@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/slickage/xrc-api",
   "dependencies": {
-    "restify": "~2.6.1"
+    "restify": "~2.6.1",
+    "mocha": "~1.17.0"
   }
 }
