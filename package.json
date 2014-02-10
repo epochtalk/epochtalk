@@ -1,23 +1,25 @@
 {
-  "name": "xrc-api",
+  "name": "tng-be",
   "version": "0.1.0",
-  "description": "xrc-api =======",
+  "description": "Forum TNG Backend",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/slickage/xrc-api"
+    "url": "git://github.com/slickage/tng-be"
   },
   "author": "James Wang <jw@slickage.com> (http://wangb.us/)",
   "license": "TBD",
   "bugs": {
-    "url": "https://github.com/slickage/xrc-api/issues"
+    "url": "https://github.com/slickage/tng-be/issues"
   },
-  "homepage": "https://github.com/slickage/xrc-api",
+  "homepage": "https://github.com/slickage/tng-be",
   "dependencies": {
-    "restify": "~2.6.1",
-    "mocha": "~1.17.0"
+    "mocha": "~1.17.0",
+    "nano": "~4.4.0",
+    "express": "~3.4.8",
+    "emcee": "0.0.4"
   }
 }
