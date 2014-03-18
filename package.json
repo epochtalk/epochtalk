@@ -1,6 +1,6 @@
 {
   "name": "tng-be",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Forum TNG Backend",
   "main": "index.js",
   "scripts": {
@@ -17,14 +17,7 @@
   },
   "homepage": "https://github.com/slickage/tng-be",
   "dependencies": {
-    "mocha": "~1.17.0",
-    "nano": "~4.4.0",
-    "express": "~3.4.8",
-    "emcee": "0.0.4",
-    "passport": "~0.2.0",
-    "jsonwebtoken": "~0.1.0",
-    "connect-redis": "~1.4.6",
-    "passport-local": "~0.1.6",
-    "express-jwt": "~0.1.1"
+    "hapi": "^3.0.0",
+    "hamljs": "^0.6.2"
   }
 }
