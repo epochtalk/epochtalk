@@ -1,4 +1,5 @@
 var Hapi = require('hapi');
+var routes = require('./routes');
 var config = require('./config');
 
 var options = {
@@ -14,14 +15,5 @@ var options = {
 };
 
 var server = new Hapi.Server(config.port, options);
-var index = function (request, reply) {
-  reply.view('index', { greeting: 'tng index' });
-}
-
-server.route({
-  method: 'GET',
-  path: '/',
-  handler: index
-});
-
+server.route(routes);
 server.start();
