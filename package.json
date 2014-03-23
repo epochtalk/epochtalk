@@ -22,6 +22,7 @@
     "nano": "^5.7.1"
   },
   "devDependencies": {
-    "mysql": "^2.1.1"
+    "mysql": "^2.1.1",
+    "couchapp": "^0.11.0"
   }
 }

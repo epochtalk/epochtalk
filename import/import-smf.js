@@ -26,8 +26,8 @@ var importStart = function() {
   db = nano.use('tng');
   connection.connect();
   importTable('smf_boards', 'board');
-  importTable('smf_topics', 'topics');
-  importTable('smf_messages', 'messages');
+  importTable('smf_topics', 'topic');
+  importTable('smf_messages', 'message');
   connection.end();
 }
 
