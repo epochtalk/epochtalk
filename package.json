@@ -20,5 +20,8 @@
     "hapi": "^3.0.0",
     "hamljs": "^0.6.2",
     "nano": "^5.7.1"
+  },
+  "devDependencies": {
+    "mysql": "^2.1.1"
   }
 }
