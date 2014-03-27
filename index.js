@@ -1,19 +1,8 @@
-var Hapi = require('hapi');
-var routes = require('./routes');
+'use strict';
 var config = require('./config');
+var site = require('./site');
+console.log('Config: ' + JSON.stringify(config));
 
-var options = {
-  views: {
-    path: __dirname + '/templates',
-    engines: {
-      haml: 'hamljs'
-    },
-    compileOptions: {
-      pretty: true
-    }
-  }
-};
+site.listen(config.port);
+console.log('Listening on port: ' + config.port);
 
-var server = new Hapi.Server(config.port, options);
-server.route(routes);
-server.start();
