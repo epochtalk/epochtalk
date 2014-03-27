@@ -1,7 +1,7 @@
 {
-  "name": "tng-be",
+  "name": "epoch",
   "version": "0.2.0",
-  "description": "Forum TNG Backend",
+  "description": "Epoch forum software",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,9 +13,9 @@
   "author": "James Wang <jw@slickage.com> (http://wangb.us/)",
   "license": "TBD",
   "bugs": {
-    "url": "https://github.com/slickage/tng-be/issues"
+    "url": "https://github.com/slickage/epoch/issues"
   },
-  "homepage": "https://github.com/slickage/tng-be",
+  "homepage": "https://github.com/slickage/epoch",
   "dependencies": {
     "nano": "^5.7.1",
     "express": "^3.5.1",

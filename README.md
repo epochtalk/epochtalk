@@ -1,4 +1,4 @@
-TNG ("Ungoliant")
+Epoch
 =================
 *Pre-alpha Software! Use at own risk.*
 
