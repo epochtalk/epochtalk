@@ -14,22 +14,20 @@ ddoc.views.boards = {
   map: function(doc) {
     if (doc.type === 'board')
       emit(doc._id, doc);
-  },
-  reduce: '_count'
+  }
 }
 
 ddoc.views.topics = {
   map: function(doc) {
     if (doc.type === 'topic')
       emit(doc._id, doc);
-  },
-  reduce: '_count'
+  }
 }
 
-ddoc.views.messages = {
+ddoc.views.messagesByTopic = {
   map: function(doc) {
     if (doc.type === 'message')
-      emit(doc._id, doc);
+      emit(doc['ID_TOPIC'], doc);
   },
   reduce: '_count'
 }

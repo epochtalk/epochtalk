@@ -3,6 +3,7 @@ var RedisStore = require('connect-redis')(express);
 var config = require('./config');
 var app = express();
 var engines = require('consolidate');
+var db = require('./db');
 
 app.engine('haml', engines.haml);
 app.set('view engine', 'haml');
@@ -27,5 +28,40 @@ app.use(express.session({
 app.get('/', function(req, res){
   return res.render('home', {greeting: 'asdf'});
 });
+
+app.get('/api/boards', function(req, res) {
+  db.findBoards(function(err, boards) {
+    return res.json(boards);
+  });
+});
+
+app.get('/api/boards/:boardId', function(req, res) {
+  res.json({board: 'asdf'});
+});
+
+app.get('/api/topics', function(req, res) {
+  db.findTopics(function(err, topics) {
+    return res.json(topics);
+  });
+});
+
+app.get('/api/topics/:topicId', function(req, res) {
+  db.findTopic(req.params.topicId, function(err, topic) {
+    return res.json(topic);
+  });
+});
+
+app.get('/api/messages', function(req, res) {
+  db.findMessages(function(err, messages) {
+    return res.json(messages);
+  });
+});
+
+app.get('/api/messages/:messageId', function(req, res) {
+  res.json({message: 'asdf'});
+});
+
+
+
 
 module.exports = app;
