@@ -36,11 +36,13 @@ app.get('/api/boards', function(req, res) {
 });
 
 app.get('/api/boards/:boardId', function(req, res) {
-  res.json({board: 'asdf'});
+  db.findBoard(req.params.boardId, function(err, board) {
+    return res.json(board);
+  });
 });
 
 app.get('/api/topics', function(req, res) {
-  db.findTopics(function(err, topics) {
+  db.findTopics(req.query.limit, req.query.startkey, function(err, topics) {
     return res.json(topics);
   });
 });
