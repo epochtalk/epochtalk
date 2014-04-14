@@ -30,25 +30,25 @@ app.get('/', function(req, res){
 });
 
 app.get('/api/boards', function(req, res) {
-  db.findBoards(function(err, boards) {
+  db.boards.all(function(err, boards) {
     return res.json(boards);
   });
 });
 
 app.get('/api/boards/:boardId', function(req, res) {
-  db.findBoard(req.params.boardId, function(err, board) {
+  db.boards.find(req.params.boardId, function(err, board) {
     return res.json(board);
   });
 });
 
 app.get('/api/topics', function(req, res) {
-  db.findTopics(req.query.limit, req.query.startkey, function(err, topics) {
+  db.topics.all(req.query.limit, req.query.startkey, function(err, topics) {
     return res.json(topics);
   });
 });
 
 app.get('/api/topics/:topicId', function(req, res) {
-  db.findTopic(req.params.topicId, function(err, topic) {
+  db.topics.find(req.params.topicId, function(err, topic) {
     return res.json(topic);
   });
 });
