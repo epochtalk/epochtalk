@@ -14,3 +14,7 @@ results
 npm-debug.log
 node_modules
 /id_deploy
+
+/public/system/lib
+test/coverage/
+/public/build/

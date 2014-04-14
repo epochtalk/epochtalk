@@ -1,0 +1,3 @@
+test/coverage/**
+/server/couchapp.js
+
