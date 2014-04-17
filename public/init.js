@@ -1,12 +1,10 @@
 'use strict';
-
+console.log('init');
 angular.element(document).ready(function() {
 	//Fixing facebook bug with redirect
 	if (window.location.hash === '#_=_') window.location.hash = '#!';
-
 	//Then init the app
-	angular.bootstrap(document, ['mean']);
-
+	angular.bootstrap(document, ['epc']);
 });
 
 // Dynamically add angular modules declared by packages
@@ -17,8 +15,8 @@ for (var index in window.modules) {
 };
 
 // Default modules
-var modules = ['ngCookies', 'ngResource', 'ui.bootstrap', 'ui.router', 'mean.system', 'mean.articles', 'mean.auth'];
+var modules = ['ngCookies', 'ngResource', 'ui.router'];
 modules = modules.concat(packageModules);
 
 // Combined modules
-angular.module('mean', modules);
+angular.module('epc', modules);

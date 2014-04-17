@@ -3,8 +3,8 @@
     %title Thread Test
   %body
     .subject title
-    .body= greeting
-
+    .body
+      %div{"ng-controller": "BoardsCtrl", "ng-cloak": true} {{foo}}
     %script{src: "public/system/lib/angular/angular.js", type: "text/javascript"}
     %script{src: "public/system/lib/angular-cookies/angular-cookies.js", type: "text/javascript"}
     %script{src: "public/system/lib/angular-resource/angular-resource.js", type: "text/javascript"}
@@ -12,17 +12,5 @@
     %script{src: "public/system/lib/angular-bootstrap/ui-bootstrap.js", type: "text/javascript"}
     %script{src: "public/system/lib/angular-bootstrap/ui-bootstrap-tpls.js", type: "text/javascript"}
     %script{src: "public/init.js", type: "text/javascript"}
-    %script{src: "public/articles/articles.js", type: "text/javascript"}
-    %script{src: "public/auth/auth.js", type: "text/javascript"}
-    %script{src: "public/system/system.js", type: "text/javascript"}
-    %script{src: "public/articles/controllers/articles.js", type: "text/javascript"}
-    %script{src: "public/articles/routes/articles.js", type: "text/javascript"}
-    %script{src: "public/articles/services/articles.js", type: "text/javascript"}
-    %script{src: "public/auth/controllers/auth.js", type: "text/javascript"}
-    %script{src: "public/auth/routes/auth.js", type: "text/javascript"}
-    %script{src: "public/system/controllers/header.js", type: "text/javascript"}
-    %script{src: "public/system/controllers/index.js", type: "text/javascript"}
     %script{src: "public/system/routes/system.js", type: "text/javascript"}
-    %script{src: "public/system/services/global.js", type: "text/javascript"}
-    %script{src: "public/system/services/interceptor.js", type: "text/javascript"}
-    %script{src: "public/system/services/menus.js", type: "text/javascript"}
+    %script{src: "public/system/controllers/boards.js", type: "text/javascript"}
