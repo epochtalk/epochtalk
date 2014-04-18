@@ -4,7 +4,9 @@
   "description": "Epoch forum software",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "browserify -t brfs app/app.js -o public/bundle.js",
+    "watch": "watchify -t brfs app/app.js -o public/bundle.js",
+    "test": "tap ./tests"
   },
   "repository": {
     "type": "git",
@@ -39,6 +41,7 @@
     "grunt-mocha-test": "latest",
     "grunt-nodemon": "0.2.0",
     "load-grunt-tasks": "^0.4.0",
-    "time-grunt": "^0.3.1"
+    "time-grunt": "^0.3.1",
+    "brfs": "^1.0.2"
   }
 }
