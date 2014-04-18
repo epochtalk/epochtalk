@@ -1,4 +1,4 @@
-module.exports = function($scope) {
-  $scope.title = 'Main Page';
+module.exports = function($scope, $location) {
+  $location.path('/boards');
 };
 

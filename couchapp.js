@@ -23,9 +23,14 @@ ddoc.views.topics = {
   }
 };
 
+ddoc.views.topicsByBoard = {
+  map: function(doc) {
+    if (doc.type === 'topic') emit(doc.ID_BOARD, doc);
+  }
+};
+
 ddoc.views.messagesByTopic = {
   map: function(doc) {
     if (doc.type === 'message') emit(doc.ID_TOPIC, doc);
-  },
-  reduce: '_count'
+  }
 };

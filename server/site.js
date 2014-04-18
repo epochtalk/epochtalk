@@ -44,9 +44,16 @@ app.get('/api/boards/:boardId', function(req, res) {
 });
 
 app.get('/api/topics', function(req, res) {
-  db.topics.all(req.query.limit, req.query.startkey, function(err, topics) {
-    return res.json(topics);
-  });
+  if (req.query.boardId) {
+    db.topics.byBoard(req.query.boardId, req.query.limit, req.query.startkey, function(err, topics) {
+      return res.json(topics);
+    });
+  }
+  else {
+    db.topics.all(req.query.limit, req.query.startkey, function(err, topics) {
+      return res.json(topics);
+    });
+  }
 });
 
 app.get('/api/topics/:topicId', function(req, res) {

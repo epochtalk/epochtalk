@@ -6,7 +6,7 @@ module.exports = function($routeProvider) {
     template: fs.readFileSync(__dirname + '/templates/main.html')
   });
 
-  //  ['board', 'thread', 'message'].forEach(function(modelName) {
+  //  ['board', 'topic', 'message'].forEach(function(modelName) {
   //   console.log(modelName);
   //   $routeProvider.when('/' + modelName + 's', {
   //     controller: require('./controllers/' + modelName + 's.js'),
@@ -29,24 +29,24 @@ module.exports = function($routeProvider) {
     template: fs.readFileSync(__dirname + '/templates/board.html')
   });
 
-  $routeProvider.when('/threads', {
-    controller: require('./controllers/threads.js'),
-    template: fs.readFileSync(__dirname + '/templates/threads.html')
+  $routeProvider.when('/topics', {
+    controller: require('./controllers/topics.js'),
+    template: fs.readFileSync(__dirname + '/templates/topics.html')
   });
 
-  $routeProvider.when('/threads/:threadId', {
-    controller: require('./controllers/thread.js'),
-    template: fs.readFileSync(__dirname + '/templates/thread.html')
+  $routeProvider.when('/topics/:topicId', {
+    controller: require('./controllers/topic.js'),
+    template: fs.readFileSync(__dirname + '/templates/topic.html')
   });
 
   $routeProvider.when('/messages', {
-    controller: require('./controllers/thread.js'),
-    template: fs.readFileSync(__dirname + '/templates/thread.html')
+    controller: require('./controllers/messages.js'),
+    template: fs.readFileSync(__dirname + '/templates/messages.html')
   });
 
   $routeProvider.when('/messages/:messageId', {
-    controller: require('./controllers/thread.js'),
-    template: fs.readFileSync(__dirname + '/templates/thread.html')
+    controller: require('./controllers/topic.js'),
+    template: fs.readFileSync(__dirname + '/templates/message.html')
   });
 };
 
