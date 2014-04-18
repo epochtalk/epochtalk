@@ -1,3 +1,6 @@
-'use strict';
-console.log('app!');
+require('angular');
+
+angular.module('ept', ['ngRoute'])
+  .config(require('./routes'));
+
 
