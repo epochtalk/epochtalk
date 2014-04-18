@@ -4,6 +4,7 @@
   "description": "Epoch forum software",
   "main": "server.js",
   "scripts": {
+    "install": "napa",
     "build": "browserify -t brfs app/app.js -o public/bundle.js",
     "watch": "watchify -t brfs app/app.js -o public/bundle.js",
     "test": "tap ./tests"
@@ -18,14 +19,17 @@
     "url": "https://github.com/slickage/epoch/issues"
   },
   "homepage": "https://github.com/slickage/epoch",
+  "napa": {
+    "angular": "angular/bower-angular",
+    "angular-route": "angular/bower-angular-route"
+  },
   "dependencies": {
     "nano": "^5.7.1",
     "express": "^3.5.1",
     "connect-redis": "~1.4.7",
     "consolidate": "^0.10.0",
     "hamljs": "^0.6.2",
-    "underscore": "^1.6.0",
-    "angular": "^1.2.16"
+    "underscore": "^1.6.0"
   },
   "devDependencies": {
     "mysql": "^2.1.1",

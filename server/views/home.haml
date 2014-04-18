@@ -1,16 +1,7 @@
-%html
+!!! 5
+%html{"ng-app": "ept"}
   %head
     %title Thread Test
   %body
-    .subject title
-    .body
-      %div{"ng-controller": "BoardsCtrl", "ng-cloak": true} {{foo}}
-    %script{src: "public/system/lib/angular/angular.js", type: "text/javascript"}
-    %script{src: "public/system/lib/angular-cookies/angular-cookies.js", type: "text/javascript"}
-    %script{src: "public/system/lib/angular-resource/angular-resource.js", type: "text/javascript"}
-    %script{src: "public/system/lib/angular-ui-router/release/angular-ui-router.js", type: "text/javascript"}
-    %script{src: "public/system/lib/angular-bootstrap/ui-bootstrap.js", type: "text/javascript"}
-    %script{src: "public/system/lib/angular-bootstrap/ui-bootstrap-tpls.js", type: "text/javascript"}
-    %script{src: "public/init.js", type: "text/javascript"}
-    %script{src: "public/system/routes/system.js", type: "text/javascript"}
-    %script{src: "public/system/controllers/boards.js", type: "text/javascript"}
+    %ng-view
+    %script{src: "/bundle.js", type: "text/javascript"}
