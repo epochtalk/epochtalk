@@ -1,6 +1,6 @@
 'use strict';
 var config = require(__dirname + '/../config');
-var _ = require('underscore');
+var _ = require('lodash');
 var nano = require('nano')(config.couchdb.url);
 var topics = {};
 var dbName = config.couchdb.dbName;
@@ -11,7 +11,7 @@ module.exports = topics;
 
 topics.all = function(limit, startkey, cb) {
   var filter = {};
-  filter.limit = limit ? Number(limit) : 10;
+  filter.limit = limit ? (Number(limit) += 1) : 11;
   if (startkey) filter.startkey = startkey;
   console.log(dbName + ' ' + recordType);
   couch.view(dbName, recordType, filter, function(err, result) {
@@ -26,8 +26,9 @@ topics.all = function(limit, startkey, cb) {
 topics.byBoard = function(boardId, limit, startkey, cb) {
   var filter = {};
   filter.boardId = boardId;
-  filter.limit = limit ? Number(limit) : 10;
+  filter.limit = limit ? (Number(limit) += 1) : 11;
   if (startkey) filter.startkey = startkey;
+  console.log(filter);
   couch.view(dbName, recordType + 'ByBoard', filter, function(err, result) {
     delete result.total_rows;
     result.next_startkey = result.rows[result.rows.length - 1].key;

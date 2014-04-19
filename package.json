@@ -29,7 +29,8 @@
     "connect-redis": "~1.4.7",
     "consolidate": "^0.10.0",
     "hamljs": "^0.6.2",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "lodash": "^2.4.1"
   },
   "devDependencies": {
     "mysql": "^2.1.1",

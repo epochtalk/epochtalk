@@ -1,3 +1,6 @@
-<div ng-repeat="topic in topics">
-  {{topic.value.name}}
+<div ng-repeat="topic in topics.rows">
+  <tt><a ng-href="/#/topics/{{topic.id}}">{{topic.id}}</a></tt>
+  <tt>[{{topic.message.posterName}}]<tt> {{topic.message.subject}}
 </div>
+<button ng-click="paginate()">Next</button>
+

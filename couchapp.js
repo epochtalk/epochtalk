@@ -34,3 +34,9 @@ ddoc.views.messagesByTopic = {
     if (doc.type === 'message') emit(doc.ID_TOPIC, doc);
   }
 };
+
+ddoc.views.messages = {
+  map: function(doc) {
+    if (doc.type === 'message') emit(doc.ID_MSG, doc);
+  }
+};
