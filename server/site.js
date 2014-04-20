@@ -77,6 +77,7 @@ app.get('/api/messages', function(req, res) {
 });
 
 app.get('/api/messages/:messageId', function(req, res) {
+  console.log('find message: ' + req.params.messageId);
   db.messages.find(req.params.messageId, function(err, message) {
     return res.json(message);
   });

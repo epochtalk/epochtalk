@@ -10,10 +10,11 @@ var couch = nano.use(config.couchdb.dbName);
 module.exports = boards;
 
 boards.all = function(cb) {
-  couch.view(dbName, recordType, {limit: 11}, function(err, body) {
-    var result = _.first(body.rows, 10);
-    result.next_startkey = body.rows[body.rows.length - 1].key;
-    result.next_startkey_docid = body.rows[body.rows.length - 1].id;
+  var filter = {limit: 200};
+  couch.view(dbName, recordType, filter, function(err, body) {
+    var result = body.rows;
+    // result.next_startkey = body.rows[body.rows.length - 1].key;
+    // result.next_startkey_docid = body.rows[body.rows.length - 1].id;
     cb(err, result);
   });
 };

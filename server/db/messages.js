@@ -1,7 +1,13 @@
 'use strict';
 var config = require(__dirname + '/../config');
 var _ = require('lodash');
-var nano = require('nano')(config.couchdb.url);
+var nano = require('nano')({
+  url: config.couchdb.url,
+  log: function (id, args) {
+    console.log(id, args);
+    console.log(decodeURI(args[0].headers.uri));
+  }
+});
 var messages = {};
 var dbName = config.couchdb.dbName;
 var recordType = 'messages';
@@ -13,7 +19,6 @@ messages.all = function(limit, startkey, cb) {
   var filter = {};
   filter.limit = limit ? Number(limit) : 10;
   if (startkey) filter.startkey = startkey;
-  console.log(dbName + ' ' + recordType);
   couch.view(dbName, recordType, filter, function(err, result) {
     delete result.total_rows;
     result.next_startkey = result.rows[result.rows.length - 1].key;
@@ -36,8 +41,13 @@ messages.find = function(messageId, cb) {
 };
 
 messages.byTopic = function(topicId, limit, startkey_docid, cb) {
+  console.log('topic: ' + topicId);
   var filter = {};
-  filter.key = Number(topicId);
+  topicId = Number(topicId);
+  filter.descending = true;
+  filter.startkey = [topicId, {}];
+  filter.endkey = [topicId, null];
+  // filter.descending = true;
   if (startkey_docid) { 
     filter.startkey_docid = startkey_docid;
   }
