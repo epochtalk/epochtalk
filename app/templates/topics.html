@@ -1,6 +1,10 @@
+Page: {{page}}
 <div ng-repeat="topic in topics.rows">
-  <tt><a ng-href="/#/topics/{{topic.id}}">{{topic.id}}</a></tt>
-  <tt>[{{topic.message.posterName}}]<tt> {{topic.message.subject}}
+  <tt><a ng-href="/#/topics/{{topic.value.ID_TOPIC}}/messages">{{topic.id}}</a></tt>
+  [{{topic.message.posterName}}]
+  <em>@{{topic.message.posterTime * 1000 | date:'medium'}}</em>
+  {{topic.message.subject}}
 </div>
-<button ng-click="paginate()">Next</button>
+<button ng-click="paginatePrev()" ng-show="page > 1">Prev</button>
+<button ng-click="paginateNext()">Next</button>
 

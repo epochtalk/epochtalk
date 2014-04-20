@@ -29,7 +29,7 @@ module.exports = function($routeProvider) {
     template: fs.readFileSync(__dirname + '/templates/board.html')
   });
 
-  $routeProvider.when('/topics', {
+  $routeProvider.when('/boards/:boardId/topics', {
     controller: require('./controllers/topics.js'),
     template: fs.readFileSync(__dirname + '/templates/topics.html')
   });
@@ -39,7 +39,7 @@ module.exports = function($routeProvider) {
     template: fs.readFileSync(__dirname + '/templates/topic.html')
   });
 
-  $routeProvider.when('/messages', {
+  $routeProvider.when('/topics/:topicId/messages', {
     controller: require('./controllers/messages.js'),
     template: fs.readFileSync(__dirname + '/templates/messages.html')
   });

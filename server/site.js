@@ -63,9 +63,17 @@ app.get('/api/topics/:topicId', function(req, res) {
 });
 
 app.get('/api/messages', function(req, res) {
-  db.findMessages(function(err, messages) {
-    return res.json(messages);
-  });
+  if (req.query.topicId) {
+    console.log('by topic: ' + req.query.topicId);
+    db.messages.byTopic(req.query.topicId, req.query.limit, req.query.startkey_docid, function(err, messages) {
+      return res.json(messages);
+    });
+  }
+  else {
+    db.messages.all(function(err, messages) {
+      return res.json(messages);
+    });
+  }
 });
 
 app.get('/api/messages/:messageId', function(req, res) {

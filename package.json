@@ -21,7 +21,8 @@
   "homepage": "https://github.com/slickage/epoch",
   "napa": {
     "angular": "angular/bower-angular",
-    "angular-route": "angular/bower-angular-route"
+    "angular-route": "angular/bower-angular-route",
+    "angular-sanitize": "angular/bower-angular-sanitize"
   },
   "dependencies": {
     "nano": "^5.7.1",

@@ -1,0 +1,14 @@
+Page: {{page}}
+<div ng-repeat="message in messages.rows">
+  <div style="margin: 10px 0px;">
+    <strong>{{message.value.subject}}</strong>
+    [{{message.value.posterName}}]
+    <em>@{{message.value.posterTime * 1000 | date:'medium'}}</em>
+    
+    <tt><a ng-href="/#/messages/{{message.id}}">{{message.id}}</a></tt>
+  </div>
+  <div ng-bind-html="message.value.body" style="background-color: #eee; margin-left: 5px"></div>
+</div>
+<button ng-click="paginatePrev()">Prev</button>
+<button ng-click="paginateNext()">Next</button>
+
