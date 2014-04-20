@@ -3,7 +3,7 @@ module.exports = function($scope, $routeParams, $http) {
   $scope.rowsPerPage = 10;
 
   console.log('/api/messages?topicId=' + $routeParams.topicId); 
-  $http.get('/api/messages?topicId=' + $routeParams.topicId)
+  $http.get('/api/messages?topicId=' + $routeParams.topicId + '&limit=1000')
   .success(function(messages) {
     $scope.page = (messages.offset / $scope.rowsPerPage) + 1;
     $scope.messages = messages;
