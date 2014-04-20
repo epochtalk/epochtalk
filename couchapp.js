@@ -25,7 +25,7 @@ ddoc.views.topics = {
 
 ddoc.views.topicsByBoard = {
   map: function(doc) {
-    if (doc.type === 'topic') emit(doc.ID_BOARD, doc);
+    if (doc.type === 'topic') emit(doc.ID_BOARD, null);
   }
 };
 

@@ -46,7 +46,9 @@ module.exports = function($scope, $location, $routeParams, $http) {
   });
 
   $scope.paginate = function() {
-    $http.get('/api/topics?boardId=' + $routeParams.boardId + '&startkey=' + $scope.topics.next_startkey_docid)
+    console.log($scope.topics.next_startkey_docid);
+    console.log('/api/topics?boardId=' + $routeParams.boardId + '&startkey_docid=' + $scope.topics.next_startkey_docid);
+    $http.get('/api/topics?boardId=' + $routeParams.boardId + '&startkey_docid=' + $scope.topics.next_startkey_docid)
     .success(function(topics) {
       $scope.topics = topics;
       angular.forEach($scope.topics.rows, function(topic) {

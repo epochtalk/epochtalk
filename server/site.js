@@ -45,7 +45,7 @@ app.get('/api/boards/:boardId', function(req, res) {
 
 app.get('/api/topics', function(req, res) {
   if (req.query.boardId) {
-    db.topics.byBoard(req.query.boardId, req.query.limit, req.query.startkey, function(err, topics) {
+    db.topics.byBoard(req.query.boardId, req.query.limit, req.query.startkey_docid, function(err, topics) {
       return res.json(topics);
     });
   }
