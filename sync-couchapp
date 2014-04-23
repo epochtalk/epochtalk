@@ -1,2 +1,2 @@
 #!/bin/bash
-couchapp push couchapp.js http://localhost:5984/tng
+couchapp push couchapp.js http://localhost:5984/epochtalk

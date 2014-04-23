@@ -3,7 +3,7 @@ var couchapp = require('couchapp'),
     path = require('path');
 
 var ddoc = {
-  _id: '_design/tng',
+  _id: '_design/epochtalk',
   views: {},
   lists: {},
   shows: {} 
@@ -16,6 +16,17 @@ ddoc.views.boards = {
     if (doc.type === 'board') emit(doc._id, doc);
   }
 };
+ddoc.views.threads = {
+  map: function(doc) {
+    if (doc.type === 'thread') emit(doc._id, doc);
+  }
+};
+ddoc.views.posts = {
+  map: function(doc) {
+    if (doc.type === 'post') emit(doc._id, doc);
+  }
+};
+
 
 ddoc.views.topics = {
   map: function(doc) {
