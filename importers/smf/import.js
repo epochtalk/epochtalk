@@ -28,9 +28,6 @@ var importTable = function(table, type) {
 var importStart = function() {
   db = nano.use(dbName);
   connection.connect();
-  // importTable('smf_boards', 'board');
-  // importTable('smf_topics', 'thread');
-  // importTable('smf_messages', 'post');
   connection.query('select * from smf_boards', function(err, rows) {
     if (err) throw err;
     rows.forEach(function(row) {
@@ -57,6 +54,7 @@ var importStart = function() {
                 if (err) console.log(err);
                 rows.forEach(function(row) {
                   var post = {};
+                  post.type = 'post';
                   post.thread_id = threadId;
                   post.subject = row.subject;
                   post.body = row.body;
