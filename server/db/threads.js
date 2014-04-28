@@ -30,18 +30,21 @@ threads.all = function(limit, startkey, cb) {
 
 threads.byBoard = function(boardId, limit, startkey_docid, cb) {
   var filter = {};
-  filter.key = Number(boardId);
+  filter.key = boardId;
   if (startkey_docid) { 
     filter.startkey_docid = startkey_docid;
   }
   filter.limit = limit ? Number(limit) + 1 : 11;
+  console.log(filter);
   couch.view(dbName, recordType + 'ByBoard', filter, function(err, docs) {
-    delete docs.total_rows;
-    docs.next_startkey = docs.rows[docs.rows.length - 1].key;
-    docs.next_startkey_docid = docs.rows[docs.rows.length - 1].id; 
-    docs.rows = _.map(_.first(docs.rows, filter.limit - 1), function(row) {
-      return row.value;
-    });
+    if (!err && docs && docs.length > 0) {
+      delete docs.total_rows;
+      docs.next_startkey = docs.rows[docs.rows.length - 1].key;
+      docs.next_startkey_docid = docs.rows[docs.rows.length - 1].id; 
+      docs.rows = _.map(_.first(docs.rows, filter.limit - 1), function(row) {
+        return row.value;
+      });
+    }
     cb(err, docs);
   });
 };
