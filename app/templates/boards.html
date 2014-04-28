@@ -1,4 +1,4 @@
 <div ng-repeat="board in boards">
-  <span style="font-size: 1.0em; font-family: monospace; color: #09f;">{{board._id}}</span>
+  <a ng-href="/#/boards/{{board._id}}" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{board._id}}</a>
   <a ng-href="/#/boards/{{board._id}}" ng-bind-html="board.title"></a>
 </div>
