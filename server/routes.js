@@ -17,15 +17,15 @@ var configureRoutes = function(app) {
     });
   });
 
-  app.get('/api/topics', function(req, res) {
-    if (req.query.boardId) {
-      db.topics.byBoard(req.query.boardId, req.query.limit, req.query.startkey_docid, function(err, topics) {
-        return res.json(topics);
+  app.get('/api/boards/:boardId/threads', function(req, res) {
+    if (req.params.boardId) {
+      db.threads.byBoard(req.params.boardId, req.query.limit, req.query.startkey_docid, function(err, threads) {
+        return res.json(threads);
       });
     }
     else {
-      db.topics.all(req.query.limit, req.query.startkey, function(err, topics) {
-        return res.json(topics);
+      db.threads.all(req.query.limit, req.query.startkey, function(err, threads) {
+        return res.json(threads);
       });
     }
   });

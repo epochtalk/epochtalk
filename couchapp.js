@@ -24,7 +24,7 @@ ddoc.views.threads = {
 
 ddoc.views.threadsByBoard = {
   map: function(doc) {
-    if (doc.type === 'thread') emit(doc.board_id, null);
+    if (doc.type === 'thread') emit(doc.board_id, doc);
   }
 };
 
