@@ -21,33 +21,22 @@ ddoc.views.threads = {
     if (doc.type === 'thread') emit(doc._id, doc);
   }
 };
+
+ddoc.views.threadsByBoard = {
+  map: function(doc) {
+    if (doc.type === 'thread') emit(doc.board_id, null);
+  }
+};
+
 ddoc.views.posts = {
   map: function(doc) {
     if (doc.type === 'post') emit(doc._id, doc);
   }
 };
 
-
-ddoc.views.topics = {
+ddoc.views.postsByThread = {
   map: function(doc) {
-    if (doc.type === 'topic') emit(doc._id, doc);
+    if (doc.type === 'post') emit([doc.topic_id, doc.created_at], doc);
   }
 };
 
-ddoc.views.topicsByBoard = {
-  map: function(doc) {
-    if (doc.type === 'topic') emit(doc.ID_BOARD, doc);
-  }
-};
-
-ddoc.views.messagesByTopic = {
-  map: function(doc) {
-    if (doc.type === 'message') emit([doc.ID_TOPIC, doc.posterTime], doc);
-  }
-};
-
-ddoc.views.messages = {
-  map: function(doc) {
-    if (doc.type === 'message') emit(doc.ID_MSG, doc);
-  }
-};

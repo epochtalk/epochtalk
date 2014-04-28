@@ -3,11 +3,11 @@ var mysql = require('mysql');
 var nano = require('nano')('http://localhost:5984');
 var CLEAN = true;
 var connection = mysql.createConnection({
-  host: '172.16.112.130',
-  port: 43306,
+  host: 'localhost',
+  port: 3306,
   database: 'smf',
   user: 'root',
-  password: 'password'
+  password: ''
 });
 
 var db;

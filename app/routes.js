@@ -29,9 +29,9 @@ module.exports = function($routeProvider) {
     template: fs.readFileSync(__dirname + '/templates/board.html')
   });
 
-  $routeProvider.when('/boards/:boardId/topics', {
-    controller: require('./controllers/topics.js'),
-    template: fs.readFileSync(__dirname + '/templates/topics.html')
+  $routeProvider.when('/boards/:boardId/threads', {
+    controller: require('./controllers/threads.js'),
+    template: fs.readFileSync(__dirname + '/templates/threads.html')
   });
 
   $routeProvider.when('/topics/:topicId', {

@@ -5,3 +5,5 @@ require('angular-sanitize/angular-sanitize');
 angular.module('ept', ['ngRoute', 'ngSanitize'])
   .config(require('./routes'));
 
+
+  console.log('halp');
