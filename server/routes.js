@@ -30,21 +30,20 @@ var configureRoutes = function(app) {
     }
   });
 
-  app.get('/api/topics/:topicId', function(req, res) {
-    db.topics.find(req.params.topicId, function(err, topic) {
-      return res.json(topic);
+  app.get('/api/threads/:threadId', function(req, res) {
+    db.threads.find(req.params.threadId, function(err, thread) {
+      return res.json(thread);
     });
   });
 
-  app.get('/api/messages', function(req, res) {
-    if (req.query.topicId) {
-      console.log('by topic: ' + req.query.topicId);
-      db.messages.byTopic(req.query.topicId, req.query.limit, req.query.startkey_docid, function(err, messages) {
+  app.get('/api/threads/:threadId/posts', function(req, res) {
+    if (req.params.threadId) {
+      db.posts.byThread(req.params.threadId, req.query.limit, req.query.startkey_docid, function(err, messages) {
         return res.json(messages);
       });
     }
     else {
-      db.messages.all(function(err, messages) {
+      db.posts.all(function(err, messages) {
         return res.json(messages);
       });
     }

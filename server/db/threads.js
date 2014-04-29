@@ -36,12 +36,12 @@ threads.byBoard = function(boardId, limit, startkey_docid, cb) {
   }
   filter.limit = limit ? Number(limit) + 1 : 11;
   console.log(filter);
-  couch.view(dbName, recordType + 'ByBoard', filter, function(err, docs) {
-    if (!err && docs && docs.length > 0) {
+  couch.view(dbName, recordType + 'ByBoard', filter, function(err, docs) {    
+    if (!err && docs && docs.rows.length > 0) {
       delete docs.total_rows;
       docs.next_startkey = docs.rows[docs.rows.length - 1].key;
       docs.next_startkey_docid = docs.rows[docs.rows.length - 1].id; 
-      docs.rows = _.map(_.first(docs.rows, filter.limit - 1), function(row) {
+      docs.rows = _.map(docs.rows, function(row) {
         return row.value;
       });
     }
@@ -49,8 +49,8 @@ threads.byBoard = function(boardId, limit, startkey_docid, cb) {
   });
 };
 
-threads.find = function(topicId, cb) {
-  couch.view(dbName, recordType, { key: topicId }, function(err, docs) {
+threads.find = function(threadId, cb) {
+  couch.view(dbName, recordType, { key: threadId }, function(err, docs) {
     if (!err  && docs.rows && docs.rows.length > 0) {
       var thread = docs.rows[0].value;
       return cb(err, thread);

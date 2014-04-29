@@ -36,7 +36,7 @@ ddoc.views.posts = {
 
 ddoc.views.postsByThread = {
   map: function(doc) {
-    if (doc.type === 'post') emit([doc.topic_id, doc.created_at], doc);
+    if (doc.type === 'post') emit([doc.thread_id, doc.created_at], doc);
   }
 };
 

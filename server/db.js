@@ -1,9 +1,9 @@
 var boards = require('./db/boards');
 var threads = require('./db/threads');
-var messages = require('./db/messages');
+var posts = require('./db/posts');
 
 var db = {};
 db.boards = boards;
 db.threads = threads;
-db.messages = messages;
+db.posts = posts;
 module.exports = db;

@@ -58,6 +58,7 @@ var importStart = function() {
                   post.thread_id = threadId;
                   post.subject = row.subject;
                   post.body = row.body;
+                  post.created_at = row.posterTime;
                   post.smf_contents = row;
                   db.insert(post, function(err, body) {
                     console.log('imported post: ' + body.id);

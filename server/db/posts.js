@@ -8,14 +8,14 @@ var nano = require('nano')({
     console.log(decodeURI(args[0].headers.uri));
   }
 });
-var messages = {};
+var posts = {};
 var dbName = config.couchdb.dbName;
-var recordType = 'messages';
+var recordType = 'posts';
 var couch = nano.use(config.couchdb.dbName);
 
-module.exports = messages;
+module.exports = posts;
 
-messages.all = function(limit, startkey, cb) {
+posts.all = function(limit, startkey, cb) {
   var filter = {};
   filter.limit = limit ? Number(limit) : 10;
   if (startkey) filter.startkey = startkey;
@@ -28,7 +28,7 @@ messages.all = function(limit, startkey, cb) {
   });
 };
 
-messages.find = function(messageId, cb) {
+posts.find = function(messageId, cb) {
   var filter = {};
   filter.limit = 1;
   filter.key = Number(messageId);
@@ -40,23 +40,26 @@ messages.find = function(messageId, cb) {
   });
 };
 
-messages.byTopic = function(topicId, limit, startkey_docid, cb) {
-  console.log('topic: ' + topicId);
+posts.byThread = function(threadId, limit, startkey_docid, cb) {
+  console.log('thread: ' + threadId);
   var filter = {};
-  topicId = Number(topicId);
   filter.descending = true;
-  filter.startkey = [topicId, {}];
-  filter.endkey = [topicId, null];
+  filter.startkey = [threadId, {}];
+  filter.endkey = [threadId, null];
   // filter.descending = true;
   if (startkey_docid) { 
     filter.startkey_docid = startkey_docid;
   }
   filter.limit = limit ? Number(limit) + 1 : 11;
-  couch.view(dbName, recordType + 'ByTopic', filter, function(err, docs) {
-    delete docs.total_rows;
-    docs.next_startkey = docs.rows[docs.rows.length - 1].key;
-    docs.next_startkey_docid = docs.rows[docs.rows.length - 1].id; 
-    docs.rows = _.first(docs.rows, filter.limit - 1);
+  couch.view(dbName, recordType + 'ByThread', filter, function(err, docs) {
+    if (!err && docs && docs.rows.length > 0) {
+      delete docs.total_rows;
+      docs.next_startkey = docs.rows[docs.rows.length - 1].key;
+      docs.next_startkey_docid = docs.rows[docs.rows.length - 1].id; 
+      docs.rows = _.map(docs.rows, function(row) {
+        return row.value;
+      });
+    }
     cb(err, docs);
   });
 };

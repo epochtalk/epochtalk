@@ -4,6 +4,10 @@ module.exports = function($scope, $http, $routeParams) {
     $scope.board = board;
   });
 
-
+  $http.get('/api/boards/' + boardId + '/threads')
+  .success(function(threads) {
+    console.log(threads);
+    $scope.threads = threads;
+  });
 }
 
