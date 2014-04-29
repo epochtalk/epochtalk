@@ -7,7 +7,7 @@ module.exports = function($scope, $http, $routeParams) {
   $http.get('/api/boards/' + boardId + '/threads')
   .success(function(threads) {
     console.log(threads);
-    $scope.threads = threads;
+    $scope.threads = threads.rows;
   });
 }
 

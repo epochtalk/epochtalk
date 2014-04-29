@@ -1,10 +1,9 @@
-{{board._id}}
 <h5>{{board.title}}</h5>
 <div>
   {{board.description}}
 </div>
 
 <div ng-repeat="thread in threads">
-  {{thread._id}}
+  <a ng-href="/#/boards/{{thread._id}}" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{thread._id}}</a>
+  <a ng-href="/#/boards/{{thread._id}}" ng-bind-html="thread.title"></a>
 </div>
-
