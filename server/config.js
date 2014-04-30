@@ -10,7 +10,7 @@ var config = {
   },
   couchdb: {
     url: 'http://localhost:5984',
-    dbName: 'epochtalk'
+    name: 'epoch'
   }
 };
 

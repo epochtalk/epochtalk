@@ -31,7 +31,8 @@
     "consolidate": "^0.10.0",
     "hamljs": "^0.6.2",
     "lodash": "^2.4.1",
-    "async": "^0.7.0"
+    "async": "^0.7.0",
+    "yargs": "^1.2.1"
   },
   "devDependencies": {
     "mysql": "^2.1.1",
