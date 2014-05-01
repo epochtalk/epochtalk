@@ -3,19 +3,23 @@ var config = require(__dirname + '/../config');
 var _ = require('lodash');
 var nano = require('nano')(config.couchdb.url);
 var boards = {};
-var dbName = config.couchdb.dbName;
+var dbName = config.couchdb.name;
 var recordType = 'boards';
-var couch = nano.use(config.couchdb.dbName);
+var couch = nano.use(dbName);
 
 module.exports = boards;
 
 boards.all = function(cb) {
   var filter = {limit: 200};
   couch.view(dbName, recordType, filter, function(err, body) {
-    var result = _.map(body.rows, function(row) {
-      delete row.value.smf_contents;
-      return row.value;
-    });
+    console.log(err);
+    
+    if (!err && body.rows && body.rows.length > 0) {
+      var result = _.map(body.rows, function(row) {
+        delete row.value.smf_contents;
+        return row.value;
+      });
+    }
     // result.next_startkey = body.rows[body.rows.length - 1].key;
     // result.next_startkey_docid = body.rows[body.rows.length - 1].id;
     cb(err, result);

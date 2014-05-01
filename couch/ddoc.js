@@ -3,7 +3,7 @@ var couchapp = require('couchapp'),
     path = require('path');
 
 var ddoc = {
-  _id: '_design/epochtalk',
+  _id: '_design/epoch',
   views: {},
   lists: {},
   shows: {} 
