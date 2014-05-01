@@ -1,7 +1,6 @@
 'use strict';
 var mysql = require('mysql');
 var nano = require('nano')('http://localhost:5984');
-var CLEAN = true;
 var connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
@@ -10,23 +9,8 @@ var connection = mysql.createConnection({
   password: ''
 });
 
-var db;
-var dbName = 'epochtalk';
-// type refers to type when in couchdb
-// importTable(mysql_table, couch_object_type, mapping);
-var importTable = function(table, type) {
-  console.log('Importing ' + table + ' with type: ' + type);
-  connection.query('select * from ' + table, function(err, rows) {
-    if (err) throw err;
-    rows.forEach(function(row) {
-      row.type = type;
-      db.insert(row);
-    });
-  });
-};
-
-var importStart = function() {
-  db = nano.use(dbName);
+var start = function(dbName, cb) {
+  var db = nano.use(dbName);
   connection.connect();
   connection.query('select * from smf_boards', function(err, rows) {
     if (err) throw err;
@@ -73,16 +57,6 @@ var importStart = function() {
   });
 };
 
-if (CLEAN) {
-  nano.db.destroy(dbName);
-  nano.db.create(dbName, function(err) {
-    if (err) throw err;
-    console.log('Database created.');
-    importStart();
-  });
-}
-else {
-  importStart();
-}
-
-
+module.exports = {
+  start: start
+};

@@ -1,0 +1,11 @@
+Epochtalk Setup Tool Usage:
+
+--create
+Creates database from /server/config. Defaults to 'epoch'
+
+--recreate
+Use with caution! Deletes and creates database from same parameters as --create
+
+-i, --import <importer>
+Imports via /importers/<importer>. Edit importers as needed.
+

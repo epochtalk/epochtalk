@@ -1,14 +1,15 @@
-#!/usr/bin/env node
 'use strict';
+var fs = require('fs');
+var usage = fs.readFileSync(__dirname + '/usage', 'utf-8');
 var yargs = require('yargs')
-.usage('Epochtalk Database Tool');
+  .options('i', {alias : 'import'})
+  .usage(usage);
 var argv = yargs.argv;
 var couchapp = require('couchapp');
-var config = require(__dirname + '/server/config');
+var config = require(__dirname + '/../server/config');
 var nano = require('nano')(config.couchdb.url);
 var dbName = config.couchdb.name;
-var ddoc = require(__dirname + '/db/ddoc');
-
+var ddoc = require(__dirname + '/../couch/ddoc');
 var setupDatabase = function(cb) {
   nano.db.create(dbName, function(err) {
     if (err) {
@@ -25,15 +26,12 @@ var setupDatabase = function(cb) {
   });
 };
 
-var create = argv.create;
-var recreate = argv.recreate;
-if (recreate) {
+if (argv.recreate) {
   nano.db.destroy(dbName, function(err, body) {
     if (err) {
       console.log(err.reason);
     }
     else {
-      console.log(body);
       setupDatabase(function(err) {
         if (!err) {
           console.log('Database is recreated.');
@@ -42,12 +40,25 @@ if (recreate) {
     }
   });
 }
-else if (create) {
+else if (argv.create) {
   setupDatabase(function(err) {
     if (!err) {
       console.log('Database is now set up.');
     }
   });
+}
+else if (argv.i) {
+  try {
+    var importerPath = __dirname + '/../importers/' + argv.i;
+    var importer = require(importerPath);
+    console.log('Starting import via: ' + importerPath);
+    importer.start(dbName, function(err, body) {
+      console.log(body);
+    });
+  }
+  catch(err) {
+    console.log(err);
+  }
 }
 else {
   console.log(yargs.help());
