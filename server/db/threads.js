@@ -1,18 +1,11 @@
 'use strict';
-var config = require(__dirname + '/../config');
 var _ = require('lodash');
-var nano = require('nano')({
-  url: config.couchdb.url,
-  // log: function (id, args) {
-  //   console.log(id, args);
-  // }
-});
+var config = require(__dirname + '/../config');
+var couch = require(__dirname + '/couch');
+var dbName = config.couchdb.dbName;
+var recordType = 'threads';
 
 var threads = {};
-var recordType = 'threads';
-var dbName = config.couchdb.dbName;
-var couch = nano.use(config.couchdb.dbName);
-
 module.exports = threads;
 
 threads.all = function(limit, startkey, cb) {

@@ -1,19 +1,16 @@
 'use strict';
-var config = require(__dirname + '/../config');
 var _ = require('lodash');
-var nano = require('nano')(config.couchdb.url);
-var boards = {};
+var config = require(__dirname + '/../config');
+var couch = require(__dirname + '/couch');
 var dbName = config.couchdb.name;
 var recordType = 'boards';
-var couch = nano.use(dbName);
 
+var boards = {};
 module.exports = boards;
 
 boards.all = function(cb) {
   var filter = {limit: 200};
   couch.view(dbName, recordType, filter, function(err, body) {
-    console.log(err);
-    
     if (!err && body.rows && body.rows.length > 0) {
       var result = _.map(body.rows, function(row) {
         delete row.value.smf_contents;

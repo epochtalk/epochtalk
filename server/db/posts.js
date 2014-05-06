@@ -1,18 +1,11 @@
 'use strict';
-var config = require(__dirname + '/../config');
 var _ = require('lodash');
-var nano = require('nano')({
-  url: config.couchdb.url,
-  log: function (id, args) {
-    console.log(id, args);
-    console.log(decodeURI(args[0].headers.uri));
-  }
-});
-var posts = {};
+var config = require(__dirname + '/../config');
+var couch = require(__dirname + '/couch');
 var dbName = config.couchdb.dbName;
 var recordType = 'posts';
-var couch = nano.use(config.couchdb.dbName);
 
+var posts = {};
 module.exports = posts;
 
 posts.all = function(limit, startkey, cb) {
