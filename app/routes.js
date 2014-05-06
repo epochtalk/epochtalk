@@ -34,19 +34,14 @@ module.exports = function($routeProvider) {
     template: fs.readFileSync(__dirname + '/templates/threads.html')
   });
 
-  $routeProvider.when('/topics/:topicId', {
-    controller: require('./controllers/topic.js'),
-    template: fs.readFileSync(__dirname + '/templates/topic.html')
+  $routeProvider.when('/threads/:threadId', {
+    controller: require('./controllers/thread.js'),
+    template: fs.readFileSync(__dirname + '/templates/thread.html')
   });
 
-  $routeProvider.when('/topics/:topicId/messages', {
-    controller: require('./controllers/messages.js'),
-    template: fs.readFileSync(__dirname + '/templates/messages.html')
-  });
-
-  $routeProvider.when('/messages/:messageId', {
-    controller: require('./controllers/topic.js'),
-    template: fs.readFileSync(__dirname + '/templates/message.html')
+  $routeProvider.when('/threads/:threadId/posts', {
+    controller: require('./controllers/posts.js'),
+    template: fs.readFileSync(__dirname + '/templates/posts.html')
   });
 };
 
