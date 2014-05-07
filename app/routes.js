@@ -6,19 +6,6 @@ module.exports = function($routeProvider) {
     template: fs.readFileSync(__dirname + '/templates/main.html')
   });
 
-  //  ['board', 'topic', 'message'].forEach(function(modelName) {
-  //   console.log(modelName);
-  //   $routeProvider.when('/' + modelName + 's', {
-  //     controller: require('./controllers/' + modelName + 's.js'),
-  //     template: fs.readFileSync(__dirname + '/templates/' + modelName + 's.html')
-  //   });
-
-  //   $routeProvider.when('/' + modelName + 's/:' + modelName + 'Id', {
-  //     controller: require('./controllers/' + modelName + '.js'),
-  //     template: fs.readFileSync(__dirname + '/templates/' + modelName + '.html')
-  //   });
-  // });
-
   $routeProvider.when('/boards', {
     controller: require('./controllers/boards.js'),
     template: fs.readFileSync(__dirname + '/templates/boards.html')

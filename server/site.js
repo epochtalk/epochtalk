@@ -10,7 +10,6 @@ var routes = require('./routes')(app);
 app.engine('haml', engines.haml);
 app.set('view engine', 'haml');
 app.set('views', __dirname + '/views');
-app.use(express.favicon());
 app.use('/', express.static(config.root + '/public'));
 app.use(express.logger('dev'));
 app.use(express.cookieParser('adness'));
@@ -28,9 +27,5 @@ app.use(express.session({
     maxAge:86400000
   }
 }));
-
-
-
-
 
 module.exports = app;

@@ -2,7 +2,7 @@
 var _ = require('lodash');
 var config = require(__dirname + '/../config');
 var couch = require(__dirname + '/couch');
-var dbName = config.couchdb.dbName;
+var dbName = config.couchdb.name;
 var recordType = 'posts';
 
 var posts = {};
@@ -33,23 +33,32 @@ posts.find = function(messageId, cb) {
   });
 };
 
+
+var defaultViewLimit = Number(5);
+
 posts.byThread = function(threadId, limit, startkey_docid, cb) {
   console.log('thread: ' + threadId);
   var filter = {};
   filter.descending = true;
   filter.startkey = [threadId, {}];
   filter.endkey = [threadId, null];
-  // filter.descending = true;
-  if (startkey_docid) { 
-    filter.startkey_docid = startkey_docid;
-  }
-  filter.limit = limit ? Number(limit) + 1 : 11;
+  // if (startkey_docid) { 
+  //   filter.startkey_docid = startkey_docid;
+  // console.log('startkey_docid: ' + startkey_docid);
+  // }
+  limit = limit ? Number(limit) : defaultViewLimit;
+  filter.skip = 2;
+
+  // +1 for couch pagination
+  filter.limit = limit + 1;
+  console.log(filter);
   couch.view(dbName, recordType + 'ByThread', filter, function(err, docs) {
     if (!err && docs && docs.rows.length > 0) {
-      delete docs.total_rows;
+      // delete docs.total_rows;
       docs.next_startkey = docs.rows[docs.rows.length - 1].key;
       docs.next_startkey_docid = docs.rows[docs.rows.length - 1].id; 
-      docs.rows = _.map(docs.rows, function(row) {
+      console.log(docs.next_startkey_docid);
+      docs.rows = _.map(_.first(docs.rows, limit), function(row) {
         return row.value;
       });
     }

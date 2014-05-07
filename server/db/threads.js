@@ -22,7 +22,6 @@ threads.all = function(limit, startkey, cb) {
 };
 
 threads.byBoard = function(boardId, limit, startkey_docid, cb) {
-  console.log('by board');
   var filter = {};
   filter.key = boardId;
   if (startkey_docid) { 
@@ -31,7 +30,6 @@ threads.byBoard = function(boardId, limit, startkey_docid, cb) {
   filter.limit = limit ? Number(limit) + 1 : 11;
   console.log(filter);
   couch.view(dbName, recordType + 'ByBoard', filter, function(err, docs) {
-    console.log(err);
     if (!err && docs && docs.rows.length > 0) {
       delete docs.total_rows;
       docs.next_startkey = docs.rows[docs.rows.length - 1].key;

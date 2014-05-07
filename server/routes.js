@@ -37,28 +37,16 @@ var configureRoutes = function(app) {
   });
 
   app.get('/api/threads/:threadId/posts', function(req, res) {
+    var handler = function(err, posts) {
+      return res.json(posts);
+    };
     if (req.params.threadId) {
-      db.posts.byThread(req.params.threadId, req.query.limit, req.query.startkey_docid, function(err, messages) {
-        return res.json(messages);
-      });
+      db.posts.byThread(req.params.threadId, req.query.limit, req.query.startkey_docid, handler);
     }
     else {
-      db.posts.all(function(err, messages) {
-        return res.json(messages);
-      });
+      db.posts.all(handler);
     }
   });
-
-  app.get('/api/messages/:messageId', function(req, res) {
-    console.log('find message: ' + req.params.messageId);
-    db.messages.find(req.params.messageId, function(err, message) {
-      return res.json(message);
-    });
-  });
-
 }
-
-
-
 
 module.exports = configureRoutes;

@@ -4,6 +4,6 @@
 </div>
 
 <div ng-repeat="thread in threads">
-  <a ng-href="/#/boards/{{thread._id}}" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{thread._id}}</a>
-  <a ng-href="/#/boards/{{thread._id}}" ng-bind-html="thread.title"></a>
+  <a ng-href="/#/threads/{{thread._id}}/posts" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{thread._id}}</a>
+  <a ng-href="/#/threads/{{thread._id}}/posts">#</a>
 </div>

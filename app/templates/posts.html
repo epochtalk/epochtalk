@@ -1,0 +1,12 @@
+<div ng-repeat="post in posts.rows">
+  <h4>
+    {{post.subject}}
+    <em>@{{post.created_at * 1000 | date:'medium'}}</em>
+  </h4>
+  <div>
+    {{post.body}}
+  </div>
+</div>
+<button ng-click="paginatePrev()">Prev</button>
+<button ng-click="paginateNext()">Next</button>
+
