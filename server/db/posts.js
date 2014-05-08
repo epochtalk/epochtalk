@@ -34,20 +34,26 @@ posts.find = function(messageId, cb) {
 };
 
 
-var defaultViewLimit = Number(5);
+var defaultViewLimit = Number(10);
 
-posts.byThread = function(threadId, limit, startkey_docid, cb) {
+posts.byThread = function(threadId, limit, startkey, startkey_docid, cb) {
   console.log('thread: ' + threadId);
+  console.log('startkey');
   var filter = {};
   filter.descending = true;
   filter.startkey = [threadId, {}];
   filter.endkey = [threadId, null];
+  if (startkey && startkey_docid) {
+    startkey[1] = Number(startkey[1]);
+    filter.startkey = startkey;
+    filter.startkey_docid = startkey_docid;
+    console.log(startkey);
+  }
   // if (startkey_docid) { 
   //   filter.startkey_docid = startkey_docid;
   // console.log('startkey_docid: ' + startkey_docid);
   // }
   limit = limit ? Number(limit) : defaultViewLimit;
-  filter.skip = 2;
 
   // +1 for couch pagination
   filter.limit = limit + 1;

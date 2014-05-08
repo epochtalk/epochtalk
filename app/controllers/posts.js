@@ -9,8 +9,15 @@ module.exports = function($scope, $routeParams, $http) {
   });
 
   $scope.paginateNext = function() {
-    console.log('/api/threads/' + threadId + '/posts?startkey_docid=' + $scope.posts.next_startkey_docid);
-    $http.get('/api/threads/' + threadId + '/posts?startkey_docid=' + $scope.posts.next_startkey_docid)
+    console.log($scope.posts.next_startkey);
+    $http({
+      url: '/api/threads/' + threadId + '/posts',
+      method: 'GET',
+      params: {
+        startkey: $scope.posts.next_startkey,
+        startkey_docid: $scope.posts.next_startkey_docid
+      }
+    })
     .success(function(posts) {
       console.log(posts);
       $scope.page = (posts.offset / rowsPerPage) + 1;
