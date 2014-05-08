@@ -33,37 +33,29 @@ posts.find = function(messageId, cb) {
   });
 };
 
-
 var defaultViewLimit = Number(10);
 
 posts.byThread = function(threadId, limit, startkey, startkey_docid, cb) {
-  console.log('thread: ' + threadId);
-  console.log('startkey');
   var filter = {};
   filter.descending = true;
   filter.startkey = [threadId, {}];
   filter.endkey = [threadId, null];
   if (startkey && startkey_docid) {
+    // 2nd key is created_at, a timestamp. query as a Number.
     startkey[1] = Number(startkey[1]);
     filter.startkey = startkey;
     filter.startkey_docid = startkey_docid;
-    console.log(startkey);
   }
-  // if (startkey_docid) { 
-  //   filter.startkey_docid = startkey_docid;
-  // console.log('startkey_docid: ' + startkey_docid);
-  // }
   limit = limit ? Number(limit) : defaultViewLimit;
 
   // +1 for couch pagination
   filter.limit = limit + 1;
-  console.log(filter);
   couch.view(dbName, recordType + 'ByThread', filter, function(err, docs) {
     if (!err && docs && docs.rows.length > 0) {
-      // delete docs.total_rows;
+      delete docs.total_rows;
+      delete docs.offset;
       docs.next_startkey = docs.rows[docs.rows.length - 1].key;
       docs.next_startkey_docid = docs.rows[docs.rows.length - 1].id; 
-      console.log(docs.next_startkey_docid);
       docs.rows = _.map(_.first(docs.rows, limit), function(row) {
         return row.value;
       });

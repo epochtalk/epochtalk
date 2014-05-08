@@ -6,7 +6,7 @@ var ddoc = {
   _id: '_design/epoch',
   views: {},
   lists: {},
-  shows: {} 
+  shows: {},
 };
 
 module.exports = ddoc;
@@ -40,3 +40,14 @@ ddoc.views.postsByThread = {
   }
 };
 
+var threadIds = {};
+ddoc.views.threadsWithPosts = {
+  map: function(doc) {
+    if (doc.type === 'post') {
+      if (!threadIds.hashasOwnProperty(doc.thread_id)) {
+        threadIds[thread_id] = true;
+        emit(doc._id, doc);
+      }      
+    }
+  }
+};

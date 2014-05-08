@@ -10,7 +10,9 @@ module.exports = threads;
 
 threads.all = function(limit, startkey, cb) {
   var filter = {};
-  filter.limit = limit ? Number(limit) + 1 : 11;
+  limit = limit ? Number(limit) : defaultViewLimit;
+  filter.limit = limit + 1;
+  
   if (startkey) filter.startkey = startkey;
   couch.view(dbName, recordType, filter, function(err, result) {
     delete result.total_rows;
@@ -21,17 +23,22 @@ threads.all = function(limit, startkey, cb) {
   });
 };
 
-threads.byBoard = function(boardId, limit, startkey_docid, cb) {
+var defaultViewLimit = Number(10);
+
+threads.byBoard = function(boardId, limit, key, startkey_docid, cb) {
   var filter = {};
-  filter.key = boardId;
-  if (startkey_docid) { 
+  if (key && startkey_docid) {
+    filter.key = boardId;
     filter.startkey_docid = startkey_docid;
   }
-  filter.limit = limit ? Number(limit) + 1 : 11;
-  console.log(filter);
+  
+  limit = limit ? Number(limit) : defaultViewLimit;
+  filter.limit = limit + 1;
+  
   couch.view(dbName, recordType + 'ByBoard', filter, function(err, docs) {
     if (!err && docs && docs.rows.length > 0) {
       delete docs.total_rows;
+      delete docs.offset;
       docs.next_startkey = docs.rows[docs.rows.length - 1].key;
       docs.next_startkey_docid = docs.rows[docs.rows.length - 1].id; 
       docs.rows = _.map(docs.rows, function(row) {

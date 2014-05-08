@@ -26,7 +26,7 @@ module.exports = function($routeProvider) {
     template: fs.readFileSync(__dirname + '/templates/thread.html')
   });
 
-  $routeProvider.when('/threads/:threadId/posts', {
+  $routeProvider.when('/threads/:threadId/posts/:startkey?', {
     controller: require('./controllers/posts.js'),
     template: fs.readFileSync(__dirname + '/templates/posts.html')
   });
