@@ -9,7 +9,7 @@
     "watch": "watchify -t brfs app/app.js -o public/bundle.js",
     "test": "tap ./tests",
     "start": "npm run build & node server",
-    "start-dev": "npm run watch & npm start"
+    "start-dev": "npm run watch & nodemon server | bunyan"
   },
   "repository": {
     "type": "git",
@@ -34,7 +34,9 @@
     "hamljs": "^0.6.2",
     "lodash": "^2.4.1",
     "async": "^0.7.0",
-    "yargs": "^1.2.1"
+    "yargs": "^1.2.1",
+    "morgan": "^1.0.1",
+    "bunyan": "^0.22.3"
   },
   "devDependencies": {
     "mysql": "^2.1.1",

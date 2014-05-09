@@ -4,7 +4,7 @@ var nano = require('nano')({
   url: config.couchdb.url,
   log: function(id, args) {
     // console.log(id, args);
-    console.log(decodeURI(args[0].headers.uri));
+    // console.log(decodeURI(args[0].headers.uri));
   }
 });
 var dbName = config.couchdb.name;

@@ -38,8 +38,6 @@ var configureRoutes = function(app) {
   });
 
   app.get('/api/threads/:threadId/posts', function(req, res) {
-    console.log('get posts');
-    console.log(req.query);
     var handler = function(err, posts) {
       return res.json(posts);
     };
