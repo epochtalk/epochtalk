@@ -43,10 +43,6 @@ posts.byThread = function(threadId, query, cb) {
   var endkey = query.endkey;
   var endkey_docid = query.endkey_docid;
 
-  console.log('endkey');
-  console.log(endkey);
-  console.log(endkey_docid);
-
   var filter = {};
   filter.descending = true;
   filter.startkey = [threadId, {}];

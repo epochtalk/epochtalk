@@ -18,6 +18,7 @@ var configureRoutes = function(app) {
   });
 
   app.get('/api/boards/:boardId/threads', function(req, res) {
+    console.log('get threads');
     if (req.params.boardId) {
       db.threads.byBoard(req.params.boardId, req.query.limit, req.query.key, req.query.startkey_docid, function(err, threads) {
         return res.json(threads);
@@ -37,7 +38,7 @@ var configureRoutes = function(app) {
   });
 
   app.get('/api/threads/:threadId/posts', function(req, res) {
-    console.log('get posts again');
+    console.log('get posts');
     console.log(req.query);
     var handler = function(err, posts) {
       return res.json(posts);
