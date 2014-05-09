@@ -1,7 +1,7 @@
 {
-  "name": "epoch",
+  "name": "epochtalk",
   "version": "0.2.0",
-  "description": "Epoch forum software",
+  "description": "Epochtalk forum software",
   "main": "server.js",
   "scripts": {
     "install": "napa",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/slickage/tng-be"
+    "url": "git://github.com/slickage/epochtalk"
   },
-  "author": "James Wang <jw@slickage.com> (http://wangb.us/)",
+  "author": "James Wang <jw@slickage.com> (http://slickage.com/)",
   "license": "TBD",
   "bugs": {
-    "url": "https://github.com/slickage/epoch/issues"
+    "url": "https://github.com/slickage/epochtalk/issues"
   },
-  "homepage": "https://github.com/slickage/epoch",
+  "homepage": "https://github.com/slickage/epochtalk",
   "napa": {
     "angular": "angular/bower-angular",
     "angular-route": "angular/bower-angular-route",
