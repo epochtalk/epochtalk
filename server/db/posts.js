@@ -35,7 +35,18 @@ posts.find = function(messageId, cb) {
 
 var defaultViewLimit = Number(10);
 
-posts.byThread = function(threadId, limit, startkey, startkey_docid, cb) {
+posts.byThread = function(threadId, query, cb) {
+  // limit, startkey, startkey_docid, endkey, endkey_docid,
+  var limit = query.limit;
+  var startkey = query.startkey;
+  var startkey_docid = query.startkey_docid;
+  var endkey = query.endkey;
+  var endkey_docid = query.endkey_docid;
+
+  console.log('endkey');
+  console.log(endkey);
+  console.log(endkey_docid);
+
   var filter = {};
   filter.descending = true;
   filter.startkey = [threadId, {}];
@@ -46,6 +57,12 @@ posts.byThread = function(threadId, limit, startkey, startkey_docid, cb) {
     filter.startkey = startkey;
     filter.startkey_docid = startkey_docid;
   }
+  else if (endkey && endkey_docid) {
+    endkey[1] = Number(endkey[1]);
+    filter.endkey = endkey;
+    filter.endkey_docid = endkey_docid;
+  }
+
   limit = limit ? Number(limit) : defaultViewLimit;
 
   // +1 for couch pagination

@@ -43,7 +43,7 @@ var configureRoutes = function(app) {
       return res.json(posts);
     };
     if (req.params.threadId) {
-      db.posts.byThread(req.params.threadId, req.query.limit, req.query.startkey, req.query.startkey_docid, handler);
+      db.posts.byThread(req.params.threadId, req.query, handler);
     }
     else {
       db.posts.all(handler);
