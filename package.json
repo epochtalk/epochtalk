@@ -37,19 +37,6 @@
   "devDependencies": {
     "mysql": "^2.1.1",
     "couchapp": "^0.11.0",
-    "assetmanager": "^0.1.1",
-    "grunt-concurrent": "latest",
-    "grunt-contrib-csslint": "^0.2.0",
-    "grunt-contrib-cssmin": "^0.9.0",
-    "grunt-contrib-jshint": "latest",
-    "grunt-contrib-uglify": "^0.4.0",
-    "grunt-contrib-watch": "latest",
-    "grunt-env": "^0.4.1",
-    "grunt-karma": "^0.6.2",
-    "grunt-mocha-test": "latest",
-    "grunt-nodemon": "0.2.0",
-    "load-grunt-tasks": "^0.4.0",
-    "time-grunt": "^0.3.1",
     "brfs": "^1.0.2"
   }
 }
