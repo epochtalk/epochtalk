@@ -7,7 +7,8 @@
     "install": "napa",
     "build": "browserify -t brfs app/app.js -o public/bundle.js",
     "watch": "watchify -t brfs app/app.js -o public/bundle.js",
-    "test": "tap ./tests"
+    "test": "tap ./tests",
+    "start-dev": "npm run watch & npm start"
   },
   "repository": {
     "type": "git",
