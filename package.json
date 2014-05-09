@@ -2,12 +2,13 @@
   "name": "epochtalk",
   "version": "0.2.0",
   "description": "Epochtalk forum software",
-  "main": "server.js",
+  "main": "server",
   "scripts": {
     "install": "napa",
     "build": "browserify -t brfs app/app.js -o public/bundle.js",
     "watch": "watchify -t brfs app/app.js -o public/bundle.js",
     "test": "tap ./tests",
+    "start": "npm run build & node server",
     "start-dev": "npm run watch & npm start"
   },
   "repository": {
