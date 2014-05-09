@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "nano": "^5.7.1",
-    "express": "^3.5.1",
+    "express": "^4.1.2",
     "connect-redis": "~1.4.7",
     "consolidate": "^0.10.0",
     "hamljs": "^0.6.2",
