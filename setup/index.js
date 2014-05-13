@@ -10,13 +10,14 @@ var config = require(__dirname + '/../server/config');
 var nano = require('nano')(config.couchdb.url);
 var dbName = config.couchdb.name;
 var ddoc = require(__dirname + '/../couch/ddoc');
+var dbUrl = config.couchdb.url + '/' + dbName;
+
 var setupDatabase = function(cb) {
   nano.db.create(dbName, function(err) {
     if (err) {
       console.log(err.reason);
     }
     else {
-      var dbUrl = config.couchdb.url + '/' + dbName;
       console.log('Database created: ' + dbUrl);
       couchapp.createApp(ddoc, dbUrl, function(app) {
         app.push();
@@ -47,6 +48,11 @@ else if (argv.create) {
     }
   });
 }
+else if (argv.update) {
+  couchapp.createApp(ddoc, dbUrl, function(app) {
+    app.push();
+  });
+}
 else if (argv.i) {
   try {
     var importerPath = __dirname + '/../importers/' + argv.i;
@@ -63,4 +69,3 @@ else if (argv.i) {
 else {
   console.log(yargs.help());
 }
-
