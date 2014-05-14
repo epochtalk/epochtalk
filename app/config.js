@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-module.exports = function($routeProvider) {
+module.exports = function($routeProvider, $locationProvider) {
   $routeProvider.when('/', {
     controller: require('./controllers/main.js'),
     template: fs.readFileSync(__dirname + '/templates/main.html')
@@ -30,5 +30,6 @@ module.exports = function($routeProvider) {
     controller: require('./controllers/posts.js'),
     template: fs.readFileSync(__dirname + '/templates/posts.html')
   });
-};
 
+  $locationProvider.html5Mode(true);
+};

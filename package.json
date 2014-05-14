@@ -36,7 +36,9 @@
     "async": "^0.7.0",
     "yargs": "^1.2.1",
     "morgan": "^1.0.1",
-    "bunyan": "^0.22.3"
+    "bunyan": "^0.22.3",
+    "method-override": "^1.0.0",
+    "body-parser": "^1.2.0"
   },
   "devDependencies": {
     "mysql": "^2.1.1",

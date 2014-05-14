@@ -17,6 +17,15 @@
   </style>
 </head>
 <body>
+  <div style="float: left;">
+    <a ng-href="/" style="font-size: 1.0em; color: #09f;">Root</a>
+  </div>
+  <div style="float: right;">
+    Not Logged In |
+    <a ng-href="/login" style="font-size: 1.0em; color: #09f;">Login</a>
+  </div>
+  <div style="clear: both;"></div>
+  <hr/>
   <ng-view></ng-view>
   <script src="/bundle.js" type="text/javascript"></script>
 </body>
