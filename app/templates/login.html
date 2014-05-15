@@ -1,1 +1,6 @@
-Login
+<form name="form" ng-submit="login(form)">
+  <input name="email" placeholder="Email" ng-model="user.email"/>
+  <input name="password" placeholder="Password" ng-model="user.password" type="password"><br>
+  <button type="submit">Login</button>
+  <p id="error-msg"></p>
+</form>

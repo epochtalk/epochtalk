@@ -6,7 +6,7 @@
   "scripts": {
     "install": "napa",
     "build": "browserify -t brfs app/app.js -o public/bundle.js",
-    "watch": "watchify -t brfs app/app.js -o public/bundle.js",
+    "watch": "watchify -t brfs app/app.js -o public/bundle.js -v",
     "test": "tap ./tests",
     "start": "npm run build & node server",
     "start-dev": "npm run watch & nodemon server | bunyan"
@@ -23,6 +23,8 @@
   "homepage": "https://github.com/slickage/epochtalk",
   "napa": {
     "angular": "angular/bower-angular",
+    "angular-cookies": "angular/bower-angular-cookies",
+    "angular-resource": "angular/bower-angular-resource",
     "angular-route": "angular/bower-angular-route",
     "angular-sanitize": "angular/bower-angular-sanitize"
   },

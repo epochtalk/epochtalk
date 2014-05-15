@@ -1,4 +1,5 @@
 var fs = require('fs');
+require('./services');
 
 module.exports = function($routeProvider, $locationProvider) {
   $routeProvider.when('/', {
