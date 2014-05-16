@@ -53,6 +53,11 @@ else if (argv.update) {
     app.push();
   });
 }
+else if (argv.seed) {
+  var seed = require(__dirname + '/../couch/seed');
+  seed.seed();
+}
+
 else if (argv.i) {
   try {
     var importerPath = __dirname + '/../importers/' + argv.i;
