@@ -43,8 +43,9 @@
     "body-parser": "^1.2.0"
   },
   "devDependencies": {
-    "mysql": "^2.1.1",
+    "brfs": "^1.0.2",
+    "charlatan": "^0.1.9",
     "couchapp": "^0.11.0",
-    "brfs": "^1.0.2"
+    "mysql": "^2.1.1"
   }
 }
