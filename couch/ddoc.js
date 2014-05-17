@@ -16,9 +16,10 @@ ddoc.views.boards = {
     if (doc.type === 'board') emit(doc._id, doc);
   }
 };
-ddoc.views.threads = {
+
+ddoc.views.posts = {
   map: function(doc) {
-    if (doc.type === 'thread') emit(doc._id, doc);
+    if (doc.type === 'post') emit(doc._id, doc);
   }
 };
 
@@ -28,26 +29,9 @@ ddoc.views.threadsByBoard = {
   }
 };
 
-ddoc.views.posts = {
-  map: function(doc) {
-    if (doc.type === 'post') emit(doc._id, doc);
-  }
-};
-
 ddoc.views.postsByThread = {
   map: function(doc) {
     if (doc.type === 'post') emit([doc.thread_id, doc.created_at], doc);
   }
 };
 
-var threadIds = {};
-ddoc.views.threadsWithPosts = {
-  map: function(doc) {
-    if (doc.type === 'post') {
-      if (!threadIds.hashasOwnProperty(doc.thread_id)) {
-        threadIds[thread_id] = true;
-        emit(doc._id, doc);
-      }      
-    }
-  }
-};

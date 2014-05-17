@@ -52,6 +52,7 @@ var generateBoard = function() {
     description: description,
     type: 'board'
   }
+  return board;
 }
 
 var generatePost = function() {
