@@ -2,6 +2,8 @@ var express = require('express');
 var db = require(__dirname + '/../db');
 var api = express.Router();
 
+require(__dirname + '/users')(api);
+
 api.route('/boards').get(function(req, res) {
   db.boards.all(function(err, boards) {
     return res.json(boards);
