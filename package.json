@@ -9,7 +9,8 @@
     "watch": "watchify -t brfs app/app.js -o public/bundle.js -v",
     "test": "tap ./tests",
     "start": "npm run build & node server",
-    "start-dev": "npm run watch & nodemon server | bunyan"
+    "start-dev": "nodemon server | bunyan",
+    "start-devwatch": "npm run watch & nodemon server | bunyan"
   },
   "repository": {
     "type": "git",
