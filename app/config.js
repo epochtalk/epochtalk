@@ -12,6 +12,11 @@ module.exports = function($routeProvider, $locationProvider) {
     template: fs.readFileSync(__dirname + '/templates/login.html')
   });
 
+  $routeProvider.when('/register', {
+    controller: require('./controllers/register.js'),
+    template: fs.readFileSync(__dirname + '/templates/register.html')
+  });
+
   $routeProvider.when('/boards', {
     controller: require('./controllers/boards.js'),
     template: fs.readFileSync(__dirname + '/templates/boards.html')

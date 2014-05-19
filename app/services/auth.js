@@ -5,7 +5,6 @@ module.exports = function($location, $rootScope, Session, User, $cookieStore) {
   $cookieStore.remove('user');
 
   return {
-
     login: function(provider, user, callback) {
       console.log('provider: ' + provider);
       console.log('user: ' + user);
@@ -21,6 +20,11 @@ module.exports = function($location, $rootScope, Session, User, $cookieStore) {
       // }, function(err) {
       //   return cb(err.data);
       // });
+    },
+
+    register: function(provider, user, callback) {
+      console.log('register via: ' + provider);
+      console.log('user: ' + user);
     },
 
     logout: function(callback) {

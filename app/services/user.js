@@ -1,10 +1,9 @@
 'use strict';
 
 module.exports = function($resource) {
-  return $resource('/auth/users/:id/', {},
-    {
-      'update': {
-        method:'PUT'
-      }
-    });
+  return $resource('/api/users/:id/', {}, {
+    'update': {
+      method:'PUT'
+    }
+  });
 };
