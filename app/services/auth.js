@@ -7,8 +7,8 @@ module.exports = function($location, $rootScope, Session, User, $cookieStore) {
   return {
 
     login: function(provider, user, callback) {
-      console.log(provider);
-      console.log(user);
+      console.log('provider: ' + provider);
+      console.log('user: ' + user);
       // var cb = callback || angular.noop;
       // Session.save({
       //   provider: provider,
@@ -26,12 +26,12 @@ module.exports = function($location, $rootScope, Session, User, $cookieStore) {
     logout: function(callback) {
       var cb = callback || angular.noop;
       Session.delete(function(res) {
-          $rootScope.currentUser = null;
-          return cb();
-        },
-        function(err) {
-          return cb(err.data);
-        });
+        $rootScope.currentUser = null;
+        return cb();
+      },
+      function(err) {
+        return cb(err.data);
+      });
     },
 
     createUser: function(userinfo, callback) {

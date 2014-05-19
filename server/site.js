@@ -1,8 +1,8 @@
 'use strict';
 var config = require('./config');
 var express = require('express');
-var morgan  = require('morgan');
-var bodyParser     = require('body-parser');
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
 var app = express();
