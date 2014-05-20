@@ -6,6 +6,9 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
 var app = express();
+app.use(bodyParser());
+app.use(methodOverride());
+
 var engines = require('consolidate');
 var db = require('./db');
 var routes = require('./routes')(app);
@@ -23,7 +26,5 @@ else {
   app.use(morgan());
 }
 
-app.use(bodyParser());
-app.use(methodOverride());
 
 module.exports = app;

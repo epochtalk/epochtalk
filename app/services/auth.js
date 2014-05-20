@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function($location, $rootScope, Session, User, $cookieStore) {
+module.exports = function($location, $rootScope, Session, User, $cookieStore, $http) {
   $rootScope.currentUser = $cookieStore.get('user') || null;
   $cookieStore.remove('user');
 
@@ -8,6 +8,7 @@ module.exports = function($location, $rootScope, Session, User, $cookieStore) {
     login: function(provider, user, callback) {
       console.log('provider: ' + provider);
       console.log('user: ' + user);
+
       // var cb = callback || angular.noop;
       // Session.save({
       //   provider: provider,
@@ -24,7 +25,9 @@ module.exports = function($location, $rootScope, Session, User, $cookieStore) {
 
     register: function(provider, user, callback) {
       console.log('register via: ' + provider);
-      console.log('user: ' + user);
+      console.log('user:');
+      console.log(user);
+      User.register(user);
     },
 
     logout: function(callback) {
