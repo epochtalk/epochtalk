@@ -5,8 +5,8 @@
   "main": "server",
   "scripts": {
     "install": "napa",
-    "build": "browserify -t brfs app/app.js -o public/bundle.js",
-    "watch": "watchify -t brfs app/app.js -o public/bundle.js -v",
+    "build": "browserify -t cssify -t brfs app/app.js -o public/bundle.js",
+    "watch": "watchify -t cssify -t brfs app/app.js -o public/bundle.js -v",
     "test": "mocha -R spec ./tests",
     "start": "npm run build & node server",
     "start-dev": "nodemon server | bunyan",
@@ -36,6 +36,7 @@
     "bunyan": "^0.22.3",
     "connect-redis": "~1.4.7",
     "consolidate": "^0.10.0",
+    "cssify": "^0.5.1",
     "express": "^4.1.2",
     "hamljs": "^0.6.2",
     "lodash": "^2.4.1",
@@ -48,6 +49,7 @@
     "brfs": "^1.0.2",
     "charlatan": "^0.1.9",
     "couchapp": "^0.11.0",
+    "cssify": "^0.5.1",
     "mocha": "^1.19.0",
     "mysql": "^2.1.1"
   }

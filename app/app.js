@@ -10,3 +10,5 @@ angular.module('ept', [
   'ngResource',
   'ngSanitize'
 ]).config(require('./config'));
+
+require('./css/style.css');
