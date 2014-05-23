@@ -13,25 +13,48 @@ module.exports = ddoc;
 
 ddoc.views.boards = {
   map: function(doc) {
-    if (doc.type === 'board') emit(doc._id, doc);
+    if (doc.type === 'board' && !doc.parent_board_id) {
+      emit([doc._id], doc);
+    }
+    else if (doc.type === 'board' && doc.parent_board_id) {
+      emit([doc.parent_board_id, doc._id], doc);
+    }
   }
 };
 
 ddoc.views.posts = {
   map: function(doc) {
-    if (doc.type === 'post') emit(doc._id, doc);
+    if (doc.type === 'post' && !doc.parent_post_id) {
+      emit([doc._id], doc);
+    }
+    else if (doc.type === 'post' && doc.parent_post_id) {
+      emit([doc.parent_post_id, doc._id], doc);
+    }
   }
 };
 
-ddoc.views.threadsByBoard = {
+ddoc.views.users = {
   map: function(doc) {
-    if (doc.type === 'thread') emit(doc.board_id, doc);
+    if (doc.type === 'user') emit(doc._id, doc);
   }
 };
 
-ddoc.views.postsByThread = {
+ddoc.views.postByBoard = {
   map: function(doc) {
-    if (doc.type === 'post') emit([doc.thread_id, doc.created_at], doc);
+    if (doc.type === 'post' && !doc.parent_post_id) {
+      emit([doc._id, doc.board_id], doc);
+    }
+  }
+};
+
+ddoc.views.postsByParentPost = {
+  map: function(doc) {
+    if (doc.type === 'post' && doc.parent_post_id) {
+      emit([doc.parent_post_id, doc.timestamps.created, doc._id], doc);
+    }
+    else if (doc.type === 'post' && !doc.parent_post_id) {
+      emit([doc._id, doc.timestamps.created], doc);
+    }
   }
 };
 
