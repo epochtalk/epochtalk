@@ -1,4 +1,8 @@
 <div ng-repeat="board in boards">
   <a ng-href="/boards/{{board._id}}" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{board._id}}</a>
-  <a ng-href="/boards/{{board._id}}" ng-bind-html="board.title"></a>
+  <a ng-href="/boards/{{board._id}}" ng-bind-html="board.name"></a>
+  <div ng-repeat="subBoard in subBoards[board._id]">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a ng-href="/boards/{{subBoard._id}}" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{subBoard._id}}</a>
+    <a ng-href="/boards/{{subBoard._id}}" ng-bind-html="subBoard.name"></a>
+  </div>
 </div>

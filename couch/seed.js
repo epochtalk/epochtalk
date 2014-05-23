@@ -117,7 +117,7 @@ function seedBoards(users, parentBoard, seedBoardsCallback) {
   mods.forEach(function(mod){
     moderatorIds.push(mod._id);
   });
-  if (parentBoard) { // If subBoardCount is even rand num between 1-5 subboards, else no subboards
+  if (parentBoard) {
     var subBoardCount = Charlatan.Helpers.rand(6, 0);
     var randNum = Charlatan.Helpers.rand(10, 0);
     subBoardCount = randNum > 6 ? subBoardCount : 0;

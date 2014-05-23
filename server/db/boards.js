@@ -13,12 +13,10 @@ boards.all = function(cb) {
   couch.view(dbName, recordType, filter, function(err, body) {
     if (!err && body.rows && body.rows.length > 0) {
       var result = _.map(body.rows, function(row) {
-        delete row.value.smf_contents;
+        delete row.value.type;
         return row.value;
       });
     }
-    // result.next_startkey = body.rows[body.rows.length - 1].key;
-    // result.next_startkey_docid = body.rows[body.rows.length - 1].id;
     cb(err, result);
   });
 };
@@ -28,6 +26,7 @@ boards.find = function(boardId, cb) {
     var board;
     if (!err && body.rows && body.rows.length > 0) {
       board = body.rows[0].value;
+      delete board.type;
     }
     return cb(err, board);
   });

@@ -25,8 +25,6 @@ module.exports = function($location, $rootScope, Session, User, $cookieStore, $h
 
     register: function(provider, user, callback) {
       console.log('register via: ' + provider);
-      console.log('user:');
-      console.log(user);
       User.register(user);
     },
 
