@@ -19,21 +19,10 @@ ddoc.views.boards = {
   }
 };
 
-ddoc.views.threads = {
+ddoc.views.threadsByBoard = {
   map: function(doc) {
     if (doc.type === 'post' && !doc.parent_post_id) {
-      emit(doc._id, doc);
-    }
-  }
-};
-
-ddoc.views.posts = {
-  map: function(doc) {
-    if (doc.type === 'post' && !doc.parent_post_id) {
-      emit([doc._id], doc);
-    }
-    else if (doc.type === 'post' && doc.parent_post_id) {
-      emit([doc.parent_post_id, doc._id], doc);
+      emit([doc.board_id, doc.timestamps.created], doc);
     }
   }
 };
@@ -52,13 +41,10 @@ ddoc.views.postByBoard = {
   }
 };
 
-ddoc.views.postsByParentPost = {
+ddoc.views.postsByThread = {
   map: function(doc) {
     if (doc.type === 'post' && doc.parent_post_id) {
-      emit([doc.parent_post_id, doc.timestamps.created, doc._id], doc);
-    }
-    else if (doc.type === 'post' && !doc.parent_post_id) {
-      emit([doc._id, doc.timestamps.created], doc);
+      emit([doc.parent_post_id, doc.timestamps.created]);
     }
   }
 };

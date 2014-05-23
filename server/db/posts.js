@@ -35,7 +35,7 @@ posts.find = function(messageId, cb) {
 
 var defaultViewLimit = Number(10);
 
-posts.byThread = function(threadId, query, cb) {
+posts.byThread = function(parentPostId, query, cb) {
   // limit, startkey, startkey_docid, endkey, endkey_docid,
   var limit = query.limit;
   var startkey = query.startkey;
@@ -44,11 +44,11 @@ posts.byThread = function(threadId, query, cb) {
   var endkey_docid = query.endkey_docid;
 
   var filter = {};
-  filter.descending = true;
-  filter.startkey = [threadId, {}];
-  filter.endkey = [threadId, null];
+  filter.startkey = [parentPostId, null];
+  filter.endkey = [parentPostId, {}];
+  filter.include_docs = true;
   if (startkey && startkey_docid) {
-    // 2nd key is created_at, a timestamp. query as a Number.
+    // 2nd key is timestamps.created, a timestamp. query as a Number.
     startkey[1] = Number(startkey[1]);
     filter.startkey = startkey;
     filter.startkey_docid = startkey_docid;
@@ -70,7 +70,7 @@ posts.byThread = function(threadId, query, cb) {
       docs.next_startkey = docs.rows[docs.rows.length - 1].key;
       docs.next_startkey_docid = docs.rows[docs.rows.length - 1].id; 
       docs.rows = _.map(_.first(docs.rows, limit), function(row) {
-        return row.value;
+        return row.doc;
       });
     }
     cb(err, docs);
