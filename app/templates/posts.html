@@ -2,7 +2,7 @@
 <button ng-click="paginateNext()">Next</button>
 <div ng-repeat="post in posts.rows" style="width: 800px">
   <div style="font-weight: 700; margin-top: 10px;">
-    {{post.subject}}
+    {{post.subject}} ({{post._id}})
     <em>@{{post.timestamps.created | date:'medium'}}</em>
   </div>
   <div style="margin-bottom: 10px;">

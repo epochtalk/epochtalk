@@ -52,4 +52,16 @@ api.route('/threads/:parentPostId/posts')
   }
 });
 
+api.route('/posts/:postId')
+.get(function(req, res) {
+  if (req.params.postId) {
+    db.posts.find(req.params.postId, function(err, post) {
+      if (!err) {
+        delete post.type;
+      }
+      return res.json(post);
+    });
+  }
+});
+
 module.exports = api;

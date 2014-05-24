@@ -21,15 +21,16 @@ posts.all = function(limit, startkey, cb) {
   });
 };
 
-posts.find = function(messageId, cb) {
+posts.find = function(postId, cb) {
   var filter = {};
   filter.limit = 1;
-  filter.key = Number(messageId);
-  couch.view(dbName, recordType, filter, function(err, result) {
-    if (!err && result.rows && result.rows.length > 0) {
-      return cb(err, result.rows[0].value);
+  filter.key = Number(postId);
+  couch.get(postId, null, function(err, result) {
+    if (err || !result || result.type !== 'post') {
+      err = new Error('Post not found.');
+      result = undefined;
     }
-    return cb(err, undefined);
+    return cb(err, result);
   });
 };
 
