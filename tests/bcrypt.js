@@ -8,6 +8,7 @@ describe('auth', function() {
       var hash = bcrypt.hashSync(pass, 10);
       var matchHash = bcrypt.compareSync('password test', hash);
       var msg = 'pass: ' + pass + ', hash: ' + hash;
+      console.log(msg);
       assert.equal(true, matchHash, msg);
     });
   });

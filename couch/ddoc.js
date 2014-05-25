@@ -33,6 +33,12 @@ ddoc.views.users = {
   }
 };
 
+ddoc.views.usersByEmail = {
+  map: function(doc) {
+    if (doc.type === 'user') emit(doc.email, null);
+  }
+};
+
 ddoc.views.postByBoard = {
   map: function(doc) {
     if (doc.type === 'post' && !doc.parent_post_id) {

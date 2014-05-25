@@ -2,12 +2,16 @@
 
 module.exports = function($resource) {
   return $resource('/api/users/:id/', {}, {
-    'update': {
+    update: {
       method: 'PUT'
     },
-    'register': {
+    register: {
       method: 'POST',
       url: '/api/users/register'
+    },
+    login: {
+      method: 'POST',
+      url: '/api/users/login'
     }
   });
 };

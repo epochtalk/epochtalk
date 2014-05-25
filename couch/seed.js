@@ -7,10 +7,10 @@ var async = require('async');
 var seed = {};
 module.exports = seed;
 
-var numUsers = 1000;
+var numUsers = 25;
 var numMods = 10;
-var numBoards = 25;
-var maxPosts = 100;
+var numBoards = 5;
+var maxPosts = 25;
 
 function randomDate(start, end) {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));

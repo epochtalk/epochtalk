@@ -1,11 +1,9 @@
 var config = require(__dirname + '/../config');
-var boards = require(__dirname + '/boards');
-var threads = require(__dirname + '/threads');
-var posts = require(__dirname + '/posts');
-
-
 var db = {};
-db.boards = boards;
-db.threads = threads;
-db.posts = posts;
+db.boards = require(__dirname + '/boards');
+db.threads = require(__dirname + '/threads');
+db.posts = require(__dirname + '/posts');
+db.users = require(__dirname + '/users');
+console.log(db.users);
+
 module.exports = db;
