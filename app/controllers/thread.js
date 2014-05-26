@@ -1,6 +1,6 @@
 module.exports = function($scope, $routeParams, $http) {
-  $scope.threadId = $routeParams.threadId;
-  $http.get('/api/threads/' + $scope.threadId).success(function(thread) {
+  $scope.parentPostId = $routeParams.parentPostId;
+  $http.get('/api/threads/' + $scope.parentPostId).success(function(thread) {
     console.log(thread);
   });
-}
+};

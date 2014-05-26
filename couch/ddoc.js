@@ -49,9 +49,10 @@ ddoc.views.postByBoard = {
 
 ddoc.views.postsByThread = {
   map: function(doc) {
-    if (doc.type === 'post' && doc.parent_post_id) {
-      emit([doc.parent_post_id, doc.timestamps.created]);
+    if (doc.type === 'post') {
+      emit([doc.parent_post_id ? doc.parent_post_id : doc._id, doc.timestamps.created]);
     }
   }
 };
+
 
