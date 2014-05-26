@@ -51,14 +51,14 @@ posts.byThread = function(parentPostId, query, cb) {
     filter.startkey = startkey;
   }
 
-  limit = limit ? Number(limit) : defaultViewLimit;
+  filter.limit = limit ? Number(limit) : defaultViewLimit;
 
   // +1 for couch pagination
   couch.view(dbName, recordType + 'ByThread', filter, function(err, docs) {
     if (!err && docs && docs.rows.length > 0) {
       delete docs.total_rows;
       delete docs.offset;
-      docs.rows = _.map(_.first(docs.rows, limit), function(row) {
+      docs.rows = _.map(docs.rows, function(row) {
         return row.doc;
       });
     }
