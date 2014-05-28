@@ -7,9 +7,7 @@ module.exports = function($location, $rootScope, Session, User, $cookieStore, $h
   return {
     login: function(provider, user, callback) {
       console.log('provider: ' + provider);
-      User.login(user).success(function(user) {
-        console.log(user);
-      });
+      User.login(user);
       // var cb = callback || angular.noop;
       // Session.save({
       //   provider: provider,
