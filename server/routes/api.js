@@ -1,13 +1,12 @@
 var express = require('express');
 var db = require(__dirname + '/../db');
 var api = express.Router();
-var passport = require('passport');
+var passport = require(__dirname + '/../passport');
 require(__dirname + '/users')(api);
-
-
 
 api.route('/boards')
 .get(function(req, res) {
+  console.log(req.user);
   db.boards.all(function(err, boards) {
     return res.json(boards);
   });

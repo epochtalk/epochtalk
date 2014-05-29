@@ -13,18 +13,16 @@ module.exports = function(api) {
     return res.end();
   });
 
-  api.route('/users/login').post(passport.authenticate('local', { successRedirect: '/',
-                                       failureRedirect: '/login' }));
-  // api.route('/users/login').post(function(req, res) {
-  //   console.log('Login User.');
-  //   var user = req.body;
-  //   db.users.login(user, function(err, user) {
-  //     if (err) {
-  //       return res.send(401, err);
-  //     }
-  //     else {
-  //       return res.end();
-  //     }
-  //   });
-  // });
+  api.route('/users/login').post(function(req, res, next) {
+    var user = req.body;
+    req.login(user, function(err) {
+      if (err) {
+        return next(err);
+      }
+      else {
+        console.log('login');
+        return res.json({success: true});
+      }
+    });
+  });
 };

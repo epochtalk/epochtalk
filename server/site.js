@@ -10,9 +10,9 @@ var cookieParser = require('cookie-parser');
 var passport = require(__dirname + '/passport');
 
 var app = express();
-app.use(bodyParser());
 app.use(methodOverride());
 app.use(cookieParser('epoch'));
+app.use(bodyParser());
 app.use(session({ store: new RedisStore({
   host: config.redis.host,
   port: config.redis.port
