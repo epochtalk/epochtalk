@@ -1,7 +1,8 @@
 var config = require(__dirname + '/../server/config');
+var db = require(__dirname + '/../server/db');
 var nano = require('nano')(config.couchdb.url);
 var dbName = config.couchdb.name;
-var db = nano.use(dbName);
+var couch = nano.use(dbName);
 var Charlatan = require('charlatan');
 var async = require('async');
 var seed = {};
@@ -20,6 +21,7 @@ var generateUser = function() {
   var name = Charlatan.Internet.userName();
   var email = Charlatan.Internet.freeEmail(name);
   var createdDate = randomDate(new Date(2012, 0, 1), new Date());
+  var password = 'epochtalk';
   var timestamps = {
     created: createdDate.getTime(),
     updated: Charlatan.Helpers.rand(10, 0) > 8 ? randomDate(createdDate, new Date()).getTime() : null
@@ -27,6 +29,8 @@ var generateUser = function() {
   var user = {
     username: name,
     email: email,
+    password: password,
+    confirm_password: password,
     timestamps: timestamps,
     type: 'user'
   };
@@ -94,7 +98,7 @@ function seedUsers(seedUsersCallback) {
     },
     function (cb) {
       var user = generateUser();
-      db.insert(user, function(err, body) {
+      db.users.register(user, function(err, body) {
         user._id = body.id;
         process.stdout.write('Generating Users: ' + user._id + '\r');
         users.push(user);
@@ -133,7 +137,7 @@ function seedBoards(users, parentBoard, seedBoardsCallback) {
       var randModIds = Charlatan.Helpers.shuffle(moderatorIds);
       var modsSubset = randModIds.slice(0, Charlatan.Helpers.rand(randModIds.length, 0));
       var board = generateBoard(modsSubset, parentBoard);
-      db.insert(board, function(err, body) {
+      couch.insert(board, function(err, body) {
         board._id = body.id;
         process.stdout.write('Generating Boards: ' + board._id + '\r');
         if (parentBoard) {
@@ -176,7 +180,7 @@ function seedPosts(board, users, parentPost, seedPostsCallback) {
       else { // top level post
         post = generatePost(authorId, board._id, board.timestamps.created);
       }
-      db.insert(post, function(err, body) {
+      couch.insert(post, function(err, body) {
         post._id = body.id;
         process.stdout.write('Generating Post: ' + post._id + '\r');
         if (parentPost) {

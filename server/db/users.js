@@ -28,7 +28,7 @@ users.register = function(user, cb) {
   else {
     console.log('validation failed on user: ');
     console.log(user);
-    err = new Error('Validation failed on user: ' + user.email);
+    var err = new Error('Validation failed on user: ' + user.email);
     cb(err, null);
   }
 };
@@ -60,6 +60,6 @@ users.login = function(user, cb) {
   });
   // get user from couch, match hash
 
-}
+};
 
 module.exports = users;
