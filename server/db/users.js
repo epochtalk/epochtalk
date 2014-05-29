@@ -23,13 +23,13 @@ var validate = function(user) {
 
 users.register = function(user, cb) {
   if (validate(user)) {
-    couch.insert(user, function(err, body, header) {
-      console.log(body);
-    });
+    couch.insert(user, cb);
   }
   else {
     console.log('validation failed on user: ');
     console.log(user);
+    err = new Error('Validation failed on user: ' + user.email);
+    cb(err, null);
   }
 };
 
@@ -39,7 +39,7 @@ users.login = function(user, cb) {
   filter.key = user.email;
   filter.include_docs = true;
   filter.limit = 1;
-  
+
   couch.view(dbName, recordType + 'ByEmail', filter, function(err, res) {
     var storedUser;
     if (res && res.rows && res.rows.length > 0) {
@@ -63,4 +63,3 @@ users.login = function(user, cb) {
 }
 
 module.exports = users;
-
