@@ -15,7 +15,7 @@ var dbUrl = config.couchdb.url + '/' + dbName;
 var setupDatabase = function(cb) {
   nano.db.create(dbName, function(err) {
     if (err) {
-      console.log(err.reason);
+      console.log(err);
     }
     else {
       console.log('Database created: ' + dbUrl);
@@ -30,7 +30,7 @@ var setupDatabase = function(cb) {
 if (argv.recreate) {
   nano.db.destroy(dbName, function(err, body) {
     if (err) {
-      console.log(err.reason);
+      console.log(err);
     }
     else {
       setupDatabase(function(err) {
