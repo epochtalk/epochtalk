@@ -15,6 +15,6 @@ var app = angular.module('ept', [
 app.config(require('./config'));
 app.controller('HeaderCtrl', require('./controllers/header'));
 
-require('./css/normalize.css');
-require('./css/foundation.css');
+require('foundation/css/normalize.css');
+require('foundation/css/foundation.css');
 require('./css/style.css');

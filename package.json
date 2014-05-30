@@ -27,7 +27,8 @@
     "angular-cookies": "angular/bower-angular-cookies",
     "angular-resource": "angular/bower-angular-resource",
     "angular-route": "angular/bower-angular-route",
-    "angular-sanitize": "angular/bower-angular-sanitize"
+    "angular-sanitize": "angular/bower-angular-sanitize",
+    "foundation": "zurb/bower-foundation"
   },
   "dependencies": {
     "async": "^0.7.0",
