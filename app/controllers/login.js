@@ -1,7 +1,8 @@
-module.exports = function($scope, Auth) {
+module.exports = function($scope, $route, Auth) {
   $scope.login = function(form) {
-    console.log('user');
-    console.log($scope.user);
-    Auth.login('password', $scope.user);
+    Auth.login('password', $scope.user, function(success) {
+      $route.reload();
+    });
+
   }
 }

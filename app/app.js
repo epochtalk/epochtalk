@@ -4,11 +4,15 @@ require('angular-resource/angular-resource');
 require('angular-route/angular-route');
 require('angular-sanitize/angular-sanitize');
 
-angular.module('ept', [
+var app = angular.module('ept', [
   'ngRoute',
   'ngCookies',
   'ngResource',
   'ngSanitize'
-]).config(require('./config'));
+]);
+
+
+app.config(require('./config'));
+app.controller('HeaderCtrl', require('./controllers/header'));
 
 require('./css/style.css');

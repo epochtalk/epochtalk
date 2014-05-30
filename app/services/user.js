@@ -12,6 +12,10 @@ module.exports = function($resource) {
     login: {
       method: 'POST',
       url: '/api/users/login'
+    },
+    logout: {
+      method: 'DELETE',
+      url: '/api/users/logout'
     }
   });
 };

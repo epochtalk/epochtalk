@@ -25,4 +25,9 @@ module.exports = function(api) {
       }
     });
   });
+
+  api.route('/users/logout').delete(function(req, res, next) {
+    req.logout();
+    res.json({logged_out: true});
+  });
 };

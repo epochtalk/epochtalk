@@ -6,7 +6,6 @@ require(__dirname + '/users')(api);
 
 api.route('/boards')
 .get(function(req, res) {
-  console.log(req.user);
   db.boards.all(function(err, boards) {
     return res.json(boards);
   });
@@ -73,5 +72,15 @@ api.route('/profiles/:userId')
   });
 });
 
+api.route('/me')
+.get(function(req, res) {
+  if (req.isAuthenticated()) {
+    res.json({success: true, email: req.user.email});
+  }
+  else {
+    res.status(400);
+    res.end();
+  }
+})
 
 module.exports = api;
