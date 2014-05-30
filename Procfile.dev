@@ -1,2 +1,0 @@
-web: nodemon index.js
-
