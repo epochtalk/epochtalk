@@ -5,10 +5,15 @@ var couch = require(__dirname + '/couch');
 var dbName = config.couchdb.name;
 var recordType = 'boards';
 
+var replHandler = function(err, result) {
+  console.log(result);
+};
+
 var boards = {};
 module.exports = boards;
 
 boards.all = function(cb) {
+  var cb = cb || replHandler;
   var filter = {limit: 200};
   couch.view(dbName, recordType, filter, function(err, body) {
     if (!err && body.rows && body.rows.length > 0) {
