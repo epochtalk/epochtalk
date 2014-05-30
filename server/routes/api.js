@@ -66,4 +66,12 @@ api.route('/posts/:postId')
   }
 });
 
+api.route('/profiles/:userId')
+.get(function(req, res) {
+  db.profiles.find(req.params.userId, function(err, profile) {
+    return res.json(profile);
+  });
+});
+
+
 module.exports = api;

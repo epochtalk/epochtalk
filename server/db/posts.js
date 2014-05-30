@@ -1,6 +1,8 @@
 'use strict';
 var _ = require('lodash');
+var async = require('async');
 var config = require(__dirname + '/../config');
+var profiles = require(__dirname + '/profiles');
 var couch = require(__dirname + '/couch');
 var dbName = config.couchdb.name;
 var recordType = 'posts';
@@ -61,7 +63,23 @@ posts.byThread = function(parentPostId, query, cb) {
       docs.rows = _.map(docs.rows, function(row) {
         return row.doc;
       });
+      async.each(docs.rows, function(post, cb) {
+        profiles.find(post.author_id, function(err, profile) {
+          if (!err) {
+            post.author = {};
+            post.author.id = post.author_id;
+            post.author.username = profile.username;
+            post.author.email = profile.email;
+            delete post.author_id;
+          }
+          cb(err);
+        });
+      }, function(err) {
+        cb(err, docs);
+      });
     }
-    cb(err, docs);
+    else {
+      cb(err, docs);
+    }
   });
 };

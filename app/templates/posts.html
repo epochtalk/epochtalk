@@ -9,7 +9,7 @@
     <em>@{{post.timestamps.created | date:'medium'}}</em>
   </div>
   <div style="margin-bottom: 10px;">
-    by {{post.author_id}}
+    by {{post.author.username}} ({{post.author.email}})
   </div>
 
   <div style="background-color: #eee; border: 1px solid #ddd; border-radius: 5px; padding: 5px;" ng-bind-html="post.body"></div>
