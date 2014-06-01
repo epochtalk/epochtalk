@@ -1,3 +1,6 @@
+// require('foundation/js/vendor/jquery');
+// require('foundation/js/vendor/modernizr');
+// require('foundation/js/foundation');
 require('angular/angular');
 require('angular-cookies/angular-cookies');
 require('angular-resource/angular-resource');
@@ -18,4 +21,3 @@ app.controller('HeaderCtrl', require('./controllers/header'));
 require('./css/normalize.css');
 require('./css/foundation.css');
 require('./css/style.css');
-
