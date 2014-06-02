@@ -4,10 +4,10 @@
   "description": "Epochtalk forum software",
   "main": "server",
   "scripts": {
-    "install": "napa",
-    "build": "browserify -t cssify -t brfs app/app.js -o public/bundle.js",
-    "watch": "watchify -t cssify -t brfs app/app.js -o public/bundle.js -v",
-    "test": "mocha -R spec ./tests",
+    "install": "./node_modules/.bin/napa",
+    "build": "./node_modules/.bin/browserify -t cssify -t brfs app/app.js -o public/bundle.js",
+    "watch": "./node_modules/.bin/watchify -t cssify -t brfs app/app.js -o public/bundle.js -v",
+    "test": "./node_modules/.bin/mocha -R spec ./tests",
     "start": "npm run build & node server",
     "start-dev": "nodemon server | bunyan",
     "start-devwatch": "npm run watch & nodemon server | bunyan"
@@ -52,10 +52,13 @@
   },
   "devDependencies": {
     "brfs": "^1.0.2",
+    "browserify": "^4.1.7",
     "charlatan": "^0.1.9",
     "couchapp": "^0.11.0",
     "cssify": "^0.5.1",
     "mocha": "^1.19.0",
-    "mysql": "^2.1.1"
+    "mysql": "^2.1.1",
+    "napa": "^0.4.1",
+    "watchify": "^0.10.2"
   }
 }
