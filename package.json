@@ -9,8 +9,8 @@
     "watch": "./node_modules/.bin/watchify -t cssify -t brfs app/app.js -o public/bundle.js -v",
     "test": "./node_modules/.bin/mocha -R spec ./tests",
     "start": "npm run build & node server",
-    "start-dev": "nodemon server | bunyan",
-    "start-devwatch": "npm run watch & nodemon server | bunyan"
+    "start-dev": "./node_modules/.bin/nodemon server | ./node_modules/.bin/bunyan",
+    "start-devwatch": "npm run watch & ./node_modules/.bin/nodemon server | ./node_modules/.bin/bunyan"
   },
   "repository": {
     "type": "git",
@@ -60,6 +60,7 @@
     "mocha": "^1.19.0",
     "mysql": "^2.1.1",
     "napa": "^0.4.1",
+    "nodemon": "^1.1.1",
     "watchify": "^0.10.2"
   }
 }
