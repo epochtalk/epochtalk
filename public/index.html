@@ -22,12 +22,7 @@
       <li ng-if="!loggedIn"><a ng-href="/login">Login</a></li>
       <li ng-if="!loggedIn"><a ng-href="/register">Register</a></li>
 
-      <li class="has-dropdown">
-        <a href="#">Cog</a>
-        <ul class="dropdown">
-          <li><a href="#">First link in dropdown</a></li>
-        </ul>
-      </li>
+      <li ng-if="loggedIn"><a ng-href="#" ng-click="logout()">Logout</a></li>
     </ul>
 
     <!-- Left Nav Section -->

@@ -28,7 +28,10 @@ passport.deserializeUser(function(email, done) {
   filter.include_docs = true;
   filter.limit = 1;
   couch.view(dbName, 'usersByEmail', filter, function(err, res) {
-    var storedUser = res.rows[0].doc;
+    var storedUser;
+    if (res.rows && res.rows.length === 1) {
+      storedUser = res.rows[0].doc;
+    }
     return done(err, storedUser);
   });
 });
