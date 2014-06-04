@@ -2,14 +2,13 @@ var express = require('express');
 var config = require(__dirname + '/../config');
 var db = require(__dirname + '/../db');
 var api = require(__dirname + '/api');
-var speakeasy = require('speakeasy');
+var qr = require('qr-image');
 
 var configureRoutes = function(app) {
-  // totp test route
   app.get('/totp', function(req, res) {
-    var totpKey = speakeasy.totp({key: 'SpWaxP[NvGW%gz>yB:lo'});
-    return res.json({totp: totpKey});
-
+    var code = qr.image('otpauth://totp/epochtalk?secret=' + req.user.totp_key.base32, { type: 'svg' });
+    res.type('svg');
+    return code.pipe(res);
   });
 
   app.use('/', express.static(config.root + '/public'));

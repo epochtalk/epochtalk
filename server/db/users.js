@@ -6,6 +6,7 @@ var dbName = config.couchdb.name;
 var recordType = 'users';
 var bcrypt = require('bcrypt');
 var users = {};
+var speakeasy = require('speakeasy');
 
 // validation for reg
 var validate = function(user) {
@@ -23,6 +24,11 @@ var validate = function(user) {
 
 users.register = function(user, cb) {
   if (validate(user)) {
+    var key = speakeasy.generate_key({length : 20, google_auth_qr: true});
+    // qrcode.generate('otpauth://totp/foo?secret=' + key.base32, function(qrCode) {
+    //   console.log(qrCode);
+    // });
+    user.totp_key = key;
     couch.insert(user, cb);
   }
   else {
@@ -34,32 +40,33 @@ users.register = function(user, cb) {
 };
 
 users.login = function(user, cb) {
-  console.log('login...');
   var filter = {};
   filter.key = user.email;
   filter.include_docs = true;
   filter.limit = 1;
-
+  var authedUser;
   couch.view(dbName, recordType + 'ByEmail', filter, function(err, res) {
     var storedUser;
     if (res && res.rows && res.rows.length > 0) {
       storedUser = res.rows[0].doc;
+      var otp = speakeasy.totp({key: storedUser.totp_key.ascii});
+      var matchOTP = (otp === user.otp);
       var matchHash = bcrypt.compareSync(user.password, storedUser.passhash);
-      if (!matchHash) {
-        err = new Error('Login failed: Bad password.');
+      if (matchHash && matchOTP) {
+        authedUser = storedUser;
+        // remove before sending back to client
+        delete authedUser.totp_key;
+        delete authedUser.passhash;
       }
       else {
-        // remove passhash before sending back to client
-        delete storedUser.passhash;
+        err = new Error('Login failed: Bad password.');
       }
     }
     else {
       err = new Error('Login failed: No such user.');
     }
-    cb(err, storedUser);
+    cb(err, authedUser);
   });
-  // get user from couch, match hash
-
 };
 
 module.exports = users;
