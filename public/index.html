@@ -8,7 +8,7 @@
     <nav class="top-bar" data-topbar>
   <ul class="title-area">
     <li class="name">
-      <h1><a href="#">Epochtalk</a></h1>
+      <h1><a href="/">Epochtalk</a></h1>
     </li>
      <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
     <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -17,11 +17,8 @@
   <section class="top-bar-section">
     <!-- Right Nav Section -->
     <ul class="right">
-
-      <!-- <li>{{loginState}}</li> -->
       <li ng-if="!loggedIn"><a ng-href="/login">Login</a></li>
       <li ng-if="!loggedIn"><a ng-href="/register">Register</a></li>
-
       <li ng-if="loggedIn"><a ng-href="#" ng-click="logout()">Logout</a></li>
     </ul>
 
@@ -32,22 +29,6 @@
     </ul>
   </section>
 </nav>
-
-    <div style="float: left;">
-      <a ng-href="/" style="font-size: 1.0em; color: #09f;">Root</a>
-    </div>
-    <div ng-if="!loggedIn" style="float: right;">
-      {{loginState}} |
-      <a ng-href="/login" style="font-size: 1.0em; color: #09f;">Login</a> |
-      <a ng-href="/register" style="font-size: 1.0em; color: #09f;">Register</a>
-    </div>
-    <div ng-if="loggedIn" style="float: right;">
-      {{loginState}} |
-      <a ng-href="#" ng-click="logout()" style="font-size: 1.0em; color: #09f;">Logout</a>
-    </div>
-    <div style="clear: both;"></div>
-  </div>
-  <hr/>
   <ng-view></ng-view>
   <script src="/bundle.js" type="text/javascript"></script>
 </body>
