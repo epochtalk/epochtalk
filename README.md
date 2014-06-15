@@ -12,5 +12,12 @@ Dependencies
 * [couchdb](http://wiki.apache.org/couchdb/Installation)
 * [foreman](https://github.com/ddollar/foreman)
 
+## Development
+
+* Clone git repository.
+* `gem install foreman`
+* `npm install`
+* `foreman start`
+
 ## License
 MIT
