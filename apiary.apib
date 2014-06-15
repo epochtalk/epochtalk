@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: http://www.google.com
+HOST: http://alpha.epoch.im
 
 # epochtalk
 Notes API is a *short texts saving* service similar to its physical paper presence on your table.
@@ -7,7 +7,7 @@ Notes API is a *short texts saving* service similar to its physical paper presen
 # Group Notes
 Notes related resources of the **Notes API**
 
-## Notes Collection [/notes]
+## Posts Collection [/posts]
 ### List all Notes [GET]
 + Response 200 (application/json)
 
@@ -26,13 +26,13 @@ Notes related resources of the **Notes API**
 
         { "id": 3, "title": "Buy cheese and bread for breakfast." }
 
-## Note [/notes/{id}]
-A single Note object with all its details
+## Post [/posts/{id}]
+A single Post object with all its details
 
 + Parameters
     + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
 
-### Retrieve a Note [GET]
+### Retrieve a Post [GET]
 + Response 200 (application/json)
 
     + Header
@@ -43,5 +43,5 @@ A single Note object with all its details
 
             { "id": 2, "title": "Pick-up posters from post-office" }
 
-### Remove a Note [DELETE]
+### Remove a Post [DELETE]
 + Response 204
