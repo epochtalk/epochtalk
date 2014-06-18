@@ -6,29 +6,28 @@
 <body>
   <div ng-controller="HeaderCtrl">
     <nav class="top-bar" data-topbar>
-  <ul class="title-area">
-    <li class="name">
-      <h1><a href="/">Epochtalk</a></h1>
-    </li>
-     <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-  </ul>
-
-  <section class="top-bar-section">
-    <!-- Right Nav Section -->
-    <ul class="right">
-      <li ng-if="!loggedIn"><a ng-href="/login">Login</a></li>
-      <li ng-if="!loggedIn"><a ng-href="/register">Register</a></li>
-      <li ng-if="loggedIn"><a ng-href="#" ng-click="logout()">Logout</a></li>
+    <ul class="title-area">
+      <li class="name">
+        <h1><a href="/">Epochtalk</a></h1>
+      </li>
+      <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
     </ul>
+    <section class="top-bar-section">
+      <!-- Right Nav Section -->
+      <ul class="right">
+        <li ng-if="!loggedIn"><a ng-href="/login">Login</a></li>
+        <li ng-if="!loggedIn"><a ng-href="/register">Register</a></li>
+        <li ng-if="loggedIn"><a ng-href="#" ng-click="logout()">Logout</a></li>
+      </ul>
 
-    <!-- Left Nav Section -->
-    <ul class="left">
-      <li><a href="#">Left Nav Button</a></li>
-
-    </ul>
-  </section>
-</nav>
+      <!-- Left Nav Section -->
+      <ul class="left">
+        <li><a href="#">Topics</a></li>
+      </ul>
+    </section>
+    </nav>
+  </div>
   <ng-view></ng-view>
   <script src="/bundle.js" type="text/javascript"></script>
 </body>
