@@ -8,5 +8,5 @@ module.exports = function($scope, $http, $routeParams) {
   .success(function(threads) {
     $scope.threads = threads.rows;
   });
-}
+};
 

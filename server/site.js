@@ -21,7 +21,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 var engines = require('consolidate');
-var db = require('./db');
 var routes = require('./routes')(app);
 
 app.engine('haml', engines.haml);

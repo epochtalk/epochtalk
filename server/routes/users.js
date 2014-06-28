@@ -1,4 +1,3 @@
-var db = require(__dirname + '/../db');
 var passport = require(__dirname + '/../passport');
 
 module.exports = function(api) {
@@ -9,7 +8,6 @@ module.exports = function(api) {
   api.route('/users/register').post(function(req, res) {
     console.log('Register User.');
     var user = req.body;
-    db.users.register(user);
     return res.end();
   });
 

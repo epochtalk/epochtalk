@@ -1,6 +1,5 @@
 var express = require('express');
 var config = require(__dirname + '/../config');
-var db = require(__dirname + '/../db');
 var api = require(__dirname + '/api');
 var qr = require('qr-image');
 
@@ -16,6 +15,6 @@ var configureRoutes = function(app) {
   app.get('*', function(req, res){
     return res.sendfile('index.html', {root: './public'});
   });
-}
+};
 
 module.exports = configureRoutes;

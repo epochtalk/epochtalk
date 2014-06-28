@@ -5,71 +5,22 @@ var yargs = require('yargs')
   .options('i', {alias : 'import'})
   .usage(usage);
 var argv = yargs.argv;
-var couchapp = require('couchapp');
 var config = require(__dirname + '/../server/config');
-var nano = require('nano')(config.couchdb.url);
-var dbName = config.couchdb.name;
-var ddoc = require(__dirname + '/../couch/ddoc');
-var dbUrl = config.couchdb.url + '/' + dbName;
-
-var setupDatabase = function(cb) {
-  nano.db.create(dbName, function(err) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      console.log('Database created: ' + dbUrl);
-      couchapp.createApp(ddoc, dbUrl, function(app) {
-        app.push();
-      });
-    }
-    return cb(err);
-  });
-};
 
 if (argv.recreate) {
-  nano.db.destroy(dbName, function(err, body) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      setupDatabase(function(err) {
-        if (!err) {
-          console.log('Database is recreated.');
-        }
-      });
-    }
-  });
+  console.log('This feature is not implemented right now.');
 }
 else if (argv.create) {
-  setupDatabase(function(err) {
-    if (!err) {
-      console.log('Database is now set up.');
-    }
-  });
+  console.log('This feature is not implemented right now.');
 }
 else if (argv.update) {
-  couchapp.createApp(ddoc, dbUrl, function(app) {
-    app.push();
-  });
+  console.log('This feature is not implemented right now.');
 }
 else if (argv.seed) {
-  var seed = require(__dirname + '/../couch/seed');
-  seed.seed();
+  console.log('This feature is not implemented right now.');
 }
-
 else if (argv.i) {
-  try {
-    var importerPath = __dirname + '/../importers/' + argv.i;
-    var importer = require(importerPath);
-    console.log('Starting import via: ' + importerPath);
-    importer.start(dbName, function(err, body) {
-      console.log(body);
-    });
-  }
-  catch(err) {
-    console.log(err);
-  }
+  console.log('This feature is not implemented right now.');
 }
 else {
   console.log(yargs.help());

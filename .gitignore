@@ -18,3 +18,4 @@ node_modules
 test/coverage/
 /public/bundle.js
 /public/.bundle.js
+/public/bundle.min.js

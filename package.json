@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/slickage/epochtalk"
+    "url": "git://github.com/epochtalk/epochtalk"
   },
   "author": "James Wang <jw@slickage.com> (http://slickage.com/)",
   "license": "TBD",
@@ -45,7 +45,6 @@
     "lodash": "^2.4.1",
     "method-override": "^1.0.0",
     "morgan": "^1.0.1",
-    "nano": "^5.7.1",
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
     "qr-image": "^1.1.0",
@@ -56,7 +55,6 @@
     "brfs": "^1.0.2",
     "browserify": "^4.1.7",
     "charlatan": "^0.1.9",
-    "couchapp": "^0.11.0",
     "cssify": "^0.5.1",
     "mocha": "^1.19.0",
     "mysql": "^2.1.1",
