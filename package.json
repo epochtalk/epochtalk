@@ -5,7 +5,7 @@
   "main": "server",
   "scripts": {
     "install": "./node_modules/.bin/napa",
-    "build": "./node_modules/.bin/browserify -t cssify -t brfs app/app.js -o public/bundle.js",
+    "build": "./node_modules/.bin/browserify -t cssify -t brfs -t browserify-ngmin app/app.js -o public/bundle.js && ./node_modules/.bin/uglifyjs 'public/bundle.js' -o public/bundle.min.js -c -m -r 'require,exports,module'",
     "watch": "./node_modules/.bin/watchify -t cssify -t brfs app/app.js -o public/bundle.js -v",
     "test": "./node_modules/.bin/mocha -R spec ./tests",
     "start": "npm run build & node server",
@@ -54,12 +54,14 @@
   "devDependencies": {
     "brfs": "^1.0.2",
     "browserify": "^4.1.7",
+    "browserify-ngmin": "^0.1.0",
     "charlatan": "^0.1.9",
     "cssify": "^0.5.1",
     "mocha": "^1.19.0",
     "mysql": "^2.1.1",
     "napa": "^0.4.1",
     "nodemon": "^1.1.1",
+    "uglify-js": "^2.4.14",
     "watchify": "^0.10.2"
   }
 }

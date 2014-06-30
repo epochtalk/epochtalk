@@ -1,4 +1,5 @@
-module.exports = function($scope, $location) {
-  $location.path('/boards');
-};
-
+module.exports = ['$scope', '$location',
+  function($scope, $location) {
+    $location.path('/boards');
+  }
+];

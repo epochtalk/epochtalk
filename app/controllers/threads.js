@@ -1,4 +1,5 @@
-module.exports = function($scope, $routeParams) {
-  console.log('threads');
-  $scope.parentPostId = $routeParams.parentPostId;
-};
+module.exports = ['$scope', '$routeParams',
+  function($scope, $routeParams) {
+    $scope.parentPostId = $routeParams.parentPostId;
+  }
+];
