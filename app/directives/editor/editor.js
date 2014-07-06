@@ -13,11 +13,11 @@ module.exports = function() {
       // Find relevant HTML Elements
       var htmlElement = element[0];
       // bbcode editor element
-      var editorElement = htmlElement.getElementsByClassName('ee-bbcode-editor')[0];
-      editorElement = angular.element(editorElement);
+      var rawEditorElement = htmlElement.getElementsByClassName('ee-bbcode-editor')[0];
+      var editorElement = angular.element(rawEditorElement);
       // bbcode preview element
-      var previewElement = htmlElement.getElementsByClassName('ee-bbcode-preview')[0];
-      previewElement = angular.element(previewElement);
+      var rawPreviewElement = htmlElement.getElementsByClassName('ee-bbcode-preview')[0];
+      var previewElement = angular.element(rawPreviewElement);
 
       // medium options
       var options = {
@@ -29,12 +29,21 @@ module.exports = function() {
 
       // Medium Editor Event Bindings
       var onChange = function() {
-        scope.$apply(function() {
-          // process BBCode
-          var processed = xbbcode.process({text: editorElement.html()}).html;
-          previewElement.html(processed);
-          scope.saveText({ text: editorElement.html() });
-        });
+        // process BBCode
+        var processed = xbbcode.process({text: editorElement.html()}).html;
+        previewElement.html(processed);
+        scope.saveText({ text: editorElement.html() });
+      };
+
+      // scoll binding
+      var onEditorScroll = function() {
+        var scrollTop = rawEditorElement.scrollTop;
+        rawPreviewElement.scrollTop = scrollTop;
+      };
+
+      var onPreviewScroll = function() {
+        var scrollTop = rawPreviewElement.scrollTop;
+        rawEditorElement.scrollTop = scrollTop;
       };
 
       // on load ng-model text to editor and preview
@@ -44,6 +53,8 @@ module.exports = function() {
 
       editorElement.on('input', onChange);
       editorElement.on('blur', onChange);
+      editorElement.on('scroll', onEditorScroll);
+      previewElement.on('scroll', onPreviewScroll);
     },
     template: fs.readFileSync(__dirname + '/../../templates/editor.html')
   };
