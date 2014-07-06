@@ -12,7 +12,8 @@ var passport = require(__dirname + '/passport');
 var app = express();
 app.use(methodOverride());
 app.use(cookieParser('epoch'));
-app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ store: new RedisStore({
   host: config.redis.host,
   port: config.redis.port

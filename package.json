@@ -4,7 +4,7 @@
   "description": "Epochtalk forum software",
   "main": "server",
   "scripts": {
-    "install": "./node_modules/.bin/napa",
+    "install": "./node_modules/.bin/napa && ./copyMediumCSS.sh",
     "build": "./node_modules/.bin/browserify -t cssify -t brfs -t browserify-ngmin app/app.js -o public/bundle.js && ./node_modules/.bin/uglifyjs 'public/bundle.js' -o public/bundle.min.js -c -m -r 'require,exports,module'",
     "watch": "./node_modules/.bin/watchify -t cssify -t brfs app/app.js -o public/bundle.js -v",
     "test": "./node_modules/.bin/mocha -R spec ./tests",
@@ -43,6 +43,7 @@
     "express-session": "^1.2.0",
     "hamljs": "^0.6.2",
     "lodash": "^2.4.1",
+    "medium-editor": "^1.8.14",
     "method-override": "^1.0.0",
     "morgan": "^1.0.1",
     "passport": "^0.2.0",

@@ -27,6 +27,9 @@ app.controller('ThreadsCtrl', require('./controllers/threads.js'));
 app.controller('ThreadCtrl', require('./controllers/thread.js'));
 app.controller('PostsCtrl', require('./controllers/posts.js'));
 
+// add epochtalk-editor directive
+app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
+
 // Set Angular Configs
 app.config(require('./config'));
 
@@ -34,3 +37,8 @@ app.config(require('./config'));
 require('./css/normalize.css');
 require('./css/foundation.css');
 require('./css/style.css');
+require('./css/editor.css');
+require('./css/medium-editor.css');
+require('./css/default.css');
+var cssify = require('cssify');
+cssify.byUrl('//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css');
