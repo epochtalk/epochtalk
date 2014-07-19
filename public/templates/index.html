@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html ng-app="ept">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EpochTalk Forum</title>
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/foundation.css">
+  <link rel="stylesheet" href="css/epochtalk.css">
+</head>
+<body class="antialiased hide-extras">
+  <div class="row">
+    <div class="small-12 columns clearfix">
+      <h1 class="left">EpochTalk Forum</h1>
+      <span class="right padding-top-25"><a href="#login">Login</a></span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <nav class="top-bar" data-topbar>
+        <ul class="title-area">
+          <li class="name"></li>
+           <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+          <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+        </ul>
+
+        <section class="top-bar-section">
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Help</a></li>
+            <li><a href="#">Donate</a></li>
+          </ul>
+          <!-- Right Nav Section -->
+          <ul class="right">
+            <li class="has-form">
+              <div class="row collapse">
+                <div class="large-8 small-9 columns">
+                  <input style="height: 28px" type="text" placeholder="Search the forum">
+                </div>
+                <div class="large-4 small-3 columns">
+                  <a href="#" class="info button expand">Search</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </nav>
+      <ul class="breadcrumbs">
+        <li><a href="#">Home</a></li>
+        <li class="current"><a href="#">Forum</a></li>
+        <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">I like to dance sometimes</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12">
+      <h3 class="thin-dotted-underline">Bitcoin Related</h3>
+    </div>
+  </div>
+  <script src="js/vendor/jquery.js"></script>
+  <script src="js/foundation.min.js"></script>
+  <script>
+    $(document).foundation();
+  </script>
+</body>
+</html>

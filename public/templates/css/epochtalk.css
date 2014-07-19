@@ -1,0 +1,25 @@
+body { 
+  margin-top:10px;
+}
+
+.padding-top-25 {
+  padding-top: 25px;
+}
+
+.breadcrumbs > .news:before {
+  content: "";
+  margin: 0px 0;
+  position: relative;
+  top: 1px;
+}
+
+.breadcrumbs > .news {
+  color: #444;
+  text-transform: none;
+}
+
+.thin-dotted-underline {
+  border-bottom: 1px dotted #ccc;
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
+}
