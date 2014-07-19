@@ -20,6 +20,16 @@ body {
 
 .thin-dotted-underline {
   border-bottom: 1px dotted #ccc;
-  padding-left: 0.9375rem;
-  padding-right: 0.9375rem;
+}
+
+.board {
+  font-size: 20px;
+  text-decoration: underline;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.moderators {
+  color: #999;
+  font-size: 13px;
 }
