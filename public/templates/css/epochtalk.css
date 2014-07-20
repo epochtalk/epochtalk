@@ -1,9 +1,10 @@
 body { 
   margin-top:10px;
+  background: url(../img/white_wall_hash.png);
 }
 
-.padding-top-25 {
-  padding-top: 25px;
+.padding-top-15 {
+  padding-top: 15px;
 }
 
 .breadcrumbs > .news:before {
@@ -32,4 +33,53 @@ body {
 .moderators {
   color: #999;
   font-size: 13px;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+.child-boards {
+  color: #666;
+  font-size: 16px;
+  display: inline-block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.board-info {
+  display: inline-block;
+  font-size: 13px;
+  color: #999;
+}
+
+.board-info-spacer {
+  margin-top: 10px;
+}
+
+.post-alert {
+  color: #777 !important;
+  font-weight: bold;
+}
+
+.board-section {
+  margin-bottom: 20px;
+}
+
+.footer {
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+  background-color: #444;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.footer h3 {
+  color: #999;
+}
+
+.copyright {
+  font-size: 12px;
+  margin-top: 10px;
+  text-align: center;
+  display: block;
 }
