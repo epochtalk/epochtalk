@@ -17,9 +17,11 @@ node_modules
 /id_deploy
 
 test/coverage/
-/public/bundle.js
-/public/.bundle.js
-/public/bundle.min.js
+/public/js/bundle.js
+/public/js/.bundle.js
+/public/js/bundle.min.js
 
 /app/css/medium-editor.css
 /app/css/default.css
+
+/epoch.db

@@ -5,7 +5,7 @@
   "main": "server",
   "scripts": {
     "install": "./node_modules/.bin/napa && ./copyMediumCSS.sh",
-    "build": "./node_modules/.bin/browserify -t cssify -t brfs -t browserify-ngmin app/app.js -o public/bundle.js && ./node_modules/.bin/uglifyjs 'public/bundle.js' -o public/bundle.min.js -c -m -r 'require,exports,module'",
+    "build": "./node_modules/.bin/browserify -t cssify -t brfs -t browserify-ngmin app/app.js -o public/js/bundle.js && ./node_modules/.bin/uglifyjs 'public/js/bundle.js' -o public/js/bundle.min.js -c -m -r 'require,exports,module'",
     "watch": "./node_modules/.bin/watchify -t cssify -t brfs app/app.js -o public/bundle.js -v",
     "test": "./node_modules/.bin/mocha -R spec ./tests",
     "start": "npm run build & node server",
@@ -33,24 +33,18 @@
   "dependencies": {
     "async": "^0.7.0",
     "bcrypt": "^0.7.8",
-    "body-parser": "^1.2.0",
     "bunyan": "^0.22.3",
-    "connect-redis": "^2.0.0",
-    "consolidate": "^0.10.0",
-    "cookie-parser": "^1.1.0",
     "cssify": "^0.5.1",
-    "express": "^4.1.2",
-    "express-session": "^1.2.0",
-    "hamljs": "^0.6.2",
+    "good": "^2.2.0",
+    "hapi": "^6.2.1",
     "lodash": "^2.4.1",
     "medium-editor": "^1.8.14",
-    "method-override": "^1.0.0",
-    "morgan": "^1.0.1",
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
     "qr-image": "^1.1.0",
     "speakeasy": "^1.0.3",
-    "yargs": "^1.2.1"
+    "yargs": "^1.2.1",
+    "epoch-api": "git+ssh://git@github.com:epochtalk/api"
   },
   "devDependencies": {
     "brfs": "^1.0.2",
