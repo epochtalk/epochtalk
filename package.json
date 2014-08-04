@@ -44,7 +44,7 @@
     "qr-image": "^1.1.0",
     "speakeasy": "^1.0.3",
     "yargs": "^1.2.1",
-    "epoch-api": "git+ssh://git@github.com:epochtalk/api"
+    "epoch-api": "git://github.com/epochtalk/api"
   },
   "devDependencies": {
     "brfs": "^1.0.2",
