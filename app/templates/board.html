@@ -1,12 +1,14 @@
-<div style="margin: 10px 10px">
-  <h4>{{board.name}}</h4>
-  <div>{{board.description}}</div>
-  <hr />
-
-  <div ng-repeat="thread in threads">
-    <a ng-href="/threads/{{thread.id}}/posts" style="font-size: 18px; color: #09f;">{{thread.title}}</a> <em>@{{thread.created_at | date:'medium'}}</em>
-    <br />
-    <span style="color: #555"><strong>Thread ID:</strong> <span style="font-family:monospace;">{{thread.id}}</span></span>
+<div class="row">
+  <div class="small-12 columns">
+    <h4>{{board.name}}</h4>
+    <div>{{board.description}}</div>
     <hr />
+
+    <div ng-repeat="thread in threads">
+      <a ng-href="/threads/{{thread.id}}/posts" style="font-size: 18px; color: #09f;">{{thread.title}}</a> <em>@{{thread.created_at | date:'medium'}}</em>
+      <br />
+      <span style="color: #555"><strong>Thread ID:</strong> <span style="font-family:monospace;">{{thread.id}}</span></span>
+      <hr />
+    </div>
   </div>
 </div>

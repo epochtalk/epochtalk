@@ -1,35 +1,76 @@
 <!DOCTYPE html>
 <html ng-app="ept">
 <head>
-  <title>Epochtalk Development Preview</title>
-</head>
-<body>
-  <div ng-controller="HeaderCtrl">
-    <nav class="top-bar" data-topbar>
-    <ul class="title-area">
-      <li class="name">
-        <h1><a href="/">Epochtalk</a></h1>
-      </li>
-      <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-    </ul>
-    <section class="top-bar-section">
-      <!-- Right Nav Section -->
-      <ul class="right">
-        <li ng-if="!loggedIn"><a ng-href="/login">Login</a></li>
-        <li ng-if="!loggedIn"><a ng-href="/register">Register</a></li>
-        <li ng-if="loggedIn"><a ng-href="#" ng-click="logout()">Logout</a></li>
-      </ul>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EpochTalk Forum</title>
 
-      <!-- Left Nav Section -->
-      <ul class="left">
-        <li><a href="#">Topics</a></li>
+  <link rel="stylesheet" href="/static/css/normalize.css">
+  <link rel="stylesheet" href="/static/css/foundation.css">
+  <link rel="stylesheet" href="/static/css/epochtalk.css">
+</head>
+<body class="antialiased hide-extras">
+  <div class="row">
+    <div class="small-12 columns clearfix">
+      <h1 class="left">EpochTalk Forum</h1>
+      <span class="right padding-top-15"><a class="button tiny round" href="#login">Login</a></span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <nav class="top-bar" data-topbar>
+        <ul class="title-area">
+          <li class="name"></li>
+           <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+          <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+        </ul>
+
+        <section class="top-bar-section">
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li class="active"><a href="/">Home</a></li>
+            <li><a href="#">Help</a></li>
+            <li><a href="#">Donate</a></li>
+          </ul>
+          <!-- Right Nav Section -->
+          <ul class="right">
+            <li class="has-form">
+              <div class="row collapse">
+                <div class="large-8 small-9 columns">
+                  <input style="height: 28px" type="text" placeholder="Search the forum">
+                </div>
+                <div class="large-4 small-3 columns">
+                  <a href="#" class="info button expand">Search</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </nav>
+      <ul class="breadcrumbs">
+        <li><a href="/">Home</a></li>
+        <li class="current"><a href="#">Forum</a></li>
+        <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">Dolor mollit jerky pork</a></li>
       </ul>
-    </section>
-    </nav>
+    </div>
   </div>
   <ng-view></ng-view>
+  <div class="panel footer">
+    <div class="row">
+      <div class="small-12 columns">
+        <h3>Generic Footer Stuff</h3>
+          Prosciutto pork loin hamburger t-bone tail porchetta meatball, shoulder frankfurter chicken cow leberkas strip steak tenderloin kielbasa. Venison short loin beef ribs swine, short ribs doner shoulder brisket chicken tenderloin turducken pork. Kevin venison pancetta, pork belly short ribs prosciutto meatball. Sausage frankfurter ham hock, filet mignon short ribs pork belly sirloin andouille swine meatloaf capicola jerky ball tip. Pork loin ham hock shankle, shank meatball hamburger sirloin tri-tip andouille kielbasa capicola rump. Turducken biltong tri-tip spare ribs ground round chuck.
+        <br />
+        <span class="copyright">&copy; 2013 EpochTalk</span>
+      </div>
+    </div>
+  </div>
   <script src="/static/js/bundle.min.js" type="text/javascript"></script>
+  <script src="/static/js/vendor/jquery.js" type="text/javascript"></script>
+  <script src="/static/js/foundation.min.js" type="text/javascript"></script>
+  <script>
+    $(document).foundation();
+  </script>
 </body>
 
 </html>

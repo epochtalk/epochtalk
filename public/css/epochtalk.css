@@ -1,0 +1,85 @@
+body { 
+  margin-top:10px;
+  background: url(../img/white_wall_hash.png);
+}
+
+.padding-top-15 {
+  padding-top: 15px;
+}
+
+.breadcrumbs > .news:before {
+  content: "";
+  margin: 0px 0;
+  position: relative;
+  top: 1px;
+}
+
+.breadcrumbs > .news {
+  color: #444;
+  text-transform: none;
+}
+
+.thin-dotted-underline {
+  border-bottom: 1px dotted #ccc;
+}
+
+.board {
+  font-size: 20px;
+  text-decoration: underline;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.moderators {
+  color: #999;
+  font-size: 13px;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+.child-boards {
+  color: #666;
+  font-size: 16px;
+  display: inline-block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.board-info {
+  display: inline-block;
+  font-size: 13px;
+  color: #999;
+}
+
+.board-info-spacer {
+  margin-top: 10px;
+}
+
+.post-alert {
+  color: #777 !important;
+  font-weight: bold;
+}
+
+.board-section {
+  margin-bottom: 20px;
+}
+
+.footer {
+  border-left: 0px !important;
+  border-right: 0px !important;
+  border-bottom: 0px !important;
+  background-color: #444 !important;
+  color: #ccc !important;
+  font-size: 14px !important;
+}
+
+.footer h3 {
+  color: #999 !important;
+}
+
+.copyright {
+  font-size: 12px;
+  margin-top: 10px;
+  text-align: center;
+  display: block;
+}
