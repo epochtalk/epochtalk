@@ -1,9 +1,12 @@
-<div style="margin: 10px 0px" ng-repeat="board in boards">
-  <a ng-href="/boards/{{board._id}}" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{board._id}}</a>
-  <a ng-href="/boards/{{board._id}}" ng-bind-html="board.name"></a>
-  <div ng-repeat="subBoard in subBoards[board._id]">
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a ng-href="/boards/{{subBoard._id}}" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{subBoard._id}}</a>
-    <a ng-href="/boards/{{subBoard._id}}" ng-bind-html="subBoard.name"></a>
+<div style="margin: 10px 10px" ng-repeat="board in boards">
+  <a ng-href="/boards/{{board.id}}" style="font-size: 18px; color: #09f;" ng-bind-html="board.name"></a>
+  <br />
+  <span style="font-size: 12px; color: #555"><strong>Board ID:</strong> <span style="font-family:monospace;">{{board.id}}</span></span>
+  <p>{{board.description}}<br /></p>
+  <div ng-repeat="subBoard in subBoards[board.id]">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a ng-href="/boards/{{subBoard.id}}" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{subBoard.id}}</a>
+    <a ng-href="/boards/{{subBoard.id}}" ng-bind-html="subBoard.name"></a>
   </div>
+  <hr />
 </div>
 

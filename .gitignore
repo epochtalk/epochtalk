@@ -20,6 +20,7 @@ test/coverage/
 /public/js/bundle.js
 /public/js/.bundle.js
 /public/js/bundle.min.js
+/public/bundle.js
 
 /app/css/medium-editor.css
 /app/css/default.css

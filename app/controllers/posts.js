@@ -3,75 +3,98 @@ var _ = require('lodash');
 module.exports = ['$scope', '$routeParams', '$http',
   function($scope, $routeParams, $http) {
     var rowsPerPage = 10;
-    var parentPostId = $routeParams.parentPostId;
-    $scope.posts = [];
-    $http.get('/api/threads/' + parentPostId + '/posts')
+    var threadId = $routeParams.threadId;
+    $scope.posts = null;
+    $scope.pageKeys = [];
+    $http({ // Temporary in order to get total postCount
+      url: '/api/posts',
+      method: 'GET',
+      params: {
+        thread_id: threadId,
+        limit: 99999
+      }
+    })
     .success(function(posts) {
-      posts.rows.forEach(function(post) {
-        $scope.posts.push(post);
-      });
-      $http.get('/api/threads/' + parentPostId)
-      .success(function(threadData) {
-        // Save paged_post_keys to scope (for paging)
-        $scope.pageKeys = threadData.paged_post_keys;
-        // Build the current pages key from the first post in the $scope.post array
-        var parentPostId = $scope.posts[0].parent_post_id ? $scope.posts[0].parent_post_id : $scope.posts[0]._id;
-        var curKey = [parentPostId, $scope.posts[0].timestamps.created];
-        // Determine the page the client is on
-        $scope.page = _.findIndex($scope.pageKeys, curKey);
+      var postCount = posts.length;
+      var totalPages = Math.ceil(postCount / rowsPerPage);
+      var pageCount = 0;
+      var keyIndex = 0;
+      for (var i = 0; i < totalPages; i++) {
+        var id = i === 0 ? null : posts[keyIndex-1].id;
+        keyIndex += rowsPerPage;
+        var key = { page: pageCount++, id: id };
+        $scope.pageKeys.push(key);
+      }
+      $http({
+        url: '/api/posts',
+        method: 'GET',
+        params: {
+          thread_id: threadId,
+          limit: rowsPerPage
+        }
+      })
+      .success(function(threadPosts) {
+        $scope.posts = threadPosts;
+        $scope.page = _.findIndex($scope.pageKeys, threadPosts[0].id) + 1;
       });
     });
 
-    $scope.gotoPage = function(pageKey, page) {
+    $scope.gotoPage = function(pageKey) {
       $http({
-        url: '/api/threads/' + parentPostId + '/posts',
+        url: '/api/posts',
         method: 'GET',
         params: {
-          startkey: pageKey,
+          thread_id: threadId,
+          post_id: pageKey.id,
+          limit: rowsPerPage
         }
       })
       .success(function(posts) {
-        $scope.page = page;
-        $scope.posts = posts.rows;
+        $scope.page = pageKey.page;
+        $scope.posts = posts;
       });
     };
 
     $scope.paginateNext = function() {
-      if($scope.pageKeys.length > 1 && $scope.page < $scope.pageKeys.length - 1) {
+      if($scope.pageKeys.length > 0 && $scope.page < $scope.pageKeys.length - 1) {
         $http({
-          url: '/api/threads/' + parentPostId + '/posts',
+          url: '/api/posts',
           method: 'GET',
           params: {
-            startkey: $scope.pageKeys[$scope.page + 1],
+            thread_id: threadId,
+            post_id: $scope.pageKeys[$scope.page + 1].id,
+            limit: rowsPerPage
           }
         })
         .success(function(posts) {
-          $scope.page++;
-          $scope.posts = posts.rows;
+          $scope.page = $scope.pageKeys[$scope.page + 1].page;
+          $scope.posts = posts;
         });
       }
     };
 
-    $scope.paginatePrevAPI = function() {
-      $http.get('/api/threads/' + parentPostId + '/posts?endkey_docid=' + $scope.posts.rows[0].id)
-      .success(function(posts) {
-        $scope.page = (posts.offset / rowsPerPage) + 1;
-        $scope.posts = posts;
-      });
-    };
+    // $scope.paginatePrevAPI = function() {
+    //   $http.get('/api/threads/' + parentPostId + '/posts?endkey_docid=' + $scope.posts.rows[0].id)
+    //   .success(function(posts) {
+    //     $scope.page = (posts.offset / rowsPerPage) + 1;
+    //     $scope.posts = posts;
+    //   });
+    // };
     
     $scope.paginatePrev = function() {
       if ($scope.page > 0) {
         $http({
-          url: '/api/threads/' + parentPostId + '/posts',
+          url: '/api/posts',
           method: 'GET',
           params: {
-            startkey: $scope.pageKeys[$scope.page - 1],
+            thread_id: threadId,
+            post_id: $scope.pageKeys[$scope.page - 1].id,
+            limit: rowsPerPage
           }
         })
         .success(function(posts) {
-          $scope.page--;
-          $scope.posts = posts.rows;
+          $scope.page = $scope.pageKeys[$scope.page - 1].page;
+          $scope.posts = posts;
         });
       }
     };

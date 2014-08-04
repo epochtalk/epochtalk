@@ -33,12 +33,12 @@ module.exports = ['$routeProvider', '$locationProvider',
       template: fs.readFileSync(__dirname + '/templates/threads.html')
     });
 
-    $routeProvider.when('/threads/:parentPostId', {
+    $routeProvider.when('/threads/:threadId', {
       controller: 'ThreadCtrl',
       template: fs.readFileSync(__dirname + '/templates/thread.html')
     });
 
-    $routeProvider.when('/threads/:parentPostId/posts/:startkey?', {
+    $routeProvider.when('/threads/:threadId/posts/:startkey?', {
       controller: 'PostsCtrl',
       template: fs.readFileSync(__dirname + '/templates/posts.html')
     });

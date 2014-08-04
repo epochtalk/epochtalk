@@ -1,21 +1,23 @@
-<button ng-click="paginatePrev()">Prev</button>
-<span ng-repeat="pageKey in pageKeys">
-  <a href="#" ng-click="gotoPage(pageKey, $index)">{{ $index + 1 }}</a>
-</span>
-<button ng-click="paginateNext()">Next</button>
-<div ng-repeat="post in posts" style="width: 800px">
-  <div style="font-weight: 700; margin-top: 10px;">
-    {{post.subject}} ({{post._id}})
-    <em>@{{post.timestamps.created | date:'medium'}}</em>
-  </div>
-  <div style="margin-bottom: 10px;">
-    by {{post.author.username}} ({{post.author.email}})
+<div style="margin: 10px 10px">
+  <button ng-click="paginatePrev()">Prev</button>
+  <span ng-repeat="pageKey in pageKeys">
+    <a href="#" ng-click="gotoPage(pageKey)">{{ $index + 1 }}</a>
+  </span>
+  <button ng-click="paginateNext()">Next</button>
+  <div ng-repeat="post in posts" style="width: 800px">
+    <div style="font-weight: 700; margin-top: 10px;">
+      {{post.title}} ({{post.id}})
+      <em>@{{post.created_at | date:'medium'}}</em>
+    </div>
+    <div style="margin-bottom: 10px;">
+      by {{post.author.username}} ({{post.author.email}})
+    </div>
+
+    <div style="background-color: #eee; border: 1px solid #ddd; border-radius: 5px; padding: 5px;" ng-bind-html="post.body"></div>
   </div>
 
-  <div style="background-color: #eee; border: 1px solid #ddd; border-radius: 5px; padding: 5px;" ng-bind-html="post.body"></div>
-</div>
-
-<!-- editor -->
-<div style="height: 300px; width: 800px;">
-  <epochtalk-editor text="editorText" save-text="save(text)" style="height: 100%; width: 100%; display: block;"></epochtalk-editor>
+  <!-- editor -->
+  <div style="height: 300px; width: 800px;">
+    <epochtalk-editor text="editorText" save-text="save(text)" style="height: 100%; width: 100%; display: block;"></epochtalk-editor>
+  </div>
 </div>
