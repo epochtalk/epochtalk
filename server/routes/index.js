@@ -9,7 +9,7 @@
 // });
 
 var path = require('path');
-var api = require(__dirname + '/../../../api/routes');
+var api = require('epoch-api');
 
 exports.endpoints = function() {
   // add local routes

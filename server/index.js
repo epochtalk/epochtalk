@@ -8,6 +8,7 @@ var config = require(__dirname + '/config');
 
 var serverOpts = {
   // cors disabled by default
+  // CSP?
   security: {
     hsts: true,
     xframe: true,
