@@ -1,6 +1,6 @@
 body { 
   margin-top:10px;
-  background: url(../img/white_wall_hash.png);
+  background: url(/static/img/white_wall_hash.png);
 }
 
 .padding-top-15 {

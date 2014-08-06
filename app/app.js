@@ -36,6 +36,7 @@ app.config(require('./config'));
 // CSS Styles
 require('./css/normalize.css');
 require('./css/foundation.css');
+require('./css/epochtalk.css');
 require('./css/style.css');
 require('./css/editor.css');
 require('./css/medium-editor.css');
