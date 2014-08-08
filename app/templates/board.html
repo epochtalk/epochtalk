@@ -1,14 +1,88 @@
 <div class="row">
   <div class="small-12 columns">
-    <h4>{{board.name}}</h4>
-    <div>{{board.description}}</div>
-    <hr />
-
-    <div ng-repeat="thread in threads">
-      <a ng-href="/threads/{{thread.id}}/posts" style="font-size: 18px; color: #09f;">{{thread.title}}</a> <em>@{{thread.created_at | date:'medium'}}</em>
-      <br />
-      <span style="color: #555"><strong>Thread ID:</strong> <span style="font-family:monospace;">{{thread.id}}</span></span>
-      <hr />
+    <h3>{{board.name}}</h3>
+    <span class="moderators"><strong>Moderators: </strong> Unknown, Unknown, Unknown</span>
+    <div class="thin-dotted-underline bottom-spacer-10"></div>
+  </div>
+  <div class="small-12 columns">
+    <span ng-if="board.child_boards">
+      <h6><strong>Child Boards</strong></h6>
+      <div ng-repeat="childBoard in board.child_boards">
+        <div class="row">
+          <div class="small-12 columns">
+           <h5 ng-class="$first ? '' : 'top-spacer-15'">
+             <a ng-href="/boards/{{childBoard.id}}" ng-bind-html="childBoard.name"></a>
+           </h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 medium-8 columns">
+           {{childBoard.description}}
+          </div>
+          <div class="small-12 medium-2 columns">
+            <div class="board-info">
+              <strong>unknown</strong> posts
+            </div>
+            <div class="board-info">
+              <strong>unknown</strong> threads
+            </div>
+          </div>
+          <div class="small-12 medium-2 columns">
+            <div class="board-info">Last post by</div>
+            <div class="board-info"><a href="#">unknown</a></div>
+            <div class="board-info">in thread <a href="#">unknown</a></div>
+            <div class="board-info">@ unknown</div>
+          </div>
+        </div>
+      </div>
+      <div class="thin-dotted-underline top-spacer-10 bottom-spacer-10"></div>
+    </span>
+    <h6 class="top-spacer-10 bottom-spacer-10"><strong>Page 1 of 1</strong></h6>
+    <div ng-if="threads" class="row show-for-medium-up">
+      <div class="small-11 medium-7 columns">
+        <h6>Subject</h6>
+      </div>
+      <div class="small-6 medium-1 columns">
+        <h6>Replies</h6>
+      </div>
+      <div class="small-6 medium-1 columns">
+        <h6>Views</h6>
+      </div>
+      <div class="small-12 medium-2 columns">
+        <h6>Last Reply</h6>
+      </div>
+    </div>
+    <div class="bottom-spacer-10" ng-repeat="thread in threads">
+      <div class="top-spacer-15"></div>
+      <div class="row">
+        <div class="small-11 medium-7 columns">
+          <h6 class="no-margin"><a ng-href="/threads/{{thread.id}}/posts" style="font-size: 18px; color: #09f;">{{thread.title}}</a> - <span style="font-family:monospace;">{{thread.id}}</span></h6>
+          <div>
+          Started by: <a href="#">unknown</a> @ <em>{{thread.created_at | date:'medium'}}</em>
+          </div>
+          <div class="top-spacer-5">
+            <a href="#">1</a>&nbsp;
+            <a href="#">2</a>&nbsp;
+            <a href="#">3</a>&nbsp;
+            <a href="#">All</a>
+          </div>
+        </div>
+        <div class="small-6 medium-1 columns show-for-medium-up">
+          999
+        </div>
+        <div class="small-6 medium-1 columns show-for-medium-up">
+          999
+        </div>
+        <div class="small-12 columns board-info show-for-small-only">
+          <strong>999</strong> replies and <strong>999</strong> views
+        </div>
+        <div class="small-12 medium-2 columns">
+          <div class="board-info">Last post by</div>
+          <div class="board-info"><a href="#">unknown</a></div>
+          <div class="board-info">in thread <a href="#">unknown</a></div>
+          <div class="board-info">@ unknown</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

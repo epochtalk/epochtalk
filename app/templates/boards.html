@@ -12,25 +12,22 @@
       <span class="moderators"><strong>Moderators:</strong> <a href="#">WonderWoman</a>, <a href="#">Flash</a>, <a href="#">Batman</a></span>
       <br />
       {{board.description}} - {{board.id}}
+      <br />
+      <span class="child-boards" ng-if="board.child_boards">
+        <strong>Child Boards:</strong>
+         <span ng-repeat="childBoard in board.child_boards">
+          <a ng-href="/boards/{{childBoard.id}}" ng-bind-html="childBoard.name"></a>{{$last ? '' : ', '}}
+         </span>
+      </span>
     </div>
     <div class="small-12 medium-2 columns">
-      <div class="board-info board-info-spacer"><strong>999</strong> posts</div>
-      <div class="board-info"><strong>999</strong> threads</div><br />
+      <div class="board-info board-info-spacer"><strong>unknown</strong> posts</div>
+      <div class="board-info"><strong>unknown</strong> threads</div><br />
       <div class="board-info board-info-spacer">Last post by</div>
-      <div class="board-info"><a href="#">Slickage</a></div>
-      <div class="board-info">in thread <a href="#">not hooked up</a></div>
-      <div class="board-info">07/25/14 10:54am</div>
+      <div class="board-info"><a href="#">unknown</a></div>
+      <div class="board-info">in thread <a href="#">unknown</a></div>
+      <div class="board-info">@ unknown</div>
     </div>
   </div>
-
-<!--   <a ng-href="/boards/{{board.id}}" style="font-size: 18px; color: #09f;"></a>
-  <br />
-  <span style="font-size: 12px; color: #555"><strong>Board ID:</strong> <span style="font-family:monospace;">{{board.id}}</span></span>
-  <p>{{board.description}}<br /></p>
-  <div ng-repeat="subBoard in subBoards[board.id]">
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a ng-href="/boards/{{subBoard.id}}" style="font-size: 1.0em; font-family: monospace; color: #09f;">{{subBoard.id}}</a>
-    <a ng-href="/boards/{{subBoard.id}}" ng-bind-html="subBoard.name"></a>
-  </div>
-  <hr /> -->
 </div>
 
