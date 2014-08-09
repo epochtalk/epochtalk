@@ -22,3 +22,18 @@ else
   echo "default.css not found in node_modules"
   echo "Please make sure Medium-Editor is installed through npm"
 fi
+
+# delete everything but release for angular-breadcrumb
+ngBreadcrumbDir="./node_modules/ng-breadcrumb"
+if [ -e $ngBreadcrumbDir ]; then 
+  echo "Copying dist of ng-breadcrumb to top level"
+  # copy the css files to app/css/
+  mv "$ngBreadcrumbDir/dist" ./node_modules/ng-breadcrumb-tmp/
+  rm -rf "$ngBreadcrumbDir"
+  mkdir "$ngBreadcrumbDir"
+  mv ./node_modules/ng-breadcrumb-tmp/* "$ngBreadcrumbDir"
+  rm -rf ./node_modules/ng-breadcrumb-tmp/
+else 
+  echo "ng-breadcrumb not found in node_modules"
+  echo "Please make sure ng-breadcrumb is installed through npm"
+fi

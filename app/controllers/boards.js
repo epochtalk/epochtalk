@@ -1,19 +1,8 @@
-module.exports = ['$scope', '$http',
-  function($scope, $http) {
+module.exports = ['$scope', '$http', '$rootScope', 'breadcrumbs',
+  function($scope, $http, $rootScope, breadcrumbs) {
     $http.get('/api/boards').success(function(boards) {
-      $scope.boards = [];
-      $scope.subBoards = {};
-      boards.forEach(function(board) {
-        if (board.parent_board_id) {
-          if (!$scope.subBoards[board.parent_board_id]) {
-            $scope.subBoards[board.parent_board_id] = [];
-          }
-          $scope.subBoards[board.parent_board_id].push(board);
-        }
-        else {
-          $scope.boards.push(board);
-        }
-      });
+      $scope.boards = boards;
+      $rootScope.breadcrumbs = breadcrumbs.get();
     });
   }
 ];

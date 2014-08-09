@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
-module.exports = ['$scope', '$routeParams', '$http',
-  function($scope, $routeParams, $http) {
+module.exports = ['$scope', '$routeParams', '$http', '$rootScope', 'breadcrumbs',
+  function($scope, $routeParams, $http, $rootScope, breadcrumbs) {
     var rowsPerPage = 10;
     var threadId = $routeParams.threadId;
     $scope.posts = null;
@@ -15,6 +15,9 @@ module.exports = ['$scope', '$routeParams', '$http',
       }
     })
     .success(function(posts) {
+      breadcrumbs.options = { 'Thread': posts[0].title };
+      $rootScope.breadcrumbs = breadcrumbs.get();
+
       var postCount = posts.length;
       var totalPages = Math.ceil(postCount / rowsPerPage);
       var pageCount = 0;

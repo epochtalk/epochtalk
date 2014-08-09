@@ -1,5 +1,6 @@
-module.exports = ['$scope', '$http', '$route', 'User',
-  function($scope, $http, $route, User) {
+module.exports = ['$scope', '$http', '$route', 'User', '$rootScope', 'breadcrumbs',
+  function($scope, $http, $route, User, $rootScope, breadcrumbs) {
+    $rootScope.breadcrumbs = breadcrumbs.get();
     $scope.loggedIn = false;
     $scope.loginState = 'Not Logged In';
 

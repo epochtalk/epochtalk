@@ -7,9 +7,12 @@ require('angular-cookies/angular-cookies');
 require('angular-resource/angular-resource');
 require('angular-route/angular-route');
 require('angular-sanitize/angular-sanitize');
+require('ng-breadcrumb/ng-breadcrumbs');
+
 
 // Create Angular App
 var app = angular.module('ept', [
+  'ng-breadcrumbs',
   'ngRoute',
   'ngCookies',
   'ngResource',
