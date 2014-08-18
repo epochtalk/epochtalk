@@ -13,10 +13,10 @@
       <br />
       {{board.description}} - {{board.id}}
       <br />
-      <span class="child-boards" ng-if="board.child_boards">
+      <span class="child-boards" ng-if="board.children.length > 0">
         <strong>Child Boards:</strong>
-         <span ng-repeat="childBoard in board.child_boards">
-          <a ng-href="/boards/{{childBoard.id}}" ng-bind-html="childBoard.name"></a>{{$last ? '' : ', '}}
+         <span ng-repeat="child in board.children">
+          <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
          </span>
       </span>
     </div>
