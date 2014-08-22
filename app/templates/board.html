@@ -5,9 +5,9 @@
     <div class="thin-dotted-underline bottom-spacer-10"></div>
   </div>
   <div class="small-12 columns">
-    <span ng-if="board.child_boards">
+    <span ng-if="board.children">
       <h6><strong>Child Boards</strong></h6>
-      <div ng-repeat="childBoard in board.child_boards">
+      <div ng-repeat="childBoard in board.children">
         <div class="row">
           <div class="small-12 columns">
            <h5 ng-class="$first ? '' : 'top-spacer-15'">
