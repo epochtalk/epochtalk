@@ -39,6 +39,15 @@ module.exports = ['$scope', '$routeParams', '$http', '$rootScope', 'breadcrumbs'
       .success(function(threadPosts) {
         $scope.posts = threadPosts;
         $scope.page = _.findIndex($scope.pageKeys, threadPosts[0].id) + 1;
+        $scope.posts.forEach(function(post) {
+          $http({
+            url: '/api/users/' + post.user_id,
+            method: 'GET'
+          })
+          .success(function(user) {
+            post.user = user;
+          })
+        });
       });
     });
 
@@ -83,7 +92,7 @@ module.exports = ['$scope', '$routeParams', '$http', '$rootScope', 'breadcrumbs'
     //     $scope.posts = posts;
     //   });
     // };
-    
+
     $scope.paginatePrev = function() {
       if ($scope.page > 0) {
         $http({

@@ -72,15 +72,15 @@
           {{thread.post_count}}
         </div>
         <div class="medium-1 columns show-for-medium-up">
-          999
+          {{thread.view_count}}
         </div>
         <div class="small-12 columns board-info show-for-small-only">
-          <strong>{{thread.post_count}}</strong> replies and <strong>999</strong> views
+          <strong>{{thread.post_count}}</strong> replies and <strong>{{thread.view_count}}</strong> views
         </div>
         <div class="small-12 medium-2 columns">
           <div class="board-info">Last post by</div>
-          <div class="board-info"><a href="#">unknown</a></div>
-          <div class="board-info">@ unknown</div>
+          <div class="board-info"><a href="#">{{thread.last_post_username}}</a></div>
+          <div class="board-info">@ {{thread.last_post_created_at | date:'medium'}}</div>
         </div>
       </div>
     </div>
