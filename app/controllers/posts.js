@@ -2,6 +2,7 @@ var _ = require('lodash');
 
 module.exports = ['$scope', '$routeParams', '$http', '$rootScope', 'breadcrumbs',
   function($scope, $routeParams, $http, $rootScope, breadcrumbs) {
+    // TODO: this needs to be grabbed from user settings
     var rowsPerPage = 10;
     var threadId = $routeParams.threadId;
     $scope.posts = null;

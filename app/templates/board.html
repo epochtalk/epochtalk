@@ -62,10 +62,12 @@
           Started by: <a href="#">{{thread.user.username}}</a> @ <em>{{thread.created_at | date:'medium'}}</em>
           </div>
           <div class="top-spacer-5">
-            <a href="#">1</a>&nbsp;
-            <a href="#">2</a>&nbsp;
-            <a href="#">3</a>&nbsp;
-            <a href="#">All</a>
+            <span ng-if="thread.page_count > 1">
+              <span ng-repeat="i in range(thread.page_count) track by $index">
+                <a href="#">{{$index + 1}}</a>
+              </span>
+              <a href="#">All</a>
+            </span>
           </div>
         </div>
         <div class="medium-1 columns show-for-medium-up">
