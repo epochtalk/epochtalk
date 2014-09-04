@@ -1,98 +1,43 @@
 var _ = require('lodash');
 
-module.exports = ['$scope', '$routeParams', '$http', '$rootScope', 'breadcrumbs',
-  function($scope, $routeParams, $http, $rootScope, breadcrumbs) {
+module.exports = ['$scope', '$location', '$routeParams', '$http', '$rootScope', 'breadcrumbs',
+  function($scope, $location, $routeParams, $http, $rootScope, breadcrumbs) {
     // TODO: this needs to be grabbed from user settings
-    var rowsPerPage = 10;
+    var postsPerPage = 10;
     var threadId = $routeParams.threadId;
+    var page = ($location.search()).page;
+    $scope.page = page ? Number(page) : 1;
     $scope.posts = null;
-    $scope.pageKeys = [];
-    $http({ // Temporary in order to get total postCount
-      url: '/api/posts',
+    $scope.pageCount = 1;
+    $scope.url = $location.path();
+    $http({
+      url: '/api/thread/',
       method: 'GET',
       params: {
-        thread_id: threadId,
-        limit: 99999
+        id: threadId
       }
     })
-    .success(function(posts) {
-      breadcrumbs.options = { 'Thread': posts[0].title };
+    .success(function(thread) {
+      breadcrumbs.options = { 'Thread': thread.title };
       $rootScope.breadcrumbs = breadcrumbs.get();
-
-      var postCount = posts.length;
-      var totalPages = Math.ceil(postCount / rowsPerPage);
-      var pageCount = 0;
-      var keyIndex = 0;
-      for (var i = 0; i < totalPages; i++) {
-        var id = i === 0 ? null : posts[keyIndex-1].id;
-        keyIndex += rowsPerPage;
-        var key = { page: pageCount++, id: id };
-        $scope.pageKeys.push(key);
-      }
+      var postCount = thread.post_count;
+      $scope.pageCount = Math.ceil(postCount / postsPerPage);
       $http({
         url: '/api/posts',
         method: 'GET',
         params: {
           thread_id: threadId,
-          limit: rowsPerPage
+          limit: postsPerPage,
+          page: $scope.page
         }
       })
       .success(function(threadPosts) {
         $scope.posts = threadPosts;
-        $scope.page = _.findIndex($scope.pageKeys, threadPosts[0].id) + 1;
       });
     });
 
-    $scope.gotoPage = function(pageKey) {
-      $http({
-        url: '/api/posts',
-        method: 'GET',
-        params: {
-          thread_id: threadId,
-          post_id: pageKey.id,
-          limit: rowsPerPage
-        }
-      })
-      .success(function(posts) {
-        $scope.page = pageKey.page;
-        $scope.posts = posts;
-      });
-    };
-
-    $scope.paginateNext = function() {
-      if($scope.pageKeys.length > 0 && $scope.page < $scope.pageKeys.length - 1) {
-        $http({
-          url: '/api/posts',
-          method: 'GET',
-          params: {
-            thread_id: threadId,
-            post_id: $scope.pageKeys[$scope.page + 1].id,
-            limit: rowsPerPage
-          }
-        })
-        .success(function(posts) {
-          $scope.page = $scope.pageKeys[$scope.page + 1].page;
-          $scope.posts = posts;
-        });
-      }
-    };
-
-    $scope.paginatePrev = function() {
-      if ($scope.page > 0) {
-        $http({
-          url: '/api/posts',
-          method: 'GET',
-          params: {
-            thread_id: threadId,
-            post_id: $scope.pageKeys[$scope.page - 1].id,
-            limit: rowsPerPage
-          }
-        })
-        .success(function(posts) {
-          $scope.page = $scope.pageKeys[$scope.page - 1].page;
-          $scope.posts = posts;
-        });
-      }
+    $scope.range = function(n) {
+      return new Array(n);
     };
 
   }

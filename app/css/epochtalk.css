@@ -1,4 +1,4 @@
-body { 
+body {
   margin-top:10px;
   background: url(/static/img/white_wall_hash.png);
 }
@@ -101,6 +101,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .footer h3 {
   color: #999 !important;
+}
+
+.pagination {
+  font-size: 14px;
+  font-weight: bold;
+  font-family: monospace;
 }
 
 .copyright {

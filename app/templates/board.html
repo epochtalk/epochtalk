@@ -64,7 +64,7 @@
           <div class="top-spacer-5">
             <span ng-if="thread.page_count > 1">
               <span ng-repeat="i in range(thread.page_count) track by $index">
-                <a href="#">{{$index + 1}}</a>
+                <a ng-href="/threads/{{thread.id}}/posts?page={{$index+1}}">{{$index + 1}}</a>
               </span>
               <a href="#">All</a>
             </span>
