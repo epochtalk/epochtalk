@@ -2,31 +2,31 @@
   <div class="small-12 columns">
     <div class="pagination">
       <span ng-if="page > 1">
-        <a ng-href="{{url}}?page=1">&le;</a>
-        <a ng-href="{{url}}?page={{page - 1}}">&lt;</a>
+        <a class="pagination-btn" ng-href="{{url}}?page=1">&le;</a>
+        <a class="pagination-btn" ng-href="{{url}}?page={{page - 1}}">&lt;</a>
       </span>
       <span ng-if="page === 1">
-        &le;&nbsp;&lt;
+        <span class="pagination-btn inactive">&le;</span>&nbsp;<span class="pagination-btn inactive">&lt;</span>
       </span>
       <span ng-repeat="i in range(pageCount) track by $index">
-        <span ng-show="$index === page - 1" ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</span>
-        <a ng-show="$index !== page - 1" ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
+        <span ng-show="$index === page - 1" class="pagination-btn inactive">{{ $index + 1 }}</span>
+        <a class="pagination-btn" ng-show="$index !== page - 1" ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
       </span>
       <span ng-if="page < pageCount">
-        <a ng-href="{{url}}?page={{page + 1}}">&gt;</a>
-        <a ng-href="{{url}}?page={{pageCount}}">&ge;</a>
+        <a class="pagination-btn" ng-href="{{url}}?page={{page + 1}}">&gt;</a>
+        <a class="pagination-btn" ng-href="{{url}}?page={{pageCount}}">&ge;</a>
       </span>
       <span ng-if="page === pageCount">
-        &gt;&nbsp;&ge;
+        <span class="pagination-btn inactive">&gt;</span>&nbsp;<span class="pagination-btn inactive">&ge;</span>
       </span>
     </div>
     <div ng-repeat="post in posts">
       <div style="font-weight: 700; margin-top: 10px;">
-        {{post.title}} ({{post.id}})
-        <em>@{{post.created_at | date:'medium'}}</em>
+        {{post.title}} ( by <a href="#">{{post.user.username}}</a>
+        <em>@{{post.created_at | date:'medium'}}</em> )
       </div>
       <div style="margin-bottom: 10px;">
-        by {{post.user.username}}
+
       </div>
 
       <div style="background-color: #eee; border: 1px solid #ddd; border-radius: 5px; padding: 5px;" ng-bind-html="post.body"></div>
