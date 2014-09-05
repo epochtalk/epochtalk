@@ -37,7 +37,26 @@
       </div>
       <div class="thin-dotted-underline top-spacer-10 bottom-spacer-10"></div>
     </span>
-    <h6 class="top-spacer-10 bottom-spacer-10"><strong>Page 1 of 1</strong></h6>
+    <div class="pagination">
+      <span ng-if="page > 1">
+        <a ng-href="{{url}}?page=1">&le;</a>
+        <a ng-href="{{url}}?page={{page - 1}}">&lt;</a>
+      </span>
+      <span ng-if="page === 1">
+        &le;&nbsp;&lt;
+      </span>
+      <span ng-repeat="i in range(pageCount) track by $index">
+        <span ng-show="$index === page - 1" ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</span>
+        <a ng-show="$index !== page - 1" ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
+      </span>
+      <span ng-if="page < pageCount">
+        <a ng-href="{{url}}?page={{page + 1}}">&gt;</a>
+        <a ng-href="{{url}}?page={{pageCount}}">&ge;</a>
+      </span>
+      <span ng-if="page === pageCount">
+        &gt;&nbsp;&ge;
+      </span>
+    </div>
     <div ng-if="threads" class="row show-for-medium-up">
       <div class="small-11 medium-7 columns">
         <h6>Subject</h6>

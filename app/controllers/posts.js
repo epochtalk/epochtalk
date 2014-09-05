@@ -10,6 +10,7 @@ module.exports = ['$scope', '$location', '$routeParams', '$http', '$rootScope', 
     $scope.posts = null;
     $scope.pageCount = 1;
     $scope.url = $location.path();
+
     $http({
       url: '/api/thread/',
       method: 'GET',
