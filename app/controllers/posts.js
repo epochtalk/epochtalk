@@ -3,7 +3,8 @@ var _ = require('lodash');
 module.exports = ['$scope', '$location', '$routeParams', '$http', '$rootScope', 'breadcrumbs',
   function($scope, $location, $routeParams, $http, $rootScope, breadcrumbs) {
     // TODO: this needs to be grabbed from user settings
-    var postsPerPage = 10;
+    var limit = ($location.search()).limit;
+    var postsPerPage = limit ? Number(limit) : 10;
     var threadId = $routeParams.threadId;
     var page = ($location.search()).page;
     $scope.page = page ? Number(page) : 1;

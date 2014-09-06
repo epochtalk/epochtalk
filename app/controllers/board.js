@@ -1,7 +1,9 @@
 module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', 'breadcrumbs',
   function($scope, $location, $http, $routeParams, $rootScope, breadcrumbs) {
     // TODO: this needs to be grabbed from user settings
-    var threadsPerPage = 10;
+    var limit = ($location.search()).limit;
+    var threadsPerPage = limit ? Number(limit) : 10;
+
     var boardId = $routeParams.boardId;
     var page = ($location.search()).page;
     $scope.page = page ? Number(page) : 1;
