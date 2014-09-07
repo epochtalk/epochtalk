@@ -25,7 +25,7 @@
       <div class="board-info"><strong>{{board.thread_count}}</strong> threads</div><br />
       <div class="board-info board-info-spacer">Last post by</div>
       <div class="board-info"><a href="#">{{board.last_post_username}}</a></div>
-      <div class="board-info">in thread <a href="#">{{board.last_thread_title}}</a></div>
+      <div class="board-info">in thread <a ng-href="/threads/{{board.last_thread_id}}/posts">{{board.last_thread_title}}</a></div>
       <div class="board-info">@ {{board.last_post_created_at | date:'medium'}}</div>
     </div>
   </div>

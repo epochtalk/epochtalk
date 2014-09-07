@@ -50,7 +50,7 @@
           <div class="small-12 medium-2 columns">
             <div class="board-info">Last post by</div>
             <div class="board-info"><a href="#">{{childBoard.last_post_username}}</a></div>
-            <div class="board-info">in thread <a href="#">{{childBoard.last_thread_title}}</a></div>
+            <div class="board-info">in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts">{{childBoard.last_thread_title}}</a></div>
             <div class="board-info">@ {{childBoard.last_post_created_at | date:'medium'}}</div>
           </div>
         </div>
