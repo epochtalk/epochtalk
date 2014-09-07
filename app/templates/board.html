@@ -1,29 +1,38 @@
 <div class="row">
-  <div class="small-12 columns pagination">
-    <span ng-if="page > 1">
-      <a class="pagination-btn" ng-href="{{url}}?page=1">&le;</a>
-      <a class="pagination-btn" ng-href="{{url}}?page={{page - 1}}">&lt;</a>
-    </span>
-    <span ng-if="page === 1">
-      <span class="pagination-btn inactive">&le;</span>&nbsp;<span class="pagination-btn inactive">&lt;</span>
-    </span>
-    <span ng-repeat="i in range(pageCount) track by $index">
-      <span ng-show="$index === page - 1" class="pagination-btn inactive">{{ $index + 1 }}</span>
-      <a class="pagination-btn" ng-show="$index !== page - 1" ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
-    </span>
-    <span ng-if="page < pageCount">
-      <a class="pagination-btn" ng-href="{{url}}?page={{page + 1}}">&gt;</a>
-      <a class="pagination-btn" ng-href="{{url}}?page={{pageCount}}">&ge;</a>
-    </span>
-    <span ng-if="page === pageCount">
-      <span class="pagination-btn inactive">&gt;</span>&nbsp;<span class="pagination-btn inactive">&ge;</span>
-    </span>
+
+  <div class="small-12 columns">
+    <ul class="pagination" role="menubar" aria-label="Pagination">
+      <span ng-if="page > 1">
+        <li class="arrow">
+          <a ng-href="{{url}}?page={{page - 1}}">&laquo; Previous</a>
+        </li>
+      </span>
+      <span ng-if="page === 1">
+        <li class="arrow unavailable" aria-disabled="true"><a href="">&laquo; Previous</a></li>
+      </span>
+      <span ng-repeat="i in range(pageCount) track by $index">
+        <li ng-show="$index === page - 1" class="current"><a href="">{{ $index + 1 }}</a></li>
+        <li ng-show="$index !== page - 1">
+          <a ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
+        </li>
+      </span>
+      <span ng-if="page < pageCount">
+        <li class="arrow">
+          <a ng-href="{{url}}?page={{page + 1}}">Next &raquo;</a>
+        </li>
+      </span>
+      <span ng-if="page === pageCount">
+        <li class="arrow unavailable" aria-disabled="true"><a href="">Next &raquo;</a></li>
+      </span>
+    </ul>
   </div>
+
   <div class="small-12 columns">
     <h3>{{board.name}}</h3>
     <span class="moderators"><strong>Moderators: </strong> Unknown, Unknown, Unknown</span>
     <div class="thin-dotted-underline bottom-spacer-10"></div>
   </div>
+
   <div class="small-12 columns">
     <span ng-if="board.children">
       <h6><strong>Child Boards</strong></h6>
@@ -105,4 +114,32 @@
       </div>
     </div>
   </div>
+
+  <div class="small-12 columns">
+    <ul class="pagination" role="menubar" aria-label="Pagination">
+      <span ng-if="page > 1">
+        <li class="arrow">
+          <a ng-href="{{url}}?page={{page - 1}}">&laquo; Previous</a>
+        </li>
+      </span>
+      <span ng-if="page === 1">
+        <li class="arrow unavailable" aria-disabled="true"><a href="">&laquo; Previous</a></li>
+      </span>
+      <span ng-repeat="i in range(pageCount) track by $index">
+        <li ng-show="$index === page - 1" class="current"><a href="">{{ $index + 1 }}</a></li>
+        <li ng-show="$index !== page - 1">
+          <a ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
+        </li>
+      </span>
+      <span ng-if="page < pageCount">
+        <li class="arrow">
+          <a ng-href="{{url}}?page={{page + 1}}">Next &raquo;</a>
+        </li>
+      </span>
+      <span ng-if="page === pageCount">
+        <li class="arrow unavailable" aria-disabled="true"><a href="">Next &raquo;</a></li>
+      </span>
+    </ul>
+  </div>
+
 </div>
