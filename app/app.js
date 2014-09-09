@@ -1,6 +1,3 @@
-// require('foundation/js/vendor/jquery');
-// require('foundation/js/vendor/modernizr');
-// require('foundation/js/foundation');
 // Dependencies
 require('angular/angular');
 require('angular-cookies/angular-cookies');
@@ -8,7 +5,13 @@ require('angular-resource/angular-resource');
 require('angular-route/angular-route');
 require('angular-sanitize/angular-sanitize');
 require('ng-breadcrumb/ng-breadcrumbs');
-
+jQuery = require('foundation/js/vendor/jquery');
+$ = jQuery;
+// require('foundation/js/vendor/modernizr');
+// require('foundation/js/vendor/fastclick');
+// require('foundation/js/vendor/jquery.cookie');
+// require('foundation/js/vendor/placeholder');
+require('foundation/js/foundation');
 
 // Create Angular App
 var app = angular.module('ept', [
