@@ -34,7 +34,7 @@
   </div>
 
   <div class="small-12 columns">
-    <span ng-if="board.children">
+    <span ng-if="board.children && page === 1">
       <h6><strong>Child Boards</strong></h6>
       <div ng-repeat="childBoard in board.children">
         <div class="row">
