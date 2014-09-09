@@ -46,7 +46,13 @@
         </div>
         <div class="row">
           <div class="small-12 medium-8 columns">
-           {{childBoard.description}}
+           {{childBoard.description}}<br />
+           <span class="child-boards" ng-if="childBoard.children.length > 0">
+             <strong>Child Boards:</strong>
+              <span ng-repeat="child in childBoard.children">
+               <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
+              </span>
+           </span>
           </div>
           <div class="small-12 medium-2 columns">
             <div class="board-info">
