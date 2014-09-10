@@ -1,4 +1,6 @@
 var core = require('epochcore')();
+var Hapi = require('hapi');
+var Promise = require('bluebird');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 var redis = require('redis');
@@ -14,30 +16,33 @@ exports.login = {
 
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
-      console.log('already logged in');
       // reply with token
-      return reply(request.auth.crendentials.token);
+      return reply(request.auth.credentials.token);
     }
 
     // input validation (username and password)
     if (!request.payload.username || !request.payload.password) {
       var message = 'Missing usernmae or password';
-      return reply(message);
+      var inputError = Hapi.error.badRequest(message);
+      return reply(inputError);
     }
 
     // check if user exists
     var username = request.payload.username;
     var password = request.payload.password;
+    var errorCode = 500;
     return core.users.userByUsername(username)
+    .catch(function(err) {
+      errorCode = 400;
+      throw new Error('User not found');
+    })
     .then(function(user) {
-      // generate passhash from password
-      var passhash = bcrypt.hashSync(password, 12);
-
-      // check if passhas matches
-      if (passhash === user.passhash) {
+      // check if passhash matches
+      if (bcrypt.compareSync(password, user.passhash)) {
         return user;
       }
       else {
+        errorCode = 400;
         throw new Error('Invalid Crendentials');
       }
     })
@@ -61,9 +66,11 @@ exports.login = {
       });
     })
     .catch(function(err) {
-      console.log("in login handler catch");
       console.log(err);
-      return reply(err);
+      var error = Hapi.error.badRequest(err.message);
+      error.output.statusCode = errorCode;
+      error.reformat();
+      return reply(error);
     });
   },
   auth: {
@@ -74,13 +81,10 @@ exports.login = {
 
 exports.logout = {
   handler: function(request, reply) {
-
-    console.log(request.auth);
-
     // check if already logged in with jwt
     if (!request.auth.isAuthenticated) {
-      console.log('Not Logged In');
-      return reply('Not Logged In');
+      var error = Hapi.error.badRequest('Not Logged In');
+      return reply(error);
     }
 
     var credentials = request.auth.credentials;
@@ -104,13 +108,94 @@ exports.register = {
 
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
-      console.log('already logged in');
       // reply with token
-      return reply(request.auth.crendentials.token);
+      return reply(request.auth.credentials.token);
     }
 
+    // input validation (username and password)
+    if (!request.payload.username ||
+        !request.payload.email ||
+        !request.payload.password ||
+        !request.payload.confirmation) {
+      var message = 'Missing username or password or email';
+      var inputError = Hapi.error.badRequest(message);
+      return reply(inputError);
+    }
 
-    return reply(true);
+    // check that password and confirmation match
+    if (request.payload.password !== request.payload.confirmation) {
+      var errMessage = 'Password and Confirmation do not match';
+      var passwordError = Hapi.error.badRequest(errMessage);
+      return reply(passwordError);
+    }
+
+    var username = request.payload.username;
+    var email = request.payload.email;
+    var password = request.payload.password;
+    var confirmation = request.payload.confirmation;
+
+    var newUser = {
+      username: username,
+      email: email,
+      password: password,
+      confirmation: confirmation
+    };
+
+    // check that username or email does not already exist
+    var errorCode = 500;
+    var usernameFound = false;
+    var emailFound = false;
+    var usernameCheck = core.users.userByUsername(username);
+    var emailCheck = core.users.userByEmail(email);
+    return Promise.join(usernameCheck, emailCheck,
+      function(usernameUser, emailUser) {
+        if (usernameUser) { usernameFound = true; }
+        if (emailUser) { emailFound = true; }
+      }
+    )
+    .catch(function(err) {
+      console.log('Username Email Check error');
+      console.log(err);
+    })
+    .then(function() {
+      console.log("error checking");
+      var errorMessage = '';
+      if (usernameFound) { errorMessage += 'Username Already Taken. '; }
+      if (emailFound) { errorMessage += 'Email Already Taken'; }
+      if (errorMessage.length > 0) {
+        errorCode = 400;
+        throw new Error(errorMessage);
+      }
+    })
+    .then(function() {
+      // insert user
+      return core.users.create(newUser);
+    })
+    .then(function(user) {
+      // create token
+      var decodedToken = {
+        id: user.id,
+        username: username,
+        email: email
+      };
+      var token = jwt.sign(decodedToken, config.privateKey);
+
+      // save token to redis
+      redisClient.set(user.id, token, function(err) {
+        if (err) { throw new Error(err); }
+
+        // return token to user
+        return reply(token);
+      });
+    })
+    .catch(function(err) {
+      console.log(err);
+      // catch any errors along the way
+      var error = Hapi.error.badRequest(err.message);
+      error.output.statusCode = errorCode;
+      error.reformat();
+      return reply(error);
+    });
   },
   auth: {
     mode: 'try',
