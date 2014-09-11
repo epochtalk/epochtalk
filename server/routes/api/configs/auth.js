@@ -13,21 +13,20 @@ exports.login = {
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
-      // reply with token
-      return reply(request.auth.credentials.token);
+      // reply with original token
+      return reply({ token: request.auth.credentials.token });
     }
 
     // check if user exists
+    var errorCode = 500;
     var username = request.payload.username;
     var password = request.payload.password;
-    var errorCode = 500;
     return core.users.userByUsername(username)
     .catch(function(err) {
       errorCode = 400;
       throw new Error('Invalid Credentials');
     })
-    .then(function(user) {
-      // check if passhash matches
+    .then(function(user) { // check if passhash matches
       if (bcrypt.compareSync(password, user.passhash)) {
         return user;
       }
@@ -36,23 +35,11 @@ exports.login = {
         throw new Error('Invalid Credentials');
       }
     })
-    .then(function(user) {
-      // decodedToken: what we're going to encode into the token
-      var decodedToken = {
-        id: user.id,
-        username: user.username,
-        email: user.email
-      };
-
-      // build jwt token from user
-      var token = jwt.sign(decodedToken, config.privateKey);
-
-      // save token to redis
+    .then(function(user) { // build and save token
+      var token = buildToken(user);
       redisClient.set(user.id, token, function(err) {
         if (err) { throw new Error(err); }
-
-        // return token to user
-        return reply(token);
+        return reply({ token: token }); // return token to user
       });
     })
     .catch(function(err) {
@@ -101,8 +88,8 @@ exports.register = {
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
-      // reply with token
-      return reply(request.auth.credentials.token);
+      // reply with original token
+      return reply({ token: request.auth.credentials.token });
     }
 
     var username = request.payload.username;
@@ -139,19 +126,11 @@ exports.register = {
     .then(function() { // insert user
       return core.users.create(newUser);
     })
-    .then(function(user) {
-      // create token
-      var decodedToken = {
-        id: user.id,
-        username: username,
-        email: email
-      };
-      var token = jwt.sign(decodedToken, config.privateKey);
-
-      // save token to redis
+    .then(function(user) { // build and save token
+      var token = buildToken(user);
       redisClient.set(user.id, token, function(err) {
         if (err) { throw new Error(err); }
-        return reply(token); // return token to user
+        return reply({ token: token }); // return token to user
       });
     })
     .catch(function(err) {
@@ -175,4 +154,19 @@ exports.refreshToken = {
   handler: function(request, reply) {
     return reply(true);
   }
+};
+
+// helper methods
+
+var buildToken = function(user) {
+  // create token
+  var decodedToken = {
+    id: user.id,
+    username: username,
+    email: email
+    // token expiration
+  };
+
+  // build jwt token from decodedToken and privateKey
+  return jwt.sign(decodedToken, config.privateKey);
 };
