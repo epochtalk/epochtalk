@@ -37,7 +37,13 @@ app.controller('PostsCtrl', require('./controllers/posts.js'));
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
 
 // Set Angular Configs
-app.config(require('./config'));
+app.config(require('./config'))
+.run(['$rootScope', function($rootScope) {
+  $rootScope.$on('$viewContentLoaded', function() {
+    console.log('here');
+    $(document).foundation();
+  });
+}]);
 
 // CSS Styles
 require('./css/normalize.css');
