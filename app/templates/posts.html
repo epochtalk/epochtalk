@@ -1,37 +1,6 @@
 <div class="row">
   <div class="small-12 columns">
-
-    <ul class="pagination" role="menubar" aria-label="Pagination">
-      <span ng-if="page > 1">
-        <li class="arrow">
-          <a ng-href="{{url}}?page={{page - 1}}">&laquo; Previous</a>
-        </li>
-      </span>
-      <span ng-if="page === 1">
-        <li class="arrow unavailable" aria-disabled="true"><a href="">&laquo; Previous</a></li>
-      </span>
-      <span ng-repeat="i in range(pageCount) track by $index">
-        <li ng-show="$index === page - 1" class="current"><a href="">{{ $index + 1 }}</a></li>
-        <li ng-show="$index !== page - 1">
-          <a ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
-        </li>
-      </span>
-      <span ng-if="page < pageCount">
-        <li class="arrow">
-          <a ng-href="{{url}}?page={{page + 1}}">Next &raquo;</a>
-        </li>
-      </span>
-      <span ng-if="page === pageCount">
-        <li class="arrow unavailable" aria-disabled="true"><a href="">Next &raquo;</a></li>
-      </span>
-    </ul>
-<!--     <button data-dropdown="jump-to-page" aria-controls="jump-to-page" aria-expanded="false" class="tiny button dropdown">Page {{page}} of {{pageCount}}</button>
-    <ul id="jump-to-page" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1"><br />
-      <li>
-        <input type="number" name="quantity" min="1" max="{{pageCount}}">
-        <button class="tiny button">Go</button>
-      </li>
-    </ul> -->
+    <ng-include src="'partials/pagination.html'"></ng-include>
 
     <div ng-repeat="post in posts">
       <div style="font-weight: 700; margin-top: 10px; margin-bottom: 2px;">
@@ -48,31 +17,6 @@
     <div style="height: 300px; width: 800px;">
       <epochtalk-editor text="editorText" save-text="save(text)" style="height: 100%; width: 100%; display: block;"></epochtalk-editor>
     </div>
-
-    <ul class="pagination" role="menubar" aria-label="Pagination">
-      <span ng-if="page > 1">
-        <li class="arrow">
-          <a ng-href="{{url}}?page={{page - 1}}">&laquo; Previous</a>
-        </li>
-      </span>
-      <span ng-if="page === 1">
-        <li class="arrow unavailable" aria-disabled="true"><a href="">&laquo; Previous</a></li>
-      </span>
-      <span ng-repeat="i in range(pageCount) track by $index">
-        <li ng-show="$index === page - 1" class="current"><a href="">{{ $index + 1 }}</a></li>
-        <li ng-show="$index !== page - 1">
-          <a ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
-        </li>
-      </span>
-      <span ng-if="page < pageCount">
-        <li class="arrow">
-          <a ng-href="{{url}}?page={{page + 1}}">Next &raquo;</a>
-        </li>
-      </span>
-      <span ng-if="page === pageCount">
-        <li class="arrow unavailable" aria-disabled="true"><a href="">Next &raquo;</a></li>
-      </span>
-    </ul>
-
+    <ng-include src="'partials/pagination.html'"></ng-include>
   </div>
 </div>

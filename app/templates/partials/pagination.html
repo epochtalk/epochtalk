@@ -1,0 +1,24 @@
+<ul class="pagination" role="menubar" aria-label="Pagination">
+  <span ng-if="page > 1">
+    <li class="arrow">
+      <a ng-href="{{url}}?page={{page - 1}}">&laquo; Previous</a>
+    </li>
+  </span>
+  <span ng-if="page === 1">
+    <li class="arrow unavailable" aria-disabled="true"><a href="">&laquo; Previous</a></li>
+  </span>
+  <span ng-repeat="i in range(pageCount) track by $index">
+    <li ng-show="$index === page - 1" class="current"><a href="">{{ $index + 1 }}</a></li>
+    <li ng-show="$index !== page - 1">
+      <a ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
+    </li>
+  </span>
+  <span ng-if="page < pageCount">
+    <li class="arrow">
+      <a ng-href="{{url}}?page={{page + 1}}">Next &raquo;</a>
+    </li>
+  </span>
+  <span ng-if="page === pageCount">
+    <li class="arrow unavailable" aria-disabled="true"><a href="">Next &raquo;</a></li>
+  </span>
+</ul>

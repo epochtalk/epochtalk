@@ -1,5 +1,11 @@
-module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', 'breadcrumbs',
-  function($scope, $location, $http, $routeParams, $rootScope, breadcrumbs) {
+var fs = require('fs');
+
+module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', '$templateCache', 'breadcrumbs',
+  function($scope, $location, $http, $routeParams, $rootScope, $templateCache, breadcrumbs) {
+    // Load pagination partial template into template cache
+    var paginationTemplate = fs.readFileSync(__dirname + '/../templates/partials/pagination.html');
+    $templateCache.put('partials/pagination.html', paginationTemplate);
+
     // TODO: this needs to be grabbed from user settings
     var limit = ($location.search()).limit;
     var threadsPerPage = limit ? Number(limit) : 10;
