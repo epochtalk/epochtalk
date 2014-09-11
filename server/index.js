@@ -38,11 +38,6 @@ var server = Hapi.createServer('localhost', config.port, serverOpts);
   *   -- credentials, the user short object to be tied to request.auth.credentials
   */
 var validate = function(token, decodedToken, cb) {
-
-  console.log("in validateFunc");
-  console.log(token);
-  console.log(decodedToken);
-
   // get id from decodedToken to query redis with for token
   var user_id = decodedToken.id;
   redisClient.get(user_id, function(err, redisUserToken) {

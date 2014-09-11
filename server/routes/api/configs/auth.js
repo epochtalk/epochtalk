@@ -7,24 +7,14 @@ var redis = require('redis');
 var path = require('path');
 var config = require(path.join(__dirname, '..', '..', '..', 'config'));
 var redisClient = redis.createClient(config.redis.port, config.redis.host);
-// var authSchema = require(path.join('..', 'schema', 'auth'));
+var authSchema = require(path.join('..', 'schema', 'auth'));
 
 exports.login = {
   handler: function(request, reply) {
-
-    console.log(request.auth);
-
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       // reply with token
       return reply(request.auth.credentials.token);
-    }
-
-    // input validation (username and password)
-    if (!request.payload.username || !request.payload.password) {
-      var message = 'Missing usernmae or password';
-      var inputError = Hapi.error.badRequest(message);
-      return reply(inputError);
     }
 
     // check if user exists
@@ -34,7 +24,7 @@ exports.login = {
     return core.users.userByUsername(username)
     .catch(function(err) {
       errorCode = 400;
-      throw new Error('User not found');
+      throw new Error('Invalid Credentials');
     })
     .then(function(user) {
       // check if passhash matches
@@ -43,7 +33,7 @@ exports.login = {
       }
       else {
         errorCode = 400;
-        throw new Error('Invalid Crendentials');
+        throw new Error('Invalid Credentials');
       }
     })
     .then(function(user) {
@@ -66,7 +56,6 @@ exports.login = {
       });
     })
     .catch(function(err) {
-      console.log(err);
       var error = Hapi.error.badRequest(err.message);
       error.output.statusCode = errorCode;
       error.reformat();
@@ -76,6 +65,9 @@ exports.login = {
   auth: {
     mode: 'try',
     strategy: 'jwt'
+  },
+  validate: {
+    payload: authSchema.validateLogin
   }
 };
 
@@ -92,6 +84,10 @@ exports.logout = {
 
     // delete jwt from redis 
     redisClient.del(id, function(err, value) {
+      if (err) {
+        var error = Hapi.error.internal(err.message);
+        return reply(error);
+      }
       return reply(true);
     });
   },
@@ -103,42 +99,19 @@ exports.logout = {
 
 exports.register = {
   handler: function(request, reply) {
-
-    console.log(request.auth);
-
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       // reply with token
       return reply(request.auth.credentials.token);
     }
 
-    // input validation (username and password)
-    if (!request.payload.username ||
-        !request.payload.email ||
-        !request.payload.password ||
-        !request.payload.confirmation) {
-      var message = 'Missing username or password or email';
-      var inputError = Hapi.error.badRequest(message);
-      return reply(inputError);
-    }
-
-    // check that password and confirmation match
-    if (request.payload.password !== request.payload.confirmation) {
-      var errMessage = 'Password and Confirmation do not match';
-      var passwordError = Hapi.error.badRequest(errMessage);
-      return reply(passwordError);
-    }
-
     var username = request.payload.username;
     var email = request.payload.email;
-    var password = request.payload.password;
-    var confirmation = request.payload.confirmation;
-
     var newUser = {
       username: username,
       email: email,
-      password: password,
-      confirmation: confirmation
+      password: request.payload.password,
+      confirmation: request.payload.confirmation
     };
 
     // check that username or email does not already exist
@@ -153,12 +126,8 @@ exports.register = {
         if (emailUser) { emailFound = true; }
       }
     )
-    .catch(function(err) {
-      console.log('Username Email Check error');
-      console.log(err);
-    })
+    .catch(function(err) { /* expecting this */ })
     .then(function() {
-      console.log("error checking");
       var errorMessage = '';
       if (usernameFound) { errorMessage += 'Username Already Taken. '; }
       if (emailFound) { errorMessage += 'Email Already Taken'; }
@@ -167,8 +136,7 @@ exports.register = {
         throw new Error(errorMessage);
       }
     })
-    .then(function() {
-      // insert user
+    .then(function() { // insert user
       return core.users.create(newUser);
     })
     .then(function(user) {
@@ -183,13 +151,10 @@ exports.register = {
       // save token to redis
       redisClient.set(user.id, token, function(err) {
         if (err) { throw new Error(err); }
-
-        // return token to user
-        return reply(token);
+        return reply(token); // return token to user
       });
     })
     .catch(function(err) {
-      console.log(err);
       // catch any errors along the way
       var error = Hapi.error.badRequest(err.message);
       error.output.statusCode = errorCode;
@@ -200,6 +165,9 @@ exports.register = {
   auth: {
     mode: 'try',
     strategy: 'jwt'
+  },
+  validate: {
+    payload: authSchema.validateRegister
   }
 };
 
