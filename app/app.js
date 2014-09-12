@@ -32,6 +32,7 @@ app.controller('BoardCtrl', require('./controllers/board.js'));
 app.controller('ThreadsCtrl', require('./controllers/threads.js'));
 app.controller('ThreadCtrl', require('./controllers/thread.js'));
 app.controller('PostsCtrl', require('./controllers/posts.js'));
+app.controller('ProfileCtrl', require('./controllers/profile.js'));
 
 // add epochtalk-editor directive
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));

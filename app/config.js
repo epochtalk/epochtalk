@@ -51,6 +51,12 @@ module.exports = ['$routeProvider', '$locationProvider',
       label: 'Thread'
     });
 
+    $routeProvider.when('/profiles/:userId', {
+      controller: 'ProfileCtrl',
+      template: fs.readFileSync(__dirname + '/templates/profile.html'),
+      label: 'Profile'
+    });
+
     $locationProvider.html5Mode(true);
   }
 ];
