@@ -43,6 +43,7 @@ exports.login = {
       });
     })
     .catch(function(err) {
+      console.log(err);
       var error = Hapi.error.badRequest(err.message);
       error.output.statusCode = errorCode;
       error.reformat();
@@ -162,8 +163,8 @@ var buildToken = function(user) {
   // create token
   var decodedToken = {
     id: user.id,
-    username: username,
-    email: email
+    username: user.username,
+    email: user.email
     // token expiration
   };
 
