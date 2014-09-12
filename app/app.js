@@ -5,12 +5,11 @@ require('angular-resource/angular-resource');
 require('angular-route/angular-route');
 require('angular-sanitize/angular-sanitize');
 require('ng-breadcrumb/ng-breadcrumbs');
+// var Modernizr = require('foundation/js/vendor/modernizr');
 jQuery = require('foundation/js/vendor/jquery');
 $ = jQuery;
-// require('foundation/js/vendor/modernizr');
-// require('foundation/js/vendor/fastclick');
-// require('foundation/js/vendor/jquery.cookie');
-// require('foundation/js/vendor/placeholder');
+require('foundation/js/vendor/fastclick');
+require('foundation/js/vendor/placeholder');
 require('foundation/js/foundation');
 
 // Create Angular App
@@ -41,7 +40,6 @@ app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
 app.config(require('./config'))
 .run(['$rootScope', function($rootScope) {
   $rootScope.$on('$viewContentLoaded', function() {
-    console.log('here');
     $(document).foundation();
   });
 }]);

@@ -1,18 +1,73 @@
 <!DOCTYPE html>
 <html ng-app="ept">
+
 <head>
   <base href="/">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EpochTalk Forum</title>
 </head>
+
 <body class="antialiased hide-extras">
-  <div class="row">
-    <div class="small-12 columns clearfix">
-      <h1 class="left">EpochTalk Forum</h1>
-      <span class="right padding-top-15"><a class="button tiny round" href="#login">Login</a></span>
+  
+  <!-- Page Title and Header -->
+  <div class="row" ng-controller="HeaderCtrl">
+    <div class="small-6 columns header-element">
+      <div class="header-container">
+        <h1 class="left header-centered-height">EpochTalk Forum</h1>
+      </div>
+    </div>
+
+    <div class="small-6 columns">      
+      <div class="row">
+        
+        <div ng-if="loggedIn">
+          <div class="small-9 columns header-element">
+            <div class="header-container">
+              <div class="header-centered-both">
+                {{ loginState }}
+              </div>
+            </div>
+          </div>
+          <div class="small-3 columns header-element">
+            <div class="header-container">
+              <span class="right header-centered-both">
+                <a class="button small no-margin" ng-href="" ng-click="logout()">Logout</a>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="!loggedIn">
+          <div class="small-9 columns header-element">
+            <div class="header-container">
+              <form class="header-centered-height" ng-submit="login()">
+                <div class="small-6 columns">
+                  <input class="no-margin" type="text" placeholder="Username" ng-model="user.username" ng-focus="!loggedIn">
+                  <input id="rememberMe" class="no-margin" type="checkbox" ng-model="user.rememberMe">
+                  <label for="rememberMe" class="header-checkbox">Remember me</label>
+                </div>
+                <div class="small-6 columns">
+                  <input class="no-margin" type="password" placeholder="Password" ng-model="user.password" ng-keyup="$event.keyCode == 13 && login()">
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="small-3 columns header-element">
+            <div class="header-container">
+              <span class="right header-centered-both">
+                <a class="button small no-margin" ng-href="" ng-click="login()">Login</a>
+              </span>
+            </div>
+          </div>
+        </div>
+      
+      </div>
     </div>
   </div>
+  
+  <!-- Secondary Header -->
   <div class="row">
     <div class="small-12 columns">
       <nav class="top-bar" data-topbar>
@@ -54,7 +109,11 @@
 
     </div>
   </div>
+  
+  <!-- Main Content -->
   <ng-view></ng-view>
+  
+  <!-- Footer -->
   <div class="panel footer">
     <div class="row">
       <div class="small-12 columns">
@@ -65,7 +124,8 @@
       </div>
     </div>
   </div>
-  <script src="/static/js/bundle.min.js" type="text/javascript"></script>
+
+  <script src="/static/js/bundle.js" type="text/javascript"></script>
 </body>
 
 </html>

@@ -1,4 +1,4 @@
 angular.module('ept')
   .factory('Auth', require('./auth'))
-  .factory('Session', require('./session'))
+  .factory('AuthInterceptor', require('./authInterceptor.js'))
   .factory('User', require('./user'));

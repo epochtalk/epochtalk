@@ -1,4 +1,5 @@
 'use strict';
+/* jslint node: true */
 
 module.exports = ['$resource',
   function($resource) {
@@ -8,15 +9,15 @@ module.exports = ['$resource',
       },
       register: {
         method: 'POST',
-        url: '/api/users/register'
+        url: '/api/register'
       },
       login: {
         method: 'POST',
-        url: '/api/users/login'
+        url: '/api/login'
       },
       logout: {
         method: 'DELETE',
-        url: '/api/users/logout'
+        url: '/api/logout'
       }
     });
   }

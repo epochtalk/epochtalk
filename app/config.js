@@ -1,8 +1,8 @@
 var fs = require('fs');
 require('./services');
 
-module.exports = ['$routeProvider', '$locationProvider',
-  function($routeProvider, $locationProvider) {
+module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
+  function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider.when('/', {
       controller: 'MainCtrl',
       template: fs.readFileSync(__dirname + '/templates/main.html'),
@@ -58,5 +58,6 @@ module.exports = ['$routeProvider', '$locationProvider',
     });
 
     $locationProvider.html5Mode(true);
+    $httpProvider.interceptors.push('AuthInterceptor');
   }
 ];
