@@ -1,24 +1,151 @@
 <ul class="pagination" role="menubar" aria-label="Pagination">
+
+  <!-- Previous Button -->
   <span ng-if="page > 1">
     <li class="arrow">
-      <a ng-href="{{url}}?page={{page - 1}}">&laquo; Previous</a>
+      <a ng-href="{{url}}?page={{page - 1}}">
+        &laquo; Previous
+      </a>
     </li>
   </span>
   <span ng-if="page === 1">
-    <li class="arrow unavailable" aria-disabled="true"><a href="">&laquo; Previous</a></li>
-  </span>
-  <span ng-repeat="i in range(pageCount) track by $index">
-    <li ng-show="$index === page - 1" class="current"><a href="">{{ $index + 1 }}</a></li>
-    <li ng-show="$index !== page - 1">
-      <a ng-href="{{url}}?page={{ $index + 1 }}">{{ $index + 1 }}</a>
+    <li class="arrow unavailable" aria-disabled="true">
+      <a href="">
+        &laquo; Previous
+      </a>
     </li>
   </span>
+
+  <!-- Page Iteration -->
+  <span ng-repeat="i in range(pageCount) track by $index">
+
+    <!-- CASE 1: 15 or Fewer Pages, No truncation -->
+    <span ng-if="pageCount <= 15">
+      <li ng-show="$index + 1 === page" class="current">
+        <a href="">
+          {{ $index + 1 }}
+        </a>
+      </li>
+      <li ng-show="$index + 1 !== page">
+        <a ng-href="{{url}}?page={{ $index + 1 }}">
+          {{ $index + 1 }}
+        </a>
+      </li>
+    </span>
+
+    <!-- CASE 2: More than 15 Pages, selected page is 6 or less, truncate tail-->
+    <span ng-if="pageCount > 15 && page <= 6">
+      <!-- Selected Page -->
+      <li ng-show="$index + 1 === page" class="current">
+        <a href="">
+          {{ $index + 1 }}
+        </a>
+      </li>
+
+      <!-- Non-Selected, first 8 pages and last 3 pages -->
+      <li ng-show="$index + 1 !== page && ($index + 1 <= 8 || $index + 1 >= pageCount - 2)">
+        <a ng-href="{{url}}?page={{ $index + 1 }}">
+          {{ $index + 1 }}
+        </a>
+      </li>
+
+      <!-- Elipsis -->
+      <li ng-show="$index + 1 === 8" class="unavailable">
+        <a href="">
+          &hellip;
+        </a>
+      </li>
+    </span>
+
+    <!-- CASE 3: More than 15 Pages, selected page greater than 6 but less than pageCount - 6, truncate tail/head -->
+    <span ng-if="pageCount > 15 && page > 6 && page < pageCount - 5">
+
+      <!-- Selected Page -->
+      <li ng-show="$index + 1 === page" class="current">
+        <a href="">
+           {{ $index + 1 }}
+        </a>
+      </li>
+
+      <!-- First 3 Pages and Last 3 Page -->
+      <li ng-show="$index + 1 <= 3 || $index + 1 >= pageCount - 2">
+        <a ng-href="{{url}}?page={{ $index + 1 }}">
+          {{ $index + 1 }}
+        </a>
+      </li>
+
+      <!-- Within 2 pages prior/after Current Page -->
+      <li ng-show="($index + 1 <= page + 2 && $index + 1 > page) || ($index + 1 >= page - 2 && $index + 1 < page)">
+        <a ng-href="{{url}}?page={{ $index + 1 }}">
+          {{ $index + 1 }}
+        </a>
+      </li>
+
+      <!-- Elipsis -->
+      <li ng-show="$index === 3 || $index + 1 === page + 2" class="unavailable">
+        <a href="">
+          &hellip;
+        </a>
+      </li>
+
+    </span>
+
+    <!-- CASE 4: More than 15 Pages, selected page is pageCount - 5 or greater, truncate head-->
+    <span ng-if="pageCount > 15 && page >= pageCount - 5">
+      <!-- Selected Page -->
+      <li ng-show="$index + 1 === page" class="current">
+        <a href="">
+          {{ $index + 1 }}
+        </a>
+      </li>
+
+      <!-- Non-Selected, last 8 pages and first 3 pages -->
+      <li ng-show="$index + 1 !== page && ($index + 1 > pageCount - 8 || $index + 1 <= 3)">
+        <a ng-href="{{url}}?page={{ $index + 1 }}">
+          {{ $index + 1 }}
+        </a>
+      </li>
+
+      <!-- Elipsis -->
+      <li ng-show="$index + 1 === 3" class="unavailable">
+        <a href="">
+          &hellip;
+        </a>
+      </li>
+    </span>
+
+  </span>
+
+  <!-- Next Button -->
   <span ng-if="page < pageCount">
     <li class="arrow">
-      <a ng-href="{{url}}?page={{page + 1}}">Next &raquo;</a>
+      <a ng-href="{{url}}?page={{page + 1}}">
+        Next &raquo;
+      </a>
     </li>
   </span>
   <span ng-if="page === pageCount">
-    <li class="arrow unavailable" aria-disabled="true"><a href="">Next &raquo;</a></li>
+    <li class="arrow unavailable" aria-disabled="true">
+      <a href="">
+        Next &raquo;
+      </a>
+    </li>
   </span>
+
 </ul>
+
+<!-- CASE 1: 15 OR FEWER PAGES -->
+<!-- [1] 2 3 4 5 6 7 8 9 10 11 13 14 15 -->
+
+<!-- CASE 2: SELECTED PAGE IS 6 OR LESS, TRUNCATE TAIL -->
+<!-- 1 2 3 4 5 [6] 7 8 ... 14 15 16 -->
+
+<!-- CASE 3: MORE THAN 15 PAGES TRUNCATE TAIL/HEAD -->
+<!-- 1 2 3 ... 7 8 [9] 10 11 ... 14 15 16 -->
+<!-- 1 2 3 ... 5 6 [7] 8 9 ... 14 15 16 -->
+
+<!-- CASE 4: SELECTED PAGE IS (PAGECOUNT - 5) OR MORE, TRUNCATE HEAD -->
+<!-- 1 2 3 ... 9 10 [11] 12 13 14 15 16 -->
+
+<!-- INCORRECT TRUNCATION -->
+<!-- 1 2 3 ... 4 5 [6] 7 8 ... 13 14 15 -->
