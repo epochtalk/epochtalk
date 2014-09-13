@@ -46,6 +46,10 @@ h1, h2, h3, h4, h5, h6 { margin-bottom: 0px; }
 .header-centered-height {
   position: absolute;
   top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
   transform: translateY(-50%);
 }
 .header-checkbox { font-size: 0.75rem; padding-top: 5px; }
@@ -98,52 +102,39 @@ h1, h2, h3, h4, h5, h6 { margin-bottom: 0px; }
 
 .footer h3 { color: #999 !important; }
 
-/*.pagination {
-  font-size: 14px;
-  font-weight: bold;
-  font-family: monospace;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
-
-.pagination-btn {
-  -moz-border-radius:8px;
-  -webkit-border-radius:8px;
-  border-radius:4px;
-  border:1px solid #dcdcdc;
-  padding:4px 7px;
-  text-decoration:none;
-  background:-moz-linear-gradient( center top, #ffffff 5%, #f6f6f6 100% );
-  background:-ms-linear-gradient( top, #ffffff 5%, #f6f6f6 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6');
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #ffffff), color-stop(100%, #f6f6f6) );
-  background-color:#ffffff;
-  color:#008CBA;
-  display:inline-block;
-  text-shadow:1px 1px 0px #ffffff;
-  -webkit-box-shadow:inset 1px 1px 0px 0px #ffffff;
-  -moz-box-shadow:inset 1px 1px 0px 0px #ffffff;
-  box-shadow:inset 1px 1px 0px 0px #ffffff;
-}
-
-.pagination-btn:hover {
-  background:-moz-linear-gradient( center top, #f6f6f6 5%, #ffffff 100% );
-  background:-ms-linear-gradient( top, #f6f6f6 5%, #ffffff 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff');
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #f6f6f6), color-stop(100%, #ffffff) );
-  background-color:#f6f6f6;
-}
-
-.pagination-btn:active {
-  position:relative;
-  top:1px;
-}*/
 
 .inactive {
   background-color:#CCC;
   color: #666;
+}
+
+.page-go-btn {
+  display: inline !important;
+  height: 20px !important;
+  width: 40px !important;
+  padding: 2px !important;
+  margin: 0px !important;
+  font-size: 10px !important;
+}
+
+.page-dropdown {
+  outline: 0px !important;
+  padding: 5px !important;
+}
+
+.page-input {
+  display: inline !important;
+  width: 28px !important;
+  height: 20px !important;
+  padding: 0px !important;
+  margin: 0px !important;
+  font-size: 12px !important;
 }
 
 .copyright {
