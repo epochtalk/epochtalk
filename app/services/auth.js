@@ -4,7 +4,23 @@
 
 module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
   function($location, $rootScope, $http, $window, User) {
+    var loginState = 'Not Logged In';
+    var getUser = function() {
+      var username;
+      if ($window.sessionStorage.username) {
+        username = $window.sessionStorage.username;
+      }
+      else if ($window.localStorage.username) {
+        username = $window.localStorage.username;
+      }
+      return username;
+    };
+
     return {
+      register: function(user, callback, error) {
+        User.register(user);
+      },
+
       login: function(user, callback, error) {
         // get username and rememberMe
         var username = user.username;
@@ -14,6 +30,7 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
         User.login(user, callback, error).$promise
         .then(function(resource) {
           var token = resource.token;
+          loginState = 'Logged In as ' + username;
           if (rememberMe) {
             $window.localStorage.token = token;
             $window.localStorage.username = username;
@@ -24,6 +41,7 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
           }
         })
         .catch(function(err) {
+          loginState = 'Not Logged In';
           // delete storage keys
           delete $window.sessionStorage.token;
           delete $window.sessionStorage.username;
@@ -32,44 +50,39 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
         });
       },
 
-      register: function( user, callback) {
-        User.register(user);
+      logout: function(callback, error) {
+        User.logout(callback, error).$promise
+        .then(function() {
+          loginState = 'Not Logged In';
+          // delete key from session storage
+          delete $window.sessionStorage.token;
+          delete $window.sessionStorage.username;
+          delete $window.localStorage.token;
+          delete $window.localStorage.username;
+        })
+        .catch(function(err) {
+          loginState = 'Could Not Log You Out';
+        });
       },
 
-      logout: function(callback) {
-        var cb = callback || angular.noop;
-        // delete key from session storage
-        delete $window.sessionStorage.token;
-        delete $window.sessionStorage.username;
-        delete $window.localStorage.token;
-        delete $window.localStorage.username;
-        return cb();
-      },
-
-      isAuthenticated: function(callback) {
-        var cb = callback || angular.noop;
-
-        // TODO: query the backend to check auth state?
-
+      isAuthenticated: function() {
         var authenticated = false;
         if ($window.sessionStorage.token ||
             $window.localStorage.token) {
           authenticated = true;
         }
-        return cb(authenticated);
+        return authenticated;
+      },
+
+      loginState: function() {
+        var username = getUser();
+        if (username) { loginState = 'Logged In as ' + username; }
+        return loginState;
       },
 
       currentUser: function() {
         // check if key exists in storage
-        var username;
-
-        if ($window.sessionStorage.username) {
-          username = $window.sessionStorage.username;
-        }
-        else if ($window.localStorage.username) {
-          username = $window.localStorage.username;
-        }
-
+        var username = getUser();
         $rootScope.currentUser = username;
         return username;
       },

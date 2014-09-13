@@ -21,11 +21,11 @@
     <div class="small-6 columns">      
       <div class="row">
         
-        <div ng-if="loggedIn">
+        <div ng-if="loggedIn()">
           <div class="small-9 columns header-element">
             <div class="header-container">
               <div class="header-centered-both">
-                {{ loginState }}
+                {{ loginState() }}
               </div>
             </div>
           </div>
@@ -38,12 +38,12 @@
           </div>
         </div>
 
-        <div ng-if="!loggedIn">
+        <div ng-if="!loggedIn()">
           <div class="small-9 columns header-element">
             <div class="header-container">
               <form class="header-centered-height" ng-submit="login()">
                 <div class="small-6 columns">
-                  <input class="no-margin" type="text" placeholder="Username" ng-model="user.username" ng-focus="!loggedIn">
+                  <input class="no-margin" type="text" placeholder="Username" ng-model="user.username" ng-focus="!loggedIn()">
                   <input id="rememberMe" class="no-margin" type="checkbox" ng-model="user.rememberMe">
                   <label for="rememberMe" class="header-checkbox">Remember me</label>
                 </div>
