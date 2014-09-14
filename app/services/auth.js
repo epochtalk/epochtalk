@@ -18,7 +18,23 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
 
     return {
       register: function(user, callback, error) {
-        User.register(user);
+        // get username
+        var username = user.username;
+        User.register(user, callback, error).$promise
+        .then(function(resource) {
+          var token = resource.token;
+          loginState = 'Logged In as ' + username;
+          $window.sessionStorage.token = token;
+          $window.sessionStorage.username = username;
+        })
+        .catch(function(err) {
+          loginState = 'Not Logged In';
+          // delete storage keys
+          delete $window.sessionStorage.token;
+          delete $window.sessionStorage.username;
+          delete $window.localStorage.token;
+          delete $window.localStorage.username;
+        });
       },
 
       login: function(user, callback, error) {
@@ -100,18 +116,6 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
       //       return cb(err.data);
       //   });
       // }
-
-      // createUser: function(userinfo, callback) {
-      //   var cb = callback || angular.noop;
-      //   User.save(userinfo,
-      //     function(user) {
-      //       $rootScope.currentUser = user;
-      //       return cb();
-      //     },
-      //     function(err) {
-      //       return cb(err.data);
-      //     });
-      // },
 
       // removeUser: function(email, password, callback) {
       //   var cb = callback || angular.noop;

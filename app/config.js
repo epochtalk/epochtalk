@@ -16,9 +16,9 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
     });
 
     $routeProvider.when('/register', {
-      controller: 'RegisterCtrl',
-      template: fs.readFileSync(__dirname + '/templates/register.html'),
-      label: 'Register'
+      controller: 'RegistrationCtrl',
+      template: fs.readFileSync(__dirname + '/templates/registration.html'),
+      label: 'Registration'
     });
 
     $routeProvider.when('/boards', {

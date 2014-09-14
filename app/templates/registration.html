@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="small-10 small-offset-1 columns">
+    <h3>Registration</h3>
+    <br>
+  </div>
+</div>
+
+<div class="row">
+  <div class="small-10 small-offset-1 columns">
+    <label>Email</label>
+    <input type="text" ng-class="error.email.classes" ng-model="user.email" placeholder="Email">
+    <small class="error" ng-if="error.email.message.length > 0">
+      {{ error.email.message }}
+    </small>
+    <br>
+
+    <label>Username</label>
+    <input type="text" ng-class="error.username.classes" ng-model="user.username" placeholder="Username">
+    <small class="error" ng-if="error.username.message.length > 0">
+      {{ error.username.message }}
+    </small>
+    <br>
+    
+    <label>Password</label>
+    <input type="password" ng-class="error.password.classes" ng-model="user.password" placeholder="Password">
+    <small class="error" ng-if="error.password.message.length > 0">
+      {{ error.password.message }}
+    </small>
+    <br>
+    
+    <label>Password Confirmation</label>
+    <input type="password" ng-class="error.confirmation.classes" ng-model="user.confirmation" placeholder="Password Confirmation">
+    <small class="error" ng-if="error.confirmation.message.lenght > 0">
+      {{ error.confirmation.message }}
+    </small>
+    <br>
+
+    <button class="button expand" ng-class="error.register.classes" ng-click="register()">Register</button>
+    <small class="error" ng-if="error.register.message.length > 0">
+      {{ error.register.message }}
+    </small>
+  </div>
+</div>
