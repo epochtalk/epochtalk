@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$route', '$rootScope', '$window', 'Auth', 'breadcrumbs',
-  function($scope, $route, $rootScope, $window, Auth, breadcrumbs) {
+module.exports = ['$scope', '$rootScope', 'Auth', 'breadcrumbs',
+  function($scope, $rootScope, Auth, breadcrumbs) {
     $rootScope.breadcrumbs = breadcrumbs.get();
     $scope.loggedIn = Auth.isAuthenticated;
     $scope.loginState = Auth.loginState;
