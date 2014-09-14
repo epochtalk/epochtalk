@@ -5,6 +5,8 @@ body {
 
 .padding-top-15 { padding-top: 15px; }
 
+.page-height { min-height: 80%;}
+
 .breadcrumbs > .news:before {
   content: "";
   margin: 0 0;
