@@ -103,6 +103,18 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
         return username;
       },
 
+      checkUsername: function(username, callback, error) {
+        $http({ method: 'GET', url: '/api/register/username/' + username })
+        .success(callback)
+        .error(error);
+      },
+
+      checkEmail: function(email, callback, error) {
+        $http({ method: 'GET', url: '/api/register/email/' + email })
+        .success(callback)
+        .error(error);
+      }
+
       // changePassword: function(email, oldPassword, newPassword, callback) {
       //   var cb = callback || angular.noop;
       //   User.update({

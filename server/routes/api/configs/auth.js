@@ -43,7 +43,6 @@ exports.login = {
       });
     })
     .catch(function(err) {
-      console.log(err);
       var error = Hapi.error.badRequest(err.message);
       error.output.statusCode = errorCode;
       error.reformat();
@@ -148,6 +147,34 @@ exports.register = {
   },
   validate: {
     payload: authSchema.validateRegister
+  }
+};
+
+exports.username = {
+  handler: function(request, reply) {
+    var username = request.params.username;
+
+    core.users.userByUsername(username)
+    .then(function(user) {
+      reply({ found: true });
+    })
+    .catch(function(err) {
+      reply({ found: false });
+    });
+  }
+};
+
+exports.email = {
+  handler: function(request, reply) {
+    var email = request.params.email;
+
+    core.users.userByEmail(email)
+    .then(function(user) {
+      reply({ found: true });
+    })
+    .catch(function(err) {
+      reply({ found: false});
+    });
   }
 };
 
