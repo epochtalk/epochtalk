@@ -59,11 +59,13 @@
     "browserify-ngmin": "^0.1.0",
     "charlatan": "^0.1.9",
     "cssify": "^0.5.1",
+    "gulp": "^3.8.8",
     "mocha": "^1.19.0",
     "mysql": "^2.1.1",
     "napa": "^0.4.1",
     "nodemon": "^1.1.1",
     "uglify-js": "^2.4.14",
+    "vinyl-source-stream": "^1.0.0",
     "watchify": "^0.10.2"
   }
 }
