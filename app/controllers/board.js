@@ -34,14 +34,34 @@ module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', 
         var postsPerPage = 10;
         threads.forEach(function(thread) {
           thread.page_count = Math.ceil(thread.post_count / postsPerPage);
+          getPageKeysForThread(thread);
         });
         $scope.threads = threads;
         $scope.paginationKeys = getPaginationKeys();
       });
     });
 
-    $scope.range = function(n) {
-      return new Array(n);
+    var getPageKeysForThread = function(thread) {
+      var pageKeys = [];
+      var urlPrefix = '/threads/' + thread.id + '/posts?page=';
+      if (thread.page_count < 7) {
+        var i = 1;
+        while(pageKeys.push({ val: i.toString(), url: urlPrefix + i++}) < thread.page_count);
+      }
+      else {
+        var thirdToLastPage = (thread.page_count - 2).toString();
+        var secondToLastPage = (thread.page_count - 1).toString();
+        var lastPage = thread.page_count.toString();
+        pageKeys.push({ val: '1', url: urlPrefix + '1' });
+        pageKeys.push({ val: '2', url: urlPrefix + '2' });
+        pageKeys.push({ val: '3', url: urlPrefix + '3' });
+        pageKeys.push({ val: '&hellip;', url: null });
+        pageKeys.push({ val: thirdToLastPage, url: urlPrefix + thirdToLastPage });
+        pageKeys.push({ val: secondToLastPage, url: urlPrefix + secondToLastPage });
+        pageKeys.push({ val: lastPage, url: urlPrefix + lastPage });
+      }
+      pageKeys.push({ val: 'All', url: urlPrefix + '1&limit=' + thread.post_count });
+      thread.page_keys = pageKeys;
     };
 
     var getPaginationKeys = function() {
