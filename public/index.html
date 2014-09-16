@@ -6,12 +6,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EpochTalk Forum</title>
+  <style>
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+      display: none !important;
+    }
+  </style>
 </head>
 
 <body class="antialiased hide-extras">
   
   <!-- Page Title and Header -->
-  <div class="row" ng-controller="HeaderCtrl">
+  <div class="row" ng-cloak ng-controller="HeaderCtrl">
     <div class="small-6 columns header-element">
       <div class="header-container">
         <h1 class="left header-centered-height">EpochTalk Forum</h1>
@@ -68,7 +73,7 @@
   </div>
   
   <!-- Secondary Header -->
-  <div class="row">
+  <div class="row" ng-cloak>
     <div class="small-12 columns">
       <nav class="top-bar" data-topbar>
         <ul class="title-area">
@@ -111,10 +116,10 @@
   </div>
   
   <!-- Main Content -->
-  <div ng-view class="page-height"></div>
+  <div ng-view class="page-height" ng-cloak></div>
   
   <!-- Footer -->
-  <div class="panel footer no-margin">
+  <div class="panel footer no-margin" ng-cloak>
     <div class="row">
       <div class="small-12 columns">
         <h3>Generic Footer Stuff</h3>

@@ -5,7 +5,7 @@
   "main": "server",
   "scripts": {
     "install": "./node_modules/.bin/napa && ./postInstall.sh",
-    "build": "./node_modules/.bin/browserify -t cssify -t brfs -t browserify-ngmin app/app.js -o public/js/bundle.js && ./node_modules/.bin/uglifyjs 'public/js/bundle.js' -o public/js/bundle.min.js -c -m -r 'require,exports,module'",
+    "build": "./node_modules/.bin/browserify -t cssify -t brfs -t browserify-ngmin app/app.js -o public/js/bundle.js && ./node_modules/.bin/uglifyjs 'public/js/bundle.js' -o public/js/bundle.min.js -c -m",
     "watch": "./node_modules/.bin/watchify -t cssify -t brfs app/app.js -o public/bundle.js -v",
     "test": "./node_modules/.bin/mocha -R spec ./tests",
     "start": "npm run build & node server",
