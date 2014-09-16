@@ -1,15 +1,9 @@
-/* browserify task
-   ---------------
-   Bundle javascripty things with browserify!
-
-   If the watch task is running, this uses watchify instead
-   of browserify for faster bundling using caching.
-*/
-
-var gulp         = require('gulp');
-var browserify   = require('browserify');
-var watchify     = require('watchify');
-var source       = require('vinyl-source-stream');
+var gulp = require('gulp');
+var browserify = require('browserify');
+var watchify = require('watchify');
+var buffer = require('vinyl-buffer');
+var source = require('vinyl-source-stream');
+var uglify = require('gulp-uglify');
 
 gulp.task('browserify', function() {
   var bundler = browserify({
@@ -34,6 +28,9 @@ gulp.task('browserify', function() {
       // stream gulp compatible. Specifiy the
       // desired output filename here.
       .pipe(source('bundle.js'))
+      .pipe(gulp.dest('./public/js/'))
+      .pipe(buffer())
+      .pipe(uglify())
       // Specify the output destination
       .pipe(gulp.dest('./public/js/'))
       // Log when bundling completes!

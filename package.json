@@ -39,6 +39,7 @@
     "cssify": "^0.5.1",
     "epochcore": "^0.5.3",
     "good": "^2.2.0",
+    "gulp-uglifyjs": "^0.4.2",
     "hapi": "^6.2.1",
     "hapi-auth-jsonwebtoken": "^0.2.1",
     "joi": "^4.6.2",
@@ -60,11 +61,14 @@
     "charlatan": "^0.1.9",
     "cssify": "^0.5.1",
     "gulp": "^3.8.8",
+    "gulp-uglify": "^1.0.1",
     "mocha": "^1.19.0",
     "mysql": "^2.1.1",
     "napa": "^0.4.1",
     "nodemon": "^1.1.1",
     "uglify-js": "^2.4.14",
+    "uglifyify": "^2.5.0",
+    "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.0.0",
     "watchify": "^0.10.2"
   }
