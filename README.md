@@ -8,7 +8,6 @@ Dependencies
 
 ## External Dependencies
 * [node](http://nodejs.org)
-* [redis](http://redis.io)
 * [couchdb](http://wiki.apache.org/couchdb/Installation)
 * [foreman](https://github.com/ddollar/foreman)
 

@@ -77,7 +77,16 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
           delete $window.localStorage.username;
         })
         .catch(function(err) {
-          loginState = 'Could Not Log You Out';
+          if (err.data.message === 'Not Logged In') {
+            delete $window.sessionStorage.token;
+            delete $window.sessionStorage.username;
+            delete $window.localStorage.token;
+            delete $window.localStorage.username;
+            loginState = 'Logged Out';
+          }
+          else {
+            loginState = 'Could Not Log You Out';
+          }
         });
       },
 

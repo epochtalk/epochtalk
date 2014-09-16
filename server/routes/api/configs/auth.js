@@ -3,11 +3,10 @@ var Hapi = require('hapi');
 var Promise = require('bluebird');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
-var redis = require('redis');
 var path = require('path');
 var config = require(path.join(__dirname, '..', '..', '..', 'config'));
-var redisClient = redis.createClient(config.redis.port, config.redis.host);
 var authSchema = require(path.join('..', 'schema', 'auth'));
+var memDb = require(path.join('..', '..', '..', 'memStore')).db;
 
 exports.login = {
   handler: function(request, reply) {
@@ -37,7 +36,7 @@ exports.login = {
     })
     .then(function(user) { // build and save token
       var token = buildToken(user);
-      redisClient.set(user.id, token, function(err) {
+      memDb.put(user.id, token, function(err) {
         if (err) { throw new Error(err); }
         return reply({ token: token }); // return token to user
       });
@@ -69,12 +68,13 @@ exports.logout = {
     var credentials = request.auth.credentials;
     var id = credentials.id;
 
-    // delete jwt from redis 
-    redisClient.del(id, function(err, value) {
+    // delete jwt from memdown 
+    memDb.del(id, function(err, value) {
       if (err) {
         var error = Hapi.error.internal(err.message);
         return reply(error);
       }
+
       return reply(true);
     });
   },
@@ -128,7 +128,7 @@ exports.register = {
     })
     .then(function(user) { // build and save token
       var token = buildToken(user);
-      redisClient.set(user.id, token, function(err) {
+      memDb.put(user.id, token, function(err) {
         if (err) { throw new Error(err); }
         return reply({ token: token }); // return token to user
       });
