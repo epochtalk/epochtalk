@@ -59,5 +59,6 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
 
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('AuthInterceptor');
+    $httpProvider.interceptors.push('ViewInterceptor');
   }
 ];

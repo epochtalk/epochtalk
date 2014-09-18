@@ -78,14 +78,13 @@ server.route(routes.endpoints());
 // register server route logging
 server.pack.register(good, function (err) {
   if (err) { throw err; /* error loading the plugin */  }
-
-  // start server
-  server.start(function () {
-    server.log('debug', 'config: ' + JSON.stringify(config, undefined, 2));
-    server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
-  });
 });
 
+// start server
+server.start(function () {
+  server.log('debug', 'config: ' + JSON.stringify(config, undefined, 2));
+  server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
+});
 
 // debug: print routes
 // var table = server.table();

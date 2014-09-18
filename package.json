@@ -48,6 +48,7 @@
     "lodash": "^2.4.1",
     "medium-editor": "^1.8.14",
     "memdown": "^0.10.2",
+    "node-uuid": "^1.4.1",
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
     "qr-image": "^1.1.0",
