@@ -1,19 +1,10 @@
+var fs = require('fs');
+
 module.exports = ['$location', function($location) {
   return {
     restrict: 'E',
     scope: false,
-    template:
-    '<div class="row" ng-cloak>' +
-      '<div class="small-12 columns">' +
-        '<ul class="pagination" role="menubar" aria-label="Pagination">' +
-         '<span ng-repeat="pageKey in paginationKeys">' +
-            '<li ng-class="pageKey.class">' +
-              '<a ng-href="{{pageKey.url}}" ng-bind-html="pageKey.val"></a>' +
-            '</li>' +
-          '</span>' +
-        '</ul>' +
-      '</div>' +
-    '</div>',
+    template: fs.readFileSync(__dirname + '/../../templates/pagination.html'),
     link: function($scope) {
       $scope.$watch('pageCount', function (newPageCount) {
         var pageCount = newPageCount;
