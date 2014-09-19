@@ -1,22 +1,4 @@
-<div class="row">
-<!--   <div class="small-2 columns" style="float:right;">
-    <button data-dropdown="dropdown-a" aria-controls="dropdown-a" aria-expanded="false" class="tiny button dropdown">Page {{page}} of {{pageCount}}</button>
-    <div id="dropdown-a" data-dropdown-content class="page-dropdown f-dropdown" aria-hidden="true" tabindex="-1">
-      Jump to page&nbsp;
-      <input type="number" class="page-input" value="{{page}}" min="1" max="{{pageCount}}">&nbsp;
-      <button class="page-go-btn tiny button">Go</button>
-    </div>
-  </div> -->
-  <div class="small-12 columns">
-    <ul class="pagination" role="menubar" aria-label="Pagination">
-      <span ng-repeat="pageKey in paginationKeys">
-        <li ng-class="pageKey.class">
-          <a ng-href="{{pageKey.url}}" ng-bind-html="pageKey.val"></a>
-        </li>
-      </span>
-    </ul>
-  </div>
-</div>
+<pagination page-count="{{pageCount}}" page="{{page}}"></pagination>
 <div class="row">
   <div class="small-12 columns">
     <h3>{{board.name}}</h3>
@@ -111,22 +93,4 @@
     </div>
   </div>
 </div>
-<div class="row">
-<!--   <div class="small-2 columns" style="float:right;">
-    <button data-dropdown="dropdown-b" aria-controls="dropdown-b" aria-expanded="false" class="tiny button dropdown">Page {{page}} of {{pageCount}}</button>
-    <div id="dropdown-b" data-dropdown-content class="page-dropdown f-dropdown" aria-hidden="true" tabindex="-1">
-      Jump to page&nbsp;
-      <input type="number" class="page-input" value="{{page}}" min="1" max="{{pageCount}}">&nbsp;
-      <button class="page-go-btn tiny button">Go</button>
-    </div>
-  </div> -->
-  <div class="small-12 columns">
-    <ul class="pagination" role="menubar" aria-label="Pagination">
-      <span ng-repeat="pageKey in paginationKeys">
-        <li ng-class="pageKey.class">
-          <a ng-href="{{pageKey.url}}" ng-bind-html="pageKey.val"></a>
-        </li>
-      </span>
-    </ul>
-  </div>
-</div>
+<pagination page-count="{{pageCount}}" page="{{page}}"></pagination>

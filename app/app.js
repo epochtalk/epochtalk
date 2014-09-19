@@ -36,6 +36,7 @@ app.controller('RegistrationCtrl', require('./controllers/registration.js'));
 
 // add epochtalk-editor directive
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
+app.directive('pagination', require('./directives/pagination'));
 
 // Set Angular Configs
 app.config(require('./config'))
