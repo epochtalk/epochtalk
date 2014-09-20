@@ -51,6 +51,20 @@ exports.all = {
   }
 };
 
+exports.allCategories = {
+  handler: function(request, reply) {
+    core.boards.allCategories()
+    .then(function(boards) {
+      if (boards.length > 0) {
+        reply(boards);
+      }
+    })
+    .catch(function(err) {
+      reply(err.message);
+    });
+  }
+};
+
 exports.update = {
   handler: function(request, reply) {
     // build updateBoard object from params and payload
