@@ -1,7 +1,7 @@
 <pagination page-count="{{pageCount}}" page="{{page}}"></pagination>
 <div class="row">
   <div class="small-12 columns">
-    <h3>{{board.name}}</h3>
+    <h3 ng-bind-html="board.name"></h3>
     <span class="moderators"><strong>Moderators: </strong> Unknown, Unknown, Unknown</span>
     <div class="thin-dotted-underline bottom-spacer-10"></div>
   </div>
@@ -37,8 +37,8 @@
           </div>
           <div class="small-12 medium-2 columns">
             <div class="board-info">Last post by</div>
-            <div class="board-info"><a href="#">{{childBoard.last_post_username}}</a></div>
-            <div class="board-info">in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts">{{childBoard.last_thread_title}}</a></div>
+            <div class="board-info"><a href="#" ng-bind-html="childBoard.last_post_username"></a></div>
+            <div class="board-info">in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title"></a></div>
             <div class="board-info">@ {{childBoard.last_post_created_at | date:'medium'}}</div>
           </div>
         </div>
@@ -63,9 +63,9 @@
       <div class="top-spacer-15"></div>
       <div class="row">
         <div class="small-11 medium-7 columns">
-          <h6 class="no-margin"><a ng-href="/threads/{{thread.id}}/posts" style="font-size: 18px;">{{thread.title}}</a></h6>
+          <h6 class="no-margin"><a ng-href="/threads/{{thread.id}}/posts" style="font-size: 18px;" ng-bind-html="thread.title"></a></h6>
           <div>
-          Started by: <a href="#">{{thread.user.username}}</a> @ <em>{{thread.created_at | date:'medium'}}</em>
+          Started by: <a href="#" ng-bind-html="thread.user.username"></a> @ <em>{{thread.created_at | date:'medium'}}</em>
           </div>
           <div class="top-spacer-5">
             <span ng-if="thread.page_count > 1">
@@ -86,7 +86,7 @@
         </div>
         <div class="small-12 medium-2 columns">
           <div class="board-info">Last post by</div>
-          <div class="board-info"><a href="#">{{thread.last_post_username}}</a></div>
+          <div class="board-info"><a href="#" ng-bind-html="thread.last_post_username"></a></div>
           <div class="board-info">@ {{thread.last_post_created_at | date:'medium'}}</div>
         </div>
       </div>

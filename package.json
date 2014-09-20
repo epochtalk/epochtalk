@@ -37,7 +37,7 @@
     "bluebird": "^2.3.2",
     "bunyan": "^0.22.3",
     "cssify": "^0.5.1",
-    "epochcore": "^0.5.5",
+    "epochcore": "^0.5.6",
     "good": "^2.2.0",
     "hapi": "^6.2.1",
     "hapi-auth-jsonwebtoken": "^0.2.1",
