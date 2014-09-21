@@ -15,8 +15,9 @@
 
 <body class="antialiased hide-extras">
   
+<div ng-controller="HeaderCtrl">
   <!-- Page Title and Header -->
-  <div class="row" ng-cloak ng-controller="HeaderCtrl">
+  <div class="row" ng-cloak>
     <div class="small-6 columns header-element">
       <div class="header-container">
         <h1 class="left header-centered-height">EpochTalk Forum</h1>
@@ -88,6 +89,7 @@
             <li class="active"><a href="/">Home</a></li>
             <li><a href="#">Help</a></li>
             <li><a href="#">Donate</a></li>
+            <li ng-if="loggedIn()"><a href="/me">Profile</a></li>
           </ul>
           <!-- Right Nav Section -->
           <ul class="right">
@@ -114,6 +116,7 @@
 
     </div>
   </div>
+</div>
   
   <!-- Main Content -->
   <div ng-view class="page-height" ng-cloak></div>
