@@ -45,9 +45,43 @@ $ npm run start
 Upon running the `start` command EpochTalk will start its webserver and compile all JavaScript and css. Once compilation is complete the forum can be viewed at `http://localhost:8080`
 
 ## API
-The EpochTalk API can be accessed at `http://localhost:8080/api/` when the server is running.
+The EpochTalk API can be accessed at `http://localhost:8080/api/` when the server is running. The following api routes are supported:
 
-TODO...
+###Boards
+| Route | Type | Params | Description |
+|-------|------|--------|-------------|
+|`/api/boards`|POST| Board Obj |Used to create a new board|
+|`/api/boards`|GET|N/A|Returns a categorized list of all boards with categories|
+|`/api/boards/all`|GET|N/A|Returns an uncategorized list of all boards|
+|`/api/boards/{id}`|POST|Updated Board Obj|Used to update a specific board|
+|`/api/boards/{id}`|GET|N/A|Returns a specific board|
+|`/api/boards/{id}`|DELETE|N/A|Used to delete a specific board|
+All POST parameters must follow the [Board Schema](https://github.com/epochtalk/core#board-schema)
+
+###Threads
+| Route | Type | Params | Description |
+|-------|------|--------|-------------|
+|`/api/threads`|POST|Thread Obj|Used to create a new thread|
+|`/api/threads`|GET|board_id, limit, page|Returns a list of threads by board|
+|`/api/thread/{id}`|GET|N/A|Returns a specific thread|
+All POST parameters must follow the [Thread Schema](https://github.com/epochtalk/core#thread-schema)
+
+###Posts
+| Route | Type | Params | Description |
+|-------|------|--------|-------------|
+|`/api/posts`|POST|Post Obj|Used to create a new post|
+|`/api/posts`|GET|thread_id, limit, page|Returns a list of posts by thread|
+|`/api/posts/{id}`|GET|N/A|Returns a specific post|
+|`/api/posts/{id}`|POST|Updated Post Obj|Used to update a specific post|
+|`/api/posts/{id}`|DELETE|N/A|Used to delete a specific post|
+All POST parameters must follow the [Post Schema](https://github.com/epochtalk/core#post-schema)
+
+###Users
+| Route | Type | Params | Description |
+|-------|------|--------|-------------|
+|`/api/users`|POST|User Obj|Used to create a new user|
+|`/api/users/{id}`|GET|N/A|Returns a specific user|
+All POST parameters must follow the [User Schema](https://github.com/epochtalk/core#user-schema)
 
 ##TODO (Planned Changes)
 * Redesign of frontend user interface (Current UI is temporary). Design is currently a low priority until the EpochCore backend is in a more stable state.
