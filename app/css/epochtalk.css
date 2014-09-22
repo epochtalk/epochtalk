@@ -94,9 +94,9 @@ h1, h2, h3, h4, h5, h6 { margin-bottom: 0px; }
 .board-section { margin-bottom: 20px; }
 
 .footer {
-  border-left: 0px !important;
-  border-right: 0px !important;
-  border-bottom: 0px !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
   background-color: #444 !important;
   color: #ccc !important;
   font-size: 14px !important;
@@ -121,12 +121,12 @@ input::-webkit-inner-spin-button {
   height: 20px !important;
   width: 40px !important;
   padding: 2px !important;
-  margin: 0px !important;
+  margin: 0 !important;
   font-size: 10px !important;
 }
 
 .page-dropdown {
-  outline: 0px !important;
+  outline: 0 !important;
   padding: 5px !important;
 }
 
@@ -134,8 +134,8 @@ input::-webkit-inner-spin-button {
   display: inline !important;
   width: 28px !important;
   height: 20px !important;
-  padding: 0px !important;
-  margin: 0px !important;
+  padding: 0 !important;
+  margin: 0 !important;
   font-size: 12px !important;
 }
 
@@ -145,3 +145,5 @@ input::-webkit-inner-spin-button {
   text-align: center;
   display: block;
 }
+
+.bold-title { font-weight: bold; }

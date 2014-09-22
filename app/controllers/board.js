@@ -33,6 +33,10 @@ module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', 
         threads.forEach(function(thread) {
           thread.page_count = Math.ceil(thread.post_count / postsPerPage);
           getPageKeysForThread(thread);
+
+          if (thread.has_new_post) {
+            thread.title_class = 'bold-title';
+          }
         });
         $scope.threads = threads;
       });

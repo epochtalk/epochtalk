@@ -1,8 +1,9 @@
-var boards = require(__dirname + '/boards');
-var threads = require(__dirname + '/threads');
-var posts = require(__dirname + '/posts');
-var users = require(__dirname + '/users');
-var auth = require(__dirname + '/auth');
+var path = require('path');
+var boards = require(path.join(__dirname, 'boards'));
+var threads = require(path.join(__dirname, 'threads'));
+var posts = require(path.join(__dirname, 'posts'));
+var users = require(path.join(__dirname, 'users'));
+var auth = require(path.join(__dirname,  'auth'));
 
 function buildEndpoints() {
   return [].concat(boards, threads, posts, users, auth);
