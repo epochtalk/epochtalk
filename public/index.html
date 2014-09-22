@@ -20,60 +20,10 @@
   <div class="row" ng-cloak>
     <div class="small-6 columns header-element">
       <div class="header-container">
-        <h1 class="left header-centered-height">EpochTalk Forum</h1>
-      </div>
-    </div>
-
-    <div class="small-6 columns">      
-      <div class="row">
-        
-        <div ng-if="loggedIn()">
-          <div class="small-9 columns header-element">
-            <div class="header-container">
-              <div class="header-centered-both">
-                {{ loginState() }}
-              </div>
-            </div>
-          </div>
-          <div class="small-3 columns header-element">
-            <div class="header-container">
-              <span class="right header-centered-both">
-                <a class="button small no-margin" ng-href="" ng-click="logout()">Logout</a>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div ng-if="!loggedIn()">
-          <div class="small-9 columns header-element">
-            <div class="header-container">
-              <form class="header-centered-height" ng-submit="login()">
-                <div class="small-6 columns">
-                  <input class="no-margin" type="text" placeholder="Username" ng-model="user.username" ng-focus="!loggedIn()">
-                  <input id="rememberMe" class="no-margin" type="checkbox" ng-model="user.rememberMe">
-                  <label for="rememberMe" class="header-checkbox">Remember me</label>
-                </div>
-                <div class="small-6 columns">
-                  <input class="no-margin" type="password" placeholder="Password" ng-model="user.password" ng-keyup="$event.keyCode == 13 && login()">
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <div class="small-3 columns header-element">
-            <div class="header-container">
-              <span class="right header-centered-both">
-                <a class="button small no-margin" ng-href="" ng-click="login()">Login</a>
-              </span>
-            </div>
-          </div>
-        </div>
-      
+        <h2 class="left header-centered-height">EpochTalk Forum</h2>
       </div>
     </div>
   </div>
-  
-  <!-- Secondary Header -->
   <div class="row" ng-cloak>
     <div class="small-12 columns">
       <nav class="top-bar" data-topbar>
@@ -92,16 +42,28 @@
             <li ng-if="loggedIn()"><a href="/me">Profile</a></li>
           </ul>
           <!-- Right Nav Section -->
-          <ul class="right">
-            <li class="has-form">
-              <div class="row collapse">
-                <div class="large-8 small-9 columns">
-                  <input style="height: 28px" type="text" placeholder="Search the forum">
-                </div>
-                <div class="large-4 small-3 columns">
-                  <a href="#" class="info button expand">Search</a>
-                </div>
-              </div>
+          <ul ng-if="!loggedIn()" class="right">
+            <li style="margin-right: 5px">
+              <input id="rememberMe" class="no-margin" type="checkbox" ng-model="user.rememberMe">
+            </li>
+            <li style="margin-right: 5px">
+              <input class="no-margin" type="text" placeholder="Username" ng-model="user.username" ng-focus="!loggedIn()">
+            </li>
+            <li style="margin-right: 5px">
+              <input class="no-margin" type="password" placeholder="Password" ng-model="user.password" ng-keyup="$event.keyCode == 13 && login()">
+            </li>
+            <li style="margin-right: 5px">
+              <a href="#" class="button expand" ng-click="login()">Login</a>
+            </li>
+          </ul>
+          
+          <ul ng-show="loggedIn()" class="right">
+            <li class="has-dropdown">
+              <a href="/me">{{ currentUser() }}</a>
+              <ul class="dropdown">
+                <li><a href="/me">Profile</a></li>
+                <li><a ng-href="" ng-click="logout()">Logout</a></li>
+              </ul>
             </li>
           </ul>
         </section>
@@ -111,7 +73,9 @@
           <a ng-if="!$last" ng-href="{{ breadcrumb.path }}" ng-bind="breadcrumb.label" class="margin-right-xs"></a>
           <span ng-if="$last" ng-bind="breadcrumb.label"></span>
         </li>
+        <!--
         <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">Dolor mollit jerky pork</a></li>
+        -->
       </ul>
 
     </div>

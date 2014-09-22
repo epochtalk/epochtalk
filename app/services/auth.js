@@ -1,10 +1,12 @@
 'use strict';
 /* jslint node: true */
 /* global angular */
+var greetingLoggedOut = 'Not Logged In';
+var greetingLoggedIn = 'Logged In as ';
 
 module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
   function($location, $rootScope, $http, $window, User) {
-    var loginState = 'Not Logged In';
+    var greeting = greetingLoggedOut;
     var getUser = function() {
       var username;
       if ($window.sessionStorage.username) {
@@ -23,12 +25,12 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
         User.register(user, callback, error).$promise
         .then(function(resource) {
           var token = resource.token;
-          loginState = 'Logged In as ' + username;
+          greeting = greetingLoggedIn + username;
           $window.sessionStorage.token = token;
           $window.sessionStorage.username = username;
         })
         .catch(function(err) {
-          loginState = 'Not Logged In';
+          greeting = greetingLoggedOut;
           // delete storage keys
           delete $window.sessionStorage.token;
           delete $window.sessionStorage.username;
@@ -46,7 +48,7 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
         User.login(user, callback, error).$promise
         .then(function(resource) {
           var token = resource.token;
-          loginState = 'Logged In as ' + username;
+          greeting = greetingLoggedIn + username;
           if (rememberMe) {
             $window.localStorage.token = token;
             $window.localStorage.username = username;
@@ -57,7 +59,7 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
           }
         })
         .catch(function(err) {
-          loginState = 'Not Logged In';
+          greeting = greetingLoggedOut;
           // delete storage keys
           delete $window.sessionStorage.token;
           delete $window.sessionStorage.username;
@@ -69,7 +71,7 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
       logout: function(callback, error) {
         User.logout(callback, error).$promise
         .then(function() {
-          loginState = 'Not Logged In';
+          greeting = greetingLoggedOut;
           // delete key from session storage
           delete $window.sessionStorage.token;
           delete $window.sessionStorage.username;
@@ -77,15 +79,15 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
           delete $window.localStorage.username;
         })
         .catch(function(err) {
-          if (err.data.message === 'Not Logged In') {
+          if (err.data.message === greetingLoggedOut) {
             delete $window.sessionStorage.token;
             delete $window.sessionStorage.username;
             delete $window.localStorage.token;
             delete $window.localStorage.username;
-            loginState = 'Logged Out';
+            greeting = 'Logged Out';
           }
           else {
-            loginState = 'Could Not Log You Out';
+            greeting = 'Could Not Log You Out';
           }
         });
       },
@@ -103,10 +105,12 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
         return authenticated;
       },
 
-      loginState: function() {
+      loginStateGreeting: function() {
         var username = getUser();
-        if (username) { loginState = 'Logged In as ' + username; }
-        return loginState;
+        if (username) {
+          greeting = greetingLoggedIn;
+        }
+        return greeting;
       },
 
       currentUser: function() {

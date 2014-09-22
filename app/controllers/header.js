@@ -2,7 +2,8 @@ module.exports = ['$scope', '$rootScope', 'Auth', 'breadcrumbs',
   function($scope, $rootScope, Auth, breadcrumbs) {
     $rootScope.breadcrumbs = breadcrumbs.get();
     $scope.loggedIn = Auth.isAuthenticated;
-    $scope.loginState = Auth.loginState;
+    $scope.loginStateGreeting = Auth.loginStateGreeting;
+    $scope.currentUser = Auth.currentUser;
     $scope.user = {};
 
     Auth.checkAuthentication();
