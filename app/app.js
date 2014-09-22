@@ -30,6 +30,7 @@ app.controller('NewThreadCtrl', require('./controllers/newThread.js'));
 app.controller('PostsCtrl', require('./controllers/posts.js'));
 app.controller('ProfileCtrl', require('./controllers/profile.js'));
 app.controller('RegistrationCtrl', require('./controllers/registration.js'));
+app.controller('CategoriesCtrl', require('./controllers/categories.js'));
 
 // add epochtalk-editor directive
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));

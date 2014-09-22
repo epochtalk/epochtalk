@@ -46,6 +46,12 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       label: 'Profile'
     });
 
+    $routeProvider.when('/admin/categories', {
+      controller: 'CategoriesCtrl',
+      template: fs.readFileSync(__dirname + '/templates/categories.html'),
+      label: 'Categories'
+    });
+
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('AuthInterceptor');
     $httpProvider.interceptors.push('ViewInterceptor');
