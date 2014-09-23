@@ -5,6 +5,8 @@ module.exports = ['$scope', '$rootScope', 'Auth', 'breadcrumbs',
     $scope.loginState = Auth.loginState;
     $scope.user = {};
 
+    Auth.checkAuthentication();
+
     $scope.login = function() {
       Auth.login($scope.user,
         function(data) {

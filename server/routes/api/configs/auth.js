@@ -150,6 +150,23 @@ exports.register = {
   }
 };
 
+exports.isAuthenticated = {
+  handler: function(request, reply) {
+    // check if already logged in with jwt
+    if (request.auth.isAuthenticated) {
+      return reply({ authenticated: true });
+    }
+    else {
+      reply({ authenticated: false }).header('Authorization', 'Revoked');
+    }
+
+  },
+  auth: {
+    mode: 'try',
+    strategy: 'jwt'
+  }
+};
+
 exports.username = {
   handler: function(request, reply) {
     var username = request.params.username;

@@ -19,7 +19,8 @@ module.exports = ['$rootScope', '$q', '$window', function ($rootScope, $q, $wind
       return config;
     },
     response: function (response) {
-      if (response.status === 401) {
+      if (response.status === 401 ||
+          response.headers('Authorization') === 'Revoked') {
         // handle the case where the user is not authenticated
         delete $window.sessionStorage.token;
         delete $window.sessionStorage.username;

@@ -90,6 +90,10 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
         });
       },
 
+      checkAuthentication: function() {
+        $http({ method: 'GET', url: '/api/authenticated' });
+      },
+
       isAuthenticated: function() {
         var authenticated = false;
         if ($window.sessionStorage.token ||
