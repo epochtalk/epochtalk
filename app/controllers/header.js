@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$rootScope', 'Auth', 'breadcrumbs',
-  function($scope, $rootScope, Auth, breadcrumbs) {
+module.exports = ['$scope', '$rootScope', '$route', 'Auth', 'breadcrumbs',
+  function($scope, $rootScope, $route, Auth, breadcrumbs) {
     $rootScope.breadcrumbs = breadcrumbs.get();
     $scope.loggedIn = Auth.isAuthenticated;
     $scope.loginStateGreeting = Auth.loginStateGreeting;
@@ -13,12 +13,15 @@ module.exports = ['$scope', '$rootScope', 'Auth', 'breadcrumbs',
         function(data) {
           $scope.user.username = '';
           $scope.user.password = '';
+          $route.reload();
         }
       );
     };
 
     $scope.logout = function() {
-      Auth.logout();
+      Auth.logout(function(data) {
+        $route.reload();
+      });
     };
   }
 ];

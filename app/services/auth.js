@@ -69,7 +69,7 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
       },
 
       logout: function(callback, error) {
-        User.logout(callback, error).$promise
+        User.logout(null, callback, error).$promise
         .then(function() {
           greeting = greetingLoggedOut;
           // delete key from session storage
