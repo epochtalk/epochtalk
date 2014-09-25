@@ -8,6 +8,7 @@ require('ng-breadcrumb/ng-breadcrumbs');
 // var Modernizr = require('foundation/js/vendor/modernizr');
 jQuery = require('foundation/js/vendor/jquery');
 $ = jQuery;
+require('nestable/jquery.nestable');
 require('foundation/js/vendor/fastclick');
 require('foundation/js/vendor/placeholder');
 require('foundation/js/foundation');
@@ -35,6 +36,7 @@ app.controller('CategoriesCtrl', require('./controllers/categories.js'));
 // add epochtalk-editor directive
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
 app.directive('pagination', require('./directives/pagination'));
+app.directive('nestable', require('./directives/nestable'));
 
 // Set Angular Configs
 app.config(require('./config'))

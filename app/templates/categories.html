@@ -1,18 +1,7 @@
-<script type="text/ng-template" id="populate_childboards.html">
-  <span ng-bind-html="board.name"></span>
-  <ul>
-    <li ng-repeat="board in board.children" ng-include="'populate_childboards.html'"></li>
-  </ul>
-</script>
-
 <div class="row">
+
   <div class="small-12 columns">
-    <ul>
-      <li ng-repeat="cat in categories"><h4 ng-bind-html="cat.name"></h4>
-        <ul>
-          <li ng-repeat="board in cat.boards" ng-include="'populate_childboards.html'"></li>
-        </ul>
-      </li>
-    </ul>
+    <nestable></nestable>
+
   </div>
 </div>

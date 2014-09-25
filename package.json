@@ -29,7 +29,8 @@
     "angular-route": "angular/bower-angular-route",
     "angular-sanitize": "angular/bower-angular-sanitize",
     "foundation": "zurb/bower-foundation",
-    "ng-breadcrumb": "ianwalter/ng-breadcrumbs"
+    "ng-breadcrumb": "ianwalter/ng-breadcrumbs",
+    "nestable": "slickage/Nestable"
   },
   "dependencies": {
     "async": "^0.7.0",
