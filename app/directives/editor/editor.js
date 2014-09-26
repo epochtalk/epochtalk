@@ -59,6 +59,6 @@ module.exports = function() {
       editorElement.on('scroll', onEditorScroll);
       previewElement.on('scroll', onPreviewScroll);
     },
-    template: fs.readFileSync(__dirname + '/../../templates/editor.html')
+    template: fs.readFileSync(__dirname + '/../../templates/directives/editor.html')
   };
 };

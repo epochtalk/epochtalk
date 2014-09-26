@@ -48,7 +48,7 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
 
     $routeProvider.when('/admin/categories', {
       controller: 'CategoriesCtrl',
-      template: fs.readFileSync(__dirname + '/templates/categories.html'),
+      template: fs.readFileSync(__dirname + '/templates/admin/categories.html'),
       label: 'Categories'
     });
 

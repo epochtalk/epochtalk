@@ -4,7 +4,7 @@ module.exports = ['$location', function($location) {
   return {
     restrict: 'E',
     scope: false,
-    template: fs.readFileSync(__dirname + '/../../templates/pagination.html'),
+    template: fs.readFileSync(__dirname + '/../../templates/directives/pagination.html'),
     link: function($scope) {
       $scope.$watch('pageCount', function (newPageCount) {
         var pageCount = newPageCount;

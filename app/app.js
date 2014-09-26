@@ -36,7 +36,7 @@ app.controller('CategoriesCtrl', require('./controllers/categories.js'));
 // add epochtalk-editor directive
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
 app.directive('pagination', require('./directives/pagination'));
-app.directive('nestable', require('./directives/nestable'));
+app.directive('manageForum', require('./directives/manage_forum'));
 
 // Set Angular Configs
 app.config(require('./config'))
