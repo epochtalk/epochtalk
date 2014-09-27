@@ -1,25 +1,23 @@
-module.exports = ['$scope', '$location', '$routeParams', '$http', '$rootScope', 'breadcrumbs',
-  function($scope, $location, $routeParams, $http, $rootScope, breadcrumbs) {
-
+module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'breadcrumbs', 'Auth',
+  function($scope, $route, $routeParams, $http, $rootScope, breadcrumbs, Auth) {
     // TODO: this needs to be grabbed from user settings
-    var limit = ($location.search()).limit;
-    var postsPerPage = limit ? Number(limit) : 10;
     var threadId = $routeParams.threadId;
-    var page = ($location.search()).page;
+    var limit = $routeParams.limit;
+    var postsPerPage = limit ? Number(limit) : 10;
+    var page = $routeParams.page;
     $scope.page = page ? Number(page) : 1;
     $scope.posts = null;
     $scope.pageCount = 1;
-    $scope.url = $location.path();
-    // pagination
+    $scope.thread = {};
+    $scope.loggedIn = Auth.isAuthenticated;
 
     $http({
       url: '/api/thread/',
       method: 'GET',
-      params: {
-        id: threadId
-      }
+      params: { id: threadId }
     })
     .success(function(thread) {
+      $scope.title = 'Re: ' + thread.title;
       breadcrumbs.options = { 'Thread': thread.title };
       $rootScope.breadcrumbs = breadcrumbs.get();
       var postCount = thread.post_count;
@@ -38,5 +36,26 @@ module.exports = ['$scope', '$location', '$routeParams', '$http', '$rootScope', 
       });
     });
 
+    $scope.title = '';
+    $scope.encodedText = '';
+    $scope.processedText = '';
+    $scope.saveText = function(encoded, text) {
+      $scope.encodedText = encoded;
+      $scope.processedText = text;
+    };
+    $scope.savePost = function(post) {
+      // save post to server
+      $http({
+        url: '/api/posts',
+        method: 'POST',
+        data: {
+          title: $scope.title,
+          encodedBody: $scope.encodedText,
+          body: $scope.processedText,
+          thread_id: threadId
+        }
+      })
+      .success(function(data) { $route.reload();});
+    };
   }
 ];

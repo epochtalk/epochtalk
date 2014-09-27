@@ -92,7 +92,6 @@ module.exports = ['$location', function($location) {
           generatePageKeys(elipsis);
         }
         $scope.paginationKeys = paginationKeys;
-        console.log($scope.paginationKeys);
       }, true);
 
     }

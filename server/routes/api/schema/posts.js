@@ -3,15 +3,14 @@ var Joi = require('joi');
 var rawPostSchema = Joi.object().keys({
   title: Joi.string().min(1).max(255).required(),
   body: Joi.string().min(1).required(), // 1 char minimum post length
-  thread_id: Joi.string(),
-  user_id: Joi.string()
+  encodedBody: Joi.string().min(1),
+  thread_id: Joi.string()
 });
 
 module.exports = {
   rawPostSchema: rawPostSchema,
   validate: function(post, options, next) {
-    console.log(post);
-    var postSchema = rawPostSchema.with('title', 'body', 'thread_id', 'user_id');
+    var postSchema = rawPostSchema.with('title', 'body', 'thread_id');
     Joi.validate(post, postSchema, next);
   },
   validateId: function(post, options, next) {

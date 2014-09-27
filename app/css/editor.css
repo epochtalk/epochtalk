@@ -15,7 +15,6 @@ body { margin: 0; padding: 0; }
   width: 100%;
   height: 100%;
   background-color: #fff;
-  padding: 15px;
   overflow: hidden;
   -webkit-transition: all linear 200ms;
   -moz-transition: all linear 200ms;
@@ -42,7 +41,7 @@ body { margin: 0; padding: 0; }
 .ee-bbcode-editor {
   box-sizing: border-box;
   overflow: auto;
-  border: 1px solid gray;
+  border: 1px solid #cccccc;
   padding: 15px;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 14px;
@@ -57,7 +56,7 @@ body { margin: 0; padding: 0; }
 .ee-bbcode-preview {
   box-sizing: border-box;
   padding: 15px;
-  border: 1px solid gray;
+  border: 1px solid #cccccc;
   border-left: 0px;
   word-wrap: break-word;
   overflow: auto;
@@ -74,10 +73,10 @@ body { margin: 0; padding: 0; }
   padding: 0; }
 .ee-show-editor { opacity: 1; visibility: visible; }
 
-.ee-split-container {
-  overflow: hidden;
-  height: 100%;}
+.ee-split-container { overflow: hidden; height: 100%;}
 .ee-half-column { width: 50%; height: 100%; float: left; }
+.ee-split-header { overflow: hidden; }
+.ee-half-header { width: 50%; float: left; }
 
 .ee-show { display: block; }
 .ee-hide { display: none; }

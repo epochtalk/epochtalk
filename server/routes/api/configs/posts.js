@@ -3,9 +3,10 @@ var postSchema = require('../schema/posts');
 
 exports.create = {
   handler: function(request, reply) {
-    // TODO validation: ensure thread_id exists
-    if (!request.payload.thread_id) {
-      return reply('Needs thread ID');
+    // check if already logged in with jwt
+    var user;
+    if (request.auth.isAuthenticated) {
+      user = request.auth.credentials;
     }
 
     // build the post object from payload and params
@@ -13,7 +14,7 @@ exports.create = {
       title: request.payload.title,
       body: request.payload.body,
       thread_id: request.payload.thread_id,
-      user_id: request.payload.user_id
+      user_id: user.id
     };
 
     // create the post in core
@@ -27,7 +28,8 @@ exports.create = {
   },
   validate: {
     payload: postSchema.validate
-  }
+  },
+  auth: { strategy: 'jwt' }
 };
 
 exports.find = {

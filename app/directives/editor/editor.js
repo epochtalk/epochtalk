@@ -32,7 +32,10 @@ module.exports = function() {
         // process BBCode
         var processed = xbbcode.process({text: editorElement.html()}).html;
         previewElement.html(processed);
-        scope.saveText({ text: editorElement.html() });
+        scope.saveText({
+          encoded: editorElement.html(),
+          text: previewElement.html()
+        });
       };
 
       // scoll binding
