@@ -56,8 +56,8 @@ module.exports = function() {
           originalNoCatHtml = generateNoCatBoardsList(boards);
           $('#cat-list').html(originalCatHtml);
           $('#no-cat-boards-list').html(originalNoCatHtml);
-          $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
-          $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
+          $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
+          $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 3, group: 1 });
         }
       }, true);
 
@@ -84,7 +84,7 @@ module.exports = function() {
             '" data-top="true" data-cat-name="' + scope.newCatName + '">' +
             '<div class="dd-handle dd-root-handle">' +  scope.newCatName + '</div></li>';
           $('#nestable-cats > .dd-list').prepend(newCatHtml);
-          $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
+          $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
           scope.newCatName = '';
         }
       };
@@ -94,7 +94,7 @@ module.exports = function() {
           var newBoardHtml = '<li class="dd-item" data-id="' + nestIndex++ +
             '" data-board-id=""><div class="dd-handle">' +  scope.newBoardName + '</div></li>';
           $('#nestable-boards > .dd-list').prepend(newBoardHtml);
-          $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
+          $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 3, group: 1 });
           scope.newBoardName = '';
         }
       };
@@ -116,8 +116,8 @@ module.exports = function() {
       scope.reset = function() {
         $('#cat-list').html(originalCatHtml);
         $('#no-cat-boards-list').html(originalNoCatHtml);
-        $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
-        $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
+        $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
+        $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 3, group: 1 });
       };
     }
   };

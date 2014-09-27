@@ -50,6 +50,7 @@ app.config(require('./config'))
 require('./css/normalize.css');
 require('./css/foundation.css');
 require('./css/epochtalk.css');
+require('./css/manage-forum.css');
 require('./css/editor.css');
 require('./css/medium-editor.css');
 require('./css/default.css');
