@@ -9,12 +9,6 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       label: 'Home'
     });
 
-    $routeProvider.when('/login', {
-      controller: 'LoginCtrl',
-      template: fs.readFileSync(__dirname + '/templates/login.html'),
-      label: 'Login'
-    });
-
     $routeProvider.when('/register', {
       controller: 'RegistrationCtrl',
       template: fs.readFileSync(__dirname + '/templates/registration.html'),
