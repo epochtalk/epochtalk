@@ -4,13 +4,19 @@ module.exports = function() {
   return {
     restrict: 'E',
     template: fs.readFileSync(__dirname + '/../../templates/directives/manage-forum.html'),
+    scope: {
+      categories: '=',
+      boards: '=',
+    },
     link: function(scope) {
-      var index = 0;
+      scope.newCatName = '';
+      scope.newBoardName = '';
+      var nestIndex = 0;
 
       var generateCategoryList = function(categories) {
-        var html = '<div class="dd" id="nestableCats"><ol class="dd-list">';
+        var html = '<div class="dd" id="nestable-cats"><ol class="dd-list">';
         categories.forEach(function(cat) {
-          html += '<li class="dd-item" data-id="' + index++ + '" data-top="true" data-cat-name="' + cat.name + '"><div class="dd-handle dd-root-handle">' +
+          html += '<li class="dd-item dd-root-item" data-id="' + nestIndex++ + '" data-top="true" data-cat-name="' + cat.name + '"><div class="dd-handle dd-root-handle">' +
              cat.name + '</div>' + generateBoardList(cat.boards) + '</li>';
         });
         html += '</ol></div>';
@@ -21,18 +27,37 @@ module.exports = function() {
         if (!boards) { return ''; }
         var html = '<ol class="dd-list">';
         boards.forEach(function(board) {
-          html += '<li class="dd-item" data-id="' + index++ + '" data-board-id="' + board.id + '"><div class="dd-handle">' + board.name + '</div>' + generateBoardList(board.children) + '</li>';
+          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board-id="' + board.id + '"><div class="dd-handle">' + board.name + '</div>' + generateBoardList(board.children) + '</li>';
         });
         html += '</ol>';
         return html;
       };
 
-      var originalHtml;
-      scope.$watch('categories', function(cats) {
-        if (cats) {
-          originalHtml = generateCategoryList(cats);
-          $('#nestable-list').html(originalHtml);
-          $('#nestableCats').nestable({ protectRoot: true, maxDepth: 10 });
+      var generateNoCatBoardsList = function(boards) {
+        var noCatBoards = [];
+        boards.forEach(function(board) {
+          if (!board.category_id && board.category_id !== 0) {
+            noCatBoards.push(board);
+          }
+        });
+        var html = '<div class="dd" id="nestable-boards">';
+        html += generateBoardList(noCatBoards);
+        html += '</div>';
+        return html;
+      };
+
+      var originalCatHtml;
+      var originalNoCatHtml;
+      scope.$watchGroup(['categories', 'boards'], function(newValues) {
+        var cats = newValues[0];
+        var boards = newValues[1];
+        if (cats && boards) {
+          originalCatHtml = generateCategoryList(cats);
+          originalNoCatHtml = generateNoCatBoardsList(boards);
+          $('#cat-list').html(originalCatHtml);
+          $('#no-cat-boards-list').html(originalNoCatHtml);
+          $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
+          $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
         }
       }, true);
 
@@ -53,23 +78,46 @@ module.exports = function() {
         return updatedCats;
       };
 
+      scope.insertNewCategory = function() {
+        if (scope.newCatName !== '') {
+          var newCatHtml = '<li class="dd-item dd-root-item" data-id="' + nestIndex++ +
+            '" data-top="true" data-cat-name="' + scope.newCatName + '">' +
+            '<div class="dd-handle dd-root-handle">' +  scope.newCatName + '</div></li>';
+          $('#nestable-cats > .dd-list').prepend(newCatHtml);
+          $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
+          scope.newCatName = '';
+        }
+      };
+
+      scope.insertNewBoard = function() {
+        if (scope.newBoardName !== '') {
+          var newBoardHtml = '<li class="dd-item" data-id="' + nestIndex++ +
+            '" data-board-id=""><div class="dd-handle">' +  scope.newBoardName + '</div></li>';
+          $('#nestable-boards > .dd-list').prepend(newBoardHtml);
+          $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
+          scope.newBoardName = '';
+        }
+      };
+
       scope.expandAll = function() {
-        $('#nestableCats').nestable('expandAll');
+        $('#nestable-cats').nestable('expandAll');
       };
 
       scope.collapseAll = function() {
-        $('#nestableCats').nestable('collapseAll');
+        $('#nestable-cats').nestable('collapseAll');
       };
 
       scope.submit = function() {
-        var serializedArr = $('#nestableCats').nestable('serialize');
+        var serializedArr = $('#nestable-cats').nestable('serialize');
         var updatedCats = buildUpdatedCats(serializedArr);
         console.log(JSON.stringify(updatedCats, null, 2));
       };
 
       scope.reset = function() {
-        $('#nestable-list').html(originalHtml);
-        $('#nestableCats').nestable({ protectRoot: true, maxDepth: 10 });
+        $('#cat-list').html(originalCatHtml);
+        $('#no-cat-boards-list').html(originalNoCatHtml);
+        $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
+        $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
       };
     }
   };
