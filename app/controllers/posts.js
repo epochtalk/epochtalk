@@ -10,6 +10,7 @@ module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'br
     $scope.pageCount = 1;
     $scope.thread = {};
     $scope.loggedIn = Auth.isAuthenticated;
+    $scope.newPost = { title: '' };
 
     $http({
       url: '/api/thread/',
@@ -17,7 +18,8 @@ module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'br
       params: { id: threadId }
     })
     .success(function(thread) {
-      $scope.title = 'Re: ' + thread.title;
+      $scope.newPost.title = 'Re: ' + thread.title;
+      $scope.newPost.thread_id = thread.id;
       breadcrumbs.options = { 'Thread': thread.title };
       $rootScope.breadcrumbs = breadcrumbs.get();
       var postCount = thread.post_count;
@@ -36,26 +38,19 @@ module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'br
       });
     });
 
-    $scope.title = '';
-    $scope.encodedText = '';
-    $scope.processedText = '';
     $scope.saveText = function(encoded, text) {
-      $scope.encodedText = encoded;
-      $scope.processedText = text;
+      $scope.newPost.encodedBody = encoded;
+      $scope.newPost.body = text;
     };
+
     $scope.savePost = function(post) {
       // save post to server
       $http({
         url: '/api/posts',
         method: 'POST',
-        data: {
-          title: $scope.title,
-          encodedBody: $scope.encodedText,
-          body: $scope.processedText,
-          thread_id: threadId
-        }
+        data: $scope.newPost
       })
-      .success(function(data) { $route.reload();});
+      .success(function(data) { $route.reload(); });
     };
   }
 ];
