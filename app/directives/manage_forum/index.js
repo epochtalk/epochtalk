@@ -1,4 +1,5 @@
 var fs = require('fs');
+var _ = require('lodash');
 
 module.exports = function() {
   return {
@@ -12,8 +13,6 @@ module.exports = function() {
       scope.newCatName = '';
       scope.newBoardName = '';
       var nestIndex = 0;
-      var originalCatBoards;
-      var originalUncatBoards;
 
       var generateCategoryList = function(categories) {
         var html = '<div class="dd" id="nestable-cats"><ol class="dd-list">';
@@ -29,7 +28,12 @@ module.exports = function() {
         if (!boards) { return ''; }
         var html = '<ol class="dd-list">';
         boards.forEach(function(board) {
-          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board="' + board + '"><div class="dd-handle">' + board.name + '</div>' + generateBoardList(board.children) + '</li>';
+          var boardData = JSON.stringify({
+            id: board.id,
+            name: board.name,
+            children_ids: board.children_ids || []
+          });
+          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board=\'' + boardData + '\'><div class="dd-handle">' + board.name + '</div>' + generateBoardList(board.children) + '</li>';
         });
         html += '</ol>';
         return html;
@@ -61,27 +65,45 @@ module.exports = function() {
           $('#no-cat-boards-list').html(originalNoCatHtml);
           $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
           $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 3, group: 1 });
-
-          originalCatBoards = $('#nestable-cats').nestable('serialize');
-          originalUncatBoards = $('#nestable-boards').nestable('serialize');
         }
       }, true);
 
-      var buildUpdatedCats = function(serializedArr) {
+      var buildUpdatedCats = function(catsArr) {
         var updatedCats = [];
-        serializedArr.forEach(function(category) {
+        catsArr.forEach(function(category) {
           var cat = {
             name: category.catName,
             board_ids: []
           };
           if (category.children) {
             category.children.forEach(function(child) {
-              cat.board_ids.push(child.board.boardId);
+              cat.board_ids.push(child.board.id);
             });
           }
           updatedCats.push(cat);
         });
         return updatedCats;
+      };
+
+      var processBoardChanges = function(boardsArr) {
+        if (!boardsArr) { return; }
+        var newChildren = [];
+        boardsArr.forEach(function(item) {
+          var board = item.board;
+          if (item.children) {
+            item.children.forEach(function(childItem) {
+              var childBoard = childItem.board;
+              newChildren.push(childBoard.id);
+            });
+            if(!_.isEqual(board.children_ids, newChildren)) {
+              console.log('old children:');
+              console.log(board.children_ids);
+              console.log('new children:');
+              console.log(newChildren);
+            }
+            processBoardChanges(item.children);
+          }
+        });
       };
 
       scope.insertNewCategory = function() {
@@ -117,8 +139,9 @@ module.exports = function() {
         var serializedArr = $('#nestable-cats').nestable('serialize');
 
         console.log(JSON.stringify(serializedArr, null, 2));
-        console.log(JSON.stringify(originalCatBoards, null, 2));
-
+        serializedArr.forEach(function(cat) {
+          processBoardChanges(cat.children);
+        });
         var updatedCats = buildUpdatedCats(serializedArr);
         console.log(JSON.stringify(updatedCats, null, 2));
       };
