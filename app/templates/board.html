@@ -6,6 +6,13 @@
     <div class="thin-dotted-underline bottom-spacer-10"></div>
   </div>
 
+  <div class="small-12 columns" ng-if="loggedIn()">
+    <dl class="sub-nav" style="margin-bottom: 0">
+      <dd><a ng-href="{{newThreadUrl}}">Start a New Thread</a></dd>
+    </dl>
+    <div class="thin-dotted-underline bottom-spacer-10"></div>
+  </div>
+
   <div class="small-12 columns">
     <span ng-if="board.children && page === 1">
       <h6><strong>Child Boards</strong></h6>

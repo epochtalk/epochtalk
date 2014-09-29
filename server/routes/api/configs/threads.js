@@ -8,25 +8,30 @@ var memDb = require(path.join('..', '..', '..', 'memStore')).db;
 
 exports.create = {
   handler: function(request, reply) {
+    // check if already logged in with jwt
+    var user;
+    if (request.auth.isAuthenticated) {
+      user = request.auth.credentials;
+    }
+
     // build the thread post object from payload and params
-    var newThread = {
+    var newThread = { board_id: request.payload.board_id };
+    var newPost = {
       title: request.payload.title,
       body: request.payload.body,
-      board_id: request.payload.board_id
+      encodedBody: request.payload.encodedBody,
+      user_id: user.id
     };
 
     // create the thread in core
     core.threads.create(newThread)
-    .then(function(thread) {
-      reply(thread);
-    })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .then(function(thread) { newPost.thread_id = thread.id; })
+    .then(function() { return core.posts.create(newPost); })
+    .then(function(post) {reply(post); })
+    .catch(function(err) { reply(err.message); });
   },
-  validate: {
-    payload: threadSchema.validate
-  }
+  validate: { payload: threadSchema.validate },
+  auth: { strategy: 'jwt' }
 };
 
 exports.byBoard = {
@@ -75,14 +80,8 @@ exports.find = {
   handler: function(request, reply) {
     var thread = request.pre.thread;
     var newViewerId = request.pre.newViewId;
-
-    if (newViewerId) {
-      return reply(thread).header('Epoch-Viewer', newViewerId);
-    }
+    if (newViewerId) { return reply(thread).header('Epoch-Viewer', newViewerId); }
     else { return reply(thread); }
   },
-  auth: {
-    mode: 'try',
-    strategy: 'jwt'
-  }
+  auth: { mode: 'try', strategy: 'jwt' }
 };

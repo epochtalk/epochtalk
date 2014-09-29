@@ -27,6 +27,12 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       label: 'Board Name'
     });
 
+    $routeProvider.when('/boards/:boardId/threads/new', {
+      controller: 'NewThreadCtrl',
+      template: fs.readFileSync(__dirname + '/templates/newThread.html'),
+      label: 'New Thread'
+    });    
+
     $routeProvider.when('/boards/:boardId/threads', {
       controller: 'ThreadsCtrl',
       template: fs.readFileSync(__dirname + '/templates/threads.html'),
@@ -42,7 +48,7 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
     $routeProvider.when('/threads/:threadId/posts/:startkey?', {
       controller: 'PostsCtrl',
       template: fs.readFileSync(__dirname + '/templates/posts.html'),
-      label: 'Thread'
+      label: 'Thread Page'
     });
 
     $routeProvider.when('/profiles/:userId', {

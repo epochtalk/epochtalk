@@ -10,7 +10,7 @@ var rawPostSchema = Joi.object().keys({
 module.exports = {
   rawPostSchema: rawPostSchema,
   validate: function(post, options, next) {
-    var postSchema = rawPostSchema.with('title', 'body', 'thread_id');
+    var postSchema = rawPostSchema.with('title', 'thread_id');
     Joi.validate(post, postSchema, next);
   },
   validateId: function(post, options, next) {

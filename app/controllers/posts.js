@@ -1,11 +1,11 @@
 module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'breadcrumbs', 'Auth',
   function($scope, $route, $routeParams, $http, $rootScope, breadcrumbs, Auth) {
     // TODO: this needs to be grabbed from user settings
-    var threadId = $routeParams.threadId;
     var limit = $routeParams.limit;
     var postsPerPage = limit ? Number(limit) : 10;
     var page = $routeParams.page;
     $scope.page = page ? Number(page) : 1;
+    var threadId = $routeParams.threadId;
     $scope.posts = null;
     $scope.pageCount = 1;
     $scope.thread = {};
@@ -44,12 +44,7 @@ module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'br
     };
 
     $scope.savePost = function(post) {
-      // save post to server
-      $http({
-        url: '/api/posts',
-        method: 'POST',
-        data: $scope.newPost
-      })
+      $http.post('/api/posts', $scope.newPost)
       .success(function(data) { $route.reload(); });
     };
   }

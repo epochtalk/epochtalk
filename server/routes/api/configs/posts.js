@@ -19,16 +19,10 @@ exports.create = {
 
     // create the post in core
     core.posts.create(newPost)
-    .then(function(post) {
-      reply(post);
-    })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .then(function(post) { reply(post); })
+    .catch(function(err) { reply(err.message); });
   },
-  validate: {
-    payload: postSchema.validate
-  },
+  validate: { payload: postSchema.validate },
   auth: { strategy: 'jwt' }
 };
 
@@ -36,16 +30,10 @@ exports.find = {
   handler: function(request, reply) {
     var id = request.params.id;
     core.posts.find(id)
-    .then(function(post) {
-      reply(post);
-    })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .then(function(post) { reply(post); })
+    .catch(function(err) { reply(err.message); });
   },
-  validate: {
-    params: postSchema.validateId
-  }
+  validate: { params: postSchema.validateId }
 };
 
 exports.byThread = {
@@ -56,12 +44,8 @@ exports.byThread = {
       page: request.query.page || request.params.page
     };
     core.posts.byThread(threadId, opts)
-    .then(function(posts) {
-      reply(posts);
-    })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .then(function(posts) { reply(posts); })
+    .catch(function(err) { reply(err.message); });
   },
   validate: {
     params: postSchema.validateByThread,
@@ -80,12 +64,8 @@ exports.update = {
     };
 
     core.posts.update(updatePost)
-    .then(function(post) {
-      reply(post);
-    })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .then(function(post) { reply(post); })
+    .catch(function(err) { reply(err.message); });
   },
   validate: {
     payload: postSchema.validate,
@@ -97,14 +77,8 @@ exports.delete = {
   handler: function(request, reply) {
     var postId = request.params.id;
     core.posts.delete(postId)
-    .then(function(post) {
-      reply(post);
-    })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .then(function(post) { reply(post); })
+    .catch(function(err) { reply(err.message); });
   },
-  validate: {
-    params: postSchema.validateId
-  }
+  validate: { params: postSchema.validateId }
 };

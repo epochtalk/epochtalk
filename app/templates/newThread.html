@@ -1,0 +1,32 @@
+<div class="row">
+  
+  <div class="small-12 columns" ng-if="!loggedIn()" style="margin-bottom: 10px">
+    <div style="text-align: center">
+      <span class="label alert radius">
+        You need to be logged in to make a new thread
+      </span>
+    </div>
+  </div>
+
+  <div class="small-12 columns">
+    <span>
+      Start New Topic:
+    </span>
+
+    <!-- editor -->
+    <label>Title:</label>
+    <input type="text" ng-model="thread.title">
+    <div class="row">
+      <div class="small-6 columns">
+        <label>Reply:</label>
+      </div>
+      <div class="small-6 columns" style="padding-left: 0;">
+        <label>Preview:</label>
+      </div>
+    </div>
+    <div style="height: 200px; width: 100%; margin-bottom: 20px;">
+      <epochtalk-editor text="thead.encodedBody" save-text="updateText(encoded, text)" style="height: 100%; width: 100%; display: block;"></epochtalk-editor>
+    </div>
+    <button class="button expand" ng-click="save()">Submit</button>
+  </div>
+</div>

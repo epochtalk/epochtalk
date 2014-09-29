@@ -1,15 +1,15 @@
-module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', 'breadcrumbs',
-  function($scope, $location, $http, $routeParams, $rootScope, breadcrumbs) {
-    // TODO: this needs to be grabbed from user settings
-    var limit = ($location.search()).limit;
-    var threadsPerPage = limit ? Number(limit) : 10;
-
+module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', 'Auth', 'breadcrumbs',
+  function($scope, $location, $http, $routeParams, $rootScope, Auth, breadcrumbs) {
     var boardId = $routeParams.boardId;
-    var page = ($location.search()).page;
+    // TODO: this needs to be grabbed from user settings
+    var limit = $routeParams.limit;
+    var threadsPerPage = limit ? Number(limit) : 10;
+    var page = $routeParams.page;
     $scope.page = page ? Number(page) : 1;
     $scope.threads = null;
     $scope.pageCount = 1;
-    $scope.url = $location.path();
+    $scope.loggedIn = Auth.isAuthenticated;
+    $scope.newThreadUrl = '/boards/' + boardId + '/threads/new';
 
     $http.get('/api/boards/' + boardId)
     .success(function(board) {
@@ -34,9 +34,7 @@ module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', 
           thread.page_count = Math.ceil(thread.post_count / postsPerPage);
           getPageKeysForThread(thread);
 
-          if (thread.has_new_post) {
-            thread.title_class = 'bold-title';
-          }
+          if (thread.has_new_post) { thread.title_class = 'bold-title'; }
         });
         $scope.threads = threads;
       });
