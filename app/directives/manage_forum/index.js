@@ -29,7 +29,7 @@ module.exports = function() {
         if (!boards) { return ''; }
         var html = '<ol class="dd-list">';
         boards.forEach(function(board) {
-          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board-id="' + board.id + '" data-board-name="' + board.name + '"><div class="dd-handle">' + board.name + '</div>' + generateBoardList(board.children) + '</li>';
+          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board="' + board + '"><div class="dd-handle">' + board.name + '</div>' + generateBoardList(board.children) + '</li>';
         });
         html += '</ol>';
         return html;
@@ -42,8 +42,9 @@ module.exports = function() {
             noCatBoards.push(board);
           }
         });
+        var emptyHtml = '<div class="dd-empty"></div>';
         var html = '<div class="dd" id="nestable-boards">';
-        html += generateBoardList(noCatBoards);
+        html += noCatBoards.length > 0 ? generateBoardList(noCatBoards) : emptyHtml;
         html += '</div>';
         return html;
       };
@@ -75,7 +76,7 @@ module.exports = function() {
           };
           if (category.children) {
             category.children.forEach(function(child) {
-              cat.board_ids.push(child.boardId);
+              cat.board_ids.push(child.board.boardId);
             });
           }
           updatedCats.push(cat);
@@ -97,7 +98,7 @@ module.exports = function() {
       scope.insertNewBoard = function() {
         if (scope.newBoardName !== '') {
           var newBoardHtml = '<li class="dd-item" data-id="' + nestIndex++ +
-            '" data-board-id="" data-board-name="' + scope.newBoardName + '"><div class="dd-handle">' +  scope.newBoardName + '</div></li>';
+            '" data-board="' + { name: scope.newBoardName }+ '"><div class="dd-handle">' +  scope.newBoardName + '</div></li>';
           $('#nestable-boards > .dd-list').prepend(newBoardHtml);
           $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 3, group: 1 });
           scope.newBoardName = '';
@@ -114,8 +115,10 @@ module.exports = function() {
 
       scope.submit = function() {
         var serializedArr = $('#nestable-cats').nestable('serialize');
+
         console.log(JSON.stringify(serializedArr, null, 2));
         console.log(JSON.stringify(originalCatBoards, null, 2));
+
         var updatedCats = buildUpdatedCats(serializedArr);
         console.log(JSON.stringify(updatedCats, null, 2));
       };
