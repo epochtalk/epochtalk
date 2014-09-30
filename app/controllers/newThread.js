@@ -3,6 +3,8 @@ module.exports = ['$scope', '$routeParams', '$http','$rootScope', '$location', '
     $rootScope.breadcrumbs = breadcrumbs.get();
     $scope.loggedIn = Auth.isAuthenticated;
     $scope.error = {};
+
+    Auth.checkAuthentication();
     
     $scope.thread = {
       board_id: $routeParams.boardId,
