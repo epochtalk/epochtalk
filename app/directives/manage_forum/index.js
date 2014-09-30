@@ -13,11 +13,17 @@ module.exports = function() {
       scope.newCatName = '';
       scope.newBoardName = '';
       var nestIndex = 0;
+      var newBoards = [];
+      var deletedBoards = [];
 
       var generateCategoryList = function(categories) {
         var html = '<div class="dd" id="nestable-cats"><ol class="dd-list">';
         categories.forEach(function(cat) {
-          html += '<li class="dd-item dd-root-item" data-id="' + nestIndex++ + '" data-top="true" data-cat-name="' + cat.name + '"><div class="dd-handle dd-root-handle">' +
+          var catData = JSON.stringify({
+            name: cat.name,
+            children_ids: cat.board_ids || []
+          });
+          html += '<li class="dd-item dd-root-item" data-id="' + nestIndex++ + '" data-top="true" data-cat=\'' + catData + '\'><div class="dd-handle dd-root-handle">' +
              cat.name + '</div>' + generateBoardList(cat.boards) + '</li>';
         });
         html += '</ol></div>';
@@ -31,6 +37,7 @@ module.exports = function() {
           var boardData = JSON.stringify({
             id: board.id,
             name: board.name,
+            parent_id: board.parent_id || '',
             children_ids: board.children_ids || []
           });
           html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board=\'' + boardData + '\'><div class="dd-handle">' + board.name + '</div>' + generateBoardList(board.children) + '</li>';
@@ -70,13 +77,13 @@ module.exports = function() {
 
       var buildUpdatedCats = function(catsArr) {
         var updatedCats = [];
-        catsArr.forEach(function(category) {
+        catsArr.forEach(function(item) {
           var cat = {
-            name: category.catName,
+            name: item.cat.name,
             board_ids: []
           };
-          if (category.children) {
-            category.children.forEach(function(child) {
+          if (item.children) {
+            item.children.forEach(function(child) {
               cat.board_ids.push(child.board.id);
             });
           }
@@ -85,31 +92,37 @@ module.exports = function() {
         return updatedCats;
       };
 
-      var processBoardChanges = function(boardsArr) {
+      var processChanges = function(boardsArr) {
         if (!boardsArr) { return; }
-        var newChildren = [];
         boardsArr.forEach(function(item) {
-          var board = item.board;
-          if (item.children) {
-            item.children.forEach(function(childItem) {
-              var childBoard = childItem.board;
-              newChildren.push(childBoard.id);
-            });
-            if(!_.isEqual(board.children_ids, newChildren)) {
-              console.log('old children:');
-              console.log(board.children_ids);
-              console.log('new children:');
-              console.log(newChildren);
-            }
-            processBoardChanges(item.children);
+          var newChildrenIds = [];
+          var board = item.board || item.cat;
+          item.children = item.children || [];
+          item.children.forEach(function(childItem) {
+            var childBoard = childItem.board;
+            newChildrenIds.push(childBoard.id);
+          });
+          if(!_.isEqual(board.children_ids, newChildrenIds)) {
+            console.log('Cat/Board Name: ' + board.name);
+            console.log('Board ID: ' + board.id);
+            console.log('Parent ID: ' + board.parent_id);
+            console.log('old children:');
+            console.log(board.children_ids);
+            console.log('new children:');
+            console.log(newChildrenIds);
           }
+          processChanges(item.children);
         });
       };
 
       scope.insertNewCategory = function() {
         if (scope.newCatName !== '') {
+          var catData = JSON.stringify({
+            name: scope.newCatMame,
+            children_ids: []
+          });
           var newCatHtml = '<li class="dd-item dd-root-item" data-id="' + nestIndex++ +
-            '" data-top="true" data-cat-name="' + scope.newCatName + '">' +
+            '" data-top="true" data-cat=\'' + catData + '\'>' +
             '<div class="dd-handle dd-root-handle">' +  scope.newCatName + '</div></li>';
           $('#nestable-cats > .dd-list').prepend(newCatHtml);
           $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
@@ -119,8 +132,21 @@ module.exports = function() {
 
       scope.insertNewBoard = function() {
         if (scope.newBoardName !== '') {
+          // Add list if list is currently empty
+          if ($('#nestable-boards').children('.dd-empty').length) {
+            $('#nestable-boards').html('<ol class="dd-list"></ol>');
+          }
+          var newBoard = {
+            id: '',
+            dataId: nestIndex,
+            name: scope.newBoardName,
+            parent_id: '',
+            children_ids: []
+          };
+          newBoards.push(newBoard);
+          var newBoardData = JSON.stringify(newBoard);
           var newBoardHtml = '<li class="dd-item" data-id="' + nestIndex++ +
-            '" data-board="' + { name: scope.newBoardName }+ '"><div class="dd-handle">' +  scope.newBoardName + '</div></li>';
+            '" data-board=\'' + newBoardData + '\'><div class="dd-handle">' +  scope.newBoardName + '</div></li>';
           $('#nestable-boards > .dd-list').prepend(newBoardHtml);
           $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 3, group: 1 });
           scope.newBoardName = '';
@@ -136,14 +162,38 @@ module.exports = function() {
       };
 
       scope.submit = function() {
-        var serializedArr = $('#nestable-cats').nestable('serialize');
 
-        console.log(JSON.stringify(serializedArr, null, 2));
-        serializedArr.forEach(function(cat) {
-          processBoardChanges(cat.children);
+        var i = 0;
+        // 1) Create new Boards
+        console.log('Adding new Boards: \n' + JSON.stringify(newBoards, null, 2));
+        newBoards.forEach(function(newBoard) {
+           var newBoardEl = $('li[data-id="' + newBoard.dataId + '"]');
+           var newBoardData = newBoardEl.data().board;
+           newBoardData.id = 'OH SNAP' + i++;
+           newBoardEl.data().board = newBoardData;
         });
+
+        // 2) Delete removed Boards
+        console.log('Deleting removed boards:');
+        deletedBoards.forEach(function(deleteBoard) {
+          console.log(deleteBoard);
+          // core.boards.delete
+        });
+
+        // 3) Handle Board Ordering/Move Changes
+        console.log('Handling moved boards');
+        var serializedArr = $('#nestable-cats').nestable('serialize');
+        processChanges(serializedArr);
+
+        // 4) Updated all Categories
         var updatedCats = buildUpdatedCats(serializedArr);
-        console.log(JSON.stringify(updatedCats, null, 2));
+        console.log('Updating Categories: \n' + JSON.stringify(updatedCats, null, 2));
+
+        // Order of Operations
+        // 1) Add all new Boards (boards.create)
+        // 2) Handle boards that were deleted (boards.update?)
+        // 3) Handle boards moved to other boards (boards.moveChildBoard)
+        // 4) Update categories (boards.updateCategories)
       };
 
       scope.reset = function() {
