@@ -1,7 +1,7 @@
 var fs = require('fs');
 var _ = require('lodash');
 
-module.exports = function() {
+module.exports = ['$http', function($http) {
   return {
     restrict: 'E',
     template: fs.readFileSync(__dirname + '/../../templates/directives/manage-forum.html'),
@@ -14,8 +14,6 @@ module.exports = function() {
       scope.newBoardName = '';
       var nestIndex = 0;
       var newBoards = []; // stores newly added boards
-      var deletedBoards = []; // stores deleted boards
-      var movedBoards = {}; // stores boards which were moved
 
       // Init for view (creates nestable lists for categorized/uncategorized boards)
       var originalCatHtml;
@@ -102,8 +100,9 @@ module.exports = function() {
       };
 
       // Recursively builds a hashmap of moved boards
-      var buildMovedBoardsHash = function(boardsArr) {
+      var buildMovedBoardsHash = function(boardsArr, movedBoards) {
         if (!boardsArr) { return; }
+        movedBoards = movedBoards || {};
         boardsArr.forEach(function(item) {
           var newChildrenIds = [];
           var board = item.board || item.cat;
@@ -130,6 +129,10 @@ module.exports = function() {
                 delete movedBoards[addedChild];
               }
             });
+            // Odering change for non top level boards (Update Board children_ids order)
+            if (!removedChildren.length && !addedChildren.length && board.id) {
+              console.log('New Board Order' + JSON.stringify(newChildrenIds));
+            }
             // TODO: Account for boards moved from categorized -> uncategoriezed and vice versa
 
             // console.log('Cat/Board Name: ' + board.name);
@@ -141,8 +144,13 @@ module.exports = function() {
             // console.log('all current children:');
             // console.log(newChildrenIds);
           }
-          buildMovedBoardsHash(item.children);
+          buildMovedBoardsHash(item.children, movedBoards);
         });
+        return movedBoards;
+      };
+
+      var processMoveBoards = function(movedBoards) {
+        console.log(JSON.stringify(movedBoards, null, 2));
       };
 
       scope.submit = function() {
@@ -157,24 +165,28 @@ module.exports = function() {
            newBoardEl.data().board = newBoardData;
         });
 
-        // 2) Delete Boards which have been removed
-        console.log('2) Deleting removed boards:');
-        deletedBoards.forEach(function(deleteBoard) {
-          // core.boards.delete
-          console.log(deleteBoard);
-        });
-
-        // 3) Handle Boards which have been moved
-        console.log('3) Handling moved boards');
+        // 2) Handle Boards which have been moved/reordered
+        console.log('2) Handling moved boards');
         var serializedArr = $('#nestable-cats').nestable('serialize');
-        buildMovedBoardsHash(serializedArr);
-        console.log(JSON.stringify(movedBoards, null, 2));
+        var movedBoards = buildMovedBoardsHash(serializedArr);
+        processMoveBoards(movedBoards);
         // TODO: moveBoards(movedBoards);
 
-        // 4) Updated all Categories
+        // 3) Updated all Categories
         var updatedCats = buildUpdatedCats(serializedArr);
-        console.log('4) Updating Categories: \n' + JSON.stringify(updatedCats, null, 2));
-        // core.boards.updateCategories(updatedCats);
+        console.log('3) Updating Categories: \n' + JSON.stringify(updatedCats, null, 2));
+        $http({
+          url: '/api/boards/categories',
+          method: 'POST',
+          data: {
+            categories: updatedCats
+          }
+        })
+        .success(function(updated) {
+          console.log('Success!');
+          console.log(updated);
+        });
+              // core.boards.updateCategories(updatedCats);
       };
 
       // Resets to original state
@@ -237,4 +249,4 @@ module.exports = function() {
       };
     }
   };
-};
+}];

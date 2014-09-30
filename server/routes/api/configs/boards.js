@@ -58,13 +58,31 @@ exports.allCategories = {
   }
 };
 
+exports.updateCategories = {
+  handler: function(request, reply) {
+    // update board on core
+    core.boards.updateCategories(request.payload.categories)
+    .then(function(board) {
+      reply(board);
+    })
+    .catch(function(err) {
+      reply(err.message);
+    });
+  },
+  validate: {
+    payload: boardSchema.validateCategories
+  }
+};
+
 exports.update = {
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = {
       id: request.params.id,
       name: request.payload.name,
-      description: request.payload.description
+      description: request.payload.description,
+      children_ids: request.payload.children_ids,
+      parent_id: request.payload.parent_id
     };
 
     // update board on core
