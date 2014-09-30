@@ -1,5 +1,6 @@
 var path = require('path');
 var uuid = require('node-uuid');
+var Hapi = require('hapi');
 var Promise = require('bluebird');
 var core = require('epochcore')();
 var threadSchema = require(path.join('..', 'schema', 'threads'));
@@ -8,13 +9,8 @@ var memDb = require(path.join('..', '..', '..', 'memStore')).db;
 
 exports.create = {
   handler: function(request, reply) {
-    // check if already logged in with jwt
-    var user;
-    if (request.auth.isAuthenticated) {
-      user = request.auth.credentials;
-    }
-
     // build the thread post object from payload and params
+    var user = request.auth.credentials;
     var newThread = { board_id: request.payload.board_id };
     var newPost = {
       title: request.payload.title,
@@ -23,11 +19,11 @@ exports.create = {
       user_id: user.id
     };
 
-    // create the thread in core
+    // create the thread and first post in core
     core.threads.create(newThread)
     .then(function(thread) { newPost.thread_id = thread.id; })
     .then(function() { return core.posts.create(newPost); })
-    .then(function(post) {reply(post); })
+    .then(function(post) { reply(post); })
     .catch(function(err) { reply(err.message); });
   },
   validate: { payload: threadSchema.validate },

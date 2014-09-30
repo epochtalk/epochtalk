@@ -31,7 +31,7 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       controller: 'NewThreadCtrl',
       template: fs.readFileSync(__dirname + '/templates/newThread.html'),
       label: 'New Thread'
-    });    
+    });
 
     $routeProvider.when('/boards/:boardId/threads', {
       controller: 'ThreadsCtrl',

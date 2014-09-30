@@ -2,6 +2,7 @@ module.exports = ['$scope', '$routeParams', '$http','$rootScope', '$location', '
   function($scope, $routeParams, $http, $rootScope, $location, Auth, breadcrumbs) {
     $rootScope.breadcrumbs = breadcrumbs.get();
     $scope.loggedIn = Auth.isAuthenticated;
+    $scope.error = {};
     
     $scope.thread = {
       board_id: $routeParams.boardId,
@@ -20,6 +21,11 @@ module.exports = ['$scope', '$routeParams', '$http','$rootScope', '$location', '
       $http.post('/api/threads', $scope.thread)
       .then(function(response) {
         $location.path('/threads/' + response.data.thread_id + '/posts');
+      })
+      .catch(function(err) {
+        $scope.error.post = {};
+        $scope.error.post.found = true;
+        $scope.error.post.message = err.data.message;
       });
     };
   }

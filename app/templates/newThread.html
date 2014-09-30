@@ -1,11 +1,17 @@
 <div class="row">
   
-  <div class="small-12 columns" ng-if="!loggedIn()" style="margin-bottom: 10px">
-    <div style="text-align: center">
-      <span class="label alert radius">
-        You need to be logged in to make a new thread
-      </span>
-    </div>
+  <!-- Auth error message -->
+  <div class="small-12 columns text-center" ng-if="!loggedIn()" style="margin-bottom: 10px">
+    <span class="label alert radius">
+      You need to be logged in to make a new thread
+    </span>
+  </div>
+
+  <!-- POST error message -->
+  <div class="small-12 columns text-center" ng-if="error.post.found">
+    <span class="label alert">
+      {{ error.post.message }}
+    </span>
   </div>
 
   <div class="small-12 columns">
