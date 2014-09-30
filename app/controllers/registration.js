@@ -15,7 +15,7 @@ module.exports = ['$scope', '$location', '$rootScope', 'Auth', 'breadcrumbs',
         function(err) {
           $scope.validation.register.error = true;
           $scope.validation.register.classes = 'no-margin';
-          $scope.validation.register.message = 'Could Not Register You';
+          $scope.validation.register.message = err.data.message;
         }
       );
     };

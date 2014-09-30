@@ -7,6 +7,7 @@ var path = require('path');
 var config = require(path.join(__dirname, '..', '..', '..', 'config'));
 var authSchema = require(path.join('..', 'schema', 'auth'));
 var memDb = require(path.join('..', '..', '..', 'memStore')).db;
+var pre = require(path.join('..', 'pre', 'auth'));
 
 exports.login = {
   handler: function(request, reply) {
@@ -87,6 +88,14 @@ exports.logout = {
 };
 
 exports.register = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: { payload: authSchema.validateRegister },
+  pre: [
+    [
+      { method: pre.checkEmail },
+      { method: pre.checkUsername }
+    ]
+  ],
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
@@ -99,40 +108,15 @@ exports.register = {
       return reply(loginReply);
     }
 
-    var username = request.payload.username;
-    var email = request.payload.email;
     var newUser = {
-      username: username,
-      email: email,
+      username: request.payload.username,
+      email: request.payload.email,
       password: request.payload.password,
       confirmation: request.payload.confirmation
     };
 
     // check that username or email does not already exist
-    var errorCode = 500;
-    var usernameFound = false;
-    var emailFound = false;
-    var usernameCheck = core.users.userByUsername(username);
-    var emailCheck = core.users.userByEmail(email);
-    return Promise.join(usernameCheck, emailCheck,
-      function(usernameUser, emailUser) {
-        if (usernameUser) { usernameFound = true; }
-        if (emailUser) { emailFound = true; }
-      }
-    )
-    .catch(function(err) { /* expecting this */ })
-    .then(function() {
-      var errorMessage = '';
-      if (usernameFound) { errorMessage += 'Username Already Taken. '; }
-      if (emailFound) { errorMessage += 'Email Already Taken'; }
-      if (errorMessage.length > 0) {
-        errorCode = 400;
-        throw new Error(errorMessage);
-      }
-    })
-    .then(function() { // insert user
-      return core.users.create(newUser);
-    })
+    return core.users.create(newUser)
     .then(function(user) { // build and save token
       var token = buildToken(user);
       memDb.put(user.id, token, function(err) {
@@ -146,15 +130,9 @@ exports.register = {
       });
     })
     .catch(function(err) {
-      // catch any errors along the way
-      var error = Hapi.error.badRequest(err.message);
-      error.output.statusCode = errorCode;
-      error.reformat();
-      return reply(error);
+      return reply(Hapi.error.internal('Registration Error', err));
     });
-  },
-  auth: { mode: 'try', strategy: 'jwt' },
-  validate: { payload: authSchema.validateRegister }
+  }
 };
 
 exports.isAuthenticated = {
