@@ -13,27 +13,17 @@ exports.create = {
 
     // create the thread in core
     core.users.create(newUser)
-    .then(function(user) {
-      reply(user);
-    })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .then(function(user) { reply(user); })
+    .catch(function(err) { reply(err.message); });
   },
-  validate: {
-    payload: userSchema.validate
-  }
+  validate: { payload: userSchema.validate }
 };
 
 exports.find = {
   handler: function(request, reply) {
     var userId = request.params.id || request.query.id;
     core.users.find(userId)
-    .then(function(user) {
-      reply(user);
-    })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .then(function(user) { reply(user); })
+    .catch(function(err) { reply(err.message); });
   }
 };

@@ -68,24 +68,20 @@ module.exports = {
     }
   },
   getUserViews: function(request, reply) {
-    var user;
-
     // return early if not signed in
     if (!request.auth.isAuthenticated) { return reply(undefined); }
 
-    user = request.auth.credentials;
+    var user = request.auth.credentials;
     core.users.getUserViews(user.id)
     .then(function(userViews) { return reply(userViews); });
   },
   updateUserView: function(request, reply) {
+    // return early if not signed in
+    if (!request.auth.isAuthenticated) { return reply(); }
+    
     var threadId = request.params.id || request.query.id;
     var now = Date.now();
-    var user;
-
-    // return early if not signed in
-    if (!request.auth.isAuthenticated) { return reply(undefined); }
-
-    user = request.auth.credentials;
+    var user = request.auth.credentials;
     var newUserViews = [ { threadId: threadId, timestamp: now } ];
     core.users.putUserViews(user.id, newUserViews)
     .then(function() { return reply(); })

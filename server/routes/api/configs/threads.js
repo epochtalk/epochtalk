@@ -1,11 +1,7 @@
 var path = require('path');
-var uuid = require('node-uuid');
-var Hapi = require('hapi');
-var Promise = require('bluebird');
 var core = require('epochcore')();
 var threadSchema = require(path.join('..', 'schema', 'threads'));
 var pre = require(path.join('..', 'pre', 'threads'));
-var memDb = require(path.join('..', '..', '..', 'memStore')).db;
 
 exports.create = {
   handler: function(request, reply) {
@@ -59,10 +55,7 @@ exports.byBoard = {
     params: threadSchema.validateByBoard,
     query: threadSchema.validateByBoard
   },
-  auth: {
-    mode: 'try',
-    strategy: 'jwt'
-  }
+  auth: { mode: 'try', strategy: 'jwt' }
 };
 
 exports.find = {
@@ -70,7 +63,7 @@ exports.find = {
     [
       { method: pre.getThread, assign: 'thread' },
       { method: pre.checkViewValidity, assign: 'newViewId' },
-      { method: pre.updateUserView, assign: 'userView' }
+      { method: pre.updateUserView }
     ]
   ],
   handler: function(request, reply) {

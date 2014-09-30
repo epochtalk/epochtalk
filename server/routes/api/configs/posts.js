@@ -3,13 +3,8 @@ var postSchema = require('../schema/posts');
 
 exports.create = {
   handler: function(request, reply) {
-    // check if already logged in with jwt
-    var user;
-    if (request.auth.isAuthenticated) {
-      user = request.auth.credentials;
-    }
-
     // build the post object from payload and params
+    var user = request.auth.credentials;
     var newPost = {
       title: request.payload.title,
       body: request.payload.body,
