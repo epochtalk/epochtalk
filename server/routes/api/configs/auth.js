@@ -12,8 +12,13 @@ exports.login = {
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
-      // reply with original token
-      return reply({ token: request.auth.credentials.token });
+      var loggedInUser = request.auth.credentials;
+      var loginReply = {
+        token: loggedInUser.token,
+        username: loggedInUser.username,
+        userId: loggedInUser.id
+      };
+      return reply(loginReply);
     }
 
     // check if user exists
@@ -38,7 +43,12 @@ exports.login = {
       var token = buildToken(user);
       memDb.put(user.id, token, function(err) {
         if (err) { throw new Error(err); }
-        return reply({ token: token }); // return token to user
+        var userReply = {
+          token: token,
+          username: user.username,
+          userId: user.id
+        };
+        return reply(userReply);
       });
     })
     .catch(function(err) {
@@ -48,13 +58,8 @@ exports.login = {
       return reply(error);
     });
   },
-  auth: {
-    mode: 'try',
-    strategy: 'jwt'
-  },
-  validate: {
-    payload: authSchema.validateLogin
-  }
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: { payload: authSchema.validateLogin }
 };
 
 exports.logout = {
@@ -78,18 +83,20 @@ exports.logout = {
       return reply(true);
     });
   },
-  auth: {
-    mode: 'try',
-    strategy: 'jwt'
-  }
+  auth: { mode: 'try', strategy: 'jwt' }
 };
 
 exports.register = {
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
-      // reply with original token
-      return reply({ token: request.auth.credentials.token });
+      var loggedInUser = request.auth.credentials;
+      var loginReply = {
+        token: loggedInUser.token,
+        username: loggedInUser.username,
+        userId: loggedInUser.id
+      };
+      return reply(loginReply);
     }
 
     var username = request.payload.username;
@@ -130,7 +137,12 @@ exports.register = {
       var token = buildToken(user);
       memDb.put(user.id, token, function(err) {
         if (err) { throw new Error(err); }
-        return reply({ token: token }); // return token to user
+        var userReply = {
+          token: token,
+          username: user.username,
+          userId: user.id
+        };
+        return reply(userReply);
       });
     })
     .catch(function(err) {
@@ -141,13 +153,8 @@ exports.register = {
       return reply(error);
     });
   },
-  auth: {
-    mode: 'try',
-    strategy: 'jwt'
-  },
-  validate: {
-    payload: authSchema.validateRegister
-  }
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: { payload: authSchema.validateRegister }
 };
 
 exports.isAuthenticated = {
@@ -161,37 +168,24 @@ exports.isAuthenticated = {
     }
 
   },
-  auth: {
-    mode: 'try',
-    strategy: 'jwt'
-  }
+  auth: { mode: 'try', strategy: 'jwt' }
 };
 
 exports.username = {
   handler: function(request, reply) {
     var username = request.params.username;
-
     core.users.userByUsername(username)
-    .then(function(user) {
-      reply({ found: true });
-    })
-    .catch(function(err) {
-      reply({ found: false });
-    });
+    .then(function(user) { reply({ found: true }); })
+    .catch(function(err) { reply({ found: false }); });
   }
 };
 
 exports.email = {
   handler: function(request, reply) {
     var email = request.params.email;
-
     core.users.userByEmail(email)
-    .then(function(user) {
-      reply({ found: true });
-    })
-    .catch(function(err) {
-      reply({ found: false});
-    });
+    .then(function(user) { reply({ found: true }); })
+    .catch(function(err) { reply({ found: false}); });
   }
 };
 

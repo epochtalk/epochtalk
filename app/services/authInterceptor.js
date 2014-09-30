@@ -24,8 +24,10 @@ module.exports = ['$rootScope', '$q', '$window', function ($rootScope, $q, $wind
         // handle the case where the user is not authenticated
         delete $window.sessionStorage.token;
         delete $window.sessionStorage.username;
+        delete $window.sessionStorage.userId;
         delete $window.localStorage.token;
         delete $window.localStorage.username;
+        delete $window.localStorage.userId;
       }
       return response || $q.when(response);
     }

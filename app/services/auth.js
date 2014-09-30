@@ -18,53 +18,55 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
       return username;
     };
 
+    var clearUser = function() {
+      delete $window.sessionStorage.token;
+      delete $window.sessionStorage.username;
+      delete $window.sessionStorage.userId;
+      delete $window.localStorage.token;
+      delete $window.localStorage.username;
+      delete $window.localStorage.userId;
+    };
+
+    var saveUserLocal = function(resource) {
+      $window.localStorage.token = resource.token;
+      $window.localStorage.username = resource.username;
+      $window.localStorage.userId = resource.userId;
+    };
+
+    var saveUserSession = function(resource) {
+      $window.sessionStorage.token = resource.token;
+      $window.sessionStorage.username = resource.username;
+      $window.sessionStorage.userId = resource.userId;
+    };
+
     return {
       register: function(user, callback, error) {
         // get username
-        var username = user.username;
         User.register(user, callback, error).$promise
         .then(function(resource) {
-          var token = resource.token;
-          greeting = greetingLoggedIn + username;
-          $window.sessionStorage.token = token;
-          $window.sessionStorage.username = username;
+          greeting = greetingLoggedIn + resource.username;
+          saveUserSession(resource);
         })
         .catch(function(err) {
           greeting = greetingLoggedOut;
-          // delete storage keys
-          delete $window.sessionStorage.token;
-          delete $window.sessionStorage.username;
-          delete $window.localStorage.token;
-          delete $window.localStorage.username;
+          clearUser();
         });
       },
 
       login: function(user, callback, error) {
         // get username and rememberMe
-        var username = user.username;
         var rememberMe = user.rememberMe;
         delete user.rememberMe;
 
         User.login(user, callback, error).$promise
         .then(function(resource) {
-          var token = resource.token;
-          greeting = greetingLoggedIn + username;
-          if (rememberMe) {
-            $window.localStorage.token = token;
-            $window.localStorage.username = username;
-          }
-          else {
-            $window.sessionStorage.token = token;
-            $window.sessionStorage.username = username;
-          }
+          greeting = greetingLoggedIn + resource.username;
+          if (rememberMe) { saveUserLocal(resource); }
+          else { saveUserSession(resource); }
         })
         .catch(function(err) {
           greeting = greetingLoggedOut;
-          // delete storage keys
-          delete $window.sessionStorage.token;
-          delete $window.sessionStorage.username;
-          delete $window.localStorage.token;
-          delete $window.localStorage.username;
+          clearUser();
         });
       },
 
@@ -72,18 +74,11 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
         User.logout(null, callback, error).$promise
         .then(function() {
           greeting = greetingLoggedOut;
-          // delete key from session storage
-          delete $window.sessionStorage.token;
-          delete $window.sessionStorage.username;
-          delete $window.localStorage.token;
-          delete $window.localStorage.username;
+          clearUser();
         })
         .catch(function(err) {
           if (err.data.message === greetingLoggedOut) {
-            delete $window.sessionStorage.token;
-            delete $window.sessionStorage.username;
-            delete $window.localStorage.token;
-            delete $window.localStorage.username;
+            clearUser();
             greeting = 'Logged Out';
           }
           else {
@@ -98,8 +93,7 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
 
       isAuthenticated: function() {
         var authenticated = false;
-        if ($window.sessionStorage.token ||
-            $window.localStorage.token) {
+        if ($window.sessionStorage.token || $window.localStorage.token) {
           authenticated = true;
         }
         return authenticated;
@@ -107,9 +101,7 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
 
       loginStateGreeting: function() {
         var username = getUser();
-        if (username) {
-          greeting = greetingLoggedIn;
-        }
+        if (username) { greeting = greetingLoggedIn; }
         return greeting;
       },
 
