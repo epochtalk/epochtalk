@@ -1,6 +1,5 @@
 var path = require('path');
 var uuid = require('node-uuid');
-var Promise = require('bluebird');
 var core = require('epochcore')();
 var memDb = require(path.join('..', '..', '..', 'memStore')).db;
 
@@ -36,7 +35,7 @@ module.exports = {
         return reply(undefined);
       })
       .catch(function(err) { // viewId not found
-        putAsync(viewerIdKey, Date.now()); // save to memdb
+        memDb.putAsync(viewerIdKey, Date.now()); // save to memdb
         var addressKey = viewerAddress + threadId;
         return checkViewKey(addressKey)
         .then(function(valid) { // address found
@@ -45,7 +44,7 @@ module.exports = {
         })
         // address doesn't exists so inc is valid
         .catch(function() {
-          putAsync(addressKey, Date.now());
+          memDb.putAsync(addressKey, Date.now());
           core.threads.incViewCount(threadId);
           return reply(undefined);
         });
@@ -53,7 +52,7 @@ module.exports = {
     } // no viewerId, check IP 
     else {
       newViewerId = uuid.v4(); // generate new viewerId
-      putAsync(newViewerId + threadId, Date.now()); // save to mem db
+      memDb.putAsync(newViewerId + threadId, Date.now()); // save to mem db
       var addressKey = viewerAddress + threadId;
       return checkViewKey(addressKey)
       .then(function(valid) {
@@ -62,7 +61,7 @@ module.exports = {
       })
       // address doesn't exists so inc is valid
       .catch(function(err) {
-        putAsync(addressKey, Date.now());
+        memDb.putAsync(addressKey, Date.now());
         core.threads.incViewCount(threadId);
         return reply(newViewerId);
       });
@@ -94,32 +93,14 @@ module.exports = {
   }
 };
 
-var getAsync = function(key) {
-  return new Promise(function(fulfill, reject) {
-    memDb.get(key, function(err, value) {
-      if (err) { reject(err); }
-      else { fulfill(value); }
-    });
-  });
-};
-
-var putAsync = function(key, value) {
-  return new Promise(function(fulfill, reject) {
-    memDb.put(key, value, function(err) {
-      if (err) { reject(err); }
-      else { fulfill(value); }
-    });
-  });
-};
-
 var checkViewKey = function(key) {
-  return getAsync(key)
+  return memDb.getAsync(key)
   .then(function(storedTime) {
     var timeElapsed = Date.now() - storedTime;
     // key exists and is past the cooling period
     // update key with new value and return true
     if (timeElapsed > 1000 * 60) {
-      return putAsync(key, Date.now())
+      return memDb.putAsync(key, Date.now())
       .then(function() { return true; });
     }
     // key exists but before cooling period
