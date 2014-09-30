@@ -41,8 +41,10 @@ module.exports = function() {
             name: cat.name,
             children_ids: cat.board_ids || []
           });
-          html += '<li class="dd-item dd-root-item" data-id="' + nestIndex++ + '" data-top="true" data-cat=\'' + catData + '\'><div class="dd-handle dd-root-handle">' +
-             cat.name + '</div>' + generateBoardList(cat.boards) + '</li>';
+          var toolbarHtml = '<i ng-click="editCategory()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          html += '<li class="dd-item dd-root-item" data-id="' + nestIndex++ +
+            '" data-top="true" data-cat=\'' + catData + '\'><div class="dd-handle' +
+            ' dd-root-handle">' + cat.name + toolbarHtml +'</div>' + generateBoardList(cat.boards) + '</li>';
         });
         html += '</ol></div>';
         return html;
@@ -59,7 +61,8 @@ module.exports = function() {
             name: board.name,
             children_ids: board.children_ids || []
           });
-          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board=\'' + boardData + '\'><div class="dd-handle">' + board.name + '</div>' + generateBoardList(board.children) + '</li>';
+          var toolbarHtml = '<i ng-click="editBoard()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board=\'' + boardData + '\'><div class="dd-handle">' + board.name + toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
         });
         html += '</ol>';
         return html;
@@ -199,9 +202,10 @@ module.exports = function() {
             name: scope.newCatName,
             children_ids: []
           });
+          var toolbarHtml = '<i ng-click="editCategory()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var newCatHtml = '<li class="dd-item dd-root-item" data-id="' + nestIndex++ +
             '" data-top="true" data-cat=\'' + catData + '\'>' +
-            '<div class="dd-handle dd-root-handle">' +  scope.newCatName + '</div></li>';
+            '<div class="dd-handle dd-root-handle">' +  scope.newCatName + toolbarHtml + '</div></li>';
           $('#nestable-cats > .dd-list').prepend(newCatHtml);
           $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
           scope.newCatName = '';
@@ -223,8 +227,9 @@ module.exports = function() {
           };
           newBoards.push(newBoard);
           var newBoardData = JSON.stringify(newBoard);
+          var toolbarHtml = '<i ng-click="editCategory()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var newBoardHtml = '<li class="dd-item" data-id="' + nestIndex++ +
-            '" data-board=\'' + newBoardData + '\'><div class="dd-handle">' +  scope.newBoardName + '</div></li>';
+            '" data-board=\'' + newBoardData + '\'><div class="dd-handle">' +  scope.newBoardName + toolbarHtml + '</div></li>';
           $('#nestable-boards > .dd-list').prepend(newBoardHtml);
           $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
           scope.newBoardName = '';

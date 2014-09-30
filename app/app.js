@@ -55,4 +55,4 @@ require('./css/editor.css');
 require('./css/medium-editor.css');
 require('./css/default.css');
 var cssify = require('cssify');
-cssify.byUrl('//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css');
+cssify.byUrl('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');

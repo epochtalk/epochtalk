@@ -1,6 +1,6 @@
 <div class="row">
   <br />
-  <div class="small-6 columns">
+  <div class="small-12 medium-6 columns">
     <div class="row collapse">
       <div class="small-2 columns">
         <a ng-click="insertNewCategory()" class="button prefix">Add</a>
@@ -10,7 +10,7 @@
       </div>
     </div>
   </div>
-  <div class="small-6 columns">
+  <div class="small-12 medium-6 columns">
     <div class="row collapse">
       <div class="small-2 columns">
         <a ng-click="insertNewBoard()" class="button prefix">Add</a>
@@ -22,19 +22,19 @@
   </div>
 </div>
 <div class="row">
-  <div class="small-6 columns">
+  <div class="small-12 medium-6 columns">
     <h6 class="thin-dotted-underline">
       Categorized Boards
       <div class="right">
-        <a ng-click="expandAll()">[Expand]</a>&nbsp;
-        <a ng-click="collapseAll()">[Collapse]</a>
+        <a ng-click="expandAll()"><i class="fa fa-expand"></i> Expand</a>&nbsp;
+        <a ng-click="collapseAll()"><i class="fa fa-compress"></i> Collapse</a>
       </div>
     </h6>
     <div id="cat-list"></div>
-    <button class="tiny" ng-click="reset()">Reset</button>&nbsp;
-    <button class="tiny" ng-click="submit()">Save</button>
+    <button class="tiny" ng-click="reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset</button>&nbsp;
+    <button class="tiny" ng-click="submit()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
   </div>
-  <div class="small-6 columns">
+  <div class="small-12 medium-6 columns">
     <h6 class="thin-dotted-underline">Uncategorized Boards</h6>
     <div id="no-cat-boards-list"></div>
   </div>

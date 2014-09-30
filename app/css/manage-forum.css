@@ -34,7 +34,7 @@
   line-height: 20px;
 }
 
-.dd-handle, .dd-nodrag, .dd-root-handle {
+.dd-handle, .dd-root-handle {
   display: block;
   height: 30px;
   margin: 5px 0;
@@ -64,11 +64,6 @@
 
 .dd-root-item > button:before {
   color: #fff !important;
-}
-
-.dd-nodrag .dd-handle:hover {
-  color: #2ea8e5;
-  background: #fff;
 }
 
 .dd-item > button {
@@ -145,4 +140,11 @@
 .dd-dragel .dd-handle {
   -webkit-box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, 0.1);
+}
+
+.dd-right-icon {
+  float: right;
+  margin-top: 3px;
+  padding-left: 5px;
+  cursor: pointer;
 }
