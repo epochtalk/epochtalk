@@ -44,7 +44,7 @@ var validate = function(token, decodedToken, cb) {
     var isValid = false;
     var credentials = {};
 
-    if (err) { error = err; }
+    if (err) { error = Hapi.error.unauthorized('Session is no longer valid.'); }
 
     // check if the token from memDown matches the token we got in the request
     // if it matches, then the token from the request is still valid
