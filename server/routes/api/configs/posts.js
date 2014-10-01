@@ -1,13 +1,18 @@
 var core = require('epochcore')();
 var postSchema = require('../schema/posts');
+var path = require('path');
+var pre = require(path.join('..', 'pre', 'posts'));
 
 exports.create = {
+  auth: { strategy: 'jwt' },
+  validate: { payload: postSchema.validate },
   handler: function(request, reply) {
     // build the post object from payload and params
     var user = request.auth.credentials;
     var newPost = {
       title: request.payload.title,
       body: request.payload.body,
+      encodedBody: request.payload.encodedBody,
       thread_id: request.payload.thread_id,
       user_id: user.id
     };
@@ -16,9 +21,7 @@ exports.create = {
     core.posts.create(newPost)
     .then(function(post) { reply(post); })
     .catch(function(err) { reply(err.message); });
-  },
-  validate: { payload: postSchema.validate },
-  auth: { strategy: 'jwt' }
+  }
 };
 
 exports.find = {
@@ -32,48 +35,76 @@ exports.find = {
 };
 
 exports.byThread = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: {
+    params: postSchema.validateByThread,
+    query: postSchema.validateByThread
+  },
   handler: function(request, reply) {
+    var user;
+    if (request.auth.isAuthenticated) { user = request.auth.credentials; }
     var threadId = request.query.thread_id || request.params.thread_id;
     var opts = {
       limit: request.query.limit || request.params.limit,
       page: request.query.page || request.params.page
     };
+
     core.posts.byThread(threadId, opts)
-    .then(function(posts) { reply(posts); })
+    .then(function(posts) {
+      if (user) {
+        posts.map(function(post) {
+          if (post.user.id === user.id) { post.editable = true; }
+        });
+      }
+
+      // strip user ids?
+
+      reply(posts);
+    })
     .catch(function(err) { reply(err.message); });
-  },
-  validate: {
-    params: postSchema.validateByThread,
-    query: postSchema.validateByThread
   }
 };
 
 exports.update = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    payload: postSchema.validate,
+    params: postSchema.validateId
+  },
+  pre: [
+    [
+      { method: pre.authPost }
+    ]
+  ],
   handler: function(request, reply) {
+    var user = request.auth.credentials;
     // build updatePost object from params and payload
     var updatePost = {
       id: request.params.id,
       title: request.payload.title,
       body: request.payload.body,
-      thread_id: request.payload.thread_id
+      encodedBody: request.payload.encodedBody,
+      thread_id: request.payload.thread_id,
+      user_id: user.id
     };
 
     core.posts.update(updatePost)
     .then(function(post) { reply(post); })
     .catch(function(err) { reply(err.message); });
-  },
-  validate: {
-    payload: postSchema.validate,
-    params: postSchema.validateId
   }
 };
 
 exports.delete = {
+  validate: { params: postSchema.validateId },
+  pre: [
+    [
+      { method: pre.authPost }
+    ]
+  ],
   handler: function(request, reply) {
     var postId = request.params.id;
     core.posts.delete(postId)
     .then(function(post) { reply(post); })
     .catch(function(err) { reply(err.message); });
   },
-  validate: { params: postSchema.validateId }
 };
