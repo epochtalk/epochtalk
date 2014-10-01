@@ -155,7 +155,7 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
       };
 
       // 1) Create Boards which have been added
-      var createNewBoards= function() {
+      var createNewBoards = function() {
         return $q(function(resolve, reject) {
           if (!newBoards.length) { resolve(); }
           console.log('1) Adding new Boards: \n' + JSON.stringify(newBoards, null, 2));

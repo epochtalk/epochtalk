@@ -94,7 +94,7 @@ exports.update = {
     .catch(function(err) { reply(Hapi.error.internal()); });
   },
   validate: {
-    payload: boardSchema.validate,
+    payload: boardSchema.validateUpdate,
     params: boardSchema.validateId
   }
 };
