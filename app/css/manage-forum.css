@@ -62,6 +62,20 @@
   background: linear-gradient(top, #008CBA 0%, #009CBA 100%);
 }
 
+.dd-removed-handle {
+  background: #FEBFBF;
+  background: -webkit-linear-gradient(top, #FEBFBF 0%, #FE8080 100%);
+  background: -moz-linear-gradient(top, #FEBFBF 0%, #FE8080 100%);
+  background: linear-gradient(top, #FEBFBF 0%, #FE8080 100%);
+}
+
+.dd-added-handle {
+  background: #E6FEE6;
+  background: -webkit-linear-gradient(top, #E6FEE6 0%, #CDFECD 100%);
+  background: -moz-linear-gradient(top, #E6FEE6 0%, #CDFECD 100%);
+  background: linear-gradient(top, #E6FEE6 0%, #CDFECD 100%);
+}
+
 .dd-root-item > button:before {
   color: #fff !important;
 }

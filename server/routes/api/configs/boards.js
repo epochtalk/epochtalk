@@ -66,6 +66,7 @@ exports.updateCategories = {
       reply(board);
     })
     .catch(function(err) {
+      console.log(err);
       reply(err.message);
     });
   },

@@ -1,7 +1,7 @@
 var Joi = require('joi');
 
 var rawBoardSchema = Joi.object().keys({
-  name: Joi.string().min(1).max(255).required(),
+  name: Joi.string().min(1).max(255),
   description: Joi.string(),
   parent_id: Joi.string(),
   children_ids: Joi.array()
