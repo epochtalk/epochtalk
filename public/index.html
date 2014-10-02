@@ -50,7 +50,7 @@
               <input class="no-margin" type="text" placeholder="Username" ng-model="user.username" ng-focus="!loggedIn()">
             </li>
             <li style="margin-right: 5px">
-              <input class="no-margin" type="password" placeholder="Password" ng-model="user.password" ng-keyup="$event.keyCode == 13 && login()">
+              <input class="no-margin" type="password" placeholder="Password" ng-model="user.password" ng-keyup="enterLogin($event)">
             </li>
             <li style="margin-right: 5px">
               <a href="#" class="button expand" ng-click="login()">Login</a>
