@@ -1,4 +1,5 @@
 var core = require('epochcore')();
+var Hapi = require('hapi');
 var postSchema = require('../schema/posts');
 var path = require('path');
 var pre = require(path.join('..', 'pre', 'posts'));
@@ -20,7 +21,7 @@ exports.create = {
     // create the post in core
     core.posts.create(newPost)
     .then(function(post) { reply(post); })
-    .catch(function(err) { reply(err.message); });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   }
 };
 
@@ -29,7 +30,7 @@ exports.find = {
     var id = request.params.id;
     core.posts.find(id)
     .then(function(post) { reply(post); })
-    .catch(function(err) { reply(err.message); });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   },
   validate: { params: postSchema.validateId }
 };
@@ -61,7 +62,7 @@ exports.byThread = {
 
       reply(posts);
     })
-    .catch(function(err) { reply(err.message); });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   }
 };
 
@@ -90,7 +91,7 @@ exports.update = {
 
     core.posts.update(updatePost)
     .then(function(post) { reply(post); })
-    .catch(function(err) { reply(err.message); });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   }
 };
 
@@ -105,6 +106,6 @@ exports.delete = {
     var postId = request.params.id;
     core.posts.delete(postId)
     .then(function(post) { reply(post); })
-    .catch(function(err) { reply(err.message); });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   },
 };

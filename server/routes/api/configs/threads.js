@@ -1,4 +1,5 @@
 var path = require('path');
+var Hapi = require('hapi');
 var core = require('epochcore')();
 var threadSchema = require(path.join('..', 'schema', 'threads'));
 var pre = require(path.join('..', 'pre', 'threads'));
@@ -20,7 +21,7 @@ exports.create = {
     .then(function(thread) { newPost.thread_id = thread.id; })
     .then(function() { return core.posts.create(newPost); })
     .then(function(post) { reply(post); })
-    .catch(function(err) { reply(err.message); });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   },
   validate: { payload: threadSchema.validate },
   auth: { strategy: 'jwt' }

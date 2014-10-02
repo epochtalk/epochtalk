@@ -1,4 +1,5 @@
 var core = require('epochcore')();
+var Hapi = require('hapi');
 var boardSchema = require('../schema/boards');
 
 exports.create = {
@@ -15,9 +16,7 @@ exports.create = {
     .then(function(board) {
       reply(board);
     })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   },
   validate: {
     payload: boardSchema.validate
@@ -30,9 +29,7 @@ exports.find = {
     .then(function(board) {
       reply(board);
     })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   },
   validate: {
     params: boardSchema.validateId
@@ -45,9 +42,7 @@ exports.all = {
     .then(function(boards) {
       reply(boards);
     })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   }
 };
 
@@ -59,9 +54,7 @@ exports.allCategories = {
         reply(boards);
       }
     })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   }
 };
 
@@ -79,9 +72,7 @@ exports.update = {
     .then(function(board) {
       reply(board);
     })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   },
   validate: {
     payload: boardSchema.validate,
@@ -95,9 +86,7 @@ exports.delete = {
     .then(function(board) {
       reply(board);
     })
-    .catch(function(err) {
-      reply(err.message);
-    });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   },
   validate: {
     params: boardSchema.validateId

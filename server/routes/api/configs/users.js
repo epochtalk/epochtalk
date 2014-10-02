@@ -1,4 +1,5 @@
 var core = require('epochcore')();
+var Hapi = require('hapi');
 var userSchema = require('../schema/users');
 
 exports.create = {
@@ -14,7 +15,7 @@ exports.create = {
     // create the thread in core
     core.users.create(newUser)
     .then(function(user) { reply(user); })
-    .catch(function(err) { reply(err.message); });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   },
   validate: { payload: userSchema.validate }
 };
@@ -24,6 +25,6 @@ exports.find = {
     var userId = request.params.id || request.query.id;
     core.users.find(userId)
     .then(function(user) { reply(user); })
-    .catch(function(err) { reply(err.message); });
+    .catch(function(err) { reply(Hapi.error.internal()); });
   }
 };
