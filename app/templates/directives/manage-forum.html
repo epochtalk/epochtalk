@@ -11,14 +11,15 @@
     </div>
   </div>
   <div class="small-12 medium-6 columns">
-    <div class="row collapse">
+    <a href="#" data-reveal-id="add-new-board" class="button fill-btn">Add New Board</a>
+<!--     <div class="row collapse">
       <div class="small-2 columns">
         <a ng-click="insertNewBoard()" class="button prefix">Add</a>
       </div>
       <div class="small-10 columns">
         <input type="text" id="new-board" ng-model="newBoardName" placeholder="New Board">
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
 <div class="row">
@@ -39,3 +40,57 @@
     <div id="no-cat-boards-list"></div>
   </div>
 </div>
+
+<!-- MODALS -->
+<div id="add-new-board" class="reveal-modal tiny" data-reveal>
+  <h3 class="thin-dotted-underline">Add New Board</h3>
+  <div class="row">
+    <div class="small-12 columns">
+      <br />
+      <label>Board Name
+        <input type="text" ng-model="newBoardName" placeholder="Board Name" />
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <label>Board Description
+        <textarea rows="5" ng-model="newBoardDesc" placeholder="Board Description"></textarea>
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <a ng-click="insertNewBoard()" class="button fill-btn">Add Board</a>
+    </div>
+  </div>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="edit-board" class="reveal-modal tiny" data-reveal>
+  <h3 id="board-modal-title" class="thin-dotted-underline">Edit Board</h3>
+  <div class="row">
+    <div class="small-12 columns">
+      <br />
+      <label>Board Name
+        <input type="text" ng-model="editBoardName" placeholder="Board Name" />
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <label>Board Description
+        <textarea rows="5" ng-model="editBoardDesc" placeholder="Board Description"></textarea>
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <a ng-click="editBoard()" class="button fill-btn">Edit Board</a>
+      <div class="text-center">OR</div>
+      <a ng-click="markDeleted()" class="button fill-btn">Mark Deleted</a>
+    </div>
+  </div>
+
+  <a class="close-reveal-modal">&#215;</a>
+  </div></div>

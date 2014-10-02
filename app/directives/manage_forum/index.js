@@ -1,7 +1,7 @@
 var fs = require('fs');
 var _ = require('lodash');
 
-module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
+module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $q, $compile) {
   return {
     restrict: 'E',
     template: fs.readFileSync(__dirname + '/../../templates/directives/manage-forum.html'),
@@ -10,10 +10,22 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
       boards: '=',
     },
     link: function(scope) {
+      // New Cat Scope Vars
       scope.newCatName = '';
+
+      // New Board Scope Vars
       scope.newBoardName = '';
-      var nestIndex = 0;
+      scope.newBoardDesc = '';
+
+      // Edited Board Scope Vars
+      scope.editBoardDataId = '';
+      scope.editBoardId = '';
+      scope.editBoardName = '';
+      scope.editBoardDesc = '';
+
+      var nestIndex = 0; // used to populate unique data-id attribute
       var newBoards = []; // stores newly added boards
+      var editedBoards = {}; // stores edited boards
 
       // Init for view (creates nestable lists for categorized/uncategorized boards)
       var originalCatHtml;
@@ -24,8 +36,8 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
         if (cats && boards) {
           originalCatHtml = generateCategoryList(cats);
           originalNoCatHtml = generateNoCatBoardsList(boards);
-          $('#cat-list').html(originalCatHtml);
-          $('#no-cat-boards-list').html(originalNoCatHtml);
+          $('#cat-list').html($compile(originalCatHtml)(scope));
+          $('#no-cat-boards-list').html($compile(originalNoCatHtml)(scope));
           $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
           $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
         }
@@ -40,9 +52,10 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
             children_ids: cat.board_ids || []
           });
           var toolbarHtml = '<i ng-click="editCategory()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var status = '<i class="fa status"></i>';
           html += '<li class="dd-item dd-root-item" data-id="' + nestIndex++ +
             '" data-top="true" data-cat=\'' + catData + '\'><div class="dd-handle' +
-            ' dd-root-handle">' + cat.name + toolbarHtml +'</div>' + generateBoardList(cat.boards) + '</li>';
+            ' dd-root-handle">' + status + cat.name + toolbarHtml +'</div>' + generateBoardList(cat.boards) + '</li>';
         });
         html += '</ol></div>';
         return html;
@@ -57,10 +70,12 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
           var boardData = JSON.stringify({
             id: board.id,
             name: board.name,
+            description: board.description,
             children_ids: board.children_ids || []
           });
-          var toolbarHtml = '<i ng-click="editBoard()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
-          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board=\'' + boardData + '\'><div class="dd-handle">' + board.name + toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
+          var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' + nestIndex + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var status = '<i class="fa status"></i>';
+          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board=\'' + boardData + '\'><div class="dd-handle">' + status + board.name + toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
         });
         html += '</ol>';
         return html;
@@ -130,6 +145,8 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
               }
             });
             // Ordering change for non top level boards (Update Board children_ids order)
+            // Top level ordering is handled by updateCategories, parent boards children_ids
+            // array must be updated to fix ordering of child boards.
             if (!removedChildren.length && !addedChildren.length && board.id) {
               console.log('Reordering: ' + JSON.stringify(board));
               $http({
@@ -165,7 +182,8 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
               url: '/api/boards',
               method: 'POST',
               data: {
-                name: newBoard.name
+                name: newBoard.name,
+                description: newBoard.description
               }
             })
             .success(function(board) {
@@ -240,8 +258,8 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
 
       // Resets to original state
       scope.reset = function() {
-        $('#cat-list').html(originalCatHtml);
-        $('#no-cat-boards-list').html(originalNoCatHtml);
+        $('#cat-list').html($compile(originalCatHtml)(scope));
+        $('#no-cat-boards-list').html($compile(originalNoCatHtml)(scope));
         $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
         $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
       };
@@ -264,13 +282,66 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
             children_ids: []
           });
           var toolbarHtml = '<i ng-click="editCategory()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var status = '<i class="fa status added"></i>';
           var newCatHtml = '<li class="dd-item dd-root-item" data-id="' + nestIndex++ +
             '" data-top="true" data-cat=\'' + catData + '\'>' +
-            '<div class="dd-handle dd-root-handle">' +  scope.newCatName + toolbarHtml + '</div></li>';
+            '<div class="dd-handle dd-root-handle">' + status +  scope.newCatName + toolbarHtml + '</div></li>';
+          newCatHtml = $compile(newCatHtml)(scope);
           $('#nestable-cats > .dd-list').prepend(newCatHtml);
           $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
           scope.newCatName = '';
         }
+      };
+
+      // Sets the board being edited
+      scope.setEditBoard = function(dataId) {
+        // TODO: Is there a better way to find the edited board data?
+        var editBoardEl = $('li[data-id="' + dataId + '"]');
+        var editBoard = editBoardEl.data().board;
+        scope.editBoardDataId = dataId;
+        scope.editBoardId = editBoard.id;
+        scope.editBoardName = editBoard.name;
+        scope.editBoardDesc = editBoard.description;
+      };
+
+      // Edits the board
+      scope.editBoard = function() {
+        var editBoardEl = $('li[data-id="' + scope.editBoardDataId + '"]');
+        // Board being edited is a new board.
+        if (!scope.editBoardId && scope.editBoardDataId) {
+        console.log(JSON.stringify(newBoards, null, 2));
+          newBoards.forEach(function(newBoard) {
+            if (newBoard.dataId === scope.editBoardDataId) {
+              newBoard.name = scope.editBoardName;
+              newBoard.description = scope.editBoardDesc;
+            }
+          });
+        console.log(JSON.stringify(newBoards, null, 2));
+        }
+        // Board being edited is an existing board
+        else {
+          var editedBoard = {
+            name: scope.editBoardName,
+            description: scope.editBoardDesc
+          };
+          editedBoards[scope.editBoardId] = editedBoard;
+          var status = editBoardEl.find('.dd-handle > .status');
+          status.addClass('edited');
+        }
+
+        // Update data stored in data-board to reflect edit
+        var editBoard = editBoardEl.data().board;
+        editBoard.name = scope.editBoardName;
+        editBoard.description = scope.editBoardDesc;
+        editBoardEl.data().board = editBoard;
+
+        // Reset scope params for editing board
+        scope.editBoardDataId = '';
+        scope.editBoardId = '';
+        scope.editBoardName = '';
+        scope.editBoardDesc = '';
+        console.log(JSON.stringify(editedBoards, null, 2));
+        $('#edit-board').foundation('reveal', 'close');
       };
 
       // Creates a new board
@@ -284,16 +355,21 @@ module.exports = ['$http', '$route', '$q', function($http, $route, $q) {
             id: '',
             dataId: nestIndex,
             name: scope.newBoardName,
+            description: scope.newBoardDesc,
             children_ids: []
           };
           newBoards.push(newBoard);
           var newBoardData = JSON.stringify(newBoard);
-          var toolbarHtml = '<i ng-click="editCategory()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' + nestIndex + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var status = '<i class="fa status added"></i>';
           var newBoardHtml = '<li class="dd-item" data-id="' + nestIndex++ +
-            '" data-board=\'' + newBoardData + '\'><div class="dd-handle dd-added-handle">' +  scope.newBoardName + toolbarHtml + '</div></li>';
+            '" data-board=\'' + newBoardData + '\'><div class="dd-handle">' + status +  scope.newBoardName + toolbarHtml + '</div></li>';
+          newBoardHtml = $compile(newBoardHtml)(scope);
           $('#nestable-boards > .dd-list').prepend(newBoardHtml);
           $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
           scope.newBoardName = '';
+          scope.newBoardDesc = '';
+          $('#add-new-board').foundation('reveal', 'close');
         }
       };
     }
