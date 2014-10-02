@@ -77,8 +77,8 @@ exports.update = {
     ]
   ],
   handler: function(request, reply) {
-    var user = request.auth.credentials;
     // build updatePost object from params and payload
+    var user = request.auth.credentials;
     var updatePost = {
       id: request.params.id,
       title: request.payload.title,
