@@ -143,10 +143,18 @@
 }
 
 .dd-right-icon {
-  float: right;
-  margin-top: 3px;
-  padding-left: 5px;
+  float: right !important;
   cursor: pointer;
+  padding-top: 3px;
+  padding-left: 5px;
+}
+
+.dd-desc {
+  width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
 }
 
 .fill-btn {

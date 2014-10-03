@@ -23,9 +23,14 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
       scope.editBoardName = '';
       scope.editBoardDesc = '';
 
+      // Edit Cat Scope Vars
+      scope.editCatDataId = '';
+      scope.editCatName = '';
+
       var nestIndex = 0; // used to populate unique data-id attribute
       var newBoards = []; // stores newly added boards
       var editedBoards = {}; // stores edited boards
+      var deletedBoards = []; // stores boards to be deleted
 
       // Init for view (creates nestable lists for categorized/uncategorized boards)
       var originalCatHtml;
@@ -51,11 +56,13 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
             name: cat.name,
             children_ids: cat.board_ids || []
           });
-          var toolbarHtml = '<i ng-click="editCategory()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i data-reveal-id="edit-category" ng-click="setEditCat(' + nestIndex +
+            ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item dd-root-item" data-id="' + nestIndex++ +
             '" data-top="true" data-cat=\'' + catData + '\'><div class="dd-handle' +
-            ' dd-root-handle">' + status + cat.name + toolbarHtml +'</div>' + generateBoardList(cat.boards) + '</li>';
+            ' dd-root-handle">' + status + '<div class="dd-desc">' + cat.name + '</div>' + toolbarHtml +'</div>' + generateBoardList(cat.boards) + '</li>';
         });
         html += '</ol></div>';
         return html;
@@ -73,9 +80,12 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
             description: board.description,
             children_ids: board.children_ids || []
           });
-          var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' + nestIndex + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i data-reveal-id="edit-board" ng-click="setEditBoard(' + nestIndex +
+            ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
-          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board=\'' + boardData + '\'><div class="dd-handle">' + status + board.name + toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
+          html += '<li class="dd-item" data-id="' + nestIndex++ + '" data-board=\'' + boardData + '\'><div class="dd-handle">' + status + '<div class="dd-desc">' + board.name + '</div>' +
+            toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
         });
         html += '</ol>';
         return html;
@@ -281,16 +291,51 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
             name: scope.newCatName,
             children_ids: []
           });
-          var toolbarHtml = '<i ng-click="editCategory()" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i data-reveal-id="edit-category" ng-click="setEditCat(' + nestIndex +
+            ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status added"></i>';
           var newCatHtml = '<li class="dd-item dd-root-item" data-id="' + nestIndex++ +
             '" data-top="true" data-cat=\'' + catData + '\'>' +
-            '<div class="dd-handle dd-root-handle">' + status +  scope.newCatName + toolbarHtml + '</div></li>';
+            '<div class="dd-handle dd-root-handle">' + status + '<div class="dd-desc">' + scope.newCatName + '</div>' + toolbarHtml + '</div></li>';
           newCatHtml = $compile(newCatHtml)(scope);
           $('#nestable-cats > .dd-list').prepend(newCatHtml);
           $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
           scope.newCatName = '';
         }
+      };
+
+      // Sets the category being edited
+      scope.setEditCat = function(dataId) {
+        // TODO: Is there a better way to find the edited cat data?
+        var editCatEl = $('li[data-id="' + dataId + '"]');
+        var editCat = editCatEl.data().cat;
+        scope.editCatDataId = dataId;
+        scope.editCatName = editCat.name;
+      };
+
+      // Edits the set category
+      scope.editCategory = function() {
+        // Get handle on edited item
+        var editCatEl = $('li[data-id="' + scope.editCatDataId + '"]');
+        var editCat = editCatEl.data().cat;
+
+        // Update the data-cat attribute
+        editCat.name = scope.editCatName;
+        editCatEl.data().cat = editCat;
+
+        // Update UI to reflect change
+        var catDescEl = editCatEl.children('.dd-handle').children('.dd-desc');
+        catDescEl.text(scope.editCatName);
+
+        // Show that the item was changed
+        var status = editCatEl.children('.dd-handle').children('.status');
+        status.addClass('edited');
+
+        // Reset and close
+        scope.editCatName = '';
+        scope.editCatDataId = '';
+        scope.closeModal('#edit-category');
       };
 
       // Sets the board being edited
@@ -304,19 +349,17 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
         scope.editBoardDesc = editBoard.description;
       };
 
-      // Edits the board
+      // Edits the set board
       scope.editBoard = function() {
         var editBoardEl = $('li[data-id="' + scope.editBoardDataId + '"]');
         // Board being edited is a new board.
         if (!scope.editBoardId && scope.editBoardDataId) {
-        console.log(JSON.stringify(newBoards, null, 2));
           newBoards.forEach(function(newBoard) {
             if (newBoard.dataId === scope.editBoardDataId) {
               newBoard.name = scope.editBoardName;
               newBoard.description = scope.editBoardDesc;
             }
           });
-        console.log(JSON.stringify(newBoards, null, 2));
         }
         // Board being edited is an existing board
         else {
@@ -325,7 +368,7 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
             description: scope.editBoardDesc
           };
           editedBoards[scope.editBoardId] = editedBoard;
-          var status = editBoardEl.find('.dd-handle > .status');
+          var status = editBoardEl.children('.dd-handle').children('.status');
           status.addClass('edited');
         }
 
@@ -335,13 +378,21 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
         editBoard.description = scope.editBoardDesc;
         editBoardEl.data().board = editBoard;
 
+        // Update UI to reflect change
+        var boardDescEl = editBoardEl.children('.dd-handle').children('.dd-desc');
+        boardDescEl.text(scope.editBoardName);
+
         // Reset scope params for editing board
         scope.editBoardDataId = '';
         scope.editBoardId = '';
         scope.editBoardName = '';
         scope.editBoardDesc = '';
         console.log(JSON.stringify(editedBoards, null, 2));
-        $('#edit-board').foundation('reveal', 'close');
+        scope.closeModal('#edit-board');
+      };
+
+      scope.closeModal = function(modalId) {
+        $(modalId).foundation('reveal', 'close');
       };
 
       // Creates a new board
@@ -360,16 +411,19 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
           };
           newBoards.push(newBoard);
           var newBoardData = JSON.stringify(newBoard);
-          var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' + nestIndex + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i data-reveal-id="edit-board" ng-click="setEditBoard(' + nestIndex +
+            ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status added"></i>';
           var newBoardHtml = '<li class="dd-item" data-id="' + nestIndex++ +
-            '" data-board=\'' + newBoardData + '\'><div class="dd-handle">' + status +  scope.newBoardName + toolbarHtml + '</div></li>';
+            '" data-board=\'' + newBoardData + '\'><div class="dd-handle">' + status +
+            '<div class="dd-desc">' + scope.newBoardName + '</div>' + toolbarHtml + '</div></li>';
           newBoardHtml = $compile(newBoardHtml)(scope);
           $('#nestable-boards > .dd-list').prepend(newBoardHtml);
           $('#nestable-boards').nestable({ protectRoot: true, maxDepth: 4, group: 1 });
           scope.newBoardName = '';
           scope.newBoardDesc = '';
-          $('#add-new-board').foundation('reveal', 'close');
+          scope.closeModal('#add-new-board');
         }
       };
     }
