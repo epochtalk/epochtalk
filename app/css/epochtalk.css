@@ -3,8 +3,6 @@ body {
   background: url(/static/img/white_wall_hash.png);
 }
 
-.padding-top-15 { padding-top: 15px; }
-
 .page-height { min-height: 80%;}
 
 .breadcrumbs > .news:before {
@@ -26,6 +24,9 @@ h1, h2, h3, h4, h5, h6 { margin-bottom: 0px; }
 .top-spacer-15 { margin-top: 15px; }
 .top-spacer-5 { margin-top: 5px; }
 .bottom-spacer-10 { margin-bottom: 10px; }
+.margin-bottom-21 { margin-bottom: 21px; }
+.padding-top-10 { padding-top: 10px; }
+.padding-top-15 { padding-top: 15px; }
 
 .no-margin {
   margin-top: 0;
