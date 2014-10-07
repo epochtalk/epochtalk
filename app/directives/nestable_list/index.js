@@ -15,94 +15,19 @@ module.exports = ['$compile', function($compile) {
     link: function(scope, element) {
       var dataId = 0; // used to populate unique data-id attribute
       var nestableId; // id of the nestable list
-      var nestableMap;
-      var newBoards;
-      var opts;
-      var listElements;
+      var nestableMap; // Stores a map of data-id to object (boards/cats)
+      var newBoards; // Stores array of newly added boards
+      var opts; // Stores options for nestable list
+      var listElements; // Map containing the jquery eleme
       var originalHtml; // original html state for resetting list
 
-      // Tells the parent controller the dataId of the category being edited
-      scope.setEditCatDataId = function(dataId) {
-        // call parent controller
-        scope.setEditCat({data: dataId});
-      };
+      // ========================
+      // Nestable List Generation
+      // ========================
 
-      // Tells the parent controller the dataId of the board being edited
-      scope.setEditBoardDataId = function(dataId) {
-        // call parent controller
-        scope.setEditBoard({data: dataId});
-      };
-
-      // Tells the parent controller the dataId of the item being deleted
-      scope.setDeleteDataId = function(dataId) {
-        // call parent controller
-        scope.setDelete({data: dataId});
-      };
-
-      // Listen for parent controller adding boards
-      scope.$on('insertNewBoard', function(scopeDetails, data) {
-        if (data.listId === nestableId) {
-          insertNewBoard(data.newBoard);
-        }
-      });
-
-      // Listen for parent controller adding categories
-      scope.$on('insertNewCategory', function(scopeDetails, data) {
-        if (data.listId === nestableId) {
-          insertNewCategory(data.newCatName);
-        }
-      });
-
-      // Listen for parent controller deleting list items
-      scope.$on('confirmDelete', function(scopeDetails, data) {
-        confirmDelete(data.dataId);
-      });
-
-      // Listen for parent controller editing categories
-      scope.$on('editCategory', function(scopeDetails, data) {
-        if (data.listId === nestableId) {
-          editCategory(data.newCatName, data.dataId);
-        }
-      });
-
-      // Listen for parent controller editing boards
-      scope.$on('editBoard', function(scopeDetails, data) {
-        editBoard(data.boardName, data.dataId, data.isExistingBoard);
-      });
-
-      var editBoard = function(boardName, dataId, isExistingBoard) {
-        var editBoardEl = $('li[data-id="' + dataId + '"]');
-
-        if (isExistingBoard) {
-          // editedBoards[scope.editBoardId] = editedBoard;
-          var status = editBoardEl.children('.dd-handle').children('.status');
-          status.addClass('edited');
-        }
-
-        // Update UI to reflect change
-        var boardDescEl = editBoardEl.children('.dd-handle').children('.dd-desc');
-        boardDescEl.text(boardName);
-      };
-
-      var confirmDelete = function(dataId) {
-        var deleteEl = $('li[data-id="' + dataId + '"]');
-        if (deleteEl) { deleteEl.remove(); }
-      };
-
-      var editCategory = function(newCatName, dataId) {
-        var editCatEl = $('li[data-id="' + dataId + '"]');
-
-        // Update UI to reflect change
-        var catDescEl = editCatEl.children('.dd-handle').children('.dd-desc');
-        catDescEl.text(newCatName);
-
-        // Show that the item was changed
-        var status = editCatEl.children('.dd-handle').children('.status');
-        status.addClass('edited');
-      };
-
-
-      scope.$watchGroup(['data', 'listId', 'opts', 'nestableMap', 'listElements', 'newBoards'], function(newValues) {
+      // Initialization
+      var group = ['data', 'listId', 'opts', 'nestableMap', 'listElements', 'newBoards'];
+      scope.$watchGroup(group, function(newValues) {
         var data = newValues[0];
         var listId = newValues[1];
         opts = newValues[2] || {};
@@ -136,10 +61,10 @@ module.exports = ['$compile', function($compile) {
             children_ids: cat.board_ids || []
           };
           // Edit pencil and trash buttons
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDeleteDataId(\'' + nestableId + '-' +
-            dataId + '\')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
-            '<i data-reveal-id="edit-category" ng-click="setEditCatDataId(\'' + nestableId + '-' + dataId +
-            '\')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDeleteDataId(\'' +
+             nestableId + '-' + dataId + '\')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i data-reveal-id="edit-category" ng-click="setEditCatDataId(\'' + nestableId + '-' +
+            dataId + '\')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item dd-root-item" data-id="' + nestableId + '-' + dataId++ +
             '" data-top="true" data-name="' + cat.name + '"><div class="dd-handle' +
@@ -162,14 +87,14 @@ module.exports = ['$compile', function($compile) {
             description: board.description,
             children_ids: board.children_ids || []
           };
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDeleteDataId(\'' + nestableId + '-' +
-            dataId + '\')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
-            '<i data-reveal-id="edit-board" ng-click="setEditBoardDataId(\'' + nestableId + '-' + dataId +
-            '\')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDeleteDataId(\'' +
+            nestableId + '-' + dataId + '\')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i data-reveal-id="edit-board" ng-click="setEditBoardDataId(\'' + nestableId + '-' +
+            dataId + '\')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
-          html += '<li class="dd-item" data-id="' + nestableId + '-' + dataId++ + '"><div class="dd-handle">' +
-            status + '<div class="dd-desc">' + board.name + '</div>' + toolbarHtml +
-            '</div>' + generateBoardList(board.children) + '</li>';
+          html += '<li class="dd-item" data-id="' + nestableId + '-' + dataId++ + '">' +
+            '<div class="dd-handle">' + status + '<div class="dd-desc">' + board.name + '</div>' +
+            toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
         });
         html += '</ol>';
         return html;
@@ -190,29 +115,71 @@ module.exports = ['$compile', function($compile) {
         return html;
       };
 
+      // ==================================
+      // Communicate with Parent Controller
+      // ==================================
+
+      // Tells the parent controller the dataId of the category being edited
+      scope.setEditCatDataId = function(dataId) {
+        // call parent controller
+        scope.setEditCat({data: dataId});
+      };
+
+      // Tells the parent controller the dataId of the board being edited
+      scope.setEditBoardDataId = function(dataId) {
+        // call parent controller
+        scope.setEditBoard({data: dataId});
+      };
+
+      // Tells the parent controller the dataId of the item being deleted
+      scope.setDeleteDataId = function(dataId) {
+        // call parent controller
+        scope.setDelete({data: dataId});
+      };
+
+      // ===============
+      // UI Manipulation
+      // ===============
+
+      // Listen for parent controller adding categories
+      scope.$on('insertNewCategory', function(scopeDetails, data) {
+        if (data.listId === nestableId) {
+          insertNewCategory(data.newCatName);
+        }
+      });
+
       // Creates a new category
       var insertNewCategory = function(catName) {
-        if (scope.newCatName !== '') {
+        if (catName !== '') {
           // Update hashmap of list items
           nestableMap[nestableId + '-' + dataId] = {
-            name: catName.name,
+            name: catName,
             children_ids: []
           };
 
           // Edit pencil and trash buttons
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDeleteDataId(\'' + nestableId + '-' +
-            dataId + '\')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
-            '<i data-reveal-id="edit-category" ng-click="setEditCatDataId(\'' + nestableId + '-' + dataId +
-            '\')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDeleteDataId(\'' +
+            nestableId + '-' + dataId + '\')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i data-reveal-id="edit-category" ng-click="setEditCatDataId(\'' + nestableId + '-' +
+              dataId + '\')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           var newCatHtml = '<li class="dd-item dd-root-item" data-id="' + nestableId + '-' + dataId++ +
-            '" data-top="true" data-name="' + catName + '"><div class="dd-handle' +
-            ' dd-root-handle">' + status + '<div class="dd-desc">' + catName + '</div>' + toolbarHtml + '</div></li>';
+            '" data-top="true" data-name="' + catName + '"><div class="dd-handle dd-root-handle">' +
+            status + '<div class="dd-desc">' + catName + '</div>' + toolbarHtml + '</div></li>';
+
+          // Compile and prepend new category html
           newCatHtml = $compile(newCatHtml)(scope);
-          $('#' + nestableId + '> .dd-list').prepend(newCatHtml);
+          $('#' + nestableId + ' > .dd-list').prepend(newCatHtml);
           $('#' + nestableId).nestable(opts);
         }
       };
+
+      // Listen for parent controller adding boards
+      scope.$on('insertNewBoard', function(scopeDetails, data) {
+        if (data.listId === nestableId) {
+          insertNewBoard(data.newBoard);
+        }
+      });
 
       // Creates a new board
       var insertNewBoard = function(board) {
@@ -233,19 +200,69 @@ module.exports = ['$compile', function($compile) {
           if ($('#' + nestableId).children('.dd-empty').length) {
             $('#' + nestableId).html('<ol class="dd-list"></ol>');
           }
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDeleteDataId(\'' + nestableId + '-' +
-            dataId + '\')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
-            '<i data-reveal-id="edit-board" ng-click="setEditBoardDataId(\'' + nestableId + '-' + dataId +
-            '\')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
-          var status = '<i class="fa status"></i>';
-          var newBoardHtml = '<li class="dd-item" data-id="' + nestableId + '-' + dataId++ + '"><div class="dd-handle">' +
-            status + '<div class="dd-desc">' + board.name + '</div>' + toolbarHtml +
-            '</div></li>';
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDeleteDataId(\'' +
+            nestableId + '-' + dataId + '\')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i data-reveal-id="edit-board" ng-click="setEditBoardDataId(\'' + nestableId + '-' +
+            dataId + '\')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+          var status = '<i class="fa status added"></i>';
+          var newBoardHtml = '<li class="dd-item" data-id="' + nestableId + '-' + dataId++ +
+            '"><div class="dd-handle">' + status + '<div class="dd-desc">' + board.name +
+            '</div>' + toolbarHtml + '</div></li>';
+
+          // Compile and prepend new board html
           newBoardHtml = $compile(newBoardHtml)(scope);
           $('#' + nestableId + '> .dd-list').prepend(newBoardHtml);
           $('#' + nestableId).nestable(opts);
         }
       };
+
+      // Listen for parent controller deleting list items
+      scope.$on('confirmDelete', function(scopeDetails, data) {
+        confirmDelete(data.dataId);
+      });
+
+      // Updates UI when item is deleted from nestable list
+      var confirmDelete = function(dataId) {
+        var deleteEl = $('li[data-id="' + dataId + '"]');
+        if (deleteEl) { deleteEl.remove(); }
+      };
+
+      // Listen for parent controller editing categories
+      scope.$on('editCategory', function(scopeDetails, data) {
+        if (data.listId === nestableId) {
+          editCategory(data.newCatName, data.dataId);
+        }
+      });
+
+      // Updates UI when Category is edited
+      var editCategory = function(newCatName, dataId) {
+        var editCatEl = $('li[data-id="' + dataId + '"]');
+        // Update UI to reflect change
+        var catDescEl = editCatEl.children('.dd-handle').children('.dd-desc');
+        catDescEl.text(newCatName);
+        // Show that the item was changed
+        var status = editCatEl.children('.dd-handle').children('.status');
+        status.addClass('edited');
+      };
+
+      // Listen for parent controller editing boards
+      scope.$on('editBoard', function(scopeDetails, data) {
+        editBoard(data.boardName, data.dataId, data.isExistingBoard);
+      });
+
+      // Updates UI when Board is edited
+      var editBoard = function(boardName, dataId, isExistingBoard) {
+        var editBoardEl = $('li[data-id="' + dataId + '"]');
+        if (isExistingBoard) {
+          // editedBoards[scope.editBoardId] = editedBoard;
+          var status = editBoardEl.children('.dd-handle').children('.status');
+          status.addClass('edited');
+        }
+        // Update UI to reflect change
+        var boardDescEl = editBoardEl.children('.dd-handle').children('.dd-desc');
+        boardDescEl.text(boardName);
+      };
+
     }
   };
 }];
