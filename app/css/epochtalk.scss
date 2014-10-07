@@ -2,6 +2,7 @@
 
 body {
   color: $color-body;
+  line-height: 1.4rem;
   margin-top:10px;
   // background: url(/static/img/white_wall_hash.png);
 }
@@ -156,14 +157,42 @@ input::-webkit-inner-spin-button {
 // Views --------------------------------------------------------- //
 // Posts
 .post-block {
+  border-bottom: 1px solid $color-gray;
   float: left;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
   width: 100%;
 }
 
 .post-user {
   float: left;
-  margin-right: 10px;
-  width: 150px;
+  padding-right: .8333rem;
+  width: 16.6667%;
+
+  .user-avatar {
+    background: no-repeat center center;
+    @include bg-cover;
+    height: 120px;
+    position: relative;
+    width: 100%;
+  }
+
+  .user-role {
+    background-color: rgba(0,0,0,.75);
+    bottom: 0;
+    color: #fff;
+    font-size: .8125em;
+    font-weight: 600;
+    padding: 6px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+  }
+
+  .user-details {
+    @include list-clean;
+  }
 }
 
 .post-title {
@@ -171,7 +200,6 @@ input::-webkit-inner-spin-button {
 }
 
 .post-body {
-  border-bottom: 1px solid $color-gray;
   float: left;
-  padding-bottom: 2rem;
+  width: 83.3333%;
 }

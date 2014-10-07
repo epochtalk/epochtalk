@@ -9,23 +9,21 @@
       <div class="viewable post-block" ng-if="!post.editMode">
         <!-- User info -->
         <div class="post-user">
-          <div class="user-avatar">
-            <img src="http://lorempixel.com/400/200/people/" alt="">
+          <div class="user-avatar" style="background-image:url('http://lorempixel.com/400/200/people/')">
+            <!-- <img src="" alt=""> -->
             <span class="user-role">Hero</span>
           </div>
           <ul class="user-details">
-            <li class="name">User Name</li>
+            <li class="name"><a href="#" ng-bind-html="post.user.username"></a></li>
             <li class="points"> * * * * *</li>
             <li class="activity">Activity: 879</li>
           </ul>
-          <p class="user-name">User Name</p>
         </div>
         <!-- Post Title -->
-        <div class="post-title" style="font-weight: 700; margin-top: 10px; margin-bottom: 2px;">
-          <span ng-bind-html="post.title"></span>
-          <span class="radius secondary label">
-          by <a href="#" ng-bind-html="post.user.username"></a>
-          <em>@{{post.created_at | date:'medium'}}</em>
+        <div class="post-title">
+          <!-- <span ng-bind-html="post.title"></span> -->
+          <span class="timestamp">
+          {{post.created_at | date:'medium'}}
           </span>
           <button class="button tiny" ng-click="startEditPost($index)" ng-if="post.editable">
             Edit

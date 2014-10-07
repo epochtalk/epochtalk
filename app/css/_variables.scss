@@ -4,3 +4,19 @@
 $color-epoch: 	slategray;
 $color-body: 		#444;
 $color-gray: 		#ccc;
+
+
+
+
+// Mixins
+@mixin list-clean {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+@mixin bg-cover {
+	-webkit-background-size: 	cover;
+	-moz-background-size: 		cover;
+	background-size: 					cover;
+}
