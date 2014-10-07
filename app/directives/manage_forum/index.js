@@ -27,6 +27,9 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
       scope.editCatDataId = '';
       scope.editCatName = '';
 
+      // Delete Scope Vars
+      scope.deleteDataId = '';
+
       var nestIndex = 0; // used to populate unique data-id attribute
       var newBoards = []; // stores newly added boards
       var editedBoards = {}; // stores edited boards
@@ -56,7 +59,8 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
             name: cat.name,
             children_ids: cat.board_ids || []
           });
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDelete(' + nestIndex +
+            ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
             '<i data-reveal-id="edit-category" ng-click="setEditCat(' + nestIndex +
             ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
@@ -80,7 +84,8 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
             description: board.description,
             children_ids: board.children_ids || []
           });
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDelete(' + nestIndex +
+            ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
             '<i data-reveal-id="edit-board" ng-click="setEditBoard(' + nestIndex +
             ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
@@ -291,7 +296,8 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
             name: scope.newCatName,
             children_ids: []
           });
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDelete(' + nestIndex +
+            ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
             '<i data-reveal-id="edit-category" ng-click="setEditCat(' + nestIndex +
             ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status added"></i>';
@@ -303,6 +309,18 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
           $('#nestable-cats').nestable({ protectRoot: true, maxDepth: 5, group: 1 });
           scope.newCatName = '';
         }
+      };
+
+      // Sets the item being deleted
+      scope.setDelete = function(dataId) {
+        scope.deleteDataId = dataId;
+      };
+
+      scope.confirmDelete = function() {
+        var deleteEl = $('li[data-id="' + scope.deleteDataId + '"]');
+        deleteEl.remove();
+        scope.deleteDataId = '';
+        scope.closeModal('#delete-confirm');
       };
 
       // Sets the category being edited
@@ -411,7 +429,8 @@ module.exports = ['$http', '$route', '$q', '$compile', function($http, $route, $
           };
           newBoards.push(newBoard);
           var newBoardData = JSON.stringify(newBoard);
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDelete(' + nestIndex +
+            ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
             '<i data-reveal-id="edit-board" ng-click="setEditBoard(' + nestIndex +
             ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status added"></i>';

@@ -3,4 +3,127 @@
     <h4 class="thin-dotted-underline">Manage Categories and Boards</h4>
   </div>
 </div>
-<manage-forum categories="categories" boards="boards"></manage-forum>
+<div class="row">
+  <br />
+  <div class="small-12 medium-6 columns">
+    <div class="row collapse">
+      <div class="small-2 columns">
+        <a ng-click="insertNewCategory()" class="button prefix">Add</a>
+      </div>
+      <div class="small-10 columns">
+        <input type="text" id="new-cat" ng-model="newCatName" placeholder="New Category">
+      </div>
+    </div>
+  </div>
+  <div class="small-12 medium-6 columns">
+    <a href="#" data-reveal-id="add-new-board" class="button fill-btn">Add New Board</a>
+  </div>
+</div>
+<div class="row">
+  <div class="small-12 medium-6 columns">
+    <h6 class="thin-dotted-underline">
+      Categorized Boards
+      <div class="right">
+        <a ng-click="expandAll()"><i class="fa fa-expand"></i> Expand</a>&nbsp;
+        <a ng-click="collapseAll()"><i class="fa fa-compress"></i> Collapse</a>
+      </div>
+    </h6>
+    <nestable-list data="catListData" list-id="catListId" opts="catListOpts" nestable-map="nestableMap" list-elements="listElements" set-edit-cat="setEditCat(data)" set-edit-board="setEditBoard(data)" set-delete="setDelete(data)"></nestable-list>
+    <button class="tiny" ng-click="reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset</button>&nbsp;
+    <button class="tiny" ng-click="save()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+  </div>
+  <div class="small-12 medium-6 columns">
+    <h6 class="thin-dotted-underline">Uncategorized Boards</h6>
+    <nestable-list data="boardListData" list-id="boardListId" opts="boardListOpts" nestable-map="nestableMap" list-elements="listElements" new-boards="newBoards" set-edit-board="setEditBoard(data)" set-delete="setDelete(data)"></nestable-list>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="add-new-board" class="reveal-modal tiny" data-reveal>
+  <h3 class="thin-dotted-underline">Add New Board</h3>
+  <div class="row">
+    <div class="small-12 columns">
+      <br />
+      <label>Board Name
+        <input type="text" ng-model="newBoardName" placeholder="Board Name" />
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <label>Board Description
+        <textarea rows="5" ng-model="newBoardDesc" placeholder="Board Description"></textarea>
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <a ng-click="insertNewBoard()" class="button fill-btn">Add Board</a>
+    </div>
+  </div>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="edit-board" class="reveal-modal tiny" data-reveal>
+  <h3 class="thin-dotted-underline">Edit Board</h3>
+  <div class="row">
+    <div class="small-12 columns">
+      <br />
+      <label>Board Name
+        <input type="text" ng-model="editBoardName" placeholder="Board Name" />
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <label>Board Description
+        <textarea rows="5" ng-model="editBoardDesc" placeholder="Board Description"></textarea>
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <a ng-click="editBoard()" class="button fill-btn">Edit Board</a>
+    </div>
+  </div>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="edit-category" class="reveal-modal tiny" data-reveal>
+  <h3 class="thin-dotted-underline">Edit Category</h3>
+  <div class="row">
+    <div class="small-12 columns">
+      <br />
+      <label>Category Name
+        <input type="text" ng-model="editCatName" placeholder="Category Name" />
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <a ng-click="editCategory()" class="button fill-btn">Edit Category</a>
+    </div>
+  </div>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="delete-confirm" class="reveal-modal tiny" data-reveal>
+  <h3 class="thin-dotted-underline">Confirm Delete</h3>
+  <div class="row">
+    <div class="small-12 columns">
+      <br />
+      <p>
+        Are you sure you would like to mark this item for deletion? Delete will not take effect until the changes are saved.
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-6 columns">
+      <a ng-click="confirmDelete()" class="button fill-btn">Mark Deleted</a>
+    </div>
+    <div class="small-6 columns">
+      <a ng-click="closeModal('#delete-confirm')" class="button fill-btn">Cancel</a>
+    </div>
+  </div>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
