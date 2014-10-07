@@ -1,5 +1,6 @@
 body {
   color: #444;
+  line-height: 1.4rem;
   margin-top: 10px; }
 
 .page-height {
@@ -163,20 +164,45 @@ input::-webkit-inner-spin-button {
   font-weight: bold; }
 
 .post-block {
+  border-bottom: 1px solid #ccc;
   float: left;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
   width: 100%; }
 
 .post-user {
   float: left;
-  margin-right: 10px;
-  width: 150px; }
+  padding-right: .8333rem;
+  width: 16.6667%; }
+  .post-user .user-avatar {
+    background: no-repeat center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    height: 120px;
+    position: relative;
+    width: 100%; }
+  .post-user .user-role {
+    background-color: rgba(0, 0, 0, 0.75);
+    bottom: 0;
+    color: #fff;
+    font-size: .8125em;
+    font-weight: 600;
+    padding: 6px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%; }
+  .post-user .user-details {
+    list-style-type: none;
+    margin: 0;
+    padding: 0; }
 
 .post-title {
   float: left; }
 
 .post-body {
-  border-bottom: 1px solid #ccc;
   float: left;
-  padding-bottom: 2rem; }
+  width: 83.3333%; }
 
 /*# sourceMappingURL=epochtalk.css.map */
