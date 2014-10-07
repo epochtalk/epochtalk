@@ -24,5 +24,7 @@ test/coverage/
 
 /app/css/medium-editor.css
 /app/css/default.css
+/app/css/.sass-cache/
 
 /epoch.db
+
