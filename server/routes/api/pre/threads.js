@@ -73,7 +73,8 @@ module.exports = {
 
     var user = request.auth.credentials;
     core.users.getUserViews(user.id)
-    .then(function(userViews) { return reply(userViews); });
+    .then(function(userViews) { return reply(userViews); })
+    .catch(function(err) { return reply({}); });
   },
   updateUserView: function(request, reply) {
     // return early if not signed in
