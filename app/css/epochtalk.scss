@@ -1,59 +1,45 @@
-body {
-  color: blue;
-  margin-top: 10px; }
+@import 'variables';
 
-.page-height {
-  min-height: 80%; }
+body {
+  // color: $color-body;
+  color: blue;
+  margin-top:10px;
+  // background: url(/static/img/white_wall_hash.png);
+}
+
+.page-height { min-height: 80%;}
 
 .breadcrumbs > .news:before {
   content: "";
   margin: 0 0;
   position: relative;
-  top: 1px; }
-
+  top: 1px;
+}
 .breadcrumbs > .news {
   color: #444;
-  text-transform: none; }
+  text-transform: none;
+}
 
-.thin-dotted-underline {
-  border-bottom: 1px dotted #ccc; }
+.thin-dotted-underline { border-bottom: 1px dotted #ccc; }
 
-h1, h2, h3, h4, h5, h6 {
-  margin-bottom: 0px; }
+h1, h2, h3, h4, h5, h6 { margin-bottom: 0px; }
 
-.top-spacer-10 {
-  margin-top: 10px; }
-
-.top-spacer-15 {
-  margin-top: 15px; }
-
-.top-spacer-5 {
-  margin-top: 5px; }
-
-.bottom-spacer-10 {
-  margin-bottom: 10px; }
-
-.margin-bottom-21 {
-  margin-bottom: 21px; }
-
-.padding-top-10 {
-  padding-top: 10px; }
-
-.padding-top-15 {
-  padding-top: 15px; }
+.top-spacer-10 { margin-top: 10px; }
+.top-spacer-15 { margin-top: 15px; }
+.top-spacer-5 { margin-top: 5px; }
+.bottom-spacer-10 { margin-bottom: 10px; }
+.margin-bottom-21 { margin-bottom: 21px; }
+.padding-top-10 { padding-top: 10px; }
+.padding-top-15 { padding-top: 15px; }
 
 .no-margin {
   margin-top: 0;
   line-height: normal;
-  margin-bottom: 0 !important; }
+  margin-bottom: 0 !important;
+}
 
-.header-element {
-  height: 80px; }
-
-.header-container {
-  position: relative;
-  height: 80px; }
-
+.header-element { height: 80px; }
+.header-container { position: relative; height:80px; }
 .header-centered-both {
   position: absolute;
   top: 50%;
@@ -62,8 +48,8 @@ h1, h2, h3, h4, h5, h6 {
   -moz-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   -o-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%); }
-
+  transform: translate(-50%, -50%);
+}
 .header-centered-height {
   position: absolute;
   top: 50%;
@@ -71,45 +57,46 @@ h1, h2, h3, h4, h5, h6 {
   -moz-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   -o-transform: translateY(-50%);
-  transform: translateY(-50%); }
-
-.header-checkbox {
-  font-size: 0.75rem;
-  padding-top: 5px; }
+  transform: translateY(-50%);
+}
+.header-checkbox { font-size: 0.75rem; padding-top: 5px; }
 
 .board {
   font-size: 20px;
   text-decoration: underline;
   display: inline-block;
-  padding-bottom: 5px; }
+  padding-bottom: 5px;
+}
 
 .moderators {
   color: #999;
   font-size: 13px;
   display: inline-block;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+}
 
 .child-boards {
   color: #666;
   font-size: 16px;
   display: inline-block;
   margin-top: 5px;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+}
 
 .board-info {
   display: inline-block;
   font-size: 13px;
-  color: #999; }
+  color: #999;
+}
 
-.board-info-spacer {
-  margin-top: 10px; }
+.board-info-spacer { margin-top: 10px; }
 
 .post-alert {
   color: #777 !important;
-  font-weight: bold; }
+  font-weight: bold;
+}
 
-.board-section {
-  margin-bottom: 20px; }
+.board-section { margin-bottom: 20px; }
 
 .footer {
   border-left: 0 !important;
@@ -117,21 +104,22 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom: 0 !important;
   background-color: #444 !important;
   color: #ccc !important;
-  font-size: 14px !important; }
+  font-size: 14px !important;
+}
 
-.footer h3 {
-  color: #999 !important; }
+.footer h3 { color: #999 !important; }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  /* display: none; <- Crashes Chrome on hover */
-  -webkit-appearance: none;
-  margin: 0;
-  /* <-- Apparently some margin are still there even though it's hidden */ }
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
 
 .inactive {
-  background-color: #CCC;
-  color: #666; }
+  background-color:#CCC;
+  color: #666;
+}
 
 .page-go-btn {
   display: inline !important;
@@ -139,11 +127,13 @@ input::-webkit-inner-spin-button {
   width: 40px !important;
   padding: 2px !important;
   margin: 0 !important;
-  font-size: 10px !important; }
+  font-size: 10px !important;
+}
 
 .page-dropdown {
   outline: 0 !important;
-  padding: 5px !important; }
+  padding: 5px !important;
+}
 
 .page-input {
   display: inline !important;
@@ -151,15 +141,14 @@ input::-webkit-inner-spin-button {
   height: 20px !important;
   padding: 0 !important;
   margin: 0 !important;
-  font-size: 12px !important; }
+  font-size: 12px !important;
+}
 
 .copyright {
   font-size: 12px;
   margin-top: 10px;
   text-align: center;
-  display: block; }
+  display: block;
+}
 
-.bold-title {
-  font-weight: bold; }
-
-/*# sourceMappingURL=epochtalk.css.map */
+.bold-title { font-weight: bold; }

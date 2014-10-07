@@ -1,5 +1,5 @@
 body {
-  color: blue;
+  color: green;
   margin-top: 10px; }
 
 .page-height {
@@ -162,4 +162,4 @@ input::-webkit-inner-spin-button {
 .bold-title {
   font-weight: bold; }
 
-/*# sourceMappingURL=epochtalk.css.map */
+/*# sourceMappingURL=epochtalk-sass.css.map */
