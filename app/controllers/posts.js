@@ -42,15 +42,21 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
     };
 
     $scope.savePost = function(post) {
+      // error check input
+
+      delete $scope.newPost.error;
+
+
       Posts.save($scope.newPost).$promise
       .then(function(data) { $route.reload(); })
-      .catch(function(data, status) {
+      .catch(function(response) {
+        console.log(response);
         var error = '';
-        if (status === 500) {
+        if (response.status === 500) {
           error = 'Post could not be saved. ';
           error += 'Please refresh the page.';
         }
-        else { error = data.message; }
+        else { error = response.data.message; }
 
         $scope.newPost.error = {};
         $scope.newPost.error.message = error;
@@ -74,6 +80,8 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
     };
 
     $scope.saveEditPost = function(index) {
+      // check input
+
       var editPost = $scope.posts[index];
       var saveEditPost = {
         title: editPost.title,
@@ -82,15 +90,15 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
         thread_id: editPost.thread_id
       };
 
-      $http.post('/api/posts/' + editPost.id, saveEditPost)
-      .success(function(data) { $route.reload(); })
-      .error(function(data, status) {
+      Posts.update({id: editPost.id}, saveEditPost).$promise
+      .then(function(data) { $route.reload(); })
+      .catch(function(response) {
         var error = '';
-        if (status === 500) {
+        if (response.status === 500) {
           error = 'Post was not able to be saved. ';
           error += 'Please refresh the page.';
         }
-        else { error = data.message; }
+        else { error = response.data.message; }
 
         $scope.posts[index].error = {};
         $scope.posts[index].error.message = error;
