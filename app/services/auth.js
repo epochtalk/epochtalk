@@ -4,8 +4,8 @@
 var greetingLoggedOut = 'Not Logged In';
 var greetingLoggedIn = 'Logged In as ';
 
-module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
-  function($location, $rootScope, $http, $window, User) {
+module.exports = ['$location', '$rootScope', '$window', 'User',
+  function($location, $rootScope, $window, User) {
     var greeting = greetingLoggedOut;
     var getUser = function() {
       var username;
@@ -87,9 +87,7 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
         });
       },
 
-      checkAuthentication: function() {
-        $http({ method: 'GET', url: '/api/authenticated' });
-      },
+      checkAuthentication: function() { User.ping(); },
 
       isAuthenticated: function() {
         var authenticated = false;
@@ -113,15 +111,11 @@ module.exports = ['$location', '$rootScope', '$http', '$window', 'User',
       },
 
       checkUsername: function(username, callback, error) {
-        $http({ method: 'GET', url: '/api/register/username/' + username })
-        .success(callback)
-        .error(error);
+        User.checkUsername({ username: username }, callback, error);
       },
 
       checkEmail: function(email, callback, error) {
-        $http({ method: 'GET', url: '/api/register/email/' + email })
-        .success(callback)
-        .error(error);
+        User.checkEmail({ email: email }, callback, error);
       }
 
       // changePassword: function(email, oldPassword, newPassword, callback) {

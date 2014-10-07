@@ -18,6 +18,20 @@ module.exports = ['$resource',
       logout: {
         method: 'DELETE',
         url: '/api/logout'
+      },
+      ping: {
+        method: 'GET',
+        url: '/api/authenticated'
+      },
+      checkUsername: {
+        method: 'GET',
+        url: '/api/register/username/:username',
+        params: { username: '@username' }
+      },
+      checkEmail: {
+        method: 'GET',
+        url: '/api/register/email/:email',
+        params: { email: '@email' }
       }
     });
   }
