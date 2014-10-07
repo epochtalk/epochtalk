@@ -34,19 +34,7 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       label: 'New Thread'
     });
 
-    $routeProvider.when('/boards/:boardId/threads', {
-      controller: 'ThreadsCtrl',
-      template: fs.readFileSync(__dirname + '/templates/threads.html'),
-      label: 'Threads'
-    });
-
-    $routeProvider.when('/threads/:threadId', {
-      controller: 'ThreadCtrl',
-      template: fs.readFileSync(__dirname + '/templates/thread.html'),
-      label: 'Thread'
-    });
-
-    $routeProvider.when('/threads/:threadId/posts/:startkey?', {
+    $routeProvider.when('/threads/:threadId/posts', {
       controller: 'PostsCtrl',
       template: fs.readFileSync(__dirname + '/templates/posts.html'),
       label: 'Thread Page'

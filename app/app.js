@@ -27,8 +27,6 @@ app.controller('MainCtrl', require('./controllers/main.js'));
 app.controller('BoardsCtrl', require('./controllers/boards.js'));
 app.controller('BoardCtrl', require('./controllers/board.js'));
 app.controller('NewThreadCtrl', require('./controllers/newThread.js'));
-app.controller('ThreadsCtrl', require('./controllers/threads.js'));
-app.controller('ThreadCtrl', require('./controllers/thread.js'));
 app.controller('PostsCtrl', require('./controllers/posts.js'));
 app.controller('ProfileCtrl', require('./controllers/profile.js'));
 app.controller('RegistrationCtrl', require('./controllers/registration.js'));
