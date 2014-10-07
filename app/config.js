@@ -1,5 +1,6 @@
 var fs = require('fs');
 require('./services');
+require('./resources');
 
 module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
   function($routeProvider, $locationProvider, $httpProvider) {

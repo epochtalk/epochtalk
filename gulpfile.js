@@ -8,7 +8,7 @@ gulp.task('build', ['browserify']);
 gulp.task('default', ['build']);
 gulp.task('watch', function() {
   livereload.listen();
-  gulp.watch('app/**/*.{js,html}', ['build']).on('change', livereload.changed);
+  gulp.watch('app/**/*.{js,html,css}', ['build']).on('change', livereload.changed);
   gulp.watch('public/**/*').on('change', livereload.changed);
   gulp.watch('server/**/*.js');
 });

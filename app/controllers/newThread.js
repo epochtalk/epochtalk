@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$routeParams', '$http','$rootScope', '$location', 'Auth', 'breadcrumbs',
-  function($scope, $routeParams, $http, $rootScope, $location, Auth, breadcrumbs) {
+module.exports = ['$scope', '$routeParams', '$rootScope', '$location', 'Auth', 'Threads', 'breadcrumbs',
+  function($scope, $routeParams, $rootScope, $location, Auth, Threads, breadcrumbs) {
     $rootScope.breadcrumbs = breadcrumbs.get();
     $scope.loggedIn = Auth.isAuthenticated;
     $scope.error = {};
@@ -20,9 +20,9 @@ module.exports = ['$scope', '$routeParams', '$http','$rootScope', '$location', '
 
     $scope.save = function(post) {
       // create a new thread and post
-      $http.post('/api/threads', $scope.thread)
-      .then(function(response) {
-        $location.path('/threads/' + response.data.thread_id + '/posts');
+      Threads.save($scope.thread).$promise
+       .then(function(thread) {
+        $location.path('/threads/' + thread.thread_id + '/posts');
       })
       .catch(function(err) {
         $scope.error.post = {};

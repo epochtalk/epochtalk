@@ -1,6 +1,7 @@
-module.exports = ['$scope', '$http', '$rootScope', 'breadcrumbs',
-  function($scope, $http, $rootScope, breadcrumbs) {
-    $http.get('/api/boards').success(function(categorizedBoards) {
+module.exports = ['$scope', '$rootScope', 'Boards', 'breadcrumbs',
+  function($scope, $rootScope, Boards, breadcrumbs) {
+    Boards.query().$promise
+    .then(function(categorizedBoards) {
       $scope.categorizedBoards = categorizedBoards;
       $rootScope.breadcrumbs = breadcrumbs.get();
     });

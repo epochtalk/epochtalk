@@ -20,7 +20,7 @@ gulp.task('browserify', function() {
     return bundler
       .transform('cssify')
       .transform('brfs')
-      .transform('browserify-ngmin')
+      // .transform('browserify-ngmin')
       .bundle()
       // Report compile errors
       .on('error', console.log)
@@ -30,7 +30,7 @@ gulp.task('browserify', function() {
       .pipe(source('bundle.js'))
       .pipe(gulp.dest('./public/js/'))
       .pipe(buffer())
-      .pipe(uglify())
+      // .pipe(uglify())
       // Specify the output destination
       .pipe(gulp.dest('./public/js/'))
       // Log when bundling completes!

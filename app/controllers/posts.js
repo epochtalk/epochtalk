@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'breadcrumbs', 'Auth',
-  function($scope, $route, $routeParams, $http, $rootScope, breadcrumbs, Auth) {
+module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Threads', 'Posts', 'breadcrumbs',
+  function($scope, $route, $routeParams, $rootScope, Auth, Threads, Posts, breadcrumbs) {
     $scope.loggedIn = Auth.isAuthenticated;
     var threadId = $routeParams.threadId;
     // TODO: this needs to be grabbed from user settings
@@ -11,12 +11,8 @@ module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'br
 
     // Loading post calls
 
-    $http({
-      url: '/api/thread/',
-      method: 'GET',
-      params: { id: threadId }
-    })
-    .success(function(thread) {
+    Threads.get({ id: threadId }).$promise
+    .then(function(thread) {
       $scope.newPost.title = 'Re: ' + thread.title;
       $scope.newPost.thread_id = thread.id;
 
@@ -26,17 +22,17 @@ module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'br
       var postCount = thread.post_count;
       var postsPerPage = Number($routeParams.limit) || 10;
       $scope.pageCount = Math.ceil(postCount / postsPerPage);
-      $http({
-        url: '/api/posts',
-        method: 'GET',
-        params: {
-          thread_id: threadId,
-          limit: postsPerPage,
-          page: $scope.page
-        }
-      })
-      .success(function(threadPosts) { $scope.posts = threadPosts; });
-    });
+      return postsPerPage;
+    })
+    .then(function(postsPerPage) {
+      var query = {
+        thread_id: threadId,
+        limit: postsPerPage,
+        page: $scope.page
+      };
+      return Posts.byThread(query).$promise;
+    })
+    .then(function(threadPosts) { $scope.posts = threadPosts; });
 
     // new post methods
 
@@ -46,9 +42,9 @@ module.exports = ['$scope', '$route', '$routeParams', '$http', '$rootScope', 'br
     };
 
     $scope.savePost = function(post) {
-      $http.post('/api/posts', $scope.newPost)
-      .success(function(data) { $route.reload(); })
-      .error(function(data, status) {
+      Posts.save($scope.newPost).$promise
+      .then(function(data) { $route.reload(); })
+      .catch(function(data, status) {
         var error = '';
         if (status === 500) {
           error = 'Post could not be saved. ';

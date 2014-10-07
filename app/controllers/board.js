@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', 'Auth', 'breadcrumbs',
-  function($scope, $location, $http, $routeParams, $rootScope, Auth, breadcrumbs) {
+module.exports = ['$scope', '$routeParams', '$rootScope', 'Auth', 'breadcrumbs', 'Boards', 'Threads',
+  function($scope, $routeParams, $rootScope, Auth, breadcrumbs, Boards, Threads) {
     var boardId = $routeParams.boardId;
     // TODO: this needs to be grabbed from user settings
     var limit = $routeParams.limit;
@@ -11,33 +11,32 @@ module.exports = ['$scope', '$location', '$http', '$routeParams', '$rootScope', 
     $scope.loggedIn = Auth.isAuthenticated;
     $scope.newThreadUrl = '/boards/' + boardId + '/threads/new';
 
-    $http.get('/api/boards/' + boardId)
-    .success(function(board) {
+    Boards.get({ id: boardId }).$promise
+    .then(function(board) {
       $scope.board = board;
       breadcrumbs.options = { 'Board Name': board.name };
       $rootScope.breadcrumbs = breadcrumbs.get();
       var threadCount = board.thread_count;
       $scope.pageCount = Math.ceil(threadCount / threadsPerPage);
-      $http({
-        url: '/api/threads',
-        method: 'GET',
-        params: {
-          board_id: boardId,
-          limit: threadsPerPage,
-          page: $scope.page
-        }
-      })
-      .success(function(threads) {
-        // TODO: this needs to be grabbed from user settings
-        var postsPerPage = 10;
-        threads.forEach(function(thread) {
-          thread.page_count = Math.ceil(thread.post_count / postsPerPage);
-          getPageKeysForThread(thread);
+    })
+    .then(function() {
+      var query = {
+        board_id: boardId,
+        limit: threadsPerPage,
+        page: $scope.page
+      };
+      return Threads.byBoard(query).$promise;
+    })
+    .then(function(threads) {
+      // TODO: this needs to be grabbed from user settings
+      var postsPerPage = 10;
+      threads.forEach(function(thread) {
+        thread.page_count = Math.ceil(thread.post_count / postsPerPage);
+        getPageKeysForThread(thread);
 
-          if (thread.has_new_post) { thread.title_class = 'bold-title'; }
-        });
-        $scope.threads = threads;
+        if (thread.has_new_post) { thread.title_class = 'bold-title'; }
       });
+      $scope.threads = threads;
     });
 
     var getPageKeysForThread = function(thread) {
