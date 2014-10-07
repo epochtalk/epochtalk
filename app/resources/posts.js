@@ -16,13 +16,7 @@ module.exports = ['$resource',
       },
       update: {
         method: 'POST',
-        params: {
-          id: '@id',
-          title: '@title',
-          body: '@body',
-          encodedBody: '@encodedBody',
-          thread_id: '@thread_id'
-        }
+        params: { id: '@id' }
       }
     });
   }

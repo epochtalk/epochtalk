@@ -1,10 +1,6 @@
-module.exports = ['$scope', '$routeParams', '$http','$rootScope', 'breadcrumbs',
-  function($scope, $routeParams, $http, $rootScope, breadcrumbs) {
+module.exports = ['$scope', '$routeParams', '$rootScope', 'breadcrumbs',
+  function($scope, $routeParams, $rootScope, breadcrumbs) {
     $rootScope.breadcrumbs = breadcrumbs.get();
-    // $scope.parentPostId = $routeParams.parentPostId;
-    // $http.get('/api/threads/' + $scope.parentPostId).success(function(thread) {
-    //   console.log(thread);
-    // });
   }
 ];
 

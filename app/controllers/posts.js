@@ -41,11 +41,20 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
       $scope.newPost.body = text;
     };
 
-    $scope.savePost = function(post) {
-      // error check input
-
+    $scope.savePost = function() {
       delete $scope.newPost.error;
 
+      // error check input
+      if (!$scope.newPost.title || $scope.newPost.title.length === 0) {
+        $scope.newPost.error = {};
+        $scope.newPost.error.message = 'No Title Found';
+        return;
+      }
+      if (!$scope.newPost.body || $scope.newPost.body.length === 0) {
+        $scope.newPost.error = {};
+        $scope.newPost.error.message = 'No Post Body Found';
+        return;
+      }
 
       Posts.save($scope.newPost).$promise
       .then(function(data) { $route.reload(); })
@@ -80,9 +89,21 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
     };
 
     $scope.saveEditPost = function(index) {
-      // check input
-
       var editPost = $scope.posts[index];
+      
+      // check input
+      delete editPost.error;
+      if (!editPost.title || editPost.title.length === 0) {
+        $scope.posts[index].error = {};
+        $scope.posts[index].error.message = 'No Title Found';
+        return;
+      }
+      if (!editPost.body || editPost.body.length === 0) {
+        $scope.posts[index].error = {};
+        $scope.posts[index].error.message = 'No Post Body Found';
+        return;
+      }
+
       var saveEditPost = {
         title: editPost.title,
         body: editPost.body,
