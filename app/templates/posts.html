@@ -25,6 +25,12 @@
           <span class="timestamp">
           {{post.created_at | date:'medium'}}
           </span>
+          <ul class="post-action">
+            <li><a href="#">like</a></li>
+            <li><a href="#">flag</a></li>
+            <li><a href="#">reply</a></li>
+            <li><a href="#">quote</a></li>
+          </ul>
           <button class="button tiny" ng-click="startEditPost($index)" ng-if="post.editable">
             Edit
           </button>

@@ -1,7 +1,10 @@
 body {
   color: #444;
-  line-height: 1.4rem;
+  line-height: 1.5;
   margin-top: 10px; }
+
+ol, ul, dl {
+  line-height: 1.5; }
 
 .page-height {
   min-height: 80%; }
@@ -164,7 +167,7 @@ input::-webkit-inner-spin-button {
   font-weight: bold; }
 
 .post-block {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #dddddd;
   float: left;
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
@@ -196,10 +199,31 @@ input::-webkit-inner-spin-button {
   .post-user .user-details {
     list-style-type: none;
     margin: 0;
-    padding: 0; }
+    padding: 0;
+    font-size: .8125rem; }
+    .post-user .user-details .name {
+      font-size: 1rem;
+      font-weight: 600; }
 
 .post-title {
-  float: left; }
+  color: #aaaaaa;
+  float: left;
+  width: 83.3333%; }
+
+.post-action {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  float: right; }
+  .post-action li {
+    display: inline-block;
+    padding-right: 1rem; }
+    .post-action li:last-child {
+      padding-right: 0; }
+  .post-action a {
+    color: #dddddd; }
+    .post-action a:hover {
+      color: slategray; }
 
 .post-body {
   float: left;

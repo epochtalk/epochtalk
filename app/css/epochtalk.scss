@@ -2,9 +2,13 @@
 
 body {
   color: $color-body;
-  line-height: 1.4rem;
+  line-height: $line-height;
   margin-top:10px;
   // background: url(/static/img/white_wall_hash.png);
+}
+
+ol, ul, dl {
+  line-height: $line-height;
 }
 
 .page-height { min-height: 80%;}
@@ -157,7 +161,7 @@ input::-webkit-inner-spin-button {
 // Views --------------------------------------------------------- //
 // Posts
 .post-block {
-  border-bottom: 1px solid $color-gray;
+  border-bottom: 1px solid $color-gray-light;
   float: left;
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
@@ -192,11 +196,36 @@ input::-webkit-inner-spin-button {
 
   .user-details {
     @include list-clean;
+    font-size: .8125rem;
+
+    .name {
+      font-size: 1rem;
+      font-weight: 600;
+    }
   }
 }
 
 .post-title {
+  color: $color-gray-med;
   float: left;
+  width: 83.3333%;
+}
+
+.post-action {
+  @include list-clean;
+  float: right;
+
+  li {
+    @include list-flat;
+  }
+
+  a {
+    color: $color-gray-light;
+
+    &:hover {
+      color: $color-epoch;
+    }
+  }
 }
 
 .post-body {
