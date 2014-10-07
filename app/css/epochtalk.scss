@@ -1,8 +1,7 @@
 @import 'variables';
 
 body {
-  // color: $color-body;
-  color: blue;
+  color: $color-body;
   margin-top:10px;
   // background: url(/static/img/white_wall_hash.png);
 }
@@ -152,3 +151,27 @@ input::-webkit-inner-spin-button {
 }
 
 .bold-title { font-weight: bold; }
+
+
+// Views --------------------------------------------------------- //
+// Posts
+.post-block {
+  float: left;
+  width: 100%;
+}
+
+.post-user {
+  float: left;
+  margin-right: 10px;
+  width: 150px;
+}
+
+.post-title {
+  float: left;
+}
+
+.post-body {
+  border-bottom: 1px solid $color-gray;
+  float: left;
+  padding-bottom: 2rem;
+}

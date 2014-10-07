@@ -1,5 +1,5 @@
 body {
-  color: blue;
+  color: #444;
   margin-top: 10px; }
 
 .page-height {
@@ -161,5 +161,22 @@ input::-webkit-inner-spin-button {
 
 .bold-title {
   font-weight: bold; }
+
+.post-block {
+  float: left;
+  width: 100%; }
+
+.post-user {
+  float: left;
+  margin-right: 10px;
+  width: 150px; }
+
+.post-title {
+  float: left; }
+
+.post-body {
+  border-bottom: 1px solid #ccc;
+  float: left;
+  padding-bottom: 2rem; }
 
 /*# sourceMappingURL=epochtalk.css.map */
