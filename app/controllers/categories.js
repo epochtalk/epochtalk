@@ -4,17 +4,18 @@ module.exports = ['$scope', '$q', '$route', '$http', '$rootScope', 'breadcrumbs'
   function($scope, $q, $route, $http, $rootScope, breadcrumbs) {
     var movedBoards = {}; // Map of moved child boards by id
     var editedBoards = {}; // Map of edited boards by id
-
+    var catListId = 'categorized-boards';
+    var boardListId = 'uncategorized-boards';
+    var origCats;
+    var origBoards;
     // Initialization
     $http.get('/api/boards').success(function(categories) {
       $rootScope.breadcrumbs = breadcrumbs.get();
       $http.get('/api/boards/all').success(function(allBoards) {
+        origCats = _.clone(categories, true);
+        origBoards = _.clone(allBoards, true);
         $scope.catListData = categories;
-        $scope.catListOpts = { protectRoot: true, maxDepth: 5, group: 1 };
-        $scope.catListId = 'categorized-boards';
         $scope.boardListData = allBoards;
-        $scope.boardListOpts = { protectRoot: true, maxDepth: 4, group: 1 };
-        $scope.boardListId = 'uncategorized-boards';
         $scope.nestableMap = {};
         $scope.listElements = {};
         $scope.newBoards = [];
@@ -26,13 +27,10 @@ module.exports = ['$scope', '$q', '$route', '$http', '$rootScope', 'breadcrumbs'
     // ================
 
     $scope.save = function() {
-      var serializedCats;
+      var serializedCats = $('#' + catListId).nestable('serialize');
+      var serializedBoards = $('#' + boardListId).nestable('serialize');
       return createNewBoards() // 1) Create new boards
       .then(function() {
-        var catList = $scope.listElements[$scope.catListId];
-        var boardList = $scope.listElements[$scope.boardListId];
-        var serializedBoards = boardList.nestable('serialize');
-        serializedCats = catList.nestable('serialize');
         buildMovedBoardsHash(serializedCats);
         buildMovedBoardsHash(serializedBoards);
         // 2) Handle Boards which have been moved/reordered
@@ -55,12 +53,12 @@ module.exports = ['$scope', '$q', '$route', '$http', '$rootScope', 'breadcrumbs'
 
     // Expands all Categories/Boards
     $scope.expandAll = function() {
-      $('#' + $scope.catListId).nestable('expandAll');
+      $('#' + catListId).nestable('expandAll');
     };
 
     // Collapses all Categories/Boards
     $scope.collapseAll = function() {
-      $('#' + $scope.catListId).nestable('collapseAll');
+      $('#' + catListId).nestable('collapseAll');
     };
 
     $scope.reset = function() {
@@ -70,7 +68,7 @@ module.exports = ['$scope', '$q', '$route', '$http', '$rootScope', 'breadcrumbs'
     $scope.insertNewCategory = function() {
       $scope.$broadcast('insertNewCategory', {
           newCatName: $scope.newCatName || '',
-          listId: $scope.catListId
+          listId: catListId
       });
       $scope.newCatName = '';
     };
@@ -100,7 +98,7 @@ module.exports = ['$scope', '$q', '$route', '$http', '$rootScope', 'breadcrumbs'
       };
       $scope.$broadcast('insertNewBoard', {
         newBoard: board,
-        listId: $scope.boardListId
+        listId: boardListId
       });
       $scope.closeModal('#add-new-board');
       $scope.newBoardName = '';
@@ -132,7 +130,7 @@ module.exports = ['$scope', '$q', '$route', '$http', '$rootScope', 'breadcrumbs'
       $scope.$broadcast('editCategory', {
         newCatName: $scope.editCatName,
         dataId: editCatDataId,
-        listId: $scope.catListId
+        listId: catListId
       });
 
       // Update the category in the nestableMap

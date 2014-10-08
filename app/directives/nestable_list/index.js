@@ -3,10 +3,7 @@ module.exports = ['$compile', function($compile) {
     restrict: 'E',
     scope: {
       data: '=',
-      listId: '=',
-      opts: '=',
       nestableMap: '=',
-      listElements: '=',
       newBoards: '=',
       setEditCat: '&',
       setEditBoard: '&',
@@ -15,40 +12,32 @@ module.exports = ['$compile', function($compile) {
     link: function(scope, element) {
       var dataId = 0; // used to populate unique data-id attribute
       var nestableId; // id of the nestable list
-      var nestableMap; // Stores a map of data-id to object (boards/cats)
-      var newBoards; // Stores array of newly added boards
       var opts; // Stores options for nestable list
-      var listElements; // Map containing the jquery eleme
-      var originalHtml; // original html state for resetting list
 
       // ========================
       // Nestable List Generation
       // ========================
 
       // Initialization
-      var group = ['data', 'listId', 'opts', 'nestableMap', 'listElements', 'newBoards'];
-      scope.$watchGroup(group, function(newValues) {
-        var data = newValues[0];
-        var listId = newValues[1];
-        opts = newValues[2] || {};
-        nestableMap = newValues[3];
-        listElements = newValues[4];
-        newBoards = newValues[5];
-        if (data && data.length && listId && opts && nestableMap && listElements) {
-          nestableId = listId;
+      scope.$watch('data', function(data) {
+
+        if (data && data.length) {
+          var html;
           var firstItem = data[0];
           if (firstItem.board_ids) { // categories were passed into 'data'
-            originalHtml = generateCategoryList(data);
+            nestableId = 'categorized-boards';
+            opts = { protectRoot: true, maxDepth: 5, group: 1 };
+            html = generateCategoryList(data);
           }
           else if (firstItem.id) { // boards were passed in
-            originalHtml = generateNoCatBoardsList(data);
+            nestableId = 'uncategorized-boards';
+            opts = { protectRoot: true, maxDepth: 4, group: 1 };
+            html = generateNoCatBoardsList(data);
           }
           // Compile html so angular controls will work
-          var compiledHtml = $compile(originalHtml)(scope);
-          element.replaceWith(compiledHtml);
-          var nestableList = $('#' + nestableId);
-          listElements[nestableId] = nestableList;
-          nestableList.nestable(opts);
+          var compiledHtml = $compile(html)(scope);
+          $(element).html(compiledHtml);
+          $('#' + nestableId).nestable(opts);
         }
       }, true);
 
@@ -56,7 +45,7 @@ module.exports = ['$compile', function($compile) {
       var generateCategoryList = function(categories) {
         var html = '<div class="dd" id="' + nestableId + '"><ol class="dd-list">';
         categories.forEach(function(cat) {
-          nestableMap[nestableId + '-' + dataId] = {
+          scope.nestableMap[nestableId + '-' + dataId] = {
             name: cat.name,
             children_ids: cat.board_ids || []
           };
@@ -81,7 +70,7 @@ module.exports = ['$compile', function($compile) {
         var html = '<ol class="dd-list">';
         boards.forEach(function(board) {
           // Store boardData within each li's data-board attr for easy access
-          nestableMap[nestableId + '-' + dataId] = {
+          scope.nestableMap[nestableId + '-' + dataId] = {
             id: board.id,
             name: board.name,
             description: board.description,
@@ -152,7 +141,7 @@ module.exports = ['$compile', function($compile) {
       var insertNewCategory = function(catName) {
         if (catName !== '') {
           // Update hashmap of list items
-          nestableMap[nestableId + '-' + dataId] = {
+          scope.nestableMap[nestableId + '-' + dataId] = {
             name: catName,
             children_ids: []
           };
@@ -185,7 +174,7 @@ module.exports = ['$compile', function($compile) {
       var insertNewBoard = function(board) {
         if (board.name !== '') {
           // Update hashmap of list items
-          nestableMap[nestableId + '-' + dataId] = {
+          scope.nestableMap[nestableId + '-' + dataId] = {
             id: '',
             name: board.name,
             description: board.description,
@@ -194,7 +183,7 @@ module.exports = ['$compile', function($compile) {
           // Add dataId to board before adding to new boards array
           // to allow for quick lookup in nestableMap from parent controller
           board.dataId = nestableId + '-' + dataId;
-          newBoards.push(board);
+          scope.newBoards.push(board);
 
           //Add list if list is currently empty
           if ($('#' + nestableId).children('.dd-empty').length) {

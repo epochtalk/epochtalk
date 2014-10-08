@@ -28,13 +28,13 @@
         <a ng-click="collapseAll()"><i class="fa fa-compress"></i> Collapse</a>
       </div>
     </h6>
-    <nestable-list data="catListData" list-id="catListId" opts="catListOpts" nestable-map="nestableMap" list-elements="listElements" set-edit-cat="setEditCat(data)" set-edit-board="setEditBoard(data)" set-delete="setDelete(data)"></nestable-list>
+    <nestable-list data="catListData" nestable-map="nestableMap" list-elements="listElements" set-edit-cat="setEditCat(data)" set-edit-board="setEditBoard(data)" set-delete="setDelete(data)"></nestable-list>
     <button class="tiny" ng-click="reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset</button>&nbsp;
     <button class="tiny" ng-click="save()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
   </div>
   <div class="small-12 medium-6 columns">
     <h6 class="thin-dotted-underline">Uncategorized Boards</h6>
-    <nestable-list data="boardListData" list-id="boardListId" opts="boardListOpts" nestable-map="nestableMap" list-elements="listElements" new-boards="newBoards" set-edit-board="setEditBoard(data)" set-delete="setDelete(data)"></nestable-list>
+    <nestable-list data="boardListData" nestable-map="nestableMap" list-elements="listElements" new-boards="newBoards" set-edit-board="setEditBoard(data)" set-delete="setDelete(data)"></nestable-list>
   </div>
 </div>
 
