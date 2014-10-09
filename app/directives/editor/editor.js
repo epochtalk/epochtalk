@@ -1,5 +1,5 @@
 var medium = require('medium-editor');
-var xbbcode = require('./xbbcode');
+var bbcodeParser = require('bbcode-parser');
 var fs = require('fs');
 
 module.exports = function() {
@@ -30,7 +30,7 @@ module.exports = function() {
       // Medium Editor Event Bindings
       var onChange = function() {
         // process BBCode
-        var processed = xbbcode.process({text: editorElement.html()}).html;
+        var processed = bbcodeParser.process({text: editorElement.html()}).html;
         previewElement.html(processed);
         scope.saveText({
           encoded: editorElement.html(),
@@ -51,7 +51,7 @@ module.exports = function() {
 
       // on load ng-model text to editor and preview
       editorElement.html(scope.text);
-      var processed = xbbcode.process({text: editorElement.html()}).html;
+      var processed = bbcodeParser.process({text: editorElement.html()}).html;
       previewElement.html(processed);
 
       editorElement.on('input', onChange);
