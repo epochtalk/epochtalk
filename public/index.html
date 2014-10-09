@@ -15,72 +15,73 @@
 
 <body class="antialiased hide-extras">
   
-<div ng-controller="HeaderCtrl">
-  <!-- Page Title and Header -->
-  <div class="row" ng-cloak>
-    <div class="small-6 columns header-element">
-      <div class="header-container">
-        <h2 class="left header-centered-height">EpochTalk Forum</h2>
+  <div ng-controller="HeaderCtrl">
+    <!-- Page Title and Header -->
+    <div class="row" ng-cloak>
+      <div class="small-6 columns header-element">
+        <div class="header-container">
+          <h2 class="left header-centered-height">EpochTalk Forum</h2>
+        </div>
+      </div>
+    </div>
+    <div class="row" ng-cloak>
+      <div class="small-12 columns">
+        <nav class="top-bar" data-topbar>
+          <ul class="title-area">
+            <li class="name"></li>
+             <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+            <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+          </ul>
+
+          <section class="top-bar-section">
+            <!-- Left Nav Section -->
+            <ul class="left">
+              <li class="active"><a href="/">Home</a></li>
+              <li><a href="#">Help</a></li>
+              <li><a href="#">Donate</a></li>
+              <li ng-if="loggedIn()"><a href="/me">Profile</a></li>
+            </ul>
+            <!-- Right Nav Section -->
+            <ul ng-if="!loggedIn()" class="right">
+              <li style="margin-right: 5px">
+                <input id="rememberMe" class="no-margin" type="checkbox" ng-model="user.rememberMe">
+              </li>
+              <li style="margin-right: 5px">
+                <input class="no-margin" type="text" placeholder="Username" ng-model="user.username" ng-focus="!loggedIn()">
+              </li>
+              <li style="margin-right: 5px">
+                <input class="no-margin" type="password" placeholder="Password" ng-model="user.password" ng-keyup="enterLogin($event)">
+              </li>
+              <li style="margin-right: 5px">
+                <a href="#" class="button expand" ng-click="login()">Login</a>
+              </li>
+            </ul>
+            
+            <ul ng-show="loggedIn()" class="right">
+              <li class="has-dropdown">
+                <a href="/me">{{ currentUser() }}</a>
+                <ul class="dropdown">
+                  <li><a href="/me">Profile</a></li>
+                  <li><a ng-href="" ng-click="logout()">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+          </section>
+        </nav>
+        <div class="magellan-override" data-magellan-expedition="fixed">
+          <ul class="breadcrumbs" data-tapbar>
+            <li ng-repeat="breadcrumb in breadcrumbs track by breadcrumb.path" ng-class="{ active: $last }">
+              <a ng-if="!$last" ng-href="{{ breadcrumb.path }}" ng-bind="breadcrumb.label" class="margin-right-xs"></a>
+              <span ng-if="$last" ng-bind="breadcrumb.label"></span>
+            </li>
+            <!--
+            <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">Dolor mollit jerky pork</a></li>
+            -->
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-  <div class="row" ng-cloak>
-    <div class="small-12 columns">
-      <nav class="top-bar" data-topbar>
-        <ul class="title-area">
-          <li class="name"></li>
-           <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-          <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-        </ul>
-
-        <section class="top-bar-section">
-          <!-- Left Nav Section -->
-          <ul class="left">
-            <li class="active"><a href="/">Home</a></li>
-            <li><a href="#">Help</a></li>
-            <li><a href="#">Donate</a></li>
-            <li ng-if="loggedIn()"><a href="/me">Profile</a></li>
-          </ul>
-          <!-- Right Nav Section -->
-          <ul ng-if="!loggedIn()" class="right">
-            <li style="margin-right: 5px">
-              <input id="rememberMe" class="no-margin" type="checkbox" ng-model="user.rememberMe">
-            </li>
-            <li style="margin-right: 5px">
-              <input class="no-margin" type="text" placeholder="Username" ng-model="user.username" ng-focus="!loggedIn()">
-            </li>
-            <li style="margin-right: 5px">
-              <input class="no-margin" type="password" placeholder="Password" ng-model="user.password" ng-keyup="enterLogin($event)">
-            </li>
-            <li style="margin-right: 5px">
-              <a href="#" class="button expand" ng-click="login()">Login</a>
-            </li>
-          </ul>
-          
-          <ul ng-show="loggedIn()" class="right">
-            <li class="has-dropdown">
-              <a href="/me">{{ currentUser() }}</a>
-              <ul class="dropdown">
-                <li><a href="/me">Profile</a></li>
-                <li><a ng-href="" ng-click="logout()">Logout</a></li>
-              </ul>
-            </li>
-          </ul>
-        </section>
-      </nav>
-      <ul class="breadcrumbs">
-        <li ng-repeat="breadcrumb in breadcrumbs track by breadcrumb.path" ng-class="{ active: $last }">
-          <a ng-if="!$last" ng-href="{{ breadcrumb.path }}" ng-bind="breadcrumb.label" class="margin-right-xs"></a>
-          <span ng-if="$last" ng-bind="breadcrumb.label"></span>
-        </li>
-        <!--
-        <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">Dolor mollit jerky pork</a></li>
-        -->
-      </ul>
-
-    </div>
-  </div>
-</div>
   
   <!-- Main Content -->
   <div ng-view class="page-height" ng-cloak></div>

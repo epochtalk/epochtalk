@@ -3,6 +3,13 @@ body {
   background: url(/static/img/white_wall_hash.png);
 }
 
+/* Foundation Overrides */
+.magellan-override {
+  padding: 0px;
+  background: transparent;
+}
+
+
 .page-height { min-height: 80%;}
 
 .breadcrumbs > .news:before {
