@@ -23,13 +23,13 @@
         <a ng-click="collapseAll()"><i class="fa fa-compress"></i> Collapse</a>
       </div>
     </h6>
-    <div id="cat-list"></div>
+    <nestable-categories></nestable-categories>
     <button class="tiny" ng-click="reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset</button>&nbsp;
-    <button class="tiny" ng-click="submit()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+    <button class="tiny" ng-click="save()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
   </div>
   <div class="small-12 medium-6 columns">
     <h6 class="thin-dotted-underline">Uncategorized Boards</h6>
-    <div id="no-cat-boards-list"></div>
+    <nestable-boards></nestable-boards>
   </div>
 </div>
 

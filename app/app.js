@@ -36,8 +36,9 @@ app.controller('CategoriesCtrl', require('./controllers/categories.js'));
 // add epochtalk-editor directive
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
 app.directive('pagination', require('./directives/pagination'));
-app.directive('manageForum', require('./directives/manage_forum'));
-app.directive('nestableList', require('./directives/nestable_list'));
+app.directive('categoryEditor', require('./directives/category_editor'));
+app.directive('nestableBoards', require('./directives/category_editor/nestable-boards.js'));
+app.directive('nestableCategories', require('./directives/category_editor/nestable-categories.js'));
 
 // Set Angular Configs
 app.config(require('./config'))
@@ -51,7 +52,7 @@ app.config(require('./config'))
 require('./css/normalize.css');
 require('./css/foundation.css');
 require('./css/epochtalk.css');
-require('./css/manage-forum.css');
+require('./css/category-editor.css');
 require('./css/editor.css');
 require('./css/medium-editor.css');
 require('./css/default.css');
