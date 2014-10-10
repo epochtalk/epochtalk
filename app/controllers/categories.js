@@ -27,6 +27,7 @@ module.exports = ['$scope', '$q', '$route', '$rootScope', 'Boards', 'breadcrumbs
       return $q.all($scope.newBoards.map(function(newBoard) {
         var dataId = newBoard.dataId;
         delete newBoard.dataId;
+        console.log(newBoard);
         return Boards.save(newBoard).$promise
         .then(function(board) {
           console.log('Created New Board: ' + JSON.stringify(board));
