@@ -111,8 +111,8 @@ module.exports = ['$compile', '$route', function($compile, $route) {
         var deleteEl = $('li[data-id="' + deleteDataId + '"]');
         if (deleteEl) {
           var boardListEl = $('#' + $scope.boardListId + ' > .dd-list');
-          var childBoardEls = deleteEl.children().find('.dd-item');
-          boardListEl.append(childBoardEls);
+          var childBoardsHtml = deleteEl.children('.dd-list').html();
+          boardListEl.append(childBoardsHtml);
           deleteEl.remove();
         }
 

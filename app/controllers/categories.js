@@ -51,15 +51,15 @@ module.exports = ['$scope', '$q', '$route', '$rootScope', 'Boards', 'breadcrumbs
     // 3) Handle Boards which have been edited
     $scope.processEditedBoards = function() {
       console.log('3) Handling edited boards: \n' + JSON.stringify($scope.editedBoards, null, 2));
-      return $q.all(_.map($scope.editedBoards, function(editedBoard, id) {
-        return Boards.update({ id: id }, editedBoard).$promise
+      return $q.all(_.map($scope.editedBoards, function(editedBoard, key) {
+        return Boards.update({ id: key }, editedBoard).$promise
         .catch(function(response) {
           console.log(response);
         });
       }));
     };
 
-    // 3) Updated all Categories
+    // 4) Updated all Categories
     $scope.processCategories = function() {
       console.log('4) Updating Categories: \n' + JSON.stringify($scope.updatedCats, null, 2));
       return Boards.updateCategories({ categories: $scope.updatedCats }).$promise
