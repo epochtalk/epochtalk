@@ -4,13 +4,14 @@
 var path = require('path');
 var Hapi = require('hapi');
 var good = require('good');
+var Blankie = require('blankie');
+var Scooter = require('scooter');
 var jwt = require('hapi-auth-jsonwebtoken');
 var config = require(path.join(__dirname, 'config'));
 var memDb = require(path.join(__dirname, 'memStore')).db;
 
 var serverOpts = {
   // cors disabled by default
-  // CSP?
   security: {
     hsts: true,
     xframe: true,
@@ -74,6 +75,23 @@ server.pack.register(jwt, function(err) {
 // api routes
 var routes = require(__dirname + '/routes');
 server.route(routes.endpoints());
+
+
+// CSP
+server.pack.register([Scooter, {
+  plugin: Blankie,
+  options: {
+    defaultSrc: 'none',
+    scriptSrc: ['self', "'nonce-sabc123'"],
+    styleSrc: ['unsafe-inline', 'http://netdna.bootstrapcdn.com'],
+    fontSrc: ['self', 'http://netdna.bootstrapcdn.com'],
+    imgSrc: 'self',
+    connectSrc: ['self', 'ws://localhost', 'ws://127.0.0.1:35729/livereload']
+  }
+}] , function(err) {
+  if (err) { throw err; }
+});
+
 
 // register server route logging
 server.pack.register(good, function (err) {

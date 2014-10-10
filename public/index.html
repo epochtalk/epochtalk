@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="ept">
+<html ng-app="ept" ng-csp>
 
 <head>
   <base href="/">
@@ -15,83 +15,86 @@
 
 <body class="antialiased hide-extras">
   
+  <!-- Header -->
   <div ng-controller="HeaderCtrl">
-    <!-- Page Title and Header -->
-    <div class="row" ng-cloak>
-      <div class="small-6 columns header-element">
-        <div class="header-container">
-          <h2 class="left header-centered-height">EpochTalk Forum</h2>
-        </div>
-      </div>
-    </div>
     <div class="row" ng-cloak>
       <div class="small-12 columns">
-        <nav class="top-bar" data-topbar>
+
+        <!-- Navigation -->
+        <nav class="top-bar" data-topbar role="navigation">
+          <!-- For mobile -->
           <ul class="title-area">
-            <li class="name"></li>
-             <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-            <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+            <li class="name">
+              <h1><a ng-href="/">Epochtalk Forum</a></h1>
+            </li>
+            <li class="toggle-topbar menu-icon">
+              <a ng-href="#"><span>Menu</span></a>
+            </li>
           </ul>
 
+          <!-- For Desktop -->
           <section class="top-bar-section">
             <!-- Left Nav Section -->
             <ul class="left">
-              <li class="active"><a href="/">Home</a></li>
-              <li><a href="#">Help</a></li>
-              <li><a href="#">Donate</a></li>
-              <li ng-if="loggedIn()"><a href="/me">Profile</a></li>
+              <!-- <li><a href="#">Help</a></li> -->
+              <!-- <li><a href="#">Donate</a></li> -->
             </ul>
+
             <!-- Right Nav Section -->
-            <ul ng-if="!loggedIn()" class="right">
-              <li style="margin-right: 5px">
-                <input id="rememberMe" class="no-margin" type="checkbox" ng-model="user.rememberMe">
+            <ul ng-if="!loggedIn()" class="right login-container">
+              <li>
+                <input type="checkbox" ng-model="user.rememberMe">
               </li>
-              <li style="margin-right: 5px">
-                <input class="no-margin" type="text" placeholder="Username" ng-model="user.username" ng-focus="!loggedIn()">
+              <li>
+                <input type="text" placeholder="Username" ng-model="user.username" autofocus>
               </li>
-              <li style="margin-right: 5px">
-                <input class="no-margin" type="password" placeholder="Password" ng-model="user.password" ng-keyup="enterLogin($event)">
+              <li>
+                <input type="password" placeholder="Password" ng-model="user.password" ng-keyup="enterLogin($event)">
               </li>
-              <li style="margin-right: 5px">
-                <a href="#" class="button expand" ng-click="login()">Login</a>
+              <li>
+                <a href="#" class="button" ng-click="login()">Login</a>
               </li>
             </ul>
             
-            <ul ng-show="loggedIn()" class="right">
+            <!-- User Drop Down -->
+            <ul ng-if="loggedIn()" class="right">
               <li class="has-dropdown">
-                <a href="/me">{{ currentUser() }}</a>
+                <a ng-href="/me">{{ currentUser() }}</a>
                 <ul class="dropdown">
-                  <li><a href="/me">Profile</a></li>
-                  <li><a ng-href="" ng-click="logout()">Logout</a></li>
+                  <li><a ng-href="/me">Profile</a></li>
+                  <li><a ng-href="#" ng-click="logout()">Logout</a></li>
                 </ul>
               </li>
             </ul>
           </section>
         </nav>
+
+        <!-- Breadcrumbs -->
         <div class="magellan-override" data-magellan-expedition="fixed">
-          <ul class="breadcrumbs" data-tapbar>
+          <ul class="breadcrumbs">
             <li ng-repeat="breadcrumb in breadcrumbs track by breadcrumb.path" ng-class="{ active: $last }">
               <a ng-if="!$last" ng-href="{{ breadcrumb.path }}" ng-bind="breadcrumb.label" class="margin-right-xs"></a>
               <span ng-if="$last" ng-bind="breadcrumb.label"></span>
             </li>
-            <!--
+            
             <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">Dolor mollit jerky pork</a></li>
-            -->
+            
           </ul>
         </div>
+
       </div>
     </div>
   </div>
   
   <!-- Main Content -->
-  <div ng-view class="page-height" ng-cloak></div>
+  <div ng-view class="main-container" ng-cloak></div>
   
   <!-- Footer -->
-  <div class="panel footer no-margin" ng-cloak>
+  <div class="footer" ng-cloak>
     <div class="row">
       <div class="small-12 columns">
         <h3>Generic Footer Stuff</h3>
-          Prosciutto pork loin hamburger t-bone tail porchetta meatball, shoulder frankfurter chicken cow leberkas strip steak tenderloin kielbasa. Venison short loin beef ribs swine, short ribs doner shoulder brisket chicken tenderloin turducken pork. Kevin venison pancetta, pork belly short ribs prosciutto meatball. Sausage frankfurter ham hock, filet mignon short ribs pork belly sirloin andouille swine meatloaf capicola jerky ball tip. Pork loin ham hock shankle, shank meatball hamburger sirloin tri-tip andouille kielbasa capicola rump. Turducken biltong tri-tip spare ribs ground round chuck.
+        Prosciutto pork loin hamburger t-bone tail porchetta meatball, shoulder frankfurter chicken cow leberkas strip steak tenderloin kielbasa. Venison short loin beef ribs swine, short ribs doner shoulder brisket chicken tenderloin turducken pork. Kevin venison pancetta, pork belly short ribs prosciutto meatball. Sausage frankfurter ham hock, filet mignon short ribs pork belly sirloin andouille swine meatloaf capicola jerky ball tip. Pork loin ham hock shankle, shank meatball hamburger sirloin tri-tip andouille kielbasa capicola rump. Turducken biltong tri-tip spare ribs ground round chuck.
         <br />
         <span class="copyright">&copy; 2014 EpochTalk</span>
       </div>
