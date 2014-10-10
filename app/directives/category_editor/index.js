@@ -40,10 +40,12 @@ module.exports = ['$compile', '$route', function($compile, $route) {
         catDescEl.text($scope.editCatName);
         // Show that the item was changed
         var status = editCatEl.children('.dd-handle').children('.status');
-        status.addClass('edited');
+        status.addClass('modified');
 
         // Update the category name
-        var editCat = editCatEl.data();
+        var editCatData = editCatEl.data();
+        editCatData.name = $scope.editCatName;
+        var editCat = $scope.nestableMap[editCatDataId];
         editCat.name = $scope.editCatName;
 
         // Reset and close
@@ -62,7 +64,6 @@ module.exports = ['$compile', '$route', function($compile, $route) {
 
       // Edits the set board
       $scope.editBoard = function() {
-        var isExistingBoard = false;
         // Board being edited is a new board.
         if (!editBoardId && editBoardDataId) {
           $scope.newBoards.forEach(function(newBoard) {
@@ -78,16 +79,13 @@ module.exports = ['$compile', '$route', function($compile, $route) {
             name: $scope.editBoardName,
             description: $scope.editBoardDesc
           };
-          isExistingBoard = true;
          $scope.editedBoards[editBoardId] = editedBoard;
         }
 
         var editBoardEl = $('li[data-id="' + editBoardDataId + '"]');
-        if (isExistingBoard) {
-          // editedBoards[scope.editBoardId] = editedBoard;
-          var status = editBoardEl.children('.dd-handle').children('.status');
-          status.addClass('edited');
-        }
+        var status = editBoardEl.children('.dd-handle').children('.status');
+        status.addClass('modified');
+
         // Update UI to reflect change
         var boardDescEl = editBoardEl.children('.dd-handle').children('.dd-desc');
         boardDescEl.text($scope.editBoardName);
@@ -111,7 +109,12 @@ module.exports = ['$compile', '$route', function($compile, $route) {
 
       $scope.confirmDelete = function() {
         var deleteEl = $('li[data-id="' + deleteDataId + '"]');
-        if (deleteEl) { deleteEl.remove(); }
+        if (deleteEl) {
+          var boardListEl = $('#' + $scope.boardListId + ' > .dd-list');
+          var childBoardEls = deleteEl.children().find('.dd-item');
+          boardListEl.append(childBoardEls);
+          deleteEl.remove();
+        }
 
         deleteDataId = '';
         $scope.closeModal('#delete-confirm');
@@ -196,8 +199,6 @@ module.exports = ['$compile', '$route', function($compile, $route) {
           if(!_.isEqual(board.children_ids, newChildrenIds)) {
             var removedChildren = _.difference(board.children_ids, newChildrenIds);
             var addedChildren = _.difference(newChildrenIds, board.children_ids);
-            console.log('Removed Children: ' + JSON.stringify(removedChildren));
-            console.log('Added Children: ' + JSON.stringify(addedChildren));
             // Set Old Parent of moved board
             removedChildren.forEach(function(removedChild) {
               movedBoards[removedChild] = movedBoards[removedChild] || {};

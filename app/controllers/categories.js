@@ -1,43 +1,46 @@
-module.exports = ['$scope', '$q', '$route', '$http', '$rootScope', 'breadcrumbs',
-  function($scope, $q, $route, $http, $rootScope, breadcrumbs) {
+var _ = require('lodash');
+
+module.exports = ['$scope', '$q', '$route', '$rootScope', 'Boards', 'breadcrumbs',
+  function($scope, $q, $route, $rootScope, Boards, breadcrumbs) {
+
     // Initialization
-    $http.get('/api/boards').success(function(categories) {
+    var boardCategories;
+    Boards.query().$promise
+    .then(function(categories) {
       $rootScope.breadcrumbs = breadcrumbs.get();
-      $http.get('/api/boards/all').success(function(allBoards) {
-        $scope.catListData = categories;
-        $scope.boardListData = allBoards;
-        $scope.nestableMap = {};
-        $scope.editedBoards = {};
-        $scope.movedBoards = {};
-        $scope.newBoards = [];
-        $scope.updatedCats = [];
-      });
+      boardCategories = categories;
+      return Boards.all().$promise;
+    })
+    .then(function(allBoards) {
+      $scope.catListData = boardCategories;
+      $scope.boardListData = allBoards;
+      $scope.nestableMap = {};
+      $scope.editedBoards = {};
+      $scope.movedBoards = {};
+      $scope.newBoards = [];
+      $scope.updatedCats = [];
     });
 
     // 1) Create Boards which have been added
     $scope.processNewBoards = function() {
       console.log('1) Adding new Boards: \n' + JSON.stringify($scope.newBoards, null, 2));
-      return $q.all(
-        $scope.newBoards.map(function(newBoard) {
-          return $http({
-            url: '/api/boards',
-            method: 'POST',
-            data: {
-              name: newBoard.name,
-              description: newBoard.description
-            }
-          })
-          .success(function(board) {
-            console.log('Created New Board: ' + JSON.stringify(board));
-            $scope.nestableMap[newBoard.dataId].id = board.id;
-          });
+      return $q.all($scope.newBoards.map(function(newBoard) {
+        var dataId = newBoard.dataId;
+        delete newBoard.dataId;
+        return Boards.save(newBoard).$promise
+        .then(function(board) {
+          console.log('Created New Board: ' + JSON.stringify(board));
+          $scope.nestableMap[dataId].id = board.id;
         })
-      );
+        .catch(function(response) {
+          console.log(response);
+        });
+      }));
     };
 
     // 2) Handle Boards which have been moved/reordered
     $scope.processMoveBoards = function() {
-      return $q(function(resolve, reject) {
+      return $q(function(resolve) {
         console.log('2) Handling moved boards');
         console.log(JSON.stringify($scope.movedBoards, null, 2));
         resolve();
@@ -46,55 +49,21 @@ module.exports = ['$scope', '$q', '$route', '$http', '$rootScope', 'breadcrumbs'
 
     // 3) Handle Boards which have been edited
     $scope.processEditedBoards = function() {
-      return $q(function(resolve, reject) {
-        var editedBoards = $scope.editedBoards;
-        console.log('3) Handling edited boards');
-        console.log(JSON.stringify(editedBoards, null, 2));
-
-        // var updateBoard = function(board) {
-        //   $http({
-        //     url: '/api/boards',
-        //     method: 'POST',
-        //     data: {
-        //       name: board.name,
-        //       description: board.description
-        //     }
-        //   })
-        //   .success(function(board) {
-        //     console.log('Editing Board: ' + JSON.stringify(board));
-        //     $scope.nestableMap[board.dataId].id = board.id;
-        //   })
-        //   .error(function(data) {
-        //     reject(data);
-        //   });
-        // };
-
-        // for (var key in editedBoards) {
-        //   var board = editedBoards[key];
-
-        // }
-        resolve();
-      });
+      console.log('3) Handling edited boards: \n' + JSON.stringify($scope.editedBoards, null, 2));
+      return $q.all(_.map($scope.editedBoards, function(editedBoard, id) {
+        return Boards.update({ id: id }, editedBoard).$promise
+        .catch(function(response) {
+          console.log(response);
+        });
+      }));
     };
 
     // 3) Updated all Categories
     $scope.processCategories = function() {
-      return $q(function(resolve, reject) {
-        var updatedCats = $scope.updatedCats;
-        console.log('4) Updating Categories: \n' + JSON.stringify(updatedCats, null, 2));
-        $http({
-          url: '/api/boards/categories',
-          method: 'POST',
-          data: {
-            categories: updatedCats
-          }
-        })
-        .success(function() {
-          resolve();
-        })
-        .error(function(data) {
-          reject(data);
-        });
+      console.log('4) Updating Categories: \n' + JSON.stringify($scope.updatedCats, null, 2));
+      return Boards.updateCategories({ categories: $scope.updatedCats }).$promise
+      .catch(function(response) {
+        console.log(response);
       });
     };
 

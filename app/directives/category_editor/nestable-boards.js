@@ -29,8 +29,7 @@ module.exports = ['$compile', function($compile) {
             description: board.description,
             children_ids: board.children_ids || []
           };
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
-            '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
+          var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item" data-id="' + dataId + '">' +
@@ -80,10 +79,9 @@ module.exports = ['$compile', function($compile) {
           if ($('#' + scope.boardListId).children('.dd-empty').length) {
             $('#' + scope.boardListId).html('<ol class="dd-list"></ol>');
           }
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
-            '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
+          var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
-          var status = '<i class="fa status added"></i>';
+          var status = '<i class="fa status modified"></i>';
           var newBoardHtml = '<li class="dd-item" data-id="' + dataId +
             '"><div class="dd-handle">' + status + '<div class="dd-desc">' + board.name +
             '</div>' + toolbarHtml + '</div></li>';

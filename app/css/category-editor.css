@@ -169,29 +169,11 @@
   padding-right: 5px !important;
 }
 
-.added {
-  color: #50D050;
-  display: inline-block !important;
-}
-
-.added::before {
-  content: "\f0fe";
-}
-
-.removed {
-  color: #FF0000;
-  display: inline-block !important;
-}
-
-.removed::before {
-  content: "\f146";
-}
-
-.edited {
+.modified {
   color: #40BFFF;
   display: inline-block !important;
 }
 
-.edited::before {
+.modified::before {
   content: "\f0c8";
 }

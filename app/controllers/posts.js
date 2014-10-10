@@ -18,7 +18,7 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
 
       breadcrumbs.options = { 'Thread': thread.title };
       $rootScope.breadcrumbs = breadcrumbs.get();
-      
+
       var postCount = thread.post_count;
       var postsPerPage = Number($routeParams.limit) || 10;
       $scope.pageCount = Math.ceil(postCount / postsPerPage);
@@ -90,7 +90,7 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
 
     $scope.saveEditPost = function(index) {
       var editPost = $scope.posts[index];
-      
+
       // check input
       delete editPost.error;
       if (!editPost.title || editPost.title.length === 0) {

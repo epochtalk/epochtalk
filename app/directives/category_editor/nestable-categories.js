@@ -52,8 +52,7 @@ module.exports = ['$compile', function($compile) {
             description: board.description,
             children_ids: board.children_ids || []
           };
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
-            '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
+          var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item" data-id="' + dataId + '">' +
@@ -78,7 +77,7 @@ module.exports = ['$compile', function($compile) {
           var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
             '<i data-reveal-id="edit-category" ng-click="setEditCat(' +
               dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
-          var status = '<i class="fa status"></i>';
+          var status = '<i class="fa status modified"></i>';
           var newCatHtml = '<li class="dd-item dd-root-item" data-id="' + dataId +
             '" data-top="true" data-name="' + catName + '"><div class="dd-handle dd-root-handle">' +
             status + '<div class="dd-desc">' + catName + '</div>' + toolbarHtml + '</div></li>';
