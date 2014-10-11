@@ -1,35 +1,76 @@
 
 
-<div ng-repeat="cat in categorizedBoards">
+<div class="category" ng-repeat="cat in categorizedBoards">
+
+  <!-- Category Title -->
   <div class="row">
-    <div class="small-12 columns">
-      <h3 class="thin-dotted-underline" ng-bind-html="cat.name"></h3>
+    <div class="small-12 columns category-title">
+      <h3>{{ cat.name }}</h3>
+      <div class="thin-dotted-underline"></div>
     </div>
   </div>
+  
+  <!-- Boards in Category -->
   <div ng-repeat="board in cat.boards">
-    <div class="row board-section">
-      <div class="small-12 medium-10 columns">
-        <a class="board" ng-href="/boards/{{board.id}}" ng-bind-html="board.name"></a>
-        <br />
-        <span class="moderators"><strong>Moderators:</strong> <a href="#">Unknown</a>, <a href="#">Unknown</a>, <a href="#">Unknown</a></span>
-        <br />
-        <span ng-bind-html="board.description"></span>
-        <br />
+    <div class="row category-board">
+      
+      <!-- Board Info -->
+      <div class="small-12 medium-7 columns">
+        <!-- Board Name -->
+        <div class="category-board-name">
+          <a ng-href="/boards/{{board.id}}">
+            {{ board.name }}
+          </a>
+        </div>
+        <!-- Moderators -->
+        <div class="moderators">
+          <strong>Moderators:</strong>
+          <a href="#">Unknown</a>,
+          <a href="#">Unknown</a>,
+          <a href="#">Unknown</a>
+        </div>
+        <!-- Board Description -->
+        <div class="category-board-desc">
+          <span>{{ board.description }}</span>
+        </div>
+        <!-- Child Boards -->
         <span class="child-boards" ng-if="board.children.length > 0">
           <strong>Child Boards:</strong>
-           <span ng-repeat="child in board.children">
-            <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
-           </span>
+          <span ng-repeat="child in board.children">
+            <a ng-href="/boards/{{child.id}}">{{ child.name }}</a>
+            {{$last ? '' : ', '}}
+          </span>
         </span>
       </div>
-      <div class="small-12 medium-2 columns">
-        <div class="board-info board-info-spacer"><strong>{{board.total_post_count}}</strong> posts</div>
-        <div class="board-info"><strong>{{board.total_thread_count}}</strong> threads</div><br />
-        <div class="board-info board-info-spacer">Last post by</div>
-        <div class="board-info"><a href="#" ng-bind-html="board.last_post_username"></a></div>
-        <div class="board-info">in thread <a ng-href="/threads/{{board.last_thread_id}}/posts" ng-bind-html="board.last_thread_title"></a></div>
-        <div class="board-info">@ {{board.last_post_created_at | date:'medium'}}</div>
+
+      <!-- Board Posts and Threads -->
+      <div class="small-12 medium-2 columns text-info text-center">
+        <div>
+          <strong>{{board.total_post_count}}</strong> posts
+        </div>
+        <div>
+          <strong>{{board.total_thread_count}}</strong> threads
+        </div>
       </div>
+
+      <!-- Board Last Post By -->
+      <div class="small-12 medium-3 columns text-info">
+        <div>
+          Last post by
+          <a ng-href="#">{{ board.last_post_username }}</a>
+        </div>
+        <div>
+          in thread
+          <a ng-href="/threads/{{board.last_thread_id}}/posts">
+            {{ board.last_thread_title }}
+          </a>
+        </div>
+        <div>
+          {{board.last_post_created_at | date:'medium'}}
+        </div>
+      </div>
+
     </div>
   </div>
+
 </div>

@@ -4,38 +4,21 @@ body { background: url(/static/img/white_wall_hash.png); }
 .main-container { min-height: 80%; }
 .thin-dotted-underline {
   border-bottom: 1px dotted #ccc;
+  margin-bottom: 10px;
   padding-bottom: 10px; }
+.text-info { font-size: 13px; color: #999; }
+.bold-title { font-weight: bold; }
 
 /* Foundation Overrides */
 .magellan-override { padding: 0px; background: transparent; }
-
-/* Login CSS */
-/* optimize for mobile layout */
-.login-container > li { margin-right: 5px; }
-
-/* Breadcrumb CSS */
-.breadcrumbs > .news:before {
-  content: "";
-  margin: 0 0;
-  position: relative;
-  top: 1px; }
-.breadcrumbs > .news {
-  color: #444;
-  text-transform: none; }
 
 /* Page Controls */
 .page-controls > dl { margin-bottom: 0; }
 .page-controls > dl > dd { margin-bottom: 0; }
 
-/* Board Page */
-.board-page { padding-bottom: 15px; }
-.child-board { padding-bottom: 10px; }
-.board-info {
-  display: inline-block;
-  font-size: 13px;
-  color: #999; }
-.thread-listItem { padding: 5px 0; }
-.thread-listItem .division { font-size: 80%; line-height: 1.5; }
+/* Login CSS */
+/* optimize for mobile layout */
+.login-container > li { margin-right: 5px; }
 
 /* Footer CSS */
 .footer {
@@ -51,87 +34,53 @@ body { background: url(/static/img/white_wall_hash.png); }
   text-align: center;
   display: block; }
 
+/* Breadcrumb CSS */
+.breadcrumbs > .news:before {
+  content: "";
+  margin: 0 0;
+  position: relative;
+  top: 1px; }
+.breadcrumbs > .news {
+  color: #444;
+  text-transform: none; }
 
+/* Board Page */
+.board-page { padding-bottom: 15px; }
+.child-board { padding-bottom: 5px; }
+.child-board h5 { margin-bottom: 0px; }
+.child-board-desc { font-size: 14px; line-height: 1.1; padding-bottom: 3px; }
+.child-board-desc :last-child { padding-bottom: 0; }
+.thread-listItem { padding: 5px 0; }
+.thread-listItem .division { font-size: 80%; line-height: 1.5; }
 
-/* Un - Optimized */
-.top-spacer-10 { margin-top: 10px; }
-.top-spacer-15 { margin-top: 15px; }
-.top-spacer-5 { margin-top: 5px; }
-.bottom-spacer-10 { margin-bottom: 10px; }
-.margin-bottom-21 { margin-bottom: 21px; }
-.padding-top-10 { padding-top: 10px; }
-.padding-top-15 { padding-top: 15px; }
-
-.no-margin {
-  margin-top: 0;
-  line-height: normal;
-  margin-bottom: 0 !important;
-}
-
-.board {
+/* Boards Page */
+.category { margin-bottom: 30px; }
+.category-title h3 { margin-bottom: 0; margin-top: 0; }
+.category-board { margin-bottom: 20px; }
+.category-board-name {
   font-size: 20px;
   text-decoration: underline;
-  display: inline-block;
-  padding-bottom: 5px;
-}
-
+  margin-bottom: 5px; }
+.category-board-desc { font-size: 14px; line-height: 1.1; }
 .moderators {
   color: #999;
   font-size: 13px;
-  display: inline-block;
-  margin-bottom: 5px;
-}
-
+  margin-bottom: 5px; }
 .child-boards {
   color: #666;
-  font-size: 16px;
-  display: inline-block;
+  font-size: 14px;
   margin-top: 5px;
-  margin-bottom: 5px;
-}
+  margin-bottom: 5px; }
 
-.board-info-spacer { margin-top: 10px; }
+/* New Thread Page */
+.info-box { margin-bottom: 10px; }
+.preview-title { padding-left: 0px; }
+.editor-container { height: 200px; width: 100%; margin-bottom: 20px; }
+.editor { height: 100%; width: 100%; display: block; }
 
-.post-alert {
-  color: #777 !important;
-  font-weight: bold;
-}
-
-.board-section { margin-bottom: 20px; }
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
-
-.inactive {
-  background-color:#CCC;
-  color: #666;
-}
-
-.page-go-btn {
-  display: inline !important;
-  height: 20px !important;
-  width: 40px !important;
-  padding: 2px !important;
-  margin: 0 !important;
-  font-size: 10px !important;
-}
-
-.page-dropdown {
-  outline: 0 !important;
-  padding: 5px !important;
-}
-
-.page-input {
-  display: inline !important;
-  width: 28px !important;
-  height: 20px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  font-size: 12px !important;
-}
-
-.bold-title { font-weight: bold; }
+/* Registration Page */
+.reg-page-title { margin-bottom: 21px; }
+.reg-input-section { margin-bottom: 20px; }
+.reg-input-section input { margin-bottom: 0; }
+.reg-input-section button { margin-bottom: 0; }
+.reg-input-section small { display: block; }

@@ -7,7 +7,7 @@
     <span class="moderators">
       <strong>Moderators: </strong> Unknown, Unknown, Unknown
     </span>
-    <div class="thin-dotted-underline bottom-spacer-10"></div>
+    <div class="thin-dotted-underline"></div>
   </div>
 
   <!-- Page Controls -->
@@ -15,7 +15,7 @@
     <dl class="sub-nav">
       <dd><a ng-href="{{ newThreadUrl }}">Start a New Thread</a></dd>
     </dl>
-    <div class="thin-dotted-underline bottom-spacer-10"></div>
+    <div class="thin-dotted-underline"></div>
   </div>
 
   <!-- Child Boards -->
@@ -24,49 +24,46 @@
 
     <div class="child-board" ng-repeat="childBoard in board.children">
       <!-- Child Board Title -->
-     <h5><a ng-href="/boards/{{childBoard.id}}" ng-bind-html="childBoard.name"></a></h5>
+      <h5>
+        <a ng-href="/boards/{{childBoard.id}}" ng-bind-html="childBoard.name"></a>
+      </h5>
 
       <!-- Child Board description and content -->
       <div class="row">
         <!-- Description and child boards -->
-        <div class="small-12 medium-10 columns">
-         {{childBoard.description}}
-         <span class="child-boards" ng-if="childBoard.children.length > 0">
-           <strong>Child Boards:</strong>
+        <div class="small-12 medium-9 columns child-board-desc">
+          {{childBoard.description}}
+          <span class="child-boards" ng-if="childBoard.children.length > 0">
+            <strong>Child Boards:</strong>
             <span ng-repeat="child in childBoard.children">
-             <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
+              <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
             </span>
-         </span>
+          </span>
         </div>
 
         <!-- Posts and threads -->
-        <div class="small-12 medium-2 columns">
-          <div class="board-info">
+        <div class="small-12 medium-3 columns text-info">
+          <div>
             <strong>{{childBoard.total_post_count}}</strong> posts
           </div>
-          <div class="board-info">
+          <div>
             <strong>{{childBoard.total_thread_count}}</strong> threads
           </div>
         </div>
       </div>
       <!-- Last Post By -->
       <div class="row">
-        <div class="small-12 medium-8 columns">
-          <div class="board-info">Last post by</div>
-          <div class="board-info">
-            <a href="#" ng-bind-html="childBoard.last_post_username"></a>
-          </div>
-          <div class="board-info">
-            in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title"></a>
-          </div>
-          <div class="board-info">
-            @ {{childBoard.last_post_created_at | date:'medium'}}
-          </div>
+        <div class="small-12 medium-8 columns text-info">
+          Last post by
+          <a href="#" ng-bind-html="childBoard.last_post_username"></a>
+          in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title"></a>
+          <br>
+          {{childBoard.last_post_created_at | date:'medium'}}
         </div>
       </div>
 
     </div>
-    <div class="thin-dotted-underline top-spacer-10 bottom-spacer-10"></div>
+    <div class="thin-dotted-underline"></div>
   </div>
 
   <!-- Threads -->
@@ -76,13 +73,13 @@
       <div class="small-11 medium-7 columns">
         <h6><strong>Subject</strong></h6>
       </div>
-      <div class="small-6 medium-1 columns">
+      <div class="small-6 medium-1 columns text-center">
         <h6><strong>Replies</strong></h6>
       </div>
-      <div class="small-6 medium-1 columns">
+      <div class="small-6 medium-1 columns text-center">
         <h6><strong>Views</strong></h6>
       </div>
-      <div class="small-12 medium-2 columns">
+      <div class="small-12 medium-3 columns">
         <h6><strong>Last Reply</strong></h6>
       </div>
     </div>
@@ -90,11 +87,12 @@
     <!-- Thread listing -->
     <div class="thread-listItem" ng-repeat="thread in threads">
       <div class="row">
-        <div class="small-11 medium-7 columns">
+        <div class="small-12 medium-7 columns">
           <a ng-class="thread.title_class" ng-href="/threads/{{thread.id}}/posts" ng-bind-html="thread.title"></a><br>
 
           <div class="division">
-            Started by: <a href="#" ng-bind-html="thread.user.username"></a> @ <em>{{thread.created_at | date:'medium'}}</em>
+            Started by: <a href="#" ng-bind-html="thread.user.username"></a>
+            <em>( {{ thread.created_at | date:'medium' }} )</em>
           </div>
 
           <div class="division" ng-if="thread.page_count > 1">
@@ -104,22 +102,22 @@
           </div>
         </div>
 
-        <div class="medium-1 columns show-for-medium-up">
+        <div class="medium-1 columns show-for-medium-up text-center">
           {{thread.post_count - 1}}
         </div>
 
-        <div class="medium-1 columns show-for-medium-up">
+        <div class="medium-1 columns show-for-medium-up text-center">
           {{thread.view_count}}
         </div>
 
-        <div class="small-12 columns board-info show-for-small-only">
+        <div class="small-12 columns text-info show-for-small-only">
           <strong>{{thread.post_count - 1}}</strong> replies and <strong>{{thread.view_count}}</strong> views
         </div>
 
-        <div class="small-12 medium-2 columns">
-          <div class="board-info">Last post by</div>
-          <div class="board-info"><a href="#" ng-bind-html="thread.last_post_username"></a></div>
-          <div class="board-info">@ {{thread.last_post_created_at | date:'medium'}}</div>
+        <div class="small-12 medium-3 columns text-info">
+          {{thread.last_post_created_at | date:'medium'}}
+          <br>
+          <a href="#" ng-bind-html="thread.last_post_username"></a>
         </div>
       </div>
     </div>
