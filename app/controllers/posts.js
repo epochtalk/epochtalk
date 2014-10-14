@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Threads', 'Posts', 'breadcrumbs',
-  function($scope, $route, $routeParams, $rootScope, Auth, Threads, Posts, breadcrumbs) {
+module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routeParams', '$rootScope', 'Auth', 'Threads', 'Posts', 'breadcrumbs',
+  function($scope, $timeout, $location, $anchorScroll, $routeParams, $rootScope, Auth, Threads, Posts, breadcrumbs) {
     $scope.loggedIn = Auth.isAuthenticated;
     var threadId = $routeParams.threadId;
     // TODO: this needs to be grabbed from user settings
@@ -8,7 +8,9 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
     $scope.posts = null;
     $scope.newPost = { title: '' };
     $scope.tempPosts = {};
-
+    var postCount;
+    var limit;
+    var postsPerPage;
     // Loading post calls
 
     Threads.get({ id: threadId }).$promise
@@ -16,13 +18,12 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
       $scope.newPost.title = 'Re: ' + thread.title;
       $scope.newPost.thread_id = thread.id;
 
-      breadcrumbs.options = { 'Thread': thread.title };
+      breadcrumbs.options = { 'Thread Page': thread.title };
       $rootScope.breadcrumbs = breadcrumbs.get();
 
-      var postCount = thread.post_count;
-
-      var limit = $routeParams.limit;
-      var postsPerPage = limit === 'all' ? Number(postCount) : Number(limit) || 10;
+      postCount = thread.post_count;
+      limit = $routeParams.limit;
+      postsPerPage = limit === 'all' ? Number(postCount) : Number(limit) || 10;
 
       $scope.pageCount = Math.ceil(postCount / postsPerPage);
       return postsPerPage;
@@ -37,7 +38,21 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
     })
     .then(function(threadPosts) {
       $scope.posts = threadPosts;
+
+      if ($location.hash().length > 0) {
+        gotoAnchor($location.hash());
+      }
     });
+
+    var gotoAnchor = function(id, jumpToLastPage) {
+      $timeout(function() {
+        if (jumpToLastPage) {
+          $location.search('page', $scope.pageCount);
+        }
+        $location.hash(id);
+        $anchorScroll();
+      });
+    };
 
     // new post methods
 
@@ -63,7 +78,12 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
 
       $scope.newPost.body = $scope.newPost.encodedBody;
       Posts.save($scope.newPost).$promise
-      .then(function(data) { $route.reload(); })
+      .then(function(data) {
+        postCount++; // Increment post count and recalculate pageCount
+        postsPerPage = limit === 'all' ? Number(postCount) : Number(limit) || 10;
+        $scope.pageCount = Math.ceil(postCount / postsPerPage);
+        gotoAnchor(data.id, true);
+      })
       .catch(function(response) {
         console.log(response);
         var error = '';
@@ -123,7 +143,7 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
 
 
       Posts.update({id: editPost.id}, saveEditPost).$promise
-      .then(function(data) { $route.reload(); })
+      .then(function(data) { gotoAnchor(data.id); })
       .catch(function(response) {
         var error = '';
         if (response.status === 500) {
