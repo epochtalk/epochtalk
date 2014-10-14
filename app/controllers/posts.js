@@ -35,7 +35,9 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
       };
       return Posts.byThread(query).$promise;
     })
-    .then(function(threadPosts) { $scope.posts = threadPosts; });
+    .then(function(threadPosts) {
+      $scope.posts = threadPosts;
+    });
 
     // new post methods
 
@@ -59,6 +61,7 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
         return;
       }
 
+      $scope.newPost.body = $scope.newPost.encodedBody;
       Posts.save($scope.newPost).$promise
       .then(function(data) { $route.reload(); })
       .catch(function(response) {
@@ -82,7 +85,12 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
       $scope.tempPosts[editPost.id] = {};
       $scope.tempPosts[editPost.id].title = editPost.title;
       $scope.tempPosts[editPost.id].body = editPost.body;
-      $scope.tempPosts[editPost.id].encodedBody = editPost.encodedBody;
+      if (editPost.encodedBody) {
+        $scope.tempPosts[editPost.id].encodedBody = editPost.encodedBody;
+      }
+      else {
+        $scope.tempPosts[editPost.id].encodedBody = editPost.body;
+      }
       $scope.posts[index].editMode = true;
     };
 
@@ -109,10 +117,10 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
 
       var saveEditPost = {
         title: editPost.title,
-        body: editPost.body,
-        encodedBody: editPost.encodedBody,
+        body: editPost.encodedBody,
         thread_id: editPost.thread_id
       };
+
 
       Posts.update({id: editPost.id}, saveEditPost).$promise
       .then(function(data) { $route.reload(); })
