@@ -38,10 +38,9 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routePar
     })
     .then(function(threadPosts) {
       $scope.posts = threadPosts;
-
-      if ($location.hash().length > 0) {
-        gotoAnchor($location.hash());
-      }
+      $timeout(function() {
+        $anchorScroll();
+      });
     });
 
     var gotoAnchor = function(id, jumpToLastPage) {
