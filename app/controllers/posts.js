@@ -76,6 +76,7 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routePar
         return;
       }
 
+      // use input text when saving post
       $scope.newPost.body = $scope.newPost.encodedBody;
       Posts.save($scope.newPost).$promise
       .then(function(data) {
@@ -102,15 +103,19 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routePar
 
     $scope.startEditPost = function(index) {
       var editPost = $scope.posts[index];
+
+      // save a copy in case they cancel
       $scope.tempPosts[editPost.id] = {};
       $scope.tempPosts[editPost.id].title = editPost.title;
       $scope.tempPosts[editPost.id].body = editPost.body;
-      if (editPost.encodedBody) {
-        $scope.tempPosts[editPost.id].encodedBody = editPost.encodedBody;
+      $scope.tempPosts[editPost.id].encodedBody = editPost.encodedBody;
+
+      // check encodedBody exists, if not, use body for editing
+      if (!editPost.encodedBody) {
+        editPost.encodedBody = editPost.body;
       }
-      else {
-        $scope.tempPosts[editPost.id].encodedBody = editPost.body;
-      }
+
+      // turn on editing
       $scope.posts[index].editMode = true;
     };
 
@@ -137,10 +142,9 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routePar
 
       var saveEditPost = {
         title: editPost.title,
-        body: editPost.encodedBody,
+        body: editPost.encodedBody, // use input text to save
         thread_id: editPost.thread_id
       };
-
 
       Posts.update({id: editPost.id}, saveEditPost).$promise
       .then(function(data) { gotoAnchor(data.id); })
