@@ -20,7 +20,10 @@ module.exports = ['$scope', '$route', '$routeParams', '$rootScope', 'Auth', 'Thr
       $rootScope.breadcrumbs = breadcrumbs.get();
 
       var postCount = thread.post_count;
-      var postsPerPage = Number($routeParams.limit) || 10;
+
+      var limit = $routeParams.limit;
+      var postsPerPage = limit === 'all' ? Number(postCount) : Number(limit) || 10;
+
       $scope.pageCount = Math.ceil(postCount / postsPerPage);
       return postsPerPage;
     })

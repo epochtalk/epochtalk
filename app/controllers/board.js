@@ -58,7 +58,7 @@ module.exports = ['$scope', '$routeParams', '$rootScope', 'Auth', 'breadcrumbs',
         pageKeys.push({ val: secondToLastPage, url: urlPrefix + secondToLastPage });
         pageKeys.push({ val: lastPage, url: urlPrefix + lastPage });
       }
-      pageKeys.push({ val: 'All', url: urlPrefix + '1&limit=' + thread.post_count });
+      pageKeys.push({ val: 'All', url: urlPrefix + '1&limit=all' });
       thread.page_keys = pageKeys;
     };
 
