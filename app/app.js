@@ -4,7 +4,6 @@ require('angular-cookies/angular-cookies');
 require('angular-resource/angular-resource');
 require('angular-route/angular-route');
 require('angular-sanitize/angular-sanitize');
-require('ng-breadcrumb/ng-breadcrumbs');
 // var Modernizr = require('foundation/js/vendor/modernizr');
 jQuery = require('foundation/js/vendor/jquery');
 $ = jQuery;
@@ -15,7 +14,6 @@ require('foundation/js/foundation');
 
 // Create Angular App
 var app = angular.module('ept', [
-  'ng-breadcrumbs',
   'ngRoute',
   'ngCookies',
   'ngResource',

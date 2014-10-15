@@ -33,7 +33,7 @@ var server = Hapi.createServer('localhost', config.port, serverOpts);
   * token, original unadulterated token
   * decodedToken, the decrypted value in the token
   *   -- { username, user_id, email }
-  * cb(err, isValid, credentials), 
+  * cb(err, isValid, credentials),
   *   -- isValid, if true if decodedToken matches a user token
   *   -- credentials, the user short object to be tied to request.auth.credentials
   */

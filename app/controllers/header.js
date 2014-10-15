@@ -1,12 +1,13 @@
-module.exports = ['$scope', '$rootScope', '$route', '$timeout', 'Auth', 'breadcrumbs',
-  function($scope, $rootScope, $route, $timeout, Auth, breadcrumbs) {
-    $rootScope.breadcrumbs = breadcrumbs.get();
+module.exports = ['$scope', '$rootScope', '$route', '$timeout', 'Auth', 'BreadcrumbSvc',
+  function($scope, $rootScope, $route, $timeout, Auth, BreadcrumbSvc) {
     $scope.loggedIn = Auth.isAuthenticated;
     $scope.loginStateGreeting = Auth.loginStateGreeting;
     $scope.currentUser = Auth.currentUser;
     $scope.user = {};
 
     Auth.checkAuthentication();
+
+    $scope.breadcrumbs = BreadcrumbSvc.crumbs;
 
     $scope.enterLogin = function(keyEvent) {
       if (keyEvent.which === 13) {

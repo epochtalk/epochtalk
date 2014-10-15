@@ -1,5 +1,6 @@
 angular.module('ept')
-  .factory('Boards', require('./boards'))
-  .factory('Threads', require('./threads'))
-  .factory('Posts', require('./posts'))
-  .factory('User', require('./user'));
+  .factory('Breadcrumbs', require('./breadcrumbs.js'))
+  .factory('Boards', require('./boards.js'))
+  .factory('Threads', require('./threads.js'))
+  .factory('Posts', require('./posts.js'))
+  .factory('User', require('./user.js'));

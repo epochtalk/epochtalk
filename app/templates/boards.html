@@ -4,16 +4,16 @@
 
   <!-- Category Title -->
   <div class="row">
-    <div class="small-12 columns category-title">
+    <div id="cat-{{$index+1}}" class="small-12 columns category-title">
       <h3>{{ cat.name }}</h3>
       <div class="thin-dotted-underline"></div>
     </div>
   </div>
-  
+
   <!-- Boards in Category -->
   <div ng-repeat="board in cat.boards">
     <div class="row category-board">
-      
+
       <!-- Board Info -->
       <div class="small-12 medium-7 columns">
         <!-- Board Name -->

@@ -4,8 +4,8 @@
 var greetingLoggedOut = 'Not Logged In';
 var greetingLoggedIn = 'Logged In as ';
 
-module.exports = ['$location', '$rootScope', '$window', 'User',
-  function($location, $rootScope, $window, User) {
+module.exports = ['$location', '$window', 'User',
+  function($location, $window, User) {
     var greeting = greetingLoggedOut;
     var getUser = function() {
       var username;
@@ -106,7 +106,6 @@ module.exports = ['$location', '$rootScope', '$window', 'User',
       currentUser: function() {
         // check if key exists in storage
         var username = getUser();
-        $rootScope.currentUser = username;
         return username;
       },
 

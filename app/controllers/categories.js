@@ -1,13 +1,13 @@
 var _ = require('lodash');
 
-module.exports = ['$scope', '$q', '$route', '$rootScope', 'Boards', 'breadcrumbs',
-  function($scope, $q, $route, $rootScope, Boards, breadcrumbs) {
+module.exports = ['$scope', '$q', '$route', '$rootScope', 'Boards', 'BreadcrumbSvc',
+  function($scope, $q, $route, $rootScope, Boards, BreadcrumbSvc) {
 
     // Initialization
     var boardCategories;
     Boards.query().$promise
     .then(function(categories) {
-      $rootScope.breadcrumbs = breadcrumbs.get();
+      BreadcrumbSvc.update('categoryEditor');
       boardCategories = categories;
       return Boards.all().$promise;
     })

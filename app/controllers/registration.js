@@ -1,6 +1,6 @@
-module.exports = ['$scope', '$location', '$rootScope', 'Auth', 'breadcrumbs',
-  function($scope, $location, $rootScope, Auth, breadcrumbs) {
-    $rootScope.breadcrumbs = breadcrumbs.get();
+module.exports = ['$scope', '$location', '$rootScope', 'Auth', 'BreadcrumbSvc',
+  function($scope, $location, $rootScope, Auth, BreadcrumbSvc) {
+    BreadcrumbSvc.update('registration');
     $scope.user = {};
     $scope.validation = {
       register: {},

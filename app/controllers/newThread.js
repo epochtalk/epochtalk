@@ -1,11 +1,11 @@
-module.exports = ['$scope', '$routeParams', '$rootScope', '$location', 'Auth', 'Threads', 'breadcrumbs',
-  function($scope, $routeParams, $rootScope, $location, Auth, Threads, breadcrumbs) {
-    $rootScope.breadcrumbs = breadcrumbs.get();
+module.exports = ['$scope', '$routeParams', '$rootScope', '$location', 'Auth', 'Threads', 'BreadcrumbSvc',
+  function($scope, $routeParams, $rootScope, $location, Auth, Threads, BreadcrumbSvc) {
+    BreadcrumbSvc.update($routeParams.boardId, 'board');
     $scope.loggedIn = Auth.isAuthenticated;
     $scope.error = {};
 
     Auth.checkAuthentication();
-    
+
     $scope.thread = {
       board_id: $routeParams.boardId,
       encodedBody: '',

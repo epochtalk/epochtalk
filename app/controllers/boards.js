@@ -1,9 +1,9 @@
-module.exports = ['$scope', '$rootScope', 'Boards', 'breadcrumbs',
-  function($scope, $rootScope, Boards, breadcrumbs) {
+module.exports = ['$scope', '$rootScope', 'Boards', 'BreadcrumbSvc',
+  function($scope, $rootScope, Boards, BreadcrumbSvc) {
     Boards.query().$promise
     .then(function(categorizedBoards) {
       $scope.categorizedBoards = categorizedBoards;
-      $rootScope.breadcrumbs = breadcrumbs.get();
+      BreadcrumbSvc.update('home');
     });
   }
 ];
