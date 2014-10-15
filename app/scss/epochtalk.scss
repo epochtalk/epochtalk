@@ -1,0 +1,86 @@
+/** Globals ---------------------------------------------------------------- */
+
+body { background: url(/static/img/white_wall_hash.png); }
+.main-container { min-height: 80%; }
+.thin-dotted-underline {
+  border-bottom: 1px dotted #ccc;
+  margin-bottom: 10px;
+  padding-bottom: 10px; }
+.text-info { font-size: 13px; color: #999; }
+.bold-title { font-weight: bold; }
+
+/* Foundation Overrides */
+.magellan-override { padding: 0px; background: transparent; }
+
+/* Page Controls */
+.page-controls > dl { margin-bottom: 0; }
+.page-controls > dl > dd { margin-bottom: 0; }
+
+/* Login CSS */
+/* optimize for mobile layout */
+.login-container > li { margin-right: 5px; }
+
+/* Footer CSS */
+.footer {
+  background-color: #444;
+  color: #ccc;
+  font-size: 14px;
+  padding: 10px 10px 20px 10px;
+  margin-bottom: 0; }
+.footer h3 { color: #999;}
+.copyright {
+  font-size: 12px;
+  margin-top: 10px;
+  text-align: center;
+  display: block; }
+
+/* Breadcrumb CSS */
+.breadcrumbs > .news:before {
+  content: "";
+  margin: 0 0;
+  position: relative;
+  top: 1px; }
+.breadcrumbs > .news {
+  color: #444;
+  text-transform: none; }
+
+/* Board Page */
+.board-page { padding-bottom: 15px; }
+.child-board { padding-bottom: 5px; }
+.child-board h5 { margin-bottom: 0px; }
+.child-board-desc { font-size: 14px; line-height: 1.1; padding-bottom: 3px; }
+.child-board-desc :last-child { padding-bottom: 0; }
+.thread-listItem { padding: 5px 0; }
+.thread-listItem .division { font-size: 80%; line-height: 1.5; }
+
+/* Boards Page */
+.category { margin-bottom: 30px; }
+.category-title h3 { margin-bottom: 0; margin-top: 0; }
+.category-board { margin-bottom: 20px; }
+.category-board-name {
+  font-size: 20px;
+  text-decoration: underline;
+  margin-bottom: 5px; }
+.category-board-desc { font-size: 14px; line-height: 1.1; }
+.moderators {
+  color: #999;
+  font-size: 13px;
+  margin-bottom: 5px; }
+.child-boards {
+  color: #666;
+  font-size: 14px;
+  margin-top: 5px;
+  margin-bottom: 5px; }
+
+/* New Thread Page */
+.info-box { margin-bottom: 10px; }
+.preview-title { padding-left: 0px; }
+.editor-container { height: 200px; width: 100%; margin-bottom: 20px; }
+.editor { height: 100%; width: 100%; display: block; }
+
+/* Registration Page */
+.reg-page-title { margin-bottom: 21px; }
+.reg-input-section { margin-bottom: 20px; }
+.reg-input-section input { margin-bottom: 0; }
+.reg-input-section button { margin-bottom: 0; }
+.reg-input-section small { display: block; }
