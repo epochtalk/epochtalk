@@ -1,6 +1,5 @@
-module.exports = ['$scope', '$routeParams', '$rootScope', 'BreadcrumbSvc',
-  function($scope, $routeParams, $rootScope, BreadcrumbSvc) {
-    BreadcrumbSvc.update('profile');
+module.exports = ['$scope', '$routeParams', '$rootScope',
+  function($scope, $routeParams, $rootScope) {
   }
 ];
 

@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routeParams', '$rootScope', 'Auth', 'Threads', 'Posts', 'BreadcrumbSvc',
-  function($scope, $timeout, $location, $anchorScroll, $routeParams, $rootScope, Auth, Threads, Posts, BreadcrumbSvc) {
+module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routeParams', '$rootScope', 'Auth', 'Threads', 'Posts',
+  function($scope, $timeout, $location, $anchorScroll, $routeParams, $rootScope, Auth, Threads, Posts) {
     $scope.loggedIn = Auth.isAuthenticated;
     var threadId = $routeParams.threadId;
     // TODO: this needs to be grabbed from user settings
@@ -17,8 +17,6 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routePar
     .then(function(thread) {
       $scope.newPost.title = 'Re: ' + thread.title;
       $scope.newPost.thread_id = thread.id;
-
-      BreadcrumbSvc.update(threadId, 'thread');
 
       postCount = thread.post_count;
       limit = $routeParams.limit;

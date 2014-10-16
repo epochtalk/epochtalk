@@ -4,18 +4,18 @@
 module.exports = ['$rootScope', 'Breadcrumbs', function ($rootScope, Breadcrumbs) {
   // Static Pages
   var home =            { url: '/',                 label: 'Home' };
-  var registration =    { url: '/register',         label: 'Registration' };
+  var register =        { url: '/register',         label: 'Registration' };
   var profile =         { url: '/profile',          label: 'Profile' };
   var admin =           { url: '/admin',            label: 'Admin' };
-  var categoryEditor =  { url: '/admin/categories', label: 'Category Editor' };
+  var categories =      { url: '/admin/categories', label: 'Category Editor' };
 
   // Static Page Crumbs
   var staticCrumbs = {
     home: [ home ],
-    registration: [ home, registration ],
+    register: [ home, register ],
     profile: [ home, profile ],
     admin: [ home, admin ],
-    categoryEditor: [home, admin, categoryEditor]
+    categories: [home, admin, categories]
   };
 
   var breadcrumbs;

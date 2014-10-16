@@ -1,6 +1,5 @@
-module.exports = ['$scope', '$routeParams', '$rootScope', '$location', 'Auth', 'Threads', 'BreadcrumbSvc',
-  function($scope, $routeParams, $rootScope, $location, Auth, Threads, BreadcrumbSvc) {
-    BreadcrumbSvc.update($routeParams.boardId, 'board');
+module.exports = ['$scope', '$routeParams', '$rootScope', '$location', 'Auth', 'Threads',
+  function($scope, $routeParams, $rootScope, $location, Auth, Threads) {
     $scope.loggedIn = Auth.isAuthenticated;
     $scope.error = {};
 

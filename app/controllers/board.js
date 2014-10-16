@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$routeParams', '$rootScope', 'Auth', 'BreadcrumbSvc', 'Boards', 'Threads',
-  function($scope, $routeParams, $rootScope, Auth, BreadcrumbSvc, Boards, Threads) {
+module.exports = ['$scope', '$routeParams', '$rootScope', 'Auth', 'Boards', 'Threads',
+  function($scope, $routeParams, $rootScope, Auth, Boards, Threads) {
     var boardId = $routeParams.boardId;
     // TODO: this needs to be grabbed from user settings
     var limit = $routeParams.limit;
@@ -13,7 +13,6 @@ module.exports = ['$scope', '$routeParams', '$rootScope', 'Auth', 'BreadcrumbSvc
 
     Boards.get({ id: boardId }).$promise
     .then(function(board) {
-      BreadcrumbSvc.update(boardId, 'board');
       $scope.board = board;
       var threadCount = board.thread_count;
       $scope.pageCount = Math.ceil(threadCount / threadsPerPage);
