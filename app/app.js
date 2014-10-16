@@ -70,7 +70,6 @@ app.config(require('./config'))
       if (!id || id === 'boards') { id = 'home'; }
     }
 
-    console.log(id, crumbType);
     BreadcrumbSvc.update(id, crumbType);
   });
 

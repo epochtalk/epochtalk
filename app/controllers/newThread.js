@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$routeParams', '$rootScope', '$location', 'Auth', 'Threads',
-  function($scope, $routeParams, $rootScope, $location, Auth, Threads) {
+module.exports = ['$scope', '$routeParams', '$location', 'Auth', 'Threads',
+  function($scope, $routeParams, $location, Auth, Threads) {
     $scope.loggedIn = Auth.isAuthenticated;
     $scope.error = {};
 

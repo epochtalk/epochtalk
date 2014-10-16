@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
-module.exports = ['$scope', '$q', '$route', '$rootScope', 'Boards',
-  function($scope, $q, $route, $rootScope, Boards) {
+module.exports = ['$scope', '$q', '$route', 'Boards',
+  function($scope, $q, $route, Boards) {
 
     // Initialization
     var boardCategories;

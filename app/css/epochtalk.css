@@ -8,6 +8,7 @@ body { background: url(/static/img/white_wall_hash.png); }
   padding-bottom: 10px; }
 .text-info { font-size: 13px; color: #999; }
 .bold-title { font-weight: bold; }
+.anchor-offset { display: block; position: relative; top: -35px; visibility: hidden; }
 
 /* Foundation Overrides */
 .magellan-override { padding: 0px; background: transparent; }
@@ -77,6 +78,14 @@ body { background: url(/static/img/white_wall_hash.png); }
 .preview-title { padding-left: 0px; }
 .editor-container { height: 200px; width: 100%; margin-bottom: 20px; }
 .editor { height: 100%; width: 100%; display: block; }
+
+/* Post Page */
+.post-title { font-weight: 700; margin-top: 10px; margin-bottom: 2px; }
+.post-preview-lbl { padding-left: 0; }
+.post-editor { height: 100%; width: 100%; display: block; }
+.post-editor-container { height: 200px; width: 100%; margin-bottom: 20px; }
+.post-editor-auth { padding: 10px 0; }
+.edit-btn { margin: 0; }
 
 /* Registration Page */
 .reg-page-title { margin-bottom: 21px; }

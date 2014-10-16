@@ -6,15 +6,16 @@
     <!-- Post Listing -->
     <div ng-repeat="post in posts track by post.id" >
       <!-- public view of post -->
-      <div id="{{post.id}}" class="viewable" ng-if="!post.editMode">
+      <a class="anchor-offset" id="{{post.id}}"></a>
+      <div class="viewable" ng-if="!post.editMode">
         <!-- Post Title -->
-        <div style="font-weight: 700; margin-top: 10px; margin-bottom: 2px;">
+        <div class="post-title">
           <span ng-bind-html="post.title"></span>
           <span class="radius secondary label">
           by <a href="#" ng-bind-html="post.user.username"></a>
           <em>@{{post.created_at | date:'medium'}}</em>
           </span>
-          <button class="button tiny" ng-click="startEditPost($index)" ng-if="post.editable">
+          <button class="button tiny edit-btn" ng-click="startEditPost($index)" ng-if="post.editable">
             Edit
           </button>
         </div>
@@ -24,19 +25,19 @@
 
       <!-- private edit view of post -->
       <div class="editable" ng-if="post.editMode">
-        <div style="font-weight: 700; margin-top: 10px; margin-bottom: 2px;">
+        <div class="post-title">
           <label>Title:</label>
           <input type="text" ng-model="post.title">
           <div class="row">
             <div class="small-6 columns">
               <label>Reply:</label>
             </div>
-            <div class="small-6 columns" style="padding-left: 0;">
+            <div class="small-6 columns" class="post-preview-lbl">
               <label>Preview:</label>
             </div>
           </div>
-          <div style="height: 200px; width: 100%; margin-bottom: 20px;">
-            <epochtalk-editor text="post.encodedBody" save-text="saveEditText(post, encoded, text)" style="height: 100%; width: 100%; display: block;"></epochtalk-editor>
+          <div class="post-editor-container">
+            <epochtalk-editor text="post.encodedBody" save-text="saveEditText(post, encoded, text)" class="post-editor"></epochtalk-editor>
           </div>
         </div>
         <button class="button tiny" ng-click="cancelEditPost($index)">
@@ -52,19 +53,19 @@
     </div>
 
     <!-- editor -->
-    <div ng-if="loggedIn()" style="padding: 10px 0;">
+    <div ng-if="loggedIn()" class="post-editor-auth">
       <label>Title:</label>
       <input type="text" ng-model="newPost.title">
       <div class="row">
         <div class="small-6 columns">
           <label>Reply:</label>
         </div>
-        <div class="small-6 columns" style="padding-left: 0;">
+        <div class="small-6 columns" class="post-preview-lbl">
           <label>Preview:</label>
         </div>
       </div>
-      <div style="height: 200px; width: 100%; margin-bottom: 20px;">
-        <epochtalk-editor text="newPost.encodedBody" save-text="saveText(encoded, text)" style="height: 100%; width: 100%; display: block;"></epochtalk-editor>
+      <div class="post-editor-container">
+        <epochtalk-editor text="newPost.encodedBody" save-text="saveText(encoded, text)" class="post-editor"></epochtalk-editor>
       </div>
       <button class="button expand" ng-click="savePost()">Send</button>
       <span class="label alert" ng-if="newPost.error">

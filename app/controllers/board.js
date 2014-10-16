@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$routeParams', '$rootScope', 'Auth', 'Boards', 'Threads',
-  function($scope, $routeParams, $rootScope, Auth, Boards, Threads) {
+module.exports = ['$scope', '$routeParams', 'Auth', 'Boards', 'Threads',
+  function($scope, $routeParams, Auth, Boards, Threads) {
     var boardId = $routeParams.boardId;
     // TODO: this needs to be grabbed from user settings
     var limit = $routeParams.limit;

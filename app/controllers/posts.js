@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routeParams', '$rootScope', 'Auth', 'Threads', 'Posts',
-  function($scope, $timeout, $location, $anchorScroll, $routeParams, $rootScope, Auth, Threads, Posts) {
+module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routeParams', '$route', 'Auth', 'Threads', 'Posts',
+  function($scope, $timeout, $location, $anchorScroll, $routeParams, $route, Auth, Threads, Posts) {
     $scope.loggedIn = Auth.isAuthenticated;
     var threadId = $routeParams.threadId;
     // TODO: this needs to be grabbed from user settings
@@ -143,7 +143,10 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routePar
       };
 
       Posts.update({id: editPost.id}, saveEditPost).$promise
-      .then(function(data) { gotoAnchor(data.id); })
+      .then(function(data) {
+        $location.hash(data.id);
+        $route.reload();
+      })
       .catch(function(response) {
         var error = '';
         if (response.status === 500) {
