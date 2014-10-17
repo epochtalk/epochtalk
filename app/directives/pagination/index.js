@@ -9,6 +9,7 @@ module.exports = ['$location', function($location) {
       $scope.$watch('pageCount', function (newPageCount) {
         var pageCount = newPageCount;
         var page = $scope.page;
+        var limit = $location.search().limit;
         var generatePageKeys = function(elipsis) {
           // Add Previous Button
           var prevBtnKey = { val: '&laquo; Previous' };
@@ -62,8 +63,13 @@ module.exports = ['$location', function($location) {
         };
 
         var paginationKeys = [];
-        var elipsis;
-        var urlPrefix = $location.path() + '?page=';
+        var elipsis, urlPrefix;
+        if (limit) {
+          urlPrefix = $location.path() + '?limit=' + limit + '&page=';
+        }
+        else {
+          urlPrefix = $location.path() + '?page=';
+        }
         var truncate = pageCount > 15;
         // Case 1: No Truncation up to 15 pages
         // [1] 2 3 4 5 6 7 8 9 10 11 13 14 15
