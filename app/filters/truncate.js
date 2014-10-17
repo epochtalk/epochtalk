@@ -7,11 +7,12 @@ module.exports = [function () {
       length = 10;
     }
     var end = '&hellip;';
-    if (text.length <= length || text.length - 3 <= length) {
+    var endLen = 2;
+    if (text.length <= length || text.length - endLen <= length) {
       return text;
     }
     else {
-      return String(text).substring(0, length-end.length) + end;
+      return String(text).substring(0, length - endLen).trim() + end;
     }
   };
 }];

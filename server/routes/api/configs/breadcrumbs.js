@@ -27,7 +27,9 @@ exports.byType = {
       .then(function(obj) {
         var nextType, nextId;
         if (curType === type.category) { // Category
-          crumbs.push({ label: obj[id-1].name, url: '/##cat-' + id });
+          var catName = obj[id-1].name;
+          var anchorId = '/##' + catName.split(' ').join('-') + '-' + id;
+          crumbs.push({ label: catName, url: anchorId.toLowerCase()});
         }
         else if (curType === type.board) { // Board
           if (!obj.parent_id && obj.category_id) { // Has no Parent

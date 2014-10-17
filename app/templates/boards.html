@@ -4,7 +4,7 @@
 
   <!-- Category Title -->
   <div class="row">
-    <a class="anchor-offset" id="cat-{{$index+1}}"></a>
+    <a class="anchor-offset" id="{{cat.name | replace:' ':'-' | lowercase }}-{{$index+1}}"></a>
     <div class="small-12 columns category-title">
       <h3>{{ cat.name }}</h3>
       <div class="thin-dotted-underline"></div>

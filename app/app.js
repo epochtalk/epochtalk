@@ -40,37 +40,15 @@ app.directive('nestableCategories', require('./directives/category_editor/nestab
 
 // Set Angular Configs
 app.config(require('./config'))
-.run(['$rootScope', '$location', 'BreadcrumbSvc', function($rootScope, $location, BreadcrumbSvc) {
+.run(['$rootScope', 'BreadcrumbSvc', function($rootScope, BreadcrumbSvc) {
 
   $rootScope.$on('$viewContentLoaded', function() {
     $(document).foundation();
   });
 
   // Dynamically populate breadcrumbs
-  $rootScope.$on('$routeChangeStart', function() {
-    var types = ['board', 'thread', 'post'];
-
-    var pathArr = $location.path().split('/');
-    pathArr.shift(); // remove empty first element
-
-    var basePath = pathArr[0];
-    var id, crumbType;
-    for (var i = 0; i < types.length; i++) {
-      var type = types[i];
-      if (basePath.indexOf(type) > -1 && pathArr.length > 1) {
-        id = pathArr[1];
-        crumbType = type;
-        break;
-      }
-    }
-
-    if (!id && !crumbType) {
-      id = pathArr[pathArr.length-1];
-      // Redirect for / and /boards to Home
-      if (!id || id === 'boards') { id = 'home'; }
-    }
-
-    BreadcrumbSvc.update(id, crumbType);
+  $rootScope.$on('$routeChangeSuccess', function() {
+    BreadcrumbSvc.update();
   });
 
 }]);

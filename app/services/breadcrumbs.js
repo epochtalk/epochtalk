@@ -1,36 +1,58 @@
 'use strict';
 /* jslint node: true */
+var _ = require('lodash');
 
-module.exports = ['$rootScope', 'Breadcrumbs', function ($rootScope, Breadcrumbs) {
-  // Static Pages
-  var home =            { url: '/',                 label: 'Home' };
-  var register =        { url: '/register',         label: 'Registration' };
-  var profile =         { url: '/profile',          label: 'Profile' };
-  var admin =           { url: '/admin',            label: 'Admin' };
-  var categories =      { url: '/admin/categories', label: 'Category Editor' };
+module.exports = ['$routeParams', '$location', 'Breadcrumbs',
+function ($routeParams, $location, Breadcrumbs) {
+  var breadcrumbs; // stores array of breadcrumb objects
 
-  // Static Page Crumbs
-  var staticCrumbs = {
-    home: [ home ],
-    register: [ home, register ],
-    profile: [ home, profile ],
-    admin: [ home, admin ],
-    categories: [home, admin, categories]
+  // Static Page Routes
+  var routes = {
+    home:           '/',
+    boards:         '/boards',
+    register:       '/register',
+    profile:        '/profile',
+    admin:          '/admin',
+    categories:     '/admin/categories'
   };
 
-  var breadcrumbs;
+  // Static Page Breadcrumb Objects
+  var home =        { url: routes.home,         label: 'Home' };
+  var register =    { url: routes.register,     label: 'Registration' };
+  var profile =     { url: routes.profile,      label: 'Profile' };
+  var admin =       { url: routes.admin,        label: 'Admin' };
+  var categories =  { url: routes.categories,   label: 'Category Editor' };
+
+  // Static Page Breadcrumb Array
+  var staticCrumbs = {};
+  staticCrumbs[routes.home] =         [ home ];
+  staticCrumbs[routes.boards] =       [ home ];
+  staticCrumbs[routes.register] =     [ home, register ];
+  staticCrumbs[routes.profile] =      [ home, profile ];
+  staticCrumbs[routes.admin] =        [ home, admin ];
+  staticCrumbs[routes.categories] =   [ home, admin, categories];
 
   return {
-    update: function(id, type) {
+    update: function() {
       breadcrumbs = [];
-
-      if (type) { // If type is provided dynamically build breadcrumbs
-        Breadcrumbs.getBreadcrumbs({ id: id, type: type}, function(partialCrumbs) {
-          breadcrumbs = breadcrumbs.concat(staticCrumbs.home, partialCrumbs);
+      var path = $location.path();
+      var routeParams = $routeParams;
+      // routeParams isn't empty, route is dynamic
+      if (!_.isEmpty(routeParams)) {
+        // Maps routeParams key to breadcrumb type
+        var keyToType = {
+          boardId:  'board',
+          threadId: 'thread',
+          postId:   'post'
+        };
+        var idKey = Object.keys(routeParams).reverse()[0];
+        Breadcrumbs.getBreadcrumbs({ id: routeParams[idKey], type: keyToType[idKey] },
+        function(partialCrumbs) {
+          breadcrumbs = breadcrumbs.concat(staticCrumbs[routes.home], partialCrumbs);
         });
       }
-      else { // If type is not provided set static breadcrumbs
-        breadcrumbs = breadcrumbs.concat(staticCrumbs[id]);
+      else { // routeParams is empty, route is static
+        breadcrumbs = breadcrumbs.concat(staticCrumbs[path]);
       }
     },
     crumbs: function() { return breadcrumbs; }
