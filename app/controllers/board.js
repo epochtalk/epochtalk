@@ -42,7 +42,7 @@ module.exports = ['$scope', '$routeParams', 'Auth', 'Boards', 'Threads',
       var urlPrefix = '/threads/' + thread.id + '/posts?page=';
       if (thread.page_count < 7) {
         var i = 1;
-        while(pageKeys.push({ val: i.toString(), url: urlPrefix + i++}) < thread.page_count);
+        while(pageKeys.push({ val: i.toString(), url: urlPrefix + i++}) < thread.page_count){}
       }
       else {
         var thirdToLastPage = (thread.page_count - 2).toString();

@@ -37,15 +37,18 @@ function ($routeParams, $location, Breadcrumbs) {
       breadcrumbs = [];
       var path = $location.path();
       var routeParams = $routeParams;
+      // Maps routeParams key to breadcrumb type
+      var keyToType = {
+        boardId:  'board',
+        threadId: 'thread',
+        postId:   'post'
+      };
+      var routeParamKeys = Object.keys(routeParams);
+      var keys = Object.keys(keyToType);
+      var matches = _.intersection(routeParamKeys, keys);
       // routeParams isn't empty, route is dynamic
-      if (!_.isEmpty(routeParams)) {
-        // Maps routeParams key to breadcrumb type
-        var keyToType = {
-          boardId:  'board',
-          threadId: 'thread',
-          postId:   'post'
-        };
-        var idKey = Object.keys(routeParams).reverse()[0];
+      if (!_.isEmpty(matches)) {
+        var idKey = routeParamKeys.reverse()[0];
         Breadcrumbs.getBreadcrumbs({ id: routeParams[idKey], type: keyToType[idKey] },
         function(partialCrumbs) {
           breadcrumbs = breadcrumbs.concat(staticCrumbs[routes.home], partialCrumbs);
