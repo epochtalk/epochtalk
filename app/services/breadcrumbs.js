@@ -46,7 +46,7 @@ function ($routeParams, $location, Breadcrumbs) {
       var routeParamKeys = Object.keys(routeParams);
       var keys = Object.keys(keyToType);
       var matches = _.intersection(routeParamKeys, keys);
-      // routeParams isn't empty, route is dynamic
+      // matches, route is dynamic
       if (!_.isEmpty(matches)) {
         var idKey = routeParamKeys.reverse()[0];
         Breadcrumbs.getBreadcrumbs({ id: routeParams[idKey], type: keyToType[idKey] },
