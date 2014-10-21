@@ -2,7 +2,6 @@
 
 <div class="row">
   <div class="small-12 columns">
-
     <!-- Post Listing -->
     <div ng-repeat="post in posts track by post.id" >
       <!-- public view of post -->
@@ -10,7 +9,7 @@
       <div class="viewable post-block" ng-if="!post.editMode">
         <!-- User info -->
         <div class="post-user">
-          <div class="user-avatar" style="background-image:url('http://lorempixel.com/400/200/people/')">
+          <div class="user-avatar" style="background-image:url('/static/img/rides-a-fixie.jpg');">
             <span class="user-role">Hero</span>
           </div>
           <ul class="user-details">
