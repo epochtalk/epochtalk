@@ -7,20 +7,36 @@
     <div ng-repeat="post in posts track by post.id" >
       <!-- public view of post -->
       <a class="anchor-offset" id="{{post.id}}"></a>
-      <div class="viewable" ng-if="!post.editMode">
+      <div class="viewable post-block" ng-if="!post.editMode">
+        <!-- User info -->
+        <div class="post-user">
+          <div class="user-avatar" style="background-image:url('http://lorempixel.com/400/200/people/')">
+            <span class="user-role">Hero</span>
+          </div>
+          <ul class="user-details">
+            <li class="name"><a href="#" ng-bind-html="post.user.username"></a></li>
+            <li class="points"> * * * * *</li>
+            <li class="activity">Activity: 879</li>
+          </ul>
+        </div>
         <!-- Post Title -->
         <div class="post-title">
-          <span ng-bind-html="post.title"></span>
-          <span class="radius secondary label">
-          by <a href="#" ng-bind-html="post.user.username"></a>
-          <em>@{{post.created_at | date:'medium'}}</em>
+          <!-- <span ng-bind-html="post.title"></span> -->
+          <span class="timestamp">
+          {{post.created_at | date:'medium'}}
           </span>
-          <button class="button tiny edit-btn" ng-click="startEditPost($index)" ng-if="post.editable">
+          <ul class="post-action">
+            <li><a href="#">like</a></li>
+            <li><a href="#">flag</a></li>
+            <li><a href="#">reply</a></li>
+            <li><a href="#">quote</a></li>
+          </ul>
+          <button class="button tiny" ng-click="startEditPost($index)" ng-if="post.editable">
             Edit
           </button>
         </div>
         <!-- Post Body -->
-        <div class="panel" ng-bind-html="post.body"></div>
+        <div class="post-body" ng-bind-html="post.body"></div>
       </div>
 
       <!-- private edit view of post -->
