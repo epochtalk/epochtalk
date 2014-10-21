@@ -1,6 +1,8 @@
+@import 'variables';
+
 /** Globals ---------------------------------------------------------------- */
 
-body { background: url(/static/img/white_wall_hash.png); }
+// body { background: url(/static/img/white_wall_hash.png); }
 .main-container { min-height: 80%; }
 .thin-dotted-underline {
   border-bottom: 1px dotted #ccc;
@@ -80,12 +82,86 @@ body { background: url(/static/img/white_wall_hash.png); }
 .editor { height: 100%; width: 100%; display: block; }
 
 /* Post Page */
-.post-title { font-weight: 700; margin-top: 10px; margin-bottom: 2px; }
-.post-preview-lbl { padding-left: 0; }
-.post-editor { height: 100%; width: 100%; display: block; }
-.post-editor-container { height: 200px; width: 100%; margin-bottom: 20px; }
-.post-editor-auth { padding: 10px 0; }
-.edit-btn { margin: 0; }
+// .post-title { font-weight: 700; margin-top: 10px; margin-bottom: 2px; }
+// .post-preview-lbl { padding-left: 0; }
+// .post-editor { height: 100%; width: 100%; display: block; }
+// .post-editor-container { height: 200px; width: 100%; margin-bottom: 20px; }
+// .post-editor-auth { padding: 10px 0; }
+// .edit-btn { margin: 0; }
+
+.post-block {
+  border-bottom: 1px solid $color-gray-light;
+  float: left;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  width: 100%;
+}
+
+.post-user {
+  float: left;
+  padding-right: .8333rem;
+  width: 16.6667%;
+
+  .user-avatar {
+    background: no-repeat center center;
+    @include bg-cover;
+    height: 120px;
+    position: relative;
+    width: 100%;
+  }
+
+  .user-role {
+    background-color: rgba(0,0,0,.75);
+    bottom: 0;
+    color: #fff;
+    font-size: .8125em;
+    font-weight: 600;
+    padding: 6px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+  }
+
+  .user-details {
+    @include list-clean;
+    font-size: .8125rem;
+
+    .name {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+  }
+}
+
+.post-title {
+  color: $color-gray-med;
+  float: left;
+  width: 83.3333%;
+}
+
+.post-action {
+  @include list-clean;
+  float: right;
+
+  li {
+    @include list-flat;
+  }
+
+  a {
+    color: $color-gray-light;
+
+    &:hover {
+      color: $color-epoch;
+    }
+  }
+}
+
+.post-body {
+  float: left;
+  width: 83.3333%;
+}
+
 
 /* Registration Page */
 .reg-page-title { margin-bottom: 21px; }
