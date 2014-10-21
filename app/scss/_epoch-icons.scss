@@ -1,0 +1,55 @@
+//
+// Icon Font: epoch-icons
+//
+
+@font-face {
+  font-family: "epoch-icons";
+  src: font-url("/static/fonts/epoch-icons_68a852b2663ff246fc808bafd4b8db71.eot");
+  src: font-url("/static/fonts/epoch-icons_68a852b2663ff246fc808bafd4b8db71.eot?#iefix") format("embedded-opentype"),
+       font-url("/static/fonts/epoch-icons_68a852b2663ff246fc808bafd4b8db71.woff") format("woff"),
+       font-url("/static/fonts/epoch-icons_68a852b2663ff246fc808bafd4b8db71.ttf") format("truetype"),
+       font-url("/static/fonts/epoch-icons_68a852b2663ff246fc808bafd4b8db71.svg#epoch-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "epoch-icons";
+    src: font-url("/static/fonts/epoch-icons_68a852b2663ff246fc808bafd4b8db71.svg#epoch-icons") format("svg");
+  }
+}
+
+[data-icon]:before { content: attr(data-icon); }
+
+[data-icon]:before,
+.icon-epoch-flag:before,
+.icon-epoch-heart:before,
+.icon-epoch-plus-one:before,
+.icon-epoch-quote:before,
+.icon-epoch-reply:before,
+.icon-epoch-unverified:before,
+.icon-epoch-verified:before,
+.icon-epoch-watch:before {
+  display: inline-block;
+  font-family: "epoch-icons";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+.icon-epoch-flag:before { content: "\f100"; }
+.icon-epoch-heart:before { content: "\f101"; }
+.icon-epoch-plus-one:before { content: "\f102"; }
+.icon-epoch-quote:before { content: "\f103"; }
+.icon-epoch-reply:before { content: "\f104"; }
+.icon-epoch-unverified:before { content: "\f105"; }
+.icon-epoch-verified:before { content: "\f106"; }
+.icon-epoch-watch:before { content: "\f107"; }
