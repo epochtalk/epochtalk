@@ -35,9 +35,15 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       template: fs.readFileSync(__dirname + '/templates/posts.html')
     });
 
-    $routeProvider.when('/profiles/:userId', {
+    $routeProvider.when('/profiles/:username', {
       controller: 'ProfileCtrl',
-      template: fs.readFileSync(__dirname + '/templates/profile.html')
+      controllerAs: 'profiles',
+      template: fs.readFileSync(__dirname + '/templates/profile.html'),
+      resolve: {
+        user: [ 'User', '$route', function(Users, $route) {
+          return Users.get({ id: $route.current.params.username });
+        }]
+      }
     });
 
     $routeProvider.when('/admin/categories', {

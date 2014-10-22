@@ -85,7 +85,7 @@ server.pack.register([Scooter, {
     scriptSrc: ['self', "'nonce-sabc123'"],
     styleSrc: ['unsafe-inline', 'http://netdna.bootstrapcdn.com'],
     fontSrc: ['self', 'http://netdna.bootstrapcdn.com'],
-    imgSrc: 'self',
+    imgSrc: [ 'self', 'http://placehold.it/' ],
     connectSrc: ['self', 'ws://localhost', 'ws://127.0.0.1:35729/livereload']
   }
 }] , function(err) {

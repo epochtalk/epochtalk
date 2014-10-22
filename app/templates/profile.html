@@ -1,30 +1,159 @@
 <div class="row">
+  <!-- Left Sidebar -->
   <div class="large-3 columns">
-    <h1><img src="http://placehold.it/400x400&text=Logo"/></h1>
-  </div>
-</div>
-
-<div class="row">
-
-
-  <div class="large-9 push-3 columns">
-    <h3>Page Title <small>Page subtitle</small></h3>
-    <p>Bacon ipsum dolor sit amet salami ham hock biltong ball tip drumstick sirloin pancetta meatball short loin. Venison tail chuck pork chop, andouille ball tip beef ribs flank boudin bacon. Salami andouille pork belly short ribs flank cow. Salami sirloin turkey kielbasa. Sausage venison pork loin leberkas chuck short loin, cow ham prosciutto pastrami jowl. Ham hock jerky tri-tip, fatback hamburger shoulder swine pancetta ground round. Tri-tip prosciutto meatball turkey, brisket spare ribs shankle chuck cow chicken ham hock boudin meatloaf jowl.</p>
-    <p>Ground round pastrami pork loin tenderloin jerky. Jerky spare ribs biltong, ham hock ham capicola pork. Jerky turducken pork, meatloaf sausage capicola swine corned beef turkey short loin. Tongue prosciutto pork loin, ground round spare ribs venison kielbasa strip steak.</p>
-    <p>Hamburger bresaola turkey t-bone, leberkas salami pork chop ham hock beef ribs. Rump biltong meatball venison, short ribs pork loin shank shankle corned beef beef. Cow salami jowl short loin hamburger fatback. Short ribs pork belly shoulder pastrami drumstick salami corned beef ham hock bresaola. Swine filet mignon cow sausage ball tip. Cow ribeye ground round, sausage pork loin pig beef ball tip turkey boudin.</p>
-    <p>Prosciutto ball tip filet mignon andouille frankfurter chicken rump sausage meatball. Filet mignon meatloaf ground round andouille ham hock pork. Bresaola short loin meatball chuck hamburger pig. Turkey venison chuck, tongue fatback tail swine jerky corned beef shank kielbasa prosciutto ribeye ham tri-tip. Rump bacon pork belly meatloaf shoulder short loin meatball kielbasa pork loin tongue bresaola brisket corned beef jowl prosciutto. Beef ribs shankle short ribs pork belly corned beef fatback pork chop tongue biltong boudin strip steak sirloin meatloaf pancetta.</p>
-  </div>
-
-
-  <div class="large-3 pull-9 columns">
+    <img src="http://placehold.it/320x240&text=Avatar"/>
     <ul class="side-nav">
-      <li><a href="#">Section 1</a></li>
-      <li><a href="#">Section 2</a></li>
-      <li><a href="#">Section 3</a></li>
-      <li><a href="#">Section 4</a></li>
-      <li><a href="#">Section 5</a></li>
-      <li><a href="#">Section 6</a></li>
+      <li><a href="#">Send Personal Message</a></li>
+      <li><a href="#">Show Last Post</a></li>
+      <li><a href="#">Show General Statistics</a></li>
     </ul>
-    <p><img src="http://placehold.it/320x240&text=Ad"/></p>
+  </div>
+
+  <!-- Main Content -->
+  <div class="large-9 columns">
+    <!-- Page Header and Edit Button -->
+    <div class="row">
+      <div class="small-9 columns">
+        <h3>{{ profiles.user.username }}'s Profile</h3>
+      </div>
+      <div class="small-3 columns" ng-If="profiles.user.editable">
+        <button class="button small radius right" ng-click="profiles.editMode = true">
+          Edit Profile
+        </button>
+      </div>
+    </div>
+    
+    <!-- Show Content -->
+    <div ng-If="profiles.editMode === false">
+      <div class="panel">
+        <div>
+          Name: {{ profiles.user.name }}
+        </div>
+        
+        <div>
+          Posts: {{ profiles.user.posts }}
+        </div>
+
+        <div>
+          Position: {{ profiles.user.postion }}
+        </div>
+        
+        <div>
+          Date Registered: {{ profiles.user.created_at | date:'medium' }}
+        </div>
+
+        <div>
+          Last Active: {{ profiles.user.updated_at | date:'medium' }}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div>
+          Email: {{ profiles.user.email }}
+        </div>
+
+        <div>
+          Website: {{ profiles.user.website }}
+        </div>
+
+        <div>
+          Current Status: {{ profiles.user.status }}
+        </div>
+
+        <div>
+          Bitcoin Address(s): {{ profiles.user.btcAddress }}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div>
+          Gender: {{ profiles.user.gender }}
+        </div>
+
+        <div>
+          Age: {{ profiles.user.dob }}
+        </div>
+
+        <div>
+          Location: {{ profiles.user.location }}
+        </div>
+
+        <div>
+          Local Time: {{ Date.now() | date:'medium' }}
+        </div>
+
+        <div>
+          Language: {{ profiles.user.language }}
+        </div>
+      </div>
+
+      <div class="panel">
+        Signature: {{ profiles.user.signature }}
+      </div>
+    </div>
+
+    <!-- Edit Content -->
+    <div ng-If="profiles.editMode === true">
+      <div class="panel">
+        <label>Name
+          <input type="text" placeholder="Name" ng-model="profiles.user.name">
+        </label>
+
+        <label>Email
+          <input type="text" placeholder="Email" ng-model="profiles.user.email">
+        </label>
+
+        <label>Website
+          <input type="text" placeholder="Website" ng-model="profiles.user.website">
+        </label>
+
+        <label>Bitcoin Address
+          <input type="text" placeholder="Bitcoin Address" ng-model="profiles.user.btcAddress">
+        </label>
+
+        <label>Gender
+          <input type="text" placeholder="Gender" ng-model="profiles.user.gender">
+        </label>
+
+        <label>Date of Birth
+          <input type="text" placeholder="Date of Birth" ng-model="profiles.user.dob">
+        </label>
+
+        <label>Location
+          <input type="text" placeholder="Location" ng-model="profiles.user.location">
+        </label>
+
+        <label>Language
+          <input type="text" placeholder="Language" ng-model="profiles.user.language">
+        </label>
+
+        <label>Signature
+          <textarea type="text" placeholder="Signature" ng-model="profiles.user.signature"></textarea>
+        </label>
+
+        <!-- Cancel/Save Buttons -->
+        <div class="row">
+          <div class="small-6 columns">
+            <button class="button expand alert" ng-click="profiles.editMode = false">
+              Close
+            </button>
+          </div>
+          <div class="small-6 columns">
+            <button class="button expand" ng-click="profiles.saveProfile()">
+              Save
+            </button>
+          </div>
+        </div>
+
+        <div class="row" ng-if="profiles.error.status">
+          <div class="small-12 columns">
+            <div class="alert-box alert radius">
+              {{ profiles.error.message }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
