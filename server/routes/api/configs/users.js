@@ -1,6 +1,8 @@
 var core = require('epochcore')();
 var Hapi = require('hapi');
+var path = require('path');
 var userSchema = require('../schema/users');
+var pre = require(path.join('..', 'pre', 'users'));
 
 exports.create = {
   handler: function(request, reply) {
@@ -24,16 +26,27 @@ exports.create = {
 };
 
 exports.update = {
+  pre: [[
+    { method: pre.getCurrentUser, assign: 'currentUser' },
+    { method: pre.checkUsernameUniqueness },
+    { method: pre.checkEmailUniqueness }
+  ]],
   handler: function(request, reply) {
-    // get user from auth service
-    var user = request.auth.credentials;
+    // get user
+    var user = request.pre.currentUser;
 
     // build the user object from payload and params
     var updateUser = { id: user.id };
-    updateUser.username = request.payload.username;
-    updateUser.email = request.payload.email;
-    updateUser.password = request.payload.password;
-    updateUser.confirmation = request.payload.confirmation;
+    if (request.payload.username) {
+      updateUser.username = request.payload.username;
+    }
+    if (request.payload.email) {
+      updateUser.email = request.payload.email;
+    }
+    if (request.payload.password && request.payload.confirmation) {
+      updateUser.password = request.payload.password;
+      updateUser.confirmation = request.payload.confirmation;
+    }
 
     // create the thread in core
     core.users.update(updateUser)

@@ -1,17 +1,12 @@
-module.exports = ['user', 'User',
-  function(user, User) {
+module.exports = ['user', 'User', '$location',
+  function(user, User, $location) {
     var ctrl = this;
-    this.user = user;
+    user.$promise.then(function(user) {
+      ctrl.user = user;
+      ctrl.displayUsername = angular.copy(user.username);
+    });
     this.editMode = false;
     this.error = {};
-
-    this.startEditMode = function() {
-      this.editMode = true;
-    };
-
-    this.cancelEditMode = function() {
-      this.editMode = false;
-    };
 
     this.saveProfile = function() {
       User.update(this.user).$promise
@@ -19,6 +14,11 @@ module.exports = ['user', 'User',
         ctrl.user = data;
         ctrl.editMode = false;
         ctrl.error = {}; // reset error
+
+        // redirect page if username changed
+        if (ctrl.displayUsername !== ctrl.user.username) {
+          $location.path('/profiles/' + ctrl.user.username);
+        }
       })
       .catch(function(err) {
         ctrl.error.status = true;

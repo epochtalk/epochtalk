@@ -14,7 +14,7 @@
     <!-- Page Header and Edit Button -->
     <div class="row">
       <div class="small-9 columns">
-        <h3>{{ profiles.user.username }}'s Profile</h3>
+        <h3>{{ profiles.displayUsername }}'s Profile</h3>
       </div>
       <div class="small-3 columns" ng-If="profiles.user.editable">
         <button class="button small radius right" ng-click="profiles.editMode = true">
@@ -94,65 +94,72 @@
 
     <!-- Edit Content -->
     <div ng-If="profiles.editMode === true">
-      <div class="panel">
-        <label>Name
-          <input type="text" placeholder="Name" ng-model="profiles.user.name">
-        </label>
+        
+      <form name="form" class="css-form" novalidate>
+        <div class="panel">
+          <label>Username
+            <input type="text" ng-model="profiles.user.username"/>
+          </label>
 
-        <label>Email
-          <input type="text" placeholder="Email" ng-model="profiles.user.email">
-        </label>
+          <label>Name
+            <input type="text" placeholder="Name" ng-model="profiles.user.name">
+          </label>
 
-        <label>Website
-          <input type="text" placeholder="Website" ng-model="profiles.user.website">
-        </label>
+          <label>Email
+            <input type="text" placeholder="Email" ng-model="profiles.user.email">
+          </label>
 
-        <label>Bitcoin Address
-          <input type="text" placeholder="Bitcoin Address" ng-model="profiles.user.btcAddress">
-        </label>
+          <label>Website
+            <input type="text" placeholder="Website" ng-model="profiles.user.website">
+          </label>
 
-        <label>Gender
-          <input type="text" placeholder="Gender" ng-model="profiles.user.gender">
-        </label>
+          <label>Bitcoin Address
+            <input type="text" placeholder="Bitcoin Address" ng-model="profiles.user.btcAddress">
+          </label>
 
-        <label>Date of Birth
-          <input type="text" placeholder="Date of Birth" ng-model="profiles.user.dob">
-        </label>
+          <label>Gender
+            <input type="text" placeholder="Gender" ng-model="profiles.user.gender">
+          </label>
 
-        <label>Location
-          <input type="text" placeholder="Location" ng-model="profiles.user.location">
-        </label>
+          <label>Date of Birth
+            <input type="text" placeholder="Date of Birth" ng-model="profiles.user.dob">
+          </label>
 
-        <label>Language
-          <input type="text" placeholder="Language" ng-model="profiles.user.language">
-        </label>
+          <label>Location
+            <input type="text" placeholder="Location" ng-model="profiles.user.location">
+          </label>
 
-        <label>Signature
-          <textarea type="text" placeholder="Signature" ng-model="profiles.user.signature"></textarea>
-        </label>
+          <label>Language
+            <input type="text" placeholder="Language" ng-model="profiles.user.language">
+          </label>
 
-        <!-- Cancel/Save Buttons -->
-        <div class="row">
-          <div class="small-6 columns">
-            <button class="button expand alert" ng-click="profiles.editMode = false">
-              Close
-            </button>
+          <label>Signature
+            <textarea type="text" placeholder="Signature" ng-model="profiles.user.signature"></textarea>
+          </label>
+
+          <!-- Cancel/Save Buttons -->
+          <div class="row">
+            <div class="small-6 columns">
+              <button class="button expand alert" ng-click="profiles.editMode = false">
+                Close
+              </button>
+            </div>
+            <div class="small-6 columns">
+              <button class="button expand" ng-click="profiles.saveProfile()">
+                Save
+              </button>
+            </div>
           </div>
-          <div class="small-6 columns">
-            <button class="button expand" ng-click="profiles.saveProfile()">
-              Save
-            </button>
-          </div>
-        </div>
 
-        <div class="row" ng-if="profiles.error.status">
-          <div class="small-12 columns">
-            <div class="alert-box alert radius">
-              {{ profiles.error.message }}
+          <div class="row" ng-if="profiles.error.status">
+            <div class="small-12 columns">
+              <div class="alert-box alert radius">
+                {{ profiles.error.message }}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
 
   </div>
