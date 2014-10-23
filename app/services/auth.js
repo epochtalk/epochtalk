@@ -1,12 +1,9 @@
 'use strict';
 /* jslint node: true */
 /* global angular */
-var greetingLoggedOut = 'Not Logged In';
-var greetingLoggedIn = 'Logged In as ';
 
 module.exports = ['$location', '$window', 'User',
   function($location, $window, User) {
-    var greeting = greetingLoggedOut;
     var getUser = function() {
       var username;
       if ($window.sessionStorage.username) {
@@ -16,6 +13,15 @@ module.exports = ['$location', '$window', 'User',
         username = $window.localStorage.username;
       }
       return username;
+    };
+
+    var setUser = function(username) {
+      if ($window.sessionStorage.username) {
+        $window.sessionStorage.username = username;
+      }
+      else if ($window.localStorage.username) {
+        $window.localStorage.username = username;
+      }
     };
 
     var clearUser = function() {
@@ -44,11 +50,9 @@ module.exports = ['$location', '$window', 'User',
         // get username
         User.register(user, callback, error).$promise
         .then(function(resource) {
-          greeting = greetingLoggedIn + resource.username;
           saveUserSession(resource);
         })
         .catch(function(err) {
-          greeting = greetingLoggedOut;
           clearUser();
         });
       },
@@ -60,12 +64,10 @@ module.exports = ['$location', '$window', 'User',
 
         User.login(user, callback, error).$promise
         .then(function(resource) {
-          greeting = greetingLoggedIn + resource.username;
           if (rememberMe) { saveUserLocal(resource); }
           else { saveUserSession(resource); }
         })
         .catch(function(err) {
-          greeting = greetingLoggedOut;
           clearUser();
         });
       },
@@ -73,17 +75,7 @@ module.exports = ['$location', '$window', 'User',
       logout: function(callback, error) {
         User.logout(null, callback, error).$promise
         .then(function() {
-          greeting = greetingLoggedOut;
           clearUser();
-        })
-        .catch(function(err) {
-          if (err.data.message === greetingLoggedOut) {
-            clearUser();
-            greeting = 'Logged Out';
-          }
-          else {
-            greeting = 'Could Not Log You Out';
-          }
         });
       },
 
@@ -97,17 +89,8 @@ module.exports = ['$location', '$window', 'User',
         return authenticated;
       },
 
-      loginStateGreeting: function() {
-        var username = getUser();
-        if (username) { greeting = greetingLoggedIn; }
-        return greeting;
-      },
-
-      currentUser: function() {
-        // check if key exists in storage
-        var username = getUser();
-        return username;
-      },
+      currentUser: function() { return getUser(); },
+      setUser: setUser,
 
       checkUsername: function(username, callback, error) {
         User.checkUsername({ username: username }, callback, error);

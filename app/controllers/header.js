@@ -1,7 +1,6 @@
 module.exports = ['$scope', '$route', '$timeout', 'Auth', 'BreadcrumbSvc',
   function($scope, $route, $timeout, Auth, BreadcrumbSvc) {
     $scope.loggedIn = Auth.isAuthenticated;
-    $scope.loginStateGreeting = Auth.loginStateGreeting;
     $scope.currentUser = Auth.currentUser;
     $scope.user = {};
 

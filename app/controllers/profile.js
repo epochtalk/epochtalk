@@ -1,5 +1,5 @@
-module.exports = ['user', 'User', '$location',
-  function(user, User, $location) {
+module.exports = ['user', 'User', 'Auth', '$location',
+  function(user, User, Auth, $location) {
     var ctrl = this;
     user.$promise.then(function(user) {
       ctrl.user = user;
@@ -18,6 +18,7 @@ module.exports = ['user', 'User', '$location',
         // redirect page if username changed
         if (ctrl.displayUsername !== ctrl.user.username) {
           $location.path('/profiles/' + ctrl.user.username);
+          Auth.setUser(ctrl.user.username);
         }
       })
       .catch(function(err) {
