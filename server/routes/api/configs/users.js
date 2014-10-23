@@ -48,6 +48,42 @@ exports.update = {
       updateUser.confirmation = request.payload.confirmation;
     }
 
+    if (request.payload.name) {
+      updateUser.name = request.payload.name;
+    }
+
+    if (request.payload.website) {
+      updateUser.website = request.payload.website;
+    }
+
+    if (request.payload.btcAddress) {
+      updateUser.btcAddress = request.payload.btcAddress;
+    }
+
+    if (request.payload.gender) {
+      updateUser.gender = request.payload.gender;
+    }
+
+    if (request.payload.dob) {
+      updateUser.dob = request.payload.dob;
+    }
+
+    if (request.payload.location) {
+      updateUser.location = request.payload.location;
+    }
+
+    if (request.payload.language) {
+      updateUser.language = request.payload.language;
+    }
+
+    if (request.payload.signature) {
+      updateUser.signature = request.payload.signature;
+    }
+
+    if (request.payload.avatar) {
+      updateUser.avatar = request.payload.avatar;
+    }
+
     // create the thread in core
     core.users.update(updateUser)
     .then(function(user) {

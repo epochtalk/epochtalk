@@ -11,8 +11,17 @@ var updateUserSchema = Joi.object().keys({
   id: Joi.string().required(),
   username: Joi.string().regex(/[a-zA-Z0-9_\-]/).min(2).max(30),
   email: Joi.string().email(),
-  password: Joi.string().regex(/[a-zA-Z0-9]{3,30}/),
-  confirmation: Joi.ref('password')
+  password: Joi.string(),
+  confirmation: Joi.ref('password'),
+  name: Joi.string(),
+  website: Joi.string(),
+  btcAddress: Joi.string(),
+  gender: Joi.string(),
+  dob: Joi.date(),
+  location: Joi.string(),
+  language: Joi.string(),
+  signature: Joi.string(),
+  avatar: Joi.string() // url
 }).with('password', 'confirmation');
 
 module.exports = {
