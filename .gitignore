@@ -22,7 +22,6 @@ test/coverage/
 /public/js/bundle.min.js
 /public/bundle.js
 
-/app/css/medium-editor.css
-/app/css/default.css
+/app/css/**
 
 /epoch.db

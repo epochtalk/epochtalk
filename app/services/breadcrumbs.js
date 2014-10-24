@@ -6,35 +6,17 @@ module.exports = ['$routeParams', '$location', 'Breadcrumbs',
 function ($routeParams, $location, Breadcrumbs) {
   var breadcrumbs; // stores array of breadcrumb objects
 
-  // Static Page Routes
-  var routes = {
-    home:           '/',
-    boards:         '/boards',
-    register:       '/register',
-    profile:        '/profile',
-    admin:          '/admin',
-    categories:     '/admin/categories'
+  var pathLookup = {
+    home:       { url: '/',                   label: 'Home' },
+    register:   { url: '/register',           label: 'Registration' },
+    profiles:   {                             label: 'Profiles' },
+    admin:      { url: '/admin',              label: 'Administration' },
+    categories: { url: '/admin/categories',   label: 'Category Editor' }
   };
-
-  // Static Page Breadcrumb Objects
-  var home =        { url: routes.home,         label: 'Home' };
-  var register =    { url: routes.register,     label: 'Registration' };
-  var profile =     { url: routes.profile,      label: 'Profile' };
-  var admin =       { url: routes.admin,        label: 'Admin' };
-  var categories =  { url: routes.categories,   label: 'Category Editor' };
-
-  // Static Page Breadcrumb Array
-  var staticCrumbs = {};
-  staticCrumbs[routes.home] =         [ home ];
-  staticCrumbs[routes.boards] =       [ home ];
-  staticCrumbs[routes.register] =     [ home, register ];
-  staticCrumbs[routes.profile] =      [ home, profile ];
-  staticCrumbs[routes.admin] =        [ home, admin ];
-  staticCrumbs[routes.categories] =   [ home, admin, categories];
 
   return {
     update: function() {
-      breadcrumbs = [];
+      breadcrumbs = [ pathLookup.home ];
       var path = $location.path();
       var routeParams = $routeParams;
       // Maps routeParams key to breadcrumb type
@@ -51,11 +33,16 @@ function ($routeParams, $location, Breadcrumbs) {
         var idKey = routeParamKeys.reverse()[0];
         Breadcrumbs.getBreadcrumbs({ id: routeParams[idKey], type: keyToType[idKey] },
         function(partialCrumbs) {
-          breadcrumbs = breadcrumbs.concat(staticCrumbs[routes.home], partialCrumbs);
+          breadcrumbs = breadcrumbs.concat(partialCrumbs);
         });
       }
       else { // routeParams is empty, route is static
-        breadcrumbs = breadcrumbs.concat(staticCrumbs[path]);
+        var pathArr = path.split('/');
+        pathArr.shift(); // Shifting array by one to eliminate empty index
+        pathArr.forEach(function(id) {
+          var crumb = pathLookup[id] || { label: id };
+          breadcrumbs.push(crumb);
+        });
       }
     },
     crumbs: function() { return breadcrumbs; }

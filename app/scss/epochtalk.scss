@@ -44,6 +44,9 @@ body { background: url(/static/img/white_wall_hash.png); }
 .breadcrumbs > .news {
   color: #444;
   text-transform: none; }
+.breadcrumbs > li > span  {
+  color: #444;
+}
 
 /* Board Page */
 .board-page { padding-bottom: 15px; }
