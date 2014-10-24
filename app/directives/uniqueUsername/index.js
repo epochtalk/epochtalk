@@ -18,8 +18,11 @@ module.exports = ['Auth', '$q', '$timeout',
 
           // check if the input hasn't changed from the original
           if (originalUsername === modelValue) {
-            def.resolve();
-            return def.promise;
+            ctrl.$setValidity('sameUsername', false);
+            return $q.when();
+          }
+          else {
+            ctrl.$setValidity('sameUsername', true);
           }
 
           // check against the backend to see if available

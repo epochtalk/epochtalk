@@ -106,7 +106,7 @@
             <small class="label error" ng-if="form.username.$error.noUsername">
               Username Required
             </small>
-            <small class="label success" ng-if="!form.username.$error.username && !form.username.$error.noUsername">
+            <small class="label success" ng-if="!form.username.$error.username && !form.username.$error.noUsername && !form.username.$error.sameUsername">
               Username Available
             </small>
           </label>
