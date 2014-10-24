@@ -116,7 +116,19 @@
           </label>
 
           <label>Email
-            <input type="text" placeholder="Email" ng-model="profiles.user.email">
+            <input type="email" name="email" ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
+            <small class="label error" ng-if="form.email.$error.uniqueEmail">
+              Email Already Taken
+            </small>
+            <small class="label error" ng-if="form.email.$error.email">
+              Email is not valid
+            </small>
+            <small class="label error" ng-if="!form.email.$error.email && form.email.$error.noEmail">
+              Email Required
+            </small>
+            <small class="label success" ng-if="!form.email.$error.email && !form.email.$error.noEmail && !form.email.$error.uniqueEmail && !form.email.$error.sameEmail">
+              Email Available
+            </small>
           </label>
 
           <label>Website

@@ -5,6 +5,7 @@ module.exports = ['user', 'User', 'Auth', '$location',
     user.$promise.then(function(user) {
       ctrl.user = user;
       ctrl.displayUsername = angular.copy(user.username);
+      ctrl.displayEmail = angular.copy(user.email);
     });
     this.editMode = false;
     this.error = {};
