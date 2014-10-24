@@ -1,6 +1,7 @@
 module.exports = ['user', 'User', 'Auth', '$location',
   function(user, User, Auth, $location) {
     var ctrl = this;
+    this.user = {};
     user.$promise.then(function(user) {
       ctrl.user = user;
       ctrl.displayUsername = angular.copy(user.username);

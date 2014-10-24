@@ -3,6 +3,7 @@
   <div class="large-3 columns">
     <img src="http://placehold.it/320x240&text=Avatar"/>
     <ul class="side-nav">
+      <li ng-if="profiles.user.editable"><a href="#">Change Avatar</a></li>
       <li><a href="#">Send Personal Message</a></li>
       <li><a href="#">Show Last Post</a></li>
       <li><a href="#">Show General Statistics</a></li>
@@ -96,9 +97,18 @@
     <div ng-If="profiles.editMode === true">
         
       <form name="form" class="css-form" novalidate>
-        <div class="panel">
+        <div class="panel profile-form">
           <label>Username
-            <input type="text" ng-model="profiles.user.username"/>
+            <input type="text" name="username" ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
+            <small class="label error" ng-if="form.username.$error.username">
+              Username Already Taken
+            </small>
+            <small class="label error" ng-if="form.username.$error.noUsername">
+              Username Required
+            </small>
+            <small class="label success" ng-if="!form.username.$error.username && !form.username.$error.noUsername">
+              Username Available
+            </small>
           </label>
 
           <label>Name
