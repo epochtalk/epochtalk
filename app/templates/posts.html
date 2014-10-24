@@ -12,7 +12,7 @@
         <div class="post-title">
           <span ng-bind-html="post.title"></span>
           <span class="radius secondary label">
-          by <a href="#" ng-bind-html="post.user.username"></a>
+          by <a href="/profiles/{{post.user.username}}" ng-bind-html="post.user.username"></a>
           <em>@{{post.created_at | date:'medium'}}</em>
           </span>
           <button class="button tiny edit-btn" ng-click="startEditPost($index)" ng-if="post.editable">

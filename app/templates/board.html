@@ -55,7 +55,7 @@
       <div class="row">
         <div class="small-12 medium-8 columns text-info">
           Last post by
-          <a href="#" ng-bind-html="childBoard.last_post_username"></a>
+          <a href="/profiles/{{ childBoard.last_post_username }}" ng-bind-html="childBoard.last_post_username"></a>
           in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title"></a>
           <br>
           {{childBoard.last_post_created_at | date:'medium'}}
@@ -117,7 +117,7 @@
         <div class="small-12 medium-3 columns text-info">
           {{thread.last_post_created_at | date:'medium'}}
           <br>
-          <a href="#" ng-bind-html="thread.last_post_username"></a>
+          <a href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
         </div>
       </div>
     </div>

@@ -59,7 +59,7 @@
             <!-- User Drop Down -->
             <ul ng-if="loggedIn()" class="right">
               <li class="has-dropdown">
-                <a ng-href="/me">{{ currentUser() }}</a>
+                <a ng-href="/profiles/{{ currentUser() }}">{{ currentUser() }}</a>
                 <ul class="dropdown">
                   <li><a ng-href="/profiles/{{ currentUser() }}">Profile</a></li>
                   <li><a ng-href="#" ng-click="logout()">Logout</a></li>
