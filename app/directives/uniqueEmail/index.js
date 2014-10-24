@@ -5,7 +5,6 @@ module.exports = ['Auth', '$q', '$timeout',
       link: function(scope, elm, attrs, ctrl) {
         if (ctrl && ctrl.$validators.email) {
           ctrl.$asyncValidators.uniqueEmail = function(modelValue, viewValue) {
-            var def = $q.defer();
             var originalEmail = attrs.uniqueEmail;
 
             // check if the input is empty
@@ -19,12 +18,10 @@ module.exports = ['Auth', '$q', '$timeout',
 
             // check if the input hasn't changed from the original
             if (originalEmail === modelValue) {
-              ctrl.$setValidity('sameEmail', false);
               return $q.when();
             }
-            else {
-              ctrl.$setValidity('sameEmail', true);
-            }
+            
+            var def = $q.defer();
 
             // check against the backend to see if available
             Auth.checkEmail(modelValue,

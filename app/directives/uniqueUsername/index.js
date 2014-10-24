@@ -4,9 +4,8 @@ module.exports = ['Auth', '$q', '$timeout',
       require: 'ngModel',
       link: function(scope, elm, attrs, ctrl) {
         ctrl.$asyncValidators.username = function(modelValue, viewValue) {
-          var def = $q.defer();
           var originalUsername = attrs.uniqueUsername;
-
+          
           // check if the input is empty
           if (ctrl.$isEmpty(modelValue)) {
             ctrl.$setValidity('noUsername', false);
@@ -18,12 +17,10 @@ module.exports = ['Auth', '$q', '$timeout',
 
           // check if the input hasn't changed from the original
           if (originalUsername === modelValue) {
-            ctrl.$setValidity('sameUsername', false);
             return $q.when();
           }
-          else {
-            ctrl.$setValidity('sameUsername', true);
-          }
+
+          var def = $q.defer();
 
           // check against the backend to see if available
           Auth.checkUsername(modelValue,

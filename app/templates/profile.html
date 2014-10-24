@@ -17,7 +17,7 @@
       <div class="small-9 columns">
         <h3>{{ profiles.displayUsername }}'s Profile</h3>
       </div>
-      <div class="small-3 columns" ng-If="profiles.user.editable">
+      <div class="small-3 columns" ng-If="profiles.user.editable && profiles.editMode === false">
         <button class="button small radius right" ng-click="profiles.editMode = true">
           Edit Profile
         </button>
@@ -96,8 +96,8 @@
     <!-- Edit Content -->
     <div ng-If="profiles.editMode === true">
         
-      <form name="form" class="css-form" novalidate>
-        <div class="panel profile-form">
+      <div class="panel profile-form">
+        <form name="form" class="css-form" novalidate>
           <label>Username
             <input type="text" name="username" ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
             <small class="label error" ng-if="form.username.$error.username">
@@ -106,7 +106,7 @@
             <small class="label error" ng-if="form.username.$error.noUsername">
               Username Required
             </small>
-            <small class="label success" ng-if="!form.username.$error.username && !form.username.$error.noUsername && !form.username.$error.sameUsername">
+            <small class="label success" ng-if="profiles.displayUsername !== profiles.user.username && !form.username.$error.username && !form.username.$error.noUsername">
               Username Available
             </small>
           </label>
@@ -126,7 +126,7 @@
             <small class="label error" ng-if="!form.email.$error.email && form.email.$error.noEmail">
               Email Required
             </small>
-            <small class="label success" ng-if="!form.email.$error.email && !form.email.$error.noEmail && !form.email.$error.uniqueEmail && !form.email.$error.sameEmail">
+            <small class="label success" ng-if="profiles.displayEmail !== profiles.user.email && !form.email.$error.email && !form.email.$error.noEmail && !form.email.$error.uniqueEmail">
               Email Available
             </small>
           </label>
@@ -158,30 +158,30 @@
           <label>Signature
             <textarea type="text" placeholder="Signature" ng-model="profiles.user.signature"></textarea>
           </label>
+        </form>
 
-          <!-- Cancel/Save Buttons -->
-          <div class="row">
-            <div class="small-6 columns">
-              <button class="button expand alert" ng-click="profiles.editMode = false">
-                Close
-              </button>
-            </div>
-            <div class="small-6 columns">
-              <button class="button expand" ng-click="profiles.saveProfile()">
-                Save
-              </button>
-            </div>
+        <!-- Cancel/Save Buttons -->
+        <div class="row">
+          <div class="small-6 columns">
+            <button class="button expand alert" ng-click="profiles.editMode = false">
+              Close
+            </button>
           </div>
+          <div class="small-6 columns">
+            <button class="button expand" ng-click="profiles.saveProfile()" ng-disabled="form.$invalid">
+              Save
+            </button>
+          </div>
+        </div>
 
-          <div class="row" ng-if="profiles.error.status">
-            <div class="small-12 columns">
-              <div class="alert-box alert radius">
-                {{ profiles.error.message }}
-              </div>
+        <div class="row" ng-if="profiles.error.status">
+          <div class="small-12 columns">
+            <div class="alert-box alert radius">
+              {{ profiles.error.message }}
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </div>
 
   </div>
