@@ -99,14 +99,14 @@
       <div class="panel profile-form">
         <form name="form" class="css-form" novalidate>
           <label>Username
-            <input type="text" name="username" ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
-            <small class="label error" ng-if="form.username.$error.username">
+            <input type="text" name="username" required ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
+            <small class="label error" ng-if="form.username.$error.unique">
               Username Already Taken
             </small>
-            <small class="label error" ng-if="form.username.$error.noUsername">
+            <small class="label error" ng-if="form.username.$error.required">
               Username Required
             </small>
-            <small class="label success" ng-if="profiles.displayUsername !== profiles.user.username && !form.username.$error.username && !form.username.$error.noUsername">
+            <small class="label success" ng-if="profiles.displayUsername !== profiles.user.username && !form.username.$error.unique && !form.username.$error.required">
               Username Available
             </small>
           </label>
@@ -116,17 +116,17 @@
           </label>
 
           <label>Email
-            <input type="email" name="email" ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
-            <small class="label error" ng-if="form.email.$error.uniqueEmail">
-              Email Already Taken
-            </small>
+            <input type="email" name="email" required ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
             <small class="label error" ng-if="form.email.$error.email">
               Email is not valid
             </small>
-            <small class="label error" ng-if="!form.email.$error.email && form.email.$error.noEmail">
+            <small class="label error" ng-if="form.email.$error.unique">
+              Email Already Taken
+            </small>
+            <small class="label error" ng-if="!form.email.$error.email && form.email.$error.required">
               Email Required
             </small>
-            <small class="label success" ng-if="profiles.displayEmail !== profiles.user.email && !form.email.$error.email && !form.email.$error.noEmail && !form.email.$error.uniqueEmail">
+            <small class="label success" ng-if="profiles.displayEmail !== profiles.user.email && !form.email.$error.email && !form.email.$error.required && !form.email.$error.unique">
               Email Available
             </small>
           </label>

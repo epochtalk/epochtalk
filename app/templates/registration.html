@@ -6,54 +6,77 @@
 
 <div class="row">
   <div class="small-10 small-offset-1 columns">
-    <div class='reg-input-section'>
-      <label>Email</label>
-      <input type="email" ng-model="user.email" ng-blur="checkEmail()" placeholder="Email" required>
-      <small class="label success" ng-if="validation.email.success">
-        Email Available
-      </small>
-      <small class="label alert" ng-if="validation.email.error">
-        {{ validation.email.message }}
-      </small>
-    </div>
+    <form name="form" class="css-form" novalidate>
+      <div class='reg-input-section'>
+        <label>Email
+          <input type="email" name="email" ng-model="user.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Email" required>
+          <small class="label error" ng-if="form.email.$error.email">
+            Email is not valid
+          </small>
+          <small class="label error" ng-if="form.email.$error.unique">
+            Email Already Taken
+          </small>
+          <small class="label error" ng-if="form.email.$touched && form.email.$error.required">
+            Email Required
+          </small>
+          <small class="label success" ng-if="!form.email.$error.email && !form.email.$error.required && !form.email.$error.unique">
+            Email Available
+          </small>
+        </label>
+      </div>
 
-    <div class="reg-input-section">   
-      <label>Username</label>
-      <input type="text" ng-model="user.username" ng-blur="checkUsername()" placeholder="Username" required>
-      <small class="label success" ng-if="validation.username.success">
-        Username Available
-      </small>
-      <small class="label alert" ng-if="validation.username.error">
-        {{ validation.username.message }}
-      </small>
-    </div>
-    
-    <div class="reg-input-section">   
-      <label>Password</label>
-      <input type="password" ng-model="user.password" placeholder="Password" required>
-      <small class="label success" ng-if="validation.password.success">
-        Looks Good
-      </small>
-      <small class="error" ng-if="validation.password.error">
-        {{ validation.password.message }}
-      </small>
-    </div>
-    
-    <div class="reg-input-section">
-      <label>Password Confirmation</label>
-      <input type="password" ng-model="user.confirmation" placeholder="Password Confirmation" ng-blur="checkPasswords()" required>
-      <small class="label success" ng-if="validation.password.success">
-        Looks Good
-      </small>
-      <small class="error" ng-if="validation.password.error">
-        {{ validation.password.message }}
-      </small>
-    </div>
+      <div class="reg-input-section">   
+        <label>Username
+          <input type="text" name="username" ng-model="user.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" required>
+          <small class="label error" ng-if="form.username.$error.unique">
+            Username Already Taken
+          </small>
+          <small class="label error" ng-if="form.username.$touched && form.username.$error.required">
+            Username Required
+          </small>
+          <small class="label success" ng-if="!form.username.$error.unique && !form.username.$error.required">
+            Username Available
+          </small>
+        </label>
+      </div>
+      
+      <div class="reg-input-section">   
+        <label>Password
+          <input type="password" name="password" ng-model="user.password" placeholder="Password" required>
+          <small class="label error" ng-if="form.password.$touched && form.password.$error.required">
+            Password is Required
+          </small>
+          <small class="label error" ng-if="!form.password.$error.required && user.password !== user.confirmation">
+            Password and Confirmation do not match
+          </small>
+          <small class="label success" ng-if="user.password === user.confirmation && !form.password.$error.required">
+            Looks Good
+          </small>
+        </label>
+      </div>
+      
+      <div class="reg-input-section">
+        <label>Password Confirmation
+          <input type="password" name="confirmation" ng-model="user.confirmation" placeholder="Password Confirmation" required>
+          <small class="label error" ng-if="form.confirmation.$touched && form.confirmation.$error.required">
+            Confirmation is Required
+          </small>
+          <small class="label error" ng-if="!form.confirmation.$error.required &&user.password !== user.confirmation">
+            Password and Confirmation do not match
+          </small>
+          <small class="label success" ng-if="user.password === user.confirmation && !form.confirmation.$error.required">
+            Looks Good
+          </small>
+        </label>
+      </div>
+    </form>
 
     <div class="reg-input-section">
-      <button class="button expand" ng-click="register()">Register</button>
-      <small class="error" ng-if="validation.register.error">
-        {{ validation.register.message }}
+      <button class="button expand" ng-click="register()" ng-disabled="form.$invalid || user.password !== user.confirmation">
+        Register
+      </button>
+      <small class="error" ng-if="error.status">
+        {{ error.message }}
       </small>
     </div>
 

@@ -4,16 +4,12 @@ module.exports = ['Auth', '$q', '$timeout',
       require: 'ngModel',
       link: function(scope, elm, attrs, ctrl) {
         if (ctrl && ctrl.$validators.email) {
-          ctrl.$asyncValidators.uniqueEmail = function(modelValue, viewValue) {
+          ctrl.$asyncValidators.unique = function(modelValue, viewValue) {
             var originalEmail = attrs.uniqueEmail;
 
             // check if the input is empty
             if (ctrl.$isEmpty(modelValue)) {
-              ctrl.$setValidity('noEmail', false);
               return $q.when();
-            }
-            else {
-              ctrl.$setValidity('noEmail', true);
             }
 
             // check if the input hasn't changed from the original
