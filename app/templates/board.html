@@ -91,7 +91,7 @@
           <a ng-class="thread.title_class" ng-href="/threads/{{thread.id}}/posts" ng-bind-html="thread.title"></a><br>
 
           <div class="division">
-            Started by: <a href="#" ng-bind-html="thread.user.username"></a>
+            Started by: <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>
             <em>( {{ thread.created_at | date:'medium' }} )</em>
           </div>
 

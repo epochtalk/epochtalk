@@ -10,10 +10,10 @@
       <div class="viewable" ng-if="!post.editMode">
         <!-- Post Title -->
         <div class="post-title">
-          <span ng-bind-html="post.title"></span>
+          <span ng-bind="post.title"></span>
           <span class="radius secondary label">
-          by <a href="/profiles/{{post.user.username}}" ng-bind-html="post.user.username"></a>
-          <em>@{{post.created_at | date:'medium'}}</em>
+          by <a href="/profiles/{{post.user.username}}" ng-bind="post.user.username"></a>
+          <em>@</em><em ng-bind="post.created_at | date:'medium'"></em>
           </span>
           <button class="button tiny edit-btn" ng-click="startEditPost($index)" ng-if="post.editable">
             Edit
@@ -21,6 +21,8 @@
         </div>
         <!-- Post Body -->
         <div class="panel" ng-bind-html="post.body"></div>
+        <div ng-if="post.user.signature" ng-bind-html="post.user.signature">
+        </div>
       </div>
 
       <!-- private edit view of post -->
@@ -46,9 +48,7 @@
         <button class="button tiny" ng-click="saveEditPost($index)">
           Save
         </button>
-        <span class="label alert" ng-if="post.error">
-          {{ post.error.message }}
-        </span>
+        <span class="label alert" ng-if="post.error" ng-bind="post.error.message"></span>
       </div>
     </div>
 
@@ -68,9 +68,7 @@
         <epochtalk-editor text="newPost.encodedBody" save-text="saveText(encoded, text)" class="post-editor"></epochtalk-editor>
       </div>
       <button class="button expand" ng-click="savePost()">Send</button>
-      <span class="label alert" ng-if="newPost.error">
-        {{ newPost.error.message }}
-      </span>
+      <span class="label alert" ng-if="newPost.error" ng-bind="newPost.error.message"></span>
     </div>
 
   </div>
