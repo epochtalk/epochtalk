@@ -1,48 +1,22 @@
-module.exports = ['$scope', '$routeParams', 'Auth', 'Boards', 'Threads',
-  function($scope, $routeParams, Auth, Boards, Threads) {
-    var boardId = $routeParams.boardId;
-    // TODO: this needs to be grabbed from user settings
-    var limit = $routeParams.limit;
-    var threadsPerPage = limit ? Number(limit) : 10;
-    var page = $routeParams.page;
-    $scope.page = page ? Number(page) : 1;
-    $scope.threads = null;
-    $scope.pageCount = 1;
-    $scope.loggedIn = Auth.isAuthenticated;
-    $scope.newThreadUrl = '/boards/' + boardId + '/threads/new';
+module.exports = ['$scope', '$route', 'Auth', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
+  function($scope, $route, Auth, Threads, board, threads, page, threadLimit, postLimit) {
+    var ctrl = this;
+    this.newThreadUrl = '/boards/' + board.id + '/threads/new';
+    this.loggedIn = Auth.isAuthenticated; // check Auth
+    this.page = page; // this page
 
-    Boards.get({ id: boardId }).$promise
-    .then(function(board) {
-      $scope.board = board;
-      var threadCount = board.thread_count;
-      $scope.pageCount = Math.ceil(threadCount / threadsPerPage);
-    })
-    .then(function() {
-      var query = {
-        board_id: boardId,
-        limit: threadsPerPage,
-        page: $scope.page
-      };
-      return Threads.byBoard(query).$promise;
-    })
-    .then(function(threads) {
-      // TODO: this needs to be grabbed from user settings
-      var postsPerPage = 10;
-      threads.forEach(function(thread) {
-        thread.page_count = Math.ceil(thread.post_count / postsPerPage);
-        getPageKeysForThread(thread);
-
-        if (thread.has_new_post) { thread.title_class = 'bold-title'; }
-      });
-      $scope.threads = threads;
+    board.$promise.then(function(board) {
+      ctrl.board = board;
+      ctrl.pageCount = Math.ceil(board.thread_count / threadLimit);
     });
-
+    
+    // generate page listing for each thread
     var getPageKeysForThread = function(thread) {
       var pageKeys = [];
       var urlPrefix = '/threads/' + thread.id + '/posts?page=';
       if (thread.page_count < 7) {
         var i = 1;
-        while(pageKeys.push({ val: i.toString(), url: urlPrefix + i++}) < thread.page_count){}
+        while(pageKeys.push({ val: i.toString(), url: urlPrefix + i++}) < thread.page_count) {}
       }
       else {
         var thirdToLastPage = (thread.page_count - 2).toString();
@@ -60,5 +34,29 @@ module.exports = ['$scope', '$routeParams', 'Auth', 'Boards', 'Threads',
       thread.page_keys = pageKeys;
     };
 
+    // page count for each thread
+    threads.$promise.then(function(threads) {
+      ctrl.threads = threads;
+      threads.forEach(function(thread) {
+        thread.page_count = Math.ceil(thread.post_count / postLimit);
+        getPageKeysForThread(thread);
+        // user based UI
+        if (thread.has_new_post) { thread.title_class = 'bold-title'; }
+      });
+    });
+
+    // pagination
+
+    $scope.$on('$routeUpdate', function(event, route) {
+      var query = {
+        board_id: $route.current.params.boardId,
+        limit: route.params.limit,
+        page: route.params.page
+      };
+      return Threads.byBoard(query).$promise.then(function(threads) {
+        ctrl.threads = threads;
+        ctrl.page = Number(route.params.page);
+      });
+    });
   }
 ];

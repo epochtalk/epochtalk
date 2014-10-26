@@ -3,103 +3,110 @@ var fs = require('fs');
 module.exports = ['$location', function($location) {
   return {
     restrict: 'E',
-    scope: false,
+    scope: {
+      pageCount: '=',
+      page: '='
+    },
     template: fs.readFileSync(__dirname + '/../../templates/directives/pagination.html'),
-    link: function($scope) {
-      $scope.$watch('pageCount', function (newPageCount) {
-        var pageCount = newPageCount;
-        var page = $scope.page;
+    link: function(scope) {
+
+      scope.$watchGroup(['pageCount', 'page'], function() {
+        buildPages();
+      });
+
+      var buildPages = function() {
+        scope.paginationKeys = [];
+        var ellipsis;
+        var urlPrefix;
         var limit = $location.search().limit;
-        var generatePageKeys = function(elipsis) {
-          // Add Previous Button
-          var prevBtnKey = { val: '&laquo; Previous' };
-          if (page > 1) {
-            prevBtnKey.class = 'arrow';
-            prevBtnKey.url = urlPrefix + (page - 1);
-            paginationKeys.push(prevBtnKey);
-          }
-          else {
-            prevBtnKey.class = 'arrow unavailable';
-            prevBtnKey.url = null;
-            paginationKeys.push(prevBtnKey);
-          }
-          // Add Pagination Keys
-          var elipsisIndex = 0;
-          var index = 1;
-          while (index <= pageCount) {
-            var pageKey;
-            if (elipsis && elipsis[elipsisIndex] && elipsis[elipsisIndex].index === index) {
-              pageKey = {
-                val: '&hellip;',
-                url: null,
-                class: 'unavailable'
-              };
-              index = elipsis[elipsisIndex].nextIndex;
-              elipsisIndex++;
-            }
-            else {
-              pageKey = {
-                val: index.toString(),
-                url: urlPrefix + index,
-                class: index === page ? 'current' : null
-              };
-              index++;
-            }
-            paginationKeys.push(pageKey);
-          }
 
-          // Add Next Button
-          var nextBtnKey = { val: 'Next &raquo;' };
-          if (page < pageCount) {
-            nextBtnKey.class = 'arrow';
-            nextBtnKey.url = urlPrefix + (page + 1);
-            paginationKeys.push(nextBtnKey);
-          }
-          else {
-            nextBtnKey.class = 'arrow unavailable';
-            nextBtnKey.url = null;
-            paginationKeys.push(nextBtnKey);
-          }
-        };
-
-        var paginationKeys = [];
-        var elipsis, urlPrefix;
         if (limit) {
           urlPrefix = $location.path() + '?limit=' + limit + '&page=';
         }
         else {
           urlPrefix = $location.path() + '?page=';
         }
-        var truncate = pageCount > 15;
+
+        var truncate = scope.pageCount > 15;
+        
         // Case 1: No Truncation up to 15 pages
         // [1] 2 3 4 5 6 7 8 9 10 11 13 14 15
-        if (!truncate) {
-          generatePageKeys();
-        }
+        if (!truncate) { generatePageKeys(undefined, urlPrefix); }
         // Case 2: Truncate Tail
         // 1 2 3 4 5 [6] 7 8 ... 14 15 16
-        else if (truncate && page <= 6) {
-          elipsis = [{ index: 9, nextIndex: pageCount - 2 }];
-          generatePageKeys(elipsis);
+        else if (truncate && scope.page <= 6) {
+          ellipsis = [{ index: 9, nextIndex: scope.pageCount - 2 }];
+          generatePageKeys(ellipsis, urlPrefix);
         }
         // Case 3: Truncate Head
         // 1 2 3 ... 9 10 [11] 12 13 14 15 16
-        else if (truncate && page >= pageCount - 5) {
-          elipsis = [{ index: 4, nextIndex: pageCount - 8 }];
-          generatePageKeys(elipsis);
+        else if (truncate && scope.page >= scope.pageCount - 5) {
+          ellipsis = [{ index: 4, nextIndex: scope.pageCount - 8 }];
+          generatePageKeys(ellipsis, urlPrefix);
         }
         // Case 4: Truncate Head and Tail
         // 1 2 3 ... 7 8 [9] 10 11 ... 14 15 16
-        else if (truncate && page > 6 && page < pageCount - 5) {
-          elipsis = [
-            { index: 4, nextIndex: page - 2 },
-            { index: page + 3, nextIndex: pageCount - 2 }
+        else if (truncate && scope.page > 6 && scope.page < scope.pageCount - 5) {
+          ellipsis = [
+            { index: 4, nextIndex: scope.page - 2 },
+            { index: scope.page + 3, nextIndex: scope.pageCount - 2 }
           ];
-          generatePageKeys(elipsis);
+          generatePageKeys(ellipsis, urlPrefix);
         }
-        $scope.paginationKeys = paginationKeys;
-      }, true);
+      };
 
+      var generatePageKeys = function(ellipsis, urlPrefix) {
+        // Add Previous Button
+        var prevBtnKey = { val: '&laquo; Previous' };
+        if (scope.page > 1) {
+          prevBtnKey.class = 'arrow';
+          prevBtnKey.url = urlPrefix + (scope.page - 1);
+          scope.paginationKeys.push(prevBtnKey);
+        }
+        else {
+          prevBtnKey.class = 'arrow unavailable';
+          prevBtnKey.url = null;
+          scope.paginationKeys.push(prevBtnKey);
+        }
+        // Add Pagination Keys
+        var ellipsisIndex = 0;
+        var index = 1;
+        while (index <= scope.pageCount) {
+          var pageKey;
+          if (ellipsis && ellipsis[ellipsisIndex] && ellipsis[ellipsisIndex].index === index) {
+            pageKey = {
+              val: '&hellip;',
+              url: null,
+              class: 'unavailable'
+            };
+            index = ellipsis[ellipsisIndex].nextIndex;
+            ellipsisIndex++;
+          }
+          else {
+            pageKey = {
+              val: index.toString(),
+              url: urlPrefix + index,
+              class: index === scope.page ? 'current' : null
+            };
+            index++;
+          }
+          scope.paginationKeys.push(pageKey);
+        }
+
+        // Add Next Button
+        var nextBtnKey = { val: 'Next &raquo;' };
+        if (scope.page < scope.pageCount) {
+          nextBtnKey.class = 'arrow';
+          nextBtnKey.url = urlPrefix + (scope.page + 1);
+          scope.paginationKeys.push(nextBtnKey);
+        }
+        else {
+          nextBtnKey.class = 'arrow unavailable';
+          nextBtnKey.url = null;
+          scope.paginationKeys.push(nextBtnKey);
+        }
+      };
+      
     }
   };
 }];

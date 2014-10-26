@@ -1,9 +1,6 @@
 module.exports = ['$timeout', '$anchorScroll', 'boards',
   function($timeout, $anchorScroll, boards) {
     this.categorizedBoards = boards;
-    console.log(boards);
-    $timeout(function() {
-      $anchorScroll();
-    });
+    $timeout(function() { $anchorScroll(); }, 100); // 100 for quick clicks
   }
 ];

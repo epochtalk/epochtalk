@@ -1,23 +1,21 @@
 <div class="row">
   
   <!-- Auth error message -->
-  <div class="small-12 columns info-box text-center" ng-if="!loggedIn()">
+  <div class="small-12 columns info-box text-center" ng-if="!NewThreadCtrl.loggedIn()">
     <span class="label alert radius">
       You need to be logged in to make a new thread
     </span>
   </div>
 
   <!-- POST error message -->
-  <div class="small-12 columns text-center" ng-if="error.post.found">
-    <span class="label alert">
-      {{ error.post.message }}
-    </span>
+  <div class="small-12 columns text-center" ng-if="NewThreadCtrl.error.post.found">
+    <span class="label alert" ng-bind="NewThreadCtrl.error.post.message"></span>
   </div>
 
   <div class="small-12 columns">
     <!-- editor -->
     <label>Title:</label>
-    <input type="text" ng-model="thread.title">
+    <input type="text" ng-model="NewThreadCtrl.thread.title">
     <div class="row">
       <div class="small-6 columns">
         <label>Reply:</label>
@@ -27,8 +25,8 @@
       </div>
     </div>
     <div class="editor-container">
-      <epochtalk-editor class="editor" text="thread.encodedBody" save-text="updateText(encoded, text)"></epochtalk-editor>
+      <epochtalk-editor class="editor" text="NewThreadCtrl.thread.encodedBody" save-text="NewThreadCtrl.updateText(encoded, text)"></epochtalk-editor>
     </div>
-    <button class="button expand" ng-click="save()">Submit</button>
+    <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="NewThreadCtrl.thread.title && NewThreadCtrl.thread.body">Submit</button>
   </div>
 </div>

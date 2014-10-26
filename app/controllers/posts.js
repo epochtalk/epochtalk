@@ -1,88 +1,70 @@
-module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routeParams', '$route', 'Auth', 'Threads', 'Posts',
-  function($scope, $timeout, $location, $anchorScroll, $routeParams, $route, Auth, Threads, Posts) {
-    $scope.loggedIn = Auth.isAuthenticated;
-    var threadId = $routeParams.threadId;
-    // TODO: this needs to be grabbed from user settings
-    $scope.page = Number($routeParams.page) || 1;
-    $scope.pageCount = 1;
-    $scope.posts = null;
-    $scope.newPost = { title: '' };
-    $scope.tempPosts = {};
-    var postCount;
-    var limit;
-    var postsPerPage;
-    // Loading post calls
+module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 'Auth', 'Posts', 'thread', 'posts', 'page', 'limit',
+  function($scope, $timeout, $location, $route, $anchorScroll, Auth, Posts, thread, posts, page, limit) {
+    var ctrl = this;
+    this.loggedIn = Auth.isAuthenticated;
+    var tempPosts = {};
+    this.page = page;
+    this.limit = limit;
 
-    Threads.get({ id: threadId }).$promise
-    .then(function(thread) {
-      $scope.newPost.title = 'Re: ' + thread.title;
-      $scope.newPost.thread_id = thread.id;
-
-      postCount = thread.post_count;
-      limit = $routeParams.limit;
-      postsPerPage = limit === 'all' ? Number(postCount) : Number(limit) || 10;
-
-      $scope.pageCount = Math.ceil(postCount / postsPerPage);
-      return postsPerPage;
-    })
-    .then(function(postsPerPage) {
-      var query = {
-        thread_id: threadId,
-        limit: postsPerPage,
-        page: $scope.page
-      };
-      return Posts.byThread(query).$promise;
-    })
-    .then(function(threadPosts) {
-      $scope.posts = threadPosts;
-      $timeout(function() {
-        $anchorScroll();
-      });
+    thread.$promise.then(function(thread) {
+      ctrl.thread = thread;
+      ctrl.newPost = { title: 'Re: ' + thread.title, thread_id: thread.id };
+      ctrl.totalPosts = thread.post_count;
+      calculatePages();
     });
+
+    posts.$promise.then(function(posts) {
+      ctrl.posts = posts;
+    });
+
+    $timeout(function() { $anchorScroll(); });
+
+    var calculatePages = function() {
+      var count;
+      if (ctrl.limit === 'all') { count = Number(ctrl.totalPosts); }
+      else { count = Number(ctrl.limit) || 10; }
+      ctrl.pageCount = Math.ceil(ctrl.totalPosts / count);
+    };
 
     var gotoAnchor = function(id, jumpToLastPage) {
       $timeout(function() {
-        if (jumpToLastPage) {
-          $location.search('page', $scope.pageCount);
-        }
+        if (jumpToLastPage) { $location.search('page', ctrl.pageCount); }
         $location.hash(id);
         $anchorScroll();
-      });
+      }, 100);
     };
 
     // new post methods
 
-    $scope.saveText = function(encoded, text) {
-      $scope.newPost.encodedBody = encoded;
-      $scope.newPost.body = text;
+    this.saveText = function(encoded, text) {
+      ctrl.newPost.encodedBody = encoded;
+      ctrl.newPost.body = text;
     };
 
-    $scope.savePost = function() {
-      delete $scope.newPost.error;
+    this.savePost = function() {
+      delete ctrl.newPost.error;
 
       // error check input
-      if (!$scope.newPost.title || $scope.newPost.title.length === 0) {
-        $scope.newPost.error = {};
-        $scope.newPost.error.message = 'No Title Found';
+      if (!this.newPost.title || this.newPost.title.length === 0) {
+        this.newPost.error = {};
+        this.newPost.error.message = 'No Title Found';
         return;
       }
-      if (!$scope.newPost.body || $scope.newPost.body.length === 0) {
-        $scope.newPost.error = {};
-        $scope.newPost.error.message = 'No Post Body Found';
+      if (!this.newPost.body || this.newPost.body.length === 0) {
+        this.newPost.error = {};
+        this.newPost.error.message = 'No Post Body Found';
         return;
       }
 
       // use input text when saving post
-      $scope.newPost.body = $scope.newPost.encodedBody;
-      Posts.save($scope.newPost).$promise
+      this.newPost.body = this.newPost.encodedBody;
+      Posts.save(this.newPost).$promise
       .then(function(data) {
-        postCount++; // Increment post count and recalculate pageCount
-        postsPerPage = limit === 'all' ? Number(postCount) : Number(limit) || 10;
-        $scope.pageCount = Math.ceil(postCount / postsPerPage);
+        ctrl.totalPosts++; // Increment post count and recalculate pageCount
+        calculatePages();
         gotoAnchor(data.id, true);
       })
       .catch(function(response) {
-        console.log(response);
         var error = '';
         if (response.status === 500) {
           error = 'Post could not be saved. ';
@@ -90,21 +72,21 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routePar
         }
         else { error = response.data.message; }
 
-        $scope.newPost.error = {};
-        $scope.newPost.error.message = error;
+        ctrl.newPost.error = {};
+        ctrl.newPost.error.message = error;
       });
     };
 
     // edit post methods
 
-    $scope.startEditPost = function(index) {
-      var editPost = $scope.posts[index];
+    this.startEditPost = function(index) {
+      var editPost = this.posts[index];
 
       // save a copy in case they cancel
-      $scope.tempPosts[editPost.id] = {};
-      $scope.tempPosts[editPost.id].title = editPost.title;
-      $scope.tempPosts[editPost.id].body = editPost.body;
-      $scope.tempPosts[editPost.id].encodedBody = editPost.encodedBody;
+      tempPosts[editPost.id] = {};
+      tempPosts[editPost.id].title = editPost.title;
+      tempPosts[editPost.id].body = editPost.body;
+      tempPosts[editPost.id].encodedBody = editPost.encodedBody;
 
       // check encodedBody exists, if not, use body for editing
       if (!editPost.encodedBody) {
@@ -112,27 +94,27 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routePar
       }
 
       // turn on editing
-      $scope.posts[index].editMode = true;
+      this.posts[index].editMode = true;
     };
 
-    $scope.saveEditText = function(post, encoded, text) {
+    this.saveEditText = function(post, encoded, text) {
       post.encodedBody = encoded;
       post.body = text;
     };
 
-    $scope.saveEditPost = function(index) {
-      var editPost = $scope.posts[index];
+    this.saveEditPost = function(index) {
+      var editPost = this.posts[index];
 
       // check input
       delete editPost.error;
       if (!editPost.title || editPost.title.length === 0) {
-        $scope.posts[index].error = {};
-        $scope.posts[index].error.message = 'No Title Found';
+        this.posts[index].error = {};
+        this.posts[index].error.message = 'No Title Found';
         return;
       }
       if (!editPost.body || editPost.body.length === 0) {
-        $scope.posts[index].error = {};
-        $scope.posts[index].error.message = 'No Post Body Found';
+        this.posts[index].error = {};
+        this.posts[index].error.message = 'No Post Body Found';
         return;
       }
 
@@ -155,17 +137,34 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$routePar
         }
         else { error = response.data.message; }
 
-        $scope.posts[index].error = {};
-        $scope.posts[index].error.message = error;
+        ctrl.posts[index].error = {};
+        ctrl.posts[index].error.message = error;
       });
     };
 
-    $scope.cancelEditPost = function(index) {
-      var cancelPost = $scope.posts[index];
-      $scope.posts[index].title = $scope.tempPosts[cancelPost.id].title;
-      $scope.posts[index].body = $scope.tempPosts[cancelPost.id].body;
-      $scope.posts[index].encodedBody = $scope.tempPosts[cancelPost.id].encodedBody;
-      $scope.posts[index].editMode = false;
+    this.cancelEditPost = function(index) {
+      var cancelPost = this.posts[index];
+      this.posts[index].title = tempPosts[cancelPost.id].title;
+      this.posts[index].body = tempPosts[cancelPost.id].body;
+      this.posts[index].encodedBody = tempPosts[cancelPost.id].encodedBody;
+      this.posts[index].editMode = false;
     };
+
+    // pagination 
+
+    $scope.$on('$routeUpdate', function(event, route) {
+      console.log("routeUpdate");
+      console.log(route.params.page);
+
+      var query = {
+        thread_id: $route.current.params.threadId,
+        limit: route.params.limit,
+        page: route.params.page
+      };
+      return Posts.byThread(query).$promise.then(function(posts) {
+        ctrl.posts = posts;
+        ctrl.page = Number(route.params.page);
+      });
+    });
   }
 ];

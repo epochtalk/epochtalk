@@ -1,33 +1,33 @@
-module.exports = ['$scope', '$routeParams', '$location', 'Auth', 'Threads',
-  function($scope, $routeParams, $location, Auth, Threads) {
-    $scope.loggedIn = Auth.isAuthenticated;
-    $scope.error = {};
+module.exports = ['$routeParams', '$location', 'Auth', 'Threads',
+  function($routeParams, $location, Auth, Threads) {
+    this.loggedIn = Auth.isAuthenticated;
+    this.error = {};
 
     Auth.checkAuthentication();
 
-    $scope.thread = {
+    this.thread = {
       board_id: $routeParams.boardId,
       encodedBody: '',
       body: '',
       title: ''
     };
 
-    $scope.updateText = function(encoded, text) {
-      $scope.thread.encodedBody = encoded;
-      $scope.thread.body = text;
+    this.updateText = function(encoded, text) {
+      this.thread.encodedBody = encoded;
+      this.thread.body = text;
     };
 
-    $scope.save = function(post) {
+    this.save = function(post) {
       // create a new thread and post
-      $scope.thread.body = $scope.thread.encodedBody;
-      Threads.save($scope.thread).$promise
+      this.thread.body = this.thread.encodedBody;
+      Threads.save(this.thread).$promise
        .then(function(thread) {
         $location.path('/threads/' + thread.thread_id + '/posts');
       })
       .catch(function(err) {
-        $scope.error.post = {};
-        $scope.error.post.found = true;
-        $scope.error.post.message = err.data.message;
+        this.error.post = {};
+        this.error.post.found = true;
+        this.error.post.message = err.data.message;
       });
     };
   }

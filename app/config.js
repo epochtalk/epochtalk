@@ -30,17 +30,67 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
 
     $routeProvider.when('/boards/:boardId', {
       controller: 'BoardCtrl',
-      template: fs.readFileSync(__dirname + '/templates/board.html')
+      controllerAs: 'BoardCtrl',
+      reloadOnSearch: false,
+      template: fs.readFileSync(__dirname + '/templates/board.html'),
+      resolve: {
+        board: ['Boards', '$route', function(Boards, $route) {
+          return Boards.get({ id: $route.current.params.boardId});
+        }],
+        threads: ['Threads', '$route', function(Threads, $route) {
+          var query = {
+            board_id: $route.current.params.boardId,
+            limit: Number($route.current.params.limit) || 10,
+            page: Number($route.current.params.page) || 1
+          };
+          return Threads.byBoard(query);
+        }],
+        page: ['$route', function($route) {
+          return Number($route.current.params.page) || 1;
+        }],
+        threadLimit: ['$route', function($route) {
+          // TODO: this needs to be grabbed from user settings
+          return Number($route.current.params.limit) || 10;
+        }],
+        postLimit: [function() {
+          // TODO: this needs to be grabbed from user settings
+          return 10;
+        }]
+      }
     });
 
     $routeProvider.when('/boards/:boardId/threads/new', {
       controller: 'NewThreadCtrl',
+      controllerAs: 'NewThreadCtrl',
       template: fs.readFileSync(__dirname + '/templates/newThread.html')
     });
 
     $routeProvider.when('/threads/:threadId/posts', {
       controller: 'PostsCtrl',
-      template: fs.readFileSync(__dirname + '/templates/posts.html')
+      controllerAs: 'PostsCtrl',
+      template: fs.readFileSync(__dirname + '/templates/posts.html'),
+      reloadOnSearch: false,
+      resolve: {
+        thread: ['Threads', '$route', function(Threads, $route) {
+          return Threads.get({ id: $route.current.params.threadId });
+        }],
+        posts: ['Posts', '$route', function(Posts, $route) {
+          var query = {
+            thread_id: $route.current.params.threadId,
+            limit: Number($route.current.params.limit) || 10,
+            page: Number($route.current.params.page) || 1
+          };
+          return Posts.byThread(query);
+        }],
+        page: ['$route', function($route) {
+          return Number($route.current.params.page) || 1;
+        }],
+        limit: ['$route', function($route) {
+          // TODO: this needs to be grabbed from user settings
+          if ($route.current.params.limit === 'all') { return 'all'; }
+          else { return Number($route.current.params.limit) || 10; }
+        }]
+      }
     });
 
     $routeProvider.when('/profiles/:username', {
