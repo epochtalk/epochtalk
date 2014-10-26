@@ -15,7 +15,7 @@
     <!-- Page Header and Edit Button -->
     <div class="row">
       <div class="small-9 columns">
-        <h3>{{ profiles.displayUsername }}'s Profile</h3>
+        <h3 ng-bind="(profiles.displayUsername) + '\'s Profiles'"></h3>
       </div>
       <div class="small-3 columns" ng-If="profiles.user.editable && profiles.editMode === false">
         <button class="button small radius right" ng-click="profiles.editMode = true">
@@ -28,68 +28,83 @@
     <div ng-If="profiles.editMode === false">
       <div class="panel">
         <div>
-          Name: {{ profiles.user.name }}
+          Name:
+          <span ng-bind="profiles.user.name"></span>
         </div>
         
         <div>
-          Posts: {{ profiles.user.posts }}
+          Posts: 
+          <span ng-bind="profiles.user.posts"></span>
         </div>
 
         <div>
-          Position: {{ profiles.user.postion }}
+          Position: 
+          <span ng-bind="profiles.user.position"></span>
         </div>
         
         <div>
-          Date Registered: {{ profiles.user.created_at | date:'medium' }}
+          Date Registered: 
+          <span ng-bind="profiles.user.created_at | date:'medium'"></span>
         </div>
 
         <div>
-          Last Active: {{ profiles.user.updated_at | date:'medium' }}
+          Last Active: 
+          <span ng-bind="profiles.user.updated_at | date:'medium'"></span>
         </div>
       </div>
 
       <div class="panel">
         <div>
-          Email: {{ profiles.user.email }}
+          Email: 
+          <span ng-bind="profiles.user.email"></span>
         </div>
 
         <div>
-          Website: {{ profiles.user.website }}
+          Website: 
+          <span ng-bind="profiles.user.website"></span>
         </div>
 
         <div>
-          Current Status: {{ profiles.user.status }}
+          Current Status: 
+          <span ng-bind="profiles.user.status"></span>
         </div>
 
         <div>
-          Bitcoin Address(s): {{ profiles.user.btcAddress }}
+          Bitcoin Address(s): 
+          <span ng-bind="profiles.user.btcAddress"></span>
         </div>
       </div>
 
       <div class="panel">
         <div>
-          Gender: {{ profiles.user.gender }}
+          Gender: 
+          <span ng-bind="profiles.user.gender"></span>
         </div>
 
         <div>
-          Age: {{ profiles.user.dob }}
+          Age: 
+          <span ng-bind="profiles.user.dob"></span>
         </div>
 
         <div>
-          Location: {{ profiles.user.location }}
+          Location: 
+          <span ng-bind="profiles.user.location"></span>
         </div>
 
         <div>
-          Local Time: {{ Date.now() | date:'medium' }}
+          Local Time: 
+          <span ng-bind="Date.now() | date:'medium'"></span>
         </div>
 
         <div>
-          Language: {{ profiles.user.language }}
+          Language: 
+          <span ng-bind="profiles.user.language"></span>
         </div>
       </div>
 
       <div class="panel">
-        Signature: {{ profiles.user.signature }}
+        Signature: 
+        <span ng-bind="profiles.user.signature"></span>
       </div>
     </div>
 
@@ -176,9 +191,7 @@
 
         <div class="row" ng-if="profiles.error.status">
           <div class="small-12 columns">
-            <div class="alert-box alert radius">
-              {{ profiles.error.message }}
-            </div>
+            <div class="alert-box alert radius" ng-bind="profiles.error.message"></div>
           </div>
         </div>
       </div>

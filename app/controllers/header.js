@@ -1,30 +1,31 @@
-module.exports = ['$scope', '$route', '$timeout', 'Auth', 'BreadcrumbSvc',
-  function($scope, $route, $timeout, Auth, BreadcrumbSvc) {
-    $scope.loggedIn = Auth.isAuthenticated;
-    $scope.currentUser = Auth.currentUser;
-    $scope.user = {};
+module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
+  function($route, $timeout, Auth, BreadcrumbSvc) {
+    var ctrl = this;
+    this.loggedIn = Auth.isAuthenticated;
+    this.currentUser = Auth.currentUser;
+    this.user = {};
 
     Auth.checkAuthentication();
 
-    $scope.breadcrumbs = BreadcrumbSvc.crumbs;
+    this.breadcrumbs = BreadcrumbSvc.crumbs;
 
-    $scope.enterLogin = function(keyEvent) {
+    this.enterLogin = function(keyEvent) {
       if (keyEvent.which === 13) {
-        $scope.login();
+        ctrl.login();
       }
     };
 
-    $scope.login = function() {
-      Auth.login($scope.user,
+    this.login = function() {
+      Auth.login(ctrl.user,
         function(data) {
-          $scope.user.username = '';
-          $scope.user.password = '';
+          ctrl.user.username = '';
+          ctrl.user.password = '';
           $timeout(function() { $route.reload(); });
         }
       );
     };
 
-    $scope.logout = function() {
+    this.logout = function() {
       Auth.logout(function(data) {
         $timeout(function() { $route.reload(); });
       });

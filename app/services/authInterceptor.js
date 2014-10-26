@@ -1,7 +1,7 @@
 'use strict';
 /* jslint node: true */
 
-module.exports = ['$rootScope', '$q', '$window', function ($rootScope, $q, $window) {
+module.exports = ['$q', '$window', function ($q, $window) {
   return {
     request: function (config) {
       config.headers = config.headers || {};
