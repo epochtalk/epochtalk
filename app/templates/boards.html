@@ -1,12 +1,10 @@
-
-
-<div class="category" ng-repeat="cat in categorizedBoards">
+<div class="category" ng-repeat="cat in boards.categorizedBoards">
 
   <!-- Category Title -->
   <div class="row">
     <a class="anchor-offset" id="{{cat.name | replace:' ':'-' | lowercase }}-{{$index+1}}"></a>
     <div class="small-12 columns category-title">
-      <h3>{{ cat.name }}</h3>
+      <h3 ng-bind="cat.name"></h3>
       <div class="thin-dotted-underline"></div>
     </div>
   </div>
@@ -19,9 +17,7 @@
       <div class="small-12 medium-7 columns">
         <!-- Board Name -->
         <div class="category-board-name">
-          <a ng-href="/boards/{{board.id}}">
-            {{ board.name }}
-          </a>
+          <a ng-href="/boards/{{board.id}}" ng-bind="board.name"></a>
         </div>
         <!-- Moderators -->
         <div class="moderators">
@@ -32,14 +28,13 @@
         </div>
         <!-- Board Description -->
         <div class="category-board-desc">
-          <span>{{ board.description }}</span>
+          <span ng-bind="board.description"></span>
         </div>
         <!-- Child Boards -->
         <span class="child-boards" ng-if="board.children.length > 0">
           <strong>Child Boards:</strong>
           <span ng-repeat="child in board.children">
-            <a ng-href="/boards/{{child.id}}">{{ child.name }}</a>
-            {{$last ? '' : ', '}}
+            <a ng-href="/boards/{{child.id}}" ng-bind="child.name"></a>{{$last ? '' : ', '}}
           </span>
         </span>
       </div>
@@ -47,10 +42,10 @@
       <!-- Board Posts and Threads -->
       <div class="small-12 medium-2 columns text-info text-center">
         <div>
-          <strong>{{board.total_post_count}}</strong> posts
+          <strong ng-bind="board.total_post_count"></strong> posts
         </div>
         <div>
-          <strong>{{board.total_thread_count}}</strong> threads
+          <strong ng-bind="board.total_thread_count"></strong> threads
         </div>
       </div>
 
@@ -58,17 +53,13 @@
       <div class="small-12 medium-3 columns text-info">
         <div>
           Last post by
-          <a ng-href="/profiles/{{ board.last_post_username }}">{{ board.last_post_username }}</a>
+          <a ng-href="/profiles/{{ board.last_post_username }}" ng-bind="board.last_post_username"></a>
         </div>
         <div>
           in thread
-          <a ng-href="/threads/{{board.last_thread_id}}/posts">
-            {{ board.last_thread_title }}
-          </a>
+          <a ng-href="/threads/{{board.last_thread_id}}/posts" ng-bind="board.last_thread_title"></a>
         </div>
-        <div>
-          {{board.last_post_created_at | date:'medium'}}
-        </div>
+        <div ng-bind="board.last_post_created_at | date:'medium' "></div>
       </div>
 
     </div>

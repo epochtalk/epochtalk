@@ -1,11 +1,9 @@
-module.exports = ['$scope', '$timeout', '$anchorScroll', 'Boards',
-  function($scope, $timeout, $anchorScroll, Boards) {
-    Boards.query().$promise
-    .then(function(categorizedBoards) {
-      $scope.categorizedBoards = categorizedBoards;
-      $timeout(function() {
-        $anchorScroll();
-      });
+module.exports = ['$timeout', '$anchorScroll', 'boards',
+  function($timeout, $anchorScroll, boards) {
+    this.categorizedBoards = boards;
+    console.log(boards);
+    $timeout(function() {
+      $anchorScroll();
     });
   }
 ];

@@ -1,16 +1,17 @@
-module.exports = ['$scope', '$location', '$rootScope', 'Auth',
-  function($scope, $location, $rootScope, Auth) {
-    $scope.user = {};
-    $scope.error = {};
+module.exports = ['$location', 'Auth',
+  function($location, Auth) {
+    var ctrl = this;
+    this.user = {};
+    this.error = {};
 
-    $scope.register = function() {
-      $scope.error = {};
+    this.register = function() {
+      ctrl.error = {};
 
-      Auth.register($scope.user,
+      Auth.register(this.user,
         function() { $location.path('/'); },
         function(err) {
-          $scope.error.status = true;
-          $scope.error.message = err.data.message;
+          ctrl.error.status = true;
+          ctrl.error.message = err.data.message;
         }
       );
     };
