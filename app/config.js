@@ -7,19 +7,19 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
   function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider.when('/', {
       controller: 'MainCtrl',
-      controllerAs: 'main',
+      controllerAs: 'MainCtrl',
       template: fs.readFileSync(__dirname + '/templates/main.html')
     });
 
     $routeProvider.when('/register', {
       controller: 'RegistrationCtrl',
-      controllerAs: 'register',
+      controllerAs: 'RegistrationCtrl',
       template: fs.readFileSync(__dirname + '/templates/registration.html')
     });
 
     $routeProvider.when('/boards', {
       controller: 'BoardsCtrl',
-      controllerAs: 'boards',
+      controllerAs: 'BoardsCtrl',
       template: fs.readFileSync(__dirname + '/templates/boards.html'),
       resolve: {
         boards: [ 'Boards', function(Boards) {

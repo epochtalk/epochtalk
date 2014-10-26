@@ -9,7 +9,7 @@
     <form name="form" class="css-form" novalidate>
       <div class='reg-input-section'>
         <label>Email
-          <input type="email" name="email" ng-model="register.user.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Email" required>
+          <input type="email" name="email" ng-model="RegistrationCtrl.user.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Email" required>
           <small class="label error" ng-if="form.email.$error.email">
             Email is not valid
           </small>
@@ -27,7 +27,7 @@
 
       <div class="reg-input-section">   
         <label>Username
-          <input type="text" name="username" ng-model="register.user.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" required>
+          <input type="text" name="username" ng-model="RegistrationCtrl.user.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" required>
           <small class="label error" ng-if="form.username.$error.unique">
             Username Already Taken
           </small>
@@ -42,14 +42,14 @@
       
       <div class="reg-input-section">   
         <label>Password
-          <input type="password" name="password" ng-model="register.user.password" placeholder="Password" required>
+          <input type="password" name="password" ng-model="RegistrationCtrl.user.password" placeholder="Password" required>
           <small class="label error" ng-if="form.password.$touched && form.password.$error.required">
             Password is Required
           </small>
-          <small class="label error" ng-if="!form.password.$error.required && register.user.password !== register.user.confirmation">
+          <small class="label error" ng-if="!form.password.$error.required && RegistrationCtrl.user.password !== RegistrationCtrl.user.confirmation">
             Password and Confirmation do not match
           </small>
-          <small class="label success" ng-if="register.user.password === register.user.confirmation && !form.password.$error.required">
+          <small class="label success" ng-if="RegistrationCtrl.user.password === RegistrationCtrl.user.confirmation && !form.password.$error.required">
             Looks Good
           </small>
         </label>
@@ -57,14 +57,14 @@
       
       <div class="reg-input-section">
         <label>Password Confirmation
-          <input type="password" name="confirmation" ng-model="register.user.confirmation" placeholder="Password Confirmation" required>
+          <input type="password" name="confirmation" ng-model="RegistrationCtrl.user.confirmation" placeholder="Password Confirmation" required>
           <small class="label error" ng-if="form.confirmation.$touched && form.confirmation.$error.required">
             Confirmation is Required
           </small>
-          <small class="label error" ng-if="!form.confirmation.$error.required && register.user.password !== register.user.confirmation">
+          <small class="label error" ng-if="!form.confirmation.$error.required && RegistrationCtrl.user.password !== RegistrationCtrl.user.confirmation">
             Password and Confirmation do not match
           </small>
-          <small class="label success" ng-if="register.user.password === register.user.confirmation && !form.confirmation.$error.required">
+          <small class="label success" ng-if="RegistrationCtrl.user.password === RegistrationCtrl.user.confirmation && !form.confirmation.$error.required">
             Looks Good
           </small>
         </label>
@@ -72,10 +72,10 @@
     </form>
 
     <div class="reg-input-section">
-      <button class="button expand" ng-click="register()" ng-disabled="form.$invalid || register.user.password !== register.user.confirmation">
-        Register
+      <button class="button expand" ng-click="RegistrationCtrl()" ng-disabled="form.$invalid || RegistrationCtrl.user.password !== RegistrationCtrl.user.confirmation">
+        RegistrationCtrl
       </button>
-      <small class="error" ng-if="error.status" ng-bind="register.error.message"></small>
+      <small class="error" ng-if="error.status" ng-bind="RegistrationCtrl.error.message"></small>
     </div>
 
   </div>

@@ -1,4 +1,4 @@
-<div class="category" ng-repeat="cat in boards.categorizedBoards">
+<div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards track by cat.id">
 
   <!-- Category Title -->
   <div class="row">
@@ -10,7 +10,7 @@
   </div>
 
   <!-- Boards in Category -->
-  <div ng-repeat="board in cat.boards">
+  <div ng-repeat="board in cat.boards track by board.id">
     <div class="row category-board">
 
       <!-- Board Info -->
