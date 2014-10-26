@@ -28,7 +28,7 @@ exports.byType = {
         var nextType, nextId;
         if (curType === type.category) { // Category
           var catName = obj[id-1].name;
-          var anchorId = '/##' + catName.split(' ').join('-') + '-' + id;
+          var anchorId = '/boards#' + catName.split(' ').join('-') + '-' + id;
           crumbs.push({ label: catName, url: anchorId.toLowerCase()});
         }
         else if (curType === type.board) { // Board

@@ -4,10 +4,10 @@ var _ = require('lodash');
 
 module.exports = ['$routeParams', '$location', 'Breadcrumbs',
 function ($routeParams, $location, Breadcrumbs) {
-  var breadcrumbs; // stores array of breadcrumb objects
+  var breadcrumbsStore; // stores array of breadcrumb objects
 
   var pathLookup = {
-    home:       { url: '/',                   label: 'Home' },
+    home:       { url: '/boards',             label: 'Home' },
     register:   { url: '/register',           label: 'Registration' },
     profiles:   {                             label: 'Profiles' },
     admin:      { url: '/admin',              label: 'Administration' },
@@ -16,7 +16,7 @@ function ($routeParams, $location, Breadcrumbs) {
 
   return {
     update: function() {
-      breadcrumbs = [ pathLookup.home ];
+      var breadcrumbs = [ pathLookup.home ];
       var path = $location.path();
       var routeParams = $routeParams;
       // Maps routeParams key to breadcrumb type
@@ -34,6 +34,7 @@ function ($routeParams, $location, Breadcrumbs) {
         Breadcrumbs.getBreadcrumbs({ id: routeParams[idKey], type: keyToType[idKey] },
         function(partialCrumbs) {
           breadcrumbs = breadcrumbs.concat(partialCrumbs);
+          breadcrumbsStore = breadcrumbs;
         });
       }
       else { // routeParams is empty, route is static
@@ -43,8 +44,9 @@ function ($routeParams, $location, Breadcrumbs) {
           var crumb = pathLookup[id] || { label: id };
           breadcrumbs.push(crumb);
         });
+        breadcrumbsStore = breadcrumbs;
       }
     },
-    crumbs: function() { return breadcrumbs; }
+    crumbs: function() { return breadcrumbsStore; }
   };
 }];
