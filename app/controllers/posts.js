@@ -62,6 +62,7 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
       .then(function(data) {
         ctrl.totalPosts++; // Increment post count and recalculate pageCount
         calculatePages();
+        $route.reload();
         gotoAnchor(data.id, true);
       })
       .catch(function(response) {
@@ -153,9 +154,6 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
     // pagination 
 
     $scope.$on('$routeUpdate', function(event, route) {
-      console.log("routeUpdate");
-      console.log(route.params.page);
-
       var query = {
         thread_id: $route.current.params.threadId,
         limit: route.params.limit,
