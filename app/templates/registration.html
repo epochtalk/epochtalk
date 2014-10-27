@@ -72,8 +72,8 @@
     </form>
 
     <div class="reg-input-section">
-      <button class="button expand" ng-click="RegistrationCtrl()" ng-disabled="form.$invalid || RegistrationCtrl.user.password !== RegistrationCtrl.user.confirmation">
-        RegistrationCtrl
+      <button class="button expand" ng-click="RegistrationCtrl.register()" ng-disabled="form.$invalid || RegistrationCtrl.user.password !== RegistrationCtrl.user.confirmation">
+        Register
       </button>
       <small class="error" ng-if="error.status" ng-bind="RegistrationCtrl.error.message"></small>
     </div>
