@@ -35,7 +35,7 @@
   "dependencies": {
     "async": "^0.7.0",
     "bbcode-parser": "git://github.com/epochtalk/bbcode-parser",
-    "bcrypt": "^0.8.0",
+    "bcrypt": "^0.7.8",
     "blankie": "^0.1.2",
     "bluebird": "^2.3.2",
     "bunyan": "^0.22.3",
