@@ -1,12 +1,12 @@
 module.exports = ['$scope', '$route', 'Auth', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
   function($scope, $route, Auth, Threads, board, threads, page, threadLimit, postLimit) {
     var ctrl = this;
-    this.newThreadUrl = '/boards/' + board.id + '/threads/new';
     this.loggedIn = Auth.isAuthenticated; // check Auth
     this.page = page; // this page
 
     board.$promise.then(function(board) {
       ctrl.board = board;
+      ctrl.newThreadUrl = '/boards/' + board.id + '/threads/new';
       ctrl.pageCount = Math.ceil(board.thread_count / threadLimit);
     });
     

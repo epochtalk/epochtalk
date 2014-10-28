@@ -15,7 +15,7 @@
   <div class="small-12 columns">
     <!-- editor -->
     <label>Title:</label>
-    <input type="text" ng-model="NewThreadCtrl.thread.title">
+    <input type="text" ng-model="NewThreadCtrl.thread.title" required>
     <div class="row">
       <div class="small-6 columns">
         <label>Reply:</label>
@@ -27,6 +27,6 @@
     <div class="editor-container">
       <epochtalk-editor class="editor" text="NewThreadCtrl.thread.encodedBody" save-text="NewThreadCtrl.updateText(encoded, text)"></epochtalk-editor>
     </div>
-    <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="NewThreadCtrl.thread.title && NewThreadCtrl.thread.body">Submit</button>
+    <button class="button expand" ng-click="NewThreadCtrl.save()">Submit</button>
   </div>
 </div>

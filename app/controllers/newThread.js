@@ -1,5 +1,6 @@
 module.exports = ['$routeParams', '$location', 'Auth', 'Threads',
   function($routeParams, $location, Auth, Threads) {
+    var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
     this.error = {};
 
@@ -13,21 +14,21 @@ module.exports = ['$routeParams', '$location', 'Auth', 'Threads',
     };
 
     this.updateText = function(encoded, text) {
-      this.thread.encodedBody = encoded;
-      this.thread.body = text;
+      ctrl.thread.encodedBody = encoded;
+      ctrl.thread.body = text;
     };
 
     this.save = function(post) {
       // create a new thread and post
-      this.thread.body = this.thread.encodedBody;
-      Threads.save(this.thread).$promise
+      ctrl.thread.body = ctrl.thread.encodedBody;
+      Threads.save(ctrl.thread).$promise
        .then(function(thread) {
         $location.path('/threads/' + thread.thread_id + '/posts');
       })
       .catch(function(err) {
-        this.error.post = {};
-        this.error.post.found = true;
-        this.error.post.message = err.data.message;
+        ctrl.error.post = {};
+        ctrl.error.post.found = true;
+        ctrl.error.post.message = err.data.message;
       });
     };
   }
