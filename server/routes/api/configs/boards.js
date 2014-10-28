@@ -50,9 +50,7 @@ exports.allCategories = {
   handler: function(request, reply) {
     core.boards.allCategories()
     .then(function(boards) {
-      if (boards.length > 0) {
-        reply(boards);
-      }
+      reply(boards);
     })
     .catch(function(err) { reply(Hapi.error.internal()); });
   }
@@ -66,7 +64,6 @@ exports.updateCategories = {
       reply(board);
     })
     .catch(function(err) {
-      console.log(err);
       reply(err.message);
     });
   },
