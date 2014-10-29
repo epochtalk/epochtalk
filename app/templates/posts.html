@@ -48,7 +48,7 @@
             </div>
             <!-- Editor -->
             <div class="editor-container">
-              <epochtalk-editor body="post.body" encoded-body="{{post.encodedBody}}" class="editor"></epochtalk-editor>
+              <epochtalk-editor body="post.body" encoded-body="post.encodedBody" class="editor"></epochtalk-editor>
             </div>
           </div>
         </form>
@@ -86,7 +86,7 @@
         </div>
         <!-- Editor -->
         <div class="editor-container">
-          <epochtalk-editor body="PostsCtrl.newPost.body" encoded-body="{{PostsCtrl.newPost.encodedBody}}" class="editor"></epochtalk-editor>
+          <epochtalk-editor body="PostsCtrl.newPost.body" encoded-body="PostsCtrl.newPost.encodedBody" reset="PostsCtrl.resetEditor" class="editor"></epochtalk-editor>
         </div>
       </form>
       <div class="editor-button-container">

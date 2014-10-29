@@ -7,7 +7,8 @@ module.exports = function() {
     restrict: 'E',
     scope: {
       body: '=',
-      encodedBody: '@'
+      encodedBody: '=',
+      reset: '='
     },
     link: function(scope, element, attrs, ctrl) {
       // Find relevant HTML Elements
@@ -19,7 +20,7 @@ module.exports = function() {
       var rawPreviewElement = htmlElement.getElementsByClassName('ee-bbcode-preview')[0];
       var previewElement = angular.element(rawPreviewElement);
 
-      // medium options
+      // Medium Editor and options
       var options = {
         "targetBlank":true,
         "buttonLabels":"fontawesome",
@@ -51,18 +52,31 @@ module.exports = function() {
         rawEditorElement.scrollTop = scrollTop;
       };
 
-      // on load ng-model body to editor and preview
-      if (scope.encodedBody && scope.encodedBody.length > 0) {
-        editorElement.html(scope.encodedBody);
-      }
-      else { editorElement.html(scope.body); }
-      var processed = bbcodeParser.process({text: editorElement.html()}).html;
-      previewElement.html(processed);
-
+      // bind all the things
       editorElement.on('input', onChange);
       editorElement.on('blur', onChange);
       editorElement.on('scroll', onEditorScroll);
       previewElement.on('scroll', onPreviewScroll);
+
+      // directive initialization 
+      var init = function() {
+        // on load ng-model body to editor and preview
+        if (scope.encodedBody && scope.encodedBody.length > 0) {
+          editorElement.html(scope.encodedBody);
+        }
+        else { editorElement.html(scope.body); }
+        var processed = bbcodeParser.process({text: editorElement.html()}).html;
+        previewElement.html(processed);
+      };
+      init();
+      
+      // reset switch
+      scope.$watch('reset', function(newValue, oldValue) {
+        if (newValue === true) {
+          init();
+          scope.reset = false;
+        }
+      });
     },
     template: fs.readFileSync(__dirname + '/../../templates/directives/editor.html')
   };

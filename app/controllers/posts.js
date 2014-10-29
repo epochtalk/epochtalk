@@ -1,11 +1,14 @@
 module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 'Auth', 'Posts', 'thread', 'posts', 'page', 'limit',
   function($scope, $timeout, $location, $route, $anchorScroll, Auth, Posts, thread, posts, page, limit) {
     var ctrl = this;
-    this.loggedIn = Auth.isAuthenticated;
-    var tempPosts = {};
-    this.page = page;
-    this.limit = limit;
+    this.loggedIn = Auth.isAuthenticated; // used to check auth
+    var tempPosts = {}; // contains post content while editing
+    this.page = page; // current page
+    this.limit = limit; // posts per page
+    this.resetEditor = true; // used to reset new post editor
 
+    // set the thread, newPost.thread_id and title
+    // and calculate the total number of pages
     thread.$promise.then(function(thread) {
       ctrl.thread = thread;
       ctrl.newPost = { title: 'Re: ' + thread.title, thread_id: thread.id };
@@ -13,12 +16,17 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
       calculatePages();
     });
 
+    // define all the posts
     posts.$promise.then(function(posts) {
       ctrl.posts = posts;
     });
 
+    // scroll to any hash in the url
     $timeout(function() { $anchorScroll(); });
 
+    // figure out how many pages there should be in this thread
+    // Should be called only after the total number of posts this thread
+    // has is already determined or recalculated.
     var calculatePages = function() {
       var count;
       if (ctrl.limit === 'all') { count = Number(ctrl.totalPosts); }
@@ -26,38 +34,29 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
       ctrl.pageCount = Math.ceil(ctrl.totalPosts / count);
     };
 
-    var gotoAnchor = function(id, jumpToLastPage) {
-      $timeout(function() {
-        if (jumpToLastPage) { $location.search('page', ctrl.pageCount); }
-        $location.hash(id);
-        $anchorScroll();
-      }, 100);
-    };
-
     // new post methods
 
     this.savePost = function() {
       delete ctrl.newPost.error;
 
-      // error check input
-      if (!this.newPost.title || this.newPost.title.length === 0) {
-        this.newPost.error = {};
-        this.newPost.error.message = 'No Title Found';
-        return;
-      }
-      if (!this.newPost.body || this.newPost.body.length === 0) {
-        this.newPost.error = {};
-        this.newPost.error.message = 'No Post Body Found';
-        return;
-      }
-
-      // use input text when saving post
-      Posts.save(this.newPost).$promise
-      .then(function(data) {
-        ctrl.totalPosts++; // Increment post count and recalculate pageCount
+      Posts.save(ctrl.newPost).$promise
+      .then(function(post) {
+        // Increment post count and recalculate ctrl.pageCount
+        ctrl.totalPosts++;
         calculatePages();
-        $route.reload();
-        gotoAnchor(data.id, true);
+        
+        // clean out new post
+        ctrl.newPost.body = '';
+        ctrl.newPost.encodedBody = '';
+        ctrl.resetEditor = true; // reset editor
+
+        // Go to last page in the thread
+        // and scroll to new post
+        $timeout(function() {
+          $location.search('page', ctrl.pageCount);
+          $location.hash(post.id); // set post id in url hash for scrolling
+          $anchorScroll();
+        }, 50);
       })
       .catch(function(response) {
         var error = '';
@@ -88,31 +87,24 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
     };
 
     this.saveEditPost = function(index) {
-      var editPost = this.posts[index];
+      var editPost = this.posts[index]; // get post content
+      delete editPost.error; // delete any errors for this post
 
-      // check input
-      delete editPost.error;
-      if (!editPost.title || editPost.title.length === 0) {
-        this.posts[index].error = {};
-        this.posts[index].error.message = 'No Title Found';
-        return;
-      }
-      if (!editPost.body || editPost.body.length === 0) {
-        this.posts[index].error = {};
-        this.posts[index].error.message = 'No Post Body Found';
-        return;
-      }
-
+      // create updated version of this post
       var saveEditPost = {
         title: editPost.title,
         body: editPost.body,
         thread_id: editPost.thread_id
       };
 
+      // away we go!
       Posts.update({id: editPost.id}, saveEditPost).$promise
       .then(function(data) {
-        $location.hash(data.id);
-        $route.reload();
+        // remove temp post since post has been saved
+        delete tempPosts[editPost.id];
+
+        // switch off edit mode
+        editPost.editMode = false;
       })
       .catch(function(response) {
         var error = '';
@@ -129,10 +121,14 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
 
     this.cancelEditPost = function(index) {
       var cancelPost = this.posts[index];
+
+      // replace post content with content from tempPost
       this.posts[index].title = tempPosts[cancelPost.id].title;
       this.posts[index].body = tempPosts[cancelPost.id].body;
       this.posts[index].encodedBody = tempPosts[cancelPost.id].encodedBody;
-      this.posts[index].editMode = false;
+      this.posts[index].editMode = false; // turn off editing
+
+      delete tempPosts[cancelPost.id]; // delete this content in tempPosts
     };
 
     // pagination 
