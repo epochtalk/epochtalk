@@ -3,6 +3,8 @@ module.exports = ['$scope', '$route', 'Auth', 'Threads', 'board', 'threads', 'pa
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated; // check Auth
     this.page = page; // this page
+    this.postLimit = postLimit;
+    this.threadLimit = threadLimit;
 
     board.$promise.then(function(board) {
       ctrl.board = board;
@@ -47,15 +49,25 @@ module.exports = ['$scope', '$route', 'Auth', 'Threads', 'board', 'threads', 'pa
 
     // pagination
 
-    $scope.$on('$routeUpdate', function(event, route) {
+    $scope.$on('$routeUpdate', function(event, $route) {
       var query = {
-        board_id: $route.current.params.boardId,
-        limit: route.params.limit,
-        page: route.params.page
+        board_id: $route.params.boardId,
+        limit: $route.params.limit,
+        page: $route.params.page
       };
       return Threads.byBoard(query).$promise.then(function(threads) {
+        // update page number
+        ctrl.page = Number($route.params.page);
+        ctrl.threadLimit = Number($route.params.limit) || 10;
+
+        // update thread with page count
         ctrl.threads = threads;
-        ctrl.page = Number(route.params.page);
+        threads.forEach(function(thread) {
+          thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
+          getPageKeysForThread(thread);
+          // user based UI
+          if (thread.has_new_post) { thread.title_class = 'bold-title'; }
+        });
       });
     });
   }
