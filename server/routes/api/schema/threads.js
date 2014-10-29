@@ -5,8 +5,8 @@ module.exports = {
     var threadSchema = Joi.object().keys({
       title: Joi.string().min(1).max(255).required(),
       body: Joi.string().min(1).required(), // 1 char minimum post length
-      encodedBody: Joi.string().min(1),
-      board_id: Joi.string()
+      encodedBody: Joi.string().allow(''),
+      board_id: Joi.string().required()
     });
     Joi.validate(thread, threadSchema, next);
   },

@@ -27,48 +27,74 @@
 
       <!-- private edit view of post -->
       <div class="editable" ng-if="post.editMode">
-        <div class="post-title">
-          <label>Title:</label>
-          <input type="text" ng-model="post.title">
-          <div class="row">
-            <div class="small-6 columns">
-              <label>Reply:</label>
+        <!-- Editor -->
+        <form name="form" class="css-form editor-form" novalidate>
+          <!-- Title -->
+          <div class="post-title">
+            <label>Title:
+              <input type="text" name="title" placeholder="Title" ng-model="post.title" required>
+              <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
+                Title is Required
+              </small>
+            </label>
+            <!-- Body -->
+            <div class="row">
+              <div class="small-6 columns">
+                <label>Reply:</label>
+              </div>
+              <div class="small-6 columns" class="preview-title">
+                <label>Preview:</label>
+              </div>
             </div>
-            <div class="small-6 columns" class="post-preview-lbl">
-              <label>Preview:</label>
+            <!-- Editor -->
+            <div class="editor-container">
+              <epochtalk-editor body="post.body" encoded-body="{{post.encodedBody}}" class="editor"></epochtalk-editor>
             </div>
           </div>
-          <div class="post-editor-container">
-            <epochtalk-editor text="post.encodedBody" save-text="PostsCtrl.saveEditText(post, encoded, text)" class="post-editor"></epochtalk-editor>
-          </div>
+        </form>
+        <div class="editor-button-container">
+          <button class="button tiny" ng-click="PostsCtrl.cancelEditPost($index)">
+            Close
+          </button>
+          <button class="button tiny" ng-click="PostsCtrl.saveEditPost($index)" ng-disabled="form.title.$error.required || !post.body.length > 0">
+            Save
+          </button>
+          <span class="label alert" ng-if="post.error" ng-bind="post.error.message"></span>
         </div>
-        <button class="button tiny" ng-click="PostsCtrl.cancelEditPost($index)">
-          Close
-        </button>
-        <button class="button tiny" ng-click="PostsCtrl.saveEditPost($index)">
-          Save
-        </button>
-        <span class="label alert" ng-if="post.error" ng-bind="post.error.message"></span>
       </div>
     </div>
 
-    <!-- editor -->
+    <!-- Editor if logged in -->
     <div ng-if="PostsCtrl.loggedIn()" class="post-editor-auth">
-      <label>Title:</label>
-      <input type="text" ng-model="PostsCtrl.newPost.title">
-      <div class="row">
-        <div class="small-6 columns">
-          <label>Reply:</label>
+      <!-- editor -->
+      <form name="form" class="css-form editor-form" novalidate>
+        <!-- Title -->
+        <label>Title:
+          <input type="text" name="title" placeholder="Title" ng-model="PostsCtrl.newPost.title" required>
+          <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
+            Title is Required
+          </small>
+        </label>
+        <!-- Body -->
+        <div class="row">
+          <div class="small-6 columns">
+            <label>Reply:</label>
+          </div>
+          <div class="small-6 columns" class="preview-title">
+            <label>Preview:</label>
+          </div>
         </div>
-        <div class="small-6 columns" class="post-preview-lbl">
-          <label>Preview:</label>
+        <!-- Editor -->
+        <div class="editor-container">
+          <epochtalk-editor body="PostsCtrl.newPost.body" encoded-body="{{PostsCtrl.newPost.encodedBody}}" class="editor"></epochtalk-editor>
         </div>
+      </form>
+      <div class="editor-button-container">
+        <button class="button expand" ng-click="PostsCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsCtrl.newPost.body.length > 0">
+          Send
+        </button>
+        <span class="label alert" ng-if="PostsCtrl.newPost.error" ng-bind="PostsCtrl.newPost.error.message"></span>
       </div>
-      <div class="post-editor-container">
-        <epochtalk-editor text="PostsCtrl.newPost.encodedBody" save-text="PostsCtrl.saveText(encoded, text)" class="post-editor"></epochtalk-editor>
-      </div>
-      <button class="button expand" ng-click="PostsCtrl.savePost()">Send</button>
-      <span class="label alert" ng-if="PostsCtrl.newPost.error" ng-bind="PostsCtrl.newPost.error.message"></span>
     </div>
 
   </div>

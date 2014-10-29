@@ -36,11 +36,6 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
 
     // new post methods
 
-    this.saveText = function(encoded, text) {
-      ctrl.newPost.encodedBody = encoded;
-      ctrl.newPost.body = text;
-    };
-
     this.savePost = function() {
       delete ctrl.newPost.error;
 
@@ -57,7 +52,6 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
       }
 
       // use input text when saving post
-      this.newPost.body = this.newPost.encodedBody;
       Posts.save(this.newPost).$promise
       .then(function(data) {
         ctrl.totalPosts++; // Increment post count and recalculate pageCount
@@ -89,18 +83,8 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
       tempPosts[editPost.id].body = editPost.body;
       tempPosts[editPost.id].encodedBody = editPost.encodedBody;
 
-      // check encodedBody exists, if not, use body for editing
-      if (!editPost.encodedBody) {
-        editPost.encodedBody = editPost.body;
-      }
-
       // turn on editing
       this.posts[index].editMode = true;
-    };
-
-    this.saveEditText = function(post, encoded, text) {
-      post.encodedBody = encoded;
-      post.body = text;
     };
 
     this.saveEditPost = function(index) {
@@ -121,7 +105,7 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
 
       var saveEditPost = {
         title: editPost.title,
-        body: editPost.encodedBody, // use input text to save
+        body: editPost.body,
         thread_id: editPost.thread_id
       };
 

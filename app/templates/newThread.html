@@ -14,19 +14,32 @@
 
   <div class="small-12 columns">
     <!-- editor -->
-    <label>Title:</label>
-    <input type="text" ng-model="NewThreadCtrl.thread.title" required>
-    <div class="row">
-      <div class="small-6 columns">
-        <label>Reply:</label>
+    <form name="form" class="css-form editor-form" novalidate>
+      <!-- Title -->
+      <label>Title:
+        <input type="text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" required>
+        <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
+          Title is Required
+        </small>
+      </label>
+      <!-- Body -->
+      <div class="row">
+        <div class="small-6 columns">
+          <label>Body:</label>
+        </div>
+        <div class="small-6 columns preview-title">
+          <label>Preview:</label>
+        </div>
       </div>
-      <div class="small-6 columns preview-title">
-        <label>Preview:</label>
+      <!-- Editor -->
+      <div class="editor-container">
+        <epochtalk-editor class="editor" body="NewThreadCtrl.thread.body" encoded-body="{{NewThreadCtrl.thread.encodedBody}}"></epochtalk-editor>
       </div>
+    </form>
+    <div class="editor-button-container">
+      <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || form.title.$error.required || !NewThreadCtrl.thread.body.length > 0">
+        Submit
+      </button>
     </div>
-    <div class="editor-container">
-      <epochtalk-editor class="editor" text="NewThreadCtrl.thread.encodedBody" save-text="NewThreadCtrl.updateText(encoded, text)"></epochtalk-editor>
-    </div>
-    <button class="button expand" ng-click="NewThreadCtrl.save()">Submit</button>
   </div>
 </div>

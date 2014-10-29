@@ -3,8 +3,8 @@ var Joi = require('joi');
 var rawPostSchema = Joi.object().keys({
   title: Joi.string().min(1).max(255).required(),
   body: Joi.string().min(1).required(), // 1 char minimum post length
-  encodedBody: Joi.string().min(1),
-  thread_id: Joi.string()
+  encodedBody: Joi.string().allow(''),
+  thread_id: Joi.string().required()
 });
 
 module.exports = {

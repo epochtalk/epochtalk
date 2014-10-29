@@ -78,16 +78,10 @@ body { background: url(/static/img/white_wall_hash.png); }
 
 /* New Thread Page */
 .info-box { margin-bottom: 10px; }
-.preview-title { padding-left: 0px; }
-.editor-container { height: 200px; width: 100%; margin-bottom: 20px; }
-.editor { height: 100%; width: 100%; display: block; }
 
 /* Post Page */
 .post-title { font-weight: 700; margin-top: 10px; margin-bottom: 2px; }
-.post-preview-lbl { padding-left: 0; }
-.post-editor { height: 100%; width: 100%; display: block; }
-.post-editor-container { height: 200px; width: 100%; margin-bottom: 20px; }
-.post-editor-auth { padding: 10px 0; }
+.post-editor-auth { padding: 20px 0; }
 .edit-btn { margin: 0; }
 
 /* Registration Page */
@@ -103,6 +97,22 @@ body { background: url(/static/img/white_wall_hash.png); }
 .profile-form label:last-child { margin-bottom: 20px; }
 .profile-form input { margin-bottom: 0; }
 .profile-form small {
+  display: block;
+  line-height: 1;
+  padding: 0.25rem 0.5rem 0.375rem;
+  font-size: 0.6875rem; 
+  margin: 0; }
+
+
+/* editor form */
+.editor { height: 100%; width: 100%; display: block; }
+.editor-container { height: 200px; width: 100%; }
+.editor-button-container { margin-top: 20px; }
+.preview-title { padding-left: 0px; }
+.editor-form label { margin-top: 0; }
+.editor-form div label { margin-top: 20px; }
+.editor-form input { margin-bottom: 0; }
+.editor-form small {
   display: block;
   line-height: 1;
   padding: 0.25rem 0.5rem 0.375rem;

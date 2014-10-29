@@ -6,8 +6,8 @@ module.exports = function() {
   return {
     restrict: 'E',
     scope: {
-      text: "=",
-      saveText: '&'
+      body: '=',
+      encodedBody: '@'
     },
     link: function(scope, element, attrs, ctrl) {
       // Find relevant HTML Elements
@@ -30,12 +30,14 @@ module.exports = function() {
       // Medium Editor Event Bindings
       var onChange = function() {
         // process BBCode
-        var processed = bbcodeParser.process({text: editorElement.html()}).html;
+        var rawText = editorElement.html();
+        var processed = bbcodeParser.process({text: rawText}).html;
         previewElement.html(processed);
-        scope.saveText({
-          encoded: editorElement.html(),
-          text: previewElement.html()
-        });
+        if (rawText === '<p><br></p>' || rawText === '<p><br>""</p>') {
+          rawText = '';
+        }
+        scope.body = rawText;
+        scope.$apply();
       };
 
       // scoll binding
@@ -49,8 +51,11 @@ module.exports = function() {
         rawEditorElement.scrollTop = scrollTop;
       };
 
-      // on load ng-model text to editor and preview
-      editorElement.html(scope.text);
+      // on load ng-model body to editor and preview
+      if (scope.encodedBody && scope.encodedBody.length > 0) {
+        editorElement.html(scope.encodedBody);
+      }
+      else { editorElement.html(scope.body); }
       var processed = bbcodeParser.process({text: editorElement.html()}).html;
       previewElement.html(processed);
 
