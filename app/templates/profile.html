@@ -15,7 +15,7 @@
     <!-- Page Header and Edit Button -->
     <div class="row">
       <div class="small-9 columns">
-        <h3 ng-bind="(profiles.displayUsername) + '\'s Profiles'"></h3>
+        <h3 ng-bind-html="(profiles.displayUsername) + '\'s Profiles'"></h3>
       </div>
       <div class="small-3 columns" ng-If="profiles.user.editable && profiles.editMode === false">
         <button class="button small radius right" ng-click="profiles.editMode = true">
@@ -29,7 +29,7 @@
       <div class="panel">
         <div>
           Name:
-          <span ng-bind="profiles.user.name"></span>
+          <span ng-bind-html="profiles.user.name"></span>
         </div>
         
         <div>
@@ -104,7 +104,7 @@
 
       <div class="panel">
         Signature: 
-        <span ng-bind="profiles.user.signature"></span>
+        <span ng-bind-html="profiles.user.signature"></span>
       </div>
     </div>
 

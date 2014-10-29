@@ -10,9 +10,9 @@
       <div class="viewable" ng-if="!post.editMode">
         <!-- Post Title -->
         <div class="post-title">
-          <span ng-bind="post.title"></span>
+          <span ng-bind-html="post.title"></span>
           <span class="radius secondary label">
-          by <a href="/profiles/{{post.user.username}}" ng-bind="post.user.username"></a>
+          by <a href="/profiles/{{post.user.username}}" ng-bind-html="post.user.username"></a>
           <em ng-bind="'@' + (post.created_at | date:'medium')"></em>
           </span>
           <button class="button tiny edit-btn" ng-click="PostsCtrl.startEditPost($index)" ng-if="post.editable">

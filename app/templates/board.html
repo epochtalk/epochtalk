@@ -3,7 +3,7 @@
 <div class="row board-page">
   <!-- Page Header -->
   <div class="small-12 columns">
-    <h3 ng-bind="BoardCtrl.board.name"></h3>
+    <h3 ng-bind-html="BoardCtrl.board.name"></h3>
     <span class="moderators">
       <strong>Moderators: </strong> Unknown, Unknown, Unknown
     </span>
@@ -25,18 +25,18 @@
     <div class="child-board" ng-repeat="childBoard in BoardCtrl.board.children">
       <!-- Child Board Title -->
       <h5>
-        <a ng-href="/boards/{{childBoard.id}}" ng-bind="childBoard.name"></a>
+        <a ng-href="/boards/{{childBoard.id}}" ng-bind-html="childBoard.name"></a>
       </h5>
 
       <!-- Child Board description and content -->
       <div class="row">
         <!-- Description and child boards -->
         <div class="small-12 medium-9 columns child-board-desc">
-          {{childBoard.description}}
+          <div ng-bind-html="childBoard.description"></div>
           <span class="child-boards" ng-if="childBoard.children.length > 0">
             <strong>Child Boards:</strong>
             <span ng-repeat="child in childBoard.children">
-              <a ng-href="/boards/{{child.id}}" ng-bind="child.name"></a>{{$last ? '' : ', '}}
+              <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
             </span>
           </span>
         </div>
@@ -55,8 +55,8 @@
       <div class="row">
         <div class="small-12 medium-8 columns text-info">
           Last post by
-          <a href="/profiles/{{ childBoard.last_post_username }}" ng-bind="childBoard.last_post_username"></a>
-          in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind="childBoard.last_thread_title"></a>
+          <a href="/profiles/{{ childBoard.last_post_username }}" ng-bind-html="childBoard.last_post_username"></a>
+          in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title"></a>
           <br>
           <span ng-bind="childBoard.last_post_created_at | date:'medium'"></span>
         </div>
@@ -88,10 +88,10 @@
     <div class="thread-listItem" ng-repeat="thread in BoardCtrl.threads track by thread.id">
       <div class="row">
         <div class="small-12 medium-7 columns">
-          <a ng-class="thread.title_class" ng-href="/threads/{{thread.id}}/posts" ng-bind="thread.title"></a><br>
+          <a ng-class="thread.title_class" ng-href="/threads/{{thread.id}}/posts" ng-bind-html="thread.title"></a><br>
 
           <div class="division">
-            Started by: <a href="/profiles/{{thread.user.username}}" ng-bind="thread.user.username"></a>
+            Started by: <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>
             <em ng-bind="'(' + (thread.created_at | date:'medium') + ')'"></em>
           </div>
 
@@ -111,9 +111,9 @@
         </div>
 
         <div class="small-12 medium-3 columns text-info">
-          {{thread.last_post_created_at | date:'medium'}}
+          <div ng-bind="thread.last_post_created_at | date:'medium'"></div>
           <br>
-          <a href="/profiles/{{thread.last_post_username}}" ng-bind="thread.last_post_username"></a>
+          <a href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
         </div>
       </div>
     </div>
