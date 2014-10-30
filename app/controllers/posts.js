@@ -22,7 +22,7 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
     });
 
     // scroll to any hash in the url
-    $timeout(function() { $anchorScroll(); });
+    $timeout(function() { $anchorScroll(); }, 100);
 
     // figure out how many pages there should be in this thread
     // Should be called only after the total number of posts this thread
@@ -56,7 +56,7 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
           $location.search('page', ctrl.pageCount);
           $location.hash(post.id); // set post id in url hash for scrolling
           $anchorScroll();
-        }, 50);
+        }, 100);
       })
       .catch(function(response) {
         var error = '';
@@ -93,7 +93,7 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
       // create updated version of this post
       var saveEditPost = {
         title: editPost.title,
-        body: editPost.body,
+        encodedBody: editPost.encodedBody,
         thread_id: editPost.thread_id
       };
 

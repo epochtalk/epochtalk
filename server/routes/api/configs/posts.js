@@ -12,7 +12,6 @@ exports.create = {
     var user = request.auth.credentials;
     var newPost = {
       title: request.payload.title,
-      body: request.payload.body,
       encodedBody: request.payload.encodedBody,
       thread_id: request.payload.thread_id,
       user_id: user.id
@@ -58,8 +57,6 @@ exports.byThread = {
         });
       }
 
-      // strip user ids?
-
       reply(posts);
     })
     .catch(function(err) { reply(Hapi.error.internal()); });
@@ -79,14 +76,11 @@ exports.update = {
   ],
   handler: function(request, reply) {
     // build updatePost object from params and payload
-    var user = request.auth.credentials;
     var updatePost = {
       id: request.params.id,
       title: request.payload.title,
-      body: request.payload.body,
       encodedBody: request.payload.encodedBody,
-      thread_id: request.payload.thread_id,
-      user_id: user.id
+      thread_id: request.payload.thread_id
     };
 
     core.posts.update(updatePost)

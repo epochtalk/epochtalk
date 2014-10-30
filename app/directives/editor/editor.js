@@ -37,7 +37,8 @@ module.exports = function() {
         if (rawText === '<p><br></p>' || rawText === '<p><br>""</p>') {
           rawText = '';
         }
-        scope.body = rawText;
+        scope.body = processed;
+        scope.encodedBody = rawText;
         scope.$apply();
       };
 

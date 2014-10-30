@@ -11,7 +11,6 @@ exports.create = {
     var newThread = { board_id: request.payload.board_id };
     var newPost = {
       title: request.payload.title,
-      body: request.payload.body,
       encodedBody: request.payload.encodedBody,
       user_id: user.id
     };
