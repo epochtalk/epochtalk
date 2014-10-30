@@ -20,8 +20,12 @@
           </button>
         </div>
         <!-- Post Body -->
-        <div class="panel" ng-bind-html="post.body"></div>
-        <div ng-if="post.user.signature" ng-bind-html="post.user.signature">
+        <div class="panel">
+          <div ng-bind-html="post.body"></div>
+          <div ng-if="post.user.signature">
+            <hr>
+            <div ng-bind-html="post.user.signature"></div>
+          </div>
         </div>
       </div>
 

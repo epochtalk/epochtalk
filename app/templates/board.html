@@ -97,7 +97,7 @@
 
           <div class="division" ng-if="thread.page_count > 1">
             <span ng-repeat="pageKey in thread.page_keys">
-              <a ng-href="{{pageKey.url}}" ng-bind="pageKey.val"></a>
+              <a ng-href="{{pageKey.url}}" ng-bind-html="pageKey.val"></a>
             </span>
           </div>
         </div>

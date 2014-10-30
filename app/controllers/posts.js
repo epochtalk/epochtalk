@@ -74,7 +74,7 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
     // edit post methods
 
     this.startEditPost = function(index) {
-      var editPost = this.posts[index];
+      var editPost = ctrl.posts[index];
 
       // save a copy in case they cancel
       tempPosts[editPost.id] = {};
@@ -83,11 +83,11 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
       tempPosts[editPost.id].encodedBody = editPost.encodedBody;
 
       // turn on editing
-      this.posts[index].editMode = true;
+      ctrl.posts[index].editMode = true;
     };
 
     this.saveEditPost = function(index) {
-      var editPost = this.posts[index]; // get post content
+      var editPost = ctrl.posts[index]; // get post content
       delete editPost.error; // delete any errors for this post
 
       // create updated version of this post
@@ -120,13 +120,13 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
     };
 
     this.cancelEditPost = function(index) {
-      var cancelPost = this.posts[index];
+      var cancelPost = ctrl.posts[index];
 
       // replace post content with content from tempPost
-      this.posts[index].title = tempPosts[cancelPost.id].title;
-      this.posts[index].body = tempPosts[cancelPost.id].body;
-      this.posts[index].encodedBody = tempPosts[cancelPost.id].encodedBody;
-      this.posts[index].editMode = false; // turn off editing
+      ctrl.posts[index].title = tempPosts[cancelPost.id].title;
+      ctrl.posts[index].body = tempPosts[cancelPost.id].body;
+      ctrl.posts[index].encodedBody = tempPosts[cancelPost.id].encodedBody;
+      ctrl.posts[index].editMode = false; // turn off editing
 
       delete tempPosts[cancelPost.id]; // delete this content in tempPosts
     };
