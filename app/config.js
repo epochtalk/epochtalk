@@ -106,7 +106,15 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
 
     $routeProvider.when('/admin/categories', {
       controller: 'CategoriesCtrl',
-      template: fs.readFileSync(__dirname + '/templates/admin/categories.html')
+      template: fs.readFileSync(__dirname + '/templates/admin/categories.html'),
+      resolve: {
+        categories: ['Boards', function(Boards) {
+          return Boards.query();
+        }],
+        boards: ['Boards', function(Boards) {
+          return Boards.all();
+        }]
+      }
     });
 
     $locationProvider.html5Mode(true);

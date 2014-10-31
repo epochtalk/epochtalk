@@ -1,14 +1,12 @@
 var _ = require('lodash');
 
-module.exports = ['$scope', '$q', '$route', 'Boards',
-  function($scope, $q, $route, Boards) {
-
+module.exports = ['$scope', '$q', '$route', 'Boards', 'boards', 'categories',
+  function($scope, $q, $route, Boards, boards, categories) {
     // Initialization
     var boardCategories;
-    Boards.query().$promise
-    .then(function(categories) {
-      boardCategories = categories;
-      return Boards.all().$promise;
+    categories.$promise.then(function(allCats) {
+      boardCategories = allCats;
+      return boards.$promise;
     })
     .then(function(allBoards) {
       $scope.catListData = boardCategories;
