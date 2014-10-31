@@ -2,7 +2,7 @@ var medium = require('medium-editor');
 var bbcodeParser = require('bbcode-parser');
 var fs = require('fs');
 
-module.exports = function() {
+module.exports = ['$timeout', function($timeout) {
   return {
     restrict: 'E',
     scope: {
@@ -28,18 +28,54 @@ module.exports = function() {
       };
       var editor = new medium(editorElement, options);
 
-      // Medium Editor Event Bindings
-      var onChange = function() {
-        // process BBCode
+      // converts encoded unicode into numeric representation
+      function textToEntities(text) {
+        var entities = "";
+        for (var i = 0; i < text.length; i++) {
+          if (text.charCodeAt(i) > 127) {
+            entities += "&#" + text.charCodeAt(i) + ";";
+          }
+          else { entities += text.charAt(i); }
+        }
+
+        return entities;
+      }
+
+      function parseInput() {
+        // get raw user input
         var rawText = editorElement.html();
+        // at this point, special characters are escaped: < > &
+
+        // replaces all ampersands (isn't much of an issue)
+        rawText = rawText.replace(/&amp;/g, '&');
+
+        // convert all unicode characters to their numeric representation
+        // this is so we can save it to the db and present it to any encoding
+        rawText = textToEntities(rawText);
+
+        // parse bbcode and bind to preview
         var processed = bbcodeParser.process({text: rawText}).html;
         previewElement.html(processed);
+
+        // medium always leaves input dirty even if there's no input
+        // this will clean it
         if (rawText === '<p><br></p>' || rawText === '<p><br>""</p>') {
           rawText = '';
         }
+
+        // re-bind to scope
         scope.body = processed;
         scope.encodedBody = rawText;
         scope.$apply();
+      }
+
+      // Medium Editor Event Bindings
+      var debounce;
+      var onChange = function() {
+        $timeout.cancel(debounce);
+        debounce = $timeout(function() {
+          parseInput();
+        }, 250);
       };
 
       // scoll binding
@@ -81,4 +117,4 @@ module.exports = function() {
     },
     template: fs.readFileSync(__dirname + '/../../templates/directives/editor.html')
   };
-};
+}];

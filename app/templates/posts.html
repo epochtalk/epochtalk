@@ -34,26 +34,24 @@
         <!-- Editor -->
         <form name="form" class="css-form editor-form" novalidate>
           <!-- Title -->
-          <div class="post-title">
-            <label>Title:
-              <input type="text" name="title" placeholder="Title" ng-model="post.title" required>
-              <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
-                Title is Required
-              </small>
-            </label>
-            <!-- Body -->
-            <div class="row">
-              <div class="small-6 columns">
-                <label>Reply:</label>
-              </div>
-              <div class="small-6 columns" class="preview-title">
-                <label>Preview:</label>
-              </div>
+          <label>Title:
+            <input type="text" name="title" placeholder="Title" ng-model="post.title" required>
+            <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
+              Title is Required
+            </small>
+          </label>
+          <!-- Body -->
+          <div class="row">
+            <div class="small-6 columns">
+              <label>Reply:</label>
             </div>
-            <!-- Editor -->
-            <div class="editor-container">
-              <epochtalk-editor body="post.body" encoded-body="post.encodedBody" class="editor"></epochtalk-editor>
+            <div class="small-6 columns" class="preview-title">
+              <label>Preview:</label>
             </div>
+          </div>
+          <!-- Editor -->
+          <div class="editor-container">
+            <epochtalk-editor body="post.body" encoded-body="post.encodedBody" class="editor"></epochtalk-editor>
           </div>
         </form>
         <div class="editor-button-container">
