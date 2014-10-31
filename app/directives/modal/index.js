@@ -3,12 +3,12 @@ module.exports = ['$timeout', function($timeout) {
     restrict: 'E',
     scope: {
       show: '=',
+      onClose: '='
     },
     replace: true,
     transclude: true,
     template: '<div class="reveal-modal" data-reveal>' +
-      '<div ng-transclude></div>' +
-      '<a class="close-reveal-modal">&#215;</a>' +
+      '<div ng-transclude></div>'+
       '</div>',
     link: function(scope, element) {
       scope.$watch('show', function(show) {
@@ -18,6 +18,7 @@ module.exports = ['$timeout', function($timeout) {
             scope.show = false;
             $timeout(function() { scope.$apply(); });
             $(document).off('close.fndtn.reveal', '[data-reveal]');
+            if (typeof scope.onClose === 'function') { scope.onClose(); }
           });
         }
         else {

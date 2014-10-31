@@ -60,9 +60,12 @@ module.exports = ['$location', '$window', 'User',
       login: function(user, callback, error) {
         // get username and rememberMe
         var rememberMe = user.rememberMe;
-        delete user.rememberMe;
+        // Can't delete user.rememberMe without UI Flicker, copy user instead
+        var userCopy = {};
+        userCopy.username = user.username;
+        userCopy.password = user.password;
 
-        User.login(user, callback, error).$promise
+        User.login(userCopy, callback, error).$promise
         .then(function(resource) {
           if (rememberMe) { saveUserLocal(resource); }
           else { saveUserSession(resource); }

@@ -76,15 +76,16 @@
       </div>
     </div>
     <div class="row" ng-cloak>
-      <modal class="tiny" show="HeaderCtrl.show">
+      <modal class="tiny" show="HeaderCtrl.show" on-close="HeaderCtrl.clearLoginFields">
         <input type="checkbox" ng-model="HeaderCtrl.user.rememberMe"> Remember Me
         <br/>
-        <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" autofocus>
+        <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.modalVisible" autofocus>
         <br/>
         <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)">
         <br />
         <a href="#" class="button tiny" ng-click="HeaderCtrl.login()">Login</a>&nbsp;
         <a href="#" class="button tiny" ng-click="HeaderCtrl.closeLoginModal()">Cancel</a>
+        <a class="close-reveal-modal">&#215;</a>
       </modal>
     </div>
   </div>
