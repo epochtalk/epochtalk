@@ -15,9 +15,19 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
       }
     };
 
+    this.show = false;
+    this.openLoginModal = function() {
+      ctrl.show = true;
+    };
+
+    this.closeLoginModal = function() {
+      ctrl.show = false;
+    };
+
     this.login = function() {
       Auth.login(ctrl.user,
         function(data) {
+          ctrl.closeLoginModal();
           ctrl.user.username = '';
           ctrl.user.password = '';
           $timeout(function() { $route.reload(); });

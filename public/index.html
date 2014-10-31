@@ -43,16 +43,7 @@
             <!-- Right Nav Section -->
             <ul ng-if="!HeaderCtrl.loggedIn()" class="right login-container">
               <li>
-                <input type="checkbox" ng-model="HeaderCtrl.user.rememberMe">
-              </li>
-              <li>
-                <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" autofocus>
-              </li>
-              <li>
-                <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)">
-              </li>
-              <li>
-                <a href="#" class="button" ng-click="HeaderCtrl.login()">Login</a>
+                <a href="#" class="button" ng-click="HeaderCtrl.openLoginModal()">Login</a>
               </li>
             </ul>
 
@@ -84,6 +75,18 @@
 
       </div>
     </div>
+    <div class="row" ng-cloak>
+      <modal class="tiny" show="HeaderCtrl.show">
+        <input type="checkbox" ng-model="HeaderCtrl.user.rememberMe"> Remember Me
+        <br/>
+        <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" autofocus>
+        <br/>
+        <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)">
+        <br />
+        <a href="#" class="button tiny" ng-click="HeaderCtrl.login()">Login</a>&nbsp;
+        <a href="#" class="button tiny" ng-click="HeaderCtrl.closeLoginModal()">Cancel</a>
+      </modal>
+    </div>
   </div>
 
   <!-- Main Content -->
@@ -100,6 +103,7 @@
       </div>
     </div>
   </div>
+
 
   <script src="/static/js/bundle.js" type="text/javascript"></script>
 </body>
