@@ -19,10 +19,10 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
     // define all the posts
     posts.$promise.then(function(posts) {
       ctrl.posts = posts;
+      $timeout($anchorScroll);
     });
 
     // scroll to any hash in the url
-    $timeout(function() { $anchorScroll(); }, 100);
 
     // figure out how many pages there should be in this thread
     // Should be called only after the total number of posts this thread
@@ -52,11 +52,8 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
 
         // Go to last page in the thread
         // and scroll to new post
-        $timeout(function() {
-          $location.search('page', ctrl.pageCount);
-          $location.hash(post.id); // set post id in url hash for scrolling
-          $anchorScroll();
-        }, 100);
+        $location.search('page', ctrl.pageCount);
+        $location.hash(post.id); // set post id in url hash for scrolling
       })
       .catch(function(response) {
         var error = '';
@@ -142,6 +139,7 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
       return Posts.byThread(query).$promise.then(function(posts) {
         ctrl.posts = posts;
         ctrl.page = Number(route.params.page);
+        $timeout($anchorScroll);
       });
     });
   }
