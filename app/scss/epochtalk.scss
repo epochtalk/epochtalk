@@ -8,7 +8,7 @@ body { background: url(/static/img/white_wall_hash.png); }
   padding-bottom: 10px; }
 .text-info { font-size: 13px; color: #999; }
 .bold-title { font-weight: bold; }
-.no-margin { margin: 0px; }
+.no-margin { margin: 0; }
 .anchor-offset { display: block; position: relative; top: -35px; visibility: hidden; }
 
 /* Foundation Overrides */
@@ -21,6 +21,8 @@ body { background: url(/static/img/white_wall_hash.png); }
 /* Login CSS */
 /* optimize for mobile layout */
 .login-container > li { margin-right: 5px; }
+.red.label { background-color: #e91c21; display: block; }
+.error-container { height: 25px; padding-top: 15px; }
 
 /* Footer CSS */
 .footer {

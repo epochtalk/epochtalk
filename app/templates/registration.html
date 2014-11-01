@@ -25,7 +25,7 @@
         </label>
       </div>
 
-      <div class="reg-input-section">   
+      <div class="reg-input-section">
         <label>Username
           <input type="text" name="username" ng-model="RegistrationCtrl.user.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" required>
           <small class="label error" ng-if="form.username.$error.unique">
@@ -39,8 +39,8 @@
           </small>
         </label>
       </div>
-      
-      <div class="reg-input-section">   
+
+      <div class="reg-input-section">
         <label>Password
           <input type="password" name="password" ng-model="RegistrationCtrl.user.password" placeholder="Password" required>
           <small class="label error" ng-if="form.password.$touched && form.password.$error.required">
@@ -54,7 +54,7 @@
           </small>
         </label>
       </div>
-      
+
       <div class="reg-input-section">
         <label>Password Confirmation
           <input type="password" name="confirmation" ng-model="RegistrationCtrl.user.confirmation" placeholder="Password Confirmation" required>
@@ -75,7 +75,7 @@
       <button class="button expand" ng-click="RegistrationCtrl.register()" ng-disabled="form.$invalid || RegistrationCtrl.user.password !== RegistrationCtrl.user.confirmation">
         Register
       </button>
-      <small class="error" ng-if="error.status" ng-bind="RegistrationCtrl.error.message"></small>
+      <small class="error" ng-if="RegistrationCtrl.error.status" ng-bind="RegistrationCtrl.error.message"></small>
     </div>
 
   </div>

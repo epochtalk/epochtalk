@@ -77,17 +77,29 @@
     </div>
     <div class="row" ng-cloak>
       <modal class="tiny" show="HeaderCtrl.show" on-close="HeaderCtrl.clearLoginFields">
-        <h3 class="thin-dotted-underline">Login</h3>
-        <br />
-        <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.modalVisible" autofocus>
-        <br/>
-        <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)">
-        <br />
-        <a href="#" class="button tiny no-margin" ng-click="HeaderCtrl.login()">Login</a>&nbsp;
-        <a href="#" class="button tiny no-margin" ng-click="HeaderCtrl.closeLoginModal()">Cancel</a>
-        <span class="right">
-          <input type="checkbox" ng-model="HeaderCtrl.user.rememberMe"> Remember Me
-        </span>
+        <form name="form" class="css-form" novalidate>
+          <h3 class="thin-dotted-underline">Login</h3>
+          <br />
+          <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.modalVisible" autofocus required>
+          <br/>
+          <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)" required>
+          <br />
+          <a href="#" class="button tiny no-margin" ng-click="HeaderCtrl.login()"
+            ng-disabled="form.$invalid">
+            Login
+          </a>
+          &nbsp;
+          <a href="#" class="button tiny no-margin" ng-click="HeaderCtrl.closeLoginModal()">
+            Cancel
+          </a>
+          <span class="right">
+            <input type="checkbox" ng-model="HeaderCtrl.user.rememberMe"> Remember Me
+          </span>
+          <br />
+          <div class="error-container">
+            <span class="red radius label" ng-if="HeaderCtrl.error.status" ng-bind="HeaderCtrl.error.message"></span>
+          </div>
+        </form>
         <a class="close-reveal-modal">&#215;</a>
       </modal>
     </div>

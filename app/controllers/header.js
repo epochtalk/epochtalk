@@ -4,6 +4,7 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
     this.loggedIn = Auth.isAuthenticated;
     this.currentUser = Auth.currentUser;
     this.user = {};
+    this.error = {};
 
     Auth.checkAuthentication();
 
@@ -33,15 +34,21 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
         ctrl.user.username = '';
         ctrl.user.password = '';
         ctrl.user.rememberMe = false;
+        ctrl.error = {};
       }, 500);
     };
 
     this.login = function() {
+      ctrl.error = {};
       Auth.login(ctrl.user,
         function(data) {
           ctrl.closeLoginModal();
           ctrl.clearLoginFields();
           $timeout(function() { $route.reload(); });
+        },
+        function(err) {
+          ctrl.error.status = true;
+          ctrl.error.message = err.data.message;
         }
       );
     };
