@@ -46,8 +46,10 @@ module.exports = ['$timeout', function($timeout) {
         var rawText = editorElement.html();
         // at this point, special characters are escaped: < > &
 
-        // replaces all ampersands (isn't much of an issue)
+        // replaces &, <, >
         rawText = rawText.replace(/&amp;/g, '&');
+        rawText = rawText.replace(/&gt;/g, '&#62;');
+        rawText = rawText.replace(/&lt;/g, '&#60;');
 
         // convert all unicode characters to their numeric representation
         // this is so we can save it to the db and present it to any encoding
