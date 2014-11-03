@@ -36,6 +36,7 @@ app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
 app.directive('pagination', require('./directives/pagination'));
 app.directive('categoryEditor', require('./directives/category_editor'));
 app.directive('modal', require('./directives/modal'));
+app.directive('autoFocus', require('./directives/autofocus'));
 app.directive('nestableBoards', require('./directives/category_editor/nestable-boards.js'));
 app.directive('nestableCategories', require('./directives/category_editor/nestable-categories.js'));
 app.directive('uniqueUsername', require('./directives/uniqueUsername'));

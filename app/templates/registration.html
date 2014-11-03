@@ -9,7 +9,7 @@
     <form name="form" class="css-form" novalidate>
       <div class='reg-input-section'>
         <label>Email
-          <input type="email" name="email" ng-model="RegistrationCtrl.user.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Email" ng-keyup="RegistrationCtrl.submit($event)" required autofocus>
+          <input type="email" name="email" ng-model="RegistrationCtrl.user.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Email" ng-keyup="RegistrationCtrl.submit($event)" required auto-focus>
           <small class="label error" ng-if="form.email.$error.email">
             Email is not valid
           </small>
