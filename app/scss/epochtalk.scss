@@ -10,6 +10,7 @@ body { background: url(/static/img/white_wall_hash.png); }
 .bold-title { font-weight: bold; }
 .no-margin { margin: 0; }
 .anchor-offset { display: block; position: relative; top: -35px; visibility: hidden; }
+.no-select { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
 /* Foundation Overrides */
 .magellan-override { padding: 0px; background: transparent; }
