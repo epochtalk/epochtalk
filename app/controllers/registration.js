@@ -4,6 +4,12 @@ module.exports = ['$location', 'Auth',
     this.user = {};
     this.error = {};
 
+    this.submit = function(keyEvent) {
+      if (keyEvent.which === 13) {
+        ctrl.register();
+      }
+    };
+
     this.register = function() {
       ctrl.error = {};
 

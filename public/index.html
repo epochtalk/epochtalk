@@ -43,6 +43,9 @@
             <!-- Right Nav Section -->
             <ul ng-if="!HeaderCtrl.loggedIn()" class="right login-container">
               <li>
+                <a href="/register">Register</a>
+              </li>
+              <li>
                 <a href="#" class="button" ng-click="HeaderCtrl.openLoginModal()">Login</a>
               </li>
             </ul>
@@ -80,7 +83,7 @@
         <form name="form" class="css-form" novalidate>
           <h3 class="thin-dotted-underline">Login</h3>
           <br />
-          <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.modalVisible" autofocus required>
+          <input type="text" placeholder="Username" ng-keyup="HeaderCtrl.enterLogin($event)" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.modalVisible" autofocus required>
           <br/>
           <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)" required>
           <br />

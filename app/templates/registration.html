@@ -9,7 +9,7 @@
     <form name="form" class="css-form" novalidate>
       <div class='reg-input-section'>
         <label>Email
-          <input type="email" name="email" ng-model="RegistrationCtrl.user.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Email" required>
+          <input type="email" name="email" ng-model="RegistrationCtrl.user.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Email" ng-keyup="RegistrationCtrl.submit($event)" required autofocus>
           <small class="label error" ng-if="form.email.$error.email">
             Email is not valid
           </small>
@@ -27,7 +27,7 @@
 
       <div class="reg-input-section">
         <label>Username
-          <input type="text" name="username" ng-model="RegistrationCtrl.user.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" required>
+          <input type="text" name="username" ng-model="RegistrationCtrl.user.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" ng-keyup="RegistrationCtrl.submit($event)" required>
           <small class="label error" ng-if="form.username.$error.unique">
             Username Already Taken
           </small>
@@ -42,7 +42,7 @@
 
       <div class="reg-input-section">
         <label>Password
-          <input type="password" name="password" ng-model="RegistrationCtrl.user.password" placeholder="Password" required>
+          <input type="password" name="password" ng-model="RegistrationCtrl.user.password" placeholder="Password" ng-keyup="RegistrationCtrl.submit($event)" required>
           <small class="label error" ng-if="form.password.$touched && form.password.$error.required">
             Password is Required
           </small>
@@ -57,7 +57,7 @@
 
       <div class="reg-input-section">
         <label>Password Confirmation
-          <input type="password" name="confirmation" ng-model="RegistrationCtrl.user.confirmation" placeholder="Password Confirmation" required>
+          <input type="password" name="confirmation" ng-model="RegistrationCtrl.user.confirmation" placeholder="Password Confirmation" ng-keyup="RegistrationCtrl.submit($event)" required>
           <small class="label error" ng-if="form.confirmation.$touched && form.confirmation.$error.required">
             Confirmation is Required
           </small>
