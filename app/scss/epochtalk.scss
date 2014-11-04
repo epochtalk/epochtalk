@@ -1,6 +1,5 @@
 /** Globals ---------------------------------------------------------------- */
 
-body { background: url(/static/img/white_wall_hash.png); }
 .main-container { min-height: 100%; }
 .thin-dotted-underline {
   border-bottom: 1px dotted #ccc;
@@ -11,6 +10,7 @@ body { background: url(/static/img/white_wall_hash.png); }
 .no-margin { margin: 0; }
 .anchor-offset { display: block; position: relative; top: -35px; visibility: hidden; }
 .no-select { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+.inline-block { display: inline-block; }
 
 /* Foundation Overrides */
 .magellan-override { padding: 0px; background: transparent; }
@@ -79,6 +79,7 @@ body { background: url(/static/img/white_wall_hash.png); }
   font-size: 14px;
   margin-top: 5px;
   margin-bottom: 5px; }
+.collapse-btn { font-size: 1.45em; margin-right: 10px;}
 
 /* New Thread Page */
 .info-box { margin-bottom: 10px; }

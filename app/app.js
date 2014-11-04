@@ -36,6 +36,7 @@ app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
 app.directive('pagination', require('./directives/pagination'));
 app.directive('categoryEditor', require('./directives/category_editor'));
 app.directive('modal', require('./directives/modal'));
+app.directive('slideToggle', require('./directives/slide_toggle'));
 app.directive('autoFocus', require('./directives/autofocus'));
 app.directive('nestableBoards', require('./directives/category_editor/nestable-boards.js'));
 app.directive('nestableCategories', require('./directives/category_editor/nestable-categories.js'));
@@ -59,12 +60,12 @@ app.config(require('./config'))
 
 
 // CSS Styles
+var cssify = require('cssify');
 require('./css/normalize.css');
 require('./css/foundation.css');
+cssify.byUrl('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');
 require('./css/epochtalk.css');
 require('./css/category-editor.css');
 require('./css/editor.css');
 require('./css/medium-editor.css');
 require('./css/default.css');
-var cssify = require('cssify');
-cssify.byUrl('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');
