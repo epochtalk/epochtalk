@@ -84,11 +84,11 @@ All POST parameters must follow the [Post Schema](https://github.com/epochtalk/c
 All POST parameters must follow the [User Schema](https://github.com/epochtalk/core#user-schema)
 
 ##Editor
-![Editor](http://imgur.com/KYiJS9J)
+![Editor](http://i.imgur.com/KYiJS9J.png)
 
 Each post is crafted through a unique editor that can parses BBCode or with an intuitive Medium inspired text selection tool. The tool itself is from [daviferreira](https://github.com/daviferreira/medium-editor).
 
-![medium](http://imgur.com/25AM51Z)
+![medium](http://i.imgur.com/25AM51Z.png)
 
 The selection tool allows the user to highlight a section of text and a popup will appear with a list of options available to the user. The default list of options as they appear are:
 * bold
