@@ -34,11 +34,16 @@ exports.byBoard = {
   handler: function(request, reply) {
     var threads = request.pre.threads;
     var userViews = request.pre.userViews;
+    var user = request.auth.credentials;
 
     // iterate through threads and see if the thread has been viewed yet
     if (userViews) {
       threads = threads.map(function(thread) {
-        if (!userViews[thread.id]) {
+        // If user made last post consider thread viewed
+        if (user.username === thread.last_post_username) {
+          thread.has_new_post = false;
+        }
+        else if (!userViews[thread.id]) {
           thread.has_new_post = true;
         }
         else if (userViews[thread.id] &&
