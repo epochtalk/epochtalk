@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$route', 'Auth', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
-  function($scope, $route, Auth, Threads, board, threads, page, threadLimit, postLimit) {
+module.exports = ['$scope', '$route', '$window', 'Auth', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
+  function($scope, $route, $window, Auth, Threads, board, threads, page, threadLimit, postLimit) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated; // check Auth
     this.page = page; // this page
@@ -11,7 +11,7 @@ module.exports = ['$scope', '$route', 'Auth', 'Threads', 'board', 'threads', 'pa
       ctrl.newThreadUrl = '/boards/' + board.id + '/threads/new';
       ctrl.pageCount = Math.ceil(board.thread_count / threadLimit);
     });
-    
+
     // generate page listing for each thread
     var getPageKeysForThread = function(thread) {
       var pageKeys = [];
@@ -56,10 +56,12 @@ module.exports = ['$scope', '$route', 'Auth', 'Threads', 'board', 'threads', 'pa
         page: $route.params.page
       };
       return Threads.byBoard(query).$promise.then(function(threads) {
+        // scroll to top when loading new threads since this isn't a true route change
+        $window.scrollTo(0,0);
+
         // update page number
         ctrl.page = Number($route.params.page);
         ctrl.threadLimit = Number($route.params.limit) || 10;
-
         // update thread with page count
         ctrl.threads = threads;
         threads.forEach(function(thread) {
