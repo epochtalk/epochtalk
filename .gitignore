@@ -23,5 +23,6 @@ test/coverage/
 /public/bundle.js
 
 /app/css/**
+/app/.sass-cache/
 
 /epoch.db
