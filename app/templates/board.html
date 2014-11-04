@@ -58,7 +58,7 @@
           <a href="/profiles/{{ childBoard.last_post_username }}" ng-bind-html="childBoard.last_post_username"></a>
           in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title"></a>
           <br>
-          <span ng-bind="childBoard.last_post_created_at | date:'medium'"></span>
+          <span ng-bind="childBoard.last_post_created_at | humanDate"></span>
         </div>
       </div>
 
@@ -92,7 +92,7 @@
 
           <div class="division">
             Started by: <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>
-            <em ng-bind="'(' + (thread.created_at | date:'medium') + ')'"></em>
+            <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
           </div>
 
           <div class="division" ng-if="thread.page_count > 1">
@@ -111,9 +111,8 @@
         </div>
 
         <div class="small-12 medium-3 columns text-info">
-          <div ng-bind="thread.last_post_created_at | date:'medium'"></div>
-          <br>
-          <a href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+          <div ng-bind="thread.last_post_created_at | humanDate"></div>
+          by <a href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
         </div>
       </div>
     </div>

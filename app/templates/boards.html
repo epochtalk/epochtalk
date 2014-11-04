@@ -62,7 +62,7 @@
               in thread
               <a ng-href="/threads/{{board.last_thread_id}}/posts" ng-bind-html="board.last_thread_title"></a>
             </div>
-            <div ng-bind="board.last_post_created_at | date:'medium' "></div>
+            <div ng-bind="board.last_post_created_at | humanDate"></div>
           </div>
 
         </div>
