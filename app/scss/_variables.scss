@@ -1,0 +1,36 @@
+// SASS variables 
+
+// Colors
+$color-epoch: 			slategray;
+$color-body: 				#444;
+$color-gray: 				lighten($color-body, 20%);
+$color-gray-med: 		lighten($color-body, 40%);
+$color-gray-light:	lighten($color-body, 60%);
+$color-gray-sub: 		lighten($color-body, 70%);
+
+
+
+// Layout
+$font-size-body: 100%;
+$line-height: 1.5;
+
+// Mixins
+@mixin list-clean {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+@mixin list-flat {
+	display: inline-block;
+	padding-right: 1rem;
+	&:last-child {
+		padding-right: 0;
+	}
+}
+
+@mixin bg-cover {
+	-webkit-background-size: 	cover;
+	-moz-background-size: 		cover;
+	background-size: 					cover;
+}

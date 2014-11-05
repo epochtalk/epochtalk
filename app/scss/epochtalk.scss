@@ -1,3 +1,6 @@
+@import 'variables';
+// @import 'epoch-icons';
+
 /** Globals ---------------------------------------------------------------- */
 
 .main-container { min-height: 100%; }
@@ -85,9 +88,83 @@
 .info-box { margin-bottom: 10px; }
 
 /* Post Page */
-.post-title { font-weight: 700; margin-top: 10px; margin-bottom: 2px; }
-.post-editor-auth { padding: 20px 0; }
-.edit-btn { margin: 0; }
+// .post-title { font-weight: 700; margin-top: 10px; margin-bottom: 2px; }
+// .post-preview-lbl { padding-left: 0; }
+// .post-editor { height: 100%; width: 100%; display: block; }
+// .post-editor-container { height: 200px; width: 100%; margin-bottom: 20px; }
+// .post-editor-auth { padding: 10px 0; }
+// .edit-btn { margin: 0; }
+
+.post-block {
+  border-bottom: 1px solid $color-gray-light;
+  // float: left;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  // width: 100%;
+}
+
+.post-user {
+  width: 100%;
+
+  .user-avatar {
+    background: no-repeat center center;
+    @include bg-cover;
+    height: 120px;
+    position: relative;
+    width: 100%;
+  }
+
+  .user-role {
+    background-color: rgba(0,0,0,.75);
+    bottom: 0;
+    color: #fff;
+    font-size: .8125em;
+    font-weight: 600;
+    padding: 6px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+  }
+
+  .user-details {
+    @include list-clean;
+    font-size: .8125rem;
+
+    .name {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+  }
+}
+
+.post-title {
+  color: $color-gray-med;
+  float: left;
+}
+
+.post-action {
+  @include list-clean;
+  float: right;
+
+  li {
+    @include list-flat;
+  }
+
+  a {
+    color: $color-gray-light;
+
+    &:hover {
+      color: $color-epoch;
+    }
+  }
+}
+
+.post-body {
+  float: left;
+  width: 83.3333%;
+}
+
 
 /* Registration Page */
 .reg-page-title { margin-bottom: 21px; }
@@ -123,3 +200,17 @@
   padding: 0.25rem 0.5rem 0.375rem;
   font-size: 0.6875rem;
   margin: 0; }
+
+
+
+// Media Queries
+@media only screen and (max-width: 40em) {
+  .post-user {
+    margin-bottom: .5rem;
+
+    .user-avatar {
+      display: none;
+    }
+  }
+}
+
