@@ -83,7 +83,7 @@ server.pack.register([Scooter, {
   plugin: Blankie,
   options: {
     defaultSrc: 'none',
-    scriptSrc: ['self', '\'nonce-sabc123\''],
+    scriptSrc: ['self'],
     styleSrc: ['unsafe-inline', 'http://netdna.bootstrapcdn.com'],
     fontSrc: ['self', 'http://netdna.bootstrapcdn.com'],
     imgSrc: [ 'self', 'http://placehold.it/' ],
