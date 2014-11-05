@@ -7,6 +7,7 @@ var good = require('good');
 var Blankie = require('blankie');
 var Scooter = require('scooter');
 var jwt = require('hapi-auth-jsonwebtoken');
+var mkdirp = require('mkdirp');
 var config = require(path.join(__dirname, 'config'));
 var memDb = require(path.join(__dirname, 'memStore')).db;
 
@@ -20,7 +21,7 @@ var serverOpts = {
     noSniff: true
   },
   files: {
-    relativeTo: path.join(__dirname, "../public")
+    relativeTo: path.join(__dirname, '../public')
   }
 };
 var server = Hapi.createServer('localhost', config.port, serverOpts);
@@ -82,7 +83,7 @@ server.pack.register([Scooter, {
   plugin: Blankie,
   options: {
     defaultSrc: 'none',
-    scriptSrc: ['self', "'nonce-sabc123'"],
+    scriptSrc: ['self', '\'nonce-sabc123\''],
     styleSrc: ['unsafe-inline', 'http://netdna.bootstrapcdn.com'],
     fontSrc: ['self', 'http://netdna.bootstrapcdn.com'],
     imgSrc: [ 'self', 'http://placehold.it/' ],
@@ -93,8 +94,23 @@ server.pack.register([Scooter, {
 });
 
 
+// check if logging is enabled
+var options = {};
+if (config.logEnabled) {
+  mkdirp.sync('./logs/operations');
+  mkdirp.sync('./logs/errors');
+  mkdirp.sync('./logs/requests');
+  var logOpts = { extension: 'log', rotationTime: 1, format: 'YYYY-MM-DD-X' };
+  options.reporters = [
+    { reporter: require('good-console'), args:[{ log: '*', request: '*', error: '*' }] },
+    { reporter: require('good-file'), args: ['./logs/operations/', { ops: '*' }, logOpts] },
+    { reporter: require('good-file'), args: ['./logs/errors/', { error: '*' }, logOpts] },
+    { reporter: require('good-file'), args: ['./logs/requests/', { request: '*' }, logOpts] }
+  ];
+}
+
 // register server route logging
-server.pack.register(good, function (err) {
+server.pack.register({ plugin: good, options: options}, function (err) {
   if (err) { throw err; /* error loading the plugin */  }
 });
 
