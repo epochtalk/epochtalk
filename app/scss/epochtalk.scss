@@ -136,6 +136,10 @@
       font-weight: 600;
     }
   }
+
+  .user-role-sm {
+    display: none;
+  }
 }
 
 .post-title {
@@ -208,8 +212,18 @@
   .post-user {
     margin-bottom: .5rem;
 
-    .user-avatar {
+    .user-avatar,
+    .points,
+    .activity {
       display: none;
+    }
+
+    .user-role-sm {
+      color: $color-gray-med;
+      display: inline;
+      font-size: .75rem;
+      margin-left: .4rem;
+      text-transform: uppercase;
     }
   }
 }
