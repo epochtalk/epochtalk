@@ -7,8 +7,9 @@ module.exports = [function () {
       length = 10;
     }
     var end = '&hellip;';
-    var endLen = 2;
-    if (text.length <= length || text.length - endLen <= length) {
+    var endLen = 3;
+    console.log(text, text.length, String(text).substring(0, length - endLen).trim() + end);
+    if (text.length <= length) {
       return text;
     }
     else {
