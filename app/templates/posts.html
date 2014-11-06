@@ -10,7 +10,7 @@
           <span class="user-role">Hero</span>
         </div>
         <ul class="user-details">
-          <li class="name"><a href="#" ng-bind-html="post.user.username"></a><span class="user-role-sm">Hero</span></li>
+          <li class="name"><a href="/profiles/{{post.user.username}}" ng-bind-html="post.user.username"></a><span class="user-role-sm">Hero</span></li>
           <li class="points"> * * * * *</li>
           <li class="activity">Activity: 879</li>
         </ul>
@@ -22,7 +22,7 @@
     <div class="post-title">
       <!-- <span ng-bind-html="post.title"></span> -->
       <span class="timestamp">
-      {{post.created_at | date:'medium'}}
+      {{post.created_at | humanDate}}
       </span>
       <ul class="post-action">
         <li><a href="#"><i class="icon-epoch-heart"></i></a></li>
@@ -30,7 +30,7 @@
         <li><a href="#"><i class="icon-epoch-reply"></i></a></li>
         <li><a href="#"><i class="icon-epoch-quote"></i></a></li>
       </ul>
-      <button class="button tiny" ng-click="startEditPost($index)" ng-if="post.editable">
+      <button class="button tiny" ng-click="PostsCtrl.startEditPost($index)" ng-if="post.editable">
         Edit
       </button>
     </div>
@@ -79,42 +79,43 @@
           <span class="label alert" ng-if="post.error" ng-bind="post.error.message"></span>
         </div>
       </div>
-      
-      <!-- Editor if logged in -->
-      <div ng-if="PostsCtrl.loggedIn()" class="post-editor-auth">
-        <!-- editor -->
-        <form name="form" class="css-form editor-form" novalidate>
-          <!-- Title -->
-          <label>Title:
-            <input type="text" name="title" placeholder="Title" ng-model="PostsCtrl.newPost.title" required>
-            <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
-              Title is Required
-            </small>
-          </label>
-          <!-- Body -->
-          <div class="row">
-            <div class="small-6 columns">
-              <label>Reply:</label>
-            </div>
-            <div class="small-6 columns" class="preview-title">
-              <label>Preview:</label>
-            </div>
-          </div>
-          <!-- Editor -->
-          <div class="editor-container">
-            <epochtalk-editor body="PostsCtrl.newPost.body" encoded-body="PostsCtrl.newPost.encodedBody" reset="PostsCtrl.resetEditor" class="editor"></epochtalk-editor>
-          </div>
-        </form>
-        <div class="editor-button-container">
-          <button class="button expand" ng-click="PostsCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsCtrl.newPost.body.length > 0">
-            Send
-          </button>
-          <span class="label alert" ng-if="PostsCtrl.newPost.error" ng-bind="PostsCtrl.newPost.error.message"></span>
-        </div>
-      </div>
   </div>
 </div>
-
-
+<div class="row">
+  <div class="small-12 columns">
+    <!-- Editor if logged in -->
+    <div ng-if="PostsCtrl.loggedIn()" class="post-editor-auth">
+      <!-- editor -->
+      <form name="form" class="css-form editor-form" novalidate>
+        <!-- Title -->
+        <label>Title:
+          <input type="text" name="title" placeholder="Title" ng-model="PostsCtrl.newPost.title" required>
+          <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
+            Title is Required
+          </small>
+        </label>
+        <!-- Body -->
+        <div class="row">
+          <div class="small-6 columns">
+            <label>Reply:</label>
+          </div>
+          <div class="small-6 columns" class="preview-title">
+            <label>Preview:</label>
+          </div>
+        </div>
+        <!-- Editor -->
+        <div class="editor-container">
+          <epochtalk-editor body="PostsCtrl.newPost.body" encoded-body="PostsCtrl.newPost.encodedBody" reset="PostsCtrl.resetEditor" class="editor"></epochtalk-editor>
+        </div>
+      </form>
+      <div class="editor-button-container">
+        <button class="button expand" ng-click="PostsCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsCtrl.newPost.body.length > 0">
+          Send
+        </button>
+        <span class="label alert" ng-if="PostsCtrl.newPost.error" ng-bind="PostsCtrl.newPost.error.message"></span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <pagination page-count="PostsCtrl.pageCount" page="PostsCtrl.page"></pagination>
