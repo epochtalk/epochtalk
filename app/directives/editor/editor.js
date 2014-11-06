@@ -8,7 +8,8 @@ module.exports = ['$timeout', function($timeout) {
     scope: {
       body: '=',
       encodedBody: '=',
-      reset: '='
+      reset: '=',
+      focusEditor: '='
     },
     link: function(scope, element, attrs, ctrl) {
       // Find relevant HTML Elements
@@ -97,7 +98,7 @@ module.exports = ['$timeout', function($timeout) {
       editorElement.on('scroll', onEditorScroll);
       previewElement.on('scroll', onPreviewScroll);
 
-      // directive initialization 
+      // directive initialization
       var init = function() {
         // on load ng-model body to editor and preview
         if (scope.encodedBody && scope.encodedBody.length > 0) {
@@ -108,12 +109,19 @@ module.exports = ['$timeout', function($timeout) {
         previewElement.html(processed);
       };
       init();
-      
+
       // reset switch
       scope.$watch('reset', function(newValue, oldValue) {
         if (newValue === true) {
           init();
           scope.reset = false;
+        }
+      });
+
+      // autofocus switch
+      scope.$watch('focusEditor', function(focusEditor) {
+        if (focusEditor === true) {
+          $(rawEditorElement).focus();
         }
       });
     },
