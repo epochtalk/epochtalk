@@ -71,13 +71,16 @@
         <span class="label alert" ng-if="post.error" ng-bind="post.error.message"></span>
       </div>
     </div>
-
     <ul class="post-action">
       <li><a href="#"><i class="icon-epoch-heart"></i></a></li>
       <li><a href="#"><i class="icon-epoch-flag"></i></a></li>
       <li><a href="#"><i class="icon-epoch-reply"></i></a></li>
       <li><a href="#"><i class="icon-epoch-quote"></i></a></li>
     </ul>
+    <div ng-if="post.user.signature">
+      <div class="post-signature"></div>
+      <div ng-bind-html="post.user.signature"></div>
+    </div>
   </div>
 </div>
 <div class="row">
