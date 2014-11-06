@@ -97,10 +97,8 @@
 
 .post-block {
   border-bottom: 1px solid $color-gray-light;
-  // float: left;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  // width: 100%;
+  margin-bottom: 1.6rem;
+  padding-bottom: 2.4rem;
 }
 
 .post-user {
@@ -153,12 +151,17 @@
   float: right;
   padding-left: 1rem;
 
+  &:hover a {
+    color: $color-gray-med;
+  }
+
   li {
     @include list-flat;
   }
 
   a {
     color: $color-gray-light;
+    transition: all .1s ease;
 
     &:hover {
       color: $color-epoch;
@@ -167,8 +170,9 @@
 }
 
 .post-body {
-  float: left;
-  width: 83.3333%;
+    margin-bottom: 1.2rem;
+  // float: left;
+  // width: 83.3333%;
 }
 
 
@@ -227,6 +231,20 @@
       margin-left: .4rem;
       text-transform: uppercase;
     }
+  }
+
+  .post-block {
+    padding-bottom: 1.2rem;
+  }
+
+  .post-title .post-action {
+    display: none;
+  }
+
+  .post-action {
+    float: left;
+    font-size: 1.2rem;
+    padding-left: 0;
   }
 }
 
