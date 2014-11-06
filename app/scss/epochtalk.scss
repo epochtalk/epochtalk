@@ -1,5 +1,5 @@
 @import 'variables';
-// @import 'epoch-icons';
+@import 'epoch-icons';
 
 /** Globals ---------------------------------------------------------------- */
 
@@ -145,11 +145,13 @@
 .post-title {
   color: $color-gray-med;
   float: left;
+  width: 100%;
 }
 
 .post-action {
   @include list-clean;
   float: right;
+  padding-left: 1rem;
 
   li {
     @include list-flat;
