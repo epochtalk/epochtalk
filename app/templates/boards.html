@@ -4,10 +4,11 @@
   <div class="row">
     <a class="anchor-offset" id="{{cat.name | replace:' ':'-' | lowercase }}-{{$index+1}}"></a>
     <div class="small-12 columns category-title">
-      <a ng-click="BoardsCtrl.toggle($index)"
-      ng-class="{ 'fa-chevron-right' : BoardsCtrl.toggles[$index], 'fa-chevron-down': !BoardsCtrl.toggles[$index] }"
-      class="fa collapse-btn no-select"></a>
-      <h3 ng-bind-html="cat.name" class="inline-block"></h3>
+      <div ng-click="BoardsCtrl.toggle($index)" class="inline-block pointer no-select">
+        <a ng-class="{ 'fa-chevron-right' : BoardsCtrl.toggles[$index], 'fa-chevron-down': !BoardsCtrl.toggles[$index] }"
+        class="fa collapse-btn no-select"></a>
+        <h3 ng-bind-html="cat.name" class="inline-block"></h3>
+      </div>
       <div class="thin-dotted-underline"></div>
     </div>
   </div>

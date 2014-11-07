@@ -14,6 +14,7 @@
 .anchor-offset { display: block; position: relative; top: -35px; visibility: hidden; }
 .no-select { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 .inline-block { display: inline-block; }
+.pointer { cursor: pointer; }
 
 /* Foundation Overrides */
 .magellan-override { padding: 0px; background: transparent; }
@@ -82,7 +83,7 @@
   font-size: 14px;
   margin-top: 5px;
   margin-bottom: 5px; }
-.collapse-btn { display: inline-block; width: 15px; font-size: 1.45em; margin-right: 10px;}
+.collapse-btn { position: relative; top: -3px; width: 15px; margin-right: 5px; font-size: 1em;}
 
 /* New Thread Page */
 .info-box { margin-bottom: 10px; }
