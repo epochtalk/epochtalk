@@ -44,12 +44,11 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc', 'User',
 
     this.recover = function() {
       ctrl.recoverError = {};
-      User.recoverEmail({ query: ctrl.recover.query }).$promise
-      .then(function(resource) {
+      User.recoverAccount({ query: ctrl.recover.query }).$promise
+      .then(function() { // Success
         ctrl.recoverSubmitted = true;
-        console.log(resource.email);
       })
-      .catch(function(err) {
+      .catch(function(err) { // Error
         ctrl.recoverError.status = true;
         ctrl.recoverError.message = err.data.message;
       });

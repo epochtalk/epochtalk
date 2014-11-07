@@ -33,9 +33,9 @@ module.exports = ['$resource',
         url: '/api/register/email/:email',
         params: { email: '@email' }
       },
-      recoverEmail: {
+      recoverAccount: {
         method: 'GET',
-        url: '/api/users/recover/:query',
+        url: '/api/users/:query/recover',
         params: { query: '@query' }
       }
     });
