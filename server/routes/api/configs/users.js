@@ -117,3 +117,18 @@ exports.find = {
   },
   auth: { mode: 'try', strategy: 'jwt' }
 };
+
+exports.recoverEmail = {
+  handler: function(request, reply) {
+    var query = request.params.query;
+    core.users.userByUsername(query)
+    .catch(function() { return core.users.userByEmail(query); })
+    .then(function(user) {
+      reply({ email: user.email });
+    })
+    .catch(function() {
+      var error = Hapi.error.badRequest('No Account Found');
+      reply(error);
+    });
+  }
+};

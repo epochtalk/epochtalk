@@ -1,14 +1,59 @@
-module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
-  function($route, $timeout, Auth, BreadcrumbSvc) {
+module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc', 'User',
+  function($route, $timeout, Auth, BreadcrumbSvc, User) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
     this.currentUser = Auth.currentUser;
     this.user = {};
-    this.error = {};
+    this.recover = {};
+    this.loginError = {};
+    this.recoverError = {};
+    this.recoverSubmitted = false;
+    this.recoverModalVisible = false;
+    this.showRecover = false;
+    this.loginModalVisible = false;  // Indicates if modal is currently still in view
+    this.showLogin = false; //  toggling show will open/close modal
 
     Auth.checkAuthentication();
 
     this.breadcrumbs = BreadcrumbSvc.crumbs;
+
+    this.enterRecover = function(keyEvent) {
+      if (keyEvent.which === 13) {
+        ctrl.recover();
+      }
+    };
+
+    this.openRecoverModal = function() {
+      ctrl.showRecover = true;
+      ctrl.recoverModalVisible = true;
+    };
+
+    this.closeRecoverModal = function() {
+      ctrl.showRecover = false;
+    };
+
+    this.clearRecoverFields = function() {
+      // Delay clearing fields to hide clear from users
+      $timeout(function() {
+        ctrl.recoverModalVisible = false; // Modal is out of view
+        ctrl.recoverSubmitted = false;
+        ctrl.recover.query = '';
+        ctrl.recoverError = {};
+      }, 500);
+    };
+
+    this.recover = function() {
+      ctrl.recoverError = {};
+      User.recoverEmail({ query: ctrl.recover.query }).$promise
+      .then(function(resource) {
+        ctrl.recoverSubmitted = true;
+        console.log(resource.email);
+      })
+      .catch(function(err) {
+        ctrl.recoverError.status = true;
+        ctrl.recoverError.message = err.data.message;
+      });
+    };
 
     this.enterLogin = function(keyEvent) {
       if (keyEvent.which === 13) {
@@ -16,30 +61,28 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
       }
     };
 
-    this.show = false; //  toggling show will open/close modal
-    this.modalVisible = false;  // Indicates if the modal is currently still in view
     this.openLoginModal = function() {
-      ctrl.show = true;
-      ctrl.modalVisible = true; // modal is in view
+      ctrl.showLogin = true;
+      ctrl.loginModalVisible = true; // modal is in view
     };
 
     this.closeLoginModal = function() {
-      ctrl.show = false;
+      ctrl.showLogin = false;
     };
 
     this.clearLoginFields = function() {
       // Delay clearing fields to hide clear from users
       $timeout(function() {
-        ctrl.modalVisible = false; // Modal is out of view
+        ctrl.loginModalVisible = false; // Modal is out of view
         ctrl.user.username = '';
         ctrl.user.password = '';
         ctrl.user.rememberMe = false;
-        ctrl.error = {};
+        ctrl.loginError = {};
       }, 500);
     };
 
     this.login = function() {
-      ctrl.error = {};
+      ctrl.loginError = {};
       Auth.login(ctrl.user,
         function(data) {
           ctrl.closeLoginModal();
@@ -47,8 +90,8 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
           $timeout(function() { $route.reload(); });
         },
         function(err) {
-          ctrl.error.status = true;
-          ctrl.error.message = err.data.message;
+          ctrl.loginError.status = true;
+          ctrl.loginError.message = err.data.message;
         }
       );
     };
@@ -58,5 +101,21 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
         $timeout(function() { $route.reload(); });
       });
     };
+
+    this.swapModals = function() {
+      if (ctrl.showLogin) {
+        ctrl.closeLoginModal();
+        $timeout(function() {
+          ctrl.openRecoverModal();
+        }, 200);
+      }
+      else {
+        ctrl.closeRecoverModal();
+        $timeout(function() {
+          ctrl.openLoginModal();
+        }, 200);
+      }
+    };
+
   }
 ];

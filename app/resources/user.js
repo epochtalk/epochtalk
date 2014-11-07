@@ -32,6 +32,11 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/register/email/:email',
         params: { email: '@email' }
+      },
+      recoverEmail: {
+        method: 'GET',
+        url: '/api/users/recover/:query',
+        params: { query: '@query' }
       }
     });
   }
