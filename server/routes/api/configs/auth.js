@@ -4,6 +4,7 @@ var Promise = require('bluebird');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 var path = require('path');
+var heckler = require('heckler');
 var config = require(path.join(__dirname, '..', '..', '..', 'config'));
 var authSchema = require(path.join('..', 'schema', 'auth'));
 var memDb = require(path.join('..', '..', '..', 'memStore')).db;
@@ -74,7 +75,7 @@ exports.logout = {
     var credentials = request.auth.credentials;
     var id = credentials.id;
 
-    // delete jwt from memdown 
+    // delete jwt from memdown
     memDb.del(id, function(err, value) {
       if (err) {
         var error = Hapi.error.internal(err.message);
@@ -164,6 +165,31 @@ exports.email = {
     core.users.userByEmail(email)
     .then(function(user) { reply({ found: true }); })
     .catch(function(err) { reply({ found: false}); });
+  }
+};
+
+exports.recoverAccount = {
+  handler: function(request, reply) {
+    var query = request.params.query;
+    core.users.userByUsername(query)
+    .catch(function() { return core.users.userByEmail(query); })
+    .then(function(user) {
+      //Email user reset information here
+      var email = {
+        from: config.senderEmail,
+        to: user.email,
+        subject: '[EpochTalk] Account Recovery',
+        html: 'Visit the link below to reset your user password: <br /><br />' +
+              '<strong>Username</strong>: ' + user.username + '<br />' +
+              '<strong>Password</strong>: <a href="#">Reset</a>'
+      };
+      heckler.email(email);
+      reply('Reset passsword email sent');
+    })
+    .catch(function() {
+      var error = Hapi.error.badRequest('No Account Found');
+      reply(error);
+    });
   }
 };
 

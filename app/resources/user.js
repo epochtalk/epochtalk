@@ -35,7 +35,7 @@ module.exports = ['$resource',
       },
       recoverAccount: {
         method: 'GET',
-        url: '/api/users/:query/recover',
+        url: '/api/recover/:query',
         params: { query: '@query' }
       }
     });

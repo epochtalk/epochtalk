@@ -117,20 +117,3 @@ exports.find = {
   },
   auth: { mode: 'try', strategy: 'jwt' }
 };
-
-exports.recoverAccount = {
-  handler: function(request, reply) {
-    var query = request.params.query;
-    core.users.userByUsername(query)
-    .catch(function() { return core.users.userByEmail(query); })
-    .then(function(user) {
-      //Email user reset information here
-      console.log(user.email);
-      reply();
-    })
-    .catch(function() {
-      var error = Hapi.error.badRequest('No Account Found');
-      reply(error);
-    });
-  }
-};

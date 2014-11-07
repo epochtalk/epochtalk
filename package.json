@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "async": "^0.9.0",
-    "bbcode-parser": "git://github.com/epochtalk/bbcode-parser",
+    "bbcode-parser": "git+https://github.com/epochtalk/bbcode-parser",
     "bcrypt": "^0.7.8",
     "blankie": "^0.1.2",
     "bluebird": "^2.3.2",
@@ -45,6 +45,7 @@
     "good-file": "^3.0.0",
     "hapi": "^7.1.1",
     "hapi-auth-jsonwebtoken": "^0.2.1",
+    "heckler": "git+https://github.com/slickage/heckler",
     "joi": "^4.6.2",
     "jsonwebtoken": "^1.1.1",
     "levelup": "^0.19.0",

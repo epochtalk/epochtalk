@@ -7,6 +7,7 @@ module.exports = [
   { method: 'POST', path: '/register', config: auth.register },
   { method: 'GET', path: '/register/username/{username}', config: auth.username },
   { method: 'GET', path: '/register/email/{email}', config: auth.email },
-  { method: 'GET', path: '/authenticated', config: auth.isAuthenticated }
+  { method: 'GET', path: '/authenticated', config: auth.isAuthenticated },
+  { method: 'GET', path: '/recover/{query}', config: auth.recoverAccount }
   // { method: 'POST', path: '/refreshToken', config: auth.refreshToken }
 ];

@@ -5,6 +5,7 @@ var config = {
   root: rootPath,
   port: process.env.PORT || 8080,
   logEnabled: true,
+  senderEmail: 'info@epochtalk.com',
   privateKey: 'Change this to something more secure'
 };
 
