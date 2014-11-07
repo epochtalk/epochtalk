@@ -7,7 +7,7 @@ function ($routeParams, $location, Breadcrumbs) {
   var breadcrumbsStore; // stores array of breadcrumb objects
 
   var pathLookup = {
-    home:       { url: '/boards',             label: 'Home' },
+    home:       { url: '/',             label: 'Home' },
     register:   { url: '/register',           label: 'Registration' },
     profiles:   {                             label: 'Profiles' },
     admin:      { url: '/admin',              label: 'Administration' },
