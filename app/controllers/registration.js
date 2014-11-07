@@ -1,16 +1,9 @@
-module.exports = ['$scope', '$location', 'Auth',
-  function($scope, $location, Auth) {
+module.exports = ['$location', 'Auth',
+  function($location, Auth) {
     var ctrl = this;
-
-    // TODO: possibly a better way to watch for if the user logs in
-    $scope.$watch(function(){
-      return Auth.isAuthenticated();
-    }, function (loggedIn) {
-      // Dont let users see this page if they're logged in
-      if (loggedIn) {
-        $location.path('/');
-      }
-    });
+    if (Auth.isAuthenticated()) {
+      $location.path('/');
+    }
 
     this.user = {};
     this.error = {};
