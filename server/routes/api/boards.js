@@ -15,4 +15,6 @@ module.exports = [
   { method: 'POST', path: '/boards/{id}', config: boards.update },
   // DELETE BOARD (should delete all threads?)
   { method: 'DELETE', path: '/boards/{id}', config: boards.delete },
+  // POST IMPORT
+  { method: 'POST', path: '/boards/import', config: boards.import }
 ];

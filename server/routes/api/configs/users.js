@@ -6,16 +6,7 @@ var pre = require(path.join('..', 'pre', 'users'));
 
 exports.create = {
   handler: function(request, reply) {
-    // build the user object from payload and params
-    var newUser = {
-      username: request.payload.username,
-      email: request.payload.email,
-      password: request.payload.password,
-      confirmation: request.payload.confirmation
-    };
-
-    // create the thread in core
-    core.users.create(newUser)
+    core.users.create(request.payload)
     .then(function(user) {
       delete user.passhash;
       reply(user);
@@ -23,6 +14,19 @@ exports.create = {
     .catch(function(err) { reply(Hapi.error.internal()); });
   },
   validate: { payload: userSchema.validate }
+};
+
+exports.import = {
+  handler: function(request, reply) {
+    core.users.create(request.payload)
+    .then(function(user) {
+      delete user.passhash;
+      reply(user);
+    })
+    .catch(function(err) { reply(Hapi.error.internal()); });
+  },
+  validate: { payload: userSchema.validate },
+  auth: { strategy: 'jwt' }
 };
 
 exports.update = {

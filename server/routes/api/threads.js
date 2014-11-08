@@ -9,4 +9,6 @@ module.exports = [
   { method: 'GET', path: '/threads/{id}', config: threads.find },
   // DON'T UPDATE THREAD (update should be done in post)
   // DON'T DELETE THREAD (for now, should delete all posts?)
+  // POST IMPORT
+  { method: 'POST', path: '/threads/import', config: threads.import }
 ];

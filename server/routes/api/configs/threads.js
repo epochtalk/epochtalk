@@ -26,6 +26,25 @@ exports.create = {
   auth: { strategy: 'jwt' }
 };
 
+exports.import = {
+  handler: function(request, reply) {
+    var posts = request.payload.posts;
+    var thread = request.payload;
+    delete thread.posts;
+    core.threads.import(thread)
+    .then(function(importedThread) {
+      return Promise.each(posts, function(post) {
+        post.thread_id = importedThread.id;
+        return core.posts.import(post);
+      });
+    })
+    .then(function() { reply(thread); })
+    .catch(function(err) { reply(Hapi.error.internal()); });
+  },
+  // validate: { payload: threadSchema.validateImport },
+  auth: { strategy: 'jwt' }
+};
+
 exports.byBoard = {
   pre: [
     { method: pre.getThreads, assign: 'threads' },

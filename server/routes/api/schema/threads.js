@@ -1,24 +1,42 @@
-var Joi = require('joi');
+var joi = require('joi');
+
+var threadByBoardSchema = {
+  board_id: joi.string().required(),
+  page: joi.number(),
+  limit: joi.number().integer().min(1)
+};
+
+var threadSchema = joi.object().keys({
+  title: joi.string().min(1).max(255).required(),
+  body: joi.string().allow(''),
+  encodedBody: joi.string().required(),
+  board_id: joi.string().required()
+});
+
+var threadImportSchema = joi.object().keys({
+  board_id: joi.string().required(),
+  created_at: joi.number(),
+  updated_at: joi.number(),
+  view_count: joi.number(),
+  deleted: joi.boolean(),
+  smf: {
+    ID_MEMBER: joi.number(),
+    ID_TOPIC: joi.number(),
+    ID_FIRST_MSG: joi.number()
+  }
+});
 
 module.exports = {
   validate: function(thread, options, next) {
-    var threadSchema = Joi.object().keys({
-      title: Joi.string().min(1).max(255).required(),
-      body: Joi.string().allow(''),
-      encodedBody: Joi.string().required(),
-      board_id: Joi.string().required()
-    });
-    Joi.validate(thread, threadSchema, next);
+    joi.validate(thread, threadSchema, next);
   },
   validateByBoard: function(params, options, next) {
     if (Object.getOwnPropertyNames(params).length === 0) {
       return next();
     }
-    var threadByBoardSchema = {
-      board_id: Joi.string().required(),
-      page: Joi.number(),
-      limit: Joi.number().integer().min(1)
-    };
-    Joi.validate(params, threadByBoardSchema, next);
+    joi.validate(params, threadByBoardSchema, next);
+  },
+  validateImport: function(params, options, next) {
+    joi.validate(params, threadImportSchema, next);
   }
 };
