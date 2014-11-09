@@ -20,7 +20,7 @@ module.exports = ['user', 'User', 'Auth', '$location',
         // redirect page if username changed
         if (ctrl.displayUsername !== ctrl.user.username) {
           $location.path('/profiles/' + ctrl.user.username);
-          Auth.setUser(ctrl.user.username);
+          Auth.setUsername(ctrl.user.username);
         }
       })
       .catch(function(err) {

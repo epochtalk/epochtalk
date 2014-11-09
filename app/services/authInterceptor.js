@@ -6,11 +6,14 @@ module.exports = ['$q', '$window', function ($q, $window) {
     request: function (config) {
       config.headers = config.headers || {};
       var token;
-      if($window.sessionStorage.token) {
+      if ($window.sessionStorage.token) {
         token = $window.sessionStorage.token;
       }
       else if ($window.localStorage.token) {
         token = $window.localStorage.token;
+      }
+      else if ($window.privateStorage.token) {
+        token = $window.privateStorage.token;
       }
 
       if (token) {
@@ -28,6 +31,9 @@ module.exports = ['$q', '$window', function ($q, $window) {
         delete $window.localStorage.token;
         delete $window.localStorage.username;
         delete $window.localStorage.userId;
+        delete $window.privateStorage.token;
+        delete $window.privateStorage.username;
+        delete $window.privateStorage.userId;
       }
       return response || $q.when(response);
     }

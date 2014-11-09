@@ -4,7 +4,34 @@
 
 module.exports = ['$location', '$window', 'User',
   function($location, $window, User) {
-    var getUser = function() {
+    // private storage fallback for safari private browser
+    $window.privateStorage = {};
+    var hasLocalStorage = checkLocalStorage();
+    var hasSessionStorage = checkSessionStorage();
+
+    function checkLocalStorage() {
+      var testKey = 'test';
+      var storage = $window.localStorage;
+      try {
+        storage.setItem(testKey, '1');
+        storage.removeItem(testKey);
+        return true;
+      }
+      catch (error) { return false; }
+    }
+
+    function checkSessionStorage() {
+      var testKey = 'test';
+      var storage = $window.sessionStorage;
+      try {
+        storage.setItem(testKey, '1');
+        storage.removeItem(testKey);
+        return true;
+      }
+      catch (error) { return false; }
+    }
+
+    var getUsername = function() {
       var username;
       if ($window.sessionStorage.username) {
         username = $window.sessionStorage.username;
@@ -12,15 +39,21 @@ module.exports = ['$location', '$window', 'User',
       else if ($window.localStorage.username) {
         username = $window.localStorage.username;
       }
+      else if ($window.privateStorage.username) {
+        username = $window.privateStorage.username;
+      }
       return username;
     };
 
-    var setUser = function(username) {
+    var setUsername = function(username) {
       if ($window.sessionStorage.username) {
         $window.sessionStorage.username = username;
       }
       else if ($window.localStorage.username) {
         $window.localStorage.username = username;
+      }
+      else if ($window.privateStorage.username) {
+        $window.privateStorage.username = username;
       }
     };
 
@@ -31,30 +64,43 @@ module.exports = ['$location', '$window', 'User',
       delete $window.localStorage.token;
       delete $window.localStorage.username;
       delete $window.localStorage.userId;
+      delete $window.privateStorage.token;
+      delete $window.privateStorage.username;
+      delete $window.privateStorage.userId;
     };
 
     var saveUserLocal = function(resource) {
-      $window.localStorage.token = resource.token;
-      $window.localStorage.username = resource.username;
-      $window.localStorage.userId = resource.userId;
+      if (hasLocalStorage) {
+        $window.localStorage.token = resource.token;
+        $window.localStorage.username = resource.username;
+        $window.localStorage.userId = resource.userId;
+      }
+      else {
+        $window.privateStorage.token = resource.token;
+        $window.privateStorage.username = resource.username;
+        $window.privateStorage.userId = resource.userId;
+      }
     };
 
     var saveUserSession = function(resource) {
-      $window.sessionStorage.token = resource.token;
-      $window.sessionStorage.username = resource.username;
-      $window.sessionStorage.userId = resource.userId;
+      if (hasSessionStorage) {
+        $window.sessionStorage.token = resource.token;
+        $window.sessionStorage.username = resource.username;
+        $window.sessionStorage.userId = resource.userId;
+      }
+      else {
+        $window.privateStorage.token = resource.token;
+        $window.privateStorage.username = resource.username;
+        $window.privateStorage.userId = resource.userId;
+      }
     };
 
     return {
       register: function(user, callback, error) {
         // get username
         User.register(user, callback, error).$promise
-        .then(function(resource) {
-          saveUserSession(resource);
-        })
-        .catch(function(err) {
-          clearUser();
-        });
+        .then(function(resource) { saveUserSession(resource); })
+        .catch(function(err) { clearUser(); });
       },
 
       login: function(user, callback, error) {
@@ -70,30 +116,28 @@ module.exports = ['$location', '$window', 'User',
           if (rememberMe) { saveUserLocal(resource); }
           else { saveUserSession(resource); }
         })
-        .catch(function(err) {
-          clearUser();
-        });
+        .catch(function(err) { clearUser(); });
       },
 
       logout: function(callback, error) {
         User.logout(null, callback, error).$promise
-        .then(function() {
-          clearUser();
-        });
+        .then(function() { clearUser(); });
       },
 
       checkAuthentication: function() { User.ping(); },
 
       isAuthenticated: function() {
         var authenticated = false;
-        if ($window.sessionStorage.token || $window.localStorage.token) {
+        if ($window.sessionStorage.token ||
+            $window.localStorage.token ||
+            $window.privateStorage.token) {
           authenticated = true;
         }
         return authenticated;
       },
 
-      currentUser: function() { return getUser(); },
-      setUser: setUser,
+      getUsername: getUsername,
+      setUsername: setUsername,
 
       checkUsername: function(username, callback, error) {
         User.checkUsername({ username: username }, callback, error);

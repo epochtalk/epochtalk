@@ -2,7 +2,7 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc', 'User',
   function($route, $timeout, Auth, BreadcrumbSvc, User) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
-    this.currentUser = Auth.currentUser;
+    this.currentUser = Auth.getUsername;
     this.user = {};
     this.recover = {};
     this.loginError = {};
