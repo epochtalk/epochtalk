@@ -1,10 +1,49 @@
 var core = require('epochcore')();
+var path = require('path');
 var Hapi = require('hapi');
-var boardSchema = require('../schema/boards');
+var boardSchema = require(path.join(__dirname, '..', 'schema', 'boards'));
 
 exports.create = {
   handler: function(request, reply) {
-    quest, reply) {
+    core.boards.create(request.payload)
+    .then(function(board) {
+      reply(board);
+    })
+    .catch(function(err) { reply(Hapi.error.internal()); });
+  },
+  validate: {
+    payload: boardSchema.validate
+  }
+};
+
+exports.import = {
+  handler: function(request, reply) {
+    core.boards.create(request.payload)
+    .then(function(board) {
+      reply(board);
+    })
+    .catch(function(err) { reply(Hapi.error.internal()); });
+  },
+  validate: {
+    payload: boardSchema.validate
+  }
+};
+
+exports.find = {
+  handler: function(request, reply) {
+    core.boards.find(request.params.id)
+    .then(function(board) {
+      reply(board);
+    })
+    .catch(function(err) { reply(Hapi.error.internal()); });
+  },
+  validate: {
+    params: boardSchema.validateId
+  }
+};
+
+exports.all = {
+  handler: function(request, reply) {
     core.boards.all()
     .then(function(boards) {
       reply(boards);
