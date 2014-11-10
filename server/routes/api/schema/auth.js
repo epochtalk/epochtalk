@@ -5,6 +5,13 @@ var loginSchema = Joi.object().keys({
   password: Joi.string().required()
 });
 
+var resetPasswordSchema = Joi.object().keys({
+  username: Joi.string().min(1).max(255).required(),
+  password: Joi.string().required(),
+  confirmation: Joi.ref('password'),
+  token: Joi.string().required()
+});
+
 var registerSchema = Joi.object().keys({
   username: Joi.string().regex(/[a-zA-Z0-9_\-]/).min(1).max(255).required(),
   email: Joi.string().email().required(),
@@ -20,5 +27,8 @@ module.exports = {
   },
   validateRegister: function(register, options, next) {
     Joi.validate(register, registerSchema, next);
+  },
+  validateResetPassword: function(reset, options, next) {
+    Joi.validate(reset, resetPasswordSchema, next);
   }
 };

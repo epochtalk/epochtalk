@@ -15,6 +15,10 @@ module.exports = ['$resource',
         method: 'POST',
         url: '/api/login'
       },
+      resetPassword: {
+        method: 'POST',
+        url: '/api/reset'
+      },
       logout: {
         method: 'DELETE',
         url: '/api/logout'
@@ -37,6 +41,11 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/recover/:query',
         params: { query: '@query' }
+      },
+      isValidResetToken: {
+        method: 'GET',
+        url: '/api/reset/:username/:token/validate',
+        params: { username: '@username', token: '@token' }
       }
     });
   }

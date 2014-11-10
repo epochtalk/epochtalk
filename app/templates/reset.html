@@ -1,0 +1,32 @@
+<!--Reset Password -->
+<div class="row">
+  <div class="small-12 columns">
+    <h3>Reset Password</h3>
+    <div class="thin-dotted-underline"></div>
+  </div>
+</div>
+<div class="row">
+  <div class="small-12 columns">
+    <div ng-if="ResetCtrl.status.message" class="alert-box radius" ng-class="ResetCtrl.status.type">
+      {{ResetCtrl.status.message}}
+      <a ng-click="ResetCtrl.hideStatus()" class="close">&times;</a>
+    </div>
+    <div ng-if="!resetPassword.confirmation.$error.required && !resetPassword.password.$error.required && ResetCtrl.updatedUser.password !== ResetCtrl.updatedUser.confirmation && resetPassword.password.$touched" class="alert-box alert radius" ng-class="ResetCtrl.status.type">
+      Password and Confirmation do not match
+    </div>
+    <form name="resetPassword" class="css-form" novalidate>
+      <input type="password" name="password" placeholder="New Password" ng-model="ResetCtrl.updatedUser.password" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" ng-disabled="ResetCtrl.tokenExpired" auto-focus required>
+      <br/>
+      <input type="password" name="confirmation" placeholder="Confirm New Password" ng-model="ResetCtrl.updatedUser.confirmation" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}"  ng-disabled="ResetCtrl.tokenExpired" required>
+      <br />
+      <a href="#" class="button tiny no-margin" ng-click="ResetCtrl.resetPassword()"
+        ng-disabled="ResetCtrl.tokenExpired || resetPassword.$invalid || ResetCtrl.updatedUser.password !== ResetCtrl.updatedUser.confirmation">
+        Reset Password
+      </a>
+      &nbsp;
+      <a href="#" class="button tiny no-margin" ng-click="ResetCtrl.redirectHome()">
+        Cancel
+      </a>
+    </form>
+  </div>
+</div>

@@ -8,6 +8,8 @@ module.exports = [
   { method: 'GET', path: '/register/username/{username}', config: auth.username },
   { method: 'GET', path: '/register/email/{email}', config: auth.email },
   { method: 'GET', path: '/authenticated', config: auth.isAuthenticated },
-  { method: 'GET', path: '/recover/{query}', config: auth.recoverAccount }
+  { method: 'GET', path: '/recover/{query}', config: auth.recoverAccount },
+  { method: 'GET', path: '/reset/{username}/{token}/validate', config: auth.isValidResetToken },
+  { method: 'POST', path: '/reset', config: auth.resetPassword }
   // { method: 'POST', path: '/refreshToken', config: auth.refreshToken }
 ];

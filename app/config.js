@@ -17,6 +17,21 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       template: fs.readFileSync(__dirname + '/templates/registration.html')
     });
 
+    $routeProvider.when('/reset/:username/:token', {
+      controller: 'ResetCtrl',
+      controllerAs: 'ResetCtrl',
+      template: fs.readFileSync(__dirname + '/templates/reset.html'),
+      resolve: {
+        tokenStatus: [ 'User', '$route', function(Users, $route) {
+          var params = {
+            username: $route.current.params.username,
+            token: $route.current.params.token
+          };
+          return Users.isValidResetToken(params);
+        }]
+      }
+    });
+
     $routeProvider.when('/boards', {
       controller: 'BoardsCtrl',
       controllerAs: 'BoardsCtrl',

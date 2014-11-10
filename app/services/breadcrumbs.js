@@ -7,11 +7,12 @@ function ($routeParams, $location, Breadcrumbs) {
   var breadcrumbsStore; // stores array of breadcrumb objects
 
   var pathLookup = {
-    home:       { url: '/',             label: 'Home' },
+    home:       { url: '/',                   label: 'Home' },
     register:   { url: '/register',           label: 'Registration' },
     profiles:   {                             label: 'Profiles' },
     admin:      { url: '/admin',              label: 'Administration' },
-    categories: { url: '/admin/categories',   label: 'Category Editor' }
+    categories: { url: '/admin/categories',   label: 'Category Editor' },
+    reset:      { url: '/reset',              label: 'Reset Password',        ignoreFollowing: true }
   };
 
   return {
@@ -40,10 +41,12 @@ function ($routeParams, $location, Breadcrumbs) {
       else { // routeParams is empty, route is static
         var pathArr = path.split('/');
         pathArr.shift(); // Shifting array by one to eliminate empty index
-        pathArr.forEach(function(id) {
+        for (var i = 0, len = pathArr.length; i < len; i++) {
+          var id = pathArr[i];
           var crumb = pathLookup[id] || { label: id };
           breadcrumbs.push(crumb);
-        });
+          if (crumb.ignoreFollowing) { break; } // ignore following crumbs if ignoreFollowing is true
+        }
         breadcrumbsStore = breadcrumbs;
       }
     },

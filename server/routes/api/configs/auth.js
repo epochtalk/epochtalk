@@ -6,9 +6,11 @@ var bcrypt = require('bcrypt');
 var path = require('path');
 var heckler = require('heckler');
 var config = require(path.join(__dirname, '..', '..', '..', 'config'));
+var emailTemplates = require(path.join(__dirname, '..', '..', '..', 'email-templates'));
 var authSchema = require(path.join('..', 'schema', 'auth'));
 var memDb = require(path.join('..', '..', '..', 'memStore')).db;
 var pre = require(path.join('..', 'pre', 'auth'));
+var crypto = require('crypto');
 
 exports.login = {
   handler: function(request, reply) {
@@ -174,22 +176,82 @@ exports.recoverAccount = {
     core.users.userByUsername(query)
     .catch(function() { return core.users.userByEmail(query); })
     .then(function(user) {
-      //Email user reset information here
-      var email = {
-        from: config.senderEmail,
-        to: user.email,
-        subject: '[EpochTalk] Account Recovery',
-        html: 'Visit the link below to reset your user password: <br /><br />' +
-              '<strong>Username</strong>: ' + user.username + '<br />' +
-              '<strong>Password</strong>: <a href="#">Reset</a>'
-      };
-      heckler.email(email);
-      reply('Reset passsword email sent');
+      var updateUser = {};
+      // Build updated user with resetToken and resetExpiration
+      updateUser.reset_token = crypto.randomBytes(20).toString('hex');
+      updateUser.reset_expiration = Date.now() + 1000 * 60 * 60; // 1 hr
+      updateUser.id = user.id;
+
+      // Store token and expiration to user object
+      core.users.update(updateUser)
+      .then(function(user) {
+        // Email user reset information here
+        heckler.email(emailTemplates.recoverAccount(user.email, user.username, user.reset_token));
+        var response = {};
+        response.statusCode = 200;
+        response.message = 'Reset passsword email sent';
+        reply(response);
+      })
+      .catch(function(err) {
+        reply(Hapi.error.internal(err));
+      });
     })
     .catch(function() {
       var error = Hapi.error.badRequest('No Account Found');
       reply(error);
     });
+  }
+};
+
+exports.resetPassword = {
+  handler: function(request, reply) {
+    var username = request.payload.username;
+    var password = request.payload.password;
+    var confirmation = request.payload.confirmation;
+    var token = request.payload.token;
+    core.users.userByUsername(username)
+    .then(function(user) {
+      var now = Date.now();
+      var tokenValid = user.reset_token === token;
+      var tokenExpired =  now > user.reset_expiration;
+      if (tokenValid && !tokenExpired) {
+        var updateUser = {};
+        updateUser.id = user.id;
+        updateUser.reset_expiration = now;
+        updateUser.password = password;
+        updateUser.confirmation = confirmation;
+        return core.users.update(updateUser)
+        .then(function(updatedUser) {
+          var response = {};
+          response.statusCode = 200;
+          response.message = 'Password successfully reset for user ' + updatedUser.username + '.';
+          // Send password reset confirmation email here
+          reply(response);
+        })
+        .catch(function(err) {
+          reply(Hapi.error.badRequest(err.message));
+        });
+      }
+      else {
+        reply(Hapi.error.badRequest('Password reset failed. Invalid reset token.'));
+      }
+    });
+  },
+  validate: { payload: authSchema.validateResetPassword }
+};
+
+exports.isValidResetToken = {
+  handler: function(request, reply) {
+    var username = request.params.username;
+    var token = request.params.token;
+    core.users.userByUsername(username)
+    .then(function(user) {
+      var now = Date.now();
+      var tokenValid = user.reset_token === token;
+      var tokenExpired =  now > user.reset_expiration;
+      reply({ token_valid: tokenValid, token_expired: tokenValid ? tokenExpired : undefined });
+    })
+    .catch(function() { return reply({ token_valid: false }); });
   }
 };
 
