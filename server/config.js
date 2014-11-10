@@ -6,7 +6,7 @@ var config = {
   port: process.env.PORT || 8080,
   logEnabled: true,
   senderEmail: 'info@epochtalk.com',
-  hostUrl: 'http://localhost',
+  hostUrl: 'http://localhost:8080',
   privateKey: 'Change this to something more secure'
 };
 
