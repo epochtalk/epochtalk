@@ -18,15 +18,15 @@ exports.create = {
 
 exports.import = {
   handler: function(request, reply) {
-    core.users.create(request.payload)
+    core.users.import(request.payload)
     .then(function(user) {
       delete user.passhash;
       reply(user);
     })
     .catch(function(err) { reply(Hapi.error.internal()); });
   },
-  validate: { payload: userSchema.validate },
-  auth: { strategy: 'jwt' }
+  validate: { payload: userSchema.validateImport }
+  // auth: { strategy: 'jwt' }
 };
 
 exports.update = {
