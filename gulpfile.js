@@ -1,12 +1,18 @@
-var path = require('path');
-require(path.join(__dirname, 'gulp', 'sass'));
-require(path.join(__dirname, 'gulp', 'browserify'));
 var gulp = require('gulp');
 var del = require('del');
 var livereload = require('gulp-livereload');
+var shell = require('gulp-shell');
+var nodemon = require('nodemon');
+var path = require('path');
+require(path.join(__dirname, 'gulp', 'sass'));
+require(path.join(__dirname, 'gulp', 'browserify'));
 
-gulp.task('build', ['copy-css', 'sass', 'browserify']);
-gulp.task('default', ['build']);
+gulp.task('build', ['clean', 'copy-css', 'sass', 'browserify']);
+gulp.task('dev', ['build', 'watch', 'nodemon']);
+gulp.task('default', function() {
+  return gulp.src('Procfile.dev', {read: false})
+    .pipe(shell('foreman start -f <%= file.path %> -p 8080'));
+});
 
 gulp.task('watch', function() {
   livereload.listen();
@@ -44,4 +50,8 @@ gulp.task('copy-css', function() {
       }
       else { data = false; }
     });
+});
+
+gulp.task('nodemon', function() {
+  nodemon(path.join(__dirname, 'server'));
 });

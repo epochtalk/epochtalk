@@ -1,2 +1,1 @@
-start-dev: npm run start-dev
-watch: gulp watch
+serve: npm run dev
