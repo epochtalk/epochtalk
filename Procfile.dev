@@ -1,1 +1,2 @@
-serve: npm run dev
+server: npm run dev
+emailer: node ./node_modules/epoch-emailer/server.js

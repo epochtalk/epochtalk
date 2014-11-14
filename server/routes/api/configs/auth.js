@@ -1,12 +1,10 @@
 var core = require('epochcore')();
 var Hapi = require('hapi');
-var Promise = require('bluebird');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 var path = require('path');
-var heckler = require('heckler');
+var emailer = require(path.join(__dirname, '..', '..', '..', 'emailer'));
 var config = require(path.join(__dirname, '..', '..', '..', 'config'));
-var emailTemplates = require(path.join(__dirname, '..', '..', '..', 'email'));
 var authSchema = require(path.join('..', 'schema', 'auth'));
 var memDb = require(path.join('..', '..', '..', 'memStore')).db;
 var pre = require(path.join('..', 'pre', 'auth'));
@@ -166,7 +164,7 @@ exports.email = {
     var email = request.params.email;
     core.users.userByEmail(email)
     .then(function(user) { reply({ found: true }); })
-    .catch(function(err) { reply({ found: false}); });
+    .catch(function(err) { reply({ found: false }); });
   }
 };
 
@@ -186,11 +184,15 @@ exports.recoverAccount = {
       core.users.update(updateUser)
       .then(function(user) {
         // Email user reset information here
-        heckler.email(emailTemplates.recoverAccount(user.email, user.username, user.reset_token));
-        var response = {};
-        response.statusCode = 200;
-        response.message = 'Reset passsword email sent';
-        reply(response);
+        var emailParams = {
+          email: user.email,
+          username: user.username,
+          reset_url: path.join(config.publicUrl, 'reset', user.username, user.reset_token)
+        };
+        return emailer.send('recoverAccount', emailParams);
+      })
+      .then(function(success) {
+        reply(success);
       })
       .catch(function(err) {
         reply(Hapi.error.internal(err));

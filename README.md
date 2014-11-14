@@ -29,7 +29,18 @@ $ cd frontend
 $ npm install
 ```
 
-3) Seed Test Data **(Optional)**
+3) Set Required Environment Variables
+
+One way of doing this is using [foreman](http://ddollar.github.io/foreman/) and a `.env` file. Example `.env` file for EpochTalk:
+```sh
+SMTP_HOST=smtp.example.com
+SMTP_USER=test@example.com
+SMTP_PASS=password
+EMAILER_SENDER_EMAIL=info@epochtalk.com
+EMAILER_LOG_ENABLED=true
+```
+
+4) Seed Test Data **(Optional)**
 
 EpochTalk is currently in alpha release, the easiest way to view the state of the software is to seed the forum with test data using the EpochTalk [admin tool](https://github.com/epochtalk/admin). While still within the `frontend` directory run the following commands:
 ```sh
@@ -37,7 +48,7 @@ $ npm install git+ssh://git@github.com/epochtalk/admin.git -g
 $ epoch --seed
 ```
 
-4) Start the EpochTalk Server
+5) Start the EpochTalk Server
 
 ```sh
 $ npm run start
@@ -99,7 +110,7 @@ The selection tool allows the user to highlight a section of text and a popup wi
 * Header 2
 * Blockquote
 
-Additional options can be added, they are as follows: 
+Additional options can be added, they are as follows:
 * superscript
 * subscript
 * strikethrough
@@ -114,9 +125,9 @@ Additional options can be added, they are as follows:
 * indent
 * outdent
 
-As for BBCode, the codes that are parsed is based off the SMF 1.0 BBCode spec but with some modifications as per the BitcoinTalk forum. Because BBCode differs from forum to forum, a preview window is provided to the right of the main user input to show what the post would like once it has been sent to the server. The editor itself will parse the user input in real time with a 250 millisecond debounce. So user can continue to type and the text will not be parsed until 250 millisecond after the last keypress. 
+As for BBCode, the codes that are parsed is based off the SMF 1.0 BBCode spec but with some modifications as per the BitcoinTalk forum. Because BBCode differs from forum to forum, a preview window is provided to the right of the main user input to show what the post would like once it has been sent to the server. The editor itself will parse the user input in real time with a 250 millisecond debounce. So user can continue to type and the text will not be parsed until 250 millisecond after the last keypress.
 
-The two systems can be used together since medium tool currently does not support some of the features that BBCode can do (Mainly colored text). It is suggested to use the Medium tool with BBCode added whenever the Medium tool falls short. 
+The two systems can be used together since medium tool currently does not support some of the features that BBCode can do (Mainly colored text). It is suggested to use the Medium tool with BBCode added whenever the Medium tool falls short.
 
 ### Security
 
@@ -126,7 +137,7 @@ All user typed HTML is escaped using their decimal encoding while any HTML gener
 
 Title like inputs are stripped of all html while description like inputs are allowed only formatting based html tags (```<b>```, ```<em>```, ```<table>``` but not ```<div>```, ```<img>```, and ```<span>```). Posts and Signatures are given the full treatment as described as above but allow more html like ```<img>```.
 
-### Planned Features: 
+### Planned Features:
 * Markdown Support
 * Hiding the preview window
 * Moving the preview window to another location

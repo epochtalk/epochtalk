@@ -4,10 +4,9 @@ var rootPath = path.normalize(__dirname + '/..');
 var config = {
   root: rootPath,
   port: process.env.PORT || 8080,
-  logEnabled: true,
-  senderEmail: 'info@epochtalk.com',
-  hostUrl: 'http://localhost:8080',
-  privateKey: 'Change this to something more secure'
+  logEnabled: process.env.LOG_ENABLED || true,
+  publicUrl: 'http://localhost:8080',
+  privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure'
 };
 
 module.exports = config;
