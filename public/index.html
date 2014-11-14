@@ -112,17 +112,15 @@
         <form name="recover" class="css-form" novalidate>
           <h3 class="thin-dotted-underline">Recover Account</h3>
           <br />
-          <input type="text" placeholder="Username or Email" ng-keyup="HeaderCtrl.enterRecover($event)" ng-model="HeaderCtrl.recover.query" ng-if="HeaderCtrl.recoverModalVisible && !HeaderCtrl.recoverSubmitted" auto-focus required>
+          <input type="text" placeholder="Username or Email" ng-keyup="HeaderCtrl.enterRecover($event)" ng-model="HeaderCtrl.recover.query" ng-disabled="HeaderCtrl.recoverDisabled" ng-if="HeaderCtrl.recoverModalVisible && !HeaderCtrl.recoverSubmitted" auto-focus required>
           <span ng-if="HeaderCtrl.recoverSubmitted">
             Please check the email listed for your account to reset your password.<br /><br />
           </span>
           <br/>
           <a ng-click="HeaderCtrl.swapModals()">Back to Login</a><br /><br />
           <span ng-if="!HeaderCtrl.recoverSubmitted">
-            <a href="#" class="button tiny no-margin" ng-click="HeaderCtrl.recover()"
-              ng-disabled="recover.$invalid">
-              Recover
-            </a>
+            <a href="#" class="button tiny no-margin recover-btn" ng-click="HeaderCtrl.recover()"
+              ng-disabled="recover.$invalid || HeaderCtrl.recoverDisabled" ng-bind="HeaderCtrl.recoverBtnLabel"></a>
             &nbsp;
           </span>
           <a href="#" class="button tiny no-margin" ng-click="HeaderCtrl.closeRecoverModal()">

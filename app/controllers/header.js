@@ -3,22 +3,30 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc', 'User',
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
     this.currentUser = Auth.getUsername;
-    this.user = {};
-    this.recover = {};
-    this.loginError = {};
-    this.recoverError = {};
-    this.recoverSubmitted = false;
-    this.recoverModalVisible = false;
-    this.showRecover = false;
+
+    this.user = {}; // Login Model
+    this.recover = {}; // Recover Account Model
+
+    this.loginError = {}; // Holds login errors
+    this.recoverError = {}; // Holds recover account erros
+
+    this.recoverSubmitted = false; // Indicates if form successfully submitted
+    this.recoverModalVisible = false; // Indicates if modal is currently in view
+    this.showRecover = false; // toggling show will open/close modal
+
+    this.recoverDisabled = false; // Indicates if the 'Recover' button is disabled
+    this.recoverBtnLabel = 'Recover'; // The label for the 'Recover' button
+
     this.loginModalVisible = false;  // Indicates if modal is currently still in view
     this.showLogin = false; //  toggling show will open/close modal
+
 
     Auth.checkAuthentication();
 
     this.breadcrumbs = BreadcrumbSvc.crumbs;
 
     this.enterRecover = function(keyEvent) {
-      if (keyEvent.which === 13) {
+      if (keyEvent.which === 13 && ctrl.recover.query.length) {
         ctrl.recover();
       }
     };
@@ -44,18 +52,24 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc', 'User',
 
     this.recover = function() {
       ctrl.recoverError = {};
+      ctrl.recoverDisabled = true;
+      ctrl.recoverBtnLabel = 'Loading...';
       User.recoverAccount({ query: ctrl.recover.query }).$promise
       .then(function() { // Success
         ctrl.recoverSubmitted = true;
+        ctrl.recoverDisabled = false;
+        ctrl.recoverBtnLabel = 'Recover';
       })
       .catch(function(err) { // Error
         ctrl.recoverError.status = true;
         ctrl.recoverError.message = err.data.message;
+        ctrl.recoverDisabled = false;
+        ctrl.recoverBtnLabel = 'Recover';
       });
     };
 
     this.enterLogin = function(keyEvent) {
-      if (keyEvent.which === 13) {
+      if (keyEvent.which === 13 && ctrl.user.username.length && ctrl.user.password.length) {
         ctrl.login();
       }
     };
