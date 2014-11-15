@@ -31,6 +31,20 @@
 
 /* Header CSS */
 .recover-btn { width: 85px; }
+input.icon-padding { padding-right: 40px; }
+.invalid { color: rgba(206, 4, 6, 0.64); }
+.valid { color: rgba(27, 196, 63, 0.64); }
+.input-icon {
+  cursor: default;
+  font-size: 20px;
+  position: relative;
+  float: right;
+  width: 20px;
+  height: 20px;
+  z-index: 9999;
+  top: -27px;
+  right: 10px;
+}
 
 /* Footer CSS */
 .footer {
@@ -187,7 +201,7 @@
 }
 
 
-/* Registration Page */
+/* Registration Modal */
 .reg-page-title { margin-bottom: 21px; }
 .reg-input-section { margin-bottom: 20px; }
 .reg-input-section input { margin-bottom: 0; }

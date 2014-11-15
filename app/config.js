@@ -11,12 +11,6 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       template: fs.readFileSync(__dirname + '/templates/main.html')
     });
 
-    $routeProvider.when('/register', {
-      controller: 'RegistrationCtrl',
-      controllerAs: 'RegistrationCtrl',
-      template: fs.readFileSync(__dirname + '/templates/registration.html')
-    });
-
     $routeProvider.when('/reset/:username/:token', {
       controller: 'ResetCtrl',
       controllerAs: 'ResetCtrl',
