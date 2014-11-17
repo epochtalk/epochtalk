@@ -1,14 +1,18 @@
-module.exports = ['$location', '$timeout', '$route', 'tokenStatus', 'User', 'Auth', function($location, $timeout, $route, tokenStatus, User, Auth) {
+module.exports = ['$location', '$timeout', '$route', 'Auth', function($location, $timeout, $route, Auth) {
   var ctrl = this;
   this.updatedUser = {};
   this.tokenExpired = false;
   this.tokenValid = false;
   this.status = {};
 
-  tokenStatus.$promise
-  .then(function(resource) {
-    ctrl.tokenExpired = resource.token_expired;
-    ctrl.tokenValid = resource.token_valid;
+  var params = {
+    username: $route.current.params.username,
+    token: $route.current.params.token
+  };
+
+  Auth.checkResetToken(params, function(res) {
+    ctrl.tokenExpired = res.token_expired;
+    ctrl.tokenValid = res.token_valid;
     if (!ctrl.tokenValid) {
       ctrl.redirectHome();
     }
@@ -27,8 +31,7 @@ module.exports = ['$location', '$timeout', '$route', 'tokenStatus', 'User', 'Aut
       confirmation: ctrl.updatedUser.confirmation,
       token: $route.current.params.token
     };
-    User.resetPassword(user).$promise
-    .then(function() {
+    Auth.resetPassword(user, function() { // success
       ctrl.updatedUser = {};
       ctrl.status = {};
       ctrl.status.message = 'Successfully reset account password, you will be redirected shortly.';
@@ -44,8 +47,8 @@ module.exports = ['$location', '$timeout', '$route', 'tokenStatus', 'User', 'Aut
           ctrl.status.type = 'alert';
         });
       }, 4000);
-    })
-    .catch(function(err) {
+    },
+    function(err) { // error
       ctrl.status.message = err.data.message;
       ctrl.status.type = 'alert';
     });

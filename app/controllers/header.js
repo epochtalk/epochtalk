@@ -1,5 +1,5 @@
-module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc', 'User',
-  function($route, $timeout, Auth, BreadcrumbSvc, User) {
+module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
+  function($route, $timeout, Auth, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
     this.currentUser = Auth.getUsername;
@@ -151,13 +151,13 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc', 'User',
       ctrl.recoverError = {};
       ctrl.recoverDisabled = true;
       ctrl.recoverBtnLabel = 'Loading...';
-      User.recoverAccount({ query: ctrl.recover.query }).$promise
-      .then(function() { // Success
+      Auth.recoverAccount({ query: ctrl.recover.query },
+      function() { // Success
         ctrl.recoverSubmitted = true;
         ctrl.recoverDisabled = false;
         ctrl.recoverBtnLabel = 'Recover';
-      })
-      .catch(function(err) { // Error
+      },
+      function(err) { // Error
         ctrl.recoverError.status = true;
         ctrl.recoverError.message = err.data.message;
         ctrl.recoverDisabled = false;

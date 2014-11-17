@@ -96,11 +96,6 @@ module.exports = ['$location', '$window', 'User',
     };
 
     return {
-      confirmAccount: function(user, callback, error) {
-        User.confirmAccount(user, callback, error).$promise
-        .then(function(resource) { saveUserSession(resource); });
-      },
-
       register: function(user, callback, error) {
         // Register passthrough
         User.register(user, callback, error);
@@ -148,8 +143,24 @@ module.exports = ['$location', '$window', 'User',
 
       checkEmail: function(email, callback, error) {
         User.checkEmail({ email: email }, callback, error);
-      }
+      },
 
+      confirmAccount: function(user, callback, error) {
+        User.confirmAccount(user, callback, error).$promise
+        .then(function(resource) { saveUserSession(resource); });
+      },
+
+      resetPassword: function(params, callback, error) {
+        User.resetPassword(params, callback, error);
+      },
+
+      recoverAccount: function(params, callback, error) {
+        User.recoverAccount(params, callback, error);
+      },
+
+      checkResetToken: function(params, callback, error) {
+        User.checkResetToken(params, callback, error);
+      }
       // changePassword: function(email, oldPassword, newPassword, callback) {
       //   var cb = callback || angular.noop;
       //   User.update({

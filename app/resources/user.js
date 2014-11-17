@@ -41,15 +41,15 @@ module.exports = ['$resource',
         url: '/api/register/email/:email',
         params: { email: '@email' }
       },
+      checkResetToken: {
+        method: 'GET',
+        url: '/api/reset/:username/:token/validate',
+        params: { username: '@username', token: '@token' }
+      },
       recoverAccount: {
         method: 'GET',
         url: '/api/recover/:query',
         params: { query: '@query' }
-      },
-      isValidResetToken: {
-        method: 'GET',
-        url: '/api/reset/:username/:token/validate',
-        params: { username: '@username', token: '@token' }
       }
     });
   }

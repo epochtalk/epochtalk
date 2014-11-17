@@ -265,7 +265,7 @@ exports.resetPassword = {
   validate: { payload: authSchema.validateResetPassword }
 };
 
-exports.isValidResetToken = {
+exports.checkResetToken = {
   handler: function(request, reply) {
     var username = request.params.username;
     var token = request.params.token;
