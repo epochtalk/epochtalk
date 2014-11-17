@@ -1,12 +1,10 @@
-require('./sass.js');
 var gulp = require('gulp');
 var browserify = require('browserify');
 var watchify = require('watchify');
 var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
-var uglify = require('gulp-uglify');
 
-gulp.task('browserify', ['sass'],  function() {
+gulp.task('browserify',  function() {
   var bundler = browserify({
     // cache: {}, packageCache: {}, fullPaths: true,
     // Specify the entry point of your app

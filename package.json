@@ -72,6 +72,7 @@
     "mocha": "^2.0.1",
     "napa": "^1.0.1",
     "nodemon": "^1.1.1",
+    "run-sequence": "^1.0.1",
     "tiny-lr": "^0.1.4",
     "uglify-js": "^2.4.14",
     "vinyl-buffer": "^1.0.0",
