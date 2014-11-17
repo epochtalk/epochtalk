@@ -11,17 +11,23 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       template: fs.readFileSync(__dirname + '/templates/main.html')
     });
 
+    $routeProvider.when('/confirm/:username/:token', {
+      controller: 'ConfirmCtrl',
+      controllerAs: 'ConfirmCtrl',
+      template: fs.readFileSync(__dirname + '/templates/confirm.html')
+    });
+
     $routeProvider.when('/reset/:username/:token', {
       controller: 'ResetCtrl',
       controllerAs: 'ResetCtrl',
       template: fs.readFileSync(__dirname + '/templates/reset.html'),
       resolve: {
-        tokenStatus: [ 'User', '$route', function(Users, $route) {
+        tokenStatus: [ 'User', '$route', function(User, $route) {
           var params = {
             username: $route.current.params.username,
             token: $route.current.params.token
           };
-          return Users.isValidResetToken(params);
+          return User.isValidResetToken(params);
         }]
       }
     });
@@ -107,8 +113,8 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       controllerAs: 'profiles',
       template: fs.readFileSync(__dirname + '/templates/profile.html'),
       resolve: {
-        user: [ 'User', '$route', function(Users, $route) {
-          return Users.get({ id: $route.current.params.username });
+        user: [ 'User', '$route', function(User, $route) {
+          return User.get({ id: $route.current.params.username });
         }]
       }
     });

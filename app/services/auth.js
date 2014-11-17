@@ -96,11 +96,14 @@ module.exports = ['$location', '$window', 'User',
     };
 
     return {
+      confirmAccount: function(user, callback, error) {
+        User.confirmAccount(user, callback, error).$promise
+        .then(function(resource) { saveUserSession(resource); });
+      },
+
       register: function(user, callback, error) {
-        // get username
-        User.register(user, callback, error).$promise
-        .then(function(resource) { saveUserSession(resource); })
-        .catch(function(err) { clearUser(); });
+        // Register passthrough
+        User.register(user, callback, error);
       },
 
       login: function(user, callback, error) {

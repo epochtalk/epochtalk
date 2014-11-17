@@ -19,6 +19,10 @@ module.exports = ['$resource',
         method: 'POST',
         url: '/api/reset'
       },
+      confirmAccount: {
+        method: 'POST',
+        url: '/api/confirm'
+      },
       logout: {
         method: 'DELETE',
         url: '/api/logout'

@@ -5,7 +5,7 @@ module.exports = {
   checkUsername: function(request, reply) {
     var username = request.payload.username;
     core.users.userByUsername(username)
-    .then(function(threads) {
+    .then(function() {
       var error = Hapi.error.badRequest('Username Already Exists');
       return reply(error);
     })
@@ -14,7 +14,7 @@ module.exports = {
   checkEmail: function(request, reply) {
     var email = request.payload.email;
     core.users.userByEmail(email)
-    .then(function(thread) {
+    .then(function() {
       var error = Hapi.error.badRequest('Email Already Exists');
       return reply(error);
     })

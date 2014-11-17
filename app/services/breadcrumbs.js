@@ -12,7 +12,8 @@ function ($routeParams, $location, Breadcrumbs) {
     profiles:   {                             label: 'Profiles' },
     admin:      { url: '/admin',              label: 'Administration' },
     categories: { url: '/admin/categories',   label: 'Category Editor' },
-    reset:      { url: '/reset',              label: 'Reset Password',        ignoreFollowing: true }
+    reset:      { url: '/reset',              label: 'Reset Password',        ignoreFollowing: true },
+    confirm:    { url: '/confirm',            label: 'Account Confirmation',  ignoreFollowing: true }
   };
 
   return {

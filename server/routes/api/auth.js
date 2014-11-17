@@ -10,6 +10,7 @@ module.exports = [
   { method: 'GET', path: '/authenticated', config: auth.isAuthenticated },
   { method: 'GET', path: '/recover/{query}', config: auth.recoverAccount },
   { method: 'GET', path: '/reset/{username}/{token}/validate', config: auth.isValidResetToken },
-  { method: 'POST', path: '/reset', config: auth.resetPassword }
+  { method: 'POST', path: '/reset', config: auth.resetPassword },
+  { method: 'POST', path: '/confirm', config: auth.confirmAccount }
   // { method: 'POST', path: '/refreshToken', config: auth.refreshToken }
 ];

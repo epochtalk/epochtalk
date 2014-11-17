@@ -28,12 +28,12 @@ exports.login = {
     var username = request.payload.username;
     var password = request.payload.password;
     return core.users.userByUsername(username)
-    .catch(function(err) {
+    .catch(function() {
       errorCode = 400;
       throw new Error('Invalid Credentials');
     })
     .then(function(user) { // check if passhash matches
-      if (bcrypt.compareSync(password, user.passhash)) {
+      if (!user.confirmation_token && bcrypt.compareSync(password, user.passhash)) {
         return user;
       }
       else {
@@ -76,12 +76,11 @@ exports.logout = {
     var id = credentials.id;
 
     // delete jwt from memdown
-    memDb.del(id, function(err, value) {
+    memDb.del(id, function(err) {
       if (err) {
         var error = Hapi.error.internal(err.message);
         return reply(error);
       }
-
       return reply(true);
     });
   },
@@ -113,26 +112,50 @@ exports.register = {
       username: request.payload.username,
       email: request.payload.email,
       password: request.payload.password,
-      confirmation: request.payload.confirmation
+      confirmation: request.payload.confirmation,
+      confirmation_token: crypto.randomBytes(20).toString('hex')
     };
-
     // check that username or email does not already exist
     return core.users.create(newUser)
-    .then(function(user) { // build and save token
-      var token = buildToken(user);
-      memDb.put(user.id, token, function(err) {
-        if (err) { throw new Error(err); }
-        var userReply = {
-          token: token,
-          username: user.username,
-          userId: user.id
-        };
-        return reply(userReply);
-      });
-    })
     .catch(function(err) {
       return reply(Hapi.error.internal('Registration Error', err));
+    })
+    .then(function(user) { // send confirmation email
+      reply({ statusCode: 200, message: 'Successfully Created Account' });
+      var emailParams = {
+        email: user.email,
+        username: user.username,
+        confirm_url: path.join(config.publicUrl, 'confirm', user.username, user.confirmation_token)
+      };
+      emailer.send('confirmAccount', emailParams);
     });
+  }
+};
+
+exports.confirmAccount = {
+  handler: function(request, reply) {
+    var username = request.payload.username;
+    var confirmationToken = request.payload.token;
+    core.users.userByUsername(username)
+    .then(function(user) {
+      if (!user.confirmation_token || confirmationToken !== user.confirmation_token) {
+        return reply(Hapi.error.badRequest('Account Confirmation Error'));
+      }
+      return core.users.update({ confirmation_token: undefined, id: user.id });
+    })
+    .then(function(updatedUser) {
+      var authToken = buildToken(updatedUser);
+      memDb.put(updatedUser.id, authToken, function(err) {
+        if (err) { throw new Error(err); }
+        var userReply = {
+          token: authToken,
+          username: updatedUser.username,
+          userId: updatedUser.id
+        };
+        reply(userReply);
+      });
+    })
+    .catch(function() { reply(Hapi.error.badRequest('Account Confirmation Error')); });
   }
 };
 
@@ -154,8 +177,8 @@ exports.username = {
   handler: function(request, reply) {
     var username = request.params.username;
     core.users.userByUsername(username)
-    .then(function(user) { reply({ found: true }); })
-    .catch(function(err) { reply({ found: false }); });
+    .then(function() { reply({ found: true }); })
+    .catch(function() { reply({ found: false }); });
   }
 };
 
@@ -163,8 +186,8 @@ exports.email = {
   handler: function(request, reply) {
     var email = request.params.email;
     core.users.userByEmail(email)
-    .then(function(user) { reply({ found: true }); })
-    .catch(function(err) { reply({ found: false }); });
+    .then(function() { reply({ found: true }); })
+    .catch(function() { reply({ found: false }); });
   }
 };
 

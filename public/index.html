@@ -140,6 +140,16 @@
       </modal>
     </div>
 
+    <!-- Registration Confrimation Modal -->
+    <div class="row" ng-cloak>
+      <modal class="tiny" show="HeaderCtrl.showRegisterSuccess">
+        <h3 class="thin-dotted-underline">Registration Success</h3>
+        <br />
+        Thank you for registering. Please check your email and confirm your account.
+        <a class="close-reveal-modal">&#215;</a>
+      </modal>
+    </div>
+
     <!-- Register Modal -->
     <div class="row" ng-cloak>
       <modal class="small" show="HeaderCtrl.showRegister" on-close="HeaderCtrl.clearRegisterFields">
@@ -147,7 +157,7 @@
           <h3 class="thin-dotted-underline">Register</h3>
           <br />
           <div class='reg-input-section'>
-            <label>Email
+            <label>Email &mdash; <span class="label input-info">Must be valid to confirm account</span>
               <span ng-if="register.email.$touched && register.email.$error.required" class="invalid right">
                 Email is required
               </span>

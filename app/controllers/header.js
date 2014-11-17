@@ -18,6 +18,9 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc', 'User',
     this.registerModalVisible = false; // Indicates if modal is currrently in view
     this.showRegister = false; // Toggling show will open/close modal
 
+    // Register Success Modal
+    this.showRegisterSuccess = false;
+
     // Recover Account Modal
     this.recover = {}; // Recover Account Model
     this.recoverError = {}; // Holds recover account errors
@@ -97,7 +100,9 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc', 'User',
         function() {
           ctrl.clearRegisterFields();
           ctrl.closeRegisterModal();
-          $timeout(function() { $route.reload(); });
+          $timeout(function() {
+            ctrl.showRegisterSuccess = true;
+          }, 500);
         },
         function(err) {
           ctrl.registerError.status = true;
