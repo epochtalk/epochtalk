@@ -125,7 +125,7 @@ exports.register = {
       var emailParams = {
         email: user.email,
         username: user.username,
-        confirm_url: path.join(config.publicUrl, 'confirm', user.username, user.confirmation_token)
+        confirm_url: config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token)
       };
       emailer.send('confirmAccount', emailParams);
     });
@@ -210,7 +210,7 @@ exports.recoverAccount = {
         var emailParams = {
           email: user.email,
           username: user.username,
-          reset_url: path.join(config.publicUrl, 'reset', user.username, user.reset_token)
+          reset_url: config.publicUrl + '/' + path.join('reset', user.username, user.reset_token)
         };
         return emailer.send('recoverAccount', emailParams);
       })

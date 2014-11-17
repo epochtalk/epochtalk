@@ -167,7 +167,7 @@
               <span ng-if="register.email.$touched && register.email.$error.unique" class="invalid right">
                 Email is taken
               </span>
-              <input type="email" class="icon-padding" name="email" ng-model="HeaderCtrl.registerUser.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Email"  ng-if="HeaderCtrl.registerModalVisible" auto-focus required>
+              <input type="email" class="icon-padding" name="email" ng-model="HeaderCtrl.registerUser.email" unique-email placeholder="Email"  ng-if="HeaderCtrl.registerModalVisible" auto-focus required>
               <i ng-if="register.email.$touched && !register.email.$error.email && !register.email.$error.required && !register.email.$error.unique" class="fa fa-check input-icon valid"></i>
               <i ng-if="register.email.$touched && (register.email.$error.email || register.email.$error.required || register.email.$error.unique)" class="fa fa-times input-icon invalid"></i>
             </label>
@@ -215,7 +215,7 @@
             </label>
           </div>
           <div class="reg-input-section">
-            <button class="button tiny no-margin" ng-click="HeaderCtrl.register()" ng-disabled="register.$invalid || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.password !== '' && HeaderCtrl.registerUser.confirmation !== ''">
+            <button class="button tiny no-margin" ng-click="HeaderCtrl.register()" ng-disabled="register.$invalid || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password === '' || HeaderCtrl.registerUser.confirmation === ''">
               Register
             </button>
             &nbsp;

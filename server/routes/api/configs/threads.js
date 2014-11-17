@@ -76,8 +76,8 @@ exports.byBoard = {
     return reply(threads);
   },
   validate: {
-    params: threadSchema.validateByBoard,
-    query: threadSchema.validateByBoard
+    params: threadSchema.validateParamsByBoard,
+    query: threadSchema.validateQueryByBoard
   },
   auth: { mode: 'try', strategy: 'jwt' }
 };

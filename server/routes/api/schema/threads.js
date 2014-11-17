@@ -1,4 +1,5 @@
 var joi = require('joi');
+var _ = require('lodash');
 
 var threadByBoardSchema = {
   board_id: joi.string().required(),
@@ -30,10 +31,12 @@ module.exports = {
   validate: function(thread, options, next) {
     joi.validate(thread, threadSchema, next);
   },
-  validateByBoard: function(params, options, next) {
-    if (Object.getOwnPropertyNames(params).length === 0) {
-      return next();
-    }
+  validateParamsByBoard: function(params, options, next) {
+    if (_.isEmpty(params)) { return next(); }
+    joi.validate(params, threadByBoardSchema, next);
+  },
+  validateQueryByBoard: function(params, options, next) {
+    if (_.isEmpty(params)) { return next(); }
     joi.validate(params, threadByBoardSchema, next);
   },
   validateImport: function(params, options, next) {
