@@ -97,15 +97,15 @@ server.pack.register([Scooter, {
 // check if logging is enabled
 var options = {};
 if (config.logEnabled) {
-  mkdirp.sync('./logs/operations');
-  mkdirp.sync('./logs/errors');
-  mkdirp.sync('./logs/requests');
+  mkdirp.sync('./logs/server/operations');
+  mkdirp.sync('./logs/server/errors');
+  mkdirp.sync('./logs/server/requests');
   var logOpts = { extension: 'log', rotationTime: 1, format: 'YYYY-MM-DD-X' };
   options.reporters = [
     { reporter: require('good-console'), args:[{ log: '*', request: '*', error: '*' }] },
-    { reporter: require('good-file'), args: ['./logs/operations/', { ops: '*' }, logOpts] },
-    { reporter: require('good-file'), args: ['./logs/errors/', { error: '*' }, logOpts] },
-    { reporter: require('good-file'), args: ['./logs/requests/', { request: '*' }, logOpts] }
+    { reporter: require('good-file'), args: ['./logs/server/operations/', { ops: '*' }, logOpts] },
+    { reporter: require('good-file'), args: ['./logs/server/errors/', { error: '*' }, logOpts] },
+    { reporter: require('good-file'), args: ['./logs/server/requests/', { request: '*' }, logOpts] }
   ];
 }
 
