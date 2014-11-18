@@ -65,7 +65,7 @@
         <button class="button tiny" ng-click="PostsCtrl.cancelEditPost($index)">
           Close
         </button>
-        <button class="button tiny" ng-click="PostsCtrl.saveEditPost($index)" ng-disabled="form.title.$error.required || !post.body.length > 0">
+        <button class="button tiny" ng-click="PostsCtrl.saveEditPost($index)" ng-disabled="form.title.$error.required || !post.encodedBody.length > 0">
           Save
         </button>
         <span class="label alert" ng-if="post.error" ng-bind="post.error.message"></span>
@@ -112,7 +112,7 @@
         </div>
       </form>
       <div class="editor-button-container">
-        <button class="button expand" ng-click="PostsCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsCtrl.newPost.body.length > 0">
+        <button class="button expand" ng-click="PostsCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsCtrl.newPost.encodedBody.length > 0">
           Send
         </button>
         <span class="label alert" ng-if="PostsCtrl.newPost.error" ng-bind="PostsCtrl.newPost.error.message"></span>

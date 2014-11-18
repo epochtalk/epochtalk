@@ -62,9 +62,8 @@ module.exports = ['$timeout', function($timeout) {
 
         // medium always leaves input dirty even if there's no input
         // this will clean it
-        if (rawText === '<p><br></p>' || rawText === '<p><br>""</p>') {
-          rawText = '';
-        }
+        var simpleText = editorElement.text();
+        if (simpleText.length === 0) { rawText = ''; }
 
         // re-bind to scope
         scope.body = processed;
