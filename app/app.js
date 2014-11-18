@@ -62,11 +62,5 @@ app.config(require('./config'))
 
 // CSS Styles
 var cssify = require('cssify');
-require('./css/normalize.css');
-require('./css/foundation.css');
+require('./css/app.css');
 cssify.byUrl('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');
-require('./css/epochtalk.css');
-require('./css/category-editor.css');
-require('./css/editor.css');
-require('./css/medium-editor.css');
-require('./css/default.css');

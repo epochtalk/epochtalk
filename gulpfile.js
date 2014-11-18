@@ -5,6 +5,7 @@ var shell = require('gulp-shell');
 var nodemon = require('nodemon');
 var path = require('path');
 var runSequence = require('run-sequence');
+var rename = require('gulp-rename');
 
 require(path.join(__dirname, 'gulp', 'sass'));
 require(path.join(__dirname, 'gulp', 'browserify'));
@@ -34,6 +35,11 @@ gulp.task('watch', function() {
 gulp.task('clean', function() {
   del([
     'app/css/*.css',
+    'app/scss/default.scss',
+    'app/scss/medium-editor.scss',
+    'app/scss/foundation/components',
+    'app/scss/normalize.scss',
+    'app/scss/foundation.scss',
     'public/js/*.js'
   ]);
 });
@@ -61,7 +67,8 @@ gulp.task('copy-css', function() {
         else { data = false; }
       });
     gulp.src('./node_modules/medium-editor/dist/css/medium-editor.css')
-      .pipe(gulp.dest('./app/css'))
+      .pipe(rename('medium-editor.scss'))
+      .pipe(gulp.dest('./app/scss'))
       .on('data', function() { data = true; })
       .on('end', function() {
         if (!data) {
@@ -71,7 +78,8 @@ gulp.task('copy-css', function() {
         else { data = false; }
       });
     gulp.src('./node_modules/medium-editor/dist/css/themes/default.css')
-      .pipe(gulp.dest('./app/css'))
+      .pipe(rename('default.scss'))
+      .pipe(gulp.dest('./app/scss'))
       .on('data', function() { data = true; })
       .on('end', function() {
         if (!data) {
