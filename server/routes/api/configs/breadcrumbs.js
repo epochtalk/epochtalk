@@ -1,6 +1,6 @@
 var core = require('epochcore')();
 var Hapi = require('hapi');
-var breadcrumbSchema = require('../schema/breadcrumbs');
+var breadcrumbValidator = require('epoch-validator').api.breadcrumbs;
 
 exports.byType = {
   handler: function(request, reply) {
@@ -61,5 +61,5 @@ exports.byType = {
     .then(function(breadcrumbs) { reply(breadcrumbs.reverse()); })
     .catch(function() { reply(Hapi.error.internal());});
   },
-  validate: { query: breadcrumbSchema.validate }
+  validate: { query: breadcrumbValidator.byType }
 };

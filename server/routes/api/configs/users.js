@@ -1,11 +1,11 @@
 var core = require('epochcore')();
 var Hapi = require('hapi');
+var userValidator = require('epoch-validator').api.users;
 var path = require('path');
-var userSchema = require('../schema/users');
 var pre = require(path.join('..', 'pre', 'users'));
 
 exports.create = {
-  validate: { payload: userSchema.validate },
+  validate: { payload: userValidator.create },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     core.users.create(request.payload)
@@ -19,7 +19,7 @@ exports.create = {
 
 exports.import = {
   // auth: { strategy: 'jwt' },
-  validate: { payload: userSchema.validateImport },
+  validate: { payload: userValidator.import },
   pre: [
     { method: pre.clean },
     { method: pre.parseSignature }
@@ -36,7 +36,7 @@ exports.import = {
 
 exports.update = {
   auth: { strategy: 'jwt' },
-  validate: { payload: userSchema.validateUpdate },
+  validate: { payload: userValidator.update },
   pre: [
     [
       { method: pre.getCurrentUser, assign: 'currentUser' },

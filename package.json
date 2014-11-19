@@ -38,6 +38,7 @@
     "bluebird": "^2.3.2",
     "cheerio": "^0.18.0",
     "epoch-emailer": "git+https://github.com/epochtalk/emailer",
+    "epoch-validator": "git+https://github.com/epochtalk/validator",
     "epochcore": "^0.5.6",
     "good": "^3.1.0",
     "good-console": "^2.0.0",

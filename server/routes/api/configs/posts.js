@@ -1,6 +1,6 @@
 var core = require('epochcore')();
 var Hapi = require('hapi');
-var postSchema = require('../schema/posts');
+var postValidator = require('epoch-validator').api.posts;
 var path = require('path');
 var pre = require(path.join('..', 'pre', 'posts'));
 
@@ -11,7 +11,7 @@ exports.create = {
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
-  validate: { payload: postSchema.validate },
+  validate: { payload: postValidator.create },
   handler: function(request, reply) {
     // build the post object from payload and params
     var user = request.auth.credentials;
@@ -37,14 +37,14 @@ exports.find = {
     .then(function(post) { reply(post); })
     .catch(function(err) { reply(Hapi.error.internal()); });
   },
-  validate: { params: postSchema.validateId }
+  validate: { params: postValidator.id }
 };
 
 exports.byThread = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
-    params: postSchema.validateByThread,
-    query: postSchema.validateByThread
+    params: postValidator.paramsByThread,
+    query: postValidator.queryByThread
   },
   handler: function(request, reply) {
     var user;
@@ -72,8 +72,8 @@ exports.byThread = {
 exports.update = {
   auth: { strategy: 'jwt' },
   validate: {
-    payload: postSchema.validate,
-    params: postSchema.validateId
+    payload: postValidator.update,
+    params: postValidator.id
   },
   pre: [
     { method: pre.authPost },
@@ -98,7 +98,7 @@ exports.update = {
 };
 
 exports.delete = {
-  validate: { params: postSchema.validateId },
+  validate: { params: postValidator.id },
   pre: [ { method: pre.authPost } ],
   handler: function(request, reply) {
     var postId = request.params.id;

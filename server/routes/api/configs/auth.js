@@ -2,10 +2,10 @@ var core = require('epochcore')();
 var Hapi = require('hapi');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
+var authValidator = require('epoch-validator').api.auth;
 var path = require('path');
 var emailer = require(path.join(__dirname, '..', '..', '..', 'emailer'));
 var config = require(path.join(__dirname, '..', '..', '..', 'config'));
-var authSchema = require(path.join('..', 'schema', 'auth'));
 var memDb = require(path.join('..', '..', '..', 'memStore')).db;
 var pre = require(path.join('..', 'pre', 'auth'));
 var crypto = require('crypto');
@@ -61,7 +61,7 @@ exports.login = {
     });
   },
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { payload: authSchema.validateLogin }
+  validate: { payload: authValidator.login }
 };
 
 exports.logout = {
@@ -89,7 +89,7 @@ exports.logout = {
 
 exports.register = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { payload: authSchema.validateRegister },
+  validate: { payload: authValidator.register },
   pre: [
     [
       { method: pre.checkEmail },
@@ -262,7 +262,7 @@ exports.resetPassword = {
       }
     });
   },
-  validate: { payload: authSchema.validateResetPassword }
+  validate: { payload: authValidator.resetPassword }
 };
 
 exports.checkResetToken = {

@@ -1,7 +1,7 @@
 var path = require('path');
 var Hapi = require('hapi');
 var core = require('epochcore')();
-var threadSchema = require(path.join('..', 'schema', 'threads'));
+var threadValidator = require('epoch-validator').api.threads;
 var pre = require(path.join('..', 'pre', 'threads'));
 
 exports.create = {
@@ -11,6 +11,7 @@ exports.create = {
     var newThread = { board_id: request.payload.board_id };
     var newPost = {
       title: request.payload.title,
+      body: request.payload.body,
       encodedBody: request.payload.encodedBody,
       user_id: user.id
     };
@@ -22,7 +23,7 @@ exports.create = {
     .then(function(post) { reply(post); })
     .catch(function(err) { reply(Hapi.error.internal()); });
   },
-  validate: { payload: threadSchema.validate },
+  validate: { payload: threadValidator.create },
   auth: { strategy: 'jwt' }
 };
 
@@ -41,7 +42,7 @@ exports.import = {
     .then(function() { reply(thread); })
     .catch(function(err) { reply(Hapi.error.internal()); });
   },
-  // validate: { payload: threadSchema.validateImport },
+  // validate: { payload: threadValidator.import },
   auth: { strategy: 'jwt' }
 };
 
@@ -76,8 +77,8 @@ exports.byBoard = {
     return reply(threads);
   },
   validate: {
-    params: threadSchema.validateParamsByBoard,
-    query: threadSchema.validateQueryByBoard
+    params: threadValidator.paramsByBoard,
+    query: threadValidator.queryByBoard
   },
   auth: { mode: 'try', strategy: 'jwt' }
 };
