@@ -6,12 +6,18 @@ var pre = require(path.join('..', 'pre', 'posts'));
 
 exports.create = {
   auth: { strategy: 'jwt' },
+  pre: [
+    { method: pre.clean },
+    { method: pre.parseEncodings },
+    { method: pre.subImages }
+  ],
   validate: { payload: postSchema.validate },
   handler: function(request, reply) {
     // build the post object from payload and params
     var user = request.auth.credentials;
     var newPost = {
       title: request.payload.title,
+      body: request.payload.body,
       encodedBody: request.payload.encodedBody,
       thread_id: request.payload.thread_id,
       user_id: user.id
@@ -70,15 +76,17 @@ exports.update = {
     params: postSchema.validateId
   },
   pre: [
-    [
-      { method: pre.authPost }
-    ]
+    { method: pre.authPost },
+    { method: pre.clean },
+    { method: pre.parseEncodings },
+    { method: pre.subImages }
   ],
   handler: function(request, reply) {
     // build updatePost object from params and payload
     var updatePost = {
       id: request.params.id,
       title: request.payload.title,
+      body: request.payload.body,
       encodedBody: request.payload.encodedBody,
       thread_id: request.payload.thread_id
     };
@@ -91,11 +99,7 @@ exports.update = {
 
 exports.delete = {
   validate: { params: postSchema.validateId },
-  pre: [
-    [
-      { method: pre.authPost }
-    ]
-  ],
+  pre: [ { method: pre.authPost } ],
   handler: function(request, reply) {
     var postId = request.params.id;
     core.posts.delete(postId)
