@@ -3,8 +3,16 @@ var Hapi = require('hapi');
 var core = require('epochcore')();
 var threadValidator = require('epoch-validator').api.threads;
 var pre = require(path.join('..', 'pre', 'threads'));
+var postPre = require(path.join('..', 'pre', 'posts'));
 
 exports.create = {
+  auth: { strategy: 'jwt' },
+  validate: { payload: threadValidator.create },
+  pre: [
+    { method: postPre.clean },
+    { method: postPre.parseEncodings },
+    { method: postPre.subImages }
+  ],
   handler: function(request, reply) {
     // build the thread post object from payload and params
     var user = request.auth.credentials;
@@ -22,12 +30,12 @@ exports.create = {
     .then(function() { return core.posts.create(newPost); })
     .then(function(post) { reply(post); })
     .catch(function(err) { reply(Hapi.error.internal()); });
-  },
-  validate: { payload: threadValidator.create },
-  auth: { strategy: 'jwt' }
+  }
 };
 
 exports.import = {
+  auth: { strategy: 'jwt' },
+  // validate: { payload: threadValidator.import },
   handler: function(request, reply) {
     var posts = request.payload.posts;
     var thread = request.payload;
@@ -41,12 +49,15 @@ exports.import = {
     })
     .then(function() { reply(thread); })
     .catch(function(err) { reply(Hapi.error.internal()); });
-  },
-  // validate: { payload: threadValidator.import },
-  auth: { strategy: 'jwt' }
+  }
 };
 
 exports.byBoard = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: {
+    params: threadValidator.paramsByBoard,
+    query: threadValidator.queryByBoard
+  },
   pre: [
     { method: pre.getThreads, assign: 'threads' },
     { method: pre.getUserViews, assign: 'userViews' }
@@ -75,15 +86,11 @@ exports.byBoard = {
     }
 
     return reply(threads);
-  },
-  validate: {
-    params: threadValidator.paramsByBoard,
-    query: threadValidator.queryByBoard
-  },
-  auth: { mode: 'try', strategy: 'jwt' }
+  }
 };
 
 exports.find = {
+  auth: { mode: 'try', strategy: 'jwt' },
   pre: [
     [
       { method: pre.getThread, assign: 'thread' },
@@ -96,6 +103,5 @@ exports.find = {
     var newViewerId = request.pre.newViewId;
     if (newViewerId) { return reply(thread).header('Epoch-Viewer', newViewerId); }
     else { return reply(thread); }
-  },
-  auth: { mode: 'try', strategy: 'jwt' }
+  }
 };
