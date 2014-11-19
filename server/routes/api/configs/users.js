@@ -5,6 +5,8 @@ var userSchema = require('../schema/users');
 var pre = require(path.join('..', 'pre', 'users'));
 
 exports.create = {
+  validate: { payload: userSchema.validate },
+  pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     core.users.create(request.payload)
     .then(function(user) {
@@ -12,11 +14,16 @@ exports.create = {
       reply(user);
     })
     .catch(function(err) { reply(Hapi.error.internal()); });
-  },
-  validate: { payload: userSchema.validate }
+  }
 };
 
 exports.import = {
+  // auth: { strategy: 'jwt' },
+  validate: { payload: userSchema.validateImport },
+  pre: [
+    { method: pre.clean },
+    { method: pre.parseSignature }
+  ],
   handler: function(request, reply) {
     core.users.import(request.payload)
     .then(function(user) {
@@ -24,17 +31,21 @@ exports.import = {
       reply(user);
     })
     .catch(function(err) { reply(Hapi.error.internal()); });
-  },
-  validate: { payload: userSchema.validateImport }
-  // auth: { strategy: 'jwt' }
+  }
 };
 
 exports.update = {
-  pre: [[
-    { method: pre.getCurrentUser, assign: 'currentUser' },
-    { method: pre.checkUsernameUniqueness },
-    { method: pre.checkEmailUniqueness }
-  ]],
+  auth: { strategy: 'jwt' },
+  validate: { payload: userSchema.validateUpdate },
+  pre: [
+    [
+      { method: pre.getCurrentUser, assign: 'currentUser' },
+      { method: pre.checkUsernameUniqueness },
+      { method: pre.checkEmailUniqueness }
+    ],
+    { method: pre.clean },
+    { method: pre.parseSignature }
+  ],
   handler: function(request, reply) {
     // get user
     var user = request.pre.currentUser;
@@ -96,12 +107,11 @@ exports.update = {
       reply(user);
     })
     .catch(function(err) { reply(Hapi.error.internal()); });
-  },
-  validate: { payload: userSchema.validateUpdate },
-  auth: { strategy: 'jwt' }
+  }
 };
 
 exports.find = {
+  auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
     // get logged in user
     var authUser = {};
@@ -118,6 +128,5 @@ exports.find = {
     })
     .then(function(user) { reply(user); })
     .catch(function(err) { reply(Hapi.error.internal()); });
-  },
-  auth: { mode: 'try', strategy: 'jwt' }
+  }
 };
