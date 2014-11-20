@@ -18,7 +18,7 @@ exports.import = {
   validate: { payload: boardValidator.schema.import },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
-    core.boards.create(request.payload)
+    core.boards.import(request.payload)
     .then(function(board) { reply(board); })
     .catch(function(err) { reply(Hapi.error.internal()); });
   }
