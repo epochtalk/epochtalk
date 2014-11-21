@@ -30,6 +30,22 @@ exports.create = {
   }
 };
 
+exports.import = {
+  // auth: { strategy: 'jwt' },
+  // pre: [
+  //   { method: pre.clean },
+  //   { method: pre.parseEncodings },
+  //   { method: pre.subImages }
+  // ],
+  // validate: { payload: postValidator.create },
+  handler: function(request, reply) {
+    // build the post object from payload and params
+    core.posts.import(request.payload)
+    .then(function(post) { reply(post); })
+    .catch(function(err) { reply(Hapi.error.internal()); });
+  }
+};
+
 exports.find = {
   handler: function(request, reply) {
     var id = request.params.id;

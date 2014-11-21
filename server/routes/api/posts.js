@@ -10,5 +10,7 @@ module.exports = [
   // UPDATE POST
   { method: 'POST', path: '/posts/{id}', config: posts.update },
   // DELETE POST
-  { method: 'DELETE', path: '/posts/{id}', config: posts.delete }
+  { method: 'DELETE', path: '/posts/{id}', config: posts.delete },
+  // IMPORT POST
+  { method: 'POST', path: '/posts/import', config: posts.import }
 ];
