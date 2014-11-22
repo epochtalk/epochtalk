@@ -78,20 +78,22 @@ input.icon-padding { padding-right: 40px; }
 .board-page { padding-bottom: 15px; }
 .child-board { padding-bottom: 5px; }
 .child-board h5 { margin-bottom: 0px; }
-.child-board-desc { font-size: 14px; line-height: 1.1; padding-bottom: 3px; }
+.child-board-desc { font-size: 14px; line-height: 1.1; padding-bottom: 3px; word-wrap: break-word; overflow-wrap: break-word; }
 .child-board-desc :last-child { padding-bottom: 0; }
+.thread-title { word-wrap: break-word; overflow-wrap: break-word; }
 .thread-listItem { padding: 5px 0; }
 .thread-listItem .division { font-size: 80%; line-height: 1.5; }
+.board-name { word-wrap: break-word; overflow-wrap: break-word; }
 
 /* Boards Page */
 .category { margin-bottom: 30px; }
-.category-title h3 { margin-bottom: 0; margin-top: 0; }
+.category-title h3 { margin-bottom: 0; margin-top: 0; word-wrap: break-word; overflow-wrap: break-word; }
 .category-board { margin-bottom: 20px; }
 .category-board-name {
   font-size: 20px;
   text-decoration: underline;
   margin-bottom: 5px; }
-.category-board-desc { font-size: 14px; line-height: 1.1; }
+.category-board-desc { font-size: 14px; line-height: 1.1; word-wrap: break-word; overflow-wrap: break-word; }
 .moderators {
   color: #999;
   font-size: 13px;
@@ -199,6 +201,8 @@ input.icon-padding { padding-right: 40px; }
     margin-bottom: 1.2rem;
   // float: left;
   // width: 83.3333%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 

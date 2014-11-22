@@ -25,7 +25,7 @@
     <div class="child-board" ng-repeat="childBoard in BoardCtrl.board.children">
       <!-- Child Board Title -->
       <h5>
-        <a ng-href="/boards/{{childBoard.id}}" ng-bind-html="childBoard.name"></a>
+        <a ng-href="/boards/{{childBoard.id}}" class="board-name" ng-bind-html="childBoard.name"></a>
       </h5>
 
       <!-- Child Board description and content -->
@@ -88,7 +88,7 @@
     <div class="thread-listItem" ng-repeat="thread in BoardCtrl.threads track by thread.id">
       <div class="row">
         <div class="small-12 medium-7 columns">
-          <a ng-class="thread.title_class" ng-href="/threads/{{thread.id}}/posts" ng-bind-html="thread.title"></a><br>
+          <a ng-class="thread.title_class" class="thread-title" ng-href="/threads/{{thread.id}}/posts" ng-bind-html="thread.title"></a><br>
 
           <div class="division">
             Started by: <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>

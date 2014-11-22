@@ -21,7 +21,7 @@
           <div class="small-12 medium-7 columns">
             <!-- Board Name -->
             <div class="category-board-name">
-              <a ng-href="/boards/{{board.id}}" ng-bind-html="board.name"></a>
+              <a ng-href="/boards/{{board.id}}" class="board-name" ng-bind-html="board.name"></a>
             </div>
             <!-- Moderators -->
             <div class="moderators">
@@ -38,7 +38,7 @@
             <span class="child-boards" ng-if="board.children.length > 0">
               <strong>Child Boards:</strong>
               <span ng-repeat="child in board.children">
-                <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
+                <a ng-href="/boards/{{child.id}}" class="board-name" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
               </span>
             </span>
           </div>
