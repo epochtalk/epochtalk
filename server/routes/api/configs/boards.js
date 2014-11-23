@@ -5,7 +5,7 @@ var boardValidator = require('epoch-validator').api.boards;
 var pre = require(path.join('..', 'pre', 'boards'));
 
 exports.create = {
-  validate: { payload: boardValidator.create },
+  validate: { payload: boardValidator.schema.create },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     core.boards.create(request.payload)
@@ -15,7 +15,7 @@ exports.create = {
 };
 
 exports.import = {
-  validate: { payload: boardValidator.import },
+  validate: { payload: boardValidator.schema.import },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     core.boards.create(request.payload)
@@ -50,7 +50,7 @@ exports.allCategories = {
 };
 
 exports.updateCategories = {
-  validate: { payload: boardValidator.categories },
+  validate: { payload: boardValidator.schema.categories },
   handler: function(request, reply) {
     // update board on core
     core.boards.updateCategories(request.payload.categories)
@@ -61,8 +61,8 @@ exports.updateCategories = {
 
 exports.update = {
   validate: {
-    payload: boardValidator.update,
-    params: boardValidator.id
+    payload: boardValidator.schema.update,
+    params: boardValidator.schema.id
   },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
@@ -83,7 +83,7 @@ exports.update = {
 };
 
 exports.delete = {
-  validate: { params: boardValidator.id },
+  validate: { params: boardValidator.schema.id },
   handler: function(request, reply) {
     core.boards.delete(request.params.id)
     .then(function(board) { reply(board); })

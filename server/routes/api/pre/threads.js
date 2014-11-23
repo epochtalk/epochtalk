@@ -49,7 +49,7 @@ module.exports = {
           return reply(undefined);
         });
       });
-    } // no viewerId, check IP 
+    } // no viewerId, check IP
     else {
       newViewerId = uuid.v4(); // generate new viewerId
       memDb.putAsync(newViewerId + threadId, Date.now()); // save to mem db
@@ -79,7 +79,7 @@ module.exports = {
   updateUserView: function(request, reply) {
     // return early if not signed in
     if (!request.auth.isAuthenticated) { return reply(); }
-    
+
     var threadId = request.params.id || request.query.id;
     var now = Date.now();
     var user = request.auth.credentials;

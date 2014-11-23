@@ -61,5 +61,5 @@ exports.byType = {
     .then(function(breadcrumbs) { reply(breadcrumbs.reverse()); })
     .catch(function() { reply(Hapi.error.internal());});
   },
-  validate: { query: breadcrumbValidator.byType }
+  validate: { query: breadcrumbValidator.schema.byType }
 };

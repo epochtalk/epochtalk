@@ -5,7 +5,7 @@ var path = require('path');
 var pre = require(path.join('..', 'pre', 'users'));
 
 exports.create = {
-  validate: { payload: userValidator.create },
+  validate: { payload: userValidator.schema.create },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     core.users.create(request.payload)
@@ -19,7 +19,7 @@ exports.create = {
 
 exports.import = {
   // auth: { strategy: 'jwt' },
-  validate: { payload: userValidator.import },
+  validate: { payload: userValidator.schema.import },
   pre: [
     { method: pre.clean },
     { method: pre.parseSignature }
@@ -36,7 +36,7 @@ exports.import = {
 
 exports.update = {
   auth: { strategy: 'jwt' },
-  validate: { payload: userValidator.update },
+  validate: { payload: userValidator.schema.update },
   pre: [
     [
       { method: pre.getCurrentUser, assign: 'currentUser' },

@@ -11,7 +11,7 @@ exports.create = {
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
-  validate: { payload: postValidator.create },
+  validate: { payload: postValidator.schema.create },
   handler: function(request, reply) {
     // build the post object from payload and params
     var user = request.auth.credentials;
@@ -37,7 +37,7 @@ exports.find = {
     .then(function(post) { reply(post); })
     .catch(function(err) { reply(Hapi.error.internal()); });
   },
-  validate: { params: postValidator.id }
+  validate: { params: postValidator.schema.id }
 };
 
 exports.byThread = {
@@ -72,8 +72,8 @@ exports.byThread = {
 exports.update = {
   auth: { strategy: 'jwt' },
   validate: {
-    payload: postValidator.update,
-    params: postValidator.id
+    payload: postValidator.schema.update,
+    params: postValidator.schema.id
   },
   pre: [
     { method: pre.authPost },
@@ -98,7 +98,7 @@ exports.update = {
 };
 
 exports.delete = {
-  validate: { params: postValidator.id },
+  validate: { params: postValidator.schema.id },
   pre: [ { method: pre.authPost } ],
   handler: function(request, reply) {
     var postId = request.params.id;

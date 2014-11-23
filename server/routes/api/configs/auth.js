@@ -61,7 +61,7 @@ exports.login = {
     });
   },
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { payload: authValidator.login }
+  validate: { payload: authValidator.schema.login }
 };
 
 exports.logout = {
@@ -89,7 +89,7 @@ exports.logout = {
 
 exports.register = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { payload: authValidator.register },
+  validate: { payload: authValidator.schema.register },
   pre: [
     [
       { method: pre.checkEmail },
@@ -262,7 +262,7 @@ exports.resetPassword = {
       }
     });
   },
-  validate: { payload: authValidator.resetPassword }
+  validate: { payload: authValidator.schema.resetPassword }
 };
 
 exports.checkResetToken = {

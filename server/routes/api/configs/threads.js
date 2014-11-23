@@ -7,7 +7,7 @@ var postPre = require(path.join('..', 'pre', 'posts'));
 
 exports.create = {
   auth: { strategy: 'jwt' },
-  validate: { payload: threadValidator.create },
+  validate: { payload: threadValidator.schema.create },
   pre: [
     { method: postPre.clean },
     { method: postPre.parseEncodings },
@@ -35,7 +35,7 @@ exports.create = {
 
 exports.import = {
   auth: { strategy: 'jwt' },
-  // validate: { payload: threadValidator.import },
+  validate: { payload: threadValidator.schema.import },
   handler: function(request, reply) {
     var posts = request.payload.posts;
     var thread = request.payload;

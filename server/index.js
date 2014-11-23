@@ -18,9 +18,8 @@ var serverOpts = {
     noOpen: true,
     noSniff: true
   },
-  files: {
-    relativeTo: path.join(__dirname, '../public')
-  }
+  files: { relativeTo: path.join(__dirname, '..', 'public') },
+  validation: { stripUnknown: true }
 };
 var server = Hapi.createServer('localhost', config.port, serverOpts);
 
