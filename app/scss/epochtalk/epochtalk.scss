@@ -32,17 +32,19 @@
 }
 #sidebar {
   position: fixed;
-  width: 245px;
+  width: 225px;
   z-index: 998;
   height: 100%;
-  padding-top: 45px;
+  margin-top: 45px;
+  padding-bottom: 45px;
   background-color: #EFEFEF;
+  overflow-y: scroll;
 }
 .sidebar-category { padding-left: 12px; font-weight:bold; }
 .sidebar-spacer { padding-top: 15px; }
 .has-form { min-width: 400px; }
 .admin-padding {
-  padding-left: 245px;
+  padding-left: 225px;
   padding-top: 65px;
 }
 
