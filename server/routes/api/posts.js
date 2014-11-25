@@ -72,17 +72,28 @@ var pre = {
 
     // convert each image's src to cdn version
     return Promise.map(images, function(element) {
+      // get image src
       var src = $(element).attr('src');
-      $(element).attr('data-canonical-src', src);
 
-      // get new url
-      var cdnImageUrl = 'http://placehold.it/40/40';
-      $(element).attr('src', cdnImageUrl);
+      // if image already in cdn, skip
+      if (config.cdnUrl && src.indexOf(config.cdnUrl) === 0) { return; }
+
+      // get new url from cdn
+      var cdnUrl = cdn.url(src);
+
+      if (src !== cdnUrl) {
+        // move original src to data-canonical-src
+        $(element).attr('data-canonical-src', src);
+      }
+
+      // update src with new url
+      $(element).attr('src', cdnUrl);
     })
     .then(function() {
       request.payload.body = $.html();
       return reply();
-    });
+    })
+    .catch(function(err) { return reply(err); });
   }
 };
 
