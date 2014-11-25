@@ -17,7 +17,7 @@
     "url": "git://github.com/epochtalk/epochtalk"
   },
   "author": "James Wang <jw@slickage.com> (http://slickage.com/)",
-  "license": "TBD",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/slickage/epochtalk/issues"
   },
@@ -52,9 +52,13 @@
     "medium-editor": "^1.8.14",
     "memdown": "^0.11.0",
     "mkdirp": "^0.5.0",
+    "mmmagic": "^0.3.11",
     "node-uuid": "^1.4.1",
+    "pkgcloud": "^1.0.3",
     "request": "^2.48.0",
     "sanitize-html": "^1.4.3",
+    "stream-meter": "^1.0.3",
+    "through2": "^0.6.3",
     "yargs": "^1.2.1"
   },
   "devDependencies": {

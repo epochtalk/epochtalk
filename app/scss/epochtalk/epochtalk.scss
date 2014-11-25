@@ -95,9 +95,7 @@ input.icon-padding { padding-right: 40px; }
 .breadcrumbs > .news {
   color: #444;
   text-transform: none; }
-.breadcrumbs > li > span  {
-  color: #444;
-}
+.breadcrumbs > li > span  { color: #444; }
 
 /* Board Page */
 .board-page { padding-bottom: 15px; }
@@ -250,12 +248,8 @@ input.icon-padding { padding-right: 40px; }
   font-size: 0.6875rem;
   margin: 0; }
 
-
 /* editor form */
-.editor { height: 100%; width: 100%; display: block; }
-.editor-container { height: 200px; width: 100%; }
 .editor-button-container { margin-top: 20px; }
-.preview-title { padding-left: 0px; }
 .editor-form label { margin-top: 0; }
 .editor-form div label { margin-top: 20px; }
 .editor-form input { margin-bottom: 0; }

@@ -2,7 +2,7 @@ var medium = require('medium-editor');
 var bbcodeParser = require('bbcode-parser');
 var fs = require('fs');
 
-module.exports = ['$timeout', function($timeout) {
+module.exports = ['$timeout', 'FileUpload', function($timeout, FileUpload) {
   return {
     restrict: 'E',
     scope: {
@@ -11,14 +11,19 @@ module.exports = ['$timeout', function($timeout) {
       reset: '=',
       focusEditor: '='
     },
+    controller: function($scope) {
+      $scope.upload = function() {
+        FileUpload.upload($scope.imageFiles, 'http://localhost:8080/images');
+      };
+    },
     link: function(scope, element, attrs, ctrl) {
       // Find relevant HTML Elements
       var htmlElement = element[0];
       // bbcode editor element
-      var rawEditorElement = htmlElement.getElementsByClassName('ee-bbcode-editor')[0];
+      var rawEditorElement = htmlElement.getElementsByClassName('editor-input')[0];
       var editorElement = angular.element(rawEditorElement);
       // bbcode preview element
-      var rawPreviewElement = htmlElement.getElementsByClassName('ee-bbcode-preview')[0];
+      var rawPreviewElement = htmlElement.getElementsByClassName('editor-preview')[0];
       var previewElement = angular.element(rawPreviewElement);
 
       // Medium Editor and options

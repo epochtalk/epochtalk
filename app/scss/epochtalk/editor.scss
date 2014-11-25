@@ -1,82 +1,29 @@
 html { margin: 0; padding: 0; }
 body { margin: 0; padding: 0; }
 
-.ee-main-container {
-  overflow:hidden;
-  box-sizing: border-box;
-  height: 100%;
-  width: 100%;
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 14px;
-  line-height: 1.42857143; }
+.editor-left-column { padding-right: 0px; }
+.editor-right-column { padding-left: 0px; }
+.editor-body { background-color: #fff; }
+.editor-footer { color: #777; }
 
-.ee-editor-container {
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  overflow: hidden;
-  -webkit-transition: all linear 200ms;
-  -moz-transition: all linear 200ms;
-  -o-transition: all linear 200ms;
-  transition: all linear 200ms; }
-
-.ee-buttons {
-  box-sizing: border-box; 
-  margin-top: -10px;
-  padding: 0 10px 15px 0;
-  height: 40px; }
-.ee-buttons > button {
-  height: 40px;
-  width: 40px;
-  font-size: medium; }
-
-.ee-medium-editor {
-  overflow: auto;
-  height: 100%;
-  outline: none;
-  white-space: pre; }
-.ee-medium-editor p { margin: 0; }
-
-.ee-bbcode-editor {
-  box-sizing: border-box;
-  overflow: auto;
-  border: 1px solid #cccccc;
-  padding: 15px;
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 14px;
-  line-height: 1.42857143;
+.editor-input {
+  border: 1px solid #ccc;
+  padding: 8px 10px 10px 10px;
+  min-height: 60px;
   outline: none;
   white-space: pre;
-  height: 100%;
-  width: 100%;
   cursor: default; }
-.ee-bbcode-editor p { margin: 0; }
+.editor-input p { margin: 0; }
+.editor-input span {
+  font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px; }
 
-.ee-bbcode-preview {
-  box-sizing: border-box;
-  padding: 15px;
-  border: 1px solid #cccccc;
-  border-left: 0px;
+.editor-preview {
+  padding: 8px 10px 10px 10px;
+  border: 1px solid #ccc;
+  border-left: 0;
+  min-height: 60px;
   word-wrap: break-word;
-  overflow: auto;
-  white-space: pre;
-  width: 100%;
-  height: 100%; }
-.ee-bbcode-preview p { margin: 0; }
-
-
-.ee-hide-editor {
-  opacity: 0;
-  height: 0;
-  visibility: hidden;
-  padding: 0; }
-.ee-show-editor { opacity: 1; visibility: visible; }
-
-.ee-split-container { overflow: hidden; height: 100%;}
-.ee-half-column { width: 50%; height: 100%; float: left; }
-.ee-split-header { overflow: hidden; }
-.ee-half-header { width: 50%; float: left; }
-
-.ee-show { display: block; }
-.ee-hide { display: none; }
+  white-space: pre; }
+.editor-preview p { margin: 0; }

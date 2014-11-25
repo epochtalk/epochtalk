@@ -44,6 +44,7 @@ app.directive('nestableBoards', require('./directives/category_editor/nestable-b
 app.directive('nestableCategories', require('./directives/category_editor/nestable-categories.js'));
 app.directive('uniqueUsername', require('./directives/uniqueUsername'));
 app.directive('uniqueEmail', require('./directives/uniqueEmail'));
+app.directive('fileModel', require('./directives/file_model'));
 
 // Set Angular Configs
 app.config(require('./config'))

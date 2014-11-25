@@ -1,12 +1,25 @@
-<div class="ee-main-container">
-  <div class="ee-editor-container">
-    <div class="ee-split-container">
-      <div class="ee-half-column">
-        <div class="ee-bbcode-editor" contenteditable="true"></div>
-      </div>
-      <div class="ee-half-column">
-        <div class="ee-bbcode-preview"></div>
-      </div>
-    </div>
+<div class="row">
+  <div class="medium-6 columns">
+    <label>Input:</label>
   </div>
+  <div class="medium-6 columns">
+    <label>Preview:</label>
+  </div>
+</div>
+
+<div class="editor-body row">
+  <div class="medium-6 columns editor-left-column">
+    <div class="editor-input" contenteditable="true"></div>
+  </div>
+  <div class="medium-6 columns editor-right-column">
+    <div class="editor-preview"></div>
+  </div>
+</div>
+
+<div class="editor-footer">
+  To upload a image, either drag and drop them into this area 
+  or just click here
+  <input type="file" file-model="imageFiles">
+  <br>
+  <button ng-click="upload()">Upload</button>
 </div>

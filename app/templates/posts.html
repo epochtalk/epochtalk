@@ -47,19 +47,9 @@
             Title is Required
           </small>
         </label>
-        <!-- Body -->
-        <div class="row">
-          <div class="small-6 columns">
-            <label>Reply:</label>
-          </div>
-          <div class="small-6 columns" class="preview-title">
-            <label>Preview:</label>
-          </div>
-        </div>
         <!-- Editor -->
-        <div class="editor-container">
-          <epochtalk-editor body="post.body" encoded-body="post.encodedBody" focus-editor="true"  class="editor"></epochtalk-editor>
-        </div>
+        <epochtalk-editor body="post.body" encoded-body="post.encodedBody" focus-editor="true">
+        </epochtalk-editor>
       </form>
       <div class="editor-button-container">
         <button class="button tiny" ng-click="PostsCtrl.cancelEditPost($index)">
@@ -83,7 +73,9 @@
     </div>
   </div>
 </div>
+
 <pagination page-count="PostsCtrl.pageCount" page="PostsCtrl.page"></pagination>
+
 <div class="row">
   <div class="small-12 columns">
     <!-- Editor if logged in -->
@@ -97,19 +89,9 @@
             Title is Required
           </small>
         </label>
-        <!-- Body -->
-        <div class="row">
-          <div class="small-6 columns">
-            <label>Reply:</label>
-          </div>
-          <div class="small-6 columns" class="preview-title">
-            <label>Preview:</label>
-          </div>
-        </div>
-        <!-- Editor -->
-        <div class="editor-container">
-          <epochtalk-editor body="PostsCtrl.newPost.body" encoded-body="PostsCtrl.newPost.encodedBody" reset="PostsCtrl.resetEditor" focus-editor="false" class="editor"></epochtalk-editor>
-        </div>
+        <!-- Post Editor -->
+        <epochtalk-editor body="PostsCtrl.newPost.body" encoded-body="PostsCtrl.newPost.encodedBody" reset="PostsCtrl.resetEditor" focus-editor="false">
+        </epochtalk-editor>
       </form>
       <div class="editor-button-container">
         <button class="button expand" ng-click="PostsCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsCtrl.newPost.encodedBody.length > 0">
