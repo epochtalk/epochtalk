@@ -13,74 +13,117 @@
   </style>
 </head>
 
-<body class="antialiased hide-extras">
+<body class="antialiased hide-extras" ng-controller="AppCtrl as AppCtrl">
 
   <!-- Header -->
   <div ng-controller="HeaderCtrl as HeaderCtrl">
-    <div class="row" ng-cloak>
-      <div class="small-12 columns">
 
-        <!-- Navigation -->
-        <nav class="top-bar" data-topbar role="navigation">
-          <!-- For mobile -->
-          <ul class="title-area">
-            <li class="name">
-              <h1><a ng-href="/">Epochtalk Forum</a></h1>
-            </li>
-            <li class="toggle-topbar menu-icon">
-              <a ng-href="#"><span>Menu</span></a>
-            </li>
-          </ul>
+    <!-- Forum Header -->
+    <span ng-show="!AppCtrl.isAdminPanel()" ng-cloak>
+      <div class="row">
+        <div class="small-12 columns">
 
-          <!-- For Desktop -->
-          <section class="top-bar-section">
-            <!-- Left Nav Section -->
-            <ul class="left">
-              <!-- <li><a href="#">Help</a></li> -->
-              <!-- <li><a href="#">Donate</a></li> -->
-            </ul>
-
-            <!-- Right Nav Section -->
-            <ul ng-if="!HeaderCtrl.loggedIn()" class="right login-container">
-              <li>
-                <a ng-click="HeaderCtrl.openRegisterModal()">Register</a>
+          <!-- Navigation -->
+          <nav class="top-bar" data-topbar role="navigation">
+            <!-- For mobile -->
+            <ul class="title-area">
+              <li class="name">
+                <h1><a ng-href="/">Epochtalk Forum</a></h1>
               </li>
-              <li>
-                <a class="button" ng-click="HeaderCtrl.openLoginModal()">Login</a>
+              <li class="toggle-topbar menu-icon">
+                <a ng-href="#"><span>Menu</span></a>
               </li>
             </ul>
 
-            <!-- User Drop Down -->
-            <ul ng-if="HeaderCtrl.loggedIn()" class="right">
-              <li class="has-dropdown">
-                <a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}" ng-bind-html="HeaderCtrl.currentUser()"></a>
-                <ul class="dropdown">
-                  <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}">Profile</a></li>
-                  <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
-                </ul>
+            <!-- For Desktop -->
+            <section class="top-bar-section">
+
+              <!-- Right Nav Section -->
+              <ul ng-if="!HeaderCtrl.loggedIn()" class="right login-container">
+                <li>
+                  <a ng-click="HeaderCtrl.openRegisterModal()">Register</a>
+                </li>
+                <li>
+                  <a class="button" ng-click="HeaderCtrl.openLoginModal()">Login</a>
+                </li>
+              </ul>
+
+              <!-- User Drop Down -->
+              <ul ng-if="HeaderCtrl.loggedIn()" class="right">
+                <li class="has-dropdown">
+                  <a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}" ng-bind-html="HeaderCtrl.currentUser()"></a>
+                  <ul class="dropdown">
+                    <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}">Profile</a></li>
+                    <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </section>
+          </nav>
+
+          <!-- Breadcrumbs -->
+          <div class="magellan-override" data-magellan-expedition="fixed">
+            <ul class="breadcrumbs">
+              <li ng-repeat="breadcrumb in HeaderCtrl.breadcrumbs() track by breadcrumb.label" ng-class="{ active: $last }">
+                  <a ng-if="!$last && breadcrumb.url" ng-href="{{ breadcrumb.url }}" ng-bind-html="breadcrumb.label | truncate:30" class="margin-right-xs"></a>
+                  <span ng-if="$last || !breadcrumb.url" ng-bind-html="breadcrumb.label | truncate:30"></span>
               </li>
+
+              <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">Dolor mollit jerky pork</a></li>
+
             </ul>
-          </section>
-        </nav>
+          </div>
 
-        <!-- Breadcrumbs -->
-        <div class="magellan-override" data-magellan-expedition="fixed">
-          <ul class="breadcrumbs">
-            <li ng-repeat="breadcrumb in HeaderCtrl.breadcrumbs() track by breadcrumb.label" ng-class="{ active: $last }">
-                <a ng-if="!$last && breadcrumb.url" ng-href="{{ breadcrumb.url }}" ng-bind-html="breadcrumb.label | truncate:30" class="margin-right-xs"></a>
-                <span ng-if="$last || !breadcrumb.url" ng-bind-html="breadcrumb.label | truncate:30"></span>
-            </li>
-
-            <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">Dolor mollit jerky pork</a></li>
-
-          </ul>
         </div>
-
       </div>
-    </div>
+    </span>
 
-    <!-- Login Modal -->
-    <div class="row" ng-cloak>
+    <!-- Admin Header -->
+    <span ng-show="AppCtrl.isAdminPanel()" ng-cloak>
+      <!-- Navigation -->
+      <nav class="top-bar admin-header" data-topbar role="navigation">
+        <!-- For mobile -->
+        <ul class="title-area">
+          <li class="name">
+            <h1><a ng-href="/admin">Epochtalk Admin</a></h1>
+          </li>
+
+          <li class="toggle-topbar menu-icon">
+            <a ng-href="#"><span>Menu</span></a>
+          </li>
+        </ul>
+
+        <!-- For Desktop -->
+        <section class="top-bar-section">
+          <ul class="left">
+
+          </ul>
+          <!-- Right Nav Section -->
+          <ul class="right login-container">
+          <li class="has-form">
+            <div class="row collapse">
+              <div class="medium-9 columns">
+                <input type="text" placeholder="Find Stuff">
+              </div>
+              <div class="medium-3 columns">
+                <a href="#" class="button expand">Search</a>
+              </div>
+            </div>
+          </li>
+            <li>
+              <a href="/boards">Forum</a>
+            </li>
+            <li>
+              <a ng-if="!HeaderCtrl.loggedIn()" ng-click="HeaderCtrl.openLoginModal()">Login</a>
+              <a ng-if="HeaderCtrl.loggedIn()" ng-click="HeaderCtrl.logout()">Logout</a>
+            </li>
+          </ul>
+        </section>
+      </nav>
+    </span>
+
+    <div ng-cloak>
+      <!-- Login Modal -->
       <modal class="tiny" show="HeaderCtrl.showLogin" on-close="HeaderCtrl.clearLoginFields">
         <form name="login" class="css-form" novalidate>
           <h3 class="thin-dotted-underline">Login</h3>
@@ -108,10 +151,8 @@
         </form>
         <a class="close-reveal-modal">&#215;</a>
       </modal>
-    </div>
 
-    <!-- Recover Account Modal -->
-    <div class="row" ng-cloak>
+      <!-- Recover Account Modal -->
       <modal class="tiny" show="HeaderCtrl.showRecover" on-close="HeaderCtrl.clearRecoverFields">
         <form name="recover" class="css-form" novalidate>
           <h3 class="thin-dotted-underline">Recover Account</h3>
@@ -138,20 +179,16 @@
         </form>
         <a class="close-reveal-modal">&#215;</a>
       </modal>
-    </div>
 
-    <!-- Registration Confrimation Modal -->
-    <div class="row" ng-cloak>
+      <!-- Registration Confrimation Modal -->
       <modal class="tiny" show="HeaderCtrl.showRegisterSuccess">
         <h3 class="thin-dotted-underline">Registration Success</h3>
         <br />
         Thank you for registering. Please check your email and confirm your account.
         <a class="close-reveal-modal">&#215;</a>
       </modal>
-    </div>
 
-    <!-- Register Modal -->
-    <div class="row" ng-cloak>
+      <!-- Register Modal -->
       <modal class="small" show="HeaderCtrl.showRegister" on-close="HeaderCtrl.clearRegisterFields">
         <form name="register" class="css-form" novalidate>
           <h3 class="thin-dotted-underline">Register</h3>
@@ -230,13 +267,41 @@
         <a class="close-reveal-modal">&#215;</a>
       </modal>
     </div>
+
   </div>
 
   <!-- Main Content -->
-  <div ng-view  autoscroll="true" class="main-container" ng-cloak></div>
+  <div ng-show="AppCtrl.isAdminPanel()" id="sidebar" ng-cloak>
+    <ul class="side-nav">
+      <li><h6 class="thin-dotted-underline sidebar-category">General</h6></li>
+      <li><a href="#">Getting Started</a></li>
+      <li><a href="#">Post News</a></li>
+      <li><a href="#">Forum Statistics</a></li>
+      <li class="sidebar-spacer"></li>
+      <li><h6 class="thin-dotted-underline sidebar-category">Manage</h6></li>
+      <li><a href="#">Moderation Queue</a></li>
+      <li><a href="/admin/categories">Boards and Categories</a></li>
+      <li><a href="#">Moderators</a></li>
+      <li><a href="#">Users</a></li>
+      <li><a href="#">Groups and Permissions</a></li>
+      <li><a href="#">Plugins</a></li>
+      <li class="sidebar-spacer"></li>
+      <li><h6 class="thin-dotted-underline sidebar-category">Settings</h6></li>
+      <li><a href="#">General</a></li>
+      <li><a href="#">Users</a></li>
+      <li><a href="#">Messaging</a></li>
+      <li><a href="#">Profiles</a></li>
+      <li><a href="#">Appearance</a></li>
+      <li class="sidebar-spacer"></li>
+      <li><h6 class="thin-dotted-underline sidebar-category">Advanced</h6></li>
+      <li><a href="#">Database</a></li>
+      <li><a href="#">Logs</a></li>
+    </ul>
+  </div>
+  <div ng-class="{ 'admin-padding' : AppCtrl.isAdminPanel() }" ng-view autoscroll="true" class="main-container" ng-cloak></div>
 
   <!-- Footer -->
-  <div class="footer" ng-cloak>
+  <div class="footer" ng-show="!AppCtrl.isAdminPanel()" ng-cloak>
     <div class="row">
       <div class="small-12 columns">
         <h3>Generic Footer Stuff</h3>
@@ -246,7 +311,6 @@
       </div>
     </div>
   </div>
-
 
   <script src="/static/js/bundle.js" type="text/javascript"></script>
 </body>

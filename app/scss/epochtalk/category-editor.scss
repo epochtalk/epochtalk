@@ -44,9 +44,6 @@
   font-weight: bold;
   border: 1px solid #ccc;
   background: #fafafa;
-  background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
-  background: -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
-  background: linear-gradient(top, #fafafa 0%, #eee 100%);
   -webkit-border-radius: 3px;
   border-radius: 3px;
   box-sizing: border-box;
@@ -54,12 +51,9 @@
 }
 
 .dd-root-handle {
-  border: 1px solid #007ba0;
+  border: 1px solid scale-color($primary-color, $lightness: -15%);
   color: #fff;
-  background: #008CBA;
-  background: -webkit-linear-gradient(top, #008CBA 0%, #009CBA 100%);
-  background: -moz-linear-gradient(top, #008CBA 0%, #009CBA 100%);
-  background: linear-gradient(top, #008CBA 0%, #009CBA 100%);
+  background: $primary-color;
 }
 
 .dd-root-item > button:before {
