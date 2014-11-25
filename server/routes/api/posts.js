@@ -101,12 +101,12 @@ var pre = {
 var posts = {};
 posts.create = {
   auth: { strategy: 'jwt' },
+  validate: { payload: postValidator.schema.create },
   pre: [
     { method: pre.clean },
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
-  validate: { payload: postValidator.schema.create },
   handler: function(request, reply) {
     // build the post object from payload and params
     var user = request.auth.credentials;
@@ -142,13 +142,13 @@ posts.import = {
 };
 
 posts.find = {
+  validate: { params: postValidator.schema.id },
   handler: function(request, reply) {
     var id = request.params.id;
     core.posts.find(id)
     .then(function(post) { reply(post); })
     .catch(function() { reply(Hapi.error.internal()); });
-  },
-  validate: { params: postValidator.schema.id }
+  }
 };
 
 posts.byThread = {
@@ -209,6 +209,7 @@ posts.update = {
 };
 
 posts.delete = {
+  auth: { strategy: 'jwt' },
   validate: { params: postValidator.schema.id },
   pre: [ { method: pre.authPost } ],
   handler: function(request, reply) {
