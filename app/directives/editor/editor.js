@@ -2,7 +2,7 @@ var medium = require('medium-editor');
 var bbcodeParser = require('bbcode-parser');
 var fs = require('fs');
 
-module.exports = ['$timeout', 'FileUpload', function($timeout, FileUpload) {
+module.exports = ['$timeout', function($timeout) {
   return {
     restrict: 'E',
     scope: {
@@ -13,7 +13,7 @@ module.exports = ['$timeout', 'FileUpload', function($timeout, FileUpload) {
     },
     controller: function($scope) {
       $scope.upload = function() {
-        FileUpload.upload($scope.imageFiles, 'http://localhost:8080/images');
+        var images = $scope.imageFiles;
       };
     },
     link: function(scope, element, attrs, ctrl) {
