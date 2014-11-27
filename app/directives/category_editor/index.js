@@ -1,7 +1,7 @@
 var fs = require('fs');
 var _ = require('lodash');
 
-module.exports = ['$compile', '$route', function($compile, $route) {
+module.exports = ['$state', function($state) {
   return {
     restrict: 'E',
     template: fs.readFileSync(__dirname + '/../../templates/directives/category-editor.html'),
@@ -135,7 +135,7 @@ module.exports = ['$compile', '$route', function($compile, $route) {
       };
 
       $scope.reset = function() {
-        $route.reload();
+        $state.go($state.$current, null, { reload: true });
       };
 
       $scope.save = function() {
@@ -159,7 +159,7 @@ module.exports = ['$compile', '$route', function($compile, $route) {
         })
         .then(function() {
           console.log('Done Saving!');
-          return $route.reload();
+          return $state.go($state.$current, null, { reload: true });
         });
       };
 

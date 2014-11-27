@@ -1,4 +1,4 @@
-module.exports = ['$location', '$timeout', '$route', 'Auth', function($location, $timeout, $route, Auth) {
+module.exports = ['$location', '$timeout', '$stateParams', 'Auth', function($location, $timeout, $stateParams, Auth) {
   var ctrl = this;
   this.updatedUser = {};
   this.tokenExpired = false;
@@ -6,8 +6,8 @@ module.exports = ['$location', '$timeout', '$route', 'Auth', function($location,
   this.status = {};
 
   var params = {
-    username: $route.current.params.username,
-    token: $route.current.params.token
+    username: $stateParams.username,
+    token: $stateParams.token
   };
 
   Auth.checkResetToken(params, function(res) {
@@ -26,10 +26,10 @@ module.exports = ['$location', '$timeout', '$route', 'Auth', function($location,
 
   this.resetPassword = function() {
     var user = {
-      username: $route.current.params.username,
+      username: $stateParams.username,
       password: ctrl.updatedUser.password,
       confirmation: ctrl.updatedUser.confirmation,
-      token: $route.current.params.token
+      token: $stateParams.token
     };
     Auth.resetPassword(user, function() { // success
       ctrl.updatedUser = {};

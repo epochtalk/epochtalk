@@ -3,128 +3,195 @@ require('./filters');
 require('./services');
 require('./resources');
 
-module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
-  function($routeProvider, $locationProvider, $httpProvider) {
-    $routeProvider.when('/', {
-      controller: 'MainCtrl',
-      controllerAs: 'MainCtrl',
-      template: fs.readFileSync(__dirname + '/templates/main.html')
-    });
+module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
+  function($stateProvider, $locationProvider, $httpProvider) {
 
-    $routeProvider.when('/confirm/:username/:token', {
-      controller: 'ConfirmCtrl',
-      controllerAs: 'ConfirmCtrl',
-      template: fs.readFileSync(__dirname + '/templates/confirm.html')
-    });
-
-    $routeProvider.when('/reset/:username/:token', {
-      controller: 'ResetCtrl',
-      controllerAs: 'ResetCtrl',
-      template: fs.readFileSync(__dirname + '/templates/reset.html')
-    });
-
-    $routeProvider.when('/boards', {
-      controller: 'BoardsCtrl',
-      controllerAs: 'BoardsCtrl',
-      template: fs.readFileSync(__dirname + '/templates/boards.html'),
+    $stateProvider.state('index', {
+      url: '/',
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'content': {
+          controller: 'MainCtrl',
+          controllerAs: 'MainCtrl',
+          template: fs.readFileSync(__dirname + '/templates/main.html')
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+      }
+    })
+    .state('profile', {
+      url: '/profiles/{username}',
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'content': {
+          controller: 'ProfileCtrl',
+          controllerAs: 'profiles',
+          template: fs.readFileSync(__dirname + '/templates/profile.html')
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+      },
       resolve: {
-        boards: [ 'Boards', function(Boards) {
-          return Boards.query();
+        user: [ 'User', '$stateParams', function(User, $stateParams) {
+          return User.get({ id: $stateParams.username });
         }]
       }
-    });
-
-    $routeProvider.when('/boards/:boardId', {
-      controller: 'BoardCtrl',
-      controllerAs: 'BoardCtrl',
-      reloadOnSearch: false,
-      template: fs.readFileSync(__dirname + '/templates/board.html'),
-      resolve: {
-        board: ['Boards', '$route', function(Boards, $route) {
-          return Boards.get({ id: $route.current.params.boardId});
-        }],
-        threads: ['Threads', '$route', function(Threads, $route) {
-          var query = {
-            board_id: $route.current.params.boardId,
-            limit: Number($route.current.params.limit) || 10,
-            page: Number($route.current.params.page) || 1
-          };
-          return Threads.byBoard(query);
-        }],
-        page: ['$route', function($route) {
-          return Number($route.current.params.page) || 1;
-        }],
-        threadLimit: ['$route', function($route) {
-          // TODO: this needs to be grabbed from user settings
-          return Number($route.current.params.limit) || 10;
-        }],
-        postLimit: [function() {
-          // TODO: this needs to be grabbed from user settings
-          return 10;
-        }]
+    })
+    .state('confirm', {
+      url: '/confirm/{username}/{token}',
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'content': {
+          controller: 'ConfirmCtrl',
+          controllerAs: 'ConfirmCtrl',
+          template: fs.readFileSync(__dirname + '/templates/confirm.html')
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
       }
-    });
+    })
+    .state('reset', {
+      url: '/reset/{username}/{token}',
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'content': {
+          controller: 'ResetCtrl',
+          controllerAs: 'ResetCtrl',
+          template: fs.readFileSync(__dirname + '/templates/reset.html')
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
 
-    $routeProvider.when('/boards/:boardId/threads/new', {
-      controller: 'NewThreadCtrl',
-      controllerAs: 'NewThreadCtrl',
-      template: fs.readFileSync(__dirname + '/templates/newThread.html')
-    });
-
-    $routeProvider.when('/threads/:threadId/posts', {
-      controller: 'PostsCtrl',
-      controllerAs: 'PostsCtrl',
-      template: fs.readFileSync(__dirname + '/templates/posts.html'),
-      reloadOnSearch: false,
-      resolve: {
-        thread: ['Threads', '$route', function(Threads, $route) {
-          return Threads.get({ id: $route.current.params.threadId });
-        }],
-        posts: ['Posts', '$route', function(Posts, $route) {
-          var query = {
-            thread_id: $route.current.params.threadId,
-            limit: Number($route.current.params.limit) || 10,
-            page: Number($route.current.params.page) || 1
-          };
-          return Posts.byThread(query);
-        }],
-        page: ['$route', function($route) {
-          return Number($route.current.params.page) || 1;
-        }],
-        limit: ['$route', function($route) {
-          // TODO: this needs to be grabbed from user settings
-          if ($route.current.params.limit === 'all') { return 'all'; }
-          else { return Number($route.current.params.limit) || 10; }
-        }]
       }
-    });
-
-    $routeProvider.when('/profiles/:username', {
-      controller: 'ProfileCtrl',
-      controllerAs: 'profiles',
-      template: fs.readFileSync(__dirname + '/templates/profile.html'),
-      resolve: {
-        user: [ 'User', '$route', function(User, $route) {
-          return User.get({ id: $route.current.params.username });
-        }]
+    })
+    .state('boards', {
+      url: '/boards',
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'content': {
+          controller: 'BoardsCtrl',
+          controllerAs: 'BoardsCtrl',
+          template: fs.readFileSync(__dirname + '/templates/boards.html'),
+          resolve: {
+            boards: [ 'Boards', function(Boards) {
+              return Boards.query();
+            }]
+          }
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
       }
-    });
-
-    $routeProvider.when('/admin', {
-      protect: true
-    });
-
-    $routeProvider.when('/admin/categories', {
-      protect: true,
-      controller: 'CategoriesCtrl',
-      template: fs.readFileSync(__dirname + '/templates/admin/categories.html'),
-      resolve: {
-        categories: ['Boards', function(Boards) {
-          return Boards.query();
-        }],
-        boards: ['Boards', function(Boards) {
-          return Boards.all();
-        }]
+    })
+    .state('threads', {
+      url: '/boards/{boardId}?limit&page',
+      // reloadOnSearch: false,
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'content': {
+          controller: 'BoardCtrl',
+          controllerAs: 'BoardCtrl',
+          template: fs.readFileSync(__dirname + '/templates/board.html'),
+          resolve: {
+            board: ['Boards', '$stateParams', function(Boards, $stateParams) {
+              return Boards.get({ id: $stateParams.boardId});
+            }],
+            threads: ['Threads', '$stateParams', function(Threads, $stateParams) {
+              var query = {
+                board_id: $stateParams.boardId,
+                limit: Number($stateParams.limit) || 10,
+                page: Number($stateParams.page) || 1
+              };
+              return Threads.byBoard(query);
+            }],
+            page: ['$stateParams', function($stateParams) {
+              return Number($stateParams.page) || 1;
+            }],
+            threadLimit: ['$stateParams', function($stateParams) {
+              // TODO: this needs to be grabbed from user settings
+              return Number($stateParams.limit) || 10;
+            }],
+            postLimit: [function() {
+              // TODO: this needs to be grabbed from user settings
+              return 10;
+            }]
+          }
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+      }
+    })
+    .state('newThread', {
+      url: '/boards/{boardId}/threads/new',
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'content': {
+          controller: 'NewThreadCtrl',
+          controllerAs: 'NewThreadCtrl',
+          template: fs.readFileSync(__dirname + '/templates/newThread.html')
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+      }
+    })
+    .state('posts', {
+      url: '/threads/{threadId}/posts?limit&page',
+      // reloadOnSearch: false,
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'content': {
+          controller: 'PostsCtrl',
+          controllerAs: 'PostsCtrl',
+          template: fs.readFileSync(__dirname + '/templates/posts.html'),
+          resolve: {
+            thread: ['Threads', '$stateParams', function(Threads, $stateParams) {
+              return Threads.get({ id: $stateParams.threadId });
+            }],
+            posts: ['Posts', '$stateParams', function(Posts, $stateParams) {
+              var query = {
+                thread_id: $stateParams.threadId,
+                limit: Number($stateParams.limit) || 10,
+                page: Number($stateParams.page) || 1
+              };
+              return Posts.byThread(query);
+            }],
+            page: ['$stateParams', function($stateParams) {
+              return Number($stateParams.page) || 1;
+            }],
+            limit: ['$stateParams', function($stateParams) {
+              // TODO: this needs to be grabbed from user settings
+              if ($stateParams.limit === 'all') { return 'all'; }
+              else { return Number($stateParams.limit) || 10; }
+            }]
+          }
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+      }
+    })
+    .state('admin', {
+      url: '/admin',
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/admin/header.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+      }
+    })
+    .state('categories', {
+      url: '/admin/categories',
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/templates/admin/header.html') },
+        'content': {
+          controller: 'CategoriesCtrl',
+          template: fs.readFileSync(__dirname + '/templates/admin/categories.html'),
+          resolve: {
+            categories: ['Boards', function(Boards) {
+              return Boards.query();
+            }],
+            boards: ['Boards', function(Boards) {
+              return Boards.all();
+            }]
+          }
+        },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
       }
     });
 

@@ -1,5 +1,5 @@
-module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
-  function($route, $timeout, Auth, BreadcrumbSvc) {
+module.exports = ['$state', '$timeout', 'Auth', 'BreadcrumbSvc',
+  function($state, $timeout, Auth, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
     this.currentUser = Auth.getUsername;
@@ -63,7 +63,7 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
         function() {
           ctrl.closeLoginModal();
           ctrl.clearLoginFields();
-          $timeout(function() { $route.reload(); });
+          $timeout(function() { $state.go($state.$current, null, { reload: true }); });
         },
         function(err) {
           ctrl.loginError.status = true;
@@ -74,7 +74,7 @@ module.exports = ['$route', '$timeout', 'Auth', 'BreadcrumbSvc',
 
     this.logout = function() {
       Auth.logout(function() {
-        $timeout(function() { $route.reload(); });
+        $timeout(function() { $state.go($state.$current, null, { reload: true }); });
       });
     };
 

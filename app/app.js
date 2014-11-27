@@ -3,6 +3,7 @@ require('angular/angular');
 require('angular-resource/angular-resource');
 require('angular-route/angular-route');
 require('angular-sanitize/angular-sanitize');
+require('angular-ui-router');
 // var Modernizr = require('foundation/js/vendor/modernizr');
 jQuery = require('foundation/js/vendor/jquery');
 $ = jQuery;
@@ -15,10 +16,11 @@ require('foundation/js/foundation');
 var app = angular.module('ept', [
   'ngRoute',
   'ngResource',
-  'ngSanitize'
+  'ngSanitize',
+  'ui.router'
 ]);
 
-// Register Controllers
+// Register Forum Page Controllers
 app.controller('AppCtrl', require('./controllers/app.js'));
 app.controller('HeaderCtrl', require('./controllers/header.js'));
 app.controller('MainCtrl', require('./controllers/main.js'));
@@ -29,9 +31,11 @@ app.controller('PostsCtrl', require('./controllers/posts.js'));
 app.controller('ProfileCtrl', require('./controllers/profile.js'));
 app.controller('ResetCtrl', require('./controllers/reset.js'));
 app.controller('ConfirmCtrl', require('./controllers/confirm.js'));
+
+// Register Admin Page Controllers
 app.controller('CategoriesCtrl', require('./controllers/admin/categories.js'));
 
-// add epochtalk-editor directive
+// Register Directives
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
 app.directive('pagination', require('./directives/pagination'));
 app.directive('categoryEditor', require('./directives/category_editor'));
@@ -47,15 +51,15 @@ app.directive('uniqueEmail', require('./directives/uniqueEmail'));
 app.config(require('./config'))
 .run(['$rootScope', '$location', 'Auth', 'BreadcrumbSvc', function($rootScope, $location, Auth, BreadcrumbSvc) {
 
-  // Reload foundation when view loads
+  // Load foundation on view change
   $rootScope.$on('$viewContentLoaded', function() {
     $(document).foundation();
   });
 
   // Redirect users from protected routes
   // TODO: Add check to see if user is admin
-  $rootScope.$on('$routeChangeStart', function (event, next) {
-    if (next.$$route && next.$$route.protect) {
+  $rootScope.$on('$stateChangeStart', function (event, next) {
+    if (next.$$state && next.$$state.protect) {
       Auth.checkAuthentication();
       var isAuthenticated = Auth.isAuthenticated();
       // Possibly redirect to login page in the future
@@ -64,7 +68,7 @@ app.config(require('./config'))
   });
 
   // Dynamically populate breadcrumbs
-  $rootScope.$on('$routeChangeSuccess', function() {
+  $rootScope.$on('$stateChangeSuccess', function() {
     BreadcrumbSvc.update();
   });
 

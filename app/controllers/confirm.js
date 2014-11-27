@@ -1,10 +1,10 @@
-module.exports = ['$location', '$timeout', '$route', 'Auth', function($location, $timeout, $route, Auth) {
+module.exports = ['$location', '$timeout', '$stateParams', 'Auth', function($location, $timeout, $stateParams, Auth) {
   var ctrl = this;
   this.message = '';
 
   var params = {
-    username: $route.current.params.username,
-    token: $route.current.params.token
+    username: $stateParams.username,
+    token: $stateParams.token
   };
 
   Auth.confirmAccount(params, function() {
