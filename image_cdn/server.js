@@ -7,6 +7,8 @@ var good = require('good');
 var mkdirp = require('mkdirp');
 var config = require(path.join(__dirname, 'config'));
 
+// server caching
+// server.cache
 var serverOpts = {
   // cors disabled by default
   security: {
@@ -18,10 +20,6 @@ var serverOpts = {
   }
 };
 var server = Hapi.createServer('localhost', config.port, serverOpts);
-
-// server caching
-// server.cache
-
 
 // api routes
 var routes = require(__dirname + '/routes');

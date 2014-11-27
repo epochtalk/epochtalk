@@ -10,19 +10,17 @@ upload.url = function(url) {
 
   if (config.cdnUrl) {
     // set the image cdn method
-    var method = crypto.createHash('sha256').update('hotlink').digest('hex');
+    var method = crypto.createHash('sha1').update('hotlink').digest('hex');
 
     // encrypt the url
     var cipher = crypto.createCipher('aes-256-cbc', config.privateKey);
     var codedUrl = cipher.update(url,'utf8','hex');
     codedUrl += cipher.final('hex');
 
-    if (config.cdnUrl.indexOf('/', config.cdnUrl.length - 1) !== -1) {
-      cdnUrl = config.cdnUrl + method + codedUrl;
+    if (config.cdnUrl.indexOf('/', config.cdnUrl.length-1) === -1) {
+      cdnUrl = config.cdnUrl + '/';
     }
-    else {
-      cdnUrl = config.cdnUrl + '/' + method + '/' + codedUrl;
-    }
+    cdnUrl += method + '/' + codedUrl;
   }
   
   return cdnUrl;

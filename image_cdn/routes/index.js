@@ -2,7 +2,6 @@
 'use strict';
 
 var Hapi = require('hapi');
-var req = require('request');
 var crypto = require('crypto');
 var path = require('path');
 var config = require(path.join(__dirname, '..', 'config'));
@@ -12,40 +11,40 @@ exports.endpoints = function() {
   var routes = [
     {
       method: 'GET',
-      path: '/images/{method}/{url}',
+      path: '/images/{method}/{options}',
       config: {
         handler: function(request, reply) {
           var method = request.params.method;
-          var url = request.params.url;
-
+          var options = request.params.options;
           // find method signature
-          var hotlink = crypto.createHash('sha256').update('hotlink').digest('hex');
-          var s3 = crypto.createHash('sha256').update('s3').digest('hex');
-          
-          // decode url
-          var decodedUrl = '';
-          try {
-            var decipher = crypto.createDecipher('aes-256-cbc', config.privateKey);
-            decodedUrl = decipher.update(url,'hex','utf8');
-            decodedUrl += decipher.final('utf8');
-          }
-          catch(err) {
-            // send error image
-            return reply(Hapi.error.badRequest());
-          }
+          var hotlink = crypto.createHash('sha1').update('hotlink').digest('hex');
+          var s3 = crypto.createHash('sha1').update('s3').digest('hex');
 
           // figure out image method
           if (method === hotlink) {
-            // pipe url back to requester
-            return reply(req(decodedUrl));
+            // decode options
+            try {
+              var decipher = crypto.createDecipher('aes-256-cbc', config.privateKey);
+              var decodedUrl = decipher.update(options, 'hex', 'utf8');
+              decodedUrl += decipher.final('utf8');
+              // pipe url back to requester
+              return reply.proxy({ uri: decodedUrl, passThrough: true });
+            }
+            catch(err) {
+              // send error image
+              return reply(Hapi.error.badRequest());
+            }
           }
           else if (method === s3) {
-            // pipe url back to requester
-            return reply(Hapi.error.notFound());
+            var bucketUrl = config.bucketUrl;
+            if (bucketUrl.indexOf('/', bucketUrl.length-1) === -1) {
+              bucketUrl += '/';
+            }
+            bucketUrl += 'images/';
+            bucketUrl += options;
+            return reply.proxy({ uri: bucketUrl, passThrough: true });
           }
-          else {
-            return reply(Hapi.error.badRequest());
-          }
+          else { return reply(Hapi.error.badRequest()); }
         }
       }
     }
