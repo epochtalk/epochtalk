@@ -30,7 +30,7 @@ exports.import = {
       delete user.passhash;
       reply(user);
     })
-    .catch(function(err) { reply(Hapi.error.internal()); });
+    .catch(function(err) { reply(err); });
   }
 };
 

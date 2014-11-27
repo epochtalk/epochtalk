@@ -42,7 +42,7 @@ exports.import = {
     // build the post object from payload and params
     core.posts.import(request.payload)
     .then(function(post) { reply(post); })
-    .catch(function(err) { reply(Hapi.error.internal()); });
+    .catch(function(err) { reply(err); });
   }
 };
 

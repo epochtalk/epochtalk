@@ -34,8 +34,8 @@ exports.create = {
 };
 
 exports.import = {
-  auth: { strategy: 'jwt' },
-  validate: { payload: threadValidator.schema.import },
+  // auth: { strategy: 'jwt' },
+  // validate: { payload: threadValidator.schema.import },
   handler: function(request, reply) {
     core.threads.import(request.payload)
     // .then(function(importedThread) {
@@ -44,10 +44,8 @@ exports.import = {
     //     return core.posts.import(post);
     //   });
     // })
-    .then(function() { reply({}); })
-    .catch(function(err) {
-      reply(Hapi.error.internal());
-    });
+    .then(function(thread) { reply(thread); })
+    .catch(function(err) { reply(err); });
   }
 };
 
