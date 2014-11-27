@@ -2,7 +2,7 @@ var medium = require('medium-editor');
 var bbcodeParser = require('bbcode-parser');
 var fs = require('fs');
 
-module.exports = ['$timeout', function($timeout) {
+module.exports = ['$timeout', '$http', function($timeout, $http) {
   return {
     restrict: 'E',
     scope: {
@@ -11,10 +11,88 @@ module.exports = ['$timeout', function($timeout) {
       reset: '=',
       focusEditor: '='
     },
-    controller: function($scope) {
-      $scope.upload = function() {
-        var images = $scope.imageFiles;
-      };
+    controller: function($scope, $element) {
+      $scope.imageUrl = '';
+      $scope.imageUploading = false;
+      $scope.imageComplete = false;
+
+
+      // Define event handlers
+      function uploadProgress(e) {
+        $scope.$apply(function () {
+          if (e.lengthComputable) {
+            var progress = Math.round(e.loaded * 100 / e.total);
+            console.log(progress);
+          }
+          else { console.log('unable to compute'); }
+        });
+      }
+      function uploadComplete(e) {
+        var xhr = e.srcElement || e.target;
+        $scope.$apply(function () {
+          if (xhr.status === 204) { // successful upload
+            console.log('upload finished');
+            console.log($scope.imageUrl);
+          }
+          else {
+            console.log('upload failed at the end');
+          }
+        });
+      }
+      function uploadFailed(e) {
+        var xhr = e.srcElement || e.target;
+        $scope.$apply(function () {
+          console.log('upload failed');
+        });
+      }
+      function uploadCanceled(e) {
+        var xhr = e.srcElement || e.target;
+        $scope.$apply(function () {
+          console.log('upload cancelled');
+        });
+      }
+      function upload(e) {
+        // files to upload
+        $scope.files = $element.find('input')[0].files;
+        var file = $scope.files[0];
+
+        $http.get('/policy/' + file.name)
+        .success(function(data) {
+          // get policy and signature
+          var policy = data.policy;
+          var signature = data.signature;
+          var accessKey = data.accessKey;
+          var url = data.uploadUrl;
+          var filename = data.filename;
+          $scope.imageUrl = data.imageUrl;
+
+          // form data
+          var fd = new FormData();
+          fd.append('key', 'images/' + filename);
+          fd.append('acl', 'public-read');
+          fd.append('Content-Type', file.type);
+          fd.append('AWSAccessKeyId', accessKey);
+          fd.append('policy', policy);
+          fd.append('signature', signature);
+          fd.append("file", file);
+
+          var xhr = new XMLHttpRequest();
+          xhr.upload.addEventListener("progress", uploadProgress, false);
+          xhr.addEventListener("load", uploadComplete, false);
+          xhr.addEventListener("error", uploadFailed, false);
+          xhr.addEventListener("abort", uploadCanceled, false);
+          $scope.$emit('s3upload:start', xhr);
+
+          // Send the file
+          xhr.open('POST', url, true);
+          xhr.send(fd);
+        })
+        .error(function(data) { console.log(data); });
+      }
+
+      // bind to changes in the image input 
+      var fileInput = $element.find('input');
+      fileInput.bind('change', upload);
     },
     link: function(scope, element, attrs, ctrl) {
       // Find relevant HTML Elements
