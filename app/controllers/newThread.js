@@ -1,10 +1,10 @@
-module.exports = ['$routeParams', '$location', 'Auth', 'Threads',
-  function($routeParams, $location, Auth, Threads) {
+module.exports = ['$stateParams', '$location', 'Auth', 'Threads',
+  function($stateParams, $location, Auth, Threads) {
     var ctrl = this;
 
     this.error = {};
     this.thread = {
-      board_id: $routeParams.boardId,
+      board_id: $stateParams.boardId,
       encodedBody: '',
       body: '',
       title: ''

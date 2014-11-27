@@ -2,8 +2,8 @@
 /* jslint node: true */
 var _ = require('lodash');
 
-module.exports = ['$routeParams', '$location', 'Breadcrumbs',
-function ($routeParams, $location, Breadcrumbs) {
+module.exports = ['$stateParams', '$location', 'Breadcrumbs',
+function ($stateParams, $location, Breadcrumbs) {
   var breadcrumbsStore; // stores array of breadcrumb objects
 
   var pathLookup = {
@@ -20,7 +20,12 @@ function ($routeParams, $location, Breadcrumbs) {
     update: function() {
       var breadcrumbs = [ pathLookup.home ];
       var path = $location.path();
-      var routeParams = $routeParams;
+      var routeParams = $stateParams;
+
+      // Strip query str params since stateParams includes query and route params together
+      delete routeParams.limit;
+      delete routeParams.page;
+
       // Maps routeParams key to breadcrumb type
       var keyToType = {
         boardId:  'board',

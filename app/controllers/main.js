@@ -1,5 +1,5 @@
-module.exports = ['$location',
-  function($location) {
-    $location.path('/boards');
+module.exports = ['$state',
+  function($state) {
+    $state.go('boards');
   }
 ];

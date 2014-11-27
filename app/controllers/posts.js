@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 'Auth', 'Posts', 'thread', 'posts', 'page', 'limit',
-  function($scope, $timeout, $location, $route, $anchorScroll, Auth, Posts, thread, posts, page, limit) {
+module.exports = ['$scope', '$timeout', '$location', '$stateParams', '$anchorScroll', 'Auth', 'Posts', 'thread', 'posts', 'page', 'limit',
+  function($scope, $timeout, $location, $stateParams, $anchorScroll, Auth, Posts, thread, posts, page, limit) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated; // used to check auth
     var tempPosts = {}; // contains post content while editing
@@ -44,7 +44,7 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
         // Increment post count and recalculate ctrl.pageCount
         ctrl.totalPosts++;
         calculatePages();
-        
+
         // clean out new post
         ctrl.newPost.body = '';
         ctrl.newPost.encodedBody = '';
@@ -128,17 +128,17 @@ module.exports = ['$scope', '$timeout', '$location', '$route', '$anchorScroll', 
       delete tempPosts[cancelPost.id]; // delete this content in tempPosts
     };
 
-    // pagination 
+    // pagination
 
-    $scope.$on('$routeUpdate', function(event, route) {
+    $scope.$on('$stateChangeStart', function(event, $stateParams) {
       var query = {
-        thread_id: $route.current.params.threadId,
-        limit: route.params.limit,
-        page: route.params.page
+        thread_id: $stateParams.threadId,
+        limit: $stateParams.limit,
+        page: $stateParams.page
       };
       return Posts.byThread(query).$promise.then(function(posts) {
         ctrl.posts = posts;
-        ctrl.page = Number(route.params.page);
+        ctrl.page = Number($stateParams.page);
         $timeout($anchorScroll);
       });
     });

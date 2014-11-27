@@ -4,6 +4,7 @@ require('angular-cookies/angular-cookies');
 require('angular-resource/angular-resource');
 require('angular-route/angular-route');
 require('angular-sanitize/angular-sanitize');
+require('angular-ui-router');
 // var Modernizr = require('foundation/js/vendor/modernizr');
 jQuery = require('foundation/js/vendor/jquery');
 $ = jQuery;
@@ -17,10 +18,11 @@ var app = angular.module('ept', [
   'ngRoute',
   'ngCookies',
   'ngResource',
-  'ngSanitize'
+  'ngSanitize',
+  'ui.router'
 ]);
 
-// Register Controllers
+// Register Forum Page Controllers
 app.controller('AppCtrl', require('./controllers/app.js'));
 app.controller('HeaderCtrl', require('./controllers/header.js'));
 app.controller('MainCtrl', require('./controllers/main.js'));
@@ -31,9 +33,11 @@ app.controller('PostsCtrl', require('./controllers/posts.js'));
 app.controller('ProfileCtrl', require('./controllers/profile.js'));
 app.controller('ResetCtrl', require('./controllers/reset.js'));
 app.controller('ConfirmCtrl', require('./controllers/confirm.js'));
-app.controller('CategoriesCtrl', require('./controllers/categories.js'));
 
-// add epochtalk-editor directive
+// Register Admin Page Controllers
+app.controller('CategoriesCtrl', require('./controllers/admin/categories.js'));
+
+// Register Directives
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
 app.directive('pagination', require('./directives/pagination'));
 app.directive('categoryEditor', require('./directives/category_editor'));
@@ -49,12 +53,13 @@ app.directive('uniqueEmail', require('./directives/uniqueEmail'));
 app.config(require('./config'))
 .run(['$rootScope', 'BreadcrumbSvc', function($rootScope, BreadcrumbSvc) {
 
+  // Load foundation on view change
   $rootScope.$on('$viewContentLoaded', function() {
     $(document).foundation();
   });
 
   // Dynamically populate breadcrumbs
-  $rootScope.$on('$routeChangeSuccess', function() {
+  $rootScope.$on('$stateChangeSuccess', function() {
     BreadcrumbSvc.update();
   });
 
