@@ -16,6 +16,20 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
       $scope.imageUploading = false;
       $scope.imageComplete = false;
 
+      function insertTextAtCursor(text) {
+        var sel, range, html;
+        if (window.getSelection) {
+          sel = window.getSelection();
+          if (sel.getRangeAt && sel.rangeCount) {
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode( document.createTextNode(text) );
+          }
+        }
+        else if (document.selection && document.selection.createRange) {
+          document.selection.createRange().text = text;
+        }
+      }
 
       // Define event handlers
       function uploadProgress(e) {
@@ -31,8 +45,10 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
         var xhr = e.srcElement || e.target;
         $scope.$apply(function () {
           if (xhr.status === 204) { // successful upload
-            console.log('upload finished');
-            console.log($scope.imageUrl);
+            var editor = $element[0].getElementsByClassName('editor-input')[0];
+            $(editor).focus();
+            insertTextAtCursor('[img]' + $scope.imageUrl + '[/img]');
+            $(editor).blur();
           }
           else {
             console.log('upload failed at the end');
