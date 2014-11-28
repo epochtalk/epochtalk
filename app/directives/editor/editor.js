@@ -12,9 +12,11 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
       focusEditor: '='
     },
     controller: function($scope, $element) {
+      var inputElement = $element.find('input')[0];
       $scope.imageUrl = '';
       $scope.imageUploading = false;
       $scope.imageComplete = false;
+      $scope.openImagePicker = function(e) { inputElement.click(); };
 
       function insertTextAtCursor(text) {
         var sel, range, html;
@@ -56,13 +58,11 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
         });
       }
       function uploadFailed(e) {
-        var xhr = e.srcElement || e.target;
         $scope.$apply(function () {
           console.log('upload failed');
         });
       }
       function uploadCanceled(e) {
-        var xhr = e.srcElement || e.target;
         $scope.$apply(function () {
           console.log('upload cancelled');
         });
@@ -107,8 +107,7 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
       }
 
       // bind to changes in the image input 
-      var fileInput = $element.find('input');
-      fileInput.bind('change', upload);
+      inputElement.bind('change', upload);
     },
     link: function(scope, element, attrs, ctrl) {
       // Find relevant HTML Elements
