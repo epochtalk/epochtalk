@@ -141,7 +141,9 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
         var fileList = dt.files;
         var images = [];
         for (var i = 0; i < fileList.length; i++) {
-          images.push(fileList[i]);
+          var file = fileList[i];
+          if (!file.type.match(/image.*/)) { continue; }
+          images.push(file);
         }
         upload(images);
       }
