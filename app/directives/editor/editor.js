@@ -13,6 +13,7 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
     },
     controller: function($scope, $element) {
       var inputElement = $element.find('input')[0];
+      var footer = $element[0].getElementsByClassName('editor-footer')[0];
       $scope.openImagePicker = function(e) { inputElement.click(); };
 
       function insertTextAtCursor(text) {
@@ -30,7 +31,7 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
         }
       }
 
-      // Define event handlers
+      // Define upload event handlers
       function uploadProgress(e) {
         $scope.$apply(function () {
           if (e.lengthComputable) {
@@ -64,14 +65,7 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
           console.log('upload cancelled');
         });
       }
-      function upload() {
-        // get all the images from the file picker
-        var fileList = inputElement.files;
-        var images = [];
-        for (var i = 0; i < fileList.length; i++) {
-          images.push(fileList[i]);
-        }
-
+      function upload(images) {
         // upload each image
         images.forEach(function(image) {
           // get a s3 policy for this image
@@ -115,7 +109,42 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
 
       // bind to changes in the image input
       // because angular can handle ng-change on input[file=type]
-      angular.element(inputElement).bind('change', upload);
+      angular.element(inputElement).bind('change', function() {
+        // get all the images from the file picker
+        var fileList = inputElement.files;
+        var images = [];
+        for (var i = 0; i < fileList.length; i++) {
+          images.push(fileList[i]);
+        }
+        upload(images);
+      });
+
+      // drap and drop implementation
+      footer.addEventListener("dragenter", dragenter, false);
+      function dragenter(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
+      footer.addEventListener("dragover", dragover, false);
+      function dragover(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
+      footer.addEventListener("drop", drop, false);
+      function drop(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var dt = e.dataTransfer;
+        var fileList = dt.files;
+        var images = [];
+        for (var i = 0; i < fileList.length; i++) {
+          images.push(fileList[i]);
+        }
+        upload(images);
+      }
     },
     link: function(scope, element, attrs, ctrl) {
       // Find relevant HTML Elements
