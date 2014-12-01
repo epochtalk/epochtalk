@@ -58,8 +58,8 @@ app.config(require('./config'))
   // TODO: Add check to see if user is admin
   $rootScope.$on('$routeChangeStart', function (event, next) {
     if (next.$$route && next.$$route.protect) {
-      var isAuthenticated = Auth.isAuthenticated();
       Auth.checkAuthentication();
+      var isAuthenticated = Auth.isAuthenticated();
       // Possibly redirect to login page in the future
       if (!isAuthenticated) { $location.path('/'); }
     }

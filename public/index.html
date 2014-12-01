@@ -17,7 +17,7 @@
 
   <!-- Header -->
   <div ng-controller="HeaderCtrl as HeaderCtrl">
-    <span ng-switch on="AppCtrl.isAdminPanel()">
+    <span ng-switch on="AppCtrl.isAdminPanel() && AppCtrl.isAuthenticatedAdmin()">
       <div ng-switch-when="true"><ng-include src="'/static/partials/admin-header.html'" /></div>
       <div ng-switch-when="false"><ng-include src="'/static/partials/header.html'" /></div>
     </span>
@@ -25,7 +25,7 @@
   </div>
 
   <!-- Main Content -->
-  <span ng-switch on="AppCtrl.isAdminPanel()">
+  <span ng-switch on="AppCtrl.isAdminPanel() && AppCtrl.isAuthenticatedAdmin()">
     <div ng-switch-when="true"><ng-include src="'/static/partials/admin-sidebar.html'" /></div>
   </span>
   <div ng-class="{ 'admin-padding' : AppCtrl.isAdminPanel() }" ng-view autoscroll="true" class="main-container" ng-cloak></div>
