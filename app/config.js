@@ -110,7 +110,12 @@ module.exports = ['$routeProvider', '$locationProvider', '$httpProvider',
       }
     });
 
+    $routeProvider.when('/admin', {
+      protect: true
+    });
+
     $routeProvider.when('/admin/categories', {
+      protect: true,
       controller: 'CategoriesCtrl',
       template: fs.readFileSync(__dirname + '/templates/admin/categories.html'),
       resolve: {

@@ -18,6 +18,7 @@ var pre = {
 // Route handlers/configs
 var boards = {};
 boards.create = {
+  auth: { mode: 'required', strategy: 'jwt' },
   validate: { payload: boardValidator.schema.create },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
@@ -63,6 +64,7 @@ boards.allCategories = {
 };
 
 boards.updateCategories = {
+  auth: { mode: 'required', strategy: 'jwt' },
   validate: { payload: boardValidator.schema.categories },
   handler: function(request, reply) {
     // update board on core
@@ -73,6 +75,7 @@ boards.updateCategories = {
 };
 
 boards.update = {
+  auth: { mode: 'required', strategy: 'jwt' },
   validate: {
     payload: boardValidator.schema.update,
     params: boardValidator.schema.id
@@ -96,6 +99,7 @@ boards.update = {
 };
 
 boards.delete = {
+  auth: { mode: 'required', strategy: 'jwt' },
   validate: { params: boardValidator.schema.id },
   handler: function(request, reply) {
     core.boards.delete(request.params.id)

@@ -31,7 +31,7 @@ app.controller('PostsCtrl', require('./controllers/posts.js'));
 app.controller('ProfileCtrl', require('./controllers/profile.js'));
 app.controller('ResetCtrl', require('./controllers/reset.js'));
 app.controller('ConfirmCtrl', require('./controllers/confirm.js'));
-app.controller('CategoriesCtrl', require('./controllers/categories.js'));
+app.controller('CategoriesCtrl', require('./controllers/admin/categories.js'));
 
 // add epochtalk-editor directive
 app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
@@ -47,10 +47,22 @@ app.directive('uniqueEmail', require('./directives/uniqueEmail'));
 
 // Set Angular Configs
 app.config(require('./config'))
-.run(['$rootScope', 'BreadcrumbSvc', function($rootScope, BreadcrumbSvc) {
+.run(['$rootScope', '$location', 'Auth', 'BreadcrumbSvc', function($rootScope, $location, Auth, BreadcrumbSvc) {
 
+  // Reload foundation when view loads
   $rootScope.$on('$viewContentLoaded', function() {
     $(document).foundation();
+  });
+
+  // Redirect users from protected routes
+  // TODO: Add check to see if user is admin
+  $rootScope.$on('$routeChangeStart', function (event, next) {
+    if (next.$$route && next.$$route.protect) {
+      var isAuthenticated = Auth.isAuthenticated();
+      Auth.checkAuthentication();
+      // Possibly redirect to login page in the future
+      if (!isAuthenticated) { $location.path('/'); }
+    }
   });
 
   // Dynamically populate breadcrumbs
