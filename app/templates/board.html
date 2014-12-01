@@ -1,4 +1,5 @@
-<pagination page-count="BoardCtrl.pageCount" page="BoardCtrl.page"></pagination>
+<!--<pagination page-count="BoardCtrl.pageCount" page="BoardCtrl.page"></pagination>-->
+<div ui-view="pagination"></div>
 
 <div class="row board-page">
   <!-- Page Header -->
@@ -66,57 +67,9 @@
     <div class="thin-dotted-underline"></div>
   </div>
 
-  <!-- Threads -->
-  <div class="small-12 columns" style="min-height: 483px;">
-    <!-- Thread listing headers -->
-    <div ng-if="BoardCtrl.threads" class="row show-for-medium-up">
-      <div class="small-11 medium-7 columns">
-        <h6><strong>Subject</strong></h6>
-      </div>
-      <div class="small-6 medium-1 columns text-center">
-        <h6><strong>Replies</strong></h6>
-      </div>
-      <div class="small-6 medium-1 columns text-center">
-        <h6><strong>Views</strong></h6>
-      </div>
-      <div class="small-12 medium-3 columns">
-        <h6><strong>Last Reply</strong></h6>
-      </div>
-    </div>
-
-    <!-- Thread listing -->
-    <div class="thread-listItem" ng-repeat="thread in BoardCtrl.threads track by thread.id">
-      <div class="row">
-        <div class="small-12 medium-7 columns">
-          <a ng-class="thread.title_class" class="thread-title" ui-sref="posts({ threadId: thread.id})" ng-bind-html="thread.title"></a><br>
-
-          <div class="division">
-            Started by: <a ui-sref="profiles({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
-            <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
-          </div>
-
-          <div class="division" ng-if="thread.page_count > 1">
-            <span ng-repeat="pageKey in thread.page_keys">
-              <a ui-sref="{{pageKey.url}}" ng-bind-html="pageKey.val"></a>
-            </span>
-          </div>
-        </div>
-
-        <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.post_count - 1"></div>
-
-        <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.view_count"></div>
-
-        <div class="small-12 columns text-info show-for-small-only">
-          <strong ng-bind="thread.post_count-1"></strong> replies and <strong ng-bind="thread.view_count"></strong> views
-        </div>
-
-        <div class="small-12 medium-3 columns text-info">
-          <div ng-bind="thread.last_post_created_at | humanDate"></div>
-          by <a ui-sref="profiles({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div ui-view="data"></div>
 </div>
 
-<pagination page-count="BoardCtrl.pageCount" page="BoardCtrl.page"></pagination>
+<div ui-view="pagination"></div>
+
+<!--<pagination page-count="BoardCtrl.pageCount" page="BoardCtrl.page"></pagination>-->
