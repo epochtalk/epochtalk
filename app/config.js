@@ -170,6 +170,7 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
     })
     .state('admin', {
       url: '/admin',
+      protect: true,
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/admin/header.html') },
         'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
@@ -177,6 +178,7 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
     })
     .state('categories', {
       url: '/admin/categories',
+      protect: true,
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/admin/header.html') },
         'content': {

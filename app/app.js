@@ -59,7 +59,7 @@ app.config(require('./config'))
   // Redirect users from protected routes
   // TODO: Add check to see if user is admin
   $rootScope.$on('$stateChangeStart', function (event, next) {
-    if (next.$$state && next.$$state.protect) {
+    if (next && next.protect) {
       Auth.checkAuthentication();
       var isAuthenticated = Auth.isAuthenticated();
       // Possibly redirect to login page in the future
