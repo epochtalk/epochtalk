@@ -2,7 +2,7 @@ var medium = require('medium-editor');
 var bbcodeParser = require('bbcode-parser');
 var fs = require('fs');
 
-module.exports = ['$timeout', '$http', function($timeout, $http) {
+module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http, s3ImageUpload) {
   return {
     restrict: 'E',
     scope: {
@@ -17,93 +17,36 @@ module.exports = ['$timeout', '$http', function($timeout, $http) {
       $scope.openImagePicker = function(e) { inputElement.click(); };
 
       function insertTextAtCursor(text) {
-        var sel, range, html;
-        if (window.getSelection) {
-          sel = window.getSelection();
-          if (sel.getRangeAt && sel.rangeCount) {
-            range = sel.getRangeAt(0);
-            range.deleteContents();
-            range.insertNode( document.createTextNode(text) );
-          }
-        }
-        else if (document.selection && document.selection.createRange) {
-          document.selection.createRange().text = text;
+        var sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+          var range = sel.getRangeAt(0);
+          range.collapse(false);
+          range.insertNode( document.createTextNode(text) );
         }
       }
 
-      // Define upload event handlers
-      function uploadProgress(e) {
-        $scope.$apply(function () {
-          if (e.lengthComputable) {
-            var progress = Math.round(e.loaded * 100 / e.total);
-            console.log(progress);
-          }
-          else { console.log('unable to compute'); }
-        });
-      }
-      function uploadComplete(e, url) {
-        var xhr = e.srcElement || e.target;
-        $scope.$apply(function () {
-          if (xhr.status === 204) { // successful upload
-            var editor = $element[0].getElementsByClassName('editor-input')[0];
-            $(editor).focus();
-            insertTextAtCursor('[img]' + url + '[/img]');
-            $(editor).blur();
-          }
-          else {
-            console.log('upload failed at the end');
-          }
-        });
-      }
-      function uploadFailed(e) {
-        $scope.$apply(function () {
-          console.log('upload failed');
-        });
-      }
-      function uploadCanceled(e) {
-        $scope.$apply(function () {
-          console.log('upload cancelled');
-        });
-      }
       function upload(images) {
         // upload each image
         images.forEach(function(image) {
-          // get a s3 policy for this image
-          $http.get('/policy/' + image.name)
-          .success(function(data) {
-            // get policy and signature
-            var policy = data.policy;
-            var signature = data.signature;
-            var accessKey = data.accessKey;
-            var url = data.uploadUrl;
-            var filename = data.filename;
-            var imageUrl = data.imageUrl;
-
-            // form data
-            var fd = new FormData();
-            fd.append('key', 'images/' + filename);
-            fd.append('acl', 'public-read');
-            fd.append('Content-Type', image.type);
-            fd.append('AWSAccessKeyId', accessKey);
-            fd.append('policy', policy);
-            fd.append('signature', signature);
-            fd.append("file", image);
-
-            // upload request and event bindings
-            var xhr = new XMLHttpRequest();
-            xhr.upload.addEventListener("progress", uploadProgress, false);
-            xhr.addEventListener("load", function(e) {
-              uploadComplete(e, imageUrl);
-            }, false);
-            xhr.addEventListener("error", uploadFailed, false);
-            xhr.addEventListener("abort", uploadCanceled, false);
-            $scope.$emit('s3upload:start', xhr);
-
-            // Send the file
-            xhr.open('POST', url, true);
-            xhr.send(fd);
+          s3ImageUpload.policy(image.name)
+          .then(function(policy) {
+            return s3ImageUpload.upload(policy, image)
+            .progress(function(percent) {
+              console.log(percent);
+            })
+            .success(function(url) {
+              var editor = $element[0].getElementsByClassName('editor-input')[0];
+              $(editor).focus();
+              insertTextAtCursor('[img]' + url + '[/img]');
+              $(editor).blur();
+            });
           })
-          .error(function(data) { console.log(data); });
+          .catch(function() {
+            console.log('failed');
+          })
+          .then(function() {
+            // clear file input file list
+          });
         });
       }
 
