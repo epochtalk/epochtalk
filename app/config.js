@@ -18,8 +18,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
         'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
       }
-    })
-    .state('profile', {
+    });
+
+    $stateProvider.state('profile', {
       url: '/profiles/{username}',
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
@@ -36,8 +37,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
           return User.get({ id: $stateParams.username });
         }]
       }
-    })
-    .state('confirm', {
+    });
+
+    $stateProvider.state('confirm', {
       url: '/confirm/{username}/{token}',
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
@@ -49,8 +51,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
         'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
       }
-    })
-    .state('reset', {
+    });
+
+    $stateProvider.state('reset', {
       url: '/reset/{username}/{token}',
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
@@ -63,8 +66,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
 
       }
-    })
-    .state('boards', {
+    });
+
+    $stateProvider.state('boards', {
       url: '/boards',
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
@@ -81,8 +85,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
         'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
       }
-    })
-    .state('threads', {
+    });
+
+    $stateProvider.state('threads', {
       url: '/boards/{boardId}?limit&page',
       // reloadOnSearch: false,
       views: {
@@ -119,8 +124,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
         'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
       }
-    })
-    .state('newThread', {
+    });
+
+    $stateProvider.state('newThread', {
       url: '/boards/{boardId}/threads/new',
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
@@ -132,8 +138,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
         'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
       }
-    })
-    .state('posts', {
+    });
+
+    $stateProvider.state('posts', {
       url: '/threads/{threadId}/posts?limit&page',
       // reloadOnSearch: false,
       views: {
@@ -176,8 +183,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
         'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
       }
-    })
-    .state('admin', {
+    });
+
+    $stateProvider.state('admin', {
       url: '/admin',
       protect: true,
       views: {
@@ -185,8 +193,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') },
         'sidenav': { template: fs.readFileSync(__dirname + '/templates/admin/sidenav.html') }
       }
-    })
-    .state('categories', {
+    });
+
+    $stateProvider.state('categories', {
       url: '/admin/categories',
       protect: true,
       views: {
