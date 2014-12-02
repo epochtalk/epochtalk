@@ -14,38 +14,51 @@ module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http
     controller: function($scope, $element) {
       var inputElement = $element.find('input')[0];
       var footer = $element[0].getElementsByClassName('editor-footer')[0];
+      var editor = $element[0].getElementsByClassName('editor-input')[0];
       $scope.openImagePicker = function(e) { inputElement.click(); };
+      $scope.images = [];
 
-      function insertTextAtCursor(text) {
+      function insertText(text) {
+        $(editor).focus();
         var sel = window.getSelection();
         if (sel.getRangeAt && sel.rangeCount) {
           var range = sel.getRangeAt(0);
           range.collapse(false);
           range.insertNode( document.createTextNode(text) );
         }
+        $(editor).blur();
       }
 
       function upload(images) {
         // upload each image
         images.forEach(function(image) {
+          var imageProgress = {
+            status: "Initializing",
+            name: image.name,
+            progress: 0
+          };
+          $scope.images.push(imageProgress);
+
+          // get policy for this image
           s3ImageUpload.policy(image.name)
           .then(function(policy) {
+            imageProgress.id = policy.data.filename;
+            imageProgress.status = "Starting";
+
+            // upload image to s3
             return s3ImageUpload.upload(policy, image)
             .progress(function(percent) {
-              console.log(percent);
+              imageProgress.progress = percent;
+              imageProgress.status = "Uploading";
             })
             .success(function(url) {
-              var editor = $element[0].getElementsByClassName('editor-input')[0];
-              $(editor).focus();
-              insertTextAtCursor('[img]' + url + '[/img]');
-              $(editor).blur();
+              imageProgress.status = "Complete";
+              imageProgress.url = url;
+              insertText('[img]' + url + '[/img]');
             });
           })
           .catch(function() {
-            console.log('failed');
-          })
-          .then(function() {
-            // clear file input file list
+            imageProgress.status = "Failed";
           });
         });
       }
@@ -60,6 +73,7 @@ module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http
           images.push(fileList[i]);
         }
         upload(images);
+        inputElement.value = ""; // clear filelist for reuse
       });
 
       // drap and drop implementation

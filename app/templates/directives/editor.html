@@ -20,4 +20,11 @@
   To upload a image, either drag and drop them into this area 
   or just <a ng-href="#" ng-click="openImagePicker()">click here</a>
   <input type="file" accept="image/*" multiple style="display: none;">
+  <div class="imageProgressContainer" ng-repeat="image in images">
+    <span ng-bind=image.status></span> (<span ng-bind="image.progress"></span>): 
+    <a ng-href="{{image.url}}" target="_blank" ng-if="image.url">
+      <span ng-bind="image.name"></span>
+    </a>
+    <span ng-bind="image.name" ng-if="!image.url"></span>
+  </div>
 </div>
