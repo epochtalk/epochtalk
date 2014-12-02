@@ -63,7 +63,7 @@ module.exports = ['$state', '$timeout', 'Auth', 'BreadcrumbSvc',
         function() {
           ctrl.closeLoginModal();
           ctrl.clearLoginFields();
-          $timeout(function() { $state.go($state.$current, null, { reload: true }); });
+          $timeout(function() { $state.go('.', {}, { reload: true }); });
         },
         function(err) {
           ctrl.loginError.status = true;
@@ -74,7 +74,7 @@ module.exports = ['$state', '$timeout', 'Auth', 'BreadcrumbSvc',
 
     this.logout = function() {
       Auth.logout(function() {
-        $timeout(function() { $state.go($state.$current, null, { reload: true }); });
+        $timeout(function() { $state.go('.', {}, { reload: true }); });
       });
     };
 

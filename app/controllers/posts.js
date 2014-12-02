@@ -128,19 +128,20 @@ module.exports = ['$scope', '$timeout', '$location', '$stateParams', '$anchorScr
       delete tempPosts[cancelPost.id]; // delete this content in tempPosts
     };
 
-    // pagination
+    // // pagination
 
-    $scope.$on('$stateChangeStart', function(event, $stateParams) {
-      var query = {
-        thread_id: $stateParams.threadId,
-        limit: $stateParams.limit,
-        page: $stateParams.page
-      };
-      return Posts.byThread(query).$promise.then(function(posts) {
-        ctrl.posts = posts;
-        ctrl.page = Number($stateParams.page);
-        $timeout($anchorScroll);
-      });
-    });
+    // $scope.$on('$stateChangeStart', function() {
+    //   var limit = ctrl.limit === 'all' ? Number(ctrl.totalPosts) : $stateParams.limit;
+    //   var query = {
+    //     thread_id: $stateParams.threadId,
+    //     limit: limit,
+    //     page: $stateParams.page
+    //   };
+    //   return Posts.byThread(query).$promise.then(function(posts) {
+    //     ctrl.posts = posts;
+    //     ctrl.page = Number($stateParams.page);
+    //     $timeout($anchorScroll);
+    //   });
+    // });
   }
 ];

@@ -47,33 +47,31 @@ module.exports = ['$scope', '$stateParams', '$window', 'Auth', 'Threads', 'board
       });
     });
 
-    // pagination
+    // // pagination
 
 
-    $scope.$on('$stateChangeStart', function() {
-      console.log('test');
-      console.log($stateParams);
-      var query = {
-        board_id: $stateParams.boardId,
-        limit: $stateParams.limit,
-        page: $stateParams.page
-      };
-      return Threads.byBoard(query).$promise.then(function(threads) {
-        // scroll to top when loading new threads since this isn't a true route change
-        $window.scrollTo(0,0);
+    // $scope.$on('$stateChangeStart', function() {
+    //   var query = {
+    //     board_id: $stateParams.boardId,
+    //     limit: $stateParams.limit,
+    //     page: $stateParams.page
+    //   };
+    //   return Threads.byBoard(query).$promise.then(function(threads) {
+    //     // scroll to top when loading new threads since this isn't a true route change
+    //     $window.scrollTo(0,0);
 
-        // update page number
-        ctrl.page = Number($stateParams.page);
-        ctrl.threadLimit = Number($stateParams.limit) || 10;
-        // update thread with page count
-        ctrl.threads = threads;
-        threads.forEach(function(thread) {
-          thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
-          getPageKeysForThread(thread);
-          // user based UI
-          if (thread.has_new_post) { thread.title_class = 'bold-title'; }
-        });
-      });
-    });
+    //     // update page number
+    //     ctrl.page = Number($stateParams.page);
+    //     ctrl.threadLimit = Number($stateParams.limit) || 10;
+    //     // update thread with page count
+    //     ctrl.threads = threads;
+    //     threads.forEach(function(thread) {
+    //       thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
+    //       getPageKeysForThread(thread);
+    //       // user based UI
+    //       if (thread.has_new_post) { thread.title_class = 'bold-title'; }
+    //     });
+    //   });
+    // });
   }
 ];

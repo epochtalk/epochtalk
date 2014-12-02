@@ -146,13 +146,22 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
             thread: ['Threads', '$stateParams', function(Threads, $stateParams) {
               return Threads.get({ id: $stateParams.threadId });
             }],
-            posts: ['Posts', '$stateParams', function(Posts, $stateParams) {
+            posts: ['Threads', 'Posts', '$stateParams', function(Threads, Posts, $stateParams) {
               var query = {
                 thread_id: $stateParams.threadId,
-                limit: Number($stateParams.limit) || 10,
                 page: Number($stateParams.page) || 1
               };
-              return Posts.byThread(query);
+              if ($stateParams.limit === 'all') {
+                return Threads.get({ id: $stateParams.threadId }).$promise
+                .then(function(thread) {
+                  query.limit = Number(thread.post_count) || 10;
+                  return Posts.byThread(query);
+                });
+              }
+              else {
+                query.limit = Number($stateParams.limit) || 10;
+                return Posts.byThread(query);
+              }
             }],
             page: ['$stateParams', function($stateParams) {
               return Number($stateParams.page) || 1;
@@ -173,7 +182,8 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
       protect: true,
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/admin/header.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') },
+        'sidenav': { template: fs.readFileSync(__dirname + '/templates/admin/sidenav.html') }
       }
     })
     .state('categories', {
@@ -193,7 +203,8 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
             }]
           }
         },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') },
+        'sidenav': { template: fs.readFileSync(__dirname + '/templates/admin/sidenav.html') }
       }
     });
 

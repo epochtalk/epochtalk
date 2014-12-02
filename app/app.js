@@ -49,21 +49,20 @@ app.directive('uniqueEmail', require('./directives/uniqueEmail'));
 
 // Set Angular Configs
 app.config(require('./config'))
-.run(['$rootScope', '$location', 'Auth', 'BreadcrumbSvc', function($rootScope, $location, Auth, BreadcrumbSvc) {
+.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc) {
 
   // Load foundation on view change
   $rootScope.$on('$viewContentLoaded', function() {
-    $(document).foundation();
+    $timeout(function() { $(document).foundation(); });
   });
 
   // Redirect users from protected routes
   // TODO: Add check to see if user is admin
   $rootScope.$on('$stateChangeStart', function (event, next) {
     if (next && next.protect) {
-      Auth.checkAuthentication();
       var isAuthenticated = Auth.isAuthenticated();
       // Possibly redirect to login page in the future
-      if (!isAuthenticated) { $location.path('/'); }
+      if (!isAuthenticated) { $timeout(function() { $state.go('boards'); }); }
     }
   });
 
