@@ -18,16 +18,17 @@ module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http
       $scope.openImagePicker = function(e) { inputElement.click(); };
       $scope.images = [];
 
-      function insertText(text) {
+      $scope.insertImageUrl = function(url) {
         $(editor).focus();
         var sel = window.getSelection();
         if (sel.getRangeAt && sel.rangeCount) {
           var range = sel.getRangeAt(0);
           range.collapse(false);
+          var text = '[img]' + url + '[/img]';
           range.insertNode( document.createTextNode(text) );
         }
         $(editor).blur();
-      }
+      };
 
       function upload(images) {
         // upload each image
@@ -54,7 +55,7 @@ module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http
             .success(function(url) {
               imageProgress.status = "Complete";
               imageProgress.url = url;
-              insertText('[img]' + url + '[/img]');
+              $scope.insertImageUrl(url);
             });
           })
           .catch(function() {
