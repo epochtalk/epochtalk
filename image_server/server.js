@@ -22,8 +22,7 @@ var serverOpts = {
 var server = Hapi.createServer('localhost', config.port, serverOpts);
 
 // api routes
-var routes = require(__dirname + '/routes');
-server.route(routes.endpoints());
+server.route(require(path.join(__dirname, 'routes')));
 
 // check if logging is enabled
 var options = {};
