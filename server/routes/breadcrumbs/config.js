@@ -3,8 +3,7 @@ var Hapi = require('hapi');
 var breadcrumbValidator = require('epoch-validator').api.breadcrumbs;
 
 // Route handlers/configs
-var breadcrumbs = {};
-breadcrumbs.byType = {
+exports.byType = {
   handler: function(request, reply) {
     // Core menthod type enum
     var findType = {
@@ -65,8 +64,3 @@ breadcrumbs.byType = {
   },
   validate: { query: breadcrumbValidator.schema.byType }
 };
-
-// Export Routes
-exports.routes = [
-  { method: 'GET', path: '/breadcrumbs', config: breadcrumbs.byType }
-];

@@ -1,10 +1,7 @@
 var core = require('epochcore')();
-var Hapi = require('hapi');
 var uuid = require('node-uuid');
-var threadValidator = require('epoch-validator').api.threads;
 var path = require('path');
 var memDb = require(path.join('..', '..', 'memStore')).db;
-var postPre = require(path.join(__dirname, 'posts')).pre;
 
 // Helpers
 var checkViewKey = function(key) {
@@ -24,7 +21,7 @@ var checkViewKey = function(key) {
 };
 
 // Pre
-var pre = {
+module.exports = {
   getThreads: function(request, reply) {
     var boardId = request.query.board_id || request.params.board_id;
     var opts = {
@@ -110,119 +107,3 @@ var pre = {
     .catch(function(err) { return reply(err); });
   }
 };
-
-// Route handlers/configs
-var threads = {};
-threads.create = {
-  auth: { strategy: 'jwt' },
-  validate: { payload: threadValidator.schema.create },
-  pre: [
-    { method: postPre.clean },
-    { method: postPre.parseEncodings },
-    { method: postPre.subImages }
-  ],
-  handler: function(request, reply) {
-    // build the thread post object from payload and params
-    var user = request.auth.credentials;
-    var newThread = { board_id: request.payload.board_id };
-    var newPost = {
-      title: request.payload.title,
-      body: request.payload.body,
-      encodedBody: request.payload.encodedBody,
-      user_id: user.id
-    };
-
-    // create the thread and first post in core
-    core.threads.create(newThread)
-    .then(function(thread) { newPost.thread_id = thread.id; })
-    .then(function() { return core.posts.create(newPost); })
-    .then(function(post) { reply(post); })
-    .catch(function() { reply(Hapi.error.internal()); });
-  }
-};
-
-threads.import = {
-  // auth: { strategy: 'jwt' },
-  // validate: { payload: threadValidator.schema.import },
-  handler: function(request, reply) {
-    core.threads.import(request.payload)
-    // .then(function(importedThread) {
-    //   return Promise.each(posts, function(post) {
-    //     post.thread_id = importedThread.id;
-    //     return core.posts.import(post);
-    //   });
-    // })
-    .then(function(thread) { reply(thread); })
-    .catch(function(err) { reply(err); });
-  }
-};
-
-threads.byBoard = {
-  auth: { mode: 'try', strategy: 'jwt' },
-  validate: {
-    params: threadValidator.paramsByBoard,
-    query: threadValidator.queryByBoard
-  },
-  pre: [
-    { method: pre.getThreads, assign: 'threads' },
-    { method: pre.getUserViews, assign: 'userViews' }
-  ],
-  handler: function(request, reply) {
-    var threads = request.pre.threads;
-    var userViews = request.pre.userViews;
-    var user = request.auth.credentials;
-
-    // iterate through threads and see if the thread has been viewed yet
-    if (userViews) {
-      threads = threads.map(function(thread) {
-        // If user made last post consider thread viewed
-        if (user.username === thread.last_post_username) {
-          thread.has_new_post = false;
-        }
-        else if (!userViews[thread.id]) {
-          thread.has_new_post = true;
-        }
-        else if (userViews[thread.id] &&
-                 userViews[thread.id] <= thread.last_post_created_at) {
-          thread.has_new_post = true;
-        }
-        return thread;
-      });
-    }
-
-    return reply(threads);
-  }
-};
-
-threads.find = {
-  auth: { mode: 'try', strategy: 'jwt' },
-  pre: [
-    [
-      { method: pre.getThread, assign: 'thread' },
-      { method: pre.checkViewValidity, assign: 'newViewId' },
-      { method: pre.updateUserView }
-    ]
-  ],
-  handler: function(request, reply) {
-    var thread = request.pre.thread;
-    var newViewerId = request.pre.newViewId;
-    if (newViewerId) { return reply(thread).header('Epoch-Viewer', newViewerId); }
-    else { return reply(thread); }
-  }
-};
-
-// Export Routes/Pre
-exports.routes = [
-  // CREATE THREAD
-  { method: 'POST', path: '/threads', config: threads.create },
-  // QUERY for threads under: board_id
-  { method: 'GET', path: '/threads', config: threads.byBoard },
-  // GET
-  { method: 'GET', path: '/threads/{id}', config: threads.find },
-  // DON'T UPDATE THREAD (update should be done in post)
-  // DON'T DELETE THREAD (for now, should delete all posts?)
-  // POST IMPORT
-  { method: 'POST', path: '/threads/import', config: threads.import }
-];
-
-exports.pre = pre;

@@ -8,6 +8,7 @@ var path = require('path');
 var emailer = require(path.join(__dirname, '..', '..', 'emailer'));
 var config = require(path.join(__dirname, '..', '..', 'config'));
 var memDb = require(path.join(__dirname, '..', '..', 'memStore')).db;
+var pre = require(path.join(__dirname, 'pre'));
 
 // Helpers
 var buildToken = function(user) {
@@ -18,36 +19,12 @@ var buildToken = function(user) {
     email: user.email
     // token expiration
   };
-
   // build jwt token from decodedToken and privateKey
   return jwt.sign(decodedToken, config.privateKey);
 };
 
-// Pre
-var pre = {
-  checkUsername: function(request, reply) {
-    var username = request.payload.username;
-    core.users.userByUsername(username)
-    .then(function() {
-      var error = Hapi.error.badRequest('Username Already Exists');
-      return reply(error);
-    })
-    .catch(function() { return reply(); });
-  },
-  checkEmail: function(request, reply) {
-    var email = request.payload.email;
-    core.users.userByEmail(email)
-    .then(function() {
-      var error = Hapi.error.badRequest('Email Already Exists');
-      return reply(error);
-    })
-    .catch(function() { return reply(); });
-  }
-};
-
 // Route handlers/configs
-var auth = {};
-auth.login = {
+exports.login = {
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
@@ -101,7 +78,7 @@ auth.login = {
   validate: { payload: authValidator.schema.login }
 };
 
-auth.logout = {
+exports.logout = {
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (!request.auth.isAuthenticated) {
@@ -124,7 +101,7 @@ auth.logout = {
   auth: { mode: 'try', strategy: 'jwt' }
 };
 
-auth.register = {
+exports.register = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { payload: authValidator.schema.register },
   pre: [
@@ -169,7 +146,7 @@ auth.register = {
   }
 };
 
-auth.confirmAccount = {
+exports.confirmAccount = {
   handler: function(request, reply) {
     var username = request.payload.username;
     var confirmationToken = request.payload.token;
@@ -196,7 +173,7 @@ auth.confirmAccount = {
   }
 };
 
-auth.isAuthenticated = {
+exports.isAuthenticated = {
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
@@ -210,7 +187,7 @@ auth.isAuthenticated = {
   auth: { mode: 'try', strategy: 'jwt' }
 };
 
-auth.username = {
+exports.username = {
   handler: function(request, reply) {
     var username = request.params.username;
     core.users.userByUsername(username)
@@ -219,7 +196,7 @@ auth.username = {
   }
 };
 
-auth.email = {
+exports.email = {
   handler: function(request, reply) {
     var email = request.params.email;
     core.users.userByEmail(email)
@@ -228,7 +205,7 @@ auth.email = {
   }
 };
 
-auth.recoverAccount = {
+exports.recoverAccount = {
   handler: function(request, reply) {
     var query = request.params.query;
     core.users.userByUsername(query)
@@ -265,7 +242,7 @@ auth.recoverAccount = {
   }
 };
 
-auth.resetPassword = {
+exports.resetPassword = {
   handler: function(request, reply) {
     var username = request.payload.username;
     var password = request.payload.password;
@@ -302,7 +279,7 @@ auth.resetPassword = {
   validate: { payload: authValidator.schema.resetPassword }
 };
 
-auth.checkResetToken = {
+exports.checkResetToken = {
   handler: function(request, reply) {
     var username = request.params.username;
     var token = request.params.token;
@@ -317,25 +294,8 @@ auth.checkResetToken = {
   }
 };
 
-auth.refreshToken = {
+exports.refreshToken = {
   handler: function(request, reply) {
     return reply(true);
   }
 };
-
-// Export Routes/Pre
-exports.routes = [
-  { method: 'POST', path: '/login', config: auth.login },
-  { method: 'DELETE', path: '/logout', config: auth.logout },
-  { method: 'POST', path: '/register', config: auth.register },
-  { method: 'GET', path: '/register/username/{username}', config: auth.username },
-  { method: 'GET', path: '/register/email/{email}', config: auth.email },
-  { method: 'GET', path: '/authenticated', config: auth.isAuthenticated },
-  { method: 'GET', path: '/recover/{query}', config: auth.recoverAccount },
-  { method: 'GET', path: '/reset/{username}/{token}/validate', config: auth.checkResetToken },
-  { method: 'POST', path: '/reset', config: auth.resetPassword },
-  { method: 'POST', path: '/confirm', config: auth.confirmAccount }
-  // { method: 'POST', path: '/refreshToken', config: auth.refreshToken }
-];
-
-exports.pre = pre;

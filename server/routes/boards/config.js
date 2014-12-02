@@ -2,22 +2,10 @@ var core = require('epochcore')();
 var Hapi = require('hapi');
 var boardValidator = require('epoch-validator').api.boards;
 var path = require('path');
-var sanitize = require(path.join('..', '..', 'sanitize'));
-
-// Pre
-var pre = {
-  clean: function(request, reply) {
-    request.payload.name = sanitize.strip(request.payload.name);
-    if (request.payload.description) {
-      request.payload.description = sanitize.display(request.payload.description);
-    }
-    return reply();
-  }
-};
+var pre = require(path.join(__dirname, 'pre'));
 
 // Route handlers/configs
-var boards = {};
-boards.create = {
+exports.create = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: { payload: boardValidator.schema.create },
   pre: [ { method: pre.clean } ],
@@ -28,7 +16,7 @@ boards.create = {
   }
 };
 
-boards.import = {
+exports.import = {
   // validate: { payload: boardValidator.schema.import },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
@@ -38,7 +26,7 @@ boards.import = {
   }
 };
 
-boards.find = {
+exports.find = {
   validate: { params: boardValidator.id },
   handler: function(request, reply) {
     core.boards.find(request.params.id)
@@ -47,7 +35,7 @@ boards.find = {
   }
 };
 
-boards.all = {
+exports.all = {
   handler: function(request, reply) {
     core.boards.all()
     .then(function(boards) { reply(boards); })
@@ -55,7 +43,7 @@ boards.all = {
   }
 };
 
-boards.allCategories = {
+exports.allCategories = {
   handler: function(request, reply) {
     core.boards.allCategories()
     .then(function(categories) { reply(categories); })
@@ -63,7 +51,7 @@ boards.allCategories = {
   }
 };
 
-boards.updateCategories = {
+exports.updateCategories = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: { payload: boardValidator.schema.categories },
   handler: function(request, reply) {
@@ -74,7 +62,7 @@ boards.updateCategories = {
   }
 };
 
-boards.update = {
+exports.update = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: {
     payload: boardValidator.schema.update,
@@ -98,7 +86,7 @@ boards.update = {
   }
 };
 
-boards.delete = {
+exports.delete = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: { params: boardValidator.schema.id },
   handler: function(request, reply) {
@@ -107,25 +95,3 @@ boards.delete = {
     .catch(function() { reply(Hapi.error.internal()); });
   }
 };
-
-// Export Routes/Pre
-exports.routes = [
-  // CREATE BOARD
-  { method: 'POST', path: '/boards', config: boards.create },
-  // GET SINGLE BOARD
-  { method: 'GET', path: '/boards/{id}', config: boards.find },
-  // GET ALL BOARDS
-  { method: 'GET', path: '/boards/all', config: boards.all },
-  // GET ALL BOARDS IN CATEGORY
-  { method: 'GET', path: '/boards', config: boards.allCategories },
-  // UPDATE BOARDS AND CATEGORIES
-  { method: 'POST', path: '/boards/categories', config: boards.updateCategories },
-  // UPDATE BOARD
-  { method: 'POST', path: '/boards/{id}', config: boards.update },
-  // DELETE BOARD (should delete all threads?)
-  { method: 'DELETE', path: '/boards/{id}', config: boards.delete },
-  // POST IMPORT
-  { method: 'POST', path: '/boards/import', config: boards.import }
-];
-
-exports.pre = pre;
