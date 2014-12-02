@@ -40,6 +40,7 @@ exports.endpoints = function() {
       method: 'GET',
       path: '/policy/{filename}',
       config: {
+        auth: { strategy: 'jwt' },
         handler: function(request, reply) {
           // hash filename
           var filename = request.params.filename;
