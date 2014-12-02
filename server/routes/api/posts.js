@@ -5,7 +5,9 @@ var cheerio = require('cheerio');
 var bbcodeParser = require('bbcode-parser');
 var postValidator = require('epoch-validator').api.posts;
 var path = require('path');
-var sanitize = require(path.join('..', '..', 'sanitize'));
+var config = require(path.join(__dirname, '..', '..', 'config'));
+var cdn = require(path.join(__dirname, '..', '..', 'image-cdn'));
+var sanitize = require(path.join(__dirname, '..', '..', 'sanitize'));
 
 // Pre
 var pre = {
