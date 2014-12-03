@@ -4,11 +4,11 @@
 
 @font-face {
   font-family: "epoch-icons";
-  src: url("/static/fonts/epoch-icons_093e78b55fe75f94bbe306d299a3aa35.eot");
-  src: url("/static/fonts/epoch-icons_093e78b55fe75f94bbe306d299a3aa35.eot?#iefix") format("embedded-opentype"),
-       url("/static/fonts/epoch-icons_093e78b55fe75f94bbe306d299a3aa35.woff") format("woff"),
-       url("/static/fonts/epoch-icons_093e78b55fe75f94bbe306d299a3aa35.ttf") format("truetype"),
-       url("/static/fonts/epoch-icons_093e78b55fe75f94bbe306d299a3aa35.svg#epoch-icons") format("svg");
+  src: url("/static/fonts/epoch-icons_911ff2a469287e7907212110c1562a38.eot");
+  src: url("/static/fonts/epoch-icons_911ff2a469287e7907212110c1562a38.eot?#iefix") format("embedded-opentype"),
+       url("/static/fonts/epoch-icons_911ff2a469287e7907212110c1562a38.woff") format("woff"),
+       url("/static/fonts/epoch-icons_911ff2a469287e7907212110c1562a38.ttf") format("truetype"),
+       url("/static/fonts/epoch-icons_911ff2a469287e7907212110c1562a38.svg#epoch-icons") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -16,18 +16,32 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: "epoch-icons";
-    src: url("/static/fonts/epoch-icons_093e78b55fe75f94bbe306d299a3aa35.svg#epoch-icons") format("svg");
+    src: url("/static/fonts/epoch-icons_911ff2a469287e7907212110c1562a38.svg#epoch-icons") format("svg");
   }
 }
 
 [data-icon]:before { content: attr(data-icon); }
 
 [data-icon]:before,
+.icon-epoch-active:before,
+.icon-epoch-active-very:before,
+.icon-epoch-add:before,
+.icon-epoch-add-outline:before,
+.icon-epoch-alert:before,
+.icon-epoch-edit:before,
+.icon-epoch-edit-pencil:before,
 .icon-epoch-flag:before,
 .icon-epoch-heart:before,
+.icon-epoch-link:before,
+.icon-epoch-lock:before,
+.icon-epoch-message:before,
 .icon-epoch-plus-one:before,
+.icon-epoch-plus-one-heart:before,
 .icon-epoch-quote:before,
 .icon-epoch-reply:before,
+.icon-epoch-reply-circle:before,
+.icon-epoch-search:before,
+.icon-epoch-settings:before,
 .icon-epoch-unverified:before,
 .icon-epoch-verified:before,
 .icon-epoch-watch:before {
@@ -45,11 +59,25 @@
   font-smoothing: antialiased;
 }
 
+.icon-epoch-active:before { content: "\f108"; }
+.icon-epoch-active-very:before { content: "\f109"; }
+.icon-epoch-add:before { content: "\f10a"; }
+.icon-epoch-add-outline:before { content: "\f115"; }
+.icon-epoch-alert:before { content: "\f10b"; }
+.icon-epoch-edit:before { content: "\f10c"; }
+.icon-epoch-edit-pencil:before { content: "\f10d"; }
 .icon-epoch-flag:before { content: "\f100"; }
 .icon-epoch-heart:before { content: "\f101"; }
+.icon-epoch-link:before { content: "\f10e"; }
+.icon-epoch-lock:before { content: "\f10f"; }
+.icon-epoch-message:before { content: "\f110"; }
 .icon-epoch-plus-one:before { content: "\f102"; }
+.icon-epoch-plus-one-heart:before { content: "\f111"; }
 .icon-epoch-quote:before { content: "\f103"; }
 .icon-epoch-reply:before { content: "\f104"; }
+.icon-epoch-reply-circle:before { content: "\f112"; }
+.icon-epoch-search:before { content: "\f113"; }
+.icon-epoch-settings:before { content: "\f114"; }
 .icon-epoch-unverified:before { content: "\f105"; }
 .icon-epoch-verified:before { content: "\f106"; }
 .icon-epoch-watch:before { content: "\f107"; }
