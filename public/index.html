@@ -14,22 +14,23 @@
 </head>
 
 <body class="antialiased hide-extras" ng-controller="AppCtrl as AppCtrl">
-
-  <!-- Header -->
-  <div ng-controller="HeaderCtrl as HeaderCtrl">
-    <div ui-view="header" ng-cloak></div>
-    <div ui-view="modals" ng-cloak></div>
-  </div>
-  <!-- End Header -->
-
-  <!-- Main content -->
-  <div ng-switch on="AppCtrl.isAdminPanel() && AppCtrl.isAuthenticatedAdmin()">
-    <div ng-switch-when="true">
-      <div ui-view="sidenav" ng-cloak></div>
-      <div class="admin-padding" ui-view="content" autoscroll="true" class="main-container" ng-cloak></div>
+  <div class="wrapper">
+    <!-- Header -->
+    <div ng-controller="HeaderCtrl as HeaderCtrl">
+      <div ui-view="header" ng-cloak></div>
+      <div ui-view="modals" ng-cloak></div>
     </div>
-    <div ng-switch-when="false">
-      <div ui-view="content" autoscroll="true" class="main-container" ng-cloak></div>
+    <!-- End Header -->
+
+    <!-- Main content -->
+    <div ng-switch on="AppCtrl.isAdminPanel() && AppCtrl.isAuthenticatedAdmin()">
+      <div ng-switch-when="true">
+        <div ui-view="sidenav" ng-cloak></div>
+        <div class="admin-padding" ui-view="content" autoscroll="true" class="main-container" ng-cloak></div>
+      </div>
+      <div ng-switch-when="false">
+        <div ui-view="content" autoscroll="true" class="main-container" ng-cloak></div>
+      </div>
     </div>
   </div>
 
