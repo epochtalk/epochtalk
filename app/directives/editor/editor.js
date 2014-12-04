@@ -34,7 +34,7 @@ module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http
         // upload each image
         images.forEach(function(image) {
           var imageProgress = {
-            status: "Initializing",
+            status: 'Initializing',
             name: image.name,
             progress: 0
           };
@@ -44,21 +44,26 @@ module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http
           s3ImageUpload.policy(image.name)
           .then(function(policy) {
             imageProgress.id = policy.data.filename;
-            imageProgress.status = "Starting";
+            imageProgress.status = 'Starting';
 
             // upload image to s3
             return s3ImageUpload.upload(policy, image)
             .progress(function(percent) {
               imageProgress.progress = percent;
-              imageProgress.status = "Uploading";
+              imageProgress.status = 'Uploading';
+            })
+            .error(function(data) {
+              imageProgress.progress = '--';
+              imageProgress.status = 'Failed';
             })
             .success(function(url) {
-              imageProgress.status = "Complete";
+              imageProgress.status = 'Complete';
               imageProgress.url = url;
               $scope.insertImageUrl(url);
             });
           })
           .catch(function() {
+            imageProgress.progress = '--';
             imageProgress.status = "Failed";
           });
         });

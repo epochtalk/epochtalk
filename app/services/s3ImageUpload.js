@@ -34,6 +34,7 @@ module.exports = ['$q', '$http', function ($q, $http) {
       xhr.addEventListener("load", deferred.resolve, false);
       xhr.addEventListener("error", deferred.reject, false);
       xhr.upload.addEventListener("progress", deferred.notify, false);
+      xhr.upload.addEventListener("error", deferred.reject, false);
 
       // Send the file
       xhr.open('POST', url, true);
@@ -43,15 +44,16 @@ module.exports = ['$q', '$http', function ($q, $http) {
       promise.success = function(fn) {
         promise.then(function(response) {
           var xhr = response.srcElement || response.target;
-          if (xhr.status === 204) { // successful upload
-            fn(imageUrl);
-            return promise;
-          }
-          else { return $q.reject('Error uploading'); }
+          // successful upload
+          if (xhr.status === 204) { fn(imageUrl); }
+          // error uploading
+          else { promise.error_fn(); }
         });
+        return promise;
       };
       promise.error = function(fn) {
-        promise.then(null, fn);
+        promise.error_fn = fn;
+        promise.then(null, function(data) { fn(data); });
         return promise;
       };
       promise.progress = function(fn) {
