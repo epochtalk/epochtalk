@@ -10,6 +10,7 @@
 
 var path = require('path');
 var crypto = require('crypto');
+var imageProxy = require(path.join(__dirname, '..', 'images'));
 var config = require(path.join(__dirname, '..', 'config'));
 var breadcrumbs = require(path.join(__dirname, 'breadcrumbs'));
 var boards = require(path.join(__dirname, 'boards'));
@@ -80,6 +81,9 @@ exports.endpoints = function() {
           if (imageUrl.indexOf('/', imageUrl.length-1) === -1) { imageUrl += '/'; }
           imageUrl += crypto.createHash('sha1').update('s3').digest('hex') + '/';
           imageUrl += filename;
+
+          // add this imageUrl to the image proxy expiry
+          imageProxy.setExpiration(config.imageExpiration, imageUrl);
 
           return reply({
             policy: policy,

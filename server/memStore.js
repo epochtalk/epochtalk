@@ -28,8 +28,30 @@ memDb.delAsync = function(key) {
   return new Promise(function(fulfill, reject) {
     memDb.del(key, function(err) {
       if (err) { reject(err); }
-      else { fulfill(value); }
+      else { fulfill(); }
     });
+  });
+};
+
+memDb.imageQuery = function() {
+  return new Promise(function(fulfill, reject) {
+    var entries = [];
+    var sorter = function(entry) { entries.push(entry); };
+    var handler = function() { return fulfill(entries); };
+
+    // query key
+    var startKey = 'image' + 0;
+    var endKey = 'image' + Date.now();
+    var queryOptions = {
+      gte: startKey,
+      lte: endKey
+    };
+
+    memDb.createReadStream(queryOptions)
+    .on('data', sorter)
+    .on('error', reject)
+    .on('close', handler)
+    .on('end', handler);
   });
 };
 

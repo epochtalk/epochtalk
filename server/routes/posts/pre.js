@@ -5,7 +5,7 @@ var bbcodeParser = require('bbcode-parser');
 var Promise = require('bluebird');
 var path = require('path');
 var config = require(path.join(__dirname, '..', '..', 'config'));
-var cdn = require(path.join(__dirname, '..', '..', 'image-cdn'));
+var imageProxy = require(path.join(__dirname, '..', '..', 'images'));
 var sanitize = require(path.join(__dirname, '..', '..', 'sanitize'));
 
 module.exports = {
@@ -70,24 +70,28 @@ module.exports = {
       images.push(element);
     });
 
-    // convert each image's src to cdn version
+    // convert each image's src to proxy version
     return Promise.map(images, function(element) {
       // get image src
       var src = $(element).attr('src');
 
-      // if image already in cdn, skip
-      if (config.cdnUrl && src.indexOf(config.cdnUrl) === 0) { return; }
+      // if image already in proxy form, skip
+      if (config.cdnUrl && src.indexOf(config.cdnUrl) === 0) {
+        // clear this image from the imageProxy expiry
+        imageProxy.clearExpiration(src);
+        return;
+      }
 
-      // get new url from cdn
-      var cdnUrl = cdn.url(src);
+      // get new hotlinkedUrl from proxy
+      var proxyUrl = imageProxy.hotlinkedUrl(src);
 
-      if (src !== cdnUrl) {
+      if (src !== proxyUrl) {
         // move original src to data-canonical-src
         $(element).attr('data-canonical-src', src);
       }
 
       // update src with new url
-      $(element).attr('src', cdnUrl);
+      $(element).attr('src', proxyUrl);
     })
     .then(function() {
       request.payload.body = $.html();
