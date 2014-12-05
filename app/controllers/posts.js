@@ -100,6 +100,9 @@ module.exports = ['$scope', '$timeout', '$location', '$stateParams', '$anchorScr
         // remove temp post since post has been saved
         delete tempPosts[editPost.id];
 
+        editPost.body = data.body;
+        editPost.encodedBody = data.encodedBody;
+
         // switch off edit mode
         editPost.editMode = false;
       })
