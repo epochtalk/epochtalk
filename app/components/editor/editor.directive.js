@@ -224,6 +224,6 @@ module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http
         }
       });
     },
-    template: fs.readFileSync(__dirname + '/../../templates/directives/editor.html')
+    template: fs.readFileSync(__dirname + '/editor.html')
   };
 }];

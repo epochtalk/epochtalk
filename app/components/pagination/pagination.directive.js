@@ -7,7 +7,7 @@ module.exports = ['$location', function($location) {
       pageCount: '=',
       page: '='
     },
-    template: fs.readFileSync(__dirname + '/../../templates/directives/pagination.html'),
+    template: fs.readFileSync(__dirname + '/pagination.html'),
     link: function(scope) {
 
       scope.$watchGroup(['pageCount', 'page'], function() {
@@ -28,7 +28,7 @@ module.exports = ['$location', function($location) {
         }
 
         var truncate = scope.pageCount > 15;
-        
+
         // Case 1: No Truncation up to 15 pages
         // [1] 2 3 4 5 6 7 8 9 10 11 13 14 15
         if (!truncate) { generatePageKeys(undefined, urlPrefix); }
@@ -106,7 +106,7 @@ module.exports = ['$location', function($location) {
           scope.paginationKeys.push(nextBtnKey);
         }
       };
-      
+
     }
   };
 }];

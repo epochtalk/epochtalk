@@ -18,14 +18,14 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
     $stateProvider.state('profile', {
       url: '/profiles/{username}',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: 'ProfileCtrl',
           controllerAs: 'profiles',
-          template: fs.readFileSync(__dirname + '/templates/profile.html')
+          template: fs.readFileSync(__dirname + '/user/profile.html')
         },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
       },
       resolve: {
         user: [ 'User', '$stateParams', function(User, $stateParams) {
@@ -37,28 +37,28 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
     $stateProvider.state('confirm', {
       url: '/confirm/{username}/{token}',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: 'ConfirmCtrl',
           controllerAs: 'ConfirmCtrl',
-          template: fs.readFileSync(__dirname + '/templates/confirm.html')
+          template: fs.readFileSync(__dirname + '/user/confirm.html')
         },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
       }
     });
 
     $stateProvider.state('reset', {
       url: '/reset/{username}/{token}',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: 'ResetCtrl',
           controllerAs: 'ResetCtrl',
-          template: fs.readFileSync(__dirname + '/templates/reset.html')
+          template: fs.readFileSync(__dirname + '/user/reset.html')
         },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
 
       }
     });
@@ -66,32 +66,32 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
     $stateProvider.state('boards', {
       url: '/boards',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: 'BoardsCtrl',
           controllerAs: 'BoardsCtrl',
-          template: fs.readFileSync(__dirname + '/templates/boards.html'),
+          template: fs.readFileSync(__dirname + '/boards/boards.html'),
           resolve: {
             boards: [ 'Boards', function(Boards) {
               return Boards.query();
             }]
           }
         },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
       }
     });
 
     $stateProvider.state('board', {
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: [function(){}],
           controllerAs: 'BoardWrapperCtrl',
-          template: fs.readFileSync(__dirname + '/templates/board/board.html')
+          template: fs.readFileSync(__dirname + '/board/board.html')
         },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
       }
     })
     .state('board.data', {
@@ -100,7 +100,7 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'data@board': {
           controller: 'BoardCtrl',
           controllerAs: 'BoardCtrl',
-          template: fs.readFileSync(__dirname + '/templates/board/data.html'),
+          template: fs.readFileSync(__dirname + '/board/board.data.html'),
           resolve: {
             board: ['Boards', '$stateParams', function(Boards, $stateParams) {
               return Boards.get({ id: $stateParams.boardId});
@@ -132,27 +132,27 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
     $stateProvider.state('newThread', {
       url: '/boards/{boardId}/threads/new',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: 'NewThreadCtrl',
           controllerAs: 'NewThreadCtrl',
-          template: fs.readFileSync(__dirname + '/templates/newThread.html')
+          template: fs.readFileSync(__dirname + '/board/new-thread.html')
         },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
       }
     });
 
     $stateProvider.state('posts', {
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: [function(){}],
           controllerAs: 'PostsWrapperCtrl',
-          template: fs.readFileSync(__dirname + '/templates/posts/posts.html')
+          template: fs.readFileSync(__dirname + '/posts/posts.html')
         },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
       }
     })
     .state('posts.data', {
@@ -161,7 +161,7 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
         'data@posts': {
           controller: 'PostsCtrl',
           controllerAs: 'PostsCtrl',
-          template: fs.readFileSync(__dirname + '/templates/posts/data.html'),
+          template: fs.readFileSync(__dirname + '/posts/posts.data.html'),
           resolve: {
             thread: ['Threads', '$stateParams', function(Threads, $stateParams) {
               return Threads.get({ id: $stateParams.threadId });
@@ -200,9 +200,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
       url: '/admin',
       protect: true,
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/admin/header.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') },
-        'sidenav': { template: fs.readFileSync(__dirname + '/templates/admin/sidenav.html') }
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.admin.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') },
+        'sidenav': { template: fs.readFileSync(__dirname + '/layout/sidenav.html') }
       }
     });
 
@@ -210,10 +210,10 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
       url: '/admin/categories',
       protect: true,
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/admin/header.html') },
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.admin.html') },
         'content': {
           controller: 'CategoriesCtrl',
-          template: fs.readFileSync(__dirname + '/templates/admin/categories.html'),
+          template: fs.readFileSync(__dirname + '/admin_categories/admin-categories.html'),
           resolve: {
             categories: ['Boards', function(Boards) {
               return Boards.query();
@@ -223,8 +223,8 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
             }]
           }
         },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') },
-        'sidenav': { template: fs.readFileSync(__dirname + '/templates/admin/sidenav.html') }
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') },
+        'sidenav': { template: fs.readFileSync(__dirname + '/layout/sidenav.html') }
       }
     });
 

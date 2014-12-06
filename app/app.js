@@ -21,30 +21,30 @@ var app = angular.module('ept', [
 ]);
 
 // Register Forum Page Controllers
-app.controller('AppCtrl', require('./controllers/app.js'));
-app.controller('HeaderCtrl', require('./controllers/header.js'));
-app.controller('BoardsCtrl', require('./controllers/boards.js'));
-app.controller('BoardCtrl', require('./controllers/board.js'));
-app.controller('NewThreadCtrl', require('./controllers/newThread.js'));
-app.controller('PostsCtrl', require('./controllers/posts.js'));
-app.controller('ProfileCtrl', require('./controllers/profile.js'));
-app.controller('ResetCtrl', require('./controllers/reset.js'));
-app.controller('ConfirmCtrl', require('./controllers/confirm.js'));
+app.controller('BoardsCtrl',        require('./boards/boards.controller.js'));
+app.controller('BoardCtrl',         require('./board/board.controller.js'));
+app.controller('NewThreadCtrl',     require('./board/new-thread.controller.js'));
+app.controller('PostsCtrl',         require('./posts/posts.controller.js'));
+app.controller('LayoutCtrl',        require('./layout/layout.controller.js'));
+app.controller('HeaderCtrl',        require('./layout/header.controller.js'));
+app.controller('ProfileCtrl',       require('./user/profile.controller.js'));
+app.controller('ResetCtrl',         require('./user/reset.controller.js'));
+app.controller('ConfirmCtrl',       require('./user/confirm.controller.js'));
 
 // Register Admin Page Controllers
-app.controller('CategoriesCtrl', require('./controllers/admin/categories.js'));
+app.controller('CategoriesCtrl',    require('./admin_categories/admin-categories.controller.js'));
 
 // Register Directives
-app.directive('epochtalkEditor', require('./directives/editor/editor.js'));
-app.directive('pagination', require('./directives/pagination'));
-app.directive('categoryEditor', require('./directives/category_editor'));
-app.directive('modal', require('./directives/modal'));
-app.directive('slideToggle', require('./directives/slide_toggle'));
-app.directive('autoFocus', require('./directives/autofocus'));
-app.directive('nestableBoards', require('./directives/category_editor/nestable-boards.js'));
-app.directive('nestableCategories', require('./directives/category_editor/nestable-categories.js'));
-app.directive('uniqueUsername', require('./directives/uniqueUsername'));
-app.directive('uniqueEmail', require('./directives/uniqueEmail'));
+app.directive('pagination',         require('./components/pagination/pagination.directive.js'));
+app.directive('epochtalkEditor',    require('./components/editor/editor.directive.js'));
+app.directive('categoryEditor',     require('./components/category_editor/category-editor.directive.js'));
+app.directive('nestableBoards',     require('./components/category_editor/nestable-boards.directive.js'));
+app.directive('nestableCategories', require('./components/category_editor/nestable-categories.directive.js'));
+app.directive('modal',              require('./components/modal/modal.directive.js'));
+app.directive('slideToggle',        require('./components/slide_toggle/slide-toggle.directive.js'));
+app.directive('autoFocus',          require('./components/autofocus/autofocus.directive.js'));
+app.directive('uniqueUsername',     require('./components/unique_username/unique-username.directive.js'));
+app.directive('uniqueEmail',        require('./components/unique_email/unique-email.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))

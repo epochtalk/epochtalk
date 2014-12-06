@@ -4,7 +4,7 @@ var _ = require('lodash');
 module.exports = ['$state', function($state) {
   return {
     restrict: 'E',
-    template: fs.readFileSync(__dirname + '/../../templates/directives/category-editor.html'),
+    template: fs.readFileSync(__dirname + '/category-editor.html'),
     controller: function($scope) {
       $scope.catListId = 'categorized-boards';
       $scope.boardListId = 'uncategorized-boards';
