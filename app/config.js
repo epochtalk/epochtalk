@@ -9,14 +9,9 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
     $stateProvider.state('index', {
       url: '/',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
         'content': {
-          controller: 'MainCtrl',
-          controllerAs: 'MainCtrl',
-          template: fs.readFileSync(__dirname + '/templates/main.html')
-        },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+          controller: ['$state', function($state) { $state.go('boards'); }],
+        }
       }
     });
 

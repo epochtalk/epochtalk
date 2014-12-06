@@ -23,7 +23,6 @@ var app = angular.module('ept', [
 // Register Forum Page Controllers
 app.controller('AppCtrl', require('./controllers/app.js'));
 app.controller('HeaderCtrl', require('./controllers/header.js'));
-app.controller('MainCtrl', require('./controllers/main.js'));
 app.controller('BoardsCtrl', require('./controllers/boards.js'));
 app.controller('BoardCtrl', require('./controllers/board.js'));
 app.controller('NewThreadCtrl', require('./controllers/newThread.js'));
