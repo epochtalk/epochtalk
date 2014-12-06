@@ -6,6 +6,8 @@ module.exports = ['$scope', '$timeout', '$location', '$stateParams', '$anchorScr
     this.page = page; // current page
     this.limit = limit; // posts per page
     this.resetEditor = true; // used to reset new post editor
+    this.parent = $scope.$parent.PostsWrapperCtrl;
+    this.parent.page = page;
 
     // set the thread, newPost.thread_id and title
     // and calculate the total number of pages
@@ -32,6 +34,7 @@ module.exports = ['$scope', '$timeout', '$location', '$stateParams', '$anchorScr
       if (ctrl.limit === 'all') { count = Number(ctrl.totalPosts); }
       else { count = Number(ctrl.limit) || 10; }
       ctrl.pageCount = Math.ceil(ctrl.totalPosts / count);
+      ctrl.parent.pageCount = ctrl.pageCount;
     };
 
     // new post methods

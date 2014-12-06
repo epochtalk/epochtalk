@@ -82,15 +82,25 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
       }
     });
 
-    $stateProvider.state('threads', {
-      url: '/boards/{boardId}?limit&page',
-      // reloadOnSearch: false,
+    $stateProvider.state('board', {
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
         'content': {
+          controller: [function(){}],
+          controllerAs: 'BoardWrapperCtrl',
+          template: fs.readFileSync(__dirname + '/templates/board/board.html')
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+      }
+    })
+    .state('board.data', {
+      url: '/boards/{boardId}?limit&page',
+      views: {
+        'data@board': {
           controller: 'BoardCtrl',
           controllerAs: 'BoardCtrl',
-          template: fs.readFileSync(__dirname + '/templates/board.html'),
+          template: fs.readFileSync(__dirname + '/templates/board/data.html'),
           resolve: {
             board: ['Boards', '$stateParams', function(Boards, $stateParams) {
               return Boards.get({ id: $stateParams.boardId});
@@ -115,9 +125,7 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
               return 10;
             }]
           }
-        },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        }
       }
     });
 
@@ -136,14 +144,24 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
     });
 
     $stateProvider.state('posts', {
-      url: '/threads/{threadId}/posts?limit&page',
-      // reloadOnSearch: false,
       views: {
         'header': { template: fs.readFileSync(__dirname + '/templates/header.html') },
         'content': {
+          controller: [function(){}],
+          controllerAs: 'PostsWrapperCtrl',
+          template: fs.readFileSync(__dirname + '/templates/posts/posts.html')
+        },
+        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+      }
+    })
+    .state('posts.data', {
+      url: '/threads/{threadId}/posts?limit&page',
+      views: {
+        'data@posts': {
           controller: 'PostsCtrl',
           controllerAs: 'PostsCtrl',
-          template: fs.readFileSync(__dirname + '/templates/posts.html'),
+          template: fs.readFileSync(__dirname + '/templates/posts/data.html'),
           resolve: {
             thread: ['Threads', '$stateParams', function(Threads, $stateParams) {
               return Threads.get({ id: $stateParams.threadId });
@@ -174,9 +192,7 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
               else { return Number($stateParams.limit) || 10; }
             }]
           }
-        },
-        'footer': { template: fs.readFileSync(__dirname + '/templates/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/templates/modals.html') }
+        }
       }
     });
 

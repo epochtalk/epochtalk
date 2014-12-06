@@ -1,5 +1,3 @@
-<pagination page-count="PostsCtrl.pageCount" page="PostsCtrl.page"></pagination>
-
 <div class="row post-block" ng-repeat="post in PostsCtrl.posts track by post.id">
   <a class="anchor-offset" id="{{post.id}}"></a>
   <!-- public view of post -->
@@ -73,8 +71,6 @@
     </div>
   </div>
 </div>
-
-<pagination page-count="PostsCtrl.pageCount" page="PostsCtrl.page"></pagination>
 
 <div class="row">
   <div class="small-12 columns">

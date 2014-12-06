@@ -1,15 +1,22 @@
-module.exports = ['$scope', '$stateParams', '$window', 'Auth', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
-  function($scope, $stateParams, $window, Auth, Threads, board, threads, page, threadLimit, postLimit) {
+module.exports = ['$scope', '$anchorScroll', '$stateParams', '$window', 'Auth', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
+  function($scope, $anchorScroll, $stateParams, $window, Auth, Threads, board, threads, page, threadLimit, postLimit) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated; // check Auth
-    this.page = page; // this page
     this.postLimit = postLimit;
     this.threadLimit = threadLimit;
+    this.page = page; // this page
+    this.parent = $scope.$parent.BoardWrapperCtrl;
+    this.parent.page = page;
+
+    // Scroll fix for nested state
+    $anchorScroll();
 
     board.$promise.then(function(board) {
       ctrl.board = board;
-      ctrl.newThreadUrl = '/boards/' + board.id + '/threads/new';
-      ctrl.pageCount = Math.ceil(board.thread_count / threadLimit);
+      ctrl.parent.board  = board;
+      ctrl.parent.newThreadUrl = '/boards/' + board.id + '/threads/new';
+      ctrl.parent.loggedIn = Auth.isAuthenticated;
+      ctrl.parent.pageCount = Math.ceil(board.thread_count / threadLimit);
     });
 
     // generate page listing for each thread
@@ -47,31 +54,5 @@ module.exports = ['$scope', '$stateParams', '$window', 'Auth', 'Threads', 'board
       });
     });
 
-    // // pagination
-
-
-    // $scope.$on('$stateChangeStart', function() {
-    //   var query = {
-    //     board_id: $stateParams.boardId,
-    //     limit: $stateParams.limit,
-    //     page: $stateParams.page
-    //   };
-    //   return Threads.byBoard(query).$promise.then(function(threads) {
-    //     // scroll to top when loading new threads since this isn't a true route change
-    //     $window.scrollTo(0,0);
-
-    //     // update page number
-    //     ctrl.page = Number($stateParams.page);
-    //     ctrl.threadLimit = Number($stateParams.limit) || 10;
-    //     // update thread with page count
-    //     ctrl.threads = threads;
-    //     threads.forEach(function(thread) {
-    //       thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
-    //       getPageKeysForThread(thread);
-    //       // user based UI
-    //       if (thread.has_new_post) { thread.title_class = 'bold-title'; }
-    //     });
-    //   });
-    // });
   }
 ];

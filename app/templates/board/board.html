@@ -1,0 +1,24 @@
+<pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
+<div class="row board-page">
+  <!-- Page Header -->
+  <div class="small-12 columns">
+    <h3 ng-bind-html="BoardWrapperCtrl.board.name"></h3>
+    <span class="moderators">
+      <strong>Moderators: </strong> Unknown, Unknown, Unknown
+    </span>
+    <div class="thin-dotted-underline"></div>
+  </div>
+
+  <!-- Page Controls -->
+  <div class="small-12 columns page-controls" ng-if="BoardWrapperCtrl.loggedIn()">
+    <dl class="sub-nav">
+      <dd><a ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})">Start a New Thread</a></dd>
+    </dl>
+    <div class="thin-dotted-underline"></div>
+  </div>
+
+  <!-- Board's Thread Data-->
+  <div ui-view="data"></div>
+</div>
+
+<pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
