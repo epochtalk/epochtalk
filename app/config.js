@@ -6,26 +6,44 @@ require('./resources');
 module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
   function($stateProvider, $locationProvider, $httpProvider) {
 
+    // Index Page (re-route to boards)
     $stateProvider.state('index', {
       url: '/',
       views: {
-        'content': {
+        'body': {
           controller: ['$state', function($state) { $state.go('boards'); }],
         }
       }
     });
 
-    $stateProvider.state('profile', {
-      url: '/profiles/{username}',
+    // Public layout
+    $stateProvider.state('public-layout', {
       views: {
         'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
+        'body': { template: fs.readFileSync(__dirname + '/layout/public-content.html') },
+        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
+        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
+      }
+    });
+
+    // Admin layout
+    $stateProvider.state('admin-layout', {
+      views: {
+        'header': { template: fs.readFileSync(__dirname + '/layout/header.admin.html') },
+        'body': { template: fs.readFileSync(__dirname + '/layout/admin-content.html') },
+        'sidenav': { template: fs.readFileSync(__dirname + '/layout/sidenav.html') }
+      }
+    });
+
+    $stateProvider.state('profile', {
+      url: '/profiles/{username}',
+      parent: 'public-layout',
+      views: {
         'content': {
           controller: 'ProfileCtrl',
           controllerAs: 'profiles',
           template: fs.readFileSync(__dirname + '/user/profile.html')
-        },
-        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
+        }
       },
       resolve: {
         user: [ 'User', '$stateParams', function(User, $stateParams) {
@@ -36,37 +54,32 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
 
     $stateProvider.state('confirm', {
       url: '/confirm/{username}/{token}',
+      parent: 'public-layout',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: 'ConfirmCtrl',
           controllerAs: 'ConfirmCtrl',
           template: fs.readFileSync(__dirname + '/user/confirm.html')
-        },
-        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
+        }
       }
     });
 
     $stateProvider.state('reset', {
       url: '/reset/{username}/{token}',
+      parent: 'public-layout',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: 'ResetCtrl',
           controllerAs: 'ResetCtrl',
           template: fs.readFileSync(__dirname + '/user/reset.html')
-        },
-        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
-
+        }
       }
     });
 
     $stateProvider.state('boards', {
       url: '/boards',
+      parent: 'public-layout',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: 'BoardsCtrl',
           controllerAs: 'BoardsCtrl',
@@ -76,22 +89,18 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
               return Boards.query();
             }]
           }
-        },
-        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
+        }
       }
     });
 
     $stateProvider.state('board', {
+      parent: 'public-layout',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: [function(){}],
           controllerAs: 'BoardWrapperCtrl',
           template: fs.readFileSync(__dirname + '/board/board.html')
         },
-        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
       }
     })
     .state('board.data', {
@@ -131,28 +140,24 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
 
     $stateProvider.state('newThread', {
       url: '/boards/{boardId}/threads/new',
+      parent: 'public-layout',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: 'NewThreadCtrl',
           controllerAs: 'NewThreadCtrl',
           template: fs.readFileSync(__dirname + '/board/new-thread.html')
-        },
-        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
+        }
       }
     });
 
     $stateProvider.state('posts', {
+      parent: 'public-layout',
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/layout/header.html') },
         'content': {
           controller: [function(){}],
           controllerAs: 'PostsWrapperCtrl',
           template: fs.readFileSync(__dirname + '/posts/posts.html')
-        },
-        'footer': { template: fs.readFileSync(__dirname + '/layout/footer.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') }
+        }
       }
     })
     .state('posts.data', {
@@ -198,19 +203,15 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
 
     $stateProvider.state('admin', {
       url: '/admin',
+      parent: 'admin-layout',
       protect: true,
-      views: {
-        'header': { template: fs.readFileSync(__dirname + '/layout/header.admin.html') },
-        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') },
-        'sidenav': { template: fs.readFileSync(__dirname + '/layout/sidenav.html') }
-      }
     });
 
     $stateProvider.state('categories', {
       url: '/admin/categories',
+      parent: 'admin-layout',
       protect: true,
       views: {
-        'header': { template: fs.readFileSync(__dirname + '/layout/header.admin.html') },
         'content': {
           controller: 'CategoriesCtrl',
           template: fs.readFileSync(__dirname + '/admin_categories/admin-categories.html'),
@@ -223,8 +224,6 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
             }]
           }
         },
-        'modals': { template: fs.readFileSync(__dirname + '/layout/modals.html') },
-        'sidenav': { template: fs.readFileSync(__dirname + '/layout/sidenav.html') }
       }
     });
 
