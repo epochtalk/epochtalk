@@ -31,7 +31,11 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
       views: {
         'header': { template: fs.readFileSync(__dirname + '/layout/header.admin.html') },
         'body': { template: fs.readFileSync(__dirname + '/layout/admin-content.html') },
-        'sidenav': { template: fs.readFileSync(__dirname + '/layout/sidenav.html') }
+        'sidenav': {
+          controller: 'AdminNavCtrl',
+          controllerAs: 'AdminNavCtrl',
+          template: fs.readFileSync(__dirname + '/layout/sidenav.html')
+        }
       }
     });
 

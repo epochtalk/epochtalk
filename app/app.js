@@ -32,6 +32,7 @@ app.controller('ResetCtrl',         require('./user/reset.controller.js'));
 app.controller('ConfirmCtrl',       require('./user/confirm.controller.js'));
 
 // Register Admin Page Controllers
+app.controller('AdminNavCtrl',      require('./layout/sidenav.controller.js'));
 app.controller('CategoriesCtrl',    require('./admin_categories/admin-categories.controller.js'));
 
 // Register Directives
