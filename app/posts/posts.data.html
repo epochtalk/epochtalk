@@ -23,14 +23,19 @@
       {{post.created_at | humanDate}}
       </span>
       <ul class="post-action">
+        <li>
+          <a href="#" ng-click="PostsCtrl.startEditPost($index)" ng-if="post.editable && !post.editMode">
+            <i class="icon-epoch-edit-pencil"></i>
+          </a>
+          <a href="#" ng-click="PostsCtrl.cancelEditPost($index)" ng-if="post.editable && post.editMode">
+            <i class="icon-epoch-edit-pencil"></i>
+          </a>
+        </li>
         <li><a href="#"><i class="icon-epoch-heart"></i></a></li>
         <li><a href="#"><i class="icon-epoch-flag"></i></a></li>
         <li><a href="#"><i class="icon-epoch-reply"></i></a></li>
         <li><a href="#"><i class="icon-epoch-quote"></i></a></li>
       </ul>
-      <button class="button tiny" ng-click="PostsCtrl.startEditPost($index)" ng-if="post.editable && !post.editMode">
-        Edit
-      </button>
     </div>
     <!-- Post Body -->
     <div class="post-body" ng-bind-html="post.body" ng-if="!post.editMode"></div>
@@ -50,16 +55,24 @@
         </epochtalk-editor>
       </form>
       <div class="editor-button-container">
-        <button class="button tiny" ng-click="PostsCtrl.cancelEditPost($index)">
-          Close
-        </button>
         <button class="button tiny" ng-click="PostsCtrl.saveEditPost($index)" ng-disabled="form.title.$error.required || !post.encodedBody.length > 0">
           Save
+        </button>
+        <button class="button tiny" ng-click="PostsCtrl.cancelEditPost($index)">
+          Cancel
         </button>
         <span class="label alert" ng-if="post.error" ng-bind="post.error.message"></span>
       </div>
     </div>
     <ul class="post-action">
+      <li>
+        <a href="#" ng-click="PostsCtrl.startEditPost($index)" ng-if="post.editable && !post.editMode">
+          <i class="icon-epoch-edit-pencil"></i>
+        </a>
+        <a href="#" ng-click="PostsCtrl.cancelEditPost($index)" ng-if="post.editable && post.editMode">
+          <i class="icon-epoch-edit-pencil"></i>
+        </a>
+      </li>
       <li><a href="#"><i class="icon-epoch-heart"></i></a></li>
       <li><a href="#"><i class="icon-epoch-flag"></i></a></li>
       <li><a href="#"><i class="icon-epoch-reply"></i></a></li>
