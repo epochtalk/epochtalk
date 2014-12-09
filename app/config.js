@@ -211,7 +211,7 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
       protect: true,
     });
 
-    $stateProvider.state('categories', {
+    $stateProvider.state('admin-categories', {
       url: '/admin/categories',
       parent: 'admin-layout',
       protect: true,
@@ -225,6 +225,24 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
             }],
             boards: ['Boards', function(Boards) {
               return Boards.all();
+            }]
+          }
+        },
+      }
+    });
+
+    $stateProvider.state('admin-users', {
+      url: '/admin/users',
+      parent: 'admin-layout',
+      protect: true,
+      views: {
+        'content': {
+          controller: 'UsersCtrl',
+          controllerAs: 'UsersCtrl',
+          template: fs.readFileSync(__dirname + '/admin_users/admin-users.html'),
+          resolve: {
+            users: ['User', function(User) {
+              return User.all();
             }]
           }
         },

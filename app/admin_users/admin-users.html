@@ -1,0 +1,30 @@
+<div class="row full-width">
+  <div class="small-12 columns">
+    <h4 class="thin-dotted-underline">Manage Users</h4>
+  </div>
+</div>
+<div class="row full-width">
+  <div class="small-12 columns">
+    <table width="100%">
+      <thead>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Registered</th>
+        <th width="300">Actions</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="user in UsersCtrl.users track by user.username">
+          <td ng-bind="user.username"></td>
+          <td ng-bind="user.email"></td>
+          <td ng-bind="user.created_at | humanDate"></td>
+          <td>
+            <a href="#">View Posts</a>&nbsp;&nbsp;
+            <a href="#">Edit</a>&nbsp;&nbsp;
+            <a href="#">Ban</a>&nbsp;&nbsp;
+            <a href="#">Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -122,3 +122,23 @@ exports.find = {
     .catch(function() { reply(Hapi.error.internal()); });
   }
 };
+
+exports.all = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  handler: function(request, reply) {
+    // get logged in user
+    var authUser = {};
+    if (request.auth.isAuthenticated) {
+      authUser = request.auth.credentials;
+    }
+    core.users.all()
+    .then(function(users) {
+      users.forEach(function(user) {
+        delete user.passhash;
+      });
+      return users;
+    })
+    .then(function(users) { reply(users); })
+    .catch(function() { reply(Hapi.error.internal()); });
+  }
+};
