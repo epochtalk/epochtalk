@@ -3,7 +3,6 @@ module.exports = ['users', function(users) {
 
   users.$promise
   .then(function(allUsers) {
-    console.log(allUsers);
     ctrl.users = allUsers;
   });
 }];
