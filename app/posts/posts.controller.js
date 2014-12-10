@@ -1,5 +1,5 @@
-module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', 'Auth', 'Posts', 'thread', 'posts', 'page', 'limit',
-  function($scope, $timeout, $location, $anchorScroll, Auth, Posts, thread, posts, page, limit) {
+module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', '$uiViewScroll', 'Auth', 'Posts', 'thread', 'posts', 'page', 'limit',
+  function($scope, $timeout, $location, $anchorScroll, $uiViewScroll, Auth, Posts, thread, posts, page, limit) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
     var parent = $scope.$parent.PostsWrapperCtrl;
@@ -86,7 +86,8 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', 'Auth', 'P
           ctrl.totalPosts++;
           calculatePages();
           // Go to last page in the thread and scroll to new post
-          pullPage(parent.pageCount, data.id);
+          if (page === parent.pageCount) { pullPage(parent.pageCount, data.id); }
+          else { $location.search('page', parent.pageCount).hash(data.id); }
         }
         else if (type === 'edit') {
           var index = ctrl.posting.index;
@@ -98,6 +99,7 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', 'Auth', 'P
         }
         
         ctrl.writePost(); // reset editor
+        ctrl.showEditor = false;
       })
       .catch(function(response) {
         var error = '';
@@ -126,8 +128,11 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', 'Auth', 'P
         ctrl.posts = posts;
         parent.page = page;
         // set hash and scroll
-        $location.hash(anchor);
-        $anchorScroll();
+        $timeout(function() {
+          var element = document.getElementById(anchor);
+          element = angular.element(element);
+          $uiViewScroll(element);
+        });
       });
     };
   }
