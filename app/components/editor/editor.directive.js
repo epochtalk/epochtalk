@@ -2,7 +2,7 @@ var medium = require('medium-editor');
 var bbcodeParser = require('bbcode-parser');
 var fs = require('fs');
 
-module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http, s3ImageUpload) {
+module.exports = ['$timeout', 'S3ImageUpload', function($timeout, s3ImageUpload) {
   return {
     restrict: 'E',
     scope: {
@@ -175,9 +175,7 @@ module.exports = ['$timeout', '$http', 'S3ImageUpload', function($timeout, $http
       var debounce;
       var onChange = function() {
         $timeout.cancel(debounce);
-        debounce = $timeout(function() {
-          parseInput();
-        }, 250);
+        debounce = $timeout(function() { parseInput(); }, 250);
       };
 
       // scoll binding
