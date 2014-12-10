@@ -211,6 +211,19 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
       protect: true,
     });
 
+    $stateProvider.state('admin-moderation', {
+      url: '/admin/moderation',
+      parent: 'admin-layout',
+      protect: true,
+      views: {
+        'content': {
+          controller: 'ModerationCtrl',
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderation/admin-moderation.html'),
+        }
+      }
+    });
+
     $stateProvider.state('admin-categories', {
       url: '/admin/categories',
       parent: 'admin-layout',
@@ -227,7 +240,25 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
               return Boards.all();
             }]
           }
-        },
+        }
+      }
+    });
+
+    $stateProvider.state('admin-moderators', {
+      url: '/admin/moderators',
+      parent: 'admin-layout',
+      protect: true,
+      views: {
+        'content': {
+          controller: 'ModeratorsCtrl',
+          controllerAs: 'ModeratorsCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderators/admin-moderators.html'),
+          resolve: {
+            users: ['User', function(User) {
+              return User.all();
+            }]
+          }
+        }
       }
     });
 
@@ -245,9 +276,10 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
               return User.all();
             }]
           }
-        },
+        }
       }
     });
+
 
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('AuthInterceptor');

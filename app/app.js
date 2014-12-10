@@ -35,6 +35,8 @@ app.controller('ConfirmCtrl',       require('./user/confirm.controller.js'));
 app.controller('AdminNavCtrl',      require('./layout/sidenav.controller.js'));
 app.controller('CategoriesCtrl',    require('./admin_categories/admin-categories.controller.js'));
 app.controller('UsersCtrl',         require('./admin_users/admin-users.controller.js'));
+app.controller('ModeratorsCtrl',    require('./admin_moderators/admin-moderators.controller.js'));
+app.controller('ModerationCtrl',    require('./admin_moderation/admin-moderation.controller.js'));
 
 // Register Directives
 app.directive('pagination',         require('./components/pagination/pagination.directive.js'));
