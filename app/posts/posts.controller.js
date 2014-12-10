@@ -86,27 +86,48 @@ module.exports = ['$scope', '$timeout', '$location', '$anchorScroll', 'Auth', 'P
           ctrl.totalPosts++;
           calculatePages();
           // Go to last page in the thread and scroll to new post
-          $location.search('page', parent.pageCount);
-          $location.hash(data.id); // set post id in url hash for scrolling
+          pullPage(parent.pageCount, data.id);
         }
         else if (type === 'edit') {
           var index = ctrl.posting.index;
-          ctrl.posts[index].body = data.body;
-          ctrl.posts[index].encodedBody = data.encodedBody;
+          var editPost = ctrl.posts[index];
+          if (editPost.id === ctrl.posting.id) {
+            editPost.body = data.body;
+            editPost.encodedBody = data.encodedBody;
+          }
         }
         
         ctrl.writePost(); // reset editor
       })
       .catch(function(response) {
         var error = '';
-        if (response.status == 500) {
+        if (response.status !== 200) {
           error = 'Post could not be saved. ';
           error += 'Please refresh the page.';
+          console.log(response);
         }
-        else { error = response.data.message; }
 
         ctrl.posting.error = {};
-        ctrl.posting.error.message = error;
+        ctrl.posting.error.message = error.message;
+      });
+    };
+
+    var pullPage = function(page, anchor) {
+      var query = {
+        thread_id: ctrl.thread.id,
+        page: page,
+        limit: ctrl.limit
+      };
+      if (ctrl.limit === 'all') { query.limit = ctrl.totalPosts; }
+
+      // replace current posts with new posts
+      Posts.byThread(query).$promise
+      .then(function(posts) {
+        ctrl.posts = posts;
+        parent.page = page;
+        // set hash and scroll
+        $location.hash(anchor);
+        $anchorScroll();
       });
     };
   }
