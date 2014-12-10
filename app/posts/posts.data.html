@@ -1,33 +1,33 @@
 <div class="row post-block" ng-repeat="post in PostsCtrl.posts track by post.id">
+  <!-- Post Anchor -->
   <a class="anchor-offset" id="{{post.id}}"></a>
-  <!-- public view of post -->
+
+  <!-- Post Profile Section -->
   <div class="small-12 medium-2 columns">
-    <!-- User info -->
-      <div class="post-user">
-        <div class="user-avatar" style="background-image:url('/static/img/rides-a-fixie.jpg');">
-          <span class="user-role">Hero</span>
-        </div>
-        <ul class="user-details">
-          <li class="name"><a href="/profiles/{{post.user.username}}" ng-bind-html="post.user.username"></a><span class="user-role-sm">Hero</span></li>
-          <li class="points"> * * * * *</li>
-          <li class="activity">Activity: 879</li>
-        </ul>
+    <div class="post-user">
+      <div class="user-avatar" style="background-image:url('/static/img/rides-a-fixie.jpg');">
+        <span class="user-role">Hero</span>
       </div>
+      <ul class="user-details">
+        <li class="name">
+          <a href="/profiles/{{post.user.username}}" ng-bind-html="post.user.username"></a>
+          <span class="user-role-sm">Hero</span>
+        </li>
+        <li class="points"> * * * * *</li>
+        <li class="activity">Activity: 879</li>
+      </ul>
+    </div>
   </div>
 
+  <!-- Post Body Section -->
   <div class="small-12 medium-10 columns">
     <!-- Post Title -->
     <div class="post-title">
       <!-- <span ng-bind-html="post.title"></span> -->
-      <span class="timestamp">
-      {{post.created_at | humanDate}}
-      </span>
+      <span class="timestamp" ng-bind="post.created_at | humanDate"></span>
       <ul class="post-action">
-        <li>
-          <a href="#" ng-click="PostsCtrl.startEditPost($index)" ng-if="post.editable && !post.editMode">
-            <i class="icon-epoch-edit-pencil"></i>
-          </a>
-          <a href="#" ng-click="PostsCtrl.cancelEditPost($index)" ng-if="post.editable && post.editMode">
+        <li ng-if="post.editable">
+          <a ng-href="#" ng-click="PostsCtrl.writePost($index)">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
         </li>
@@ -38,38 +38,10 @@
       </ul>
     </div>
     <!-- Post Body -->
-    <div class="post-body" ng-bind-html="post.body" ng-if="!post.editMode"></div>
-    <!-- private edit view of post -->
-    <div class="editable" ng-if="post.editMode">
-      <!-- Editor -->
-      <form name="form" class="css-form editor-form" novalidate>
-        <!-- Title -->
-        <label>Title:
-          <input type="text" name="title" placeholder="Title" ng-model="post.title" required>
-          <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
-            Title is Required
-          </small>
-        </label>
-        <!-- Editor -->
-        <epochtalk-editor body="post.body" encoded-body="post.encodedBody" focus-editor="true">
-        </epochtalk-editor>
-      </form>
-      <div class="editor-button-container">
-        <button class="button tiny" ng-click="PostsCtrl.saveEditPost($index)" ng-disabled="form.title.$error.required || !post.encodedBody.length > 0">
-          Save
-        </button>
-        <button class="button tiny" ng-click="PostsCtrl.cancelEditPost($index)">
-          Cancel
-        </button>
-        <span class="label alert" ng-if="post.error" ng-bind="post.error.message"></span>
-      </div>
-    </div>
+    <div class="post-body" ng-bind-html="post.body"></div>
     <ul class="post-action">
-      <li>
-        <a href="#" ng-click="PostsCtrl.startEditPost($index)" ng-if="post.editable && !post.editMode">
-          <i class="icon-epoch-edit-pencil"></i>
-        </a>
-        <a href="#" ng-click="PostsCtrl.cancelEditPost($index)" ng-if="post.editable && post.editMode">
+      <li ng-if="post.editable">
+        <a ng-href="#" ng-click="PostsCtrl.writePost($index)">
           <i class="icon-epoch-edit-pencil"></i>
         </a>
       </li>
@@ -85,29 +57,48 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="small-12 columns">
-    <!-- Editor if logged in -->
-    <div ng-if="PostsCtrl.loggedIn()" class="post-editor-auth">
-      <!-- editor -->
-      <form name="form" class="css-form editor-form" novalidate>
-        <!-- Title -->
-        <label>Title:
-          <input type="text" name="title" placeholder="Title" ng-model="PostsCtrl.newPost.title" required>
-          <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
-            Title is Required
-          </small>
-        </label>
-        <!-- Post Editor -->
-        <epochtalk-editor body="PostsCtrl.newPost.body" encoded-body="PostsCtrl.newPost.encodedBody" reset="PostsCtrl.resetEditor" focus-editor="false">
-        </epochtalk-editor>
-      </form>
-      <div class="editor-button-container">
-        <button class="button expand" ng-click="PostsCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsCtrl.newPost.encodedBody.length > 0">
-          Send
-        </button>
-        <span class="label alert" ng-if="PostsCtrl.newPost.error" ng-bind="PostsCtrl.newPost.error.message"></span>
-      </div>
+<div ng-if="PostsCtrl.loggedIn()">
+  <div class="small-12 columns editor-fixed-bottom" ng-if="!PostsCtrl.showEditor">
+    <ul class="post-action">
+      <li ng-click="PostsCtrl.showEditor = true">
+        <span><i class="icon-epoch-add"> Show Editor</i></span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="small-12 columns editor-fixed" ng-if="PostsCtrl.showEditor">
+    <div class="small-12 columns">
+      <ul class="post-action">
+      <li ng-click="PostsCtrl.showEditor = false">
+        <span>Hide Editor</i> </span>
+      </li>
+      <li ng-click="PostsCtrl.writePost()">
+        <span>New Post</i></span>
+      </li>
+    </ul>
+    </div>
+
+    <!-- Editor -->
+    <form name="form" class="editor-form" novalidate>
+      <!-- Title -->
+      <label>Title:
+        <input type="text" name="title" placeholder="Title" ng-model="PostsCtrl.posting.post.title" required>
+        <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
+          Title is Required
+        </small>
+      </label>
+      <!-- Post Editor -->
+      <epochtalk-editor body="PostsCtrl.posting.post.body" encoded-body="PostsCtrl.posting.post.encodedBody" reset="PostsCtrl.resetEditor" focus-editor="false">
+      </epochtalk-editor>
+    </form>
+    <!-- Editor Controls -->
+    <div class="editor-button-container">
+      <button class="button expand" ng-click="PostsCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsCtrl.posting.post.encodedBody.length > 0">
+        Send
+      </button>
+      <span class="label alert" ng-if="PostsCtrl.posting.error" ng-bind="PostsCtrl.posting.error.message"></span>
     </div>
   </div>
 </div>
+
+
