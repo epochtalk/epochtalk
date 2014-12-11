@@ -1,0 +1,44 @@
+<!-- Reported Users -->
+<div class="content">
+  <div class="left"><h4>Pending Moderation</h4></div>
+  <div class="right"><pagination page-count="5" page="1"></pagination></div>
+  <table width="100%">
+    <thead>
+      <th>Username</th>
+      <th>Reason</th>
+      <th width="200">Date</th>
+      <th width="200">Actions</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="reportedUser in ModerationCtrl.reportedUsers track by reportedUser.username">
+        <td><a href="/profiles/{{reportedUser.username}}" ng-bind="reportedUser.username"></a></td>
+        <td ng-bind="reportedUser.reason"></td>
+        <td ng-bind="reportedUser.reported_at | humanDate"></td>
+        <td>
+          <a href="#">Ignore</a>&nbsp;&nbsp;
+          <a href="#">Warn</a>&nbsp;&nbsp;
+          <a href="#">Ban</a>&nbsp;&nbsp;
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br /><br />
+  <div class="left"><h4>Moderation History</h4></div>
+  <div class="right"><pagination page-count="5" page="1"></pagination></div>
+  <table width="100%">
+    <thead>
+      <th>Username</th>
+      <th>Reason</th>
+      <th width="200">Date</th>
+      <th width="200">Moderator Notes</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="reportedUser in ModerationCtrl.reportedUsers track by reportedUser.username">
+        <td><a href="/profiles/{{reportedUser.username}}" ng-bind="reportedUser.username"></a></td>
+        <td ng-bind="reportedUser.reason"></td>
+        <td ng-bind="reportedUser.reported_at | humanDate"></td>
+        <td ng-bind="reportedUser.moderator_notes"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

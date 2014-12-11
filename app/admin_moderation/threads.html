@@ -1,0 +1,45 @@
+<!-- Reported Threads -->
+<div class="content">
+  <div class="left"><h4>Pending Moderation</h4></div>
+  <div class="right"><pagination page-count="5" page="1"></pagination></div>
+  <table width="100%">
+    <thead>
+      <th>Thread</th>
+      <th>Reason</th>
+      <th width="200">Date</th>
+      <th width="250">Actions</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="reportedThread in ModerationCtrl.reportedThreads track by reportedThread.thread">
+        <td><a href="#" ng-bind="reportedThread.thread"></a></td>
+        <td ng-bind="reportedThread.reason"></td>
+        <td ng-bind="reportedThread.reported_at | humanDate"></td>
+        <td>
+          <a href="#">Modify</a>&nbsp;&nbsp;
+          <a href="#">Ignore</a>&nbsp;&nbsp;
+          <a href="#">Warn</a>&nbsp;&nbsp;
+          <a href="#">Ban</a>&nbsp;&nbsp;
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br /><br />
+  <div class="left"><h4>Moderation History</h4></div>
+  <div class="right"><pagination page-count="5" page="1"></pagination></div>
+  <table width="100%">
+    <thead>
+      <th>Thread</th>
+      <th>Reason</th>
+      <th width="200">Date</th>
+      <th width="250">Moderator Notes</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="reportedThread in ModerationCtrl.reportedThreads track by reportedThread.thread">
+        <td><a href="#" ng-bind="reportedThread.thread"></a></td>
+        <td ng-bind="reportedThread.reason"></td>
+        <td ng-bind="reportedThread.reported_at | humanDate"></td>
+        <td ng-bind="reportedThread.moderator_notes"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

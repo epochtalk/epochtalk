@@ -7,151 +7,19 @@
   <div class="small-12 columns">
 
     <!-- Tabs -->
-    <dl class="tabs" ng-model="tab" ng-init="tab = 'users'">
-      <dd ng-class="{'active': tab == 'users'}">
-        <a ng-click="tab = 'users'">Reported Users</a>
+    <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'users'">
+      <dd class="no-select" ng-class="{'active': tab == 'users'}">
+        <a href="/admin/moderation/users" ng-click="tab = 'users'">Reported Users</a>
       </dd>
-      <dd ng-class="{'active': tab == 'threads'}">
-        <a ng-click="tab = 'threads'">Reported Threads</a>
+      <dd class="no-select" ng-class="{'active': tab == 'threads'}">
+        <a href="/admin/moderation/threads" ng-click="tab = 'threads'">Reported Threads</a>
       </dd>
-      <dd ng-class="{'active': tab == 'posts'}">
-        <a href="#" ng-click="tab = 'posts'">Reported Posts</a>
+      <dd class="no-select" ng-class="{'active': tab == 'posts'}">
+        <a href="/admin/moderation/posts" ng-click="tab = 'posts'">Reported Posts</a>
       </dd>
     </dl>
+    <br /><br />
+    <div ui-view="data"></div>
 
-    <div class="tabs-content">
-
-      <!-- Reported Users -->
-      <div class="content" ng-class="{'active': tab == 'users'}">
-        <h4>Pending Moderation</h4>
-        <table width="100%">
-          <thead>
-            <th>Username</th>
-            <th>Reason</th>
-            <th width="200">Date</th>
-            <th width="200">Actions</th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="reportedUser in ModerationCtrl.reportedUsers track by reportedUser.username">
-              <td><a href="/profiles/{{reportedUser.username}}" ng-bind="reportedUser.username"></a></td>
-              <td ng-bind="reportedUser.reason"></td>
-              <td ng-bind="reportedUser.reported_at | humanDate"></td>
-              <td>
-                <a href="#">Ignore</a>&nbsp;&nbsp;
-                <a href="#">Warn</a>&nbsp;&nbsp;
-                <a href="#">Ban</a>&nbsp;&nbsp;
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h4>Moderation History</h4>
-        <table width="100%">
-          <thead>
-            <th>Username</th>
-            <th>Reason</th>
-            <th width="200">Date</th>
-            <th width="200">Moderator Notes</th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="reportedUser in ModerationCtrl.reportedUsers track by reportedUser.username">
-              <td><a href="/profiles/{{reportedUser.username}}" ng-bind="reportedUser.username"></a></td>
-              <td ng-bind="reportedUser.reason"></td>
-              <td ng-bind="reportedUser.reported_at | humanDate"></td>
-              <td ng-bind="reportedUser.moderator_notes"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Reported Threads -->
-      <div class="content" ng-class="{'active': tab == 'threads'}">
-        <h4>Pending Moderation</h4>
-        <table width="100%">
-          <thead>
-            <th>Thread</th>
-            <th>Reason</th>
-            <th width="200">Date</th>
-            <th width="250">Actions</th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="reportedThread in ModerationCtrl.reportedThreads track by reportedThread.thread">
-              <td><a href="#" ng-bind="reportedThread.thread"></a></td>
-              <td ng-bind="reportedThread.reason"></td>
-              <td ng-bind="reportedThread.reported_at | humanDate"></td>
-              <td>
-                <a href="#">Modify</a>&nbsp;&nbsp;
-                <a href="#">Ignore</a>&nbsp;&nbsp;
-                <a href="#">Warn</a>&nbsp;&nbsp;
-                <a href="#">Ban</a>&nbsp;&nbsp;
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h4>Moderation History</h4>
-        <table width="100%">
-          <thead>
-            <th>Thread</th>
-            <th>Reason</th>
-            <th width="200">Date</th>
-            <th width="250">Moderator Notes</th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="reportedThread in ModerationCtrl.reportedThreads track by reportedThread.thread">
-              <td><a href="#" ng-bind="reportedThread.thread"></a></td>
-              <td ng-bind="reportedThread.reason"></td>
-              <td ng-bind="reportedThread.reported_at | humanDate"></td>
-              <td ng-bind="reportedThread.moderator_notes"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Reported Posts -->
-      <div class="content" ng-class="{'active': tab == 'posts'}">
-        <h4>Pending Moderation</h4>
-        <table width="100%">
-          <thead>
-            <th>Post</th>
-            <th>Reason</th>
-            <th width="200">Date</th>
-            <th width="250">Actions</th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="reportedPost in ModerationCtrl.reportedPosts track by reportedPost.post">
-              <td><a href="#" ng-bind="reportedPost.post"></a></td>
-              <td ng-bind="reportedPost.reason"></td>
-              <td ng-bind="reportedPost.reported_at | humanDate"></td>
-              <td>
-                <a href="#">Modify</a>&nbsp;&nbsp;
-                <a href="#">Ignore</a>&nbsp;&nbsp;
-                <a href="#">Warn</a>&nbsp;&nbsp;
-                <a href="#">Ban</a>&nbsp;&nbsp;
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h4>Moderation History</h4>
-        <table width="100%">
-          <thead>
-            <th>Post</th>
-            <th>Reason</th>
-            <th width="200">Date</th>
-            <th width="250">Moderator Notes</th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="reportedPost in ModerationCtrl.reportedPosts track by reportedPost.post">
-              <td><a href="#" ng-bind="reportedPost.post"></a></td>
-              <td ng-bind="reportedPost.reason"></td>
-              <td ng-bind="reportedPost.reported_at | humanDate"></td>
-              <td ng-bind="reportedPost.moderator_notes"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-    </div>
   </div>
 </div>

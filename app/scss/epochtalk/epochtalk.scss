@@ -50,6 +50,21 @@
   padding-top: 65px;
 }
 
+/* Admin Moderation Queue */
+.tabs {
+  border-bottom: 1px dotted #ccc;
+  width: 50%;
+  min-width: 550px;
+}
+
+.custom-tabs dd.active a {
+  background-color: #eaeaea;
+}
+
+.custom-tabs dd a{
+  background-color: #fff;
+}
+
 /* Login CSS */
 /* optimize for mobile layout */
 .login-container > li { margin-right: 5px; }

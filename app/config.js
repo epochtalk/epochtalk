@@ -3,8 +3,8 @@ require('./filters');
 require('./services');
 require('./resources');
 
-module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
-  function($stateProvider, $locationProvider, $httpProvider) {
+module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider',
+  function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 
     // Index Page (re-route to boards)
     $stateProvider.state('index', {
@@ -211,15 +211,46 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
       protect: true,
     });
 
+    // Default child state for admin-moderation is users
+    $urlRouterProvider.when('/admin/moderation', '/admin/moderation/users');
+
     $stateProvider.state('admin-moderation', {
       url: '/admin/moderation',
       parent: 'admin-layout',
       protect: true,
       views: {
         'content': {
-          controller: 'ModerationCtrl',
-          controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin_moderation/admin-moderation.html'),
+        }
+      }
+    })
+    .state('admin-moderation.users', {
+      url: '/users',
+      views: {
+        'data@admin-moderation': {
+          controller: 'ModUsersCtrl',
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderation/users.html'),
+        }
+      }
+    })
+    .state('admin-moderation.threads', {
+      url: '/threads',
+      views: {
+        'data@admin-moderation': {
+          controller: 'ModThreadsCtrl',
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderation/threads.html'),
+        }
+      }
+    })
+    .state('admin-moderation.posts', {
+      url: '/posts',
+      views: {
+        'data@admin-moderation': {
+          controller: 'ModPostsCtrl',
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderation/posts.html'),
         }
       }
     });
