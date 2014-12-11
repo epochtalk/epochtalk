@@ -158,8 +158,8 @@ module.exports = ['$stateProvider', '$locationProvider', '$httpProvider',
       parent: 'public-layout',
       views: {
         'content': {
-          controller: [function(){}],
-          controllerAs: 'PostsWrapperCtrl',
+          controller: 'PostsParentCtrl',
+          controllerAs: 'PostsParentCtrl',
           template: fs.readFileSync(__dirname + '/posts/posts.html')
         }
       }

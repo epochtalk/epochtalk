@@ -23,6 +23,7 @@ var app = angular.module('ept', [
 app.controller('BoardsCtrl',        require('./boards/boards.controller.js'));
 app.controller('BoardCtrl',         require('./board/board.controller.js'));
 app.controller('NewThreadCtrl',     require('./board/new-thread.controller.js'));
+app.controller('PostsParentCtrl',   require('./posts/parent.controller.js'));
 app.controller('PostsCtrl',         require('./posts/posts.controller.js'));
 app.controller('LayoutCtrl',        require('./layout/layout.controller.js'));
 app.controller('HeaderCtrl',        require('./layout/header.controller.js'));

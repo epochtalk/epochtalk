@@ -266,23 +266,16 @@ input.icon-padding { padding-right: 40px; }
   margin: 0; }
 
 .editor-fixed-bottom {
-  position: fixed;
-  bottom: 0;
-  z-index: 8000;
-}
-.editor-fixed {
-  padding-top: 20px;
-  position: fixed;
-  bottom: 0;
   width: 100%;
-  min-height: 25%;
-  max-height: 50%;
-  background-color: white;
+  position: fixed;
+  bottom: 0;
   z-index: 8000;
-  border: 5px solid #cccccc;
-  overflow: auto;
-}
-
+  background-color: white;
+  max-height: 50%; overflow: auto; }
+.post-toolbar { background-color: #ccc; margin: 0; float: right; }
+.post-toolbar li { display: inline; list-style-type: none; padding-right: 10px; }
+.post-toolbar li:first-child { padding-left: 10px; }
+.editor-container { padding-top: 20px; border: 5px #ccc solid; }
 
 
 // Media Queries

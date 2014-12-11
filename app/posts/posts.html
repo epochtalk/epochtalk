@@ -1,5 +1,49 @@
-<pagination page-count="PostsWrapperCtrl.pageCount" page="PostsWrapperCtrl.page"></pagination>
+<pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
 
 <div class="content-spacer" ui-view="data"></div>
 
-<pagination page-count="PostsWrapperCtrl.pageCount" page="PostsWrapperCtrl.page"></pagination>
+<pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+
+
+<div ng-if="PostsParentCtrl.loggedIn() && PostsParentCtrl.newPostEnabled">
+  <div class="editor-fixed-bottom">
+    
+    <!-- fixed bottom toolbar -->
+    <ul class="post-toolbar">
+      <li ng-click="PostsParentCtrl.showEditor = true" ng-if="!PostsParentCtrl.showEditor">
+        <span><i class="icon-epoch-add"> Show Editor</i></span>
+      </li>
+      <li ng-click="PostsParentCtrl.showEditor = false" ng-if="PostsParentCtrl.showEditor">
+        <span>Hide Editor</i> </span>
+      </li>
+      <li ng-click="PostsParentCtrl.writePost()" ng-if="PostsParentCtrl.newPostEnabled">
+        <span>New Post</i></span>
+      </li>
+    </ul>
+
+    <!-- Editor Container-->
+    <div class="small-12 columns editor-container" ng-if="PostsParentCtrl.showEditor">
+      <!-- Editor -->
+      <form name="form" class="editor-form" novalidate>
+        <!-- Title -->
+        <label>Title:
+          <input type="text" name="title" placeholder="Title" ng-model="PostsParentCtrl.posting.post.title" required>
+          <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
+            Title is Required
+          </small>
+        </label>
+        <!-- Post Editor -->
+        <epochtalk-editor body="PostsParentCtrl.posting.post.body" encoded-body="PostsParentCtrl.posting.post.encodedBody" reset="PostsParentCtrl.resetEditor" focus-editor="false">
+        </epochtalk-editor>
+      </form>
+      <!-- Editor Controls -->
+      <div class="editor-button-container">
+        <button class="button expand" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.posting.post.encodedBody.length > 0">
+          Send
+        </button>
+        <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
