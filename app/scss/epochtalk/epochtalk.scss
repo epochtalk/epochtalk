@@ -1,11 +1,10 @@
 @import 'variables';
 @import 'epoch-icons';
 
-body { overflow: hidden; }
-
 /** Globals ---------------------------------------------------------------- */
 
-.main-content { overflow: auto; height: 100%; }
+.body-scroll-lock { overflow: hidden; }
+.main-content { min-height: 100%; }
 .content-spacer { min-height: 500px; }
 .thin-dotted-underline {
   border-bottom: 1px dotted #ccc;
@@ -14,6 +13,7 @@ body { overflow: hidden; }
 .text-info { font-size: 13px; color: #999; }
 .bold-title { font-weight: bold; }
 .no-margin { margin: 0; }
+.anchor-offset { display: block; position: relative; top: -35px; visibility: hidden; }
 .no-select { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 .inline-block { display: inline-block; }
 .pointer { cursor: pointer; }
@@ -99,7 +99,7 @@ input.icon-padding { padding-right: 40px; }
   color: #ccc;
   font-size: 14px;
   padding: 10px 10px 20px 10px;
-  margin-bottom: 97px; }
+  margin-bottom: 0; }
 .footer h3 { color: #999;}
 .copyright {
   font-size: 12px;

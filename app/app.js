@@ -51,6 +51,7 @@ app.directive('slideToggle',        require('./components/slide_toggle/slide-tog
 app.directive('autoFocus',          require('./components/autofocus/autofocus.directive.js'));
 app.directive('uniqueUsername',     require('./components/unique_username/unique-username.directive.js'));
 app.directive('uniqueEmail',        require('./components/unique_email/unique-email.directive.js'));
+app.directive('scrollLock',        require('./components/scroll_lock/scroll-lock.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))
