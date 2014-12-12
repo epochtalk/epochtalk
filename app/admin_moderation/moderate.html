@@ -1,25 +1,26 @@
-<div class="row full-width">
+<div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
   <div class="small-12 columns">
     <h4 class="thin-dotted-underline">Moderation Queue</h4>
   </div>
 </div>
-<div class="row full-width">
+<div class="row"  ng-class="{'full-width' : ModerationCtrl.fullWidth }">
   <div class="small-12 columns">
-
     <!-- Tabs -->
     <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'users'">
       <dd class="no-select" ng-class="{'active': tab == 'users'}">
-        <a href="/admin/moderation/users" ng-click="tab = 'users'">Reported Users</a>
+        <a ui-sref=".users" ng-click="tab = 'users'">Reported Users</a>
       </dd>
       <dd class="no-select" ng-class="{'active': tab == 'threads'}">
-        <a href="/admin/moderation/threads" ng-click="tab = 'threads'">Reported Threads</a>
+        <a ui-sref=".threads" ng-click="tab = 'threads'">Reported Threads</a>
       </dd>
       <dd class="no-select" ng-class="{'active': tab == 'posts'}">
-        <a href="/admin/moderation/posts" ng-click="tab = 'posts'">Reported Posts</a>
+        <a ui-sref=".posts" ng-click="tab = 'posts'">Reported Posts</a>
       </dd>
     </dl>
-    <br /><br />
-    <div ui-view="data"></div>
 
+    <br /><br />
+
+    <!-- Moderation Data -->
+    <div ui-view="data"></div>
   </div>
 </div>

@@ -205,6 +205,55 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     });
 
+    // Default child state for moderate is users
+    $urlRouterProvider.when('/moderate', '/moderate/users');
+
+    $stateProvider.state('moderate', {
+      url: '/moderate',
+      parent: 'public-layout',
+      protect: true,
+      views: {
+        'content': {
+          controller: [function() { this.fullWidth = false; }],
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderation/moderate.html'),
+        }
+      }
+    })
+    .state('moderate.users', {
+      url: '/users',
+      protect: true,
+      views: {
+        'data@moderate': {
+          controller: 'ModUsersCtrl',
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderation/users.html'),
+        }
+      }
+    })
+    .state('moderate.threads', {
+      url: '/threads',
+      protect: true,
+      views: {
+        'data@moderate': {
+          controller: 'ModThreadsCtrl',
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderation/threads.html'),
+        }
+      }
+    })
+    .state('moderate.posts', {
+      url: '/posts',
+      protect: true,
+      views: {
+        'data@moderate': {
+          controller: 'ModPostsCtrl',
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderation/posts.html'),
+        }
+      }
+    });
+
     $stateProvider.state('admin', {
       url: '/admin',
       parent: 'admin-layout',
@@ -212,42 +261,47 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     // Default child state for admin-moderation is users
-    $urlRouterProvider.when('/admin/moderation', '/admin/moderation/users');
+    $urlRouterProvider.when('/admin/moderate', '/admin/moderate/users');
 
-    $stateProvider.state('admin-moderation', {
-      url: '/admin/moderation',
+    $stateProvider.state('admin-moderate', {
+      url: '/admin/moderate',
       parent: 'admin-layout',
       protect: true,
       views: {
         'content': {
-          template: fs.readFileSync(__dirname + '/admin_moderation/admin-moderation.html'),
+          controller: [function() { this.fullWidth = true; }],
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin_moderation/moderate.html'),
         }
       }
     })
-    .state('admin-moderation.users', {
+    .state('admin-moderate.users', {
       url: '/users',
+      protect: true,
       views: {
-        'data@admin-moderation': {
+        'data@admin-moderate': {
           controller: 'ModUsersCtrl',
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin_moderation/users.html'),
         }
       }
     })
-    .state('admin-moderation.threads', {
+    .state('admin-moderate.threads', {
       url: '/threads',
+      protect: true,
       views: {
-        'data@admin-moderation': {
+        'data@admin-moderate': {
           controller: 'ModThreadsCtrl',
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin_moderation/threads.html'),
         }
       }
     })
-    .state('admin-moderation.posts', {
+    .state('admin-moderate.posts', {
       url: '/posts',
+      protect: true,
       views: {
-        'data@admin-moderation': {
+        'data@admin-moderate': {
           controller: 'ModPostsCtrl',
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin_moderation/posts.html'),

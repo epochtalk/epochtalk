@@ -1,4 +1,6 @@
-module.exports = [function() {
+module.exports = ['$scope', function($scope) {
+  this.parent = $scope.$parent;
+  this.parent.tab = 'users';
 
   // Placeholder reported user data
   this.reportedUsers = [{
