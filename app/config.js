@@ -316,7 +316,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       views: {
         'content': {
           controller: 'CategoriesCtrl',
-          template: fs.readFileSync(__dirname + '/admin_categories/admin-categories.html'),
+          template: fs.readFileSync(__dirname + '/admin_categories/categories.html'),
           resolve: {
             categories: ['Boards', function(Boards) {
               return Boards.query();
@@ -337,7 +337,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'content': {
           controller: 'ModeratorsCtrl',
           controllerAs: 'ModeratorsCtrl',
-          template: fs.readFileSync(__dirname + '/admin_moderators/admin-moderators.html'),
+          template: fs.readFileSync(__dirname + '/admin_moderators/moderators.html'),
           resolve: {
             users: ['User', function(User) {
               return User.all();
@@ -355,7 +355,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'content': {
           controller: 'UsersCtrl',
           controllerAs: 'UsersCtrl',
-          template: fs.readFileSync(__dirname + '/admin_users/admin-users.html'),
+          template: fs.readFileSync(__dirname + '/admin_users/users.html'),
           resolve: {
             users: ['User', function(User) {
               return User.all();
