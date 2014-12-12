@@ -14,21 +14,19 @@
 </head>
 
 <body class="antialiased hide-extras" ng-controller="LayoutCtrl as LayoutCtrl">
-  <div class="wrapper">
     <!-- Header -->
     <div ng-controller="HeaderCtrl as HeaderCtrl">
       <div ui-view="header" ng-cloak></div>
       <div ui-view="modals" ng-cloak></div>
     </div>
-    <!-- End Header -->
-
+  <div class="main-content">
     <!-- Main content -->
     <div ui-view="sidenav" ng-cloak></div>
     <div ui-view="body" ng-cloak></div>
-  </div>
 
-  <!-- Footer -->
-  <div ui-view="footer" ng-cloak></div>
+    <!-- Footer -->
+    <div ui-view="footer" ng-cloak></div>
+  </div>
 
   <script src="/static/js/bundle.js" type="text/javascript"></script>
 </body>
