@@ -51,6 +51,11 @@
   padding-top: 65px;
 }
 
+/* Admin Manage Groups */
+.selectable-row:hover { cursor: pointer; background-color: $secondary-color; }
+.active-row { background-color: $primary-color !important; }
+.active-row td { color: #fff !important; }
+
 /* Admin Moderation Queue */
 .tabs {
   border-bottom: 1px dotted #ccc;
@@ -62,7 +67,7 @@
   background-color: #eaeaea;
 }
 
-.custom-tabs dd a{
+.custom-tabs dd a {
   background-color: #fff;
 }
 

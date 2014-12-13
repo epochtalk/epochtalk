@@ -257,7 +257,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     $stateProvider.state('admin', {
       url: '/admin',
       parent: 'admin-layout',
-      protect: true,
+      protect: true
     });
 
     // Default child state for admin-moderation is users
@@ -329,24 +329,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     });
 
-    $stateProvider.state('admin-moderators', {
-      url: '/admin/moderators',
-      parent: 'admin-layout',
-      protect: true,
-      views: {
-        'content': {
-          controller: 'ModeratorsCtrl',
-          controllerAs: 'ModeratorsCtrl',
-          template: fs.readFileSync(__dirname + '/admin_moderators/moderators.html'),
-          resolve: {
-            users: ['User', function(User) {
-              return User.all();
-            }]
-          }
-        }
-      }
-    });
-
     $stateProvider.state('admin-users', {
       url: '/admin/users',
       parent: 'admin-layout',
@@ -362,6 +344,24 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             }]
           }
         }
+      }
+    });
+
+    $stateProvider.state('admin-groups', {
+      url: '/admin/groups',
+      parent: 'admin-layout',
+      protect: true,
+      views: {
+        'content': {
+          controller: 'GroupsCtrl',
+          controllerAs: 'GroupsCtrl',
+          template: fs.readFileSync(__dirname + '/admin_groups/groups.html'),
+        }
+      },
+      resolve: {
+        users: ['User', function(User) {
+          return User.all();
+        }]
       }
     });
 

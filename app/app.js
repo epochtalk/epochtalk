@@ -35,10 +35,10 @@ app.controller('ConfirmCtrl',       require('./user/confirm.controller.js'));
 app.controller('AdminNavCtrl',      require('./layout/sidenav.controller.js'));
 app.controller('CategoriesCtrl',    require('./admin_categories/categories.controller.js'));
 app.controller('UsersCtrl',         require('./admin_users/users.controller.js'));
-app.controller('ModeratorsCtrl',    require('./admin_moderators/moderators.controller.js'));
 app.controller('ModUsersCtrl',      require('./admin_moderation/users.controller.js'));
 app.controller('ModThreadsCtrl',    require('./admin_moderation/threads.controller.js'));
 app.controller('ModPostsCtrl',      require('./admin_moderation/posts.controller.js'));
+app.controller('GroupsCtrl',        require('./admin_groups/groups.controller.js'));
 
 // Register Directives
 app.directive('pagination',         require('./components/pagination/pagination.directive.js'));
