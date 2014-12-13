@@ -62,14 +62,9 @@
   width: 65%;
   min-width: 550px;
 }
-
-.custom-tabs dd.active a {
-  background-color: #eaeaea;
-}
-
-.custom-tabs dd a {
-  background-color: #fff;
-}
+.custom-tabs dd.active a { background-color: #eaeaea; }
+.custom-tabs dd a { background-color: #fff; }
+.queue-search { margin-left:-15px; }
 
 /* Login CSS */
 /* optimize for mobile layout */

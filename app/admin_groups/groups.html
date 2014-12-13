@@ -5,6 +5,7 @@
 </div>
 <div class="row full-width">
   <div class="small-12 columns">
+    <h5>Select a Group</h5>
     <table width="100%">
       <thead>
         <th>Group Name</th>
@@ -19,7 +20,7 @@
         </tr>
       </tbody>
     </table>
-    <br /><br />
+    <br />
   </div>
 </div>
 <div class="row full-width">
@@ -29,11 +30,7 @@
 </div>
 
 <div class="row full-width">
-  <div class="small-3 columns">
-    <a class="button tiny">Add</a>
-    <a class="button tiny">Remove</a>
-  </div>
-  <div class="small-5 columns">
+  <div class="small-4 columns">
     <div class="row collapse">
       <div class="small-10 columns">
         <input type="text" placeholder="Search {{GroupsCtrl.activeGroup.name}} Members">
@@ -42,6 +39,12 @@
         <a href="#" class="button postfix">Search</a>
       </div>
     </div>
+  </div>
+  <div class="small-2 columns">
+    <a class="button postfix">Add Members</a>
+  </div>
+  <div class="small-2 columns">
+    <a class="button postfix">Remove Members</a>
   </div>
   <div class="small-4 columns">
     <div class="right"><pagination page-count="5" page="1"></pagination></div>
