@@ -288,7 +288,7 @@ input.icon-padding { padding-right: 40px; }
   position: fixed;
   bottom: 0;
   z-index: 8000;
-  background-color: white; 
+  background-color: transparent; 
   max-height: 50%; }
 .post-toolbar { background-color: #ccc; margin: 0; float: right; }
 .post-toolbar li { display: inline; list-style-type: none; padding-right: 10px; }
@@ -296,7 +296,8 @@ input.icon-padding { padding-right: 40px; }
 .editor-container {
   padding-top: 20px;
   border: 5px #ccc solid;
-  overflow: auto; }
+  overflow: auto; 
+  background-color: white; }
 
 
 // Media Queries
