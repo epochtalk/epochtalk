@@ -47,5 +47,18 @@ module.exports = ['users', function(users) {
 
   // the selected group
   this.activeGroup = this.groups[0];
+  this.selectedUsers = {};
+
+  this.setActiveGroup = function(group) {
+    this.activeGroup = group;
+    ctrl.selectedUsers = {};
+  };
+
+  this.selectAll = function() {
+    this.activeGroup.users.forEach(function(user) {
+      ctrl.selectedUsers[user.username] = !ctrl.selectedUsers[user.username];
+    });
+  };
+
 
 }];

@@ -54,6 +54,7 @@
 /* Admin Manage Groups */
 .selectable-row:hover { cursor: pointer; background-color: $secondary-color; }
 .active-row { background-color: $primary-color !important; }
+.member-select { margin: 0px !important; }
 .active-row td { color: #fff !important; }
 
 /* Admin Moderation Queue */

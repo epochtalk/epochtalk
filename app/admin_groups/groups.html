@@ -13,7 +13,7 @@
         <th>Permissions</th>
       </thead>
       <tbody>
-        <tr class="no-select selectable-row" ng-class="{ 'active-row' : GroupsCtrl.activeGroup === group }" ng-click="GroupsCtrl.activeGroup = group" ng-repeat="group in GroupsCtrl.groups track by group.name">
+        <tr class="no-select selectable-row" ng-class="{ 'active-row' : GroupsCtrl.activeGroup === group }" ng-click="GroupsCtrl.setActiveGroup(group)" ng-repeat="group in GroupsCtrl.groups track by group.name">
           <td ng-bind="group.name"></td>
           <td ng-bind="group.member_count"></td>
           <td ng-bind="group.permissions"></td>
@@ -55,14 +55,18 @@
   <div class="small-12 columns">
     <table width="100%">
       <thead>
-        <th>Select</th>
+        <th width="50">
+          <a ng-click="GroupsCtrl.selectAll()">Select</a>
+        </th>
         <th>Username</th>
         <th>Member Since</th>
         <th>Actions</th>
       </thead>
       <tbody>
-        <tr ng-repeat="user in GroupsCtrl.activeGroup.users track by user.username">
-          <td><input type="checkbox" /></td>
+        <tr class="no-select selectable-row" ng-click="GroupsCtrl.selectedUsers[user.username] = !GroupsCtrl.selectedUsers[user.username]" ng-repeat="user in GroupsCtrl.activeGroup.users track by user.username">
+          <td align="center">
+            <input ng-click="$event.stopPropagation();" ng-model="GroupsCtrl.selectedUsers[user.username]" class="member-select" type="checkbox" />
+          </td>
           <td><a href="#" ng-bind="user.username"></a></td>
           <td ng-bind="user.created_at | humanDate"></td>
           <td><a href="#">Remove User</a></td>
