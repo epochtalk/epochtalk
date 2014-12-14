@@ -6,7 +6,7 @@
 
 
 <div ng-if="PostsParentCtrl.loggedIn() && PostsParentCtrl.newPostEnabled">
-  <div class="editor-fixed-bottom" scroll-lock>
+  <div class="editor-fixed-bottom">
     
     <!-- fixed bottom toolbar -->
     <ul class="post-toolbar">
@@ -22,7 +22,7 @@
     </ul>
 
     <!-- Editor Container-->
-    <div class="small-12 columns editor-container" ng-if="PostsParentCtrl.showEditor">
+    <div class="small-12 columns editor-container" ng-if="PostsParentCtrl.showEditor" scroll-lock resizeable>
       <!-- Editor -->
       <form name="form" class="editor-form" novalidate>
         <!-- Title -->
