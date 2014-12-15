@@ -2,6 +2,11 @@ module.exports = ['$scope', function($scope) {
   this.parent = $scope.$parent;
   this.parent.tab = 'posts';
 
+  this.toggles = {
+    pending: false,
+    histry: false
+  };
+
   // Placeholder reported post data
   this.reportedPosts = [{
     post: 'Morbi ut dapibus arcu, nec lobortis erat.',

@@ -1,6 +1,10 @@
 module.exports = ['users', function(users) {
   var ctrl = this;
 
+  this.toggles = {
+    groups: false,
+    active: false
+  };
   // Placeholder data
   this.groups = [{
     id: 1,

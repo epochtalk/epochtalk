@@ -2,6 +2,11 @@ module.exports = ['$scope', function($scope) {
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
 
+  this.toggles = {
+    pending: false,
+    history: false
+  };
+
   // Placeholder reported user data
   this.reportedUsers = [{
     username: 'daisy_wisozk',

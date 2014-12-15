@@ -2,6 +2,11 @@ module.exports = ['$scope', function($scope) {
   this.parent = $scope.$parent;
   this.parent.tab = 'threads';
 
+  this.toggles = {
+    pending: false,
+    history: false
+  };
+
   // Placeholder reported thread data
   this.reportedThreads = [{
     thread: 'Purus in turpis porta lorem ipsum',

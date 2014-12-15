@@ -5,73 +5,84 @@
 </div>
 <div class="row full-width">
   <div class="small-12 columns">
-    <h5>Select a Group</h5>
-    <table width="100%">
-      <thead>
-        <th>Group Name</th>
-        <th>Members</th>
-        <th>Permissions</th>
-      </thead>
-      <tbody>
-        <tr class="no-select selectable-row" ng-class="{ 'active-row' : GroupsCtrl.activeGroup === group }" ng-click="GroupsCtrl.setActiveGroup(group)" ng-repeat="group in GroupsCtrl.groups track by group.name">
-          <td ng-bind="group.name"></td>
-          <td ng-bind="group.member_count"></td>
-          <td ng-bind="group.permissions"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div ng-click="GroupsCtrl.toggles.groups = !GroupsCtrl.toggles.groups" class="inline-block pointer no-select">
+      <a ng-class="{ 'fa-chevron-right' : GroupsCtrl.toggles.groups, 'fa-chevron-down': !GroupsCtrl.toggles.groups }"
+      class="fa collapse-btn no-select"></a>
+      <h4 class="inline-block">Select a Group</h4>
+    </div>
+    <div slide-toggle="GroupsCtrl.toggles.groups">
+      <table width="100%">
+        <thead>
+          <th>Group Name</th>
+          <th>Members</th>
+          <th>Permissions</th>
+        </thead>
+        <tbody>
+          <tr class="no-select selectable-row" ng-class="{ 'active-row' : GroupsCtrl.activeGroup === group }" ng-click="GroupsCtrl.setActiveGroup(group)" ng-repeat="group in GroupsCtrl.groups track by group.name">
+            <td ng-bind="group.name"></td>
+            <td ng-bind="group.member_count"></td>
+            <td ng-bind="group.permissions"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <br />
   </div>
 </div>
 <div class="row full-width">
   <div class="small-12 columns">
-    <h5>{{GroupsCtrl.activeGroup.name}} Members</h5>
-  </div>
-</div>
-
-<div class="row full-width">
-  <div class="small-4 columns">
-    <div class="row collapse">
-      <div class="small-10 columns">
-        <input type="text" placeholder="Search {{GroupsCtrl.activeGroup.name}} Members">
-      </div>
-      <div class="small-2 columns">
-        <a href="#" class="button postfix">Search</a>
-      </div>
+    <div ng-click="GroupsCtrl.toggles.active = !GroupsCtrl.toggles.active" class="inline-block pointer no-select">
+      <a ng-class="{ 'fa-chevron-right' : GroupsCtrl.toggles.active, 'fa-chevron-down': !GroupsCtrl.toggles.active }"
+      class="fa collapse-btn no-select"></a>
+      <h4 class="inline-block">{{GroupsCtrl.activeGroup.name}} Members</h4>
     </div>
   </div>
-  <div class="small-2 columns">
-    <a class="button postfix">Add Members</a>
-  </div>
-  <div class="small-2 columns">
-    <a class="button postfix">Remove Members</a>
-  </div>
-  <div class="small-4 columns">
-    <div class="right"><pagination page-count="5" page="1"></pagination></div>
-  </div>
 </div>
+<div slide-toggle="GroupsCtrl.toggles.active">
+  <div class="row full-width">
+    <div class="small-4 columns">
+      <div class="row collapse">
+        <div class="small-10 columns">
+          <input type="text" placeholder="Search {{GroupsCtrl.activeGroup.name}} Members">
+        </div>
+        <div class="small-2 columns">
+          <a href="#" class="button postfix">Search</a>
+        </div>
+      </div>
+    </div>
+    <div class="small-2 columns">
+      <a class="button postfix">Add Members</a>
+    </div>
+    <div class="small-2 columns">
+      <a class="button postfix">Remove Members</a>
+    </div>
+    <div class="small-4 columns">
+      <div class="right"><pagination page-count="5" page="1"></pagination></div>
+    </div>
+  </div>
 
-<div class="row full-width">
-  <div class="small-12 columns">
-    <table width="100%">
-      <thead>
-        <th width="50">
-          <a ng-click="GroupsCtrl.selectAll()">Select</a>
-        </th>
-        <th>Username</th>
-        <th>Member Since</th>
-        <th>Actions</th>
-      </thead>
-      <tbody>
-        <tr class="no-select selectable-row" ng-click="GroupsCtrl.selectedUsers[user.username] = !GroupsCtrl.selectedUsers[user.username]" ng-repeat="user in GroupsCtrl.activeGroup.users track by user.username">
-          <td align="center">
-            <input ng-click="$event.stopPropagation();" ng-model="GroupsCtrl.selectedUsers[user.username]" class="member-select" type="checkbox" />
-          </td>
-          <td><a href="#" ng-bind="user.username"></a></td>
-          <td ng-bind="user.created_at | humanDate"></td>
-          <td><a href="#">Remove User</a></td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="row full-width">
+    <div class="small-12 columns">
+      <table width="100%">
+        <thead>
+          <th width="50">
+            <a ng-click="GroupsCtrl.selectAll()">Select</a>
+          </th>
+          <th>Username</th>
+          <th>Member Since</th>
+          <th>Actions</th>
+        </thead>
+        <tbody>
+          <tr class="no-select selectable-row" ng-click="GroupsCtrl.selectedUsers[user.username] = !GroupsCtrl.selectedUsers[user.username]" ng-repeat="user in GroupsCtrl.activeGroup.users track by user.username">
+            <td align="center">
+              <input ng-click="$event.stopPropagation();" ng-model="GroupsCtrl.selectedUsers[user.username]" class="member-select" type="checkbox" />
+            </td>
+            <td><a href="#" ng-bind="user.username"></a></td>
+            <td ng-bind="user.created_at | humanDate"></td>
+            <td><a href="#">Remove User</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
