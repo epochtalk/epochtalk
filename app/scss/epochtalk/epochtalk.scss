@@ -52,7 +52,8 @@
 }
 
 /* Admin Manage Groups */
-.selectable-row:hover { cursor: pointer; background-color: $secondary-color; }
+.selectable-row:hover { background-color: $secondary-color; }
+.pointer { cursor: pointer; }
 .active-row { background-color: $primary-color !important; }
 .member-select { margin: 0px !important; }
 .active-row td { color: #fff !important; }
@@ -288,7 +289,7 @@ input.icon-padding { padding-right: 40px; }
   position: fixed;
   bottom: 0;
   z-index: 8000;
-  background-color: transparent; 
+  background-color: transparent;
   max-height: 50%; }
 .post-toolbar { background-color: #ccc; margin: 0; float: right; }
 .post-toolbar li { display: inline; list-style-type: none; padding-right: 10px; }
@@ -296,7 +297,7 @@ input.icon-padding { padding-right: 40px; }
 .editor-container {
   padding-top: 20px;
   border: 5px #ccc solid;
-  overflow: auto; 
+  overflow: auto;
   background-color: white; }
 
 
