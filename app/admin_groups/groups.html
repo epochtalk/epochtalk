@@ -34,7 +34,7 @@
     <div ng-click="GroupsCtrl.toggles.active = !GroupsCtrl.toggles.active" class="inline-block pointer no-select">
       <a ng-class="{ 'fa-chevron-right' : GroupsCtrl.toggles.active, 'fa-chevron-down': !GroupsCtrl.toggles.active }"
       class="fa collapse-btn no-select"></a>
-      <h4 class="inline-block">{{GroupsCtrl.activeGroup.name}} Members</h4>
+      <h4 class="inline-block">{{GroupsCtrl.activeGroup.name}} Group Members</h4>
     </div>
   </div>
 </div>
@@ -73,8 +73,8 @@
           <th>Actions</th>
         </thead>
         <tbody>
-          <tr class="no-select selectable-row" ng-click="GroupsCtrl.selectedUsers[user.username] = !GroupsCtrl.selectedUsers[user.username]" ng-repeat="user in GroupsCtrl.activeGroup.users track by user.username">
-            <td align="center">
+          <tr class="no-select selectable-row" ng-repeat="user in GroupsCtrl.activeGroup.users track by user.username">
+            <td ng-click="GroupsCtrl.selectedUsers[user.username] = !GroupsCtrl.selectedUsers[user.username]">
               <input ng-click="$event.stopPropagation();" ng-model="GroupsCtrl.selectedUsers[user.username]" class="member-select" type="checkbox" />
             </td>
             <td><a href="#" ng-bind="user.username"></a></td>
