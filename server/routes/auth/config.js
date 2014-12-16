@@ -192,8 +192,13 @@ exports.username = {
   handler: function(request, reply) {
     var username = request.params.username;
     core.users.userByUsername(username)
-    .then(function() { reply({ found: true }); })
-    .catch(function() { reply({ found: false }); });
+    .then(function(user) {
+      var found = !!user;
+      reply({ found: found });
+    })
+    .catch(function() {
+      reply({ found: false });
+    });
   }
 };
 
@@ -201,7 +206,10 @@ exports.email = {
   handler: function(request, reply) {
     var email = request.params.email;
     core.users.userByEmail(email)
-    .then(function() { reply({ found: true }); })
+    .then(function(user) {
+      var found = !!user;
+      reply({ found: found });
+    })
     .catch(function() { reply({ found: false }); });
   }
 };
