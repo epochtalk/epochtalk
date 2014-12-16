@@ -42,7 +42,8 @@ exports.login = {
     var username = request.payload.username;
     var password = request.payload.password;
     return core.users.userByUsername(username)
-    .catch(function() {
+    .catch(function(err) {
+      console.log(err);
       errorCode = 400;
       throw new Error('Invalid Credentials');
     })
@@ -131,9 +132,6 @@ exports.register = {
     };
     // check that username or email does not already exist
     return core.users.create(newUser)
-    .catch(function(err) {
-      return reply(Hapi.error.internal('Registration Error', err));
-    })
     .then(function(user) { // send confirmation email
       reply({ statusCode: 200, message: 'Successfully Created Account' });
       var emailParams = {
@@ -142,6 +140,9 @@ exports.register = {
         confirm_url: config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token)
       };
       emailer.send('confirmAccount', emailParams);
+    })
+    .catch(function(err) {
+      return reply(Hapi.error.internal('Registration Error', err));
     });
   }
 };
