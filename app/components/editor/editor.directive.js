@@ -2,7 +2,9 @@ var medium = require('medium-editor');
 var bbcodeParser = require('bbcode-parser');
 var fs = require('fs');
 
-module.exports = ['$timeout', 'S3ImageUpload', function($timeout, s3ImageUpload) {
+module.exports = [
+  '$timeout', '$window', '$rootScope', 'S3ImageUpload',
+  function($timeout, $window, $rootScope, s3ImageUpload) {
   return {
     restrict: 'E',
     scope: {
@@ -110,6 +112,29 @@ module.exports = ['$timeout', 'S3ImageUpload', function($timeout, s3ImageUpload)
         }
         upload(images);
       }
+
+      // user exit bindings
+      var confirmMessage = 'It looks like a post is being written.';
+      $window.onbeforeunload =  function(e) {
+        if ($scope.originalText !== $scope.encodedBody) { return confirmMessage; }
+      };
+
+      var destroyRouteBlocker = $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+        // check state routes differ
+        if (toState.url === fromState.url) { return; }
+
+        if ($scope.originalText !== $scope.encodedBody) {
+          var message = confirmMessage + ' Are you sure you want to leave?';
+          var answer = confirm(message);
+          if (!answer) { e.preventDefault(); }
+        }
+      });
+
+      $element.on('$destroy', function() {
+        $window.onbeforeunload = undefined;
+        destroyRouteBlocker();
+      });
+
     },
     link: function(scope, element, attrs, ctrl) {
       // Find relevant HTML Elements
@@ -200,8 +225,12 @@ module.exports = ['$timeout', 'S3ImageUpload', function($timeout, s3ImageUpload)
         // on load ng-model body to editor and preview
         if (scope.encodedBody && scope.encodedBody.length > 0) {
           editorElement.html(scope.encodedBody);
+          scope.originalText = scope.encodedBody;
         }
-        else { editorElement.html(scope.body); }
+        else {
+          editorElement.html(scope.body);
+          scope.originalText = scope.body;
+        }
         var processed = bbcodeParser.process({text: editorElement.html()}).html;
         previewElement.html(processed);
       };
@@ -217,9 +246,7 @@ module.exports = ['$timeout', 'S3ImageUpload', function($timeout, s3ImageUpload)
 
       // autofocus switch
       scope.$watch('focusEditor', function(focusEditor) {
-        if (focusEditor === true) {
-          $(rawEditorElement).focus();
-        }
+        if (focusEditor === true) { $(editor).focus(); }
       });
     },
     template: fs.readFileSync(__dirname + '/editor.html')
