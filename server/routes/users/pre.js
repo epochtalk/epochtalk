@@ -1,4 +1,4 @@
-var core = require('epochcore')();
+var core = require('epoch-core-pg')();
 var Hapi = require('hapi');
 var bbcodeParser = require('bbcode-parser');
 var path = require('path');

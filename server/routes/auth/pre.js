@@ -1,4 +1,4 @@
-var core = require('epochcore')();
+var core = require('epoch-core-pg')();
 var Hapi = require('hapi');
 
 module.exports = {

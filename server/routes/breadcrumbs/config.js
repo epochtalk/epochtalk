@@ -1,4 +1,4 @@
-var core = require('epochcore')();
+var core = require('epoch-core-pg')();
 var Hapi = require('hapi');
 var breadcrumbValidator = require('epoch-validator').api.breadcrumbs;
 

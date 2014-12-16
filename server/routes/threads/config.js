@@ -1,4 +1,4 @@
-var core = require('epochcore')();
+var core = require('epoch-core-pg')();
 var Hapi = require('hapi');
 var threadValidator = require('epoch-validator').api.threads;
 var path = require('path');

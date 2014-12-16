@@ -1,4 +1,4 @@
-var core = require('epochcore')();
+var core = require('epoch-core-pg')();
 var Hapi = require('hapi');
 var boardValidator = require('epoch-validator').api.boards;
 var path = require('path');
@@ -47,7 +47,10 @@ exports.allCategories = {
   handler: function(request, reply) {
     core.boards.allCategories()
     .then(function(categories) { reply(categories); })
-    .catch(function() { reply(Hapi.error.internal()); });
+    .catch(function(err) {
+      console.log(err); 
+      reply(Hapi.error.internal());
+    });
   }
 };
 

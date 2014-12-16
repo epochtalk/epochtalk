@@ -40,7 +40,7 @@
     "cheerio": "^0.18.0",
     "epoch-emailer": "git+https://github.com/epochtalk/emailer",
     "epoch-validator": "git+https://github.com/epochtalk/validator",
-    "epochcore": "^0.5.6",
+    "epoch-core-pg": "git+https://github.com/epochtalk/core-pg",
     "good": "^3.1.0",
     "good-console": "^2.0.0",
     "good-file": "^3.0.0",
