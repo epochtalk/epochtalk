@@ -50,12 +50,6 @@
         </div>
       </div>
     </div>
-    <div class="small-2 columns">
-      <a class="button postfix">Add Members</a>
-    </div>
-    <div class="small-2 columns">
-      <a class="button postfix">Remove Members</a>
-    </div>
     <div class="small-4 columns">
       <div class="right"><pagination page-count="5" page="1"></pagination></div>
     </div>
@@ -84,5 +78,26 @@
         </tbody>
       </table>
     </div>
+  </div>
+  <div class="row full-width">
+    <div class="small-12 columns">
+      <a class="button small" ng-click="GroupsCtrl.openAddMembersModal()">Add Members</a>
+      <a class="button small">Remove Selected</a>
+    </div>
+  </div>
+  <div ng-cloak>
+    <modal class="tiny" show="GroupsCtrl.showAddMembers" on-close="GroupsCtrl.clearAddMembersFields">
+      <h3 class="thin-dotted-underline">Add Users to {{GroupsCtrl.activeGroup.name}}</h3>
+      <br />
+      <div class="row collapse">
+        <div class="small-10 columns">
+          <input type="text" ng-model="GroupsCtrl.memberQuery" placeholder="Lookup a user" ng-if="GroupsCtrl.addMembersModalVisible" auto-focus required>
+        </div>
+        <div class="small-2 columns">
+          <a href="#" class="button postfix">Add</a>
+        </div>
+      </div>
+      <a class="close-reveal-modal">&#215;</a>
+    </modal>
   </div>
 </div>

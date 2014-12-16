@@ -1,10 +1,7 @@
-module.exports = ['users', function(users) {
+module.exports = ['$timeout', 'users', function($timeout, users) {
   var ctrl = this;
 
-  this.toggles = {
-    groups: false,
-    active: false
-  };
+  //----------------------------------------------------- TO BE DELETED
   // Placeholder data
   this.groups = [{
     id: 1,
@@ -46,12 +43,16 @@ module.exports = ['users', function(users) {
     ctrl.groups[3].users = allUsers;
     ctrl.groups[3].member_count = ctrl.groups[3].users.length;
     ctrl.groups[3].users = allUsers.slice(0, 10);
-
   });
+  //-----------------------------------------------------  END TO BE DELETED
 
-  // the selected group
-  this.activeGroup = this.groups[0];
-  this.selectedUsers = {};
+  this.toggles = {
+    groups: false,
+    active: false
+  };
+
+  this.activeGroup = this.groups[0]; // seleted group
+  this.selectedUsers = {}; // holds users with checkmark checked
 
   this.setActiveGroup = function(group) {
     this.activeGroup = group;
@@ -62,6 +63,23 @@ module.exports = ['users', function(users) {
     this.activeGroup.users.forEach(function(user) {
       ctrl.selectedUsers[user.username] = !ctrl.selectedUsers[user.username];
     });
+  };
+
+  // Add members modal
+  this.showAddMembers = false; // Triggers Modal Open/Close
+  this.addMembersModalVisible = false; // Determines if modal is still in users view
+  this.memberQuery = ''; // Model for adding user
+
+  this.openAddMembersModal = function() {
+    ctrl.showAddMembers = true;
+    ctrl.addMembersModalVisible = true;
+  };
+
+  this.clearAddMembersFields = function() {
+    $timeout(function() {
+      ctrl.addMembersModalVisible = false; // Modal is out of view
+      ctrl.memberQuery = '';
+    }, 500);
   };
 
 
