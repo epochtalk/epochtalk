@@ -1,4 +1,4 @@
-var core = require('epochcore')();
+var core = require('epoch-core-pg')();
 var Hapi = require('hapi');
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
