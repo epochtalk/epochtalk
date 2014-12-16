@@ -22,7 +22,7 @@ module.exports = [
 
       $scope.insertImageUrl = function(url) {
         $(editor).focus();
-        var sel = window.getSelection();
+        var sel = $window.getSelection();
         if (sel.getRangeAt && sel.rangeCount) {
           var range = sel.getRangeAt(0);
           range.collapse(false);
@@ -246,7 +246,17 @@ module.exports = [
 
       // autofocus switch
       scope.$watch('focusEditor', function(focusEditor) {
-        if (focusEditor === true) { $(editor).focus(); }
+        if (focusEditor === true) {
+          $timeout(function() {
+            var range = document.createRange();
+            range.selectNodeContents(rawEditorElement);
+            range.collapse(false);
+            var sel = $window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            $(rawEditorElement).focus();
+          }, 10);
+        }
       });
     },
     template: fs.readFileSync(__dirname + '/editor.html')
