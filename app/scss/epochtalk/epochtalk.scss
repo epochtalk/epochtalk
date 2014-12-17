@@ -52,11 +52,13 @@
 }
 
 /* Admin Manage Groups */
-.selectable-row:hover { background-color: $secondary-color; }
+tr.selectable-row:hover { background-color: $secondary-color; }
 .pointer { cursor: pointer; }
-.active-row { background-color: $primary-color !important; }
-.member-select { margin: 0px !important; }
-.active-row td { color: #fff !important; }
+tr.active-row { background-color: $primary-color; }
+tr:nth-of-type(even).active-row { background-color: $primary-color; }
+tr.active-row.selectable-row:hover { background-color: $primary-color }
+input.member-select { margin: 0px; }
+tr.active-row td { color: #fff; }
 
 /* Admin Moderation Queue */
 .tabs {
