@@ -256,6 +256,7 @@ module.exports = [
             sel.addRange(range);
             $(rawEditorElement).focus();
           }, 10);
+          scope.focusEditor = false;
         }
       });
     },

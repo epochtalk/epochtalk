@@ -3,8 +3,9 @@ module.exports = [
   function($scope, $location, Auth, Posts) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
-    this.resetEditor = true;
+    this.resetEditor = false;
     this.showEditor = false;
+    this.focusEditor = false;
     this.tempPost = { body: '', encodedBody: '' };
     this.posting = { post: this.tempPost };
     // pullPage function injected by child controller
@@ -22,7 +23,7 @@ module.exports = [
         var id = values[0];
         var title = values[1];
         if (id && title && ctrl.newPostEnabled === false) {
-          ctrl.writePost();
+          ctrl.initEditor();
           ctrl.newPostEnabled = true;
         }
       }
@@ -35,7 +36,12 @@ module.exports = [
       ctrl.pageCount = Math.ceil(ctrl.thread_post_count / count);
     };
 
-    this.writePost = function(index) {
+    this.openEditor = function() {
+      ctrl.showEditor = true;
+      ctrl.focusEditor = true;
+    };
+
+    this.initEditor = function(index, show) {
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         ctrl.posting.type = 'edit';
@@ -54,8 +60,8 @@ module.exports = [
       editorPost.body = post.body || '';
       editorPost.encodedBody = post.encodedBody || '';
       
-      if (post) { ctrl.showEditor = true; }
       ctrl.resetEditor = true;
+      if (show) { ctrl.openEditor(); }
     };
 
     this.savePost = function() {
@@ -89,7 +95,7 @@ module.exports = [
           }
         }
         
-        ctrl.writePost(); // reset editor
+        ctrl.initEditor(); // reset editor
         ctrl.showEditor = false;
       })
       .catch(function(response) {

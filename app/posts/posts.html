@@ -10,14 +10,14 @@
     
     <!-- fixed bottom toolbar -->
     <ul class="post-toolbar">
-      <li ng-click="PostsParentCtrl.showEditor = true" ng-if="!PostsParentCtrl.showEditor">
+      <li ng-click="PostsParentCtrl.openEditor()" ng-if="!PostsParentCtrl.showEditor">
         <span><i class="icon-epoch-add"> Show Editor</i></span>
       </li>
       <li ng-click="PostsParentCtrl.showEditor = false" ng-if="PostsParentCtrl.showEditor">
         <span>Hide Editor</i> </span>
       </li>
       <li>|</li>
-      <li ng-click="PostsParentCtrl.writePost()" ng-if="PostsParentCtrl.newPostEnabled">
+      <li ng-click="PostsParentCtrl.initEditor(null, true)" ng-if="PostsParentCtrl.newPostEnabled">
         <span>New Post</i></span>
       </li>
     </ul>
@@ -34,7 +34,7 @@
           </small>
         </label>
         <!-- Post Editor -->
-        <epochtalk-editor body="PostsParentCtrl.posting.post.body" encoded-body="PostsParentCtrl.posting.post.encodedBody" reset="PostsParentCtrl.resetEditor" focus-editor="PostsParentCtrl.showEditor">
+        <epochtalk-editor body="PostsParentCtrl.posting.post.body" encoded-body="PostsParentCtrl.posting.post.encodedBody" reset="PostsParentCtrl.resetEditor" focus-editor="PostsParentCtrl.focusEditor">
         </epochtalk-editor>
       </form>
       <!-- Editor Controls -->

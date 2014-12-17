@@ -27,7 +27,7 @@
       <span class="timestamp" ng-bind="post.created_at | humanDate"></span>
       <ul class="post-action">
         <li ng-if="post.editable">
-          <a ng-href="#" ng-click="PostsCtrl.writePost($index)">
+          <a ng-href="#" ng-click="PostsCtrl.initEditor($index, true)">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
         </li>
@@ -41,7 +41,7 @@
     <div class="post-body" ng-bind-html="post.body"></div>
     <ul class="post-action">
       <li ng-if="post.editable">
-        <a ng-href="#" ng-click="PostsCtrl.writePost($index)">
+        <a ng-href="#" ng-click="PostsCtrl.initEditor($index, true)">
           <i class="icon-epoch-edit-pencil"></i>
         </a>
       </li>
