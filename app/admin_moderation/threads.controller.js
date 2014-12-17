@@ -1,6 +1,7 @@
 module.exports = ['$scope', function($scope) {
   this.parent = $scope.$parent;
   this.parent.tab = 'threads';
+  this.fullWidth = this.parent.ModerationCtrl.fullWidth; // full width in admin view/fixed width in moderator view
 
   this.toggles = {
     pending: false,

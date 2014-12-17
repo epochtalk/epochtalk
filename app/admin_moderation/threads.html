@@ -1,13 +1,17 @@
-<!-- Reported Threads -->
-<div class="content">
-  <div ng-click="ModerationCtrl.toggles.pending = !ModerationCtrl.toggles.pending" class="inline-block pointer no-select">
-    <a ng-class="{ 'fa-chevron-right' : ModerationCtrl.toggles.pending, 'fa-chevron-down': !ModerationCtrl.toggles.pending }"
-    class="fa collapse-btn no-select"></a>
-    <h4 class="inline-block">Pending Moderation</h4>
+<!-- Reported Threads Header -->
+<div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+  <div class="small-12 columns">
+    <div ng-click="ModerationCtrl.toggles.pending = !ModerationCtrl.toggles.pending" class="inline-block pointer no-select">
+      <a ng-class="{ 'fa-chevron-right' : ModerationCtrl.toggles.pending, 'fa-chevron-down': !ModerationCtrl.toggles.pending }"
+      class="fa collapse-btn no-select"></a>
+      <h4 class="inline-block">Pending Moderation</h4>
+    </div>
   </div>
-
-  <div slide-toggle="ModerationCtrl.toggles.pending">
-    <div class="small-6 columns queue-search">
+</div>
+<div slide-toggle="ModerationCtrl.toggles.pending">
+  <!-- Reported Threads Control -->
+  <div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+    <div class="small-6 columns">
       <div class="row collapse">
         <div class="small-10 columns">
           <input type="text" placeholder="Search">
@@ -20,39 +24,49 @@
     <div class="small-6 columns">
       <div class="right"><pagination page-count="5" page="1"></pagination></div>
     </div>
-    <table width="100%">
-      <thead>
-        <th>Thread</th>
-        <th>Reason</th>
-        <th width="200">Date</th>
-        <th width="250">Actions</th>
-      </thead>
-      <tbody>
-        <tr ng-repeat="reportedThread in ModerationCtrl.reportedThreads track by reportedThread.thread">
-          <td><a href="#" ng-bind="reportedThread.thread"></a></td>
-          <td ng-bind="reportedThread.reason"></td>
-          <td ng-bind="reportedThread.reported_at | humanDate"></td>
-          <td>
-            <a href="#">Modify</a>&nbsp;&nbsp;
-            <a href="#">Ignore</a>&nbsp;&nbsp;
-            <a href="#">Warn</a>&nbsp;&nbsp;
-            <a href="#">Ban</a>&nbsp;&nbsp;
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
-
-  <br />
-
-  <div ng-click="ModerationCtrl.toggles.history = !ModerationCtrl.toggles.history" class="inline-block pointer no-select">
-    <a ng-class="{ 'fa-chevron-right' : ModerationCtrl.toggles.history, 'fa-chevron-down': !ModerationCtrl.toggles.history }"
-    class="fa collapse-btn no-select"></a>
-    <h4 class="inline-block">Moderation History</h4>
+  <!-- Reported Threads Table -->
+  <div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+    <div class="small-12 columns">
+      <table width="100%">
+        <thead>
+          <th>Thread</th>
+          <th>Reason</th>
+          <th width="200">Date</th>
+          <th width="250">Actions</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="reportedThread in ModerationCtrl.reportedThreads track by reportedThread.thread">
+            <td><a href="#" ng-bind="reportedThread.thread"></a></td>
+            <td ng-bind="reportedThread.reason"></td>
+            <td ng-bind="reportedThread.reported_at | humanDate"></td>
+            <td>
+              <a href="#">Modify</a>&nbsp;&nbsp;
+              <a href="#">Ignore</a>&nbsp;&nbsp;
+              <a href="#">Warn</a>&nbsp;&nbsp;
+              <a href="#">Ban</a>&nbsp;&nbsp;
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-
-  <div slide-toggle="ModerationCtrl.toggles.history">
-    <div class="small-6 columns queue-search">
+</div>
+<br />
+<!-- Reported Threads History Header -->
+<div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+  <div class="small-12 columns">
+    <div ng-click="ModerationCtrl.toggles.history = !ModerationCtrl.toggles.history" class="inline-block pointer no-select">
+      <a ng-class="{ 'fa-chevron-right' : ModerationCtrl.toggles.history, 'fa-chevron-down': !ModerationCtrl.toggles.history }"
+      class="fa collapse-btn no-select"></a>
+      <h4 class="inline-block">Moderation History</h4>
+    </div>
+  </div>
+</div>
+<div slide-toggle="ModerationCtrl.toggles.history">
+  <!-- Reported Threads History Controls -->
+  <div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+    <div class="small-6 columns">
       <div class="row collapse">
         <div class="small-10 columns">
           <input type="text" placeholder="Search">
@@ -65,21 +79,26 @@
     <div class="small-6 columns">
       <div class="right"><pagination page-count="5" page="1"></pagination></div>
     </div>
-    <table width="100%">
-      <thead>
-        <th>Thread</th>
-        <th>Reason</th>
-        <th width="200">Date</th>
-        <th width="250">Moderator Notes</th>
-      </thead>
-      <tbody>
-        <tr ng-repeat="reportedThread in ModerationCtrl.reportedThreads track by reportedThread.thread">
-          <td><a href="#" ng-bind="reportedThread.thread"></a></td>
-          <td ng-bind="reportedThread.reason"></td>
-          <td ng-bind="reportedThread.reported_at | humanDate"></td>
-          <td ng-bind="reportedThread.moderator_notes"></td>
-        </tr>
-      </tbody>
-    </table>
+  </div>
+  <!-- Reported Threads History Table -->
+  <div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+    <div class="small-12 columns">
+      <table width="100%">
+        <thead>
+          <th>Thread</th>
+          <th>Reason</th>
+          <th width="200">Date</th>
+          <th width="250">Moderator Notes</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="reportedThread in ModerationCtrl.reportedThreads track by reportedThread.thread">
+            <td><a href="#" ng-bind="reportedThread.thread"></a></td>
+            <td ng-bind="reportedThread.reason"></td>
+            <td ng-bind="reportedThread.reported_at | humanDate"></td>
+            <td ng-bind="reportedThread.moderator_notes"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
