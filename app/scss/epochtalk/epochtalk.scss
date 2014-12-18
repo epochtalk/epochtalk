@@ -131,6 +131,11 @@ input.icon-padding { padding-right: 40px; }
 .thread-listItem { padding: 5px 0; }
 .thread-listItem .division { font-size: 80%; line-height: 1.5; }
 .board-name { word-wrap: break-word; overflow-wrap: break-word; }
+.thread-editor-container {
+  position: relative;
+  padding-top: 20px;
+  background-color: white;
+  height: 500px; }
 
 /* Boards Page */
 .category { margin-bottom: 30px; }
