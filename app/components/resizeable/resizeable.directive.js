@@ -7,16 +7,11 @@ module.exports = ['$document',
         var body = doc[0].body;
         var destroyed = false;
         var clicked = false;
+        var onHold = false;
+        var setCursor = false;
         var newHeight;
-        var setCursor;
-        var onHold;
-
-        // init
         var maxHeight = body.clientHeight;
-        var halfHeight = Math.ceil(maxHeight / 2) - 25; // toolbar height
-        var currentHeight = element[0].clientHeight + 10;
-        if (currentHeight > halfHeight) { currentHeight = halfHeight; }
-        element[0].style.height = currentHeight + 'px';
+        element[0].style.height = '288px';
 
         var animate = function() {
           if (destroyed) { return; }
@@ -31,7 +26,6 @@ module.exports = ['$document',
         var onDown = function(e) {
           // calculate max height
           maxHeight = body.clientHeight;
-          halfHeight = Math.ceil(maxHeight / 2) - 25; // toolbar height
           clicked = true; // trigger on clicked
           if (setCursor) { onHold = true; }
         };
@@ -48,7 +42,8 @@ module.exports = ['$document',
           if (clicked && onHold) {
             e.preventDefault();
             newHeight = maxHeight - e.clientY;
-            if (newHeight > halfHeight) { newHeight = halfHeight; }
+            if (newHeight > maxHeight - 25) { newHeight = maxHeight - 25; }
+            if (newHeight < 288) { newHeight = 288; }
           }
           else { newHeight = undefined; }
         };

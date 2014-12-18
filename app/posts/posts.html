@@ -4,7 +4,6 @@
 
 <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
 
-
 <div ng-if="PostsParentCtrl.loggedIn() && PostsParentCtrl.newPostEnabled">
   <div class="editor-fixed-bottom">
     
@@ -34,7 +33,7 @@
           </small>
         </label>
         <!-- Post Editor -->
-        <epochtalk-editor body="PostsParentCtrl.posting.post.body" encoded-body="PostsParentCtrl.posting.post.encodedBody" reset="PostsParentCtrl.resetEditor" focus-editor="PostsParentCtrl.focusEditor">
+        <epochtalk-editor class="posts-editor" body="PostsParentCtrl.posting.post.body" encoded-body="PostsParentCtrl.posting.post.encodedBody" reset="PostsParentCtrl.resetEditor" focus-editor="PostsParentCtrl.focusEditor">
         </epochtalk-editor>
       </form>
       <!-- Editor Controls -->

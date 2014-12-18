@@ -1,17 +1,30 @@
 .editor-body {
   background-color: #fff;
-  margin-bottom: 20px;
-  max-width: 100%; }
-.editor-column-left { padding: 0 5px 0 0; }
-.editor-column-right { padding: 0 0 0 5px; }
+  max-width: 100%;
+  position: absolute;
+  top: 40px; 
+  bottom: 25px; }
+.editor-column-left { padding: 0 5px 0 0; height: 100%; }
+.editor-column-right { padding: 0 0 0 5px; height: 100%; }
 .editor-footer { color: #777; }
 
-.editor-input { white-space: pre; cursor: default; }
+.editor-input {
+  white-space: pre;
+  overflow: auto;
+  height: 100%; }
 .editor-input p { margin: 0; }
 .editor-input span {
   font-family: inherit;
   font-size: 1rem;
   line-height: 1.6; }
 
-.editor-preview { word-wrap: break-word; white-space: pre; }
+.editor-preview { 
+  white-space: pre;
+  overflow: auto;
+  height: 100%; }
 .editor-preview p { margin: 0; }
+
+.editor-footer {
+  position: absolute;
+  bottom: 0px;
+  height: 25px; }
