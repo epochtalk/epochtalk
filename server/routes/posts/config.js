@@ -72,17 +72,27 @@ exports.byThread = {
       page: request.query.page || request.params.page
     };
 
-    core.posts.byThread(threadId, opts)
-    .then(function(posts) {
-      if (user) {
-        posts.map(function(post) {
-          if (post.user.id === user.id) { post.editable = true; }
-        });
-      }
+    var queryByThread = function() {
+      core.posts.byThread(threadId, opts)
+      .then(function(posts) {
+        if (user) {
+          posts.map(function(post) {
+            if (post.user.id === user.id) { post.editable = true; }
+          });
+        }
+        reply(posts);
+      })
+      .catch(function() { reply(Hapi.error.internal()); });
+    };
 
-      reply(posts);
-    })
-    .catch(function() { reply(Hapi.error.internal()); });
+    if (opts.limit === 'all') {
+      core.threads.find(threadId)
+      .then(function(thread) {
+        opts.limit = Number(thread.post_count) || 10;
+        queryByThread();
+      });
+    }
+    else { queryByThread(); }
   }
 };
 

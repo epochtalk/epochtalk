@@ -176,21 +176,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
               return Threads.get({ id: $stateParams.threadId });
             }],
             posts: ['Threads', 'Posts', '$stateParams', function(Threads, Posts, $stateParams) {
+              var limit = $stateParams.limit;
               var query = {
                 thread_id: $stateParams.threadId,
-                page: Number($stateParams.page) || 1
+                page: Number($stateParams.page) || 1,
+                limit: limit === 'all' ? limit : (Number(limit) || 10)
               };
-              if ($stateParams.limit === 'all') {
-                return Threads.get({ id: $stateParams.threadId }).$promise
-                .then(function(thread) {
-                  query.limit = Number(thread.post_count) || 10;
-                  return Posts.byThread(query);
-                });
-              }
-              else {
-                query.limit = Number($stateParams.limit) || 10;
-                return Posts.byThread(query);
-              }
+              return Posts.byThread(query);
             }],
             page: ['$stateParams', function($stateParams) {
               return Number($stateParams.page) || 1;
