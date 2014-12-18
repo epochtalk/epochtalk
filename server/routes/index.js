@@ -13,6 +13,7 @@ var crypto = require('crypto');
 var imageProxy = require(path.join(__dirname, '..', 'images'));
 var config = require(path.join(__dirname, '..', 'config'));
 var breadcrumbs = require(path.join(__dirname, 'breadcrumbs'));
+var categories = require(path.join(__dirname,  'categories'));
 var boards = require(path.join(__dirname, 'boards'));
 var threads = require(path.join(__dirname, 'threads'));
 var posts = require(path.join(__dirname, 'posts'));
@@ -20,7 +21,7 @@ var users = require(path.join(__dirname, 'users'));
 var auth = require(path.join(__dirname,  'auth'));
 
 function buildEndpoints() {
-  return [].concat(breadcrumbs, boards, threads, posts, users, auth);
+  return [].concat(breadcrumbs, categories, boards, threads, posts, users, auth);
 }
 
 exports.endpoints = function() {
