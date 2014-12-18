@@ -3,6 +3,7 @@
 
 module.exports = [function () {
   return function(text, length) {
+    if (!text) { return; }
     if (isNaN(length)) {
       length = 10;
     }
