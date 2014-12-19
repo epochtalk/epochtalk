@@ -12,6 +12,7 @@ exports.create = {
     core.users.create(request.payload)
     .then(function(user) {
       delete user.passhash;
+      delete user.confirmation_token;
       reply(user);
     })
     .catch(function() { reply(Hapi.error.internal()); });
@@ -29,6 +30,7 @@ exports.import = {
     core.users.import(request.payload)
     .then(function(user) {
       delete user.passhash;
+      delete user.confirmation_token;
       reply(user);
     })
     .catch(function(err) { reply(err); });
@@ -95,6 +97,7 @@ exports.update = {
     core.users.update(updateUser)
     .then(function(user) {
       delete user.passhash;
+      delete user.confirmation_token;
       user.editable = true;
       reply(user);
     })
@@ -115,6 +118,7 @@ exports.find = {
     core.users.userByUsername(username)
     .then(function(user) {
       delete user.passhash;
+      delete user.confirmation_token;
       if (authUser.id === user.id) { user.editable = true; }
       return user;
     })
@@ -135,6 +139,7 @@ exports.all = {
     .then(function(users) {
       users.forEach(function(user) {
         delete user.passhash;
+        delete user.confirmation_token;
       });
       return users;
     })
