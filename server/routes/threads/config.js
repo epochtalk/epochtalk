@@ -58,25 +58,25 @@ exports.byBoard = {
   },
   pre: [
     { method: pre.getThreads, assign: 'threads' },
-    { method: pre.getUserViews, assign: 'userViews' }
+    { method: pre.getUserThreadViews, assign: 'threadViews' }
   ],
   handler: function(request, reply) {
     var threads = request.pre.threads;
-    var userViews = request.pre.userViews;
+    var threadViews = request.pre.threadViews;
     var user = request.auth.credentials;
 
     // iterate through threads and see if the thread has been viewed yet
-    if (userViews) {
+    if (threadViews) {
       threads = threads.map(function(thread) {
         // If user made last post consider thread viewed
         if (user.username === thread.last_post_username) {
           thread.has_new_post = false;
         }
-        else if (!userViews[thread.id]) {
+        else if (!threadViews[thread.id]) {
           thread.has_new_post = true;
         }
-        else if (userViews[thread.id] &&
-                 userViews[thread.id] <= thread.last_post_created_at) {
+        else if (threadViews[thread.id] &&
+                 threadViews[thread.id] <= thread.last_post_created_at) {
           thread.has_new_post = true;
         }
         return thread;
@@ -93,7 +93,7 @@ exports.find = {
     [
       { method: pre.getThread, assign: 'thread' },
       { method: pre.checkViewValidity, assign: 'newViewId' },
-      { method: pre.updateUserView }
+      { method: pre.updateUserThreadViews }
     ]
   ],
   handler: function(request, reply) {

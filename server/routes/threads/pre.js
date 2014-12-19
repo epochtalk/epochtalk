@@ -85,24 +85,24 @@ module.exports = {
       });
     }
   },
-  getUserViews: function(request, reply) {
+  getUserThreadViews: function(request, reply) {
     // return early if not signed in
     if (!request.auth.isAuthenticated) { return reply(undefined); }
 
     var user = request.auth.credentials;
-    core.users.getUserViews(user.id)
+    core.users.getUserThreadViews(user.id)
     .then(function(userViews) { return reply(userViews); })
     .catch(function() { return reply({}); });
   },
-  updateUserView: function(request, reply) {
+  updateUserThreadViews: function(request, reply) {
     // return early if not signed in
     if (!request.auth.isAuthenticated) { return reply(); }
 
     var threadId = request.params.id || request.query.id;
     var now = Date.now();
     var user = request.auth.credentials;
-    var newUserViews = [ { threadId: threadId, timestamp: now } ];
-    core.users.putUserViews(user.id, newUserViews)
+    var newThreadViews = [ { threadId: threadId, timestamp: now } ];
+    core.users.putUserThreadViews(user.id, newThreadViews)
     .then(function() { return reply(); })
     .catch(function(err) { return reply(err); });
   }
