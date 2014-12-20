@@ -74,6 +74,7 @@ exports.update = {
     if (request.payload.btcAddress) {
       updateUser.btcAddress = request.payload.btcAddress;
     }
+
     if (request.payload.gender) {
       updateUser.gender = request.payload.gender;
     }
@@ -91,6 +92,9 @@ exports.update = {
     }
     if (request.payload.avatar) {
       updateUser.avatar = request.payload.avatar;
+    }
+    if (request.payload.position) {
+      updateUser.position = request.payload.position;
     }
 
     // create the thread in core

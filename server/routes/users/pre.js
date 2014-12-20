@@ -100,6 +100,9 @@ module.exports = {
     if (request.payload.avatar) {
       request.payload.avatar = sanitize.strip(request.payload.avatar);
     }
+    if (request.payload.position) {
+      request.payload.position = sanitize.strip(request.payload.position);
+    }
     if (request.payload.reset_token) {
       request.payload.reset_token = sanitize.strip(request.payload.reset_token);
     }
