@@ -24,12 +24,14 @@ module.exports = {
         // check that new username is unique
         var newUsername = request.payload.username;
         core.users.userByUsername(newUsername)
-        .then(function() {
-          // throw error
-          var usernameError = Hapi.error.badRequest('Username Already Exists');
-          return reply(usernameError);
+        .then(function(user) {
+          if (user) {
+            var usernameError = Hapi.error.badRequest('Username Already Exists');
+            return reply(usernameError);
+          }
+          else { return reply(); }
         })
-        .catch(function() { return reply(); });
+        .catch(function(err) { return reply(err); });
       }
     });
   },
@@ -45,12 +47,14 @@ module.exports = {
         // check that new email is unique
         var newEmail = request.payload.email;
         core.users.userByEmail(newEmail)
-        .then(function() {
-          // throw Error
-          var emailError = Hapi.error.badRequest('Email Already Exists');
-          return reply(emailError);
+        .then(function(user) {
+          if (user) {
+            var emailError = Hapi.error.badRequest('Email Already Exists');
+            return reply(emailError);
+          }
+          else { return reply(); }
         })
-        .catch(function() { return reply(); });
+        .catch(function(err) { return reply(err); });
       }
     });
   },
