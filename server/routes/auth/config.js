@@ -42,8 +42,7 @@ exports.login = {
     var username = request.payload.username;
     var password = request.payload.password;
     return core.users.userByUsername(username)
-    .catch(function(err) {
-      console.log(err);
+    .catch(function() {
       errorCode = 400;
       throw new Error('Invalid Credentials');
     })

@@ -1,5 +1,6 @@
 var core = require('epoch-core-pg')();
 var Hapi = require('hapi');
+var bcrypt = require('bcrypt');
 var userValidator = require('epoch-validator').api.users;
 var path = require('path');
 var pre = require(path.join(__dirname, 'pre'));
@@ -61,7 +62,14 @@ exports.update = {
     if (request.payload.email) {
       updateUser.email = request.payload.email;
     }
-    if (request.payload.password && request.payload.confirmation) {
+    if (request.payload.old_password && request.payload.password && request.payload.confirmation) {
+      if (bcrypt.compareSync(request.payload.old_password, user.passhash)) {
+        updateUser.password = request.payload.password;
+        updateUser.confirmation = request.payload.confirmation;
+      }
+      else { return reply(Hapi.error.badRequest('Old Password Invalid')); }
+    }
+    else if (request.payload.password && request.payload.confirmation) {
       updateUser.password = request.payload.password;
       updateUser.confirmation = request.payload.confirmation;
     }
