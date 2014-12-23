@@ -33,11 +33,11 @@ exports.create = {
 
 exports.import = {
   // auth: { strategy: 'jwt' },
-  // pre: [
-  //   { method: pre.clean },
-  //   { method: pre.parseEncodings },
-  //   { method: pre.subImages }
-  // ],
+  pre: [
+    { method: pre.clean },
+    { method: pre.parseEncodings },
+    { method: pre.subImages }
+  ],
   // validate: { payload: postValidator.create },
   handler: function(request, reply) {
     // build the post object from payload and params
