@@ -129,6 +129,7 @@ exports.find = {
     var username = request.params.id;
     core.users.userByUsername(username)
     .then(function(user) {
+      if (!user) { return reply(Hapi.error.badRequest('User doesn\'t exist.')); }
       delete user.passhash;
       delete user.confirmation_token;
       if (authUser.id === user.id) { user.editable = true; }

@@ -47,7 +47,7 @@ exports.login = {
       throw new Error('Invalid Credentials');
     })
     .then(function(user) { // check if passhash matches
-      if (!user.confirmation_token && bcrypt.compareSync(password, user.passhash)) {
+      if (user && !user.confirmation_token && bcrypt.compareSync(password, user.passhash)) {
         return user;
       }
       else {
@@ -152,7 +152,7 @@ exports.confirmAccount = {
     var confirmationToken = request.payload.token;
     core.users.userByUsername(username)
     .then(function(user) {
-      if (!user.confirmation_token || confirmationToken !== user.confirmation_token) {
+      if (!user || !user.confirmation_token || confirmationToken !== user.confirmation_token) {
         return reply(Hapi.error.badRequest('Account Confirmation Error'));
       }
       return core.users.update({ confirmation_token: undefined, id: user.id });
@@ -219,6 +219,7 @@ exports.recoverAccount = {
     core.users.userByUsername(query)
     .catch(function() { return core.users.userByEmail(query); })
     .then(function(user) {
+      if (!user) { throw new Error(); } // Will be caught by No Account Found error
       var updateUser = {};
       // Build updated user with resetToken and resetExpiration
       updateUser.reset_token = crypto.randomBytes(20).toString('hex');
@@ -258,6 +259,9 @@ exports.resetPassword = {
     var token = request.payload.token;
     core.users.userByUsername(username)
     .then(function(user) {
+      if (!user) {
+        return reply(Hapi.error.badRequest('Password reset failed. No Account Found.'));
+      }
       var now = Date.now();
       var tokenValid = user.reset_token === token;
       var tokenExpired =  now > user.reset_expiration;
@@ -293,6 +297,9 @@ exports.checkResetToken = {
     var token = request.params.token;
     core.users.userByUsername(username)
     .then(function(user) {
+      if (!user) {
+        return reply(Hapi.error.badRequest('No Account Found.'));
+      }
       var now = Date.now();
       var tokenValid = user.reset_token === token;
       var tokenExpired =  now > user.reset_expiration;
