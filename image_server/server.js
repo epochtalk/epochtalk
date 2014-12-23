@@ -27,15 +27,15 @@ server.route(require(path.join(__dirname, 'routes')));
 // check if logging is enabled
 var options = {};
 if (config.logEnabled) {
-  mkdirp.sync('./logs/server/operations');
-  mkdirp.sync('./logs/server/errors');
-  mkdirp.sync('./logs/server/requests');
+  mkdirp.sync('./logs/images/operations');
+  mkdirp.sync('./logs/images/errors');
+  mkdirp.sync('./logs/images/requests');
   var logOpts = { extension: 'log', rotationTime: 1, format: 'YYYY-MM-DD-X' };
   options.reporters = [
     { reporter: require('good-console'), args:[{ log: '*', request: '*', error: '*' }] },
-    { reporter: require('good-file'), args: ['./logs/server/operations/', { ops: '*' }, logOpts] },
-    { reporter: require('good-file'), args: ['./logs/server/errors/', { error: '*' }, logOpts] },
-    { reporter: require('good-file'), args: ['./logs/server/requests/', { request: '*' }, logOpts] }
+    { reporter: require('good-file'), args: ['./logs/images/operations/', { ops: '*' }, logOpts] },
+    { reporter: require('good-file'), args: ['./logs/images/errors/', { error: '*' }, logOpts] },
+    { reporter: require('good-file'), args: ['./logs/images/requests/', { request: '*' }, logOpts] }
   ];
 }
 
