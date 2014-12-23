@@ -21,7 +21,7 @@ exports.create = {
     var newPost = {
       title: request.payload.title,
       body: request.payload.body,
-      encodedBody: request.payload.encodedBody,
+      raw_body: request.payload.raw_body,
       user_id: user.id
     };
 

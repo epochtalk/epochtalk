@@ -67,7 +67,7 @@ module.exports = {
       signature = signature.replace(/&gt;/g, '&#62;');
       signature = signature.replace(/&lt;/g, '&#60;');
 
-      // parse encodedBody to generate body
+      // parse raw_body to generate body
       var parsed = bbcodeParser.process({text: signature}).html;
       request.payload.signature = parsed;
     }

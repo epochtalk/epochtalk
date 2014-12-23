@@ -19,7 +19,7 @@ exports.create = {
     var newPost = {
       title: request.payload.title,
       body: request.payload.body,
-      encodedBody: request.payload.encodedBody,
+      raw_body: request.payload.raw_body,
       thread_id: request.payload.thread_id,
       user_id: user.id
     };
@@ -114,7 +114,7 @@ exports.update = {
       id: request.params.id,
       title: request.payload.title,
       body: request.payload.body,
-      encodedBody: request.payload.encodedBody,
+      raw_body: request.payload.raw_body,
       thread_id: request.payload.thread_id
     };
 
