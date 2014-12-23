@@ -9,7 +9,7 @@ module.exports = [
     restrict: 'E',
     scope: {
       body: '=',
-      encodedBody: '=',
+      rawBody: '=',
       reset: '=',
       focusEditor: '='
     },
@@ -116,14 +116,14 @@ module.exports = [
       // user exit bindings
       var confirmMessage = 'It looks like a post is being written.';
       $window.onbeforeunload =  function(e) {
-        if ($scope.originalText !== $scope.encodedBody) { return confirmMessage; }
+        if ($scope.originalText !== $scope.rawBody) { return confirmMessage; }
       };
 
       var destroyRouteBlocker = $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
         // check state routes differ
         if (toState.url === fromState.url) { return; }
 
-        if ($scope.originalText !== $scope.encodedBody) {
+        if ($scope.originalText !== $scope.rawBody) {
           var message = confirmMessage + ' Are you sure you want to leave?';
           var answer = confirm(message);
           if (!answer) { e.preventDefault(); }
@@ -192,7 +192,7 @@ module.exports = [
 
         // re-bind to scope
         scope.body = processed;
-        scope.encodedBody = rawText;
+        scope.rawBody = rawText;
         scope.$apply();
       }
 
@@ -223,9 +223,9 @@ module.exports = [
       // directive initialization
       var init = function() {
         // on load ng-model body to editor and preview
-        if (scope.encodedBody && scope.encodedBody.length > 0) {
-          editorElement.html(scope.encodedBody);
-          scope.originalText = scope.encodedBody;
+        if (scope.rawBody && scope.rawBody.length > 0) {
+          editorElement.html(scope.rawBody);
+          scope.originalText = scope.rawBody;
         }
         else {
           editorElement.html(scope.body);

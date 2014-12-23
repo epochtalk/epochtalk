@@ -6,7 +6,7 @@ module.exports = [
     this.resetEditor = false;
     this.showEditor = false;
     this.focusEditor = false;
-    this.tempPost = { body: '', encodedBody: '' };
+    this.tempPost = { body: '', raw_body: '' };
     this.posting = { post: this.tempPost };
     // pullPage function injected by child controller
 
@@ -51,15 +51,15 @@ module.exports = [
         ctrl.posting.type = 'new';
         ctrl.posting.index = '';
       }
-      
+
       ctrl.posting.error = '';
       ctrl.posting.id = post.id || '';
       var editorPost = ctrl.posting.post;
       editorPost.thread_id = post.thread_id || ctrl.thread_id;
       editorPost.title = post.title || 'Re: ' + ctrl.thread_title;
       editorPost.body = post.body || '';
-      editorPost.encodedBody = post.encodedBody || '';
-      
+      editorPost.raw_body = post.raw_body || '';
+
       ctrl.resetEditor = true;
       if (show) { ctrl.openEditor(); }
     };
@@ -91,10 +91,10 @@ module.exports = [
           var editPost = ctrl.posts[index];
           if (editPost.id === ctrl.posting.id) {
             editPost.body = data.body;
-            editPost.encodedBody = data.encodedBody;
+            editPost.raw_body = data.raw_body;
           }
         }
-        
+
         ctrl.initEditor(); // reset editor
         ctrl.showEditor = false;
       })

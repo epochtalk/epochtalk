@@ -5,7 +5,7 @@ module.exports = ['$stateParams', '$location', 'Auth', 'Threads',
     this.error = {};
     this.thread = {
       board_id: $stateParams.boardId,
-      encodedBody: '',
+      raw_body: '',
       body: '',
       title: ''
     };

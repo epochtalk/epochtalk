@@ -1,5 +1,5 @@
 <div class="row">
-  
+
   <!-- Auth error message -->
   <div class="small-12 columns info-box text-center" ng-if="!NewThreadCtrl.loggedIn()">
     <span class="label alert radius">
@@ -24,7 +24,7 @@
         </small>
       </label>
       <!-- New Thread Editor -->
-      <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" encoded-body="NewThreadCtrl.thread.encodedBody"></epochtalk-editor tabIndex="2">
+      <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" raw-body="NewThreadCtrl.thread.raw_body"></epochtalk-editor tabIndex="2">
     </form>
     <!-- Editor Controls -->
     <div class="editor-button-container">
