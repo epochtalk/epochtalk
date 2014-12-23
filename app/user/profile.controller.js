@@ -1,11 +1,11 @@
-module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter',
-  function(user, User, Auth, $location, $timeout, $filter) {
+module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$window',
+  function(user, User, Auth, $location, $timeout, $filter, $window) {
     var ctrl = this;
 
     // Edit Profile Fields
     this.editMode = false;
-    this.error = {};
     this.user = {};
+    this.pageStatus = {};
 
     user.$promise.then(function(user) {
       ctrl.user = user;
@@ -16,6 +16,14 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter',
 
       // This isn't the profile users true local time, just a placeholder
       ctrl.userLocalTime = $filter('date')(Date.now(), 'medium');
+
+      // Show success message if user changed their username
+      if ($location.search().success) {
+        $location.search('success', undefined);
+        ctrl.pageStatus.status = true;
+        ctrl.pageStatus.message = 'Sucessfully saved profile';
+        ctrl.pageStatus.type = 'success';
+      }
     });
 
     this.saveProfile = function() {
@@ -23,7 +31,7 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter',
       .then(function(data) {
         ctrl.user = data;
         ctrl.editMode = false;
-        ctrl.error = {}; // reset error
+        ctrl.pageStatus = {}; // reset error
 
         // Reformat DOB and calculate age on save
         ctrl.user.dob = $filter('date')(ctrl.user.dob, 'longDate');
@@ -31,13 +39,20 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter',
 
         // redirect page if username changed
         if (ctrl.displayUsername !== ctrl.user.username) {
+          $location.search('success', true);
           $location.path('/profiles/' + ctrl.user.username);
           Auth.setUsername(ctrl.user.username);
         }
+        ctrl.pageStatus.status = true;
+        ctrl.pageStatus.message = 'Sucessfully saved profile';
+        ctrl.pageStatus.type = 'success';
+        $window.scrollTo(0, 0);
       })
       .catch(function(err) {
-        ctrl.error.status = true;
-        ctrl.error.message = err.data.error + ': ' + err.data.message;
+        ctrl.pageStatus.status = true;
+        ctrl.pageStatus.type = 'alert';
+        ctrl.pageStatus.message = err.data.error + ': ' + err.data.message;
+        $window.scrollTo(0, 0);
       });
     };
 
@@ -76,12 +91,10 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter',
       User.update(changePassUser).$promise
       .then(function() {
         ctrl.passData = {};
-        ctrl.changePassStatus.status = true;
-        ctrl.changePassStatus.message = 'Sucessfully changed account password';
-        ctrl.changePassStatus.type = 'success';
-        $timeout(function() {
-          ctrl.closeChangePassModal();
-        }, 2000);
+        ctrl.pageStatus.status = true;
+        ctrl.pageStatus.message = 'Sucessfully changed account password';
+        ctrl.pageStatus.type = 'success';
+        ctrl.closeChangePassModal();
       })
       .catch(function(err) {
         ctrl.changePassStatus.status = true;

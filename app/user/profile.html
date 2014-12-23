@@ -1,10 +1,24 @@
 <div class="row">
+  <div class="small-12 columns">
+    <h4 class="thin-dotted-underline" ng-bind-html="(profiles.displayUsername) + '\'s Profile'"></h4>
+    <div class="alert-box radius" ng-class="profiles.pageStatus.type" ng-if="profiles.pageStatus.status">
+      {{profiles.pageStatus.message}}
+      <a ng-click="profiles.pageStatus = {}" class="close">&times;</a>
+    </div>
+  </div>
+</div>
+<div class="row">
   <!-- Left Sidebar -->
   <div class="large-3 columns">
     <img src="http://placehold.it/320x240&text=Avatar"/>
     <ul class="side-nav">
       <li ng-if="profiles.user.editable"><a href="#">Change Avatar</a></li>
-      <li ng-if="profiles.user.editable"><a href="#" ng-click="profiles.openChangePassModal()">Change Password</a></li>
+      <li ng-if="profiles.user.editable">
+        <a href="#" ng-click="profiles.openChangePassModal()">Change Password</a>
+      </li>
+      <li ng-If="profiles.user.editable">
+        <a href="#" ng-click="profiles.editMode = !profiles.editMode">Change Profile Fields</a>
+      </li>
       <li><a href="#">Send Personal Message</a></li>
       <li><a href="#">Show Last Post</a></li>
       <li><a href="#">Show General Statistics</a></li>
@@ -13,18 +27,6 @@
 
   <!-- Main Content -->
   <div class="large-9 columns">
-    <!-- Page Header and Edit Button -->
-    <div class="row">
-      <div class="small-9 columns">
-        <h3 ng-bind-html="(profiles.displayUsername) + '\'s Profile'"></h3>
-      </div>
-      <div class="small-3 columns" ng-If="profiles.user.editable && profiles.editMode === false">
-        <button class="button small radius right" ng-click="profiles.editMode = true">
-          Edit Profile
-        </button>
-      </div>
-    </div>
-
     <!-- Show Content -->
     <div ng-If="profiles.editMode === false">
       <div class="panel">
