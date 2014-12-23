@@ -155,6 +155,119 @@ input.icon-padding { padding-right: 40px; }
   right: 10px;
 }
 
+#header {
+  background-color: #fff;
+  border-bottom: 1px solid $color-gray-light;
+  margin-bottom: 2rem;
+
+  .top-bar {
+    background-color: inherit;
+
+    .name a {
+      color: inherit;
+      padding: 0;
+    }
+
+    .top-bar-section {
+      font-size: 0.875rem;
+      font-weight: 300;
+
+      .dropdown {
+        border: 1px solid $color-gray-light;
+        border-top: none;
+        left: -1px;
+      }
+
+      ul li,
+      ul > li a.button,
+      li > a,
+      .has-dropdown a {
+        background-color: #fff;
+        color: $color-gray-med;
+        font-size: 0.875rem;
+      }
+
+      .has-dropdown {
+        &:hover,
+        &:hover a,
+        .dropdown li a {
+          background-color: #fafafa;
+        }
+      }
+    }
+  }
+
+  .breadcrumbs {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    height: 45px;
+    line-height: 45px;
+    margin-bottom: 0;
+    padding: 0;
+
+    li {
+      line-height: 45px;
+    }
+  }
+
+  .fixed {
+    border-bottom: 1px solid $color-gray-light;
+
+    ul {
+      margin: 0 auto;
+      max-width: 62.5rem;
+      padding: 0 0.9375rem;
+    }
+  }
+
+  [data-magellan-expedition],
+  [data-magellan-expedition-clone] {
+    padding: 0 0.9375rem;
+  }
+
+  .header-top {
+    border-bottom: 1px solid $color-gray-light;
+  }
+
+  .search {
+    // border-left: 1px solid $color-gray-light;
+    // border-right: 1px solid $color-gray-light;
+  }
+
+  .form-group {
+    border-left: 1px solid $color-gray-light;
+    border-right: 1px solid $color-gray-light;
+    position: relative;
+
+    input[type="text"] {
+      border: none;
+      box-shadow: none;
+      height: 45px;
+      padding-left: 32px;
+      top: 0;
+      width: 250px;
+    }
+
+    label {
+      color: $color-gray-med;
+      font-size: 1.1rem;
+      position: absolute;
+      left: 8px;
+      top: 8px;
+    }
+  }
+
+  .avatar {
+    height: auto;
+    margin-bottom: 3px;
+    margin-left: 6px;
+    padding: 0 2px;
+    width: 40px;
+  }
+}
+
+
 /* Footer CSS */
 .footer {
   position: relative;

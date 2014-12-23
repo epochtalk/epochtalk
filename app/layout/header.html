@@ -1,56 +1,76 @@
-<div class="row">
-  <div class="small-12 columns">
-
-    <!-- Navigation -->
-    <nav class="top-bar" data-topbar role="navigation">
-      <!-- For mobile -->
-      <ul class="title-area">
-        <li class="name">
-          <h1><a ng-href="/">Epochtalk Forum</a></h1>
-        </li>
-        <li class="toggle-topbar menu-icon">
-          <a ng-href="#"><span>Menu</span></a>
-        </li>
-      </ul>
-
-      <!-- For Desktop -->
-      <section class="top-bar-section">
-
-        <!-- Right Nav Section -->
-        <ul ng-if="!HeaderCtrl.loggedIn()" class="right login-container">
-          <li>
-            <a ng-click="HeaderCtrl.openRegisterModal()">Register</a>
+<div class="header-top">
+  <div class="row">
+    <div class="nav-main small-12 columns">
+      <!-- Navigation -->
+      <nav class="top-bar" data-topbar role="navigation">
+        <!-- For mobile -->
+        <ul class="title-area">
+          <li class="name">
+            <h1><a ng-href="/">Epochtalk Forum</a></h1>
           </li>
-          <li>
-            <a class="button" ng-click="HeaderCtrl.openLoginModal()">Login</a>
+          <li class="toggle-topbar menu-icon">
+            <a ng-href="#"><span>Menu</span></a>
           </li>
         </ul>
 
-        <!-- User Drop Down -->
-        <ul ng-if="HeaderCtrl.loggedIn()" class="right">
-          <li class="has-dropdown">
-            <a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}" ng-bind-html="HeaderCtrl.currentUser()"></a>
-            <ul class="dropdown">
-              <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}">Profile</a></li>
-              <li><a ng-click="HeaderCtrl.logout()">Logout</a></li>
-            </ul>
-          </li>
-        </ul>
-      </section>
-    </nav>
+        <!-- For Desktop -->
+        <section class="top-bar-section">
 
-    <!-- Breadcrumbs -->
-    <div class="magellan-override" data-magellan-expedition="fixed">
-      <ul class="breadcrumbs">
-        <li ng-repeat="breadcrumb in HeaderCtrl.breadcrumbs() track by breadcrumb.label" ng-class="{ active: $last }">
-            <a ng-if="!$last && breadcrumb.url" ng-href="{{ breadcrumb.url }}" ng-bind-html="breadcrumb.label | truncate:30" class="margin-right-xs"></a>
-            <span ng-if="$last || !breadcrumb.url" ng-bind-html="breadcrumb.label | truncate:30"></span>
-        </li>
+          <!-- Right Nav Section -->
+          <ul ng-if="!HeaderCtrl.loggedIn()" class="right login-container">
+            <li class="search">
+              <form action="" class="search">
+                <div class="form-group">
+                  <input type="text" name="search" placeholder="Search">
+                  <label for="search" class="icon-epoch-search"></label>
+                </div>
+              </form>
+            </li>
+            <li>
+              <a ng-click="HeaderCtrl.openRegisterModal()">Register</a>
+            </li>
+            <li>
+              <a class="button" ng-click="HeaderCtrl.openLoginModal()">Login</a>
+            </li>
+          </ul>
 
-        <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">Dolor mollit jerky pork</a></li>
-
-      </ul>
+          <!-- User Drop Down -->
+          <ul ng-if="HeaderCtrl.loggedIn()" class="right">
+            <li class="search">
+              <form action="" class="search">
+                <div class="form-group">
+                  <input type="text" name="search" placeholder="Search">
+                  <label for="search" class="icon-epoch-search"></label>
+                </div>
+              </form>
+            </li>
+            <li class="has-dropdown">
+              <div><img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="" class="avatar">
+              <a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}" ng-bind-html="HeaderCtrl.currentUser()"></a></div>
+              <ul class="dropdown">
+                <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}">Profile</a></li>
+                <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+      </nav>
     </div>
-
   </div>
 </div>
+
+
+<div class="row">
+  <div class="nav-secondary small-12 columns" data-magellan-expedition="fixed">
+    <ul class="breadcrumbs">
+      <li ng-repeat="breadcrumb in HeaderCtrl.breadcrumbs() track by breadcrumb.label" ng-class="{ active: $last }">
+          <a ng-if="!$last && breadcrumb.url" ng-href="{{ breadcrumb.url }}" ng-bind-html="breadcrumb.label | truncate:30" class="margin-right-xs"></a>
+          <span ng-if="$last || !breadcrumb.url" ng-bind-html="breadcrumb.label | truncate:30"></span>
+      </li>
+
+      <li class="news right text-right"><strong>Latest News:</strong> <a href="#news">Dolor mollit jerky pork</a></li>
+
+    </ul>
+  </div>
+</div>
+
