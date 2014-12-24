@@ -6,6 +6,7 @@ module.exports = ['$compile', function($compile) {
 
       // Initialization
       scope.$watch('boardListData', function(data) {
+        if (!data) { data = []; }
         var html = generateNoCatBoardsList(data);
         // Compile html so angular controls will work
         var compiledHtml = $compile(html)(scope);
