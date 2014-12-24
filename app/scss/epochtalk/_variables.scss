@@ -14,6 +14,11 @@ $color-gray-sub: 		lighten($color-body, 70%);
 $font-size-body: 100%;
 $line-height: 1.5;
 
+// Fonts
+//$font-serif: "crimson_text_roman", "Times New Roman", serif;
+$font-sans: "Lato", "Helvetica Neue", Helvetica, sans-serif;
+$font-condensed: "HelveticaNeueMediumCondensed", "HelveticaNeue-Medium-Condensed", "Helvetica Neue Medium Condensed", "HelveticaNeueMedium", "HelveticaNeue-Medium", "Helvetica Neue Medium", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnRegular', "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
+
 // Mixins
 @mixin list-clean {
 	list-style-type: none;

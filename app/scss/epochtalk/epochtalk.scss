@@ -1,5 +1,7 @@
 @import 'variables';
 @import 'epoch-icons';
+@import url(http://fonts.googleapis.com/css?family=Lato:400,300,700);
+@import url(http://fonts.googleapis.com/css?family=Inconsolata);
 
 /** Globals ---------------------------------------------------------------- */
 body { font-family: $font-sans; }
@@ -83,6 +85,7 @@ label > input[type="checkbox"] {
 
 /* Foundation Overrides */
 .magellan-override { padding: 0px; background: transparent; }
+.top-bar .name h1 { font-family: 'Inconsolata'; font-size: 20px; }
 
 /* Page Controls */
 .page-controls > dl { margin-bottom: 0; }
@@ -318,8 +321,10 @@ input.icon-padding { padding-right: 40px; }
 .category-board { margin-bottom: 20px; }
 .category-board-name {
   font-size: 20px;
-  text-decoration: underline;
   margin-bottom: 5px; }
+.category-board-name a {
+  text-decoration: underline;
+}
 .category-board-desc { font-size: 14px; line-height: 1.1; word-wrap: break-word; overflow-wrap: break-word; }
 .moderators {
   color: #999;
