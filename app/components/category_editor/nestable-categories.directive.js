@@ -6,13 +6,11 @@ module.exports = ['$compile', function($compile) {
 
       // Initialization
       scope.$watch('catListData', function(data) {
-        if (data && data.length) {
-          var html = generateCategoryList(data);
-          // Compile html so angular controls will work
-          var compiledHtml = $compile(html)(scope);
-          $(element).html(compiledHtml);
-          $('#' + scope.catListId).nestable(scope.catListOpts);
-        }
+        var html = generateCategoryList(data);
+        // Compile html so angular controls will work
+        var compiledHtml = $compile(html)(scope);
+        $(element).html(compiledHtml);
+        $('#' + scope.catListId).nestable(scope.catListOpts);
       }, true);
 
       // Generates nestable html for category data

@@ -6,13 +6,11 @@ module.exports = ['$compile', function($compile) {
 
       // Initialization
       scope.$watch('boardListData', function(data) {
-        if (data && data.length) {
-          var html = generateNoCatBoardsList(data);
-          // Compile html so angular controls will work
-          var compiledHtml = $compile(html)(scope);
-          $(element).html(compiledHtml);
-          $('#' + scope.boardListId).nestable(scope.boardListOpts);
-        }
+        var html = generateNoCatBoardsList(data);
+        // Compile html so angular controls will work
+        var compiledHtml = $compile(html)(scope);
+        $(element).html(compiledHtml);
+        $('#' + scope.boardListId).nestable(scope.boardListOpts);
       }, true);
 
       // Generates nestable html elements for board data
