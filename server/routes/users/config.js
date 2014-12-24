@@ -132,6 +132,7 @@ exports.find = {
       if (!user) { return reply(Hapi.error.badRequest('User doesn\'t exist.')); }
       delete user.passhash;
       delete user.confirmation_token;
+      if (authUser.id !== user.id) { delete user.email; }
       if (authUser.id === user.id) { user.editable = true; }
       return user;
     })
@@ -153,6 +154,7 @@ exports.all = {
       users.forEach(function(user) {
         delete user.passhash;
         delete user.confirmation_token;
+        if (authUser.id !== user.id) { delete user.email; }
       });
       return users;
     })
