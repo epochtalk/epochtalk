@@ -70,10 +70,13 @@ label > input[type="checkbox"] {
 .body-scroll-lock { overflow: hidden; }
 .main-content { min-height: 100%; }
 .content-spacer { min-height: 500px; }
-.thin-dotted-underline {
-  border-bottom: 1px dotted #ccc;
+.thin-dotted-underline, .thin-underline {
+  border-bottom: 1px dotted $color-gray-light;
   margin-bottom: 10px;
   padding-bottom: 10px; }
+.thin-underline {
+  border-bottom: 1px solid $color-gray-light;
+}
 .text-info { font-size: 13px; color: #999; }
 .bold-title { font-weight: bold; }
 .no-margin { margin: 0; }
@@ -87,9 +90,37 @@ label > input[type="checkbox"] {
 .magellan-override { padding: 0px; background: transparent; }
 .top-bar .name h1 { font-family: 'Inconsolata'; font-size: 20px; }
 
-/* Page Controls */
-.page-controls > dl { margin-bottom: 0; }
-.page-controls > dl > dd { margin-bottom: 0; }
+// Page Controls ----------------------------- //
+.page-controls {
+  &> dl {
+    margin-bottom: 0;
+    padding: 1.2rem 0 .5rem;
+
+    &> dd {
+      margin: 0;
+    }
+
+    dd {
+      a {
+        display: block;
+        padding: 10px 16px;
+        border: 1px solid $color-gray-light;
+        -webkit-border-radius: 50px;
+        -moz-border-radius: 50px;
+        border-radius: 50px;
+
+        i {
+          margin-right: 6px;
+        }
+
+        &:hover {
+          background-color: $color-epoch;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
 
 /* Admin Panel CSS */
 .admin-header {
@@ -270,6 +301,13 @@ input.icon-padding { padding-right: 40px; }
   }
 }
 
+// Pagination styles ------------------------- //
+pagination {
+  .pagination {
+    float: right;
+  }
+}
+
 
 /* Footer CSS */
 .footer {
@@ -316,7 +354,7 @@ input.icon-padding { padding-right: 40px; }
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
-.thread-listItem { padding: 5px 0; }
+.thread-listItem { padding: 5px 0 15px; }
 .thread-listItem .division { font-size: 80%; line-height: 1.5; }
 .board-name { word-wrap: break-word; overflow-wrap: break-word; }
 .thread-editor-container {

@@ -1,20 +1,20 @@
 <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
 <div class="row board-page content-spacer">
   <!-- Page Header -->
-  <div class="small-12 columns">
+  <div class="small-12 columns board-title">
     <h3 ng-bind-html="BoardWrapperCtrl.board.name"></h3>
     <span class="moderators">
       <strong>Moderators: </strong> Unknown, Unknown, Unknown
     </span>
-    <div class="thin-dotted-underline"></div>
+    <!-- <div class="thin-dotted-underline"></div> -->
   </div>
 
   <!-- Page Controls -->
   <div class="small-12 columns page-controls" ng-if="BoardWrapperCtrl.loggedIn()">
     <dl class="sub-nav">
-      <dd><a ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})">Start a New Thread</a></dd>
+      <dd><a ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})"><i class="icon-epoch-add"></i>Start a New Thread</a></dd>
     </dl>
-    <div class="thin-dotted-underline"></div>
+    <!-- <div class="thin-dotted-underline"></div> -->
   </div>
 
   <!-- Board's Thread Data-->
