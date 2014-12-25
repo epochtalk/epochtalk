@@ -92,7 +92,9 @@ var uploadImage = function(url, filename) {
       ftc.on('error', function(err) { return console.log(err); });
 
       // get image from url and pipe to cdn
-      request(url).pipe(ftc).pipe(writeStream);
+      request(url).on('error', function(err) {
+        console.log(err);
+      }).pipe(ftc).pipe(writeStream);
     }
   });
 };
