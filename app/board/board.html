@@ -1,13 +1,25 @@
-<pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
+<div class="board-header">
+  <div class="row">
+    <div class="small-12 columns board-title">
+      <h3 ng-bind-html="BoardWrapperCtrl.board.name"></h3>
+      <span class="moderators">
+        <strong>Moderators: </strong> Unknown, Unknown, Unknown
+      </span>
+    </div>
+  </div>
+  <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>  
+</div>
+
+
+<!-- <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination> -->
 <div class="row board-page content-spacer">
   <!-- Page Header -->
-  <div class="small-12 columns board-title">
+  <!-- <div class="small-12 columns board-title">
     <h3 ng-bind-html="BoardWrapperCtrl.board.name"></h3>
     <span class="moderators">
       <strong>Moderators: </strong> Unknown, Unknown, Unknown
     </span>
-    <!-- <div class="thin-dotted-underline"></div> -->
-  </div>
+  </div> -->
 
   <!-- Page Controls -->
   <div class="small-12 columns page-controls" ng-if="BoardWrapperCtrl.loggedIn()">

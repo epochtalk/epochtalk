@@ -97,7 +97,7 @@ label > input[type="checkbox"] {
 .page-controls {
   &> dl {
     margin-bottom: 0;
-    padding: 1.2rem 0 .5rem;
+    padding: 0 0 20px;
 
     &> dd {
       margin: 0;
@@ -386,6 +386,13 @@ pagination {
   height: 500px; }
 
 /* Boards Page */
+.board-header {
+  background-color: #f9f9f9;
+  padding: 20px 0 0;
+  margin-bottom: 2rem;
+  margin-top: -2rem;
+}
+
 .category { margin-bottom: 30px; }
 .category-title {
   h3 {
