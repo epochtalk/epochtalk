@@ -15,6 +15,7 @@ a {
   }
 }
 
+<<<<<<< HEAD
 .sad-face {
   font-size:300px;
 }
@@ -67,6 +68,8 @@ label > input[type="checkbox"] {
   width: 100%;
 }
 
+=======
+>>>>>>> Updating link colors
 .body-scroll-lock { overflow: hidden; }
 .main-content { min-height: 100%; }
 .content-spacer { min-height: 500px; }
@@ -114,7 +117,7 @@ label > input[type="checkbox"] {
         }
 
         &:hover {
-          background-color: $color-epoch;
+          background-color: $color-active;
           color: #fff;
         }
       }
@@ -305,6 +308,22 @@ input.icon-padding { padding-right: 40px; }
 pagination {
   .pagination {
     float: right;
+
+    li {
+      &.current {
+        a {
+          background: $color-active;
+
+          button:focus {
+            background: $color-active;
+          }
+
+          &:hover, &:focus {
+            background: $color-active-dark;
+          } 
+        }
+      }
+    }
   }
 }
 
@@ -327,6 +346,9 @@ pagination {
   display: block; }
 
 /* Breadcrumb CSS */
+.breadcrumbs > * a {
+  color: $color-active;
+}
 .breadcrumbs > .news:before {
   content: "";
   margin: 0 0;
