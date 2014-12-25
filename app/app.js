@@ -82,6 +82,6 @@ app.config(require('./config'))
 
 
 // CSS Styles
-var cssify = require('cssify');
-require('./css/app.css');
-cssify.byUrl('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');
+// var cssify = require('cssify');
+// require('./css/app.css');
+// cssify.byUrl('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');

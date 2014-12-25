@@ -17,7 +17,6 @@ gulp.task('browserify',  function() {
     // Log when bundling starts
 
     return bundler
-      .transform('cssify')
       .transform('brfs')
       // .transform('browserify-ngmin')
       .bundle()

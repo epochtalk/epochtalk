@@ -32,7 +32,7 @@ gulp.task('watch', function() {
 
 gulp.task('clean', function(cb) {
   del([
-    'app/css/*.css',
+    'public/css/*.css',
     'app/scss/default.scss',
     'app/scss/medium-editor.scss',
     'app/scss/foundation/components',

@@ -22,8 +22,8 @@ test/coverage/
 /public/js/.bundle.js
 /public/js/bundle.min.js
 /public/bundle.js
+/public/css/**
 
-/app/css/**
 /app/scss/foundation.scss
 /app/scss/normalize.scss
 /app/scss/foundation/components/

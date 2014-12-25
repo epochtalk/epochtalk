@@ -138,6 +138,7 @@ exports.register = {
         username: user.username,
         confirm_url: config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token)
       };
+      console.log(emailParams);
       emailer.send('confirmAccount', emailParams);
     })
     .catch(function(err) {
