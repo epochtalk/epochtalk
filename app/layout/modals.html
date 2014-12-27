@@ -93,7 +93,7 @@
           <span ng-if="register.username.$touched && register.username.$error.unique" class="invalid right">
           Username is taken
           </span>
-          <input type="text" class="icon-padding" name="username" ng-model="HeaderCtrl.registerUser.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" ng-if="HeaderCtrl.registerModalVisible" required>
+          <input type="text" class="icon-padding" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username  ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" ng-if="HeaderCtrl.registerModalVisible" required>
           <i ng-if="register.username.$touched && !register.username.$error.unique && !register.username.$error.required" class="fa fa-check input-icon valid"></i>
           <i ng-if="register.username.$touched && (register.username.$error.required || register.username.$error.unique)" class="fa fa-times input-icon invalid"></i>
         </label>
