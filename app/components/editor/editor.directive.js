@@ -132,9 +132,7 @@ module.exports = [
       });
 
       // autofocus switch
-      console.log($scope.exitEditor);
       $scope.$watch('exitEditor', function(exitEditor) {
-        console.log(exitEditor);
         if (exitEditor === true) {
           $window.onbeforeunload = undefined;
           destroyRouteBlocker();
