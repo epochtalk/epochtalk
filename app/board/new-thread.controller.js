@@ -2,6 +2,7 @@ module.exports = ['$stateParams', '$location', 'Auth', 'Threads',
   function($stateParams, $location, Auth, Threads) {
     var ctrl = this;
 
+    this.exitEditor = false;
     this.error = {};
     this.thread = {
       board_id: $stateParams.boardId,
@@ -14,6 +15,7 @@ module.exports = ['$stateParams', '$location', 'Auth', 'Threads',
     Auth.checkAuthentication();
 
     this.save = function(post) {
+      ctrl.exitEditor = true;
       // create a new thread and post
       Threads.save(ctrl.thread).$promise
        .then(function(thread) {

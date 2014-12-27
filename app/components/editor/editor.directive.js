@@ -11,7 +11,8 @@ module.exports = [
       body: '=',
       rawBody: '=',
       reset: '=',
-      focusEditor: '='
+      focusEditor: '=',
+      exitEditor: '='
     },
     controller: function($scope, $element) {
       var inputElement = $element.find('input')[0];
@@ -127,6 +128,16 @@ module.exports = [
           var message = confirmMessage + ' Are you sure you want to leave?';
           var answer = confirm(message);
           if (!answer) { e.preventDefault(); }
+        }
+      });
+
+      // autofocus switch
+      console.log($scope.exitEditor);
+      $scope.$watch('exitEditor', function(exitEditor) {
+        console.log(exitEditor);
+        if (exitEditor === true) {
+          $window.onbeforeunload = undefined;
+          destroyRouteBlocker();
         }
       });
 
