@@ -2,6 +2,10 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
   function(user, User, Auth, $location, $timeout, $filter, $window) {
     var ctrl = this;
 
+    // Possibly a better solution than this, ui-router causes
+    // issues with scrolling to top on route change.
+    $window.scrollTo(0, 0);
+
     // Edit Profile Fields
     this.editMode = false;
     this.user = {};
