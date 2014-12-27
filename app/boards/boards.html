@@ -46,10 +46,10 @@
           <!-- Board Posts and Threads -->
           <div class="small-12 medium-2 columns text-info text-center">
             <div>
-              <strong ng-bind="board.total_post_count"></strong> posts
+              <strong ng-bind="board.total_post_count | number:0"></strong> posts
             </div>
             <div>
-              <strong ng-bind="board.total_thread_count"></strong> threads
+              <strong ng-bind="board.total_thread_count | number:0"></strong> threads
             </div>
           </div>
 

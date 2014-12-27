@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-module.exports = ['$location', function($location) {
+module.exports = ['$location', '$filter', function($location, $filter) {
   return {
     restrict: 'E',
     scope: {
@@ -84,7 +84,7 @@ module.exports = ['$location', function($location) {
           }
           else {
             pageKey = {
-              val: index.toString(),
+              val: $filter('number')(index, 0),
               url: urlPrefix + index,
               class: index === scope.page ? 'current' : null
             };

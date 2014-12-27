@@ -24,10 +24,10 @@
         <!-- Posts and threads -->
         <div class="small-12 medium-3 columns text-info">
           <div>
-            <strong ng-bind="childBoard.total_post_count"></strong> posts
+            <strong ng-bind="childBoard.total_post_count | number:0"></strong> posts
           </div>
           <div>
-            <strong ng-bind="childBoard.total_thread_count"></strong> threads
+            <strong ng-bind="childBoard.total_thread_count | number:0"></strong> threads
           </div>
         </div>
       </div>
@@ -82,12 +82,12 @@
           </div>
         </div>
 
-        <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.post_count - 1"></div>
+        <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.post_count - 1 | number:0"></div>
 
-        <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.view_count"></div>
+        <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.view_count | number:0"></div>
 
         <div class="small-12 columns text-info show-for-small-only">
-          <strong ng-bind="thread.post_count-1"></strong> replies and <strong ng-bind="thread.view_count"></strong> views
+          <strong ng-bind="thread.post_count-1 | number:0"></strong> replies and <strong ng-bind="thread.view_count | number:0"></strong> views
         </div>
 
         <div class="small-12 medium-3 columns text-info">
