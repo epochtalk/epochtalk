@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 module.exports = ['$compile', function($compile) {
   return {
     restrict: 'E',
@@ -17,9 +19,11 @@ module.exports = ['$compile', function($compile) {
       // Generates nestable html for category data
       var generateCategoryList = function(categories) {
         var html = '<div class="dd" id="' + scope.catListId + '"><ol class="dd-list">';
-        categories.forEach(function(cat) {
+        var sortedCats = _.sortBy(categories, function(cat) { return cat.view_order; });
+        sortedCats.forEach(function(cat) {
           var dataId = scope.getDataId();
           scope.nestableMap[dataId] = {
+            id: cat.id,
             name: cat.name,
             children_ids: cat.board_ids || []
           };
@@ -28,7 +32,7 @@ module.exports = ['$compile', function($compile) {
             '<i data-reveal-id="edit-category" ng-click="setEditCat(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
-          html += '<li class="dd-item dd-root-item" data-id="' + dataId +
+          html += '<li class="dd-item dd-root-item" data-id="' + cat.id +
             '" data-top="true" data-name="' + cat.name + '"><div class="dd-handle' +
             ' dd-root-handle">' + status + '<div class="dd-desc">' + cat.name + '</div>' +
             toolbarHtml + '</div>' + generateBoardList(cat.boards) + '</li>';
