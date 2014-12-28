@@ -22,6 +22,7 @@ module.exports = ['$stateParams', '$location', 'Auth', 'Threads',
         $location.path('/threads/' + thread.thread_id + '/posts');
       })
       .catch(function(err) {
+        ctrl.exitEditor = false;
         ctrl.error.post = {};
         ctrl.error.post.found = true;
         ctrl.error.post.message = err.data.message;

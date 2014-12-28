@@ -115,27 +115,38 @@ module.exports = [
       }
 
       // user exit bindings
+      var exitingAllowed = false;
       var confirmMessage = 'It looks like a post is being written.';
-      $window.onbeforeunload =  function(e) {
+      var exitFunction = function(e) {
         if ($scope.originalText !== $scope.rawBody) { return confirmMessage; }
       };
+      $window.onbeforeunload = exitFunction;
 
-      var destroyRouteBlocker = $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-        // check state routes differ
-        if (toState.url === fromState.url) { return; }
+      var routeLeaveFunction = function() {
+        return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+          // check state routes differ
+          if (toState.url === fromState.url) { return; }
 
-        if ($scope.originalText !== $scope.rawBody) {
-          var message = confirmMessage + ' Are you sure you want to leave?';
-          var answer = confirm(message);
-          if (!answer) { e.preventDefault(); }
-        }
-      });
+          if ($scope.originalText !== $scope.rawBody) {
+            var message = confirmMessage + ' Are you sure you want to leave?';
+            var answer = confirm(message);
+            if (!answer) { e.preventDefault(); }
+          }
+        });
+      };
+      var destroyRouteBlocker = routeLeaveFunction();
 
       // autofocus switch
       $scope.$watch('exitEditor', function(exitEditor) {
-        if (exitEditor === true) {
+        if (exitEditor === true && exitingAllowed === false) {
           $window.onbeforeunload = undefined;
           destroyRouteBlocker();
+          exitingAllowed = true;
+        }
+        else if (exitEditor === false && exitingAllowed === true) {
+          $window.onbeforeunload = exitFunction;
+          destroyRouteBlocker = routeLeaveFunction();
+          exitingAllowed = false;
         }
       });
 
