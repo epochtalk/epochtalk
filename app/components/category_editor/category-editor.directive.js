@@ -65,7 +65,7 @@ module.exports = ['$state', function($state) {
       // Edits the set board
       $scope.editBoard = function() {
         // Board being edited is a new board.
-        if (!editBoardId && editBoardDataId) {
+        if (editBoardId === -1 && editBoardDataId) {
           $scope.newBoards.forEach(function(newBoard) {
             if (newBoard.dataId === editBoardDataId) {
               newBoard.name = $scope.editBoardName;
@@ -189,41 +189,42 @@ module.exports = ['$state', function($state) {
           var newChildrenIds = [];
           var board = $scope.nestableMap[item.id]; // original board object
           item.children = item.children || [];
-
-          // Lookup each childItem by its data-id in the nestableMap
-          item.children.forEach(function(childItem) {
-            var childBoard = $scope.nestableMap[childItem.id];
-            newChildrenIds.push(childBoard.id); // populate array of latest children ids
-          });
-
-          // If arrays are not equal, a change has occured
-          if(!_.isEqual(board.children_ids, newChildrenIds)) {
-            var removedChildren = _.difference(board.children_ids, newChildrenIds);
-            var addedChildren = _.difference(newChildrenIds, board.children_ids);
-            // Set Old Parent of moved board
-            removedChildren.forEach(function(removedChild) {
-              movedBoards[removedChild] = movedBoards[removedChild] || {};
-              movedBoards[removedChild].oldParent = board.id || '';
-              if (movedBoards[removedChild].oldParent === '' && movedBoards[removedChild].newParent === '') {
-                delete movedBoards[removedChild]; // Ignore top level board changes
-              }
+          if (!item.catId) { // Dont process category changes
+            // Lookup each childItem by its data-id in the nestableMap
+            item.children.forEach(function(childItem) {
+              var childBoard = $scope.nestableMap[childItem.id];
+              newChildrenIds.push(childBoard.id); // populate array of latest children ids
             });
 
-            // Set New Parent of moved board
-            addedChildren.forEach(function(addedChild) {
-              movedBoards[addedChild] = movedBoards[addedChild] || {};
-              movedBoards[addedChild].newParent = board.id || '';
-              if (movedBoards[addedChild].oldParent === '' && movedBoards[addedChild].newParent === '') {
-                delete movedBoards[addedChild]; // Ignore top level board changes
-              }
-            });
+            // If arrays are not equal, a change has occured
+            if(!_.isEqual(board.children_ids, newChildrenIds)) {
+              var removedChildren = _.difference(board.children_ids, newChildrenIds);
+              var addedChildren = _.difference(newChildrenIds, board.children_ids);
+              // Set Old Parent of moved board
+              removedChildren.forEach(function(removedChild) {
+                movedBoards[removedChild] = movedBoards[removedChild] || {};
+                movedBoards[removedChild].oldParent = board.id || '';
+                if (movedBoards[removedChild].oldParent === '' && movedBoards[removedChild].newParent === '') {
+                  delete movedBoards[removedChild]; // Ignore top level board changes
+                }
+              });
 
-            // Ordering change for non top level boards (Update Board children_ids order)
-            // Top level ordering is handled by updateCategories, parent boards children_ids
-            // array must be updated to fix ordering of child boards.
-            if (!removedChildren.length && !addedChildren.length && board.id) {
-              $scope.editedBoards[board.id] = $scope.editedBoards[board.id] || {};
-              $scope.editedBoards[board.id].children_ids =  newChildrenIds;
+              // Set New Parent of moved board
+              addedChildren.forEach(function(addedChild) {
+                movedBoards[addedChild] = movedBoards[addedChild] || {};
+                movedBoards[addedChild].newParent = board.id || '';
+                if (movedBoards[addedChild].oldParent === '' && movedBoards[addedChild].newParent === '') {
+                  delete movedBoards[addedChild]; // Ignore top level board changes
+                }
+              });
+
+              // Ordering change for non top level boards (Update Board children_ids order)
+              // Top level ordering is handled by updateCategories, parent boards children_ids
+              // array must be updated to fix ordering of child boards.
+              if (!removedChildren.length && !addedChildren.length && board.id) {
+                $scope.editedBoards[board.id] = $scope.editedBoards[board.id] || {};
+                $scope.editedBoards[board.id].children_ids =  newChildrenIds;
+              }
             }
           }
           buildMovedBoardsHash(item.children);

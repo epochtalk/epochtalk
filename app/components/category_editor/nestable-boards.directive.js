@@ -64,7 +64,7 @@ module.exports = ['$compile', function($compile) {
           var dataId = scope.getDataId();
           // Update hashmap of list items
           scope.nestableMap[dataId] = {
-            id: '',
+            id: -1,
             name: board.name,
             description: board.description,
             children_ids: [],

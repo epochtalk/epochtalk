@@ -23,7 +23,8 @@ module.exports = ['$compile', function($compile) {
         sortedCats.forEach(function(cat) {
           var dataId = scope.getDataId();
           var boardIds = [];
-          cat.boards.forEach(function(board) { boardIds.push(board.id); });
+          var catBoards = cat.boards || [];
+          catBoards.forEach(function(board) { boardIds.push(board.id); });
           scope.nestableMap[dataId] = {
             id: cat.id,
             name: cat.name,
