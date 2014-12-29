@@ -154,8 +154,6 @@ module.exports = ['$state', function($state) {
         })
         .then(function() {
           // 4) Updated all Categories
-          console.log('Serialized Cats:', serializedCats);
-          console.log('Nestable Map:', $scope.nestableMap);
           buildUpdatedCats(serializedCats);
           return $scope.processCategories();
         })
@@ -170,7 +168,7 @@ module.exports = ['$state', function($state) {
         var updatedCats = $scope.updatedCats;
         catsArr.forEach(function(item) {
           var cat = {
-            id: item.id,
+            id: item.catId,
             name: item.name,
             board_ids: []
           };

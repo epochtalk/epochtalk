@@ -22,17 +22,19 @@ module.exports = ['$compile', function($compile) {
         var sortedCats = _.sortBy(categories, function(cat) { return cat.view_order; });
         sortedCats.forEach(function(cat) {
           var dataId = scope.getDataId();
+          var boardIds = [];
+          cat.boards.forEach(function(board) { boardIds.push(board.id); });
           scope.nestableMap[dataId] = {
             id: cat.id,
             name: cat.name,
-            children_ids: cat.board_ids || []
+            children_ids: boardIds
           };
           // Edit pencil and trash buttons
           var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
             '<i data-reveal-id="edit-category" ng-click="setEditCat(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
-          html += '<li class="dd-item dd-root-item" data-id="' + cat.id +
+          html += '<li class="dd-item dd-root-item" data-cat-id="' + cat.id + '" data-id="' + dataId +
             '" data-top="true" data-name="' + cat.name + '"><div class="dd-handle' +
             ' dd-root-handle">' + status + '<div class="dd-desc">' + cat.name + '</div>' +
             toolbarHtml + '</div>' + generateBoardList(cat.boards) + '</li>';
@@ -81,7 +83,7 @@ module.exports = ['$compile', function($compile) {
             '<i data-reveal-id="edit-category" ng-click="setEditCat(' +
               dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status modified"></i>';
-          var newCatHtml = '<li class="dd-item dd-root-item" data-id="' + dataId +
+          var newCatHtml = '<li class="dd-item dd-root-item" data-cat-id="' + -1 + '"  data-id="' + dataId +
             '" data-top="true" data-name="' + catName + '"><div class="dd-handle dd-root-handle">' +
             status + '<div class="dd-desc">' + catName + '</div>' + toolbarHtml + '</div></li>';
 
