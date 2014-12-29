@@ -546,6 +546,16 @@ pagination {
   overflow-wrap: break-word;
 }
 
+.quoteHeader {
+
+}
+
+.quote {
+  font-style: italic;
+  border: 2px solid #DDD;
+  background-color: #EEE;
+  padding: 10px;
+}
 
 /* Registration Modal */
 .reg-page-title { margin-bottom: 21px; }
