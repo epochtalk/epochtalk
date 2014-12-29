@@ -36,14 +36,14 @@
 
           <!-- User Drop Down -->
           <ul ng-if="HeaderCtrl.loggedIn()" class="right">
-            <li class="search">
+            <!-- <li class="search">
               <form action="" class="search">
                 <div class="form-group">
                   <input type="text" name="search" placeholder="Search">
                   <label for="search" class="icon-epoch-search"></label>
                 </div>
               </form>
-            </li>
+            </li> -->
             <li class="has-dropdown">
               <div><img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="" class="avatar">
               <a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}" ng-bind-html="HeaderCtrl.currentUser()"></a></div>
