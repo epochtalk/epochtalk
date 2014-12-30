@@ -576,21 +576,36 @@ pagination {
 
 .post-body {
   margin-bottom: 1.2rem;
-  // float: left;
+  float: left;
   // width: 83.3333%;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
 .quoteHeader {
-
+  border-top: 1px solid $color-gray-light;
+  margin: 10px 24px 0;
+  // padding-left: 24px;
+  padding-top: 16px;
 }
 
 .quote {
-  font-style: italic;
-  border: 2px solid #DDD;
-  background-color: #EEE;
-  padding: 10px;
+  // font-style: italic;
+  // border: 2px solid #DDD;
+  // background-color: #EEE;
+  border-bottom: 1px solid $color-gray-light;
+  color: $color-gray-med;
+  margin-bottom: 16px;
+  margin: 0 24px 16px;
+  padding: 6px 0 24px;
+
+  &>br {
+    display: none;
+  }
+
+  .quote {
+    // padding-top: 0;
+  }
 }
 
 /* Registration Modal */
