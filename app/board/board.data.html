@@ -35,7 +35,7 @@
       <div class="row">
         <div class="small-12 medium-8 columns text-info">
           Last post by
-          <a href="/profiles/{{ childBoard.last_post_username }}" ng-bind-html="childBoard.last_post_username"></a>
+          <a ng-href="/profiles/{{ childBoard.last_post_username }}" ng-bind-html="childBoard.last_post_username"></a>
           in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title"></a>
           <br>
           <span ng-bind="childBoard.last_post_created_at | humanDate"></span>
@@ -92,7 +92,7 @@
 
         <div class="small-12 medium-3 columns text-info">
           <div ng-bind="thread.last_post_created_at | humanDate"></div>
-          by <a href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+          by <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
         </div>
       </div>
     </div>
