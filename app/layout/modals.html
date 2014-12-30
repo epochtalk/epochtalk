@@ -63,7 +63,9 @@
   <modal class="small" show="HeaderCtrl.showRegister" on-close="HeaderCtrl.clearRegisterFields">
     <form name="register" class="css-form" novalidate>
       <h3 class="thin-dotted-underline">Register</h3>
-      <br />
+      <div class="error-container">
+        <div class="" ng-if="HeaderCtrl.registerError.status" ng-bind="HeaderCtrl.registerError.message"></div>
+      </div>
       <div class='reg-input-section'>
         <label>Email &mdash; <span class="label secondary input-info">Must be valid to confirm account</span>
           <span ng-if="register.email.$touched && register.email.$error.required" class="invalid right">
@@ -110,29 +112,22 @@
       </div>
 
       <div class="reg-input-section">
-        <label>Password Confirmation
+        <label>Confirm Password
           <span ng-if="register.confirmation.$touched && register.confirmation.$error.required" class="invalid right">
             Password confirmation is required
           </span>
           <span ng-if="register.password.$touched && HeaderCtrl.registerUser.password !== '' && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !register.confirmation.$error.required" class="invalid right">
             Password and confirmation do not match
           </span>
-          <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Password Confirmation" ng-if="HeaderCtrl.registerModalVisible" required>
+          <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Confirm Password" ng-if="HeaderCtrl.registerModalVisible" required>
           <i ng-if="(register.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !register.password.$touched && !register.confirmation.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !register.confirmation.$error.required)" class="fa fa-check input-icon valid"></i>
           <i ng-if="(register.confirmation.$touched && register.confirmation.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
         </label>
       </div>
-      <div class="reg-input-section">
+      <div class="reg-input-section form-action">
         <button class="button no-margin" ng-click="HeaderCtrl.register()" ng-disabled="register.$invalid || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password === '' || HeaderCtrl.registerUser.confirmation === ''">
           Register
         </button>
-        &nbsp;
-        <a class="secondary-action no-margin" ng-click="HeaderCtrl.closeRegisterModal()">
-          Cancel
-        </a>
-        <div class="error-container">
-          <span class="red radius label" ng-if="HeaderCtrl.registerError.status" ng-bind="HeaderCtrl.registerError.message"></span>
-        </div>
       </div>
     </form>
     <a class="close-reveal-modal">&#215;</a>

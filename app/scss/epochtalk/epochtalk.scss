@@ -43,6 +43,23 @@ input[type] {
 }
 
 // Form style tweaks ------------------------- //
+input[type] {
+  box-shadow: none;
+
+  &.ng-invalid,
+  &.ng-invalid-mismatch {
+    border-color: red;
+  }
+
+  &.ng-untouched {
+    border-color: #ccc;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
+}
+
 label > input[type="checkbox"] {
   margin-right: .25rem;
 }
