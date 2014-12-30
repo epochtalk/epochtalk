@@ -42,6 +42,7 @@ input[type] {
   }
 }
 
+// Form style tweaks ------------------------- //
 label > input[type="checkbox"] {
   margin-right: .25rem;
 }
@@ -96,7 +97,8 @@ label > input[type="checkbox"] {
   border-radius: 1000px;
   border-color: $color-active;
   font-family: $font-sans;
-  padding: 12px 18px;
+  outline: none;
+  padding: 10px 22px;
 }
 
 // disabled button and disabled button hover/focus styles
@@ -198,7 +200,14 @@ tr.active-row td { color: #fff; }
 /* optimize for mobile layout */
 .login-container > li { margin-right: 5px; }
 .red.label { background-color: #e91c21; display: block; }
-.error-container { height: 25px; padding-top: 15px; }
+.error-container {
+  div {
+    background-color: red;
+    color: #fff;
+    padding: 8px 10px;
+    margin: 0 0 1rem;
+  }
+}
 
 /* Header CSS */
 .recover-btn { width: 85px; }
@@ -606,6 +615,13 @@ pagination {
   .quote {
     // padding-top: 0;
   }
+}
+
+// Generic Modal Styles ---------------------- /
+.reveal-modal .close-reveal-modal,
+dialog .close-reveal-modal {
+  font-size: 1.5rem;
+  right: 1rem;
 }
 
 /* Registration Modal */

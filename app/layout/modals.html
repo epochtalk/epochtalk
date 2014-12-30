@@ -2,26 +2,25 @@
   <modal class="tiny" show="HeaderCtrl.showLogin" on-close="HeaderCtrl.clearLoginFields">
     <form name="login" class="css-form" novalidate>
       <h3 class="thin-dotted-underline">Login</h3>
-      <br />
-      <input type="text" placeholder="Username" ng-keyup="HeaderCtrl.enterLogin($event)" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.loginModalVisible" auto-focus required>
-      <br/>
-      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-if="HeaderCtrl.loginModalVisible" ng-keyup="HeaderCtrl.enterLogin($event)" required>
-      <span class="right">
-        <input type="checkbox" ng-model="HeaderCtrl.user.rememberMe"> Remember Me
-      </span>
-      <br />
-      <button class="button no-margin" ng-click="HeaderCtrl.login()"
-        ng-disabled="login.$invalid">
-        Login
-      </button>
-      &nbsp;
-      <a class="secondary-action no-margin" ng-click="HeaderCtrl.closeLoginModal()">
-        Cancel
-      </a>
-      <br /><br />
-      <a ng-click="HeaderCtrl.swapModals()">Recover Account</a>
       <div class="error-container">
-        <span class="red radius label" ng-if="HeaderCtrl.loginError.status" ng-bind="HeaderCtrl.loginError.message"></span>
+        <!-- <span class="red radius label" ng-if="HeaderCtrl.loginError.status" ng-bind="HeaderCtrl.loginError.message"></span> -->
+        <div class="" ng-if="HeaderCtrl.loginError.status" ng-bind="HeaderCtrl.loginError.message"></div>
+      </div>
+      <input type="text" placeholder="Username" ng-keyup="HeaderCtrl.enterLogin($event)" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.loginModalVisible" auto-focus required>
+      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)" required>
+      <div class="form-login-remember">
+        <label><input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">Remember Me</label>
+      </div>
+      <div class="form-action">
+        <!-- <a class="secondary-action no-margin" ng-click="HeaderCtrl.closeLoginModal()">
+          Cancel
+        </a> -->
+        <button class="button no-margin" ng-click="HeaderCtrl.login()" ng-disabled="login.$invalid">
+          Login
+        </button>
+      </div>
+      <div class="form-action-secondary">
+        <a ng-click="HeaderCtrl.swapModals()">Help, I forgot my password!</a>
       </div>
     </form>
     <a class="close-reveal-modal">&#215;</a>
