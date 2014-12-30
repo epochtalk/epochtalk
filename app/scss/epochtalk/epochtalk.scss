@@ -98,7 +98,7 @@ label > input[type="checkbox"] {
 .text-info { font-size: 13px; color: #999; }
 .bold-title { font-weight: bold; }
 .no-margin { margin: 0; }
-.anchor-offset { display: block; position: relative; top: -35px; visibility: hidden; }
+.anchor-offset { display: block; position: relative; top: -55px; visibility: hidden; }
 .no-select { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 .inline-block { display: inline-block; }
 .pointer { cursor: pointer; }
@@ -187,7 +187,7 @@ button:hover, button:focus, .button:hover, .button:focus {
   overflow-y: auto;
 }
 .sidebar-category { padding-left: 12px; margin: 0; font-weight:bold; display: inline-block; }
-.sidebar-collapse-btn { padding-left: 12px; color: $primary-color; display:inline-block; position: relative; top: -1px; width: 15px; margin-right: 5px; font-size: 1em;}
+.sidebar-collapse-btn { padding-left: 12px; color:  $color-active; display:inline-block; position: relative; top: -1px; width: 15px; margin-right: 5px; font-size: 1em;}
 .sidebar-spacer { padding-top: 15px; }
 .has-form { min-width: 400px; }
 .admin-padding {
@@ -198,9 +198,9 @@ button:hover, button:focus, .button:hover, .button:focus {
 /* Admin Manage Groups */
 tr.selectable-row:hover { background-color: $secondary-color; }
 .pointer { cursor: pointer; }
-tr.active-row { background-color: $primary-color; }
-tr:nth-of-type(even).active-row { background-color: $primary-color; }
-tr.active-row.selectable-row:hover { background-color: $primary-color }
+tr.active-row { background-color:  $color-active; }
+tr:nth-of-type(even).active-row { background-color:  $color-active; }
+tr.active-row.selectable-row:hover { background-color:  $color-active }
 input.member-select { margin: 0px; }
 tr.active-row td { color: #fff; }
 
@@ -587,6 +587,7 @@ pagination {
 
 .post-action {
   @include list-clean;
+  clear: both;
   float: right;
   padding-left: 1rem;
 
@@ -771,4 +772,4 @@ dialog .close-reveal-modal {
 
 /* 404 Not Found Page */
 .error-code { font-weight: 100; font-size:200px; }
-.error-message { font-size:30px; color: $primary-color; }
+.error-message { font-size:30px; color:  $color-active; }
