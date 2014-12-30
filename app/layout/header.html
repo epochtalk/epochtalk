@@ -34,8 +34,8 @@
             </li>
           </ul>
 
-          <!-- User Drop Down -->
-          <ul ng-if="HeaderCtrl.loggedIn()" class="right">
+          <!-- User Drop Down on anything that is not a small sized screen -->
+          <ul ng-if="HeaderCtrl.loggedIn()" class="right show-for-medium-up">
             <!-- <li class="search">
               <form action="" class="search">
                 <div class="form-group">
@@ -52,6 +52,25 @@
                 <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
               </ul>
             </li>
+          </ul>
+          
+          <!-- User menu on small sized screens -->
+          <ul ng-if="HeaderCtrl.loggedIn()" class="right show-for-small-only">
+            <!-- <li class="search">
+              <form action="" class="search">
+                <div class="form-group">
+                  <input type="text" name="search" placeholder="Search">
+                  <label for="search" class="icon-epoch-search"></label>
+                </div>
+              </form>
+            </li> -->
+            <li>
+              <div><img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="" class="avatar">
+              <a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}" ng-bind-html="HeaderCtrl.currentUser()"></a></div>
+            </li>
+            </li>              
+            <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}">Profile</a></li>
+            <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
           </ul>
         </section>
       </nav>
