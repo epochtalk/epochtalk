@@ -638,16 +638,14 @@ pagination {
 }
 
 .quote {
-  // font-style: italic;
-  // border: 2px solid #DDD;
-  // background-color: #EEE;
   border-bottom: 1px solid $color-gray-light;
   color: $color-gray-med;
-  margin-bottom: 16px;
-  margin: 0 24px 16px;
+  margin: 0 24px 24px;
   padding: 6px 0 24px;
 
-  &>br {
+  &>br:first-child,
+  &>br:last-child,
+  &+br {
     display: none;
   }
 
@@ -655,6 +653,7 @@ pagination {
     // padding-top: 0;
   }
 }
+
 
 // Generic Modal Styles ---------------------- /
 .reveal-modal .close-reveal-modal,
