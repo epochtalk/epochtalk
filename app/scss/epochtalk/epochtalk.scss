@@ -269,6 +269,7 @@ input.icon-padding { padding-right: 40px; }
         border: 1px solid $color-gray-light;
         border-top: none;
         left: -1px;
+        right: -1px;
       }
 
       ul li,
@@ -281,6 +282,13 @@ input.icon-padding { padding-right: 40px; }
       }
 
       .has-dropdown {
+        border: 1px solid transparent;
+
+        &:hover {
+          border-right: 1px solid $color-gray-light;
+          border-left: 1px solid $color-gray-light;
+        }
+
         &:hover,
         &:hover a,
         .dropdown li a {
