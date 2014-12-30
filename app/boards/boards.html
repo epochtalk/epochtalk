@@ -44,7 +44,7 @@
           </div>
 
           <!-- Board Posts and Threads -->
-          <div class="small-12 medium-2 columns text-info text-center">
+          <div class="view-count small-6 medium-2 columns text-info text-center">
             <div>
               <strong ng-bind="board.total_post_count | number:0"></strong> posts
             </div>
@@ -54,7 +54,7 @@
           </div>
 
           <!-- Board Last Post By -->
-          <div class="small-12 medium-3 columns text-info">
+          <div class="last-post small-6 medium-3 columns text-info">
             <div>
               Last post by
               <a ng-href="/profiles/{{ board.last_post_username }}" ng-bind-html="board.last_post_username"></a>
