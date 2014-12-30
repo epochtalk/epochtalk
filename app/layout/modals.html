@@ -106,7 +106,7 @@
           <span ng-if="register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !register.password.$error.required" class="invalid right">
             Password and confirmation do not match
           </span>
-          <input type="password" class="icon-padding" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Password" ng-if="HeaderCtrl.registerModalVisible" required>
+          <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Password" ng-if="HeaderCtrl.registerModalVisible" required>
           <i ng-if="(register.password.$touched && !register.confirmation.$touched && !register.password.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !register.password.$error.required)" class="fa fa-check input-icon valid"></i>
           <i ng-if="(register.password.$touched && register.password.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
         </label>
@@ -120,7 +120,7 @@
           <span ng-if="register.password.$touched && HeaderCtrl.registerUser.password !== '' && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !register.confirmation.$error.required" class="invalid right">
             Password and confirmation do not match
           </span>
-          <input type="password" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Password Confirmation" ng-if="HeaderCtrl.registerModalVisible" required>
+          <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Password Confirmation" ng-if="HeaderCtrl.registerModalVisible" required>
           <i ng-if="(register.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !register.password.$touched && !register.confirmation.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !register.confirmation.$error.required)" class="fa fa-check input-icon valid"></i>
           <i ng-if="(register.confirmation.$touched && register.confirmation.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
         </label>
