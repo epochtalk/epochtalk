@@ -206,23 +206,54 @@
   <modal class="tiny" show="profiles.showChangePass" on-close="profiles.clearChangePassFields">
     <form name="changePass" class="css-form" novalidate>
       <h3 class="thin-dotted-underline">Change Password</h3>
-      <br />
-      <input type="password" placeholder="Old Password" ng-model="profiles.passData.oldPass" ng-if="profiles.changePassModalVisible" auto-focus required>
-      <input type="password" placeholder="New Password" ng-model="profiles.passData.password" required>
-      <input type="password" placeholder="Confirm New Password" ng-model="profiles.passData.confirmation" required>
-      <br />
-      <button class="button tiny no-margin" ng-click="profiles.changePassword()"
-        ng-disabled="changePass.$invalid">
-        Confirm
-      </button>
-      &nbsp;
-      <button class="button tiny no-margin" ng-click="profiles.closeChangePassModal()">
-        Cancel
-      </button>
-
-      <br />
       <div class="error-container">
-        <span class="radius label" ng-if="profiles.changePassStatus.status" ng-bind="profiles.changePassStatus.message" ng-class="profiles.changePassStatus.type"></span>
+        <div ng-if="profiles.changePassStatus.status" ng-bind="profiles.changePassStatus.message" ng-class="profiles.changePassStatus.type"></div>
+      </div>
+
+      <div class='input-section'>
+        <label>&nbsp;
+          <div ng-if="changePass.oldPass.$touched && changePass.oldPass.$error.required" class="invalid right">
+            Old password is required
+          </div>
+          <input ng-if="profiles.changePassModalVisible" type="password" name="oldPass" placeholder="Old Password" ng-model="profiles.passData.oldPass" ng-if="profiles.changePassModalVisible" auto-focus required>
+          <i ng-if="changePass.oldPass.$touched && !changePass.oldPass.$error.required" class="fa fa-check input-icon valid"></i>
+          <i ng-if="changePass.oldPass.$touched && changePass.oldPass.$error.required" class="fa fa-times input-icon invalid"></i>
+        </label>
+      </div>
+
+      <div class='input-section'>
+        <label>
+          <div ng-if="changePass.pass.$touched && changePass.pass.$error.required" class="input-error invalid right">
+            New password is required
+          </div>
+          <div ng-if="changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !changePass.pass.$error.required" class="input-error invalid right">
+            Password and confirmation do not match
+          </div>
+          <input ng-if="profiles.changePassModalVisible" type="password" name="pass" placeholder="New Password" ng-model="profiles.passData.password" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
+          <i ng-if="(changePass.pass.$touched && !changePass.passConf.$touched && !changePass.pass.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !changePass.pass.$error.required)" class="fa fa-check input-icon valid"></i>
+          <i ng-if="(changePass.pass.$touched && changePass.pass.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+        </label>
+      </div>
+
+      <div class='input-section'>
+        <label>
+          <div ng-if="changePass.passConf.$touched && changePass.passConf.$error.required" class="input-error invalid right">
+            Password confirmation is required
+          </div>
+          <div ng-if="changePass.passConf.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !changePass.passConf.$error.required" class="input-error invalid right">
+            Password and confirmation do not match
+          </div>
+          <input ng-if="profiles.changePassModalVisible" type="password" name="passConf" placeholder="Confirm New Password" ng-model="profiles.passData.confirmation" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
+          <i ng-if="(changePass.passConf.$touched  && profiles.passData.confirmation !== '' && !changePass.pass.$touched && !changePass.passConf.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !changePass.passConf.$error.required)" class="fa fa-check input-icon valid"></i>
+          <i ng-if="(changePass.passConf.$touched && changePass.passConf.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+        </label>
+      </div>
+
+      <div class="form-action">
+        <button class="button no-margin" ng-click="profiles.changePassword()"
+          ng-disabled="changePass.$invalid || profiles.passData.password !== profiles.passData.confirmation">
+          Confirm
+        </button>
       </div>
     </form>
     <a class="close-reveal-modal">&#215;</a>

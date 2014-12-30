@@ -118,6 +118,17 @@ label > input[type="checkbox"] {
   padding: 10px 22px;
 }
 
+a.button.prefix { border-top-right-radius: 0px; border-bottom-right-radius: 0px; }
+a.button.postfix { border-top-left-radius: 0px; border-bottom-left-radius: 0px; }
+
+.side-nav li a:not(.button) {
+  color: $color-active;
+}
+
+.side-nav li a:not(.button):hover, .side-nav li a:not(.button):focus {
+  color: $color-active-dark;
+}
+
 // disabled button and disabled button hover/focus styles
 button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus, .button[disabled], button[disabled], .button.disabled {
   background-color: $color-gray-med;
@@ -277,8 +288,10 @@ input.icon-padding { padding-right: 40px; }
       li > a,
       .has-dropdown a {
         background-color: #fff;
-        color: $color-gray-med;
+        color: $color-gray;
         font-size: 0.875rem;
+        font-weight: 400;
+        font-family: $font-sans;
       }
 
       .has-dropdown {
@@ -650,12 +663,13 @@ dialog .close-reveal-modal {
   right: 1rem;
 }
 
-/* Registration Modal */
-.reg-page-title { margin-bottom: 21px; }
-.reg-input-section { margin-bottom: 20px; }
-.reg-input-section input { margin-bottom: 0; }
-.reg-input-section button { margin-bottom: 0; }
-.reg-input-section small { display: block; }
+/* Modal Forms */
+.input-error { margin-top: -25px; }
+.input-section { margin-bottom: 30px; }
+.input-section input { margin-bottom: 0; }
+.input-section button { margin-bottom: 0; }
+.input-section small { display: block; }
+form .input-section:last-child {margin-bottom: 0px; }
 
 /* Profile Page */
 .profile-form label { margin-top: 20px; }

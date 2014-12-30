@@ -6,7 +6,7 @@
         <div class="" ng-if="HeaderCtrl.loginError.status" ng-bind="HeaderCtrl.loginError.message"></div>
       </div>
       <input type="text" placeholder="Username" ng-keyup="HeaderCtrl.enterLogin($event)" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.loginModalVisible" auto-focus required>
-      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)" required>
+      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)" ng-if="HeaderCtrl.loginModalVisible" required>
       <div class="form-login-remember">
         <label><input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">Remember Me</label>
       </div>
@@ -64,67 +64,67 @@
     <form name="register" class="css-form" novalidate>
       <h3 class="thin-dotted-underline">Register</h3>
       <div class="error-container">
-        <div class="" ng-if="HeaderCtrl.registerError.status" ng-bind="HeaderCtrl.registerError.message"></div>
+        <div ng-if="HeaderCtrl.registerError.status" ng-bind="HeaderCtrl.registerError.message"></div>
       </div>
-      <div class='reg-input-section'>
-        <label>Email &mdash; <span class="label secondary input-info">Must be valid to confirm account</span>
-          <span ng-if="register.email.$touched && register.email.$error.required" class="invalid right">
+      <div class='input-section'>
+        <label><div class="inline-block label secondary input-info">Email must be valid to confirm account</div>
+          <div ng-if="register.email.$touched && register.email.$error.required" class="invalid right">
             Email is required
-          </span>
-          <span ng-if="register.email.$touched && register.email.$error.email" class="invalid right">
+          </div>
+          <div ng-if="register.email.$touched && register.email.$error.email" class="invalid right">
             Email is invalid
-          </span>
-          <span ng-if="register.email.$touched && register.email.$error.unique" class="invalid right">
+          </div>
+          <div ng-if="register.email.$touched && register.email.$error.unique" class="invalid right">
             Email is taken
-          </span>
+          </div>
           <input type="email" class="icon-padding" name="email" maxlength="255" ng-model="HeaderCtrl.registerUser.email" unique-email placeholder="Email"  ng-if="HeaderCtrl.registerModalVisible" auto-focus required>
           <i ng-if="register.email.$touched && !register.email.$error.email && !register.email.$error.required && !register.email.$error.unique" class="fa fa-check input-icon valid"></i>
           <i ng-if="register.email.$touched && (register.email.$error.email || register.email.$error.required || register.email.$error.unique)" class="fa fa-times input-icon invalid"></i>
         </label>
       </div>
 
-      <div class="reg-input-section">
-        <label>Username
-          <span ng-if="register.username.$touched && register.username.$error.required" class="invalid right">
+      <div class="input-section">
+        <label>
+          <div ng-if="register.username.$touched && register.username.$error.required" class="input-error invalid right">
           Username is required
-          </span>
-          <span ng-if="register.username.$touched && register.username.$error.unique" class="invalid right">
+          </div>
+          <div ng-if="register.username.$touched && register.username.$error.unique" class="input-error invalid right">
           Username is taken
-          </span>
+          </div>
           <input type="text" class="icon-padding" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username  ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" ng-if="HeaderCtrl.registerModalVisible" required>
           <i ng-if="register.username.$touched && !register.username.$error.unique && !register.username.$error.required" class="fa fa-check input-icon valid"></i>
           <i ng-if="register.username.$touched && (register.username.$error.required || register.username.$error.unique)" class="fa fa-times input-icon invalid"></i>
         </label>
       </div>
 
-      <div class="reg-input-section">
-        <label>Password
-          <span ng-if="register.password.$touched && register.password.$error.required" class="invalid right">
+      <div class="input-section">
+        <label>
+          <div ng-if="register.password.$touched && register.password.$error.required" class="input-error invalid right">
             Password is required
-          </span>
-          <span ng-if="register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !register.password.$error.required" class="invalid right">
+          </div>
+          <div ng-if="register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !register.password.$error.required" class="input-error invalid right">
             Password and confirmation do not match
-          </span>
+          </div>
           <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Password" ng-if="HeaderCtrl.registerModalVisible" required>
           <i ng-if="(register.password.$touched && !register.confirmation.$touched && !register.password.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !register.password.$error.required)" class="fa fa-check input-icon valid"></i>
           <i ng-if="(register.password.$touched && register.password.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
         </label>
       </div>
 
-      <div class="reg-input-section">
-        <label>Confirm Password
-          <span ng-if="register.confirmation.$touched && register.confirmation.$error.required" class="invalid right">
+      <div class="input-section">
+        <label>
+          <div ng-if="register.confirmation.$touched && register.confirmation.$error.required" class="input-error invalid right">
             Password confirmation is required
-          </span>
-          <span ng-if="register.password.$touched && HeaderCtrl.registerUser.password !== '' && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !register.confirmation.$error.required" class="invalid right">
+          </div>
+          <div ng-if="register.password.$touched && HeaderCtrl.registerUser.password !== '' && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !register.confirmation.$error.required" class="input-error invalid right">
             Password and confirmation do not match
-          </span>
+          </div>
           <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Confirm Password" ng-if="HeaderCtrl.registerModalVisible" required>
           <i ng-if="(register.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !register.password.$touched && !register.confirmation.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !register.confirmation.$error.required)" class="fa fa-check input-icon valid"></i>
           <i ng-if="(register.confirmation.$touched && register.confirmation.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
         </label>
       </div>
-      <div class="reg-input-section form-action">
+      <div class="input-section form-action">
         <button class="button no-margin" ng-click="HeaderCtrl.register()" ng-disabled="register.$invalid || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password === '' || HeaderCtrl.registerUser.confirmation === ''">
           Register
         </button>
