@@ -3,7 +3,6 @@
     <form name="login" class="css-form" novalidate>
       <h3 class="thin-dotted-underline">Login</h3>
       <div class="error-container">
-        <!-- <span class="red radius label" ng-if="HeaderCtrl.loginError.status" ng-bind="HeaderCtrl.loginError.message"></span> -->
         <div class="" ng-if="HeaderCtrl.loginError.status" ng-bind="HeaderCtrl.loginError.message"></div>
       </div>
       <input type="text" placeholder="Username" ng-keyup="HeaderCtrl.enterLogin($event)" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.loginModalVisible" auto-focus required>
@@ -29,25 +28,24 @@
   <!-- Recover Account Modal -->
   <modal class="tiny" show="HeaderCtrl.showRecover" on-close="HeaderCtrl.clearRecoverFields">
     <form name="recover" class="css-form" novalidate>
-      <h3 class="thin-dotted-underline">Recover Account</h3>
-      <br />
+      <h3 class="thin-dotted-underline">Recover Your Account</h3>
+      <div class="error-container">
+        <div class="" ng-if="HeaderCtrl.recoverError.status" ng-bind="HeaderCtrl.recoverError.message"></div>
+      </div>
       <input type="text" placeholder="Username or Email" ng-keyup="HeaderCtrl.enterRecover($event)" ng-model="HeaderCtrl.recover.query" ng-disabled="HeaderCtrl.recoverDisabled" ng-if="HeaderCtrl.recoverModalVisible && !HeaderCtrl.recoverSubmitted" auto-focus required>
       <span ng-if="HeaderCtrl.recoverSubmitted">
         Please check the email listed for your account to reset your password.<br /><br />
       </span>
-      <a ng-click="HeaderCtrl.swapModals()">Back to Login</a><br /><br />
-      <span ng-if="!HeaderCtrl.recoverSubmitted">
+      <div class="form-action" ng-if="!HeaderCtrl.recoverSubmitted">
         <button class="button no-margin recover-btn" ng-click="HeaderCtrl.recover()"
           ng-disabled="recover.$invalid || HeaderCtrl.recoverDisabled" ng-bind="HeaderCtrl.recoverBtnLabel"></button>
-        &nbsp;
-      </span>
-      <a class="secondary-action no-margin" ng-click="HeaderCtrl.closeRecoverModal()">
+      </div>
+      <!-- <a class="secondary-action no-margin" ng-click="HeaderCtrl.closeRecoverModal()">
         <span ng-if="!HeaderCtrl.recoverSubmitted">Cancel</span>
         <span ng-if="HeaderCtrl.recoverSubmitted">Done</span>
-      </a>
-      <br />
-      <div class="error-container">
-        <span class="red radius label" ng-if="HeaderCtrl.recoverError.status" ng-bind="HeaderCtrl.recoverError.message"></span>
+      </a> -->
+      <div class="form-action-secondary">
+        <a ng-click="HeaderCtrl.swapModals()">Take me back to Login</a>
       </div>
     </form>
     <a class="close-reveal-modal">&#215;</a>
