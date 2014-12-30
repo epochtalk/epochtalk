@@ -92,6 +92,35 @@ label > input[type="checkbox"] {
 /* Foundation Overrides */
 .magellan-override { padding: 0px; background: transparent; }
 .top-bar .name h1 { font-family: 'Inconsolata'; font-size: 20px; }
+.button, button {
+  background-color: $color-active;
+  -moz-border-radius: 1000px;
+  -webkit-border-radius: 1000px;
+  border-radius: 1000px;
+  border-color: $color-active;
+  font-family: $font-sans;
+  padding: 12px 18px;
+}
+
+// disabled button and disabled button hover/focus styles
+button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus, .button[disabled], button[disabled], .button.disabled {
+  background-color: $color-gray-med;
+  border-color: $color-gray-med;
+}
+
+// button hover/focus styles
+button:hover, button:focus, .button:hover, .button:focus {
+  background-color: $color-active-dark;
+  border-color: $color-active-dark;
+}
+
+.secondary-action {
+  color: $color-gray-med;
+}
+
+.secondary-action:hover, .secondary-action:focus {
+  color: $color-active;
+}
 
 // Page Controls ----------------------------- //
 .page-controls {
