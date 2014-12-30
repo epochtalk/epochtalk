@@ -51,7 +51,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       },
       resolve: {
         user: [ 'User', '$stateParams', function(User, $stateParams) {
-          return User.get({ id: $stateParams.username });
+          return User.get({ id: $stateParams.username }).$promise
+          .then(function(user) { return user; });
         }]
       }
     });
@@ -90,7 +91,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/boards/boards.html'),
           resolve: {
             boards: [ 'Boards', function(Boards) {
-              return Boards.query();
+              return Boards.query().$promise
+              .then(function(categorizedBoards) { return categorizedBoards; });
             }]
           }
         }
@@ -116,7 +118,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/board/board.data.html'),
           resolve: {
             board: ['Boards', '$stateParams', function(Boards, $stateParams) {
-              return Boards.get({ id: $stateParams.boardId});
+              return Boards.get({ id: $stateParams.boardId}).$promise
+              .then(function(board) { return board; });
             }],
             threads: ['Threads', '$stateParams', function(Threads, $stateParams) {
               var query = {
@@ -124,7 +127,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
                 limit: Number($stateParams.limit) || 10,
                 page: Number($stateParams.page) || 1
               };
-              return Threads.byBoard(query);
+              return Threads.byBoard(query).$promise
+              .then(function(threads) { return threads; });
             }],
             page: ['$stateParams', function($stateParams) {
               return Number($stateParams.page) || 1;
@@ -173,7 +177,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/posts/posts.data.html'),
           resolve: {
             thread: ['Threads', '$stateParams', function(Threads, $stateParams) {
-              return Threads.get({ id: $stateParams.threadId });
+              return Threads.get({ id: $stateParams.threadId }).$promise
+              .then(function(thread) { return thread; });
             }],
             posts: ['Threads', 'Posts', '$stateParams', function(Threads, Posts, $stateParams) {
               var limit = $stateParams.limit;
@@ -182,7 +187,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
                 page: Number($stateParams.page) || 1,
                 limit: limit === 'all' ? limit : (Number(limit) || 10)
               };
-              return Posts.byThread(query);
+              return Posts.byThread(query).$promise
+              .then(function(posts) { return posts; });
             }],
             page: ['$stateParams', function($stateParams) {
               return Number($stateParams.page) || 1;
@@ -311,10 +317,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/admin_categories/categories.html'),
           resolve: {
             categories: ['Boards', function(Boards) {
-              return Boards.query();
+              return Boards.query().$promise
+              .then(function(categories) { return categories; });
             }],
             boards: ['Boards', function(Boards) {
-              return Boards.all();
+              return Boards.all().$promise
+              .then(function(boards) {return boards; });
             }]
           }
         }
@@ -332,7 +340,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/admin_users/users.html'),
           resolve: {
             users: ['User', function(User) {
-              return User.all();
+              return User.all().$promise
+              .then(function(users) { return users; });
             }]
           }
         }
@@ -347,16 +356,32 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'content': {
           controller: 'GroupsCtrl',
           controllerAs: 'GroupsCtrl',
-          template: fs.readFileSync(__dirname + '/admin_groups/groups.html'),
+          template: fs.readFileSync(__dirname + '/admin_groups/groups.html')
         }
       },
       resolve: {
         users: ['User', function(User) {
-          return User.all();
+          return User.all().$promise
+          .then(function(users) { return users; });
         }]
       }
     });
 
+    $stateProvider.state('404', {
+      parent: 'public-layout',
+      views: {
+        'content': {
+          template: fs.readFileSync(__dirname + '/layout/404.html')
+        }
+      },
+    });
+
+    // 404 without redirecting user from current url
+    $urlRouterProvider.otherwise(function($injector){
+       var state = $injector.get('$state');
+       state.go('404');
+       return true;
+    });
 
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('AuthInterceptor');

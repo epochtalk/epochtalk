@@ -5,18 +5,14 @@ module.exports = [
     var parent = $scope.$parent.PostsParentCtrl;
     parent.page = page;
     parent.limit = limit;
-    
-    thread.$promise.then(function(threadPromise) {
-      parent.thread_id = threadPromise.id;
-      parent.thread_title = threadPromise.title;
-      parent.thread_post_count = threadPromise.post_count;
-    });
 
-    posts.$promise.then(function(posts) {
-      ctrl.posts = posts;
-      parent.posts = posts;
-      $timeout($anchorScroll);
-    });
+    parent.thread_id = thread.id;
+    parent.thread_title = thread.title;
+    parent.thread_post_count = thread.post_count;
+
+    ctrl.posts = posts;
+    parent.posts = posts;
+    $timeout($anchorScroll);
 
     this.initEditor = parent.initEditor;
     parent.pullPage = function(page, anchor) {

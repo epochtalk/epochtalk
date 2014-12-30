@@ -11,13 +11,11 @@ module.exports = ['$scope', '$anchorScroll', '$stateParams', '$window', 'Auth', 
     // Scroll fix for nested state
     $anchorScroll();
 
-    board.$promise.then(function(board) {
-      ctrl.board = board;
-      ctrl.parent.board  = board;
-      ctrl.parent.newThreadUrl = '/boards/' + board.id + '/threads/new';
-      ctrl.parent.loggedIn = Auth.isAuthenticated;
-      ctrl.parent.pageCount = Math.ceil(board.thread_count / threadLimit);
-    });
+    ctrl.board = board;
+    ctrl.parent.board  = board;
+    ctrl.parent.newThreadUrl = '/boards/' + board.id + '/threads/new';
+    ctrl.parent.loggedIn = Auth.isAuthenticated;
+    ctrl.parent.pageCount = Math.ceil(board.thread_count / threadLimit);
 
     // generate page listing for each thread
     var getPageKeysForThread = function(thread) {
@@ -44,14 +42,12 @@ module.exports = ['$scope', '$anchorScroll', '$stateParams', '$window', 'Auth', 
     };
 
     // page count for each thread
-    threads.$promise.then(function(threads) {
-      ctrl.threads = threads;
-      threads.forEach(function(thread) {
-        thread.page_count = Math.ceil(thread.post_count / postLimit);
-        getPageKeysForThread(thread);
-        // user based UI
-        if (thread.has_new_post) { thread.title_class = 'bold-title'; }
-      });
+    ctrl.threads = threads;
+    threads.forEach(function(thread) {
+      thread.page_count = Math.ceil(thread.post_count / postLimit);
+      getPageKeysForThread(thread);
+      // user based UI
+      if (thread.has_new_post) { thread.title_class = 'bold-title'; }
     });
 
   }

@@ -29,21 +29,19 @@ module.exports = ['$timeout', 'users', function($timeout, users) {
   }];
 
   // Placeholder data
-  users.$promise
-  .then(function(allUsers) {
-    ctrl.groups[0].users = allUsers.slice(0, 3);
-    ctrl.groups[0].member_count = ctrl.groups[0].users.length;
 
-    ctrl.groups[1].users = allUsers.slice(4, 8);
-    ctrl.groups[1].member_count = ctrl.groups[1].users.length;
+  ctrl.groups[0].users = users.slice(0, 3);
+  ctrl.groups[0].member_count = ctrl.groups[0].users.length;
 
-    ctrl.groups[2].users = allUsers.slice(10, 20);
-    ctrl.groups[2].member_count = ctrl.groups[2].users.length;
+  ctrl.groups[1].users = users.slice(4, 8);
+  ctrl.groups[1].member_count = ctrl.groups[1].users.length;
 
-    ctrl.groups[3].users = allUsers;
-    ctrl.groups[3].member_count = ctrl.groups[3].users.length;
-    ctrl.groups[3].users = allUsers.slice(0, 10);
-  });
+  ctrl.groups[2].users = users.slice(10, 20);
+  ctrl.groups[2].member_count = ctrl.groups[2].users.length;
+
+  ctrl.groups[3].users = users;
+  ctrl.groups[3].member_count = ctrl.groups[3].users.length;
+  ctrl.groups[3].users = users.slice(0, 10);
   //-----------------------------------------------------  END TO BE DELETED
 
   this.toggles = {

@@ -11,24 +11,31 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
     this.user = {};
     this.pageStatus = {};
 
-    user.$promise.then(function(user) {
-      ctrl.user = user;
-      ctrl.displayUsername = angular.copy(user.username);
-      ctrl.displayEmail = angular.copy(user.email);
-      ctrl.user.dob = $filter('date')(ctrl.user.dob, 'longDate');
-      ctrl.userAge = calcAge(ctrl.user.dob);
+    // Helper methods
+    var calcAge = function(dob) {
+      if (!dob) { return '';}
+      dob = new Date(dob);
+      var ageDiff = Date.now() - dob.getTime();
+      var ageDate = new Date(ageDiff);
+      return Math.abs(ageDate.getUTCFullYear() - 1970);
+    };
 
-      // This isn't the profile users true local time, just a placeholder
-      ctrl.userLocalTime = $filter('date')(Date.now(), 'medium');
+    this.user = user;
+    this.displayUsername = angular.copy(user.username);
+    this.displayEmail = angular.copy(user.email);
+    this.user.dob = $filter('date')(this.user.dob, 'longDate');
+    this.userAge = calcAge(this.user.dob);
 
-      // Show success message if user changed their username
-      if ($location.search().success) {
-        $location.search('success', undefined);
-        ctrl.pageStatus.status = true;
-        ctrl.pageStatus.message = 'Sucessfully saved profile';
-        ctrl.pageStatus.type = 'success';
-      }
-    });
+    // This isn't the profile users true local time, just a placeholder
+    this.userLocalTime = $filter('date')(Date.now(), 'medium');
+
+    // Show success message if user changed their username
+    if ($location.search().success) {
+      $location.search('success', undefined);
+      this.pageStatus.status = true;
+      this.pageStatus.message = 'Sucessfully saved profile';
+      this.pageStatus.type = 'success';
+    }
 
     this.saveProfile = function() {
       User.update(this.user).$promise
@@ -105,15 +112,6 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
         ctrl.changePassStatus.message = err.data.message;
         ctrl.changePassStatus.type = 'alert';
       });
-    };
-
-    // Helper methods
-    var calcAge = function(dob) {
-      if (!dob) { return '';}
-      dob = new Date(dob);
-      var ageDiff = Date.now() - dob.getTime();
-      var ageDate = new Date(ageDiff);
-      return Math.abs(ageDate.getUTCFullYear() - 1970);
     };
 
   }

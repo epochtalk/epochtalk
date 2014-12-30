@@ -6,15 +6,13 @@ module.exports = ['$timeout', '$anchorScroll', 'boards',
 
     this.toggles = {};
 
-    boards.$promise.then(function(cats) {
-      var sortedCats = _.sortBy(cats, function(cat) { return cat.view_order; });
-      ctrl.categorizedBoards = sortedCats;
-      var i = 0;
-      sortedCats.forEach(function() {
-        ctrl.toggles[i++] = false;
-      });
-      $timeout($anchorScroll);
+    var sortedCats = _.sortBy(boards, function(cat) { return cat.view_order; });
+    this.categorizedBoards = sortedCats;
+    var i = 0;
+    sortedCats.forEach(function() {
+      ctrl.toggles[i++] = false;
     });
+    $timeout($anchorScroll);
 
     this.toggle = function(index){
       ctrl.toggles[index] = !ctrl.toggles[index];

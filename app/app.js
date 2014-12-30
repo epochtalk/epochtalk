@@ -69,7 +69,10 @@ app.config(require('./config'))
     if (next && next.protect) {
       var isAuthenticated = Auth.isAuthenticated();
       // Possibly redirect to login page in the future
-      if (!isAuthenticated) { $timeout(function() { $state.go('boards'); }); }
+      if (!isAuthenticated) {
+        event.preventDefault();
+        $timeout(function() { $state.go('boards'); });
+      }
     }
   });
 
@@ -78,6 +81,11 @@ app.config(require('./config'))
     BreadcrumbSvc.update();
   });
 
+  // 404 if there is an error changing state
+  $rootScope.$on('$stateChangeError', function(event) {
+    event.preventDefault();
+    $state.go('404');
+  });
 }]);
 
 

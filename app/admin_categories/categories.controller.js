@@ -3,20 +3,13 @@ var _ = require('lodash');
 module.exports = ['$scope', '$q', 'Boards', 'boards', 'categories',
   function($scope, $q, Boards, boards, categories) {
     // Initialization
-    var boardCategories;
-    categories.$promise.then(function(allCats) {
-      boardCategories = allCats;
-      return boards.$promise;
-    })
-    .then(function(allBoards) {
-      $scope.catListData = boardCategories;
-      $scope.boardListData = allBoards;
-      $scope.nestableMap = {};
-      $scope.editedBoards = {};
-      $scope.movedBoards = {};
-      $scope.newBoards = [];
-      $scope.updatedCats = [];
-    });
+    $scope.catListData = categories;
+    $scope.boardListData = boards;
+    $scope.nestableMap = {};
+    $scope.editedBoards = {};
+    $scope.movedBoards = {};
+    $scope.newBoards = [];
+    $scope.updatedCats = [];
 
     // 1) Create Boards which have been added
     $scope.processNewBoards = function() {
