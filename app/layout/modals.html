@@ -36,17 +36,16 @@
       <span ng-if="HeaderCtrl.recoverSubmitted">
         Please check the email listed for your account to reset your password.<br /><br />
       </span>
-      <br/>
       <a ng-click="HeaderCtrl.swapModals()">Back to Login</a><br /><br />
       <span ng-if="!HeaderCtrl.recoverSubmitted">
-        <button class="button tiny no-margin recover-btn" ng-click="HeaderCtrl.recover()"
+        <button class="button no-margin recover-btn" ng-click="HeaderCtrl.recover()"
           ng-disabled="recover.$invalid || HeaderCtrl.recoverDisabled" ng-bind="HeaderCtrl.recoverBtnLabel"></button>
         &nbsp;
       </span>
-      <button class="button tiny no-margin" ng-click="HeaderCtrl.closeRecoverModal()">
+      <a class="secondary-action no-margin" ng-click="HeaderCtrl.closeRecoverModal()">
         <span ng-if="!HeaderCtrl.recoverSubmitted">Cancel</span>
         <span ng-if="HeaderCtrl.recoverSubmitted">Done</span>
-      </button>
+      </a>
       <br />
       <div class="error-container">
         <span class="red radius label" ng-if="HeaderCtrl.recoverError.status" ng-bind="HeaderCtrl.recoverError.message"></span>
@@ -127,13 +126,13 @@
         </label>
       </div>
       <div class="reg-input-section">
-        <button class="button tiny no-margin" ng-click="HeaderCtrl.register()" ng-disabled="register.$invalid || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password === '' || HeaderCtrl.registerUser.confirmation === ''">
+        <button class="button no-margin" ng-click="HeaderCtrl.register()" ng-disabled="register.$invalid || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password === '' || HeaderCtrl.registerUser.confirmation === ''">
           Register
         </button>
         &nbsp;
-        <button class="button tiny no-margin" ng-click="HeaderCtrl.closeRegisterModal()">
+        <a class="secondary-action no-margin" ng-click="HeaderCtrl.closeRegisterModal()">
           Cancel
-        </button>
+        </a>
         <div class="error-container">
           <span class="red radius label" ng-if="HeaderCtrl.registerError.status" ng-bind="HeaderCtrl.registerError.message"></span>
         </div>
