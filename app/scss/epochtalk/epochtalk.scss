@@ -531,6 +531,10 @@ pagination {
 
   a {
     color: $color-gray-med;
+
+    &:hover {
+      color: $color-active;
+    }
   }
 }
 
@@ -604,7 +608,7 @@ pagination {
     transition: all .1s ease;
 
     &:hover {
-      color: $color-epoch;
+      color: $color-active;
     }
   }
 }
