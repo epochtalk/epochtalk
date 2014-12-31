@@ -1,5 +1,12 @@
 <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
 
+<div class="row">
+  <div class="small-12 columns board-title">
+    <h4 ng-bind-html="PostsParentCtrl.thread_title"></h3>
+  </div>
+</div>
+<br />
+
 <div class="content-spacer" ui-view="data"></div>
 
 <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
