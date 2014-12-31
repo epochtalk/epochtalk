@@ -1,12 +1,35 @@
 .editor-body {
-  background-color: #fff;
+  // background-color: #fff;
   width: 100%;
   position: absolute;
   top: 40px; 
-  bottom: 25px; }
-.editor-column-left { padding: 0 5px 0 0; height: 100%; }
-.editor-column-right { padding: 0 0 0 5px; height: 100%; }
-.editor-footer { color: #777; }
+  bottom: 25px; 
+
+  input[type],
+  .editor-input,
+  .editor-preview {
+    background-color: #fff;
+    border: 1px solid $color-gray-med;
+    padding: 0.5rem;
+  }
+}
+
+.editor-column-left {
+  padding: 0 5px 0 0;
+  height: 100%;
+  // margin-right: 10px;
+}
+
+.editor-column-right {
+  padding: 0 0 0 5px;
+  height: 100%;
+  // margin-left: 10px;
+}
+
+.editor-footer {
+  color: #777;
+  font-size: .875rem;
+}
 
 .editor-input {
   white-space: pre;
