@@ -17,20 +17,36 @@
 
 <body class="antialiased hide-extras" ng-controller="LayoutCtrl as LayoutCtrl">
   <!-- Header -->
-  <div ng-controller="HeaderCtrl as HeaderCtrl">
-    <div ui-view="header" ng-cloak></div>
+  <div id="header" ng-controller="HeaderCtrl as HeaderCtrl">
+    <div ui-view="header" ng-cloak id="header"></div>
     <div ui-view="modals" ng-cloak></div>
   </div>
-  
+
   <!-- Main content -->
-  <div ui-view="sidenav" ng-cloak></div>
-  <div class="main-content">
+  <div id="sidenav" ui-view="sidenav" ng-cloak></div>
+  <div id="main" class="main-content">
     <div ui-view="body" ng-cloak></div>
   </div>
 
   <!-- Footer -->
-  <div ui-view="footer" ng-cloak></div>
+  <div id="footer" ui-view="footer" ng-cloak></div>
 
+  <!-- Noscript Message -->
+  <noscript>
+    <style>
+      #header, #footer, #sidenav, #main { display: none; }
+    </style>
+    <div class="row">
+      <div class="small-12 medium-4 sad-face columns">
+        :(
+      </div>
+      <div class="small-12 medium-8 noscript-message columns">
+        It appears you have JavaScript disabled, in order to view this forum JavaScript must be enabled.  EpochTalk Forum Software currently does not support noscript, if there is enough demand this feature may be added in the future.
+      </div>
+    </div>
+  </noscript>
+
+  <!-- Load App Bundle -->
   <script src="/static/js/bundle.js" type="text/javascript"></script>
 </body>
 

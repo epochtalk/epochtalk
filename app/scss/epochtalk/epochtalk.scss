@@ -2,6 +2,68 @@
 @import 'epoch-icons';
 
 /** Globals ---------------------------------------------------------------- */
+body { font-family: $font-sans; }
+h1, h2, h3, h4, h5, h6 { font-family: $font-sans; }
+
+a {
+  color: $color-active;
+
+  &:hover, &:focus {
+    color: $color-active-dark;
+  }
+}
+
+.sad-face {
+  font-size:300px;
+}
+
+.noscript-message {
+  margin-top: 200px;
+  font-size: 20px;
+}
+
+// Form style tweaks ------------------------- //
+input[type] {
+  box-shadow: none;
+
+  &.ng-invalid,
+  &.ng-invalid-mismatch {
+    border-color: red;
+  }
+
+  &.ng-untouched {
+    border-color: #ccc;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+label > input[type="checkbox"] {
+  margin-right: .25rem;
+}
+
+.form-action {
+  padding: .5rem 0 1.5rem;
+  text-align: center;
+
+  button, .button {
+    width: 100%;
+  }
+
+  .secondary-action {
+    margin: 0 1rem;
+  }
+}
+
+.form-action-secondary {
+  border-top: 1px solid $color-gray-light;
+  font-size: .875rem;
+  padding-top: 1rem;
+  text-align: center;
+  width: 100%;
+}
 
 .body-scroll-lock { overflow: hidden; }
 .main-content { min-height: 100%; }
@@ -354,6 +416,19 @@ input.icon-padding { padding-right: 40px; }
     float: left;
     font-size: 1.2rem;
     padding-left: 0;
+  }
+
+  .view-count {
+    padding-top: 15px;
+    float: right;
+  }
+  .last-post {
+    padding-top: 15px;
+    float: left;
+  }
+
+  .noscript-message {
+    margin-top: 0px;
   }
 }
 
