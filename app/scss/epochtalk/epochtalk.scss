@@ -581,7 +581,7 @@ pagination {
 
 .post-title {
   color: $color-gray-med;
-  float: left;
+  // float: left;
   width: 100%;
 }
 
@@ -611,7 +611,6 @@ pagination {
 
 .post-body {
   margin-bottom: 1.2rem;
-  float: left;
   // width: 83.3333%;
   word-wrap: break-word;
   overflow-wrap: break-word;
