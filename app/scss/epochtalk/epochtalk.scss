@@ -390,19 +390,50 @@ pagination {
 /* Footer CSS */
 .footer {
   position: relative;
-//  height: 190px;
   clear:both;
-  background-color: #444;
-  color: #ccc;
-  font-size: 14px;
-  padding: 10px 10px 20px 10px;
-  margin-bottom: 0;}
+  background-color: $color-gray-sub;
+  color: $color-gray;
+  font-size: .8rem;
+  padding: 40px 10px 60px 10px;
+  margin-bottom: 0;
+
+  a {
+    color: $color-gray;
+    &:hover {
+      color: $color-active;
+    }
+  }
+  
+  ul {
+    font-size: .8rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    
+    li {
+      
+    }
+  }
+
+  .title {
+    font-weight: 600;
+    line-height: 3;
+  }
+
+  .copyright,
+  .attrib {
+    display: block;
+    text-align: right;
+  }
+
+  .copyright {
+    font-size: 1.5rem;
+    font-weight: 200;
+  }
+}
+
 .footer h3 { color: #999;}
-.copyright {
-  font-size: 12px;
-  margin-top: 10px;
-  text-align: center;
-  display: block; }
+
 
 /* Breadcrumb CSS */
 .breadcrumbs > * a {
@@ -446,7 +477,7 @@ pagination {
 
 /* Boards Page */
 .board-header {
-  background-color: #f9f9f9;
+  background-color: $color-gray-sub;
   padding: 20px 0 0;
   margin-bottom: 2rem;
   margin-top: -2rem;
