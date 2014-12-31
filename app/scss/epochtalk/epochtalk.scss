@@ -522,11 +522,16 @@ pagination {
 
 .post-signature {
   clear: both;
+  color: $color-gray-med;
   font-size: 13px;
   height: 80px;
   overflow: hidden;
   word-wrap: break-word;
   text-overflow: ellipsis;
+
+  a {
+    color: $color-gray-med;
+  }
 }
 
 .post-block {
