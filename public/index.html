@@ -17,24 +17,24 @@
 
 <body class="antialiased hide-extras" ng-controller="LayoutCtrl as LayoutCtrl">
   <!-- Header -->
-  <div id="header" ng-controller="HeaderCtrl as HeaderCtrl">
+  <div id="header-wrap" ng-controller="HeaderCtrl as HeaderCtrl">
     <div ui-view="header" ng-cloak id="header"></div>
     <div ui-view="modals" ng-cloak></div>
   </div>
 
   <!-- Main content -->
-  <div id="sidenav" ui-view="sidenav" ng-cloak></div>
-  <div id="main" class="main-content">
+  <div id="sidenav-wrap" ui-view="sidenav" ng-cloak></div>
+  <div id="main-wrap" class="main-content">
     <div ui-view="body" ng-cloak></div>
   </div>
 
   <!-- Footer -->
-  <div id="footer" ui-view="footer" ng-cloak></div>
+  <div id="footer-wrap" ui-view="footer" ng-cloak></div>
 
   <!-- Noscript Message -->
   <noscript>
     <style>
-      #header, #footer, #sidenav, #main { display: none; }
+      #header-wrap, #footer-wrap, #sidenav-wrap, #main-wrap { display: none; }
     </style>
     <div class="row">
       <div class="small-12 medium-4 sad-face columns">
