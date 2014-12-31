@@ -802,6 +802,30 @@ form .input-section:last-child {margin-bottom: 0px; }
   .noscript-message {
     margin-top: 0px;
   }
+
+  .footer {
+    ul {
+      margin-bottom: 1rem;
+    }
+
+    li {
+      display: inline-block;
+      margin-right: 1rem;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .title {
+      display: block;
+      line-height: inherit;
+    }
+    .copyright,
+    .attrib {
+      text-align: left;
+    }
+  }
 }
 
 /* 404 Not Found Page */
