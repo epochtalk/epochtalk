@@ -33,6 +33,24 @@ module.exports = {
     request.payload.raw_body = sanitize.bbcode(request.payload.raw_body);
     return reply();
   },
+  adjustQuoteDate: function(request, reply) {
+    var input = request.payload.raw_body;
+    var reg = /\[quote.*?(date=[0-9]*).*?\]/gi;
+    var matchArray;
+    var replaceArray = [];
+
+    while ((matchArray = reg.exec(input)) !== null) {
+      replaceArray.push(matchArray[1]);
+    }
+
+    replaceArray.forEach(function(oldDate) {
+      var date = Number(oldDate.replace('date=', ''));
+      var newDate = 'date=' + date * 1000;
+      request.payload.raw_body = request.payload.raw_body.replace(oldDate, newDate);
+    });
+
+    return reply();
+  },
   parseEncodings: function(request, reply) {
     // check if raw_body has any bbcode
     if (request.payload.raw_body.indexOf('[') >= 0) {

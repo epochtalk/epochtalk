@@ -35,6 +35,7 @@ exports.import = {
   // auth: { strategy: 'jwt' },
   pre: [
     { method: pre.clean },
+    { method: pre.adjustQuoteDate },
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
