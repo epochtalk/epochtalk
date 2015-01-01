@@ -7,7 +7,7 @@ var good = require('good');
 var jwt = require('hapi-auth-jsonwebtoken');
 var mkdirp = require('mkdirp');
 var config = require(path.join(__dirname, 'config'));
-var memDb = require(path.join(__dirname, 'memStore')).db;
+var memDb = require(path.join(__dirname, 'memstore')).db;
 
 var serverOpts = {
   // cors disabled by default

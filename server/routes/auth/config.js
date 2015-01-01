@@ -7,7 +7,7 @@ var authValidator = require('epoch-validator').api.auth;
 var path = require('path');
 var emailer = require(path.join(__dirname, '..', '..', 'emailer'));
 var config = require(path.join(__dirname, '..', '..', 'config'));
-var memDb = require(path.join(__dirname, '..', '..', 'memStore')).db;
+var memDb = require(path.join(__dirname, '..', '..', 'memstore')).db;
 var pre = require(path.join(__dirname, 'pre'));
 
 // Helpers
