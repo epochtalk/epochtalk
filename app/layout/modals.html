@@ -125,7 +125,7 @@
         </label>
       </div>
       <div class="input-section form-action">
-        <button class="button no-margin" ng-click="HeaderCtrl.register()" ng-disabled="register.$invalid || !register.username.$touched || !register.email.$touched || !register.password.$touched || !register.confirmation.$touched  || register.username.$error.unique || register.email.$error.unique || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password === '' || HeaderCtrl.registerUser.confirmation === ''">
+        <button class="button no-margin" ng-click="HeaderCtrl.register()" ng-disabled="register.$invalid || !register.username.$touched || !register.email.$touched || !register.password.$touched || !register.confirmation.$dirty  || register.username.$error.unique || register.email.$error.unique || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password === '' || HeaderCtrl.registerUser.confirmation === ''">
           Register
         </button>
       </div>
