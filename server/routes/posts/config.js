@@ -1,7 +1,7 @@
-var core = require('epoch-core-pg')();
+var path = require('path');
+var core = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var postValidator = require('epoch-validator').api.posts;
-var path = require('path');
 var pre = require(path.join(__dirname, 'pre'));
 
 // Route handlers/configs

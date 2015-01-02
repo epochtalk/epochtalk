@@ -1,10 +1,10 @@
-var core = require('epoch-core-pg')();
+var path = require('path');
+var core = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
 var authValidator = require('epoch-validator').api.auth;
-var path = require('path');
 var emailer = require(path.join(__dirname, '..', '..', 'emailer'));
 var config = require(path.join(__dirname, '..', '..', 'config'));
 var memDb = require(path.join(__dirname, '..', '..', 'memstore')).db;

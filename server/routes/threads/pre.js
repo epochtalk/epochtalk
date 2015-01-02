@@ -1,6 +1,6 @@
-var core = require('epoch-core-pg')();
-var uuid = require('node-uuid');
 var path = require('path');
+var core = require(path.join(__dirname, '..', '..', '..', 'db'));
+var uuid = require('node-uuid');
 var memDb = require(path.join('..', '..', 'memstore')).db;
 
 // Helpers

@@ -1,4 +1,5 @@
-var core = require('epoch-core-pg')();
+var path = require('path');
+var core = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var breadcrumbValidator = require('epoch-validator').api.breadcrumbs;
 

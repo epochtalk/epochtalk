@@ -1,7 +1,7 @@
-var core = require('epoch-core-pg')();
+var path = require('path');
+var core = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var threadValidator = require('epoch-validator').api.threads;
-var path = require('path');
 var postPre = require(path.join(__dirname, '..', 'posts', 'pre'));
 var pre = require(path.join(__dirname, 'pre'));
 
