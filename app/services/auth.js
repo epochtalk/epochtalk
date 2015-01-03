@@ -134,6 +134,11 @@ module.exports = ['$location', '$window', 'User',
         return authenticated;
       },
 
+      getRoles: function() {
+        return User.get({ id: getUsername() }).$promise
+        .then(function(user) { return user.roles || []; });
+      },
+
       getUsername: getUsername,
       setUsername: setUsername,
 

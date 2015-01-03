@@ -46,14 +46,15 @@
             </li> -->
             <li class="has-dropdown">
               <div><img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="" class="avatar">
-              <a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}" ng-bind-html="HeaderCtrl.currentUser()"></a></div>
+              <a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}" ng-bind-html="HeaderCtrl.currentUsername()"></a></div>
               <ul class="dropdown">
-                <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}">Profile</a></li>
+                <li ng-if="HeaderCtrl.currentUserIsAdmin"><a ng-href="/admin">Admin Panel</a></li>
+                <li ng-if="HeaderCtrl.currentUserIsMod"><a ng-href="/moderate">Mod Panel</a></li>
+                <li><a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}">Profile</a></li>
                 <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
               </ul>
             </li>
           </ul>
-          
           <!-- User menu on small sized screens -->
           <ul ng-if="HeaderCtrl.loggedIn()" class="right show-for-small-only">
             <!-- <li class="search">
@@ -66,10 +67,12 @@
             </li> -->
             <li>
               <div><img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="" class="avatar">
-              <a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}" ng-bind-html="HeaderCtrl.currentUser()"></a></div>
+              <a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}" ng-bind-html="HeaderCtrl.currentUsername()"></a></div>
             </li>
-            </li>              
-            <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser() }}">Profile</a></li>
+            </li>
+            <li ng-if="HeaderCtrl.currentUserIsAdmin"><a ng-href="/admin">Admin Panel</a></li>
+            <li ng-if="HeaderCtrl.currentUserIsMod"><a ng-href="/moderate">Mod Panel</a></li>
+            <li><a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}">Profile</a></li>
             <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
           </ul>
         </section>

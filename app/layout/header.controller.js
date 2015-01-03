@@ -2,9 +2,33 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
   function($state, $location, $timeout, Auth, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
-    this.currentUser = Auth.getUsername;
+    this.currentUserIsAdmin = false;
+    this.currentUserIsMod = false;
+    this.currentUsername = Auth.getUsername;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
     Auth.checkAuthentication();
+
+    // Used to determine if user is an admin or mod for displaying
+    // extra menu items for mod/admin panels
+    var checkUserRoles = function() {
+      ctrl.currentUserIsAdmin = false;
+      ctrl.currentUserIsMod = false;
+      Auth.getRoles()
+      .then(function(roles) {
+        roles.forEach(function(role) {
+          // This may change in the future, for now this method looks if the user
+          // is and admin or mod by doing a string comparison to the users role names
+          if (role.name === 'Moderator' || role.name === 'Global Moderator') {
+            ctrl.currentUserIsMod = true;
+          }
+          else if (role.name === 'Administrator') {
+            ctrl.currentUserIsAdmin = true;
+          }
+        });
+      });
+    };
+
+    checkUserRoles(); // Check the authenticated users roles
 
     // Login Modal
     this.user = {}; // Login form Model
@@ -63,6 +87,7 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
         function() {
           ctrl.closeLoginModal();
           ctrl.clearLoginFields();
+          checkUserRoles();
           $timeout(function() { $state.go('.', $location.search(), { reload: true }); });
         },
         function(err) {
@@ -74,6 +99,8 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
 
     this.logout = function() {
       Auth.logout(function() {
+        ctrl.currentUserIsMod = false;
+        ctrl.currentUserIsAdmin = false;
         $timeout(function() { $state.go('.', $location.search(), { reload: true }); });
       });
     };
@@ -100,6 +127,7 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
         function() {
           ctrl.clearRegisterFields();
           ctrl.closeRegisterModal();
+          checkUserRoles();
           $timeout(function() {
             ctrl.showRegisterSuccess = true;
           }, 500);
