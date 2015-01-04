@@ -46,8 +46,7 @@ plan.remote(function(remote) {
   remote.log('Reload application');
   remote.sudo('ln -snf ~/' + tmpDir + ' ~/'+appName, {user: username});
   remote.exec('cp ~/btctalk.env ~/' + appName + '/.env');
-  remote.exec('cd ~/' + appName);
-  remote.exec('foreman export systemd /tmp/ -a ' + appName);
+  remote.exec('foreman export systemd /tmp/ -a ' + appName + ' -f ~/' + appName + '/Procfile -d ~/' + appName);
   remote.sudo('cp /tmp/' + appName + '*.service /tmp/' + appName + '*.target /usr/lib/systemd/system/');
   remote.sudo('systemctl enable ' + appName + '.target');
   remote.sudo('systemctl stop ' + appName + '.target');

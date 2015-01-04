@@ -1,6 +1,5 @@
 /* jshint node: true */
 'use strict';
-
 var path = require('path');
 var Hapi = require('hapi');
 var good = require('good');
