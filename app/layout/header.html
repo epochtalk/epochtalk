@@ -89,6 +89,7 @@
           <a ng-if="!$last && breadcrumb.url" ng-href="{{ breadcrumb.url }}" ng-bind-html="breadcrumb.label | truncate:30" class="margin-right-xs"></a>
           <span ng-if="$last || !breadcrumb.url" ng-bind-html="breadcrumb.label | truncate:30"></span>
       </li>
+      <li class="news right text-right"><strong>Latest News:</strong> <a href="#news"></a></li>
     </ul>
   </div>
 </div>
