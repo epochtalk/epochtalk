@@ -45,11 +45,13 @@ plan.remote(function(remote) {
   remote.sudo('npm --prefix ~/' + tmpDir + ' install ~/' + tmpDir, {user: username});
   remote.log('Reload application');
   remote.sudo('ln -snf ~/' + tmpDir + ' ~/'+appName, {user: username});
-  remote.exec('cp ~/btctalk.env ~/' + appName + '/.env');
+  remote.exec('ln -s ~/btctalk.env ~/' + appName + '/.env');
   remote.exec('cd ~/' + appName + '; npm run build');
   // remote.sudo('rm -rf /tmp/' + appName + '*');
   // remote.exec('cd ~/' + appName + '; nf export -t systemd -o /tmp/ -a ' + appName);
   // remote.sudo('cp /tmp/' + appName + '*.service /tmp/' + appName + '*.target /usr/lib/systemd/system/');
   // remote.sudo('systemctl enable ' + appName + '.target');
-  remote.sudo('systemctl restart ' + appName + '.target');
+  remote.sudo('systemctl restart ' + appName + '-server.target');
+  remote.sudo('systemctl restart ' + appName + '-emailer.target');
+  remote.sudo('systemctl restart ' + appName + '-images.target');
 });
