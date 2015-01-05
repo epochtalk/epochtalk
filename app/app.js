@@ -63,28 +63,17 @@ app.config(require('./config'))
     $timeout(function() { $(document).foundation(); });
   });
 
-  // Redirect users from protected routes
-  // TODO: Add check to see if user is admin
-  $rootScope.$on('$stateChangeStart', function (event, next) {
-    if (next && next.protect) {
-      var isAuthenticated = Auth.isAuthenticated();
-      // Possibly redirect to login page in the future
-      if (!isAuthenticated) {
-        event.preventDefault();
-        $timeout(function() { $state.go('boards'); });
-      }
-    }
-  });
-
   // Dynamically populate breadcrumbs
   $rootScope.$on('$stateChangeSuccess', function() {
     BreadcrumbSvc.update();
   });
 
   // 404 if there is an error changing state
-  $rootScope.$on('$stateChangeError', function(event) {
+  $rootScope.$on('$stateChangeError', function(event, next, nextParams, prev, prevParams, error) {
     event.preventDefault();
-    $state.go('404');
+    // Check if state change error was caused by unauthorized access to a route
+    if (error === 'Unauthorized') { $state.go('boards'); }
+    else { $state.go('404'); }
   });
 }]);
 

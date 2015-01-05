@@ -142,6 +142,34 @@ module.exports = ['$location', '$window', 'User',
       getUsername: getUsername,
       setUsername: setUsername,
 
+      checkAdmin: function() {
+        return User.get({ id: getUsername() }).$promise
+        .then(function(user) {
+          user.roles = user.roles || [];
+          var isAdmin = false;
+          user.roles.forEach(function(role) {
+            if (role.name === 'Administrator') { isAdmin = true; }
+          });
+          return isAdmin;
+        })
+        .catch(function() { return false; });
+      },
+
+      checkModerator: function() {
+        return User.get({ id: getUsername() }).$promise
+        .then(function(user) {
+          user.roles = user.roles || [];
+          var isMod = false;
+          user.roles.forEach(function(role) {
+            if (role.name === 'Administrator' || role.name === 'Moderator' || role.name === 'Global Moderator') {
+             isMod = true;
+           }
+          });
+          return isMod;
+        })
+        .catch(function() { return false; });
+      },
+
       checkUsername: function(username, callback, error) {
         User.checkUsername({ username: username }, callback, error);
       },
