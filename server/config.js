@@ -5,7 +5,7 @@ var config = {
   root: rootPath,
   port: process.env.PORT || 8080,
   logEnabled: process.env.LOG_ENABLED || true,
-  publicUrl: 'http://localhost:8080',
+  publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080',
   privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure',
   cdnUrl: process.env.CDN_URL || 'http://localhost:8280/images',
   s3Bucket: process.env.S3_BUCKET || 'epoch-dev',
