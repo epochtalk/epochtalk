@@ -7,8 +7,12 @@ var pre = require(path.join(__dirname, 'pre'));
 // Route handlers/configs
 exports.create = {
   auth: { mode: 'required', strategy: 'jwt' },
+
   validate: { payload: boardValidator.schema.create },
-  pre: [ { method: pre.clean } ],
+  pre: [
+    { method: pre.clean },
+    { method: pre.adminCheck }
+  ],
   handler: function(request, reply) {
     core.boards.create(request.payload)
     .then(function(board) { reply(board); })
@@ -48,7 +52,7 @@ exports.allCategories = {
     core.boards.allCategories()
     .then(function(categories) { reply(categories); })
     .catch(function(err) {
-      console.log(err); 
+      console.log(err);
       reply(Hapi.error.internal());
     });
   }
@@ -56,6 +60,7 @@ exports.allCategories = {
 
 exports.updateCategories = {
   auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: pre.adminCheck } ],
   validate: { payload: boardValidator.schema.categories },
   handler: function(request, reply) {
     // update board on core
@@ -71,7 +76,10 @@ exports.update = {
     payload: boardValidator.schema.update,
     params: boardValidator.schema.id
   },
-  pre: [ { method: pre.clean } ],
+  pre: [
+    { method: pre.clean },
+    { method: pre.adminCheck }
+  ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = {
