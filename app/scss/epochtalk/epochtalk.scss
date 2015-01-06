@@ -164,23 +164,94 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 /* Admin Panel CSS */
+#header-wrap #header {
+  .admin-header {
+    background-color: $color-gray-dark;
+
+    .name a {
+      color: #fff
+    }
+  }
+
+  .admin-header {
+    .top-bar-section {
+      ul {
+        li {
+          background-color: transparent;
+
+          &>a {
+            background-color: transparent;
+            color: #fff;
+
+            &:hover {
+              color: $color-active-light;
+            }
+          }
+        }
+      }
+
+      .form-group {
+        border-color: $color-gray;
+
+        input[type="text"] {
+          background-color: transparent;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
 .admin-header {
+  // border-bottom: 1px solid $color-gray-sub;
+  // height: 3.2rem;
   position: fixed;
   width: 100%;
   z-index: 999;
+
+  .title-area {
+    margin-left: 1rem;
+
+    .name {
+      height: inherit;
+      h1 {
+        line-height: 2.6125rem;
+      }
+    }
+  }
 }
 #sidebar {
   position: fixed;
   width: 225px;
   z-index: 998;
   height: 100%;
-  margin-top: 45px;
+  margin-top: 12px;
   padding-bottom: 45px;
   background-color: #EFEFEF;
   overflow-y: auto;
+
+  .sidebar-category {
+    padding-left: 8px;
+    margin: 0;
+    font-weight:bold;
+    display: inline-block;
+  }
+  .sidebar-collapse-btn {
+    font-size: 0.7rem;
+    padding-left: 12px;
+    color:  $color-active;
+    display:inline-block;
+    position: relative;
+    top: -1px;
+    width: 15px;
+    margin-right: 5px;
+  }
+
+  .collapsible {
+    margin-left: 20px;
+  }
 }
-.sidebar-category { padding-left: 12px; margin: 0; font-weight:bold; display: inline-block; }
-.sidebar-collapse-btn { padding-left: 12px; color:  $color-active; display:inline-block; position: relative; top: -1px; width: 15px; margin-right: 5px; font-size: 1em;}
+
 .sidebar-spacer { padding-top: 15px; }
 .has-form { min-width: 400px; }
 .admin-padding {
@@ -274,6 +345,12 @@ input.icon-padding { padding-right: 40px; }
         font-size: 0.875rem;
         font-weight: 400;
         font-family: $font-sans;
+      }
+
+      ul > li > a {
+        &:hover {
+              color: $color-active;
+            }
       }
 
       .has-dropdown {
