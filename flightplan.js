@@ -46,6 +46,7 @@ plan.remote(function(remote) {
   remote.log('Reload application');
   remote.sudo('ln -snf ~/' + tmpDir + ' ~/'+appName, {user: username});
   remote.exec('ln -s ~/btctalk.env ~/' + appName + '/.env');
+  remote.exec('ln -s ~/config.json ~/' + appName + '/config.json');
   remote.exec('cd ~/' + appName + '; npm run build');
   // remote.sudo('rm -rf /tmp/' + appName + '*');
   // remote.exec('cd ~/' + appName + '; nf export -t systemd -o /tmp/ -a ' + appName);
