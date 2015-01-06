@@ -739,7 +739,7 @@ form .input-section:last-child {margin-bottom: 0px; }
 // .post-toolbar li { display: inline; list-style-type: none; padding-right: 10px; }
 // .post-toolbar li:first-child { padding-left: 10px; }
 .editor-container {
-  background-color: $color-gray-sub;
+  background-color: $color-gray-dark;
   position: relative;
   padding-top: 20px;
   border-top: 4px solid $color-active;
@@ -750,8 +750,27 @@ form .input-section:last-child {margin-bottom: 0px; }
   top: 20px;
   bottom: 90px;
   left: 0.9375rem;
-  right: 0.9375rem; }
-.editor-form label { margin-top: 0; }
+  right: 0.9375rem; 
+  
+  label {
+    color: $color-gray-light;
+    margin-top: 0;
+  }
+
+  .editor-column-left,
+  .editor-column-right {
+    label {
+      margin-bottom: 0.2rem;
+    }
+  }
+
+  
+  .editor-footer {
+    color: $color-gray;
+    padding-top: 0.3rem;
+  }
+}
+
 .editor-form div label { margin-top: 20px; }
 .editor-form input { margin-bottom: 0; }
 .editor-form small {
