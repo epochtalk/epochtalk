@@ -247,8 +247,27 @@ button:hover, button:focus, .button:hover, .button:focus {
     margin-right: 5px;
   }
 
+  .side-nav {
+    padding-top: 0;
+    
+    li {
+      border-top: 1px solid $color-gray-light;
+      padding: 1rem 0;
+
+      ul {
+        list-style-type: none;
+        margin-top: 0.25rem;
+      }
+    }
+  }
+
   .collapsible {
     margin-left: 20px;
+
+    li {
+        border-top: none;
+        padding: 0;
+      }
   }
 }
 
