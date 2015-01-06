@@ -53,6 +53,7 @@ app.directive('uniqueUsername',     require('./components/unique_username/unique
 app.directive('uniqueEmail',        require('./components/unique_email/unique-email.directive.js'));
 app.directive('scrollLock',        require('./components/scroll_lock/scroll-lock.directive.js'));
 app.directive('resizeable',        require('./components/resizeable/resizeable.directive.js'));
+app.directive('autoLink',        require('./components/auto_link/autolink.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))
