@@ -45,9 +45,19 @@
       </form>
       <!-- Editor Controls -->
       <div class="editor-button-container">
-        <button class="button expand" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.posting.post.raw_body.length > 0">
-          Send
-        </button>
+        <div class="row">
+          <div class="medium-6 columns">
+            <button class="button secondary expand" ng-click="PostsParentCtrl.cancelPost()">
+              Cancel
+            </button>
+          </div>
+          <div class="medium-6 columns">
+            <button class="button expand" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.posting.post.raw_body.length > 0">
+              Send
+            </button>
+          </div>
+        </div>
+
         <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
       </div>
     </div>

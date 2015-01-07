@@ -104,5 +104,10 @@ module.exports = [
         console.err(response);
       });
     };
+
+    this.cancelPost = function() {
+      this.showEditor = false;
+      this.initEditor(null, false);
+    };
   }
 ];
