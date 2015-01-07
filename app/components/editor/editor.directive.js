@@ -124,9 +124,6 @@ module.exports = [
 
       var routeLeaveFunction = function() {
         return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-          // check state routes differ
-          if (toState.url === fromState.url) { return; }
-
           if ($scope.originalText !== $scope.rawBody) {
             var message = confirmMessage + ' Are you sure you want to leave?';
             var answer = confirm(message);
@@ -250,11 +247,11 @@ module.exports = [
         else {
           editorElement.html(scope.body);
           scope.originalText = scope.body;
+          scope.rawBody = scope.body;
         }
         var processed = bbcodeParser.process({text: editorElement.html()}).html;
         previewElement.html(processed);
       };
-      init();
 
       // reset switch
       scope.$watch('reset', function(newValue, oldValue) {
