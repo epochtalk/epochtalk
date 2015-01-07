@@ -959,10 +959,29 @@ form .input-section:last-child {margin-bottom: 0px; }
 .editor-button-container {
   position: absolute;
   bottom: 0px;
-  // left: 0.9375rem;
   right: 0.9375rem;
   height: 70px;
-  width: 240px; }
+  text-align: right;
+  width: 49%;
+
+  button.button {
+    margin-right: 1.9%;
+    width: 48%;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.cancel {
+      background-color: transparent;
+      color: $color-gray-light;
+      width: 25%;
+      &:hover {
+        color: $color-active;
+      }
+    }
+  } 
+}
 
 // Media Queries
 @media only screen and (max-width: 40em) {
@@ -1051,6 +1070,23 @@ form .input-section:last-child {margin-bottom: 0px; }
     .copyright,
     .attrib {
       text-align: left;
+    }
+  }
+
+  .editor-button-container {
+    right: 0;
+    left: 0;
+    height: 60px;
+    text-align: center;
+    width: 100%;
+
+    button.button {
+      margin: 0;
+      width: 90%;
+
+      &.cancel {
+        display: none;
+      }
     }
   }
 }
