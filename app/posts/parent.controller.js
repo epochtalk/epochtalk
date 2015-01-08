@@ -115,7 +115,8 @@ module.exports = [
           }
         }
 
-        ctrl.cancelPost();
+        initEditor();
+        ctrl.closeEditor();
       })
       .catch(function(response) {
         ctrl.posting.error = {};
@@ -127,7 +128,7 @@ module.exports = [
     this.cancelPost = function() {
       if (discardAlert()) {
         initEditor();
-        this.closeEditor();
+        ctrl.closeEditor();
       }
     };
   }
