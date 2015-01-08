@@ -210,6 +210,7 @@ module.exports = [
 
       var routeLeaveFunction = function() {
         return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+          if (toState.url === fromState.url) { return; }
           if ($scope.dirty) {
             var message = confirmMessage + ' Are you sure you want to leave?';
             var answer = confirm(message);
