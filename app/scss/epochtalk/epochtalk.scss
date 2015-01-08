@@ -885,7 +885,8 @@ form .input-section:last-child {margin-bottom: 0px; }
   z-index: 1000; }
 
 .post-toolbar {
-  background-color: $color-active;
+  // background-color: $color-active;
+  background-color: $color-gray-dark;
   border: 2px solid #fff;
   border-bottom: none;
   color: #fff;
@@ -913,8 +914,19 @@ form .input-section:last-child {margin-bottom: 0px; }
   background-color: $color-gray-dark;
   position: relative;
   padding-top: 20px;
-  border-top: 4px solid $color-active;
-  min-height: 288px; }
+  // border-top: 4px solid $color-active;
+  min-height: 288px; 
+
+  &:after {
+    content: url('/static/img/btn-dragbar.png');
+    display: block;
+    position: relative;
+    text-align: center;
+    top: -28px;
+    width: 100%;
+  }
+}
+
 /* editor form */
 .editor-form {
   position: absolute;
@@ -1071,6 +1083,12 @@ form .input-section:last-child {margin-bottom: 0px; }
     .copyright,
     .attrib {
       text-align: left;
+    }
+  }
+
+  .editor-container {
+    &:after {
+      display: none;
     }
   }
 
