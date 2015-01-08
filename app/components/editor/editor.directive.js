@@ -3,23 +3,50 @@ var bbcodeParser = require('bbcode-parser');
 var fs = require('fs');
 
 module.exports = [
-  '$timeout', '$window', '$rootScope', 'S3ImageUpload',
-  function($timeout, $window, $rootScope, s3ImageUpload) {
+  '$timeout', '$document', '$window', '$rootScope', 'S3ImageUpload',
+  function($timeout, $document, $window, $rootScope, s3ImageUpload) {
   return {
     restrict: 'E',
     scope: {
       body: '=',
       rawBody: '=',
-      reset: '=',
-      focusEditor: '=',
-      exitEditor: '='
+      resetSwitch: '=',
+      focusSwitch: '=',
+      exitSwitch: '='
     },
     controller: function($scope, $element) {
-      var inputElement = $element.find('input')[0];
-      var footer = $element[0].getElementsByClassName('editor-footer')[0];
+      // reset switch
+      $scope.$watch('resetSwitch', function(newValue) {
+        if (newValue === true) { $scope.resetEditor(); }
+      });
+
+      // autofocus switch
+      $scope.$watch('focusSwitch', function(newValue) {
+        if (newValue === true) { $scope.focusEditor(); }
+      });
+
+      // exit switch
+      $scope.$watch('exitSwitch', function(newValue) {
+        $scope.exitEditor(newValue);
+      });
+    },
+    link: function($scope, $element) {
+      // editor input elements
       var editor = $element[0].getElementsByClassName('editor-input')[0];
-      $scope.openImagePicker = function(e) { inputElement.click(); };
+      var $editor = angular.element(editor);
+      // editor preview elements
+      var preview = $element[0].getElementsByClassName('editor-preview')[0];
+      var $preview = angular.element(preview);
+      // editor footer 
+      var footer = $element[0].getElementsByClassName('editor-footer')[0];
+      var $footer = angular.element(footer);
+
+      // -- Images 
+
+      // file input (raw html)
       $scope.images = [];
+      var inputElement = $element.find('input')[0];
+      $scope.openImagePicker = function() { inputElement.click(); };
 
       $scope.insertImageUrl = function(url) {
         $(editor).focus();
@@ -28,7 +55,7 @@ module.exports = [
           var range = sel.getRangeAt(0);
           range.collapse(false);
           var text = '[img]' + url + '[/img]';
-          range.insertNode( document.createTextNode(text) );
+          range.insertNode( $document[0].createTextNode(text) );
         }
         $(editor).blur();
       };
@@ -74,7 +101,7 @@ module.exports = [
 
       // bind to changes in the image input
       // because angular can handle ng-change on input[file=type]
-      angular.element(inputElement).bind('change', function() {
+      angular.element(inputElement).on('change', function() {
         // get all the images from the file picker
         var fileList = inputElement.files;
         var images = [];
@@ -82,27 +109,18 @@ module.exports = [
           images.push(fileList[i]);
         }
         upload(images);
-        inputElement.value = ""; // clear filelist for reuse
+        inputElement.value = ''; // clear filelist for reuse
       });
 
       // drap and drop implementation
-      footer.addEventListener("dragenter", dragenter, false);
-      function dragenter(e) {
+      var cancelEvent = function(e) {
         e.stopPropagation();
         e.preventDefault();
-      }
-
-      footer.addEventListener("dragover", dragover, false);
-      function dragover(e) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-
-      footer.addEventListener("drop", drop, false);
-      function drop(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
+      };
+      $footer.on("dragenter", cancelEvent);
+      $footer.on("dragover", cancelEvent);
+      $footer.on("drop", function(e) {
+        cancelEvent(e);
         var dt = e.dataTransfer;
         var fileList = dt.files;
         var images = [];
@@ -112,56 +130,9 @@ module.exports = [
           images.push(file);
         }
         upload(images);
-      }
-
-      // user exit bindings
-      var exitingAllowed = false;
-      var confirmMessage = 'It looks like a post is being written.';
-      var exitFunction = function(e) {
-        if ($scope.originalText !== $scope.rawBody) { return confirmMessage; }
-      };
-      $window.onbeforeunload = exitFunction;
-
-      var routeLeaveFunction = function() {
-        return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-          if ($scope.originalText !== $scope.rawBody) {
-            var message = confirmMessage + ' Are you sure you want to leave?';
-            var answer = confirm(message);
-            if (!answer) { e.preventDefault(); }
-          }
-        });
-      };
-      var destroyRouteBlocker = routeLeaveFunction();
-
-      // autofocus switch
-      $scope.$watch('exitEditor', function(exitEditor) {
-        if (exitEditor === true && exitingAllowed === false) {
-          $window.onbeforeunload = undefined;
-          destroyRouteBlocker();
-          exitingAllowed = true;
-        }
-        else if (exitEditor === false && exitingAllowed === true) {
-          $window.onbeforeunload = exitFunction;
-          destroyRouteBlocker = routeLeaveFunction();
-          exitingAllowed = false;
-        }
       });
 
-      $element.on('$destroy', function() {
-        $window.onbeforeunload = undefined;
-        destroyRouteBlocker();
-      });
-
-    },
-    link: function(scope, element, attrs, ctrl) {
-      // Find relevant HTML Elements
-      var htmlElement = element[0];
-      // bbcode editor element
-      var rawEditorElement = htmlElement.getElementsByClassName('editor-input')[0];
-      var editorElement = angular.element(rawEditorElement);
-      // bbcode preview element
-      var rawPreviewElement = htmlElement.getElementsByClassName('editor-preview')[0];
-      var previewElement = angular.element(rawPreviewElement);
+      // -- Editor
 
       // Medium Editor and options
       var options = {
@@ -169,7 +140,7 @@ module.exports = [
         "buttonLabels":"fontawesome",
         "placeholder": ''
       };
-      var editor = new medium(editorElement, options);
+      var mediumEditor = new medium(editor, options);
 
       // converts encoded unicode into numeric representation
       function textToEntities(text) {
@@ -186,7 +157,7 @@ module.exports = [
 
       function parseInput() {
         // get raw user input
-        var rawText = editorElement.html();
+        var rawText = $editor.html();
         // at this point, special characters are escaped: < > &
 
         // replaces &, <, >
@@ -200,81 +171,107 @@ module.exports = [
 
         // parse bbcode and bind to preview
         var processed = bbcodeParser.process({text: rawText}).html;
-        previewElement.html(processed);
+        $preview.html(processed);
 
         // medium always leaves input dirty even if there's no input
         // this will clean it
-        var simpleText = editorElement.text();
-        if (simpleText.length === 0) { rawText = ''; }
+        if ($editor.text().length === 0) { rawText = ''; }
 
         // re-bind to scope
-        scope.body = processed;
-        scope.rawBody = rawText;
-        scope.$apply();
+        $scope.body = processed;
+        $scope.rawBody = rawText;
+        $scope.$apply();
       }
 
-      // Medium Editor Event Bindings
+      // debounce parsing on input (250ms)
       var debounce;
       var onChange = function() {
         $timeout.cancel(debounce);
         debounce = $timeout(function() { parseInput(); }, 250);
       };
+      $editor.on('blur', onChange);
+      $editor.on('input', onChange);
 
       // scoll binding
-      var onEditorScroll = function() {
-        var scrollTop = rawEditorElement.scrollTop;
-        rawPreviewElement.scrollTop = scrollTop;
+      $editor.on('scroll', function() { preview.scrollTop = editor.scrollTop; });
+      $preview.on('scroll', function() { editor.scrollTop = preview.scrollTop; });
+
+      // -- Page Exit Eventing
+
+      var confirmMessage = 'It looks like a post is being written.';
+      var exitFunction = function() {
+        if ($scope.originalText !== $scope.rawBody) {
+          return confirmMessage;
+        }
       };
+      $window.onbeforeunload = exitFunction;
 
-      var onPreviewScroll = function() {
-        var scrollTop = rawPreviewElement.scrollTop;
-        rawEditorElement.scrollTop = scrollTop;
+      var routeLeaveFunction = function() {
+        return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+          if ($scope.originalText !== $scope.rawBody) {
+            var message = confirmMessage + ' Are you sure you want to leave?';
+            var answer = confirm(message);
+            if (!answer) { cancelEvent(e); }
+          }
+        });
       };
+      var destroyRouteBlocker = routeLeaveFunction();
 
-      // bind all the things
-      editorElement.on('input', onChange);
-      editorElement.on('blur', onChange);
-      editorElement.on('scroll', onEditorScroll);
-      previewElement.on('scroll', onPreviewScroll);
+      // -- Controller Functions
 
-      // directive initialization
-      var init = function() {
+      // directive initialization and reset
+      var initEditor = function() {
         // on load ng-model body to editor and preview
-        if (scope.rawBody && scope.rawBody.length > 0) {
-          editorElement.html(scope.rawBody);
-          scope.originalText = scope.rawBody;
+        if ($scope.rawBody && $scope.rawBody.length > 0) {
+          $editor.html($scope.rawBody);
+          $scope.originalText = $scope.rawBody;
         }
         else {
-          editorElement.html(scope.body);
-          scope.originalText = scope.body;
-          scope.rawBody = scope.body;
+          $editor.html($scope.body);
+          $scope.originalText = $scope.body;
+          $scope.rawBody = $scope.body;
         }
-        var processed = bbcodeParser.process({text: editorElement.html()}).html;
-        previewElement.html(processed);
+        var processed = bbcodeParser.process({text: $editor.html()}).html;
+        $preview.html(processed);
       };
 
-      // reset switch
-      scope.$watch('reset', function(newValue, oldValue) {
-        if (newValue === true) {
-          init();
-          scope.reset = false;
-        }
-      });
+      // resets the editor 
+      $scope.resetEditor = function() {
+        initEditor();
+        $scope.resetSwitch = false;
+      };
 
-      // autofocus switch
-      scope.$watch('focusEditor', function(focusEditor) {
-        if (focusEditor === true) {
-          $timeout(function() {
-            var range = document.createRange();
-            range.selectNodeContents(rawEditorElement);
-            range.collapse(false);
-            var sel = $window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-            $(rawEditorElement).focus();
-          }, 10);
-          scope.focusEditor = false;
+      // focus input on editor element
+      $scope.focusEditor = function() {
+        $timeout(function() {
+          var range = $document[0].createRange();
+          range.selectNodeContents(editor);
+          range.collapse(false);
+          var sel = $window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          $(editor).focus();
+        }, 10);
+        $scope.focusSwitch = false;
+      };
+
+      $scope.exitEditor = function(value) {
+        if (value === true) {
+          $window.onbeforeunload = undefined;
+          if (destroyRouteBlocker) { destroyRouteBlocker(); }
         }
+        else if (value === false) {
+          $window.onbeforeunload = exitFunction;
+          if (destroyRouteBlocker) { destroyRouteBlocker(); }
+          destroyRouteBlocker = routeLeaveFunction();
+        }
+      };
+
+      // -- Destroy
+
+      $element.on('$destroy', function() {
+        $window.onbeforeunload = undefined;
+        if (destroyRouteBlocker) { destroyRouteBlocker(); }
       });
     },
     template: fs.readFileSync(__dirname + '/editor.html')
