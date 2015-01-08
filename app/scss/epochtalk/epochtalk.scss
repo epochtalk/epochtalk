@@ -290,19 +290,21 @@ button:hover, button:focus, .button:hover, .button:focus {
     // background-color: $color-gray-sub;
     border-bottom: 1px solid $color-gray-light;
     padding: 40px 36px 20px;
+    margin-bottom: 2rem;
   }
 
   h2 {
     color: $color-gray-med;
+    margin-bottom: 0;
   }
 
-  .data {
-    margin-top: 2rem;
-  }
+  // .data {
+  //   margin-top: 2rem;
+  // }
 
   // Moderation Queue
   .tabs {
-    margin-top: 0.75rem;
+    margin-top: 1rem;
     min-width: 550px;
     width: 65%;
   }
