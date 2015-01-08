@@ -24,11 +24,11 @@
         </small>
       </label>
       <!-- New Thread Editor -->
-      <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" raw-body="NewThreadCtrl.thread.raw_body" exit-switch="NewThreadCtrl.exitEditor"></epochtalk-editor tabIndex="2">
+      <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" raw-body="NewThreadCtrl.thread.raw_body" reset-switch="NewThreadCtrl.resetEditor" exit-switch="NewThreadCtrl.exitEditor" dirty="NewThreadCtrl.dirtyEditor"></epochtalk-editor tabIndex="2">
     </form>
     <!-- Editor Controls -->
     <div class="editor-button-container">
-      <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || form.title.$error.required || !NewThreadCtrl.thread.body.length > 0" tabIndex="3">
+      <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || form.title.$error.required || !NewThreadCtrl.dirtyEditor" tabIndex="3">
         Submit
       </button>
     </div>
