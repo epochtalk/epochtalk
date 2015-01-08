@@ -211,7 +211,7 @@ module.exports = [
           if ($scope.originalText !== $scope.rawBody) {
             var message = confirmMessage + ' Are you sure you want to leave?';
             var answer = confirm(message);
-            if (!answer) { cancelEvent(e); }
+            if (!answer) { e.preventDefault(); }
           }
         });
       };
