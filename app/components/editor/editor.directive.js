@@ -12,7 +12,8 @@ module.exports = [
       rawBody: '=',
       resetSwitch: '=',
       focusSwitch: '=',
-      exitSwitch: '='
+      exitSwitch: '=',
+      dirty: '='
     },
     controller: function($scope, $element) {
       // reset switch
@@ -180,6 +181,7 @@ module.exports = [
         // re-bind to scope
         $scope.body = processed;
         $scope.rawBody = rawText;
+        $scope.dirty = $scope.originalText !== $scope.rawBody;
         $scope.$apply();
       }
 
@@ -200,7 +202,7 @@ module.exports = [
 
       var confirmMessage = 'It looks like a post is being written.';
       var exitFunction = function() {
-        if ($scope.originalText !== $scope.rawBody) {
+        if ($scope.dirty) {
           return confirmMessage;
         }
       };
@@ -208,7 +210,7 @@ module.exports = [
 
       var routeLeaveFunction = function() {
         return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-          if ($scope.originalText !== $scope.rawBody) {
+          if ($scope.dirty) {
             var message = confirmMessage + ' Are you sure you want to leave?';
             var answer = confirm(message);
             if (!answer) { e.preventDefault(); }
@@ -231,8 +233,7 @@ module.exports = [
           $scope.originalText = $scope.body;
           $scope.rawBody = $scope.body;
         }
-        var processed = bbcodeParser.process({text: $editor.html()}).html;
-        $preview.html(processed);
+        onChange();
       };
 
       // resets the editor 

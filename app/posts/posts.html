@@ -19,11 +19,11 @@
       <li ng-click="PostsParentCtrl.openEditor()" ng-if="!PostsParentCtrl.showEditor">
         <span><i class="icon-epoch-add"> Show Editor</i></span>
       </li>
-      <li ng-click="PostsParentCtrl.showEditor = false" ng-if="PostsParentCtrl.showEditor">
+      <li ng-click="PostsParentCtrl.closeEditor()" ng-if="PostsParentCtrl.showEditor">
         <span>Hide Editor</i> </span>
       </li>
       <li>|</li>
-      <li ng-click="PostsParentCtrl.initEditor(null, true)" ng-if="PostsParentCtrl.newPostEnabled">
+      <li ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.newPostEnabled">
         <span>New Post</i></span>
       </li>
     </ul>
@@ -40,7 +40,7 @@
           </small>
         </label>
         <!-- Post Editor -->
-        <epochtalk-editor class="posts-editor" body="PostsParentCtrl.posting.post.body" raw-body="PostsParentCtrl.posting.post.raw_body" reset-switch="PostsParentCtrl.resetEditor" focus-switch="PostsParentCtrl.focusEditor">
+        <epochtalk-editor class="posts-editor" body="PostsParentCtrl.posting.post.body" raw-body="PostsParentCtrl.posting.post.raw_body" reset-switch="PostsParentCtrl.resetEditor" focus-switch="PostsParentCtrl.focusEditor" dirty="PostsParentCtrl.dirtyEditor">
         </epochtalk-editor>
       </form>
       <!-- Editor Controls -->
@@ -52,7 +52,7 @@
             </button>
           </div>
           <div class="medium-6 columns">
-            <button class="button expand" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.posting.post.raw_body.length > 0">
+            <button class="button expand" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.dirtyEditor">
               Send
             </button>
           </div>

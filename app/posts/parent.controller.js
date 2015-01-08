@@ -3,6 +3,7 @@ module.exports = [
   function($scope, $location, Auth, Posts) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
+    this.dirtyEditor = false;
     this.resetEditor = false;
     this.showEditor = false;
     this.focusEditor = false;
@@ -23,7 +24,7 @@ module.exports = [
         var id = values[0];
         var title = values[1];
         if (id && title && ctrl.newPostEnabled === false) {
-          ctrl.initEditor();
+          initEditor(); //set editor
           ctrl.newPostEnabled = true;
         }
       }
@@ -36,12 +37,16 @@ module.exports = [
       ctrl.pageCount = Math.ceil(ctrl.thread_post_count / count);
     };
 
-    this.openEditor = function() {
-      ctrl.showEditor = true;
-      ctrl.focusEditor = true;
+    var discardAlert = function() {
+      if (ctrl.dirtyEditor) {
+        var message = 'It looks like you were working on something. ';
+        message += 'Are you sure you want to leave that behind?';
+        return confirm(message);
+      }
+      else { return true;}
     };
 
-    this.initEditor = function(index, show) {
+    var initEditor = function(index, show) {
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         ctrl.posting.type = 'edit';
@@ -61,7 +66,22 @@ module.exports = [
       editorPost.raw_body = post.raw_body || '';
 
       ctrl.resetEditor = true;
-      if (show) { ctrl.openEditor(); }
+    };
+
+    this.openEditor = function() {
+      ctrl.showEditor = true;
+      ctrl.focusEditor = true;
+    };
+
+    this.closeEditor = function() {
+      ctrl.showEditor = false;
+    };
+
+    this.loadEditor = function(index) {
+      if (discardAlert()) {
+        initEditor(index);
+        ctrl.openEditor();
+      }
     };
 
     this.savePost = function() {
@@ -95,8 +115,7 @@ module.exports = [
           }
         }
 
-        ctrl.initEditor(); // reset editor
-        ctrl.showEditor = false;
+        ctrl.cancelPost();
       })
       .catch(function(response) {
         ctrl.posting.error = {};
@@ -106,8 +125,10 @@ module.exports = [
     };
 
     this.cancelPost = function() {
-      this.showEditor = false;
-      this.initEditor(null, false);
+      if (discardAlert()) {
+        initEditor();
+        this.closeEditor();
+      }
     };
   }
 ];
