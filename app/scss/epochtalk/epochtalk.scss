@@ -965,7 +965,7 @@ form .input-section:last-child {margin-bottom: 0px; }
   width: 49%;
 
   button.button {
-    float: right;
+    // float: right;
     margin-right: 1.9%;
     width: 48%;
 
@@ -1077,17 +1077,18 @@ form .input-section:last-child {margin-bottom: 0px; }
   .editor-button-container {
     right: 0;
     left: 0;
-    height: 90px;
+    height: 70px;
+    margin: 0 auto;
     text-align: center;
-    width: 100%;
+    width: 90%;
 
     button.button {
-      float: none;
+      // float: right;
       margin: 0;
-      width: 90%;
+      width: 49%;
 
       &.cancel {
-        width: 90%;
+        width: 49%;
       }
     }
   }
