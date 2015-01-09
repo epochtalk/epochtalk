@@ -4,8 +4,9 @@
 $color-epoch: 			slategray;
 // $color-active: 			rgb(255, 78, 0); 		//orange
 // $color-active: 			rgb(255, 71, 175); 	//pink
-$color-active: 			rgb(44, 163, 48); 			//green
-$color-active-dark:	darken($color-active, 15);
+$color-active: 				rgb(44, 163, 48); 			//green
+$color-active-light: 	lighten($color-active, 15);
+$color-active-dark:		darken($color-active, 15);
 $color-body: 				#444;
 $color-gray: 				lighten($color-body, 20%);
 $color-gray-med: 		lighten($color-body, 40%);

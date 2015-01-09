@@ -1,23 +1,21 @@
-<div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
-  <div class="small-12 columns">
-    <h4 class="thin-dotted-underline">Moderation Queue</h4>
-  </div>
-</div>
-<div class="row"  ng-class="{'full-width' : ModerationCtrl.fullWidth }">
-  <div class="small-12 columns">
-    <!-- Tabs -->
-    <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'users'">
-      <dd class="no-select" ng-class="{'active': tab == 'users'}">
-        <a ui-sref=".users" ng-click="tab = 'users'">Reported Users</a>
-      </dd>
-      <dd class="no-select" ng-class="{'active': tab == 'threads'}">
-        <a ui-sref=".threads" ng-click="tab = 'threads'">Reported Threads</a>
-      </dd>
-      <dd class="no-select" ng-class="{'active': tab == 'posts'}">
-        <a ui-sref=".posts" ng-click="tab = 'posts'">Reported Posts</a>
-      </dd>
-    </dl>
-  </div>
-</div>
-<br />
-<div ui-view="data"></div>
+<div class="content-header" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+  <h2>Moderation Queue</h2>
+  <!-- <div class="row"  ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+    <div class="small-12 columns"> -->
+      <!-- Tabs -->
+      <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'users'">
+        <dd class="no-select" ng-class="{'active': tab == 'users'}">
+          <a ui-sref=".users" ng-click="tab = 'users'">Reported Users</a>
+        </dd>
+        <dd class="no-select" ng-class="{'active': tab == 'threads'}">
+          <a ui-sref=".threads" ng-click="tab = 'threads'">Reported Threads</a>
+        </dd>
+        <dd class="no-select" ng-class="{'active': tab == 'posts'}">
+          <a ui-sref=".posts" ng-click="tab = 'posts'">Reported Posts</a>
+        </dd>
+      </dl>
+    </div>
+<!--   </div>
+</div> -->
+
+<div ui-view="data" class="data"></div>
