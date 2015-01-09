@@ -48,7 +48,8 @@
 .editor-preview { 
   white-space: pre;
   overflow: auto;
-  height: 100%; }
+  height: 100%;
+  word-wrap: break-word; }
 .editor-preview p { margin: 0; }
 
 .editor-footer {
