@@ -885,7 +885,8 @@ form .input-section:last-child {margin-bottom: 0px; }
   z-index: 1000; }
 
 .post-toolbar {
-  background-color: $color-active;
+  // background-color: $color-active;
+  background-color: $color-gray-dark;
   border: 2px solid #fff;
   border-bottom: none;
   color: #fff;
@@ -906,6 +907,11 @@ form .input-section:last-child {margin-bottom: 0px; }
       padding: 10px 0;
     }
   }
+
+  i {
+    margin-right: .3rem;
+  }
+
 }
 // .post-toolbar li { display: inline; list-style-type: none; padding-right: 10px; }
 // .post-toolbar li:first-child { padding-left: 10px; }
@@ -913,8 +919,19 @@ form .input-section:last-child {margin-bottom: 0px; }
   background-color: $color-gray-dark;
   position: relative;
   padding-top: 20px;
-  border-top: 4px solid $color-active;
-  min-height: 288px; }
+  // border-top: 4px solid $color-active;
+  min-height: 288px; 
+
+  &:after {
+    content: url('/static/img/btn-dragbar.png');
+    display: block;
+    position: relative;
+    text-align: center;
+    top: -28px;
+    width: 100%;
+  }
+}
+
 /* editor form */
 .editor-form {
   position: absolute;
@@ -959,10 +976,30 @@ form .input-section:last-child {margin-bottom: 0px; }
 .editor-button-container {
   position: absolute;
   bottom: 0px;
-  // left: 0.9375rem;
   right: 0.9375rem;
   height: 70px;
-  width: 240px; }
+  text-align: right;
+  width: 49%;
+
+  button.button {
+    // float: right;
+    margin-right: 1.9%;
+    width: 48%;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.cancel {
+      background-color: transparent;
+      color: $color-gray-light;
+      width: 25%;
+      &:hover {
+        color: $color-active;
+      }
+    }
+  } 
+}
 
 // Media Queries
 @media only screen and (max-width: 40em) {
@@ -1051,6 +1088,31 @@ form .input-section:last-child {margin-bottom: 0px; }
     .copyright,
     .attrib {
       text-align: left;
+    }
+  }
+
+  .editor-container {
+    &:after {
+      display: none;
+    }
+  }
+
+  .editor-button-container {
+    right: 0;
+    left: 0;
+    height: 70px;
+    margin: 0 auto;
+    text-align: center;
+    width: 90%;
+
+    button.button {
+      // float: right;
+      margin: 0;
+      width: 49%;
+
+      &.cancel {
+        width: 49%;
+      }
     }
   }
 }

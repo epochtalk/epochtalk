@@ -17,14 +17,14 @@
     <!-- fixed bottom toolbar -->
     <ul class="post-toolbar">
       <li ng-click="PostsParentCtrl.openEditor()" ng-if="!PostsParentCtrl.showEditor">
-        <span><i class="icon-epoch-add"> Show Editor</i></span>
+        <span><i class="icon-epoch-edit-pencil"></i>Show Editor</span>
       </li>
       <li ng-click="PostsParentCtrl.closeEditor()" ng-if="PostsParentCtrl.showEditor">
-        <span>Hide Editor</i> </span>
+        <span><i class="icon-epoch-edit-pencil"></i>Hide Editor</i> </span>
       </li>
       <li>|</li>
       <li ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.newPostEnabled">
-        <span>New Post</i></span>
+        <span><i class="icon-epoch-add-outline"></i>New Post</i></span>
       </li>
     </ul>
 
@@ -45,7 +45,14 @@
       </form>
       <!-- Editor Controls -->
       <div class="editor-button-container">
-        <div class="row">
+        <button class="button secondary expand cancel" ng-click="PostsParentCtrl.cancelPost()">
+          Cancel
+        </button>
+        <button class="button expand" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.posting.post.raw_body.length > 0">
+          Send
+        </button>
+<<<<<<< HEAD
+        <!-- <div class="row">
           <div class="medium-6 columns">
             <button class="button secondary expand" ng-click="PostsParentCtrl.cancelPost()">
               Cancel
@@ -56,7 +63,9 @@
               Send
             </button>
           </div>
-        </div>
+        </div> -->
+=======
+>>>>>>> Updating editor toolbar icons and cleanup
 
         <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
       </div>

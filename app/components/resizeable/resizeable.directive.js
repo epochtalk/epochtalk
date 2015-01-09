@@ -35,7 +35,7 @@ module.exports = ['$document',
           var elementHeight = element[0].clientHeight + 10; // box border
           var verticalGap = maxHeight - elementHeight;
           verticalGap = verticalGap - e.clientY;
-          if (verticalGap > -15 && verticalGap <= 0) { setCursor = true; }
+          if (verticalGap > -25 && verticalGap <= 0) { setCursor = true; }
           else { setCursor = false; }
 
           // change height of element
