@@ -92,7 +92,10 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
         },
         function(err) {
           ctrl.loginError.status = true;
-          ctrl.loginError.message = err.data.message;
+          if (err && err.data && err.data.message) {
+            ctrl.loginError.message = err.data.message;
+          }
+          else { ctrl.loginError.message = 'Unable to connect to server'; }
         }
       );
     };
