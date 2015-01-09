@@ -343,6 +343,7 @@ button:hover, button:focus, .button:hover, .button:focus {
       &:nth-of-type(even) {
         background: transparent;
       }
+      &:nth
       td {
         padding-top: 24px;
         padding-bottom: 24px;
@@ -352,13 +353,12 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 /* Admin Manage Groups */
-tr.selectable-row:hover { background-color: $secondary-color; }
+.admin-content table tr.selectable-row:hover { background-color: $secondary-color; }
 .pointer { cursor: pointer; }
-tr.active-row { background-color:  $color-active; }
-tr:nth-of-type(even).active-row { background-color:  $color-active; }
-tr.active-row.selectable-row:hover { background-color:  $color-active }
+.admin-content table tr.active-row { background-color:  $color-active; }
+.admin-content table tr.active-row.selectable-row:hover { background-color:  $color-active }
 input.member-select { margin: 0px; }
-tr.active-row td { color: #fff; }
+.admin-content table tr.active-row td { color: #fff; }
 
 /* Admin Moderation Queue */
 // .tabs {
@@ -921,8 +921,8 @@ form .input-section:last-child {margin-bottom: 0px; }
   top: 20px;
   bottom: 90px;
   left: 0.9375rem;
-  right: 0.9375rem; 
-  
+  right: 0.9375rem;
+
   label {
     color: $color-gray-light;
     margin-top: 0;
@@ -935,7 +935,7 @@ form .input-section:last-child {margin-bottom: 0px; }
     }
   }
 
-  
+
   .editor-footer {
     color: $color-gray;
     padding-top: 0.3rem;
