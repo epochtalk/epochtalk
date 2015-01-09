@@ -50,15 +50,13 @@ module.exports = [
       $scope.openImagePicker = function() { inputElement.click(); };
 
       $scope.insertImageUrl = function(url) {
-        $(editor).focus();
+        editor.focus();
         var sel = $window.getSelection();
-        if (sel.getRangeAt && sel.rangeCount) {
           var range = sel.getRangeAt(0);
           range.collapse(false);
           var text = '[img]' + url + '[/img]';
           range.insertNode( $document[0].createTextNode(text) );
-        }
-        $(editor).blur();
+        editor.blur();
       };
 
       function upload(images) {
@@ -252,7 +250,7 @@ module.exports = [
           var sel = $window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
-          $(editor).focus();
+          editor.focus();
         }, 10);
         $scope.focusSwitch = false;
       };

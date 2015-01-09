@@ -21,7 +21,7 @@
   or just <a ng-href="#" ng-click="openImagePicker()">click here</a>
   <input type="file" accept="image/*" multiple style="display: none;">
   <div class="imageProgressContainer" ng-repeat="image in images">
-    <i class="icon-epoch-add" ng-click="insertImageUrl(image.url)" ng-if="image.url"></i>
+    <button class="button tiny icon-epoch-add" ng-click="insertImageUrl(image.url)" ng-if="image.url"></button>
     <span ng-bind=image.status></span> (<span ng-bind="image.progress"></span>): 
     <a ng-href="{{image.url}}" target="_blank" ng-if="image.url">
       <span ng-bind="image.name"></span>
