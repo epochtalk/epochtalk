@@ -51,21 +51,6 @@
         <button class="button expand" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.posting.post.raw_body.length > 0">
           Send
         </button>
-<<<<<<< HEAD
-        <!-- <div class="row">
-          <div class="medium-6 columns">
-            <button class="button secondary expand" ng-click="PostsParentCtrl.cancelPost()">
-              Cancel
-            </button>
-          </div>
-          <div class="medium-6 columns">
-            <button class="button expand" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.dirtyEditor">
-              Send
-            </button>
-          </div>
-        </div> -->
-=======
->>>>>>> Updating editor toolbar icons and cleanup
 
         <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
       </div>
