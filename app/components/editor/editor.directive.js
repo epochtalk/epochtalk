@@ -52,10 +52,10 @@ module.exports = [
       $scope.insertImageUrl = function(url) {
         editor.focus();
         var sel = $window.getSelection();
-          var range = sel.getRangeAt(0);
-          range.collapse(false);
-          var text = '[img]' + url + '[/img]';
-          range.insertNode( $document[0].createTextNode(text) );
+        var range = sel.getRangeAt(0);
+        range.collapse(false);
+        var text = '[img]' + url + '[/img]';
+        range.insertNode( $document[0].createTextNode(text) );
         editor.blur();
       };
 
