@@ -16,6 +16,11 @@ module.exports = [
       dirty: '='
     },
     controller: function($scope, $element) {
+      $scope.imageModal = false;
+      $scope.openImageModal = function() {
+        $scope.imageModal = true;
+      };
+
       // reset switch
       $scope.$watch('resetSwitch', function(newValue) {
         if (newValue === true) { $scope.resetEditor(); }
