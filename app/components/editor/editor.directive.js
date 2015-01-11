@@ -238,6 +238,7 @@ module.exports = [
       // resets the editor 
       $scope.resetEditor = function() {
         initEditor();
+        $scope.images = [];
         $scope.resetSwitch = false;
       };
 
