@@ -26,7 +26,7 @@ module.exports = ['$document', '$window',
             return;
           }
 
-          $element.scrollTop(newScroll);
+          element.scrollTop = newScroll;
           e.stopPropagation();
           e.preventDefault();
         };
