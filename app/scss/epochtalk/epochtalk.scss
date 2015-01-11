@@ -935,7 +935,7 @@ form .input-section:last-child {margin-bottom: 0px; }
 .editor-form {
   position: absolute;
   top: 20px;
-  bottom: 90px;
+  bottom: 45px;
   left: 0.9375rem;
   right: 0.9375rem;
 
@@ -954,7 +954,7 @@ form .input-section:last-child {margin-bottom: 0px; }
 
   .editor-footer {
     color: $color-gray;
-    padding-top: 0.3rem;
+    padding-top: 15px;
   }
 }
 
@@ -976,7 +976,7 @@ form .input-section:last-child {margin-bottom: 0px; }
   position: absolute;
   bottom: 0px;
   right: 0.9375rem;
-  height: 70px;
+  height: 53px;
   text-align: right;
   width: 49%;
 
