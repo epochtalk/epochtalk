@@ -40,6 +40,7 @@
     "boom": "^2.6.1",
     "cheerio": "^0.18.0",
     "commander": "^2.5.1",
+    "epoch-image-server": "git+https://github.com/epochtalk/image-server",
     "epoch-core-pg": "git+https://github.com/epochtalk/core-pg",
     "epoch-emailer": "git+https://github.com/epochtalk/emailer",
     "epoch-validator": "git+https://github.com/epochtalk/validator",
