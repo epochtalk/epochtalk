@@ -27,7 +27,7 @@ exports.import = {
     core.boards.import(request.payload)
     .then(function(board) { reply(board); })
     .catch(function(err) { 
-      request.log('error', 'Import board: ' + JSON.stringify(error, ['stack', 'message'], 2));
+      request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
       reply(err); });
   }
 };
