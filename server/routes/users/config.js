@@ -34,7 +34,10 @@ exports.import = {
       delete user.confirmation_token;
       reply(user);
     })
-    .catch(function(err) { reply(err); });
+    .catch(function(err) {
+      request.log('error', 'Import board: ' + JSON.stringify(error, ['stack', 'message'], 2));
+      reply(err);
+    });
   }
 };
 

@@ -44,7 +44,10 @@ exports.import = {
     // build the post object from payload and params
     core.posts.import(request.payload)
     .then(function(post) { reply(post); })
-    .catch(function(err) { reply(err); });
+    .catch(function(err) { 
+      request.log('error', 'Import board: ' + JSON.stringify(error, ['stack', 'message'], 2));
+      reply(err);
+    });
   }
 };
 

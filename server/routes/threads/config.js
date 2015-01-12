@@ -46,7 +46,10 @@ exports.import = {
     //   });
     // })
     .then(function(thread) { reply(thread); })
-    .catch(function(err) { reply(err); });
+    .catch(function(err) {
+      request.log('error', 'Import board: ' + JSON.stringify(error, ['stack', 'message'], 2));
+      reply(err);
+    });
   }
 };
 

@@ -5,6 +5,7 @@ var Hapi = require('hapi');
 var good = require('good');
 var jwt = require('hapi-auth-jsonwebtoken');
 var mkdirp = require('mkdirp');
+var topConfig = require(path.join(__dirname, '..', 'config'));
 var config = require(path.join(__dirname, 'config'));
 var memDb = require(path.join(__dirname, 'memstore')).db;
 

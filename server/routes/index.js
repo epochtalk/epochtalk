@@ -1,13 +1,6 @@
 /* jshint node: true */
 'use strict';
 
-// var qr = require('qr-image');
-// app.get('/totp', function(req, res) {
-//   var code = qr.image('otpauth://totp/epochtalk?secret=' + req.user.totp_key.base32, { type: 'svg' });
-//   res.type('svg');
-//   return code.pipe(res);
-// });
-
 var path = require('path');
 var crypto = require('crypto');
 var imageProxy = require(path.join(__dirname, '..', 'images'));
