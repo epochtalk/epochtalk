@@ -15,6 +15,7 @@ module.exports = [
     $timeout($anchorScroll);
 
     this.loadEditor = parent.loadEditor;
+    this.addQuote = parent.addQuote;
     parent.pullPage = function(page, anchor) {
       var query = {
         thread_id: parent.thread_id,

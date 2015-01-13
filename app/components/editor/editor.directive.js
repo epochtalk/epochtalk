@@ -10,6 +10,7 @@ module.exports = [
     scope: {
       body: '=',
       rawBody: '=',
+      quote: '=',
       resetSwitch: '=',
       focusSwitch: '=',
       exitSwitch: '=',
@@ -20,6 +21,11 @@ module.exports = [
       $scope.openImageModal = function() {
         $scope.imageModal = true;
       };
+
+      // quote insert 
+      $scope.$watch('quote', function(newQuote) {
+        if (newQuote) { $scope.insertQuote(newQuote); }
+      });
 
       // reset switch
       $scope.$watch('resetSwitch', function(newValue) {
@@ -240,6 +246,32 @@ module.exports = [
         onChange();
       };
 
+      $scope.insertQuote = function(newQuote) {
+        editor.focus();
+        var sel = $window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+          var range = sel.getRangeAt(0);
+
+          var el = $document[0].createElement('div');
+          el.innerHTML = newQuote;
+          var frag = $document[0].createDocumentFragment(), node, lastNode;
+          while ( (node = el.firstChild) ) {
+            lastNode = frag.appendChild(node);
+          }
+          range.insertNode(frag);
+          if (lastNode) {
+            range = range.cloneRange();
+            range.setStartAfter(lastNode);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
+
+          $scope.quote = '';
+          editor.blur();
+        }
+      };
+
       // resets the editor 
       $scope.resetEditor = function() {
         initEditor();
@@ -261,6 +293,7 @@ module.exports = [
         $scope.focusSwitch = false;
       };
 
+      // turns off page exit events
       $scope.exitEditor = function(value) {
         if (value === true) {
           $window.onbeforeunload = undefined;

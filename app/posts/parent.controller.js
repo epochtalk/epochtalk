@@ -1,12 +1,13 @@
 module.exports = [
-  '$scope', '$location', 'Auth', 'Posts',
-  function($scope, $location, Auth, Posts) {
+  '$scope', '$timeout', '$location', 'Auth', 'Posts',
+  function($scope, $timeout, $location, Auth, Posts) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated;
     this.dirtyEditor = false;
     this.resetEditor = false;
     this.showEditor = false;
     this.focusEditor = false;
+    this.quote = '';
     this.tempPost = { body: '', raw_body: '' };
     this.posting = { post: this.tempPost };
     // pullPage function injected by child controller
@@ -75,6 +76,29 @@ module.exports = [
 
     this.closeEditor = function() {
       ctrl.showEditor = false;
+    };
+
+    this.addQuote = function(index) {
+      var timeDuration = 0;
+      if (ctrl.showEditor === false) {
+        ctrl.showEditor = true;
+        timeDuration = 100;
+      }
+
+      $timeout(function() {
+        var post = ctrl.posts && ctrl.posts[index] || '';
+        if (post) {
+          var newQuote = '[quote author=';
+          newQuote += post.user.username;
+          newQuote += ' link=';
+          newQuote += '/threads/' + ctrl.thread_id + '/posts?page=' + ctrl.page + '#' + post.id;
+          newQuote += ' date=' + new Date(post.created_at).getTime();
+          newQuote += ']';
+          newQuote += post.raw_body || post.body;
+          newQuote += '[/quote]';
+          ctrl.quote = newQuote;
+        }
+      }, timeDuration);
     };
 
     this.loadEditor = function(index) {
