@@ -1,10 +1,8 @@
 // Dependencies
 require('angular/angular');
 require('angular-resource/angular-resource');
-// require('angular-route/angular-route');
 require('angular-sanitize/angular-sanitize');
 require('angular-ui-router');
-// var Modernizr = require('foundation/js/vendor/modernizr');
 jQuery = require('foundation/js/vendor/jquery');
 $ = jQuery;
 require('nestable/jquery.nestable');
@@ -77,9 +75,3 @@ app.config(require('./config'))
     else { $state.go('404'); }
   });
 }]);
-
-
-// CSS Styles
-// var cssify = require('cssify');
-// require('./css/app.css');
-// cssify.byUrl('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');
