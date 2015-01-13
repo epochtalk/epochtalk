@@ -36,8 +36,8 @@ exports.import = {
   pre: [
     { method: pre.clean },
     { method: pre.adjustQuoteDate },
-    { method: pre.parseEncodings },
-    { method: pre.subImages }
+    { method: pre.parseEncodings }
+    // { method: pre.subImages }
   ],
   // validate: { payload: postValidator.create },
   handler: function(request, reply) {
