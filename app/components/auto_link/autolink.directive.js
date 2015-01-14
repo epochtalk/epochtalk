@@ -1,7 +1,7 @@
 module.exports = ['$timeout', function($timeout) {
   return {
     restrict: 'A',
-    link: function(scope, element) {
+    link: function(scope, element, attributes) {
       var regex = /(?:https?\:\/\/|www\.)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/ig;
       var regexFunction = function(url) {
         var wrap = document.createElement('div');
@@ -16,11 +16,17 @@ module.exports = ['$timeout', function($timeout) {
       var autoLink = function(text) {
         if (!text) { text = ''; }
         var _text = text.replace(regex, regexFunction);
-        if (!_text) { _text = ''; }
+        if (!_text) { _text = text; }
         return _text;
       };
 
       $timeout(function () { element.html(autoLink(element.html())); });
+
+      scope.$watch(attributes.autoLink, function(newValue) {
+        if (newValue) {
+          $timeout(function () { element.html(autoLink(element.html())); });
+        }
+      });
     }
   };
 }];
