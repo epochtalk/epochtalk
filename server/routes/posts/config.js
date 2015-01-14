@@ -45,7 +45,7 @@ exports.import = {
     core.posts.import(request.payload)
     .then(function(post) { reply(post); })
     .catch(function(err) { 
-      request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
+      request.log('error', 'Import post: ' + JSON.stringify(err, ['stack', 'message'], 2));
       reply(err);
     });
   }
