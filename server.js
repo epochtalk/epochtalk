@@ -4,6 +4,7 @@ var good = require('good');
 var jwt = require('hapi-auth-jsonwebtoken');
 var mkdirp = require('mkdirp');
 var config = require(path.join(__dirname, 'config'));
+var memDb = require('epochtalk-http-api/memstore').db;
 
 var serverOpts = {
   // cors disabled by default
