@@ -29,6 +29,26 @@ var serverOpts = {
 var server = new Hapi.Server();
 var connection = server.connection(serverOpts);
 
+server.route([
+{
+  method: 'GET',
+  path: '/static/{path*}',
+  handler: {
+    directory: {
+      path: path.join(__dirname, 'public'),
+      index: false
+    }
+  }
+},
+// index page
+{
+  method: 'GET',
+  path: '/{path*}',
+  handler: {
+    file: 'index.html'
+  }
+}]);
+
 // check if logging is enabled
 var goodOpts = {};
 if (config.logEnabled) {
