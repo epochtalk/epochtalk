@@ -1,5 +1,6 @@
 var path = require('path');
 var Hapi = require('hapi');
+var Boom = require('boom');
 var good = require('good');
 var jwt = require('hapi-auth-jsonwebtoken');
 var mkdirp = require('mkdirp');
@@ -85,7 +86,9 @@ var validate = function(token, decodedToken, cb) {
     var isValid = false;
     var credentials = {};
 
-    if (err) { error = Hapi.error.unauthorized('Session is no longer valid.'); }
+    if (err) {
+      error = Boom.unauthorized('Session is no longer valid.');
+    }
 
     // check if the token from memDown matches the token we got in the request
     // if it matches, then the token from the request is still valid
