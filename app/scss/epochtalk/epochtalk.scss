@@ -284,7 +284,8 @@ button:hover, button:focus, .button:hover, .button:focus {
   padding-top: 0;
 }
 
-.admin-content {
+.admin-content,
+.public-content {
   .content-header {
     // background-color: $color-gray-sub;
     border-bottom: 1px solid $color-gray-light;
@@ -348,6 +349,16 @@ button:hover, button:focus, .button:hover, .button:focus {
         padding-bottom: 24px;
       }
     }
+  }
+}
+
+.public-content {
+  .content-header {
+    margin: 0 auto;
+    max-width: 62.5rem;
+    padding-left: 0.9375rem;
+    padding-right: 0.9375rem;
+    padding-top: 0;
   }
 }
 
