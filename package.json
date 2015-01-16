@@ -17,7 +17,7 @@
     "url": "git://github.com/epochtalk/epochtalk"
   },
   "author": "James Wang <jw@slickage.com> (http://slickage.com/)",
-  "license": "MIT",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/slickage/epochtalk/issues"
   },
@@ -43,7 +43,7 @@
     "epoch-image-server": "git+https://github.com/epochtalk/image-server",
     "epoch-core-pg": "git+https://github.com/epochtalk/core-pg",
     "epoch-emailer": "git+https://github.com/epochtalk/emailer",
-    "epoch-server": "git+https://github.com/epochtalk/server",
+    "epochtalk-http-api": "^1.0.0",
     "epoch-validator": "git+https://github.com/epochtalk/validator",
     "good": "^3.1.0",
     "good-console": "^2.0.0",
