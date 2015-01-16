@@ -41,7 +41,7 @@
     "cheerio": "^0.18.0",
     "commander": "^2.5.1",
     "epoch-image-server": "git+https://github.com/epochtalk/image-server",
-    "epoch-core-pg": "git+https://github.com/epochtalk/core-pg",
+    "epochtalk-core-pg": "^0.9.0",
     "epoch-emailer": "git+https://github.com/epochtalk/emailer",
     "epochtalk-http-api": "^1.0.3",
     "epoch-validator": "git+https://github.com/epochtalk/validator",

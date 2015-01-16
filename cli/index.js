@@ -1,6 +1,6 @@
 var path = require('path');
 var program = require('commander');
-var schema = require('epoch-core-pg/schema');
+var schema = require('epochtalk-core-pg/schema');
 program
   .version('0.0.1')
   .option('--recreate [database]', 'Recreate [database]. Default: config.json{database} OR epoch_dev)')
