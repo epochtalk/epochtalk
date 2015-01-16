@@ -43,7 +43,7 @@
     "epoch-image-server": "git+https://github.com/epochtalk/image-server",
     "epoch-core-pg": "git+https://github.com/epochtalk/core-pg",
     "epoch-emailer": "git+https://github.com/epochtalk/emailer",
-    "epochtalk-http-api": "^1.0.1",
+    "epochtalk-http-api": "^1.0.2",
     "epoch-validator": "git+https://github.com/epochtalk/validator",
     "good": "^5.1.1",
     "good-console": "^4.1.0",
