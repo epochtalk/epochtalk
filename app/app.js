@@ -53,6 +53,7 @@ app.directive('scrollLock',        require('./components/scroll_lock/scroll-lock
 app.directive('resizeable',        require('./components/resizeable/resizeable.directive.js'));
 app.directive('autoLink',        require('./components/auto_link/autolink.directive.js'));
 app.directive('autoDate',        require('./components/auto_date/autodate.directive.js'));
+app.directive('styleFix',        require('./components/style_fix/stylefix.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))
