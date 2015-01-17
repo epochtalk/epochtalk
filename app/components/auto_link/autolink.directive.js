@@ -22,7 +22,7 @@ module.exports = ['$timeout', function($timeout) {
 
       $timeout(function () { element.html(autoLink(element.html())); });
 
-      scope.$watch(attributes.autoLink, function(newValue) {
+      scope.$watch(function() { return element.text(); }, function(newValue) {
         if (newValue) {
           $timeout(function () { element.html(autoLink(element.html())); });
         }

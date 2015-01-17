@@ -17,8 +17,6 @@ module.exports = [
       dirty: '='
     },
     controller: function($scope, $element) {
-      $scope.resetParseLinks = false;
-      $scope.resetParseDates = false;
       $scope.imageModal = false;
       $scope.openImageModal = function() {
         $scope.imageModal = true;
@@ -189,17 +187,11 @@ module.exports = [
         // this will clean it
         if ($editor.text().length === 0) { rawText = ''; }
 
-        $scope.resetParseLinks = true;
-        $scope.resetParseDates = true;
-
         // re-bind to scope
         $scope.body = processed;
         $scope.rawBody = rawText;
         $scope.dirty = $scope.originalText !== $scope.rawBody;
         $scope.$apply();
-
-        $scope.resetParseLinks = false;
-        $scope.resetParseDates = false;
       }
 
       // debounce parsing on input (250ms)

@@ -42,7 +42,7 @@
       </ul>
     </div>
     <!-- Post Body -->
-    <div class="post-body" ng-bind-html="post.body" auto-link auto-date></div>
+    <div class="post-body" ng-bind-html="post.body" auto-link auto-date style-fix></div>
     <ul class="post-action">
       <li ng-if="post.editable">
         <a ng-href="#" ng-click="PostsCtrl.loadEditor($index)">

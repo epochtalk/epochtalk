@@ -32,7 +32,7 @@ module.exports = ['$timeout', '$filter', function($timeout, $filter) {
 
       $timeout(function () { element.html(autoDate(element.html())); });
 
-      scope.$watch(attributes.autoDate, function(newValue) {
+      scope.$watch(function() { return element.text(); }, function(newValue) {
         if (newValue) {
           $timeout(function () { element.html(autoDate(element.html())); });
         }
