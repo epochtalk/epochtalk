@@ -1,5 +1,5 @@
 var medium = require('medium-editor');
-var bbcodeParser = require('bbcode-parser');
+var bbcodeParser = require('epochtalk-bbcode-parser');
 var fs = require('fs');
 
 module.exports = [

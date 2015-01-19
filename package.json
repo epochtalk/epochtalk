@@ -34,7 +34,7 @@
   "dependencies": {
     "angular-ui-router": "^0.2.11",
     "async": "^0.9.0",
-    "bbcode-parser": "git+https://github.com/epochtalk/bbcode-parser",
+    "epochtalk-bbcode-parser": "^1.0.0",
     "bcrypt": "^0.7.8",
     "bluebird": "^2.3.2",
     "boom": "^2.6.1",
