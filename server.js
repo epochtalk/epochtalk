@@ -2,7 +2,8 @@ var path = require('path');
 var Hapi = require('hapi');
 var Boom = require('boom');
 var good = require('good');
-var jwt = require('hapi-auth-jsonwebtoken');
+var hapiAuthJwt = require('hapi-auth-jwt');
+var jwt = require('jsonwebtoken');
 var mkdirp = require('mkdirp');
 var config = require(path.join(__dirname, 'config'));
 var memDb = require('epochtalk-http-api/memstore').db;
@@ -71,14 +72,13 @@ server.register({ register: good, options: goodOpts}, function (err) {
 
 /**
  * JWT
- * token, original unadulterated token
  * decodedToken, the decrypted value in the token
  *   -- { username, user_id, email }
  * cb(err, isValid, credentials),
  *   -- isValid, if true if decodedToken matches a user token
  *   -- credentials, the user short object to be tied to request.auth.credentials
  */
-var validate = function(token, decodedToken, cb) {
+var validate = function(decodedToken, cb) {
   // get id from decodedToken to query memDown with for token
   var user_id = decodedToken.id;
   memDb.get(user_id, function(err, savedToken) {
@@ -92,12 +92,12 @@ var validate = function(token, decodedToken, cb) {
 
     // check if the token from memDown matches the token we got in the request
     // if it matches, then the token from the request is still valid
-    if (!error && token === savedToken) {
+    if (!error) {
       isValid = true;
       credentials.id = decodedToken.id;
       credentials.username = decodedToken.username;
       credentials.email = decodedToken.email;
-      credentials.token = token;
+      // credentials.token = token;
     }
 
     // return if token valid with user credentials
@@ -105,7 +105,7 @@ var validate = function(token, decodedToken, cb) {
   });
 };
 
-server.register(jwt, function(err) {
+server.register(hapiAuthJwt, function(err) {
   if (err) { throw err; /* error loading the jwt plugin */ }
   // register auth strategy
   var strategyOptions = {
