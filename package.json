@@ -49,7 +49,7 @@
     "hapi": "^8.1.0",
     "hapi-auth-jwt": "^2.0.0",
     "joi": "^4.6.2",
-    "jsonwebtoken": "^3.2.2",
+    "jsonwebtoken": "1.3.x",
     "levelup": "^0.19.0",
     "lodash": "^2.4.1",
     "medium-editor": "^1.8.14",

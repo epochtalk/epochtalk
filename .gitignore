@@ -16,7 +16,6 @@ config.json
 
 npm-debug.log
 node_modules
-/id_deploy
 
 test/coverage/
 /public/js/bundle.js
@@ -31,5 +30,3 @@ test/coverage/
 /app/scss/default.scss
 /app/scss/medium-editor.scss
 /app/.sass-cache/
-
-/epoch.db
