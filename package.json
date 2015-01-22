@@ -41,7 +41,7 @@
     "commander": "^2.5.1",
     "epochtalk-bbcode-parser": "^1.0.0",
     "epochtalk-emailer": "^0.0.1",
-    "epochtalk-http-api": "^1.0.4",
+    "epochtalk-http-api": "^1.0.5",
     "epochtalk-image-server": "^0.1.0",
     "good": "^5.1.1",
     "good-console": "^4.1.0",
