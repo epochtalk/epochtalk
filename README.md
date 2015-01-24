@@ -1,4 +1,4 @@
-# EpochTalk [![Gitter chat](http://img.shields.io/badge/gitter-slickage%2Fepochtalk-1dce73.svg?style=flat)](https://gitter.im/slickage/epochtalk)[![Build Status](http://img.shields.io/travis/slickage/epochtalk.svg?style=flat)](https://travis-ci.org/slickage/epochtalk)
+# EpochTalk [![Circle CI](https://circleci.com/gh/epochtalk/epochtalk.svg?circle-token=:circle-token)](https://circleci.com/gh/epochtalk/epochtalk) [![Gitter chat](http://img.shields.io/badge/gitter-slickage%2Fepochtalk-1dce73.svg?style=flat)](https://gitter.im/slickage/epochtalk)
 
 ####**Warning this project is under active development, design is subject to change**
 
