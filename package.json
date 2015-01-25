@@ -16,12 +16,12 @@
     "type": "git",
     "url": "git://github.com/epochtalk/epochtalk"
   },
-  "author": "James Wang <jw@slickage.com> (http://slickage.com/)",
+  "author": "James Wang <jw@slickage.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/slickage/epochtalk/issues"
+    "url": "https://github.com/epochtalk/epochtalk/issues"
   },
-  "homepage": "https://github.com/slickage/epochtalk",
+  "homepage": "https://github.com/epochtalk/epochtalk",
   "napa": {
     "angular": "angular/bower-angular#v1.3.1-build.3464+sha.d97b427",
     "angular-cookies": "angular/bower-angular-cookies#v1.3.1-build.3464+sha.d97b427",
