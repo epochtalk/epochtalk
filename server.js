@@ -119,6 +119,11 @@ server.register({ register: require('epochtalk-http-api') }, function(err) {
   if (err) throw(err);
 });
 
+server.register({ register: require('lout') }, function(err) {
+  if (err) throw(err);
+});
+
+
 server.start(function () {
   server.log('debug', 'config: ' + JSON.stringify(config, undefined, 2));
   server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
