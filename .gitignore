@@ -30,3 +30,5 @@ test/coverage/
 /app/scss/default.scss
 /app/scss/medium-editor.scss
 /app/.sass-cache/
+
+database.json
