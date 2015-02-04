@@ -4,6 +4,8 @@
   "description": "Epochtalk forum software",
   "main": "server",
   "scripts": {
+    "db-create": "createdb epochtalk_dev",
+    "db-migrate": "./node_modules/.bin/db-migrate -m ./node_modules/epochtalk-core-pg/migrations up",
     "install": "./node_modules/.bin/napa",
     "gulp": "./node_modules/.bin/gulp",
     "build": "./node_modules/.bin/gulp build",
@@ -60,6 +62,7 @@
     "mkdirp": "^0.5.0",
     "mmmagic": "^0.3.11",
     "node-uuid": "^1.4.1",
+    "pg": "^4.2.0",
     "pkgcloud": "^1.0.3",
     "request": "^2.48.0",
     "sanitize-html": "^1.4.3",
