@@ -7,7 +7,7 @@
     "db-create": "createdb $(cat database.json | ./node_modules/.bin/json dev.database)",
     "db-drop": "dropdb epochtalk_dev",
     "db-migrate": "./node_modules/.bin/db-migrate -m ./node_modules/epochtalk-core-pg/migrations up",
-    "db-newseed": "",
+    "db-recreate": "npm run db-drop && npm run db-create && npm run db-migrate",
     "install": "./node_modules/.bin/napa",
     "gulp": "./node_modules/.bin/gulp",
     "build": "./node_modules/.bin/gulp build",
