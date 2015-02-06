@@ -115,7 +115,8 @@ server.register(hapiAuthJwt, function(err) {
   server.auth.strategy('jwt', 'jwt', strategyOptions);
 });
 
-server.register({ register: require('epochtalk-http-api') }, function(err) {
+var httpApiOpts = { config: config };
+server.register({ register: require('epochtalk-http-api'), options: httpApiOpts }, function(err) {
   if (err) throw(err);
 });
 

@@ -2,7 +2,6 @@ var path = require('path');
 var database = require('./database.json');
 var config = {
   root: path.normalize(__dirname),
-  db: process.env.DB,
   port: process.env.PORT || 8080,
   logEnabled: process.env.LOG_ENABLED || true,
   publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080',
@@ -22,10 +21,10 @@ var config = {
 // for (var key in json) config[key] = json[key];
 
 if (process.env.NODE_ENV === 'production') {
-  config.db = database.prod.database;
+  config.db = database.prod;
 }
 else {
-  config.db = database.dev.database;
+  config.db = database.dev;
 }
 
 module.exports = config;
