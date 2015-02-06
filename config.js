@@ -1,4 +1,5 @@
 var path = require('path');
+var database = require('./database.json');
 var config = {
   root: path.normalize(__dirname),
   db: process.env.DB,
@@ -17,7 +18,14 @@ var config = {
   imageInterval: process.env.IMAGE_INTERVAL || 1000 * 60 * 15
 };
 
-var json = require(path.join(__dirname, 'config.json'));
-for (var key in json) config[key] = json[key];
+// var json = require(path.join(__dirname, 'config.json'));
+// for (var key in json) config[key] = json[key];
+
+if (process.env.NODE_ENV === 'production') {
+  config.db = database.prod.database;
+}
+else {
+  config.db = database.dev.database;
+}
 
 module.exports = config;
