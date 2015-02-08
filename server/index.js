@@ -15,7 +15,7 @@ server.route([{
   path: '/static/{path*}',
   handler: {
     directory: {
-      path: path.join(__dirname, 'public'),
+      path: path.join(__dirname, '..', 'public'),
       index: false
     }
   }
