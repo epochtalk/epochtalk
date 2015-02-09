@@ -1,6 +1,6 @@
 {
   "name": "epochtalk",
-  "version": "0.3.0-0",
+  "version": "0.3.0",
   "description": "Epochtalk forum software",
   "main": "server",
   "scripts": {
