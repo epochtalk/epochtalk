@@ -47,6 +47,7 @@ plan.remote(function(remote) {
   remote.sudo('ln -snf ~/' + tmpDir + ' ~/'+appName, {user: username});
   remote.exec('ln -s ~/btctalk.env ~/' + appName + '/.env');
   remote.exec('ln -s ~/config.json ~/' + appName + '/config.json');
+  remote.exec('ln -s ~/database.json ~/' + appName + '/database.json');
   remote.exec('cd ~/' + appName + '; npm run build');
   remote.sudo('systemctl restart ' + appName + '-server.target');
   remote.sudo('systemctl restart ' + appName + '-emailer.target');
