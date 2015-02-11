@@ -14,18 +14,13 @@ gulp.task('build', function(cb) {
   runSequence('clean', 'copy-css', 'sass', 'browserify', cb);
 });
 
-gulp.task('dev', function(cb) {
-  runSequence('build', 'watch', 'nodemon', cb);
-});
-
-gulp.task('default', function() {
-  return gulp.src('Procfile.dev', {read: false})
-    .pipe(shell('foreman start -f <%= file.path %> -p 8080'));
+gulp.task('default', function(cb) {
+  runSequence('build', 'watch', cb);
 });
 
 gulp.task('watch', function() {
   livereload.listen();
-  gulp.watch('app/**/*.{js,html,scss}', ['build']).on('change', livereload.changed);
+  gulp.watch('app/**/*.{js,html}', ['browserify']).on('change', livereload.changed);
   gulp.watch('public/**/*').on('change', livereload.changed);
   gulp.watch('server/**/*.js');
 });
