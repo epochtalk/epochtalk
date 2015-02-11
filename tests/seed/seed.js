@@ -1,6 +1,7 @@
 var Promise = require('bluebird');
 var urlPrefix = 'http://localhost:8080/api';
 var request = Promise.promisifyAll(require('request'));
+var jwtToken = '';
 
 // request(urlPrefix + 'boards', function(err, res, body) {
 //   console.log(body);
@@ -24,18 +25,25 @@ request.postAsync(urlPrefix + '/register', {json: {
     token: token
   }})
 }).then(function(res) {
-  var token = res[1].token;
+  jwtToken = res[1].token;
   console.log('account confirmed: admin');
   return request.postAsync(urlPrefix + '/categories', {
-    headers: {
-      'Authorization': 'Bearer ' + res[1].token
-    },
+    headers: {'Authorization': 'Bearer ' + jwtToken},
     json: {
       name: 'General'
     }
   });
 }).then(function(res) {
+  var categoryId = res[1].id;
+  console.log('created general category.');
+  return request.postAsync(urlPrefix + '/boards', {
+    headers: {'Authorization': 'Bearer ' + jwtToken},
+    json: {
+      category_id: categoryId,
+      name: 'General Discussion',
+      description: 'The art of discussing, generally.'
+    }
+  });
+}).then(function(res) {
   console.log(res[1]);
-});;
-
-// request.post(urlPrefix + '/categories', {name: 'General'}, handler);
+});
