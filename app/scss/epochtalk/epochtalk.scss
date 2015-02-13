@@ -478,13 +478,14 @@ input.icon-padding { padding-right: 40px; }
     background-color: transparent;
     border: none;
     border-radius: 0;
-    height: 45px;
-    line-height: 45px;
+    height: 30px;
+    line-height: 30px;
     margin-bottom: 0;
+    margin-top: 0;
     padding: 0;
 
     li {
-      line-height: 45px;
+      line-height: 30px;
     }
   }
 
@@ -513,8 +514,8 @@ input.icon-padding { padding-right: 40px; }
   }
 
   .form-group {
-    border-left: 1px solid $color-gray-light;
-    border-right: 1px solid $color-gray-light;
+    // border-left: 1px solid $color-gray-light;
+    // border-right: 1px solid $color-gray-light;
     position: relative;
 
     input[type="text"] {
@@ -575,7 +576,7 @@ pagination {
   background-color: $color-gray-sub;
   color: $color-gray;
   font-size: .8rem;
-  padding: 40px 10px 60px 10px;
+  padding: 10px 10px 40px 10px;
   margin-bottom: 0;
 
   a {
@@ -773,7 +774,7 @@ pagination {
     color: #fff;
     font-size: .8125em;
     font-weight: 600;
-    padding: 6px;
+    padding: 3px;
     position: absolute;
     text-align: center;
     text-transform: uppercase;

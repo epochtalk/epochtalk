@@ -5,7 +5,8 @@
   <!-- Post Profile Section -->
   <div class="small-12 medium-2 columns">
     <div class="post-user">
-      <div class="user-avatar" style="background-image:url('/static/img/rides-a-fixie.jpg');">
+      <div class="user-avatar"
+        style="background-image:url('/static/img/128x128.gif');">
         <span class="user-role">Hero</span>
       </div>
       <ul class="user-details">
@@ -13,7 +14,7 @@
           <a href="/profiles/{{post.user.username}}" ng-bind-html="post.user.username"></a>
           <span class="user-role-sm">Hero</span>
         </li>
-        <li class="points"> * * * * *</li>
+        <!-- <li class="points"> * * * * *</li> -->
         <!-- <li class="activity">Activity: 879</li> -->
       </ul>
     </div>
@@ -43,21 +44,6 @@
     </div>
     <!-- Post Body -->
     <div class="post-body" ng-bind-html="post.body" auto-link auto-date style-fix></div>
-    <ul class="post-action">
-      <li ng-if="post.editable">
-        <a ng-href="#" ng-click="PostsCtrl.loadEditor($index)">
-          <i class="icon-epoch-edit-pencil"></i>
-        </a>
-      </li>
-      <!-- <li><a href="#"><i class="icon-epoch-heart"></i></a></li>
-      <li><a href="#"><i class="icon-epoch-flag"></i></a></li>
-      <li><a href="#"><i class="icon-epoch-reply"></i></a></li> -->
-      <li ng-if="PostsParentCtrl.loggedIn()">
-          <a href="#" ng-click="PostsCtrl.addQuote($index)">
-            <i class="icon-epoch-quote"></i>
-          </a>
-        </li>
-    </ul>
     <div ng-if="post.user.signature">
       <div class="post-sig-border"></div>
       <div class="post-signature" ng-bind-html="post.user.signature"></div>
