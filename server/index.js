@@ -1,7 +1,9 @@
 var path = require('path');
 var Hapi = require('hapi');
 var Boom = require('boom');
-var good = require('good');
+var Good = require('good');
+var GoodFile = require('good-file');
+var GoodConsole = require('good-console');
 var hapiAuthJwt = require('hapi-auth-jwt');
 var jwt = require('jsonwebtoken');
 var mkdirp = require('mkdirp');
@@ -32,19 +34,23 @@ server.route([{
 var defaultRegisterCb = function(err) { if (err) throw(err); };
 
 // logging only regiestered if config enabled
-var goodOpts = {};
+var options = {};
 if (config.logEnabled) {
-  mkdirp.sync('./logs/server/operations');
-  mkdirp.sync('./logs/server/errors');
-  mkdirp.sync('./logs/server/requests');
-  var logOpts = { extension: 'log', rotationTime: 1, format: 'YYYY-MM-DD-X' };
-  goodOpts.reporters = [
-    { reporter: require('good-console'), args:[{ log: '*', response: '*', error: '*' }] },
-    { reporter: require('good-file'), args: ['./logs/server/operations/', { ops: '*' }, logOpts] },
-    { reporter: require('good-file'), args: ['./logs/server/errors/', { error: '*' }, logOpts] },
-    { reporter: require('good-file'), args: ['./logs/server/requests/', { response: '*' }, logOpts] }
-  ];
-  server.register({ register: good, options: goodOpts}, defaultRegisterCb);
+  var opsPath = path.join(__dirname, '..', 'logs', 'server', 'operations');
+  var errsPath = path.join(__dirname, '..', 'logs', 'server', 'errors');
+  var reqsPath = path.join(__dirname, '..', 'logs', 'server', 'requests');
+  mkdirp.sync(opsPath);
+  mkdirp.sync(errsPath);
+  mkdirp.sync(reqsPath);
+  var configWithPath = function(path) {
+    return { path: path, extension: 'log', rotate: 'daily', format: 'YYYY-MM-DD-X', prefix:'epochtalk' };
+  };
+  var consoleReporter = new GoodConsole({ log: '*', response: '*' });
+  var opsReporter = new GoodFile(configWithPath(opsPath), { log: '*', ops: '*' });
+  var errsReporter = new GoodFile(configWithPath(errsPath), { log: '*', error: '*' });
+  var reqsReporter = new GoodFile(configWithPath(reqsPath), { log: '*', response: '*' });
+  options.reporters = [ consoleReporter, opsReporter, errsReporter, reqsReporter ];
+  server.register({ register: Good, options: options}, defaultRegisterCb);
 }
 // auth via jwt
 server.register(hapiAuthJwt, function(err) {
