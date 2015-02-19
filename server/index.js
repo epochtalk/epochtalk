@@ -40,9 +40,9 @@ if (config.logEnabled) {
   var logOpts = { extension: 'log', rotationTime: 1, format: 'YYYY-MM-DD-X' };
   goodOpts.reporters = [
     { reporter: require('good-console'), args:[{ log: '*', response: '*', error: '*' }] },
-    { reporter: require('good-file'), args: ['./logs/server/operations/ops', { ops: '*' }, logOpts] },
-    { reporter: require('good-file'), args: ['./logs/server/errors/errs', { error: '*' }, logOpts] },
-    { reporter: require('good-file'), args: ['./logs/server/requests/reqs', { response: '*' }, logOpts] }
+    { reporter: require('good-file'), args: ['./logs/server/operations/', { ops: '*' }, logOpts] },
+    { reporter: require('good-file'), args: ['./logs/server/errors/', { error: '*' }, logOpts] },
+    { reporter: require('good-file'), args: ['./logs/server/requests/', { response: '*' }, logOpts] }
   ];
   server.register({ register: good, options: goodOpts}, defaultRegisterCb);
 }
