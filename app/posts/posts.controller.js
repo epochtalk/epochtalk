@@ -17,7 +17,7 @@ module.exports = [
     // default post avatar image if not found
     ctrl.posts.map(function(post) {
       if (!post.avatar) {
-        post.avatar = 'http://placehold.it/400/cccccc';
+        post.avatar = 'http://placehold.it/400/cccccc&text=Avatar';
       }
     });
 
