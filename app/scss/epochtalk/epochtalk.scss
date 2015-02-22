@@ -891,6 +891,34 @@ form .input-section:last-child {margin-bottom: 0px; }
   padding: 0.25rem 0.5rem 0.375rem;
   font-size: 0.6875rem;
   margin: 0; }
+/* Profile Page Avatar */
+.profile-avatar-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  }
+.profile-avatar-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.profile-avatar-container .after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 45px;
+  color: #FFF;
+  padding: 10px;
+  background: rgba(0, 0, 0, .6);
+}
+.profile-boxes { padding: 10px; margin-bottom: 1.25rem; }
+.profile-stats { text-align: center; }
+.profile-stat {
+  font-size: 26px;
+}
+
+
 
 /* Post Page Again */
 .resize-cursor { cursor: ns-resize; }
@@ -936,7 +964,7 @@ form .input-section:last-child {margin-bottom: 0px; }
   position: relative;
   padding-top: 20px;
   // border-top: 4px solid $color-active;
-  min-height: 288px; 
+  min-height: 288px;
 
   &:after {
     content: url('/static/img/btn-dragbar.png');
@@ -1014,7 +1042,7 @@ form .input-section:last-child {margin-bottom: 0px; }
         color: $color-active;
       }
     }
-  } 
+  }
 }
 
 // Media Queries

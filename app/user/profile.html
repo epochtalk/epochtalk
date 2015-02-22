@@ -1,261 +1,273 @@
 <div class="row">
   <div class="small-12 columns">
-    <h4 class="thin-dotted-underline" ng-bind-html="(profiles.displayUsername) + '\'s Profile'"></h4>
     <div class="alert-box radius" ng-class="profiles.pageStatus.type" ng-if="profiles.pageStatus.status">
       {{profiles.pageStatus.message}}
       <a ng-click="profiles.pageStatus = {}" class="close">&times;</a>
     </div>
   </div>
 </div>
+
 <div class="row">
   <!-- Left Sidebar -->
   <div class="large-3 columns">
-    <img src="http://placehold.it/320x240&text=Avatar"/>
+    <!-- User's Avatar -->
+    <div class="profile-avatar-container">
+      <img ng-src="{{profiles.user.avatar}}"/>
+      <a href="#" class="after" ng-if="profiles.user.editable" ng-click="profiles.editAvatar = true">
+        <div>Change Avatar</div>
+      </a>
+    </div>
+
+    <!-- User Information -->
+    <h4 ng-bind="profiles.displayUsername"></h4>
+    <div><span ng-bind="profiles.user.name"></span></div>
+    <div><span ng-bind="profiles.user.position"></span></div>
+    <div><span ng-bind="profiles.user.status"></span></div>
+    <hr ng-if="profiles.user.email || profiles.user.btcAddress || profiles.user.website">
+    <div><span ng-bind="profiles.user.email"></span></div>
+    <div><span ng-bind="profiles.user.btcAddress"></span></div>
+    <div><span ng-bind="profiles.user.website"></span></div>
+    <hr>
+    <div><span ng-bind="profiles.user.gender"></span></div>
+    <div><span ng-bind="profiles.userAge"></span></div>
+    <div><span ng-bind="profiles.user.location"></span></div>
+    <div><span ng-bind="profiles.user.language"></span></div>
+    <div><span ng-bind="profiles.userLocalTime"></span></div>
+
+    <!-- User Actions -->
     <ul class="side-nav">
-      <li ng-if="profiles.user.editable"><a href="#">Change Avatar</a></li>
       <li ng-if="profiles.user.editable">
-        <a href="#" ng-click="profiles.openChangePassModal()">Change Password</a>
+        <a href="#" ng-click="profiles.openChangePassModal()">
+          Change Password
+        </a>
       </li>
+
       <li ng-If="profiles.user.editable">
-        <a href="#" ng-click="profiles.editMode = !profiles.editMode">Change Profile Fields</a>
+        <a href="#" ng-click="profiles.editMode = !profiles.editMode">
+          Change Profile Fields
+        </a>
       </li>
-      <li><a href="#">Send Personal Message</a></li>
-      <li><a href="#">Show Last Post</a></li>
-      <li><a href="#">Show General Statistics</a></li>
     </ul>
   </div>
 
-  <!-- Main Content -->
+  <!-- Right Side Content -->
   <div class="large-9 columns">
-    <!-- Show Content -->
-    <div ng-If="profiles.editMode === false">
-      <div class="panel">
-        <div>
-          Name:
-          <span ng-bind-html="profiles.user.name"></span>
+
+    <div class="profile-boxes">
+      <div class="row">
+        <div class="large-4 columns profile-stats">
+          Account Created On:<br>
+          <span class="profile-stat" ng-bind="profiles.user.created_at | date:'mediumDate'"></span>
         </div>
-
-        <div>
-          Posts:
-          <span ng-bind="profiles.user.posts"></span>
+        <div class="large-4 columns profile-stats">
+          Number of Posts:<br>
+          <span class="profile-stat" ng-bind="profiles.user.posts + ' Posts'"></span>
         </div>
-
-        <div>
-          Position:
-          <span ng-bind="profiles.user.position"></span>
-        </div>
-
-        <div>
-          Date Registered:
-          <span ng-bind="profiles.user.created_at | date:'medium'"></span>
-        </div>
-
-        <div>
-          Last Active:
-          <span ng-bind="profiles.user.updated_at | date:'medium'"></span>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div>
-          Email:
-          <span ng-bind="profiles.user.email"></span>
-        </div>
-
-        <div>
-          Website:
-          <span ng-bind="profiles.user.website"></span>
-        </div>
-
-        <div>
-          Current Status:
-          <span ng-bind="profiles.user.status"></span>
-        </div>
-
-        <div>
-          Bitcoin Address(es):
-          <span ng-bind="profiles.user.btcAddress"></span>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div>
-          Gender:
-          <span ng-bind="profiles.user.gender"></span>
-        </div>
-
-        <div>
-          Age:
-          <span ng-bind="profiles.userAge"></span>
-        </div>
-
-        <div>
-          Location:
-          <span ng-bind="profiles.user.location"></span>
-        </div>
-
-        <div>
-          Local Time:
-          <span ng-bind="profiles.userLocalTime"></span>
-        </div>
-
-        <div>
-          Language:
-          <span ng-bind="profiles.user.language"></span>
-        </div>
-      </div>
-
-      <div class="panel">
-        Signature:
-        <div ng-bind-html="profiles.user.signature" class="profile post-signature"></div>
-      </div>
-    </div>
-
-    <!-- Edit Content -->
-    <div ng-If="profiles.editMode === true">
-
-      <div class="panel profile-form">
-        <form name="form" class="css-form" novalidate>
-          <label>Username
-            <input type="text" name="username" required ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
-            <small class="label error" ng-if="form.username.$error.unique">
-              Username Already Taken
-            </small>
-            <small class="label error" ng-if="form.username.$error.required">
-              Username Required
-            </small>
-            <small class="label success" ng-if="profiles.displayUsername !== profiles.user.username && !form.username.$error.unique && !form.username.$error.required">
-              Username Available
-            </small>
-          </label>
-
-          <label>Name
-            <input type="text" placeholder="Name" ng-model="profiles.user.name">
-          </label>
-
-          <label>Email
-            <input type="email" name="email" required ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
-            <small class="label error" ng-if="form.email.$error.email">
-              Email is not valid
-            </small>
-            <small class="label error" ng-if="form.email.$error.unique">
-              Email Already Taken
-            </small>
-            <small class="label error" ng-if="!form.email.$error.email && form.email.$error.required">
-              Email Required
-            </small>
-            <small class="label success" ng-if="profiles.displayEmail !== profiles.user.email && !form.email.$error.email && !form.email.$error.required && !form.email.$error.unique">
-              Email Available
-            </small>
-          </label>
-
-          <label>Website
-            <input type="text" placeholder="Website" ng-model="profiles.user.website">
-          </label>
-
-          <label>Bitcoin Address
-            <input type="text" placeholder="Bitcoin Address" ng-model="profiles.user.btcAddress">
-          </label>
-
-          <label>Gender
-            <input type="text" placeholder="Gender" ng-model="profiles.user.gender">
-          </label>
-
-          <label>Date of Birth
-            <input type="text" placeholder="Date of Birth" ng-model="profiles.user.dob">
-          </label>
-
-          <label>Location
-            <input type="text" placeholder="Location" ng-model="profiles.user.location">
-          </label>
-
-          <label>Language
-            <input type="text" placeholder="Language" ng-model="profiles.user.language">
-          </label>
-
-          <label>Signature
-            <textarea type="text" placeholder="Signature" ng-model="profiles.user.signature"></textarea>
-          </label>
-        </form>
-
-        <!-- Cancel/Save Buttons -->
-        <div class="row">
-          <div class="small-6 columns">
-            <button class="button expand alert" ng-click="profiles.editMode = false">
-              Close
-            </button>
-          </div>
-          <div class="small-6 columns">
-            <button class="button expand" ng-click="profiles.saveProfile()" ng-disabled="form.$invalid">
-              Save
-            </button>
-          </div>
-        </div>
-
-        <div class="row" ng-if="profiles.error.status">
-          <div class="small-12 columns">
-            <div class="alert-box alert radius" ng-bind="profiles.error.message"></div>
-          </div>
+        <div class="large-4 columns profile-stats">
+          Account Last Used:<br>
+          <span class="profile-stat" ng-bind="profiles.user.updated_at | date:'mediumDate'"></span>
         </div>
       </div>
     </div>
 
+    <div class="profile-boxes">
+      <div class="row">
+        <div class="large-12 columns"><strong>Posts over time:</strong></div>
+      </div>
+      <div class="row">
+        <div class="large-12 columns">
+          <canvas id="myChart" height="300" width="700"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-boxes">
+      <div class="row">
+        <div class="large-12 columns"><strong>Signature:</strong></div>
+      </div>
+      <div ng-bind-html="profiles.user.signature" class="profile post-signature"></div>
+    </div>
   </div>
 </div>
-<div ng-cloak>
-  <modal class="tiny" show="profiles.showChangePass" on-close="profiles.clearChangePassFields">
-    <form name="changePass" class="css-form" novalidate>
-      <h3 class="thin-dotted-underline">Change Password</h3>
-      <div class="error-container">
-        <div ng-if="profiles.changePassStatus.status" ng-bind="profiles.changePassStatus.message" ng-class="profiles.changePassStatus.type"></div>
-      </div>
 
-      <div class='input-section'>
-        <label>&nbsp;
-          <div ng-if="changePass.oldPass.$touched && changePass.oldPass.$error.required" class="invalid right">
-            Old password is required
-          </div>
-          <input ng-if="profiles.changePassModalVisible" type="password" name="oldPass" placeholder="Old Password" ng-model="profiles.passData.oldPass" ng-if="profiles.changePassModalVisible" auto-focus required>
-          <i ng-if="changePass.oldPass.$touched && !changePass.oldPass.$error.required" class="fa fa-check input-icon valid"></i>
-          <i ng-if="changePass.oldPass.$touched && changePass.oldPass.$error.required" class="fa fa-times input-icon invalid"></i>
-        </label>
-      </div>
+<!-- Change Password Modal -->
+<modal class="tiny" show="profiles.showChangePass" on-close="profiles.clearChangePassFields">
+  <form name="changePass" class="css-form" novalidate>
+    <h3 class="thin-dotted-underline">Change Password</h3>
+    <!-- Modal Error Message -->
+    <div class="error-container">
+      <div ng-if="profiles.changePassStatus.status" ng-bind="profiles.changePassStatus.message" ng-class="profiles.changePassStatus.type"></div>
+    </div>
 
-      <div class='input-section'>
-        <label>
-          <div ng-if="changePass.pass.$touched && changePass.pass.$error.required" class="input-error invalid right">
-            New password is required
-          </div>
-          <div ng-if="changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !changePass.pass.$error.required" class="input-error invalid right">
-            Password and confirmation do not match
-          </div>
-          <input ng-if="profiles.changePassModalVisible" type="password" name="pass" placeholder="New Password" ng-model="profiles.passData.password" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
-          <i ng-if="(changePass.pass.$touched && !changePass.passConf.$touched && !changePass.pass.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !changePass.pass.$error.required)" class="fa fa-check input-icon valid"></i>
-          <i ng-if="(changePass.pass.$touched && changePass.pass.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
-        </label>
-      </div>
+    <!-- Old Password -->
+    <div class='input-section'>
+      <label>&nbsp;
+        <!-- input error -->
+        <div ng-if="changePass.oldPass.$touched && changePass.oldPass.$error.required" class="invalid right">
+          Old password is required
+        </div>
+        <!-- old password input -->
+        <input ng-if="profiles.changePassModalVisible" type="password" name="oldPass" placeholder="Old Password" ng-model="profiles.passData.oldPass" ng-if="profiles.changePassModalVisible" auto-focus required>
+        <i ng-if="changePass.oldPass.$touched && !changePass.oldPass.$error.required" class="fa fa-check input-icon valid"></i>
+        <i ng-if="changePass.oldPass.$touched && changePass.oldPass.$error.required" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
 
-      <div class='input-section'>
-        <label>
-          <div ng-if="changePass.passConf.$touched && changePass.passConf.$error.required" class="input-error invalid right">
-            Password confirmation is required
-          </div>
-          <div ng-if="changePass.passConf.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !changePass.passConf.$error.required" class="input-error invalid right">
-            Password and confirmation do not match
-          </div>
-          <input ng-if="profiles.changePassModalVisible" type="password" name="passConf" placeholder="Confirm New Password" ng-model="profiles.passData.confirmation" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
-          <i ng-if="(changePass.passConf.$touched  && profiles.passData.confirmation !== '' && !changePass.pass.$touched && !changePass.passConf.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !changePass.passConf.$error.required)" class="fa fa-check input-icon valid"></i>
-          <i ng-if="(changePass.passConf.$touched && changePass.passConf.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
-        </label>
-      </div>
+    <!-- New Password -->
+    <div class='input-section'>
+      <label>
+        <div ng-if="changePass.pass.$touched && changePass.pass.$error.required" class="input-error invalid right">
+          New password is required
+        </div>
+        <div ng-if="changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !changePass.pass.$error.required" class="input-error invalid right">
+          Password and confirmation do not match
+        </div>
+        <input ng-if="profiles.changePassModalVisible" type="password" name="pass" placeholder="New Password" ng-model="profiles.passData.password" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
+        <i ng-if="(changePass.pass.$touched && !changePass.passConf.$touched && !changePass.pass.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !changePass.pass.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="(changePass.pass.$touched && changePass.pass.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
 
-      <div class="form-action">
-        <button class="button no-margin" ng-click="profiles.changePassword()"
-          ng-disabled="changePass.$invalid || profiles.passData.password !== profiles.passData.confirmation">
-          Confirm
-        </button>
-      </div>
-    </form>
-    <a class="close-reveal-modal">&#215;</a>
-  </modal>
-</div>
+    <!-- Confirm Password -->
+    <div class='input-section'>
+      <label>
+        <div ng-if="changePass.passConf.$touched && changePass.passConf.$error.required" class="input-error invalid right">
+          Password confirmation is required
+        </div>
+        <div ng-if="changePass.passConf.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !changePass.passConf.$error.required" class="input-error invalid right">
+          Password and confirmation do not match
+        </div>
+        <input ng-if="profiles.changePassModalVisible" type="password" name="passConf" placeholder="Confirm New Password" ng-model="profiles.passData.confirmation" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
+        <i ng-if="(changePass.passConf.$touched  && profiles.passData.confirmation !== '' && !changePass.pass.$touched && !changePass.passConf.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !changePass.passConf.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="(changePass.passConf.$touched && changePass.passConf.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
+
+    <div class="form-action">
+      <button class="button no-margin" ng-click="profiles.changePassword()"
+        ng-disabled="changePass.$invalid || profiles.passData.password !== profiles.passData.confirmation">
+        Confirm
+      </button>
+    </div>
+  </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Edit Profile Modal -->
+<modal class="tiny" show="profiles.editMode">
+  <form name="form" class="css-form" novalidate>
+    <label>Username
+      <input type="text" name="username" required ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
+      <small class="label error" ng-if="form.username.$error.unique">
+        Username Already Taken
+      </small>
+      <small class="label error" ng-if="form.username.$error.required">
+        Username Required
+      </small>
+      <small class="label success" ng-if="profiles.displayUsername !== profiles.user.username && !form.username.$error.unique && !form.username.$error.required">
+        Username Available
+      </small>
+    </label>
+
+    <label>Name
+      <input type="text" placeholder="Name" ng-model="profiles.user.name">
+    </label>
+
+    <label>Email
+      <input type="email" name="email" required ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
+      <small class="label error" ng-if="form.email.$error.email">
+        Email is not valid
+      </small>
+      <small class="label error" ng-if="form.email.$error.unique">
+        Email Already Taken
+      </small>
+      <small class="label error" ng-if="!form.email.$error.email && form.email.$error.required">
+        Email Required
+      </small>
+      <small class="label success" ng-if="profiles.displayEmail !== profiles.user.email && !form.email.$error.email && !form.email.$error.required && !form.email.$error.unique">
+        Email Available
+      </small>
+    </label>
+
+    <label>Website
+      <input type="text" placeholder="Website" ng-model="profiles.user.website">
+    </label>
+
+    <label>Bitcoin Address
+      <input type="text" placeholder="Bitcoin Address" ng-model="profiles.user.btcAddress">
+    </label>
+
+    <label>Gender
+      <input type="text" placeholder="Gender" ng-model="profiles.user.gender">
+    </label>
+
+    <label>Date of Birth
+      <input type="text" placeholder="Date of Birth" ng-model="profiles.user.dob">
+    </label>
+
+    <label>Location
+      <input type="text" placeholder="Location" ng-model="profiles.user.location">
+    </label>
+
+    <label>Language
+      <input type="text" placeholder="Language" ng-model="profiles.user.language">
+    </label>
+
+    <label>Signature
+      <textarea type="text" placeholder="Signature" ng-model="profiles.user.signature"></textarea>
+    </label>
+  </form>
+
+  <!-- Cancel/Save Buttons -->
+  <div class="row">
+    <div class="small-6 columns">
+      <button class="button expand alert" ng-click="profiles.editMode = false">
+        Close
+      </button>
+    </div>
+    <div class="small-6 columns">
+      <button class="button expand" ng-click="profiles.saveProfile()" ng-disabled="form.$invalid">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="row" ng-if="profiles.error.status">
+    <div class="small-12 columns">
+      <div class="alert-box alert radius" ng-bind="profiles.error.message"></div>
+    </div>
+  </div>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Change Avatar Modal -->
+<modal class="tiny" show="profiles.editAvatar">
+  <form name="form" class="css-form" novalidate>
+    <label>Avatar address
+      <input type="text" name="avatar" ng-model="profiles.user.avatar" />
+    </label>
+  </form>
+
+  <!-- Cancel/Save Buttons -->
+  <div class="row">
+    <div class="small-6 columns">
+      <button class="button expand alert" ng-click="profiles.editAvatar = false">
+        Close
+      </button>
+    </div>
+    <div class="small-6 columns">
+      <button class="button expand" ng-click="profiles.saveAvatar()" ng-disabled="form.$invalid">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="row" ng-if="profiles.error.status">
+    <div class="small-12 columns">
+      <div class="alert-box alert radius" ng-bind="profiles.error.message"></div>
+    </div>
+  </div>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>

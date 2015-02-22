@@ -1,15 +1,11 @@
 module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$window',
   function(user, User, Auth, $location, $timeout, $filter, $window) {
     var ctrl = this;
+    this.user = {};
 
     // Possibly a better solution than this, ui-router causes
     // issues with scrolling to top on route change.
     $window.scrollTo(0, 0);
-
-    // Edit Profile Fields
-    this.editMode = false;
-    this.user = {};
-    this.pageStatus = {};
 
     // Helper methods
     var calcAge = function(dob) {
@@ -25,11 +21,13 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
     this.displayEmail = angular.copy(user.email);
     this.user.dob = $filter('date')(this.user.dob, 'longDate');
     this.userAge = calcAge(this.user.dob);
+    this.user.posts = this.user.posts || 0;
 
     // This isn't the profile users true local time, just a placeholder
-    this.userLocalTime = $filter('date')(Date.now(), 'medium');
+    this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
 
     // Show success message if user changed their username
+    this.pageStatus = {};
     if ($location.search().success) {
       $location.search('success', undefined);
       this.pageStatus.status = true;
@@ -37,6 +35,8 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
       this.pageStatus.type = 'success';
     }
 
+    // Edit Profile Fields
+    this.editMode = false;
     this.saveProfile = function() {
       User.update(this.user).$promise
       .then(function(data) {
@@ -54,6 +54,26 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
           $location.path('/profiles/' + ctrl.user.username);
           Auth.setUsername(ctrl.user.username);
         }
+        ctrl.pageStatus.status = true;
+        ctrl.pageStatus.message = 'Sucessfully saved profile';
+        ctrl.pageStatus.type = 'success';
+        $window.scrollTo(0, 0);
+      })
+      .catch(function(err) {
+        ctrl.pageStatus.status = true;
+        ctrl.pageStatus.type = 'alert';
+        ctrl.pageStatus.message = err.data.error + ': ' + err.data.message;
+        $window.scrollTo(0, 0);
+      });
+    };
+
+    this.editAvatar = false;
+    this.saveAvatar = function() {
+      User.update(this.user).$promise
+      .then(function(data) {
+        ctrl.user = data;
+        ctrl.editAvatar = false;
+        ctrl.pageStatus = {}; // reset error
         ctrl.pageStatus.status = true;
         ctrl.pageStatus.message = 'Sucessfully saved profile';
         ctrl.pageStatus.type = 'success';
@@ -114,6 +134,23 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
       });
     };
 
+    var data = {
+      labels: ["August", "September", "October", "November", "December", "January", "February"],
+      datasets: [
+        {
+          label: "My First dataset",
+          fillColor: "rgba(220,220,220,0.2)",
+          strokeColor: "rgba(220,220,220,1)",
+          pointColor: "rgba(220,220,220,1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(220,220,220,1)",
+          data: [65, 59, 80, 81, 56, 55, 40]
+        }
+      ]
+    };
+    Chart.defaults.global.responsive = true;
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var myNewChart = new Chart(ctx).Line(data);
   }
 ];
-
