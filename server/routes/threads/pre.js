@@ -1,7 +1,7 @@
 var path = require('path');
 var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var uuid = require('node-uuid');
-var memDb = require(path.join('..', '..', '..', 'memstore')).db;
+var memDb = require(path.join('..', '..', 'memstore')).db;
 
 // Helpers
 var checkViewKey = function(key) {

@@ -3,7 +3,7 @@ var Hapi = require('hapi');
 var Boom = require('boom');
 var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var bbcodeParser = require('epochtalk-bbcode-parser');
-var sanitizer = require(path.join('..', '..', '..', 'sanitizer'));
+var sanitizer = require(path.join('..', '..', 'sanitizer'));
 
 module.exports = {
   getCurrentUser: function(request, reply) {

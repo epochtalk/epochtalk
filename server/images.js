@@ -6,7 +6,7 @@ var path = require('path');
 var request = require('request');
 var mmm = require('mmmagic');
 var through2 = require('through2');
-var config = require(path.join(__dirname, 'config'));
+var config = require(path.join(__dirname, '..', 'config'));
 var memStore = require(path.join(__dirname, 'memstore')).db;
 var Magic = mmm.Magic;
 

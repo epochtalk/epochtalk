@@ -1,5 +1,5 @@
 var Boom = require('boom');
-var memDb = require('../memstore').db;
+var memDb = require('./memstore').db;
 
 /**
  * JWT

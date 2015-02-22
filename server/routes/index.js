@@ -1,6 +1,6 @@
 var path = require('path');
 var crypto = require('crypto');
-var imageProxy = require(path.join(__dirname, '..', '..', 'images'));
+var imageProxy = require(path.join(__dirname, '..', 'images'));
 var config = require(path.join(__dirname, '..', '..', 'config'));
 var breadcrumbs = require(path.join(__dirname, 'breadcrumbs'));
 var categories = require(path.join(__dirname,  'categories'));

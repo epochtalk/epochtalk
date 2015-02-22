@@ -6,8 +6,8 @@ var cheerio = require('cheerio');
 var bbcodeParser = require('epochtalk-bbcode-parser');
 var Promise = require('bluebird');
 var config = require(path.join(__dirname, '..', '..', '..', 'config'));
-var imageProxy = require(path.join(__dirname, '..', '..', '..', 'images'));
-var sanitizer = require(path.join(__dirname, '..', '..', '..', 'sanitizer'));
+var imageProxy = require(path.join(__dirname, '..', '..', 'images'));
+var sanitizer = require(path.join(__dirname, '..', '..', 'sanitizer'));
 
 module.exports = {
   authPost: function(request, reply) {

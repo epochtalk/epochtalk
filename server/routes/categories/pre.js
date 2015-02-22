@@ -1,5 +1,5 @@
 var path = require('path');
-var sanitizer = require(path.join('..', '..', '..', 'sanitizer'));
+var sanitizer = require(path.join('..', '..', 'sanitizer'));
 
 module.exports = {
   clean: function(request, reply) {

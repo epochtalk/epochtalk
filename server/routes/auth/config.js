@@ -6,9 +6,9 @@ var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
 var authValidator = require('epochtalk-validator').api.auth;
-var emailer = require(path.join(__dirname, '..', '..', '..', 'emailer'));
+var emailer = require(path.join(__dirname, '..', '..', 'emailer'));
 var config = require(path.join(__dirname, '..', '..', '..', 'config'));
-var memDb = require(path.join(__dirname, '..', '..', '..', 'memstore')).db;
+var memDb = require(path.join(__dirname, '..', '..', 'memstore')).db;
 var pre = require(path.join(__dirname, 'pre'));
 
 // Helpers
