@@ -9,27 +9,8 @@ var jwt = require('jsonwebtoken');
 var mkdirp = require('mkdirp');
 var config = require(path.join(__dirname, '..', 'config'));
 var serverOptions = require(path.join(__dirname, 'server-options'));
-
 var server = new Hapi.Server();
 var connection = server.connection(serverOptions);
-server.route([{
-  method: 'GET',
-  path: '/static/{path*}',
-  handler: {
-    directory: {
-      path: path.join(__dirname, '..', 'public'),
-      index: false
-    }
-  }
-},
-// index page
-{
-  method: 'GET',
-  path: '/{path*}',
-  handler: {
-    file: 'index.html'
-  }
-}]);
 
 var defaultRegisterCb = function(err) { if (err) throw(err); };
 
@@ -61,9 +42,10 @@ server.register(hapiAuthJwt, function(err) {
   };
   server.auth.strategy('jwt', 'jwt', strategyOptions);
 });
-// api routes
-var httpApiOpts = { config: config };
-server.register({ register: require('epochtalk-http-api'), options: httpApiOpts }, defaultRegisterCb);
+
+var routes = require(path.join(__dirname, 'routes'));
+server.route(routes.endpoints());
+
 // lout for api documentation
 server.register({ register: require('lout') }, defaultRegisterCb);
 
