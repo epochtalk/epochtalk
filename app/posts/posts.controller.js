@@ -14,6 +14,13 @@ module.exports = [
     parent.posts = posts;
     $timeout($anchorScroll);
 
+    // default post avatar image if not found
+    ctrl.posts.map(function(post) {
+      if (!post.avatar) {
+        post.avatar = 'http://placehold.it/400/cccccc';
+      }
+    });
+
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
     parent.pullPage = function(page, anchor) {

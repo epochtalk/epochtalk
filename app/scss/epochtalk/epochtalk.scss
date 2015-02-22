@@ -767,6 +767,11 @@ pagination {
     position: relative;
     width: 100%;
   }
+  .user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
   .user-role {
     background-color: rgba(0,0,0,.75);

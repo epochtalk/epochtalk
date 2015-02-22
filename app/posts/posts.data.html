@@ -6,8 +6,8 @@
   <div class="small-12 medium-2 columns">
     <div class="post-user">
       <a style="display: block" href="/profiles/{{post.user.username}}">
-        <div class="user-avatar"
-          style="background-image:url('/static/img/128x128.gif');">
+        <div class="user-avatar">
+          <img ng-src="{{post.avatar}}">
           <span class="user-role">Hero</span>
         </div>
       </a>
