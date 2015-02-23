@@ -650,7 +650,16 @@ pagination {
 }
 .thread-listItem { padding: 5px 0 15px; }
 .thread-listItem .division { font-size: 80%; line-height: 1.5; }
-.board-name { word-wrap: break-word; overflow-wrap: break-word; }
+
+.board-name {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.board-name a {
+  text-decoration: none;
+}
+
 .thread-editor-container {
   position: relative;
   padding-top: 20px;
@@ -693,7 +702,6 @@ pagination {
 }
 
 .category-board-name {font-size: 20px; margin-bottom: 5px; }
-.category-board-name a {text-decoration: underline;}
 
 .category-board-desc { font-size: 14px; line-height: 1.1; word-wrap: break-word; overflow-wrap: break-word; }
 .moderators {

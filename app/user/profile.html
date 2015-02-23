@@ -26,7 +26,7 @@
     <hr ng-if="profiles.user.email || profiles.user.btcAddress || profiles.user.website">
     <div><span ng-bind="profiles.user.email"></span></div>
     <div><span ng-bind="profiles.user.btcAddress"></span></div>
-    <div><span ng-bind="profiles.user.website"></span></div>
+    <div><a ng-href="{{profiles.user.website}}">{{profiles.user.website}}</a></div>
     <hr>
     <div><span ng-bind="profiles.user.gender"></span></div>
     <div><span ng-bind="profiles.userAge"></span></div>
