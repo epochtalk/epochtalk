@@ -8,6 +8,7 @@
     "db-drop": "dropdb epochtalk_dev",
     "db-migrate": "./node_modules/.bin/db-migrate -m ./node_modules/epochtalk-core-pg/migrations up",
     "db-recreate": "npm run db-drop && npm run db-create && npm run db-migrate",
+    "db-devseed": "node ./tests/seed/seed.js",
     "install": "./node_modules/.bin/napa",
     "build": "./node_modules/.bin/gulp build",
     "dev-fe": "node server & ./node_modules/.bin/gulp default",
