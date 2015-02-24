@@ -48,7 +48,7 @@
     "commander": "^2.5.1",
     "db-migrate": "^0.8.0",
     "epochtalk-bbcode-parser": "^1.0.0",
-    "epochtalk-core-pg": "^0.9.4",
+    "epochtalk-core-pg": "^0.9.5",
     "epochtalk-emailer": "^0.0.1",
     "epochtalk-image-server": "^0.1.0",
     "epochtalk-validator": "0.0.2",
