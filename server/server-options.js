@@ -3,7 +3,7 @@ var config = require(path.join(__dirname, '..', 'config'));
 
 module.exports = {
   // cors disabled by default
-  host: 'localhost',
+  host: config.host, 
   port: config.port,
   routes: {
     files: { relativeTo: path.join(__dirname, '..', 'public') },

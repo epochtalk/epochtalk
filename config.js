@@ -2,6 +2,7 @@ var path = require('path');
 var database = require('./database.json');
 var config = {
   root: path.normalize(__dirname),
+  host: process.env.HOST || 'localhost',
   port: process.env.PORT || 8080,
   logEnabled: process.env.LOG_ENABLED || true,
   publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080',
