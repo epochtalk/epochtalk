@@ -17,14 +17,14 @@
 </div>
 
 <div class="editor-footer">
-  To upload a image, either drop them above this text or just 
+  To upload a image, either drop them above this text or just
   <a ng-href="#" ng-click="openImagePicker()">click here</a>
   <input type="file" accept="image/*" multiple style="display: none;">
-  
+
   <div ng-if="images.length === 1">
     <div class="imageProgressContainer" ng-repeat="image in images">
       <button class="button tiny icon-epoch-add" ng-click="insertImageUrl(image.url)" ng-if="image.url"></button>
-      <span ng-bind=image.status></span> (<span ng-bind="image.progress"></span>): 
+      <span ng-bind=image.status></span> (<span ng-bind="image.progress"></span>):
       <a ng-href="{{image.url}}" target="_blank" ng-if="image.url">
         <span ng-bind="image.name"></span>
       </a>
@@ -45,7 +45,7 @@
 
   <div class="imageProgressContainer" ng-repeat="image in images">
     <button class="button tiny icon-epoch-add" ng-click="insertImageUrl(image.url)" ng-if="image.url"></button>
-    <span ng-bind=image.status></span> (<span ng-bind="image.progress"></span>): 
+    <span ng-bind=image.status></span> (<span ng-bind="image.progress"></span>):
     <a ng-href="{{image.url}}" target="_blank" ng-if="image.url">
       <span ng-bind="image.name"></span>
     </a>

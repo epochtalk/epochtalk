@@ -1,4 +1,3 @@
-var medium = require('medium-editor');
 var bbcodeParser = require('epochtalk-bbcode-parser');
 var fs = require('fs');
 
@@ -22,7 +21,7 @@ module.exports = [
         $scope.imageModal = true;
       };
 
-      // quote insert 
+      // quote insert
       $scope.$watch('quote', function(newQuote) {
         if (newQuote) { $scope.insertQuote(newQuote); }
       });
@@ -49,11 +48,11 @@ module.exports = [
       // editor preview elements
       var preview = $element[0].getElementsByClassName('editor-preview')[0];
       var $preview = angular.element(preview);
-      // editor footer 
+      // editor footer
       var footer = $element[0].getElementsByClassName('editor-footer')[0];
       var $footer = angular.element(footer);
 
-      // -- Images 
+      // -- Images
 
       // file input (raw html)
       $scope.images = [];
@@ -143,14 +142,6 @@ module.exports = [
       });
 
       // -- Editor
-
-      // Medium Editor and options
-      var options = {
-        "targetBlank":true,
-        "buttonLabels":"fontawesome",
-        "placeholder": ''
-      };
-      var mediumEditor = new medium(editor, options);
 
       // converts encoded unicode into numeric representation
       function textToEntities(text) {
@@ -272,7 +263,7 @@ module.exports = [
         }
       };
 
-      // resets the editor 
+      // resets the editor
       $scope.resetEditor = function() {
         initEditor();
         $scope.images = [];
