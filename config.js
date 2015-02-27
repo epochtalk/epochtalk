@@ -15,7 +15,8 @@ var config = {
   s3SecretKey: process.env.S3_SECRET_KEY || 'testkey',
   maxImageSize: process.env.MAX_IMAGE_SIZE || 10485760,
   imageExpiration: process.env.IMAGE_EXPIRATION || 1000 * 60 * 60 * 2,
-  imageInterval: process.env.IMAGE_INTERVAL || 1000 * 60 * 15
+  imageInterval: process.env.IMAGE_INTERVAL || 1000 * 60 * 15,
+  loginRequired: process.env.LOGIN_REQUIRED || true
 };
 
 // var json = require(path.join(__dirname, 'config.json'));

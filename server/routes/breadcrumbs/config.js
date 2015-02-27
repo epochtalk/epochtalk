@@ -3,10 +3,15 @@ var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var Boom = require('boom');
 var breadcrumbValidator = require('epochtalk-validator').api.breadcrumbs;
+var pre = require(path.join(__dirname, 'pre'));
 
 // Route handlers/configs
 exports.byType = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: { query: breadcrumbValidator.schema.byType },
+  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   handler: function(request, reply) {
+    if (!request.pre.viewable) { return reply([]); }
     // method type enum
     var findType = {
       board: db.boards.find,
@@ -63,6 +68,5 @@ exports.byType = {
     return buildCrumbs(request.query.id, request.query.type, [])
     .then(function(breadcrumbs) { reply(breadcrumbs.reverse()); })
     .catch(function(err) { reply(Boom.badImplementation(err));});
-  },
-  validate: { query: breadcrumbValidator.schema.byType }
+  }
 };

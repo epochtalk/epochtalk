@@ -53,8 +53,11 @@ exports.import = {
 };
 
 exports.find = {
+  auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: postValidator.schema.id },
+  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   handler: function(request, reply) {
+    if (!request.pre.viewable) { return reply({}); }
     var id = request.params.id;
     db.posts.find(id)
     .then(function(post) { reply(post); })
@@ -68,7 +71,9 @@ exports.byThread = {
     params: postValidator.paramsByThread,
     query: postValidator.queryByThread
   },
+  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   handler: function(request, reply) {
+    if (!request.pre.viewable) { return reply([]); }
     var user;
     if (request.auth.isAuthenticated) { user = request.auth.credentials; }
     var threadId = request.query.thread_id || request.params.thread_id;

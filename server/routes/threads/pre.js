@@ -2,6 +2,7 @@ var path = require('path');
 var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var uuid = require('node-uuid');
 var memDb = require(path.join('..', '..', 'memstore')).db;
+var config = require(path.join(__dirname, '..', '..', '..', 'config'));
 
 // Helpers
 var checkViewKey = function(key) {
@@ -22,6 +23,10 @@ var checkViewKey = function(key) {
 
 // Pre
 module.exports = {
+  requireLogin: function(request, reply) {
+    if (config.loginRequired) { return reply(request.auth.isAuthenticated); }
+    else { return reply(true); }
+  },
   getThreads: function(request, reply) {
     var boardId = request.query.board_id || request.params.board_id;
     var opts = {

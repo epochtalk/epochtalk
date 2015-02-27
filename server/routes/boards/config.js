@@ -26,7 +26,7 @@ exports.import = {
   handler: function(request, reply) {
     db.boards.import(request.payload)
     .then(function(board) { reply(board); })
-    .catch(function(err) { 
+    .catch(function(err) {
       request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
       reply(Boom.badImplementation(err));
     });
@@ -34,8 +34,11 @@ exports.import = {
 };
 
 exports.find = {
+  auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: boardValidator.id },
+  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   handler: function(request, reply) {
+    if (!request.pre.viewable) { return reply({}); }
     db.boards.find(request.params.id)
     .then(function(board) { reply(board); })
     .catch(function(err) { reply(Boom.badImplementation(err)); });
@@ -43,7 +46,10 @@ exports.find = {
 };
 
 exports.all = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   handler: function(request, reply) {
+    if (!request.pre.viewable) { return reply([]); }
     db.boards.all()
     .then(function(boards) { reply(boards); })
     .catch(function(err) { reply(Boom.badImplementation(err)); });
@@ -51,7 +57,10 @@ exports.all = {
 };
 
 exports.allCategories = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   handler: function(request, reply) {
+    if (!request.pre.viewable) { return reply([]); }
     db.boards.allCategories()
     .then(function(categories) { reply(categories); })
     .catch(function(err) {

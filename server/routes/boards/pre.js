@@ -2,6 +2,7 @@ var path = require('path');
 var Boom = require('boom');
 var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var sanitizer = require(path.join('..', '..', 'sanitizer'));
+var config = require(path.join(__dirname, '..', '..', '..', 'config'));
 
 module.exports = {
   clean: function(request, reply) {
@@ -10,6 +11,10 @@ module.exports = {
       request.payload.description = sanitizer.display(request.payload.description);
     }
     return reply();
+  },
+  requireLogin: function(request, reply) {
+    if (config.loginRequired) { return reply(request.auth.isAuthenticated); }
+    else { return reply(true); }
   },
   adminCheck: function(request, reply) {
     var userId = request.auth.credentials.id;

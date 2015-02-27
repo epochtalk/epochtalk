@@ -55,10 +55,12 @@ exports.byBoard = {
     query: threadValidator.queryByBoard
   },
   pre: [
+    { method: pre.requireLogin, assign: 'viewable' },
     { method: pre.getThreads, assign: 'threads' },
     { method: pre.getUserThreadViews, assign: 'threadViews' }
   ],
   handler: function(request, reply) {
+    if (!request.pre.viewable) { return reply([]); }
     var threads = request.pre.threads;
     var threadViews = request.pre.threadViews;
     var user = request.auth.credentials;
@@ -89,12 +91,14 @@ exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   pre: [
     [
+    { method: pre.requireLogin, assign: 'viewable' },
       { method: pre.getThread, assign: 'thread' },
       { method: pre.checkViewValidity, assign: 'newViewId' },
       { method: pre.updateUserThreadViews }
     ]
   ],
   handler: function(request, reply) {
+    if (!request.pre.viewable) { return reply({}); }
     var thread = request.pre.thread;
     var newViewerId = request.pre.newViewId;
     if (newViewerId) { return reply(thread).header('Epoch-Viewer', newViewerId); }
