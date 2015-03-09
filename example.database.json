@@ -1,24 +1,18 @@
 {
   "dev": {
     "driver": "pg",
-    "user": "jianshi",
-    "password": "",
     "host": "localhost",
     "database": "epochtalk_dev"
   },
 
   "test": {
     "driver": "pg",
-    "user": "root",
-    "password": "",
     "host": "localhost",
     "database": "epochtalk_test"
   },
 
   "prod": {
     "driver": "pg",
-    "user": "prod",
-    "password": "prod",
     "host": "localhost",
     "database": "epochtalk"
   },
