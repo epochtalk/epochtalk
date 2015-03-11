@@ -71,7 +71,7 @@ module.exports = ['$compile', function($compile) {
 
       scope.insertNewCategory = function() {
         var catName = scope.newCatName;
-        if (catName !== '') {
+        if (catName) {
           var dataId = scope.getDataId();
           // Update hashmap of list items
           scope.nestableMap[dataId] = {
