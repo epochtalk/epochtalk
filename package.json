@@ -6,8 +6,11 @@
   "scripts": {
     "db-create": "createdb $(cat database.json | ./node_modules/.bin/json dev.database)",
     "db-drop": "dropdb $(cat database.json | ./node_modules/.bin/json dev.database)",
+    "db-create-prod": "createdb $(cat database.json | ./node_modules/.bin/json prod.database)",
+    "db-drop-prod": "dropdb $(cat database.json | ./node_modules/.bin/json prod.database)",
     "db-migrate": "./node_modules/.bin/db-migrate -m ./node_modules/epochtalk-core-pg/migrations up",
     "db-recreate": "npm run db-drop && npm run db-create && npm run db-migrate",
+    "db-recreate-prod": "NODE_ENV=production npm run db-drop-prod && npm run db-create-prod && npm run db-migrate",
     "db-devseed": "node ./tests/seed/seed.js",
     "install": "./node_modules/.bin/napa",
     "build": "./node_modules/.bin/gulp build",
