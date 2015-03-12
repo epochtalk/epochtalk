@@ -25,11 +25,8 @@
             </div>
             <!-- Moderators -->
             <div class="moderators">
-              <strong>Moderators</strong>
-              <!-- <a href="#">Unknown</a>,
-              <a href="#">Unknown</a>,
-              <a href="#">Unknown</a>
-              -->
+              <strong ng-if="board.moderators.length > 0">Moderators: </strong>
+              <a ng-href="/profiles/{{mod.username}}" ng-repeat="mod in board.moderators" ng-bind="mod.username + ($last ? '' : ', ')"></a>
             </div>
             <!-- Board Description -->
             <div class="category-board-desc">
