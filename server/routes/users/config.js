@@ -135,7 +135,7 @@ exports.find = {
     var username = request.params.id;
     db.users.userByUsername(username)
     .then(function(user) {
-      if (!user) { return reply(Boom.badRequest('User doesn\'t exist.')); }
+      if (!user) { return Boom.badRequest('User doesn\'t exist.'); }
       delete user.passhash;
       delete user.confirmation_token;
       if (authUser.id !== user.id) { delete user.email; }
