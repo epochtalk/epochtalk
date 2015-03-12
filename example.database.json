@@ -1,5 +1,5 @@
 {
-  "dev": {
+  "development": {
     "driver": "pg",
     "host": "localhost",
     "database": "epochtalk_dev"
@@ -11,7 +11,7 @@
     "database": "epochtalk_test"
   },
 
-  "prod": {
+  "production": {
     "driver": "pg",
     "host": "localhost",
     "database": "epochtalk"

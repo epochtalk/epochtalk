@@ -19,14 +19,5 @@ var config = {
   loginRequired: process.env.LOGIN_REQUIRED || false
 };
 
-// var json = require(path.join(__dirname, 'config.json'));
-// for (var key in json) config[key] = json[key];
-
-if (process.env.NODE_ENV === 'production') {
-  config.db = database.prod;
-}
-else {
-  config.db = database.dev;
-}
-
+config.db = database[process.env.NODE_ENV];
 module.exports = config;
