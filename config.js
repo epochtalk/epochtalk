@@ -19,5 +19,6 @@ var config = {
   loginRequired: process.env.LOGIN_REQUIRED || false
 };
 
-config.db = database[process.env.NODE_ENV];
+var env = process.env.NODE_ENV || 'development';
+config.db = database[env];
 module.exports = config;
