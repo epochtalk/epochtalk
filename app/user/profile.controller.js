@@ -22,7 +22,7 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
     this.user.dob = $filter('date')(this.user.dob, 'longDate');
     this.userAge = calcAge(this.user.dob);
     this.user.post_count = this.user.post_count || 0;
-    this.user.avatar = this.user.avatar || 'http://placehold.it/400/cccccc&text=Avatar';
+    this.user.avatar = this.user.avatar || 'http://placehold.it/400/cccccc/&text=Avatar';
 
     // This isn't the profile users true local time, just a placeholder
     this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');

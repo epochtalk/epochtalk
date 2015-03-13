@@ -1,6 +1,7 @@
 module.exports = [
   '$scope', '$timeout', '$anchorScroll', '$uiViewScroll', 'Posts', 'thread', 'posts', 'page', 'limit',
   function($scope, $timeout, $anchorScroll, $uiViewScroll, Posts, thread, posts, page, limit) {
+    console.log('child');
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
     parent.page = page;
@@ -17,7 +18,7 @@ module.exports = [
     // default post avatar image if not found
     ctrl.posts.map(function(post) {
       if (!post.avatar) {
-        post.avatar = 'http://placehold.it/400/cccccc&text=Avatar';
+        post.avatar = 'http://placehold.it/400/cccccc/&text=Avatar';
       }
     });
 
@@ -34,6 +35,12 @@ module.exports = [
       // replace current posts with new posts
       Posts.byThread(query).$promise
       .then(function(posts) {
+        // default post avatar image if not found
+        posts.map(function(post) {
+          if (!post.avatar) {
+            post.avatar = 'http://placehold.it/400/cccccc/&text=Avatar';
+          }
+        });
         ctrl.posts = posts;
         parent.posts = posts;
         // set hash and scroll
