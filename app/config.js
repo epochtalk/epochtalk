@@ -5,16 +5,6 @@ require('./resources');
 
 module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider',
   function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
-    // Index Page (re-route to boards)
-    $stateProvider.state('index', {
-      url: '/',
-      views: {
-        'body': {
-          controller: ['$state', function($state) { $state.go('boards'); }],
-        }
-      }
-    });
-    
     // Public layout
     $stateProvider.state('public-layout', {
       views: {
@@ -158,6 +148,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
 
     $stateProvider.state('posts', {
       parent: 'public-layout',
+      reloadOnSearch: false,
       views: {
         'content': {
           controller: 'PostsParentCtrl',
@@ -168,6 +159,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     })
     .state('posts.data', {
       url: '/threads/{threadId}/posts?limit&page',
+      reloadOnSearch: false,
       views: {
         'data@posts': {
           controller: 'PostsCtrl',

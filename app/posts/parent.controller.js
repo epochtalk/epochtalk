@@ -127,8 +127,8 @@ module.exports = [
           calculatePages();
           // Go to last page in the thread and scroll to new post
           var lastPage = ctrl.pageCount;
-          if (ctrl.page === lastPage) { ctrl.pullPage(lastPage, data.id); }
-          else { $location.search('page', lastPage).hash(data.id); }
+          $location.search('page', lastPage).hash(data.id);
+          ctrl.pullPage(lastPage);
         }
         else if (type === 'edit') {
           var index = ctrl.posting.index;
@@ -145,7 +145,7 @@ module.exports = [
       .catch(function(response) {
         ctrl.posting.error = {};
         ctrl.posting.error.message = 'Post could not be saved.';
-        console.err(response);
+        console.error(response);
       });
     };
 

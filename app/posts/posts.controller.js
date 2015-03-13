@@ -1,7 +1,6 @@
 module.exports = [
-  '$scope', '$timeout', '$anchorScroll', '$uiViewScroll', 'Posts', 'thread', 'posts', 'page', 'limit',
-  function($scope, $timeout, $anchorScroll, $uiViewScroll, Posts, thread, posts, page, limit) {
-    console.log('child');
+  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Posts', 'thread', 'posts', 'page', 'limit',
+  function($rootScope, $scope, $timeout, $anchorScroll, $location, Posts, thread, posts, page, limit) {
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
     parent.page = page;
@@ -15,6 +14,27 @@ module.exports = [
     parent.posts = posts;
     $timeout($anchorScroll);
 
+    $rootScope.$on('$locationChangeSuccess', function(event){
+      var params = $location.search();
+      var page = Number(params.page);
+      var limit = Number(params.limit);
+      var pageChanged = false;
+      var limitChanged = false;
+
+      if (page && page !== parent.page) {
+        pageChanged = true;
+        parent.page = page;
+      }
+      if (limit && limit !== parent.limit) {
+        limitChanged = true;
+        parent.limit = limit;
+      }
+
+      if(pageChanged || limitChanged) {
+        parent.pullPage(parent.page, undefined);
+      }
+    });
+
     // default post avatar image if not found
     ctrl.posts.map(function(post) {
       if (!post.avatar) {
@@ -24,7 +44,7 @@ module.exports = [
 
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
-    parent.pullPage = function(page, anchor) {
+    parent.pullPage = function(page) {
       var query = {
         thread_id: parent.thread_id,
         page: page,
@@ -43,12 +63,7 @@ module.exports = [
         });
         ctrl.posts = posts;
         parent.posts = posts;
-        // set hash and scroll
-        $timeout(function() {
-          var element = document.getElementById(anchor);
-          element = angular.element(element);
-          $uiViewScroll(element);
-        });
+        $timeout($anchorScroll);
       });
     };
   }
