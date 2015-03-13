@@ -37,17 +37,19 @@ exports.import = {
   pre: [
     { method: pre.clean },
     { method: pre.adjustQuoteDate },
-    { method: pre.parseEncodings },
-    { method: pre.subImages }
+    { method: pre.parseEncodings }
+    // { method: pre.subImages }
   ],
   // validate: { payload: postValidator.create },
   handler: function(request, reply) {
     // build the post object from payload and params
     db.posts.import(request.payload)
-    .then(function(post) { reply(post); })
+    .then(function(post) {
+      reply(post);
+    })
     .catch(function(err) {
-      request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      reply(Boom.badImplementation(err));
+      request.log('error', 'Import post: ' + JSON.stringify(err, ['stack', 'message'], 2));
+      return reply(Boom.badImplementation(err));
     });
   }
 };
