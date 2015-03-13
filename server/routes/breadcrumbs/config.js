@@ -15,7 +15,7 @@ exports.byType = {
     // method type enum
     var findType = {
       board: db.boards.find,
-      category: db.boards.allCategories,
+      category: db.categories.find,
       thread: db.threads.find,
       post: db.posts.find
     };
@@ -31,12 +31,12 @@ exports.byType = {
     // Recursively Build breadcrumbs
     var buildCrumbs = function(id, curType, crumbs) {
       if (!id) { return crumbs; }
-      return findType[curType](curType !== type.category ? id : undefined)
+      return findType[curType](id)
       .then(function(obj) {
         var nextType, nextId;
         if (curType === type.category) { // Category
-          var catName = obj[id-1].name;
-          // var anchorId = '/boards#' + catName.split(' ').join('-') + '-' + id;
+          var catName = obj.name;
+          // var anchorId = '/#' + catName.replace(' ', '-') + '-' + '1';
           crumbs.push({ label: catName, url: ''});
         }
         else if (curType === type.board) { // Board
