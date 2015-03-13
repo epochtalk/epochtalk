@@ -28,16 +28,14 @@
   },
   "homepage": "https://github.com/slickage/epochtalk",
   "napa": {
-    "angular": "angular/bower-angular#v1.3.1-build.3464+sha.d97b427",
-    "angular-cookies": "angular/bower-angular-cookies#v1.3.1-build.3464+sha.d97b427",
-    "angular-resource": "angular/bower-angular-resource#v1.3.1-build.3464+sha.d97b427",
-    "angular-route": "angular/bower-angular-route#v1.3.1-build.3464+sha.d97b427",
-    "angular-sanitize": "angular/bower-angular-sanitize#v1.3.1-build.3464+sha.d97b427",
+    "angular": "angular/bower-angular#v1.3.14",
+    "angular-resource": "angular/bower-angular-resource#v1.3.14",
+    "angular-sanitize": "angular/bower-angular-sanitize#v1.3.14",
     "foundation": "zurb/bower-foundation",
     "nestable": "slickage/Nestable"
   },
   "dependencies": {
-    "angular-ui-router": "^0.2.11",
+    "angular-ui-router": "^0.2.13",
     "async": "^0.9.0",
     "bcrypt": "^0.8.0",
     "bluebird": "^2.6.4",
