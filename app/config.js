@@ -170,7 +170,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
               return Threads.get({ id: $stateParams.threadId }).$promise
               .then(function(thread) { return thread; });
             }],
-            posts: ['Threads', 'Posts', '$stateParams', function(Threads, Posts, $stateParams) {
+            posts: ['Posts', '$stateParams', function(Posts, $stateParams) {
               var limit = $stateParams.limit;
               var query = {
                 thread_id: $stateParams.threadId,

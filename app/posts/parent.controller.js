@@ -128,7 +128,7 @@ module.exports = [
           // Go to last page in the thread and scroll to new post
           var lastPage = ctrl.pageCount;
           $location.search('page', lastPage).hash(data.id);
-          ctrl.pullPage(lastPage);
+          if (ctrl.page === lastPage) { ctrl.pullPage(); }
         }
         else if (type === 'edit') {
           var index = ctrl.posting.index;

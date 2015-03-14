@@ -1,23 +1,23 @@
 module.exports = [
-  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Posts', 'thread', 'posts', 'page', 'limit',
-  function($rootScope, $scope, $timeout, $anchorScroll, $location, Posts, thread, posts, page, limit) {
+  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Threads', 'Posts', 'thread', 'posts', 'page', 'limit',
+  function($rootScope, $scope, $timeout, $anchorScroll, $location, Threads, Posts, thread, posts, page, limit) {
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
     parent.page = page;
     parent.limit = limit;
-
     parent.thread_id = thread.id;
     parent.thread_title = thread.title;
     parent.thread_post_count = thread.post_count;
-
-    ctrl.posts = posts;
     parent.posts = posts;
+
+    this.posts = posts;
+    this.thread = thread;
     $timeout($anchorScroll);
 
-    $rootScope.$on('$locationChangeSuccess', function(event){
+    this.offLCS = $rootScope.$on('$locationChangeSuccess', function(event){
       var params = $location.search();
-      var page = Number(params.page);
-      var limit = Number(params.limit);
+      var page = Number(params.page) || 1;
+      var limit = params.limit === 'all' ? params.limit : (Number(params.limit) || 10);
       var pageChanged = false;
       var limitChanged = false;
 
@@ -30,10 +30,9 @@ module.exports = [
         parent.limit = limit;
       }
 
-      if(pageChanged || limitChanged) {
-        parent.pullPage(parent.page, undefined);
-      }
+      if (pageChanged || limitChanged) { parent.pullPage(); }
     });
+    $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
     // default post avatar image if not found
     ctrl.posts.map(function(post) {
@@ -44,13 +43,16 @@ module.exports = [
 
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
-    parent.pullPage = function(page) {
+    parent.pullPage = function() {
       var query = {
         thread_id: parent.thread_id,
-        page: page,
+        page: parent.page,
         limit: parent.limit
       };
-      if (parent.limit === 'all') { query.limit = parent.thread_post_count; }
+
+      // update thread's post page count
+      Threads.get({ id: ctrl.thread.id }).$promise
+      .then(function(thread) { parent.thread_post_count = thread.post_count; });
 
       // replace current posts with new posts
       Posts.byThread(query).$promise
