@@ -87,8 +87,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       }
     });
+
     $stateProvider.state('board', {
       parent: 'public-layout',
+      reloadOnSearch: false,
       views: {
         'content': {
           controller: [function(){}],
@@ -99,6 +101,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     })
     .state('board.data', {
       url: '/boards/{boardId}?limit&page',
+      reloadOnSearch: false,
       views: {
         'data@board': {
           controller: 'BoardCtrl',
@@ -106,7 +109,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/board/board.data.html'),
           resolve: {
             board: ['Boards', '$stateParams', function(Boards, $stateParams) {
-              return Boards.get({ id: $stateParams.boardId}).$promise
+              return Boards.get({ id: $stateParams.boardId }).$promise
               .then(function(board) { return board; });
             }],
             threads: ['Threads', '$stateParams', function(Threads, $stateParams) {

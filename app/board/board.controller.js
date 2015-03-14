@@ -1,24 +1,22 @@
-module.exports = ['$scope', '$anchorScroll', '$stateParams', '$window', 'Auth', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
-  function($scope, $anchorScroll, $stateParams, $window, Auth, Threads, board, threads, page, threadLimit, postLimit) {
+module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Auth', 'Boards', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
+  function($rootScope, $scope, $anchorScroll, $location, $timeout, Auth, Boards, Threads, board, threads, page, threadLimit, postLimit) {
     var ctrl = this;
     this.loggedIn = Auth.isAuthenticated; // check Auth
+    this.board = board;
+    this.page = page; // this page
     this.postLimit = postLimit;
     this.threadLimit = threadLimit;
-    this.page = page; // this page
+    this.threads = threads;
+
     this.parent = $scope.$parent.BoardWrapperCtrl;
+    this.parent.loggedIn = Auth.isAuthenticated;
+    this.parent.board  = board;
     this.parent.page = page;
-
-    // Scroll fix for nested state
-    $anchorScroll();
-
-    ctrl.board = board;
-    ctrl.parent.board  = board;
-    ctrl.parent.newThreadUrl = '/boards/' + board.id + '/threads/new';
-    ctrl.parent.loggedIn = Auth.isAuthenticated;
-    ctrl.parent.pageCount = Math.ceil(board.thread_count / threadLimit);
+    this.parent.pageCount = Math.ceil(board.thread_count / threadLimit);
+    this.parent.newThreadUrl = '/boards/' + board.id + '/threads/new';
 
     // generate page listing for each thread
-    var getPageKeysForThread = function(thread) {
+    this.getPageKeysForThread = function(thread) {
       var pageKeys = [];
       var urlPrefix = '/threads/' + thread.id + '/posts?page=';
       if (thread.page_count < 7) {
@@ -42,13 +40,63 @@ module.exports = ['$scope', '$anchorScroll', '$stateParams', '$window', 'Auth', 
     };
 
     // page count for each thread
-    ctrl.threads = threads;
     threads.forEach(function(thread) {
-      thread.page_count = Math.ceil(thread.post_count / postLimit);
-      getPageKeysForThread(thread);
       // user based UI
       if (thread.has_new_post) { thread.title_class = 'bold-title'; }
+      thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
+      ctrl.getPageKeysForThread(thread);
     });
+
+    // Scroll fix for nested state
+    $timeout($anchorScroll);
+
+    this.offLCS = $rootScope.$on('$locationChangeSuccess', function(event){
+      var params = $location.search();
+      var page = Number(params.page) || 1;
+      var limit = Number(params.limit) || 10;
+      var pageChanged = false;
+      var limitChanged = false;
+
+      if (page && page !== ctrl.page) {
+        pageChanged = true;
+        ctrl.parent.page = page;
+        ctrl.page = page;
+      }
+      if (limit && limit !== ctrl.threadLimit) {
+        limitChanged = true;
+        ctrl.threadLimit = limit;
+      }
+
+      if(pageChanged || limitChanged) { ctrl.pullPage(); }
+    });
+    $scope.$on('$destroy', function() { ctrl.offLCS(); });
+
+    this.pullPage = function() {
+      var query = {
+        board_id: ctrl.board.id,
+        page: ctrl.page,
+        limit: ctrl.threadLimit
+      };
+
+      // update board's thread page count
+      Boards.get({ id: ctrl.board.id }).$promise
+      .then(function(board) {
+        ctrl.parent.pageCount = Math.ceil(board.thread_count / ctrl.threadLimit);
+      });
+
+      // replace current threads with new threads
+      Threads.byBoard(query).$promise
+      .then(function(threads) {
+        ctrl.threads = threads;
+        ctrl.threads.forEach(function(thread) {
+          // user based UI
+          if (thread.has_new_post) { thread.title_class = 'bold-title'; }
+          thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
+          ctrl.getPageKeysForThread(thread);
+        });
+        $timeout($anchorScroll);
+      });
+    };
 
   }
 ];
