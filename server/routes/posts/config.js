@@ -49,7 +49,7 @@ exports.import = {
     })
     .catch(function(err) {
       request.log('error', 'Import post: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      return reply(Boom.badImplementation(err));
+      return reply(Boom.badRequest('Import post failed'));
     });
   }
 };
