@@ -1,4 +1,5 @@
 angular.module('ept')
+  .factory('Page', require('./page.js'))
   .factory('Auth', require('./auth.js'))
   .factory('AuthInterceptor', require('./authInterceptor.js'))
   .factory('BreadcrumbSvc', require('./breadcrumbs.js'))

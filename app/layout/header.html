@@ -6,7 +6,7 @@
         <!-- For mobile -->
         <ul class="title-area">
           <li class="name">
-            <h1><a ng-href="/">Epochtalk Forum</a></h1>
+            <h1><a ng-href="/">Epochtalk</a></h1>
           </li>
           <li class="toggle-topbar menu-icon">
             <a ng-href="#"><span>Menu</span></a>
@@ -15,7 +15,6 @@
 
         <!-- For Desktop -->
         <section class="top-bar-section">
-
           <!-- Right Nav Section -->
           <ul ng-if="!HeaderCtrl.loggedIn()" class="right login-container">
             <!-- <li class="search">
@@ -36,14 +35,14 @@
 
           <!-- User Drop Down on anything that is not a small sized screen -->
           <ul ng-if="HeaderCtrl.loggedIn()" class="right show-for-medium-up">
-            <!-- <li class="search">
+            <li class="search">
               <form action="" class="search">
                 <div class="form-group">
                   <input type="text" name="search" placeholder="Search">
                   <label for="search" class="icon-epoch-search"></label>
                 </div>
               </form>
-            </li> -->
+            </li>
             <li class="has-dropdown">
               <div><img src="/static/img/36x36-av.gif" alt="" class="avatar">
               <a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}" ng-bind-html="HeaderCtrl.currentUsername()"></a></div>
@@ -81,7 +80,6 @@
   </div>
 </div>
 
-
 <div class="row">
   <div class="nav-secondary small-12 columns" data-magellan-expedition="fixed">
     <ul class="breadcrumbs">
@@ -92,4 +90,3 @@
     </ul>
   </div>
 </div>
-

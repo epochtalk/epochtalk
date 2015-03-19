@@ -16,6 +16,7 @@ function buildEndpoints() {
 
 exports.endpoints = function() {
   var localRoutes = [
+    // static assets
     {
       method: 'GET',
       path: '/static/{path*}',

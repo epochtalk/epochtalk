@@ -17,6 +17,11 @@ var app = angular.module('ept', [
   'ui.router'
 ]);
 
+// Base Controller
+app.controller('BaseCtrl', function($scope, Page) {
+  $scope.Page = Page;
+});
+
 // Register Forum Page Controllers
 app.controller('BoardsCtrl',        require('./boards/boards.controller.js'));
 app.controller('BoardCtrl',         require('./board/board.controller.js'));
