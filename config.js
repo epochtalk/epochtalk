@@ -7,18 +7,39 @@ var config = {
   logEnabled: process.env.LOG_ENABLED || true,
   publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080',
   privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure',
-  cdnUrl: process.env.CDN_URL || 'http://localhost:8280/images',
-  s3Bucket: process.env.S3_BUCKET || 'epoch-dev',
-  s3Region: process.env.S3_REGION || 'us-west-2',
-  bucketUrl: process.env.BUCKET_URL || 'https://epoch-dev.s3.amazonaws.com',
-  s3AccessKey: process.env.S3_ACCESS_KEY || 'testkey',
-  s3SecretKey: process.env.S3_SECRET_KEY || 'testkey',
-  maxImageSize: process.env.MAX_IMAGE_SIZE || 10485760,
-  imageExpiration: process.env.IMAGE_EXPIRATION || 1000 * 60 * 60 * 2,
-  imageInterval: process.env.IMAGE_INTERVAL || 1000 * 60 * 15,
-  loginRequired: process.env.LOGIN_REQUIRED || false
+  loginRequired: process.env.LOGIN_REQUIRED || false,
+  images: {
+    storage: process.env.IMAGES_STORAGE || 'local',
+    root: process.env.IMAGES_URL_ROOT || 'http://localhost',
+    dir: process.env.IMAGES_URL_DIR || 'images',
+    maxSize: process.env.IMAGES_MAX_SIZE || 10485760,
+    expiration: process.env.IMAGES_EXPIRATION || 1000 * 60 * 60 * 2,
+    interval: process.env.IMAGES_INTERVAL || 1000 * 60 * 15,
+    s3: {
+      bucket: process.env.S3_BUCKET || 'bukkit',
+      region: process.env.S3_REGION || 'region',
+      accessKey: process.env.S3_ACCESS_KEY || 'testkey',
+      secretKey: process.env.S3_SECRET_KEY || 'testkey',
+    }
+  }
 };
 
+// parse images root and dir
+var root = config.images.root;
+if (root.indexOf('/', root.length-1) === -1) {
+  config.images.root = root + '/';
+}
+var dir = config.images.dir;
+if (dir.indexOf('/', dir.length-1) === -1) {
+  dir += '/';
+  config.images.dir = dir;
+}
+if (dir.indexOf('/') === 0) {
+  config.images.dir = dir.substring(1);
+}
+
+// add db config
 var env = process.env.NODE_ENV || 'development';
 config.db = database[env];
+
 module.exports = config;

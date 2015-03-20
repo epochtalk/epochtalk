@@ -9,62 +9,100 @@ var through2 = require('through2');
 var config = require(path.join(__dirname, '..', 'config'));
 var memStore = require(path.join(__dirname, 'memstore')).db;
 var Magic = mmm.Magic;
-
 var client = require('pkgcloud').storage.createClient({
   provider: 'amazon',
-  key: config.s3SecretKey,
-  keyId: config.s3AccessKey,
-  region: config.s3Region
+  key: config.images.s3.secretKey,
+  keyId: config.images.s3.accessKey,
+  region: config.images.s3.region
 });
 
-proxy.hotlinkedUrl = function(url) {
-  var cdnUrl = url;
+proxy.uploadPolicy = function(filename) {
+  var imageName = generateUploadFilename(filename);
+  var imageUrl = generateImageUrl(imageName);
+  var key = config.images.dir + imageName;
 
-  if (config.cdnUrl) {
-    // generate a url for the hotlink
-    var result = generateHotlinkUrl(url);
-    var filename = result.filename;
-    cdnUrl = result.cdnUrl;
+  // build policy
+  var expiration = new Date();
+  expiration.setMinutes(expiration.getMinutes() + 5);
+  expiration = expiration.toISOString();
+  var conditions = [];
+  conditions.push({bucket: config.images.s3.bucket});
+  conditions.push(['starts-with', '$key', key]);
+  conditions.push({'acl': 'public-read'});
+  conditions.push(['starts-with', '$Content-Type', 'image']);
+  conditions.push(['content-length-range', 1024, config.images.maxSize]);
+  var policy = { expiration: expiration, conditions: conditions };
+  policy = JSON.stringify(policy);
+  policy = new Buffer(policy).toString('base64');
 
-    // upload hotlinked image to s3
-    uploadImage(url, filename);
-  }
-  
-  return cdnUrl;
+  // sign policy to generate signature
+  var signature = crypto.createHmac('sha1', config.images.s3.secretKey).update(new Buffer(policy)).digest('base64');
+
+  // add this imageUrl to the image proxy expiry
+  proxy.setExpiration(config.images.expiration, imageUrl);
+
+  return {
+    policy: policy,
+    signature: signature,
+    accessKey: config.images.s3.accessKey,
+    uploadUrl: config.images.root,
+    key: key,
+    imageUrl: imageUrl
+  };
 };
 
-var generateHotlinkUrl = function(url) {
-  // set the image cdn method
-  var method = crypto.createHash('sha1').update('hotlink').digest('hex');
+proxy.saveImage = function(imgSrc) {
+  var url;
 
-  // encrypt the url
-  var cipher = crypto.createCipher('aes-256-cbc', config.privateKey);
-  var codedUrl = cipher.update(url,'utf8','hex');
-  codedUrl += cipher.final('hex');
-
-  // construct the url with method and encryptedUrl
-  var cdnUrl = config.cdnUrl;
-  if (config.cdnUrl.indexOf('/', config.cdnUrl.length-1) === -1) {
-    cdnUrl += '/';
+  // image uploaded by client
+  if (imgSrc.indexOf(config.images.root) === 0) {
+    // clear any expirations
+    proxy.clearExpiration(imgSrc);
   }
-  cdnUrl += method + '/' + codedUrl;
-  return { cdnUrl: cdnUrl, filename: codedUrl };
+  // hotlink image
+  else {
+    var filename = generateHotlinkFilename(imgSrc);
+    uploadImage(imgSrc, filename);
+    url = generateImageUrl(filename);
+  }
+
+  return url;
+};
+
+var generateHotlinkFilename = function(filename) {
+  var ext = path.extname(filename);
+  var hash = crypto.createHash('sha1')
+  .update(filename)
+  .digest('hex');
+  return hash + ext;
+};
+
+var generateUploadFilename = function(filename) {
+  var ext = path.extname(filename);
+  var hash = crypto.createHash('sha1')
+  .update(filename)
+  .update(Date.now().toString())
+  .digest('hex');
+  return hash + ext;
+};
+
+var generateImageUrl = function(filename) {
+  var imageUrl = config.images.root;
+  if (imageUrl.indexOf('/', imageUrl.length-1) === -1) { imageUrl += '/'; }
+  imageUrl += config.images.dir + filename;
+  return imageUrl;
 };
 
 var uploadImage = function(url, filename) {
-  var s3Url = config.bucketUrl;
-  if (s3Url.indexOf('/', s3Url.length-1) === -1) { s3Url += '/'; }
-  s3Url += 'images/';
-  s3Url += filename;
-
   // check if this already exists in cdn
+  var s3Url = generateImageUrl(filename);
   request.head(s3Url, function(err, response) {
     // if it already exists, just return
     if (response && response.statusCode === 200) { return; }
     else { // otherwise, try uploading image to cdn
       var options = {
-        container: 'epoch-dev/images',
-        remote: filename,
+        container: config.images.s3.bucket,
+        remote: config.images.dir + filename,
         acl: 'public-read'
       };
       var writeStream = client.upload(options);
@@ -92,13 +130,15 @@ var uploadImage = function(url, filename) {
       ftc.on('error', function(err) { return console.log(err); });
 
       // get image from url and pipe to cdn
-      request(url).on('error', function(err) {
-        console.log(err);
-      }).pipe(ftc).pipe(writeStream);
+      request(url)
+      .on('error', function(err) { console.log(err); })
+      .pipe(ftc)
+      .pipe(writeStream);
     }
   });
 };
 
+// Image Expiration
 
 proxy.setExpiration = function(duration, url) {
   var expiration = Date.now() + duration;
@@ -116,7 +156,6 @@ proxy.setExpiration = function(duration, url) {
 proxy.clearExpiration = function(url) {
   memStore.getAsync(url)
   .then(function(expiration) {
-    console.log(expiration);
     memStore.delAsync(url); // delete content
     memStore.delAsync('image' + expiration); // delete index
   })
@@ -131,8 +170,7 @@ var expire = function() {
       // remove from s3
       var pathArray = url.split('/');
       var file = pathArray[pathArray.length-1];
-      file = 'images/' + file;
-      client.removeFile(config.s3Bucket, file, function(err) {
+      client.removeFile(config.images.s3.bucket, file, function(err) {
         if (err) { console.log(err); }
       });
       // clear from memStore
@@ -141,4 +179,4 @@ var expire = function() {
   });
 };
 
-setInterval(expire, config.imageInterval);
+setInterval(expire, config.images.interval);

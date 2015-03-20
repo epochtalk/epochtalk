@@ -45,7 +45,6 @@
     "epochtalk-bbcode-parser": "^1.0.0",
     "epochtalk-core-pg": "^0.9.9",
     "epochtalk-emailer": "^0.0.1",
-    "epochtalk-image-server": "^0.1.0",
     "epochtalk-validator": "0.0.3",
     "fs-extra": "^0.16.5",
     "good": "^5.1.1",

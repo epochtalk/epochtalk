@@ -3,8 +3,8 @@
 
 module.exports = ['$q', '$http', function ($q, $http) {
   return {
-    policy: function(imageName) {
-      return $http.get('/policy/' + imageName);
+    policy: function(filename) {
+      return $http.post('/policy', { filename: filename });
     },
     upload: function (policyResponse, image) {
       var deferred = $q.defer();
@@ -16,12 +16,12 @@ module.exports = ['$q', '$http', function ($q, $http) {
       var signature = data.signature;
       var accessKey = data.accessKey;
       var url = data.uploadUrl;
-      var filename = data.filename;
+      var key = data.key;
       var imageUrl = data.imageUrl;
 
       // form data
       var fd = new FormData();
-      fd.append('key', 'images/' + filename);
+      fd.append('key', key);
       fd.append('acl', 'public-read');
       fd.append('Content-Type', image.type);
       fd.append('AWSAccessKeyId', accessKey);
@@ -66,7 +66,7 @@ module.exports = ['$q', '$http', function ($q, $http) {
         return promise;
       };
       promise.abort = function() { xhr.abort(); };
-      
+
       return promise;
     }
   };

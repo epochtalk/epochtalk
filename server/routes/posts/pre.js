@@ -5,9 +5,9 @@ var Boom = require('boom');
 var cheerio = require('cheerio');
 var bbcodeParser = require('epochtalk-bbcode-parser');
 var Promise = require('bluebird');
-var config = require(path.join(__dirname, '..', '..', '..', 'config'));
-var imageProxy = require(path.join(__dirname, '..', '..', 'images'));
-var sanitizer = require(path.join(__dirname, '..', '..', 'sanitizer'));
+var config = require(path.normalize(__dirname + '/../../../config'));
+var imageStore = require(path.normalize(__dirname + '/../../images'));
+var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
   requireLogin: function(request, reply) {
@@ -93,33 +93,24 @@ module.exports = {
       images.push(element);
     });
 
-    // convert each image's src to proxy version
+    // convert each image's src to cdn version
     return Promise.map(images, function(element) {
-      // get image src
-      var src = $(element).attr('src');
+      var imgSrc = $(element).attr('src');
+      var savedUrl = imageStore.saveImage(imgSrc);
 
-      // if image already in proxy form, skip
-      if (config.cdnUrl && src.indexOf(config.cdnUrl) === 0) {
-        // clear this image from the imageProxy expiry
-        imageProxy.clearExpiration(src);
-        return;
-      }
-
-      // get new hotlinkedUrl from proxy
-      var proxyUrl = imageProxy.hotlinkedUrl(src);
-
-      if (src !== proxyUrl) {
+      if (savedUrl) {
         // move original src to data-canonical-src
-        $(element).attr('data-canonical-src', src);
+        $(element).attr('data-canonical-src', imgSrc);
+        // update src with new url
+        $(element).attr('src', savedUrl);
       }
-
-      // update src with new url
-      $(element).attr('src', proxyUrl);
     })
     .then(function() {
       request.payload.body = $.html();
       return reply();
     })
-    .catch(function(err) { return reply(err); });
+    .catch(function(err) {
+      console.log(err);
+      return reply(err); });
   }
 };
