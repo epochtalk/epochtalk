@@ -56,9 +56,8 @@ app.directive('uniqueUsername',     require('./components/unique_username/unique
 app.directive('uniqueEmail',        require('./components/unique_email/unique-email.directive.js'));
 app.directive('scrollLock',        require('./components/scroll_lock/scroll-lock.directive.js'));
 app.directive('resizeable',        require('./components/resizeable/resizeable.directive.js'));
-app.directive('autoLink',        require('./components/auto_link/autolink.directive.js'));
-app.directive('autoDate',        require('./components/auto_date/autodate.directive.js'));
-app.directive('styleFix',        require('./components/style_fix/stylefix.directive.js'));
+app.directive('imageLoader', require('./components/image_loader/image_loader.directive.js'));
+app.directive('postProcessing', require('./components/post-processing/post-processing.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))

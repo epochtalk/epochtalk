@@ -849,6 +849,22 @@ pagination {
   overflow-wrap: break-word;
 }
 
+.post-body img.loaded { opacity: 1; }
+.post-body img {
+  opacity: 0;
+  -webkit-transition: opacity 0.5s ease-in;
+  -moz-transition: opacity 0.5s ease-in;
+  -o-transition: opacity 0.5s ease-in;
+  -ms-transition: opacity 0.5s ease-in;
+  transition: opacity 0.5s ease-in;
+}
+.post-body .imageContainer.loaded { background: none; }
+.post-body .imageContainer {
+  background: url('/static/img/loading.gif') no-repeat center;
+  display: inline;
+}
+.editor-preview .imageContainer { display: inline; }
+
 .quoteHeader {
   border-top: 1px solid $color-gray-light;
   margin: 10px 24px 0;

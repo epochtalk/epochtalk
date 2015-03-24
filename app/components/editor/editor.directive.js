@@ -172,7 +172,6 @@ module.exports = [
 
         // parse bbcode and bind to preview
         var processed = bbcodeParser.process({text: rawText}).html;
-        $preview.html(processed);
 
         // medium always leaves input dirty even if there's no input
         // this will clean it

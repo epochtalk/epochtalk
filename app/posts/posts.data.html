@@ -45,7 +45,7 @@
       </ul>
     </div>
     <!-- Post Body -->
-    <div class="post-body" ng-bind-html="post.body" auto-link auto-date style-fix></div>
+    <div class="post-body" ng-bind-html="post.body" post-processing="post.body" style-fix="true"></div>
     <div ng-if="post.user.signature">
       <div class="post-sig-border"></div>
       <div class="post-signature" ng-bind-html="post.user.signature"></div>

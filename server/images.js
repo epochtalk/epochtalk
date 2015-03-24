@@ -105,11 +105,9 @@ var uploadImage = function(url, filename) {
         remote: config.images.dir + filename,
         acl: 'public-read'
       };
-      var writeStream = client.upload(options);
-      writeStream.on('error', function(err) { return console.log(err); });
-      writeStream.on('success', function(file) { return; });
 
       // check file type
+      var newStream = true;
       var fileTypeCheck = new Magic(mmm.MAGIC_MIME_TYPE);
       var ftc = through2(function(chunk, enc, cb) {
         fileTypeCheck.detect(chunk, function(err, result) {
@@ -117,10 +115,11 @@ var uploadImage = function(url, filename) {
           if (err) { error = err; }
 
           // check results
-          if (!result ||
-              result.indexOf('image') !== 0 &&
-              result.indexOf('application/octet-stream') !== 0) {
-            error = new Error('Invalid File Type');
+          if (result && newStream) {
+            newStream = false;
+            if (result.indexOf('image') !== 0) {
+              error = new Error('Invalid File Type');
+            }
           }
 
           // next
@@ -128,6 +127,11 @@ var uploadImage = function(url, filename) {
         });
       });
       ftc.on('error', function(err) { return console.log(err); });
+
+      // write to cdn
+      var writeStream = client.upload(options);
+      writeStream.on('error', function(err) { return console.log(err); });
+      writeStream.on('success', function(file) { return; });
 
       // get image from url and pipe to cdn
       request(url)
