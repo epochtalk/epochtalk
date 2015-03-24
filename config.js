@@ -1,13 +1,23 @@
 var path = require('path');
-var database = require('./database.json');
+var database = require(path.normalize(__dirname + '/database.json'));
+
+var parseBool = function(value) {
+  var result = false;
+  if (value === 'true') { result = true; }
+  else if (value === 'True') { result = true; }
+  else if (value === 'TRUE') { result = true; }
+  else if (value === '1') { result = true; }
+  return result;
+};
+
 var config = {
   root: path.normalize(__dirname),
   host: process.env.HOST || 'localhost',
   port: process.env.PORT || 8080,
-  logEnabled: process.env.LOG_ENABLED || true,
+  logEnabled: parseBool(process.env.LOG_ENABLED) || true,
   publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080',
   privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure',
-  loginRequired: process.env.LOGIN_REQUIRED || false,
+  loginRequired: parseBool(process.env.LOGIN_REQUIRED) || false,
   images: {
     storage: process.env.IMAGES_STORAGE || 'local',
     root: process.env.IMAGES_URL_ROOT || 'http://localhost',

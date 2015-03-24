@@ -12,10 +12,6 @@ module.exports = {
     }
     return reply();
   },
-  requireLogin: function(request, reply) {
-    if (config.loginRequired) { return reply(request.auth.isAuthenticated); }
-    else { return reply(true); }
-  },
   adminCheck: function(request, reply) {
     var userId = request.auth.credentials.id;
     var error = Boom.unauthorized('You must be an admin to perform this action.');

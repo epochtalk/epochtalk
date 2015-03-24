@@ -10,10 +10,6 @@ var imageStore = require(path.normalize(__dirname + '/../../images'));
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
-  requireLogin: function(request, reply) {
-    if (config.loginRequired) { return reply(request.auth.isAuthenticated); }
-    else { return reply(true); }
-  },
   authPost: function(request, reply) {
     var userId = request.auth.credentials.id;
     var postId = request.params.id;

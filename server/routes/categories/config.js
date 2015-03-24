@@ -28,10 +28,9 @@ exports.import = {
 
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
-  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   // validate: { params: boardValidator.id },
   handler: function(request, reply) {
-    if (!request.pre.viewable) { return reply({}); }
+    if (!request.server.methods.viewable(request)) { return reply({}); }
     db.categories.find(request.params.id)
     .then(function(board) { reply(board); })
     .catch(function(err) { reply(Boom.badImplementation(err)); });
@@ -40,9 +39,8 @@ exports.find = {
 
 exports.all = {
   auth: { mode: 'try', strategy: 'jwt' },
-  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   handler: function(request, reply) {
-    if (!request.pre.viewable) { return reply([]); }
+    if (!request.server.methods.viewable(request)) { return reply([]); }
     db.categories.all()
     .then(function(categories) { reply(categories); })
     .catch(function(err) { reply(Boom.badImplementation(err)); });

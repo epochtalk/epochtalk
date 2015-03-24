@@ -23,10 +23,6 @@ var checkViewKey = function(key) {
 
 // Pre
 module.exports = {
-  requireLogin: function(request, reply) {
-    if (config.loginRequired) { return reply(request.auth.isAuthenticated); }
-    else { return reply(true); }
-  },
   getThreads: function(request, reply) {
     var boardId = request.query.board_id || request.params.board_id;
     var opts = {

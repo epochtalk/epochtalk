@@ -123,9 +123,8 @@ exports.update = {
 
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
-  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   handler: function(request, reply) {
-    if (!request.pre.viewable) { return reply({}); }
+    if (!request.server.methods.viewable) { return reply({}); }
     // get logged in user
     var authUser = {};
     if (request.auth.isAuthenticated) {
@@ -149,9 +148,8 @@ exports.find = {
 
 exports.all = {
   auth: { mode: 'try', strategy: 'jwt' },
-  pre: [ { method: pre.requireLogin, assign: 'viewable' } ],
   handler: function(request, reply) {
-    if (!request.pre.viewable) { return reply([]); }
+    if (!request.server.methods.viewable) { return reply([]); }
     // get logged in user
     var authUser = {};
     if (request.auth.isAuthenticated) {
