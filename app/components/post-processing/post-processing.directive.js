@@ -117,9 +117,7 @@ module.exports = ['$timeout', '$filter', '$compile', '$parse', function($timeout
       };
 
       $scope.$watch('postProcessing',
-        function(newValue) {
-          if (newValue) { $timeout(function () { process(); }); }
-        }
+        function() { $timeout(function () { process(); }); }
       );
     }
   };
