@@ -1,10 +1,10 @@
 'use strict';
 /* jslint node: true */
 
-module.exports = ['$q', '$http', function ($q, $http) {
+module.exports = ['$q', '$http', '$window', function ($q, $http, $window) {
   return {
     policy: function(filename) {
-      return $http.post('/policy', { filename: filename });
+      return $http.post('/images/policy', { filename: filename });
     },
     upload: function (policyResponse, image) {
       var deferred = $q.defer();
@@ -18,6 +18,20 @@ module.exports = ['$q', '$http', function ($q, $http) {
       var url = data.uploadUrl;
       var key = data.key;
       var imageUrl = data.imageUrl;
+      var storageType = data.storageType;
+
+      var token;
+      if (storageType === 'local') {
+        if ($window.sessionStorage.token) {
+          token = $window.sessionStorage.token;
+        }
+        else if ($window.localStorage.token) {
+          token = $window.localStorage.token;
+        }
+        else if ($window.privateStorage.token) {
+          token = $window.privateStorage.token;
+        }
+      }
 
       // form data
       var fd = new FormData();
@@ -38,6 +52,9 @@ module.exports = ['$q', '$http', function ($q, $http) {
 
       // Send the file
       xhr.open('POST', url, true);
+      if (storageType === 'local') {
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+      }
       xhr.send(fd);
 
       // append promise properties

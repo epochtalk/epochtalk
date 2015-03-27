@@ -23,6 +23,10 @@ test/coverage/
 /public/js/bundle.min.js
 /public/bundle.js
 /public/css/**
+/public/images/*.jpg
+/public/images/*.jpeg
+/public/images/*.png
+/public/images/*.gif
 
 /app/scss/foundation.scss
 /app/scss/normalize.scss

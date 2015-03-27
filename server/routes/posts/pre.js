@@ -92,7 +92,8 @@ module.exports = {
     // convert each image's src to cdn version
     return Promise.map(images, function(element) {
       var imgSrc = $(element).attr('src');
-      var savedUrl = imageStore.saveImage(imgSrc);
+      var storage = config.images.storage;
+      var savedUrl = imageStore[storage].saveImage(imgSrc);
 
       if (savedUrl) {
         // move original src to data-canonical-src

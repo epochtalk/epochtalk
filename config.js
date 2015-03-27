@@ -15,17 +15,21 @@ var config = {
   host: process.env.HOST || 'localhost',
   port: process.env.PORT || 8080,
   logEnabled: parseBool(process.env.LOG_ENABLED) || true,
-  publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080',
+  publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080/',
   privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure',
   loginRequired: parseBool(process.env.LOGIN_REQUIRED) || false,
   images: {
     storage: process.env.IMAGES_STORAGE || 'local',
-    root: process.env.IMAGES_URL_ROOT || 'http://localhost',
-    dir: process.env.IMAGES_URL_DIR || 'images',
     maxSize: process.env.IMAGES_MAX_SIZE || 10485760,
     expiration: process.env.IMAGES_EXPIRATION || 1000 * 60 * 60 * 2,
     interval: process.env.IMAGES_INTERVAL || 1000 * 60 * 15,
+    local: {
+      dir: process.env.IMAGES_LOCAL_DIR || 'public/images',
+      path: process.env.IMAGES_LOCAL_PATH || 'static/images'
+    },
     s3: {
+      root: process.env.IMAGES_S3_ROOT || 'http://some.where',
+      dir: process.env.IMAGES_S3_DIR || '/images',
       bucket: process.env.S3_BUCKET || 'bukkit',
       region: process.env.S3_REGION || 'region',
       accessKey: process.env.S3_ACCESS_KEY || 'testkey',
@@ -34,19 +38,48 @@ var config = {
   }
 };
 
+
+// parse public url
+var publicUrl = config.publicUrl;
+if (publicUrl.indexOf('/', publicUrl.length-1) === publicUrl.length-1) {
+  config.publicUrl = publicUrl.substring(0, publicUrl.length-1);
+}
+
+
+// parse images local dir
+var localDir = config.images.local.dir;
+if (localDir.indexOf('/') !== 0) {
+  config.images.local.dir = '/' + localDir;
+  localDir =  '/' + localDir;
+}
+if (localDir.indexOf('/', localDir.length-1) === -1) {
+  config.images.local.dir = localDir + '/';
+}
+// parse images public dir
+var localPath = config.images.local.path;
+if (localPath.indexOf('/') !== 0) {
+  config.images.local.path = '/' + localPath;
+  localPath = '/' + localPath;
+}
+if (localPath.indexOf('/', localPath.length-1) === -1) {
+  config.images.local.path = localPath + '/';
+}
+
+
 // parse images root and dir
-var root = config.images.root;
-if (root.indexOf('/', root.length-1) === -1) {
-  config.images.root = root + '/';
+var s3root = config.images.s3.root;
+if (s3root.indexOf('/', s3root.length-1) === -1) {
+  config.images.s3.root = s3root + '/';
 }
-var dir = config.images.dir;
-if (dir.indexOf('/', dir.length-1) === -1) {
-  dir += '/';
-  config.images.dir = dir;
+var s3dir = config.images.s3.dir;
+if (s3dir.indexOf('/', s3dir.length-1) === -1) {
+  s3dir += '/';
+  config.images.s3.dir = s3dir;
 }
-if (dir.indexOf('/') === 0) {
-  config.images.dir = dir.substring(1);
+if (s3dir.indexOf('/') === 0) {
+  config.images.s3.dir = s3dir.substring(1);
 }
+
 
 // add db config
 var env = process.env.NODE_ENV || 'development';

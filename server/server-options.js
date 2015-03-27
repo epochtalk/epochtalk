@@ -1,12 +1,12 @@
 var path = require('path');
-var config = require(path.join(__dirname, '..', 'config'));
+var config = require(path.normalize(__dirname + '/../config'));
 
 module.exports = {
   // cors disabled by default
-  host: config.host, 
+  host: config.host,
   port: config.port,
   routes: {
-    files: { relativeTo: path.join(__dirname, '..', 'public') },
+    files: { relativeTo: path.normalize(__dirname + '/../public') },
     validate: {
       options: {
         stripUnknown: true
