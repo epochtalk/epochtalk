@@ -375,9 +375,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     $stateProvider.state('404', {
-      parent: 'public-layout',
       views: {
-        'content': {
+        'body': {
           template: fs.readFileSync(__dirname + '/layout/404.html')
         }
       },
