@@ -84,6 +84,7 @@ label > input[type="checkbox"] {
 .inline-block { display: inline-block; }
 .pointer { cursor: pointer; }
 .full-width { max-width: none; padding: 0 20px; }
+.word-wrap { word-wrap: break-word; }
 
 /* Foundation Overrides */
 .magellan-override { padding: 0px; background: transparent; }
