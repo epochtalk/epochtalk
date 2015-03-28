@@ -52,7 +52,8 @@ exports.update = {
       { method: pre.checkEmailUniqueness }
     ],
     { method: pre.clean },
-    { method: pre.parseSignature }
+    { method: pre.parseSignature },
+    { method: pre.removeImages }
   ],
   handler: function(request, reply) {
     // get user

@@ -1,6 +1,7 @@
 var path = require('path');
 var Hapi = require('hapi');
 var Boom = require('boom');
+var cheerio = require('cheerio');
 var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var bbcodeParser = require('epochtalk-bbcode-parser');
 var sanitizer = require(path.join('..', '..', 'sanitizer'));
@@ -101,7 +102,7 @@ module.exports = {
       request.payload.language = sanitizer.strip(request.payload.language);
     }
     if (request.payload.signature) {
-      request.payload.signature = sanitizer.bbcode(request.payload.signature);
+      request.payload.signature = sanitizer.display(request.payload.signature);
     }
     if (request.payload.avatar) {
       request.payload.avatar = sanitizer.strip(request.payload.avatar);
@@ -118,6 +119,15 @@ module.exports = {
     if (request.payload.confirmation_token) {
       request.payload.confirmation_token = sanitizer.strip(request.payload.confirmation_token);
     }
+    return reply();
+  },
+  removeImages: function(request, reply) {
+    // load html in post.body into cheerio
+    var html = request.payload.signature;
+    var $ = cheerio.load(html);
+    $('img').remove();
+    var parsed = $.html();
+    request.payload.signature = parsed.replace(/\r\n|\r|\n/g,'<br />');
     return reply();
   }
 };

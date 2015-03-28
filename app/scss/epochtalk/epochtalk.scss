@@ -1186,6 +1186,13 @@ form .input-section:last-child {margin-bottom: 0px; }
   }
 }
 
+.profile-update-signature {
+  height: 50px;
+  border: 1px solid #cccccc;
+  margin-bottom: 20px;
+  overflow: auto;
+}
+
 /* 404 Not Found Page */
 .error-code { font-weight: 100; font-size:200px; }
 .error-message { font-size:30px; color:  $color-active; }

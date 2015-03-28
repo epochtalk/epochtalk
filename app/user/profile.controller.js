@@ -1,11 +1,8 @@
-module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$window',
-  function(user, User, Auth, $location, $timeout, $filter, $window) {
+module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$anchorScroll',
+  function(user, User, Auth, $location, $timeout, $filter, $anchorScroll) {
     var ctrl = this;
     this.user = {};
-
-    // Possibly a better solution than this, ui-router causes
-    // issues with scrolling to top on route change.
-    $window.scrollTo(0, 0);
+    $timeout($anchorScroll);
 
     // Helper methods
     var calcAge = function(dob) {
@@ -58,13 +55,13 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
         ctrl.pageStatus.status = true;
         ctrl.pageStatus.message = 'Sucessfully saved profile';
         ctrl.pageStatus.type = 'success';
-        $window.scrollTo(0, 0);
+        $timeout($anchorScroll);
       })
       .catch(function(err) {
         ctrl.pageStatus.status = true;
         ctrl.pageStatus.type = 'alert';
         ctrl.pageStatus.message = err.data.error + ': ' + err.data.message;
-        $window.scrollTo(0, 0);
+        $timeout($anchorScroll);
       });
     };
 
@@ -78,13 +75,13 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
         ctrl.pageStatus.status = true;
         ctrl.pageStatus.message = 'Sucessfully saved profile';
         ctrl.pageStatus.type = 'success';
-        $window.scrollTo(0, 0);
+        $timeout($anchorScroll);
       })
       .catch(function(err) {
         ctrl.pageStatus.status = true;
         ctrl.pageStatus.type = 'alert';
         ctrl.pageStatus.message = err.data.error + ': ' + err.data.message;
-        $window.scrollTo(0, 0);
+        $timeout($anchorScroll);
       });
     };
 
@@ -93,6 +90,15 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
     this.changePassStatus = {};
     this.showChangePass = false;
     this.changePassModalVisible = false;
+
+    this.openChangeUserModel = function() {
+      ctrl.editMode = true;
+      ctrl.user.signature = ctrl.user.signature.replace(/<br \/>/gi,'\r\n');
+    };
+
+    this.closeChangeUserModel = function() {
+      ctrl.user.signature = ctrl.user.signature.replace(/\r\n|\r|\n/g,'<br />');
+    };
 
     this.openChangePassModal = function() {
       ctrl.showChangePass = true;

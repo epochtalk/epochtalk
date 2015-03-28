@@ -43,7 +43,7 @@
       </li>
 
       <li ng-If="profiles.user.editable">
-        <a href="#" ng-click="profiles.editMode = !profiles.editMode">
+        <a href="#" ng-click="profiles.openChangeUserModel()">
           Change Profile Fields
         </a>
       </li>
@@ -85,7 +85,7 @@
       <div class="row">
         <div class="large-12 columns"><strong>Signature:</strong></div>
       </div>
-      <div ng-bind-html="profiles.user.signature" class="profile post-signature"></div>
+      <div class="profile post-signature" post-processing="profiles.user.signature" style-fix="true"></div>
     </div>
   </div>
 </div>
@@ -154,7 +154,7 @@
 </modal>
 
 <!-- Edit Profile Modal -->
-<modal class="tiny" show="profiles.editMode">
+<modal class="small" show="profiles.editMode" on-close="profiles.closeChangeUserModel">
   <form name="form" class="css-form" novalidate>
     <label>Username
       <input type="text" name="username" required ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
