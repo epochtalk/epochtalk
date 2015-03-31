@@ -55,14 +55,14 @@ images.clearExpiration = function(url) {
 
 var expire = function() {
   memStore.imageQuery()
-  .then(function(images) {
-    images.forEach(function(image) {
+  .then(function(expiredImages) {
+    expiredImages.forEach(function(image) {
       var url = image.value;
       // remove from storage
       var storage = config.images.storage;
       images[storage].removeImage(url);
       // clear from memStore
-      proxy.clearExpiration(url);
+      images.clearExpiration(url);
     });
   });
 };

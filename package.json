@@ -34,6 +34,7 @@
   "dependencies": {
     "angular-ui-router": "^0.2.13",
     "async": "^0.9.0",
+    "aws-sdk": "^2.1.20",
     "bcrypt": "^0.8.0",
     "bluebird": "^2.6.4",
     "boom": "^2.6.1",
@@ -66,7 +67,6 @@
     "node-sass": "^3.0.0-alpha.0",
     "node-uuid": "^1.4.1",
     "pg": "^4.2.0",
-    "pkgcloud": "^1.0.3",
     "request": "^2.53.0",
     "sanitize-html": "^1.4.3",
     "stream-meter": "^1.0.3",
