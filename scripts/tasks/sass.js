@@ -6,11 +6,10 @@ var Promise = require('bluebird');
 // file params
 var sassPath = './app/scss/app.scss';
 var publicSassPath = './public/css/app.css';
-var includeDirs = ['./app/scss/'];
 
 module.exports = function() {
   return new Promise(function(resolve, reject) {
-    var opts = { file: sassPath, includePaths: includeDirs };
+    var opts = { file: sassPath };
     var output = sass.renderSync(opts);
     fs.writeFile(publicSassPath, output.css, function(err) {
       if (err) { reject(err); }

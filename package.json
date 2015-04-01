@@ -28,7 +28,7 @@
     "angular": "angular/bower-angular#v1.3.14",
     "angular-resource": "angular/bower-angular-resource#v1.3.14",
     "angular-sanitize": "angular/bower-angular-sanitize#v1.3.14",
-    "foundation": "zurb/bower-foundation",
+    "foundation": "zurb/bower-foundation#5.5.1",
     "nestable": "slickage/Nestable"
   },
   "dependencies": {
@@ -64,7 +64,7 @@
     "mkdirp": "^0.5.0",
     "mmmagic": "^0.3.11",
     "napa": "^1.0.1",
-    "node-sass": "^3.0.0-alpha.0",
+    "node-sass": "^2.1.1",
     "node-uuid": "^1.4.1",
     "pg": "^4.2.0",
     "request": "^2.53.0",
