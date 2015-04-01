@@ -103,7 +103,7 @@ All POST parameters must follow the [Post Schema](https://github.com/epochtalk/c
 All POST parameters must follow the [User Schema](https://github.com/epochtalk/core#user-schema)
 
 ##Editor
-![Editor](http://i.imgur.com/KYiJS9J.png)
+![Editor](http://i.imgur.com/kNoyjeL.png)
 
 Each post is crafted through a unique editor that can parses BBCode.
 
