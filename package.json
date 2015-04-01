@@ -12,7 +12,8 @@
     "db-devseed": "node ./tests/seed/devseed.js",
     "sass": "node ./scripts/sass.js",
     "build": "node ./scripts/build.js",
-    "serve": "node ./scripts/serve.js"
+    "serve": "node ./scripts/serve.js",
+    "test": "./node_modules/.bin/mocha -R spec ./tests"
   },
   "repository": {
     "type": "git",
