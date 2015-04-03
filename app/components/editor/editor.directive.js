@@ -15,12 +15,8 @@ module.exports = [
       exitSwitch: '=',
       dirty: '='
     },
+    template: fs.readFileSync(__dirname + '/editor.html'),
     controller: function($scope, $element) {
-      $scope.imageModal = false;
-      $scope.openImageModal = function() {
-        $scope.imageModal = true;
-      };
-
       // quote insert
       $scope.$watch('quote', function(newQuote) {
         if (newQuote) { $scope.insertQuote(newQuote); }
@@ -48,16 +44,8 @@ module.exports = [
       // editor preview elements
       var preview = $element[0].getElementsByClassName('editor-preview')[0];
       var $preview = angular.element(preview);
-      // editor footer
-      var footer = $element[0].getElementsByClassName('editor-footer')[0];
-      var $footer = angular.element(footer);
 
       // -- Images
-
-      // file input (raw html)
-      $scope.images = [];
-      var inputElement = $element.find('input')[0];
-      $scope.openImagePicker = function() { inputElement.click(); };
 
       $scope.insertImageUrl = function(url) {
         editor.focus();
@@ -68,78 +56,6 @@ module.exports = [
         range.insertNode( $document[0].createTextNode(text) );
         editor.blur();
       };
-
-      function upload(images) {
-        // upload each image
-        images.forEach(function(image) {
-          var imageProgress = {
-            status: 'Initializing',
-            name: image.name,
-            progress: 0
-          };
-          $scope.images.push(imageProgress);
-
-          // get policy for this image
-          s3ImageUpload.policy(image.name)
-          .then(function(policy) {
-            imageProgress.id = policy.data.filename;
-            imageProgress.status = 'Starting';
-
-            // upload image to s3
-            return s3ImageUpload.upload(policy, image)
-            .progress(function(percent) {
-              imageProgress.progress = percent;
-              imageProgress.status = 'Uploading';
-            })
-            .error(function(data) {
-              imageProgress.progress = '--';
-              imageProgress.status = 'Failed';
-            })
-            .success(function(url) {
-              imageProgress.status = 'Complete';
-              imageProgress.url = url;
-              $scope.insertImageUrl(url);
-            });
-          })
-          .catch(function() {
-            imageProgress.progress = '--';
-            imageProgress.status = "Failed";
-          });
-        });
-      }
-
-      // bind to changes in the image input
-      // because angular can handle ng-change on input[file=type]
-      angular.element(inputElement).on('change', function() {
-        // get all the images from the file picker
-        var fileList = inputElement.files;
-        var images = [];
-        for (var i = 0; i < fileList.length; i++) {
-          images.push(fileList[i]);
-        }
-        upload(images);
-        inputElement.value = ''; // clear filelist for reuse
-      });
-
-      // drap and drop implementation
-      var cancelEvent = function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-      };
-      $footer.on("dragenter", cancelEvent);
-      $footer.on("dragover", cancelEvent);
-      $footer.on("drop", function(e) {
-        cancelEvent(e);
-        var dt = e.dataTransfer;
-        var fileList = dt.files;
-        var images = [];
-        for (var i = 0; i < fileList.length; i++) {
-          var file = fileList[i];
-          if (!file.type.match(/image.*/)) { continue; }
-          images.push(file);
-        }
-        upload(images);
-      });
 
       // -- Editor
 
@@ -302,7 +218,6 @@ module.exports = [
         $window.onbeforeunload = undefined;
         if (destroyRouteBlocker) { destroyRouteBlocker(); }
       });
-    },
-    template: fs.readFileSync(__dirname + '/editor.html')
+    }
   };
 }];

@@ -17,38 +17,9 @@
 </div>
 
 <div class="editor-footer">
-  To upload a image, either drop them above this text or just
-  <a ng-href="#" ng-click="openImagePicker()">click here</a>
-  <input type="file" accept="image/*" multiple style="display: none;">
-
-  <div ng-if="images.length === 1">
-    <div class="imageProgressContainer" ng-repeat="image in images">
-      <button class="button tiny icon-epoch-add" ng-click="insertImageUrl(image.url)" ng-if="image.url"></button>
-      <span ng-bind=image.status></span> (<span ng-bind="image.progress"></span>):
-      <a ng-href="{{image.url}}" target="_blank" ng-if="image.url">
-        <span ng-bind="image.name"></span>
-      </a>
-      <span ng-bind="image.name" ng-if="!image.url"></span>
+  <div class="medium-6 columns editor-images-container">
+    <div class="editor-images">
+      <image-uploader purpose="editor"  on-done="insertImageUrl(data)"></image-uploader>
     </div>
   </div>
-
-  <div ng-if="images.length > 1">
-    <a ng-click="openImageModal()">
-      <span ng-bind="images.length"></span> images uploaded
-    </a>
-  </div>
 </div>
-
-<!-- Login Modal -->
-<modal class="medium" show="imageModal" scroll-lock>
-  <a class="close-reveal-modal">&#215;</a>
-
-  <div class="imageProgressContainer" ng-repeat="image in images">
-    <button class="button tiny icon-epoch-add" ng-click="insertImageUrl(image.url)" ng-if="image.url"></button>
-    <span ng-bind=image.status></span> (<span ng-bind="image.progress"></span>):
-    <a ng-href="{{image.url}}" target="_blank" ng-if="image.url">
-      <span ng-bind="image.name"></span>
-    </a>
-    <span ng-bind="image.name" ng-if="!image.url"></span>
-  </div>
-</modal>

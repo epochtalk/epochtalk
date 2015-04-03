@@ -1,0 +1,40 @@
+To upload a image, drag and drop them here or
+<a ng-href="#" ng-click="openImagePicker()">click here</a>
+<input type="file" accept="image/*" style="display: none;">
+
+<div ng-if="images.length > 0 && purpose === 'avatar'" class="profile-avatar-container">
+  <br />
+  <img ng-src="{{images[0].url}}" />
+</div>
+
+<div ng-if="images.length > 0 && purpose === 'editor'">
+  <a ng-click="openImageModal()">
+    <span ng-bind="images.length"></span> images uploaded
+  </a>
+</div>
+
+<!-- Image Modal -->
+<modal class="medium" show="imageModal">
+  <a class="close-reveal-modal">&#215;</a>
+  <ul ng-class="images.length > 1 ? 'medium-block-grid-2' : 'medium-block-grid-1'" class="picker-list">
+    <li ng-repeat="image in images">
+      <div class="image-picker">
+        <!-- image picker header -->
+        <div class="header" >
+          (<span ng-bind="image.progress"></span>%):
+          <a ng-href="{{image.url}}" target="_blank" ng-if="image.url">
+            <span ng-bind="image.name"></span>
+          </a>
+          <span ng-bind=image.status ng-if="!image.url"></span>
+        </div>
+        <!-- image picker body -->
+        <div class="picker-body">
+          <img ng-src="{{image.url}}" ng-click="fireDone(image.url)"/>
+          <a ng-href="#" class="after" ng-click="fireDone(image.url)">
+            <div>Add to Editor</div>
+          </a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</modal>
