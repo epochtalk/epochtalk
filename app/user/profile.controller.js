@@ -1,10 +1,16 @@
 module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$anchorScroll',
   function(user, User, Auth, $location, $timeout, $filter, $anchorScroll) {
     var ctrl = this;
-    this.user = {};
     $timeout($anchorScroll);
+    this.user = user;
+    this.displayUsername = angular.copy(user.username);
+    this.displayEmail = angular.copy(user.email);
+    this.user.dob = $filter('date')(this.user.dob, 'longDate');
+    this.user.post_count = this.user.post_count || 0;
+    this.displayAvatar = angular.copy(this.user.avatar || 'http://placehold.it/400/cccccc/&text=Avatar');
+    // This isn't the profile users true local time, just a placeholder
+    this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
 
-    // Helper methods
     var calcAge = function(dob) {
       if (!dob) { return '';}
       dob = new Date(dob);
@@ -12,35 +18,36 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
       var ageDate = new Date(ageDiff);
       return Math.abs(ageDate.getUTCFullYear() - 1970);
     };
-
-    this.user = user;
-    this.displayUsername = angular.copy(user.username);
-    this.displayEmail = angular.copy(user.email);
-    this.user.dob = $filter('date')(this.user.dob, 'longDate');
     this.userAge = calcAge(this.user.dob);
-    this.user.post_count = this.user.post_count || 0;
-    this.user.avatar = this.user.avatar || 'http://placehold.it/400/cccccc/&text=Avatar';
-
-    // This isn't the profile users true local time, just a placeholder
-    this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
 
     // Show success message if user changed their username
     this.pageStatus = {};
     if ($location.search().success) {
       $location.search('success', undefined);
-      this.pageStatus.status = true;
-      this.pageStatus.message = 'Sucessfully saved profile';
-      this.pageStatus.type = 'success';
+      updatePageStatus('success', 'Successfully saved profile');
+    }
+    function updatePageStatus(type, message) {
+      ctrl.pageStatus.status = true;
+      ctrl.pageStatus.type = type;
+      ctrl.pageStatus.message = message;
     }
 
-    // Edit Profile Fields
+    // Edit Profile
     this.editMode = false;
+    this.openChangeUserModel = function() {
+      ctrl.editMode = true;
+      ctrl.user.signature = ctrl.user.signature.replace(/<br \/>/gi,'\r\n');
+    };
+
+    this.closeChangeUserModel = function() {
+      ctrl.user.signature = ctrl.user.signature.replace(/\r\n|\r|\n/g,'<br />');
+    };
+
     this.saveProfile = function() {
       User.update(this.user).$promise
       .then(function(data) {
         ctrl.user = data;
         ctrl.editMode = false;
-        ctrl.pageStatus = {}; // reset error
 
         // Reformat DOB and calculate age on save
         ctrl.user.dob = $filter('date')(ctrl.user.dob, 'longDate');
@@ -52,35 +59,29 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
           $location.path('/profiles/' + ctrl.user.username);
           Auth.setUsername(ctrl.user.username);
         }
-        ctrl.pageStatus.status = true;
-        ctrl.pageStatus.message = 'Sucessfully saved profile';
-        ctrl.pageStatus.type = 'success';
+
+        updatePageStatus('success', 'Successfully saved profile');
         $timeout($anchorScroll);
       })
       .catch(function(err) {
-        ctrl.pageStatus.status = true;
-        ctrl.pageStatus.type = 'alert';
-        ctrl.pageStatus.message = err.data.error + ': ' + err.data.message;
+        updatePageStatus('alert', err.data.error + ': ' + err.data.message);
         $timeout($anchorScroll);
       });
     };
 
+    // Edit Avatar
     this.editAvatar = false;
     this.saveAvatar = function() {
       User.update(this.user).$promise
       .then(function(data) {
         ctrl.user = data;
+        ctrl.displayAvatar = angular.copy(data.avatar || 'http://placehold.it/400/cccccc/&text=Avatar');
         ctrl.editAvatar = false;
-        ctrl.pageStatus = {}; // reset error
-        ctrl.pageStatus.status = true;
-        ctrl.pageStatus.message = 'Sucessfully saved profile';
-        ctrl.pageStatus.type = 'success';
+        updatePageStatus('success', 'Successfully saved profile');
         $timeout($anchorScroll);
       })
       .catch(function(err) {
-        ctrl.pageStatus.status = true;
-        ctrl.pageStatus.type = 'alert';
-        ctrl.pageStatus.message = err.data.error + ': ' + err.data.message;
+        updatePageStatus('alert', err.data.error + ': ' + err.data.message);
         $timeout($anchorScroll);
       });
     };
@@ -90,15 +91,6 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
     this.changePassStatus = {};
     this.showChangePass = false;
     this.changePassModalVisible = false;
-
-    this.openChangeUserModel = function() {
-      ctrl.editMode = true;
-      ctrl.user.signature = ctrl.user.signature.replace(/<br \/>/gi,'\r\n');
-    };
-
-    this.closeChangeUserModel = function() {
-      ctrl.user.signature = ctrl.user.signature.replace(/\r\n|\r|\n/g,'<br />');
-    };
 
     this.openChangePassModal = function() {
       ctrl.showChangePass = true;
@@ -128,18 +120,20 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
       };
       User.update(changePassUser).$promise
       .then(function() {
-        ctrl.passData = {};
-        ctrl.pageStatus.status = true;
-        ctrl.pageStatus.message = 'Sucessfully changed account password';
-        ctrl.pageStatus.type = 'success';
         ctrl.closeChangePassModal();
+        ctrl.clearChangePassFields();
+        updatePageStatus('success', 'Sucessfully changed account password');
       })
       .catch(function(err) {
-        ctrl.changePassStatus.status = true;
-        ctrl.changePassStatus.message = err.data.message;
-        ctrl.changePassStatus.type = 'alert';
+        ctrl.changePassStatus = {
+          status: true,
+          type: alert,
+          message: err.data.message
+        };
       });
     };
+
+    // DUMMY CHART DATA
 
     var data = {
       labels: ["August", "September", "October", "November", "December", "January", "February"],

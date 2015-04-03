@@ -12,7 +12,7 @@
   <div class="large-3 columns word-wrap">
     <!-- User's Avatar -->
     <div class="profile-avatar-container">
-      <img ng-src="{{profiles.user.avatar}}"/>
+      <img ng-src="{{profiles.displayAvatar}}" />
       <a href="#" class="after" ng-if="profiles.user.editable" ng-click="profiles.editAvatar = true">
         <div>Change Avatar</div>
       </a>
@@ -242,12 +242,15 @@
 </modal>
 
 <!-- Change Avatar Modal -->
-<modal class="tiny" show="profiles.editAvatar">
+<modal class="small" show="profiles.editAvatar">
   <form name="form" class="css-form" novalidate>
     <label>Avatar address
       <input type="text" name="avatar" ng-model="profiles.user.avatar" />
     </label>
   </form>
+
+  <image-uploader model="profiles.user.avatar" purpose="avatar"></image-uploader>
+  <br /><br />
 
   <!-- Cancel/Save Buttons -->
   <div class="row">

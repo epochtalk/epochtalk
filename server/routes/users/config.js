@@ -53,7 +53,7 @@ exports.update = {
     ],
     { method: pre.clean },
     { method: pre.parseSignature },
-    { method: pre.removeImages }
+    { method: pre.removeImages },
   ],
   handler: function(request, reply) {
     // get user

@@ -2,10 +2,11 @@ var path = require('path');
 var Hapi = require('hapi');
 var Boom = require('boom');
 var cheerio = require('cheerio');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
+var db = require(path.normalize(__dirname + '/../../../db'));
 var bbcodeParser = require('epochtalk-bbcode-parser');
-var sanitizer = require(path.join('..', '..', 'sanitizer'));
-var config = require(path.join(__dirname, '..', '..', '..', 'config'));
+var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
+var imageStore = require(path.normalize(__dirname + '/../../images'));
+var config = require(path.normalize(__dirname + '/../../../config'));
 
 module.exports = {
   getCurrentUser: function(request, reply) {
@@ -122,12 +123,16 @@ module.exports = {
     return reply();
   },
   removeImages: function(request, reply) {
-    // load html in post.body into cheerio
+    // load html in user.signature into cheerio
     var html = request.payload.signature;
     var $ = cheerio.load(html);
     $('img').remove();
     var parsed = $.html();
     request.payload.signature = parsed.replace(/\r\n|\r|\n/g,'<br />');
+
+    // clear user.avatar image upload
+    var url = request.payload.avatar;
+    imageStore.clearExpiration(url);
     return reply();
   }
 };
