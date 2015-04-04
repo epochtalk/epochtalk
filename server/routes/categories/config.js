@@ -1,8 +1,8 @@
 var path = require('path');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var Boom = require('boom');
-var pre = require(path.join(__dirname, 'pre'));
+var pre = require(path.normalize(__dirname + '/pre'));
+var db = require(path.normalize(__dirname + '/../../../db'));
 
 // Route handlers/configs
 exports.create = {

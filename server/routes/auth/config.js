@@ -1,17 +1,16 @@
+var Joi = require('joi');
 var path = require('path');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var Boom = require('boom');
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
-var authValidator = require('epochtalk-validator').api.auth;
-var emailer = require(path.join(__dirname, '..', '..', 'emailer'));
-var config = require(path.join(__dirname, '..', '..', '..', 'config'));
-var memDb = require(path.join(__dirname, '..', '..', 'memstore')).db;
-var pre = require(path.join(__dirname, 'pre'));
+var db = require(path.normalize(__dirname + '/../../../db'));
+var emailer = require(path.normalize(__dirname + '/../../emailer'));
+var config = require(path.normalize(__dirname + '/../../../config'));
+var memDb = require(path.normalize(__dirname + '/../../memstore')).db;
+var pre = require(path.normalize(__dirname + '/pre'));
 
-// Helpers
 var buildToken = function(user) {
   // create token
   var decodedToken = {
@@ -24,8 +23,14 @@ var buildToken = function(user) {
   return jwt.sign(decodedToken, config.privateKey);
 };
 
-// Route handlers/configs
 exports.login = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: {
+    payload: {
+      username: Joi.string().min(1).max(255).required(),
+      password: Joi.string().min(8).max(72).required()
+    }
+  },
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
@@ -74,12 +79,11 @@ exports.login = {
       error.reformat();
       return reply(error);
     });
-  },
-  auth: { mode: 'try', strategy: 'jwt' },
-  validate: { payload: authValidator.schema.login }
+  }
 };
 
 exports.logout = {
+  auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (!request.auth.isAuthenticated) {
@@ -97,13 +101,19 @@ exports.logout = {
       }
       return reply(true);
     });
-  },
-  auth: { mode: 'try', strategy: 'jwt' }
+  }
 };
 
 exports.register = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { payload: authValidator.schema.register },
+  validate: {
+    payload: {
+      username: Joi.string().min(1).max(255).required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().min(8).max(72).required(),
+      confirmation: Joi.ref('password')
+    }
+  },
   pre: [
     [
       { method: pre.checkUniqueEmail },
@@ -151,6 +161,12 @@ exports.register = {
 };
 
 exports.confirmAccount = {
+  validate: {
+    payload: {
+      username: Joi.string().min(1).max(255).required(),
+      token: Joi.string().required()
+    }
+  },
   handler: function(request, reply) {
     var username = request.payload.username;
     var confirmationToken = request.payload.token;
@@ -178,6 +194,7 @@ exports.confirmAccount = {
 };
 
 exports.isAuthenticated = {
+  auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
@@ -187,11 +204,11 @@ exports.isAuthenticated = {
       reply({ authenticated: false }).header('Authorization', 'Revoked');
     }
 
-  },
-  auth: { mode: 'try', strategy: 'jwt' }
+  }
 };
 
 exports.username = {
+  validate: { params: { username: Joi.string().min(1).max(255).required() } },
   handler: function(request, reply) {
     var username = request.params.username;
     db.users.userByUsername(username)
@@ -206,6 +223,7 @@ exports.username = {
 };
 
 exports.email = {
+  validate: { params: { email: Joi.string().email().required() } },
   handler: function(request, reply) {
     var email = request.params.email;
     db.users.userByEmail(email)
@@ -218,6 +236,11 @@ exports.email = {
 };
 
 exports.recoverAccount = {
+  validate: {
+    query: {
+      query: Joi.string().min(1).max(255).required(),
+    }
+  },
   handler: function(request, reply) {
     var query = request.params.query;
     db.users.userByUsername(query)
@@ -256,6 +279,14 @@ exports.recoverAccount = {
 };
 
 exports.resetPassword = {
+  validate: {
+    payload: {
+      username: Joi.string().min(1).max(255).required(),
+      password: Joi.string().min(8).max(72).required(),
+      confirmation: Joi.ref('password'),
+      token: Joi.string().token().required()
+    }
+  },
   handler: function(request, reply) {
     var username = request.payload.username;
     var password = request.payload.password;
@@ -291,11 +322,16 @@ exports.resetPassword = {
         reply(Boom.badRequest('Password reset failed. Invalid reset token.'));
       }
     });
-  },
-  validate: { payload: authValidator.schema.resetPassword }
+  }
 };
 
 exports.checkResetToken = {
+  validate: {
+    params: {
+      username: Joi.string().min(1).max(255).required(),
+      token: Joi.string().required()
+    }
+  },
   handler: function(request, reply) {
     var username = request.params.username;
     var token = request.params.token;
@@ -314,7 +350,5 @@ exports.checkResetToken = {
 };
 
 exports.refreshToken = {
-  handler: function(request, reply) {
-    return reply(true);
-  }
+  handler: function(request, reply) { return reply(true); }
 };

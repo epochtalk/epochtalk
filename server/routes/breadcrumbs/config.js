@@ -1,13 +1,17 @@
+var Joi = require('joi');
 var path = require('path');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var Boom = require('boom');
-var breadcrumbValidator = require('epochtalk-validator').api.breadcrumbs;
+var db = require(path.normalize(__dirname + '/../../../db'));
 
-// Route handlers/configs
 exports.byType = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { query: breadcrumbValidator.schema.byType },
+  validate: {
+    query: {
+      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      type: Joi.string().required()
+    }
+  },
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply([]); }
 

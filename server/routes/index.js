@@ -1,7 +1,7 @@
+var Joi = require('joi');
 var Boom = require('boom');
 var path = require('path');
 var crypto = require('crypto');
-var imagesValidator = require('epochtalk-validator').api.images;
 var images = require(path.normalize(__dirname + '/../images'));
 var config = require(path.normalize(__dirname + '/../../config'));
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
@@ -43,7 +43,7 @@ exports.endpoints = function() {
       path: '/images/policy',
       config: {
         auth: { strategy: 'jwt' },
-        validate: { payload: imagesValidator.schema.policy },
+        validate: { payload: { filename: Joi.string().required() } },
         handler: function(request, reply) {
           var filename = request.payload.filename;
           var storage = config.images.storage;

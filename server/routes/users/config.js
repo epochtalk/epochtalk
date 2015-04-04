@@ -1,14 +1,21 @@
+var Joi = require('joi');
 var path = require('path');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var Boom = require('boom');
 var bcrypt = require('bcrypt');
-var userValidator = require('epochtalk-validator').api.users;
-var pre = require(path.join(__dirname, 'pre'));
+var pre = require(path.normalize(__dirname + '/pre'));
+var db = require(path.normalize(__dirname + '/../../../db'));
 
 // Route handlers/configs
 exports.create = {
-  validate: { payload: userValidator.schema.create },
+  validate: {
+    payload: Joi.object().keys({
+      email: Joi.string().email().required(),
+      username: Joi.string().min(1).max(255).required(),
+      password: Joi.string().min(8).max(72).required(),
+      confirmation: Joi.ref('password')
+    })
+  },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     db.users.create(request.payload)
@@ -23,7 +30,28 @@ exports.create = {
 
 exports.import = {
   // auth: { strategy: 'jwt' },
-  validate: { payload: userValidator.schema.import },
+  validate: {
+    payload: Joi.object().keys({
+      username: Joi.string().required(),
+      email: Joi.string(), // should be required?
+      created_at: Joi.date(),
+      updated_at: Joi.date(),
+      name: Joi.string().allow(''),
+      website: Joi.string().allow(''),
+      btcAddress: Joi.string().allow(''),
+      gender: Joi.string().allow(''),
+      dob: Joi.string().allow(''),
+      location: Joi.string().allow(''),
+      language: Joi.string(),
+      position: Joi.string(),
+      signature: Joi.string().allow(''),
+      avatar: Joi.string().allow(''),
+      status: Joi.string(),
+      smf: Joi.object().keys({
+        ID_MEMBER: Joi.number().required()
+      })
+    })
+  },
   pre: [
     { method: pre.clean },
     { method: pre.parseSignature }
@@ -44,7 +72,29 @@ exports.import = {
 
 exports.update = {
   auth: { strategy: 'jwt' },
-  validate: { payload: userValidator.schema.update },
+  validate: {
+    payload: Joi.object().keys({
+      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      email: Joi.string().email(),
+      username: Joi.string().min(1).max(255),
+      old_password: Joi.string().min(8).max(72),
+      password: Joi.string().min(8).max(72),
+      confirmation: Joi.ref('password'),
+      name: Joi.string().allow(''),
+      website: Joi.string().allow(''),
+      btcAddress: Joi.string().allow(''),
+      gender: Joi.string().allow(''),
+      dob: Joi.date().allow(''),
+      location: Joi.string().allow(''),
+      language: Joi.string().allow(''),
+      position: Joi.string().allow(''),
+      signature: Joi.string().allow(''),
+      avatar: Joi.string().allow(''),
+      reset_token: Joi.string(),
+      reset_expiration: Joi.date(),
+      confirmation_token: Joi.string().optional()
+    })
+  },
   pre: [
     [
       { method: pre.getCurrentUser, assign: 'currentUser' },

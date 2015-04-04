@@ -1,8 +1,8 @@
 var path = require('path');
 var Boom = require('boom');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
-var sanitizer = require(path.join('..', '..', 'sanitizer'));
-var config = require(path.join(__dirname, '..', '..', '..', 'config'));
+var db = require(path.normalize(__dirname + '/../../../db'));
+var config = require(path.normalize(__dirname + '/../../../config'));
+var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
   clean: function(request, reply) {

@@ -1,7 +1,6 @@
 var path = require('path');
-var auth = require(path.join(__dirname, 'config'));
+var auth = require(path.normalize(__dirname + '/config'));
 
-// Export Routes/Pre
 module.exports = [
   { method: 'POST', path: '/login', config: auth.login },
   { method: 'DELETE', path: '/logout', config: auth.logout },

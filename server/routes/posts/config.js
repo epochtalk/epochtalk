@@ -1,14 +1,20 @@
+var Joi = require('joi');
 var path = require('path');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var Boom = require('boom');
-var postValidator = require('epochtalk-validator').api.posts;
-var pre = require(path.join(__dirname, 'pre'));
+var pre = require(path.normalize(__dirname + '/pre'));
+var db = require(path.normalize(__dirname + '/../../../db'));
 
-// Route handlers/configs
 exports.create = {
   auth: { strategy: 'jwt' },
-  validate: { payload: postValidator.schema.create },
+  validate: {
+    payload: Joi.object().keys({
+      title: Joi.string().min(1).max(255).required(),
+      body: Joi.string().allow(''),
+      raw_body: Joi.string().required(),
+      thread_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    })
+  },
   pre: [
     { method: pre.clean },
     { method: pre.parseEncodings },
@@ -34,13 +40,20 @@ exports.create = {
 
 exports.import = {
   // auth: { strategy: 'jwt' },
+  // validate: {
+  //   payload: Joi.object().keys({
+  //     title: Joi.string().min(1).max(255).required(),
+  //     body: Joi.string().allow(''),
+  //     raw_body: Joi.string().required(),
+  //     thread_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+  //   })
+  // },
   pre: [
     { method: pre.clean },
     { method: pre.adjustQuoteDate },
     { method: pre.parseEncodings }
     // { method: pre.subImages }
   ],
-  // validate: { payload: postValidator.create },
   handler: function(request, reply) {
     // build the post object from payload and params
     db.posts.import(request.payload)
@@ -56,7 +69,11 @@ exports.import = {
 
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { params: postValidator.schema.id },
+  validate: {
+    params: {
+      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    }
+  },
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply({}); }
     var id = request.params.id;
@@ -69,17 +86,20 @@ exports.find = {
 exports.byThread = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
-    params: postValidator.paramsByThread,
-    query: postValidator.queryByThread
+    query: {
+      thread_id: Joi.string().required(),
+      page: Joi.number().integer().default(1),
+      limit: [ Joi.number().integer().min(1), Joi.string().valid('all') ]
+    }
   },
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply([]); }
     var user;
     if (request.auth.isAuthenticated) { user = request.auth.credentials; }
-    var threadId = request.query.thread_id || request.params.thread_id;
+    var threadId = request.query.thread_id;
     var opts = {
-      limit: request.query.limit || request.params.limit,
-      page: request.query.page || request.params.page
+      limit: request.query.limit || 10,
+      page: request.query.page
     };
 
     var queryByThread = function() {
@@ -109,8 +129,15 @@ exports.byThread = {
 exports.update = {
   auth: { strategy: 'jwt' },
   validate: {
-    payload: postValidator.schema.update,
-    params: postValidator.schema.id
+    payload: {
+      title: Joi.string().min(1).max(255).required(),
+      body: Joi.string().allow(''),
+      raw_body: Joi.string().required(),
+      thread_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    },
+    params: {
+      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    }
   },
   pre: [
     { method: pre.authPost },
@@ -136,7 +163,11 @@ exports.update = {
 
 exports.delete = {
   auth: { strategy: 'jwt' },
-  validate: { params: postValidator.schema.id },
+  validate: {
+    params: {
+      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    }
+  },
   pre: [ { method: pre.authPost } ],
   handler: function(request, reply) {
     var postId = request.params.id;

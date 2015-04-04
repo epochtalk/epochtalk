@@ -1,14 +1,22 @@
+var Joi = require('joi');
 var path = require('path');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var Boom = require('boom');
-var boardValidator = require('epochtalk-validator').api.boards;
-var pre = require(path.join(__dirname, 'pre'));
+var pre = require(path.normalize(__dirname + '/pre'));
+var db = require(path.normalize(__dirname + '/../../../db'));
 
-// Route handlers/configs
+
 exports.create = {
   auth: { mode: 'required', strategy: 'jwt' },
-  validate: { payload: boardValidator.schema.create },
+  validate: {
+    payload: {
+      name: Joi.string().min(1).max(255).required(),
+      description: Joi.string().allow(''),
+      category_id: [ Joi.string(), Joi.number() ],
+      parent_id: [ Joi.string(), Joi.number() ],
+      children_ids: [ Joi.array(Joi.string()), Joi.array(Joi.number()) ]
+    }
+  },
   pre: [
     { method: pre.clean },
     { method: pre.adminCheck }
@@ -21,7 +29,22 @@ exports.create = {
 };
 
 exports.import = {
-  // validate: { payload: boardValidator.schema.import },
+  // validate: {
+  //   payload: {
+  //     name: Joi.string().required(),
+  //     description: Joi.string(),
+  //     category_id: [ Joi.string(), Joi.number() ],
+  //     created_at: Joi.date(),
+  //     updated_at: Joi.date(),
+  //     parent_id: [ Joi.string(), Joi.number() ],
+  //     children_ids: [ Joi.array(Joi.string()), Joi.array(Joi.number()) ],
+  //     deleted: Joi.boolean(),
+  //     smf: Joi.object().keys({
+  //       ID_BOARD: Joi.number(),
+  //       ID_PARENT: Joi.number()
+  //     })
+  //   }
+  // },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     db.boards.import(request.payload)
@@ -35,7 +58,11 @@ exports.import = {
 
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { params: boardValidator.id },
+  validate: {
+    params: {
+      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    }
+  },
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply({}); }
 
@@ -72,7 +99,11 @@ exports.allCategories = {
 exports.updateCategories = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: pre.adminCheck } ],
-  validate: { payload: boardValidator.schema.categories },
+  validate: {
+    payload: {
+      categories: Joi.array().required(),
+    }
+  },
   handler: function(request, reply) {
     // update board on db
     db.boards.updateCategories(request.payload.categories)
@@ -84,8 +115,16 @@ exports.updateCategories = {
 exports.update = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: {
-    payload: boardValidator.schema.update,
-    params: boardValidator.schema.id
+    payload: {
+      name: Joi.string().min(1).max(255),
+      description: Joi.string().allow(''),
+      category_id: [ Joi.string(), Joi.number() ],
+      parent_id: [ Joi.string(), Joi.number() ],
+      children_ids: Joi.array()
+    },
+    params: {
+      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    }
   },
   pre: [
     { method: pre.clean },
@@ -110,7 +149,11 @@ exports.update = {
 
 exports.delete = {
   auth: { mode: 'required', strategy: 'jwt' },
-  validate: { params: boardValidator.schema.id },
+  validate: {
+    params: {
+      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    }
+  },
   handler: function(request, reply) {
     db.boards.delete(request.params.id)
     .then(function(board) { reply(board); })

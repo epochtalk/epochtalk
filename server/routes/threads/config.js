@@ -1,15 +1,21 @@
+var Joi = require('joi');
 var path = require('path');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var Boom = require('boom');
-var threadValidator = require('epochtalk-validator').api.threads;
-var postPre = require(path.join(__dirname, '..', 'posts', 'pre'));
-var pre = require(path.join(__dirname, 'pre'));
+var pre = require(path.normalize(__dirname + '/pre'));
+var db = require(path.normalize(__dirname + '/../../../db'));
+var postPre = require(path.normalize(__dirname + '/../posts/pre'));
 
-// Route handlers/configs
 exports.create = {
   auth: { strategy: 'jwt' },
-  validate: { payload: threadValidator.schema.create },
+  validate: {
+    payload: Joi.object().keys({
+      title: Joi.string().min(1).max(255).required(),
+      body: Joi.string().allow(''),
+      raw_body: Joi.string().required(),
+      board_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    })
+  },
   pre: [
     { method: postPre.clean },
     { method: postPre.parseEncodings },
@@ -37,7 +43,20 @@ exports.create = {
 
 exports.import = {
   // auth: { strategy: 'jwt' },
-  // validate: { payload: threadValidator.schema.import },
+  // validate: {
+  //   payload: Joi.object().keys({
+  //     board_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+  //     created_at: Joi.date(),
+  //     updated_at: Joi.date(),
+  //     view_count: Joi.number(),
+  //     deleted: Joi.boolean(),
+  //     smf: Joi.object().keys({
+  //       ID_MEMBER: Joi.number(),
+  //       ID_TOPIC: Joi.number(),
+  //       ID_FIRST_MSG: Joi.number()
+  //     })
+  //   })
+  // },
   handler: function(request, reply) {
     db.threads.import(request.payload)
     .then(function(thread) { reply(thread); })
@@ -51,8 +70,11 @@ exports.import = {
 exports.byBoard = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
-    params: threadValidator.paramsByBoard,
-    query: threadValidator.queryByBoard
+    query: {
+      board_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      page: Joi.number().default(1),
+      limit: Joi.number().integer().min(1).default(10)
+    }
   },
   pre: [
     { method: pre.getThreads, assign: 'threads' },

@@ -1,7 +1,7 @@
 var path = require('path');
 var Hapi = require('hapi');
 var Boom = require('boom');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
+var db = require(path.normalize(__dirname + '/../../../db'));
 
 module.exports = {
   checkUniqueEmail: function(request, reply) {

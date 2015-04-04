@@ -1,10 +1,10 @@
 var path = require('path');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var Hapi = require('hapi');
 var Boom = require('boom');
 var cheerio = require('cheerio');
-var bbcodeParser = require('epochtalk-bbcode-parser');
 var Promise = require('bluebird');
+var bbcodeParser = require('epochtalk-bbcode-parser');
+var db = require(path.normalize(__dirname + '/../../../db'));
 var config = require(path.normalize(__dirname + '/../../../config'));
 var imageStore = require(path.normalize(__dirname + '/../../images'));
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
@@ -106,8 +106,6 @@ module.exports = {
       request.payload.body = $.html();
       return reply();
     })
-    .catch(function(err) {
-      console.log(err);
-      return reply(err); });
+    .catch(function(err) { return reply(err); });
   }
 };

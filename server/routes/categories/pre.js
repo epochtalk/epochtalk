@@ -1,6 +1,6 @@
 var path = require('path');
-var sanitizer = require(path.join('..', '..', 'sanitizer'));
-var config = require(path.join(__dirname, '..', '..', '..', 'config'));
+var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
+var config = require(path.normalize(__dirname + '/../../../config'));
 
 module.exports = {
   clean: function(request, reply) {

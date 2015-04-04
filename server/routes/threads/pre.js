@@ -1,8 +1,8 @@
 var path = require('path');
-var db = require(path.join(__dirname, '..', '..', '..', 'db'));
 var uuid = require('node-uuid');
-var memDb = require(path.join('..', '..', 'memstore')).db;
-var config = require(path.join(__dirname, '..', '..', '..', 'config'));
+var db = require(path.normalize(__dirname + '/../../../db'));
+var memDb = require(path.normalize(__dirname + '/../../memstore')).db;
+var config = require(path.normalize(__dirname + '/../../../config'));
 
 // Helpers
 var checkViewKey = function(key) {
@@ -24,10 +24,10 @@ var checkViewKey = function(key) {
 // Pre
 module.exports = {
   getThreads: function(request, reply) {
-    var boardId = request.query.board_id || request.params.board_id;
+    var boardId = request.query.board_id;
     var opts = {
-      limit: request.query.limit || request.params.limit,
-      page: request.query.page || request.params.page
+      limit: request.query.limit,
+      page: request.query.page
     };
 
     db.threads.byBoard(boardId, opts)
