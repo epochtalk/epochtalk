@@ -309,7 +309,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@admin-moderate': {
           controller: 'ModPostsCtrl',
           controllerAs: 'ModerationCtrl',
-          template: fs.readFileSync(__dirname + '/admin_moderation/posts.html'),
+          template: fs.readFileSync(__dirname + '/admin_moderation/posts.html')
         }
       }
     });
