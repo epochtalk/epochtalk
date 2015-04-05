@@ -70,6 +70,7 @@
     "pg": "^4.2.0",
     "request": "^2.53.0",
     "sanitize-html": "^1.4.3",
+    "slugid": "^1.0.3",
     "stream-meter": "^1.0.3",
     "through2": "^0.6.3",
     "yargs": "^1.2.1"
