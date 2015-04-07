@@ -6,28 +6,6 @@ var bcrypt = require('bcrypt');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 
-// Route handlers/configs
-exports.create = {
-  validate: {
-    payload: Joi.object().keys({
-      email: Joi.string().email().required(),
-      username: Joi.string().min(1).max(255).required(),
-      password: Joi.string().min(8).max(72).required(),
-      confirmation: Joi.ref('password')
-    })
-  },
-  pre: [ { method: pre.clean } ],
-  handler: function(request, reply) {
-    db.users.create(request.payload)
-    .then(function(user) {
-      delete user.passhash;
-      delete user.confirmation_token;
-      reply(user);
-    })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
-  }
-};
-
 exports.import = {
   // auth: { strategy: 'jwt' },
   validate: {
@@ -60,7 +38,6 @@ exports.import = {
     db.users.import(request.payload)
     .then(function(user) {
       delete user.passhash;
-      delete user.confirmation_token;
       reply(user);
     })
     .catch(function(err) {
@@ -92,7 +69,7 @@ exports.update = {
       avatar: Joi.string().allow(''),
       reset_token: Joi.string(),
       reset_expiration: Joi.date(),
-      confirmation_token: Joi.string().optional()
+      confirmation_token: Joi.string()
     })
   },
   pre: [
@@ -137,7 +114,6 @@ exports.update = {
     if (request.payload.btcAddress || request.payload.btcAddress === '') {
       updateUser.btcAddress = request.payload.btcAddress;
     }
-
     if (request.payload.gender || request.payload.gender === '') {
       updateUser.gender = request.payload.gender;
     }
@@ -163,7 +139,6 @@ exports.update = {
     // create the thread in db
     db.users.update(updateUser)
     .then(function(user) {
-      delete user.passhash;
       delete user.confirmation_token;
       user.editable = true;
       reply(user);

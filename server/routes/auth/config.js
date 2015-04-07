@@ -136,7 +136,6 @@ exports.register = {
       username: request.payload.username,
       email: request.payload.email,
       password: request.payload.password,
-      confirmation: request.payload.confirmation,
       confirmation_token: crypto.randomBytes(20).toString('hex')
     };
     // check that username or email does not already exist
@@ -175,7 +174,7 @@ exports.confirmAccount = {
       if (!user || !user.confirmation_token || confirmationToken !== user.confirmation_token) {
         return reply(Boom.badRequest('Account Confirmation Error'));
       }
-      return db.users.update({ confirmation_token: undefined, id: user.id });
+      return db.users.update({ confirmation_token: null, id: user.id });
     })
     .then(function(updatedUser) {
       var authToken = buildToken(updatedUser);
@@ -237,7 +236,7 @@ exports.email = {
 
 exports.recoverAccount = {
   validate: {
-    query: {
+    params: {
       query: Joi.string().min(1).max(255).required(),
     }
   },
