@@ -2,9 +2,10 @@ var Joi = require('joi');
 var path = require('path');
 var Hapi = require('hapi');
 var Boom = require('boom');
-var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
 var config = require(path.normalize(__dirname + '/../../../config'));
@@ -43,23 +44,22 @@ exports.login = {
       return reply(loginReply);
     }
 
-    // check if user exists
-    var errorCode = 500;
     var username = request.payload.username;
     var password = request.payload.password;
     return db.users.userByUsername(username)
-    .catch(function() {
-      errorCode = 400;
-      throw new Error('Invalid Credentials');
+    .then(function(user) { // check user exists
+      if (user) { return user; }
+      else { return Promise.reject(Boom.badRequest('Invalid Credentials')); }
+    })
+    .then(function(user) { // check confirmation token
+      if (user.confirmation_token) {
+        return Promise.reject(Boom.badRequest('Account Not Confirmed'));
+      }
+      else { return user; }
     })
     .then(function(user) { // check if passhash matches
-      if (user && !user.confirmation_token && bcrypt.compareSync(password, user.passhash)) {
-        return user;
-      }
-      else {
-        errorCode = 400;
-        throw new Error('Invalid Credentials');
-      }
+      if (bcrypt.compareSync(password, user.passhash)) { return user; }
+      else { return Promise.reject(Boom.badRequest('Invalid Credentials')); }
     })
     .then(function(user) { // build and save token
       var token = buildToken(user);
@@ -74,10 +74,8 @@ exports.login = {
       });
     })
     .catch(function(err) {
-      var error = Boom.badRequest(err.message);
-      error.output.statusCode = errorCode;
-      error.reformat();
-      return reply(error);
+      if (err.isBoom) { return reply(err); }
+      else return reply(Boom.badImplementation(err));
     });
   }
 };
@@ -87,19 +85,13 @@ exports.logout = {
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (!request.auth.isAuthenticated) {
-      var error = Boom.badRequest('Not Logged In');
-      return reply(error);
+      return reply(Boom.badRequest('Not Logged In'));
     }
 
-    var credentials = request.auth.credentials;
-    var id = credentials.id;
-
     // delete jwt from memdown
-    memDb.del(id, function(err) {
-      if (err) {
-        return reply(Boom.badImplementation(err));
-      }
-      return reply(true);
+    memDb.del(request.auth.credentials.id, function(err) {
+      if (err) { return reply(Boom.badImplementation(err)); }
+      else { return reply(true); }
     });
   }
 };
@@ -171,10 +163,17 @@ exports.confirmAccount = {
     var confirmationToken = request.payload.token;
     db.users.userByUsername(username)
     .then(function(user) {
-      if (!user || !user.confirmation_token || confirmationToken !== user.confirmation_token) {
-        return reply(Boom.badRequest('Account Confirmation Error'));
+      if (user) { return user; }
+      else { return Promise.reject(Boom.badRequest('Account Not Found')); }
+    })
+    .then(function(user) {
+      var tokenMatch = confirmationToken === user.confirmationToken;
+      if (user.confirmation_token && tokenMatch) {
+        return db.users.update({ confirmation_token: null, id: user.id });
       }
-      return db.users.update({ confirmation_token: null, id: user.id });
+      else {
+        return Promise.reject(Boom.badRequest('Account Confirmation Error'));
+      }
     })
     .then(function(updatedUser) {
       var authToken = buildToken(updatedUser);
@@ -188,7 +187,10 @@ exports.confirmAccount = {
         reply(userReply);
       });
     })
-    .catch(function() { reply(Boom.badRequest('Account Confirmation Error')); });
+    .catch(function(err) {
+      if (err.isBoom) { return reply(err); }
+      else { return reply(Boom.badImplementation(err)); }
+    });
   }
 };
 
@@ -202,7 +204,6 @@ exports.isAuthenticated = {
     else {
       reply({ authenticated: false }).header('Authorization', 'Revoked');
     }
-
   }
 };
 
@@ -215,9 +216,7 @@ exports.username = {
       var found = !!user;
       reply({ found: found });
     })
-    .catch(function() {
-      reply({ found: false });
-    });
+    .catch(function() { reply({ found: false }); });
   }
 };
 
@@ -235,44 +234,41 @@ exports.email = {
 };
 
 exports.recoverAccount = {
-  validate: {
-    params: {
-      query: Joi.string().min(1).max(255).required(),
-    }
-  },
+  validate: { params: { query: Joi.string().min(1).max(255).required(), } },
   handler: function(request, reply) {
     var query = request.params.query;
     db.users.userByUsername(query)
+    .then(function(user) {
+      if (user) { return user; }
+      else { return Promise.reject(Boom.badRequest('No Account Found')); }
+    })
     .catch(function() { return db.users.userByEmail(query); })
     .then(function(user) {
-      if (!user) { throw new Error(); } // Will be caught by No Account Found error
-      var updateUser = {};
+      if (user) { return user; }
+      else { return Promise.reject(Boom.badRequest('No Account Found')); }
+    })
+    .then(function(user) {
       // Build updated user with resetToken and resetExpiration
+      var updateUser = {};
       updateUser.reset_token = crypto.randomBytes(20).toString('hex');
       updateUser.reset_expiration = Date.now() + 1000 * 60 * 60; // 1 hr
       updateUser.id = user.id;
-
       // Store token and expiration to user object
-      db.users.update(updateUser)
-      .then(function(user) {
-        // Email user reset information here
-        var emailParams = {
-          email: user.email,
-          username: user.username,
-          reset_url: config.publicUrl + '/' + path.join('reset', user.username, user.reset_token)
-        };
-        return emailer.send('recoverAccount', emailParams);
-      })
-      .then(function(success) {
-        reply(success);
-      })
-      .catch(function(err) {
-        reply(Boom.badImplementation(err));
-      });
+      return db.users.update(updateUser);
     })
-    .catch(function() {
-      var error = Boom.badRequest('No Account Found');
-      reply(error);
+    .then(function(user) {
+      // Email user reset information here
+      var emailParams = {
+        email: user.email,
+        username: user.username,
+        reset_url: config.publicUrl + '/' + path.join('reset', user.username, user.reset_token)
+      };
+      return emailer.send('recoverAccount', emailParams);
+    })
+    .then(function(success) { reply(success); })
+    .catch(function(err) {
+      if (err.isBoom) { return reply(err); }
+      else { return reply(Boom.badImplementation(err)); }
     });
   }
 };
@@ -289,37 +285,34 @@ exports.resetPassword = {
   handler: function(request, reply) {
     var username = request.payload.username;
     var password = request.payload.password;
-    var confirmation = request.payload.confirmation;
     var token = request.payload.token;
     db.users.userByUsername(username)
     .then(function(user) {
-      if (!user) {
-        return reply(Boom.badRequest('Password reset failed. No Account Found.'));
-      }
+      if (user) { return user; }
+      else { return Promise.reject(Boom.badRequest('Account Not Found')); }
+    })
+    .then(function(user) {
       var now = Date.now();
-      var tokenValid = user.reset_token === token;
-      var tokenExpired =  now > user.reset_expiration;
-      if (tokenValid && !tokenExpired) {
+      var tokenMatched = user.reset_token && user.reset_token === token;
+      var expiryValid = user.reset_expiration && now < user.reset_expiration;
+      if (tokenMatched && expiryValid) {
         var updateUser = {};
         updateUser.id = user.id;
-        updateUser.reset_expiration = now;
+        updateUser.reset_expiration = null;
+        updateUser.reset_token = null;
         updateUser.password = password;
-        updateUser.confirmation = confirmation;
-        return db.users.update(updateUser)
-        .then(function(updatedUser) {
-          var response = {};
-          response.statusCode = 200;
-          response.message = 'Password successfully reset for user ' + updatedUser.username + '.';
-          // Send password reset confirmation email here
-          reply(response);
-        })
-        .catch(function(err) {
-          reply(Boom.badRequest(err.message));
-        });
+        return updateUser;
       }
-      else {
-        reply(Boom.badRequest('Password reset failed. Invalid reset token.'));
-      }
+      else { return Promise.reject(Boom.badRequest('Invalid reset token.')); }
+    })
+    .then(db.users.update)
+    .then(function(updatedUser) {
+      // TODO: Send password reset confirmation email here
+      return reply('Password Successfully Reset');
+    })
+    .catch(function(err) {
+      if (err.isBoom) { return reply(err); }
+      else { return reply(Boom.badImplementation(err)); }
     });
   }
 };
@@ -336,13 +329,15 @@ exports.checkResetToken = {
     var token = request.params.token;
     db.users.userByUsername(username)
     .then(function(user) {
-      if (!user) {
-        return reply(Boom.badRequest('No Account Found.'));
-      }
+      if (!user) { return reply(Boom.badRequest('No Account Found.')); }
       var now = Date.now();
-      var tokenValid = user.reset_token === token;
-      var tokenExpired =  now > user.reset_expiration;
-      reply({ token_valid: tokenValid, token_expired: tokenValid ? tokenExpired : undefined });
+      var tokenValid = user.reset_token && user.reset_token === token;
+      var tokenExpired =  user.reset_expiration && now > user.reset_expiration;
+      var ret = {
+        token_valid: tokenValid,
+        token_expired: tokenValid ? tokenExpired : undefined
+      };
+      return reply(ret);
     })
     .catch(function() { return reply({ token_valid: false }); });
   }

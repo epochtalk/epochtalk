@@ -36,10 +36,7 @@ exports.import = {
   ],
   handler: function(request, reply) {
     db.users.import(request.payload)
-    .then(function(user) {
-      delete user.passhash;
-      reply(user);
-    })
+    .then(function(user) { reply(user); })
     .catch(function(err) {
       request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
       reply(Boom.badImplementation(err));
@@ -66,15 +63,12 @@ exports.update = {
       language: Joi.string().allow(''),
       position: Joi.string().allow(''),
       signature: Joi.string().allow(''),
-      avatar: Joi.string().allow(''),
-      reset_token: Joi.string(),
-      reset_expiration: Joi.date(),
-      confirmation_token: Joi.string()
-    })
+      avatar: Joi.string().allow('')
+    }).and('old_password', 'password', 'confirmation')
   },
   pre: [
     [
-      { method: pre.getCurrentUser, assign: 'currentUser' },
+      { method: pre.getCurrentUser, assign: 'oldUser' },
       { method: pre.checkUsernameUniqueness },
       { method: pre.checkEmailUniqueness }
     ],
@@ -83,63 +77,21 @@ exports.update = {
     { method: pre.removeImages },
   ],
   handler: function(request, reply) {
-    // get user
-    var user = request.pre.currentUser;
+    var oldUser = request.pre.oldUser;
+    request.payload.id = oldUser.id; // ensure modifying logged in user
 
-    // build the user object from payload and params
-    var updateUser = { id: user.id };
-    if (request.payload.username) {
-      updateUser.username = request.payload.username;
-    }
-    if (request.payload.email) {
-      updateUser.email = request.payload.email;
-    }
-    if (request.payload.old_password && request.payload.password && request.payload.confirmation) {
-      if (bcrypt.compareSync(request.payload.old_password, user.passhash)) {
-        updateUser.password = request.payload.password;
-        updateUser.confirmation = request.payload.confirmation;
-      }
-      else { return reply(Boom.badRequest('Old Password Invalid')); }
-    }
-    else if (request.payload.password && request.payload.confirmation) {
-      updateUser.password = request.payload.password;
-      updateUser.confirmation = request.payload.confirmation;
-    }
-    if (request.payload.name || request.payload.name === '') {
-      updateUser.name = request.payload.name;
-    }
-    if (request.payload.website || request.payload.website === '') {
-      updateUser.website = request.payload.website;
-    }
-    if (request.payload.btcAddress || request.payload.btcAddress === '') {
-      updateUser.btcAddress = request.payload.btcAddress;
-    }
-    if (request.payload.gender || request.payload.gender === '') {
-      updateUser.gender = request.payload.gender;
-    }
-    if (request.payload.dob || request.payload.dob === '') {
-      updateUser.dob = request.payload.dob;
-    }
-    if (request.payload.location || request.payload.location === '') {
-      updateUser.location = request.payload.location;
-    }
-    if (request.payload.language || request.payload.language === '') {
-      updateUser.language = request.payload.language;
-    }
-    if (request.payload.signature || request.payload.signature === '') {
-      updateUser.signature = request.payload.signature;
-    }
-    if (request.payload.avatar || request.payload.avatar === '') {
-      updateUser.avatar = request.payload.avatar;
-    }
-    if (request.payload.position || request.payload.position === '') {
-      updateUser.position = request.payload.position;
+    // check password
+    var oldPass = request.payload.old_password;
+    if (oldPass && !bcrypt.compareSync(oldPass, oldUser.passhash)) {
+      return reply(Boom.badRequest('Old Password Invalid'));
     }
 
     // create the thread in db
-    db.users.update(updateUser)
+    db.users.update(request.payload)
     .then(function(user) {
       delete user.confirmation_token;
+      delete user.reset_token;
+      delete user.reset_expiration;
       user.editable = true;
       reply(user);
     })
@@ -149,6 +101,7 @@ exports.update = {
 
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     if (!request.server.methods.viewable) { return reply({}); }
     // get logged in user
@@ -163,6 +116,7 @@ exports.find = {
       if (!user) { return Boom.badRequest('User doesn\'t exist.'); }
       delete user.passhash;
       delete user.confirmation_token;
+      delete user.reset_token;
       if (authUser.id !== user.id) { delete user.email; }
       if (authUser.id === user.id) { user.editable = true; }
       return user;
@@ -186,6 +140,7 @@ exports.all = {
       users.forEach(function(user) {
         delete user.passhash;
         delete user.confirmation_token;
+        delete user.reset_token;
         if (authUser.id !== user.id) { delete user.email; }
       });
       return users;

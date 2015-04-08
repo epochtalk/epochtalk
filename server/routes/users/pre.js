@@ -10,10 +10,11 @@ var config = require(path.normalize(__dirname + '/../../../config'));
 
 module.exports = {
   getCurrentUser: function(request, reply) {
-    // get user id from auth
-    var userId = request.auth.credentials.id;
-    db.users.find(userId)
-    .then(function(user) { return reply(user); })
+    db.users.find(request.auth.credentials.id)
+    .then(function(user) {
+      if (user) { return reply(user); }
+      else { return Boom.badRequest('User Not Found'); }
+    })
     .catch(function(err) { return reply(err); });
   },
   checkUsernameUniqueness: function(request, reply) {
@@ -123,16 +124,20 @@ module.exports = {
     return reply();
   },
   removeImages: function(request, reply) {
-    // load html in user.signature into cheerio
-    var html = request.payload.signature;
-    var $ = cheerio.load(html);
-    $('img').remove();
-    var parsed = $.html();
-    request.payload.signature = parsed.replace(/\r\n|\r|\n/g,'<br />');
+    // remove images in signature
+    if (request.payload.signature) {
+      var $ = cheerio.load(request.payload.signature);
+      $('img').remove();
+      var parsed = $.html();
+      request.payload.signature = parsed.replace(/\r\n|\r|\n/g,'<br />');
+    }
 
-    // clear user.avatar image upload
-    var url = request.payload.avatar;
-    imageStore.clearExpiration(url);
+    // clear the expiration on user's avatar
+    if (request.payload.avatar) {
+      var url = request.payload.avatar;
+      imageStore.clearExpiration(url);
+    }
+
     return reply();
   }
 };
