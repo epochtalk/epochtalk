@@ -22,7 +22,7 @@ exports.import = {
       location: Joi.string().allow(''),
       language: Joi.string(),
       position: Joi.string(),
-      signature: Joi.string().allow(''),
+      raw_signature: Joi.string().allow(''),
       avatar: Joi.string().allow(''),
       status: Joi.string(),
       smf: Joi.object().keys({
@@ -32,7 +32,8 @@ exports.import = {
   },
   pre: [
     { method: pre.clean },
-    { method: pre.parseSignature }
+    { method: pre.parseSignature },
+    { method: pre.handleImages },
   ],
   handler: function(request, reply) {
     db.users.import(request.payload)
@@ -62,9 +63,12 @@ exports.update = {
       location: Joi.string().allow(''),
       language: Joi.string().allow(''),
       position: Joi.string().allow(''),
+      raw_signature: Joi.string().allow(''),
       signature: Joi.string().allow(''),
       avatar: Joi.string().allow('')
-    }).and('old_password', 'password', 'confirmation')
+    })
+    .and('old_password', 'password', 'confirmation')
+    .with('signature', 'raw_signature')
   },
   pre: [
     [
@@ -74,7 +78,7 @@ exports.update = {
     ],
     { method: pre.clean },
     { method: pre.parseSignature },
-    { method: pre.removeImages },
+    { method: pre.handleImages },
   ],
   handler: function(request, reply) {
     var oldUser = request.pre.oldUser;

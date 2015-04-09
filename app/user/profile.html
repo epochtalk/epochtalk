@@ -18,6 +18,14 @@
       </a>
     </div>
 
+    <!-- Edit Profile Controls -->
+    <div class="profile-edit-container" ng-if="profiles.user.editable">
+      Edit:
+      <a href="#" ng-click="profiles.editMode = true">Profile</a>
+      |
+      <a href="#" ng-click="profiles.openChangePassModal()">Password </a>
+    </div>
+
     <!-- User Information -->
     <h4 ng-bind="profiles.displayUsername"></h4>
     <div><span ng-bind="profiles.user.name"></span></div>
@@ -33,21 +41,6 @@
     <div><span ng-bind="profiles.user.location"></span></div>
     <div><span ng-bind="profiles.user.language"></span></div>
     <div><span ng-bind="profiles.userLocalTime"></span></div>
-
-    <!-- User Actions -->
-    <ul class="side-nav">
-      <li ng-if="profiles.user.editable">
-        <a href="#" ng-click="profiles.openChangePassModal()">
-          Change Password
-        </a>
-      </li>
-
-      <li ng-If="profiles.user.editable">
-        <a href="#" ng-click="profiles.openChangeUserModel()">
-          Change Profile Fields
-        </a>
-      </li>
-    </ul>
   </div>
 
   <!-- Right Side Content -->
@@ -83,9 +76,14 @@
 
     <div class="profile-boxes">
       <div class="row">
-        <div class="large-12 columns"><strong>Signature:</strong></div>
+        <div class="large-12 columns">
+          <strong>Signature:</strong>
+          <a ng-href="#" ng-click="profiles.editSignature = true" ng-if="profiles.user.editable">
+            <i class="icon-epoch-edit-pencil"></i>
+          </a>
+        </div>
       </div>
-      <div class="profile post-signature" post-processing="profiles.user.signature" style-fix="true"></div>
+      <div class="post-signature" post-processing="profiles.user.signature" style-fix="true"></div>
     </div>
   </div>
 </div>
@@ -154,72 +152,75 @@
 </modal>
 
 <!-- Edit Profile Modal -->
-<modal class="small" show="profiles.editMode" on-close="profiles.closeChangeUserModel">
+<modal class="medium" show="profiles.editMode">
   <form name="form" class="css-form" novalidate>
-    <label>Username
-      <input type="text" name="username" required ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
-      <small class="label error" ng-if="form.username.$error.unique">
-        Username Already Taken
-      </small>
-      <small class="label error" ng-if="form.username.$error.required">
-        Username Required
-      </small>
-      <small class="label success" ng-if="profiles.displayUsername !== profiles.user.username && !form.username.$error.unique && !form.username.$error.required">
-        Username Available
-      </small>
-    </label>
+    <div class="row">
 
-    <label>Name
-      <input type="text" placeholder="Name" ng-model="profiles.user.name">
-    </label>
+      <div class="medium-6 columns">
+        <label>Username
+          <input type="text" name="username" required ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
+          <small class="label error" ng-if="form.username.$error.unique">
+            Username Already Taken
+          </small>
+          <small class="label error" ng-if="form.username.$error.required">
+            Username Required
+          </small>
+          <small class="label success" ng-if="profiles.displayUsername !== profiles.user.username && !form.username.$error.unique && !form.username.$error.required">
+            Username Available
+          </small>
+        </label>
 
-    <label>Email
-      <input type="email" name="email" required ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
-      <small class="label error" ng-if="form.email.$error.email">
-        Email is not valid
-      </small>
-      <small class="label error" ng-if="form.email.$error.unique">
-        Email Already Taken
-      </small>
-      <small class="label error" ng-if="!form.email.$error.email && form.email.$error.required">
-        Email Required
-      </small>
-      <small class="label success" ng-if="profiles.displayEmail !== profiles.user.email && !form.email.$error.email && !form.email.$error.required && !form.email.$error.unique">
-        Email Available
-      </small>
-    </label>
+        <label>Name
+          <input type="text" placeholder="Name" ng-model="profiles.user.name">
+        </label>
 
-    <label>Website
-      <input type="text" placeholder="Website" ng-model="profiles.user.website">
-    </label>
+        <label>Email
+          <input type="email" name="email" required ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
+          <small class="label error" ng-if="form.email.$error.email">
+            Email is not valid
+          </small>
+          <small class="label error" ng-if="form.email.$error.unique">
+            Email Already Taken
+          </small>
+          <small class="label error" ng-if="!form.email.$error.email && form.email.$error.required">
+            Email Required
+          </small>
+          <small class="label success" ng-if="profiles.displayEmail !== profiles.user.email && !form.email.$error.email && !form.email.$error.required && !form.email.$error.unique">
+            Email Available
+          </small>
+        </label>
 
-    <label>Bitcoin Address
-      <input type="text" placeholder="Bitcoin Address" ng-model="profiles.user.btcAddress">
-    </label>
+        <label>Website
+          <input type="text" placeholder="Website" ng-model="profiles.user.website">
+        </label>
 
-    <label>Gender
-      <input type="text" placeholder="Gender" ng-model="profiles.user.gender">
-    </label>
+        <label>Bitcoin Address
+          <input type="text" placeholder="Bitcoin Address" ng-model="profiles.user.btcAddress">
+        </label>
+      </div>
 
-    <label>Date of Birth
-      <input type="text" placeholder="Date of Birth" ng-model="profiles.user.dob">
-    </label>
+      <div class="medium-6 columns">
+        <label>Gender
+          <input type="text" placeholder="Gender" ng-model="profiles.user.gender">
+        </label>
 
-    <label>Location
-      <input type="text" placeholder="Location" ng-model="profiles.user.location">
-    </label>
+        <label>Date of Birth
+          <input type="text" placeholder="Date of Birth" ng-model="profiles.user.dob">
+        </label>
 
-    <label>Language
-      <input type="text" placeholder="Language" ng-model="profiles.user.language">
-    </label>
+        <label>Location
+          <input type="text" placeholder="Location" ng-model="profiles.user.location">
+        </label>
 
-    <label>Signature
-      <textarea type="text" placeholder="Signature" ng-model="profiles.user.signature"></textarea>
-    </label>
+        <label>Language
+          <input type="text" placeholder="Language" ng-model="profiles.user.language">
+        </label>
+      </div>
+    </div>
   </form>
 
   <!-- Cancel/Save Buttons -->
-  <div class="row">
+  <div class="row profile-save-container">
     <div class="small-6 columns">
       <button class="button expand alert" ng-click="profiles.editMode = false">
         Close
@@ -261,6 +262,37 @@
     </div>
     <div class="small-6 columns">
       <button class="button expand" ng-click="profiles.saveAvatar()" ng-disabled="form.$invalid">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="row" ng-if="profiles.error.status">
+    <div class="small-12 columns">
+      <div class="alert-box alert radius" ng-bind="profiles.error.message"></div>
+    </div>
+  </div>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Change Signature Modal -->
+<modal class="medium" show="profiles.editSignature">
+  <form name="form" class="css-form" novalidate>
+    <label>Signature
+      <textarea type="text" rows="10" placeholder="Signature" ng-model="profiles.user.raw_signature"></textarea>
+    </label>
+  </form>
+
+  <!-- Cancel/Save Buttons -->
+  <div class="row">
+    <div class="small-6 columns">
+      <button class="button expand alert" ng-click="profiles.editSignature = false">
+        Close
+      </button>
+    </div>
+    <div class="small-6 columns">
+      <button class="button expand" ng-click="profiles.saveSignature()" ng-disabled="form.$invalid">
         Save
       </button>
     </div>

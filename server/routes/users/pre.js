@@ -63,79 +63,56 @@ module.exports = {
       }
     });
   },
+  clean: function(request, reply) {
+    var keys = ['username', 'email', 'name', 'website', 'btcAddress', 'gender', 'location', 'language', 'avatar', 'position'];
+    keys.map(function(key) {
+      if (request.payload[key]) {
+        request.payload[key] = sanitizer.strip(request.payload[key]);
+      }
+    });
+
+    var displayKeys = ['signature', 'raw_signature'];
+    displayKeys.map(function(key) {
+      if (request.payload[key]) {
+        request.payload[key] = sanitizer.display(request.payload[key]);
+      }
+    });
+
+    return reply();
+  },
   parseSignature: function(request, reply) {
-    // check if signature has any bbcode
+    // check if raw_signature has any bbcode
     var signature = request.payload.signature;
-    if (signature && signature.indexOf('[') >= 0) {
+    var raw_signature = request.payload.raw_signature;
+    if (raw_signature && raw_signature.indexOf('[') >= 0) {
       // convert all &lt; and &gt; to decimal to escape the regex
       // in the bbcode parser that'll unescape those chars
-      signature = signature.replace(/&gt;/g, '&#62;');
-      signature = signature.replace(/&lt;/g, '&#60;');
+      raw_signature = raw_signature.replace(/(?:\r\n|\r|\n)/g, '<br />');
+      raw_signature = raw_signature.replace(/&gt;/g, '&#62;');
+      raw_signature = raw_signature.replace(/&lt;/g, '&#60;');
 
       // parse raw_body to generate body
-      var parsed = bbcodeParser.process({text: signature}).html;
+      var parsed = bbcodeParser.process({text: raw_signature}).html;
       request.payload.signature = parsed;
     }
+    else if (raw_signature) {
+      raw_signature = raw_signature.replace(/(?:\r\n|\r|\n)/g, '<br />');
+      request.payload.signature = raw_signature;
+    }
+
     return reply();
   },
-  clean: function(request, reply) {
-    if (request.payload.username) {
-      request.payload.username = sanitizer.strip(request.payload.username);
-    }
-    if (request.payload.email) {
-      request.payload.email = sanitizer.strip(request.payload.email);
-    }
-    if (request.payload.name) {
-      request.payload.name = sanitizer.strip(request.payload.name);
-    }
-    if (request.payload.website) {
-      request.payload.website = sanitizer.strip(request.payload.website);
-    }
-    if (request.payload.btcAddress) {
-      request.payload.btcAddress = sanitizer.strip(request.payload.btcAddress);
-    }
-    if (request.payload.gender) {
-      request.payload.gender = sanitizer.strip(request.payload.gender);
-    }
-    if (request.payload.location) {
-      request.payload.location = sanitizer.strip(request.payload.location);
-    }
-    if (request.payload.language) {
-      request.payload.language = sanitizer.strip(request.payload.language);
-    }
-    if (request.payload.signature) {
-      request.payload.signature = sanitizer.display(request.payload.signature);
-    }
-    if (request.payload.avatar) {
-      request.payload.avatar = sanitizer.strip(request.payload.avatar);
-    }
-    if (request.payload.position) {
-      request.payload.position = sanitizer.strip(request.payload.position);
-    }
-    if (request.payload.reset_token) {
-      request.payload.reset_token = sanitizer.strip(request.payload.reset_token);
-    }
-    if (request.payload.reset_expiration) {
-      request.payload.reset_expiration = sanitizer.strip(request.payload.reset_expiration);
-    }
-    if (request.payload.confirmation_token) {
-      request.payload.confirmation_token = sanitizer.strip(request.payload.confirmation_token);
-    }
-    return reply();
-  },
-  removeImages: function(request, reply) {
+  handleImages: function(request, reply) {
     // remove images in signature
     if (request.payload.signature) {
       var $ = cheerio.load(request.payload.signature);
       $('img').remove();
-      var parsed = $.html();
-      request.payload.signature = parsed.replace(/\r\n|\r|\n/g,'<br />');
+      request.payload.signature = $.html();
     }
 
     // clear the expiration on user's avatar
     if (request.payload.avatar) {
-      var url = request.payload.avatar;
-      imageStore.clearExpiration(url);
+      imageStore.clearExpiration(request.payload.avatar);
     }
 
     return reply();

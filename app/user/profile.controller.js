@@ -34,17 +34,20 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
 
     // Edit Profile
     this.editMode = false;
-    this.openChangeUserModel = function() {
-      ctrl.editMode = true;
-      ctrl.user.signature = ctrl.user.signature.replace(/<br \/>/gi,'\r\n');
-    };
-
-    this.closeChangeUserModel = function() {
-      ctrl.user.signature = ctrl.user.signature.replace(/\r\n|\r|\n/g,'<br />');
-    };
-
     this.saveProfile = function() {
-      User.update(this.user).$promise
+      var changeProfileUser = {
+        id: ctrl.user.id,
+        username: ctrl.user.username,
+        name: ctrl.user.name,
+        email: ctrl.user.email,
+        website: ctrl.user.website,
+        btcAddress: ctrl.user.btcAddress,
+        gender: ctrl.user.gender,
+        dob: ctrl.user.dob,
+        location: ctrl.user.location,
+        language: ctrl.user.language
+      };
+      User.update(changeProfileUser).$promise
       .then(function(data) {
         ctrl.user = data;
         ctrl.editMode = false;
@@ -72,12 +75,37 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
     // Edit Avatar
     this.editAvatar = false;
     this.saveAvatar = function() {
-      User.update(this.user).$promise
+      var changeAvatarUser = {
+        id: ctrl.user.id,
+        avatar: ctrl.user.avatar,
+      };
+      User.update(changeAvatarUser).$promise
       .then(function(data) {
         ctrl.user = data;
         ctrl.displayAvatar = angular.copy(data.avatar || 'http://placehold.it/400/cccccc/&text=Avatar');
         ctrl.editAvatar = false;
-        updatePageStatus('success', 'Successfully saved profile');
+        updatePageStatus('success', 'Successfully updated avatar');
+        $timeout($anchorScroll);
+      })
+      .catch(function(err) {
+        updatePageStatus('alert', err.data.error + ': ' + err.data.message);
+        $timeout($anchorScroll);
+      });
+    };
+
+    // Edit Signature
+    this.editSignature = false;
+    this.saveSignature = function() {
+      var changeSigUser = {
+        id: ctrl.user.id,
+        raw_signature: ctrl.user.raw_signature,
+        signature: ctrl.user.signature
+      };
+      User.update(changeSigUser).$promise
+      .then(function(data) {
+        ctrl.user = data;
+        ctrl.editSignature = false;
+        updatePageStatus('success', 'Successfully updated signature');
         $timeout($anchorScroll);
       })
       .catch(function(err) {

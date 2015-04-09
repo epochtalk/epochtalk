@@ -1096,14 +1096,8 @@ input.member-select { margin: 0px; }
 .profile-boxes { padding: 10px; margin-bottom: 1.25rem; }
 .profile-stats { text-align: center; }
 .profile-stat { font-size: 26px; }
-
-/* Profile Siganture */
-.profile-update-signature {
-  height: 50px;
-  border: 1px solid #cccccc;
-  margin-bottom: 20px;
-  overflow: auto;
-}
+.profile-edit-container { padding-top: 10px; text-align: center; }
+.profile-save-container { padding-top: 20px; }
 
 // 404 --------------------------------------- //
 .error-code { font-weight: 100; font-size:200px; }
