@@ -167,7 +167,7 @@ exports.confirmAccount = {
       else { return Promise.reject(Boom.badRequest('Account Not Found')); }
     })
     .then(function(user) {
-      var tokenMatch = confirmationToken === user.confirmationToken;
+      var tokenMatch = confirmationToken === user.confirmation_token;
       if (user.confirmation_token && tokenMatch) {
         return db.users.update({ confirmation_token: null, id: user.id });
       }
