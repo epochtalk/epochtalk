@@ -1,2 +1,1 @@
 server: npm run serve
-emailer: nodemon ./node_modules/epochtalk-emailer/server.js

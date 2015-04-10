@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width"/>
+    <style type="text/css">
+      body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        background-color: #f4f4f4;
+      }
+      .header {
+        background-color: #008CBA;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 25px;
+        padding-left: 25px;
+        height: 50px;
+        vertical-align: middle;
+      }
+      .body {
+        min-width: 80%;
+        background-color: #fff;
+        border: 1px solid #dfdfdf;
+        border-collapse: collapse;;
+      }
+      .content {
+        padding: 25px;
+        padding-top: 10px;
+        color: #5e5e5e;
+      }
+      .footer {
+        background-color: #f4f4f4;
+        color: #bababa;
+        margin: 5px;
+        line-height: 30px;
+        height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <table align="center" class="body">
+      <tr>
+        <td class="header" align="left" valign="middle">
+            EpochTalk Forums
+        </td>
+      </tr>
+      <tr>
+        <td class="content" align="left" valign="top">
+          <h3>Account Recovery</h3>
+          Recover your account by visiting the link below and resetting your password:<br /><br />
+          <strong>Username</strong>: {{=it.username}}<br />
+          <strong>Password</strong>:
+          <a href="{{=it.resetUrl}}">Reset</a>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" valign="top">
+            <div class="footer">&copy; 2014 EpochTalk</div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

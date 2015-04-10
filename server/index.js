@@ -56,6 +56,8 @@ server.method(methods);
 server.register({ register: require('lout') }, defaultRegisterCb);
 
 server.start(function () {
-  server.log('debug', 'config: ' + JSON.stringify(config, undefined, 2));
+  var configCopy = config;
+  configCopy.emailer.pass = configCopy.emailer.pass.replace(/./g, '*');
+  server.log('debug', 'config: ' + JSON.stringify(configCopy, undefined, 2));
   server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
 });

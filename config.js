@@ -18,6 +18,14 @@ var config = {
   publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080/',
   privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure',
   loginRequired: parseBool(process.env.LOGIN_REQUIRED) || false,
+  emailer: {
+    sender: process.env.EMAILER_SENDER || 'info@example.com',
+    host: process.env.EMAILER_HOST || 'smtp.gmail.com',
+    port: process.env.EMAILER_PORT || 465,
+    user: process.env.EMAILER_USER || 'username',
+    pass: process.env.EMAILER_PASS || 'password',
+    secure: process.env.EMAILER_SECURE || true
+  },
   images: {
     storage: process.env.IMAGES_STORAGE || 'local',
     maxSize: process.env.IMAGES_MAX_SIZE || 10485760,
