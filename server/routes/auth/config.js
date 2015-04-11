@@ -18,10 +18,10 @@ var buildToken = function(user) {
     id: user.id,
     username: user.username,
     email: user.email
-    // token expiration
   };
+  // TODO: handle token expiration?
   // build jwt token from decodedToken and privateKey
-  return jwt.sign(decodedToken, config.privateKey);
+  return jwt.sign(decodedToken, config.privateKey, { algorithm: 'HS256' });
 };
 
 exports.login = {
@@ -63,7 +63,8 @@ exports.login = {
     })
     .then(function(user) { // build and save token
       var token = buildToken(user);
-      memDb.put(user.id, token, function(err) {
+      var key = user.id + token;
+      memDb.put(key, token, function(err) {
         if (err) { throw new Error(err); }
         var userReply = {
           token: token,
@@ -89,7 +90,9 @@ exports.logout = {
     }
 
     // delete jwt from memdown
-    memDb.del(request.auth.credentials.id, function(err) {
+    var creds = request.auth.credentials;
+    var key = creds.id + creds.token;
+    memDb.del(key, function(err) {
       if (err) { return reply(Boom.badImplementation(err)); }
       else { return reply(true); }
     });
@@ -177,7 +180,8 @@ exports.confirmAccount = {
     })
     .then(function(updatedUser) {
       var authToken = buildToken(updatedUser);
-      memDb.put(updatedUser.id, authToken, function(err) {
+      var key = updatedUser.id + authToken;
+      memDb.put(key, authToken, function(err) {
         if (err) { throw new Error(err); }
         var userReply = {
           token: authToken,

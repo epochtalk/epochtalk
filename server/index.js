@@ -1,15 +1,14 @@
 var path = require('path');
 var Hapi = require('hapi');
-var Boom = require('boom');
 var Good = require('good');
 var mkdirp = require('mkdirp');
-var jwt = require('jsonwebtoken');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
-var hapiAuthJwt = require('hapi-auth-jwt');
 var methods = require(path.normalize(__dirname + '/methods'));
+var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
 var config = require(path.normalize(__dirname + '/../config'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
+var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var server = new Hapi.Server();
 var connection = server.connection(serverOptions);
 
@@ -36,11 +35,11 @@ if (config.logEnabled) {
 }
 
 // auth via jwt
-server.register(hapiAuthJwt, function(err) {
+server.register(Auth, function(err) {
   if (err) throw err;
   var strategyOptions = {
     key: config.privateKey,
-    validateFunc: require(path.normalize(__dirname + '/jwt-validate'))
+    validateFunc: AuthValidate
   };
   server.auth.strategy('jwt', 'jwt', strategyOptions);
 });
