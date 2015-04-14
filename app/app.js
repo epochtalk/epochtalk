@@ -23,20 +23,21 @@ app.controller('BoardCtrl',         require('./board/board.controller.js'));
 app.controller('NewThreadCtrl',     require('./board/new-thread.controller.js'));
 app.controller('PostsParentCtrl',   require('./posts/parent.controller.js'));
 app.controller('PostsCtrl',         require('./posts/posts.controller.js'));
-app.controller('LayoutCtrl',        require('./layout/layout.controller.js'));
 app.controller('HeaderCtrl',        require('./layout/header.controller.js'));
 app.controller('ProfileCtrl',       require('./user/profile.controller.js'));
 app.controller('ResetCtrl',         require('./user/reset.controller.js'));
 app.controller('ConfirmCtrl',       require('./user/confirm.controller.js'));
 
 // Register Admin Page Controllers
-app.controller('AdminNavCtrl',      require('./layout/sidenav.controller.js'));
-app.controller('CategoriesCtrl',    require('./admin_categories/categories.controller.js'));
-app.controller('UsersCtrl',         require('./admin_users/users.controller.js'));
-app.controller('ModUsersCtrl',      require('./admin_moderation/users.controller.js'));
-app.controller('ModThreadsCtrl',    require('./admin_moderation/threads.controller.js'));
-app.controller('ModPostsCtrl',      require('./admin_moderation/posts.controller.js'));
-app.controller('GroupsCtrl',        require('./admin_groups/groups.controller.js'));
+app.controller('GeneralSettingsCtrl', require('./admin/settings/general.controller.js'));
+app.controller('ForumSettingsCtrl',   require('./admin/settings/forum.controller.js'));
+app.controller('CategoriesCtrl',      require('./admin/management/boards.controller.js'));
+app.controller('UsersCtrl',           require('./admin/management/users.controller.js'));
+app.controller('ModeratorsCtrl',      require('./admin/management/moderators.controller.js'));
+app.controller('AdministratorsCtrl',  require('./admin/management/administrators.controller.js'));
+app.controller('ModUsersCtrl',        require('./admin/moderation/users.controller.js'));
+app.controller('ModPostsCtrl',        require('./admin/moderation/posts.controller.js'));
+app.controller('AnalyticsCtrl',       require('./admin/analytics/analytics.controller.js'));
 
 // Register Directives
 app.directive('pagination',         require('./components/pagination/pagination.directive.js'));

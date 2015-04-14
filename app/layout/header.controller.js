@@ -30,6 +30,13 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
 
     checkUserRoles(); // Check the authenticated users roles
 
+    this.checkAdminRoute = function(route) {
+      var pathArr = $location.path().split('/');
+      pathArr.shift();
+      if (pathArr.length < 2) { return false; }
+      return pathArr[0].toLowerCase() === 'admin' && pathArr[1].toLowerCase() === route;
+    };
+
     // Login Modal
     this.user = {}; // Login form Model
     this.loginError = {}; // Holds login errors

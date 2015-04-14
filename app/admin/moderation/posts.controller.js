@@ -5,7 +5,7 @@ module.exports = ['$scope', function($scope) {
 
   this.toggles = {
     pending: false,
-    histry: false
+    history: false
   };
 
   // Placeholder reported post data

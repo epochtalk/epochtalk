@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Epochtalk</title>
   <link rel="stylesheet" href="/static/css/app.css"/>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css"/>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
   <style>
     [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
       display: none !important;
@@ -15,7 +15,7 @@
   </style>
 </head>
 
-<body class="antialiased hide-extras" ng-controller="LayoutCtrl as LayoutCtrl">
+<body class="antialiased hide-extras">
   <!-- Header -->
   <div id="header-wrap" ng-controller="HeaderCtrl as HeaderCtrl">
     <div ui-view="header" ng-cloak id="header"></div>
@@ -23,7 +23,6 @@
   </div>
 
   <!-- Main content -->
-  <div id="sidenav-wrap" ui-view="sidenav" ng-cloak></div>
   <div id="main-wrap" class="main-content">
     <div ui-view="body" ng-cloak></div>
   </div>
@@ -41,7 +40,7 @@
         :(
       </div>
       <div class="small-12 medium-8 noscript-message columns">
-        It appears you have JavaScript disabled, in order to view this forum JavaScript must be enabled.  EpochTalk Forum Software currently does not support noscript, if there is enough demand this feature may be added in the future.
+        It appears you have JavaScript disabled, in order to view this forum JavaScript must be enabled.  Epochtalk Forum Software currently does not support noscript, if there is enough demand this feature may be added in the future.
       </div>
     </div>
   </noscript>

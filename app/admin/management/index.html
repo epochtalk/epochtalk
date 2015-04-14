@@ -1,0 +1,19 @@
+<div class="content-header full-width">
+  <h2>Management</h2>
+  <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'boards'">
+    <dd class="no-select" ng-class="{'active': tab == 'boards'}">
+      <a ui-sref=".boards" ng-click="tab = 'boards'">Boards</a>
+    </dd>
+    <dd class="no-select" ng-class="{'active': tab == 'users'}">
+      <a ui-sref=".users" ng-click="tab = 'users'">Users</a>
+    </dd>
+    <dd class="no-select" ng-class="{'active': tab == 'moderators'}">
+      <a ui-sref=".moderators" ng-click="tab = 'moderators'">Moderators</a>
+    </dd>
+    <dd class="no-select" ng-class="{'active': tab == 'administrators'}">
+      <a ui-sref=".administrators" ng-click="tab = 'administrators'">Administrators</a>
+    </dd>
+  </dl>
+</div>
+
+<div ui-view="data" class="data"></div>

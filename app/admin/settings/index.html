@@ -1,0 +1,15 @@
+<div class="content-header full-width">
+  <h2>Settings</h2>
+
+    <!-- Tabs -->
+    <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'general'">
+      <dd class="no-select" ng-class="{'active': tab == 'general'}">
+        <a ui-sref=".general" ng-click="tab = 'general'">General</a>
+      </dd>
+      <dd class="no-select" ng-class="{'active': tab == 'forum'}">
+        <a ui-sref=".forum" ng-click="tab = 'forum'">Forum</a>
+      </dd>
+    </dl>
+  </div>
+
+<div ui-view="data" class="data"></div>

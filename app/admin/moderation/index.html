@@ -1,0 +1,12 @@
+<div class="content-header" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+  <h2>Moderation Queue</h2>
+  <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'users'">
+    <dd class="no-select" ng-class="{'active': tab == 'users'}">
+      <a ui-sref=".users" ng-click="tab = 'users'">Users</a>
+    </dd>
+    <dd class="no-select" ng-class="{'active': tab == 'posts'}">
+      <a ui-sref=".posts" ng-click="tab = 'posts'">Posts</a>
+    </dd>
+  </dl>
+</div>
+<div ui-view="data" class="data"></div>

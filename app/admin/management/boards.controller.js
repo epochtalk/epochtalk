@@ -2,6 +2,9 @@ var _ = require('lodash');
 
 module.exports = ['$scope', '$q', 'Boards', 'boards', 'categories',
   function($scope, $q, Boards, boards, categories) {
+    this.parent = $scope.$parent;
+    this.parent.tab = 'boards';
+
     // Initialization
     $scope.catListData = categories;
     $scope.boardListData = boards;

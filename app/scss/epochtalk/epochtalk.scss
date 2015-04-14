@@ -121,7 +121,6 @@ label > input[type="checkbox"] { margin-right: .25rem; }
 // Foundation Tool Overrides ----------------- //
 /* Magellan */
 .magellan-override { padding: 0px; background: transparent; }
-.top-bar .name h1 { font-family: 'Inconsolata'; font-size: 20px; }
 
 // Page Controls ----------------------------- //
 .page-controls {
@@ -206,7 +205,7 @@ input.icon-padding { padding-right: 40px; }
   .top-bar {
     background-color: inherit;
 
-    .name a { color: inherit; padding: 0; }
+    .logo a { color: inherit; padding-top: 20px; }
 
     .title-area { background-color: inherit; }
 
@@ -317,11 +316,53 @@ input.icon-padding { padding-right: 40px; }
 #header-wrap #header {
   .admin-header {
     background-color: $color-gray-dark;
-    .name a { color: #fff }
   }
 
   .admin-header {
     .top-bar-section {
+      .login-container { padding-right: 5px;}
+      .dropdown {
+        border: 1px solid #666;
+        border-top: none;
+        left: -1px;
+        right: -1px;
+      }
+
+      .top-bar-btn:active, .top-bar-btn, .top-bar-btn-selected, .top-bar-btn-selected:hover {
+        line-height: 25px;
+        height: auto;
+        margin-top: 4px;
+        text-align: center;
+        background-color: trasparent;
+        border-radius: 3px;
+        color: #fff;
+      }
+      .top-bar-btn:hover, .top-bar-btn-selected {
+        background-color: #555;
+        color: #fff;
+      }
+
+      .has-dropdown {
+        .avatar { margin-top: -1px; }
+        border: 1px solid transparent;
+        a { background-color: transparent; color: #fff; }
+        &:hover {
+          border-right: 1px solid #666;
+          border-left: 1px solid #666;
+        }
+
+        &:hover,
+        &:hover a,
+        .dropdown li a { background-color: $color-gray-dark; }
+      }
+
+      ul.left li {
+        padding-right:10px;
+        padding-top:6px;
+      }
+      ul.left:first-child {
+        padding-left:10px;
+      }
       ul {
         li {
           background-color: transparent;
@@ -360,10 +401,9 @@ input.icon-padding { padding-right: 40px; }
 
   .title-area {
     margin-left: 1rem;
-
-    .name {
-      height: inherit;
-      h1 { line-height: 2.6125rem; }
+    .logo {
+      padding-top: 7px;
+      color: $color-active;
     }
   }
 }
@@ -456,25 +496,19 @@ pagination {
 
 .sidebar-spacer { padding-top: 15px; }
 .has-form { min-width: 400px; }
-.admin-padding {
-  padding-left: 225px;
-  padding-top: 0;
-}
 
 /* Content */
 
 .admin-content,
 .public-content {
   .content-header {
-    // background-color: $color-gray-sub;
-    border-bottom: 1px solid $color-gray-light;
     padding: 40px 36px 20px;
-    margin-bottom: 2rem;
   }
 
   h2 {
-    color: $color-gray-med;
+    color: $color-gray-dark;
     margin-bottom: 0;
+    display: inline-block;
   }
 
   // .data {
@@ -482,16 +516,17 @@ pagination {
   // }
 
   // Moderation Queue
-  .tabs {
-    margin-top: 1rem;
-    min-width: 550px;
-    width: 65%;
+  .tabs dd {
+    top: 6px;
   }
 
   .custom-tabs {
+    display: inline-block;
+    padding-left: 25px;
     dd {
       &.active a {
         border: 1px solid $color-active;
+        border-radius: 3px;
         color: $color-active;
       }
 
