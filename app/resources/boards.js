@@ -15,7 +15,6 @@ module.exports = ['$resource',
       },
       updateCategories: {
         method: 'POST',
-        params: { categories: '@categories' },
         url: '/api/boards/categories',
         isArray: true
       }
