@@ -12,23 +12,21 @@
     <span class="label alert" ng-bind="NewThreadCtrl.error.post.message"></span>
   </div>
 
+  <div class="small-12 columns">
+    <!-- Title -->
+    <label>Title:
+      <input type="text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" required autofocus tabIndex="1">
+    </label>
+  </div>
+
   <!-- Editor -->
   <div class="small-12 columns thread-editor-container">
-    <!-- editor -->
     <form name="form" class="editor-form" novalidate>
-      <!-- Title -->
-      <label>Title:
-        <input type="text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" required autofocus tabIndex="1">
-        <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
-          Title is Required
-        </small>
-      </label>
-      <!-- New Thread Editor -->
       <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" raw-body="NewThreadCtrl.thread.raw_body" reset-switch="NewThreadCtrl.resetEditor" exit-switch="NewThreadCtrl.exitEditor" dirty="NewThreadCtrl.dirtyEditor"></epochtalk-editor tabIndex="2">
     </form>
     <!-- Editor Controls -->
     <div class="editor-button-container">
-      <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || form.title.$error.required || !NewThreadCtrl.dirtyEditor" tabIndex="3">
+      <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || !NewThreadCtrl.dirtyEditor" tabIndex="3">
         Submit
       </button>
     </div>

@@ -1017,20 +1017,21 @@ input.member-select { margin: 0px; }
   }
 
   .editor-image-uploader {
-    position: absolute;
-    top: 12px;
+    display: block;
     width: 100%;
     text-align: center;
-    padding-right: 30px;
   }
 
   .editor-images {
-    border: 2px dashed #777;
     height: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
+    width: 100%;
+    padding: 11px 10px 0px;
   }
-  .editor-images:hover { background-color: #353535; }
+  .editor-images:hover {
+    background: rgba(0,0,0,0.1);
+    border: 2px dashed #777;
+    padding-top: 9px;
+  }
 }
 .editor-form div label { margin-top: 15px; }
 .editor-form small {
