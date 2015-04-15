@@ -53,22 +53,25 @@ module.exports = {
     return reply();
   },
   parseEncodings: function(request, reply) {
+    var raw_body = request.payload.raw_body;
     // check if raw_body has any bbcode
-    if (request.payload.raw_body.indexOf('[') >= 0) {
-      // convert all &lt; and &gt; to decimal to escape the regex
+    if (raw_body.indexOf('[') >= 0) {
+      // convert all (<, &lt;) and (>, &gt;) to decimal to escape the regex
       // in the bbcode parser that'll unescape those chars
-      request.payload.raw_body = request.payload.raw_body.replace(/&gt;/g, '&#62;');
-      request.payload.raw_body = request.payload.raw_body.replace(/&lt;/g, '&#60;');
+      raw_body = raw_body.replace(/(?:<|&lt;)/g, '&#60;');
+      raw_body = raw_body.replace(/(?:>|&gt;)/g, '&#62;');
+
+      // convert all unicode characters to their numeric representation
+      // this is so we can save it to the db and present it to any encoding
+      raw_body = textToEntities(raw_body);
 
       // parse raw_body to generate body
-      var parsedBody = bbcodeParser.process({text: request.payload.raw_body}).html;
+      var parsedBody = bbcodeParser.process({text: raw_body}).html;
       request.payload.body = parsedBody;
 
       // check if parsing was needed
-      if (parsedBody === request.payload.raw_body) {
         // it wasn't need so remove raw_body
-        request.payload.raw_body = null;
-      }
+      if (parsedBody === raw_body) { request.payload.raw_body = null; }
     }
     else {
       // nothing to parse, just move raw_body to body
@@ -109,3 +112,15 @@ module.exports = {
     .catch(function(err) { return reply(err); });
   }
 };
+
+function textToEntities(text) {
+  var entities = "";
+  for (var i = 0; i < text.length; i++) {
+    if (text.charCodeAt(i) > 127) {
+      entities += "&#" + text.charCodeAt(i) + ";";
+    }
+    else { entities += text.charAt(i); }
+  }
+
+  return entities;
+}
