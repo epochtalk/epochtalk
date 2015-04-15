@@ -30,15 +30,11 @@
 
     <!-- Editor Container-->
     <div class="small-12 columns editor-container" ng-show="PostsParentCtrl.showEditor" resizeable>
+      <div class="editor-container-bar">
+        <img src="/static/img/btn-dragbar.png" />
+      </div>
       <!-- Editor -->
       <form name="form" class="editor-form" novalidate>
-        <!-- Title -->
-        <label>Title:
-          <input type="text" name="title" placeholder="Title" ng-model="PostsParentCtrl.posting.post.title" required>
-          <small class="label error" ng-if="form.title.$touched && form.title.$error.required">
-            Title is Required
-          </small>
-        </label>
         <!-- Post Editor -->
         <epochtalk-editor class="posts-editor" body="PostsParentCtrl.posting.post.body" raw-body="PostsParentCtrl.posting.post.raw_body" reset-switch="PostsParentCtrl.resetEditor" focus-switch="PostsParentCtrl.focusEditor" dirty="PostsParentCtrl.dirtyEditor" quote="PostsParentCtrl.quote">
         </epochtalk-editor>

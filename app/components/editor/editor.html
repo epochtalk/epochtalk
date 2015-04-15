@@ -9,7 +9,7 @@
 
 <div class="editor-body">
   <div class="medium-6 columns editor-column-left">
-    <div class="editor-input" contenteditable="true" scroll-lock tabindex="1"></div>
+    <textarea class="editor-input" contenteditable="true" scroll-lock tabindex="1"></textarea>
   </div>
   <div class="medium-6 columns editor-column-right">
     <div class="editor-preview" scroll-lock post-processing="body" style-fix="false"></div>
@@ -19,7 +19,7 @@
 <div class="editor-footer">
   <div class="medium-6 columns editor-images-container">
     <div class="editor-images">
-      <image-uploader purpose="editor"  on-done="insertImageUrl(data)"></image-uploader>
+      <image-uploader class="editor-image-uploader" purpose="editor"  on-done="insertImageUrl(data)"></image-uploader>
     </div>
   </div>
 </div>

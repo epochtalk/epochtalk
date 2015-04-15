@@ -3,15 +3,14 @@ To upload a image, drag and drop them here or
 <input type="file" accept="image/*" style="display: none;">
 
 <div ng-if="images.length > 0 && purpose === 'avatar'" class="profile-avatar-container">
-  <br />
   <img ng-src="{{images[0].url}}" />
 </div>
 
-<div ng-if="images.length > 0 && purpose === 'editor'">
-  <a ng-click="openImageModal()">
+<span ng-if="images.length > 0 && purpose === 'editor'">
+  (<a ng-click="openImageModal()">
     <span ng-bind="images.length"></span> images uploaded
-  </a>
-</div>
+  </a>)
+</span>
 
 <!-- Image Modal -->
 <modal class="medium" show="imageModal">

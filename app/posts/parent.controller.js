@@ -88,15 +88,14 @@ module.exports = [
       $timeout(function() {
         var post = ctrl.posts && ctrl.posts[index] || '';
         if (post) {
-          var newQuote = '[quote author=';
-          newQuote += post.user.username;
-          newQuote += ' link=';
-          newQuote += '/threads/' + ctrl.thread_id + '/posts?page=' + ctrl.page + '#' + post.id;
-          newQuote += ' date=' + new Date(post.created_at).getTime();
-          newQuote += ']';
-          newQuote += post.raw_body || post.body;
-          newQuote += '[/quote]';
-          ctrl.quote = newQuote;
+          ctrl.quote = {
+            username: post.user.username,
+            threadId: ctrl.thread_id,
+            page: ctrl.page,
+            postId: post.id,
+            createdAt: new Date(post.created_at).getTime(),
+            body: post.raw_body || post.body
+          };
         }
       }, timeDuration);
     };

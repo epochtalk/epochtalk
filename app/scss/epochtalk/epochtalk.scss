@@ -843,6 +843,7 @@ input.member-select { margin: 0px; }
 
 .post-body {
   margin-bottom: 1.2rem;
+  white-space: pre-wrap;
   word-wrap: break-word;
   overflow-wrap: break-word; }
 .post-body img.loaded { opacity: 1; }
@@ -926,21 +927,20 @@ input.member-select { margin: 0px; }
   position: relative;
   padding-top: 20px;
   min-height: 288px;
-
-  &:after {
-    content: url('/static/img/btn-dragbar.png');
-    display: block;
-    position: relative;
-    text-align: center;
-    top: -28px;
-    width: 100%;
-  }
+}
+.editor-container-bar {
+  display: block;
+  position: relative;
+  text-align: center;
+  top: -28px;
+  width: 100%;
+  height: 10px;
 }
 
 .editor-form {
   position: absolute;
-  top: 20px;
-  bottom: 0px;
+  top: 0;
+  bottom: 0;
   left: 0.9375rem;
   right: 0.9375rem;
 
@@ -961,6 +961,7 @@ input.member-select { margin: 0px; }
       background-color: #fff;
       border: 1px solid $color-gray-med;
       padding: 0.5rem;
+      resize: none;
 
       &:focus {
         outline: 1px solid $color-active;
@@ -977,7 +978,7 @@ input.member-select { margin: 0px; }
   }
 
   .editor-input {
-    white-space: pre;
+    white-space: pre-wrap;
     overflow: auto;
     height: 100%;
 
@@ -989,7 +990,7 @@ input.member-select { margin: 0px; }
   }
 
   .editor-preview {
-    white-space: pre;
+    white-space: pre-wrap;
     overflow: auto;
     height: 100%;
     word-wrap: break-word;
@@ -1015,6 +1016,14 @@ input.member-select { margin: 0px; }
     padding-right: 5px;
   }
 
+  .editor-image-uploader {
+    position: absolute;
+    top: 12px;
+    width: 100%;
+    text-align: center;
+    padding-right: 30px;
+  }
+
   .editor-images {
     border: 2px dashed #777;
     height: 100%;
@@ -1023,7 +1032,7 @@ input.member-select { margin: 0px; }
   }
   .editor-images:hover { background-color: #353535; }
 }
-.editor-form div label { margin-top: 20px; }
+.editor-form div label { margin-top: 15px; }
 .editor-form small {
   display: block;
   line-height: 1;
@@ -1032,13 +1041,13 @@ input.member-select { margin: 0px; }
   margin: 0; }
 .posts-editor {
   position: absolute;
-  top: 58px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px; }
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
 .editor-button-container {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   right: 0.9375rem;
   height: 53px;
   text-align: right;

@@ -49,49 +49,19 @@ module.exports = [
 
       $scope.insertImageUrl = function(url) {
         editor.focus();
-        var sel = $window.getSelection();
-        var range = sel.getRangeAt(0);
-        range.collapse(false);
-        var text = '[img]' + url + '[/img]';
-        range.insertNode( $document[0].createTextNode(text) );
+        var inserted = $editor.val() + '[img]' + url + '[/img]';
+        $editor.val(inserted);
         editor.blur();
       };
 
       // -- Editor
 
-      // converts encoded unicode into numeric representation
-      function textToEntities(text) {
-        var entities = "";
-        for (var i = 0; i < text.length; i++) {
-          if (text.charCodeAt(i) > 127) {
-            entities += "&#" + text.charCodeAt(i) + ";";
-          }
-          else { entities += text.charAt(i); }
-        }
-
-        return entities;
-      }
-
       function parseInput() {
-        // get raw user input
-        var rawText = $editor.html();
-        // at this point, special characters are escaped: < > &
-
-        // replaces &, <, >
-        rawText = rawText.replace(/&amp;/g, '&');
-        rawText = rawText.replace(/&gt;/g, '&#62;');
-        rawText = rawText.replace(/&lt;/g, '&#60;');
-
-        // convert all unicode characters to their numeric representation
-        // this is so we can save it to the db and present it to any encoding
-        rawText = textToEntities(rawText);
-
-        // parse bbcode and bind to preview
+        // BBCode Parsing
+        var rawText = $editor.val();
+        rawText = rawText.replace(/(?:<|&lt;)/g, '&#60;'); // prevent html
+        rawText = rawText.replace(/(?:>|&gt;)/g, '&#62;');
         var processed = bbcodeParser.process({text: rawText}).html;
-
-        // medium always leaves input dirty even if there's no input
-        // this will clean it
-        if ($editor.text().length === 0) { rawText = ''; }
 
         // re-bind to scope
         $scope.body = processed;
@@ -117,9 +87,7 @@ module.exports = [
 
       var confirmMessage = 'It looks like a post is being written.';
       var exitFunction = function() {
-        if ($scope.dirty) {
-          return confirmMessage;
-        }
+        if ($scope.dirty) { return confirmMessage; }
       };
       $window.onbeforeunload = exitFunction;
 
@@ -141,11 +109,11 @@ module.exports = [
       var initEditor = function() {
         // on load ng-model body to editor and preview
         if ($scope.rawBody && $scope.rawBody.length > 0) {
-          $editor.html($scope.rawBody);
+          $editor.val($scope.rawBody);
           $scope.originalText = $scope.rawBody;
         }
         else {
-          $editor.html($scope.body);
+          $editor.val($scope.body);
           $scope.originalText = $scope.body;
           $scope.rawBody = $scope.body;
         }
@@ -154,28 +122,15 @@ module.exports = [
 
       $scope.insertQuote = function(newQuote) {
         editor.focus();
-        var sel = $window.getSelection();
-        if (sel.getRangeAt && sel.rangeCount) {
-          var range = sel.getRangeAt(0);
-
-          var el = $document[0].createElement('div');
-          el.innerHTML = newQuote;
-          var frag = $document[0].createDocumentFragment(), node, lastNode;
-          while ( (node = el.firstChild) ) {
-            lastNode = frag.appendChild(node);
-          }
-          range.insertNode(frag);
-          if (lastNode) {
-            range = range.cloneRange();
-            range.setStartAfter(lastNode);
-            range.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(range);
-          }
-
-          $scope.quote = '';
-          editor.blur();
-        }
+        var quote = '[quote author=' + newQuote.username;
+        quote += ' link=';
+        quote += '/threads/' + newQuote.threadId + '/posts?page=' + newQuote.page + '#' + newQuote.postId;
+        quote += ' date=' + newQuote.createdAt + ']';
+        quote += newQuote.body;
+        quote += '[/quote]';
+        $editor.val($editor.val() + quote);
+        $scope.quote = '';
+        editor.blur();
       };
 
       // resets the editor
@@ -187,15 +142,7 @@ module.exports = [
 
       // focus input on editor element
       $scope.focusEditor = function() {
-        $timeout(function() {
-          var range = $document[0].createRange();
-          range.selectNodeContents(editor);
-          range.collapse(false);
-          var sel = $window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-          editor.focus();
-        }, 10);
+        $timeout(function() { editor.focus(); }, 10);
         $scope.focusSwitch = false;
       };
 
