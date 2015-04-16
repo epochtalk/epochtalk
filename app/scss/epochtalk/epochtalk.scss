@@ -121,6 +121,7 @@ label > input[type="checkbox"] { margin-right: .25rem; }
 // Foundation Tool Overrides ----------------- //
 /* Magellan */
 .magellan-override { padding: 0px; background: transparent; }
+.top-bar .name h1 { font-family: 'Inconsolata'; font-size: 20px; }
 
 // Page Controls ----------------------------- //
 .page-controls {
@@ -205,6 +206,7 @@ input.icon-padding { padding-right: 40px; }
   .top-bar {
     background-color: inherit;
 
+    .name a { color: inherit; padding: 0; }
     .logo a { color: inherit; padding-top: 20px; }
 
     .title-area { background-color: inherit; }
