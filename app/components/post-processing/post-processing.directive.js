@@ -95,12 +95,12 @@ module.exports = ['$timeout', '$filter', '$compile', '$parse', function($timeout
         var doStyleFix = $scope.styleFix;
 
         // autoDate and autoLink
-        processed = processed.replace(autoDateRegex, autoDate) || postBody;
-        processed = processed.replace(autoLinkRegex, autoLink) || postBody;
+        processed = processed.replace(autoDateRegex, autoDate) || processed;
+        processed = processed.replace(autoLinkRegex, autoLink) || processed;
 
         // styleFix
         if (doStyleFix) {
-          processed = processed.replace(styleFixRegex, styleFix) || postBody;
+          processed = processed.replace(styleFixRegex, styleFix) || processed;
         }
 
         // dump html into element
