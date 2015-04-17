@@ -62,12 +62,6 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
     this.recoverBtnLabel = 'Recover'; // The label for the 'Recover' button
 
     // Login Modal Methods
-    this.enterLogin = function(keyEvent) {
-      if (keyEvent.which === 13 && ctrl.user.username.length && ctrl.user.password.length) {
-        ctrl.login();
-      }
-    };
-
     this.openLoginModal = function() {
       ctrl.showLogin = true;
       ctrl.loginModalVisible = true; // modal is in view
@@ -89,6 +83,7 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
     };
 
     this.login = function() {
+      if (ctrl.user.username.length === 0 || ctrl.user.password.length === 0) { return; }
       ctrl.loginError = {};
       Auth.login(ctrl.user,
         function() {

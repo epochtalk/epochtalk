@@ -5,8 +5,8 @@
       <div class="error-container">
         <div class="" ng-if="HeaderCtrl.loginError.status" ng-bind="HeaderCtrl.loginError.message"></div>
       </div>
-      <input type="text" placeholder="Username" ng-keyup="HeaderCtrl.enterLogin($event)" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.loginModalVisible" auto-focus required>
-      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-keyup="HeaderCtrl.enterLogin($event)" ng-if="HeaderCtrl.loginModalVisible" required>
+      <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.loginModalVisible" auto-focus required>
+      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-if="HeaderCtrl.loginModalVisible" required>
       <div class="form-login-remember">
         <label><input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">Remember Me</label>
       </div>
