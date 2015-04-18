@@ -14,6 +14,7 @@ module.exports = [
     link: function($scope, $element, $attrs) {
       // directive initialization
       $scope.images = [];
+      $scope.model = $scope.model || '';
       var inputElement = $element.find('input')[0];
       $scope.openImagePicker = function() { inputElement.click(); };
 
@@ -58,7 +59,7 @@ module.exports = [
               imageProgress.status = 'Complete';
               imageProgress.url = url;
               if ($scope.onDone) { $scope.onDone({data: url}); }
-              if ($scope.model) { $scope.model = url; }
+              if ($scope.purpose === 'avatar') { $scope.model = url; }
             });
           })
           .catch(function() {
