@@ -1160,8 +1160,53 @@ input.member-select { margin: 0px; }
 .sad-face { font-size:300px; }
 .noscript-message { margin-top: 200px; font-size: 20px; }
 
+// Admin Settings ------------------------------ //
+.column-padding-fix { padding-left: 0px; padding-right:0px; }
+.column-spacing-fix { padding-right: 25px; }
+.section-header-top-spacing { padding-top: 35px; clear: both; }
+span.postfix-custom { background: #fff; }
+.input-btn-container { position: relative; }
+input[type].nested-btn-input { padding-right: 146px; }
+.upload-input-btn {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  display: inline-block;
+  width: 140px;
+  height: 29px;
+  line-height: 12px;
+  border-radius: 2px;
+  font-size: 13px;
+  z-index:9999;
+  pointer-events: none;
+  background: $color-active-fill;
+}
+.file-upload {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+  display: inline-block;
+}
+.admin-btn {
+  background: $color-active-fill;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.desc-label { color: #BBBBBB; }
+
 // Media Queries
+// Medium
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  .column-spacing-fix { padding-right: 0px; }
+}
+//Small
 @media only screen and (max-width: 40em) {
+  .column-spacing-fix { padding-right: 0px; }
   .post-user {
     margin-bottom: .5rem;
 
