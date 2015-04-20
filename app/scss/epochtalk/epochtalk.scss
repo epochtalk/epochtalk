@@ -1282,6 +1282,7 @@ input[type].nested-input { padding-right: 146px; }
 
 // Admin - General Settings ------------------ //
 .column-padding-fix { padding-left: 0px; padding-right:0px; }
+.column-padding-top, .column-btn-padding-top { padding-top: 15px; }
 .column-spacing-fix { padding-right: 25px; }
 .section-header-top-spacing { padding-top: 35px; clear: both; }
 span.postfix-custom { background: #fff; }
@@ -1296,12 +1297,28 @@ span.postfix-custom { background: #fff; }
 }
 .admin-btn {
   background: $color-active-fill;
-  display: inline-block;
+  display: block;
   width: 100%;
-  height: 100%;
+  margin-top: 6px;
+  height: 33px;
   border-radius: 2px;
   font-size: 13px;
+  text-align: center;
+  color: white;
+  line-height: 33px;
+  -webkit-transition: background 0.2s linear;
+  -moz-transition: background 0.2s linear;
+  -ms-transition: background 0.2s linear;
+  -o-transition: background 0.2s linear;
+  transition: background 0.2s linear;
 }
+.admin-btn:hover,
+.admin-btn:focus {
+  background-color: $color-active-dark;
+  border-color: $color-active-dark;
+  color: #fff;
+}
+
 .desc-label { color: #BBBBBB; }
 input[type].hide-radio {
   display: none;
@@ -1328,10 +1345,12 @@ input[type].hide-radio {
 // Medium
 @media only screen and (min-width: 40.063em) and (max-width: 64em) {
   .column-spacing-fix { padding-right: 0px; }
+  .column-btn-padding-top { padding-top: 0px; }
 }
 //Small
 @media only screen and (max-width: 40em) {
   .column-spacing-fix { padding-right: 0px; }
+  .column-btn-padding-top { padding-top: 0px; }
   .post-user {
     margin-bottom: .5rem;
 
