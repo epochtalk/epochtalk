@@ -68,8 +68,10 @@ exports.login = {
         if (err) { throw new Error(err); }
         var userReply = {
           token: token,
+          id: user.id,
           username: user.username,
-          userId: user.id
+          avatar: user.avatar,
+          roles: user.roles
         };
         return reply(userReply);
       });
@@ -185,8 +187,9 @@ exports.confirmAccount = {
         if (err) { throw new Error(err); }
         var userReply = {
           token: authToken,
+          id: updatedUser.id,
           username: updatedUser.username,
-          userId: updatedUser.id
+          roles: updatedUser.roles
         };
         reply(userReply);
       });
@@ -198,16 +201,25 @@ exports.confirmAccount = {
   }
 };
 
-exports.isAuthenticated = {
+exports.authenticate = {
   auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
-      return reply({ authenticated: true });
+      var username = request.auth.credentials.username;
+      return db.users.userByUsername(username)
+      .then(function(user) {
+        var retUser = {
+          id: user.id,
+          username: user.username,
+          roles: user.roles,
+          avatar: user.avatar
+        };
+        return reply(retUser);
+      })
+      .catch(function() { return reply(Boom.unauthorized()); });
     }
-    else {
-      reply({ authenticated: false }).header('Authorization', 'Revoked');
-    }
+    else { return reply(Boom.unauthorized()); }
   }
 };
 

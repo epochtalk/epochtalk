@@ -1,5 +1,5 @@
-module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$anchorScroll',
-  function(user, User, Auth, $location, $timeout, $filter, $anchorScroll) {
+module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter', '$anchorScroll',
+  function(user, User, Session, $location, $timeout, $filter, $anchorScroll) {
     var ctrl = this;
     $timeout($anchorScroll);
     this.user = user;
@@ -60,7 +60,7 @@ module.exports = ['user', 'User', 'Auth', '$location', '$timeout', '$filter', '$
         if (ctrl.displayUsername !== ctrl.user.username) {
           $location.search('success', true);
           $location.path('/profiles/' + ctrl.user.username);
-          Auth.setUsername(ctrl.user.username);
+          Session.setUsername(ctrl.user.username);
         }
 
         updatePageStatus('success', 'Successfully saved profile');

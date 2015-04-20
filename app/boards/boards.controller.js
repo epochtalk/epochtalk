@@ -9,9 +9,7 @@ module.exports = ['$timeout', '$anchorScroll', 'boards',
     var sortedCats = _.sortBy(boards, function(cat) { return cat.view_order; });
     this.categorizedBoards = sortedCats;
     var i = 0;
-    sortedCats.forEach(function() {
-      ctrl.toggles[i++] = false;
-    });
+    sortedCats.forEach(function() { ctrl.toggles[i++] = false; });
     $timeout($anchorScroll);
 
     this.toggle = function(index){

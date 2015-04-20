@@ -2,102 +2,11 @@
 /* jslint node: true */
 /* global angular */
 
-module.exports = ['$location', '$window', 'User',
-  function($location, $window, User) {
-    // private storage fallback for safari private browser
-    $window.privateStorage = {};
-    var hasLocalStorage = checkLocalStorage();
-    var hasSessionStorage = checkSessionStorage();
-
-    function checkLocalStorage() {
-      var testKey = 'test';
-      var storage = $window.localStorage;
-      try {
-        storage.setItem(testKey, '1');
-        storage.removeItem(testKey);
-        return true;
-      }
-      catch (error) { return false; }
-    }
-
-    function checkSessionStorage() {
-      var testKey = 'test';
-      var storage = $window.sessionStorage;
-      try {
-        storage.setItem(testKey, '1');
-        storage.removeItem(testKey);
-        return true;
-      }
-      catch (error) { return false; }
-    }
-
-    var getUsername = function() {
-      var username;
-      if ($window.sessionStorage.username) {
-        username = $window.sessionStorage.username;
-      }
-      else if ($window.localStorage.username) {
-        username = $window.localStorage.username;
-      }
-      else if ($window.privateStorage.username) {
-        username = $window.privateStorage.username;
-      }
-      return username;
-    };
-
-    var setUsername = function(username) {
-      if ($window.sessionStorage.username) {
-        $window.sessionStorage.username = username;
-      }
-      else if ($window.localStorage.username) {
-        $window.localStorage.username = username;
-      }
-      else if ($window.privateStorage.username) {
-        $window.privateStorage.username = username;
-      }
-    };
-
-    var clearUser = function() {
-      delete $window.sessionStorage.token;
-      delete $window.sessionStorage.username;
-      delete $window.sessionStorage.userId;
-      delete $window.localStorage.token;
-      delete $window.localStorage.username;
-      delete $window.localStorage.userId;
-      delete $window.privateStorage.token;
-      delete $window.privateStorage.username;
-      delete $window.privateStorage.userId;
-    };
-
-    var saveUserLocal = function(resource) {
-      if (hasLocalStorage) {
-        $window.localStorage.token = resource.token;
-        $window.localStorage.username = resource.username;
-        $window.localStorage.userId = resource.userId;
-      }
-      else {
-        $window.privateStorage.token = resource.token;
-        $window.privateStorage.username = resource.username;
-        $window.privateStorage.userId = resource.userId;
-      }
-    };
-
-    var saveUserSession = function(resource) {
-      if (hasSessionStorage) {
-        $window.sessionStorage.token = resource.token;
-        $window.sessionStorage.username = resource.username;
-        $window.sessionStorage.userId = resource.userId;
-      }
-      else {
-        $window.privateStorage.token = resource.token;
-        $window.privateStorage.username = resource.username;
-        $window.privateStorage.userId = resource.userId;
-      }
-    };
-
-    return {
+module.exports = ['$window', 'User', 'Session',
+  function($window, User, Session) {
+    // Service API
+    var serviceAPI = {
       register: function(user, callback, error) {
-        // Register passthrough
         User.register(user, callback, error);
       },
 
@@ -109,117 +18,30 @@ module.exports = ['$location', '$window', 'User',
         userCopy.username = user.username;
         userCopy.password = user.password;
 
-        User.login(userCopy, callback, error).$promise
-        .then(function(resource) {
-          if (rememberMe) { saveUserLocal(resource); }
-          else { saveUserSession(resource); }
-        })
-        .catch(function(err) { clearUser(); });
+        User.login(userCopy).$promise
+        .then(function(resource) { Session.setUser(resource, rememberMe); })
+        .then(callback)
+        .catch(function(err) {
+          Session.clearUser();
+          error();
+        });
       },
 
       logout: function(callback, error) {
         User.logout(null, callback, error).$promise
-        .then(function() { clearUser(); });
+        .then(function() { Session.clearUser(); });
       },
 
-      checkAuthentication: function() { User.ping(); },
-
-      isAuthenticated: function() {
-        var authenticated = false;
-        if ($window.sessionStorage.token ||
-            $window.localStorage.token ||
-            $window.privateStorage.token) {
-          authenticated = true;
+      authenticate: function() {
+        if (Session.getToken()) {
+          User.ping().$promise
+          .then(function(user) { Session.setUser(user); })
+          .catch(function(err) { Session.clearUser(); });
         }
-        return authenticated;
-      },
-
-      getRoles: function() {
-        return User.get({ id: getUsername() }).$promise
-        .then(function(user) { return user.roles || []; });
-      },
-
-      getUsername: getUsername,
-      setUsername: setUsername,
-
-      checkAdmin: function() {
-        return User.get({ id: getUsername() }).$promise
-        .then(function(user) {
-          user.roles = user.roles || [];
-          var isAdmin = false;
-          user.roles.forEach(function(role) {
-            if (role.name === 'Administrator') { isAdmin = true; }
-          });
-          return isAdmin;
-        })
-        .catch(function() { return false; });
-      },
-
-      checkModerator: function() {
-        return User.get({ id: getUsername() }).$promise
-        .then(function(user) {
-          user.roles = user.roles || [];
-          var isMod = false;
-          user.roles.forEach(function(role) {
-            if (role.name === 'Administrator' || role.name === 'Moderator' || role.name === 'Global Moderator') {
-             isMod = true;
-           }
-          });
-          return isMod;
-        })
-        .catch(function() { return false; });
-      },
-
-      checkUsername: function(username, callback, error) {
-        User.checkUsername({ username: username }, callback, error);
-      },
-
-      checkEmail: function(email, callback, error) {
-        User.checkEmail({ email: email }, callback, error);
-      },
-
-      confirmAccount: function(user, callback, error) {
-        User.confirmAccount(user, callback, error).$promise
-        .then(function(resource) { saveUserSession(resource); });
-      },
-
-      resetPassword: function(params, callback, error) {
-        User.resetPassword(params, callback, error);
-      },
-
-      recoverAccount: function(params, callback, error) {
-        User.recoverAccount(params, callback, error);
-      },
-
-      checkResetToken: function(params, callback, error) {
-        User.checkResetToken(params, callback, error);
       }
-      // changePassword: function(email, oldPassword, newPassword, callback) {
-      //   var cb = callback || angular.noop;
-      //   User.update({
-      //     email: email,
-      //     oldPassword: oldPassword,
-      //     newPassword: newPassword
-      //   }, function(user) {
-      //       console.log('password changed');
-      //       return cb();
-      //   }, function(err) {
-      //       return cb(err.data);
-      //   });
-      // }
-
-      // removeUser: function(email, password, callback) {
-      //   var cb = callback || angular.noop;
-      //   User.delete({
-      //     email: email,
-      //     password: password
-      //   }, function(user) {
-      //       console.log(user + 'removed');
-      //       return cb();
-      //   }, function(err) {
-      //       return cb(err.data);
-      //   });
-      // }
     };
+
+    serviceAPI.authenticate();
+    return serviceAPI;
   }
 ];

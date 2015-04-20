@@ -1,5 +1,5 @@
-module.exports = ['Auth', '$q', '$timeout',
-  function(Auth, $q, $timeout) {
+module.exports = ['User', '$q', '$timeout',
+  function(User, $q, $timeout) {
     return {
       require: 'ngModel',
       link: function(scope, elm, attrs, ctrl) {
@@ -16,11 +16,11 @@ module.exports = ['Auth', '$q', '$timeout',
             if (originalEmail === modelValue) {
               return $q.when();
             }
-            
+
             var def = $q.defer();
 
             // check against the backend to see if available
-            Auth.checkEmail(modelValue,
+            User.checkEmail({email: modelValue},
               function(result) {
                 if (result.found) { def.reject(); }
                 else { def.resolve(); }

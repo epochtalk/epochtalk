@@ -17,14 +17,6 @@
         <section class="top-bar-section">
           <!-- Right Nav Section -->
           <ul ng-if="!HeaderCtrl.loggedIn()" class="right login-container">
-            <!-- <li class="search">
-              <form action="" class="search">
-                <div class="form-group">
-                  <input type="text" name="search" placeholder="Search">
-                  <label for="search" class="icon-epoch-search"></label>
-                </div>
-              </form>
-            </li> -->
             <li>
               <a ng-click="HeaderCtrl.openRegisterModal()">Register</a>
             </li>
@@ -44,35 +36,48 @@
               </form>
             </li>
             <li class="has-dropdown">
-              <div><img src="/static/img/36x36-av.gif" alt="" class="avatar">
-              <a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}" ng-bind-html="HeaderCtrl.currentUsername()"></a></div>
+              <div>
+                <img ng-src="{{ HeaderCtrl.currentUser.avatar }}" class="avatar">
+                <a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}" ng-bind-html="HeaderCtrl.currentUser.username"></a>
+              </div>
               <ul class="dropdown">
-                <li ng-if="HeaderCtrl.currentUserIsAdmin"><a ng-href="/admin">Admin Panel</a></li>
-                <li ng-if="HeaderCtrl.currentUserIsMod"><a ng-href="/moderate">Mod Panel</a></li>
-                <li><a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}">Profile</a></li>
-                <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
+                <li ng-if="HeaderCtrl.currentUser.isAdmin">
+                  <a ng-href="/admin">Admin Panel</a>
+                </li>
+                <li ng-if="HeaderCtrl.currentUser.isMod">
+                  <a ng-href="/moderate">Mod Panel</a>
+                </li>
+                <li>
+                  <a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}">Profile</a>
+                </li>
+                <li>
+                  <a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a>
+                </li>
               </ul>
             </li>
           </ul>
+
           <!-- User menu on small sized screens -->
           <ul ng-if="HeaderCtrl.loggedIn()" class="right show-for-small-only">
-            <!-- <li class="search">
-              <form action="" class="search">
-                <div class="form-group">
-                  <input type="text" name="search" placeholder="Search">
-                  <label for="search" class="icon-epoch-search"></label>
-                </div>
-              </form>
-            </li> -->
             <li>
-              <div><img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="" class="avatar">
-              <a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}" ng-bind-html="HeaderCtrl.currentUsername()"></a></div>
+              <div>
+                <img ng-src="{{ HeaderCtrl.currentUser.avatar }}" alt="" class="avatar">
+                <a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}" ng-bind-html="HeaderCtrl.currentUser.username"></a>
+              </div>
             </li>
             </li>
-            <li ng-if="HeaderCtrl.currentUserIsAdmin"><a ng-href="/admin">Admin Panel</a></li>
-            <li ng-if="HeaderCtrl.currentUserIsMod"><a ng-href="/moderate">Mod Panel</a></li>
-            <li><a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}">Profile</a></li>
-            <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
+            <li ng-if="HeaderCtrl.currentUser.isAdmin">
+              <a ng-href="/admin">Admin Panel</a>
+            </li>
+            <li ng-if="HeaderCtrl.currentUser.isMod">
+              <a ng-href="/moderate">Mod Panel</a>
+            </li>
+            <li>
+              <a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}">Profile</a>
+            </li>
+            <li>
+              <a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a>
+            </li>
           </ul>
         </section>
       </nav>

@@ -1,7 +1,7 @@
-module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Auth', 'Boards', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
-  function($rootScope, $scope, $anchorScroll, $location, $timeout, Auth, Boards, Threads, board, threads, page, threadLimit, postLimit) {
+module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Session', 'Boards', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
+  function($rootScope, $scope, $anchorScroll, $location, $timeout, Session, Boards, Threads, board, threads, page, threadLimit, postLimit) {
     var ctrl = this;
-    this.loggedIn = Auth.isAuthenticated; // check Auth
+    this.loggedIn = Session.isAuthenticated; // check Auth
     this.board = board;
     this.page = page; // this page
     this.postLimit = postLimit;
@@ -9,7 +9,7 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     this.threads = threads;
 
     this.parent = $scope.$parent.BoardWrapperCtrl;
-    this.parent.loggedIn = Auth.isAuthenticated;
+    this.parent.loggedIn = Session.isAuthenticated;
     this.parent.board  = board;
     this.parent.page = page;
     this.parent.pageCount = Math.ceil(board.thread_count / threadLimit);

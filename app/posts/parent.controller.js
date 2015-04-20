@@ -1,8 +1,8 @@
 module.exports = [
-  '$scope', '$timeout', '$location', 'Auth', 'Posts',
-  function($scope, $timeout, $location, Auth, Posts) {
+  '$scope', '$timeout', '$location', 'Session', 'Posts',
+  function($scope, $timeout, $location, Session, Posts) {
     var ctrl = this;
-    this.loggedIn = Auth.isAuthenticated;
+    this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
     this.resetEditor = false;
     this.showEditor = false;

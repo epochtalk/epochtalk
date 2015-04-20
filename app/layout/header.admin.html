@@ -25,11 +25,11 @@
         <a href="/">Back to Forum</a>
       </li>
       <li class="has-dropdown">
-        <div><img src="/static/img/36x36-av.gif" alt="" class="avatar">
-        <a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}" ng-bind-html="HeaderCtrl.currentUsername()"></a></div>
+        <div><img ng-src="{{ HeaderCtrl.currentUser.avatar }}" class="avatar">
+        <a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}" ng-bind-html="HeaderCtrl.currentUser.username"></a></div>
         <ul class="dropdown">
-          <li ng-if="HeaderCtrl.currentUserIsMod"><a ng-href="/moderate">Mod Panel</a></li>
-          <li><a ng-href="/profiles/{{ HeaderCtrl.currentUsername() }}">Profile</a></li>
+          <li ng-if="HeaderCtrl.currentUser.isMod"><a ng-href="/moderate">Mod Panel</a></li>
+          <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}">Profile</a></li>
           <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
         </ul>
       </li>

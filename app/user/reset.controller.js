@@ -1,4 +1,4 @@
-module.exports = ['$location', '$timeout', '$stateParams', 'Auth', function($location, $timeout, $stateParams, Auth) {
+module.exports = ['$location', '$timeout', '$stateParams', 'User', 'Auth', function($location, $timeout, $stateParams, User, Auth) {
   var ctrl = this;
   this.updatedUser = {};
   this.tokenExpired = false;
@@ -10,7 +10,7 @@ module.exports = ['$location', '$timeout', '$stateParams', 'Auth', function($loc
     token: $stateParams.token
   };
 
-  Auth.checkResetToken(params, function(res) {
+  User.checkResetToken(params, function(res) {
     ctrl.tokenExpired = res.token_expired;
     ctrl.tokenValid = res.token_valid;
     if (!ctrl.tokenValid) {
@@ -31,7 +31,7 @@ module.exports = ['$location', '$timeout', '$stateParams', 'Auth', function($loc
       confirmation: ctrl.updatedUser.confirmation,
       token: $stateParams.token
     };
-    Auth.resetPassword(user, function() { // success
+    User.resetPassword(user, function() { // success
       ctrl.updatedUser = {};
       ctrl.status = {};
       ctrl.status.message = 'Successfully reset account password, you will be redirected shortly.';

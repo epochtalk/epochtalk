@@ -3,4 +3,5 @@ angular.module('ept')
   .factory('AuthInterceptor', require('./authInterceptor.js'))
   .factory('BreadcrumbSvc', require('./breadcrumbs.js'))
   .factory('ViewInterceptor', require('./viewInterceptor.js'))
-  .factory('S3ImageUpload', require('./s3ImageUpload.js'));
+  .factory('S3ImageUpload', require('./s3ImageUpload.js'))
+  .factory('Session', require('./session.js'));

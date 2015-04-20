@@ -34,7 +34,7 @@ module.exports = ['$resource',
       },
       ping: {
         method: 'GET',
-        url: '/api/authenticated'
+        url: '/api/authenticate'
       },
       checkUsername: {
         method: 'GET',

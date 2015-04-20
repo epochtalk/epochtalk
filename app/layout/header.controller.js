@@ -1,34 +1,9 @@
-module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
-  function($state, $location, $timeout, Auth, BreadcrumbSvc) {
+module.exports = ['$state', '$stateParams', '$location', '$timeout', 'Auth', 'Session', 'User', 'BreadcrumbSvc',
+  function($state, $stateParams, $location, $timeout, Auth, Session, User, BreadcrumbSvc) {
     var ctrl = this;
-    this.loggedIn = Auth.isAuthenticated;
-    this.currentUserIsAdmin = false;
-    this.currentUserIsMod = false;
-    this.currentUsername = Auth.getUsername;
+    this.currentUser = Session.user;
+    this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
-    Auth.checkAuthentication();
-
-    // Used to determine if user is an admin or mod for displaying
-    // extra menu items for mod/admin panels
-    var checkUserRoles = function() {
-      ctrl.currentUserIsAdmin = false;
-      ctrl.currentUserIsMod = false;
-      Auth.getRoles()
-      .then(function(roles) {
-        roles.forEach(function(role) {
-          // This may change in the future, for now this method looks if the user
-          // is and admin or mod by doing a string comparison to the users role names
-          if (role.name === 'Moderator' || role.name === 'Global Moderator') {
-            ctrl.currentUserIsMod = true;
-          }
-          else if (role.name === 'Administrator') {
-            ctrl.currentUserIsAdmin = true;
-          }
-        });
-      });
-    };
-
-    checkUserRoles(); // Check the authenticated users roles
 
     this.checkAdminRoute = function(route) {
       var pathArr = $location.path().split('/');
@@ -67,9 +42,7 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
       ctrl.loginModalVisible = true; // modal is in view
     };
 
-    this.closeLoginModal = function() {
-      ctrl.showLogin = false;
-    };
+    this.closeLoginModal = function() { ctrl.showLogin = false; };
 
     this.clearLoginFields = function() {
       // Delay clearing fields to hide clear from users
@@ -89,8 +62,12 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
         function() {
           ctrl.closeLoginModal();
           ctrl.clearLoginFields();
-          checkUserRoles();
-          $timeout(function() { $state.go('.', $location.search(), { reload: true }); });
+          $timeout(function() {
+            // hack to get drop down to work in nested view pages
+            // the proper fix would be to put the dropdown in a directive
+            $(document).foundation('topbar', 'reflow');
+            $state.go($state.current, $stateParams, { reload: true });
+          }, 10);
         },
         function(err) {
           ctrl.loginError.status = true;
@@ -104,12 +81,13 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
 
     this.logout = function() {
       Auth.logout(function() {
-        ctrl.currentUserIsMod = false;
-        ctrl.currentUserIsAdmin = false;
-        $timeout(function() { $state.go('.', $location.search(), { reload: true }); });
+        $timeout(function() {
+          // hack to get drop down to work in nested view pages
+          // the proper fix would be to put the dropdown in a directive
+          $state.go($state.current, $stateParams, { reload: true });
+        });
       });
     };
-
 
     // Registration Modal Methods
     this.openRegisterModal = function() {
@@ -117,12 +95,10 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
       ctrl.registerModalVisible = true; // modal is in view
     };
 
-    this.closeRegisterModal = function() {
-      ctrl.showRegister = false;
-    };
+    this.closeRegisterModal = function() { ctrl.showRegister = false; };
 
     this.register = function() {
-      if (Auth.isAuthenticated()) {
+      if (Session.isAuthenticated()) {
         ctrl.registerError.status = true;
         ctrl.registerError.message = 'Cannot register new user while logged in.';
         return;
@@ -132,10 +108,7 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
         function() {
           ctrl.clearRegisterFields();
           ctrl.closeRegisterModal();
-          checkUserRoles();
-          $timeout(function() {
-            ctrl.showRegisterSuccess = true;
-          }, 500);
+          $timeout(function() { ctrl.showRegisterSuccess = true; }, 500);
         },
         function(err) {
           ctrl.registerError.status = true;
@@ -152,7 +125,6 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
         ctrl.registerError = {};
       }, 500);
     };
-
 
     // Recover Account Modal Methods
     this.enterRecover = function(keyEvent) {
@@ -184,7 +156,7 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
       ctrl.recoverError = {};
       ctrl.recoverDisabled = true;
       ctrl.recoverBtnLabel = 'Loading...';
-      Auth.recoverAccount({ query: ctrl.recover.query },
+      User.recoverAccount({ query: ctrl.recover.query },
       function() { // Success
         ctrl.recoverSubmitted = true;
         ctrl.recoverDisabled = false;
@@ -201,15 +173,11 @@ module.exports = ['$state', '$location', '$timeout', 'Auth', 'BreadcrumbSvc',
     this.swapModals = function() {
       if (ctrl.showLogin) {
         ctrl.closeLoginModal();
-        $timeout(function() {
-          ctrl.openRecoverModal();
-        }, 200);
+        $timeout(function() { ctrl.openRecoverModal(); }, 200);
       }
       else {
         ctrl.closeRecoverModal();
-        $timeout(function() {
-          ctrl.openLoginModal();
-        }, 200);
+        $timeout(function() { ctrl.openLoginModal(); }, 200);
       }
     };
 

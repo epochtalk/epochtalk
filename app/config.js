@@ -192,23 +192,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     // Checks if user is an admin
-    var adminCheck = ['$q', 'Auth', function($q, Auth) {
-      return Auth.checkAdmin()
-      .then(function(isAdmin) {
-        if (isAdmin) { return true; }
-        // $stateChangeError in app.js expects error to be 'Unauthorized'
-        else { return $q.reject('Unauthorized'); }
-      });
+    var adminCheck = ['$q', 'Session', function($q, Session) {
+      if (Session.user.isAdmin) { return true; }
+      else { return $q.reject('Unauthorized'); }
     }];
 
     // Checks if user is a moderator
-    var modCheck = ['$q', 'Auth', function($q, Auth) {
-      return Auth.checkModerator()
-      .then(function(isMod) {
-        if (isMod) { return true; }
-        // $stateChangeError in app.js expects error to be 'Unauthorized'
-        else { return $q.reject('Unauthorized'); }
-      });
+    var modCheck = ['$q', 'Session', function($q, Session) {
+      if (Session.user.isMod) { return true; }
+      else { return $q.reject('Unauthorized'); }
     }];
 
     // Default child state for moderate is users

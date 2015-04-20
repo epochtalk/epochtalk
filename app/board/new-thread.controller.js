@@ -1,5 +1,5 @@
-module.exports = ['$stateParams', '$location', 'Auth', 'Threads',
-  function($stateParams, $location, Auth, Threads) {
+module.exports = ['$stateParams', '$location', 'Session', 'Threads',
+  function($stateParams, $location, Session, Threads) {
     var ctrl = this;
 
     this.exitEditor = false;
@@ -13,14 +13,13 @@ module.exports = ['$stateParams', '$location', 'Auth', 'Threads',
       title: ''
     };
 
-    this.loggedIn = Auth.isAuthenticated;
-    Auth.checkAuthentication();
+    this.loggedIn = Session.isAuthenticated;
 
     this.save = function(post) {
       ctrl.exitEditor = true;
       // create a new thread and post
       Threads.save(ctrl.thread).$promise
-       .then(function(thread) {
+      .then(function(thread) {
         $location.path('/threads/' + thread.thread_id + '/posts');
       })
       .catch(function(err) {
