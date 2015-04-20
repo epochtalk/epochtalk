@@ -1,13 +1,8 @@
-<div class="row full-width">
-  <br />
+<div class="row full-width admin-table-header">
   <div class="small-12 medium-6 columns">
-    <div class="row collapse">
-      <div class="small-2 columns">
-        <a ng-click="insertNewCategory()" class="button prefix">Add</a>
-      </div>
-      <div class="small-10 columns">
-        <input type="text" id="new-cat" ng-model="newCatName" placeholder="New Category">
-      </div>
+    <div class="nested-input-container">
+      <button class="nested-btn" ng-click="insertNewCategory()">Add Category</button>
+        <input class="nested-input" type="text" id="new-cat" ng-model="newCatName" placeholder="New Category Name">
     </div>
   </div>
   <div class="small-12 medium-6 columns">

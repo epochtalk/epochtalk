@@ -31,8 +31,8 @@ module.exports = ['$compile', function($compile) {
           var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
-          html += '<li class="dd-item" data-id="' + dataId + '">' +
-            '<div class="dd-handle">' + status + '<div class="dd-desc">' + board.name + '</div>' +
+          html += '<li class="dd-item" data-id="' + dataId + '"><div class="dd-grab"></div>' +
+            '<div class="dd-handle">' + status + '<div class="dd-desc">' + board.name +  '<span>' + board.description + '</span></div>' +
             toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
         });
         html += '</ol>';
@@ -82,8 +82,8 @@ module.exports = ['$compile', function($compile) {
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status modified"></i>';
           var newBoardHtml = '<li class="dd-item" data-id="' + dataId +
-            '"><div class="dd-handle">' + status + '<div class="dd-desc">' + board.name +
-            '</div>' + toolbarHtml + '</div></li>';
+            '"><div class="dd-grab"></div><div class="dd-handle">' + status + '<div class="dd-desc">' + board.name +
+             '<span>' + board.description + '</span></div>' + toolbarHtml + '</div></li>';
 
           // Compile and prepend new board html
           newBoardHtml = $compile(newBoardHtml)(scope);

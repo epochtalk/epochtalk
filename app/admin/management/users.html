@@ -1,17 +1,13 @@
-<div class="row full-width">
+<div class="admin-table-header">
   <div class="small-6 columns">
-    <div class="row collapse">
-      <div class="small-10 columns">
-        <input type="text" placeholder="Search Users">
-      </div>
-      <div class="small-2 columns">
-        <a href="#" class="button postfix">Search</a>
-      </div>
+    <div class="nested-input-container">
+      <button class="nested-btn">Search</button>
+      <input class="nested-input" type="text" id="search-users" placeholder="Search users by username" />
     </div>
   </div>
   <div class="small-6 columns">
-    <div class="right"><pagination page-count="5" page="1"></pagination></div>
   </div>
+  <div class="admin-table-fix"></div>
 </div>
 <div class="row full-width">
   <div class="small-12 columns">
@@ -38,3 +34,5 @@
     </table>
   </div>
 </div>
+<div class="right"><pagination page-count="5" page="1"></pagination></div>
+

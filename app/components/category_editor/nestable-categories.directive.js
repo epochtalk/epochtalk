@@ -36,7 +36,7 @@ module.exports = ['$compile', function($compile) {
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item dd-root-item" data-cat-id="' + cat.id + '" data-id="' + dataId +
-            '" data-top="true" data-name="' + cat.name + '"><div class="dd-handle' +
+            '" data-top="true" data-name="' + cat.name + '"><div class="dd-grab-cat"></div><div class="dd-handle' +
             ' dd-root-handle">' + status + '<div class="dd-desc">' + cat.name + '</div>' +
             toolbarHtml + '</div>' + generateBoardList(cat.boards) + '</li>';
         });
@@ -62,7 +62,7 @@ module.exports = ['$compile', function($compile) {
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item" data-id="' + dataId + '">' +
-            '<div class="dd-handle">' + status + '<div class="dd-desc">' + board.name + '</div>' +
+            '<div class="dd-grab"></div><div class="dd-handle">' + status + '<div class="dd-desc">' + board.name + '<span>' + board.description + '</span></div>' +
             toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
         });
         html += '</ol>';
@@ -85,7 +85,7 @@ module.exports = ['$compile', function($compile) {
               dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status modified"></i>';
           var newCatHtml = '<li class="dd-item dd-root-item" data-cat-id="' + -1 + '"  data-id="' + dataId +
-            '" data-top="true" data-name="' + catName + '"><div class="dd-handle dd-root-handle">' +
+            '" data-top="true" data-name="' + catName + '"><div class="dd-grab-cat"></div><div class="dd-handle dd-root-handle">' +
             status + '<div class="dd-desc">' + catName + '</div>' + toolbarHtml + '</div></li>';
 
           // Compile and prepend new category html

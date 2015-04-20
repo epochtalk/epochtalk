@@ -11,16 +11,16 @@
     <label for="website-keywords">Website Keywords</label>
     <input type="text" id="website-keywords" placeholder="Example: epochtalk, forum, open source, support" />
     <label for="website-logo-upload-btn">Website Logo</label>
-    <div class="input-btn-container">
-      <button class="upload-input-btn">Upload</button>
+    <div class="nested-input-container">
+      <button class="nested-btn upload-btn">Upload</button>
       <input type="file" id="website-logo-upload-btn" class="file-upload" />
-      <input class="nested-btn-input" type="text" id="website-logo" placeholder="default_logo.png" />
+      <input class="nested-input upload-btn" type="text" id="website-logo" placeholder="default_logo.png" />
     </div>
     <label for="website-favicon-upload-btn">Website Favicon</label>
-    <div class="input-btn-container">
-      <button class="upload-input-btn">Upload</button>
+    <div class="nested-input-container">
+      <button class="nested-btn upload-btn">Upload</button>
       <input type="file" id="website-favicon-upload-btn" class="file-upload" />
-      <input class="nested-btn-input" type="text" id="website-favicon" placeholder="favicon.ico" />
+      <input class="nested-input" type="text" id="website-favicon" placeholder="favicon.ico" />
     </div>
 
     <!-- Database Tasks -->
@@ -81,7 +81,7 @@
     </div>
     <div class="small-6 medium-2 columns radio-toolbar">
       <input type="radio" class="hide-radio" name="image-type" ng-value="false" id="image-type-s3" ng-model="AdminSettingsCtrl.localImageServer" />
-      <label for="image-type-s3">s3</label>
+      <label for="image-type-s3">S3</label>
     </div>
     <div class="radio-spacer"></div>
     <label for="image-size">Max Image Size</label>
