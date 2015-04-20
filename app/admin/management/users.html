@@ -18,7 +18,7 @@
         <th width="300">Actions</th>
       </thead>
       <tbody>
-        <tr ng-repeat="user in UsersCtrl.users track by user.username">
+        <tr ng-repeat="user in AdminManagementCtrl.users track by user.username">
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
           <td ng-bind="user.email"></td>
           <td ng-bind="user.created_at | humanDate"></td>

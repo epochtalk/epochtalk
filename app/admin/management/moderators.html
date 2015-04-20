@@ -1,5 +1,61 @@
+<div class="admin-table-header">
+  <div class="small-4 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="0" id="moderator-filter-0" ng-model="AdminManagementCtrl.tableFilter" />
+    <label for="moderator-filter-0">All</label>
+  </div>
+  <div class="small-4 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="1" id="moderator-filter-1" ng-model="AdminManagementCtrl.tableFilter" />
+    <label for="moderator-filter-1">Global</label>
+  </div>
+  <div class="small-4 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="2" id="moderator-filter-2" ng-model="AdminManagementCtrl.tableFilter" />
+    <label for="moderator-filter-2">Local</label>
+  </div>
+  <div class="small-12 medium-3 columns">&nbsp;</div>
+  <div class="small-12 medium-6 columns">
+    <div class="nested-input-container">
+      <a ng-href="" class="nested-btn">Add Moderator</a>
+      <input class="nested-input" type="text" id="mod-to-add" placeholder="Type the name of the user you wish to make a moderator" />
+    </div>
+  </div>
+  <div class="admin-table-fix"></div>
+</div>
 <div class="row full-width">
   <div class="small-12 columns">
-    <h3>TODO: Moderators Management</h3>
+    <table width="100%">
+      <thead>
+        <th>Moderator Username</th>
+        <th>Global Moderator</th>
+        <th width="45%">Boards</th>
+        <th>Moderator Since</th>
+        <th>Last Active Date</th>
+        <th width="150">Actions</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="user in AdminManagementCtrl.users track by user.username">
+          <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
+          <td>
+            <div class="onoffswitch onoffswitch-left-align">
+              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="global-mod-{{$index}}" checked>
+              <label class="onoffswitch-label" for="global-mod-{{$index}}">
+                <span class="onoffswitch-inner"></span>
+                <span class="onoffswitch-switch"></span>
+              </label>
+            </div>
+          </td>
+          <td>
+            <input type="text" class="no-margin" id="moderated-boards-{{$index}}" placeholder="Type a board name and hit enter to add" />
+          </td>
+          <td ng-bind="user.created_at | humanDate"></td>
+          <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
+          <td ng-bind="user.created_at | humanDate"></td>
+          <td>
+            <a href="#">Remove Moderator</a>&nbsp;&nbsp;
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
+<div class="right"><pagination page-count="5" page="1"></pagination></div>
+

@@ -100,7 +100,7 @@ label > input[type="checkbox"] { margin-right: .25rem; }
 .thin-underline { border-bottom: 1px solid $color-gray-light; }
 .text-info { font-size: 13px; color: #999; }
 .bold-title { font-weight: bold; }
-.no-margin { margin: 0; }
+.no-margin, input[type="text"].no-margin { margin: 0; }
 .anchor-offset {
   display: block;
   position: relative;
@@ -418,10 +418,10 @@ pagination {
     li {
       &.current {
         a {
-          background: $color-active;
+          background: $color-active-fill;
 
           button:focus {
-            background: $color-active;
+            background: $color-active-fill;
           }
 
           &:hover, &:focus {
@@ -567,6 +567,7 @@ pagination {
       td {
         padding-top: 12px;
         padding-bottom: 12px;
+        vertical-align: middle;
       }
     }
   }
@@ -1200,84 +1201,85 @@ input[type].nested-input { padding-right: 146px; }
   color: #fff;
 }
 
+.onoffswitch-right-align { float: right; }
+.onoffswitch-left-align { float: left; margin-left: -0.5rem;}
 .onoffswitch {
-    position: relative;
-    float: right;
-    width: 90px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+  position: relative;
+  width: 90px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .onoffswitch-checkbox {
-    display: none;
+  display: none;
 }
 .onoffswitch-label {
-    display: block;
-    overflow: hidden;
-    cursor: pointer;
-    border: 2px solid #FFFFFF;
-    border-radius: 5px;
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #FFFFFF;
+  border-radius: 5px;
 }
 .onoffswitch-inner {
-    display: block;
-    width: 200%;
-    margin-left: -100%;
-    -moz-transition: margin 0.2s ease-in 0s;
-    -webkit-transition: margin 0.2s ease-in 0s;
-    -o-transition: margin 0.2s ease-in 0s;
-    transition: margin 0.2s ease-in 0s;
+  display: block;
+  width: 200%;
+  margin-left: -100%;
+  -moz-transition: margin 0.2s ease-in 0s;
+  -webkit-transition: margin 0.2s ease-in 0s;
+  -o-transition: margin 0.2s ease-in 0s;
+  transition: margin 0.2s ease-in 0s;
 }
 .onoffswitch-inner:before, .onoffswitch-inner:after {
-    display: block;
-    float: left;
-    width: 50%;
-    height: 36px;
-    padding: 0;
-    line-height: 36px;
-    font-size: 14px;
-    color: white;
-    font-weight: bold;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+  display: block;
+  float: left;
+  width: 50%;
+  height: 36px;
+  padding: 0;
+  line-height: 36px;
+  font-size: 14px;
+  color: white;
+  font-weight: bold;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .onoffswitch-inner:before {
-    content: "ON";
-    padding-left: 12px;
-    width: 79px;
-    background-color: #FF7442;
-    color: #FFFFFF;
+  content: "ON";
+  padding-left: 12px;
+  width: 79px;
+  background-color: #FF7442;
+  color: #FFFFFF;
 }
 .onoffswitch-inner:after {
-    content: "OFF";
-    padding-right: 10px;
-    width: 79px;
-    background-color: #EEEEEE;
-    color: #999999;
-    text-align: right;
+  content: "OFF";
+  padding-right: 10px;
+  width: 79px;
+  background-color: #EEEEEE;
+  color: #999999;
+  text-align: right;
 }
 .onoffswitch-switch {
-    display: block;
-    width: 30px;
-    height: 32px;
-    margin: 3px;
-    background: #FFFFFF;
-    border: 2px solid #FFFFFF;
-    border-radius: 2px;
-    position: absolute;
-    top: 1px;
-    bottom: 0;
-    right: 45px;
-    -moz-transition: all 0.2s ease-in 0s;
-    -webkit-transition: all 0.2s ease-in 0s;
-    -o-transition: all 0.2s ease-in 0s;
-    transition: all 0.2s ease-in 0s;
+  display: block;
+  width: 30px;
+  height: 32px;
+  margin: 3px;
+  background: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  border-radius: 2px;
+  position: absolute;
+  top: 1px;
+  bottom: 0;
+  right: 45px;
+  -moz-transition: all 0.2s ease-in 0s;
+  -webkit-transition: all 0.2s ease-in 0s;
+  -o-transition: all 0.2s ease-in 0s;
+  transition: all 0.2s ease-in 0s;
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-    margin-left: 0;
+  margin-left: 0;
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-    right: 0px;
+  right: 0px;
 }
 
 // Admin - General Settings ------------------ //
@@ -1337,8 +1339,12 @@ input[type].hide-radio {
   text-align: center;
 }
 .radio-toolbar input[type="radio"]:checked + label {
-    background: $color-active-fill;
-    color: #fff;
+  background: $color-active-fill;
+  color: #fff;
+  margin-left: 0px;
+}
+.radio-toolbar input[type="radio"] + label {
+  margin-left: 0px;
 }
 
 // Media Queries

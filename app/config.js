@@ -323,7 +323,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       views: {
         'data@admin-management': {
           controller: 'UsersCtrl',
-          controllerAs: 'UsersCtrl',
+          controllerAs: 'AdminManagementCtrl',
           template: fs.readFileSync(__dirname + '/admin/management/users.html'),
           resolve: {
             adminCheck: adminCheck,
@@ -342,6 +342,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controller: 'ModeratorsCtrl',
           controllerAs: 'AdminManagementCtrl',
           template: fs.readFileSync(__dirname + '/admin/management/moderators.html'),
+          resolve: {
+            adminCheck: adminCheck,
+            users: ['User', function(User) {
+              return User.all().$promise
+              .then(function(users) { return users; });
+            }]
+          }
         }
       }
     })
@@ -352,6 +359,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controller: 'AdministratorsCtrl',
           controllerAs: 'AdminManagementCtrl',
           template: fs.readFileSync(__dirname + '/admin/management/administrators.html'),
+          resolve: {
+            adminCheck: adminCheck,
+            users: ['User', function(User) {
+              return User.all().$promise
+              .then(function(users) { return users; });
+            }]
+          }
         }
       }
     });
