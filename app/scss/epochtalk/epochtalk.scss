@@ -1198,6 +1198,26 @@ input[type].nested-btn-input { padding-right: 146px; }
   font-size: 13px;
 }
 .desc-label { color: #BBBBBB; }
+input[type].hide-radio {
+  display: none;
+}
+.radio-spacer {
+  clear: both;
+  padding-top: 12px;
+}
+.radio-toolbar label, admin-btn {
+  display: inline-block;
+  height: 36px;
+  width: 100%;
+  border-radius: 2px;
+  font-size: 13px;
+  line-height: 36px;
+  text-align: center;
+}
+.radio-toolbar input[type="radio"]:checked + label {
+    background: $color-active-fill;
+    color: #fff;
+}
 
 // Media Queries
 // Medium

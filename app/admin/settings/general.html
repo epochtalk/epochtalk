@@ -1,5 +1,8 @@
 <div class="row full-width">
+
+  <!-- Column One -->
   <div class="small-12 large-6 columns">
+    <!-- Web Configurations -->
     <h5 class="thin-dotted-underline">Web Configurations</h5>
     <label for="website-title">Website Title</label>
     <input type="text" id="website-title" placeholder="Example: Epochtalk Forums" />
@@ -19,6 +22,8 @@
       <input type="file" id="website-favicon-upload-btn" class="file-upload" />
       <input class="nested-btn-input" type="text" id="website-favicon" placeholder="favicon.ico" />
     </div>
+
+    <!-- Database Tasks -->
     <h5 class="thin-dotted-underline section-header-top-spacing">Database Tasks</h5>
     <div class="small-12 large-9 columns column-padding-fix column-spacing-fix">
       <label for="database-backup">Backup Database</label>
@@ -42,7 +47,10 @@
       <button id="database-migrate" class="admin-btn">Migrate</button>
     </div>
   </div>
+
+  <!-- Column Two -->
   <div class="small-12 large-6 columns">
+    <!-- SMTP Configurations -->
     <h5 class="thin-dotted-underline">SMTP Configurations</h5>
     <div class="small-12 large-9 columns column-padding-fix column-spacing-fix">
       <label for="smtp-server">SMTP Server</label>
@@ -60,12 +68,42 @@
       <label for="smtp-password">SMTP Password</label>
       <input type="password" id="smtp-password" placeholder="Password" />
     </div>
+
+    <!-- Image Server Configurations -->
     <h5 class="thin-dotted-underline section-header-top-spacing">Image Server Configurations</h5>
+    <div class="small-12 medium-8 columns column-padding-fix column-spacing-fix">
+      <label>Image Server Host</label>
+      <label class="desc-label">Host image server locally or on Amazon S3</label>
+    </div>
+    <div class="small-6 medium-2 columns column-padding-fix column-spacing-fix radio-toolbar">
+      <input type="radio" class="hide-radio" name="image-type" ng-value="true" ng-model="AdminSettingsCtrl.localImageServer" id="image-type-local" />
+      <label for="image-type-local">Local</label>
+    </div>
+    <div class="small-6 medium-2 columns radio-toolbar">
+      <input type="radio" class="hide-radio" name="image-type" ng-value="false" id="image-type-s3" ng-model="AdminSettingsCtrl.localImageServer" />
+      <label for="image-type-s3">s3</label>
+    </div>
+    <div class="radio-spacer"></div>
     <label for="image-size">Max Image Size</label>
     <input type="text" id="image-size" placeholder="Max Image Upload Size in MegaBytes ( Example: 10 )" />
     <label for="image-expiration">Image Expiration</label>
     <input type="text" id="image-expiration" placeholder="Expiration in milliseconds for images that were uploaded but not posted ( Example: 7,200,000 )" />
     <label for="image-interval">Expiration Interval</label>
     <input type="text" id="image-interval" placeholder="How often to check for expired images in milliseconds ( Example: 900,000 )" />
+    <!-- Only shown if S3 is selected as image server host -->
+    <div ng-if="!AdminSettingsCtrl.localImageServer">
+      <label for="image-root">S3 Root URL</label>
+      <input type="text" id="image-root" placeholder="Example: http://exmaple.com" />
+      <label for="image-dir">S3 Directory</label>
+      <input type="text" id="image-dir" placeholder="Example: /epochtalk" />
+      <label for="image-bucket">S3 Bucket</label>
+      <input type="text" id="image-bucket" placeholder="Example: bukkit" />
+      <label for="image-region">S3 Region</label>
+      <input type="text" id="image-region" placeholder="Example: US West" />
+      <label for="image-access-key">S3 Access Key</label>
+      <input type="password" id="image-access-key" placeholder="Amazon S3 Access Key" />
+      <label for="image-secret-key">S3 Secret Key</label>
+      <input type="text" id="image-secret-key" placeholder="Amazon S3 Secret Key" />
+    </div>
   </div>
 </div>
