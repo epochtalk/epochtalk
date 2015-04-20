@@ -13,13 +13,16 @@
       <thead>
         <th>Username</th>
         <th>Email</th>
-        <th>Registered</th>
+        <th>Registered Date</th>
+        <th>Last Active Date</th>
         <th width="300">Actions</th>
       </thead>
       <tbody>
         <tr ng-repeat="user in UsersCtrl.users track by user.username">
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
           <td ng-bind="user.email"></td>
+          <td ng-bind="user.created_at | humanDate"></td>
+          <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
           <td ng-bind="user.created_at | humanDate"></td>
           <td>
             <a href="#">View Posts</a>&nbsp;&nbsp;
