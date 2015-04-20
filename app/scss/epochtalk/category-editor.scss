@@ -49,9 +49,9 @@
 }
 
 .dd-root-handle {
-  border: 1px solid scale-color($color-active, $lightness: -15%);
+  border: 1px solid scale-color($color-active-fill, $lightness: -15%);
   color: #fff;
-  background: $color-active;
+  background: $color-active-fill;
 }
 
 .dd-root-item > button:before {

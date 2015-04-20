@@ -15,11 +15,11 @@ a {
 /* Button Overrides */
 .button,
 button {
-  background-color: $color-active;
+  background-color: $color-active-fill;
   -moz-border-radius: 1000px;
   -webkit-border-radius: 1000px;
   border-radius: 1000px;
-  border-color: $color-active;
+  border-color: $color-active-fill;
   font-family: $font-sans;
   outline: none;
   padding: 10px 22px;
@@ -1160,7 +1160,7 @@ input.member-select { margin: 0px; }
 .sad-face { font-size:300px; }
 .noscript-message { margin-top: 200px; font-size: 20px; }
 
-// Admin Settings ------------------------------ //
+// Admin - General Settings ------------------------------ //
 .column-padding-fix { padding-left: 0px; padding-right:0px; }
 .column-spacing-fix { padding-right: 25px; }
 .section-header-top-spacing { padding-top: 35px; clear: both; }
@@ -1217,6 +1217,88 @@ input[type].hide-radio {
 .radio-toolbar input[type="radio"]:checked + label {
     background: $color-active-fill;
     color: #fff;
+}
+
+// Admin - Forum Settings ------------------------------ //
+
+.onoffswitch {
+    position: relative;
+    float: right;
+    width: 90px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid #FFFFFF;
+    border-radius: 5px;
+}
+.onoffswitch-inner {
+    display: block;
+    width: 200%;
+    margin-left: -100%;
+    -moz-transition: margin 0.2s ease-in 0s;
+    -webkit-transition: margin 0.2s ease-in 0s;
+    -o-transition: margin 0.2s ease-in 0s;
+    transition: margin 0.2s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block;
+    float: left;
+    width: 50%;
+    height: 36px;
+    padding: 0;
+    line-height: 36px;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 12px;
+    width: 79px;
+    background-color: #FF7442;
+    color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 10px;
+    width: 79px;
+    background-color: #EEEEEE;
+    color: #999999;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block;
+    width: 30px;
+    height: 32px;
+    margin: 3px;
+    background: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-radius: 2px;
+    position: absolute;
+    top: 1px;
+    bottom: 0;
+    right: 45px;
+    -moz-transition: all 0.2s ease-in 0s;
+    -webkit-transition: all 0.2s ease-in 0s;
+    -o-transition: all 0.2s ease-in 0s;
+    transition: all 0.2s ease-in 0s;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px;
 }
 
 // Media Queries
