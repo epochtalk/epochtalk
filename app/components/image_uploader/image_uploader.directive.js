@@ -1,7 +1,6 @@
 var fs = require('fs');
 
-module.exports = [
-  '$timeout', 'S3ImageUpload',
+module.exports = ['$timeout', 'S3ImageUpload',
   function($timeout, s3ImageUpload) {
   return {
     restrict: 'E',
@@ -14,7 +13,6 @@ module.exports = [
     link: function($scope, $element, $attrs) {
       // directive initialization
       $scope.images = [];
-      $scope.model = $scope.model || '';
       var inputElement = $element.find('input')[0];
       $scope.openImagePicker = function() { inputElement.click(); };
 
