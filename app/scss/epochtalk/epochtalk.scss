@@ -626,22 +626,22 @@ pagination {
 
 // Admin Page -------------------------------- //
 /* Admin Manage Groups */
-.admin-content table tr.selectable-row:hover { background-color: $secondary-color; }
+.admin-content table tr.selectable-row:hover { background-color: $color-gray-sub; }
 .pointer { cursor: pointer; }
-.admin-content table tr.active-row { background-color:  $color-active; }
-.admin-content table tr.active-row.selectable-row:hover { background-color:  $color-active }
-input.member-select { margin: 0px; }
+.admin-content table tr.active-row { background-color:  $color-active-fill; }
+.admin-content table tr.active-row.selectable-row:hover { background-color:  $color-active-fill }
 .admin-content table tr.active-row td { color: #fff; }
+.admin-content table tr.active-row td a { color: darken($color-active-dark, 10%); }
+.admin-content table tr.active-row td a:hover { color: $color-active-dark; }
 
-/* Admin Moderation Queue */
-// .tabs {
-//   border-bottom: 1px dotted #ccc;
-//   width: 65%;
-//   min-width: 550px;
-// }
-// .custom-tabs dd.active a { background-color: #eaeaea; }
-// .custom-tabs dd a { background-color: #fff; }
-
+.admin-content-selectable table tr td { padding-top: 6px; padding-bottom: 6px; }
+.admin-content-selectable table tr td div {
+  display: inline-block;
+  max-width: 500px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
 // Board Page -------------------------------- //
 .board-page { padding-bottom: 15px; }
@@ -1168,7 +1168,7 @@ input.member-select { margin: 0px; }
 // Admin - Common ---------------------------- //
 .admin-table-header {
   background-color: $color-gray-sub;
-  padding: 20px 0 0;
+  padding: 20px 22px 0 22px;
   margin-bottom: 2rem;
 }
 .admin-table-fix { clear: both; }

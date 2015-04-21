@@ -225,6 +225,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controller: 'ModUsersCtrl',
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/users.html'),
+          resolve: {
+            modCheck: modCheck,
+            users: ['User', function(User) {
+              return User.all().$promise
+              .then(function(users) { return users; });
+            }]
+          }
         }
       }
     })
@@ -234,7 +241,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@moderation': {
           controller: 'ModPostsCtrl',
           controllerAs: 'ModerationCtrl',
-          template: fs.readFileSync(__dirname + '/admin/moderation/posts.html'),
+          template: fs.readFileSync(__dirname + '/admin/moderation/posts.html')
         }
       }
     });
@@ -393,6 +400,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controller: 'ModUsersCtrl',
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/users.html'),
+          resolve: {
+            adminCheck: adminCheck,
+            users: ['User', function(User) {
+              return User.all().$promise
+              .then(function(users) { return users; });
+            }]
+          }
         }
       }
     })

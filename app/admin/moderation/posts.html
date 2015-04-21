@@ -1,104 +1,58 @@
-<!-- Reported Posts Header -->
+<div class="admin-table-header">
+  <div class="small-4 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="0" id="users-filter-0" ng-model="ModerationCtrl.tableFilter" />
+    <label for="users-filter-0">All</label>
+  </div>
+  <div class="small-4 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="1" id="users-filter-1" ng-model="ModerationCtrl.tableFilter" />
+    <label for="users-filter-1">Pending</label>
+  </div>
+  <div class="small-4 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="2" id="users-filter-2" ng-model="ModerationCtrl.tableFilter" />
+    <label for="users-filter-2">Reviewed</label>
+  </div>
+  <div class="small-12 medium-3 columns">&nbsp;</div>
+  <div class="small-12 medium-6 columns">
+    <div class="nested-input-container">
+      <a ng-href="" class="nested-btn">Search</a>
+      <input class="nested-input" type="text" id="posts-search" placeholder="Search reported posts" />
+    </div>
+  </div>
+  <div class="admin-table-fix"></div>
+</div>
+<div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+  <div class="small-12 columns admin-content-selectable">
+    <table width="100%">
+      <thead>
+        <th width="200">Reported Date</th>
+        <th width="200">Posted Date</th>
+        <th>Title</th>
+        <th width="200">Author</th>
+        <th width="400">Reason</th>
+        <th width="225">Actions</th>
+      </thead>
+      <tbody>
+        <tr ng-class="{ 'active-row' : ModerationCtrl.selectedPost === post }" ng-click="ModerationCtrl.selectPost(post)" class="selectable-row pointer" ng-repeat="post in ModerationCtrl.reportedPosts track by post.title">
+          <td ng-bind="post.reported_at | humanDate"></td>
+          <td ng-bind="post.posted_date | humanDate"></td>
+          <td><div ng-bind="post.title"></div></td>
+          <td><a href="/profiles/{{post.username}}" ng-bind="post.username"></a></td>
+          <td><div ng-bind="post.reason"></div></td>
+          <td>
+            <a href="#">Edit</a>&nbsp;&nbsp;
+            <a href="#">Delete</a>&nbsp;&nbsp;
+            <a href="#">Ignore</a>&nbsp;&nbsp;
+            <a href="#">Warn</a>&nbsp;&nbsp;
+            <a href="#">Ban</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="right"><pagination page-count="5" page="1"></pagination></div>
+  </div>
+</div>
 <div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
   <div class="small-12 columns">
-    <div ng-click="ModerationCtrl.toggles.pending = !ModerationCtrl.toggles.pending" class="inline-block pointer no-select">
-      <a ng-class="{ 'fa-chevron-right' : ModerationCtrl.toggles.pending, 'fa-chevron-down': !ModerationCtrl.toggles.pending }"
-      class="fa collapse-btn no-select"></a>
-      <h4 class="inline-block">Pending Moderation</h4>
-    </div>
-  </div>
-</div>
-<div slide-toggle="ModerationCtrl.toggles.pending">
-  <!-- Reported Posts Controls -->
-  <div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
-    <div class="small-6 columns">
-      <div class="row collapse">
-        <div class="small-10 columns">
-          <input type="text" placeholder="Search">
-        </div>
-        <div class="small-2 columns">
-          <a href="#" class="button postfix">Search</a>
-        </div>
-      </div>
-    </div>
-    <div class="small-6 columns">
-      <div class="right"><pagination page-count="5" page="1"></pagination></div>
-    </div>
-  </div>
-  <!-- Reported Posts Table -->
-  <div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
-    <div class="small-12 columns">
-      <table width="100%">
-        <thead>
-          <th>Post</th>
-          <th>Reason</th>
-          <th width="200">Date</th>
-          <th width="250">Actions</th>
-        </thead>
-        <tbody>
-          <tr ng-repeat="reportedPost in ModerationCtrl.reportedPosts track by reportedPost.post">
-            <td><a href="#" ng-bind="reportedPost.post"></a></td>
-            <td ng-bind="reportedPost.reason"></td>
-            <td ng-bind="reportedPost.reported_at | humanDate"></td>
-            <td>
-              <a href="#">Modify</a>&nbsp;&nbsp;
-              <a href="#">Ignore</a>&nbsp;&nbsp;
-              <a href="#">Warn</a>&nbsp;&nbsp;
-              <a href="#">Ban</a>&nbsp;&nbsp;
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-<br />
-<!-- Reported Posts History Header -->
-<div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
-  <div class="small-12 columns">
-    <div ng-click="ModerationCtrl.toggles.history = !ModerationCtrl.toggles.history" class="inline-block pointer no-select">
-      <a ng-class="{ 'fa-chevron-right' : ModerationCtrl.toggles.history, 'fa-chevron-down': !ModerationCtrl.toggles.history }"
-      class="fa collapse-btn no-select"></a>
-      <h4 class="inline-block">Moderation History</h4>
-    </div>
-  </div>
-</div>
-<div slide-toggle="ModerationCtrl.toggles.history">
-  <!-- Reported Posts History Controls -->
-  <div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
-    <div class="small-6 columns">
-      <div class="row collapse">
-        <div class="small-10 columns">
-          <input type="text" placeholder="Search">
-        </div>
-        <div class="small-2 columns">
-          <a href="#" class="button postfix">Search</a>
-        </div>
-      </div>
-    </div>
-    <div class="small-6 columns">
-      <div class="right"><pagination page-count="5" page="1"></pagination></div>
-    </div>
-  </div>
-  <!-- Reported Posts History Tables -->
-  <div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
-    <div class="small-12 columns">
-      <table width="100%">
-        <thead>
-          <th>Post</th>
-          <th>Reason</th>
-          <th width="200">Date</th>
-          <th width="250">Moderator Notes</th>
-        </thead>
-        <tbody>
-          <tr ng-repeat="reportedPost in ModerationCtrl.reportedPosts track by reportedPost.post">
-            <td><a href="#" ng-bind="reportedPost.post"></a></td>
-            <td ng-bind="reportedPost.reason"></td>
-            <td ng-bind="reportedPost.reported_at | humanDate"></td>
-            <td ng-bind="reportedPost.moderator_notes"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <h5 class="thin-dotted-underline small-12 medium-6">Post Preview</h5>
   </div>
 </div>
