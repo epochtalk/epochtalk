@@ -99,6 +99,7 @@ module.exports = {
       raw_signature = raw_signature.replace(/(?:\r\n|\r|\n)/g, '<br />');
       request.payload.signature = raw_signature;
     }
+    else if (raw_signature === '') { request.payload.signature = ''; }
 
     return reply();
   },
