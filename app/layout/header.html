@@ -18,10 +18,10 @@
           <!-- Right Nav Section -->
           <ul ng-if="!HeaderCtrl.loggedIn()" class="right login-container">
             <li>
-              <a ng-click="HeaderCtrl.openRegisterModal()">Register</a>
+              <a ng-click="HeaderCtrl.showRegister = true">Register</a>
             </li>
             <li>
-              <a ng-click="HeaderCtrl.openLoginModal()">Login</a>
+              <a ng-click="HeaderCtrl.showLogin = true">Login</a>
             </li>
           </ul>
 

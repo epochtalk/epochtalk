@@ -1,131 +1,149 @@
-  <!-- Login Modal -->
-  <modal class="tiny" show="HeaderCtrl.showLogin" on-close="HeaderCtrl.clearLoginFields">
-    <form name="login" class="css-form" novalidate>
-      <h3 class="thin-dotted-underline">Login</h3>
-      <div class="error-container">
-        <div class="" ng-if="HeaderCtrl.loginError.status" ng-bind="HeaderCtrl.loginError.message"></div>
-      </div>
-      <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" ng-if="HeaderCtrl.loginModalVisible" auto-focus required>
-      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" ng-if="HeaderCtrl.loginModalVisible" required>
-      <div class="form-login-remember">
-        <label><input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">Remember Me</label>
-      </div>
-      <div class="form-action">
-        <button class="button no-margin" ng-click="HeaderCtrl.login()" ng-disabled="login.$invalid">
-          Login
-        </button>
-      </div>
-      <div class="form-action-secondary">
-        <a ng-click="HeaderCtrl.swapModals()">Help, I forgot my password!</a>
-      </div>
-    </form>
-    <a class="close-reveal-modal">&#215;</a>
-  </modal>
+<!-- Login Modal -->
+<modal class="tiny" show="HeaderCtrl.showLogin" on-close="HeaderCtrl.clearLoginFields()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-dotted-underline">Login</h3>
 
-  <!-- Recover Account Modal -->
-  <modal class="tiny" show="HeaderCtrl.showRecover" on-close="HeaderCtrl.clearRecoverFields">
-    <form name="recover" class="css-form" novalidate>
-      <h3 class="thin-dotted-underline">Recover Your Account</h3>
-      <div class="error-container">
-        <div class="" ng-if="HeaderCtrl.recoverError.status" ng-bind="HeaderCtrl.recoverError.message"></div>
-      </div>
-      <input type="text" placeholder="Username or Email" ng-keyup="HeaderCtrl.enterRecover($event)" ng-model="HeaderCtrl.recover.query" ng-disabled="HeaderCtrl.recoverDisabled" ng-if="HeaderCtrl.recoverModalVisible && !HeaderCtrl.recoverSubmitted" auto-focus required>
-      <span ng-if="HeaderCtrl.recoverSubmitted">
-        Please check the email listed for your account to reset your password.<br /><br />
-      </span>
-      <div class="form-action" ng-if="!HeaderCtrl.recoverSubmitted">
-        <button class="button no-margin recover-btn" ng-click="HeaderCtrl.recover()"
-          ng-disabled="recover.$invalid || HeaderCtrl.recoverDisabled" ng-bind="HeaderCtrl.recoverBtnLabel"></button>
-      </div>
-      <!-- <a class="secondary-action no-margin" ng-click="HeaderCtrl.closeRecoverModal()">
-        <span ng-if="!HeaderCtrl.recoverSubmitted">Cancel</span>
-        <span ng-if="HeaderCtrl.recoverSubmitted">Done</span>
-      </a> -->
-      <div class="form-action-secondary">
-        <a ng-click="HeaderCtrl.swapModals()">Take me back to Login</a>
-      </div>
-    </form>
-    <a class="close-reveal-modal">&#215;</a>
-  </modal>
+    <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" auto-focus="$parent.focus" required>
+    <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" required>
+    <div class="form-login-remember">
+      <label>
+        <input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">
+        Remember Me
+      </label>
+    </div>
 
-  <!-- Registration Confrimation Modal -->
-  <modal class="tiny" show="HeaderCtrl.showRegisterSuccess">
-    <h3 class="thin-dotted-underline">Registration Success</h3>
-    <br />
-    Thank you for registering. Please check your email and confirm your account.
-    <a class="close-reveal-modal">&#215;</a>
-  </modal>
+    <div class="form-action">
+      <button class="button no-margin" ng-click="HeaderCtrl.login()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+        Login
+      </button>
+    </div>
 
-  <!-- Register Modal -->
-  <modal class="small" show="HeaderCtrl.showRegister" on-close="HeaderCtrl.clearRegisterFields">
-    <form name="register" class="css-form" novalidate>
-      <h3 class="thin-dotted-underline">Register</h3>
-      <div class="error-container">
-        <div ng-if="HeaderCtrl.registerError.status" ng-bind="HeaderCtrl.registerError.message"></div>
-      </div>
-      <div class='input-section'>
-        <label><div class="inline-block label secondary input-info">Email must be valid to confirm account</div>
-          <div ng-if="register.email.$touched && register.email.$error.required" class="invalid right">
-            Email is required
-          </div>
-          <div ng-if="register.email.$touched && register.email.$error.email" class="invalid right">
-            Email is invalid
-          </div>
-          <div ng-if="register.email.$touched && register.email.$error.unique" class="invalid right">
-            Email is taken
-          </div>
-          <input type="email" class="icon-padding" name="email" maxlength="255" ng-model="HeaderCtrl.registerUser.email" unique-email placeholder="Email"  ng-if="HeaderCtrl.registerModalVisible" auto-focus required>
-          <i ng-if="register.email.$touched && !register.email.$error.email && !register.email.$error.required && !register.email.$error.unique" class="fa fa-check input-icon valid"></i>
-          <i ng-if="register.email.$touched && (register.email.$error.email || register.email.$error.required || register.email.$error.unique)" class="fa fa-times input-icon invalid"></i>
-        </label>
-      </div>
+    <div class="error-container">
+      <div ng-if="HeaderCtrl.errors.login" ng-bind="HeaderCtrl.errors.login.message"></div>
+    </div>
 
-      <div class="input-section">
-        <label>
-          <div ng-if="register.username.$touched && register.username.$error.required" class="input-error invalid right">
-          Username is required
-          </div>
-          <div ng-if="register.username.$touched && register.username.$error.unique" class="input-error invalid right">
-          Username is taken
-          </div>
-          <input type="text" class="icon-padding" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username  ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" ng-if="HeaderCtrl.registerModalVisible" required>
-          <i ng-if="register.username.$touched && !register.username.$error.unique && !register.username.$error.required" class="fa fa-check input-icon valid"></i>
-          <i ng-if="register.username.$touched && (register.username.$error.required || register.username.$error.unique)" class="fa fa-times input-icon invalid"></i>
-        </label>
-      </div>
+    <div class="form-action-secondary">
+      <a ng-click="HeaderCtrl.swapModals()">
+        Help, I forgot my password!
+      </a>
+    </div>
+  </form>
 
-      <div class="input-section">
-        <label>
-          <div ng-if="register.password.$touched && register.password.$error.required" class="input-error invalid right">
-            Password is required
-          </div>
-          <div ng-if="register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !register.password.$error.required" class="input-error invalid right">
-            Password and confirmation do not match
-          </div>
-          <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Password" ng-if="HeaderCtrl.registerModalVisible" required>
-          <i ng-if="(register.password.$touched && !register.confirmation.$touched && !register.password.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !register.password.$error.required)" class="fa fa-check input-icon valid"></i>
-          <i ng-if="(register.password.$touched && register.password.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
-        </label>
-      </div>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
 
-      <div class="input-section">
-        <label>
-          <div ng-if="register.confirmation.$touched && register.confirmation.$error.required" class="input-error invalid right">
-            Password confirmation is required
-          </div>
-          <div ng-if="register.password.$touched && HeaderCtrl.registerUser.password !== '' && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !register.confirmation.$error.required" class="input-error invalid right">
-            Password and confirmation do not match
-          </div>
-          <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Confirm Password" ng-if="HeaderCtrl.registerModalVisible" required>
-          <i ng-if="(register.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !register.password.$touched && !register.confirmation.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !register.confirmation.$error.required)" class="fa fa-check input-icon valid"></i>
-          <i ng-if="(register.confirmation.$touched && register.confirmation.$error.required) || (register.password.$touched && register.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
-        </label>
-      </div>
-      <div class="input-section form-action">
-        <button class="button no-margin" ng-click="HeaderCtrl.register()" ng-disabled="register.$invalid || !register.username.$touched || !register.email.$touched || !register.password.$touched || !register.confirmation.$dirty  || register.username.$error.unique || register.email.$error.unique || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password === '' || HeaderCtrl.registerUser.confirmation === ''">
-          Register
-        </button>
-      </div>
-    </form>
-    <a class="close-reveal-modal">&#215;</a>
-  </modal>
+<!-- Recover Account Modal -->
+<modal class="tiny" show="HeaderCtrl.showRecover" on-close="HeaderCtrl.clearRecoverFields()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-dotted-underline">Recover Your Account</h3>
+
+    <input type="text" placeholder="Username or Email" ng-model="HeaderCtrl.recoverQuery" ng-disabled="HeaderCtrl.recoverSubmitted" auto-focus="$parent.focus" required>
+    <span ng-if="HeaderCtrl.recoverBtnLabel === 'Account Reset'">
+      Please check your email to reset your password.
+      <br /><br />
+    </span>
+
+    <div class="form-action">
+      <button class="button no-margin recover-btn" ng-click="HeaderCtrl.recover()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.recoverSubmitted" ng-bind="HeaderCtrl.recoverBtnLabel"></button>
+    </div>
+
+    <div class="error-container">
+      <div class="" ng-if="HeaderCtrl.errors.recover" ng-bind="HeaderCtrl.errors.recover.message"></div>
+    </div>
+
+    <div class="form-action-secondary">
+      <a ng-click="HeaderCtrl.swapModals()">Take me back to Login</a>
+    </div>
+  </form>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Registration Confrimation Modal -->
+<modal class="tiny" show="HeaderCtrl.showRegisterSuccess">
+  <h3 class="thin-dotted-underline">Registration Success</h3>
+  <br />
+  Thank you for registering. Please check your email and confirm your account.
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Register Modal -->
+<modal class="small" show="HeaderCtrl.showRegister" on-close="HeaderCtrl.clearRegisterFields()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-dotted-underline">Register</h3>
+
+    <div class='input-section'>
+      <label>
+        <div class="inline-block label secondary input-info">
+          Email must be valid to confirm account
+        </div>
+        <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.required" class="invalid right">
+          Email is required
+        </div>
+        <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.email" class="invalid right">
+          Email is invalid
+        </div>
+        <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.unique" class="invalid right">
+          Email is taken
+        </div>
+        <input type="email" class="icon-padding" name="email" maxlength="255" ng-model="HeaderCtrl.registerUser.email" unique-email placeholder="Email" auto-focus="$parent.focus" required>
+        <i ng-if="$parent.form.email.$touched && !$parent.form.email.$error.email && !$parent.form.email.$error.required && !$parent.form.email.$error.unique" class="fa fa-check input-icon valid"></i>
+        <i ng-if="$parent.form.email.$touched && ($parent.form.email.$error.email || $parent.form.email.$error.required || $parent.form.email.$error.unique)" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
+
+    <div class="input-section">
+      <label>
+        <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.required" class="input-error invalid right">
+        Username is required
+        </div>
+        <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.unique" class="input-error invalid right">
+        Username is taken
+        </div>
+        <input type="text" class="icon-padding" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username  ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username" required>
+        <i ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && !$parent.form.username.$error.required" class="fa fa-check input-icon valid"></i>
+        <i ng-if="$parent.form.username.$touched && ($parent.form.username.$error.required || $parent.form.username.$error.unique)" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
+
+    <div class="input-section">
+      <label>
+        <div ng-if="$parent.form.password.$touched && $parent.form.password.$error.required" class="input-error invalid right">
+          Password is required
+        </div>
+        <div ng-if="$parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !$parent.form.password.$error.required" class="input-error invalid right">
+          Password and confirmation do not match
+        </div>
+        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Password" required>
+        <i ng-if="($parent.form.password.$touched && !$parent.form.confirmation.$touched && !$parent.form.password.$error.required) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !$parent.form.password.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.password.$touched && $parent.form.password.$error.required) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
+
+    <div class="input-section">
+      <label>
+        <div ng-if="$parent.form.confirmation.$touched && $parent.form.confirmation.$error.required" class="input-error invalid right">
+          Password confirmation is required
+        </div>
+        <div ng-if="$parent.form.password.$touched && HeaderCtrl.registerUser.password !== '' && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !$parent.form.confirmation.$error.required" class="input-error invalid right">
+          Password and confirmation do not match
+        </div>
+        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Confirm Password" required>
+        <i ng-if="($parent.form.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !$parent.form.password.$touched && !$parent.form.confirmation.$error.required) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !$parent.form.confirmation.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.confirmation.$touched && $parent.form.confirmation.$error.required) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
+
+    <div class="input-section form-action">
+      <button class="button no-margin" ng-click="HeaderCtrl.register()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation">
+        Register
+      </button>
+    </div>
+
+    <div class="error-container">
+      <div ng-if="HeaderCtrl.errors.register" ng-bind="HeaderCtrl.errors.register.message"></div>
+    </div>
+  </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>

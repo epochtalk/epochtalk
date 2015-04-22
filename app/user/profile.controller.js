@@ -2,6 +2,7 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
   function(user, User, Session, $location, $timeout, $filter, $anchorScroll) {
     var ctrl = this;
     $timeout($anchorScroll);
+    this.errors = {};
     this.user = user;
     this.displayUsername = angular.copy(user.username);
     this.displayEmail = angular.copy(user.email);
@@ -33,8 +34,13 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
     }
 
     // Edit Profile
-    this.editMode = false;
+    this.editProfile = false;
+    this.clearPasswordFields = function() {
+      $timeout(function() { delete ctrl.errors.profile; }, 500);
+    };
+
     this.saveProfile = function() {
+      delete ctrl.errors.profile;
       var changeProfileUser = {
         id: ctrl.user.id,
         username: ctrl.user.username,
@@ -47,10 +53,10 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
         location: ctrl.user.location,
         language: ctrl.user.language
       };
+
       User.update(changeProfileUser).$promise
       .then(function(data) {
         ctrl.user = data;
-        ctrl.editMode = false;
 
         // Reformat DOB and calculate age on save
         ctrl.user.dob = $filter('date')(ctrl.user.dob, 'longDate');
@@ -63,44 +69,59 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
           Session.setUsername(ctrl.user.username);
         }
 
+        ctrl.editProfile = false;
         updatePageStatus('success', 'Successfully saved profile');
         $timeout($anchorScroll);
       })
       .catch(function(err) {
-        updatePageStatus('alert', err.data.error + ': ' + err.data.message);
-        $timeout($anchorScroll);
+        ctrl.errors.profile = {};
+        ctrl.errors.profile.type = 'alert';
+        ctrl.errors.profile.message = 'Profile could not be updated';
       });
     };
 
     // Edit Avatar
     this.editAvatar = false;
+    this.clearPasswordFields = function() {
+      $timeout(function() { delete ctrl.errors.avatar; }, 500);
+    };
+
     this.saveAvatar = function() {
+      delete ctrl.errors.avatar;
       var changeAvatarUser = {
         id: ctrl.user.id,
         avatar: ctrl.user.avatar,
       };
+
       User.update(changeAvatarUser).$promise
       .then(function(data) {
         ctrl.user = data;
         ctrl.displayAvatar = angular.copy(data.avatar || 'http://placehold.it/400/cccccc/&text=Avatar');
+        Session.setAvatar(ctrl.displayAvatar);
         ctrl.editAvatar = false;
         updatePageStatus('success', 'Successfully updated avatar');
         $timeout($anchorScroll);
       })
       .catch(function(err) {
-        updatePageStatus('alert', err.data.error + ': ' + err.data.message);
-        $timeout($anchorScroll);
+        ctrl.errors.avatar = {};
+        ctrl.errors.avatar.type = 'alert';
+        ctrl.errors.avatar.message = 'Avatar could not be updated';
       });
     };
 
     // Edit Signature
     this.editSignature = false;
+    this.clearSignatureFields = function() {
+      $timeout(function() { delete ctrl.errors.signature; }, 500);
+    };
+
     this.saveSignature = function() {
+      delete ctrl.errors.signature;
       var changeSigUser = {
         id: ctrl.user.id,
-        raw_signature: ctrl.user.raw_signature,
-        signature: ctrl.user.signature
+        raw_signature: ctrl.user.raw_signature
       };
+
       User.update(changeSigUser).$promise
       .then(function(data) {
         ctrl.user = data;
@@ -109,55 +130,37 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
         $timeout($anchorScroll);
       })
       .catch(function(err) {
-        updatePageStatus('alert', err.data.error + ': ' + err.data.message);
-        $timeout($anchorScroll);
+        ctrl.errors.signature = {};
+        ctrl.errors.signature.type = 'alert';
+        ctrl.errors.signature.message = 'Signature could not be updated';
       });
     };
 
-    // Change Password Modal
-    this.passData = {};
-    this.changePassStatus = {};
-    this.showChangePass = false;
-    this.changePassModalVisible = false;
-
-    this.openChangePassModal = function() {
-      ctrl.showChangePass = true;
-      ctrl.changePassModalVisible = true;
-    };
-
-    this.closeChangePassModal = function() {
-      ctrl.showChangePass = false;
-    };
-
-    this.clearChangePassFields = function() {
+    // Edit Password
+    this.editPassword = false;
+    this.passData = { id: ctrl.user.id };
+    this.clearPasswordFields = function() {
       $timeout(function() {
-        ctrl.changePassModalVisible = false;
-        ctrl.passData.oldPass = '';
-        ctrl.passData.password = '';
-        ctrl.passData.confirmation = '';
-        ctrl.changePassStatus = {};
+        ctrl.passData = { id: ctrl.user.id };
+        delete ctrl.errors.password;
       }, 500);
     };
 
-    this.changePassword = function() {
-      var changePassUser = {
-        id: ctrl.user.id,
-        old_password: ctrl.passData.oldPass,
-        password: ctrl.passData.password,
-        confirmation: ctrl.passData.confirmation,
-      };
-      User.update(changePassUser).$promise
+    this.savePassword = function() {
+      delete ctrl.errors.password;
+
+      User.update(ctrl.passData).$promise
       .then(function() {
-        ctrl.closeChangePassModal();
-        ctrl.clearChangePassFields();
+        ctrl.clearPasswordFields();
+        ctrl.editPassword = false;
         updatePageStatus('success', 'Sucessfully changed account password');
+        $timeout($anchorScroll);
       })
       .catch(function(err) {
-        ctrl.changePassStatus = {
-          status: true,
-          type: alert,
-          message: err.data.message
-        };
+        console.log(err);
+        ctrl.errors.password = {};
+        ctrl.errors.password.type = 'alert';
+        ctrl.errors.password.message = 'Error updating password';
       });
     };
 

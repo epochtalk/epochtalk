@@ -23,7 +23,7 @@ module.exports = ['$window', 'User', 'Session',
         .then(callback)
         .catch(function(err) {
           Session.clearUser();
-          error();
+          error(err);
         });
       },
 

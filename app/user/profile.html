@@ -21,9 +21,9 @@
     <!-- Edit Profile Controls -->
     <div class="profile-edit-container" ng-if="profiles.user.editable">
       Edit:
-      <a href="#" ng-click="profiles.editMode = true">Profile</a>
+      <a href="#" ng-click="profiles.editProfile = true">Profile</a>
       |
-      <a href="#" ng-click="profiles.openChangePassModal()">Password </a>
+      <a href="#" ng-click="profiles.editPassword = true">Password </a>
     </div>
 
     <!-- User Information -->
@@ -31,8 +31,8 @@
     <div><span ng-bind="profiles.user.name"></span></div>
     <div><span ng-bind="profiles.user.position"></span></div>
     <div><span ng-bind="profiles.user.status"></span></div>
-    <hr ng-if="profiles.user.email || profiles.user.btcAddress || profiles.user.website">
-    <div><span ng-bind="profiles.user.email"></span></div>
+    <hr ng-if="profiles.displayEmail || profiles.user.btcAddress || profiles.user.website">
+    <div><span ng-bind="profiles.displayEmail"></span></div>
     <div><span ng-bind="profiles.user.btcAddress"></span></div>
     <div><a ng-href="{{profiles.user.website}}">{{profiles.user.website}}</a></div>
     <hr>
@@ -89,85 +89,85 @@
 </div>
 
 <!-- Change Password Modal -->
-<modal class="tiny" show="profiles.showChangePass" on-close="profiles.clearChangePassFields">
-  <form name="changePass" class="css-form" novalidate>
+<modal class="tiny" show="profiles.editPassword" on-close="profiles.clearPasswordFields()">
+  <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-dotted-underline">Change Password</h3>
-    <!-- Modal Error Message -->
-    <div class="error-container">
-      <div ng-if="profiles.changePassStatus.status" ng-bind="profiles.changePassStatus.message" ng-class="profiles.changePassStatus.type"></div>
-    </div>
 
     <!-- Old Password -->
     <div class='input-section'>
       <label>&nbsp;
         <!-- input error -->
-        <div ng-if="changePass.oldPass.$touched && changePass.oldPass.$error.required" class="invalid right">
+        <div ng-if="$parent.form.oldPass.$touched && $parent.form.oldPass.$error.required" class="invalid right">
           Old password is required
         </div>
         <!-- old password input -->
-        <input ng-if="profiles.changePassModalVisible" type="password" name="oldPass" placeholder="Old Password" ng-model="profiles.passData.oldPass" ng-if="profiles.changePassModalVisible" auto-focus required>
-        <i ng-if="changePass.oldPass.$touched && !changePass.oldPass.$error.required" class="fa fa-check input-icon valid"></i>
-        <i ng-if="changePass.oldPass.$touched && changePass.oldPass.$error.required" class="fa fa-times input-icon invalid"></i>
+        <input type="password" name="oldPass" placeholder="Old Password" ng-model="profiles.passData.old_password" auto-focus="$parent.focus" required>
+        <i ng-if="$parent.form.oldPass.$touched && !$parent.form.oldPass.$error.required" class="fa fa-check input-icon valid"></i>
+        <i ng-if="$parent.form.oldPass.$touched && $parent.form.oldPass.$error.required" class="fa fa-times input-icon invalid"></i>
       </label>
     </div>
 
     <!-- New Password -->
     <div class='input-section'>
       <label>
-        <div ng-if="changePass.pass.$touched && changePass.pass.$error.required" class="input-error invalid right">
+        <div ng-if="$parent.form.pass.$touched && $parent.form.pass.$error.required" class="input-error invalid right">
           New password is required
         </div>
-        <div ng-if="changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !changePass.pass.$error.required" class="input-error invalid right">
+        <div ng-if="$parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !$parent.form.pass.$error.required" class="input-error invalid right">
           Password and confirmation do not match
         </div>
-        <input ng-if="profiles.changePassModalVisible" type="password" name="pass" placeholder="New Password" ng-model="profiles.passData.password" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
-        <i ng-if="(changePass.pass.$touched && !changePass.passConf.$touched && !changePass.pass.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !changePass.pass.$error.required)" class="fa fa-check input-icon valid"></i>
-        <i ng-if="(changePass.pass.$touched && changePass.pass.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+        <input type="password" name="pass" placeholder="New Password" ng-model="profiles.passData.password" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
+        <i ng-if="($parent.form.pass.$touched && !$parent.form.passConf.$touched && !$parent.form.pass.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !$parent.form.pass.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.pass.$touched && $parent.form.pass.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
       </label>
     </div>
 
     <!-- Confirm Password -->
     <div class='input-section'>
       <label>
-        <div ng-if="changePass.passConf.$touched && changePass.passConf.$error.required" class="input-error invalid right">
+        <div ng-if="$parent.form.passConf.$touched && $parent.form.passConf.$error.required" class="input-error invalid right">
           Password confirmation is required
         </div>
-        <div ng-if="changePass.passConf.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !changePass.passConf.$error.required" class="input-error invalid right">
+        <div ng-if="$parent.form.passConf.$touched && $parent.form.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !$parent.form.passConf.$error.required" class="input-error invalid right">
           Password and confirmation do not match
         </div>
-        <input ng-if="profiles.changePassModalVisible" type="password" name="passConf" placeholder="Confirm New Password" ng-model="profiles.passData.confirmation" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
-        <i ng-if="(changePass.passConf.$touched  && profiles.passData.confirmation !== '' && !changePass.pass.$touched && !changePass.passConf.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !changePass.passConf.$error.required)" class="fa fa-check input-icon valid"></i>
-        <i ng-if="(changePass.passConf.$touched && changePass.passConf.$error.required) || (changePass.pass.$touched && changePass.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+        <input type="password" name="passConf" placeholder="Confirm New Password" ng-model="profiles.passData.confirmation" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
+        <i ng-if="($parent.form.passConf.$touched  && profiles.passData.confirmation !== '' && !$parent.form.pass.$touched && !$parent.form.passConf.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !$parent.form.passConf.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.passConf.$touched && $parent.form.passConf.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
       </label>
     </div>
 
+    <!-- Submit Button -->
     <div class="form-action">
-      <button class="button no-margin" ng-click="profiles.changePassword()"
-        ng-disabled="changePass.$invalid || profiles.passData.password !== profiles.passData.confirmation">
+      <button class="button no-margin" ng-click="profiles.savePassword()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || profiles.passData.password !== profiles.passData.confirmation">
         Confirm
       </button>
     </div>
+
+    <!-- Modal Error Message -->
+    <div class="error-container">
+      <div ng-if="profiles.errors.password" ng-bind="profiles.errors.password.message" ng-class="profiles.errors.password.type"></div>
+    </div>
   </form>
+
   <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Edit Profile Modal -->
-<modal class="medium" show="profiles.editMode">
-  <form name="form" class="css-form" novalidate>
+<modal class="medium" show="profiles.editProfile" on-close="profiles.clearProfileFields()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <!-- Profile Fields -->
     <div class="row">
-
       <div class="medium-6 columns">
         <label>Username
-          <input type="text" name="username" required ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"/>
-          <small class="label error" ng-if="form.username.$error.unique">
-            Username Already Taken
-          </small>
-          <small class="label error" ng-if="form.username.$error.required">
-            Username Required
-          </small>
-          <small class="label success" ng-if="profiles.displayUsername !== profiles.user.username && !form.username.$error.unique && !form.username.$error.required">
-            Username Available
-          </small>
+          <div ng-if="profiles.user.username.length === 0" class="right">
+            Username will not be changed
+          </div>
+          <div ng-if="$parent.form.username.$error.unique" class="invalid right">
+            Username already taken
+          </div>
+          <input type="text" name="username" ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
         </label>
 
         <label>Name
@@ -175,19 +175,16 @@
         </label>
 
         <label>Email
-          <input type="email" name="email" required ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
-          <small class="label error" ng-if="form.email.$error.email">
+          <div ng-if="$parent.form.email.$error.email" class="invalid right">
             Email is not valid
-          </small>
-          <small class="label error" ng-if="form.email.$error.unique">
-            Email Already Taken
-          </small>
-          <small class="label error" ng-if="!form.email.$error.email && form.email.$error.required">
-            Email Required
-          </small>
-          <small class="label success" ng-if="profiles.displayEmail !== profiles.user.email && !form.email.$error.email && !form.email.$error.required && !form.email.$error.unique">
-            Email Available
-          </small>
+          </div>
+          <div ng-if="profiles.user.email.length === 0" class="right">
+            Email will not be changed
+          </div>
+          <div ng-if="$parent.form.email.$error.unique" class="invalid right">
+            Email already taken
+          </div>
+          <input type="email" name="email" ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
         </label>
 
         <label>Website
@@ -217,92 +214,66 @@
         </label>
       </div>
     </div>
-  </form>
 
-  <!-- Cancel/Save Buttons -->
-  <div class="row profile-save-container">
-    <div class="small-6 columns">
-      <button class="button expand alert" ng-click="profiles.editMode = false">
-        Close
-      </button>
-    </div>
-    <div class="small-6 columns">
-      <button class="button expand" ng-click="profiles.saveProfile()" ng-disabled="form.$invalid">
+    <!-- Save Button -->
+    <div class="row profile-save-container">
+      <button class="button expand" ng-click="profiles.saveProfile()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
         Save
       </button>
     </div>
-  </div>
 
-  <div class="row" ng-if="profiles.error.status">
-    <div class="small-12 columns">
-      <div class="alert-box alert radius" ng-bind="profiles.error.message"></div>
+    <!-- Modal Error Message -->
+    <div class="error-container">
+      <div ng-if="profiles.errors.profile" ng-bind="profiles.errors.profile.message" ng-class="profiles.errors.profile.type"></div>
     </div>
-  </div>
+  </form>
 
   <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Change Avatar Modal -->
-<modal class="small" show="profiles.editAvatar">
-  <form name="form" class="css-form" novalidate>
+<modal class="small" show="profiles.editAvatar" on-close="profiles.clearAvatarFields()">
+  <form name="$parent.form" class="css-form" novalidate>
     <label>Avatar address
-      <input type="text" name="avatar" ng-model="profiles.user.avatar" />
+      <input type="text" name="avatar" ng-model="profiles.user.avatar" auto-focus="$parent.focus" required />
     </label>
-  </form>
 
-  <image-uploader model="profiles.user.avatar" purpose="avatar"></image-uploader>
-  <br /><br />
+    <image-uploader model="profiles.user.avatar" purpose="avatar"></image-uploader>
+    <br /><br />
 
-  <!-- Cancel/Save Buttons -->
-  <div class="row">
-    <div class="small-6 columns">
-      <button class="button expand alert" ng-click="profiles.editAvatar = false">
-        Close
-      </button>
-    </div>
-    <div class="small-6 columns">
-      <button class="button expand" ng-click="profiles.saveAvatar()" ng-disabled="form.$invalid">
+    <!-- Save Button -->
+    <div class="row">
+      <button class="button expand" ng-click="profiles.saveAvatar()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
         Save
       </button>
     </div>
-  </div>
 
-  <div class="row" ng-if="profiles.error.status">
-    <div class="small-12 columns">
-      <div class="alert-box alert radius" ng-bind="profiles.error.message"></div>
-    </div>
-  </div>
+    <!-- Modal Error Message -->
+    <div class="error-container">
+      <div ng-if="profiles.errors.avatar" ng-bind="profiles.errors.avatar.message" ng-class="profiles.errors.avatar.type"></div>
+  </form>
 
   <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Change Signature Modal -->
-<modal class="medium" show="profiles.editSignature">
-  <form name="form" class="css-form" novalidate>
+<modal class="medium" show="profiles.editSignature" on-close="profiles.clearSignatureFields()">
+  <form name="$parent.form" class="css-form" novalidate>
     <label>Signature
-      <textarea type="text" rows="10" placeholder="Signature" ng-model="profiles.user.raw_signature"></textarea>
+      <textarea type="text" rows="10" placeholder="Signature" ng-model="profiles.user.raw_signature" auto-focus="$parent.focus" ></textarea>
     </label>
-  </form>
 
-  <!-- Cancel/Save Buttons -->
-  <div class="row">
-    <div class="small-6 columns">
-      <button class="button expand alert" ng-click="profiles.editSignature = false">
-        Close
-      </button>
-    </div>
-    <div class="small-6 columns">
-      <button class="button expand" ng-click="profiles.saveSignature()" ng-disabled="form.$invalid">
+    <!-- Save Button -->
+    <div class="row">
+      <button class="button expand" ng-click="profiles.saveSignature()" ng-disabled="$parent.form.$invalid || $parent.form.errors">
         Save
       </button>
     </div>
-  </div>
 
-  <div class="row" ng-if="profiles.error.status">
-    <div class="small-12 columns">
-      <div class="alert-box alert radius" ng-bind="profiles.error.message"></div>
-    </div>
-  </div>
+    <!-- Modal Error Message -->
+    <div class="error-container">
+      <div ng-if="profiles.errors.signature" ng-bind="profiles.errors.signature.message" ng-class="profiles.errors.signature.type"></div>
+  </form>
 
   <a class="close-reveal-modal">&#215;</a>
 </modal>
