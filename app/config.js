@@ -203,56 +203,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       else { return $q.reject('Unauthorized'); }
     }];
 
-    // Default child state for moderate is users
-    $urlRouterProvider.when('/moderation', '/moderation/users');
-
-    $stateProvider.state('moderation', {
-      url: '/moderation',
-      parent: 'public-layout',
-      views: {
-        'content': {
-          controller: [function() { this.fullWidth = false; }],
-          controllerAs: 'ModerationCtrl',
-          template: fs.readFileSync(__dirname + '/admin/moderation/index.html'),
-          resolve: { modCheck: modCheck }
-        }
-      }
-    })
-    .state('moderation.users', {
-      url: '/users',
-      views: {
-        'data@moderation': {
-          controller: 'ModUsersCtrl',
-          controllerAs: 'ModerationCtrl',
-          template: fs.readFileSync(__dirname + '/admin/moderation/users.html'),
-          resolve: {
-            modCheck: modCheck,
-            users: ['User', function(User) {
-              return User.all().$promise
-              .then(function(users) { return users; });
-            }]
-          }
-        }
-      }
-    })
-    .state('moderation.posts', {
-      url: '/posts',
-      views: {
-        'data@moderation': {
-          controller: 'ModPostsCtrl',
-          controllerAs: 'ModerationCtrl',
-          template: fs.readFileSync(__dirname + '/admin/moderation/posts.html')
-        }
-      }
-    });
-
     $urlRouterProvider.when('/admin', '/admin/settings/general');
     $urlRouterProvider.when('/admin/', '/admin/settings/general');
 
     $stateProvider.state('admin', {
       url: '/admin',
       parent: 'admin-layout',
-      resolve: { adminCheck: adminCheck }
+      resolve: { userAccess: modCheck || adminCheck }
     });
 
     // Default child state for admin-settings is general
@@ -265,7 +222,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       views: {
         'content': {
           template: fs.readFileSync(__dirname + '/admin/settings/index.html'),
-          resolve: { adminCheck: adminCheck }
+          resolve: { userAccess: adminCheck }
         }
       }
     })
@@ -276,6 +233,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controller: 'GeneralSettingsCtrl',
           controllerAs: 'AdminSettingsCtrl',
           template: fs.readFileSync(__dirname + '/admin/settings/general.html'),
+          resolve: { userAccess: adminCheck }
         }
       }
     })
@@ -286,6 +244,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controller: 'ForumSettingsCtrl',
           controllerAs: 'AdminSettingsCtrl',
           template: fs.readFileSync(__dirname + '/admin/settings/forum.html'),
+          resolve: { userAccess: adminCheck }
         }
       }
     });
@@ -300,7 +259,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       views: {
         'content': {
           template: fs.readFileSync(__dirname + '/admin/management/index.html'),
-          resolve: { adminCheck: adminCheck }
+          resolve: { userAccess: adminCheck }
         }
       }
     })
@@ -312,7 +271,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'AdminManagementCtrl',
           template: fs.readFileSync(__dirname + '/admin/management/boards.html'),
           resolve: {
-            adminCheck: adminCheck,
+            userAccess: adminCheck,
             categories: ['Boards', function(Boards) {
               return Boards.query().$promise
               .then(function(categories) { return categories; });
@@ -333,7 +292,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'AdminManagementCtrl',
           template: fs.readFileSync(__dirname + '/admin/management/users.html'),
           resolve: {
-            adminCheck: adminCheck,
+            userAccess: adminCheck,
             users: ['User', function(User) {
               return User.all().$promise
               .then(function(users) { return users; });
@@ -350,7 +309,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'AdminManagementCtrl',
           template: fs.readFileSync(__dirname + '/admin/management/moderators.html'),
           resolve: {
-            adminCheck: adminCheck,
+            userAccess: adminCheck,
             users: ['User', function(User) {
               return User.all().$promise
               .then(function(users) { return users; });
@@ -367,7 +326,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'AdminManagementCtrl',
           template: fs.readFileSync(__dirname + '/admin/management/administrators.html'),
           resolve: {
-            adminCheck: adminCheck,
+            userAccess: adminCheck,
             users: ['User', function(User) {
               return User.all().$promise
               .then(function(users) { return users; });
@@ -389,7 +348,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controller: [function() { this.fullWidth = true; }],
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/index.html'),
-          resolve: { adminCheck: adminCheck }
+          resolve: { userAccess: modCheck }
         }
       }
     })
@@ -401,7 +360,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/users.html'),
           resolve: {
-            adminCheck: adminCheck,
+            userAccess: modCheck,
             users: ['User', function(User) {
               return User.all().$promise
               .then(function(users) { return users; });
@@ -416,7 +375,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@admin-moderation': {
           controller: 'ModPostsCtrl',
           controllerAs: 'ModerationCtrl',
-          template: fs.readFileSync(__dirname + '/admin/moderation/posts.html')
+          template: fs.readFileSync(__dirname + '/admin/moderation/posts.html'),
+          resolve: { userAccess: modCheck }
         }
       }
     });
@@ -428,7 +388,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'content': {
           controller: 'AnalyticsCtrl',
           controllerAs: 'AnalyticsCtrl',
-          template: fs.readFileSync(__dirname + '/admin/analytics/index.html')
+          template: fs.readFileSync(__dirname + '/admin/analytics/index.html'),
+          resolve: { userAccess: adminCheck }
         }
       }
     });

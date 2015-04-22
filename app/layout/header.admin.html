@@ -14,10 +14,10 @@
   <!-- For Desktop -->
   <section class="top-bar-section">
     <ul class="left">
-      <li><a ng-class="HeaderCtrl.checkAdminRoute('settings') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/settings"><i class="fa fa-cogs"></i>&nbsp;&nbsp;&nbsp;Settings</a></li>
-      <li><a ng-class="HeaderCtrl.checkAdminRoute('management') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/management"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;&nbsp;Management</a></li>
-      <li><a ng-class="HeaderCtrl.checkAdminRoute('moderation') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/moderation"><i class="fa fa-users"></i>&nbsp;&nbsp;&nbsp;Moderation</a></li>
-      <li><a ng-class="HeaderCtrl.checkAdminRoute('analytics') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/analytics"><i class="fa fa-line-chart"></i>&nbsp;&nbsp;&nbsp;Analytics</a></li>
+      <li ng-if="HeaderCtrl.currentUser.isAdmin"><a ng-class="HeaderCtrl.checkAdminRoute('settings') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/settings"><i class="fa fa-cogs"></i>&nbsp;&nbsp;&nbsp;Settings</a></li>
+      <li ng-if="HeaderCtrl.currentUser.isAdmin"><a ng-class="HeaderCtrl.checkAdminRoute('management') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/management"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;&nbsp;Management</a></li>
+      <li ng-if="HeaderCtrl.currentUser.isAdmin || HeaderCtrl.currentUser.isMod"><a ng-class="HeaderCtrl.checkAdminRoute('moderation') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/moderation"><i class="fa fa-users"></i>&nbsp;&nbsp;&nbsp;Moderation</a></li>
+      <li ng-if="HeaderCtrl.currentUser.isAdmin"><a ng-class="HeaderCtrl.checkAdminRoute('analytics') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/analytics"><i class="fa fa-line-chart"></i>&nbsp;&nbsp;&nbsp;Analytics</a></li>
     </ul>
     <!-- Right Nav Section -->
     <ul class="right login-container">
@@ -28,7 +28,6 @@
         <div><img ng-src="{{ HeaderCtrl.currentUser.avatar }}" class="avatar">
         <a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}" ng-bind-html="HeaderCtrl.currentUser.username"></a></div>
         <ul class="dropdown">
-          <li ng-if="HeaderCtrl.currentUser.isMod"><a ng-href="/moderate">Mod Panel</a></li>
           <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}">Profile</a></li>
           <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
         </ul>
