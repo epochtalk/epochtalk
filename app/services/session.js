@@ -88,7 +88,8 @@ module.exports = ['$window',
         return localToken || sessionToken || privateToken;
       },
       isAuthenticated: function() { return authenticated; },
-      setUsername: function(username) { user.username = username; }
+      setUsername: function(username) { user.username = username; },
+      setAvatar: function(avatar) { user.avatar = avatar; }
     };
 
     return serviceAPI;
