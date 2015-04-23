@@ -2,7 +2,6 @@ module.exports = ['$scope', function($scope) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'posts';
-  this.fullWidth = this.parent.ModerationCtrl.fullWidth; // full width in admin view/fixed width in moderator view
   this.tableFilter = 0;
   this.selectedPost = null;
 

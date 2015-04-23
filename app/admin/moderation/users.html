@@ -20,7 +20,7 @@
   </div>
   <div class="admin-table-fix"></div>
 </div>
-<div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+<div class="row full-width">
   <div class="small-12 columns admin-content-selectable">
     <table width="100%">
       <thead>
@@ -32,7 +32,7 @@
         <th width="200">Actions</th>
       </thead>
       <tbody>
-        <tr ng-class="{ 'active-row' : ModerationCtrl.selectedUser === user }" ng-click="ModerationCtrl.selectUser(user)" class="selectable-row pointer" ng-repeat="user in ModerationCtrl.users track by user.username">
+        <tr ng-class="{ 'active-row' : ModerationCtrl.selectedUsername === user.username }" ng-click="ModerationCtrl.selectUser(user.username)" class="selectable-row pointer" ng-repeat="user in ModerationCtrl.users track by user.username">
           <td ng-bind="ModerationCtrl.reportedUsers[{{$index}}].reported_at | humanDate"></td>
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
           <td ng-bind="user.email"></td>
@@ -50,8 +50,12 @@
     <div class="right"><pagination page-count="5" page="1"></pagination></div>
   </div>
 </div>
-<div class="row" ng-class="{'full-width' : ModerationCtrl.fullWidth }">
+<div ng-if="ModerationCtrl.selectedUsername" class="row full-width">
   <div class="small-12 columns">
-    <h5 class="thin-dotted-underline small-12 medium-6">Profile Preview for username</h5>
+    <h5 class="thin-dotted-underline small-12 medium-6">Profile Preview for {{ModerationCtrl.selectedUsername}}</h5>
   </div>
+  <div class="small-12 medium-8 columns">
+    <div ui-view="preview"></div>
+  </div>
+  <div class="small-12 medium-4">&nbsp;</div>
 </div>

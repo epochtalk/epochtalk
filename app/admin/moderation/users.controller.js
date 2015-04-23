@@ -1,14 +1,14 @@
-module.exports = ['$scope', 'users', function($scope, users) {
+module.exports = ['$scope', '$location', 'users', 'user', function($scope, $location, users, user) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
-  this.fullWidth = this.parent.ModerationCtrl.fullWidth; // full width in admin view/fixed width in moderator view
   this.users = users;
   this.tableFilter = 0;
-  this.selectedUser = null;
+  this.selectedUsername = user.username;
 
-  this.selectUser = function(user) {
-    ctrl.selectedUser = user;
+  this.selectUser = function(username) {
+    $location.search('username', username);
+    ctrl.selectedUsername = username;
   };
 
   // Placeholder reported user data

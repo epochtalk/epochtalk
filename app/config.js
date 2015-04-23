@@ -345,28 +345,36 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       parent: 'admin-layout',
       views: {
         'content': {
-          controller: [function() { this.fullWidth = true; }],
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/index.html'),
-          resolve: { userAccess: modCheck }
+          resolve: { userAccess: adminCheck || modCheck }
         }
       }
     })
     .state('admin-moderation.users', {
-      url: '/users',
+      url: '/users?username',
       views: {
         'data@admin-moderation': {
           controller: 'ModUsersCtrl',
           controllerAs: 'ModerationCtrl',
-          template: fs.readFileSync(__dirname + '/admin/moderation/users.html'),
-          resolve: {
-            userAccess: modCheck,
-            users: ['User', function(User) {
-              return User.all().$promise
-              .then(function(users) { return users; });
-            }]
-          }
+          template: fs.readFileSync(__dirname + '/admin/moderation/users.html')
+        },
+        'preview@admin-moderation.users': {
+          controller: 'ProfileCtrl',
+          controllerAs: 'profiles',
+          template: fs.readFileSync(__dirname + '/user/profile.html')
         }
+      },
+      resolve: {
+        userAccess: adminCheck || modCheck,
+        users: ['User', function(User) {
+          return User.all().$promise
+          .then(function(users) { return users; });
+        }],
+        user: [ 'User', '$stateParams', function(User, $stateParams) {
+          return User.get({ id: $stateParams.username }).$promise
+          .then(function(user) { return user; });
+        }]
       }
     })
     .state('admin-moderation.posts', {
