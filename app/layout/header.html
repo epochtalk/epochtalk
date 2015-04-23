@@ -61,7 +61,7 @@
           <ul ng-if="HeaderCtrl.loggedIn()" class="right show-for-small-only">
             <li>
               <div>
-                <img ng-src="{{ HeaderCtrl.currentUser.avatar }}" alt="" class="avatar">
+                <img ng-src="{{ HeaderCtrl.currentUser.avatar }}" class="avatar">
                 <a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}" ng-bind-html="HeaderCtrl.currentUser.username"></a>
               </div>
             </li>

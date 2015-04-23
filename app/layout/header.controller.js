@@ -1,5 +1,5 @@
-module.exports = ['$state', '$stateParams', '$location', '$timeout', 'Auth', 'Session', 'User', 'BreadcrumbSvc',
-  function($state, $stateParams, $location, $timeout, Auth, Session, User, BreadcrumbSvc) {
+module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'BreadcrumbSvc',
+  function($location, $timeout, Auth, Session, User, BreadcrumbSvc) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.loggedIn = Session.isAuthenticated;
@@ -31,11 +31,8 @@ module.exports = ['$state', '$stateParams', '$location', '$timeout', 'Auth', 'Se
         function() {
           ctrl.showLogin = false;
           ctrl.clearLoginFields();
-          $timeout(function() {
             // hack to get drop down to work in nested view pages
-            // the proper fix would be to put the dropdown in a directive
-            $(document).foundation('topbar', 'reflow');
-          }, 10);
+          $timeout(function() { $(document).foundation('topbar', 'reflow'); }, 10);
         },
         function(err) {
           ctrl.errors.login = {};
@@ -57,8 +54,9 @@ module.exports = ['$state', '$stateParams', '$location', '$timeout', 'Auth', 'Se
       // Delay clearing fields to hide clear from users
       $timeout(function() {
         ctrl.registerUser = {};
-        ctrl.registerUser.email = ''; // manual clear because angular bug
-        ctrl.registerUser.username = ''; // manual clear because angular bug
+        // manual clear because angular validation bug
+        ctrl.registerUser.email = '';
+        ctrl.registerUser.username = '';
         delete ctrl.errors.register;
       }, 500);
     };
