@@ -96,7 +96,6 @@ exports.update = {
       delete user.confirmation_token;
       delete user.reset_token;
       delete user.reset_expiration;
-      user.editable = true;
       reply(user);
     })
     .catch(function(err) { reply(Boom.badImplementation(err)); });
@@ -122,7 +121,6 @@ exports.find = {
       delete user.confirmation_token;
       delete user.reset_token;
       if (authUser.id !== user.id) { delete user.email; }
-      if (authUser.id === user.id) { user.editable = true; }
       return user;
     })
     .then(function(user) { reply(user); })

@@ -13,13 +13,13 @@
     <!-- User's Avatar -->
     <div class="profile-avatar-container">
       <img ng-src="{{profiles.displayAvatar}}" />
-      <a href="#" class="after" ng-if="profiles.user.editable" ng-click="profiles.editAvatar = true">
+      <a href="#" class="after" ng-if="profiles.editable()" ng-click="profiles.editAvatar = true">
         <div>Change Avatar</div>
       </a>
     </div>
 
     <!-- Edit Profile Controls -->
-    <div class="profile-edit-container" ng-if="profiles.user.editable">
+    <div class="profile-edit-container" ng-if="profiles.editable()">
       Edit:
       <a href="#" ng-click="profiles.editProfile = true">Profile</a>
       |
@@ -78,7 +78,7 @@
       <div class="row">
         <div class="large-12 columns">
           <strong>Signature:</strong>
-          <a ng-href="#" ng-click="profiles.editSignature = true" ng-if="profiles.user.editable">
+          <a ng-href="#" ng-click="profiles.editSignature = true" ng-if="profiles.editable()">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
         </div>

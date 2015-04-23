@@ -35,7 +35,6 @@ module.exports = ['$state', '$stateParams', '$location', '$timeout', 'Auth', 'Se
             // hack to get drop down to work in nested view pages
             // the proper fix would be to put the dropdown in a directive
             $(document).foundation('topbar', 'reflow');
-            $state.go($state.current, $stateParams, { reload: true });
           }, 10);
         },
         function(err) {
@@ -48,15 +47,7 @@ module.exports = ['$state', '$stateParams', '$location', '$timeout', 'Auth', 'Se
       );
     };
 
-    this.logout = function() {
-      Auth.logout(function() {
-        $timeout(function() {
-          // hack to get drop down to work in nested view pages
-          // the proper fix would be to put the dropdown in a directive
-          $state.go($state.current, $stateParams, { reload: true });
-        });
-      });
-    };
+    this.logout = Auth.logout;
 
     // Registration
     this.registerUser = {}; // Register form model

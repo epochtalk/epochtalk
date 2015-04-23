@@ -4,6 +4,7 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
     $timeout($anchorScroll);
     this.errors = {};
     this.user = user;
+    this.editable = function() { return Session.user.id === user.id; };
     this.displayUsername = angular.copy(user.username);
     this.displayEmail = angular.copy(user.email);
     this.user.dob = $filter('date')(this.user.dob, 'longDate');
@@ -157,7 +158,6 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
         $timeout($anchorScroll);
       })
       .catch(function(err) {
-        console.log(err);
         ctrl.errors.password = {};
         ctrl.errors.password.type = 'alert';
         ctrl.errors.password.message = 'Error updating password';
