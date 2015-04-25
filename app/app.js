@@ -2,6 +2,7 @@
 require('angular/angular');
 require('angular-resource/angular-resource');
 require('angular-sanitize/angular-sanitize');
+require('angular-animate/angular-animate');
 require('angular-ui-router');
 jQuery = require('foundation/js/vendor/jquery');
 $ = jQuery;
@@ -14,6 +15,7 @@ require('foundation/js/foundation');
 var app = angular.module('ept', [
   'ngResource',
   'ngSanitize',
+  'ngAnimate',
   'ui.router'
 ]);
 
