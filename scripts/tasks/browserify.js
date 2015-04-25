@@ -22,9 +22,7 @@ module.exports = function(watch, callback) {
   if (watch) {
     bundler = watchify(bundler);
     bundler.on('update', function() {
-      bundler
-      .transform('brfs')
-      .bundle(function(err, data) {
+      bundler.bundle(function(err, data) {
         fs.writeFile('./public/js/bundle.js', data, function(err) {
           if (err) { return console.log(err); }
           console.log('Bundle Updated.');
