@@ -1,10 +1,9 @@
-module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'BreadcrumbSvc',
-  function($location, $timeout, Auth, Session, User, BreadcrumbSvc) {
+module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert',
+  function($location, $timeout, Auth, Session, User, BreadcrumbSvc, Alert) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
-    this.errors = {};
 
     this.checkAdminRoute = function(route) {
       var pathArr = $location.path().split('/');
@@ -17,15 +16,11 @@ module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'Breadcrum
     this.user = {};
     this.showLogin = false;
     this.clearLoginFields = function() {
-      $timeout(function() {
-        ctrl.user = {};
-        delete ctrl.errors.login;
-      }, 500);
+      $timeout(function() { ctrl.user = {}; }, 500);
     };
 
     this.login = function() {
       if (ctrl.user.username.length === 0 || ctrl.user.password.length === 0) { return; }
-      delete ctrl.errors.login;
 
       Auth.login(ctrl.user,
         function() {
@@ -35,11 +30,8 @@ module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'Breadcrum
           $timeout(function() { $(document).foundation('topbar', 'reflow'); }, 10);
         },
         function(err) {
-          ctrl.errors.login = {};
-          if (err.data && err.data.message) {
-            ctrl.errors.login.message = err.data.message;
-          }
-          else { ctrl.errors.login.message = 'Login Failed'; }
+          if (err.data && err.data.message) { Alert.error(err.data.message); }
+          else { Alert.error('Login Failed'); }
         }
       );
     };
@@ -57,17 +49,14 @@ module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'Breadcrum
         // manual clear because angular validation bug
         ctrl.registerUser.email = '';
         ctrl.registerUser.username = '';
-        delete ctrl.errors.register;
       }, 500);
     };
 
     this.register = function() {
       if (Session.isAuthenticated()) {
-        ctrl.errors.register = {};
-        ctrl.errors.register.message = 'Cannot register new user while logged in.';
+        Alert.error('Cannot register new user while logged in.');
         return;
       }
-      delete ctrl.errors.register;
 
       Auth.register(ctrl.registerUser,
         function() {
@@ -75,10 +64,7 @@ module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'Breadcrum
           ctrl.clearRegisterFields();
           $timeout(function() { ctrl.showRegisterSuccess = true; }, 500);
         },
-        function(err) {
-          ctrl.errors.register = {};
-          ctrl.errors.register.message = err.data.message;
-        }
+        function(err) { Alert.error(err.data.message); }
       );
     };
 
@@ -92,14 +78,12 @@ module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'Breadcrum
         ctrl.recoverSubmitted = false;
         ctrl.recoverBtnLabel = 'Reset';
         ctrl.recoverQuery = '';
-        delete ctrl.errors.recover;
       }, 500);
     };
 
     this.recover = function() {
       if (ctrl.recoverQuery.length === 0) { return; }
 
-      delete ctrl.errors.recover;
       ctrl.recoverSubmitted = true;
       ctrl.recoverBtnLabel = 'Loading...';
 
@@ -108,8 +92,7 @@ module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'Breadcrum
       .catch(function(err) {
         ctrl.recoverSubmitted = false;
         ctrl.recoverBtnLabel = 'Reset';
-        ctrl.errors.recover = {};
-        ctrl.errors.recover.message = err.data.message;
+        Alert.error(err.data.message);
       });
     };
 

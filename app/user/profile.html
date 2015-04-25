@@ -144,18 +144,13 @@
         Confirm
       </button>
     </div>
-
-    <!-- Modal Error Message -->
-    <div class="error-container">
-      <div ng-if="profiles.errors.password" ng-bind="profiles.errors.password.message" ng-class="profiles.errors.password.type"></div>
-    </div>
   </form>
 
   <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Edit Profile Modal -->
-<modal class="medium" show="profiles.editProfile" on-close="profiles.clearProfileFields()">
+<modal class="medium" show="profiles.editProfile">
   <form name="$parent.form" class="css-form" novalidate>
     <!-- Profile Fields -->
     <div class="row">
@@ -221,18 +216,13 @@
         Save
       </button>
     </div>
-
-    <!-- Modal Error Message -->
-    <div class="error-container">
-      <div ng-if="profiles.errors.profile" ng-bind="profiles.errors.profile.message" ng-class="profiles.errors.profile.type"></div>
-    </div>
   </form>
 
   <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Change Avatar Modal -->
-<modal class="small" show="profiles.editAvatar" on-close="profiles.clearAvatarFields()">
+<modal class="small" show="profiles.editAvatar">
   <form name="$parent.form" class="css-form" novalidate>
     <label>Avatar address
       <input type="text" name="avatar" ng-model="profiles.user.avatar" auto-focus="$parent.focus" required />
@@ -247,17 +237,13 @@
         Save
       </button>
     </div>
-
-    <!-- Modal Error Message -->
-    <div class="error-container">
-      <div ng-if="profiles.errors.avatar" ng-bind="profiles.errors.avatar.message" ng-class="profiles.errors.avatar.type"></div>
   </form>
 
   <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Change Signature Modal -->
-<modal class="medium" show="profiles.editSignature" on-close="profiles.clearSignatureFields()">
+<modal class="medium" show="profiles.editSignature">
   <form name="$parent.form" class="css-form" novalidate>
     <label>Signature
       <textarea type="text" rows="10" placeholder="Signature" ng-model="profiles.user.raw_signature" auto-focus="$parent.focus" ></textarea>
@@ -269,10 +255,6 @@
         Save
       </button>
     </div>
-
-    <!-- Modal Error Message -->
-    <div class="error-container">
-      <div ng-if="profiles.errors.signature" ng-bind="profiles.errors.signature.message" ng-class="profiles.errors.signature.type"></div>
   </form>
 
   <a class="close-reveal-modal">&#215;</a>

@@ -1,8 +1,7 @@
-module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter', '$anchorScroll',
-  function(user, User, Session, $location, $timeout, $filter, $anchorScroll) {
+module.exports = ['user', 'User', 'Session', 'Alert', '$location', '$timeout', '$filter', '$anchorScroll',
+  function(user, User, Session, Alert, $location, $timeout, $filter, $anchorScroll) {
     var ctrl = this;
     $timeout($anchorScroll);
-    this.errors = {};
     this.user = user;
     this.editable = function() { return Session.user.id === user.id; };
     this.displayUsername = angular.copy(user.username);
@@ -23,25 +22,14 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
     this.userAge = calcAge(this.user.dob);
 
     // Show success message if user changed their username
-    this.pageStatus = {};
     if ($location.search().success) {
       $location.search('success', undefined);
-      updatePageStatus('success', 'Successfully saved profile');
-    }
-    function updatePageStatus(type, message) {
-      ctrl.pageStatus.status = true;
-      ctrl.pageStatus.type = type;
-      ctrl.pageStatus.message = message;
+      Alert.success('Successfully saved profile');
     }
 
     // Edit Profile
     this.editProfile = false;
-    this.clearPasswordFields = function() {
-      $timeout(function() { delete ctrl.errors.profile; }, 500);
-    };
-
     this.saveProfile = function() {
-      delete ctrl.errors.profile;
       var changeProfileUser = {
         id: ctrl.user.id,
         username: ctrl.user.username,
@@ -59,36 +47,26 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
       .then(function(data) {
         ctrl.user = data;
 
-        // Reformat DOB and calculate age on save
-        ctrl.user.dob = $filter('date')(ctrl.user.dob, 'longDate');
-        ctrl.userAge = calcAge(ctrl.user.dob);
-
         // redirect page if username changed
         if (ctrl.displayUsername !== ctrl.user.username) {
+          Session.setUsername(ctrl.user.username);
           $location.search('success', true);
           $location.path('/profiles/' + ctrl.user.username);
-          Session.setUsername(ctrl.user.username);
         }
-
-        ctrl.editProfile = false;
-        updatePageStatus('success', 'Successfully saved profile');
-        $timeout($anchorScroll);
+        else {
+          // Reformat DOB and calculate age on save
+          ctrl.editProfile = false;
+          ctrl.user.dob = $filter('date')(ctrl.user.dob, 'longDate');
+          ctrl.userAge = calcAge(ctrl.user.dob);
+          Alert.success('Successfully saved profile');
+        }
       })
-      .catch(function(err) {
-        ctrl.errors.profile = {};
-        ctrl.errors.profile.type = 'alert';
-        ctrl.errors.profile.message = 'Profile could not be updated';
-      });
+      .catch(function(err) { Alert.error('Profile could not be updated'); });
     };
 
     // Edit Avatar
     this.editAvatar = false;
-    this.clearPasswordFields = function() {
-      $timeout(function() { delete ctrl.errors.avatar; }, 500);
-    };
-
     this.saveAvatar = function() {
-      delete ctrl.errors.avatar;
       var changeAvatarUser = {
         id: ctrl.user.id,
         avatar: ctrl.user.avatar,
@@ -100,24 +78,14 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
         ctrl.displayAvatar = angular.copy(data.avatar || 'http://placehold.it/400/cccccc/&text=Avatar');
         Session.setAvatar(ctrl.displayAvatar);
         ctrl.editAvatar = false;
-        updatePageStatus('success', 'Successfully updated avatar');
-        $timeout($anchorScroll);
+        Alert.success('Successfully updated avatar');
       })
-      .catch(function(err) {
-        ctrl.errors.avatar = {};
-        ctrl.errors.avatar.type = 'alert';
-        ctrl.errors.avatar.message = 'Avatar could not be updated';
-      });
+      .catch(function(err) { Alert.error('Avatar could not be updated'); });
     };
 
     // Edit Signature
     this.editSignature = false;
-    this.clearSignatureFields = function() {
-      $timeout(function() { delete ctrl.errors.signature; }, 500);
-    };
-
     this.saveSignature = function() {
-      delete ctrl.errors.signature;
       var changeSigUser = {
         id: ctrl.user.id,
         raw_signature: ctrl.user.raw_signature
@@ -127,41 +95,26 @@ module.exports = ['user', 'User', 'Session', '$location', '$timeout', '$filter',
       .then(function(data) {
         ctrl.user = data;
         ctrl.editSignature = false;
-        updatePageStatus('success', 'Successfully updated signature');
-        $timeout($anchorScroll);
+        Alert.success('Successfully updated signature');
       })
-      .catch(function(err) {
-        ctrl.errors.signature = {};
-        ctrl.errors.signature.type = 'alert';
-        ctrl.errors.signature.message = 'Signature could not be updated';
-      });
+      .catch(function(err) { Alert.error('Signature could not be updated'); });
     };
 
     // Edit Password
     this.editPassword = false;
     this.passData = { id: ctrl.user.id };
     this.clearPasswordFields = function() {
-      $timeout(function() {
-        ctrl.passData = { id: ctrl.user.id };
-        delete ctrl.errors.password;
-      }, 500);
+      $timeout(function() { ctrl.passData = { id: ctrl.user.id }; }, 500);
     };
 
     this.savePassword = function() {
-      delete ctrl.errors.password;
-
       User.update(ctrl.passData).$promise
       .then(function() {
         ctrl.clearPasswordFields();
         ctrl.editPassword = false;
-        updatePageStatus('success', 'Sucessfully changed account password');
-        $timeout($anchorScroll);
+        Alert.success('Sucessfully changed account password');
       })
-      .catch(function(err) {
-        ctrl.errors.password = {};
-        ctrl.errors.password.type = 'alert';
-        ctrl.errors.password.message = 'Error updating password';
-      });
+      .catch(function(err) { Alert.error('Error updating password'); });
     };
 
     // DUMMY CHART DATA

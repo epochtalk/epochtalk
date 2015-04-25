@@ -18,10 +18,6 @@
       </button>
     </div>
 
-    <div class="error-container">
-      <div ng-if="HeaderCtrl.errors.login" ng-bind="HeaderCtrl.errors.login.message"></div>
-    </div>
-
     <div class="form-action-secondary">
       <a ng-click="HeaderCtrl.swapModals()">
         Help, I forgot my password!
@@ -46,10 +42,6 @@
     <div class="form-action">
       <button class="button no-margin recover-btn" ng-click="HeaderCtrl.recover()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.recoverSubmitted" ng-bind="HeaderCtrl.recoverBtnLabel"></button>
-    </div>
-
-    <div class="error-container">
-      <div class="" ng-if="HeaderCtrl.errors.recover" ng-bind="HeaderCtrl.errors.recover.message"></div>
     </div>
 
     <div class="form-action-secondary">
@@ -140,10 +132,7 @@
         Register
       </button>
     </div>
-
-    <div class="error-container">
-      <div ng-if="HeaderCtrl.errors.register" ng-bind="HeaderCtrl.errors.register.message"></div>
-    </div>
   </form>
+  
   <a class="close-reveal-modal">&#215;</a>
 </modal>

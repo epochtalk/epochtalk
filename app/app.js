@@ -57,6 +57,7 @@ app.directive('resizeable',        require('./components/resizeable/resizeable.d
 app.directive('imageLoader', require('./components/image_loader/image_loader.directive.js'));
 app.directive('postProcessing', require('./components/post-processing/post-processing.directive.js'));
 app.directive('imageUploader', require('./components/image_uploader/image_uploader.directive.js'));
+app.directive('alert', require('./components/alert/alert.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))
