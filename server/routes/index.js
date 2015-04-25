@@ -11,9 +11,15 @@ var threads = require(path.normalize(__dirname + '/threads'));
 var posts = require(path.normalize(__dirname + '/posts'));
 var users = require(path.normalize(__dirname + '/users'));
 var auth = require(path.normalize(__dirname + '/auth'));
+var auth = require(path.normalize(__dirname + '/auth'));
+var adminsSettings = require(path.normalize(__dirname + '/admin/settings'));
 
 function buildEndpoints() {
   return [].concat(breadcrumbs, categories, boards, threads, posts, users, auth);
+}
+
+function buildAdminEndpoints() {
+  return [].concat(adminsSettings);
 }
 
 exports.endpoints = function() {
@@ -109,7 +115,13 @@ exports.endpoints = function() {
     route.path = '/api' + route.path;
   });
 
+  // namespace admin routes
+  var apiAdminRoutes = buildAdminEndpoints();
+  apiAdminRoutes.forEach(function(route) {
+    route.path = '/api/admin' + route.path;
+  });
+
   // add core routes
-  var routes = localRoutes.concat(apiRoutes);
+  var routes = localRoutes.concat(apiRoutes, apiAdminRoutes);
   return routes;
 };

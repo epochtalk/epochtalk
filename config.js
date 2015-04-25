@@ -18,6 +18,13 @@ var config = {
   publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080/',
   privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure',
   loginRequired: parseBool(process.env.LOGIN_REQUIRED) || false,
+  website: {
+    title: process.env.WEBSITE_TITLE || 'Epochtalk Forums',
+    description: process.env.WEBSITE_DESCRIPTION || 'Open source forum software',
+    keywords: process.env.WEBSITE_KEYWORDS || 'open source, free forum, forum software, forum',
+    logo: process.env.WEBSITE_LOGO || '',
+    favicon: process.env.WEBSITE_FAVICON || ''
+  },
   emailer: {
     sender: process.env.EMAILER_SENDER || 'info@example.com',
     host: process.env.EMAILER_HOST || 'smtp.gmail.com',
@@ -38,10 +45,10 @@ var config = {
     s3: {
       root: process.env.IMAGES_S3_ROOT || 'http://some.where',
       dir: process.env.IMAGES_S3_DIR || '/images',
-      bucket: process.env.S3_BUCKET || 'bukkit',
-      region: process.env.S3_REGION || 'region',
-      accessKey: process.env.S3_ACCESS_KEY || 'testkey',
-      secretKey: process.env.S3_SECRET_KEY || 'testkey',
+      bucket: process.env.IMAGES_S3_BUCKET || 'bukkit',
+      region: process.env.IMAGES_S3_REGION || 'region',
+      accessKey: process.env.IMAGES_S3_ACCESS_KEY || 'testkey',
+      secretKey: process.env.IMAGES_S3_SECRET_KEY || 'testkey',
     }
   }
 };
