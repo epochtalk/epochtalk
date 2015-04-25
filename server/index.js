@@ -4,6 +4,7 @@ var Good = require('good');
 var mkdirp = require('mkdirp');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
+var _ = require('lodash');
 var methods = require(path.normalize(__dirname + '/methods'));
 var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
 var config = require(path.normalize(__dirname + '/../config'));
@@ -55,8 +56,11 @@ server.method(methods);
 server.register({ register: require('lout') }, defaultRegisterCb);
 
 server.start(function () {
-  var configCopy = config;
-  configCopy.emailer.pass = configCopy.emailer.pass.replace(/./g, '*');
-  server.log('debug', 'config: ' + JSON.stringify(configCopy, undefined, 2));
+  var configClone= _.cloneDeep(config);
+  configClone.privateKey = configClone.privateKey.replace(/./g, '*');
+  configClone.emailer.pass = configClone.emailer.pass.replace(/./g, '*');
+  configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*');
+  configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*');
+  server.log('debug', 'config: ' + JSON.stringify(configClone, undefined, 2));
   server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
 });
