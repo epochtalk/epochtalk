@@ -167,7 +167,16 @@ dialog .close-reveal-modal { font-size: 1.5rem; right: 1rem; }
 .input-section small { display: block; }
 form .input-section:last-child {margin-bottom: 0px; }
 
-// Animations -------------------------------- //
+// Alert Service ----------------------------- //
+.alertService {
+  position: fixed;
+  top: 15px;
+  left: 20%;
+  right: 20%;
+  z-index: 9000;
+}
+
+/* Animations  */
 .repeated-item.ng-enter,
 .repeated-item.ng-leave,
 .repeated-item.ng-move {
