@@ -86,6 +86,10 @@ label > input[type="checkbox"] { margin-right: .25rem; }
 .secondary-action:hover,
 .secondary-action:focus { color: $color-active; }
 
+// BBCode Styles ----------------------------------------------------------- //
+.spoiler { color: black; background-color: black; }
+.spoiler:hover { color: white; }
+
 // Page Structure ---------------------------------------------------------- //
 .main-content {
   min-height: 100%;
