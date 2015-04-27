@@ -233,7 +233,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controller: 'GeneralSettingsCtrl',
           controllerAs: 'AdminSettingsCtrl',
           template: fs.readFileSync(__dirname + '/admin/settings/general.html'),
-          resolve: { userAccess: adminCheck }
+          resolve: {
+            userAccess: adminCheck,
+            settings: ['Settings', function(Settings) {
+              return Settings.all().$promise
+              .then(function(settings) { return settings; });
+            }],
+          }
         }
       }
     })

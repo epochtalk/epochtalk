@@ -1,5 +1,6 @@
-module.exports = ['$scope', function($scope) {
+module.exports = ['$scope', 'settings', function($scope, settings) {
   this.parent = $scope.$parent;
   this.parent.tab = 'general';
-  this.localImageServer = true;
+  this.localImageServer = settings.images.storage === 'local';
+  this.settings = settings;
 }];
