@@ -52,12 +52,13 @@ app.directive('slideToggle',        require('./components/slide_toggle/slide-tog
 app.directive('autoFocus',          require('./components/autofocus/autofocus.directive.js'));
 app.directive('uniqueUsername',     require('./components/unique_username/unique-username.directive.js'));
 app.directive('uniqueEmail',        require('./components/unique_email/unique-email.directive.js'));
-app.directive('scrollLock',        require('./components/scroll_lock/scroll-lock.directive.js'));
-app.directive('resizeable',        require('./components/resizeable/resizeable.directive.js'));
-app.directive('imageLoader', require('./components/image_loader/image_loader.directive.js'));
-app.directive('postProcessing', require('./components/post-processing/post-processing.directive.js'));
-app.directive('imageUploader', require('./components/image_uploader/image_uploader.directive.js'));
-app.directive('alert', require('./components/alert/alert.directive.js'));
+app.directive('scrollLock',         require('./components/scroll_lock/scroll-lock.directive.js'));
+app.directive('resizeable',         require('./components/resizeable/resizeable.directive.js'));
+app.directive('imageLoader',        require('./components/image_loader/image_loader.directive.js'));
+app.directive('postProcessing',     require('./components/post-processing/post-processing.directive.js'));
+app.directive('imageUploader',      require('./components/image_uploader/image_uploader.directive.js'));
+app.directive('alert',              require('./components/alert/alert.directive.js'));
+app.directive('disableAnimation',   require('./components/disable_animation/disable-animation.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))
