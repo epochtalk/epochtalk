@@ -3,6 +3,7 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var _ = require('lodash');
+var renameKeys = require('deep-rename-keys');
 var pre = require(path.normalize(__dirname + '/pre'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
 
@@ -40,6 +41,15 @@ var writeConfigToEnv = function(updatedConfig) {
   });
 };
 
+var camelCaseToUnderscore = function(obj) {
+  if (_.isObject(obj)) {
+    return renameKeys(obj, function(key) {
+      return key.split(/(?=[A-Z])/).join('_').toLowerCase();
+    });
+  }
+  return obj;
+};
+
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   pre: [ { method: pre.adminCheck } ],
@@ -61,6 +71,7 @@ exports.find = {
       splitName.forEach(function(child) { result = result[child]; });
     }
     else { result = config[configName]; }
+    result = camelCaseToUnderscore(result);
     reply(result || Boom.badRequest('Setting not found'));
   }
 };
@@ -81,8 +92,8 @@ exports.update = {
         title: Joi.string(),
         description: Joi.string(),
         keywords: Joi.string(),
-        logo: Joi.string(),
-        favicon: Joi.string()
+        logo: Joi.string().allow(''),
+        favicon: Joi.string().allow('')
       }),
       emailer: Joi.object().keys({
         sender: Joi.string(),
@@ -94,7 +105,7 @@ exports.update = {
       }),
       images: Joi.object().keys({
         storage: Joi.string(),
-        max_size: Joi.string(),
+        max_size: Joi.number(),
         expiration: Joi.number(),
         interval: Joi.number(),
         local: Joi.object().keys({

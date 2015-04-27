@@ -1,6 +1,5 @@
 <div class="content-header full-width">
   <h2>Settings</h2>
-
     <!-- Tabs -->
     <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'general'">
       <dd class="no-select" ng-class="{'active': tab == 'general'}">
@@ -10,6 +9,11 @@
         <a ui-sref=".forum" ng-click="tab = 'forum'">Forum</a>
       </dd>
     </dl>
-  </div>
+
+    <div class="right">
+      <button ng-click="child.save()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>&nbsp;
+      <button ng-click="child.reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset</button>
+    </div>
+</div>
 
 <div ui-view="data" class="data"></div>

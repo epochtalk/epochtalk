@@ -221,6 +221,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       parent: 'admin-layout',
       views: {
         'content': {
+          controller: function($scope) { $scope.child = {}; },
           template: fs.readFileSync(__dirname + '/admin/settings/index.html'),
           resolve: { userAccess: adminCheck }
         }
