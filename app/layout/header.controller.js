@@ -1,5 +1,5 @@
-module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert',
-  function($location, $timeout, Auth, Session, User, BreadcrumbSvc, Alert) {
+module.exports = ['$location', '$timeout', '$state', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert',
+  function($location, $timeout, $state, Auth, Session, User, BreadcrumbSvc, Alert) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.loggedIn = Session.isAuthenticated;
@@ -59,10 +59,24 @@ module.exports = ['$location', '$timeout', 'Auth', 'Session', 'User', 'Breadcrum
       }
 
       Auth.register(ctrl.registerUser,
-        function() {
+        function(registeredUser) {
+          var loginUser = {
+            username: ctrl.registerUser.username,
+            password: ctrl.registerUser.password
+          };
           ctrl.showRegister = false;
           ctrl.clearRegisterFields();
-          $timeout(function() { ctrl.showRegisterSuccess = true; }, 500);
+          if (registeredUser.confirm_token) {
+            $timeout(function() { ctrl.showRegisterSuccess = true; }, 500);
+          }
+          else {
+            ctrl.user.username = loginUser.username;
+            ctrl.user.password = loginUser.password;
+            ctrl.login();
+            $timeout(function() {
+              $state.go($state.current, {}, { reload: true });
+            }, 500);
+          }
         },
         function(err) { Alert.error(err.data.message); }
       );

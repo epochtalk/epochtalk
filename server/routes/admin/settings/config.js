@@ -87,6 +87,7 @@ exports.update = {
       log_enabled: Joi.boolean(),
       public_url: Joi.string(),
       private_key: Joi.string(),
+      verify_registration: Joi.boolean(),
       login_required: Joi.boolean(),
       website: Joi.object().keys({
         title: Joi.string(),

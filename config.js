@@ -17,6 +17,7 @@ var config = {
   logEnabled: parseBool(process.env.LOG_ENABLED) || true,
   publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080/',
   privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure',
+  verifyRegistration: parseBool(process.env.VERIFY_REGISTRATION) || true,
   loginRequired: parseBool(process.env.LOGIN_REQUIRED) || false,
   website: {
     title: process.env.WEBSITE_TITLE || 'Epochtalk Forums',

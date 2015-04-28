@@ -133,22 +133,28 @@ exports.register = {
       username: request.payload.username,
       email: request.payload.email,
       password: request.payload.password,
-      confirmation_token: crypto.randomBytes(20).toString('hex')
+      confirmation_token: config.verifyRegistration ? crypto.randomBytes(20).toString('hex') : null
     };
     // check that username or email does not already exist
     return db.users.create(newUser)
     .then(function(user) { // send confirmation email
-      var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
-      reply({ statusCode: 200, message: 'Successfully Created Account',
-        username: user.username,
-        confirm_token: user.confirmation_token,
-        confirm_url: confirmUrl
-      });
-      var emailParams = {
-        email: user.email, username: user.username, confirm_url: confirmUrl
+      var result = {
+        statusCode: 200,
+        message: 'Successfully Created Account',
+        username: user.username
       };
-      request.server.log('debug', emailParams);
-      emailer.send('confirmAccount', emailParams);
+      if (config.verifyRegistration) {
+        var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
+        result.confirm_token = user.confirmation_token;
+        result.confirm_url = confirmUrl;
+        reply(result);
+        var emailParams = {
+          email: user.email, username: user.username, confirm_url: confirmUrl
+        };
+        request.server.log('debug', emailParams);
+        emailer.send('confirmAccount', emailParams);
+      }
+      else { reply(result); }
     })
     .catch(function(err) {
       return reply(Boom.badImplementation(err));
