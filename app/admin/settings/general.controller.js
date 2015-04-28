@@ -15,16 +15,12 @@ module.exports = ['$scope', 'settings', 'Settings', function($scope, settings, S
 
   $scope.child.save = function() {
     Settings.update(ctrl.settings).$promise
-    .then(function() {
-      // success
-      console.log('save successful');
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
+    .then(function() { ctrl.originalSettings = angular.copy(ctrl.settings); })
+    .catch(function(err) { console.log(err); });
   };
 
   $scope.child.reset = function() {
     ctrl.settings = angular.copy(ctrl.originalSettings);
+    ctrl.localImageServer = ctrl.settings.images.storage === 'local';
   };
 }];

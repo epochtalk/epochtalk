@@ -33,6 +33,8 @@ var writeConfigToEnv = function(updatedConfig) {
           stream.write(environmentKey + '=' + value + '\n');
           // Set the env var for the running node process
           process.env[environmentKey] = value;
+          // Update the config object
+          oldConfig[key] = value;
         }
       });
     };
@@ -61,7 +63,6 @@ exports.find = {
   handler: function(request, reply) {
     var configName = request.params.name;
     var result;
-
     if (configName === 'all') { result = config; }
     else if (configName.indexOf('_') > -1) {
       var splitName = configName.split('_');
