@@ -1499,3 +1499,15 @@ input[type].hide-radio {
     }
   }
 }
+
+// Disable ngAnimate Animations
+.secret {
+    //Use this for transitions
+    &.ng-show,
+    &.ng-hide {
+      -webkit-transition: none !important;
+      -moz-transition: none !important;
+      -o-transition: none !important;
+      transition: none !important;
+    }
+}

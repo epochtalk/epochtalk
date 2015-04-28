@@ -60,7 +60,6 @@ app.directive('imageLoader',        require('./components/image_loader/image_loa
 app.directive('postProcessing',     require('./components/post-processing/post-processing.directive.js'));
 app.directive('imageUploader',      require('./components/image_uploader/image_uploader.directive.js'));
 app.directive('alert',              require('./components/alert/alert.directive.js'));
-app.directive('disableAnimation',   require('./components/disable_animation/disable-animation.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))

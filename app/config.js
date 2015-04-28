@@ -222,9 +222,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       views: {
         'content': {
           controller: function($scope) { $scope.child = {}; },
-          template: fs.readFileSync(__dirname + '/admin/settings/index.html'),
-          resolve: { userAccess: adminCheck }
+          template: fs.readFileSync(__dirname + '/admin/settings/index.html')
         }
+      },
+      resolve: {
+        userAccess: adminCheck,
+        settings: ['Settings', function(Settings) {
+          return Settings.get().$promise
+          .then(function(settings) { return settings; });
+        }]
       }
     })
     .state('admin-settings.general', {
@@ -233,14 +239,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@admin-settings': {
           controller: 'GeneralSettingsCtrl',
           controllerAs: 'AdminSettingsCtrl',
-          template: fs.readFileSync(__dirname + '/admin/settings/general.html'),
-          resolve: {
-            userAccess: adminCheck,
-            settings: ['Settings', function(Settings) {
-              return Settings.all().$promise
-              .then(function(settings) { return settings; });
-            }],
-          }
+          template: fs.readFileSync(__dirname + '/admin/settings/general.html')
         }
       }
     })
@@ -250,8 +249,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@admin-settings': {
           controller: 'ForumSettingsCtrl',
           controllerAs: 'AdminSettingsCtrl',
-          template: fs.readFileSync(__dirname + '/admin/settings/forum.html'),
-          resolve: { userAccess: adminCheck }
+          template: fs.readFileSync(__dirname + '/admin/settings/forum.html')
         }
       }
     });

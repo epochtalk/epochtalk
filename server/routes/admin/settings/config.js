@@ -1,7 +1,6 @@
 var fs = require('fs');
 var Joi = require('joi');
 var path = require('path');
-var Boom = require('boom');
 var _ = require('lodash');
 var renameKeys = require('deep-rename-keys');
 var pre = require(path.normalize(__dirname + '/pre'));
@@ -55,25 +54,8 @@ var camelCaseToUnderscore = function(obj) {
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   pre: [ { method: pre.adminCheck } ],
-  validate: {
-    params: {
-      name: Joi.string().required()
-    }
-  },
   handler: function(request, reply) {
-    var configName = request.params.name;
-    var result;
-    if (configName === 'all') { result = config; }
-    else if (configName.indexOf('_') > -1) {
-      var splitName = configName.split('_');
-      var parent = splitName[0];
-      result = config[parent];
-      splitName = splitName.slice(1);
-      splitName.forEach(function(child) { result = result[child]; });
-    }
-    else { result = config[configName]; }
-    result = camelCaseToUnderscore(result);
-    reply(result || Boom.badRequest('Setting not found'));
+    reply(camelCaseToUnderscore(config));
   }
 };
 

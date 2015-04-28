@@ -14,7 +14,7 @@ module.exports = ['$scope', 'settings', 'Settings', function($scope, settings, S
   this.showSmtpPass = false;
 
   $scope.child.save = function() {
-    Settings.update(ctrl.settings).$promise
+    Settings.save(ctrl.settings).$promise
     .then(function() { ctrl.originalSettings = angular.copy(ctrl.settings); })
     .catch(function(err) { console.log(err); });
   };
