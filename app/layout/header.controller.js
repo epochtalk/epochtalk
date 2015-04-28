@@ -60,25 +60,19 @@ module.exports = ['$location', '$timeout', '$state', 'Auth', 'Session', 'User', 
 
       Auth.register(ctrl.registerUser,
         function(registeredUser) {
-          var loginUser = {
-            username: ctrl.registerUser.username,
-            password: ctrl.registerUser.password
-          };
           ctrl.showRegister = false;
           ctrl.clearRegisterFields();
           if (registeredUser.confirm_token) {
             $timeout(function() { ctrl.showRegisterSuccess = true; }, 500);
           }
           else {
-            ctrl.user.username = loginUser.username;
-            ctrl.user.password = loginUser.password;
-            ctrl.login();
-            $timeout(function() {
-              $state.go($state.current, {}, { reload: true });
-            }, 500);
+            $timeout(function() { $state.go($state.current, {}, { reload: true }); }, 500);
           }
         },
-        function(err) { Alert.error(err.data.message); }
+        function(err) {
+          if (err.data && err.data.message) { Alert.error(err.data.message); }
+          else { Alert.error('Registration Error'); }
+        }
       );
     };
 

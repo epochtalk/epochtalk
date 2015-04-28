@@ -137,24 +137,38 @@ exports.register = {
     };
     // check that username or email does not already exist
     return db.users.create(newUser)
-    .then(function(user) { // send confirmation email
-      var result = {
-        statusCode: 200,
-        message: 'Successfully Created Account',
-        username: user.username
-      };
-      if (config.verifyRegistration) {
+    .then(function(user) {
+      if (config.verifyRegistration) {  // send confirmation email
         var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
-        result.confirm_token = user.confirmation_token;
-        result.confirm_url = confirmUrl;
-        reply(result);
+        var regReply = {
+          statusCode: 200,
+          message: 'Successfully Created Account',
+          username: user.username,
+          confirm_token: user.confirmation_token,
+          confirm_url: confirmUrl
+        };
+        reply(regReply);
         var emailParams = {
           email: user.email, username: user.username, confirm_url: confirmUrl
         };
         request.server.log('debug', emailParams);
         emailer.send('confirmAccount', emailParams);
       }
-      else { reply(result); }
+      else { // Log user in after registering
+        var token = buildToken(user);
+        var key = user.id + token;
+        memDb.put(key, token, function(err) {
+          if (err) { throw new Error(err); }
+          var regReply = {
+            token: token,
+            id: user.id,
+            username: user.username,
+            avatar: user.avatar,
+            roles: user.roles
+          };
+          return reply(regReply);
+        });
+      }
     })
     .catch(function(err) {
       return reply(Boom.badImplementation(err));
