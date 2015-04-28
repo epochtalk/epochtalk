@@ -4,6 +4,7 @@ require('angular-resource/angular-resource');
 require('angular-sanitize/angular-sanitize');
 require('angular-animate/angular-animate');
 require('angular-ui-router');
+require('angular-loading-bar');
 jQuery = require('foundation/js/vendor/jquery');
 $ = jQuery;
 require('nestable/jquery.nestable');
@@ -16,7 +17,8 @@ var app = angular.module('ept', [
   'ngResource',
   'ngSanitize',
   'ngAnimate',
-  'ui.router'
+  'ui.router',
+  'angular-loading-bar'
 ]);
 
 // Register Forum Page Controllers

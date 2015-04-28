@@ -30,6 +30,7 @@
     "angular-resource": "angular/bower-angular-resource#v1.3.14",
     "angular-sanitize": "angular/bower-angular-sanitize#v1.3.14",
     "angular-animate": "angular/bower-angular-animate#v1.3.14",
+    "angular-loading-bar": "chieffancypants/angular-loading-bar#0.7.1",
     "foundation": "zurb/bower-foundation#5.5.1",
     "nestable": "slickage/Nestable"
   },

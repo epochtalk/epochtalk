@@ -3,8 +3,8 @@ require('./filters');
 require('./services');
 require('./resources');
 
-module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider',
-  function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
+module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', 'cfpLoadingBarProvider',
+  function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, cfpLoadingBarProvider) {
     // Public layout
     $stateProvider.state('public-layout', {
       views: {
@@ -427,5 +427,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('AuthInterceptor');
     $httpProvider.interceptors.push('ViewInterceptor');
+    // loading bar latency (For testing only)
+    cfpLoadingBarProvider.latencyThreshold = 10;
   }
 ];

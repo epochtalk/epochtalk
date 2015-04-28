@@ -52,6 +52,16 @@ module.exports = function() {
     });
   });
 
+  var loadingBarCss = new Promise(function(resolve, reject) {
+    var filepath = './node_modules/angular-loading-bar/build/loading-bar.css';
+    var dest = './app/scss/loading-bar.scss';
+    fse.copy(filepath, dest, function(err) {
+      if (err) { return reject(err); }
+      console.log('Loading Bar CSS Copied.');
+      return resolve();
+    });
+  });
+
   return Promise.join(foundationComponents, foundationSass, normalizeSass, mediumCss, defaultCss, function() {})
   .catch(function(err) { console.log(err); });
 };

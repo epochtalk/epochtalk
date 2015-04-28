@@ -33,6 +33,7 @@ test/coverage/
 /app/scss/foundation/components/
 /app/scss/default.scss
 /app/scss/medium-editor.scss
+/app/scss/loading-bar.scss
 /app/.sass-cache/
 
 database.json
