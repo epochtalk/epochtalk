@@ -10,7 +10,7 @@
     </div>
     <div class="small-3 columns column-padding-fix">
       <div class="onoffswitch onoffswitch-right-align">
-        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="public-forum" checked>
+        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="public-forum" ng-model="AdminSettingsCtrl.settings.login_required" ng-true-value="false" ng-false-value="true">
         <label class="onoffswitch-label" for="public-forum">
           <span class="onoffswitch-inner"></span>
           <span class="onoffswitch-switch"></span>
@@ -23,7 +23,7 @@
     </div>
     <div class="small-3 columns column-padding-fix">
       <div class="onoffswitch onoffswitch-right-align">
-        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="verify-registration" checked>
+        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="verify-registration" ng-model="AdminSettingsCtrl.settings.verify_registration">
         <label class="onoffswitch-label" for="verify-registration">
           <span class="onoffswitch-inner"></span>
           <span class="onoffswitch-switch"></span>

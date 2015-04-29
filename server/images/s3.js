@@ -10,7 +10,6 @@ var Promise = require('bluebird');
 var through2 = require('through2');
 var images = require(path.normalize(__dirname + '/index'));
 var config = require(path.normalize(__dirname + '/../../config'));
-var bucket = config.images.s3.bucket;
 var Magic = mmm.Magic;
 
 // S3 Configurations
@@ -24,14 +23,14 @@ var checkBucket = function() {
     region: config.images.s3.region
   });
   client = new AWS.S3();
-  client.headBucket({ Bucket: bucket }, function(err, data) {
+  client.headBucket({ Bucket: config.images.s3.bucket }, function(err, data) {
     if (err) { createBucket(); }
   });
 };
 
 var createBucket = function() {
   return new Promise(function(resolve, reject) {
-    client.createBucket({ Bucket: bucket }, function(err, data) {
+    client.createBucket({ Bucket: config.images.s3.bucket }, function(err, data) {
       if (err) { reject(err); }
       else { resolve(data); }
     });
@@ -53,14 +52,14 @@ var createBucketPolicy = function() {
           Sid: 'Stmt' + Date.now(),
           Action: ['s3:GetObject'],
           Effect: 'Allow',
-          Resource: 'arn:aws:s3:::' + bucket + '/' + dir,
+          Resource: 'arn:aws:s3:::' + config.images.s3.bucket + '/' + dir,
           Principal: '*'
         }
       ]
     };
     policy = JSON.stringify(policy);
 
-    var params = { Bucket: bucket, Policy: policy };
+    var params = { Bucket: config.images.s3.bucket, Policy: policy };
     client.putBucketPolicy(params, function(err, data) {
       if (err) { reject(err); }
       else { resolve(data); }
@@ -80,7 +79,7 @@ var createCorsPolicy = function() {
       ]
     };
 
-    var corsParams = { Bucket: bucket, CORSConfiguration: rules };
+    var corsParams = { Bucket: config.images.s3.bucket, CORSConfiguration: rules };
     client.putBucketCors(corsParams, function(err, data) {
       if (err) { reject(err); }
       else { resolve(data); }
@@ -91,7 +90,7 @@ var createCorsPolicy = function() {
 var createImageKey = function() {
   return new Promise(function(resolve, reject) {
     var params = {
-      Bucket: bucket,
+      Bucket: config.images.s3.bucket,
       Key: config.images.s3.dir,
       ContentLength: 0,
     };
@@ -162,7 +161,7 @@ var uploadImage = function(url, filename) {
 
       // write to s3
       var options = {
-        Bucket: bucket,
+        Bucket: config.images.s3.bucket,
         Key: config.images.s3.dir + filename,
         ACL: 'public-read',
         ContentType: contentType,
@@ -195,7 +194,7 @@ s3.uploadPolicy = function(filename) {
   expiration.setMinutes(expiration.getMinutes() + 5);
   expiration = expiration.toISOString();
   var conditions = [];
-  conditions.push({bucket: bucket});
+  conditions.push({bucket: config.images.s3.bucket});
   conditions.push(['starts-with', '$key', key]);
   conditions.push({'acl': 'public-read'});
   conditions.push(['starts-with', '$Content-Type', 'image']);
@@ -242,7 +241,7 @@ s3.removeImage = function(imageUrl) {
   var root = config.images.s3.root;
   var file = imageUrl.replace(root, '');
   client.deleteObject({
-    Bucket: bucket,
+    Bucket: config.images.s3.bucket,
     Key: file
   },
   function(err) { if (err) { console.log(err); } });

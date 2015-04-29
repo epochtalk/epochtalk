@@ -229,7 +229,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         userAccess: adminCheck,
         settings: ['Settings', function(Settings) {
           return Settings.get().$promise
-          .then(function(settings) { return settings; });
+          .then(function(settings) {
+            // Remove unsettable configs
+            delete settings.db;
+            delete settings.rootDir;
+            return settings;
+          });
         }]
       }
     })
