@@ -1,4 +1,4 @@
-module.exports = ['$scope', 'settings', 'Settings', function($scope, settings, Settings) {
+module.exports = ['$scope', 'settings', 'Settings', 'Alert', function($scope, settings, Settings, Alert) {
   var ctrl = this;
 
   // Tab control
@@ -20,8 +20,11 @@ module.exports = ['$scope', 'settings', 'Settings', function($scope, settings, S
   // Save action
   $scope.child.save = function() {
     Settings.save(ctrl.settings).$promise
-    .then(function() { ctrl.originalSettings = angular.copy(ctrl.settings); })
-    .catch(function(err) { console.log(err); });
+    .then(function() {
+      Alert.success('Successfully saved settings');
+      ctrl.originalSettings = angular.copy(ctrl.settings);
+    })
+    .catch(function() { Alert.error('Settings could not be updated'); });
   };
 
   // Reset action
