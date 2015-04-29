@@ -1,12 +1,11 @@
 var path = require('path');
 var database = require(path.normalize(__dirname + '/database.json'));
 
-var parseBool = function(value) {
-  var result = false;
+var parseBool = function(value, defaultValue) {
+  var result = defaultValue || false;
+  value = typeof value === 'string' ? value.toLowerCase() : value;
   if (value === 'true') { result = true; }
-  else if (value === 'True') { result = true; }
-  else if (value === 'TRUE') { result = true; }
-  else if (value === '1') { result = true; }
+  else if (value === 'false') { result = false; }
   return result;
 };
 
@@ -14,11 +13,11 @@ var config = {
   root: path.normalize(__dirname),
   host: process.env.HOST || 'localhost',
   port: process.env.PORT || 8080,
-  logEnabled: parseBool(process.env.LOG_ENABLED) || true,
+  logEnabled: parseBool(process.env.LOG_ENABLED, true),
   publicUrl: process.env.PUBLIC_URL || 'http://localhost:8080/',
   privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure',
-  verifyRegistration: parseBool(process.env.VERIFY_REGISTRATION) || false,
-  loginRequired: parseBool(process.env.LOGIN_REQUIRED) || false,
+  verifyRegistration: parseBool(process.env.VERIFY_REGISTRATION, true),
+  loginRequired: parseBool(process.env.LOGIN_REQUIRED, false),
   website: {
     title: process.env.WEBSITE_TITLE || 'Epochtalk Forums',
     description: process.env.WEBSITE_DESCRIPTION || 'Open source forum software',
@@ -32,7 +31,7 @@ var config = {
     port: process.env.EMAILER_PORT || 465,
     user: process.env.EMAILER_USER || 'username',
     pass: process.env.EMAILER_PASS || 'password',
-    secure: process.env.EMAILER_SECURE || true
+    secure: parseBool(process.env.EMAILER_SECURE, true)
   },
   images: {
     storage: process.env.IMAGES_STORAGE || 'local',
