@@ -134,15 +134,13 @@ local.uploadImage = function(source, filename, reply) {
 };
 
 var deleteImage = function(error, pathToFile) {
-  console.log(error);
-
   fs.unlink(pathToFile, function(error) {
     if (error) { console.log(error); }
   });
 };
 
 local.removeImage = function(imageUrl) {
-  var pathArray = url.split('/');
+  var pathArray = imageUrl.split('/');
   var filepath = path.normalize(__dirname + '/../../public/images');
   filepath = filepath + '/' + pathArray[pathArray.length-1];
   deleteImage(undefined, filepath);
