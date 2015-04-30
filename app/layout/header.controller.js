@@ -1,5 +1,5 @@
-module.exports = ['$location', '$timeout', '$state', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert',
-  function($location, $timeout, $state, Auth, Session, User, BreadcrumbSvc, Alert) {
+module.exports = ['$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert',
+  function($location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.loggedIn = Session.isAuthenticated;
@@ -22,21 +22,26 @@ module.exports = ['$location', '$timeout', '$state', 'Auth', 'Session', 'User', 
     this.login = function() {
       if (ctrl.user.username.length === 0 || ctrl.user.password.length === 0) { return; }
 
-      Auth.login(ctrl.user,
-        function() {
-          ctrl.showLogin = false;
-          ctrl.clearLoginFields();
-            // hack to get drop down to work in nested view pages
-          $timeout(function() { $(document).foundation('topbar', 'reflow'); }, 10);
-        },
-        function(err) {
-          if (err.data && err.data.message) { Alert.error(err.data.message); }
-          else { Alert.error('Login Failed'); }
-        }
-      );
+      Auth.login(ctrl.user)
+      .then(function() {
+        ctrl.showLogin = false;
+        ctrl.clearLoginFields();
+        $state.go($state.current, $stateParams, { reload: true });
+        // hack to get drop down to work in nested view pages
+        $timeout(function() { $(document).foundation('topbar', 'reflow'); }, 10);
+      })
+      .catch(function(err) {
+        if (err.data && err.data.message) { Alert.error(err.data.message); }
+        else { Alert.error('Login Failed'); }
+      });
     };
 
-    this.logout = Auth.logout;
+    this.logout = function() {
+      Auth.logout()
+      .then(function() {
+        $state.go($state.current, $stateParams, { reload: true });
+      });
+    };
 
     // Registration
     this.registerUser = {}; // Register form model
@@ -58,22 +63,21 @@ module.exports = ['$location', '$timeout', '$state', 'Auth', 'Session', 'User', 
         return;
       }
 
-      Auth.register(ctrl.registerUser,
-        function(registeredUser) {
-          ctrl.showRegister = false;
-          ctrl.clearRegisterFields();
-          if (registeredUser.confirm_token) {
-            $timeout(function() { ctrl.showRegisterSuccess = true; }, 500);
-          }
-          else {
-            $timeout(function() { $state.go($state.current, {}, { reload: true }); }, 500);
-          }
-        },
-        function(err) {
-          if (err.data && err.data.message) { Alert.error(err.data.message); }
-          else { Alert.error('Registration Error'); }
+      Auth.register(ctrl.registerUser)
+      .then(function(registeredUser) {
+        ctrl.showRegister = false;
+        ctrl.clearRegisterFields();
+        if (registeredUser.confirm_token) {
+          $timeout(function() { ctrl.showRegisterSuccess = true; }, 500);
         }
-      );
+        else {
+          $timeout(function() { $state.go($state.current, $stateParams, { reload: true }); }, 500);
+        }
+      })
+      .catch(function(err) {
+        if (err.data && err.data.message) { Alert.error(err.data.message); }
+        else { Alert.error('Registration Error'); }
+      });
     };
 
     // Recover Account

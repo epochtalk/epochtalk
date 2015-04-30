@@ -6,20 +6,16 @@ module.exports = ['$window', 'User', 'Session',
   function($window, User, Session) {
     // Service API
     var serviceAPI = {
-      register: function(user, callback, error) {
+      register: function(user) {
         User.register(user).$promise
         .then(function(resource) {
           // Set user session if account is already confirmed (log the user in)
-          if (!resource.confirm_token) { Session.setUser(resource, false); }
-          callback(resource);
-        })
-        .catch(function(err) {
-          Session.clearUser();
-          error(err);
+          if (!resource.confirm_token) { Session.setUser(resource); }
+          return resource;
         });
       },
 
-      login: function(user, callback, error) {
+      login: function(user) {
         // get username and rememberMe
         var rememberMe = user.rememberMe;
         // Can't delete user.rememberMe without UI Flicker, copy user instead
@@ -27,17 +23,14 @@ module.exports = ['$window', 'User', 'Session',
         userCopy.username = user.username;
         userCopy.password = user.password;
 
-        User.login(userCopy).$promise
-        .then(function(resource) { Session.setUser(resource, rememberMe); })
-        .then(callback)
-        .catch(function(err) {
-          Session.clearUser();
-          error(err);
+        return User.login(userCopy).$promise
+        .then(function(resource) {
+          Session.setUser(resource, rememberMe);
         });
       },
 
-      logout: function(callback, error) {
-        User.logout(null, callback, error).$promise
+      logout: function() {
+        return User.logout().$promise
         .then(function() { Session.clearUser(); });
       },
 
