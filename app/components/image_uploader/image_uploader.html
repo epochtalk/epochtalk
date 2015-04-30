@@ -1,16 +1,30 @@
-Drag and drop images here or
-<a ng-href="#" ng-click="openImagePicker()">click here</a>
 <input type="file" accept="image/*" style="display: none;">
 
-<div ng-if="images.length > 0 && purpose === 'avatar'" class="profile-avatar-container">
-  <img ng-src="{{images[0].url}}" />
+<div ng-if="imagesUploading" style="text-align: center">
+  <div class="progress">
+    <span class="meter" ng-style="{ width: imagesProgress }"></span>
+  </div>
 </div>
 
-<span ng-if="images.length > 0 && purpose === 'editor'">
-  (<a ng-click="openImageModal()">
-    <span ng-bind="images.length"></span> images uploaded
-  </a>)
-</span>
+<div ng-if="!imagesUploading">
+  Drag and drop images here or
+  <a ng-href="#" ng-click="openImagePicker()">click here</a>
+
+  <div ng-if="images.length > 0 && purpose === 'avatar'" class="profile-avatar-container">
+    <img ng-src="{{images[0].url}}" />
+  </div>
+
+  <span ng-if="images.length > 0 && purpose === 'editor'">
+    (<a ng-click="openImageModal()">
+      <span ng-if="images.length === 1">
+        view <span ng-bind="images.length"></span> image
+      </span>
+      <span ng-if="images.length > 1">
+        view <span ng-bind="images.length"></span> images
+      </span>
+    </a>)
+  </span>
+</div>
 
 <!-- Image Modal -->
 <modal class="medium" show="imageModal">
@@ -29,7 +43,7 @@ Drag and drop images here or
         <!-- image picker body -->
         <div class="picker-body">
           <img ng-src="{{image.url}}" ng-click="fireDone(image.url)"/>
-          <a ng-href="#" class="after" ng-click="fireDone(image.url)">
+          <a ng-href="#" class="after" ng-if="image.url" ng-click="fireDone(image.url)">
             <div>Add to Editor</div>
           </a>
         </div>

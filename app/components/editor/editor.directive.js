@@ -48,6 +48,7 @@ module.exports = [
       // -- Images
 
       $scope.insertImageUrl = function(url) {
+        if (!url) { return; }
         editor.focus();
         var inserted = $editor.val() + '[img]' + url + '[/img]';
         $editor.val(inserted);

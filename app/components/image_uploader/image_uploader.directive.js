@@ -1,7 +1,7 @@
 var fs = require('fs');
 
-module.exports = ['$timeout', 'S3ImageUpload',
-  function($timeout, s3ImageUpload) {
+module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
+  function($timeout, s3ImageUpload, Alert) {
   return {
     restrict: 'E',
     scope: {
@@ -13,6 +13,8 @@ module.exports = ['$timeout', 'S3ImageUpload',
     link: function($scope, $element, $attrs) {
       // directive initialization
       $scope.images = [];
+      $scope.imagesUploading = false;
+      $scope.imagesProgress = 0;
       var inputElement = $element.find('input')[0];
       $scope.openImagePicker = function() { inputElement.click(); };
 
@@ -27,6 +29,8 @@ module.exports = ['$timeout', 'S3ImageUpload',
       }
 
       function upload(images) {
+        $scope.imagesUploading = true;
+        $scope.imagesProgress = 0;
         if ($scope.purpose === 'avatar') { $scope.images = []; }
         // upload each image
         images.forEach(function(image) {
@@ -48,14 +52,21 @@ module.exports = ['$timeout', 'S3ImageUpload',
             .progress(function(percent) {
               imageProgress.progress = percent;
               imageProgress.status = 'Uploading';
+              updateImagesUploading();
             })
             .error(function(data) {
               imageProgress.progress = '--';
               imageProgress.status = 'Failed';
+              updateImagesUploading();
+              var message = 'Image upload failed for: ' + imageProgress.name + '.';
+              message += 'Please ensure images are within size limits.';
+              Alert.error(message);
             })
             .success(function(url) {
+              imageProgress.progress = 100;
               imageProgress.status = 'Complete';
               imageProgress.url = url;
+              updateImagesUploading();
               if ($scope.onDone) { $scope.onDone({data: url}); }
               if ($scope.purpose === 'avatar') { $scope.model = url; }
             });
@@ -63,8 +74,32 @@ module.exports = ['$timeout', 'S3ImageUpload',
           .catch(function() {
             imageProgress.progress = '--';
             imageProgress.status = "Failed";
+            updateImagesUploading();
+            var message = 'Image upload failed for: ' + imageProgress.name + '.';
+            message += 'Please ensure images are within size limits.';
+            Alert.error(message);
           });
         });
+      }
+
+      function updateImagesUploading() {
+        var uploading = false;
+        var percentComplete = 0;
+        var validImages = $scope.images.length;
+
+        // check each image for it's status
+        $scope.images.map(function(imageProgress) {
+          if (imageProgress.status === 'Uploading') { uploading = true; }
+          if (imageProgress.progress === '--') { validImages = validImages - 1; }
+          else { percentComplete = percentComplete + imageProgress.progress; }
+        });
+
+        // compute percent complete
+        $scope.imagesProgress = Math.round(percentComplete / validImages) + '%';
+
+        // check if there are any images still uploading
+        if (uploading) { return; }
+        else { $scope.imagesUploading = false; }
       }
 
       // bind to changes in the image input

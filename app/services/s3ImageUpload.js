@@ -1,7 +1,8 @@
 'use strict';
 /* jslint node: true */
 
-module.exports = ['$q', '$http', '$window', function ($q, $http, $window) {
+module.exports = ['$q', '$http', '$window', 'Session',
+function ($q, $http, $window, Session) {
   return {
     policy: function(filename) {
       return $http.post('/images/policy', { filename: filename });
@@ -21,17 +22,7 @@ module.exports = ['$q', '$http', '$window', function ($q, $http, $window) {
       var storageType = data.storageType;
 
       var token;
-      if (storageType === 'local') {
-        if ($window.sessionStorage.token) {
-          token = $window.sessionStorage.token;
-        }
-        else if ($window.localStorage.token) {
-          token = $window.localStorage.token;
-        }
-        else if ($window.privateStorage.token) {
-          token = $window.privateStorage.token;
-        }
-      }
+      if (storageType === 'local') { token = Session.getToken(); }
 
       // form data
       var fd = new FormData();
@@ -64,7 +55,7 @@ module.exports = ['$q', '$http', '$window', function ($q, $http, $window) {
           // successful upload
           if (xhr.status === 204) { fn(imageUrl); }
           // error uploading
-          else { promise.error_fn(); }
+          else { promise.error_fn(response); }
         });
         return promise;
       };
