@@ -14,31 +14,6 @@ var Magic = mmm.Magic;
 
 // S3 Configurations
 var client;
-var checkBucket = function() {
-  if (config.images.storage !== 's3') { return; }
-
-  AWS.config.update({
-    secretAccessKey: config.images.s3.secretKey,
-    accessKeyId: config.images.s3.accessKey,
-    region: config.images.s3.region
-  });
-  client = new AWS.S3();
-  client.headBucket({ Bucket: config.images.s3.bucket }, function(err, data) {
-    if (err) { createBucket(); }
-  });
-};
-
-var createBucket = function() {
-  return new Promise(function(resolve, reject) {
-    client.createBucket({ Bucket: config.images.s3.bucket }, function(err, data) {
-      if (err) { reject(err); }
-      else { resolve(data); }
-    });
-  })
-  .then(createBucketPolicy)
-  .then(createCorsPolicy)
-  .then(createImageKey);
-};
 
 var createBucketPolicy = function() {
   return new Promise(function(resolve, reject) {
@@ -100,8 +75,6 @@ var createImageKey = function() {
     });
   });
 };
-
-checkBucket();
 
 var generateImageUrl = function(filename) {
   var imageUrl = config.images.s3.root;
@@ -184,6 +157,53 @@ var checkFileType = function(filename) {
   else { return ''; }
 };
 
+s3.initClient = function(accessKey, secretKey, region) {
+  return new Promise(function(resolve, reject) {
+    if (config.images.storage !== 's3') { return reject(); }
+    accessKey = accessKey || config.images.s3.accessKey;
+    secretKey = secretKey || config.images.s3.secretKey;
+    region = region || config.images.s3.region;
+
+    AWS.config.update({
+      secretAccessKey: secretKey,
+      accessKeyId: accessKey,
+      region: region
+    });
+    client = new AWS.S3();
+    return resolve(client);
+  });
+};
+
+s3.checkAccount = function() {
+  return new Promise(function(resolve, reject) {
+    client.listBuckets(function(err, data) {
+      if (err) { return reject(err); }
+      if (data) { return resolve(data); }
+    });
+  });
+};
+
+s3.checkBucket = function() {
+  return new Promise(function(resolve, reject) {
+    client.headBucket({ Bucket: config.images.s3.bucket }, function(err, data) {
+      if (err) { return reject(); }
+      if (data) { return resolve(); }
+    });
+  });
+};
+
+s3.createBucket = function() {
+  return new Promise(function(resolve, reject) {
+    client.createBucket({ Bucket: config.images.s3.bucket }, function(err, data) {
+      if (err) { reject(err); }
+      else { resolve(data); }
+    });
+  })
+  .then(createBucketPolicy)
+  .then(createCorsPolicy)
+  .then(createImageKey);
+};
+
 s3.uploadPolicy = function(filename) {
   var imageName = images.generateUploadFilename(filename);
   var imageUrl = generateImageUrl(imageName);
@@ -246,3 +266,12 @@ s3.removeImage = function(imageUrl) {
   },
   function(err) { if (err) { console.log(err); } });
 };
+
+s3.initClient()
+.then(s3.checkAccount)
+.then(function() {
+  return s3.checkBucket()
+  // bucket does not exist
+  .catch(function() { return s3.createBucket(); });
+})
+.catch(function(err) { console.log(err); });
