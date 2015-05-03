@@ -1,10 +1,10 @@
 var path = require('path');
 var Boom = require('boom');
-var db = require(path.normalize(__dirname + '/../../../db'));
+var db = require(path.normalize(__dirname + '/../../../../db'));
 
 module.exports = {
-  getCurrentUser: function(request, reply) {
-    var userId = request.auth.credentials.id;
+  checkUserExists: function(request, reply) {
+    var userId = request.payload.id;
     db.users.find(userId)
     .then(function(user) {
       if (user) { return reply(user); }
@@ -14,7 +14,7 @@ module.exports = {
   },
   checkUsernameUniqueness: function(request, reply) {
     if (!request.payload.username) { return reply(); }
-    var userId = request.auth.credentials.id;
+    var userId = request.payload.id;
     db.users.find(userId)
     .then(function(user) {
       // check if username has changed
@@ -36,7 +36,7 @@ module.exports = {
   },
   checkEmailUniqueness: function(request, reply) {
     if (!request.payload.email) { return reply(); }
-    var userId = request.auth.credentials.id;
+    var userId = request.payload.id;
     db.users.find(userId)
     .then(function(user) {
       // check if email has changed

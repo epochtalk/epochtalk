@@ -12,14 +12,15 @@ var posts = require(path.normalize(__dirname + '/posts'));
 var users = require(path.normalize(__dirname + '/users'));
 var auth = require(path.normalize(__dirname + '/auth'));
 var auth = require(path.normalize(__dirname + '/auth'));
-var adminsSettings = require(path.normalize(__dirname + '/admin/settings'));
+var adminSettings = require(path.normalize(__dirname + '/admin/settings'));
+var adminUsers = require(path.normalize(__dirname + '/admin/users'));
 
 function buildEndpoints() {
   return [].concat(breadcrumbs, categories, boards, threads, posts, users, auth);
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminsSettings);
+  return [].concat(adminSettings, adminUsers);
 }
 
 exports.endpoints = function() {

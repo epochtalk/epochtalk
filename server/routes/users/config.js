@@ -1,8 +1,8 @@
 var Joi = require('joi');
 var path = require('path');
-var Hapi = require('hapi');
 var Boom = require('boom');
 var bcrypt = require('bcrypt');
+var commonPre = require(path.normalize(__dirname + '/../common')).users;
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 
@@ -31,9 +31,9 @@ exports.import = {
     })
   },
   pre: [
-    { method: pre.clean },
-    { method: pre.parseSignature },
-    { method: pre.handleImages },
+    { method: commonPre.clean },
+    { method: commonPre.parseSignature },
+    { method: commonPre.handleImages },
   ],
   handler: function(request, reply) {
     db.users.import(request.payload)
@@ -76,9 +76,9 @@ exports.update = {
       { method: pre.checkUsernameUniqueness },
       { method: pre.checkEmailUniqueness }
     ],
-    { method: pre.clean },
-    { method: pre.parseSignature },
-    { method: pre.handleImages },
+    { method: commonPre.clean },
+    { method: commonPre.parseSignature },
+    { method: commonPre.handleImages },
   ],
   handler: function(request, reply) {
     var oldUser = request.pre.oldUser;

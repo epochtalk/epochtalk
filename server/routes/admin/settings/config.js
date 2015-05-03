@@ -3,7 +3,7 @@ var Joi = require('joi');
 var path = require('path');
 var _ = require('lodash');
 var renameKeys = require('deep-rename-keys');
-var pre = require(path.normalize(__dirname + '/pre'));
+var commonPre = require(path.normalize(__dirname + '/../../common')).admin;
 var config = require(path.normalize(__dirname + '/../../../../config'));
 
 var writeConfigToEnv = function(updatedConfig) {
@@ -52,16 +52,16 @@ var camelCaseToUnderscore = function(obj) {
 };
 
 exports.find = {
-  auth: { mode: 'try', strategy: 'jwt' },
-  pre: [ { method: pre.adminCheck } ],
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonPre.adminCheck } ],
   handler: function(request, reply) {
     reply(camelCaseToUnderscore(config));
   }
 };
 
 exports.update = {
-  auth: { mode: 'try', strategy: 'jwt' },
-  pre: [ { method: pre.adminCheck } ],
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonPre.adminCheck } ],
   validate: {
     payload: Joi.object().keys({
       root: Joi.string(),
