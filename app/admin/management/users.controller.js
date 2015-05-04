@@ -12,9 +12,8 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
 
   this.setSortField = function(sortField) {
     // Sort Field hasn't changed just toggle desc
-    if (sortField === ctrl.field || (sortField === 'username' && !ctrl.field)) {
-      ctrl.desc = ctrl.desc === 'true' ? 'false' : 'true';
-    }
+    var unchanged = sortField === ctrl.field || (sortField === 'username' && !ctrl.field);
+    if (unchanged) { ctrl.desc = ctrl.desc === 'true' ? 'false' : 'true'; } // bool to str
     // Sort Field changed default to ascending order
     else { ctrl.desc = 'false'; }
     ctrl.field = sortField;
@@ -27,18 +26,18 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
 
   this.getSortClass = function(sortField) {
     var sortClass;
-    var sortDesc = ctrl.desc === 'true';
+    var sortDesc = ctrl.desc === 'true'; // str to bool
     // Username is sorted asc by default
     if (sortField === 'username' && !ctrl.field && !sortDesc) {
-      sortClass = 'sort-asc';
+      sortClass = 'fa fa-sort-asc';
     }
     else if (ctrl.field === sortField && sortDesc) {
-      sortClass = 'sort-desc';
+      sortClass = 'fa fa-sort-desc';
     }
     else if (ctrl.field === sortField && !sortDesc) {
-      sortClass = 'sort-asc';
+      sortClass = 'fa fa-sort-asc';
     }
-    else { sortClass = 'sort'; }
+    else { sortClass = 'fa fa-sort'; }
     return sortClass;
   };
 

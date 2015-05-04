@@ -86,24 +86,6 @@ label > input[type="checkbox"] { margin-right: .25rem; }
 .secondary-action:hover,
 .secondary-action:focus { color: $color-active; }
 
-.sort,
-.sort-asc,
-.sort-desc{
-  padding: 4px 21px 4px 4px;
-  cursor: pointer;
-}
-.sort {
-  background: url(data:image/gif;base64,R0lGODlhCwALAJEAAAAAAP///xUVFf///yH5BAEAAAMALAAAAAALAAsAAAIUnC2nKLnT4or00PvyrQwrPzUZshQAOw==) no-repeat center;
-}
-.sort-asc {
-  background: url(data:image/gif;base64,R0lGODlhCwALAJEAAAAAAP///xUVFf///yH5BAEAAAMALAAAAAALAAsAAAIRnC2nKLnT4or00Puy3rx7VQAAOw==) no-repeat center;
-  border-bottom:#70AADD 2px solid;
-}
-.sort-desc {
-  background: url(data:image/gif;base64,R0lGODlhCwALAJEAAAAAAP///xUVFf///yH5BAEAAAMALAAAAAALAAsAAAIPnI+py+0/hJzz0IruwjsVADs=) no-repeat center;
-  border-bottom:2px solid #b00;
-}
-
 // BBCode Styles ----------------------------------------------------------- //
 .spoiler { color: black; background-color: black; }
 .spoiler:hover { color: white; }

@@ -30,20 +30,8 @@ module.exports = ['$location', '$filter', function($location, $filter) {
         delete queryParams.page; // Page is handled separately
 
         // Build url prefix, include existing query params
-        var index = 0;
         urlPrefix = $location.path() + '?';
-        _.forIn(queryParams, function(value, key) {
-          if (index === 0) { // first
-            urlPrefix += key + '=' + value;
-          }
-          else {
-            urlPrefix += '&' + key + '=' + value;
-          }
-          if (index === Object.keys(queryParams).length - 1) { // last
-            urlPrefix += '&';
-          }
-          index++;
-        });
+        _.forIn(queryParams, function(value, key) { urlPrefix += key + '=' + value + '&'; });
         urlPrefix += 'page=';
 
         var truncate = scope.pageCount > 15;

@@ -11,10 +11,10 @@
   <div class="small-12 columns">
     <table width="100%">
       <thead>
-        <th ng-class="AdminManagementCtrl.getSortClass('username')" ng-click="AdminManagementCtrl.setSortField('username')">Username</th>
-        <th ng-class="AdminManagementCtrl.getSortClass('email')" ng-click="AdminManagementCtrl.setSortField('email')">Email</th>
-        <th ng-class="AdminManagementCtrl.getSortClass('created_at')" ng-click="AdminManagementCtrl.setSortField('created_at')">Registered Date</th>
-        <th>Last Active Date</th>
+        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Username</th>
+        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('email')"><span ng-class="AdminManagementCtrl.getSortClass('email')"></span>&nbsp;Email</th>
+        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('created_at')"><span ng-class="AdminManagementCtrl.getSortClass('created_at')"></span>&nbsp;Registered Date</th>
+        <th >Last Active Date</th>
         <th width="300">Actions</th>
       </thead>
       <tbody>
