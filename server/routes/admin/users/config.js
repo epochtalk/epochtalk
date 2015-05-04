@@ -73,6 +73,15 @@ exports.find = {
   }
 };
 
+exports.count = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  handler: function(request, reply) {
+    db.users.count()
+    .then(function(usersCount) { reply(usersCount); });
+  }
+};
+
 exports.page = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: {

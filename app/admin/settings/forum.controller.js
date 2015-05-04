@@ -1,4 +1,4 @@
-module.exports = ['$scope', 'settings', 'Settings', function($scope, settings, Settings) {
+module.exports = ['$scope', 'settings', 'AdminSettings', function($scope, settings, AdminSettings) {
   var ctrl = this;
 
   // Tab control
@@ -11,7 +11,7 @@ module.exports = ['$scope', 'settings', 'Settings', function($scope, settings, S
 
   // Save action
   $scope.child.save = function() {
-    Settings.save(ctrl.settings).$promise
+    AdminSettings.save(ctrl.settings).$promise
     .then(function() { ctrl.originalSettings = angular.copy(ctrl.settings); })
     .catch(function(err) { console.log(err); });
   };

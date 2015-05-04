@@ -227,8 +227,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       },
       resolve: {
         userAccess: adminCheck,
-        settings: ['Settings', function(Settings) {
-          return Settings.get().$promise
+        settings: ['AdminSettings', function(AdminSettings) {
+          return AdminSettings.get().$promise
           .then(function(settings) {
             // Remove unsettable configs
             delete settings.db;
@@ -265,6 +265,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
 
     $stateProvider.state('admin-management', {
       url: '/admin/management',
+      reloadOnSearch: false,
       parent: 'admin-layout',
       views: {
         'content': {
@@ -296,6 +297,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     })
     .state('admin-management.users', {
       url: '/users',
+      reloadOnSearch: false,
       views: {
         'data@admin-management': {
           controller: 'UsersCtrl',
@@ -303,9 +305,31 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/admin/management/users.html'),
           resolve: {
             userAccess: adminCheck,
-            users: ['User', function(User) {
-              return User.all().$promise
-              .then(function(users) { return users; });
+            users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+              var query = {
+                field: $stateParams.field,
+                desc: $stateParams.desc,
+                limit: Number($stateParams.limit) || 10,
+                page: Number($stateParams.page) || 1
+              };
+              return AdminUsers.page(query).$promise
+              .then(function(threads) { return threads; });
+            }],
+            usersCount: ['AdminUsers', function(AdminUsers) {
+              return AdminUsers.count().$promise
+              .then(function(usersCount) { return usersCount.count; });
+            }],
+            field: ['$stateParams', function($stateParams) {
+              return $stateParams.field;
+            }],
+            desc: ['$stateParams', function($stateParams) {
+              return $stateParams.desc;
+            }],
+            page: ['$stateParams', function($stateParams) {
+              return Number($stateParams.page) || 1;
+            }],
+            limit: ['$stateParams', function($stateParams) {
+              return Number($stateParams.limit) || 10;
             }]
           }
         }
