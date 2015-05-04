@@ -53,7 +53,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     if (ctrl.desc) { query.desc = ctrl.desc; }
     if (ctrl.field) { query.field = ctrl.field; }
 
-    // update board's thread page count
+    // update users's thread page count
     AdminUsers.count().$promise
     .then(function(updatedCount) {
       ctrl.usersCount = Math.ceil(updatedCount.count / limit);
