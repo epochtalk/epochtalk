@@ -1,31 +1,50 @@
 var fs = require('fs');
+var _ = require('lodash');
 
 module.exports = ['$location', '$filter', function($location, $filter) {
   return {
     restrict: 'E',
     scope: {
       pageCount: '=',
-      page: '='
+      page: '=',
+      queryParams: '='
     },
     template: fs.readFileSync(__dirname + '/pagination.html'),
     link: function(scope) {
 
+      // Update if pageCount or page changes
       scope.$watchGroup(['pageCount', 'page'], function() {
         buildPages();
       });
+
+      // Update pagination if any of the other query strings change
+      scope.$watch('queryParams', function () {
+        buildPages();
+      }, true);
 
       var buildPages = function() {
         scope.paginationKeys = [];
         var ellipsis;
         var urlPrefix;
-        var limit = $location.search().limit;
+        var queryParams = $location.search();
+        delete queryParams.page; // Page is handled separately
 
-        if (limit) {
-          urlPrefix = $location.path() + '?limit=' + limit + '&page=';
-        }
-        else {
-          urlPrefix = $location.path() + '?page=';
-        }
+        // Build url prefix, include existing query params
+        var index = 0;
+        urlPrefix = $location.path() + '?';
+        _.forIn(queryParams, function(value, key) {
+          if (index === 0) { // first
+            urlPrefix += key + '=' + value;
+          }
+          else {
+            urlPrefix += '&' + key + '=' + value;
+          }
+          if (index === Object.keys(queryParams).length - 1) { // last
+            urlPrefix += '&';
+          }
+          index++;
+        });
+        urlPrefix += 'page=';
 
         var truncate = scope.pageCount > 15;
 

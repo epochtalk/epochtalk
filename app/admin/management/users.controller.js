@@ -4,10 +4,43 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.parent.tab = 'users';
   this.usersCount =  Math.ceil(usersCount / limit);
   this.users = users;
+  this.queryParams = $location.search();
   this.page = page;
   this.limit = limit;
   this.field = field;
   this.desc = desc;
+
+  this.setSortField = function(sortField) {
+    // Sort Field hasn't changed just toggle desc
+    if (sortField === ctrl.field || (sortField === 'username' && !ctrl.field)) {
+      ctrl.desc = ctrl.desc === 'true' ? 'false' : 'true';
+    }
+    // Sort Field changed default to ascending order
+    else { ctrl.desc = 'false'; }
+    ctrl.field = sortField;
+    $location.search('desc', ctrl.desc);
+    $location.search('field', sortField);
+
+    // Update queryParams (forces pagination to refresh)
+    ctrl.queryParams = $location.search();
+  };
+
+  this.getSortClass = function(sortField) {
+    var sortClass;
+    var sortDesc = ctrl.desc === 'true';
+    // Username is sorted asc by default
+    if (sortField === 'username' && !ctrl.field && !sortDesc) {
+      sortClass = 'sort-asc';
+    }
+    else if (ctrl.field === sortField && sortDesc) {
+      sortClass = 'sort-desc';
+    }
+    else if (ctrl.field === sortField && !sortDesc) {
+      sortClass = 'sort-asc';
+    }
+    else { sortClass = 'sort'; }
+    return sortClass;
+  };
 
   $timeout($anchorScroll);
 
@@ -16,7 +49,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     var page = Number(params.page) || 1;
     var limit = Number(params.limit) || 10;
     var field = params.field;
-    var desc = params.desc;
+    var descending = params.desc === 'true';
     var pageChanged = false;
     var limitChanged = false;
     var fieldChanged = false;
@@ -35,9 +68,9 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       fieldChanged = true;
       ctrl.field = field;
     }
-    if (desc && desc !== ctrl.desc) {
+    if (descending !== ctrl.desc) {
       descChanged = true;
-      ctrl.desc = desc;
+      ctrl.desc = descending.toString();
     }
 
     if(pageChanged || limitChanged || fieldChanged || descChanged) { ctrl.pullPage(); }

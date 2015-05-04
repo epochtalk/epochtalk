@@ -11,9 +11,9 @@
   <div class="small-12 columns">
     <table width="100%">
       <thead>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Registered Date</th>
+        <th ng-class="AdminManagementCtrl.getSortClass('username')" ng-click="AdminManagementCtrl.setSortField('username')">Username</th>
+        <th ng-class="AdminManagementCtrl.getSortClass('email')" ng-click="AdminManagementCtrl.setSortField('email')">Email</th>
+        <th ng-class="AdminManagementCtrl.getSortClass('created_at')" ng-click="AdminManagementCtrl.setSortField('created_at')">Registered Date</th>
         <th>Last Active Date</th>
         <th width="300">Actions</th>
       </thead>
@@ -33,7 +33,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="right"><pagination page-count="AdminManagementCtrl.usersCount" page="AdminManagementCtrl.page"></pagination></div>
+    <div class="right"><pagination page-count="AdminManagementCtrl.usersCount" page="AdminManagementCtrl.page" query-params="AdminManagementCtrl.queryParams"></pagination></div>
   </div>
 </div>
 
