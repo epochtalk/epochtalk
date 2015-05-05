@@ -26,7 +26,7 @@ module.exports = ['$location', '$filter', function($location, $filter) {
         scope.paginationKeys = [];
         var ellipsis;
         var urlPrefix;
-        var queryParams = $location.search();
+        var queryParams = angular.copy($location.search());
         delete queryParams.page; // Page is handled separately
 
         // Build url prefix, include existing query params
