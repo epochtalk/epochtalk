@@ -82,6 +82,24 @@ exports.count = {
   }
 };
 
+exports.countAdmins = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  handler: function(request, reply) {
+    db.users.countAdmins()
+    .then(function(adminsCount) { reply(adminsCount); });
+  }
+};
+
+exports.countModerators = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  handler: function(request, reply) {
+    db.users.countModerators()
+    .then(function(moderatorsCount) { reply(moderatorsCount); });
+  }
+};
+
 exports.page = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: {
@@ -102,5 +120,51 @@ exports.page = {
     };
     db.users.page(opts)
     .then(function(users) { reply(users); });
+  }
+};
+
+exports.pageAdmins = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  validate: {
+    query: {
+      page: Joi.number().integer().min(1).default(1),
+      limit: Joi.number().integer().min(1).default(10),
+      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'role'),
+      desc: Joi.boolean().default(false)
+    }
+  },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  handler: function(request, reply) {
+    var opts = {
+      limit: request.query.limit || 10,
+      page: request.query.page || 1,
+      sortField: request.query.field || 'username',
+      sortDesc: request.query.desc || false
+    };
+    db.users.pageAdmins(opts)
+    .then(function(admins) { reply(admins); });
+  }
+};
+
+exports.pageModerators = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  validate: {
+    query: {
+      page: Joi.number().integer().min(1).default(1),
+      limit: Joi.number().integer().min(1).default(10),
+      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'role'),
+      desc: Joi.boolean().default(false)
+    }
+  },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  handler: function(request, reply) {
+    var opts = {
+      limit: request.query.limit || 10,
+      page: request.query.page || 1,
+      sortField: request.query.field || 'username',
+      sortDesc: request.query.desc || false
+    };
+    db.users.pageModerators(opts)
+    .then(function(moderators) { reply(moderators); });
   }
 };
