@@ -2,7 +2,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
-  this.usersCount =  Math.ceil(usersCount / limit);
+  this.pageCount =  Math.ceil(usersCount / limit);
   this.users = users;
   this.queryParams = $location.search();
   this.page = page;
@@ -90,13 +90,13 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     // update users's thread page count
     AdminUsers.count().$promise
     .then(function(updatedCount) {
-      ctrl.usersCount = Math.ceil(updatedCount.count / limit);
+      ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
 
     // replace current users with new users
     AdminUsers.page(query).$promise
-    .then(function(users) {
-      ctrl.users = users;
+    .then(function(updatedUsers) {
+      ctrl.users = updatedUsers;
       $timeout($anchorScroll);
     });
   };
