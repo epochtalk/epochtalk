@@ -24,18 +24,18 @@
   <div class="small-12 columns">
     <table width="100%">
       <thead>
-        <th>Administrator Username</th>
-        <th>Super Administrator</th>
+        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Administrator Username</th>
+        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('role')"><span ng-class="AdminManagementCtrl.getSortClass('role')"></span>&nbsp;Super Administrator</th>
         <th>Administrator Since</th>
         <th>Last Active Date</th>
         <th width="175">Actions</th>
       </thead>
       <tbody>
-        <tr ng-repeat="user in AdminManagementCtrl.users track by user.username">
+        <tr ng-repeat="user in AdminManagementCtrl.admins track by user.username">
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
           <td>
             <div class="onoffswitch onoffswitch-left-align">
-              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="super-admin-{{$index}}" checked>
+              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="super-admin-{{$index}}" ng-checked="AdminManagementCtrl.isSuperAdmin(user.role)">
               <label class="onoffswitch-label" for="super-admin-{{$index}}">
                 <span class="onoffswitch-inner"></span>
                 <span class="onoffswitch-switch"></span>
@@ -51,7 +51,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="right"><pagination page-count="5" page="1"></pagination></div>
+    <div class="right"><pagination page-count="AdminManagementCtrl.pageCount" page="AdminManagementCtrl.page" query-params="AdminManagementCtrl.queryParams"></pagination></div>
   </div>
 </div>
 

@@ -383,9 +383,31 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/admin/management/administrators.html'),
           resolve: {
             userAccess: adminCheck,
-            users: ['User', function(User) {
-              return User.all().$promise
-              .then(function(users) { return users; });
+            admins: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+              var query = {
+                field: $stateParams.field,
+                desc: $stateParams.desc,
+                limit: Number($stateParams.limit) || 10,
+                page: Number($stateParams.page) || 1
+              };
+              return AdminUsers.pageAdmins(query).$promise
+              .then(function(admins) { return admins; });
+            }],
+            adminsCount: ['AdminUsers', function(AdminUsers) {
+              return AdminUsers.countAdmins().$promise
+              .then(function(adminsCount) { return adminsCount.count; });
+            }],
+            field: ['$stateParams', function($stateParams) {
+              return $stateParams.field;
+            }],
+            desc: ['$stateParams', function($stateParams) {
+              return $stateParams.desc;
+            }],
+            page: ['$stateParams', function($stateParams) {
+              return Number($stateParams.page) || 1;
+            }],
+            limit: ['$stateParams', function($stateParams) {
+              return Number($stateParams.limit) || 10;
             }]
           }
         }
