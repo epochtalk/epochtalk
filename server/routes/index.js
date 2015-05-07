@@ -73,7 +73,7 @@ exports.endpoints = function() {
         handler: function(request, reply) {
           // check we're using local storage
           if (config.images.storage !== 'local') {
-            return reply(Boom.badRequest('This route is not is use'));
+            return reply(Boom.notFound());
           }
 
           // make sure image file exists
