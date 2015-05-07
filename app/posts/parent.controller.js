@@ -10,6 +10,8 @@ module.exports = [
     this.quote = '';
     this.tempPost = { body: '', raw_body: '' };
     this.posting = { post: this.tempPost };
+    this.editorPosition = 'editor-fixed-bottom';
+    this.resize = true;
     // pullPage function injected by child controller
 
     $scope.$watch(
@@ -152,6 +154,20 @@ module.exports = [
       if (discardAlert()) {
         initEditor();
         ctrl.closeEditor();
+      }
+    };
+
+    var isFullscreen = true;
+    this.fullscreen = function() {
+      if (isFullscreen) {
+        isFullscreen = false;
+        this.editorPosition = 'editor-full-screen';
+        this.resize = false;
+      }
+      else {
+        isFullscreen = true;
+        this.editorPosition = 'editor-fixed-bottom';
+        this.resize = true;
       }
     };
   }

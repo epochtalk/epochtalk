@@ -12,30 +12,100 @@
 <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
 
 <div ng-if="PostsParentCtrl.loggedIn() && PostsParentCtrl.newPostEnabled">
-  <div class="editor-fixed-bottom">
 
-    <!-- fixed bottom toolbar -->
-    <ul class="post-toolbar">
-      <li ng-click="PostsParentCtrl.openEditor()" ng-if="!PostsParentCtrl.showEditor">
-        <span><i class="icon-epoch-edit-pencil"></i>Show Editor</span>
-      </li>
-      <li ng-click="PostsParentCtrl.closeEditor()" ng-if="PostsParentCtrl.showEditor">
-        <span><i class="icon-epoch-edit-pencil"></i>Hide Editor</i> </span>
-      </li>
-      <li>|</li>
-      <li ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.newPostEnabled">
-        <span><i class="icon-epoch-add-outline"></i>New Post</i></span>
-      </li>
-    </ul>
+  <!-- fixed bottom toolbar -->
+  <ul class="post-toolbar">
+    <li ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.newPostEnabled">
+      <span>+</span>
+    </li>
+  </ul>
 
+  <div ng-class="PostsParentCtrl.editorPosition" ng-show="PostsParentCtrl.showEditor" resizeable="PostsParentCtrl.resize">
     <!-- Editor Container-->
-    <div class="small-12 columns editor-container" ng-show="PostsParentCtrl.showEditor" resizeable>
-      <div class="editor-container-bar">
-        <img src="/static/img/btn-dragbar.png" />
+    <div class="small-12 columns editor-container">
+      <!-- Editor Header -->
+      <div class="editor-top-bar">
+        <div class="medium-6 medium-offset-6 small-12 columns">
+          <button ng-click="PostsParentCtrl.showFormatting = true">formatting</button>
+          <button ng-click="PostsParentCtrl.fullscreen()">fullscreen</button>
+        </div>
+
+        <div class="editor-formatting" ng-if="PostsParentCtrl.showFormatting">
+          <a class="close-formatting" ng-click="PostsParentCtrl.showFormatting = false">X</a>
+          <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank">
+            <h4>BBCode Lookup</h4>
+          </a>
+          <div class="medium-5 small-12 columns">
+            <strong>Bold</strong>:<div style="float: right">[b][/b]</div><br>
+            <em>Italics</em>:<div style="float: right">[i][/i]</div><br>
+            <u>Underline</u>:<div style="float: right">[u][/u]</div><br>
+            <del>Strikethrough</del>:<div style="float: right">[s][/s]</div><br>
+            BTC:<div style="float: right">[btc][/btc]</div><br>
+            <span style="background-color: green">Glow</span>:
+            <div style="float: right">[glow={color}][/glow]</div><br>
+            <span style="text-shadow: red 1px 1px 5px;">Shadow</span>:
+            <div style="float: right">[shadow={color}, {direction}, {blur}][/shadow]</div><br>
+            Font Size:<div style="float: right">[size={size}][/size]</div><br>
+            <sup>Superscript</sup>:<div style="float: right">[sup][/sup]</div><br>
+            <sub>Subscript</sub>:<div style="float: right">[sub][/sub]</div><br>
+
+            <hr>
+
+            <code>Code</code>:<div style="float: right">[code][/code]</div><br>
+            <tt>TeleText</tt>:<div style="float: right">[tt][/tt]</div><br>
+            Preformatted Text:<div style="float: right">[pre][/pre]</div><br>
+            Justify Left:<div style="float: right">[left][/left]</div><br>
+            Justify Right:<div style="float: right">[right][/right]</div><br>
+            Justify Center:<div style="float: right">[center][/center]</div><br>
+
+            <hr>
+
+            Horizontal Rule:<div style="float: right">[hr][/hr]</div><br><br>
+          </div>
+          <div class="medium-5 medium-offset-2 small-12 columns">
+            Black:<div style="float: right">[black][/black]</div><br>
+            Blue:<div style="float: right">[blue][/blue]</div><br>
+            Green:<div style="float: right">[green][/green]</div><br>
+            Red:<div style="float: right">[red][/red]</div><br>
+            White:<div style="float: right">[white][/white]</div><br>
+            Additional Colors:<div style="float: right">[color={color}][/color]</div><br>
+
+            <hr>
+
+            Image:<div style="float: right">[img]{URL}[/img]</div><br>
+            URL:<div style="float: right">[url={URL}][/url]</div><br>
+            Email:<div style="float: right">[email={email}][/email]</div><br>
+            FTP:<div style="float: right">[ftp={URL}][/ftp]</div><br>
+
+            <hr>
+
+            Lists:
+            <div style="float: right">
+            <pre>
+              [list]
+              [li][/li]
+              [li][/li]
+              [/list]
+            </pre>
+            </div><br>
+
+            <hr>
+
+            Tables:
+            <div style="float: right">
+            <pre>
+              [table]
+              [tr]
+              [td][/td]
+              [/tr]
+              [/table]
+            </pre>
+            </div><br>
+          </div>
+        </div>
       </div>
       <!-- Editor -->
       <form name="form" class="editor-form" novalidate>
-        <!-- Post Editor -->
         <epochtalk-editor class="posts-editor" body="PostsParentCtrl.posting.post.body" raw-body="PostsParentCtrl.posting.post.raw_body" reset-switch="PostsParentCtrl.resetEditor" focus-switch="PostsParentCtrl.focusEditor" dirty="PostsParentCtrl.dirtyEditor" quote="PostsParentCtrl.quote">
         </epochtalk-editor>
       </form>
@@ -51,6 +121,5 @@
         <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
       </div>
     </div>
-
   </div>
 </div>
