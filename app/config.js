@@ -200,6 +200,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     // Checks if user is a moderator
     var modCheck = ['$q', 'Session', function($q, Session) {
       if (Session.user.isMod) { return true; }
+      else if (Session.user.isAdmin) { return false; } // admin isn't mod, but isn't unauthorized
       else { return $q.reject('Unauthorized'); }
     }];
 
@@ -425,7 +426,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'content': {
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/index.html'),
-          resolve: { userAccess: adminCheck || modCheck }
+          resolve: { userAccess: modCheck || adminCheck }
         }
       }
     })
@@ -444,7 +445,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck || modCheck,
         users: ['User', function(User) {
           return User.all().$promise
           .then(function(users) { return users; });
@@ -461,8 +461,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@admin-moderation': {
           controller: 'ModPostsCtrl',
           controllerAs: 'ModerationCtrl',
-          template: fs.readFileSync(__dirname + '/admin/moderation/posts.html'),
-          resolve: { userAccess: modCheck }
+          template: fs.readFileSync(__dirname + '/admin/moderation/posts.html')
         }
       }
     });
