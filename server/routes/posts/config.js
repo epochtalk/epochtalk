@@ -104,14 +104,7 @@ exports.byThread = {
 
     var queryByThread = function() {
       db.posts.byThread(threadId, opts)
-      .then(function(posts) {
-        if (user) {
-          posts.map(function(post) {
-            if (post.user.id === user.id) { post.editable = true; }
-          });
-        }
-        reply(posts);
-      })
+      .then(reply)
       .catch(function(err) { reply(Boom.badImplementation(err)); });
     };
 

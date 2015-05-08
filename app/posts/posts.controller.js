@@ -1,6 +1,6 @@
 module.exports = [
-  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Threads', 'Posts', 'thread', 'posts', 'page', 'limit',
-  function($rootScope, $scope, $timeout, $anchorScroll, $location, Threads, Posts, thread, posts, page, limit) {
+  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Threads', 'Posts', 'thread', 'posts', 'page', 'limit',
+  function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Threads, Posts, thread, posts, page, limit) {
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
     parent.page = page;
@@ -10,6 +10,7 @@ module.exports = [
     parent.thread_post_count = thread.post_count;
     parent.posts = posts;
 
+    this.user = Session.user;
     this.posts = posts;
     this.thread = thread;
     $timeout($anchorScroll);

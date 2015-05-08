@@ -29,7 +29,7 @@
       <!-- <span ng-bind-html="post.title"></span> -->
       <span class="timestamp" ng-bind="post.created_at | humanDate"></span>
       <ul class="post-action">
-        <li ng-if="post.editable">
+        <li ng-if="post.user.id === PostsCtrl.user.id">
           <a ng-href="#" ng-click="PostsCtrl.loadEditor($index)">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
