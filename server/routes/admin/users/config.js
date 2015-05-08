@@ -73,6 +73,25 @@ exports.find = {
   }
 };
 
+exports.searchUsernames = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  validate: {
+    query: {
+      username: Joi.string().required(),
+      limit: Joi.number().integer().min(1).default(15)
+    }
+  },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  handler: function(request, reply) {
+    // get user by username
+    var searchStr = request.query.username;
+    var limit = request.query.limit;
+    db.users.searchUsernames(searchStr, limit)
+    .then(function(users) { reply(users); })
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
+  }
+};
+
 exports.count = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.adminCheck } ],

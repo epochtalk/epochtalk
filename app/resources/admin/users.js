@@ -12,6 +12,11 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/admin/users/count'
       },
+      searchUsernames: {
+        method: 'GET',
+        url: '/api/admin/users/search',
+        isArray: true
+      },
       countAdmins: {
         method: 'GET',
         url: '/api/admin/users/admins/count'
@@ -22,34 +27,16 @@ module.exports = ['$resource',
       },
       page: {
         method: 'GET',
-        params: {
-          field: '@field',
-          desc: '@desc',
-          limit: '@limit',
-          page: '@page'
-        },
         url: '/api/admin/users',
         isArray: true
       },
       pageAdmins: {
         method: 'GET',
-        params: {
-          field: '@field',
-          desc: '@desc',
-          limit: '@limit',
-          page: '@page'
-        },
         url: '/api/admin/users/admins',
         isArray: true
       },
       pageModerators: {
         method: 'GET',
-        params: {
-          field: '@field',
-          desc: '@desc',
-          limit: '@limit',
-          page: '@page'
-        },
         url: '/api/admin/users/moderators',
         isArray: true
       }
