@@ -13,10 +13,7 @@
   </div>
   <div class="small-12 medium-3 columns">&nbsp;</div>
   <div class="small-12 medium-6 columns">
-    <div class="nested-input-container">
-      <a ng-href="" class="nested-btn">Add Moderator</a>
-      <input class="nested-input" type="text" id="mod-to-add" placeholder="Type the name of the user you wish to make a moderator" />
-    </div>
+    <autocomplete-username button-text="Add Moderator" button-action="AdminManagementCtrl.addModerator(user)" input-placeholder="Type the name of the user you wish to make a moderator"></autocomplete-username>
   </div>
   <div class="admin-table-fix"></div>
 </div>

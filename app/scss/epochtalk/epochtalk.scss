@@ -1246,7 +1246,8 @@ pagination {
 .admin-table-fix { clear: both; }
 .nested-input-container { position: relative; }
 input[type].nested-input { padding-right: 146px; }
-.nested-btn {
+input[type].nested-input.valid-username { color: green; }
+.nested-btn, .nested-btn-disabled {
   position: absolute;
   right: 4px;
   top: 4px;
@@ -1271,6 +1272,12 @@ input[type].nested-input { padding-right: 146px; }
   background-color: $color-active-dark;
   border-color: $color-active-dark;
   color: #fff;
+}
+.nested-btn-disabled {
+  color: #ccc;
+  background-color: $color-active-dark;
+  border-color: $color-active-dark;
+  pointer-events: none;
 }
 
 .onoffswitch-right-align { float: right; }
@@ -1545,12 +1552,11 @@ input[type].hide-radio {
 
 // Disable ngAnimate Animations
 .secret {
-    //Use this for transitions
-    &.ng-show,
-    &.ng-hide {
-      -webkit-transition: none !important;
-      -moz-transition: none !important;
-      -o-transition: none !important;
-      transition: none !important;
-    }
+  &.ng-show,
+  &.ng-hide {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+  }
 }

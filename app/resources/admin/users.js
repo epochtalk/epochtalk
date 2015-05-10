@@ -10,35 +10,42 @@ module.exports = ['$resource',
       },
       count: {
         method: 'GET',
-        url: '/api/admin/users/count'
+        url: '/api/admin/users/count',
+        ignoreLoadingBar: true
       },
       searchUsernames: {
         method: 'GET',
         url: '/api/admin/users/search',
-        isArray: true
+        isArray: true,
+        ignoreLoadingBar: true
       },
       countAdmins: {
         method: 'GET',
-        url: '/api/admin/users/admins/count'
+        url: '/api/admin/users/admins/count',
+        ignoreLoadingBar: true
       },
       countModerators: {
         method: 'GET',
-        url: '/api/admin/users/moderators/count'
+        url: '/api/admin/users/moderators/count',
+        ignoreLoadingBar: true
       },
       page: {
         method: 'GET',
         url: '/api/admin/users',
-        isArray: true
+        isArray: true,
+        ignoreLoadingBar: true
       },
       pageAdmins: {
         method: 'GET',
         url: '/api/admin/users/admins',
-        isArray: true
+        isArray: true,
+        ignoreLoadingBar: true
       },
       pageModerators: {
         method: 'GET',
         url: '/api/admin/users/moderators',
-        isArray: true
+        isArray: true,
+        ignoreLoadingBar: true
       }
     });
   }

@@ -13,6 +13,10 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.desc = desc;
   this.filter = filter;
 
+  this.addAdministrator = function(user) {
+    console.log(user);
+  };
+
   this.setFilter = function(newFilter) {
     ctrl.filter = newFilter;
     ctrl.queryParams.filter = newFilter;

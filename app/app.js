@@ -44,22 +44,23 @@ app.controller('ModPostsCtrl',        require('./admin/moderation/posts.controll
 app.controller('AnalyticsCtrl',       require('./admin/analytics/analytics.controller.js'));
 
 // Register Directives
-app.directive('pagination',         require('./components/pagination/pagination.directive.js'));
-app.directive('epochtalkEditor',    require('./components/editor/editor.directive.js'));
-app.directive('categoryEditor',     require('./components/category_editor/category-editor.directive.js'));
-app.directive('nestableBoards',     require('./components/category_editor/nestable-boards.directive.js'));
-app.directive('nestableCategories', require('./components/category_editor/nestable-categories.directive.js'));
-app.directive('modal',              require('./components/modal/modal.directive.js'));
-app.directive('slideToggle',        require('./components/slide_toggle/slide-toggle.directive.js'));
-app.directive('autoFocus',          require('./components/autofocus/autofocus.directive.js'));
-app.directive('uniqueUsername',     require('./components/unique_username/unique-username.directive.js'));
-app.directive('uniqueEmail',        require('./components/unique_email/unique-email.directive.js'));
-app.directive('scrollLock',         require('./components/scroll_lock/scroll-lock.directive.js'));
-app.directive('resizeable',         require('./components/resizeable/resizeable.directive.js'));
-app.directive('imageLoader',        require('./components/image_loader/image_loader.directive.js'));
-app.directive('postProcessing',     require('./components/post-processing/post-processing.directive.js'));
-app.directive('imageUploader',      require('./components/image_uploader/image_uploader.directive.js'));
-app.directive('alert',              require('./components/alert/alert.directive.js'));
+app.directive('pagination',             require('./components/pagination/pagination.directive.js'));
+app.directive('epochtalkEditor',        require('./components/editor/editor.directive.js'));
+app.directive('categoryEditor',         require('./components/category_editor/category-editor.directive.js'));
+app.directive('nestableBoards',         require('./components/category_editor/nestable-boards.directive.js'));
+app.directive('nestableCategories',     require('./components/category_editor/nestable-categories.directive.js'));
+app.directive('modal',                  require('./components/modal/modal.directive.js'));
+app.directive('slideToggle',            require('./components/slide_toggle/slide-toggle.directive.js'));
+app.directive('autoFocus',              require('./components/autofocus/autofocus.directive.js'));
+app.directive('uniqueUsername',         require('./components/unique_username/unique-username.directive.js'));
+app.directive('uniqueEmail',            require('./components/unique_email/unique-email.directive.js'));
+app.directive('scrollLock',             require('./components/scroll_lock/scroll-lock.directive.js'));
+app.directive('resizeable',             require('./components/resizeable/resizeable.directive.js'));
+app.directive('imageLoader',            require('./components/image_loader/image_loader.directive.js'));
+app.directive('postProcessing',         require('./components/post-processing/post-processing.directive.js'));
+app.directive('imageUploader',          require('./components/image_uploader/image_uploader.directive.js'));
+app.directive('alert',                  require('./components/alert/alert.directive.js'));
+app.directive('autocompleteUsername',   require('./components/autocomplete_username/autocomplete-username.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))
