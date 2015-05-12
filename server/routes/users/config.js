@@ -127,27 +127,3 @@ exports.find = {
     .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };
-
-exports.all = {
-  auth: { mode: 'try', strategy: 'jwt' },
-  handler: function(request, reply) {
-    if (!request.server.methods.viewable) { return reply([]); }
-    // get logged in user
-    var authUser = {};
-    if (request.auth.isAuthenticated) {
-      authUser = request.auth.credentials;
-    }
-    db.users.all()
-    .then(function(users) {
-      users.forEach(function(user) {
-        delete user.passhash;
-        delete user.confirmation_token;
-        delete user.reset_token;
-        if (authUser.id !== user.id) { delete user.email; }
-      });
-      return users;
-    })
-    .then(function(users) { reply(users); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
-  }
-};

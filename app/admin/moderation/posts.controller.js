@@ -11,6 +11,7 @@ module.exports = ['$scope', function($scope) {
 
   // Placeholder reported post data
   this.reportedPosts = [{
+    reporter: 'Johnny',
     title: 'Morbi ut dapibus arcu, nec lobortis erat.',
     username: 'dorthy',
     reason: 'Spam post',
@@ -19,6 +20,7 @@ module.exports = ['$scope', function($scope) {
     moderator_notes: 'No action taken, invalid complaint'
   },
   {
+    reporter: 'Sammy',
     title: 'Fusce neque velit',
     username: 'Wizard119',
     reason: 'Post contains offensive content',
@@ -27,6 +29,7 @@ module.exports = ['$scope', function($scope) {
     moderator_notes: 'Post was modified to remove offensive content'
   },
   {
+    reporter: 'Kyle',
     title: 'Nullam fermentum mauris viverra',
     username: 'Frodo',
     reason: 'User double posted',

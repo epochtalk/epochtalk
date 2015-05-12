@@ -446,8 +446,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       },
       resolve: {
         users: ['User', function(User) {
-          return User.all().$promise
-          .then(function(users) { return users; });
+          return [];
         }],
         user: [ 'User', '$stateParams', function(User, $stateParams) {
           return User.get({ id: $stateParams.username }).$promise

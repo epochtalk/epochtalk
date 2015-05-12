@@ -24,8 +24,9 @@
   <div class="small-12 columns admin-content-selectable">
     <table width="100%">
       <thead>
+        <th>Reported By</th>
         <th width="200">Reported Date</th>
-        <th>Username</th>
+        <th>Reported User</th>
         <th>Email</th>
         <th width="200">Registered Date</th>
         <th width="500">Reason</th>
@@ -33,9 +34,10 @@
       </thead>
       <tbody>
         <tr ng-class="{ 'active-row' : ModerationCtrl.selectedUsername === user.username }" ng-click="ModerationCtrl.selectUser(user.username)" class="selectable-row pointer" ng-repeat="user in ModerationCtrl.users track by user.username">
+          <td><a href="/profiles/undefined" ng-bind="ModerationCtrl.reportedUsers[{{$index}}].reporter"></a></td>
           <td ng-bind="ModerationCtrl.reportedUsers[{{$index}}].reported_at | humanDate"></td>
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
-          <td ng-bind="user.email"></td>
+          <td ng-bind="ModerationCtrl.reportedUsers[{{$index}}].email"></td>
           <td ng-bind="user.created_at | humanDate"></td>
           <td><div ng-bind="ModerationCtrl.reportedUsers[{{$index}}].reason"></div></td>
           <td>

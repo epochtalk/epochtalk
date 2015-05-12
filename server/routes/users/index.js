@@ -5,6 +5,5 @@ var users = require(path.normalize(__dirname + '/config'));
 module.exports = [
   { method: 'GET', path: '/users/{id}', config: users.find },
   { method: 'PUT', path: '/users', config: users.update },
-  { method: 'GET', path: '/users/all', config: users.all },
   { method: 'POST', path: '/users/import', config: users.import }
 ];

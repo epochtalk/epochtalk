@@ -27,11 +27,6 @@ module.exports = ['$resource',
         method: 'DELETE',
         url: '/api/logout'
       },
-      all: {
-        method: 'GET',
-        url: '/api/users/all',
-        isArray: true
-      },
       ping: {
         method: 'GET',
         url: '/api/authenticate'
