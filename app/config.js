@@ -347,7 +347,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             userAccess: adminCheck,
             moderators: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
               var query = {
-                filter: $stateParams.filter,
                 field: $stateParams.field,
                 desc: $stateParams.desc,
                 limit: Number($stateParams.limit) || 10,
@@ -356,13 +355,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
               return AdminUsers.pageModerators(query).$promise
               .then(function(moderators) { return moderators; });
             }],
-            moderatorsCount: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-              var query = { filter: $stateParams.filter };
-              return AdminUsers.countModerators(query).$promise
+            moderatorsCount: ['AdminUsers', function(AdminUsers) {
+              return AdminUsers.countModerators().$promise
               .then(function(moderatorsCount) { return moderatorsCount.count; });
-            }],
-            filter: ['$stateParams', function($stateParams) {
-              return $stateParams.filter;
             }],
             field: ['$stateParams', function($stateParams) {
               return $stateParams.field;
@@ -391,7 +386,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             userAccess: adminCheck,
             admins: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
               var query = {
-                filter: $stateParams.filter,
                 field: $stateParams.field,
                 desc: $stateParams.desc,
                 limit: Number($stateParams.limit) || 10,
@@ -400,13 +394,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
               return AdminUsers.pageAdmins(query).$promise
               .then(function(admins) { return admins; });
             }],
-            adminsCount: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-              var query = { filter: $stateParams.filter };
-              return AdminUsers.countAdmins(query).$promise
+            adminsCount: ['AdminUsers', function(AdminUsers) {
+              return AdminUsers.countAdmins().$promise
               .then(function(adminsCount) { return adminsCount.count; });
-            }],
-            filter: ['$stateParams', function($stateParams) {
-              return $stateParams.filter;
             }],
             field: ['$stateParams', function($stateParams) {
               return $stateParams.field;

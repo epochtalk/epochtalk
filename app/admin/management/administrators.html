@@ -1,17 +1,4 @@
 <div class="admin-table-header">
-  <div class="small-4 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="0" id="moderator-filter-0" ng-model="AdminManagementCtrl.selectedFilterIndex" ng-click="AdminManagementCtrl.setFilter()" />
-    <label for="moderator-filter-0">All</label>
-  </div>
-  <div class="small-4 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="1" id="moderator-filter-1" ng-model="AdminManagementCtrl.selectedFilterIndex" ng-click="AdminManagementCtrl.setFilter('super')" />
-    <label for="moderator-filter-1">Super</label>
-  </div>
-  <div class="small-4 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="2" id="moderator-filter-2" ng-model="AdminManagementCtrl.selectedFilterIndex" ng-click="AdminManagementCtrl.setFilter('admin')" />
-    <label for="moderator-filter-2">Regular</label>
-  </div>
-  <div class="small-12 medium-3 columns">&nbsp;</div>
   <div class="small-12 medium-6 columns">
     <autocomplete-username button-text="Add Administrator" button-action="AdminManagementCtrl.addAdministrator(user)" input-placeholder="Type the name of the user you wish to make an administrator"></autocomplete-username>
   </div>
@@ -22,7 +9,7 @@
     <table width="100%">
       <thead>
         <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Administrator Username</th>
-        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('role')"><span ng-class="AdminManagementCtrl.getSortClass('role')"></span>&nbsp;Super Administrator</th>
+        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('roles')"><span ng-class="AdminManagementCtrl.getSortClass('roles')"></span>&nbsp;Super Administrator</th>
         <th>Administrator Since</th>
         <th>Last Active Date</th>
         <th width="175">Actions</th>
@@ -32,7 +19,7 @@
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
           <td>
             <div class="onoffswitch onoffswitch-left-align">
-              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="super-admin-{{$index}}" ng-checked="AdminManagementCtrl.isSuperAdmin(user.role)">
+              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="super-admin-{{$index}}" ng-checked="AdminManagementCtrl.isSuperAdmin(user.roles)">
               <label class="onoffswitch-label" for="super-admin-{{$index}}">
                 <span class="onoffswitch-inner"></span>
                 <span class="onoffswitch-switch"></span>

@@ -1,9 +1,8 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminUsers', 'admins', 'adminsCount', 'filter', 'page', 'limit', 'field', 'desc', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminUsers, admins, adminsCount, filter, page, limit, field, desc) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminUsers', 'admins', 'adminsCount', 'page', 'limit', 'field', 'desc', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminUsers, admins, adminsCount, page, limit, field, desc) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'administrators';
   this.admins = admins;
-  this.selectedFilterIndex = 0;
   this.pageCount =  Math.ceil(adminsCount / limit);
   this.admins = admins;
   this.queryParams = $location.search();
@@ -11,16 +10,9 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.limit = limit;
   this.field = field;
   this.desc = desc;
-  this.filter = filter;
 
   this.addAdministrator = function(user) {
     console.log(user);
-  };
-
-  this.setFilter = function(newFilter) {
-    ctrl.filter = newFilter;
-    ctrl.queryParams.filter = newFilter;
-    $location.search(ctrl.queryParams);
   };
 
   this.setSortField = function(sortField) {
@@ -56,20 +48,18 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     return sortClass;
   };
 
-  this.isSuperAdmin = function(role) {
-    return role === 'Super Administrator';
+  this.isSuperAdmin = function(roles) {
+    return roles.indexOf('Super Administrator') > -1;
   };
 
   $timeout($anchorScroll);
 
   this.offLCS = $rootScope.$on('$locationChangeSuccess', function(){
     var params = $location.search();
-    var filter = params.filter;
     var page = Number(params.page) || 1;
     var limit = Number(params.limit) || 10;
     var field = params.field;
     var descending = params.desc === 'true';
-    var filterChanged = false;
     var pageChanged = false;
     var limitChanged = false;
     var fieldChanged = false;
@@ -96,12 +86,8 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       descChanged = true;
       ctrl.desc = descending.toString();
     }
-    if (filter && filter !== ctrl.filter) {
-      filterChanged = true;
-      ctrl.filter = filter;
-    }
 
-    if(pageChanged || limitChanged || fieldChanged || descChanged || filterChanged) { ctrl.pullPage(); }
+    if(pageChanged || limitChanged || fieldChanged || descChanged) { ctrl.pullPage(); }
   });
   $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
@@ -113,10 +99,9 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
 
     if (ctrl.desc) { query.desc = ctrl.desc; }
     if (ctrl.field) { query.field = ctrl.field; }
-    if (ctrl.filter) { query.filter = ctrl.filter; }
 
     // update admin's page count
-    AdminUsers.countAdmins({ filter: query.filter }).$promise
+    AdminUsers.countAdmins().$promise
     .then(function(updatedCount) {
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });

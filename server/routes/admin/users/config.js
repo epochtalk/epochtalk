@@ -73,6 +73,25 @@ exports.find = {
   }
 };
 
+exports.addRole = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  validate: {
+    payload: {
+      userId: Joi.string().required(),
+      role: Joi.string().required().valid('User', 'Moderator', 'Global Moderator', 'Administrator', 'Super Administrator')
+    }
+  },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  handler: function(request, reply) {
+    var userId = request.payload.userId;
+    var role = request.payload.role;
+    db.users.addRole(userId, role)
+    .then(function(updatedUser) { reply(updatedUser); })
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
+  }
+};
+
+
 exports.searchUsernames = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: {
@@ -103,22 +122,18 @@ exports.count = {
 
 exports.countAdmins = {
   auth: { mode: 'required', strategy: 'jwt' },
-  validate: { query: { filter: Joi.string().valid('admin', 'super') } },
   pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
-    var opts = { filter: request.query.filter };
-    db.users.countAdmins(opts)
+    db.users.countAdmins()
     .then(function(adminsCount) { reply(adminsCount); });
   }
 };
 
 exports.countModerators = {
   auth: { mode: 'required', strategy: 'jwt' },
-  validate: { query: { filter: Joi.string().valid('global', 'moderator') } },
   pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
-    var opts = { filter: request.query.filter };
-    db.users.countModerators(opts)
+    db.users.countModerators()
     .then(function(moderatorsCount) { reply(moderatorsCount); });
   }
 };
@@ -152,8 +167,7 @@ exports.pageAdmins = {
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).default(10),
-      filter: Joi.string().valid('super', 'admin'),
-      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'role'),
+      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'roles'),
       desc: Joi.boolean().default(false)
     }
   },
@@ -162,7 +176,6 @@ exports.pageAdmins = {
     var opts = {
       limit: request.query.limit || 10,
       page: request.query.page || 1,
-      filter: request.query.filter || undefined,
       sortField: request.query.field || 'username',
       sortDesc: request.query.desc || false
     };
@@ -177,8 +190,7 @@ exports.pageModerators = {
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).default(10),
-      filter: Joi.string().valid('global', 'moderator'),
-      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'role'),
+      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'roles'),
       desc: Joi.boolean().default(false)
     }
   },
@@ -187,7 +199,6 @@ exports.pageModerators = {
     var opts = {
       limit: request.query.limit || 10,
       page: request.query.page || 1,
-      filter: request.query.filter || undefined,
       sortField: request.query.field || 'username',
       sortDesc: request.query.desc || false
     };

@@ -10,5 +10,6 @@ module.exports = [
   { method: 'GET', path: '/users/admins/count', config: users.countAdmins },
   { method: 'GET', path: '/users/moderators/count', config: users.countModerators },
   { method: 'GET', path: '/users/{username}', config: users.find },
-  { method: 'PUT', path: '/users', config: users.update }
+  { method: 'PUT', path: '/users', config: users.update },
+  { method: 'PUT', path: '/users/role', config: users.addRole }
 ];
