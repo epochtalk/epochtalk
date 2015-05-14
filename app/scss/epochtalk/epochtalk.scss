@@ -103,7 +103,6 @@ label > input[type="checkbox"] { margin-right: .25rem; }
   padding-bottom: 10px; }
 .thin-underline { border-bottom: 1px solid $color-gray-light; }
 .text-info { font-size: 13px; color: #999; }
-.bold-title { font-weight: bold; }
 .no-margin, input[type="text"].no-margin { margin: 0; }
 .anchor-offset {
   display: block;
@@ -230,7 +229,7 @@ input.icon-padding { padding-right: 40px; }
 #header {
   background-color: #fff;
   border-bottom: 1px solid $color-gray-light;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 
   .top-bar {
     background-color: inherit;
@@ -440,9 +439,19 @@ input.icon-padding { padding-right: 40px; }
 }
 
 /* Pagination */
+.pagination-container {
+  display: block;
+  margin-bottom: 0.5rem;
+  &.center { text-align: center; }
+  &.right { text-align: right; }
+  &.lower-center { text-align: center; padding-top: 1rem; }
+}
+
 pagination {
+  display: inline-table;
+
   .pagination {
-    float: right;
+    margin-left: 0rem;
 
     li {
       &.current {
@@ -619,7 +628,7 @@ pagination {
   background-color: $color-gray-sub;
   color: $color-gray;
   font-size: .8rem;
-  padding: 10px 10px 40px 10px;
+  padding: 10px 10px 15px 10px;
   margin-bottom: 0;
 
   a {
@@ -678,16 +687,18 @@ pagination {
 .child-board h5 { margin-bottom: 0px; }
 .child-board-desc { font-size: 14px; line-height: 1.1; padding-bottom: 3px; word-wrap: break-word; overflow-wrap: break-word; }
 .child-board-desc :last-child { padding-bottom: 0; }
-.thread-header {
+.thread-list-header {
+  text-align: left;
   h6 {
     color: $color-gray-med;
     font-weight: 400;
   }
 }
 .thread-title {
-  font-weight: 600;
   word-wrap: break-word;
-  overflow-wrap: break-word; }
+  overflow-wrap: break-word;
+  &.bold { font-weight: bold; }
+}
 .thread-listItem { padding: 5px 0 15px; }
 .thread-listItem .division { font-size: 80%; line-height: 1.5; }
 
@@ -707,9 +718,7 @@ pagination {
 // Boards Page ------------------------------- //
 .board-header {
   background-color: $color-gray-sub;
-  padding: 20px 0 0;
-  margin-bottom: 2rem;
-  margin-top: -2rem;
+  margin-bottom: 0.5rem;
 }
 
 .category { margin-bottom: 30px; }
@@ -770,19 +779,28 @@ pagination {
 .info-box { margin-bottom: 10px; }
 
 // Post Page --------------------------------- //
+.thread-header {
+  font-size: x-large;
+  font-weight: 600;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
 .post-sig-border {
   clear: both;
   width: 250px;
   border-top: 1px solid $color-gray-light;
-  margin-bottom: 1.4rem;
-  margin-top: 1.4rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .post-signature {
   clear: both;
   color: $color-gray-med;
   font-size: 13px;
-  height: 80px;
+  max-height: 80px;
   overflow: hidden;
   word-wrap: break-word;
   text-overflow: ellipsis;
@@ -796,9 +814,9 @@ pagination {
 
 .post-block {
   border-bottom: 1px solid $color-gray-light;
-  margin-bottom: 1.6rem;
-  padding-bottom: 2.4rem;
-}
+  padding-top: 1.5rem;
+  padding-bottom: 1rem; }
+.post-block:first-child { border-top: 1px solid $color-gray-light; }
 
 .post-user {
   width: 100%;
@@ -849,7 +867,7 @@ pagination {
 
 .post-title {
   color: $color-gray-med;
-  // float: left;
+  margin-bottom: 0.5rem;
   width: 100%;
 }
 
@@ -878,7 +896,7 @@ pagination {
 }
 
 .post-body {
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.5rem;
   white-space: pre-wrap;
   word-wrap: break-word;
   overflow-wrap: break-word; }

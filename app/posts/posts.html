@@ -1,15 +1,18 @@
-<pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
-
 <div class="row">
-  <div class="small-12 columns board-title">
-    <h4 ng-bind-html="PostsParentCtrl.thread_title"></h3>
+  <div class="small-12 columns thread-header">
+    <span ng-bind-html="::PostsParentCtrl.thread_title"></span>
   </div>
 </div>
-<br />
+
+<div class="row pagination-container center" ng-cloak>
+  <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+</div>
 
 <div class="content-spacer" ui-view="data"></div>
 
-<pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+<div class="row pagination-container lower-center" ng-cloak>
+  <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+</div>
 
 <div ng-if="PostsParentCtrl.loggedIn() && PostsParentCtrl.newPostEnabled">
 

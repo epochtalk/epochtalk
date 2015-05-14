@@ -42,7 +42,7 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     // page count for each thread
     threads.forEach(function(thread) {
       // user based UI
-      if (thread.has_new_post) { thread.title_class = 'bold-title'; }
+      if (thread.has_new_post) { thread.title_class = 'bold'; }
       thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
       ctrl.getPageKeysForThread(thread);
     });
@@ -90,7 +90,7 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
         ctrl.threads = threads;
         ctrl.threads.forEach(function(thread) {
           // user based UI
-          if (thread.has_new_post) { thread.title_class = 'bold-title'; }
+          if (thread.has_new_post) { thread.title_class = 'bold'; }
           thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
           ctrl.getPageKeysForThread(thread);
         });
