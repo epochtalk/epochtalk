@@ -451,7 +451,8 @@ pagination {
   display: inline-table;
 
   .pagination {
-    margin-left: 0rem;
+    margin-left: 0;
+    margin-bottom: 0;
 
     li {
       &.current {
@@ -817,6 +818,10 @@ pagination {
   padding-top: 1.5rem;
   padding-bottom: 1rem; }
 .post-block:first-child { border-top: 1px solid $color-gray-light; }
+.post-block.super-admin { border: 1px solid blue; box-shadow: 1px 1px 5px gray; }
+.post-block.admin { border: 1px solid red; box-shadow: 1px 1px 5px gray; }
+.post-block.global-mod { border: 1px solid yellow; box-shadow: 1px 1px 5px gray; }
+.post-block.mod { border: 1px solid green; box-shadow: 1px 1px 5px gray; }
 
 .post-user {
   width: 100%;
