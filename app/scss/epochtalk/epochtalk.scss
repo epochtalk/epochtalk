@@ -987,13 +987,20 @@ pagination {
 }
 .editor-container-bar {
   display: block;
-  position: relative;
-  text-align: center;
-  top: -5px;
-  width: 100%;
-  height: 0;
+  position: absolute;
+  top: 5px;
+  left: 40%;
+  right: 40%;
+  height: 10px;
   z-index: 10;
   cursor: ns-resize;
+  .bar {
+    height: 5px;
+    width: 35px;
+    border-radius: 10px;
+    background-color: gray;
+    margin: auto;
+  }
 }
 
 .editor-top-bar {

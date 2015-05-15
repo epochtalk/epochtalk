@@ -13,7 +13,7 @@ module.exports = ['$document',
 
         function init() {
           destroyed = false;
-          element.prepend('<div class="editor-container-bar"><img src="/static/img/btn-dragbar.png" /></div>');
+          element.prepend('<div class="editor-container-bar"><div class="bar"></div></div>');
           animate();
           doc.on('mousedown', onDown);
           doc.on('mousemove', onMove);
