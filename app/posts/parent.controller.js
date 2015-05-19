@@ -1,6 +1,6 @@
 module.exports = [
-  '$scope', '$timeout', '$location', 'Session', 'Posts',
-  function($scope, $timeout, $location, Session, Posts) {
+  '$scope', '$timeout', '$location', 'Session', 'Posts', 'Reports', 'Alert',
+  function($scope, $timeout, $location, Session, Posts, Reports, Alert) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -169,6 +169,53 @@ module.exports = [
         this.editorPosition = 'editor-fixed-bottom';
         this.resize = true;
       }
+    };
+
+    this.reportedPost = {}; // Object being reported
+    this.showReportModal = false; // Visible state of modal
+    this.offendingId = undefined; // Is the post or user id being reported
+    this.reportReason = ''; // The reason for the report
+    this.reportSubmitted = false; // Has the report been submitted
+    this.reportBtnLabel = 'Submit Report'; // Button label for modal
+    this.user = Session.user; // Logged in user
+    this.openReportModal = function(post) {
+      ctrl.reportedPost = post;
+      ctrl.showReportModal = true;
+    };
+
+    this.closeReportModal = function() {
+      $timeout(function() {
+        ctrl.showReportModal = false;
+        ctrl.offendingId = undefined;
+        ctrl.reportReason = '';
+        ctrl.reportedPost = {};
+        ctrl.reportSubmitted = false;
+      }, 500);
+    };
+
+    this.submitReport = function() {
+      ctrl.reportSubmitted = true;
+      var report = { // build report
+        reporter_user_id: ctrl.user.id,
+        reporter_reason: ctrl.reportReason
+      };
+      var reportPromise;
+      if (ctrl.offendingId === ctrl.reportedPost.id) { // Post report
+        report.offender_post_id = ctrl.offendingId;
+        reportPromise = Reports.createPostReport(report).$promise;
+      }
+      else { // User report
+        report.offender_user_id = ctrl.offendingId;
+        reportPromise = Reports.createUserReport(report).$promise;
+      }
+      reportPromise.then(function() {
+        ctrl.closeReportModal();
+        $timeout(function() { Alert.success('Successfully sent report'); }, 500);
+      })
+      .catch(function() {
+        ctrl.closeReportModal();
+        $timeout(function() { Alert.error('Error sending report, please try again later'); }, 500);
+      });
     };
   }
 ];

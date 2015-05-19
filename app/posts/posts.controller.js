@@ -44,6 +44,7 @@ module.exports = [
 
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
+    this.openReportModal = parent.openReportModal;
     parent.pullPage = function() {
       var query = {
         thread_id: parent.thread_id,

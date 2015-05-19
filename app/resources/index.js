@@ -5,4 +5,5 @@ angular.module('ept')
   .factory('Boards', require('./boards.js'))
   .factory('Threads', require('./threads.js'))
   .factory('Posts', require('./posts.js'))
+  .factory('Reports', require('./reports.js'))
   .factory('User', require('./user.js'));

@@ -107,6 +107,23 @@
           </div>
         </div>
       </div>
+      <!-- Reporting Modal -->
+      <modal class="tiny" show="PostsParentCtrl.showReportModal" on-close="PostsParentCtrl.closeReportModal()">
+        <form name="$parent.form" class="css-form">
+          <h3 class="thin-dotted-underline">Report User/Post</h3>
+          <br />
+          <label>Which would you like to report?</label>
+          <input type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.user.id" id="reportUser" ng-disabled="PostsParentCtrl.reportSubmitted" required><label for="reportUser">{{PostsParentCtrl.reportedPost.user.username}}</label>
+          <input type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.id" id="reportPost" ng-disabled="PostsParentCtrl.reportSubmitted" required><label for="reportPost">{{PostsParentCtrl.reportedPost.user.username}}'s Post</label>
+          <label>Reason for Report</label>
+          <textarea name="reportReason" ng-model="PostsParentCtrl.reportReason" ng-disabled="PostsParentCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required></textarea>
+          <div class="form-action">
+            <button class="button no-margin" ng-click="PostsParentCtrl.submitReport()"
+              ng-disabled="$parent.form.$invalid || $parent.form.$errors || PostsParentCtrl.reportSubmitted" ng-bind="PostsParentCtrl.reportBtnLabel"></button>
+          </div>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+      </modal>
       <!-- Editor -->
       <form name="form" class="editor-form" novalidate>
         <epochtalk-editor class="posts-editor" body="PostsParentCtrl.posting.post.body" raw-body="PostsParentCtrl.posting.post.raw_body" reset-switch="PostsParentCtrl.resetEditor" focus-switch="PostsParentCtrl.focusEditor" dirty="PostsParentCtrl.dirtyEditor" quote="PostsParentCtrl.quote">

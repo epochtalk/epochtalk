@@ -1,4 +1,4 @@
-<div class="row post-block" ng-class="{ 'admin': post.user.role === 'Administrator', 'global-mod': post.user.role === 'Global Moderator', 'mod': post.user.role === 'Moderator' }" 
+<div class="row post-block" ng-class="{ 'admin': post.user.role === 'Administrator', 'global-mod': post.user.role === 'Global Moderator', 'mod': post.user.role === 'Moderator' }"
 ng-repeat="post in PostsCtrl.posts track by post.id">
   <!-- Post Anchor -->
   <a class="anchor-offset" id="{{post.id}}"></a>
@@ -30,16 +30,20 @@ ng-repeat="post in PostsCtrl.posts track by post.id">
       <!-- <span ng-bind-html="post.title"></span> -->
       <span class="timestamp" ng-bind="post.created_at | humanDate"></span>
       <ul class="post-action">
+        <li ng-if="PostsParentCtrl.loggedIn()">
+          <a ng-href="#" ng-click="PostsCtrl.openReportModal(post)">
+            <i class="icon-epoch-flag"></i>
+          </a>
+        </li>
         <li ng-if="post.user.id === PostsCtrl.user.id">
           <a ng-href="#" ng-click="PostsCtrl.loadEditor($index)">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
         </li>
         <!-- <li><a href="#"><i class="icon-epoch-heart"></i></a></li>
-        <li><a href="#"><i class="icon-epoch-flag"></i></a></li>
         <li><a href="#"><i class="icon-epoch-reply"></i></a></li> -->
         <li ng-if="PostsParentCtrl.loggedIn()">
-          <a href="#" ng-click="PostsCtrl.addQuote($index)">
+          <a ng-href="#" ng-click="PostsCtrl.addQuote($index)">
             <i class="icon-epoch-quote"></i>
           </a>
         </li>
