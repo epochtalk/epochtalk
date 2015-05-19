@@ -1,9 +1,10 @@
-module.exports = ['$scope', function($scope) {
+module.exports = ['$scope', 'postReports', function($scope, postReports) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'posts';
   this.tableFilter = 0;
   this.selectedPost = null;
+  this.postReports = postReports;
 
   this.selectPost = function(post) {
     ctrl.selectedPost = post;

@@ -32,20 +32,17 @@ module.exports = ['$resource',
       page: {
         method: 'GET',
         url: '/api/admin/users',
-        isArray: true,
-        ignoreLoadingBar: true
+        isArray: true
       },
       pageAdmins: {
         method: 'GET',
         url: '/api/admin/users/admins',
-        isArray: true,
-        ignoreLoadingBar: true
+        isArray: true
       },
       pageModerators: {
         method: 'GET',
         url: '/api/admin/users/moderators',
-        isArray: true,
-        ignoreLoadingBar: true
+        isArray: true
       }
     });
   }

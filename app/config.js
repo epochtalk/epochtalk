@@ -445,8 +445,31 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        users: ['User', function(User) {
-          return [];
+        limit: ['$stateParams', function($stateParams) {
+          return $stateParams.limit;
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        filter: ['$stateParams', function($stateParams) {
+          return $stateParams.filter;
+        }],
+        field: ['$stateParams', function($stateParams) {
+          return $stateParams.field;
+        }],
+        desc: ['$stateParams', function($stateParams) {
+          return $stateParams.desc;
+        }],
+        userReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
+          var query = {
+            field: $stateParams.field,
+            desc: $stateParams.desc,
+            filter: $stateParams.filter,
+            limit: Number($stateParams.limit) || 15,
+            page: Number($stateParams.page) || 1
+          };
+          return AdminReports.pageUserReports(query).$promise
+          .then(function(userReports) { return userReports; });
         }],
         user: [ 'User', '$stateParams', function(User, $stateParams) {
           return User.get({ id: $stateParams.username }).$promise
@@ -462,6 +485,34 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/posts.html')
         }
+      },
+      resolve: {
+        limit: ['$stateParams', function($stateParams) {
+          return $stateParams.limit;
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        filter: ['$stateParams', function($stateParams) {
+          return $stateParams.filter;
+        }],
+        field: ['$stateParams', function($stateParams) {
+          return $stateParams.field;
+        }],
+        desc: ['$stateParams', function($stateParams) {
+          return $stateParams.desc;
+        }],
+        postReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
+          var query = {
+            field: $stateParams.field,
+            desc: $stateParams.desc,
+            filter: $stateParams.filter,
+            limit: Number($stateParams.limit) || 15,
+            page: Number($stateParams.page) || 1
+          };
+          return AdminReports.pagePostReports(query).$promise
+          .then(function(postReports) { return postReports; });
+        }]
       }
     });
 

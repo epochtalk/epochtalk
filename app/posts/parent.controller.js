@@ -190,11 +190,13 @@ module.exports = [
         ctrl.reportReason = '';
         ctrl.reportedPost = {};
         ctrl.reportSubmitted = false;
+        ctrl.reportBtnLabel = 'Submit Report';
       }, 500);
     };
 
     this.submitReport = function() {
       ctrl.reportSubmitted = true;
+      ctrl.reportBtnLabel = 'Submitting...';
       var report = { // build report
         reporter_user_id: ctrl.user.id,
         reporter_reason: ctrl.reportReason

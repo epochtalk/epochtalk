@@ -119,10 +119,10 @@ exports.pageUserReports = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(10),
+      limit: Joi.number().integer().min(1).default(15),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority'),
-      desc: Joi.boolean().default(false)
+      desc: Joi.boolean().default(true)
     }
   },
   handler: function(request, reply) {
@@ -144,10 +144,10 @@ exports.pagePostReports = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(10),
+      limit: Joi.number().integer().min(1).default(15),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority'),
-      desc: Joi.boolean().default(false)
+      desc: Joi.boolean().default(true)
     }
   },
   handler: function(request, reply) {

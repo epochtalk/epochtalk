@@ -33,13 +33,14 @@
         <th width="225">Actions</th>
       </thead>
       <tbody>
-        <tr ng-class="{ 'active-row' : ModerationCtrl.selectedPost === post }" ng-click="ModerationCtrl.selectPost(post)" class="selectable-row pointer" ng-repeat="post in ModerationCtrl.reportedPosts track by post.title">
-          <td><a href="/profiles/undefined" ng-bind="post.reporter"></td>
-          <td ng-bind="post.reported_at | humanDate"></td>
-          <td ng-bind="post.posted_date | humanDate"></td>
-          <td><div ng-bind="post.title"></div></td>
-          <td><a href="/profiles/{{post.username}}" ng-bind="post.username"></a></td>
-          <td><div ng-bind="post.reason"></div></td>
+        <!-- ng-class="{ 'active-row' : ModerationCtrl.selectedPost === post }" ng-click="ModerationCtrl.selectPost(post)" -->
+        <tr class="selectable-row pointer" ng-repeat="postReport in ModerationCtrl.postReports track by postReport.id">
+          <td><a href="/profiles/{{postReport.reporter_username}}" ng-bind="postReport.reporter_username"></td>
+          <td ng-bind="postReport.created_at | humanDate"></td>
+          <td ng-bind="postReport.offender_created_at | humanDate"></td>
+          <td><a href="/threads/{{postReport.offender_thread_id}}/posts#{{postReport.offender_post_id}}" ng-bind="postReport.offender_title"></a></td>
+          <td><a href="/profiles/{{postReport.offender_author_username}}" ng-bind="postReport.offender_author_username"></a></td>
+          <td><div ng-bind="postReport.reporter_reason"></div></td>
           <td>
             <a href="#">Edit</a>&nbsp;&nbsp;
             <a href="#">Delete</a>&nbsp;&nbsp;
