@@ -121,13 +121,13 @@ exports.pageUserReports = {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).default(15),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
-      field: Joi.string().default('created_at').valid('created_at', 'priority'),
-      desc: Joi.boolean().default(true)
+      field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_username', 'offender_email', 'offender_created_at'),
+      desc: Joi.boolean().default(false)
     }
   },
   handler: function(request, reply) {
     var opts = {
-      limit: request.query.limit || 10,
+      limit: request.query.limit || 15,
       page: request.query.page || 1,
       filter: request.query.filter || undefined,
       sortField: request.query.field || 'username',
@@ -146,13 +146,13 @@ exports.pagePostReports = {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).default(15),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
-      field: Joi.string().default('created_at').valid('created_at', 'priority'),
-      desc: Joi.boolean().default(true)
+      field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_created_at', 'offender_title', 'offender_author_username'),
+      desc: Joi.boolean().default(false)
     }
   },
   handler: function(request, reply) {
     var opts = {
-      limit: request.query.limit || 10,
+      limit: request.query.limit || 15,
       page: request.query.page || 1,
       filter: request.query.filter || undefined,
       sortField: request.query.field || 'username',
@@ -206,5 +206,49 @@ exports.pagePostReportsNotes = {
     };
     db.reports.pagePostReportsNotes(reportId, opts)
     .then(function(reports) { reply(reports); });
+  }
+};
+
+exports.userReportsCount = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  validate: { query: { status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report') } },
+  handler: function(request, reply) {
+    var status = request.query.status;
+    db.reports.userReportsCount(status)
+    .then(function(count) { reply(count); });
+  }
+};
+
+exports.postReportsCount = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  validate: { query: { status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report') } },
+  handler: function(request, reply) {
+    var status = request.query.status;
+    db.reports.postReportsCount(status)
+    .then(function(count) { reply(count); });
+  }
+};
+
+exports.userReportsNotesCount = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  handler: function(request, reply) {
+    var reportId = request.params.report_id;
+    db.reports.userReportsNotesCount(reportId)
+    .then(function(count) { reply(count); });
+  }
+};
+
+exports.postReportsNotesCount = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  handler: function(request, reply) {
+    var reportId = request.params.report_id;
+    db.reports.postReportsNotesCount(reportId)
+    .then(function(count) { reply(count); });
   }
 };

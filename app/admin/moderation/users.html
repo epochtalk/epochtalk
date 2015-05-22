@@ -1,14 +1,14 @@
 <div class="admin-table-header">
   <div class="small-4 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="0" id="users-filter-0" ng-model="ModerationCtrl.tableFilter" />
+    <input type="radio" class="hide-radio" name="table-filter" value="0" id="users-filter-0" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter()" />
     <label for="users-filter-0">All</label>
   </div>
   <div class="small-4 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="1" id="users-filter-1" ng-model="ModerationCtrl.tableFilter" />
+    <input type="radio" class="hide-radio" name="table-filter" value="1" id="users-filter-1" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Pending')" />
     <label for="users-filter-1">Pending</label>
   </div>
   <div class="small-4 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="2" id="users-filter-2" ng-model="ModerationCtrl.tableFilter" />
+    <input type="radio" class="hide-radio" name="table-filter" value="2" id="users-filter-2" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Reviewed')" />
     <label for="users-filter-2">Reviewed</label>
   </div>
   <div class="small-12 medium-3 columns">&nbsp;</div>
@@ -24,11 +24,12 @@
   <div class="small-12 columns admin-content-selectable">
     <table width="100%">
       <thead>
-        <th>Reported By</th>
-        <th width="200">Reported Date</th>
-        <th>Reported User</th>
-        <th>Email</th>
-        <th width="200">Registered Date</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('reporter_username')"><span ng-class="ModerationCtrl.getSortClass('reporter_username')"></span>&nbsp;Reported By</th>
+        <th width="200" class="pointer" ng-click="ModerationCtrl.setSortField('created_at')"><span ng-class="ModerationCtrl.getSortClass('created_at')"></span>&nbsp;Reported Date</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('priority')"><span ng-class="ModerationCtrl.getSortClass('priority')"></span>&nbsp;Status</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('offender_username')"><span ng-class="ModerationCtrl.getSortClass('offender_username')"></span>&nbsp;Reported User</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('offender_email')"><span ng-class="ModerationCtrl.getSortClass('offender_email')"></span>&nbsp;Email</th>
+        <th width="200" class="pointer" ng-click="ModerationCtrl.setSortField('offender_created_at')"><span ng-class="ModerationCtrl.getSortClass('offender_created_at')"></span>&nbsp;Registered Date</th>
         <th width="500">Reason</th>
         <th width="200">Actions</th>
       </thead>
@@ -37,6 +38,7 @@
         <tr ng-click="ModerationCtrl.selectUser(userReport.username)" class="selectable-row pointer" ng-repeat="userReport in ModerationCtrl.userReports track by userReport.id">
           <td><a href="/profiles/{{userReport.reporter_username}}" ng-bind="userReport.reporter_username"></a></td>
           <td ng-bind="userReport.created_at | humanDate"></td>
+          <td ng-bind="userReport.status"></td>
           <td><a href="/profiles/{{userReport.offender_username}}" ng-bind="userReport.offender_username"></a></td>
           <td ng-bind="userReport.offender_email"></td>
           <td ng-bind="userReport.offender_created_at | humanDate"></td>
@@ -50,7 +52,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="right"><pagination page-count="5" page="1"></pagination></div>
+    <div class="right"><pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination></div>
   </div>
 </div>
 <div ng-if="ModerationCtrl.selectedUsername" class="row full-width">

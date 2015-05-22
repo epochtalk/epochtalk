@@ -12,6 +12,14 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/admin/reports/posts',
         isArray: true
+      },
+      userReportsCount: {
+        method: 'GET',
+        url: '/api/admin/reports/users/count'
+      },
+      postReportsCount: {
+        method: 'GET',
+        url: '/api/admin/reports/users/count'
       }
     });
   }

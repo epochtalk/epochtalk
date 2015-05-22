@@ -1,15 +1,15 @@
 <div class="admin-table-header">
   <div class="small-4 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="0" id="users-filter-0" ng-model="ModerationCtrl.tableFilter" />
-    <label for="users-filter-0">All</label>
+    <input type="radio" class="hide-radio" name="table-filter" value="0" id="posts-filter-0" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter()" />
+    <label for="posts-filter-0">All</label>
   </div>
   <div class="small-4 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="1" id="users-filter-1" ng-model="ModerationCtrl.tableFilter" />
-    <label for="users-filter-1">Pending</label>
+    <input type="radio" class="hide-radio" name="table-filter" value="1" id="posts-filter-1" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Pending')" />
+    <label for="posts-filter-1">Pending</label>
   </div>
   <div class="small-4 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="2" id="users-filter-2" ng-model="ModerationCtrl.tableFilter" />
-    <label for="users-filter-2">Reviewed</label>
+    <input type="radio" class="hide-radio" name="table-filter" value="2" id="posts-filter-2" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Reviewed')" />
+    <label for="posts-filter-2">Reviewed</label>
   </div>
   <div class="small-12 medium-3 columns">&nbsp;</div>
   <div class="small-12 medium-6 columns">
@@ -24,11 +24,12 @@
   <div class="small-12 columns admin-content-selectable">
     <table width="100%">
       <thead>
-        <th>Reported By</th>
-        <th width="200">Reported Date</th>
-        <th width="200">Posted Date</th>
-        <th>Title</th>
-        <th width="200">Author</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('reporter_username')"><span ng-class="ModerationCtrl.getSortClass('reporter_username')"></span>&nbsp;Reported By</th>
+        <th width="200" class="pointer" ng-click="ModerationCtrl.setSortField('created_at')"><span ng-class="ModerationCtrl.getSortClass('created_at')"></span>&nbsp;Reported Date</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('priority')"><span ng-class="ModerationCtrl.getSortClass('priority')"></span>&nbsp;Status</th>
+        <th width="200" class="pointer" ng-click="ModerationCtrl.setSortField('offender_created_at')"><span ng-class="ModerationCtrl.getSortClass('offender_created_at')"></span>&nbsp;Posted Date</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('offender_title')"><span ng-class="ModerationCtrl.getSortClass('offender_title')"></span>&nbsp;Title</th>
+        <th width="200" class="pointer" ng-click="ModerationCtrl.setSortField('offender_author_username')"><span ng-class="ModerationCtrl.getSortClass('offender_author_username')"></span>&nbsp;Author</th>
         <th width="400">Reason</th>
         <th width="225">Actions</th>
       </thead>
@@ -37,6 +38,7 @@
         <tr class="selectable-row pointer" ng-repeat="postReport in ModerationCtrl.postReports track by postReport.id">
           <td><a href="/profiles/{{postReport.reporter_username}}" ng-bind="postReport.reporter_username"></td>
           <td ng-bind="postReport.created_at | humanDate"></td>
+          <td ng-bind="postReport.status"></td>
           <td ng-bind="postReport.offender_created_at | humanDate"></td>
           <td><a href="/threads/{{postReport.offender_thread_id}}/posts#{{postReport.offender_post_id}}" ng-bind="postReport.offender_title"></a></td>
           <td><a href="/profiles/{{postReport.offender_author_username}}" ng-bind="postReport.offender_author_username"></a></td>
@@ -51,7 +53,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="right"><pagination page-count="5" page="1"></pagination></div>
+    <div class="right"><pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination></div>
   </div>
 </div>
 <div class="row full-width">

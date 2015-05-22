@@ -446,7 +446,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       },
       resolve: {
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit;
+          return $stateParams.limit || 15;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -458,12 +458,16 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return $stateParams.field;
         }],
         desc: ['$stateParams', function($stateParams) {
-          return $stateParams.desc;
+          return $stateParams.desc || true;
+        }],
+        reportCount: ['AdminReports', function(AdminReports) {
+          return AdminReports.userReportsCount().$promise
+          .then(function(userReportsCount) { return userReportsCount.count; });
         }],
         userReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
           var query = {
             field: $stateParams.field,
-            desc: $stateParams.desc,
+            desc: $stateParams.desc || true,
             filter: $stateParams.filter,
             limit: Number($stateParams.limit) || 15,
             page: Number($stateParams.page) || 1
@@ -488,7 +492,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       },
       resolve: {
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit;
+          return $stateParams.limit || 15;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -500,12 +504,16 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return $stateParams.field;
         }],
         desc: ['$stateParams', function($stateParams) {
-          return $stateParams.desc;
+          return $stateParams.desc || true;
+        }],
+        reportCount: ['AdminReports', function(AdminReports) {
+          return AdminReports.postReportsCount().$promise
+          .then(function(postReportsCount) { return postReportsCount.count; });
         }],
         postReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
           var query = {
             field: $stateParams.field,
-            desc: $stateParams.desc,
+            desc: $stateParams.desc || true,
             filter: $stateParams.filter,
             limit: Number($stateParams.limit) || 15,
             page: Number($stateParams.page) || 1
