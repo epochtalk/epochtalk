@@ -47,6 +47,11 @@ ng-repeat="post in PostsCtrl.posts track by post.id">
             <i class="icon-epoch-quote"></i>
           </a>
         </li>
+        <li>
+          <a ng-href="{{PostsCtrl.rootUrl}}#{{post.id}}">
+            <i class="icon-epoch-link"></i>
+          </a>
+        </li>
       </ul>
     </div>
     <!-- Post Body -->

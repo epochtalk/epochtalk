@@ -9,6 +9,7 @@ module.exports = [
     parent.thread_title = thread.title;
     parent.thread_post_count = thread.post_count;
     parent.posts = posts;
+    this.rootUrl = generateBaseUrl();
 
     this.user = Session.user;
     this.posts = posts;
@@ -70,5 +71,13 @@ module.exports = [
         $timeout($anchorScroll);
       });
     };
+
+    function generateBaseUrl() {
+      var url = $location.protocol() + '://';
+      url += $location.host();
+      if ($location.port() !== 80) { url += ':' + $location.port(); }
+      url += $location.path();
+      return url;
+    }
   }
 ];
