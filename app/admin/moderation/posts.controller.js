@@ -106,7 +106,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     if (ctrl.filter) { query.filter = ctrl.filter; }
 
     // update mods's page count
-    AdminReports.userReportsCount({ status: query.filter }).$promise
+    AdminReports.postReportsCount({ status: query.filter }).$promise
     .then(function(updatedCount) {
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
