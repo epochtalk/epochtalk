@@ -119,7 +119,7 @@ exports.pageUserReports = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(15),
+      limit: Joi.number().integer().min(1).default(10),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_username', 'offender_email', 'offender_created_at'),
       desc: Joi.boolean().default(false)
@@ -127,7 +127,7 @@ exports.pageUserReports = {
   },
   handler: function(request, reply) {
     var opts = {
-      limit: request.query.limit || 15,
+      limit: request.query.limit || 10,
       page: request.query.page || 1,
       filter: request.query.filter || undefined,
       sortField: request.query.field || 'username',
@@ -144,7 +144,7 @@ exports.pagePostReports = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(15),
+      limit: Joi.number().integer().min(1).default(10),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_created_at', 'offender_title', 'offender_author_username'),
       desc: Joi.boolean().default(false)
@@ -152,7 +152,7 @@ exports.pagePostReports = {
   },
   handler: function(request, reply) {
     var opts = {
-      limit: request.query.limit || 15,
+      limit: request.query.limit || 10,
       page: request.query.page || 1,
       filter: request.query.filter || undefined,
       sortField: request.query.field || 'username',

@@ -469,7 +469,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             field: $stateParams.field,
             desc: $stateParams.desc || true,
             filter: $stateParams.filter,
-            limit: Number($stateParams.limit) || 15,
+            limit: Number($stateParams.limit) || 10,
             page: Number($stateParams.page) || 1
           };
           return AdminReports.pageUserReports(query).$promise
@@ -515,7 +515,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             field: $stateParams.field,
             desc: $stateParams.desc || true,
             filter: $stateParams.filter,
-            limit: Number($stateParams.limit) || 15,
+            limit: Number($stateParams.limit) || 10,
             page: Number($stateParams.page) || 1
           };
           return AdminReports.pagePostReports(query).$promise

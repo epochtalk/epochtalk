@@ -169,3 +169,39 @@ exports.delete = {
     .catch(function(err) { reply(Boom.badImplementation(err)); });
   },
 };
+
+exports.pageByUserCount = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: { params: { user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  handler: function(request, reply) {
+    var userId = request.params.user_id;
+    db.posts.pageByUserCount(userId)
+    .then(function(count) { reply(count); })
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
+  }
+};
+
+exports.pageByUser = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: {
+    params: { user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
+    query: {
+      page: Joi.number().integer().min(1).default(1),
+      limit: Joi.number().integer().min(1).default(10),
+      field: Joi.string().default('created_at').valid('created_at', 'updated_at', 'title'),
+      desc: Joi.boolean().default(false)
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.params.user_id;
+    var opts = {
+      limit: request.query.limit,
+      page: request.query.page,
+      sortField: request.query.field,
+      sortDesc: request.query.desc
+    };
+    db.posts.pageByUser(userId, opts)
+    .then(function(posts) { reply(posts); })
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
+  }
+};

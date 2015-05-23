@@ -5,6 +5,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.userReports = userReports;
   this.tableFilter = 0;
   this.selectedUsername = user.username;
+  this.selectedReportId;
 
   this.pageCount = Math.ceil(reportCount / limit);
   this.queryParams = $location.search();
@@ -14,9 +15,10 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.desc = desc;
   this.filter = filter;
 
-  this.selectUser = function(username) {
-    $location.search('username', username);
-    ctrl.selectedUsername = username;
+  this.selectReport = function(userReport) {
+    $location.search('username', userReport.offender_username);
+    ctrl.selectedUsername = userReport.offender_username;
+    ctrl.selectedReportId = userReport.id;
   };
 
   this.setFilter = function(newFilter) {
