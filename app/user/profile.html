@@ -1,8 +1,8 @@
 <div class="row">
   <div class="small-12 columns">
-    <div class="alert-box radius" ng-class="profiles.pageStatus.type" ng-if="profiles.pageStatus.status">
-      {{profiles.pageStatus.message}}
-      <a ng-click="profiles.pageStatus = {}" class="close">&times;</a>
+    <div class="alert-box radius" ng-class="ProfileCtrl.pageStatus.type" ng-if="ProfileCtrl.pageStatus.status">
+      {{ProfileCtrl.pageStatus.message}}
+      <a ng-click="ProfileCtrl.pageStatus = {}" class="close">&times;</a>
     </div>
   </div>
 </div>
@@ -12,35 +12,35 @@
   <div class="large-3 columns word-wrap">
     <!-- User's Avatar -->
     <div class="profile-avatar-container">
-      <img ng-src="{{profiles.displayAvatar}}" />
-      <a href="#" class="after" ng-if="profiles.editable()" ng-click="profiles.editAvatar = true">
+      <img ng-src="{{ProfileCtrl.displayAvatar}}" />
+      <a href="#" class="after" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
         <div>Change Avatar</div>
       </a>
     </div>
 
     <!-- Edit Profile Controls -->
-    <div class="profile-edit-container" ng-if="profiles.editable()">
+    <div class="profile-edit-container" ng-if="ProfileCtrl.editable()">
       Edit:
-      <a href="#" ng-click="profiles.editProfile = true">Profile</a>
+      <a href="#" ng-click="ProfileCtrl.editProfile = true">Profile</a>
       |
-      <a href="#" ng-click="profiles.editPassword = true">Password </a>
+      <a href="#" ng-click="ProfileCtrl.editPassword = true">Password </a>
     </div>
 
     <!-- User Information -->
-    <h4 ng-bind="profiles.displayUsername"></h4>
-    <div><span ng-bind="profiles.user.name"></span></div>
-    <div><span ng-bind="profiles.user.position"></span></div>
-    <div><span ng-bind="profiles.user.status"></span></div>
-    <hr ng-if="profiles.displayEmail || profiles.user.btcAddress || profiles.user.website">
-    <div><span ng-bind="profiles.displayEmail"></span></div>
-    <div><span ng-bind="profiles.user.btcAddress"></span></div>
-    <div><a ng-href="{{profiles.user.website}}">{{profiles.user.website}}</a></div>
+    <h4 ng-bind="ProfileCtrl.displayUsername"></h4>
+    <div><span ng-bind="ProfileCtrl.user.name"></span></div>
+    <div><span ng-bind="ProfileCtrl.user.position"></span></div>
+    <div><span ng-bind="ProfileCtrl.user.status"></span></div>
+    <hr ng-if="ProfileCtrl.displayEmail || ProfileCtrl.user.btcAddress || ProfileCtrl.user.website">
+    <div><span ng-bind="ProfileCtrl.displayEmail"></span></div>
+    <div><span ng-bind="ProfileCtrl.user.btcAddress"></span></div>
+    <div><a ng-href="{{ProfileCtrl.user.website}}">{{ProfileCtrl.user.website}}</a></div>
     <hr>
-    <div><span ng-bind="profiles.user.gender"></span></div>
-    <div><span ng-bind="profiles.userAge"></span></div>
-    <div><span ng-bind="profiles.user.location"></span></div>
-    <div><span ng-bind="profiles.user.language"></span></div>
-    <div><span ng-bind="profiles.userLocalTime"></span></div>
+    <div><span ng-bind="ProfileCtrl.user.gender"></span></div>
+    <div><span ng-bind="ProfileCtrl.userAge"></span></div>
+    <div><span ng-bind="ProfileCtrl.user.location"></span></div>
+    <div><span ng-bind="ProfileCtrl.user.language"></span></div>
+    <div><span ng-bind="ProfileCtrl.userLocalTime"></span></div>
   </div>
 
   <!-- Right Side Content -->
@@ -50,15 +50,15 @@
       <div class="row">
         <div class="large-4 columns profile-stats">
           Account Created On:<br>
-          <span class="profile-stat" ng-bind="profiles.user.created_at | date:'mediumDate'"></span>
+          <span class="profile-stat" ng-bind="ProfileCtrl.user.created_at | date:'mediumDate'"></span>
         </div>
         <div class="large-4 columns profile-stats">
           Number of Posts:<br>
-          <span class="profile-stat" ng-bind="profiles.user.post_count + ' Posts'"></span>
+          <span class="profile-stat" ng-bind="ProfileCtrl.user.post_count + ' Posts'"></span>
         </div>
         <div class="large-4 columns profile-stats">
           Account Last Used:<br>
-          <span class="profile-stat" ng-bind="profiles.user.updated_at | date:'mediumDate'"></span>
+          <span class="profile-stat" ng-bind="ProfileCtrl.user.updated_at | date:'mediumDate'"></span>
         </div>
       </div>
     </div>
@@ -78,18 +78,50 @@
       <div class="row">
         <div class="large-12 columns">
           <strong>Signature:</strong>
-          <a ng-href="#" ng-click="profiles.editSignature = true" ng-if="profiles.editable()">
+          <a ng-href="#" ng-click="ProfileCtrl.editSignature = true" ng-if="ProfileCtrl.editable()">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
         </div>
       </div>
-      <div class="post-signature" post-processing="profiles.user.signature" style-fix="true"></div>
+      <div class="post-signature" post-processing="ProfileCtrl.user.signature" style-fix="true"></div>
     </div>
+  </div>
+</div>
+<br /><br />
+<div class="row">
+  <div class="small-12 columns">
+    <h5>Posts by {{ProfileCtrl.user.username}}</h5>
+  </div>
+</div>
+
+<!-- User's Paged Posts -->
+<div class="row">
+  <div class="small-12 columns">
+    <div class="right"><pagination page-count="ProfileCtrl.pageCount" page="ProfileCtrl.page" query-params="ProfileCtrl.queryParams"></pagination></div>
+  </div>
+  <div class="small-12 columns">
+    <table width="100%">
+      <thead>
+        <th width="150">Thread</th>
+        <th>Post</th>
+        <th width="150" class="pointer" ng-click="ProfileCtrl.setSortField('created_at')"><span ng-class="ProfileCtrl.getSortClass('created_at')"></span>&nbsp;Post Date</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="post in ProfileCtrl.usersPosts track by post.id">
+          <td><a href="/threads/{{post.thread_id}}/posts" ng-bind="post.thread_title | truncate:50"></a></td>
+          <td ng-bind="(post.raw_body || post.body) | truncate:250"></td>
+          <td ng-bind="post.created_at | humanDate"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="small-12 columns">
+    <div class="right"><pagination page-count="ProfileCtrl.pageCount" page="ProfileCtrl.page" query-params="ProfileCtrl.queryParams"></pagination></div>
   </div>
 </div>
 
 <!-- Change Password Modal -->
-<modal class="tiny" show="profiles.editPassword" on-close="profiles.clearPasswordFields()">
+<modal class="tiny" show="ProfileCtrl.editPassword" on-close="ProfileCtrl.clearPasswordFields()">
   <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-dotted-underline">Change Password</h3>
 
@@ -101,7 +133,7 @@
           Old password is required
         </div>
         <!-- old password input -->
-        <input type="password" name="oldPass" placeholder="Old Password" ng-model="profiles.passData.old_password" auto-focus="$parent.focus" required>
+        <input type="password" name="oldPass" placeholder="Old Password" ng-model="ProfileCtrl.passData.old_password" auto-focus="$parent.focus" required>
         <i ng-if="$parent.form.oldPass.$touched && !$parent.form.oldPass.$error.required" class="fa fa-check input-icon valid"></i>
         <i ng-if="$parent.form.oldPass.$touched && $parent.form.oldPass.$error.required" class="fa fa-times input-icon invalid"></i>
       </label>
@@ -113,12 +145,12 @@
         <div ng-if="$parent.form.pass.$touched && $parent.form.pass.$error.required" class="input-error invalid right">
           New password is required
         </div>
-        <div ng-if="$parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !$parent.form.pass.$error.required" class="input-error invalid right">
+        <div ng-if="$parent.form.pass.$touched && $parent.form.passConf.$touched && ProfileCtrl.passData.password !== ProfileCtrl.passData.confirmation && !$parent.form.pass.$error.required" class="input-error invalid right">
           Password and confirmation do not match
         </div>
-        <input type="password" name="pass" placeholder="New Password" ng-model="profiles.passData.password" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
-        <i ng-if="($parent.form.pass.$touched && !$parent.form.passConf.$touched && !$parent.form.pass.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !$parent.form.pass.$error.required)" class="fa fa-check input-icon valid"></i>
-        <i ng-if="($parent.form.pass.$touched && $parent.form.pass.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+        <input type="password" name="pass" placeholder="New Password" ng-model="ProfileCtrl.passData.password" ng-class="{'ng-invalid-mismatch' : ProfileCtrl.passData.password !== ProfileCtrl.passData.confirmation }" required>
+        <i ng-if="($parent.form.pass.$touched && !$parent.form.passConf.$touched && !$parent.form.pass.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && ProfileCtrl.passData.password === ProfileCtrl.passData.confirmation && !$parent.form.pass.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.pass.$touched && $parent.form.pass.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && ProfileCtrl.passData.password !== ProfileCtrl.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
       </label>
     </div>
 
@@ -128,19 +160,19 @@
         <div ng-if="$parent.form.passConf.$touched && $parent.form.passConf.$error.required" class="input-error invalid right">
           Password confirmation is required
         </div>
-        <div ng-if="$parent.form.passConf.$touched && $parent.form.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation && !$parent.form.passConf.$error.required" class="input-error invalid right">
+        <div ng-if="$parent.form.passConf.$touched && $parent.form.passConf.$touched && ProfileCtrl.passData.password !== ProfileCtrl.passData.confirmation && !$parent.form.passConf.$error.required" class="input-error invalid right">
           Password and confirmation do not match
         </div>
-        <input type="password" name="passConf" placeholder="Confirm New Password" ng-model="profiles.passData.confirmation" ng-class="{'ng-invalid-mismatch' : profiles.passData.password !== profiles.passData.confirmation }" required>
-        <i ng-if="($parent.form.passConf.$touched  && profiles.passData.confirmation !== '' && !$parent.form.pass.$touched && !$parent.form.passConf.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password === profiles.passData.confirmation && !$parent.form.passConf.$error.required)" class="fa fa-check input-icon valid"></i>
-        <i ng-if="($parent.form.passConf.$touched && $parent.form.passConf.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && profiles.passData.password !== profiles.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+        <input type="password" name="passConf" placeholder="Confirm New Password" ng-model="ProfileCtrl.passData.confirmation" ng-class="{'ng-invalid-mismatch' : ProfileCtrl.passData.password !== ProfileCtrl.passData.confirmation }" required>
+        <i ng-if="($parent.form.passConf.$touched  && ProfileCtrl.passData.confirmation !== '' && !$parent.form.pass.$touched && !$parent.form.passConf.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && ProfileCtrl.passData.password === ProfileCtrl.passData.confirmation && !$parent.form.passConf.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.passConf.$touched && $parent.form.passConf.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && ProfileCtrl.passData.password !== ProfileCtrl.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
       </label>
     </div>
 
     <!-- Submit Button -->
     <div class="form-action">
-      <button class="button no-margin" ng-click="profiles.savePassword()"
-        ng-disabled="$parent.form.$invalid || $parent.form.$errors || profiles.passData.password !== profiles.passData.confirmation">
+      <button class="button no-margin" ng-click="ProfileCtrl.savePassword()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || ProfileCtrl.passData.password !== ProfileCtrl.passData.confirmation">
         Confirm
       </button>
     </div>
@@ -150,69 +182,69 @@
 </modal>
 
 <!-- Edit Profile Modal -->
-<modal class="medium" show="profiles.editProfile">
+<modal class="medium" show="ProfileCtrl.editProfile">
   <form name="$parent.form" class="css-form" novalidate>
     <!-- Profile Fields -->
     <div class="row">
       <div class="medium-6 columns">
         <label>Username
-          <div ng-if="profiles.user.username.length === 0" class="right">
+          <div ng-if="ProfileCtrl.user.username.length === 0" class="right">
             Username will not be changed
           </div>
           <div ng-if="$parent.form.username.$error.unique" class="invalid right">
             Username already taken
           </div>
-          <input type="text" name="username" ng-model="profiles.user.username" unique-username="{{profiles.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
+          <input type="text" name="username" ng-model="ProfileCtrl.user.username" unique-username="{{ProfileCtrl.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
         </label>
 
         <label>Name
-          <input type="text" placeholder="Name" ng-model="profiles.user.name">
+          <input type="text" placeholder="Name" ng-model="ProfileCtrl.user.name">
         </label>
 
         <label>Email
           <div ng-if="$parent.form.email.$error.email" class="invalid right">
             Email is not valid
           </div>
-          <div ng-if="profiles.user.email.length === 0" class="right">
+          <div ng-if="ProfileCtrl.user.email.length === 0" class="right">
             Email will not be changed
           </div>
           <div ng-if="$parent.form.email.$error.unique" class="invalid right">
             Email already taken
           </div>
-          <input type="email" name="email" ng-model="profiles.user.email" unique-email="{{profiles.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
+          <input type="email" name="email" ng-model="ProfileCtrl.user.email" unique-email="{{ProfileCtrl.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
         </label>
 
         <label>Website
-          <input type="text" placeholder="Website" ng-model="profiles.user.website">
+          <input type="text" placeholder="Website" ng-model="ProfileCtrl.user.website">
         </label>
 
         <label>Bitcoin Address
-          <input type="text" placeholder="Bitcoin Address" ng-model="profiles.user.btcAddress">
+          <input type="text" placeholder="Bitcoin Address" ng-model="ProfileCtrl.user.btcAddress">
         </label>
       </div>
 
       <div class="medium-6 columns">
         <label>Gender
-          <input type="text" placeholder="Gender" ng-model="profiles.user.gender">
+          <input type="text" placeholder="Gender" ng-model="ProfileCtrl.user.gender">
         </label>
 
         <label>Date of Birth
-          <input type="text" placeholder="Date of Birth" ng-model="profiles.user.dob">
+          <input type="text" placeholder="Date of Birth" ng-model="ProfileCtrl.user.dob">
         </label>
 
         <label>Location
-          <input type="text" placeholder="Location" ng-model="profiles.user.location">
+          <input type="text" placeholder="Location" ng-model="ProfileCtrl.user.location">
         </label>
 
         <label>Language
-          <input type="text" placeholder="Language" ng-model="profiles.user.language">
+          <input type="text" placeholder="Language" ng-model="ProfileCtrl.user.language">
         </label>
       </div>
     </div>
 
     <!-- Save Button -->
     <div class="row profile-save-container">
-      <button class="button expand" ng-click="profiles.saveProfile()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+      <button class="button expand" ng-click="ProfileCtrl.saveProfile()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
         Save
       </button>
     </div>
@@ -222,18 +254,18 @@
 </modal>
 
 <!-- Change Avatar Modal -->
-<modal class="small" show="profiles.editAvatar">
+<modal class="small" show="ProfileCtrl.editAvatar">
   <form name="$parent.form" class="css-form" novalidate>
     <label>Avatar address
-      <input type="text" name="avatar" ng-model="profiles.user.avatar" auto-focus="$parent.focus" required />
+      <input type="text" name="avatar" ng-model="ProfileCtrl.user.avatar" auto-focus="$parent.focus" required />
     </label>
 
-    <image-uploader model="profiles.user.avatar" purpose="avatar"></image-uploader>
+    <image-uploader model="ProfileCtrl.user.avatar" purpose="avatar"></image-uploader>
     <br /><br />
 
     <!-- Save Button -->
     <div class="row">
-      <button class="button expand" ng-click="profiles.saveAvatar()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+      <button class="button expand" ng-click="ProfileCtrl.saveAvatar()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
         Save
       </button>
     </div>
@@ -243,15 +275,15 @@
 </modal>
 
 <!-- Change Signature Modal -->
-<modal class="medium" show="profiles.editSignature">
+<modal class="medium" show="ProfileCtrl.editSignature">
   <form name="$parent.form" class="css-form" novalidate>
     <label>Signature
-      <textarea type="text" rows="10" placeholder="Signature" ng-model="profiles.user.raw_signature" auto-focus="$parent.focus" ></textarea>
+      <textarea type="text" rows="10" placeholder="Signature" ng-model="ProfileCtrl.user.raw_signature" auto-focus="$parent.focus" ></textarea>
     </label>
 
     <!-- Save Button -->
     <div class="row">
-      <button class="button expand" ng-click="profiles.saveSignature()" ng-disabled="$parent.form.$invalid || $parent.form.errors">
+      <button class="button expand" ng-click="ProfileCtrl.saveSignature()" ng-disabled="$parent.form.$invalid || $parent.form.errors">
         Save
       </button>
     </div>

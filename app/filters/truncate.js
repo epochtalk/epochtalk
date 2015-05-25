@@ -7,7 +7,7 @@ module.exports = [function () {
     if (isNaN(length)) {
       length = 10;
     }
-    var end = '&hellip;';
+    var end = '...';
     var endLen = 3;
     if (text.length <= length) {
       return text;

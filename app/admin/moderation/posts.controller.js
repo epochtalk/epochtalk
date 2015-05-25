@@ -58,7 +58,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
     var params = $location.search();
     var page = Number(params.page) || 1;
-    var limit = Number(params.limit) || 15;
+    var limit = Number(params.limit) || 10;
     var descending;
     // desc when undefined defaults to true, since we are sorting created_at desc by default
     if (params.desc === undefined) { descending = true; }

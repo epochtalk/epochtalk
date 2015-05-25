@@ -24,12 +24,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     $stateProvider.state('profile', {
-      url: '/profiles/{username}',
+      url: '/profiles/{username}?limit&page&field&desc',
       parent: 'public-layout',
+      reloadOnSearch: false,
       views: {
         'content': {
           controller: 'ProfileCtrl',
-          controllerAs: 'profiles',
+          controllerAs: 'ProfileCtrl',
           template: fs.readFileSync(__dirname + '/user/profile.html')
         }
       },
@@ -37,6 +38,34 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         user: [ 'User', '$stateParams', function(User, $stateParams) {
           return User.get({ id: $stateParams.username }).$promise
           .then(function(user) { return user; });
+        }],
+        limit: ['$stateParams', function($stateParams) {
+          return $stateParams.limit || 10;
+        }],
+        page: ['$stateParams', function($stateParams) {
+          console.log($stateParams, $stateParams.page, Number($stateParams.page));
+          return Number($stateParams.page) || 1;
+        }],
+        field: ['$stateParams', function($stateParams) {
+          return $stateParams.field;
+        }],
+        desc: ['$stateParams', function($stateParams) {
+          return $stateParams.desc || true;
+        }],
+        usersPostsCount: ['Posts', '$stateParams', function(Posts, $stateParams) {
+          return Posts.pageByUserCount({ username: $stateParams.username }).$promise
+          .then(function(usersCount) { return usersCount.count; });
+        }],
+        usersPosts: ['Posts', '$stateParams', function(Posts, $stateParams) {
+          var params = {
+            username: $stateParams.username,
+            field: $stateParams.field,
+            desc: $stateParams.desc || true,
+            limit: Number($stateParams.limit) || 10,
+            page: Number($stateParams.page) || 1
+          };
+          return Posts.pageByUser(params).$promise
+          .then(function(usersPosts) { return usersPosts; });
         }]
       }
     });
@@ -297,7 +326,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-management.users', {
-      url: '/users',
+      url: '/users?page&limit&field&desc',
       reloadOnSearch: false,
       views: {
         'data@admin-management': {
@@ -337,7 +366,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-management.moderators', {
-      url: '/moderators',
+      url: '/moderators?page&limit&field&desc',
       views: {
         'data@admin-management': {
           controller: 'ModeratorsCtrl',
@@ -376,7 +405,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-management.administrators', {
-      url: '/administrators',
+      url: '/administrators?page&limit&field&desc',
       views: {
         'data@admin-management': {
           controller: 'AdministratorsCtrl',
@@ -431,7 +460,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-moderation.users', {
-      url: '/users?username',
+      url: '/users?username&page&limit&field&desc&filter',
       views: {
         'data@admin-moderation': {
           controller: 'ModUsersCtrl',
@@ -440,13 +469,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         },
         'preview@admin-moderation.users': {
           controller: 'ProfileCtrl',
-          controllerAs: 'profiles',
+          controllerAs: 'ProfileCtrl',
           template: fs.readFileSync(__dirname + '/user/profile.html')
         }
       },
       resolve: {
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 15;
+          return $stateParams.limit || 10;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -478,11 +507,29 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         user: [ 'User', '$stateParams', function(User, $stateParams) {
           return User.get({ id: $stateParams.username }).$promise
           .then(function(user) { return user; });
+        }],
+        usersPostsCount: ['Posts', '$stateParams', function(Posts, $stateParams) {
+          var username = $stateParams.username;
+          if (username) {
+            return Posts.pageByUserCount({ username: username }).$promise
+            .then(function(usersCount) { return usersCount.count; });
+          }
+          else { return; }
+        }],
+        usersPosts: ['Posts', '$stateParams', function(Posts, $stateParams) {
+          var params = {
+            username: $stateParams.username
+          };
+          if (params.username) {
+            return Posts.pageByUser(params).$promise
+            .then(function(usersPosts) { return usersPosts; });
+          }
+          else { return; }
         }]
       }
     })
     .state('admin-moderation.posts', {
-      url: '/posts',
+      url: '/posts?page&limit&field&desc&filter',
       views: {
         'data@admin-moderation': {
           controller: 'ModPostsCtrl',
@@ -492,7 +539,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       },
       resolve: {
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 15;
+          return $stateParams.limit || 10;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;

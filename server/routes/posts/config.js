@@ -172,19 +172,19 @@ exports.delete = {
 
 exports.pageByUserCount = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { params: { user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  validate: { params: { username: Joi.string().required() } },
   handler: function(request, reply) {
-    var userId = request.params.user_id;
-    db.posts.pageByUserCount(userId)
+    var username = request.params.username;
+    db.posts.pageByUserCount(username)
     .then(function(count) { reply(count); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    .catch(function(err) { console.log(err); reply(Boom.badImplementation(err)); });
   }
 };
 
 exports.pageByUser = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
-    params: { user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
+    params: { username: Joi.string().required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).default(10),
@@ -193,14 +193,14 @@ exports.pageByUser = {
     }
   },
   handler: function(request, reply) {
-    var userId = request.params.user_id;
+    var username = request.params.username;
     var opts = {
       limit: request.query.limit,
       page: request.query.page,
       sortField: request.query.field,
       sortDesc: request.query.desc
     };
-    db.posts.pageByUser(userId, opts)
+    db.posts.pageByUser(username, opts)
     .then(function(posts) { reply(posts); })
     .catch(function(err) { reply(Boom.badImplementation(err)); });
   }

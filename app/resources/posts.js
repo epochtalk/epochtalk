@@ -17,6 +17,17 @@ module.exports = ['$resource',
       update: {
         method: 'POST',
         params: { id: '@id' }
+      },
+      pageByUser: {
+        url: '/api/posts/user/:username',
+        method: 'GET',
+        params: { username: '@username' },
+        isArray: true
+      },
+      pageByUserCount: {
+        url: '/api/posts/user/:username/count',
+        params: { username: '@username' },
+        method: 'GET'
       }
     });
   }
