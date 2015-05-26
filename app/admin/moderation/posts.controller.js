@@ -1,9 +1,10 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminReports, postReports, reportCount, page, limit, field, desc, filter) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminReports, Posts, postReports, reportCount, page, limit, field, desc, filter) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'posts';
   this.tableFilter = 0;
-  this.selectedPost = null;
+  this.selectedPostReport = null;
+  this.previewPosts = [];
   this.postReports = postReports;
 
   this.pageCount = Math.ceil(reportCount / limit);
@@ -14,8 +15,17 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.desc = desc;
   this.filter = filter;
 
-  this.selectPost = function(post) {
-    ctrl.selectedPost = post;
+  this.selectPostReport = function(postReport) {
+    if (ctrl.selectedPostReport === postReport) {
+      ctrl.selectedPostReport = null;
+    }
+    else {
+      ctrl.selectedPostReport = postReport;
+      Posts.get({ id: postReport.offender_post_id }).$promise
+      .then(function(post) {
+        ctrl.previewPosts = [ post ];
+      });
+    }
   };
 
   this.setFilter = function(newFilter) {
@@ -115,7 +125,6 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     AdminReports.pagePostReports(query).$promise
     .then(function(newReports) {
       ctrl.postReports = newReports;
-      $timeout($anchorScroll);
     });
   };
 

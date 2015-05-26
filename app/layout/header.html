@@ -42,7 +42,7 @@
               </div>
               <ul class="dropdown">
                 <li ng-if="HeaderCtrl.currentUser.isAdmin">
-                  <a ng-href="/admin">Admin Panel</a>
+                  <a ui-sref="^.admin()">Admin Panel</a>
                 </li>
                 <li ng-if="HeaderCtrl.currentUser.isMod && !HeaderCtrl.currentUser.isAdmin">
                   <a ng-href="/admin/moderation">Mod Panel</a>
@@ -67,7 +67,7 @@
             </li>
             </li>
             <li ng-if="HeaderCtrl.currentUser.isAdmin">
-              <a ng-href="/admin">Admin Panel</a>
+              <a ui-sref="^.admin()">Admin Panel</a>
             </li>
             <li ng-if="HeaderCtrl.currentUser.isMod && !HeaderCtrl.currentUser.isAdmin">
               <a ng-href="/admin/moderation">Mod Panel</a>

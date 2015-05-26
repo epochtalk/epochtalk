@@ -1,13 +1,4 @@
 <div class="row">
-  <div class="small-12 columns">
-    <div class="alert-box radius" ng-class="ProfileCtrl.pageStatus.type" ng-if="ProfileCtrl.pageStatus.status">
-      {{ProfileCtrl.pageStatus.message}}
-      <a ng-click="ProfileCtrl.pageStatus = {}" class="close">&times;</a>
-    </div>
-  </div>
-</div>
-
-<div class="row">
   <!-- Left Sidebar -->
   <div class="large-3 columns word-wrap">
     <!-- User's Avatar -->
@@ -87,38 +78,10 @@
     </div>
   </div>
 </div>
-<br /><br />
-<div class="row">
-  <div class="small-12 columns">
-    <h5>Posts by {{ProfileCtrl.user.username}}</h5>
-  </div>
-</div>
 
-<!-- User's Paged Posts -->
-<div class="row">
-  <div class="small-12 columns">
-    <div class="right"><pagination page-count="ProfileCtrl.pageCount" page="ProfileCtrl.page" query-params="ProfileCtrl.queryParams"></pagination></div>
-  </div>
-  <div class="small-12 columns">
-    <table width="100%">
-      <thead>
-        <th width="150">Thread</th>
-        <th>Post</th>
-        <th width="150" class="pointer" ng-click="ProfileCtrl.setSortField('created_at')"><span ng-class="ProfileCtrl.getSortClass('created_at')"></span>&nbsp;Post Date</th>
-      </thead>
-      <tbody>
-        <tr ng-repeat="post in ProfileCtrl.usersPosts track by post.id">
-          <td><a href="/threads/{{post.thread_id}}/posts" ng-bind="post.thread_title | truncate:50"></a></td>
-          <td ng-bind="(post.raw_body || post.body) | truncate:250"></td>
-          <td ng-bind="post.created_at | humanDate"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="small-12 columns">
-    <div class="right"><pagination page-count="ProfileCtrl.pageCount" page="ProfileCtrl.page" query-params="ProfileCtrl.queryParams"></pagination></div>
-  </div>
-</div>
+<br /><br />
+
+<div ui-view="posts"></div>
 
 <!-- Change Password Modal -->
 <modal class="tiny" show="ProfileCtrl.editPassword" on-close="ProfileCtrl.clearPasswordFields()">

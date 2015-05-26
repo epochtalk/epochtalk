@@ -54,7 +54,7 @@
     <div class="right"><pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination></div>
   </div>
 </div>
-<div ng-if="ModerationCtrl.selectedUsername" class="row full-width">
+<div ng-if="ModerationCtrl.selectedUsername !== null" class="row full-width">
   <div class="small-12 columns">
     <h5 class="thin-dotted-underline small-12 medium-6">Profile Preview for {{ModerationCtrl.selectedUsername}}</h5>
   </div>

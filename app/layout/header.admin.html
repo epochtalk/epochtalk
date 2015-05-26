@@ -22,13 +22,13 @@
     <!-- Right Nav Section -->
     <ul class="right login-container">
       <li>
-        <a href="/">Back to Forum</a>
+        <a ui-sref="^.boards()">Back to Forum</a>
       </li>
       <li class="has-dropdown">
         <div><img ng-src="{{ HeaderCtrl.currentUser.avatar }}" class="avatar">
-        <a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}" ng-bind-html="HeaderCtrl.currentUser.username"></a></div>
+        <a ui-sref="^.profile({ username: HeaderCtrl.currentUser.username })" ng-bind-html="HeaderCtrl.currentUser.username"></a></div>
         <ul class="dropdown">
-          <li><a ng-href="/profiles/{{ HeaderCtrl.currentUser.username }}">Profile</a></li>
+          <li><a ui-sref="^.profile({ username: HeaderCtrl.currentUser.username })">Profile</a></li>
           <li><a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a></li>
         </ul>
       </li>

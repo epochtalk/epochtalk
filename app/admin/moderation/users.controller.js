@@ -1,11 +1,11 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'userReports', 'user', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminReports, userReports, user, reportCount, page, limit, field, desc, filter) {
+module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, AdminReports, User, userReports, reportCount, page, limit, field, desc, filter) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
   this.userReports = userReports;
   this.tableFilter = 0;
-  this.selectedUsername = user.username;
-  this.selectedReportId;
+  this.selectedReportId = null;
+  this.selectedUsername = null;
 
   this.pageCount = Math.ceil(reportCount / limit);
   this.queryParams = $location.search();
@@ -16,14 +16,23 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.filter = filter;
 
   this.selectReport = function(userReport) {
-    $location.search('username', userReport.offender_username);
-    ctrl.selectedUsername = userReport.offender_username;
-    ctrl.selectedReportId = userReport.id;
+    if (userReport.id === ctrl.selectedReportId) {
+      $location.search('username', undefined);
+      ctrl.selectedReportId = null;
+      ctrl.selectedUsername = null;
+    }
+    else {
+      $location.search('username', userReport.offender_username);
+      ctrl.selectedReportId = userReport.id;
+    }
   };
 
   this.setFilter = function(newFilter) {
     ctrl.queryParams.filter = newFilter;
     $location.search(ctrl.queryParams);
+    ctrl.selectedReportId = null;
+    ctrl.selectedUsername = null;
+    $location.search('username', undefined);
   };
 
   this.setSortField = function(sortField) {
@@ -60,6 +69,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
 
   this.offLCS = $rootScope.$on('$locationChangeSuccess', function(){
     var params = $location.search();
+    var username = params.username;
     var page = Number(params.page) || 1;
     var limit = Number(params.limit) || 10;
     var descending;
@@ -67,12 +77,17 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     if (params.desc === undefined) { descending = true; }
     else { descending = params.desc === 'true'; }
     var filter = params.filter;
+    var usernameChanged = false;
     var pageChanged = false;
     var limitChanged = false;
     var fieldChanged = false;
     var descChanged = false;
     var filterChanged = false;
 
+    if (username && username !== ctrl.selectedUsername) {
+      usernameChanged = true;
+      ctrl.selectedUsername = username;
+    }
     if (page && page !== ctrl.page) {
       pageChanged = true;
       ctrl.parent.page = page;
@@ -94,7 +109,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       filterChanged = true;
       ctrl.filter = filter;
     }
-    if(pageChanged || limitChanged || fieldChanged || descChanged || filterChanged) { ctrl.pullPage(); }
+    if(usernameChanged || pageChanged || limitChanged || fieldChanged || descChanged || filterChanged) { ctrl.pullPage(); }
   });
   $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
@@ -118,7 +133,9 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     AdminReports.pageUserReports(query).$promise
     .then(function(newReports) {
       ctrl.userReports = newReports;
-      $timeout($anchorScroll);
     });
+
+    // Location has already been updated using location.search, reload only child state
+    $state.go('admin-moderation.users.preview', { username: ctrl.selectedUsername }, { location: false, reload: 'admin-moderation.users.preview' });
   };
 }];

@@ -24,7 +24,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     $stateProvider.state('profile', {
-      url: '/profiles/{username}?limit&page&field&desc',
+      url: '/profiles/{username}',
       parent: 'public-layout',
       reloadOnSearch: false,
       views: {
@@ -38,12 +38,24 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         user: [ 'User', '$stateParams', function(User, $stateParams) {
           return User.get({ id: $stateParams.username }).$promise
           .then(function(user) { return user; });
-        }],
+        }]
+      }
+    })
+    .state('profile.posts', {
+      url: '?limit&page&field&desc',
+      reloadOnSearch: false,
+      views: {
+        'posts@profile': {
+          controller: 'ProfilePostsCtrl',
+          controllerAs: 'ProfilePostsCtrl',
+          template: fs.readFileSync(__dirname + '/user/posts.html')
+        }
+      },
+      resolve: {
         limit: ['$stateParams', function($stateParams) {
           return $stateParams.limit || 10;
         }],
         page: ['$stateParams', function($stateParams) {
-          console.log($stateParams, $stateParams.page, Number($stateParams.page));
           return Number($stateParams.page) || 1;
         }],
         field: ['$stateParams', function($stateParams) {
@@ -451,6 +463,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     $stateProvider.state('admin-moderation', {
       url: '/admin/moderation',
       parent: 'admin-layout',
+      reloadOnSearch: false,
       views: {
         'content': {
           controllerAs: 'ModerationCtrl',
@@ -461,16 +474,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     })
     .state('admin-moderation.users', {
       url: '/users?username&page&limit&field&desc&filter',
+      reloadOnSearch: false,
       views: {
         'data@admin-moderation': {
           controller: 'ModUsersCtrl',
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/users.html')
-        },
-        'preview@admin-moderation.users': {
-          controller: 'ProfileCtrl',
-          controllerAs: 'ProfileCtrl',
-          template: fs.readFileSync(__dirname + '/user/profile.html')
         }
       },
       resolve: {
@@ -503,33 +512,28 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           };
           return AdminReports.pageUserReports(query).$promise
           .then(function(userReports) { return userReports; });
-        }],
+        }]
+      }
+    })
+    .state('admin-moderation.users.preview', {
+      reloadOnSearch: false,
+      views: {
+        'preview@admin-moderation.users': {
+          controller: 'ProfileCtrl',
+          controllerAs: 'ProfileCtrl',
+          template: fs.readFileSync(__dirname + '/user/profile.html')
+        }
+      },
+      resolve: {
         user: [ 'User', '$stateParams', function(User, $stateParams) {
           return User.get({ id: $stateParams.username }).$promise
           .then(function(user) { return user; });
-        }],
-        usersPostsCount: ['Posts', '$stateParams', function(Posts, $stateParams) {
-          var username = $stateParams.username;
-          if (username) {
-            return Posts.pageByUserCount({ username: username }).$promise
-            .then(function(usersCount) { return usersCount.count; });
-          }
-          else { return; }
-        }],
-        usersPosts: ['Posts', '$stateParams', function(Posts, $stateParams) {
-          var params = {
-            username: $stateParams.username
-          };
-          if (params.username) {
-            return Posts.pageByUser(params).$promise
-            .then(function(usersPosts) { return usersPosts; });
-          }
-          else { return; }
         }]
       }
     })
     .state('admin-moderation.posts', {
       url: '/posts?page&limit&field&desc&filter',
+      reloadOnSearch: false,
       views: {
         'data@admin-moderation': {
           controller: 'ModPostsCtrl',
@@ -565,6 +569,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             limit: Number($stateParams.limit) || 10,
             page: Number($stateParams.page) || 1
           };
+
           return AdminReports.pagePostReports(query).$promise
           .then(function(postReports) { return postReports; });
         }]

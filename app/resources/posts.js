@@ -22,12 +22,12 @@ module.exports = ['$resource',
         url: '/api/posts/user/:username',
         method: 'GET',
         params: { username: '@username' },
-        isArray: true
+        isArray: true,
       },
       pageByUserCount: {
         url: '/api/posts/user/:username/count',
         params: { username: '@username' },
-        method: 'GET'
+        method: 'GET',
       }
     });
   }

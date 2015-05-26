@@ -34,8 +34,7 @@
         <th width="225">Actions</th>
       </thead>
       <tbody>
-        <!-- ng-class="{ 'active-row' : ModerationCtrl.selectedPost === post }" ng-click="ModerationCtrl.selectPost(post)" -->
-        <tr class="selectable-row pointer" ng-repeat="postReport in ModerationCtrl.postReports track by postReport.id">
+        <tr ng-class="{ 'active-row' : ModerationCtrl.selectedPostReport === postReport }" class="selectable-row pointer" ng-click="ModerationCtrl.selectPostReport(postReport)" ng-repeat="postReport in ModerationCtrl.postReports track by postReport.id">
           <td><a href="/profiles/{{postReport.reporter_username}}" ng-bind="postReport.reporter_username"></td>
           <td ng-bind="postReport.created_at | humanDate"></td>
           <td ng-bind="postReport.status"></td>
@@ -56,8 +55,21 @@
     <div class="right"><pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination></div>
   </div>
 </div>
-<div class="row full-width">
+<div class="row full-width" ng-show="ModerationCtrl.selectedPostReport">
   <div class="small-12 columns">
     <h5 class="thin-dotted-underline small-12 medium-6">Post Preview</h5>
+  </div>
+</div>
+
+<div class="row full-width" ng-repeat="post in ModerationCtrl.previewPosts track by post.id">
+
+  <!-- Post Body Section -->
+  <div class="small-12 columns">
+    <!-- Post Title -->
+    <div class="post-title">
+      <span class="timestamp" ng-bind="post.created_at | humanDate"></span>
+    </div>
+    <!-- Post Body -->
+    <div class="post-body" post-processing="post.body" style-fix="true"></div>
   </div>
 </div>

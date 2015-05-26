@@ -1,0 +1,28 @@
+<!-- User's Paged Posts -->
+<div class="row">
+  <div class="small-12 columns">
+    <h5>Posts by {{ProfilePostsCtrl.user.username}}</h5>
+  </div>
+  <div class="small-12 columns">
+    <div class="right"><pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination></div>
+  </div>
+  <div class="small-12 columns">
+    <table width="100%">
+      <thead>
+        <th width="150">Thread</th>
+        <th>Post</th>
+        <th width="150" class="pointer" ng-click="ProfilePostsCtrl.setSortField('created_at')"><span ng-class="ProfilePostsCtrl.getSortClass('created_at')"></span>&nbsp;Post Date</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
+          <td><a href="/threads/{{post.thread_id}}/posts" ng-bind="post.thread_title | truncate:50"></a></td>
+          <td ng-bind="(post.raw_body || post.body) | truncate:250"></td>
+          <td ng-bind="post.created_at | humanDate"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="small-12 columns">
+    <div class="right"><pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination></div>
+  </div>
+</div>

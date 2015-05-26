@@ -29,6 +29,7 @@ app.controller('PostsParentCtrl',   require('./posts/parent.controller.js'));
 app.controller('PostsCtrl',         require('./posts/posts.controller.js'));
 app.controller('HeaderCtrl',        require('./layout/header.controller.js'));
 app.controller('ProfileCtrl',       require('./user/profile.controller.js'));
+app.controller('ProfilePostsCtrl',  require('./user/posts.controller.js'));
 app.controller('ResetCtrl',         require('./user/reset.controller.js'));
 app.controller('ConfirmCtrl',       require('./user/confirm.controller.js'));
 
