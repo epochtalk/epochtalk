@@ -86,6 +86,26 @@ label > input[type="checkbox"] { margin-right: .25rem; }
 .secondary-action:hover,
 .secondary-action:focus { color: $color-active; }
 
+/* Tooltips */
+.css-tooltip {
+  display: inline;
+  position: relative;
+}
+.css-tooltip:hover:after {
+  background: #333;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  bottom: 120%;
+  color: #FFF;
+  content: attr(data-css-tooltip);
+  left: 50%;
+  padding: 5px 15px;
+  position: absolute;
+  z-index: 10;
+  text-align: center;
+  transform: translate(-50%, 0);
+}
+
 // BBCode Styles ----------------------------------------------------------- //
 .spoiler { color: black; background-color: black; }
 .spoiler:hover { color: white; }

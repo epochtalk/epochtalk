@@ -31,24 +31,22 @@ ng-repeat="post in PostsCtrl.posts track by post.id">
       <span class="timestamp" ng-bind="post.created_at | humanDate"></span>
       <ul class="post-action">
         <li ng-if="PostsParentCtrl.loggedIn()">
-          <a ng-href="#" ng-click="PostsCtrl.openReportModal(post)">
+          <a ng-href="#" class="css-tooltip" data-css-tooltip="Report" ng-click="PostsCtrl.openReportModal(post)">
             <i class="icon-epoch-flag"></i>
           </a>
         </li>
         <li ng-if="post.user.id === PostsCtrl.user.id">
-          <a ng-href="#" ng-click="PostsCtrl.loadEditor($index)">
+          <a ng-href="#" class="css-tooltip" data-css-tooltip="Edit" ng-click="PostsCtrl.loadEditor($index)">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
         </li>
-        <!-- <li><a href="#"><i class="icon-epoch-heart"></i></a></li>
-        <li><a href="#"><i class="icon-epoch-reply"></i></a></li> -->
         <li ng-if="PostsParentCtrl.loggedIn()">
-          <a ng-href="#" ng-click="PostsCtrl.addQuote($index)">
+          <a ng-href="#" class="css-tooltip" data-css-tooltip="Quote" ng-click="PostsCtrl.addQuote($index)">
             <i class="icon-epoch-quote"></i>
           </a>
         </li>
         <li>
-          <a ng-href="{{PostsCtrl.rootUrl}}#{{post.id}}">
+          <a ng-href="{{PostsCtrl.rootUrl}}#{{post.id}}" class="css-tooltip" data-css-tooltip="Permalink">
             <i class="icon-epoch-link"></i>
           </a>
         </li>
