@@ -1,34 +1,52 @@
+<!-- Auth error message -->
 <div class="row">
-
-  <!-- Auth error message -->
   <div class="small-12 columns info-box text-center" ng-if="!NewThreadCtrl.loggedIn()">
     <span class="label alert radius">
       You need to be logged in to make a new thread
     </span>
   </div>
+</div>
 
-  <!-- POST error message -->
-  <div class="small-12 columns text-center" ng-if="NewThreadCtrl.error.post.found">
-    <span class="label alert" ng-bind="NewThreadCtrl.error.post.message"></span>
+  <!-- New Thread -->
+<div class="row">
+  <div class="small-12 columns thread-spacer">
+    <h4>New Thread</h4>
   </div>
+</div>
 
+<div class="row">
   <div class="small-12 columns">
     <!-- Title -->
     <label>Title:
       <input type="text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" required autofocus tabIndex="1">
     </label>
   </div>
+</div>
 
-  <!-- Editor -->
+<!-- Editor -->
+<div class="row">
   <div class="small-12 columns thread-editor-container">
     <form name="form" class="editor-form" novalidate>
       <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" raw-body="NewThreadCtrl.thread.raw_body" reset-switch="NewThreadCtrl.resetEditor" exit-switch="NewThreadCtrl.exitEditor" dirty="NewThreadCtrl.dirtyEditor"></epochtalk-editor tabIndex="2">
     </form>
-    <!-- Editor Controls -->
-    <div class="editor-button-container">
-      <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || !NewThreadCtrl.dirtyEditor" tabIndex="3">
-        Submit
-      </button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="small-3 columns thread-spacer">
+    <h5>Lock Thread?</h5>
+    <div class="switch">
+      <input id="lockThread" type="checkbox" ng-model="NewThreadCtrl.thread.locked" ng-disabled="!NewThreadCtrl.loggedIn()" tabIndex="3">
+      <label for="lockThread">Lock Thread?</label>
     </div>
+  </div>
+</div>
+
+<!-- Editor Controls -->
+<div class="row">
+  <div class="small-12 columns thread-spacer">
+    <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || !NewThreadCtrl.dirtyEditor" tabIndex="4">
+      Submit
+    </button>
   </div>
 </div>

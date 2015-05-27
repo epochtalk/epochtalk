@@ -106,5 +106,20 @@ module.exports = {
     db.users.putUserThreadViews(user.id, newThreadViews)
     .then(function() { return reply(); })
     .catch(function(err) { return reply(err); });
+  },
+  isAdmin: function(request, reply) {
+    if (!request.auth.isAuthenticated) { return reply(Boom.unauthorized()); }
+    else {
+      var username = request.auth.credentials.username;
+      var isAdmin = false;
+      return db.users.userByUsername(username)
+      .then(function(user) {
+        user.roles.forEach(function(role) {
+          if (role.name === 'Administrator') { isAdmin = true; }
+        });
+        return reply(isAdmin);
+      })
+      .catch(function() { return reply(isAdmin); });
+    }
   }
 };

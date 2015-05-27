@@ -730,11 +730,12 @@ pagination {
 
 .board-name a { text-decoration: none; }
 
+.thread-spacer { margin-bottom: 20px; }
 .thread-editor-container {
   position: relative;
-  padding-top: 20px;
   background-color: white;
   height: 500px; }
+.thread-editor-container > .editor-form { top: 0px; }
 
 // Boards Page ------------------------------- //
 .board-header {

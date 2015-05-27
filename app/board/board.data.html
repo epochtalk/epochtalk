@@ -68,7 +68,9 @@
     <div class="thread-listItem" ng-repeat="thread in BoardCtrl.threads track by thread.id">
       <div class="row">
         <div class="small-12 medium-7 columns">
-          <a ng-class="thread.title_class" class="thread-title" ng-href="/threads/{{thread.id}}/posts" ng-bind-html="thread.title"></a><br>
+          <a ng-class="thread.title_class" class="thread-title" ng-href="/threads/{{thread.id}}/posts" ng-bind-html="thread.title"></a>
+          <i class="icon-epoch-lock" ng-if="thread.locked"></i>
+          <br>
 
           <div class="division">
             Started by: <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>

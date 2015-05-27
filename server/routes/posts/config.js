@@ -12,10 +12,11 @@ exports.create = {
       title: Joi.string().min(1).max(255).required(),
       body: Joi.string().allow(''),
       raw_body: Joi.string().required(),
-      thread_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+      thread_id: Joi.string().required()
     })
   },
   pre: [
+    { method: pre.threadLocked },
     { method: pre.clean },
     { method: pre.parseEncodings },
     { method: pre.subImages }
@@ -23,18 +24,11 @@ exports.create = {
   handler: function(request, reply) {
     // build the post object from payload and params
     var user = request.auth.credentials;
-    var newPost = {
-      title: request.payload.title,
-      body: request.payload.body,
-      raw_body: request.payload.raw_body,
-      thread_id: request.payload.thread_id,
-      user_id: user.id
-    };
+    var newPost = request.payload;
+    newPost.user_id = user.id;
 
     // create the post in db
-    db.posts.create(newPost)
-    .then(function(post) { reply(post); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    return reply(db.posts.create(newPost));
   }
 };
 
@@ -45,7 +39,7 @@ exports.import = {
   //     title: Joi.string().min(1).max(255).required(),
   //     body: Joi.string().allow(''),
   //     raw_body: Joi.string().required(),
-  //     thread_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+  //     thread_id: Joi.string().required()
   //   })
   // },
   pre: [
@@ -57,9 +51,7 @@ exports.import = {
   handler: function(request, reply) {
     // build the post object from payload and params
     db.posts.import(request.payload)
-    .then(function(post) {
-      reply(post);
-    })
+    .then(reply)
     .catch(function(err) {
       request.log('error', 'Import post: ' + JSON.stringify(err, ['stack', 'message'], 2));
       return reply(Boom.badRequest('Import post failed'));
@@ -69,11 +61,7 @@ exports.import = {
 
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: {
-    params: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
-    }
-  },
+  validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply({}); }
     var id = request.params.id;
@@ -126,11 +114,9 @@ exports.update = {
       title: Joi.string().min(1).max(255).required(),
       body: Joi.string().allow(''),
       raw_body: Joi.string().required(),
-      thread_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+      thread_id: Joi.string().required()
     },
-    params: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
-    }
+    params: { id: Joi.string().required() }
   },
   pre: [
     { method: pre.authPost },
@@ -156,11 +142,7 @@ exports.update = {
 
 exports.delete = {
   auth: { strategy: 'jwt' },
-  validate: {
-    params: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
-    }
-  },
+  validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.authPost } ],
   handler: function(request, reply) {
     var postId = request.params.id;

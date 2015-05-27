@@ -1,6 +1,6 @@
 module.exports = [
-  '$scope', '$timeout', '$location', 'Session', 'Posts', 'Reports', 'Alert',
-  function($scope, $timeout, $location, Session, Posts, Reports, Alert) {
+  '$scope', '$timeout', '$location', 'Session', 'Posts', 'Threads', 'Reports', 'Alert',
+  function($scope, $timeout, $location, Session, Posts, Threads, Reports, Alert) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -12,6 +12,15 @@ module.exports = [
     this.posting = { post: this.tempPost };
     this.editorPosition = 'editor-fixed-bottom';
     this.resize = true;
+    this.showThreadControls = function() {
+      var show = false;
+      if (ctrl.user.isAdmin || ctrl.user.isMod) { show = true; }
+      else if (ctrl.user.id === ctrl.thread_user.id) { show = true; }
+      return show;
+    };
+    this.allowPosting = function() {
+      return ctrl.loggedIn() && ctrl.newPostEnabled && !ctrl.thread_locked;
+    };
     // pullPage function injected by child controller
 
     $scope.$watch(
@@ -40,6 +49,15 @@ module.exports = [
       ctrl.pageCount = Math.ceil(ctrl.thread_post_count / count);
     };
 
+    this.updateThreadLock = function() {
+      // let angular digest the change in lock status
+      $timeout(function() {
+        var lockStatus = ctrl.thread_locked;
+        return Threads.lock({id: ctrl.thread_id}, { status: lockStatus}).$promise
+        .then(function(lockThread) { ctrl.thread_locked = lockThread.locked; });
+      });
+    };
+
     var discardAlert = function() {
       if (ctrl.dirtyEditor) {
         var message = 'It looks like you were working on something. ';
@@ -60,7 +78,6 @@ module.exports = [
         ctrl.posting.index = '';
       }
 
-      ctrl.posting.error = '';
       ctrl.posting.id = post.id || '';
       var editorPost = ctrl.posting.post;
       editorPost.thread_id = post.thread_id || ctrl.thread_id;
@@ -143,11 +160,7 @@ module.exports = [
         initEditor();
         ctrl.closeEditor();
       })
-      .catch(function(response) {
-        ctrl.posting.error = {};
-        ctrl.posting.error.message = 'Post could not be saved.';
-        console.error(response);
-      });
+      .catch(function(response) { Alert.error('Post could not be saved'); });
     };
 
     this.cancelPost = function() {

@@ -10,10 +10,11 @@ exports.create = {
   auth: { strategy: 'jwt' },
   validate: {
     payload: Joi.object().keys({
+      locked: Joi.boolean().default(false),
       title: Joi.string().min(1).max(255).required(),
       body: Joi.string().allow(''),
       raw_body: Joi.string().required(),
-      board_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+      board_id: Joi.string().required()
     })
   },
   pre: [
@@ -24,7 +25,10 @@ exports.create = {
   handler: function(request, reply) {
     // build the thread post object from payload and params
     var user = request.auth.credentials;
-    var newThread = { board_id: request.payload.board_id };
+    var newThread = {
+      board_id: request.payload.board_id,
+      locked: request.payload.locked
+    };
     var newPost = {
       title: request.payload.title,
       body: request.payload.body,
@@ -45,7 +49,8 @@ exports.import = {
   // auth: { strategy: 'jwt' },
   // validate: {
   //   payload: Joi.object().keys({
-  //     board_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+  //     locked: Joi.boolean().default(false),
+  //     board_id: Joi.string().required(),
   //     created_at: Joi.date(),
   //     updated_at: Joi.date(),
   //     view_count: Joi.number(),
@@ -59,7 +64,7 @@ exports.import = {
   // },
   handler: function(request, reply) {
     db.threads.import(request.payload)
-    .then(function(thread) { reply(thread); })
+    .then(reply)
     .catch(function(err) {
       request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
       reply(Boom.badImplementation(err));
@@ -71,7 +76,7 @@ exports.byBoard = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
     query: {
-      board_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      board_id: Joi.string().required(),
       page: Joi.number().default(1),
       limit: Joi.number().integer().min(1).default(10)
     }
@@ -110,6 +115,7 @@ exports.byBoard = {
 
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
   pre: [
     [
       { method: pre.getThread, assign: 'thread' },
@@ -123,5 +129,40 @@ exports.find = {
     var newViewerId = request.pre.newViewId;
     if (newViewerId) { return reply(thread).header('Epoch-Viewer', newViewerId); }
     else { return reply(thread); }
+  }
+};
+
+exports.lock = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    params: { id: Joi.string().required() },
+    payload: { status: Joi.boolean().default(true) }
+  },
+  pre: [
+    { method: pre.getThread, assign: 'thread' },
+    { method: pre.isAdmin, assign: 'isAdmin' }
+  ],
+  handler: function(request, reply) {
+    var thisUserId = request.auth.credentials.id;
+    var thread = request.pre.thread;
+    var isAdmin = request.pre.isAdmin;
+    var canLock = false;
+
+    // check if thread is lockable by user
+    if (isAdmin) { canLock = true; }
+    else if (thread.user.id === thisUserId) { canLock = true; }
+
+    // lock thread
+    var promise;
+    if (canLock) {
+      var threadId = request.params.id;
+      var lockStatus = request.payload.status;
+      thread.locked = lockStatus;
+      promise = db.threads.lock(threadId, lockStatus)
+      .then(function() { return thread; });
+    }
+    else { promise = Boom.unauthorized(); }
+
+    return reply(promise);
   }
 };

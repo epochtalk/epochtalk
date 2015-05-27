@@ -110,6 +110,16 @@ module.exports = {
       return reply();
     })
     .catch(function(err) { return reply(err); });
+  },
+  threadLocked: function(request, reply) {
+    var threadId = request.payload.thread_id;
+    var promise = db.threads.find(threadId)
+    .then(function(thread) {
+      var output;
+      if (thread.locked) { output = Boom.forbidden('Thread is locked'); }
+      return output;
+    });
+    return reply(promise);
   }
 };
 

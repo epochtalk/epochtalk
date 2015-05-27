@@ -1,16 +1,16 @@
-module.exports = ['$stateParams', '$location', 'Session', 'Threads',
-  function($stateParams, $location, Session, Threads) {
+module.exports = ['$stateParams', '$location', 'Session', 'Threads', 'Alert',
+  function($stateParams, $location, Session, Threads, Alert) {
     var ctrl = this;
 
     this.exitEditor = false;
     this.dirtyEditor = false;
     this.resetEditor = true;
-    this.error = {};
     this.thread = {
       board_id: $stateParams.boardId,
       raw_body: '',
       body: '',
-      title: ''
+      title: '',
+      locked: false
     };
 
     this.loggedIn = Session.isAuthenticated;
@@ -24,9 +24,7 @@ module.exports = ['$stateParams', '$location', 'Session', 'Threads',
       })
       .catch(function(err) {
         ctrl.exitEditor = false;
-        ctrl.error.post = {};
-        ctrl.error.post.found = true;
-        ctrl.error.post.message = err.data.message;
+        Alert.error('Could not create thread: ' + err.data.message);
       });
     };
   }

@@ -1,20 +1,39 @@
+<!-- Page Title -->
 <div class="row">
   <div class="small-12 columns thread-header">
     <span ng-bind-html="::PostsParentCtrl.thread_title"></span>
+    <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread_locked"></i>
   </div>
 </div>
 
+<!-- Top Pagination -->
 <div class="row pagination-container center" ng-cloak>
   <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
 </div>
 
+<!-- Admin Section -->
+<div class="row thread-spacer" ng-if="PostsParentCtrl.showThreadControls()">
+  <h4>Thread Controls</h4>
+  <div class="small-3 columns">
+    <h5>Thread Locked</h5>
+    <div class="switch">
+      <input id="lockThread" type="checkbox" ng-model="PostsParentCtrl.thread_locked">
+      <label for="lockThread" ng-click="PostsParentCtrl.updateThreadLock()">Lock Thread?</label>
+    </div>
+  </div>
+</div>
+<!-- User Section -->
+
+<!-- Posts Listing -->
 <div class="content-spacer" ui-view="data"></div>
 
+<!-- Bottom Pagination -->
 <div class="row pagination-container lower-center" ng-cloak>
   <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
 </div>
 
-<div ng-if="PostsParentCtrl.loggedIn() && PostsParentCtrl.newPostEnabled">
+<!-- Editor -->
+<div ng-if="PostsParentCtrl.allowPosting()">
 
   <!-- fixed bottom toolbar -->
   <ul class="post-toolbar">
