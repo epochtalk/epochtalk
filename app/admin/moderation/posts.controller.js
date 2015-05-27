@@ -1,10 +1,10 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminReports, Posts, postReports, reportCount, page, limit, field, desc, filter) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminReports, Posts, postReports, reportCount, page, limit, field, desc, filter, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'posts';
   this.tableFilter = 0;
-  this.selectedPostReport = null;
-  this.previewPosts = [];
+  this.previewPost = null;
+  this.reportId = reportId;
   this.postReports = postReports;
 
   this.pageCount = Math.ceil(reportCount / limit);
@@ -15,22 +15,51 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.desc = desc;
   this.filter = filter;
 
-  this.selectPostReport = function(postReport) {
-    if (ctrl.selectedPostReport === postReport) {
-      ctrl.selectedPostReport = null;
+  this.showPreview = function(reportId) {
+    var postId;
+    for (var i = 0; i < ctrl.postReports.length; i++) {
+      var report = ctrl.postReports[i];
+      if (report.id === reportId) {
+        postId = report.offender_post_id;
+        break;
+      }
     }
-    else {
-      ctrl.selectedPostReport = postReport;
-      Posts.get({ id: postReport.offender_post_id }).$promise
+    if (postId) {
+      Posts.get({ id: postId }).$promise
       .then(function(post) {
-        ctrl.previewPosts = [ post ];
+        ctrl.previewPost = post;
       });
     }
   };
 
+  // Handles case where users links directly to selected report
+  if (this.reportId && this.postReports.length) {
+    this.showPreview(this.reportId);
+  }
+
+  this.selectPostReport = function(postReportId) {
+    if (ctrl.reportId === postReportId) {
+      ctrl.reportId = null;
+      ctrl.previewPost = null;
+      var params = $location.search();
+      delete params.reportId;
+      $location.search(params);
+    }
+    else {
+      ctrl.reportId = postReportId;
+      $location.search('reportId', postReportId);
+      ctrl.showPreview(ctrl.reportId);
+    }
+    // Update so pagination knows reportId changed
+    ctrl.queryParams.reportId = ctrl.reportId;
+  };
+
   this.setFilter = function(newFilter) {
     ctrl.queryParams.filter = newFilter;
+    delete ctrl.queryParams.reportId;
     $location.search(ctrl.queryParams);
+    ctrl.reportId = null;
+    ctrl.previewPost = null;
   };
 
   this.setSortField = function(sortField) {
@@ -127,5 +156,4 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       ctrl.postReports = newReports;
     });
   };
-
 }];

@@ -1,12 +1,11 @@
-module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, AdminReports, User, userReports, reportCount, page, limit, field, desc, filter) {
+module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, AdminReports, User, userReports, reportCount, page, limit, field, desc, filter, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
   this.userReports = userReports;
   this.tableFilter = 0;
-  this.selectedReportId = null;
+  this.reportId = reportId;
   this.selectedUsername = null;
-
   this.pageCount = Math.ceil(reportCount / limit);
   this.queryParams = $location.search();
   this.page = page;
@@ -16,23 +15,36 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.filter = filter;
 
   this.selectReport = function(userReport) {
-    if (userReport.id === ctrl.selectedReportId) {
-      $location.search('username', undefined);
-      ctrl.selectedReportId = null;
+    if (userReport.id === ctrl.reportId) {
+      var params = $location.search();
+      delete params.reportId;
+      $location.search(params);
+      ctrl.reportId = null;
       ctrl.selectedUsername = null;
     }
     else {
-      $location.search('username', userReport.offender_username);
-      ctrl.selectedReportId = userReport.id;
+      $location.search('reportId', userReport.id);
+      ctrl.selectedUsername = userReport.offender_username;
     }
   };
 
+  // Handles case when linking to this state with reportId in query string already populated
+  if (this.reportId && this.userReports.length) {
+    for (var i = 0; i < this.userReports.length; i++) {
+      var curReport = this.userReports[i];
+      if (this.reportId === curReport.id) {
+        ctrl.selectReport(curReport);
+        break;
+      }
+    }
+  }
+
   this.setFilter = function(newFilter) {
     ctrl.queryParams.filter = newFilter;
+    delete ctrl.queryParams.reportId;
     $location.search(ctrl.queryParams);
-    ctrl.selectedReportId = null;
+    ctrl.reportId = null;
     ctrl.selectedUsername = null;
-    $location.search('username', undefined);
   };
 
   this.setSortField = function(sortField) {
@@ -69,7 +81,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
 
   this.offLCS = $rootScope.$on('$locationChangeSuccess', function(){
     var params = $location.search();
-    var username = params.username;
+    var reportId = params.reportId;
     var page = Number(params.page) || 1;
     var limit = Number(params.limit) || 10;
     var descending;
@@ -77,16 +89,17 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
     if (params.desc === undefined) { descending = true; }
     else { descending = params.desc === 'true'; }
     var filter = params.filter;
-    var usernameChanged = false;
+    var reportIdChanged = false;
     var pageChanged = false;
     var limitChanged = false;
     var fieldChanged = false;
     var descChanged = false;
     var filterChanged = false;
 
-    if (username && username !== ctrl.selectedUsername) {
-      usernameChanged = true;
-      ctrl.selectedUsername = username;
+    if (reportId && reportId !== ctrl.reportId) {
+      reportIdChanged = true;
+      ctrl.reportId = reportId;
+      ctrl.queryParams.reportId = ctrl.reportId;
     }
     if (page && page !== ctrl.page) {
       pageChanged = true;
@@ -109,7 +122,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
       filterChanged = true;
       ctrl.filter = filter;
     }
-    if(usernameChanged || pageChanged || limitChanged || fieldChanged || descChanged || filterChanged) { ctrl.pullPage(); }
+    if(reportIdChanged || pageChanged || limitChanged || fieldChanged || descChanged || filterChanged) { ctrl.pullPage(); }
   });
   $scope.$on('$destroy', function() { ctrl.offLCS(); });
 

@@ -34,7 +34,7 @@
         <th width="200">Actions</th>
       </thead>
       <tbody>
-        <tr ng-class="{ 'active-row' : ModerationCtrl.selectedReportId === userReport.id }" ng-click="ModerationCtrl.selectReport(userReport)" class="selectable-row pointer" ng-repeat="userReport in ModerationCtrl.userReports track by userReport.id">
+        <tr ng-class="{ 'active-row' : ModerationCtrl.reportId === userReport.id }" ng-click="ModerationCtrl.selectReport(userReport)" class="selectable-row pointer" ng-repeat="userReport in ModerationCtrl.userReports track by userReport.id">
           <td><a href="/profiles/{{userReport.reporter_username}}" ng-bind="userReport.reporter_username"></a></td>
           <td ng-bind="userReport.created_at | humanDate"></td>
           <td ng-bind="userReport.status"></td>

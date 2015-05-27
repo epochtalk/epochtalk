@@ -473,7 +473,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-moderation.users', {
-      url: '/users?username&page&limit&field&desc&filter',
+      url: '/users?page&limit&field&desc&filter&reportId',
       reloadOnSearch: false,
       views: {
         'data@admin-moderation': {
@@ -498,6 +498,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         desc: ['$stateParams', function($stateParams) {
           return $stateParams.desc || true;
         }],
+        reportId: ['$stateParams', function($stateParams) {
+          return $stateParams.reportId;
+        }],
         reportCount: ['AdminReports', function(AdminReports) {
           return AdminReports.userReportsCount().$promise
           .then(function(userReportsCount) { return userReportsCount.count; });
@@ -517,6 +520,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     })
     .state('admin-moderation.users.preview', {
       reloadOnSearch: false,
+      params: { username: { value: undefined } },
       views: {
         'preview@admin-moderation.users': {
           controller: 'ProfileCtrl',
@@ -532,7 +536,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-moderation.posts', {
-      url: '/posts?page&limit&field&desc&filter',
+      url: '/posts?page&limit&field&desc&filter&reportId',
       reloadOnSearch: false,
       views: {
         'data@admin-moderation': {
@@ -556,6 +560,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }],
         desc: ['$stateParams', function($stateParams) {
           return $stateParams.desc || true;
+        }],
+        reportId: ['$stateParams', function($stateParams) {
+          return $stateParams.reportId;
         }],
         reportCount: ['AdminReports', function(AdminReports) {
           return AdminReports.postReportsCount().$promise

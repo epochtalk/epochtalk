@@ -18,20 +18,20 @@
     </div>
 
     <!-- User Information -->
-    <h4 ng-bind="ProfileCtrl.displayUsername"></h4>
-    <div><span ng-bind="ProfileCtrl.user.name"></span></div>
-    <div><span ng-bind="ProfileCtrl.user.position"></span></div>
-    <div><span ng-bind="ProfileCtrl.user.status"></span></div>
+    <h4 ng-bind="::ProfileCtrl.displayUsername"></h4>
+    <div><span ng-bind="::ProfileCtrl.user.name"></span></div>
+    <div><span ng-bind="::ProfileCtrl.user.position"></span></div>
+    <div><span ng-bind="::ProfileCtrl.user.status"></span></div>
     <hr ng-if="ProfileCtrl.displayEmail || ProfileCtrl.user.btcAddress || ProfileCtrl.user.website">
-    <div><span ng-bind="ProfileCtrl.displayEmail"></span></div>
-    <div><span ng-bind="ProfileCtrl.user.btcAddress"></span></div>
-    <div><a ng-href="{{ProfileCtrl.user.website}}">{{ProfileCtrl.user.website}}</a></div>
+    <div><span ng-bind="::ProfileCtrl.displayEmail"></span></div>
+    <div><span ng-bind="::ProfileCtrl.user.btcAddress"></span></div>
+    <div><a ng-href="{{ProfileCtrl.user.website}}">{{::ProfileCtrl.user.website}}</a></div>
     <hr>
-    <div><span ng-bind="ProfileCtrl.user.gender"></span></div>
-    <div><span ng-bind="ProfileCtrl.userAge"></span></div>
-    <div><span ng-bind="ProfileCtrl.user.location"></span></div>
-    <div><span ng-bind="ProfileCtrl.user.language"></span></div>
-    <div><span ng-bind="ProfileCtrl.userLocalTime"></span></div>
+    <div><span ng-bind="::ProfileCtrl.user.gender"></span></div>
+    <div><span ng-bind="::ProfileCtrl.userAge"></span></div>
+    <div><span ng-bind="::ProfileCtrl.user.location"></span></div>
+    <div><span ng-bind="::ProfileCtrl.user.language"></span></div>
+    <div><span ng-bind="::ProfileCtrl.userLocalTime"></span></div>
   </div>
 
   <!-- Right Side Content -->
