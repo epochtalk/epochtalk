@@ -1,12 +1,14 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminReports, Posts, postReports, reportCount, page, limit, field, desc, filter, reportId) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminReports', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminReports, Posts, postReports, reportCount, page, limit, field, desc, filter, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'posts';
   this.tableFilter = 0;
   this.previewPost = null;
+  this.previewReport = null;
   this.reportId = reportId;
   this.postReports = postReports;
 
+  // Report Pagination Vars
   this.pageCount = Math.ceil(reportCount / limit);
   this.queryParams = $location.search();
   this.page = page;
@@ -15,40 +17,72 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.desc = desc;
   this.filter = filter;
 
-  this.showPreview = function(reportId) {
-    var postId;
-    for (var i = 0; i < ctrl.postReports.length; i++) {
-      var report = ctrl.postReports[i];
-      if (report.id === reportId) {
-        postId = report.offender_post_id;
-        break;
-      }
-    }
-    if (postId) {
-      Posts.get({ id: postId }).$promise
-      .then(function(post) {
-        ctrl.previewPost = post;
-      });
-    }
+  // Report Notes Vars
+  this.reportNotes = null;
+  this.reportNote = null;
+  this.noteSubmitted = false;
+  this.submitBtnLabel = 'Add Note';
+  this.user = Session.user;
+
+  this.submitReportNote = function() {
+    ctrl.submitBtnLabel = 'Submitting...';
+    ctrl.noteSubmitted = true;
+    var params = {
+      report_id: ctrl.reportId,
+      user_id: ctrl.user.id,
+      note: ctrl.reportNote
+    };
+    AdminReports.createPostReportNote(params).$promise
+    .then(function(createdNote) {
+      ctrl.reportNotes.push(createdNote);
+      ctrl.submitBtnLabel = 'Add Note';
+      ctrl.noteSubmitted = false;
+      ctrl.reportNote = null;
+    });
+  };
+
+  this.showPreview = function(report) {
+    ctrl.previewReport = report;
+    ctrl.reportId = report.id;
+
+    Posts.get({ id: report.offender_post_id }).$promise
+    .then(function(post) {
+      ctrl.previewPost = post;
+    });
+
+    AdminReports.pagePostReportsNotes({ report_id: report.id, limit: 'all' }).$promise
+    .then(function(reportNotes) {
+      ctrl.reportNotes = reportNotes;
+    });
   };
 
   // Handles case where users links directly to selected report
   if (this.reportId && this.postReports.length) {
-    this.showPreview(this.reportId);
+    for (var i = 0; i < this.postReports.length; i++) {
+      var curReport = this.postReports[i];
+      if (curReport.id === this.reportId) {
+        this.showPreview(curReport);
+        break;
+      }
+    }
   }
 
-  this.selectPostReport = function(postReportId) {
-    if (ctrl.reportId === postReportId) {
+  this.selectPostReport = function(postReport) {
+    // Clear Report Notes
+    ctrl.reportNotes = null;
+    ctrl.reportNote = null;
+    ctrl.noteSubmitted = false;
+    if (ctrl.reportId === postReport.id) {
       ctrl.reportId = null;
       ctrl.previewPost = null;
+      ctrl.previewReport = null;
       var params = $location.search();
       delete params.reportId;
       $location.search(params);
     }
     else {
-      ctrl.reportId = postReportId;
-      $location.search('reportId', postReportId);
-      ctrl.showPreview(ctrl.reportId);
+      $location.search('reportId', postReport.id);
+      ctrl.showPreview(postReport);
     }
     // Update so pagination knows reportId changed
     ctrl.queryParams.reportId = ctrl.reportId;

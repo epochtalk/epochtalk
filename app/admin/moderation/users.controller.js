@@ -1,11 +1,14 @@
-module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll', 'AdminReports', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, AdminReports, User, userReports, reportCount, page, limit, field, desc, filter, reportId) {
+module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminReports', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Session, AdminReports, User, userReports, reportCount, page, limit, field, desc, filter, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
   this.userReports = userReports;
   this.tableFilter = 0;
   this.reportId = reportId;
+  this.previewReport = null;
   this.selectedUsername = null;
+
+  // Report Pagination Vars
   this.pageCount = Math.ceil(reportCount / limit);
   this.queryParams = $location.search();
   this.page = page;
@@ -14,17 +17,53 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.desc = desc;
   this.filter = filter;
 
+  // Report Notes Vars
+  this.reportNotes = null;
+  this.reportNote = null;
+  this.noteSubmitted = false;
+  this.submitBtnLabel = 'Add Note';
+  this.user = Session.user;
+
+  this.submitReportNote = function() {
+    ctrl.submitBtnLabel = 'Submitting...';
+    ctrl.noteSubmitted = true;
+    var params = {
+      report_id: ctrl.reportId,
+      user_id: ctrl.user.id,
+      note: ctrl.reportNote
+    };
+    AdminReports.createUserReportNote(params).$promise
+    .then(function(createdNote) {
+      ctrl.reportNotes.push(createdNote);
+      ctrl.submitBtnLabel = 'Add Note';
+      ctrl.noteSubmitted = false;
+      ctrl.reportNote = null;
+    });
+  };
+
   this.selectReport = function(userReport) {
+    // Clear Report Notes
+    ctrl.reportNotes = null;
+    ctrl.reportNote = null;
+    ctrl.noteSubmitted = false;
     if (userReport.id === ctrl.reportId) {
       var params = $location.search();
       delete params.reportId;
       $location.search(params);
       ctrl.reportId = null;
       ctrl.selectedUsername = null;
+      ctrl.previewReport = null;
     }
     else {
       $location.search('reportId', userReport.id);
       ctrl.selectedUsername = userReport.offender_username;
+      ctrl.previewReport = userReport;
+
+      AdminReports.pageUserReportsNotes({ report_id: userReport.id, limit: 'all' }).$promise
+      .then(function(reportNotes) {
+        console.log(reportNotes);
+        ctrl.reportNotes = reportNotes;
+      });
     }
   };
 

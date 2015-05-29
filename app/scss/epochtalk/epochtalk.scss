@@ -702,6 +702,40 @@ pagination {
   text-overflow: ellipsis;
 }
 
+.admin-content table.report-details {
+  td.field {
+    font-size: 13px;
+    color: $color-gray;
+    width: 175px;
+    padding-left: 0;
+    vertical-align: top;
+  }
+  td.desc {
+    font-size: 13px;
+  }
+}
+
+.admin-content div.note-avatar-container {
+  float: left;
+  width: 60px;
+  height: 60px;
+
+  img.note-avatar {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.admin-content div.note-details {
+  font-size: 13px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+
+  span.note-date {
+    color: $color-gray-med;
+  }
+}
+
 // Board Page -------------------------------- //
 .board-page { padding-bottom: 15px; }
 .child-board { padding-bottom: 5px; }

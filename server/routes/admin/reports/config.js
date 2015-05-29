@@ -170,7 +170,7 @@ exports.pageUserReportsNotes = {
     params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(10),
+      limit: [ Joi.number().integer().min(1).default(10), Joi.string().valid('all') ],
       desc: Joi.boolean().default(false)
     }
   },
@@ -181,8 +181,21 @@ exports.pageUserReportsNotes = {
       page: request.query.page || 1,
       sortDesc: request.query.desc || false
     };
-    db.reports.pageUserReportsNotes(reportId, opts)
-    .then(function(reports) { reply(reports); });
+    if (opts.limit === 'all') {
+      db.reports.userReportsNotesCount(reportId)
+      .then(function(notesCount) {
+          opts.limit = notesCount.count;
+          return;
+       })
+      .then(function() {
+        return db.reports.pageUserReportsNotes(reportId, opts)
+        .then(function(reports) { reply(reports); });
+      });
+    }
+    else {
+      db.reports.pageUserReportsNotes(reportId, opts)
+      .then(function(reports) { reply(reports); });
+    }
   }
 };
 
@@ -193,7 +206,7 @@ exports.pagePostReportsNotes = {
     params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(10),
+      limit: [ Joi.number().integer().min(1).default(10), Joi.string().valid('all') ],
       desc: Joi.boolean().default(false)
     }
   },
@@ -204,8 +217,21 @@ exports.pagePostReportsNotes = {
       page: request.query.page || 1,
       sortDesc: request.query.desc || false
     };
-    db.reports.pagePostReportsNotes(reportId, opts)
-    .then(function(reports) { reply(reports); });
+    if (opts.limit === 'all') {
+      db.reports.postReportsNotesCount(reportId)
+      .then(function(notesCount) {
+          opts.limit = notesCount.count;
+          return;
+       })
+      .then(function() {
+        db.reports.pagePostReportsNotes(reportId, opts)
+        .then(function(reports) { reply(reports); });
+      });
+    }
+    else {
+      db.reports.pagePostReportsNotes(reportId, opts)
+      .then(function(reports) { reply(reports); });
+    }
   }
 };
 

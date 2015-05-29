@@ -54,12 +54,65 @@
     <div class="right"><pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination></div>
   </div>
 </div>
+<br />
 <div ng-if="ModerationCtrl.selectedUsername !== null" class="row full-width">
-  <div class="small-12 columns">
-    <h5 class="thin-dotted-underline small-12 medium-6">Profile Preview for {{ModerationCtrl.selectedUsername}}</h5>
+  <div class="small-12 large-4 columns">
+    <h5 class="thin-dotted-underline">Report Details</h5>
+    <table width="100%" class="report-details">
+      <tbody>
+        <tr>
+          <td class="field">Reported By</td>
+          <td class="desc"><a href="/profiles/{{ModerationCtrl.previewReport.reporter_username}}" ng-bind="ModerationCtrl.previewReport.reporter_username"></a></td>
+        </tr>
+        <tr>
+          <td class="field">Reported Date</td>
+          <td class="desc" ng-bind="ModerationCtrl.previewReport.created_at | humanDate"></td>
+        </tr>
+        <tr>
+          <td class="field">Current Status</td>
+          <td class="desc" ng-bind="ModerationCtrl.previewReport.status"></td>
+        </tr>
+        <tr>
+          <td class="field">Reason for Report</td>
+          <td class="desc" ng-bind="ModerationCtrl.previewReport.reporter_reason"></td>
+        </tr>
+        <tr>
+          <td class="field">Reported User</td>
+          <td class="desc"><a href="/profiles/{{ModerationCtrl.previewReport.offender_username}}" ng-bind="ModerationCtrl.previewReport.offender_username"></a></td>
+        </tr>
+        <tr>
+          <td class="field">Reported User Email</td>
+          <td class="desc"><a href="mailto:{{ModerationCtrl.previewReport.offender_email}}" ng-bind="ModerationCtrl.previewReport.offender_email"></a></td>
+        </tr>
+        <tr>
+          <td class="field">Reported User Registered Date</td>
+          <td class="desc" ng-bind="ModerationCtrl.previewReport.offender_created_at | humanDate"></td>
+        </tr>
+        <tr>
+          <td class="field">Moderation Notes</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <div ng-repeat="note in ModerationCtrl.reportNotes track by note.id">
+      <div class="note-avatar-container"><img class="note-avatar" ng-src="{{ note.avatar || 'http://placehold.it/50&text=' + note.username }}" /></div>
+      <div class="note-details">
+        <span class="note-author"><a href="/profiles/{{note.username}}" ng-bind="note.username"></a></span>
+        <span class="note-date" ng-bind="note.created_at | humanDate"></span>
+        <div class="note-message" ng-bind="note.note"></div>
+      </div>
+      <div class="thin-dotted-underline"></div>
+    </div>
+    <form name="$parent.form" class="css-form">
+      <textarea name="reportNote" ng-model="ModerationCtrl.reportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3" required></textarea>
+      <div class="form-action">
+        <button class="button no-margin" ng-click="ModerationCtrl.submitReportNote()"
+          ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.noteSubmitted" ng-bind="ModerationCtrl.submitBtnLabel"></button>
+      </div>
+    </form>
   </div>
-  <div class="small-12 medium-8 columns">
+  <div class="small-12 large-8 columns">
+    <h5 class="thin-dotted-underline">Reported User {{ModerationCtrl.selectedUsername}}</h5>
     <div ui-view="preview"></div>
   </div>
-  <div class="small-12 medium-4">&nbsp;</div>
 </div>
