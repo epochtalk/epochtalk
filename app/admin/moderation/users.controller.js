@@ -24,6 +24,19 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.submitBtnLabel = 'Add Note';
   this.user = Session.user;
 
+  this.updateReportNote = function(note) {
+    delete note.edit;
+    AdminReports.updateUserReportNote(note).$promise
+    .then(function(updatedNote) {
+      for (var i = 0; i < ctrl.reportNotes.length; i++) {
+        if (ctrl.reportNotes[i].id === note.id) {
+          ctrl.reportNotes[i] = updatedNote;
+          break;
+        }
+      }
+    });
+  };
+
   this.submitReportNote = function() {
     ctrl.submitBtnLabel = 'Submitting...';
     ctrl.noteSubmitted = true;
