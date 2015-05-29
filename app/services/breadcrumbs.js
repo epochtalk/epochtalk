@@ -7,13 +7,28 @@ function ($stateParams, $location, Breadcrumbs) {
   var breadcrumbsStore; // stores array of breadcrumb objects
 
   var pathLookup = {
-    home:       { url: '/',                   label: 'Home' },
-    register:   { url: '/register',           label: 'Registration' },
-    profiles:   {                             label: 'Profiles' },
-    admin:      { url: '/admin',              label: 'Administration' },
-    categories: { url: '/admin/categories',   label: 'Category Editor' },
-    reset:      { url: '/reset',              label: 'Reset Password',        ignoreFollowing: true },
-    confirm:    { url: '/confirm',            label: 'Account Confirmation',  ignoreFollowing: true }
+    home: {
+      url: '/',
+      state: '^.boards()',
+      label: 'Home'
+    },
+    register: {
+      url: '/register',
+      label: 'Registration'
+    },
+    profiles: {
+      label: 'Profiles'
+    },
+    reset: {
+      url: '/reset',
+      label: 'Reset Password',
+      ignoreFollowing: true
+    },
+    confirm: {
+      url: '/confirm',
+      label: 'Account Confirmation',
+      ignoreFollowing: true
+    }
   };
 
   return {
