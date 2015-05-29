@@ -5,9 +5,9 @@
   "main": "server",
   "scripts": {
     "install": "./node_modules/.bin/napa",
-    "db-create": "createdb $(cat database.json | ./node_modules/.bin/json ${NODE_ENV=development}.database)",
-    "db-drop": "dropdb $(cat database.json | ./node_modules/.bin/json ${NODE_ENV=development}.database)",
-    "db-migrate": "./node_modules/.bin/db-migrate -e ${NODE_ENV=development} -m ./node_modules/epochtalk-core-pg/migrations up",
+    "db-create": "createdb $DEV_DB_DATABASE",
+    "db-drop": "dropdb $DEV_DB_DATABASE",
+    "db-migrate": "./node_modules/.bin/db-migrate -e ${NODE_ENV=dev} -m ./node_modules/epochtalk-core-pg/migrations up",
     "db-recreate": "npm run db-drop && npm run db-create && npm run db-migrate",
     "db-devseed": "node ./tests/seed/devseed.js",
     "sass": "node ./scripts/sass.js",

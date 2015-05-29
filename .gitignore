@@ -35,5 +35,3 @@ test/coverage/
 /app/scss/medium-editor.scss
 /app/scss/loading-bar.scss
 /app/.sass-cache/
-
-database.json

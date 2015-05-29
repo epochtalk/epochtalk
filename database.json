@@ -1,0 +1,26 @@
+{
+  "dev": {
+    "driver": {"ENV": "DEV_DB_DRIVER"},
+    "user": {"ENV": "DEV_DB_USER"},
+    "password": {"ENV": "DEV_DB_PASSWORD"},
+    "host": {"ENV": "DEV_DB_HOST"},
+    "database": {"ENV": "DEV_DB_DATABASE"}
+  },
+
+  "test": {
+    "driver": {"ENV": "TEST_DB_DRIVER"},
+    "user": {"ENV": "TEST_DB_USER"},
+    "password": {"ENV": "TEST_DB_PASSWORD"},
+    "host": {"ENV": "TEST_DB_HOST"},
+    "database": {"ENV": "TEST_DB_DATABASE"}
+  },
+
+  "prod": {
+    "driver": {"ENV": "PROD_DB_DRIVER"},
+    "user": {"ENV": "PROD_DB_USER"},
+    "password": {"ENV": "PROD_DB_PASSWORD"},
+    "host": {"ENV": "PROD_DB_HOST"},
+    "database": {"ENV": "PROD_DB_DATABASE"}
+  },
+  "sql-file" : true
+}
