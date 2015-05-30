@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
-          <td><a href="/threads/{{post.thread_id}}/posts" ng-bind="post.thread_title | truncate:50"></a></td>
+          <td><a ui-sref="posts.data({ threadId: post.thread_id, '#': post.id })" ng-bind="post.thread_title | truncate:50"></a></td>
           <td ng-bind="(post.raw_body || post.body) | truncate:250"></td>
           <td ng-bind="post.created_at | humanDate"></td>
         </tr>
