@@ -7,7 +7,7 @@
   </div>
 </div>
 
-  <!-- New Thread -->
+  <!-- New Thread and Title -->
 <div class="row">
   <div class="small-12 columns thread-spacer">
     <h4>New Thread</h4>
@@ -32,6 +32,7 @@
   </div>
 </div>
 
+<!-- Thread Controls -->
 <div class="row">
   <div class="small-3 columns thread-spacer">
     <h5>Lock Thread?</h5>
@@ -40,9 +41,20 @@
       <label for="lockThread">Lock Thread?</label>
     </div>
   </div>
+
+  <div class="small-3 columns thread-spacer" ng-if="NewThreadCtrl.user.isAdmin">
+    <h5>Sticky Thread?</h5>
+    <div class="switch">
+      <input id="stickyThread" type="checkbox" ng-model="NewThreadCtrl.thread.sticky" ng-disabled="!NewThreadCtrl.loggedIn()" tabIndex="4">
+      <label for="stickyThread"></label>
+    </div>
+  </div>
+
+  <div class="small-3 columns thread-spacer"></div>
+  <div class="small-3 columns thread-spacer"></div>
 </div>
 
-<!-- Editor Controls -->
+<!-- Submit Button -->
 <div class="row">
   <div class="small-12 columns thread-spacer">
     <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || !NewThreadCtrl.dirtyEditor" tabIndex="4">

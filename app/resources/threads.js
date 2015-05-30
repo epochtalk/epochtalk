@@ -11,13 +11,17 @@ module.exports = ['$resource',
           limit: '@limit',
           page: '@page'
         },
-        url: '/api/threads',
-        isArray: true
+        url: '/api/threads'
       },
       lock: {
         method: 'POST',
         params: { id: '@id' },
         url: '/api/threads/:id/lock'
+      },
+      sticky: {
+        method: 'POST',
+        params: { id: '@id' },
+        url: '/api/threads/:id/sticky'
       }
     });
   }

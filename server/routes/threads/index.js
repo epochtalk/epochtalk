@@ -9,5 +9,6 @@ module.exports = [
   // DON'T UPDATE THREAD (update should be done in post)
   // DON'T DELETE THREAD (for now, should delete all posts?)
   { method: 'POST', path: '/threads/import', config: threads.import },
-  { method: 'POST', path: '/threads/{id}/lock', config: threads.lock }
+  { method: 'POST', path: '/threads/{id}/lock', config: threads.lock },
+  { method: 'POST', path: '/threads/{id}/sticky', config: threads.sticky }
 ];

@@ -11,6 +11,7 @@ exports.create = {
   validate: {
     payload: Joi.object().keys({
       locked: Joi.boolean().default(false),
+      sticky: Joi.boolean().default(false),
       title: Joi.string().min(1).max(255).required(),
       body: Joi.string().allow(''),
       raw_body: Joi.string().required(),
@@ -27,7 +28,8 @@ exports.create = {
     var user = request.auth.credentials;
     var newThread = {
       board_id: request.payload.board_id,
-      locked: request.payload.locked
+      locked: request.payload.locked,
+      sticky: request.payload.sticky
     };
     var newPost = {
       title: request.payload.title,
@@ -40,7 +42,7 @@ exports.create = {
     db.threads.create(newThread)
     .then(function(thread) { newPost.thread_id = thread.id; })
     .then(function() { return db.posts.create(newPost); })
-    .then(function(post) { reply(post); })
+    .then(reply)
     .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };
@@ -49,6 +51,7 @@ exports.import = {
   // auth: { strategy: 'jwt' },
   // validate: {
   //   payload: Joi.object().keys({
+  //     sticky: Joi.boolean().default(false),
   //     locked: Joi.boolean().default(false),
   //     board_id: Joi.string().required(),
   //     created_at: Joi.date(),
@@ -93,19 +96,11 @@ exports.byBoard = {
 
     // iterate through threads and see if the thread has been viewed yet
     if (threadViews) {
-      threads = threads.map(function(thread) {
-        // If user made last post consider thread viewed
-        if (user.username === thread.last_post_username) {
-          thread.has_new_post = false;
-        }
-        else if (!threadViews[thread.id]) {
-          thread.has_new_post = true;
-        }
-        else if (threadViews[thread.id] &&
-                 threadViews[thread.id] <= thread.last_post_created_at) {
-          thread.has_new_post = true;
-        }
-        return thread;
+      threads.normal = threads.normal.map(function(thread) {
+        return setNewPost(user, threadViews, thread);
+      });
+      threads.sticky = threads.sticky.map(function(thread) {
+        return setNewPost(user, threadViews, thread);
       });
     }
 
@@ -147,13 +142,13 @@ exports.lock = {
     var thread = request.pre.thread;
     var isAdmin = request.pre.isAdmin;
     var canLock = false;
+    var promise;
 
     // check if thread is lockable by user
     if (isAdmin) { canLock = true; }
     else if (thread.user.id === thisUserId) { canLock = true; }
 
     // lock thread
-    var promise;
     if (canLock) {
       var threadId = request.params.id;
       var lockStatus = request.payload.status;
@@ -166,3 +161,48 @@ exports.lock = {
     return reply(promise);
   }
 };
+
+exports.sticky = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    params: { id: Joi.string().required() },
+    payload: { status: Joi.boolean().default(true) }
+  },
+  pre: [
+    { method: pre.getThread, assign: 'thread' },
+    { method: pre.isAdmin, assign: 'isAdmin' }
+  ],
+  handler: function(request, reply) {
+    var thisUserId = request.auth.credentials.id;
+    var thread = request.pre.thread;
+    var isAdmin = request.pre.isAdmin;
+    var promise;
+
+    // lock thread
+    if (isAdmin) {
+      var threadId = request.params.id;
+      var stickyStatus = request.payload.status;
+      thread.sticky = stickyStatus;
+      promise = db.threads.sticky(threadId, stickyStatus)
+      .then(function() { return thread; });
+    }
+    else { promise = Boom.unauthorized(); }
+
+    return reply(promise);
+  }
+};
+
+function setNewPost(user, threadViews, thread) {
+  // If user made last post consider thread viewed
+  if (user.username === thread.last_post_username) {
+    thread.has_new_post = false;
+  }
+  else if (!threadViews[thread.id]) {
+    thread.has_new_post = true;
+  }
+  else if (threadViews[thread.id] &&
+           threadViews[thread.id] <= thread.last_post_created_at) {
+    thread.has_new_post = true;
+  }
+  return thread;
+}

@@ -35,12 +35,12 @@ ng-repeat="post in PostsCtrl.posts track by post.id">
             <i class="icon-epoch-flag"></i>
           </a>
         </li>
-        <li ng-if="post.user.id === PostsCtrl.user.id">
+        <li ng-if="post.user.id === PostsCtrl.user.id && !PostsParentCtrl.thread_locked">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Edit" ng-click="PostsCtrl.loadEditor($index)">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
         </li>
-        <li ng-if="PostsParentCtrl.loggedIn()">
+        <li ng-if="PostsParentCtrl.loggedIn() && !PostsParentCtrl.thread_locked">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Quote" ng-click="PostsCtrl.addQuote($index)">
             <i class="icon-epoch-quote"></i>
           </a>

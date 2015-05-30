@@ -6,7 +6,8 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     this.page = page; // this page
     this.postLimit = postLimit;
     this.threadLimit = threadLimit;
-    this.threads = threads;
+    this.threads = threads.normal;
+    this.stickyThreads = threads.sticky;
 
     this.parent = $scope.$parent.BoardWrapperCtrl;
     this.parent.loggedIn = Session.isAuthenticated;
@@ -40,12 +41,14 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     };
 
     // page count for each thread
-    threads.forEach(function(thread) {
+    function threadPageCount(thread) {
       // user based UI
       if (thread.has_new_post) { thread.title_class = 'bold'; }
       thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
       ctrl.getPageKeysForThread(thread);
-    });
+    }
+    threads.normal.forEach(threadPageCount);
+    threads.sticky.forEach(threadPageCount);
 
     // Scroll fix for nested state
     $timeout($anchorScroll);
@@ -87,13 +90,10 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
       // replace current threads with new threads
       Threads.byBoard(query).$promise
       .then(function(threads) {
-        ctrl.threads = threads;
-        ctrl.threads.forEach(function(thread) {
-          // user based UI
-          if (thread.has_new_post) { thread.title_class = 'bold'; }
-          thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
-          ctrl.getPageKeysForThread(thread);
-        });
+        ctrl.threads = threads.normal;
+        ctrl.stickyThreads = threads.sticky;
+        ctrl.threads.forEach(threadPageCount);
+        ctrl.stickyThreads.forEach(threadPageCount);
         $timeout($anchorScroll);
       });
     };

@@ -10,10 +10,12 @@ module.exports = ['$stateParams', '$location', 'Session', 'Threads', 'Alert',
       raw_body: '',
       body: '',
       title: '',
+      sticky: false,
       locked: false
     };
 
     this.loggedIn = Session.isAuthenticated;
+    this.user = Session.user;
 
     this.save = function(post) {
       ctrl.exitEditor = true;

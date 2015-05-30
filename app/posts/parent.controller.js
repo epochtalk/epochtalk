@@ -53,8 +53,17 @@ module.exports = [
       // let angular digest the change in lock status
       $timeout(function() {
         var lockStatus = ctrl.thread_locked;
-        return Threads.lock({id: ctrl.thread_id}, { status: lockStatus}).$promise
+        return Threads.lock({id: ctrl.thread_id}, {status: lockStatus}).$promise
         .then(function(lockThread) { ctrl.thread_locked = lockThread.locked; });
+      });
+    };
+
+    this.updateThreadSticky = function() {
+      // let angular digest the change in lock status
+      $timeout(function() {
+        var stickyStatus = ctrl.thread_sticky;
+        return Threads.sticky({id: ctrl.thread_id}, {status: stickyStatus}).$promise
+        .then(function(stickyThread) { ctrl.thread_sticky = stickyThread.sticky; });
       });
     };
 

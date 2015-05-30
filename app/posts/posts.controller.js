@@ -9,6 +9,7 @@ module.exports = [
     parent.thread_title = thread.title;
     parent.thread_post_count = thread.post_count;
     parent.thread_locked = thread.locked;
+    parent.thread_sticky = thread.sticky;
     parent.thread_user = thread.user;
     parent.posts = posts;
     this.rootUrl = generateBaseUrl();
