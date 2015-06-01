@@ -85,7 +85,9 @@
     "watchify": "^2.4.0"
   },
   "engines": {
-    "iojs": "1.5.x",
-    "node": "0.10.x"
+    "node": "0.12.x"
+  },
+  "bin": {
+    "epoch" : "cli/index.js"
   }
 }
