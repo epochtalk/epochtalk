@@ -49,7 +49,7 @@
     "deep-rename-keys": "^0.1.0",
     "dot": "^1.0.3",
     "epochtalk-bbcode-parser": "^1.0.0",
-    "epochtalk-core-pg": "^0.9.10",
+    "epochtalk-core-pg": "^0.9.11",
     "fs-extra": "^0.16.5",
     "good": "^5.1.1",
     "good-console": "^4.1.0",
