@@ -12,7 +12,7 @@ var genericArgs = {
   verbose: program.verbose,
 };
 
-if (program.create) {
+var seed = function() {
   var adminUser = {
     username: 'admin',
     email: 'admin@epochtalk.com',
@@ -42,6 +42,15 @@ if (program.create) {
   .catch(function(err) {
     console.log(err);
     db.close();
+  });
+}
+
+
+if (program.create) {
+  var exec = require('child_process').exec;
+  exec('npm run db-create && npm run db-migrate', function (error, stdout, stderr) {
+    console.log(stdout);
+    seed();
   });
 }
 else {
