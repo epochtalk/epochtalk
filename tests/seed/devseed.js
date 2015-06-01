@@ -1,5 +1,5 @@
 var Promise = require('bluebird');
-var urlPrefix = 'http://localhost:8080/api';
+var urlPrefix = 'http://localhost:5000/api';
 var request = Promise.promisifyAll(require('request'));
 var jwtToken = '';
 
@@ -12,8 +12,8 @@ var handler = function(err, res, body) {
 request.postAsync(urlPrefix + '/register', {json: {
   username: 'admin',
   email: 'admin@slickage.com',
-  password: 'admin',
-  confirmation: 'admin'
+  password: 'admin1234',
+  confirmation: 'admin1234'
 }}).then(function(res) {
   console.log('created user: admin');
   var body = res[1];
