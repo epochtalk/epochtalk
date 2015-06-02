@@ -20,9 +20,9 @@
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
           <td>
             <div class="onoffswitch onoffswitch-left-align" ng-init="globalMod = AdminManagementCtrl.isGlobalMod(user.roles)">
-              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="global-mod-{{$index}}" ng-model="globalMod" ng-click="AdminManagementCtrl.toggleGlobalMod(user.user_id, globalMod)">
+              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="global-mod-{{$index}}" ng-model="globalMod" ng-disabled="AdminManagementCtrl.user.id === user.user_id" ng-click="AdminManagementCtrl.toggleGlobalMod(user.user_id, globalMod)">
               <label class="onoffswitch-label" for="global-mod-{{$index}}">
-                <span class="onoffswitch-inner"></span>
+                <span ng-class="AdminManagementCtrl.user.id === user.user_id ? 'onoffswitch-inner onoffswitch-inner-disabled': 'onoffswitch-inner'"></span>
                 <span class="onoffswitch-switch"></span>
               </label>
             </div>

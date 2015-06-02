@@ -2,11 +2,13 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'posts';
-  this.tableFilter = 0;
   this.previewPost = null;
   this.previewReport = null;
   this.reportId = reportId;
   this.postReports = postReports;
+  this.tableFilter = 0;
+  if (filter === 'Pending') { this.tableFilter = 1; }
+  else if (filter === 'Reviewed') { this.tableFilter = 2; }
 
   // Report Pagination Vars
   this.pageCount = Math.ceil(reportCount / limit);
