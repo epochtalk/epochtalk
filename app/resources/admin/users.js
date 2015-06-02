@@ -4,9 +4,22 @@
 module.exports = ['$resource',
   function($resource) {
     return $resource('/api/admin/users/:username/', {}, {
+      find: {
+        method: 'GET',
+        params: { username: '@username' },
+        ignoreLoadingBar: true
+      },
       update: {
         method: 'PUT',
         url: '/api/admin/users'
+      },
+      addRoles: {
+        method: 'PUT',
+        url: '/api/admin/users/roles/add'
+      },
+      removeRoles: {
+        method: 'PUT',
+        url: '/api/admin/users/roles/remove'
       },
       count: {
         method: 'GET',

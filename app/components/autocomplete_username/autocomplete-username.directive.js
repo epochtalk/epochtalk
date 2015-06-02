@@ -15,9 +15,10 @@ module.exports = ['AdminUsers', function(AdminUsers) {
       $scope.usernameIsValid = false;
 
       $scope.performAction = function() {
-        AdminUsers.get({username: $scope.searchStr }).$promise
+        AdminUsers.find({ username: $scope.searchStr }).$promise
         .then(function(user) {
           $scope.buttonAction({ user: user });
+          $scope.searchStr = null;
         });
       };
 

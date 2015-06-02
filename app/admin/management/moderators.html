@@ -1,6 +1,6 @@
 <div class="admin-table-header">
   <div class="small-12 medium-6 columns">
-    <autocomplete-username button-text="Add Moderator" button-action="AdminManagementCtrl.addModerator(user)" input-placeholder="Type the name of the user you wish to make a moderator"></autocomplete-username>
+    <autocomplete-username button-text="Add Moderator" button-action="AdminManagementCtrl.showConfirmAdd(user)" input-placeholder="Type the name of the user you wish to make a moderator"></autocomplete-username>
   </div>
   <div class="admin-table-fix"></div>
 </div>
@@ -19,8 +19,8 @@
         <tr ng-repeat="user in AdminManagementCtrl.moderators track by user.username">
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
           <td>
-            <div class="onoffswitch onoffswitch-left-align">
-              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="global-mod-{{$index}}" ng-checked="AdminManagementCtrl.isGlobalMod(user.roles)">
+            <div class="onoffswitch onoffswitch-left-align" ng-init="globalMod = AdminManagementCtrl.isGlobalMod(user.roles)">
+              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="global-mod-{{$index}}" ng-model="globalMod" ng-click="AdminManagementCtrl.toggleGlobalMod(user.user_id, globalMod)">
               <label class="onoffswitch-label" for="global-mod-{{$index}}">
                 <span class="onoffswitch-inner"></span>
                 <span class="onoffswitch-switch"></span>
@@ -28,13 +28,13 @@
             </div>
           </td>
           <td>
-            <input type="text" class="no-margin" id="moderated-boards-{{$index}}" placeholder="Type a board name and hit enter to add" />
+            <input ng-disabled="globalMod" type="text" class="no-margin" id="moderated-boards-{{$index}}" placeholder="{{ globalMod ? 'Disabled for Global Moderators' : 'Type a board name and hit enter to add' }}" />
           </td>
           <td ng-bind="user.created_at | humanDate"></td>
           <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
           <td ng-bind="user.created_at | humanDate"></td>
           <td>
-            <a href="#">Remove Moderator</a>&nbsp;&nbsp;
+            <a href="#" ng-if="AdminManagementCtrl.user.id !== user.user_id" ng-click="AdminManagementCtrl.showConfirmRemove(user)">Remove Moderator</a><span ng-if="AdminManagementCtrl.user.id === user.user_id">Remove Moderator</span>&nbsp;&nbsp;
           </td>
         </tr>
       </tbody>
@@ -43,3 +43,41 @@
   </div>
 </div>
 
+<modal class="tiny" show="AdminManagementCtrl.showConfirmRemoveModal" on-close="AdminManagementCtrl.closeConfirmRemove()">
+  <h3 class="thin-dotted-underline">Confirm Removal</h3>
+  Are you sure you would like to remove <strong>{{AdminManagementCtrl.selectedUser.username}}</strong> from moderators?
+  <br /><br />
+  <button class="button no-margin small-12" ng-click="AdminManagementCtrl.removeModerator()" ng-disabled="AdminManagementCtrl.roleRemoveSubmitted" ng-bind="AdminManagementCtrl.confirmRemoveBtnLabel"></button>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<modal class="tiny" show="AdminManagementCtrl.showConfirmAddModal" on-close="AdminManagementCtrl.closeConfirmAdd()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-dotted-underline">Confirm User Role</h3>
+    <br />
+    <label>User Information</label>
+    <table width="100%">
+      <tr>
+        <td>Username</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.username"></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.email"></td>
+      </tr>
+      <tr>
+        <td>Register Date</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.created_at | humanDate"></td>
+      </tr>
+    </table>
+    <label>Select a role:</label>
+    <input type="radio" name="roleMod" ng-model="AdminManagementCtrl.selectedRole" value="Moderator" id="roleMod" ng-disabled="AdminManagementCtrl.roleAddSubmitted" required><label for="roleMod">Moderator</label>
+    <input type="radio" name="roleGlobal" ng-model="AdminManagementCtrl.selectedRole" value="Global Moderator" id="roleGlobal" ng-disabled="AdminManagementCtrl.roleAddSubmitted" required><label for="roleGlobal">Global Moderator</label>
+
+    <div class="form-action">
+      <button class="button no-margin" ng-click="AdminManagementCtrl.addModerator()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminManagementCtrl.reportSubmitted" ng-bind="AdminManagementCtrl.confirmAddBtnLabel"></button>
+    </div>
+  </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>

@@ -73,24 +73,41 @@ exports.find = {
   }
 };
 
-exports.addRole = {
+exports.addRoles = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: {
     payload: {
-      userId: Joi.string().required(),
-      role: Joi.string().required().valid('User', 'Moderator', 'Global Moderator', 'Administrator', 'Super Administrator')
+      user_id: Joi.string().required(),
+      roles: Joi.array().items(Joi.string().valid('User', 'Moderator', 'Global Moderator', 'Administrator', 'Super Administrator').required()).unique().min(1).required()
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
-    var userId = request.payload.userId;
-    var role = request.payload.role;
-    db.users.addRole(userId, role)
+    var userId = request.payload.user_id;
+    var roles = request.payload.roles;
+    db.users.addRoles(userId, roles)
     .then(function(updatedUser) { reply(updatedUser); })
     .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };
 
+exports.removeRoles = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  validate: {
+    payload: {
+      user_id: Joi.string().required(),
+      roles: Joi.array().items(Joi.string().valid('User', 'Moderator', 'Global Moderator', 'Administrator', 'Super Administrator').required()).unique().min(1).required()
+    }
+  },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var roles = request.payload.roles;
+    db.users.removeRoles(userId, roles)
+    .then(function(updatedUser) { reply(updatedUser); })
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
+  }
+};
 
 exports.searchUsernames = {
   auth: { mode: 'required', strategy: 'jwt' },

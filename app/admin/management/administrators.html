@@ -1,6 +1,6 @@
 <div class="admin-table-header">
   <div class="small-12 medium-6 columns">
-    <autocomplete-username button-text="Add Administrator" button-action="AdminManagementCtrl.addAdministrator(user)" input-placeholder="Type the name of the user you wish to make an administrator"></autocomplete-username>
+    <autocomplete-username button-text="Add Administrator" button-action="AdminManagementCtrl.showConfirmAdd(user)" input-placeholder="Type the name of the user you wish to make an administrator"></autocomplete-username>
   </div>
   <div class="admin-table-fix"></div>
 </div>
@@ -18,8 +18,8 @@
         <tr ng-repeat="user in AdminManagementCtrl.admins track by user.username">
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
           <td>
-            <div class="onoffswitch onoffswitch-left-align">
-              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="super-admin-{{$index}}" ng-checked="AdminManagementCtrl.isSuperAdmin(user.roles)">
+            <div class="onoffswitch onoffswitch-left-align" ng-init="superAdmin = AdminManagementCtrl.isSuperAdmin(user.roles)">
+              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="super-admin-{{$index}}" ng-model="superAdmin" ng-click="AdminManagementCtrl.toggleSuperAdmin(user.user_id, superAdmin)">
               <label class="onoffswitch-label" for="super-admin-{{$index}}">
                 <span class="onoffswitch-inner"></span>
                 <span class="onoffswitch-switch"></span>
@@ -30,7 +30,7 @@
           <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
           <td ng-bind="user.created_at | humanDate"></td>
           <td>
-            <a href="#">Remove Administrator</a>&nbsp;&nbsp;
+            <a href="#" ng-if="AdminManagementCtrl.user.id !== user.user_id" ng-click="AdminManagementCtrl.showConfirmRemove(user)">Remove Administrator</a><span ng-if="AdminManagementCtrl.user.id === user.user_id">Remove Administrator</span>&nbsp;&nbsp;
           </td>
         </tr>
       </tbody>
@@ -39,3 +39,41 @@
   </div>
 </div>
 
+<modal class="tiny" show="AdminManagementCtrl.showConfirmRemoveModal" on-close="AdminManagementCtrl.closeConfirmRemove()">
+  <h3 class="thin-dotted-underline">Confirm Removal</h3>
+  Are you sure you would like to remove <strong>{{AdminManagementCtrl.selectedUser.username}}</strong> from administrators?
+  <br /><br />
+  <button class="button no-margin small-12" ng-click="AdminManagementCtrl.removeAdministrator()" ng-disabled="AdminManagementCtrl.roleRemoveSubmitted" ng-bind="AdminManagementCtrl.confirmRemoveBtnLabel"></button>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<modal class="tiny" show="AdminManagementCtrl.showConfirmAddModal" on-close="AdminManagementCtrl.closeConfirmAdd()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-dotted-underline">Confirm User Role</h3>
+    <br />
+    <label>User Information</label>
+    <table width="100%">
+      <tr>
+        <td>Username</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.username"></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.email"></td>
+      </tr>
+      <tr>
+        <td>Register Date</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.created_at | humanDate"></td>
+      </tr>
+    </table>
+    <label>Select a role:</label>
+    <input type="radio" name="roleAdmin" ng-model="AdminManagementCtrl.selectedRole" value="Administrator" id="roleAdmin" ng-disabled="AdminManagementCtrl.roleAddSubmitted" required><label for="roleAdmin">Administrator</label>
+    <input type="radio" name="roleSuper" ng-model="AdminManagementCtrl.selectedRole" value="Super Administrator" id="roleSuper" ng-disabled="AdminManagementCtrl.roleAddSubmitted" required><label for="roleSuper">Super Administrator</label>
+
+    <div class="form-action">
+      <button class="button no-margin" ng-click="AdminManagementCtrl.addAdministrator()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminManagementCtrl.reportSubmitted" ng-bind="AdminManagementCtrl.confirmAddBtnLabel"></button>
+    </div>
+  </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>

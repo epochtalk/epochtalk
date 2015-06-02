@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminUsers', 'moderators', 'moderatorsCount', 'page', 'limit', 'field', 'desc', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminUsers, moderators, moderatorsCount, page, limit, field, desc) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminUsers', 'moderators', 'moderatorsCount', 'page', 'limit', 'field', 'desc', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminUsers, moderators, moderatorsCount, page, limit, field, desc) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'moderators';
@@ -10,8 +10,104 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.field = field;
   this.desc = desc;
 
-  this.addModerator = function(user) {
-    console.log(user);
+  this.user = Session.user;
+  this.selectedUser = null; // User being added/deleted
+
+  // Adding moderator
+  this.showConfirmAddModal = false; // confirmation modal visible bool
+  this.roleAddSubmitted = false; // form submitted bool
+  this.selectedRole = null; //  model backing selected role (global or reg mod)
+  this.confirmAddBtnLabel = 'Confirm'; // modal button label
+
+  this.showConfirmAdd = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.showConfirmAddModal = true;
+  };
+
+  this.closeConfirmAdd = function() {
+    ctrl.selectedUser = null;
+    ctrl.selectedRole = null;
+    ctrl.showConfirmAddModal = false;
+  };
+
+  this.addModerator = function() {
+    ctrl.confirmAddBtnLabel = 'Loading...';
+    ctrl.roleAddSubmitted = true;
+    var hasModRole = false;
+    ctrl.selectedUser.roles.forEach(function(role) {
+      if (role === 'Moderator' || role.name === 'Global Moderator') { hasModRole = true; }
+    });
+
+    if (hasModRole) { ctrl.closeConfirmAdd(); }
+    else {
+      var roles = [ 'Moderator' ]; // default to mod role
+      if (ctrl.selectedRole === 'Global Moderator') { // Append global mod role if selected
+        roles.push('Global Moderator');
+      }
+      var params = {
+        user_id: ctrl.selectedUser.id,
+        roles: roles
+      };
+      AdminUsers.addRoles(params).$promise
+      .then(function() {
+        ctrl.closeConfirmAdd();
+        ctrl.pullPage();
+
+        $timeout(function() { // wait for modal to close
+          ctrl.confirmAddBtnLabel = 'Confirm';
+          ctrl.roleAddSubmitted = false;
+        }, 500);
+      });
+    }
+  };
+
+  // Removing moderator
+  this.showConfirmRemoveModal = false;
+  this.roleRemoveSubmitted = false;
+  this.confirmRemoveBtnLabel = 'Confirm';
+
+  this.showConfirmRemove = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.showConfirmRemoveModal = true;
+  };
+
+  this.closeConfirmRemove = function() {
+    ctrl.selectedUser = null;
+
+    // fix for modal not opening after closing
+    $timeout(function() { ctrl.showConfirmRemoveModal = false; });
+  };
+
+  this.removeModerator = function() {
+    ctrl.confirmRemoveBtnLabel = 'Loading...';
+    ctrl.roleRemoveSubmitted = true;
+    var params = {
+      user_id: ctrl.selectedUser.user_id,
+      roles: ctrl.selectedUser.roles
+    };
+    AdminUsers.removeRoles(params).$promise
+    .then(function() {
+      ctrl.pullPage();
+      ctrl.closeConfirmRemove();
+      $timeout(function() { // wait for modal to close
+        ctrl.confirmRemoveBtnLabel = 'Confirm';
+        ctrl.roleRemoveSubmitted = false;
+      }, 500);
+    });
+  };
+
+  // Toggling role with switch
+  this.toggleGlobalMod = function(userId, setGlobalMod) {
+    var params = {
+      user_id: userId,
+      roles: ['Global Moderator']
+    };
+    var promise;
+    if (setGlobalMod) { promise = AdminUsers.addRoles(params).$promise; }
+    else { promise = AdminUsers.removeRoles(params).$promise; }
+    promise.then(function() {
+      ctrl.pullPage();
+    });
   };
 
   this.setSortField = function(sortField) {
@@ -105,7 +201,6 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     AdminUsers.pageModerators(query).$promise
     .then(function(newModerators) {
       ctrl.moderators = newModerators;
-      $timeout($anchorScroll);
     });
   };
 }];

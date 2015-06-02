@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminUsers', 'admins', 'adminsCount', 'page', 'limit', 'field', 'desc', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminUsers, admins, adminsCount, page, limit, field, desc) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminUsers', 'admins', 'adminsCount', 'page', 'limit', 'field', 'desc', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminUsers, admins, adminsCount, page, limit, field, desc) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'administrators';
@@ -11,8 +11,104 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.field = field;
   this.desc = desc;
 
-  this.addAdministrator = function(user) {
-    console.log(user);
+  this.user = Session.user;
+  this.selectedUser = null; // User being added/deleted
+
+  // Adding administrators
+  this.showConfirmAddModal = false; // confirmation modal visible bool
+  this.roleAddSubmitted = false; // form submitted bool
+  this.selectedRole = null; //  model backing selected role (global or reg mod)
+  this.confirmAddBtnLabel = 'Confirm'; // modal button label
+
+  this.showConfirmAdd = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.showConfirmAddModal = true;
+  };
+
+  this.closeConfirmAdd = function() {
+    ctrl.selectedUser = null;
+    ctrl.selectedRole = null;
+    ctrl.showConfirmAddModal = false;
+  };
+
+  this.addAdministrator = function() {
+    ctrl.confirmAddBtnLabel = 'Loading...';
+    ctrl.roleAddSubmitted = true;
+    var hasAdminRole = false;
+    ctrl.selectedUser.roles.forEach(function(role) {
+      if (role === 'Administrator' || role.name === 'Super Administrator') { hasAdminRole = true; }
+    });
+
+    if (hasAdminRole) { ctrl.closeConfirmAdd(); }
+    else {
+      var roles = [ 'Administrator' ]; // default to admin role
+      if (ctrl.selectedRole === 'Super Administrator') { // Append super admin role if selected
+        roles.push('Super Administrator');
+      }
+      var params = {
+        user_id: ctrl.selectedUser.id,
+        roles: roles
+      };
+      AdminUsers.addRoles(params).$promise
+      .then(function() {
+        ctrl.closeConfirmAdd();
+        ctrl.pullPage();
+
+        $timeout(function() { // wait for modal to close
+          ctrl.confirmAddBtnLabel = 'Confirm';
+          ctrl.roleAddSubmitted = false;
+        }, 500);
+      });
+    }
+  };
+
+  // Removing administrators
+  this.showConfirmRemoveModal = false;
+  this.roleRemoveSubmitted = false;
+  this.confirmRemoveBtnLabel = 'Confirm';
+
+  this.showConfirmRemove = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.showConfirmRemoveModal = true;
+  };
+
+  this.closeConfirmRemove = function() {
+    ctrl.selectedUser = null;
+
+    // fix for modal not opening after closing
+    $timeout(function() { ctrl.showConfirmRemoveModal = false; });
+  };
+
+  this.removeAdministrator = function() {
+    ctrl.confirmRemoveBtnLabel = 'Loading...';
+    ctrl.roleRemoveSubmitted = true;
+    var params = {
+      user_id: ctrl.selectedUser.user_id,
+      roles: ctrl.selectedUser.roles
+    };
+    AdminUsers.removeRoles(params).$promise
+    .then(function() {
+      ctrl.pullPage();
+      ctrl.closeConfirmRemove();
+      $timeout(function() { // wait for modal to close
+        ctrl.confirmRemoveBtnLabel = 'Confirm';
+        ctrl.roleRemoveSubmitted = false;
+      }, 500);
+    });
+  };
+
+  // Toggling role with switch
+  this.toggleSuperAdmin = function(userId, setSuperAdmin) {
+    var params = {
+      user_id: userId,
+      roles: ['Super Administrator']
+    };
+    var promise;
+    if (setSuperAdmin) { promise = AdminUsers.addRoles(params).$promise; }
+    else { promise = AdminUsers.removeRoles(params).$promise; }
+    promise.then(function() {
+      ctrl.pullPage();
+    });
   };
 
   this.setSortField = function(sortField) {
@@ -110,7 +206,6 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     AdminUsers.pageAdmins(query).$promise
     .then(function(newAdmins) {
       ctrl.admins = newAdmins;
-      $timeout($anchorScroll);
     });
   };
 }];
