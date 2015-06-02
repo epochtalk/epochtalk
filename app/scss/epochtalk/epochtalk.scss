@@ -1418,8 +1418,23 @@ input[type].nested-input.valid-username { color: green; }
   content: "OFF";
   padding-right: 10px;
   width: 79px;
-  background-color: #EEEEEE;
+  background-color: #DDDDDD;
   color: #999999;
+  text-align: right;
+}
+.onoffswitch-inner-disabled:before {
+  content: "ON";
+  padding-left: 12px;
+  width: 79px;
+  background-color: #FFD2C2;
+  color: #FFFFFF;
+}
+.onoffswitch-inner-disabled:after {
+  content: "OFF";
+  padding-right: 10px;
+  width: 79px;
+  background-color: #EEEEEE;
+  color: #FFFFFF;
   text-align: right;
 }
 .onoffswitch-switch {

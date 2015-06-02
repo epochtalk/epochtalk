@@ -2,10 +2,10 @@
   <h2>Moderation</h2>
   <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'users'">
     <dd class="no-select" ng-class="{'active': tab == 'users'}">
-      <a ui-sref=".users" ng-click="tab = 'users'">Users</a>
+      <a ui-sref=".users({ filter: 'Pending' })" ng-click="tab = 'users'">Users</a>
     </dd>
     <dd class="no-select" ng-class="{'active': tab == 'posts'}">
-      <a ui-sref=".posts" ng-click="tab = 'posts'">Posts</a>
+      <a ui-sref=".posts({ filter: 'Pending' })" ng-click="tab = 'posts'">Posts</a>
     </dd>
   </dl>
 </div>

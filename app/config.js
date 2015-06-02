@@ -457,8 +457,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     // Default child state for admin-moderation is users
-    $urlRouterProvider.when('/admin/moderation', '/admin/moderation/users');
-    $urlRouterProvider.when('/admin/moderation/', '/admin/moderation/users');
+    $urlRouterProvider.when('/admin/moderation', ['$state', function($state) {
+      $state.go('admin-moderation.users', { filter: 'Pending'}, { location: true, reload: true });
+    }]);
+    $urlRouterProvider.when('/admin/moderation/', ['$state', function($state) {
+      $state.go('admin-moderation.users', { filter: 'Pending'}, { location: true, reload: true });
+    }]);
 
     $stateProvider.state('admin-moderation', {
       url: '/admin/moderation',
@@ -501,8 +505,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         reportId: ['$stateParams', function($stateParams) {
           return $stateParams.reportId;
         }],
-        reportCount: ['AdminReports', function(AdminReports) {
-          return AdminReports.userReportsCount().$promise
+        reportCount: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
+          return AdminReports.userReportsCount({ status: $stateParams.filter }).$promise
           .then(function(userReportsCount) { return userReportsCount.count; });
         }],
         userReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
@@ -564,8 +568,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         reportId: ['$stateParams', function($stateParams) {
           return $stateParams.reportId;
         }],
-        reportCount: ['AdminReports', function(AdminReports) {
-          return AdminReports.postReportsCount().$promise
+        reportCount: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
+          return AdminReports.postReportsCount({ status: $stateParams.filter }).$promise
           .then(function(postReportsCount) { return postReportsCount.count; });
         }],
         postReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {

@@ -3,10 +3,12 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
   this.userReports = userReports;
-  this.tableFilter = 0;
   this.reportId = reportId;
   this.previewReport = null;
   this.selectedUsername = null;
+  this.tableFilter = 0;
+  if (filter === 'Pending') { this.tableFilter = 1; }
+  else if (filter === 'Reviewed') { this.tableFilter = 2; }
 
   // Report Pagination Vars
   this.pageCount = Math.ceil(reportCount / limit);
@@ -74,7 +76,6 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
 
       AdminReports.pageUserReportsNotes({ report_id: userReport.id, limit: 'all' }).$promise
       .then(function(reportNotes) {
-        console.log(reportNotes);
         ctrl.reportNotes = reportNotes;
       });
     }
