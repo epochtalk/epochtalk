@@ -7,7 +7,7 @@ module.exports = ['$window', 'User', 'Session',
     // Service API
     var serviceAPI = {
       register: function(user) {
-        User.register(user).$promise
+        return User.register(user).$promise
         .then(function(resource) {
           // Set user session if account is already confirmed (log the user in)
           if (!resource.confirm_token) { Session.setUser(resource); }
