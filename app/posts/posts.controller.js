@@ -11,6 +11,7 @@ module.exports = [
     parent.thread_locked = thread.locked;
     parent.thread_sticky = thread.sticky;
     parent.thread_user = thread.user;
+    parent.board_id = thread.board_id;
     parent.posts = posts;
     this.rootUrl = generateBaseUrl();
 

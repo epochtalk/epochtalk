@@ -1,6 +1,8 @@
+var _ = require('lodash');
+
 module.exports = [
-  '$scope', '$timeout', '$location', 'Session', 'Posts', 'Threads', 'Reports', 'Alert',
-  function($scope, $timeout, $location, Session, Posts, Threads, Reports, Alert) {
+  '$scope', '$timeout', '$location', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert',
+  function($scope, $timeout, $location, $state, Session, Boards, Posts, Threads, Reports, Alert) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -21,6 +23,15 @@ module.exports = [
     this.allowPosting = function() {
       return ctrl.loggedIn() && ctrl.newPostEnabled && !ctrl.thread_locked;
     };
+    this.moveBoard = {};
+    this.boards = Boards.all().$promise
+    .then(function(boards) {
+      ctrl.boards = boards;
+      ctrl.moveBoard = _.find(boards, function(board) {
+        return board.id === ctrl.board_id;
+      });
+      return boards;
+    });
     // pullPage function injected by child controller
 
     $scope.$watch(
@@ -65,6 +76,12 @@ module.exports = [
         return Threads.sticky({id: ctrl.thread_id}, {status: stickyStatus}).$promise
         .then(function(stickyThread) { ctrl.thread_sticky = stickyThread.sticky; });
       });
+    };
+
+    this.moveThread = function() {
+      var newBoardId = ctrl.moveBoard.id;
+      return Threads.move({id: ctrl.thread_id}, {newBoardId: newBoardId}).$promise
+      .then(function(newBoard) { $state.go($state.$current, null, {reload:true}); });
     };
 
     var discardAlert = function() {

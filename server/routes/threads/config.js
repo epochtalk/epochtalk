@@ -150,10 +150,8 @@ exports.lock = {
 
     // lock thread
     if (canLock) {
-      var threadId = request.params.id;
-      var lockStatus = request.payload.status;
-      thread.locked = lockStatus;
-      promise = db.threads.lock(threadId, lockStatus)
+      thread.locked = request.payload.status;
+      promise = db.threads.lock(thread.id, thread.locked)
       .then(function() { return thread; });
     }
     else { promise = Boom.unauthorized(); }
@@ -173,17 +171,14 @@ exports.sticky = {
     { method: pre.isAdmin, assign: 'isAdmin' }
   ],
   handler: function(request, reply) {
-    var thisUserId = request.auth.credentials.id;
     var thread = request.pre.thread;
     var isAdmin = request.pre.isAdmin;
     var promise;
 
     // lock thread
     if (isAdmin) {
-      var threadId = request.params.id;
-      var stickyStatus = request.payload.status;
-      thread.sticky = stickyStatus;
-      promise = db.threads.sticky(threadId, stickyStatus)
+      thread.sticky = request.payload.status;
+      promise = db.threads.sticky(thread.id, thread.sticky)
       .then(function() { return thread; });
     }
     else { promise = Boom.unauthorized(); }
@@ -191,6 +186,40 @@ exports.sticky = {
     return reply(promise);
   }
 };
+
+exports.move = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    params: { id: Joi.string().required() },
+    payload: { newBoardId: Joi.string().required() }
+  },
+  pre: [
+    { method: pre.getThread, assign: 'thread' },
+    { method: pre.isAdmin, assign: 'isAdmin' }
+  ],
+  handler: function(request, reply) {
+    var thread = request.pre.thread;
+    var isAdmin = request.pre.isAdmin;
+    var newBoardId = request.payload.newBoardId;
+    var promise;
+
+    // reject of newBoardId matches old board_id
+    if (isAdmin && thread.board_id === newBoardId) {
+      promise = Boom.badRequest('New Board is the same as current board');
+    }
+    // lock thread
+    else if (isAdmin) {
+      thread.board_id = newBoardId;
+      promise = db.threads.move(thread.id, thread.board_id)
+      .then(function() { return thread; })
+      .catch(console.log);
+    }
+    else { promise = Boom.unauthorized(); }
+
+    return reply(promise);
+  }
+};
+
 
 function setNewPost(user, threadViews, thread) {
   // If user made last post consider thread viewed
