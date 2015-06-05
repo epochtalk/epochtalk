@@ -1,16 +1,16 @@
 // Dependencies
-require('angular/angular');
-require('angular-resource/angular-resource');
-require('angular-sanitize/angular-sanitize');
-require('angular-animate/angular-animate');
-require('angular-ui-router');
-require('angular-loading-bar');
-jQuery = require('foundation/js/vendor/jquery');
+require('../bower_components/angular/angular');
+require('../bower_components/angular-resource/angular-resource');
+require('../bower_components/angular-sanitize/angular-sanitize');
+require('../bower_components/angular-animate/angular-animate');
+require('../bower_components/angular-ui-router/release/angular-ui-router');
+require('../bower_components/angular-loading-bar');
+jQuery = require('../bower_components/foundation/js/vendor/jquery');
 $ = jQuery;
-require('nestable/jquery.nestable');
-require('foundation/js/vendor/fastclick');
-require('foundation/js/vendor/placeholder');
-require('foundation/js/foundation');
+require('../bower_components/nestable/jquery.nestable');
+require('../bower_components/foundation/js/vendor/fastclick');
+require('../bower_components/foundation/js/vendor/placeholder');
+require('../bower_components/foundation/js/foundation');
 
 // Create Angular App
 var app = angular.module('ept', [

@@ -10,11 +10,20 @@ Next generation forum software. EpochTalk is a forum frontend designed to be pai
 * JavaScript and CSS is bundled and minimized for performance using [Browserify](https://www.npmjs.org/package/browserify) and [Uglify-js](https://www.npmjs.org/package/uglify-js)
 * Designed with performance in mind. EpochTalk's backend, [EpochCore](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
 
-
 ## Dependencies
 * [node](http://nodejs.org)
 * [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
 * [Postgres](http://www.postgresql.org/) 
+
+### Frontend Dependencies
+"angular": "angular/bower-angular#v1.3.14",
+"angular-resource": "angular/bower-angular-resource#v1.3.14",
+"angular-sanitize": "angular/bower-angular-sanitize#v1.3.14",
+"angular-animate": "angular/bower-angular-animate#v1.3.14",
+"angular-loading-bar": "chieffancypants/angular-loading-bar#0.7.1",
+"foundation": "zurb/bower-foundation#5.5.1",
+"nestable": "slickage/Nestable"
+
 
 ## Installation
 

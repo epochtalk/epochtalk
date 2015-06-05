@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 
 module.exports = function() {
   var foundationComponents = new Promise(function(resolve, reject) {
-    var filepath = './node_modules/foundation/scss/foundation/components';
+    var filepath = './bower_components/foundation/scss/foundation/components';
     var dest = './app/scss/foundation/components';
     fse.copy(filepath, dest, function(err) {
       if (err) { return reject(err); }
@@ -13,7 +13,7 @@ module.exports = function() {
   });
 
   var foundationSass = new Promise(function(resolve, reject) {
-    var filepath = './node_modules/foundation/scss/foundation.scss';
+    var filepath = './bower_components/foundation/scss/foundation.scss';
     var dest = './app/scss/foundation.scss';
     fse.copy(filepath, dest, function(err) {
       if (err) { return reject(err); }
@@ -23,7 +23,7 @@ module.exports = function() {
   });
 
   var normalizeSass = new Promise(function(resolve, reject) {
-    var filepath = './node_modules/foundation/scss/normalize.scss';
+    var filepath = './bower_components/foundation/scss/normalize.scss';
     var dest = './app/scss/normalize.scss';
     fse.copy(filepath, dest, function(err) {
       if (err) { return reject(err); }
@@ -53,7 +53,7 @@ module.exports = function() {
   });
 
   var loadingBarCss = new Promise(function(resolve, reject) {
-    var filepath = './node_modules/angular-loading-bar/build/loading-bar.css';
+    var filepath = './bower_components/angular-loading-bar/build/loading-bar.css';
     var dest = './app/scss/loading-bar.scss';
     fse.copy(filepath, dest, function(err) {
       if (err) { return reject(err); }
