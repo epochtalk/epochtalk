@@ -1359,9 +1359,9 @@ input[type].nested-input.valid-username { color: green; }
   color: #fff;
 }
 .nested-btn-disabled {
-  color: #ccc;
-  background-color: $color-active-dark;
-  border-color: $color-active-dark;
+  color: #fff;
+  background-color: #ccc;
+  border-color: #ccc;
   pointer-events: none;
 }
 
