@@ -22,6 +22,11 @@ module.exports = ['$resource',
         method: 'POST',
         params: { id: '@id' },
         url: '/api/threads/:id/sticky'
+      },
+      move: {
+        method: 'POST',
+        params: { id: '@id' },
+        url: '/api/threads/:id/move'
       }
     });
   }

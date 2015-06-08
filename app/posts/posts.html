@@ -33,8 +33,11 @@
     </div>
   </div>
 
-  <div class="small-3 columns"></div>
-  <div class="small-3 columns"></div>
+  <div class="small-5 columns row" ng-if="PostsParentCtrl.user.isAdmin">
+    <h5>Move Thread</h5>
+    <select class="small-8" name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name for board in PostsParentCtrl.boards"></select>
+    <button class="small-3" ng-click="PostsParentCtrl.moveThread()">Move</button>
+  </div>
 </div>
 
 <!-- Posts Listing -->
