@@ -131,8 +131,12 @@ exports.searchUsernames = {
 exports.count = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  validate: { query: { filter: Joi.string().valid('banned') } },
   handler: function(request, reply) {
-    db.users.count()
+    var opts;
+    var filter = request.query.filter;
+    if (filter) { opts = { filter: filter } }
+    db.users.count(opts)
     .then(function(usersCount) { reply(usersCount); });
   }
 };
@@ -161,8 +165,9 @@ exports.page = {
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).default(10),
-      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'imported_at'),
-      desc: Joi.boolean().default(false)
+      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'imported_at', 'ban_expiration'),
+      desc: Joi.boolean().default(false),
+      filter: Joi.string().valid('banned'),
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
@@ -171,7 +176,8 @@ exports.page = {
       limit: request.query.limit || 10,
       page: request.query.page || 1,
       sortField: request.query.field || 'username',
-      sortDesc: request.query.desc || false
+      sortDesc: request.query.desc || false,
+      filter: request.query.filter || undefined
     };
     db.users.page(opts)
     .then(function(users) { reply(users); });
@@ -221,5 +227,37 @@ exports.pageModerators = {
     };
     db.users.pageModerators(opts)
     .then(function(moderators) { reply(moderators); });
+  }
+};
+
+exports.ban = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  validate: {
+    payload: {
+      user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      expiration: Joi.date()
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var expiration = request.payload.expiration || null;
+    db.users.ban(userId, expiration)
+    .then(function(ban) { reply(ban); });
+  }
+};
+
+exports.unban = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.adminCheck } ],
+  validate: {
+    payload: {
+      user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    db.users.unban(userId)
+    .then(function(ban) { reply(ban); });
   }
 };
