@@ -7,7 +7,7 @@ module.exports = ['user', 'User', 'Session', 'Alert', '$timeout', '$filter', '$s
     this.displayEmail = angular.copy(user.email);
     this.user.dob = $filter('date')(this.user.dob, 'longDate');
     this.user.post_count = this.user.post_count || 0;
-    this.displayAvatar = angular.copy(this.user.avatar || 'http://placehold.it/400&text=' + user.username);
+    this.displayAvatar = angular.copy(this.user.avatar || 'http://fakeimg.pl/400x400/ccc/444/?text=' + user.username);
     // This isn't the profile users true local time, just a placeholder
     this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
 
@@ -66,7 +66,7 @@ module.exports = ['user', 'User', 'Session', 'Alert', '$timeout', '$filter', '$s
       User.update(changeAvatarUser).$promise
       .then(function(data) {
         ctrl.user = data;
-        ctrl.displayAvatar = angular.copy(data.avatar || 'http://placehold.it/400&text=' + ctrl.user.username);
+        ctrl.displayAvatar = angular.copy(data.avatar || 'http://fakeimg.pl/400x400/ccc/444/?text=' + ctrl.user.username);
         Session.setAvatar(ctrl.displayAvatar);
         ctrl.editAvatar = false;
         Alert.success('Successfully updated avatar');

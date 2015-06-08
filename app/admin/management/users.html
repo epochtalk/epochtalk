@@ -1,4 +1,13 @@
 <div class="admin-table-header">
+  <div class="small-6 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="0" id="users-filter-0" ng-model="AdminManagementCtrl.tableFilter" ng-click="AdminManagementCtrl.setFilter()" />
+    <label for="users-filter-0">All</label>
+  </div>
+  <div class="small-6 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="1" id="users-filter-1" ng-model="AdminManagementCtrl.tableFilter" ng-click="AdminManagementCtrl.setFilter('banned')" />
+    <label for="users-filter-1">Banned</label>
+  </div>
+  <div class="small-12 medium-4 columns">&nbsp;</div>
   <div class="small-12 medium-6 columns">
     <div class="nested-input-container">
       <a ng-href="" class="nested-btn">Search</a>
@@ -13,6 +22,7 @@
       <thead>
         <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Username</th>
         <th class="pointer" ng-click="AdminManagementCtrl.setSortField('email')"><span ng-class="AdminManagementCtrl.getSortClass('email')"></span>&nbsp;Email</th>
+        <th class="pointer" ng-show="AdminManagementCtrl.tableFilter == 1" ng-click="AdminManagementCtrl.setSortField('ban_expiration')"><span ng-class="AdminManagementCtrl.getSortClass('ban_expiration')"></span>&nbsp;Ban Expiration</th>
         <th class="pointer" ng-click="AdminManagementCtrl.setSortField('created_at')"><span ng-class="AdminManagementCtrl.getSortClass('created_at')"></span>&nbsp;Registered Date</th>
         <th >Last Active Date</th>
         <th width="300">Actions</th>
@@ -21,14 +31,15 @@
         <tr ng-repeat="user in AdminManagementCtrl.users track by user.username">
           <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
           <td ng-bind="user.email"></td>
+          <td ng-show="AdminManagementCtrl.tableFilter == 1" ng-bind="user.ban_expiration | humanDate:true"></td>
           <td ng-bind="user.created_at | humanDate"></td>
           <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
           <td ng-bind="user.created_at | humanDate"></td>
           <td>
             <a href="#">View Posts</a>&nbsp;&nbsp;
             <a href="#">Edit</a>&nbsp;&nbsp;
-            <a href="#">Ban</a>&nbsp;&nbsp;
-            <a href="#">Delete</a>
+            <a href="#" ng-hide="user.ban_expiration" ng-click="AdminManagementCtrl.showBanConfirm(user);">Ban</a>
+            <a href="#" ng-show="user.ban_expiration" ng-click="AdminManagementCtrl.showUnbanConfirm(user);">Unban</a>
           </td>
         </tr>
       </tbody>
@@ -37,3 +48,65 @@
   </div>
 </div>
 
+<!-- Confirm Ban Modal -->
+<modal class="tiny" show="AdminManagementCtrl.showConfirmBanModal" on-close="AdminManagementCtrl.closeConfirmBan()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-dotted-underline">Confirm Ban</h3>
+    <label>User Information</label>
+    <table width="100%">
+      <tr>
+        <td>Username</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.username"></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.email"></td>
+      </tr>
+      <tr>
+        <td>Register Date</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.created_at | humanDate"></td>
+      </tr>
+    </table>
+
+    <label for="banType">Select Ban Type:</label>
+    <input type="radio" name="banType" ng-model="AdminManagementCtrl.permanentBan" ng-value="true" id="permanent" ng-disabled="AdminManagementCtrl.banSubmitted" required><label for="permanent">Permanent</label>
+    <input type="radio" name="banType" ng-model="AdminManagementCtrl.permanentBan" ng-value="false" id="temporary" ng-disabled="AdminManagementCtrl.banSubmitted" required><label for="temporary">Temporary</label>
+    <div ng-show="AdminManagementCtrl.permanentBan === false">
+      <label for="banUntil">Enter Ban Expiration Date:</label>
+      <input type="date" ng-model="AdminManagementCtrl.banUntil" min="{{AdminManagementCtrl.minDate()}}" name="banUntil" ng-required="AdminManagementCtrl.permanentBan === false" />
+    </div>
+    <div class="form-action">
+      <button class="button no-margin" ng-click="AdminManagementCtrl.banUser()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminManagementCtrl.banSubmitted" ng-bind="AdminManagementCtrl.confirmBanBtnLabel"></button>
+    </div>
+  </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Confirm Unban Modal -->
+<modal class="tiny" show="AdminManagementCtrl.showConfirmUnbanModal" on-close="AdminManagementCtrl.closeConfirmUnban()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-dotted-underline">Confirm Unban</h3>
+    <label>User Information</label>
+    <table width="100%">
+      <tr>
+        <td>Username</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.username"></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.email"></td>
+      </tr>
+      <tr>
+        <td>Register Date</td>
+        <td ng-bind="AdminManagementCtrl.selectedUser.created_at | humanDate"></td>
+      </tr>
+    </table>
+
+    <div class="form-action">
+      <button class="button no-margin" ng-click="AdminManagementCtrl.unbanUser()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminManagementCtrl.banSubmitted" ng-bind="AdminManagementCtrl.confirmBanBtnLabel"></button>
+    </div>
+  </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
