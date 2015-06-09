@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminReports', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Session, AdminReports, User, userReports, reportCount, page, limit, field, desc, filter, reportId) {
+module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminReports', 'AdminUsers', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Session, AdminReports, AdminUsers, User, userReports, reportCount, page, limit, field, desc, filter, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
@@ -25,6 +25,85 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.noteSubmitted = false;
   this.submitBtnLabel = 'Add Note';
   this.user = Session.user;
+
+  // Banning Vars
+  this.showConfirmBanModal = false; // confirmation ban modal visible bool
+  this.showConfirmUnbanModal = false; // confirmation unban modal visible bool
+  this.banSubmitted = false; // form submitted bool
+  this.selectedUser = null; //  model backing selected user
+  this.confirmBanBtnLabel = 'Confirm'; // modal button label
+  this.permanentBan = undefined; // boolean indicating if ban is permanent
+  this.banUntil = null; // model
+
+  this.minDate = function() {
+    var d = new Date();
+    var month = '' + (d.getMonth() + 1);
+    var day = '' + d.getDate();
+    var year = d.getFullYear();
+    if (month.length < 2) { month = '0' + month; }
+    if (day.length < 2) { day = '0' + day; }
+    return [year, month, day].join('-');
+  };
+
+  this.showBanConfirm = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.showConfirmBanModal = true;
+  };
+
+  this.closeConfirmBan = function() {
+    ctrl.selectedUser = null;
+    ctrl.permanentBan = undefined;
+    ctrl.banUntil = null;
+
+    // Fix for modal not opening after closing
+    $timeout(function() { ctrl.showConfirmBanModal = false; });
+  };
+
+  this.banUser = function() {
+    ctrl.confirmBanBtnLabel = 'Loading...';
+    ctrl.banSubmitted = true;
+    var params = {
+      user_id: ctrl.selectedUser.id,
+      expiration: ctrl.banUntil || undefined
+    };
+    AdminUsers.ban(params).$promise
+    .then(function() {
+      ctrl.closeConfirmBan();
+      ctrl.pullPage();
+      $timeout(function() { // wait for modal to close
+        ctrl.confirmBanBtnLabel = 'Confirm';
+        ctrl.banSubmitted = false;
+      }, 500);
+    });
+  };
+
+  this.showUnbanConfirm = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.showConfirmUnbanModal = true;
+  };
+
+  this.closeConfirmUnban = function() {
+    ctrl.selectedUser = null;
+    // Fix for modal not opening after closing
+    $timeout(function() { ctrl.showConfirmUnbanModal = false; });
+  };
+
+  this.unbanUser = function() {
+    ctrl.confirmBanBtnLabel = 'Loading...';
+    ctrl.banSubmitted = true;
+    var params = {
+      user_id: ctrl.selectedUser.id,
+    };
+    AdminUsers.unban(params).$promise
+    .then(function() {
+      ctrl.closeConfirmUnban();
+      ctrl.pullPage();
+      $timeout(function() { // wait for modal to close
+        ctrl.confirmBanBtnLabel = 'Confirm';
+        ctrl.banSubmitted = false;
+      }, 500);
+    });
+  };
 
   this.updateReportNote = function(note) {
     delete note.edit;
@@ -57,6 +136,10 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   };
 
   this.selectReport = function(userReport) {
+    // do nothing if user is being selected to be banned
+    // this prevents the row highlight when clicking links
+    // within the row
+    if (ctrl.selectedUser) { return; }
     // Clear Report Notes
     ctrl.reportNotes = null;
     ctrl.reportNote = null;

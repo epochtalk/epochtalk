@@ -43,7 +43,7 @@ module.exports = [
     // default post avatar image if not found
     ctrl.posts.map(function(post) {
       if (!post.avatar) {
-        post.avatar = 'http://placehold.it/400/cccccc/&text=Avatar';
+        post.avatar = 'http://fakeimg.pl/400x400/ccc/444/?text=' + post.user.username;
       }
     });
 
@@ -67,7 +67,7 @@ module.exports = [
         // default post avatar image if not found
         posts.map(function(post) {
           if (!post.avatar) {
-            post.avatar = 'http://placehold.it/400/cccccc/&text=Avatar';
+            post.avatar = 'http://fakeimg.pl/400x400/ccc/444/?text=' + post.user.username;
           }
         });
         ctrl.posts = posts;

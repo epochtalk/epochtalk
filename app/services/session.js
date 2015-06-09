@@ -36,7 +36,7 @@ module.exports = ['$window',
       authenticated = true;
       user.id = newUser.id;
       user.username = newUser.username;
-      user.avatar = newUser.avatar || 'http://placehold.it/40/cccccc/&text=Avatar';
+      user.avatar = newUser.avatar || 'http://fakeimg.pl/400x400/ccc/444/?text=' + user.username;
       user.roles = newUser.roles || [];
       // user roles
       user.roles.forEach(function(role) {

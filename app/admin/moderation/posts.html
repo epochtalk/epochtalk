@@ -30,24 +30,25 @@
         <th width="200" class="pointer" ng-click="ModerationCtrl.setSortField('offender_created_at')"><span ng-class="ModerationCtrl.getSortClass('offender_created_at')"></span>&nbsp;Posted Date</th>
         <th class="pointer" ng-click="ModerationCtrl.setSortField('offender_title')"><span ng-class="ModerationCtrl.getSortClass('offender_title')"></span>&nbsp;Title</th>
         <th width="200" class="pointer" ng-click="ModerationCtrl.setSortField('offender_author_username')"><span ng-class="ModerationCtrl.getSortClass('offender_author_username')"></span>&nbsp;Author</th>
-        <th width="400">Reason</th>
+        <th width="375">Reason</th>
         <th width="225">Actions</th>
       </thead>
       <tbody>
-        <tr ng-class="{ 'active-row' : ModerationCtrl.reportId === postReport.id }" class="selectable-row pointer" ng-click="ModerationCtrl.selectPostReport(postReport)" ng-repeat="postReport in ModerationCtrl.postReports track by postReport.id">
-          <td><a href="/profiles/{{postReport.reporter_username}}" ng-bind="postReport.reporter_username"></td>
+        <tr ng-class="{ 'active-row' : ModerationCtrl.reportId === postReport.id }" class="selectable-row pointer" ng-click="ModerationCtrl.selectReport(postReport)" ng-repeat="postReport in ModerationCtrl.postReports track by postReport.id">
+          <td><a ui-sref="profile({ username: postReport.reporter_username })" ng-bind="postReport.reporter_username"></td>
           <td ng-bind="postReport.created_at | humanDate"></td>
           <td ng-bind="postReport.status"></td>
           <td ng-bind="postReport.offender_created_at | humanDate"></td>
           <td><a href="/threads/{{postReport.offender_thread_id}}/posts#{{postReport.offender_post_id}}" ng-bind="postReport.offender_title"></a></td>
-          <td><a href="/profiles/{{postReport.offender_author_username}}" ng-bind="postReport.offender_author_username"></a></td>
+          <td><a ui-sref="profile({ username: postReport.offender_author_username })" ng-bind="postReport.offender_author_username"></a></td>
           <td><div ng-bind="postReport.reporter_reason"></div></td>
           <td>
             <a href="#">Edit</a>&nbsp;&nbsp;
             <a href="#">Delete</a>&nbsp;&nbsp;
             <a href="#">Ignore</a>&nbsp;&nbsp;
-            <a href="#">Warn</a>&nbsp;&nbsp;
-            <a href="#">Ban</a>
+            <span>Warn</span>&nbsp;&nbsp;
+            <a href="#" ng-hide="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showBanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Ban</a>
+            <a href="#" ng-show="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showUnbanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Unban</a>
           </td>
         </tr>
       </tbody>
@@ -63,7 +64,7 @@
       <tbody>
         <tr>
           <td class="field">Reported By</td>
-          <td class="desc"><a href="/profiles/{{ModerationCtrl.previewReport.reporter_username}}" ng-bind="ModerationCtrl.previewReport.reporter_username"></a></td>
+          <td class="desc"><a ui-sref="profile({ username: ModerationCtrl.previewReport.reporter_username })" ng-bind="ModerationCtrl.previewReport.reporter_username"></a></td>
         </tr>
         <tr>
           <td class="field">Reported Date</td>
@@ -97,7 +98,7 @@
     </table>
     <div ng-repeat="note in ModerationCtrl.reportNotes track by note.id">
       <div class="note-avatar-container" ng-if="!note.edit">
-        <img class="note-avatar" ng-src="{{ note.avatar || 'http://placehold.it/50&text=' + note.username }}" />
+        <img class="note-avatar" ng-src="{{ note.avatar || 'http://fakeimg.pl/50x50/ccc/444/?text=' + note.username }}" />
       </div>
       <div class="note-details" ng-if="!note.edit">
         <span class="note-author"><a href="/profiles/{{note.username}}" ng-bind="note.username"></a>&nbsp;</span>
@@ -128,3 +129,66 @@
     <div class="post-body" post-processing="ModerationCtrl.previewPost.body" style-fix="true"></div>
   </div>
 </div>
+
+<!-- Confirm Ban Modal -->
+<modal class="tiny" show="ModerationCtrl.showConfirmBanModal" on-close="ModerationCtrl.closeConfirmBan()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-dotted-underline">Confirm Ban</h3>
+    <label>User Information</label>
+    <table width="100%">
+      <tr>
+        <td>Username</td>
+        <td ng-bind="ModerationCtrl.selectedUser.username"></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td ng-bind="ModerationCtrl.selectedUser.email"></td>
+      </tr>
+      <tr>
+        <td>Register Date</td>
+        <td ng-bind="ModerationCtrl.selectedUser.created_at | humanDate"></td>
+      </tr>
+    </table>
+
+    <label for="banType">Select Ban Type:</label>
+    <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="true" id="permanent" ng-disabled="ModerationCtrl.banSubmitted" required><label for="permanent">Permanent</label>
+    <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="false" id="temporary" ng-disabled="ModerationCtrl.banSubmitted" required><label for="temporary">Temporary</label>
+    <div ng-show="ModerationCtrl.permanentBan === false">
+      <label for="banUntil">Enter Ban Expiration Date:</label>
+      <input type="date" ng-model="ModerationCtrl.banUntil" min="{{ModerationCtrl.minDate()}}" name="banUntil" ng-required="ModerationCtrl.permanentBan === false" />
+    </div>
+    <div class="form-action">
+      <button class="button no-margin" ng-click="ModerationCtrl.banUser()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.banSubmitted" ng-bind="ModerationCtrl.confirmBanBtnLabel"></button>
+    </div>
+  </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Confirm Unban Modal -->
+<modal class="tiny" show="ModerationCtrl.showConfirmUnbanModal" on-close="ModerationCtrl.closeConfirmUnban()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-dotted-underline">Confirm Unban</h3>
+    <label>User Information</label>
+    <table width="100%">
+      <tr>
+        <td>Username</td>
+        <td ng-bind="ModerationCtrl.selectedUser.username"></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td ng-bind="ModerationCtrl.selectedUser.email"></td>
+      </tr>
+      <tr>
+        <td>Register Date</td>
+        <td ng-bind="ModerationCtrl.selectedUser.created_at | humanDate"></td>
+      </tr>
+    </table>
+
+    <div class="form-action">
+      <button class="button no-margin" ng-click="ModerationCtrl.unbanUser()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.banSubmitted" ng-bind="ModerationCtrl.confirmBanBtnLabel"></button>
+    </div>
+  </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>

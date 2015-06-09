@@ -338,7 +338,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-management.users', {
-      url: '/users?page&limit&field&desc',
+      url: '/users?page&limit&field&desc&filter',
       reloadOnSearch: false,
       views: {
         'data@admin-management': {
@@ -352,13 +352,17 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
                 field: $stateParams.field,
                 desc: $stateParams.desc,
                 limit: Number($stateParams.limit) || 10,
-                page: Number($stateParams.page) || 1
+                page: Number($stateParams.page) || 1,
+                filter: $stateParams.filter
               };
               return AdminUsers.page(query).$promise
               .then(function(users) { return users; });
             }],
-            usersCount: ['AdminUsers', function(AdminUsers) {
-              return AdminUsers.count().$promise
+            usersCount: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+              var opts;
+              var filter = $stateParams.filter;
+              if (filter) { opts = { filter: filter }; }
+              return AdminUsers.count(opts).$promise
               .then(function(usersCount) { return usersCount.count; });
             }],
             field: ['$stateParams', function($stateParams) {
@@ -372,6 +376,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             }],
             limit: ['$stateParams', function($stateParams) {
               return Number($stateParams.limit) || 10;
+            }],
+            filter: ['$stateParams', function($stateParams) {
+              return $stateParams.filter;
             }]
           }
         }

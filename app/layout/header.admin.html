@@ -14,10 +14,10 @@
   <!-- For Desktop -->
   <section class="top-bar-section">
     <ul class="left">
-      <li ng-if="HeaderCtrl.currentUser.isAdmin"><a ng-class="HeaderCtrl.checkAdminRoute('settings') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/settings"><i class="fa fa-cogs"></i>&nbsp;&nbsp;&nbsp;Settings</a></li>
-      <li ng-if="HeaderCtrl.currentUser.isAdmin"><a ng-class="HeaderCtrl.checkAdminRoute('management') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/management"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;&nbsp;Management</a></li>
+      <li ng-if="HeaderCtrl.currentUser.isAdmin"><a ng-class="HeaderCtrl.checkAdminRoute('settings') ? 'top-bar-btn-selected' : 'top-bar-btn'" ui-sref="admin-settings.general" ui-sref-opts="{ reload: true }"><i class="fa fa-cogs"></i>&nbsp;&nbsp;&nbsp;Settings</a></li>
+      <li ng-if="HeaderCtrl.currentUser.isAdmin"><a ng-class="HeaderCtrl.checkAdminRoute('management') ? 'top-bar-btn-selected' : 'top-bar-btn'" ui-sref="admin-management.boards" ui-sref-opts="{ reload: true }"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;&nbsp;Management</a></li>
       <li ng-if="HeaderCtrl.currentUser.isAdmin || HeaderCtrl.currentUser.isMod"><a ng-class="HeaderCtrl.checkAdminRoute('moderation') ? 'top-bar-btn-selected' : 'top-bar-btn'" ui-sref="admin-moderation.users({ filter: 'Pending' })" ui-sref-opts="{ reload: true }"><i class="fa fa-users"></i>&nbsp;&nbsp;&nbsp;Moderation</a></li>
-      <li ng-if="HeaderCtrl.currentUser.isAdmin"><a ng-class="HeaderCtrl.checkAdminRoute('analytics') ? 'top-bar-btn-selected' : 'top-bar-btn'" ng-href="/admin/analytics"><i class="fa fa-line-chart"></i>&nbsp;&nbsp;&nbsp;Analytics</a></li>
+      <li ng-if="HeaderCtrl.currentUser.isAdmin"><a ng-class="HeaderCtrl.checkAdminRoute('analytics') ? 'top-bar-btn-selected' : 'top-bar-btn'" ui-sref="admin-analytics" ui-sref-opts="{ reload: true }"><i class="fa fa-line-chart"></i>&nbsp;&nbsp;&nbsp;Analytics</a></li>
     </ul>
     <!-- Right Nav Section -->
     <ul class="right login-container">

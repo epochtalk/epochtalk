@@ -13,6 +13,14 @@ module.exports = ['$resource',
         method: 'PUT',
         url: '/api/admin/users'
       },
+      ban: {
+        method: 'PUT',
+        url: '/api/admin/users/ban'
+      },
+      unban: {
+        method: 'PUT',
+        url: '/api/admin/users/unban'
+      },
       addRoles: {
         method: 'PUT',
         url: '/api/admin/users/roles/add'

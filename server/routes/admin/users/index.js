@@ -12,5 +12,7 @@ module.exports = [
   { method: 'GET', path: '/users/{username}', config: users.find },
   { method: 'PUT', path: '/users', config: users.update },
   { method: 'PUT', path: '/users/roles/add', config: users.addRoles },
-  { method: 'PUT', path: '/users/roles/remove', config: users.removeRoles }
+  { method: 'PUT', path: '/users/roles/remove', config: users.removeRoles },
+  { method: 'PUT', path: '/users/ban', config: users.ban },
+  { method: 'PUT', path: '/users/unban', config: users.unban }
 ];
