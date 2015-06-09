@@ -29,10 +29,14 @@ module.exports = {
         return db.users.userByUsername(username)
         .then(function(user) {
           var isMod = false;
+          var isAdmin = false;
           user.roles.forEach(function(role) {
             if (role.name === 'Moderator' || role.name === 'Global Moderator') { isMod = true; }
+            if (role.name === 'Administrator' || role.name === 'Super Administrator') { isAdmin = true; }
           });
-          return reply(isMod || Boom.unauthorized());
+          if (isMod) { return reply(true); }
+          else if (isAdmin) { return reply(false); } // Admin is not unauthorized, fall through to adminCheck
+          else { return reply(Boom.unauthorized()); }
         })
         .catch(function() { return reply(Boom.unauthorized()); });
       }
