@@ -100,7 +100,7 @@
       <img class="note-avatar" ng-src="{{ note.avatar || 'http://fakeimg.pl/50x50/ccc/444/?text=' + note.username }}" />
     </div>
     <div class="note-details" ng-if="!note.edit">
-      <span class="note-author"><a href="/profiles/{{note.username}}" ng-bind="note.username"></a>&nbsp;</span>
+      <span class="note-author"><a ui-sref="profile({ username: note.username })" ng-bind="note.username"></a>&nbsp;</span>
       <span class="note-date" ng-bind="note.created_at | humanDate"></span>
       <span class="note-date" ng-if="note.created_at !== note.updated_at"> &mdash; Edited <span ng-bind="note.updated_at | humanDate"></span></span>
       <span class="right" ng-if="ModerationCtrl.user.id === note.user_id"><a href="#" ng-click="note.edit = true; note.noteCopy = note.note">Edit</a></span>

@@ -29,7 +29,7 @@
       </thead>
       <tbody>
         <tr ng-repeat="user in AdminManagementCtrl.users track by user.username">
-          <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
+          <td><a ui-sref="profile({ username: user.username })" ng-bind="user.username"></a></td>
           <td ng-bind="user.email"></td>
           <td ng-show="AdminManagementCtrl.tableFilter == 1" ng-bind="user.ban_expiration | humanDate:true"></td>
           <td ng-bind="user.created_at | humanDate"></td>

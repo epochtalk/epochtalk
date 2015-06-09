@@ -39,7 +39,7 @@
           <td ng-bind="postReport.created_at | humanDate"></td>
           <td ng-bind="postReport.status"></td>
           <td ng-bind="postReport.offender_created_at | humanDate"></td>
-          <td><a href="/threads/{{postReport.offender_thread_id}}/posts#{{postReport.offender_post_id}}" ng-bind="postReport.offender_title"></a></td>
+          <td><a ui-sref="posts.data({ threadId: postReport.offender_thread_id, '#': postReport.offender_post_id })" ng-bind="postReport.offender_title"></a></td>
           <td><a ui-sref="profile({ username: postReport.offender_author_username })" ng-bind="postReport.offender_author_username"></a></td>
           <td><div ng-bind="postReport.reporter_reason"></div></td>
           <td>
@@ -80,11 +80,11 @@
         </tr>
         <tr>
           <td class="field">Reported Post</td>
-          <td class="desc"><a href="/threads/{{ModerationCtrl.previewReport.offender_thread_id}}/posts#{{ModerationCtrl.previewReport.offender_post_id}}" ng-bind="ModerationCtrl.previewReport.offender_title"></a></td>
+          <td class="desc"><a ui-sref="posts.data({ threadId: ModerationCtrl.previewReport.offender_thread_id, '#': ModerationCtrl.previewReport.offender_post_id })" ui-sref-opts="{ reload: true }" ng-bind="ModerationCtrl.previewReport.offender_title"></a></td>
         </tr>
         <tr>
           <td class="field">Reported Post Author</td>
-          <td class="desc"><a href="/profiles/{{ModerationCtrl.previewReport.offender_author_username}}" ng-bind="ModerationCtrl.previewReport.offender_author_username"></a></td>
+          <td class="desc"><a ui-sref="profile({ username: ModerationCtrl.previewReport.offender_author_username })" ng-bind="ModerationCtrl.previewReport.offender_author_username"></a></td>
         </tr>
         <tr>
           <td class="field">Reported Post Date</td>
@@ -101,7 +101,7 @@
         <img class="note-avatar" ng-src="{{ note.avatar || 'http://fakeimg.pl/50x50/ccc/444/?text=' + note.username }}" />
       </div>
       <div class="note-details" ng-if="!note.edit">
-        <span class="note-author"><a href="/profiles/{{note.username}}" ng-bind="note.username"></a>&nbsp;</span>
+        <span class="note-author"><a ui-sref="profile({ username: note.username })" ng-bind="note.username"></a>&nbsp;</span>
         <span class="note-date" ng-bind="note.created_at | humanDate"></span>
         <span class="note-date" ng-if="note.created_at !== note.updated_at"> &mdash; Edited <span ng-bind="note.updated_at | humanDate"></span></span>
         <span class="right" ng-if="ModerationCtrl.user.id === note.user_id"><a href="#" ng-click="note.edit = true; note.noteCopy = note.note">Edit</a></span>
