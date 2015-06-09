@@ -232,7 +232,7 @@ exports.pageModerators = {
 
 exports.ban = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     payload: {
       user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -249,7 +249,7 @@ exports.ban = {
 
 exports.unban = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     payload: {
       user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
