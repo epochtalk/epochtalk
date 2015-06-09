@@ -54,9 +54,10 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       expiration: ctrl.banUntil || undefined
     };
     AdminUsers.ban(params).$promise
-    .then(function() {
+    .then(function(ban) {
+      if (ctrl.tableFilter === 0) { ctrl.pullPage(); }
+      else { ctrl.selectedUser.ban_expiration = ban.expiration; }
       ctrl.closeConfirmBan();
-      ctrl.pullPage();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
         ctrl.banSubmitted = false;
@@ -83,8 +84,9 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     };
     AdminUsers.unban(params).$promise
     .then(function() {
+      if (ctrl.tableFilter === 0) { ctrl.pullPage(); }
+      else { ctrl.selectedUser.ban_expiration = null; }
       ctrl.closeConfirmUnban();
-      ctrl.pullPage();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
         ctrl.banSubmitted = false;
@@ -93,6 +95,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   };
 
   this.setFilter = function(newFilter) {
+    ctrl.users = null;
     ctrl.queryParams = {
       filter: newFilter,
       field: 'username'

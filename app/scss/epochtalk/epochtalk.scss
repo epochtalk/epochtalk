@@ -693,6 +693,8 @@ pagination {
 .admin-content table tr.active-row td a { color: darken($color-active-dark, 10%); }
 .admin-content table tr.active-row td a:hover { color: $color-active-dark; }
 
+.admin-content table tr.unbanned { background-color: #FFAEAE }
+
 .admin-content-selectable table tr td { padding-top: 2px; padding-bottom: 2px; font-size: 12px; }
 .admin-content-selectable table tr td div {
   display: inline-block;
