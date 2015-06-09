@@ -15,9 +15,28 @@ module.exports = {
         .then(function(user) {
           var isAdmin = false;
           user.roles.forEach(function(role) {
-            if (role.name === 'Administrator') { isAdmin = true; }
+            if (role.name === 'Administrator' || role.name === 'Super Administrator') { isAdmin = true; }
           });
           return reply(isAdmin || Boom.unauthorized());
+        })
+        .catch(function() { return reply(Boom.unauthorized()); });
+      }
+      else { return reply(Boom.unauthorized()); }
+    },
+    modCheck: function(request, reply) {
+      if (request.auth.isAuthenticated) {
+        var username = request.auth.credentials.username;
+        return db.users.userByUsername(username)
+        .then(function(user) {
+          var isMod = false;
+          var isAdmin = false;
+          user.roles.forEach(function(role) {
+            if (role.name === 'Moderator' || role.name === 'Global Moderator') { isMod = true; }
+            if (role.name === 'Administrator' || role.name === 'Super Administrator') { isAdmin = true; }
+          });
+          if (isMod) { return reply(true); }
+          else if (isAdmin) { return reply(false); } // Admin is not unauthorized, fall through to adminCheck
+          else { return reply(Boom.unauthorized()); }
         })
         .catch(function() { return reply(Boom.unauthorized()); });
       }

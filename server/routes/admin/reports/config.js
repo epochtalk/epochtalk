@@ -6,8 +6,8 @@ var db = require(path.normalize(__dirname + '/../../../../db'));
 
 // Create Operations
 exports.createUserReportNote = {
- auth: { mode: 'required', strategy: 'jwt' },
- pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     payload: {
       report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -24,8 +24,8 @@ exports.createUserReportNote = {
 };
 
 exports.createPostReportNote = {
- auth: { mode: 'required', strategy: 'jwt' },
- pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     payload: {
       report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -43,8 +43,8 @@ exports.createPostReportNote = {
 
 // Update Operations
 exports.updateUserReport = {
- auth: { mode: 'required', strategy: 'jwt' },
- pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     payload: {
       id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -61,8 +61,8 @@ exports.updateUserReport = {
 };
 
 exports.updatePostReport = {
- auth: { mode: 'required', strategy: 'jwt' },
- pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     payload: {
       id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -79,8 +79,8 @@ exports.updatePostReport = {
 };
 
 exports.updateUserReportNote = {
- auth: { mode: 'required', strategy: 'jwt' },
- pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     payload: {
       id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -96,8 +96,8 @@ exports.updateUserReportNote = {
 };
 
 exports.updatePostReportNote = {
- auth: { mode: 'required', strategy: 'jwt' },
- pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { mode: 'required', strategy: 'jwt' },
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     payload: {
       id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -115,7 +115,7 @@ exports.updatePostReportNote = {
 // Paging Operations
 exports.pageUserReports = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -140,7 +140,7 @@ exports.pageUserReports = {
 
 exports.pagePostReports = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -165,7 +165,7 @@ exports.pagePostReports = {
 
 exports.pageUserReportsNotes = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
     query: {
@@ -201,7 +201,7 @@ exports.pageUserReportsNotes = {
 
 exports.pagePostReportsNotes = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: {
     params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
     query: {
@@ -237,7 +237,7 @@ exports.pagePostReportsNotes = {
 
 exports.userReportsCount = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: { query: { status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report') } },
   handler: function(request, reply) {
     var status = request.query.status;
@@ -248,7 +248,7 @@ exports.userReportsCount = {
 
 exports.postReportsCount = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: { query: { status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report') } },
   handler: function(request, reply) {
     var status = request.query.status;
@@ -259,7 +259,7 @@ exports.postReportsCount = {
 
 exports.userReportsNotesCount = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
@@ -270,7 +270,7 @@ exports.userReportsNotesCount = {
 
 exports.postReportsNotesCount = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
   handler: function(request, reply) {
     var reportId = request.params.report_id;

@@ -17,7 +17,7 @@
       </thead>
       <tbody>
         <tr ng-repeat="user in AdminManagementCtrl.moderators track by user.username">
-          <td><a href="/profiles/{{user.username}}" ng-bind="user.username"></a></td>
+          <td><a ui-sref="profile({ username: user.username })" ng-bind="user.username"></a></td>
           <td>
             <div class="onoffswitch onoffswitch-left-align" ng-init="globalMod = AdminManagementCtrl.isGlobalMod(user.roles)">
               <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="global-mod-{{$index}}" ng-model="globalMod" ng-disabled="AdminManagementCtrl.user.id === user.user_id" ng-click="AdminManagementCtrl.toggleGlobalMod(user.user_id, globalMod)">
