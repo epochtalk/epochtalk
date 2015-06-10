@@ -35,7 +35,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        user: [ 'User', '$stateParams', function(User, $stateParams) {
+        $title: ['$stateParams', function($stateParams) {
+          return $stateParams.username;
+        }],
+        user: [ 'User', '$stateParams', '$state', function(User, $stateParams, $state) {
           return User.get({ id: $stateParams.username }).$promise
           .then(function(user) { return user; });
         }]
@@ -91,6 +94,11 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'ConfirmCtrl',
           template: fs.readFileSync(__dirname + '/user/confirm.html')
         }
+      },
+      resolve: {
+        $title: ['$stateParams', function($stateParams) {
+          return 'Confirm Account ' + $stateParams.username;
+        }]
       }
     });
 
@@ -103,6 +111,11 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'ResetCtrl',
           template: fs.readFileSync(__dirname + '/user/reset.html')
         }
+      },
+      resolve: {
+        $title: ['$stateParams', function($stateParams) {
+          return 'Reset Password ' + $stateParams.username;
+        }]
       }
     });
 
@@ -113,14 +126,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'content': {
           controller: 'BoardsCtrl',
           controllerAs: 'BoardsCtrl',
-          template: fs.readFileSync(__dirname + '/boards/boards.html'),
-          resolve: {
-            boards: [ 'Boards', function(Boards) {
-              return Boards.query().$promise
-              .then(function(categorizedBoards) { return categorizedBoards; });
-            }]
-          }
+          template: fs.readFileSync(__dirname + '/boards/boards.html')
         }
+      },
+      resolve: {
+        $title: function() { return 'Home'; },
+        boards: [ 'Boards', function(Boards) {
+          return Boards.query().$promise
+          .then(function(categorizedBoards) { return categorizedBoards; });
+        }]
       }
     });
 
@@ -132,7 +146,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controller: [function(){}],
           controllerAs: 'BoardWrapperCtrl',
           template: fs.readFileSync(__dirname + '/board/board.html')
-        },
+        }
       }
     })
     .state('board.data', {
@@ -142,34 +156,38 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@board': {
           controller: 'BoardCtrl',
           controllerAs: 'BoardCtrl',
-          template: fs.readFileSync(__dirname + '/board/board.data.html'),
-          resolve: {
-            board: ['Boards', '$stateParams', function(Boards, $stateParams) {
-              return Boards.get({ id: $stateParams.boardId }).$promise
-              .then(function(board) { return board; });
-            }],
-            threads: ['Threads', '$stateParams', function(Threads, $stateParams) {
-              var query = {
-                board_id: $stateParams.boardId,
-                limit: Number($stateParams.limit) || 10,
-                page: Number($stateParams.page) || 1
-              };
-              return Threads.byBoard(query).$promise
-              .then(function(threads) { return threads; });
-            }],
-            page: ['$stateParams', function($stateParams) {
-              return Number($stateParams.page) || 1;
-            }],
-            threadLimit: ['$stateParams', function($stateParams) {
-              // TODO: this needs to be grabbed from user settings
-              return Number($stateParams.limit) || 10;
-            }],
-            postLimit: [function() {
-              // TODO: this needs to be grabbed from user settings
-              return 10;
-            }]
-          }
+          template: fs.readFileSync(__dirname + '/board/board.data.html')
         }
+      },
+      resolve: {
+        $title: ['Boards', '$stateParams', function(Boards, $stateParams) {
+          return Boards.get({ id: $stateParams.boardId }).$promise
+          .then(function(board) { return board.name; });
+        }],
+        board: ['Boards', '$stateParams', function(Boards, $stateParams) {
+          return Boards.get({ id: $stateParams.boardId }).$promise
+          .then(function(board) { return board; });
+        }],
+        threads: ['Threads', '$stateParams', function(Threads, $stateParams) {
+          var query = {
+            board_id: $stateParams.boardId,
+            limit: Number($stateParams.limit) || 10,
+            page: Number($stateParams.page) || 1
+          };
+          return Threads.byBoard(query).$promise
+          .then(function(threads) { return threads; });
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        threadLimit: ['$stateParams', function($stateParams) {
+          // TODO: this needs to be grabbed from user settings
+          return Number($stateParams.limit) || 10;
+        }],
+        postLimit: [function() {
+          // TODO: this needs to be grabbed from user settings
+          return 10;
+        }]
       }
     });
 
@@ -182,6 +200,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'NewThreadCtrl',
           template: fs.readFileSync(__dirname + '/board/new-thread.html')
         }
+      },
+      resolve: {
+        $title: function() { return 'Create New Thread'; }
       }
     });
 
@@ -203,32 +224,36 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@posts': {
           controller: 'PostsCtrl',
           controllerAs: 'PostsCtrl',
-          template: fs.readFileSync(__dirname + '/posts/posts.data.html'),
-          resolve: {
-            thread: ['Threads', '$stateParams', function(Threads, $stateParams) {
-              return Threads.get({ id: $stateParams.threadId }).$promise
-              .then(function(thread) { return thread; });
-            }],
-            posts: ['Posts', '$stateParams', function(Posts, $stateParams) {
-              var limit = $stateParams.limit;
-              var query = {
-                thread_id: $stateParams.threadId,
-                page: Number($stateParams.page) || 1,
-                limit: limit === 'all' ? limit : (Number(limit) || 10)
-              };
-              return Posts.byThread(query).$promise
-              .then(function(posts) { return posts; });
-            }],
-            page: ['$stateParams', function($stateParams) {
-              return Number($stateParams.page) || 1;
-            }],
-            limit: ['$stateParams', function($stateParams) {
-              // TODO: this needs to be grabbed from user settings
-              if ($stateParams.limit === 'all') { return 'all'; }
-              else { return Number($stateParams.limit) || 10; }
-            }]
-          }
+          template: fs.readFileSync(__dirname + '/posts/posts.data.html')
         }
+      },
+      resolve: {
+        $title: ['Threads', '$stateParams', function(Threads, $stateParams) {
+          return Threads.get({ id: $stateParams.threadId }).$promise
+          .then(function(thread) { return thread.title; });
+        }],
+        thread: ['Threads', '$stateParams', function(Threads, $stateParams) {
+          return Threads.get({ id: $stateParams.threadId }).$promise
+          .then(function(thread) { return thread; });
+        }],
+        posts: ['Posts', '$stateParams', function(Posts, $stateParams) {
+          var limit = $stateParams.limit;
+          var query = {
+            thread_id: $stateParams.threadId,
+            page: Number($stateParams.page) || 1,
+            limit: limit === 'all' ? limit : (Number(limit) || 10)
+          };
+          return Posts.byThread(query).$promise
+          .then(function(posts) { return posts; });
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        limit: ['$stateParams', function($stateParams) {
+          // TODO: this needs to be grabbed from user settings
+          if ($stateParams.limit === 'all') { return 'all'; }
+          else { return Number($stateParams.limit) || 10; }
+        }]
       }
     });
 
@@ -288,6 +313,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'AdminSettingsCtrl',
           template: fs.readFileSync(__dirname + '/admin/settings/general.html')
         }
+      },
+      resolve: {
+        userAccess: adminCheck,
+        $title: function() { return 'General Settings'; }
       }
     })
     .state('admin-settings.forum', {
@@ -298,6 +327,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           controllerAs: 'AdminSettingsCtrl',
           template: fs.readFileSync(__dirname + '/admin/settings/forum.html')
         }
+      },
+      resolve: {
+        userAccess: adminCheck,
+        $title: function() { return 'Forum Settings'; }
       }
     });
 
@@ -311,10 +344,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       parent: 'admin-layout',
       views: {
         'content': {
-          template: fs.readFileSync(__dirname + '/admin/management/index.html'),
-          resolve: { userAccess: adminCheck }
+          template: fs.readFileSync(__dirname + '/admin/management/index.html')
         }
-      }
+      },
+      resolve: { userAccess: adminCheck }
     })
     .state('admin-management.boards', {
       url: '/boards',
@@ -322,19 +355,20 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@admin-management': {
           controller: 'CategoriesCtrl',
           controllerAs: 'AdminManagementCtrl',
-          template: fs.readFileSync(__dirname + '/admin/management/boards.html'),
-          resolve: {
-            userAccess: adminCheck,
-            categories: ['Boards', function(Boards) {
-              return Boards.query().$promise
-              .then(function(categories) { return categories; });
-            }],
-            boards: ['Boards', function(Boards) {
-              return Boards.all().$promise
-              .then(function(boards) {return boards; });
-            }]
-          }
+          template: fs.readFileSync(__dirname + '/admin/management/boards.html')
         }
+      },
+      resolve: {
+        userAccess: adminCheck,
+        $title: function() { return 'Board Management'; },
+        categories: ['Boards', function(Boards) {
+          return Boards.query().$promise
+          .then(function(categories) { return categories; });
+        }],
+        boards: ['Boards', function(Boards) {
+          return Boards.all().$promise
+          .then(function(boards) {return boards; });
+        }]
       }
     })
     .state('admin-management.users', {
@@ -344,44 +378,45 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@admin-management': {
           controller: 'UsersCtrl',
           controllerAs: 'AdminManagementCtrl',
-          template: fs.readFileSync(__dirname + '/admin/management/users.html'),
-          resolve: {
-            userAccess: adminCheck,
-            users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-              var query = {
-                field: $stateParams.field,
-                desc: $stateParams.desc,
-                limit: Number($stateParams.limit) || 10,
-                page: Number($stateParams.page) || 1,
-                filter: $stateParams.filter
-              };
-              return AdminUsers.page(query).$promise
-              .then(function(users) { return users; });
-            }],
-            usersCount: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-              var opts;
-              var filter = $stateParams.filter;
-              if (filter) { opts = { filter: filter }; }
-              return AdminUsers.count(opts).$promise
-              .then(function(usersCount) { return usersCount.count; });
-            }],
-            field: ['$stateParams', function($stateParams) {
-              return $stateParams.field;
-            }],
-            desc: ['$stateParams', function($stateParams) {
-              return $stateParams.desc;
-            }],
-            page: ['$stateParams', function($stateParams) {
-              return Number($stateParams.page) || 1;
-            }],
-            limit: ['$stateParams', function($stateParams) {
-              return Number($stateParams.limit) || 10;
-            }],
-            filter: ['$stateParams', function($stateParams) {
-              return $stateParams.filter;
-            }]
-          }
+          template: fs.readFileSync(__dirname + '/admin/management/users.html')
         }
+      },
+      resolve: {
+        userAccess: adminCheck,
+        $title: function() { return 'User Management'; },
+        users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+          var query = {
+            field: $stateParams.field,
+            desc: $stateParams.desc,
+            limit: Number($stateParams.limit) || 10,
+            page: Number($stateParams.page) || 1,
+            filter: $stateParams.filter
+          };
+          return AdminUsers.page(query).$promise
+          .then(function(users) { return users; });
+        }],
+        usersCount: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+          var opts;
+          var filter = $stateParams.filter;
+          if (filter) { opts = { filter: filter }; }
+          return AdminUsers.count(opts).$promise
+          .then(function(usersCount) { return usersCount.count; });
+        }],
+        field: ['$stateParams', function($stateParams) {
+          return $stateParams.field;
+        }],
+        desc: ['$stateParams', function($stateParams) {
+          return $stateParams.desc;
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        limit: ['$stateParams', function($stateParams) {
+          return Number($stateParams.limit) || 10;
+        }],
+        filter: ['$stateParams', function($stateParams) {
+          return $stateParams.filter;
+        }]
       }
     })
     .state('admin-management.moderators', {
@@ -390,37 +425,38 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@admin-management': {
           controller: 'ModeratorsCtrl',
           controllerAs: 'AdminManagementCtrl',
-          template: fs.readFileSync(__dirname + '/admin/management/moderators.html'),
-          resolve: {
-            userAccess: adminCheck,
-            moderators: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-              var query = {
-                field: $stateParams.field,
-                desc: $stateParams.desc,
-                limit: Number($stateParams.limit) || 10,
-                page: Number($stateParams.page) || 1
-              };
-              return AdminUsers.pageModerators(query).$promise
-              .then(function(moderators) { return moderators; });
-            }],
-            moderatorsCount: ['AdminUsers', function(AdminUsers) {
-              return AdminUsers.countModerators().$promise
-              .then(function(moderatorsCount) { return moderatorsCount.count; });
-            }],
-            field: ['$stateParams', function($stateParams) {
-              return $stateParams.field;
-            }],
-            desc: ['$stateParams', function($stateParams) {
-              return $stateParams.desc;
-            }],
-            page: ['$stateParams', function($stateParams) {
-              return Number($stateParams.page) || 1;
-            }],
-            limit: ['$stateParams', function($stateParams) {
-              return Number($stateParams.limit) || 10;
-            }]
-          }
+          template: fs.readFileSync(__dirname + '/admin/management/moderators.html')
         }
+      },
+      resolve: {
+        userAccess: adminCheck,
+        $title: function() { return 'Moderator Management'; },
+        moderators: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+          var query = {
+            field: $stateParams.field,
+            desc: $stateParams.desc,
+            limit: Number($stateParams.limit) || 10,
+            page: Number($stateParams.page) || 1
+          };
+          return AdminUsers.pageModerators(query).$promise
+          .then(function(moderators) { return moderators; });
+        }],
+        moderatorsCount: ['AdminUsers', function(AdminUsers) {
+          return AdminUsers.countModerators().$promise
+          .then(function(moderatorsCount) { return moderatorsCount.count; });
+        }],
+        field: ['$stateParams', function($stateParams) {
+          return $stateParams.field;
+        }],
+        desc: ['$stateParams', function($stateParams) {
+          return $stateParams.desc;
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        limit: ['$stateParams', function($stateParams) {
+          return Number($stateParams.limit) || 10;
+        }]
       }
     })
     .state('admin-management.administrators', {
@@ -429,37 +465,38 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'data@admin-management': {
           controller: 'AdministratorsCtrl',
           controllerAs: 'AdminManagementCtrl',
-          template: fs.readFileSync(__dirname + '/admin/management/administrators.html'),
-          resolve: {
-            userAccess: adminCheck,
-            admins: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-              var query = {
-                field: $stateParams.field,
-                desc: $stateParams.desc,
-                limit: Number($stateParams.limit) || 10,
-                page: Number($stateParams.page) || 1
-              };
-              return AdminUsers.pageAdmins(query).$promise
-              .then(function(admins) { return admins; });
-            }],
-            adminsCount: ['AdminUsers', function(AdminUsers) {
-              return AdminUsers.countAdmins().$promise
-              .then(function(adminsCount) { return adminsCount.count; });
-            }],
-            field: ['$stateParams', function($stateParams) {
-              return $stateParams.field;
-            }],
-            desc: ['$stateParams', function($stateParams) {
-              return $stateParams.desc;
-            }],
-            page: ['$stateParams', function($stateParams) {
-              return Number($stateParams.page) || 1;
-            }],
-            limit: ['$stateParams', function($stateParams) {
-              return Number($stateParams.limit) || 10;
-            }]
-          }
+          template: fs.readFileSync(__dirname + '/admin/management/administrators.html')
         }
+      },
+      resolve: {
+        userAccess: adminCheck,
+        $title: function() { return 'Admin Management'; },
+        admins: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+          var query = {
+            field: $stateParams.field,
+            desc: $stateParams.desc,
+            limit: Number($stateParams.limit) || 10,
+            page: Number($stateParams.page) || 1
+          };
+          return AdminUsers.pageAdmins(query).$promise
+          .then(function(admins) { return admins; });
+        }],
+        adminsCount: ['AdminUsers', function(AdminUsers) {
+          return AdminUsers.countAdmins().$promise
+          .then(function(adminsCount) { return adminsCount.count; });
+        }],
+        field: ['$stateParams', function($stateParams) {
+          return $stateParams.field;
+        }],
+        desc: ['$stateParams', function($stateParams) {
+          return $stateParams.desc;
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        limit: ['$stateParams', function($stateParams) {
+          return Number($stateParams.limit) || 10;
+        }]
       }
     });
 
@@ -478,10 +515,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       views: {
         'content': {
           controllerAs: 'ModerationCtrl',
-          template: fs.readFileSync(__dirname + '/admin/moderation/index.html'),
-          resolve: { userAccess: modCheck || adminCheck }
+          template: fs.readFileSync(__dirname + '/admin/moderation/index.html')
         }
-      }
+      },
+      resolve: { userAccess: modCheck || adminCheck }
     })
     .state('admin-moderation.users', {
       url: '/users?page&limit&field&desc&filter&reportId',
@@ -494,6 +531,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        $title: function() { return 'User Moderation'; },
         limit: ['$stateParams', function($stateParams) {
           return $stateParams.limit || 10;
         }],
@@ -557,6 +595,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        $title: function() { return 'Post Moderation'; },
         limit: ['$stateParams', function($stateParams) {
           return $stateParams.limit || 10;
         }],
@@ -601,9 +640,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         'content': {
           controller: 'AnalyticsCtrl',
           controllerAs: 'AnalyticsCtrl',
-          template: fs.readFileSync(__dirname + '/admin/analytics/index.html'),
-          resolve: { userAccess: adminCheck }
+          template: fs.readFileSync(__dirname + '/admin/analytics/index.html')
         }
+      },
+      resolve: {
+        userAccess: adminCheck,
+        $title: function() { return 'Analytics'; }
       }
     });
 
@@ -613,6 +655,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/layout/404.html')
         }
       },
+      resolve: {
+        $title: function() { return '404 Not Found'; }
+      }
     });
 
     // 404 without redirecting user from current url
