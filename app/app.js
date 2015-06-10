@@ -4,6 +4,7 @@ require('../bower_components/angular-resource/angular-resource');
 require('../bower_components/angular-sanitize/angular-sanitize');
 require('../bower_components/angular-animate/angular-animate');
 require('../bower_components/angular-ui-router/release/angular-ui-router');
+require('../bower_components/angular-ui-router-title/angular-ui-router-title');
 require('../bower_components/angular-loading-bar');
 jQuery = require('../bower_components/foundation/js/vendor/jquery');
 $ = jQuery;
@@ -18,6 +19,7 @@ var app = angular.module('ept', [
   'ngSanitize',
   'ngAnimate',
   'ui.router',
+  'ui.router.title',
   'angular-loading-bar'
 ]);
 

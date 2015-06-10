@@ -8,6 +8,7 @@
     "angular-loading-bar": "0.7.1",
     "foundation": "5.5.1",
     "nestable": "slickage/Nestable",
-    "angular-ui-router": "~0.2.15"
+    "angular-ui-router": "~0.2.15",
+    "angular-ui-router-title": "0.0.3"
   }
 }
