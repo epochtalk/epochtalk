@@ -85,6 +85,55 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     });
 
+    $stateProvider.state('users-posts', {
+      url: '/profiles/{username}/posts?limit&page&field&desc',
+      parent: 'public-layout',
+      reloadOnSearch: false,
+      views: {
+        'content': {
+          controller: 'ProfilePostsCtrl',
+          controllerAs: 'ProfilePostsCtrl',
+          template: fs.readFileSync(__dirname + '/user/posts.html')
+        }
+      },
+      resolve: {
+        $title: ['$stateParams', function($stateParams) {
+          return 'Posts by ' + $stateParams.username;
+        }],
+        user: [ 'User', '$stateParams', function(User, $stateParams) {
+          return User.get({ id: $stateParams.username }).$promise
+          .then(function(user) { return user; });
+        }],
+        limit: ['$stateParams', function($stateParams) {
+          return $stateParams.limit || 10;
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        field: ['$stateParams', function($stateParams) {
+          return $stateParams.field;
+        }],
+        desc: ['$stateParams', function($stateParams) {
+          return $stateParams.desc || true;
+        }],
+        usersPostsCount: ['Posts', '$stateParams', function(Posts, $stateParams) {
+          return Posts.pageByUserCount({ username: $stateParams.username }).$promise
+          .then(function(usersCount) { return usersCount.count; });
+        }],
+        usersPosts: ['Posts', '$stateParams', function(Posts, $stateParams) {
+          var params = {
+            username: $stateParams.username,
+            field: $stateParams.field,
+            desc: $stateParams.desc || true,
+            limit: Number($stateParams.limit) || 10,
+            page: Number($stateParams.page) || 1
+          };
+          return Posts.pageByUser(params).$promise
+          .then(function(usersPosts) { return usersPosts; });
+        }]
+      }
+    });
+
     $stateProvider.state('confirm', {
       url: '/confirm/{username}/{token}',
       parent: 'public-layout',
@@ -578,6 +627,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        $title: ['$stateParams', function($stateParams) {
+          return $stateParams.username;
+        }],
         user: [ 'User', '$stateParams', function(User, $stateParams) {
           return User.get({ id: $stateParams.username }).$promise
           .then(function(user) { return user; });

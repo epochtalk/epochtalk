@@ -10,6 +10,7 @@ module.exports = ['user', 'User', 'Session', 'Alert', '$timeout', '$filter', '$s
     this.displayAvatar = angular.copy(this.user.avatar || 'http://fakeimg.pl/400x400/ccc/444/?text=' + user.username);
     // This isn't the profile users true local time, just a placeholder
     this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
+    this.displayPostsUrl = false;
 
     var calcAge = function(dob) {
       if (!dob) { return '';}
@@ -134,6 +135,9 @@ module.exports = ['user', 'User', 'Session', 'Alert', '$timeout', '$filter', '$s
       // Load posts state with proper state params
       var params = $location.search();
       $state.go('profile.posts', params, { location: false, reload: 'profile.posts' });
+    }
+    else {
+      this.displayPostsUrl = true;
     }
   }
 ];
