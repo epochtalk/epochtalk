@@ -43,6 +43,11 @@ module.exports = ['user', 'User', 'Session', 'Alert', '$timeout', '$filter', '$s
         // redirect page if username changed
         if (ctrl.displayUsername !== ctrl.user.username) {
           Session.setUsername(ctrl.user.username);
+          var params = { username: ctrl.user.username};
+          Alert.success('Saved Profile, redirecting in 5 seconds');
+          $timeout(function() {
+            $state.go('profile', params, { location: true, reload: true });
+          }, 5000);
         }
         else {
           // Reformat DOB and calculate age on save

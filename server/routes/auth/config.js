@@ -226,8 +226,8 @@ exports.authenticate = {
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
-      var username = request.auth.credentials.username;
-      return db.users.userByUsername(username)
+      var userId = request.auth.credentials.id;
+      return db.users.find(userId)
       .then(function(user) {
         var retUser = {
           id: user.id,
