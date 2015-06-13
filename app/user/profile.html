@@ -22,6 +22,7 @@
     <div><span ng-bind="::ProfileCtrl.user.name"></span></div>
     <div><span ng-bind="::ProfileCtrl.user.position"></span></div>
     <div><span ng-bind="::ProfileCtrl.user.status"></span></div>
+    <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.user.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>
     <hr ng-if="ProfileCtrl.displayEmail || ProfileCtrl.user.btcAddress || ProfileCtrl.user.website">
     <div><span ng-bind="::ProfileCtrl.displayEmail"></span></div>
     <div><span ng-bind="::ProfileCtrl.user.btcAddress"></span></div>

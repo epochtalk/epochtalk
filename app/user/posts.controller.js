@@ -1,5 +1,5 @@
-module.exports = ['user', 'usersPosts', 'usersPostsCount', 'limit', 'page', 'field', 'desc', 'Posts', '$location', '$scope', '$rootScope', '$state',
-  function(user, usersPosts, usersPostsCount, limit, page, field, desc, Posts, $location, $scope, $rootScope, $state) {
+module.exports = ['user', 'usersPosts', 'usersPostsCount', 'limit', 'page', 'field', 'desc', 'Posts', '$location', '$scope', '$rootScope', '$state', '$anchorScroll',
+  function(user, usersPosts, usersPostsCount, limit, page, field, desc, Posts, $location, $scope, $rootScope, $state, $anchorScroll) {
     var ctrl = this;
     this.user = user;
     this.pageCount = Math.ceil(usersPostsCount / limit);
@@ -9,6 +9,8 @@ module.exports = ['user', 'usersPosts', 'usersPostsCount', 'limit', 'page', 'fie
     this.field = field;
     this.desc = desc;
     this.usersPosts = usersPosts;
+
+    if ($state.current.name === 'users-posts') { $anchorScroll(); }
 
     this.setSortField = function(sortField) {
       // Sort Field hasn't changed just toggle desc
