@@ -47,9 +47,10 @@ function ($stateParams, $location, Breadcrumbs) {
         threadId: 'thread',
         postId:   'post'
       };
-      var routeParamKeys = Object.keys(routeParams);
+      var routeParamKeys = _.without(Object.keys(routeParams), '#'); // remove anchor hash from params
       var keys = Object.keys(keyToType);
       var matches = _.intersection(routeParamKeys, keys);
+
       // matches, route is dynamic
       if (!_.isEmpty(matches)) {
         var idKey = routeParamKeys.reverse()[0];
