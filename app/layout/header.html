@@ -6,7 +6,10 @@
         <!-- For mobile -->
         <ul class="title-area">
           <li class="name">
-            <h1><a ng-href="/">Epochtalk</a></h1>
+            <h1>
+              <a ng-href="/" ng-if="$webConfigs.logo"><img ng-src="{{$webConfigs.logo}}" class="logo" /></a>
+              <a ng-href="/" ng-bind="$webConfigs.title">Epochtalk</a>
+            </h1>
           </li>
           <li class="toggle-topbar menu-icon">
             <a ng-href="#"><span>Menu</span></a>

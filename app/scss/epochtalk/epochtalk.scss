@@ -145,6 +145,13 @@ label > input[type="checkbox"] { margin-right: .25rem; }
 /* Magellan */
 .magellan-override { padding: 0px; background: transparent; }
 .top-bar .name h1 { font-family: 'Inconsolata'; font-size: 20px; }
+.top-bar .name h1 a { display: inline-block; }
+.top-bar .name h1 .logo {
+  padding-right: 10px;
+  width: 35px;
+  height: 25px;
+  margin-bottom: 4px;
+}
 
 // Page Controls ----------------------------- //
 .page-controls {
@@ -256,6 +263,7 @@ input.icon-padding { padding-right: 40px; }
 
     .name a { color: inherit; padding: 0; }
     .logo a { color: inherit; padding-top: 20px; }
+    .logo a .admin-title { padding-top: 3px; }
 
     .title-area { background-color: inherit; }
 

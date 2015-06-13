@@ -11,17 +11,11 @@
     <label for="website-keywords">Website Keywords</label>
     <input type="text" id="website-keywords" ng-model="AdminSettingsCtrl.settings.website.keywords" placeholder="Example: epochtalk, forum, open source, support" />
     <label for="website-logo-upload-btn">Website Logo</label>
-    <div class="nested-input-container">
-      <a ng-href="" class="nested-btn upload-btn">Upload</a>
-      <input type="file" id="website-logo-upload-btn" class="file-upload" />
-      <input class="nested-input upload-btn" type="text" id="website-logo" ng-model="AdminSettingsCtrl.settings.website.logo" placeholder="default_logo.png" />
-    </div>
+    <image-uploader class="editor-image-uploader" model="AdminSettingsCtrl.settings.website.logo" purpose="logo"></image-uploader>
+    <input type="text" id="website-logo" ng-model="AdminSettingsCtrl.settings.website.logo" placeholder="default_logo.png" />
     <label for="website-favicon-upload-btn">Website Favicon</label>
-    <div class="nested-input-container">
-      <a ng-href="" class="nested-btn upload-btn">Upload</a>
-      <input type="file" id="website-favicon-upload-btn" class="file-upload" />
-      <input class="nested-input" type="text" id="website-favicon" ng-model="AdminSettingsCtrl.settings.website.favicon" placeholder="favicon.ico" />
-    </div>
+    <image-uploader class="editor-image-uploader" model="AdminSettingsCtrl.settings.website.favicon" purpose="favicon"></image-uploader>
+    <input type="text" id="website-favicon" ng-model="AdminSettingsCtrl.settings.website.favicon" placeholder="favicon.ico" />
 
     <!-- Database Tasks -->
     <h5 class="thin-dotted-underline section-header-top-spacing">Database Tasks</h5>
@@ -30,21 +24,21 @@
       <label class="desc-label" for="database-backup">Creates and downloads a backup of all forum data</label>
     </div>
     <div class="small-12 large-3 columns column-padding-fix">
-      <a id="database-backup" class="admin-btn">Backup</a>
+      <a id="database-backup" class="admin-btn" style="background-color: #CCC;">Backup</a>
     </div>
     <div class="small-12 large-9 columns column-padding-fix column-spacing-fix column-padding-top">
       <label for="database-restore">Restore Database</label>
       <label class="desc-label" for="database-restore">Allows restoration of forum data from a backup file</label>
     </div>
     <div class="small-12 large-3 columns column-padding-fix column-btn-padding-top">
-      <a id="database-restore" class="admin-btn">Restore</a>
+      <a id="database-restore" class="admin-btn" style="background-color: #CCC;">Restore</a>
     </div>
     <div class="small-12 large-9 columns column-padding-fix column-spacing-fix column-padding-top">
       <label for="database-migrate">Migrate Database</label>
       <label class="desc-label" for="database-migrate">Launches wizard to migrate data from other forums</label>
     </div>
     <div class="small-12 large-3 columns column-padding-fix column-btn-padding-top">
-      <a id="database-migrate" class="admin-btn">Migrate</a>
+      <a id="database-migrate" class="admin-btn" style="background-color: #CCC;">Migrate</a>
     </div>
   </div>
 

@@ -67,7 +67,12 @@ app.directive('autocompleteUsername',   require('./components/autocomplete_usern
 
 // Set Angular Configs
 app.config(require('./config'))
-.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc) {
+.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', 'Settings', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc, Settings) {
+
+  // Fetch website configs (title, keywords, desc...)
+  Settings.webConfigs().$promise
+  .then(function(configs) { $rootScope.$webConfigs = configs; })
+  .catch(function() { console.log('Error fetching website configs'); });
 
   // Load foundation on view change
   $rootScope.$on('$viewContentLoaded', function() {
