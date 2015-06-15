@@ -43,9 +43,9 @@
           <td><a ui-sref="profile({ username: postReport.offender_author_username })" ng-bind="postReport.offender_author_username"></a></td>
           <td><div ng-bind="postReport.reporter_reason"></div></td>
           <td>
-            <a href="#">Edit</a>&nbsp;&nbsp;
-            <a href="#">Delete</a>&nbsp;&nbsp;
-            <a href="#">Ignore</a>&nbsp;&nbsp;
+            <a href="#" ng-click="ModerationCtrl.showSetStatus(postReport)">Status</a>&nbsp;&nbsp;
+            <span>Edit</span>&nbsp;&nbsp;
+            <span>Delete</span>&nbsp;&nbsp;
             <span>Warn</span>&nbsp;&nbsp;
             <a href="#" ng-hide="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showBanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Ban</a>
             <a href="#" ng-show="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showUnbanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Unban</a>
@@ -63,16 +63,20 @@
     <table width="100%" class="report-details">
       <tbody>
         <tr>
-          <td class="field">Reported By</td>
-          <td class="desc"><a ui-sref="profile({ username: ModerationCtrl.previewReport.reporter_username })" ng-bind="ModerationCtrl.previewReport.reporter_username"></a></td>
-        </tr>
-        <tr>
           <td class="field">Reported Date</td>
           <td class="desc" ng-bind="ModerationCtrl.previewReport.created_at | humanDate"></td>
+        </tr>
+        <tr ng-if="ModerationCtrl.previewReport.reviewer_user_id">
+          <td class="field">Reviewed Date</td>
+          <td class="desc" ng-bind="ModerationCtrl.previewReport.updated_at | humanDate"></td>
         </tr>
         <tr>
           <td class="field">Current Status</td>
           <td class="desc" ng-bind="ModerationCtrl.previewReport.status"></td>
+        </tr>
+        <tr>
+          <td class="field">Reported By</td>
+          <td class="desc"><a ui-sref="profile({ username: ModerationCtrl.previewReport.reporter_username })" ng-bind="ModerationCtrl.previewReport.reporter_username"></a></td>
         </tr>
         <tr>
           <td class="field">Reason for Report</td>
@@ -188,6 +192,42 @@
     <div class="form-action">
       <button class="button no-margin" ng-click="ModerationCtrl.unbanUser()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.banSubmitted" ng-bind="ModerationCtrl.confirmBanBtnLabel"></button>
+    </div>
+  </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Set Status Modal -->
+<modal class="tiny" show="ModerationCtrl.showSetStatusModal" on-close="ModerationCtrl.closeSetStatus()">
+  <form name="$parent.statusForm" class="css-form">
+    <h3 class="thin-dotted-underline">Set Report Status</h3>
+    <label>Report Information</label>
+    <table width="100%">
+      <tr>
+        <td>Current Status</td>
+        <td ng-bind="ModerationCtrl.selectedPostReport.status"></td>
+      </tr>
+      <tr>
+        <td>Reported User</td>
+        <td ng-bind="ModerationCtrl.selectedPostReport.offender_username"></td>
+      </tr>
+      <tr>
+        <td>Reported By</td>
+        <td ng-bind="ModerationCtrl.selectedPostReport.reporter_username"></td>
+      </tr>
+      <tr>
+        <td>Reported Date</td>
+        <td ng-bind="ModerationCtrl.selectedPostReport.created_at | humanDate"></td>
+      </tr>
+    </table>
+    <label for="newStatus">Select New Report Status:</label>
+    <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Pending'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Pending" id="pending" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Pending'" for="pending">Pending</label>
+    <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Reviewed'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Reviewed" id="reviewed" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Reviewed'" for="reviewed">Reviewed</label>
+    <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Ignored'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Ignored" id="ignored" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Ignored'" for="ignored">Ignored</label>
+    <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Bad Report'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Bad Report" id="badReport" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Bad Report'" for="badReport">Bad Report</label>
+    <div class="form-action">
+      <button class="button no-margin" ng-click="ModerationCtrl.setStatus()"
+        ng-disabled="$parent.statusForm.$invalid || $parent.statusForm.$errors || ModerationCtrl.setStatusSubmitted || ModerationCtrl.selectedStatus === ModerationCtrl.selectedPostReport.status" ng-bind="ModerationCtrl.setStatusBtnLabel"></button>
     </div>
   </form>
   <a class="close-reveal-modal">&#215;</a>

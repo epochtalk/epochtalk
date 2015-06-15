@@ -35,6 +35,69 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.permanentBan = undefined; // boolean indicating if ban is permanent
   this.banUntil = null; // model
 
+  // Set Status Vars
+  this.showSetStatusModal  = false;
+  this.setStatusSubmitted = false;
+  this.setStatusBtnLabel = 'Confirm';
+  this.selectedPostReport = null;
+  this.selectedStatus = null;
+  this.statusReportNote = null;
+
+  this.showSetStatus = function(postReport) {
+    ctrl.selectedPostReport = postReport;
+    ctrl.showSetStatusModal = true;
+    ctrl.selectedStatus = postReport.status;
+  };
+
+  this.closeSetStatus = function() {
+    // Fix for modal not opening after closing
+    $timeout(function() { ctrl.showSetStatusModal = false; });
+
+    // Wait for modal to disappear then clear fields
+    $timeout(function() {
+      ctrl.selectedPostReport = null;
+      ctrl.selectedStatus = null;
+      ctrl.statusReportNote = null;
+      ctrl.setStatusSubmitted = false;
+      ctrl.setStatusBtnLabel = 'Confirm';
+    }, 1000);
+  };
+
+  this.setStatus = function() {
+    ctrl.setStatusSubmitted = true;
+    ctrl.setStatusBtnLabel = 'Loading...';
+    var updateReport = {
+      id: ctrl.selectedPostReport.id,
+      status: ctrl.selectedStatus,
+      reviewer_user_id: ctrl.user.id
+    };
+    AdminReports.updatePostReport(updateReport).$promise
+    .then(function(updatedReport) {
+      ctrl.selectedPostReport.reviewer_user_id = updatedReport.reviewer_user_id;
+      ctrl.selectedPostReport.status = updatedReport.status;
+      ctrl.selectedPostReport.updated_at = updatedReport.updated_at;
+      $timeout(function() { ctrl.closeSetStatus(); });
+      return;
+    })
+    .then(function() {
+      if (ctrl.statusReportNote) { // note is optional
+        var params = {
+          report_id: ctrl.selectedPostReport.id,
+          user_id: ctrl.user.id,
+          note: ctrl.statusReportNote
+        };
+        return AdminReports.createPostReportNote(params).$promise
+        .then(function(createdNote) {
+          // Add note if report is currently being previewed
+          if (ctrl.reportNotes && ctrl.previewReport.id === ctrl.selectedPostReport.id) {
+            ctrl.reportNotes.push(createdNote);
+          }
+        });
+      }
+      else { return; }
+    });
+  };
+
   this.minDate = function() {
     var d = new Date();
     var month = '' + (d.getMonth() + 1);
@@ -154,7 +217,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     // do nothing if user is being selected to be banned
     // this prevents the row highlight when clicking links
     // within the row
-    if (ctrl.selectedUser) { return; }
+    if (ctrl.selectedUser || ctrl.selectedPostReport) { return; }
     // Clear Report Notes
     ctrl.reportNotes = null;
     ctrl.reportNote = null;
