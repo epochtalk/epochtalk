@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminUsers', 'moderators', 'moderatorsCount', 'page', 'limit', 'field', 'desc', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminUsers, moderators, moderatorsCount, page, limit, field, desc) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminUsers', 'moderators', 'moderatorsCount', 'page', 'limit', 'field', 'desc', 'USER_ROLES', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminUsers, moderators, moderatorsCount, page, limit, field, desc, USER_ROLES) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'moderators';
@@ -28,6 +28,11 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     ctrl.selectedUser = null;
     ctrl.selectedRole = null;
     ctrl.showConfirmAddModal = false;
+
+    $timeout(function() { // wait for modal to close
+      ctrl.confirmAddBtnLabel = 'Confirm';
+      ctrl.roleAddSubmitted = false;
+    }, 1000);
   };
 
   this.addModerator = function() {
@@ -35,14 +40,14 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     ctrl.roleAddSubmitted = true;
     var hasModRole = false;
     ctrl.selectedUser.roles.forEach(function(role) {
-      if (role === 'Moderator' || role.name === 'Global Moderator') { hasModRole = true; }
+      if (role.name === USER_ROLES.mod || role.name === USER_ROLES.globalMod) { hasModRole = true; }
     });
 
     if (hasModRole) { ctrl.closeConfirmAdd(); }
     else {
-      var roles = [ 'Moderator' ]; // default to mod role
-      if (ctrl.selectedRole === 'Global Moderator') { // Append global mod role if selected
-        roles.push('Global Moderator');
+      var roles = [ USER_ROLES.mod ]; // default to mod role
+      if (ctrl.selectedRole === USER_ROLES.globalMod) { // Append global mod role if selected
+        roles.push(USER_ROLES.globalMod);
       }
       var params = {
         user_id: ctrl.selectedUser.id,
@@ -52,11 +57,6 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       .then(function() {
         ctrl.closeConfirmAdd();
         ctrl.pullPage();
-
-        $timeout(function() { // wait for modal to close
-          ctrl.confirmAddBtnLabel = 'Confirm';
-          ctrl.roleAddSubmitted = false;
-        }, 500);
       });
     }
   };
@@ -74,6 +74,10 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.closeConfirmRemove = function() {
     ctrl.selectedUser = null;
 
+    $timeout(function() { // wait for modal to close
+      ctrl.confirmRemoveBtnLabel = 'Confirm';
+      ctrl.roleRemoveSubmitted = false;
+    }, 1000);
     // fix for modal not opening after closing
     $timeout(function() { ctrl.showConfirmRemoveModal = false; });
   };
@@ -89,10 +93,6 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     .then(function() {
       ctrl.pullPage();
       ctrl.closeConfirmRemove();
-      $timeout(function() { // wait for modal to close
-        ctrl.confirmRemoveBtnLabel = 'Confirm';
-        ctrl.roleRemoveSubmitted = false;
-      }, 500);
     });
   };
 
@@ -100,7 +100,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.toggleGlobalMod = function(userId, setGlobalMod) {
     var params = {
       user_id: userId,
-      roles: ['Global Moderator']
+      roles: [ USER_ROLES.globalMod ]
     };
     var promise;
     if (setGlobalMod) { promise = AdminUsers.addRoles(params).$promise; }
@@ -144,7 +144,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   };
 
   this.isGlobalMod = function(roles) {
-    return roles.indexOf('Global Moderator') > -1;
+    return roles.indexOf(USER_ROLES.globalMod) > -1;
   };
 
   $timeout($anchorScroll);

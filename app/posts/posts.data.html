@@ -1,4 +1,4 @@
-<div class="row post-block" ng-class="{ 'admin': post.user.role === 'Administrator', 'global-mod': post.user.role === 'Global Moderator', 'mod': post.user.role === 'Moderator' }"
+<div class="row post-block" ng-class="{ 'admin': post.user.role === USER_ROLES.admin || post.user.role === USER_ROLES.superAdmin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }"
 ng-repeat="post in PostsCtrl.posts track by post.id">
   <!-- Post Anchor -->
   <a class="anchor-offset" id="{{post.id}}"></a>

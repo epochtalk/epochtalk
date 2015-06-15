@@ -1,5 +1,4 @@
 var path = require('path');
-var Hapi = require('hapi');
 var Boom = require('boom');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');

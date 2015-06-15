@@ -2,9 +2,10 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var commonUsersPre = require(path.normalize(__dirname + '/../../common')).users;
-var commonAdminPre = require(path.normalize(__dirname + '/../../common')).admin;
+var commonAdminPre = require(path.normalize(__dirname + '/../../common')).auth;
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
+var USER_ROLES = require(path.normalize(__dirname + '/../../user-roles'));
 
 exports.update = {
   auth: { mode: 'required', strategy: 'jwt' },
@@ -78,7 +79,7 @@ exports.addRoles = {
   validate: {
     payload: {
       user_id: Joi.string().required(),
-      roles: Joi.array().items(Joi.string().valid('User', 'Moderator', 'Global Moderator', 'Administrator', 'Super Administrator').required()).unique().min(1).required()
+      roles: Joi.array().items(Joi.string().valid(USER_ROLES.user, USER_ROLES.mod, USER_ROLES.globalMod, USER_ROLES.admin, USER_ROLES.superAdmin).required()).unique().min(1).required()
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
@@ -96,7 +97,7 @@ exports.removeRoles = {
   validate: {
     payload: {
       user_id: Joi.string().required(),
-      roles: Joi.array().items(Joi.string().valid('User', 'Moderator', 'Global Moderator', 'Administrator', 'Super Administrator').required()).unique().min(1).required()
+      roles: Joi.array().items(Joi.string().valid(USER_ROLES.user, USER_ROLES.mod, USER_ROLES.globalMod, USER_ROLES.admin, USER_ROLES.superAdmin).required()).unique().min(1).required()
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
@@ -135,7 +136,7 @@ exports.count = {
   handler: function(request, reply) {
     var opts;
     var filter = request.query.filter;
-    if (filter) { opts = { filter: filter } }
+    if (filter) { opts = { filter: filter }; }
     db.users.count(opts)
     .then(function(usersCount) { reply(usersCount); });
   }

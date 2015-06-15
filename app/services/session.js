@@ -2,8 +2,8 @@
 /* jslint node: true */
 /* global angular */
 
-module.exports = ['$window',
-  function($window) {
+module.exports = ['$window', 'USER_ROLES',
+  function($window, USER_ROLES) {
     var user = {};
     var authenticated = false;
     $window.privateStorage = {}; // fallback for safari private browser
@@ -40,13 +40,8 @@ module.exports = ['$window',
       user.roles = newUser.roles || [];
       // user roles
       user.roles.forEach(function(role) {
-        if (role.name === 'Administrator') { user.isAdmin = true; }
-      });
-
-      user.roles.forEach(function(role) {
-        if (role.name === 'Moderator' || role.name === 'Global Moderator') {
-          user.isMod = true;
-       }
+        if (role.name === USER_ROLES.admin || role.name === USER_ROLES.superAdmin) { user.isAdmin = true; }
+        if (role.name === USER_ROLES.mod || role.name === USER_ROLES.globalMod) { user.isMod = true; }
       });
 
       // token storage

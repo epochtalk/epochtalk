@@ -67,7 +67,17 @@ app.directive('autocompleteUsername',   require('./components/autocomplete_usern
 
 // Set Angular Configs
 app.config(require('./config'))
-.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', 'Settings', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc, Settings) {
+.constant('USER_ROLES', {
+  user: 'User',
+  mod: 'Moderator',
+  globalMod: 'Global Moderator',
+  admin: 'Administrator',
+  superAdmin: 'Super Administrator'
+})
+.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', 'Settings', 'USER_ROLES', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc, Settings, USER_ROLES) {
+
+  // Set ROLES to rootscope to be used in templates
+  $rootScope.USER_ROLES = USER_ROLES;
 
   // Fetch website configs (title, keywords, desc...)
   Settings.webConfigs().$promise
