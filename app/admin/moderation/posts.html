@@ -208,8 +208,12 @@
         <td ng-bind="ModerationCtrl.selectedPostReport.status"></td>
       </tr>
       <tr>
-        <td>Reported User</td>
-        <td ng-bind="ModerationCtrl.selectedPostReport.offender_username"></td>
+        <td>Reported Post</td>
+        <td ng-bind="ModerationCtrl.selectedPostReport.offender_title"></td>
+      </tr>
+      <tr>
+        <td>Reported Post Author</td>
+        <td ng-bind="ModerationCtrl.selectedPostReport.offender_author_username"></td>
       </tr>
       <tr>
         <td>Reported By</td>
@@ -225,6 +229,8 @@
     <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Reviewed'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Reviewed" id="reviewed" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Reviewed'" for="reviewed">Reviewed</label>
     <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Ignored'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Ignored" id="ignored" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Ignored'" for="ignored">Ignored</label>
     <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Bad Report'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Bad Report" id="badReport" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Bad Report'" for="badReport">Bad Report</label>
+    <label for="statusReportNote">Leave a note (optional):</label>
+    <textarea name="statusReportNote" ng-model="ModerationCtrl.statusReportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3"></textarea>
     <div class="form-action">
       <button class="button no-margin" ng-click="ModerationCtrl.setStatus()"
         ng-disabled="$parent.statusForm.$invalid || $parent.statusForm.$errors || ModerationCtrl.setStatusSubmitted || ModerationCtrl.selectedStatus === ModerationCtrl.selectedPostReport.status" ng-bind="ModerationCtrl.setStatusBtnLabel"></button>
