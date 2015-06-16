@@ -74,13 +74,14 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
     AdminReports.updateUserReport(updateReport).$promise
     .then(function(updatedReport) {
       ctrl.selectedUserReport.reviewer_user_id = updatedReport.reviewer_user_id;
-      ctrl.previewReport.reviewer_user_id = updatedReport.reviewer_user_id;
-
       ctrl.selectedUserReport.status = updatedReport.status;
-      ctrl.previewReport.status = updatedReport.status;
-
       ctrl.selectedUserReport.updated_at = updatedReport.updated_at;
-      ctrl.previewReport.updated_at = updatedReport.updated_at;
+
+      if (ctrl.previewReport) {
+        ctrl.previewReport.reviewer_user_id = updatedReport.reviewer_user_id;
+        ctrl.previewReport.status = updatedReport.status;
+        ctrl.previewReport.updated_at = updatedReport.updated_at;
+      }
       $timeout(function() { ctrl.closeSetStatus(); });
       return;
     })
