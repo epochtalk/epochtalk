@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminUsers', 'admins', 'adminsCount', 'page', 'limit', 'field', 'desc', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminUsers, admins, adminsCount, page, limit, field, desc) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminUsers', 'admins', 'adminsCount', 'page', 'limit', 'field', 'desc', 'USER_ROLES', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminUsers, admins, adminsCount, page, limit, field, desc, USER_ROLES) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'administrators';
@@ -29,6 +29,11 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     ctrl.selectedUser = null;
     ctrl.selectedRole = null;
     ctrl.showConfirmAddModal = false;
+
+    $timeout(function() { // wait for modal to close
+      ctrl.confirmAddBtnLabel = 'Confirm';
+      ctrl.roleAddSubmitted = false;
+    }, 1000);
   };
 
   this.addAdministrator = function() {
@@ -36,14 +41,14 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     ctrl.roleAddSubmitted = true;
     var hasAdminRole = false;
     ctrl.selectedUser.roles.forEach(function(role) {
-      if (role === 'Administrator' || role.name === 'Super Administrator') { hasAdminRole = true; }
+      if (role.name === USER_ROLES.admin || role.name === USER_ROLES.superAdmin) { hasAdminRole = true; }
     });
 
     if (hasAdminRole) { ctrl.closeConfirmAdd(); }
     else {
-      var roles = [ 'Administrator' ]; // default to admin role
-      if (ctrl.selectedRole === 'Super Administrator') { // Append super admin role if selected
-        roles.push('Super Administrator');
+      var roles = [ USER_ROLES.admin ]; // default to admin role
+      if (ctrl.selectedRole === USER_ROLES.superAdmin) { // Append super admin role if selected
+        roles.push(USER_ROLES.superAdmin);
       }
       var params = {
         user_id: ctrl.selectedUser.id,
@@ -53,11 +58,6 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       .then(function() {
         ctrl.closeConfirmAdd();
         ctrl.pullPage();
-
-        $timeout(function() { // wait for modal to close
-          ctrl.confirmAddBtnLabel = 'Confirm';
-          ctrl.roleAddSubmitted = false;
-        }, 500);
       });
     }
   };
@@ -75,6 +75,10 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.closeConfirmRemove = function() {
     ctrl.selectedUser = null;
 
+    $timeout(function() { // wait for modal to close
+      ctrl.confirmRemoveBtnLabel = 'Confirm';
+      ctrl.roleRemoveSubmitted = false;
+    }, 1000);
     // fix for modal not opening after closing
     $timeout(function() { ctrl.showConfirmRemoveModal = false; });
   };
@@ -90,10 +94,6 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     .then(function() {
       ctrl.pullPage();
       ctrl.closeConfirmRemove();
-      $timeout(function() { // wait for modal to close
-        ctrl.confirmRemoveBtnLabel = 'Confirm';
-        ctrl.roleRemoveSubmitted = false;
-      }, 500);
     });
   };
 
@@ -101,7 +101,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.toggleSuperAdmin = function(userId, setSuperAdmin) {
     var params = {
       user_id: userId,
-      roles: ['Super Administrator']
+      roles: [USER_ROLES.superAdmin]
     };
     var promise;
     if (setSuperAdmin) { promise = AdminUsers.addRoles(params).$promise; }
@@ -145,7 +145,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   };
 
   this.isSuperAdmin = function(roles) {
-    return roles.indexOf('Super Administrator') > -1;
+    return roles.indexOf(USER_ROLES.superAdmin) > -1;
   };
 
   $timeout($anchorScroll);

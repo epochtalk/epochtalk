@@ -1,7 +1,5 @@
 var path = require('path');
-var Boom = require('boom');
-var db = require(path.normalize(__dirname + '/../../../db'));
-var config = require(path.normalize(__dirname + '/../../../config'));
+
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
@@ -11,22 +9,5 @@ module.exports = {
       request.payload.description = sanitizer.display(request.payload.description);
     }
     return reply();
-  },
-  adminCheck: function(request, reply) {
-    var userId = request.auth.credentials.id;
-    var error = Boom.unauthorized('You must be an admin to perform this action.');
-    db.users.find(userId)
-    .then(function(user) {
-      if (!user) { return reply(error); }
-      var isAdmin = false;
-      user.roles.forEach(function(role) {
-        if (role.name === 'Administrator') { isAdmin = true; }
-      });
-      if (isAdmin) { reply(); }
-      else { return reply(error); }
-    })
-    .catch(function() {
-      return reply(error);
-    });
-  },
+  }
 };

@@ -1,7 +1,7 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var commonAdminPre = require(path.normalize(__dirname + '/../../common')).admin;
+var commonAdminPre = require(path.normalize(__dirname + '/../../common')).auth;
 var db = require(path.normalize(__dirname + '/../../../../db'));
 
 // Create Operations

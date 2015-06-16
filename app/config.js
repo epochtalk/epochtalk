@@ -38,7 +38,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         $title: ['$stateParams', function($stateParams) {
           return $stateParams.username;
         }],
-        user: [ 'User', '$stateParams', '$state', function(User, $stateParams, $state) {
+        user: [ 'User', '$stateParams', function(User, $stateParams) {
           return User.get({ id: $stateParams.username }).$promise
           .then(function(user) { return user; });
         }]

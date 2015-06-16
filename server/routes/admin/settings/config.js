@@ -3,7 +3,7 @@ var Joi = require('joi');
 var path = require('path');
 var _ = require('lodash');
 var renameKeys = require('deep-rename-keys');
-var commonPre = require(path.normalize(__dirname + '/../../common')).admin;
+var commonPre = require(path.normalize(__dirname + '/../../common')).auth;
 var config = require(path.normalize(__dirname + '/../../../../config'));
 
 var writeConfigToEnv = function(updatedConfig) {

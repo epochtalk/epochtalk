@@ -159,7 +159,7 @@ exports.pageByUserCount = {
     var username = request.params.username;
     db.posts.pageByUserCount(username)
     .then(function(count) { reply(count); })
-    .catch(function(err) { console.log(err); reply(Boom.badImplementation(err)); });
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };
 

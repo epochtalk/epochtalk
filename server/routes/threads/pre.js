@@ -2,8 +2,7 @@ var path = require('path');
 var uuid = require('node-uuid');
 var db = require(path.normalize(__dirname + '/../../../db'));
 var memDb = require(path.normalize(__dirname + '/../../memstore')).db;
-var config = require(path.normalize(__dirname + '/../../../config'));
-
+var Boom = require('boom');
 // Helpers
 var checkViewKey = function(key) {
   return memDb.getAsync(key)
@@ -107,19 +106,9 @@ module.exports = {
     .then(function() { return reply(); })
     .catch(function(err) { return reply(err); });
   },
-  isAdmin: function(request, reply) {
-    if (!request.auth.isAuthenticated) { return reply(Boom.unauthorized()); }
-    else {
-      var username = request.auth.credentials.username;
-      var isAdmin = false;
-      return db.users.userByUsername(username)
-      .then(function(user) {
-        user.roles.forEach(function(role) {
-          if (role.name === 'Administrator') { isAdmin = true; }
-        });
-        return reply(isAdmin);
-      })
-      .catch(function() { return reply(isAdmin); });
-    }
+  threadAuthorCheck: function(request, reply) {
+    var authorUserId = request.pre.thread.user.id;
+    var authedUserId = request.auth.credentials.id;
+    reply(authorUserId === authedUserId);
   }
 };

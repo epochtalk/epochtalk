@@ -5,9 +5,10 @@ var bbcodeParser = require('epochtalk-bbcode-parser');
 var sanitizer = require(path.normalize(__dirname + '/../sanitizer'));
 var imageStore = require(path.normalize(__dirname + '/../images'));
 var db = require(path.normalize(__dirname + '/../../db'));
+var USER_ROLES = require(path.normalize(__dirname + '/user-roles'));
 
 module.exports = {
-  admin: {
+  auth: {
     adminCheck: function(request, reply) {
       if (request.auth.isAuthenticated) {
         var username = request.auth.credentials.username;
@@ -15,7 +16,7 @@ module.exports = {
         .then(function(user) {
           var isAdmin = false;
           user.roles.forEach(function(role) {
-            if (role.name === 'Administrator' || role.name === 'Super Administrator') { isAdmin = true; }
+            if (role.name === USER_ROLES.admin || role.name === USER_ROLES.superAdmin) { isAdmin = true; }
           });
           return reply(isAdmin || Boom.unauthorized());
         })
@@ -31,8 +32,8 @@ module.exports = {
           var isMod = false;
           var isAdmin = false;
           user.roles.forEach(function(role) {
-            if (role.name === 'Moderator' || role.name === 'Global Moderator') { isMod = true; }
-            if (role.name === 'Administrator' || role.name === 'Super Administrator') { isAdmin = true; }
+            if (role.name === USER_ROLES.mod || role.name === USER_ROLES.globalMod) { isMod = true; }
+            if (role.name === USER_ROLES.admin || role.name === USER_ROLES.superAdmin) { isAdmin = true; }
           });
           if (isMod) { return reply(true); }
           else if (isAdmin) { return reply(false); } // Admin is not unauthorized, fall through to adminCheck

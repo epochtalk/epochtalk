@@ -1,8 +1,8 @@
 var Joi = require('joi');
 var path = require('path');
-var Hapi = require('hapi');
 var Boom = require('boom');
 var pre = require(path.normalize(__dirname + '/pre'));
+var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var db = require(path.normalize(__dirname + '/../../../db'));
 var postPre = require(path.normalize(__dirname + '/../posts/pre'));
 
@@ -135,18 +135,12 @@ exports.lock = {
   },
   pre: [
     { method: pre.getThread, assign: 'thread' },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: pre.threadAuthorCheck || commonPre.adminCheck, assign: 'canLock' }
   ],
   handler: function(request, reply) {
-    var thisUserId = request.auth.credentials.id;
     var thread = request.pre.thread;
-    var isAdmin = request.pre.isAdmin;
-    var canLock = false;
+    var canLock = request.pre.canLock;
     var promise;
-
-    // check if thread is lockable by user
-    if (isAdmin) { canLock = true; }
-    else if (thread.user.id === thisUserId) { canLock = true; }
 
     // lock thread
     if (canLock) {
@@ -168,7 +162,7 @@ exports.sticky = {
   },
   pre: [
     { method: pre.getThread, assign: 'thread' },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: commonPre.adminCheck, assign: 'isAdmin' }
   ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
@@ -195,7 +189,7 @@ exports.move = {
   },
   pre: [
     { method: pre.getThread, assign: 'thread' },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: commonPre.adminCheck, assign: 'isAdmin' }
   ],
   handler: function(request, reply) {
     var thread = request.pre.thread;

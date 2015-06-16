@@ -1,7 +1,7 @@
 var Joi = require('joi');
 var path = require('path');
-var Hapi = require('hapi');
 var Boom = require('boom');
+var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 
@@ -19,7 +19,7 @@ exports.create = {
   },
   pre: [
     { method: pre.clean },
-    { method: pre.adminCheck }
+    { method: commonPre.adminCheck }
   ],
   handler: function(request, reply) {
     db.boards.create(request.payload)
@@ -98,7 +98,7 @@ exports.allCategories = {
 
 exports.updateCategories = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: pre.adminCheck } ],
+  pre: [ { method: commonPre.adminCheck } ],
   validate: {
     payload: {
       categories: Joi.array().required(),
@@ -128,7 +128,7 @@ exports.update = {
   },
   pre: [
     { method: pre.clean },
-    { method: pre.adminCheck }
+    { method: commonPre.adminCheck }
   ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
@@ -143,7 +143,7 @@ exports.update = {
     // update board on db
     db.boards.update(updateBoard)
     .then(function(board) { reply(board); })
-    .catch(function() { reply(Boom.badImplementation(err)); });
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };
 
@@ -157,6 +157,6 @@ exports.delete = {
   handler: function(request, reply) {
     db.boards.delete(request.params.id)
     .then(function(board) { reply(board); })
-    .catch(function() { reply(Boom.badImplementation(err)); });
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };
