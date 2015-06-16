@@ -10,7 +10,7 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
       onDone: '&'
     },
     template: fs.readFileSync(__dirname + '/image_uploader.html'),
-    link: function($scope, $element, $attrs) {
+    link: function($scope, $element) {
       // directive initialization
       $scope.images = [];
       $scope.imagesUploading = false;
@@ -27,11 +27,14 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
       if ($scope.purpose === 'editor') {
         $(inputElement).attr('multiple', '');
       }
+      else if ($scope.purpose === 'favicon') {
+        $(inputElement).attr('accept', 'image/x-icon');
+      }
 
       function upload(images) {
         $scope.imagesUploading = true;
         $scope.imagesProgress = 0;
-        if ($scope.purpose === 'avatar') { $scope.images = []; }
+        if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.images = []; }
         // upload each image
         images.forEach(function(image) {
           var imageProgress = {
@@ -54,7 +57,7 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
               imageProgress.status = 'Uploading';
               updateImagesUploading();
             })
-            .error(function(data) {
+            .error(function() {
               imageProgress.progress = '--';
               imageProgress.status = 'Failed';
               updateImagesUploading();
@@ -68,12 +71,12 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
               imageProgress.url = url;
               updateImagesUploading();
               if ($scope.onDone) { $scope.onDone({data: url}); }
-              if ($scope.purpose === 'avatar') { $scope.model = url; }
+              if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.model = url; }
             });
           })
           .catch(function() {
             imageProgress.progress = '--';
-            imageProgress.status = "Failed";
+            imageProgress.status = 'Failed';
             updateImagesUploading();
             var message = 'Image upload failed for: ' + imageProgress.name + '.';
             message += 'Please ensure images are within size limits.';
@@ -121,9 +124,9 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
         e.stopPropagation();
         e.preventDefault();
       };
-      $parent.on("dragenter", cancelEvent);
-      $parent.on("dragover", cancelEvent);
-      $parent.on("drop", function(e) {
+      $parent.on('dragenter', cancelEvent);
+      $parent.on('dragover', cancelEvent);
+      $parent.on('drop', function(e) {
         cancelEvent(e);
         var dt = e.dataTransfer;
         var fileList = dt.files;
@@ -133,7 +136,7 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
           if (!file.type.match(/image.*/)) { continue; }
           images.push(file);
         }
-        if ($scope.purpose === 'avatar') { images = [images[0]]; }
+        if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { images = [images[0]]; }
         upload(images);
       });
 

@@ -5,7 +5,10 @@
   <base href="/">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title ng-bind="'Epochtalk - ' + ($title || 'Home')">Epochtalk</title>
+  <title ng-bind="$webConfigs.title + ' - ' + ($title || 'Home')">Epochtalk</title>
+  <meta name="description" content="{{$webConfigs.description}}" />
+  <meta name="keywords" content="{{$webConfigs.keywords}}">
+  <link rel="shortcut icon" type="image/x-icon" href="{{$webConfigs.favicon}}">
   <link rel="stylesheet" href="/static/css/app.css"/>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
   <style>
