@@ -25,13 +25,12 @@ module.exports = ['$compile', function($compile) {
           scope.nestableMap[dataId] = {
             id: board.id,
             name: board.name,
-            description: board.description,
-            children_ids: board.children_ids || []
+            description: board.description
           };
           var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
-          html += '<li class="dd-item" data-id="' + dataId + '"><div class="dd-grab"></div>' +
+          html += '<li class="dd-item" data-board-id="' + board.id + '" data-id="' + dataId + '"><div class="dd-grab"></div>' +
             '<div class="dd-handle">' + status + '<div class="dd-desc">' + board.name +  '<span>' + board.description + '</span></div>' +
             toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
         });
@@ -41,15 +40,9 @@ module.exports = ['$compile', function($compile) {
 
       // Generates nestable html for uncategorized boards
       var generateNoCatBoardsList = function(boards) {
-        var noCatBoards = [];
-        boards.forEach(function(board) {
-          if (!board.category_id && board.category_id !== 0) {
-            noCatBoards.push(board);
-          }
-        });
         var emptyHtml = '<div class="dd-empty"></div>';
         var html = '<div class="dd" id="' + scope.boardListId + '">';
-        html += noCatBoards.length > 0 ? generateBoardList(noCatBoards) : emptyHtml;
+        html += boards.length > 0 ? generateBoardList(boards) : emptyHtml;
         html += '</div>';
         return html;
       };
@@ -66,8 +59,7 @@ module.exports = ['$compile', function($compile) {
           scope.nestableMap[dataId] = {
             id: -1,
             name: board.name,
-            description: board.description,
-            children_ids: [],
+            description: board.description
           };
           // Add dataId to board before adding to new boards array
           // to allow for quick lookup in nestableMap from parent controller

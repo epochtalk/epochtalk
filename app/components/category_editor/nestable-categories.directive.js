@@ -19,7 +19,7 @@ module.exports = ['$compile', function($compile) {
       // Generates nestable html for category data
       var generateCategoryList = function(categories) {
         var html = '<div class="dd" id="' + scope.catListId + '"><ol class="dd-list">';
-        var sortedCats = _.sortBy(categories, function(cat) { return cat.view_order; });
+        var sortedCats = _.sortBy(categories, 'view_order');
         sortedCats.forEach(function(cat) {
           var dataId = scope.getDataId();
           var boardIds = [];
@@ -28,7 +28,7 @@ module.exports = ['$compile', function($compile) {
           scope.nestableMap[dataId] = {
             id: cat.id,
             name: cat.name,
-            children_ids: boardIds
+            children: catBoards
           };
           // Edit pencil and trash buttons
           var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
@@ -56,12 +56,12 @@ module.exports = ['$compile', function($compile) {
             id: board.id,
             name: board.name,
             description: board.description,
-            children_ids: board.children_ids || []
+            children: board.children || []
           };
           var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
-          html += '<li class="dd-item" data-id="' + dataId + '">' +
+          html += '<li class="dd-item" data-board-id="' + board.id + '" data-id="' + dataId + '">' +
             '<div class="dd-grab"></div><div class="dd-handle">' + status + '<div class="dd-desc">' + board.name + '<span>' + board.description + '</span></div>' +
             toolbarHtml + '</div>' + generateBoardList(board.children) + '</li>';
         });
@@ -74,10 +74,7 @@ module.exports = ['$compile', function($compile) {
         if (catName) {
           var dataId = scope.getDataId();
           // Update hashmap of list items
-          scope.nestableMap[dataId] = {
-            name: catName,
-            children_ids: []
-          };
+          scope.nestableMap[dataId] = { name: catName };
 
           // Edit pencil and trash buttons
           var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
