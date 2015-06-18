@@ -136,8 +136,10 @@ module.exports = ['$state', function($state) {
 
       $scope.save = function() {
         var serializedCats = $('#' + $scope.catListId).nestable('serialize');
+        // 0) Create new Categories
+        return $scope.processNewCategories()
         // 1) Create new boards
-        return $scope.processNewBoards()
+        .then($scope.processNewBoards)
         // 2) Handle Boards which have been edited
         .then($scope.processEditedBoards)
         // 3) Updated all Categories
@@ -152,24 +154,48 @@ module.exports = ['$state', function($state) {
       };
 
       // Translates serialized array into boards.updateCategory format
-      // TODO: handle child boards
-      // TODO: handle array notation
       var buildUpdatedCats = function(catsArr) {
-        var updatedCats = $scope.updatedCats;
-        catsArr.forEach(function(item) {
-          var cat = {
-            id: item.catId,
-            name: item.name,
-            board_ids: []
-          };
-          if (item.children) {
-            item.children.forEach(function(child) {
-              cat.board_ids.push($scope.nestableMap[child.id].id);
-            });
-          }
-          updatedCats.push(cat);
+        $scope.boardMapping = [];
+        catsArr.forEach(function(cat, index) {
+          // add this cat as a row entry
+          var catId = $scope.nestableMap[cat.id].id;
+          var row = { type: 'category', id: catId, name: cat.name, view_order: index };
+          $scope.boardMapping.push(row);
+
+          // add children boards as entries recursively
+          if (!cat.children) { return; }
+          cat.children.forEach(function(catBoard, index) {
+            // add this cat board as a row entry
+            var boardId = $scope.nestableMap[catBoard.id].id;
+            var boardRow = {
+              type: 'board',
+              id: boardId,
+              category_id: catId,
+              view_order: index
+            };
+            $scope.boardMapping.push(boardRow);
+
+            // add any children board entries
+            if (catBoard.children && catBoard.children.length > 0) {
+              buildEntries(catBoard.children, boardId);
+            }
+          });
         });
       };
+
+      function buildEntries(currentBoards, parentId) {
+        currentBoards.forEach(function(board, index) {
+          // add this board as a row entry
+          var boardId = $scope.nestableMap[board.id].id;
+          var row = { type: 'board', id: boardId, parent_id: parentId, view_order: index };
+          $scope.boardMapping.push(row);
+
+          // add any children boards as a row entry
+          if (board.children && board.children.length > 0) {
+            buildEntries(board.children, boardId);
+          }
+        });
+      }
     }
   };
 }];
