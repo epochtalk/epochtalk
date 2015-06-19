@@ -3,21 +3,18 @@ var _ = require('lodash');
 module.exports = ['$timeout', '$anchorScroll', 'boards',
   function($timeout, $anchorScroll, boards) {
     var ctrl = this;
+    this.categorizedBoards = boards;
     this.toggles = {};
-
-    // sort categories by view_order
-    var sortedCats = _.sortBy(boards, function(cat) { return cat.view_order; });
-    this.categorizedBoards = sortedCats;
 
     // Category toggling
     var i = 0;
-    sortedCats.forEach(function() { ctrl.toggles[i++] = false; });
+    this.categorizedBoards.forEach(function() { ctrl.toggles[i++] = false; });
     this.toggle = function(index){
       ctrl.toggles[index] = !ctrl.toggles[index];
     };
 
     // set total_thread_count and total_post_count for all boards
-    sortedCats.map(function(category) {
+    this.categorizedBoards.map(function(category) {
       var boards = category.boards;
       boards.map(function(board) {
         var children = countTotals(board.children);
