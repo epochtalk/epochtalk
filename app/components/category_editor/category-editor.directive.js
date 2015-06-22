@@ -22,9 +22,7 @@ module.exports = ['$state', function($state) {
       $scope.editBoardName = ''; // Model for edited board name
       $scope.editBoardDesc = ''; // Model for edited board desc
 
-      $scope.getDataId = function() {
-        return dataId++;
-      };
+      $scope.getDataId = function() { return dataId++; };
 
       $scope.setEditCat = function(dataId) {
         var editCat = $scope.nestableMap[dataId];
@@ -64,7 +62,7 @@ module.exports = ['$state', function($state) {
 
       // Edits the set board
       $scope.editBoard = function() {
-        // Board being edited is a new board.
+        // Board being edited is in new board array
         if (editBoardId === -1 && editBoardDataId) {
           $scope.newBoards.forEach(function(newBoard) {
             if (newBoard.dataId === editBoardDataId) {
@@ -103,9 +101,7 @@ module.exports = ['$state', function($state) {
         $scope.closeModal('#edit-board');
       };
 
-      $scope.setDelete = function(dataId) {
-        deleteDataId = dataId;
-      };
+      $scope.setDelete = function(dataId) { deleteDataId = dataId; };
 
       $scope.confirmDelete = function() {
         var deleteEl = $('li[data-id="' + deleteDataId + '"]');
@@ -140,20 +136,14 @@ module.exports = ['$state', function($state) {
 
       $scope.save = function() {
         var serializedCats = $('#' + $scope.catListId).nestable('serialize');
-        var serializedBoards = $('#' + $scope.boardListId).nestable('serialize');
-        return $scope.processNewBoards() // 1) Create new boards
+        // 0) Create new Categories
+        return $scope.processNewCategories()
+        // 1) Create new boards
+        .then($scope.processNewBoards)
+        // 2) Handle Boards which have been edited
+        .then($scope.processEditedBoards)
+        // 3) Updated all Categories
         .then(function() {
-          buildMovedBoardsHash(serializedCats);
-          buildMovedBoardsHash(serializedBoards);
-          // 2) Handle Boards which have been moved/reordered
-          return $scope.processMoveBoards();
-        })
-        .then(function() {
-          // 3) Handle Boards which have been edited
-          return $scope.processEditedBoards();
-        })
-        .then(function() {
-          // 4) Updated all Categories
           buildUpdatedCats(serializedCats);
           return $scope.processCategories();
         })
@@ -165,84 +155,47 @@ module.exports = ['$state', function($state) {
 
       // Translates serialized array into boards.updateCategory format
       var buildUpdatedCats = function(catsArr) {
-        var updatedCats = $scope.updatedCats;
-        catsArr.forEach(function(item) {
-          var cat = {
-            id: item.catId,
-            name: item.name,
-            board_ids: []
-          };
-          if (item.children) {
-            item.children.forEach(function(child) {
-              cat.board_ids.push($scope.nestableMap[child.id].id);
-            });
-          }
-          updatedCats.push(cat);
-        });
-      };
+        $scope.boardMapping = [];
+        catsArr.forEach(function(cat, index) {
+          // add this cat as a row entry
+          var catId = $scope.nestableMap[cat.id].id;
+          var row = { type: 'category', id: catId, name: cat.name, view_order: index };
+          $scope.boardMapping.push(row);
 
-      // Recursively builds a hashmap of moved boards
-      var buildMovedBoardsHash = function(boardsArr) {
-        var movedBoards = $scope.movedBoards;
-        if (!boardsArr) { return; }
-        boardsArr.forEach(function(item) {
-          var newChildrenIds = [];
-          var board = $scope.nestableMap[item.id]; // original board object
-          item.children = item.children || [];
-          if (!item.catId) { // Dont process category changes
-            // Lookup each childItem by its data-id in the nestableMap
-            item.children.forEach(function(childItem) {
-              var childBoard = $scope.nestableMap[childItem.id];
-              newChildrenIds.push(childBoard.id); // populate array of latest children ids
-            });
+          // add children boards as entries recursively
+          if (!cat.children) { return; }
+          cat.children.forEach(function(catBoard, index) {
+            // add this cat board as a row entry
+            var boardId = $scope.nestableMap[catBoard.id].id;
+            var boardRow = {
+              type: 'board',
+              id: boardId,
+              category_id: catId,
+              view_order: index
+            };
+            $scope.boardMapping.push(boardRow);
 
-            // If arrays are not equal, a change has occured
-            if(!_.isEqual(board.children_ids, newChildrenIds)) {
-              var removedChildren = _.difference(board.children_ids, newChildrenIds);
-              var addedChildren = _.difference(newChildrenIds, board.children_ids);
-              // Set Old Parent of moved board
-              removedChildren.forEach(function(removedChild) {
-                movedBoards[removedChild] = movedBoards[removedChild] || {};
-                movedBoards[removedChild].oldParent = board.id || '';
-                if (movedBoards[removedChild].oldParent === '' && movedBoards[removedChild].newParent === '') {
-                  delete movedBoards[removedChild]; // Ignore top level board changes
-                }
-              });
-
-              // Set New Parent of moved board
-              addedChildren.forEach(function(addedChild) {
-                movedBoards[addedChild] = movedBoards[addedChild] || {};
-                movedBoards[addedChild].newParent = board.id || '';
-                if (movedBoards[addedChild].oldParent === '' && movedBoards[addedChild].newParent === '') {
-                  delete movedBoards[addedChild]; // Ignore top level board changes
-                }
-              });
-
-              // Ordering change for non top level boards (Update Board children_ids order)
-              // Top level ordering is handled by updateCategories, parent boards children_ids
-              // array must be updated to fix ordering of child boards.
-              if (!removedChildren.length && !addedChildren.length && board.id) {
-                $scope.editedBoards[board.id] = $scope.editedBoards[board.id] || {};
-                $scope.editedBoards[board.id].children_ids =  newChildrenIds;
-              }
+            // add any children board entries
+            if (catBoard.children && catBoard.children.length > 0) {
+              buildEntries(catBoard.children, boardId);
             }
-          }
-          buildMovedBoardsHash(item.children);
+          });
         });
-
-        // Remove boards without an old parent/new parent
-        for (var key in movedBoards) {
-          // Newly added boards
-          if (!movedBoards[key].oldParent && movedBoards[key].newParent === '') {
-            delete movedBoards[key];
-          }
-          // Board moved from root to root location
-          else if (!movedBoards[key].newParent && movedBoards[key].oldParent === '') {
-            delete movedBoards[key];
-          }
-        }
       };
 
+      function buildEntries(currentBoards, parentId) {
+        currentBoards.forEach(function(board, index) {
+          // add this board as a row entry
+          var boardId = $scope.nestableMap[board.id].id;
+          var row = { type: 'board', id: boardId, parent_id: parentId, view_order: index };
+          $scope.boardMapping.push(row);
+
+          // add any children boards as a row entry
+          if (board.children && board.children.length > 0) {
+            buildEntries(board.children, boardId);
+          }
+        });
+      }
     }
   };
 }];

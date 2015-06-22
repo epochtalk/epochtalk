@@ -99,15 +99,11 @@ exports.allCategories = {
 exports.updateCategories = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonPre.adminCheck } ],
-  validate: {
-    payload: {
-      categories: Joi.array().required(),
-    }
-  },
+  validate: { payload: { boardMapping: Joi.array().required() } },
   handler: function(request, reply) {
     // update board on db
-    db.boards.updateCategories(request.payload.categories)
-    .then(function(board) { reply(board); })
+    db.boards.updateCategories(request.payload.boardMapping)
+    .then(function(categories) { reply(categories); })
     .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };
