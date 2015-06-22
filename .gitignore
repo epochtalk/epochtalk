@@ -11,6 +11,7 @@ lib-cov
 
 pids
 logs
+doc
 results
 config.json
 

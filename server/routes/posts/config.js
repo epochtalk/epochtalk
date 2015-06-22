@@ -1,10 +1,23 @@
 var Joi = require('joi');
 var path = require('path');
-var Hapi = require('hapi');
 var Boom = require('boom');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
+  * @api {POST} /posts Create
+  * @apiName CreatePost
+  * @apiPermission User
+  * @apiDescription Used to create a new post.
+  *
+  * @apiUse PostObjectPayload
+  *
+  * @apiUse PostObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue creating the post
+  */
 exports.create = {
   auth: { strategy: 'jwt' },
   validate: {
@@ -32,6 +45,25 @@ exports.create = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
+  * @api {POST} /posts/import Import
+  * @apiName ImportPost
+  * @apiPermission Super Administrator
+  * @apiDescription Used to import a post. Currently only SMF is supported.
+  *
+  * @apiUse PostObjectPayload
+  * @apiParam (Payload) {object} smf Object containing SMF metadata
+  * @apiParam (Payload) {number} smf.ID_MEMBER Legacy smf user id
+  * @apiParam (Payload) {number} smf.ID_TOPIC Legacy smf thread id
+  * @apiParam (Payload) {number} smf.ID_MSG Legacy smf post id
+  * @apiParam (Payload) {string} smf.posterName Legacy smf username
+  *
+  * @apiUse PostObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue importing the post
+  */
 exports.import = {
   // auth: { strategy: 'jwt' },
   // validate: {
@@ -59,6 +91,19 @@ exports.import = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
+  * @api {GET} /posts/:id Find
+  * @apiName FindPost
+  * @apiDescription Used to find a post.
+  *
+  * @apiParam {string} id The unique id of the post to retrieve
+  *
+  * @apiUse PostObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue finding the post
+  */
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
@@ -71,6 +116,22 @@ exports.find = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
+  * @api {GET} /posts Page By Thread
+  * @apiName PagePostsByThread
+  * @apiDescription Used to page through posts by thread.
+  *
+  * @apiParam (Query) {string} thread_id The unique id of the thread to retrieve posts from
+  * @apiParam (Query) {number} page=1 Which page of posts to retrieve
+  * @apiParam (Query) {mixed} limit Number indicating how many posts to retrieve per page.
+  * Also accepts string 'all' to retrieve all posts
+  *
+  * @apiSuccess {array} posts Array containing posts for particular page and thread
+  *
+  * @apiError (Error 500) InternalServerError There was an issue finding the posts for thread
+  */
 exports.byThread = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
@@ -107,6 +168,21 @@ exports.byThread = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
+  * @api {POST} /posts/:id Update
+  * @apiName UpdatePost
+  * @apiPermission User (Post's Author)
+  * @apiDescription Used to update a post.
+  *
+  * @apiParam {string} id The unique id of the post being updated
+  * @apiUse PostObjectPayload
+  *
+  * @apiUse PostObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue updating the post
+  */
 exports.update = {
   auth: { strategy: 'jwt' },
   validate: {
@@ -140,6 +216,20 @@ exports.update = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
+  * @api {DELETE} /posts/:id Delete
+  * @apiName DeletePost
+  * @apiPermission User (Post's Author)
+  * @apiDescription Used to delete a post.
+  *
+  * @apiParam {string} id The unique id of the post being updated
+  *
+  * @apiUse PostObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue deleting the post
+  */
 exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
@@ -152,6 +242,19 @@ exports.delete = {
   },
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
+  * @api {GET} /posts/user/:username/count User Post Count
+  * @apiName PagePostsByUserCount
+  * @apiDescription Retrieves the number of posts created by a particular user.
+  *
+  * @apiParam {string} username The username of the user's post count to retrieve
+  *
+  * @apiSuccess {number} count Number of posts created by this user
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the post count
+  */
 exports.pageByUserCount = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { username: Joi.string().required() } },
@@ -163,6 +266,24 @@ exports.pageByUserCount = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
+  * @api {GET} /posts/user/:username Page By User
+  * @apiName PagePostsByUser
+  * @apiDescription Used to page through posts made by a particular user
+  *
+  * @apiParam {string} username The username of the user's whose posts to page through
+  *
+  * @apiParam (Query) {number} page=1 Which page of the user's posts to retrieve
+  * @apiParam (Query) {number} limit=10 How many posts to return per page
+  * @apiParam (Query) {string="created_at","updated_at","title"} field The field to sort the posts by
+  * @apiParam (Query) {boolean} desc=false True to sort descending, false to sort ascending
+  *
+  * @apiSuccess {array} posts Array containing posts for a particular user
+  *
+  * @apiError (Error 500) InternalServerError There was an issue finding posts for the user
+  */
 exports.pageByUser = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
@@ -187,3 +308,24 @@ exports.pageByUser = {
     .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };
+
+/**
+  * @apiDefine PostObjectPayload
+  * @apiParam (Payload) {string} title The title of the post
+  * @apiParam (Payload) {string} body The post's body with any markup tags converted and parsed into html elements
+  * @apiParam (Payload) {string} raw_body The post's body as it was entered in the editor by the user
+  * @apiParam (Payload) {string} thread_id The unique id of the thread the post belongs to
+  */
+
+/**
+  * @apiDefine PostObjectSuccess
+  * @apiSuccess {string} id The unique id of the post
+  * @apiSuccess {string} thread_id The unique id of the thread the post belongs to
+  * @apiSuccess {string} user_id The unique id of the user who created the post
+  * @apiSuccess {string} title The title of the post
+  * @apiSuccess {string} body The post's body with any markup tags converted and parsed into html elements
+  * @apiSuccess {string} raw_body The post's body as it was entered in the editor by the user
+  * @apiSuccess {timestamp} created_at Timestamp of when the post was created
+  * @apiSuccess {timestamp} updated_at Timestamp of when the post was updated
+  * @apiSuccess {timestamp} imported_at Timestamp of when the post was imported
+  */

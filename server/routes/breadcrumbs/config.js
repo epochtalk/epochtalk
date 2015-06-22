@@ -1,9 +1,24 @@
 var Joi = require('joi');
 var path = require('path');
-var Hapi = require('hapi');
 var Boom = require('boom');
 var db = require(path.normalize(__dirname + '/../../../db'));
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Breadcrumbs
+  * @api {GET} /breadcrumbs Find
+  * @apiName FindBreadcrumbs
+  * @apiDescription Used to get the breadcrumbs from board, thread, category or post id
+  *
+  * @apiParam (Query) {string} id The unique id of the board, thread, category or post to retrieve breadcrumbs for
+  * @apiParam (Query) {string} type The type of the id being provided (board, category, thread, or post)
+  *
+  * @apiSuccess {array} breadcrumbs Array containing breadcrumb objects
+  * @apiSuccess (Breadcrumb Object) {string} label Label for the breadcrumb link
+  * @apiSuccess (Breadcrumb Object) {string} url URL for backing the label
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the breadcrumbs
+  */
 exports.byType = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {

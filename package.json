@@ -21,9 +21,14 @@
   "author": "James Wang <jw@slickage.com> (http://slickage.com/)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/slickage/epochtalk/issues"
+    "url": "https://github.com/epochtalk/epochtalk/issues"
   },
-  "homepage": "https://github.com/slickage/epochtalk",
+  "homepage": "https://github.com/epochtalk/epochtalk",
+  "apidoc": {
+    "title": "Epochtalk",
+    "description" : "Overview of Epochtalk API",
+    "url": "/api"
+  },
   "dependencies": {
     "async": "^0.9.0",
     "aws-sdk": "^2.1.20",
@@ -76,6 +81,6 @@
     "node": "0.12.x"
   },
   "bin": {
-    "epoch" : "cli/index.js"
+    "epoch": "cli/index.js"
   }
 }
