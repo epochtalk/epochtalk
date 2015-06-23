@@ -27,7 +27,7 @@ module.exports = ['$timeout', '$anchorScroll', 'boards',
       var thread_count = 0;
       var post_count = 0;
 
-      if (countBoards.length > 0) {
+      if (countBoards && countBoards.length > 0) {
         countBoards.forEach(function(board) {
           var children = countTotals(board.children);
           thread_count += children.thread_count + board.thread_count;

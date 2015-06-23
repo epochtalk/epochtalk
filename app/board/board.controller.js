@@ -17,17 +17,19 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     this.parent.newThreadUrl = '/boards/' + board.id + '/threads/new';
 
     // set total_thread_count and total_post_count for all boards
-    board.children.map(function(childBoard) {
-      var children = countTotals(childBoard.children);
-      childBoard.total_thread_count = children.thread_count + childBoard.thread_count;
-      childBoard.total_post_count = children.post_count + childBoard.post_count;
-    });
+    if (board.children) {
+      board.children.map(function(childBoard) {
+        var children = countTotals(childBoard.children);
+        childBoard.total_thread_count = children.thread_count + childBoard.thread_count;
+        childBoard.total_post_count = children.post_count + childBoard.post_count;
+      });
+    }
 
     function countTotals(countBoards) {
       var thread_count = 0;
       var post_count = 0;
 
-      if (countBoards.length > 0) {
+      if (countBoards && countBoards.length > 0) {
         countBoards.forEach(function(countBoard) {
           var children = countTotals(countBoard.children);
           thread_count += children.thread_count + countBoard.thread_count;

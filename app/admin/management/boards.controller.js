@@ -25,7 +25,7 @@ module.exports = ['$scope', '$q', 'Boards', 'Categories', 'boards', 'categories'
         // remove this board from boardListData
         _.remove(boards, function(tempBoard) { return tempBoard.id === board.id; });
         // recurse if there are children
-        if (board.children.length > 0) { cleanBoards(board.children); }
+        if (board.children && board.children.length > 0) { cleanBoards(board.children); }
       });
     }
 
