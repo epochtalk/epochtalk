@@ -1,156 +1,230 @@
-# EpochTalk [![Circle CI](https://circleci.com/gh/epochtalk/epochtalk.svg?circle-token=:circle-token)](https://circleci.com/gh/epochtalk/epochtalk) [![Gitter chat](http://img.shields.io/badge/gitter-slickage%2Fepochtalk-1dce73.svg?style=flat)](https://gitter.im/slickage/epochtalk)
+# Epochtalk [![Circle CI](https://circleci.com/gh/epochtalk/epochtalk.svg?circle-token=:circle-token)](https://circleci.com/gh/epochtalk/epochtalk) [![Gitter chat](http://img.shields.io/badge/gitter-epochtalk%2Fepochtalk-1dce73.svg?style=flat)](https://gitter.im/epochtalk/epochtalk)
 
 ####**Warning this project is under active development, design is subject to change**
 
-Next generation forum software. EpochTalk is a forum frontend designed to be paired with EpochCore [Backend](https://github.com/epochtalk/core-pg). The EpochTalk frontend utilizes technologies such as [AngularJS](https://angularjs.org), [Browserify](https://www.npmjs.org/package/browserify) and [Foundation](http://foundation.zurb.com) for improved performance and user experience as compared to existing forum software.
+Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Browserify](https://www.npmjs.org/package/browserify), [Postgres](https://github.com/postgres/postgres) and [Foundation](http://foundation.zurb.com) for improved performance and user experience as compared to existing forum software.
+
+![Epochtalk Forums](http://i.imgur.com/cq4SCVV.png)
+
+## Index
+* [Features](#features)
+* [Dependencies](#dependencies)
+  * [System](#system)
+  * [Bower](#bower)
+  * [NPM](#npm)
+* [Installation](#installation)
+* [Configuration](#configuration)
+  * [Manual Configuration](#manual-configuration)
+  * [Admin Panel Configuration](#admin-panel-configuration)
+* [API](#api)
+* [Editor](#editor)
+  * [BBCode](#bbcode)
+  * [Security](#security)
+  * [Planned Features](#planned-features)
+* [Contributions](#contributions)
+* [Planned Changes](#planned-changes)
+* [Feedback](#feedback)
+* [License](#license)
 
 ## Features
-* EpochTalk is a single page web application created with [AngularJS](https://angularjs.org)
+* Epochtalk is a single page web application created with [AngularJS](https://angularjs.org)
 * Web/Mobile ready responsive design using [Foundation](http://foundation.zurb.com)
 * JavaScript and CSS is bundled and minimized for performance using [Browserify](https://www.npmjs.org/package/browserify) and [Uglify-js](https://www.npmjs.org/package/uglify-js)
-* Designed with performance in mind. EpochTalk's backend, [EpochCore](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
+* Designed with performance in mind. EpochTalk's backend, [Epochtalk-Core-PG](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
 
 ## Dependencies
+### System
 * [node](http://nodejs.org)
 * [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
-* [Postgres](http://www.postgresql.org/) 
+* [bower](https://github.com/bower/bower)
+* [Postgres](http://www.postgresql.org/)
+* [foreman](http://ddollar.github.io/foreman)
 
-### Frontend Dependencies
-"angular": "angular/bower-angular#v1.3.14",
-"angular-resource": "angular/bower-angular-resource#v1.3.14",
-"angular-sanitize": "angular/bower-angular-sanitize#v1.3.14",
-"angular-animate": "angular/bower-angular-animate#v1.3.14",
-"angular-loading-bar": "chieffancypants/angular-loading-bar#0.7.1",
-"foundation": "zurb/bower-foundation#5.5.1",
-"nestable": "slickage/Nestable"
+### Bower
+* angular `1.3.14`
+* angular-resource `1.3.14`
+* angular-sanitize `1.3.14`
+* angular-animate `1.3.14`
+* angular-loading-bar `0.7.1`
+* foundation `5.5.1`
+* nestable [slickage/Nestable](http://github.com/slickage/Nestable)
+* angular-ui-router `~0.2.15`
+* angular-ui-router-title `0.0.3`
+
+### NPM
+* async `^0.9.0`
+* aws-sdk `^2.1.20`
+* bcrypt `^0.8.0`
+* bluebird `^2.6.4`
+* boom `^2.6.1`
+* brfs `^1.3.0`
+* browserify `^8.1.3`
+* cheerio `^0.18.0`
+* commander `^2.5.1`
+* db-migrate `^0.8.0`
+* deep-rename-keys `^0.1.0`
+* dot `^1.0.3`
+* epochtalk-bbcode-parser `^1.0.0`
+* epochtalk-core-pg `^0.9.11`
+* fs-extra `^0.16.5`
+* good `^5.1.1`
+* good-console `^4.1.0`
+* good-file `^4.0.1`
+* hapi `^8.2.0`
+* hoek `^2.12.0`
+* joi `^6.0.8`
+* json `^9.0.3`
+* jsonwebtoken `^5.0.0`
+* levelup `^0.19.0`
+* lodash `^2.4.1`
+* lout `^6.1.0`
+* medium-editor `^1.8.14`
+* memdown `^0.11.0`
+* mkdirp `^0.5.0`
+* mmmagic `^0.3.11`
+* node-sass `^2.1.1`
+* node-uuid `^1.4.1`
+* nodemailer `^1.3.2`
+* pg `^4.2.0`
+* request `^2.53.0`
+* sanitize-html `^1.4.3`
+* stream-meter `^1.0.3`
+* through2 `^0.6.3`
+* yargs `^1.2.1`
 
 
 ## Installation
 
-1) Checkout repository using git:
+#### 1) Checkout repository using git:
 ```sh
-$ git clone git@github.com:epochtalk/frontend.git
+$ git clone git@github.com:epochtalk/epochtalk.git
 ```
 
-2) Change directories and install dependencies using [npm](https://www.npmjs.org/doc/README.html)
+#### 2) Change directories and install dependencies using [npm](https://www.npmjs.org/doc/README.html)
 ```sh
-$ cd frontend
+$ cd epochtalk
 $ npm install
 ```
 
-3) Set Required Environment Variables
 
-One way of doing this is using [foreman](http://ddollar.github.io/foreman/) and a `.env` file. Example `.env` file for EpochTalk:
+#### 3) Install frontend dependencies using [bower](https://github.com/bower/bower)
 ```sh
-SMTP_HOST=smtp.example.com
-SMTP_USER=test@example.com
-SMTP_PASS=password
-EMAILER_SENDER_EMAIL=info@epochtalk.com
-EMAILER_LOG_ENABLED=true
+$ bower install
 ```
 
-4) Seed Test Data **(Optional)**
-
-EpochTalk is currently in alpha release, the easiest way to view the state of the software is to seed the forum with test data using the EpochTalk [admin tool](https://github.com/epochtalk/admin). While still within the `frontend` directory run the following commands:
-```sh
-$ npm install git+ssh://git@github.com/epochtalk/admin.git -g
-$ epoch --seed
-```
-
-4a) Initialize DB on first run
-
-Before running EpochTalk for the first time, it is essential that these command are run first to ensure that the DB has created the correct tables.
+#### 4) Initialize Database
+First ensure that [Postgres](http://www.postgresql.org/) is installed an running. Before running EpochTalk for the first time, it is essential that these command are run first to ensure that the DB has created the correct tables.
 ```sh
 $ npm run db-create
 $ npm run db-migrate
 ```
 
-5) Start the EpochTalk Server
-
+#### 5) Run the Epochtalk CLI tool
+The CLI tool will create the first board and admin account. From the root directory of the project run the following command:
 ```sh
-$ npm run serve
+$ node cli/index.js --create
 ```
-Upon running the `serve` command EpochTalk will start its webserver and compile all JavaScript and css. Once compilation is complete the forum can be viewed at `http://localhost:8080`
+
+#### 6) Start the EpochTalk Server
+Ensure that [foreman](http://ddollar.github.io/foreman) is installed. Upon running the `foreman start` command Epochtalk will start its webserver and compile all JavaScript and css. Once compilation is complete the forum can be viewed at `http://localhost:8080`
+```sh
+$ foreman start -f Procfile.dev #for development
+$ foreman start -f #for production
+```
+
+#### 7) Login and Change Admin Account Information
+Login to the admin account using the username ``admin`` and password ``admin1234``. Visit your profile by clicking the link in the top right corner of the page, then change your username and password.
+
+### NOTE
+Since both [Epochtalk](https://github.com/epochtalk/epochtalk) and [core-pg](https://github.com/epochtalk/core-pg) are actively being developed, the database migrations can become out of sync. To resolve this you can checkout [core-pg](https://github.com/epochtalk/core-pg) and then from within the root directory of core-pg, you can run ``npm link``. Change directories into the ``node_modules`` of your checked out [Epochtalk](https://github.com/epochtalk/epochtalk) project and run ``npm link epochtalk-core-pg``. This will ensure that [Epochtalk](https://github.com/epochtalk/epochtalk) is using the latest master of [core-pg](https://github.com/epochtalk/core-pg) instead of the npm version. Then run ``npm run db-migrate`` from the root directory of your [Epochtalk](https://github.com/epochtalk/epochtalk) project to ensure all migrations are up to date.
+
+## Configuration
+Forum configurations can be set either manually or using the admin panel.
+### Manual Configuration
+The forum configs can be set manually with a [.env](http://ddollar.github.io/foreman/#ENVIRONMENT) file in the root directory of the project.
+```sh
+HOST=localhost
+PORT=8080
+LOG_ENABLED=true
+PUBLIC_URL=http://localhost:8080
+PRIVATE_KEY=Change this to something more secure
+VERIFY_REGISTRATION=false
+LOGIN_REQUIRED=false
+WEBSITE_TITLE=Epochtalk Forums
+WEBSITE_DESCRIPTION=Open source forum software
+WEBSITE_KEYWORDS=open source, free forum, forum software, forum
+WEBSITE_LOGO=
+WEBSITE_FAVICON=
+EMAILER_SENDER=info@example.com
+EMAILER_HOST=smtp.gmail.com
+EMAILER_PORT=465
+EMAILER_USER=username
+EMAILER_PASS=password
+EMAILER_SECURE=true
+IMAGES_STORAGE=local
+IMAGES_MAX_SIZE=10485760
+IMAGES_EXPIRATION=7200000
+IMAGES_INTERVAL=900000
+IMAGES_LOCAL_DIR=/public/images
+IMAGES_LOCAL_PATH=/static/images
+IMAGES_S3_ROOT=http://some.where
+IMAGES_S3_DIR=images/
+IMAGES_S3_BUCKET=bukkit
+IMAGES_S3_REGION=region
+IMAGES_S3_ACCESS_KEY=testkey
+IMAGES_S3_SECRET_KEY=testkey
+```
+### Admin Panel Configuration
+Configurations can also be set using the settings tab in the administration panel.
+![Admin Settings](http://i.imgur.com/8ODSJQR.png)
 
 ## API
-The EpochTalk API can be accessed at `http://localhost:8080/api/` when the server is running. The following api routes are supported:
-
-###Boards
-| Route | Type | Params | Description |
-|-------|------|--------|-------------|
-|`/api/boards`|POST| Board Obj |Used to create a new board|
-|`/api/boards`|GET|N/A|Returns a categorized list of all boards with categories|
-|`/api/boards/all`|GET|N/A|Returns an uncategorized list of all boards|
-|`/api/boards/{id}`|POST|Updated Board Obj|Used to update a specific board|
-|`/api/boards/{id}`|GET|N/A|Returns a specific board|
-|`/api/boards/{id}`|DELETE|N/A|Used to delete a specific board|
-All POST parameters must follow the [Board Schema](https://github.com/epochtalk/core#board-schema)
-
-###Threads
-| Route | Type | Params | Description |
-|-------|------|--------|-------------|
-|`/api/threads`|POST|Thread Obj|Used to create a new thread|
-|`/api/threads`|GET|board_id, limit, page|Returns a list of threads by board|
-|`/api/thread/{id}`|GET|N/A|Returns a specific thread|
-All POST parameters must follow the [Thread Schema](https://github.com/epochtalk/core#thread-schema)
-
-###Posts
-| Route | Type | Params | Description |
-|-------|------|--------|-------------|
-|`/api/posts`|POST|Post Obj|Used to create a new post|
-|`/api/posts`|GET|thread_id, limit, page|Returns a list of posts by thread|
-|`/api/posts/{id}`|GET|N/A|Returns a specific post|
-|`/api/posts/{id}`|POST|Updated Post Obj|Used to update a specific post|
-|`/api/posts/{id}`|DELETE|N/A|Used to delete a specific post|
-All POST parameters must follow the [Post Schema](https://github.com/epochtalk/core#post-schema)
-
-###Users
-| Route | Type | Params | Description |
-|-------|------|--------|-------------|
-|`/api/users`|POST|User Obj|Used to create a new user|
-|`/api/users/{id}`|GET|N/A|Returns a specific user|
-All POST parameters must follow the [User Schema](https://github.com/epochtalk/core#user-schema)
+The EpochTalk API can be accessed at `http://localhost:8080/api/` while the server is running. To see full documentation for the api visit the [Epochtalk API Documentation](https://github.com/epochtalk/epochtalk/wiki/Epochtalk-API-Documentation) wiki page.
 
 ##Editor
-![Editor](http://i.imgur.com/kNoyjeL.png)
+![Editor](http://i.imgur.com/5JPc0ui.png)
 
-Each post is crafted through a unique editor that can parses BBCode.
+Each post is crafted through a unique editor with a live content preview.
 
-As for BBCode, the codes that are parsed is based off the SMF 1.0 BBCode spec but with some modifications as per the BitcoinTalk forum. Because BBCode differs from forum to forum, a preview window is provided to the right of the main user input to show what the post would like once it has been sent to the server. The editor itself will parse the user input in real time with a 250 millisecond debounce. So user can continue to type and the text will not be parsed until 250 millisecond after the last keypress.
+### BBCode
+
+As for BBCode, the tags that are parsed are based off the SMF 1.0 BBCode spec but with some modifications as per the BitcoinTalk forum. Due to the fact that BBCode differs from forum to forum, a preview window is provided to the right of the main user input to preview what the post will look like once it has been sent to the server. The editor itself will parse the user input in real time with a 250 millisecond debounce. So user can continue to type and the text will not be parsed until 250 millisecond after the last keypress.
+
+To view the list of supported BBCode tags click the ``formatting`` button at the top right of the editor:
+
+![Formatting](http://i.imgur.com/4GQwfmh.png)
 
 ### Security
 
 All user typed HTML is escaped using their decimal encoding while any other HTML is cleaned using [punkave's](https://github.com/punkave) [sanitize-html](https://github.com/punkave/sanitize-html) library. All BBCode input is parsed through our modified [BBCode-Parser](https://github.com/epochtalk/bbcode-parser) library. This ensures that all content passed to the server is sanitized from any malicious code. Also, Angular's sanitization library also ensures that anything missed through the above process is yet again cleaned before it is shown on the client's browser.
 
-*All inputs on the forum is cleaned to different degrees.*
+*All inputs on the forum are cleaned to different degrees.*
 
-Title like inputs are stripped of all html while description like inputs are allowed only formatting based html tags (```<b>```, ```<em>```, ```<table>``` but not ```<div>```, ```<img>```, and ```<span>```). Posts and Signatures are given the full treatment as described as above but allow more html like ```<img>```.
+Title like inputs are stripped of all html while description like inputs are allowed only formatting based html tags (```<b>```, ```<em>```, ```<table>``` but not ```<div>```, ```<img>```, and ```<span>```). Posts and Signatures are given the full treatment as described above but allow more html like ```<img>```.
 
 ### Planned Features:
 * Markdown Support
 * Medium Based Editor
 * Hiding the preview window
 * Moving the preview window to another location
-* Full Screen Editor
 * Full feature compatibility across all input methods (BBCode, Medium, Markdown)
 
+## Contributions
+Epochtalk is an open source project and we are planning to accept contributions. If you would like to contribute to Epochtalk please email [info@slickage.com](mailto:info@slickage.com).
 
-##TODO (Planned Changes)
-* Redesign of frontend user interface (Current UI is temporary). Design is currently a low priority until the EpochCore backend is in a more stable state.
-* Functionality to create Boards/Threads/Posts via the UI (Currently supported via the API)
-* Implementation of Admin and User Views
+## Planned Changes
+* Redesign of frontend user interface (Current UI is temporary). Design is currently a low priority until the all the forum features are fully fleshed out.
+* Dockerizing Epochtalk
 
-See our github issues flagged with the [TODO label](https://github.com/epochtalk/frontend/issues?q=is%3Aopen+is%3Aissue+label%3ATODO)
+To see planned backend changes, visit the core-pg [issues page](https://github.com/epochtalk/core-pg/issues)
 
-To see planned backend changes, visit the EpochCore [issues page](https://github.com/epochtalk/core/issues?q=is%3Aopen+is%3Aissue+label%3ATODO)
+## Feedback
+Please leave us feedback using [github issues](https://github.com/epochtalk/epochtalk/issues)
 
-##Feedback
-Please leave us feedback using [github issues](https://github.com/epochtalk/frontend/issues)
-
-##License
+## License
 The MIT License (MIT)
 
-Copyright (c) 2014 EpochTalk
+Copyright (c) 2014 Epochtalk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
