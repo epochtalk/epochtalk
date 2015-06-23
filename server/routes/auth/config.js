@@ -24,6 +24,23 @@ var buildToken = function(user) {
   return jwt.sign(decodedToken, config.privateKey, { algorithm: 'HS256' });
 };
 
+/**
+  * @api {POST} /login Login
+  * @apiName Login
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to log a user into their account.
+  *
+  * @apiParam (Payload) {string} username User's unique username
+  * @apiParam (Payload) {string} password User's password
+  *
+  * @apiSuccess {string} token User's authentication token
+  * @apiSuccess {string} username User's unique username
+  * @apiSuccess {string} userId User's unique id
+  *
+  * @apiError BadRequest Invalid credentials were provided or the account hasn't been confirmed
+  * @apiError (Error 500) InternalServerError There was an issue looking up the user in the db
+  */
 exports.login = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
@@ -83,6 +100,18 @@ exports.login = {
   }
 };
 
+/**
+  * @api {DELETE} /logout Logout
+  * @apiName Logout
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to log a user out of their account.
+  *
+  * @apiSuccess {boolean} success true if user is successfully logged out
+  *
+  * @apiError BadRequest No user is currently logged in
+  * @apiError (Error 500) InternalServerError There was an issue deleteing user's web token
+  */
 exports.logout = {
   auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
@@ -101,6 +130,45 @@ exports.logout = {
   }
 };
 
+/**
+  * @api {POST} /register Register (w/o account verification)
+  * @apiName RegisterNoVerify
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to register a new account with account verification disabled in admin settings.
+  *
+  * @apiParam (Payload) {string} username User's unique username.
+  * @apiParam (Payload) {string} email User's email address.
+  * @apiParam (Payload) {string} password User's password
+  * @apiParam (Payload) {string} confirmation User's confirmed password
+  *
+  * @apiSuccess {string} token User's authentication token
+  * @apiSuccess {string} id User's unique id
+  * @apiSuccess {string} avatar User's avatar url
+  * @apiSuccess {array} roles Array of user's roles
+  *
+  * @apiError BadRequest There was an error creating the user
+  */
+/**
+  * @api {POST} /register Register (w/ account verification)
+  * @apiName RegisterVerify
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to register a new account with account verification enabled in admin settings.
+  * This will send an email to the user with the account verification link.
+  *
+  * @apiParam (Payload) {string} username User's unique username.
+  * @apiParam (Payload) {string} email User's email address.
+  * @apiParam (Payload) {string} password User's password
+  * @apiParam (Payload) {string} confirmation User's confirmed password
+  *
+  * @apiSuccess {string} message Account creation success message
+  * @apiSuccess {string} username Created user's username
+  * @apiSuccess {string} confirm_token Created user's account confirmation token
+  * @apiSuccess {string} confirm_url URL to visit to confirm user's account
+  *
+  * @apiError BadRequest There was an error creating the user
+  */
 exports.register = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
@@ -176,6 +244,25 @@ exports.register = {
   }
 };
 
+/**
+  * @api {POST} /confirm Confirm Account
+  * @apiName Confirm Account
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to confirm a newly registered account when account verification
+  * is enabled in the admin panel.
+  *
+  * @apiParam (Payload) {string} username User's unique username.
+  * @apiParam (Payload) {string} token User's confirmation token.
+  *
+  * @apiSuccess {string} token User's authentication token
+  * @apiSuccess {string} id User's unique id
+  * @apiSuccess {string} avatar User's avatar url
+  * @apiSuccess {array} roles Array of user's roles
+  *
+  * @apiError BadRequest Account was not found or confirmation token doesn't match
+  * @apiError (Error 500) InternalServerError There was an issue looking up the user in the db
+  */
 exports.confirmAccount = {
   validate: {
     payload: {
@@ -221,6 +308,20 @@ exports.confirmAccount = {
   }
 };
 
+/**
+  * @api {GET} /authenticate Authenticate User
+  * @apiName Authenticate User
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to check the logged in user's authentication.
+  *
+  * @apiSuccess {string} id User's unique id
+  * @apiSuccess {string} username User's username
+  * @apiSuccess {string} avatar User's avatar url
+  * @apiSuccess {array} roles Array of user's roles
+  *
+  * @apiError Unauthorized returned when user is not authenticated
+  */
 exports.authenticate = {
   auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
@@ -243,6 +344,17 @@ exports.authenticate = {
   }
 };
 
+/**
+  * @api {GET} /register/username/:username Username Availability
+  * @apiName Username Availability
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to check if a username is available when registering a new account.
+  *
+  * @apiParam {string} username The username to check
+  *
+  * @apiSuccess {boolean} found true if username exists false if not
+  */
 exports.username = {
   validate: { params: { username: Joi.string().min(1).max(255).required() } },
   handler: function(request, reply) {
@@ -256,6 +368,17 @@ exports.username = {
   }
 };
 
+/**
+  * @api {GET} /register/email/:email Email Availability
+  * @apiName Email Availability
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to check if an email is available when registering a new account.
+  *
+  * @apiParam {string} email The email to check
+  *
+  * @apiSuccess {boolean} found true if email exists false if not
+  */
 exports.email = {
   validate: { params: { email: Joi.string().email().required() } },
   handler: function(request, reply) {
@@ -269,6 +392,21 @@ exports.email = {
   }
 };
 
+
+/**
+  * @api {GET} /recover/:query Recover Account
+  * @apiName AccountRecoveryReq
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to recover an account by username or email. Sends an email with
+  * a URL to visit to reset the user's account password.
+  *
+  * @apiParam {string} query The email or username to attempt to recover
+  *
+  * @apiSuccess {boolean} success true if recovery email is sent
+  * @apiError BadRequest The username or email is not found
+  * @apiError (Error 500) InternalServerError There was an error updating the user account's reset token information
+  */
 exports.recoverAccount = {
   validate: { params: { query: Joi.string().min(1).max(255).required(), } },
   handler: function(request, reply) {
@@ -309,6 +447,23 @@ exports.recoverAccount = {
   }
 };
 
+/**
+  * @api {POST} /reset Reset Account Password
+  * @apiName AccountRecoveryReset
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to reset an account password after recovering an account.
+  *
+  * @apiParam (Payload) {string} username The username of the user whose password is being reset
+  * @apiParam (Payload) {string} password The new account password
+  * @apiParam (Payload) {string} query The new account password confirmation
+  * @apiParam (Payload) {string} token The token for resetting the account password
+  *
+  * @apiSuccess {string} message Password Successfully Reset
+  *
+  * @apiError BadRequest The user account could not be found or the reset token is invalid
+  * @apiError (Error 500) InternalServerError There was an error updating the user account's reset token information
+  */
 exports.resetPassword = {
   validate: {
     payload: {
@@ -353,6 +508,23 @@ exports.resetPassword = {
   }
 };
 
+
+/**
+  * @api {GET} /reset/:username/:token/validate Validate Account Reset Token
+  * @apiName AccountRecoveryToken
+  * @apiGroup Auth
+  * @apiVersion 0.3.0
+  * @apiDescription Used to check the validity of the reset token. Verifys that the reset
+  * token is for the correct user and that it is not expired.
+  *
+  * @apiParam {string} username The username of the user whose reset token is to be checked
+  * @apiParam {string} token The token for resetting the account password
+  *
+  * @apiSuccess {boolean} token_valid true if the token is valid false if it is not
+  * @apiSuccess {boolean} token_expired true if token is expired false if not. Undefined if token is invalid
+  *
+  * @apiError BadRequest The user account could not be found
+  */
 exports.checkResetToken = {
   validate: {
     params: {
