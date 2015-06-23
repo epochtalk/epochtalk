@@ -4,7 +4,7 @@
 
 Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Browserify](https://www.npmjs.org/package/browserify), [Postgres](https://github.com/postgres/postgres) and [Foundation](http://foundation.zurb.com) for improved performance and user experience as compared to existing forum software.
 
-![Epochtalk Forums](http://i.imgur.com/cq4SCVV.png)
+![Epochtalk Forums](http://i.imgur.com/iWEvbvF.png)
 
 ## Index
 * [Features](#features)
@@ -30,7 +30,7 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * Epochtalk is a single page web application created with [AngularJS](https://angularjs.org)
 * Web/Mobile ready responsive design using [Foundation](http://foundation.zurb.com)
 * JavaScript and CSS is bundled and minimized for performance using [Browserify](https://www.npmjs.org/package/browserify) and [Uglify-js](https://www.npmjs.org/package/uglify-js)
-* Designed with performance in mind. EpochTalk's backend, [Epochtalk-Core-PG](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
+* Designed with performance in mind. Epochtalk's backend, [Epochtalk-Core-PG](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
 
 ## Dependencies
 ### System
@@ -113,7 +113,7 @@ $ bower install
 ```
 
 #### 4) Initialize Database
-First ensure that [Postgres](http://www.postgresql.org/) is installed an running. Before running EpochTalk for the first time, it is essential that these command are run first to ensure that the DB has created the correct tables.
+First ensure that [Postgres](http://www.postgresql.org/) is installed an running. Before running Epochtalk for the first time, it is essential that these command are run first to ensure that the DB has created the correct tables.
 ```sh
 $ npm run db-create
 $ npm run db-migrate
@@ -125,7 +125,7 @@ The CLI tool will create the first board and admin account. From the root direct
 $ node cli/index.js --create
 ```
 
-#### 6) Start the EpochTalk Server
+#### 6) Start the Epochtalk Server
 Ensure that [foreman](http://ddollar.github.io/foreman) is installed. Upon running the `foreman start` command Epochtalk will start its webserver and compile all JavaScript and css. Once compilation is complete the forum can be viewed at `http://localhost:8080`
 ```sh
 $ foreman start -f Procfile.dev #for development
@@ -176,10 +176,10 @@ IMAGES_S3_SECRET_KEY=testkey
 ```
 ### Admin Panel Configuration
 Configurations can also be set using the settings tab in the administration panel.
-![Admin Settings](http://i.imgur.com/8ODSJQR.png)
+![Admin Settings](http://i.imgur.com/kIxs86V.png)
 
 ## API
-The EpochTalk API can be accessed at `http://localhost:8080/api/` while the server is running. To see full documentation for the api visit the [Epochtalk API Documentation](https://github.com/epochtalk/epochtalk/wiki/Epochtalk-API-Documentation) wiki page.
+The Epochtalk API can be accessed at `http://localhost:8080/api/` while the server is running. To see full documentation for the api visit the [Epochtalk API Documentation](https://github.com/epochtalk/epochtalk/wiki/Epochtalk-API-Documentation) wiki page.
 
 ##Editor
 ![Editor](http://i.imgur.com/5JPc0ui.png)
@@ -224,7 +224,7 @@ Please leave us feedback using [github issues](https://github.com/epochtalk/epoc
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2014 Epochtalk
+Copyright (c) 2015 Epochtalk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
