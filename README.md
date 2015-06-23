@@ -112,30 +112,23 @@ $ npm install
 $ bower install
 ```
 
-#### 4) Initialize Database
-First ensure that [Postgres](http://www.postgresql.org/) is installed an running. Before running Epochtalk for the first time, it is essential that these command are run first to ensure that the DB has created the correct tables.
-```sh
-$ npm run db-create
-$ npm run db-migrate
-```
-
-#### 5) Run the Epochtalk CLI tool
-The CLI tool will create the first board and admin account. From the root directory of the project run the following command:
+#### 4) Run the Epochtalk CLI tool
+First ensure that [Postgres](http://www.postgresql.org/) is installed an running. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the fourm. From the root directory of the project run the following command:
 ```sh
 $ node cli/index.js --create
 ```
 
-#### 6) Start the Epochtalk Server
+#### 5) Start the Epochtalk server
 Ensure that [foreman](http://ddollar.github.io/foreman) is installed. Upon running the `foreman start` command Epochtalk will start its webserver and compile all JavaScript and css. Once compilation is complete the forum can be viewed at `http://localhost:8080`
 ```sh
 $ foreman start -f Procfile.dev #for development
 $ foreman start -f #for production
 ```
 
-#### 7) Login and Change Admin Account Information
+#### 6) Login and change admin account information
 Login to the admin account using the username ``admin`` and password ``admin1234``. Visit your profile by clicking the link in the top right corner of the page, then change your username and password.
 
-### NOTE
+### Trouble Shooting
 Since both [Epochtalk](https://github.com/epochtalk/epochtalk) and [core-pg](https://github.com/epochtalk/core-pg) are actively being developed, the database migrations can become out of sync. To resolve this you can checkout [core-pg](https://github.com/epochtalk/core-pg) and then from within the root directory of core-pg, you can run ``npm link``. Change directories into the ``node_modules`` of your checked out [Epochtalk](https://github.com/epochtalk/epochtalk) project and run ``npm link epochtalk-core-pg``. This will ensure that [Epochtalk](https://github.com/epochtalk/epochtalk) is using the latest master of [core-pg](https://github.com/epochtalk/core-pg) instead of the npm version. Then run ``npm run db-migrate`` from the root directory of your [Epochtalk](https://github.com/epochtalk/epochtalk) project to ensure all migrations are up to date.
 
 ## Configuration
