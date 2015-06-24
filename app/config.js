@@ -437,7 +437,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           var query = {
             field: $stateParams.field,
             desc: $stateParams.desc,
-            limit: Number($stateParams.limit) || 10,
+            limit: Number($stateParams.limit) || 15,
             page: Number($stateParams.page) || 1,
             filter: $stateParams.filter
           };
@@ -461,7 +461,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return Number($stateParams.page) || 1;
         }],
         limit: ['$stateParams', function($stateParams) {
-          return Number($stateParams.limit) || 10;
+          return Number($stateParams.limit) || 15;
         }],
         filter: ['$stateParams', function($stateParams) {
           return $stateParams.filter;
