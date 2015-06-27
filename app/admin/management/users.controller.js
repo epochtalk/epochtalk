@@ -142,7 +142,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
     var params = $location.search();
     var page = Number(params.page) || 1;
-    var limit = Number(params.limit) || 10;
+    var limit = Number(params.limit) || 15;
     var field = params.field;
     var filter = params.filter;
     var descending = params.desc === 'true';

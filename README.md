@@ -113,7 +113,7 @@ $ bower install
 ```
 
 #### 4) Run the Epochtalk CLI tool
-First ensure that [Postgres](http://www.postgresql.org/) is installed an running. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the fourm. From the root directory of the project run the following command:
+First ensure that [Postgres](http://www.postgresql.org/) is installed and running. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the fourm. From the root directory of the project run the following command:
 ```sh
 $ node cli/index.js --create
 ```
