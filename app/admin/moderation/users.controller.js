@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminReports', 'AdminUsers', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Session, AdminReports, AdminUsers, User, userReports, reportCount, page, limit, field, desc, filter, reportId) {
+module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminReports', 'AdminUsers', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Session, AdminReports, AdminUsers, User, userReports, reportCount, page, limit, field, desc, filter, search, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
@@ -9,6 +9,11 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.tableFilter = 0;
   if (filter === 'Pending') { this.tableFilter = 1; }
   else if (filter === 'Reviewed') { this.tableFilter = 2; }
+
+  // Search Vars
+  this.search = search;
+  this.searchStr = null;
+  this.count = reportCount;
 
   // Report Pagination Vars
   this.pageCount = Math.ceil(reportCount / limit);
@@ -42,6 +47,24 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.selectedUserReport = null;
   this.selectedStatus = null;
   this.statusReportNote = null;
+
+  this.searchReports = function() {
+    ctrl.queryParams = {
+      filter: ctrl.filter,
+      field: 'created_at',
+      search: ctrl.searchStr
+    };
+    $location.search(ctrl.queryParams);
+  };
+
+  this.clearSearch = function() {
+    ctrl.queryParams = {
+      field: 'created_at',
+      filter: ctrl.filter
+    };
+    $location.search(ctrl.queryParams);
+    ctrl.searchStr = null;
+  };
 
   this.showSetStatus = function(userReport) {
     ctrl.selectedUserReport = userReport;
@@ -247,9 +270,11 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.setFilter = function(newFilter) {
     ctrl.queryParams.filter = newFilter;
     delete ctrl.queryParams.reportId;
+    delete ctrl.queryParams.search;
     $location.search(ctrl.queryParams);
     ctrl.reportId = null;
     ctrl.selectedUsername = null;
+    ctrl.searchStr = null;
   };
 
   this.setSortField = function(sortField) {
@@ -289,17 +314,20 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
     var reportId = params.reportId;
     var page = Number(params.page) || 1;
     var limit = Number(params.limit) || 10;
+    var field = params.field;
+    var filter = params.filter;
+    var search = params.search;
     var descending;
     // desc when undefined defaults to true, since we are sorting created_at desc by default
     if (params.desc === undefined) { descending = true; }
     else { descending = params.desc === 'true'; }
-    var filter = params.filter;
     var reportIdChanged = false;
     var pageChanged = false;
     var limitChanged = false;
     var fieldChanged = false;
     var descChanged = false;
     var filterChanged = false;
+    var searchChanged = false;
 
     if (reportId && reportId !== ctrl.reportId) {
       reportIdChanged = true;
@@ -327,23 +355,36 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
       filterChanged = true;
       ctrl.filter = filter;
     }
-    if(reportIdChanged || pageChanged || limitChanged || fieldChanged || descChanged || filterChanged) { ctrl.pullPage(); }
+    if ((search === undefined || search) && search !== ctrl.search) {
+      searchChanged = true;
+      ctrl.search = search;
+    }
+    if(reportIdChanged || pageChanged || limitChanged || fieldChanged || descChanged || filterChanged || searchChanged) { ctrl.pullPage(); }
   });
   $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
   this.pullPage = function() {
     var query = {
       page: ctrl.page,
-      limit: ctrl.limit
+      limit: ctrl.limit,
+      desc: ctrl.desc,
+      field: ctrl.field,
+      filter: ctrl.filter,
+      search: ctrl.search
     };
 
-    if (ctrl.desc) { query.desc = ctrl.desc; }
-    if (ctrl.field) { query.field = ctrl.field; }
-    if (ctrl.filter) { query.filter = ctrl.filter; }
+    var opts;
+    if (ctrl.filter || ctrl.search) {
+      opts = {
+        status: ctrl.filter,
+        search: ctrl.search
+      };
+    }
 
     // update mods's page count
-    AdminReports.userReportsCount({ status: query.filter }).$promise
+    AdminReports.userReportsCount(opts).$promise
     .then(function(updatedCount) {
+      ctrl.count = updatedCount.count;
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
 

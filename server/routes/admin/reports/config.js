@@ -259,6 +259,7 @@ exports.updatePostReportNote = {
   * @apiParam (Query) {string="Pending","Reviwed","Ignored","Bad Report"} filter Used to filter reports by their status
   * @apiParam (Query) {string="created_at","priority","reporter_username","offender_username","offender_email","offender_created_at"} field=created_at Indicates which column to sort by, used for table sorting
   * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
+  * @apiParam (Query) {string} [search] String used to search for a report by username
   *
   * @apiSuccess {object[]} userReports An array of user reports. Sort order varies depending on the query parameters passed in.
   * @apiSuccess {string} userReports.id The unique id of the user report
@@ -286,16 +287,18 @@ exports.pageUserReports = {
       limit: Joi.number().integer().min(1).default(10),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_username', 'offender_email', 'offender_created_at'),
-      desc: Joi.boolean().default(false)
+      desc: Joi.boolean().default(false),
+      search: Joi.string()
     }
   },
   handler: function(request, reply) {
     var opts = {
-      limit: request.query.limit || 10,
-      page: request.query.page || 1,
-      filter: request.query.filter || undefined,
-      sortField: request.query.field || 'username',
-      sortDesc: request.query.desc || false
+      page: request.query.page,
+      limit: request.query.limit,
+      filter: request.query.filter,
+      sortField: request.query.field,
+      sortDesc: request.query.desc,
+      searchStr: request.query.search
     };
     db.reports.pageUserReports(opts)
     .then(function(reports) { reply(reports); });
@@ -315,6 +318,7 @@ exports.pageUserReports = {
   * @apiParam (Query) {string="Pending","Reviwed","Ignored","Bad Report"} filter Used to filter reports by their status
   * @apiParam (Query) {string="created_at","priority","reporter_username","offender_created_at","offender_title","offender_author_username"} field=created_at Indicates which column to sort by, used for table sorting
   * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
+  * @apiParam (Query) {string} [search] String used to search for a report by username
   *
   * @apiSuccess {object[]} postReports An array of post reports. Sort order varies depending on the query parameters passed in.
   * @apiSuccess {string} postReports.id The unique id of the post report
@@ -346,16 +350,18 @@ exports.pagePostReports = {
       limit: Joi.number().integer().min(1).default(10),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_created_at', 'offender_title', 'offender_author_username'),
-      desc: Joi.boolean().default(false)
+      desc: Joi.boolean().default(false),
+      search: Joi.string()
     }
   },
   handler: function(request, reply) {
     var opts = {
-      limit: request.query.limit || 10,
-      page: request.query.page || 1,
-      filter: request.query.filter || undefined,
-      sortField: request.query.field || 'username',
-      sortDesc: request.query.desc || false
+      limit: request.query.limit,
+      page: request.query.page,
+      filter: request.query.filter,
+      sortField: request.query.field,
+      sortDesc: request.query.desc,
+      searchStr: request.query.search
     };
     db.reports.pagePostReports(opts)
     .then(function(reports) { reply(reports); });
@@ -494,6 +500,7 @@ exports.pagePostReportsNotes = {
   * used to determine how many pages to show for paginating through reports.
   *
   * @apiParam (Query) {string="Pending","Reviewed","Ignored","Bad Report"} [status] The status of the user reports you want a count for
+  * @apiParam (Query) {string} [search] Allows user to filter count by their search string
   *
   * @apiSuccess {number} count The number of user reports
   *
@@ -502,10 +509,23 @@ exports.pagePostReportsNotes = {
 exports.userReportsCount = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
-  validate: { query: { status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report') } },
+  validate: {
+    query: {
+      status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
+      search: Joi.string()
+    }
+  },
   handler: function(request, reply) {
     var status = request.query.status;
-    db.reports.userReportsCount(status)
+    var search = request.query.search;
+    var opts;
+    if (status || search) {
+      opts = {
+        status: status,
+        searchStr: search
+      };
+    }
+    db.reports.userReportsCount(opts)
     .then(function(count) { reply(count); });
   }
 };
@@ -520,6 +540,7 @@ exports.userReportsCount = {
   * used to determine how many pages to show for paginating through reports.
   *
   * @apiParam (Query) {string="Pending","Reviewed","Ignored","Bad Report"} [status] The status of the post reports you want a count for
+  * @apiParam (Query) {string} [search] Allows user to filter count by their search string
   *
   * @apiSuccess {number} count The number of post reports
   *
@@ -528,10 +549,23 @@ exports.userReportsCount = {
 exports.postReportsCount = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
-  validate: { query: { status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report') } },
+  validate: {
+    query: {
+      status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
+      search: Joi.string()
+    }
+  },
   handler: function(request, reply) {
     var status = request.query.status;
-    db.reports.postReportsCount(status)
+    var search = request.query.search;
+    var opts;
+    if (status || search) {
+      opts = {
+        status: status,
+        searchStr: search
+      };
+    }
+    db.reports.postReportsCount(opts)
     .then(function(count) { reply(count); });
   }
 };

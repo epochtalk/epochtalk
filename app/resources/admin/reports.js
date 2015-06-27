@@ -19,7 +19,7 @@ module.exports = ['$resource',
       },
       postReportsCount: {
         method: 'GET',
-        url: '/api/admin/reports/users/count'
+        url: '/api/admin/reports/posts/count'
       },
       pageUserReportsNotes: {
         method: 'GET',
@@ -40,7 +40,7 @@ module.exports = ['$resource',
       },
       postReportsNotesCount: {
         method: 'GET',
-        url: '/api/admin/reports/usernotes/:report_id/count',
+        url: '/api/admin/reports/postnotes/:report_id/count',
         params: { report_id: '@report_id' }
       },
       createUserReportNote: {

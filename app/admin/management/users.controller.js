@@ -1,7 +1,8 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminUsers, users, usersCount, page, limit, field, desc, filter) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminUsers, users, usersCount, page, limit, field, desc, filter, search) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
+  this.count = usersCount;
   this.pageCount =  Math.ceil(usersCount / limit);
   this.users = users;
   this.queryParams = $location.search();
@@ -11,6 +12,8 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.desc = desc;
   this.filter = filter;
   this.tableFilter = 0;
+  this.search = search;
+  this.searchStr = null;
   if (filter === 'banned') { this.tableFilter = 1; }
 
   // Banning Vars
@@ -21,6 +24,24 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.confirmBanBtnLabel = 'Confirm'; // modal button label
   this.permanentBan = undefined; // boolean indicating if ban is permanent
   this.banUntil = null; // model
+
+  this.searchUsers = function() {
+    ctrl.queryParams = {
+      filter: ctrl.filter,
+      field: 'username',
+      search: ctrl.searchStr
+    };
+    $location.search(ctrl.queryParams);
+  };
+
+  this.clearSearch = function() {
+    ctrl.queryParams = {
+      field: 'username',
+      filter: ctrl.filter
+    };
+    $location.search(ctrl.queryParams);
+    ctrl.searchStr = null;
+  };
 
   this.minDate = function() {
     var d = new Date();
@@ -102,6 +123,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     };
     $location.search(ctrl.queryParams);
     ctrl.selectedUser = null;
+    ctrl.searchStr = null;
   };
 
   this.setSortField = function(sortField) {
@@ -145,12 +167,14 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     var limit = Number(params.limit) || 15;
     var field = params.field;
     var filter = params.filter;
+    var search = params.search;
     var descending = params.desc === 'true';
     var pageChanged = false;
     var limitChanged = false;
     var fieldChanged = false;
     var descChanged = false;
     var filterChanged = false;
+    var searchChanged = false;
 
     if (page && page !== ctrl.page) {
       pageChanged = true;
@@ -173,8 +197,12 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       filterChanged = true;
       ctrl.filter = filter;
     }
+    if ((search === undefined || search) && search !== ctrl.search) {
+      searchChanged = true;
+      ctrl.search = search;
+    }
 
-    if(pageChanged || limitChanged || fieldChanged || descChanged || filterChanged) { ctrl.pullPage(); }
+    if(pageChanged || limitChanged || fieldChanged || descChanged || filterChanged || searchChanged) { ctrl.pullPage(); }
   });
   $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
@@ -184,17 +212,22 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       limit: ctrl.limit,
       desc: ctrl.desc,
       field: ctrl.field,
-      filter: ctrl.filter
+      filter: ctrl.filter,
+      search: ctrl.search
     };
 
     var opts;
-    if (ctrl.filter) {
-      opts = { filter: ctrl.filter };
+    if (ctrl.filter || ctrl.search) {
+      opts = {
+        filter: ctrl.filter,
+        search: ctrl.search
+      };
     }
 
     // update users's page count
     AdminUsers.count(opts).$promise
     .then(function(updatedCount) {
+      ctrl.count = updatedCount.count;
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
 

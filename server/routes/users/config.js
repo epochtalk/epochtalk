@@ -5,6 +5,7 @@ var bcrypt = require('bcrypt');
 var commonPre = require(path.normalize(__dirname + '/../common')).users;
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
+var querystring = require('querystring');
 
 /**
   * @apiVersion 0.3.0
@@ -239,7 +240,7 @@ exports.find = {
       authUser = request.auth.credentials;
     }
     // get user by username
-    var username = request.params.id;
+    var username = querystring.unescape(request.params.id);
     db.users.userByUsername(username)
     .then(function(user) {
       if (!user) { return Boom.badRequest('User doesn\'t exist.'); }

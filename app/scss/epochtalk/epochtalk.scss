@@ -364,6 +364,7 @@ input.icon-padding { padding-right: 40px; }
 
   .avatar {
     height: auto;
+    max-height: 40px;
     margin-bottom: 3px;
     margin-left: 6px;
     padding: 0 2px;
@@ -1342,6 +1343,25 @@ pagination {
 .nested-input-container { position: relative; }
 input[type].nested-input { padding-right: 146px; }
 input[type].nested-input.valid-username { color: green; }
+.nested-input-container .nested-clear-btn {
+  position: absolute;
+  right: 156px;
+  top: 9px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 30px;
+  font-size: 13px;
+  z-index: 2;
+  background: #ccc;
+  color: #fff;
+  text-align: center;
+}
+.nested-input-container .nested-clear-btn:hover,
+.nested-input-container .nested-clear-btn:focus {
+  background-color: #666;
+}
 .nested-btn, .nested-btn-disabled {
   position: absolute;
   right: 4px;

@@ -14,13 +14,17 @@
   <div class="small-12 medium-3 columns">&nbsp;</div>
   <div class="small-12 medium-6 columns">
     <div class="nested-input-container">
-      <a ng-href="" class="nested-btn">Search</a>
-      <input class="nested-input" type="text" id="users-search" placeholder="Search reported users" />
+      <a ng-if="ModerationCtrl.search" ng-click="ModerationCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
+      <a ng-click="ModerationCtrl.searchReports()" class="nested-btn">Search</a>
+      <input class="nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="users-search" placeholder="Search reported users" />
     </div>
   </div>
   <div class="admin-table-fix"></div>
 </div>
 <div class="row full-width">
+  <div ng-if="ModerationCtrl.search">
+    Displaying {{ModerationCtrl.count | number}} search result(s) for "<strong>{{ModerationCtrl.search}}</strong>" in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong>:<br /><br />
+  </div>
   <div class="small-12 columns admin-content-selectable">
     <table width="100%">
       <thead>
