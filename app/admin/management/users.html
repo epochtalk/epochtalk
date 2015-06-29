@@ -12,7 +12,7 @@
     <div class="nested-input-container">
       <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
       <a ng-click="AdminManagementCtrl.searchUsers()" class="nested-btn">Search</a>
-      <input class="nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username"  />
+      <input class="nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
     </div>
   </div>
   <div class="admin-table-fix"></div>

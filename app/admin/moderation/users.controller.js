@@ -49,6 +49,10 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.statusReportNote = null;
 
   this.searchReports = function() {
+    if (!ctrl.searchStr.length) {
+      ctrl.clearSearch();
+      return;
+    }
     ctrl.queryParams = {
       filter: ctrl.filter,
       field: 'created_at',

@@ -26,6 +26,10 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.banUntil = null; // model
 
   this.searchUsers = function() {
+    if (!ctrl.searchStr.length) {
+      ctrl.clearSearch();
+      return;
+    }
     ctrl.queryParams = {
       filter: ctrl.filter,
       field: 'username',
