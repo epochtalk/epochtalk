@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminUsers, users, usersCount, page, limit, field, desc, filter, search) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, AdminUsers, users, usersCount, page, limit, field, desc, filter, search) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
@@ -41,6 +41,30 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     };
     $location.search(ctrl.queryParams);
     ctrl.searchStr = null;
+  };
+
+  // Edit Profile Vars
+  this.showEditUserModal = false;
+
+  this.showEditUser = function(username) {
+    AdminUsers.find({ username: username }).$promise
+    .then(function(userData) {
+      ctrl.selectedUser = userData;
+      ctrl.selectedUser.dob = $filter('date')(ctrl.selectedUser.dob, 'longDate');
+      ctrl.showEditUserModal = true;
+    });
+  };
+
+  this.closeEditUser = function() {
+    ctrl.showEditUserModal = false;
+    $timeout(function() { ctrl.selectedUser = null; }, 500); // dont remove user info till modal is out of view
+  };
+
+  this.saveUserEdit = function() {
+    AdminUsers.update(ctrl.selectedUser).$promise
+    .then(function() {
+      ctrl.closeEditUser();
+    });
   };
 
   this.minDate = function() {
