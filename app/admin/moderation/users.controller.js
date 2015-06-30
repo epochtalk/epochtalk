@@ -227,7 +227,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
     });
   };
 
-  this.selectReport = function(userReport) {
+  this.selectReport = function(userReport, initialPageLoad) {
     // do nothing if user is being selected to be banned
     // this prevents the row highlight when clicking links
     // within the row
@@ -236,7 +236,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
     ctrl.reportNotes = null;
     ctrl.reportNote = null;
     ctrl.noteSubmitted = false;
-    if (userReport.id === ctrl.reportId) {
+    if (userReport.id === ctrl.reportId && !initialPageLoad) {
       var params = $location.search();
       delete params.reportId;
       $location.search(params);
@@ -245,7 +245,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
       ctrl.previewReport = null;
     }
     else {
-      $location.search('reportId', userReport.id);
+      if (!initialPageLoad) { $location.search('reportId', userReport.id); }
       ctrl.selectedUsername = userReport.offender_username;
       ctrl.previewReport = userReport;
 
@@ -253,6 +253,10 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
       .then(function(reportNotes) {
         ctrl.reportNotes = reportNotes;
       });
+
+      if (initialPageLoad) {
+        $state.go('admin-moderation.users.preview', { username: ctrl.selectedUsername }, { location: false, reload: 'admin-moderation.users.preview' });
+      }
     }
   };
 
@@ -261,7 +265,8 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
     for (var i = 0; i < this.userReports.length; i++) {
       var curReport = this.userReports[i];
       if (this.reportId === curReport.id) {
-        ctrl.selectReport(curReport);
+        ctrl.selectReport(curReport, true);
+
         break;
       }
     }
