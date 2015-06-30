@@ -31,7 +31,7 @@ module.exports = ['$location', '$filter', function($location, $filter) {
 
         // Build url prefix, include existing query params
         urlPrefix = $location.path() + '?';
-        _.forIn(queryParams, function(value, key) { urlPrefix += key + '=' + value + '&'; });
+        _.forIn(queryParams, function(value, key) { urlPrefix += key + '=' + encodeURI(value) + '&'; });
         urlPrefix += 'page=';
 
         var truncate = scope.pageCount > 15;

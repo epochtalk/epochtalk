@@ -421,7 +421,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-management.users', {
-      url: '/users?page&limit&field&desc&filter',
+      url: '/users?page&limit&field&desc&filter&search',
       reloadOnSearch: false,
       views: {
         'data@admin-management': {
@@ -439,7 +439,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             desc: $stateParams.desc,
             limit: Number($stateParams.limit) || 15,
             page: Number($stateParams.page) || 1,
-            filter: $stateParams.filter
+            filter: $stateParams.filter,
+            search: $stateParams.search
           };
           return AdminUsers.page(query).$promise
           .then(function(users) { return users; });
@@ -447,7 +448,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         usersCount: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
           var opts;
           var filter = $stateParams.filter;
-          if (filter) { opts = { filter: filter }; }
+          var search = $stateParams.search;
+          if (filter || search) {
+            opts = {
+              filter: filter,
+              search: search
+            };
+          }
           return AdminUsers.count(opts).$promise
           .then(function(usersCount) { return usersCount.count; });
         }],
@@ -455,7 +462,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return $stateParams.field;
         }],
         desc: ['$stateParams', function($stateParams) {
-          return $stateParams.desc;
+          return $stateParams.desc || false;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -465,6 +472,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }],
         filter: ['$stateParams', function($stateParams) {
           return $stateParams.filter;
+        }],
+        search: ['$stateParams', function($stateParams) {
+          return $stateParams.search;
         }]
       }
     })
@@ -498,7 +508,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return $stateParams.field;
         }],
         desc: ['$stateParams', function($stateParams) {
-          return $stateParams.desc;
+          return $stateParams.desc || false;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -538,7 +548,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return $stateParams.field;
         }],
         desc: ['$stateParams', function($stateParams) {
-          return $stateParams.desc;
+          return $stateParams.desc || false;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -570,7 +580,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       resolve: { userAccess: modCheck || adminCheck }
     })
     .state('admin-moderation.users', {
-      url: '/users?page&limit&field&desc&filter&reportId',
+      url: '/users?page&limit&field&desc&filter&search&reportId',
       reloadOnSearch: false,
       views: {
         'data@admin-moderation': {
@@ -596,11 +606,23 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         desc: ['$stateParams', function($stateParams) {
           return $stateParams.desc || true;
         }],
+        search: ['$stateParams', function($stateParams) {
+          return $stateParams.search;
+        }],
         reportId: ['$stateParams', function($stateParams) {
           return $stateParams.reportId;
         }],
         reportCount: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
-          return AdminReports.userReportsCount({ status: $stateParams.filter }).$promise
+          var opts;
+          var status = $stateParams.filter;
+          var search = $stateParams.search;
+          if (status || search) {
+            opts = {
+              status: status,
+              search: search
+            };
+          }
+          return AdminReports.userReportsCount(opts).$promise
           .then(function(userReportsCount) { return userReportsCount.count; });
         }],
         userReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
@@ -609,7 +631,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             desc: $stateParams.desc || true,
             filter: $stateParams.filter,
             limit: Number($stateParams.limit) || 10,
-            page: Number($stateParams.page) || 1
+            page: Number($stateParams.page) || 1,
+            search: $stateParams.search
           };
           return AdminReports.pageUserReports(query).$promise
           .then(function(userReports) { return userReports; });
@@ -637,7 +660,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-moderation.posts', {
-      url: '/posts?page&limit&field&desc&filter&reportId',
+      url: '/posts?page&limit&field&desc&filter&search&reportId',
       reloadOnSearch: false,
       views: {
         'data@admin-moderation': {
@@ -663,11 +686,23 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         desc: ['$stateParams', function($stateParams) {
           return $stateParams.desc || true;
         }],
+        search: ['$stateParams', function($stateParams) {
+          return $stateParams.search;
+        }],
         reportId: ['$stateParams', function($stateParams) {
           return $stateParams.reportId;
         }],
         reportCount: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
-          return AdminReports.postReportsCount({ status: $stateParams.filter }).$promise
+          var opts;
+          var status = $stateParams.filter;
+          var search = $stateParams.search;
+          if (status || search) {
+            opts = {
+              status: status,
+              search: search
+            };
+          }
+          return AdminReports.postReportsCount(opts).$promise
           .then(function(postReportsCount) { return postReportsCount.count; });
         }],
         postReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
@@ -676,9 +711,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             desc: $stateParams.desc || true,
             filter: $stateParams.filter,
             limit: Number($stateParams.limit) || 10,
-            page: Number($stateParams.page) || 1
+            page: Number($stateParams.page) || 1,
+            search: $stateParams.search
           };
-
           return AdminReports.pagePostReports(query).$promise
           .then(function(postReports) { return postReports; });
         }]

@@ -10,14 +10,18 @@
   <div class="small-12 medium-4 columns">&nbsp;</div>
   <div class="small-12 medium-6 columns">
     <div class="nested-input-container">
-      <a ng-href="" class="nested-btn">Search</a>
-      <input class="nested-input" type="text" id="search-users" placeholder="Search users by username" />
+      <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
+      <a ng-click="AdminManagementCtrl.searchUsers()" class="nested-btn">Search</a>
+      <input class="nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
     </div>
   </div>
   <div class="admin-table-fix"></div>
 </div>
 <div class="row full-width">
   <div class="small-12 columns">
+    <div ng-if="AdminManagementCtrl.search">
+    Displaying {{AdminManagementCtrl.count | number}} search result(s) for "<strong>{{AdminManagementCtrl.search}}</strong>" in <strong>{{AdminManagementCtrl.filter ? 'Banned': 'All'}}</strong>:<br /><br />
+    </div>
     <table width="100%">
       <thead>
         <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Username</th>

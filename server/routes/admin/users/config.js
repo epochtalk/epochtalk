@@ -289,6 +289,7 @@ exports.searchUsernames = {
   *
   * @apiParam (Query) {string="banned"} [filter] If banned is passed in, route will return count
   * of banned users.
+  * @apiParam (Query) {string} [search] Used to filter count by search string
   *
   * @apiSuccess {number} count The number of users registered given the passed in parameters
   *
@@ -297,11 +298,23 @@ exports.searchUsernames = {
 exports.count = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.adminCheck } ],
-  validate: { query: { filter: Joi.string().valid('banned') } },
+  validate: {
+    query: {
+      filter: Joi.string().valid('banned'),
+      search: Joi.string()
+    }
+  },
   handler: function(request, reply) {
     var opts;
     var filter = request.query.filter;
-    if (filter) { opts = { filter: filter }; }
+    var search = request.query.search;
+    if (filter || search) {
+      opts = {
+        filter: filter,
+        searchStr: search
+      };
+    }
+
     db.users.count(opts)
     .then(function(usersCount) { reply(usersCount); });
   }
@@ -365,6 +378,7 @@ exports.countModerators = {
   * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results
   * in descending order
   * @apiParam (Query) {string="banned"} [filter] If banned is passed in only banned users are returned
+  * @apiParam (Query) {string} [search] Username to search for
   *
   * @apiSuccess {object[]} users An array of user objects
   * @apiSuccess {string} users.id The unique id of the user
@@ -385,6 +399,7 @@ exports.page = {
       field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'imported_at', 'ban_expiration'),
       desc: Joi.boolean().default(false),
       filter: Joi.string().valid('banned'),
+      search: Joi.string()
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
@@ -394,7 +409,8 @@ exports.page = {
       page: request.query.page,
       sortField: request.query.field,
       sortDesc: request.query.desc,
-      filter: request.query.filter
+      filter: request.query.filter,
+      searchStr: request.query.search
     };
     db.users.page(opts)
     .then(function(users) { reply(users); });
