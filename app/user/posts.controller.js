@@ -23,7 +23,6 @@ module.exports = ['user', 'usersPosts', 'usersPostsCount', 'limit', 'page', 'fie
       $location.search('page', ctrl.page);
       $location.search('desc', ctrl.desc);
       $location.search('field', sortField);
-
       // Update queryParams (forces pagination to refresh)
       ctrl.queryParams = $location.search();
     };
@@ -46,6 +45,7 @@ module.exports = ['user', 'usersPosts', 'usersPostsCount', 'limit', 'page', 'fie
       var params = $location.search();
       var page = Number(params.page) || 1;
       var limit = Number(params.limit) || 10;
+      var field = params.field;
       var descending;
       // desc when undefined defaults to true, since we are sorting created_at desc by default
       if (params.desc === undefined) { descending = true; }
