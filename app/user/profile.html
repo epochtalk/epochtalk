@@ -3,7 +3,7 @@
   <div class="large-3 columns word-wrap">
     <!-- User's Avatar -->
     <div class="profile-avatar-container">
-      <img ng-src="{{ProfileCtrl.displayAvatar}}" />
+      <img ng-src="{{ProfileCtrl.displayUser.avatar}}" />
       <a href="#" class="after" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
         <div>Change Avatar</div>
       </a>
@@ -18,21 +18,23 @@
     </div>
 
     <!-- User Information -->
-    <h4 ng-bind="::ProfileCtrl.displayUsername"></h4>
-    <div><span ng-bind="::ProfileCtrl.user.name"></span></div>
-    <div><span ng-bind="::ProfileCtrl.user.position"></span></div>
-    <div><span ng-bind="::ProfileCtrl.user.status"></span></div>
-    <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.user.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>
-    <hr ng-if="ProfileCtrl.displayEmail || ProfileCtrl.user.btcAddress || ProfileCtrl.user.website">
-    <div><span ng-bind="::ProfileCtrl.displayEmail"></span></div>
-    <div><span ng-bind="::ProfileCtrl.user.btcAddress"></span></div>
-    <div><a ng-href="{{ProfileCtrl.user.website}}">{{::ProfileCtrl.user.website}}</a></div>
+    <h4 ng-bind="ProfileCtrl.displayUser.username"></h4>
+    <div><span ng-bind="ProfileCtrl.displayUser.name"></span></div>
+    <div><span ng-bind="ProfileCtrl.displayUser.position"></span></div>
+    <div><span ng-bind="ProfileCtrl.displayUser.status"></span></div>
+    <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.displayUser.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>
+    <hr ng-if="ProfileCtrl.displayUser.email || ProfileCtrl.displayUser.btcAddress || ProfileCtrl.displayUser.website">
+    <div ng-if="ProfileCtrl.displayUser.email">
+      <a href="mailto:{{ProfileCtrl.displayUser.email}}" ng-bind="ProfileCtrl.displayUser.email"></a>
+    </div>
+    <div><span ng-bind="ProfileCtrl.displayUser.btcAddress"></span></div>
+    <div><a ng-href="{{ProfileCtrl.displayUser.website}}">{{ProfileCtrl.displayUser.website}}</a></div>
     <hr>
-    <div><span ng-bind="::ProfileCtrl.user.gender"></span></div>
-    <div><span ng-bind="::ProfileCtrl.userAge"></span></div>
-    <div><span ng-bind="::ProfileCtrl.user.location"></span></div>
-    <div><span ng-bind="::ProfileCtrl.user.language"></span></div>
-    <div><span ng-bind="::ProfileCtrl.userLocalTime"></span></div>
+    <div><span ng-bind="ProfileCtrl.displayUser.gender"></span></div>
+    <div><span ng-bind="ProfileCtrl.userAge"></span></div>
+    <div><span ng-bind="ProfileCtrl.displayUser.location"></span></div>
+    <div><span ng-bind="ProfileCtrl.displayUser.language"></span></div>
+    <div><span ng-bind="ProfileCtrl.userLocalTime"></span></div>
   </div>
 
   <!-- Right Side Content -->
@@ -42,15 +44,15 @@
       <div class="row">
         <div class="large-4 columns profile-stats">
           Account Created On:<br>
-          <span class="profile-stat" ng-bind="ProfileCtrl.user.created_at | date:'mediumDate'"></span>
+          <span class="profile-stat" ng-bind="ProfileCtrl.displayUser.created_at | date:'mediumDate'"></span>
         </div>
         <div class="large-4 columns profile-stats">
           Number of Posts:<br>
-          <span class="profile-stat" ng-bind="ProfileCtrl.user.post_count + ' Posts'"></span>
+          <span class="profile-stat" ng-bind="ProfileCtrl.displayUser.post_count + ' Posts'"></span>
         </div>
         <div class="large-4 columns profile-stats">
           Account Last Used:<br>
-          <span class="profile-stat" ng-bind="ProfileCtrl.user.updated_at | date:'mediumDate'"></span>
+          <span class="profile-stat" ng-bind="ProfileCtrl.displayUser.updated_at | date:'mediumDate'"></span>
         </div>
       </div>
     </div>
@@ -75,7 +77,7 @@
           </a>
         </div>
       </div>
-      <div class="post-signature" post-processing="ProfileCtrl.user.signature" style-fix="true"></div>
+      <div class="post-signature" post-processing="ProfileCtrl.displayUser.signature" style-fix="true"></div>
     </div>
   </div>
 </div>
@@ -86,7 +88,19 @@
 
 <!-- Change Password Modal -->
 <modal class="tiny" show="ProfileCtrl.editPassword" on-close="ProfileCtrl.clearPasswordFields()">
-  <form name="$parent.form" class="css-form" novalidate>
+  <form ng-if="ProfileCtrl.adminVisitor" name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-dotted-underline">Change Password</h3>
+    <label>Minimum 8 characters</label>
+    <input type="password" auto-focus="$parent.focus" name="pass" placeholder="New Password" ng-model="ProfileCtrl.passData.password">
+    <!-- Submit Button -->
+    <div class="form-action">
+      <button class="button no-margin" ng-click="ProfileCtrl.savePassword(); $parent.form.$setPristine(); $parent.form.$setUntouched()"
+        ng-disabled="!ProfileCtrl.passData.password || ProfileCtrl.passData.password.length < 8">
+        Confirm
+      </button>
+    </div>
+  </form>
+  <form ng-if="!ProfileCtrl.adminVisitor" name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-dotted-underline">Change Password</h3>
 
     <!-- Old Password -->
@@ -135,7 +149,7 @@
 
     <!-- Submit Button -->
     <div class="form-action">
-      <button class="button no-margin" ng-click="ProfileCtrl.savePassword()"
+      <button class="button no-margin" ng-click="ProfileCtrl.savePassword(); $parent.form.$setPristine(); $parent.form.$setUntouched()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || ProfileCtrl.passData.password !== ProfileCtrl.passData.confirmation">
         Confirm
       </button>
@@ -146,7 +160,7 @@
 </modal>
 
 <!-- Edit Profile Modal -->
-<modal class="medium" show="ProfileCtrl.editProfile">
+<modal class="medium" show="ProfileCtrl.editProfile" on-close="ProfileCtrl.closeEditProfile()">
   <form name="$parent.form" class="css-form" novalidate>
     <!-- Profile Fields -->
     <div class="row">
@@ -158,7 +172,7 @@
           <div ng-if="$parent.form.username.$error.unique" class="invalid right">
             Username already taken
           </div>
-          <input type="text" name="username" ng-model="ProfileCtrl.user.username" unique-username="{{ProfileCtrl.displayUsername}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
+          <input type="text" name="username" ng-model="ProfileCtrl.user.username" unique-username="{{ProfileCtrl.displayUser.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
         </label>
 
         <label>Name
@@ -175,7 +189,7 @@
           <div ng-if="$parent.form.email.$error.unique" class="invalid right">
             Email already taken
           </div>
-          <input type="email" name="email" ng-model="ProfileCtrl.user.email" unique-email="{{ProfileCtrl.displayEmail}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
+          <input type="email" name="email" ng-model="ProfileCtrl.user.email" unique-email="{{ProfileCtrl.displayUser.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
         </label>
 
         <label>Website
@@ -218,10 +232,10 @@
 </modal>
 
 <!-- Change Avatar Modal -->
-<modal class="small" show="ProfileCtrl.editAvatar">
+<modal class="small" show="ProfileCtrl.editAvatar" on-close="ProfileCtrl.closeEditAvatar()">
   <form name="$parent.form" class="css-form" novalidate>
     <label>Avatar address
-      <input type="text" name="avatar" ng-model="ProfileCtrl.user.avatar" auto-focus="$parent.focus" required />
+      <input type="text" name="avatar" ng-model="ProfileCtrl.user.avatar" auto-focus="$parent.focus" />
     </label>
 
     <image-uploader model="ProfileCtrl.user.avatar" purpose="avatar"></image-uploader>
@@ -239,7 +253,7 @@
 </modal>
 
 <!-- Change Signature Modal -->
-<modal class="medium" show="ProfileCtrl.editSignature">
+<modal class="medium" show="ProfileCtrl.editSignature" on-close="ProfileCtrl.closeEditSignature()">
   <form name="$parent.form" class="css-form" novalidate>
     <label>Signature
       <textarea type="text" rows="10" placeholder="Signature" ng-model="ProfileCtrl.user.raw_signature" auto-focus="$parent.focus" ></textarea>

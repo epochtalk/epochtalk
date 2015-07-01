@@ -1,7 +1,7 @@
 module.exports = ['user', 'usersPosts', 'usersPostsCount', 'limit', 'page', 'field', 'desc', 'Posts', '$location', '$scope', '$rootScope', '$state', '$anchorScroll',
   function(user, usersPosts, usersPostsCount, limit, page, field, desc, Posts, $location, $scope, $rootScope, $state, $anchorScroll) {
     var ctrl = this;
-    this.user = user;
+    this.user = angular.copy(user);
     this.pageCount = Math.ceil(usersPostsCount / limit);
     this.queryParams = $location.search();
     this.page = page;

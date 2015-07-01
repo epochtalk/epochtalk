@@ -5,12 +5,12 @@ module.exports = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scop
   this.parent = $scope.$parent;
   this.parent.tab = 'general';
 
-  // convert image storage type to a bool
-  this.localImageServer = settings.images.storage === 'local';
-
   // Make copy of settings for a restore state
   this.originalSettings = angular.copy(settings);
-  this.settings = settings;
+  this.settings = angular.copy(settings);
+
+  // convert image storage type to a bool
+  this.localImageServer = ctrl.originalSettings.images.storage === 'local';
 
   // Used to hide/show password fields
   this.showAccessKey = false;
@@ -30,5 +30,6 @@ module.exports = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scop
   // Reset action
   $scope.child.reset = function() {
     ctrl.settings = angular.copy(ctrl.originalSettings);
+    ctrl.localImageServer = ctrl.originalSettings.images.storage === 'local';
   };
 }];

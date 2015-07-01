@@ -38,9 +38,11 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         $title: ['$stateParams', function($stateParams) {
           return $stateParams.username;
         }],
-        user: [ 'User', '$stateParams', function(User, $stateParams) {
-          return User.get({ id: $stateParams.username }).$promise
-          .then(function(user) { return user; });
+        user: ['AdminUsers', 'Session', 'User', '$stateParams', function(AdminUsers, Session, User, $stateParams) {
+          var promise;
+          if (Session.user.isAdmin) { promise = AdminUsers.find({ username: $stateParams.username }).$promise; }
+          else { promise = User.get({ id: $stateParams.username }).$promise; }
+          return promise.then(function(user) { return user; });
         }]
       }
     })
