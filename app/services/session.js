@@ -18,7 +18,7 @@ module.exports = ['$window', 'USER_ROLES',
         avatar: $window.sessionStorage.avatar || $window.localStorage.avatar
       };
       if ($window.sessionStorage.roles || $window.localStorage.roles) {
-        user.roles = JSON.parse($window.sessionStorage.roles || $window.localStorage.avatar);
+        user.roles = JSON.parse($window.sessionStorage.roles || $window.localStorage.roles);
       }
       if (user.roles) {
         user.roles.forEach(function(role) {
