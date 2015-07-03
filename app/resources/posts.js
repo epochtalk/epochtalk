@@ -28,6 +28,16 @@ module.exports = ['$resource',
         url: '/api/posts/user/:username/count',
         params: { username: '@username' },
         method: 'GET',
+      },
+      undelete: {
+        url: '/api/posts/:id/undelete',
+        method: 'POST',
+        params: { id: '@id' }
+      },
+      purge: {
+        url: '/api/posts/:id/purge',
+        method: 'DELETE',
+        params: { id: '@id' }
       }
     });
   }

@@ -29,16 +29,15 @@ exports.create = {
     })
   },
   pre: [
-    { method: pre.threadLocked },
+    { method: pre.canCreate }, //handle permissions
     { method: pre.clean },
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
   handler: function(request, reply) {
     // build the post object from payload and params
-    var user = request.auth.credentials;
     var newPost = request.payload;
-    newPost.user_id = user.id;
+    newPost.user_id = request.auth.credentials.id;
 
     // create the post in db
     return reply(db.posts.create(newPost));
@@ -82,12 +81,12 @@ exports.import = {
   ],
   handler: function(request, reply) {
     // build the post object from payload and params
-    db.posts.import(request.payload)
-    .then(reply)
+    var promise = db.posts.import(request.payload)
     .catch(function(err) {
       request.log('error', 'Import post: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      return reply(Boom.badRequest('Import post failed'));
+      return Boom.badRequest('Import post failed');
     });
+    return reply(promise);
   }
 };
 
@@ -107,12 +106,16 @@ exports.import = {
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.canFind } ],
   handler: function(request, reply) {
+    // handle permissions
     if (!request.server.methods.viewable(request)) { return reply({}); }
+
+    // retrieve post
     var id = request.params.id;
-    db.posts.find(id)
-    .then(function(post) { reply(post); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = db.posts.find(id)
+    .error(function(err) { return Boom.badRequest(err.message); });
+    return reply(promise);
   }
 };
 
@@ -138,33 +141,36 @@ exports.byThread = {
     query: {
       thread_id: Joi.string().required(),
       page: Joi.number().integer().default(1),
-      limit: [ Joi.number().integer().min(1), Joi.string().valid('all') ]
+      limit: [
+        Joi.number().integer().min(1).max(100),
+        Joi.string().valid('all')
+      ]
     }
   },
+  pre: [ { method: pre.canRetrieve } ],
   handler: function(request, reply) {
+    // handle permissions
     if (!request.server.methods.viewable(request)) { return reply([]); }
-    var user;
-    if (request.auth.isAuthenticated) { user = request.auth.credentials; }
+
+    // retrieve posts for this thread
     var threadId = request.query.thread_id;
     var opts = {
       limit: request.query.limit || 10,
       page: request.query.page
     };
 
-    var queryByThread = function() {
-      db.posts.byThread(threadId, opts)
-      .then(reply)
-      .catch(function(err) { reply(Boom.badImplementation(err)); });
-    };
-
+    var promise;
     if (opts.limit === 'all') {
-      db.threads.find(threadId)
+      promise = db.threads.find(threadId)
       .then(function(thread) {
         opts.limit = Number(thread.post_count) || 10;
-        queryByThread();
-      });
+        return [threadId, opts];
+      })
+      .spread(db.posts.byThread);
     }
-    else { queryByThread(); }
+    else { promise = db.posts.byThread(threadId, opts); }
+
+    return reply(promise);
   }
 };
 
@@ -173,7 +179,7 @@ exports.byThread = {
   * @apiGroup Posts
   * @api {POST} /posts/:id Update
   * @apiName UpdatePost
-  * @apiPermission User (Post's Author)
+  * @apiPermission User (Post's Author) or Admin
   * @apiDescription Used to update a post.
   *
   * @apiParam {string} id The unique id of the post being updated
@@ -195,24 +201,16 @@ exports.update = {
     params: { id: Joi.string().required() }
   },
   pre: [
-    { method: pre.authPost },
+    { method: pre.canUpdate }, //handle permissions
     { method: pre.clean },
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
   handler: function(request, reply) {
     // build updatePost object from params and payload
-    var updatePost = {
-      id: request.params.id,
-      title: request.payload.title,
-      body: request.payload.body,
-      raw_body: request.payload.raw_body,
-      thread_id: request.payload.thread_id
-    };
-
-    db.posts.update(updatePost)
-    .then(function(post) { reply(post); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var updatePost = request.payload;
+    updatePost.id = request.params.id;
+    return reply(db.posts.update(updatePost));
   }
 };
 
@@ -221,31 +219,82 @@ exports.update = {
   * @apiGroup Posts
   * @api {DELETE} /posts/:id Delete
   * @apiName DeletePost
-  * @apiPermission User (Post's Author)
+  * @apiPermission User (Post's Author) or Admin
   * @apiDescription Used to delete a post.
   *
-  * @apiParam {string} id The unique id of the post being updated
+  * @apiParam {string} id The Id of the post to delete
   *
   * @apiUse PostObjectSuccess
   *
+  * @apiError (Error 400) BadRequest Post Already Deleted
   * @apiError (Error 500) InternalServerError There was an issue deleting the post
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.authPost } ],
+  pre: [ { method: pre.canDelete } ], //handle permissions
   handler: function(request, reply) {
-    var postId = request.params.id;
-    db.posts.delete(postId)
-    .then(function(post) { reply(post); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
-  },
+    // delete post
+    var promise = db.posts.delete(request.params.id)
+    .error(function(err) { return Boom.badRequest(err.message); });
+    return reply(promise);
+  }
 };
 
 /**
   * @apiVersion 0.3.0
   * @apiGroup Posts
-  * @api {GET} /posts/user/:username/count User Post Count
+  * @api {POST} /posts/:id Undelete
+  * @apiName UndeletePost
+  * @apiPermission User (Post's Author) or Admin
+  * @apiDescription Used to undo a deleted post.
+  *
+  * @apiParam {string} id The Id of the post to undo deletion on
+  *
+  * @apiUse PostObjectSuccess
+  *
+  * @apiError (Error 400) BadRequest Post Not Deleted
+  * @apiError (Error 500) InternalServerError There was an issue undeleting the post
+  */
+exports.undelete = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.canDelete }, ], //handle permissions
+  handler: function(request, reply) {
+    // undelete post
+    var promise = db.posts.undelete(request.params.id)
+    .error(function(err) { return Boom.badRequest(err.message); });
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
+  * @api {DELETE} /posts/:id/purge Purge
+  * @apiName PurgePost
+  * @apiPermission Admin
+  * @apiDescription Used to purge a post.
+  *
+  * @apiParam {string} id The Id of the post to purge
+  *
+  * @apiUse PostObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue purging the post
+  */
+exports.purge = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.canPurge } ], //handle permissions
+  handler: function(request, reply) {
+    // purge post
+    return reply(db.posts.purge(request.params.id));
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Posts
   * @apiName PagePostsByUserCount
   * @apiDescription Retrieves the number of posts created by a particular user.
   *
@@ -259,10 +308,13 @@ exports.pageByUserCount = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { username: Joi.string().required() } },
   handler: function(request, reply) {
+    // TODO: this still shows posts from deleted threads/boards
+    // handle permissions
+    if (!request.server.methods.viewable(request)) { return reply([]); }
+
+    // retrieve post count for user
     var username = request.params.username;
-    db.posts.pageByUserCount(username)
-    .then(function(count) { reply(count); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    return reply(db.posts.pageByUserCount(username));
   }
 };
 
@@ -296,6 +348,11 @@ exports.pageByUser = {
     }
   },
   handler: function(request, reply) {
+    // TODO: this still shows posts from deleted threads/boards
+    // handle permissions
+    if (!request.server.methods.viewable(request)) { return reply([]); }
+
+    // retrieve user's posts
     var username = request.params.username;
     var opts = {
       limit: request.query.limit,
@@ -303,9 +360,7 @@ exports.pageByUser = {
       sortField: request.query.field,
       sortDesc: request.query.desc
     };
-    db.posts.pageByUser(username, opts)
-    .then(function(posts) { reply(posts); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    return reply(db.posts.pageByUser(username, opts));
   }
 };
 

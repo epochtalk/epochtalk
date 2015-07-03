@@ -30,12 +30,27 @@ ng-repeat="post in PostsCtrl.posts track by post.id">
       <!-- <span ng-bind-html="post.title"></span> -->
       <span class="timestamp" ng-bind="post.created_at | humanDate"></span>
       <ul class="post-action">
+        <li ng-if="PostsCtrl.user.isAdmin && $index !== 0">
+          <a ng-href="#" class="css-tooltip" data-css-tooltip="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
+            <i class="icon-epoch-unverified"></i>
+          </a>
+        </li>
+        <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.user.isAdmin) && $index !== 0 && !post.deleted">
+          <a ng-href="#" class="css-tooltip" data-css-tooltip="Delete" ng-click="PostsParentCtrl.openDeleteModal($index)">
+            <i class="icon-epoch-unverified"></i>
+          </a>
+        </li>
+        <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.user.isAdmin) && post.deleted === true">
+          <a ng-href="#" class="css-tooltip" data-css-tooltip="Undelete" ng-click="PostsParentCtrl.openUndeleteModal($index)">
+            <i class="icon-epoch-unverified"></i>
+          </a>
+        </li>
         <li ng-if="PostsParentCtrl.loggedIn()">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Report" ng-click="PostsCtrl.openReportModal(post)">
             <i class="icon-epoch-flag"></i>
           </a>
         </li>
-        <li ng-if="post.user.id === PostsCtrl.user.id && !PostsParentCtrl.thread_locked">
+        <li ng-if="(post.user.id === PostsCtrl.user.id && !PostsParentCtrl.thread_locked) || PostsCtrl.user.isAdmin">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Edit" ng-click="PostsCtrl.loadEditor($index)">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
@@ -60,3 +75,57 @@ ng-repeat="post in PostsCtrl.posts track by post.id">
     </div>
   </div>
 </div>
+
+<!-- Delete Post Modal -->
+<modal class="medium" show="PostsParentCtrl.showDeleteModal" on-close="PostsParentCtrl.closeDeleteModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <center>
+      <p>Are you sure you want to delete this post?</p>
+    </center>
+
+    <!-- Save Button -->
+    <div class="row">
+      <button class="button expand" ng-click="PostsParentCtrl.deletePost()">
+        Delete Post
+      </button>
+    </div>
+  </form>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Undelete Post Modal -->
+<modal class="medium" show="PostsParentCtrl.showUndeleteModal" on-close="PostsParentCtrl.closeUndeleteModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <center>
+      <p>Are you sure you want to Undelete this post?</p>
+    </center>
+
+    <!-- Save Button -->
+    <div class="row">
+      <button class="button expand" ng-click="PostsParentCtrl.undeletePost()">
+        Undelete Post
+      </button>
+    </div>
+  </form>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Purge Post Modal -->
+<modal class="medium" show="PostsParentCtrl.showPurgeModal" on-close="PostsParentCtrl.closePurgeModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <center>
+      <p>Are you sure you want to permanently delete this post?</p>
+    </center>
+
+    <!-- Save Button -->
+    <div class="row">
+      <button class="button expand" ng-click="PostsParentCtrl.purgePost()">
+        Purge Post
+      </button>
+    </div>
+  </form>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
