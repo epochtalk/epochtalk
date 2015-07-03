@@ -40,8 +40,8 @@
           <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
           <td ng-bind="user.created_at | humanDate"></td>
           <td>
-            <a href="#">View Posts</a>&nbsp;&nbsp;
-            <a href="#">Edit</a>&nbsp;&nbsp;
+            <a ui-sref="users-posts({ username: user.username })" ui-sref-opts="{ reload: true }">View Posts</a>&nbsp;&nbsp;
+            <a href="#" ng-click="AdminManagementCtrl.showEditUser(user.username)">Edit</a>&nbsp;&nbsp;
             <a href="#" ng-hide="user.ban_expiration" ng-click="AdminManagementCtrl.showBanConfirm(user);">Ban</a>
             <a href="#" ng-show="user.ban_expiration" ng-click="AdminManagementCtrl.showUnbanConfirm(user);">Unban</a>
           </td>
@@ -112,5 +112,90 @@
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminManagementCtrl.banSubmitted" ng-bind="AdminManagementCtrl.confirmBanBtnLabel"></button>
     </div>
   </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Edit Profile Modal -->
+<modal class="medium" show="AdminManagementCtrl.showEditUserModal" on-close="AdminManagementCtrl.closeEditUser()">
+  <form ng-if="AdminManagementCtrl.selectedUser" name="$parent.form" class="css-form" novalidate>
+    <!-- Profile Fields -->
+    <div class="row">
+      <div class="medium-6 columns">
+        <label>Username
+          <div ng-if="AdminManagementCtrl.selectedUser.username.length === 0" class="right">
+            Username will not be changed
+          </div>
+          <div ng-if="$parent.form.username.$error.unique" class="invalid right">
+            Username already taken
+          </div>
+          <input type="text" name="username" ng-model="AdminManagementCtrl.selectedUser.username" unique-username="{{::AdminManagementCtrl.selectedUser.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
+        </label>
+
+        <label>Name
+          <input type="text" placeholder="Name" ng-model="AdminManagementCtrl.selectedUser.name">
+        </label>
+
+        <label>Email
+          <div ng-if="$parent.form.email.$error.email" class="invalid right">
+            Email is not valid
+          </div>
+          <div ng-if="AdminManagementCtrl.user.email.length === 0" class="right">
+            Email will not be changed
+          </div>
+          <div ng-if="$parent.form.email.$error.unique" class="invalid right">
+            Email already taken
+          </div>
+          <input type="email" name="email" ng-model="AdminManagementCtrl.selectedUser.email" unique-email="{{::AdminManagementCtrl.selectedUser.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
+        </label>
+
+        <label>New Password
+          <input type="password" placeholder="New Password" ng-model="AdminManagementCtrl.selectedUser.password">
+        </label>
+
+        <label>Avatar
+          <image-uploader class="editor-image-uploader" model="AdminManagementCtrl.selectedUser.avatar" purpose="avatar"></image-uploader>
+          <input type="text" ng-model="AdminManagementCtrl.selectedUser.avatar" placeholder="URL to avatar image" />
+        </label>
+
+        <label>Signature
+          <textarea type="text" rows="5" placeholder="Signature" ng-model="AdminManagementCtrl.selectedUser.raw_signature"></textarea>
+        </label>
+      </div>
+
+      <div class="medium-6 columns">
+        <label>Website
+          <input type="text" placeholder="Website" ng-model="AdminManagementCtrl.selectedUser.website">
+        </label>
+
+        <label>Bitcoin Address
+          <input type="text" placeholder="Bitcoin Address" ng-model="AdminManagementCtrl.selectedUser.btcAddress">
+        </label>
+
+        <label>Gender
+          <input type="text" placeholder="Gender" ng-model="AdminManagementCtrl.selectedUser.gender">
+        </label>
+
+        <label>Date of Birth
+          <input type="text" placeholder="Date of Birth" ng-model="AdminManagementCtrl.selectedUser.dob">
+        </label>
+
+        <label>Location
+          <input type="text" placeholder="Location" ng-model="AdminManagementCtrl.selectedUser.location">
+        </label>
+
+        <label>Language
+          <input type="text" placeholder="Language" ng-model="AdminManagementCtrl.selectedUser.language">
+        </label>
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <div class="row profile-save-container">
+      <button class="button expand" ng-click="AdminManagementCtrl.saveUserEdit()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+        Save
+      </button>
+    </div>
+  </form>
+
   <a class="close-reveal-modal">&#215;</a>
 </modal>

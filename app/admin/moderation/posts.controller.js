@@ -245,7 +245,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     });
   };
 
-  this.selectReport = function(postReport) {
+  this.selectReport = function(postReport, initialPageLoad) {
     // do nothing if user is being selected to be banned
     // this prevents the row highlight when clicking links
     // within the row
@@ -254,7 +254,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     ctrl.reportNotes = null;
     ctrl.reportNote = null;
     ctrl.noteSubmitted = false;
-    if (ctrl.reportId === postReport.id) {
+    if (ctrl.reportId === postReport.id && !initialPageLoad) {
       ctrl.reportId = null;
       ctrl.previewPost = null;
       ctrl.previewReport = null;
@@ -263,7 +263,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       $location.search(params);
     }
     else {
-      $location.search('reportId', postReport.id);
+      if (!initialPageLoad) { $location.search('reportId', postReport.id); }
       ctrl.showPreview(postReport);
     }
     // Update so pagination knows reportId changed
@@ -275,7 +275,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     for (var i = 0; i < this.postReports.length; i++) {
       var curReport = this.postReports[i];
       if (curReport.id === this.reportId) {
-        this.selectReport(curReport);
+        this.selectReport(curReport, true);
         break;
       }
     }

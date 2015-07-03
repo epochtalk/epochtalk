@@ -40,6 +40,7 @@ module.exports = ['$window', 'User', 'Session',
           .then(function(user) { Session.setUser(user); })
           .catch(function(err) { Session.clearUser(); });
         }
+        else { Session.clearUser(); }
       }
     };
 

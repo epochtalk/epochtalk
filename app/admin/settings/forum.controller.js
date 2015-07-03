@@ -7,7 +7,7 @@ module.exports = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scop
 
   // Make copy of settings for a restore state
   this.originalSettings = angular.copy(settings);
-  this.settings = settings;
+  this.settings = angular.copy(settings);
 
   // Save action
   $scope.child.save = function() {

@@ -10,6 +10,26 @@ module.exports = ['$window', 'USER_ROLES',
     var hasLocalStorage = checkLocalStorage();
     var hasSessionStorage = checkSessionStorage();
 
+     // Attempt to retrieve and auth user from session then local storage
+     try {
+      user = {
+        id: $window.sessionStorage.id || $window.localStorage.id,
+        username: $window.sessionStorage.username || $window.localStorage.username,
+        avatar: $window.sessionStorage.avatar || $window.localStorage.avatar
+      };
+      if ($window.sessionStorage.roles || $window.localStorage.roles) {
+        user.roles = JSON.parse($window.sessionStorage.roles || $window.localStorage.roles);
+      }
+      if (user.roles) {
+        user.roles.forEach(function(role) {
+          if (role.name === USER_ROLES.admin || role.name === USER_ROLES.superAdmin) { user.isAdmin = true; }
+          if (role.name === USER_ROLES.mod || role.name === USER_ROLES.globalMod) { user.isMod = true; }
+        });
+      }
+      if ($window.sessionStorage.token || $window.localStorage.token) { authenticated = true; }
+     }
+     catch(err) { console.log('Error parsing user roles from session: ', err); }
+
     function checkLocalStorage() {
       var testKey = 'test';
       var storage = $window.localStorage;
@@ -50,11 +70,19 @@ module.exports = ['$window', 'USER_ROLES',
         if (hasLocalStorage) { storage = $window.localStorage; }
         else { storage = $window.privateStorage; }
         storage.token = newUser.token;
+        storage.id = user.id;
+        storage.username = user.username;
+        storage.avatar = user.avatar;
+        storage.roles = JSON.stringify(user.roles);
       }
       else if (newUser.token) {
         if (hasSessionStorage) { storage = $window.sessionStorage; }
         else { storage = $window.privateStorage; }
         storage.token = newUser.token;
+        storage.id = user.id;
+        storage.username = user.username;
+        storage.avatar = user.avatar;
+        storage.roles = JSON.stringify(user.roles);
       }
     }
 
@@ -69,6 +97,21 @@ module.exports = ['$window', 'USER_ROLES',
       delete $window.sessionStorage.token;
       delete $window.localStorage.token;
       delete $window.privateStorage.token;
+
+      delete $window.sessionStorage.id;
+      delete $window.sessionStorage.username;
+      delete $window.sessionStorage.avatar;
+      delete $window.sessionStorage.roles;
+
+      delete $window.localStorage.id;
+      delete $window.localStorage.username;
+      delete $window.localStorage.avatar;
+      delete $window.localStorage.roles;
+
+      delete $window.privateStorage.id;
+      delete $window.privateStorage.username;
+      delete $window.privateStorage.avatar;
+      delete $window.privateStorage.roles;
     }
 
     // Service API

@@ -70,11 +70,10 @@ exports.update = {
       signature: Joi.string().allow(''),
       avatar: Joi.string().allow('')
     })
-    .and('password', 'confirmation')
     .with('signature', 'raw_signature')
   },
   pre: [
-    { method: commonAdminPre.adminCheck },
+    { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
     [
       { method: pre.checkUserExists },
       { method: pre.checkUsernameUniqueness },
