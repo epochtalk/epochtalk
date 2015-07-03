@@ -291,7 +291,7 @@ exports.pageByUser = {
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).default(10),
-      field: Joi.string().default('created_at').valid('created_at', 'updated_at', 'title'),
+      field: Joi.string().default('created_at').valid('thread_title', 'created_at', 'updated_at', 'title'),
       desc: Joi.boolean().default(false)
     }
   },
