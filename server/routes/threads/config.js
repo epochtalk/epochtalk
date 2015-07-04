@@ -306,16 +306,12 @@ exports.move = {
     var newBoardId = request.payload.newBoardId;
     var promise;
 
-    // reject of newBoardId matches old board_id
-    if (isAdmin && thread.board_id === newBoardId) {
-      promise = Boom.badRequest('New Board is the same as current board');
-    }
     // lock thread
-    else if (isAdmin) {
+    if (isAdmin) {
       thread.board_id = newBoardId;
       promise = db.threads.move(thread.id, thread.board_id)
       .then(function() { return thread; })
-      .catch(console.log);
+      .error(function(err) { return Boom.badRequest(err.message); });
     }
     else { promise = Boom.unauthorized(); }
 

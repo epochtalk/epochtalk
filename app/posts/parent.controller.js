@@ -60,6 +60,8 @@ module.exports = [
       ctrl.pageCount = Math.ceil(ctrl.thread_post_count / count);
     };
 
+    /* Thread Methods */
+
     this.updateThreadLock = function() {
       // let angular digest the change in lock status
       $timeout(function() {
@@ -83,6 +85,8 @@ module.exports = [
       return Threads.move({id: ctrl.thread_id}, {newBoardId: newBoardId}).$promise
       .then(function(newBoard) { $state.go($state.$current, null, {reload:true}); });
     };
+
+    /* Post Methods */
 
     var discardAlert = function() {
       if (ctrl.dirtyEditor) {
@@ -119,9 +123,7 @@ module.exports = [
       ctrl.focusEditor = true;
     };
 
-    this.closeEditor = function() {
-      ctrl.showEditor = false;
-    };
+    this.closeEditor = function() { ctrl.showEditor = false; };
 
     this.addQuote = function(index) {
       var timeDuration = 0;
@@ -196,6 +198,66 @@ module.exports = [
       }
     };
 
+    this.deletePostIndex;
+    this.showDeleteModal = false;
+    this.closeDeleteModal = function() {
+      $timeout(function() { ctrl.showDeleteModal = false; });
+    };
+    this.openDeleteModal = function(index) {
+      ctrl.deletePostIndex = index;
+      ctrl.showDeleteModal = true;
+    };
+    this.deletePost = function() {
+      var index = ctrl.deletePostIndex;
+      var post = ctrl.posts && ctrl.posts[index] || '';
+      if (post) {
+        Posts.delete({id: post.id}).$promise
+        .then(function() { post.deleted = true; })
+        .catch(function(err) { Alert.error('Failed to delete post'); })
+        .finally(function() { ctrl.showDeleteModal = false; });
+      }
+    };
+
+    this.undeletePostIndex;
+    this.showUndeleteModal = false;
+    this.closeUndeleteModal = function() {
+      $timeout(function() { ctrl.showUndeleteModal = false; });
+    };
+    this.openUndeleteModal = function(index) {
+      ctrl.undeletePostIndex = index;
+      ctrl.showUndeleteModal = true;
+    };
+    this.undeletePost = function() {
+      var index = ctrl.undeletePostIndex;
+      var post = ctrl.posts && ctrl.posts[index] || '';
+      if (post) {
+        Posts.undelete({id: post.id}).$promise
+        .then(function() { post.deleted = false; })
+        .catch(function(err) { Alert.error('Failed to Undelete Post'); })
+        .finally(function() { ctrl.showUndeleteModal = false; });
+      }
+    };
+
+    this.purgePostIndex;
+    this.showPurgeModal = false;
+    this.closePurgeModal = function() {
+      $timeout(function() { ctrl.showPurgeModal = false; });
+    };
+    this.openPurgeModal = function(index) {
+      ctrl.purgePostIndex = index;
+      ctrl.showPurgeModal = true;
+    };
+    this.purgePost = function() {
+      var index = ctrl.purgePostIndex;
+      var post = ctrl.posts && ctrl.posts[index] || '';
+      if (post) {
+        Posts.purge({id: post.id}).$promise
+        .then(function() { $state.go($state.$current, null, {reload:true}); })
+        .catch(function(err) { Alert.error('Failed to purge Post'); })
+        .finally(function() { ctrl.showPurgeModal = false; });
+      }
+    };
+
     var isFullscreen = true;
     this.fullscreen = function() {
       if (isFullscreen) {
@@ -209,6 +271,8 @@ module.exports = [
         this.resize = true;
       }
     };
+
+    /* User/Post Reporting */
 
     this.reportedPost = {}; // Object being reported
     this.showReportModal = false; // Visible state of modal

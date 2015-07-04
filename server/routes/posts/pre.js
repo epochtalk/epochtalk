@@ -7,26 +7,110 @@ var db = require(path.normalize(__dirname + '/../../../db'));
 var config = require(path.normalize(__dirname + '/../../../config'));
 var imageStore = require(path.normalize(__dirname + '/../../images'));
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
+var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 
 module.exports = {
-  authPost: function(request, reply) {
-    var userId = request.auth.credentials.id;
+  canFind: function(request, reply) {
     var postId = request.params.id;
+    var isThreadDeleted = isPostThreadDeleted(postId);
+    var isBoardDeleted = isPostBoardDeleted(postId);
 
-    db.posts.find(postId)
-    .then(function(post) {
-      var authError;
-
-      if (post.user_id !== userId) {
-        authError = Boom.badRequest('User did not create this post.');
-      }
-
-      return reply(authError);
-    })
-    .catch(function() {
-      var error = Boom.badRequest('Post Not Found');
-      return reply(error);
+    var promise = Promise.join(isThreadDeleted, isBoardDeleted, function(threadDeleted, boardDeleted) {
+      var reject = false;
+      if (threadDeleted || boardDeleted) { reject = true; }
+      if (reject) { return Boom.forbidden(); }
     });
+    return reply(promise);
+  },
+  canRetrieve: function(request, reply) {
+    var threadId = request.query.thread_id;
+    var isDeleted = isThreadDeleted(threadId);
+    var isBoardDeleted = isThreadBoardDeleted(threadId);
+
+    var promise = Promise.join(isDeleted, isBoardDeleted, function(threadDeleted, boardDeleted) {
+      var reject = false;
+      if (threadDeleted || boardDeleted) { reject = true; }
+      if (reject) { return Boom.forbidden(); }
+    });
+    return reply(promise);
+  },
+  canCreate: function(request, reply) {
+    var threadId = request.payload.thread_id;
+    var isLocked = isThreadLocked(threadId);
+    var isDeleted = isThreadDeleted(threadId);
+    var isBoardDelete = isThreadBoardDeleted(threadId);
+
+    var promise = Promise.join(isLocked, isDeleted, isBoardDelete, function(locked, deleted, boardDeleted) {
+      var reject = false;
+      if (deleted || boardDeleted) { reject = true; }
+      else if (locked) { reject = true; }
+      if (reject) { return Boom.forbidden(); }
+    });
+    return reply(promise);
+  },
+  canUpdate: function(request, reply) {
+    var postId = request.params.id;
+    var userId = request.auth.credentials.id;
+    var username = request.auth.credentials.username;
+    var authenticated = request.auth.isAuthenticated;
+
+    var isLocked = isPostThreadLocked(postId);
+    var isOwner = isPostOwner(userId, postId);
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isThreadDeleted = isPostThreadDeleted(postId);
+    var isBoardDeleted = isPostBoardDeleted(postId);
+
+    var promise = Promise.join(isAdmin, isLocked, isOwner, isThreadDeleted, isBoardDeleted, function(admin, locked, owner, threadDeleted, boardDeleted) {
+      var reject = true;
+      if (admin) { reject = false; }
+      else if (threadDeleted) { reject = true; }
+      else if (boardDeleted) { reject = true; }
+      else if (locked) { reject = true; }
+      else if (owner) { reject = false; }
+      if (reject) { return Boom.forbidden(); }
+    });
+    return reply(promise);
+  },
+  canDelete: function(request, reply) {
+    var postId = request.params.id;
+    var userId = request.auth.credentials.id;
+    var username = request.auth.credentials.username;
+    var authenticated = request.auth.isAuthenticated;
+
+    var isLocked = isPostThreadLocked(postId);
+    var isOwner = isPostOwner(userId, postId);
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isFirst = isFirstPost(postId);
+    var isThreadDeleted = isPostThreadDeleted(postId);
+    var isBoardDeleted = isPostBoardDeleted(postId);
+
+    var promise = Promise.join(isAdmin, isLocked, isOwner, isFirst, isThreadDeleted, isBoardDeleted, function(admin, locked, owner, firstPost, threadDeleted, boardDeleted) {
+      var reject = true;
+      if (firstPost) { reject = true }
+      else if (admin) { reject = false; }
+      else if (threadDeleted) { reject = true; }
+      else if (boardDeleted) { reject = true; }
+      else if (locked) { reject = true; }
+      else if (owner) { reject = false; }
+      if (reject) { return Boom.forbidden(); }
+    });
+    return reply(promise);
+  },
+  canPurge: function(request, reply) {
+    var postId = request.params.id;
+    var authenticated = request.auth.isAuthenticated;
+    var username = request.auth.credentials.username;
+
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isFirst = isFirstPost(postId);
+
+    var promise = Promise.join(isAdmin, isFirst, function(admin, firstPost) {
+      var reject = true;
+      if (firstPost) { reject = true; }
+      else if (admin) { reject = false; }
+      if (reject) { return Boom.forbidden(); }
+    });
+    return reply(promise);
   },
   clean: function(request, reply) {
     request.payload.title = sanitizer.strip(request.payload.title);
@@ -109,16 +193,6 @@ module.exports = {
       return reply();
     })
     .catch(function(err) { return reply(err); });
-  },
-  threadLocked: function(request, reply) {
-    var threadId = request.payload.thread_id;
-    var promise = db.threads.find(threadId)
-    .then(function(thread) {
-      var output;
-      if (thread.locked) { output = Boom.forbidden('Thread is locked'); }
-      return output;
-    });
-    return reply(promise);
   }
 };
 
@@ -132,4 +206,44 @@ function textToEntities(text) {
   }
 
   return entities;
+}
+
+function isThreadDeleted(threadId) {
+  return db.threads.deepFind(threadId)
+  .then(function(thread) { return thread.deleted; });
+}
+
+function isThreadBoardDeleted(threadId) {
+  return db.threads.getThreadsBoard(threadId)
+  .then(function(board) { return board.deleted; });
+}
+
+function isThreadLocked(threadId) {
+  return db.threads.find(threadId)
+  .then(function(thread) { return thread.locked; });
+}
+
+function isPostThreadLocked(postId) {
+  return db.posts.getPostsThread(postId)
+  .then(function(thread) { return thread.locked; });
+}
+
+function isPostThreadDeleted(postId) {
+  return db.posts.getPostsThread(postId)
+  .then(function(thread) { return thread.deleted; });
+}
+
+function isPostBoardDeleted(postId) {
+  return db.posts.getPostsBoard(postId)
+  .then(function(board) { return board.deleted; });
+}
+
+function isPostOwner(userId, postId) {
+  return db.posts.deepFind(postId)
+  .then(function(post) { return post.user_id === userId; });
+}
+
+function isFirstPost(postId) {
+  return db.posts.getThreadFirstPost(postId)
+  .then(function(post) { return post.id === postId; });
 }

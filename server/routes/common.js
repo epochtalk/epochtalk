@@ -1,6 +1,7 @@
 var path = require('path');
 var cheerio = require('cheerio');
 var Boom = require('boom');
+var Promise = require('bluebird');
 var bbcodeParser = require('epochtalk-bbcode-parser');
 var sanitizer = require(path.normalize(__dirname + '/../sanitizer'));
 var imageStore = require(path.normalize(__dirname + '/../images'));
@@ -9,6 +10,8 @@ var USER_ROLES = require(path.normalize(__dirname + '/user-roles'));
 
 module.exports = {
   auth: {
+    isAdmin: isAdmin,
+    isMod: isMod,
     adminCheck: function(request, reply) {
       if (request.auth.isAuthenticated) {
         var username = request.auth.credentials.username;
@@ -101,3 +104,43 @@ module.exports = {
     }
   }
 };
+
+function isAdmin(authenticated, username) {
+  var promise;
+
+  var isAdmin = false;
+  if (!authenticated) { promise = Promise.resolve(isAdmin); }
+  else {
+    promise = db.users.userByUsername(username)
+    .then(function(user) {
+      user.roles.forEach(function(role) {
+        if (role.name === USER_ROLES.admin) {isAdmin = true; }
+        else if (role.name === USER_ROLES.superAdmin) { isAdmin = true; }
+      });
+      return isAdmin;
+    })
+    .catch(function() { return isAdmin; });
+  }
+
+  return promise;
+}
+
+function isMod(authenticated, username) {
+  var promise;
+  var isMod = false;
+
+  if (!authenticated) { promise = Promise.resolve(isMod); }
+  else {
+    return db.users.userByUsername(username)
+    .then(function(user) {
+      user.roles.forEach(function(role) {
+        if (role.name === USER_ROLES.mod) { isMod = true; }
+        else if (role.name === USER_ROLES.globalMod) { isMod = true; }
+      });
+      return isMod;
+    })
+    .catch(function() { return isMod });
+  }
+
+  return promise;
+}
