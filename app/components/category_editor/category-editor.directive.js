@@ -1,5 +1,4 @@
 var fs = require('fs');
-var _ = require('lodash');
 
 module.exports = ['$state', function($state) {
   return {
@@ -149,7 +148,7 @@ module.exports = ['$state', function($state) {
         })
         .then(function() {
           console.log('Done Saving!');
-          return $state.go($state.$current, null, { reload: true });
+          return $state.go($state.$current, { saved: true }, { reload: true });
         });
       };
 

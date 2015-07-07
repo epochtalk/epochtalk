@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
-module.exports = ['$scope', '$q', 'Boards', 'Categories', 'boards', 'categories',
-  function($scope, $q, Boards, Categories, boards, categories) {
+module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'boards', 'categories',
+  function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, boards, categories) {
     this.parent = $scope.$parent;
     this.parent.tab = 'boards';
 
@@ -14,6 +14,13 @@ module.exports = ['$scope', '$q', 'Boards', 'Categories', 'boards', 'categories'
     $scope.newCategories = [];
     $scope.updatedCats = [];
     $scope.boardMapping = [];
+
+    // temporary hack to get save alert working
+    if ($stateParams.saved === 'true') { // string compare to query string
+      $location.search({});
+      Alert.success('Boards successfully saved.');
+    }
+    $anchorScroll();
 
     function cleanBoardList() {
       categories.forEach(function(cat) { return cleanBoards(cat.boards); });

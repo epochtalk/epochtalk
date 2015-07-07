@@ -1,6 +1,7 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
+var pre = require(path.normalize(__dirname + '/pre'));
 var commonAdminPre = require(path.normalize(__dirname + '/../../common')).auth;
 var db = require(path.normalize(__dirname + '/../../../../db'));
 
@@ -192,7 +193,10 @@ exports.updatePostReport = {
   */
 exports.updateUserReportNote = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  pre: [
+    { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
+    { method: pre.canUpdateUserReportNote }
+  ],
   validate: {
     payload: {
       id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -231,7 +235,10 @@ exports.updateUserReportNote = {
   */
 exports.updatePostReportNote = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  pre: [
+    { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
+    { method: pre.canUpdatePostReportNote }
+  ],
   validate: {
     payload: {
       id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),

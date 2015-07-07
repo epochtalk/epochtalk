@@ -139,7 +139,7 @@ function isMod(authenticated, username) {
       });
       return isMod;
     })
-    .catch(function() { return isMod });
+    .catch(function() { return isMod; });
   }
 
   return promise;

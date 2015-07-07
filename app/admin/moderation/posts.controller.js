@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminReports, AdminUsers, Posts, postReports, reportCount, page, limit, field, desc, filter, search, reportId) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Posts, postReports, reportCount, page, limit, field, desc, filter, search, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'posts';
@@ -9,6 +9,8 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.tableFilter = 0;
   if (filter === 'Pending') { this.tableFilter = 1; }
   else if (filter === 'Reviewed') { this.tableFilter = 2; }
+  else if (filter === 'Ignored') { this.tableFilter = 3; }
+  else if (filter === 'Bad Report') { this.tableFilter = 4; }
 
   // Search Vars
   this.search = search;
@@ -108,6 +110,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
         ctrl.previewReport.status = updatedReport.status;
         ctrl.previewReport.updated_at = updatedReport.updated_at;
       }
+      Alert.success('Report status has been set to ' + updatedReport.status);
       $timeout(function() { ctrl.closeSetStatus(); });
       return;
     })
@@ -163,6 +166,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     };
     AdminUsers.ban(params).$promise
     .then(function() {
+      Alert.success(ctrl.selectedUser.username + ' has been banned');
       ctrl.closeConfirmBan();
       ctrl.pullPage();
       $timeout(function() { // wait for modal to close
@@ -191,6 +195,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     };
     AdminUsers.unban(params).$promise
     .then(function() {
+      Alert.success(ctrl.selectedUser.username + ' has been unbanned');
       ctrl.closeConfirmUnban();
       ctrl.pullPage();
       $timeout(function() { // wait for modal to close
@@ -210,6 +215,12 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
           break;
         }
       }
+      Alert.success('Note successfully updated');
+    })
+    .catch(function(err) {
+      note.note = note.noteCopy;
+      delete note.noteCopy;
+      Alert.error('Error: ' + err.data.message);
     });
   };
 
@@ -227,6 +238,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       ctrl.submitBtnLabel = 'Add Note';
       ctrl.noteSubmitted = false;
       ctrl.reportNote = null;
+      Alert.success('Note successfully created');
     });
   };
 
@@ -285,6 +297,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     ctrl.queryParams.filter = newFilter;
     delete ctrl.queryParams.reportId;
     delete ctrl.queryParams.search;
+    delete ctrl.queryParams.page;
     $location.search(ctrl.queryParams);
     ctrl.reportId = null;
     ctrl.previewPost = null;

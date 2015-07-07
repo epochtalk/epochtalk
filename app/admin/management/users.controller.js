@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, AdminUsers, users, usersCount, page, limit, field, desc, filter, search) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', 'Alert', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, Alert, AdminUsers, users, usersCount, page, limit, field, desc, filter, search) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'users';
@@ -68,7 +68,9 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     AdminUsers.update(ctrl.selectedUser).$promise
     .then(function() {
       ctrl.closeEditUser();
-    });
+      Alert.success('Successfully updated profile for ' + ctrl.selectedUser.username);
+    })
+    .catch(function() { Alert.error('There was an error updating user ' + ctrl.selectedUser.username); });
   };
 
   this.minDate = function() {
@@ -106,6 +108,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     .then(function(ban) {
       if (ctrl.tableFilter === 0) { ctrl.pullPage(); }
       else { ctrl.selectedUser.ban_expiration = ban.expiration; }
+      Alert.success(ctrl.selectedUser.username + ' has been banned');
       ctrl.closeConfirmBan();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -135,6 +138,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     .then(function() {
       if (ctrl.tableFilter === 0) { ctrl.pullPage(); }
       else { ctrl.selectedUser.ban_expiration = null; }
+      Alert.success(ctrl.selectedUser.username + ' has been unbanned');
       ctrl.closeConfirmUnban();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
