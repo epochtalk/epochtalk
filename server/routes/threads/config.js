@@ -2,7 +2,6 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var pre = require(path.normalize(__dirname + '/pre'));
-var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var db = require(path.normalize(__dirname + '/../../../db'));
 var postPre = require(path.normalize(__dirname + '/../posts/pre'));
 
@@ -32,6 +31,7 @@ exports.create = {
     })
   },
   pre: [
+    { method: pre.canCreate },
     { method: postPre.clean },
     { method: postPre.parseEncodings },
     { method: postPre.subImages }
@@ -52,11 +52,10 @@ exports.create = {
     };
 
     // create the thread and first post in db
-    db.threads.create(newThread)
+    var promise = db.threads.create(newThread)
     .then(function(thread) { newPost.thread_id = thread.id; })
-    .then(function() { return db.posts.create(newPost); })
-    .then(reply)
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    .then(function() { return db.posts.create(newPost); });
+    return reply(promise);
   }
 };
 
@@ -98,12 +97,12 @@ exports.import = {
   //   })
   // },
   handler: function(request, reply) {
-    db.threads.import(request.payload)
-    .then(reply)
+    var promise = db.threads.import(request.payload)
     .catch(function(err) {
       request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
       reply(Boom.badImplementation(err));
     });
+    return reply(promise);
   }
 };
 
@@ -132,8 +131,11 @@ exports.byBoard = {
     }
   },
   pre: [
-    { method: pre.getThreads, assign: 'threads' },
-    { method: pre.getUserThreadViews, assign: 'threadViews' }
+    [
+      { method: pre.canRetrieve },
+      { method: pre.getThreads, assign: 'threads' },
+      { method: pre.getUserThreadViews, assign: 'threadViews' }
+    ]
   ],
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply([]); }
@@ -173,7 +175,10 @@ exports.find = {
   validate: { params: { id: Joi.string().required() } },
   pre: [
     [
+      { method: pre.canFind },
       { method: pre.getThread, assign: 'thread' },
+    ],
+    [
       { method: pre.checkViewValidity, assign: 'newViewId' },
       { method: pre.updateUserThreadViews }
     ]
@@ -210,21 +215,18 @@ exports.lock = {
     payload: { status: Joi.boolean().default(true) }
   },
   pre: [
-    { method: pre.getThread, assign: 'thread' },
-    { method: pre.threadAuthorCheck || commonPre.adminCheck, assign: 'canLock' }
+    [
+      { method: pre.canLock },
+      { method: pre.getThread, assign: 'thread' },
+    ]
   ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
-    var canLock = request.pre.canLock;
-    var promise;
+    thread.locked = request.payload.status;
 
     // lock thread
-    if (canLock) {
-      thread.locked = request.payload.status;
-      promise = db.threads.lock(thread.id, thread.locked)
-      .then(function() { return thread; });
-    }
-    else { promise = Boom.unauthorized(); }
+    var promise = db.threads.lock(thread.id, thread.locked)
+    .then(function() { return thread; });
 
     return reply(promise);
   }
@@ -253,21 +255,18 @@ exports.sticky = {
     payload: { status: Joi.boolean().default(true) }
   },
   pre: [
-    { method: pre.getThread, assign: 'thread' },
-    { method: commonPre.adminCheck, assign: 'isAdmin' }
+    [
+      { method: pre.canSticky },
+      { method: pre.getThread, assign: 'thread' },
+    ]
   ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
-    var isAdmin = request.pre.isAdmin;
-    var promise;
+    thread.sticky = request.payload.status;
 
-    // lock thread
-    if (isAdmin) {
-      thread.sticky = request.payload.status;
-      promise = db.threads.sticky(thread.id, thread.sticky)
-      .then(function() { return thread; });
-    }
-    else { promise = Boom.unauthorized(); }
+    // sticky thread
+    var promise = db.threads.sticky(thread.id, thread.sticky)
+    .then(function() { return thread; });
 
     return reply(promise);
   }
@@ -281,7 +280,7 @@ exports.sticky = {
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to move a thread to a different board.
   *
-  * @apiParam {string} id The unique id of the thread to sticky
+  * @apiParam {string} id The unique id of the thread to move
   * @apiParam (Payload) {string} newBoardId The unique id of the board to move this thread into.
   *
   * @apiUse ThreadObjectSuccess2
@@ -297,28 +296,102 @@ exports.move = {
     payload: { newBoardId: Joi.string().required() }
   },
   pre: [
-    { method: pre.getThread, assign: 'thread' },
-    { method: commonPre.adminCheck, assign: 'isAdmin' }
+    [
+      { method: pre.canMove },
+      { method: pre.getThread, assign: 'thread' },
+    ]
   ],
   handler: function(request, reply) {
-    var thread = request.pre.thread;
-    var isAdmin = request.pre.isAdmin;
     var newBoardId = request.payload.newBoardId;
-    var promise;
+    var thread = request.pre.thread;
+    thread.board_id = newBoardId;
 
-    // lock thread
-    if (isAdmin) {
-      thread.board_id = newBoardId;
-      promise = db.threads.move(thread.id, thread.board_id)
-      .then(function() { return thread; })
-      .error(function(err) { return Boom.badRequest(err.message); });
-    }
-    else { promise = Boom.unauthorized(); }
+    // move thread
+    var promise = db.threads.move(thread.id, thread.board_id)
+    .then(function() { return thread; })
+    .error(function(err) { return Boom.badRequest(err.message); });
 
     return reply(promise);
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Threads
+  * @api {DELETE} /threads/:id Delete
+  * @apiName DeleteThread
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
+  * @apiDescription Used to delete a thread.
+  *
+  * @apiParam {string} id The unique id of the thread to delete
+  *
+  * @apiUse ThreadObjectSuccess2
+  *
+  * @apiError BadRequest User attempted to delete that is already deleted
+  * @apiError Unauthorized User doesn't have permissions to delete the thread
+  * @apiError (Error 500) InternalServerError There was an issue deleting the thread
+  */
+exports.delete = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.canDelete } ],
+  handler: function(request, reply) {
+    var promise = db.threads.delete(request.params.id)
+    .error(function(err) { return Boom.badRequest(err.message); });
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Threads
+  * @api {POST} /threads/:id/undelete Undelete
+  * @apiName UndeleteThread
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
+  * @apiDescription Used to undelete a thread.
+  *
+  * @apiParam {string} id The unique id of the thread to undelete
+  *
+  * @apiUse ThreadObjectSuccess2
+  *
+  * @apiError BadRequest User attempted to undelete that is not deleted
+  * @apiError Unauthorized User doesn't have permissions to undelete the thread
+  * @apiError (Error 500) InternalServerError There was an issue undeleting the thread
+  */
+exports.undelete = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.canDelete } ],
+  handler: function(request, reply) {
+    var promise = db.threads.undelete(request.params.id)
+    .error(function(err) { return Boom.badRequest(err.message); });
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Threads
+  * @api {DELETE} /threads/:id/purge Purge
+  * @apiName PurgeThread
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
+  * @apiDescription Used to purge a thread.
+  *
+  * @apiParam {string} id The unique id of the thread to purge
+  *
+  * @apiUse ThreadObjectSuccess2
+  *
+  * @apiError Unauthorized User doesn't have permissions to purge the thread
+  * @apiError (Error 500) InternalServerError There was an issue purging the thread
+  */
+exports.purge = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.canPurge } ],
+  handler: function(request, reply) {
+    return reply(db.threads.purge(request.params.id));
+  }
+};
 
 function setNewPost(user, threadViews, thread) {
   // If user made last post consider thread viewed

@@ -33,7 +33,29 @@
     </div>
   </div>
 
-  <div class="small-5 columns row" ng-if="PostsParentCtrl.user.isAdmin">
+  <!-- Delete Thread -->
+  <div class="small-3 columns" ng-if="PostsParentCtrl.user.isAdmin && !PostsParentCtrl.thread.deleted">
+    <h5>Delete Thread</h5>
+    <button class="btn-expand" ng-click="PostsParentCtrl.showDeleteThreadModal = true">Delete</button>
+  </div>
+
+  <!-- Undelete Thread -->
+  <div class="small-3 columns" ng-if="PostsParentCtrl.user.isAdmin && PostsParentCtrl.thread.deleted">
+    <h5>Undelete Thread</h5>
+    <button class="btn-expand" ng-click="PostsParentCtrl.showUndeleteThreadModal = true">Undelete</button>
+  </div>
+
+  <!-- Purge Delete -->
+  <div class="small-3 columns" ng-if="PostsParentCtrl.user.isAdmin">
+    <h5>Purge Thread</h5>
+    <button class="btn-expand" ng-click="PostsParentCtrl.showPurgeThreadModal = true">Purge</button>
+  </div>
+</div>
+
+<!-- Second row of thread controls -->
+<div class="row thread-spacer" ng-if="PostsParentCtrl.showThreadControls()">
+  <!-- Move Thread -->
+  <div class="small-12 columns" ng-if="PostsParentCtrl.user.isAdmin">
     <h5>Move Thread</h5>
     <select class="small-8" name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name for board in PostsParentCtrl.boards"></select>
     <button class="small-3" ng-click="PostsParentCtrl.moveThread()">Move</button>
@@ -177,5 +199,59 @@
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || PostsParentCtrl.reportSubmitted" ng-bind="PostsParentCtrl.reportBtnLabel"></button>
     </div>
   </form>
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Delete Thread Modal -->
+<modal class="medium" show="PostsParentCtrl.showDeleteThreadModal" on-close="PostsParentCtrl.closeDeleteThreadModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <center>
+      <p>Are you sure you want to delete this thread?</p>
+    </center>
+
+    <!-- Save Button -->
+    <div class="row">
+      <button class="button expand" ng-click="PostsParentCtrl.deleteThread()">
+        Delete Thread
+      </button>
+    </div>
+  </form>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Undelete Post Modal -->
+<modal class="medium" show="PostsParentCtrl.showUndeleteThreadModal" on-close="PostsParentCtrl.closeUndeleteThreadModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <center>
+      <p>Are you sure you want to Undelete this thread?</p>
+    </center>
+
+    <!-- Save Button -->
+    <div class="row">
+      <button class="button expand" ng-click="PostsParentCtrl.undeleteThread()">
+        Undelete Thread
+      </button>
+    </div>
+  </form>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Purge Post Modal -->
+<modal class="medium" show="PostsParentCtrl.showPurgeThreadModal" on-close="PostsParentCtrl.closePurgeThreadModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <center>
+      <p>Are you sure you want to permanently delete this thread?</p>
+    </center>
+
+    <!-- Save Button -->
+    <div class="row">
+      <button class="button expand" ng-click="PostsParentCtrl.purgeThread()">
+        Purge Thread
+      </button>
+    </div>
+  </form>
+
   <a class="close-reveal-modal">&#215;</a>
 </modal>

@@ -86,6 +86,48 @@ module.exports = [
       .then(function(newBoard) { $state.go($state.$current, null, {reload:true}); });
     };
 
+    this.showDeleteThreadModal = false;
+    this.closeDeleteThreadModal = function() {
+      $timeout(function() { ctrl.showDeleteThreadModal = false; });
+    };
+    this.openDeleteThreadModal = function() {
+      ctrl.showDeleteThreadModal = true;
+    };
+    this.deleteThread = function() {
+      Threads.delete({id: ctrl.thread.id}).$promise
+      .then(function() { ctrl.thread.deleted = true; })
+      .catch(function(err) { Alert.error('Failed to delete thread'); })
+      .finally(function() { ctrl.showDeleteThreadModal = false; });
+    };
+
+    this.showUndeleteThreadModal = false;
+    this.closeUndeleteThreadModal = function() {
+      $timeout(function() { ctrl.showUndeleteThreadModal = false; });
+    };
+    this.openUndeleteThreadModal = function() {
+      ctrl.showUndeleteThreadModal = true;
+    };
+    this.undeleteThread = function() {
+      Threads.undelete({id: ctrl.thread.id}).$promise
+      .then(function() { ctrl.thread.deleted = false; })
+      .catch(function(err) { Alert.error('Failed to Undelete Thread'); })
+      .finally(function() { ctrl.showUndeleteThreadModal = false; });
+    };
+
+    this.showPurgeThreadModal = false;
+    this.closePurgeThreadModal = function() {
+      $timeout(function() { ctrl.showPurgeThreadModal = false; });
+    };
+    this.openPurgeThreadModal = function() {
+      ctrl.showPurgeThreadModal = true;
+    };
+    this.purgeThread = function() {
+      Threads.purge({id: ctrl.thread.id}).$promise
+      .then(function() { $state.go('board.data', {boardId: ctrl.board_id}); })
+      .catch(function(err) { Alert.error('Failed to purge Thread'); })
+      .finally(function() { ctrl.showPurgeThreadModal = false; });
+    };
+
     /* Post Methods */
 
     var discardAlert = function() {

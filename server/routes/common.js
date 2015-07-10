@@ -107,19 +107,18 @@ module.exports = {
 
 function isAdmin(authenticated, username) {
   var promise;
+  var admin = false;
 
-  var isAdmin = false;
-  if (!authenticated) { promise = Promise.resolve(isAdmin); }
+  if (!authenticated) { promise = Promise.resolve(admin); }
   else {
     promise = db.users.userByUsername(username)
     .then(function(user) {
       user.roles.forEach(function(role) {
-        if (role.name === USER_ROLES.admin) {isAdmin = true; }
-        else if (role.name === USER_ROLES.superAdmin) { isAdmin = true; }
+        if (role.name === USER_ROLES.admin) { admin = true; }
+        else if (role.name === USER_ROLES.superAdmin) { admin = true; }
       });
-      return isAdmin;
-    })
-    .catch(function() { return isAdmin; });
+      return admin;
+    });
   }
 
   return promise;
@@ -127,19 +126,18 @@ function isAdmin(authenticated, username) {
 
 function isMod(authenticated, username) {
   var promise;
-  var isMod = false;
+  var mod = false;
 
-  if (!authenticated) { promise = Promise.resolve(isMod); }
+  if (!authenticated) { promise = Promise.resolve(mod); }
   else {
     return db.users.userByUsername(username)
     .then(function(user) {
       user.roles.forEach(function(role) {
-        if (role.name === USER_ROLES.mod) { isMod = true; }
-        else if (role.name === USER_ROLES.globalMod) { isMod = true; }
+        if (role.name === USER_ROLES.mod) { mod = true; }
+        else if (role.name === USER_ROLES.globalMod) { mod = true; }
       });
-      return isMod;
-    })
-    .catch(function() { return isMod; });
+      return mod;
+    });
   }
 
   return promise;
