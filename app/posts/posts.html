@@ -1,8 +1,8 @@
 <!-- Page Title -->
 <div class="row">
   <div class="small-12 columns thread-header">
-    <span ng-bind-html="::PostsParentCtrl.thread_title"></span>
-    <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread_locked"></i>
+    <span ng-bind-html="::PostsParentCtrl.thread.title"></span>
+    <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
   </div>
 </div>
 
@@ -19,7 +19,7 @@
   <div class="small-3 columns">
     <h5>Thread Locked</h5>
     <div class="switch">
-      <input id="lockThread" type="checkbox" ng-model="PostsParentCtrl.thread_locked">
+      <input id="lockThread" type="checkbox" ng-model="PostsParentCtrl.thread.locked">
       <label for="lockThread" ng-click="PostsParentCtrl.updateThreadLock()"></label>
     </div>
   </div>
@@ -28,7 +28,7 @@
   <div class="small-3 columns" ng-if="PostsParentCtrl.user.isAdmin">
     <h5>Thread Sticky</h5>
     <div class="switch">
-      <input id="stickyThread" type="checkbox" ng-model="PostsParentCtrl.thread_sticky">
+      <input id="stickyThread" type="checkbox" ng-model="PostsParentCtrl.thread.sticky">
       <label for="stickyThread" ng-click="PostsParentCtrl.updateThreadSticky()"></label>
     </div>
   </div>

@@ -17,11 +17,11 @@ module.exports = [
     this.showThreadControls = function() {
       var show = false;
       if (ctrl.user.isAdmin || ctrl.user.isMod) { show = true; }
-      else if (ctrl.user.id === ctrl.thread_user.id) { show = true; }
+      else if (ctrl.user.id === ctrl.thread.user.id) { show = true; }
       return show;
     };
     this.allowPosting = function() {
-      return ctrl.loggedIn() && ctrl.newPostEnabled && !ctrl.thread_locked;
+      return ctrl.loggedIn() && ctrl.newPostEnabled && !ctrl.thread.locked;
     };
     this.moveBoard = {};
     this.boards = Boards.all().$promise
@@ -35,14 +35,14 @@ module.exports = [
     // pullPage function injected by child controller
 
     $scope.$watch(
-      function() { return ctrl.thread_post_count; },
+      function() { return ctrl.thread.post_count; },
       function(postCount) { if (postCount) { calculatePages(); } }
     );
 
     ctrl.newPostEnabled = false;
     $scope.$watchGroup(
-      [function() { return ctrl.thread_id; },
-       function() { return ctrl.thread_title; }],
+      [function() { return ctrl.thread.id; },
+       function() { return ctrl.thread.title; }],
       function(values) {
         var id = values[0];
         var title = values[1];
@@ -55,9 +55,9 @@ module.exports = [
 
     var calculatePages = function() {
       var count;
-      if (ctrl.limit === 'all') { count = Number(ctrl.thread_post_count); }
+      if (ctrl.limit === 'all') { count = Number(ctrl.thread.post_count); }
       else { count = Number(ctrl.limit) || 10; }
-      ctrl.pageCount = Math.ceil(ctrl.thread_post_count / count);
+      ctrl.pageCount = Math.ceil(ctrl.thread.post_count / count);
     };
 
     /* Thread Methods */
@@ -65,24 +65,24 @@ module.exports = [
     this.updateThreadLock = function() {
       // let angular digest the change in lock status
       $timeout(function() {
-        var lockStatus = ctrl.thread_locked;
-        return Threads.lock({id: ctrl.thread_id}, {status: lockStatus}).$promise
-        .then(function(lockThread) { ctrl.thread_locked = lockThread.locked; });
+        var lockStatus = ctrl.thread.locked;
+        return Threads.lock({id: ctrl.thread.id}, {status: lockStatus}).$promise
+        .then(function(lockThread) { ctrl.thread.locked = lockThread.locked; });
       });
     };
 
     this.updateThreadSticky = function() {
       // let angular digest the change in lock status
       $timeout(function() {
-        var stickyStatus = ctrl.thread_sticky;
-        return Threads.sticky({id: ctrl.thread_id}, {status: stickyStatus}).$promise
-        .then(function(stickyThread) { ctrl.thread_sticky = stickyThread.sticky; });
+        var stickyStatus = ctrl.thread.sticky;
+        return Threads.sticky({id: ctrl.thread.id}, {status: stickyStatus}).$promise
+        .then(function(stickyThread) { ctrl.thread.sticky = stickyThread.sticky; });
       });
     };
 
     this.moveThread = function() {
       var newBoardId = ctrl.moveBoard.id;
-      return Threads.move({id: ctrl.thread_id}, {newBoardId: newBoardId}).$promise
+      return Threads.move({id: ctrl.thread.id}, {newBoardId: newBoardId}).$promise
       .then(function(newBoard) { $state.go($state.$current, null, {reload:true}); });
     };
 
@@ -110,8 +110,8 @@ module.exports = [
 
       ctrl.posting.id = post.id || '';
       var editorPost = ctrl.posting.post;
-      editorPost.thread_id = post.thread_id || ctrl.thread_id;
-      editorPost.title = post.title || 'Re: ' + ctrl.thread_title;
+      editorPost.thread_id = post.thread_id || ctrl.thread.id;
+      editorPost.title = post.title || 'Re: ' + ctrl.thread.title;
       editorPost.body = post.body || '';
       editorPost.raw_body = post.raw_body || '';
 
@@ -137,7 +137,7 @@ module.exports = [
         if (post) {
           ctrl.quote = {
             username: post.user.username,
-            threadId: ctrl.thread_id,
+            threadId: ctrl.thread.id,
             page: ctrl.page,
             postId: post.id,
             createdAt: new Date(post.created_at).getTime(),
@@ -169,7 +169,7 @@ module.exports = [
       postPromise.then(function(data) {
         if (type === 'new') {
           // Increment post count and recalculate ctrl.pageCount
-          ctrl.thread_post_count++;
+          ctrl.thread.post_count++;
           calculatePages();
           // Go to last page in the thread and scroll to new post
           var lastPage = ctrl.pageCount;
@@ -198,7 +198,7 @@ module.exports = [
       }
     };
 
-    this.deletePostIndex;
+    this.deletePostIndex = -1;
     this.showDeleteModal = false;
     this.closeDeleteModal = function() {
       $timeout(function() { ctrl.showDeleteModal = false; });
@@ -218,7 +218,7 @@ module.exports = [
       }
     };
 
-    this.undeletePostIndex;
+    this.undeletePostIndex = -1;
     this.showUndeleteModal = false;
     this.closeUndeleteModal = function() {
       $timeout(function() { ctrl.showUndeleteModal = false; });
@@ -238,7 +238,7 @@ module.exports = [
       }
     };
 
-    this.purgePostIndex;
+    this.purgePostIndex = -1;
     this.showPurgeModal = false;
     this.closePurgeModal = function() {
       $timeout(function() { ctrl.showPurgeModal = false; });
