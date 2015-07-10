@@ -1,7 +1,8 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminUsers', 'moderators', 'moderatorsCount', 'page', 'limit', 'field', 'desc', 'USER_ROLES', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminUsers, moderators, moderatorsCount, page, limit, field, desc, USER_ROLES) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminUsers', 'moderators', 'moderatorsCount', 'page', 'limit', 'field', 'desc', 'USER_ROLES', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminUsers, moderators, moderatorsCount, page, limit, field, desc, USER_ROLES) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'moderators';
+  this.count = moderatorsCount;
   this.pageCount =  Math.ceil(moderatorsCount / limit);
   this.moderators = moderators;
   this.queryParams = $location.search();
@@ -43,7 +44,10 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       if (role.name === USER_ROLES.mod || role.name === USER_ROLES.globalMod) { hasModRole = true; }
     });
 
-    if (hasModRole) { ctrl.closeConfirmAdd(); }
+    if (hasModRole) {
+      Alert.warning(ctrl.selectedUser.username + ' is already in the list of moderators');
+      ctrl.closeConfirmAdd();
+    }
     else {
       var roles = [ USER_ROLES.mod ]; // default to mod role
       if (ctrl.selectedRole === USER_ROLES.globalMod) { // Append global mod role if selected
@@ -55,6 +59,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       };
       AdminUsers.addRoles(params).$promise
       .then(function() {
+        Alert.success(ctrl.selectedUser.username + ' has been added as a ' + ctrl.selectedRole);
         ctrl.closeConfirmAdd();
         ctrl.pullPage();
       });
@@ -91,6 +96,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     };
     AdminUsers.removeRoles(params).$promise
     .then(function() {
+      Alert.success(ctrl.selectedUser.username + ' has been removed from moderators');
       ctrl.pullPage();
       ctrl.closeConfirmRemove();
     });
@@ -194,6 +200,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     // update mods's page count
     AdminUsers.countModerators().$promise
     .then(function(updatedCount) {
+      ctrl.count = updatedCount.count;
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
 

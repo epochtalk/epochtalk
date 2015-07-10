@@ -17,7 +17,10 @@
   </div>
   <div class="admin-table-fix"></div>
 </div>
-<div class="row full-width">
+<div class="row full-width" align="center" ng-if="!AdminManagementCtrl.search && AdminManagementCtrl.count < 1">
+  <h4>No Users to display in <strong>{{AdminManagementCtrl.filter ? 'Banned' : 'All'}}</strong></h4>
+</div>
+<div class="row full-width" ng-if="AdminManagementCtrl.count > 0 || AdminManagementCtrl.search">
   <div class="small-12 columns">
     <div ng-if="AdminManagementCtrl.search">
     Displaying {{AdminManagementCtrl.count | number}} search result(s) for "<strong>{{AdminManagementCtrl.search}}</strong>" in <strong>{{AdminManagementCtrl.filter ? 'Banned': 'All'}}</strong>:<br /><br />

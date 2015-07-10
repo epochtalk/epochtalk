@@ -11,7 +11,15 @@
     <input type="radio" class="hide-radio" name="table-filter" value="2" id="users-filter-2" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Reviewed')" />
     <label for="users-filter-2">Reviewed</label>
   </div>
-  <div class="small-12 medium-3 columns">&nbsp;</div>
+  <div class="small-6 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="3" id="posts-filter-3" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Ignored')" />
+    <label for="posts-filter-3">Ignored</label>
+  </div>
+  <div class="small-6 medium-1 columns radio-toolbar">
+    <input type="radio" class="hide-radio" name="table-filter" value="4" id="posts-filter-4" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Bad Report')" />
+    <label for="posts-filter-4">Bad Report</label>
+  </div>
+  <div class="small-12 medium-1 columns">&nbsp;</div>
   <div class="small-12 medium-6 columns">
     <div class="nested-input-container">
       <a ng-if="ModerationCtrl.search" ng-click="ModerationCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
@@ -21,7 +29,10 @@
   </div>
   <div class="admin-table-fix"></div>
 </div>
-<div class="row full-width">
+<div class="row full-width" align="center" ng-if="!ModerationCtrl.search && ModerationCtrl.count < 1">
+  <h4>No User Reports to display in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong></h4>
+</div>
+<div class="row full-width" ng-if="ModerationCtrl.count > 0 || ModerationCtrl.search">
   <div ng-if="ModerationCtrl.search">
     Displaying {{ModerationCtrl.count | number}} search result(s) for "<strong>{{ModerationCtrl.search}}</strong>" in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong>:<br /><br />
   </div>

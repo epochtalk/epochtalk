@@ -401,7 +401,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       resolve: { userAccess: adminCheck }
     })
     .state('admin-management.boards', {
-      url: '/boards',
+      url: '/boards?saved',
       views: {
         'data@admin-management': {
           controller: 'CategoriesCtrl',

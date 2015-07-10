@@ -1,8 +1,9 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminUsers', 'admins', 'adminsCount', 'page', 'limit', 'field', 'desc', 'USER_ROLES', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminUsers, admins, adminsCount, page, limit, field, desc, USER_ROLES) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminUsers', 'admins', 'adminsCount', 'page', 'limit', 'field', 'desc', 'USER_ROLES', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminUsers, admins, adminsCount, page, limit, field, desc, USER_ROLES) {
   var ctrl = this;
   this.parent = $scope.$parent;
   this.parent.tab = 'administrators';
   this.admins = admins;
+  this.count = adminsCount;
   this.pageCount =  Math.ceil(adminsCount / limit);
   this.admins = admins;
   this.queryParams = $location.search();
@@ -44,7 +45,10 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       if (role.name === USER_ROLES.admin || role.name === USER_ROLES.superAdmin) { hasAdminRole = true; }
     });
 
-    if (hasAdminRole) { ctrl.closeConfirmAdd(); }
+    if (hasAdminRole) {
+      Alert.warning(ctrl.selectedUser.username + ' is already in the list of administrators');
+      ctrl.closeConfirmAdd();
+    }
     else {
       var roles = [ USER_ROLES.admin ]; // default to admin role
       if (ctrl.selectedRole === USER_ROLES.superAdmin) { // Append super admin role if selected
@@ -56,6 +60,8 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       };
       AdminUsers.addRoles(params).$promise
       .then(function() {
+        var messageEnding = ctrl.selectedRole === USER_ROLES.superAdmin ? ' ' + USER_ROLES.superAdmin : 'n ' + USER_ROLES.admin;
+        Alert.success(ctrl.selectedUser.username + ' has been added as a' + messageEnding);
         ctrl.closeConfirmAdd();
         ctrl.pullPage();
       });
@@ -92,6 +98,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     };
     AdminUsers.removeRoles(params).$promise
     .then(function() {
+      Alert.success(ctrl.selectedUser.username + ' has been removed from administrators');
       ctrl.pullPage();
       ctrl.closeConfirmRemove();
     });
@@ -199,6 +206,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     // update admin's page count
     AdminUsers.countAdmins().$promise
     .then(function(updatedCount) {
+      ctrl.count = updatedCount.count;
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
 
