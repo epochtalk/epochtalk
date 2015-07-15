@@ -27,6 +27,16 @@ module.exports = ['$resource',
         method: 'POST',
         params: { id: '@id' },
         url: '/api/threads/:id/move'
+      },
+      undelete: {
+        url: '/api/threads/:id/undelete',
+        method: 'POST',
+        params: { id: '@id' }
+      },
+      purge: {
+        url: '/api/threads/:id/purge',
+        method: 'DELETE',
+        params: { id: '@id' }
       }
     });
   }

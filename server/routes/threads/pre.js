@@ -1,27 +1,82 @@
 var path = require('path');
 var uuid = require('node-uuid');
+var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
 var memDb = require(path.normalize(__dirname + '/../../memstore')).db;
+var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var Boom = require('boom');
-// Helpers
-var checkViewKey = function(key) {
-  return memDb.getAsync(key)
-  .then(function(storedTime) {
-    var timeElapsed = Date.now() - storedTime;
-    // key exists and is past the cooling period
-    // update key with new value and return true
-    if (timeElapsed > 1000 * 60) {
-      return memDb.putAsync(key, Date.now())
-      .then(function() { return true; });
-    }
-    // key exists but before cooling period
-    // do nothing and return false
-    else { return false; }
-  });
-};
 
-// Pre
 module.exports = {
+  canFind: function(request, reply) {
+    var threadId = request.params.id;
+    var promise = isThreadBoardDeleted(threadId)
+    .then(function(deleted) {
+      if (deleted) { return Boom.notFound(); }
+    });
+    return reply(promise);
+  },
+  canRetrieve: function(request, reply) {
+    var boardId = request.query.board_id;
+    var promise = isBoardDeleted(boardId)
+    .then(function(deleted) {
+      if (deleted) { return Boom.notFound(); }
+    });
+    return reply(promise);
+  },
+  canCreate: function(request, reply) {
+    var boardId = request.payload.board_id;
+    var promise = isBoardDeleted(boardId)
+    .then(function(deleted) {
+      if (deleted) { return Boom.badRequest('Board does not exist'); }
+    });
+    return reply(promise);
+  },
+  canMove: function(request, reply) {
+    var threadId = request.params.id;
+    var username = request.auth.credentials.username;
+    var authenticated = request.auth.isAuthenticated;
+
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
+    var isBoardDeleted = isThreadBoardDeleted(threadId);
+
+    var promise = Promise.join(isAdmin, isMod, isBoardDeleted, function(admin, mod, isDeleted) {
+      var isManagement = false;
+      var result = Boom.forbidden();
+
+      if (admin) { isManagement = true; }
+      else if (mod) { isManagement = true; }
+      if (isManagement && isDeleted) { result = Boom.notFound('New Board does not exist'); }
+      else if (isManagement) { result = ''; }
+
+      return result;
+    });
+    return reply(promise);
+  },
+  canLock: function(request, reply) {
+    var threadId = request.params.id;
+    var userId = request.auth.credentials.id;
+    var username = request.auth.credentials.username;
+    var authenticated = request.auth.isAuthenticated;
+
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
+    var isOwner = isThreadOwner(threadId, userId);
+
+    var promise = Promise.join(isAdmin, isMod, isOwner, function(admin, mod, owner) {
+      var result = Boom.forbidden();
+
+      if (admin) { result = ''; }
+      else if (mod) { result = ''; }
+      else if (owner) { result = ''; }
+
+      return result;
+    });
+    return reply(promise);
+  },
+  canSticky: managementAccess,
+  canDelete: managementAccess,
+  canPurge: managementAccess,
   getThreads: function(request, reply) {
     var boardId = request.query.board_id;
     var opts = {
@@ -105,10 +160,55 @@ module.exports = {
     db.users.putUserThreadViews(user.id, newThreadViews)
     .then(function() { return reply(); })
     .catch(function(err) { return reply(err); });
-  },
-  threadAuthorCheck: function(request, reply) {
-    var authorUserId = request.pre.thread.user.id;
-    var authedUserId = request.auth.credentials.id;
-    reply(authorUserId === authedUserId);
   }
 };
+
+// Re-Used permissions
+function managementAccess(request, reply) {
+  var threadId = request.params.id;
+  var username = request.auth.credentials.username;
+  var authenticated = request.auth.isAuthenticated;
+
+  var isAdmin = commonPre.isAdmin(authenticated, username);
+  var isMod = commonPre.isMod(authenticated, username);
+
+  var promise = Promise.join(isAdmin, isMod, function(admin, mod) {
+    var result = Boom.forbidden();
+    if (admin) { result = ''; }
+    else if (mod) { result = ''; }
+    return result;
+  });
+  return reply(promise);
+}
+
+// Helpers
+function isBoardDeleted(boardId) {
+  return db.boards.deepFind(boardId)
+  .then(function(board) { return board.deleted; });
+}
+
+function isThreadBoardDeleted(threadId) {
+  return db.threads.getThreadsBoard(threadId)
+  .then(function(board) { return board.deleted; });
+}
+
+function isThreadOwner(threadId, userId) {
+  return db.threads.getThreadOwner(threadId)
+  .then(function(owner) { return owner.user_id === userId; });
+}
+
+function checkViewKey(key) {
+  return memDb.getAsync(key)
+  .then(function(storedTime) {
+    var timeElapsed = Date.now() - storedTime;
+    // key exists and is past the cooling period
+    // update key with new value and return true
+    if (timeElapsed > 1000 * 60) {
+      return memDb.putAsync(key, Date.now())
+      .then(function() { return true; });
+    }
+    // key exists but before cooling period
+    // do nothing and return false
+    else { return false; }
+  });
+}
