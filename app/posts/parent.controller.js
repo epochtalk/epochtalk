@@ -9,11 +9,14 @@ module.exports = [
     this.resetEditor = false;
     this.showEditor = false;
     this.focusEditor = false;
+    this.newPostEnabled = false;
     this.quote = '';
     this.tempPost = { body: '', raw_body: '' };
     this.posting = { post: this.tempPost };
     this.editorPosition = 'editor-fixed-bottom';
     this.resize = true;
+    this.moveBoard = {};
+    this.boards = [];
     this.showThreadControls = function() {
       var show = false;
       if (ctrl.user.isAdmin || ctrl.user.isMod) { show = true; }
@@ -23,15 +26,31 @@ module.exports = [
     this.allowPosting = function() {
       return ctrl.loggedIn() && ctrl.newPostEnabled && !ctrl.thread.locked;
     };
-    this.moveBoard = {};
-    this.boards = Boards.all().$promise
-    .then(function(boards) {
-      ctrl.boards = boards;
-      ctrl.moveBoard = _.find(boards, function(board) {
-        return board.id === ctrl.board_id;
+    getBoards();
+    function getBoards() {
+      // check if user is an admin
+      var adminRole = _.find(Session.user.roles, function(role) {
+        return role.name === 'Administrator';
       });
-      return boards;
-    });
+
+      if (adminRole) {
+        return Boards.all().$promise
+        .then(function(allBoards) {
+          ctrl.boards = allBoards || [];
+          ctrl.moveBoard = _.find(ctrl.boards, function(board) {
+            return board.id === ctrl.board_id;
+          });
+        });
+      }
+      else { ctrl.boards = []; }
+    }
+
+    function calculatePages() {
+      var count;
+      if (ctrl.limit === 'all') { count = Number(ctrl.thread.post_count); }
+      else { count = Number(ctrl.limit) || 10; }
+      ctrl.pageCount = Math.ceil(ctrl.thread.post_count / count);
+    }
     // pullPage function injected by child controller
 
     $scope.$watch(
@@ -39,7 +58,6 @@ module.exports = [
       function(postCount) { if (postCount) { calculatePages(); } }
     );
 
-    ctrl.newPostEnabled = false;
     $scope.$watchGroup(
       [function() { return ctrl.thread.id; },
        function() { return ctrl.thread.title; }],
@@ -52,13 +70,6 @@ module.exports = [
         }
       }
     );
-
-    var calculatePages = function() {
-      var count;
-      if (ctrl.limit === 'all') { count = Number(ctrl.thread.post_count); }
-      else { count = Number(ctrl.limit) || 10; }
-      ctrl.pageCount = Math.ceil(ctrl.thread.post_count / count);
-    };
 
     /* Thread Methods */
 
