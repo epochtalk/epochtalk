@@ -1,7 +1,6 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 
@@ -35,20 +34,15 @@ exports.create = {
   validate: {
     payload: {
       name: Joi.string().min(1).max(255).required(),
-      description: Joi.string().allow(''),
-      category_id: [ Joi.string(), Joi.number() ],
-      parent_id: [ Joi.string(), Joi.number() ],
-      children_ids: [ Joi.array(Joi.string()), Joi.array(Joi.number()) ]
+      description: Joi.string().allow('')
     }
   },
   pre: [
-    { method: pre.clean },
-    { method: commonPre.adminCheck }
+    { method: pre.canCreate },
+    { method: pre.clean }
   ],
   handler: function(request, reply) {
-    db.boards.create(request.payload)
-    .then(function(board) { reply(board); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    return reply(db.boards.create(request.payload));
   }
 };
 
@@ -94,12 +88,12 @@ exports.import = {
   // },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
-    db.boards.import(request.payload)
-    .then(function(board) { reply(board); })
+    var promise = db.boards.import(request.payload)
     .catch(function(err) {
       request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      reply(Boom.badImplementation(err));
+      return Boom.badImplementation(err);
     });
+    return reply(promise);
   }
 };
 
@@ -121,17 +115,12 @@ exports.import = {
   */
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: {
-    params: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
-    }
-  },
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.canFind } ],
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply({}); }
 
-    db.boards.find(request.params.id)
-    .then(function(board) { reply(board); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    return reply(db.boards.find(request.params.id));
   }
 };
 
@@ -148,15 +137,13 @@ exports.find = {
   */
 exports.all = {
   auth: { mode: 'try', strategy: 'jwt' },
+  pre: [ { method: pre.canAll } ],
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply([]); }
 
-    db.boards.all()
-    .then(function(boards) { reply(boards); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    return reply(db.boards.all());
   }
 };
-
 
 /**
   * @apiVersion 0.3.0
@@ -174,11 +161,7 @@ exports.allCategories = {
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply([]); }
 
-    db.boards.allCategories()
-    .then(function(categories) { reply(categories); })
-    .catch(function(err) {
-      reply(Boom.badImplementation(err));
-    });
+    return reply(db.boards.allCategories());
   }
 };
 
@@ -204,13 +187,13 @@ exports.allCategories = {
   */
 exports.updateCategories = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonPre.adminCheck } ],
+  pre: [ { method: pre.canUpdate } ],
   validate: { payload: { boardMapping: Joi.array().required() } },
   handler: function(request, reply) {
     // update board on db
-    db.boards.updateCategories(request.payload.boardMapping)
-    .then(function(categories) { reply(categories); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var boardMapping = request.payload.boardMapping;
+    var promise = db.boards.updateCategories(boardMapping);
+    return reply(promise);
   }
 };
 
@@ -236,33 +219,21 @@ exports.update = {
   validate: {
     payload: {
       name: Joi.string().min(1).max(255),
-      description: Joi.string().allow(''),
-      category_id: [ Joi.string(), Joi.number() ],
-      parent_id: [ Joi.string(), Joi.number() ],
-      children_ids: Joi.array()
+      description: Joi.string().allow('')
     },
-    params: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
-    }
+    params: { id: Joi.string().required() }
   },
   pre: [
-    { method: pre.clean },
-    { method: commonPre.adminCheck }
+    { method: pre.canUpdate },
+    { method: pre.clean }
   ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
-    var updateBoard = {
-      id: request.params.id,
-      name: request.payload.name,
-      description: request.payload.description,
-      children_ids: request.payload.children_ids,
-      parent_id: request.payload.parent_id
-    };
+    var updateBoard = request.payload;
+    updateBoard.id = request.params.id;
 
     // update board on db
-    db.boards.update(updateBoard)
-    .then(function(board) { reply(board); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    return reply(db.boards.update(updateBoard));
   }
 };
 
@@ -282,17 +253,9 @@ exports.update = {
   */
 exports.delete = {
   auth: { mode: 'required', strategy: 'jwt' },
-  validate: {
-    params: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
-    }
-  },
-  pre: [
-    { method: commonPre.adminCheck }
-  ],
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.canDelete } ],
   handler: function(request, reply) {
-    db.boards.delete(request.params.id)
-    .then(function(board) { reply(board); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    return reply(db.boards.delete(request.params.id));
   }
 };

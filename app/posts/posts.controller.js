@@ -47,14 +47,14 @@ module.exports = [
     this.openReportModal = parent.openReportModal;
     parent.pullPage = function() {
       var query = {
-        thread_id: parent.thread_id,
+        thread_id: parent.thread.id,
         page: parent.page,
         limit: parent.limit
       };
 
       // update thread's post page count
       Threads.get({ id: ctrl.thread.id }).$promise
-      .then(function(thread) { parent.thread_post_count = thread.post_count; });
+      .then(function(thread) { parent.thread.post_count = thread.post_count; });
 
       // replace current posts with new posts
       Posts.byThread(query).$promise

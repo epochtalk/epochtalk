@@ -4,16 +4,18 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
   function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, boards, categories) {
     this.parent = $scope.$parent;
     this.parent.tab = 'boards';
-
-    // Initialization
-    $scope.catListData = categories;
-    $scope.boardListData = [];
+    // Category and Board Data
+    $scope.catListData = categories; // Data backing left side of page
+    $scope.boardListData = boards; // Data backing right side of page
+    // Category and Board reference map
     $scope.nestableMap = {};
-    $scope.editedBoards = {};
+    // New/Edited/Deleted Boards
     $scope.newBoards = [];
+    $scope.editedBoards = [];
+    $scope.deletedBoards = [];
+    // New/Deleted Categories
     $scope.newCategories = [];
-    $scope.updatedCats = [];
-    $scope.boardMapping = [];
+    $scope.deletedCategories = [];
 
     // temporary hack to get save alert working
     if ($stateParams.saved === 'true') { // string compare to query string
@@ -44,7 +46,6 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
       return $q.all($scope.newCategories.map(function(newCategory) {
         var dataId = newCategory.dataId;
         delete newCategory.dataId;
-        console.log(newCategory);
         return Categories.save(newCategory).$promise
         .then(function(category) {
           console.log('Created New Category: ' + JSON.stringify(category));
@@ -60,7 +61,6 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
       return $q.all($scope.newBoards.map(function(newBoard) {
         var dataId = newBoard.dataId;
         delete newBoard.dataId;
-        console.log(newBoard);
         return Boards.save(newBoard).$promise
         .then(function(board) {
           console.log('Created New Board: ' + JSON.stringify(board));
@@ -73,16 +73,35 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
     // 2) Handle Boards which have been edited
     $scope.processEditedBoards = function() {
       console.log('2) Handling edited boards: \n' + JSON.stringify($scope.editedBoards, null, 2));
-      return $q.all(_.map($scope.editedBoards, function(editedBoard, key) {
-        return Boards.update({ id: key }, editedBoard).$promise
+      return $q.all($scope.editedBoards.map(function(editedBoard) {
+        var board = { name: editedBoard.name, description: editedBoard.description };
+        return Boards.update({ id: editedBoard.id }, board).$promise
         .catch(function(response) { console.log(response); });
       }));
     };
 
-    // 3) Updated all Categories
-    $scope.processCategories = function() {
-      console.log('3) Updating Categories: \n' + JSON.stringify($scope.updatedCats, null, 2));
-      return Boards.updateCategories({ boardMapping: $scope.boardMapping }).$promise
+    // 3) Handle Boards which have been deleted
+    $scope.processDeletedBoards = function() {
+      console.log('3) Handling deleted boards: \n' + JSON.stringify($scope.deletedBoards, null, 2));
+      return $q.all($scope.deletedBoards.map(function(deletedBoard) {
+        return Boards.delete({ id: deletedBoard }).$promise
+        .catch(function(response) { console.log(response); });
+      }));
+    };
+
+    // 4) Handle Categories which have been deleted
+    $scope.processDeletedCategories = function() {
+      console.log('4) Handling deleted categories: \n' + JSON.stringify($scope.deletedCategories, null, 2));
+      return $q.all($scope.deletedCategories.map(function(deletedCategory) {
+        return Categories.delete({ id: deletedCategory }).$promise
+        .catch(function(response) { console.log(response); });
+      }));
+    };
+
+    // 5) Updated all Categories
+    $scope.processCategories = function(boardMapping) {
+      console.log('5) Updating board mapping: \n' + JSON.stringify(boardMapping, null, 2));
+      return Boards.updateCategories({ boardMapping: boardMapping }).$promise
       .catch(function(response) { console.log(response); });
     };
 

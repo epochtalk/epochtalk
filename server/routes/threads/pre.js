@@ -8,72 +8,88 @@ var Boom = require('boom');
 
 module.exports = {
   canFind: function(request, reply) {
+    var username = '';
     var threadId = request.params.id;
-    var promise = isThreadBoardDeleted(threadId)
-    .then(function(deleted) {
-      if (deleted) { return Boom.notFound(); }
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
+    var isVisible = isThreadBoardVisible(threadId);
+
+    var promise = Promise.join(isAdmin, isMod, isVisible, function(admin, mod, visible) {
+      var result = Boom.notFound('Board Not Found');
+
+      if (admin || mod) { result = ''; }
+      else if (visible) { result = ''; }
+
+      return result;
     });
     return reply(promise);
+
   },
   canRetrieve: function(request, reply) {
+    var username = '';
     var boardId = request.query.board_id;
-    var promise = isBoardDeleted(boardId)
-    .then(function(deleted) {
-      if (deleted) { return Boom.notFound(); }
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
+    var isVisible = isBoardVisible(boardId);
+
+    var promise = Promise.join(isAdmin, isMod, isVisible, function(admin, mod, visible) {
+      var result = Boom.notFound('Board Not Found');
+
+      if (admin || mod) { result = ''; }
+      else if (visible) { result = ''; }
+
+      return result;
     });
     return reply(promise);
   },
   canCreate: function(request, reply) {
+    var username = '';
     var boardId = request.payload.board_id;
-    var promise = isBoardDeleted(boardId)
-    .then(function(deleted) {
-      if (deleted) { return Boom.badRequest('Board does not exist'); }
-    });
-    return reply(promise);
-  },
-  canMove: function(request, reply) {
-    var threadId = request.params.id;
-    var username = request.auth.credentials.username;
     var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
 
     var isAdmin = commonPre.isAdmin(authenticated, username);
     var isMod = commonPre.isMod(authenticated, username);
-    var isBoardDeleted = isThreadBoardDeleted(threadId);
+    var isVisible = isBoardVisible(boardId);
 
-    var promise = Promise.join(isAdmin, isMod, isBoardDeleted, function(admin, mod, isDeleted) {
-      var isManagement = false;
+    var promise = Promise.join(isAdmin, isMod, isVisible, function(admin, mod, visible) {
       var result = Boom.forbidden();
 
-      if (admin) { isManagement = true; }
-      else if (mod) { isManagement = true; }
-      if (isManagement && isDeleted) { result = Boom.notFound('New Board does not exist'); }
-      else if (isManagement) { result = ''; }
-
+      if (admin || mod) { result = ''; }
+      else if (visible) { result = ''; }
       return result;
     });
     return reply(promise);
   },
   canLock: function(request, reply) {
+    var username = '';
     var threadId = request.params.id;
     var userId = request.auth.credentials.id;
-    var username = request.auth.credentials.username;
     var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
 
     var isAdmin = commonPre.isAdmin(authenticated, username);
     var isMod = commonPre.isMod(authenticated, username);
+    var isVisible = isThreadBoardVisible(threadId);
     var isOwner = isThreadOwner(threadId, userId);
 
-    var promise = Promise.join(isAdmin, isMod, isOwner, function(admin, mod, owner) {
+    var promise = Promise.join(isAdmin, isMod, isVisible, isOwner, function(admin, mod, visible, owner) {
       var result = Boom.forbidden();
 
-      if (admin) { result = ''; }
-      else if (mod) { result = ''; }
-      else if (owner) { result = ''; }
+      if (admin || mod) { result = ''; }
+      else if (owner && visible) { result = ''; }
 
       return result;
     });
     return reply(promise);
   },
+  canMove: managementAccess,
   canSticky: managementAccess,
   canDelete: managementAccess,
   canPurge: managementAccess,
@@ -165,31 +181,39 @@ module.exports = {
 
 // Re-Used permissions
 function managementAccess(request, reply) {
+  var username = '';
   var threadId = request.params.id;
-  var username = request.auth.credentials.username;
   var authenticated = request.auth.isAuthenticated;
+  if (authenticated) { username = request.auth.credentials.username; }
 
   var isAdmin = commonPre.isAdmin(authenticated, username);
   var isMod = commonPre.isMod(authenticated, username);
 
   var promise = Promise.join(isAdmin, isMod, function(admin, mod) {
     var result = Boom.forbidden();
-    if (admin) { result = ''; }
-    else if (mod) { result = ''; }
+    if (admin ||  mod) { result = ''; }
     return result;
   });
   return reply(promise);
 }
 
 // Helpers
-function isBoardDeleted(boardId) {
-  return db.boards.deepFind(boardId)
-  .then(function(board) { return board.deleted; });
+function isBoardVisible(boardId) {
+  return db.boards.getBoardInBoardMapping(boardId)
+  .then(function(board) {
+    var visible = false;
+    if (board) { visible = true; }
+    return visible;
+  });
 }
 
-function isThreadBoardDeleted(threadId) {
-  return db.threads.getThreadsBoard(threadId)
-  .then(function(board) { return board.deleted; });
+function isThreadBoardVisible(threadId) {
+  return db.threads.getThreadsBoardInBoardMapping(threadId)
+  .then(function(board) {
+    var visible = false;
+    if (board) { visible = true; }
+    return visible;
+  });
 }
 
 function isThreadOwner(threadId, userId) {

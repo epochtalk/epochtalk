@@ -27,7 +27,7 @@ module.exports = ['$compile', function($compile) {
             description: board.description,
             children: board.children || []
           };
-          var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
+          var toolbarHtml = '<i data-reveal-id="delete-board" ng-click="setBoardDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i><i data-reveal-id="edit-board" ng-click="setEditBoard(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item" data-board-id="' + board.id + '" data-id="' + dataId + '"><div class="dd-grab"></div>' +
@@ -71,7 +71,7 @@ module.exports = ['$compile', function($compile) {
           if ($('#' + scope.boardListId).children('.dd-empty').length) {
             $('#' + scope.boardListId).html('<ol class="dd-list"></ol>');
           }
-          var toolbarHtml = '<i data-reveal-id="edit-board" ng-click="setEditBoard(' +
+          var toolbarHtml = '<i data-reveal-id="delete-board" ng-click="setBoardDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i><i data-reveal-id="edit-board" ng-click="setEditBoard(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status modified"></i>';
           var newBoardHtml = '<li class="dd-item" data-id="' + dataId +

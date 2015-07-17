@@ -9,6 +9,7 @@
     <a href="#" data-reveal-id="add-new-board" class="button fill-btn">Add New Board</a>
   </div>
 </div>
+
 <div class="row full-width">
   <div class="small-12 medium-6 columns">
     <h5 class="thin-dotted-underline">
@@ -97,22 +98,48 @@
   <a class="close-reveal-modal">&#215;</a>
 </div>
 
-<div id="delete-confirm" class="reveal-modal tiny" data-reveal>
+<div id="delete-category" class="reveal-modal tiny" data-reveal>
   <h3 class="thin-dotted-underline">Confirm Delete</h3>
   <div class="row">
     <div class="small-12 columns">
-      <br />
       <p>
-        Are you sure you would like to mark this item for deletion? Delete will not take effect until the changes are saved.
+        Are you sure you would like to mark this category for deletion? Delete will not take effect until the changes are saved.
+      <p/>
+      <p>
+        All boards under this category will be moved to the 'Uncategorized Boards' section.
       </p>
+      <br />
     </div>
   </div>
   <div class="row">
     <div class="small-6 columns">
-      <a ng-click="confirmDelete()" class="button fill-btn">Mark Deleted</a>
+      <a ng-click="confirmCatDelete()" class="button fill-btn">Delete</a>
     </div>
     <div class="small-6 columns">
-      <a ng-click="closeModal('#delete-confirm')" class="button fill-btn">Cancel</a>
+      <a ng-click="closeModal('#delete-category')" class="button fill-btn">Cancel</a>
+    </div>
+  </div>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="delete-board" class="reveal-modal tiny" data-reveal>
+  <h3 class="thin-dotted-underline">Confirm Delete</h3>
+  <div class="row">
+    <div class="small-12 columns">
+      <p>
+        Are you sure you would like to mark this board for deletion? Delete will not take effect until the changes are saved.
+        <br /><br />
+        <b>WARNING: Deleting this board will delete all threads and posts in this board. </b>
+      </p>
+      <br />
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-6 columns">
+      <a ng-click="confirmBoardDelete()" class="button fill-btn">Delete</a>
+    </div>
+    <div class="small-6 columns">
+      <a ng-click="closeModal('#delete-board')" class="button fill-btn">Cancel</a>
     </div>
   </div>
   <a class="close-reveal-modal">&#215;</a>

@@ -11,104 +11,139 @@ var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 
 module.exports = {
   canFind: function(request, reply) {
+    var username = '';
     var postId = request.params.id;
-    var isThreadDeleted = isPostThreadDeleted(postId);
-    var isBoardDeleted = isPostBoardDeleted(postId);
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
 
-    var promise = Promise.join(isThreadDeleted, isBoardDeleted, function(threadDeleted, boardDeleted) {
-      var reject = false;
-      if (threadDeleted || boardDeleted) { reject = true; }
-      if (reject) { return Boom.forbidden(); }
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
+    var isThreadDeleted = isPostThreadDeleted(postId);
+    var isBoardVisible = isPostBoardVisible(postId);
+
+    var promise = Promise.join(isAdmin, isMod, isThreadDeleted, isBoardVisible, function(admin, mod, threadDeleted, visible) {
+      var result = Boom.notFound();
+      if (admin || mod) { result = ''; }
+      else if (!threadDeleted && visible) { result = ''; }
+      return result;
     });
     return reply(promise);
   },
   canRetrieve: function(request, reply) {
+    var username = '';
     var threadId = request.query.thread_id;
-    var isDeleted = isThreadDeleted(threadId);
-    var isBoardDeleted = isThreadBoardDeleted(threadId);
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
 
-    var promise = Promise.join(isDeleted, isBoardDeleted, function(threadDeleted, boardDeleted) {
-      var reject = false;
-      if (threadDeleted || boardDeleted) { reject = true; }
-      if (reject) { return Boom.forbidden(); }
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
+    var isDeleted = isThreadDeleted(threadId);
+    var isBoardVisible = isThreadBoardVisible(threadId);
+
+    var promise = Promise.join(isAdmin, isMod, isDeleted, isBoardVisible, function(admin, mod, threadDeleted, visible) {
+      var result = Boom.notFound();
+
+      if (admin || mod) { result = ''; }
+      else if (!threadDeleted && visible) { result = ''; }
+
+      return result;
     });
     return reply(promise);
   },
   canCreate: function(request, reply) {
+    var username = '';
     var threadId = request.payload.thread_id;
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
     var isLocked = isThreadLocked(threadId);
     var isDeleted = isThreadDeleted(threadId);
-    var isBoardDelete = isThreadBoardDeleted(threadId);
+    var isBoardVisible = isThreadBoardVisible(threadId);
 
-    var promise = Promise.join(isLocked, isDeleted, isBoardDelete, function(locked, deleted, boardDeleted) {
-      var reject = false;
-      if (deleted || boardDeleted) { reject = true; }
-      else if (locked) { reject = true; }
-      if (reject) { return Boom.forbidden(); }
+    var promise = Promise.join(isAdmin, isMod, isLocked, isDeleted, isBoardVisible, function(admin, mod, locked, deleted, visible) {
+      var result = Boom.forbidden();
+
+      if (admin || mod) { result = ''; }
+      else if (deleted) { result = Boom.notFound(); }
+      else if (locked) { result = Boom.forbidden; }
+      else if (visible) { result = ''; }
+
+      return result;
     });
     return reply(promise);
   },
   canUpdate: function(request, reply) {
     var postId = request.params.id;
-    var userId = request.auth.credentials.id;
-    var username = request.auth.credentials.username;
+    var userId = '';
+    var username = '';
     var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+    if (authenticated) { userId = request.auth.credentials.id; }
 
     var isLocked = isPostThreadLocked(postId);
     var isOwner = isPostOwner(userId, postId);
     var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
+    var isDeleted = isPostDeleted(postId);
     var isThreadDeleted = isPostThreadDeleted(postId);
-    var isBoardDeleted = isPostBoardDeleted(postId);
+    var isBoardVisible = isPostBoardVisible(postId);
 
-    var promise = Promise.join(isAdmin, isLocked, isOwner, isThreadDeleted, isBoardDeleted, function(admin, locked, owner, threadDeleted, boardDeleted) {
-      var reject = true;
-      if (admin) { reject = false; }
-      else if (threadDeleted) { reject = true; }
-      else if (boardDeleted) { reject = true; }
-      else if (locked) { reject = true; }
-      else if (owner) { reject = false; }
-      if (reject) { return Boom.forbidden(); }
+    var promise = Promise.join(isAdmin, isMod, isLocked, isOwner, isDeleted, isThreadDeleted, isBoardVisible, function(admin, mod, locked, owner, deleted, threadDeleted, visible) {
+      var result = Boom.forbidden();
+
+      if (admin || mod) { result = ''; }
+      else if (deleted) { result = Boom.notFound(); }
+      else if (threadDeleted) { result = Boom.notFound(); }
+      else if (!visible) { result = Boom.notFound(); }
+      else if (locked) { result = Boom.forbidden(); }
+      else if (owner) { result = ''; }
+      return result;
     });
     return reply(promise);
   },
   canDelete: function(request, reply) {
     var postId = request.params.id;
-    var userId = request.auth.credentials.id;
-    var username = request.auth.credentials.username;
+    var userId = '';
+    var username = '';
     var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+    if (authenticated) { userId = request.auth.credentials.id; }
 
     var isLocked = isPostThreadLocked(postId);
     var isOwner = isPostOwner(userId, postId);
     var isAdmin = commonPre.isAdmin(authenticated, username);
     var isFirst = isFirstPost(postId);
     var isThreadDeleted = isPostThreadDeleted(postId);
-    var isBoardDeleted = isPostBoardDeleted(postId);
+    var isBoardVisible = isPostBoardVisible(postId);
 
-    var promise = Promise.join(isAdmin, isLocked, isOwner, isFirst, isThreadDeleted, isBoardDeleted, function(admin, locked, owner, firstPost, threadDeleted, boardDeleted) {
-      var reject = true;
-      if (firstPost) { reject = true }
-      else if (admin) { reject = false; }
-      else if (threadDeleted) { reject = true; }
-      else if (boardDeleted) { reject = true; }
-      else if (locked) { reject = true; }
-      else if (owner) { reject = false; }
-      if (reject) { return Boom.forbidden(); }
+    var promise = Promise.join(isAdmin, isLocked, isOwner, isFirst, isThreadDeleted, isBoardVisible, function(admin, locked, owner, firstPost, threadDeleted, visible) {
+      var result = Boom.forbidden();
+      if (firstPost) { result = Boom.forbidden(); }
+      else if (admin) { result = ''; }
+      else if (threadDeleted) { result = Boom.notFound(); }
+      else if (!visible) { result = Boom.notFound(); }
+      else if (locked) { result = Boom.forbidden(); }
+      else if (owner) { result = ''; }
+      return result;
     });
     return reply(promise);
   },
   canPurge: function(request, reply) {
     var postId = request.params.id;
+    var username = '';
     var authenticated = request.auth.isAuthenticated;
-    var username = request.auth.credentials.username;
+    if (authenticated) { username = request.auth.credentials.username; }
 
     var isAdmin = commonPre.isAdmin(authenticated, username);
     var isFirst = isFirstPost(postId);
 
     var promise = Promise.join(isAdmin, isFirst, function(admin, firstPost) {
-      var reject = true;
-      if (firstPost) { reject = true; }
-      else if (admin) { reject = false; }
-      if (reject) { return Boom.forbidden(); }
+      var result = Boom.forbidden();
+      if (firstPost) { result = Boom.forbidden(); }
+      else if (admin) { result = ''; }
+      return result;
     });
     return reply(promise);
   },
@@ -213,9 +248,13 @@ function isThreadDeleted(threadId) {
   .then(function(thread) { return thread.deleted; });
 }
 
-function isThreadBoardDeleted(threadId) {
-  return db.threads.getThreadsBoard(threadId)
-  .then(function(board) { return board.deleted; });
+function isThreadBoardVisible(threadId) {
+  return db.threads.getThreadsBoardInBoardMapping(threadId)
+  .then(function(board) {
+    var visible = false;
+    if (board) { visible = true; }
+    return visible;
+  });
 }
 
 function isThreadLocked(threadId) {
@@ -233,9 +272,13 @@ function isPostThreadDeleted(postId) {
   .then(function(thread) { return thread.deleted; });
 }
 
-function isPostBoardDeleted(postId) {
-  return db.posts.getPostsBoard(postId)
-  .then(function(board) { return board.deleted; });
+function isPostBoardVisible(postId) {
+  return db.posts.getPostsBoardInBoardMapping(postId)
+  .then(function(board) {
+    var visible = false;
+    if (board) { visible = true; }
+    return visible;
+  });
 }
 
 function isPostOwner(userId, postId) {
@@ -246,4 +289,9 @@ function isPostOwner(userId, postId) {
 function isFirstPost(postId) {
   return db.posts.getThreadFirstPost(postId)
   .then(function(post) { return post.id === postId; });
+}
+
+function isPostDeleted(postId) {
+  return db.posts.find(postId)
+  .then(function(post) { return post.deleted; });
 }

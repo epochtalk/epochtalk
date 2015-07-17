@@ -1,21 +1,22 @@
 var fs = require('fs');
+var _ = require('lodash');
 
 module.exports = ['$state', function($state) {
   return {
     restrict: 'E',
     template: fs.readFileSync(__dirname + '/category-editor.html'),
     controller: function($scope) {
+      var dataId = 0;
       $scope.catListId = 'categorized-boards';
       $scope.boardListId = 'uncategorized-boards';
       $scope.catListOpts = { protectRoot: true, maxDepth: 5, group: 1 };
       $scope.boardListOpts = { protectRoot: true, maxDepth: 4, group: 1 };
-      var dataId = 0;
 
-      var deleteDataId = ''; // Stores the data-id of item being deleted
-
+      var deleteCatDataId = '';
       var editCatDataId = ''; // Stores the data-id of category being edited
       $scope.editCatName = ''; // Model for edited category name
 
+      var deleteBoardDataId = '';
       var editBoardDataId = ''; // Stores the data-id of board being edited
       var editBoardId = ''; // Stores the id of the board being edited
       $scope.editBoardName = ''; // Model for edited board name
@@ -23,13 +24,14 @@ module.exports = ['$state', function($state) {
 
       $scope.getDataId = function() { return dataId++; };
 
+      /* Edit Category */
+
       $scope.setEditCat = function(dataId) {
         var editCat = $scope.nestableMap[dataId];
         editCatDataId = dataId;
         $scope.editCatName = editCat.name;
       };
 
-      // Edits the set category
       $scope.editCategory = function() {
         var editCatEl = $('li[data-id="' + editCatDataId + '"]');
         // Update UI to reflect change
@@ -51,6 +53,8 @@ module.exports = ['$state', function($state) {
         $scope.closeModal('#edit-category');
       };
 
+      /* Edit Board */
+
       $scope.setEditBoard = function(dataId) {
         var editBoard = $scope.nestableMap[dataId];
         editBoardDataId = dataId;
@@ -59,7 +63,6 @@ module.exports = ['$state', function($state) {
         $scope.editBoardDesc = editBoard.description;
       };
 
-      // Edits the set board
       $scope.editBoard = function() {
         // Board being edited is in new board array
         if (editBoardId === -1 && editBoardDataId) {
@@ -73,10 +76,11 @@ module.exports = ['$state', function($state) {
         // Board being edited is an existing board
         else {
           var editedBoard = {
+            id: editBoardId,
             name: $scope.editBoardName,
             description: $scope.editBoardDesc
           };
-         $scope.editedBoards[editBoardId] = editedBoard;
+         $scope.editedBoards.push(editedBoard);
         }
 
         var editBoardEl = $('li[data-id="' + editBoardDataId + '"]');
@@ -100,38 +104,72 @@ module.exports = ['$state', function($state) {
         $scope.closeModal('#edit-board');
       };
 
-      $scope.setDelete = function(dataId) { deleteDataId = dataId; };
+      /* Delete Category */
 
-      $scope.confirmDelete = function() {
-        var deleteEl = $('li[data-id="' + deleteDataId + '"]');
+      $scope.closeModal = function(modalId) { $(modalId).foundation('reveal', 'close'); };
+
+      $scope.setCatDelete = function(dataId) { deleteCatDataId = dataId; };
+
+      $scope.confirmCatDelete = function() {
+        // find category to delete
+        var deleteEl = $('li[data-id="' + deleteCatDataId + '"]');
         if (deleteEl) {
+          // attach children boards to board listing
           var boardListEl = $('#' + $scope.boardListId + ' > .dd-list');
           var childBoardsHtml = deleteEl.children('.dd-list').html();
           boardListEl.append(childBoardsHtml);
           deleteEl.remove();
         }
 
-        deleteDataId = '';
-        $scope.closeModal('#delete-confirm');
+        // add this cat to the deletedCategories list
+        var category = $scope.nestableMap[deleteCatDataId];
+        if (category.id === -1) {
+          _.remove($scope.newCategories, function(cat) {
+            return cat.dataId === deleteCatDataId;
+          });
+        }
+        else { $scope.deletedCategories.push(category.id); }
+
+        // reset form and modal
+        deleteCatDataId = '';
+        $scope.closeModal('#delete-category');
       };
 
-      $scope.closeModal = function(modalId) {
-        $(modalId).foundation('reveal', 'close');
+      /* Delete Board */
+
+      $scope.setBoardDelete = function(dataId) { deleteBoardDataId = dataId; };
+
+      $scope.confirmBoardDelete = function() {
+        // find category to delete
+        var deleteEl = $('li[data-id="' + deleteBoardDataId + '"]');
+        if (deleteEl) {
+          // attach children boards to board listing
+          var boardListEl = $('#' + $scope.boardListId + ' > .dd-list');
+          var childBoardsHtml = deleteEl.children('.dd-list').html();
+          boardListEl.append(childBoardsHtml);
+          deleteEl.remove();
+        }
+
+        // add this board to the deletedBoards list
+        var board = $scope.nestableMap[deleteBoardDataId];
+        if (board.id === -1) {
+          _.remove($scope.newBoards, function(b) {
+            return b.dataId === deleteBoardDataId;
+          });
+        }
+        else { $scope.deletedBoards.push(board.id); }
+
+        // reset form and modal
+        deleteBoardDataId = '';
+        $scope.closeModal('#delete-board');
       };
 
-      // Expands all Categories/Boards
-      $scope.expandAll = function() {
-        $('#' + $scope.catListId).nestable('expandAll');
-      };
+      /* Expand/Collapse all Categories/Boards */
+      $scope.expandAll = function() { $('#' + $scope.catListId).nestable('expandAll'); };
+      $scope.collapseAll = function() { $('#' + $scope.catListId).nestable('collapseAll'); };
 
-      // Collapses all Categories/Boards
-      $scope.collapseAll = function() {
-        $('#' + $scope.catListId).nestable('collapseAll');
-      };
-
-      $scope.reset = function() {
-        $state.go($state.$current, null, { reload: true });
-      };
+      /* Save/Reset Page */
+      $scope.reset = function() { $state.go($state.$current, null, { reload: true }); };
 
       $scope.save = function() {
         var serializedCats = $('#' + $scope.catListId).nestable('serialize');
@@ -141,10 +179,14 @@ module.exports = ['$state', function($state) {
         .then($scope.processNewBoards)
         // 2) Handle Boards which have been edited
         .then($scope.processEditedBoards)
+        // 3) Handle Boards which have been deleted
+        .then($scope.processDeletedBoards)
+        // 4) Handle Categories which have been deleted
+        .then($scope.processDeletedCategories)
         // 3) Updated all Categories
         .then(function() {
-          buildUpdatedCats(serializedCats);
-          return $scope.processCategories();
+          var mapping = buildUpdatedCats(serializedCats);
+          return $scope.processCategories(mapping);
         })
         .then(function() {
           console.log('Done Saving!');
@@ -152,14 +194,14 @@ module.exports = ['$state', function($state) {
         });
       };
 
-      // Translates serialized array into boards.updateCategory format
-      var buildUpdatedCats = function(catsArr) {
-        $scope.boardMapping = [];
+      /* Translates serialized array into boards.updateCategory format */
+      function buildUpdatedCats(catsArr) {
+        var boardMapping = [];
         catsArr.forEach(function(cat, index) {
           // add this cat as a row entry
           var catId = $scope.nestableMap[cat.id].id;
           var row = { type: 'category', id: catId, name: cat.name, view_order: index };
-          $scope.boardMapping.push(row);
+          boardMapping.push(row);
 
           // add children boards as entries recursively
           if (!cat.children) { return; }
@@ -172,26 +214,27 @@ module.exports = ['$state', function($state) {
               category_id: catId,
               view_order: index
             };
-            $scope.boardMapping.push(boardRow);
+            boardMapping.push(boardRow);
 
             // add any children board entries
             if (catBoard.children && catBoard.children.length > 0) {
-              buildEntries(catBoard.children, boardId);
+              buildEntries(catBoard.children, boardId, boardMapping);
             }
           });
         });
-      };
+        return boardMapping;
+      }
 
-      function buildEntries(currentBoards, parentId) {
+      function buildEntries(currentBoards, parentId, boardMapping) {
         currentBoards.forEach(function(board, index) {
           // add this board as a row entry
           var boardId = $scope.nestableMap[board.id].id;
           var row = { type: 'board', id: boardId, parent_id: parentId, view_order: index };
-          $scope.boardMapping.push(row);
+          boardMapping.push(row);
 
           // add any children boards as a row entry
           if (board.children && board.children.length > 0) {
-            buildEntries(board.children, boardId);
+            buildEntries(board.children, boardId, boardMapping);
           }
         });
       }
