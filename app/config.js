@@ -211,10 +211,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        $title: ['Boards', '$stateParams', function(Boards, $stateParams) {
-          return Boards.get({ id: $stateParams.boardId }).$promise
-          .then(function(board) { return board.name; });
-        }],
+        $title: ['board', function(board) { return board.name; }],
         board: ['Boards', '$stateParams', function(Boards, $stateParams) {
           return Boards.get({ id: $stateParams.boardId }).$promise
           .then(function(board) { return board; });
@@ -279,10 +276,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        $title: ['Threads', '$stateParams', function(Threads, $stateParams) {
-          return Threads.get({ id: $stateParams.threadId }).$promise
-          .then(function(thread) { return thread.title; });
-        }],
+        $title: ['thread', function(thread) { return thread.title; }],
         thread: ['Threads', '$stateParams', function(Threads, $stateParams) {
           return Threads.get({ id: $stateParams.threadId }).$promise
           .then(function(thread) { return thread; });
