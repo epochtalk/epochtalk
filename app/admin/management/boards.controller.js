@@ -91,7 +91,7 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
 
     // 4) Handle Categories which have been deleted
     $scope.processDeletedCategories = function() {
-      console.log('3) Handling deleted categories: \n' + JSON.stringify($scope.deletedCategories, null, 2));
+      console.log('4) Handling deleted categories: \n' + JSON.stringify($scope.deletedCategories, null, 2));
       return $q.all($scope.deletedCategories.map(function(deletedCategory) {
         return Categories.delete({ id: deletedCategory }).$promise
         .catch(function(response) { console.log(response); });

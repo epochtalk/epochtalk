@@ -1,4 +1,5 @@
 var fs = require('fs');
+var _ = require('lodash');
 
 module.exports = ['$state', function($state) {
   return {
@@ -119,9 +120,15 @@ module.exports = ['$state', function($state) {
           boardListEl.append(childBoardsHtml);
           deleteEl.remove();
         }
+
         // add this cat to the deletedCategories list
         var category = $scope.nestableMap[deleteCatDataId];
-        $scope.deletedCategories.push(category.id);
+        if (category.id === -1) {
+          _.remove($scope.newCategories, function(cat) {
+            return cat.dataId === deleteCatDataId;
+          });
+        }
+        else { $scope.deletedCategories.push(category.id); }
 
         // reset form and modal
         deleteCatDataId = '';
@@ -142,9 +149,15 @@ module.exports = ['$state', function($state) {
           boardListEl.append(childBoardsHtml);
           deleteEl.remove();
         }
-        // add this cat to the deletedCategories list
+
+        // add this board to the deletedBoards list
         var board = $scope.nestableMap[deleteBoardDataId];
-        $scope.deletedBoards.push(board.id);
+        if (board.id === -1) {
+          _.remove($scope.newBoards, function(b) {
+            return b.dataId === deleteBoardDataId;
+          });
+        }
+        else { $scope.deletedBoards.push(board.id); }
 
         // reset form and modal
         deleteBoardDataId = '';
@@ -169,7 +182,7 @@ module.exports = ['$state', function($state) {
         // 3) Handle Boards which have been deleted
         .then($scope.processDeletedBoards)
         // 4) Handle Categories which have been deleted
-        // .thne($scope.processDeletedCategories)
+        .then($scope.processDeletedCategories)
         // 3) Updated all Categories
         .then(function() {
           var mapping = buildUpdatedCats(serializedCats);

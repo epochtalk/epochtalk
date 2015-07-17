@@ -79,7 +79,7 @@ module.exports = ['$compile', function($compile) {
           scope.newCategories.push(category);
 
           // Edit pencil and trash buttons
-          var toolbarHtml = '<i data-reveal-id="delete-confirm" ng-click="setCatDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+          var toolbarHtml = '<i data-reveal-id="delete-category" ng-click="setCatDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
             '<i data-reveal-id="edit-category" ng-click="setEditCat(' +
               dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status modified"></i>';

@@ -88,12 +88,12 @@ exports.import = {
   // },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
-    db.boards.import(request.payload)
-    .then(function(board) { reply(board); })
+    var promise = db.boards.import(request.payload)
     .catch(function(err) {
       request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      reply(Boom.badImplementation(err));
+      return Boom.badImplementation(err);
     });
+    return reply(promise);
   }
 };
 
