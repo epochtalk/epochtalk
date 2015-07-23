@@ -10,6 +10,13 @@ var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 
 module.exports = {
+  isAdmin: function(request, reply) {
+    var username = '';
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+    var promise = commonPre.isAdmin(authenticated, username);
+    return reply(promise);
+  },
   canFind: function(request, reply) {
     var username = '';
     var postId = request.params.id;
@@ -49,22 +56,25 @@ module.exports = {
     return reply(promise);
   },
   canCreate: function(request, reply) {
+    var userId = '';
     var username = '';
     var threadId = request.payload.thread_id;
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { username = request.auth.credentials.username; }
+    if (authenticated) { userId = request.auth.credentials.id; }
 
     var isAdmin = commonPre.isAdmin(authenticated, username);
     var isMod = commonPre.isMod(authenticated, username);
     var isLocked = isThreadLocked(threadId);
     var isBoardVisible = isThreadBoardVisible(threadId);
+    var isActive = isUserActive(userId);
 
     var promise = Promise.join(isAdmin, isMod, isLocked, isBoardVisible, isActive, function(admin, mod, locked, visible, active) {
       var result = Boom.forbidden();
 
       if (admin || mod) { result = ''; }
       else if (locked) { result = Boom.forbidden; }
-      else if (visible) { result = ''; }
+      else if (visible && active) { result = ''; }
 
       return result;
     });
@@ -84,6 +94,7 @@ module.exports = {
     var isMod = commonPre.isMod(authenticated, username);
     var isDeleted = isPostDeleted(postId);
     var isBoardVisible = isPostBoardVisible(postId);
+    var isActive = isUserActive(userId);
 
     var promise = Promise.join(isAdmin, isMod, isLocked, isOwner, isDeleted, isBoardVisible, isActive, function(admin, mod, locked, owner, deleted, visible, active) {
       var result = Boom.forbidden();
@@ -92,7 +103,7 @@ module.exports = {
       else if (deleted) { result = Boom.notFound(); }
       else if (!visible) { result = Boom.notFound(); }
       else if (locked) { result = Boom.forbidden(); }
-      else if (owner) { result = ''; }
+      else if (owner && active) { result = ''; }
       return result;
     });
     return reply(promise);
@@ -110,6 +121,7 @@ module.exports = {
     var isAdmin = commonPre.isAdmin(authenticated, username);
     var isFirst = isFirstPost(postId);
     var isBoardVisible = isPostBoardVisible(postId);
+    var isActive = isUserActive(userId);
 
     var promise = Promise.join(isAdmin, isLocked, isOwner, isFirst, isBoardVisible, isActive, function(admin, locked, owner, firstPost, visible, active) {
       var result = Boom.forbidden();
@@ -117,7 +129,7 @@ module.exports = {
       else if (admin) { result = ''; }
       else if (!visible) { result = Boom.notFound(); }
       else if (locked) { result = Boom.forbidden(); }
-      else if (owner) { result = ''; }
+      else if (owner && active) { result = ''; }
       return result;
     });
     return reply(promise);
@@ -135,6 +147,46 @@ module.exports = {
       var result = Boom.forbidden();
       if (firstPost) { result = Boom.forbidden(); }
       else if (admin) { result = ''; }
+      return result;
+    });
+    return reply(promise);
+  },
+  canPageByUserCount: function(request, reply) {
+    var username = '';
+    var payloadUsername = request.params.username;
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
+    var isActive = isUserActive(payloadUsername);
+
+    var promise = Promise.join(isAdmin, isMod, isActive, function(admin, mod, active) {
+      var result = Boom.notFound();
+      if (admin || mod) { result = ''; }
+      else if (username === payloadUsername) { result = ''; }
+      else if (active === false) { result = Boom.notFound(); }
+      else if (active === true) { result = '';}
+      return result;
+    });
+    return reply(promise);
+  },
+  canPageByUser: function(request, reply) {
+    var username = '';
+    var payloadUsername = request.params.username;
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+
+    var isAdmin = commonPre.isAdmin(authenticated, username);
+    var isMod = commonPre.isMod(authenticated, username);
+    var isActive = isUserActive(payloadUsername);
+
+    var promise = Promise.join(isAdmin, isMod, isActive, function(admin, mod, active) {
+      var result = Boom.notFound();
+      if (admin || mod) { result = ''; }
+      else if (username === payloadUsername) { result = ''; }
+      else if (active === false) { result = Boom.notFound(); }
+      else if (active === true) { result = '';}
       return result;
     });
     return reply(promise);
@@ -276,4 +328,14 @@ function isFirstPost(postId) {
 function isPostDeleted(postId) {
   return db.posts.find(postId)
   .then(function(post) { return post.deleted; });
+}
+
+function isUserActive(username) {
+  var active = false;
+  if (!username) { return Promise.resolve(active); }
+  return db.users.userByUsername(username)
+  .then(function(user) {
+    if (user) { active = !user.deleted; }
+    return active;
+  });
 }
