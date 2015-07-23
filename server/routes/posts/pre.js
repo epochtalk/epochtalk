@@ -67,7 +67,7 @@ module.exports = {
     var isMod = commonPre.isMod(authenticated, username);
     var isLocked = isThreadLocked(threadId);
     var isBoardVisible = isThreadBoardVisible(threadId);
-    var isActive = isUserActive(userId);
+    var isActive = isUserActive(username);
 
     var promise = Promise.join(isAdmin, isMod, isLocked, isBoardVisible, isActive, function(admin, mod, locked, visible, active) {
       var result = Boom.forbidden();
@@ -94,7 +94,7 @@ module.exports = {
     var isMod = commonPre.isMod(authenticated, username);
     var isDeleted = isPostDeleted(postId);
     var isBoardVisible = isPostBoardVisible(postId);
-    var isActive = isUserActive(userId);
+    var isActive = isUserActive(username);
 
     var promise = Promise.join(isAdmin, isMod, isLocked, isOwner, isDeleted, isBoardVisible, isActive, function(admin, mod, locked, owner, deleted, visible, active) {
       var result = Boom.forbidden();
@@ -121,7 +121,7 @@ module.exports = {
     var isAdmin = commonPre.isAdmin(authenticated, username);
     var isFirst = isFirstPost(postId);
     var isBoardVisible = isPostBoardVisible(postId);
-    var isActive = isUserActive(userId);
+    var isActive = isUserActive(username);
 
     var promise = Promise.join(isAdmin, isLocked, isOwner, isFirst, isBoardVisible, isActive, function(admin, locked, owner, firstPost, visible, active) {
       var result = Boom.forbidden();
@@ -317,7 +317,7 @@ function isPostBoardVisible(postId) {
 
 function isPostOwner(userId, postId) {
   return db.posts.find(postId)
-  .then(function(post) { return post && post.user_id === userId; });
+  .then(function(post) { return post && post.user.id === userId; });
 }
 
 function isFirstPost(postId) {
