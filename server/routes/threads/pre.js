@@ -92,7 +92,6 @@ module.exports = {
   canMove: managementAccess,
   canSticky: managementAccess,
   canDelete: managementAccess,
-  canPurge: managementAccess,
   getThreads: function(request, reply) {
     var boardId = request.query.board_id;
     var opts = {
