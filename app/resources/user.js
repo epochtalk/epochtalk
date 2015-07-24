@@ -53,11 +53,13 @@ module.exports = ['$resource',
       },
       deactivate: {
         method: 'POST',
-        url: '/api/users/deactivate'
+        url: '/api/users/:id/deactivate',
+        params: { id: '@id' }
       },
       reactivate: {
         method: 'POST',
-        url: '/api/users/reactivate'
+        url: '/api/users/:id/reactivate',
+        params: { id: '@id' }
       }
     });
   }

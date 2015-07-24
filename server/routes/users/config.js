@@ -252,9 +252,15 @@ exports.find = {
 
 exports.deactivate = {
   auth: { strategy: 'jwt' },
-  pre: [ { method: pre.canDeactivate } ],
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ [
+    { method: pre.canDeactivate },
+    { method: pre.isAdmin, assign: 'isAdmin' }
+  ] ],
   handler: function(request, reply) {
-    var userId = request.auth.credentials.id;
+    var userId = '';
+    if (request.pre.isAdmin) { userId = request.params.id; }
+    else { userId = request.auth.credentials.id; }
     var promise = db.users.deactivate(userId);
     return reply(promise);
   }
@@ -262,9 +268,15 @@ exports.deactivate = {
 
 exports.reactivate = {
   auth: { strategy: 'jwt' },
-  pre: [ { method: pre.canReactivate } ],
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ [
+    { method: pre.canReactivate },
+    { method: pre.isAdmin, assign: 'isAdmin' }
+  ] ],
   handler: function(request, reply) {
-    var userId = request.auth.credentials.id;
+    var userId = '';
+    if (request.pre.isAdmin) { userId = request.params.id; }
+    else { userId = request.auth.credentials.id; }
     var promise = db.users.reactivate(userId);
     return reply(promise);
   }
@@ -272,9 +284,10 @@ exports.reactivate = {
 
 exports.delete = {
   auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ],
   handler: function(request, reply) {
-    var userId = request.auth.credentials.id;
+    var userId = request.params.id;
     var promise = db.users.delete(userId);
     return reply(promise);
   }

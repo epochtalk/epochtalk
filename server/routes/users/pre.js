@@ -3,8 +3,16 @@ var Boom = require('boom');
 var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
+var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 
 module.exports = {
+  isAdmin: function(request, reply) {
+    var username = '';
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+    var promise = commonPre.isAdmin(authenticated, username);
+    return reply(promise);
+  },
   canUpdate: function(request, reply) {
     var userId = request.auth.credentials.id;
     var username = request.payload.username;
@@ -14,13 +22,15 @@ module.exports = {
     var isPasswordValid = isOldPasswordValid(oldPassword, userId);
     var isUsernameUnique = isNewUsernameUnique(username, userId);
     var isEmailUnique = isNewEmailUnique(email, userId);
+    var isActive = isUserActive(userId);
 
-    var promise = Promise.join(isPasswordValid, isUsernameUnique, isEmailUnique, function(password, username, email) {
+    var promise = Promise.join(isPasswordValid, isUsernameUnique, isEmailUnique, isActive, function(password, username, email, active) {
       var results = Boom.forbidden();
 
       if (!password) { results = Boom.badRequest('Invalid Password'); }
       else if (!username) { result = Boom.badRequest('Username Taken'); }
       else if (!email) { result = Boom.badRequest('Email Taken'); }
+      else if (!active) { result = Boom.badRequest('Account Not Active'); }
       else { results = ''; }
 
       return results;
@@ -29,7 +39,7 @@ module.exports = {
     return reply(promise);
   },
   canDeactivate: function(request, reply) {
-    var userId = request.auth.credentials.id;
+    var userId = request.params.id;
     var promise = isUserActive(userId)
     .then(function(active) {
       var results = Boom.forbidden();
@@ -40,7 +50,7 @@ module.exports = {
     return reply(promise);
   },
   canReactivate: function(request, reply) {
-    var userId = request.auth.credentials.id;
+    var userId = request.params.id;
     var promise = isUserActive(userId)
     .then(function(active) {
       var results = Boom.forbidden();
@@ -68,7 +78,7 @@ function isUserActive(userId) {
   return db.users.find(userId)
   .then(function(user) {
     var active = false;
-    if (user) { active = user.deleted; }
+    if (user) { active = !user.deleted; }
     return active;
   });
 }
