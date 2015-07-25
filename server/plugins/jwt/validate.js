@@ -1,6 +1,6 @@
 var Boom = require('boom');
 var path = require('path');
-var memDb = require(path.normalize(__dirname + '/../../memstore')).db;
+var redis = require(path.normalize(__dirname + '/../../../redis'));
 
 /**
  * JWT
@@ -13,24 +13,20 @@ var memDb = require(path.normalize(__dirname + '/../../memstore')).db;
 module.exports = function(decodedToken, token, cb) {
   // get id from decodedToken to query memDown with for token
   var key = decodedToken.id + token;
-  memDb.get(key, function(err, savedToken) {
-    var error;
-    var isValid = false;
+  redis.getAsync(key)
+  .then(function(result) {
+    if (!result) { throw new Error('Token Not Found'); }
+
     var credentials = {};
+    credentials.id = decodedToken.id;
+    credentials.username = decodedToken.username;
+    credentials.email = decodedToken.email;
+    credentials.token = token;
 
-    if (err) { error = Boom.unauthorized('Session is no longer valid.'); }
-
-    // check if the token from memDown matches the token we got in the request
-    // if it matches, then the token from the request is still valid
-    if (!error) {
-      isValid = true;
-      credentials.id = decodedToken.id;
-      credentials.username = decodedToken.username;
-      credentials.email = decodedToken.email;
-      credentials.token = token;
-    }
-
-    // return if token valid with user credentials
-    return cb(error, isValid, credentials);
+    return cb(null, true, credentials);
+  })
+  .catch(function(err) {
+    var error = Boom.unauthorized('Session is no longer valid.');
+    return cb(error, false, {});
   });
 };

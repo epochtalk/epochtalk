@@ -2,7 +2,7 @@ var path = require('path');
 var uuid = require('node-uuid');
 var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
-var memDb = require(path.normalize(__dirname + '/../../memstore')).db;
+var redis = require(path.normalize(__dirname + '/../../../redis'));
 var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var Boom = require('boom');
 
@@ -125,7 +125,7 @@ module.exports = {
         return reply(undefined);
       })
       .catch(function() { // viewId not found
-        memDb.putAsync(viewerIdKey, Date.now()); // save to memdb
+        redis.setAsync(viewerIdKey, Date.now()); // save to redis
         var addressKey = viewerAddress + threadId;
         return checkViewKey(addressKey)
         .then(function(valid) { // address found
@@ -134,7 +134,7 @@ module.exports = {
         })
         // address doesn't exists so inc is valid
         .catch(function() {
-          memDb.putAsync(addressKey, Date.now());
+          redis.setAsync(addressKey, Date.now());
           db.threads.incViewCount(threadId);
           return reply(undefined);
         });
@@ -142,7 +142,7 @@ module.exports = {
     } // no viewerId, check IP
     else {
       newViewerId = uuid.v4(); // generate new viewerId
-      memDb.putAsync(newViewerId + threadId, Date.now()); // save to mem db
+      redis.setAsync(newViewerId + threadId, Date.now());
       var addressKey = viewerAddress + threadId;
       return checkViewKey(addressKey)
       .then(function(valid) {
@@ -151,7 +151,7 @@ module.exports = {
       })
       // address doesn't exists so inc is valid
       .catch(function() {
-        memDb.putAsync(addressKey, Date.now());
+        redis.setAsync(addressKey, Date.now());
         db.threads.incViewCount(threadId);
         return reply(newViewerId);
       });
@@ -223,13 +223,13 @@ function isThreadOwner(threadId, userId) {
 }
 
 function checkViewKey(key) {
-  return memDb.getAsync(key)
+  return redis.getAsync(key)
   .then(function(storedTime) {
     var timeElapsed = Date.now() - storedTime;
     // key exists and is past the cooling period
     // update key with new value and return true
     if (timeElapsed > 1000 * 60) {
-      return memDb.putAsync(key, Date.now())
+      return redis.setAsync(key, Date.now())
       .then(function() { return true; });
     }
     // key exists but before cooling period

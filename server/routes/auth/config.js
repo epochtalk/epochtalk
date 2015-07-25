@@ -9,7 +9,7 @@ var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
 var config = require(path.normalize(__dirname + '/../../../config'));
-var memDb = require(path.normalize(__dirname + '/../../memstore')).db;
+var redis = require(path.normalize(__dirname + '/../../../redis'));
 var pre = require(path.normalize(__dirname + '/pre'));
 
 var buildToken = function(user) {
@@ -81,8 +81,8 @@ exports.login = {
     .then(function(user) { // build and save token
       var token = buildToken(user);
       var key = user.id + token;
-      memDb.put(key, token, function(err) {
-        if (err) { throw new Error(err); }
+      return redis.setAsync(key, token)
+      .then(function() {
         var userReply = {
           token: token,
           id: user.id,
@@ -123,10 +123,9 @@ exports.logout = {
     // delete jwt from memdown
     var creds = request.auth.credentials;
     var key = creds.id + creds.token;
-    memDb.del(key, function(err) {
-      if (err) { return reply(Boom.badImplementation(err)); }
-      else { return reply(true); }
-    });
+    redis.delAsync(key)
+    .then(function(err) { return reply(true); })
+    .catch(function(err) { return reply(Boom.badImplementation(err)); });
   }
 };
 
@@ -225,8 +224,8 @@ exports.register = {
       else { // Log user in after registering
         var token = buildToken(user);
         var key = user.id + token;
-        memDb.put(key, token, function(err) {
-          if (err) { throw new Error(err); }
+        redis.setAsync(key, token)
+        .then(function() {
           var regReply = {
             token: token,
             id: user.id,
@@ -235,7 +234,8 @@ exports.register = {
             roles: user.roles
           };
           return reply(regReply);
-        });
+        })
+        .catch(function(err) { return reply(Boom.badImplementation(err)); });
       }
     })
     .catch(function(err) {
@@ -290,15 +290,15 @@ exports.confirmAccount = {
     .then(function(updatedUser) {
       var authToken = buildToken(updatedUser);
       var key = updatedUser.id + authToken;
-      memDb.put(key, authToken, function(err) {
-        if (err) { throw new Error(err); }
+      return redis.setAsync(key, authToken)
+      .then(function() {
         var userReply = {
           token: authToken,
           id: updatedUser.id,
           username: updatedUser.username,
           roles: updatedUser.roles
         };
-        reply(userReply);
+        return reply(userReply);
       });
     })
     .catch(function(err) {
