@@ -52,9 +52,6 @@ server.route(routes.endpoints());
 // server methods
 server.method(methods);
 
-// lout for api documentation
-server.register({ register: require('lout') }, defaultRegisterCb);
-
 server.start(function () {
   var configClone= _.cloneDeep(config);
   configClone.privateKey = configClone.privateKey.replace(/./g, '*');

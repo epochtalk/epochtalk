@@ -26,7 +26,7 @@
   "homepage": "https://github.com/epochtalk/epochtalk",
   "apidoc": {
     "title": "Epochtalk",
-    "description" : "Overview of Epochtalk API",
+    "description": "Overview of Epochtalk API",
     "url": "/api"
   },
   "dependencies": {
@@ -55,7 +55,6 @@
     "jsonwebtoken": "^5.0.0",
     "levelup": "^0.19.0",
     "lodash": "^2.4.1",
-    "lout": "^6.1.0",
     "medium-editor": "^1.8.14",
     "memdown": "^0.11.0",
     "mkdirp": "^0.5.0",
