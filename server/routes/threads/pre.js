@@ -57,12 +57,13 @@ module.exports = {
     var isAdmin = commonPre.isAdmin(authenticated, username);
     var isMod = commonPre.isMod(authenticated, username);
     var isVisible = isBoardVisible(boardId);
+    var isActive = isUserActive(username);
 
-    var promise = Promise.join(isAdmin, isMod, isVisible, function(admin, mod, visible) {
+    var promise = Promise.join(isAdmin, isMod, isVisible, isActive, function(admin, mod, visible, active) {
       var result = Boom.forbidden();
 
       if (admin || mod) { result = ''; }
-      else if (visible) { result = ''; }
+      else if (visible && active) { result = ''; }
       return result;
     });
     return reply(promise);
@@ -78,12 +79,13 @@ module.exports = {
     var isMod = commonPre.isMod(authenticated, username);
     var isVisible = isThreadBoardVisible(threadId);
     var isOwner = isThreadOwner(threadId, userId);
+    var isActive = isUserActive(username);
 
-    var promise = Promise.join(isAdmin, isMod, isVisible, isOwner, function(admin, mod, visible, owner) {
+    var promise = Promise.join(isAdmin, isMod, isVisible, isOwner, isActive, function(admin, mod, visible, owner, active) {
       var result = Boom.forbidden();
 
       if (admin || mod) { result = ''; }
-      else if (owner && visible) { result = ''; }
+      else if (owner && visible && active) { result = ''; }
 
       return result;
     });
@@ -92,7 +94,6 @@ module.exports = {
   canMove: managementAccess,
   canSticky: managementAccess,
   canDelete: managementAccess,
-  canPurge: managementAccess,
   getThreads: function(request, reply) {
     var boardId = request.query.board_id;
     var opts = {
@@ -234,5 +235,15 @@ function checkViewKey(key) {
     // key exists but before cooling period
     // do nothing and return false
     else { return false; }
+  });
+}
+
+function isUserActive(username) {
+  var active = false;
+  if (!username) { return Promise.resolve(active); }
+  return db.users.userByUsername(username)
+  .then(function(user) {
+    if (user) { active = !user.deleted; }
+    return active;
   });
 }

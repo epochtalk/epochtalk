@@ -318,60 +318,6 @@ exports.move = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads
-  * @api {DELETE} /threads/:id Delete
-  * @apiName DeleteThread
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Used to delete a thread.
-  *
-  * @apiParam {string} id The unique id of the thread to delete
-  *
-  * @apiUse ThreadObjectSuccess2
-  *
-  * @apiError BadRequest User attempted to delete that is already deleted
-  * @apiError Unauthorized User doesn't have permissions to delete the thread
-  * @apiError (Error 500) InternalServerError There was an issue deleting the thread
-  */
-exports.delete = {
-  auth: { strategy: 'jwt' },
-  validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ],
-  handler: function(request, reply) {
-    var promise = db.threads.delete(request.params.id)
-    .error(function(err) { return Boom.badRequest(err.message); });
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Threads
-  * @api {POST} /threads/:id/undelete Undelete
-  * @apiName UndeleteThread
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Used to undelete a thread.
-  *
-  * @apiParam {string} id The unique id of the thread to undelete
-  *
-  * @apiUse ThreadObjectSuccess2
-  *
-  * @apiError BadRequest User attempted to undelete that is not deleted
-  * @apiError Unauthorized User doesn't have permissions to undelete the thread
-  * @apiError (Error 500) InternalServerError There was an issue undeleting the thread
-  */
-exports.undelete = {
-  auth: { strategy: 'jwt' },
-  validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ],
-  handler: function(request, reply) {
-    var promise = db.threads.undelete(request.params.id)
-    .error(function(err) { return Boom.badRequest(err.message); });
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Threads
   * @api {DELETE} /threads/:id/purge Purge
   * @apiName PurgeThread
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
@@ -384,12 +330,12 @@ exports.undelete = {
   * @apiError Unauthorized User doesn't have permissions to purge the thread
   * @apiError (Error 500) InternalServerError There was an issue purging the thread
   */
-exports.purge = {
+exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canPurge } ],
+  pre: [ { method: pre.canDelete } ],
   handler: function(request, reply) {
-    return reply(db.threads.purge(request.params.id));
+    return reply(db.threads.delete(request.params.id));
   }
 };
 

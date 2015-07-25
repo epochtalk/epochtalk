@@ -3,6 +3,7 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
     var ctrl = this;
     this.user = user;
     this.editable = function() { return Session.user.id === user.id || Session.user.isAdmin; };
+    this.removable = function() { return Session.user.isAdmin; };
     this.adminVisitor = Session.user.id !== user.id && Session.user.isAdmin;
     this.displayUser = angular.copy(user);
     this.displayUser.avatar = this.displayUser.avatar || 'http://fakeimg.pl/400x400/ccc/444/?text=' + this.displayUser.username;
@@ -150,8 +151,53 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
       ctrl.user.updated_at = ctrl.displayUser.updated_at;
     };
 
-    // DUMMY CHART DATA
+    // Deactivate account
+    this.showDeactivate = false;
+    this.closeDeactivateModal = function() {
+      $timeout(function() { ctrl.showDeactivate = false; });
+    };
+    this.openDeactivateModal = function(index) { ctrl.showDeactivate = true; };
+    this.deactivateUser = function() {
+      User.deactivate({ id: ctrl.user.id }).$promise
+      .then(function() {
+        ctrl.user.deleted = true;
+        Alert.success('Account Deactivated.');
+      })
+      .catch(function() { Alert.error('Error Deactivating Account'); })
+      .finally(function() { ctrl.showDeactivate = false; });
+    };
 
+    // Reactivate account
+    this.showReactivate = false;
+    this.closeReactivateModal = function() {
+      $timeout(function() { ctrl.showReactivate = false; });
+    };
+    this.openReactivateModal = function(index) { ctrl.showReactivate = true; };
+    this.reactivateUser = function() {
+      User.reactivate({ id: ctrl.user.id }).$promise
+      .then(function() {
+        ctrl.user.deleted = false;
+        Alert.success('Account Reactivated.');
+      })
+      .catch(function() { Alert.error('Error Reactivating Account'); })
+      .finally(function() { ctrl.showReactivate = false; });
+    };
+
+    // Delete account
+    this.showDelete = false;
+    this.closeDeleteModal = function() {
+      $timeout(function() { ctrl.showDelete = false; });
+    };
+    this.openDeleteModal = function(index) { ctrl.showDelete = true; };
+    this.deleteUser = function() {
+      User.delete({ id: ctrl.user.id }).$promise
+      .then(function() { Alert.success('Account Deleted.'); })
+      .catch(function() { Alert.error('Error Deleting Account'); })
+      .finally(function() { ctrl.showDelete = false; });
+    };
+
+
+    // DUMMY CHART DATA
     var data = {
       labels: ['August', 'September', 'October', 'November', 'December', 'January', 'February'],
       datasets: [

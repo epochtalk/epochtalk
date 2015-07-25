@@ -14,7 +14,12 @@
       Edit:
       <a href="#" ng-click="ProfileCtrl.editProfile = true">Profile</a>
       |
-      <a href="#" ng-click="ProfileCtrl.editPassword = true">Password </a>
+      <a href="#" ng-click="ProfileCtrl.editPassword = true">Password</a>
+      <br>
+      <a href="#" ng-click="ProfileCtrl.showDeactivate = true" ng-if="!ProfileCtrl.user.deleted">Deactivate Account</a>
+      <a href="#" ng-click="ProfileCtrl.showReactivate = true" ng-if="ProfileCtrl.user.deleted">Reactivate Account</a>
+      <br>
+      <a href="#" ng-click="ProfileCtrl.showDelete = true" ng-if="ProfileCtrl.removable()">Delete Account</a>
     </div>
 
     <!-- User Information -->
@@ -263,6 +268,66 @@
     <div class="row">
       <button class="button expand" ng-click="ProfileCtrl.saveSignature()" ng-disabled="$parent.form.$invalid || $parent.form.errors">
         Save
+      </button>
+    </div>
+  </form>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Deactivate Account Modal -->
+<modal class="medium" show="ProfileCtrl.showDeactivate" on-close="ProfileCtrl.closeDeactivateModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <center>
+      <p>
+        Are you sure you want to deactivate your account? Your information and posts will be hidden from other users. You will not be able to create, edit, or delete your posts and threads.
+      </p>
+    </center>
+
+    <!-- Deactivate Button -->
+    <div class="row">
+      <button class="button expand" ng-click="ProfileCtrl.deactivateUser()">
+        Deactivate Account
+      </button>
+    </div>
+  </form>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Reactivate Account Modal -->
+<modal class="medium" show="ProfileCtrl.showReactivate" on-close="ProfileCtrl.closeReactivateModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <center>
+      <p>
+        Reactivate your account? All your threads and posts will be viewable to the public again. You will also be able to create, edit, and delete your posts and threads like normal.
+      </p>
+    </center>
+
+    <!-- Reactivate Button -->
+    <div class="row">
+      <button class="button expand" ng-click="ProfileCtrl.reactivateUser()">
+        Reactivate Account
+      </button>
+    </div>
+  </form>
+
+  <a class="close-reveal-modal">&#215;</a>
+</modal>
+
+<!-- Delete Account Modal -->
+<modal class="medium" show="ProfileCtrl.showDelete" on-close="ProfileCtrl.closeDeleteModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <center>
+      <p>
+        Are you sure you want to delete this account? This will delete the user's account and all their posts and threads. Any threads this user has started will be deleted and any posts from other users within that thread will be deleted as well.
+      </p>
+    </center>
+
+    <!-- Delete Button -->
+    <div class="row">
+      <button class="button expand" ng-click="ProfileCtrl.deleteUser()">
+        Delete Account
       </button>
     </div>
   </form>

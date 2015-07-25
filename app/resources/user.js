@@ -50,6 +50,16 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/recover/:query',
         params: { query: '@query' }
+      },
+      deactivate: {
+        method: 'POST',
+        url: '/api/users/:id/deactivate',
+        params: { id: '@id' }
+      },
+      reactivate: {
+        method: 'POST',
+        url: '/api/users/:id/reactivate',
+        params: { id: '@id' }
       }
     });
   }

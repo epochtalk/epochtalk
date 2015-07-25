@@ -40,7 +40,8 @@ exports.create = {
     newPost.user_id = request.auth.credentials.id;
 
     // create the post in db
-    return reply(db.posts.create(newPost));
+    var promise = db.posts.create(newPost);
+    return reply(promise);
   }
 };
 
@@ -112,8 +113,10 @@ exports.find = {
     if (!request.server.methods.viewable(request)) { return reply({}); }
 
     // retrieve post
+    var authenticated = request.auth.isAuthenticated;
     var id = request.params.id;
     var promise = db.posts.find(id)
+    .then(function(post) { return cleanPosts(post, userId); })
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }
@@ -152,13 +155,17 @@ exports.byThread = {
     // handle permissions
     if (!request.server.methods.viewable(request)) { return reply([]); }
 
-    // retrieve posts for this thread
+    // ready parameters
+    var userId = '';
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { userId = request.auth.credentials.id; }
     var threadId = request.query.thread_id;
     var opts = {
       limit: request.query.limit || 10,
       page: request.query.page
     };
 
+    // retrieve posts for this thread
     var promise;
     if (opts.limit === 'all') {
       promise = db.threads.find(threadId)
@@ -166,9 +173,13 @@ exports.byThread = {
         opts.limit = Number(thread.post_count) || 10;
         return [threadId, opts];
       })
-      .spread(db.posts.byThread);
+      .spread(db.posts.byThread)
+      .then(function(posts) { return cleanPosts(posts, userId); });
     }
-    else { promise = db.posts.byThread(threadId, opts); }
+    else {
+      promise = db.posts.byThread(threadId, opts)
+      .then(function(posts) { return cleanPosts(posts, userId); });
+    }
 
     return reply(promise);
   }
@@ -207,7 +218,6 @@ exports.update = {
     { method: pre.subImages }
   ],
   handler: function(request, reply) {
-    // build updatePost object from params and payload
     var updatePost = request.payload;
     updatePost.id = request.params.id;
     return reply(db.posts.update(updatePost));
@@ -234,7 +244,6 @@ exports.delete = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ], //handle permissions
   handler: function(request, reply) {
-    // delete post
     var promise = db.posts.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
@@ -261,7 +270,6 @@ exports.undelete = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete }, ], //handle permissions
   handler: function(request, reply) {
-    // undelete post
     var promise = db.posts.undelete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
@@ -287,8 +295,8 @@ exports.purge = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canPurge } ], //handle permissions
   handler: function(request, reply) {
-    // purge post
-    return reply(db.posts.purge(request.params.id));
+    var promise = db.posts.purge(request.params.id);
+    return reply(promise);
   }
 };
 
@@ -307,8 +315,9 @@ exports.purge = {
 exports.pageByUserCount = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { username: Joi.string().required() } },
+  pre: [ { method: pre.canPageByUserCount } ],
+  // TODO: this still shows posts from deleted threads/boards
   handler: function(request, reply) {
-    // TODO: this still shows posts from deleted threads/boards
     // handle permissions
     if (!request.server.methods.viewable(request)) { return reply([]); }
 
@@ -347,12 +356,20 @@ exports.pageByUser = {
       desc: Joi.boolean().default(false)
     }
   },
+  pre: [ [
+    { method: pre.canPageByUser },
+    { method: pre.isAdmin, assign: 'isAdmin' }
+  ] ],
   handler: function(request, reply) {
-    // TODO: this still shows posts from deleted threads/boards
+  // TODO: this still shows posts from deleted threads/boards
     // handle permissions
     if (!request.server.methods.viewable(request)) { return reply([]); }
 
-    // retrieve user's posts
+    // ready parameters
+    var userId = '';
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { userId = request.auth.credentials.id; }
+    var isAdmin = request.pre.isAdmin;
     var username = request.params.username;
     var opts = {
       limit: request.query.limit,
@@ -360,9 +377,41 @@ exports.pageByUser = {
       sortField: request.query.field,
       sortDesc: request.query.desc
     };
-    return reply(db.posts.pageByUser(username, opts));
+
+    // get user's posts
+    var promise = db.posts.pageByUser(username, opts)
+    .then(function(posts) { return cleanPosts(posts, userId, isAdmin); });
+
+    return reply(promise);
   }
 };
+
+function cleanPosts(posts, currentUserId, isAdmin) {
+  posts = [].concat(posts);
+
+  return posts.map(function(post) {
+    // if currentUser owns post, show everything
+    if (currentUserId === post.user.id) { return post; }
+    if (isAdmin) { return post; }
+
+    // remove deleted users or post information
+    if (post.deleted || post.user.deleted) {
+      post.body = '';
+      post.raw_body = '';
+
+      delete post.avatar;
+      delete post.created_at;
+      delete post.updated_at;
+      delete post.imported_at;
+      delete post.user.signature;
+      delete post.user.role;
+      delete post.user.username;
+      delete post.user.id;
+    }
+
+    return post;
+  });
+}
 
 /**
   * @apiDefine PostObjectPayload

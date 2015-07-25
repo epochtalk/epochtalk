@@ -1,7 +1,6 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var bcrypt = require('bcrypt');
 var commonPre = require(path.normalize(__dirname + '/../common')).users;
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
@@ -82,12 +81,13 @@ exports.import = {
     { method: commonPre.handleImages },
   ],
   handler: function(request, reply) {
-    db.users.import(request.payload)
-    .then(function(user) { reply(user); })
+    var promise = db.users.import(request.payload)
     .catch(function(err) {
       request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      reply(Boom.badImplementation(err));
+      return Boom.badImplementation(err);
     });
+
+    return reply(promise);
   }
 };
 
@@ -139,7 +139,7 @@ exports.update = {
   auth: { strategy: 'jwt' },
   validate: {
     payload: Joi.object().keys({
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       email: Joi.string().email(),
       username: Joi.string().min(1).max(255),
       old_password: Joi.string().min(8).max(72),
@@ -161,27 +161,17 @@ exports.update = {
     .with('signature', 'raw_signature')
   },
   pre: [
-    [
-      { method: pre.getCurrentUser, assign: 'oldUser' },
-      { method: pre.checkUsernameUniqueness },
-      { method: pre.checkEmailUniqueness }
-    ],
+    { method: pre.canUpdate },
     { method: commonPre.clean },
     { method: commonPre.parseSignature },
     { method: commonPre.handleImages },
   ],
   handler: function(request, reply) {
-    var oldUser = request.pre.oldUser;
-    request.payload.id = oldUser.id; // ensure modifying logged in user
-
-    // check password
-    var oldPass = request.payload.old_password;
-    if (oldPass && !bcrypt.compareSync(oldPass, oldUser.passhash)) {
-      return reply(Boom.badRequest('Old Password Invalid'));
-    }
+    // set editing user to current user
+    request.payload.id = request.auth.credentials.id;
 
     // update the user in db
-    db.users.update(request.payload)
+    var promise = db.users.update(request.payload)
     .then(function(user) {
       delete user.confirmation_token;
       delete user.reset_token;
@@ -189,9 +179,10 @@ exports.update = {
       delete user.old_password;
       delete user.password;
       delete user.confirmation;
-      reply(user);
-    })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+      return user;
+    });
+
+    return reply(promise);
   }
 };
 
@@ -234,24 +225,70 @@ exports.find = {
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     if (!request.server.methods.viewable) { return reply({}); }
-    // get logged in user
-    var authUser = {};
-    if (request.auth.isAuthenticated) {
-      authUser = request.auth.credentials;
-    }
+
+    // get logged in user id
+    var userId = '';
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { userId = request.auth.credentials.id; }
+
     // get user by username
     var username = querystring.unescape(request.params.id);
-    db.users.userByUsername(username)
+    var promise = db.users.userByUsername(username)
     .then(function(user) {
-      if (!user) { return Boom.badRequest('User doesn\'t exist.'); }
+      if (!user) { return Boom.notFound(); }
+      if (user.deleted && user.id !== userId) { return Boom.notFound(); }
+
       delete user.passhash;
       delete user.confirmation_token;
       delete user.reset_token;
       delete user.reset_expiration;
-      if (authUser.id !== user.id) { delete user.email; }
+      if (userId !== user.id) { delete user.email; }
       return user;
-    })
-    .then(function(user) { reply(user); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    });
+
+    return reply(promise);
+  }
+};
+
+exports.deactivate = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ [
+    { method: pre.canDeactivate },
+    { method: pre.isAdmin, assign: 'isAdmin' }
+  ] ],
+  handler: function(request, reply) {
+    var userId = '';
+    if (request.pre.isAdmin) { userId = request.params.id; }
+    else { userId = request.auth.credentials.id; }
+    var promise = db.users.deactivate(userId);
+    return reply(promise);
+  }
+};
+
+exports.reactivate = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ [
+    { method: pre.canReactivate },
+    { method: pre.isAdmin, assign: 'isAdmin' }
+  ] ],
+  handler: function(request, reply) {
+    var userId = '';
+    if (request.pre.isAdmin) { userId = request.params.id; }
+    else { userId = request.auth.credentials.id; }
+    var promise = db.users.reactivate(userId);
+    return reply(promise);
+  }
+};
+
+exports.delete = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.canDelete } ],
+  handler: function(request, reply) {
+    var userId = request.params.id;
+    var promise = db.users.delete(userId);
+    return reply(promise);
   }
 };

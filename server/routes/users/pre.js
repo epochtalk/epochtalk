@@ -1,59 +1,137 @@
 var path = require('path');
 var Boom = require('boom');
+var bcrypt = require('bcrypt');
+var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
+var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 
 module.exports = {
-  getCurrentUser: function(request, reply) {
-    var userId = request.auth.credentials.id;
-    db.users.find(userId)
-    .then(function(user) {
-      if (user) { return reply(user); }
-      else { return Boom.badRequest('User Not Found'); }
-    })
-    .catch(function(err) { return reply(err); });
+  isAdmin: function(request, reply) {
+    var username = '';
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { username = request.auth.credentials.username; }
+    var promise = commonPre.isAdmin(authenticated, username);
+    return reply(promise);
   },
-  checkUsernameUniqueness: function(request, reply) {
-    if (!request.payload.username) { return reply(); }
+  canUpdate: function(request, reply) {
     var userId = request.auth.credentials.id;
-    db.users.find(userId)
-    .then(function(user) {
-      // check if username has changed
-      if (user.username === request.payload.username) { return reply(); }
-      else {
-        // check that new username is unique
-        var newUsername = request.payload.username;
-        db.users.userByUsername(newUsername)
-        .then(function(user) {
-          if (user) {
-            var usernameError = Boom.badRequest('Username Already Exists');
-            return reply(usernameError);
-          }
-          else { return reply(); }
-        })
-        .catch(function(err) { return reply(err); });
-      }
+    var username = request.payload.username;
+    var email = request.payload.email;
+    var oldPassword = request.payload.old_password;
+
+    var isPasswordValid = isOldPasswordValid(oldPassword, userId);
+    var isUsernameUnique = isNewUsernameUnique(username, userId);
+    var isEmailUnique = isNewEmailUnique(email, userId);
+    var isActive = isUserActive(userId);
+
+    var promise = Promise.join(isPasswordValid, isUsernameUnique, isEmailUnique, isActive, function(password, username, email, active) {
+      var results = Boom.forbidden();
+
+      if (!password) { results = Boom.badRequest('Invalid Password'); }
+      else if (!username) { result = Boom.badRequest('Username Taken'); }
+      else if (!email) { result = Boom.badRequest('Email Taken'); }
+      else if (!active) { result = Boom.badRequest('Account Not Active'); }
+      else { results = ''; }
+
+      return results;
     });
+
+    return reply(promise);
   },
-  checkEmailUniqueness: function(request, reply) {
-    if (!request.payload.email) { return reply(); }
-    var userId = request.auth.credentials.id;
-    db.users.find(userId)
-    .then(function(user) {
-      // check if email has changed
-      if (user.email === request.payload.email) { return reply(); }
-      else {
-        // check that new email is unique
-        var newEmail = request.payload.email;
-        db.users.userByEmail(newEmail)
-        .then(function(user) {
-          if (user) {
-            var emailError = Boom.badRequest('Email Already Exists');
-            return reply(emailError);
-          }
-          else { return reply(); }
-        })
-        .catch(function(err) { return reply(err); });
-      }
+  canDeactivate: function(request, reply) {
+    var userId = request.params.id;
+    var promise = isUserActive(userId)
+    .then(function(active) {
+      var results = Boom.forbidden();
+      if (active) { results = ''; }
+      else { result = Boom.badRequest('Account is Not Active'); }
+      return results;
     });
+    return reply(promise);
+  },
+  canReactivate: function(request, reply) {
+    var userId = request.params.id;
+    var promise = isUserActive(userId)
+    .then(function(active) {
+      var results = Boom.forbidden();
+      if (active) { results = Boom.badRequest('Account is Active'); }
+      else { results = ''; }
+      return results;
+    });
+    return reply(promise);
+  },
+  canDelete: function(request, reply) {
+    var username = request.auth.credentials.username;
+    var authenticated = request.auth.isAuthenticated;
+    var promise = commonPre.isAdmin(authenticated, username)
+    .then(function(admin) {
+      var result = Boom.forbidden();
+      if (admin) { result = ''; }
+      return result;
+    });
+    return reply(promise);
   }
 };
+
+/* Should check if the user's account is active or not */
+function isUserActive(userId) {
+  return db.users.find(userId)
+  .then(function(user) {
+    var active = false;
+    if (user) { active = !user.deleted; }
+    return active;
+  });
+}
+
+/* Should check if the old_password given matches this user's password */
+function isOldPasswordValid(oldPassword, userId) {
+  var valid = false;
+
+  if (!oldPassword) { return Promise.resolve(true); }
+
+  return db.users.find(userId)
+  .then(function(user) {
+    if (bcrypt.compareSync(oldPassword, user.passhash)) { valid = true; }
+    return valid;
+  });
+}
+
+/* Should check if email exists, is different from user's current email, and is unique */
+function isNewUsernameUnique(username, userId) {
+  var unique = false;
+
+  // bypass check if no email given
+  if (!username) { return Promise.resolve(true); }
+
+  // check if user exists with this email
+  return db.users.userByUsername(username)
+  .then(function(user) {
+    // email hasn't changed
+    if (user && user.id === userId) { unique = true; }
+    // user with this email already exists and is not this user
+    else if (user) { unique = false; }
+    // no user with this email
+    else { unique = true; }
+    return unique;
+  });
+}
+
+/* Should check if email exists, is different from user's current email, and is unique */
+function isNewEmailUnique(email, userId) {
+  var unique = false;
+
+  // bypass check if no email given
+  if (!email) { return Promise.resolve(true); }
+
+  // check if user exists with this email
+  return db.users.userByEmail(email)
+  .then(function(user) {
+    // email hasn't changed
+    if (user && user.id === userId) { unique = true; }
+    // user with this email already exists and is not this user
+    else if (user) { unique = false; }
+    // no user with this email
+    else { unique = true; }
+    return unique;
+  });
+}
