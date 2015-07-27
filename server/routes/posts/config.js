@@ -1,8 +1,10 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
+var cheerio = require('cheerio');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
+var imageStore = require(path.normalize(__dirname + '/../../images'));
 
 /**
   * @apiVersion 0.3.0
@@ -40,7 +42,8 @@ exports.create = {
     newPost.user_id = request.auth.credentials.id;
 
     // create the post in db
-    var promise = db.posts.create(newPost);
+    var promise = db.posts.create(newPost)
+    .then(createImageReferences); // handle image references
     return reply(promise);
   }
 };
@@ -83,6 +86,7 @@ exports.import = {
   handler: function(request, reply) {
     // build the post object from payload and params
     var promise = db.posts.import(request.payload)
+    // TODO: handle image references
     .catch(function(err) {
       request.log('error', 'Import post: ' + JSON.stringify(err, ['stack', 'message'], 2));
       return Boom.badRequest('Import post failed');
@@ -220,7 +224,9 @@ exports.update = {
   handler: function(request, reply) {
     var updatePost = request.payload;
     updatePost.id = request.params.id;
-    return reply(db.posts.update(updatePost));
+    var promise = db.posts.update(updatePost)
+    .then(updateImageReferences); // handle image references
+    return reply(promise);
   }
 };
 
@@ -411,6 +417,50 @@ function cleanPosts(posts, currentUserId, isAdmin) {
 
     return post;
   });
+}
+
+function createImageReferences(post) {
+  // load html in post.body into cheerio
+  var html = post.body;
+  var $ = cheerio.load(html);
+
+  // collect all the images in the body
+  var images = [];
+  $('img').each(function(index, element) {
+    images.push(element);
+  });
+
+  // save all images with a reference to post
+  images.map(function(element) {
+    var imgSrc = $(element).attr('src');
+    imageStore.addPostImageReference(post.id, imgSrc);
+  });
+
+  return post;
+}
+
+function updateImageReferences(post) {
+  // load html in post.body into cheerio
+  var html = post.body;
+  var $ = cheerio.load(html);
+
+  // collect all the images in the body
+  var images = [];
+  $('img').each(function(index, element) {
+    images.push(element);
+  });
+
+  // delete all image references for this post
+  imageStore.removePostImageReferences(post.id)
+  .then(function() {
+    // convert each image's src to cdn version
+    images.map(function(element) {
+      var imgSrc = $(element).attr('src');
+      imageStore.addPostImageReference(post.id, imgSrc);
+    });
+  });
+
+  return post;
 }
 
 /**

@@ -52,7 +52,7 @@ exports.delete = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ],
   handler: function(request, reply) {
-    var promise = db.categories.delete(request.params.id).catch(console.log);
+    var promise = db.categories.delete(request.params.id);
     return reply(promise);
   }
 };
