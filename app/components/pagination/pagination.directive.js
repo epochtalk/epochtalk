@@ -64,7 +64,7 @@ module.exports = ['$location', '$filter', function($location, $filter) {
 
       var generatePageKeys = function(ellipsis, urlPrefix) {
         // Add Previous Button
-        var prevBtnKey = { val: '&laquo; Previous' };
+        var prevBtnKey = { val: '&#10094;' };
         if (scope.page > 1) {
           prevBtnKey.class = 'arrow';
           prevBtnKey.url = urlPrefix + (scope.page - 1);
@@ -101,7 +101,7 @@ module.exports = ['$location', '$filter', function($location, $filter) {
         }
 
         // Add Next Button
-        var nextBtnKey = { val: 'Next &raquo;' };
+        var nextBtnKey = { val: '&#10095;' };
         if (scope.page < scope.pageCount) {
           nextBtnKey.class = 'arrow';
           nextBtnKey.url = urlPrefix + (scope.page + 1);

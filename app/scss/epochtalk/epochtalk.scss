@@ -118,10 +118,10 @@ label > input[type="checkbox"] { margin-right: .25rem; }
 .content-spacer { min-height: 500px; }
 .thin-dotted-underline,
 .thin-underline {
-  border-bottom: 1px dotted $color-gray-light;
+  border-bottom: 1px solid $color-gray-light;
   margin-bottom: 10px;
   padding-bottom: 10px; }
-.thin-underline { border-bottom: 1px solid $color-gray-light; }
+.thin-underline { border-bottom: 1px solid $color-gray-med; }
 .text-info { font-size: 13px; color: #999; }
 .no-margin, input[type="text"].no-margin { margin: 0; }
 .anchor-offset {
@@ -144,7 +144,7 @@ label > input[type="checkbox"] { margin-right: .25rem; }
 // Foundation Tool Overrides ----------------- //
 /* Magellan */
 .magellan-override { padding: 0px; background: transparent; }
-.top-bar .name h1 { font-family: 'Inconsolata'; font-size: 20px; }
+.top-bar .name h1 { font-size: 1.125rem; }
 .top-bar .name h1 a { display: inline-block; }
 .top-bar .name h1 .logo {
   padding-right: 10px;
@@ -254,14 +254,12 @@ input.icon-padding { padding-right: 40px; }
 }
 
 #header {
-  background-color: #fff;
-  border-bottom: 1px solid $color-gray-light;
+  border-bottom: 1px solid $breadcrumbs-border-color;
   margin-bottom: 0.5rem;
-
   .top-bar {
     background-color: inherit;
 
-    .name a { color: inherit; padding: 0; }
+    .name a { color: $header-text-color; padding: 0; }
     .logo a { color: inherit; padding-top: 20px; }
     .logo a .admin-title { padding-top: 3px; }
 
@@ -272,44 +270,29 @@ input.icon-padding { padding-right: 40px; }
       font-weight: 300;
 
       .dropdown {
-        border: 1px solid $color-gray-light;
-        border-top: none;
-        left: -1px;
-        right: -1px;
+        border: 1px solid $header-border-color;
+        background-color: $header-bg-color;
+        border-top: 1px solid $header-bg-color;
       }
 
       ul li,
       ul > li a.button,
       li > a,
       .has-dropdown a {
-        background-color: #fff;
-        color: $color-gray;
-        font-size: 0.875rem;
+        background: transparent;
+        font-size: 0.85rem;
         font-weight: 400;
         font-family: $font-sans;
       }
+      li > a { font-size: 0.75rem; }
 
       ul > li > a {
         &:hover { color: $color-active; }
-      }
-
-      .has-dropdown {
-        border: 1px solid transparent;
-
-        &:hover {
-          border-right: 1px solid $color-gray-light;
-          border-left: 1px solid $color-gray-light;
-        }
-
-        &:hover,
-        &:hover a,
-        .dropdown li a { background-color: #fafafa; }
       }
     }
   }
 
   .breadcrumbs {
-    background-color: transparent;
     border: none;
     border-radius: 0;
     height: 30px;
@@ -322,7 +305,8 @@ input.icon-padding { padding-right: 40px; }
   }
 
   .fixed {
-    border-bottom: 1px solid $color-gray-light;
+    background-color: $breadcrumbs-bg-color;
+    box-shadow: 0 4px 5px -3px $breadcrumbs-shadow-color;
 
     ul {
       margin: 0 auto;
@@ -332,9 +316,22 @@ input.icon-padding { padding-right: 40px; }
   }
 
   [data-magellan-expedition],
-  [data-magellan-expedition-clone] { padding: 0 0.9375rem; }
+  [data-magellan-expedition-clone] {
+    background-color: $breadcrumbs-bg-color;
+    padding: 0 0.9375rem;
+  }
 
-  .header-top { border-bottom: 1px solid $color-gray-light; }
+  .header-top {
+    height: 46px;
+    background-color: $header-bg-color;
+    border-bottom: 1px solid $header-border-color;
+  }
+
+  .header-bottom {
+    background-color: $breadcrumbs-bg-color;
+    border-bottom: 1px solid $breadcrumbs-border-color;
+    box-shadow: 0 4px 5px -3px $breadcrumbs-shadow-color;
+  }
 
   .search {
     // border-left: 1px solid $color-gray-light;
@@ -345,6 +342,8 @@ input.icon-padding { padding-right: 40px; }
     position: relative;
 
     input[type="text"] {
+      background-color: inherit;
+      color: $header-text-color;
       border: none;
       box-shadow: none;
       height: 45px;
@@ -354,7 +353,7 @@ input.icon-padding { padding-right: 40px; }
     }
 
     label {
-      color: $color-gray-med;
+      color: $header-text-color;
       font-size: 1.1rem;
       position: absolute;
       left: 8px;
@@ -363,12 +362,12 @@ input.icon-padding { padding-right: 40px; }
   }
 
   .avatar {
-    height: auto;
-    max-height: 40px;
+    height: 35px;
     margin-bottom: 3px;
     margin-left: 6px;
-    padding: 0 2px;
-    width: 40px;
+    width: 35px;
+    border: 2px solid $breadcrumbs-bg-color;
+    border-radius: 100px;
   }
 }
 
@@ -379,12 +378,14 @@ input.icon-padding { padding-right: 40px; }
 
   .admin-header {
     .top-bar-section {
-      .login-container { padding-right: 5px;}
+      .login-container { padding-right: 35px;}
       .dropdown {
         border: 1px solid #666;
-        border-top: none;
+        background-color: #2b2b2b;
+        border-top: 1px solid #2b2b2b;
         left: -1px;
         right: -1px;
+        margin-top: 0px;
       }
 
       .top-bar-btn:active, .top-bar-btn, .top-bar-btn-selected, .top-bar-btn-selected:hover {
@@ -403,16 +404,7 @@ input.icon-padding { padding-right: 40px; }
 
       .has-dropdown {
         .avatar { margin-top: -1px; }
-        border: 1px solid transparent;
-        a { background-color: transparent; color: #fff; }
-        &:hover {
-          border-right: 1px solid #666;
-          border-left: 1px solid #666;
-        }
-
-        &:hover,
-        &:hover a,
-        .dropdown li a { background-color: $color-gray-dark; }
+        a { color: #fff; }
       }
 
       ul.left li {
@@ -482,6 +474,7 @@ pagination {
   .pagination {
     margin-left: 0;
     margin-bottom: 0;
+    margin-top: 10px;
 
     li {
       &.current {
@@ -502,14 +495,11 @@ pagination {
 }
 
 /* Breadcrumb CSS */
-.breadcrumbs > * a { color: $color-active; }
-.breadcrumbs > .news:before {
-  content: "";
-  margin: 0 0;
-  position: relative;
-  top: 1px; }
-.breadcrumbs > .news { color: #444; text-transform: none; }
-.breadcrumbs > li > span  { color: #444; }
+.breadcrumbs > * a {
+  color: $breadcrumbs-link-color;
+  font-weight: 600;
+}
+.breadcrumbs > li > span  { color: $breadcrumbs-link-color; }
 
 /* Sidebar */
 
@@ -749,6 +739,7 @@ pagination {
 
 // Board Page -------------------------------- //
 .board-page { padding-bottom: 15px; }
+.board-title h3 { font-size: 1.5rem; font-weight: 600; color: $color-gray-dark; }
 .child-board { padding-bottom: 5px; }
 .child-board h5 { margin-bottom: 0px; }
 .child-board-desc { font-size: 14px; line-height: 1.1; padding-bottom: 3px; word-wrap: break-word; overflow-wrap: break-word; }
@@ -784,14 +775,14 @@ pagination {
 
 // Boards Page ------------------------------- //
 .board-header {
-  background-color: $color-gray-sub;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  margin-top: 1.5rem;
 }
 
 .category { margin-bottom: 30px; }
 .category-title {
   h3 {
-    color: $color-gray;
+    color: $color-gray-dark;
     font-size: 1.3em;
     margin-bottom: 0;
     margin-top: 0;
@@ -810,7 +801,7 @@ pagination {
 }
 
 .category-board {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   padding-left: 24px;
 }
 
@@ -847,12 +838,13 @@ pagination {
 
 // Post Page --------------------------------- //
 .thread-header {
-  font-size: x-large;
+  font-size: 1.5rem;
   font-weight: 600;
+  color: $color-gray-dark;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  text-align: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  margin-top: 1.5rem;
 }
 
 .post-sig-border {
@@ -882,12 +874,15 @@ pagination {
 .post-block {
   border-bottom: 1px solid $color-gray-light;
   padding-top: 1.5rem;
-  padding-bottom: 1rem; }
+  padding-bottom: 1rem;
+}
+/*
 .post-block:first-child { border-top: 1px solid $color-gray-light; }
 .post-block.super-admin { border: 1px solid blue; box-shadow: 1px 1px 5px gray; }
 .post-block.admin { border: 1px solid red; box-shadow: 1px 1px 5px gray; }
 .post-block.global-mod { border: 1px solid yellow; box-shadow: 1px 1px 5px gray; }
 .post-block.mod { border: 1px solid green; box-shadow: 1px 1px 5px gray; }
+*/
 
 .post-user {
   width: 100%;
@@ -895,20 +890,19 @@ pagination {
   .user-avatar {
     background: no-repeat center center;
     @include bg-cover;
-    height: 120px;
+    height: 50px;
     position: relative;
-    width: 100%;
+    width: 50px;
   }
   .user-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 100px;
   }
 
   .user-role {
-    background-color: rgba(0,0,0,.75);
-    bottom: 0;
-    color: #fff;
+    color: $color-gray-med;
     font-size: .8125em;
     font-weight: 600;
     left: 0;
@@ -946,7 +940,11 @@ pagination {
   @include list-clean;
   clear: both;
   float: right;
-  padding-left: 1rem;
+  color: $color-gray-med;
+  .timestamp {
+    line-height: 1rem;
+    color: $color-gray-med;
+  }
 
   &:hover a {
     color: $color-gray-med;

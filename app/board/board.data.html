@@ -1,6 +1,6 @@
 <!-- Child Boards -->
-<div class="small-12 columns" ng-if="BoardCtrl.board.children && BoardCtrl.page === 1">
-  <h5><strong>Child Boards</strong></h5>
+<div class="small-12 columns" ng-if="BoardCtrl.board.children.length > 0 && BoardCtrl.page === 1">
+  <h5>Child Boards</h5>
 
   <div class="child-board" ng-repeat="childBoard in BoardCtrl.board.children">
     <!-- Child Board Title -->
@@ -14,7 +14,7 @@
       <div class="small-12 medium-9 columns child-board-desc">
         <div ng-bind-html="childBoard.description"></div>
         <span class="child-boards" ng-if="childBoard.children.length > 0">
-          <strong>Child Boards:</strong>
+          Child Boards:</strong>
           <span ng-repeat="child in childBoard.children">
             <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
           </span>

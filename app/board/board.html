@@ -1,17 +1,16 @@
 <div class="board-header">
   <div class="row">
-    <div class="small-12 columns board-title">
+    <div class="small-4 columns board-title">
       <h3 ng-bind-html="BoardWrapperCtrl.board.name"></h3>
       <span class="moderators">
         <strong ng-if="BoardWrapperCtrl.board.moderators.length > 0">Moderators: </strong>
         <a ng-href="/profiles/{{mod.username}}" ng-repeat="mod in BoardWrapperCtrl.board.moderators" ng-bind="mod.username + ($last ? '' : ', ')"></a>
       </span>
     </div>
-  </div>
-
-  <!-- Pagination Top -->
-  <div class="row pagination-container center">
-    <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
+    <!-- Pagination Top -->
+    <div class="small-8 columns text-right">
+      <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
+    </div>
   </div>
 </div>
 
@@ -28,6 +27,6 @@
 </div>
 
 <!-- Pagination Bottom -->
-<div class="row pagination-container center">
+<div class="row pagination-container text-right">
   <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
 </div>

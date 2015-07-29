@@ -1,6 +1,20 @@
 // SASS variables
 
-// Colors
+// Header Layout Colors
+
+$header-bg-color: RGB(66, 71, 80);
+$header-text-color: RGB(255, 255, 255);
+$header-border-color: RGB(166, 168, 172);
+
+$breadcrumbs-bg-color: RGB(244, 244, 244);
+$breadcrumbs-link-color: RGB(85, 85, 85);
+$breadcrumbs-border-color: RGB(232, 232, 232);
+$breadcrumbs-shadow-color: RGB(214, 214, 214);
+
+// Font Colors
+$font-color-darkgray: RGB(40, 40, 40);
+
+// Old Colors
 $color-epoch: slategray;
 $color-active: rgb(255, 78, 0); 		//orange
 $color-active-fill: rgb(255, 116, 66); 		//lighter orange

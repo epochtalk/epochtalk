@@ -1,0 +1,185 @@
+@import 'variables';
+@import 'icons';
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,700);
+
+// Neat Vars
+$max-width: 960px;
+
+// Media Queries
+$S: 320px;
+$M: 768px;
+$L: 1170px;
+
+@mixin MQ($canvas) {
+  @if $canvas == S {
+   @media only screen and (min-width: $S) { @content; }
+  }
+  @else if $canvas == M {
+   @media only screen and (min-width: $M) { @content; }
+  }
+  @else if $canvas == L {
+   @media only screen and (min-width: $L) { @content; }
+  }
+}
+
+// Epochtalk Vars
+$base-font-sans: "Lato", "Helvetica Neue", Helvetica, sans-serif;
+$base-font-color: RGB(34, 34, 34);
+$base-font-size: 16px;
+
+$header-height: 3.125rem;
+$header-bg-color: RGB(66, 71, 80);
+$header-border-color: RGB(166, 168, 172);
+$header-logo-font-size: 1.3rem;
+$header-logo-font-color: RGB(255, 255, 255);
+$header-login-font-size: 0.815rem;
+$header-login-font-color: $header-logo-font-color;
+$header-dropdown-bg-color: RGBA(46, 50, 58, 0.98);
+$header-dropdown-shadow-color: RGBA(0, 0, 0, 0.3);
+
+$breadcrumbs-height: 2.8125rem;
+$breadcrumbs-font-size: $header-login-font-size;
+$breadcrumbs-bg-color: RGB(244, 244, 244);
+$breadcrumbs-link-color: RGB(102, 102, 102);
+$breadcrumbs-dead-link-color: RGB(153, 153, 153);
+$breadcrumbs-border-color: RGB(227, 227, 227);
+$breadcrumbs-shadow-color: RGBA(0, 0, 0, 0.1);
+$breadcrumbs-bottom-margin: 1.75rem;
+
+
+/*-------------- Main Layout -------------- */
+html, body {
+  font-size: $base-font-size;
+  font-family: $base-font-sans;
+  color: $base-font-color;
+}
+
+// Header
+header {
+  #menu-wrap {
+    @include clearfix();
+    background-color: $header-bg-color;
+    padding: 0 1em;
+    text-align: center;
+    height: $header-height;
+    #menu {
+      @include outer-container;
+      h3 {
+        float: left;
+        margin: 0;
+        font-family: $base-font-sans;
+        line-height: $header-height;
+        font-size: $header-logo-font-size;
+        #logo {
+          padding-right: 10px;
+          width: 35px;
+          height: 25px;
+          margin-bottom: 4px;
+        }
+        #logo-text { color: $header-logo-font-color; }
+      }
+      ul {
+        display: inline-block;
+        float: right;
+        margin: 0;
+        line-height: $header-height;
+        padding: 0;
+        list-style-type: none;
+        li { display: inline-block; }
+        li a {
+          color: $header-login-font-color;
+          font-size: $header-login-font-size;
+          padding-left: 1.25rem;
+        }
+        .search {
+          position: relative;
+          input[type="text"] {
+            background-color: inherit;
+            color: $header-logo-font-color;
+            border: none;
+            box-shadow: none;
+            margin: 0;
+            padding: 0 0.4rem 0 2rem;
+            top: 0;
+            width: 250px;
+          }
+          label {
+            color: $header-logo-font-color;
+            font-size: 1.1rem;
+            position: absolute;
+            left: 0.4rem;
+            top: 0.4rem;
+          }
+        }
+        .login-dropdown-wrap {
+          min-width: 125px;
+          position: relative;
+          div {
+            text-align: left;
+            padding: 0 10px;
+          }
+          a { padding-left: 0.8rem; }
+          .login-dropdown {
+            display: none;
+            width: 100%;
+            text-align: left;
+            margin-top: -1px;
+            background-color: $header-dropdown-bg-color;
+            position: absolute;
+            z-index: 9999;
+            li, li a { display: block; height: 2.5rem; line-height: 2.5rem; }
+          }
+          .avatar {
+            height: 35px;
+            width: 35px;
+            margin: 0 auto;
+            border: 2px solid white;
+            border-radius: 100px;
+          }
+        }
+        .login-dropdown-wrap:hover {
+          box-shadow: 0 2px 4px $header-dropdown-shadow-color;
+          background-color: $header-dropdown-bg-color;
+          .login-dropdown { display: block; box-shadow: 0 2px 4px $header-dropdown-shadow-color; }
+        }
+      }
+      @include MQ($S) {
+        ul {
+          display: none;
+        }
+      }
+    }
+  }
+
+  #breadcrumbs-wrap {
+    @include clearfix();
+    background-color: $breadcrumbs-bg-color;
+    border-bottom: 1px solid $breadcrumbs-border-color;
+    box-shadow: 0px 2px 6px $breadcrumbs-shadow-color;
+    padding: 0 1em;
+    text-align: center;
+    height: $breadcrumbs-height;
+    margin-bottom: $breadcrumbs-bottom-margin;
+    #breadcrumbs {
+      @include outer-container;
+      min-width: 0;
+      padding: 0;
+      background: none;
+      text-transform: uppercase;
+      ul {
+        float: left;
+        display: inline-block;
+        margin: 0;
+        line-height: $breadcrumbs-height;
+        padding: 0;
+        list-style-type: none;
+        li { color: $breadcrumbs-link-color; display: inline-block; }
+        li::before { content: "/"; padding: 0 0.4rem; }
+        li:first-child::before { content: none; }
+        li a { color: $breadcrumbs-link-color; font-size: $breadcrumbs-font-size; }
+        li span { color: $breadcrumbs-dead-link-color; font-size: $breadcrumbs-font-size; }
+      }
+    }
+  }
+}
+
