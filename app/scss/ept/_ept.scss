@@ -148,6 +148,19 @@ header {
         }
       }
     }
+    #menu.admin-menu {
+      max-width: none;
+      h3 #logo-text { padding-right: 0.8rem; }
+      #menu-left {
+        float: left;
+        .menu-btn, .menu-btn-selected { padding: 0 0.8rem; display: inline-block; }
+        .menu-btn-selected { background-color: $header-dropdown-bg-color; }
+      }
+      #menu-right {
+        float: right;
+        li:first-child { padding-right: 0.8rem }
+      }
+    }
   }
 
   #breadcrumbs-wrap {
