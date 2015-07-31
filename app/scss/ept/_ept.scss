@@ -6,19 +6,16 @@
 $max-width: 960px;
 
 // Media Queries
-$S: 320px;
-$M: 768px;
-$L: 1170px;
+$phone: 480px;
+$tablet-min: 768px;
+$tablet-max: 1024px;
 
 @mixin MQ($canvas) {
-  @if $canvas == S {
-   @media only screen and (min-width: $S) { @content; }
+  @if $canvas == Phone {
+   @media only screen and (max-device-width: $phone) { @content; }
   }
-  @else if $canvas == M {
-   @media only screen and (min-width: $M) { @content; }
-  }
-  @else if $canvas == L {
-   @media only screen and (min-width: $L) { @content; }
+  @else if $canvas == Tablet {
+   @media only screen and (min-device-width: $tablet-min) and (max-device-width: $tablet-max)  { @content; }
   }
 }
 
@@ -48,10 +45,13 @@ $breadcrumbs-bottom-margin: 1.75rem;
 
 
 /*-------------- Main Layout -------------- */
+// Page
 html, body {
   font-size: $base-font-size;
   font-family: $base-font-sans;
   color: $base-font-color;
+  @include MQ(Phone) { font-size: $base-font-size * 0.8; }
+  @include MQ(Tablet) { font-size: $base-font-size * 0.9; }
 }
 
 // Header
@@ -61,7 +61,7 @@ header {
     background-color: $header-bg-color;
     padding: 0 1em;
     text-align: center;
-    height: $header-height;
+    min-height: $header-height;
     #menu {
       @include outer-container;
       h3 {
@@ -72,9 +72,10 @@ header {
         font-size: $header-logo-font-size;
         #logo {
           padding-right: 10px;
-          width: 35px;
-          height: 25px;
-          margin-bottom: 4px;
+          width: 2.1875rem;
+          height: auto;
+          max-height: 2.1875rem;
+          margin-bottom: 0.25rem;
         }
         #logo-text { color: $header-logo-font-color; }
       }
@@ -85,22 +86,23 @@ header {
         line-height: $header-height;
         padding: 0;
         list-style-type: none;
-        li { display: inline-block; }
+        li { float: left; }
         li a {
           color: $header-login-font-color;
           font-size: $header-login-font-size;
           padding-left: 1.25rem;
         }
         .search {
+          @include MQ(Phone) { display: none; }
           position: relative;
           input[type="text"] {
+            display: inline-block;
             background-color: inherit;
             color: $header-logo-font-color;
             border: none;
             box-shadow: none;
             margin: 0;
             padding: 0 0.4rem 0 2rem;
-            top: 0;
             width: 250px;
           }
           label {
@@ -108,18 +110,27 @@ header {
             font-size: 1.1rem;
             position: absolute;
             left: 0.4rem;
-            top: 0.4rem;
+            top: 0.7125rem;
           }
         }
-        .login-dropdown-wrap {
+        #user-dropdown-wrap {
           min-width: 125px;
           position: relative;
           div {
             text-align: left;
             padding: 0 10px;
+            .avatar {
+              height: 2.1875rem;
+              width: 2.1875rem;
+              border: 2px solid white;
+              border-radius: 100px;
+              margin-bottom: 0.25rem;
+            }
+            a {
+              padding-left: 0.8rem;
+            }
           }
-          a { padding-left: 0.8rem; }
-          .login-dropdown {
+          #user-dropdown {
             display: none;
             width: 100%;
             text-align: left;
@@ -127,25 +138,13 @@ header {
             background-color: $header-dropdown-bg-color;
             position: absolute;
             z-index: 9999;
-            li, li a { display: block; height: 2.5rem; line-height: 2.5rem; }
-          }
-          .avatar {
-            height: 35px;
-            width: 35px;
-            margin: 0 auto;
-            border: 2px solid white;
-            border-radius: 100px;
+            li, li a { float: none; display: block; height: 2.5rem; line-height: 2.5rem; }
           }
         }
-        .login-dropdown-wrap:hover {
+        #user-dropdown-wrap:hover {
           box-shadow: 0 2px 4px $header-dropdown-shadow-color;
           background-color: $header-dropdown-bg-color;
-          .login-dropdown { display: block; box-shadow: 0 2px 4px $header-dropdown-shadow-color; }
-        }
-      }
-      @include MQ($S) {
-        ul {
-          display: none;
+          #user-dropdown { display: block; box-shadow: 0 2px 4px $header-dropdown-shadow-color; }
         }
       }
     }
@@ -182,4 +181,6 @@ header {
     }
   }
 }
+
+
 
