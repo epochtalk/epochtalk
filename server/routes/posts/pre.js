@@ -233,12 +233,12 @@ module.exports = {
 
       // check if parsing was needed
         // it wasn't need so remove raw_body
-      if (parsedBody === raw_body) { request.payload.raw_body = null; }
+      if (parsedBody === raw_body) { request.payload.raw_body = ''; }
     }
     else {
       // nothing to parse, just move raw_body to body
       request.payload.body = request.payload.raw_body;
-      request.payload.raw_body = null;
+      request.payload.raw_body = '';
     }
 
     return reply();

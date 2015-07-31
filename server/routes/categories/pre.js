@@ -22,6 +22,6 @@ function isAdmin(request, reply) {
     var result = Boom.forbidden();
     if (admin) { result = ''; }
     return result;
-  }).catch(console.log);
+  });
   return reply(promise);
 }

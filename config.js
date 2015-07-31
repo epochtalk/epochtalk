@@ -18,6 +18,10 @@ var config = {
   privateKey: process.env.PRIVATE_KEY || 'Change this to something more secure',
   verifyRegistration: parseBool(process.env.VERIFY_REGISTRATION, false),
   loginRequired: parseBool(process.env.LOGIN_REQUIRED, false),
+  redis: {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: process.env.REDIS_PORT || 6379
+  },
   website: {
     title: process.env.WEBSITE_TITLE || 'Epochtalk Forums',
     description: process.env.WEBSITE_DESCRIPTION || 'Open source forum software',
