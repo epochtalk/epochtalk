@@ -111,16 +111,23 @@ exports.import = {
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canFind } ],
+  pre: [ [
+    { method: pre.canFind },
+    { method: pre.isAdmin, assign: 'isAdmin' }
+  ] ],
   handler: function(request, reply) {
     // handle permissions
     if (!request.server.methods.viewable(request)) { return reply({}); }
 
     // retrieve post
+    var userId = '';
     var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { userId = request.auth.credentials.id; }
+    var isAdmin = request.pre.isAdmin;
     var id = request.params.id;
     var promise = db.posts.find(id)
-    .then(function(post) { return cleanPosts(post, userId); })
+    .then(function(post) { return cleanPosts(post, userId, isAdmin); })
+    .then(function(posts) { return posts[0]; })
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }
