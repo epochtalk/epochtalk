@@ -136,8 +136,8 @@ local.uploadImage = function(source, filename, reply) {
 var deleteImage = function(err, pathToFile) {
   if (err) { console.log(err); }
   fs.unlink(pathToFile, function(error) {
-    if (error.code === 'ENOENT') { /* ignore already deleted files */ }
-    else { console.log(error); }
+    if (error && error.code === 'ENOENT') { /* ignore deleted files */ }
+    else if (error) { console.log(error); }
   });
 };
 
