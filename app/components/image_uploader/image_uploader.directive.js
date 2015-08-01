@@ -24,7 +24,10 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
       $scope.fireDone = function(url) { $scope.onDone({ data: url }); };
 
       // input initialization
-      if ($scope.purpose === 'editor') {
+      if ($scope.purpose === 'avatar') {
+        $scope.images[0] = { url: $scope.model };
+      }
+      else if ($scope.purpose === 'editor') {
         $(inputElement).attr('multiple', '');
       }
       else if ($scope.purpose === 'favicon') {
@@ -106,7 +109,7 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
       }
 
       // bind to changes in the image input
-      // because angular can handle ng-change on input[file=type]
+      // because angular can't handle ng-change on input[file=type]
       angular.element(inputElement).on('change', function() {
         // get all the images from the file picker
         var fileList = inputElement.files;

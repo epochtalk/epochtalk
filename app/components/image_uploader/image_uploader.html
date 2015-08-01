@@ -10,8 +10,8 @@
   Drag and drop images here or
   <a ng-href="#" ng-click="openImagePicker()">click here</a>
 
-  <div ng-if="images.length > 0 && purpose === 'avatar'" class="profile-avatar-container">
-    <img ng-src="{{images[0].url}}" />
+  <div ng-if="model && purpose === 'avatar'" class="profile-avatar-container">
+    <img ng-src="{{ model }}" />
   </div>
 
   <span ng-if="images.length > 0 && purpose === 'editor'">
