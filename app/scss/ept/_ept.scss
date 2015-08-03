@@ -45,6 +45,18 @@ html, body {
   @include media($mobile) { font-size: $base-font-size * 0.8; }
 }
 
+// Components
+.button, button {
+  background-color: $color-active-fill;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  border-color: $color-active-fill;
+  font-family: $base-font-sans;
+  outline: none;
+  padding: 0.625rem 1.375rem;
+}
+
 // Header
 header {
   #menu-wrap {
@@ -188,11 +200,17 @@ header {
 
 // Main
 main {
+  @include clearfix();
   min-height: 100%;
-  margin-bottom: -120px;
-  padding-bottom: 120px;
-  .admin-content {
-    @include fill-parent;
+  #public-content {
+    @include outer-container;
+  }
+  #error-404 {
+    @include outer-container;
+    @include row();
+    text-align: center;
+    .code { @include span-columns(12); @include omega; font-size: 12.5rem; font-weight: 100; }
+    .message { @include span-columns(12); @include omega; font-size: 1.875rem; color: $color-active; }
   }
 }
 
@@ -228,7 +246,7 @@ footer {
   position: relative;
   background-color:$footer-bg-color;
   color: $footer-font-color;
-  font-size: .8rem;
+  font-size: 0.8rem;
   padding: 10px 10px 15px 10px;
   margin-bottom: 0;
   #footer {
