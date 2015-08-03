@@ -2,23 +2,6 @@
 @import 'icons';
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300,700);
 
-// Neat Vars
-$max-width: 960px;
-
-// Media Queries
-$phone: 480px;
-$tablet-min: 768px;
-$tablet-max: 1024px;
-
-@mixin MQ($canvas) {
-  @if $canvas == Phone {
-   @media only screen and (max-device-width: $phone) { @content; }
-  }
-  @else if $canvas == Tablet {
-   @media only screen and (min-device-width: $tablet-min) and (max-device-width: $tablet-max)  { @content; }
-  }
-}
-
 // Epochtalk Vars
 $base-font-sans: "Lato", "Helvetica Neue", Helvetica, sans-serif;
 $base-font-color: RGB(34, 34, 34);
@@ -50,8 +33,7 @@ html, body {
   font-size: $base-font-size;
   font-family: $base-font-sans;
   color: $base-font-color;
-  @include MQ(Phone) { font-size: $base-font-size * 0.8; }
-  @include MQ(Tablet) { font-size: $base-font-size * 0.9; }
+  @include media($mobile) { font-size: $base-font-size * 0.8; }
 }
 
 // Header
@@ -93,7 +75,7 @@ header {
           padding-left: 1.25rem;
         }
         .search {
-          @include MQ(Phone) { display: none; }
+          @include media($mobile) { display: none; }
           position: relative;
           input[type="text"] {
             display: inline-block;
@@ -195,5 +177,86 @@ header {
   }
 }
 
+// Main
+main {
+  min-height: 100%;
+  margin-bottom: -120px;
+  padding-bottom: 120px;
+  .admin-content {
+    @include fill-parent;
+  }
+}
 
+// No Script
+noscript {
+  @include clearfix();
+  #noscript {
+    @include outer-container;
+    @include row();
+    .sad-face {
+      @include span-columns(4);
+      font-size: 18.75rem;
+    }
+    .message {
+      @include span-columns(8);
+      font-size: 1.25rem;
+      margin-top: 12.5rem;
+    }
+  }
+  @include media($mobile) {
+    #noscript {
+       text-align: center;
+      .sad-face { @include span-columns(8); @include omega; }
+      .message { @include span-columns(8); @include omega; margin: 0; padding: 0 1rem; }
+    }
+  }
+}
+
+
+// Footer
+footer {
+  @include clearfix();
+  position: relative;
+  background-color: $color-gray-sub;
+  color: $color-gray;
+  font-size: .8rem;
+  padding: 10px 10px 15px 10px;
+  margin-bottom: 0;
+  #footer {
+    @include outer-container;
+    .row {
+      @include row();
+      .links {
+        @include span-columns(3);
+        a {
+          color: $color-gray;
+          &:hover { color: $color-active; }
+        }
+        ul {
+          font-size: .8rem;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+        .title {
+          font-weight: 600;
+          line-height: 3;
+        }
+      }
+      .info {
+        @include span-columns(6);
+        text-align: right;
+        .copyright {
+          display: block;
+          font-size: 1.5rem;
+          font-weight: 200;
+        }
+      }
+    }
+  }
+  @include media($mobile) {
+    #footer .row .links { @include span-columns(4); @include omega(2n); text-align: center; }
+    #footer .row .info { @include span-columns(8); text-align: center; padding-top: 1rem; }
+  }
+}
 

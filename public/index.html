@@ -27,23 +27,23 @@
   </div>
 
   <!-- Main content -->
-  <div id="main-wrap" class="main-content">
+  <main>
     <div ui-view="body" ng-cloak></div>
-  </div>
+  </main>
 
   <!-- Footer -->
-  <div id="footer-wrap" ui-view="footer" ng-cloak></div>
+  <footer ui-view="footer" ng-cloak></footer>
 
   <!-- Noscript Message -->
   <noscript>
     <style>
-      #header-wrap, #footer-wrap, #sidenav-wrap, #main-wrap { display: none; }
+      header, main { display: none; }
     </style>
-    <div class="row">
-      <div class="small-12 medium-4 sad-face columns">
+    <div id="noscript">
+      <div class="sad-face">
         :(
       </div>
-      <div class="small-12 medium-8 noscript-message columns">
+      <div class="message">
         It appears you have JavaScript disabled, in order to view this forum JavaScript must be enabled.  Epochtalk Forum Software currently does not support noscript, if there is enough demand this feature may be added in the future.
       </div>
     </div>
