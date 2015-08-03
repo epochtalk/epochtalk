@@ -7,6 +7,10 @@ $base-font-sans: "Lato", "Helvetica Neue", Helvetica, sans-serif;
 $base-font-color: RGB(34, 34, 34);
 $base-font-size: 16px;
 
+// Primary layout colors
+$color-active: rgb(255, 78, 0);
+$color-active-fill: rgb(255, 116, 66);
+
 $header-height: 3.125rem;
 $header-bg-color: RGB(66, 71, 80);
 $header-border-color: RGB(166, 168, 172);
@@ -25,6 +29,11 @@ $breadcrumbs-dead-link-color: RGB(153, 153, 153);
 $breadcrumbs-border-color: RGB(227, 227, 227);
 $breadcrumbs-shadow-color: RGBA(0, 0, 0, 0.1);
 $breadcrumbs-bottom-margin: 1.75rem;
+
+$footer-bg-color: lighten(#444, 71%);
+$footer-font-color: lighten(#444, 20%);
+$footer-link-color: $footer-font-color;
+$footer-link-hover-color: $color-active;
 
 
 /*-------------- Main Layout -------------- */
@@ -217,8 +226,8 @@ noscript {
 footer {
   @include clearfix();
   position: relative;
-  background-color: $color-gray-sub;
-  color: $color-gray;
+  background-color:$footer-bg-color;
+  color: $footer-font-color;
   font-size: .8rem;
   padding: 10px 10px 15px 10px;
   margin-bottom: 0;
@@ -229,8 +238,8 @@ footer {
       .links {
         @include span-columns(3);
         a {
-          color: $color-gray;
-          &:hover { color: $color-active; }
+          color: $footer-link-color;
+          &:hover { color: $footer-link-hover-color; }
         }
         ul {
           font-size: .8rem;
