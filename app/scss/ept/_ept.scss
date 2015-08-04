@@ -34,14 +34,14 @@ $breadcrumbs-link-color: RGB(102, 102, 102);
 $breadcrumbs-dead-link-color: RGB(153, 153, 153);
 $breadcrumbs-border-color: RGB(227, 227, 227);
 $breadcrumbs-shadow-color: RGBA(0, 0, 0, 0.1);
-$breadcrumbs-bottom-margin: 1.75rem;
+$breadcrumbs-bottom-margin: 1rem;
 
 $footer-bg-color: $color-gray-sub;
 $footer-font-color: lighten($color-gray, 20%);
 $footer-link-color: $footer-font-color;
 $footer-link-hover-color: $color-active;
 
-// Mixins
+/*-------------- Mixins -------------- */
 @mixin no-select {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -51,6 +51,18 @@ $footer-link-hover-color: $color-active;
   user-select: none;
 }
 
+@mixin border-radius($radius) {
+  border-radius: $radius;
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  -o-border-radius: $radius;
+}
+
+@mixin info-text($size: 0.8rem) {
+  color: $color-gray-med;
+  font-size: $size;
+}
 /*-------------- Main Layout -------------- */
 // Page
 html, body {
@@ -60,18 +72,19 @@ html, body {
   @include media($mobile) { font-size: $base-font-size * 0.85; }
 }
 
+h1, h2, h3, h4, h5, h6 { margin: 0; }
+
 // Components
 .button, button {
+  @include border-radius(2px);
   background-color: $color-active-fill;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  border-radius: 2px;
   border-color: $color-active-fill;
   font-family: $base-font-sans;
   outline: none;
   padding: 0.625rem 1.375rem;
 }
 pagination .arrow { font-family: 'Zapf Dingbats'; }
+.thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
 
 
 // Header
@@ -86,7 +99,6 @@ header {
       @include outer-container;
       h3 {
         float: left;
-        margin: 0;
         font-family: $base-font-sans;
         line-height: $header-height;
         font-size: $header-logo-font-size;
@@ -107,11 +119,7 @@ header {
         padding: 0;
         list-style-type: none;
         li { float: left; }
-        li a {
-          color: $header-login-font-color;
-          font-size: $header-login-font-size;
-          padding-left: 1.25rem;
-        }
+        li a { color: $header-login-font-color; font-size: $header-login-font-size; padding-left: 1.25rem; }
         .search {
           @include media($mobile) { display: none; }
           position: relative;
@@ -140,15 +148,13 @@ header {
             text-align: left;
             padding: 0 10px;
             .avatar {
+              @include border-radius(100px);
               height: 2.1875rem;
               width: 2.1875rem;
               border: 2px solid white;
-              border-radius: 100px;
               margin-bottom: 0.25rem;
             }
-            a {
-              padding-left: 0.8rem;
-            }
+            a { padding-left: 0.8rem; }
           }
           #user-dropdown {
             display: none;
@@ -224,16 +230,17 @@ header {
 main {
   @include clearfix();
   @include pad(0 1rem);
-  margin-top: -1rem;
   min-height: 100%;
   #public-content { @include outer-container; }
   #error-404 {
     @include outer-container;
-    @include row();
+    @include row;
     text-align: center;
     .code { @include span-columns(12); @include omega; font-size: 12.5rem; font-weight: 100; }
     .message { @include span-columns(12); @include omega; font-size: 1.875rem; color: $color-active; }
-    @include media($mobile) {
+  }
+  @include media($mobile) {
+    #error-404 {
       .code { font-size: 8rem; }
       .message { font-size: 1.5rem; }
     }
@@ -245,16 +252,9 @@ noscript {
   @include clearfix();
   #noscript {
     @include outer-container;
-    @include row();
-    .sad-face {
-      @include span-columns(4);
-      font-size: 18.75rem;
-    }
-    .message {
-      @include span-columns(8);
-      font-size: 1.25rem;
-      margin-top: 12.5rem;
-    }
+    @include row;
+    .sad-face { @include span-columns(4); font-size: 18.75rem; }
+    .message { @include span-columns(8); font-size: 1.25rem; margin-top: 12.5rem; }
   }
   @include media($mobile) {
     #noscript {
@@ -278,32 +278,20 @@ footer {
   #footer {
     @include outer-container;
     .row {
-      @include row();
+      @include row;
       .links {
         @include span-columns(3);
         a {
           color: $footer-link-color;
           &:hover { color: $footer-link-hover-color; }
         }
-        ul {
-          font-size: .8rem;
-          margin: 0;
-          padding: 0;
-          list-style: none;
-        }
-        .title {
-          font-weight: 600;
-          line-height: 3;
-        }
+        ul { font-size: .8rem; margin: 0; padding: 0; list-style: none; }
+        .title { font-weight: 600;  line-height: 3; }
       }
       .info {
         @include span-columns(6);
         text-align: right;
-        .copyright {
-          display: block;
-          font-size: 1.5rem;
-          font-weight: 200;
-        }
+        .copyright { display: block; font-size: 1.5rem; font-weight: 200; }
       }
     }
   }
@@ -317,20 +305,18 @@ footer {
 main {
   #public-content {
     .category {
-      @include row();
+      @include row;
       .title {
         @include span-columns(12);
-        h4 { display: inline-block; margin: 0; padding-left: 0.5rem; }
+        h4 { display: inline-block; padding-left: 0.5rem; }
         .collapse-section { @include no-select; cursor: pointer; display: inline-block; }
-        .thin-underline { border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
       }
       .board {
-        @include row();
+        @include row;
+        @include pad(0 0 1rem 0);
         font-size: 0.95rem;
-        padding-bottom: 1rem;
         .info {
           @include span-columns(7);
-          h5 { margin: 0; }
         }
         .view-count { @include span-columns(2); color: $color-gray-med; font-size: 0.8rem; }
         .last-post { @include span-columns(3); @include omega; color: $color-gray-med; font-size: 0.8rem;}
@@ -341,6 +327,101 @@ main {
         .info { @include span-columns(8);}
         .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
         .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
+      }
+    }
+  }
+}
+
+/*-------------- Individual Board Layout -------------- */
+main {
+  #public-content {
+    .pagination-wrap pagination { float: right; }
+    .board-header {
+      @include row;
+      @include pad(0 0 1rem 0);
+      .title {
+        @include span-columns(4);
+        h4 { font-weight: bold; }
+      }
+      .pagination-wrap { @include span-columns(8); @include omega; }
+      .moderators { @include span-columns(12); @include omega; }
+    }
+    .board-controls {
+      @include pad(0.5rem 0 1.5rem 0);
+      a {
+        @include border-radius(50px);
+        color: $color-gray-med;
+        padding: 0.625rem 1rem;
+        border: 1px solid $color-gray-light;
+        i { margin-right: 0.375rem; }
+        &:hover { background-color: $color-active; color: #fff; }
+      }
+    }
+    .board-data {
+      @include row;
+      .child-boards {
+        @include pad(0 0 1rem 0);
+        .board {
+          @include clearfix;
+          @include pad(0 0 1rem 0);
+          font-size: 0.95rem;
+          .info {  @include span-columns(7); }
+          .view-count { @include span-columns(2); @include info-text; }
+          .last-post { @include span-columns(3); @include omega; @include info-text;}
+        }
+      }
+      .threads-header {
+        .mobile-header { display: none; }
+        .subject { @include span-columns(7); }
+        .replies, .views { @include span-columns(1); text-align: center; }
+        .last-reply { @include span-columns(3); @include omega; }
+      }
+      .threads-data {
+        @include clearfix;
+        @include pad(0 0 1rem 0);
+        font-size: 0.95rem;
+        .subject {
+          @include span-columns(7);
+          .mobile-stats { @include info-text(0.9rem); display: none; }
+        }
+        .replies, .views { @include span-columns(1); @include info-text; text-align: center; }
+        .last-reply { @include span-columns(3); @include omega; @include info-text; }
+      }
+    }
+    .board-footer {
+      @include row;
+      @include pad(0 0 1rem 0);
+     .pagination-wrap { @include span-columns(12); @include omega; }
+    }
+    @include media($mobile) {
+      .board-header, .board-footer { text-align: center; }
+      .board-header .title {
+        @include span-columns(8);
+        @include omega;
+        h4 { font-size: 1.4rem; }
+      }
+      .board-header .pagination-wrap, .board-footer .pagination-wrap {
+        @include span-columns(8);
+        @include omega;
+        pagination { float: none; }
+      }
+      .board-header .moderators { @include pad(0.5rem 0 0 0); }
+      .board-controls a { display: block; text-align: center; }
+      .board-data {
+        .child-boards .board {
+          .info { @include span-columns(8);}
+          .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
+          .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
+        }
+        .threads-header {
+          .mobile-header { @include span-columns(8); @include omega; display: block; }
+          .subject, .replies, .views, .last-reply { display: none; }
+        }
+        .threads-data {
+          .subject { @include span-columns(8); @include omega; }
+          .subject .mobile-stats { display: block; }
+          .replies, .views, .last-reply { display: none; }
+        }
       }
     }
   }

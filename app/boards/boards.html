@@ -10,59 +10,59 @@
       </div>
       <div class="thin-underline"></div>
     </div>
-    <!-- Boards in Category -->
-    <div slide-toggle="BoardsCtrl.toggles[$index]">
-      <div class="board" ng-repeat="board in cat.boards track by board.id">
-        <!-- Board Info -->
-        <div class="info">
-          <!-- Board Name -->
-          <h5>
-            <a ng-href="/boards/{{::board.id}}" class="board-name" ng-bind-html="board.name"></a>
-          </h5>
-          <!-- Moderators -->
-          <div ng-if="board.moderators.length > 0">
-            <strong>Moderators: </strong>
-            <a ng-href="/profiles/{{::mod.username}}" ng-repeat="mod in board.moderators" ng-bind="::mod.username + ($last ? '' : ', ')"></a>
-          </div>
-          <!-- Board Description -->
-          <div>
-            <span ng-bind-html="::board.description"></span>
-          </div>
-          <!-- Child Boards -->
-          <div ng-if="board.children.length > 0">
-            <strong>Child Boards:</strong>
-            <span ng-repeat="child in board.children">
-              <a ng-href="/boards/{{::child.id}}" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
-            </span>
-          </div>
+  </div>
+  <!-- Boards in Category -->
+  <div slide-toggle="BoardsCtrl.toggles[$index]">
+    <div class="board" ng-repeat="board in cat.boards track by board.id">
+      <!-- Board Info -->
+      <div class="info">
+        <!-- Board Name -->
+        <h5>
+          <a ng-href="/boards/{{::board.id}}" class="board-name" ng-bind-html="board.name"></a>
+        </h5>
+        <!-- Moderators -->
+        <div ng-if="board.moderators.length > 0">
+          <strong>Moderators: </strong>
+          <a ng-href="/profiles/{{::mod.username}}" ng-repeat="mod in board.moderators" ng-bind="::mod.username + ($last ? '' : ', ')"></a>
         </div>
-
-        <!-- Board Posts and Threads -->
-        <div class="view-count">
-          <div>
-            <strong ng-bind="::board.total_post_count | number:0"></strong> posts
-          </div>
-          <div>
-            <strong ng-bind="::board.total_thread_count | number:0"></strong> threads
-          </div>
+        <!-- Board Description -->
+        <div>
+          <span ng-bind-html="::board.description"></span>
         </div>
-
-        <!-- Board Last Post By -->
-        <div class="last-post">
-          <div ng-if="::board.last_post_username">
-            Last post by
-            <a ng-href="/profiles/{{::board.last_post_username}}" ng-bind="::board.last_post_username"></a>
-          </div>
-          <div ng-if="board.last_thread_title">
-            in thread
-            <a ng-href="/threads/{{::board.last_thread_id}}/posts" ng-bind="::board.last_thread_title | truncate:25"></a>
-          </div>
-          <div ng-if="board.last_post_created_at">
-            <i ng-bind="::board.last_post_created_at | humanDate"></i>
-          </div>
+        <!-- Child Boards -->
+        <div ng-if="board.children.length > 0">
+          <strong>Child Boards:</strong>
+          <span ng-repeat="child in board.children">
+            <a ng-href="/boards/{{::child.id}}" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
+          </span>
         </div>
-
       </div>
+
+      <!-- Board Posts and Threads -->
+      <div class="view-count">
+        <div>
+          <strong ng-bind="::board.total_post_count | number:0"></strong> posts
+        </div>
+        <div>
+          <strong ng-bind="::board.total_thread_count | number:0"></strong> threads
+        </div>
+      </div>
+
+      <!-- Board Last Post By -->
+      <div class="last-post">
+        <div ng-if="board.last_post_username">
+          Last post by
+          <a ng-href="/profiles/{{::board.last_post_username}}" ng-bind-html="::board.last_post_username"></a>
+        </div>
+        <div ng-if="board.last_thread_title">
+          in thread
+          <a ng-href="/threads/{{::board.last_thread_id}}/posts" ng-bind-html="::board.last_thread_title | truncate:25"></a>
+        </div>
+        <div ng-if="board.last_post_created_at">
+          <i ng-bind="::board.last_post_created_at | humanDate"></i>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
