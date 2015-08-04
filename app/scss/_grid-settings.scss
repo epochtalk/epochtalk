@@ -4,7 +4,7 @@ $max-width: 960px;
 $tablet: 768px;
 $mobile: new-breakpoint(max-width $tablet - 1 8);
 
-$visual-grid: true;
+$visual-grid: false;
 $visual-grid-color: red;
 $visual-grid-index: front;
 $visual-grid-opacity: 0.1;

@@ -1,46 +1,44 @@
 <div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards">
   <!-- Category Title -->
-  <div class="row">
-    <a class="anchor-offset" id="{{::cat.name | replace:' ':'-' | lowercase }}-{{$index+1}}"></a>
-    <div class="small-12 columns category-title">
-      <div ng-click="BoardsCtrl.toggle($index)" class="inline-block pointer no-select">
+
+  <div>
+    <div class="title">
+      <div ng-click="BoardsCtrl.toggle($index)" class="collapse-section">
         <a ng-class="{ 'fa-chevron-right' : BoardsCtrl.toggles[$index], 'fa-chevron-down': !BoardsCtrl.toggles[$index] }"
         class="fa collapse-btn no-select"></a>
-        <h3 ng-bind-html="::cat.name" class="inline-block"></h3>
+        <h4 ng-bind-html="::cat.name"></h4>
       </div>
-      <div class="thin-dotted-underline"></div>
+      <div class="thin-underline"></div>
     </div>
-  </div>
-  <!-- Boards in Category -->
-  <div slide-toggle="BoardsCtrl.toggles[$index]">
-    <div ng-repeat="board in cat.boards track by board.id">
-      <div class="row category-board">
+    <!-- Boards in Category -->
+    <div slide-toggle="BoardsCtrl.toggles[$index]">
+      <div class="board" ng-repeat="board in cat.boards track by board.id">
         <!-- Board Info -->
-        <div class="small-12 medium-7 columns">
+        <div class="info">
           <!-- Board Name -->
-          <div class="category-board-name">
-            <a ng-href="/boards/{{::board.id}}" class="board-name" ng-bind-html="::board.name"></a>
-          </div>
+          <h5>
+            <a ng-href="/boards/{{::board.id}}" class="board-name" ng-bind-html="board.name"></a>
+          </h5>
           <!-- Moderators -->
-          <div class="moderators">
-            <strong ng-if="board.moderators.length > 0">Moderators: </strong>
+          <div ng-if="board.moderators.length > 0">
+            <strong>Moderators: </strong>
             <a ng-href="/profiles/{{::mod.username}}" ng-repeat="mod in board.moderators" ng-bind="::mod.username + ($last ? '' : ', ')"></a>
           </div>
           <!-- Board Description -->
-          <div class="category-board-desc">
+          <div>
             <span ng-bind-html="::board.description"></span>
           </div>
           <!-- Child Boards -->
-          <span class="child-boards" ng-if="board.children.length > 0">
+          <div ng-if="board.children.length > 0">
             <strong>Child Boards:</strong>
             <span ng-repeat="child in board.children">
               <a ng-href="/boards/{{::child.id}}" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
             </span>
-          </span>
+          </div>
         </div>
 
         <!-- Board Posts and Threads -->
-        <div class="view-count small-6 medium-2 columns text-info text-left">
+        <div class="view-count">
           <div>
             <strong ng-bind="::board.total_post_count | number:0"></strong> posts
           </div>
@@ -50,7 +48,7 @@
         </div>
 
         <!-- Board Last Post By -->
-        <div class="last-post small-6 medium-3 columns text-info">
+        <div class="last-post">
           <div ng-if="::board.last_post_username">
             Last post by
             <a ng-href="/profiles/{{::board.last_post_username}}" ng-bind="::board.last_post_username"></a>

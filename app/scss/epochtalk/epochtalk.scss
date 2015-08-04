@@ -774,64 +774,64 @@ pagination {
 .thread-editor-container > .editor-form { top: 0px; }
 
 // Boards Page ------------------------------- //
-.board-header {
-  margin-bottom: 2rem;
-  margin-top: 1.5rem;
-}
+// .board-header {
+//   margin-bottom: 2rem;
+//   margin-top: 1.5rem;
+// }
 
-.category { margin-bottom: 30px; }
-.category-title {
-  h3 {
-    color: $color-gray-dark;
-    font-size: 1.3em;
-    margin-bottom: 0;
-    margin-top: 0;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
+// .category { margin-bottom: 30px; }
+// .category-title {
+//   h3 {
+//     color: $color-gray-dark;
+//     font-size: 1.3em;
+//     margin-bottom: 0;
+//     margin-top: 0;
+//     word-wrap: break-word;
+//     overflow-wrap: break-word;
+//   }
 
-  .collapse-btn {
-    font-size: .7em;
-    margin-right: 4px;
-  }
+//   .collapse-btn {
+//     font-size: .7em;
+//     margin-right: 4px;
+//   }
 
-  .thin-dotted-underline {
-    margin-left: 24px;
-  }
-}
+//   .thin-dotted-underline {
+//     margin-left: 24px;
+//   }
+// }
 
-.category-board {
-  margin-bottom: 15px;
-  padding-left: 24px;
-}
+// .category-board {
+//   margin-bottom: 15px;
+//   padding-left: 24px;
+// }
 
-.category-board-name { font-size: 20px; margin-bottom: 5px; }
+// .category-board-name { font-size: 20px; margin-bottom: 5px; }
 
-.category-board-desc {
-  font-size: 14px;
-  line-height: 1.1;
-  word-wrap: break-word;
-  overflow-wrap: break-word; }
+// .category-board-desc {
+//   font-size: 14px;
+//   line-height: 1.1;
+//   word-wrap: break-word;
+//   overflow-wrap: break-word; }
 
-.moderators {
-  color: #999;
-  font-size: 13px;
-  margin-bottom: 5px; }
+// .moderators {
+//   color: #999;
+//   font-size: 13px;
+//   margin-bottom: 5px; }
 
-.child-boards {
-  color: #666;
-  font-size: 14px;
-  margin-top: 5px;
-  margin-bottom: 5px; }
+// .child-boards {
+//   color: #666;
+//   font-size: 14px;
+//   margin-top: 5px;
+//   margin-bottom: 5px; }
 
-.collapse-btn {
-  display:inline-block;
-  position: relative;
-  top: -3px;
-  width: 15px;
-  margin-right: 5px;
-  font-size: .875em;
-}
+// .collapse-btn {
+//   display:inline-block;
+//   position: relative;
+//   top: -3px;
+//   width: 15px;
+//   margin-right: 5px;
+//   font-size: .875em;
+// }
 
 // New Thread Page --------------------------- //
 .info-box { margin-bottom: 10px; }

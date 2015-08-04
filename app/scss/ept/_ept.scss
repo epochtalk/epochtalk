@@ -11,6 +11,12 @@ $base-font-size: 16px;
 $color-active: rgb(255, 78, 0);
 $color-active-fill: rgb(255, 116, 66);
 
+$color-gray: #444;
+$color-gray-med: lighten($color-gray, 40%);
+$color-gray-light: lighten($color-gray, 60%);
+$color-gray-sub: lighten($color-gray, 71%);
+$color-gray-dark: darken($color-gray, 10%);
+
 $header-height: 3.125rem;
 $header-bg-color: RGB(66, 71, 80);
 $header-border-color: RGB(166, 168, 172);
@@ -30,11 +36,20 @@ $breadcrumbs-border-color: RGB(227, 227, 227);
 $breadcrumbs-shadow-color: RGBA(0, 0, 0, 0.1);
 $breadcrumbs-bottom-margin: 1.75rem;
 
-$footer-bg-color: lighten(#444, 71%);
-$footer-font-color: lighten(#444, 20%);
+$footer-bg-color: $color-gray-sub;
+$footer-font-color: lighten($color-gray, 20%);
 $footer-link-color: $footer-font-color;
 $footer-link-hover-color: $color-active;
 
+// Mixins
+@mixin no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 /*-------------- Main Layout -------------- */
 // Page
@@ -42,7 +57,7 @@ html, body {
   font-size: $base-font-size;
   font-family: $base-font-sans;
   color: $base-font-color;
-  @include media($mobile) { font-size: $base-font-size * 0.8; }
+  @include media($mobile) { font-size: $base-font-size * 0.85; }
 }
 
 // Components
@@ -56,13 +71,15 @@ html, body {
   outline: none;
   padding: 0.625rem 1.375rem;
 }
+pagination .arrow { font-family: 'Zapf Dingbats'; }
+
 
 // Header
 header {
   #menu-wrap {
     @include clearfix();
+    @include pad(0 1rem);
     background-color: $header-bg-color;
-    padding: 0 1em;
     text-align: center;
     min-height: $header-height;
     #menu {
@@ -168,10 +185,10 @@ header {
 
   #breadcrumbs-wrap {
     @include clearfix();
+    @include pad(0 1rem);
     background-color: $breadcrumbs-bg-color;
     border-bottom: 1px solid $breadcrumbs-border-color;
     box-shadow: 0px 2px 6px $breadcrumbs-shadow-color;
-    padding: 0 1em;
     text-align: center;
     height: $breadcrumbs-height;
     margin-bottom: $breadcrumbs-bottom-margin;
@@ -188,6 +205,7 @@ header {
         line-height: $breadcrumbs-height;
         padding: 0;
         list-style-type: none;
+        white-space: nowrap;
         li { color: $breadcrumbs-link-color; display: inline-block; }
         li::before { content: "/"; padding: 0 0.4rem; }
         li:first-child::before { content: none; }
@@ -195,22 +213,30 @@ header {
         li span { color: $breadcrumbs-dead-link-color; font-size: $breadcrumbs-font-size; }
       }
     }
+    @include media($mobile) {
+      #breadcrumbs::-webkit-scrollbar { height: 0; width: 0; }
+      #breadcrumbs { overflow: hidden; overflow-x: scroll; }
+    }
   }
 }
 
 // Main
 main {
   @include clearfix();
+  @include pad(0 1rem);
+  margin-top: -1rem;
   min-height: 100%;
-  #public-content {
-    @include outer-container;
-  }
+  #public-content { @include outer-container; }
   #error-404 {
     @include outer-container;
     @include row();
     text-align: center;
     .code { @include span-columns(12); @include omega; font-size: 12.5rem; font-weight: 100; }
     .message { @include span-columns(12); @include omega; font-size: 1.875rem; color: $color-active; }
+    @include media($mobile) {
+      .code { font-size: 8rem; }
+      .message { font-size: 1.5rem; }
+    }
   }
 }
 
@@ -243,11 +269,11 @@ noscript {
 // Footer
 footer {
   @include clearfix();
+  @include pad(1rem);
   position: relative;
   background-color:$footer-bg-color;
   color: $footer-font-color;
   font-size: 0.8rem;
-  padding: 10px 10px 15px 10px;
   margin-bottom: 0;
   #footer {
     @include outer-container;
@@ -287,3 +313,35 @@ footer {
   }
 }
 
+/*-------------- Boards Layout -------------- */
+main {
+  #public-content {
+    .category {
+      @include row();
+      .title {
+        @include span-columns(12);
+        h4 { display: inline-block; margin: 0; padding-left: 0.5rem; }
+        .collapse-section { @include no-select; cursor: pointer; display: inline-block; }
+        .thin-underline { border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
+      }
+      .board {
+        @include row();
+        font-size: 0.95rem;
+        padding-bottom: 1rem;
+        .info {
+          @include span-columns(7);
+          h5 { margin: 0; }
+        }
+        .view-count { @include span-columns(2); color: $color-gray-med; font-size: 0.8rem; }
+        .last-post { @include span-columns(3); @include omega; color: $color-gray-med; font-size: 0.8rem;}
+      }
+    }
+    @include media($mobile) {
+      .category .board {
+        .info { @include span-columns(8);}
+        .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
+        .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
+      }
+    }
+  }
+}

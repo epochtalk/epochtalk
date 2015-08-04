@@ -54,7 +54,6 @@ exports.byType = {
         var nextType, nextId;
         if (curType === type.category) { // Category
           var catName = obj.name;
-          // var anchorId = '/#' + catName.replace(' ', '-') + '-' + '1';
           crumbs.push({ label: catName, url: ''});
         }
         else if (curType === type.board) { // Board
