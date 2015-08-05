@@ -19,3 +19,34 @@
   color: $color-gray-med;
   font-size: $size;
 }
+
+@mixin label($type, $font-size: 0.6875rem, $border-radius: 2px, $padding: 0.25rem 0.5rem 0.25rem) {
+  @include border-radius($border-radius);
+  font-weight: normal;
+  text-align: center;
+  white-space: nowrap;
+  display: inline-block;
+  position: relative;
+  padding: $padding;
+  font-size: $font-size;
+  @if $type == error {
+    background-color: #f04124;
+    color: #FFFFFF;
+  }
+  @else if $type == warning {
+    background-color: #f08a24;
+    color: #FFFFFF;
+  }
+  @else if $type == success {
+    background-color: #43AC6A;
+    color: #FFFFFF;
+  }
+  @else if $type == info {
+    background-color: #a0d3e8;
+    color: #333333;
+  }
+  @else {
+    background-color: #e7e7e7;
+    color: #333333;
+  }
+}

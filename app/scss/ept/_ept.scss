@@ -1,7 +1,6 @@
 @import 'variables';
 @import 'icons';
 @import 'mixins';
-@import url(https://fonts.googleapis.com/css?family=Lato:400,300,700);
 
 /*-------------- Global Layout -------------- */
 html, body {
@@ -251,6 +250,7 @@ main #public-content {
     .title {
       @include span-columns(12);
       h4 { display: inline-block; padding-left: 0.5rem; }
+      a { display: inline-block; width: 1rem; }
       .collapse-section { @include no-select; cursor: pointer; display: inline-block; }
     }
     .board {
@@ -365,5 +365,17 @@ main #public-content {
         .replies, .views, .last-reply { display: none; }
       }
     }
+  }
+}
+
+/*-------------- New Thread -------------- */
+main #public-content {
+  .padded-row { @include row; @include pad(0 0 1rem 0); }
+  .fill-row { @include clearfix; @include span-columns(12); @include omega; }
+  .logged-out { @include label(error, 0.8rem); }
+  .padded-row {
+    .h4, .h6 { display: inline-block; }
+    .option label { display: inline-block; }
+    .option input { margin: 0; }
   }
 }

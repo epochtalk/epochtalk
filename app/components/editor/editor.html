@@ -1,23 +1,23 @@
 <div class="editor-header">
-  <div class="medium-6 columns editor-column-left">
+  <div class="editor-column-left">
     <label>Input:</label>
   </div>
-  <div class="medium-6 columns editor-column-right">
+  <div class="editor-column-right">
     <label>Preview:</label>
   </div>
 </div>
 
 <div class="editor-body">
-  <div class="medium-6 columns editor-column-left">
-    <textarea class="editor-input" scroll-lock tabindex="1"></textarea>
+  <div class="editor-column-left">
+    <textarea class="editor-input" tabindex="1"></textarea>
   </div>
-  <div class="medium-6 columns editor-column-right">
-    <div class="editor-preview" scroll-lock post-processing="body" style-fix="false"></div>
+  <div class="editor-column-right">
+    <div class="editor-preview" post-processing="body" style-fix="false"></div>
   </div>
 </div>
 
 <div class="editor-footer">
-  <div class="medium-6 columns editor-images-container">
+  <div class="editor-images-container">
     <div class="editor-images">
       <image-uploader class="editor-image-uploader" purpose="editor"  on-done="insertImageUrl(data)"></image-uploader>
     </div>

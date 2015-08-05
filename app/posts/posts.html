@@ -69,10 +69,10 @@
 
   <div ng-class="PostsParentCtrl.editorPosition" ng-show="PostsParentCtrl.showEditor" resizeable="PostsParentCtrl.resize">
     <!-- Editor Container-->
-    <div class="small-12 columns editor-container">
+    <div class="editor-container">
       <!-- Editor Header -->
       <div class="editor-top-bar">
-        <div class="medium-6 medium-offset-6 small-12 columns">
+        <div class="buttons">
           <button ng-click="PostsParentCtrl.showFormatting = true">formatting</button>
           <button ng-click="PostsParentCtrl.fullscreen()">fullscreen</button>
         </div>
@@ -158,10 +158,10 @@
       </form>
       <!-- Editor Controls -->
       <div class="editor-button-container">
-        <button class="button secondary expand cancel" ng-click="PostsParentCtrl.cancelPost()">
+        <button class="cancel" ng-click="PostsParentCtrl.cancelPost()">
           Cancel
         </button>
-        <button class="button expand" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.posting.post.raw_body.length > 0">
+        <button class="send" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.posting.post.raw_body.length > 0">
           Send
         </button>
 
