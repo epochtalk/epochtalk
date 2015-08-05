@@ -1,80 +1,18 @@
 @import 'variables';
 @import 'icons';
+@import 'mixins';
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300,700);
 
-// Epochtalk Vars
-$base-font-sans: "Lato", "Helvetica Neue", Helvetica, sans-serif;
-$base-font-color: RGB(34, 34, 34);
-$base-font-size: 16px;
-
-// Primary layout colors
-$color-active: rgb(255, 78, 0);
-$color-active-fill: rgb(255, 116, 66);
-
-$color-gray: #444;
-$color-gray-med: lighten($color-gray, 40%);
-$color-gray-light: lighten($color-gray, 60%);
-$color-gray-sub: lighten($color-gray, 71%);
-$color-gray-dark: darken($color-gray, 10%);
-
-$header-height: 3.125rem;
-$header-bg-color: RGB(66, 71, 80);
-$header-border-color: RGB(166, 168, 172);
-$header-logo-font-size: 1.3rem;
-$header-logo-font-color: RGB(255, 255, 255);
-$header-login-font-size: 0.815rem;
-$header-login-font-color: $header-logo-font-color;
-$header-dropdown-bg-color: RGBA(46, 50, 58, 0.98);
-$header-dropdown-shadow-color: RGBA(0, 0, 0, 0.3);
-
-$breadcrumbs-height: 2.8125rem;
-$breadcrumbs-font-size: $header-login-font-size;
-$breadcrumbs-bg-color: RGB(244, 244, 244);
-$breadcrumbs-link-color: RGB(102, 102, 102);
-$breadcrumbs-dead-link-color: RGB(153, 153, 153);
-$breadcrumbs-border-color: RGB(227, 227, 227);
-$breadcrumbs-shadow-color: RGBA(0, 0, 0, 0.1);
-$breadcrumbs-bottom-margin: 1rem;
-
-$footer-bg-color: $color-gray-sub;
-$footer-font-color: lighten($color-gray, 20%);
-$footer-link-color: $footer-font-color;
-$footer-link-hover-color: $color-active;
-
-/*-------------- Mixins -------------- */
-@mixin no-select {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-@mixin border-radius($radius) {
-  border-radius: $radius;
-  -webkit-border-radius: $radius;
-  -moz-border-radius: $radius;
-  -ms-border-radius: $radius;
-  -o-border-radius: $radius;
-}
-
-@mixin info-text($size: 0.8rem) {
-  color: $color-gray-med;
-  font-size: $size;
-}
-/*-------------- Main Layout -------------- */
-// Page
+/*-------------- Global Layout -------------- */
 html, body {
   font-size: $base-font-size;
   font-family: $base-font-sans;
   color: $base-font-color;
   @include media($mobile) { font-size: $base-font-size * 0.85; }
 }
-
 h1, h2, h3, h4, h5, h6 { margin: 0; }
 
-// Components
+/*-------------- Global Components -------------- */
 .button, button {
   @include border-radius(2px);
   background-color: $color-active-fill;
@@ -86,12 +24,11 @@ h1, h2, h3, h4, h5, h6 { margin: 0; }
 pagination .arrow { font-family: 'Zapf Dingbats'; }
 .thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
 
-
-// Header
+/*-------------- Index File -------------- */
 header {
   #menu-wrap {
     @include clearfix();
-    @include pad(0 1rem);
+    @include pad(0 $base-grid-padding);
     background-color: $header-bg-color;
     text-align: center;
     min-height: $header-height;
@@ -121,7 +58,6 @@ header {
         li { float: left; }
         li a { color: $header-login-font-color; font-size: $header-login-font-size; padding-left: 1.25rem; }
         .search {
-          @include media($mobile) { display: none; }
           position: relative;
           input[type="text"] {
             display: inline-block;
@@ -187,11 +123,16 @@ header {
         li:first-child { padding-right: 0.8rem }
       }
     }
+
+    // Mobile Menu Layout
+    @include media($mobile) {
+      #menu ul .search { display: none; }
+    }
   }
 
   #breadcrumbs-wrap {
     @include clearfix();
-    @include pad(0 1rem);
+    @include pad(0 $base-grid-padding);
     background-color: $breadcrumbs-bg-color;
     border-bottom: 1px solid $breadcrumbs-border-color;
     box-shadow: 0px 2px 6px $breadcrumbs-shadow-color;
@@ -219,6 +160,8 @@ header {
         li span { color: $breadcrumbs-dead-link-color; font-size: $breadcrumbs-font-size; }
       }
     }
+
+    // Mobile Breadcrumbs Layout
     @include media($mobile) {
       #breadcrumbs::-webkit-scrollbar { height: 0; width: 0; }
       #breadcrumbs { overflow: hidden; overflow-x: scroll; }
@@ -226,28 +169,13 @@ header {
   }
 }
 
-// Main
 main {
   @include clearfix();
-  @include pad(0 1rem);
+  @include pad(0 $base-grid-padding);
   min-height: 100%;
   #public-content { @include outer-container; }
-  #error-404 {
-    @include outer-container;
-    @include row;
-    text-align: center;
-    .code { @include span-columns(12); @include omega; font-size: 12.5rem; font-weight: 100; }
-    .message { @include span-columns(12); @include omega; font-size: 1.875rem; color: $color-active; }
-  }
-  @include media($mobile) {
-    #error-404 {
-      .code { font-size: 8rem; }
-      .message { font-size: 1.5rem; }
-    }
-  }
 }
 
-// No Script
 noscript {
   @include clearfix();
   #noscript {
@@ -256,6 +184,8 @@ noscript {
     .sad-face { @include span-columns(4); font-size: 18.75rem; }
     .message { @include span-columns(8); font-size: 1.25rem; margin-top: 12.5rem; }
   }
+
+  // Mobile Noscript Layout
   @include media($mobile) {
     #noscript {
        text-align: center;
@@ -265,11 +195,9 @@ noscript {
   }
 }
 
-
-// Footer
 footer {
   @include clearfix();
-  @include pad(1rem);
+  @include pad(1rem $base-grid-padding);
   position: relative;
   background-color:$footer-bg-color;
   color: $footer-font-color;
@@ -277,151 +205,164 @@ footer {
   margin-bottom: 0;
   #footer {
     @include outer-container;
-    .row {
-      @include row;
-      .links {
-        @include span-columns(3);
-        a {
-          color: $footer-link-color;
-          &:hover { color: $footer-link-hover-color; }
-        }
-        ul { font-size: .8rem; margin: 0; padding: 0; list-style: none; }
-        .title { font-weight: 600;  line-height: 3; }
+    .row { @include row; }
+    .links {
+      @include span-columns(3);
+      a {
+        color: $footer-link-color;
+        &:hover { color: $footer-link-hover-color; }
       }
-      .info {
-        @include span-columns(6);
-        text-align: right;
-        .copyright { display: block; font-size: 1.5rem; font-weight: 200; }
-      }
+      ul { font-size: .8rem; margin: 0; padding: 0; list-style: none; }
+      .title { font-weight: 600;  line-height: 3; }
+    }
+    .info {
+      @include span-columns(6);
+      text-align: right;
+      .copyright { display: block; font-size: 1.5rem; font-weight: 200; }
     }
   }
+
+  // Mobile Footer Layout
   @include media($mobile) {
     #footer .row .links { @include span-columns(4); @include omega(2n); text-align: center; }
     #footer .row .info { @include span-columns(8); text-align: center; padding-top: 1rem; }
   }
 }
 
+/*-------------- 404 Layout -------------- */
+main #error-404 {
+  @include outer-container;
+  @include row;
+  text-align: center;
+  .code { @include span-columns(12); @include omega; font-size: 12.5rem; font-weight: 100; }
+  .message { @include span-columns(12); @include omega; font-size: 1.875rem; color: $color-active; }
+
+  // Mobile 404 Layout
+  @include media($mobile) {
+    .code { font-size: 8rem; }
+    .message { font-size: 1.5rem; }
+  }
+}
+
 /*-------------- Boards Layout -------------- */
-main {
-  #public-content {
-    .category {
-      @include row;
-      .title {
-        @include span-columns(12);
-        h4 { display: inline-block; padding-left: 0.5rem; }
-        .collapse-section { @include no-select; cursor: pointer; display: inline-block; }
-      }
-      .board {
-        @include row;
-        @include pad(0 0 1rem 0);
-        font-size: 0.95rem;
-        .info {
-          @include span-columns(7);
-        }
-        .view-count { @include span-columns(2); color: $color-gray-med; font-size: 0.8rem; }
-        .last-post { @include span-columns(3); @include omega; color: $color-gray-med; font-size: 0.8rem;}
-      }
+main #public-content {
+  .category {
+    @include row;
+    .title {
+      @include span-columns(12);
+      h4 { display: inline-block; padding-left: 0.5rem; }
+      .collapse-section { @include no-select; cursor: pointer; display: inline-block; }
     }
-    @include media($mobile) {
-      .category .board {
-        .info { @include span-columns(8);}
-        .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
-        .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
-      }
+    .board {
+      @include row;
+      @include pad(0 0 1rem 0);
+      font-size: 0.95rem;
+      .info { @include span-columns(7); }
+      .view-count { @include span-columns(2); color: $color-gray-med; font-size: 0.8rem; }
+      .last-post { @include span-columns(3); @include omega; color: $color-gray-med; font-size: 0.8rem;}
+    }
+  }
+
+  // Mobile Boards Layout
+  @include media($mobile) {
+    .category .board {
+      .info { @include span-columns(8);}
+      .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
+      .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
     }
   }
 }
 
 /*-------------- Individual Board Layout -------------- */
-main {
-  #public-content {
-    .pagination-wrap pagination { float: right; }
-    .board-header {
-      @include row;
+main #public-content {
+  .pagination-wrap pagination { float: right; }
+  .board-header {
+    @include row;
+    @include pad(0 0 1rem 0);
+    .title {
+      @include span-columns(4);
+      h4 { font-weight: bold; }
+    }
+    .pagination-wrap { @include span-columns(8); @include omega; }
+    .moderators { @include span-columns(12); @include omega; }
+  }
+  .board-controls {
+    @include pad(0.5rem 0 1.5rem 0);
+    a {
+      @include border-radius(50px);
+      color: $color-gray-med;
+      padding: 0.625rem 1rem;
+      border: 1px solid $color-gray-light;
+      i { margin-right: 0.375rem; }
+      &:hover { background-color: $color-active; color: #fff; }
+    }
+  }
+  .board-data {
+    @include row;
+    .child-boards {
       @include pad(0 0 1rem 0);
-      .title {
-        @include span-columns(4);
-        h4 { font-weight: bold; }
-      }
-      .pagination-wrap { @include span-columns(8); @include omega; }
-      .moderators { @include span-columns(12); @include omega; }
-    }
-    .board-controls {
-      @include pad(0.5rem 0 1.5rem 0);
-      a {
-        @include border-radius(50px);
-        color: $color-gray-med;
-        padding: 0.625rem 1rem;
-        border: 1px solid $color-gray-light;
-        i { margin-right: 0.375rem; }
-        &:hover { background-color: $color-active; color: #fff; }
-      }
-    }
-    .board-data {
-      @include row;
-      .child-boards {
-        @include pad(0 0 1rem 0);
-        .board {
-          @include clearfix;
-          @include pad(0 0 1rem 0);
-          font-size: 0.95rem;
-          .info {  @include span-columns(7); }
-          .view-count { @include span-columns(2); @include info-text; }
-          .last-post { @include span-columns(3); @include omega; @include info-text;}
-        }
-      }
-      .threads-header {
-        .mobile-header { display: none; }
-        .subject { @include span-columns(7); }
-        .replies, .views { @include span-columns(1); text-align: center; }
-        .last-reply { @include span-columns(3); @include omega; }
-      }
-      .threads-data {
+      .board {
         @include clearfix;
         @include pad(0 0 1rem 0);
         font-size: 0.95rem;
-        .subject {
-          @include span-columns(7);
-          .mobile-stats { @include info-text(0.9rem); display: none; }
-        }
-        .replies, .views { @include span-columns(1); @include info-text; text-align: center; }
-        .last-reply { @include span-columns(3); @include omega; @include info-text; }
+        .info {  @include span-columns(7); }
+        .view-count { @include span-columns(2); @include info-text; }
+        .last-post { @include span-columns(3); @include omega; @include info-text;}
       }
     }
-    .board-footer {
-      @include row;
+    .threads-header {
+      .mobile-header { display: none; }
+      .subject { @include span-columns(7); }
+      .replies, .views { @include span-columns(1); text-align: center; }
+      .last-reply { @include span-columns(3); @include omega; }
+    }
+    .threads-data {
+      @include clearfix;
       @include pad(0 0 1rem 0);
-     .pagination-wrap { @include span-columns(12); @include omega; }
+      font-size: 0.95rem;
+      .subject {
+        @include span-columns(7);
+        .mobile-stats { @include info-text(0.9rem); display: none; }
+      }
+      .replies, .views { @include span-columns(1); @include info-text; text-align: center; }
+      .last-reply { @include span-columns(3); @include omega; @include info-text; }
     }
-    @include media($mobile) {
-      .board-header, .board-footer { text-align: center; }
-      .board-header .title {
-        @include span-columns(8);
-        @include omega;
-        h4 { font-size: 1.4rem; }
+  }
+  .board-footer {
+    @include row;
+    @include pad(0 0 1rem 0);
+   .pagination-wrap { @include span-columns(12); @include omega; }
+  }
+
+  // Mobile Board Layout
+  @include media($mobile) {
+    .board-header, .board-footer { text-align: center; }
+    .board-header .title {
+      @include span-columns(8);
+      @include omega;
+      h4 { font-size: 1.4rem; }
+    }
+    .board-header .pagination-wrap, .board-footer .pagination-wrap {
+      @include span-columns(8);
+      @include omega;
+      pagination { float: none; }
+    }
+    .board-header .moderators { @include pad(0.5rem 0 0 0); }
+    .board-controls a { display: block; text-align: center; }
+    .board-data {
+      .child-boards .board {
+        .info { @include span-columns(8);}
+        .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
+        .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
       }
-      .board-header .pagination-wrap, .board-footer .pagination-wrap {
-        @include span-columns(8);
-        @include omega;
-        pagination { float: none; }
+      .threads-header {
+        .mobile-header { @include span-columns(8); @include omega; display: block; }
+        .subject, .replies, .views, .last-reply { display: none; }
       }
-      .board-header .moderators { @include pad(0.5rem 0 0 0); }
-      .board-controls a { display: block; text-align: center; }
-      .board-data {
-        .child-boards .board {
-          .info { @include span-columns(8);}
-          .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
-          .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
-        }
-        .threads-header {
-          .mobile-header { @include span-columns(8); @include omega; display: block; }
-          .subject, .replies, .views, .last-reply { display: none; }
-        }
-        .threads-data {
-          .subject { @include span-columns(8); @include omega; }
-          .subject .mobile-stats { display: block; }
-          .replies, .views, .last-reply { display: none; }
-        }
+      .threads-data {
+        .subject { @include span-columns(8); @include omega; }
+        .subject .mobile-stats { display: block; }
+        .replies, .views, .last-reply { display: none; }
       }
     }
   }
