@@ -26,9 +26,8 @@
           <a ng-href="/profiles/{{::mod.username}}" ng-repeat="mod in board.moderators" ng-bind="::mod.username + ($last ? '' : ', ')"></a>
         </div>
         <!-- Board Description -->
-        <div>
-          <span ng-bind-html="::board.description"></span>
-        </div>
+        <div class="description" ng-bind-html="::board.description"></div>
+
         <!-- Child Boards -->
         <div ng-if="board.children.length > 0">
           <strong>Child Boards:</strong>

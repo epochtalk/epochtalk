@@ -309,7 +309,7 @@
     div label, .editor-form div label { margin: 0; color: $color-gray; }
     .editor-body { top: 1.5625rem; }
     .editor-header, .editor-body, .editor-top-bar { @include pad(0); }
-    .editor-footer { padding-left: 0; padding-right: 0; }
+    .editor-footer { padding-left: 0; padding-right: 0; color: $color-gray; }
     .editor-images-container { @include pad(0); }
   }
   @include media($mobile) {

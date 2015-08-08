@@ -1,29 +1,25 @@
-<div class="row post-block" ng-repeat="post in PostsCtrl.posts track by post.id">
+<div class="post-block" ng-repeat="post in PostsCtrl.posts track by post.id">
   <!-- Post Anchor -->
   <a class="anchor-offset" id="{{::post.id}}"></a>
 
   <!-- Post Profile Section -->
-  <div class="small-12 medium-1 columns">
-    <div class="post-user">
-      <a style="display: block" href="/profiles/{{::post.user.username}}">
-        <div class="user-avatar">
-          <img ng-src="{{::post.avatar}}">
-        </div>
-        <span class="user-role">Hero</span>
-      </a>
-    </div>
+  <div class="post-user">
+    <a href="/profiles/{{::post.user.username}}">
+      <div class="user-avatar">
+        <img ng-class="{ 'admin': post.user.role === USER_ROLES.admin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }" ng-src="{{::post.avatar}}">
+      </div>
+      <div class="user-role">Hero</div>
+    </a>
   </div>
 
   <!-- Post Body Section -->
-  <div class="small-12 medium-11 columns">
+  <div class="post-content">
     <!-- Post Title -->
     <div class="post-title">
-      <!-- <span ng-bind-html="post.title"></span> -->
-      <a href="/profiles/{{::post.user.username}}" ng-class="{ 'admin': post.user.role === USER_ROLES.admin || post.user.role === USER_ROLES.superAdmin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }" ng-bind-html="::post.user.username"></a>
+      <a class="username" href="/profiles/{{::post.user.username}}" ng-class="{ 'admin': post.user.role === USER_ROLES.admin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }" ng-bind-html="::post.user.username"></a>
+      <div class="timestamp" ng-bind="::post.created_at | humanDate"></div>
+
       <ul class="post-action">
-        <li>
-          <span class="timestamp right" ng-bind="::post.created_at | humanDate"></span>
-        </li>
         <li ng-if="PostsCtrl.user.isAdmin && $index !== 0">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
             <i class="icon-epoch-unverified"></i>
@@ -60,6 +56,7 @@
           </a>
         </li>
       </ul>
+      <div class="clear"></div>
     </div>
     <!-- Post Body -->
     <div class="post-body" post-processing="post.body" style-fix="true"></div>

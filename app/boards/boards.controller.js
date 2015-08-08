@@ -1,5 +1,3 @@
-var _ = require('lodash');
-
 module.exports = ['$timeout', '$anchorScroll', 'boards',
   function($timeout, $anchorScroll, boards) {
     var ctrl = this;

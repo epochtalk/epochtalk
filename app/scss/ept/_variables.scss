@@ -1,9 +1,10 @@
-@import url(https://fonts.googleapis.com/css?family=Lato:400,300,700);
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,700,900);
 
 // Epochtalk Vars
 $base-font-sans: "Lato", "Helvetica Neue", Helvetica, sans-serif;
 $base-font-color: RGB(34, 34, 34);
 $base-font-size: 16px;
+$base-line-height: 1.3rem;
 $base-grid-padding: 1rem;
 
 // Primary layout colors
@@ -11,7 +12,7 @@ $color-active: rgb(255, 78, 0);
 $color-active-fill: rgb(255, 116, 66);
 
 $color-gray: #444;
-$color-gray-med: lighten($color-gray, 40%);
+$color-gray-med: lighten($color-gray, 33.5%);
 $color-gray-light: lighten($color-gray, 60%);
 $color-gray-sub: lighten($color-gray, 71%);
 $color-gray-dark: darken($color-gray, 10%);
@@ -29,7 +30,7 @@ $header-dropdown-shadow-color: RGBA(0, 0, 0, 0.3);
 $breadcrumbs-height: 2.8125rem;
 $breadcrumbs-font-size: $header-login-font-size;
 $breadcrumbs-bg-color: RGB(244, 244, 244);
-$breadcrumbs-link-color: RGB(102, 102, 102);
+$breadcrumbs-link-color: $base-font-color;
 $breadcrumbs-dead-link-color: RGB(153, 153, 153);
 $breadcrumbs-border-color: RGB(227, 227, 227);
 $breadcrumbs-shadow-color: RGBA(0, 0, 0, 0.1);

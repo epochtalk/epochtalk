@@ -1,17 +1,16 @@
 <!-- Page Title -->
-<div class="row thread-header">
-  <div class="small-4 columns">
-    <span ng-bind-html="::PostsParentCtrl.thread.title"></span>
+<div class="thread-header">
+  <div class="title">
+    <h4 ng-bind-html="::PostsParentCtrl.thread.title"></h4>
     <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
   </div>
-  <!-- Top Pagination -->
-  <div class="small-8 columns pagination-container text-right" ng-cloak>
+  <div class="pagination-wrap">
     <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
   </div>
 </div>
 
 <!-- Thread Controls Section -->
-<div class="row thread-spacer" ng-if="PostsParentCtrl.showThreadControls()">
+<div class="thread-controls" ng-if="PostsParentCtrl.showThreadControls()">
   <h4>Thread Controls</h4>
 
   <!-- Thread Lock -->
@@ -37,24 +36,26 @@
     <h5>Purge Thread</h5>
     <button class="btn-expand" ng-click="PostsParentCtrl.showPurgeThreadModal = true">Purge</button>
   </div>
-</div>
 
-<!-- Second row of thread controls -->
-<div class="row thread-spacer" ng-if="PostsParentCtrl.showThreadControls()">
-  <!-- Move Thread -->
-  <div class="small-12 columns" ng-if="PostsParentCtrl.user.isAdmin">
-    <h5>Move Thread</h5>
-    <select class="small-8" name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name for board in PostsParentCtrl.boards"></select>
-    <button class="small-3" ng-click="PostsParentCtrl.moveThread()">Move</button>
+  <!-- Second row of thread controls -->
+  <div class="row thread-spacer" ng-if="PostsParentCtrl.showThreadControls()">
+    <!-- Move Thread -->
+    <div class="small-12 columns" ng-if="PostsParentCtrl.user.isAdmin">
+      <h5>Move Thread</h5>
+      <select class="small-8" name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name for board in PostsParentCtrl.boards"></select>
+      <button class="small-3" ng-click="PostsParentCtrl.moveThread()">Move</button>
+    </div>
   </div>
 </div>
 
 <!-- Posts Listing -->
-<div class="content-spacer" ui-view="data"></div>
+<div class="thread-data" ui-view="data"></div>
 
 <!-- Bottom Pagination -->
-<div class="row pagination-container text-right" ng-cloak>
-  <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+<div class="thread-footer">
+  <div class="pagination-wrap">
+    <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+  </div>
 </div>
 
 <!-- Editor -->

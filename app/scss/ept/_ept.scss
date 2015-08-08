@@ -7,9 +7,20 @@ html, body {
   font-size: $base-font-size;
   font-family: $base-font-sans;
   color: $base-font-color;
+  line-height: $base-line-height;
   @include media($mobile) { font-size: $base-font-size * 0.85; }
 }
-h1, h2, h3, h4, h5, h6 { margin: 0; }
+#public-content { margin-top: 2rem; }
+h1, h2, h3, h4, h5, h6 { margin: 0; line-height: 1.5rem;}
+h4 { font-size: 1.3125rem; } //Category Name, Board Name, Thread Name
+h5 { font-size: 1.125rem; } // Board Name (Front Page), Section Headers Board View
+a {
+  color: $color-active;
+  &:hover, &:focus { color: $color-active-dark; }
+}
+.bold { font-weight: bold; }
+.right { float: right; }
+.left { float: left; }
 
 /*-------------- Global Components -------------- */
 .button, button {
@@ -20,8 +31,67 @@ h1, h2, h3, h4, h5, h6 { margin: 0; }
   outline: none;
   padding: 0.625rem 1.375rem;
 }
-pagination .arrow { font-family: 'Zapf Dingbats'; }
 .thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
+.secret {
+  &.ng-show,
+  &.ng-hide {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+  }
+}
+code {
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+  background-color: #f8f8f8;
+  border-width: 1px solid #dfdfdf;
+  padding: 0 1rem 1rem;
+  display: block;
+  font-size: 0.85rem;
+}
+.quoteHeader {
+  margin: 0 0 0 1rem;
+  padding: 0 0.625rem 0;
+  border-left: 4px solid RGB(221, 221, 221);
+}
+.quote {
+  margin: 0 0 1rem 1rem;
+  padding: 0 0.625rem 0;
+  border-left: 4px solid RGB(221, 221, 221);
+  &>br:first-child,
+  &>br:last-child,
+  &+br { display: none; }
+}
+ul.pagination {
+  display: inline-block;
+  min-height: 1.3rem;
+  li {
+    line-height: 1.3rem;
+    color: #222222;
+    font-size: 0.875rem;
+    margin-left: 0.3125rem;
+    float: left;
+    display: block;
+    &.arrow { font-family: 'Zapf Dingbats'; }
+    a {
+      display: block;
+      padding: 0.0325rem 0.325rem 0.0325rem;
+      color: #999999;
+      background: none;
+      border-radius: 3px;
+      font-weight: normal;
+      font-size: 1rem;
+      line-height: inherit;
+      transition: background-color 300ms ease-out;
+    }
+  }
+  li.unavailable a { cursor: default; color: #999999; }
+  li.current a {
+    background: $color-active-fill;
+    &:hover, &:focus { background: $color-active-dark; }
+  }
+  @include media($mobile) { margin-top: 1rem; }
+}
 
 /*-------------- Index File -------------- */
 header {
@@ -211,7 +281,7 @@ footer {
         color: $footer-link-color;
         &:hover { color: $footer-link-hover-color; }
       }
-      ul { font-size: .8rem; margin: 0; padding: 0; list-style: none; }
+      ul { font-size: 0.8rem; margin: 0; padding: 0; list-style: none; }
       .title { font-weight: 600;  line-height: 3; }
     }
     .info {
@@ -233,6 +303,7 @@ main #error-404 {
   @include outer-container;
   @include row;
   text-align: center;
+  line-height: normal;
   .code { @include span-columns(12); @include omega; font-size: 12.5rem; font-weight: 100; }
   .message { @include span-columns(12); @include omega; font-size: 1.875rem; color: $color-active; }
 
@@ -256,10 +327,16 @@ main #public-content {
     .board {
       @include row;
       @include pad(0 0 1rem 0);
-      font-size: 0.95rem;
-      .info { @include span-columns(7); }
-      .view-count { @include span-columns(2); color: $color-gray-med; font-size: 0.8rem; }
-      .last-post { @include span-columns(3); @include omega; color: $color-gray-med; font-size: 0.8rem;}
+      .info {
+        @include span-columns(7);
+        .description { font-size: 0.875rem; }
+      }
+      .view-count { @include span-columns(2); @include info-text; }
+      .last-post {
+        @include span-columns(3);
+        @include omega;
+        @include info-text;
+      }
     }
   }
 
@@ -304,8 +381,10 @@ main #public-content {
       .board {
         @include clearfix;
         @include pad(0 0 1rem 0);
-        font-size: 0.95rem;
-        .info {  @include span-columns(7); }
+        .info {
+          @include span-columns(7);
+          .description { font-size: 0.875rem; }
+        }
         .view-count { @include span-columns(2); @include info-text; }
         .last-post { @include span-columns(3); @include omega; @include info-text;}
       }
@@ -322,7 +401,13 @@ main #public-content {
       font-size: 0.95rem;
       .subject {
         @include span-columns(7);
-        .mobile-stats { @include info-text(0.9rem); display: none; }
+        .thread-title {
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          &.bold { font-weight: bold; }
+        }
+        .started-by { font-size: 0.875rem; }
+        .mobile-stats { @include info-text; display: none; }
       }
       .replies, .views { @include span-columns(1); @include info-text; text-align: center; }
       .last-reply { @include span-columns(3); @include omega; @include info-text; }
@@ -368,7 +453,7 @@ main #public-content {
   }
 }
 
-/*-------------- New Thread -------------- */
+/*-------------- New Thread Layout -------------- */
 main #public-content {
   .padded-row { @include row; @include pad(0 0 1rem 0); }
   .fill-row { @include clearfix; @include span-columns(12); @include omega; }
@@ -377,5 +462,181 @@ main #public-content {
     .h4, .h6 { display: inline-block; }
     .option label { display: inline-block; }
     .option input { margin: 0; }
+  }
+}
+
+/*-------------- Posts (Thread View) Layout -------------- */
+main #public-content {
+  .pagination-wrap pagination { float: right; }
+  .thread-header {
+    @include row;
+    @include pad(0 0 1rem 0);
+    .title {
+      @include span-columns(6);
+      h4 { font-weight: bold; display: inline; overflow-wrap: break-word; word-wrap: break-word; }
+    }
+    .pagination-wrap { @include span-columns(6); @include omega; }
+  }
+  .thread-controls {
+    @include pad(0 0 1rem 0);
+    display: none;
+  }
+  .thread-data {
+    @include pad(0 0 1rem 0);
+    .post-block {
+      @include row;
+      @include clearfix;
+      @include pad(1.25rem 0);
+      position: relative;
+      min-height: 8rem;
+      border-bottom: 1px solid $color-gray-light;
+      .post-user {
+        width: 5rem;
+        padding-right: 1.25rem;
+        display: inline-block;
+        position: absolute;
+        a { display: block; }
+        .user-avatar {
+          @include bg-cover;
+          background: no-repeat center center;
+          height: 3.75rem;
+          width: 3.75rem;
+          img { @include border-radius(100px); width: 100%; height: 100%; object-fit: cover;}
+          img.admin { border: 0.125rem solid $color-active-fill; }
+          img.global-mod { border: 0.125rem solid #32A56E; }
+          img.mod { border: 0.125rem solid #508DD0; }
+        }
+        .user-role {
+          padding-top: 0.625rem;
+          color: $color-gray-med;
+          font-size: 0.8125em;
+          text-align: center;
+          text-transform: uppercase;
+          width: 100%;
+        }
+      }
+      .post-content {
+        display: block;
+        margin-left: 5rem;
+        .post-title {
+          color: $color-gray-med;
+          margin-bottom: 0.5rem;
+          width: 100%;
+          a.username {
+            float: left;
+            margin-right: 0.75rem;
+            color: $base-font-color;
+            font-weight: 900;
+            &:hover { transition: all .1s ease; color: $color-active; }
+          }
+          a.admin {
+            background-color: $color-active-fill;
+            padding: 0 0.3rem;
+            color: #fff;
+            &:hover { color: #fff; }
+          }
+          a.global-mod {
+            background-color: #32A56E;
+            padding: 0 0.3rem;
+            color: #fff;
+            &:hover { color: #fff; }
+          }
+          a.mod {
+            background-color: #508DD0;
+            padding: 0 0.3rem;
+            color: #fff;
+            &:hover { color: #fff; }
+          }
+          .timestamp {
+            display: inline-block;
+            color: $color-gray-med;
+            line-height: 1.3rem;
+            font-size: 0.8125rem;
+            font-weight: 400;
+            float: left;
+          }
+          .post-action {
+            @include list-clean;
+            float: right;
+            line-height: 1.3rem;
+            color: $color-gray-med;
+            li {
+              @include list-flat;
+              a {
+                color: $color-gray-light;
+                transition: all .1s ease;
+                &:hover { color: $color-active; }
+              }
+            }
+            &:hover a { color: $color-gray-med; }
+          }
+          &:hover .post-action a { color: $color-gray-med; }
+          .clear { @include clearfix; }
+        }
+        .post-body {
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          .imageContainer.loaded { background: none; }
+          .imageContainer { background: url('/static/img/loading.gif') no-repeat center; display: inline;}
+          img.loaded { opacity: 1; }
+          img {
+            opacity: 0;
+            -webkit-transition: opacity 0.5s ease-in;
+            -moz-transition: opacity 0.5s ease-in;
+            -o-transition: opacity 0.5s ease-in;
+            -ms-transition: opacity 0.5s ease-in;
+            transition: opacity 0.5s ease-in;
+          }
+        }
+        .post-sig-border {
+          clear: both;
+          width: 250px;
+          border-top: 1px solid $color-gray-light;
+          margin-bottom: 0.5rem;
+          margin-top: 0.5rem;
+        }
+        .post-signature {
+          clear: both;
+          color: $color-gray-med;
+          font-size: 13px;
+          max-height: 80px;
+          overflow: hidden;
+          word-wrap: break-word;
+          text-overflow: ellipsis;
+          a {
+            color: $color-gray-med;
+            &:hover { color: $color-active; }
+          }
+        }
+      }
+    }
+  }
+  .thread-footer {
+    @include row;
+    @include pad(0 0 1rem 0);
+   .pagination-wrap { @include span-columns(12); @include omega; }
+  }
+
+  // Posts Layout Mobile
+  @include media($mobile) {
+    .thread-header, .thread-footer { text-align: center; }
+    .thread-header .title {
+      @include span-columns(8);
+      @include omega;
+      h4 { font-size: 1.4rem; }
+    }
+    .thread-header .pagination-wrap, .thread-footer .pagination-wrap {
+      @include span-columns(8);
+      @include omega;
+      pagination { float: none; }
+    }
+    .thread-header { padding: 0; }
+    .thread-data .post-block:first-child { padding-top: 0; }
+    .thread-data .post-block .post-user { display: none; }
+    .thread-data .post-block .post-content { margin-left: 0; }
+    .thread-data .post-block .post-content .post-title { position: relative; }
+    .thread-data .post-block .post-content .timestamp { float: none; width: 100%; }
+    .thread-data .post-block .post-content .post-action { position: absolute; top:0; right:0; }
   }
 }
