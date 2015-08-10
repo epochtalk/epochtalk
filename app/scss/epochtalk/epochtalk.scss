@@ -986,31 +986,31 @@ input.icon-padding { padding-right: 40px; }
   margin: 0; }
 
 /* Profile Avatar */
-.profile-avatar-container {
-  position: relative;
-  width: 100%;
-  height: 200px;
-  }
-.profile-avatar-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.profile-avatar-container .after {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 45px;
-  color: #FFF;
-  padding: 10px;
-  background: rgba(0, 0, 0, .6);
-}
-.profile-boxes { padding: 10px; margin-bottom: 1.25rem; }
-.profile-stats { text-align: center; }
-.profile-stat { font-size: 26px; }
-.profile-edit-container { padding-top: 10px; text-align: center; }
-.profile-save-container { padding-top: 20px; }
+// .profile-avatar-container {
+//   position: relative;
+//   width: 100%;
+//   height: 200px;
+//   }
+// .profile-avatar-container img {
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+// }
+// .profile-avatar-container .after {
+//   position: absolute;
+//   bottom: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 45px;
+//   color: #FFF;
+//   padding: 10px;
+//   background: rgba(0, 0, 0, .6);
+// }
+// .profile-boxes { padding: 10px; margin-bottom: 1.25rem; }
+// .profile-stats { text-align: center; }
+// .profile-stat { font-size: 26px; }
+// .profile-edit-container { padding-top: 10px; text-align: center; }
+// .profile-save-container { padding-top: 20px; }
 
 // 404 --------------------------------------- //
 .error-code { font-weight: 100; font-size:200px; }

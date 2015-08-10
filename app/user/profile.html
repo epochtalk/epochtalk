@@ -1,21 +1,25 @@
-<div class="row">
+<div class="profile-content">
   <!-- Left Sidebar -->
-  <div class="large-3 columns word-wrap">
+  <div class="profile-left">
     <!-- User's Avatar -->
-    <div class="profile-avatar-container">
-      <img ng-src="{{ProfileCtrl.displayUser.avatar}}" />
-      <a href="#" class="after" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
-        <div>Change Avatar</div>
-      </a>
+    <div class="profile-row">
+      <div class="profile-avatar-container">
+        <img ng-src="{{ProfileCtrl.displayUser.avatar}}" />
+        <a href="#" class="after" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
+          <div>Change Avatar</div>
+        </a>
+      </div>
     </div>
 
     <!-- Edit Profile Controls -->
-    <div class="profile-edit-container" ng-if="ProfileCtrl.editable()">
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.editable()">
       Edit:
       <a href="#" ng-click="ProfileCtrl.editProfile = true">Profile</a>
       |
       <a href="#" ng-click="ProfileCtrl.editPassword = true">Password</a>
-      <br>
+    </div>
+
+    <div class="profile-row centered-text">
       <a href="#" ng-click="ProfileCtrl.showDeactivate = true" ng-if="!ProfileCtrl.user.deleted">Deactivate Account</a>
       <a href="#" ng-click="ProfileCtrl.showReactivate = true" ng-if="ProfileCtrl.user.deleted">Reactivate Account</a>
       <br>
@@ -23,73 +27,71 @@
     </div>
 
     <!-- User Information -->
-    <h4 ng-bind="ProfileCtrl.displayUser.username"></h4>
-    <div><span ng-bind="ProfileCtrl.displayUser.name"></span></div>
-    <div><span ng-bind="ProfileCtrl.displayUser.position"></span></div>
-    <div><span ng-bind="ProfileCtrl.displayUser.status"></span></div>
-    <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.displayUser.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>
-    <hr ng-if="ProfileCtrl.displayUser.email || ProfileCtrl.displayUser.btcAddress || ProfileCtrl.displayUser.website">
-    <div ng-if="ProfileCtrl.displayUser.email">
-      <a href="mailto:{{ProfileCtrl.displayUser.email}}" ng-bind="ProfileCtrl.displayUser.email"></a>
+    <div class="profile-row">
+      <h4 ng-bind="ProfileCtrl.displayUser.username"></h4>
+      <div><span ng-bind="ProfileCtrl.displayUser.name"></span></div>
+      <div><span ng-bind="ProfileCtrl.displayUser.position"></span></div>
+      <div><span ng-bind="ProfileCtrl.displayUser.status"></span></div>
+      <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.displayUser.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>
+      <hr ng-if="ProfileCtrl.displayUser.email || ProfileCtrl.displayUser.btcAddress || ProfileCtrl.displayUser.website">
+      <div ng-if="ProfileCtrl.displayUser.email">
+        <a href="mailto:{{ProfileCtrl.displayUser.email}}" ng-bind="ProfileCtrl.displayUser.email"></a>
+      </div>
+      <div><span ng-bind="ProfileCtrl.displayUser.btcAddress"></span></div>
+      <div><a ng-href="{{ProfileCtrl.displayUser.website}}">{{ProfileCtrl.displayUser.website}}</a></div>
+      <hr>
+      <div><span ng-bind="ProfileCtrl.displayUser.gender"></span></div>
+      <div><span ng-bind="ProfileCtrl.userAge"></span></div>
+      <div><span ng-bind="ProfileCtrl.displayUser.location"></span></div>
+      <div><span ng-bind="ProfileCtrl.displayUser.language"></span></div>
+      <div><span ng-bind="ProfileCtrl.userLocalTime"></span></div>
     </div>
-    <div><span ng-bind="ProfileCtrl.displayUser.btcAddress"></span></div>
-    <div><a ng-href="{{ProfileCtrl.displayUser.website}}">{{ProfileCtrl.displayUser.website}}</a></div>
-    <hr>
-    <div><span ng-bind="ProfileCtrl.displayUser.gender"></span></div>
-    <div><span ng-bind="ProfileCtrl.userAge"></span></div>
-    <div><span ng-bind="ProfileCtrl.displayUser.location"></span></div>
-    <div><span ng-bind="ProfileCtrl.displayUser.language"></span></div>
-    <div><span ng-bind="ProfileCtrl.userLocalTime"></span></div>
   </div>
 
   <!-- Right Side Content -->
-  <div class="large-9 columns word-wrap">
-
-    <div class="profile-boxes">
-      <div class="row">
-        <div class="large-4 columns profile-stats">
-          Account Created On:<br>
-          <span class="profile-stat" ng-bind="ProfileCtrl.displayUser.created_at | date:'mediumDate'"></span>
-        </div>
-        <div class="large-4 columns profile-stats">
-          Number of Posts:<br>
-          <span class="profile-stat" ng-bind="ProfileCtrl.displayUser.post_count + ' Posts'"></span>
-        </div>
-        <div class="large-4 columns profile-stats">
-          Account Last Used:<br>
-          <span class="profile-stat" ng-bind="ProfileCtrl.displayUser.updated_at | date:'mediumDate'"></span>
-        </div>
+  <div class="profile-right">
+    <div class="profile-row">
+      <div class="stats centered-text">
+        Account Created On:<br>
+        <span class="stat-text" ng-bind="ProfileCtrl.displayUser.created_at | date:'mediumDate'"></span>
+      </div>
+      <div class="stats">
+        Number of Posts:<br>
+        <span class="stat-text" ng-bind="ProfileCtrl.displayUser.post_count + ' Posts'"></span>
+      </div>
+      <div class="stats">
+        Account Last Used:<br>
+        <span class="stat-text" ng-bind="ProfileCtrl.displayUser.updated_at | date:'mediumDate'"></span>
       </div>
     </div>
 
-    <div class="profile-boxes">
-      <div class="row">
-        <div class="large-12 columns"><strong>Posts over time:</strong></div>
-      </div>
-      <div class="row">
-        <div class="large-12 columns">
-          <canvas id="myChart" height="300" width="700"></canvas>
-        </div>
+    <div class="profile-row">
+      <div class="fill-row"><strong>Posts over time:</strong></div>
+    </div>
+
+    <div class="profile-row">
+      <canvas class="fill-row" id="myChart"></canvas>
+    </div>
+
+    <div class="profile-row">
+      <div class="fill-row">
+        <strong>Signature:</strong>
+        <a ng-href="#" ng-click="ProfileCtrl.editSignature = true" ng-if="ProfileCtrl.editable()">
+          <i class="icon-epoch-edit-pencil"></i>
+        </a>
       </div>
     </div>
 
-    <div class="profile-boxes">
-      <div class="row">
-        <div class="large-12 columns">
-          <strong>Signature:</strong>
-          <a ng-href="#" ng-click="ProfileCtrl.editSignature = true" ng-if="ProfileCtrl.editable()">
-            <i class="icon-epoch-edit-pencil"></i>
-          </a>
-        </div>
+    <div class="profile-row">
+      <div class="fill-row">
+        <div class="post-signature" post-processing="ProfileCtrl.displayUser.signature" style-fix="true"></div>
       </div>
-      <div class="post-signature" post-processing="ProfileCtrl.displayUser.signature" style-fix="true"></div>
     </div>
   </div>
+
 </div>
 
-<br /><br />
-
-<div ui-view="posts"></div>
+<div class="profile-posts" ui-view="posts"></div>
 
 <!-- Change Password Modal -->
 <modal class="tiny" show="ProfileCtrl.editPassword" on-close="ProfileCtrl.clearPasswordFields()">
