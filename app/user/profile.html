@@ -19,7 +19,7 @@
       <a href="#" ng-click="ProfileCtrl.editPassword = true">Password</a>
     </div>
 
-    <div class="profile-row centered-text">
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.editable()">
       <a href="#" ng-click="ProfileCtrl.showDeactivate = true" ng-if="!ProfileCtrl.user.deleted">Deactivate Account</a>
       <a href="#" ng-click="ProfileCtrl.showReactivate = true" ng-if="ProfileCtrl.user.deleted">Reactivate Account</a>
       <br>
@@ -70,7 +70,7 @@
     </div>
 
     <div class="profile-row">
-      <canvas class="fill-row" id="myChart"></canvas>
+      <canvas class="fill-row" id="myChart" height="200"></canvas>
     </div>
 
     <div class="profile-row">

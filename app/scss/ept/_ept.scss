@@ -642,8 +642,8 @@ main #public-content {
   }
 }
 
-// Profile Layout
-main #public-content {
+/*-------------- Profile Layout -------------- */
+main #public-content, main .admin-content {
   .profile-save-container { padding-top: 20px; }
   .profile-posts, .profile-content, .profile-row {
     @include clearfix;
@@ -677,7 +677,6 @@ main #public-content {
       @include span-columns(9);
       @include omega;
       word-wrap: break-word;
-      #myChart { height: 300px; }
       .stats {
         @include span-columns(4);
         @include omega(3n);
@@ -686,7 +685,7 @@ main #public-content {
       }
     }
   }
-  .profile-posts {
+  .profile-posts, & {
     .profile-row {
       .title { @include span-columns(2); font-weight: 600; }
       .pagination-wrap {
@@ -704,14 +703,12 @@ main #public-content {
       .profile-right {
         border-top: 1px solid #ddd;
         padding-top: 1rem;
+        #myChart { height: auto; }
         .stats .stat-text { font-size: 1rem; }
       }
-      .profile-left, .profile-right {
-        @include span-columns(8);
-        @include omega;
-      }
+      .profile-left, .profile-right { @include span-columns(8); @include omega; }
     }
-    .profile-posts {
+    .profile-posts, & {
       .profile-row .title, .profile-row .pagination-wrap, .pagination-wrap {
         @include span-columns(8);
         @include omega;
