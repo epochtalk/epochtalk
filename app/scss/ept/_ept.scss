@@ -14,6 +14,7 @@ html, body {
 h1, h2, h3, h4, h5, h6 { margin: 0; line-height: 1.5rem;}
 h4 { font-size: 1.3125rem; } //Category Name, Board Name, Thread Name
 h5 { font-size: 1.125rem; } // Board Name (Front Page), Section Headers Board View
+label { font-family: $base-font-sans; }
 a {
   color: $color-active;
   &:hover, &:focus { color: $color-active-dark; }
@@ -479,8 +480,34 @@ main #public-content {
     .pagination-wrap { @include span-columns(6); @include omega; }
   }
   .thread-controls {
+    @include row;
     @include pad(0 0 1rem 0);
-    display: none;
+    .control {
+      @include span-columns(4);
+      @include omega(3n);
+      text-align: center;
+      margin: 1rem 0;
+      label { display: inline-block; font-size: 1rem; color: $base-font-color; }
+      #stickyThread, #lockThread {
+        display:none;
+        font-family: "epoch-icons";
+        & + label:before { font-size: 2rem; color: $color-gray-med; display: block; }
+        &:checked + label:before { color: $color-active-fill; }
+      }
+      #purgeThread {
+        color: $color-gray-med;
+        &.clicked { color: $color-active-fill; }
+        &:before { font-size: 2rem; }
+        label { display: block; }
+      }
+    }
+    .control-full-width {
+      @include span-columns(12);
+      select {
+        @include span-columns(9);
+      }
+      .button { @include span-columns(3); }
+    }
   }
   .thread-data {
     @include pad(0 0 1rem 0);
@@ -631,6 +658,13 @@ main #public-content {
       @include span-columns(8);
       @include omega;
       pagination { float: none; }
+    }
+    .thread-controls {
+      .control .hide-mobile { display: none; }
+      .control-full-width, .control-full-width select, .control-full-width .button {
+        @include span-columns(8);
+        @include omega;
+      }
     }
     .thread-header { padding: 0; }
     .thread-data .post-block:first-child { padding-top: 0; }
