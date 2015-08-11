@@ -22,17 +22,17 @@
       <ul class="post-action">
         <li ng-if="PostsCtrl.user.isAdmin && $index !== 0">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
-            <i class="icon-epoch-unverified"></i>
+            <i class="fa fa-trash"></i>
           </a>
         </li>
         <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.user.isAdmin) && $index !== 0 && !post.deleted">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Delete" ng-click="PostsParentCtrl.openDeleteModal($index)">
-            <i class="icon-epoch-unverified"></i>
+            <i class="fa fa-eye-slash"></i>
           </a>
         </li>
         <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.user.isAdmin) && post.deleted === true">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Undelete" ng-click="PostsParentCtrl.openUndeleteModal($index)">
-            <i class="icon-epoch-unverified"></i>
+            <i class="fa fa-eye"></i>
           </a>
         </li>
         <li ng-if="PostsParentCtrl.loggedIn()">

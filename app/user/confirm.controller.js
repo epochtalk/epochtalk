@@ -10,11 +10,13 @@ module.exports = ['$location', '$timeout', '$stateParams', 'User', 'Session', 'A
     User.confirmAccount(params).$promise
     .then(function(user) {
       Session.setUser(user);
-      Alert.success('Account successfully confirmed, you will be redirected shortly...');
+      ctrl.message = 'Account successfully confirmed, you will be redirected shortly...';
+      Alert.success(ctrl.message);
       $timeout(function() { $location.path('/'); }, 3000);
     })
     .catch(function(err) {
-      Alert.error(err.data.message);
+      ctrl.message = err.data.message;
+      Alert.error(ctrl.message);
       $timeout(function() { $location.path('/'); }, 3000);
     });
   }

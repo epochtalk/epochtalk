@@ -34,6 +34,7 @@ a {
   outline: none;
   padding: 0.625rem 1.375rem;
 }
+.error-label { @include label(error,  0.6875rem, 2px, 0.1rem); }
 .thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
 .secret {
   &.ng-show,

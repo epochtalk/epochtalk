@@ -693,8 +693,8 @@ input.icon-padding { padding-right: 40px; }
 .admin-content table tr.active-row td a:hover { color: $color-active-dark; }
 
 .admin-content table tr.unbanned { background-color: #FFAEAE }
-
-.admin-content-selectable table tr td { padding-top: 2px; padding-bottom: 2px; font-size: 12px; }
+.admin-content-selectable table { table-layout: fixed; }
+.admin-content-selectable table tr td { padding-top: 2px; padding-bottom: 2px; font-size: 12px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
 .admin-content-selectable table tr td div {
   display: inline-block;
   max-width: 500px;
