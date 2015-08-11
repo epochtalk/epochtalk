@@ -17,8 +17,11 @@ h5 { font-size: 1.125rem; } // Board Name (Front Page), Section Headers Board Vi
 label { font-family: $base-font-sans; }
 a {
   color: $color-active;
-  @include transition(all 0.15s ease);
-  &:hover, &:focus { @include transition(all 0.15s ease); color: $color-active-dark; }
+  @include transition(color 0.15s ease, background-color 0.15s ease);
+  &:hover, &:focus {
+    @include transition(color 0.15s ease, background-color 0.15s ease);
+    color: $color-active-dark;
+  }
 }
 .bold { font-weight: bold; }
 .right { float: right; }
