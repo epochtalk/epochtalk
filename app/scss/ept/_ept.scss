@@ -328,7 +328,7 @@ main #public-content {
       @include pad(0 0 1rem 0);
       .info {
         @include span-columns(7);
-        .description { font-size: 0.875rem; }
+        .description, .childboard { font-size: 0.875rem; }
       }
       .view-count { @include span-columns(2); @include info-text; }
       .last-post {
@@ -400,12 +400,13 @@ main #public-content {
       font-size: 0.95rem;
       .subject {
         @include span-columns(7);
+        .title i { color: $color-gray; }
         .thread-title {
           word-wrap: break-word;
           overflow-wrap: break-word;
           &.bold { font-weight: bold; }
         }
-        .started-by { font-size: 0.875rem; }
+        .started-by, .pages { font-size: 0.875rem; }
         .mobile-stats { @include info-text; display: none; }
       }
       .replies, .views { @include span-columns(1); @include info-text; text-align: center; }

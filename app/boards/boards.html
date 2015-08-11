@@ -29,7 +29,7 @@
         <div class="description" ng-bind-html="::board.description"></div>
 
         <!-- Child Boards -->
-        <div ng-if="board.children.length > 0">
+        <div class="childboards" ng-if="board.children.length > 0">
           <strong>Child Boards:</strong>
           <span ng-repeat="child in board.children">
             <a ng-href="/boards/{{::child.id}}" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
