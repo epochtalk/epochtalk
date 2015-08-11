@@ -328,7 +328,7 @@ main #public-content {
       @include pad(0 0 1rem 0);
       .info {
         @include span-columns(7);
-        .description, .childboard { font-size: 0.875rem; }
+        .description, .childboards { font-size: 0.875rem; }
       }
       .view-count { @include span-columns(2); @include info-text; }
       .last-post {
