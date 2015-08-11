@@ -4,7 +4,9 @@
     <!-- User's Avatar -->
     <div class="profile-row">
       <div class="profile-avatar-container">
-        <img ng-src="{{ProfileCtrl.displayUser.avatar}}" />
+        <a href="#" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
+          <img ng-src="{{ProfileCtrl.displayUser.avatar}}" />
+        </a>
         <a href="#" class="after" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
           <div>Change Avatar</div>
         </a>
@@ -70,7 +72,7 @@
     </div>
 
     <div class="profile-row">
-      <canvas class="fill-row" id="myChart" height="200"></canvas>
+      <canvas class="fill-row" id="myChart"></canvas>
     </div>
 
     <div class="profile-row">

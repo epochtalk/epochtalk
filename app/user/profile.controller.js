@@ -214,6 +214,7 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
       ]
     };
     Chart.defaults.global.responsive = true;
+    Chart.defaults.global.maintainAspectRatio = false;
     var ctx = document.getElementById('myChart').getContext('2d');
     var myNewChart = new Chart(ctx).Line(data);
 
