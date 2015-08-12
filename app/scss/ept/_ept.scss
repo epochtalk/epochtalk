@@ -8,15 +8,18 @@ html, body {
   font-family: $base-font-sans;
   color: $base-font-color;
   line-height: $base-line-height;
+  font-weight: normal;
   @include media($mobile) { font-size: $base-font-size * 0.85; }
 }
 #public-content { margin-top: 2rem; }
+#admin-content { margin-top: 1.5rem; }
 h1, h2, h3, h4, h5, h6 { margin: 0; line-height: 1.5rem;}
 h4 { font-size: 1.3125rem; } //Category Name, Board Name, Thread Name
 h5 { font-size: 1.125rem; } // Board Name (Front Page), Section Headers Board View
 label { font-family: $base-font-sans; }
 a {
   color: $color-active;
+  text-decoration: none;
   @include transition(color 0.15s ease, background-color 0.15s ease);
   &:hover, &:focus {
     @include transition(color 0.15s ease, background-color 0.15s ease);
@@ -94,6 +97,45 @@ ul.pagination {
   }
   @include media($mobile) { margin-top: 1rem; }
 }
+.toggle-switch { position: absolute; margin-left: -9999px; visibility: hidden; }
+input.toggle-switch + label {
+  @include no-select;
+  @include border-radius(3px);
+  @include transition(background 0.3s);
+  display: block;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  padding: 2px;
+  width: 3.75rem;
+  height: 2rem;
+  background-color: $color-gray-light;
+  margin: 0;
+  float: right;
+}
+input.toggle-switch + label:before,
+input.toggle-switch + label:after { display: block; position: absolute; content: ""; }
+input.toggle-switch + label:before {
+  @include transition(background 0.3s);
+  top: 2px;
+  left: 2px;
+  bottom: 2px;
+  right: 2px;
+  background-color: #fff;
+}
+input.toggle-switch + label:after {
+  @include border-radius(2px);
+  @include transition(margin 0.3s, background 0.3s);
+  top: 4px;
+  left: 4px;
+  bottom: 4px;
+  width: 1.5625rem;
+  background-color: $color-gray-light;
+
+  @include media($mobile) { width: 1.45rem; }
+}
+input.toggle-switch:checked + label { background-color: $color-active-fill; }
+input.toggle-switch:checked + label:after { margin-left: 1.6875rem; background-color: $color-active-fill; }
 
 /*-------------- Index File -------------- */
 header {
@@ -192,12 +234,14 @@ header {
       #menu-right {
         float: right;
         li:first-child { padding-right: 0.8rem }
+        .show-mobile { display: none; }
       }
     }
 
     // Mobile Menu Layout
     @include media($mobile) {
-      #menu ul .search { display: none; }
+      #menu ul .search, #menu.admin-menu .hide-mobile { display: none; }
+      #menu.admin-menu #menu-right .show-mobile { display: inline-block; }
     }
   }
 
@@ -667,7 +711,7 @@ main #public-content {
 }
 
 /*-------------- Profile Layout -------------- */
-main #public-content, main .admin-content {
+main #public-content, main #admin-content {
   .profile-save-container { padding-top: 20px; }
   .profile-posts, .profile-content, .profile-row {
     @include clearfix;
@@ -745,6 +789,102 @@ main #public-content, main .admin-content {
         @include omega;
       }
       .pagination-wrap, .pagination-wrap pagination { float: none; text-align: center; }
+    }
+  }
+}
+
+/*-------------- Admin Panel - Global Components -------------- */
+main #admin-content {
+  @include pad(0 $base-grid-padding * 2);
+  #admin-subnav {
+    h2 { display: inline-block; }
+    .tabs dd { top: 0.375rem; }
+    .custom-tabs {
+      display: inline-block;
+      padding-left: 1.5625rem;
+      dd {
+        &.active a { border: 1px solid $color-active; border-radius: 3px; color: $color-active; }
+        a { background-color: transparent; padding: 0.4rem 1rem; }
+      }
+    }
+  }
+  table {
+    border: none;
+    thead {
+      background-color: transparent;
+      tr { border-bottom: 1px solid $color-gray-light; }
+      th { color: $color-gray-med; font-weight: 400; }
+    }
+    tr {
+      border-bottom: 1px solid $color-gray-sub;
+      vertical-align: top;
+      &:nth-of-type(even) { background: transparent; }
+      &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+      td { padding-top: 0.75rem; padding-bottom: 0.75rem; vertical-align: middle; }
+    }
+  }
+
+  @include media($mobile) {
+    @include pad(0);
+    .mobile-buttons {
+      @include fill-parent;
+      @include row;
+      @include pad(1rem 0);
+      .button { @include span-columns(8); @include omega; margin: 0; }
+    }
+  }
+}
+
+/*-------------- Admin Panel - Settings Layout -------------- */
+
+main #admin-content #admin-data {
+  .half-column {
+    @include row;
+    @include span-columns(6);
+    @include omega(2n);
+    .section-header-top-spacing { padding-top: 2.1875rem; clear: both; }
+    &.section-header-top-spacing { padding-top: 0; }
+    .desc, .switch-desc { @include span-columns(9); }
+    .desc-label { color: $color-gray-med; }
+    .button { @include span-columns(3); @include omega; font-size: 0.875rem; padding: 0.625rem; }
+    .switch-block { @include span-columns(3); @include omega; padding-top: 0.25rem; }
+    .smtp-server-wrap { @include span-columns(9); }
+    .smtp-port-wrap { @include span-columns(3); @include omega; }
+    .smtp-user-wrap { @include span-columns(6); }
+    .smtp-pass-wrap { @include span-columns(6); @include omega; }
+    .setting-row { @include clearfix; padding-bottom: 1rem; }
+    .img-wrap {
+      @include omega(3n);
+      @include clearfix;
+      padding-bottom: 1rem;
+      .img-server-wrap { @include span-columns(8); }
+      .img-radio-button { @include span-columns(2); }
+      input[type].hide-radio { display: none; }
+      .img-radio-button label {
+        display: inline-block;
+        height: 36px;
+        width: 100%;
+        border-radius: 2px;
+        font-size: 13px;
+        line-height: 36px;
+        text-align: center;
+      }
+      .img-radio-button input[type="radio"]:checked + label { background: $color-active-fill; color: #fff; margin-left: 0px; }
+      .img-radio-button input[type="radio"] + label { margin-left: 0px; }
+    }
+    .fixed-img-wrap {
+      @include omega(3n);
+      .setting { @include span-columns(4); }
+    }
+  }
+
+  @include media($mobile) {
+    .half-column {
+      @include span-columns(8); @include omega;
+      &.section-header-top-spacing { padding-top: 2.1875rem; }
+      .desc, .button, .fixed-img-wrap .setting { @include span-columns(8); @include omega; }
+      .img-wrap .img-server-wrap { @include span-columns(8); @include omega; }
+      .img-wrap .img-radio-button { @include span-columns(4); padding-top: 0.5rem; }
     }
   }
 }
