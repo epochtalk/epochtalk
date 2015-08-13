@@ -30,6 +30,7 @@ a {
 .right { float: right; }
 .left { float: left; }
 .centered-text { text-align: center; }
+.row-section { @include clearfix; @include row; }
 .fill-row { @include clearfix; @include span-columns(12); @include omega; }
 .clear { @include clearfix; }
 /*-------------- Global Components -------------- */
@@ -228,8 +229,8 @@ header {
       h3 #logo-text { padding-right: 0.8rem; }
       #menu-left {
         float: left;
-        .menu-btn, .menu-btn-selected { padding: 0 0.8rem; display: inline-block; }
-        .menu-btn-selected { background-color: $header-dropdown-bg-color; }
+        .menu-btn, .menu-btn-selected { padding: 0 0.8rem; display: block; }
+        .menu-btn-selected { background-color: $header-dropdown-bg-color; border-bottom: 2px solid $color-active-fill; }
       }
       #menu-right {
         float: right;
@@ -803,6 +804,7 @@ main #admin-content {
     .custom-tabs {
       display: inline-block;
       padding-left: 1.5625rem;
+      font-size: 1rem;
       dd {
         &.active a { border: 1px solid $color-active; border-radius: 3px; color: $color-active; }
         a { background-color: transparent; padding: 0.4rem 1rem; }
@@ -874,6 +876,9 @@ main #admin-content {
 
   @include media($mobile) {
     @include pad(0);
+    #admin-subnav .custom-tabs { @include span-columns(8); @include omega; padding-left: 0; }
+    #admin-subnav .custom-tabs dd a { font-size: 0.75rem; }
+    .admin-table-header { @include pad(1.25rem 1rem 0); margin: 0 -1rem 2rem; }
     .half-column { @include span-columns(8); @include omega; }
     .mobile-buttons {
       @include fill-parent;
@@ -937,6 +942,5 @@ main #admin-content {
 /*-------------- Admin Panel - Management Layout -------------- */
 main #admin-content {
   @include media($mobile) {
-    #admin-subnav .management.custom-tabs { padding-left: 0; }
   }
 }
