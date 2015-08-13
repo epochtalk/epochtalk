@@ -31,7 +31,7 @@ a {
 .left { float: left; }
 .centered-text { text-align: center; }
 .fill-row { @include clearfix; @include span-columns(12); @include omega; }
-
+.clear { @include clearfix; }
 /*-------------- Global Components -------------- */
 .button, button {
   @include border-radius(2px);
@@ -797,7 +797,8 @@ main #public-content, main #admin-content {
 main #admin-content {
   @include pad(0 $base-grid-padding * 2);
   #admin-subnav {
-    h2 { display: inline-block; }
+    margin-bottom: 1rem;
+    h2 { display: inline-block; line-height: normal; }
     .tabs dd { top: 0.375rem; }
     .custom-tabs {
       display: inline-block;
@@ -823,9 +824,57 @@ main #admin-content {
       td { padding-top: 0.75rem; padding-bottom: 0.75rem; vertical-align: middle; }
     }
   }
+  .admin-table-header {
+    background-color: $color-gray-sub;
+    @include pad(1.25rem 3rem 0);
+    margin: 0 -3rem 2rem;
+  }
+  .half-column {
+    @include row;
+    @include span-columns(6);
+    @include omega(2n);
+  }
+  .nested-input-container { position: relative; }
+  input[type].nested-input.valid-username { color: green; }
+  .nested-input-container .nested-clear-btn {
+    position: absolute;
+    right: 156px;
+    top: 9px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    z-index: 2;
+    background: #ccc;
+    color: #fff;
+    text-align: center;
+  }
+  .nested-input-container .nested-clear-btn:hover,
+  .nested-input-container .nested-clear-btn:focus { background-color: #666; }
+  .nested-btn, .nested-btn-disabled {
+    @include border-radius(2px);
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    bottom: 4px;
+    display: inline-block;
+    width: 8.75rem;
+    line-height: 1.875rem;
+    font-size: 0.8125rem;
+    z-index: 2;
+    background: $color-active-fill;
+    color: #fff;
+    text-align: center;
+  }
+  .nested-btn:hover,
+  .nested-btn:focus { background-color: $color-active-dark; border-color: $color-active-dark; color: #fff; }
+  .nested-btn-disabled { color: #fff; background-color: #ccc; border-color: #ccc; pointer-events: none; }
 
   @include media($mobile) {
     @include pad(0);
+    .half-column { @include span-columns(8); @include omega; }
     .mobile-buttons {
       @include fill-parent;
       @include row;
@@ -837,11 +886,8 @@ main #admin-content {
 
 /*-------------- Admin Panel - Settings Layout -------------- */
 
-main #admin-content #admin-data {
-  .half-column {
-    @include row;
-    @include span-columns(6);
-    @include omega(2n);
+main #admin-content {
+  .settings.half-column {
     .section-header-top-spacing { padding-top: 2.1875rem; clear: both; }
     &.section-header-top-spacing { padding-top: 0; }
     .desc, .switch-desc { @include span-columns(9); }
@@ -879,12 +925,18 @@ main #admin-content #admin-data {
   }
 
   @include media($mobile) {
-    .half-column {
-      @include span-columns(8); @include omega;
+    .settings.half-column {
       &.section-header-top-spacing { padding-top: 2.1875rem; }
       .desc, .button, .fixed-img-wrap .setting { @include span-columns(8); @include omega; }
       .img-wrap .img-server-wrap { @include span-columns(8); @include omega; }
       .img-wrap .img-radio-button { @include span-columns(4); padding-top: 0.5rem; }
     }
+  }
+}
+
+/*-------------- Admin Panel - Management Layout -------------- */
+main #admin-content {
+  @include media($mobile) {
+    #admin-subnav .management.custom-tabs { padding-left: 0; }
   }
 }
