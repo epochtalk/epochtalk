@@ -1,44 +1,41 @@
 <div class="admin-table-header">
-  <div class="small-12 medium-6 columns">
+  <div class="autocomplete-wrap">
     <autocomplete-username button-text="Add Administrator" button-action="AdminManagementCtrl.showConfirmAdd(user)" input-placeholder="Type the name of the user you wish to make an administrator"></autocomplete-username>
   </div>
-  <div class="admin-table-fix"></div>
+  <div class="clear"></div>
 </div>
-<div class="row full-width" align="center" ng-if="AdminManagementCtrl.count < 1">
+<div class="fill-row centered-text" ng-if="AdminManagementCtrl.count < 1">
   <h4>No Administrators to display</h4>
 </div>
-<div class="row full-width" ng-if="AdminManagementCtrl.count > 0">
-  <div class="small-12 columns">
-    <table width="100%">
-      <thead>
-        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Administrator Username</th>
-        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('roles')"><span ng-class="AdminManagementCtrl.getSortClass('roles')"></span>&nbsp;Super Administrator</th>
-        <th>Administrator Since</th>
-        <th>Last Active Date</th>
-        <th width="175">Actions</th>
-      </thead>
-      <tbody>
-        <tr ng-repeat="user in AdminManagementCtrl.admins track by user.username">
-          <td><a ui-sref="profile({ username: user.username })" ng-bind="user.username"></a></td>
-          <td>
-            <div class="onoffswitch onoffswitch-left-align" ng-init="superAdmin = AdminManagementCtrl.isSuperAdmin(user.roles)">
-              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="super-admin-{{$index}}" ng-model="superAdmin" ng-disabled="AdminManagementCtrl.user.id === user.user_id" ng-click="AdminManagementCtrl.toggleSuperAdmin(user.user_id, superAdmin)">
-              <label class="onoffswitch-label" for="super-admin-{{$index}}">
-                <span ng-class="AdminManagementCtrl.user.id === user.user_id ? 'onoffswitch-inner onoffswitch-inner-disabled': 'onoffswitch-inner'"></span>
-                <span class="onoffswitch-switch"></span>
-              </label>
-            </div>
-          </td>
-          <td ng-bind="user.created_at | humanDate"></td>
-          <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
-          <td ng-bind="user.created_at | humanDate"></td>
-          <td>
-            <a href="#" ng-if="AdminManagementCtrl.user.id !== user.user_id" ng-click="AdminManagementCtrl.showConfirmRemove(user)">Remove Administrator</a><span ng-if="AdminManagementCtrl.user.id === user.user_id">Remove Administrator</span>&nbsp;&nbsp;
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="right"><pagination page-count="AdminManagementCtrl.pageCount" page="AdminManagementCtrl.page" query-params="AdminManagementCtrl.queryParams"></pagination></div>
+<div class="fill-row" ng-if="AdminManagementCtrl.count > 0">
+  <table width="100%">
+    <thead>
+      <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Administrator Username</th>
+      <th class="pointer" ng-click="AdminManagementCtrl.setSortField('roles')"><span ng-class="AdminManagementCtrl.getSortClass('roles')"></span>&nbsp;Super Administrator</th>
+      <th class="hide-mobile">Administrator Since</th>
+      <th class="hide-mobile">Last Active Date</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in AdminManagementCtrl.admins track by user.username">
+        <td><a ui-sref="profile({ username: user.username })" ng-bind="user.username"></a></td>
+        <td>
+          <div class="switch-block" ng-init="superAdmin = AdminManagementCtrl.isSuperAdmin(user.roles)">
+            <input class="toggle-switch" type="checkbox" id="super-admin-{{$index}}" ng-model="superAdmin" ng-disabled="AdminManagementCtrl.user.id === user.user_id" ng-click="AdminManagementCtrl.toggleSuperAdmin(user.user_id, superAdmin)">
+            <label for="super-admin-{{$index}}"></label>
+          </div>
+        </td>
+        <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
+        <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
+        <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
+        <td>
+          <a href="#" ng-if="AdminManagementCtrl.user.id !== user.user_id" ng-click="AdminManagementCtrl.showConfirmRemove(user)">Remove Administrator</a><span ng-if="AdminManagementCtrl.user.id === user.user_id">Remove Administrator</span>&nbsp;&nbsp;
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagination-wrap">
+    <pagination page-count="AdminManagementCtrl.pageCount" page="AdminManagementCtrl.page" query-params="AdminManagementCtrl.queryParams"></pagination>
   </div>
 </div>
 

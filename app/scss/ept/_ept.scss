@@ -33,6 +33,8 @@ a {
 .row-section { @include clearfix; @include row; }
 .fill-row { @include clearfix; @include span-columns(12); @include omega; }
 .clear { @include clearfix; }
+.show-mobile { display: none; @include media($mobile) { display: inline-block; } }
+.hide-mobile { @include media($mobile) { display: none; } }
 /*-------------- Global Components -------------- */
 .button, button {
   @include border-radius(2px);
@@ -235,14 +237,12 @@ header {
       #menu-right {
         float: right;
         li:first-child { padding-right: 0.8rem }
-        .show-mobile { display: none; }
       }
     }
 
     // Mobile Menu Layout
     @include media($mobile) {
-      #menu ul .search, #menu.admin-menu .hide-mobile { display: none; }
-      #menu.admin-menu #menu-right .show-mobile { display: inline-block; }
+      #menu ul .search { display: none; }
     }
   }
 
@@ -695,7 +695,6 @@ main #public-content {
       pagination { float: none; }
     }
     .thread-controls {
-      .control .hide-mobile { display: none; }
       .control-full-width, .control-full-width select, .control-full-width .button {
         @include span-columns(8);
         @include omega;
@@ -936,37 +935,37 @@ main #admin-content {
       &.section-header-top-spacing { padding-top: 2.1875rem; }
       .desc, .button, .fixed-img-wrap .setting { @include span-columns(8); @include omega; }
       .img-wrap .img-server-wrap { @include span-columns(8); @include omega; }
-      .img-wrap .img-radio-button { @include span-columns(4); padding-top: 0.5rem; }
+      .img-wrap .radio-button { @include span-columns(4); padding-top: 0.5rem; }
     }
   }
 }
 
 /*-------------- Admin Panel - Management Layout -------------- */
 main #admin-content {
-
-  #management-users {
-    .pagination-wrap {
-      @include span-columns(12);
-      @include omega;
-      pagination { float: right; }
-    }
-    .radio-button, .header-spacer { @include span-columns(2); margin-bottom: 1rem; }
-    .user-search { @include span-columns(6); @include omega; }
+  .pagination-wrap {
+    @include span-columns(12);
+    @include omega;
+    pagination { float: right; }
   }
+
+  .management-users.radio-button, .header-spacer { @include span-columns(2); margin-bottom: 1rem; }
+  .user-search { @include span-columns(6); @include omega; }
+  .autocomplete-wrap { @include span-columns(6); }
+  .switch-block label { float: none; }
+
   @include media($mobile) {
-    #management-users {
-      .pagination-wrap { @include span-columns(8); @include omega; }
-      .pagination-wrap, .pagination-wrap pagination { float: none; text-align: center; }
-      .radio-button { @include span-columns(4); @include omega(2n); }
-      .header-spacer { display: none; }
-      .user-search { @include span-columns(8); @include omega; }
-      .hide-mobile { display: none; }
-      .email-column {
-        max-width: 7rem;
-        overflow: hidden;
-        word-wrap: none;
-        text-overflow: ellipsis;
-      }
+    .pagination-wrap { @include span-columns(8); @include omega; }
+    .pagination-wrap, .pagination-wrap pagination { float: none; text-align: center; }
+    .management-users.radio-button { @include span-columns(4); @include omega(2n); }
+    .header-spacer { display: none; }
+    .user-search { @include span-columns(8); @include omega; }
+    .email-column {
+      max-width: 7rem;
+      overflow: hidden;
+      word-wrap: none;
+      text-overflow: ellipsis;
     }
+    tr.show-mobile { display: table-row; }
+    .autocomplete-wrap { @include span-columns(8); @include omega; }
   }
 }
