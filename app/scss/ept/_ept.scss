@@ -771,8 +771,8 @@ main #public-content, main #admin-content {
         ul.pagination { margin-bottom: 0px; }
       }
     }
-    table { word-break: break-all; }
   }
+  .profile-posts table { word-break: break-all; }
 
   @include media($mobile) {
     .profile-content {
@@ -827,6 +827,8 @@ main #admin-content {
     }
   }
   .admin-table-header {
+    @include clearfix;
+    @include row;
     background-color: $color-gray-sub;
     @include pad(1.25rem 3rem 0);
     margin: 0 -3rem 2rem;
@@ -839,22 +841,22 @@ main #admin-content {
   .nested-input-container { position: relative; }
   input[type].nested-input.valid-username { color: green; }
   .nested-input-container .nested-clear-btn {
+    @include border-radius(30px);
     position: absolute;
-    right: 156px;
-    top: 9px;
+    right: 9.75rem;
+    top: 0.563rem;
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    border-radius: 30px;
-    font-size: 13px;
+    width: 1.25rem;
+    height: 1.25rem;
+    line-height: 1.25rem;
+    font-size: 0.8125rem;
     z-index: 2;
-    background: #ccc;
+    background: $color-gray-light;
     color: #fff;
     text-align: center;
   }
   .nested-input-container .nested-clear-btn:hover,
-  .nested-input-container .nested-clear-btn:focus { background-color: #666; }
+  .nested-input-container .nested-clear-btn:focus { background-color:  $color-gray-med; }
   .nested-btn, .nested-btn-disabled {
     @include border-radius(2px);
     position: absolute;
@@ -873,6 +875,18 @@ main #admin-content {
   .nested-btn:hover,
   .nested-btn:focus { background-color: $color-active-dark; border-color: $color-active-dark; color: #fff; }
   .nested-btn-disabled { color: #fff; background-color: #ccc; border-color: #ccc; pointer-events: none; }
+  .radio-button label {
+    display: inline-block;
+    height: 36px;
+    width: 100%;
+    border-radius: 2px;
+    font-size: 13px;
+    line-height: 36px;
+    text-align: center;
+  }
+  .radio-button input[type="radio"]:checked + label { background: $color-active-fill; color: #fff; margin-left: 0px; }
+  .radio-button input[type="radio"] + label { margin-left: 0px; }
+  input[type].hide-radio { display: none; }
 
   @include media($mobile) {
     @include pad(0);
@@ -909,19 +923,7 @@ main #admin-content {
       @include clearfix;
       padding-bottom: 1rem;
       .img-server-wrap { @include span-columns(8); }
-      .img-radio-button { @include span-columns(2); }
-      input[type].hide-radio { display: none; }
-      .img-radio-button label {
-        display: inline-block;
-        height: 36px;
-        width: 100%;
-        border-radius: 2px;
-        font-size: 13px;
-        line-height: 36px;
-        text-align: center;
-      }
-      .img-radio-button input[type="radio"]:checked + label { background: $color-active-fill; color: #fff; margin-left: 0px; }
-      .img-radio-button input[type="radio"] + label { margin-left: 0px; }
+      .radio-button { @include span-columns(2); }
     }
     .fixed-img-wrap {
       @include omega(3n);
@@ -941,6 +943,30 @@ main #admin-content {
 
 /*-------------- Admin Panel - Management Layout -------------- */
 main #admin-content {
+
+  #management-users {
+    .pagination-wrap {
+      @include span-columns(12);
+      @include omega;
+      pagination { float: right; }
+    }
+    .radio-button, .header-spacer { @include span-columns(2); margin-bottom: 1rem; }
+    .user-search { @include span-columns(6); @include omega; }
+  }
   @include media($mobile) {
+    #management-users {
+      .pagination-wrap { @include span-columns(8); @include omega; }
+      .pagination-wrap, .pagination-wrap pagination { float: none; text-align: center; }
+      .radio-button { @include span-columns(4); @include omega(2n); }
+      .header-spacer { display: none; }
+      .user-search { @include span-columns(8); @include omega; }
+      .hide-mobile { display: none; }
+      .email-column {
+        max-width: 7rem;
+        overflow: hidden;
+        word-wrap: none;
+        text-overflow: ellipsis;
+      }
+    }
   }
 }

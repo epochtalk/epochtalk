@@ -267,6 +267,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     AdminUsers.page(query).$promise
     .then(function(updatedUsers) {
       ctrl.users = updatedUsers;
+      $timeout($anchorScroll);
     });
   };
 }];

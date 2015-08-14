@@ -64,11 +64,11 @@
       <label>Image Server Host</label>
       <label class="desc-label">Host image server locally or on Amazon S3</label>
     </div>
-    <div class="img-radio-button">
+    <div class="radio-button">
       <input type="radio" class="hide-radio" name="image-type" ng-value="true" ng-click="AdminSettingsCtrl.settings.images.storage = 'local'" ng-model="AdminSettingsCtrl.localImageServer" id="image-type-local" />
       <label for="image-type-local">Local</label>
     </div>
-    <div class="img-radio-button">
+    <div class="radio-button">
       <input type="radio" class="hide-radio" name="image-type" ng-value="false" ng-click="AdminSettingsCtrl.settings.images.storage = 's3'" id="image-type-s3" ng-model="AdminSettingsCtrl.localImageServer" />
       <label for="image-type-s3">S3</label>
     </div>

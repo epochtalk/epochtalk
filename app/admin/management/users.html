@@ -1,47 +1,50 @@
-<div class="admin-table-header">
-  <div class="small-6 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="0" id="users-filter-0" ng-model="AdminManagementCtrl.tableFilter" ng-click="AdminManagementCtrl.setFilter()" />
-    <label for="users-filter-0">All</label>
-  </div>
-  <div class="small-6 medium-1 columns radio-toolbar">
-    <input type="radio" class="hide-radio" name="table-filter" value="1" id="users-filter-1" ng-model="AdminManagementCtrl.tableFilter" ng-click="AdminManagementCtrl.setFilter('banned')" />
-    <label for="users-filter-1">Banned</label>
-  </div>
-  <div class="small-12 medium-4 columns">&nbsp;</div>
-  <div class="small-12 medium-6 columns">
-    <div class="nested-input-container">
-      <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
-      <a ng-click="AdminManagementCtrl.searchUsers()" class="nested-btn">Search</a>
-      <input class="nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
+<div id="management-users">
+  <div class="admin-table-header">
+    <div class="radio-button">
+      <input type="radio" class="hide-radio" name="table-filter" value="0" id="users-filter-0" ng-model="AdminManagementCtrl.tableFilter" ng-click="AdminManagementCtrl.setFilter()" />
+      <label for="users-filter-0">All</label>
     </div>
+    <div class="radio-button">
+      <input type="radio" class="hide-radio" name="table-filter" value="1" id="users-filter-1" ng-model="AdminManagementCtrl.tableFilter" ng-click="AdminManagementCtrl.setFilter('banned')" />
+      <label for="users-filter-1">Banned</label>
+    </div>
+    <div class="header-spacer">&nbsp;</div>
+    <div class="user-search">
+      <div class="nested-input-container">
+        <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
+        <a ng-click="AdminManagementCtrl.searchUsers()" class="nested-btn">Search</a>
+        <input class="nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
+      </div>
+    </div>
+    <div class="clear"></div>
   </div>
-  <div class="admin-table-fix"></div>
-</div>
-<div class="row full-width" align="center" ng-if="!AdminManagementCtrl.search && AdminManagementCtrl.count < 1">
-  <h4>No Users to display in <strong>{{AdminManagementCtrl.filter ? 'Banned' : 'All'}}</strong></h4>
-</div>
-<div class="row full-width" ng-if="AdminManagementCtrl.count > 0 || AdminManagementCtrl.search">
-  <div class="small-12 columns">
+  <div class="fill-row" align="center" ng-if="!AdminManagementCtrl.search && AdminManagementCtrl.count < 1">
+    <h4>No Users to display in <strong>{{AdminManagementCtrl.filter ? 'Banned' : 'All'}}</strong></h4>
+  </div>
+  <div class="fill-row" ng-if="AdminManagementCtrl.count > 0 || AdminManagementCtrl.search">
     <div ng-if="AdminManagementCtrl.search">
     Displaying {{AdminManagementCtrl.count | number}} search result(s) for "<strong>{{AdminManagementCtrl.search}}</strong>" in <strong>{{AdminManagementCtrl.filter ? 'Banned': 'All'}}</strong>:<br /><br />
+    </div>
+    <div class="pagination-wrap">
+      <pagination page-count="AdminManagementCtrl.pageCount" page="AdminManagementCtrl.page" query-params="AdminManagementCtrl.queryParams"></pagination>
     </div>
     <table width="100%">
       <thead>
         <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Username</th>
-        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('email')"><span ng-class="AdminManagementCtrl.getSortClass('email')"></span>&nbsp;Email</th>
+        <th class="pointer" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }" ng-click="AdminManagementCtrl.setSortField('email')"><span ng-class="AdminManagementCtrl.getSortClass('email')"></span>&nbsp;Email</th>
         <th class="pointer" ng-show="AdminManagementCtrl.tableFilter == 1" ng-click="AdminManagementCtrl.setSortField('ban_expiration')"><span ng-class="AdminManagementCtrl.getSortClass('ban_expiration')"></span>&nbsp;Ban Expiration</th>
-        <th class="pointer" ng-click="AdminManagementCtrl.setSortField('created_at')"><span ng-class="AdminManagementCtrl.getSortClass('created_at')"></span>&nbsp;Registered Date</th>
-        <th >Last Active Date</th>
-        <th width="300">Actions</th>
+        <th class="pointer hide-mobile" ng-click="AdminManagementCtrl.setSortField('created_at')"><span ng-class="AdminManagementCtrl.getSortClass('created_at')"></span>&nbsp;Registered Date</th>
+        <th class="hide-mobile">Last Active Date</th>
+        <th>Actions</th>
       </thead>
       <tbody>
         <tr ng-repeat="user in AdminManagementCtrl.users track by user.username" ng-class="{unbanned: AdminManagementCtrl.tableFilter == 1 && !user.ban_expiration}">
           <td><a ui-sref="profile({ username: user.username })" ng-bind="user.username"></a></td>
-          <td ng-bind="user.email"></td>
+          <td class="email-column" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }"><a href="mailto:{{user.email}}" ng-bind="user.email"></a></td>
           <td ng-show="AdminManagementCtrl.tableFilter == 1" ng-bind="user.ban_expiration | humanDate:true"></td>
-          <td ng-bind="user.created_at | humanDate"></td>
+          <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
           <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
-          <td ng-bind="user.created_at | humanDate"></td>
+          <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
           <td>
             <a ui-sref="users-posts({ username: user.username })" ui-sref-opts="{ reload: true }">View Posts</a>&nbsp;&nbsp;
             <a href="#" ng-click="AdminManagementCtrl.showEditUser(user.username)">Edit</a>&nbsp;&nbsp;
@@ -51,7 +54,9 @@
         </tr>
       </tbody>
     </table>
-    <div class="right"><pagination page-count="AdminManagementCtrl.pageCount" page="AdminManagementCtrl.page" query-params="AdminManagementCtrl.queryParams"></pagination></div>
+    <div class="pagination-wrap">
+      <pagination page-count="AdminManagementCtrl.pageCount" page="AdminManagementCtrl.page" query-params="AdminManagementCtrl.queryParams"></pagination>
+    </div>
   </div>
 </div>
 
