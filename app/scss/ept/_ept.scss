@@ -26,6 +26,7 @@ a {
     color: $color-active-dark;
   }
 }
+.pointer { cursor: pointer; }
 .bold { font-weight: bold; }
 .right { float: right; }
 .left { float: left; }
@@ -660,13 +661,13 @@ main #public-content {
           margin-top: 0.5rem;
         }
         .post-signature {
+          @include truncate-ellipsis;
           clear: both;
           color: $color-gray-med;
           font-size: 13px;
           max-height: 80px;
-          overflow: hidden;
           word-wrap: break-word;
-          text-overflow: ellipsis;
+          white-space: pre-wrap;
           a {
             color: $color-gray-med;
             &:hover { color: $color-active; }
@@ -820,6 +821,13 @@ main #admin-content {
     tr {
       border-bottom: 1px solid $color-gray-sub;
       vertical-align: top;
+      &.unbanned { background-color: #FFAEAE }
+      &.selectable-row:hover { background-color: $color-gray-sub; }
+      &.active-row, &.active-row:nth-of-type(even) { background-color:  $color-active-fill; }
+      &.active-row.selectable-row:hover { background-color:  $color-active-fill }
+      &.active-row td { color: #fff; }
+      &.active-row td a { color: darken($color-active-dark, 10%); }
+      &.active-row td a:hover { color: $color-active-dark; }
       &:nth-of-type(even) { background: transparent; }
       &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
       td { padding-top: 0.75rem; padding-bottom: 0.75rem; vertical-align: middle; }
@@ -875,6 +883,7 @@ main #admin-content {
   .nested-btn:focus { background-color: $color-active-dark; border-color: $color-active-dark; color: #fff; }
   .nested-btn-disabled { color: #fff; background-color: #ccc; border-color: #ccc; pointer-events: none; }
   .radio-button label {
+    @include truncate-ellipsis;
     display: inline-block;
     height: 36px;
     width: 100%;
@@ -886,6 +895,7 @@ main #admin-content {
   .radio-button input[type="radio"]:checked + label { background: $color-active-fill; color: #fff; margin-left: 0px; }
   .radio-button input[type="radio"] + label { margin-left: 0px; }
   input[type].hide-radio { display: none; }
+  .user-search { @include span-columns(6); @include omega; }
 
   @include media($mobile) {
     @include pad(0);
@@ -893,6 +903,7 @@ main #admin-content {
     #admin-subnav .custom-tabs dd a { font-size: 0.75rem; }
     .admin-table-header { @include pad(1.25rem 1rem 0); margin: 0 -1rem 2rem; }
     .half-column { @include span-columns(8); @include omega; }
+    .user-search { @include span-columns(8); @include omega; }
     .mobile-buttons {
       @include fill-parent;
       @include row;
@@ -949,7 +960,6 @@ main #admin-content {
   }
 
   .management-users.radio-button, .header-spacer { @include span-columns(2); margin-bottom: 1rem; }
-  .user-search { @include span-columns(6); @include omega; }
   .autocomplete-wrap { @include span-columns(6); }
   .switch-block label { float: none; }
 
@@ -958,14 +968,64 @@ main #admin-content {
     .pagination-wrap, .pagination-wrap pagination { float: none; text-align: center; }
     .management-users.radio-button { @include span-columns(4); @include omega(2n); }
     .header-spacer { display: none; }
-    .user-search { @include span-columns(8); @include omega; }
-    .email-column {
-      max-width: 7rem;
-      overflow: hidden;
-      word-wrap: none;
-      text-overflow: ellipsis;
-    }
+    .email-column { @include truncate-ellipsis; max-width: 7rem; word-wrap: none; }
     tr.show-mobile { display: table-row; }
     .autocomplete-wrap { @include span-columns(8); @include omega; }
+  }
+}
+
+/*-------------- Admin Panel - Moderation Layout -------------- */
+main #admin-content {
+  .filter.radio-button, .filter.header-spacer { @include span-columns(1); margin-bottom: 1rem; }
+  .admin-content-selectable table {
+    table-layout: fixed;
+    th { @include truncate-ellipsis; }
+    th.reason { width: 25rem; }
+    th.user-actions { width: 7.5rem; }
+    tr td {
+      @include truncate-ellipsis;
+      padding-top: 0.125rem;
+      padding-bottom: 0.125rem;
+      font-size: 0.75rem;
+      div {
+        @include truncate-ellipsis;
+        display: inline-block;
+        width: 24rem;
+      }
+    }
+  }
+  .report-details-wrap { @include span-columns(4); }
+  .preview-wrap { @include span-columns(8); @include omega; }
+
+  table.report-details {
+    td.field {
+      font-size: 0.8125rem;
+      color: $color-gray-med;
+      width: 9.375rem;
+      padding-left: 0;
+      vertical-align: top;
+    }
+    td.desc { font-size: 13px;}
+  }
+
+  .note-avatar-container {
+    float: left;
+    width: 60px;
+    height: 60px;
+    .note-avatar { width: 50px; height: 50px; }
+  }
+
+  .note-details {
+    font-size: 13px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    .note-date { color: $color-gray-med; }
+  }
+
+  @include media($mobile) {
+    .report-details-wrap { @include span-columns(8); @include omega; }
+    .preview-wrap { @include span-columns(8); }
+    .filter.radio-button { @include span-columns(2.6); @include omega(3n); margin-bottom: 1rem; }
+    .filter.header-spacer { display: none; }
   }
 }

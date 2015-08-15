@@ -613,58 +613,58 @@ input.icon-padding { padding-right: 40px; }
 
 // Admin Page -------------------------------- //
 /* Admin Manage Groups */
-#admin-content table tr.selectable-row:hover { background-color: $color-gray-sub; }
-.pointer { cursor: pointer; }
-#admin-content table tr.active-row { background-color:  $color-active-fill; }
-#admin-content table tr.active-row.selectable-row:hover { background-color:  $color-active-fill }
-#admin-content table tr.active-row td { color: #fff; }
-#admin-content table tr.active-row td a { color: darken($color-active-dark, 10%); }
-#admin-content table tr.active-row td a:hover { color: $color-active-dark; }
+// #admin-content table tr.selectable-row:hover { background-color: $color-gray-sub; }
+// .pointer { cursor: pointer; }
+// #admin-content table tr.active-row { background-color:  $color-active-fill; }
+// #admin-content table tr.active-row.selectable-row:hover { background-color:  $color-active-fill }
+// #admin-content table tr.active-row td { color: #fff; }
+// #admin-content table tr.active-row td a { color: darken($color-active-dark, 10%); }
+// #admin-content table tr.active-row td a:hover { color: $color-active-dark; }
 
-#admin-content table tr.unbanned { background-color: #FFAEAE }
-#admin-content .admin-content-selectable table { table-layout: fixed; }
-#admin-content .admin-content-selectable table tr td { padding-top: 2px; padding-bottom: 2px; font-size: 12px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
-#admin-content .admin-content-selectable table tr td div {
-  display: inline-block;
-  max-width: 500px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+// #admin-content table tr.unbanned { background-color: #FFAEAE }
+// #admin-content .admin-content-selectable table { table-layout: fixed; }
+// #admin-content .admin-content-selectable table tr td { padding-top: 2px; padding-bottom: 2px; font-size: 12px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+// #admin-content .admin-content-selectable table tr td div {
+//   display: inline-block;
+//   max-width: 500px;
+//   overflow: hidden;
+//   white-space: nowrap;
+//   text-overflow: ellipsis;
+// }
 
-#admin-content table.report-details {
-  td.field {
-    font-size: 13px;
-    color: $color-gray;
-    width: 175px;
-    padding-left: 0;
-    vertical-align: top;
-  }
-  td.desc {
-    font-size: 13px;
-  }
-}
+// #admin-content table.report-details {
+//   td.field {
+//     font-size: 13px;
+//     color: $color-gray;
+//     width: 175px;
+//     padding-left: 0;
+//     vertical-align: top;
+//   }
+//   td.desc {
+//     font-size: 13px;
+//   }
+// }
 
-#admin-content div.note-avatar-container {
-  float: left;
-  width: 60px;
-  height: 60px;
+// #admin-content div.note-avatar-container {
+//   float: left;
+//   width: 60px;
+//   height: 60px;
 
-  img.note-avatar {
-    width: 50px;
-    height: 50px;
-  }
-}
+//   img.note-avatar {
+//     width: 50px;
+//     height: 50px;
+//   }
+// }
 
-#admin-content div.note-details {
-  font-size: 13px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+// #admin-content div.note-details {
+//   font-size: 13px;
+//   padding-top: 5px;
+//   padding-bottom: 5px;
 
-  span.note-date {
-    color: $color-gray-med;
-  }
-}
+//   span.note-date {
+//     color: $color-gray-med;
+//   }
+// }
 
 // Board Page -------------------------------- //
 // .board-page { padding-bottom: 15px; }

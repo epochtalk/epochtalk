@@ -20,6 +20,12 @@
   font-size: $size;
 }
 
+@mixin truncate-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 @mixin list-clean {
   list-style-type: none;
   margin: 0;

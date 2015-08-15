@@ -1,62 +1,62 @@
 <div class="admin-table-header">
-  <div class="small-4 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="0" id="users-filter-0" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter()" />
     <label for="users-filter-0">All</label>
   </div>
-  <div class="small-4 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="1" id="users-filter-1" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Pending')" />
     <label for="users-filter-1">Pending</label>
   </div>
-  <div class="small-4 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="2" id="users-filter-2" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Reviewed')" />
     <label for="users-filter-2">Reviewed</label>
   </div>
-  <div class="small-6 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="3" id="posts-filter-3" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Ignored')" />
     <label for="posts-filter-3">Ignored</label>
   </div>
-  <div class="small-6 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="4" id="posts-filter-4" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Bad Report')" />
     <label for="posts-filter-4">Bad Report</label>
   </div>
-  <div class="small-12 medium-1 columns">&nbsp;</div>
-  <div class="small-12 medium-6 columns">
+  <div class="filter header-spacer">&nbsp;</div>
+  <div class="user-search">
     <div class="nested-input-container">
       <a ng-if="ModerationCtrl.search" ng-click="ModerationCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
       <a ng-click="ModerationCtrl.searchReports()" class="nested-btn">Search</a>
       <input class="nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="users-search" placeholder="Search reported users" ng-keydown="$event.which === 13 && ModerationCtrl.searchReports()" ng-keyup="$event.which === 27 && ModerationCtrl.clearSearch()" />
     </div>
   </div>
-  <div class="admin-table-fix"></div>
+  <div class="clear"></div>
 </div>
-<div class="row full-width" align="center" ng-if="!ModerationCtrl.search && ModerationCtrl.count < 1">
+<div class="fill-row centered-text" ng-if="!ModerationCtrl.search && ModerationCtrl.count < 1">
   <h4>No User Reports to display in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong></h4>
 </div>
-<div class="row full-width" ng-if="ModerationCtrl.count > 0 || ModerationCtrl.search">
+<div class="fill-row" ng-if="ModerationCtrl.count > 0 || ModerationCtrl.search">
   <div ng-if="ModerationCtrl.search">
     Displaying {{ModerationCtrl.count | number}} search result(s) for "<strong>{{ModerationCtrl.search}}</strong>" in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong>:<br /><br />
   </div>
-  <div class="small-12 columns admin-content-selectable">
+  <div class="fill-row admin-content-selectable">
     <table width="100%">
       <thead>
-        <th class="pointer" ng-click="ModerationCtrl.setSortField('reporter_username')"><span ng-class="ModerationCtrl.getSortClass('reporter_username')"></span>&nbsp;Reported By</th>
-        <th width="200" class="pointer" ng-click="ModerationCtrl.setSortField('created_at')"><span ng-class="ModerationCtrl.getSortClass('created_at')"></span>&nbsp;Reported Date</th>
+        <th class="pointer hide-mobile" ng-click="ModerationCtrl.setSortField('reporter_username')"><span ng-class="ModerationCtrl.getSortClass('reporter_username')"></span>&nbsp;Reported By</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('created_at')"><span ng-class="ModerationCtrl.getSortClass('created_at')"></span>&nbsp;Reported Date</th>
         <th class="pointer" ng-click="ModerationCtrl.setSortField('priority')"><span ng-class="ModerationCtrl.getSortClass('priority')"></span>&nbsp;Status</th>
         <th class="pointer" ng-click="ModerationCtrl.setSortField('offender_username')"><span ng-class="ModerationCtrl.getSortClass('offender_username')"></span>&nbsp;Reported User</th>
-        <th class="pointer" ng-click="ModerationCtrl.setSortField('offender_email')"><span ng-class="ModerationCtrl.getSortClass('offender_email')"></span>&nbsp;Email</th>
-        <th width="200" class="pointer" ng-click="ModerationCtrl.setSortField('offender_created_at')"><span ng-class="ModerationCtrl.getSortClass('offender_created_at')"></span>&nbsp;Registered Date</th>
-        <th width="500">Reason</th>
-        <th width="200">Actions</th>
+        <th class="pointer hide-mobile" ng-click="ModerationCtrl.setSortField('offender_email')"><span ng-class="ModerationCtrl.getSortClass('offender_email')"></span>&nbsp;Email</th>
+        <th class="pointer hide-mobile" ng-click="ModerationCtrl.setSortField('offender_created_at')"><span ng-class="ModerationCtrl.getSortClass('offender_created_at')"></span>&nbsp;Registered Date</th>
+        <th class="reason hide-mobile">Reason</th>
+        <th class="user-actions">Actions</th>
       </thead>
       <tbody>
         <tr ng-class="{ 'active-row' : ModerationCtrl.reportId === userReport.id }" ng-click="ModerationCtrl.selectReport(userReport)" class="selectable-row pointer" ng-repeat="userReport in ModerationCtrl.userReports track by userReport.id">
-          <td><a ui-sref="profile({ username: userReport.reporter_username })" ng-bind="userReport.reporter_username"></a></td>
+          <td class="hide-mobile"><a ui-sref="profile({ username: userReport.reporter_username })" ng-bind="userReport.reporter_username"></a></td>
           <td ng-bind="userReport.created_at | humanDate"></td>
           <td ng-bind="userReport.status"></td>
           <td><a ui-sref="profile({ username: userReport.offender_username })" ng-bind="userReport.offender_username"></a></td>
-          <td ng-bind="userReport.offender_email"></td>
-          <td ng-bind="userReport.offender_created_at | humanDate"></td>
-          <td><div ng-bind="userReport.reporter_reason"></div></td>
+          <td class="hide-mobile"><a href="mailto:{{userReport.offender_email}}" ng-bind="userReport.offender_email"></a></td>
+          <td class="hide-mobile" ng-bind="userReport.offender_created_at | humanDate"></td>
+          <td class="hide-mobile"><div ng-bind="userReport.reporter_reason"></div></td>
           <td>
             <a href="#" ng-click="ModerationCtrl.showSetStatus(userReport)">Status</a>&nbsp;&nbsp;
             <span>Warn</span>&nbsp;&nbsp;
@@ -66,13 +66,15 @@
         </tr>
       </tbody>
     </table>
-    <div class="right"><pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination></div>
+    <div class="pagination-wrap">
+      <pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination>
+    </div>
   </div>
 </div>
 <br />
-<div ng-if="ModerationCtrl.selectedUsername !== null" class="row full-width">
-  <div class="small-12 large-4 columns">
-    <h5 class="thin-dotted-underline">Report Details</h5>
+<div ng-if="ModerationCtrl.selectedUsername !== null">
+  <div class="report-details-wrap">
+    <h5 class="thin-underline">Report Details</h5>
     <table width="100%" class="report-details">
       <tbody>
         <tr>
@@ -114,33 +116,33 @@
       </tbody>
     </table>
     <div ng-repeat="note in ModerationCtrl.reportNotes track by note.id">
-    <div class="note-avatar-container" ng-if="!note.edit">
-      <img class="note-avatar" ng-src="{{ note.avatar || 'http://fakeimg.pl/50x50/ccc/444/?text=' + note.username }}" />
-    </div>
-    <div class="note-details" ng-if="!note.edit">
-      <span class="note-author"><a ui-sref="profile({ username: note.username })" ng-bind="note.username"></a>&nbsp;</span>
-      <span class="note-date" ng-bind="note.created_at | humanDate"></span>
-      <span class="note-date" ng-if="note.created_at !== note.updated_at"> &mdash; Edited <span ng-bind="note.updated_at | humanDate"></span></span>
-      <span class="right" ng-if="ModerationCtrl.user.id === note.user_id"><a href="#" ng-click="note.edit = true; note.noteCopy = note.note">Edit</a></span>
-      <div class="note-message" ng-bind="note.note"></div>
-    </div>
-    <div ng-if="note.edit" class="note-details">
-      <a class="right" href="#" ng-click="ModerationCtrl.updateReportNote(note)">Save</a>
-      <a class="right" href="#" ng-click="note.edit = undefined; note.note = note.noteCopy; note.noteCopy = undefined">Cancel&nbsp;&nbsp;&nbsp;</a>
-      <textarea rows="3" ng-model="note.note"></textarea>
-    </div>
-      <div class="thin-dotted-underline"></div>
+      <div class="note-avatar-container" ng-if="!note.edit">
+        <img class="note-avatar" ng-src="{{ note.avatar || 'http://fakeimg.pl/50x50/ccc/444/?text=' + note.username }}" />
+      </div>
+      <div class="note-details" ng-if="!note.edit">
+        <span class="note-author"><a ui-sref="profile({ username: note.username })" ng-bind="note.username"></a>&nbsp;</span>
+        <span class="note-date" ng-bind="note.created_at | humanDate"></span>
+        <span class="note-date" ng-if="note.created_at !== note.updated_at"> &mdash; Edited <span ng-bind="note.updated_at | humanDate"></span></span>
+        <span class="right" ng-if="ModerationCtrl.user.id === note.user_id"><a href="#" ng-click="note.edit = true; note.noteCopy = note.note">Edit</a></span>
+        <div class="note-message" ng-bind="note.note"></div>
+      </div>
+      <div ng-if="note.edit" class="note-details">
+        <a class="right" href="#" ng-click="ModerationCtrl.updateReportNote(note)">Save</a>
+        <a class="right" href="#" ng-click="note.edit = undefined; note.note = note.noteCopy; note.noteCopy = undefined">Cancel&nbsp;&nbsp;&nbsp;</a>
+        <textarea rows="3" ng-model="note.note"></textarea>
+      </div>
+      <div class="thin-underline"></div>
     </div>
     <form name="$parent.form" class="css-form">
       <textarea name="reportNote" ng-model="ModerationCtrl.reportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3" required></textarea>
       <div class="form-action">
-        <button class="button no-margin" ng-click="ModerationCtrl.submitReportNote()"
-          ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.noteSubmitted" ng-bind="ModerationCtrl.submitBtnLabel"></button>
+        <a class="button" ng-click="ModerationCtrl.submitReportNote()"
+          ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.noteSubmitted" ng-bind="ModerationCtrl.submitBtnLabel"></a>
       </div>
     </form>
   </div>
-  <div class="small-12 large-8 columns">
-    <h5 class="thin-dotted-underline">Reported User {{ModerationCtrl.selectedUsername}}</h5>
+  <div class="preview-wrap">
+    <h5 class="thin-underline">Reported User {{ModerationCtrl.selectedUsername}}</h5>
     <div ui-view="preview"></div>
   </div>
 </div>
@@ -148,7 +150,7 @@
 <!-- Confirm Ban Modal -->
 <modal class="tiny" show="ModerationCtrl.showConfirmBanModal" on-close="ModerationCtrl.closeConfirmBan()">
   <form name="$parent.form" class="css-form">
-    <h3 class="thin-dotted-underline">Confirm Ban</h3>
+    <h3 class="thin-underline">Confirm Ban</h3>
     <label>User Information</label>
     <table width="100%">
       <tr>
@@ -183,7 +185,7 @@
 <!-- Confirm Unban Modal -->
 <modal class="tiny" show="ModerationCtrl.showConfirmUnbanModal" on-close="ModerationCtrl.closeConfirmUnban()">
   <form name="$parent.form" class="css-form">
-    <h3 class="thin-dotted-underline">Confirm Unban</h3>
+    <h3 class="thin-underline">Confirm Unban</h3>
     <label>User Information</label>
     <table width="100%">
       <tr>
@@ -211,7 +213,7 @@
 <!-- Set Status Modal -->
 <modal class="tiny" show="ModerationCtrl.showSetStatusModal" on-close="ModerationCtrl.closeSetStatus()">
   <form name="$parent.statusForm" class="css-form">
-    <h3 class="thin-dotted-underline">Set Report Status</h3>
+    <h3 class="thin-underline">Set Report Status</h3>
     <label>Report Information</label>
     <table width="100%">
       <tr>
