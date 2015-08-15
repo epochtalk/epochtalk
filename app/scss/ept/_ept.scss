@@ -36,6 +36,7 @@ a {
 .clear { @include clearfix; }
 .show-mobile { display: none; @include media($mobile) { display: inline-block; } }
 .hide-mobile { @include media($mobile) { display: none; } }
+
 /*-------------- Global Components -------------- */
 .button, button {
   @include border-radius(2px);
@@ -49,6 +50,15 @@ a {
 .thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
 .secret {
   &.ng-show, &.ng-hide { @include transition(none !important); }
+}
+.post-body {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  .imageContainer.loaded { background: none; }
+  .imageContainer { background: url('/static/img/loading.gif') no-repeat center; display: inline;}
+  img.loaded { opacity: 1; }
+  img { @include transition(opacity 0.5s ease-in); opacity: 0; }
 }
 code {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
@@ -644,15 +654,6 @@ main #public-content {
           &:hover .post-action a { color: $color-gray-med; }
           .clear { @include clearfix; }
         }
-        .post-body {
-          white-space: pre-wrap;
-          word-wrap: break-word;
-          overflow-wrap: break-word;
-          .imageContainer.loaded { background: none; }
-          .imageContainer { background: url('/static/img/loading.gif') no-repeat center; display: inline;}
-          img.loaded { opacity: 1; }
-          img { @include transition(opacity 0.5s ease-in); opacity: 0; }
-        }
         .post-sig-border {
           clear: both;
           width: 250px;
@@ -982,6 +983,7 @@ main #admin-content {
     th { @include truncate-ellipsis; }
     th.reason { width: 25rem; }
     th.user-actions { width: 7.5rem; }
+    th.post-actions { width: 12.5rem; }
     tr td {
       @include truncate-ellipsis;
       padding-top: 0.125rem;
@@ -994,8 +996,8 @@ main #admin-content {
       }
     }
   }
-  .report-details-wrap { @include span-columns(4); }
-  .preview-wrap { @include span-columns(8); @include omega; }
+  .report-details-wrap { @include span-columns(4); margin-bottom: 1rem; }
+  .preview-wrap { @include span-columns(8); @include omega; margin-bottom: 1rem; }
 
   table.report-details {
     td.field {

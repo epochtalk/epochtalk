@@ -1,62 +1,61 @@
 <div class="admin-table-header">
-  <div class="small-4 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="0" id="posts-filter-0" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter()" />
     <label for="posts-filter-0">All</label>
   </div>
-  <div class="small-4 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="1" id="posts-filter-1" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Pending')" />
     <label for="posts-filter-1">Pending</label>
   </div>
-  <div class="small-4 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="2" id="posts-filter-2" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Reviewed')" />
     <label for="posts-filter-2">Reviewed</label>
   </div>
-  <div class="small-6 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="3" id="posts-filter-3" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Ignored')" />
     <label for="posts-filter-3">Ignored</label>
   </div>
-  <div class="small-6 medium-1 columns radio-toolbar">
+  <div class="filter radio-button">
     <input type="radio" class="hide-radio" name="table-filter" value="4" id="posts-filter-4" ng-model="ModerationCtrl.tableFilter" ng-click="ModerationCtrl.setFilter('Bad Report')" />
     <label for="posts-filter-4">Bad Report</label>
   </div>
-  <div class="small-12 medium-1 columns">&nbsp;</div>
-  <div class="small-12 medium-6 columns">
+  <div class="filter header-spacer">&nbsp;</div>
+  <div class="user-search clear">
     <div class="nested-input-container">
       <a ng-if="ModerationCtrl.search" ng-click="ModerationCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
       <a ng-click="ModerationCtrl.searchReports()" class="nested-btn">Search</a>
       <input class="nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="posts-search" placeholder="Search reported posts" ng-keydown="$event.which === 13 && ModerationCtrl.searchReports()" ng-keyup="$event.which === 27 && ModerationCtrl.clearSearch()" />
     </div>
   </div>
-  <div class="admin-table-fix"></div>
 </div>
-<div class="row full-width" align="center" ng-if="!ModerationCtrl.search && ModerationCtrl.count < 1">
+<div class="fill-row centered-text" ng-if="!ModerationCtrl.search && ModerationCtrl.count < 1">
   <h4>No Post Reports to display in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong></h4>
 </div>
-<div class="row full-width" ng-if="ModerationCtrl.count > 0 || ModerationCtrl.search">
+<div class="fill-row" ng-if="ModerationCtrl.count > 0 || ModerationCtrl.search">
   <div ng-if="ModerationCtrl.search">
     Displaying {{ModerationCtrl.count | number}} search result(s) for "<strong>{{ModerationCtrl.search}}</strong>" in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong>:<br /><br />
   </div>
-  <div class="small-12 columns admin-content-selectable">
+  <div class="fill-row admin-content-selectable">
     <table width="100%">
       <thead>
-        <th width="125" class="pointer" ng-click="ModerationCtrl.setSortField('reporter_username')"><span ng-class="ModerationCtrl.getSortClass('reporter_username')"></span>&nbsp;Reported By</th>
-        <th width="185" class="pointer" ng-click="ModerationCtrl.setSortField('created_at')"><span ng-class="ModerationCtrl.getSortClass('created_at')"></span>&nbsp;Reported Date</th>
-        <th width="125" class="pointer" ng-click="ModerationCtrl.setSortField('priority')"><span ng-class="ModerationCtrl.getSortClass('priority')"></span>&nbsp;Status</th>
-        <th width="185" class="pointer" ng-click="ModerationCtrl.setSortField('offender_created_at')"><span ng-class="ModerationCtrl.getSortClass('offender_created_at')"></span>&nbsp;Posted Date</th>
-        <th width="200"class="pointer" style="" ng-click="ModerationCtrl.setSortField('offender_title')"><span ng-class="ModerationCtrl.getSortClass('offender_title')"></span>&nbsp;Title</th>
-        <th width="185" class="pointer" ng-click="ModerationCtrl.setSortField('offender_author_username')"><span ng-class="ModerationCtrl.getSortClass('offender_author_username')"></span>&nbsp;Author</th>
-        <th width="325">Reason</th>
-        <th width="225">Actions</th>
+        <th class="pointer hide-mobile" ng-click="ModerationCtrl.setSortField('reporter_username')"><span ng-class="ModerationCtrl.getSortClass('reporter_username')"></span>&nbsp;Reported By</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('created_at')"><span ng-class="ModerationCtrl.getSortClass('created_at')"></span>&nbsp;Reported Date</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('priority')"><span ng-class="ModerationCtrl.getSortClass('priority')"></span>&nbsp;Status</th>
+        <th class="pointer hide-mobile" ng-click="ModerationCtrl.setSortField('offender_created_at')"><span ng-class="ModerationCtrl.getSortClass('offender_created_at')"></span>&nbsp;Posted Date</th>
+        <th class="pointer hide-mobile" style="" ng-click="ModerationCtrl.setSortField('offender_title')"><span ng-class="ModerationCtrl.getSortClass('offender_title')"></span>&nbsp;Title</th>
+        <th class="pointer" ng-click="ModerationCtrl.setSortField('offender_author_username')"><span ng-class="ModerationCtrl.getSortClass('offender_author_username')"></span>&nbsp;Author</th>
+        <th class="reason hide-mobile">Reason</th>
+        <th class="post-actions">Actions</th>
       </thead>
       <tbody>
         <tr ng-class="{ 'active-row' : ModerationCtrl.reportId === postReport.id }" class="selectable-row pointer" ng-click="ModerationCtrl.selectReport(postReport)" ng-repeat="postReport in ModerationCtrl.postReports track by postReport.id">
-          <td><a ui-sref="profile({ username: postReport.reporter_username })" ng-bind="postReport.reporter_username"></td>
+          <td class="hide-mobile"><a ui-sref="profile({ username: postReport.reporter_username })" ng-bind="postReport.reporter_username"></td>
           <td ng-bind="postReport.created_at | humanDate"></td>
           <td ng-bind="postReport.status"></td>
-          <td ng-bind="postReport.offender_created_at | humanDate"></td>
-          <td><a ui-sref="posts.data({ threadId: postReport.offender_thread_id, '#': postReport.offender_post_id })" ng-bind="postReport.offender_title"></a></td>
+          <td class="hide-mobile" ng-bind="postReport.offender_created_at | humanDate"></td>
+          <td class="hide-mobile"><a ui-sref="posts.data({ threadId: postReport.offender_thread_id, '#': postReport.offender_post_id })" ng-bind="postReport.offender_title"></a></td>
           <td><a ui-sref="profile({ username: postReport.offender_author_username })" ng-bind="postReport.offender_author_username"></a></td>
-          <td><div ng-bind="postReport.reporter_reason"></div></td>
+          <td class="hide-mobile"><div ng-bind="postReport.reporter_reason"></div></td>
           <td>
             <a href="#" ng-click="ModerationCtrl.showSetStatus(postReport)">Status</a>&nbsp;&nbsp;
             <span>Edit</span>&nbsp;&nbsp;
@@ -68,12 +67,14 @@
         </tr>
       </tbody>
     </table>
-    <div class="right"><pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination></div>
+    <div class="pagination-wrap">
+      <pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination>
+    </div>
   </div>
 </div>
 <br />
-<div class="row full-width" ng-show="ModerationCtrl.previewPost !== null">
-  <div class="small-12 large-4 columns">
+<div ng-show="ModerationCtrl.previewPost !== null">
+  <div class="report-details-wrap">
     <h5 class="thin-dotted-underline">Report Details</h5>
     <table width="100%" class="report-details">
       <tbody>
@@ -142,7 +143,7 @@
     </form>
   </div>
   <!-- Post Body Section -->
-  <div class="small-12 large-8 columns">
+  <div class="preview-wrap">
     <h5 class="thin-dotted-underline">Reported Post</h5>
     <!-- Post Body -->
     <div class="post-body" post-processing="ModerationCtrl.previewPost.body" style-fix="true"></div>

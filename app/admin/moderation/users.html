@@ -20,14 +20,13 @@
     <label for="posts-filter-4">Bad Report</label>
   </div>
   <div class="filter header-spacer">&nbsp;</div>
-  <div class="user-search">
+  <div class="user-search clear">
     <div class="nested-input-container">
       <a ng-if="ModerationCtrl.search" ng-click="ModerationCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
       <a ng-click="ModerationCtrl.searchReports()" class="nested-btn">Search</a>
       <input class="nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="users-search" placeholder="Search reported users" ng-keydown="$event.which === 13 && ModerationCtrl.searchReports()" ng-keyup="$event.which === 27 && ModerationCtrl.clearSearch()" />
     </div>
   </div>
-  <div class="clear"></div>
 </div>
 <div class="fill-row centered-text" ng-if="!ModerationCtrl.search && ModerationCtrl.count < 1">
   <h4>No User Reports to display in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong></h4>
