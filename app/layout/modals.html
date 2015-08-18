@@ -1,73 +1,61 @@
 <!-- Login Modal -->
-<modal class="tiny" show="HeaderCtrl.showLogin" on-close="HeaderCtrl.clearLoginFields()">
+<modal show="HeaderCtrl.showLogin" on-close="HeaderCtrl.clearLoginFields()">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-dotted-underline">Login</h3>
-
+    <h3 class="thin-underline">Login</h3>
     <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" auto-focus="$parent.focus" required>
-    <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password" required>
-    <div class="form-login-remember">
-      <label>
-        <input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">
-        Remember Me
-      </label>
-    </div>
+    <label>
+      <div class="input-info">Minimum 8 characters</div>
+      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password"  ng-class="{'ng-invalid': HeaderCtrl.user.password.length < 8 }" required>
+    </label>
+    <label>
+      <input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">
+      Remember Me
+    </label>
 
-    <div class="form-action">
-      <button class="button no-margin" ng-click="HeaderCtrl.login()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+    <button class="button fill-row" ng-click="HeaderCtrl.login()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
         Login
-      </button>
-    </div>
-
-    <div class="form-action-secondary">
-      <a ng-click="HeaderCtrl.swapModals()">
-        Help, I forgot my password!
-      </a>
+    </button>
+    <hr />
+    <div class="centered-text">
+      <a ng-click="HeaderCtrl.swapModals()">Help, I forgot my password!</a>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Recover Account Modal -->
-<modal class="tiny" show="HeaderCtrl.showRecover" on-close="HeaderCtrl.clearRecoverFields()">
+<modal show="HeaderCtrl.showRecover" on-close="HeaderCtrl.clearRecoverFields()">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-dotted-underline">Recover Your Account</h3>
+    <h3 class="thin-underline">Recover Your Account</h3>
 
-    <input type="text" placeholder="Username or Email" ng-model="HeaderCtrl.recoverQuery" ng-disabled="HeaderCtrl.recoverSubmitted" auto-focus="$parent.focus" required>
-    <span ng-if="HeaderCtrl.recoverBtnLabel === 'Account Reset'">
+    <input type="text" placeholder="Username or Email" ng-model="HeaderCtrl.recoverQuery" ng-hide="HeaderCtrl.recoverBtnLabel === 'Account Reset'" ng-disabled="HeaderCtrl.recoverSubmitted" auto-focus="$parent.focus" required>
+    <span ng-show="HeaderCtrl.recoverBtnLabel === 'Account Reset'">
       Please check your email to reset your password.
       <br /><br />
     </span>
-
-    <div class="form-action">
-      <button class="button no-margin recover-btn" ng-click="HeaderCtrl.recover()"
+    <button class="button fill-row" ng-click="HeaderCtrl.recover()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.recoverSubmitted" ng-bind="HeaderCtrl.recoverBtnLabel"></button>
-    </div>
-
-    <div class="form-action-secondary">
+    <hr />
+    <div class="centered-text">
       <a ng-click="HeaderCtrl.swapModals()">Take me back to Login</a>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
-<!-- Registration Confrimation Modal -->
-<modal class="tiny" show="HeaderCtrl.showRegisterSuccess">
-  <h3 class="thin-dotted-underline">Registration Success</h3>
+<!-- Registration Confirmation Modal -->
+<modal show="HeaderCtrl.showRegisterSuccess">
+  <h3 class="thin-underline">Registration Success</h3>
   <br />
   Thank you for registering. Please check your email and confirm your account.
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Register Modal -->
-<modal class="small" show="HeaderCtrl.showRegister" on-close="HeaderCtrl.clearRegisterFields()">
-  <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-dotted-underline">Register</h3>
+<modal show="HeaderCtrl.showRegister" on-close="HeaderCtrl.clearRegisterFields()">
+  <form name="$parent.form" novalidate>
+    <h3 class="thin-underline">Register</h3>
 
     <div class='input-section'>
       <label>
-        <div class="inline-block label secondary input-info">
+        <div class="input-info">
           Email must be valid to confirm account
         </div>
         <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.required" class="invalid right">
@@ -104,35 +92,39 @@
         <div ng-if="$parent.form.password.$touched && $parent.form.password.$error.required" class="input-error invalid right">
           Password is required
         </div>
-        <div ng-if="$parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !$parent.form.password.$error.required" class="input-error invalid right">
+        <div ng-if="$parent.form.password.$touched && HeaderCtrl.registerUser.password.length < 8" class="input-error invalid right">
+          Password must be at least 8 characters
+        </div>
+        <div ng-if="$parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.password.length >= 8 && !$parent.form.password.$error.required" class="input-error invalid right">
           Password and confirmation do not match
         </div>
-        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Password" required>
-        <i ng-if="($parent.form.password.$touched && !$parent.form.confirmation.$touched && !$parent.form.password.$error.required) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !$parent.form.password.$error.required)" class="fa fa-check input-icon valid"></i>
-        <i ng-if="($parent.form.password.$touched && $parent.form.password.$error.required) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
+        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password.length < 8 }" class="icon-padding" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Password" required>
+        <i ng-if="($parent.form.password.$touched && !$parent.form.confirmation.$touched && !$parent.form.password.$error.required && HeaderCtrl.registerUser.password.length >= 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.password.length >= 8 && !$parent.form.password.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.password.$touched && $parent.form.password.$error.required) || ($parent.form.password.$touched && HeaderCtrl.registerUser.password.length < 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
       </label>
     </div>
 
     <div class="input-section">
       <label>
         <div ng-if="$parent.form.confirmation.$touched && $parent.form.confirmation.$error.required" class="input-error invalid right">
-          Password confirmation is required
+          Confirmation is required
         </div>
-        <div ng-if="$parent.form.password.$touched && HeaderCtrl.registerUser.password !== '' && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && !$parent.form.confirmation.$error.required" class="input-error invalid right">
+        <div ng-if="$parent.form.confirmation.$touched && HeaderCtrl.registerUser.confirmation.length < 8" class="input-error invalid right">
+          Confirmation must be at least 8 characters
+        </div>
+        <div ng-if="$parent.form.password.$touched && HeaderCtrl.registerUser.password !== '' && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.confirmation.length >= 8 && !$parent.form.confirmation.$error.required" class="input-error invalid right">
           Password and confirmation do not match
         </div>
-        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation }" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Confirm Password" required>
-        <i ng-if="($parent.form.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !$parent.form.password.$touched && !$parent.form.confirmation.$error.required) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && !$parent.form.confirmation.$error.required)" class="fa fa-check input-icon valid"></i>
-        <i ng-if="($parent.form.confirmation.$touched && $parent.form.confirmation.$error.required) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
+        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.confirmation.length < 8 }" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Confirm Password" required>
+        <i ng-if="($parent.form.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !$parent.form.password.$touched && !$parent.form.confirmation.$error.required && HeaderCtrl.registerUser.confirmation.length >= 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.confirmation.length >= 8 && !$parent.form.confirmation.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.confirmation.$touched && $parent.form.confirmation.$error.required) || ($parent.form.confirmation.$touched && HeaderCtrl.registerUser.confirmation.length < 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
       </label>
     </div>
 
-    <div class="input-section form-action">
-      <button class="button no-margin" ng-click="HeaderCtrl.register()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation">
+    <div class="input-section clear">
+      <button class="fill-row" ng-click="HeaderCtrl.register()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.registerUser.password.length < 8 || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation">
         Register
       </button>
     </div>
   </form>
-  
-  <a class="close-reveal-modal">&#215;</a>
 </modal>

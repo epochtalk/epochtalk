@@ -2,7 +2,9 @@
 $max-width: 960px;
 
 $tablet: 768px;
+$desktop: 1200px;
 $mobile: new-breakpoint(max-width $tablet - 1 8);
+$desktop-small: new-breakpoint(max-width $desktop 12);
 
 $visual-grid: false;
 $visual-grid-color: red;

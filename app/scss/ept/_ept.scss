@@ -38,6 +38,46 @@ a {
 .hide-mobile { @include media($mobile) { display: none; } }
 
 /*-------------- Global Components -------------- */
+.ng-modal.ng-hide { opacity: 0; }
+.ng-modal { @include transition(opacity 0.1s linear); opacity: 1; }
+.ng-modal-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+.ng-modal-dialog {
+  @include span-columns(4, block-collapse);
+  left: 0;
+  right: 0;
+  top: 20%;
+  margin: 0 auto;
+  position: absolute;
+  z-index: 10000;
+  background-color: #fff;
+  box-shadow: 4px 4px 80px #000;
+  @include media($desktop-small) { @include span-columns(6, block-collapse); }
+  @include media($mobile) { @include span-columns(7, block-collapse); top: 2.5%; }
+}
+.ng-modal.medium .ng-modal-dialog {
+  @include span-columns(7, block-collapse);
+  @include media($desktop-small) { @include span-columns(9, block-collapse); }
+  @include media($mobile) { @include span-columns(7, block-collapse); top: 2.5%; }
+}
+.ng-modal-dialog-content { padding: 2rem; text-align: left; }
+.ng-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  color: $color-gray-disabled;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: inline-block;
+  font-weight: bold;
+}
 .button, button {
   @include border-radius(2px);
   background-color: $color-active-fill;
@@ -45,12 +85,15 @@ a {
   font-family: $base-font-sans;
   outline: none;
   padding: 0.625rem 1.375rem;
+  &:hover, &:focus { background-color: $color-active-dark; border-color: $color-active-dark; }
+  &.disabled, &.disabled:hover, &.disabled:focus, &[disabled], &[disabled]:hover, &[disabled]:focus {
+    background-color: $color-gray-disabled;
+    border-color: $color-gray-disabled;
+  }
 }
 .error-label { @include label(error,  0.6875rem, 2px, 0.1rem); }
 .thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
-.secret {
-  &.ng-show, &.ng-hide { @include transition(none !important); }
-}
+.secret { &.ng-show, &.ng-hide { @include transition(none !important); } }
 .post-body {
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -150,6 +193,61 @@ input.toggle-switch + label:after {
 }
 input.toggle-switch:checked + label { background-color: $color-active-fill; }
 input.toggle-switch:checked + label:after { margin-left: 1.6875rem; background-color: $color-active-fill; }
+
+input[type] {
+  box-shadow: none;
+  &.ng-invalid,
+  &.ng-invalid-mismatch { border-color: red; }
+  &.ng-untouched { border-color: #ccc; }
+  &:focus { box-shadow: none; }
+}
+
+.input-info { @include label(default, 0.6875rem, 0, 0 0.3125rem); }
+.input-section {
+  position: relative;
+  margin-bottom: 1.875rem;
+  input {
+    margin-bottom: 0;
+    &.icon-padding { padding-right: 40px; }
+  }
+  button, .button { margin-bottom: 0; }
+  &:last-child {margin-bottom: 0px; }
+  .input-error { margin-top: -1.5625rem; }
+  .invalid { color: rgba(206, 4, 6, 0.64); }
+  .valid { color: rgba(27, 196, 63, 0.64); }
+  .input-icon {
+    cursor: text;
+    font-size: 1.25rem;
+    position: absolute;
+    z-index: 99999;
+    bottom: 0.5rem;
+    right: 0.8rem;
+  }
+}
+
+input[type="text"], input[type="password"], input[type="date"], input[type="datetime"],
+input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"],
+input[type="number"], input[type="search"], input[type="tel"], input[type="time"],
+input[type="url"], input[type="color"], textarea {
+  @include border-radius(0);
+  @include transition(all 0.15s linear);
+  -webkit-appearance: none;
+  background-color: #FFFFFF;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.75);
+  display: block;
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+  padding: 0.5rem;
+  height: 2.3125rem;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 
 /*-------------- Index File -------------- */
 header {

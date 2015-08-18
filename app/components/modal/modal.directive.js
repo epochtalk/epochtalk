@@ -1,4 +1,4 @@
-module.exports = ['$timeout', function($timeout) {
+module.exports = ['$anchorScroll', function($anchorScroll) {
   return {
     restrict: 'E',
     scope: {
@@ -7,13 +7,17 @@ module.exports = ['$timeout', function($timeout) {
     },
     replace: true,
     transclude: true,
-    template: '<div class="reveal-modal" data-reveal>' +
-              '<div ng-transclude></div></div>',
-    link: function(scope, element) {
+    template:
+    '<div class="ng-modal" ng-show="show">' +
+      '<div class="ng-modal-overlay" ng-click="close()"></div>' +
+      '<div class="ng-modal-dialog" ng-style="dialogStyle">' +
+        '<div class="ng-modal-close" ng-click="close()"><i class="fa fa-times"></i></div>' +
+        '<div class="ng-modal-dialog-content" ng-transclude></div>' +
+      '</div>' +
+    '</div>',
+    link: function(scope) {
       scope.focus = false;
-
-      function close() {
-        $(document).off('close.fndtn.reveal', '[data-reveal]');
+      scope.close = function() {
         scope.focus = false;
         scope.show = false;
         if (scope.form) {
@@ -21,15 +25,11 @@ module.exports = ['$timeout', function($timeout) {
           scope.form.$setUntouched();
         }
         if (scope.onClose) { scope.onClose(); }
-      }
+      };
 
       scope.$watch('show', function(show) {
-        if (show) {
-          $(element).foundation('reveal', 'open');
-          $(document).on('close.fndtn.reveal', '[data-reveal]', close);
-          scope.focus = true;
-        }
-        else { $(element).foundation('reveal', 'close'); }
+        if (show) { scope.focus = true; $anchorScroll();}
+        else { scope.close(); }
       });
     }
   };

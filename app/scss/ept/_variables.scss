@@ -14,6 +14,7 @@ $color-active-fill: rgb(255, 116, 66);
 $color-gray: #444;
 $color-gray-med: lighten($color-gray, 33.5%);
 $color-gray-light: lighten($color-gray, 60%);
+$color-gray-disabled: lighten($color-gray, 40%);
 $color-gray-sub: lighten($color-gray, 71%);
 $color-gray-dark: darken($color-gray, 10%);
 
