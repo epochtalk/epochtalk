@@ -128,6 +128,10 @@ exports.update = {
       private_key: Joi.string(),
       verify_registration: Joi.boolean(),
       login_required: Joi.boolean(),
+      redis: Joi.object().keys({
+        host: Joi.string(),
+        port: Joi.number()
+      }),
       website: Joi.object().keys({
         title: Joi.string(),
         description: Joi.string(),
