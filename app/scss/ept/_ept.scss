@@ -59,15 +59,17 @@ a {
   z-index: 10000;
   background-color: #fff;
   box-shadow: 4px 4px 80px #000;
+  button, .button { margin-bottom: 0; }
   @include media($desktop-small) { @include span-columns(6, block-collapse); }
-  @include media($mobile) { @include span-columns(7, block-collapse); top: 2.5%; }
+  @include media($mobile) { @include span-columns(7, block-collapse); top: 3%; }
 }
 .ng-modal.medium .ng-modal-dialog {
   @include span-columns(7, block-collapse);
+  top: 10%;
   @include media($desktop-small) { @include span-columns(9, block-collapse); }
-  @include media($mobile) { @include span-columns(7, block-collapse); top: 2.5%; }
+  @include media($mobile) { @include span-columns(7, block-collapse); top: 3%; }
 }
-.ng-modal-dialog-content { padding: 2rem; text-align: left; }
+.ng-modal-dialog-content { padding: 2rem; text-align: left;  }
 .ng-modal-close {
   position: absolute;
   top: 0.75rem;
@@ -932,6 +934,31 @@ main #admin-content {
       td { padding-top: 0.75rem; padding-bottom: 0.75rem; vertical-align: middle; }
     }
   }
+  table.striped {
+    background: #FFFFFF;
+    margin-bottom: 1.25rem;
+    border: solid 1px $color-gray-light;
+    table-layout: auto;
+    thead {
+      background: $color-gray-med-light;
+      tr th, tr td {
+        padding: 0.5rem 0.625rem 0.625rem;
+        font-size: 0.875rem;
+        font-weight: bold;
+        color: $color-gray;
+      }
+    }
+    tr th, tr td {
+      padding: 0.5625rem 0.625rem;
+      font-size: 0.875rem;
+      color: $color-gray;
+      text-align: left;
+    }
+    tr:nth-of-type(even) { background: $color-gray-sub; }
+    tr { border: 0; }
+    thead tr th, tbody tr th, tbody tr td, tr td { display: table-cell; line-height: 1.125rem; }
+  }
+
   .admin-table-header {
     @include clearfix;
     @include row;
@@ -1080,8 +1107,8 @@ main #admin-content {
     table-layout: fixed;
     th { @include truncate-ellipsis; }
     th.reason { width: 25rem; }
-    th.user-actions { width: 7.5rem; }
-    th.post-actions { width: 12.5rem; }
+    th.user-actions { width: 9rem; }
+    th.post-actions { width: 13rem; }
     tr td {
       @include truncate-ellipsis;
       padding-top: 0.125rem;

@@ -31,8 +31,8 @@ module.exports = ['$compile', function($compile) {
             children: catBoards
           };
           // Edit pencil and trash buttons
-          var toolbarHtml = '<i data-reveal-id="delete-category" ng-click="setCatDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
-            '<i data-reveal-id="edit-category" ng-click="setEditCat(' +
+          var toolbarHtml = '<i ng-click="setCatDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i ng-click="setEditCat(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item dd-root-item" data-cat-id="' + cat.id + '" data-id="' + dataId +
@@ -57,7 +57,7 @@ module.exports = ['$compile', function($compile) {
             description: board.description,
             children: board.children || []
           };
-          var toolbarHtml = '<i data-reveal-id="delete-board" ng-click="setBoardDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i><i data-reveal-id="edit-board" ng-click="setEditBoard(' +
+          var toolbarHtml = '<i ng-click="setBoardDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i><i ng-click="setEditBoard(' +
             dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item" data-board-id="' + board.id + '" data-id="' + dataId + '">' +
@@ -71,7 +71,7 @@ module.exports = ['$compile', function($compile) {
       scope.insertNewCategory = function() {
         var category = { name: scope.newCatName };
 
-        if (category.name !== '') {
+        if (category.name) {
           var dataId = scope.getDataId();
           // Update hashmap of list items
           scope.nestableMap[dataId] = { id: -1, name: category.name };
@@ -79,8 +79,8 @@ module.exports = ['$compile', function($compile) {
           scope.newCategories.push(category);
 
           // Edit pencil and trash buttons
-          var toolbarHtml = '<i data-reveal-id="delete-category" ng-click="setCatDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
-            '<i data-reveal-id="edit-category" ng-click="setEditCat(' +
+          var toolbarHtml = '<i ng-click="setCatDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i>' +
+            '<i ng-click="setEditCat(' +
               dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
           var status = '<i class="fa status modified"></i>';
           var newCatHtml = '<li class="dd-item dd-root-item" data-cat-id="' + -1 + '"  data-id="' + dataId + '" data-top="true" data-name="' + category.name +

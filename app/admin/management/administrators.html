@@ -39,20 +39,21 @@
   </div>
 </div>
 
-<modal class="tiny" show="AdminManagementCtrl.showConfirmRemoveModal" on-close="AdminManagementCtrl.closeConfirmRemove()">
-  <h3 class="thin-dotted-underline">Confirm Removal</h3>
+<modal show="AdminManagementCtrl.showConfirmRemoveModal" on-close="AdminManagementCtrl.closeConfirmRemove()">
+  <h3 class="thin-underline">Confirm Removal</h3>
   Are you sure you would like to remove <strong>{{AdminManagementCtrl.selectedUser.username}}</strong> from administrators?
   <br /><br />
-  <button class="button no-margin small-12" ng-click="AdminManagementCtrl.removeAdministrator()" ng-disabled="AdminManagementCtrl.roleRemoveSubmitted" ng-bind="AdminManagementCtrl.confirmRemoveBtnLabel"></button>
-  <a class="close-reveal-modal">&#215;</a>
+  <div class="clear">
+    <button class="fill-row" ng-click="AdminManagementCtrl.removeAdministrator()" ng-disabled="AdminManagementCtrl.roleRemoveSubmitted" ng-bind="AdminManagementCtrl.confirmRemoveBtnLabel"></button>
+  </div>
 </modal>
 
-<modal class="tiny" show="AdminManagementCtrl.showConfirmAddModal" on-close="AdminManagementCtrl.closeConfirmAdd()">
+<modal show="AdminManagementCtrl.showConfirmAddModal" on-close="AdminManagementCtrl.closeConfirmAdd()">
   <form name="$parent.form" class="css-form">
-    <h3 class="thin-dotted-underline">Confirm User Role</h3>
+    <h3 class="thin-underline">Confirm User Role</h3>
     <br />
     <label>User Information</label>
-    <table width="100%">
+    <table class="striped" width="100%">
       <tr>
         <td>Username</td>
         <td ng-bind="AdminManagementCtrl.selectedUser.username"></td>
@@ -70,10 +71,9 @@
     <input type="radio" name="roleAdmin" ng-model="AdminManagementCtrl.selectedRole" value="Administrator" id="roleAdmin" ng-disabled="AdminManagementCtrl.roleAddSubmitted" required><label for="roleAdmin">Administrator</label>
     <input type="radio" name="roleSuper" ng-model="AdminManagementCtrl.selectedRole" value="Super Administrator" id="roleSuper" ng-disabled="AdminManagementCtrl.roleAddSubmitted" required><label for="roleSuper">Super Administrator</label>
 
-    <div class="form-action">
-      <button class="button no-margin" ng-click="AdminManagementCtrl.addAdministrator()"
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminManagementCtrl.addAdministrator()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminManagementCtrl.roleAddSubmitted" ng-bind="AdminManagementCtrl.confirmAddBtnLabel"></button>
     </div>
   </form>
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
