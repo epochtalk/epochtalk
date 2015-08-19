@@ -39,9 +39,9 @@ var config = {
   },
   images: {
     storage: process.env.IMAGES_STORAGE || 'local',
-    maxSize: process.env.IMAGES_MAX_SIZE || 10485760,
-    expiration: process.env.IMAGES_EXPIRATION || 1000 * 60 * 60 * 2,
-    interval: process.env.IMAGES_INTERVAL || 1000 * 60 * 15,
+    maxSize: Number(process.env.IMAGES_MAX_SIZE) || 10485760,
+    expiration: Number(process.env.IMAGES_EXPIRATION) || 1000 * 60 * 60 * 2,
+    interval: Number(process.env.IMAGES_INTERVAL) || 1000 * 60 * 15,
     local: {
       dir: process.env.IMAGES_LOCAL_DIR || 'public/images',
       path: process.env.IMAGES_LOCAL_PATH || 'static/images'
