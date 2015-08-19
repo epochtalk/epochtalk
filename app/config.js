@@ -730,6 +730,25 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     });
 
+    $stateProvider.state('messages', {
+      url: '/messages',
+      parent: 'public-layout',
+      views: {
+        'content': {
+          controller: 'MessagesCtrl',
+          controllerAs: 'MessagesCtrl',
+          template: fs.readFileSync(__dirname + '/messages/messages.html')
+        }
+      },
+      resolve: {
+        $title: function() { return 'Private Messages'; },
+        pageData: ['Messages', function(Messages) {
+          return Messages.latest().$promise
+          .then(function(messages) { return messages; });
+        }]
+      }
+    });
+
     $stateProvider.state('404', {
       views: {
         'body': {
