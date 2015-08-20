@@ -160,8 +160,8 @@ exports.allCategories = {
   auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply([]); }
-
-    return reply(db.boards.allCategories());
+    var promise = db.boards.allCategories();
+    return reply(promise);
   }
 };
 

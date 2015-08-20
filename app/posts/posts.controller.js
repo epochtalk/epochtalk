@@ -9,7 +9,6 @@ module.exports = [
     parent.board_id = thread.board_id;
     parent.posts = posts;
     this.rootUrl = generateBaseUrl();
-
     this.user = Session.user;
     this.posts = posts;
     this.thread = thread;

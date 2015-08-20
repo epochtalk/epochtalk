@@ -1,20 +1,20 @@
 <div class="row post-block" ng-class="{ 'admin': post.user.role === USER_ROLES.admin || post.user.role === USER_ROLES.superAdmin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }"
 ng-repeat="post in PostsCtrl.posts track by post.id">
   <!-- Post Anchor -->
-  <a class="anchor-offset" id="{{post.id}}"></a>
+  <a class="anchor-offset" id="{{::post.id}}"></a>
 
   <!-- Post Profile Section -->
   <div class="small-12 medium-2 columns">
     <div class="post-user">
-      <a style="display: block" href="/profiles/{{post.user.username}}">
+      <a style="display: block" href="/profiles/{{::post.user.username}}">
         <div class="user-avatar">
-          <img ng-src="{{post.avatar}}">
+          <img ng-src="{{::post.avatar}}">
           <span class="user-role">Hero</span>
         </div>
       </a>
       <ul class="user-details">
         <li class="name">
-          <a href="/profiles/{{post.user.username}}" ng-bind-html="post.user.username"></a>
+          <a href="/profiles/{{::post.user.username}}" ng-bind="::post.user.username"></a>
           <span class="user-role-sm">Hero</span>
         </li>
         <!-- <li class="points"> * * * * *</li> -->
@@ -28,7 +28,7 @@ ng-repeat="post in PostsCtrl.posts track by post.id">
     <!-- Post Title -->
     <div class="post-title">
       <!-- <span ng-bind-html="post.title"></span> -->
-      <span class="timestamp" ng-bind="post.created_at | humanDate"></span>
+      <span class="timestamp" ng-bind="::post.created_at | humanDate"></span>
       <ul class="post-action">
         <li ng-if="PostsCtrl.user.isAdmin && $index !== 0">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">

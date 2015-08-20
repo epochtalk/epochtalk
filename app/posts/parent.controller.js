@@ -1,5 +1,3 @@
-var _ = require('lodash');
-
 module.exports = [
   '$scope', '$timeout', '$location', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert',
   function($scope, $timeout, $location, $state, Session, Boards, Posts, Threads, Reports, Alert) {
@@ -11,44 +9,42 @@ module.exports = [
     this.focusEditor = false;
     this.newPostEnabled = false;
     this.quote = '';
-    this.tempPost = { body: '', raw_body: '' };
-    this.posting = { post: this.tempPost };
+    this.posting = { post: { body: '', raw_body: '' } };
     this.editorPosition = 'editor-fixed-bottom';
     this.resize = true;
     this.moveBoard = {};
     this.boards = [];
+
     this.showThreadControls = function() {
       var show = false;
       if (ctrl.user.isAdmin || ctrl.user.isMod) { show = true; }
       else if (ctrl.user.id === ctrl.thread.user.id) { show = true; }
       return show;
     };
-    this.allowPosting = function() {
-      return ctrl.loggedIn() && ctrl.newPostEnabled && !ctrl.thread.locked;
-    };
-    getBoards();
-    function getBoards() {
-      // check if user is an admin
-      var adminRole = _.find(Session.user.roles, function(role) {
-        return role.name === 'Administrator';
-      });
 
-      if (adminRole) {
+    this.allowPosting = function() {
+      var allowed = false;
+      if (!ctrl.loggedIn()) { allowed = false; }
+      else if (!ctrl.newPostEnabled) { allowed = false; }
+      else if (Session.user.isAdmin || Session.user.isMod) { allowed = true; }
+      else if (!ctrl.thread.locked) { allowed = true; }
+      return allowed;
+    };
+
+    function getBoards() {
+      if (Session.user.isAdmin) {
         return Boards.all().$promise
         .then(function(allBoards) {
           ctrl.boards = allBoards || [];
-          ctrl.moveBoard = _.find(ctrl.boards, function(board) {
-            return board.id === ctrl.board_id;
+          ctrl.boards.map(function(board) {
+            if (board.id === ctrl.thread.board_id) { ctrl.moveBoard = board; }
           });
         });
       }
-      else { ctrl.boards = []; }
     }
 
     function calculatePages() {
-      var count;
-      if (ctrl.limit === 'all') { count = Number(ctrl.thread.post_count); }
-      else { count = Number(ctrl.limit) || 25; }
+      var count = Number(ctrl.limit) || 25;
       ctrl.pageCount = Math.ceil(ctrl.thread.post_count / count);
     }
     // pullPage function injected by child controller
@@ -58,16 +54,15 @@ module.exports = [
       function(postCount) { if (postCount) { calculatePages(); } }
     );
 
-    $scope.$watchGroup(
-      [function() { return ctrl.thread.id; },
-       function() { return ctrl.thread.title; }],
-      function(values) {
-        var id = values[0];
-        var title = values[1];
-        if (id && title && ctrl.newPostEnabled === false) {
-          initEditor(); //set editor
+    $scope.$watch(
+      function() { return ctrl.thread; },
+      function(thread) {
+        if (thread.id && thread.title && !ctrl.newPostEnabled) {
+          initEditor();
           ctrl.newPostEnabled = true;
         }
+
+        if (thread.board_id) { getBoards(); }
       }
     );
 
@@ -101,9 +96,7 @@ module.exports = [
     this.closePurgeThreadModal = function() {
       $timeout(function() { ctrl.showPurgeThreadModal = false; });
     };
-    this.openPurgeThreadModal = function() {
-      ctrl.showPurgeThreadModal = true;
-    };
+    this.openPurgeThreadModal = function() { ctrl.showPurgeThreadModal = true; };
     this.purgeThread = function() {
       Threads.delete({id: ctrl.thread.id}).$promise
       .then(function() { $state.go('board.data', {boardId: ctrl.board_id}); })
@@ -122,7 +115,7 @@ module.exports = [
       else { return true;}
     };
 
-    var initEditor = function(index, show) {
+    var initEditor = function(index) {
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         ctrl.posting.type = 'edit';
@@ -188,7 +181,7 @@ module.exports = [
         postPromise = Posts.save(post).$promise;
       }
       else if (type === 'edit') {
-        postPromise = Posts.update({id: ctrl.posting.id}, post).$promise;
+        postPromise = Posts.update(post).$promise;
       }
 
       postPromise.then(function(data) {
