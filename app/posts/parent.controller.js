@@ -48,7 +48,7 @@ module.exports = [
     function calculatePages() {
       var count;
       if (ctrl.limit === 'all') { count = Number(ctrl.thread.post_count); }
-      else { count = Number(ctrl.limit) || 10; }
+      else { count = Number(ctrl.limit) || 25; }
       ctrl.pageCount = Math.ceil(ctrl.thread.post_count / count);
     }
     // pullPage function injected by child controller

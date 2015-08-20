@@ -44,7 +44,7 @@ module.exports = ['user', 'usersPosts', 'usersPostsCount', 'limit', 'page', 'fie
     this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
       var params = $location.search();
       var page = Number(params.page) || 1;
-      var limit = Number(params.limit) || 10;
+      var limit = Number(params.limit) || 25;
       var field = params.field;
       var descending;
       // desc when undefined defaults to true, since we are sorting created_at desc by default

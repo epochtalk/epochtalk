@@ -60,7 +60,6 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
         pageKeys.push({ val: secondToLastPage, url: urlPrefix + secondToLastPage });
         pageKeys.push({ val: lastPage, url: urlPrefix + lastPage });
       }
-      pageKeys.push({ val: 'All', url: urlPrefix + '1&limit=all' });
       thread.page_keys = pageKeys;
     };
 
@@ -80,7 +79,7 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     this.offLCS = $rootScope.$on('$locationChangeSuccess', function(event){
       var params = $location.search();
       var page = Number(params.page) || 1;
-      var limit = Number(params.limit) || 10;
+      var limit = Number(params.limit) || 25;
       var pageChanged = false;
       var limitChanged = false;
 

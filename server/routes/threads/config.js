@@ -115,7 +115,7 @@ exports.import = {
   *
   * @apiParam (Query) {string} board_id The board whose threads to page through
   * @apiParam (Query) {number} page=1 The page of threads to bring back
-  * @apiParam (Query) {number} limit=10 The number of threads to bring back per page
+  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
   *
   * @apiSuccess {array} threads An array containing threads for the requested board, page and limit
   *
@@ -127,7 +127,7 @@ exports.byBoard = {
     query: {
       board_id: Joi.string().required(),
       page: Joi.number().default(1),
-      limit: Joi.number().integer().min(1).default(10)
+      limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
   pre: [

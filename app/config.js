@@ -58,7 +58,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       },
       resolve: {
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 10;
+          return $stateParams.limit || 25;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -78,7 +78,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             username: $stateParams.username,
             field: $stateParams.field,
             desc: $stateParams.desc || true,
-            limit: Number($stateParams.limit) || 10,
+            limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1
           };
           return Posts.pageByUser(params).$promise
@@ -107,7 +107,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           .then(function(user) { return user; });
         }],
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 10;
+          return $stateParams.limit || 25;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -127,7 +127,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             username: $stateParams.username,
             field: $stateParams.field,
             desc: $stateParams.desc || true,
-            limit: Number($stateParams.limit) || 10,
+            limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1
           };
           return Posts.pageByUser(params).$promise
@@ -219,7 +219,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         threads: ['Threads', '$stateParams', function(Threads, $stateParams) {
           var query = {
             board_id: $stateParams.boardId,
-            limit: Number($stateParams.limit) || 10,
+            limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1
           };
           return Threads.byBoard(query).$promise
@@ -230,11 +230,11 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }],
         threadLimit: ['$stateParams', function($stateParams) {
           // TODO: this needs to be grabbed from user settings
-          return Number($stateParams.limit) || 10;
+          return Number($stateParams.limit) || 25;
         }],
         postLimit: [function() {
           // TODO: this needs to be grabbed from user settings
-          return 10;
+          return 25;
         }]
       }
     });
@@ -286,7 +286,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           var query = {
             thread_id: $stateParams.threadId,
             page: Number($stateParams.page) || 1,
-            limit: limit === 'all' ? limit : (Number(limit) || 10)
+            limit: Number(limit) || 25
           };
           return Posts.byThread(query).$promise
           .then(function(posts) { return posts; });
@@ -295,9 +295,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return Number($stateParams.page) || 1;
         }],
         limit: ['$stateParams', function($stateParams) {
-          // TODO: this needs to be grabbed from user settings
-          if ($stateParams.limit === 'all') { return 'all'; }
-          else { return Number($stateParams.limit) || 10; }
+          return Number($stateParams.limit) || 25;
         }]
       }
     });
@@ -490,7 +488,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           var query = {
             field: $stateParams.field,
             desc: $stateParams.desc,
-            limit: Number($stateParams.limit) || 10,
+            limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1
           };
           return AdminUsers.pageModerators(query).$promise
@@ -510,7 +508,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return Number($stateParams.page) || 1;
         }],
         limit: ['$stateParams', function($stateParams) {
-          return Number($stateParams.limit) || 10;
+          return Number($stateParams.limit) || 25;
         }]
       }
     })
@@ -530,7 +528,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           var query = {
             field: $stateParams.field,
             desc: $stateParams.desc,
-            limit: Number($stateParams.limit) || 10,
+            limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1
           };
           return AdminUsers.pageAdmins(query).$promise
@@ -550,7 +548,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return Number($stateParams.page) || 1;
         }],
         limit: ['$stateParams', function($stateParams) {
-          return Number($stateParams.limit) || 10;
+          return Number($stateParams.limit) || 25;
         }]
       }
     });
@@ -588,7 +586,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       resolve: {
         $title: function() { return 'User Moderation'; },
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 10;
+          return $stateParams.limit || 25;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -626,7 +624,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             field: $stateParams.field,
             desc: $stateParams.desc || true,
             filter: $stateParams.filter,
-            limit: Number($stateParams.limit) || 10,
+            limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1,
             search: $stateParams.search
           };
@@ -668,7 +666,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       resolve: {
         $title: function() { return 'Post Moderation'; },
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 10;
+          return $stateParams.limit || 25;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -706,7 +704,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             field: $stateParams.field,
             desc: $stateParams.desc || true,
             filter: $stateParams.filter,
-            limit: Number($stateParams.limit) || 10,
+            limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1,
             search: $stateParams.search
           };

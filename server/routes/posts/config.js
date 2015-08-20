@@ -155,10 +155,7 @@ exports.byThread = {
     query: {
       thread_id: Joi.string().required(),
       page: Joi.number().integer().default(1),
-      limit: [
-        Joi.number().integer().min(1).max(100),
-        Joi.string().valid('all')
-      ]
+      limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
   pre: [ { method: pre.canRetrieve } ],
@@ -172,25 +169,13 @@ exports.byThread = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var threadId = request.query.thread_id;
     var opts = {
-      limit: request.query.limit || 10,
+      limit: request.query.limit,
       page: request.query.page
     };
 
     // retrieve posts for this thread
-    var promise;
-    if (opts.limit === 'all') {
-      promise = db.threads.find(threadId)
-      .then(function(thread) {
-        opts.limit = Number(thread.post_count) || 10;
-        return [threadId, opts];
-      })
-      .spread(db.posts.byThread)
-      .then(function(posts) { return cleanPosts(posts, userId); });
-    }
-    else {
-      promise = db.posts.byThread(threadId, opts)
-      .then(function(posts) { return cleanPosts(posts, userId); });
-    }
+    var promise = db.posts.byThread(threadId, opts)
+    .then(function(posts) { return cleanPosts(posts, userId); });
 
     return reply(promise);
   }
@@ -350,7 +335,7 @@ exports.pageByUserCount = {
   * @apiParam {string} username The username of the user's whose posts to page through
   *
   * @apiParam (Query) {number} page=1 Which page of the user's posts to retrieve
-  * @apiParam (Query) {number} limit=10 How many posts to return per page
+  * @apiParam (Query) {number} limit=25 How many posts to return per page
   * @apiParam (Query) {string="created_at","updated_at","title"} field The field to sort the posts by
   * @apiParam (Query) {boolean} desc=false True to sort descending, false to sort ascending
   *
@@ -364,7 +349,7 @@ exports.pageByUser = {
     params: { username: Joi.string().required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(10),
+      limit: Joi.number().integer().min(1).max(100).default(25),
       field: Joi.string().default('created_at').valid('thread_title', 'created_at', 'updated_at', 'title'),
       desc: Joi.boolean().default(false)
     }

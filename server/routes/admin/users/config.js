@@ -263,7 +263,7 @@ exports.searchUsernames = {
   validate: {
     query: {
       username: Joi.string().required(),
-      limit: Joi.number().integer().min(1).default(15)
+      limit: Joi.number().integer().min(1).max(100).default(15)
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
@@ -372,7 +372,7 @@ exports.countModerators = {
   * @apiDescription This allows Administrators to page through all registered users.
   *
   * @apiParam (Query) {number{1..n}} [page=1] The page of registered users to retrieve
-  * @apiParam (Query) {number{1..n}} [limit=10] The number of users to retrieve per page
+  * @apiParam (Query) {number{1..n}} [limit=25] The number of users to retrieve per page
   * @apiParam (Query) {string="username","email","updated_at","created_at","imported_at","ban_expiration"} [field=username] The db field to sort the results by
   * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results
   * in descending order
@@ -394,7 +394,7 @@ exports.page = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(15),
+      limit: Joi.number().integer().min(1).max(100).default(25),
       field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'imported_at', 'ban_expiration'),
       desc: Joi.boolean().default(false),
       filter: Joi.string().valid('banned'),
@@ -425,7 +425,7 @@ exports.page = {
   * @apiDescription This allows Administrators to page through all registered admins.
   *
   * @apiParam (Query) {number{1..n}} [page=1] The page of registered admin users to retrieve
-  * @apiParam (Query) {number{1..n}} [limit=10] The number of admin users to retrieve per page
+  * @apiParam (Query) {number{1..n}} [limit=25] The number of admin users to retrieve per page
   * @apiParam (Query) {string="username","email","updated_at","created_at","roles"} [field=username] The db field to sort the results by
   * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results
   * in descending order
@@ -445,7 +445,7 @@ exports.pageAdmins = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(10),
+      limit: Joi.number().integer().min(1).max(100).default(25),
       field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'roles'),
       desc: Joi.boolean().default(false)
     }
@@ -453,10 +453,10 @@ exports.pageAdmins = {
   pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
     var opts = {
-      limit: request.query.limit || 10,
-      page: request.query.page || 1,
-      sortField: request.query.field || 'username',
-      sortDesc: request.query.desc || false
+      limit: request.query.limit,
+      page: request.query.page,
+      sortField: request.query.field,
+      sortDesc: request.query.desc
     };
     db.users.pageAdmins(opts)
     .then(function(admins) { reply(admins); });
@@ -472,7 +472,7 @@ exports.pageAdmins = {
   * @apiDescription This allows Administrators to page through all registered mods.
   *
   * @apiParam (Query) {number{1..n}} [page=1] The page of registered mod users to retrieve
-  * @apiParam (Query) {number{1..n}} [limit=10] The number of mod users to retrieve per page
+  * @apiParam (Query) {number{1..n}} [limit=25] The number of mod users to retrieve per page
   * @apiParam (Query) {string="username","email","updated_at","created_at","roles"} [field=username] The db field to sort the results by
   * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results
   * in descending order
@@ -492,7 +492,7 @@ exports.pageModerators = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(10),
+      limit: Joi.number().integer().min(1).max(100).default(25),
       field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'roles'),
       desc: Joi.boolean().default(false)
     }
@@ -500,10 +500,10 @@ exports.pageModerators = {
   pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
     var opts = {
-      limit: request.query.limit || 10,
-      page: request.query.page || 1,
-      sortField: request.query.field || 'username',
-      sortDesc: request.query.desc || false
+      limit: request.query.limit,
+      page: request.query.page,
+      sortField: request.query.field,
+      sortDesc: request.query.desc
     };
     db.users.pageModerators(opts)
     .then(function(moderators) { reply(moderators); });

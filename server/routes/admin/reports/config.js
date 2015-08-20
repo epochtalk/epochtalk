@@ -262,7 +262,7 @@ exports.updatePostReportNote = {
   * @apiDescription Used to page through user moderation reports.
   *
   * @apiParam (Query) {number} page=1 The page of user reports to retrieve
-  * @apiParam (Query) {number} limit=10 The number of user reports to retrieve per page
+  * @apiParam (Query) {number} limit=25 The number of user reports to retrieve per page
   * @apiParam (Query) {string="Pending","Reviwed","Ignored","Bad Report"} filter Used to filter reports by their status
   * @apiParam (Query) {string="created_at","priority","reporter_username","offender_username","offender_email","offender_created_at"} field=created_at Indicates which column to sort by, used for table sorting
   * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
@@ -291,7 +291,7 @@ exports.pageUserReports = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(10),
+      limit: Joi.number().integer().min(1).max(100).default(25),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_username', 'offender_email', 'offender_created_at'),
       desc: Joi.boolean().default(false),
@@ -321,7 +321,7 @@ exports.pageUserReports = {
   * @apiDescription Used to page through post moderation reports.
   *
   * @apiParam (Query) {number} page=1 The page of post reports to retrieve
-  * @apiParam (Query) {number} limit=10 The number of post reports to retrieve per page
+  * @apiParam (Query) {number} limit=25 The number of post reports to retrieve per page
   * @apiParam (Query) {string="Pending","Reviwed","Ignored","Bad Report"} filter Used to filter reports by their status
   * @apiParam (Query) {string="created_at","priority","reporter_username","offender_created_at","offender_title","offender_author_username"} field=created_at Indicates which column to sort by, used for table sorting
   * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
@@ -354,7 +354,7 @@ exports.pagePostReports = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).default(10),
+      limit: Joi.number().integer().min(1).max(100).default(25),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_created_at', 'offender_title', 'offender_author_username'),
       desc: Joi.boolean().default(false),
@@ -386,7 +386,7 @@ exports.pagePostReports = {
   * @apiParam {string} userReportId The unique id of the user report to retrieve notes for
   *
   * @apiParam (Query) {number} page=1 The page of user report notes to retrieve
-  * @apiParam (Query) {mixed{1..n}="all"} limit=10 The number of user report notes to retrieve per page
+  * @apiParam (Query) {number} limit=25 The number of user report notes to retrieve per page
   * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
   *
   * @apiSuccess {object[]} userReportNotes An array of user report note objects.
@@ -407,32 +407,20 @@ exports.pageUserReportsNotes = {
     params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: [ Joi.number().integer().min(1).default(10), Joi.string().valid('all') ],
+      limit: Joi.number().integer().min(1).max(100).default(25),
       desc: Joi.boolean().default(false)
     }
   },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     var opts = {
-      limit: request.query.limit || 10,
-      page: request.query.page || 1,
-      sortDesc: request.query.desc || false
+      limit: request.query.limit,
+      page: request.query.page,
+      sortDesc: request.query.desc
     };
-    if (opts.limit === 'all') {
-      db.reports.userReportsNotesCount(reportId)
-      .then(function(notesCount) {
-          opts.limit = notesCount.count;
-          return;
-       })
-      .then(function() {
-        return db.reports.pageUserReportsNotes(reportId, opts)
-        .then(function(reports) { reply(reports); });
-      });
-    }
-    else {
-      db.reports.pageUserReportsNotes(reportId, opts)
-      .then(function(reports) { reply(reports); });
-    }
+
+    db.reports.pageUserReportsNotes(reportId, opts)
+    .then(function(reports) { reply(reports); });
   }
 };
 
@@ -447,7 +435,7 @@ exports.pageUserReportsNotes = {
   * @apiParam {string} postReportId The unique id of the post report to retrieve notes for
   *
   * @apiParam (Query) {number} page=1 The page of post report notes to retrieve
-  * @apiParam (Query) {mixed{1..n}="all"} limit=10 The number of post report notes to retrieve per page
+  * @apiParam (Query) {number} limit=25 The number of post report notes to retrieve per page
   * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
   *
   * @apiSuccess {object[]} postReportNotes An array of post report note objects.
@@ -468,32 +456,19 @@ exports.pagePostReportsNotes = {
     params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: [ Joi.number().integer().min(1).default(10), Joi.string().valid('all') ],
+      limit: Joi.number().integer().min(1).max(25).default(25),
       desc: Joi.boolean().default(false)
     }
   },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     var opts = {
-      limit: request.query.limit || 10,
-      page: request.query.page || 1,
-      sortDesc: request.query.desc || false
+      limit: request.query.limit,
+      page: request.query.page,
+      sortDesc: request.query.desc
     };
-    if (opts.limit === 'all') {
-      db.reports.postReportsNotesCount(reportId)
-      .then(function(notesCount) {
-          opts.limit = notesCount.count;
-          return;
-       })
-      .then(function() {
-        db.reports.pagePostReportsNotes(reportId, opts)
-        .then(function(reports) { reply(reports); });
-      });
-    }
-    else {
-      db.reports.pagePostReportsNotes(reportId, opts)
-      .then(function(reports) { reply(reports); });
-    }
+    db.reports.pagePostReportsNotes(reportId, opts)
+    .then(function(reports) { reply(reports); });
   }
 };
 

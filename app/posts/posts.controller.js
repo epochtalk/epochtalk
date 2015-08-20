@@ -18,7 +18,7 @@ module.exports = [
     this.offLCS = $rootScope.$on('$locationChangeSuccess', function(event){
       var params = $location.search();
       var page = Number(params.page) || 1;
-      var limit = params.limit === 'all' ? params.limit : (Number(params.limit) || 10);
+      var limit = Number(params.limit) || 25;
       var pageChanged = false;
       var limitChanged = false;
 
