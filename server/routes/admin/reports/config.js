@@ -456,7 +456,7 @@ exports.pagePostReportsNotes = {
     params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).max(25).default(25),
+      limit: Joi.number().integer().min(1).max(100).default(25),
       desc: Joi.boolean().default(false)
     }
   },

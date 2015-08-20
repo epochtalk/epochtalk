@@ -266,7 +266,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
       ctrl.selectedUsername = userReport.offender_username;
       ctrl.previewReport = userReport;
 
-      AdminReports.pageUserReportsNotes({ report_id: userReport.id, limit: 'all' }).$promise
+      AdminReports.pageUserReportsNotes({ report_id: userReport.id }).$promise
       .then(function(reportNotes) {
         ctrl.reportNotes = reportNotes;
       });

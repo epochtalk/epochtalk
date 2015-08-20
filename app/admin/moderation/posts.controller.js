@@ -251,7 +251,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       ctrl.previewPost = post;
     });
 
-    AdminReports.pagePostReportsNotes({ report_id: report.id, limit: 'all' }).$promise
+    AdminReports.pagePostReportsNotes({ report_id: report.id }).$promise
     .then(function(reportNotes) {
       ctrl.reportNotes = reportNotes;
     });
