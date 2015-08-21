@@ -7,7 +7,6 @@ module.exports = [
     this.resetEditor = false;
     this.showEditor = false;
     this.focusEditor = false;
-    this.newPostEnabled = false;
     this.quote = '';
     this.posting = { post: { body: '', raw_body: '' } };
     this.editorPosition = 'editor-fixed-bottom';
@@ -25,7 +24,6 @@ module.exports = [
     this.allowPosting = function() {
       var allowed = false;
       if (!ctrl.loggedIn()) { allowed = false; }
-      else if (!ctrl.newPostEnabled) { allowed = false; }
       else if (Session.user.isAdmin || Session.user.isMod) { allowed = true; }
       else if (!ctrl.thread.locked) { allowed = true; }
       return allowed;
@@ -56,14 +54,7 @@ module.exports = [
 
     $scope.$watch(
       function() { return ctrl.thread; },
-      function(thread) {
-        if (thread.id && thread.title && !ctrl.newPostEnabled) {
-          initEditor();
-          ctrl.newPostEnabled = true;
-        }
-
-        if (thread.board_id) { getBoards(); }
-      }
+      function(thread) { if (thread.board_id) { getBoards(); } }
     );
 
     /* Thread Methods */
@@ -112,36 +103,13 @@ module.exports = [
         message += 'Are you sure you want to leave that behind?';
         return confirm(message);
       }
-      else { return true;}
+      else { return true; }
     };
 
-    var initEditor = function(index) {
-      var post = ctrl.posts && ctrl.posts[index] || '';
-      if (post) {
-        ctrl.posting.type = 'edit';
-        ctrl.posting.index = index;
-      }
-      else {
-        ctrl.posting.type = 'new';
-        ctrl.posting.index = '';
-      }
-
-      ctrl.posting.id = post.id || '';
-      var editorPost = ctrl.posting.post;
-      editorPost.thread_id = post.thread_id || ctrl.thread.id;
-      editorPost.title = post.title || 'Re: ' + ctrl.thread.title;
-      editorPost.body = post.body || '';
-      editorPost.raw_body = post.raw_body || '';
-
+    function closeEditor() {
       ctrl.resetEditor = true;
-    };
-
-    this.openEditor = function() {
-      ctrl.showEditor = true;
-      ctrl.focusEditor = true;
-    };
-
-    this.closeEditor = function() { ctrl.showEditor = false; };
+      ctrl.showEditor = false;
+    }
 
     this.addQuote = function(index) {
       var timeDuration = 0;
@@ -167,25 +135,30 @@ module.exports = [
 
     this.loadEditor = function(index) {
       if (discardAlert()) {
-        initEditor(index);
-        ctrl.openEditor();
+        var post = (ctrl.posts && ctrl.posts[index]) || {};
+        ctrl.posting.index = index;
+        var editorPost = ctrl.posting.post;
+        editorPost.id = post.id || '';
+        editorPost.body = post.body || '';
+        editorPost.raw_body = post.raw_body || '';
+        ctrl.resetEditor = true;
+        ctrl.showEditor = true;
+        ctrl.focusEditor = true;
       }
     };
 
     this.savePost = function() {
-      var type = ctrl.posting.type;
       var post = ctrl.posting.post;
-      var postPromise;
+      var type = post.id ? 'update' : 'create';
+      post.title = 'Re: ' + ctrl.thread.title;
+      post.thread_id = ctrl.thread.id;
 
-      if (type === 'new') {
-        postPromise = Posts.save(post).$promise;
-      }
-      else if (type === 'edit') {
-        postPromise = Posts.update(post).$promise;
-      }
+      var postPromise;
+      if (post.id) { postPromise = Posts.update(post).$promise; }
+      else { postPromise = Posts.save(post).$promise; }
 
       postPromise.then(function(data) {
-        if (type === 'new') {
+        if (type === 'create') {
           // Increment post count and recalculate ctrl.pageCount
           ctrl.thread.post_count++;
           calculatePages();
@@ -194,27 +167,17 @@ module.exports = [
           $location.search('page', lastPage).hash(data.id);
           if (ctrl.page === lastPage) { ctrl.pullPage(); }
         }
-        else if (type === 'edit') {
-          var index = ctrl.posting.index;
-          var editPost = ctrl.posts[index];
-          if (editPost.id === ctrl.posting.id) {
-            editPost.body = data.body;
-            editPost.raw_body = data.raw_body;
-          }
+        else if (type === 'update') {
+          var editPost = ctrl.posts[ctrl.posting.index];
+          editPost.body = data.body;
+          editPost.raw_body = data.raw_body;
         }
-
-        initEditor();
-        ctrl.closeEditor();
       })
+      .then(closeEditor)
       .catch(function(response) { Alert.error('Post could not be saved'); });
     };
 
-    this.cancelPost = function() {
-      if (discardAlert()) {
-        initEditor();
-        ctrl.closeEditor();
-      }
-    };
+    this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };
 
     this.deletePostIndex = -1;
     this.showDeleteModal = false;
