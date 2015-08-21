@@ -74,9 +74,9 @@
         <div class="editor-formatting" ng-if="PostsParentCtrl.showFormatting">
           <a class="close-formatting" ng-click="PostsParentCtrl.showFormatting = false">X</a>
           <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank">
-            <h4>BBCode Lookup</h4>
+            <h4 class="thin-underline">BBCode Lookup</h4>
           </a>
-          <div class="medium-5 small-12 columns">
+          <div class="half-column">
             <strong>Bold</strong>:<div style="float: right">[b][/b]</div><br>
             <em>Italics</em>:<div style="float: right">[i][/i]</div><br>
             <u>Underline</u>:<div style="float: right">[u][/u]</div><br>
@@ -92,7 +92,7 @@
 
             <hr>
 
-            <code>Code</code>:<div style="float: right">[code][/code]</div><br>
+            <code class="preview">Code</code>:<div style="float: right">[code][/code]</div><br>
             <tt>TeleText</tt>:<div style="float: right">[tt][/tt]</div><br>
             Preformatted Text:<div style="float: right">[pre][/pre]</div><br>
             Justify Left:<div style="float: right">[left][/left]</div><br>
@@ -103,7 +103,7 @@
 
             Horizontal Rule:<div style="float: right">[hr][/hr]</div><br><br>
           </div>
-          <div class="medium-5 medium-offset-2 small-12 columns">
+          <div class="half-column">
             Black:<div style="float: right">[black][/black]</div><br>
             Blue:<div style="float: right">[blue][/blue]</div><br>
             Green:<div style="float: right">[green][/green]</div><br>
@@ -166,37 +166,31 @@
 </div>
 
 <!-- Reporting Modal -->
-<modal class="tiny" show="PostsParentCtrl.showReportModal" on-close="PostsParentCtrl.closeReportModal()">
+<modal show="PostsParentCtrl.showReportModal" on-close="PostsParentCtrl.closeReportModal()">
   <form name="$parent.form" class="css-form">
-    <h3 class="thin-dotted-underline">Report User/Post</h3>
-    <br />
+    <h3 class="thin-underline">Report User/Post</h3>
     <label>Which would you like to report?</label>
     <input type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.user.id" id="reportUser" ng-disabled="PostsParentCtrl.reportSubmitted" required><label for="reportUser">{{PostsParentCtrl.reportedPost.user.username}}</label>
     <input type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.id" id="reportPost" ng-disabled="PostsParentCtrl.reportSubmitted" required><label for="reportPost">{{PostsParentCtrl.reportedPost.user.username}}'s Post</label>
     <label>Reason for Report</label>
     <textarea name="reportReason" ng-model="PostsParentCtrl.reportReason" ng-disabled="PostsParentCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required></textarea>
-    <div class="form-action">
-      <button class="button no-margin" ng-click="PostsParentCtrl.submitReport()"
+    <div class="clear">
+      <button class="fill-row" ng-click="PostsParentCtrl.submitReport()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || PostsParentCtrl.reportSubmitted" ng-bind="PostsParentCtrl.reportBtnLabel"></button>
     </div>
   </form>
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Purge Thread Modal -->
-<modal class="medium" show="PostsParentCtrl.showPurgeThreadModal" on-close="PostsParentCtrl.closePurgeThreadModal()">
+<modal show="PostsParentCtrl.showPurgeThreadModal" on-close="PostsParentCtrl.closePurgeThreadModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <center>
-      <p>Are you sure you want to permanently delete this thread?</p>
-    </center>
-
+    <h3 class="thin-underline">Purge Thread</h3>
+    <p>Are you sure you want to permanently delete this thread?</p>
     <!-- Save Button -->
-    <div class="row">
-      <button class="button expand" ng-click="PostsParentCtrl.purgeThread()">
+    <div class="clear">
+      <button class="fill-row" ng-click="PostsParentCtrl.purgeThread()">
         Purge Thread
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>

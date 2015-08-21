@@ -36,6 +36,13 @@ a {
 .clear { @include clearfix; }
 .show-mobile { display: none; @include media($mobile) { display: inline-block; } }
 .hide-mobile { @include media($mobile) { display: none; } }
+.half-column {
+  @include row;
+  @include span-columns(6);
+  @include omega(2n);
+  @include media($mobile) { @include span-columns(8); @include omega; }
+}
+.spoiler { color: black; background-color: black; &:hover { color: white; } }
 
 /*-------------- Global Components -------------- */
 .ng-modal.ng-hide { opacity: 0; }
@@ -69,6 +76,7 @@ a {
   @include media($desktop-small) { @include span-columns(9, block-collapse); }
   @include media($mobile) { @include span-columns(7, block-collapse); top: 3%; }
 }
+.ng-modal.fixed .ng-modal-dialog { position: fixed; top: 5%; height: 90%; overflow: scroll; }
 .ng-modal-dialog-content { padding: 2rem; text-align: left;  }
 .ng-modal-close {
   position: absolute;
@@ -112,6 +120,7 @@ code {
   padding: 0 1rem 1rem;
   display: block;
   font-size: 0.85rem;
+  &.preview { padding: 0; display: inline-block; }
 }
 .quoteHeader {
   margin: 0 0 0 1rem;
@@ -203,7 +212,6 @@ input[type] {
   &.ng-untouched { border-color: #ccc; }
   &:focus { box-shadow: none; }
 }
-
 .input-info { @include label(default, 0.6875rem, 0, 0 0.3125rem); }
 .input-section {
   position: relative;
@@ -226,7 +234,6 @@ input[type] {
     right: 0.8rem;
   }
 }
-
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"],
 input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"],
 input[type="number"], input[type="search"], input[type="tel"], input[type="time"],
@@ -249,7 +256,50 @@ input[type="url"], input[type="color"], textarea {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-
+.img-picker-list {
+  margin-left: 0;
+  &.one-col {
+    li {
+      @include span-columns(12);
+      @include omega;
+    }
+  }
+  &.two-col {
+    li {
+      @include span-columns(6);
+      &:nth-child(even) { @include omega; }
+    }
+  }
+  .image-picker-cell {
+    margin-bottom: 0.5rem;
+    border: 2px solid $color-gray-med;
+    .header {
+      background-color: $color-gray;
+      color: #fff;
+      padding-left: 0.3125rem;
+      border-bottom: 2px solid $color-gray-med;
+      font-size: 0.8125rem;
+    }
+    .picker-body {
+      @include fill-parent;
+      @include clearfix;
+      height: 8rem;
+      position: relative;
+      img {height: 8rem; @include fill-parent; object-fit: cover; }
+      .after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        right: 0;
+        color: #FFF;
+        padding: 2.8125rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+}
 
 /*-------------- Index File -------------- */
 header {
@@ -966,11 +1016,6 @@ main #admin-content {
     @include pad(1.25rem 3rem 0);
     margin: 0 -3rem 2rem;
   }
-  .half-column {
-    @include row;
-    @include span-columns(6);
-    @include omega(2n);
-  }
   .nested-input-container { position: relative; }
   input[type].nested-input.valid-username { color: green; }
   .nested-input-container .nested-clear-btn {
@@ -1028,7 +1073,6 @@ main #admin-content {
     #admin-subnav .custom-tabs { @include span-columns(8); @include omega; padding-left: 0; }
     #admin-subnav .custom-tabs dd a { font-size: 0.75rem; }
     .admin-table-header { @include pad(1.25rem 1rem 0); margin: 0 -1rem 2rem; }
-    .half-column { @include span-columns(8); @include omega; }
     .user-search { @include span-columns(8); @include omega; }
     .mobile-buttons {
       @include fill-parent;

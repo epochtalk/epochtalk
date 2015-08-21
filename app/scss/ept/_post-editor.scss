@@ -79,19 +79,16 @@
   }
   .editor-formatting {
     position: absolute;
-    top: 5px;
-    bottom: 5px;
+    top: 10px;
+    bottom: 10px;
     left: 10px;
     right: 10px;
     background-color: white;
     z-index: 10;
     overflow: auto;
+    padding: 2rem;
 
-    h4 {
-      padding-left: 0.935rem;
-      padding-top: 0.5rem;
-      color: $color-active;
-    }
+    h4 {  color: $color-active; }
 
     .close-formatting {
       cursor: pointer;
@@ -270,12 +267,6 @@
   text-align: center;
   background: rgba(0, 0, 0, .6);
 }
-.image-picker {
-  height: 170px;
-  border: 5px solid #ccc;
-  overflow: hidden;
-}
-.picker-list { margin-top: 20px; }
 
 .thread-editor-container {
   position: relative;

@@ -68,55 +68,43 @@
 </div>
 
 <!-- Delete Post Modal -->
-<modal class="medium" show="PostsParentCtrl.showDeleteModal" on-close="PostsParentCtrl.closeDeleteModal()">
+<modal show="PostsParentCtrl.showDeleteModal" on-close="PostsParentCtrl.closeDeleteModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <center>
-      <p>Are you sure you want to delete this post?</p>
-    </center>
-
+    <h3 class="thin-underline">Delete Post</h3>
+    <p>Are you sure you want to delete this post?</p>
     <!-- Save Button -->
-    <div class="row">
-      <button class="button expand" ng-click="PostsParentCtrl.deletePost()">
+    <div class="clear">
+      <button class="fill-row" ng-click="PostsParentCtrl.deletePost()">
         Delete Post
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Undelete Post Modal -->
-<modal class="medium" show="PostsParentCtrl.showUndeleteModal" on-close="PostsParentCtrl.closeUndeleteModal()">
+<modal show="PostsParentCtrl.showUndeleteModal" on-close="PostsParentCtrl.closeUndeleteModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <center>
-      <p>Are you sure you want to Undelete this post?</p>
-    </center>
-
+    <h3 class="thin-underline">Undelete Post</h3>
+    <p>Are you sure you want to Undelete this post?</p>
     <!-- Save Button -->
-    <div class="row">
-      <button class="button expand" ng-click="PostsParentCtrl.undeletePost()">
+    <div class="clear">
+      <button class="fill-row" ng-click="PostsParentCtrl.undeletePost()">
         Undelete Post
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Purge Post Modal -->
-<modal class="medium" show="PostsParentCtrl.showPurgeModal" on-close="PostsParentCtrl.closePurgeModal()">
+<modal show="PostsParentCtrl.showPurgeModal" on-close="PostsParentCtrl.closePurgeModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <center>
-      <p>Are you sure you want to permanently delete this post?</p>
-    </center>
-
+    <h3 class="thin-underline">Purge Post</h3>
+    <p>Are you sure you want to permanently delete this post?</p>
     <!-- Save Button -->
-    <div class="row">
-      <button class="button expand" ng-click="PostsParentCtrl.purgePost()">
+    <div class="clear">
+      <button class="fill-row" ng-click="PostsParentCtrl.purgePost()">
         Purge Post
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
