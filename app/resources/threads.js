@@ -13,6 +13,11 @@ module.exports = ['$resource',
         },
         url: '/api/threads'
       },
+      viewed: {
+        method: 'POST',
+        params: { id: '@id' },
+        url: '/api/threads/:id/viewed'
+      },
       lock: {
         method: 'POST',
         params: { id: '@id' },

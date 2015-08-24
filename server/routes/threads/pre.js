@@ -94,17 +94,6 @@ module.exports = {
   canMove: managementAccess,
   canSticky: managementAccess,
   canDelete: managementAccess,
-  getThreads: function(request, reply) {
-    var boardId = request.query.board_id;
-    var opts = {
-      limit: request.query.limit,
-      page: request.query.page
-    };
-
-    db.threads.byBoard(boardId, opts)
-    .then(function(threads) { return reply(threads); })
-    .catch(function(err) { return reply(err.message); });
-  },
   getThread: function(request, reply) {
     var threadId = request.params.id || request.query.id;
     db.threads.find(threadId)
@@ -157,24 +146,15 @@ module.exports = {
       });
     }
   },
-  getUserThreadViews: function(request, reply) {
-    // return early if not signed in
-    if (!request.auth.isAuthenticated) { return reply(undefined); }
-
-    var user = request.auth.credentials;
-    db.users.getUserThreadViews(user.id)
-    .then(function(userViews) { return reply(userViews); })
-    .catch(function() { return reply({}); });
-  },
   updateUserThreadViews: function(request, reply) {
     // return early if not signed in
     if (!request.auth.isAuthenticated) { return reply(); }
 
     var threadId = request.params.id || request.query.id;
     var now = Date.now();
-    var user = request.auth.credentials;
+    var userId = request.auth.credentials.id;
     var newThreadViews = [ { threadId: threadId, timestamp: now } ];
-    db.users.putUserThreadViews(user.id, newThreadViews)
+    db.users.putUserThreadViews(userId, newThreadViews)
     .then(function() { return reply(); })
     .catch(function(err) { return reply(err); });
   }

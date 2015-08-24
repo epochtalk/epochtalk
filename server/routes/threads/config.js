@@ -1,6 +1,7 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
+var Promise = require('bluebird');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 var postPre = require(path.normalize(__dirname + '/../posts/pre'));
@@ -130,30 +131,45 @@ exports.byBoard = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
-  pre: [
-    [
-      { method: pre.canRetrieve },
-      { method: pre.getThreads, assign: 'threads' },
-      { method: pre.getUserThreadViews, assign: 'threadViews' }
-    ]
-  ],
+  pre: [ [ { method: pre.canRetrieve }, ] ],
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply([]); }
-    var threads = request.pre.threads;
-    var threadViews = request.pre.threadViews;
-    var user = request.auth.credentials;
+    if (!request.server.methods.viewable(request)) { return reply({}); }
 
-    // iterate through threads and see if the thread has been viewed yet
-    if (threadViews) {
-      threads.normal = threads.normal.map(function(thread) {
-        return setNewPost(user, threadViews, thread);
-      });
-      threads.sticky = threads.sticky.map(function(thread) {
-        return setNewPost(user, threadViews, thread);
-      });
-    }
+    var user = request.auth.credentials || {};
+    var boardId = request.query.board_id;
+    var opts = {
+      limit: request.query.limit,
+      page: request.query.page
+    };
 
-    return reply(threads);
+    var getThreads = db.threads.byBoard(boardId, opts);
+    var getBoard = db.boards.find(boardId);
+    var getThreadViews = function() {
+      if (!user) { return; }
+      return db.users.getUserThreadViews(user.id);
+    };
+
+    var promise = Promise.join(getThreads, getBoard, getThreadViews(), function(threads, board, threadViews) {
+      // iterate through threads and see if the thread has been viewed yet
+      if (threadViews) {
+        threads.normal = threads.normal.map(function(thread) {
+          return setNewPost(user, threadViews, thread);
+        });
+        threads.sticky = threads.sticky.map(function(thread) {
+          return setNewPost(user, threadViews, thread);
+        });
+      }
+
+      return {
+        board: board,
+        page: opts.page,
+        limit: opts.limit,
+        normal: threads.normal,
+        sticky: threads.sticky
+      };
+    });
+
+    return reply(promise);
   }
 };
 
@@ -170,14 +186,11 @@ exports.byBoard = {
   *
   * @apiError (Error 500) InternalServerError There was an issue looking up the thread
   */
-exports.find = {
+exports.viewed = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [
-    [
-      { method: pre.canFind },
-      { method: pre.getThread, assign: 'thread' },
-    ],
+    [ { method: pre.canFind } ],
     [
       { method: pre.checkViewValidity, assign: 'newViewId' },
       { method: pre.updateUserThreadViews }
@@ -185,10 +198,9 @@ exports.find = {
   ],
   handler: function(request, reply) {
     if (!request.server.methods.viewable(request)) { return reply({}); }
-    var thread = request.pre.thread;
     var newViewerId = request.pre.newViewId;
-    if (newViewerId) { return reply(thread).header('Epoch-Viewer', newViewerId); }
-    else { return reply(thread); }
+    if (newViewerId) { return reply().header('Epoch-Viewer', newViewerId); }
+    else { return reply(); }
   }
 };
 
@@ -341,14 +353,9 @@ exports.delete = {
 
 function setNewPost(user, threadViews, thread) {
   // If user made last post consider thread viewed
-  if (user.username === thread.last_post_username) {
-    thread.has_new_post = false;
-  }
-  else if (!threadViews[thread.id]) {
-    thread.has_new_post = true;
-  }
-  else if (threadViews[thread.id] &&
-           threadViews[thread.id] <= thread.last_post_created_at) {
+  if (user.username === thread.last_post_username) { thread.has_new_post = false; }
+  else if (!threadViews[thread.id]) { thread.has_new_post = true; }
+  else if (threadViews[thread.id] && threadViews[thread.id] <= thread.last_post_created_at) {
     thread.has_new_post = true;
   }
   return thread;

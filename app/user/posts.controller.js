@@ -1,14 +1,14 @@
-module.exports = ['user', 'usersPosts', 'usersPostsCount', 'limit', 'page', 'field', 'desc', 'Posts', '$location', '$scope', '$rootScope', '$state', '$anchorScroll',
-  function(user, usersPosts, usersPostsCount, limit, page, field, desc, Posts, $location, $scope, $rootScope, $state, $anchorScroll) {
+module.exports = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$state', '$anchorScroll',
+  function(user, pageData, Posts, $location, $scope, $rootScope, $state, $anchorScroll) {
     var ctrl = this;
     this.user = angular.copy(user);
-    this.pageCount = Math.ceil(usersPostsCount / limit);
+    this.pageCount = Math.ceil(pageData.count / pageData.limit);
     this.queryParams = $location.search();
-    this.page = page;
-    this.limit = limit;
-    this.field = field;
-    this.desc = desc;
-    this.usersPosts = usersPosts;
+    this.page = pageData.page;
+    this.limit = pageData.limit;
+    this.field = pageData.sortField;
+    this.desc = pageData.sortDesc;
+    this.usersPosts = pageData.posts;
 
     if ($state.current.name === 'users-posts') { $anchorScroll(); }
 
@@ -84,16 +84,11 @@ module.exports = ['user', 'usersPosts', 'usersPostsCount', 'limit', 'page', 'fie
         field: ctrl.field
       };
 
-      // update user post's page count
-      Posts.pageByUserCount({ username: params.username }).$promise
-      .then(function(updatedCount) {
-        ctrl.pageCount = Math.ceil(updatedCount.count / limit);
-      });
-
       // replace current user post with new user posts
       Posts.pageByUser(params).$promise
-      .then(function(newPosts) {
-        ctrl.usersPosts = newPosts;
+      .then(function(pageData) {
+        ctrl.pageCount = Math.ceil(pageData.count / pageData.limit);
+        ctrl.usersPosts = pageData.posts;
       });
 
       delete params.username;

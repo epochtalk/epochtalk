@@ -29,7 +29,7 @@ module.exports = [
       return allowed;
     };
 
-    function getBoards() {
+    this.getBoards = function() {
       if (Session.user.isAdmin) {
         return Boards.all().$promise
         .then(function(allBoards) {
@@ -39,23 +39,7 @@ module.exports = [
           });
         });
       }
-    }
-
-    function calculatePages() {
-      var count = Number(ctrl.limit) || 25;
-      ctrl.pageCount = Math.ceil(ctrl.thread.post_count / count);
-    }
-    // pullPage function injected by child controller
-
-    $scope.$watch(
-      function() { return ctrl.thread.post_count; },
-      function(postCount) { if (postCount) { calculatePages(); } }
-    );
-
-    $scope.$watch(
-      function() { return ctrl.thread; },
-      function(thread) { if (thread.board_id) { getBoards(); } }
-    );
+    };
 
     /* Thread Methods */
 
@@ -161,7 +145,7 @@ module.exports = [
         if (type === 'create') {
           // Increment post count and recalculate ctrl.pageCount
           ctrl.thread.post_count++;
-          calculatePages();
+          ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
           // Go to last page in the thread and scroll to new post
           var lastPage = ctrl.pageCount;
           $location.search('page', lastPage).hash(data.id);

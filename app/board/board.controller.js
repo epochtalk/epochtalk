@@ -1,23 +1,21 @@
-module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Session', 'Boards', 'Threads', 'board', 'threads', 'page', 'threadLimit', 'postLimit',
-  function($rootScope, $scope, $anchorScroll, $location, $timeout, Session, Boards, Threads, board, threads, page, threadLimit, postLimit) {
+module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Session', 'Boards', 'Threads', 'pageData',
+  function($rootScope, $scope, $anchorScroll, $location, $timeout, Session, Boards, Threads, pageData) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated; // check Auth
-    this.board = board;
-    this.page = page; // this page
-    this.postLimit = postLimit;
-    this.threadLimit = threadLimit;
-    this.threads = threads.normal;
-    this.stickyThreads = threads.sticky;
+    this.board = pageData.board;
+    this.page = pageData.page; // this page
+    this.limit = pageData.limit;
+    this.threads = pageData.normal;
+    this.stickyThreads = pageData.sticky;
 
     this.parent = $scope.$parent.BoardWrapperCtrl;
     this.parent.loggedIn = Session.isAuthenticated;
-    this.parent.board  = board;
-    this.parent.page = page;
-    this.parent.pageCount = Math.ceil(board.thread_count / threadLimit);
-    this.parent.newThreadUrl = '/boards/' + board.id + '/threads/new';
+    this.parent.board  = pageData.board;
+    this.parent.page = pageData.page;
+    this.parent.pageCount = Math.ceil(this.board.thread_count / this.limit);
 
     // set total_thread_count and total_post_count for all boards
-    board.children.map(function(childBoard) {
+    this.board.children.map(function(childBoard) {
       var children = countTotals(childBoard.children);
       childBoard.total_thread_count = children.thread_count + childBoard.thread_count;
       childBoard.total_post_count = children.post_count + childBoard.post_count;
@@ -67,11 +65,11 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     function threadPageCount(thread) {
       // user based UI
       if (thread.has_new_post) { thread.title_class = 'bold'; }
-      thread.page_count = Math.ceil(thread.post_count / ctrl.postLimit);
+      thread.page_count = Math.ceil(thread.post_count / ctrl.limit);
       ctrl.getPageKeysForThread(thread);
     }
-    threads.normal.forEach(threadPageCount);
-    threads.sticky.forEach(threadPageCount);
+    this.threads.forEach(threadPageCount);
+    this.stickyThreads.forEach(threadPageCount);
 
     // Scroll fix for nested state
     $timeout($anchorScroll);
@@ -88,9 +86,9 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
         ctrl.parent.page = page;
         ctrl.page = page;
       }
-      if (limit && limit !== ctrl.threadLimit) {
+      if (limit && limit !== ctrl.limit) {
         limitChanged = true;
-        ctrl.threadLimit = limit;
+        ctrl.limit = limit;
       }
 
       if(pageChanged || limitChanged) { ctrl.pullPage(); }
@@ -101,20 +99,15 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
       var query = {
         board_id: ctrl.board.id,
         page: ctrl.page,
-        limit: ctrl.threadLimit
+        limit: ctrl.limit
       };
-
-      // update board's thread page count
-      Boards.get({ id: ctrl.board.id }).$promise
-      .then(function(board) {
-        ctrl.parent.pageCount = Math.ceil(board.thread_count / ctrl.threadLimit);
-      });
 
       // replace current threads with new threads
       Threads.byBoard(query).$promise
-      .then(function(threads) {
-        ctrl.threads = threads.normal;
-        ctrl.stickyThreads = threads.sticky;
+      .then(function(pageData) {
+        ctrl.parent.pageCount = Math.ceil(pageData.board.thread_count / ctrl.limit);
+        ctrl.threads = pageData.normal;
+        ctrl.stickyThreads = pageData.sticky;
         ctrl.threads.forEach(threadPageCount);
         ctrl.stickyThreads.forEach(threadPageCount);
         $timeout($anchorScroll);

@@ -1,18 +1,34 @@
 module.exports = [
-  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Threads', 'Posts', 'thread', 'posts', 'page', 'limit',
-  function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Threads, Posts, thread, posts, page, limit) {
+  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Threads', 'Posts', 'pageData',
+  function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Threads, Posts, pageData) {
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
-    parent.page = page;
-    parent.limit = limit;
-    parent.thread = thread;
-    parent.board_id = thread.board_id;
-    parent.posts = posts;
+    parent.page = Number(pageData.page) || 1;
+    parent.limit = Number(pageData.limit) || 25;
+    parent.posts = pageData.posts;
+    parent.thread = pageData.thread;
+    parent.board_id = pageData.thread.board_id;
     this.rootUrl = generateBaseUrl();
     this.user = Session.user;
-    this.posts = posts;
-    this.thread = thread;
+    this.posts = pageData.posts;
+    this.thread = pageData.thread;
+    this.loadEditor = parent.loadEditor;
+    this.addQuote = parent.addQuote;
+    this.openReportModal = parent.openReportModal;
     $timeout($anchorScroll);
+
+    // init function
+    (function() {
+      parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
+      parent.getBoards();
+    })();
+
+    // default post avatar image if not found
+    ctrl.posts.map(function(post) {
+      if (!post.avatar) {
+        post.avatar = 'http://fakeimg.pl/400x400/ccc/444/?text=' + post.user.username;
+      }
+    });
 
     this.offLCS = $rootScope.$on('$locationChangeSuccess', function(event){
       var params = $location.search();
@@ -34,16 +50,6 @@ module.exports = [
     });
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
-    // default post avatar image if not found
-    ctrl.posts.map(function(post) {
-      if (!post.avatar) {
-        post.avatar = 'http://fakeimg.pl/400x400/ccc/444/?text=' + post.user.username;
-      }
-    });
-
-    this.loadEditor = parent.loadEditor;
-    this.addQuote = parent.addQuote;
-    this.openReportModal = parent.openReportModal;
     parent.pullPage = function() {
       var query = {
         thread_id: parent.thread.id,
@@ -51,21 +57,19 @@ module.exports = [
         limit: parent.limit
       };
 
-      // update thread's post page count
-      Threads.get({ id: ctrl.thread.id }).$promise
-      .then(function(thread) { parent.thread.post_count = thread.post_count; });
-
       // replace current posts with new posts
       Posts.byThread(query).$promise
-      .then(function(posts) {
+      .then(function(pageData) {
         // default post avatar image if not found
-        posts.map(function(post) {
+        pageData.posts.map(function(post) {
           if (!post.avatar) {
             post.avatar = 'http://fakeimg.pl/400x400/ccc/444/?text=' + post.user.username;
           }
         });
-        ctrl.posts = posts;
-        parent.posts = posts;
+        ctrl.posts = pageData.posts;
+        parent.posts = pageData.posts;
+        parent.thread.post_count = pageData.thread.post_count;
+        parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
         $timeout($anchorScroll);
       });
     };

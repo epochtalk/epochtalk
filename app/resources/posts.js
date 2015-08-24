@@ -11,8 +11,7 @@ module.exports = ['$resource',
           limit: '@limit',
           page: '@page'
         },
-        url: '/api/posts',
-        isArray: true
+        url: '/api/posts'
       },
       update: {
         method: 'POST',
@@ -21,13 +20,7 @@ module.exports = ['$resource',
       pageByUser: {
         url: '/api/posts/user/:username',
         method: 'GET',
-        params: { username: '@username' },
-        isArray: true,
-      },
-      pageByUserCount: {
-        url: '/api/posts/user/:username/count',
-        params: { username: '@username' },
-        method: 'GET',
+        params: { username: '@username' }
       },
       undelete: {
         url: '/api/posts/:id/undelete',

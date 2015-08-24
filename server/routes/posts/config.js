@@ -2,6 +2,7 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var cheerio = require('cheerio');
+var Promise = require('bluebird');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 var imageStore = require(path.normalize(__dirname + '/../../images'));
@@ -161,7 +162,7 @@ exports.byThread = {
   pre: [ { method: pre.canRetrieve } ],
   handler: function(request, reply) {
     // handle permissions
-    if (!request.server.methods.viewable(request)) { return reply([]); }
+    if (!request.server.methods.viewable(request)) { return reply({}); }
 
     // ready parameters
     var userId = '';
@@ -174,8 +175,17 @@ exports.byThread = {
     };
 
     // retrieve posts for this thread
-    var promise = db.posts.byThread(threadId, opts)
-    .then(function(posts) { return cleanPosts(posts, userId); });
+    var getPosts = db.posts.byThread(threadId, opts);
+    var getThread = db.threads.find(threadId);
+
+    var promise = Promise.join(getPosts, getThread, function(posts, thread) {
+      return {
+        thread: thread,
+        limit: opts.limit,
+        page: opts.page,
+        posts: cleanPosts(posts, userId)
+      };
+    });
 
     return reply(promise);
   }
@@ -301,33 +311,6 @@ exports.purge = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Posts
-  * @apiName PagePostsByUserCount
-  * @apiDescription Retrieves the number of posts created by a particular user.
-  *
-  * @apiParam {string} username The username of the user's post count to retrieve
-  *
-  * @apiSuccess {number} count Number of posts created by this user
-  *
-  * @apiError (Error 500) InternalServerError There was an issue retrieving the post count
-  */
-exports.pageByUserCount = {
-  auth: { mode: 'try', strategy: 'jwt' },
-  validate: { params: { username: Joi.string().required() } },
-  pre: [ { method: pre.canPageByUserCount } ],
-  // TODO: this still shows posts from deleted threads/boards
-  handler: function(request, reply) {
-    // handle permissions
-    if (!request.server.methods.viewable(request)) { return reply([]); }
-
-    // retrieve post count for user
-    var username = request.params.username;
-    return reply(db.posts.pageByUserCount(username));
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Posts
   * @api {GET} /posts/user/:username Page By User
   * @apiName PagePostsByUser
   * @apiDescription Used to page through posts made by a particular user
@@ -361,7 +344,7 @@ exports.pageByUser = {
   handler: function(request, reply) {
   // TODO: this still shows posts from deleted threads/boards
     // handle permissions
-    if (!request.server.methods.viewable(request)) { return reply([]); }
+    if (!request.server.methods.viewable(request)) { return reply({}); }
 
     // ready parameters
     var userId = '';
@@ -376,9 +359,20 @@ exports.pageByUser = {
       sortDesc: request.query.desc
     };
 
+    var getPosts = db.posts.pageByUser(username, opts);
+    var getCount = db.posts.pageByUserCount(username);
+
     // get user's posts
-    var promise = db.posts.pageByUser(username, opts)
-    .then(function(posts) { return cleanPosts(posts, userId, isAdmin); });
+    var promise = Promise.join(getPosts, getCount, function(posts, count) {
+      return {
+        page: opts.page,
+        limit: opts.limit,
+        sortField: opts.sortField,
+        sortDesc: opts.sortDesc,
+        posts: cleanPosts(posts, userId, isAdmin),
+        count: count
+      };
+    });
 
     return reply(promise);
   }

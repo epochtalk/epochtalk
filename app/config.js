@@ -35,12 +35,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        $title: ['$stateParams', function($stateParams) {
-          return $stateParams.username;
-        }],
+        $title: ['user', function(user) { return user.username; }],
         user: ['AdminUsers', 'Session', 'User', '$stateParams', function(AdminUsers, Session, User, $stateParams) {
           var promise;
-          if (Session.user.isAdmin) { promise = AdminUsers.find({ username: $stateParams.username }).$promise; }
+          if (Session.user.isAdmin) {
+            promise = AdminUsers.find({ username: $stateParams.username }).$promise;
+          }
           else { promise = User.get({ id: $stateParams.username }).$promise; }
           return promise.then(function(user) { return user; });
         }]
@@ -57,23 +57,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 25;
-        }],
-        page: ['$stateParams', function($stateParams) {
-          return Number($stateParams.page) || 1;
-        }],
-        field: ['$stateParams', function($stateParams) {
-          return $stateParams.field;
-        }],
-        desc: ['$stateParams', function($stateParams) {
-          return $stateParams.desc || true;
-        }],
-        usersPostsCount: ['Posts', '$stateParams', function(Posts, $stateParams) {
-          return Posts.pageByUserCount({ username: $stateParams.username }).$promise
-          .then(function(usersCount) { return usersCount.count; });
-        }],
-        usersPosts: ['Posts', '$stateParams', function(Posts, $stateParams) {
+        pageData: ['Posts', '$stateParams', function(Posts, $stateParams) {
           var params = {
             username: $stateParams.username,
             field: $stateParams.field,
@@ -81,8 +65,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1
           };
-          return Posts.pageByUser(params).$promise
-          .then(function(usersPosts) { return usersPosts; });
+          return Posts.pageByUser(params).$promise;
         }]
       }
     });
@@ -211,30 +194,14 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        $title: ['board', function(board) { return board.name; }],
-        board: ['Boards', '$stateParams', function(Boards, $stateParams) {
-          return Boards.get({ id: $stateParams.boardId }).$promise
-          .then(function(board) { return board; });
-        }],
-        threads: ['Threads', '$stateParams', function(Threads, $stateParams) {
+        $title: ['pageData', function(pageData) { return pageData.board.name; }],
+        pageData: ['Threads', '$stateParams', function(Threads, $stateParams) {
           var query = {
             board_id: $stateParams.boardId,
             limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1
           };
-          return Threads.byBoard(query).$promise
-          .then(function(threads) { return threads; });
-        }],
-        page: ['$stateParams', function($stateParams) {
-          return Number($stateParams.page) || 1;
-        }],
-        threadLimit: ['$stateParams', function($stateParams) {
-          // TODO: this needs to be grabbed from user settings
-          return Number($stateParams.limit) || 25;
-        }],
-        postLimit: [function() {
-          // TODO: this needs to be grabbed from user settings
-          return 25;
+          return Threads.byBoard(query).$promise;
         }]
       }
     });
@@ -276,26 +243,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        $title: ['thread', function(thread) { return thread.title; }],
-        thread: ['Threads', '$stateParams', function(Threads, $stateParams) {
-          return Threads.get({ id: $stateParams.threadId }).$promise
-          .then(function(thread) { return thread; });
-        }],
-        posts: ['Posts', '$stateParams', function(Posts, $stateParams) {
-          var limit = $stateParams.limit;
+        $title: ['pageData', function(pageData) { return pageData.thread.title; }],
+        pageData: ['Posts', 'Threads', '$stateParams', function(Posts, Threads, $stateParams) {
           var query = {
             thread_id: $stateParams.threadId,
             page: Number($stateParams.page) || 1,
-            limit: Number(limit) || 25
+            limit: Number($stateParams.limit) || 25
           };
-          return Posts.byThread(query).$promise
-          .then(function(posts) { return posts; });
-        }],
-        page: ['$stateParams', function($stateParams) {
-          return Number($stateParams.page) || 1;
-        }],
-        limit: ['$stateParams', function($stateParams) {
-          return Number($stateParams.limit) || 25;
+          Threads.viewed({ id: $stateParams.threadId });
+          return Posts.byThread(query).$promise;
         }]
       }
     });
