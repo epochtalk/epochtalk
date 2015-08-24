@@ -34,6 +34,7 @@ app.controller('ProfileCtrl',       require('./user/profile.controller.js'));
 app.controller('ProfilePostsCtrl',  require('./user/posts.controller.js'));
 app.controller('ResetCtrl',         require('./user/reset.controller.js'));
 app.controller('ConfirmCtrl',       require('./user/confirm.controller.js'));
+app.controller('MessagesCtrl',      require('./messages/messages.controller.js'));
 
 // Register Admin Page Controllers
 app.controller('GeneralSettingsCtrl', require('./admin/settings/general.controller.js'));
@@ -64,6 +65,7 @@ app.directive('postProcessing',         require('./components/post-processing/po
 app.directive('imageUploader',          require('./components/image_uploader/image_uploader.directive.js'));
 app.directive('alert',                  require('./components/alert/alert.directive.js'));
 app.directive('autocompleteUsername',   require('./components/autocomplete_username/autocomplete-username.directive.js'));
+app.directive('autocompleteUserId',   require('./components/autocomplete_user_id/autocomplete-user-id.directive.js'));
 
 // Set Angular Configs
 app.config(require('./config'))
