@@ -21,7 +21,7 @@ module.exports = [
     };
     $window.onbeforeunload = exitFunction;
     var routeLeaveFunction = function() {
-      return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+      return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState) {
         if (toState.url === fromState.url) { return; }
         if (ctrl.newMessage.body.length) {
           var message = confirmMessage + ' Are you sure you want to leave?';
@@ -49,7 +49,7 @@ module.exports = [
       })
       // build out reply information
       .then(function(data) {
-        ctrl.newMessage = {};
+        ctrl.newMessage = { body: '', previewBody: '' };
         ctrl.newMessage.conversation_id = data.id;
         ctrl.newMessage.sender_id = Session.user.id;
         ctrl.newMessage.sender_username = Session.user.username;
@@ -126,7 +126,7 @@ module.exports = [
         ctrl.showConvoModal = false;
       });
     };
-    this.openConvoModal = function(index) { ctrl.showConvoModal = true; };
+    this.openConvoModal = function() { ctrl.showConvoModal = true; };
     this.createConversation = function() {
       // create a new conversation id to put this message under
       var newMessage = {
@@ -142,10 +142,10 @@ module.exports = [
         // Add message to list
         savedMessage.receiver_username = ctrl.newConversation.receiver_username;
         savedMessage.sender_username = Session.user.username;
-        ctrl.recentMessages.unshift(savedMessage);
         Alert.success('New Conversation Started!');
+        ctrl.loadRecentMessages();
       })
-      .catch(function(err) { Alert.error('Failed to create conversation'); })
+      .catch(function() { Alert.error('Failed to create conversation'); })
       .finally(function() { ctrl.showConvoModal = false; });
     };
 
@@ -189,7 +189,7 @@ module.exports = [
         ctrl.newMessage.body = '';
         ctrl.newMessage.previewBody = '';
       })
-      .catch(function(err) { Alert.error('Message could not be sent'); });
+      .catch(function() { Alert.error('Message could not be sent'); });
     };
 
     this.deleteMessageId = '';
@@ -212,7 +212,7 @@ module.exports = [
         ctrl.currentConversation.messages = messages;
         ctrl.loadRecentMessages();
       })
-      .catch(function(err) {Alert.error('Failed to delete message'); })
+      .catch(function() {Alert.error('Failed to delete message'); })
       .finally(function() { ctrl.showDeleteModal = false; });
     };
 

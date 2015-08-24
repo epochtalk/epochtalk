@@ -16,7 +16,8 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/messages/users/:username',
         params: { username: '@username' },
-        isArray: true
+        isArray: true,
+        ignoreLoadingBar: true
       }
     });
   }

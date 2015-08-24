@@ -13,7 +13,7 @@
       </div>
       <div style="font-weight: bold; border-bottom: 1px solid #ccc; background-color: #eee; height: 3rem; text-align: center;">
         <button class="small-4 columns" ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page - 1)" ng-disabled="MessagesCtrl.page === 1" style="height: 100%;"><</button>
-        <div class="small-4 columns" style="padding-top: 0.75rem;">{{ MessagesCtrl.currentPage }}</div>
+        <div class="small-4 columns" style="padding-top: 0.75rem;">{{ MessagesCtrl.page }}</div>
         <button class="small-4 columns" ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page + 1)" ng-disabled="MessagesCtrl.page === MessagesCtrl.pageMax" style="height: 100%;">></button>
       </div>
     </div>
