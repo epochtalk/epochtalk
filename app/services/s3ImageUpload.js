@@ -32,19 +32,19 @@ function ($q, $http, $window, Session) {
       fd.append('AWSAccessKeyId', accessKey);
       fd.append('policy', policy);
       fd.append('signature', signature);
-      fd.append("file", image);
+      fd.append('file', image);
 
       // upload request and event bindings
       var xhr = new XMLHttpRequest();
-      xhr.addEventListener("load", deferred.resolve, false);
-      xhr.addEventListener("error", deferred.reject, false);
-      xhr.upload.addEventListener("progress", deferred.notify, false);
-      xhr.upload.addEventListener("error", deferred.reject, false);
+      xhr.addEventListener('load', deferred.resolve, false);
+      xhr.addEventListener('error', deferred.reject, false);
+      xhr.upload.addEventListener('progress', deferred.notify, false);
+      xhr.upload.addEventListener('error', deferred.reject, false);
 
       // Send the file
       xhr.open('POST', url, true);
       if (storageType === 'local') {
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
       }
       xhr.send(fd);
 

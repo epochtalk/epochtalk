@@ -14,27 +14,27 @@
 
 .post-toolbar {
   position: fixed;
-  bottom: 20px;
+  bottom: 1.25rem;
   list-style: none;
-  right: 20px;
+  right: 1.25rem;
   z-index: 10;
   margin: 0;
 
   li {
     color: #fff;
-    background-color: $color-active;
+    background-color: $color-active-fill;
     cursor: pointer;
-    padding: 5px 17px;
-    width: 48px;
-    height:48px;
-    -webkit-border-radius:  25px;
-    -moz-border-radius:     25px;
-    border-radius:          25px;
-    box-shadow: 0px 5px 10px #999;
+    padding: 0.875rem 1.0625rem;
+    width: 3rem;
+    height: 3rem;
+    -webkit-border-radius:  1.5625rem;
+    -moz-border-radius:     1.5625rem;
+    border-radius:          1.5625rem;
+    box-shadow: 0px 0.3125rem 0.625rem $color-gray;
 
     span {
       font-weight: bold;
-      font-size: x-large;
+      font-size: 1.5rem;
     }
   }
 }

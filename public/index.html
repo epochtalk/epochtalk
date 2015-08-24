@@ -19,18 +19,20 @@
   </style>
 </head>
 
-<body class="antialiased hide-extras">
-  <!-- Header -->
-  <div ng-controller="HeaderCtrl as HeaderCtrl">
-    <header ui-view="header" ng-cloak></header>
-    <div ui-view="modals" ng-cloak></div>
+<body>
+  <div id="wrapper">
+    <!-- Header -->
+    <div ng-controller="HeaderCtrl as HeaderCtrl">
+      <header ui-view="header" ng-cloak></header>
+      <div ui-view="modals" ng-cloak></div>
+    </div>
+
+    <!-- Main content -->
+    <main ui-view="body" ng-cloak></main>
+
+    <!-- Footer -->
+    <footer ui-view="footer" ng-cloak></footer>
   </div>
-
-  <!-- Main content -->
-  <main ui-view="body" ng-cloak></main>
-
-  <!-- Footer -->
-  <footer ui-view="footer" ng-cloak></footer>
 
   <!-- Noscript Message -->
   <noscript>

@@ -237,15 +237,14 @@
 </modal>
 
 <!-- Change Avatar Modal -->
-<modal class="small" show="ProfileCtrl.editAvatar" on-close="ProfileCtrl.closeEditAvatar()">
-  <form name="$parent.form" class="css-form" novalidate>
+<modal class="medium" show="ProfileCtrl.editAvatar" on-close="ProfileCtrl.closeEditAvatar()">
+  <form name="$parent.form" novalidate>
     <h3 class="thin-underline">Edit Avatar</h3>
     <label>Avatar address
       <input type="text" name="avatar" ng-model="ProfileCtrl.user.avatar" auto-focus="$parent.focus" />
     </label>
-
     <image-uploader model="ProfileCtrl.user.avatar" purpose="avatar"></image-uploader>
-    <br /><br />
+    <br />
     <!-- Save Button -->
     <div class="clear">
       <button class="fill-row" ng-click="ProfileCtrl.saveAvatar()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
@@ -272,7 +271,7 @@
 </modal>
 
 <!-- Deactivate Account Modal -->
-<modal class="medium" show="ProfileCtrl.showDeactivate" on-close="ProfileCtrl.closeDeactivateModal()">
+<modal show="ProfileCtrl.showDeactivate" on-close="ProfileCtrl.closeDeactivateModal()">
   <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-underline">Deactivate Account</h3>
     <p>
@@ -288,7 +287,7 @@
 </modal>
 
 <!-- Reactivate Account Modal -->
-<modal class="medium" show="ProfileCtrl.showReactivate" on-close="ProfileCtrl.closeReactivateModal()">
+<modal show="ProfileCtrl.showReactivate" on-close="ProfileCtrl.closeReactivateModal()">
   <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-underline">Reactivate Account</h3>
     <p>
@@ -304,7 +303,7 @@
 </modal>
 
 <!-- Delete Account Modal -->
-<modal class="medium" show="ProfileCtrl.showDelete" on-close="ProfileCtrl.closeDeleteModal()">
+<modal show="ProfileCtrl.showDelete" on-close="ProfileCtrl.closeDeleteModal()">
   <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-underline">Delete Account</h3>
     <p>

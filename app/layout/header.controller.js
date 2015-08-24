@@ -27,8 +27,6 @@ module.exports = ['$location', '$timeout', '$state', '$stateParams', 'Auth', 'Se
         ctrl.showLogin = false;
         ctrl.clearLoginFields();
         $state.go($state.current, $stateParams, { reload: true });
-        // hack to get drop down to work in nested view pages
-        $timeout(function() { $(document).foundation('topbar', 'reflow'); }, 10);
       })
       .catch(function(err) {
         if (err.data && err.data.message) { Alert.error(err.data.message); }

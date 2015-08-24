@@ -11,10 +11,11 @@
       <input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">
       Remember Me
     </label>
-
-    <button class="button fill-row" ng-click="HeaderCtrl.login()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
+    <div class="clear">
+      <button class=" fill-row" ng-click="HeaderCtrl.login()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
         Login
-    </button>
+      </button>
+    </div>
     <hr />
     <div class="centered-text">
       <a ng-click="HeaderCtrl.swapModals()">Help, I forgot my password!</a>

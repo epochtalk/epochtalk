@@ -30,9 +30,6 @@ test/coverage/
 /public/images/*.png
 /public/images/*.gif
 
-/app/scss/foundation.scss
-/app/scss/normalize.scss
-/app/scss/foundation/components/
 /app/scss/default.scss
 /app/scss/medium-editor.scss
 /app/scss/loading-bar.scss

@@ -35,7 +35,7 @@
 
   <!-- Move Thread -->
   <div class="control-full-width" ng-if="PostsParentCtrl.user.isAdmin">
-    <h6>Move Thread</h6>
+    <label>Move Thread</label>
     <select name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name for board in PostsParentCtrl.boards"></select>
     <a class="button" ng-click="PostsParentCtrl.moveThread()"><i class="fa fa-arrow-circle-left"></i>&nbsp;&nbsp;&nbsp;Move</a>
   </div>
