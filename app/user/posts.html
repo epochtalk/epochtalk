@@ -1,28 +1,32 @@
 <!-- User's Paged Posts -->
-<div class="row">
-  <div class="small-12 columns">
-    <h5>Posts by {{ProfilePostsCtrl.user.username}}</h5>
+<div class="profile-row">
+  <h5 class="title">Posts by {{ProfilePostsCtrl.user.username}}</h5>
+  <div class="centered-text" ng-if="ProfilePostsCtrl.pageCount === 0">
+    <br /><br />
+    <h4>This user has no posts to display</h4>
   </div>
-  <div class="small-12 columns">
-    <div class="right"><pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination></div>
+  <div class="pagination-wrap" ng-if="ProfilePostsCtrl.pageCount > 0">
+    <pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination>
   </div>
-  <div class="small-12 columns">
-    <table width="100%">
-      <thead>
-        <th width="150" class="pointer" ng-click="ProfilePostsCtrl.setSortField('thread_title')"><span ng-class="ProfilePostsCtrl.getSortClass('thread_title')"></span>&nbsp;Thread</th>
-        <th>Post</th>
-        <th width="150" class="pointer" ng-click="ProfilePostsCtrl.setSortField('created_at')"><span ng-class="ProfilePostsCtrl.getSortClass('created_at')"></span>&nbsp;Post Date</th>
-      </thead>
-      <tbody>
-        <tr ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
-          <td><a ui-sref="posts.data({ threadId: post.thread_id, '#': post.id })" ng-bind-html="post.thread_title | truncate:50"></a></td>
-          <td ng-bind="(post.raw_body || post.body) | truncate:250"></td>
-          <td ng-bind="post.created_at | humanDate"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="small-12 columns">
-    <div class="right"><pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination></div>
+</div>
+<div class="fill-row" ng-if="ProfilePostsCtrl.pageCount > 0">
+  <table class="striped" width="100%">
+    <thead>
+      <th width="20%" class="pointer" ng-click="ProfilePostsCtrl.setSortField('thread_title')"><span ng-class="ProfilePostsCtrl.getSortClass('thread_title')"></span>&nbsp;Thread</th>
+      <th width="60%">Post</th>
+      <th width="20%" class="pointer" ng-click="ProfilePostsCtrl.setSortField('created_at')"><span ng-class="ProfilePostsCtrl.getSortClass('created_at')"></span>&nbsp;Post Date</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
+        <td><a ui-sref="posts.data({ threadId: post.thread_id, '#': post.id })" ng-bind-html="post.thread_title | truncate:50"></a></td>
+        <td ng-bind="(post.raw_body || post.body) | truncate:250"></td>
+        <td ng-bind="post.created_at | humanDate"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="fill-row" ng-if="ProfilePostsCtrl.pageCount > 0">
+  <div class="pagination-wrap">
+    <pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination>
   </div>
 </div>

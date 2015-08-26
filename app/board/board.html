@@ -1,33 +1,24 @@
 <div class="board-header">
-  <div class="row">
-    <div class="small-12 columns board-title">
-      <h3 ng-bind-html="BoardWrapperCtrl.board.name"></h3>
-      <span class="moderators">
-        <strong ng-if="BoardWrapperCtrl.board.moderators.length > 0">Moderators: </strong>
-        <a ng-href="/profiles/{{mod.username}}" ng-repeat="mod in BoardWrapperCtrl.board.moderators" ng-bind="mod.username + ($last ? '' : ', ')"></a>
-      </span>
-    </div>
+  <div class="title">
+    <h4 ng-bind-html="BoardWrapperCtrl.board.name"></h4>
   </div>
-
-  <!-- Pagination Top -->
-  <div class="row pagination-container center">
+  <div class="pagination-wrap">
     <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
   </div>
-</div>
-
-<div class="row board-page content-spacer">
-  <!-- Page Controls -->
-  <div class="small-12 columns page-controls" ng-if="BoardWrapperCtrl.loggedIn()">
-    <dl class="sub-nav">
-      <dd><a ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})"><i class="icon-epoch-add"></i>Start a New Thread</a></dd>
-    </dl>
+  <div class="moderators" ng-if="BoardWrapperCtrl.board.moderators.length > 0">
+    <strong>Moderators: </strong>
+    <a ng-href="/profiles/{{mod.username}}" ng-repeat="mod in BoardWrapperCtrl.board.moderators" ng-bind="mod.username + ($last ? '' : ', ')"></a>
   </div>
-
-  <!-- Board's Thread Data-->
-  <div ui-view="data"></div>
 </div>
 
-<!-- Pagination Bottom -->
-<div class="row pagination-container center">
-  <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
+<div class="board-controls" ng-if="BoardWrapperCtrl.loggedIn()">
+  <a ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})"><i class="icon-epoch-add"></i>Start a New Thread</a>
+</div>
+
+<div class="board-data" ui-view="data"></div>
+
+<div class="board-footer">
+  <div class="pagination-wrap">
+    <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
+  </div>
 </div>

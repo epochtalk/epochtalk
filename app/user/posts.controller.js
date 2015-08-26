@@ -84,6 +84,7 @@ module.exports = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScop
         field: ctrl.field
       };
 
+
       // replace current user post with new user posts
       Posts.pageByUser(params).$promise
       .then(function(pageData) {

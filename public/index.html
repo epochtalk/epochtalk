@@ -8,7 +8,8 @@
   <title ng-bind="$webConfigs.title + ' - ' + ($title || 'Home')">Epochtalk</title>
   <meta name="description" content="{{$webConfigs.description}}" />
   <meta name="keywords" content="{{$webConfigs.keywords}}">
-  <link rel="shortcut icon" type="image/x-icon" href="{{$webConfigs.favicon}}">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+  <link rel="shortcut icon" href="{{$webConfigs.favicon}}">
   <link rel="stylesheet" href="/static/css/app.css"/>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
   <style>
@@ -18,31 +19,31 @@
   </style>
 </head>
 
-<body class="antialiased hide-extras">
-  <!-- Header -->
-  <div id="header-wrap" ng-controller="HeaderCtrl as HeaderCtrl">
-    <div ui-view="header" ng-cloak id="header"></div>
-    <div ui-view="modals" ng-cloak></div>
-  </div>
+<body>
+  <div id="wrapper">
+    <!-- Header -->
+    <div ng-controller="HeaderCtrl as HeaderCtrl">
+      <header ui-view="header" ng-cloak></header>
+      <div ui-view="modals" ng-cloak></div>
+    </div>
 
-  <!-- Main content -->
-  <div id="main-wrap" class="main-content">
-    <div ui-view="body" ng-cloak></div>
-  </div>
+    <!-- Main content -->
+    <main ui-view="body" ng-cloak></main>
 
-  <!-- Footer -->
-  <div id="footer-wrap" ui-view="footer" ng-cloak></div>
+    <!-- Footer -->
+    <footer ui-view="footer" ng-cloak></footer>
+  </div>
 
   <!-- Noscript Message -->
   <noscript>
     <style>
-      #header-wrap, #footer-wrap, #sidenav-wrap, #main-wrap { display: none; }
+      header, main, footer { display: none; }
     </style>
-    <div class="row">
-      <div class="small-12 medium-4 sad-face columns">
+    <div id="noscript">
+      <div class="sad-face">
         :(
       </div>
-      <div class="small-12 medium-8 noscript-message columns">
+      <div class="message">
         It appears you have JavaScript disabled, in order to view this forum JavaScript must be enabled.  Epochtalk Forum Software currently does not support noscript, if there is enough demand this feature may be added in the future.
       </div>
     </div>

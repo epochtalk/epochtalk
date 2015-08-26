@@ -19,48 +19,59 @@ module.exports = ['$state', function($state) {
       var deleteBoardDataId = '';
       var editBoardDataId = ''; // Stores the data-id of board being edited
       var editBoardId = ''; // Stores the id of the board being edited
-      $scope.editBoardName = ''; // Model for edited board name
-      $scope.editBoardDesc = ''; // Model for edited board desc
 
       $scope.getDataId = function() { return dataId++; };
 
-      /* Edit Category */
+      /* Modals */
+      $scope.showAddBoard = false;
+      $scope.showEditBoard = false;
+      $scope.showDeleteBoard = false;
+      $scope.showEditCategory = false;
+      $scope.showDeleteCategory = false;
 
+      /* Add Boards */
+      $scope.clearAddBoardFields = function() {
+        $('#newBoardName').val('');
+        $('#newBoardDesc').val('');
+      };
+
+      /* Edit Category */
       $scope.setEditCat = function(dataId) {
         var editCat = $scope.nestableMap[dataId];
         editCatDataId = dataId;
-        $scope.editCatName = editCat.name;
+        $('#editCatName').val(editCat.name);
+        $scope.showEditCategory = true;
       };
 
       $scope.editCategory = function() {
         var editCatEl = $('li[data-id="' + editCatDataId + '"]');
         // Update UI to reflect change
         var catDescEl = editCatEl.children('.dd-handle').children('.dd-desc');
-        catDescEl.text($scope.editCatName);
+        catDescEl.text($('#editCatName').val());
         // Show that the item was changed
         var status = editCatEl.children('.dd-handle').children('.status');
         status.addClass('modified');
 
         // Update the category name
         var editCatData = editCatEl.data();
-        editCatData.name = $scope.editCatName;
+        editCatData.name = $('#editCatName').val();
         var editCat = $scope.nestableMap[editCatDataId];
-        editCat.name = $scope.editCatName;
+        editCat.name = $('#editCatName').val();
 
         // Reset and close
-        $scope.editCatName = '';
         editCatDataId = '';
-        $scope.closeModal('#edit-category');
+        $('#editCatName').val('');
+        $scope.showEditCategory = false;
       };
 
       /* Edit Board */
-
       $scope.setEditBoard = function(dataId) {
         var editBoard = $scope.nestableMap[dataId];
         editBoardDataId = dataId;
         editBoardId = editBoard.id;
-        $scope.editBoardName = editBoard.name;
-        $scope.editBoardDesc = editBoard.description;
+        $('#editBoardName').val(editBoard.name);
+        $('#editBoardDesc').val(editBoard.description);
+        $scope.showEditBoard = true;
       };
 
       $scope.editBoard = function() {
@@ -68,8 +79,8 @@ module.exports = ['$state', function($state) {
         if (editBoardId === -1 && editBoardDataId) {
           $scope.newBoards.forEach(function(newBoard) {
             if (newBoard.dataId === editBoardDataId) {
-              newBoard.name = $scope.editBoardName;
-              newBoard.description = $scope.editBoardDesc;
+              newBoard.name = $('#editBoardName').val();
+              newBoard.description = $('#editBoardDesc').val();
             }
           });
         }
@@ -77,8 +88,8 @@ module.exports = ['$state', function($state) {
         else {
           var editedBoard = {
             id: editBoardId,
-            name: $scope.editBoardName,
-            description: $scope.editBoardDesc
+            name: $('#editBoardName').val(),
+            description: $('#editBoardDesc').val()
           };
          $scope.editedBoards.push(editedBoard);
         }
@@ -89,26 +100,26 @@ module.exports = ['$state', function($state) {
 
         // Update UI to reflect change
         var boardDescEl = editBoardEl.children('.dd-handle').children('.dd-desc');
-        boardDescEl.text($scope.editBoardName);
+        boardDescEl.html($('#editBoardName').val() + '<span>' +  $('#editBoardDesc').val() + '</span>');
 
         // Update data stored in nestableMap to reflect edit
         var board = $scope.nestableMap[editBoardDataId];
-        board.name = $scope.editBoardName;
-        board.description = $scope.editBoardDesc;
+        board.name = $('#editBoardName').val();
+        board.description = $('#editBoardDesc').val();
 
         // Reset scope params for editing board
         editBoardDataId = '';
         editBoardId = '';
-        $scope.editBoardName = '';
-        $scope.editBoardDesc = '';
-        $scope.closeModal('#edit-board');
+        $('#editBoardName').val('');
+        $('#editBoardDesc').val('');
+        $scope.showEditBoard = false;
       };
 
       /* Delete Category */
-
-      $scope.closeModal = function(modalId) { $(modalId).foundation('reveal', 'close'); };
-
-      $scope.setCatDelete = function(dataId) { deleteCatDataId = dataId; };
+      $scope.setCatDelete = function(dataId) {
+        deleteCatDataId = dataId;
+        $scope.showDeleteCategory = true;
+      };
 
       $scope.confirmCatDelete = function() {
         // find category to delete
@@ -132,12 +143,14 @@ module.exports = ['$state', function($state) {
 
         // reset form and modal
         deleteCatDataId = '';
-        $scope.closeModal('#delete-category');
+        $scope.showDeleteCategory = false;
       };
 
       /* Delete Board */
-
-      $scope.setBoardDelete = function(dataId) { deleteBoardDataId = dataId; };
+      $scope.setBoardDelete = function(dataId) {
+        deleteBoardDataId = dataId;
+        $scope.showDeleteBoard = true;
+      };
 
       $scope.confirmBoardDelete = function() {
         // find category to delete
@@ -161,7 +174,7 @@ module.exports = ['$state', function($state) {
 
         // reset form and modal
         deleteBoardDataId = '';
-        $scope.closeModal('#delete-board');
+        $scope.showDeleteBoard = false;
       };
 
       /* Expand/Collapse all Categories/Boards */

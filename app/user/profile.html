@@ -1,21 +1,28 @@
-<div class="row">
+<div class="profile-content">
   <!-- Left Sidebar -->
-  <div class="large-3 columns word-wrap">
+  <div class="profile-left">
     <!-- User's Avatar -->
-    <div class="profile-avatar-container">
-      <img ng-src="{{ProfileCtrl.displayUser.avatar}}" />
-      <a href="#" class="after" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
-        <div>Change Avatar</div>
-      </a>
+    <div class="profile-row">
+      <div class="profile-avatar-container">
+        <a href="#" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
+          <img ng-src="{{ProfileCtrl.displayUser.avatar}}" />
+        </a>
+        <img ng-if="!ProfileCtrl.editable()" ng-src="{{ProfileCtrl.displayUser.avatar}}" />
+        <a href="#" class="after" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
+          <div>Change Avatar</div>
+        </a>
+      </div>
     </div>
 
     <!-- Edit Profile Controls -->
-    <div class="profile-edit-container" ng-if="ProfileCtrl.editable()">
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.editable()">
       Edit:
       <a href="#" ng-click="ProfileCtrl.editProfile = true">Profile</a>
       |
       <a href="#" ng-click="ProfileCtrl.editPassword = true">Password</a>
-      <br>
+    </div>
+
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.editable()">
       <a href="#" ng-click="ProfileCtrl.showDeactivate = true" ng-if="!ProfileCtrl.user.deleted">Deactivate Account</a>
       <a href="#" ng-click="ProfileCtrl.showReactivate = true" ng-if="ProfileCtrl.user.deleted">Reactivate Account</a>
       <br>
@@ -23,90 +30,88 @@
     </div>
 
     <!-- User Information -->
-    <h4 ng-bind="ProfileCtrl.displayUser.username"></h4>
-    <div><span ng-bind="ProfileCtrl.displayUser.name"></span></div>
-    <div><span ng-bind="ProfileCtrl.displayUser.position"></span></div>
-    <div><span ng-bind="ProfileCtrl.displayUser.status"></span></div>
-    <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.displayUser.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>
-    <hr ng-if="ProfileCtrl.displayUser.email || ProfileCtrl.displayUser.btcAddress || ProfileCtrl.displayUser.website">
-    <div ng-if="ProfileCtrl.displayUser.email">
-      <a href="mailto:{{ProfileCtrl.displayUser.email}}" ng-bind="ProfileCtrl.displayUser.email"></a>
+    <div class="profile-row">
+      <h4 ng-bind="ProfileCtrl.displayUser.username"></h4>
+      <div><span ng-bind="ProfileCtrl.displayUser.name"></span></div>
+      <div><span ng-bind="ProfileCtrl.displayUser.position"></span></div>
+      <div><span ng-bind="ProfileCtrl.displayUser.status"></span></div>
+      <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.displayUser.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>
+      <hr ng-if="ProfileCtrl.displayUser.email || ProfileCtrl.displayUser.btcAddress || ProfileCtrl.displayUser.website">
+      <div ng-if="ProfileCtrl.displayUser.email">
+        <a href="mailto:{{ProfileCtrl.displayUser.email}}" ng-bind="ProfileCtrl.displayUser.email"></a>
+      </div>
+      <div><span ng-bind="ProfileCtrl.displayUser.btcAddress"></span></div>
+      <div><a ng-href="{{ProfileCtrl.displayUser.website}}">{{ProfileCtrl.displayUser.website}}</a></div>
+      <hr>
+      <div><span ng-bind="ProfileCtrl.displayUser.gender"></span></div>
+      <div><span ng-bind="ProfileCtrl.userAge"></span></div>
+      <div><span ng-bind="ProfileCtrl.displayUser.location"></span></div>
+      <div><span ng-bind="ProfileCtrl.displayUser.language"></span></div>
+      <div><span ng-bind="ProfileCtrl.userLocalTime"></span></div>
     </div>
-    <div><span ng-bind="ProfileCtrl.displayUser.btcAddress"></span></div>
-    <div><a ng-href="{{ProfileCtrl.displayUser.website}}">{{ProfileCtrl.displayUser.website}}</a></div>
-    <hr>
-    <div><span ng-bind="ProfileCtrl.displayUser.gender"></span></div>
-    <div><span ng-bind="ProfileCtrl.userAge"></span></div>
-    <div><span ng-bind="ProfileCtrl.displayUser.location"></span></div>
-    <div><span ng-bind="ProfileCtrl.displayUser.language"></span></div>
-    <div><span ng-bind="ProfileCtrl.userLocalTime"></span></div>
   </div>
 
   <!-- Right Side Content -->
-  <div class="large-9 columns word-wrap">
-
-    <div class="profile-boxes">
-      <div class="row">
-        <div class="large-4 columns profile-stats">
-          Account Created On:<br>
-          <span class="profile-stat" ng-bind="ProfileCtrl.displayUser.created_at | date:'mediumDate'"></span>
-        </div>
-        <div class="large-4 columns profile-stats">
-          Number of Posts:<br>
-          <span class="profile-stat" ng-bind="ProfileCtrl.displayUser.post_count + ' Posts'"></span>
-        </div>
-        <div class="large-4 columns profile-stats">
-          Account Last Used:<br>
-          <span class="profile-stat" ng-bind="ProfileCtrl.displayUser.updated_at | date:'mediumDate'"></span>
-        </div>
+  <div class="profile-right">
+    <div class="profile-row">
+      <div class="stats centered-text">
+        Account Created On:<br>
+        <span class="stat-text" ng-bind="ProfileCtrl.displayUser.created_at | date:'mediumDate'"></span>
+      </div>
+      <div class="stats">
+        Number of Posts:<br>
+        <span class="stat-text" ng-bind="ProfileCtrl.displayUser.post_count + ' Posts'"></span>
+      </div>
+      <div class="stats">
+        Account Last Used:<br>
+        <span class="stat-text" ng-bind="ProfileCtrl.displayUser.updated_at | date:'mediumDate'"></span>
       </div>
     </div>
 
-    <div class="profile-boxes">
-      <div class="row">
-        <div class="large-12 columns"><strong>Posts over time:</strong></div>
-      </div>
-      <div class="row">
-        <div class="large-12 columns">
-          <canvas id="myChart" height="300" width="700"></canvas>
-        </div>
+    <div class="profile-row">
+      <div class="fill-row"><strong>Posts over time:</strong></div>
+    </div>
+
+    <div class="profile-row">
+      <canvas class="fill-row" id="myChart"></canvas>
+    </div>
+
+    <div class="profile-row">
+      <div class="fill-row">
+        <strong>Signature:</strong>
+        <a ng-href="#" ng-click="ProfileCtrl.editSignature = true" ng-if="ProfileCtrl.editable()">
+          <i class="icon-epoch-edit-pencil"></i>
+        </a>
       </div>
     </div>
 
-    <div class="profile-boxes">
-      <div class="row">
-        <div class="large-12 columns">
-          <strong>Signature:</strong>
-          <a ng-href="#" ng-click="ProfileCtrl.editSignature = true" ng-if="ProfileCtrl.editable()">
-            <i class="icon-epoch-edit-pencil"></i>
-          </a>
-        </div>
+    <div class="profile-row">
+      <div class="fill-row">
+        <div class="post-signature" post-processing="ProfileCtrl.displayUser.signature" style-fix="true"></div>
       </div>
-      <div class="post-signature" post-processing="ProfileCtrl.displayUser.signature" style-fix="true"></div>
     </div>
   </div>
+
 </div>
 
-<br /><br />
-
-<div ui-view="posts"></div>
+<div class="profile-posts" ui-view="posts"></div>
 
 <!-- Change Password Modal -->
-<modal class="tiny" show="ProfileCtrl.editPassword" on-close="ProfileCtrl.clearPasswordFields()">
+<modal show="ProfileCtrl.editPassword" on-close="ProfileCtrl.clearPasswordFields()">
   <form ng-if="ProfileCtrl.adminVisitor" name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-dotted-underline">Change Password</h3>
+    <h3 class="thin-underline">Change Password</h3>
     <label>Minimum 8 characters</label>
     <input type="password" auto-focus="$parent.focus" name="pass" placeholder="New Password" ng-model="ProfileCtrl.passData.password">
     <!-- Submit Button -->
-    <div class="form-action">
-      <button class="button no-margin" ng-click="ProfileCtrl.savePassword(); $parent.form.$setPristine(); $parent.form.$setUntouched()"
+    <div class="clear">
+      <button class="fill-row" ng-click="ProfileCtrl.savePassword(); $parent.form.$setPristine(); $parent.form.$setUntouched()"
         ng-disabled="!ProfileCtrl.passData.password || ProfileCtrl.passData.password.length < 8">
         Confirm
       </button>
     </div>
   </form>
   <form ng-if="!ProfileCtrl.adminVisitor" name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-dotted-underline">Change Password</h3>
+    <h3 class="thin-underline">Change Password</h3>
 
     <!-- Old Password -->
     <div class='input-section'>
@@ -153,184 +158,162 @@
     </div>
 
     <!-- Submit Button -->
-    <div class="form-action">
-      <button class="button no-margin" ng-click="ProfileCtrl.savePassword(); $parent.form.$setPristine(); $parent.form.$setUntouched()"
+    <div class="clear">
+      <button class="fill-row" ng-click="ProfileCtrl.savePassword(); $parent.form.$setPristine(); $parent.form.$setUntouched()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || ProfileCtrl.passData.password !== ProfileCtrl.passData.confirmation">
         Confirm
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Edit Profile Modal -->
 <modal class="medium" show="ProfileCtrl.editProfile" on-close="ProfileCtrl.closeEditProfile()">
+  <h3 class="thin-underline">Edit Profile</h3>
   <form name="$parent.form" class="css-form" novalidate>
     <!-- Profile Fields -->
-    <div class="row">
-      <div class="medium-6 columns">
-        <label>Username
-          <div ng-if="ProfileCtrl.user.username.length === 0" class="right">
-            Username will not be changed
-          </div>
-          <div ng-if="$parent.form.username.$error.unique" class="invalid right">
-            Username already taken
-          </div>
-          <input type="text" name="username" ng-model="ProfileCtrl.user.username" unique-username="{{ProfileCtrl.displayUser.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
-        </label>
+    <div class="half-column">
+      <label>Username
+        <div ng-if="ProfileCtrl.user.username.length === 0" class="right">
+          Username will not be changed
+        </div>
+        <div ng-if="$parent.form.username.$error.unique" class="invalid right">
+          Username already taken
+        </div>
+        <input type="text" name="username" ng-model="ProfileCtrl.user.username" unique-username="{{ProfileCtrl.displayUser.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
+      </label>
 
-        <label>Name
-          <input type="text" placeholder="Name" ng-model="ProfileCtrl.user.name">
-        </label>
+      <label>Name
+        <input type="text" placeholder="Name" ng-model="ProfileCtrl.user.name">
+      </label>
 
-        <label>Email
-          <div ng-if="$parent.form.email.$error.email" class="invalid right">
-            Email is not valid
-          </div>
-          <div ng-if="ProfileCtrl.user.email.length === 0" class="right">
-            Email will not be changed
-          </div>
-          <div ng-if="$parent.form.email.$error.unique" class="invalid right">
-            Email already taken
-          </div>
-          <input type="email" name="email" ng-model="ProfileCtrl.user.email" unique-email="{{ProfileCtrl.displayUser.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
-        </label>
+      <label>Email
+        <div ng-if="$parent.form.email.$error.email" class="invalid right">
+          Email is not valid
+        </div>
+        <div ng-if="ProfileCtrl.user.email.length === 0" class="right">
+          Email will not be changed
+        </div>
+        <div ng-if="$parent.form.email.$error.unique" class="invalid right">
+          Email already taken
+        </div>
+        <input type="email" name="email" ng-model="ProfileCtrl.user.email" unique-email="{{ProfileCtrl.displayUser.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
+      </label>
 
-        <label>Website
-          <input type="text" placeholder="Website" ng-model="ProfileCtrl.user.website">
-        </label>
+      <label>Website
+        <input type="text" placeholder="Website" ng-model="ProfileCtrl.user.website">
+      </label>
 
-        <label>Bitcoin Address
-          <input type="text" placeholder="Bitcoin Address" ng-model="ProfileCtrl.user.btcAddress">
-        </label>
-      </div>
+      <label>Bitcoin Address
+        <input type="text" placeholder="Bitcoin Address" ng-model="ProfileCtrl.user.btcAddress">
+      </label>
+    </div>
 
-      <div class="medium-6 columns">
-        <label>Gender
-          <input type="text" placeholder="Gender" ng-model="ProfileCtrl.user.gender">
-        </label>
+    <div class="half-column">
+      <label>Gender
+        <input type="text" placeholder="Gender" ng-model="ProfileCtrl.user.gender">
+      </label>
 
-        <label>Date of Birth
-          <input type="text" placeholder="Date of Birth" ng-model="ProfileCtrl.user.dob">
-        </label>
+      <label>Date of Birth
+        <input type="text" placeholder="Date of Birth" ng-model="ProfileCtrl.user.dob">
+      </label>
 
-        <label>Location
-          <input type="text" placeholder="Location" ng-model="ProfileCtrl.user.location">
-        </label>
+      <label>Location
+        <input type="text" placeholder="Location" ng-model="ProfileCtrl.user.location">
+      </label>
 
-        <label>Language
-          <input type="text" placeholder="Language" ng-model="ProfileCtrl.user.language">
-        </label>
-      </div>
+      <label>Language
+        <input type="text" placeholder="Language" ng-model="ProfileCtrl.user.language">
+      </label>
     </div>
 
     <!-- Save Button -->
-    <div class="row profile-save-container">
-      <button class="button expand" ng-click="ProfileCtrl.saveProfile()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+    <div class="clear">
+      <button class="fill-row" ng-click="ProfileCtrl.saveProfile()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
         Save
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Change Avatar Modal -->
-<modal class="small" show="ProfileCtrl.editAvatar" on-close="ProfileCtrl.closeEditAvatar()">
-  <form name="$parent.form" class="css-form" novalidate>
+<modal class="medium" show="ProfileCtrl.editAvatar" on-close="ProfileCtrl.closeEditAvatar()">
+  <form name="$parent.form" novalidate>
+    <h3 class="thin-underline">Edit Avatar</h3>
     <label>Avatar address
       <input type="text" name="avatar" ng-model="ProfileCtrl.user.avatar" auto-focus="$parent.focus" />
     </label>
-
     <image-uploader model="ProfileCtrl.user.avatar" purpose="avatar"></image-uploader>
-    <br /><br />
-
+    <br />
     <!-- Save Button -->
-    <div class="row">
-      <button class="button expand" ng-click="ProfileCtrl.saveAvatar()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+    <div class="clear">
+      <button class="fill-row" ng-click="ProfileCtrl.saveAvatar()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
         Save
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Change Signature Modal -->
 <modal class="medium" show="ProfileCtrl.editSignature" on-close="ProfileCtrl.closeEditSignature()">
   <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Edit Signature</h3>
     <label>Signature
       <textarea type="text" rows="10" placeholder="Signature" ng-model="ProfileCtrl.user.raw_signature" auto-focus="$parent.focus" ></textarea>
     </label>
-
     <!-- Save Button -->
-    <div class="row">
-      <button class="button expand" ng-click="ProfileCtrl.saveSignature()" ng-disabled="$parent.form.$invalid || $parent.form.errors">
+    <div class="clear">
+      <button class="fill-row" ng-click="ProfileCtrl.saveSignature()" ng-disabled="$parent.form.$invalid || $parent.form.errors">
         Save
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Deactivate Account Modal -->
-<modal class="medium" show="ProfileCtrl.showDeactivate" on-close="ProfileCtrl.closeDeactivateModal()">
+<modal show="ProfileCtrl.showDeactivate" on-close="ProfileCtrl.closeDeactivateModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <center>
-      <p>
-        Are you sure you want to deactivate your account? Your information and posts will be hidden from other users. You will not be able to create, edit, or delete your posts and threads.
-      </p>
-    </center>
-
+    <h3 class="thin-underline">Deactivate Account</h3>
+    <p>
+      Are you sure you want to deactivate your account? Your information and posts will be hidden from other users. You will not be able to create, edit, or delete your posts and threads.
+    </p>
     <!-- Deactivate Button -->
-    <div class="row">
-      <button class="button expand" ng-click="ProfileCtrl.deactivateUser()">
+    <div class="clear">
+      <button class="fill-row" ng-click="ProfileCtrl.deactivateUser()">
         Deactivate Account
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Reactivate Account Modal -->
-<modal class="medium" show="ProfileCtrl.showReactivate" on-close="ProfileCtrl.closeReactivateModal()">
+<modal show="ProfileCtrl.showReactivate" on-close="ProfileCtrl.closeReactivateModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <center>
-      <p>
-        Reactivate your account? All your threads and posts will be viewable to the public again. You will also be able to create, edit, and delete your posts and threads like normal.
-      </p>
-    </center>
-
+    <h3 class="thin-underline">Reactivate Account</h3>
+    <p>
+      Reactivate your account? All your threads and posts will be viewable to the public again. You will also be able to create, edit, and delete your posts and threads like normal.
+    </p>
     <!-- Reactivate Button -->
-    <div class="row">
-      <button class="button expand" ng-click="ProfileCtrl.reactivateUser()">
+    <div class="clear">
+      <button class="fill-row" ng-click="ProfileCtrl.reactivateUser()">
         Reactivate Account
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>
 
 <!-- Delete Account Modal -->
-<modal class="medium" show="ProfileCtrl.showDelete" on-close="ProfileCtrl.closeDeleteModal()">
+<modal show="ProfileCtrl.showDelete" on-close="ProfileCtrl.closeDeleteModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <center>
-      <p>
-        Are you sure you want to delete this account? This will delete the user's account and all their posts and threads. Any threads this user has started will be deleted and any posts from other users within that thread will be deleted as well.
-      </p>
-    </center>
-
+    <h3 class="thin-underline">Delete Account</h3>
+    <p>
+      Are you sure you want to delete this account? This will delete the user's account and all their posts and threads. Any threads this user has started will be deleted and any posts from other users within that thread will be deleted as well.
+    </p>
     <!-- Delete Button -->
-    <div class="row">
-      <button class="button expand" ng-click="ProfileCtrl.deleteUser()">
+    <div class="clear">
+      <button class="fill-row" ng-click="ProfileCtrl.deleteUser()">
         Delete Account
       </button>
     </div>
   </form>
-
-  <a class="close-reveal-modal">&#215;</a>
 </modal>

@@ -41,22 +41,21 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     // generate page listing for each thread
     this.getPageKeysForThread = function(thread) {
       var pageKeys = [];
-      var urlPrefix = '/threads/' + thread.id + '/posts?page=';
       if (thread.page_count < 7) {
         var i = 1;
-        while(pageKeys.push({ val: i.toString(), url: urlPrefix + i++}) < thread.page_count) {}
+        while(pageKeys.push({ val: i++, threadId: thread.id}) < thread.page_count) {}
       }
       else {
-        var thirdToLastPage = (thread.page_count - 2).toString();
-        var secondToLastPage = (thread.page_count - 1).toString();
-        var lastPage = thread.page_count.toString();
-        pageKeys.push({ val: '1', url: urlPrefix + '1' });
-        pageKeys.push({ val: '2', url: urlPrefix + '2' });
-        pageKeys.push({ val: '3', url: urlPrefix + '3' });
-        pageKeys.push({ val: '&hellip;', url: null });
-        pageKeys.push({ val: thirdToLastPage, url: urlPrefix + thirdToLastPage });
-        pageKeys.push({ val: secondToLastPage, url: urlPrefix + secondToLastPage });
-        pageKeys.push({ val: lastPage, url: urlPrefix + lastPage });
+        var thirdToLastPage = (thread.page_count - 2);
+        var secondToLastPage = (thread.page_count - 1);
+        var lastPage = thread.page_count;
+        pageKeys.push({ val: 1, threadId: thread.id });
+        pageKeys.push({ val: 2, threadId: thread.id });
+        pageKeys.push({ val: 3, threadId: thread.id });
+        pageKeys.push({ val: '&hellip;', threadId: null });
+        pageKeys.push({ val: thirdToLastPage, threadId: thread.id });
+        pageKeys.push({ val: secondToLastPage, threadId: thread.id });
+        pageKeys.push({ val: lastPage, threadId: thread.id });
       }
       thread.page_keys = pageKeys;
     };
@@ -74,7 +73,7 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     // Scroll fix for nested state
     $timeout($anchorScroll);
 
-    this.offLCS = $rootScope.$on('$locationChangeSuccess', function(event){
+    this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
       var params = $location.search();
       var page = Number(params.page) || 1;
       var limit = Number(params.limit) || 25;

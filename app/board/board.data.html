@@ -1,137 +1,158 @@
 <!-- Child Boards -->
-<div class="small-12 columns" ng-if="BoardCtrl.board.children && BoardCtrl.page === 1">
-  <h5><strong>Child Boards</strong></h5>
+<div class="child-boards" ng-if="BoardCtrl.board.children.length > 0 && BoardCtrl.page === 1">
+  <h5>Child Boards</h5>
+  <div class="thin-underline"></div>
+  <div class="board" ng-repeat="childBoard in BoardCtrl.board.children">
 
-  <div class="child-board" ng-repeat="childBoard in BoardCtrl.board.children">
-    <!-- Child Board Title -->
-    <h5>
-      <a ng-href="/boards/{{childBoard.id}}" class="board-name" ng-bind-html="childBoard.name"></a>
-    </h5>
+    <!-- Child Board's Name, Description, Child Boards -->
+    <div class="info">
+      <h5>
+        <a ng-href="/boards/{{childBoard.id}}" class="board-name" ng-bind-html="childBoard.name"></a>
+      </h5>
 
-    <!-- Child Board description and content -->
-    <div class="row">
-      <!-- Description and child boards -->
-      <div class="small-12 medium-9 columns child-board-desc">
-        <div ng-bind-html="childBoard.description"></div>
-        <span class="child-boards" ng-if="childBoard.children.length > 0">
-          <strong>Child Boards:</strong>
-          <span ng-repeat="child in childBoard.children">
-            <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
-          </span>
+      <div class="description" ng-bind-html="childBoard.description"></div>
+
+      <div ng-if="board.children.length > 0">
+        <strong>Child Boards:</strong>
+        <span ng-repeat="child in childBoard.children">
+          <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
         </span>
       </div>
+    </div>
 
-      <!-- Posts and threads -->
-      <div class="small-12 medium-3 columns text-info">
-        <div>
-          <strong ng-bind="childBoard.total_post_count | number:0"></strong> posts
-        </div>
-        <div>
-          <strong ng-bind="childBoard.total_thread_count | number:0"></strong> threads
-        </div>
+    <!-- Child Board Posts and Threads -->
+    <div class="view-count">
+      <div>
+        <strong ng-bind="childBoard.total_post_count | number:0"></strong> posts
+      </div>
+      <div>
+        <strong ng-bind="childBoard.total_thread_count | number:0"></strong> threads
       </div>
     </div>
-    <!-- Last Post By -->
-    <div class="row">
-      <div class="small-12 medium-8 columns text-info">
+
+    <!-- Child Board Last Post By -->
+    <div class="last-post">
+      <div ng-if="childBoard.last_post_username">
         Last post by
-        <a ng-href="/profiles/{{ childBoard.last_post_username }}" ng-bind-html="childBoard.last_post_username"></a>
-        in thread <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title"></a>
-        <br>
+         <a ng-href="/profiles/{{ childBoard.last_post_username }}" ng-bind-html="childBoard.last_post_username"></a>
+      </div>
+      <div ng-if="childBoard.last_thread_title">
+        in thread
+        <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title | truncate:25"></a>
+      </div>
+      <div ng-if="childBoard.last_post_created_at">
         <span ng-bind="childBoard.last_post_created_at | humanDate"></span>
       </div>
     </div>
 
   </div>
-  <div class="thin-dotted-underline"></div>
 </div>
 
 <!-- Threads -->
-<div class="small-12 columns">
-  <!-- Thread listing headers -->
-  <div ng-if="BoardCtrl.threads" class="row show-for-medium-up thread-list-header">
-    <div class="small-11 medium-7 columns">
-      <h6>Subject</h6>
+<!-- Thread listing headers -->
+<div class="threads-header" ng-if="BoardCtrl.threads">
+  <div class="mobile-header">
+    <h5>Threads</h5>
+  </div>
+  <div class="subject">
+    <h5>Subject</h5>
+  </div>
+  <div class="replies">
+    <h5>Replies</h5>
+  </div>
+  <div class="views">
+    <h5>Views</h5>
+  </div>
+  <div class="last-reply">
+    <h5>Last Reply</h5>
+  </div>
+</div>
+<div class="thin-underline"></div>
+
+<!-- Sticky Thread listing -->
+<div class="threads-data" ng-repeat="thread in BoardCtrl.stickyThreads track by thread.id">
+
+  <div class="subject">
+    <div class="title">
+      <a ng-class="thread.title_class" class="thread-title" ui-sref="posts.data({threadId: thread.id})" ng-bind-html="thread.title"></a>
+      <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
+      <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
     </div>
-    <div class="small-6 medium-1 columns text-center">
-      <h6>Replies</h6>
+
+    <div class="started-by">
+      Started by <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>
+      <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
     </div>
-    <div class="small-6 medium-1 columns text-center">
-      <h6>Views</h6>
+
+    <div class="mobile-stats">
+      <strong class="mobile-replies" ng-bind="thread.post_count - 1 | number:0"></strong>
+      <span> Replies and </span>
+      <strong class="mobile-views" ng-bind="thread.view_count | number:0"></strong>
+      <span> Views</span>
+      <br />
+      <span>Last reply by </span>
+      <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+      <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
     </div>
-    <div class="small-12 medium-3 columns">
-      <h6>Last Reply</h6>
+
+    <div class="pages" ng-if="thread.page_count > 1">
+      <span ng-repeat="pageKey in thread.page_keys">
+        <a ng-if="pageKey.threadId !== null && pageKey.val !== 'All'" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
+        <a ng-if="pageKey.val === 'All'" ui-sref="posts.data({ threadId: pageKey.threadId, page: 1, limit: 'all' })" ng-bind-html="pageKey.val"></a>
+        <span ng-if="pageKey.threadId === null" ng-bind-html="pageKey.val"></span>
+      </span>
     </div>
   </div>
 
-  <!-- Sticky Thread listing -->
-  <div class="thread-listItem" ng-repeat="thread in BoardCtrl.stickyThreads track by thread.id">
-    <div class="row">
-      <div class="small-12 medium-7 columns">
-        <a ng-class="thread.title_class" class="thread-title" ng-href="/threads/{{thread.id}}/posts" ng-bind-html="thread.title"></a>
-        <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-        <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
-        <br>
+  <div class="replies" ng-bind="thread.post_count - 1 | number:0"></div>
 
-        <div class="division">
-          Started by: <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>
-          <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
-        </div>
+  <div class="views" ng-bind="thread.view_count | number:0"></div>
 
-        <div class="division" ng-if="thread.page_count > 1">
-          <span ng-repeat="pageKey in thread.page_keys">
-            <a ng-href="{{pageKey.url}}" ng-bind-html="pageKey.val"></a>
-          </span>
-        </div>
-      </div>
+  <div class="last-reply">
+    Last reply by <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+    <div ng-bind="thread.last_post_created_at | humanDate"></div>
+  </div>
+</div>
 
-      <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.post_count - 1 | number:0"></div>
+<!-- Thread listing -->
+<div class="threads-data" ng-repeat="thread in BoardCtrl.threads track by thread.id">
+  <div class="subject">
+    <div class="title">
+      <a ng-class="thread.title_class" class="thread-title" ui-sref="posts.data({threadId: thread.id})" ng-bind-html="thread.title"></a>
+      <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
+   </div>
 
-      <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.view_count | number:0"></div>
+    <div class="started-by">
+      Started by <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>
+      <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
+    </div>
 
-      <div class="small-12 columns text-info show-for-small-only">
-        <strong ng-bind="thread.post_count-1 | number:0"></strong> replies and <strong ng-bind="thread.view_count | number:0"></strong> views
-      </div>
+    <div class="mobile-stats">
+      <strong class="mobile-replies" ng-bind="thread.post_count - 1 | number:0"></strong>
+      <span> Replies and </span>
+      <strong class="mobile-views" ng-bind="thread.view_count | number:0"></strong>
+      <span> Views</span>
+      <br />
+      <span>Last reply by </span>
+      <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+      <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
+    </div>
 
-      <div class="small-12 medium-3 columns text-info">
-        <div ng-bind="thread.last_post_created_at | humanDate"></div>
-        by <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
-      </div>
+    <div class="pages" ng-if="thread.page_count > 1">
+      <span ng-repeat="pageKey in thread.page_keys">
+        <a ng-if="pageKey.threadId !== null && pageKey.val !== 'All'" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
+        <a ng-if="pageKey.val === 'All'" ui-sref="posts.data({ threadId: pageKey.threadId, page: 1, limit: 'all' })" ng-bind-html="pageKey.val"></a>
+        <span ng-if="pageKey.threadId === null" ng-bind-html="pageKey.val"></span>
+      </span>
     </div>
   </div>
 
-  <!-- Thread listing -->
-  <div class="thread-listItem" ng-repeat="thread in BoardCtrl.threads track by thread.id">
-    <div class="row">
-      <div class="small-12 medium-7 columns">
-        <a ng-class="thread.title_class" class="thread-title" ng-href="/threads/{{thread.id}}/posts" ng-bind-html="thread.title"></a>
-        <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-        <br>
+  <div class="replies" ng-bind="thread.post_count - 1 | number:0"></div>
 
-        <div class="division">
-          Started by: <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>
-          <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
-        </div>
+  <div class="views" ng-bind="thread.view_count | number:0"></div>
 
-        <div class="division" ng-if="thread.page_count > 1">
-          <span ng-repeat="pageKey in thread.page_keys">
-            <a ng-href="{{pageKey.url}}" ng-bind-html="pageKey.val"></a>
-          </span>
-        </div>
-      </div>
-
-      <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.post_count - 1 | number:0"></div>
-
-      <div class="medium-1 columns show-for-medium-up text-center" ng-bind="thread.view_count | number:0"></div>
-
-      <div class="small-12 columns text-info show-for-small-only">
-        <strong ng-bind="thread.post_count-1 | number:0"></strong> replies and <strong ng-bind="thread.view_count | number:0"></strong> views
-      </div>
-
-      <div class="small-12 medium-3 columns text-info">
-        <div ng-bind="thread.last_post_created_at | humanDate"></div>
-        by <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
-      </div>
-    </div>
+  <div class="last-reply">
+    Last reply by <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+    <div ng-bind="thread.last_post_created_at | humanDate"></div>
   </div>
 </div>

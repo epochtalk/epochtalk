@@ -27,11 +27,10 @@
 </div>
 
 <!-- Image Modal -->
-<modal class="medium" show="imageModal">
-  <a class="close-reveal-modal">&#215;</a>
-  <ul ng-class="images.length > 1 ? 'medium-block-grid-2' : 'medium-block-grid-1'" class="picker-list">
+<modal class="medium fixed" show="imageModal">
+  <ul ng-class="images.length > 4 ? 'two-col' : 'one-col'" class="img-picker-list">
     <li ng-repeat="image in images">
-      <div class="image-picker">
+      <div class="image-picker-cell">
         <!-- image picker header -->
         <div class="header" >
           (<span ng-bind="image.progress"></span>%):
@@ -50,4 +49,5 @@
       </div>
     </li>
   </ul>
+  <div class="clear"></div>
 </modal>

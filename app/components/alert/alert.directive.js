@@ -8,21 +8,15 @@ module.exports = ['$timeout', 'Alert', function($timeout, Alert) {
     link: function($scope, $element, $attr) {
       $scope.alerts = Alert.getAlerts();
       $scope.visibleAlerts = [];
-      $scope.$watch('alerts', syncAlerts, true);
 
       function addAlert(alert) {
-        $scope.visibleAlerts.push(alert);
+        $scope.visibleAlerts.unshift(alert);
         // timer to delete alert
         $timeout(function() { $scope.removeAlert(alert.id); }, 10000);
       }
 
       function syncAlerts() {
-        if ($scope.alerts.length === 0) { return; }
-        if ($scope.visibleAlerts.length > 2) { return; }
-
-        var slotsOpen = 0;
-        slotsOpen = 3 - $scope.visibleAlerts.length;
-        for(var i = 0; i < slotsOpen; i++) {
+        for(var i = 0; i < $scope.alerts.length; i++) {
           var temp = $scope.alerts.shift();
           if (temp) { addAlert(temp); }
         }
@@ -32,10 +26,10 @@ module.exports = ['$timeout', 'Alert', function($timeout, Alert) {
         _.remove($scope.visibleAlerts, function(alert) {
           return alert.id === id;
         });
-
         syncAlerts();
       };
 
+      $scope.$watch('alerts', syncAlerts, true);
     }
   };
 }];

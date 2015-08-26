@@ -4,6 +4,7 @@ var path = require('path');
 var _ = require('lodash');
 var renameKeys = require('deep-rename-keys');
 var commonPre = require(path.normalize(__dirname + '/../../common')).auth;
+var pre = require(path.normalize(__dirname + '/pre'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
 
 var writeConfigToEnv = function(updatedConfig) {
@@ -117,7 +118,10 @@ exports.find = {
   */
 exports.update = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonPre.adminCheck } ],
+  pre: [
+    { method: commonPre.adminCheck },
+    { method: pre.handleImages }
+  ],
   validate: {
     payload: Joi.object().keys({
       root: Joi.string(),

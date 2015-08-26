@@ -2,7 +2,7 @@
 
 ####**Warning this project is under active development, design is subject to change**
 
-Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Browserify](https://www.npmjs.org/package/browserify), [Postgres](https://github.com/postgres/postgres) and [Foundation](http://foundation.zurb.com) for improved performance and user experience as compared to existing forum software.
+Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Browserify](https://www.npmjs.org/package/browserify), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
 
 ![Epochtalk Forums](http://i.imgur.com/iWEvbvF.png)
 
@@ -28,7 +28,7 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 
 ## Features
 * Epochtalk is a single page web application created with [AngularJS](https://angularjs.org)
-* Web/Mobile ready responsive design using [Foundation](http://foundation.zurb.com)
+* Web/Mobile ready responsive design using [Bourbon](http://bourbon.io/)
 * JavaScript and CSS is bundled and minimized for performance using [Browserify](https://www.npmjs.org/package/browserify) and [Uglify-js](https://www.npmjs.org/package/uglify-js)
 * Designed with performance in mind. Epochtalk's backend, [Epochtalk-Core-PG](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
 
@@ -41,15 +41,15 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * [foreman](http://ddollar.github.io/foreman)
 
 ### Bower
-* angular `1.3.14`
-* angular-resource `1.3.14`
-* angular-sanitize `1.3.14`
-* angular-animate `1.3.14`
+* angular `1.4.4`
+* angular-resource `1.4.4`
+* angular-sanitize `1.4.4`
+* angular-animate `1.4.4`
 * angular-loading-bar `0.7.1`
-* foundation `5.5.1`
 * nestable [slickage/Nestable](http://github.com/slickage/Nestable)
 * angular-ui-router `~0.2.15`
 * angular-ui-router-title `0.0.3`
+* jquery `~2.1.4`
 
 ### NPM
 * async `^0.9.0`

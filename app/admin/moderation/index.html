@@ -1,4 +1,4 @@
-<div class="content-header full-width">
+<div id="admin-subnav" class="fill-row">
   <h2>Moderation</h2>
   <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'users'">
     <dd class="no-select" ng-class="{'active': tab == 'users'}">
@@ -9,4 +9,4 @@
     </dd>
   </dl>
 </div>
-<div ui-view="data" class="data"></div>
+<div ui-view="data" id="admin-data" class="fill-row"></div>

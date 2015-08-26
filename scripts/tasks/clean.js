@@ -8,9 +8,6 @@ module.exports = function() {
         'public/css/*.css',
         'app/scss/default.scss',
         'app/scss/medium-editor.scss',
-        'app/scss/foundation/components',
-        'app/scss/normalize.scss',
-        'app/scss/foundation.scss',
         'public/js/*.js'
       ],
       function(err) {

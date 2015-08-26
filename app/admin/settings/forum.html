@@ -1,34 +1,25 @@
-<div class="row full-width">
-
-  <!-- Column One -->
-  <div class="small-12 large-6 columns">
-    <!-- Forum Configurations -->
-    <h5 class="thin-dotted-underline">Forum Configurations</h5>
-    <div class="small-9 columns column-padding-fix column-spacing-fix">
+<!-- Column One -->
+<div class="settings half-column">
+  <!-- Forum Configurations -->
+  <h5 class="thin-underline">Forum Configurations</h5>
+  <div class="setting-row">
+    <div class="switch-desc">
       <label for="public-forum">Public Forum</label>
       <label class="desc-label" for="public-forum">Allow guests to view forum content</label>
     </div>
-    <div class="small-3 columns column-padding-fix">
-      <div class="onoffswitch onoffswitch-right-align">
-        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="public-forum" ng-model="AdminSettingsCtrl.settings.login_required" ng-true-value="false" ng-false-value="true">
-        <label class="onoffswitch-label" for="public-forum">
-          <span class="onoffswitch-inner"></span>
-          <span class="onoffswitch-switch"></span>
-        </label>
-      </div>
+    <div class="switch-block">
+      <input id="public-forum" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.login_required" ng-true-value="false" ng-false-value="true">
+      <label for="public-forum"></label>
     </div>
-    <div class="small-9 columns column-padding-fix column-spacing-fix">
+  </div>
+  <div class="setting-row">
+    <div class="switch-desc">
       <label for="verify-registration">Verify Registration</label>
       <label class="desc-label" for="verify-registration">Users must verify their accounts when registering</label>
     </div>
-    <div class="small-3 columns column-padding-fix">
-      <div class="onoffswitch onoffswitch-right-align">
-        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="verify-registration" ng-model="AdminSettingsCtrl.settings.verify_registration">
-        <label class="onoffswitch-label" for="verify-registration">
-          <span class="onoffswitch-inner"></span>
-          <span class="onoffswitch-switch"></span>
-        </label>
-      </div>
+    <div class="switch-block">
+      <input id="verify-registration" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.verify_registration">
+      <label for="verify-registration"></label>
     </div>
   </div>
 </div>

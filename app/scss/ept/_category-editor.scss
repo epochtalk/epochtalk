@@ -242,3 +242,8 @@
 .modified::before {
   content: "\f0c8";
 }
+
+@include media($mobile) {
+  .dd-desc span { display: none; }
+  .dd-desc { width: 70% };
+}

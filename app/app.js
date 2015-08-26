@@ -6,12 +6,9 @@ require('../bower_components/angular-animate/angular-animate');
 require('../bower_components/angular-ui-router/release/angular-ui-router');
 require('../bower_components/angular-ui-router-title/angular-ui-router-title');
 require('../bower_components/angular-loading-bar');
-jQuery = require('../bower_components/foundation/js/vendor/jquery');
+jQuery = require('../bower_components/jquery/dist/jquery.min.js');
 $ = jQuery;
 require('../bower_components/nestable/jquery.nestable');
-require('../bower_components/foundation/js/vendor/fastclick');
-require('../bower_components/foundation/js/vendor/placeholder');
-require('../bower_components/foundation/js/foundation');
 
 // Create Angular App
 var app = angular.module('ept', [
@@ -85,11 +82,6 @@ app.config(require('./config'))
   Settings.webConfigs().$promise
   .then(function(configs) { $rootScope.$webConfigs = configs; })
   .catch(function() { console.log('Error fetching website configs'); });
-
-  // Load foundation on view change
-  $rootScope.$on('$viewContentLoaded', function() {
-    $timeout(function() { $(document).foundation(); });
-  });
 
   // Dynamically populate breadcrumbs
   $rootScope.$on('$stateChangeSuccess', function() {

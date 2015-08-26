@@ -1,19 +1,18 @@
-<div class="content-header full-width">
+<div id="admin-subnav" class="fill-row">
   <h2>Settings</h2>
-    <!-- Tabs -->
-    <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'general'">
-      <dd class="no-select" ng-class="{'active': tab == 'general'}">
-        <a ui-sref=".general" ng-click="tab = 'general'">General</a>
-      </dd>
-      <dd class="no-select" ng-class="{'active': tab == 'forum'}">
-        <a ui-sref=".forum" ng-click="tab = 'forum'">Forum</a>
-      </dd>
-    </dl>
+  <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'general'">
+    <dd class="no-select" ng-class="{'active': tab == 'general'}">
+      <a ui-sref=".general" ng-click="tab = 'general'">General</a>
+    </dd>
+    <dd class="no-select" ng-class="{'active': tab == 'forum'}">
+      <a ui-sref=".forum" ng-click="tab = 'forum'">Forum</a>
+    </dd>
+  </dl>
 
-    <div class="right">
-      <button ng-click="child.save()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>&nbsp;
-      <button ng-click="child.reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset</button>
-    </div>
+  <div class="right mobile-buttons">
+    <a class="button" ng-click="child.save()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</a>&nbsp;
+    <a class="button" ng-click="child.reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset</a>
+  </div>
 </div>
 
-<div ui-view="data" class="data"></div>
+<div ui-view="data" id="admin-data" class="fill-row"></div>

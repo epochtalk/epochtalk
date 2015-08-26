@@ -1,64 +1,50 @@
 <!-- Auth error message -->
-<div class="row">
-  <div class="small-12 columns info-box text-center" ng-if="!NewThreadCtrl.loggedIn()">
-    <span class="label alert radius">
-      You need to be logged in to make a new thread
-    </span>
+<div class="padded-row" ng-if="!NewThreadCtrl.loggedIn()">
+  <div class="logged-out fill-row">
+    You need to be logged in to make a new thread
   </div>
 </div>
 
-  <!-- New Thread and Title -->
-<div class="row">
-  <div class="small-12 columns thread-spacer">
-    <h4>New Thread</h4>
-  </div>
+<!-- New Thread and Title -->
+<div class="padded-row">
+  <h4 class="fill-row">New Thread</h4>
 </div>
 
-<div class="row">
-  <div class="small-12 columns">
-    <!-- Title -->
-    <label>Title:
-      <input type="text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" required autofocus tabIndex="1">
-    </label>
+<!-- Title -->
+<div class="padded-row">
+  <div class="fill-row">
+    <label for="title">Title:</label>
+    <input type="text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" required autofocus tabIndex="1">
   </div>
 </div>
 
 <!-- Editor -->
-<div class="row">
-  <div class="small-12 columns thread-editor-container">
+<div class="padded-row">
+  <div class="fill-row thread-editor-container">
     <form name="form" class="editor-form" novalidate>
       <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" raw-body="NewThreadCtrl.thread.raw_body" reset-switch="NewThreadCtrl.resetEditor" exit-switch="NewThreadCtrl.exitEditor" dirty="NewThreadCtrl.dirtyEditor"></epochtalk-editor tabIndex="2">
     </form>
   </div>
 </div>
 
-<!-- Thread Controls -->
-<div class="row">
-  <div class="small-3 columns thread-spacer">
-    <h5>Lock Thread?</h5>
-    <div class="switch">
-      <input id="lockThread" type="checkbox" ng-model="NewThreadCtrl.thread.locked" ng-disabled="!NewThreadCtrl.loggedIn()" tabIndex="3">
-      <label for="lockThread">Lock Thread?</label>
+<div class="padded-row">
+  <div class="fill-row">
+    <label>Options:</label>
+    <div class="option">
+      <input type="checkbox" id="lockThread" ng-model="NewThreadCtrl.thread.locked" ng-disabled="!NewThreadCtrl.loggedIn()" tabIndex="3">
+      <label for="lockThread">Lock Thread</label>
+    </div>
+
+    <div class="option" ng-if="NewThreadCtrl.user.isAdmin">
+      <input type="checkbox" id="stickyThread" ng-model="NewThreadCtrl.thread.sticky" ng-disabled="!NewThreadCtrl.loggedIn()" tabIndex="4">
+      <label for="stickyThread">Sticky Thread</label>
     </div>
   </div>
-
-  <div class="small-3 columns thread-spacer" ng-if="NewThreadCtrl.user.isAdmin">
-    <h5>Sticky Thread?</h5>
-    <div class="switch">
-      <input id="stickyThread" type="checkbox" ng-model="NewThreadCtrl.thread.sticky" ng-disabled="!NewThreadCtrl.loggedIn()" tabIndex="4">
-      <label for="stickyThread"></label>
-    </div>
-  </div>
-
-  <div class="small-3 columns thread-spacer"></div>
-  <div class="small-3 columns thread-spacer"></div>
 </div>
 
 <!-- Submit Button -->
-<div class="row">
-  <div class="small-12 columns thread-spacer">
-    <button class="button expand" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || !NewThreadCtrl.dirtyEditor" tabIndex="4">
-      Submit
-    </button>
-  </div>
+<div class="padded-row">
+  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || !NewThreadCtrl.dirtyEditor" tabIndex="4">
+    Submit
+  </button>
 </div>
