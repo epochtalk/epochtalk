@@ -11,8 +11,11 @@ module.exports = [
     this.limit = pageData.limit;
     this.pageMax = Math.ceil(pageData.total_convo_count / pageData.limit);
     this.currentConversation = {messages: []};
+    this.selectedConversationId = null;
+    this.receiverName = null;
     this.newConversation = {body: '', receiver_id: ''};
-    this.newMessage = {body: '', receiver_id: '', previewBody: ''};
+    this.newMessage = {body: '', receiver_id: '', previewBody: '' };
+    this.showReply = false;
 
     // page exiting functions
     var confirmMessage = 'It looks like a message is being written.';
@@ -39,6 +42,7 @@ module.exports = [
     // Conversations
 
     this.loadConversation = function(conversationId) {
+      ctrl.selectedConversationId = conversationId;
       Conversations.messages({id: conversationId}).$promise
       // build out conversation information
       .then(function(data) {
@@ -56,6 +60,7 @@ module.exports = [
         var lastMessage = data.messages[data.messages.length - 1];
         var lastReceiverId = lastMessage.receiver_id;
         var lastSenderId = lastMessage.sender_id;
+        ctrl.receiverName = lastMessage.receiver_username;
         if (Session.user.id === lastSenderId) {
           ctrl.newMessage.receiver_id = lastReceiverId;
           ctrl.newMessage.receiver_username = lastMessage.receiver_username;
@@ -67,9 +72,6 @@ module.exports = [
       })
       // scroll last message into view
       .then(function() {
-        var messageLength = ctrl.currentConversation.messages.length;
-        var lastMessage = ctrl.currentConversation.messages[messageLength - 1];
-        $location.hash(lastMessage.id);
         $anchorScroll();
       });
     };
@@ -83,19 +85,12 @@ module.exports = [
       Conversations.messages(query).$promise
       // build out conversation information
       .then(function(data) {
-        ctrl.currentConversation.messages = data.messages.concat(ctrl.currentConversation.messages);
+        ctrl.currentConversation.messages = ctrl.currentConversation.messages.concat(data.messages);
         ctrl.currentConversation.last_message_id = data.last_message_id;
         ctrl.currentConversation.last_message_timestamp = data.last_message_timestamp;
         ctrl.currentConversation.hasNext = data.hasNext;
         loadConversationMembers(data.messages);
         return data;
-      })
-      // scroll to last message
-      .then(function(data) {
-        var messageLength = data.messages.length;
-        var lastMessage = data.messages[messageLength - 1];
-        $location.hash(lastMessage.id);
-        $anchorScroll();
       });
     };
 
@@ -182,7 +177,9 @@ module.exports = [
       .then(function(message) {
         message.receiver_username = ctrl.newMessage.receiver_username;
         message.sender_username = ctrl.newMessage.sender_username;
-        ctrl.currentConversation.messages.push(message);
+        message.sender_avatar = Session.user.avatar;
+        ctrl.currentConversation.messages.unshift(message);
+        Alert.success('Reply sent to ' + message.receiver_username);
       })
       .then(ctrl.loadRecentMessages)
       .then(function() {

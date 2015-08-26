@@ -84,7 +84,7 @@ exports.messages = {
 
       // handle message hasNext and possible extra message
       if (messages.length === opts.limit) {
-        messages.shift();
+        messages.pop();
         payload.messages = messages;
         payload.hasNext = true;
       }
@@ -95,8 +95,8 @@ exports.messages = {
 
       // last message values if there are any messages
       if (messages.length) {
-        payload.last_message_timestamp = messages[0].created_at;
-        payload.last_message_id = messages[0].id;
+        payload.last_message_timestamp = messages[messages.length - 1].created_at;
+        payload.last_message_id = messages[messages.length - 1].id;
       }
 
       return payload;

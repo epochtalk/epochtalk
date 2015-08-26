@@ -70,6 +70,7 @@ label {
   line-height: 1.5;
   margin-bottom: 0;
 }
+datalist { z-index: 99999; }
 .pointer { cursor: pointer; }
 .bold { font-weight: bold; }
 .right { float: right; }
@@ -91,8 +92,8 @@ label {
 input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
 
 /*-------------- Global Components -------------- */
-.ng-modal.ng-hide { opacity: 0; }
-.ng-modal { @include transition(opacity 0.1s linear); opacity: 1; }
+.ng-modal.ng-hide { opacity: 1; }
+.ng-modal { @include transition(opacity 0.2s linear); opacity: 1; }
 .ng-modal-overlay {
   background: rgba(0, 0, 0, 0.45);
   position: fixed;
@@ -102,6 +103,8 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   bottom: 0;
   z-index: 9999;
 }
+.ng-modal.ng-hide .ng-modal-dialog { @include transition(all 0.2s); @include transform(scale(1.2)); opacity: 0; }
+.ng-modal .ng-modal-dialog { @include transition(all 0.2s); @include transform(scale(1)); opacity: 1; }
 .ng-modal-dialog {
   @include span-columns(4, block-collapse);
   left: 0;
@@ -645,6 +648,8 @@ main {
   min-height: 100%;
   padding-bottom: 9.4375rem;
   #public-content { @include outer-container; }
+
+  @include media($mobile) { padding-bottom: 11.5rem; }
 }
 
 noscript {
@@ -699,6 +704,7 @@ footer {
 
   // Mobile Footer Layout
   @include media($mobile) {
+    height: 11.5rem;
     #footer .row .links { @include span-columns(4); @include omega(2n); text-align: center; }
     #footer .row .info { @include span-columns(8); text-align: center; padding-top: 1rem; }
   }
@@ -1141,6 +1147,121 @@ main #public-content, main #admin-content {
       }
       .pagination-wrap, .pagination-wrap pagination { float: none; text-align: center; }
     }
+  }
+}
+
+/*-------------- Messages Layout -------------- */
+main #public-content {
+  .conversations {
+    @include span-columns(3);
+    margin-bottom: 2rem;
+    .list {
+      border: 1px solid $color-gray-light;
+      margin-bottom: 1rem;
+      .cell {
+        @include fill-parent;
+        @include truncate-ellipsis;
+        @include pad(0.2rem 0.8rem);
+        border-bottom: 1px solid $color-gray-light;
+        font-size: 0.8rem;
+        line-height: 0.95rem;
+        cursor: pointer;
+        .msg-preview { color: darken($color-gray-med, 5); }
+        &:hover { background-color: $color-gray-sub; }
+        &.active { background-color: $color-gray-light; }
+        &:last-child { border-bottom: 0; }
+      }
+    }
+    #recentMessagesHeader {
+      @include clearfix;
+      cursor: pointer;
+      color: $color-gray-med;
+      margin-bottom: 1rem;
+      .inbox {
+        @include span-columns(4);
+        @include transition(color 0.15s ease);
+        &:hover { @include transition(color 0.15s ease); color: $color-gray; }
+      }
+      .add {
+        @include span-columns(8);
+        @include omega;
+        color: $color-active;
+        text-align: right;
+        @include transition(color 0.15s ease);
+        &:hover { @include transition(color 0.15s ease); color: $color-active-dark; }
+      }
+    }
+    #pageConvos {
+      @include clearfix;
+      height: 2.1875rem;
+      margin-bottom: 1rem;
+      background-color: $color-gray-sub;
+      .prev, .next {
+        @include span-columns(3);
+        button { display: inline-block; padding: 0.5rem; margin: 0; }
+      }
+      .next { @include omega; button { float: right; } }
+      .page { @include span-columns(6); color: $color-gray-med; text-align: center; line-height: 2.1875rem; }
+    }
+  }
+  .messages {
+    @include span-columns(9);
+    @include omega;
+    .thin-underline {
+      @include no-select;
+      margin-bottom: 0;
+      h4 { margin-bottom: 0; display: inline-block;}
+    }
+    textarea { resize: vertical; }
+    .reply {
+      border: 1px solid $color-gray-light;
+      border-top: 0;
+      background-color: $color-gray-sub;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      .preview {
+        background-color: #fff;
+        height: 7rem;
+        margin-bottom: 1rem;
+        cursor: default;
+        white-space: pre-wrap;
+        overflow-y: auto;
+        padding: 0.5rem;
+        border: 1px solid $color-gray-light;
+      }
+      button { margin-bottom: 0; }
+    }
+    .msg-container {
+      .message {
+        @include clearfix;
+        @include pad(1rem);
+        border-bottom: 1px solid $color-gray-light;
+        &:last-child { margin-bottom: 2rem; }
+        &.sender { background-color: $color-gray-sub; }
+        .avatar {
+          @include span-columns(1);
+          img {
+            @include border-radius(100px);
+            height: 2.5rem;
+            width: 2.5rem;
+          }
+        }
+        .content {
+          @include span-columns(11);
+          .title {
+            margin-bottom: 0.5rem;
+            .date { @include pad(0 0 0 0.25rem); font-size: 0.8rem; color: $color-gray-med; }
+            .action { color: $color-gray-med; }
+            &:hover .action { color: $color-gray; }
+          }
+        }
+      }
+    }
+  }
+
+  @include media($mobile) {
+    .conversations { @include span-columns(8); @include omega; }
+    .messages { @include span-columns(8); @include omega; }
   }
 }
 

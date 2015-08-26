@@ -31,7 +31,7 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
         $(inputElement).attr('multiple', '');
       }
       else if ($scope.purpose === 'favicon') {
-        $(inputElement).attr('accept', 'image/x-icon');
+        $(inputElement).attr('accept', 'image/x-icon, image/png');
       }
 
       function upload(images) {
