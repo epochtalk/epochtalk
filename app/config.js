@@ -89,23 +89,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return User.get({ id: $stateParams.username }).$promise
           .then(function(user) { return user; });
         }],
-        limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 25;
-        }],
-        page: ['$stateParams', function($stateParams) {
-          return Number($stateParams.page) || 1;
-        }],
-        field: ['$stateParams', function($stateParams) {
-          return $stateParams.field;
-        }],
-        desc: ['$stateParams', function($stateParams) {
-          return $stateParams.desc || true;
-        }],
-        usersPostsCount: ['Posts', '$stateParams', function(Posts, $stateParams) {
-          return Posts.pageByUserCount({ username: $stateParams.username }).$promise
-          .then(function(usersCount) { return usersCount.count; });
-        }],
-        usersPosts: ['Posts', '$stateParams', function(Posts, $stateParams) {
+        pageData: ['Posts', '$stateParams', function(Posts, $stateParams) {
           var params = {
             username: $stateParams.username,
             field: $stateParams.field,
@@ -113,8 +97,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1
           };
-          return Posts.pageByUser(params).$promise
-          .then(function(usersPosts) { return usersPosts; });
+          return Posts.pageByUser(params).$promise;
         }]
       }
     });

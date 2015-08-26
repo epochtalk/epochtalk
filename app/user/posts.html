@@ -1,18 +1,15 @@
 <!-- User's Paged Posts -->
 <div class="profile-row">
   <h5 class="title">Posts by {{ProfilePostsCtrl.user.username}}</h5>
-  <div class="centered-text" ng-if="ProfilePostsCtrl.count === 0">
-    <br />
-    <br />
-    <br />
-    <br />
-    <h2>This user has no posts to display</h2>
+  <div class="centered-text" ng-if="ProfilePostsCtrl.pageCount === 0">
+    <br /><br />
+    <h4>This user has no posts to display</h4>
   </div>
-  <div class="pagination-wrap" ng-if="ProfilePostsCtrl.count > 0">
+  <div class="pagination-wrap" ng-if="ProfilePostsCtrl.pageCount > 0">
     <pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination>
   </div>
 </div>
-<div class="fill-row" ng-if="ProfilePostsCtrl.count > 0">
+<div class="fill-row" ng-if="ProfilePostsCtrl.pageCount > 0">
   <table class="striped" width="100%">
     <thead>
       <th width="20%" class="pointer" ng-click="ProfilePostsCtrl.setSortField('thread_title')"><span ng-class="ProfilePostsCtrl.getSortClass('thread_title')"></span>&nbsp;Thread</th>
@@ -28,7 +25,7 @@
     </tbody>
   </table>
 </div>
-<div class="fill-row" ng-if="ProfilePostsCtrl.count > 0">
+<div class="fill-row" ng-if="ProfilePostsCtrl.pageCount > 0">
   <div class="pagination-wrap">
     <pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination>
   </div>
