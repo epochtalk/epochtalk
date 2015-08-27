@@ -52,7 +52,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
   this.statusReportNote = null;
 
   this.searchReports = function() {
-    if (!ctrl.searchStr.length) {
+    if (!ctrl.searchStr || !ctrl.searchStr.length) {
       ctrl.clearSearch();
       return;
     }
@@ -61,13 +61,17 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
       field: 'created_at',
       search: ctrl.searchStr
     };
+    ctrl.selectedUserReport = null;
+    ctrl.reportId = null;
+    ctrl.selectedUsername = null;
     $location.search(ctrl.queryParams);
   };
 
   this.clearSearch = function() {
     ctrl.queryParams = {
       field: 'created_at',
-      filter: ctrl.filter
+      filter: ctrl.filter,
+      reportId: ctrl.reportId
     };
     $location.search(ctrl.queryParams);
     ctrl.searchStr = null;
@@ -352,7 +356,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
     var filterChanged = false;
     var searchChanged = false;
 
-    if (reportId && reportId !== ctrl.reportId) {
+    if ((reportId === undefined || reportId) && reportId !== ctrl.reportId) {
       reportIdChanged = true;
       ctrl.reportId = reportId;
       ctrl.queryParams.reportId = ctrl.reportId;

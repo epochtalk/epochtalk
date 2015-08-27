@@ -169,6 +169,7 @@
     <label for="banType">Select Ban Type:</label>
     <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="true" id="permanent" ng-disabled="ModerationCtrl.banSubmitted" required><label for="permanent">Permanent</label>
     <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="false" id="temporary" ng-disabled="ModerationCtrl.banSubmitted" required><label for="temporary">Temporary</label>
+    <br /><br />
     <div ng-show="ModerationCtrl.permanentBan === false">
       <label for="banUntil">Enter Ban Expiration Date:</label>
       <input type="date" ng-model="ModerationCtrl.banUntil" min="{{ModerationCtrl.minDate()}}" name="banUntil" ng-required="ModerationCtrl.permanentBan === false" />
@@ -235,6 +236,7 @@
     <input ng-if="ModerationCtrl.selectedUserReport.status !== 'Reviewed'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Reviewed" id="reviewed" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedUserReport.status !== 'Reviewed'" for="reviewed">Reviewed</label>
     <input ng-if="ModerationCtrl.selectedUserReport.status !== 'Ignored'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Ignored" id="ignored" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedUserReport.status !== 'Ignored'" for="ignored">Ignored</label>
     <input ng-if="ModerationCtrl.selectedUserReport.status !== 'Bad Report'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Bad Report" id="badReport" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedUserReport.status !== 'Bad Report'" for="badReport">Bad Report</label>
+    <br /><br />
     <label for="statusReportNote">Leave a note (optional):</label>
     <textarea name="statusReportNote" ng-model="ModerationCtrl.statusReportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3"></textarea>
     <div class="clear">
