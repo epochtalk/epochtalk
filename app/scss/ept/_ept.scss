@@ -13,6 +13,7 @@ html, body {
   line-height: $base-line-height;
   font-weight: normal;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   @include media($mobile) { font-size: $base-font-size * 0.85; }
 }
