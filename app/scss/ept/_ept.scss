@@ -210,6 +210,7 @@ code {
   margin: 0 0 1rem 1rem;
   padding: 0 0.625rem 0;
   border-left: 4px solid RGB(221, 221, 221);
+  ul, ol { margin-left: 1.625rem }
   &>br:first-child,
   &>br:last-child,
   &+br { display: none; }
@@ -368,6 +369,7 @@ input[type="url"], input[type="color"], textarea {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  &:disabled, &[disabled] { background-color: $color-gray-light; }
 }
 input[type="checkbox"] { margin-bottom: 1rem; }
 input[type="checkbox"] + label, input[type="radio"] + label {
