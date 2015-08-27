@@ -183,7 +183,6 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
 .error-label { @include label(error,  0.6875rem, 2px, 0.1rem); }
 .thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
 hr { margin: 1rem 0; border: none; height: 1px; color: $color-gray-light; background-color: $color-gray-light; }
-.secret { &.ng-show, &.ng-hide { @include transition(none !important); } }
 .post-body {
   white-space: pre-wrap;
   word-wrap: break-word;

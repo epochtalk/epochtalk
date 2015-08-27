@@ -52,9 +52,8 @@
     <input type="text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.user" placeholder="Username" />
   </div>
   <div class="smtp-pass-wrap">
-    <label for="smtp-password">SMTP Password&nbsp;&nbsp;&nbsp;<a ng-click="AdminSettingsCtrl.showSmtpPass = !AdminSettingsCtrl.showSmtpPass">{{ AdminSettingsCtrl.showSmtpPass ? 'hide' : 'show' }}</a></label>
-    <input ng-hide="AdminSettingsCtrl.showSmtpPass" class="secret" type="password" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.pass" placeholder="Password" />
-    <input ng-show="AdminSettingsCtrl.showSmtpPass" class="secret" type="text" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.pass" placeholder="Password" />
+    <label for="smtp-password">SMTP Password</label>
+    <input class="secret" type="password" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.pass" placeholder="Password" />
   </div>
 
   <!-- Image Server Configurations -->
@@ -104,11 +103,9 @@
     <input type="text" id="image-s3-bucket" ng-model="AdminSettingsCtrl.settings.images.s3.bucket" placeholder="Example: bukkit" />
     <label for="image-region">S3 Region</label>
     <input type="text" id="image-s3-region" ng-model="AdminSettingsCtrl.settings.images.s3.region" placeholder="Example: US West" />
-    <label for="image-s3-access-key">S3 Access Key&nbsp;&nbsp;&nbsp;<a ng-click="AdminSettingsCtrl.showAccessKey = !AdminSettingsCtrl.showAccessKey">{{ AdminSettingsCtrl.showAccessKey ? 'hide' : 'show' }}</a></label>
-    <input ng-hide="AdminSettingsCtrl.showAccessKey" class="secret" type="password" id="image-s3-access-key" ng-model="AdminSettingsCtrl.settings.images.s3.access_key" placeholder="Amazon S3 Access Key" />
-    <input ng-show="AdminSettingsCtrl.showAccessKey" class="secret" type="text" id="image-s3-access-key" ng-model="AdminSettingsCtrl.settings.images.s3.access_key" placeholder="Amazon S3 Access Key" />
-    <label for="image-s3-secret-key">S3 Secret Key&nbsp;&nbsp;&nbsp;<a ng-click="AdminSettingsCtrl.showSecretKey = !AdminSettingsCtrl.showSecretKey">{{ AdminSettingsCtrl.showSecretKey ? 'hide' : 'show' }}</a></label>
-    <input ng-hide="AdminSettingsCtrl.showSecretKey" class="secret" type="password" id="image-s3-secret-key" ng-model="AdminSettingsCtrl.settings.images.s3.secret_key" placeholder="Amazon S3 Secret Key" />
-    <input ng-show="AdminSettingsCtrl.showSecretKey" class="secret" type="text" id="image-s3-secret-key" ng-model="AdminSettingsCtrl.settings.images.s3.secret_key" placeholder="Amazon S3 Secret Key" />
+    <label for="image-s3-access-key">S3 Access Key</label>
+    <input class="secret" type="password" id="image-s3-access-key" ng-model="AdminSettingsCtrl.settings.images.s3.access_key" placeholder="Amazon S3 Access Key" />
+    <label for="image-s3-secret-key">S3 Secret Key</label>
+    <input class="secret" type="password" id="image-s3-secret-key" ng-model="AdminSettingsCtrl.settings.images.s3.secret_key" placeholder="Amazon S3 Secret Key" />
   </div>
 </div>
