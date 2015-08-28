@@ -55,7 +55,7 @@
     <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="MessagesCtrl.currentUserId === message.sender_id ? 'sender' : ''">
       <div class="avatar">
        <img ng-if="message.sender_avatar" src="{{message.sender_avatar}}" />
-       <img ng-if="!message.sender_avatar" src="http://fakeimg.pl/400x400/ccc/444/?text={{message.sender_username}}" />
+       <img ng-if="!message.sender_avatar" src="https://fakeimg.pl/400x400/ccc/444/?text={{message.sender_username}}" />
       </div>
       <div class="content">
         <div class="title">
