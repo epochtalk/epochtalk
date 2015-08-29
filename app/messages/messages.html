@@ -62,7 +62,7 @@
           <strong>{{ message.sender_username}}</strong>
           <span class="date">{{ message.created_at | humanDate }}</span>
           <div ng-if="message.sender_id === MessagesCtrl.currentUserId" class="right">
-            <a href="#" class="action css-tooltip" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-css-tooltip="Delete">
+            <a ng-href="#" class="action css-tooltip" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-css-tooltip="Delete">
               <i class="fa fa-trash"></i>
             </a>
           </div>

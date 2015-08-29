@@ -4,7 +4,7 @@
 
   <!-- Post Profile Section -->
   <div class="post-user">
-    <a href="/profiles/{{::post.user.username}}">
+    <a ui-sref="profile({ username: post.user.username})">
       <div class="user-avatar">
         <img ng-class="{ 'admin': post.user.role === USER_ROLES.admin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }" ng-src="{{::post.avatar}}">
       </div>
@@ -16,7 +16,7 @@
   <div class="post-content">
     <!-- Post Title -->
     <div class="post-title">
-      <a class="username" href="/profiles/{{::post.user.username}}" ng-class="{ 'admin': post.user.role === USER_ROLES.admin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }" ng-bind-html="::post.user.username"></a>
+      <a class="username" ui-sref="profile({ username: post.user.username})" ng-class="{ 'admin': post.user.role === USER_ROLES.admin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }" ng-bind-html="::post.user.username"></a>
       <div class="timestamp" ng-bind="::post.created_at | humanDate"></div>
 
       <ul class="post-action">

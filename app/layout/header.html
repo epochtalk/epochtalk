@@ -37,10 +37,10 @@
             <a ui-sref="^.admin" ui-sref-opts="{ reload: true }">Admin Panel</a>
           </li>
           <li ng-if="HeaderCtrl.currentUser.isMod && !HeaderCtrl.currentUser.isAdmin">
-            <a href="" ui-sref="^.admin-moderation.users({ filter: 'Pending' })" ui-sref-opts="{ reload: true }">Mod Panel</a>
+            <a ui-sref="^.admin-moderation.users({ filter: 'Pending' })" ui-sref-opts="{ reload: true }">Mod Panel</a>
           </li>
           <li>
-            <a ng-href="#" ui-sref="profile({ username: HeaderCtrl.currentUser.username })" ui-sref-opts="{ reload: true }">Profile</a>
+            <a ui-sref="profile({ username: HeaderCtrl.currentUser.username })" ui-sref-opts="{ reload: true }">Profile</a>
           </li>
           <li>
             <a ui-sref="messages" ui-sref-opts="{ reload: true }">Messages</a>
@@ -59,9 +59,8 @@
   <div id="breadcrumbs">
     <ul>
       <li ng-repeat="breadcrumb in HeaderCtrl.breadcrumbs() track by breadcrumb.label" ng-if="breadcrumb.label" ng-class="{ active: $last }">
-          <a ng-if="$first && breadcrumb.url" ui-sref="{{ breadcrumb.state }}" ng-bind-html="breadcrumb.label | truncate:30"></a>
-          <a ng-if="!$last && !$first && breadcrumb.url" ng-href="{{ breadcrumb.url }}" ng-bind-html="breadcrumb.label | truncate:30"></a>
-          <span ng-if="$last || !breadcrumb.url" ng-bind-html="breadcrumb.label | truncate:30"></span>
+          <a ng-if="!$last && breadcrumb.state" ui-sref="{{breadcrumb.state}}({{breadcrumb.opts}})" ng-bind-html="breadcrumb.label | truncate:30"></a>
+          <span ng-if="$last || !breadcrumb.state" ng-bind-html="breadcrumb.label | truncate:30"></span>
       </li>
     </ul>
   </div>

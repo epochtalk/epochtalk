@@ -127,7 +127,7 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   @include media($desktop-small) { @include span-columns(9, block-collapse); }
   @include media($mobile) { @include span-columns(7, block-collapse); top: 1rem; }
 }
-.ng-modal.fixed .ng-modal-dialog { position: fixed; top: 10rem; height: 90%; overflow: scroll; }
+.ng-modal.fixed .ng-modal-dialog { position: fixed; top: 5%; max-height: 90%; overflow: scroll; }
 .ng-modal-dialog-content { padding: 2rem; text-align: left; }
 .ng-modal-close {
   position: absolute;
@@ -1308,6 +1308,8 @@ main #admin-content {
       &:nth-of-type(even) { background: transparent; }
       &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
       td { padding-top: 0.75rem; padding-bottom: 0.75rem; vertical-align: middle; }
+      td input { margin-bottom: 0; }
+      td a.ng-show, a.ng-hide { @include transition(none !important); }
     }
   }
 

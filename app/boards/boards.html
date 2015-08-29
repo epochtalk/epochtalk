@@ -18,12 +18,12 @@
       <div class="info">
         <!-- Board Name -->
         <h5>
-          <a ng-href="/boards/{{::board.id}}" class="board-name" ng-bind-html="board.name"></a>
+          <a ui-sref="board.data({ boardId: board.id })" class="board-name" ng-bind-html="board.name"></a>
         </h5>
         <!-- Moderators -->
         <div ng-if="board.moderators.length > 0">
           <strong>Moderators: </strong>
-          <a ng-href="/profiles/{{::mod.username}}" ng-repeat="mod in board.moderators" ng-bind="::mod.username + ($last ? '' : ', ')"></a>
+          <a ui-sref="profile({ username: mod.username })" ng-repeat="mod in board.moderators" ng-bind="::mod.username + ($last ? '' : ', ')"></a>
         </div>
         <!-- Board Description -->
         <div class="description" ng-bind-html="::board.description"></div>
@@ -32,7 +32,7 @@
         <div class="childboards" ng-if="board.children.length > 0">
           <strong>Child Boards:</strong>
           <span ng-repeat="child in board.children">
-            <a ng-href="/boards/{{::child.id}}" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
+            <a ui-sref="board.data({ boardId: child.id })" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
           </span>
         </div>
       </div>
@@ -51,11 +51,11 @@
       <div class="last-post">
         <div ng-if="board.last_post_username">
           Last post by
-          <a ng-href="/profiles/{{::board.last_post_username}}" ng-bind-html="::board.last_post_username"></a>
+          <a ui-sref="profile({ username: board.last_post_username })" ng-bind-html="::board.last_post_username"></a>
         </div>
         <div ng-if="board.last_thread_title">
           in thread
-          <a ng-href="/threads/{{::board.last_thread_id}}/posts" ng-bind-html="::board.last_thread_title | truncate:25"></a>
+          <a ui-sref="posts.data({ threadId: board.last_thread_id })" ng-bind-html="::board.last_thread_title | truncate:25"></a>
         </div>
         <div ng-if="board.last_post_created_at">
           <i ng-bind="::board.last_post_created_at | humanDate"></i>

@@ -53,14 +53,14 @@
           <td ng-bind="userReport.created_at | date:'MM/dd/yy @ h:mma'"></td>
           <td ng-bind="userReport.status"></td>
           <td><a ui-sref="profile({ username: userReport.offender_username })" ng-bind="userReport.offender_username"></a></td>
-          <td class="hide-mobile"><a href="mailto:{{userReport.offender_email}}" ng-bind="userReport.offender_email"></a></td>
+          <td class="hide-mobile"><a ng-href="mailto:{{userReport.offender_email}}" ng-bind="userReport.offender_email"></a></td>
           <td class="hide-mobile" ng-bind="userReport.offender_created_at | date:'MM/dd/yy @ h:mma'"></td>
           <td class="hide-mobile"><div ng-bind="userReport.reporter_reason"></div></td>
           <td>
-            <a href="#" ng-click="ModerationCtrl.showSetStatus(userReport)">Status</a>&nbsp;&nbsp;
+            <a ng-href="#" ng-click="ModerationCtrl.showSetStatus(userReport)">Status</a>&nbsp;&nbsp;
             <span>Warn</span>&nbsp;&nbsp;
-            <a href="#" ng-hide="userReport.offender_ban_expiration" ng-click="ModerationCtrl.showBanConfirm({ id: userReport.offender_user_id, username: userReport.offender_username, email: userReport.offender_email, created_at: userReport.offender_created_at })">Ban</a>
-            <a href="#" ng-show="userReport.offender_ban_expiration" ng-click="ModerationCtrl.showUnbanConfirm({ id: userReport.offender_user_id, username: userReport.offender_username, email: userReport.offender_email, created_at: userReport.offender_created_at })">Unban</a>
+            <a ng-href="#" ng-hide="userReport.offender_ban_expiration" ng-click="ModerationCtrl.showBanConfirm({ id: userReport.offender_user_id, username: userReport.offender_username, email: userReport.offender_email, created_at: userReport.offender_created_at })">Ban</a>
+            <a ng-href="#" ng-show="userReport.offender_ban_expiration" ng-click="ModerationCtrl.showUnbanConfirm({ id: userReport.offender_user_id, username: userReport.offender_username, email: userReport.offender_email, created_at: userReport.offender_created_at })">Unban</a>
           </td>
         </tr>
       </tbody>
@@ -102,7 +102,7 @@
         </tr>
         <tr>
           <td class="field">Reported User Email</td>
-          <td class="desc"><a href="mailto:{{ModerationCtrl.previewReport.offender_email}}" ng-bind="ModerationCtrl.previewReport.offender_email"></a></td>
+          <td class="desc"><a ng-href="mailto:{{ModerationCtrl.previewReport.offender_email}}" ng-bind="ModerationCtrl.previewReport.offender_email"></a></td>
         </tr>
         <tr>
           <td class="field">Reported User Registered Date</td>
@@ -122,12 +122,12 @@
         <span class="note-author"><a ui-sref="profile({ username: note.username })" ng-bind="note.username"></a>&nbsp;</span>
         <span class="note-date" ng-bind="note.created_at | humanDate"></span>
         <span class="note-date" ng-if="note.created_at !== note.updated_at"> &mdash; Edited <span ng-bind="note.updated_at | humanDate"></span></span>
-        <span class="right" ng-if="ModerationCtrl.user.id === note.user_id"><a href="#" ng-click="note.edit = true; note.noteCopy = note.note">Edit</a></span>
+        <span class="right" ng-if="ModerationCtrl.user.id === note.user_id"><a ng-href="#" ng-click="note.edit = true; note.noteCopy = note.note">Edit</a></span>
         <div class="note-message" ng-bind="note.note"></div>
       </div>
       <div ng-if="note.edit" class="note-details">
-        <a class="right" href="#" ng-click="ModerationCtrl.updateReportNote(note)">Save</a>
-        <a class="right" href="#" ng-click="note.edit = undefined; note.note = note.noteCopy; note.noteCopy = undefined">Cancel&nbsp;&nbsp;&nbsp;</a>
+        <a class="right" ng-href="#" ng-click="ModerationCtrl.updateReportNote(note)">Save</a>
+        <a class="right" ng-href="#" ng-click="note.edit = undefined; note.note = note.noteCopy; note.noteCopy = undefined">Cancel&nbsp;&nbsp;&nbsp;</a>
         <textarea rows="3" ng-model="note.note"></textarea>
       </div>
       <div class="thin-underline"></div>

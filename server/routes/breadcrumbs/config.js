@@ -15,7 +15,7 @@ var db = require(path.normalize(__dirname + '/../../../db'));
   *
   * @apiSuccess {array} breadcrumbs Array containing breadcrumb objects
   * @apiSuccess (Breadcrumb Object) {string} label Label for the breadcrumb link
-  * @apiSuccess (Breadcrumb Object) {string} url URL for backing the label
+  * @apiSuccess (Breadcrumb Object) {string} state State for backing the label
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the breadcrumbs
   */
@@ -43,7 +43,6 @@ exports.byType = {
       board: 'board',
       category: 'category',
       thread: 'thread',
-      post: 'post'
     };
 
     // Recursively Build breadcrumbs
@@ -54,7 +53,7 @@ exports.byType = {
         var nextType, nextId;
         if (curType === type.category) { // Category
           var catName = obj.name;
-          crumbs.push({ label: catName, url: ''});
+          crumbs.push({ label: catName, state: ''});
         }
         else if (curType === type.board) { // Board
           if (!obj.parent_id && obj.category_id) { // Has no Parent
@@ -65,17 +64,12 @@ exports.byType = {
             nextType = type.board;
             nextId = obj.parent_id;
           }
-          crumbs.push({ label: obj.name, url: '/boards/' + id });
+          crumbs.push({ label: obj.name, state: 'board.data', opts: { boardId: id } });
         }
         else if (curType === type.thread) { // Thread
-          crumbs.push({ label: obj.title, url: '/threads/' + id + '/posts'});
+          crumbs.push({ label: obj.title, state: 'posts.data', opts: { threadId: id } });
           nextType = type.board;
           nextId = obj.board_id;
-        }
-        else if (curType === type.post) { // Post
-          crumbs.push({ label: obj.title, url: '/posts/' + id});
-          nextType = type.thread;
-          nextId = obj.thread_id;
         }
         return buildCrumbs(nextId, nextType, crumbs);
       });

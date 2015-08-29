@@ -1,7 +1,6 @@
 <!--Reset Password -->
 <h4 class="fill-row thin-underline">Reset Password</h3>
 
-
 <div class="fill-row">
   <form name="resetPassword" class="css-form" novalidate>
     <label>
@@ -12,7 +11,7 @@
     Confirmation:
     <input type="password" name="confirmation" placeholder="Confirm New Password" ng-model="ResetCtrl.resetUser.confirmation" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}"  ng-disabled="ResetCtrl.tokenExpired" required>
     </label>
-    <a href="#" class="button fill-row" ng-click="ResetCtrl.resetPassword()"
+    <a ng-href="#" class="button fill-row" ng-click="ResetCtrl.resetPassword()"
       ng-disabled="ResetCtrl.tokenExpired || resetPassword.$invalid || ResetCtrl.resetUser.password !== ResetCtrl.resetUser.confirmation || (ResetCtrl.resetUser.password === ResetCtrl.resetUser.confirmation && ResetCtrl.resetUser.password.length < 8)">
       Reset Password
     </a>
