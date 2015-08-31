@@ -64,7 +64,7 @@
     <h5>Views</h5>
   </div>
   <div class="last-reply">
-    <h5>Last Reply</h5>
+    <h5>Last Post</h5>
   </div>
 </div>
 <div class="thin-underline"></div>
@@ -90,7 +90,7 @@
       <strong class="mobile-views" ng-bind="thread.view_count | number:0"></strong>
       <span> Views</span>
       <br />
-      <span>Last reply by </span>
+      <span>Last post by </span>
       <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
       <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
     </div>
@@ -109,7 +109,7 @@
   <div class="views" ng-bind="thread.view_count | number:0"></div>
 
   <div class="last-reply">
-    Last reply by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+    Last post by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
   </div>
 </div>
@@ -133,7 +133,7 @@
       <strong class="mobile-views" ng-bind="thread.view_count | number:0"></strong>
       <span> Views</span>
       <br />
-      <span>Last reply by </span>
+      <span>Last post by </span>
       <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
       <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
     </div>
@@ -152,7 +152,7 @@
   <div class="views" ng-bind="thread.view_count | number:0"></div>
 
   <div class="last-reply">
-    Last reply by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+    Last post by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
   </div>
 </div>
