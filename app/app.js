@@ -92,7 +92,7 @@ app.config(require('./config'))
   $rootScope.$on('$stateChangeError', function(event, next, nextParams, prev, prevParams, error) {
     event.preventDefault();
     // Check if state change error was caused by unauthorized access to a route
-    if (error === 'Unauthorized') { $state.go('boards'); }
+    if (error === 'Unauthorized' || error.status === 401) { $state.go('boards'); }
     else { $state.go('404'); }
   });
 }]);

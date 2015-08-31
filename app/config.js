@@ -680,6 +680,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        userAccess: ['$q', 'Session', function($q, Session) {
+          if (Session.isAuthenticated) { return true; }
+          else { return $q.reject('Unauthorized'); }
+        }],
         $title: function() { return 'Private Messages'; },
         pageData: ['Messages', function(Messages) {
           return Messages.latest().$promise
