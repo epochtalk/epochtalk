@@ -567,6 +567,7 @@ header {
             a { padding-left: 0.8rem; }
           }
           #user-dropdown {
+            @include pad(0 1rem);
             display: none;
             width: 100%;
             text-align: left;
@@ -574,7 +575,8 @@ header {
             background-color: $header-dropdown-bg-color;
             position: absolute;
             z-index: 9999;
-            li, li a { float: none; display: block; height: 2.5rem; line-height: 2.5rem; }
+            li, li a { float: none; display: block; height: 2.2rem; line-height: 2.2rem; }
+            li a { @include pad(0); &:hover { color: $color-active-fill; } }
           }
         }
         #user-dropdown-wrap:hover {
@@ -594,7 +596,7 @@ header {
       }
       #menu-right {
         float: right;
-        li:first-child { padding-right: 0.8rem }
+        li:first-child { padding-right: 0.8rem; }
       }
     }
 
@@ -1308,7 +1310,7 @@ main #admin-content {
       &.active-row td a:hover { color: $color-active-dark; }
       &:nth-of-type(even) { background: transparent; }
       &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
-      td { padding-top: 0.75rem; padding-bottom: 0.75rem; vertical-align: middle; }
+      td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: middle; }
       td input { margin-bottom: 0; }
       td a.ng-show, a.ng-hide { @include transition(none !important); }
     }

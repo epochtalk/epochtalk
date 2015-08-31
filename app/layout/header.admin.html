@@ -32,6 +32,9 @@
             <a ui-sref="^.profile({ username: HeaderCtrl.currentUser.username })">Profile</a>
           </li>
           <li>
+            <a ui-sref="^.messages" ui-sref-opts="{ reload: true }">Messages</a>
+          </li>
+          <li>
             <a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a>
           </li>
         </ul>
