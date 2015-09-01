@@ -33,6 +33,7 @@ function ($stateParams, $location, Breadcrumbs) {
       // Strip query str params since stateParams includes query and route params together
       delete routeParams.limit;
       delete routeParams.page;
+      delete routeParams.start;
 
       // Maps routeParams key to breadcrumb type
       var keyToType = {

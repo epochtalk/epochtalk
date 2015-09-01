@@ -48,7 +48,7 @@
           </a>
         </li>
         <li>
-          <a ng-href="{{PostsCtrl.rootUrl}}#{{post.id}}" ng-click="PostsCtrl.highlightPost()" class="css-tooltip" data-css-tooltip="Permalink">
+          <a ng-href="{{::PostsCtrl.rootUrl}}?start={{::post.position}}#{{::post.id}}" ng-click="PostsCtrl.highlightPost()" class="css-tooltip" data-css-tooltip="Permalink">
             <i class="icon-epoch-link"></i>
           </a>
         </li>

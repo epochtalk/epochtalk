@@ -3,8 +3,8 @@ module.exports = [
   function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Threads, Posts, pageData) {
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
-    parent.page = Number(pageData.page) || 1;
-    parent.limit = Number(pageData.limit) || 25;
+    parent.page = Number(pageData.page);
+    parent.limit = Number(pageData.limit);
     parent.posts = pageData.posts;
     parent.thread = pageData.thread;
     parent.board_id = pageData.thread.board_id;
@@ -33,8 +33,8 @@ module.exports = [
 
     this.offLCS = $rootScope.$on('$locationChangeSuccess', function(event){
       var params = $location.search();
-      var page = Number(params.page) || 1;
-      var limit = Number(params.limit) || 25;
+      var page = Number(params.page);
+      var limit = Number(params.limit);
       var pageChanged = false;
       var limitChanged = false;
 

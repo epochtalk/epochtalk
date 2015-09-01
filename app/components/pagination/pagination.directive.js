@@ -59,6 +59,7 @@ module.exports = ['$location', '$filter', function($location, $filter) {
         if (scope.page > 1) {
           prevBtnKey.class = 'arrow';
           opts = angular.copy($location.search());
+          opts.start = null;
           opts.page = (scope.page - 1);
           prevBtnKey.opts = opts;
           scope.paginationKeys.push(prevBtnKey);
@@ -84,6 +85,7 @@ module.exports = ['$location', '$filter', function($location, $filter) {
           }
           else {
             opts = angular.copy($location.search());
+            opts.start = null;
             opts.page = index;
             pageKey = {
               val: $filter('number')(index, 0),
@@ -99,6 +101,7 @@ module.exports = ['$location', '$filter', function($location, $filter) {
         var nextBtnKey = { val: '&#10095;' };
         if (scope.page < scope.pageCount) {
           opts = angular.copy($location.search());
+          opts.start = null;
           opts.page = (scope.page + 1);
           nextBtnKey.class = 'arrow';
           nextBtnKey.opts = opts;

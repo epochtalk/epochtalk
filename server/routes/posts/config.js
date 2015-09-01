@@ -141,23 +141,25 @@ exports.find = {
   * @apiName PagePostsByThread
   * @apiDescription Used to page through posts by thread.
   *
-  * @apiParam (Query) {string} thread_id The unique id of the thread to retrieve posts from
-  * @apiParam (Query) {number} page=1 Which page of posts to retrieve
-  * @apiParam (Query) {mixed} limit Number indicating how many posts to retrieve per page.
-  * Also accepts string 'all' to retrieve all posts
+  * @apiParam (Query) {string} thread_id Id of the thread to retrieve posts from
+  * @apiParam (Query) {number} page Specific page of posts to retrieve. Do not use with start.
+  * @apiParam (Query) {mixed} limit Number of posts to retrieve per page.
+  * @apiParam (Query) {number} start Specific post within the thread. Do not use with page.
   *
-  * @apiSuccess {array} posts Array containing posts for particular page and thread
+  * @apiSuccess {array} posts Object containing posts for particular page, the thread these Posts
+  * belong to, and the calculated page and limit constraints.
   *
   * @apiError (Error 500) InternalServerError There was an issue finding the posts for thread
   */
 exports.byThread = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
-    query: {
+    query: Joi.object().keys({
       thread_id: Joi.string().required(),
-      page: Joi.number().integer().default(1),
+      start: Joi.number().integer().min(1),
+      page: Joi.number().integer().min(1),
       limit: Joi.number().integer().min(1).max(100).default(25)
-    }
+    }).without('start', 'page')
   },
   pre: [ { method: pre.canRetrieve } ],
   handler: function(request, reply) {
@@ -166,18 +168,26 @@ exports.byThread = {
 
     // ready parameters
     var userId = '';
+    var page = request.query.page;
+    var start = request.query.start;
+    var limit = request.query.limit;
+    var threadId = request.query.thread_id;
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    var threadId = request.query.thread_id;
-    var opts = {
-      limit: request.query.limit,
-      page: request.query.page
-    };
+    var opts = { limit: limit, start: 0, page: 1 };
+
+    if (start) {
+      opts.page = Math.ceil(start / limit);
+      opts.start = Math.floor(start / limit) * limit;
+    }
+    else if (page) {
+      opts.start = ((page * limit) - limit);
+      opts.page = page;
+    }
 
     // retrieve posts for this thread
     var getPosts = db.posts.byThread(threadId, opts);
     var getThread = db.threads.find(threadId);
-
     var promise = Promise.join(getPosts, getThread, function(posts, thread) {
       return {
         thread: thread,
@@ -185,6 +195,12 @@ exports.byThread = {
         page: opts.page,
         posts: cleanPosts(posts, userId)
       };
+    })
+    // handle page or start out of range
+    .then(function(ret) {
+      var retVal = Boom.notFound();
+      if (ret.posts.length > 0) { retVal = ret; }
+      return retVal;
     });
 
     return reply(promise);
