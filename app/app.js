@@ -4,7 +4,6 @@ require('../bower_components/angular-resource/angular-resource');
 require('../bower_components/angular-sanitize/angular-sanitize');
 require('../bower_components/angular-animate/angular-animate');
 require('../bower_components/angular-ui-router/release/angular-ui-router');
-require('../bower_components/angular-ui-router-title/angular-ui-router-title');
 require('../bower_components/angular-loading-bar');
 jQuery = require('../bower_components/jquery/dist/jquery.min.js');
 $ = jQuery;
@@ -16,7 +15,6 @@ var app = angular.module('ept', [
   'ngSanitize',
   'ngAnimate',
   'ui.router',
-  'ui.router.title',
   'angular-loading-bar'
 ]);
 
@@ -85,6 +83,10 @@ app.config(require('./config'))
 
   // Dynamically populate breadcrumbs
   $rootScope.$on('$stateChangeSuccess', function() {
+    // update title
+    var title = $state.$current.locals.globals.$title;
+    if (title) { $timeout(function() { $rootScope.$title = title; }); }
+    // update breadcrumbs
     BreadcrumbSvc.update();
   });
 
