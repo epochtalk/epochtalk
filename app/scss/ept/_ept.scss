@@ -1502,6 +1502,8 @@ main #admin-content {
     .note-date { color: $color-gray-med; }
   }
 
+  .note-text-area { resize: vertical; }
+
   @include media($mobile) {
     .report-details-wrap { @include span-columns(8); @include omega; }
     .preview-wrap { @include span-columns(8); }
