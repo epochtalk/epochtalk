@@ -1,8 +1,8 @@
 var bbcodeParser = require('epochtalk-bbcode-parser');
 
 module.exports = [
-  '$scope', '$rootScope', '$timeout', '$window', '$location', '$anchorScroll', 'Session', 'Alert', 'Messages', 'Conversations', 'pageData',
-  function($scope, $rootScope, $timeout, $window, $location, $anchorScroll, Session, Alert, Messages, Conversations, pageData) {
+  '$scope', '$rootScope', '$timeout', '$window', '$location', '$anchorScroll', 'Session', 'Alert', 'Messages', 'Conversations', 'Reports', 'pageData',
+  function($scope, $rootScope, $timeout, $window, $location, $anchorScroll, Session, Alert, Messages, Conversations, Reports, pageData) {
     var ctrl = this;
     this.currentUserId = Session.user.id;
     this.recentMessages = pageData.messages;
@@ -211,6 +211,43 @@ module.exports = [
       })
       .catch(function() {Alert.error('Failed to delete message'); })
       .finally(function() { ctrl.showDeleteModal = false; });
+    };
+
+    this.reportedMessage = null;
+    this.reportReason = '';
+    this.reportBtnLabel = 'Report Message';
+    this.showReportModal = false;
+    this.reportSubmitted = false;
+    this.closeReportModal = function() {
+      $timeout(function() {
+        ctrl.showReportModal = false;
+        ctrl.reportedMessage = null;
+        ctrl.reportReason = '';
+        ctrl.reportBtnLabel = 'Report Message';
+      }, 500);
+    };
+    this.openReportModal = function(message) {
+      ctrl.reportedMessage = message;
+      ctrl.showReportModal = true;
+    };
+    this.submitReport = function() {
+      ctrl.reportSubmitted = true;
+      ctrl.reportBtnLabel = 'Submitting...';
+      var report = { // build report
+        reporter_user_id: ctrl.currentUserId,
+        reporter_reason: ctrl.reportReason,
+        offender_message_id: ctrl.reportedMessage.id
+      };
+
+      Reports.createMessageReport(report).$promise
+      .then(function() {
+        ctrl.closeReportModal();
+        $timeout(function() { Alert.success('Successfully sent report'); }, 500);
+      })
+      .catch(function() {
+        ctrl.closeReportModal();
+        $timeout(function() { Alert.error('Error sending report, please try again later'); }, 500);
+      });
     };
 
   }

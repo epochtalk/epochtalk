@@ -61,9 +61,12 @@
         <div class="title">
           <strong>{{ message.sender_username}}</strong>
           <span class="date">{{ message.created_at | humanDate }}</span>
-          <div ng-if="message.sender_id === MessagesCtrl.currentUserId" class="right">
-            <a ng-href="#" class="action css-tooltip" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-css-tooltip="Delete">
+          <div class="right">
+            <a ng-if="message.sender_id === MessagesCtrl.currentUserId" ng-href="#" class="action css-tooltip" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-css-tooltip="Delete">
               <i class="fa fa-trash"></i>
+            </a>
+            <a ng-if="message.sender_id !== MessagesCtrl.currentUserId" ng-href="#" class="action css-tooltip" ng-click="MessagesCtrl.openReportModal(message)" data-css-tooltip="Report">
+              <i class="icon-epoch-flag"></i>
             </a>
           </div>
         </div>
@@ -118,6 +121,19 @@
       <button class="fill-row" ng-click="MessagesCtrl.deleteMessage()">
         Delete Message
       </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Report Message Modal -->
+<modal show="MessagesCtrl.showReportModal" on-close="MessagesCtrl.closeReportModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Report Message</h3>
+    <label for="reportReason">Reason for Report</label>
+    <textarea name="reportReason" ng-model="MessagesCtrl.reportReason" ng-disabled="MessagesCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required></textarea>
+    <div class="clear">
+      <button class="fill-row" ng-click="MessagesCtrl.submitReport()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || MessagesCtrl.reportSubmitted" ng-bind="MessagesCtrl.reportBtnLabel"></button>
     </div>
   </form>
 </modal>

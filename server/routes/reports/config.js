@@ -82,3 +82,43 @@ exports.createPostReport = {
     .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Reports
+  * @api {POST} /reports/messages Create Message Report
+  * @apiName CreateMessageReport
+  * @apiPermission Users
+  * @apiDescription Used to report a private message for moderators/administrators to review.
+  *
+  * @apiParam (Payload) {string} reporter_user_id The unique id of the user initiating the report
+  * @apiParam (Payload) {string} reporter_reason The reporter's reason for reporting the offending private message
+  * @apiParam (Payload) {string} offender_message_id The unique id of the private message being reported
+  *
+  * @apiSuccess {string} id The unique id of the private message report which was created
+  * @apiSuccess {string} status The status of the report
+  * @apiSuccess {string} reporter_user_id The unique id of the user initiating the report
+  * @apiSuccess {string} reporter_reason The reporter's reason for reporting the offending message
+  * @apiSuccess {string} reviewer_user_id The unique id of the user reviewing the report
+  * @apiSuccess {string} offender_message_id The unique id of the private message being reported
+  * @apiSuccess {timestamp} created_at Timestamp of when the private message report was created
+  * @apiSuccess {timestamp} updated_at Timestamp of when the private message report was updated
+  *
+  * @apiError (Error 500) InternalServerError There was an issue creating the private message report
+  */
+exports.createMessageReport = {
+  auth: { mode: 'required', strategy: 'jwt' },
+  validate: {
+    payload: {
+      reporter_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      reporter_reason: Joi.string().required(),
+      offender_message_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+    }
+  },
+  handler: function(request, reply) {
+    var report = request.payload;
+    db.reports.createMessageReport(report)
+    .then(function(createdReport) { reply(createdReport); })
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
+  }
+};

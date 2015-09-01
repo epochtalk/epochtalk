@@ -10,6 +10,10 @@ module.exports = ['$resource',
       createPostReport: {
         method: 'POST',
         url: '/api/reports/posts'
+      },
+      createMessageReport: {
+        method: 'POST',
+        url: '/api/reports/messages'
       }
     });
   }
