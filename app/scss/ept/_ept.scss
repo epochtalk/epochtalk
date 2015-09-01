@@ -36,6 +36,7 @@ h6 { font-size: 1rem; }
 ul, ol, dl { list-style-position: outside; }
 div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4,
 h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; }
+textarea { resize: vertical; }
 table {
   table-layout: auto;
   border-collapse: collapse;
@@ -71,7 +72,7 @@ label {
   line-height: 1.5;
   margin-bottom: 0;
 }
-datalist { z-index: 99999; }
+datalist { z-index: 10001; }
 .pointer { cursor: pointer; }
 .bold { font-weight: bold; }
 .right { float: right; }
@@ -1216,7 +1217,6 @@ main #public-content {
       margin-bottom: 0;
       h4 { margin-bottom: 0; display: inline-block;}
     }
-    textarea { resize: vertical; }
     .reply {
       border: 1px solid $color-gray-light;
       border-top: 0;
@@ -1501,8 +1501,6 @@ main #admin-content {
     padding-bottom: 5px;
     .note-date { color: $color-gray-med; }
   }
-
-  .note-text-area { resize: vertical; }
 
   @include media($mobile) {
     .report-details-wrap { @include span-columns(8); @include omega; }

@@ -133,7 +133,7 @@
       <div class="thin-underline"></div>
     </div>
     <form name="$parent.form" class="css-form">
-      <textarea class="note-text-area" name="reportNote" ng-model="ModerationCtrl.reportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3" required></textarea>
+      <textarea name="reportNote" ng-model="ModerationCtrl.reportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3" required></textarea>
       <div class="clear">
         <button class="fill-row" ng-click="ModerationCtrl.submitReportNote()"
           ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.noteSubmitted" ng-bind="ModerationCtrl.submitBtnLabel"></button>
