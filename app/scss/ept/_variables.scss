@@ -19,6 +19,7 @@ $color-gray-med-light: lighten($color-gray, 65%);
 $color-gray-disabled: lighten($color-gray, 40%);
 $color-gray-sub: lighten($color-gray, 71%);
 $color-gray-dark: darken($color-gray, 10%);
+$color-highlighted: HSL(60, 100%, 95%);
 
 $header-height: 3.125rem;
 $header-bg-color: RGB(66, 71, 80);

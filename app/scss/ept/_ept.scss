@@ -928,10 +928,12 @@ main #public-content {
     .post-block {
       @include row;
       @include clearfix;
-      @include pad(1.25rem 0);
+      @include pad(1.25rem 0.5rem);
+      @include transition(background-color 250ms ease-in);
       position: relative;
       min-height: 8rem;
       border-bottom: 1px solid $color-gray-light;
+      &.highlighted { background-color: $color-highlighted; }
       .post-user {
         width: 5rem;
         padding-right: 1.25rem;
