@@ -12,7 +12,8 @@
     "sass": "node ./scripts/sass.js",
     "build": "node ./scripts/build.js",
     "serve": "node ./scripts/serve.js",
-    "test": "./node_modules/.bin/mocha -R spec ./tests"
+    "test": "./node_modules/.bin/mocha -R spec ./tests",
+    "start": "foreman start"
   },
   "repository": {
     "type": "git",
