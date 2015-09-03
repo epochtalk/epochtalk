@@ -13,7 +13,7 @@
     "build": "node ./scripts/build.js",
     "serve": "node ./scripts/serve.js",
     "test": "./node_modules/.bin/mocha -R spec ./tests",
-    "start": "foreman start"
+    "start": "npm run serve"
   },
   "repository": {
     "type": "git",
