@@ -43,12 +43,31 @@ module.exports = [
 
     /* Thread Methods */
 
+    this.editThread = false;
+    var threadTitle = '';
+    this.openEditThread = function() {
+      threadTitle = ctrl.thread.title;
+      ctrl.editThread = true;
+    };
+    this.closeEditThread = function() {
+      ctrl.editThread = false;
+      ctrl.thread.title = threadTitle;
+    };
+    this.updateThreadTitle = function() {
+      var title = ctrl.thread.title;
+      return Threads.title({id: ctrl.thread.id}, {title: title}).$promise
+      .then(function() { ctrl.editThread = false; })
+      .then(function() { Alert.success('Thread\'s changed to: ' + title); })
+      .catch(function() { Alert.error('Error changing thread title'); });
+    };
+
     this.updateThreadLock = function() {
       // let angular digest the change in lock status
       $timeout(function() {
         var lockStatus = ctrl.thread.locked;
         return Threads.lock({id: ctrl.thread.id}, {status: lockStatus}).$promise
-        .then(function(lockThread) { ctrl.thread.locked = lockThread.locked; });
+        .then(function(lockThread) { ctrl.thread.locked = lockThread.locked; })
+        .catch(function() { Alert.error('Error Locking Thread'); });
       });
     };
 
@@ -57,14 +76,16 @@ module.exports = [
       $timeout(function() {
         var stickyStatus = ctrl.thread.sticky;
         return Threads.sticky({id: ctrl.thread.id}, {status: stickyStatus}).$promise
-        .then(function(stickyThread) { ctrl.thread.sticky = stickyThread.sticky; });
+        .then(function(stickyThread) { ctrl.thread.sticky = stickyThread.sticky; })
+        .catch(function() { Alert.error('Error Sticking Thread'); });
       });
     };
 
     this.moveThread = function() {
       var newBoardId = ctrl.moveBoard.id;
       return Threads.move({id: ctrl.thread.id}, {newBoardId: newBoardId}).$promise
-      .then(function() { $state.go($state.$current, null, {reload:true}); });
+      .then(function() { $state.go($state.$current, null, {reload:true}); })
+      .catch(function() { Alert.error('Error Moving Thread'); });
     };
 
     this.showPurgeThreadModal = false;
