@@ -1304,6 +1304,7 @@ main #admin-content {
       border-bottom: 1px solid $color-gray-sub;
       vertical-align: top;
       &.unbanned { background-color: #FFAEAE }
+      &.selectable-row { @include no-select; }
       &.selectable-row:hover { background-color: $color-gray-sub; }
       &.active-row, &.active-row:nth-of-type(even) { background-color:  $color-active-fill; }
       &.active-row.selectable-row:hover { background-color:  $color-active-fill }

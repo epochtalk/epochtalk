@@ -247,6 +247,9 @@ module.exports = [
       .catch(function() {
         ctrl.closeReportModal();
         $timeout(function() { Alert.error('Error sending report, please try again later'); }, 500);
+      })
+      .finally(function() {
+        $timeout(function() { ctrl.reportSubmitted = false; }, 500);
       });
     };
 

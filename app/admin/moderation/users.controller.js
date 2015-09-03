@@ -15,7 +15,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
 
   // Search Vars
   this.search = search;
-  this.searchStr = null;
+  this.searchStr = search;
   this.count = reportCount;
 
   // Report Pagination Vars
@@ -340,7 +340,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
     var params = $location.search();
     var reportId = params.reportId;
     var page = Number(params.page) || 1;
-    var limit = Number(params.limit) || 25;
+    var limit = Number(params.limit) || 15;
     var field = params.field;
     var filter = params.filter;
     var search = params.search;
@@ -408,14 +408,14 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
       };
     }
 
-    // update mods's page count
+    // update report's page count
     AdminReports.userReportsCount(opts).$promise
     .then(function(updatedCount) {
       ctrl.count = updatedCount.count;
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
 
-    // replace current reports with new mods
+    // replace current reports with new reports
     AdminReports.pageUserReports(query).$promise
     .then(function(newReports) {
       ctrl.userReports = newReports;

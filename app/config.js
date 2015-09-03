@@ -526,9 +526,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       resolve: {
         $title: function() { return 'User Moderation'; },
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 25;
+          return $stateParams.limit || 15;
         }],
         page: ['$stateParams', function($stateParams) {
+          console.log('\n\nRELOAD\n\n');
           return Number($stateParams.page) || 1;
         }],
         filter: ['$stateParams', function($stateParams) {
@@ -564,7 +565,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             field: $stateParams.field,
             desc: $stateParams.desc || true,
             filter: $stateParams.filter,
-            limit: Number($stateParams.limit) || 25,
+            limit: Number($stateParams.limit) || 15,
             page: Number($stateParams.page) || 1,
             search: $stateParams.search
           };
@@ -606,7 +607,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       resolve: {
         $title: function() { return 'Post Moderation'; },
         limit: ['$stateParams', function($stateParams) {
-          return $stateParams.limit || 25;
+          return $stateParams.limit || 15;
         }],
         page: ['$stateParams', function($stateParams) {
           return Number($stateParams.page) || 1;
@@ -644,12 +645,72 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             field: $stateParams.field,
             desc: $stateParams.desc || true,
             filter: $stateParams.filter,
-            limit: Number($stateParams.limit) || 25,
+            limit: Number($stateParams.limit) || 15,
             page: Number($stateParams.page) || 1,
             search: $stateParams.search
           };
           return AdminReports.pagePostReports(query).$promise
           .then(function(postReports) { return postReports; });
+        }]
+      }
+    })
+    .state('admin-moderation.messages', {
+      url: '/messages?page&limit&field&desc&filter&search&reportId',
+      reloadOnSearch: false,
+      views: {
+        'data@admin-moderation': {
+          controller: 'ModMessagesCtrl',
+          controllerAs: 'ModerationCtrl',
+          template: fs.readFileSync(__dirname + '/admin/moderation/messages.html')
+        }
+      },
+      resolve: {
+        $title: function() { return 'Messages Moderation'; },
+        limit: ['$stateParams', function($stateParams) {
+          return $stateParams.limit || 15;
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        filter: ['$stateParams', function($stateParams) {
+          return $stateParams.filter;
+        }],
+        field: ['$stateParams', function($stateParams) {
+          return $stateParams.field;
+        }],
+        desc: ['$stateParams', function($stateParams) {
+          return $stateParams.desc || true;
+        }],
+        search: ['$stateParams', function($stateParams) {
+          return $stateParams.search;
+        }],
+        reportId: ['$stateParams', function($stateParams) {
+          return $stateParams.reportId;
+        }],
+        reportCount: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
+          var opts;
+          var status = $stateParams.filter;
+          var search = $stateParams.search;
+          if (status || search) {
+            opts = {
+              status: status,
+              search: search
+            };
+          }
+          return AdminReports.messageReportsCount(opts).$promise
+          .then(function(messageReportsCount) { return messageReportsCount.count; });
+        }],
+        messageReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
+          var query = {
+            field: $stateParams.field,
+            desc: $stateParams.desc || true,
+            filter: $stateParams.filter,
+            limit: Number($stateParams.limit) || 15,
+            page: Number($stateParams.page) || 1,
+            search: $stateParams.search
+          };
+          return AdminReports.pageMessageReports(query).$promise
+          .then(function(messageReports) { return messageReports; });
         }]
       }
     });

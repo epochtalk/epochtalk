@@ -40,6 +40,7 @@ app.controller('ModeratorsCtrl',      require('./admin/management/moderators.con
 app.controller('AdministratorsCtrl',  require('./admin/management/administrators.controller.js'));
 app.controller('ModUsersCtrl',        require('./admin/moderation/users.controller.js'));
 app.controller('ModPostsCtrl',        require('./admin/moderation/posts.controller.js'));
+app.controller('ModMessagesCtrl',     require('./admin/moderation/messages.controller.js'));
 app.controller('AnalyticsCtrl',       require('./admin/analytics/analytics.controller.js'));
 
 // Register Directives

@@ -1,11 +1,10 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Posts, postReports, reportCount, page, limit, field, desc, filter, search, reportId) {
+module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Messages', 'messageReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Messages, messageReports, reportCount, page, limit, field, desc, filter, search, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent;
-  this.parent.tab = 'posts';
-  this.previewPost = null;
+  this.parent.tab = 'messages';
   this.previewReport = null;
   this.reportId = reportId;
-  this.postReports = postReports;
+  this.messageReports = messageReports;
   this.tableFilter = 0;
   if (filter === 'Pending') { this.tableFilter = 1; }
   else if (filter === 'Reviewed') { this.tableFilter = 2; }
@@ -46,7 +45,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.showSetStatusModal  = false;
   this.setStatusSubmitted = false;
   this.setStatusBtnLabel = 'Confirm';
-  this.selectedPostReport = null;
+  this.selectedMessageReport = null;
   this.selectedStatus = null;
   this.statusReportNote = null;
 
@@ -60,8 +59,8 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       field: 'created_at',
       search: ctrl.searchStr
     };
-    ctrl.selectedPostReport = null;
-    ctrl.previewPost = null;
+    ctrl.selectedMessageReport = null;
+    ctrl.previewReport = null;
     $location.search(ctrl.queryParams);
   };
 
@@ -75,10 +74,10 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     ctrl.searchStr = null;
   };
 
-  this.showSetStatus = function(postReport) {
-    ctrl.selectedPostReport = postReport;
+  this.showSetStatus = function(messageReport) {
+    ctrl.selectedMessageReport = messageReport;
     ctrl.showSetStatusModal = true;
-    ctrl.selectedStatus = postReport.status;
+    ctrl.selectedStatus = messageReport.status;
   };
 
   this.closeSetStatus = function() {
@@ -87,7 +86,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
 
     // Wait for modal to disappear then clear fields
     $timeout(function() {
-      ctrl.selectedPostReport = null;
+      ctrl.selectedMessageReport = null;
       ctrl.selectedStatus = null;
       ctrl.statusReportNote = null;
       ctrl.setStatusSubmitted = false;
@@ -99,15 +98,15 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     ctrl.setStatusSubmitted = true;
     ctrl.setStatusBtnLabel = 'Loading...';
     var updateReport = {
-      id: ctrl.selectedPostReport.id,
+      id: ctrl.selectedMessageReport.id,
       status: ctrl.selectedStatus,
       reviewer_user_id: ctrl.user.id
     };
-    AdminReports.updatePostReport(updateReport).$promise
+    AdminReports.updateMessageReport(updateReport).$promise
     .then(function(updatedReport) {
-      ctrl.selectedPostReport.reviewer_user_id = updatedReport.reviewer_user_id;
-      ctrl.selectedPostReport.status = updatedReport.status;
-      ctrl.selectedPostReport.updated_at = updatedReport.updated_at;
+      ctrl.selectedMessageReport.reviewer_user_id = updatedReport.reviewer_user_id;
+      ctrl.selectedMessageReport.status = updatedReport.status;
+      ctrl.selectedMessageReport.updated_at = updatedReport.updated_at;
       if (ctrl.previewReport) {
         ctrl.previewReport.reviewer_user_id = updatedReport.reviewer_user_id;
         ctrl.previewReport.status = updatedReport.status;
@@ -120,14 +119,14 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     .then(function() {
       if (ctrl.statusReportNote) { // note is optional
         var params = {
-          report_id: ctrl.selectedPostReport.id,
+          report_id: ctrl.selectedMessageReport.id,
           user_id: ctrl.user.id,
           note: ctrl.statusReportNote
         };
-        return AdminReports.createPostReportNote(params).$promise
+        return AdminReports.createMessageReportNote(params).$promise
         .then(function(createdNote) {
           // Add note if report is currently being previewed
-          if (ctrl.reportNotes && ctrl.previewReport.id === ctrl.selectedPostReport.id) {
+          if (ctrl.reportNotes && ctrl.previewReport.id === ctrl.selectedMessageReport.id) {
             ctrl.reportNotes.push(createdNote);
           }
         });
@@ -210,7 +209,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
 
   this.updateReportNote = function(note) {
     delete note.edit;
-    AdminReports.updatePostReportNote(note).$promise
+    AdminReports.updateMessageReportNote(note).$promise
     .then(function(updatedNote) {
       for (var i = 0; i < ctrl.reportNotes.length; i++) {
         if (ctrl.reportNotes[i].id === note.id) {
@@ -235,7 +234,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       user_id: ctrl.user.id,
       note: ctrl.reportNote
     };
-    AdminReports.createPostReportNote(params).$promise
+    AdminReports.createMessageReportNote(params).$promise
     .then(function(createdNote) {
       ctrl.reportNotes.push(createdNote);
       ctrl.submitBtnLabel = 'Add Note';
@@ -249,46 +248,40 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     ctrl.previewReport = report;
     ctrl.reportId = report.id;
 
-    Posts.get({ id: report.offender_post_id }).$promise
-    .then(function(post) {
-      ctrl.previewPost = post;
-    });
-
-    AdminReports.pagePostReportsNotes({ report_id: report.id }).$promise
+    AdminReports.pageMessageReportsNotes({ report_id: report.id }).$promise
     .then(function(reportNotes) {
       ctrl.reportNotes = reportNotes;
     });
   };
 
-  this.selectReport = function(postReport, initialPageLoad) {
+  this.selectReport = function(messageReport, initialPageLoad) {
     // do nothing if user is being selected to be banned
     // this prevents the row highlight when clicking links
     // within the row
-    if (ctrl.selectedUser || ctrl.selectedPostReport) { return; }
+    if (ctrl.selectedUser || ctrl.selectedMessageReport) { return; }
     // Clear Report Notes
     ctrl.reportNotes = null;
     ctrl.reportNote = null;
     ctrl.noteSubmitted = false;
-    if (ctrl.reportId === postReport.id && !initialPageLoad) {
+    if (ctrl.reportId === messageReport.id && !initialPageLoad) {
       ctrl.reportId = null;
-      ctrl.previewPost = null;
       ctrl.previewReport = null;
       var params = $location.search();
       delete params.reportId;
       $location.search(params);
     }
     else {
-      if (!initialPageLoad) { $location.search('reportId', postReport.id); }
-      ctrl.showPreview(postReport);
+      if (!initialPageLoad) { $location.search('reportId', messageReport.id); }
+      ctrl.showPreview(messageReport);
     }
     // Update so pagination knows reportId changed
     ctrl.queryParams.reportId = ctrl.reportId;
   };
 
   // Handles case where users links directly to selected report
-  if (this.reportId && this.postReports.length) {
-    for (var i = 0; i < this.postReports.length; i++) {
-      var curReport = this.postReports[i];
+  if (this.reportId && this.messageReports.length) {
+    for (var i = 0; i < this.messageReports.length; i++) {
+      var curReport = this.messageReports[i];
       if (curReport.id === this.reportId) {
         this.selectReport(curReport, true);
         break;
@@ -303,8 +296,9 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     delete ctrl.queryParams.page;
     $location.search(ctrl.queryParams);
     ctrl.reportId = null;
-    ctrl.previewPost = null;
     ctrl.searchStr = null;
+    ctrl.previewReport = null;
+    ctrl.selectedMessageReport = null;
   };
 
   this.setSortField = function(sortField) {
@@ -361,6 +355,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
 
     if (page && page !== ctrl.page) {
       pageChanged = true;
+      ctrl.parent.page = page;
       ctrl.page = page;
     }
     if (limit && limit !== ctrl.limit) {
@@ -409,17 +404,17 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       };
     }
 
-    // update report's page count
-    AdminReports.postReportsCount(opts).$promise
+    // update mods's page count
+    AdminReports.messageReportsCount(opts).$promise
     .then(function(updatedCount) {
       ctrl.count = updatedCount.count;
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
 
-    // replace current reports with new reports
-    AdminReports.pagePostReports(query).$promise
+    // replace current reports with new mods
+    AdminReports.pageMessageReports(query).$promise
     .then(function(newReports) {
-      ctrl.postReports = newReports;
+      ctrl.messageReports = newReports;
     });
   };
 }];
