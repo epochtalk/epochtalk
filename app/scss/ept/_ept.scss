@@ -13,6 +13,7 @@ html, body {
   line-height: $base-line-height;
   font-weight: normal;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   @include media($mobile) { font-size: $base-font-size * 0.85; }
 }
@@ -35,6 +36,7 @@ h6 { font-size: 1rem; }
 ul, ol, dl { list-style-position: outside; }
 div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4,
 h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; }
+textarea { resize: vertical; }
 table {
   table-layout: auto;
   border-collapse: collapse;
@@ -70,7 +72,7 @@ label {
   line-height: 1.5;
   margin-bottom: 0;
 }
-datalist { z-index: 99999; }
+datalist { z-index: 10001; }
 .pointer { cursor: pointer; }
 .bold { font-weight: bold; }
 .right { float: right; }
@@ -126,7 +128,7 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   @include media($desktop-small) { @include span-columns(9, block-collapse); }
   @include media($mobile) { @include span-columns(7, block-collapse); top: 1rem; }
 }
-.ng-modal.fixed .ng-modal-dialog { position: fixed; top: 10rem; height: 90%; overflow: scroll; }
+.ng-modal.fixed .ng-modal-dialog { position: fixed; top: 5%; max-height: 90%; overflow: scroll; }
 .ng-modal-dialog-content { padding: 2rem; text-align: left; }
 .ng-modal-close {
   position: absolute;
@@ -182,7 +184,6 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
 .error-label { @include label(error,  0.6875rem, 2px, 0.1rem); }
 .thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
 hr { margin: 1rem 0; border: none; height: 1px; color: $color-gray-light; background-color: $color-gray-light; }
-.secret { &.ng-show, &.ng-hide { @include transition(none !important); } }
 .post-body {
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -210,6 +211,7 @@ code {
   margin: 0 0 1rem 1rem;
   padding: 0 0.625rem 0;
   border-left: 4px solid RGB(221, 221, 221);
+  ul, ol { margin-left: 1.625rem }
   &>br:first-child,
   &>br:last-child,
   &+br { display: none; }
@@ -368,6 +370,7 @@ input[type="url"], input[type="color"], textarea {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  &:disabled, &[disabled] { background-color: $color-gray-light; }
 }
 input[type="checkbox"] { margin-bottom: 1rem; }
 input[type="checkbox"] + label, input[type="radio"] + label {
@@ -565,6 +568,7 @@ header {
             a { padding-left: 0.8rem; }
           }
           #user-dropdown {
+            @include pad(0 1rem);
             display: none;
             width: 100%;
             text-align: left;
@@ -572,7 +576,8 @@ header {
             background-color: $header-dropdown-bg-color;
             position: absolute;
             z-index: 9999;
-            li, li a { float: none; display: block; height: 2.5rem; line-height: 2.5rem; }
+            li, li a { float: none; display: block; height: 2.2rem; line-height: 2.2rem; }
+            li a { @include pad(0); &:hover { color: $color-active-fill; } }
           }
         }
         #user-dropdown-wrap:hover {
@@ -592,7 +597,7 @@ header {
       }
       #menu-right {
         float: right;
-        li:first-child { padding-right: 0.8rem }
+        li:first-child { padding-right: 0.8rem; }
       }
     }
 
@@ -923,10 +928,12 @@ main #public-content {
     .post-block {
       @include row;
       @include clearfix;
-      @include pad(1.25rem 0);
+      @include pad(1.25rem 0.5rem);
+      @include transition(background-color 250ms ease-in);
       position: relative;
       min-height: 8rem;
       border-bottom: 1px solid $color-gray-light;
+      &.highlighted { background-color: $color-highlighted; }
       .post-user {
         width: 5rem;
         padding-right: 1.25rem;
@@ -1212,7 +1219,6 @@ main #public-content {
       margin-bottom: 0;
       h4 { margin-bottom: 0; display: inline-block;}
     }
-    textarea { resize: vertical; }
     .reply {
       border: 1px solid $color-gray-light;
       border-top: 0;
@@ -1286,6 +1292,7 @@ main #admin-content {
   }
   table {
     border: none;
+    margin-bottom: 1rem;
     thead {
       text-align: left;
       font-size: 0.875rem;
@@ -1305,7 +1312,9 @@ main #admin-content {
       &.active-row td a:hover { color: $color-active-dark; }
       &:nth-of-type(even) { background: transparent; }
       &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
-      td { padding-top: 0.75rem; padding-bottom: 0.75rem; vertical-align: middle; }
+      td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: middle; }
+      td input { margin-bottom: 0; }
+      td a.ng-show, a.ng-hide { @include transition(none !important); }
     }
   }
 

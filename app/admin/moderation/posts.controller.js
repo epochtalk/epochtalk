@@ -51,7 +51,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.statusReportNote = null;
 
   this.searchReports = function() {
-    if (!ctrl.searchStr.length) {
+    if (!ctrl.searchStr || !ctrl.searchStr.length) {
       ctrl.clearSearch();
       return;
     }
@@ -60,13 +60,16 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       field: 'created_at',
       search: ctrl.searchStr
     };
+    ctrl.selectedPostReport = null;
+    ctrl.previewPost = null;
     $location.search(ctrl.queryParams);
   };
 
   this.clearSearch = function() {
     ctrl.queryParams = {
       field: 'created_at',
-      filter: ctrl.filter
+      filter: ctrl.filter,
+      reportId: ctrl.reportId
     };
     $location.search(ctrl.queryParams);
     ctrl.searchStr = null;
@@ -343,6 +346,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     var field = params.field;
     var filter = params.filter;
     var search = params.search;
+    var reportId = params.reportId;
     var descending;
     // desc when undefined defaults to true, since we are sorting created_at desc by default
     if (params.desc === undefined) { descending = true; }
@@ -353,6 +357,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     var descChanged = false;
     var filterChanged = false;
     var searchChanged = false;
+    var reportIdChanged = false;
 
     if (page && page !== ctrl.page) {
       pageChanged = true;
@@ -379,7 +384,11 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
       searchChanged = true;
       ctrl.search = search;
     }
-    if(pageChanged || limitChanged || fieldChanged || descChanged || filterChanged || searchChanged) { ctrl.pullPage(); }
+    if ((reportId === undefined || reportId) && reportId !== ctrl.reportId) {
+      reportIdChanged = true;
+      ctrl.reportId = reportId;
+    }
+    if(pageChanged || limitChanged || fieldChanged || descChanged || filterChanged || searchChanged || reportIdChanged) { ctrl.pullPage(); }
   });
   $scope.$on('$destroy', function() { ctrl.offLCS(); });
 

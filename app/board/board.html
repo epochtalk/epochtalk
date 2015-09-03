@@ -3,11 +3,11 @@
     <h4 ng-bind-html="BoardWrapperCtrl.board.name"></h4>
   </div>
   <div class="pagination-wrap">
-    <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
+    <pagination page-count="BoardWrapperCtrl.pageCount" page-state="board.data" page="BoardWrapperCtrl.page"></pagination>
   </div>
   <div class="moderators" ng-if="BoardWrapperCtrl.board.moderators.length > 0">
     <strong>Moderators: </strong>
-    <a ng-href="/profiles/{{mod.username}}" ng-repeat="mod in BoardWrapperCtrl.board.moderators" ng-bind="mod.username + ($last ? '' : ', ')"></a>
+    <a ui-sref="profile({ username: mod.username })" ng-repeat="mod in BoardWrapperCtrl.board.moderators" ng-bind="mod.username + ($last ? '' : ', ')"></a>
   </div>
 </div>
 
@@ -19,6 +19,6 @@
 
 <div class="board-footer">
   <div class="pagination-wrap">
-    <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
+    <pagination page-count="BoardWrapperCtrl.pageCount" page-state="board.data" page="BoardWrapperCtrl.page"></pagination>
   </div>
 </div>

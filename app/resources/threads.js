@@ -6,12 +6,12 @@ module.exports = ['$resource',
     return $resource('/api/threads/:id', {}, {
       byBoard: {
         method: 'GET',
-        params: {
-          board_id: '@board_id',
-          limit: '@limit',
-          page: '@page'
-        },
         url: '/api/threads'
+      },
+      title: {
+        method: 'POST',
+        params: { id: '@id' },
+        url: '/api/threads/:id'
       },
       viewed: {
         method: 'POST',

@@ -57,12 +57,12 @@
           <td><a ui-sref="profile({ username: postReport.offender_author_username })" ng-bind="postReport.offender_author_username"></a></td>
           <td class="hide-mobile"><div ng-bind="postReport.reporter_reason"></div></td>
           <td>
-            <a href="#" ng-click="ModerationCtrl.showSetStatus(postReport)">Status</a>&nbsp;&nbsp;
+            <a ng-href="#" ng-click="ModerationCtrl.showSetStatus(postReport)">Status</a>&nbsp;&nbsp;
             <span>Edit</span>&nbsp;&nbsp;
             <span>Delete</span>&nbsp;&nbsp;
             <span>Warn</span>&nbsp;&nbsp;
-            <a href="#" ng-hide="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showBanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Ban</a>
-            <a href="#" ng-show="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showUnbanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Unban</a>
+            <a ng-href="#" ng-hide="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showBanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Ban</a>
+            <a ng-href="#" ng-show="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showUnbanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Unban</a>
           </td>
         </tr>
       </tbody>
@@ -118,26 +118,26 @@
     </table>
     <div ng-repeat="note in ModerationCtrl.reportNotes track by note.id">
       <div class="note-avatar-container" ng-if="!note.edit">
-        <img class="note-avatar" ng-src="{{ note.avatar || 'http://fakeimg.pl/50x50/ccc/444/?text=' + note.username }}" />
+        <img class="note-avatar" ng-src="{{ note.avatar || 'https://fakeimg.pl/50x50/ccc/444/?text=' + note.username }}" />
       </div>
       <div class="note-details" ng-if="!note.edit">
         <span class="note-author"><a ui-sref="profile({ username: note.username })" ng-bind="note.username"></a>&nbsp;</span>
         <span class="note-date" ng-bind="note.created_at | humanDate"></span>
         <span class="note-date" ng-if="note.created_at !== note.updated_at"> &mdash; Edited <span ng-bind="note.updated_at | humanDate"></span></span>
-        <span class="right" ng-if="ModerationCtrl.user.id === note.user_id"><a href="#" ng-click="note.edit = true; note.noteCopy = note.note">Edit</a></span>
+        <span class="right" ng-if="ModerationCtrl.user.id === note.user_id"><a ng-href="#" ng-click="note.edit = true; note.noteCopy = note.note">Edit</a></span>
         <div class="note-message" ng-bind="note.note"></div>
       </div>
       <div ng-if="note.edit" class="note-details">
-        <a class="right" href="#" ng-click="ModerationCtrl.updateReportNote(note)">Save</a>
-        <a class="right" href="#" ng-click="note.edit = undefined; note.note = note.noteCopy; note.noteCopy = undefined">Cancel&nbsp;&nbsp;&nbsp;</a>
+        <a class="right" ng-href="#" ng-click="ModerationCtrl.updateReportNote(note)">Save</a>
+        <a class="right" ng-href="#" ng-click="note.edit = undefined; note.note = note.noteCopy; note.noteCopy = undefined">Cancel&nbsp;&nbsp;&nbsp;</a>
         <textarea rows="3" ng-model="note.note"></textarea>
       </div>
       <div class="thin-underline"></div>
     </div>
     <form name="$parent.form" class="css-form">
       <textarea name="reportNote" ng-model="ModerationCtrl.reportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3" required></textarea>
-      <div class="form-action">
-        <button class="button no-margin" ng-click="ModerationCtrl.submitReportNote()"
+      <div class="clear">
+        <button class="fill-row" ng-click="ModerationCtrl.submitReportNote()"
           ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.noteSubmitted" ng-bind="ModerationCtrl.submitBtnLabel"></button>
       </div>
     </form>
@@ -173,6 +173,7 @@
     <label for="banType">Select Ban Type:</label>
     <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="true" id="permanent" ng-disabled="ModerationCtrl.banSubmitted" required><label for="permanent">Permanent</label>
     <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="false" id="temporary" ng-disabled="ModerationCtrl.banSubmitted" required><label for="temporary">Temporary</label>
+    <br /><br />
     <div ng-show="ModerationCtrl.permanentBan === false">
       <label for="banUntil">Enter Ban Expiration Date:</label>
       <input type="date" ng-model="ModerationCtrl.banUntil" min="{{ModerationCtrl.minDate()}}" name="banUntil" ng-required="ModerationCtrl.permanentBan === false" />
@@ -243,6 +244,7 @@
     <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Reviewed'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Reviewed" id="reviewed" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Reviewed'" for="reviewed">Reviewed</label>
     <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Ignored'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Ignored" id="ignored" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Ignored'" for="ignored">Ignored</label>
     <input ng-if="ModerationCtrl.selectedPostReport.status !== 'Bad Report'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Bad Report" id="badReport" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedPostReport.status !== 'Bad Report'" for="badReport">Bad Report</label>
+    <br /><br />
     <label for="statusReportNote">Leave a note (optional):</label>
     <textarea name="statusReportNote" ng-model="ModerationCtrl.statusReportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3"></textarea>
     <div class="clear">

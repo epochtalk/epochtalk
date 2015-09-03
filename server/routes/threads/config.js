@@ -204,6 +204,28 @@ exports.viewed = {
   }
 };
 
+exports.title = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    params: { id: Joi.string().required() },
+    payload: { title: Joi.string().required().min(1) }
+  },
+  pre: [ [
+    { method: pre.canUpdate },
+    { method: pre.threadFirstPost, assign: 'post' }
+  ] ],
+  handler: function(request, reply) {
+    var post = {
+      id: request.pre.post.id,
+      thread_id: request.params.id,
+      title: request.payload.title
+    };
+    var promise = db.posts.update(post)
+    .error(function() { return Boom.notFound(); });
+    return reply(promise);
+  }
+};
+
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads
@@ -228,7 +250,7 @@ exports.lock = {
   },
   pre: [
     [
-      { method: pre.canLock },
+      { method: pre.canUpdate },
       { method: pre.getThread, assign: 'thread' },
     ]
   ],

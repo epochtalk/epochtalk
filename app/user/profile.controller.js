@@ -6,7 +6,7 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
     this.removable = function() { return Session.user.isAdmin; };
     this.adminVisitor = Session.user.id !== user.id && Session.user.isAdmin;
     this.displayUser = angular.copy(user);
-    this.displayUser.avatar = this.displayUser.avatar || 'http://fakeimg.pl/400x400/ccc/444/?text=' + this.displayUser.username;
+    this.displayUser.avatar = this.displayUser.avatar || 'https://fakeimg.pl/400x400/ccc/444/?text=' + this.displayUser.username;
     this.user.dob = $filter('date')(this.user.dob, 'longDate');
     this.user.post_count = this.user.post_count || 0;
     this.user.raw_signature = this.user.raw_signature || this.user.signature;
@@ -77,7 +77,7 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
       else { promise = User.update(changeAvatarUser).$promise; }
       promise.then(function(data) {
         ctrl.updateDisplayUser(data);
-        ctrl.displayUser.avatar = ctrl.displayUser.avatar || 'http://fakeimg.pl/400x400/ccc/444/?text=' + ctrl.displayUser.username;
+        ctrl.displayUser.avatar = ctrl.displayUser.avatar || 'https://fakeimg.pl/400x400/ccc/444/?text=' + ctrl.displayUser.username;
         if(!ctrl.adminVisitor) { Session.setAvatar(ctrl.displayUser.avatar); }
         Alert.success('Successfully updated avatar');
       })

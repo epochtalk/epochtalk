@@ -29,7 +29,7 @@
         <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
         <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
         <td>
-          <a href="#" ng-if="AdminManagementCtrl.user.id !== user.user_id" ng-click="AdminManagementCtrl.showConfirmRemove(user)">Remove Administrator</a><span ng-if="AdminManagementCtrl.user.id === user.user_id">Remove Administrator</span>&nbsp;&nbsp;
+          <a ng-href="#" ng-if="AdminManagementCtrl.user.id !== user.user_id" ng-click="AdminManagementCtrl.showConfirmRemove(user)">Remove Administrator</a><span ng-if="AdminManagementCtrl.user.id === user.user_id">Remove Administrator</span>&nbsp;&nbsp;
         </td>
       </tr>
     </tbody>

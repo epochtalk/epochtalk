@@ -55,14 +55,14 @@
     <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="MessagesCtrl.currentUserId === message.sender_id ? 'sender' : ''">
       <div class="avatar">
        <img ng-if="message.sender_avatar" src="{{message.sender_avatar}}" />
-       <img ng-if="!message.sender_avatar" src="http://fakeimg.pl/400x400/ccc/444/?text={{message.sender_username}}" />
+       <img ng-if="!message.sender_avatar" src="https://fakeimg.pl/400x400/ccc/444/?text={{message.sender_username}}" />
       </div>
       <div class="content">
         <div class="title">
           <strong>{{ message.sender_username}}</strong>
           <span class="date">{{ message.created_at | humanDate }}</span>
           <div ng-if="message.sender_id === MessagesCtrl.currentUserId" class="right">
-            <a href="#" class="action css-tooltip" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-css-tooltip="Delete">
+            <a ng-href="#" class="action css-tooltip" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-css-tooltip="Delete">
               <i class="fa fa-trash"></i>
             </a>
           </div>

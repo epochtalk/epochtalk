@@ -8,24 +8,17 @@ function ($stateParams, $location, Breadcrumbs) {
 
   var pathLookup = {
     home: {
-      url: '/',
-      state: '^.boards()',
+      state: '^.boards',
       label: 'Home'
-    },
-    register: {
-      url: '/register',
-      label: 'Registration'
     },
     profiles: {
       label: 'Profiles'
     },
     reset: {
-      url: '/reset',
       label: 'Reset Password',
       ignoreFollowing: true
     },
     confirm: {
-      url: '/confirm',
       label: 'Account Confirmation',
       ignoreFollowing: true
     }
@@ -45,7 +38,6 @@ function ($stateParams, $location, Breadcrumbs) {
       var keyToType = {
         boardId:  'board',
         threadId: 'thread',
-        postId:   'post'
       };
       var routeParamKeys = _.without(Object.keys(routeParams), '#'); // remove anchor hash from params
       var keys = Object.keys(keyToType);

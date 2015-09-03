@@ -7,15 +7,15 @@
     <!-- Child Board's Name, Description, Child Boards -->
     <div class="info">
       <h5>
-        <a ng-href="/boards/{{childBoard.id}}" class="board-name" ng-bind-html="childBoard.name"></a>
+        <a ui-sref="board.data({ boardId: childBoard.id })" class="board-name" ng-bind-html="childBoard.name"></a>
       </h5>
 
       <div class="description" ng-bind-html="childBoard.description"></div>
 
-      <div ng-if="board.children.length > 0">
+      <div ng-if="childBoard.children.length > 0">
         <strong>Child Boards:</strong>
         <span ng-repeat="child in childBoard.children">
-          <a ng-href="/boards/{{child.id}}" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
+          <a ui-sref="board.data({ boardId: child.id })" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
         </span>
       </div>
     </div>
@@ -34,11 +34,11 @@
     <div class="last-post">
       <div ng-if="childBoard.last_post_username">
         Last post by
-         <a ng-href="/profiles/{{ childBoard.last_post_username }}" ng-bind-html="childBoard.last_post_username"></a>
+         <a ui-sref="profile({ username: childBoard.last_post_username })" ng-bind-html="childBoard.last_post_username"></a>
       </div>
       <div ng-if="childBoard.last_thread_title">
         in thread
-        <a ng-href="/threads/{{childBoard.last_thread_id}}/posts" ng-bind-html="childBoard.last_thread_title | truncate:25"></a>
+        <a ui-sref="posts.data({ threadId: childBoard.last_thread_id })" ng-bind-html="childBoard.last_thread_title | truncate:25"></a>
       </div>
       <div ng-if="childBoard.last_post_created_at">
         <span ng-bind="childBoard.last_post_created_at | humanDate"></span>
@@ -64,7 +64,7 @@
     <h5>Views</h5>
   </div>
   <div class="last-reply">
-    <h5>Last Reply</h5>
+    <h5>Last Post</h5>
   </div>
 </div>
 <div class="thin-underline"></div>
@@ -74,13 +74,13 @@
 
   <div class="subject">
     <div class="title">
-      <a ng-class="thread.title_class" class="thread-title" ui-sref="posts.data({threadId: thread.id})" ng-bind-html="thread.title"></a>
+      <a ng-class="thread.title_class" class="thread-title" ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
       <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
       <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
     </div>
 
     <div class="started-by">
-      Started by <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>
+      Started by <a ui-sref="profile({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
       <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
     </div>
 
@@ -90,8 +90,8 @@
       <strong class="mobile-views" ng-bind="thread.view_count | number:0"></strong>
       <span> Views</span>
       <br />
-      <span>Last reply by </span>
-      <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+      <span>Last post by </span>
+      <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
       <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
     </div>
 
@@ -109,7 +109,7 @@
   <div class="views" ng-bind="thread.view_count | number:0"></div>
 
   <div class="last-reply">
-    Last reply by <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+    Last post by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
   </div>
 </div>
@@ -118,12 +118,12 @@
 <div class="threads-data" ng-repeat="thread in BoardCtrl.threads track by thread.id">
   <div class="subject">
     <div class="title">
-      <a ng-class="thread.title_class" class="thread-title" ui-sref="posts.data({threadId: thread.id})" ng-bind-html="thread.title"></a>
+      <a ng-class="thread.title_class" class="thread-title" ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
       <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
    </div>
 
     <div class="started-by">
-      Started by <a href="/profiles/{{thread.user.username}}" ng-bind-html="thread.user.username"></a>
+      Started by <a ui-sref="profile({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
       <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
     </div>
 
@@ -133,8 +133,8 @@
       <strong class="mobile-views" ng-bind="thread.view_count | number:0"></strong>
       <span> Views</span>
       <br />
-      <span>Last reply by </span>
-      <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+      <span>Last post by </span>
+      <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
       <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
     </div>
 
@@ -152,7 +152,7 @@
   <div class="views" ng-bind="thread.view_count | number:0"></div>
 
   <div class="last-reply">
-    Last reply by <a ng-href="/profiles/{{thread.last_post_username}}" ng-bind-html="thread.last_post_username"></a>
+    Last post by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
   </div>
 </div>

@@ -21,12 +21,13 @@ module.exports = [
     (function() {
       parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
       parent.getBoards();
+      $timeout(function() { highlight($location.hash()); }, 500);
     })();
 
     // default post avatar image if not found
     ctrl.posts.map(function(post) {
       if (!post.avatar) {
-        post.avatar = 'http://fakeimg.pl/400x400/ccc/444/?text=' + post.user.username;
+        post.avatar = 'https://fakeimg.pl/400x400/ccc/444/?text=' + post.user.username;
       }
     });
 
@@ -63,7 +64,7 @@ module.exports = [
         // default post avatar image if not found
         pageData.posts.map(function(post) {
           if (!post.avatar) {
-            post.avatar = 'http://fakeimg.pl/400x400/ccc/444/?text=' + post.user.username;
+            post.avatar = 'https://fakeimg.pl/400x400/ccc/444/?text=' + post.user.username;
           }
         });
         ctrl.posts = pageData.posts;
@@ -73,6 +74,17 @@ module.exports = [
         $timeout($anchorScroll);
       });
     };
+
+    this.highlightPost = function() {
+      $timeout(function() { highlight($location.hash()); });
+    };
+
+    function highlight(postId) {
+      ctrl.posts.map(function(post) {
+        if (post.id === postId) { post.highlighted = true; }
+        else { post.highlighted = false; }
+      });
+    }
 
     function generateBaseUrl() {
       var url = $location.protocol() + '://';

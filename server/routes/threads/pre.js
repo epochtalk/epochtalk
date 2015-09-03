@@ -68,12 +68,11 @@ module.exports = {
     });
     return reply(promise);
   },
-  canLock: function(request, reply) {
-    var username = '';
+  canUpdate: function(request, reply) {
     var threadId = request.params.id;
     var userId = request.auth.credentials.id;
     var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
+    var username = request.auth.credentials.username;
 
     var isAdmin = commonPre.isAdmin(authenticated, username);
     var isMod = commonPre.isMod(authenticated, username);
@@ -157,6 +156,12 @@ module.exports = {
     db.users.putUserThreadViews(userId, newThreadViews)
     .then(function() { return reply(); })
     .catch(function(err) { return reply(err); });
+  },
+  threadFirstPost: function(request, reply) {
+    var threadId = request.params.id;
+    var promise = db.threads.getThreadFirstPost(threadId)
+    .error(function() { return Boom.notFound(); });
+    return reply(promise);
   }
 };
 

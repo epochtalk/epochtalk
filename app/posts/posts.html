@@ -1,12 +1,26 @@
 <!-- Page Title -->
 <div class="thread-header">
   <div class="title">
-    <h4 ng-bind-html="::PostsParentCtrl.thread.title"></h4>
-    <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
-    <i class="icon-epoch-verified" ng-if="PostsParentCtrl.thread.sticky"></i>
+    <!-- Show Title -->
+    <div ng-if="!PostsParentCtrl.editThread">
+      <h4 ng-bind-html="::PostsParentCtrl.thread.title"></h4>
+      <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
+      <i class="icon-epoch-verified" ng-if="PostsParentCtrl.thread.sticky"></i>
+      <a ng-href="#" ng-if="PostsParentCtrl.thread.user.id === PostsParentCtrl.user.id || PostsParentCtrl.user.isAdmin" ng-click="PostsParentCtrl.openEditThread()">
+        <i class="icon-epoch-edit-pencil"></i>
+      </a>
+    </div>
+    <!-- Edit Title -->
+    <div ng-if="PostsParentCtrl.editThread">
+      <form ng-submit="PostsParentCtrl.updateThreadTitle()">
+        <input type="text" ng-model="PostsParentCtrl.thread.title">
+        <button type="submit" ng-disabled="PostsParentCtrl.thread.title.length === 0">Save</button>
+        <button ng-click="PostsParentCtrl.closeEditThread()">Cancel</button>
+      </form>
+    </div>
   </div>
   <div class="pagination-wrap">
-    <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+    <pagination page-count="PostsParentCtrl.pageCount" page-state="posts.data" page="PostsParentCtrl.page"></pagination>
   </div>
 </div>
 
@@ -28,7 +42,7 @@
 
   <!-- Purge Delete -->
   <div class="control" ng-if="PostsParentCtrl.user.isAdmin">
-    <a href="#" id="purgeThread" class="fa fa-trash" ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }" ng-click="PostsParentCtrl.showPurgeThreadModal = true">
+    <a ng-href="#" id="purgeThread" class="fa fa-trash" ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }" ng-click="PostsParentCtrl.showPurgeThreadModal = true">
       <label>Purge <span class="hide-mobile">Thread</span></label>
     </a>
   </div>
@@ -47,7 +61,7 @@
 <!-- Bottom Pagination -->
 <div class="thread-footer">
   <div class="pagination-wrap">
-    <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+    <pagination page-count="PostsParentCtrl.pageCount" page-state="posts.data" page="PostsParentCtrl.page"></pagination>
   </div>
 </div>
 
@@ -73,75 +87,73 @@
 
         <div class="editor-formatting" ng-if="PostsParentCtrl.showFormatting">
           <a class="close-formatting" ng-click="PostsParentCtrl.showFormatting = false">X</a>
-          <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank">
-            <h4 class="thin-underline">BBCode Lookup</h4>
-          </a>
-          <div class="half-column">
-            <strong>Bold</strong>:<div style="float: right">[b][/b]</div><br>
-            <em>Italics</em>:<div style="float: right">[i][/i]</div><br>
-            <u>Underline</u>:<div style="float: right">[u][/u]</div><br>
-            <del>Strikethrough</del>:<div style="float: right">[s][/s]</div><br>
-            BTC:<div style="float: right">[btc][/btc]</div><br>
-            <span style="background-color: green">Glow</span>:
-            <div style="float: right">[glow={color}][/glow]</div><br>
-            <span style="text-shadow: red 1px 1px 5px;">Shadow</span>:
-            <div style="float: right">[shadow={color}, {direction}, {blur}][/shadow]</div><br>
-            Font Size:<div style="float: right">[size={size}][/size]</div><br>
-            <sup>Superscript</sup>:<div style="float: right">[sup][/sup]</div><br>
-            <sub>Subscript</sub>:<div style="float: right">[sub][/sub]</div><br>
-
-            <hr>
-
-            <code class="preview">Code</code>:<div style="float: right">[code][/code]</div><br>
-            <tt>TeleText</tt>:<div style="float: right">[tt][/tt]</div><br>
-            Preformatted Text:<div style="float: right">[pre][/pre]</div><br>
-            Justify Left:<div style="float: right">[left][/left]</div><br>
-            Justify Right:<div style="float: right">[right][/right]</div><br>
-            Justify Center:<div style="float: right">[center][/center]</div><br>
-
-            <hr>
-
-            Horizontal Rule:<div style="float: right">[hr][/hr]</div><br><br>
+          <div class="thin-underline fill-row">
+            <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank">
+              <h4>BBCode Lookup</h4>
+            </a>
           </div>
           <div class="half-column">
-            Black:<div style="float: right">[black][/black]</div><br>
-            Blue:<div style="float: right">[blue][/blue]</div><br>
-            Green:<div style="float: right">[green][/green]</div><br>
-            Red:<div style="float: right">[red][/red]</div><br>
-            White:<div style="float: right">[white][/white]</div><br>
-            Additional Colors:<div style="float: right">[color={color}][/color]</div><br>
+            <strong>Bold</strong>:<div class="right">[b][/b]</div><br />
+            <em>Italics</em>:<div class="right">[i][/i]</div><br />
+            <u>Underline</u>:<div class="right">[u][/u]</div><br />
+            <del>Strikethrough</del>:<div class="right">[s][/s]</div><br />
+            BTC:<div class="right">[btc][/btc]</div><br />
+            <span style="background-color: green">Glow</span>:
+            <div class="right">[glow={color}][/glow]</div><br />
+            <span style="text-shadow: red 1px 1px 5px;">Shadow</span>:
+            <div class="right">[shadow={color}, {direction}, {blur}][/shadow]</div><br />
+            Font Size:<div class="right">[size={size}][/size]</div><br />
+            <sup>Superscript</sup>:<div class="right">[sup][/sup]</div><br />
+            <sub>Subscript</sub>:<div class="right">[sub][/sub]</div><br />
 
-            <hr>
+            <hr class="clear" />
 
-            Image:<div style="float: right">[img]{URL}[/img]</div><br>
-            URL:<div style="float: right">[url={URL}][/url]</div><br>
-            Email:<div style="float: right">[email={email}][/email]</div><br>
-            FTP:<div style="float: right">[ftp={URL}][/ftp]</div><br>
+            <code class="preview">Code</code>:<div class="right">[code][/code]</div><br />
+            <tt>TeleText</tt>:<div class="right">[tt][/tt]</div><br />
+            Preformatted Text:<div class="right">[pre][/pre]</div><br />
+            Justify Left:<div class="right">[left][/left]</div><br />
+            Justify Right:<div class="right">[right][/right]</div><br />
+            Justify Center:<div class="right">[center][/center]</div><br />
 
-            <hr>
+            <hr class="clear" />
+
+            Horizontal Rule:<div class="right">[hr][/hr]</div><br /><br />
+          </div>
+          <div class="half-column">
+            Black:<div class="right">[black][/black]</div><br />
+            Blue:<div class="right">[blue][/blue]</div><br />
+            Green:<div class="right">[green][/green]</div><br />
+            Red:<div class="right">[red][/red]</div><br />
+            White:<div class="right">[white][/white]</div><br />
+            Additional Colors:<div class="right">[color={color}][/color]</div><br />
+
+            <hr class="clear" />
+
+            Image:<div class="right">[img]{URL}[/img]</div><br />
+            URL:<div class="right">[url={URL}][/url]</div><br />
+            Email:<div class="right">[email={email}][/email]</div><br />
+            FTP:<div class="right">[ftp={URL}][/ftp]</div><br />
+
+            <hr class="clear" />
 
             Lists:
-            <div style="float: right">
-            <pre>
-              [list]
-              [li][/li]
-              [li][/li]
-              [/list]
-            </pre>
-            </div><br>
+            <div class="right">
+              [list]<br />
+              &nbsp;&nbsp;[li][/li]<br />
+              &nbsp;&nbsp;[li][/li]<br />
+              [/list]<br /><br />
+            </div>
 
-            <hr>
+            <hr class="clear" />
 
             Tables:
-            <div style="float: right">
-            <pre>
-              [table]
-              [tr]
-              [td][/td]
-              [/tr]
+            <div class="right">
+              [table]<br />
+              &nbsp;&nbsp;[tr]<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;[td][/td]<br />
+              &nbsp;&nbsp;[/tr]<br />
               [/table]
-            </pre>
-            </div><br>
+            </div><br />
           </div>
         </div>
       </div>

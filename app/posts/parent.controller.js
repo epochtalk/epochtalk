@@ -43,12 +43,31 @@ module.exports = [
 
     /* Thread Methods */
 
+    this.editThread = false;
+    var threadTitle = '';
+    this.openEditThread = function() {
+      threadTitle = ctrl.thread.title;
+      ctrl.editThread = true;
+    };
+    this.closeEditThread = function() {
+      ctrl.editThread = false;
+      ctrl.thread.title = threadTitle;
+    };
+    this.updateThreadTitle = function() {
+      var title = ctrl.thread.title;
+      return Threads.title({id: ctrl.thread.id}, {title: title}).$promise
+      .then(function() { ctrl.editThread = false; })
+      .then(function() { Alert.success('Thread\'s changed to: ' + title); })
+      .catch(function() { Alert.error('Error changing thread title'); });
+    };
+
     this.updateThreadLock = function() {
       // let angular digest the change in lock status
       $timeout(function() {
         var lockStatus = ctrl.thread.locked;
         return Threads.lock({id: ctrl.thread.id}, {status: lockStatus}).$promise
-        .then(function(lockThread) { ctrl.thread.locked = lockThread.locked; });
+        .then(function(lockThread) { ctrl.thread.locked = lockThread.locked; })
+        .catch(function() { Alert.error('Error Locking Thread'); });
       });
     };
 
@@ -57,14 +76,16 @@ module.exports = [
       $timeout(function() {
         var stickyStatus = ctrl.thread.sticky;
         return Threads.sticky({id: ctrl.thread.id}, {status: stickyStatus}).$promise
-        .then(function(stickyThread) { ctrl.thread.sticky = stickyThread.sticky; });
+        .then(function(stickyThread) { ctrl.thread.sticky = stickyThread.sticky; })
+        .catch(function() { Alert.error('Error Sticking Thread'); });
       });
     };
 
     this.moveThread = function() {
       var newBoardId = ctrl.moveBoard.id;
       return Threads.move({id: ctrl.thread.id}, {newBoardId: newBoardId}).$promise
-      .then(function(newBoard) { $state.go($state.$current, null, {reload:true}); });
+      .then(function() { $state.go($state.$current, null, {reload:true}); })
+      .catch(function() { Alert.error('Error Moving Thread'); });
     };
 
     this.showPurgeThreadModal = false;
@@ -75,7 +96,7 @@ module.exports = [
     this.purgeThread = function() {
       Threads.delete({id: ctrl.thread.id}).$promise
       .then(function() { $state.go('board.data', {boardId: ctrl.board_id}); })
-      .catch(function(err) { Alert.error('Failed to purge Thread'); })
+      .catch(function() { Alert.error('Failed to purge Thread'); })
       .finally(function() { ctrl.showPurgeThreadModal = false; });
     };
 
@@ -91,6 +112,8 @@ module.exports = [
     };
 
     function closeEditor() {
+      ctrl.posting.post.raw_body = '';
+      ctrl.posting.post.body = '';
       ctrl.resetEditor = true;
       ctrl.showEditor = false;
     }
@@ -158,7 +181,7 @@ module.exports = [
         }
       })
       .then(closeEditor)
-      .catch(function(response) { Alert.error('Post could not be saved'); });
+      .catch(function() { Alert.error('Post could not be saved'); });
     };
 
     this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };
@@ -178,7 +201,7 @@ module.exports = [
       if (post) {
         Posts.delete({id: post.id}).$promise
         .then(function() { post.deleted = true; })
-        .catch(function(err) { Alert.error('Failed to delete post'); })
+        .catch(function() { Alert.error('Failed to delete post'); })
         .finally(function() { ctrl.showDeleteModal = false; });
       }
     };
@@ -198,7 +221,7 @@ module.exports = [
       if (post) {
         Posts.undelete({id: post.id}).$promise
         .then(function() { post.deleted = false; })
-        .catch(function(err) { Alert.error('Failed to Undelete Post'); })
+        .catch(function() { Alert.error('Failed to Undelete Post'); })
         .finally(function() { ctrl.showUndeleteModal = false; });
       }
     };
@@ -218,7 +241,7 @@ module.exports = [
       if (post) {
         Posts.purge({id: post.id}).$promise
         .then(function() { $state.go($state.$current, null, {reload:true}); })
-        .catch(function(err) { Alert.error('Failed to purge Post'); })
+        .catch(function() { Alert.error('Failed to purge Post'); })
         .finally(function() { ctrl.showPurgeModal = false; });
       }
     };

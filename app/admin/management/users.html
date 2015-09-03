@@ -36,16 +36,16 @@
     <tbody>
       <tr ng-repeat="user in AdminManagementCtrl.users track by user.username" ng-class="{unbanned: AdminManagementCtrl.tableFilter == 1 && !user.ban_expiration}">
         <td><a ui-sref="profile({ username: user.username })" ng-bind="user.username"></a></td>
-        <td class="email-column" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }"><a href="mailto:{{user.email}}" ng-bind="user.email"></a></td>
+        <td class="email-column" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }"><a ng-href="mailto:{{user.email}}" ng-bind="user.email"></a></td>
         <td ng-show="AdminManagementCtrl.tableFilter == 1" ng-bind="user.ban_expiration | humanDate:true"></td>
         <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
         <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
         <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
         <td>
           <a ui-sref="users-posts({ username: user.username })" ui-sref-opts="{ reload: true }">View Posts</a>&nbsp;&nbsp;
-          <a href="#" ng-click="AdminManagementCtrl.showEditUser(user.username)">Edit</a>&nbsp;&nbsp;
-          <a href="#" ng-hide="user.ban_expiration" ng-click="AdminManagementCtrl.showBanConfirm(user);">Ban</a>
-          <a href="#" ng-show="user.ban_expiration" ng-click="AdminManagementCtrl.showUnbanConfirm(user);">Unban</a>
+          <a ng-href="#" ng-click="AdminManagementCtrl.showEditUser(user.username)">Edit</a>&nbsp;&nbsp;
+          <a ng-href="#" ng-hide="user.ban_expiration" ng-click="AdminManagementCtrl.showBanConfirm(user);">Ban</a>
+          <a ng-href="#" ng-show="user.ban_expiration" ng-click="AdminManagementCtrl.showUnbanConfirm(user);">Unban</a>
         </td>
       </tr>
     </tbody>
@@ -77,7 +77,7 @@
 
     <label for="banType">Select Ban Type:</label>
     <input type="radio" name="banType" ng-model="AdminManagementCtrl.permanentBan" ng-value="true" id="permanent" ng-disabled="AdminManagementCtrl.banSubmitted" required><label for="permanent">Permanent</label>
-    <input type="radio" name="banType" ng-model="AdminManagementCtrl.permanentBan" ng-value="false" id="temporary" ng-disabled="AdminManagementCtrl.banSubmitted" required><label for="temporary">Temporary</label>
+    <input type="radio" name="banType" ng-model="AdminManagementCtrl.permanentBan" ng-value="false" id="temporary" ng-disabled="AdminManagementCtrl.banSubmitted" required><label for="temporary">Temporary</label><br /><br />
     <div ng-show="AdminManagementCtrl.permanentBan === false">
       <label for="banUntil">Enter Ban Expiration Date:</label>
       <input type="date" ng-model="AdminManagementCtrl.banUntil" min="{{AdminManagementCtrl.minDate()}}" name="banUntil" ng-required="AdminManagementCtrl.permanentBan === false" />
