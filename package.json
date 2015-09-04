@@ -13,7 +13,7 @@
     "build": "node ./scripts/build.js",
     "serve": "node ./scripts/serve.js",
     "test": "./node_modules/.bin/mocha -R spec ./tests",
-    "start": "./node_modules/.bin/bower install && npm run build && node cli/index.js --create && node server"
+    "start": "npm run db-migrate && ./node_modules/.bin/bower install && npm run build && node cli/index.js --create && node server"
   },
   "repository": {
     "type": "git",
