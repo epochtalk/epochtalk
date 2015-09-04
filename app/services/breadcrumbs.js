@@ -25,6 +25,9 @@ function ($stateParams, $location, Breadcrumbs) {
   };
 
   return {
+    updateLabelInPlace: function(newLabel) {
+      breadcrumbsStore[breadcrumbsStore.length - 1].label = newLabel;
+    },
     update: function() {
       var breadcrumbs = [ pathLookup.home ];
       var path = $location.path();

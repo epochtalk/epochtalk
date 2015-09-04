@@ -891,6 +891,9 @@ main #public-content {
     .title {
       @include span-columns(6);
       h4 { font-weight: bold; display: inline; overflow-wrap: break-word; word-wrap: break-word; }
+      input { @include span-columns(12); @include omega; }
+      button { @include span-columns(6); }
+      button.cancel { @include omega; }
     }
     .pagination-wrap { @include span-columns(6); @include omega; }
   }
@@ -1304,6 +1307,7 @@ main #admin-content {
       border-bottom: 1px solid $color-gray-sub;
       vertical-align: top;
       &.unbanned { background-color: #FFAEAE }
+      &.selectable-row { @include no-select; }
       &.selectable-row:hover { background-color: $color-gray-sub; }
       &.active-row, &.active-row:nth-of-type(even) { background-color:  $color-active-fill; }
       &.active-row.selectable-row:hover { background-color:  $color-active-fill }

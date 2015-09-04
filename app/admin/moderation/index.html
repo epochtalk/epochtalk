@@ -7,6 +7,9 @@
     <dd class="no-select" ng-class="{'active': tab == 'posts'}">
       <a ui-sref=".posts({ filter: 'Pending' })" ng-click="tab = 'posts'">Posts</a>
     </dd>
+    <dd class="no-select" ng-class="{'active': tab == 'messages'}">
+      <a ui-sref=".messages({ filter: 'Pending' })" ng-click="tab = 'messages'">Messages</a>
+    </dd>
   </dl>
 </div>
 <div ui-view="data" id="admin-data" class="fill-row"></div>

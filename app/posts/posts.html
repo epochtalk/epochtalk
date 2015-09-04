@@ -15,12 +15,12 @@
       <form ng-submit="PostsParentCtrl.updateThreadTitle()">
         <input type="text" ng-model="PostsParentCtrl.thread.title">
         <button type="submit" ng-disabled="PostsParentCtrl.thread.title.length === 0">Save</button>
-        <button ng-click="PostsParentCtrl.closeEditThread()">Cancel</button>
+        <button class="cancel" ng-click="PostsParentCtrl.closeEditThread()">Cancel</button>
       </form>
     </div>
   </div>
   <div class="pagination-wrap">
-    <pagination page-count="PostsParentCtrl.pageCount" page-state="posts.data" page="PostsParentCtrl.page"></pagination>
+    <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
   </div>
 </div>
 
@@ -61,7 +61,7 @@
 <!-- Bottom Pagination -->
 <div class="thread-footer">
   <div class="pagination-wrap">
-    <pagination page-count="PostsParentCtrl.pageCount" page-state="posts.data" page="PostsParentCtrl.page"></pagination>
+    <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
   </div>
 </div>
 
