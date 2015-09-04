@@ -15,7 +15,7 @@
       <form ng-submit="PostsParentCtrl.updateThreadTitle()">
         <input type="text" ng-model="PostsParentCtrl.thread.title">
         <button type="submit" ng-disabled="PostsParentCtrl.thread.title.length === 0">Save</button>
-        <button ng-click="PostsParentCtrl.closeEditThread()">Cancel</button>
+        <button class="cancel" ng-click="PostsParentCtrl.closeEditThread()">Cancel</button>
       </form>
     </div>
   </div>

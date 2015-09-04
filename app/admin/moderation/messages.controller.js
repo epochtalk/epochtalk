@@ -355,7 +355,6 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
 
     if (page && page !== ctrl.page) {
       pageChanged = true;
-      ctrl.parent.page = page;
       ctrl.page = page;
     }
     if (limit && limit !== ctrl.limit) {

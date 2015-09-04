@@ -891,6 +891,9 @@ main #public-content {
     .title {
       @include span-columns(6);
       h4 { font-weight: bold; display: inline; overflow-wrap: break-word; word-wrap: break-word; }
+      input { @include span-columns(12); @include omega; }
+      button { @include span-columns(6); }
+      button.cancel { @include omega; }
     }
     .pagination-wrap { @include span-columns(6); @include omega; }
   }

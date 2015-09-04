@@ -1,6 +1,6 @@
 module.exports = [
-  '$scope', '$timeout', '$location', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert',
-  function($scope, $timeout, $location, $state, Session, Boards, Posts, Threads, Reports, Alert) {
+  '$scope', '$timeout', '$location', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
+  function($scope, $timeout, $location, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -57,7 +57,10 @@ module.exports = [
       var title = ctrl.thread.title;
       return Threads.title({id: ctrl.thread.id}, {title: title}).$promise
       .then(function() { ctrl.editThread = false; })
-      .then(function() { Alert.success('Thread\'s changed to: ' + title); })
+      .then(function() {
+        Alert.success('Thread\'s title changed to: ' + title);
+        BreadcrumbSvc.updateLabelInPlace(title);
+      })
       .catch(function() { Alert.error('Error changing thread title'); });
     };
 

@@ -529,7 +529,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return $stateParams.limit || 15;
         }],
         page: ['$stateParams', function($stateParams) {
-          console.log('\n\nRELOAD\n\n');
           return Number($stateParams.page) || 1;
         }],
         filter: ['$stateParams', function($stateParams) {
