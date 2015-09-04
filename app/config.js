@@ -216,7 +216,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('posts.data', {
-      url: '/threads/{threadId}/posts?limit&page',
+      url: '/threads/{threadId}/posts?limit&page&start',
       reloadOnSearch: false,
       views: {
         'data@posts': {
@@ -230,8 +230,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         pageData: ['Posts', 'Threads', '$stateParams', function(Posts, Threads, $stateParams) {
           var query = {
             thread_id: $stateParams.threadId,
-            page: Number($stateParams.page) || 1,
-            limit: Number($stateParams.limit) || 25
+            page: $stateParams.page,
+            limit: $stateParams.limit,
+            start: $stateParams.start
           };
           Threads.viewed({ id: $stateParams.threadId });
           return Posts.byThread(query).$promise;
