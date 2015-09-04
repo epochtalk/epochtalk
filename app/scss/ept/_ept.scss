@@ -113,7 +113,7 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   right: 0;
   top: 10rem;
   margin: 0 auto;
-  position: absolute;
+  position: fixed;
   z-index: 10000;
   background-color: #fff;
   box-shadow: 4px 4px 80px #000;
@@ -128,7 +128,7 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   @include media($desktop-small) { @include span-columns(9, block-collapse); }
   @include media($mobile) { @include span-columns(7, block-collapse); top: 1rem; }
 }
-.ng-modal.fixed .ng-modal-dialog { position: fixed; top: 5%; max-height: 90%; overflow: scroll; }
+.ng-modal.image-modal .ng-modal-dialog { top: 5%; max-height: 90%; overflow: scroll; }
 .ng-modal-dialog-content { padding: 2rem; text-align: left; }
 .ng-modal-close {
   position: absolute;

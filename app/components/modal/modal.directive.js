@@ -1,4 +1,4 @@
-module.exports = ['$anchorScroll', function($anchorScroll) {
+module.exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -28,9 +28,9 @@ module.exports = ['$anchorScroll', function($anchorScroll) {
       };
 
       scope.$watch('show', function(show) {
-        if (show) { scope.focus = true; $anchorScroll();}
+        if (show) { scope.focus = true; }
         else { scope.close(); }
       });
     }
   };
-}];
+};
