@@ -35,36 +35,33 @@ module.exports = ['$resource',
         url: '/api/admin/reports/usernotes/:report_id',
         params: { report_id: '@report_id' },
         isArray: true,
-        ignoreLoadingBar: true
       },
       pagePostReportsNotes: {
         method: 'GET',
         url: '/api/admin/reports/postnotes/:report_id',
         params: { report_id: '@report_id' },
         isArray: true,
-        ignoreLoadingBar: true
       },
       pageMessageReportsNotes: {
         method: 'GET',
         url: '/api/admin/reports/messagenotes/:report_id',
         params: { report_id: '@report_id' },
         isArray: true,
-        ignoreLoadingBar: true
       },
       userReportsNotesCount: {
         method: 'GET',
         url: '/api/admin/reports/usernotes/:report_id/count',
-        params: { report_id: '@report_id' }
+        params: { report_id: '@report_id' },
       },
       postReportsNotesCount: {
         method: 'GET',
         url: '/api/admin/reports/postnotes/:report_id/count',
-        params: { report_id: '@report_id' }
+        params: { report_id: '@report_id' },
       },
       messageReportsNotesCount: {
         method: 'GET',
         url: '/api/admin/reports/messagenotes/:report_id/count',
-        params: { report_id: '@report_id' }
+        params: { report_id: '@report_id' },
       },
       createUserReportNote: {
         method: 'POST',
