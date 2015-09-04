@@ -20,7 +20,10 @@ var config = {
   loginRequired: parseBool(process.env.LOGIN_REQUIRED, false),
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || 6379
+    port: process.env.REDIS_PORT || 6379,
+    options: {
+      auth_pass:  process.env.REDIS_PASS || null
+    }
   },
   website: {
     title: process.env.WEBSITE_TITLE || 'Epochtalk Forums',
