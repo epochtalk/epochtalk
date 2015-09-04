@@ -103,5 +103,8 @@ if (s3dir.indexOf('/') === 0) {
 // add db config
 var env = process.env.NODE_ENV || 'development';
 config.db = database[env];
+if (process.env.NODE_ENV === 'production') {
+  config.db.host = process.env.DB_HOST || 'localhost';
+}
 
 module.exports = config;
