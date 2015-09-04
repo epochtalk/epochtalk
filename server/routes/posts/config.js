@@ -174,16 +174,11 @@ exports.byThread = {
     var threadId = request.query.thread_id;
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    var opts = { limit: limit, start: 0, page: 1 };
 
-    if (start) {
-      opts.page = Math.ceil(start / limit);
-      opts.start = Math.floor(start / limit) * limit;
-    }
-    else if (page) {
-      opts.start = ((page * limit) - limit);
-      opts.page = page;
-    }
+    var opts = { limit: limit, start: 0, page: 1 };
+    if (start) { opts.page = Math.ceil(start / limit); }
+    else if (page) { opts.page = page; }
+    opts.start = ((opts.page * limit) - limit);
 
     // retrieve posts for this thread
     var getPosts = db.posts.byThread(threadId, opts);
