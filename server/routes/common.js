@@ -7,6 +7,7 @@ var sanitizer = require(path.normalize(__dirname + '/../sanitizer'));
 var imageStore = require(path.normalize(__dirname + '/../images'));
 var db = require(path.normalize(__dirname + '/../../db'));
 var USER_ROLES = require(path.normalize(__dirname + '/user-roles'));
+var querystring = require('querystring');
 
 module.exports = {
   auth: {
@@ -14,7 +15,7 @@ module.exports = {
     isMod: isMod,
     adminCheck: function(request, reply) {
       if (request.auth.isAuthenticated) {
-        var username = request.auth.credentials.username;
+        var username = querystring.unescape(request.auth.credentials.username);
         return db.users.userByUsername(username)
         .then(function(user) {
           var isAdmin = false;
@@ -29,7 +30,7 @@ module.exports = {
     },
     modCheck: function(request, reply) {
       if (request.auth.isAuthenticated) {
-        var username = request.auth.credentials.username;
+        var username = querystring.unescape(request.auth.credentials.username);
         return db.users.userByUsername(username)
         .then(function(user) {
           var isMod = false;
@@ -111,6 +112,7 @@ function isAdmin(authenticated, username) {
 
   if (!authenticated) { promise = Promise.resolve(admin); }
   else {
+    username = querystring.unescape(username);
     promise = db.users.userByUsername(username)
     .then(function(user) {
       user.roles.forEach(function(role) {
@@ -130,6 +132,7 @@ function isMod(authenticated, username) {
 
   if (!authenticated) { promise = Promise.resolve(mod); }
   else {
+    username = querystring.unescape(username);
     return db.users.userByUsername(username)
     .then(function(user) {
       user.roles.forEach(function(role) {

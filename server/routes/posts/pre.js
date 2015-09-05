@@ -8,6 +8,7 @@ var config = require(path.normalize(__dirname + '/../../../config'));
 var imageStore = require(path.normalize(__dirname + '/../../images'));
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 var commonPre = require(path.normalize(__dirname + '/../common')).auth;
+var querystring = require('querystring');
 
 module.exports = {
   isAdmin: function(request, reply) {
@@ -147,26 +148,6 @@ module.exports = {
       var result = Boom.forbidden();
       if (firstPost) { result = Boom.forbidden(); }
       else if (admin) { result = ''; }
-      return result;
-    });
-    return reply(promise);
-  },
-  canPageByUserCount: function(request, reply) {
-    var username = '';
-    var payloadUsername = request.params.username;
-    var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
-
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMod = commonPre.isMod(authenticated, username);
-    var isActive = isUserActive(payloadUsername);
-
-    var promise = Promise.join(isAdmin, isMod, isActive, function(admin, mod, active) {
-      var result = Boom.notFound();
-      if (admin || mod) { result = ''; }
-      else if (username === payloadUsername) { result = ''; }
-      else if (active === false) { result = Boom.notFound(); }
-      else if (active === true) { result = '';}
       return result;
     });
     return reply(promise);
@@ -333,6 +314,7 @@ function isPostDeleted(postId) {
 function isUserActive(username) {
   var active = false;
   if (!username) { return Promise.resolve(active); }
+  username = querystring.unescape(username);
   return db.users.userByUsername(username)
   .then(function(user) {
     if (user) { active = !user.deleted; }

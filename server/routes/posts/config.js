@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 var imageStore = require(path.normalize(__dirname + '/../../images'));
+var querystring = require('querystring');
 
 /**
   * @apiVersion 0.3.0
@@ -367,7 +368,7 @@ exports.pageByUser = {
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
     var isAdmin = request.pre.isAdmin;
-    var username = request.params.username;
+    var username = querystring.unescape(request.params.username);
     var opts = {
       limit: request.query.limit,
       page: request.query.page,

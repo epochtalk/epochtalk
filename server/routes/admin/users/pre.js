@@ -1,6 +1,7 @@
 var path = require('path');
 var Boom = require('boom');
 var db = require(path.normalize(__dirname + '/../../../../db'));
+var querystring = require('querystring');
 
 module.exports = {
   checkUserExists: function(request, reply) {
@@ -21,7 +22,7 @@ module.exports = {
       if (user.username === request.payload.username) { return reply(); }
       else {
         // check that new username is unique
-        var newUsername = request.payload.username;
+        var newUsername = querystring.unescape(request.payload.username);
         db.users.userByUsername(newUsername)
         .then(function(user) {
           if (user) {
