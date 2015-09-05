@@ -8,7 +8,7 @@
     </h3>
 
     <!-- Login Section -->
-    <ul ng-if="!HeaderCtrl.loggedIn()">
+    <ul class="signed-out" ng-if="!HeaderCtrl.loggedIn()">
       <li>
         <a ng-click="HeaderCtrl.showRegister = true">REGISTER</a>
       </li>
