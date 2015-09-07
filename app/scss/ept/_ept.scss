@@ -181,6 +181,20 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
     border-color: $color-gray-disabled;
   }
 }
+.disable-animations {
+  // Use this for transitions
+  &.ng-enter,
+  &.ng-leave,
+  &.ng-animate {
+    -webkit-transition: none !important;
+    transition: none !important;
+  }
+  // Use this for keyframe animations
+  &.ng-animate {
+    -webkit-animation: none 0s;
+    animation: none 0s;
+  }
+}
 .error-label { @include label(error,  0.6875rem, 2px, 0.1rem); }
 .thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
 hr { margin: 1rem 0; border: none; height: 1px; color: $color-gray-light; background-color: $color-gray-light; }

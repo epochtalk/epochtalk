@@ -23,8 +23,8 @@
     </div>
 
     <div class="profile-row centered-text" ng-if="ProfileCtrl.editable()">
-      <a ng-href="#" ng-click="ProfileCtrl.showDeactivate = true" ng-if="!ProfileCtrl.user.deleted">Deactivate Account</a>
-      <a ng-href="#" ng-click="ProfileCtrl.showReactivate = true" ng-if="ProfileCtrl.user.deleted">Reactivate Account</a>
+      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showDeactivate = true" ng-hide="ProfileCtrl.user.deleted">Deactivate Account</a>
+      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showReactivate = true" ng-show="ProfileCtrl.user.deleted">Reactivate Account</a>
       <br>
       <a ng-href="#" ng-click="ProfileCtrl.showDelete = true" ng-if="ProfileCtrl.removable()">Delete Account</a>
     </div>
