@@ -46,7 +46,7 @@
     "del": "^1.1.1",
     "dot": "^1.0.3",
     "epochtalk-bbcode-parser": "^1.0.0",
-    "epochtalk-core-pg": "epochtalk/core-pg#database-options",
+    "epochtalk-core-pg": "epochtalk/core-pg",
     "fs-extra": "^0.16.5",
     "good": "^5.1.1",
     "good-console": "^4.1.0",
