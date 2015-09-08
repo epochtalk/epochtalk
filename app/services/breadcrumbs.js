@@ -69,8 +69,10 @@ function ($stateParams, $location, Breadcrumbs) {
       }
     },
     crumbs: function() {
-      for (var i = 0; i < breadcrumbsStore.length; i++) {
-        breadcrumbsStore[i].label = decodeURIComponent(breadcrumbsStore[i].label);
+      if (breadcrumbsStore) {
+        for (var i = 0; i < breadcrumbsStore.length; i++) {
+          breadcrumbsStore[i].label = decodeURIComponent(breadcrumbsStore[i].label);
+        }
       }
       return breadcrumbsStore;
     }
