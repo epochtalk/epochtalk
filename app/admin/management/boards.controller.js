@@ -40,7 +40,7 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
 
     cleanBoardList();
 
-    // 0) Create Boards which have been added
+    // 0) Create Categories which have been added
     $scope.processNewCategories = function() {
       console.log('0) Adding new Categories: \n' + JSON.stringify($scope.newCategories, null, 2));
       return $q.all($scope.newCategories.map(function(newCategory) {
