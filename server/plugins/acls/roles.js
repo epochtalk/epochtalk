@@ -756,4 +756,110 @@ roles.anonymous = {
   }
 };
 
+roles.noRead = {
+  // business logic (none)
+  name: 'noRead',
+  // ACLs
+  adminReports: {
+    createUserReportNote: false,
+    createPostRepostNote: false,
+    createMessageReportNote: false,
+    updateUserReport: false,
+    updatePostReport: false,
+    updateMessageReport: false,
+    updateUserReportNote: false,
+    updatePostReportNote: false,
+    updateMessageReportNote: false,
+    pageUserReports: false,
+    pagePostReports: false,
+    pageMessageReport: false,
+    pageUserReportsNotes: false,
+    pagePostReportsNotes: false,
+    pageMessageReportsNotes: false,
+    userReportCount: false,
+    postReportCount: false,
+    messageReportsCount: false,
+    userReportsNotesCount: false,
+    postReportsNotesCount: false,
+    messageReportsNotesCount: false
+  },
+  adminSettings: {
+    find: false,
+    update: false
+  },
+  adminUsers: {
+    update: false,
+    find: false,
+    addRoles: false,
+    removeRoles: false,
+    searchUsername: false,
+    count: false,
+    countAdmins: false,
+    countModerators: false,
+    page: false,
+    pageAdmins: false,
+    pageModerators: false,
+    ban: false,
+    unban: false
+  },
+  boards: {
+    create: false,
+    find: false,
+    all: false,
+    allCategories: false,
+    updateCategories: false,
+    update: false,
+    delete: false
+  },
+  categories: {
+    create: false,
+    find: false,
+    all: false,
+    delete: false
+  },
+  conversations: {
+    create: false,
+    messages: false,
+    delete: false
+  },
+  messages: {
+    create: false,
+    latest: false,
+    findUser: false,
+    delete: false
+  },
+  posts: {
+    create: false,
+    find: false,
+    byThread: false,
+    update: false,
+    delete: false,
+    undelete: false,
+    purge: false,
+    pageByUser: false
+  },
+  reports: {
+    createUserReport: false,
+    createPostReport: false,
+    createMessageReport: false
+  },
+  threads: {
+    create: false,
+    byBoard: false,
+    viewed: false,
+    title: false,
+    lock: false,
+    sticky: false,
+    move: false,
+    delete: false
+  },
+  users: {
+    update: false,
+    find: false,
+    deactivate: false,
+    reactivate: false,
+    delete: false
+  }
+};
+
 // read from DB to replace defaults

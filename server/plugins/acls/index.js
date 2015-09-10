@@ -12,19 +12,8 @@ exports.register = function (server, options, next) {
     var userACLs;
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userACLs = roles[request.auth.role] || roles.user; }
+    else if (config.loginRequired) { userACLs = roles.noRead; }
     else { userACLs = roles.anonymous; }
-
-    // if loginRequired, set role to no reads
-    if (config.loginRequired && authenticated === false) {
-      userACLs.boards.find = false;
-      userACLs.boards.allCategories = false;
-      userACLs.posts.find = false;
-      userACLs.posts.byThread = false;
-      userACLs.posts.pageByUser = false;
-      userACLs.threads.byBoard = false;
-      userACLs.threads.viewed = false;
-      userACLs.users.find = false;
-    }
 
     // grab permission needed for route (array? string?)
     // TODO: handle stacking roles and stacking permissions
