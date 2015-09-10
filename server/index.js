@@ -7,15 +7,17 @@ var GoodConsole = require('good-console');
 var _ = require('lodash');
 var methods = require(path.normalize(__dirname + '/methods'));
 var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
+var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var config = require(path.normalize(__dirname + '/../config'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
-var server = new Hapi.Server();
-var connection = server.connection(serverOptions);
-
 var defaultRegisterCb = function(err) { if (err) throw(err); };
 
-// logging only regiestered if config enabled
+// create server object
+var server = new Hapi.Server();
+server.connection(serverOptions);
+
+// server logging only registered if config enabled
 var options = {};
 if (config.logEnabled) {
   var opsPath = path.normalize(__dirname +  '/../logs/server/operations');
@@ -45,6 +47,9 @@ server.register(Auth, function(err) {
   server.auth.strategy('jwt', 'jwt', strategyOptions);
 });
 
+// route acls
+server.register(acls, defaultRegisterCb);
+
 // server routes
 var routes = require(path.normalize(__dirname + '/routes'));
 server.route(routes.endpoints());
@@ -52,8 +57,9 @@ server.route(routes.endpoints());
 // server methods
 server.method(methods);
 
+// start server
 server.start(function () {
-  var configClone= _.cloneDeep(config);
+  var configClone = _.cloneDeep(config);
   configClone.privateKey = configClone.privateKey.replace(/./g, '*');
   configClone.emailer.pass = configClone.emailer.pass.replace(/./g, '*');
   configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*');
