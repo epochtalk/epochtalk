@@ -26,7 +26,12 @@ module.exports = ['$location', '$timeout', '$state', '$stateParams', 'Auth', 'Se
       .then(function() {
         ctrl.showLogin = false;
         ctrl.clearLoginFields();
-        $state.go($state.current, $stateParams, { reload: true });
+        if ($state.current.name === 'login') { // handle login via login page
+          $state.go($state.next, $state.nextParams, { reload: true });
+          $state.next = undefined;
+          $state.nextParams = undefined; //clear out next state info after redirect
+        }
+        else { $state.go($state.current, $stateParams, { reload: true }); }
       })
       .catch(function(err) {
         if (err.data && err.data.message) { Alert.error(err.data.message); }

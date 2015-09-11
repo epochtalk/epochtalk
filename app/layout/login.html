@@ -1,0 +1,17 @@
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Login</h3>
+    <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" auto-focus="$parent.focus" required>
+    <label>
+      <div class="input-info">Minimum 8 characters</div>
+      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password"  ng-class="{'ng-invalid': HeaderCtrl.user.password.length < 8 }" required>
+    </label>
+    <label>
+      <input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">
+      Remember Me
+    </label>
+    <div class="clear">
+      <button class=" fill-row" ng-click="HeaderCtrl.login()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
+        Login
+      </button>
+    </div>
+  </form>

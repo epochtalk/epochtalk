@@ -91,11 +91,19 @@ app.config(require('./config'))
     BreadcrumbSvc.update();
   });
 
-  // 404 if there is an error changing state
+  // Handle if there is an error changing state
   $rootScope.$on('$stateChangeError', function(event, next, nextParams, prev, prevParams, error) {
     event.preventDefault();
-    // Check if state change error was caused by unauthorized access to a route
-    if (error === 'Unauthorized' || error.status === 401) { $state.go('boards'); }
+
+    // Unauthorized is redirected to login, save next so we can redirect after login
+    if (error.status === 401 || error.statusText === 'Unauthorized') {
+      $state.go('login');
+      $state.next = next;
+      $state.nextParams = nextParams;
+    }
+    // Forbidden redirect home
+    else if (error.status === 403 || error.statusText === 'Forbidden') { $state.go('boards'); }
+    // Otherwise 404
     else { $state.go('404'); }
   });
 }]);
