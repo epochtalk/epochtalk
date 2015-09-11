@@ -171,10 +171,13 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
       expiration: ctrl.banUntil || undefined
     };
     AdminUsers.ban(params).$promise
-    .then(function() {
+    .then(function(result) {
       Alert.success(ctrl.selectedUser.username + ' has been banned');
+      return result;
+    })
+    .then(updateBanLabel)
+    .then(function() {
       ctrl.closeConfirmBan();
-      ctrl.pullPage();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
         ctrl.banSubmitted = false;
@@ -200,15 +203,28 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
       user_id: ctrl.selectedUser.id,
     };
     AdminUsers.unban(params).$promise
-    .then(function() {
+    .then(function(results) {
       Alert.success(ctrl.selectedUser.username + ' has been unbanned');
+      return results;
+    })
+    .then(updateBanLabel)
+    .then(function() {
       ctrl.closeConfirmUnban();
-      ctrl.pullPage();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
         ctrl.banSubmitted = false;
       }, 500);
     });
+  };
+
+  var updateBanLabel = function(params) {
+    for (var i = 0; i < ctrl.userReports.length; i++) {
+      if (params.user_id === ctrl.userReports[i].offender_user_id) {
+        // unbanning sets ban expiration to current time
+        var expiration = new Date(params.expiration) > new Date() ? params.expiration : undefined;
+        ctrl.userReports[i].offender_ban_expiration = expiration;
+      }
+    }
   };
 
   this.updateReportNote = function(note) {

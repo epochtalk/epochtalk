@@ -4,8 +4,8 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 13px;
-  line-height: 20px;
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
 }
 
 .dd-list {
@@ -17,7 +17,7 @@
 }
 
 .dd-list .dd-list {
-  padding-left: 30px;
+  padding-left: 1.875rem;
 }
 
 .dd-collapsed .dd-list {
@@ -29,9 +29,9 @@
   position: relative;
   margin: 0;
   padding: 0;
-  min-height: 20px;
-  font-size: 13px;
-  line-height: 20px;
+  min-height: 1.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
 }
 
 .dd-grab {
@@ -40,8 +40,8 @@
   pointer-events: none;
   left: 0;
   top: 0;
-  width: 30px;
-  height: 30px;
+  width: 1.875rem;
+  height: 1.875rem;
   text-indent: 100%;
   white-space: nowrap;
   overflow: hidden;
@@ -57,7 +57,7 @@
   display: block;
   position: absolute;
   left: 0;
-  top: 3px;
+  top: 0.1875rem;
   width: 100%;
   text-align: center;
   text-indent: 0;
@@ -71,8 +71,8 @@
   pointer-events: none;
   left: 0;
   top: 0;
-  width: 30px;
-  height: 30px;
+  width: 1.875rem;
+  height: 1.875rem;
   text-indent: 100%;
   white-space: nowrap;
   overflow: hidden;
@@ -88,21 +88,21 @@
   display: block;
   position: absolute;
   left: 0;
-  top: 3px;
+  top: 0.1875rem;
   width: 100%;
   text-align: center;
   text-indent: 0;
   color: #fff;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: normal;
 }
 
 .dd-handle, .dd-root-handle {
   display: block;
-  height: 30px;
+  height: 1.875rem;
   cursor: pointer;
-  margin: 5px 0;
-  padding: 5px 10px 5px 50px;
+  margin: 0.3125rem 0;
+  padding: 0.3125rem 0.625rem 0.3125rem 3.125rem;
   color: #333;
   text-decoration: none;
   font-weight: bold;
@@ -129,16 +129,16 @@
   position: relative;
   cursor: pointer;
   float: left;
-  width: 25px;
-  height: 20px;
-  margin: 5px 0 5px 30px;
+  width: 1.5625rem;
+  height: 1.25rem;
+  margin: 0.3125rem 0 0.3125rem 1.875rem;
   padding: 0;
   text-indent: 100%;
   white-space: nowrap;
   overflow: hidden;
   border: 0;
   background: transparent;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1;
   text-align: center;
   font-weight: bold;
@@ -159,9 +159,9 @@
 }
 
 .dd-placeholder, .dd-empty {
-  margin: 5px 0;
+  margin: 0.3125rem 0;
   padding: 0;
-  height: 30px;
+  height: 1.875rem;
   background: #f2fbff;
   border: 1px dashed #b6bcbf;
   box-sizing: border-box;
@@ -170,7 +170,7 @@
 
 .dd-empty {
   border: 1px dashed #bbb;
-  min-height: 30px;
+  min-height: 1.875rem;
   background-color: #e5e5e5;
   background-image:
     -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
@@ -181,8 +181,8 @@
   background-image:
     linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
     linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
-  background-size: 60px 60px;
-  background-position: 0 0, 30px 30px;
+  background-size: 3.75rem 3.75rem;
+  background-position: 0 0, 1.875rem 1.875rem;
 }
 
 .dd-dragel {
@@ -203,8 +203,8 @@
 .dd-right-icon {
   float: right !important;
   cursor: pointer;
-  padding-top: 3px;
-  padding-left: 5px;
+  padding-top: 0.1875rem;
+  padding-left: 0.3125rem;
 }
 
 .dd-desc {
@@ -218,7 +218,7 @@
 .dd-desc > span {
   font-weight: normal;
   color: #999;
-  font-size: 11px;
+  font-size: 0.6875rem;
   padding-left: 10px;
 }
 
@@ -231,7 +231,7 @@
 
 .status {
   display: none !important;
-  padding-right: 5px !important;
+  padding-right: 0.3125rem !important;
 }
 
 .modified {

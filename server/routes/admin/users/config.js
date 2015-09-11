@@ -6,6 +6,7 @@ var commonAdminPre = require(path.normalize(__dirname + '/../../common')).auth;
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
 var USER_ROLES = require(path.normalize(__dirname + '/../../user-roles'));
+var querystring = require('querystring');
 
 /**
   * @apiVersion 0.3.0
@@ -137,7 +138,8 @@ exports.find = {
   pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
     // get user by username
-    var username = request.params.username;
+    var username = querystring.unescape(request.params.username);
+
     db.users.userByUsername(username)
     .then(function(user) {
       if (!user) { return Boom.badRequest('User doesn\'t exist.'); }

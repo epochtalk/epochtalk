@@ -68,6 +68,13 @@ function ($stateParams, $location, Breadcrumbs) {
         breadcrumbsStore = breadcrumbs;
       }
     },
-    crumbs: function() { return breadcrumbsStore; }
+    crumbs: function() {
+      if (breadcrumbsStore) {
+        for (var i = 0; i < breadcrumbsStore.length; i++) {
+          breadcrumbsStore[i].label = decodeURIComponent(breadcrumbsStore[i].label);
+        }
+      }
+      return breadcrumbsStore;
+    }
   };
 }];

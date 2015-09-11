@@ -148,7 +148,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       },
       resolve: {
         $title: function() { return 'Home'; },
-        boards: [ 'Boards', function(Boards) {
+        boards: ['Boards', function(Boards) {
           return Boards.query().$promise
           .then(function(categorizedBoards) { return categorizedBoards; });
         }]
@@ -184,7 +184,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             limit: Number($stateParams.limit) || 25,
             page: Number($stateParams.page) || 1
           };
-          return Threads.byBoard(query).$promise;
+          return Threads.byBoard(query).$promise
+          .then(function(data) { return data; });
         }]
       }
     });
@@ -243,14 +244,14 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     // Checks if user is an admin
     var adminCheck = ['$q', 'Session', function($q, Session) {
       if (Session.user.isAdmin) { return true; }
-      else { return $q.reject('Unauthorized'); }
+      else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
     }];
 
     // Checks if user is a moderator
     var modCheck = ['$q', 'Session', function($q, Session) {
       if (Session.user.isMod) { return true; }
       else if (Session.user.isAdmin) { return false; } // admin isn't mod, but isn't unauthorized
-      else { return $q.reject('Unauthorized'); }
+      else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
     }];
 
     $urlRouterProvider.when('/admin', '/admin/settings/general');
@@ -750,6 +751,20 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return Messages.latest().$promise
           .then(function(messages) { return messages; });
         }]
+      }
+    });
+
+    $stateProvider.state('login', {
+      parent: 'public-layout',
+      views: {
+        'content': {
+          controller: 'HeaderCtrl',
+          controllerAs: 'HeaderCtrl',
+          template: fs.readFileSync(__dirname + '/layout/login.html')
+        }
+      },
+      resolve: {
+        $title: function() { return 'Login'; }
       }
     });
 
