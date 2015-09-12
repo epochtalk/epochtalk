@@ -1,5 +1,6 @@
 var Boom = require('boom');
 var path = require('path');
+var Promise = require('bluebird');
 var redis = require(path.normalize(__dirname + '/../../../redis'));
 
 /**
@@ -11,18 +12,41 @@ var redis = require(path.normalize(__dirname + '/../../../redis'));
  *   -- credentials, the user short object to be tied to request.auth.credentials
  */
 module.exports = function(decodedToken, token, cb) {
-  // get id from decodedToken to query memDown with for token
-  var key = decodedToken.id + token;
-  redis.getAsync(key)
-  .then(function(result) {
-    if (!result) { throw new Error('Token Not Found'); }
+  var userInfo, userRoles;
+  var userId = decodedToken.userId;
+  var sessionId = decodedToken.sessionId;
 
-    var credentials = {};
-    credentials.id = decodedToken.id;
-    credentials.username = decodedToken.username;
-    credentials.email = decodedToken.email;
-    credentials.token = token;
-
+  // get session information
+  var sessionKey = 'user:' + userId + ':session:' + sessionId;
+  return redis.getAsync(sessionKey)
+  // validate session
+  .then(function(timestamp) {
+    timestamp = Number(timestamp);
+    if (!timestamp) { return Promise.reject(); }
+    if (timestamp !== decodedToken.timestamp) { return Promise.reject(); }
+  })
+  // get user information
+  .then(function() {
+    var userKey = 'user:' + userId;
+    return redis.hgetallAsync(userKey)
+    .then(function(value) { userInfo = value; });
+  })
+  // get user roles
+  .then(function() {
+    var userRoleKey = 'user:' + userId + ':roles';
+    return redis.smembersAsync(userRoleKey)
+    .then(function(value) { userRoles = value; });
+  })
+  .then(function() {
+    // build credentials
+    var credentials = {
+      token: token,
+      id: userId,
+      sessionId: sessionId,
+      username: userInfo.username,
+      avatar: userInfo.avatar,
+      roles: userRoles
+    };
     return cb(null, true, credentials);
   })
   .catch(function(err) {
