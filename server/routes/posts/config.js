@@ -116,7 +116,7 @@ exports.find = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.canFind },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: pre.viewDeleted, assign: 'viewDeleted' }
   ] ],
   plugins: { acls: 'posts.find' },
   handler: function(request, reply) {
@@ -124,10 +124,10 @@ exports.find = {
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    var isAdmin = request.pre.isAdmin;
+    var viewDeleted = request.pre.viewDeleted;
     var id = request.params.id;
     var promise = db.posts.find(id)
-    .then(function(post) { return cleanPosts(post, userId, isAdmin); })
+    .then(function(post) { return cleanPosts(post, userId, viewDeleted); })
     .then(function(posts) { return posts[0]; })
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
@@ -161,7 +161,7 @@ exports.byThread = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }).without('start', 'page')
   },
-  pre: [ { method: pre.canRetrieve } ],
+  pre: [ { method: pre.canRetrieve }, {method: pre.viewDeleted } ],
   plugins: { acls: 'posts.byThread' },
   handler: function(request, reply) {
     // ready parameters
@@ -352,7 +352,7 @@ exports.pageByUser = {
   },
   pre: [ [
     { method: pre.canPageByUser },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: pre.viewDeleted, assign: 'viewDeleted' }
   ] ],
   plugins: { acls: 'posts.pageByUser' },
   handler: function(request, reply) {
@@ -362,7 +362,7 @@ exports.pageByUser = {
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    var isAdmin = request.pre.isAdmin;
+    var viewDeleted = request.pre.viewDeleted;
     var username = querystring.unescape(request.params.username);
     var opts = {
       limit: request.query.limit,
@@ -381,7 +381,7 @@ exports.pageByUser = {
         limit: opts.limit,
         sortField: opts.sortField,
         sortDesc: opts.sortDesc,
-        posts: cleanPosts(posts, userId, isAdmin),
+        posts: cleanPosts(posts, userId, viewDeleted),
         count: count
       };
     });
@@ -390,13 +390,13 @@ exports.pageByUser = {
   }
 };
 
-function cleanPosts(posts, currentUserId, isAdmin) {
+function cleanPosts(posts, currentUserId, viewDeleted) {
   posts = [].concat(posts);
 
   return posts.map(function(post) {
     // if currentUser owns post, show everything
     if (currentUserId === post.user.id) { return post; }
-    if (isAdmin) { return post; }
+    if (viewDeleted) { return post; }
 
     // remove deleted users or post information
     if (post.deleted || post.user.deleted) {

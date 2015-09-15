@@ -25,13 +25,38 @@ exports.register = function (server, options, next) {
 
     var ACLValues = userACLs.map(function(acl) { return _.get(acl, routeACL); });
     var validACL = false;
-    ACLValues.forEach(function(val) { validACL = validACL || val; });
+    ACLValues.forEach(function(val) { validACL = val || validACL; });
     if (validACL) { return reply.continue(); }
     else { return reply(err); }
   });
 
+  server.expose('getACLValue', getACLValue);
+
   next();
 };
+
+function getACLValue(auth, acl) {
+  // input validation
+  if (!acl) { return false; }
+
+  var userACLs = [];
+  var validACL = false; // default everything to false
+
+  // find matching user roles
+  if (auth.isAuthenticated && _.isArray(auth.credentials.roles)) {
+    userACLs = auth.credentials.roles.map(function(roleName) { return roles[roleName]; });
+  }
+  else if (auth.isAuthenticated) { userACLs = [ roles.user ]; }
+  else if (config.loginRequired) { userACLs = [ roles.private ]; }
+  else { userACLs = [ roles.anonymous ]; }
+
+  // grab single permission from each role
+  var ACLValues = userACLs.map(function(userACL) { return _.get(userACL, acl); });
+  // OR all the permission values together
+  ACLValues.forEach(function(val) { validACL = val || validACL; });
+
+  return validACL;
+}
 
 exports.register.attributes = {
   name: 'acls',

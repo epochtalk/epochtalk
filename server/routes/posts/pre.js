@@ -11,12 +11,10 @@ var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var querystring = require('querystring');
 
 module.exports = {
-  isAdmin: function(request, reply) {
-    var username = '';
-    var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
-    var promise = commonPre.isAdmin(authenticated, username);
-    return reply(promise);
+  viewDeleted: function(request, reply) {
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var aclValue = getACLValue(request.auth, 'user.viewDeleted');
+    return reply(aclValue);
   },
   canFind: function(request, reply) {
     var username = '';
