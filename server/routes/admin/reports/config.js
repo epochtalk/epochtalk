@@ -38,6 +38,7 @@ exports.createUserReportNote = {
       note: Joi.string().required()
     }
   },
+  plugins: { acls: 'adminReports.createUserReportNote' },
   handler: function(request, reply) {
     var reportNote = request.payload;
     db.reports.createUserReportNote(reportNote)
@@ -79,6 +80,7 @@ exports.createPostReportNote = {
       note: Joi.string().required()
     }
   },
+  plugins: { acls: 'adminReports.createPostReportNote' },
   handler: function(request, reply) {
     var reportNote = request.payload;
     db.reports.createPostReportNote(reportNote)
@@ -120,6 +122,7 @@ exports.createMessageReportNote = {
       note: Joi.string().required()
     }
   },
+  plugins: { acls: 'adminReports.createMessageReportNote' },
   handler: function(request, reply) {
     var reportNote = request.payload;
     db.reports.createMessageReportNote(reportNote)
@@ -161,6 +164,7 @@ exports.updateUserReport = {
       reviewer_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
     }
   },
+  plugins: { acls: 'adminReports.updateUserReport' },
   handler: function(request, reply) {
     var report = request.payload;
     db.reports.updateUserReport(report)
@@ -202,6 +206,7 @@ exports.updatePostReport = {
       reviewer_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
     }
   },
+  plugins: { acls: 'adminReports.updatePostReport' },
   handler: function(request, reply) {
     var report = request.payload;
     db.reports.updatePostReport(report)
@@ -243,6 +248,7 @@ exports.updateMessageReport = {
       reviewer_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
     }
   },
+  plugins: { acls: 'adminReports.updateMessageReport' },
   handler: function(request, reply) {
     var report = request.payload;
     db.reports.updateMessageReport(report)
@@ -279,6 +285,7 @@ exports.updateUserReportNote = {
     { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
     { method: pre.canUpdateUserReportNote }
   ],
+  plugins: { acls: 'adminReports.updateUserReportNote' },
   validate: {
     payload: {
       id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -327,6 +334,7 @@ exports.updatePostReportNote = {
       note: Joi.string()
     }
   },
+  plugins: { acls: 'adminReports.updatePostReportNote' },
   handler: function(request, reply) {
     var reportNote = request.payload;
     db.reports.updatePostReportNote(reportNote)
@@ -363,6 +371,7 @@ exports.updateMessageReportNote = {
     { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
     { method: pre.canUpdateMessageReportNote }
   ],
+  plugins: { acls: 'adminReports.updateMessageReportNote' },
   validate: {
     payload: {
       id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
@@ -422,6 +431,7 @@ exports.pageUserReports = {
       search: Joi.string()
     }
   },
+  plugins: { acls: 'adminReports.pageUserReports' },
   handler: function(request, reply) {
     var opts = {
       page: request.query.page,
@@ -485,6 +495,7 @@ exports.pagePostReports = {
       search: Joi.string()
     }
   },
+  plugins: { acls: 'adminReports.pagePostReports' },
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -547,6 +558,7 @@ exports.pageMessageReports = {
       search: Joi.string()
     }
   },
+  plugins: { acls: 'adminReports.pageMessageReports' },
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -597,6 +609,7 @@ exports.pageUserReportsNotes = {
       desc: Joi.boolean().default(false)
     }
   },
+  plugins: { acls: 'adminReports.pageUserReportsNotes' },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     var opts = {
@@ -646,6 +659,7 @@ exports.pagePostReportsNotes = {
       desc: Joi.boolean().default(false)
     }
   },
+  plugins: { acls: 'adminReports.pagePostReportsNotes' },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     var opts = {
@@ -694,6 +708,7 @@ exports.pageMessageReportsNotes = {
       desc: Joi.boolean().default(false)
     }
   },
+  plugins: { acls: 'adminReports.pageMessageReportsNotes' },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     var opts = {
@@ -731,6 +746,7 @@ exports.userReportsCount = {
       search: Joi.string()
     }
   },
+  plugins: { acls: 'adminReports.userReportsCount' },
   handler: function(request, reply) {
     var status = request.query.status;
     var search = request.query.search;
@@ -771,6 +787,7 @@ exports.postReportsCount = {
       search: Joi.string()
     }
   },
+  plugins: { acls: 'adminReports.postReportsCount' },
   handler: function(request, reply) {
     var status = request.query.status;
     var search = request.query.search;
@@ -811,6 +828,7 @@ exports.messageReportsCount = {
       search: Joi.string()
     }
   },
+  plugins: { acls: 'adminReports.messageReportsCount' },
   handler: function(request, reply) {
     var status = request.query.status;
     var search = request.query.search;
@@ -845,6 +863,7 @@ exports.userReportsNotesCount = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  plugins: { acls: 'adminReports.userReportsNotesCount' },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     db.reports.userReportsNotesCount(reportId)
@@ -871,6 +890,7 @@ exports.postReportsNotesCount = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  plugins: { acls: 'adminReports.postReportsNotesCount' },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     db.reports.postReportsNotesCount(reportId)
@@ -897,6 +917,7 @@ exports.messageReportsNotesCount = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
   validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  plugins: { acls: 'adminReports.messageReportsNotesCount' },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     db.reports.messageReportsNotesCount(reportId)

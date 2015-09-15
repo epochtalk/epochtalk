@@ -35,6 +35,7 @@ exports.createUserReport = {
       offender_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
     }
   },
+  plugins: { acls: 'reports.createUserReport' },
   handler: function(request, reply) {
     var report = request.payload;
     db.reports.createUserReport(report)
@@ -75,6 +76,7 @@ exports.createPostReport = {
       offender_post_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
     }
   },
+  plugins: { acls: 'reports.createPostReport' },
   handler: function(request, reply) {
     var report = request.payload;
     db.reports.createPostReport(report)
@@ -115,6 +117,7 @@ exports.createMessageReport = {
       offender_message_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
     }
   },
+  plugins: { acls: 'reports.createMessageReport' },
   handler: function(request, reply) {
     var report = request.payload;
     db.reports.createMessageReport(report)

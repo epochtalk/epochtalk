@@ -41,7 +41,7 @@ exports.create = {
     { method: pre.canCreate },
     { method: pre.clean }
   ],
-  plugins: { permissions: "boards.create" },
+  plugins: { acls: 'boards.create' },
   handler: function(request, reply) {
     return reply(db.boards.create(request.payload));
   }
@@ -117,6 +117,7 @@ exports.import = {
 exports.find = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canFind } ],
+  plugins: { acls: 'boards.find' },
   handler: function(request, reply) {
     return reply(db.boards.find(request.params.id));
   }
@@ -136,9 +137,8 @@ exports.find = {
 exports.all = {
   auth: { strategy: 'jwt' },
   pre: [ { method: pre.canAll } ],
-  handler: function(request, reply) {
-    return reply(db.boards.all());
-  }
+  plugins: { acls: 'boards.all' },
+  handler: function(request, reply) { return reply(db.boards.all()); }
 };
 
 /**
@@ -153,11 +153,9 @@ exports.all = {
   * @apiError (Error 500) InternalServerError There was an issue retrieving categories
   */
 exports.allCategories = {
-  // plugins: { "permissions": "boards.allCategories" },
-  handler: function(request, reply) {
-    var promise = db.boards.allCategories();
-    return reply(promise);
-  }
+  auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'boards.allCategories' },
+  handler: function(request, reply) { return reply(db.boards.allCategories()); }
 };
 
 /**
@@ -184,6 +182,7 @@ exports.updateCategories = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: pre.canUpdate } ],
   validate: { payload: { boardMapping: Joi.array().required() } },
+  plugins: { acls: 'boards.updateCategories' },
   handler: function(request, reply) {
     // update board on db
     var boardMapping = request.payload.boardMapping;
@@ -222,6 +221,7 @@ exports.update = {
     { method: pre.canUpdate },
     { method: pre.clean }
   ],
+  plugins: { acls: 'boards.update' },
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = request.payload;
@@ -250,6 +250,7 @@ exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ],
+  plugins: { acls: 'boards.delete' },
   handler: function(request, reply) {
     return reply(db.boards.delete(request.params.id));
   }

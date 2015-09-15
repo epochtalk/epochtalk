@@ -32,6 +32,7 @@ exports.create = {
     { method: pre.clean },
     { method: pre.parseEncodings }
   ],
+  plugins: { acls: 'messages.create' },
   handler: function(request, reply) {
     var message = request.payload;
     message.sender_id = request.auth.credentials.id;
@@ -62,6 +63,7 @@ exports.latest = {
       limit: Joi.number().integer().min(1).max(100).default(15)
     }
   },
+  plugins: { acls: 'messages.latest' },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var opts = {
@@ -99,6 +101,7 @@ exports.latest = {
 exports.findUser = {
   // auth: { strategy: 'jwt' },
   validate: { params: { username: Joi.string().required() } },
+  plugins: { acls: 'messages.findUser' },
   handler: function(request, reply) {
     // get id for username
     var username = request.params.username;
@@ -126,6 +129,7 @@ exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ], //handle permissions
+  plugins: { acls: 'messages.delete' },
   handler: function(request, reply) {
     // TODO: delete conversations with no more messages
     var promise = db.messages.delete(request.params.id)

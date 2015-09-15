@@ -31,6 +31,7 @@ exports.create = {
     { method: messagePre.clean },
     { method: messagePre.parseEncodings }
   ],
+  plugins: { acls: 'conversations.create' },
   handler: function(request, reply) {
     // create the conversation in db
     var promise = db.conversations.create()
@@ -67,6 +68,7 @@ exports.messages = {
       limit: Joi.number().integer().min(1).max(100).default(15)
     }
   },
+  plugins: { acls: 'conversations.messages' },
   handler: function(request, reply) {
     var conversationId = request.params.conversationId;
     var userId = request.auth.credentials.id;
@@ -125,6 +127,7 @@ exports.delete = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: commonPre.auth.adminCheck } ], //handle permissions
   // delete by admin only
+  plugins: { acls: 'conversations.delete' },
   handler: function(request, reply) {
     var promise = db.conversations.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });

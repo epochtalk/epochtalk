@@ -12,6 +12,7 @@ exports.create = {
     { method: pre.canCreate },
     { method: pre.clean }
   ],
+  plugins: { acls: 'categories.create' },
   handler: function(request, reply) {
     var promise = db.categories.create(request.payload);
     return reply(promise);
@@ -30,9 +31,8 @@ exports.import = {
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
+  plugins: { acls: 'categories.find' },
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply({}); }
-
     var promise = db.categories.find(request.params.id);
     return reply(promise);
   }
@@ -40,9 +40,8 @@ exports.find = {
 
 exports.all = {
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'categories.all' },
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply([]); }
-
     return reply(db.categories.all());
   }
 };
@@ -51,6 +50,7 @@ exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ],
+  plugins: { acls: 'categories.delete' },
   handler: function(request, reply) {
     var promise = db.categories.delete(request.params.id);
     return reply(promise);

@@ -38,6 +38,7 @@ exports.create = {
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
+  plugins: { acls: 'posts.create' },
   handler: function(request, reply) {
     // build the post object from payload and params
     var newPost = request.payload;
@@ -117,10 +118,8 @@ exports.find = {
     { method: pre.canFind },
     { method: pre.isAdmin, assign: 'isAdmin' }
   ] ],
+  plugins: { acls: 'posts.find' },
   handler: function(request, reply) {
-    // handle permissions
-    if (!request.server.methods.viewable(request)) { return reply({}); }
-
     // retrieve post
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
@@ -163,10 +162,8 @@ exports.byThread = {
     }).without('start', 'page')
   },
   pre: [ { method: pre.canRetrieve } ],
+  plugins: { acls: 'posts.byThread' },
   handler: function(request, reply) {
-    // handle permissions
-    if (!request.server.methods.viewable(request)) { return reply({}); }
-
     // ready parameters
     var userId = '';
     var page = request.query.page;
@@ -235,6 +232,7 @@ exports.update = {
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
+  plugins: { acls: 'posts.update' },
   handler: function(request, reply) {
     var updatePost = request.payload;
     updatePost.id = request.params.id;
@@ -263,6 +261,7 @@ exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ], //handle permissions
+  plugins: { acls: 'posts.delete' },
   handler: function(request, reply) {
     var promise = db.posts.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
@@ -289,6 +288,7 @@ exports.undelete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete }, ], //handle permissions
+  plugins: { acls: 'posts.undelete' },
   handler: function(request, reply) {
     var promise = db.posts.undelete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
@@ -314,6 +314,7 @@ exports.purge = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canPurge } ], //handle permissions
+  plugins: { acls: 'posts.purge' },
   handler: function(request, reply) {
     var promise = db.posts.purge(request.params.id);
     return reply(promise);
@@ -353,10 +354,9 @@ exports.pageByUser = {
     { method: pre.canPageByUser },
     { method: pre.isAdmin, assign: 'isAdmin' }
   ] ],
+  plugins: { acls: 'posts.pageByUser' },
   handler: function(request, reply) {
-  // TODO: this still shows posts from deleted threads/boards
-    // handle permissions
-    if (!request.server.methods.viewable(request)) { return reply({}); }
+    // TODO: this still shows posts from deleted threads/boards
 
     // ready parameters
     var userId = '';

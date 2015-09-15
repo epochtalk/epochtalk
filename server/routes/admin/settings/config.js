@@ -65,9 +65,8 @@ var camelCaseToUnderscore = function(obj) {
 exports.find = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonPre.adminCheck } ],
-  handler: function(request, reply) {
-    reply(camelCaseToUnderscore(config));
-  }
+  plugins: { acls: 'adminSettings.find' },
+  handler: function(request, reply) { reply(camelCaseToUnderscore(config)); }
 };
 
 /**
@@ -171,6 +170,7 @@ exports.update = {
       })
     }).options({ stripUnknown: false, abortEarly: true })
   },
+  plugins: { acls: 'adminSettings.update' },
   handler: function(request, reply) {
     var newConfig = request.payload;
     writeConfigToEnv(newConfig);

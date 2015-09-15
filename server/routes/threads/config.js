@@ -37,6 +37,7 @@ exports.create = {
     { method: postPre.parseEncodings },
     { method: postPre.subImages }
   ],
+  plugins: { acls: 'threads.create' },
   handler: function(request, reply) {
     // build the thread post object from payload and params
     var user = request.auth.credentials;
@@ -132,9 +133,8 @@ exports.byBoard = {
     }
   },
   pre: [ [ { method: pre.canRetrieve }, ] ],
+  plugins: { acls: 'threads.byBoard' },
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply({}); }
-
     var user = request.auth.credentials || {};
     var boardId = request.query.board_id;
     var opts = {
@@ -196,8 +196,8 @@ exports.viewed = {
       { method: pre.updateUserThreadViews }
     ]
   ],
+  plugins: { acls: 'threads.viewed' },
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply({}); }
     var newViewerId = request.pre.newViewId;
     if (newViewerId) { return reply().header('Epoch-Viewer', newViewerId); }
     else { return reply(); }
@@ -214,6 +214,7 @@ exports.title = {
     { method: pre.canUpdate },
     { method: pre.threadFirstPost, assign: 'post' }
   ] ],
+  plugins: { acls: 'threads.title' },
   handler: function(request, reply) {
     var post = {
       id: request.pre.post.id,
@@ -254,6 +255,7 @@ exports.lock = {
       { method: pre.getThread, assign: 'thread' },
     ]
   ],
+  plugins: { acls: 'threads.lock' },
   handler: function(request, reply) {
     var thread = request.pre.thread;
     thread.locked = request.payload.status;
@@ -294,6 +296,7 @@ exports.sticky = {
       { method: pre.getThread, assign: 'thread' },
     ]
   ],
+  plugins: { acls: 'threads.sticky' },
   handler: function(request, reply) {
     var thread = request.pre.thread;
     thread.sticky = request.payload.status;
@@ -335,6 +338,7 @@ exports.move = {
       { method: pre.getThread, assign: 'thread' },
     ]
   ],
+  plugins: { acls: 'threads.move' },
   handler: function(request, reply) {
     var newBoardId = request.payload.newBoardId;
     var thread = request.pre.thread;
@@ -368,6 +372,7 @@ exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ],
+  plugins: { acls: 'threads.delete' },
   handler: function(request, reply) {
     return reply(db.threads.delete(request.params.id));
   }

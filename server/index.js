@@ -5,7 +5,6 @@ var mkdirp = require('mkdirp');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
 var _ = require('lodash');
-var methods = require(path.normalize(__dirname + '/methods'));
 var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var config = require(path.normalize(__dirname + '/../config'));
@@ -53,9 +52,6 @@ server.register(acls, defaultRegisterCb);
 // server routes
 var routes = require(path.normalize(__dirname + '/routes'));
 server.route(routes.endpoints());
-
-// server methods
-server.method(methods);
 
 // start server
 server.start(function () {

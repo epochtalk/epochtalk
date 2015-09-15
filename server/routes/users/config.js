@@ -166,6 +166,7 @@ exports.update = {
     { method: commonPre.parseSignature },
     { method: commonPre.handleImages },
   ],
+  plugins: { acls: 'users.update' },
   handler: function(request, reply) {
     // set editing user to current user
     request.payload.id = request.auth.credentials.id;
@@ -223,9 +224,8 @@ exports.update = {
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
+  plugins: { acls: 'users.find' },
   handler: function(request, reply) {
-    if (!request.server.methods.viewable) { return reply({}); }
-
     // get logged in user id
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
@@ -257,6 +257,7 @@ exports.deactivate = {
     { method: pre.canDeactivate },
     { method: pre.isAdmin, assign: 'isAdmin' }
   ] ],
+  plugins: { acls: 'users.deactivate' },
   handler: function(request, reply) {
     var userId = '';
     if (request.pre.isAdmin) { userId = request.params.id; }
@@ -273,6 +274,7 @@ exports.reactivate = {
     { method: pre.canReactivate },
     { method: pre.isAdmin, assign: 'isAdmin' }
   ] ],
+  plugins: { acls: 'users.reactivate' },
   handler: function(request, reply) {
     var userId = '';
     if (request.pre.isAdmin) { userId = request.params.id; }
@@ -286,6 +288,7 @@ exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ],
+  plugins: { acls: 'users.delete' },
   handler: function(request, reply) {
     var userId = request.params.id;
     var promise = db.users.delete(userId);

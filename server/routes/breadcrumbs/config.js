@@ -28,7 +28,6 @@ exports.byType = {
     }
   },
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply([]); }
 
     // method type enum
     var findType = {

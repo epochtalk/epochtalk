@@ -84,6 +84,7 @@ exports.update = {
     { method: commonUsersPre.parseSignature },
     { method: commonUsersPre.handleImages }
   ],
+  plugins: { acls: 'adminUsers.update' },
   handler: function(request, reply) {
     db.users.update(request.payload)
     .then(function(user) {
@@ -136,6 +137,7 @@ exports.find = {
   auth: { mode: 'required', strategy: 'jwt' },
   validate: { params: { username: Joi.string().required() } },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  plugins: { acls: 'adminUsers.find' },
   handler: function(request, reply) {
     // get user by username
     var username = querystring.unescape(request.params.username);
@@ -189,6 +191,7 @@ exports.addRoles = {
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  plugins: { acls: 'adminUsers.addRoles' },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
@@ -234,6 +237,7 @@ exports.removeRoles = {
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  plugins: { acls: 'adminUsers.removeRoles' },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
@@ -269,6 +273,7 @@ exports.searchUsernames = {
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  plugins: { acls: 'adminUsers.searchUsernames' },
   handler: function(request, reply) {
     // get user by username
     var searchStr = request.query.username;
@@ -305,6 +310,7 @@ exports.count = {
       search: Joi.string()
     }
   },
+  plugins: { acls: 'adminUsers.count' },
   handler: function(request, reply) {
     var opts;
     var filter = request.query.filter;
@@ -337,6 +343,7 @@ exports.count = {
 exports.countAdmins = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  plugins: { acls: 'adminUsers.countAdmins' },
   handler: function(request, reply) {
     db.users.countAdmins()
     .then(function(adminsCount) { reply(adminsCount); });
@@ -359,6 +366,7 @@ exports.countAdmins = {
 exports.countModerators = {
   auth: { mode: 'required', strategy: 'jwt' },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  plugins: { acls: 'adminUsers.countModerators' },
   handler: function(request, reply) {
     db.users.countModerators()
     .then(function(moderatorsCount) { reply(moderatorsCount); });
@@ -404,6 +412,7 @@ exports.page = {
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  plugins: { acls: 'adminUsers.page' },
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -453,6 +462,7 @@ exports.pageAdmins = {
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  plugins: { acls: 'adminUsers.pageAdmins' },
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -500,6 +510,7 @@ exports.pageModerators = {
     }
   },
   pre: [ { method: commonAdminPre.adminCheck } ],
+  plugins: { acls: 'adminUsers.pageModerators' },
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -542,6 +553,7 @@ exports.ban = {
       expiration: Joi.date()
     }
   },
+  plugins: { acls: 'adminUsers.ban' },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
@@ -577,6 +589,7 @@ exports.unban = {
       user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
     }
   },
+  plugins: { acls: 'adminUsers.unban' },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     db.users.unban(userId)
