@@ -7,6 +7,7 @@ var config = require(path.normalize(__dirname + '/../../../config'));
 exports.register = function (server, options, next) {
   // Check ACL roles on each route
   server.ext('onPostAuth', function (request, reply) {
+    return reply.continue();
     var routeACL = request.route.settings.plugins.acls;
     // route has no ACLs so allow access
     if (!routeACL) { return reply.continue(); }
@@ -21,7 +22,7 @@ exports.register = function (server, options, next) {
     else if (config.loginRequired) { userACLs = [ roles.noRead ]; }
     else { userACLs = [ roles.anonymous ]; }
 
-    // userACLs = [ roles.superAdmin, roles.moderator, roles.user, roles.noRead ];
+    userACLs = [ roles.superAdmin, roles.moderator, roles.user, roles.private ];
 
     var ACLValues = userACLs.map(function(acl) { return _.get(acl, routeACL); });
     var validACL = false;

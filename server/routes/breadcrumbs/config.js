@@ -23,7 +23,7 @@ exports.byType = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
     query: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       type: Joi.string().required()
     }
   },

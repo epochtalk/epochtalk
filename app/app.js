@@ -38,6 +38,7 @@ app.controller('CategoriesCtrl',      require('./admin/management/boards.control
 app.controller('UsersCtrl',           require('./admin/management/users.controller.js'));
 app.controller('ModeratorsCtrl',      require('./admin/management/moderators.controller.js'));
 app.controller('AdministratorsCtrl',  require('./admin/management/administrators.controller.js'));
+app.controller('RolesCtrl',           require('./admin/management/roles.controller.js'));
 app.controller('ModUsersCtrl',        require('./admin/moderation/users.controller.js'));
 app.controller('ModPostsCtrl',        require('./admin/moderation/posts.controller.js'));
 app.controller('ModMessagesCtrl',     require('./admin/moderation/messages.controller.js'));

@@ -1,5 +1,4 @@
 var path = require('path');
-var Hapi = require('hapi');
 var Boom = require('boom');
 var db = require(path.normalize(__dirname + '/../../../db'));
 

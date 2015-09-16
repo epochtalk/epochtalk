@@ -3,24 +3,17 @@ var Boom = require('boom');
 var Promise = require('bluebird');
 var bbcodeParser = require('epochtalk-bbcode-parser');
 var db = require(path.normalize(__dirname + '/../../../db'));
-var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
   canCreate: function(request, reply) {
-    // isAdmin or part of conversation
     var userId = request.auth.credentials.id;
-    var authenticated = request.auth.isAuthenticated;
-    var username = request.auth.credentials.username;
     var conversationId = request.payload.conversation_id;
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMember = isConversationMember(conversationId, userId);
-
-    var promise = Promise.join(isAdmin, isMember, function(admin, member) {
+    var promise = isConversationMember(conversationId, userId)
+    .then(function(isMember) {
       var result = Boom.badRequest();
-      if (admin) { result = ''; }
-      else if (member) { result = ''; }
+      if (isMember) { result = ''; }
       return result;
     });
     return reply(promise);
@@ -28,17 +21,14 @@ module.exports = {
   canDelete: function(request, reply) {
     // isAdmin or message sender
     var userId = request.auth.credentials.id;
-    var authenticated = request.auth.isAuthenticated;
-    var username = request.auth.credentials.username;
     var messageId = request.params.id;
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
+    // TODO: pull messages.delete from permission matrix
     var isSender = isMessageSender(messageId, userId);
 
-    var promise = Promise.join(isAdmin, isSender, function(admin, sender) {
+    var promise = Promise.join(isSender, function(sender) {
       var result = Boom.badRequest();
-      if (admin) { result = ''; }
-      else if (sender) { result = ''; }
+      if (sender) { result = ''; }
       return result;
     });
     return reply(promise);
@@ -69,10 +59,10 @@ module.exports = {
 };
 
 function textToEntities(text) {
-  var entities = "";
+  var entities = '';
   for (var i = 0; i < text.length; i++) {
     if (text.charCodeAt(i) > 127) {
-      entities += "&#" + text.charCodeAt(i) + ";";
+      entities += '&#' + text.charCodeAt(i) + ';';
     }
     else { entities += text.charAt(i); }
   }

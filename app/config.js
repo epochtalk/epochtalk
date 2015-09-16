@@ -413,6 +413,33 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }]
       }
     })
+    .state('admin-management.roles', {
+      url: '/roles',
+      reloadOnSearch: false,
+      views: {
+        'data@admin-management': {
+          controller: 'RolesCtrl',
+          controllerAs: 'AdminManagementCtrl',
+          template: fs.readFileSync(__dirname + '/admin/management/roles.html')
+        }
+      },
+      resolve: {
+        userAccess: adminCheck,
+        $title: function() { return 'User Management'; },
+        users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+          var query = {
+            field: $stateParams.field,
+            desc: $stateParams.desc,
+            limit: Number($stateParams.limit) || 15,
+            page: Number($stateParams.page) || 1,
+            filter: $stateParams.filter,
+            search: $stateParams.search
+          };
+          return AdminUsers.page(query).$promise
+          .then(function(users) { return users; });
+        }],
+      }
+    })
     .state('admin-management.moderators', {
       url: '/moderators?page&limit&field&desc',
       views: {

@@ -11,68 +11,133 @@ var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var querystring = require('querystring');
 
 module.exports = {
-  viewDeleted: function(request, reply) {
+  canViewDeletedPost: function(request, reply) {
     var getACLValue = request.server.plugins.acls.getACLValue;
-    var aclValue = getACLValue(request.auth, 'user.viewDeleted');
-    return reply(aclValue);
+    var viewSome = getACLValue(request.auth, 'user.viewDeleted.some');
+    var viewAll = getACLValue(request.auth, 'user.viewDeleted.all');
+    var result = viewAll;
+    if (request.auth.isAuthenticated && viewSome) {
+      result = isModWithPostId(request.auth.credentials.id, request.params.id);
+    }
+    return reply(result);
   },
-  canFind: function(request, reply) {
-    var username = '';
+  accessBoardWithPostId: function(request, reply) {
     var postId = request.params.id;
-    var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
+    var boardVisible = db.posts.getPostsBoardInBoardMapping(postId)
+    .then(function(board) {
+      var visible = false;
+      if (board) { visible = true; }
+      return visible;
+    });
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMod = commonPre.isMod(authenticated, username);
-    var isBoardVisible = isPostBoardVisible(postId);
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
+    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
 
-    var promise = Promise.join(isAdmin, isMod, isBoardVisible, function(admin, mod, visible) {
-      var result = Boom.notFound();
-      if (admin || mod) { result = ''; }
-      else if (visible) { result = ''; }
+    var promise = Promise.join(boardVisible, viewSome, viewAll, function(visible, some, all) {
+      var result = Boom.unauthorized();
+      // Board is visible or user has elevated privelages
+      if (visible || all) { result = true; }
+      // User is authenticated and can moderate certain boards
+      else if (request.auth.isAuthenticated && some) {
+        result = isModWithPostId(request.auth.credentials.id, postId) || Boom.forbidden();
+      }
+      // User is authenticated but has no privelages
+      else if (request.auth.isAuthenticated) { result = Boom.forbidden(); }
       return result;
     });
     return reply(promise);
   },
-  canRetrieve: function(request, reply) {
-    var username = '';
-    var threadId = request.query.thread_id;
-    var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
+  accessBoardWithThreadId: function(request, reply) {
+    var threadId = request.query.thread_id || request.payload.thread_id;
+    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId)
+    .then(function(board) {
+      var visible = false;
+      if (board) { visible = true; }
+      return visible;
+    });
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMod = commonPre.isMod(authenticated, username);
-    var isBoardVisible = isThreadBoardVisible(threadId);
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
+    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
 
-    var promise = Promise.join(isAdmin, isMod, isBoardVisible, function(admin, mod, visible) {
-      var result = Boom.notFound();
-
-      if (admin || mod) { result = ''; }
-      else if (visible) { result = ''; }
-
+    var promise = Promise.join(boardVisible, viewSome, viewAll, function(visible, some, all) {
+      var result = Boom.unauthorized();
+      // Board is visible or user has elevated privelages
+      if (visible || all) { result = true; }
+      // User is authenticated and can moderate certain boards
+      else if (request.auth.isAuthenticated && some) {
+        result = isModWithThreadId(request.auth.credentials.id, threadId) || Boom.forbidden();
+      }
+      // User is authenticated but has no privelages
+      else if (request.auth.isAuthenticated) { result = Boom.forbidden(); }
       return result;
     });
     return reply(promise);
+  },
+  accessLockedThread: function(request, reply) {
+    var threadId = request.payload.thread_id;
+    var threadLocked =  db.threads.find(threadId)
+    .then(function(thread) {
+      return thread.locked;
+    });
+
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var createSome = getACLValue(request.auth, 'boards.createInLockedThread.some');
+    var createAll = getACLValue(request.auth, 'boards.createInLockedThread.all');
+
+    var promise = Promise.join(threadLocked, createSome, createAll, function(locked, some, all) {
+      var result = Boom.unauthorized();
+      // Board is unlocked or user has elevated privelages
+      if (!locked || all) { result = true; }
+      // User is authenticated and can moderate certain boards
+      else if (request.auth.isAuthenticated && some) {
+        result = isModWithThreadId(request.auth.credentials.id, threadId) || Boom.forbidden();
+      }
+      // User is authenticated but has no privelages
+      else if (request.auth.isAuthenticated) { result = Boom.forbidden(); }
+      return result;
+    });
+    return reply(promise);
+  },
+  isUserActive: function(request, reply) {
+    var promise = Boom.unauthorized();
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) {
+      var username = request.auth.credentials.username;
+      username = querystring.unescape(username);
+      promise = db.users.userByUsername(username)
+      .then(function(user) {
+        var active = Boom.forbidden();
+        if (user) { active = !user.deleted; }
+        return active;
+      });
+    }
+    return reply(promise);
+  },
+  accessPrivateBoardWithThreadId: function(request, reply) {
+    // TODO: Implement private board check
+    return reply(true);
   },
   canCreate: function(request, reply) {
-    var userId = '';
     var username = '';
     var threadId = request.payload.thread_id;
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { username = request.auth.credentials.username; }
-    if (authenticated) { userId = request.auth.credentials.id; }
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMod = commonPre.isMod(authenticated, username);
+    // TODO: Separate logic out into three different pre methods
+    // 1): pull ignoreLock boolean and test with thread locked
+    // 2): check board permission, does this user have permission to post in this board
+    // 3): (optional) pull postUncategorizedBoard boolean and test with uncat board
+    // 4): Error on user account deleted
     var isLocked = isThreadLocked(threadId);
     var isBoardVisible = isThreadBoardVisible(threadId);
     var isActive = isUserActive(username);
 
-    var promise = Promise.join(isAdmin, isMod, isLocked, isBoardVisible, isActive, function(admin, mod, locked, visible, active) {
+    var promise = Promise.join(isLocked, isBoardVisible, isActive, function(locked, visible, active) {
       var result = Boom.forbidden();
-
-      if (admin || mod) { result = ''; }
-      else if (locked) { result = Boom.forbidden; }
+      // WARNING: currently admins/mods cannot post after lock
+      if (locked) { result = Boom.forbidden; }
       else if (visible && active) { result = ''; }
 
       return result;
@@ -87,19 +152,23 @@ module.exports = {
     if (authenticated) { username = request.auth.credentials.username; }
     if (authenticated) { userId = request.auth.credentials.id; }
 
+    // TODO: Separate logic out into three different pre methods
+    // 1): pull ignoreLock boolean and test with thread locked
+    // 2): pull postPrivateBoard boolean and test with private boards
+    // 3): (optional) pull postUncategorizedBoard boolean and test with uncat board
+    // 4): Error on user account deleted
+    // 5): pull editEqualPriority boolean and test with creator's role priority
+    // 6): Check if user is author of post
     var isLocked = isPostThreadLocked(postId);
     var isOwner = isPostOwner(userId, postId);
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMod = commonPre.isMod(authenticated, username);
     var isDeleted = isPostDeleted(postId);
     var isBoardVisible = isPostBoardVisible(postId);
     var isActive = isUserActive(username);
 
-    var promise = Promise.join(isAdmin, isMod, isLocked, isOwner, isDeleted, isBoardVisible, isActive, function(admin, mod, locked, owner, deleted, visible, active) {
+    var promise = Promise.join(isLocked, isOwner, isDeleted, isBoardVisible, isActive, function(locked, owner, deleted, visible, active) {
       var result = Boom.forbidden();
-
-      if (admin || mod) { result = ''; }
-      else if (deleted) { result = Boom.notFound(); }
+      // WARNING: currently admins/mods cannot post after lock
+      if (deleted) { result = Boom.notFound(); }
       else if (!visible) { result = Boom.notFound(); }
       else if (locked) { result = Boom.forbidden(); }
       else if (owner && active) { result = ''; }
@@ -254,6 +323,16 @@ module.exports = {
   }
 };
 
+function isModWithThreadId(userId, threadId) {
+  // TODO: Implement check against board_moderators
+  return true;
+}
+
+function isModWithPostId(userId, postId) {
+  // TODO: Implement check against board_moderators
+  return true;
+}
+
 function textToEntities(text) {
   var entities = "";
   for (var i = 0; i < text.length; i++) {
@@ -266,32 +345,10 @@ function textToEntities(text) {
   return entities;
 }
 
-function isThreadBoardVisible(threadId) {
-  return db.threads.getThreadsBoardInBoardMapping(threadId)
-  .then(function(board) {
-    var visible = false;
-    if (board) { visible = true; }
-    return visible;
-  });
-}
-
-function isThreadLocked(threadId) {
-  return db.threads.find(threadId)
-  .then(function(thread) { return thread.locked; });
-}
 
 function isPostThreadLocked(postId) {
   return db.posts.getPostsThread(postId)
   .then(function(thread) { return thread.locked; });
-}
-
-function isPostBoardVisible(postId) {
-  return db.posts.getPostsBoardInBoardMapping(postId)
-  .then(function(board) {
-    var visible = false;
-    if (board) { visible = true; }
-    return visible;
-  });
 }
 
 function isPostOwner(userId, postId) {

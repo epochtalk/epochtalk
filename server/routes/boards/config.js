@@ -31,17 +31,14 @@ var db = require(path.normalize(__dirname + '/../../../db'));
   */
 exports.create = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'boards.create' },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255).required(),
       description: Joi.string().allow('')
     }
   },
-  pre: [
-    { method: pre.canCreate },
-    { method: pre.clean }
-  ],
-  plugins: { acls: 'boards.create' },
+  pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     return reply(db.boards.create(request.payload));
   }
@@ -116,8 +113,8 @@ exports.import = {
   */
 exports.find = {
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canFind } ],
   plugins: { acls: 'boards.find' },
+  pre: [ { method: pre.canFind } ],
   handler: function(request, reply) {
     return reply(db.boards.find(request.params.id));
   }
@@ -136,9 +133,10 @@ exports.find = {
   */
 exports.all = {
   auth: { strategy: 'jwt' },
-  pre: [ { method: pre.canAll } ],
   plugins: { acls: 'boards.all' },
-  handler: function(request, reply) { return reply(db.boards.all()); }
+  handler: function(request, reply) {
+    return reply(db.boards.all());
+  }
 };
 
 /**
@@ -155,7 +153,9 @@ exports.all = {
 exports.allCategories = {
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'boards.allCategories' },
-  handler: function(request, reply) { return reply(db.boards.allCategories()); }
+  handler: function(request, reply) {
+    return reply(db.boards.allCategories());
+  }
 };
 
 /**
@@ -180,9 +180,8 @@ exports.allCategories = {
   */
 exports.updateCategories = {
   auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: pre.canUpdate } ],
-  validate: { payload: { boardMapping: Joi.array().required() } },
   plugins: { acls: 'boards.updateCategories' },
+  validate: { payload: { boardMapping: Joi.array().required() } },
   handler: function(request, reply) {
     // update board on db
     var boardMapping = request.payload.boardMapping;
@@ -210,6 +209,7 @@ exports.updateCategories = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'boards.update' },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255),
@@ -217,11 +217,7 @@ exports.update = {
     },
     params: { id: Joi.string().required() }
   },
-  pre: [
-    { method: pre.canUpdate },
-    { method: pre.clean }
-  ],
-  plugins: { acls: 'boards.update' },
+  pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = request.payload;
@@ -248,9 +244,8 @@ exports.update = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ],
   plugins: { acls: 'boards.delete' },
+  validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     return reply(db.boards.delete(request.params.id));
   }

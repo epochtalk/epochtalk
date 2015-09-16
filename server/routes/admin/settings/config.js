@@ -3,7 +3,6 @@ var Joi = require('joi');
 var path = require('path');
 var _ = require('lodash');
 var renameKeys = require('deep-rename-keys');
-var commonPre = require(path.normalize(__dirname + '/../../common')).auth;
 var pre = require(path.normalize(__dirname + '/pre'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
 
@@ -63,8 +62,7 @@ var camelCaseToUnderscore = function(obj) {
   * @apiSuccess {object} config See config.js in the root of the project
   */
 exports.find = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.find' },
   handler: function(request, reply) { reply(camelCaseToUnderscore(config)); }
 };
@@ -116,11 +114,9 @@ exports.find = {
   * @apiSuccess {object} config Same object that was passed in is returned upon success
   */
 exports.update = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [
-    { method: commonPre.adminCheck },
-    { method: pre.handleImages }
-  ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminSettings.update' },
+  pre: [ { method: pre.handleImages } ],
   validate: {
     payload: Joi.object().keys({
       root: Joi.string(),
@@ -170,7 +166,6 @@ exports.update = {
       })
     }).options({ stripUnknown: false, abortEarly: true })
   },
-  plugins: { acls: 'adminSettings.update' },
   handler: function(request, reply) {
     var newConfig = request.payload;
     writeConfigToEnv(newConfig);

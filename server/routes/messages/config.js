@@ -19,6 +19,7 @@ var pre = require(path.normalize(__dirname + '/pre'));
   */
 exports.create = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'messages.create' },
   validate: {
     payload: {
       conversation_id: Joi.string().required(),
@@ -32,7 +33,6 @@ exports.create = {
     { method: pre.clean },
     { method: pre.parseEncodings }
   ],
-  plugins: { acls: 'messages.create' },
   handler: function(request, reply) {
     var message = request.payload;
     message.sender_id = request.auth.credentials.id;
@@ -57,13 +57,13 @@ exports.create = {
   */
 exports.latest = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'messages.latest' },
   validate: {
     query: {
       page: Joi.number().integer().default(1),
       limit: Joi.number().integer().min(1).max(100).default(15)
     }
   },
-  plugins: { acls: 'messages.latest' },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var opts = {
@@ -99,9 +99,9 @@ exports.latest = {
   * @apiError (Error 500) InternalServerError There was an issue getting the messages
   */
 exports.findUser = {
-  // auth: { strategy: 'jwt' },
-  validate: { params: { username: Joi.string().required() } },
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'messages.findUser' },
+  validate: { params: { username: Joi.string().required() } },
   handler: function(request, reply) {
     // get id for username
     var username = request.params.username;
@@ -127,9 +127,9 @@ exports.findUser = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'messages.delete' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.canDelete } ], //handle permissions
-  plugins: { acls: 'messages.delete' },
   handler: function(request, reply) {
     // TODO: delete conversations with no more messages
     var promise = db.messages.delete(request.params.id)

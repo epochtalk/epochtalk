@@ -3,14 +3,155 @@ module.exports = roles;
 
 // TODO: ensure that at least superAdmin, admin, moderator, user, banned, and anonymous roles are populated
 
+/* base permission set
+  roles.basePermissions = {
+    // business logic
+    name: 'superAdministrator',
+    priority: 0,
+    // ACLs
+    adminReports: {
+      createUserReportNote: true,
+      createPostReportNote: true,
+      createMessageReportNote: true,
+      updateUserReport: true,
+      updatePostReport: true,
+      updateMessageReport: true,
+      updateUserReportNote: true,
+      updatePostReportNote: true,
+      updateMessageReportNote: true,
+      pageUserReports: true,
+      pagePostReports: true,
+      pageMessageReports: true,
+      pageUserReportsNotes: true,
+      pagePostReportsNotes: true,
+      pageMessageReportsNotes: true,
+      userReportsCount: true,
+      postReportsCount: true,
+      messageReportsCount: true,
+      userReportsNotesCount: true,
+      postReportsNotesCount: true,
+      messageReportsNotesCount: true
+    },
+    adminSettings: {
+      find: true,
+      update: true
+    },
+    adminUsers: {
+      update: true,
+      find: true,
+      addRoles: true,
+      removeRoles: true,
+      searchUsernames: true,
+      count: true,
+      countAdmins: true,
+      countModerators: true,
+      page: true,
+      pageAdmins: true,
+      pageModerators: true,
+      ban: true,
+      unban: true
+    },
+    boards: {
+      viewUncategorized: {
+        some: true,
+        all: true
+      },
+      create: true,
+      find: true,
+      all: true,
+      allCategories: true,
+      updateCategories: true,
+      update: true,
+      delete: true
+    },
+    categories: {
+      create: true,
+      find: true,
+      all: true,
+      delete: true
+    },
+    conversations: {
+      create: true,
+      messages: true,
+      delete: true
+    },
+    messages: {
+      create: true,
+      latest: true,
+      findUser: true,
+      delete: true
+    },
+    posts: {
+      viewDeleted: {
+        some: true,
+        all: true
+      },
+      createInPrivateBoard: {
+        some: true,
+        all: true
+      },
+      createInUncategorizedBoard: {
+        some: true,
+        all: true
+      },
+      createInLockedThread: {
+        some: true,
+        all: true
+      },
+      updateInPrivateBoard: {
+        some: true,
+        all: true
+      },
+      updateInUncategorizedBoard: {
+        some: true,
+        all: true
+      },
+      updateInLockedThread: {
+        some: true,
+        all: true
+      },
+      create: true,
+      find: true,
+      byThread: true,
+      update: true,
+      delete: true,
+      undelete: true,
+      purge: true,
+      pageByUser: true
+    },
+    reports: {
+      createUserReport: true,
+      createPostReport: true,
+      createMessageReport: true
+    },
+    threads: {
+      create: true,
+      byBoard: true,
+      viewed: true,
+      title: true,
+      lock: true,
+      sticky: true,
+      move: true,
+      delete: true
+    },
+    users: {
+      update: {
+        self: true,
+        other: true,
+      },
+      find: true,
+      deactivate: true,
+      reactivate: true,
+      delete: true
+    }
+  };
+*/
+
 // defaults
 roles.superAdministrator = {
   // business logic
   name: 'superAdministrator',
-  superAdmin: true,
-  admin: true,
-  globalModerator: true,
-  moderator: true,
+  priority: 0,
   // ACLs
   adminReports: {
     createUserReportNote: true,
@@ -55,6 +196,9 @@ roles.superAdministrator = {
     unban: true
   },
   boards: {
+    viewUncategorized: {
+      all: true
+    },
     create: true,
     find: true,
     all: true,
@@ -81,6 +225,24 @@ roles.superAdministrator = {
     delete: true
   },
   posts: {
+    viewDeleted: {
+      all: true
+    },
+    createInPrivateBoard: {
+      all: true
+    },
+    createInUncategorizedBoard: {
+      all: true
+    },
+    createInLockedThread: {
+      all: true
+    },
+    updateInPrivateBoard: {
+      all: true
+    },
+    updateInUncategorizedBoard: {
+      all: true
+    },
     create: true,
     find: true,
     byThread: true,
@@ -106,7 +268,10 @@ roles.superAdministrator = {
     delete: true
   },
   users: {
-    update: true,
+    update: {
+      self: true,
+      other: true,
+    },
     find: true,
     deactivate: true,
     reactivate: true,
@@ -117,9 +282,7 @@ roles.superAdministrator = {
 roles.administrator = {
   // business logic
   name: 'administrator',
-  admin: true,
-  globalModerator: true,
-  moderator: true,
+  priority: 1,
   // ACLs
   adminReports: {
     createUserReportNote: true,
@@ -164,6 +327,9 @@ roles.administrator = {
     unban: true
   },
   boards: {
+    viewUncategorized: {
+      all: true
+    },
     create: true,
     find: true,
     all: true,
@@ -190,6 +356,24 @@ roles.administrator = {
     delete: true
   },
   posts: {
+    viewDeleted: {
+      all: true
+    },
+    createInPrivateBoard: {
+      all: true
+    },
+    createInUncategorizedBoard: {
+      all: true
+    },
+    createInLockedThread: {
+      all: true
+    },
+    updateInPrivateBoard: {
+      all: true
+    },
+    updateInUncategorizedBoard: {
+      all: true
+    },
     create: true,
     find: true,
     byThread: true,
@@ -226,8 +410,7 @@ roles.administrator = {
 roles.globalModerator = {
   // business logic
   name: 'globalModerator',
-  globalModerator: true,
-  moderator: true,
+  priority: 2,
   // ACLs
   adminReports: {
     createUserReportNote: true,
@@ -252,39 +435,19 @@ roles.globalModerator = {
     postReportsNotesCount: true,
     messageReportsNotesCount: true
   },
-  adminSettings: {
-    find: false,
-    update: false
-  },
   adminUsers: {
     update: true,
     find: true,
-    addRoles: false,
-    removeRoles: false,
-    searchUsernames: false,
-    count: false,
-    countAdmins: false,
-    countModerators: false,
-    page: false,
-    pageAdmins: false,
-    pageModerators: false,
     ban: true,
     unban: true
   },
   boards: {
-    create: false,
+    viewUncategorized: {
+      all: true
+    },
     find: true,
     all: true,
     allCategories: true,
-    updateCategories: false,
-    update: false,
-    delete: false
-  },
-  categories: {
-    create: false,
-    find: false,
-    all: false,
-    delete: false
   },
   conversations: {
     create: true,
@@ -298,6 +461,24 @@ roles.globalModerator = {
     delete: true
   },
   posts: {
+    viewDeleted: {
+      all: true
+    },
+    createInPrivateBoard: {
+      all: true
+    },
+    createInUncategorizedBoard: {
+      all: true
+    },
+    createInLockedThread: {
+      all: true
+    },
+    updateInPrivateBoard: {
+      all: true
+    },
+    updateInUncategorizedBoard: {
+      all: true
+    },
     create: true,
     find: true,
     byThread: true,
@@ -327,14 +508,13 @@ roles.globalModerator = {
     find: true,
     deactivate: true,
     reactivate: true,
-    delete: false
   }
 };
 
 roles.moderator = {
   // business logic
   name: 'moderator',
-  moderator: true,
+  priority: 3,
   // ACLs
   adminReports: {
     createUserReportNote: true,
@@ -359,39 +539,19 @@ roles.moderator = {
     postReportsNotesCount: true,
     messageReportsNotesCount: true
   },
-  adminSettings: {
-    find: false,
-    update: false
-  },
   adminUsers: {
     update: true,
     find: true,
-    addRoles: false,
-    removeRoles: false,
-    searchUsernames: false,
-    count: false,
-    countAdmins: false,
-    countModerators: false,
-    page: false,
-    pageAdmins: false,
-    pageModerators: false,
     ban: true,
     unban: true
   },
   boards: {
-    create: false,
+    viewUncategorized: {
+      some: true
+    },
     find: true,
     all: true,
-    allCategories: true,
-    updateCategories: false,
-    update: false,
-    delete: false
-  },
-  categories: {
-    create: false,
-    find: false,
-    all: false,
-    delete: false
+    allCategories: true
   },
   conversations: {
     create: true,
@@ -405,6 +565,24 @@ roles.moderator = {
     delete: true
   },
   posts: {
+    viewDeleted: {
+      some: true,
+    },
+    createInPrivateBoard: {
+      some: true
+    },
+    createInUncategorizedBoard: {
+      some: true
+    },
+    createInLockedThread: {
+      some: true
+    },
+    updateInPrivateBoard: {
+      some: true
+    },
+    updateInUncategorizedBoard: {
+      some: true
+    },
     create: true,
     find: true,
     byThread: true,
@@ -433,71 +611,18 @@ roles.moderator = {
     update: true,
     find: true,
     deactivate: true,
-    reactivate: true,
-    delete: false
+    reactivate: true
   }
 };
 
 roles.user = {
   // business logic (none)
   name: 'user',
+  priority: 4,
   // ACLs
-  adminReports: {
-    createUserReportNote: false,
-    createPostReportNote: false,
-    createMessageReportNote: false,
-    updateUserReport: false,
-    updatePostReport: false,
-    updateMessageReport: false,
-    updateUserReportNote: false,
-    updatePostReportNote: false,
-    updateMessageReportNote: false,
-    pageUserReports: false,
-    pagePostReports: false,
-    pageMessageReports: false,
-    pageUserReportsNotes: false,
-    pagePostReportsNotes: false,
-    pageMessageReportsNotes: false,
-    userReportsCount: false,
-    postReportsCount: false,
-    messageReportsCount: false,
-    userReportsNotesCount: false,
-    postReportsNotesCount: false,
-    messageReportsNotesCount: false
-  },
-  adminSettings: {
-    find: false,
-    update: false
-  },
-  adminUsers: {
-    update: false,
-    find: false,
-    addRoles: false,
-    removeRoles: false,
-    searchUsernames: false,
-    count: false,
-    countAdmins: false,
-    countModerators: false,
-    page: false,
-    pageAdmins: false,
-    pageModerators: false,
-    ban: false,
-    unban: false
-  },
   boards: {
-    create: false,
     find: true,
-    all: false,
-    allCategories: true,
-    updateCategories: false,
-    update: false,
-    delete: false
-  },
-  categories: {
-    create: false,
-    find: false,
-    all: false,
-    delete: false
+    allCategories: true
   },
   conversations: {
     create: true,
@@ -517,7 +642,6 @@ roles.user = {
     update: true,
     delete: true,
     undelete: true,
-    purge: false,
     pageByUser: true
   },
   reports: {
@@ -530,336 +654,76 @@ roles.user = {
     byBoard: true,
     viewed: true,
     title: true,
-    lock: true,
-    sticky: false,
-    move: false,
-    delete: false
+    lock: true
   },
   users: {
     update: true,
     find: true,
     deactivate: true,
-    reactivate: true,
-    delete: false
+    reactivate: true
   }
 };
 
 roles.banned = {
   // business logic (none)
   name: 'banned',
+  priority: 5,
   // ACLs
-  adminReports: {
-    createUserReportNote: false,
-    createPostReportNote: false,
-    createMessageReportNote: false,
-    updateUserReport: false,
-    updatePostReport: false,
-    updateMessageReport: false,
-    updateUserReportNote: false,
-    updatePostReportNote: false,
-    updateMessageReportNote: false,
-    pageUserReports: false,
-    pagePostReports: false,
-    pageMessageReports: false,
-    pageUserReportsNotes: false,
-    pagePostReportsNotes: false,
-    pageMessageReportsNotes: false,
-    userReportsCount: false,
-    postReportsCount: false,
-    messageReportsCount: false,
-    userReportsNotesCount: false,
-    postReportsNotesCount: false,
-    messageReportsNotesCount: false
-  },
-  adminSettings: {
-    find: false,
-    update: false
-  },
-  adminUsers: {
-    update: false,
-    find: false,
-    addRoles: false,
-    removeRoles: false,
-    searchUsernames: false,
-    count: false,
-    countAdmins: false,
-    countModerators: false,
-    page: false,
-    pageAdmins: false,
-    pageModerators: false,
-    ban: false,
-    unban: false
-  },
   boards: {
-    create: false,
     find: true,
-    all: false,
-    allCategories: true,
-    updateCategories: false,
-    update: false,
-    delete: false
-  },
-  categories: {
-    create: false,
-    find: false,
-    all: false,
-    delete: false
+    allCategories: true
   },
   conversations: {
     create: true,
-    messages: true,
-    delete: false
+    messages: true
   },
   messages: {
     create: true,
     latest: true,
-    findUser: true,
-    delete: false
+    findUser: true
   },
   posts: {
-    create: false,
     find: true,
     byThread: true,
-    update: false,
-    delete: false,
-    undelete: false,
-    purge: false,
     pageByUser: true
   },
-  reports: {
-    createUserReport: false,
-    createPostReport: false,
-    createMessageReport: false
-  },
   threads: {
-    create: false,
     byBoard: true,
-    viewed: true,
-    title: false,
-    lock: false,
-    sticky: false,
-    move: false,
-    delete: false
+    viewed: true
   },
   users: {
-    update: false,
-    find: true,
-    deactivate: false,
-    reactivate: false,
-    delete: false
+    find: true
   }
 };
 
 roles.anonymous = {
   // business logic (none)
   name: 'anonymous',
+  priority: 6,
   // ACLs
-  adminReports: {
-    createUserReportNote: false,
-    createPostReportNote: false,
-    createMessageReportNote: false,
-    updateUserReport: false,
-    updatePostReport: false,
-    updateMessageReport: false,
-    updateUserReportNote: false,
-    updatePostReportNote: false,
-    updateMessageReportNote: false,
-    pageUserReports: false,
-    pagePostReports: false,
-    pageMessageReports: false,
-    pageUserReportsNotes: false,
-    pagePostReportsNotes: false,
-    pageMessageReportsNotes: false,
-    userReportsCount: false,
-    postReportsCount: false,
-    messageReportsCount: false,
-    userReportsNotesCount: false,
-    postReportsNotesCount: false,
-    messageReportsNotesCount: false
-  },
-  adminSettings: {
-    find: false,
-    update: false
-  },
-  adminUsers: {
-    update: false,
-    find: false,
-    addRoles: false,
-    removeRoles: false,
-    searchUsernames: false,
-    count: false,
-    countAdmins: false,
-    countModerators: false,
-    page: false,
-    pageAdmins: false,
-    pageModerators: false,
-    ban: false,
-    unban: false
-  },
   boards: {
-    create: false,
     find: true,
-    all: false,
-    allCategories: true,
-    updateCategories: false,
-    update: false,
-    delete: false
-  },
-  categories: {
-    create: false,
-    find: false,
-    all: false,
-    delete: false
-  },
-  conversations: {
-    create: false,
-    messages: false,
-    delete: false
-  },
-  messages: {
-    create: false,
-    latest: false,
-    findUser: false,
-    delete: false
+    allCategories: true
   },
   posts: {
-    create: false,
     find: true,
     byThread: true,
-    update: false,
-    delete: false,
-    undelete: false,
-    purge: false,
     pageByUser: true
   },
-  reports: {
-    createUserReport: false,
-    createPostReport: false,
-    createMessageReport: false
-  },
   threads: {
-    create: false,
     byBoard: true,
-    viewed: true,
-    title: false,
-    lock: false,
-    sticky: false,
-    move: false,
-    delete: false
+    viewed: true
   },
   users: {
-    update: false,
-    find: true,
-    deactivate: false,
-    reactivate: false,
-    delete: false
+    find: true
   }
 };
 
 roles.private = {
   // business logic (none)
   name: 'private',
-  // ACLs
-  adminReports: {
-    createUserReportNote: false,
-    createPostReportNote: false,
-    createMessageReportNote: false,
-    updateUserReport: false,
-    updatePostReport: false,
-    updateMessageReport: false,
-    updateUserReportNote: false,
-    updatePostReportNote: false,
-    updateMessageReportNote: false,
-    pageUserReports: false,
-    pagePostReports: false,
-    pageMessageReports: false,
-    pageUserReportsNotes: false,
-    pagePostReportsNotes: false,
-    pageMessageReportsNotes: false,
-    userReportsCount: false,
-    postReportsCount: false,
-    messageReportsCount: false,
-    userReportsNotesCount: false,
-    postReportsNotesCount: false,
-    messageReportsNotesCount: false
-  },
-  adminSettings: {
-    find: false,
-    update: false
-  },
-  adminUsers: {
-    update: false,
-    find: false,
-    addRoles: false,
-    removeRoles: false,
-    searchUsernames: false,
-    count: false,
-    countAdmins: false,
-    countModerators: false,
-    page: false,
-    pageAdmins: false,
-    pageModerators: false,
-    ban: false,
-    unban: false
-  },
-  boards: {
-    create: false,
-    find: false,
-    all: false,
-    allCategories: false,
-    updateCategories: false,
-    update: false,
-    delete: false
-  },
-  categories: {
-    create: false,
-    find: false,
-    all: false,
-    delete: false
-  },
-  conversations: {
-    create: false,
-    messages: false,
-    delete: false
-  },
-  messages: {
-    create: false,
-    latest: false,
-    findUser: false,
-    delete: false
-  },
-  posts: {
-    create: false,
-    find: false,
-    byThread: false,
-    update: false,
-    delete: false,
-    undelete: false,
-    purge: false,
-    pageByUser: false
-  },
-  reports: {
-    createUserReport: false,
-    createPostReport: false,
-    createMessageReport: false
-  },
-  threads: {
-    create: false,
-    byBoard: false,
-    viewed: false,
-    title: false,
-    lock: false,
-    sticky: false,
-    move: false,
-    delete: false
-  },
-  users: {
-    update: false,
-    find: false,
-    deactivate: false,
-    reactivate: false,
-    delete: false
-  }
+  priority: 7
+  // ACLs none
 };
 
 // read from DB to replace defaults

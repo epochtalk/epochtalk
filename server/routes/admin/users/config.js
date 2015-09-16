@@ -2,7 +2,6 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var commonUsersPre = require(path.normalize(__dirname + '/../../common')).users;
-var commonAdminPre = require(path.normalize(__dirname + '/../../common')).auth;
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
 var USER_ROLES = require(path.normalize(__dirname + '/../../user-roles'));
@@ -51,10 +50,11 @@ var querystring = require('querystring');
   * @apiError (Error 500) InternalServerError There was error updating the user
   */
 exports.update = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.update' },
   validate: {
     payload: Joi.object().keys({
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       email: Joi.string().email(),
       username: Joi.string().min(1).max(255),
       password: Joi.string().min(8).max(72),
@@ -74,7 +74,6 @@ exports.update = {
     .with('signature', 'raw_signature')
   },
   pre: [
-    { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
     [
       { method: pre.checkUserExists },
       { method: pre.checkUsernameUniqueness },
@@ -84,7 +83,6 @@ exports.update = {
     { method: commonUsersPre.parseSignature },
     { method: commonUsersPre.handleImages }
   ],
-  plugins: { acls: 'adminUsers.update' },
   handler: function(request, reply) {
     db.users.update(request.payload)
     .then(function(user) {
@@ -134,10 +132,9 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was error looking up the user
   */
 exports.find = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  validate: { params: { username: Joi.string().required() } },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.find' },
+  validate: { params: { username: Joi.string().required() } },
   handler: function(request, reply) {
     // get user by username
     var username = querystring.unescape(request.params.username);
@@ -183,15 +180,14 @@ exports.find = {
   * @apiError (Error 500) InternalServerError There was error adding roles to the user
   */
 exports.addRoles = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.addRoles' },
   validate: {
     payload: {
       user_id: Joi.string().required(),
       roles: Joi.array().items(Joi.string().valid(USER_ROLES.user, USER_ROLES.mod, USER_ROLES.globalMod, USER_ROLES.admin, USER_ROLES.superAdmin).required()).unique().min(1).required()
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
-  plugins: { acls: 'adminUsers.addRoles' },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
@@ -229,15 +225,14 @@ exports.addRoles = {
   * @apiError (Error 500) InternalServerError There was error removing roles from the user
   */
 exports.removeRoles = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.removeRoles' },
   validate: {
     payload: {
       user_id: Joi.string().required(),
       roles: Joi.array().items(Joi.string().valid(USER_ROLES.user, USER_ROLES.mod, USER_ROLES.globalMod, USER_ROLES.admin, USER_ROLES.superAdmin).required()).unique().min(1).required()
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
-  plugins: { acls: 'adminUsers.removeRoles' },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
@@ -265,15 +260,14 @@ exports.removeRoles = {
   * @apiError (Error 500) InternalServerError There was error searching for usernames
   */
 exports.searchUsernames = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.searchUsernames' },
   validate: {
     query: {
       username: Joi.string().required(),
       limit: Joi.number().integer().min(1).max(100).default(15)
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
-  plugins: { acls: 'adminUsers.searchUsernames' },
   handler: function(request, reply) {
     // get user by username
     var searchStr = request.query.username;
@@ -302,15 +296,14 @@ exports.searchUsernames = {
   * @apiError (Error 500) InternalServerError There was error calculating the user count
   */
 exports.count = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.count' },
   validate: {
     query: {
       filter: Joi.string().valid('banned'),
       search: Joi.string()
     }
   },
-  plugins: { acls: 'adminUsers.count' },
   handler: function(request, reply) {
     var opts;
     var filter = request.query.filter;
@@ -341,8 +334,7 @@ exports.count = {
   * @apiError (Error 500) InternalServerError There was error calculating the admin user count
   */
 exports.countAdmins = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.countAdmins' },
   handler: function(request, reply) {
     db.users.countAdmins()
@@ -364,8 +356,7 @@ exports.countAdmins = {
   * @apiError (Error 500) InternalServerError There was error calculating the mod user count
   */
 exports.countModerators = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.countModerators' },
   handler: function(request, reply) {
     db.users.countModerators()
@@ -400,7 +391,8 @@ exports.countModerators = {
   * @apiError (Error 500) InternalServerError There was error retrieving the users
   */
 exports.page = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.page' },
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -411,8 +403,6 @@ exports.page = {
       search: Joi.string()
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
-  plugins: { acls: 'adminUsers.page' },
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -452,7 +442,8 @@ exports.page = {
   * @apiError (Error 500) InternalServerError There was error retrieving the admins
   */
 exports.pageAdmins = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.pageAdmins' },
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -461,8 +452,6 @@ exports.pageAdmins = {
       desc: Joi.boolean().default(false)
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
-  plugins: { acls: 'adminUsers.pageAdmins' },
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -500,7 +489,8 @@ exports.pageAdmins = {
   * @apiError (Error 500) InternalServerError There was error retrieving the mods
   */
 exports.pageModerators = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.pageModerators' },
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -509,8 +499,6 @@ exports.pageModerators = {
       desc: Joi.boolean().default(false)
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
-  plugins: { acls: 'adminUsers.pageModerators' },
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -545,15 +533,14 @@ exports.pageModerators = {
   * @apiError (Error 500) InternalServerError There was error banning the user
   */
 exports.ban = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.ban' },
   validate: {
     payload: {
-      user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      user_id: Joi.string().required(),
       expiration: Joi.date()
     }
   },
-  plugins: { acls: 'adminUsers.ban' },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
@@ -582,14 +569,9 @@ exports.ban = {
   * @apiError (Error 500) InternalServerError There was error unbanning the user
   */
 exports.unban = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
-  validate: {
-    payload: {
-      user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
-    }
-  },
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.unban' },
+  validate: { payload: { user_id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     db.users.unban(userId)

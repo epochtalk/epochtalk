@@ -1,0 +1,42 @@
+<div class="half-column">
+  <br />
+  <h3>Create and Edit Roles</h3> <br />
+  <table width="100%" class="admin-content-selectable">
+    <thead>
+      <th>Role Name</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </thead>
+    <tbody ng-repeat="role in AdminManagementCtrl.roles">
+      <tr ng-class="{ 'active-row' : AdminManagementCtrl.selectedRoleName === role.name }" class="selectable-row pointer" ng-click="AdminManagementCtrl.selectRole(role)">
+        <td ng-bind-html="role.name"></td>
+        <td ng-bind-html="role.description"></td>
+        <td>
+          <a ng-href="#">Edit Permissions</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="half-column" ng-if="AdminManagementCtrl.selectedRoleName !== null">
+  <br />
+  <h3>{{AdminManagementCtrl.selectedRoleName}} (15 users)</h3> <br />
+  <table width="100%">
+    <thead>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </thead>
+    <tbody ng-repeat="user in AdminManagementCtrl.roleUsers">
+      <tr>
+        <td ng-bind-html="user.username"></td>
+        <td ng-bind-html="user.email"></td>
+        <td>
+          <a ng-href="#">Remove</a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#">All Permissions</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

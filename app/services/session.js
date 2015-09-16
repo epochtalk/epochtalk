@@ -25,6 +25,7 @@ module.exports = ['$window', 'USER_ROLES',
           if (role.name === USER_ROLES.admin || role.name === USER_ROLES.superAdmin) { user.isAdmin = true; }
           if (role.name === USER_ROLES.mod || role.name === USER_ROLES.globalMod) { user.isMod = true; }
         });
+        user.isAdmin = true;
       }
       if ($window.sessionStorage.token || $window.localStorage.token) { authenticated = true; }
      }

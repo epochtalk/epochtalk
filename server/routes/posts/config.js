@@ -33,7 +33,11 @@ exports.create = {
     })
   },
   pre: [
-    { method: pre.canCreate }, //handle permissions
+    [
+      { method: pre.accessBoardWithThreadId },
+      { method: pre.accessLockedThread },
+      { method: pre.isUserActive }
+    ],
     { method: pre.clean },
     { method: pre.parseEncodings },
     { method: pre.subImages }
@@ -115,8 +119,8 @@ exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.canFind },
-    { method: pre.viewDeleted, assign: 'viewDeleted' }
+    { method: pre.accessBoardWithPostId },
+    { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
   plugins: { acls: 'posts.find' },
   handler: function(request, reply) {
@@ -161,7 +165,8 @@ exports.byThread = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }).without('start', 'page')
   },
-  pre: [ { method: pre.canRetrieve }, {method: pre.viewDeleted } ],
+  // TODO: Highlight deleted post and to show mods
+  pre: [ { method: pre.accessBoardWithThreadId } ],
   plugins: { acls: 'posts.byThread' },
   handler: function(request, reply) {
     // ready parameters
@@ -181,6 +186,8 @@ exports.byThread = {
     // retrieve posts for this thread
     var getPosts = db.posts.byThread(threadId, opts);
     var getThread = db.threads.find(threadId);
+
+    // TODO: Show admin deleted posts but style them differently, see canFind method
     var promise = Promise.join(getPosts, getThread, function(posts, thread) {
       return {
         thread: thread,
@@ -352,7 +359,7 @@ exports.pageByUser = {
   },
   pre: [ [
     { method: pre.canPageByUser },
-    { method: pre.viewDeleted, assign: 'viewDeleted' }
+    { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
   plugins: { acls: 'posts.pageByUser' },
   handler: function(request, reply) {

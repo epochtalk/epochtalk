@@ -1,9 +1,7 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
-var commonPre = require(path.normalize(__dirname + '/../common'));
 var messagePre = require(path.normalize(__dirname + '/../messages/pre'));
 
 /**
@@ -20,6 +18,7 @@ var messagePre = require(path.normalize(__dirname + '/../messages/pre'));
   */
 exports.create = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'conversations.create' },
   validate: {
     payload: {
       receiver_id: Joi.string().required(),
@@ -31,7 +30,6 @@ exports.create = {
     { method: messagePre.clean },
     { method: messagePre.parseEncodings }
   ],
-  plugins: { acls: 'conversations.create' },
   handler: function(request, reply) {
     // create the conversation in db
     var promise = db.conversations.create()
@@ -60,6 +58,7 @@ exports.create = {
   */
 exports.messages = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'conversations.messages' },
   validate: {
     params: { conversationId: Joi.string() },
     query: {
@@ -68,7 +67,6 @@ exports.messages = {
       limit: Joi.number().integer().min(1).max(100).default(15)
     }
   },
-  plugins: { acls: 'conversations.messages' },
   handler: function(request, reply) {
     var conversationId = request.params.conversationId;
     var userId = request.auth.credentials.id;
@@ -124,10 +122,8 @@ exports.messages = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: commonPre.auth.adminCheck } ], //handle permissions
-  // delete by admin only
   plugins: { acls: 'conversations.delete' },
+  validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var promise = db.conversations.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
