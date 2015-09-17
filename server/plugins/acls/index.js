@@ -2,12 +2,12 @@ var _ = require('lodash');
 var Boom = require('boom');
 var path = require('path');
 var roles = require(path.normalize(__dirname + '/roles'));
+var db = require(path.normalize(__dirname + '/../../../db'));
 var config = require(path.normalize(__dirname + '/../../../config'));
 
 exports.register = function (server, options, next) {
   // Check ACL roles on each route
   server.ext('onPostAuth', function (request, reply) {
-    return reply.continue();
     var routeACL = request.route.settings.plugins.acls;
     // route has no ACLs so allow access
     if (!routeACL) { return reply.continue(); }
@@ -15,7 +15,7 @@ exports.register = function (server, options, next) {
     var authenticated = request.auth.isAuthenticated;
     var err = Boom.unauthorized('You must log in to see this content.');
     if (authenticated) {
-      //userACLs = request.auth.roles.map(function(roleName) { return roles[roleName]; });
+      userACLs = request.auth.credentials.roles.map(function(roleName) { return roles[roleName]; });
       if (!userACLs.length) { userACLs = [ roles.user ]; }
       err = Boom.forbidden('You do not have the proper permissions.');
     }
@@ -33,8 +33,89 @@ exports.register = function (server, options, next) {
 
   server.expose('getACLValue', getACLValue);
 
-  next();
+  server.expose('verifyRoles', verifyRoles);
+
+  return verifyRoles().then(next);
 };
+
+function verifyRoles() {
+  // get all the roles from the DB
+  return db.roles.all()
+  // find any that are missing and add them
+  .then(function(dbRoles) {
+    _.mapValues(roles, function(role) {
+      // check if this role is in dbRoles
+      var dbRoleFound = _.find(dbRoles, function(dbRole) {
+        return role.id === dbRole.id || role.lookup === dbRole.lookup;
+      });
+
+      // if role found in db and permissions exists, use these
+      if (dbRoleFound && dbRoleFound.permissions) {
+        // check if permissions are set
+        var newRole = dbRoleFound.permissions;
+        newRole.id = dbRoleFound.id;
+        newRole.name = dbRoleFound.name;
+        newRole.description = dbRoleFound.description;
+        newRole.lookup = dbRoleFound.lookup;
+        newRole.priority = dbRoleFound.priority;
+        roles[newRole.lookup] = newRole;
+      }
+      // if role found and no permissions, update permissions
+      else if (dbRoleFound) {
+        var clonedRole = _.clone(role);
+        delete clonedRole.id;
+        delete clonedRole.name;
+        delete clonedRole.lookup;
+        delete clonedRole.description;
+        delete clonedRole.priority;
+        var updateRole = {
+          id: dbRoleFound.id,
+          permissions: clonedRole
+        };
+        return db.roles.update(updateRole);
+      }
+      // dbRole not found, so add the role to db
+      else {
+        var clonedAddRole = _.clone(role);
+        delete clonedAddRole.id;
+        delete clonedAddRole.name;
+        delete clonedAddRole.lookup;
+        delete clonedAddRole.description;
+        delete clonedAddRole.priority;
+        var addRole = {
+          id: role.id,
+          name: role.name,
+          lookup: role.lookup,
+          description: role.description,
+          priority: role.priority,
+          permissions: clonedAddRole
+        };
+        return db.roles.add(addRole);
+      }
+    });
+
+    return dbRoles;
+  })
+  // pull any roles that aren't default into the roles Object
+  .map(function(dbRole) {
+    var memRoleFound = _.find(roles, function(role) {
+      return role.id === dbRole.id || role.lookup === dbRole.lookup;
+    });
+
+    if (!memRoleFound) {
+      var newRole = dbRole.permissions;
+      newRole.id = dbRole.id;
+      newRole.name = dbRole.name;
+      newRole.description = dbRole.description;
+      newRole.lookup = dbRole.lookup;
+      newRole.priority = dbRole.priority;
+      roles[dbRole.lookup] = newRole;
+    }
+    return;
+  }).then(function(){
+    return;
+  });
+}
 
 function getACLValue(auth, acl) {
   // input validation

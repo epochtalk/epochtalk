@@ -30,7 +30,7 @@ helper.saveSession = function(user) {
   var tokenResult = buildToken(user.id);
   var decodedToken = tokenResult.decodedToken;
   var token = tokenResult.token;
-  user.roles = user.roles.map(function(role) { return role.name; });
+  user.roles = user.roles.map(function(role) { return role.lookup; });
 
   // save username, avatar to redis hash under "user:{userId}"
   var userKey = 'user:' + user.id;

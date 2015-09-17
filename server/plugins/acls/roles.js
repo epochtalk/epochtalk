@@ -150,7 +150,9 @@ module.exports = roles;
 // defaults
 roles.superAdministrator = {
   // business logic
-  name: 'superAdministrator',
+  id: '8ab5ef49-c2ce-4421-9524-bb45f289d42c',
+  name: 'Super Administrator',
+  lookup: 'superAdministrator',
   priority: 0,
   // ACLs
   adminReports: {
@@ -281,7 +283,9 @@ roles.superAdministrator = {
 
 roles.administrator = {
   // business logic
-  name: 'administrator',
+  id: '06860e6f-9ac0-4c2a-8d9c-417343062fb8',
+  name: 'Administrator',
+  lookup: 'administrator',
   priority: 1,
   // ACLs
   adminReports: {
@@ -409,7 +413,9 @@ roles.administrator = {
 
 roles.globalModerator = {
   // business logic
-  name: 'globalModerator',
+  id: 'fb0f70b7-3652-4f7d-a166-05ee68e7428d',
+  name: 'Global Moderator',
+  lookup: 'globalModerator',
   priority: 2,
   // ACLs
   adminReports: {
@@ -513,7 +519,9 @@ roles.globalModerator = {
 
 roles.moderator = {
   // business logic
-  name: 'moderator',
+  id: 'c0d39771-1541-4b71-9122-af0736cad23d',
+  name: 'Moderator',
+  lookup: 'moderator',
   priority: 3,
   // ACLs
   adminReports: {
@@ -617,7 +625,9 @@ roles.moderator = {
 
 roles.user = {
   // business logic (none)
-  name: 'user',
+  id: 'edcd8f77-ce34-4433-ba85-17f9b17a3b60',
+  name: 'User',
+  lookup: 'user',
   priority: 4,
   // ACLs
   boards: {
@@ -666,7 +676,8 @@ roles.user = {
 
 roles.banned = {
   // business logic (none)
-  name: 'banned',
+  name: 'Banned',
+  lookup: 'banned',
   priority: 5,
   // ACLs
   boards: {
@@ -698,7 +709,8 @@ roles.banned = {
 
 roles.anonymous = {
   // business logic (none)
-  name: 'anonymous',
+  name: 'Anonymous',
+  lookup: 'anonymous',
   priority: 6,
   // ACLs
   boards: {
@@ -721,7 +733,8 @@ roles.anonymous = {
 
 roles.private = {
   // business logic (none)
-  name: 'private',
+  name: 'Private',
+  lookup: 'private',
   priority: 7
   // ACLs none
 };
