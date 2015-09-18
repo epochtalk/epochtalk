@@ -34,9 +34,10 @@ exports.create = {
   },
   pre: [
     [
+      { method: pre.accessPrivateBoardWithThreadId },
       { method: pre.accessBoardWithThreadId },
       { method: pre.accessLockedThread },
-      { method: pre.isUserActive }
+      { method: pre.isRequesterActive }
     ],
     { method: pre.clean },
     { method: pre.parseEncodings },
@@ -119,6 +120,7 @@ exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
+    { method: pre.accessPrivateBoardWithThreadId },
     { method: pre.accessBoardWithPostId },
     { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
@@ -166,7 +168,10 @@ exports.byThread = {
     }).without('start', 'page')
   },
   // TODO: Highlight deleted post and to show mods
-  pre: [ { method: pre.accessBoardWithThreadId } ],
+  pre: [ [
+    { method: pre.accessPrivateBoardWithThreadId },
+    { method: pre.accessBoardWithThreadId }
+  ] ],
   plugins: { acls: 'posts.byThread' },
   handler: function(request, reply) {
     // ready parameters
@@ -234,7 +239,13 @@ exports.update = {
     params: { id: Joi.string().required() }
   },
   pre: [
-    { method: pre.canUpdate }, //handle permissions
+    [
+      { method: pre.isPostEditable },
+      { method: pre.accessPrivateBoardWithThreadId },
+      { method: pre.accessBoardWithThreadId },
+      { method: pre.accessLockedThread },
+      { method: pre.isRequesterActive }
+    ],
     { method: pre.clean },
     { method: pre.parseEncodings },
     { method: pre.subImages }
@@ -267,7 +278,14 @@ exports.update = {
 exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ], //handle permissions
+  pre: [ [
+    { method: pre.isCDRPost },
+    { method: pre.isPostDeleteable },
+    { method: pre.accessPrivateBoardWithThreadId },
+    { method: pre.accessBoardWithThreadId },
+    { method: pre.accessLockedThread },
+    { method: pre.isRequesterActive }
+  ] ], //handle permissions
   plugins: { acls: 'posts.delete' },
   handler: function(request, reply) {
     var promise = db.posts.delete(request.params.id)
@@ -294,7 +312,14 @@ exports.delete = {
 exports.undelete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete }, ], //handle permissions
+  pre: [ [
+    { method: pre.isCDRPost },
+    { method: pre.isPostDeleteable },
+    { method: pre.accessPrivateBoardWithThreadId },
+    { method: pre.accessBoardWithThreadId },
+    { method: pre.accessLockedThread },
+    { method: pre.isRequesterActive }
+  ] ], //handle permissions
   plugins: { acls: 'posts.undelete' },
   handler: function(request, reply) {
     var promise = db.posts.undelete(request.params.id)
@@ -320,7 +345,7 @@ exports.undelete = {
 exports.purge = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canPurge } ], //handle permissions
+  pre: [ { method: pre.isCDRPost } ], //handle permissions
   plugins: { acls: 'posts.purge' },
   handler: function(request, reply) {
     var promise = db.posts.purge(request.params.id);
@@ -358,7 +383,7 @@ exports.pageByUser = {
     }
   },
   pre: [ [
-    { method: pre.canPageByUser },
+    { method: pre.accessUsersPosts },
     { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
   plugins: { acls: 'posts.pageByUser' },

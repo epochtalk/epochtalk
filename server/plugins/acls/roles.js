@@ -82,6 +82,15 @@ module.exports = roles;
       delete: true
     },
     posts: {
+      privilegedUpdate: {
+        samePriority: true,
+        lowerPriority: true
+      },
+      privilegedDelete: {
+        samePriority: true,
+        lowerPriority: true
+      },
+      privilegedPageByUser: true,
       viewDeleted: {
         some: true,
         all: true
@@ -227,6 +236,13 @@ roles.superAdministrator = {
     delete: true
   },
   posts: {
+    privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedDelete: {
+      lowerPriority: true
+    },
+    privilegedPageByUser: true,
     viewDeleted: {
       all: true
     },
@@ -360,6 +376,13 @@ roles.administrator = {
     delete: true
   },
   posts: {
+    privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedDelete: {
+      lowerPriority: true
+    },
+    privilegedPageByUser: true,
     viewDeleted: {
       all: true
     },
@@ -467,6 +490,13 @@ roles.globalModerator = {
     delete: true
   },
   posts: {
+    privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedDelete: {
+      lowerPriority: true
+    },
+    privilegedPageByUser: true,
     viewDeleted: {
       all: true
     },
@@ -573,6 +603,13 @@ roles.moderator = {
     delete: true
   },
   posts: {
+    privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedDelete: {
+      lowerPriority: true
+    },
+    privilegedPageByUser: true,
     viewDeleted: {
       some: true,
     },
