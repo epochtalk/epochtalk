@@ -24,4 +24,15 @@ module.exports = ['$scope', 'AdminUsers', 'users', function($scope, AdminUsers, 
     }
   };
 
+  this.showAddRoleModal = false;
+  this.selectedTab = null;
+  this.showAddRole = function() {
+    ctrl.showAddRoleModal = true;
+    ctrl.selectedTab = 'user';
+  };
+
+  this.closeAddRole = function() {
+    ctrl.showAddRoleModal = false;
+  };
+
 }];

@@ -1,6 +1,6 @@
 <div class="half-column">
   <br />
-  <h3>Create and Edit Roles</h3> <br />
+  <h3>Create and Edit Roles</h3><a ng-href="#" ng-click="AdminManagementCtrl.showAddRole()">Add new Role</a> <br />
   <table width="100%" class="admin-content-selectable">
     <thead>
       <th>Role Name</th>
@@ -40,3 +40,27 @@
     </tbody>
   </table>
 </div>
+
+<modal class="medium" show="AdminManagementCtrl.showAddRoleModal" on-close="AdminManagementCtrl.closeAddRole()">
+  <h3 class="thin-underline">Set Role Permissions</h3>
+  <div class="permissions-modal">
+    <div class="left-column">
+      <ul>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'user'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'user'}" ng-href="#">User</a></li>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'settings'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'settings'}" ng-href="#">Settings</a></li>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'reports'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'reports'}" ng-href="#">Reports</a></li>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'categories'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'categories'}" ng-href="#">Categories</a></li>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'boards'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'boards'}" ng-href="#">Boards</a></li>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'threads'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'threads'}" ng-href="#">Threads</a></li>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'posts'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'posts'}" ng-href="#">Posts</a></li>
+      </ul>
+    </div>
+    <div class="right-column">
+      <h4>Standard Permissions</h4><br /><br /><br /><br /><br />
+      <h4>Elevated Permissions</h4>
+    </div>
+  </div>
+  <div class="clear">
+    <button class="fill-row">Save and Exit</button>
+  </div>
+</modal>

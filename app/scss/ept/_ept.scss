@@ -1483,6 +1483,27 @@ main #admin-content {
   .management-users.radio-button, .header-spacer { @include span-columns(2); }
   .autocomplete-wrap { @include span-columns(6); }
   .switch-block label { float: none; }
+  .permissions-modal {
+    margin: 1rem 0;
+    ul {
+      list-style-type: none;
+      li { display: block }
+      li a { display: block; padding: 0.5rem 0; padding-left: 0.5rem; }
+      li a:hover { background-color: $color-gray-sub; }
+      li a.active { background-color: $color-active-fill; color: #fff; }
+    }
+    @include row;
+    .left-column {
+      @include span-columns(2);;
+      border-right: 1px solid $color-gray-light;
+      min-height: 21.875rem;
+      max-height: 100%;
+    }
+    .right-column {
+      @include span-columns(9);
+      @include omega;
+    }
+  }
 
   @include media($mobile) {
     .pagination-wrap { @include span-columns(8); @include omega; }
