@@ -23,13 +23,9 @@ module.exports = {
     return reply(result);
   },
   accessBoardWithPostId: function(request, reply) {
-    var postId = request.params.id;
+    var postId = _.get(request, request.route.settings.app.post_id);
     var boardVisible = db.posts.getPostsBoardInBoardMapping(postId)
-    .then(function(board) {
-      var visible = false;
-      if (board) { visible = true; }
-      return visible;
-    });
+    .then(function(board) { return !!board; });
 
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
@@ -50,13 +46,9 @@ module.exports = {
     return reply(promise);
   },
   accessBoardWithThreadId: function(request, reply) {
-    var threadId = request.query.thread_id || request.payload.thread_id;
+    var threadId = _.get(request, request.route.settings.app.thread_id);
     var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId)
-    .then(function(board) {
-      var visible = false;
-      if (board) { visible = true; }
-      return visible;
-    });
+    .then(function(board) { return !!board; });
 
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
@@ -76,12 +68,33 @@ module.exports = {
     });
     return reply(promise);
   },
-  accessLockedThread: function(request, reply) {
-    var threadId = request.payload.thread_id;
-    var threadLocked =  db.threads.find(threadId)
-    .then(function(thread) {
-      return thread.locked;
+  accessLockedThreadWithPostId: function(request, reply) {
+    var postId = _.get(request, request.route.settings.app.post_id);
+    var threadLocked = db.posts.getPostsThread(postId)
+    .then(function(thread) { return thread.locked; });
+
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var createSome = getACLValue(request.auth, 'boards.createInLockedThread.some');
+    var createAll = getACLValue(request.auth, 'boards.createInLockedThread.all');
+
+    var promise = Promise.join(threadLocked, createSome, createAll, function(locked, some, all) {
+      var result = Boom.unauthorized();
+      // Board is unlocked or user has elevated privelages
+      if (!locked || all) { result = true; }
+      // User is authenticated and can moderate certain boards
+      else if (request.auth.isAuthenticated && some) {
+        result = isModWithThreadId(request.auth.credentials.id, threadId) || Boom.forbidden();
+      }
+      // User is authenticated but has no privelages
+      else if (request.auth.isAuthenticated) { result = Boom.forbidden(); }
+      return result;
     });
+    return reply(promise);
+  },
+  accessLockedThreadWithThreadId: function(request, reply) {
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+    var threadLocked = db.threads.find(threadId)
+    .then(function(thread) { return thread.locked; });
 
     var getACLValue = request.server.plugins.acls.getACLValue;
     var createSome = getACLValue(request.auth, 'boards.createInLockedThread.some');
@@ -116,12 +129,16 @@ module.exports = {
     }
     return reply(promise);
   },
+  accessPrivateBoardWithPostId: function(request, reply) {
+    // TODO: Implement private board check
+    return reply(true);
+  },
   accessPrivateBoardWithThreadId: function(request, reply) {
     // TODO: Implement private board check
     return reply(true);
   },
   isPostEditable: function(request, reply) {
-    var postId = request.params.id;
+    var postId = _.get(request, request.route.settings.app.post_id);
     var userId = request.auth.credentials.id;
 
     var promise = db.posts.find(postId)
@@ -162,7 +179,7 @@ module.exports = {
     return reply(promise);
   },
   isCDRPost: function(request, reply) {
-    var postId = request.params.id;
+    var postId = _.get(request, request.route.settings.app.post_id);
     var promise = db.posts.getThreadFirstPost(postId)
     .then(function(post) {
       var result = true; // return true if not first post
@@ -172,13 +189,12 @@ module.exports = {
     return reply(promise);
   },
   isPostDeleteable: function(request, reply) {
-    var postId = request.params.id;
+    var postId = _.get(request, request.route.settings.app.post_id);
     var userId = request.auth.credentials.id;
 
     var promise = db.posts.find(postId)
     .then(function(post) {
-      if (post.deleted) { return Boom.forbidden(); } // break out if post is deleted
-      else if (post && post.user.id === userId) { return true; } // break out if authed user is author
+      if (post && post.user.id === userId) { return true; } // break out if authed user is author
       else { // compare user priorities
         var authorUsername = post.user.username;
         var authedUsername = request.auth.credentials.username;

@@ -23,6 +23,7 @@ var querystring = require('querystring');
   * @apiError (Error 500) InternalServerError There was an issue creating the post
   */
 exports.create = {
+  app: { thread_id: 'payload.thread_id' },
   auth: { strategy: 'jwt' },
   validate: {
     payload: Joi.object().keys({
@@ -36,7 +37,7 @@ exports.create = {
     [
       { method: pre.accessPrivateBoardWithThreadId },
       { method: pre.accessBoardWithThreadId },
-      { method: pre.accessLockedThread },
+      { method: pre.accessLockedThreadWithThreadId },
       { method: pre.isRequesterActive }
     ],
     { method: pre.clean },
@@ -117,10 +118,11 @@ exports.import = {
   * @apiError (Error 500) InternalServerError There was an issue finding the post
   */
 exports.find = {
+  app: { post_id: 'params.id' },
   auth: { mode: 'try', strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.accessPrivateBoardWithThreadId },
+    { method: pre.accessPrivateBoardWithPostId },
     { method: pre.accessBoardWithPostId },
     { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
@@ -158,6 +160,7 @@ exports.find = {
   * @apiError (Error 500) InternalServerError There was an issue finding the posts for thread
   */
 exports.byThread = {
+  app: { thread_id: 'query.thread_id'},
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
     query: Joi.object().keys({
@@ -228,6 +231,7 @@ exports.byThread = {
   * @apiError (Error 500) InternalServerError There was an issue updating the post
   */
 exports.update = {
+  app: { thread_id: 'payload.thread_id', post_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: {
     payload: {
@@ -243,7 +247,7 @@ exports.update = {
       { method: pre.isPostEditable },
       { method: pre.accessPrivateBoardWithThreadId },
       { method: pre.accessBoardWithThreadId },
-      { method: pre.accessLockedThread },
+      { method: pre.accessLockedThreadWithThreadId },
       { method: pre.isRequesterActive }
     ],
     { method: pre.clean },
@@ -276,14 +280,15 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue deleting the post
   */
 exports.delete = {
+  app: { post_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
     { method: pre.isPostDeleteable },
-    { method: pre.accessPrivateBoardWithThreadId },
-    { method: pre.accessBoardWithThreadId },
-    { method: pre.accessLockedThread },
+    { method: pre.accessPrivateBoardWithPostId },
+    { method: pre.accessBoardWithPostId },
+    { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }
   ] ], //handle permissions
   plugins: { acls: 'posts.delete' },
@@ -310,14 +315,15 @@ exports.delete = {
   * @apiError (Error 500) InternalServerError There was an issue undeleting the post
   */
 exports.undelete = {
+  app: { post_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
     { method: pre.isPostDeleteable },
-    { method: pre.accessPrivateBoardWithThreadId },
-    { method: pre.accessBoardWithThreadId },
-    { method: pre.accessLockedThread },
+    { method: pre.accessPrivateBoardWithPostId },
+    { method: pre.accessBoardWithPostId },
+    { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }
   ] ], //handle permissions
   plugins: { acls: 'posts.undelete' },
@@ -343,6 +349,7 @@ exports.undelete = {
   * @apiError (Error 500) InternalServerError There was an issue purging the post
   */
 exports.purge = {
+  app: { post_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.isCDRPost } ], //handle permissions
@@ -388,7 +395,15 @@ exports.pageByUser = {
   ] ],
   plugins: { acls: 'posts.pageByUser' },
   handler: function(request, reply) {
+    // TODO: canViewDeletePost only works for admins/globalMods
+    // pull the board_id, to check if user can view this post.
+    // this will include pulling the user's mod board list to compare against.
+    // this will probably end up being a new pre method entirely
     // TODO: this still shows posts from deleted threads/boards
+    // check if each board_id from each post is in the board mapping
+    // if it's not, then flag the post deleted.
+    // This may require another pre method to either pull public board ids or
+    // updating the db query to check if the board is deleted.
 
     // ready parameters
     var userId = '';
