@@ -3,19 +3,18 @@ var path = require('path');
 var Boom = require('boom');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
+var querystring = require('querystring');
 var bbcodeParser = require('epochtalk-bbcode-parser');
 var db = require(path.normalize(__dirname + '/../../../db'));
 var config = require(path.normalize(__dirname + '/../../../config'));
 var imageStore = require(path.normalize(__dirname + '/../../images'));
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
-var commonPre = require(path.normalize(__dirname + '/../common')).auth;
-var querystring = require('querystring');
 
 module.exports = {
   canViewDeletedPost: function(request, reply) {
     var getACLValue = request.server.plugins.acls.getACLValue;
-    var viewSome = getACLValue(request.auth, 'user.viewDeleted.some');
-    var viewAll = getACLValue(request.auth, 'user.viewDeleted.all');
+    var viewSome = getACLValue(request.auth, 'posts.viewDeleted.some');
+    var viewAll = getACLValue(request.auth, 'posts.viewDeleted.all');
     var result = viewAll;
     if (request.auth.isAuthenticated && viewSome) {
       result = isModWithPostId(request.auth.credentials.id, request.params.id);
@@ -114,9 +113,8 @@ module.exports = {
     var promise = Boom.unauthorized();
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) {
-      var username = request.auth.credentials.username;
-      username = querystring.unescape(username);
-      promise = db.users.userByUsername(username)
+      var userId = request.auth.credentials.id;
+      promise = db.users.find(userId)
       .then(function(user) {
         var active = Boom.forbidden();
         if (user) { active = !user.deleted; }
@@ -226,7 +224,7 @@ module.exports = {
 
     return reply(promise);
   },
-  accessUsersPosts: function(request, reply) {
+  accessUser: function(request, reply) {
     var username = '';
     var payloadUsername = querystring.unescape(request.params.username);
     var authenticated = request.auth.isAuthenticated;
@@ -237,7 +235,7 @@ module.exports = {
     if (username === payloadUsername) { promise = true; }
     else { // viewing deleted users posts
       var getACLValue = request.server.plugins.acls.getACLValue;
-      var priviledgedView = getACLValue(request.auth, 'posts.privilegedPageByUser');
+      var priviledgedView = getACLValue(request.auth, 'users.viewDeleted');
 
       var isActive = db.users.userByUsername(payloadUsername)
       .then(function(user) {

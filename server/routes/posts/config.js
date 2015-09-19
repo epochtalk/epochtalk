@@ -390,7 +390,7 @@ exports.pageByUser = {
     }
   },
   pre: [ [
-    { method: pre.accessUsersPosts },
+    { method: pre.accessUser },
     { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
   plugins: { acls: 'posts.pageByUser' },

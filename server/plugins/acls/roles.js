@@ -90,7 +90,6 @@ module.exports = roles;
         samePriority: true,
         lowerPriority: true
       },
-      privilegedPageByUser: true,
       viewDeleted: {
         some: true,
         all: true
@@ -152,10 +151,16 @@ module.exports = roles;
       delete: true
     },
     users: {
-      update: {
-        self: true,
-        other: true,
+      privilegedDeactivate: {
+        samePriority: true,
+        lowerPriority: true
       },
+      privilegedReactivate: {
+        samePriority: true,
+        lowerPriority: true
+      },
+      viewDeleted: true,
+      update: true,
       find: true,
       deactivate: true,
       reactivate: true,
@@ -250,7 +255,6 @@ roles.superAdministrator = {
     privilegedDelete: {
       lowerPriority: true
     },
-    privilegedPageByUser: true,
     viewDeleted: {
       all: true
     },
@@ -300,10 +304,14 @@ roles.superAdministrator = {
     delete: true
   },
   users: {
-    update: {
-      self: true,
-      other: true,
+    privilegedDeactivate: {
+      lowerPriority: true
     },
+    privilegedReactivate: {
+      lowerPriority: true
+    },
+    viewDeleted: true,
+    update: true,
     find: true,
     deactivate: true,
     reactivate: true,
@@ -396,7 +404,6 @@ roles.administrator = {
     privilegedDelete: {
       lowerPriority: true
     },
-    privilegedPageByUser: true,
     viewDeleted: {
       all: true
     },
@@ -446,6 +453,13 @@ roles.administrator = {
     delete: true
   },
   users: {
+    privilegedDeactivate: {
+      lowerPriority: true
+    },
+    privilegedReactivate: {
+      lowerPriority: true
+    },
+    viewDeleted: true,
     update: true,
     find: true,
     deactivate: true,
@@ -516,7 +530,6 @@ roles.globalModerator = {
     privilegedDelete: {
       lowerPriority: true
     },
-    privilegedPageByUser: true,
     viewDeleted: {
       all: true
     },
@@ -566,6 +579,7 @@ roles.globalModerator = {
     delete: true
   },
   users: {
+    viewDeleted: true,
     update: true,
     find: true,
     deactivate: true,
@@ -635,7 +649,6 @@ roles.moderator = {
     privilegedDelete: {
       lowerPriority: true
     },
-    privilegedPageByUser: true,
     viewDeleted: {
       some: true,
     },
@@ -685,6 +698,7 @@ roles.moderator = {
     delete: true
   },
   users: {
+    viewDeleted: true,
     update: true,
     find: true,
     deactivate: true,

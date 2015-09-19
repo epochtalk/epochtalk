@@ -161,7 +161,12 @@ exports.update = {
     .with('signature', 'raw_signature')
   },
   pre: [
-    { method: pre.canUpdate },
+    [
+      { method: pre.isOldPasswordValid },
+      { method: pre.isNewUsernameUnique },
+      { method: pre.isNewEmailUnique },
+      { method: pre.isRequesterActive }
+    ],
     { method: commonPre.clean },
     { method: commonPre.parseSignature },
     { method: commonPre.handleImages },
@@ -223,7 +228,8 @@ exports.update = {
   */
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { params: { id: Joi.string().required() } },
+  validate: { params: { username: Joi.string().required() } },
+  pre: [ { method: pre.accessUser } ],
   plugins: { acls: 'users.find' },
   handler: function(request, reply) {
     // get logged in user id
@@ -232,7 +238,7 @@ exports.find = {
     if (authenticated) { userId = request.auth.credentials.id; }
 
     // get user by username
-    var username = querystring.unescape(request.params.id);
+    var username = querystring.unescape(request.params.username);
     var promise = db.users.userByUsername(username)
     .then(function(user) {
       if (!user) { return Boom.notFound(); }
@@ -250,44 +256,80 @@ exports.find = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Users
+  * @api {POST} /users/:userId/deactivate Deactivate
+  * @apiName DeactivateUser
+  * @apiDescription Deactivate a user by userId
+  *
+  * @apiParam {string} id The userId of the user to deactivate
+  *
+  * @apiSuccess {} STATUS 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was an error deactivating the user
+  */
 exports.deactivate = {
+  app: { user_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.canDeactivate },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: pre.isReferencedUserActive },
+    { method: pre.deactivateAuthorized, assign: 'userId' }
   ] ],
   plugins: { acls: 'users.deactivate' },
   handler: function(request, reply) {
-    var userId = '';
-    if (request.pre.isAdmin) { userId = request.params.id; }
-    else { userId = request.auth.credentials.id; }
+    var userId = request.pre.userId;
     var promise = db.users.deactivate(userId);
     return reply(promise);
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Users
+  * @api {POST} /users/:userId/reactivate Reactivate
+  * @apiName ReactivateUser
+  * @apiDescription Reactivate a user by userId
+  *
+  * @apiParam {string} id The userId of the user to reactivate
+  *
+  * @apiSuccess {} STATUS 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was an error reactivating the user
+  */
 exports.reactivate = {
+  app: { user_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.canReactivate },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: pre.isReferencedUserDeactive },
+    { method: pre.reactivateAuthorized, assign: 'userId' }
   ] ],
   plugins: { acls: 'users.reactivate' },
   handler: function(request, reply) {
-    var userId = '';
-    if (request.pre.isAdmin) { userId = request.params.id; }
-    else { userId = request.auth.credentials.id; }
+    var userId = request.pre.userId;
     var promise = db.users.reactivate(userId);
     return reply(promise);
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Users
+  * @api {DELETE} /users/:userId Delete
+  * @apiName DeleteUser
+  * @apiDescription Delete a user by userId
+  *
+  * @apiParam {string} id The userId of the user to delete
+  *
+  * @apiSuccess {} STATUS 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was an error deleteing the user
+  */
 exports.delete = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ],
   plugins: { acls: 'users.delete' },
   handler: function(request, reply) {
     var userId = request.params.id;

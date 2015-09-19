@@ -1,11 +1,10 @@
 var _ = require('lodash');
+var Boom = require('boom');
 var path = require('path');
 var uuid = require('node-uuid');
 var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
 var redis = require(path.normalize(__dirname + '/../../../redis'));
-var commonPre = require(path.normalize(__dirname + '/../common')).auth;
-var Boom = require('boom');
 
 module.exports = {
   accessBoardWithThreadId: function(request, reply) {
@@ -54,9 +53,8 @@ module.exports = {
     var promise = Boom.unauthorized();
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) {
-      var username = request.auth.credentials.username;
-      username = querystring.unescape(username);
-      promise = db.users.userByUsername(username)
+      var userId = request.auth.credentials.id;
+      promise = db.users.find(userId)
       .then(function(user) {
         var active = Boom.forbidden();
         if (user) { active = !user.deleted; }
