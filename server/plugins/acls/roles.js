@@ -134,6 +134,14 @@ module.exports = roles;
       createMessageReport: true
     },
     threads: {
+      privilegedUpdate: {
+        some: true,
+        all: true
+      },
+      privilegedUpdate: {
+        some: true,
+        all: true
+      },
       create: true,
       byBoard: true,
       viewed: true,
@@ -276,6 +284,12 @@ roles.superAdministrator = {
     createMessageReport: true
   },
   threads: {
+    privilegedUpdate: {
+      all: true
+    },
+    privilegedLock: {
+      all: true
+    },
     create: true,
     byBoard: true,
     viewed: true,
@@ -416,6 +430,12 @@ roles.administrator = {
     createMessageReport: true
   },
   threads: {
+    privilegedUpdate: {
+      all: true
+    },
+    privilegedLock: {
+      all: true
+    },
     create: true,
     byBoard: true,
     viewed: true,
@@ -530,6 +550,12 @@ roles.globalModerator = {
     createMessageReport: true
   },
   threads: {
+    privilegedUpdate: {
+      all: true
+    },
+    privilegedLock: {
+      all: true
+    },
     create: true,
     byBoard: true,
     viewed: true,
@@ -643,6 +669,12 @@ roles.moderator = {
     createMessageReport: true
   },
   threads: {
+    privilegedUpdate: {
+      some: true
+    },
+    privilegedLock: {
+      some: true
+    },
     create: true,
     byBoard: true,
     viewed: true,

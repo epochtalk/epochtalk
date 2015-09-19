@@ -32,15 +32,13 @@ module.exports = {
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
 
     var promise = Promise.join(boardVisible, viewSome, viewAll, function(visible, some, all) {
-      var result = Boom.unauthorized();
+      var result = Boom.notFound();
       // Board is visible or user has elevated privelages
       if (visible || all) { result = true; }
       // User is authenticated and can moderate certain boards
       else if (request.auth.isAuthenticated && some) {
-        result = isModWithPostId(request.auth.credentials.id, postId) || Boom.forbidden();
+        result = isModWithPostId(request.auth.credentials.id, postId);
       }
-      // User is authenticated but has no privelages
-      else if (request.auth.isAuthenticated) { result = Boom.forbidden(); }
       return result;
     });
     return reply(promise);
@@ -55,15 +53,13 @@ module.exports = {
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
 
     var promise = Promise.join(boardVisible, viewSome, viewAll, function(visible, some, all) {
-      var result = Boom.unauthorized();
+      var result = Boom.notFound();
       // Board is visible or user has elevated privelages
       if (visible || all) { result = true; }
       // User is authenticated and can moderate certain boards
       else if (request.auth.isAuthenticated && some) {
-        result = isModWithThreadId(request.auth.credentials.id, threadId) || Boom.forbidden();
+        result = isModWithThreadId(request.auth.credentials.id, threadId);
       }
-      // User is authenticated but has no privelages
-      else if (request.auth.isAuthenticated) { result = Boom.forbidden(); }
       return result;
     });
     return reply(promise);
@@ -138,6 +134,7 @@ module.exports = {
     return reply(true);
   },
   isPostEditable: function(request, reply) {
+    // TODO: check user mod instead of priority
     var postId = _.get(request, request.route.settings.app.post_id);
     var userId = request.auth.credentials.id;
 
@@ -189,6 +186,7 @@ module.exports = {
     return reply(promise);
   },
   isPostDeleteable: function(request, reply) {
+    // TODO: check user mod instead of priority
     var postId = _.get(request, request.route.settings.app.post_id);
     var userId = request.auth.credentials.id;
 
@@ -248,14 +246,10 @@ module.exports = {
         return active;
       });
 
+      // Authed users with privilegedView can see deleted user's posts
       promise = Promise.join(priviledgedView, isActive, function(privileged, active) {
         var result = Boom.notFound();
-        // Authed users with privilegedView can see deleted user's posts
-        if (priviledgedView) { result = true; }
-        // cannot view deleted user's posts
-        else if (active === false) { result = Boom.notFound(); }
-        // can view active user's posts
-        else if (active === true) { result = true; }
+        if (priviledgedView || active) { result = true; }
         return result;
       });
     }

@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var path = require('path');
 var uuid = require('node-uuid');
 var Promise = require('bluebird');
@@ -7,100 +8,121 @@ var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var Boom = require('boom');
 
 module.exports = {
-  canFind: function(request, reply) {
-    var username = '';
-    var threadId = request.params.id;
-    var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
+  accessBoardWithThreadId: function(request, reply) {
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId)
+    .then(function(board) { return !!board; });
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMod = commonPre.isMod(authenticated, username);
-    var isVisible = isThreadBoardVisible(threadId);
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
+    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
 
-    var promise = Promise.join(isAdmin, isMod, isVisible, function(admin, mod, visible) {
-      var result = Boom.notFound('Board Not Found');
-
-      if (admin || mod) { result = ''; }
-      else if (visible) { result = ''; }
-
-      return result;
-    });
-    return reply(promise);
-
-  },
-  canRetrieve: function(request, reply) {
-    var username = '';
-    var boardId = request.query.board_id;
-    var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
-
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMod = commonPre.isMod(authenticated, username);
-    var isVisible = isBoardVisible(boardId);
-
-    var promise = Promise.join(isAdmin, isMod, isVisible, function(admin, mod, visible) {
-      var result = Boom.notFound('Board Not Found');
-
-      if (admin || mod) { result = ''; }
-      else if (visible) { result = ''; }
-
+    var promise = Promise.join(boardVisible, viewSome, viewAll, function(visible, some, all) {
+      var result = Boom.notFound();
+      // Board is visible or user has elevated privelages
+      if (visible || all) { result = true; }
+      // User is authenticated and can moderate certain boards
+      else if (request.auth.isAuthenticated && some) {
+        result = isModWithThreadId(request.auth.credentials.id, threadId);
+      }
       return result;
     });
     return reply(promise);
   },
-  canCreate: function(request, reply) {
-    var username = '';
-    var boardId = request.payload.board_id;
-    var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
+  accessBoardWithBoardId: function(request, reply) {
+    var boardId = _.get(request, request.route.settings.app.board_id);
+    var boardVisible = db.boards.getBoardInBoardMapping(boardId)
+    .then(function(board) { return !!board; });
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMod = commonPre.isMod(authenticated, username);
-    var isVisible = isBoardVisible(boardId);
-    var isActive = isUserActive(username);
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
+    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
 
-    var promise = Promise.join(isAdmin, isMod, isVisible, isActive, function(admin, mod, visible, active) {
-      var result = Boom.forbidden();
-
-      if (admin || mod) { result = ''; }
-      else if (visible && active) { result = ''; }
+    var promise = Promise.join(boardVisible, viewSome, viewAll, function(visible, some, all) {
+      var result = Boom.notFound();
+      // Board is visible or user has elevated privelages
+      if (visible || all) { result = true; }
+      // User is authenticated and can moderate certain boards
+      else if (request.auth.isAuthenticated && some) {
+        result = isModWithBoardId(request.auth.credentials.id, boardId);
+      }
       return result;
     });
     return reply(promise);
   },
-  canUpdate: function(request, reply) {
-    var threadId = request.params.id;
+  isRequesterActive: function(request, reply) {
+    var promise = Boom.unauthorized();
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) {
+      var username = request.auth.credentials.username;
+      username = querystring.unescape(username);
+      promise = db.users.userByUsername(username)
+      .then(function(user) {
+        var active = Boom.forbidden();
+        if (user) { active = !user.deleted; }
+        return active;
+      });
+    }
+    return reply(promise);
+  },
+  isThreadEditable: function(request, reply) {
     var userId = request.auth.credentials.id;
-    var authenticated = request.auth.isAuthenticated;
-    var username = request.auth.credentials.username;
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+    var getACLValue = request.server.plugins.acls.getACLValue;
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMod = commonPre.isMod(authenticated, username);
-    var isVisible = isThreadBoardVisible(threadId);
-    var isOwner = isThreadOwner(threadId, userId);
-    var isActive = isUserActive(username);
+    // get thread ownership
+    var isThreadOwner = db.threads.getThreadOwner(threadId)
+    .then(function(owner) { return owner.user_id === userId; });
 
-    var promise = Promise.join(isAdmin, isMod, isVisible, isOwner, isActive, function(admin, mod, visible, owner, active) {
+    // check if user is mod
+    var isMod = isModWithThreadId(userId, threadId);
+
+    // get user's permisions
+    var lockSome = getACLValue(request.auth, 'threads.privilegedUpdate.some');
+    var lockAll = getACLValue(request.auth, 'threads.privilegedUpdate.all');
+
+    var promise = Promise.join(isThreadOwner, isMod, lockSome, lockAll, function(owner, mod, some, all) {
       var result = Boom.forbidden();
-
-      if (admin || mod) { result = ''; }
-      else if (owner && visible && active) { result = ''; }
-
+      if (all || isThreadOwner) { result = true; }
+      else if (some && mod) { result = true; }
       return result;
     });
+
     return reply(promise);
   },
-  canMove: managementAccess,
-  canSticky: managementAccess,
-  canDelete: managementAccess,
+  isThreadLockable: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+    var getACLValue = request.server.plugins.acls.getACLValue;
+
+    // get thread ownership
+    var isThreadOwner = db.threads.getThreadOwner(threadId)
+    .then(function(owner) { return owner.user_id === userId; });
+
+    // check if user is mod
+    var isMod = isModWithThreadId(userId, threadId);
+
+    // get user's permisions
+    var lockSome = getACLValue(request.auth, 'threads.privilegedLock.some');
+    var lockAll = getACLValue(request.auth, 'threads.privilegedLock.all');
+
+    var promise = Promise.join(isThreadOwner, isMod, lockSome, lockAll, function(owner, mod, some, all) {
+      var result = Boom.forbidden();
+      if (all || isThreadOwner) { result = true; }
+      else if (some && mod) { result = true; }
+      return result;
+    });
+
+    return reply(promise);
+  },
   getThread: function(request, reply) {
-    var threadId = request.params.id || request.query.id;
+    var threadId = _.get(request, request.route.settings.app.thread_id);
     db.threads.find(threadId)
     .then(function(thread) { return reply(thread); })
     .catch(function(err) { return reply(err); });
   },
   checkViewValidity: function(request, reply) {
-    var threadId = request.params.id || request.query.id;
+    var threadId = _.get(request, request.route.settings.app.thread_id);
     var viewerId = request.headers['epoch-viewer'];
     var viewerAddress = request.info.remoteAddress;
     var newViewerId;
@@ -149,7 +171,7 @@ module.exports = {
     // return early if not signed in
     if (!request.auth.isAuthenticated) { return reply(); }
 
-    var threadId = request.params.id || request.query.id;
+    var threadId = _.get(request, request.route.settings.app.thread_id);
     var now = Date.now();
     var userId = request.auth.credentials.id;
     var newThreadViews = [ { threadId: threadId, timestamp: now } ];
@@ -158,53 +180,21 @@ module.exports = {
     .catch(function(err) { return reply(err); });
   },
   threadFirstPost: function(request, reply) {
-    var threadId = request.params.id;
+    var threadId = _.get(request, request.route.settings.app.thread_id);
     var promise = db.threads.getThreadFirstPost(threadId)
     .error(function() { return Boom.notFound(); });
     return reply(promise);
   }
 };
 
-// Re-Used permissions
-function managementAccess(request, reply) {
-  var username = '';
-  var threadId = request.params.id;
-  var authenticated = request.auth.isAuthenticated;
-  if (authenticated) { username = request.auth.credentials.username; }
-
-  var isAdmin = commonPre.isAdmin(authenticated, username);
-  var isMod = commonPre.isMod(authenticated, username);
-
-  var promise = Promise.join(isAdmin, isMod, function(admin, mod) {
-    var result = Boom.forbidden();
-    if (admin ||  mod) { result = ''; }
-    return result;
-  });
-  return reply(promise);
+function isModWithBoardId(userId, boardId) {
+  // TODO: Implement check against board_moderators
+  return true;
 }
 
-// Helpers
-function isBoardVisible(boardId) {
-  return db.boards.getBoardInBoardMapping(boardId)
-  .then(function(board) {
-    var visible = false;
-    if (board) { visible = true; }
-    return visible;
-  });
-}
-
-function isThreadBoardVisible(threadId) {
-  return db.threads.getThreadsBoardInBoardMapping(threadId)
-  .then(function(board) {
-    var visible = false;
-    if (board) { visible = true; }
-    return visible;
-  });
-}
-
-function isThreadOwner(threadId, userId) {
-  return db.threads.getThreadOwner(threadId)
-  .then(function(owner) { return owner.user_id === userId; });
+function isModWithThreadId(userId, threadId) {
+  // TODO: Implement check against board_moderators
+  return true;
 }
 
 function checkViewKey(key) {
@@ -220,15 +210,5 @@ function checkViewKey(key) {
     // key exists but before cooling period
     // do nothing and return false
     else { return false; }
-  });
-}
-
-function isUserActive(username) {
-  var active = false;
-  if (!username) { return Promise.resolve(active); }
-  return db.users.userByUsername(username)
-  .then(function(user) {
-    if (user) { active = !user.deleted; }
-    return active;
   });
 }
