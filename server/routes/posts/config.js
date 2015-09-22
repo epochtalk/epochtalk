@@ -25,6 +25,7 @@ var querystring = require('querystring');
 exports.create = {
   app: { thread_id: 'payload.thread_id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.create' },
   validate: {
     payload: Joi.object().keys({
       title: Joi.string().min(1).max(255).required(),
@@ -44,7 +45,6 @@ exports.create = {
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
-  plugins: { acls: 'posts.create' },
   handler: function(request, reply) {
     // build the post object from payload and params
     var newPost = request.payload;
@@ -120,13 +120,13 @@ exports.import = {
 exports.find = {
   app: { post_id: 'params.id' },
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'posts.find' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.accessPrivateBoardWithPostId },
     { method: pre.accessBoardWithPostId },
     { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
-  plugins: { acls: 'posts.find' },
   handler: function(request, reply) {
     // retrieve post
     var userId = '';
@@ -162,6 +162,7 @@ exports.find = {
 exports.byThread = {
   app: { thread_id: 'query.thread_id'},
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'posts.byThread' },
   validate: {
     query: Joi.object().keys({
       thread_id: Joi.string().required(),
@@ -175,7 +176,6 @@ exports.byThread = {
     { method: pre.accessPrivateBoardWithThreadId },
     { method: pre.accessBoardWithThreadId }
   ] ],
-  plugins: { acls: 'posts.byThread' },
   handler: function(request, reply) {
     // ready parameters
     var userId = '';
@@ -238,6 +238,7 @@ exports.update = {
     isPostWriteable: 'posts.privilegedUpdate'
   },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.update' },
   validate: {
     payload: {
       title: Joi.string().min(1).max(255).required(),
@@ -260,7 +261,6 @@ exports.update = {
     { method: pre.parseEncodings },
     { method: pre.subImages }
   ],
-  plugins: { acls: 'posts.update' },
   handler: function(request, reply) {
     var updatePost = request.payload;
     updatePost.id = request.params.id;
@@ -291,6 +291,7 @@ exports.delete = {
     isPostOwner: 'posts.privilegedDelete'
   },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.delete' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
@@ -300,7 +301,6 @@ exports.delete = {
     { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }
   ] ], //handle permissions
-  plugins: { acls: 'posts.delete' },
   handler: function(request, reply) {
     var promise = db.posts.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
@@ -329,6 +329,7 @@ exports.undelete = {
     isPostOwner: 'posts.privilegedDelete'
   },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.undelete' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
@@ -338,7 +339,6 @@ exports.undelete = {
     { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }
   ] ], //handle permissions
-  plugins: { acls: 'posts.undelete' },
   handler: function(request, reply) {
     var promise = db.posts.undelete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
@@ -363,9 +363,9 @@ exports.undelete = {
 exports.purge = {
   app: { post_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.purge' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.isCDRPost } ], //handle permissions
-  plugins: { acls: 'posts.purge' },
   handler: function(request, reply) {
     var promise = db.posts.purge(request.params.id);
     return reply(promise);
@@ -392,6 +392,7 @@ exports.purge = {
   */
 exports.pageByUser = {
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'posts.pageByUser' },
   validate: {
     params: { username: Joi.string().required() },
     query: {
@@ -405,7 +406,6 @@ exports.pageByUser = {
     { method: pre.accessUser },
     { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
-  plugins: { acls: 'posts.pageByUser' },
   handler: function(request, reply) {
     // TODO: canViewDeletePost only works for admins/globalMods
     // pull the board_id, to check if user can view this post.

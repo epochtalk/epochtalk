@@ -22,6 +22,7 @@ var postPre = require(path.normalize(__dirname + '/../posts/pre'));
 exports.create = {
   app: { board_id: 'payload.board_id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.create' },
   validate: {
     payload: Joi.object().keys({
       locked: Joi.boolean().default(false),
@@ -41,7 +42,6 @@ exports.create = {
     { method: postPre.parseEncodings },
     { method: postPre.subImages }
   ],
-  plugins: { acls: 'threads.create' },
   handler: function(request, reply) {
     // build the thread post object from payload and params
     var user = request.auth.credentials;
@@ -130,6 +130,7 @@ exports.import = {
 exports.byBoard = {
   app: { board_id: 'query.board_id' },
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'threads.byBoard' },
   validate: {
     query: {
       board_id: Joi.string().required(),
@@ -138,7 +139,6 @@ exports.byBoard = {
     }
   },
   pre: [ { method: pre.accessBoardWithBoardId } ],
-  plugins: { acls: 'threads.byBoard' },
   handler: function(request, reply) {
     var user = request.auth.credentials || {};
     var boardId = request.query.board_id;
@@ -194,6 +194,7 @@ exports.byBoard = {
 exports.viewed = {
   app: { thread_id: 'params.id' },
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'threads.viewed' },
   validate: { params: { id: Joi.string().required() } },
   pre: [
     [ { method: pre.accessBoardWithThreadId } ],
@@ -202,7 +203,6 @@ exports.viewed = {
       { method: pre.updateUserThreadViews }
     ]
   ],
-  plugins: { acls: 'threads.viewed' },
   handler: function(request, reply) {
     var newViewerId = request.pre.newViewId;
     if (newViewerId) { return reply().header('Epoch-Viewer', newViewerId); }
@@ -229,6 +229,7 @@ exports.viewed = {
 exports.title = {
   app: { thread_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.title' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { title: Joi.string().required().min(1) }
@@ -239,7 +240,6 @@ exports.title = {
     { method: pre.isThreadEditable },
     { method: pre.threadFirstPost, assign: 'post' }
   ] ],
-  plugins: { acls: 'threads.title' },
   handler: function(request, reply) {
     var post = {
       id: request.pre.post.id,
@@ -271,6 +271,7 @@ exports.title = {
 exports.lock = {
   app: { thread_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.lock' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { status: Joi.boolean().default(true) }
@@ -281,7 +282,6 @@ exports.lock = {
       { method: pre.isThreadLockable },
       { method: pre.getThread, assign: 'thread' }
     ] ],
-  plugins: { acls: 'threads.lock' },
   handler: function(request, reply) {
     var thread = request.pre.thread;
     thread.locked = request.payload.status;
@@ -313,12 +313,12 @@ exports.lock = {
 exports.sticky = {
   app: { thread_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.sticky' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { status: Joi.boolean().default(true) }
   },
   pre: [ { method: pre.getThread, assign: 'thread' } ],
-  plugins: { acls: 'threads.sticky' },
   handler: function(request, reply) {
     var thread = request.pre.thread;
     thread.sticky = request.payload.status;
@@ -351,12 +351,12 @@ exports.sticky = {
 exports.move = {
   app: { thread_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.move' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { newBoardId: Joi.string().required() }
   },
   pre: [ { method: pre.getThread, assign: 'thread' } ],
-  plugins: { acls: 'threads.move' },
   handler: function(request, reply) {
     var newBoardId = request.payload.newBoardId;
     var thread = request.pre.thread;
@@ -388,8 +388,8 @@ exports.move = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  validate: { params: { id: Joi.string().required() } },
   plugins: { acls: 'threads.delete' },
+  validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var promise = db.threads.delete(request.params.id);
     return reply(promise);

@@ -137,6 +137,7 @@ exports.import = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'users.update' },
   validate: {
     payload: Joi.object().keys({
       id: Joi.string().required(),
@@ -162,6 +163,7 @@ exports.update = {
   },
   pre: [
     [
+      // TODO: password should be need to update email
       { method: pre.isOldPasswordValid },
       { method: pre.isNewUsernameUnique },
       { method: pre.isNewEmailUnique },
@@ -171,7 +173,6 @@ exports.update = {
     { method: commonPre.parseSignature },
     { method: commonPre.handleImages },
   ],
-  plugins: { acls: 'users.update' },
   handler: function(request, reply) {
     // set editing user to current user
     request.payload.id = request.auth.credentials.id;
@@ -228,9 +229,9 @@ exports.update = {
   */
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'users.find' },
   validate: { params: { username: Joi.string().required() } },
   pre: [ { method: pre.accessUser } ],
-  plugins: { acls: 'users.find' },
   handler: function(request, reply) {
     // get logged in user id
     var userId = '';
@@ -272,12 +273,12 @@ exports.find = {
 exports.deactivate = {
   app: { user_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'users.deactivate' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isReferencedUserActive },
     { method: pre.deactivateAuthorized, assign: 'userId' }
   ] ],
-  plugins: { acls: 'users.deactivate' },
   handler: function(request, reply) {
     var userId = request.pre.userId;
     var promise = db.users.deactivate(userId);
@@ -301,12 +302,12 @@ exports.deactivate = {
 exports.reactivate = {
   app: { user_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'users.reactivate' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isReferencedUserDeactive },
     { method: pre.reactivateAuthorized, assign: 'userId' }
   ] ],
-  plugins: { acls: 'users.reactivate' },
   handler: function(request, reply) {
     var userId = request.pre.userId;
     var promise = db.users.reactivate(userId);
@@ -329,8 +330,8 @@ exports.reactivate = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  validate: { params: { id: Joi.string().required() } },
   plugins: { acls: 'users.delete' },
+  validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.params.id;
     var promise = db.users.delete(userId);

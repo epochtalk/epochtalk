@@ -5,19 +5,27 @@ var db = require(path.normalize(__dirname + '/../../../db'));
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
-  // TODO: Implement private boards. Fetch allowed roles/users from board model
-  canFind: function(request, reply) {
-    var username = '';
-    var boardId = request.params.id;
-    var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
+  accessPrivateBoardWithBoardId: function(request, reply) {
+    // TODO: Implement private board check
+    return reply(true);
+  },
+  accessBoardWithBoardId: function(request, reply) {
+    var boardId = _.get(request, request.route.settings.app.board_id);
+    var boardVisible = db.posts.getBoardInBoardMapping(boardId)
+    .then(function(board) { return !!board; });
 
-    // TODO: pull permissions, use boards.viewUncategorized in the future
-    var isVisible = db.boards.getBoardInBoardMapping(boardId);
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
+    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
 
-    var promise = Promise.join(isVisible, function(visible) {
+    var promise = Promise.join(boardVisible, viewSome, viewAll, function(visible, some, all) {
       var result = Boom.notFound();
-      if (visible) { result = ''; }
+      // Board is visible or user has elevated privelages
+      if (visible || all) { result = true; }
+      // User is authenticated and can moderate certain boards
+      else if (request.auth.isAuthenticated && some) {
+        result = isModWithPostId(request.auth.credentials.id, postId);
+      }
       return result;
     });
     return reply(promise);

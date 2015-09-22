@@ -112,9 +112,13 @@ exports.import = {
   * @apiError (Error 500) InternalServerError There was an issue finding the board
   */
 exports.find = {
+  app: { board_id: 'params.id' },
   validate: { params: { id: Joi.string().required() } },
   plugins: { acls: 'boards.find' },
-  pre: [ { method: pre.canFind } ],
+  pre: [ [
+    { method: pre.accessBoardWithBoardId },
+    { method: pre.accessPrivateBoardWithBoardId }
+  ] ],
   handler: function(request, reply) {
     return reply(db.boards.find(request.params.id));
   }

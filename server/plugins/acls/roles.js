@@ -37,6 +37,10 @@ module.exports = roles;
       update: true
     },
     adminUsers: {
+      privilegedUpdate: {
+        samePriority: true,
+        lowerPriority: true
+      },
       update: true,
       find: true,
       addRoles: true,
@@ -83,12 +87,12 @@ module.exports = roles;
     },
     posts: {
       privilegedUpdate: {
-        samePriority: true,
-        lowerPriority: true
+        some: true,
+        all: true
       },
       privilegedDelete: {
-        samePriority: true,
-        lowerPriority: true
+        some: true,
+        all: true
       },
       viewDeleted: {
         some: true,
@@ -205,6 +209,9 @@ roles.superAdministrator = {
     update: true
   },
   adminUsers: {
+    privilegedUpdate: {
+      lowerPriority: true
+    },
     update: true,
     find: true,
     addRoles: true,
@@ -354,6 +361,9 @@ roles.administrator = {
     update: true
   },
   adminUsers: {
+    privilegedUpdate: {
+      lowerPriority: true
+    },
     update: true,
     find: true,
     addRoles: true,
@@ -499,6 +509,9 @@ roles.globalModerator = {
     messageReportsNotesCount: true
   },
   adminUsers: {
+    privilegedUpdate: {
+      lowerPriority: true
+    },
     update: true,
     find: true,
     ban: true,
@@ -618,6 +631,9 @@ roles.moderator = {
     messageReportsNotesCount: true
   },
   adminUsers: {
+    privilegedUpdate: {
+      lowerPriority: true
+    },
     update: true,
     find: true,
     ban: true,

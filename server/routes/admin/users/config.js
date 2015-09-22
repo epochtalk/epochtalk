@@ -1,11 +1,11 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var commonUsersPre = require(path.normalize(__dirname + '/../../common')).users;
+var querystring = require('querystring');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
 var USER_ROLES = require(path.normalize(__dirname + '/../../user-roles'));
-var querystring = require('querystring');
+var commonPre = require(path.normalize(__dirname + '/../../common')).users;
 
 /**
   * @apiVersion 0.3.0
@@ -50,6 +50,7 @@ var querystring = require('querystring');
   * @apiError (Error 500) InternalServerError There was error updating the user
   */
 exports.update = {
+  app: { user_id: 'payload.id' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.update' },
   validate: {
@@ -58,7 +59,6 @@ exports.update = {
       email: Joi.string().email(),
       username: Joi.string().min(1).max(255),
       password: Joi.string().min(8).max(72),
-      confirmation: Joi.ref('password'),
       name: Joi.string().allow(''),
       website: Joi.string().allow(''),
       btcAddress: Joi.string().allow(''),
@@ -75,23 +75,26 @@ exports.update = {
   },
   pre: [
     [
-      { method: pre.checkUserExists },
-      { method: pre.checkUsernameUniqueness },
-      { method: pre.checkEmailUniqueness }
+      // TODO: password should be needed to change email
+      // TODO: password should be not updated by an admin role
+      { method: pre.matchPriority },
+      { method: pre.isNewUsernameUnique },
+      { method: pre.isNewEmailUnique }
     ],
-    { method: commonUsersPre.clean },
-    { method: commonUsersPre.parseSignature },
-    { method: commonUsersPre.handleImages }
+    { method: commonPre.clean },
+    { method: commonPre.parseSignature },
+    { method: commonPre.handleImages }
   ],
   handler: function(request, reply) {
-    db.users.update(request.payload)
+    var promise = db.users.update(request.payload)
     .then(function(user) {
       delete user.confirmation_token;
       delete user.reset_token;
       delete user.reset_expiration;
-      reply(user);
-    })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+      delete user.password;
+      return user;
+    });
+    return reply(promise);
   }
 };
 
@@ -136,19 +139,16 @@ exports.find = {
   plugins: { acls: 'adminUsers.find' },
   validate: { params: { username: Joi.string().required() } },
   handler: function(request, reply) {
-    // get user by username
     var username = querystring.unescape(request.params.username);
-
-    db.users.userByUsername(username)
+    var promise = db.users.userByUsername(username)
     .then(function(user) {
       if (!user) { return Boom.badRequest('User doesn\'t exist.'); }
       delete user.passhash;
       delete user.confirmation_token;
       delete user.reset_token;
       return user;
-    })
-    .then(function(user) { reply(user); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    });
+    return reply(promise);
   }
 };
 
@@ -191,9 +191,8 @@ exports.addRoles = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
-    db.users.addRoles(userId, roles)
-    .then(function(updatedUser) { reply(updatedUser); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = db.users.addRoles(userId, roles);
+    return reply(promise);
   }
 };
 
@@ -236,9 +235,8 @@ exports.removeRoles = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
-    db.users.removeRoles(userId, roles)
-    .then(function(updatedUser) { reply(updatedUser); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = db.users.removeRoles(userId, roles);
+    return reply(promise);
   }
 };
 
@@ -272,9 +270,8 @@ exports.searchUsernames = {
     // get user by username
     var searchStr = request.query.username;
     var limit = request.query.limit;
-    db.users.searchUsernames(searchStr, limit)
-    .then(function(users) { reply(users); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = db.users.searchUsernames(searchStr, limit);
+    return reply(promise);
   }
 };
 
@@ -315,8 +312,8 @@ exports.count = {
       };
     }
 
-    db.users.count(opts)
-    .then(function(usersCount) { reply(usersCount); });
+    var promise = db.users.count(opts);
+    return reply(promise);
   }
 };
 
@@ -337,8 +334,8 @@ exports.countAdmins = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.countAdmins' },
   handler: function(request, reply) {
-    db.users.countAdmins()
-    .then(function(adminsCount) { reply(adminsCount); });
+    var promise = db.users.countAdmins();
+    return reply(promise);
   }
 };
 
@@ -359,8 +356,8 @@ exports.countModerators = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.countModerators' },
   handler: function(request, reply) {
-    db.users.countModerators()
-    .then(function(moderatorsCount) { reply(moderatorsCount); });
+    var promise = db.users.countModerators();
+    return reply(promise);
   }
 };
 
@@ -412,8 +409,8 @@ exports.page = {
       filter: request.query.filter,
       searchStr: request.query.search
     };
-    db.users.page(opts)
-    .then(function(users) { reply(users); });
+    var promise = db.users.page(opts);
+    return reply(promise);
   }
 };
 
@@ -459,8 +456,8 @@ exports.pageAdmins = {
       sortField: request.query.field,
       sortDesc: request.query.desc
     };
-    db.users.pageAdmins(opts)
-    .then(function(admins) { reply(admins); });
+    var promise = db.users.pageAdmins(opts);
+    return reply(promise);
   }
 };
 
@@ -506,8 +503,8 @@ exports.pageModerators = {
       sortField: request.query.field,
       sortDesc: request.query.desc
     };
-    db.users.pageModerators(opts)
-    .then(function(moderators) { reply(moderators); });
+    var promise = db.users.pageModerators(opts);
+    return reply(promise);
   }
 };
 
@@ -544,8 +541,8 @@ exports.ban = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
-    db.users.ban(userId, expiration)
-    .then(function(ban) { reply(ban); });
+    var promise = db.users.ban(userId, expiration);
+    return reply(promise);
   }
 };
 
@@ -574,7 +571,7 @@ exports.unban = {
   validate: { payload: { user_id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    db.users.unban(userId)
-    .then(function(ban) { reply(ban); });
+    var promise = db.users.unban(userId);
+    return reply(promise);
   }
 };

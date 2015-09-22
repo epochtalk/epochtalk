@@ -4,7 +4,6 @@ var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
 var querystring = require('querystring');
 var db = require(path.normalize(__dirname + '/../../../db'));
-var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 
 module.exports = {
   deactivateAuthorized: function(request, reply) {
@@ -93,7 +92,7 @@ module.exports = {
   },
   isNewUsernameUnique: function(request, reply) {
     var userId = request.auth.credentials.id;
-    var username = request.payload.username;
+    var username = querystring.unescape(request.payload.username);
 
     // bypass check if no email given
     if (!username) { return reply(true); }
@@ -106,7 +105,7 @@ module.exports = {
       if (user && user.id === userId) { unique = true; }
       // user with this username already exists and is not this user
       else if (user) { unique = Boom.badRequest(); }
-      // no user with this email
+      // no user with this username
       else { unique = true; }
       return unique;
     });
