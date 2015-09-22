@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
@@ -10,7 +11,7 @@ module.exports = {
     var userId = request.auth.credentials.id;
     var conversationId = request.payload.conversation_id;
 
-    var promise = isConversationMember(conversationId, userId)
+    var promise = db.conversations.isConversationMember(conversationId, userId)
     .then(function(isMember) {
       var result = Boom.badRequest();
       if (isMember) { result = ''; }
@@ -18,17 +19,18 @@ module.exports = {
     });
     return reply(promise);
   },
-  canDelete: function(request, reply) {
+  isMessageOwner: function(request, reply) {
     // isAdmin or message sender
     var userId = request.auth.credentials.id;
     var messageId = request.params.id;
 
-    // TODO: pull messages.delete from permission matrix
-    var isSender = isMessageSender(messageId, userId);
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var isDeleteable = getACLValue(request.auth, 'messages.privilegedDelete');
+    var isSender = db.messages.isMessageSender(messageId, userId);
 
-    var promise = Promise.join(isSender, function(sender) {
+    var promise = Promise.join(isSender, isDeleteable, function(sender, deleteable) {
       var result = Boom.badRequest();
-      if (sender) { result = ''; }
+      if (sender || deleteable) { result = ''; }
       return result;
     });
     return reply(promise);
@@ -68,14 +70,4 @@ function textToEntities(text) {
   }
 
   return entities;
-}
-
-function isConversationMember(conversationId, userId) {
-  return db.conversations.isConversationMember(conversationId, userId)
-  .then(function(isMember) { return isMember; });
-}
-
-function isMessageSender(messageId, userId) {
-  return db.messages.isMessageSender(messageId, userId)
-  .then(function(isSender) { return isSender; });
 }

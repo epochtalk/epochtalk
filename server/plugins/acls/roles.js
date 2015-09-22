@@ -1,8 +1,6 @@
 var roles = {};
 module.exports = roles;
 
-// TODO: ensure that at least superAdmin, admin, moderator, user, banned, and anonymous roles are populated
-
 /* base permission set
   roles.basePermissions = {
     // business logic
@@ -250,6 +248,7 @@ roles.superAdministrator = {
     delete: true
   },
   messages: {
+    privilegedDelete: true,
     create: true,
     latest: true,
     findUser: true,
@@ -402,6 +401,7 @@ roles.administrator = {
     delete: true
   },
   messages: {
+    privilegedDelete: true,
     create: true,
     latest: true,
     findUser: true,
@@ -531,6 +531,7 @@ roles.globalModerator = {
     delete: true
   },
   messages: {
+    privilegedDelete: true,
     create: true,
     latest: true,
     findUser: true,

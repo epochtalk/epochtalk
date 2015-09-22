@@ -129,9 +129,8 @@ exports.delete = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'messages.delete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ], //handle permissions
+  pre: [ { method: pre.isMessageOwner } ],
   handler: function(request, reply) {
-    // TODO: delete conversations with no more messages
     var promise = db.messages.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
