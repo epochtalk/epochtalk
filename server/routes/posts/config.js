@@ -231,7 +231,12 @@ exports.byThread = {
   * @apiError (Error 500) InternalServerError There was an issue updating the post
   */
 exports.update = {
-  app: { thread_id: 'payload.thread_id', post_id: 'params.id' },
+  app: {
+    thread_id: 'payload.thread_id',
+    post_id: 'params.id',
+    isPostOwner: 'posts.privilegedUpdate',
+    isPostWriteable: 'posts.privilegedUpdate'
+  },
   auth: { strategy: 'jwt' },
   validate: {
     payload: {
@@ -244,7 +249,8 @@ exports.update = {
   },
   pre: [
     [
-      { method: pre.isPostEditable },
+      { method: pre.isPostOwner },
+      { method: pre.isPostWriteable },
       { method: pre.accessPrivateBoardWithThreadId },
       { method: pre.accessBoardWithThreadId },
       { method: pre.accessLockedThreadWithThreadId },
@@ -280,12 +286,15 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue deleting the post
   */
 exports.delete = {
-  app: { post_id: 'params.id' },
+  app: {
+    post_id: 'params.id',
+    isPostOwner: 'posts.privilegedDelete'
+  },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
-    { method: pre.isPostDeleteable },
+    { method: pre.isPostOwner },
     { method: pre.accessPrivateBoardWithPostId },
     { method: pre.accessBoardWithPostId },
     { method: pre.accessLockedThreadWithPostId },
@@ -315,12 +324,15 @@ exports.delete = {
   * @apiError (Error 500) InternalServerError There was an issue undeleting the post
   */
 exports.undelete = {
-  app: { post_id: 'params.id' },
+  app: {
+    post_id: 'params.id',
+    isPostOwner: 'posts.privilegedDelete'
+  },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
-    { method: pre.isPostDeleteable },
+    { method: pre.isPostOwner },
     { method: pre.accessPrivateBoardWithPostId },
     { method: pre.accessBoardWithPostId },
     { method: pre.accessLockedThreadWithPostId },

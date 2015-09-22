@@ -250,10 +250,10 @@ roles.superAdministrator = {
   },
   posts: {
     privilegedUpdate: {
-      lowerPriority: true
+      all: true
     },
     privilegedDelete: {
-      lowerPriority: true
+      all: true
     },
     viewDeleted: {
       all: true
@@ -399,10 +399,10 @@ roles.administrator = {
   },
   posts: {
     privilegedUpdate: {
-      lowerPriority: true
+      all: true
     },
     privilegedDelete: {
-      lowerPriority: true
+      all: true
     },
     viewDeleted: {
       all: true
@@ -525,10 +525,10 @@ roles.globalModerator = {
   },
   posts: {
     privilegedUpdate: {
-      lowerPriority: true
+      all: true
     },
     privilegedDelete: {
-      lowerPriority: true
+      all: true
     },
     viewDeleted: {
       all: true
@@ -644,10 +644,10 @@ roles.moderator = {
   },
   posts: {
     privilegedUpdate: {
-      lowerPriority: true
+      some: true
     },
     privilegedDelete: {
-      lowerPriority: true
+      some: true
     },
     viewDeleted: {
       some: true,

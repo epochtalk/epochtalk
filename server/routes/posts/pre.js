@@ -131,44 +131,44 @@ module.exports = {
     // TODO: Implement private board check
     return reply(true);
   },
-  isPostEditable: function(request, reply) {
-    // TODO: check user mod instead of priority
+  isPostWriteable: function(request, reply) {
+    var privilege = request.route.settings.app.isPostWriteable;
     var postId = _.get(request, request.route.settings.app.post_id);
     var userId = request.auth.credentials.id;
 
-    var promise = db.posts.find(postId)
-    .then(function(post) {
-      if (post.deleted) { return Boom.forbidden(); } // break out if post is deleted
-      else if (post && post.user.id === userId) { return true; } // break out if authed user is author
-      else { // compare user priorities
-        var authorUsername = post.user.username;
-        var authedUsername = request.auth.credentials.username;
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var viewSome = getACLValue(request.auth, privilege + '.some');
+    var viewAll = getACLValue(request.auth, privilege + '.all');
+    var postWriteable = db.posts.find(postId).then(function(post) { return !post.deleted; });
 
-        var getACLValue = request.server.plugins.acls.getACLValue;
-        var samePriority = getACLValue(request.auth, 'posts.privilegedUpdate.samePriority');
-        var lowerPriority = getACLValue(request.auth, 'posts.privilegedUpdate.lowerPriority');
+    var promise = Promise.join(postWriteable, viewSome, viewAll, function(writeable, some, all) {
+      var result = Boom.forbidden();
 
-        // get post author priority
-        var authorPriority = db.users.userByUsername(authorUsername)
-        .then(function(authorUser) { return _.min(_.pluck(authorUser.roles, 'priority')); });
+      if (writeable || all) { result = true; }
+      else if (some) { result = isModWithPostId(userId, postId); }
 
-        // get authed user priority
-        var authedPriority = db.users.userByUsername(authedUsername)
-        .then(function(authedUser) { return _.min(_.pluck(authedUser.roles, 'priority')); });
+      return result;
+    });
+    return reply(promise);
+  },
+  isPostOwner: function(request, reply) {
+    var privilege = request.route.settings.app.isPostOwner;
+    var postId = _.get(request, request.route.settings.app.post_id);
+    var userId = request.auth.credentials.id;
 
-        return Promise.join(authorPriority, authedPriority, samePriority, lowerPriority, function(posterPriority, editorPriority, same, lower) {
-          var result = Boom.forbidden();
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var updateSome = getACLValue(request.auth, privilege + '.some');
+    var updateAll = getACLValue(request.auth, privilege + '.all');
+    var postOwner = db.posts.find(postId)
+    .then(function(post) { return userId === post.user.id; });
 
-          // lower and same are both false, forbidden
-          if (!same && !lower) { return result; }
-          // editor has same or higher priority than post author
-          else if (same && editorPriority <= posterPriority) { result = true; }
-          // editor has higher priority than post author
-          else if (lower && editorPriority < posterPriority) { result = true; }
+    var promise = Promise.join(postOwner, updateSome, updateAll, function(owner, some, all) {
+      var result = Boom.forbidden();
 
-          return result;
-        });
-      }
+      if (owner || all) { result = true; }
+      else if (some) { result = isModWithPostId(userId, postId); }
+
+      return result;
     });
 
     return reply(promise);
@@ -181,47 +181,6 @@ module.exports = {
       if (post.id === postId) { result = Boom.forbidden(); } // forbidden if first post
       return result;
     });
-    return reply(promise);
-  },
-  isPostDeleteable: function(request, reply) {
-    // TODO: check user mod instead of priority
-    var postId = _.get(request, request.route.settings.app.post_id);
-    var userId = request.auth.credentials.id;
-
-    var promise = db.posts.find(postId)
-    .then(function(post) {
-      if (post && post.user.id === userId) { return true; } // break out if authed user is author
-      else { // compare user priorities
-        var authorUsername = post.user.username;
-        var authedUsername = request.auth.credentials.username;
-
-        var getACLValue = request.server.plugins.acls.getACLValue;
-        var samePriority = getACLValue(request.auth, 'posts.privilegedDelete.samePriority');
-        var lowerPriority = getACLValue(request.auth, 'posts.privilegedDelete.lowerPriority');
-
-        // get post author priority
-        var authorPriority = db.users.userByUsername(authorUsername)
-        .then(function(authorUser) { return _.min(_.pluck(authorUser.roles, 'priority')); });
-
-        // get authed user priority
-        var authedPriority = db.users.userByUsername(authedUsername)
-        .then(function(authedUser) { return _.min(_.pluck(authedUser.roles, 'priority')); });
-
-        return Promise.join(authorPriority, authedPriority, samePriority, lowerPriority, function(posterPriority, editorPriority, same, lower) {
-          var result = Boom.forbidden();
-
-          // lower and same are both false, forbidden
-          if (!same && !lower) { return result; }
-          // editor has same or higher priority than post author
-          else if (same && editorPriority <= posterPriority) { result = true; }
-          // editor has higher priority than post author
-          else if (lower && editorPriority < posterPriority) { result = true; }
-
-          return result;
-        });
-      }
-    });
-
     return reply(promise);
   },
   accessUser: function(request, reply) {
