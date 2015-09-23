@@ -28,6 +28,7 @@ var db = require(path.normalize(__dirname + '/../../../db'));
   */
 exports.createUserReport = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'reports.createUserReport' },
   validate: {
     payload: {
       reporter_user_id: Joi.string().required(),
@@ -35,7 +36,6 @@ exports.createUserReport = {
       offender_user_id: Joi.string().required()
     }
   },
-  plugins: { acls: 'reports.createUserReport' },
   handler: function(request, reply) {
     var report = request.payload;
     var promise = db.reports.createUserReport(report);
@@ -68,6 +68,7 @@ exports.createUserReport = {
   */
 exports.createPostReport = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'reports.createPostReport' },
   validate: {
     payload: {
       reporter_user_id: Joi.string().required(),
@@ -75,7 +76,6 @@ exports.createPostReport = {
       offender_post_id: Joi.string().required()
     }
   },
-  plugins: { acls: 'reports.createPostReport' },
   handler: function(request, reply) {
     var report = request.payload;
     var promise = db.reports.createPostReport(report);
@@ -108,6 +108,7 @@ exports.createPostReport = {
   */
 exports.createMessageReport = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'reports.createMessageReport' },
   validate: {
     payload: {
       reporter_user_id: Joi.string().required(),
@@ -115,7 +116,6 @@ exports.createMessageReport = {
       offender_message_id: Joi.string().required()
     }
   },
-  plugins: { acls: 'reports.createMessageReport' },
   handler: function(request, reply) {
     var report = request.payload;
     var promise = db.reports.createMessageReport(report);

@@ -31,9 +31,9 @@ exports.byType = {
 
     // method type enum
     var findType = {
-      board: db.boards.find,
+      board: db.boards.breadcrumb,
       category: db.categories.find,
-      thread: db.threads.find,
+      thread: db.threads.breadcrumb,
       post: db.posts.find
     };
 

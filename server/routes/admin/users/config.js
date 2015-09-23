@@ -189,6 +189,7 @@ exports.addRoles = {
     }
   },
   handler: function(request, reply) {
+    // TODO: append role to acl system
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
     var promise = db.users.addRoles(userId, roles);
@@ -233,6 +234,7 @@ exports.removeRoles = {
     }
   },
   handler: function(request, reply) {
+    // TODO: remove role from acl system
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
     var promise = db.users.removeRoles(userId, roles);
