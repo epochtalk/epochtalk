@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var fs = require('fs');
 require('./filters');
 require('./services');
@@ -242,17 +243,24 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     // Checks if user is an admin
-    var adminCheck = ['$q', 'Session', function($q, Session) {
-      if (Session.user.isAdmin) { return true; }
-      else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
-    }];
+    var adminCheck = function(route) {
+      return ['$q', 'Session', function($q, Session) {
+        if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
+        if (route && _.get(Session.user.permissions.adminAccess, route)) { return true; }
+        else if (!route && Session.user.permissions.adminAccess) { return true; }
+        else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
+      }];
+    };
 
     // Checks if user is a moderator
-    var modCheck = ['$q', 'Session', function($q, Session) {
-      if (Session.user.isMod) { return true; }
-      else if (Session.user.isAdmin) { return false; } // admin isn't mod, but isn't unauthorized
-      else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
-    }];
+    var modCheck = function(route) {
+      return ['$q', 'Session', function($q, Session) {
+        if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
+        if (route && _.get(Session.user.permissions.modAccess, route)) { return true; }
+        else if (!route && Session.user.permissions.modAccess) { return true; }
+        else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
+      }];
+    };
 
     $urlRouterProvider.when('/admin', '/admin/settings/general');
     $urlRouterProvider.when('/admin/', '/admin/settings/general');
@@ -260,7 +268,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     $stateProvider.state('admin', {
       url: '/admin',
       parent: 'admin-layout',
-      resolve: { userAccess: modCheck || adminCheck }
+      resolve: { userAccess: modCheck() || adminCheck() }
     });
 
     // Default child state for admin-settings is general
@@ -277,7 +285,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('settings'),
         settings: ['AdminSettings', function(AdminSettings) {
           return AdminSettings.get().$promise
           .then(function(settings) {
@@ -299,7 +307,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('settings.general'),
         $title: function() { return 'General Settings'; }
       }
     })
@@ -313,7 +321,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('settings.forum'),
         $title: function() { return 'Forum Settings'; }
       }
     });
@@ -331,7 +339,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/admin/management/index.html')
         }
       },
-      resolve: { userAccess: adminCheck }
+      resolve: { userAccess: adminCheck('management') }
     })
     .state('admin-management.boards', {
       url: '/boards?saved',
@@ -343,7 +351,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('management.boards'),
         $title: function() { return 'Board Management'; },
         categories: ['Boards', function(Boards) {
           return Boards.query().$promise
@@ -366,7 +374,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('management.users'),
         $title: function() { return 'User Management'; },
         users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
           var query = {
@@ -424,7 +432,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('management.roles'),
         $title: function() { return 'User Management'; },
         users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
           var query = {
@@ -450,7 +458,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('management'),
         $title: function() { return 'Moderator Management'; },
         moderators: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
           var query = {
@@ -490,7 +498,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('management'),
         $title: function() { return 'Admin Management'; },
         admins: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
           var query = {
@@ -539,7 +547,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           template: fs.readFileSync(__dirname + '/admin/moderation/index.html')
         }
       },
-      resolve: { userAccess: modCheck || adminCheck }
+      resolve: { userAccess: modCheck() }
     })
     .state('admin-moderation.users', {
       url: '/users?page&limit&field&desc&filter&search&reportId',
@@ -552,6 +560,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        userAccess: modCheck('users'),
         $title: function() { return 'User Moderation'; },
         limit: ['$stateParams', function($stateParams) {
           return $stateParams.limit || 15;
@@ -632,6 +641,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        userAccess: modCheck('posts'),
         $title: function() { return 'Post Moderation'; },
         limit: ['$stateParams', function($stateParams) {
           return $stateParams.limit || 15;
@@ -692,6 +702,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        userAccess: modCheck('messages'),
         $title: function() { return 'Messages Moderation'; },
         limit: ['$stateParams', function($stateParams) {
           return $stateParams.limit || 15;
@@ -753,7 +764,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('analytics'),
         $title: function() { return 'Analytics'; }
       }
     });

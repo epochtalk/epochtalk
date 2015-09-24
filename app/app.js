@@ -95,7 +95,6 @@ app.config(require('./config'))
   // Handle if there is an error changing state
   $rootScope.$on('$stateChangeError', function(event, next, nextParams, prev, prevParams, error) {
     event.preventDefault();
-
     // Unauthorized is redirected to login, save next so we can redirect after login
     if (error.status === 401 || error.statusText === 'Unauthorized') {
       $state.go('login');

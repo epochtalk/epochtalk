@@ -6,6 +6,23 @@ module.exports = roles;
     // business logic
     name: 'superAdministrator',
     priority: 0,
+    // View Access
+    adminAccess: {
+      settings: {
+        general: true,
+        forum: true
+      },
+      management: {
+        boards: true,
+        users: true,
+        roles: true
+      }
+    },
+    modAccess: {
+      users: true,
+      posts: true,
+      messages: true
+    },
     // ACLs
     adminReports: {
       createUserReportNote: true,
@@ -178,6 +195,23 @@ roles.superAdministrator = {
   name: 'Super Administrator',
   lookup: 'superAdministrator',
   priority: 0,
+  // View Access
+  adminAccess: {
+    settings: {
+      general: true,
+      forum: true
+    },
+    management: {
+      boards: true,
+      users: true,
+      roles: true
+    }
+  },
+  modAccess: {
+    users: true,
+    posts: true,
+    messages: true
+  },
   // ACLs
   adminReports: {
     createUserReportNote: true,
@@ -331,6 +365,19 @@ roles.administrator = {
   name: 'Administrator',
   lookup: 'administrator',
   priority: 1,
+  // View Access
+  adminAccess: {
+    management: {
+      boards: true,
+      users: true,
+      roles: true
+    }
+  },
+  modAccess: {
+    users: true,
+    posts: true,
+    messages: true
+  },
   // ACLs
   adminReports: {
     createUserReportNote: true,
@@ -484,6 +531,12 @@ roles.globalModerator = {
   name: 'Global Moderator',
   lookup: 'globalModerator',
   priority: 2,
+  // View Access
+  modAccess: {
+    users: true,
+    posts: true,
+    messages: true
+  },
   // ACLs
   adminReports: {
     createUserReportNote: true,
@@ -607,6 +660,12 @@ roles.moderator = {
   name: 'Moderator',
   lookup: 'moderator',
   priority: 3,
+  // View Access
+  modAccess: {
+    users: true,
+    posts: true,
+    messages: true
+  },
   // ACLs
   adminReports: {
     createUserReportNote: true,

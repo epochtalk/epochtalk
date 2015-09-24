@@ -1,11 +1,12 @@
 var helper = {};
 module.exports = helper;
-
+var _ = require('lodash');
 var path = require('path');
 var uuid = require('node-uuid');
 var jwt = require('jsonwebtoken');
 var redis = require(path.normalize(__dirname + '/../../../redis'));
 var config = require(path.normalize(__dirname + '/../../../config'));
+var roles = require(path.normalize(__dirname + '/../../plugins/acls/roles'));
 
 // TODO: handle token expiration?
 function buildToken(userId) {
@@ -15,13 +16,44 @@ function buildToken(userId) {
   return { decodedToken: decodedToken, token: encodedToken };
 }
 
+function getMaskedPermissions(userRoles) {
+  var permissions = userRoles.map(function(roleName) { return roles[roleName]; });
+
+  var maskPermission = function(permissionName) {
+    var allPermissions = permissions.map(function(acl) { return _.get(acl, permissionName); });
+    var maskedPermission = false;
+    allPermissions.forEach(function(val) { maskedPermission = val || maskedPermission; });
+    return maskedPermission;
+  };
+
+  return {
+    adminAccess: maskPermission('adminAccess') ? {
+      settings: maskPermission('adminAccess.settings') ? {
+        general: maskPermission('adminAccess.settings.general'),
+        forum: maskPermission('adminAccess.settings.forum')
+      } : undefined,
+      management: maskPermission('adminAccess.management') ? {
+        boards: maskPermission('adminAccess.management.boards'),
+        users: maskPermission('adminAccess.management.users'),
+        roles: maskPermission('adminAccess.management.roles')
+      } : undefined
+    } : undefined,
+    modAccess: maskPermission('modAccess') ? {
+      users: maskPermission('modAccess.users'),
+      posts: maskPermission('modAccess.posts'),
+      messages: maskPermission('modAccess.messages')
+    } : undefined
+  };
+}
+
 function formatUserReply(token, user) {
   return {
     token: token,
     id: user.id,
     username: user.username,
     avatar: user.avatar,
-    roles: user.roles
+    roles: user.roles,
+    permissions: getMaskedPermissions(user.roles)
   };
 }
 
@@ -34,7 +66,8 @@ helper.saveSession = function(user) {
 
   // save username, avatar to redis hash under "user:{userId}"
   var userKey = 'user:' + user.id;
-  var userValue = { username: user.username, avatar: user.avatar };
+  var userValue = { username: user.username };
+  if (user.avatar) { userValue.avatar = user.avatar; }
   return redis.hmsetAsync(userKey, userValue)
   // save roles to redis set under "user:{userId}:roles"
   .then(function() {

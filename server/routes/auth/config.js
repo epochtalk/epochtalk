@@ -39,7 +39,7 @@ exports.login = {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      return reply(formatUserReply(loggedInUser.token, loggedInUser));
+      return reply(helper.formatUserReply(loggedInUser.token, loggedInUser));
     }
 
     var username = request.payload.username;
@@ -54,6 +54,10 @@ exports.login = {
         return Promise.reject(Boom.badRequest('Account Not Confirmed'));
       }
       else { return user; }
+    })
+    .then(function(user) {
+      if (user.passhash) { return user; }
+      else { return Promise.reject(Boom.forbidden('Account Migration Not Complete, Please Reset Password')); }
     })
     .then(function(user) { // check if passhash matches
       if (bcrypt.compareSync(password, user.passhash)) { return user; }
@@ -149,7 +153,7 @@ exports.register = {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      return reply(formatUserReply(loggedInUser.token, loggedInUser));
+      return reply(helper.formatUserReply(loggedInUser.token, loggedInUser));
     }
 
     var newUser = {

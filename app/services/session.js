@@ -2,8 +2,8 @@
 /* jslint node: true */
 /* global angular */
 
-module.exports = ['$window', 'USER_ROLES',
-  function($window, USER_ROLES) {
+module.exports = ['$window',
+  function($window) {
     var user = {};
     var authenticated = false;
     $window.privateStorage = {}; // fallback for safari private browser
@@ -20,12 +20,8 @@ module.exports = ['$window', 'USER_ROLES',
       if ($window.sessionStorage.roles || $window.localStorage.roles) {
         user.roles = JSON.parse($window.sessionStorage.roles || $window.localStorage.roles);
       }
-      if (user.roles) {
-        user.roles.forEach(function(role) {
-          if (role.name === USER_ROLES.admin || role.name === USER_ROLES.superAdmin) { user.isAdmin = true; }
-          if (role.name === USER_ROLES.mod || role.name === USER_ROLES.globalMod) { user.isMod = true; }
-        });
-        user.isAdmin = true;
+      if ($window.sessionStorage.permissions || $window.localStorage.permissions) {
+        user.permissions = JSON.parse($window.sessionStorage.permissions || $window.localStorage.permissions);
       }
       if ($window.sessionStorage.token || $window.localStorage.token) { authenticated = true; }
      }
@@ -59,12 +55,7 @@ module.exports = ['$window', 'USER_ROLES',
       user.username = newUser.username;
       user.avatar = newUser.avatar || 'https://fakeimg.pl/400x400/ccc/444/?text=' + user.username;
       user.roles = newUser.roles || [];
-      // user roles
-      user.roles.forEach(function(role) {
-        if (role.name === USER_ROLES.admin || role.name === USER_ROLES.superAdmin) { user.isAdmin = true; }
-        if (role.name === USER_ROLES.mod || role.name === USER_ROLES.globalMod) { user.isMod = true; }
-      });
-
+      user.permissions = newUser.permissions || {};
       // token storage
       var storage;
       if (newUser.token && useLocal) {
@@ -75,6 +66,7 @@ module.exports = ['$window', 'USER_ROLES',
         storage.username = user.username;
         storage.avatar = user.avatar;
         storage.roles = JSON.stringify(user.roles);
+        storage.permissions = JSON.stringify(user.permissions);
       }
       else if (newUser.token) {
         if (hasSessionStorage) { storage = $window.sessionStorage; }
@@ -84,6 +76,7 @@ module.exports = ['$window', 'USER_ROLES',
         storage.username = user.username;
         storage.avatar = user.avatar;
         storage.roles = JSON.stringify(user.roles);
+        storage.permissions = JSON.stringify(user.permissions);
       }
     }
 
@@ -93,8 +86,7 @@ module.exports = ['$window', 'USER_ROLES',
       delete user.username;
       delete user.avatar;
       delete user.roles;
-      delete user.isAdmin;
-      delete user.isMod;
+      delete user.permissions;
       delete $window.sessionStorage.token;
       delete $window.localStorage.token;
       delete $window.privateStorage.token;
@@ -103,16 +95,19 @@ module.exports = ['$window', 'USER_ROLES',
       delete $window.sessionStorage.username;
       delete $window.sessionStorage.avatar;
       delete $window.sessionStorage.roles;
+      delete $window.sessionStorage.permissions;
 
       delete $window.localStorage.id;
       delete $window.localStorage.username;
       delete $window.localStorage.avatar;
       delete $window.localStorage.roles;
+      delete $window.localStorage.permissions;
 
       delete $window.privateStorage.id;
       delete $window.privateStorage.username;
       delete $window.privateStorage.avatar;
       delete $window.privateStorage.roles;
+      delete $window.privateStorage.permissions;
     }
 
     // Service API

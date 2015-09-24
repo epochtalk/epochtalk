@@ -22,8 +22,6 @@ exports.register = function (server, options, next) {
     else if (config.loginRequired) { userACLs = [ roles.noRead ]; }
     else { userACLs = [ roles.anonymous ]; }
 
-    userACLs = [ roles.superAdministrator, roles.moderator, roles.user, roles.private ];
-
     var ACLValues = userACLs.map(function(acl) { return _.get(acl, routeACL); });
     var validACL = false;
     ACLValues.forEach(function(val) { validACL = val || validACL; });
