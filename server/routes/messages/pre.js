@@ -7,7 +7,7 @@ var db = require(path.normalize(__dirname + '/../../../db'));
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
-  canCreate: function(request, reply) {
+  isConversationMember: function(request, reply) {
     var userId = request.auth.credentials.id;
     var conversationId = request.payload.conversation_id;
 

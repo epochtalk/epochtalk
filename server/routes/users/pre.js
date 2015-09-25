@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var bcrypt = require('bcrypt');
@@ -174,27 +175,24 @@ module.exports = {
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { username = request.auth.credentials.username; }
 
-    var promise = Boom.notFound();
-    // deleted users can see their own posts
-    if (username === payloadUsername) { promise = true; }
-    else { // viewing deleted users posts
-      var getACLValue = request.server.plugins.acls.getACLValue;
-      var priviledgedView = getACLValue(request.auth, 'users.viewDeleted');
+    if (username === payloadUsername) { return reply(true); }
 
-      var isActive = db.users.userByUsername(payloadUsername)
-      .then(function(user) {
-        var active = false;
-        if (user) { active = !user.deleted; }
-        return active;
-      });
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var priviledgedView = getACLValue(request.auth, 'users.viewDeleted');
 
-      // Authed users with privilegedView can see deleted user's posts
-      promise = Promise.join(priviledgedView, isActive, function(privileged, active) {
-        var result = Boom.notFound();
-        if (priviledgedView || active) { result = true; }
-        return result;
-      });
-    }
+    var isActive = db.users.userByUsername(payloadUsername)
+    .then(function(user) {
+      var active = false;
+      if (user) { active = !user.deleted; }
+      return active;
+    });
+
+    // Authed users with privilegedView can see deleted user's posts
+    var promise = Promise.join(priviledgedView, isActive, function(privileged, active) {
+      var result = Boom.notFound();
+      if (priviledgedView || active) { result = true; }
+      return result;
+    });
 
     return reply(promise);
   },

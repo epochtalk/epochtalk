@@ -113,8 +113,9 @@ exports.import = {
   */
 exports.find = {
   app: { board_id: 'params.id' },
-  validate: { params: { id: Joi.string().required() } },
+  auth: { mode:'try', strategy: 'jwt' },
   plugins: { acls: 'boards.find' },
+  validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.accessBoardWithBoardId },
     { method: pre.accessPrivateBoardWithBoardId }
@@ -183,7 +184,7 @@ exports.allCategories = {
   * @apiError (Error 500) InternalServerError There was an issue updating categories/boards
   */
 exports.updateCategories = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'boards.updateCategories' },
   validate: { payload: { boardMapping: Joi.array().required() } },
   handler: function(request, reply) {

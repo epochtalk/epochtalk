@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
@@ -404,24 +405,15 @@ exports.pageByUser = {
   },
   pre: [ [
     { method: pre.accessUser },
-    { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
+    { method: pre.canViewDeletedPosts, assign: 'viewables' }
   ] ],
   handler: function(request, reply) {
-    // TODO: canViewDeletePost only works for admins/globalMods
-    // pull the board_id, to check if user can view this post.
-    // this will include pulling the user's mod board list to compare against.
-    // this will probably end up being a new pre method entirely
-    // TODO: this still shows posts from deleted threads/boards
-    // check if each board_id from each post is in the board mapping
-    // if it's not, then flag the post deleted.
-    // This may require another pre method to either pull public board ids or
-    // updating the db query to check if the board is deleted.
-
+    // TODO: handle posts from private boards
     // ready parameters
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    var viewDeleted = request.pre.viewDeleted;
+    var viewables = request.pre.viewables;
     var username = querystring.unescape(request.params.username);
     var opts = {
       limit: request.query.limit,
@@ -440,7 +432,7 @@ exports.pageByUser = {
         limit: opts.limit,
         sortField: opts.sortField,
         sortDesc: opts.sortDesc,
-        posts: cleanPosts(posts, userId, viewDeleted),
+        posts: cleanPosts(posts, userId, viewables),
         count: count
       };
     });
@@ -449,18 +441,28 @@ exports.pageByUser = {
   }
 };
 
-function cleanPosts(posts, currentUserId, viewDeleted) {
+function cleanPosts(posts, currentUserId, viewContext) {
   posts = [].concat(posts);
+  var viewables = viewContext;
+  var viewablesType = 'boolean';
+  if (_.isArray(viewContext)) {
+    viewContext = viewContext.map(function(vd) { return vd.board_id; });
+    viewablesType = 'array';
+  }
 
   return posts.map(function(post) {
     // if currentUser owns post, show everything
     if (currentUserId === post.user.id) { return post; }
-    if (viewDeleted) { return post; }
+    // if viewables is an array, check if user is moderating this post
+    else if (viewablesType === 'array' && _.contains(viewContext, post.board_id)) { return post; }
+    // if viewables is a true, view all posts
+    else if (viewables) { return post; }
 
     // remove deleted users or post information
-    if (post.deleted || post.user.deleted) {
+    if (post.deleted || post.user.deleted || post.board_visible === false) {
       post.body = '';
       post.raw_body = '';
+      post.thread_title = 'deleted';
 
       delete post.avatar;
       delete post.created_at;

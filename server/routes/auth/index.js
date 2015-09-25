@@ -11,5 +11,4 @@ module.exports = [
   { method: 'GET', path: '/recover/{query}', config: auth.recoverAccount },
   { method: 'POST', path: '/reset', config: auth.resetPassword },
   { method: 'POST', path: '/confirm', config: auth.confirmAccount }
-  // { method: 'POST', path: '/refreshToken', config: auth.refreshToken }
 ];

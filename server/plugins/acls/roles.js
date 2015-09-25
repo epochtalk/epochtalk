@@ -70,6 +70,10 @@ module.exports = roles;
       ban: true,
       unban: true
     },
+    adminModerators: {
+      add: true,
+      remove: true
+    },
     boards: {
       viewUncategorized: {
         some: true,
@@ -258,6 +262,10 @@ roles.superAdministrator = {
     ban: true,
     unban: true
   },
+  adminModerators: {
+    add: true,
+    remove: true
+  },
   boards: {
     viewUncategorized: {
       all: true
@@ -423,6 +431,10 @@ roles.administrator = {
     pageModerators: true,
     ban: true,
     unban: true
+  },
+  adminModerators: {
+    add: true,
+    remove: true
   },
   boards: {
     viewUncategorized: {

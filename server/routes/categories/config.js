@@ -4,7 +4,7 @@ var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 
 exports.create = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'categories.create' },
   validate: { payload: { name: Joi.string().min(1).max(255).required() } },
   pre: [ { method: pre.clean } ],
@@ -24,7 +24,7 @@ exports.import = {
 };
 
 exports.find = {
-  auth: { mode: 'try', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'categories.find' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
@@ -34,7 +34,7 @@ exports.find = {
 };
 
 exports.all = {
-  auth: { mode: 'try', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
   plugins: { acls: 'categories.all' },
   handler: function(request, reply) {
     return reply(db.categories.all());

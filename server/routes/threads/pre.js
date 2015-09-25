@@ -8,43 +8,47 @@ var redis = require(path.normalize(__dirname + '/../../../redis'));
 
 module.exports = {
   accessBoardWithThreadId: function(request, reply) {
+    var userId = '';
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { userId = request.auth.credentials.id; }
     var threadId = _.get(request, request.route.settings.app.thread_id);
+
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
+    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
+    var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
     var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId)
     .then(function(board) { return !!board; });
 
-    var getACLValue = request.server.plugins.acls.getACLValue;
-    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
-    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
-
-    var promise = Promise.join(boardVisible, viewSome, viewAll, function(visible, some, all) {
+    var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
       // Board is visible or user has elevated privelages
       if (visible || all) { result = true; }
       // User is authenticated and can moderate certain boards
-      else if (request.auth.isAuthenticated && some) {
-        result = isModWithThreadId(request.auth.credentials.id, threadId);
-      }
+      else if (some && mod) { result = true; }
       return result;
     });
     return reply(promise);
   },
   accessBoardWithBoardId: function(request, reply) {
+    var userId = '';
+    var authenticated = request.auth.isAuthenticated;
+    if (authenticated) { userId = request.auth.credentials.id; }
     var boardId = _.get(request, request.route.settings.app.board_id);
+
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
+    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
+    var isMod = db.moderators.isModeratorWithThreadId(userId, boardId);
     var boardVisible = db.boards.getBoardInBoardMapping(boardId)
     .then(function(board) { return !!board; });
 
-    var getACLValue = request.server.plugins.acls.getACLValue;
-    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
-    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
-
-    var promise = Promise.join(boardVisible, viewSome, viewAll, function(visible, some, all) {
+    var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
       // Board is visible or user has elevated privelages
       if (visible || all) { result = true; }
       // User is authenticated and can moderate certain boards
-      else if (request.auth.isAuthenticated && some) {
-        result = isModWithBoardId(request.auth.credentials.id, boardId);
-      }
+      else if (some && mod) { result = true; }
       return result;
     });
     return reply(promise);
@@ -66,22 +70,17 @@ module.exports = {
   isThreadEditable: function(request, reply) {
     var userId = request.auth.credentials.id;
     var threadId = _.get(request, request.route.settings.app.thread_id);
-    var getACLValue = request.server.plugins.acls.getACLValue;
 
-    // get thread ownership
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var lockAll = getACLValue(request.auth, 'threads.privilegedUpdate.all');
+    var lockSome = getACLValue(request.auth, 'threads.privilegedUpdate.some');
+    var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
     var isThreadOwner = db.threads.getThreadOwner(threadId)
     .then(function(owner) { return owner.user_id === userId; });
 
-    // check if user is mod
-    var isMod = isModWithThreadId(userId, threadId);
-
-    // get user's permisions
-    var lockSome = getACLValue(request.auth, 'threads.privilegedUpdate.some');
-    var lockAll = getACLValue(request.auth, 'threads.privilegedUpdate.all');
-
-    var promise = Promise.join(isThreadOwner, isMod, lockSome, lockAll, function(owner, mod, some, all) {
+    var promise = Promise.join(isThreadOwner, lockAll, lockSome, isMod, function(owner, all, some, mod) {
       var result = Boom.forbidden();
-      if (all || isThreadOwner) { result = true; }
+      if (isThreadEditable || all) { result = true; }
       else if (some && mod) { result = true; }
       return result;
     });
@@ -91,22 +90,17 @@ module.exports = {
   isThreadLockable: function(request, reply) {
     var userId = request.auth.credentials.id;
     var threadId = _.get(request, request.route.settings.app.thread_id);
-    var getACLValue = request.server.plugins.acls.getACLValue;
 
-    // get thread ownership
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var lockAll = getACLValue(request.auth, 'threads.privilegedLock.all');
+    var lockSome = getACLValue(request.auth, 'threads.privilegedLock.some');
+    var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
     var isThreadOwner = db.threads.getThreadOwner(threadId)
     .then(function(owner) { return owner.user_id === userId; });
 
-    // check if user is mod
-    var isMod = isModWithThreadId(userId, threadId);
-
-    // get user's permisions
-    var lockSome = getACLValue(request.auth, 'threads.privilegedLock.some');
-    var lockAll = getACLValue(request.auth, 'threads.privilegedLock.all');
-
-    var promise = Promise.join(isThreadOwner, isMod, lockSome, lockAll, function(owner, mod, some, all) {
+    var promise = Promise.join(isThreadOwner, lockAll, lockSome, isMod, function(owner, all, some, mod) {
       var result = Boom.forbidden();
-      if (all || isThreadOwner) { result = true; }
+      if (isThreadOwner || all) { result = true; }
       else if (some && mod) { result = true; }
       return result;
     });
@@ -184,16 +178,6 @@ module.exports = {
     return reply(promise);
   }
 };
-
-function isModWithBoardId(userId, boardId) {
-  // TODO: Implement check against board_moderators
-  return true;
-}
-
-function isModWithThreadId(userId, threadId) {
-  // TODO: Implement check against board_moderators
-  return true;
-}
 
 function checkViewKey(key) {
   return redis.getAsync(key)

@@ -29,7 +29,7 @@ exports.create = {
     }
   },
   pre: [
-    { method: pre.canCreate },
+    { method: pre.isConversationMember },
     { method: pre.clean },
     { method: pre.parseEncodings }
   ],
