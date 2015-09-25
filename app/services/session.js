@@ -1,6 +1,7 @@
 'use strict';
 /* jslint node: true */
 /* global angular */
+var _ = require('lodash');
 
 module.exports = ['$window',
   function($window) {
@@ -110,10 +111,15 @@ module.exports = ['$window',
       delete $window.privateStorage.permissions;
     }
 
+    function hasPermission(permission) {
+      return user.permissions && _.get(user.permissions, permission);
+    }
+
     // Service API
     var serviceAPI = {
       setUser: setUser,
       clearUser: clearUser,
+      hasPermission: hasPermission,
       user: user,
       getToken: function() {
         var localToken = $window.localStorage.token;

@@ -1,6 +1,6 @@
 module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminUsers', 'admins', 'adminsCount', 'page', 'limit', 'field', 'desc', 'USER_ROLES', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminUsers, admins, adminsCount, page, limit, field, desc, USER_ROLES) {
   var ctrl = this;
-  this.parent = $scope.$parent;
+  this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'administrators';
   this.admins = admins;
   this.count = adminsCount;

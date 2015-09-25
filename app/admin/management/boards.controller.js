@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'boards', 'categories',
   function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, boards, categories) {
-    this.parent = $scope.$parent;
+    this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     // Category and Board Data
     $scope.catListData = categories; // Data backing left side of page

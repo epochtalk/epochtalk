@@ -2,7 +2,7 @@ module.exports = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scop
   var ctrl = this;
 
   // Tab control
-  this.parent = $scope.$parent;
+  this.parent = $scope.$parent.AdminSettingsCtrl;
   this.parent.tab = 'general';
 
   // Make copy of settings for a restore state

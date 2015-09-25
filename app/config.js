@@ -246,8 +246,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     var adminCheck = function(route) {
       return ['$q', 'Session', function($q, Session) {
         if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
-        if (route && _.get(Session.user.permissions.adminAccess, route)) { return true; }
-        else if (!route && Session.user.permissions.adminAccess) { return true; }
+        if (route && Session.hasPermission('adminAccess' + '.' + route)) { return true; }
+        else if (!route && Session.hasPermission('adminAccess')) { return true; }
         else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
       }];
     };
@@ -256,14 +256,21 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     var modCheck = function(route) {
       return ['$q', 'Session', function($q, Session) {
         if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
-        if (route && _.get(Session.user.permissions.modAccess, route)) { return true; }
-        else if (!route && Session.user.permissions.modAccess) { return true; }
+        if (route && Session.hasPermission('modAccess' + '.' + route)) { return true; }
+        else if (!route && Session.hasPermission('modAccess')) { return true; }
         else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
       }];
     };
 
-    $urlRouterProvider.when('/admin', '/admin/settings/general');
-    $urlRouterProvider.when('/admin/', '/admin/settings/general');
+    var adminRedirect = ['$state', 'Session', function($state, Session) {
+      if (Session.hasPermission('adminAccess.settings')) { $state.go('admin-settings'); }
+      else if (Session.hasPermission('adminAccess.management')) { $state.go('admin-management'); }
+      else if (Session.hasPermission('modAccess')) { $state.go('admin-moderation'); }
+      else { $state.go('boards'); }
+    }];
+
+    $urlRouterProvider.when('/admin', adminRedirect);
+    $urlRouterProvider.when('/admin/', adminRedirect);
 
     $stateProvider.state('admin', {
       url: '/admin',
@@ -271,16 +278,28 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       resolve: { userAccess: modCheck() || adminCheck() }
     });
 
-    // Default child state for admin-settings is general
-    $urlRouterProvider.when('/admin/settings', '/admin/settings/general');
-    $urlRouterProvider.when('/admin/settings/', '/admin/settings/general');
+    var adminSettingsRedirect = ['$state', 'Session', function($state, Session) {
+      if (Session.hasPermission('adminAccess.settings.general')) { $state.go('admin-settings.general'); }
+      else if (Session.hasPermission('adminAccess.settings.forum')) { $state.go('admin-settings.forum'); }
+      else { $state.go('admin'); }
+    }];
+
+    $urlRouterProvider.when('/admin/settings', adminSettingsRedirect);
+    $urlRouterProvider.when('/admin/settings/', adminSettingsRedirect);
 
     $stateProvider.state('admin-settings', {
       url: '/admin/settings',
       parent: 'admin-layout',
       views: {
         'content': {
-          controller: function($scope) { $scope.child = {}; },
+          controller: ['$scope', 'Session', function($scope, Session) {
+            this.hasPermission = Session.hasPermission;
+            this.tab = null;
+            if (Session.hasPermission('adminAccess.settings.general')) { this.tab = 'general'; }
+            else if (Session.hasPermission('adminAccess.settings.forum')) { this.tab = 'users'; }
+            $scope.child = {};
+          }],
+          controllerAs: 'AdminSettingsCtrl',
           template: fs.readFileSync(__dirname + '/admin/settings/index.html')
         }
       },
@@ -326,9 +345,16 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     });
 
+    var adminManagementRedirect = ['$state', 'Session', function($state, Session) {
+      if (Session.hasPermission('adminAccess.management.boards')) { $state.go('admin-management.boards'); }
+      else if (Session.hasPermission('adminAccess.management.users')) { $state.go('admin-management.users'); }
+      else if (Session.hasPermission('adminAccess.management.roles')) { $state.go('admin-management.roles'); }
+      else { $state.go('admin'); }
+    }];
+
     // Default child state for admin-management is users
-    $urlRouterProvider.when('/admin/management', '/admin/management/boards');
-    $urlRouterProvider.when('/admin/management/', '/admin/management/boards');
+    $urlRouterProvider.when('/admin/management', adminManagementRedirect);
+    $urlRouterProvider.when('/admin/management/', adminManagementRedirect);
 
     $stateProvider.state('admin-management', {
       url: '/admin/management',
@@ -336,6 +362,14 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       parent: 'admin-layout',
       views: {
         'content': {
+          controller: ['Session', function(Session) {
+            this.hasPermission = Session.hasPermission;
+            this.tab = null;
+            if (Session.hasPermission('adminAccess.management.boards')) { this.tab = 'boards'; }
+            else if (Session.hasPermission('adminAccess.management.users')) { this.tab = 'users'; }
+            else if (Session.hasPermission('adminAccess.management.roles')) { this.tab = 'roles'; }
+          }],
+          controllerAs: 'AdminManagementCtrl',
           template: fs.readFileSync(__dirname + '/admin/management/index.html')
         }
       },
@@ -529,13 +563,21 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     });
 
-    // Default child state for admin-moderation is users
-    $urlRouterProvider.when('/admin/moderation', ['$state', function($state) {
-      $state.go('admin-moderation.users', { filter: 'Pending'}, { location: true, reload: true });
-    }]);
-    $urlRouterProvider.when('/admin/moderation/', ['$state', function($state) {
-      $state.go('admin-moderation.users', { filter: 'Pending'}, { location: true, reload: true });
-    }]);
+    var moderationRedirect = ['$state', 'Session', function($state, Session) {
+      if (Session.hasPermission('modAccess.users')) {
+        $state.go('admin-moderation.users', { filter: 'Pending'}, { location: true, reload: true });
+      }
+      else if (Session.hasPermission('modAccess.posts')) {
+        $state.go('admin-moderation.posts', { filter: 'Pending'}, { location: true, reload: true });
+      }
+      else if (Session.hasPermission('modAccess.messages')) {
+        $state.go('admin-moderation.messages', { filter: 'Pending'}, { location: true, reload: true });
+      }
+      else { $state.go('admin'); }
+    }];
+
+    $urlRouterProvider.when('/admin/moderation', moderationRedirect);
+    $urlRouterProvider.when('/admin/moderation/', moderationRedirect);
 
     $stateProvider.state('admin-moderation', {
       url: '/admin/moderation',
@@ -543,6 +585,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       reloadOnSearch: false,
       views: {
         'content': {
+          controller: ['Session', function(Session) {
+            this.hasPermission = Session.hasPermission;
+            this.tab = null;
+            if (Session.hasPermission('modAccess.users')) { this.tab = 'users'; }
+            else if (Session.hasPermission('modAccess.posts')) { this.tab = 'posts'; }
+            else if (Session.hasPermission('modAccess.messages')) { this.tab = 'messages'; }
+          }],
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/index.html')
         }

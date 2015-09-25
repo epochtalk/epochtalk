@@ -1,6 +1,6 @@
 module.exports = ['$scope', 'AdminUsers', 'users', function($scope, AdminUsers, users) {
   var ctrl = this;
-  this.parent = $scope.$parent;
+  this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
   this.roles = [
     { name: 'Super Administrator', description: 'Full access to all features' },

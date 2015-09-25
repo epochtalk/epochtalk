@@ -1,6 +1,6 @@
 module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', 'Alert', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, Alert, AdminUsers, users, usersCount, page, limit, field, desc, filter, search) {
   var ctrl = this;
-  this.parent = $scope.$parent;
+  this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'users';
   this.count = usersCount;
   this.pageCount =  Math.ceil(usersCount / limit);

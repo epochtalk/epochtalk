@@ -1,11 +1,11 @@
 <div id="admin-subnav" class="fill-row">
   <h2>Settings</h2>
-  <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'general'">
-    <dd class="no-select" ng-class="{'active': tab == 'general'}">
-      <a ui-sref=".general" ng-click="tab = 'general'">General</a>
+  <dl class="tabs custom-tabs">
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.general')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab == 'general'}">
+      <a ui-sref=".general" ng-click="AdminSettingsCtrl.tab = 'general'">General</a>
     </dd>
-    <dd class="no-select" ng-class="{'active': tab == 'forum'}">
-      <a ui-sref=".forum" ng-click="tab = 'forum'">Forum</a>
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.forum')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab == 'forum'}">
+      <a ui-sref=".forum" ng-click="AdminSettingsCtrl.tab = 'forum'">Forum</a>
     </dd>
   </dl>
 
