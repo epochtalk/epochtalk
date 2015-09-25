@@ -1,10 +1,11 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var commonPre = require(path.normalize(__dirname + '/../common')).users;
+var querystring = require('querystring');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
-var querystring = require('querystring');
+var commonPre = require(path.normalize(__dirname + '/../common')).users;
+var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
 
 /**
   * @apiVersion 0.3.0
@@ -187,6 +188,10 @@ exports.update = {
       delete user.password;
       delete user.confirmation;
       return user;
+    })
+    .then(function(user) {
+      return authHelper.updateUserInfo(user)
+      .then(function() { return user; });
     });
 
     return reply(promise);
@@ -250,6 +255,7 @@ exports.find = {
       delete user.reset_token;
       delete user.reset_expiration;
       if (userId !== user.id) { delete user.email; }
+      user.roles = user.roles.map(function(role) { return role.lookup; });
       return user;
     });
 

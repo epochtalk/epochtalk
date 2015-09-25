@@ -88,6 +88,48 @@ helper.saveSession = function(user) {
   .then(function() { return formatUserReply(token, user); });
 };
 
+helper.updateRoles = function(user) {
+  // pull user role's lookup
+  user.roles = user.roles.map(function(role) { return role.lookup; });
+
+  // save roles to redis set under "user:{userId}:roles"
+  var roleKey = 'user:' + user.id + ':roles';
+  return redis.existsAsync(roleKey)
+  .then(function(exists) {
+    if (exists > 0) {
+      return redis.delAsync(roleKey)
+      .then(function() { return redis.saddAsync(roleKey, user.roles); });
+    }
+  });
+};
+
+helper.updateUserInfo = function(user) {
+  // save username, avatar to redis hash under "user:{userId}"
+  var userKey = 'user:' + user.id;
+  // check username for update
+  return redis.hexistsAsync(userKey, 'username')
+  .then(function(exists) {
+    if (exists > 0) {
+      return redis.hmsetAsync(userKey, { username: user.username });
+    }
+  })
+  // check avatar for update
+  .then(function() {
+    return redis.hexistsAsync(userKey, 'avatar')
+    .then(function(exists) {
+      if (exists > 0 && user.avatar) {
+        return redis.hmsetAsync(userKey, { avatar: user.avatar });
+      }
+      else if (exists === 0 && user.avatar) {
+        return redis.hmsetAsync(userKey, { avatar: user.avatar });
+      }
+      else if (exists > 0 && !user.avatar) {
+        return redis.hdelAsync(userKey, 'avatar');
+      }
+    });
+  });
+};
+
 helper.deleteSession = function(sessionId, userId) {
   // delete session with key "user:{userId}:session:{sessionId}"
   var sessionKey = 'user:' + userId + ':session:' + sessionId;

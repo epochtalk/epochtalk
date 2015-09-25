@@ -4,7 +4,7 @@ var Boom = require('boom');
 var querystring = require('querystring');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
-var USER_ROLES = require(path.normalize(__dirname + '/../../user-roles'));
+var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 var commonPre = require(path.normalize(__dirname + '/../../common')).users;
 
 /**
@@ -93,6 +93,10 @@ exports.update = {
       delete user.reset_expiration;
       delete user.password;
       return user;
+    })
+    .then(function(user) {
+      return authHelper.updateUserInfo(user)
+      .then(function() { return user; });
     });
     return reply(promise);
   }
@@ -146,6 +150,7 @@ exports.find = {
       delete user.passhash;
       delete user.confirmation_token;
       delete user.reset_token;
+      user.roles = user.roles.map(function(role) { return role.lookup; });
       return user;
     });
     return reply(promise);
@@ -185,14 +190,17 @@ exports.addRoles = {
   validate: {
     payload: {
       user_id: Joi.string().required(),
-      roles: Joi.array().items(Joi.string().valid(USER_ROLES.user, USER_ROLES.mod, USER_ROLES.globalMod, USER_ROLES.admin, USER_ROLES.superAdmin).required()).unique().min(1).required()
+      roles: Joi.array().items(Joi.string().required()).unique().min(1).required()
     }
   },
   handler: function(request, reply) {
-    // TODO: append role to acl system
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
-    var promise = db.users.addRoles(userId, roles);
+    var promise = db.users.addRoles(userId, roles)
+    .then(function(user) {
+      return helper.updateRoles(user)
+      .then(function() { return user; });
+    });
     return reply(promise);
   }
 };
@@ -230,14 +238,17 @@ exports.removeRoles = {
   validate: {
     payload: {
       user_id: Joi.string().required(),
-      roles: Joi.array().items(Joi.string().valid(USER_ROLES.user, USER_ROLES.mod, USER_ROLES.globalMod, USER_ROLES.admin, USER_ROLES.superAdmin).required()).unique().min(1).required()
+      roles: Joi.array().items(Joi.string().required()).unique().min(1).required()
     }
   },
   handler: function(request, reply) {
-    // TODO: remove role from acl system
     var userId = request.payload.user_id;
     var roles = request.payload.roles;
-    var promise = db.users.removeRoles(userId, roles);
+    var promise = db.users.removeRoles(userId, roles)
+    .then(function(user) {
+      return helper.updateRoles(user)
+      .then(function() { return user; });
+    });
     return reply(promise);
   }
 };
@@ -509,7 +520,6 @@ exports.pageModerators = {
     return reply(promise);
   }
 };
-
 
 /**
   * @apiVersion 0.3.0

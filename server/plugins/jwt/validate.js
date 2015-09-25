@@ -21,8 +21,8 @@ module.exports = function(decodedToken, token, cb) {
   return redis.getAsync(sessionKey)
   // validate session
   .then(function(timestamp) {
-    timestamp = Number(timestamp);
     if (!timestamp) { return Promise.reject(); }
+    timestamp = Number(timestamp);
     if (timestamp !== decodedToken.timestamp) { return Promise.reject(); }
   })
   // get user information

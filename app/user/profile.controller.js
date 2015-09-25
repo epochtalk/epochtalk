@@ -46,7 +46,7 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
         Alert.success('Successfully saved profile');
         // redirect page if username changed
         if (ctrl.displayUser.username !== data.username) {
-          if(!ctrl.adminVisitor) { Session.setUsername(ctrl.user.username); }
+          if (!ctrl.adminVisitor) { Session.setUsername(ctrl.user.username); }
           var params = { username: ctrl.user.username};
           $state.go('profile', params, { location: true, reload: false });
         }
