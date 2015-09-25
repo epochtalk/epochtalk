@@ -80,7 +80,7 @@ module.exports = {
 
     var promise = Promise.join(isThreadOwner, lockAll, lockSome, isMod, function(owner, all, some, mod) {
       var result = Boom.forbidden();
-      if (isThreadEditable || all) { result = true; }
+      if (owner || all) { result = true; }
       else if (some && mod) { result = true; }
       return result;
     });
