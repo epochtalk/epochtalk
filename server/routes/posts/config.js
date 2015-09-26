@@ -390,6 +390,25 @@ exports.pageByUser = {
   }
 };
 
+exports.history = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  handler: function(request, reply) {
+    // handle permissions
+    if (!request.server.methods.viewable(request)) { return reply({}); }
+    var id = request.params.id;
+    // retrieve posts for this thread
+    var promise = db.posts.history(id).then(function(postRevs) {
+      if (postRevs && (postRevs.length > 0))
+        return postRevs;
+      else
+        return Boom.notFound();
+    });
+
+    return reply(promise);
+  }
+};
+
 function cleanPosts(posts, currentUserId, isAdmin) {
   posts = [].concat(posts);
 
