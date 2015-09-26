@@ -5,6 +5,7 @@ var posts = require(path.normalize(__dirname + '/config'));
 module.exports = [
   { method: 'POST', path: '/posts', config: posts.create },
   { method: 'GET', path: '/posts/{id}', config: posts.find },
+  { method: 'GET', path: '/posts/{id}/history', config: posts.history },
   { method: 'GET', path: '/posts/user/{username}', config: posts.pageByUser },
   { method: 'GET', path: '/posts', config: posts.byThread },
   { method: 'POST', path: '/posts/{id}', config: posts.update },
