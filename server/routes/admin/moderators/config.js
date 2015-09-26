@@ -2,6 +2,7 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var db = require(path.normalize(__dirname + '/../../../../db'));
+var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 
 /**
   * @apiVersion 0.3.0
@@ -30,7 +31,15 @@ exports.add = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var boardId = request.payload.board_id;
-    var promise = db.moderators.add(userId, boardId);
+    var promise = db.moderators.add(userId, boardId)
+    // update redis with new moderating boads
+    .then(function() { return db.moderators.getUsersBoards(userId); })
+    .then(function(moderating) {
+      moderating = moderating.map(function(b) { return b.board_id; });
+      var moderatingUser = { id: userId, moderating: moderating };
+      return authHelper.updateModerating(moderatingUser)
+      .then(function() { return; });
+    });
     return reply(promise);
   }
 };
@@ -62,7 +71,15 @@ exports.remove = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var boardId = request.payload.board_id;
-    var promise = db.moderators.remove(userId, boardId);
+    var promise = db.moderators.remove(userId, boardId)
+    // update redis with new moderating boads
+    .then(function() { return db.moderators.getUsersBoards(userId); })
+    .then(function(moderating) {
+      moderating = moderating.map(function(b) { return b.board_id; });
+      var moderatingUser = { id: userId, moderating: moderating };
+      return authHelper.updateModerating(moderatingUser)
+      .then(function() { return; });
+    });
     return reply(promise);
   }
 };

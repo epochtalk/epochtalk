@@ -53,6 +53,7 @@ function formatUserReply(token, user) {
     username: user.username,
     avatar: user.avatar,
     roles: user.roles,
+    moderating: user.moderating,
     permissions: getMaskedPermissions(user.roles)
   };
 }
@@ -74,6 +75,12 @@ helper.saveSession = function(user) {
     var roleKey = 'user:' + user.id + ':roles';
     return redis.delAsync(roleKey)
     .then(function() { return redis.saddAsync(roleKey, user.roles); });
+  })
+  // save moderting boards to redis set under "user:{userId}:moderating"
+  .then(function() {
+    var moderatingKey = 'user:' + user.id + ':moderating';
+    return redis.delAsync(moderatingKey)
+    .then(function() { return redis.saddAsync(moderatingKey, user.moderating); });
   })
   // save session to redis key under "user:{userId}:session:{sessionId}"
   .then(function() {
@@ -99,6 +106,18 @@ helper.updateRoles = function(user) {
     if (exists > 0) {
       return redis.delAsync(roleKey)
       .then(function() { return redis.saddAsync(roleKey, user.roles); });
+    }
+  });
+};
+
+helper.updateModerating = function(user) {
+  // save roles to redis set under "user:{userId}:roles"
+  var moderatingKey = 'user:' + user.id + ':moderating';
+  return redis.existsAsync(moderatingKey)
+  .then(function(exists) {
+    if (exists > 0) {
+      return redis.delAsync(moderatingKey)
+      .then(function() { return redis.saddAsync(moderatingKey, user.moderating); });
     }
   });
 };
@@ -154,13 +173,17 @@ helper.deleteSession = function(sessionId, userId) {
           var roleKey = 'user:' + userId + ':roles';
           return redis.delAsync(roleKey);
         })
+        // delete user moderating boards
+        .then(function() {
+          var moderatingKey = 'user:' + userId + ':moderating';
+          return redis.delAsync(moderatingKey);
+        })
         // delte user info
         .then(function() {
           var userKey = 'user:' + userId;
           return redis.delAsync(userKey);
         });
       }
-      else { return; }
     });
   });
 };

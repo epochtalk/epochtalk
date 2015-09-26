@@ -12,7 +12,7 @@ var redis = require(path.normalize(__dirname + '/../../../redis'));
  *   -- credentials, the user short object to be tied to request.auth.credentials
  */
 module.exports = function(decodedToken, token, cb) {
-  var userInfo, userRoles;
+  var userInfo, userRoles, userModerating;
   var userId = decodedToken.userId;
   var sessionId = decodedToken.sessionId;
 
@@ -37,6 +37,12 @@ module.exports = function(decodedToken, token, cb) {
     return redis.smembersAsync(userRoleKey)
     .then(function(value) { userRoles = value; });
   })
+  // get user moderating boards
+  .then(function() {
+    var userModeratingKey = 'user:' + userId + ':moderating';
+    return redis.smembersAsync(userModeratingKey)
+    .then(function(value) { userModerating = value; });
+  })
   .then(function() {
     // build credentials
     var credentials = {
@@ -45,7 +51,8 @@ module.exports = function(decodedToken, token, cb) {
       sessionId: sessionId,
       username: userInfo.username,
       avatar: userInfo.avatar,
-      roles: userRoles
+      roles: userRoles,
+      moderating: userModerating
     };
     return cb(null, true, credentials);
   })

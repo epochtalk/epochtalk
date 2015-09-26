@@ -45,23 +45,36 @@ exports.login = {
     var username = request.payload.username;
     var password = request.payload.password;
     var promise = db.users.userByUsername(username) // get full user info
-    .then(function(user) { // check user exists
+    // check user exists
+    .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('Invalid Credentials')); }
     })
-    .then(function(user) { // check confirmation token
+    // check confirmation token
+    .then(function(user) {
       if (user.confirmation_token) {
         return Promise.reject(Boom.badRequest('Account Not Confirmed'));
       }
       else { return user; }
     })
+    // check passhash exists (imported user only)
     .then(function(user) {
       if (user.passhash) { return user; }
       else { return Promise.reject(Boom.forbidden('Account Migration Not Complete, Please Reset Password')); }
     })
-    .then(function(user) { // check if passhash matches
+    // check if passhash matches
+    .then(function(user) {
       if (bcrypt.compareSync(password, user.passhash)) { return user; }
       else { return Promise.reject(Boom.badRequest('Invalid Credentials')); }
+    })
+    // get user moderating boards
+    .then(function(user) {
+      return db.moderators.getUsersBoards(user.id)
+      .then(function(boards) {
+        boards = boards.map(function(board) { return board.board_id; });
+        user.moderating = boards;
+      })
+      .then(function() { return user; });
     })
     // builds token, saves session, returns request output
     .then(helper.saveSession);
@@ -231,6 +244,15 @@ exports.confirmAccount = {
       else {
         return Promise.reject(Boom.badRequest('Account Confirmation Error'));
       }
+    })
+    // get user moderating boards
+    .then(function(user) {
+      return db.moderators.getUsersBoards(user.id)
+      .then(function(boards) {
+        boards = boards.map(function(board) { return board.board_id; });
+        user.moderating = boards;
+      })
+      .then(function() { return user; });
     })
     // builds token, saves session, returns request output
     .then(helper.saveSession);
