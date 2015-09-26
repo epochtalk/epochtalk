@@ -33,10 +33,10 @@
           <a ui-sref="profile({ username: HeaderCtrl.currentUser.username })" ui-sref-opts="{ reload: true }" ng-bind-html="HeaderCtrl.currentUser.username"></a>
         </div>
         <ul id="user-dropdown">
-          <li ng-if="HeaderCtrl.currentUser.permissions.adminAccess">
+          <li ng-if="HeaderCtrl.hasPermission('adminAccess')">
             <a ui-sref="^.admin" ui-sref-opts="{ reload: true }">Admin Panel</a>
           </li>
-          <li ng-if="HeaderCtrl.currentUser.permissions.modAccess && !HeaderCtrl.currentUser.permissions.adminAccess">
+          <li ng-if="HeaderCtrl.hasPermission('modAccess') && !HeaderCtrl.hasPermission('adminAccess')">
             <a ui-sref="^.admin-moderation" ui-sref-opts="{ reload: true }">Mod Panel</a>
           </li>
           <li>

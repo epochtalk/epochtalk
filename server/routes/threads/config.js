@@ -386,12 +386,12 @@ exports.move = {
   * @apiError Unauthorized User doesn't have permissions to purge the thread
   * @apiError (Error 500) InternalServerError There was an issue purging the thread
   */
-exports.delete = {
+exports.purge = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'threads.delete' },
+  plugins: { acls: 'threads.purge' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
-    var promise = db.threads.delete(request.params.id);
+    var promise = db.threads.purge(request.params.id);
     return reply(promise);
   }
 };

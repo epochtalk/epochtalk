@@ -72,8 +72,8 @@ module.exports = {
     var threadId = _.get(request, request.route.settings.app.thread_id);
 
     var getACLValue = request.server.plugins.acls.getACLValue;
-    var lockAll = getACLValue(request.auth, 'threads.privilegedUpdate.all');
-    var lockSome = getACLValue(request.auth, 'threads.privilegedUpdate.some');
+    var lockAll = getACLValue(request.auth, 'threads.privilegedTitle.all');
+    var lockSome = getACLValue(request.auth, 'threads.privilegedTitle.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
     var isThreadOwner = db.threads.getThreadOwner(threadId)
     .then(function(owner) { return owner.user_id === userId; });

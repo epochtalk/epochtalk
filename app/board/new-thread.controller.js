@@ -17,7 +17,7 @@ module.exports = ['$stateParams', '$location', 'Session', 'Threads', 'Alert',
     this.loggedIn = Session.isAuthenticated;
     this.user = Session.user;
 
-    this.save = function(post) {
+    this.save = function() {
       ctrl.exitEditor = true;
       // create a new thread and post
       Threads.save(ctrl.thread).$promise

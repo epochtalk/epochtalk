@@ -42,7 +42,16 @@ function getMaskedPermissions(userRoles) {
       users: maskPermission('modAccess.users'),
       posts: maskPermission('modAccess.posts'),
       messages: maskPermission('modAccess.messages')
-    } : undefined
+    } : undefined,
+    profileControls: maskPermission('adminUsers') ? {
+      viewUserEmail: maskPermission('adminUsers.find')
+    } : undefined,
+    threadControls: {
+
+    },
+    postControls: {
+
+    }
   };
 }
 
