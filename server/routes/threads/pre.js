@@ -116,60 +116,49 @@ module.exports = {
   checkViewValidity: function(request, reply) {
     var threadId = _.get(request, request.route.settings.app.thread_id);
     var viewerId = request.headers['epoch-viewer'];
-    var viewerAddress = request.info.remoteAddress;
-    var newViewerId;
+    var newViewerId = '';
 
-    if (viewerId) { // viewerId was sent back so try that
-      var viewerIdKey = viewerId + threadId;
-      return checkViewKey(viewerIdKey)
-      .then(function(valid) { // viewId found
-        if (valid) { db.threads.incViewCount(threadId); }
-        return reply(undefined);
-      })
-      .catch(function() { // viewId not found
-        redis.setAsync(viewerIdKey, Date.now()); // save to redis
-        var addressKey = viewerAddress + threadId;
-        return checkViewKey(addressKey)
-        .then(function(valid) { // address found
-          if (valid) { db.threads.incViewCount(threadId); }
-          return reply(undefined);
-        })
-        // address doesn't exists so inc is valid
-        .catch(function() {
-          redis.setAsync(addressKey, Date.now());
-          db.threads.incViewCount(threadId);
-          return reply(undefined);
-        });
-      });
-    } // no viewerId, check IP
-    else {
-      newViewerId = uuid.v4(); // generate new viewerId
-      redis.setAsync(newViewerId + threadId, Date.now());
+    // Check if viewerId and threadId is found
+    var viewerIdKey = viewerId + threadId;
+    var promise = checkViewKey(viewerIdKey)
+    .then(function(valid) { // viewId found
+      if (valid) { return db.threads.incViewCount(threadId); }
+    })
+    .catch(function() { // viewId not found
+      // save this viewerId to redis
+      if (viewerId) { redis.setAsync(viewerIdKey, Date.now()); }
+      // create new viewerId and save to redis
+      else {
+        newViewerId = uuid.v4();
+        redis.setAsync(newViewerId + threadId, Date.now());
+      }
+
+      // Check if ip address and threadId is found
+      var viewerAddress = request.info.remoteAddress;
       var addressKey = viewerAddress + threadId;
       return checkViewKey(addressKey)
-      .then(function(valid) {
-        if (valid) { db.threads.incViewCount(threadId); }
-        return reply(newViewerId);
+      .then(function(valid) { // address found
+        if (valid) { return db.threads.incViewCount(threadId); }
       })
-      // address doesn't exists so inc is valid
-      .catch(function() {
+      .catch(function() { // address not found
+        // save this address + threadId combo to redis
         redis.setAsync(addressKey, Date.now());
-        db.threads.incViewCount(threadId);
-        return reply(newViewerId);
+        // increment view count
+        return db.threads.incViewCount(threadId);
       });
-    }
+    })
+    .then(function() { return newViewerId; });
+
+    return reply(promise);
   },
   updateUserThreadViews: function(request, reply) {
     // return early if not signed in
     if (!request.auth.isAuthenticated) { return reply(); }
 
     var threadId = _.get(request, request.route.settings.app.thread_id);
-    var now = Date.now();
     var userId = request.auth.credentials.id;
-    var newThreadViews = [ { threadId: threadId, timestamp: now } ];
-    db.users.putUserThreadViews(userId, newThreadViews)
-    .then(function() { return reply(); })
-    .catch(function(err) { return reply(err); });
+    var promise = db.users.putUserThreadViews(userId, threadId);
+    return reply(promise);
   },
   threadFirstPost: function(request, reply) {
     var threadId = _.get(request, request.route.settings.app.thread_id);
@@ -181,6 +170,10 @@ module.exports = {
 
 function checkViewKey(key) {
   return redis.getAsync(key)
+  .then(function(storedTime) {
+    if (storedTime) { return storedTime; }
+    else { return Promise.reject(); } // value is null
+  })
   .then(function(storedTime) {
     var timeElapsed = Date.now() - storedTime;
     // key exists and is past the cooling period

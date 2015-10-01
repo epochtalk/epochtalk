@@ -140,31 +140,18 @@ exports.byBoard = {
   },
   pre: [ { method: pre.accessBoardWithBoardId } ],
   handler: function(request, reply) {
-    var user = request.auth.credentials || {};
+    var userId;
+    if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
     var boardId = request.query.board_id;
     var opts = {
       limit: request.query.limit,
       page: request.query.page
     };
 
-    var getThreads = db.threads.byBoard(boardId, opts);
+    var getThreads = db.threads.byBoard(boardId, userId, opts);
     var getBoard = db.boards.find(boardId);
-    var getThreadViews = function() {
-      if (!user) { return; }
-      return db.users.getUserThreadViews(user.id);
-    };
 
-    var promise = Promise.join(getThreads, getBoard, getThreadViews(), function(threads, board, threadViews) {
-      // iterate through threads and see if the thread has been viewed yet
-      if (threadViews) {
-        threads.normal = threads.normal.map(function(thread) {
-          return setNewPost(user, threadViews, thread);
-        });
-        threads.sticky = threads.sticky.map(function(thread) {
-          return setNewPost(user, threadViews, thread);
-        });
-      }
-
+    var promise = Promise.join(getThreads, getBoard, function(threads, board) {
       return {
         board: board,
         page: opts.page,
@@ -418,16 +405,6 @@ exports.purge = {
     return reply(promise);
   }
 };
-
-function setNewPost(user, threadViews, thread) {
-  // If user made last post consider thread viewed
-  if (user.username === thread.last_post_username) { thread.has_new_post = false; }
-  else if (!threadViews[thread.id]) { thread.has_new_post = true; }
-  else if (threadViews[thread.id] && threadViews[thread.id] <= thread.last_post_created_at) {
-    thread.has_new_post = true;
-  }
-  return thread;
-}
 
 /**
   * @apiDefine ThreadObjectPayload
