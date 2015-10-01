@@ -366,7 +366,10 @@ exports.purge = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.purge' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.isCDRPost } ], //handle permissions
+  pre: [ [
+    { method: pre.isPostPurgeable },
+    { method: pre.isCDRPost }
+  ] ], //handle permissions
   handler: function(request, reply) {
     var promise = db.posts.purge(request.params.id);
     return reply(promise);

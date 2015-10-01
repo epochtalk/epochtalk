@@ -35,7 +35,7 @@
       <label for="lockThread">Lock Thread</label>
     </div>
 
-    <div class="option" ng-if="NewThreadCtrl.user.isAdmin">
+    <div class="option" ng-if="NewThreadCtrl.controlAccess.privilegedSticky">
       <input type="checkbox" id="stickyThread" ng-model="NewThreadCtrl.thread.sticky" ng-disabled="!NewThreadCtrl.loggedIn()" tabIndex="4">
       <label for="stickyThread">Sticky Thread</label>
     </div>

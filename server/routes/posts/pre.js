@@ -48,6 +48,23 @@ module.exports = {
     });
     return reply(promise);
   },
+  isPostPurgeable: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var postId = _.get(request, request.route.settings.app.post_id);
+
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var purgeAll = getACLValue(request.auth, 'posts.privilegedPurge.all');
+    var purgeSome = getACLValue(request.auth, 'posts.privilegedPurge.some');
+    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
+
+    var promise = Promise.join(purgeAll, purgeSome, isMod, function(all, some, mod) {
+      var result = false;
+      if (all) { result = true; }
+      else if (some && mod) { result = true; }
+      return result;
+    });
+    return reply(promise);
+  },
   accessBoardWithPostId: function(request, reply) {
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
@@ -99,13 +116,13 @@ module.exports = {
     var userId = request.auth.credentials.id;
 
     var getACLValue = request.server.plugins.acls.getACLValue;
-    var createAll = getACLValue(request.auth, 'boards.createInLockedThread.all');
-    var createSome = getACLValue(request.auth, 'boards.createInLockedThread.some');
+    var bypassAll = getACLValue(request.auth, 'posts.bypassLock.all');
+    var bypassSome = getACLValue(request.auth, 'posts.bypassLock.some');
     var isMod = db.moderators.isModeratorWithPostId(userId, postId);
     var threadLocked = db.posts.getPostsThread(postId)
     .then(function(thread) { return thread.locked; });
 
-    var promise = Promise.join(threadLocked, createAll, createSome, isMod, function(locked, all, some, mod) {
+    var promise = Promise.join(threadLocked, bypassAll, bypassSome, isMod, function(locked, all, some, mod) {
       var result = Boom.forbidden();
       // Thread is unlocked or user has elevated privelages
       if (!locked || all) { result = true; }
@@ -120,13 +137,13 @@ module.exports = {
     var userId = request.auth.credentials.id;
 
     var getACLValue = request.server.plugins.acls.getACLValue;
-    var createAll = getACLValue(request.auth, 'boards.createInLockedThread.all');
-    var createSome = getACLValue(request.auth, 'boards.createInLockedThread.some');
+    var bypassAll = getACLValue(request.auth, 'posts.bypassLock.all');
+    var bypassSome = getACLValue(request.auth, 'posts.bypassLock.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
     var threadLocked = db.threads.find(threadId)
     .then(function(thread) { return thread.locked; });
 
-    var promise = Promise.join(threadLocked, createAll, createSome, isMod, function(locked, all, some, mod) {
+    var promise = Promise.join(threadLocked, bypassAll, bypassSome, isMod, function(locked, all, some, mod) {
       var result = Boom.forbidden();
       // Board is unlocked or user has elevated privelages
       if (!locked || all) { result = true; }

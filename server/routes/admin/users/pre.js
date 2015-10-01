@@ -8,7 +8,7 @@ var querystring = require('querystring');
 module.exports = {
   isNewUsernameUnique: function(request, reply) {
     var referencedUserId = request.payload.id;
-    var username = querystring.unescape(request.payload.username);
+    var username = request.payload.username ? querystring.unescape(request.payload.username) : undefined;
 
     // bypass check if no email given
     if (!username) { return reply(true); }

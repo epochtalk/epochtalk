@@ -39,7 +39,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         $title: ['user', function(user) { return user.username; }],
         user: ['AdminUsers', 'Session', 'User', '$stateParams', function(AdminUsers, Session, User, $stateParams) {
           var promise;
-          if (Session.user.isAdmin) {
+          if (Session.hasPermission('profileControls.viewUserEmail')) {
             promise = AdminUsers.find({ username: $stateParams.username }).$promise;
           }
           else { promise = User.get({ id: $stateParams.username }).$promise; }

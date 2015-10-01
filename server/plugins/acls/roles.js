@@ -113,31 +113,15 @@ module.exports = roles;
         some: true,
         all: true
       },
+      privilegedPurge: {
+        some: true,
+        all: true
+      },
       viewDeleted: {
         some: true,
         all: true
       },
-      createInPrivateBoard: {
-        some: true,
-        all: true
-      },
-      createInUncategorizedBoard: {
-        some: true,
-        all: true
-      },
-      createInLockedThread: {
-        some: true,
-        all: true
-      },
-      updateInPrivateBoard: {
-        some: true,
-        all: true
-      },
-      updateInUncategorizedBoard: {
-        some: true,
-        all: true
-      },
-      updateInLockedThread: {
+      bypassLock: {
         some: true,
         all: true
       },
@@ -172,6 +156,10 @@ module.exports = roles;
         some: true,
         all: true
       },
+      privilegedPurge: {
+        some: true,
+        all: true
+      },
       create: true,
       byBoard: true,
       viewed: true,
@@ -179,7 +167,7 @@ module.exports = roles;
       lock: true,
       sticky: true,
       move: true,
-      delete: true
+      purge: true
     },
     users: {
       privilegedDeactivate: {
@@ -190,12 +178,16 @@ module.exports = roles;
         samePriority: true,
         lowerPriority: true
       },
+      privilegedDelete: {
+        samePriority: true,
+        lowerPriority: true
+      },
       viewDeleted: true,
       update: true,
       find: true,
       deactivate: true,
       reactivate: true,
-      delete: true
+      delete: true // do we need this?
     }
   };
 */
@@ -311,22 +303,13 @@ roles.superAdministrator = {
     privilegedDelete: {
       all: true
     },
+    privilegedPurge: {
+      all: true
+    },
     viewDeleted: {
       all: true
     },
-    createInPrivateBoard: {
-      all: true
-    },
-    createInUncategorizedBoard: {
-      all: true
-    },
-    createInLockedThread: {
-      all: true
-    },
-    updateInPrivateBoard: {
-      all: true
-    },
-    updateInUncategorizedBoard: {
+    bypassLock: {
       all: true
     },
     create: true,
@@ -364,6 +347,9 @@ roles.superAdministrator = {
       lowerPriority: true
     },
     privilegedReactivate: {
+      lowerPriority: true
+    },
+    privilegedDelete: {
       lowerPriority: true
     },
     viewDeleted: true,
@@ -481,22 +467,13 @@ roles.administrator = {
     privilegedDelete: {
       all: true
     },
+    privilegedPurge: {
+      all: true
+    },
     viewDeleted: {
       all: true
     },
-    createInPrivateBoard: {
-      all: true
-    },
-    createInUncategorizedBoard: {
-      all: true
-    },
-    createInLockedThread: {
-      all: true
-    },
-    updateInPrivateBoard: {
-      all: true
-    },
-    updateInUncategorizedBoard: {
+    bypassLock: {
       all: true
     },
     create: true,
@@ -520,6 +497,15 @@ roles.administrator = {
     privilegedLock: {
       all: true
     },
+    privilegedSticky: {
+      all: true
+    },
+    privilegedMove: {
+      all: true
+    },
+    privilegedPurge: {
+      all: true
+    },
     create: true,
     byBoard: true,
     viewed: true,
@@ -527,13 +513,16 @@ roles.administrator = {
     lock: true,
     sticky: true,
     move: true,
-    delete: true
+    purge: true
   },
   users: {
     privilegedDeactivate: {
       lowerPriority: true
     },
     privilegedReactivate: {
+      lowerPriority: true
+    },
+    privilegedDelete: {
       lowerPriority: true
     },
     viewDeleted: true,
@@ -617,22 +606,13 @@ roles.globalModerator = {
     privilegedDelete: {
       all: true
     },
+    privilegedPurge: {
+      all: true
+    },
     viewDeleted: {
       all: true
     },
-    createInPrivateBoard: {
-      all: true
-    },
-    createInUncategorizedBoard: {
-      all: true
-    },
-    createInLockedThread: {
-      all: true
-    },
-    updateInPrivateBoard: {
-      all: true
-    },
-    updateInUncategorizedBoard: {
+    bypassLock: {
       all: true
     },
     create: true,
@@ -656,6 +636,15 @@ roles.globalModerator = {
     privilegedLock: {
       all: true
     },
+    privilegedSticky: {
+      all: true
+    },
+    privilegedMove: {
+      all: true
+    },
+    privilegedPurge: {
+      all: true
+    },
     create: true,
     byBoard: true,
     viewed: true,
@@ -663,7 +652,7 @@ roles.globalModerator = {
     lock: true,
     sticky: true,
     move: true,
-    delete: true
+    purge: true
   },
   users: {
     viewDeleted: true,
@@ -745,22 +734,13 @@ roles.moderator = {
     privilegedDelete: {
       some: true
     },
+    privilegedPurge: {
+      some: true
+    },
     viewDeleted: {
       some: true,
     },
-    createInPrivateBoard: {
-      some: true
-    },
-    createInUncategorizedBoard: {
-      some: true
-    },
-    createInLockedThread: {
-      some: true
-    },
-    updateInPrivateBoard: {
-      some: true
-    },
-    updateInUncategorizedBoard: {
+    bypassLock: {
       some: true
     },
     create: true,
@@ -784,6 +764,15 @@ roles.moderator = {
     privilegedLock: {
       some: true
     },
+    privilegedSticky: {
+      some: true
+    },
+    privilegedMove: {
+      some: true
+    },
+    privilegedPurge: {
+      some: true
+    },
     create: true,
     byBoard: true,
     viewed: true,
@@ -791,7 +780,7 @@ roles.moderator = {
     lock: true,
     sticky: true,
     move: true,
-    delete: true
+    purge: true
   },
   users: {
     viewDeleted: true,

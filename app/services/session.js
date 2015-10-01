@@ -21,6 +21,9 @@ module.exports = ['$window',
       if ($window.sessionStorage.roles || $window.localStorage.roles) {
         user.roles = JSON.parse($window.sessionStorage.roles || $window.localStorage.roles);
       }
+      if ($window.sessionStorage.roles || $window.localStorage.roles) {
+        user.moderating = JSON.parse($window.sessionStorage.roles || $window.localStorage.roles);
+      }
       if ($window.sessionStorage.permissions || $window.localStorage.permissions) {
         user.permissions = JSON.parse($window.sessionStorage.permissions || $window.localStorage.permissions);
       }
@@ -56,6 +59,7 @@ module.exports = ['$window',
       user.username = newUser.username;
       user.avatar = newUser.avatar || 'https://fakeimg.pl/400x400/ccc/444/?text=' + user.username;
       user.roles = newUser.roles || [];
+      user.moderating = newUser.moderating || [];
       user.permissions = newUser.permissions || {};
       // token storage
       var storage;
@@ -67,6 +71,7 @@ module.exports = ['$window',
         storage.username = user.username;
         storage.avatar = user.avatar;
         storage.roles = JSON.stringify(user.roles);
+        storage.moderating = JSON.stringify(user.moderating);
         storage.permissions = JSON.stringify(user.permissions);
       }
       else if (newUser.token) {
@@ -77,6 +82,7 @@ module.exports = ['$window',
         storage.username = user.username;
         storage.avatar = user.avatar;
         storage.roles = JSON.stringify(user.roles);
+        storage.moderating = JSON.stringify(user.moderating);
         storage.permissions = JSON.stringify(user.permissions);
       }
     }
@@ -96,18 +102,21 @@ module.exports = ['$window',
       delete $window.sessionStorage.username;
       delete $window.sessionStorage.avatar;
       delete $window.sessionStorage.roles;
+      delete $window.sessionStorage.moderating;
       delete $window.sessionStorage.permissions;
 
       delete $window.localStorage.id;
       delete $window.localStorage.username;
       delete $window.localStorage.avatar;
       delete $window.localStorage.roles;
+      delete $window.localStorage.moderating;
       delete $window.localStorage.permissions;
 
       delete $window.privateStorage.id;
       delete $window.privateStorage.username;
       delete $window.privateStorage.avatar;
       delete $window.privateStorage.roles;
+      delete $window.privateStorage.moderating;
       delete $window.privateStorage.permissions;
     }
 
@@ -115,11 +124,45 @@ module.exports = ['$window',
       return user.permissions && _.get(user.permissions, permission);
     }
 
+    function moderatesBoard(boardId) {
+      return _.includes(user.moderating, boardId);
+    }
+
+    function getControlAccess(permission, boardId) {
+      var result = {};
+      var isMod = moderatesBoard(boardId);
+      if (user.permissions) {
+        var obj = _.get(user.permissions, permission);
+        for (var key in obj) { result[key] = (isMod && obj[key].some) || obj[key].all; }
+      }
+      return result;
+    }
+
+    function getControlAccessWithPriority(permission, othersPriority) {
+      var result = {};
+      if (user.permissions) {
+        var authedPriority = user.permissions.priority;
+        if (othersPriority === null || othersPriority === undefined) { othersPriority = Number.MAX_VALUE; }
+        var obj = _.get(user.permissions, permission);
+        for (var key in obj) {
+          var samePriority = obj[key].samePriority;
+          var lowerPriority = obj[key].lowerPriority;
+          if (samePriority) { result[key] = authedPriority <= othersPriority; }
+          else if (lowerPriority) { result[key] = authedPriority < othersPriority; }
+          else { result[key] = obj[key]; }
+        }
+      }
+      return result;
+    }
+
     // Service API
     var serviceAPI = {
       setUser: setUser,
       clearUser: clearUser,
       hasPermission: hasPermission,
+      moderatesBoard: moderatesBoard,
+      getControlAccess: getControlAccess,
+      getControlAccessWithPriority: getControlAccessWithPriority,
       user: user,
       getToken: function() {
         var localToken = $window.localStorage.token;

@@ -4,29 +4,29 @@
     <!-- User's Avatar -->
     <div class="profile-row">
       <div class="profile-avatar-container">
-        <a ng-href="#" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
+        <a ng-href="#" ng-if="ProfileCtrl.editable" ng-click="ProfileCtrl.editAvatar = true">
           <img ng-src="{{ProfileCtrl.displayUser.avatar}}" />
         </a>
-        <img ng-if="!ProfileCtrl.editable()" ng-src="{{ProfileCtrl.displayUser.avatar}}" />
-        <a ng-href="#" class="after" ng-if="ProfileCtrl.editable()" ng-click="ProfileCtrl.editAvatar = true">
+        <img ng-if="!ProfileCtrl.editable" ng-src="{{ProfileCtrl.displayUser.avatar}}" />
+        <a ng-href="#" class="after" ng-if="ProfileCtrl.editable" ng-click="ProfileCtrl.editAvatar = true">
           <div>Change Avatar</div>
         </a>
       </div>
     </div>
 
     <!-- Edit Profile Controls -->
-    <div class="profile-row centered-text" ng-if="ProfileCtrl.editable()">
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.editable">
       Edit:
       <a ng-href="#" ng-click="ProfileCtrl.editProfile = true">Profile</a>
       |
       <a ng-href="#" ng-click="ProfileCtrl.editPassword = true">Password</a>
     </div>
 
-    <div class="profile-row centered-text" ng-if="ProfileCtrl.editable()">
-      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showDeactivate = true" ng-hide="ProfileCtrl.user.deleted">Deactivate Account</a>
-      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showReactivate = true" ng-show="ProfileCtrl.user.deleted">Reactivate Account</a>
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.controlAccess.privilegedDeactivate || ProfileCtrl.controlAccess.privilegedReactivate">
+      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showDeactivate = true" ng-hide="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedDeactivate">Deactivate Account</a>
+      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showReactivate = true" ng-show="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedReactivate">Reactivate Account</a>
       <br>
-      <a ng-href="#" ng-click="ProfileCtrl.showDelete = true" ng-if="ProfileCtrl.removable()">Delete Account</a>
+      <a ng-href="#" ng-click="ProfileCtrl.showDelete = true" ng-if="ProfileCtrl.controlAccess.privilegedDelete">Delete Account</a>
     </div>
 
     <!-- User Information -->
@@ -37,7 +37,7 @@
       <div><span ng-bind="ProfileCtrl.displayUser.status"></span></div>
       <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.displayUser.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>
       <hr ng-if="ProfileCtrl.displayUser.email || ProfileCtrl.displayUser.btcAddress || ProfileCtrl.displayUser.website">
-      <div ng-if="ProfileCtrl.displayUser.email">
+      <div ng-if="ProfileCtrl.displayUser.email && ProfileCtrl.controlAccess.viewUserEmail">
         <a ng-href="mailto:{{ProfileCtrl.displayUser.email}}" ng-bind="ProfileCtrl.displayUser.email"></a>
       </div>
       <div><span ng-bind="ProfileCtrl.displayUser.btcAddress"></span></div>
@@ -79,7 +79,7 @@
     <div class="profile-row">
       <div class="fill-row">
         <strong>Signature:</strong>
-        <a ng-href="#" ng-click="ProfileCtrl.editSignature = true" ng-if="ProfileCtrl.editable()">
+        <a ng-href="#" ng-click="ProfileCtrl.editSignature = true" ng-if="ProfileCtrl.editable">
           <i class="icon-epoch-edit-pencil"></i>
         </a>
       </div>

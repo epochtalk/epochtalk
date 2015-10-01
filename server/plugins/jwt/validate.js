@@ -35,13 +35,13 @@ module.exports = function(decodedToken, token, cb) {
   .then(function() {
     var userRoleKey = 'user:' + userId + ':roles';
     return redis.smembersAsync(userRoleKey)
-    .then(function(value) { userRoles = value; });
+    .then(function(value) { userRoles = value || []; });
   })
   // get user moderating boards
   .then(function() {
     var userModeratingKey = 'user:' + userId + ':moderating';
     return redis.smembersAsync(userModeratingKey)
-    .then(function(value) { userModerating = value; });
+    .then(function(value) { userModerating = value || []; });
   })
   .then(function() {
     // build credentials

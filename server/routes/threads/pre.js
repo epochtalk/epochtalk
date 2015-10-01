@@ -67,18 +67,19 @@ module.exports = {
     }
     return reply(promise);
   },
-  isThreadEditable: function(request, reply) {
+  isThreadOwner: function(request, reply) {
     var userId = request.auth.credentials.id;
+    var privilege = request.route.settings.app.isThreadOwner;
     var threadId = _.get(request, request.route.settings.app.thread_id);
 
     var getACLValue = request.server.plugins.acls.getACLValue;
-    var lockAll = getACLValue(request.auth, 'threads.privilegedTitle.all');
-    var lockSome = getACLValue(request.auth, 'threads.privilegedTitle.some');
+    var privilegedAll = getACLValue(request.auth, privilege + '.all');
+    var privilegedSome = getACLValue(request.auth, privilege +'.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
     var isThreadOwner = db.threads.getThreadOwner(threadId)
     .then(function(owner) { return owner.user_id === userId; });
 
-    var promise = Promise.join(isThreadOwner, lockAll, lockSome, isMod, function(owner, all, some, mod) {
+    var promise = Promise.join(isThreadOwner, privilegedAll, privilegedSome, isMod, function(owner, all, some, mod) {
       var result = Boom.forbidden();
       if (owner || all) { result = true; }
       else if (some && mod) { result = true; }
@@ -87,20 +88,19 @@ module.exports = {
 
     return reply(promise);
   },
-  isThreadLockable: function(request, reply) {
+  hasPermission: function(request, reply) {
     var userId = request.auth.credentials.id;
+    var privilege = request.route.settings.app.hasPermission;
     var threadId = _.get(request, request.route.settings.app.thread_id);
 
     var getACLValue = request.server.plugins.acls.getACLValue;
-    var lockAll = getACLValue(request.auth, 'threads.privilegedLock.all');
-    var lockSome = getACLValue(request.auth, 'threads.privilegedLock.some');
+    var privilegedAll = getACLValue(request.auth, privilege + '.all');
+    var privilegedSome = getACLValue(request.auth, privilege +'.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
-    var isThreadOwner = db.threads.getThreadOwner(threadId)
-    .then(function(owner) { return owner.user_id === userId; });
+    var promise = Promise.join(privilegedAll, privilegedSome, isMod, function(all, some, mod) {
 
-    var promise = Promise.join(isThreadOwner, lockAll, lockSome, isMod, function(owner, all, some, mod) {
       var result = Boom.forbidden();
-      if (isThreadOwner || all) { result = true; }
+      if (all) { result = true; }
       else if (some && mod) { result = true; }
       return result;
     });

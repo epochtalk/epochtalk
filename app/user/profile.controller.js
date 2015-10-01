@@ -2,9 +2,6 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
   function(user, AdminUsers, User, Session, Alert, $scope, $timeout, $filter, $state, $location) {
     var ctrl = this;
     this.user = user;
-    this.editable = function() { return Session.user.id === user.id || Session.user.isAdmin; };
-    this.removable = function() { return Session.user.isAdmin; };
-    this.adminVisitor = Session.user.id !== user.id && Session.user.isAdmin;
     this.displayUser = angular.copy(user);
     this.displayUser.avatar = this.displayUser.avatar || 'https://fakeimg.pl/400x400/ccc/444/?text=' + this.displayUser.username;
     this.user.dob = $filter('date')(this.user.dob, 'longDate');
@@ -13,6 +10,10 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
     // This isn't the profile users true local time, just a placeholder
     this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
     this.displayPostsUrl = false;
+
+    this.controlAccess = Session.getControlAccessWithPriority('profileControls', user.priority);
+    this.editable = Session.user.id === user.id || this.controlAccess.privilegedUpdate;
+    this.adminVisitor = Session.user.id !== user.id && this.controlAccess.privilegedUpdate;
 
     var calcAge = function(dob) {
       if (!dob) { return '';}

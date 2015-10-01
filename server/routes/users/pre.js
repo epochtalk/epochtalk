@@ -77,8 +77,8 @@ module.exports = {
   },
   isOldPasswordValid: function(request, reply) {
     var oldPassword = request.payload.old_password;
-    var userId = request.auth.credentials.id
-    ;
+    var userId = request.auth.credentials.id;
+
     // bypass check if no old password given
     if (!oldPassword) { return reply(true); }
 
@@ -93,7 +93,7 @@ module.exports = {
   },
   isNewUsernameUnique: function(request, reply) {
     var userId = request.auth.credentials.id;
-    var username = querystring.unescape(request.payload.username);
+    var username = request.payload.username ? querystring.unescape(request.payload.username) : undefined;
 
     // bypass check if no email given
     if (!username) { return reply(true); }
@@ -108,6 +108,7 @@ module.exports = {
       else if (user) { unique = Boom.badRequest(); }
       // no user with this username
       else { unique = true; }
+
       return unique;
     });
     return reply(promise);
@@ -129,6 +130,7 @@ module.exports = {
       else if (user) { unique = Boom.badRequest(); }
       // no user with this email
       else { unique = true; }
+
       return unique;
     });
     return reply(promise);
@@ -142,6 +144,7 @@ module.exports = {
       .then(function(user) {
         var active = Boom.forbidden();
         if (user) { active = !user.deleted; }
+
         return active;
       });
     }

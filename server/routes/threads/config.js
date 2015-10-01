@@ -227,7 +227,10 @@ exports.viewed = {
   * @apiError (Error 500) InternalServerError There was an issue updating the thread title.
   */
 exports.title = {
-  app: { thread_id: 'params.id' },
+  app: {
+    thread_id: 'params.id',
+    isThreadOwner: 'threads.privilegedTitle'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.title' },
   validate: {
@@ -237,7 +240,7 @@ exports.title = {
   pre: [ [
     { method: pre.accessBoardWithThreadId },
     { method: pre.isRequesterActive },
-    { method: pre.isThreadEditable },
+    { method: pre.isThreadOwner },
     { method: pre.threadFirstPost, assign: 'post' }
   ] ],
   handler: function(request, reply) {
@@ -269,7 +272,10 @@ exports.title = {
   * @apiError (Error 500) InternalServerError There was an issue locking the thread
   */
 exports.lock = {
-  app: { thread_id: 'params.id' },
+  app: {
+    thread_id: 'params.id',
+    isThreadOwner: 'threads.privilegedLock'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.lock' },
   validate: {
@@ -279,7 +285,7 @@ exports.lock = {
   pre: [ [
       { method: pre.accessBoardWithThreadId },
       { method: pre.isRequesterActive },
-      { method: pre.isThreadLockable },
+      { method: pre.isThreadOwner },
       { method: pre.getThread, assign: 'thread' }
     ] ],
   handler: function(request, reply) {
@@ -311,14 +317,20 @@ exports.lock = {
   * @apiError (Error 500) InternalServerError There was an issue stickying the thread
   */
 exports.sticky = {
-  app: { thread_id: 'params.id' },
+  app: {
+    thread_id: 'params.id',
+    hasPermission: 'threads.privilegedSticky'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.sticky' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { status: Joi.boolean().default(true) }
   },
-  pre: [ { method: pre.getThread, assign: 'thread' } ],
+  pre: [ [
+    { method: pre.hasPermission },
+    { method: pre.getThread, assign: 'thread' }
+  ] ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
     thread.sticky = request.payload.status;
@@ -349,14 +361,20 @@ exports.sticky = {
   * @apiError (Error 500) InternalServerError There was an issue moving the thread
   */
 exports.move = {
-  app: { thread_id: 'params.id' },
+  app: {
+    thread_id: 'params.id',
+    hasPermission: 'threads.privilegedMove'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.move' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { newBoardId: Joi.string().required() }
   },
-  pre: [ { method: pre.getThread, assign: 'thread' } ],
+  pre: [ [
+    { method: pre.hasPermission },
+    { method: pre.getThread, assign: 'thread' }
+  ] ],
   handler: function(request, reply) {
     var newBoardId = request.payload.newBoardId;
     var thread = request.pre.thread;
@@ -387,9 +405,14 @@ exports.move = {
   * @apiError (Error 500) InternalServerError There was an issue purging the thread
   */
 exports.purge = {
+  app: {
+    thread_id: 'params.id',
+    hasPermission: 'threads.privilegedPurge'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.purge' },
   validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.hasPermission } ],
   handler: function(request, reply) {
     var promise = db.threads.purge(request.params.id);
     return reply(promise);

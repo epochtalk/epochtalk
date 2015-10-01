@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 module.exports = [
   '$scope', '$timeout', '$location', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
   function($scope, $timeout, $location, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
@@ -13,24 +15,35 @@ module.exports = [
     this.resize = true;
     this.moveBoard = {};
     this.boards = [];
+    this.controlAccess = {};
+    this.postControlAccess = {};
+    this.showThreadControls = false;
 
-    this.showThreadControls = function() {
-      var show = false;
-      if (ctrl.user.isAdmin || ctrl.user.isMod) { show = true; }
-      else if (ctrl.user.id === ctrl.thread.user.id) { show = true; }
-      return show;
-    };
+    // wait for board_id to be populated by child controller
+    $scope.$watch(function() { return ctrl.board_id; }, function(boardId) {
+      // Get access rights to page controls for authed user
+      ctrl.controlAccess = Session.getControlAccess('threadControls', boardId);
+      // thread owner can lock and edit title
+      if (ctrl.user.id === ctrl.thread.user.id) {
+        ctrl.controlAccess.privilegedLock = true;
+        ctrl.controlAccess.privilegedTitle = true;
+      }
+      ctrl.showThreadControls = _.some(ctrl.controlAccess);
+      ctrl.getBoards();
+    });
 
     this.allowPosting = function() {
+      var bypassLock = Session.hasPermission('postControls.bypassLock') &&
+        Session.moderatesBoard(ctrl.thread.board_id);
       var allowed = false;
-      if (!ctrl.loggedIn()) { allowed = false; }
-      else if (Session.user.isAdmin || Session.user.isMod) { allowed = true; }
-      else if (!ctrl.thread.locked) { allowed = true; }
+        if (!ctrl.loggedIn()) { allowed = false; }
+        else if (bypassLock) { allowed = true; }
+        else if (!ctrl.thread.locked) { allowed = true; }
       return allowed;
     };
 
     this.getBoards = function() {
-      if (Session.user.isAdmin) {
+      if (ctrl.controlAccess.privilegedMove) {
         return Boards.all().$promise
         .then(function(allBoards) {
           ctrl.boards = allBoards || [];

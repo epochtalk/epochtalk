@@ -1,7 +1,7 @@
-module.exports = ['$stateParams', '$location', 'Session', 'Threads', 'Alert',
-  function($stateParams, $location, Session, Threads, Alert) {
+module.exports = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Threads', 'Alert',
+  function($anchorScroll, $stateParams, $location, Session, Threads, Alert) {
+    $anchorScroll();
     var ctrl = this;
-
     this.exitEditor = false;
     this.dirtyEditor = false;
     this.resetEditor = true;
@@ -14,8 +14,8 @@ module.exports = ['$stateParams', '$location', 'Session', 'Threads', 'Alert',
       locked: false
     };
 
+    this.controlAccess = Session.getControlAccess('threadControls', ctrl.thread.board_id);
     this.loggedIn = Session.isAuthenticated;
-    this.user = Session.user;
 
     this.save = function() {
       ctrl.exitEditor = true;

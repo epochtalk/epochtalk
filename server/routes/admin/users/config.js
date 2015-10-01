@@ -1,4 +1,5 @@
 var Joi = require('joi');
+var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var querystring = require('querystring');
@@ -150,6 +151,7 @@ exports.find = {
       delete user.passhash;
       delete user.confirmation_token;
       delete user.reset_token;
+      user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
       user.roles = user.roles.map(function(role) { return role.lookup; });
       return user;
     });

@@ -26,7 +26,14 @@ function getMaskedPermissions(userRoles) {
     return maskedPermission;
   };
 
+  var getPriority = function() {
+    var priority = _.min(permissions.map(function(role) { return role.priority; }));
+    if (priority > -1) { return priority; }
+    else { return Number.MAX_VALUE; }
+  };
+
   return {
+    priority: getPriority(),
     adminAccess: maskPermission('adminAccess') ? {
       settings: maskPermission('adminAccess.settings') ? {
         general: maskPermission('adminAccess.settings.general'),
@@ -43,14 +50,64 @@ function getMaskedPermissions(userRoles) {
       posts: maskPermission('modAccess.posts'),
       messages: maskPermission('modAccess.messages')
     } : undefined,
-    profileControls: maskPermission('adminUsers') ? {
-      viewUserEmail: maskPermission('adminUsers.find')
+    profileControls: maskPermission('adminUsers') || maskPermission('users.privilegedDeactive') || maskPermission('users.privilegedReactivate') ? {
+      viewUserEmail: maskPermission('adminUsers.find'),
+      privilegedUpdate: maskPermission('adminUsers.privilegedUpdate') ? {
+        samePriority: maskPermission('adminUsers.privilegedUpdate.samePriority'),
+        lowerPriority: maskPermission('adminUsers.privilegedUpdate.lowerPriority')
+      } : undefined,
+      privilegedDeactivate: maskPermission('users.privilegedDeactivate') ? {
+        samePriority: maskPermission('users.privilegedDeactivate.samePriority'),
+        lowerPriority: maskPermission('users.privilegedDeactivate.lowerPriority')
+      } : undefined,
+      privilegedReactivate: maskPermission('users.privilegedReactivate') ? {
+        samePriority: maskPermission('users.privilegedReactivate.samePriority'),
+        lowerPriority: maskPermission('users.privilegedReactivate.lowerPriority')
+      } : undefined,
+      privilegedDelete: maskPermission('users.privilegedDelete') ? {
+        samePriority: maskPermission('users.privilegedDelete.samePriority'),
+        lowerPriority: maskPermission('users.privilegedDelete.lowerPriority')
+      } : undefined
     } : undefined,
     threadControls: {
-
+      privilegedTitle: maskPermission('threads.privilegedTitle') ? {
+        some: maskPermission('threads.privilegedTitle.some'),
+        all: maskPermission('threads.privilegedTitle.all')
+      } : undefined,
+      privilegedLock: maskPermission('threads.privilegedLock') ? {
+        some: maskPermission('threads.privilegedLock.some'),
+        all: maskPermission('threads.privilegedLock.all')
+      } : undefined,
+      privilegedSticky: maskPermission('threads.privilegedSticky') ? {
+        some: maskPermission('threads.privilegedSticky.some'),
+        all: maskPermission('threads.privilegedSticky.all')
+      } : undefined,
+      privilegedMove: maskPermission('threads.privilegedMove') ? {
+        some: maskPermission('threads.privilegedMove.some'),
+        all: maskPermission('threads.privilegedMove.all')
+      } : undefined,
+      privilegedPurge: maskPermission('threads.privilegedPurge') ? {
+        some: maskPermission('threads.privilegedPurge.some'),
+        all: maskPermission('threads.privilegedPurge.all')
+      } : undefined
     },
     postControls: {
-
+      privilegedUpdate: maskPermission('posts.privilegedUpdate') ? {
+        some: maskPermission('posts.privilegedUpdate.some'),
+        all: maskPermission('posts.privilegedUpdate.all')
+      } : undefined,
+      privilegedDelete: maskPermission('posts.privilegedDelete') ? {
+        some: maskPermission('posts.privilegedDelete.some'),
+        all: maskPermission('posts.privilegedDelete.all')
+      } : undefined,
+      privilegedPurge: maskPermission('posts.privilegedPurge') ? {
+        some: maskPermission('posts.privilegedPurge.some'),
+        all: maskPermission('posts.privilegedPurge.all')
+      } : undefined,
+      bypassLock: maskPermission('posts.bypassLock') ? {
+        some: maskPermission('posts.bypassLock.some'),
+        all: maskPermission('posts.bypassLock.all')
+      } : undefined
     }
   };
 }
@@ -76,7 +133,7 @@ helper.saveSession = function(user) {
 
   // save username, avatar to redis hash under "user:{userId}"
   var userKey = 'user:' + user.id;
-  var userValue = { username: user.username };
+  var userValue = { username: user.username};
   if (user.avatar) { userValue.avatar = user.avatar; }
   return redis.hmsetAsync(userKey, userValue)
   // save roles to redis set under "user:{userId}:roles"
@@ -89,7 +146,9 @@ helper.saveSession = function(user) {
   .then(function() {
     var moderatingKey = 'user:' + user.id + ':moderating';
     return redis.delAsync(moderatingKey)
-    .then(function() { return redis.saddAsync(moderatingKey, user.moderating); });
+    .then(function() {
+      if (user.moderating.length) { return redis.saddAsync(moderatingKey, user.moderating); }
+    });
   })
   // save session to redis key under "user:{userId}:session:{sessionId}"
   .then(function() {

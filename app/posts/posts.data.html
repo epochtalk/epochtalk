@@ -17,17 +17,17 @@
       <div class="timestamp" ng-bind="::post.created_at | humanDate"></div>
 
       <ul class="post-action">
-        <li ng-if="PostsCtrl.user.isAdmin && $index !== 0">
+        <li ng-if="PostsCtrl.controlAccess.privilegedPurge && $index !== 0">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
             <i class="fa fa-trash"></i>
           </a>
         </li>
-        <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.user.isAdmin) && $index !== 0 && !post.deleted">
+        <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.controlAccess.privilegedDelete) && $index !== 0 && !post.deleted">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Delete" ng-click="PostsParentCtrl.openDeleteModal($index)">
             <i class="fa fa-eye-slash"></i>
           </a>
         </li>
-        <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.user.isAdmin) && post.deleted === true">
+        <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.controlAccess.privilegedDelete) && post.deleted === true">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Undelete" ng-click="PostsParentCtrl.openUndeleteModal($index)">
             <i class="fa fa-eye"></i>
           </a>
@@ -37,7 +37,7 @@
             <i class="icon-epoch-flag"></i>
           </a>
         </li>
-        <li ng-if="(post.user.id === PostsCtrl.user.id && !PostsParentCtrl.thread_locked) || PostsCtrl.user.isAdmin">
+        <li ng-if="(post.user.id === PostsCtrl.user.id && !PostsParentCtrl.thread_locked) || PostsCtrl.controlAccess.privilegedUpdate">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Edit" ng-click="PostsCtrl.loadEditor($index)">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
