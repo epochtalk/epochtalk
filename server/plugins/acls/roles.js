@@ -333,6 +333,15 @@ roles.superAdministrator = {
     privilegedLock: {
       all: true
     },
+    privilegedSticky: {
+      all: true
+    },
+    privilegedMove: {
+      all: true
+    },
+    privilegedPurge: {
+      all: true
+    },
     create: true,
     byBoard: true,
     viewed: true,

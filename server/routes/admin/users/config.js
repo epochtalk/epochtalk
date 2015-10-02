@@ -200,7 +200,7 @@ exports.addRoles = {
     var roles = request.payload.roles;
     var promise = db.users.addRoles(userId, roles)
     .then(function(user) {
-      return helper.updateRoles(user)
+      return authHelper.updateRoles(user)
       .then(function() { return user; });
     });
     return reply(promise);
@@ -248,7 +248,7 @@ exports.removeRoles = {
     var roles = request.payload.roles;
     var promise = db.users.removeRoles(userId, roles)
     .then(function(user) {
-      return helper.updateRoles(user)
+      return authHelper.updateRoles(user)
       .then(function() { return user; });
     });
     return reply(promise);
