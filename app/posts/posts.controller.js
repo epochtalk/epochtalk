@@ -77,6 +77,25 @@ module.exports = [
       });
     };
 
+    this.avatarHighlight = function(color) {
+      var style = {};
+      if (color) {
+        style.background = color;
+        style.padding = '0.2rem';
+      }
+      return style;
+    };
+
+    this.usernameHighlight = function(color) {
+      var style = {};
+      if (color) {
+        style.background = color;
+        style.padding = '0 0.3rem';
+        style.color = '#ffffff';
+      }
+      return style;
+    };
+
     this.highlightPost = function() {
       $timeout(function() { highlight($location.hash()); });
     };

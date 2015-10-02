@@ -986,9 +986,6 @@ main #public-content {
           height: 3.75rem;
           width: 3.75rem;
           img { @include border-radius(100px); width: 100%; height: 100%; object-fit: cover;}
-          img.admin { border: 0.125rem solid $color-active-fill; }
-          img.global-mod { border: 0.125rem solid #32A56E; }
-          img.mod { border: 0.125rem solid #508DD0; }
         }
         .user-role {
           padding-top: 0.625rem;
@@ -1012,24 +1009,6 @@ main #public-content {
             color: $base-font-color;
             font-weight: 900;
             &:hover { color: $color-active; }
-          }
-          a.admin {
-            background-color: $color-active-fill;
-            padding: 0 0.3rem;
-            color: #fff;
-            &:hover { color: #fff; }
-          }
-          a.global-mod {
-            background-color: #32A56E;
-            padding: 0 0.3rem;
-            color: #fff;
-            &:hover { color: #fff; }
-          }
-          a.mod {
-            background-color: #508DD0;
-            padding: 0 0.3rem;
-            color: #fff;
-            &:hover { color: #fff; }
           }
           .timestamp {
             display: inline-block;

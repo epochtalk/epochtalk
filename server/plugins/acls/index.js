@@ -56,6 +56,7 @@ function verifyRoles() {
         newRole.description = dbRoleFound.description;
         newRole.lookup = dbRoleFound.lookup;
         newRole.priority = dbRoleFound.priority;
+        newRole.highlight_color = dbRoleFound.highlight_color;
         roles[newRole.lookup] = newRole;
       }
       // if role found and no permissions, update permissions
@@ -66,6 +67,7 @@ function verifyRoles() {
         delete clonedRole.lookup;
         delete clonedRole.description;
         delete clonedRole.priority;
+        delete clonedRole.highlightColor;
         var updateRole = {
           id: dbRoleFound.id,
           permissions: clonedRole
@@ -86,6 +88,7 @@ function verifyRoles() {
           lookup: role.lookup,
           description: role.description,
           priority: role.priority,
+          highlightColor: role.highlightColor,
           permissions: clonedAddRole
         };
         return db.roles.add(addRole);

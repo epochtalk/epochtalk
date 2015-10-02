@@ -4,7 +4,10 @@ module.exports = roles;
 /* base permission set
   roles.basePermissions = {
     // business logic
-    name: 'superAdministrator',
+    id: '',
+    name: 'Super Administrator',
+    lookup: 'superAdministrator',
+    highlightColor: '#FF0000',
     priority: 0,
     // View Access
     adminAccess: {
@@ -198,6 +201,7 @@ roles.superAdministrator = {
   id: '8ab5ef49-c2ce-4421-9524-bb45f289d42c',
   name: 'Super Administrator',
   lookup: 'superAdministrator',
+  highlightColor: '#ff7442',
   priority: 0,
   // View Access
   adminAccess: {
@@ -375,6 +379,7 @@ roles.administrator = {
   id: '06860e6f-9ac0-4c2a-8d9c-417343062fb8',
   name: 'Administrator',
   lookup: 'administrator',
+  highlightColor: '#ff426f',
   priority: 1,
   // View Access
   adminAccess: {
@@ -548,6 +553,7 @@ roles.globalModerator = {
   id: 'fb0f70b7-3652-4f7d-a166-05ee68e7428d',
   name: 'Global Moderator',
   lookup: 'globalModerator',
+  highlightColor: '#32A56E',
   priority: 2,
   // View Access
   modAccess: {
@@ -677,6 +683,7 @@ roles.moderator = {
   id: 'c0d39771-1541-4b71-9122-af0736cad23d',
   name: 'Moderator',
   lookup: 'moderator',
+  highlightColor: '#508DD0',
   priority: 3,
   // View Access
   modAccess: {
