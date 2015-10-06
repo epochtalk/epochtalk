@@ -16,7 +16,10 @@ module.exports = [
     this.moveBoard = {};
     this.boards = [];
     this.controlAccess = {};
-    this.postControlAccess = {};
+    this.reportControlAccess = {
+      reportPosts: Session.hasPermission('reportControls.reportPosts'),
+      reportUsers: Session.hasPermission('reportControls.reportUsers')
+    };
     this.showThreadControls = false;
 
     // wait for board_id to be populated by child controller

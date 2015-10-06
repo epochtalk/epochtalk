@@ -16,6 +16,12 @@ module.exports = [
     this.newConversation = {body: '', receiver_id: ''};
     this.newMessage = {body: '', receiver_id: '', previewBody: '' };
     this.showReply = false;
+    this.controlAccess = {
+      createConversations: Session.hasPermission('messageControls.createConversations'),
+      createMessages: Session.hasPermission('messageControls.createMessages'),
+      deleteMessages: Session.hasPermission('messageControls.deleteMessages'),
+      reportMessages: Session.hasPermission('reportControls.reportMessages')
+    };
 
     // page exiting functions
     var confirmMessage = 'It looks like a message is being written.';

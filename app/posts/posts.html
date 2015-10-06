@@ -180,10 +180,12 @@
 <!-- Reporting Modal -->
 <modal show="PostsParentCtrl.showReportModal" on-close="PostsParentCtrl.closeReportModal()">
   <form name="$parent.form" class="css-form">
-    <h3 class="thin-underline">Report User/Post</h3>
-    <label>Which would you like to report?</label>
-    <input type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.user.id" id="reportUser" ng-disabled="PostsParentCtrl.reportSubmitted" required><label for="reportUser">{{PostsParentCtrl.reportedPost.user.username}}</label>
-    <input type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.id" id="reportPost" ng-disabled="PostsParentCtrl.reportSubmitted" required><label for="reportPost">{{PostsParentCtrl.reportedPost.user.username}}'s Post</label>
+    <h3 class="thin-underline" ng-if="PostsParentCtrl.reportControlAccess.reportPosts && PostsParentCtrl.reportControlAccess.reportUsers">Report User/Post</h3>
+    <h3 class="thin-underline" ng-if="PostsParentCtrl.reportControlAccess.reportPosts && !PostsParentCtrl.reportControlAccess.reportUsers">Report Post</h3>
+    <h3 class="thin-underline" ng-if="!PostsParentCtrl.reportControlAccess.reportPosts && PostsParentCtrl.reportControlAccess.reportUsers">Report User</h3>
+    <label ng-if="PostsParentCtrl.reportControlAccess.reportPosts && PostsParentCtrl.reportControlAccess.reportUsers">Which would you like to report?</label>
+    <input ng-if="PostsParentCtrl.reportControlAccess.reportUsers" type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.user.id" id="reportUser" ng-disabled="PostsParentCtrl.reportSubmitted" required><label ng-if="PostsParentCtrl.reportControlAccess.reportUsers" for="reportUser">{{PostsParentCtrl.reportedPost.user.username}}</label>
+    <input ng-if="PostsParentCtrl.reportControlAccess.reportPosts" type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.id" id="reportPost" ng-disabled="PostsParentCtrl.reportSubmitted" required><label ng-if="PostsParentCtrl.reportControlAccess.reportPosts" for="reportPost">{{PostsParentCtrl.reportedPost.user.username}}'s Post</label>
     <label>Reason for Report</label>
     <textarea name="reportReason" ng-model="PostsParentCtrl.reportReason" ng-disabled="PostsParentCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required></textarea>
     <div class="clear">

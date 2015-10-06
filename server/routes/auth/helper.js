@@ -108,6 +108,16 @@ function getMaskedPermissions(userRoles) {
         some: maskPermission('posts.bypassLock.some'),
         all: maskPermission('posts.bypassLock.all')
       } : undefined
+    },
+    messageControls: {
+      createConversations: maskPermission('conversations.create'),
+      createMessages: maskPermission('messages.create'),
+      deleteMessages: maskPermission('messages.delete')
+    },
+    reportControls: {
+      reportPosts: maskPermission('reports.createPostReport'),
+      reportUsers: maskPermission('reports.createUserReport'),
+      reportMessages: maskPermission('reports.createMessageReport')
     }
   };
 }
