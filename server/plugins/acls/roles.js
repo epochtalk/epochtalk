@@ -7,6 +7,7 @@ module.exports = roles;
     id: '',
     name: 'Super Administrator',
     lookup: 'superAdministrator',
+    description: 'This role has full moderation and settings access',
     highlightColor: '#FF0000',
     priority: 0,
     // View Access
@@ -201,6 +202,7 @@ roles.superAdministrator = {
   id: '8ab5ef49-c2ce-4421-9524-bb45f289d42c',
   name: 'Super Administrator',
   lookup: 'superAdministrator',
+  description: 'Full moderation and settings access',
   highlightColor: '#ff7442',
   priority: 0,
   // View Access
@@ -379,7 +381,8 @@ roles.administrator = {
   id: '06860e6f-9ac0-4c2a-8d9c-417343062fb8',
   name: 'Administrator',
   lookup: 'administrator',
-  highlightColor: '#ff426f',
+  description: 'Full moderation and partial settings access',
+  highlightColor: '#FF4C4C',
   priority: 1,
   // View Access
   adminAccess: {
@@ -553,6 +556,7 @@ roles.globalModerator = {
   id: 'fb0f70b7-3652-4f7d-a166-05ee68e7428d',
   name: 'Global Moderator',
   lookup: 'globalModerator',
+  description: 'Full moderation access across all boards',
   highlightColor: '#32A56E',
   priority: 2,
   // View Access
@@ -683,6 +687,7 @@ roles.moderator = {
   id: 'c0d39771-1541-4b71-9122-af0736cad23d',
   name: 'Moderator',
   lookup: 'moderator',
+  description: 'Full moderation access to moderated boards',
   highlightColor: '#508DD0',
   priority: 3,
   // View Access
@@ -811,6 +816,7 @@ roles.user = {
   // business logic (none)
   id: 'edcd8f77-ce34-4433-ba85-17f9b17a3b60',
   name: 'User',
+  description: 'Standard account with access to create threads and post',
   lookup: 'user',
   priority: 4,
   // ACLs
@@ -862,6 +868,7 @@ roles.banned = {
   // business logic (none)
   name: 'Banned',
   lookup: 'banned',
+  description: 'Read only access with content creation disabled',
   priority: 5,
   // ACLs
   boards: {
@@ -895,6 +902,7 @@ roles.anonymous = {
   // business logic (none)
   name: 'Anonymous',
   lookup: 'anonymous',
+  description: 'Read only access',
   priority: 6,
   // ACLs
   boards: {
@@ -919,6 +927,7 @@ roles.private = {
   // business logic (none)
   name: 'Private',
   lookup: 'private',
+  description: 'Role assigned to unauthorized users when public forum is disabled',
   priority: 7
   // ACLs none
 };

@@ -1,16 +1,10 @@
-module.exports = ['$scope', 'AdminUsers', 'users', function($scope, AdminUsers, users) {
+module.exports = ['$scope', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'users', function($scope, Alert, AdminRoles, AdminUsers, roles, users) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
-  this.roles = [
-    { name: 'Super Administrator', description: 'Full access to all features' },
-    { name: 'Administrator', description: 'Administrate all content except forum/general settings' },
-    { name: 'Global Moderator', description: 'Moderate all boards and user roles' },
-    { name: 'Moderator', description: 'Moderate specific boards and users of those boards' },
-    { name: 'User', description: 'General forum access, allows posting and reading' },
-    { name: 'Banned', description: 'Read only access, disallows content creation' },
-    { name: 'Private', description: 'Users must login to view forum content, used for private forum settings' }
-  ];
+  this.roles = roles;
+  this.backupPriorities = angular.copy(roles);
+
   this.selectedRoleName = null;
   this.roleUsers = null;
   this.selectRole = function(role) {
@@ -22,6 +16,28 @@ module.exports = ['$scope', 'AdminUsers', 'users', function($scope, AdminUsers, 
       ctrl.selectedRoleName = role.name;
       ctrl.roleUsers = users;
     }
+  };
+
+  this.resetPriority = function() {
+    ctrl.roles = angular.copy(ctrl.backupPriorities);
+  };
+
+  this.savePriority = function() {
+    AdminRoles.reprioritize(ctrl.roles).$promise
+    .then(function() {
+      Alert.success('Roles successfully reprioritized');
+      ctrl.backupPriorities = angular.copy(ctrl.roles);
+    })
+    .catch(function() {
+      Alert.error('There was an error reprioritizing the roles');
+    });
+  };
+
+  this.reprioritizeRoles = function() {
+    var priority = 0;
+    ctrl.roles.forEach(function(role) {
+      role.priority = priority++;
+    });
   };
 
   this.showAddRoleModal = false;

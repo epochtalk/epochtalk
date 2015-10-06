@@ -1,15 +1,17 @@
 <div class="half-column">
   <br />
   <h3>Create and Edit Roles</h3><a ng-href="#" ng-click="AdminManagementCtrl.showAddRole()">Add new Role</a> <br />
-  <table width="100%" class="admin-content-selectable">
+  <table sv-root sv-on-sort="AdminManagementCtrl.reprioritizeRoles()" sv-part="AdminManagementCtrl.roles" width="100%" class="admin-content-selectable">
     <thead>
       <th>Role Name</th>
+      <th>Priority</th>
       <th>Description</th>
       <th>Actions</th>
     </thead>
     <tbody ng-repeat="role in AdminManagementCtrl.roles">
-      <tr ng-class="{ 'active-row' : AdminManagementCtrl.selectedRoleName === role.name }" class="selectable-row pointer" ng-click="AdminManagementCtrl.selectRole(role)">
+      <tr ng-class="{ 'active-row' : AdminManagementCtrl.selectedRoleName === role.name }" class="selectable-row pointer" ng-click="AdminManagementCtrl.selectRole(role)" sv-element>
         <td ng-bind-html="role.name"></td>
+        <td ng-bind-html="role.priority"></td>
         <td ng-bind-html="role.description"></td>
         <td>
           <a ng-href="#">Edit Permissions</a>
@@ -17,6 +19,8 @@
       </tr>
     </tbody>
   </table>
+  <div class="right"><button ng-click="AdminManagementCtrl.resetPriority()">Reset Priority</button></div>
+  <div class="right"><button ng-click="AdminManagementCtrl.savePriority()">Save Priority</button>&nbsp;&nbsp;&nbsp;</div>
 </div>
 
 <div class="half-column" ng-if="AdminManagementCtrl.selectedRoleName !== null">

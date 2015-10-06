@@ -28,7 +28,7 @@ module.exports = {
     return reply(promise);
   },
   isNewEmailUnique: function(request, reply) {
-    var referencedUserId = request.auth.credentials.id;
+    var referencedUserId = request.payload.id;
     var email = request.payload.email;
 
     // bypass check if no email given

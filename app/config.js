@@ -468,6 +468,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       resolve: {
         userAccess: adminCheck('management.roles'),
         $title: function() { return 'User Management'; },
+        roles: ['AdminRoles', function(AdminRoles) {
+          return AdminRoles.all().$promise
+          .then(function(roles) { return roles; });
+        }],
         users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
           var query = {
             field: $stateParams.field,

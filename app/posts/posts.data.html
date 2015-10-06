@@ -3,7 +3,7 @@
   <div class="post-user">
     <a ui-sref="profile({ username: post.user.username})">
       <div class="user-avatar">
-        <img ng-style="PostsCtrl.avatarHighlight(post.highlight_color)" ng-src="{{::post.avatar}}">
+        <img ng-style="PostsCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar}}">
       </div>
       <div class="user-role">Hero</div>
     </a>
@@ -13,7 +13,7 @@
   <div class="post-content">
     <!-- Post Title -->
     <div class="post-title">
-      <a class="username" ui-sref="profile({ username: post.user.username})" ng-style="PostsCtrl.usernameHighlight(post.highlight_color)" ng-bind-html="::post.user.username"></a>
+      <a class="username css-tooltip" data-css-tooltip="{{post.user.role_name || 'User'}}" ui-sref="profile({ username: post.user.username})" ng-style="PostsCtrl.usernameHighlight(post.user.highlight_color)" ng-bind-html="::post.user.username"></a>
       <div class="timestamp" ng-bind="::post.created_at | humanDate"></div>
 
       <ul class="post-action">

@@ -82,6 +82,7 @@ function verifyRoles() {
         delete clonedAddRole.lookup;
         delete clonedAddRole.description;
         delete clonedAddRole.priority;
+        delete clonedAddRole.highlightColor;
         var addRole = {
           id: role.id,
           name: role.name,

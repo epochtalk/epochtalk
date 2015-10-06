@@ -5,6 +5,7 @@ require('../bower_components/angular-sanitize/angular-sanitize');
 require('../bower_components/angular-animate/angular-animate');
 require('../bower_components/angular-ui-router/release/angular-ui-router');
 require('../bower_components/angular-loading-bar');
+require('../bower_components/angular-sortable-view/src/angular-sortable-view.min.js');
 jQuery = require('../bower_components/jquery/dist/jquery.min.js');
 $ = jQuery;
 require('../bower_components/nestable/jquery.nestable');
@@ -15,7 +16,8 @@ var app = angular.module('ept', [
   'ngSanitize',
   'ngAnimate',
   'ui.router',
-  'angular-loading-bar'
+  'angular-loading-bar',
+  'angular-sortable-view'
 ]);
 
 // Register Forum Page Controllers
