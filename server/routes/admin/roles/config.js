@@ -18,8 +18,51 @@ var rolesObj = require(path.normalize(__dirname + '/../../../plugins/acls/roles'
   * @apiError (Error 500) InternalServerError There was an issue retrieving the roles.
   */
 exports.all = {
+  auth: { strategy: 'jwt' },
   handler: function(request, reply) {
     var promise = db.roles.all();
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Roles
+  * @api {GET} /admin/roles/:id/users Page Users with Role
+  * @apiName PageUserWithRole
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Page all users with a particular role.
+  *
+  * @apiParam (Payload) {string} id The id of the role to find users for
+  *
+  * @apiParam (Query) {number} page=1 The page of users to retrieve
+  * @apiParam (Query) {number} limit=15 The number of users to retrieve per page
+  *
+  * @apiSuccess {object} userData An object containing user data.
+  * @apiSuccess {object[]} userData.users An array holding users with this role
+  * @apiSuccess {string} userData.users.id The id of the user
+  * @apiSuccess {string} userData.users.user The The username of the user
+  * @apiSuccess {string} userData.users.email The email of the user
+  * @apiSuccess {number} userData.count The total number of users within this role. Used for paging
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the user data.
+  */
+exports.users = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    params: { id: Joi.string().required() },
+    query: {
+      page: Joi.number().integer().min(1).default(1),
+      limit: Joi.number().integer().min(1).max(100).default(15),
+    }
+  },
+  handler: function(request, reply) {
+    var roleId = request.params.id;
+    var opts = {
+      page: request.query.page,
+      limit: request.query.limit
+    };
+    var promise = db.roles.users(roleId, opts);
     return reply(promise);
   }
 };
@@ -45,6 +88,7 @@ exports.all = {
   * @apiError (Error 500) InternalServerError There was an issue adding the role.
   */
 exports.add = {
+  auth: { strategy: 'jwt' },
   validate: {
     payload: {
       id: Joi.string(),
@@ -272,6 +316,7 @@ exports.add = {
   * @apiError (Error 500) InternalServerError There was an issue adding the role.
   */
 exports.update = {
+  auth: { strategy: 'jwt' },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -493,6 +538,7 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue removing the role.
   */
 exports.remove = {
+  auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var id = request.params.id;
@@ -516,6 +562,7 @@ exports.remove = {
   * @apiError (Error 500) InternalServerError There was an issue reprioritizing the roles.
   */
 exports.reprioritize = {
+  auth: { strategy: 'jwt' },
   validate: {
     payload: Joi.array(Joi.object().keys({
       id: Joi.string().required(),

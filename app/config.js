@@ -456,7 +456,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-management.roles', {
-      url: '/roles',
+      url: '/roles?roleId&page&field&desc&limit',
       reloadOnSearch: false,
       views: {
         'data@admin-management': {
@@ -467,23 +467,29 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       },
       resolve: {
         userAccess: adminCheck('management.roles'),
-        $title: function() { return 'User Management'; },
+        $title: function() { return 'Roles Management'; },
         roles: ['AdminRoles', function(AdminRoles) {
           return AdminRoles.all().$promise
           .then(function(roles) { return roles; });
         }],
-        users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-          var query = {
-            field: $stateParams.field,
-            desc: $stateParams.desc,
-            limit: Number($stateParams.limit) || 15,
-            page: Number($stateParams.page) || 1,
-            filter: $stateParams.filter,
-            search: $stateParams.search
-          };
-          return AdminUsers.page(query).$promise
-          .then(function(users) { return users; });
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
         }],
+        limit: ['$stateParams', function($stateParams) {
+          return Number($stateParams.limit) || 15;
+        }],
+        roleId: ['$stateParams', function($stateParams) {
+          return $stateParams.roleId;
+        }],
+        userData: ['AdminRoles', '$stateParams', function(AdminRoles, $stateParams) {
+          var query = {
+            id: $stateParams.roleId,
+            page: Number($stateParams.page) || 1,
+            limit: Number($stateParams.limit) || 15
+          };
+          return AdminRoles.users(query).$promise
+          .then(function(userData) { return userData; });
+        }]
       }
     })
     .state('admin-management.moderators', {

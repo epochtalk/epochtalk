@@ -866,6 +866,7 @@ roles.user = {
 
 roles.banned = {
   // business logic (none)
+  id: '67aaa01e-cc74-4c3d-9b3f-56a6f6547098',
   name: 'Banned',
   lookup: 'banned',
   description: 'Read only access with content creation disabled',
@@ -900,6 +901,7 @@ roles.banned = {
 
 roles.anonymous = {
   // business logic (none)
+  id: 'da3f52da-48c3-4487-859b-bbb2968503e1',
   name: 'Anonymous',
   lookup: 'anonymous',
   description: 'Read only access',
@@ -925,6 +927,7 @@ roles.anonymous = {
 
 roles.private = {
   // business logic (none)
+  id: 'f3493216-2b39-41c7-8a5e-0475428d2af4',
   name: 'Private',
   lookup: 'private',
   description: 'Role assigned to unauthorized users when public forum is disabled',

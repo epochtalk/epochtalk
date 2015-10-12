@@ -8,6 +8,11 @@ module.exports = ['$resource',
         method: 'GET',
         isArray: true
       },
+      users: {
+        method: 'GET',
+        url: '/api/admin/roles/:id/users',
+        params: { id: '@id' }
+      },
       remove: {
         method: 'DELETE',
         url: '/api/admin/roles/remove/:id',

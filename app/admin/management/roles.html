@@ -9,7 +9,7 @@
       <th>Actions</th>
     </thead>
     <tbody ng-repeat="role in AdminManagementCtrl.roles">
-      <tr ng-class="{ 'active-row' : AdminManagementCtrl.selectedRoleName === role.name }" class="selectable-row pointer" ng-click="AdminManagementCtrl.selectRole(role)" sv-element>
+      <tr ng-class="{ 'active-row' : AdminManagementCtrl.selectedRole.name === role.name }" class="selectable-row pointer" ng-click="AdminManagementCtrl.selectRole(role)" sv-element>
         <td ng-bind-html="role.name"></td>
         <td ng-bind-html="role.priority"></td>
         <td ng-bind-html="role.description"></td>
@@ -23,16 +23,16 @@
   <div class="right"><button ng-click="AdminManagementCtrl.savePriority()">Save Priority</button>&nbsp;&nbsp;&nbsp;</div>
 </div>
 
-<div class="half-column" ng-if="AdminManagementCtrl.selectedRoleName !== null">
+<div class="half-column" ng-if="AdminManagementCtrl.selectedRole !== null && !AdminManagementCtrl.selectedRole.message">
   <br />
-  <h3>{{AdminManagementCtrl.selectedRoleName}} (15 users)</h3> <br />
+  <h3>{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3> <br />
   <table width="100%">
     <thead>
       <th>Username</th>
       <th>Email</th>
       <th>Actions</th>
     </thead>
-    <tbody ng-repeat="user in AdminManagementCtrl.roleUsers">
+    <tbody ng-repeat="user in AdminManagementCtrl.userData.users">
       <tr>
         <td ng-bind-html="user.username"></td>
         <td ng-bind-html="user.email"></td>
@@ -43,6 +43,15 @@
       </tr>
     </tbody>
   </table>
+  <div class="pagination-wrap">
+    <pagination page-count="AdminManagementCtrl.pageCount" page="AdminManagementCtrl.page" query-params="AdminManagementCtrl.queryParams"></pagination>
+  </div>
+</div>
+
+<div class="half-column" ng-if="AdminManagementCtrl.selectedRole !== null && AdminManagementCtrl.selectedRole.message">
+  <br />
+  <h3>{{AdminManagementCtrl.selectedRole.name}}</h3> <br />
+  <h5>{{AdminManagementCtrl.selectedRole.message}}</h5>
 </div>
 
 <modal class="medium" show="AdminManagementCtrl.showAddRoleModal" on-close="AdminManagementCtrl.closeAddRole()">
