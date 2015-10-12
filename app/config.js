@@ -456,7 +456,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       }
     })
     .state('admin-management.roles', {
-      url: '/roles?roleId&page&field&desc&limit',
+      url: '/roles?roleId&page&field&desc&limit&search',
       reloadOnSearch: false,
       views: {
         'data@admin-management': {
@@ -481,11 +481,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         roleId: ['$stateParams', function($stateParams) {
           return $stateParams.roleId;
         }],
+        search: ['$stateParams', function($stateParams) {
+          return $stateParams.search;
+        }],
         userData: ['AdminRoles', '$stateParams', function(AdminRoles, $stateParams) {
           var query = {
             id: $stateParams.roleId,
             page: Number($stateParams.page) || 1,
-            limit: Number($stateParams.limit) || 15
+            limit: Number($stateParams.limit) || 15,
+            search: $stateParams.search
           };
           return AdminRoles.users(query).$promise
           .then(function(userData) { return userData; });

@@ -1,6 +1,12 @@
 <div class="half-column">
   <br />
-  <h3>Create and Edit Roles</h3><a ng-href="#" ng-click="AdminManagementCtrl.showAddRole()">Add new Role</a> <br />
+  <h3>Create and Edit Roles</h3><br />
+  <div class="roles add-role">
+    <div class="nested-input-container">
+      <a ng-click="AdminManagementCtrl.showAddRole()" class="nested-btn">Add</a>
+      <input class="nested-input" ng-model="AdminManagementCtrl.newRole" type="text" id="add-role" placeholder="Enter new role name" ng-keydown="$event.which === 13 && AdminManagementCtrl.addRole()" />
+    </div>
+  </div>
   <table sv-root sv-on-sort="AdminManagementCtrl.reprioritizeRoles()" sv-part="AdminManagementCtrl.roles" width="100%" class="admin-content-selectable">
     <thead>
       <th>Role Name</th>
@@ -26,6 +32,13 @@
 <div class="half-column" ng-if="AdminManagementCtrl.selectedRole !== null && !AdminManagementCtrl.selectedRole.message">
   <br />
   <h3>{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3> <br />
+  <div class="roles user-search">
+    <div class="nested-input-container">
+      <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
+      <a ng-click="AdminManagementCtrl.searchUsers()" class="nested-btn">Search</a>
+      <input class="nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
+    </div>
+  </div>
   <table width="100%">
     <thead>
       <th>Username</th>

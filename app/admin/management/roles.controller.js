@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'userData', 'roleId', 'limit', 'page', function($rootScope, $scope, $location, Alert, AdminRoles, AdminUsers, roles, userData, roleId, limit, page) {
+module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Alert, AdminRoles, AdminUsers, roles, userData, roleId, limit, page, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
@@ -9,13 +9,32 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
   this.page = page;
   this.limit = limit;
   this.userData = userData;
+  this.search = search;
+  this.searchStr = search;
   this.roleId = roleId;
   this.selectedRole = null;
 
+  this.searchUsers = function() {
+    if (!ctrl.searchStr || ctrl.searchStr && !ctrl.searchStr.length) {
+      ctrl.clearSearch();
+      return;
+    }
+    ctrl.queryParams.search = ctrl.searchStr;
+    $location.search(ctrl.queryParams);
+  };
+
+  this.clearSearch = function() {
+    ctrl.queryParams.search = undefined;
+    $location.search(ctrl.queryParams);
+    ctrl.searchStr = null;
+  };
+
+
   this.selectRole = function(role) {
     // reset defaults when deselecting or reselecting
-    this.page = page;
-    this.limit = limit;
+    ctrl.page = page;
+    ctrl.limit = limit;
+    ctrl.clearSearch();
     if (ctrl.selectedRole && ctrl.selectedRole.name === role.name) {
       ctrl.selectedRole = null;
       ctrl.userData = null;
@@ -81,10 +100,13 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
     var params = $location.search();
     var page = Number(params.page) || 1;
     var limit = Number(params.limit) || 15;
+    var search = params.search;
     var roleId = params.roleId;
     var roleIdChanged = false;
     var pageChanged = false;
+    var searchChanged = false;
     var limitChanged = false;
+
     if (page && page !== ctrl.page) {
       pageChanged = true;
       ctrl.page = page;
@@ -98,8 +120,12 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
       ctrl.roleId = roleId;
     }
     if (!roleId) { ctrl.roleId = null; } // allows deselection of role
+    if ((search === undefined || search) && search !== ctrl.search) {
+      searchChanged = true;
+      ctrl.search = search;
+    }
 
-    if(pageChanged || limitChanged || roleIdChanged) { ctrl.pullPage(); }
+    if(pageChanged || limitChanged || roleIdChanged || searchChanged) { ctrl.pullPage(); }
   });
   $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
@@ -107,7 +133,8 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
     var query = {
       id: ctrl.roleId,
       page: ctrl.page,
-      limit: ctrl.limit
+      limit: ctrl.limit,
+      search: ctrl.search
     };
     if (ctrl.roleId) {
       AdminRoles.users(query).$promise

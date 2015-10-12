@@ -54,13 +54,15 @@ exports.users = {
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).max(100).default(15),
+      search: Joi.string()
     }
   },
   handler: function(request, reply) {
     var roleId = request.params.id;
     var opts = {
       page: request.query.page,
-      limit: request.query.limit
+      limit: request.query.limit,
+      searchStr: request.query.search
     };
     var promise = db.roles.users(roleId, opts);
     return reply(promise);

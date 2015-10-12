@@ -1397,6 +1397,7 @@ main #admin-content {
   .radio-button input[type="radio"] + label { margin-left: 0px; }
   input[type].hide-radio { display: none; }
   .user-search { @include span-columns(6); @include omega; }
+  .roles.user-search, .roles.add-role { @include span-columns(12); }
 
   @include media($mobile) {
     @include pad(0);
