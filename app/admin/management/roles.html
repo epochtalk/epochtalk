@@ -31,7 +31,17 @@
 
 <div class="half-column" ng-if="AdminManagementCtrl.selectedRole !== null && !AdminManagementCtrl.selectedRole.message">
   <br />
-  <h3>{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3> <br />
+  <h3 class="role-header">{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3>  <a ng-click="AdminManagementCtrl.showAddUsers = !AdminManagementCtrl.showAddUsers" class="add-users"><i class="fa fa-plus"></i> Add Users</a>
+  <br /><br />
+  <div ng-show="AdminManagementCtrl.showAddUsers">
+    <tags-input min-length="1" placeholder="Type username to add" add-from-autocomplete-only="true" ng-model="AdminManagementCtrl.usersToAdd">
+      <auto-complete min-length="1" source="AdminManagementCtrl.loadTags($query)"></auto-complete>
+    </tags-input>
+    <div class="button-container">
+      <button class="half-button" ng-click="AdminManagementCtrl.usersToAdd = null" ng-disabled="!AdminManagementCtrl.usersToAdd || AdminManagementCtrl.usersToAdd.length < 1">Clear</button>
+      <button class="half-button" ng-click="AdminManagementCtrl.addUsers()" ng-disabled="!AdminManagementCtrl.usersToAdd || AdminManagementCtrl.usersToAdd.length < 1">Add User(s)</button>
+    </div>
+  </div>
   <div class="roles user-search">
     <div class="nested-input-container">
       <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>

@@ -13,6 +13,7 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
   this.searchStr = search;
   this.roleId = roleId;
   this.selectedRole = null;
+  this.showAddUsers = false;
 
   this.searchUsers = function() {
     if (!ctrl.searchStr || ctrl.searchStr && !ctrl.searchStr.length) {
@@ -29,6 +30,13 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
     ctrl.searchStr = null;
   };
 
+  this.addUsers = function() {
+    console.log(ctrl.usersToAdd);
+  };
+
+  this.loadTags = function(query) {
+    return AdminUsers.searchUsernames({ username: query }).$promise;
+  };
 
   this.selectRole = function(role) {
     // reset defaults when deselecting or reselecting

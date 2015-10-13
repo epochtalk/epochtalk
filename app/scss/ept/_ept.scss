@@ -363,6 +363,159 @@ select:-moz-focusring {
     color: transparent;
     text-shadow: 0 0 0 #000;
 }
+tags-input {
+  display: block;
+}
+tags-input *, tags-input *:before, tags-input *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+tags-input .host {
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  height: 2.3125rem;
+}
+tags-input .host:active {
+  outline: none;
+}
+
+tags-input .tags {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  padding: 1px;
+  overflow: hidden;
+  word-wrap: break-word;
+  cursor: text;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.75);
+  height: 2.3125rem;
+}
+tags-input .tags.focused {
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+tags-input .tags .tag-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+tags-input .tags .tag-item {
+  margin: 2px;
+  padding: 0 5px;
+  display: inline-block;
+  float: left;
+  font-size: 0.875rem;
+  height: 1.8rem;
+  line-height: 1.8rem;
+  border-radius: 3px;
+  color: #fff;
+  background-color: $color-active-fill;
+}
+tags-input .tags .tag-item.selected {
+  background-color: #ff5c5c;
+}
+tags-input .tags .tag-item .remove-button {
+  margin: 0 0 0 5px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  vertical-align: middle;
+  font: bold 16px Arial, sans-serif;
+  color: #fff;
+}
+tags-input .tags .tag-item .remove-button:active {
+  color: #ff0000;
+}
+tags-input .tags .input {
+  -webkit-appearance: none;
+  box-shadow: none;
+  border: 0;
+  outline: none;
+  margin: 2px;
+  padding: 0;
+  padding-left: 5px;
+  float: left;
+  height: 1.8rem;
+}
+tags-input .tags .input.invalid-tag {
+  color: #ff0000;
+}
+tags-input .tags .input::-ms-clear {
+  display: none;
+}
+tags-input.ng-invalid .tags {
+  -webkit-box-shadow: inset 0 1px 2px rgba(255, 0, 0, 0.6);
+  -moz-box-shadow: inset 0 1px 2px rgba(255, 0, 0, 0.6);
+  box-shadow: inset 0 1px 2px rgba(255, 0, 0, 0.6);
+}
+tags-input[disabled] .host:focus {
+  outline: none;
+}
+tags-input[disabled] .tags {
+  background-color: #eee;
+  cursor: default;
+}
+tags-input[disabled] .tags .tag-item {
+  opacity: 0.65;
+  color: #fff;
+  background-color: $color-gray-sub;
+}
+tags-input[disabled] .tags .tag-item .remove-button {
+  cursor: default;
+}
+tags-input[disabled] .tags .tag-item .remove-button:active {
+  color: #585858;
+}
+tags-input[disabled] .tags .input {
+  background-color: #eee;
+  cursor: default;
+}
+
+tags-input .autocomplete {
+  margin-top: 5px;
+  position: absolute;
+  padding: 5px 0;
+  z-index: 999;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.75);
+}
+tags-input .autocomplete .suggestion-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  max-height: 280px;
+  overflow-y: auto;
+  position: relative;
+}
+tags-input .autocomplete .suggestion-item {
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #000;
+  background-color: #fff;
+}
+tags-input .autocomplete .suggestion-item.selected {
+  color: #fff;
+  background-color: #0097cf;
+}
+tags-input .autocomplete .suggestion-item.selected em {
+  color: #fff;
+  background-color: #0097cf;
+}
+tags-input .autocomplete .suggestion-item em {
+  color: #000;
+  background-color: #fff;
+}
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"],
 input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"],
 input[type="number"], input[type="search"], input[type="tel"], input[type="time"],
@@ -1338,6 +1491,11 @@ main #admin-content {
     }
   }
   .ng-modal-dialog-content input[type="radio"] { margin-bottom: 1rem; }
+  .button-container {
+    @include clearfix;
+    @include row;
+    .half-button { @include span-columns(6); @include omega(2n); }
+  }
 
   .admin-table-header {
     @include clearfix;
@@ -1397,7 +1555,7 @@ main #admin-content {
   .radio-button input[type="radio"] + label { margin-left: 0px; }
   input[type].hide-radio { display: none; }
   .user-search { @include span-columns(6); @include omega; }
-  .roles.user-search, .roles.add-role { @include span-columns(12); }
+  .roles.user-search, .roles.add-role { @include span-columns(12); @include clearfix; }
 
   @include media($mobile) {
     @include pad(0);
@@ -1460,6 +1618,8 @@ main #admin-content {
     pagination { float: right; }
   }
 
+  .role-header { display: inline-block; }
+  .add-users { float: right; }
   .management-users.radio-button, .header-spacer { @include span-columns(2); }
   .autocomplete-wrap { @include span-columns(6); }
   .switch-block label { float: none; }

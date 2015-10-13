@@ -10,6 +10,7 @@
     "angular-ui-router": "~0.2.15",
     "angular-ui-router-title": "0.0.3",
     "angular-sortable-view": "~0.0.13",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "ng-tags-input": "3.0.0"
   }
 }
