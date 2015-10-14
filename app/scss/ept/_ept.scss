@@ -501,7 +501,7 @@ main #public-content table.striped, main #admin-content table.striped {
     display: block;
     padding: 0.5rem 1rem;
     color: #fff;
-    &:first-child { padding-bottom:}
+    &:first-child { padding-bottom: 0; }
     &:before { padding-right: 0.5rem; font: normal normal normal 14px/1 FontAwesome; }
     &.warning:before { color: #FD8D40; content: "\f06a"; }
     &.info:before { color: #49AED0; content: "\f05a"; }
