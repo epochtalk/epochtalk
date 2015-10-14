@@ -168,21 +168,22 @@ exports.find = {
   * @apiDescription Used to add a role or roles to a user. This allows Administrators to add new
   * (Super) Administrators and (Global) Moderators.
   *
-  * @apiParam (Payload) {string} user_id The unique id of the user to grant the role to
-  * @apiParam (Payload) {string[]="Super Administrator","Administrator","Global Moderator","Moderator","User"} roles An array of the roles you would like to add to the user
+  * @apiParam (Payload) {string[]} usernames A unique array of usernames to grant the role to
+  * @apiParam (Payload) {string} role_id The unique id of the role to grant the user
   *
-  * @apiSuccess {string} id The user's unique id
-  * @apiSuccess {string} username The user's username
-  * @apiSuccess {string} email The user's email address
-  * @apiSuccess {timestamp} created_at Timestamp of when the user's account was created
-  * @apiSuccess {timestamp} updated_at Timestamp of when the user's account was last updated
-  * @apiSuccess {object[]} roles An array containing the users role objects
-  * @apiSuccess {string} roles.id The unique id of the role
-  * @apiSuccess {string} roles.name The name of the role
-  * @apiSuccess {string} roles.description The description of the role
-  * @apiSuccess {object} roles.permissions The permissions that this role has
-  * @apiSuccess {timestamp} roles.created_at Timestamp of when the role was created
-  * @apiSuccess {timestamp} roles.updated_at Timestamp of when the role was last updated
+  * @apiSuccess {object[]} users An array containing the users with added roles
+  * @apiSuccess {string} users.id The user's unique id
+  * @apiSuccess {string} users.username The user's username
+  * @apiSuccess {string} users.email The user's email address
+  * @apiSuccess {timestamp} users.created_at Timestamp of when the user's account was created
+  * @apiSuccess {timestamp} users.updated_at Timestamp of when the user's account was last updated
+  * @apiSuccess {object[]} users.roles An array containing the users role objects
+  * @apiSuccess {string} users.roles.id The unique id of the role
+  * @apiSuccess {string} users.roles.name The name of the role
+  * @apiSuccess {string} users.roles.description The description of the role
+  * @apiSuccess {object} users.roles.permissions The permissions that this role has
+  * @apiSuccess {timestamp} users.roles.created_at Timestamp of when the role was created
+  * @apiSuccess {timestamp} users.roles.updated_at Timestamp of when the role was last updated
   *
   * @apiError (Error 500) InternalServerError There was error adding roles to the user
   */
@@ -191,15 +192,15 @@ exports.addRoles = {
   plugins: { acls: 'adminUsers.addRoles' },
   validate: {
     payload: {
-      user_id: Joi.string().required(),
-      roles: Joi.array().items(Joi.string().required()).unique().min(1).required()
+      usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
+      role_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
-    var userId = request.payload.user_id;
-    var roles = request.payload.roles;
-    var promise = db.users.addRoles(userId, roles)
-    .then(function(user) {
+    var usernames = request.payload.usernames;
+    var roleId = request.payload.role_id;
+    var promise = db.users.addRoles(usernames, roleId)
+    .map(function(user) {
       return authHelper.updateRoles(user)
       .then(function() { return user; });
     });
@@ -216,8 +217,8 @@ exports.addRoles = {
   * @apiDescription Used to remove a role or roles to a user. This allows Administrators to remove
   * roles from an account.
   *
-  * @apiParam (Payload) {string} user_id The unique id of the user to grant the role to
-  * @apiParam (Payload) {string[]="Super Administrator","Administrator","Global Moderator","Moderator","User"} roles An array of the roles you would like to remove from the user
+  * @apiParam (Payload) {string} user_id The unique id of the user to remove the role from
+  * @apiParam (Payload) {string} role_id The unique id of the role to remove from the user
   *
   * @apiSuccess {string} id The user's unique id
   * @apiSuccess {string} username The user's username
@@ -240,13 +241,13 @@ exports.removeRoles = {
   validate: {
     payload: {
       user_id: Joi.string().required(),
-      roles: Joi.array().items(Joi.string().required()).unique().min(1).required()
+      role_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    var roles = request.payload.roles;
-    var promise = db.users.removeRoles(userId, roles)
+    var roleId = request.payload.role_id;
+    var promise = db.users.removeRoles(userId, roleId)
     .then(function(user) {
       return authHelper.updateRoles(user)
       .then(function() { return user; });

@@ -23,7 +23,8 @@ module.exports = ['$resource',
       },
       addRoles: {
         method: 'PUT',
-        url: '/api/admin/users/roles/add'
+        url: '/api/admin/users/roles/add',
+        isArray: true
       },
       removeRoles: {
         method: 'PUT',

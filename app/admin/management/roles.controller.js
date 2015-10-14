@@ -31,7 +31,29 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
   };
 
   this.addUsers = function() {
-    console.log(ctrl.usersToAdd);
+    var users = [];
+    ctrl.usersToAdd.forEach(function(user) { users.push(user.text); });
+
+    AdminUsers.addRoles({ usernames: users, role_id: ctrl.roleId }).$promise
+    .then(function() {
+      Alert.success('Users successfully added to ' + ctrl.selectedRole.name + ' role.');
+      ctrl.pullPage();
+    })
+    .catch(function() {
+      Alert.error('There was an error adding users to ' + ctrl.selectedRole.name + ' role.');
+    })
+    .finally(function() { ctrl.usersToAdd = null; });
+  };
+
+  this.removeUser = function(user) {
+    AdminUsers.removeRoles({ user_id: user.id, role_id: ctrl.roleId }).$promise
+    .then(function() {
+      Alert.success('User ' + user.username + ' successfully removed from ' + ctrl.selectedRole.name + ' role.');
+      ctrl.pullPage();
+    })
+    .catch(function() {
+      Alert.error('There was an error removing ' + user.username + ' from ' + ctrl.selectedRole.name + ' role.');
+    });
   };
 
   this.loadTags = function(query) {
@@ -57,23 +79,21 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
   };
 
   // Assign selected role if view is visited with roleId query param
-  if (roleId) {
-    roles.forEach(function(role) {
-      if (roleId === role.id) {
-        ctrl.selectedRole = role;
-        $location.search(ctrl.queryParams);
-      }
-      if (role.lookup === 'user') {
-        role.message = 'The ' + role.name + ' role is assigned by default.  By default all new registered users are considered users.  The userbase of this role may not be manually edited.  Permission changes to this role will affect all users without another role assigned.';
-      }
-      if (role.lookup === 'anonymous') {
-        role.message = 'The ' + role.name + ' role is assigned by default to forum visitors who are not authenticated.  The user base of this role may not be manually edited.  Permission changes to this role will affect all unauthenticated users visiting the forum.';
-      }
-      if (role.lookup === 'private') {
-        role.message = 'The ' + role.name + ' role is assigned by default to forum visitors who are not authenticated.  This role is only used if the "Public Forum" is set to off via the forum settings page.  This requires all visitors to log in before they can view the forum content.  The user base of this role may not be manually edited.  Permission changes to this role will affect all unauthenticated users visiting the forum.';
-      }
-    });
-  }
+  roles.forEach(function(role) {
+    if (roleId && roleId === role.id) {
+      ctrl.selectedRole = role;
+      $location.search(ctrl.queryParams);
+    }
+    if (role.lookup === 'user') {
+      role.message = 'The ' + role.name + ' role is assigned by default.  By default all new registered users are considered users.  The userbase of this role may not be manually edited.  Permission changes to this role will affect all users without another role assigned.';
+    }
+    if (role.lookup === 'anonymous') {
+      role.message = 'The ' + role.name + ' role is assigned by default to forum visitors who are not authenticated.  The user base of this role may not be manually edited.  Permission changes to this role will affect all unauthenticated users visiting the forum.';
+    }
+    if (role.lookup === 'private') {
+      role.message = 'The ' + role.name + ' role is assigned by default to forum visitors who are not authenticated.  This role is only used if the "Public Forum" is set to off via the forum settings page.  This requires all visitors to log in before they can view the forum content.  The user base of this role may not be manually edited.  Permission changes to this role will affect all unauthenticated users visiting the forum.';
+    }
+  });
 
   this.resetPriority = function() { ctrl.roles = angular.copy(ctrl.backupPriorities); };
 
