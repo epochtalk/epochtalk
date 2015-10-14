@@ -1,0 +1,364 @@
+var Joi = require('joi');
+var path = require('path');
+var Boom = require('boom');
+var Promise = require('bluebird');
+var db = require(path.normalize(__dirname + '/../../../db'));
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {GET} /watchlist Page Watchlist
+  * @apiName PageWatchlist
+  * @apiDescription Used to page through a user's watchlist.
+  *
+  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
+  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  *
+  * @apiSuccess {array} threads An array of watchlist threads, page and limit
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
+  */
+exports.index = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    query: {
+      limit: Joi.number().integer().min(1).max(100).default(25)
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var opts = { page: 1, limit: request.query.limit };
+    var unreadOpts = { page: 1, limit: request.query.limit };
+
+    var getAll = db.watchlist.all(userId, opts);
+    var getUnread = db.watchlist.unread(userId, unreadOpts);
+
+    var promise = Promise.join(getAll, getUnread, function(all, unread) {
+      var hasMoreThreads = false, unreadHasMoreThreads = false;
+      if (all.length > request.query.limit) {
+        hasMoreThreads = true;
+        all.pop();
+      }
+
+      if (unread.length > request.query.limit) {
+        unreadHasMoreThreads = true;
+        unread.pop();
+      }
+
+      return {
+        page: opts.page,
+        limit: request.query.limit,
+        threads: all,
+        hasMoreThreads: hasMoreThreads,
+        unreadThreads: unread,
+        unreadHasMoreThreads: unreadHasMoreThreads
+      };
+    });
+
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {GET} /watchlist Watchlist All Threads
+  * @apiName WatchlistAllThreads
+  * @apiDescription Used to page through all the threads in a watchlist.
+  *
+  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
+  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  *
+  * @apiSuccess {array} threads An array of watchlist threads, page and limit, hasMoreThreads
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
+  */
+exports.all = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    query: {
+      page: Joi.number().default(1),
+      limit: Joi.number().integer().min(1).max(100).default(25)
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var opts = {
+      page: request.query.page,
+      limit: request.query.limit
+    };
+
+    var promise = db.watchlist.all(userId, opts)
+    .then(function(threads) {
+      var hasMoreThreads = false;
+      if (threads.length > request.query.limit) {
+        hasMoreThreads = true;
+        threads.pop();
+      }
+      return {
+        page: opts.page,
+        limit: request.query.limit,
+        threads: threads,
+        hasMoreThreads: hasMoreThreads
+      };
+    });
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {GET} /watchlist/unread Page Watchlist Unread
+  * @apiName PageWatchlistUnread
+  * @apiDescription Used to page through a user's watchlist filtered by threads with unread posts.
+  *
+  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
+  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  *
+  * @apiSuccess {array} threads An array of watchlist threads, page and limit
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
+  */
+exports.unread = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    query: {
+      page: Joi.number().default(1),
+      limit: Joi.number().integer().min(1).max(100).default(25)
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var opts = {
+      page: request.query.page,
+      limit: request.query.limit
+    };
+
+    var promise = db.watchlist.unread(userId, opts)
+    .then(function(threads) {
+      var hasMoreThreads = false;
+      if (threads.length > request.query.limit) {
+        hasMoreThreads = true;
+        threads.pop();
+      }
+      return {
+        page: opts.page,
+        limit: request.query.limit,
+        threads: threads,
+        hasMoreThreads: hasMoreThreads
+      };
+    });
+    return reply(promise);
+  }
+};
+
+exports.edit = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    query: {
+      limit: Joi.number().integer().min(1).max(100).default(25)
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var threadOpts = { page: 1, limit: request.query.limit };
+    var boardOpts = { page: 1, limit: request.query.limit };
+
+    var getThreads = db.watchlist.userWatchThreads(userId, threadOpts);
+    var getBoards = db.watchlist.userWatchBoards(userId, boardOpts);
+
+    var promise = Promise.join(getThreads, getBoards, function(threads, boards) {
+      var hasMoreThreads = false, hasMoreBoards = false;
+      if (threads.length > request.query.limit) {
+        hasMoreThreads = true;
+        threads.pop();
+      }
+      if (boards.length > request.query.limit) {
+        hasMoreBoards = true;
+        boards.pop();
+      }
+      return {
+        page: 1,
+        limit: request.query.limit,
+        threads: threads,
+        hasMoreThreads: hasMoreThreads,
+        boards: boards,
+        hasMoreBoards: hasMoreBoards
+      };
+    });
+    return reply(promise);
+  }
+};
+
+exports.pageThreads = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    query: {
+      page: Joi.number().default(1),
+      limit: Joi.number().integer().min(1).max(100).default(25)
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var opts = {
+      page: request.query.page,
+      limit: request.query.limit
+    };
+
+    var promise = db.watchlist.userWatchThreads(userId, opts)
+    .then(function(threads){
+      var hasMoreThreads = false;
+      if (threads.length > request.query.limit) {
+        hasMoreThreads = true;
+        threads.pop();
+      }
+      return {
+        page: opts.page,
+        limit: request.query.limit,
+        threads: threads,
+        hasMoreThreads: hasMoreThreads
+      };
+    });
+    return reply(promise);
+  }
+};
+
+exports.pageBoards = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    query: {
+      page: Joi.number().default(1),
+      limit: Joi.number().integer().min(1).max(100).default(25)
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var opts = {
+      page: request.query.page,
+      limit: request.query.limit
+    };
+
+    var promise = db.watchlist.userWatchBoards(userId, opts)
+    .then(function(boards) {
+      var hasMoreBoards = false;
+      if (boards.length > request.query.limit) {
+        hasMoreBoards = true;
+        boards.pop();
+      }
+      return {
+        page: opts.page,
+        limit: request.query.limit,
+        boards: boards,
+        hasMoreBoards: hasMoreBoards
+      };
+    });
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {POST} /watchlist/threads/:id WatchThread
+  * @apiName WatchThread
+  * @apiPermission User
+  * @apiDescription Used to mark a user as watching a thread.
+  *
+  * @apiUse WatchlistObjectPayload
+  * @apiUse WatchlistObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue watching the thread
+  */
+exports.watchThread = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var boardId = request.params.id;
+    var promise = db.watchlist.watchThread(userId, boardId);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {DELETE} /watchlist/threads/:id UnwatchThread
+  * @apiName UnwatchThread
+  * @apiPermission User
+  * @apiDescription Used to unmark a user as watching a thread.
+  *
+  * @apiUse WatchlistObjectPayload
+  * @apiUse WatchlistObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue unwatching the thread
+  */
+exports.unwatchThread = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var boardId = request.params.id;
+    var promise = db.watchlist.unwatchThread(userId, boardId);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {POST} /watchlist/boards/:id WatchBoard
+  * @apiName WatchBoard
+  * @apiPermission User
+  * @apiDescription Used to mark a user as watching a board.
+  *
+  * @apiUse WatchlistObjectPayload
+  * @apiUse WatchlistObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue watching the board
+  */
+exports.watchBoard = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var boardId = request.params.id;
+    var promise = db.watchlist.watchBoard(userId, boardId);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {DELETE} /watchlist/boards/:id UnwatchBoard
+  * @apiName UnwatchBoard
+  * @apiPermission User
+  * @apiDescription Used to unmark a user as watching a board.
+  *
+  * @apiUse WatchlistObjectPayload
+  * @apiUse WatchlistObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue unwatching the board
+  */
+exports.unwatchBoard = {
+  auth: { strategy: 'jwt' },
+  validate: { params: { id: Joi.string().required() } },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var boardId = request.params.id;
+    var promise = db.watchlist.unwatchBoard(userId, boardId);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiDefine WatchlistObjectPayload
+  * @apiParam (Payload) {string} id The unique id of the model being watched
+  */
+
+/**
+  * @apiDefine WatchlistObjectSuccess
+  * @apiSuccess {Object} HTTP Code STATUS 200 OK
+  */
