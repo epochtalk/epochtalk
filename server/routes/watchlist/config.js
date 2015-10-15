@@ -7,108 +7,6 @@ var db = require(path.normalize(__dirname + '/../../../db'));
 /**
   * @apiVersion 0.3.0
   * @apiGroup Watchlist
-  * @api {GET} /watchlist Page Watchlist
-  * @apiName PageWatchlist
-  * @apiDescription Used to page through a user's watchlist.
-  *
-  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
-  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
-  *
-  * @apiSuccess {array} threads An array of watchlist threads, page and limit
-  *
-  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
-  */
-exports.index = {
-  auth: { strategy: 'jwt' },
-  validate: {
-    query: {
-      limit: Joi.number().integer().min(1).max(100).default(25)
-    }
-  },
-  handler: function(request, reply) {
-    var userId = request.auth.credentials.id;
-    var opts = { page: 1, limit: request.query.limit };
-    var unreadOpts = { page: 1, limit: request.query.limit };
-
-    var getAll = db.watchlist.all(userId, opts);
-    var getUnread = db.watchlist.unread(userId, unreadOpts);
-
-    var promise = Promise.join(getAll, getUnread, function(all, unread) {
-      var hasMoreThreads = false, unreadHasMoreThreads = false;
-      if (all.length > request.query.limit) {
-        hasMoreThreads = true;
-        all.pop();
-      }
-
-      if (unread.length > request.query.limit) {
-        unreadHasMoreThreads = true;
-        unread.pop();
-      }
-
-      return {
-        page: opts.page,
-        limit: request.query.limit,
-        threads: all,
-        hasMoreThreads: hasMoreThreads,
-        unreadThreads: unread,
-        unreadHasMoreThreads: unreadHasMoreThreads
-      };
-    });
-
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Watchlist
-  * @api {GET} /watchlist Watchlist All Threads
-  * @apiName WatchlistAllThreads
-  * @apiDescription Used to page through all the threads in a watchlist.
-  *
-  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
-  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
-  *
-  * @apiSuccess {array} threads An array of watchlist threads, page and limit, hasMoreThreads
-  *
-  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
-  */
-exports.all = {
-  auth: { strategy: 'jwt' },
-  validate: {
-    query: {
-      page: Joi.number().default(1),
-      limit: Joi.number().integer().min(1).max(100).default(25)
-    }
-  },
-  handler: function(request, reply) {
-    var userId = request.auth.credentials.id;
-    var opts = {
-      page: request.query.page,
-      limit: request.query.limit
-    };
-
-    var promise = db.watchlist.all(userId, opts)
-    .then(function(threads) {
-      var hasMoreThreads = false;
-      if (threads.length > request.query.limit) {
-        hasMoreThreads = true;
-        threads.pop();
-      }
-      return {
-        page: opts.page,
-        limit: request.query.limit,
-        threads: threads,
-        hasMoreThreads: hasMoreThreads
-      };
-    });
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Watchlist
   * @api {GET} /watchlist/unread Page Watchlist Unread
   * @apiName PageWatchlistUnread
   * @apiDescription Used to page through a user's watchlist filtered by threads with unread posts.
@@ -153,6 +51,20 @@ exports.unread = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {GET} /watchlist Edit Watchlist
+  * @apiName EditWatchlist
+  * @apiDescription Used to edit a user's watchlist.
+  *
+  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
+  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  *
+  * @apiSuccess {array} threads Two arrays of watchlist threads and boards
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
+  */
 exports.edit = {
   auth: { strategy: 'jwt' },
   validate: {
@@ -191,6 +103,20 @@ exports.edit = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {GET} /watchlist Page Watchlist Threads
+  * @apiName PageWatchlistThreads
+  * @apiDescription Page though a user's watched threads
+  *
+  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
+  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  *
+  * @apiSuccess {array} threads An array of threads being watched
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
+  */
 exports.pageThreads = {
   auth: { strategy: 'jwt' },
   validate: {
@@ -224,6 +150,20 @@ exports.pageThreads = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Watchlist
+  * @api {GET} /watchlist Page Watchlist Boards
+  * @apiName PageWatchlistThreadsBoards
+  * @apiDescription Page though a user's watched boards
+  *
+  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
+  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  *
+  * @apiSuccess {array} threads An array of boards being watched
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
+  */
 exports.pageBoards = {
   auth: { strategy: 'jwt' },
   validate: {

@@ -1,7 +1,7 @@
 var route = ['$stateProvider', function($stateProvider) {
   $stateProvider.state('watchlist', {
     parent: 'public-layout',
-    url: '/watchlist?unread&limit',
+    url: '/watchlist?limit',
     reloadOnSearch: false,
     views: {
       'content': {

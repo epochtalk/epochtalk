@@ -8,14 +8,6 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/watchlist'
       },
-      all: {
-        method: 'GET',
-        url: '/api/watchlist/all'
-      },
-      unread: {
-        method: 'GET',
-        url: '/api/watchlist/unread'
-      },
       edit: {
         method: 'GET',
         url: '/api/watchlist/edit'

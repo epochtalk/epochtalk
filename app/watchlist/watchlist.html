@@ -2,11 +2,8 @@
 <div id="admin-subnav" class="fill-row" style="float: none;">
   <h2 style="display: inline-block">Watchlist</h2>
   <dl class="tabs custom-tabs" style="display: inline-block; margin-left: 50px;">
-    <dd class="no-select" ng-class="{'active': WatchlistCtrl.viewType === 'all'}">
-      <a ng-click="WatchlistCtrl.viewType = 'all'">All</a>
-    </dd>
-    <dd class="no-select" ng-class="{'active': WatchlistCtrl.viewType === 'unread'}">
-      <a ng-click="WatchlistCtrl.viewType = 'unread'">Unread</a>
+    <dd class="no-select active" >
+      <a ui-sref="watchlist">Unread</a>
     </dd>
     <dd class="no-select">
       <a ui-sref="watchlist.edit">Edit</a>
@@ -15,17 +12,17 @@
 </div>
 
 <!-- All Threads -->
-<div class="board-data" ng-if="WatchlistCtrl.viewType === 'all'">
+<div class="board-data">
 
   <!-- Top Pagination -->
   <div class="board-header">
-    <button ng-if="WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullAll(1);" style="float: right; margin-left: 2rem;">
+    <button ng-if="WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullPage(1);" style="float: right; margin-left: 2rem;">
       Older >
     </button>
     <div style="float: right; margin-left: 2rem"
       ng-if="WatchlistCtrl.threads.length > 0"
      ng-bind="WatchlistCtrl.page"></div>
-    <button ng-if="WatchlistCtrl.page > 1" ng-click="WatchlistCtrl.pullAll(-1);" style="float: right">
+    <button ng-if="WatchlistCtrl.page > 1" ng-click="WatchlistCtrl.pullPage(-1);" style="float: right">
       < Newer
     </button>
   </div>
@@ -108,125 +105,17 @@
 
   <!-- Bottom Pagination -->
   <div class="board-header">
-    <button ng-if="WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullAll(1);" style="float: right; margin-left: 2rem;">
+    <button ng-if="WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullPage(1);" style="float: right; margin-left: 2rem;">
       Older >
     </button>
     <div style="float: right; margin-left: 2rem"
       ng-if="WatchlistCtrl.threads.length > 0"
      ng-bind="WatchlistCtrl.page"></div>
-    <button ng-if="WatchlistCtrl.page > 1" ng-click="WatchlistCtrl.pullAll(-1);" style="float: right;">
+    <button ng-if="WatchlistCtrl.page > 1" ng-click="WatchlistCtrl.pullPage(-1);" style="float: right;">
       < Newer
     </button>
   </div>
 
 </div>
-
-<!-- Unread Threads -->
-<div class="board-data" ng-if="WatchlistCtrl.viewType === 'unread'">
-
-  <!-- Top Pagination -->
-  <div class="board-header">
-    <button ng-if="WatchlistCtrl.unreadHasMoreThreads" ng-click="WatchlistCtrl.pullUnread(1);" style="float: right; margin-left: 2rem;">
-      Older >
-    </button>
-    <div style="float: right; margin-left: 2rem;"
-      ng-if="WatchlistCtrl.unreadThreads.length > 0"
-     ng-bind="WatchlistCtrl.unreadPage"></div>
-    <button ng-if="WatchlistCtrl.unreadPage > 1" ng-click="WatchlistCtrl.pullUnread(-1);" style="float: right">
-      < Newer
-    </button>
-  </div>
-
-  <!-- All Threads Header -->
-  <div class="threads-header" ng-if="WatchlistCtrl.unreadThreads">
-    <div class="mobile-header">
-      <h5>Threads</h5>
-    </div>
-    <div class="subject">
-      <h5>Subject</h5>
-    </div>
-    <div class="replies">
-      <h5>Replies</h5>
-    </div>
-    <div class="views">
-      <h5>Views</h5>
-    </div>
-    <div class="last-reply">
-      <h5>Last Post</h5>
-    </div>
-  </div>
-  <div class="thin-underline"></div>
-
-  <!-- All Thread listing -->
-  <div class="threads-data" ng-repeat="thread in WatchlistCtrl.unreadThreads track by thread.id">
-
-    <div class="subject">
-      <div class="title">
-        <a ng-class="thread.title_class" class="thread-title" ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
-        <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-        <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
-      </div>
-
-      <div class="started-by">
-        Started by <a ui-sref="profile({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
-        <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
-      </div>
-
-      <div class="mobile-stats">
-        <strong class="mobile-replies" ng-bind="thread.post_count - 1 | number:0"></strong>
-        <span> Replies and </span>
-        <strong class="mobile-views" ng-bind="thread.view_count | number:0"></strong>
-        <span> Views</span>
-        <br />
-        <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
-        by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
-        <em ng-bind="thread.last_post_created_at | humanDate"></em>
-        <div ng-if="thread.has_new_post">
-          <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
-        </div>
-      </div>
-
-      <div class="pages" ng-if="thread.page_count > 1">
-        <span ng-repeat="pageKey in thread.page_keys">
-          <a ng-if="pageKey.threadId !== null" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
-          <span ng-if="pageKey.threadId === null" ng-bind-html="pageKey.val"></span>
-        </span>
-      </div>
-    </div>
-
-    <div class="replies" ng-bind="thread.post_count - 1 | number:0"></div>
-
-    <div class="views" ng-bind="thread.view_count | number:0"></div>
-
-    <div class="last-reply">
-      <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
-      by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
-      <div><em ng-bind="thread.last_post_created_at | humanDate"></em></div>
-      <div ng-if="thread.has_new_post">
-        <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- No Threads Listed -->
-  <div class-"threads-data" ng-if="WatchlistCtrl.unreadThreads.length < 1" style="text-align: center; font-weight: bold;">
-    No More Unread Threads
-  </div>
-
-  <!-- Bottom Pagination -->
-  <div class="board-header">
-    <button ng-if="WatchlistCtrl.unreadHasMoreThreads" ng-click="WatchlistCtrl.pullUnread(1);" style="float: right; margin-left: 2rem;">
-      Older >
-    </button>
-    <div style="float: right; margin-left: 2rem;"
-      ng-if="WatchlistCtrl.unreadThreads.length > 0"
-     ng-bind="WatchlistCtrl.unreadPage"></div>
-    <button ng-if="WatchlistCtrl.unreadPage > 1" ng-click="WatchlistCtrl.pullUnread(-1);" style="float: right;">
-      < Newer
-    </button>
-  </div>
-
-</div>
-
 
 <div class="board-footer"></div>

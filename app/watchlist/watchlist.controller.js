@@ -4,19 +4,13 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'S
     // page variables
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
-    this.viewType = Boolean($location.search().unread) ? 'unread' : 'all';
+    this.viewType = 'unread';
 
     // index variables
     this.page = pageData.page;
     this.limit = pageData.limit;
     this.threads = pageData.threads;
     this.hasMoreThreads = pageData.hasMoreThreads;
-
-    // unread variables
-    this.unreadPage = pageData.page;
-    this.unreadLimit = pageData.limit;
-    this.unreadThreads = pageData.unreadThreads;
-    this.unreadHasMoreThreads = pageData.unreadHasMoreThreads;
 
     // Scroll fix for nested state
     $timeout($anchorScroll);
@@ -51,32 +45,17 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'S
       ctrl.getPageKeysForThread(thread);
     }
     this.threads.forEach(threadPageCount);
-    this.unreadThreads.forEach(threadPageCount);
 
-    this.pullAll = function(pageIncrement) {
+    this.pullPage = function(pageIncrement) {
       ctrl.page = ctrl.page + pageIncrement;
       var query = { page: ctrl.page, limit: ctrl.limit };
 
       // replace current threads with new threads
-      Watchlist.all(query).$promise
+      Watchlist.index(query).$promise
       .then(function(pageData) {
-        ctrl.hasMoreThreads = pageData.hasMoreThreads;
+        ctrl.hasMoreThreadss = pageData.hasMoreThreads;
         ctrl.threads = pageData.threads;
         ctrl.threads.forEach(threadPageCount);
-        $timeout($anchorScroll);
-      });
-    };
-
-    this.pullUnread = function(pageIncrement) {
-      ctrl.unreadPage = ctrl.unreadPage + pageIncrement;
-      var query = { page: ctrl.unreadPage, limit: ctrl.unreadLimit };
-
-      // replace current threads with new threads
-      Watchlist.unread(query).$promise
-      .then(function(pageData) {
-        ctrl.unreadHasMoreThreads = pageData.hasMoreThreads;
-        ctrl.unreadThreads = pageData.threads;
-        ctrl.unreadThreads.forEach(threadPageCount);
         $timeout($anchorScroll);
       });
     };
