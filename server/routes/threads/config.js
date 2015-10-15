@@ -150,8 +150,12 @@ exports.byBoard = {
 
     var getThreads = db.threads.byBoard(boardId, userId, opts);
     var getBoard = db.boards.find(boardId);
+    var getBoardWatching = db.boards.watching(boardId, userId);
 
-    var promise = Promise.join(getThreads, getBoard, function(threads, board) {
+    var promise = Promise.join(getThreads, getBoard, getBoardWatching, function(threads, board, boardWatching) {
+      // check if board is being Watched
+      if (boardWatching) { board.watched = true; }
+
       return {
         board: board,
         page: opts.page,

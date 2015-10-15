@@ -63,6 +63,6 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'S
   }
 ];
 
-module.exports = angular.module('eptc.watchtlist.ctrl', [])
+module.exports = angular.module('ept.watchlist.ctrl', [])
 .controller('WatchlistCtrl', ctrl)
 .name;

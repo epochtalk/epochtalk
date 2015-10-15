@@ -42,6 +42,7 @@ test/coverage/
 /public/templates/posts/*.html
 /public/templates/thread/*.html
 /public/templates/user/*.html
+/public/templates/watchlist/*.html
 
 /app/scss/loading-bar.scss
 /app/.sass-cache/
