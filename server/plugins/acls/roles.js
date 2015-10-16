@@ -51,12 +51,28 @@ module.exports = roles;
       postReportsNotesCount: true,
       messageReportsNotesCount: true
     },
+    adminRoles: {
+      all: true,
+      users: true,
+      add: true,
+      update: true,
+      remove: true,
+      reprioritize: true
+    },
     adminSettings: {
       find: true,
       update: true
     },
     adminUsers: {
       privilegedUpdate: {
+        samePriority: true,
+        lowerPriority: true
+      },
+      privilegedAddRoles: {
+        samePriority: true,
+        lowerPriority: true
+      },
+      privilegedRemoveRoles: {
         samePriority: true,
         lowerPriority: true
       },
@@ -246,6 +262,14 @@ roles.superAdministrator = {
     postReportsNotesCount: true,
     messageReportsNotesCount: true
   },
+  adminRoles: {
+    all: true,
+    users: true,
+    add: true,
+    update: true,
+    remove: true,
+    reprioritize: true
+  },
   adminSettings: {
     find: true,
     update: true
@@ -253,6 +277,12 @@ roles.superAdministrator = {
   adminUsers: {
     privilegedUpdate: {
       lowerPriority: true
+    },
+    privilegedAddRoles: {
+      samePriority: true
+    },
+    privilegedRemoveRoles: {
+      samePriority: true
     },
     update: true,
     find: true,
@@ -421,12 +451,26 @@ roles.administrator = {
     postReportsNotesCount: true,
     messageReportsNotesCount: true
   },
+  adminRoles: {
+    all: true,
+    users: true,
+    add: true,
+    update: true,
+    remove: true,
+    reprioritize: false
+  },
   adminSettings: {
     find: true,
     update: true
   },
   adminUsers: {
     privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedAddRoles: {
+      lowerPriority: true
+    },
+    privilegedRemoveRoles: {
       lowerPriority: true
     },
     update: true,

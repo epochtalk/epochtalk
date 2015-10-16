@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Alert, AdminRoles, AdminUsers, roles, userData, roleId, limit, page, search) {
+module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, AdminRoles, AdminUsers, roles, userData, roleId, limit, page, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
@@ -14,6 +14,43 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
   this.roleId = roleId;
   this.selectedRole = null;
   this.showAddUsers = false;
+  this.controlAccess = Session.getControlAccessWithPriority('roleControls');
+  this.controlAccess.privilegedRemoveRoles = this.controlAccess.privilegedAddRoles ? {
+    samePriority: Session.hasPermission('roleControls.privilegedRemoveRoles.samePriority'),
+    lowerPriority: Session.hasPermission('roleControls.privilegedRemoveRoles.lowerPriority')
+  } : undefined;
+  this.controlAccess.privilegedAddRoles = this.controlAccess.privilegedAddRoles ? {
+    samePriority: Session.hasPermission('roleControls.privilegedAddRoles.samePriority'),
+    lowerPriority: Session.hasPermission('roleControls.privilegedAddRoles.lowerPriority')
+  } : undefined;
+
+  this.canViewAddUsersControl = function() {
+    var view = false;
+    if (ctrl.controlAccess.privilegedAddRoles && ctrl.controlAccess.privilegedAddRoles.samePriority) {
+      view = ctrl.selectedRole.priority >= Session.user.permissions.priority;
+    }
+    else if (ctrl.controlAccess.privilegedAddRoles && ctrl.controlAccess.privilegedAddRoles.lowerPriority) {
+      view = ctrl.selectedRole.priority > Session.user.permissions.priority;
+    }
+    if (ctrl.showAddUsers) { ctrl.showAddUsers = view; }
+    return view;
+  };
+
+  this.processUsers = function(userData) {
+    if (userData && userData.users) {
+      userData.users.forEach(function(user) {
+        user.remove = false;
+        if (ctrl.controlAccess.privilegedRemoveRoles && ctrl.controlAccess.privilegedRemoveRoles.samePriority) {
+          user.remove = user.priority >= Session.user.permissions.priority;
+        }
+        else if (ctrl.controlAccess.privilegedRemoveRoles && ctrl.controlAccess.privilegedRemoveRoles.lowerPriority) {
+          user.remove = user.priority > Session.user.permissions.priority;
+        }
+      });
+    }
+  };
+
+  this.processUsers(this.userData);
 
   this.searchUsers = function() {
     if (!ctrl.searchStr || ctrl.searchStr && !ctrl.searchStr.length) {
@@ -39,8 +76,10 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
       Alert.success('Users successfully added to ' + ctrl.selectedRole.name + ' role.');
       ctrl.pullPage();
     })
-    .catch(function() {
-      Alert.error('There was an error adding users to ' + ctrl.selectedRole.name + ' role.');
+    .catch(function(err) {
+      var message = 'There was an error adding users to ' + ctrl.selectedRole.name + ' role.';
+      if (err && err.data && err.data.message) { message = err.data.message; }
+      Alert.error(message);
     })
     .finally(function() { ctrl.usersToAdd = null; });
   };
@@ -51,8 +90,10 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
       Alert.success('User ' + user.username + ' successfully removed from ' + ctrl.selectedRole.name + ' role.');
       ctrl.pullPage();
     })
-    .catch(function() {
-      Alert.error('There was an error removing ' + user.username + ' from ' + ctrl.selectedRole.name + ' role.');
+    .catch(function(err) {
+      var message = 'There was an error removing ' + user.username + ' from ' + ctrl.selectedRole.name + ' role.';
+      if (err && err.data && err.data.message) { message = err.data.message; }
+      Alert.error(message);
     });
   };
 
@@ -109,10 +150,13 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
   };
 
   this.reprioritizeRoles = function() {
-    var priority = 0;
-    ctrl.roles.forEach(function(role) {
-      role.priority = priority++;
-    });
+    if (ctrl.controlAccess.reprioritize) {
+      var priority = 0;
+      ctrl.roles.forEach(function(role) {
+        role.priority = priority++;
+      });
+    }
+    else { ctrl.resetPriority(); }
   };
 
   this.showAddRoleModal = false;
@@ -167,6 +211,7 @@ module.exports = ['$rootScope', '$scope', '$location', 'Alert', 'AdminRoles', 'A
     if (ctrl.roleId) {
       AdminRoles.users(query).$promise
       .then(function(updatedUserData) {
+        ctrl.processUsers(updatedUserData);
         ctrl.userData = updatedUserData;
         ctrl.pageCount = Math.ceil(updatedUserData.count / query.limit);
       });

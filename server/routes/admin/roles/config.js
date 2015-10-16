@@ -4,6 +4,7 @@ var path = require('path');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
 var rolesObj = require(path.normalize(__dirname + '/../../../plugins/acls/roles'));
+var _ = require('lodash');
 
 /**
   * @apiVersion 0.3.0
@@ -19,6 +20,7 @@ var rolesObj = require(path.normalize(__dirname + '/../../../plugins/acls/roles'
   */
 exports.all = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminRoles.all' },
   handler: function(request, reply) {
     var promise = db.roles.all();
     return reply(promise);
@@ -49,6 +51,7 @@ exports.all = {
   */
 exports.users = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminRoles.users' },
   validate: {
     params: { id: Joi.string().required() },
     query: {
@@ -64,7 +67,14 @@ exports.users = {
       limit: request.query.limit,
       searchStr: request.query.search
     };
-    var promise = db.roles.users(roleId, opts);
+    var promise = db.roles.users(roleId, opts)
+    .then(function(userData) {
+      userData.users.map(function(user) {
+        user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
+        user.roles = user.roles.map(function(role) { return role.lookup; });
+      });
+      return userData;
+    });
     return reply(promise);
   }
 };
@@ -91,6 +101,7 @@ exports.users = {
   */
 exports.add = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminRoles.add' },
   validate: {
     payload: {
       id: Joi.string(),
@@ -319,6 +330,7 @@ exports.add = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminRoles.update' },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -541,6 +553,7 @@ exports.update = {
   */
 exports.remove = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminRoles.remove' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var id = request.params.id;
@@ -565,6 +578,7 @@ exports.remove = {
   */
 exports.reprioritize = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminRoles.reprioritize' },
   validate: {
     payload: Joi.array(Joi.object().keys({
       id: Joi.string().required(),

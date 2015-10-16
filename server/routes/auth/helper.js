@@ -109,6 +109,22 @@ function getMaskedPermissions(userRoles) {
         all: maskPermission('posts.bypassLock.all')
       } : undefined
     },
+    roleControls: maskPermission('adminRoles') ? {
+      privilegedAddRoles: maskPermission('adminUsers.privilegedAddRoles') ? {
+        samePriority: maskPermission('adminUsers.privilegedAddRoles.samePriority'),
+        lowerPriority: maskPermission('adminUsers.privilegedAddRoles.lowerPriority')
+      } : undefined,
+      privilegedRemoveRoles: maskPermission('adminUsers.privilegedRemoveRoles') ? {
+        samePriority: maskPermission('adminUsers.privilegedRemoveRoles.samePriority'),
+        lowerPriority: maskPermission('adminUsers.privilegedRemoveRoles.lowerPriority')
+      } : undefined,
+      all: maskPermission('adminRoles.all'),
+      users: maskPermission('adminRoles.users'),
+      add: maskPermission('adminRoles.add'),
+      remove: maskPermission('adminRoles.remove'),
+      update: maskPermission('adminRoles.update'),
+      reprioritize: maskPermission('adminRoles.reprioritize')
+    } : undefined,
     messageControls: {
       createConversations: maskPermission('conversations.create'),
       createMessages: maskPermission('messages.create'),

@@ -196,6 +196,10 @@ exports.addRoles = {
       role_id: Joi.string().required()
     }
   },
+  pre: [
+    { method: pre.hasAccessToRole },
+    { method: pre.hasSufficientPriorityToAddRole }
+  ],
   handler: function(request, reply) {
     var usernames = request.payload.usernames;
     var roleId = request.payload.role_id;
@@ -244,6 +248,7 @@ exports.removeRoles = {
       role_id: Joi.string().required()
     }
   },
+  pre: [ { method: pre.hasSufficientPriorityToRemoveRole }, ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roleId = request.payload.role_id;

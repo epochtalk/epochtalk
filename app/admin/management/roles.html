@@ -1,7 +1,7 @@
 <div class="half-column">
   <br />
   <h3>Create and Edit Roles</h3><br />
-  <div class="roles add-role">
+  <div ng-if="AdminManagementCtrl.controlAccess.add" class="roles add-role">
     <div class="nested-input-container">
       <a ng-click="AdminManagementCtrl.showAddRole()" class="nested-btn">Add</a>
       <input class="nested-input" ng-model="AdminManagementCtrl.newRole" type="text" id="add-role" placeholder="Enter new role name" ng-keydown="$event.which === 13 && AdminManagementCtrl.addRole()" />
@@ -25,13 +25,13 @@
       </tr>
     </tbody>
   </table>
-  <div class="right"><button ng-click="AdminManagementCtrl.resetPriority()">Reset Priority</button></div>
-  <div class="right"><button ng-click="AdminManagementCtrl.savePriority()">Save Priority</button>&nbsp;&nbsp;&nbsp;</div>
+  <div ng-if="AdminManagementCtrl.controlAccess.reprioritize" class="right"><button ng-click="AdminManagementCtrl.resetPriority()">Reset Priority</button></div>
+  <div ng-if="AdminManagementCtrl.controlAccess.reprioritize" class="right"><button ng-click="AdminManagementCtrl.savePriority()">Save Priority</button>&nbsp;&nbsp;&nbsp;</div>
 </div>
 
 <div class="half-column" ng-if="AdminManagementCtrl.selectedRole !== null && !AdminManagementCtrl.selectedRole.message">
   <br />
-  <h3 class="role-header">{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3>  <a ng-click="AdminManagementCtrl.showAddUsers = !AdminManagementCtrl.showAddUsers" class="add-users"><i class="fa fa-plus"></i> Add Users</a>
+  <h3 class="role-header">{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3>  <a ng-if="AdminManagementCtrl.canViewAddUsersControl()" ng-click="AdminManagementCtrl.showAddUsers = !AdminManagementCtrl.showAddUsers" class="add-users"><i class="fa fa-plus"></i> Add Users</a>
   <br /><br />
   <div ng-show="AdminManagementCtrl.showAddUsers">
     <tags-input min-length="1" placeholder="Type username to add" add-from-autocomplete-only="true" ng-model="AdminManagementCtrl.usersToAdd">
@@ -60,7 +60,9 @@
         <td ng-bind-html="user.username"></td>
         <td ng-bind-html="user.email"></td>
         <td>
-          <a ng-href="#" ng-click="AdminManagementCtrl.removeUser(user)">Remove</a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-if="user.remove" ng-href="#" ng-click="AdminManagementCtrl.removeUser(user)">Remove</a>
+          <span ng-if="!user.remove">Remove</span>
+          &nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#">All Permissions</a>
         </td>
       </tr>
