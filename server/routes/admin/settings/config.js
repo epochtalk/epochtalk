@@ -3,6 +3,7 @@ var Joi = require('joi');
 var path = require('path');
 var _ = require('lodash');
 var renameKeys = require('deep-rename-keys');
+var changeCase = require('change-case');
 var pre = require(path.normalize(__dirname + '/pre'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
 
@@ -41,11 +42,12 @@ var writeConfigToEnv = function(updatedConfig) {
     stream.end();
   });
 };
+var db = require(path.normalize(__dirname + '/../../../../db'));
 
 var camelCaseToUnderscore = function(obj) {
   if (_.isObject(obj)) {
     return renameKeys(obj, function(key) {
-      return key.split(/(?=[A-Z])/).join('_').toLowerCase();
+      return changeCase.snake(key);
     });
   }
   return obj;
@@ -64,7 +66,11 @@ var camelCaseToUnderscore = function(obj) {
 exports.find = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.find' },
-  handler: function(request, reply) { reply(camelCaseToUnderscore(config)); }
+  handler: function(request, reply) {
+    db.configurations.get().then(function(configs) {
+      reply(camelCaseToUnderscore(configs));
+    });
+  }
 };
 
 /**
