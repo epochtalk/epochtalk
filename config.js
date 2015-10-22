@@ -6,7 +6,7 @@ var config = {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
     options: {
-      auth_pass:  process.env.REDIS_PASS || null
+      auth_pass:  process.env.REDIS_AUTH_PASS || null
     }
   }
 };
