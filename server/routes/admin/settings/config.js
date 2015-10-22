@@ -130,8 +130,8 @@ exports.update = {
           dir: Joi.string(),
           bucket: Joi.string(),
           region: Joi.string(),
-          access_key: Joi.string(),
-          secret_key: Joi.string()
+          access_key: Joi.string().allow(''),
+          secret_key: Joi.string().allow('')
         })
       })
     }).options({ stripUnknown: false, abortEarly: true })
