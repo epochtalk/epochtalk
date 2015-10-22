@@ -1,0 +1,39 @@
+{
+  "logEnabled": true,
+  "privateKey": "Change this to something more secure",
+  "verifyRegistration": false,
+  "loginRequired": false,
+  "website": {
+    "title": "Epochtalk Forums",
+    "description": "Open source forum software",
+    "keywords": "open source, free forum, forum software, forum",
+    "logo": "",
+    "favicon": ""
+  },
+  "emailer": {
+    "sender": "info@example.com",
+    "host": "smtp.gmail.com",
+    "port": 465,
+    "user": "username",
+    "pass": "password",
+    "secure": true
+  },
+  "images": {
+    "storage": "local",
+    "maxSize": 10485760,
+    "expiration": 7200000,
+    "interval": 900000,
+    "local": {
+      "dir": "/public/images/",
+      "path": "/static/images/"
+    },
+    "s3": {
+      "root": "http://example.com",
+      "dir": "/images",
+      "bucket": "bukkit",
+      "region": "region",
+      "accessKey": "",
+      "secretKey": ""
+    }
+  }
+}
