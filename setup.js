@@ -1,11 +1,11 @@
 var path = require('path');
 var config = require(path.normalize(__dirname + '/config'));
 var db = require(path.normalize(__dirname + '/db'));
+var defaultConfigurations = require(path.join(__dirname, 'configurations.json'));
 
 // load server options from database
 module.exports = function() {
   return db.configurations.get().then(function(configurations) {
-    console.log(configurations);
     Object.keys(configurations).forEach(function(key) {
       config[key] = configurations[key];
     });
@@ -48,5 +48,11 @@ module.exports = function() {
     if (s3dir.indexOf('/') === 0) {
       config.images.s3.dir = s3dir.substring(1);
     }
+  })
+  .catch(function(err) {
+    if (err.isOperational) {
+      return db.configurations.create(defaultConfigurations);
+    }
+    else { return console.log(err) }
   });
 };
