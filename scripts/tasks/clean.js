@@ -6,8 +6,6 @@ module.exports = function() {
     del(
       [
         'public/css/*.css',
-        'app/scss/default.scss',
-        'app/scss/medium-editor.scss',
         'public/js/*.js'
       ],
       function(err) {

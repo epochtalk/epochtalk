@@ -1,10 +1,9 @@
-var fs = require('fs');
-var _ = require('lodash');
+var remove = require('lodash/array/remove');
 
 module.exports = ['$timeout', 'Alert', function($timeout, Alert) {
   return {
     restrict: 'E',
-    template: fs.readFileSync(__dirname + '/alert.html'),
+    template: require('./alert.html'),
     link: function($scope, $element, $attr) {
       $scope.alerts = Alert.getAlerts();
       $scope.visibleAlerts = [];
@@ -23,7 +22,7 @@ module.exports = ['$timeout', 'Alert', function($timeout, Alert) {
       }
 
       $scope.removeAlert = function(id) {
-        _.remove($scope.visibleAlerts, function(alert) {
+        remove($scope.visibleAlerts, function(alert) {
           return alert.id === id;
         });
         syncAlerts();

@@ -1,4 +1,4 @@
-module.exports = [
+var ctrl = [
   '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Threads', 'Posts', 'pageData',
   function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Threads, Posts, pageData) {
     var ctrl = this;
@@ -116,3 +116,7 @@ module.exports = [
     }
   }
 ];
+
+module.exports = angular.module('ept.posts.ctrl', [])
+.controller('PostsCtrl', ctrl)
+.name;

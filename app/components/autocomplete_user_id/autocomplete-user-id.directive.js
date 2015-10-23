@@ -1,16 +1,13 @@
-var fs = require('fs');
-var path = require('path');
-
 module.exports = ['Messages', function(Messages) {
   return {
     restrict: 'E',
-    template: fs.readFileSync(path.normalize(__dirname + '/autocomplete-user-id.html')),
+    template: require('./autocomplete-user-id.html'),
     scope: {
       userId: '=',
       username: '=',
       inputPlaceholder: '@',
     },
-    controller: function($scope) {
+    controller: ['$scope', function($scope) {
       $scope.searchResults = [];
       $scope.usernameIsValid = false;
 
@@ -33,6 +30,6 @@ module.exports = ['Messages', function(Messages) {
           }
         });
       });
-    }
+    }]
   };
 }];

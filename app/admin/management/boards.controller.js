@@ -1,6 +1,6 @@
-var _ = require('lodash');
+var remove = require('lodash/array/remove');
 
-module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'boards', 'categories',
+var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'boards', 'categories',
   function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, boards, categories) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
@@ -32,7 +32,7 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
     function cleanBoards(catBoards) {
       catBoards.forEach(function(board) {
         // remove this board from boardListData
-        _.remove(boards, function(tempBoard) { return tempBoard.id === board.id; });
+        remove(boards, function(tempBoard) { return tempBoard.id === board.id; });
         // recurse if there are children
         if (board.children.length > 0) { cleanBoards(board.children); }
       });
@@ -107,3 +107,7 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
 
   }
 ];
+
+module.exports = angular.module('ept.admin.management.boards.ctrl', [])
+.controller('CategoriesCtrl', ctrl)
+.name;

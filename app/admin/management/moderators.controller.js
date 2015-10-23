@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminUsers', 'moderators', 'moderatorsCount', 'page', 'limit', 'field', 'desc', 'USER_ROLES', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminUsers, moderators, moderatorsCount, page, limit, field, desc, USER_ROLES) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminUsers', 'moderators', 'moderatorsCount', 'page', 'limit', 'field', 'desc', 'USER_ROLES', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminUsers, moderators, moderatorsCount, page, limit, field, desc, USER_ROLES) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'moderators';
@@ -211,3 +211,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     });
   };
 }];
+
+module.exports = angular.module('ept.admin.management.moderators.ctrl', [])
+.controller('ModeratorsCtrl', ctrl)
+.name;

@@ -1,5 +1,4 @@
-module.exports = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Threads', 'Alert',
-  function($anchorScroll, $stateParams, $location, Session, Threads, Alert) {
+var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Threads', 'Alert', function($anchorScroll, $stateParams, $location, Session, Threads, Alert) {
     $anchorScroll();
     var ctrl = this;
     this.exitEditor = false;
@@ -7,9 +6,6 @@ module.exports = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
     this.resetEditor = true;
     this.thread = {
       board_id: $stateParams.boardId,
-      raw_body: '',
-      body: '',
-      title: '',
       sticky: false,
       locked: false
     };
@@ -31,3 +27,7 @@ module.exports = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
     };
   }
 ];
+
+module.exports = angular.module('ept.newThread.ctrl', [])
+.controller('NewThreadCtrl', controller)
+.name;

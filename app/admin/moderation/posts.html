@@ -24,7 +24,7 @@
     <div class="nested-input-container">
       <a ng-if="ModerationCtrl.search" ng-click="ModerationCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
       <a ng-click="ModerationCtrl.searchReports()" class="nested-btn">Search</a>
-      <input class="nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="posts-search" placeholder="Search reported posts" ng-keydown="$event.which === 13 && ModerationCtrl.searchReports()" ng-keyup="$event.which === 27 && ModerationCtrl.clearSearch()" />
+      <input class="input-text nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="posts-search" placeholder="Search reported posts" ng-keydown="$event.which === 13 && ModerationCtrl.searchReports()" ng-keyup="$event.which === 27 && ModerationCtrl.clearSearch()" />
     </div>
   </div>
 </div>

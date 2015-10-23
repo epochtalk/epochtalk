@@ -1,5 +1,4 @@
-var fs = require('fs');
-var _ = require('lodash');
+var forIn = require('lodash/object/forIn');
 
 module.exports = ['$location', '$filter', function($location, $filter) {
   return {
@@ -9,18 +8,14 @@ module.exports = ['$location', '$filter', function($location, $filter) {
       page: '=',
       queryParams: '='
     },
-    template: fs.readFileSync(__dirname + '/pagination.html'),
+    template: require('./pagination.html'),
     link: function(scope) {
 
       // Update if pageCount or page changes
-      scope.$watchGroup(['pageCount', 'page'], function() {
-        buildPages();
-      });
+      scope.$watchGroup(['pageCount', 'page'], function() { buildPages(); });
 
       // Update pagination if any of the other query strings change
-      scope.$watch('queryParams', function () {
-        buildPages();
-      }, true);
+      scope.$watch('queryParams', function () { buildPages(); }, true);
 
       var buildPages = function() {
         scope.paginationKeys = [];
@@ -32,7 +27,9 @@ module.exports = ['$location', '$filter', function($location, $filter) {
 
         // Build url prefix, include existing query params
         urlPrefix = $location.path() + '?';
-        _.forIn(queryParams, function(value, key) { urlPrefix += key + '=' + encodeURI(value) + '&'; });
+        forIn(queryParams, function(value, key) {
+          urlPrefix += key + '=' + encodeURI(value) + '&';
+        });
         urlPrefix += 'page=';
 
         var truncate = scope.pageCount > 15;

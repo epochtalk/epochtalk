@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, AdminRoles, AdminUsers, roles, userData, roleId, limit, page, search) {
+var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, AdminRoles, AdminUsers, roles, userData, roleId, limit, page, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
@@ -319,3 +319,7 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
   };
 
 }];
+
+module.exports = angular.module('ept.admin.management.roles.ctrl', [])
+.controller('RolesCtrl', ctrl)
+.name;

@@ -1,4 +1,4 @@
-module.exports = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scope, settings, AdminSettings, Alert) {
+var ctrl = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scope, settings, AdminSettings, Alert) {
   var ctrl = this;
 
   // Tab control
@@ -25,3 +25,7 @@ module.exports = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scop
     ctrl.localImageServer = ctrl.settings.images.storage === 'local';
   };
 }];
+
+module.exports = angular.module('ept.admin.settings.forum.ctrl', [])
+.controller('ForumSettingsCtrl', ctrl)
+.name;

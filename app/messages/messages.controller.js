@@ -1,6 +1,6 @@
 var bbcodeParser = require('epochtalk-bbcode-parser');
 
-module.exports = [
+var ctrl = [
   '$scope', '$rootScope', '$timeout', '$window', '$location', '$anchorScroll', 'Session', 'Alert', 'Messages', 'Conversations', 'Reports', 'pageData',
   function($scope, $rootScope, $timeout, $window, $location, $anchorScroll, Session, Alert, Messages, Conversations, Reports, pageData) {
     var ctrl = this;
@@ -261,3 +261,7 @@ module.exports = [
 
   }
 ];
+
+module.exports = angular.module('ept.messages.ctrl', [])
+.controller('MessagesCtrl', ctrl)
+.name;
