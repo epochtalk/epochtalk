@@ -106,26 +106,33 @@ $ cd epochtalk
 $ npm install
 ```
 
+#### 3) Copy the example.env file
+This file specifies the server configurations and is necessary to run the
+server.  You can edit the .env file later to specify the configurations as
+outlined in the Configuration section.
 
-#### 3) Install frontend dependencies using [bower](https://github.com/bower/bower)
+```sh
+$ cp example.env .env
+```
+
+#### 4) Install frontend dependencies using [bower](https://github.com/bower/bower)
 ```sh
 $ bower install
 ```
 
-#### 4) Run the Epochtalk CLI tool
-First ensure that [Postgres](http://www.postgresql.org/) is installed and running. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the fourm. From the root directory of the project run the following command:
+#### 5) Initialize with foreman
+First ensure that [Postgres](http://www.postgresql.org/) is installed andrunning. Also ensure that [foreman](http://ddollar.github.io/foreman) is installed. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the fourm. From the root directory of the project run the following command:
 ```sh
-$ node cli/index.js --create
+$ foreman start initialize
 ```
 
-#### 5) Start the Epochtalk server
-Ensure that [foreman](http://ddollar.github.io/foreman) is installed. Upon running the `foreman start` command Epochtalk will start its webserver and compile all JavaScript and css. Once compilation is complete the forum can be viewed at `http://localhost:8080`
+#### 6) Start the Epochtalk server
+Upon running the `foreman start` command Epochtalk will start its webserver and compile all JavaScript and css. Once compilation is complete the forum can be viewed at `http://localhost:8080`
 ```sh
-$ foreman start -f Procfile.dev #for development
-$ foreman start -f #for production
+$ foreman start server
 ```
 
-#### 6) Login and change admin account information
+#### 7) Login and change admin account information
 Login to the admin account using the username ``admin`` and password ``admin1234``. Visit your profile by clicking the link in the top right corner of the page, then change your username and password.
 
 ### Trouble Shooting
@@ -133,39 +140,17 @@ Since both [Epochtalk](https://github.com/epochtalk/epochtalk) and [core-pg](htt
 
 ## Configuration
 Forum configurations can be set either manually or using the admin panel.
+
 ### Manual Configuration
-The forum configs can be set manually with a [.env](http://ddollar.github.io/foreman/#ENVIRONMENT) file in the root directory of the project.
+The forum server configs can and must be set manually with a [.env](http://ddollar.github.io/foreman/#ENVIRONMENT) file in the root directory of the project.
 ```sh
-HOST=localhost
-PORT=8080
-LOG_ENABLED=true
-PUBLIC_URL=http://localhost:8080
-PRIVATE_KEY=Change this to something more secure
-VERIFY_REGISTRATION=false
-LOGIN_REQUIRED=false
-WEBSITE_TITLE=Epochtalk Forums
-WEBSITE_DESCRIPTION=Open source forum software
-WEBSITE_KEYWORDS=open source, free forum, forum software, forum
-WEBSITE_LOGO=
-WEBSITE_FAVICON=
-EMAILER_SENDER=info@example.com
-EMAILER_HOST=smtp.gmail.com
-EMAILER_PORT=465
-EMAILER_USER=username
-EMAILER_PASS=password
-EMAILER_SECURE=true
-IMAGES_STORAGE=local
-IMAGES_MAX_SIZE=10485760
-IMAGES_EXPIRATION=7200000
-IMAGES_INTERVAL=900000
-IMAGES_LOCAL_DIR=/public/images
-IMAGES_LOCAL_PATH=/static/images
-IMAGES_S3_ROOT=http://some.where
-IMAGES_S3_DIR=images/
-IMAGES_S3_BUCKET=bukkit
-IMAGES_S3_REGION=region
-IMAGES_S3_ACCESS_KEY=testkey
-IMAGES_S3_SECRET_KEY=testkey
+DATABASE_URL="postgres://localhost/epochtalk_dev"
+HOST="localhost"
+PORT="8080"
+PUBLIC_URL="http://localhost:8080"
+REDIS_HOST="localhost"
+REDIS_PORT="6379"
+REDIS_AUTH_PASS=""
 ```
 ### Admin Panel Configuration
 Configurations can also be set using the settings tab in the administration panel.
