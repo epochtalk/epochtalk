@@ -3,7 +3,6 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
   this.roles = roles;
-  this.backupPriorities = angular.copy(roles);
   this.queryParams = $location.search();
   this.pageCount = Math.ceil(userData.count / limit);
   this.page = page;
@@ -14,6 +13,10 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
   this.roleId = roleId;
   this.selectedRole = null;
   this.showAddUsers = false;
+  this.maxPriority = null;
+  this.newRole = {};
+  this.basedRoleId = null;
+  this.modifyingRole = false;
   this.controlAccess = Session.getControlAccessWithPriority('roleControls');
   this.controlAccess.privilegedRemoveRoles = this.controlAccess.privilegedAddRoles ? {
     samePriority: Session.hasPermission('roleControls.privilegedRemoveRoles.samePriority'),
@@ -23,6 +26,65 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
     samePriority: Session.hasPermission('roleControls.privilegedAddRoles.samePriority'),
     lowerPriority: Session.hasPermission('roleControls.privilegedAddRoles.lowerPriority')
   } : undefined;
+
+  // Assign selected role if view is visited with roleId query param
+  roles.forEach(function(role) {
+    if (roleId && roleId === role.id) {
+      ctrl.selectedRole = role;
+      $location.search(ctrl.queryParams);
+    }
+  });
+
+  this.init = function() {
+    ctrl.maxPriority = null;
+    ctrl.roles.forEach(function(role) {
+      if (!ctrl.maxPriority) { ctrl.maxPriority = role.priority; }
+      else { ctrl.maxPriority = ctrl.maxPriority < role.priority ? role.priority : ctrl.maxPriority;}
+
+      if (role.lookup === 'user') {
+        role.message = 'The ' + role.name + ' role is assigned by default.  By default all new registered users are considered users.  The userbase of this role may not be manually edited.  Permission changes to this role will affect all users without another role assigned.';
+      }
+      if (role.lookup === 'anonymous') {
+        role.message = 'The ' + role.name + ' role is assigned by default to forum visitors who are not authenticated.  The user base of this role may not be manually edited.  Permission changes to this role will affect all unauthenticated users visiting the forum.';
+      }
+      if (role.lookup === 'private') {
+        role.message = 'The ' + role.name + ' role is assigned by default to forum visitors who are not authenticated.  This role is only used if the "Public Forum" is set to off via the forum settings page.  This requires all visitors to log in before they can view the forum content.  The user base of this role may not be manually edited.  Permission changes to this role will affect all unauthenticated users visiting the forum.';
+      }
+    });
+    ctrl.backupPriorities = angular.copy(ctrl.roles);
+  };
+  this.init();
+
+  this.setBasePermissions = function() {
+    var permissions = {};
+    roles.forEach(function(role) {
+      if (role.id === ctrl.basedRoleId) { permissions = angular.copy(role.permissions); }
+    });
+    ctrl.newRole.permissions = permissions;
+  };
+
+  this.saveRole = function() {
+    var promise;
+    var successMsg = '';
+    var errorMsg = '';
+    ctrl.newRole.highlight_color = ctrl.newRole.highlight_color ? ctrl.newRole.highlight_color : undefined;
+    if (ctrl.modifyingRole) {
+      promise = AdminRoles.update(ctrl.newRole).$promise;
+      successMsg = ctrl.newRole.name + ' successfully updated.';
+      errorMsg = 'There was an error updating the role ' + ctrl.newRole.name + '.';
+    }
+    else {
+      promise = AdminRoles.add(ctrl.newRole).$promise;
+      successMsg = ctrl.newRole.name + ' successfully created.';
+      errorMsg = 'There was an error creating the role ' + ctrl.newRole.name + '.';
+    }
+    promise
+    .then(function() { Alert.success(successMsg); ctrl.pullPage(); })
+    .catch(function() { Alert.error(errorMsg); })
+    .finally(function() {
+      ctrl.closeRole();
+    });
+  };
 
   this.canViewAddUsersControl = function() {
     var view = false;
@@ -102,13 +164,15 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
   };
 
   this.selectRole = function(role) {
+    if (ctrl.modifyingRole || ctrl.roleToRemove) { return; }
     // reset defaults when deselecting or reselecting
     ctrl.page = page;
     ctrl.limit = limit;
     ctrl.clearSearch();
-    if (ctrl.selectedRole && ctrl.selectedRole.name === role.name) {
+    if (ctrl.selectedRole && ctrl.selectedRole.id === role.id) {
       ctrl.selectedRole = null;
       ctrl.userData = null;
+      ctrl.editRole = null;
       ctrl.queryParams = {};
       $location.search(ctrl.queryParams);
     }
@@ -118,23 +182,6 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
       $location.search(ctrl.queryParams);
     }
   };
-
-  // Assign selected role if view is visited with roleId query param
-  roles.forEach(function(role) {
-    if (roleId && roleId === role.id) {
-      ctrl.selectedRole = role;
-      $location.search(ctrl.queryParams);
-    }
-    if (role.lookup === 'user') {
-      role.message = 'The ' + role.name + ' role is assigned by default.  By default all new registered users are considered users.  The userbase of this role may not be manually edited.  Permission changes to this role will affect all users without another role assigned.';
-    }
-    if (role.lookup === 'anonymous') {
-      role.message = 'The ' + role.name + ' role is assigned by default to forum visitors who are not authenticated.  The user base of this role may not be manually edited.  Permission changes to this role will affect all unauthenticated users visiting the forum.';
-    }
-    if (role.lookup === 'private') {
-      role.message = 'The ' + role.name + ' role is assigned by default to forum visitors who are not authenticated.  This role is only used if the "Public Forum" is set to off via the forum settings page.  This requires all visitors to log in before they can view the forum content.  The user base of this role may not be manually edited.  Permission changes to this role will affect all unauthenticated users visiting the forum.';
-    }
-  });
 
   this.resetPriority = function() { ctrl.roles = angular.copy(ctrl.backupPriorities); };
 
@@ -159,14 +206,53 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
     else { ctrl.resetPriority(); }
   };
 
-  this.showAddRoleModal = false;
-  this.selectedTab = null;
-  this.showAddRole = function() {
-    ctrl.showAddRoleModal = true;
-    ctrl.selectedTab = 'user';
+  // Remove role modal
+  this.showRemoveRoleModal = false;
+  this.roleToRemove = null;
+  this.showRemoveRole = function(removeRole) {
+    ctrl.showRemoveRoleModal = true;
+    ctrl.roleToRemove = removeRole;
   };
 
-  this.closeAddRole = function() { ctrl.showAddRoleModal = false; };
+  this.closeRemoveRole = function() {
+    ctrl.roleToRemove = null;
+    ctrl.showRemoveRoleModal = false;
+  };
+
+  this.removeRole = function() {
+    AdminRoles.remove({ id: ctrl.roleToRemove.id }).$promise
+    .then(function() {
+      Alert.success('Role ' + ctrl.roleToRemove.name + ' successfully removed.');
+    })
+    .catch(function(err) {
+      var errMsg = 'There was an error removing the role ' + ctrl.roleToRemove.name + '.';
+      if (err && err.data && err.data.message) { errMsg = err.data.message; }
+      Alert.error(errMsg);
+    })
+    .finally(function() {
+      ctrl.closeRemoveRole();
+      ctrl.pullPage();
+    });
+  };
+
+  // Add/Edit role modal
+  this.showRoleModal = false;
+  this.selectedTab = null;
+  this.showRole = function(editRole) {
+    ctrl.showRoleModal = true;
+    ctrl.selectedTab = 'general';
+    if (editRole) {
+      ctrl.modifyingRole = true;
+      ctrl.newRole = angular.copy(editRole);
+    }
+    else { ctrl.newRole.priority = ctrl.maxPriority + 1; }
+  };
+
+  this.closeRole = function() {
+    ctrl.modifyingRole = false;
+    ctrl.showRoleModal = false;
+    ctrl.newRole = {};
+  };
 
   this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
     var params = $location.search();
@@ -216,6 +302,11 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
         ctrl.pageCount = Math.ceil(updatedUserData.count / query.limit);
       });
     }
+    AdminRoles.all(query).$promise
+    .then(function(allRoles) {
+      ctrl.roles = allRoles;
+      ctrl.init();
+    });
   };
 
 }];

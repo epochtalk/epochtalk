@@ -26,7 +26,7 @@ module.exports = ['$resource',
         method: 'PUT',
         url: '/api/admin/roles/update'
       },
-      ban: {
+      add: {
         method: 'POST',
         url: '/api/admin/roles/add'
       }

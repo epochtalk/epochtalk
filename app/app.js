@@ -41,7 +41,6 @@ app.controller('ForumSettingsCtrl',   require('./admin/settings/forum.controller
 app.controller('CategoriesCtrl',      require('./admin/management/boards.controller.js'));
 app.controller('UsersCtrl',           require('./admin/management/users.controller.js'));
 app.controller('ModeratorsCtrl',      require('./admin/management/moderators.controller.js'));
-app.controller('AdministratorsCtrl',  require('./admin/management/administrators.controller.js'));
 app.controller('RolesCtrl',           require('./admin/management/roles.controller.js'));
 app.controller('ModUsersCtrl',        require('./admin/moderation/users.controller.js'));
 app.controller('ModPostsCtrl',        require('./admin/moderation/posts.controller.js'));
@@ -106,7 +105,7 @@ app.config(require('./config'))
       $state.nextParams = nextParams;
     }
     // Forbidden redirect home
-    else if (error.status === 403 || error.statusText === 'Forbidden') { $state.go('boards'); }
+    else if ((error.status === 403 || error.statusText === 'Forbidden') && next.name !== 'boards') { $state.go('boards'); }
     // Otherwise 404
     else { $state.go('404'); }
   });

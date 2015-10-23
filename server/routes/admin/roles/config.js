@@ -3,7 +3,7 @@ var Boom = require('boom');
 var path = require('path');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
-var rolesObj = require(path.normalize(__dirname + '/../../../plugins/acls/roles'));
+var rolesHelper = require(path.normalize(__dirname + '/../../../plugins/acls/helper'));
 var _ = require('lodash');
 
 /**
@@ -108,7 +108,7 @@ exports.add = {
       name: Joi.string().min(1).max(255).required(),
       description: Joi.string().min(1).max(1000).required(),
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
-      highlightColor: Joi.string(),
+      highlight_color: Joi.string(),
       permissions: Joi.object().keys({
         adminAccess: Joi.object().keys({
           settings: Joi.object().keys({
@@ -118,6 +118,7 @@ exports.add = {
           management: Joi.object().keys({
             boards: Joi.boolean(),
             users: Joi.boolean(),
+            moderators: Joi.boolean(),
             roles: Joi.boolean()
           })
         }),
@@ -125,6 +126,14 @@ exports.add = {
           users: Joi.boolean(),
           posts: Joi.boolean(),
           messages: Joi.boolean()
+        }),
+        adminRoles: Joi.object().keys({
+          all: Joi.boolean(),
+          users: Joi.boolean(),
+          add: Joi.boolean(),
+          update: Joi.boolean(),
+          remove: Joi.boolean(),
+          reprioritize: Joi.boolean()
         }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),
@@ -155,6 +164,14 @@ exports.add = {
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
+          privilegedAddRoles: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
+          privilegedRemoveRoles: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
@@ -201,6 +218,7 @@ exports.add = {
           delete: Joi.boolean()
         }),
         messages: Joi.object().keys({
+          privilegedDelete: Joi.boolean(),
           create: Joi.boolean(),
           latest: Joi.boolean(),
           findUser: Joi.boolean(),
@@ -294,10 +312,16 @@ exports.add = {
       }).required()
     }
   },
-  pre: [ { method: pre.createLookup } ],
   handler: function(request, reply) {
     var role = request.payload;
     var promise = db.roles.add(role)
+    .then(function(result) {
+      role.id = result.id;
+      role.lookup = result.id;
+      // Add role to the in memory role object
+      rolesHelper.addRole(role);
+      return result;
+    })
     .catch(function(err) {
       if (err.cause && err.cause.code === '23505') {
         return Boom.badRequest('Role name must be unique.');
@@ -337,7 +361,8 @@ exports.update = {
       name: Joi.string().min(1).max(255).required(),
       description: Joi.string().min(1).max(1000).required(),
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
-      highlightColor: Joi.string(),
+      highlight_color: Joi.string(),
+      lookup: Joi.string().required(),
       permissions: Joi.object().keys({
         adminAccess: Joi.object().keys({
           settings: Joi.object().keys({
@@ -347,6 +372,7 @@ exports.update = {
           management: Joi.object().keys({
             boards: Joi.boolean(),
             users: Joi.boolean(),
+            moderators: Joi.boolean(),
             roles: Joi.boolean()
           })
         }),
@@ -354,6 +380,14 @@ exports.update = {
           users: Joi.boolean(),
           posts: Joi.boolean(),
           messages: Joi.boolean()
+        }),
+        adminRoles: Joi.object().keys({
+          all: Joi.boolean(),
+          users: Joi.boolean(),
+          add: Joi.boolean(),
+          update: Joi.boolean(),
+          remove: Joi.boolean(),
+          reprioritize: Joi.boolean()
         }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),
@@ -384,6 +418,14 @@ exports.update = {
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
+          privilegedAddRoles: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
+          privilegedRemoveRoles: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
@@ -523,10 +565,14 @@ exports.update = {
       }).required()
     }
   },
-  pre: [ { method: pre.createLookup } ],
   handler: function(request, reply) {
     var role = request.payload;
     var promise = db.roles.update(role)
+    .then(function(result) {
+      // Update role in the in memory role object
+      rolesHelper.updateRole(role);
+      return result;
+    })
     .catch(function(err) {
       if (err.cause && err.cause.code === '23505') {
         return Boom.badRequest('Role name must be unique.');
@@ -555,9 +601,15 @@ exports.remove = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.remove' },
   validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.preventDefaultRoleDeletion } ],
   handler: function(request, reply) {
     var id = request.params.id;
-    var promise = db.roles.remove(id);
+    var promise = db.roles.remove(id)
+    .then(function(result) {
+      // Remove deleted role from in memory object
+      rolesHelper.deleteRole(id);
+      return result;
+    });
     return reply(promise);
   }
 };
@@ -588,10 +640,10 @@ exports.reprioritize = {
   handler: function(request, reply) {
     var roles = request.payload;
     var promise = db.roles.reprioritize(roles)
-    .then(function() {
-      roles.forEach(function(role) {
-        rolesObj[role.lookup].priority = role.priority;
-      });
+    .then(function(result) {
+      // update priorities for in memory roles object
+      rolesHelper.reprioritizeRoles(roles);
+      return result;
     });
     return reply(promise);
   }

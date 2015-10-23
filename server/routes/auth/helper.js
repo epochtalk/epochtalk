@@ -27,7 +27,7 @@ function getMaskedPermissions(userRoles) {
   };
 
   var getPriority = function() {
-    var priority = _.min(permissions.map(function(role) { return role.priority; }));
+    var priority = _.min(permissions.map(function(role) { return role ? role.priority : Number.MAX_VALUE; }));
     if (priority > -1) { return priority; }
     else { return Number.MAX_VALUE; }
   };
@@ -42,6 +42,7 @@ function getMaskedPermissions(userRoles) {
       management: maskPermission('adminAccess.management') ? {
         boards: maskPermission('adminAccess.management.boards'),
         users: maskPermission('adminAccess.management.users'),
+        moderators: maskPermission('adminAccess.management.moderators'),
         roles: maskPermission('adminAccess.management.roles')
       } : undefined
     } : undefined,
@@ -50,8 +51,10 @@ function getMaskedPermissions(userRoles) {
       posts: maskPermission('modAccess.posts'),
       messages: maskPermission('modAccess.messages')
     } : undefined,
-    profileControls: maskPermission('adminUsers') || maskPermission('users.privilegedDeactive') || maskPermission('users.privilegedReactivate') ? {
+    profileControls: maskPermission('adminUsers') || maskPermission('users.privilegedDeactive') || maskPermission('users.privilegedReactivate') || maskPermission('users.deactivate') || maskPermission('users.reactivate') ? {
       viewUserEmail: maskPermission('adminUsers.find'),
+      deactivate: maskPermission('users.deactivate'),
+      reactivate: maskPermission('users.reactivate'),
       privilegedUpdate: maskPermission('adminUsers.privilegedUpdate') ? {
         samePriority: maskPermission('adminUsers.privilegedUpdate.samePriority'),
         lowerPriority: maskPermission('adminUsers.privilegedUpdate.lowerPriority')

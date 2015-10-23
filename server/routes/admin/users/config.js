@@ -341,28 +341,6 @@ exports.count = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Users
-  * @api {GET} /admin/users/admins/count (Admin) Count Administrators
-  * @apiName CountAdminUsersAdmin
-  * @apiPermission Super Administrator, Administrator
-  * @apiDescription This allows Administrators to get a count of how many admin users are
-  * registered. This is used in the admin panel for paginating through admin users.
-  *
-  * @apiSuccess {number} count The number of admin users registered
-  *
-  * @apiError (Error 500) InternalServerError There was error calculating the admin user count
-  */
-exports.countAdmins = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.countAdmins' },
-  handler: function(request, reply) {
-    var promise = db.users.countAdmins();
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Users
   * @api {GET} /admin/users/moderators/count (Admin) Count Moderators
   * @apiName CountModUsersAdmin
   * @apiPermission Super Administrator, Administrator
@@ -431,53 +409,6 @@ exports.page = {
       searchStr: request.query.search
     };
     var promise = db.users.page(opts);
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Users
-  * @api {GET} /admin/users/admins (Admin) Page Admins
-  * @apiName PageAdminUsersAdmin
-  * @apiPermission Super Administrator, Administrator
-  * @apiDescription This allows Administrators to page through all registered admins.
-  *
-  * @apiParam (Query) {number{1..n}} [page=1] The page of registered admin users to retrieve
-  * @apiParam (Query) {number{1..n}} [limit=25] The number of admin users to retrieve per page
-  * @apiParam (Query) {string="username","email","updated_at","created_at","roles"} [field=username] The db field to sort the results by
-  * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results
-  * in descending order
-  *
-  * @apiSuccess {object[]} admins An array of admin user objects
-  * @apiSuccess {string} admins.user_id The unique id of the user
-  * @apiSuccess {string} admins.username The username of the user
-  * @apiSuccess {string} admins.email The email of the user
-  * @apiSuccess {timestamp} admins.created_at Timestamp of when the admin user was created
-  * @apiSuccess {string[]} admins.roles An array containing the admin roles the user has
-  * @apiSuccess {string} admins.roles.name The string name of the role
-  *
-  * @apiError (Error 500) InternalServerError There was error retrieving the admins
-  */
-exports.pageAdmins = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.pageAdmins' },
-  validate: {
-    query: {
-      page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).max(100).default(25),
-      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'roles'),
-      desc: Joi.boolean().default(false)
-    }
-  },
-  handler: function(request, reply) {
-    var opts = {
-      limit: request.query.limit,
-      page: request.query.page,
-      sortField: request.query.field,
-      sortDesc: request.query.desc
-    };
-    var promise = db.users.pageAdmins(opts);
     return reply(promise);
   }
 };

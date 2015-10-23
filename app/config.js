@@ -348,6 +348,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     var adminManagementRedirect = ['$state', 'Session', function($state, Session) {
       if (Session.hasPermission('adminAccess.management.boards')) { $state.go('admin-management.boards'); }
       else if (Session.hasPermission('adminAccess.management.users')) { $state.go('admin-management.users'); }
+      else if (Session.hasPermission('adminAccess.management.moderators')) { $state.go('admin-management.moderators'); }
       else if (Session.hasPermission('adminAccess.management.roles')) { $state.go('admin-management.roles'); }
       else { $state.go('admin'); }
     }];
@@ -367,6 +368,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
             this.tab = null;
             if (Session.hasPermission('adminAccess.management.boards')) { this.tab = 'boards'; }
             else if (Session.hasPermission('adminAccess.management.users')) { this.tab = 'users'; }
+            else if (Session.hasPermission('adminAccess.management.moderators')) { this.tab = 'moderators'; }
             else if (Session.hasPermission('adminAccess.management.roles')) { this.tab = 'roles'; }
           }],
           controllerAs: 'AdminManagementCtrl',
@@ -521,46 +523,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         moderatorsCount: ['AdminUsers', function(AdminUsers) {
           return AdminUsers.countModerators().$promise
           .then(function(moderatorsCount) { return moderatorsCount.count; });
-        }],
-        field: ['$stateParams', function($stateParams) {
-          return $stateParams.field;
-        }],
-        desc: ['$stateParams', function($stateParams) {
-          return $stateParams.desc || false;
-        }],
-        page: ['$stateParams', function($stateParams) {
-          return Number($stateParams.page) || 1;
-        }],
-        limit: ['$stateParams', function($stateParams) {
-          return Number($stateParams.limit) || 25;
-        }]
-      }
-    })
-    .state('admin-management.administrators', {
-      url: '/administrators?page&limit&field&desc',
-      views: {
-        'data@admin-management': {
-          controller: 'AdministratorsCtrl',
-          controllerAs: 'AdminManagementCtrl',
-          template: fs.readFileSync(__dirname + '/admin/management/administrators.html')
-        }
-      },
-      resolve: {
-        userAccess: adminCheck('management'),
-        $title: function() { return 'Admin Management'; },
-        admins: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-          var query = {
-            field: $stateParams.field,
-            desc: $stateParams.desc,
-            limit: Number($stateParams.limit) || 25,
-            page: Number($stateParams.page) || 1
-          };
-          return AdminUsers.pageAdmins(query).$promise
-          .then(function(admins) { return admins; });
-        }],
-        adminsCount: ['AdminUsers', function(AdminUsers) {
-          return AdminUsers.countAdmins().$promise
-          .then(function(adminsCount) { return adminsCount.count; });
         }],
         field: ['$stateParams', function($stateParams) {
           return $stateParams.field;

@@ -306,7 +306,7 @@ input[disabled].toggle-switch + label,
 input[disabled].toggle-switch + label:after { background-color: $color-gray-light }
 input[disabled].toggle-switch:checked + label,
 input[disabled].toggle-switch:checked + label:after { background-color: lighten($color-active-fill, 20%); }
-input[type] {
+input[type], textarea {
   box-shadow: none;
   &.ng-invalid,
   &.ng-invalid-mismatch { border-color: red; }
@@ -1567,7 +1567,12 @@ main #admin-content {
   .autocomplete-wrap { @include span-columns(6); }
   .switch-block label { float: none; }
   .permissions-modal {
+    @include row;
     margin: 1rem 0;
+    h4 { margin-bottom: 0.75rem; }
+    input[type="checkbox"], input[type="radio"] { margin-bottom: 0.5rem; }
+    label { @include no-select; }
+    .indent { padding-left: 1rem; }
     ul {
       list-style-type: none;
       li { display: block }
@@ -1575,12 +1580,9 @@ main #admin-content {
       li a:hover { background-color: $color-gray-sub; }
       li a.active { background-color: $color-active-fill; color: #fff; }
     }
-    @include row;
     .left-column {
       @include span-columns(2);;
       border-right: 1px solid $color-gray-light;
-      min-height: 21.875rem;
-      max-height: 100%;
     }
     .right-column {
       @include span-columns(9);
@@ -1596,6 +1598,10 @@ main #admin-content {
     .email-column { @include truncate-ellipsis; max-width: 7rem; word-wrap: none; }
     tr.show-mobile { display: table-row; }
     .autocomplete-wrap { @include span-columns(8); @include omega; }
+    .permissions-modal {
+      .left-column { @include span-columns(3); }
+      .right-column { @include span-columns(5); @include omega; }
+    }
   }
 }
 

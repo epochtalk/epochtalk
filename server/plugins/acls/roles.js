@@ -19,6 +19,7 @@ module.exports = roles;
       management: {
         boards: true,
         users: true,
+        moderators: true,
         roles: true
       }
     },
@@ -99,19 +100,19 @@ module.exports = roles;
         some: true,
         all: true
       },
-      create: true,
-      find: true,
-      all: true,
-      allCategories: true,
-      updateCategories: true,
-      update: true,
-      delete: true
+      create: true, // creating new boards
+      find: true, // standard user permission
+      all: true, // moving boards
+      allCategories: true, // all boards in categories
+      updateCategories: true, // recategorizing boards and updating categories
+      update: true, // Update individual board
+      delete: true // Removes individual boards
     },
     categories: {
-      create: true,
-      find: true,
-      all: true,
-      delete: true
+      create: true, // Create a new categories
+      find: true, // unused
+      all: true, // unused
+      delete: true // Removes a category
     },
     conversations: {
       create: true,
@@ -230,6 +231,7 @@ roles.superAdministrator = {
     management: {
       boards: true,
       users: true,
+      moderators: true,
       roles: true
     }
   },
@@ -385,7 +387,7 @@ roles.superAdministrator = {
     lock: true,
     sticky: true,
     move: true,
-    delete: true
+    purge: true
   },
   users: {
     privilegedDeactivate: {
@@ -419,6 +421,7 @@ roles.administrator = {
     management: {
       boards: true,
       users: true,
+      moderators: true,
       roles: true
     }
   },
@@ -454,10 +457,6 @@ roles.administrator = {
   adminRoles: {
     all: true,
     users: true,
-    add: true,
-    update: true,
-    remove: true,
-    reprioritize: false
   },
   adminSettings: {
     find: true,
@@ -652,8 +651,7 @@ roles.globalModerator = {
   },
   conversations: {
     create: true,
-    messages: true,
-    delete: true
+    messages: true
   },
   messages: {
     privilegedDelete: true,
@@ -783,8 +781,7 @@ roles.moderator = {
   },
   conversations: {
     create: true,
-    messages: true,
-    delete: true
+    messages: true
   },
   messages: {
     create: true,
@@ -870,8 +867,7 @@ roles.user = {
   },
   conversations: {
     create: true,
-    messages: true,
-    delete: true
+    messages: true
   },
   messages: {
     create: true,

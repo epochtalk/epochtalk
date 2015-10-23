@@ -12,6 +12,9 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
     this.displayPostsUrl = false;
 
     this.controlAccess = Session.getControlAccessWithPriority('profileControls', user.priority);
+    // Only allow reactivating/deactivating of own account
+    this.controlAccess.deactivate = this.controlAccess.deactivate && Session.user.id === user.id;
+    this.controlAccess.reactivate = this.controlAccess.reactivate && Session.user.id === user.id;
     this.editable = Session.user.id === user.id || this.controlAccess.privilegedUpdate;
     this.adminVisitor = Session.user.id !== user.id && this.controlAccess.privilegedUpdate;
 

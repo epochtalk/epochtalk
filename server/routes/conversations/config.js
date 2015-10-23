@@ -110,7 +110,7 @@ exports.messages = {
   * @apiGroup Conversations
   * @api {DELETE} /conversations/:id Delete
   * @apiName DeleteConversation
-  * @apiPermission User (Convesation's Author) or Admin
+  * @apiPermission Admin
   * @apiDescription Used to delete a conversation.
   *
   * @apiParam {string} id The Id of the conversation to delete

@@ -7,11 +7,8 @@
     <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.users')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'users'}">
       <a ui-sref=".users" ng-click="AdminManagementCtrl.tab = 'users'">Users</a>
     </dd>
-    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'moderators'}">
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.moderators')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'moderators'}">
       <a ui-sref=".moderators" ng-click="AdminManagementCtrl.tab = 'moderators'">Moderators</a>
-    </dd>
-    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'administrators'}">
-      <a ui-sref=".administrators" ng-click="AdminManagementCtrl.tab = 'administrators'">Administrators</a>
     </dd>
     <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.roles')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'roles'}">
       <a ui-sref=".roles" ng-click="AdminManagementCtrl.tab = 'roles'">Roles</a>
