@@ -135,7 +135,10 @@
         <textarea id="desc" ng-model="AdminManagementCtrl.newRole.description" placeholder="Enter a short description of this role" ng-required="true"></textarea>
         <div>
           <div class="half-column">
-            <label for="priority">Role Priority</label>
+            <label for="priority">
+              Role Priority
+              <div class="input-info right">Priority can be changed after role is added</div>
+            </label>
             <input ng-model="AdminManagementCtrl.newRole.priority" type="number" ng-disabled="true" required />
           </div>
           <div class="half-column">
@@ -143,12 +146,14 @@
             <input ng-model="AdminManagementCtrl.newRole.highlight_color" id="highlight" type="color" placeholder="Enter a hex value for role highlight color" />
           </div>
         </div>
-        <label for="basedRole">Base Permissions (Optional)</label>
+        <label for="basedRole">
+          Base Permissions (Optional)
+          <div class="input-info right">Set base permissions to that of an existing role</div>
+        </label>
         <select id="basedRole" class="fill-row" ng-change="AdminManagementCtrl.setBasePermissions()" ng-model="AdminManagementCtrl.basedRoleId">
           <option></option>
           <option ng-selected="AdminManagementCtrl.basedRoleId === role.id" ng-repeat="role in AdminManagementCtrl.roles" ng-value="role.id" ng-bind="role.name"></option>
         </select>
-        ** NOTE: Role priority can be changed after role is added.
       </div>
 
       <!-- Views Tab -->
