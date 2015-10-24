@@ -70,7 +70,7 @@
 
   <!-- fixed bottom toolbar -->
   <ul class="post-toolbar">
-    <li ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.allowPosting()">
+    <li ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.allowPosting() && PostsParentCtrl.postControlAccess.create">
       <span>+</span>
     </li>
   </ul>

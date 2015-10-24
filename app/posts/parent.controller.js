@@ -20,18 +20,24 @@ module.exports = [
       reportPosts: Session.hasPermission('reportControls.reportPosts'),
       reportUsers: Session.hasPermission('reportControls.reportUsers')
     };
+    this.postControlAccess = {
+      create: Session.hasPermission('postControls.create')
+    };
     this.showThreadControls = false;
-
     // wait for board_id to be populated by child controller
     $scope.$watch(function() { return ctrl.board_id; }, function(boardId) {
       // Get access rights to page controls for authed user
       ctrl.controlAccess = Session.getControlAccess('threadControls', boardId);
       // thread owner can lock and edit title
       if (ctrl.user.id === ctrl.thread.user.id) {
-        ctrl.controlAccess.privilegedLock = true;
-        ctrl.controlAccess.privilegedTitle = true;
+        ctrl.controlAccess.privilegedLock = ctrl.controlAccess.lock;
+        ctrl.controlAccess.privilegedTitle = ctrl.controlAccess.title;
       }
-      ctrl.showThreadControls = _.some(ctrl.controlAccess);
+      ctrl.privilegedControlAccess = angular.copy(ctrl.controlAccess);
+      delete ctrl.privilegedControlAccess.lock; // remove non privileged permissions
+      delete ctrl.privilegedControlAccess.title;
+      delete ctrl.privilegedControlAccess.create;
+      ctrl.showThreadControls = _.some(ctrl.privilegedControlAccess);
       ctrl.getBoards();
     });
 

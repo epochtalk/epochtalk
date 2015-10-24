@@ -92,7 +92,10 @@ function getMaskedPermissions(userRoles) {
       privilegedPurge: maskPermission('threads.privilegedPurge') ? {
         some: maskPermission('threads.privilegedPurge.some'),
         all: maskPermission('threads.privilegedPurge.all')
-      } : undefined
+      } : undefined,
+      create: maskPermission('threads.create'),
+      title: maskPermission('threads.title'),
+      lock: maskPermission('threads.lock')
     },
     postControls: {
       privilegedUpdate: maskPermission('posts.privilegedUpdate') ? {
@@ -110,7 +113,11 @@ function getMaskedPermissions(userRoles) {
       bypassLock: maskPermission('posts.bypassLock') ? {
         some: maskPermission('posts.bypassLock.some'),
         all: maskPermission('posts.bypassLock.all')
-      } : undefined
+      } : undefined,
+      create: maskPermission('posts.create'),
+      update: maskPermission('posts.update'),
+      delete: maskPermission('posts.delete'),
+      undelete: maskPermission('posts.undelete')
     },
     roleControls: maskPermission('adminRoles') ? {
       privilegedAddRoles: maskPermission('adminUsers.privilegedAddRoles') ? {

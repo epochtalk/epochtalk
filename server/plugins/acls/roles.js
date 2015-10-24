@@ -458,10 +458,6 @@ roles.administrator = {
     all: true,
     users: true,
   },
-  adminSettings: {
-    find: true,
-    update: true
-  },
   adminUsers: {
     privilegedUpdate: {
       lowerPriority: true

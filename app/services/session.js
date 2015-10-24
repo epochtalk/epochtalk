@@ -133,7 +133,7 @@ module.exports = ['$window',
       var isMod = moderatesBoard(boardId);
       if (user.permissions) {
         var obj = _.get(user.permissions, permission);
-        for (var key in obj) { result[key] = (isMod && obj[key].some) || obj[key].all; }
+        for (var key in obj) { result[key] = (isMod && obj[key].some) || obj[key].all || obj[key]; }
       }
       return result;
     }
