@@ -4,15 +4,16 @@
   "description": "Epochtalk forum software",
   "main": "server",
   "scripts": {
-    "db-create": "createdb $(cat database.json | ./node_modules/.bin/json ${NODE_ENV=development}.database)",
-    "db-drop": "dropdb $(cat database.json | ./node_modules/.bin/json ${NODE_ENV=development}.database)",
-    "db-migrate": "./node_modules/.bin/db-migrate -e ${NODE_ENV=development} -m ./node_modules/epochtalk-core-pg/migrations up",
+    "db-create": "createdb epochtalk_dev",
+    "db-drop": "dropdb epochtalk_dev",
+    "db-migrate": "./node_modules/.bin/db-migrate -m ./node_modules/epochtalk-core-pg/migrations up",
     "db-recreate": "npm run db-drop && npm run db-create && npm run db-migrate",
     "db-devseed": "node ./tests/seed/devseed.js",
     "sass": "node ./scripts/sass.js",
     "build": "node ./scripts/build.js",
     "serve": "node ./scripts/serve.js",
-    "test": "./node_modules/.bin/mocha -R spec ./tests"
+    "test": "./node_modules/.bin/mocha -R spec ./tests",
+    "start": "npm run db-migrate && ./node_modules/.bin/bower install && npm run build && node cli/index.js --create && node server"
   },
   "repository": {
     "type": "git",
@@ -35,12 +36,15 @@
     "bcrypt": "^0.8.0",
     "bluebird": "^2.6.4",
     "boom": "^2.6.1",
+    "bower": "^1.5.2",
     "brfs": "^1.3.0",
     "browserify": "^8.1.3",
+    "change-case": "^2.3.0",
     "cheerio": "^0.18.0",
     "commander": "^2.5.1",
     "db-migrate": "^0.8.0",
     "deep-rename-keys": "^0.1.0",
+    "del": "^1.1.1",
     "dot": "^1.0.3",
     "epochtalk-bbcode-parser": "^1.0.0",
     "epochtalk-core-pg": "epochtalk/core-pg",
@@ -66,14 +70,13 @@
     "sanitize-html": "^1.4.3",
     "stream-meter": "^1.0.3",
     "through2": "^0.6.3",
+    "watchify": "^2.4.0",
     "yargs": "^1.2.1"
   },
   "devDependencies": {
-    "del": "^1.1.1",
     "livereload": "^0.3.6",
     "mocha": "^2.0.1",
-    "nodemon": "^1.1.1",
-    "watchify": "^2.4.0"
+    "nodemon": "^1.1.1"
   },
   "engines": {
     "node": "0.12.x"

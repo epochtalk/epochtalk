@@ -96,16 +96,19 @@
   <!-- Only shown if S3 is selected as image server host -->
   <div ng-if="!AdminSettingsCtrl.localImageServer">
     <label for="image-s3-root">S3 Root URL</label>
-    <input type="text" id="image-s3-root" ng-model="AdminSettingsCtrl.settings.images.s3.root" placeholder="Example: http://example.com" />
+    <input type="text" id="image-s3-root"
+    ng-model="AdminSettingsCtrl.settings.images.s_3.root" placeholder="Example: http://example.com" />
     <label for="image-s3-dir">S3 Directory</label>
-    <input type="text" id="image-s3-dir" ng-model="AdminSettingsCtrl.settings.images.s3.dir" placeholder="Example: /epochtalk" />
+    <input type="text" id="image-s3-dir"
+    ng-model="AdminSettingsCtrl.settings.images.s_3.dir" placeholder="Example: /epochtalk" />
     <label for="image-s3-bucket">S3 Bucket</label>
-    <input type="text" id="image-s3-bucket" ng-model="AdminSettingsCtrl.settings.images.s3.bucket" placeholder="Example: bukkit" />
+    <input type="text" id="image-s3-bucket"
+    ng-model="AdminSettingsCtrl.settings.images.s_3.bucket" placeholder="Example: bukkit" />
     <label for="image-region">S3 Region</label>
-    <input type="text" id="image-s3-region" ng-model="AdminSettingsCtrl.settings.images.s3.region" placeholder="Example: US West" />
+    <input type="text" id="image-s3-region" ng-model="AdminSettingsCtrl.settings.images.s_3.region" placeholder="Example: US West" />
     <label for="image-s3-access-key">S3 Access Key</label>
-    <input class="secret" type="password" id="image-s3-access-key" ng-model="AdminSettingsCtrl.settings.images.s3.access_key" placeholder="Amazon S3 Access Key" />
+    <input class="secret" type="password" id="image-s3-access-key" ng-model="AdminSettingsCtrl.settings.images.s_3.access_key" placeholder="Amazon S3 Access Key" />
     <label for="image-s3-secret-key">S3 Secret Key</label>
-    <input class="secret" type="password" id="image-s3-secret-key" ng-model="AdminSettingsCtrl.settings.images.s3.secret_key" placeholder="Amazon S3 Secret Key" />
+    <input class="secret" type="password" id="image-s3-secret-key" ng-model="AdminSettingsCtrl.settings.images.s_3.secret_key" placeholder="Amazon S3 Secret Key" />
   </div>
 </div>

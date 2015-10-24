@@ -3,49 +3,23 @@ var Joi = require('joi');
 var path = require('path');
 var _ = require('lodash');
 var renameKeys = require('deep-rename-keys');
+var changeCase = require('change-case');
 var pre = require(path.normalize(__dirname + '/pre'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
-
-var writeConfigToEnv = function(updatedConfig) {
-  var stream = fs.createWriteStream(path.normalize(config.root + '/.env'));
-  stream.once('open', function() {
-    var configToEnv = function(oldConfig, newConfig, parentKey) {
-      // Iterate over all config values and update if present
-      _.map(oldConfig, function(value, key) {
-        var environmentKey = parentKey ? parentKey + '_' + key : key;
-        // Updated config uses underscores not camelcase
-        var underscoredKey = key.split(/(?=[A-Z])/).join('_').toLowerCase();
-        // Value is an object recurse
-        if (_.isObject(value) && !_.isArray(value)) {
-          var nestedConf = newConfig ? newConfig[underscoredKey] : undefined;
-          configToEnv(value, nestedConf, environmentKey);
-        }
-        else {
-          // special cases, these configs cannot be set via env vars
-          if (environmentKey === 'root' || parentKey === 'db') { return; }
-          // update value for this setting if it changed
-          var newValue = newConfig ? newConfig[underscoredKey] : undefined;
-          value = newValue === undefined ? value : newValue;
-          // Detect camel case and replace with underscore and then uppercase
-          environmentKey = environmentKey.split(/(?=[A-Z])/).join('_').toUpperCase();
-          // Write env key and value to .env file
-          stream.write(environmentKey + '=' + value + '\n');
-          // Set the env var for the running node process
-          process.env[environmentKey] = value;
-          // Update the config object
-          oldConfig[key] = value;
-        }
-      });
-    };
-    configToEnv(config, updatedConfig);
-    stream.end();
-  });
-};
+var db = require(path.normalize(__dirname + '/../../../../db'));
 
 var camelCaseToUnderscore = function(obj) {
   if (_.isObject(obj)) {
     return renameKeys(obj, function(key) {
-      return key.split(/(?=[A-Z])/).join('_').toLowerCase();
+      return changeCase.snake(key);
+    });
+  }
+  return obj;
+};
+var underscoreToCamelCase = function(obj) {
+  if (_.isObject(obj)) {
+    return renameKeys(obj, function(key) {
+      return changeCase.camel(key);
     });
   }
   return obj;
@@ -64,7 +38,11 @@ var camelCaseToUnderscore = function(obj) {
 exports.find = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.find' },
-  handler: function(request, reply) { reply(camelCaseToUnderscore(config)); }
+  handler: function(request, reply) {
+    db.configurations.get().then(function(configs) {
+      reply(camelCaseToUnderscore(configs));
+    });
+  }
 };
 
 /**
@@ -119,18 +97,10 @@ exports.update = {
   pre: [ { method: pre.handleImages } ],
   validate: {
     payload: Joi.object().keys({
-      root: Joi.string(),
-      host: Joi.string(),
-      port: Joi.number(),
       log_enabled: Joi.boolean(),
-      public_url: Joi.string(),
       private_key: Joi.string(),
       verify_registration: Joi.boolean(),
       login_required: Joi.boolean(),
-      redis: Joi.object().keys({
-        host: Joi.string(),
-        port: Joi.number()
-      }),
       website: Joi.object().keys({
         title: Joi.string(),
         description: Joi.string(),
@@ -155,20 +125,24 @@ exports.update = {
           dir: Joi.string(),
           path: Joi.string()
         }),
-        s3: Joi.object().keys({
+        s_3: Joi.object().keys({
           root: Joi.string(),
           dir: Joi.string(),
           bucket: Joi.string(),
           region: Joi.string(),
-          access_key: Joi.string(),
-          secret_key: Joi.string()
+          access_key: Joi.string().allow(''),
+          secret_key: Joi.string().allow('')
         })
       })
     }).options({ stripUnknown: false, abortEarly: true })
   },
   handler: function(request, reply) {
-    var newConfig = request.payload;
-    writeConfigToEnv(newConfig);
-    reply(request.payload);
+    var newConfig = underscoreToCamelCase(request.payload);
+    db.configurations.update(newConfig).then(function() {
+      Object.keys(newConfig).forEach(function(key) {
+        config[key] = newConfig[key];
+      });
+      reply(request.payload);
+    });
   }
 };
