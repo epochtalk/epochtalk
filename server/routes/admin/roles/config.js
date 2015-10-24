@@ -569,6 +569,7 @@ exports.update = {
     var role = request.payload;
     var promise = db.roles.update(role)
     .then(function(result) {
+      role.id = result.id; // undoes deslugify which happens in core
       // Update role in the in memory role object
       rolesHelper.updateRole(role);
       return result;
