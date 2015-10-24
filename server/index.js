@@ -1,10 +1,10 @@
+var _ = require('lodash');
 var path = require('path');
 var Hapi = require('hapi');
 var Good = require('good');
 var mkdirp = require('mkdirp');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
-var _ = require('lodash');
 var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var config = require(path.normalize(__dirname + '/../config'));
@@ -48,6 +48,13 @@ setup().then(function() {
   });
   // route acls
   server.register(acls, defaultRegisterCb);
+
+  // render views
+  server.views({
+    engines: { html: require('handlebars') },
+    relativeTo: path.normalize(__dirname + '/../'),
+    path: 'public'
+  });
 
   // server routes
   var routes = require(path.normalize(__dirname + '/routes'));

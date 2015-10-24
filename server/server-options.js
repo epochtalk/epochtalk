@@ -6,7 +6,6 @@ module.exports = {
   host: config.host,
   port: config.port,
   routes: {
-    files: { relativeTo: path.normalize(__dirname + '/../public') },
     validate: {
       options: {
         stripUnknown: true

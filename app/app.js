@@ -50,15 +50,13 @@ require('./components');
 // Set Angular Configs
 app
 .config(require('./config'))
-.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', 'Settings', 'USER_ROLES', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc, Settings, USER_ROLES) {
+.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', 'USER_ROLES', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc, USER_ROLES) {
 
   // Set ROLES to rootscope to be used in templates
   $rootScope.USER_ROLES = USER_ROLES;
 
-  // Fetch website configs (title, keywords, desc...)
-  Settings.webConfigs().$promise
-  .then(function(configs) { $rootScope.$webConfigs = configs; })
-  .catch(function() { console.log('Error fetching website configs'); });
+  // Fetch website configs (title, logo, favicon)
+  $rootScope.$webConfigs = forumData;
 
   // Dynamically populate breadcrumbs
   $rootScope.$on('$stateChangeSuccess', function() {
