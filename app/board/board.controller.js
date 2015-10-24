@@ -14,6 +14,11 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     this.parent.page = pageData.page;
     this.parent.pageCount = Math.ceil(this.board.thread_count / this.limit);
 
+    this.parent.controlAccess = {
+      createPost: Session.hasPermission('postControls.create'),
+      createThread: Session.hasPermission('threadControls.create')
+    };
+
     // set total_thread_count and total_post_count for all boards
     this.board.children.map(function(childBoard) {
       var children = countTotals(childBoard.children);

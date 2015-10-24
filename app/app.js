@@ -5,6 +5,8 @@ require('../bower_components/angular-sanitize/angular-sanitize');
 require('../bower_components/angular-animate/angular-animate');
 require('../bower_components/angular-ui-router/release/angular-ui-router');
 require('../bower_components/angular-loading-bar');
+require('../bower_components/angular-sortable-view/src/angular-sortable-view.min.js');
+require('../bower_components/ng-tags-input/ng-tags-input.min.js');
 jQuery = require('../bower_components/jquery/dist/jquery.min.js');
 $ = jQuery;
 require('../bower_components/nestable/jquery.nestable');
@@ -15,7 +17,9 @@ var app = angular.module('ept', [
   'ngSanitize',
   'ngAnimate',
   'ui.router',
-  'angular-loading-bar'
+  'angular-loading-bar',
+  'angular-sortable-view',
+  'ngTagsInput'
 ]);
 
 // Register Forum Page Controllers
@@ -37,7 +41,7 @@ app.controller('ForumSettingsCtrl',   require('./admin/settings/forum.controller
 app.controller('CategoriesCtrl',      require('./admin/management/boards.controller.js'));
 app.controller('UsersCtrl',           require('./admin/management/users.controller.js'));
 app.controller('ModeratorsCtrl',      require('./admin/management/moderators.controller.js'));
-app.controller('AdministratorsCtrl',  require('./admin/management/administrators.controller.js'));
+app.controller('RolesCtrl',           require('./admin/management/roles.controller.js'));
 app.controller('ModUsersCtrl',        require('./admin/moderation/users.controller.js'));
 app.controller('ModPostsCtrl',        require('./admin/moderation/posts.controller.js'));
 app.controller('ModMessagesCtrl',     require('./admin/moderation/messages.controller.js'));
@@ -94,7 +98,6 @@ app.config(require('./config'))
   // Handle if there is an error changing state
   $rootScope.$on('$stateChangeError', function(event, next, nextParams, prev, prevParams, error) {
     event.preventDefault();
-
     // Unauthorized is redirected to login, save next so we can redirect after login
     if (error.status === 401 || error.statusText === 'Unauthorized') {
       $state.go('login');
@@ -102,7 +105,7 @@ app.config(require('./config'))
       $state.nextParams = nextParams;
     }
     // Forbidden redirect home
-    else if (error.status === 403 || error.statusText === 'Forbidden') { $state.go('boards'); }
+    else if ((error.status === 403 || error.statusText === 'Forbidden') && next.name !== 'boards') { $state.go('boards'); }
     // Otherwise 404
     else { $state.go('404'); }
   });

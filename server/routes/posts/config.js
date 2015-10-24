@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
@@ -23,7 +24,9 @@ var querystring = require('querystring');
   * @apiError (Error 500) InternalServerError There was an issue creating the post
   */
 exports.create = {
+  app: { thread_id: 'payload.thread_id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.create' },
   validate: {
     payload: Joi.object().keys({
       title: Joi.string().min(1).max(255).required(),
@@ -33,7 +36,12 @@ exports.create = {
     })
   },
   pre: [
-    { method: pre.canCreate }, //handle permissions
+    [
+      { method: pre.accessPrivateBoardWithThreadId },
+      { method: pre.accessBoardWithThreadId },
+      { method: pre.accessLockedThreadWithThreadId },
+      { method: pre.isRequesterActive }
+    ],
     { method: pre.clean },
     { method: pre.parseEncodings },
     { method: pre.subImages }
@@ -111,24 +119,24 @@ exports.import = {
   * @apiError (Error 500) InternalServerError There was an issue finding the post
   */
 exports.find = {
+  app: { post_id: 'params.id' },
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'posts.find' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.canFind },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: pre.accessPrivateBoardWithPostId },
+    { method: pre.accessBoardWithPostId },
+    { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
   handler: function(request, reply) {
-    // handle permissions
-    if (!request.server.methods.viewable(request)) { return reply({}); }
-
     // retrieve post
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    var isAdmin = request.pre.isAdmin;
+    var viewDeleted = request.pre.viewDeleted;
     var id = request.params.id;
     var promise = db.posts.find(id)
-    .then(function(post) { return cleanPosts(post, userId, isAdmin); })
+    .then(function(post) { return cleanPosts(post, userId, viewDeleted); })
     .then(function(posts) { return posts[0]; })
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
@@ -153,7 +161,9 @@ exports.find = {
   * @apiError (Error 500) InternalServerError There was an issue finding the posts for thread
   */
 exports.byThread = {
+  app: { thread_id: 'query.thread_id'},
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'posts.byThread' },
   validate: {
     query: Joi.object().keys({
       thread_id: Joi.string().required(),
@@ -162,11 +172,12 @@ exports.byThread = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }).without('start', 'page')
   },
-  pre: [ { method: pre.canRetrieve } ],
+  // TODO: Highlight deleted post and to show mods
+  pre: [ [
+    { method: pre.accessPrivateBoardWithThreadId },
+    { method: pre.accessBoardWithThreadId }
+  ] ],
   handler: function(request, reply) {
-    // handle permissions
-    if (!request.server.methods.viewable(request)) { return reply({}); }
-
     // ready parameters
     var userId = '';
     var page = request.query.page;
@@ -184,6 +195,8 @@ exports.byThread = {
     // retrieve posts for this thread
     var getPosts = db.posts.byThread(threadId, opts);
     var getThread = db.threads.find(threadId);
+
+    // TODO: Show admin deleted posts but style them differently, see canFind method
     var promise = Promise.join(getPosts, getThread, function(posts, thread) {
       return {
         thread: thread,
@@ -219,7 +232,14 @@ exports.byThread = {
   * @apiError (Error 500) InternalServerError There was an issue updating the post
   */
 exports.update = {
+  app: {
+    thread_id: 'payload.thread_id',
+    post_id: 'params.id',
+    isPostOwner: 'posts.privilegedUpdate',
+    isPostWriteable: 'posts.privilegedUpdate'
+  },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.update' },
   validate: {
     payload: {
       title: Joi.string().min(1).max(255).required(),
@@ -230,7 +250,14 @@ exports.update = {
     params: { id: Joi.string().required() }
   },
   pre: [
-    { method: pre.canUpdate }, //handle permissions
+    [
+      { method: pre.isPostOwner },
+      { method: pre.isPostWriteable },
+      { method: pre.accessPrivateBoardWithThreadId },
+      { method: pre.accessBoardWithThreadId },
+      { method: pre.accessLockedThreadWithThreadId },
+      { method: pre.isRequesterActive }
+    ],
     { method: pre.clean },
     { method: pre.parseEncodings },
     { method: pre.subImages }
@@ -260,9 +287,21 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue deleting the post
   */
 exports.delete = {
+  app: {
+    post_id: 'params.id',
+    isPostOwner: 'posts.privilegedDelete'
+  },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.delete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ], //handle permissions
+  pre: [ [
+    { method: pre.isCDRPost },
+    { method: pre.isPostOwner },
+    { method: pre.accessPrivateBoardWithPostId },
+    { method: pre.accessBoardWithPostId },
+    { method: pre.accessLockedThreadWithPostId },
+    { method: pre.isRequesterActive }
+  ] ], //handle permissions
   handler: function(request, reply) {
     var promise = db.posts.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
@@ -286,9 +325,21 @@ exports.delete = {
   * @apiError (Error 500) InternalServerError There was an issue undeleting the post
   */
 exports.undelete = {
+  app: {
+    post_id: 'params.id',
+    isPostOwner: 'posts.privilegedDelete'
+  },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.undelete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete }, ], //handle permissions
+  pre: [ [
+    { method: pre.isCDRPost },
+    { method: pre.isPostOwner },
+    { method: pre.accessPrivateBoardWithPostId },
+    { method: pre.accessBoardWithPostId },
+    { method: pre.accessLockedThreadWithPostId },
+    { method: pre.isRequesterActive }
+  ] ], //handle permissions
   handler: function(request, reply) {
     var promise = db.posts.undelete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
@@ -311,9 +362,14 @@ exports.undelete = {
   * @apiError (Error 500) InternalServerError There was an issue purging the post
   */
 exports.purge = {
+  app: { post_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'posts.purge' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canPurge } ], //handle permissions
+  pre: [ [
+    { method: pre.isPostPurgeable },
+    { method: pre.isCDRPost }
+  ] ], //handle permissions
   handler: function(request, reply) {
     var promise = db.posts.purge(request.params.id);
     return reply(promise);
@@ -340,6 +396,7 @@ exports.purge = {
   */
 exports.pageByUser = {
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'posts.pageByUser' },
   validate: {
     params: { username: Joi.string().required() },
     query: {
@@ -350,19 +407,16 @@ exports.pageByUser = {
     }
   },
   pre: [ [
-    { method: pre.canPageByUser },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: pre.accessUser },
+    { method: pre.canViewDeletedPosts, assign: 'viewables' }
   ] ],
   handler: function(request, reply) {
-  // TODO: this still shows posts from deleted threads/boards
-    // handle permissions
-    if (!request.server.methods.viewable(request)) { return reply({}); }
-
+    // TODO: handle posts from private boards
     // ready parameters
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    var isAdmin = request.pre.isAdmin;
+    var viewables = request.pre.viewables;
     var username = querystring.unescape(request.params.username);
     var opts = {
       limit: request.query.limit,
@@ -381,7 +435,7 @@ exports.pageByUser = {
         limit: opts.limit,
         sortField: opts.sortField,
         sortDesc: opts.sortDesc,
-        posts: cleanPosts(posts, userId, isAdmin),
+        posts: cleanPosts(posts, userId, viewables),
         count: count
       };
     });
@@ -390,18 +444,28 @@ exports.pageByUser = {
   }
 };
 
-function cleanPosts(posts, currentUserId, isAdmin) {
+function cleanPosts(posts, currentUserId, viewContext) {
   posts = [].concat(posts);
+  var viewables = viewContext;
+  var viewablesType = 'boolean';
+  if (_.isArray(viewContext)) {
+    viewContext = viewContext.map(function(vd) { return vd.board_id; });
+    viewablesType = 'array';
+  }
 
   return posts.map(function(post) {
     // if currentUser owns post, show everything
     if (currentUserId === post.user.id) { return post; }
-    if (isAdmin) { return post; }
+    // if viewables is an array, check if user is moderating this post
+    else if (viewablesType === 'array' && _.contains(viewContext, post.board_id)) { return post; }
+    // if viewables is a true, view all posts
+    else if (viewables) { return post; }
 
     // remove deleted users or post information
-    if (post.deleted || post.user.deleted) {
+    if (post.deleted || post.user.deleted || post.board_visible === false) {
       post.body = '';
       post.raw_body = '';
+      post.thread_title = 'deleted';
 
       delete post.avatar;
       delete post.created_at;

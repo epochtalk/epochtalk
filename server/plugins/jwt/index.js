@@ -15,7 +15,8 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  pkg: require(path.normalize(__dirname +'/../../../package.json'))
+  name: 'jwt',
+  version: '1.0.1'
 };
 
 

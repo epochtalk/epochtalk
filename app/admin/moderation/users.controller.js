@@ -1,7 +1,7 @@
 module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll',
 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, User, userReports, reportCount, page, limit, field, desc, filter, search, reportId) {
   var ctrl = this;
-  this.parent = $scope.$parent;
+  this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'users';
   this.userReports = userReports;
   this.reportId = reportId;

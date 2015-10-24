@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var fs = require('fs');
 require('./filters');
 require('./services');
@@ -38,7 +39,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         $title: ['user', function(user) { return user.username; }],
         user: ['AdminUsers', 'Session', 'User', '$stateParams', function(AdminUsers, Session, User, $stateParams) {
           var promise;
-          if (Session.user.isAdmin) {
+          if (Session.hasPermission('profileControls.viewUserEmail')) {
             promise = AdminUsers.find({ username: $stateParams.username }).$promise;
           }
           else { promise = User.get({ id: $stateParams.username }).$promise; }
@@ -242,42 +243,68 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     // Checks if user is an admin
-    var adminCheck = ['$q', 'Session', function($q, Session) {
-      if (Session.user.isAdmin) { return true; }
-      else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
-    }];
+    var adminCheck = function(route) {
+      return ['$q', 'Session', function($q, Session) {
+        if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
+        if (route && Session.hasPermission('adminAccess' + '.' + route)) { return true; }
+        else if (!route && Session.hasPermission('adminAccess')) { return true; }
+        else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
+      }];
+    };
 
     // Checks if user is a moderator
-    var modCheck = ['$q', 'Session', function($q, Session) {
-      if (Session.user.isMod) { return true; }
-      else if (Session.user.isAdmin) { return false; } // admin isn't mod, but isn't unauthorized
-      else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
+    var modCheck = function(route) {
+      return ['$q', 'Session', function($q, Session) {
+        if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
+        if (route && Session.hasPermission('modAccess' + '.' + route)) { return true; }
+        else if (!route && Session.hasPermission('modAccess')) { return true; }
+        else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
+      }];
+    };
+
+    var adminRedirect = ['$state', 'Session', function($state, Session) {
+      if (Session.hasPermission('adminAccess.settings')) { $state.go('admin-settings'); }
+      else if (Session.hasPermission('adminAccess.management')) { $state.go('admin-management'); }
+      else if (Session.hasPermission('modAccess')) { $state.go('admin-moderation'); }
+      else { $state.go('boards'); }
     }];
 
-    $urlRouterProvider.when('/admin', '/admin/settings/general');
-    $urlRouterProvider.when('/admin/', '/admin/settings/general');
+    $urlRouterProvider.when('/admin', adminRedirect);
+    $urlRouterProvider.when('/admin/', adminRedirect);
 
     $stateProvider.state('admin', {
       url: '/admin',
       parent: 'admin-layout',
-      resolve: { userAccess: modCheck || adminCheck }
+      resolve: { userAccess: modCheck() || adminCheck() }
     });
 
-    // Default child state for admin-settings is general
-    $urlRouterProvider.when('/admin/settings', '/admin/settings/general');
-    $urlRouterProvider.when('/admin/settings/', '/admin/settings/general');
+    var adminSettingsRedirect = ['$state', 'Session', function($state, Session) {
+      if (Session.hasPermission('adminAccess.settings.general')) { $state.go('admin-settings.general'); }
+      else if (Session.hasPermission('adminAccess.settings.forum')) { $state.go('admin-settings.forum'); }
+      else { $state.go('admin'); }
+    }];
+
+    $urlRouterProvider.when('/admin/settings', adminSettingsRedirect);
+    $urlRouterProvider.when('/admin/settings/', adminSettingsRedirect);
 
     $stateProvider.state('admin-settings', {
       url: '/admin/settings',
       parent: 'admin-layout',
       views: {
         'content': {
-          controller: function($scope) { $scope.child = {}; },
+          controller: ['$scope', 'Session', function($scope, Session) {
+            this.hasPermission = Session.hasPermission;
+            this.tab = null;
+            if (Session.hasPermission('adminAccess.settings.general')) { this.tab = 'general'; }
+            else if (Session.hasPermission('adminAccess.settings.forum')) { this.tab = 'users'; }
+            $scope.child = {};
+          }],
+          controllerAs: 'AdminSettingsCtrl',
           template: fs.readFileSync(__dirname + '/admin/settings/index.html')
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('settings'),
         settings: ['AdminSettings', function(AdminSettings) {
           return AdminSettings.get().$promise
           .then(function(settings) {
@@ -299,7 +326,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('settings.general'),
         $title: function() { return 'General Settings'; }
       }
     })
@@ -313,14 +340,22 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('settings.forum'),
         $title: function() { return 'Forum Settings'; }
       }
     });
 
+    var adminManagementRedirect = ['$state', 'Session', function($state, Session) {
+      if (Session.hasPermission('adminAccess.management.boards')) { $state.go('admin-management.boards'); }
+      else if (Session.hasPermission('adminAccess.management.users')) { $state.go('admin-management.users'); }
+      else if (Session.hasPermission('adminAccess.management.moderators')) { $state.go('admin-management.moderators'); }
+      else if (Session.hasPermission('adminAccess.management.roles')) { $state.go('admin-management.roles'); }
+      else { $state.go('admin'); }
+    }];
+
     // Default child state for admin-management is users
-    $urlRouterProvider.when('/admin/management', '/admin/management/boards');
-    $urlRouterProvider.when('/admin/management/', '/admin/management/boards');
+    $urlRouterProvider.when('/admin/management', adminManagementRedirect);
+    $urlRouterProvider.when('/admin/management/', adminManagementRedirect);
 
     $stateProvider.state('admin-management', {
       url: '/admin/management',
@@ -328,10 +363,19 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       parent: 'admin-layout',
       views: {
         'content': {
+          controller: ['Session', function(Session) {
+            this.hasPermission = Session.hasPermission;
+            this.tab = null;
+            if (Session.hasPermission('adminAccess.management.boards')) { this.tab = 'boards'; }
+            else if (Session.hasPermission('adminAccess.management.users')) { this.tab = 'users'; }
+            else if (Session.hasPermission('adminAccess.management.moderators')) { this.tab = 'moderators'; }
+            else if (Session.hasPermission('adminAccess.management.roles')) { this.tab = 'roles'; }
+          }],
+          controllerAs: 'AdminManagementCtrl',
           template: fs.readFileSync(__dirname + '/admin/management/index.html')
         }
       },
-      resolve: { userAccess: adminCheck }
+      resolve: { userAccess: adminCheck('management') }
     })
     .state('admin-management.boards', {
       url: '/boards?saved',
@@ -343,7 +387,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('management.boards'),
         $title: function() { return 'Board Management'; },
         categories: ['Boards', function(Boards) {
           return Boards.query().$promise
@@ -366,7 +410,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('management.users'),
         $title: function() { return 'User Management'; },
         users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
           var query = {
@@ -413,6 +457,47 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }]
       }
     })
+    .state('admin-management.roles', {
+      url: '/roles?roleId&page&field&desc&limit&search',
+      reloadOnSearch: false,
+      views: {
+        'data@admin-management': {
+          controller: 'RolesCtrl',
+          controllerAs: 'AdminManagementCtrl',
+          template: fs.readFileSync(__dirname + '/admin/management/roles.html')
+        }
+      },
+      resolve: {
+        userAccess: adminCheck('management.roles'),
+        $title: function() { return 'Roles Management'; },
+        roles: ['AdminRoles', function(AdminRoles) {
+          return AdminRoles.all().$promise
+          .then(function(roles) { return roles; });
+        }],
+        page: ['$stateParams', function($stateParams) {
+          return Number($stateParams.page) || 1;
+        }],
+        limit: ['$stateParams', function($stateParams) {
+          return Number($stateParams.limit) || 15;
+        }],
+        roleId: ['$stateParams', function($stateParams) {
+          return $stateParams.roleId;
+        }],
+        search: ['$stateParams', function($stateParams) {
+          return $stateParams.search;
+        }],
+        userData: ['AdminRoles', '$stateParams', function(AdminRoles, $stateParams) {
+          var query = {
+            id: $stateParams.roleId,
+            page: Number($stateParams.page) || 1,
+            limit: Number($stateParams.limit) || 15,
+            search: $stateParams.search
+          };
+          return AdminRoles.users(query).$promise
+          .then(function(userData) { return userData; });
+        }]
+      }
+    })
     .state('admin-management.moderators', {
       url: '/moderators?page&limit&field&desc',
       views: {
@@ -423,7 +508,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('management'),
         $title: function() { return 'Moderator Management'; },
         moderators: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
           var query = {
@@ -452,55 +537,23 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
           return Number($stateParams.limit) || 25;
         }]
       }
-    })
-    .state('admin-management.administrators', {
-      url: '/administrators?page&limit&field&desc',
-      views: {
-        'data@admin-management': {
-          controller: 'AdministratorsCtrl',
-          controllerAs: 'AdminManagementCtrl',
-          template: fs.readFileSync(__dirname + '/admin/management/administrators.html')
-        }
-      },
-      resolve: {
-        userAccess: adminCheck,
-        $title: function() { return 'Admin Management'; },
-        admins: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-          var query = {
-            field: $stateParams.field,
-            desc: $stateParams.desc,
-            limit: Number($stateParams.limit) || 25,
-            page: Number($stateParams.page) || 1
-          };
-          return AdminUsers.pageAdmins(query).$promise
-          .then(function(admins) { return admins; });
-        }],
-        adminsCount: ['AdminUsers', function(AdminUsers) {
-          return AdminUsers.countAdmins().$promise
-          .then(function(adminsCount) { return adminsCount.count; });
-        }],
-        field: ['$stateParams', function($stateParams) {
-          return $stateParams.field;
-        }],
-        desc: ['$stateParams', function($stateParams) {
-          return $stateParams.desc || false;
-        }],
-        page: ['$stateParams', function($stateParams) {
-          return Number($stateParams.page) || 1;
-        }],
-        limit: ['$stateParams', function($stateParams) {
-          return Number($stateParams.limit) || 25;
-        }]
-      }
     });
 
-    // Default child state for admin-moderation is users
-    $urlRouterProvider.when('/admin/moderation', ['$state', function($state) {
-      $state.go('admin-moderation.users', { filter: 'Pending'}, { location: true, reload: true });
-    }]);
-    $urlRouterProvider.when('/admin/moderation/', ['$state', function($state) {
-      $state.go('admin-moderation.users', { filter: 'Pending'}, { location: true, reload: true });
-    }]);
+    var moderationRedirect = ['$state', 'Session', function($state, Session) {
+      if (Session.hasPermission('modAccess.users')) {
+        $state.go('admin-moderation.users', { filter: 'Pending'}, { location: true, reload: true });
+      }
+      else if (Session.hasPermission('modAccess.posts')) {
+        $state.go('admin-moderation.posts', { filter: 'Pending'}, { location: true, reload: true });
+      }
+      else if (Session.hasPermission('modAccess.messages')) {
+        $state.go('admin-moderation.messages', { filter: 'Pending'}, { location: true, reload: true });
+      }
+      else { $state.go('admin'); }
+    }];
+
+    $urlRouterProvider.when('/admin/moderation', moderationRedirect);
+    $urlRouterProvider.when('/admin/moderation/', moderationRedirect);
 
     $stateProvider.state('admin-moderation', {
       url: '/admin/moderation',
@@ -508,11 +561,18 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       reloadOnSearch: false,
       views: {
         'content': {
+          controller: ['Session', function(Session) {
+            this.hasPermission = Session.hasPermission;
+            this.tab = null;
+            if (Session.hasPermission('modAccess.users')) { this.tab = 'users'; }
+            else if (Session.hasPermission('modAccess.posts')) { this.tab = 'posts'; }
+            else if (Session.hasPermission('modAccess.messages')) { this.tab = 'messages'; }
+          }],
           controllerAs: 'ModerationCtrl',
           template: fs.readFileSync(__dirname + '/admin/moderation/index.html')
         }
       },
-      resolve: { userAccess: modCheck || adminCheck }
+      resolve: { userAccess: modCheck() }
     })
     .state('admin-moderation.users', {
       url: '/users?page&limit&field&desc&filter&search&reportId',
@@ -525,6 +585,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        userAccess: modCheck('users'),
         $title: function() { return 'User Moderation'; },
         limit: ['$stateParams', function($stateParams) {
           return $stateParams.limit || 15;
@@ -605,6 +666,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        userAccess: modCheck('posts'),
         $title: function() { return 'Post Moderation'; },
         limit: ['$stateParams', function($stateParams) {
           return $stateParams.limit || 15;
@@ -665,6 +727,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
+        userAccess: modCheck('messages'),
         $title: function() { return 'Messages Moderation'; },
         limit: ['$stateParams', function($stateParams) {
           return $stateParams.limit || 15;
@@ -726,7 +789,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
         }
       },
       resolve: {
-        userAccess: adminCheck,
+        userAccess: adminCheck('analytics'),
         $title: function() { return 'Analytics'; }
       }
     });

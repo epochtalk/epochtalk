@@ -30,17 +30,15 @@ var db = require(path.normalize(__dirname + '/../../../db'));
   * @apiError (Error 500) InternalServerError There was an issue creating the board
   */
 exports.create = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'boards.create' },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255).required(),
       description: Joi.string().allow('')
     }
   },
-  pre: [
-    { method: pre.canCreate },
-    { method: pre.clean }
-  ],
+  pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     return reply(db.boards.create(request.payload));
   }
@@ -114,12 +112,15 @@ exports.import = {
   * @apiError (Error 500) InternalServerError There was an issue finding the board
   */
 exports.find = {
-  auth: { mode: 'try', strategy: 'jwt' },
+  app: { board_id: 'params.id' },
+  auth: { mode:'try', strategy: 'jwt' },
+  plugins: { acls: 'boards.find' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canFind } ],
+  pre: [ [
+    { method: pre.accessBoardWithBoardId },
+    { method: pre.accessPrivateBoardWithBoardId }
+  ] ],
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply({}); }
-
     return reply(db.boards.find(request.params.id));
   }
 };
@@ -136,11 +137,9 @@ exports.find = {
   * @apiError (Error 500) InternalServerError There was an issue finding all boards
   */
 exports.all = {
-  auth: { mode: 'try', strategy: 'jwt' },
-  pre: [ { method: pre.canAll } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'boards.all' },
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply([]); }
-
     return reply(db.boards.all());
   }
 };
@@ -158,10 +157,9 @@ exports.all = {
   */
 exports.allCategories = {
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'boards.allCategories' },
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply([]); }
-    var promise = db.boards.allCategories();
-    return reply(promise);
+    return reply(db.boards.allCategories());
   }
 };
 
@@ -186,8 +184,8 @@ exports.allCategories = {
   * @apiError (Error 500) InternalServerError There was an issue updating categories/boards
   */
 exports.updateCategories = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: pre.canUpdate } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'boards.updateCategories' },
   validate: { payload: { boardMapping: Joi.array().required() } },
   handler: function(request, reply) {
     // update board on db
@@ -215,7 +213,8 @@ exports.updateCategories = {
   * @apiError (Error 500) InternalServerError There was an issue updating the board
   */
 exports.update = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'boards.update' },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255),
@@ -223,10 +222,7 @@ exports.update = {
     },
     params: { id: Joi.string().required() }
   },
-  pre: [
-    { method: pre.canUpdate },
-    { method: pre.clean }
-  ],
+  pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = request.payload;
@@ -252,9 +248,9 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue deleting the board
   */
 exports.delete = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'boards.delete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ],
   handler: function(request, reply) {
     return reply(db.boards.delete(request.params.id));
   }

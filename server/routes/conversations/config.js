@@ -1,9 +1,7 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
-var commonPre = require(path.normalize(__dirname + '/../common'));
 var messagePre = require(path.normalize(__dirname + '/../messages/pre'));
 
 /**
@@ -20,6 +18,7 @@ var messagePre = require(path.normalize(__dirname + '/../messages/pre'));
   */
 exports.create = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'conversations.create' },
   validate: {
     payload: {
       receiver_id: Joi.string().required(),
@@ -59,6 +58,7 @@ exports.create = {
   */
 exports.messages = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'conversations.messages' },
   validate: {
     params: { conversationId: Joi.string() },
     query: {
@@ -110,7 +110,7 @@ exports.messages = {
   * @apiGroup Conversations
   * @api {DELETE} /conversations/:id Delete
   * @apiName DeleteConversation
-  * @apiPermission User (Convesation's Author) or Admin
+  * @apiPermission Admin
   * @apiDescription Used to delete a conversation.
   *
   * @apiParam {string} id The Id of the conversation to delete
@@ -122,9 +122,8 @@ exports.messages = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'conversations.delete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: commonPre.auth.adminCheck } ], //handle permissions
-  // delete by admin only
   handler: function(request, reply) {
     var promise = db.conversations.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });

@@ -2,6 +2,7 @@ module.exports = ['$location', '$timeout', '$state', '$stateParams', 'Auth', 'Se
   function($location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert) {
     var ctrl = this;
     this.currentUser = Session.user;
+    this.hasPermission = Session.hasPermission;
     this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
 

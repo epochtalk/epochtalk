@@ -20,7 +20,9 @@ var postPre = require(path.normalize(__dirname + '/../posts/pre'));
   * @apiError (Error 500) InternalServerError There was an issue creating the thread
   */
 exports.create = {
+  app: { board_id: 'payload.board_id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.create' },
   validate: {
     payload: Joi.object().keys({
       locked: Joi.boolean().default(false),
@@ -32,7 +34,10 @@ exports.create = {
     })
   },
   pre: [
-    { method: pre.canCreate },
+    [
+      { method: pre.accessBoardWithBoardId },
+      { method: pre.isRequesterActive }
+    ],
     { method: postPre.clean },
     { method: postPre.parseEncodings },
     { method: postPre.subImages }
@@ -123,7 +128,9 @@ exports.import = {
   * @apiError (Error 500) InternalServerError There was an issue retrieving the threads
   */
 exports.byBoard = {
+  app: { board_id: 'query.board_id' },
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'threads.byBoard' },
   validate: {
     query: {
       board_id: Joi.string().required(),
@@ -131,10 +138,8 @@ exports.byBoard = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
-  pre: [ [ { method: pre.canRetrieve }, ] ],
+  pre: [ { method: pre.accessBoardWithBoardId } ],
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply({}); }
-
     var user = request.auth.credentials || {};
     var boardId = request.query.board_id;
     var opts = {
@@ -187,31 +192,55 @@ exports.byBoard = {
   * @apiError (Error 500) InternalServerError There was an issue looking up the thread
   */
 exports.viewed = {
+  app: { thread_id: 'params.id' },
   auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'threads.viewed' },
   validate: { params: { id: Joi.string().required() } },
   pre: [
-    [ { method: pre.canFind } ],
+    [ { method: pre.accessBoardWithThreadId } ],
     [
       { method: pre.checkViewValidity, assign: 'newViewId' },
       { method: pre.updateUserThreadViews }
     ]
   ],
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply({}); }
     var newViewerId = request.pre.newViewId;
     if (newViewerId) { return reply().header('Epoch-Viewer', newViewerId); }
     else { return reply(); }
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Threads
+  * @api {GET} /threads/:id Title
+  * @apiName UpdateThreadTitle
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User (Thread Author Only)
+  * @apiDescription Used to update the title of a thread.
+  *
+  * @apiParam {string} id The unique id of the thread to lock
+  * @apiParam (Payload) {string} The new title for this thread.
+  *
+  * @apiUse ThreadObjectSuccess2
+  *
+  * @apiError Unauthorized User doesn't have permissions to update the thread title.
+  * @apiError (Error 500) InternalServerError There was an issue updating the thread title.
+  */
 exports.title = {
+  app: {
+    thread_id: 'params.id',
+    isThreadOwner: 'threads.privilegedTitle'
+  },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.title' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { title: Joi.string().required().min(1) }
   },
   pre: [ [
-    { method: pre.canUpdate },
+    { method: pre.accessBoardWithThreadId },
+    { method: pre.isRequesterActive },
+    { method: pre.isThreadOwner },
     { method: pre.threadFirstPost, assign: 'post' }
   ] ],
   handler: function(request, reply) {
@@ -243,17 +272,22 @@ exports.title = {
   * @apiError (Error 500) InternalServerError There was an issue locking the thread
   */
 exports.lock = {
+  app: {
+    thread_id: 'params.id',
+    isThreadOwner: 'threads.privilegedLock'
+  },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.lock' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { status: Joi.boolean().default(true) }
   },
-  pre: [
-    [
-      { method: pre.canUpdate },
-      { method: pre.getThread, assign: 'thread' },
-    ]
-  ],
+  pre: [ [
+      { method: pre.accessBoardWithThreadId },
+      { method: pre.isRequesterActive },
+      { method: pre.isThreadOwner },
+      { method: pre.getThread, assign: 'thread' }
+    ] ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
     thread.locked = request.payload.status;
@@ -283,17 +317,20 @@ exports.lock = {
   * @apiError (Error 500) InternalServerError There was an issue stickying the thread
   */
 exports.sticky = {
+  app: {
+    thread_id: 'params.id',
+    hasPermission: 'threads.privilegedSticky'
+  },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.sticky' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { status: Joi.boolean().default(true) }
   },
-  pre: [
-    [
-      { method: pre.canSticky },
-      { method: pre.getThread, assign: 'thread' },
-    ]
-  ],
+  pre: [ [
+    { method: pre.hasPermission },
+    { method: pre.getThread, assign: 'thread' }
+  ] ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
     thread.sticky = request.payload.status;
@@ -324,17 +361,20 @@ exports.sticky = {
   * @apiError (Error 500) InternalServerError There was an issue moving the thread
   */
 exports.move = {
+  app: {
+    thread_id: 'params.id',
+    hasPermission: 'threads.privilegedMove'
+  },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.move' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { newBoardId: Joi.string().required() }
   },
-  pre: [
-    [
-      { method: pre.canMove },
-      { method: pre.getThread, assign: 'thread' },
-    ]
-  ],
+  pre: [ [
+    { method: pre.hasPermission },
+    { method: pre.getThread, assign: 'thread' }
+  ] ],
   handler: function(request, reply) {
     var newBoardId = request.payload.newBoardId;
     var thread = request.pre.thread;
@@ -364,12 +404,18 @@ exports.move = {
   * @apiError Unauthorized User doesn't have permissions to purge the thread
   * @apiError (Error 500) InternalServerError There was an issue purging the thread
   */
-exports.delete = {
+exports.purge = {
+  app: {
+    thread_id: 'params.id',
+    hasPermission: 'threads.privilegedPurge'
+  },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.purge' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ],
+  pre: [ { method: pre.hasPermission } ],
   handler: function(request, reply) {
-    return reply(db.threads.delete(request.params.id));
+    var promise = db.threads.purge(request.params.id);
+    return reply(promise);
   }
 };
 

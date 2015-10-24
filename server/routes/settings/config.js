@@ -15,8 +15,5 @@ var config = require(path.normalize(__dirname + '/../../../config'));
   * @apiSuccess {string} logo URL for the forums logo image
   */
 exports.webConfigs = {
-  auth: { mode: 'try', strategy: 'jwt' },
-  handler: function(request, reply) {
-    reply(config.website);
-  }
+  handler: function(request, reply) { reply(config.website); }
 };

@@ -1,10 +1,12 @@
 var Joi = require('joi');
+var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
-var commonPre = require(path.normalize(__dirname + '/../common')).users;
+var querystring = require('querystring');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
-var querystring = require('querystring');
+var commonPre = require(path.normalize(__dirname + '/../common')).users;
+var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
 
 /**
   * @apiVersion 0.3.0
@@ -137,6 +139,7 @@ exports.import = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'users.update' },
   validate: {
     payload: Joi.object().keys({
       id: Joi.string().required(),
@@ -161,7 +164,13 @@ exports.update = {
     .with('signature', 'raw_signature')
   },
   pre: [
-    { method: pre.canUpdate },
+    [
+      // TODO: password should be need to update email
+      { method: pre.isOldPasswordValid },
+      { method: pre.isNewUsernameUnique },
+      { method: pre.isNewEmailUnique },
+      { method: pre.isRequesterActive }
+    ],
     { method: commonPre.clean },
     { method: commonPre.parseSignature },
     { method: commonPre.handleImages },
@@ -180,6 +189,10 @@ exports.update = {
       delete user.password;
       delete user.confirmation;
       return user;
+    })
+    .then(function(user) {
+      return authHelper.updateUserInfo(user)
+      .then(function() { return user; });
     });
 
     return reply(promise);
@@ -222,17 +235,17 @@ exports.update = {
   */
 exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
-  validate: { params: { id: Joi.string().required() } },
+  plugins: { acls: 'users.find' },
+  validate: { params: { username: Joi.string().required() } },
+  pre: [ { method: pre.accessUser } ],
   handler: function(request, reply) {
-    if (!request.server.methods.viewable) { return reply({}); }
-
     // get logged in user id
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
 
     // get user by username
-    var username = querystring.unescape(request.params.id);
+    var username = querystring.unescape(request.params.username);
     var promise = db.users.userByUsername(username)
     .then(function(user) {
       if (!user) { return Boom.notFound(); }
@@ -243,6 +256,8 @@ exports.find = {
       delete user.reset_token;
       delete user.reset_expiration;
       if (userId !== user.id) { delete user.email; }
+      user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
+      user.roles = user.roles.map(function(role) { return role.lookup; });
       return user;
     });
 
@@ -250,42 +265,81 @@ exports.find = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Users
+  * @api {POST} /users/:userId/deactivate Deactivate
+  * @apiName DeactivateUser
+  * @apiDescription Deactivate a user by userId
+  *
+  * @apiParam {string} id The userId of the user to deactivate
+  *
+  * @apiSuccess {} STATUS 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was an error deactivating the user
+  */
 exports.deactivate = {
+  app: { user_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'users.deactivate' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.canDeactivate },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: pre.isReferencedUserActive },
+    { method: pre.deactivateAuthorized, assign: 'userId' }
   ] ],
   handler: function(request, reply) {
-    var userId = '';
-    if (request.pre.isAdmin) { userId = request.params.id; }
-    else { userId = request.auth.credentials.id; }
+    var userId = request.pre.userId;
     var promise = db.users.deactivate(userId);
     return reply(promise);
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Users
+  * @api {POST} /users/:userId/reactivate Reactivate
+  * @apiName ReactivateUser
+  * @apiDescription Reactivate a user by userId
+  *
+  * @apiParam {string} id The userId of the user to reactivate
+  *
+  * @apiSuccess {} STATUS 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was an error reactivating the user
+  */
 exports.reactivate = {
+  app: { user_id: 'params.id' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'users.reactivate' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.canReactivate },
-    { method: pre.isAdmin, assign: 'isAdmin' }
+    { method: pre.isReferencedUserDeactive },
+    { method: pre.reactivateAuthorized, assign: 'userId' }
   ] ],
   handler: function(request, reply) {
-    var userId = '';
-    if (request.pre.isAdmin) { userId = request.params.id; }
-    else { userId = request.auth.credentials.id; }
+    var userId = request.pre.userId;
     var promise = db.users.reactivate(userId);
     return reply(promise);
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Users
+  * @api {DELETE} /users/:userId Delete
+  * @apiName DeleteUser
+  * @apiDescription Delete a user by userId
+  *
+  * @apiParam {string} id The userId of the user to delete
+  *
+  * @apiSuccess {} STATUS 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was an error deleteing the user
+  */
 exports.delete = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'users.delete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ],
   handler: function(request, reply) {
     var userId = request.params.id;
     var promise = db.users.delete(userId);

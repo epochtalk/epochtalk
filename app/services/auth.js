@@ -38,7 +38,7 @@ module.exports = ['$window', 'User', 'Session',
         if (Session.getToken()) {
           User.ping().$promise
           .then(function(user) { Session.setUser(user); })
-          .catch(function(err) { Session.clearUser(); });
+          .catch(function() { Session.clearUser(); });
         }
         else { Session.clearUser(); }
       }

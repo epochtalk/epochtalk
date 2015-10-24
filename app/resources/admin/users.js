@@ -23,7 +23,8 @@ module.exports = ['$resource',
       },
       addRoles: {
         method: 'PUT',
-        url: '/api/admin/users/roles/add'
+        url: '/api/admin/users/roles/add',
+        isArray: true
       },
       removeRoles: {
         method: 'PUT',
@@ -40,11 +41,6 @@ module.exports = ['$resource',
         isArray: true,
         ignoreLoadingBar: true
       },
-      countAdmins: {
-        method: 'GET',
-        url: '/api/admin/users/admins/count',
-        ignoreLoadingBar: true
-      },
       countModerators: {
         method: 'GET',
         url: '/api/admin/users/moderators/count',
@@ -53,11 +49,6 @@ module.exports = ['$resource',
       page: {
         method: 'GET',
         url: '/api/admin/users',
-        isArray: true
-      },
-      pageAdmins: {
-        method: 'GET',
-        url: '/api/admin/users/admins',
         isArray: true
       },
       pageModerators: {

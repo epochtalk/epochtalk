@@ -1,44 +1,36 @@
+var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
 var bbcodeParser = require('epochtalk-bbcode-parser');
 var db = require(path.normalize(__dirname + '/../../../db'));
-var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
-  canCreate: function(request, reply) {
-    // isAdmin or part of conversation
+  isConversationMember: function(request, reply) {
     var userId = request.auth.credentials.id;
-    var authenticated = request.auth.isAuthenticated;
-    var username = request.auth.credentials.username;
     var conversationId = request.payload.conversation_id;
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isMember = isConversationMember(conversationId, userId);
-
-    var promise = Promise.join(isAdmin, isMember, function(admin, member) {
+    var promise = db.conversations.isConversationMember(conversationId, userId)
+    .then(function(isMember) {
       var result = Boom.badRequest();
-      if (admin) { result = ''; }
-      else if (member) { result = ''; }
+      if (isMember) { result = ''; }
       return result;
     });
     return reply(promise);
   },
-  canDelete: function(request, reply) {
+  isMessageOwner: function(request, reply) {
     // isAdmin or message sender
     var userId = request.auth.credentials.id;
-    var authenticated = request.auth.isAuthenticated;
-    var username = request.auth.credentials.username;
     var messageId = request.params.id;
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isSender = isMessageSender(messageId, userId);
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var isDeleteable = getACLValue(request.auth, 'messages.privilegedDelete');
+    var isSender = db.messages.isMessageSender(messageId, userId);
 
-    var promise = Promise.join(isAdmin, isSender, function(admin, sender) {
+    var promise = Promise.join(isSender, isDeleteable, function(sender, deleteable) {
       var result = Boom.badRequest();
-      if (admin) { result = ''; }
-      else if (sender) { result = ''; }
+      if (sender || deleteable) { result = ''; }
       return result;
     });
     return reply(promise);
@@ -69,23 +61,13 @@ module.exports = {
 };
 
 function textToEntities(text) {
-  var entities = "";
+  var entities = '';
   for (var i = 0; i < text.length; i++) {
     if (text.charCodeAt(i) > 127) {
-      entities += "&#" + text.charCodeAt(i) + ";";
+      entities += '&#' + text.charCodeAt(i) + ';';
     }
     else { entities += text.charAt(i); }
   }
 
   return entities;
-}
-
-function isConversationMember(conversationId, userId) {
-  return db.conversations.isConversationMember(conversationId, userId)
-  .then(function(isMember) { return isMember; });
-}
-
-function isMessageSender(messageId, userId) {
-  return db.messages.isMessageSender(messageId, userId)
-  .then(function(isSender) { return isSender; });
 }

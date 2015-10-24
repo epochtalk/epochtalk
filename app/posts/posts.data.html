@@ -3,7 +3,7 @@
   <div class="post-user">
     <a ui-sref="profile({ username: post.user.username})">
       <div class="user-avatar">
-        <img ng-class="{ 'admin': post.user.role === USER_ROLES.admin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }" ng-src="{{::post.avatar}}">
+        <img ng-style="PostsCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar}}">
       </div>
       <div class="user-role">Hero</div>
     </a>
@@ -13,36 +13,36 @@
   <div class="post-content">
     <!-- Post Title -->
     <div class="post-title">
-      <a class="username" ui-sref="profile({ username: post.user.username})" ng-class="{ 'admin': post.user.role === USER_ROLES.admin, 'global-mod': post.user.role === USER_ROLES.globalMod, 'mod': post.user.role === USER_ROLES.mod }" ng-bind-html="::post.user.username"></a>
+      <a class="username css-tooltip" data-css-tooltip="{{post.user.role_name || 'User'}}" ui-sref="profile({ username: post.user.username})" ng-style="PostsCtrl.usernameHighlight(post.user.highlight_color)" ng-bind-html="::post.user.username"></a>
       <div class="timestamp" ng-bind="::post.created_at | humanDate"></div>
 
       <ul class="post-action">
-        <li ng-if="PostsCtrl.user.isAdmin && $index !== 0">
+        <li ng-if="PostsCtrl.controlAccess.privilegedPurge && $index !== 0">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
             <i class="fa fa-trash"></i>
           </a>
         </li>
-        <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.user.isAdmin) && $index !== 0 && !post.deleted">
+        <li ng-if="((post.user.id === PostsCtrl.user.id && PostsCtrl.controlAccess.delete) || PostsCtrl.controlAccess.privilegedDelete) && $index !== 0 && !post.deleted">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Delete" ng-click="PostsParentCtrl.openDeleteModal($index)">
             <i class="fa fa-eye-slash"></i>
           </a>
         </li>
-        <li ng-if="(post.user.id === PostsCtrl.user.id || PostsCtrl.user.isAdmin) && post.deleted === true">
+        <li ng-if="((post.user.id === PostsCtrl.user.id && PostsCtrl.controlAccess.undelete) || PostsCtrl.controlAccess.privilegedDelete) && post.deleted === true">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Undelete" ng-click="PostsParentCtrl.openUndeleteModal($index)">
             <i class="fa fa-eye"></i>
           </a>
         </li>
-        <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id ">
+        <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers)">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Report" ng-click="PostsCtrl.openReportModal(post)">
             <i class="icon-epoch-flag"></i>
           </a>
         </li>
-        <li ng-if="(post.user.id === PostsCtrl.user.id && !PostsParentCtrl.thread_locked) || PostsCtrl.user.isAdmin">
+        <li ng-if="(post.user.id === PostsCtrl.user.id && PostsCtrl.controlAccess.update && !PostsParentCtrl.thread_locked) || PostsCtrl.controlAccess.privilegedUpdate">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Edit" ng-click="PostsCtrl.loadEditor($index)">
             <i class="icon-epoch-edit-pencil"></i>
           </a>
         </li>
-        <li ng-if="PostsParentCtrl.loggedIn() && !PostsParentCtrl.thread_locked">
+        <li ng-if="PostsParentCtrl.loggedIn() && PostsCtrl.controlAccess.create && !PostsParentCtrl.thread_locked">
           <a ng-href="#" class="css-tooltip" data-css-tooltip="Quote" ng-click="PostsCtrl.addQuote($index)">
             <i class="icon-epoch-quote"></i>
           </a>
