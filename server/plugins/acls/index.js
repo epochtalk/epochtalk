@@ -15,7 +15,7 @@ exports.register = function (server, options, next) {
     var authenticated = request.auth.isAuthenticated;
     var err = Boom.unauthorized('You must log in to see this content.');
     if (authenticated) {
-      userACLs = request.auth.credentials.roles.map(function(roleName) { return roles[roleName]; });
+      userACLs = _.filter(request.auth.credentials.roles.map(function(roleName) { return roles[roleName]; }), undefined);
       if (!userACLs.length) { userACLs = [ roles.user ]; }
       err = Boom.forbidden('You do not have the proper permissions.');
     }
