@@ -19,7 +19,7 @@ exports.register = function (server, options, next) {
       if (!userACLs.length) { userACLs = [ roles.user ]; }
       err = Boom.forbidden('You do not have the proper permissions.');
     }
-    else if (config.loginRequired) { userACLs = [ roles.noRead ]; }
+    else if (config.loginRequired) { userACLs = [ roles.private ]; }
     else { userACLs = [ roles.anonymous ]; }
 
     var ACLValues = userACLs.map(function(acl) { return _.get(acl, routeACL); });

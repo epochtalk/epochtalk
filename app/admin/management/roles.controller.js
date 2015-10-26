@@ -220,6 +220,14 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
   };
 
   this.removeRole = function() {
+    if (ctrl.selectedRole && ctrl.roleToRemove.id === ctrl.selectedRole.id) {
+      // deselect role being removed
+      ctrl.selectedRole = null;
+      ctrl.userData = null;
+      ctrl.editRole = null;
+      ctrl.queryParams = {};
+      $location.search(ctrl.queryParams);
+    }
     AdminRoles.remove({ id: ctrl.roleToRemove.id }).$promise
     .then(function() {
       Alert.success('Role ' + ctrl.roleToRemove.name + ' successfully removed.');
@@ -251,6 +259,7 @@ module.exports = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Admi
   this.closeRole = function() {
     ctrl.modifyingRole = false;
     ctrl.showRoleModal = false;
+    ctrl.basedRoleId = null;
     ctrl.newRole = {};
   };
 

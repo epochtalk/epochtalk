@@ -149,14 +149,19 @@ function getMaskedPermissions(userRoles) {
 }
 
 function formatUserReply(token, user) {
+  var filteredRoles = [];
+  user.roles.forEach(function(roleName) {
+    if(roles[roleName]) { filteredRoles.push(roleName); }
+  });
+  if (!filteredRoles.length) { filteredRoles = ['user']; }
   return {
     token: token,
     id: user.id,
     username: user.username,
     avatar: user.avatar,
-    roles: user.roles,
+    roles: filteredRoles,
     moderating: user.moderating,
-    permissions: getMaskedPermissions(user.roles)
+    permissions: getMaskedPermissions(filteredRoles)
   };
 }
 
