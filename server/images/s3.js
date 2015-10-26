@@ -274,4 +274,4 @@ s3.initClient()
   // bucket does not exist
   .catch(function() { return s3.createBucket(); });
 })
-.catch(function(err) { console.log(err); });
+.catch(function(err) { console.log('S3 not configured'); });
