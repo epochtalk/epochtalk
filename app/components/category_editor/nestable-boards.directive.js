@@ -25,10 +25,11 @@ module.exports = ['$compile', function($compile) {
             id: board.id,
             name: board.name,
             description: board.description,
-            children: board.children || []
+            children: board.children || [],
+            moderators: board.moderators || []
           };
           var toolbarHtml = '<i ng-click="setBoardDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i><i ng-click="setEditBoard(' +
-            dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+            dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i><i ng-click="setModBoard(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-user"></i>';
           var status = '<i class="fa status"></i>';
           html += '<li class="dd-item" data-board-id="' + board.id + '" data-id="' + dataId + '"><div class="dd-grab"></div>' +
             '<div class="dd-handle">' + status + '<div class="dd-desc">' + board.name +  '<span>' + board.description + '</span></div>' +
@@ -60,7 +61,8 @@ module.exports = ['$compile', function($compile) {
             id: -1,
             name: board.name,
             description: board.description,
-            children: board.children || []
+            children: board.children || [],
+            moderators: board.moderators || []
           };
           // Add dataId to board before adding to new boards array
           // to allow for quick lookup in nestableMap from parent controller
@@ -72,7 +74,7 @@ module.exports = ['$compile', function($compile) {
             $('#' + scope.boardListId).html('<ol class="dd-list"></ol>');
           }
           var toolbarHtml = '<i ng-click="setBoardDelete(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-trash"></i><i ng-click="setEditBoard(' +
-            dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i>';
+            dataId + ')" class="dd-nodrag dd-right-icon fa fa-pencil"></i><i ng-click="setModBoard(' + dataId + ')" class="dd-nodrag dd-right-icon fa fa-user"></i>';
           var status = '<i class="fa status modified"></i>';
           var newBoardHtml = '<li class="dd-item" data-id="' + dataId +
             '"><div class="dd-grab"></div><div class="dd-handle">' + status + '<div class="dd-desc">' + board.name +

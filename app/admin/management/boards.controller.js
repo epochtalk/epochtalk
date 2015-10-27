@@ -4,6 +4,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
   function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, boards, categories) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
+    var ctrl = this;
     // Category and Board Data
     $scope.catListData = categories; // Data backing left side of page
     $scope.boardListData = boards; // Data backing right side of page
@@ -39,6 +40,19 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
     }
 
     cleanBoardList();
+
+    this.showModeratorsModal = false;
+    this.modBoard = null;
+    $scope.openModeratorsModal = function(board) {
+      ctrl.showModeratorsModal = true;
+      ctrl.modBoard = board;
+      console.log(board);
+    };
+
+    this.closeModerators = function() {
+      ctrl.modBoard = null;
+      ctrl.showModeratorsModal = false;
+    };
 
     // 0) Create Categories which have been added
     $scope.processNewCategories = function() {
