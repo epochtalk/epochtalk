@@ -38,7 +38,7 @@
   <h3 class="role-header">{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3>  <a ng-if="AdminManagementCtrl.canViewAddUsersControl()" ng-click="AdminManagementCtrl.showAddUsers = !AdminManagementCtrl.showAddUsers" class="add-users"><i class="fa fa-plus"></i> Add Users</a>
   <br /><br />
   <div ng-show="AdminManagementCtrl.showAddUsers">
-    <tags-input min-length="1" placeholder="Type username to add" add-from-autocomplete-only="true" ng-model="AdminManagementCtrl.usersToAdd">
+    <tags-input min-length="1" placeholder="Type username to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="AdminManagementCtrl.usersToAdd">
       <auto-complete min-length="1" source="AdminManagementCtrl.loadTags($query)"></auto-complete>
     </tags-input>
     <div class="button-container">

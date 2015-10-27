@@ -1,7 +1,8 @@
 var remove = require('lodash/array/remove');
+var Promise = require('bluebird');
 
-var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'boards', 'categories',
-  function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, boards, categories) {
+module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories',
+  function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, AdminUsers, AdminModerators, boards, categories) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     var ctrl = this;
@@ -42,16 +43,72 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
     cleanBoardList();
 
     this.showModeratorsModal = false;
+    this.nestableBoard = null;
     this.modBoard = null;
+    this.modsToRemove = [];
+    this.modsToAdd = [];
     $scope.openModeratorsModal = function(board) {
       ctrl.showModeratorsModal = true;
-      ctrl.modBoard = board;
-      console.log(board);
+      ctrl.nestableBoard = board;
+      ctrl.modBoard = angular.copy(board);
     };
 
     this.closeModerators = function() {
+      ctrl.nestableBoard = null;
       ctrl.modBoard = null;
+      ctrl.modsToAdd = [];
+      ctrl.modsToRemove = [];
       ctrl.showModeratorsModal = false;
+    };
+
+    this.markModForRemoval = function(username) {
+      this.modsToRemove.push(username);
+      remove(ctrl.modBoard.moderators, function(user) { return user.username === username; });
+    };
+
+    this.saveModChanges = function() {
+      ctrl.modsToAdd = ctrl.modsToAdd.map(function(tag) { return tag.text; });
+      var error;
+      // TODO: Optimize routes to accept multiple users
+      // Remove this promise chain of user lookups
+      Promise.each(ctrl.modsToAdd, function(username) {
+        return AdminUsers.find({ username: username }).$promise
+        .then(function(user) {
+          return AdminModerators.add({ user_id: user.id, board_id: ctrl.modBoard.id }).$promise
+          .then(function() {
+            ctrl.nestableBoard.moderators.push({ username: user.username, id: user.id });
+          })
+          .catch(function(err) {
+            error = err;
+            Alert.error('There was an error adding ' + user.username + ' as a moderator');
+          });
+        });
+      })
+      .then(function() {
+        return Promise.each(ctrl.modsToRemove, function(username) {
+          return AdminUsers.find({ username: username }).$promise
+          .then(function(user) {
+            return AdminModerators.remove({ user_id: user.id, board_id: ctrl.modBoard.id }).$promise
+            .then(function() {
+              remove(ctrl.nestableBoard.moderators, function(oldMod) { return oldMod.username === user.username; });
+            })
+            .catch(function(err) {
+              error = err;
+              Alert.error('There was an error removing ' + user.username + ' from moderators');
+            });
+          });
+        });
+      })
+      .then(function() {
+        if (!error) {
+          Alert.success('Moderators successfully updated');
+        }
+        ctrl.closeModerators();
+      });
+    };
+
+    this.loadTags = function(query) {
+      return AdminUsers.searchUsernames({ username: query }).$promise;
     };
 
     // 0) Create Categories which have been added

@@ -63,14 +63,14 @@ exports.remove = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminModerators.remove' },
   validate: {
-    payload: {
+    query: {
       user_id: Joi.string().required(),
-      board_id: Joi.string().required(),
+      board_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
-    var userId = request.payload.user_id;
-    var boardId = request.payload.board_id;
+    var userId = request.query.user_id;
+    var boardId = request.query.board_id;
     var promise = db.moderators.remove(userId, boardId)
     // update redis with new moderating boads
     .then(function() { return db.moderators.getUsersBoards(userId); })

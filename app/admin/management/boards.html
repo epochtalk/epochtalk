@@ -1,6 +1,28 @@
 <category-editor></category-editor>
 
-<modal class="medium" show="AdminManagementCtrl.showModeratorsModal" on-close="AdminManagementCtrl.closeModerators()">
-  <h3 class="thin-underline">Manage Moderators of {{AdminManagementCtrl.modBoard.name}}</h3>
-  Testing 123
+<modal show="AdminManagementCtrl.showModeratorsModal" on-close="AdminManagementCtrl.closeModerators()">
+  <h3 class="thin-underline">Manage Moderators of <span ng-bind-html="AdminManagementCtrl.modBoard.name"></span></h3>
+
+  <label>Current Moderators</label>
+  <div class="clear">
+    <ul class="mod-list" ng-if="AdminManagementCtrl.modBoard.moderators.length" >
+      <li ng-repeat="mod in AdminManagementCtrl.modBoard.moderators">
+        <div><span ng-bind-html="mod.username"></span>&nbsp;<a ng-click="AdminManagementCtrl.markModForRemoval(mod.username)"><i class="fa fa-times-circle"></i></a></div>
+      </li>
+    </ul>
+  </div>
+  <p ng-if="!AdminManagementCtrl.modBoard.moderators.length">
+  This board has no moderators.
+  </p>
+  <br />
+  <div>
+    <label>Add Moderators</label>
+    <tags-input min-length="1" placeholder="Type username of moderator(s) to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="AdminManagementCtrl.modsToAdd">
+      <auto-complete min-length="1" source="AdminManagementCtrl.loadTags($query)"></auto-complete>
+    </tags-input>
+  </div>
+  <div class="clear">
+    <label>Note: Moderator changes will take affect upon clicking save changes.</label>
+    <button class="fill-row" ng-click="AdminManagementCtrl.saveModChanges()">Save Changes</button>
+  </div>
 </modal>
