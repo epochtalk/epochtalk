@@ -127,8 +127,11 @@ $ foreman start initialize
 ```
 
 #### 6) Start the Epochtalk server
-Upon running the `foreman start` command Epochtalk will start its webserver and compile all JavaScript and css. Once compilation is complete the forum can be viewed at `http://localhost:8080`
+Running `foreman build` will compile all JavaScript and css.  The `foreman
+start` command Epochtalk will start the webserver. Once the server is running,
+the forum can be viewed at `http://localhost:8080`
 ```sh
+$ foreman start build
 $ foreman start server
 ```
 
