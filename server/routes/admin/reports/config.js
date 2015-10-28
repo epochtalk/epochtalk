@@ -2,7 +2,6 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var pre = require(path.normalize(__dirname + '/pre'));
-var commonAdminPre = require(path.normalize(__dirname + '/../../common')).auth;
 var db = require(path.normalize(__dirname + '/../../../../db'));
 
 /**
@@ -29,12 +28,12 @@ var db = require(path.normalize(__dirname + '/../../../../db'));
   * @apiError (Error 500) InternalServerError There was an error creating the user report note
   */
 exports.createUserReportNote = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.createUserReportNote' },
   validate: {
     payload: {
-      report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
-      user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      report_id: Joi.string().required(),
+      user_id: Joi.string().required(),
       note: Joi.string().required()
     }
   },
@@ -70,12 +69,12 @@ exports.createUserReportNote = {
   * @apiError (Error 500) InternalServerError There was an error creating the post report note
   */
 exports.createPostReportNote = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.createPostReportNote' },
   validate: {
     payload: {
-      report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
-      user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      report_id: Joi.string().required(),
+      user_id: Joi.string().required(),
       note: Joi.string().required()
     }
   },
@@ -111,12 +110,12 @@ exports.createPostReportNote = {
   * @apiError (Error 500) InternalServerError There was an error creating the message report note
   */
 exports.createMessageReportNote = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.createMessageReportNote' },
   validate: {
     payload: {
-      report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
-      user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      report_id: Joi.string().required(),
+      user_id: Joi.string().required(),
       note: Joi.string().required()
     }
   },
@@ -152,13 +151,13 @@ exports.createMessageReportNote = {
   * @apiError (Error 500) InternalServerError There was an error updating the user report
   */
 exports.updateUserReport = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.updateUserReport' },
   validate: {
     payload: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report').required(),
-      reviewer_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+      reviewer_user_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
@@ -193,13 +192,13 @@ exports.updateUserReport = {
   * @apiError (Error 500) InternalServerError There was an error updating the post report
   */
 exports.updatePostReport = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.updatePostReport' },
   validate: {
     payload: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report').required(),
-      reviewer_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+      reviewer_user_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
@@ -234,13 +233,13 @@ exports.updatePostReport = {
   * @apiError (Error 500) InternalServerError There was an error updating the message report
   */
 exports.updateMessageReport = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.updateMessageReport' },
   validate: {
     payload: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report').required(),
-      reviewer_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+      reviewer_user_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
@@ -274,14 +273,12 @@ exports.updateMessageReport = {
   * @apiError (Error 500) InternalServerError There was an error updating the user report note
   */
 exports.updateUserReportNote = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [
-    { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
-    { method: pre.canUpdateUserReportNote }
-  ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.updateUserReportNote' },
+  pre: [ { method: pre.canUpdateUserReportNote } ],
   validate: {
     payload: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       note: Joi.string()
     }
   },
@@ -316,14 +313,12 @@ exports.updateUserReportNote = {
   * @apiError (Error 500) InternalServerError There was an error updating the post report note
   */
 exports.updatePostReportNote = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [
-    { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
-    { method: pre.canUpdatePostReportNote }
-  ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.updatePostReportNote' },
+  pre: [ { method: pre.canUpdatePostReportNote } ],
   validate: {
     payload: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       note: Joi.string()
     }
   },
@@ -358,14 +353,12 @@ exports.updatePostReportNote = {
   * @apiError (Error 500) InternalServerError There was an error updating the message report note
   */
 exports.updateMessageReportNote = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [
-    { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
-    { method: pre.canUpdateMessageReportNote }
-  ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.updateMessageReportNote' },
+  pre: [ { method: pre.canUpdateMessageReportNote } ],
   validate: {
     payload: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       note: Joi.string()
     }
   },
@@ -410,8 +403,8 @@ exports.updateMessageReportNote = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the user reports
   */
 exports.pageUserReports = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.pageUserReports' },
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -473,8 +466,8 @@ exports.pageUserReports = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the post reports
   */
 exports.pagePostReports = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.pagePostReports' },
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -535,8 +528,8 @@ exports.pagePostReports = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the message reports
   */
 exports.pageMessageReports = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.pageMessageReports' },
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -587,10 +580,10 @@ exports.pageMessageReports = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the user report notes
   */
 exports.pageUserReportsNotes = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.pageUserReportsNotes' },
   validate: {
-    params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
+    params: { report_id: Joi.string().required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).max(100).default(15),
@@ -636,10 +629,10 @@ exports.pageUserReportsNotes = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the post report notes
   */
 exports.pagePostReportsNotes = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.pagePostReportsNotes' },
   validate: {
-    params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
+    params: { report_id: Joi.string().required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).max(100).default(15),
@@ -684,10 +677,10 @@ exports.pagePostReportsNotes = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the message report notes
   */
 exports.pageMessageReportsNotes = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.pageMessageReportsNotes' },
   validate: {
-    params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() },
+    params: { report_id: Joi.string().required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).max(100).default(15),
@@ -723,8 +716,8 @@ exports.pageMessageReportsNotes = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the user report count.
   */
 exports.userReportsCount = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.userReportsCount' },
   validate: {
     query: {
       status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
@@ -763,8 +756,8 @@ exports.userReportsCount = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the post report count.
   */
 exports.postReportsCount = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.postReportsCount' },
   validate: {
     query: {
       status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
@@ -803,8 +796,8 @@ exports.postReportsCount = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the message report count.
   */
 exports.messageReportsCount = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.messageReportsCount' },
   validate: {
     query: {
       status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
@@ -842,9 +835,9 @@ exports.messageReportsCount = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the user report notes count.
   */
 exports.userReportsNotesCount = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
-  validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.userReportsNotesCount' },
+  validate: { params: { report_id: Joi.string().required() } },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     db.reports.userReportsNotesCount(reportId)
@@ -868,9 +861,9 @@ exports.userReportsNotesCount = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the post report notes count.
   */
 exports.postReportsNotesCount = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
-  validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.postReportsNotesCount' },
+  validate: { params: { report_id: Joi.string().required() } },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     db.reports.postReportsNotesCount(reportId)
@@ -894,9 +887,9 @@ exports.postReportsNotesCount = {
   * @apiError (Error 500) InternalServerError There was an error retrieving the message report notes count.
   */
 exports.messageReportsNotesCount = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
-  validate: { params: { report_id: Joi.alternatives().try(Joi.string(), Joi.number()).required() } },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminReports.messageReportsNotesCount' },
+  validate: { params: { report_id: Joi.string().required() } },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
     db.reports.messageReportsNotesCount(reportId)

@@ -1,12 +1,12 @@
 var Joi = require('joi');
+var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
-var commonUsersPre = require(path.normalize(__dirname + '/../../common')).users;
-var commonAdminPre = require(path.normalize(__dirname + '/../../common')).auth;
+var querystring = require('querystring');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
-var USER_ROLES = require(path.normalize(__dirname + '/../../user-roles'));
-var querystring = require('querystring');
+var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
+var commonPre = require(path.normalize(__dirname + '/../../common')).users;
 
 /**
   * @apiVersion 0.3.0
@@ -51,14 +51,15 @@ var querystring = require('querystring');
   * @apiError (Error 500) InternalServerError There was error updating the user
   */
 exports.update = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  app: { user_id: 'payload.id' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.update' },
   validate: {
     payload: Joi.object().keys({
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       email: Joi.string().email(),
       username: Joi.string().min(1).max(255),
       password: Joi.string().min(8).max(72),
-      confirmation: Joi.ref('password'),
       name: Joi.string().allow(''),
       website: Joi.string().allow(''),
       btcAddress: Joi.string().allow(''),
@@ -74,25 +75,31 @@ exports.update = {
     .with('signature', 'raw_signature')
   },
   pre: [
-    { method: commonAdminPre.modCheck || commonAdminPre.adminCheck },
     [
-      { method: pre.checkUserExists },
-      { method: pre.checkUsernameUniqueness },
-      { method: pre.checkEmailUniqueness }
+      // TODO: password should be needed to change email
+      // TODO: password should be not updated by an admin role
+      { method: pre.matchPriority },
+      { method: pre.isNewUsernameUnique },
+      { method: pre.isNewEmailUnique }
     ],
-    { method: commonUsersPre.clean },
-    { method: commonUsersPre.parseSignature },
-    { method: commonUsersPre.handleImages }
+    { method: commonPre.clean },
+    { method: commonPre.parseSignature },
+    { method: commonPre.handleImages }
   ],
   handler: function(request, reply) {
-    db.users.update(request.payload)
+    var promise = db.users.update(request.payload)
     .then(function(user) {
       delete user.confirmation_token;
       delete user.reset_token;
       delete user.reset_expiration;
-      reply(user);
+      delete user.password;
+      return user;
     })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    .then(function(user) {
+      return authHelper.updateUserInfo(user)
+      .then(function() { return user; });
+    });
+    return reply(promise);
   }
 };
 
@@ -133,23 +140,22 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was error looking up the user
   */
 exports.find = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.find' },
   validate: { params: { username: Joi.string().required() } },
-  pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
-    // get user by username
     var username = querystring.unescape(request.params.username);
-
-    db.users.userByUsername(username)
+    var promise = db.users.userByUsername(username)
     .then(function(user) {
       if (!user) { return Boom.badRequest('User doesn\'t exist.'); }
       delete user.passhash;
       delete user.confirmation_token;
       delete user.reset_token;
+      user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
+      user.roles = user.roles.map(function(role) { return role.lookup; });
       return user;
-    })
-    .then(function(user) { reply(user); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    });
+    return reply(promise);
   }
 };
 
@@ -162,39 +168,47 @@ exports.find = {
   * @apiDescription Used to add a role or roles to a user. This allows Administrators to add new
   * (Super) Administrators and (Global) Moderators.
   *
-  * @apiParam (Payload) {string} user_id The unique id of the user to grant the role to
-  * @apiParam (Payload) {string[]="Super Administrator","Administrator","Global Moderator","Moderator","User"} roles An array of the roles you would like to add to the user
+  * @apiParam (Payload) {string[]} usernames A unique array of usernames to grant the role to
+  * @apiParam (Payload) {string} role_id The unique id of the role to grant the user
   *
-  * @apiSuccess {string} id The user's unique id
-  * @apiSuccess {string} username The user's username
-  * @apiSuccess {string} email The user's email address
-  * @apiSuccess {timestamp} created_at Timestamp of when the user's account was created
-  * @apiSuccess {timestamp} updated_at Timestamp of when the user's account was last updated
-  * @apiSuccess {object[]} roles An array containing the users role objects
-  * @apiSuccess {string} roles.id The unique id of the role
-  * @apiSuccess {string} roles.name The name of the role
-  * @apiSuccess {string} roles.description The description of the role
-  * @apiSuccess {object} roles.permissions The permissions that this role has
-  * @apiSuccess {timestamp} roles.created_at Timestamp of when the role was created
-  * @apiSuccess {timestamp} roles.updated_at Timestamp of when the role was last updated
+  * @apiSuccess {object[]} users An array containing the users with added roles
+  * @apiSuccess {string} users.id The user's unique id
+  * @apiSuccess {string} users.username The user's username
+  * @apiSuccess {string} users.email The user's email address
+  * @apiSuccess {timestamp} users.created_at Timestamp of when the user's account was created
+  * @apiSuccess {timestamp} users.updated_at Timestamp of when the user's account was last updated
+  * @apiSuccess {object[]} users.roles An array containing the users role objects
+  * @apiSuccess {string} users.roles.id The unique id of the role
+  * @apiSuccess {string} users.roles.name The name of the role
+  * @apiSuccess {string} users.roles.description The description of the role
+  * @apiSuccess {object} users.roles.permissions The permissions that this role has
+  * @apiSuccess {timestamp} users.roles.created_at Timestamp of when the role was created
+  * @apiSuccess {timestamp} users.roles.updated_at Timestamp of when the role was last updated
   *
   * @apiError (Error 500) InternalServerError There was error adding roles to the user
   */
 exports.addRoles = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.addRoles' },
   validate: {
     payload: {
-      user_id: Joi.string().required(),
-      roles: Joi.array().items(Joi.string().valid(USER_ROLES.user, USER_ROLES.mod, USER_ROLES.globalMod, USER_ROLES.admin, USER_ROLES.superAdmin).required()).unique().min(1).required()
+      usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
+      role_id: Joi.string().required()
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [
+    { method: pre.hasAccessToRole },
+    { method: pre.hasSufficientPriorityToAddRole }
+  ],
   handler: function(request, reply) {
-    var userId = request.payload.user_id;
-    var roles = request.payload.roles;
-    db.users.addRoles(userId, roles)
-    .then(function(updatedUser) { reply(updatedUser); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var usernames = request.payload.usernames;
+    var roleId = request.payload.role_id;
+    var promise = db.users.addRoles(usernames, roleId)
+    .map(function(user) {
+      return authHelper.updateRoles(user)
+      .then(function() { return user; });
+    });
+    return reply(promise);
   }
 };
 
@@ -207,8 +221,8 @@ exports.addRoles = {
   * @apiDescription Used to remove a role or roles to a user. This allows Administrators to remove
   * roles from an account.
   *
-  * @apiParam (Payload) {string} user_id The unique id of the user to grant the role to
-  * @apiParam (Payload) {string[]="Super Administrator","Administrator","Global Moderator","Moderator","User"} roles An array of the roles you would like to remove from the user
+  * @apiParam (Payload) {string} user_id The unique id of the user to remove the role from
+  * @apiParam (Payload) {string} role_id The unique id of the role to remove from the user
   *
   * @apiSuccess {string} id The user's unique id
   * @apiSuccess {string} username The user's username
@@ -226,20 +240,24 @@ exports.addRoles = {
   * @apiError (Error 500) InternalServerError There was error removing roles from the user
   */
 exports.removeRoles = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.removeRoles' },
   validate: {
     payload: {
       user_id: Joi.string().required(),
-      roles: Joi.array().items(Joi.string().valid(USER_ROLES.user, USER_ROLES.mod, USER_ROLES.globalMod, USER_ROLES.admin, USER_ROLES.superAdmin).required()).unique().min(1).required()
+      role_id: Joi.string().required()
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  pre: [ { method: pre.hasSufficientPriorityToRemoveRole }, ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    var roles = request.payload.roles;
-    db.users.removeRoles(userId, roles)
-    .then(function(updatedUser) { reply(updatedUser); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var roleId = request.payload.role_id;
+    var promise = db.users.removeRoles(userId, roleId)
+    .then(function(user) {
+      return authHelper.updateRoles(user)
+      .then(function() { return user; });
+    });
+    return reply(promise);
   }
 };
 
@@ -261,21 +279,20 @@ exports.removeRoles = {
   * @apiError (Error 500) InternalServerError There was error searching for usernames
   */
 exports.searchUsernames = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.searchUsernames' },
   validate: {
     query: {
       username: Joi.string().required(),
       limit: Joi.number().integer().min(1).max(100).default(15)
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
     // get user by username
     var searchStr = request.query.username;
     var limit = request.query.limit;
-    db.users.searchUsernames(searchStr, limit)
-    .then(function(users) { reply(users); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = db.users.searchUsernames(searchStr, limit);
+    return reply(promise);
   }
 };
 
@@ -297,8 +314,8 @@ exports.searchUsernames = {
   * @apiError (Error 500) InternalServerError There was error calculating the user count
   */
 exports.count = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.count' },
   validate: {
     query: {
       filter: Joi.string().valid('banned'),
@@ -316,30 +333,8 @@ exports.count = {
       };
     }
 
-    db.users.count(opts)
-    .then(function(usersCount) { reply(usersCount); });
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Users
-  * @api {GET} /admin/users/admins/count (Admin) Count Administrators
-  * @apiName CountAdminUsersAdmin
-  * @apiPermission Super Administrator, Administrator
-  * @apiDescription This allows Administrators to get a count of how many admin users are
-  * registered. This is used in the admin panel for paginating through admin users.
-  *
-  * @apiSuccess {number} count The number of admin users registered
-  *
-  * @apiError (Error 500) InternalServerError There was error calculating the admin user count
-  */
-exports.countAdmins = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
-  handler: function(request, reply) {
-    db.users.countAdmins()
-    .then(function(adminsCount) { reply(adminsCount); });
+    var promise = db.users.count(opts);
+    return reply(promise);
   }
 };
 
@@ -357,11 +352,11 @@ exports.countAdmins = {
   * @apiError (Error 500) InternalServerError There was error calculating the mod user count
   */
 exports.countModerators = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.countModerators' },
   handler: function(request, reply) {
-    db.users.countModerators()
-    .then(function(moderatorsCount) { reply(moderatorsCount); });
+    var promise = db.users.countModerators();
+    return reply(promise);
   }
 };
 
@@ -392,7 +387,8 @@ exports.countModerators = {
   * @apiError (Error 500) InternalServerError There was error retrieving the users
   */
 exports.page = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.page' },
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -403,7 +399,6 @@ exports.page = {
       search: Joi.string()
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -413,55 +408,8 @@ exports.page = {
       filter: request.query.filter,
       searchStr: request.query.search
     };
-    db.users.page(opts)
-    .then(function(users) { reply(users); });
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Users
-  * @api {GET} /admin/users/admins (Admin) Page Admins
-  * @apiName PageAdminUsersAdmin
-  * @apiPermission Super Administrator, Administrator
-  * @apiDescription This allows Administrators to page through all registered admins.
-  *
-  * @apiParam (Query) {number{1..n}} [page=1] The page of registered admin users to retrieve
-  * @apiParam (Query) {number{1..n}} [limit=25] The number of admin users to retrieve per page
-  * @apiParam (Query) {string="username","email","updated_at","created_at","roles"} [field=username] The db field to sort the results by
-  * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results
-  * in descending order
-  *
-  * @apiSuccess {object[]} admins An array of admin user objects
-  * @apiSuccess {string} admins.user_id The unique id of the user
-  * @apiSuccess {string} admins.username The username of the user
-  * @apiSuccess {string} admins.email The email of the user
-  * @apiSuccess {timestamp} admins.created_at Timestamp of when the admin user was created
-  * @apiSuccess {string[]} admins.roles An array containing the admin roles the user has
-  * @apiSuccess {string} admins.roles.name The string name of the role
-  *
-  * @apiError (Error 500) InternalServerError There was error retrieving the admins
-  */
-exports.pageAdmins = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  validate: {
-    query: {
-      page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).max(100).default(25),
-      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'roles'),
-      desc: Joi.boolean().default(false)
-    }
-  },
-  pre: [ { method: commonAdminPre.adminCheck } ],
-  handler: function(request, reply) {
-    var opts = {
-      limit: request.query.limit,
-      page: request.query.page,
-      sortField: request.query.field,
-      sortDesc: request.query.desc
-    };
-    db.users.pageAdmins(opts)
-    .then(function(admins) { reply(admins); });
+    var promise = db.users.page(opts);
+    return reply(promise);
   }
 };
 
@@ -490,7 +438,8 @@ exports.pageAdmins = {
   * @apiError (Error 500) InternalServerError There was error retrieving the mods
   */
 exports.pageModerators = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.pageModerators' },
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -499,7 +448,6 @@ exports.pageModerators = {
       desc: Joi.boolean().default(false)
     }
   },
-  pre: [ { method: commonAdminPre.adminCheck } ],
   handler: function(request, reply) {
     var opts = {
       limit: request.query.limit,
@@ -507,11 +455,10 @@ exports.pageModerators = {
       sortField: request.query.field,
       sortDesc: request.query.desc
     };
-    db.users.pageModerators(opts)
-    .then(function(moderators) { reply(moderators); });
+    var promise = db.users.pageModerators(opts);
+    return reply(promise);
   }
 };
-
 
 /**
   * @apiVersion 0.3.0
@@ -534,19 +481,19 @@ exports.pageModerators = {
   * @apiError (Error 500) InternalServerError There was error banning the user
   */
 exports.ban = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.ban' },
   validate: {
     payload: {
-      user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      user_id: Joi.string().required(),
       expiration: Joi.date()
     }
   },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
-    db.users.ban(userId, expiration)
-    .then(function(ban) { reply(ban); });
+    var promise = db.users.ban(userId, expiration);
+    return reply(promise);
   }
 };
 
@@ -570,16 +517,12 @@ exports.ban = {
   * @apiError (Error 500) InternalServerError There was error unbanning the user
   */
 exports.unban = {
-  auth: { mode: 'required', strategy: 'jwt' },
-  pre: [ { method: commonAdminPre.modCheck || commonAdminPre.adminCheck } ],
-  validate: {
-    payload: {
-      user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
-    }
-  },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.unban' },
+  validate: { payload: { user_id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    db.users.unban(userId)
-    .then(function(ban) { reply(ban); });
+    var promise = db.users.unban(userId);
+    return reply(promise);
   }
 };

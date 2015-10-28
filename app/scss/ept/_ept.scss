@@ -306,7 +306,7 @@ input[disabled].toggle-switch + label,
 input[disabled].toggle-switch + label:after { background-color: $color-gray-light }
 input[disabled].toggle-switch:checked + label,
 input[disabled].toggle-switch:checked + label:after { background-color: lighten($color-active-fill, 20%); }
-input[type] {
+input[type], textarea {
   box-shadow: none;
   &.ng-invalid,
   &.ng-invalid-mismatch { border-color: red; }
@@ -359,14 +359,110 @@ select {
   height: 2.3125rem;
   margin-top: 0.05rem;
 }
-select:-moz-focusring {
-    color: transparent;
-    text-shadow: 0 0 0 #000;
+select:-moz-focusring { color: transparent; text-shadow: 0 0 0 #000; }
+tags-input { display: block; }
+tags-input *, tags-input *:before, tags-input *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
+tags-input .host { position: relative; margin-bottom: 0.3125rem; height: 2.3125rem; }
+tags-input .host:active { outline: none; }
+tags-input .tags {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  padding: 0.0625rem;
+  overflow: hidden;
+  word-wrap: break-word;
+  cursor: text;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.75);
+  height: 2.3125rem;
+}
+tags-input .tags.focused { outline: none; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); }
+tags-input .tags .tag-list { margin: 0; padding: 0; list-style-type: none; }
+tags-input .tags .tag-item {
+  margin: 0.125rem;
+  padding: 0 0.3125rem;
+  display: inline-block;
+  float: left;
+  font-size: 0.875rem;
+  height: 1.8rem;
+  line-height: 1.8rem;
+  border-radius: 3px;
+  color: #fff;
+  background-color: $color-active-fill;
+}
+tags-input .tags .tag-item.selected { background-color: #ff5c5c; }
+tags-input .tags .tag-item .remove-button {
+  margin: 0 0 0 0.3125rem;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  vertical-align: middle;
+  font: bold 1rem;
+  color: #fff;
+}
+tags-input .tags .tag-item .remove-button:active { color: #ff0000; }
+tags-input .tags .input {
+  -webkit-appearance: none;
+  box-shadow: none;
+  border: 0;
+  outline: none;
+  margin: 0.125rem;
+  padding: 0;
+  padding-left: 0.3125rem;
+  float: left;
+  height: 1.8rem;
+}
+tags-input .tags .input.invalid-tag { color: #ff0000; }
+tags-input .tags .input::-ms-clear { display: none; }
+tags-input.ng-invalid .tags { border: 1px solid #ff0000; }
+tags-input[disabled] .host:focus { outline: none; }
+tags-input[disabled] .tags { background-color: #eee; cursor: default; }
+tags-input[disabled] .tags .tag-item { opacity: 0.65; color: #fff; background-color: $color-gray-sub; }
+tags-input[disabled] .tags .tag-item .remove-button { cursor: default; }
+tags-input[disabled] .tags .tag-item .remove-button:active { color: #585858; }
+tags-input[disabled] .tags .input { background-color: #eee; cursor: default; }
+tags-input .autocomplete {
+  margin-top: -0.0625rem;
+  position: absolute;
+  padding: 0.3125rem 0;
+  z-index: 999;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.75);
+}
+tags-input .autocomplete .suggestion-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  max-height: 18.75rem;
+  overflow-y: auto;
+  position: relative;
+}
+tags-input .autocomplete .suggestion-item {
+  padding: 0.3125rem 0.625rem;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #000;
+  background-color: #fff;
+}
+tags-input .autocomplete .suggestion-item.selected { color: #fff; background-color: #3599FF; }
+tags-input .autocomplete .suggestion-item.selected em { color: #fff; background-color: #3599FF; }
+tags-input .autocomplete .suggestion-item em { color: #000; background-color: #fff; }
+
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"],
 input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"],
 input[type="number"], input[type="search"], input[type="tel"], input[type="time"],
-input[type="url"], input[type="color"], textarea {
+input[type="url"], input[type="color"], textarea, .input-text {
   @include border-radius(0);
   @include transition(all 0.15s linear);
   -webkit-appearance: none;
@@ -561,7 +657,7 @@ header {
         .search {
           position: relative;
           height: inherit;
-          input[type="text"] {
+          .search-input {
             height: inherit;
             display: inline-block;
             background-color: inherit;
@@ -986,9 +1082,6 @@ main #public-content {
           height: 3.75rem;
           width: 3.75rem;
           img { @include border-radius(100px); width: 100%; height: 100%; object-fit: cover;}
-          img.admin { border: 0.125rem solid $color-active-fill; }
-          img.global-mod { border: 0.125rem solid #32A56E; }
-          img.mod { border: 0.125rem solid #508DD0; }
         }
         .user-role {
           padding-top: 0.625rem;
@@ -1012,24 +1105,6 @@ main #public-content {
             color: $base-font-color;
             font-weight: 900;
             &:hover { color: $color-active; }
-          }
-          a.admin {
-            background-color: $color-active-fill;
-            padding: 0 0.3rem;
-            color: #fff;
-            &:hover { color: #fff; }
-          }
-          a.global-mod {
-            background-color: #32A56E;
-            padding: 0 0.3rem;
-            color: #fff;
-            &:hover { color: #fff; }
-          }
-          a.mod {
-            background-color: #508DD0;
-            padding: 0 0.3rem;
-            color: #fff;
-            &:hover { color: #fff; }
           }
           .timestamp {
             display: inline-block;
@@ -1358,6 +1433,12 @@ main #admin-content {
       td a.ng-show, a.ng-hide { @include transition(none !important); }
     }
   }
+  .ng-modal-dialog-content input[type="radio"] { margin-bottom: 1rem; }
+  .button-container {
+    @include clearfix;
+    @include row;
+    .half-button { @include span-columns(6); @include omega(2n); }
+  }
 
   .admin-table-header {
     @include clearfix;
@@ -1417,6 +1498,7 @@ main #admin-content {
   .radio-button input[type="radio"] + label { margin-left: 0px; }
   input[type].hide-radio { display: none; }
   .user-search { @include span-columns(6); @include omega; }
+  .roles.user-search, .roles.add-role { @include span-columns(12); @include clearfix; }
 
   @include media($mobile) {
     @include pad(0);
@@ -1479,9 +1561,34 @@ main #admin-content {
     pagination { float: right; }
   }
 
+  .role-header { display: inline-block; }
+  .add-users { float: right; }
   .management-users.radio-button, .header-spacer { @include span-columns(2); }
   .autocomplete-wrap { @include span-columns(6); }
   .switch-block label { float: none; }
+  .permissions-modal {
+    @include row;
+    margin: 1rem 0;
+    h4 { margin-bottom: 0.75rem; }
+    input[type="checkbox"], input[type="radio"] { margin-bottom: 0.5rem; }
+    label { @include no-select; }
+    .indent { padding-left: 1rem; }
+    ul {
+      list-style-type: none;
+      li { display: block }
+      li a { display: block; padding: 0.5rem 0; padding-left: 0.5rem; }
+      li a:hover { background-color: $color-gray-sub; }
+      li a.active { background-color: $color-active-fill; color: #fff; }
+    }
+    .left-column {
+      @include span-columns(2);;
+      border-right: 1px solid $color-gray-light;
+    }
+    .right-column {
+      @include span-columns(9);
+      @include omega;
+    }
+  }
 
   @include media($mobile) {
     .pagination-wrap { @include span-columns(8); @include omega; }
@@ -1491,6 +1598,10 @@ main #admin-content {
     .email-column { @include truncate-ellipsis; max-width: 7rem; word-wrap: none; }
     tr.show-mobile { display: table-row; }
     .autocomplete-wrap { @include span-columns(8); @include omega; }
+    .permissions-modal {
+      .left-column { @include span-columns(3); }
+      .right-column { @include span-columns(5); @include omega; }
+    }
   }
 }
 

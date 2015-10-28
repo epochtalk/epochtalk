@@ -22,7 +22,7 @@
       <li class="search">
         <form action="" autocomplete="off">
           <div>
-            <input type="text" name="search" placeholder="Search" autocomplete="off" />
+            <input class="search-input" type="text" name="search" placeholder="Search" autocomplete="off" />
             <label for="search" class="icon-epoch-search"></label>
           </div>
         </form>
@@ -33,11 +33,11 @@
           <a ui-sref="profile({ username: HeaderCtrl.currentUser.username })" ui-sref-opts="{ reload: true }" ng-bind-html="HeaderCtrl.currentUser.username"></a>
         </div>
         <ul id="user-dropdown">
-          <li ng-if="HeaderCtrl.currentUser.isAdmin">
+          <li ng-if="HeaderCtrl.hasPermission('adminAccess')">
             <a ui-sref="^.admin" ui-sref-opts="{ reload: true }">Admin Panel</a>
           </li>
-          <li ng-if="HeaderCtrl.currentUser.isMod && !HeaderCtrl.currentUser.isAdmin">
-            <a ui-sref="^.admin-moderation.users({ filter: 'Pending' })" ui-sref-opts="{ reload: true }">Mod Panel</a>
+          <li ng-if="HeaderCtrl.hasPermission('modAccess') && !HeaderCtrl.hasPermission('adminAccess')">
+            <a ui-sref="^.admin-moderation" ui-sref-opts="{ reload: true }">Mod Panel</a>
           </li>
           <li>
             <a ui-sref="profile({ username: HeaderCtrl.currentUser.username })" ui-sref-opts="{ reload: true }">Profile</a>

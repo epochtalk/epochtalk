@@ -1,6 +1,6 @@
 <div class="nested-input-container">
   <a ng-click="performAction()" ng-class="{ 'nested-btn': usernameIsValid, 'nested-btn-disabled': !usernameIsValid }">{{buttonText}}</a>
-  <input class="nested-input" ng-class="{ 'valid-username': usernameIsValid }" ng-model="searchStr" ng-model-options="{ debounce: 300 }" type="text" list="usernames" id="user-search" placeholder="{{inputPlaceholder}}" />
+  <input class="input-text nested-input" ng-class="{ 'valid-username': usernameIsValid }" ng-model="searchStr" ng-model-options="{ debounce: 300 }" type="text" list="usernames" id="user-search" placeholder="{{inputPlaceholder}}" />
   <datalist id="usernames">
     <option ng-repeat="username in usernameSearchResults track by username" value="{{username}}">
   </datalist>

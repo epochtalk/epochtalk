@@ -19,6 +19,7 @@ var pre = require(path.normalize(__dirname + '/pre'));
   */
 exports.create = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'messages.create' },
   validate: {
     payload: {
       conversation_id: Joi.string().required(),
@@ -28,7 +29,7 @@ exports.create = {
     }
   },
   pre: [
-    { method: pre.canCreate },
+    { method: pre.isConversationMember },
     { method: pre.clean },
     { method: pre.parseEncodings }
   ],
@@ -56,6 +57,7 @@ exports.create = {
   */
 exports.latest = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'messages.latest' },
   validate: {
     query: {
       page: Joi.number().integer().default(1),
@@ -97,7 +99,8 @@ exports.latest = {
   * @apiError (Error 500) InternalServerError There was an issue getting the messages
   */
 exports.findUser = {
-  // auth: { strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'messages.findUser' },
   validate: { params: { username: Joi.string().required() } },
   handler: function(request, reply) {
     // get id for username
@@ -124,10 +127,10 @@ exports.findUser = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'messages.delete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.canDelete } ], //handle permissions
+  pre: [ { method: pre.isMessageOwner } ],
   handler: function(request, reply) {
-    // TODO: delete conversations with no more messages
     var promise = db.messages.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);

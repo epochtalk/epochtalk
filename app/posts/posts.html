@@ -6,7 +6,7 @@
       <h4 ng-bind-html="::PostsParentCtrl.thread.title"></h4>
       <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
       <i class="icon-epoch-verified" ng-if="PostsParentCtrl.thread.sticky"></i>
-      <a ng-href="#" ng-if="PostsParentCtrl.thread.user.id === PostsParentCtrl.user.id || PostsParentCtrl.user.isAdmin" ng-click="PostsParentCtrl.openEditThread()">
+      <a ng-href="#" ng-if="PostsParentCtrl.controlAccess.privilegedTitle" ng-click="PostsParentCtrl.openEditThread()">
         <i class="icon-epoch-edit-pencil"></i>
       </a>
     </div>
@@ -25,30 +25,30 @@
 </div>
 
 <!-- Thread Controls Section -->
-<h5 class="thin-underline" ng-if="PostsParentCtrl.showThreadControls()">Thread Controls</h5>
-<div class="thread-controls thin-underline" ng-if="PostsParentCtrl.showThreadControls()">
+<h5 class="thin-underline" ng-if="PostsParentCtrl.showThreadControls">Thread Controls</h5>
+<div class="thread-controls thin-underline" ng-if="PostsParentCtrl.showThreadControls">
 
   <!-- Thread Lock -->
-  <div class="control">
+  <div class="control" ng-if="PostsParentCtrl.controlAccess.privilegedLock">
     <input id="lockThread" type="checkbox" ng-model="PostsParentCtrl.thread.locked">
     <label for="lockThread" class="icon-epoch-lock" ng-click="PostsParentCtrl.updateThreadLock()">Lock <span class="hide-mobile">Thread</span></label>
   </div>
 
   <!-- Thread Sticky -->
-  <div class="control" ng-if="PostsParentCtrl.user.isAdmin">
+  <div class="control" ng-if="PostsParentCtrl.controlAccess.privilegedSticky">
     <input id="stickyThread" type="checkbox" ng-model="PostsParentCtrl.thread.sticky">
     <label for="stickyThread" class="icon-epoch-verified" ng-click="PostsParentCtrl.updateThreadSticky()">Sticky <span class="hide-mobile">Thread</span></label>
   </div>
 
   <!-- Purge Delete -->
-  <div class="control" ng-if="PostsParentCtrl.user.isAdmin">
+  <div class="control" ng-if="PostsParentCtrl.controlAccess.privilegedPurge">
     <a ng-href="#" id="purgeThread" class="fa fa-trash" ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }" ng-click="PostsParentCtrl.showPurgeThreadModal = true">
       <label>Purge <span class="hide-mobile">Thread</span></label>
     </a>
   </div>
 
   <!-- Move Thread -->
-  <div class="control-full-width" ng-if="PostsParentCtrl.user.isAdmin">
+  <div class="control-full-width"  ng-if="PostsParentCtrl.controlAccess.privilegedMove">
     <label>Move Thread</label>
     <select name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name for board in PostsParentCtrl.boards"></select>
     <a class="button" ng-click="PostsParentCtrl.moveThread()"><i class="fa fa-arrow-circle-left"></i>&nbsp;&nbsp;&nbsp;Move</a>
@@ -70,7 +70,7 @@
 
   <!-- fixed bottom toolbar -->
   <ul class="post-toolbar">
-    <li ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.allowPosting()">
+    <li ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.allowPosting() && PostsParentCtrl.postControlAccess.create">
       <span>+</span>
     </li>
   </ul>
@@ -180,10 +180,12 @@
 <!-- Reporting Modal -->
 <modal show="PostsParentCtrl.showReportModal" on-close="PostsParentCtrl.closeReportModal()">
   <form name="$parent.form" class="css-form">
-    <h3 class="thin-underline">Report User/Post</h3>
-    <label>Which would you like to report?</label>
-    <input type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.user.id" id="reportUser" ng-disabled="PostsParentCtrl.reportSubmitted" required><label for="reportUser">{{PostsParentCtrl.reportedPost.user.username}}</label>
-    <input type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.id" id="reportPost" ng-disabled="PostsParentCtrl.reportSubmitted" required><label for="reportPost">{{PostsParentCtrl.reportedPost.user.username}}'s Post</label>
+    <h3 class="thin-underline" ng-if="PostsParentCtrl.reportControlAccess.reportPosts && PostsParentCtrl.reportControlAccess.reportUsers">Report User/Post</h3>
+    <h3 class="thin-underline" ng-if="PostsParentCtrl.reportControlAccess.reportPosts && !PostsParentCtrl.reportControlAccess.reportUsers">Report Post</h3>
+    <h3 class="thin-underline" ng-if="!PostsParentCtrl.reportControlAccess.reportPosts && PostsParentCtrl.reportControlAccess.reportUsers">Report User</h3>
+    <label ng-if="PostsParentCtrl.reportControlAccess.reportPosts && PostsParentCtrl.reportControlAccess.reportUsers">Which would you like to report?</label>
+    <input ng-if="PostsParentCtrl.reportControlAccess.reportUsers" type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.user.id" id="reportUser" ng-disabled="PostsParentCtrl.reportSubmitted" required><label ng-if="PostsParentCtrl.reportControlAccess.reportUsers" for="reportUser">{{PostsParentCtrl.reportedPost.user.username}}</label>
+    <input ng-if="PostsParentCtrl.reportControlAccess.reportPosts" type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.id" id="reportPost" ng-disabled="PostsParentCtrl.reportSubmitted" required><label ng-if="PostsParentCtrl.reportControlAccess.reportPosts" for="reportPost">{{PostsParentCtrl.reportedPost.user.username}}'s Post</label>
     <label>Reason for Report</label>
     <textarea name="reportReason" ng-model="PostsParentCtrl.reportReason" ng-disabled="PostsParentCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required></textarea>
     <div class="clear">

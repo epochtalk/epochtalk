@@ -1,5 +1,5 @@
 var path = require('path');
-var config = require(path.normalize(__dirname + '/../../../config'));
+var db = require(path.normalize(__dirname + '/../../../db'));
 
 /**
   * @apiVersion 0.3.0
@@ -15,8 +15,7 @@ var config = require(path.normalize(__dirname + '/../../../config'));
   * @apiSuccess {string} logo URL for the forums logo image
   */
 exports.webConfigs = {
-  auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
-    reply(config.website);
+    db.configurations.getPublic().then(reply);
   }
 };

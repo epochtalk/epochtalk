@@ -1,32 +1,38 @@
+var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../db'));
-var commonPre = require(path.normalize(__dirname + '/../common')).auth;
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
-  canFind: function(request, reply) {
-    var username = '';
-    var boardId = request.params.id;
+  accessPrivateBoardWithBoardId: function(request, reply) {
+    // TODO: Implement private board check
+    return reply(true);
+  },
+  accessBoardWithBoardId: function(request, reply) {
+    var userId = '';
     var authenticated = request.auth.isAuthenticated;
-    if (authenticated) { username = request.auth.credentials.username; }
+    if (authenticated) { userId = request.auth.credentials.id; }
+    var boardId = _.get(request, request.route.settings.app.board_id);
 
-    var isAdmin = commonPre.isAdmin(authenticated, username);
-    var isVisible = db.boards.getBoardInBoardMapping(boardId);
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
+    var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
+    var boardVisible = db.boards.getBoardInBoardMapping(boardId)
+    .then(function(board) { return !!board; });
+    var isModerator = db.moderators.isModerator(userId, boardId);
 
-    var promise = Promise.join(isAdmin, isVisible, function(admin, visible) {
+    var promise = Promise.join(boardVisible, viewSome, viewAll, isModerator, function(visible, some, all, isMod) {
       var result = Boom.notFound();
-      if (admin) { result = ''; }
-      else if (visible) { result = ''; }
+      // Board is visible or user has elevated privelages
+      if (visible || all) { result = true; }
+      // User is authenticated and can moderate certain boards
+      else if (authenticated && some && isMod) { result = true; }
       return result;
     });
     return reply(promise);
   },
-  canAll: isAdmin,
-  canCreate: isAdmin,
-  canUpdate: isAdmin,
-  canDelete: isAdmin,
   clean: function(request, reply) {
     request.payload.name = sanitizer.strip(request.payload.name);
     if (request.payload.description) {
@@ -35,16 +41,3 @@ module.exports = {
     return reply();
   }
 };
-
-function isAdmin(request, reply) {
-  var username = '';
-  var authenticated = request.auth.isAuthenticated;
-  if (authenticated) { username = request.auth.credentials.username; }
-  var promise = commonPre.isAdmin(authenticated, username)
-  .then(function(admin) {
-    var result = Boom.forbidden();
-    if (admin) { result = ''; }
-    return result;
-  });
-  return reply(promise);
-}

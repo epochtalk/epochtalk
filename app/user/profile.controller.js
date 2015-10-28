@@ -1,10 +1,7 @@
-module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeout', '$filter', '$state', '$location',
+var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeout', '$filter', '$state', '$location',
   function(user, AdminUsers, User, Session, Alert, $scope, $timeout, $filter, $state, $location) {
     var ctrl = this;
     this.user = user;
-    this.editable = function() { return Session.user.id === user.id || Session.user.isAdmin; };
-    this.removable = function() { return Session.user.isAdmin; };
-    this.adminVisitor = Session.user.id !== user.id && Session.user.isAdmin;
     this.displayUser = angular.copy(user);
     this.displayUser.avatar = this.displayUser.avatar || 'https://fakeimg.pl/400x400/ccc/444/?text=' + this.displayUser.username;
     this.user.dob = $filter('date')(this.user.dob, 'longDate');
@@ -13,6 +10,13 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
     // This isn't the profile users true local time, just a placeholder
     this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
     this.displayPostsUrl = false;
+
+    this.controlAccess = Session.getControlAccessWithPriority('profileControls', user.priority);
+    // Only allow reactivating/deactivating of own account
+    this.controlAccess.deactivate = this.controlAccess.deactivate && Session.user.id === user.id;
+    this.controlAccess.reactivate = this.controlAccess.reactivate && Session.user.id === user.id;
+    this.editable = Session.user.id === user.id || this.controlAccess.privilegedUpdate;
+    this.adminVisitor = Session.user.id !== user.id && this.controlAccess.privilegedUpdate;
 
     var calcAge = function(dob) {
       if (!dob) { return '';}
@@ -46,7 +50,7 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
         Alert.success('Successfully saved profile');
         // redirect page if username changed
         if (ctrl.displayUser.username !== data.username) {
-          if(!ctrl.adminVisitor) { Session.setUsername(ctrl.user.username); }
+          if (!ctrl.adminVisitor) { Session.setUsername(ctrl.user.username); }
           var params = { username: ctrl.user.username};
           $state.go('profile', params, { location: true, reload: false });
         }
@@ -198,25 +202,25 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
 
 
     // DUMMY CHART DATA
-    var data = {
-      labels: ['August', 'September', 'October', 'November', 'December', 'January', 'February'],
-      datasets: [
-        {
-          label: 'My First dataset',
-          fillColor: 'rgba(220,220,220,0.2)',
-          strokeColor: 'rgba(220,220,220,1)',
-          pointColor: 'rgba(220,220,220,1)',
-          pointStrokeColor: '#fff',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: 'rgba(220,220,220,1)',
-          data: [65, 59, 80, 81, 56, 55, 40]
-        }
-      ]
-    };
-    Chart.defaults.global.responsive = true;
-    Chart.defaults.global.maintainAspectRatio = false;
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myNewChart = new Chart(ctx).Line(data);
+    // var data = {
+    //   labels: ['August', 'September', 'October', 'November', 'December', 'January', 'February'],
+    //   datasets: [
+    //     {
+    //       label: 'My First dataset',
+    //       fillColor: 'rgba(220,220,220,0.2)',
+    //       strokeColor: 'rgba(220,220,220,1)',
+    //       pointColor: 'rgba(220,220,220,1)',
+    //       pointStrokeColor: '#fff',
+    //       pointHighlightFill: '#fff',
+    //       pointHighlightStroke: 'rgba(220,220,220,1)',
+    //       data: [65, 59, 80, 81, 56, 55, 40]
+    //     }
+    //   ]
+    // };
+    // Chart.defaults.global.responsive = true;
+    // Chart.defaults.global.maintainAspectRatio = false;
+    // var ctx = document.getElementById('myChart').getContext('2d');
+    // var myNewChart = new Chart(ctx).Line(data);
 
     // Only show user's posts if viewing via the profile state
     if ($state.current.name === 'profile') {
@@ -227,3 +231,7 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
     else { this.displayPostsUrl = true; }
   }
 ];
+
+module.exports = angular.module('ept.profile.ctrl', [])
+.controller('ProfileCtrl', ctrl)
+.name;

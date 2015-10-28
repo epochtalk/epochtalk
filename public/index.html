@@ -5,7 +5,7 @@
   <base href="/">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title ng-bind="$webConfigs.title + ' - ' + ($title || 'Home')">Epochtalk</title>
+  <title ng-bind-html="$webConfigs.title + ' - ' + ($title || 'Home')">Epochtalk</title>
   <meta name="description" content="{{$webConfigs.description}}" />
   <meta name="keywords" content="{{$webConfigs.keywords}}">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
@@ -50,9 +50,8 @@
   </noscript>
 
   <!-- Load App Bundle -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js" async></script>
   <script src="/static/js/bundle.js" type="text/javascript"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"></script>
 </body>
 
 </html>

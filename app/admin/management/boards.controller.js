@@ -1,8 +1,8 @@
-var _ = require('lodash');
+var remove = require('lodash/array/remove');
 
-module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'boards', 'categories',
+var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'boards', 'categories',
   function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, boards, categories) {
-    this.parent = $scope.$parent;
+    this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     // Category and Board Data
     $scope.catListData = categories; // Data backing left side of page
@@ -32,7 +32,7 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
     function cleanBoards(catBoards) {
       catBoards.forEach(function(board) {
         // remove this board from boardListData
-        _.remove(boards, function(tempBoard) { return tempBoard.id === board.id; });
+        remove(boards, function(tempBoard) { return tempBoard.id === board.id; });
         // recurse if there are children
         if (board.children.length > 0) { cleanBoards(board.children); }
       });
@@ -40,7 +40,7 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
 
     cleanBoardList();
 
-    // 0) Create Boards which have been added
+    // 0) Create Categories which have been added
     $scope.processNewCategories = function() {
       console.log('0) Adding new Categories: \n' + JSON.stringify($scope.newCategories, null, 2));
       return $q.all($scope.newCategories.map(function(newCategory) {
@@ -107,3 +107,7 @@ module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 
 
   }
 ];
+
+module.exports = angular.module('ept.admin.management.boards.ctrl', [])
+.controller('CategoriesCtrl', ctrl)
+.name;

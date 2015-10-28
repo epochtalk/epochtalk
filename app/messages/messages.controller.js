@@ -1,6 +1,6 @@
 var bbcodeParser = require('epochtalk-bbcode-parser');
 
-module.exports = [
+var ctrl = [
   '$scope', '$rootScope', '$timeout', '$window', '$location', '$anchorScroll', 'Session', 'Alert', 'Messages', 'Conversations', 'Reports', 'pageData',
   function($scope, $rootScope, $timeout, $window, $location, $anchorScroll, Session, Alert, Messages, Conversations, Reports, pageData) {
     var ctrl = this;
@@ -16,6 +16,12 @@ module.exports = [
     this.newConversation = {body: '', receiver_id: ''};
     this.newMessage = {body: '', receiver_id: '', previewBody: '' };
     this.showReply = false;
+    this.controlAccess = {
+      createConversations: Session.hasPermission('messageControls.createConversations'),
+      createMessages: Session.hasPermission('messageControls.createMessages'),
+      deleteMessages: Session.hasPermission('messageControls.deleteMessages'),
+      reportMessages: Session.hasPermission('reportControls.reportMessages')
+    };
 
     // page exiting functions
     var confirmMessage = 'It looks like a message is being written.';
@@ -255,3 +261,7 @@ module.exports = [
 
   }
 ];
+
+module.exports = angular.module('ept.messages.ctrl', [])
+.controller('MessagesCtrl', ctrl)
+.name;

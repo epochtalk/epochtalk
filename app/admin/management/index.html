@@ -1,17 +1,17 @@
 <div id="admin-subnav" class="fill-row">
   <h2>Management</h2>
-  <dl class="tabs custom-tabs" ng-model="tab" ng-init="tab = 'boards'">
-    <dd class="no-select" ng-class="{'active': tab == 'boards'}">
-      <a ui-sref=".boards" ng-click="tab = 'boards'">Boards</a>
+  <dl class="tabs custom-tabs">
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.boards')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'boards'}">
+      <a ui-sref=".boards" ng-click="AdminManagementCtrl.tab = 'boards'">Boards</a>
     </dd>
-    <dd class="no-select" ng-class="{'active': tab == 'users'}">
-      <a ui-sref=".users" ng-click="tab = 'users'">Users</a>
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.users')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'users'}">
+      <a ui-sref=".users" ng-click="AdminManagementCtrl.tab = 'users'">Users</a>
     </dd>
-    <dd class="no-select" ng-class="{'active': tab == 'moderators'}">
-      <a ui-sref=".moderators" ng-click="tab = 'moderators'">Moderators</a>
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.moderators')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'moderators'}">
+      <a ui-sref=".moderators" ng-click="AdminManagementCtrl.tab = 'moderators'">Moderators</a>
     </dd>
-    <dd class="no-select" ng-class="{'active': tab == 'administrators'}">
-      <a ui-sref=".administrators" ng-click="tab = 'administrators'">Administrators</a>
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.roles')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'roles'}">
+      <a ui-sref=".roles" ng-click="AdminManagementCtrl.tab = 'roles'">Roles</a>
     </dd>
   </dl>
 </div>

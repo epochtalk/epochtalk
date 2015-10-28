@@ -1,9 +1,6 @@
 var bbcodeParser = require('epochtalk-bbcode-parser');
-var fs = require('fs');
 
-module.exports = [
-  '$timeout', '$document', '$window', '$rootScope', 'S3ImageUpload',
-  function($timeout, $document, $window, $rootScope, s3ImageUpload) {
+module.exports = ['$timeout', '$window', '$rootScope', function($timeout, $window, $rootScope) {
   return {
     restrict: 'E',
     scope: {
@@ -15,8 +12,8 @@ module.exports = [
       exitSwitch: '=',
       dirty: '='
     },
-    template: fs.readFileSync(__dirname + '/editor.html'),
-    controller: function($scope, $element) {
+    template: require('./editor.html'),
+    controller: ['$scope', '$element', function($scope, $element) {
       // quote insert
       $scope.$watch('quote', function(newQuote) {
         if (newQuote) { $scope.insertQuote(newQuote); }
@@ -36,7 +33,7 @@ module.exports = [
       $scope.$watch('exitSwitch', function(newValue) {
         $scope.exitEditor(newValue);
       });
-    },
+    }],
     link: function($scope, $element) {
       // editor input elements
       var editor = $element[0].getElementsByClassName('editor-input')[0];

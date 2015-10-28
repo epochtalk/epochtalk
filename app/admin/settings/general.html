@@ -4,17 +4,17 @@
   <!-- Web Configurations -->
   <h5 class="thin-underline">Web Configurations</h5>
   <label for="website-title">Website Title</label>
-  <input type="text" id="website-title" ng-model="AdminSettingsCtrl.settings.website.title" placeholder="Example: Epochtalk Forums" />
+  <input type="text" class="input-text" id="website-title" ng-model="AdminSettingsCtrl.settings.website.title" placeholder="Example: Epochtalk Forums" />
   <label for="website-description">Website Description</label>
-  <input type="text" id="website-description" ng-model="AdminSettingsCtrl.settings.website.description" placeholder="Example: Support forums for Epochtalk software" />
+  <input type="text" class="input-text" id="website-description" ng-model="AdminSettingsCtrl.settings.website.description" placeholder="Example: Support forums for Epochtalk software" />
   <label for="website-keywords">Website Keywords</label>
-  <input type="text" id="website-keywords" ng-model="AdminSettingsCtrl.settings.website.keywords" placeholder="Example: epochtalk, forum, open source, support" />
+  <input type="text" class="input-text" id="website-keywords" ng-model="AdminSettingsCtrl.settings.website.keywords" placeholder="Example: epochtalk, forum, open source, support" />
   <label for="website-logo-upload-btn">Website Logo</label>
   <image-uploader class="editor-image-uploader" model="AdminSettingsCtrl.settings.website.logo" purpose="logo"></image-uploader>
-  <input type="text" id="website-logo" ng-model="AdminSettingsCtrl.settings.website.logo" placeholder="default_logo.png" />
+  <input type="text" class="input-text" id="website-logo" ng-model="AdminSettingsCtrl.settings.website.logo" placeholder="default_logo.png" />
   <label for="website-favicon-upload-btn">Website Favicon</label>
   <image-uploader class="editor-image-uploader" model="AdminSettingsCtrl.settings.website.favicon" purpose="favicon"></image-uploader>
-  <input type="text" id="website-favicon" ng-model="AdminSettingsCtrl.settings.website.favicon" placeholder="favicon.ico" />
+  <input type="text" class="input-text" id="website-favicon" ng-model="AdminSettingsCtrl.settings.website.favicon" placeholder="favicon.ico" />
 
   <!-- Database Tasks -->
   <h5 class="thin-underline section-header-top-spacing">Database Tasks</h5>
@@ -41,15 +41,15 @@
   <h5 class="thin-underline">SMTP Configurations</h5>
   <div class="smtp-server-wrap">
     <label for="smtp-server">SMTP Server</label>
-    <input type="text" id="smtp-server" ng-model="AdminSettingsCtrl.settings.emailer.host" placeholder="Example: http://smtp.gmail.com" />
+    <input type="text" class="input-text" id="smtp-server" ng-model="AdminSettingsCtrl.settings.emailer.host" placeholder="Example: http://smtp.gmail.com" />
   </div>
   <div class="smtp-port-wrap">
     <label for="smtp-port">SMTP Port</label>
-    <input type="text" id="smtp-port" ng-model="AdminSettingsCtrl.settings.emailer.port" placeholder="Example: 587" />
+    <input type="text" class="input-text" id="smtp-port" ng-model="AdminSettingsCtrl.settings.emailer.port" placeholder="Example: 587" />
   </div>
   <div class="smtp-user-wrap">
     <label for="smtp-username">SMTP Username</label>
-    <input type="text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.user" placeholder="Username" />
+    <input type="text" class="input-text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.user" placeholder="Username" />
   </div>
   <div class="smtp-pass-wrap">
     <label for="smtp-password">SMTP Password</label>
@@ -75,37 +75,37 @@
   <div class="fixed-img-wrap">
     <div class="setting">
       <label for="image-size">Max Image Size</label>
-      <input type="text" id="image-size" ng-model="AdminSettingsCtrl.settings.images.max_size" placeholder="Max Image Upload Size in MegaBytes ( Example: 10 )" />
+      <input type="text" class="input-text" id="image-size" ng-model="AdminSettingsCtrl.settings.images.max_size" placeholder="Max Image Upload Size in MegaBytes ( Example: 10 )" />
     </div>
     <div class="setting">
       <label for="image-expiration">Image Expiration</label>
-      <input type="text" id="image-expiration" ng-model="AdminSettingsCtrl.settings.images.expiration" placeholder="Expiration in milliseconds for images that were uploaded but not posted ( Example: 7,200,000 )" />
+      <input type="text" class="input-text" id="image-expiration" ng-model="AdminSettingsCtrl.settings.images.expiration" placeholder="Expiration in milliseconds for images that were uploaded but not posted ( Example: 7,200,000 )" />
     </div>
     <div class="setting">
       <label for="image-interval">Expiration Interval</label>
-      <input type="text" id="image-interval" ng-model="AdminSettingsCtrl.settings.images.interval" placeholder="How often to check for expired images in milliseconds ( Example: 900,000 )" />
+      <input type="text" class="input-text" id="image-interval" ng-model="AdminSettingsCtrl.settings.images.interval" placeholder="How often to check for expired images in milliseconds ( Example: 900,000 )" />
     </div>
   </div>
   <!-- Only shown if Local is selected as image server host -->
   <div ng-if="AdminSettingsCtrl.localImageServer">
     <label for="image-local-dir">Local Image Directory</label>
-    <input type="text" id="image-local-dir" ng-model="AdminSettingsCtrl.settings.images.local.dir" placeholder="Enter the http directory where images should be saved" />
+    <input type="text" class="input-text" id="image-local-dir" ng-model="AdminSettingsCtrl.settings.images.local.dir" placeholder="Enter the http directory where images should be saved" />
     <label for="image-local-path">Local Image Path</label>
-    <input type="text" id="image-local-path" ng-model="AdminSettingsCtrl.settings.images.local.path" placeholder="Enter the path where images should be saved" />
+    <input type="text" class="input-text" id="image-local-path" ng-model="AdminSettingsCtrl.settings.images.local.path" placeholder="Enter the path where images should be saved" />
   </div>
   <!-- Only shown if S3 is selected as image server host -->
   <div ng-if="!AdminSettingsCtrl.localImageServer">
     <label for="image-s3-root">S3 Root URL</label>
-    <input type="text" id="image-s3-root" ng-model="AdminSettingsCtrl.settings.images.s3.root" placeholder="Example: http://example.com" />
+    <input type="text" class="input-text" id="image-s3-root" ng-model="AdminSettingsCtrl.settings.images.s_3.root" placeholder="Example: http://example.com" />
     <label for="image-s3-dir">S3 Directory</label>
-    <input type="text" id="image-s3-dir" ng-model="AdminSettingsCtrl.settings.images.s3.dir" placeholder="Example: /epochtalk" />
+    <input type="text" class="input-text" id="image-s3-dir" ng-model="AdminSettingsCtrl.settings.images.s_3.dir" placeholder="Example: /epochtalk" />
     <label for="image-s3-bucket">S3 Bucket</label>
-    <input type="text" id="image-s3-bucket" ng-model="AdminSettingsCtrl.settings.images.s3.bucket" placeholder="Example: bukkit" />
+    <input type="text" class="input-text" id="image-s3-bucket" ng-model="AdminSettingsCtrl.settings.images.s_3.bucket" placeholder="Example: bukkit" />
     <label for="image-region">S3 Region</label>
-    <input type="text" id="image-s3-region" ng-model="AdminSettingsCtrl.settings.images.s3.region" placeholder="Example: US West" />
+    <input type="text" class="input-text" id="image-s3-region" ng-model="AdminSettingsCtrl.settings.images.s_3.region" placeholder="Example: US West" />
     <label for="image-s3-access-key">S3 Access Key</label>
-    <input class="secret" type="password" id="image-s3-access-key" ng-model="AdminSettingsCtrl.settings.images.s3.access_key" placeholder="Amazon S3 Access Key" />
+    <input class="secret" type="password" id="image-s3-access-key" ng-model="AdminSettingsCtrl.settings.images.s_3.access_key" placeholder="Amazon S3 Access Key" />
     <label for="image-s3-secret-key">S3 Secret Key</label>
-    <input class="secret" type="password" id="image-s3-secret-key" ng-model="AdminSettingsCtrl.settings.images.s3.secret_key" placeholder="Amazon S3 Secret Key" />
+    <input class="secret" type="password" id="image-s3-secret-key" ng-model="AdminSettingsCtrl.settings.images.s_3.secret_key" placeholder="Amazon S3 Secret Key" />
   </div>
 </div>

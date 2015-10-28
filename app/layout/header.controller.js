@@ -1,7 +1,8 @@
-module.exports = ['$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert',
+var ctrl = ['$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert',
   function($location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert) {
     var ctrl = this;
     this.currentUser = Session.user;
+    this.hasPermission = Session.hasPermission;
     this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
 
@@ -124,3 +125,7 @@ module.exports = ['$location', '$timeout', '$state', '$stateParams', 'Auth', 'Se
 
   }
 ];
+
+module.exports = angular.module('ept.header', [])
+.controller('HeaderCtrl', ctrl)
+.name;

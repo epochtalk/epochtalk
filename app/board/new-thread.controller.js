@@ -1,23 +1,19 @@
-module.exports = ['$stateParams', '$location', 'Session', 'Threads', 'Alert',
-  function($stateParams, $location, Session, Threads, Alert) {
+var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Threads', 'Alert', function($anchorScroll, $stateParams, $location, Session, Threads, Alert) {
+    $anchorScroll();
     var ctrl = this;
-
     this.exitEditor = false;
     this.dirtyEditor = false;
     this.resetEditor = true;
     this.thread = {
       board_id: $stateParams.boardId,
-      raw_body: '',
-      body: '',
-      title: '',
       sticky: false,
       locked: false
     };
 
+    this.controlAccess = Session.getControlAccess('threadControls', ctrl.thread.board_id);
     this.loggedIn = Session.isAuthenticated;
-    this.user = Session.user;
 
-    this.save = function(post) {
+    this.save = function() {
       ctrl.exitEditor = true;
       // create a new thread and post
       Threads.save(ctrl.thread).$promise
@@ -31,3 +27,7 @@ module.exports = ['$stateParams', '$location', 'Session', 'Threads', 'Alert',
     };
   }
 ];
+
+module.exports = angular.module('ept.newThread.ctrl', [])
+.controller('NewThreadCtrl', controller)
+.name;

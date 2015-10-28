@@ -2,7 +2,7 @@
   <div class="half-column">
     <div class="nested-input-container">
       <a ng-href="#" ng-click="insertNewCategory()" class="nested-btn">Add Category</a>
-      <input class="nested-input" type="text" id="new-cat" ng-model="newCatName" placeholder="New Category Name">
+      <input class="input-text nested-input" type="text" id="new-cat" ng-model="newCatName" placeholder="New Category Name">
     </div>
   </div>
   <a ng-href="#" ng-click="showAddBoard = true" class="button half-column">Add New Board</a>
@@ -32,7 +32,7 @@
 <modal show="showAddBoard" on-close="clearAddBoardFields()">
   <h3 class="thin-underline">Add New Board</h3>
   <label>Board Name
-    <input type="text" id="newBoardName" placeholder="Board Name" />
+    <input type="text" class="input-text" id="newBoardName" placeholder="Board Name" />
   </label>
   <label>Board Description
     <textarea rows="5" id="newBoardDesc" placeholder="Board Description"></textarea>
@@ -45,7 +45,7 @@
 <modal show="showEditBoard">
   <h3 class="thin-underline">Edit Board</h3>
   <label>Board Name
-    <input type="text" id="editBoardName" ng-model="editBoardName" placeholder="Board Name" />
+    <input type="text" class="input-text" id="editBoardName" ng-model="editBoardName" placeholder="Board Name" />
   </label>
   <label>Board Description
     <textarea rows="5" id="editBoardDesc" ng-model="editBoardDesc" placeholder="Board Description"></textarea>
@@ -71,7 +71,7 @@
 <modal show="showEditCategory">
   <h3 class="thin-underline">Edit Category</h3>
   <label>Category Name
-    <input type="text" id="editCatName" placeholder="Category Name" />
+    <input type="text" class="input-text" id="editCatName" placeholder="Category Name" />
   </label>
   <div class="clear">
     <button ng-click="editCategory()" class="fill-row">Edit Category</button>

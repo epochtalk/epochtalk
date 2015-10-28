@@ -1,8 +1,8 @@
-module.exports = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scope, settings, AdminSettings, Alert) {
+var ctrl = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scope, settings, AdminSettings, Alert) {
   var ctrl = this;
 
   // Tab control
-  this.parent = $scope.$parent;
+  this.parent = $scope.$parent.AdminSettingsCtrl;
   this.parent.tab = 'general';
 
   // Make copy of settings for a restore state
@@ -33,3 +33,7 @@ module.exports = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scop
     ctrl.localImageServer = ctrl.originalSettings.images.storage === 'local';
   };
 }];
+
+module.exports = angular.module('ept.admin.settings.general.ctrl', [])
+.controller('GeneralSettingsCtrl', ctrl)
+.name;

@@ -21,16 +21,27 @@ bower_components
 
 test/coverage/
 /public/js/bundle.js
+/public/js/bundle.map
 /public/js/.bundle.js
 /public/js/bundle.min.js
-/public/bundle.js
+/public/js/*.bundle.js
 /public/css/**
 /public/images/*.jpg
 /public/images/*.jpeg
 /public/images/*.png
 /public/images/*.gif
+/public/templates/*.html
+/public/templates/admin/*.html
+/public/templates/admin/analytics/*.html
+/public/templates/admin/management/*.html
+/public/templates/admin/moderation/*.html
+/public/templates/admin/settings/*.html
+/public/templates/board/*.html
+/public/templates/layout/*.html
+/public/templates/messages/*.html
+/public/templates/posts/*.html
+/public/templates/thread/*.html
+/public/templates/user/*.html
 
-/app/scss/default.scss
-/app/scss/medium-editor.scss
 /app/scss/loading-bar.scss
 /app/.sass-cache/

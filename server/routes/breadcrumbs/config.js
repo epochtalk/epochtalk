@@ -23,18 +23,17 @@ exports.byType = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
     query: {
-      id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      id: Joi.string().required(),
       type: Joi.string().required()
     }
   },
   handler: function(request, reply) {
-    if (!request.server.methods.viewable(request)) { return reply([]); }
 
     // method type enum
     var findType = {
-      board: db.boards.find,
+      board: db.boards.breadcrumb,
       category: db.categories.find,
-      thread: db.threads.find,
+      thread: db.threads.breadcrumb,
       post: db.posts.find
     };
 

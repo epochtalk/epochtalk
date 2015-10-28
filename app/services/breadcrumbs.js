@@ -1,6 +1,9 @@
 'use strict';
 /* jslint node: true */
-var _ = require('lodash');
+
+var without = require('lodash/array/without');
+var intersection = require('lodash/array/intersection');
+var isEmpty = require('lodash/lang/isEmpty');
 
 module.exports = ['$stateParams', '$location', 'Breadcrumbs',
 function ($stateParams, $location, Breadcrumbs) {
@@ -43,12 +46,12 @@ function ($stateParams, $location, Breadcrumbs) {
         boardId:  'board',
         threadId: 'thread',
       };
-      var routeParamKeys = _.without(Object.keys(routeParams), '#'); // remove anchor hash from params
+      var routeParamKeys = without(Object.keys(routeParams), '#'); // remove anchor hash from params
       var keys = Object.keys(keyToType);
-      var matches = _.intersection(routeParamKeys, keys);
+      var matches = intersection(routeParamKeys, keys);
 
       // matches, route is dynamic
-      if (!_.isEmpty(matches)) {
+      if (!isEmpty(matches)) {
         var idKey = routeParamKeys.reverse()[0];
         Breadcrumbs.getBreadcrumbs({ id: routeParams[idKey], type: keyToType[idKey] },
         function(partialCrumbs) {

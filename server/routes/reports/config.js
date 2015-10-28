@@ -27,19 +27,19 @@ var db = require(path.normalize(__dirname + '/../../../db'));
   * @apiError (Error 500) InternalServerError There was an issue creating the user report
   */
 exports.createUserReport = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'reports.createUserReport' },
   validate: {
     payload: {
-      reporter_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      reporter_user_id: Joi.string().required(),
       reporter_reason: Joi.string().required(),
-      offender_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+      offender_user_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
     var report = request.payload;
-    db.reports.createUserReport(report)
-    .then(function(createdReport) { reply(createdReport); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = db.reports.createUserReport(report);
+    return reply(promise);
   }
 };
 
@@ -67,19 +67,19 @@ exports.createUserReport = {
   * @apiError (Error 500) InternalServerError There was an issue creating the post report
   */
 exports.createPostReport = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'reports.createPostReport' },
   validate: {
     payload: {
-      reporter_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      reporter_user_id: Joi.string().required(),
       reporter_reason: Joi.string().required(),
-      offender_post_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+      offender_post_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
     var report = request.payload;
-    db.reports.createPostReport(report)
-    .then(function(createdReport) { reply(createdReport); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = db.reports.createPostReport(report);
+    return reply(promise);
   }
 };
 
@@ -107,18 +107,18 @@ exports.createPostReport = {
   * @apiError (Error 500) InternalServerError There was an issue creating the private message report
   */
 exports.createMessageReport = {
-  auth: { mode: 'required', strategy: 'jwt' },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'reports.createMessageReport' },
   validate: {
     payload: {
-      reporter_user_id: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+      reporter_user_id: Joi.string().required(),
       reporter_reason: Joi.string().required(),
-      offender_message_id: Joi.alternatives().try(Joi.string(), Joi.number()).required()
+      offender_message_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
     var report = request.payload;
-    db.reports.createMessageReport(report)
-    .then(function(createdReport) { reply(createdReport); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = db.reports.createMessageReport(report);
+    return reply(promise);
   }
 };

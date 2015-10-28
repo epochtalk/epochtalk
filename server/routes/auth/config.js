@@ -1,28 +1,14 @@
 var Joi = require('joi');
 var path = require('path');
-var Hapi = require('hapi');
 var Boom = require('boom');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
-var jwt = require('jsonwebtoken');
 var Promise = require('bluebird');
+var pre = require(path.normalize(__dirname + '/pre'));
+var helper = require(path.normalize(__dirname + '/helper'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
 var config = require(path.normalize(__dirname + '/../../../config'));
-var redis = require(path.normalize(__dirname + '/../../../redis'));
-var pre = require(path.normalize(__dirname + '/pre'));
-
-var buildToken = function(user) {
-  // create token
-  var decodedToken = {
-    id: user.id,
-    username: user.username,
-    email: user.email
-  };
-  // TODO: handle token expiration?
-  // build jwt token from decodedToken and privateKey
-  return jwt.sign(decodedToken, config.privateKey, { algorithm: 'HS256' });
-};
 
 /**
   * @api {POST} /login Login
@@ -53,50 +39,46 @@ exports.login = {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      var loginReply = {
-        token: loggedInUser.token,
-        username: loggedInUser.username,
-        userId: loggedInUser.id
-      };
-      return reply(loginReply);
+      return reply(helper.formatUserReply(loggedInUser.token, loggedInUser));
     }
 
     var username = request.payload.username;
     var password = request.payload.password;
-    return db.users.userByUsername(username)
-    .then(function(user) { // check user exists
+    var promise = db.users.userByUsername(username) // get full user info
+    // check user exists
+    .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('Invalid Credentials')); }
     })
-    .then(function(user) { // check confirmation token
+    // check confirmation token
+    .then(function(user) {
       if (user.confirmation_token) {
         return Promise.reject(Boom.badRequest('Account Not Confirmed'));
       }
       else { return user; }
     })
-    .then(function(user) { // check if passhash matches
+    // check passhash exists (imported user only)
+    .then(function(user) {
+      if (user.passhash) { return user; }
+      else { return Promise.reject(Boom.forbidden('Account Migration Not Complete, Please Reset Password')); }
+    })
+    // check if passhash matches
+    .then(function(user) {
       if (bcrypt.compareSync(password, user.passhash)) { return user; }
       else { return Promise.reject(Boom.badRequest('Invalid Credentials')); }
     })
-    .then(function(user) { // build and save token
-      var token = buildToken(user);
-      var key = user.id + token;
-      return redis.setAsync(key, token)
-      .then(function() {
-        var userReply = {
-          token: token,
-          id: user.id,
-          username: user.username,
-          avatar: user.avatar,
-          roles: user.roles
-        };
-        return reply(userReply);
-      });
+    // get user moderating boards
+    .then(function(user) {
+      return db.moderators.getUsersBoards(user.id)
+      .then(function(boards) {
+        boards = boards.map(function(board) { return board.board_id; });
+        user.moderating = boards;
+      })
+      .then(function() { return user; });
     })
-    .catch(function(err) {
-      if (err.isBoom) { return reply(err); }
-      else return reply(Boom.badImplementation(err));
-    });
+    // builds token, saves session, returns request output
+    .then(helper.saveSession);
+    return reply(promise);
   }
 };
 
@@ -116,16 +98,12 @@ exports.logout = {
   auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
     // check if already logged in with jwt
-    if (!request.auth.isAuthenticated) {
-      return reply(Boom.badRequest('Not Logged In'));
-    }
+    if (!request.auth.isAuthenticated) { return reply(Boom.unauthorized()); }
 
-    // delete jwt from memdown
+    // deletes session, deletes user, no return
     var creds = request.auth.credentials;
-    var key = creds.id + creds.token;
-    redis.delAsync(key)
-    .then(function(err) { return reply(true); })
-    .catch(function(err) { return reply(Boom.badImplementation(err)); });
+    var promise = helper.deleteSession(creds.sessionId, creds.id);
+    return reply(promise);
   }
 };
 
@@ -188,12 +166,7 @@ exports.register = {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      var loginReply = {
-        token: loggedInUser.token,
-        username: loggedInUser.username,
-        userId: loggedInUser.id
-      };
-      return reply(loginReply);
+      return reply(helper.formatUserReply(loggedInUser.token, loggedInUser));
     }
 
     var newUser = {
@@ -203,44 +176,29 @@ exports.register = {
       confirmation_token: config.verifyRegistration ? crypto.randomBytes(20).toString('hex') : null
     };
     // check that username or email does not already exist
-    return db.users.create(newUser)
+    var promise = db.users.create(newUser)
     .then(function(user) {
       if (config.verifyRegistration) {  // send confirmation email
         var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
-        var regReply = {
+        var emailParams = {
+          email: user.email, username: user.username, confirm_url: confirmUrl
+        };
+        request.server.log('debug', emailParams);
+        emailer.send('confirmAccount', emailParams);
+        return {
           statusCode: 200,
           message: 'Successfully Created Account',
           username: user.username,
           confirm_token: user.confirmation_token,
           confirm_url: confirmUrl
         };
-        reply(regReply);
-        var emailParams = {
-          email: user.email, username: user.username, confirm_url: confirmUrl
-        };
-        request.server.log('debug', emailParams);
-        emailer.send('confirmAccount', emailParams);
       }
       else { // Log user in after registering
-        var token = buildToken(user);
-        var key = user.id + token;
-        redis.setAsync(key, token)
-        .then(function() {
-          var regReply = {
-            token: token,
-            id: user.id,
-            username: user.username,
-            avatar: user.avatar,
-            roles: user.roles
-          };
-          return reply(regReply);
-        })
-        .catch(function(err) { return reply(Boom.badImplementation(err)); });
+        // builds token, saves session, returns request output
+        return helper.saveSession(user);
       }
-    })
-    .catch(function(err) {
-      return reply(Boom.badImplementation(err));
     });
+    return reply(promise);
   }
 };
 
@@ -273,7 +231,7 @@ exports.confirmAccount = {
   handler: function(request, reply) {
     var username = request.payload.username;
     var confirmationToken = request.payload.token;
-    db.users.userByUsername(username)
+    var promise = db.users.userByUsername(username) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('Account Not Found')); }
@@ -287,24 +245,18 @@ exports.confirmAccount = {
         return Promise.reject(Boom.badRequest('Account Confirmation Error'));
       }
     })
-    .then(function(updatedUser) {
-      var authToken = buildToken(updatedUser);
-      var key = updatedUser.id + authToken;
-      return redis.setAsync(key, authToken)
-      .then(function() {
-        var userReply = {
-          token: authToken,
-          id: updatedUser.id,
-          username: updatedUser.username,
-          roles: updatedUser.roles
-        };
-        return reply(userReply);
-      });
+    // get user moderating boards
+    .then(function(user) {
+      return db.moderators.getUsersBoards(user.id)
+      .then(function(boards) {
+        boards = boards.map(function(board) { return board.board_id; });
+        user.moderating = boards;
+      })
+      .then(function() { return user; });
     })
-    .catch(function(err) {
-      if (err.isBoom) { return reply(err); }
-      else { return reply(Boom.badImplementation(err)); }
-    });
+    // builds token, saves session, returns request output
+    .then(helper.saveSession);
+    return reply(promise);
   }
 };
 
@@ -326,21 +278,12 @@ exports.authenticate = {
   auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
     // check if already logged in with jwt
+    var ret = Boom.unauthorized();
     if (request.auth.isAuthenticated) {
-      var userId = request.auth.credentials.id;
-      return db.users.find(userId)
-      .then(function(user) {
-        var retUser = {
-          id: user.id,
-          username: user.username,
-          roles: user.roles,
-          avatar: user.avatar
-        };
-        return reply(retUser);
-      })
-      .catch(function() { return reply(Boom.unauthorized()); });
+      var user = request.auth.credentials;
+      ret = helper.formatUserReply(user.token, user);
     }
-    else { return reply(Boom.unauthorized()); }
+    return reply(ret);
   }
 };
 
@@ -359,12 +302,9 @@ exports.username = {
   validate: { params: { username: Joi.string().min(1).max(255).required() } },
   handler: function(request, reply) {
     var username = request.params.username;
-    db.users.userByUsername(username)
-    .then(function(user) {
-      var found = !!user;
-      reply({ found: found });
-    })
-    .catch(function() { reply({ found: false }); });
+    var promise = db.users.userByUsername(username) // get full user info
+    .then(function(user) { return { found: !!user }; });
+    return reply(promise);
   }
 };
 
@@ -383,15 +323,11 @@ exports.email = {
   validate: { params: { email: Joi.string().email().required() } },
   handler: function(request, reply) {
     var email = request.params.email;
-    db.users.userByEmail(email)
-    .then(function(user) {
-      var found = !!user;
-      reply({ found: found });
-    })
-    .catch(function() { reply({ found: false }); });
+    var promise = db.users.userByEmail(email) // get full user info
+    .then(function(user) { return { found: !!user }; });
+    return reply(promise);
   }
 };
-
 
 /**
   * @api {GET} /recover/:query Recover Account
@@ -411,7 +347,7 @@ exports.recoverAccount = {
   validate: { params: { query: Joi.string().min(1).max(255).required(), } },
   handler: function(request, reply) {
     var query = request.params.query;
-    db.users.userByUsername(query)
+    var promise = db.users.userByUsername(query) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('No Account Found')); }
@@ -438,12 +374,8 @@ exports.recoverAccount = {
         reset_url: config.publicUrl + '/' + path.join('reset', user.username, user.reset_token)
       };
       return emailer.send('recoverAccount', emailParams);
-    })
-    .then(function(success) { reply(success); })
-    .catch(function(err) {
-      if (err.isBoom) { return reply(err); }
-      else { return reply(Boom.badImplementation(err)); }
     });
+    return reply(promise);
   }
 };
 
@@ -477,7 +409,7 @@ exports.resetPassword = {
     var username = request.payload.username;
     var password = request.payload.password;
     var token = request.payload.token;
-    db.users.userByUsername(username)
+    var promise = db.users.userByUsername(username) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('Account Not Found')); }
@@ -487,27 +419,23 @@ exports.resetPassword = {
       var tokenMatched = user.reset_token && user.reset_token === token;
       var expiryValid = user.reset_expiration && now < user.reset_expiration;
       if (tokenMatched && expiryValid) {
-        var updateUser = {};
-        updateUser.id = user.id;
-        updateUser.reset_expiration = null;
-        updateUser.reset_token = null;
-        updateUser.password = password;
-        return updateUser;
+        return {
+          id: user.id,
+          reset_expiration: null,
+          reset_token: null,
+          password: password
+        };
       }
-      else { return Promise.reject(Boom.badRequest('Invalid reset token.')); }
+      else { return Promise.reject(Boom.badRequest('Invalid Reset Token.')); }
     })
     .then(db.users.update)
     .then(function(updatedUser) {
       // TODO: Send password reset confirmation email here
-      return reply('Password Successfully Reset');
-    })
-    .catch(function(err) {
-      if (err.isBoom) { return reply(err); }
-      else { return reply(Boom.badImplementation(err)); }
+      return 'Password Successfully Reset';
     });
+    return reply(promise);
   }
 };
-
 
 /**
   * @api {GET} /reset/:username/:token/validate Validate Account Reset Token
@@ -535,22 +463,21 @@ exports.checkResetToken = {
   handler: function(request, reply) {
     var username = request.params.username;
     var token = request.params.token;
-    db.users.userByUsername(username)
+    var promise = db.users.userByUsername(username) // get full user info
     .then(function(user) {
-      if (!user) { return reply(Boom.badRequest('No Account Found.')); }
+      if (user) { return user; }
+      else { return Promise.reject(Boom.badRequest('No Account Found.')); }
+    })
+    .then(function(user){
       var now = Date.now();
       var tokenValid = user.reset_token && user.reset_token === token;
       var tokenExpired =  user.reset_expiration && now > user.reset_expiration;
-      var ret = {
+      return {
         token_valid: tokenValid,
         token_expired: tokenValid ? tokenExpired : undefined
       };
-      return reply(ret);
     })
-    .catch(function() { return reply({ token_valid: false }); });
+    .catch(function() { return { token_valid: false }; });
+    return reply(promise);
   }
-};
-
-exports.refreshToken = {
-  handler: function(request, reply) { return reply(true); }
 };

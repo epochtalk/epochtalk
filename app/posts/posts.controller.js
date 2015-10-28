@@ -1,4 +1,4 @@
-module.exports = [
+var ctrl = [
   '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Threads', 'Posts', 'pageData',
   function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Threads, Posts, pageData) {
     var ctrl = this;
@@ -17,10 +17,12 @@ module.exports = [
     this.openReportModal = parent.openReportModal;
     $timeout($anchorScroll);
 
+    // Get access rights to page controls for authed user
+    this.controlAccess = Session.getControlAccess('postControls', pageData.thread.board_id);
+
     // init function
     (function() {
       parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
-      parent.getBoards();
       $timeout(function() { highlight($location.hash()); }, 500);
     })();
 
@@ -31,7 +33,7 @@ module.exports = [
       }
     });
 
-    this.offLCS = $rootScope.$on('$locationChangeSuccess', function(event){
+    this.offLCS = $rootScope.$on('$locationChangeSuccess', function(){
       var params = $location.search();
       var page = Number(params.page);
       var limit = Number(params.limit);
@@ -75,6 +77,25 @@ module.exports = [
       });
     };
 
+    this.avatarHighlight = function(color) {
+      var style = {};
+      if (color) {
+        style.background = color;
+        style.padding = '0.2rem';
+      }
+      return style;
+    };
+
+    this.usernameHighlight = function(color) {
+      var style = {};
+      if (color) {
+        style.background = color;
+        style.padding = '0 0.3rem';
+        style.color = '#ffffff';
+      }
+      return style;
+    };
+
     this.highlightPost = function() {
       $timeout(function() { highlight($location.hash()); });
     };
@@ -95,3 +116,7 @@ module.exports = [
     }
   }
 ];
+
+module.exports = angular.module('ept.posts.ctrl', [])
+.controller('PostsCtrl', ctrl)
+.name;

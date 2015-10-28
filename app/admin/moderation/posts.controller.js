@@ -1,6 +1,6 @@
-module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Posts, postReports, reportCount, page, limit, field, desc, filter, search, reportId) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Posts, postReports, reportCount, page, limit, field, desc, filter, search, reportId) {
   var ctrl = this;
-  this.parent = $scope.$parent;
+  this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'posts';
   this.previewPost = null;
   this.previewReport = null;
@@ -439,3 +439,7 @@ module.exports = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     });
   };
 }];
+
+module.exports = angular.module('ept.admin.moderation.posts.ctrl', [])
+.controller('ModPostsCtrl', ctrl)
+.name;

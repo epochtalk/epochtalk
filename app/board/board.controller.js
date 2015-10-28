@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Session', 'Boards', 'Threads', 'pageData',
+var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Session', 'Boards', 'Threads', 'pageData',
   function($rootScope, $scope, $anchorScroll, $location, $timeout, Session, Boards, Threads, pageData) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated; // check Auth
@@ -13,6 +13,11 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
     this.parent.board  = pageData.board;
     this.parent.page = pageData.page;
     this.parent.pageCount = Math.ceil(this.board.thread_count / this.limit);
+
+    this.parent.controlAccess = {
+      createPost: Session.hasPermission('postControls.create'),
+      createThread: Session.hasPermission('threadControls.create')
+    };
 
     // set total_thread_count and total_post_count for all boards
     this.board.children.map(function(childBoard) {
@@ -115,3 +120,7 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
 
   }
 ];
+
+module.exports = angular.module('ept.board.ctrl', [])
+.controller('BoardCtrl', ctrl)
+.name;
