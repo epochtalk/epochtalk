@@ -1,7 +1,7 @@
 var remove = require('lodash/array/remove');
 var Promise = require('bluebird');
 
-module.exports = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories',
+var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories',
   function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, AdminUsers, AdminModerators, boards, categories) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
