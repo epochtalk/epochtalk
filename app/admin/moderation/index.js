@@ -132,7 +132,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       'preview@admin-moderation.users': {
         controller: 'ProfileCtrl',
         controllerAs: 'ProfileCtrl',
-        templateUrl: '/static/templates/profile.html'
+        templateUrl: '/static/templates/user/profile.html'
       }
     },
     resolve: {
