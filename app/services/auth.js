@@ -1,6 +1,5 @@
 'use strict';
 /* jslint node: true */
-/* global angular */
 
 module.exports = ['$window', 'User', 'Session',
   function($window, User, Session) {

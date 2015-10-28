@@ -1,11 +1,10 @@
-var fs = require('fs');
-var _ = require('lodash');
+var remove = require('lodash/array/remove');
 
 module.exports = ['$state', function($state) {
   return {
     restrict: 'E',
-    template: fs.readFileSync(__dirname + '/category-editor.html'),
-    controller: function($scope) {
+    template: require('./category-editor.html'),
+    controller: ['$scope', function($scope) {
       var dataId = 0;
       $scope.catListId = 'categorized-boards';
       $scope.boardListId = 'uncategorized-boards';
@@ -135,7 +134,7 @@ module.exports = ['$state', function($state) {
         // add this cat to the deletedCategories list
         var category = $scope.nestableMap[deleteCatDataId];
         if (category.id === -1) {
-          _.remove($scope.newCategories, function(cat) {
+          remove($scope.newCategories, function(cat) {
             return cat.dataId === deleteCatDataId;
           });
         }
@@ -166,7 +165,7 @@ module.exports = ['$state', function($state) {
         // add this board to the deletedBoards list
         var board = $scope.nestableMap[deleteBoardDataId];
         if (board.id === -1) {
-          _.remove($scope.newBoards, function(b) {
+          remove($scope.newBoards, function(b) {
             return b.dataId === deleteBoardDataId;
           });
         }
@@ -251,6 +250,6 @@ module.exports = ['$state', function($state) {
           }
         });
       }
-    }
+    }]
   };
 }];

@@ -1,6 +1,6 @@
-var _ = require('lodash');
+var some = require('lodash/collection/some');
 
-module.exports = [
+var ctrl = [
   '$scope', '$timeout', '$location', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
   function($scope, $timeout, $location, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
     var ctrl = this;
@@ -37,7 +37,7 @@ module.exports = [
       delete ctrl.privilegedControlAccess.lock; // remove non privileged permissions
       delete ctrl.privilegedControlAccess.title;
       delete ctrl.privilegedControlAccess.create;
-      ctrl.showThreadControls = _.some(ctrl.privilegedControlAccess);
+      ctrl.showThreadControls = some(ctrl.privilegedControlAccess);
       ctrl.getBoards();
     });
 
@@ -337,3 +337,7 @@ module.exports = [
     };
   }
 ];
+
+module.exports = angular.module('ept.posts.parentCtrl', [])
+.controller('PostsParentCtrl', ctrl)
+.name;

@@ -11,7 +11,7 @@ module.exports = ['$filter', function ($filter) {
     var isThisYear = now.getYear() === date.getYear();
     var isMaxDate = maxDate.getTime() === date.getTime();
     if (hideTime) {
-      if (isToday) { result = 'Today' }
+      if (isToday) { result = 'Today'; }
       else if (isMaxDate) { result = 'Permanent'; } // bans
       else { result = $filter('date')(dateStr, 'MMMM d, y'); }
     }

@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var sortBy = require('lodash/collection/sortBy');
 
 module.exports = ['$compile', function($compile) {
   return {
@@ -19,7 +19,7 @@ module.exports = ['$compile', function($compile) {
       // Generates nestable html for category data
       var generateCategoryList = function(categories) {
         var html = '<div class="dd" id="' + scope.catListId + '"><ol class="dd-list">';
-        var sortedCats = _.sortBy(categories, 'view_order');
+        var sortedCats = sortBy(categories, 'view_order');
         sortedCats.forEach(function(cat) {
           var dataId = scope.getDataId();
           var boardIds = [];

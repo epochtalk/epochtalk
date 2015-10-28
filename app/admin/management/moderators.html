@@ -27,7 +27,7 @@
           </div>
         </td>
         <td class="hide-mobile">
-          <input ng-disabled="globalMod" type="text" class="no-margin" name="moderated-boards-{{$index}}" placeholder="{{ globalMod ? 'Disabled for Global Moderators' : 'Type a board name and hit enter to add' }}" />
+          <input ng-disabled="globalMod" type="text" class="input-text no-margin" name="moderated-boards-{{$index}}" placeholder="{{ globalMod ? 'Disabled for Global Moderators' : 'Type a board name and hit enter to add' }}" />
         </td>
         <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
         <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
@@ -38,7 +38,7 @@
       </tr>
       <tr class="show-mobile">
         <td colspan="6">
-          <input ng-disabled="globalMod" type="text" class="no-margin" name="moderated-boards-{{$index}}" placeholder="{{ globalMod ? 'Disabled for Global Moderators' : 'Type a board name and hit enter to add' }}" />
+          <input ng-disabled="globalMod" type="text" class="input-text no-margin" name="moderated-boards-{{$index}}" placeholder="{{ globalMod ? 'Disabled for Global Moderators' : 'Type a board name and hit enter to add' }}" />
         </td>
       </tr>
     </tbody>

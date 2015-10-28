@@ -1,4 +1,4 @@
-module.exports = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$state', '$anchorScroll',
+var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$state', '$anchorScroll',
   function(user, pageData, Posts, $location, $scope, $rootScope, $state, $anchorScroll) {
     var ctrl = this;
     this.user = angular.copy(user);
@@ -99,3 +99,7 @@ module.exports = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScop
     };
   }
 ];
+
+module.exports = angular.module('ept.profile.postsCtrl', [])
+.controller('ProfilePostsCtrl', ctrl)
+.name;

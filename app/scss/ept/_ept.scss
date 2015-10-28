@@ -462,7 +462,7 @@ tags-input .autocomplete .suggestion-item em { color: #000; background-color: #f
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"],
 input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"],
 input[type="number"], input[type="search"], input[type="tel"], input[type="time"],
-input[type="url"], input[type="color"], textarea {
+input[type="url"], input[type="color"], textarea, .input-text {
   @include border-radius(0);
   @include transition(all 0.15s linear);
   -webkit-appearance: none;
@@ -657,7 +657,7 @@ header {
         .search {
           position: relative;
           height: inherit;
-          input[type="text"] {
+          .search-input {
             height: inherit;
             display: inline-block;
             background-color: inherit;

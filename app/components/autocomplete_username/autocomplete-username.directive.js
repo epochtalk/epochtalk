@@ -1,16 +1,13 @@
-var fs = require('fs');
-var path = require('path');
-
 module.exports = ['AdminUsers', function(AdminUsers) {
   return {
     restrict: 'E',
-    template: fs.readFileSync(path.normalize(__dirname + '/autocomplete-username.html')),
+    template: require('./autocomplete-username.html'),
     scope: {
       buttonText: '@',
       inputPlaceholder: '@',
       buttonAction: '&'
     },
-    controller: function($scope) {
+    controller: ['$scope', function($scope) {
       $scope.usernameSearchResults = [];
       $scope.usernameIsValid = false;
 
@@ -39,6 +36,6 @@ module.exports = ['AdminUsers', function(AdminUsers) {
           }
         });
       });
-    }
+    }]
   };
 }];

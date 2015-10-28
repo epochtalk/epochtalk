@@ -12,7 +12,7 @@
     <div class="nested-input-container">
       <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
       <a ng-click="AdminManagementCtrl.searchUsers()" class="nested-btn">Search</a>
-      <input class="nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
+      <input class="input-text nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
     </div>
   </div>
   <div class="clear"></div>
@@ -128,11 +128,11 @@
         <div ng-if="$parent.form.username.$error.unique" class="invalid right">
           Username already taken
         </div>
-        <input type="text" name="username" ng-model="AdminManagementCtrl.selectedUser.username" unique-username="{{::AdminManagementCtrl.selectedUser.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
+        <input type="text" class="input-text" name="username" ng-model="AdminManagementCtrl.selectedUser.username" unique-username="{{::AdminManagementCtrl.selectedUser.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
       </label>
 
       <label>Name
-        <input type="text" placeholder="Name" ng-model="AdminManagementCtrl.selectedUser.name">
+        <input type="text" class="input-text" placeholder="Name" ng-model="AdminManagementCtrl.selectedUser.name">
       </label>
 
       <label>Email
@@ -154,7 +154,7 @@
 
       <label>Avatar
         <image-uploader class="editor-image-uploader" model="AdminManagementCtrl.selectedUser.avatar" purpose="avatar"></image-uploader>
-        <input type="text" ng-model="AdminManagementCtrl.selectedUser.avatar" placeholder="URL to avatar image" />
+        <input type="text" class="input-text" ng-model="AdminManagementCtrl.selectedUser.avatar" placeholder="URL to avatar image" />
       </label>
 
       <label>Signature
@@ -164,27 +164,27 @@
 
     <div class="half-column">
       <label>Website
-        <input type="text" placeholder="Website" ng-model="AdminManagementCtrl.selectedUser.website">
+        <input type="text" class="input-text" placeholder="Website" ng-model="AdminManagementCtrl.selectedUser.website">
       </label>
 
       <label>Bitcoin Address
-        <input type="text" placeholder="Bitcoin Address" ng-model="AdminManagementCtrl.selectedUser.btcAddress">
+        <input type="text" class="input-text" placeholder="Bitcoin Address" ng-model="AdminManagementCtrl.selectedUser.btcAddress">
       </label>
 
       <label>Gender
-        <input type="text" placeholder="Gender" ng-model="AdminManagementCtrl.selectedUser.gender">
+        <input type="text" class="input-text" placeholder="Gender" ng-model="AdminManagementCtrl.selectedUser.gender">
       </label>
 
       <label>Date of Birth
-        <input type="text" placeholder="Date of Birth" ng-model="AdminManagementCtrl.selectedUser.dob">
+        <input type="text" class="input-text" placeholder="Date of Birth" ng-model="AdminManagementCtrl.selectedUser.dob">
       </label>
 
       <label>Location
-        <input type="text" placeholder="Location" ng-model="AdminManagementCtrl.selectedUser.location">
+        <input type="text" class="input-text" placeholder="Location" ng-model="AdminManagementCtrl.selectedUser.location">
       </label>
 
       <label>Language
-        <input type="text" placeholder="Language" ng-model="AdminManagementCtrl.selectedUser.language">
+        <input type="text" class="input-text" placeholder="Language" ng-model="AdminManagementCtrl.selectedUser.language">
       </label>
     </div>
 

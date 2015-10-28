@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Session', 'Boards', 'Threads', 'pageData',
+var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Session', 'Boards', 'Threads', 'pageData',
   function($rootScope, $scope, $anchorScroll, $location, $timeout, Session, Boards, Threads, pageData) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated; // check Auth
@@ -120,3 +120,7 @@ module.exports = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeou
 
   }
 ];
+
+module.exports = angular.module('ept.board.ctrl', [])
+.controller('BoardCtrl', ctrl)
+.name;

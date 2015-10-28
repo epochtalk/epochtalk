@@ -1,7 +1,8 @@
 'use strict';
 /* jslint node: true */
 /* global angular */
-var _ = require('lodash');
+var includes = require('lodash/collection/includes');
+var get = require('lodash/object/get');
 
 module.exports = ['$window',
   function($window) {
@@ -121,18 +122,18 @@ module.exports = ['$window',
     }
 
     function hasPermission(permission) {
-      return user.permissions && _.get(user.permissions, permission);
+      return user.permissions && get(user.permissions, permission);
     }
 
     function moderatesBoard(boardId) {
-      return _.includes(user.moderating, boardId);
+      return includes(user.moderating, boardId);
     }
 
     function getControlAccess(permission, boardId) {
       var result = {};
       var isMod = moderatesBoard(boardId);
       if (user.permissions) {
-        var obj = _.get(user.permissions, permission);
+        var obj = get(user.permissions, permission);
         for (var key in obj) { result[key] = (isMod && obj[key].some) || obj[key].all || obj[key]; }
       }
       return result;
@@ -143,7 +144,7 @@ module.exports = ['$window',
       if (user.permissions) {
         var authedPriority = user.permissions.priority;
         if (othersPriority === null || othersPriority === undefined) { othersPriority = Number.MAX_VALUE; }
-        var obj = _.get(user.permissions, permission);
+        var obj = get(user.permissions, permission);
         for (var key in obj) {
           var samePriority = obj[key].samePriority;
           var lowerPriority = obj[key].lowerPriority;

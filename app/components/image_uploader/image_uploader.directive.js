@@ -1,7 +1,4 @@
-var fs = require('fs');
-
-module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
-  function($timeout, s3ImageUpload, Alert) {
+module.exports = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3ImageUpload, Alert) {
   return {
     restrict: 'E',
     scope: {
@@ -9,7 +6,7 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert',
       purpose: '@',
       onDone: '&'
     },
-    template: fs.readFileSync(__dirname + '/image_uploader.html'),
+    template: require('./image_uploader.html'),
     link: function($scope, $element) {
       // directive initialization
       $scope.images = [];

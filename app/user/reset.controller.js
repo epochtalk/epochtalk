@@ -1,4 +1,4 @@
-module.exports = ['$location', '$timeout', '$stateParams', 'User', 'Auth', 'Alert',
+var ctrl = ['$location', '$timeout', '$stateParams', 'User', 'Auth', 'Alert',
   function($location, $timeout, $stateParams, User, Auth, Alert) {
     var ctrl = this;
     this.tokenExpired = false;
@@ -40,3 +40,7 @@ module.exports = ['$location', '$timeout', '$stateParams', 'User', 'Auth', 'Aler
     };
   }
 ];
+
+module.exports = angular.module('ept.reset.ctrl', [])
+.controller('ResetCtrl', ctrl)
+.name;

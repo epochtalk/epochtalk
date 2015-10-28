@@ -1,4 +1,4 @@
-module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeout', '$filter', '$state', '$location',
+var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeout', '$filter', '$state', '$location',
   function(user, AdminUsers, User, Session, Alert, $scope, $timeout, $filter, $state, $location) {
     var ctrl = this;
     this.user = user;
@@ -202,25 +202,25 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
 
 
     // DUMMY CHART DATA
-    var data = {
-      labels: ['August', 'September', 'October', 'November', 'December', 'January', 'February'],
-      datasets: [
-        {
-          label: 'My First dataset',
-          fillColor: 'rgba(220,220,220,0.2)',
-          strokeColor: 'rgba(220,220,220,1)',
-          pointColor: 'rgba(220,220,220,1)',
-          pointStrokeColor: '#fff',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: 'rgba(220,220,220,1)',
-          data: [65, 59, 80, 81, 56, 55, 40]
-        }
-      ]
-    };
-    Chart.defaults.global.responsive = true;
-    Chart.defaults.global.maintainAspectRatio = false;
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myNewChart = new Chart(ctx).Line(data);
+    // var data = {
+    //   labels: ['August', 'September', 'October', 'November', 'December', 'January', 'February'],
+    //   datasets: [
+    //     {
+    //       label: 'My First dataset',
+    //       fillColor: 'rgba(220,220,220,0.2)',
+    //       strokeColor: 'rgba(220,220,220,1)',
+    //       pointColor: 'rgba(220,220,220,1)',
+    //       pointStrokeColor: '#fff',
+    //       pointHighlightFill: '#fff',
+    //       pointHighlightStroke: 'rgba(220,220,220,1)',
+    //       data: [65, 59, 80, 81, 56, 55, 40]
+    //     }
+    //   ]
+    // };
+    // Chart.defaults.global.responsive = true;
+    // Chart.defaults.global.maintainAspectRatio = false;
+    // var ctx = document.getElementById('myChart').getContext('2d');
+    // var myNewChart = new Chart(ctx).Line(data);
 
     // Only show user's posts if viewing via the profile state
     if ($state.current.name === 'profile') {
@@ -231,3 +231,7 @@ module.exports = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$
     else { this.displayPostsUrl = true; }
   }
 ];
+
+module.exports = angular.module('ept.profile.ctrl', [])
+.controller('ProfileCtrl', ctrl)
+.name;

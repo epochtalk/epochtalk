@@ -1,6 +1,5 @@
 'use strict';
 /* jslint node: true */
-/* global angular */
 
 module.exports = [function() {
     var alerts = [];

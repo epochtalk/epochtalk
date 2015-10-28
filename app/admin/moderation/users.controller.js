@@ -1,4 +1,4 @@
-module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll',
+var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll',
 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, User, userReports, reportCount, page, limit, field, desc, filter, search, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
@@ -441,3 +441,7 @@ module.exports = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$a
     $state.go('admin-moderation.users.preview', { username: ctrl.selectedUsername }, { location: false, reload: 'admin-moderation.users.preview' });
   };
 }];
+
+module.exports = angular.module('ept.admin.moderation.users.ctrl', [])
+.controller('ModUsersCtrl', ctrl)
+.name;
