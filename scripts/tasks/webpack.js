@@ -50,7 +50,8 @@ var webpackConfigs = {
 module.exports = function(opts) {
   // webpack watching
   opts = opts || {};
-  webpackConfigs.watch = webpackConfigs.cache = opts.watch || true;
+  if (opts.watch === undefined) { opts.watch = true; }
+  webpackConfigs.watch = webpackConfigs.cache = opts.watch;
 
   // webpack minification
   opts.prod = opts.prod || false;
