@@ -2,27 +2,45 @@
 
 <modal show="AdminManagementCtrl.showModeratorsModal" on-close="AdminManagementCtrl.closeModerators()">
   <h3 class="thin-underline">Manage Moderators of <span ng-bind-html="AdminManagementCtrl.modBoard.name"></span></h3>
-
-  <label>Current Moderators</label>
-  <div class="clear">
-    <ul class="mod-list" ng-if="AdminManagementCtrl.modBoard.moderators.length" >
-      <li ng-repeat="mod in AdminManagementCtrl.modBoard.moderators">
-        <div><span ng-bind-html="mod.username"></span>&nbsp;<a ng-click="AdminManagementCtrl.markModForRemoval(mod.username)"><i class="fa fa-times-circle"></i></a></div>
+  <div ng-if="AdminManagementCtrl.usersWithBadPermissions && !AdminManagementCtrl.usersWithBadPermissions.length">
+    <label>Current Moderators</label>
+    <div class="clear">
+      <ul class="mod-list" ng-if="AdminManagementCtrl.modBoard.moderators.length" >
+        <li ng-repeat="mod in AdminManagementCtrl.modBoard.moderators">
+          <div><span ng-bind-html="mod.username"></span>&nbsp;<a ng-click="AdminManagementCtrl.markModForRemoval(mod.username)"><i class="fa fa-times-circle"></i></a></div>
+        </li>
+      </ul>
+    </div>
+    <p ng-if="!AdminManagementCtrl.modBoard.moderators.length">
+    This board has no moderators.
+    </p>
+    <br />
+    <div>
+      <label>Add Moderators</label>
+      <tags-input min-length="1" placeholder="Type username of moderator(s) to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="AdminManagementCtrl.modsToAdd">
+        <auto-complete min-length="1" source="AdminManagementCtrl.loadTags($query)"></auto-complete>
+      </tags-input>
+    </div>
+    <div class="clear">
+      <label>Note: Moderator changes will take affect upon clicking save changes.</label>
+      <button class="fill-row" ng-click="AdminManagementCtrl.saveModChanges()">Save Changes</button>
+    </div>
+  </div>
+  <div ng-if="AdminManagementCtrl.usersWithBadPermissions && AdminManagementCtrl.usersWithBadPermissions.length">
+    <p>
+      User(s) were successfully added to the list of moderators for <span ng-bind-html="AdminManagementCtrl.modBoard.name"></span> but the following users do not have a role with moderation permissions assigned:
+    </p>
+    <ul class="indent">
+      <li ng-repeat="username in AdminManagementCtrl.usersWithBadPermissions">
+        <a ui-sref="profile({ username: username })" ng-bind-html="username"></a>
       </li>
     </ul>
-  </div>
-  <p ng-if="!AdminManagementCtrl.modBoard.moderators.length">
-  This board has no moderators.
-  </p>
-  <br />
+    <p>
+       Visit the <a ui-sref="admin-management.roles">Roles Management</a> page to add a moderation type role. The user(s) will appear in the list of board moderators, but until an appropriate role is added they will not be able to perform any moderation tasks.
+    </p>
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminManagementCtrl.closeModerators()">Okay</button>
+    </div>
   <div>
-    <label>Add Moderators</label>
-    <tags-input min-length="1" placeholder="Type username of moderator(s) to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="AdminManagementCtrl.modsToAdd">
-      <auto-complete min-length="1" source="AdminManagementCtrl.loadTags($query)"></auto-complete>
-    </tags-input>
-  </div>
-  <div class="clear">
-    <label>Note: Moderator changes will take affect upon clicking save changes.</label>
-    <button class="fill-row" ng-click="AdminManagementCtrl.saveModChanges()">Save Changes</button>
   </div>
 </modal>

@@ -5,10 +5,13 @@ module.exports = ['$resource',
   function($resource) {
     return $resource('/api/admin/moderators', {}, {
       add: {
-        method: 'POST'
+        method: 'POST',
+        isArray: true
       },
       remove: {
-        method: 'DELETE'
+        url: '/api/admin/moderators/remove',
+        method: 'POST',
+        isArray: true
       }
     });
   }

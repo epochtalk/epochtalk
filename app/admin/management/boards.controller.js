@@ -1,8 +1,11 @@
-var remove = require('lodash/array/remove');
+var rem = require('lodash/array/remove');
+var get = require('lodash/object/get');
+var some = require('lodash/collection/some');
+var filter = require('lodash/collection/filter');
 var Promise = require('bluebird');
 
-var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories',
-  function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, AdminUsers, AdminModerators, boards, categories) {
+var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories',
+  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, AdminUsers, AdminModerators, boards, categories) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     var ctrl = this;
@@ -34,7 +37,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
     function cleanBoards(catBoards) {
       catBoards.forEach(function(board) {
         // remove this board from boardListData
-        remove(boards, function(tempBoard) { return tempBoard.id === board.id; });
+        rem(boards, function(tempBoard) { return tempBoard.id === board.id; });
         // recurse if there are children
         if (board.children.length > 0) { cleanBoards(board.children); }
       });
@@ -47,6 +50,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
     this.modBoard = null;
     this.modsToRemove = [];
     this.modsToAdd = [];
+    this.usersWithBadPermissions = [];
     $scope.openModeratorsModal = function(board) {
       ctrl.showModeratorsModal = true;
       ctrl.nestableBoard = board;
@@ -54,57 +58,102 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
     };
 
     this.closeModerators = function() {
-      ctrl.nestableBoard = null;
-      ctrl.modBoard = null;
-      ctrl.modsToAdd = [];
-      ctrl.modsToRemove = [];
       ctrl.showModeratorsModal = false;
+      $timeout(function() {
+        ctrl.nestableBoard = null;
+        ctrl.modBoard = null;
+        ctrl.modsToAdd = [];
+        ctrl.modsToRemove = [];
+        ctrl.usersWithBadPermissions = [];
+      }, 200);
     };
 
     this.markModForRemoval = function(username) {
       this.modsToRemove.push(username);
-      remove(ctrl.modBoard.moderators, function(user) { return user.username === username; });
+      rem(ctrl.modBoard.moderators, function(user) { return user.username === username; });
+    };
+
+    this.checkPermissions = function(mods) {
+      // check that the user has at least one of these permissions set
+      var modPermissions = [
+        'boards.viewUncategorized',
+        'posts.privilegedUpdate',
+        'posts.privilegedDelete',
+        'posts.privilegedPurge',
+        'posts.viewDeleted',
+        'posts.bypassLock',
+        'threads.privilegedTitle',
+        'threads.privilegedLock',
+        'threads.privilegedSticky',
+        'threads.privilegedMove',
+        'threads.privilegedPurge',
+      ];
+      return filter(mods.map(function(mod) {
+        var hasSomeModePrivileges = some(mod.roles.map(function(role) {
+          var hasModPermission = false;
+          modPermissions.forEach(function(perm) {
+            if (get(role.permissions, perm)) { hasModPermission = true; }
+          });
+          return hasModPermission;
+        }));
+        return hasSomeModePrivileges ? undefined : mod.username;
+      }), undefined);
     };
 
     this.saveModChanges = function() {
       ctrl.modsToAdd = ctrl.modsToAdd.map(function(tag) { return tag.text; });
-      var error;
-      // TODO: Optimize routes to accept multiple users
-      // Remove this promise chain of user lookups
-      Promise.each(ctrl.modsToAdd, function(username) {
-        return AdminUsers.find({ username: username }).$promise
-        .then(function(user) {
-          return AdminModerators.add({ user_id: user.id, board_id: ctrl.modBoard.id }).$promise
-          .then(function() {
+      var removeParams = { usernames: ctrl.modsToRemove, board_id: ctrl.modBoard.id };
+      var addParams = { usernames: ctrl.modsToAdd, board_id: ctrl.modBoard.id };
+      if (ctrl.modsToAdd.length && ctrl.modsToRemove.length) { // Add and Remove mods
+        AdminModerators.remove(removeParams).$promise
+        .then(function(users) {
+          return Promise.each(users, function(user) {
+            rem(ctrl.nestableBoard.moderators, function(oldMod) { return oldMod.username === user.username; });
+          })
+          .then(function() { Alert.success('Moderators successfully removed'); });
+        })
+        .then(function() {
+          return AdminModerators.add(addParams).$promise
+          .then(function(users) {
+            return Promise.each(users, function(user) {
+              ctrl.nestableBoard.moderators.push({ username: user.username, id: user.id });
+            })
+            .then(function() { return ctrl.checkPermissions(users); })
+            .then(function(badPermissionUsers) { ctrl.usersWithBadPermissions = badPermissionUsers; })
+            .then(function() { Alert.success('Moderators successfully added'); });
+          });
+        })
+        .catch(function() { Alert.error('There was an error updating moderators'); })
+        .finally(function() {
+          if (!ctrl.usersWithBadPermissions || !ctrl.usersWithBadPermissions.length) { ctrl.closeModerators(); }
+        });
+      }
+      else if (ctrl.modsToAdd.length && !ctrl.modsToRemove.length) { // Add Mods only
+        AdminModerators.add(addParams).$promise
+        .then(function(users) {
+          return Promise.each(users, function(user) {
             ctrl.nestableBoard.moderators.push({ username: user.username, id: user.id });
           })
-          .catch(function(err) {
-            error = err;
-            Alert.error('There was an error adding ' + user.username + ' as a moderator');
-          });
+          .then(function() { return ctrl.checkPermissions(users); })
+          .then(function(badPermissionUsers) { ctrl.usersWithBadPermissions = badPermissionUsers; })
+          .then(function() { Alert.success('Moderators successfully added'); });
+        })
+        .catch(function() { Alert.error('There was an error adding moderators'); })
+        .finally(function() {
+          if (!ctrl.usersWithBadPermissions || !ctrl.usersWithBadPermissions.length) { ctrl.closeModerators(); }
         });
-      })
-      .then(function() {
-        return Promise.each(ctrl.modsToRemove, function(username) {
-          return AdminUsers.find({ username: username }).$promise
-          .then(function(user) {
-            return AdminModerators.remove({ user_id: user.id, board_id: ctrl.modBoard.id }).$promise
-            .then(function() {
-              remove(ctrl.nestableBoard.moderators, function(oldMod) { return oldMod.username === user.username; });
-            })
-            .catch(function(err) {
-              error = err;
-              Alert.error('There was an error removing ' + user.username + ' from moderators');
-            });
-          });
-        });
-      })
-      .then(function() {
-        if (!error) {
-          Alert.success('Moderators successfully updated');
-        }
-        ctrl.closeModerators();
-      });
+      }
+      else { // Remove mods only
+        AdminModerators.remove(removeParams).$promise
+        .then(function(users) {
+          return Promise.each(users, function(user) {
+            rem(ctrl.nestableBoard.moderators, function(oldMod) { return oldMod.username === user.username; });
+          })
+          .then(function() { Alert.success('Moderators successfully removed'); });
+        })
+        .catch(function() { Alert.error('There was an error removing users from moderators'); })
+        .finally(function() { ctrl.closeModerators(); });
+      }
     };
 
     this.loadTags = function(query) {

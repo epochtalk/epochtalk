@@ -24,21 +24,23 @@ exports.add = {
   plugins: { acls: 'adminModerators.add' },
   validate: {
     payload: {
-      user_id: Joi.string().required(),
+      usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
       board_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
-    var userId = request.payload.user_id;
+    var usernames = request.payload.usernames;
     var boardId = request.payload.board_id;
-    var promise = db.moderators.add(userId, boardId)
+    var promise = db.moderators.add(usernames, boardId)
     // update redis with new moderating boads
-    .then(function() { return db.moderators.getUsersBoards(userId); })
-    .then(function(moderating) {
-      moderating = moderating.map(function(b) { return b.board_id; });
-      var moderatingUser = { id: userId, moderating: moderating };
-      return authHelper.updateModerating(moderatingUser)
-      .then(function() { return; });
+    .map(function(user) {
+      return db.moderators.getUsersBoards(user.id)
+      .then(function(moderating) {
+        moderating = moderating.map(function(b) { return b.board_id; });
+        var moderatingUser = { id: user.id, moderating: moderating };
+        return authHelper.updateModerating(moderatingUser)
+        .then(function() { return user; });
+      });
     });
     return reply(promise);
   }
@@ -47,7 +49,7 @@ exports.add = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Moderators
-  * @api {DELETE} /admin/moderators Remove Moderator
+  * @api {POST} /admin/moderators/remove Remove Moderator
   * @apiName RemoveModerator
   * @apiPermission Super Administrator, Administrator,
   * @apiDescription Remove a moderator from a board.
@@ -63,22 +65,24 @@ exports.remove = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminModerators.remove' },
   validate: {
-    query: {
-      user_id: Joi.string().required(),
+    payload: {
+      usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
       board_id: Joi.string().required()
     }
   },
   handler: function(request, reply) {
-    var userId = request.query.user_id;
-    var boardId = request.query.board_id;
-    var promise = db.moderators.remove(userId, boardId)
+    var usernames = request.payload.usernames;
+    var boardId = request.payload.board_id;
+    var promise = db.moderators.remove(usernames, boardId)
     // update redis with new moderating boads
-    .then(function() { return db.moderators.getUsersBoards(userId); })
-    .then(function(moderating) {
-      moderating = moderating.map(function(b) { return b.board_id; });
-      var moderatingUser = { id: userId, moderating: moderating };
-      return authHelper.updateModerating(moderatingUser)
-      .then(function() { return; });
+    .map(function(user) {
+      return db.moderators.getUsersBoards(user.id)
+      .then(function(moderating) {
+        moderating = moderating.map(function(b) { return b.board_id; });
+        var moderatingUser = { id: user.id, moderating: moderating };
+        return authHelper.updateModerating(moderatingUser)
+        .then(function() { return user; });
+      });
     });
     return reply(promise);
   }
