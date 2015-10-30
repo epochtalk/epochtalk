@@ -1,4 +1,4 @@
-# Epochtalk [![Circle CI](https://circleci.com/gh/epochtalk/epochtalk.svg?circle-token=:circle-token)](https://circleci.com/gh/epochtalk/epochtalk) [![Gitter chat](http://img.shields.io/badge/gitter-epochtalk%2Fepochtalk-1dce73.svg?style=flat)](https://gitter.im/epochtalk/epochtalk)
+# Epochtalk [![Circle CI](https://circleci.com/gh/epochtalk/epochtalk.svg?circle-token=:circle-token)](https://circleci.com/gh/epochtalk/epochtalk) [![Gitter chat](http://img.shields.io/badge/gitter-epochtalk%2Fepochtalk-1dce73.svg?style=flat)](https://gitter.im/epochtalk/epochtalk) [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 ####**Warning this project is under active development, design is subject to change**
 
