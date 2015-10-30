@@ -1,0 +1,20 @@
+{
+  "name": "epochtalk",
+  "description": "Epochtalk forum software",
+  "keywords": [
+    "epochtalk",
+    "forum",
+    "node"
+  ],
+  "repository": "https://github.com/epochtalk/epochtalk",
+  "scripts": {
+    "postdeploy": "npm start"
+  },
+  "env": {
+    "HOST": "0.0.0.0"
+  },
+  "addons": [
+    "heroku-redis:hobby-dev",
+    "heroku-postgresql:hobby-dev"
+  ]
+}
