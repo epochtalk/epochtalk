@@ -195,9 +195,13 @@ exports.byThread = {
     // retrieve posts for this thread
     var getPosts = db.posts.byThread(threadId, opts);
     var getThread = db.threads.find(threadId);
+    var getThreadWatching = db.threads.watching(threadId, userId);
 
     // TODO: Show admin deleted posts but style them differently, see canFind method
-    var promise = Promise.join(getPosts, getThread, function(posts, thread) {
+    var promise = Promise.join(getPosts, getThread, getThreadWatching, function(posts, thread, threadWatching) {
+      // check if thread is being Watched
+      if (threadWatching) { thread.watched = true; }
+      
       return {
         thread: thread,
         limit: opts.limit,

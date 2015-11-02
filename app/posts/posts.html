@@ -55,6 +55,13 @@
   </div>
 </div>
 
+
+<div class="board-controls" ng-if="PostsParentCtrl.loggedIn()">
+  <a ng-click="PostsParentCtrl.watchThread()" ng-if="!PostsParentCtrl.thread.watched">
+    <i class="icon-epoch-watch"></i>Watch This Thread
+  </a>
+</div>
+
 <!-- Posts Listing -->
 <div class="thread-data" ui-view="data"></div>
 

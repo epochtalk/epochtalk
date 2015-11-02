@@ -31,6 +31,7 @@ var app = angular.module('ept', [
   require('./user'),
   require('./user/confirm-index'),
   require('./user/reset-index'),
+  require('./watchlist'),
   require('./admin')
 ]);
 

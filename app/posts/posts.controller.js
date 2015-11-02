@@ -1,8 +1,9 @@
 var ctrl = [
-  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Threads', 'Posts', 'pageData',
-  function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Threads, Posts, pageData) {
+  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Alert', 'Watchlist', 'Session', 'Threads', 'Posts', 'pageData',
+  function($rootScope, $scope, $timeout, $anchorScroll, $location, Alert, Watchlist, Session, Threads, Posts, pageData) {
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
+    parent.loggedIn = Session.isAuthenticated;
     parent.page = Number(pageData.page);
     parent.limit = Number(pageData.limit);
     parent.posts = pageData.posts;
@@ -75,6 +76,17 @@ var ctrl = [
         parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
         $timeout($anchorScroll);
       });
+    };
+
+    parent.watchThread = function() {
+      var params = { threadId: ctrl.thread.id };
+      return Watchlist.watchThread(params).$promise
+      .then(function() {
+        ctrl.thread.watched = true;
+        parent.thread.watched = true;
+        Alert.success('This thread is being watched');
+      })
+      .catch(function(err) { Alert.error('Error watching this board'); });
     };
 
     this.avatarHighlight = function(color) {

@@ -1,5 +1,5 @@
-var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Session', 'Boards', 'Threads', 'pageData',
-  function($rootScope, $scope, $anchorScroll, $location, $timeout, Session, Boards, Threads, pageData) {
+var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Alert', 'Session', 'Boards', 'Threads', 'Watchlist', 'pageData',
+  function($rootScope, $scope, $anchorScroll, $location, $timeout, Alert, Session, Boards, Threads, Watchlist, pageData) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated; // check Auth
     this.board = pageData.board;
@@ -116,6 +116,17 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'S
         ctrl.stickyThreads.forEach(threadPageCount);
         $timeout($anchorScroll);
       });
+    };
+
+    this.parent.watchBoard = function() {
+      var params = { boardId: ctrl.board.id };
+      return Watchlist.watchBoard(params).$promise
+      .then(function() {
+        ctrl.board.watched = true;
+        ctrl.parent.board.watched = true;
+        Alert.success('This board is being watched');
+      })
+      .catch(function(err) { Alert.error('Error watching this board'); });
     };
 
   }

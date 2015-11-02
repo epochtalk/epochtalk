@@ -13,6 +13,9 @@
 
 <div class="board-controls" ng-if="BoardWrapperCtrl.loggedIn() && BoardWrapperCtrl.controlAccess.createPost && BoardWrapperCtrl.controlAccess.createThread">
   <a ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})"><i class="icon-epoch-add"></i>Start a New Thread</a>
+  <a ng-click="BoardWrapperCtrl.watchBoard()" ng-if="!BoardWrapperCtrl.board.watched">
+    <i class="icon-epoch-watch"></i>Watch This Board
+  </a>
 </div>
 
 <div class="board-data" ui-view="data"></div>
