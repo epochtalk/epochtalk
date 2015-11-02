@@ -97,8 +97,7 @@
 
     <div class="pages" ng-if="thread.page_count > 1">
       <span ng-repeat="pageKey in thread.page_keys">
-        <a ng-if="pageKey.threadId !== null && pageKey.val !== 'All'" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
-        <a ng-if="pageKey.val === 'All'" ui-sref="posts.data({ threadId: pageKey.threadId, page: 1, limit: 'all' })" ng-bind-html="pageKey.val"></a>
+        <a ng-if="pageKey.threadId !== null" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
         <span ng-if="pageKey.threadId === null" ng-bind-html="pageKey.val"></span>
       </span>
     </div>
@@ -109,8 +108,12 @@
   <div class="views" ng-bind="thread.view_count | number:0"></div>
 
   <div class="last-reply">
-    Last post by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+    <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
+     by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
+    <div ng-if="thread.has_new_post">
+      <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
+    </div>
   </div>
 </div>
 
@@ -140,8 +143,7 @@
 
     <div class="pages" ng-if="thread.page_count > 1">
       <span ng-repeat="pageKey in thread.page_keys">
-        <a ng-if="pageKey.threadId !== null && pageKey.val !== 'All'" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
-        <a ng-if="pageKey.val === 'All'" ui-sref="posts.data({ threadId: pageKey.threadId, page: 1, limit: 'all' })" ng-bind-html="pageKey.val"></a>
+        <a ng-if="pageKey.threadId !== null" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
         <span ng-if="pageKey.threadId === null" ng-bind-html="pageKey.val"></span>
       </span>
     </div>
@@ -152,7 +154,11 @@
   <div class="views" ng-bind="thread.view_count | number:0"></div>
 
   <div class="last-reply">
-    Last post by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+    <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
+    by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
+    <div ng-if="thread.has_new_post">
+      <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
+    </div>
   </div>
 </div>
