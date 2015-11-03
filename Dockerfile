@@ -50,23 +50,25 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.4/main/pg_hba.co
 # And add ``listen_addresses`` to ``/etc/postgresql/9.3/main/postgresql.conf``
 RUN echo "listen_addresses='*'" >> /etc/postgresql/9.4/main/postgresql.conf
 
-# get the epochtalk project and configure .env
-RUN git clone https://github.com/epochtalk/epochtalk.git \
-  && cd epochtalk \
-  && cp example.env .env \
-  && echo "DATABASE_URL=\"postgres://docker:docker@localhost:5432/docker\"" >> .env \
-  && echo "HOST=0.0.0.0" >> .env \
-  && npm install
+# install bower dependencies
+COPY bower.json .
+RUN bower install --allow-root
 
-EXPOSE 8080
+# install npm dependencies
+COPY package.json .
+RUN npm install
 
+# configure .env
+COPY example.env .env
+RUN echo "DATABASE_URL=\"postgres://docker:docker@localhost:5432/docker\"" >> .env \
+  && echo "HOST=0.0.0.0" >> .env
+
+# run the server
+COPY . .
 ENTRYPOINT /etc/init.d/postgresql start \
   && service redis-server start \
-  && sleep 1 \
-  && redis-cli ping \
-  && cd epochtalk \
-  && cat .env \
-  && bower install --allow-root \
   && foreman start build \
   && foreman start initialize \
   && foreman start server
+
+EXPOSE 8080
