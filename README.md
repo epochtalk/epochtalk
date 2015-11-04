@@ -135,7 +135,7 @@ $ foreman start build
 $ foreman start server
 ```
 
-#### 7) Login and change admin account information
+#### 7) Log in and change admin account information
 Login to the admin account using the username ``admin`` and password ``admin1234``. Visit your profile by clicking the link in the top right corner of the page, then change your username and password.
 
 ### Trouble Shooting
