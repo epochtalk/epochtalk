@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require('dotenv').load();
 var path = require('path');
 var program = require('commander');
 var db = require(path.normalize(__dirname + '/../db'));

@@ -1,3 +1,4 @@
+require('dotenv').load();
 var path = require('path');
 var nodemon = require('nodemon');
 var sass = require(path.join(__dirname, 'tasks', 'sass'));

@@ -38,7 +38,6 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
 * [bower](https://github.com/bower/bower)
 * [Postgres](http://www.postgresql.org/)
-* [foreman](http://ddollar.github.io/foreman)
 
 ### Bower
 * angular `1.4.4`
@@ -120,19 +119,16 @@ $ cp example.env .env
 $ bower install
 ```
 
-#### 5) Initialize with foreman
-First ensure that [Postgres](http://www.postgresql.org/) is installed andrunning. Also ensure that [foreman](http://ddollar.github.io/foreman) is installed. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the fourm. From the root directory of the project run the following command:
+#### 5) Initialize
+First ensure that [Postgres](http://www.postgresql.org/) is installed andrunning. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the fourm. From the root directory of the project run the following command:
 ```sh
-$ foreman start initialize
+$ node cli --create
 ```
 
 #### 6) Start the Epochtalk server
-Running `foreman build` will compile all JavaScript and css.  The `foreman
-start` command Epochtalk will start the webserver. Once the server is running,
-the forum can be viewed at `http://localhost:8080`
+Running the `npm run serve` command, Epochtalk will start the webserver. Once the server is running, the forum can be viewed at `http://localhost:8080`
 ```sh
-$ foreman start build
-$ foreman start server
+$ npm run serve
 ```
 
 #### 7) Log in and change admin account information
