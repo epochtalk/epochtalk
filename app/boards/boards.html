@@ -1,3 +1,5 @@
+<template-hook hook="boards-before" />
+
 <div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards">
   <!-- Category Title -->
 
@@ -65,3 +67,5 @@
     </div>
   </div>
 </div>
+
+<template-hook hook="boards-after" />

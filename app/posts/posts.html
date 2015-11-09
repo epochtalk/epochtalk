@@ -27,7 +27,6 @@
 <!-- Thread Controls Section -->
 <h5 class="thin-underline" ng-if="PostsParentCtrl.showThreadControls">Thread Controls</h5>
 <div class="thread-controls thin-underline" ng-if="PostsParentCtrl.showThreadControls">
-
   <!-- Thread Lock -->
   <div class="control" ng-if="PostsParentCtrl.controlAccess.privilegedLock">
     <input id="lockThread" type="checkbox" ng-model="PostsParentCtrl.thread.locked">
@@ -55,6 +54,7 @@
   </div>
 </div>
 
+<template-hook hook="thread-actions" />
 
 <div class="board-controls" ng-if="PostsParentCtrl.loggedIn()">
   <a ng-click="PostsParentCtrl.watchThread()" ng-if="!PostsParentCtrl.thread.watched">

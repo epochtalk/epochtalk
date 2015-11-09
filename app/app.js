@@ -39,6 +39,7 @@ require('./filters');
 require('./services');
 require('./resources');
 require('./components');
+require('./plugins');
 
 // Set Angular Configs
 app

@@ -13,8 +13,11 @@ var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var defaultRegisterCb = function(err) { if (err) throw(err); };
 var setup = require(path.normalize(__dirname + '/../setup'));
+var plugins = require(path.normalize(__dirname + '/../plugins'));
 
-setup().then(function() {
+setup()
+.then(plugins.bootstrap)
+.then(function(pluginRoutes) {
   // create server object
   var server = new Hapi.Server();
   server.connection(serverOptions);
@@ -59,7 +62,8 @@ setup().then(function() {
 
   // server routes
   var routes = require(path.normalize(__dirname + '/routes'));
-  server.route(routes.endpoints());
+  var allRoutes = pluginRoutes.concat(routes.endpoints());
+  server.route(allRoutes);
 
   // start server
   server.start(function () {

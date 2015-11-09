@@ -24,7 +24,7 @@
 
     <div class="profile-row centered-text" ng-if="ProfileCtrl.controlAccess.reactivate || ProfileCtrl.controlAccess.deactivate || ProfileCtrl.controlAccess.privilegedDeactivate || ProfileCtrl.controlAccess.privilegedReactivate">
       <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showDeactivate = true" ng-hide="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedDeactivate || ProfileCtrl.controlAccess.deactivate">Deactivate Account</a>
-      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showReactivate = true" ng-show="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedReactivate || ProfileCtrl.controlAccess.reactivate"">Reactivate Account</a>
+      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showReactivate = true" ng-show="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedReactivate || ProfileCtrl.controlAccess.reactivate">Reactivate Account</a>
       <br>
       <a ng-href="#" ng-click="ProfileCtrl.showDelete = true" ng-if="ProfileCtrl.controlAccess.privilegedDelete">Delete Account</a>
     </div>
@@ -49,6 +49,8 @@
       <div><span ng-bind="ProfileCtrl.displayUser.language"></span></div>
       <div><span ng-bind="ProfileCtrl.userLocalTime"></span></div>
     </div>
+
+    <template-hook hook="profile-details" />
   </div>
 
   <!-- Right Side Content -->
@@ -67,6 +69,8 @@
         <span class="stat-text" ng-bind="ProfileCtrl.displayUser.updated_at | date:'mediumDate'"></span>
       </div>
     </div>
+
+    <template-hook hook="profile-display" />
 
     <div class="profile-row">
       <div class="fill-row"><strong>Posts over time:</strong></div>
