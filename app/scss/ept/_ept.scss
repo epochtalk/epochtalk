@@ -1561,6 +1561,25 @@ main #admin-content {
     pagination { float: right; }
   }
 
+  ul.mod-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    list-style-image: none;
+    li { float: left; margin: 0.25rem 0; }
+    li div {
+      @include border-radius(2px);
+      margin: 0 0.25rem;
+      color: #fff;
+      padding: 0.4rem 1rem;
+      background: #2299DD;
+      font-size: 1rem;
+      font-weight: bold;
+      a, a:hover, a:active, a:visited { color: #fff; }
+    }
+  }
+  ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
+
   .role-header { display: inline-block; }
   .add-users { float: right; }
   .management-users.radio-button, .header-spacer { @include span-columns(2); }

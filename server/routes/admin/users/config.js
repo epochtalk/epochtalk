@@ -341,28 +341,6 @@ exports.count = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Users
-  * @api {GET} /admin/users/moderators/count (Admin) Count Moderators
-  * @apiName CountModUsersAdmin
-  * @apiPermission Super Administrator, Administrator
-  * @apiDescription This allows Administrators to get a count of how many mod users are
-  * registered. This is used in the admin panel for paginating through mod users.
-  *
-  * @apiSuccess {number} count The number of mod users registered
-  *
-  * @apiError (Error 500) InternalServerError There was error calculating the mod user count
-  */
-exports.countModerators = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.countModerators' },
-  handler: function(request, reply) {
-    var promise = db.users.countModerators();
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Users
   * @api {GET} /admin/users (Admin) Page Users
   * @apiName PageUsersAdmin
   * @apiPermission Super Administrator, Administrator
@@ -409,53 +387,6 @@ exports.page = {
       searchStr: request.query.search
     };
     var promise = db.users.page(opts);
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Users
-  * @api {GET} /admin/users/moderators (Admin) Page Mods
-  * @apiName PageModUsersAdmin
-  * @apiPermission Super Administrator, Administrator
-  * @apiDescription This allows Administrators to page through all registered mods.
-  *
-  * @apiParam (Query) {number{1..n}} [page=1] The page of registered mod users to retrieve
-  * @apiParam (Query) {number{1..n}} [limit=25] The number of mod users to retrieve per page
-  * @apiParam (Query) {string="username","email","updated_at","created_at","roles"} [field=username] The db field to sort the results by
-  * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results
-  * in descending order
-  *
-  * @apiSuccess {object[]} mods An array of mod user objects
-  * @apiSuccess {string} mods.user_id The unique id of the user
-  * @apiSuccess {string} mods.username The username of the user
-  * @apiSuccess {string} mods.email The email of the user
-  * @apiSuccess {timestamp} mods.created_at Timestamp of when the mod user was created
-  * @apiSuccess {string[]} mods.roles An array containing the mod roles the user has
-  * @apiSuccess {string} mods.roles.name The string name of the role
-  *
-  * @apiError (Error 500) InternalServerError There was error retrieving the mods
-  */
-exports.pageModerators = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.pageModerators' },
-  validate: {
-    query: {
-      page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).max(100).default(25),
-      field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'roles'),
-      desc: Joi.boolean().default(false)
-    }
-  },
-  handler: function(request, reply) {
-    var opts = {
-      limit: request.query.limit,
-      page: request.query.page,
-      sortField: request.query.field,
-      sortDesc: request.query.desc
-    };
-    var promise = db.users.pageModerators(opts);
     return reply(promise);
   }
 };

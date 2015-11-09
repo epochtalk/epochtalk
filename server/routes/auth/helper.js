@@ -42,7 +42,6 @@ function getMaskedPermissions(userRoles) {
       management: maskPermission('adminAccess.management') ? {
         boards: maskPermission('adminAccess.management.boards'),
         users: maskPermission('adminAccess.management.users'),
-        moderators: maskPermission('adminAccess.management.moderators'),
         roles: maskPermission('adminAccess.management.roles')
       } : undefined
     } : undefined,

@@ -19,7 +19,6 @@ module.exports = roles;
       management: {
         boards: true,
         users: true,
-        moderators: true,
         roles: true
       }
     },
@@ -231,7 +230,6 @@ roles.superAdministrator = {
     management: {
       boards: true,
       users: true,
-      moderators: true,
       roles: true
     }
   },
@@ -421,7 +419,6 @@ roles.administrator = {
     management: {
       boards: true,
       users: true,
-      moderators: true,
       roles: true
     }
   },

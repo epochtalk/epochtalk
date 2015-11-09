@@ -28,9 +28,29 @@ var adminRoute = ['$stateProvider', '$urlRouterProvider', function($stateProvide
   };
 
   var adminRedirect = ['$state', 'Session', function($state, Session) {
-    if (Session.hasPermission('adminAccess.settings')) { $state.go('admin-settings'); }
-    else if (Session.hasPermission('adminAccess.management')) { $state.go('admin-management'); }
-    else if (Session.hasPermission('modAccess')) { $state.go('admin-moderation'); }
+    if (Session.hasPermission('adminAccess.settings')) {
+      if (Session.hasPermission('adminAccess.settings.general')) { $state.go('admin-settings.general'); }
+      else if (Session.hasPermission('adminAccess.settings.forum')) { $state.go('admin-settings.forum'); }
+      else { $state.go('boards'); }
+    }
+    else if (Session.hasPermission('adminAccess.management')) {
+      if (Session.hasPermission('adminAccess.management.boards')) { $state.go('admin-management.boards'); }
+      else if (Session.hasPermission('adminAccess.management.users')) { $state.go('admin-management.users'); }
+      else if (Session.hasPermission('adminAccess.management.roles')) { $state.go('admin-management.roles'); }
+      else { $state.go('boards'); }
+    }
+    else if (Session.hasPermission('modAccess')) {
+      if (Session.hasPermission('modAccess.users')) {
+        $state.go('admin-moderation.users', { filter: 'Pending'}, { location: true, reload: true });
+      }
+      else if (Session.hasPermission('modAccess.posts')) {
+        $state.go('admin-moderation.posts', { filter: 'Pending'}, { location: true, reload: true });
+      }
+      else if (Session.hasPermission('modAccess.messages')) {
+        $state.go('admin-moderation.messages', { filter: 'Pending'}, { location: true, reload: true });
+      }
+      else { $state.go('boards'); }
+    }
     else { $state.go('boards'); }
   }];
 

@@ -118,7 +118,6 @@ exports.add = {
           management: Joi.object().keys({
             boards: Joi.boolean(),
             users: Joi.boolean(),
-            moderators: Joi.boolean(),
             roles: Joi.boolean()
           })
         }),
@@ -372,7 +371,6 @@ exports.update = {
           management: Joi.object().keys({
             boards: Joi.boolean(),
             users: Joi.boolean(),
-            moderators: Joi.boolean(),
             roles: Joi.boolean()
           })
         }),

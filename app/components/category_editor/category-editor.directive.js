@@ -63,6 +63,10 @@ module.exports = ['$state', function($state) {
         $scope.showEditCategory = false;
       };
 
+      $scope.setModBoard = function(dataId) {
+        $scope.openModeratorsModal($scope.nestableMap[dataId]);
+      };
+
       /* Edit Board */
       $scope.setEditBoard = function(dataId) {
         var editBoard = $scope.nestableMap[dataId];
