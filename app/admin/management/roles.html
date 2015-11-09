@@ -161,7 +161,7 @@
         <h4>Moderation View Permissions</h4>
         <!-- View Admin Settings -->
         <label>
-          <input id="modAccess-settings" type="checkbox" ng-init="modAccess = AdminManagementCtrl.newRole.permissions.modAccess.users || AdminManagementCtrl.newRole.permissions.modAccess.posts || AdminManagementCtrl.newRole.permissions.modAccess.messages" ng-model="modAccess" ng-false-value="undefined" />
+          <input id="modAccess-settings" type="checkbox" ng-init="modAccess = AdminManagementCtrl.newRole.permissions.modAccess.users || AdminManagementCtrl.newRole.permissions.modAccess.posts || AdminManagementCtrl.newRole.permissions.modAccess.messages" ng-model="modAccess" ng-change="!modAccess ? AdminManagementCtrl.newRole.permissions.modAccess.users = false : null; !modAccess ? AdminManagementCtrl.newRole.permissions.modAccess.posts = false : null; !modAccess ? AdminManagementCtrl.newRole.permissions.modAccess.messages = false : null;" />
           Allow user to access moderation views
         </label>
         <div class="indent" ng-if="modAccess">
@@ -182,7 +182,7 @@
         <h4><br />Administration View Permissions</h4>
         <!-- View Admin Settings -->
         <label>
-          <input id="adminAccess-settings" type="checkbox" ng-init="settings = AdminManagementCtrl.newRole.permissions.adminAccess.settings.general || AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum" ng-model="settings" ng-false-value="undefined" />
+          <input id="adminAccess-settings" type="checkbox" ng-init="settings = AdminManagementCtrl.newRole.permissions.adminAccess.settings.general || AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum" ng-model="settings" ng-change="!settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.general = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum = false : null;" />
           Allow user to access admin settings view
         </label>
         <div class="indent" ng-if="settings">
@@ -198,7 +198,7 @@
 
         <!-- View Admin Management -->
         <label>
-          <input id="adminAccess-management" type="checkbox" ng-init="management = AdminManagementCtrl.newRole.permissions.adminAccess.management.boards || AdminManagementCtrl.newRole.permissions.adminAccess.management.users || AdminManagementCtrl.newRole.permissions.adminAccess.management.moderators || AdminManagementCtrl.newRole.permissions.adminAccess.management.roles" ng-model="management" ng-false-value="undefined" />
+          <input id="adminAccess-management" type="checkbox" ng-init="management = AdminManagementCtrl.newRole.permissions.adminAccess.management.boards || AdminManagementCtrl.newRole.permissions.adminAccess.management.users || AdminManagementCtrl.newRole.permissions.adminAccess.management.roles" ng-model="management" ng-change="!management ? AdminManagementCtrl.newRole.permissions.adminAccess.management.boards = false : null; !management ? AdminManagementCtrl.newRole.permissions.adminAccess.management.users = false : null; !management ? AdminManagementCtrl.newRole.permissions.adminAccess.management.roles = false : null;" />
           Allow user to access admin management view
         </label>
         <div class="indent" ng-if="management">
@@ -209,10 +209,6 @@
           <label>
             <input id="adminAccess-management-users" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.management.users" ng-false-value="undefined" />
             Users Management tab
-          </label>
-          <label>
-            <input id="adminAccess-management-moderators" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.management.moderators" ng-false-value="undefined" />
-            Moderators Management tab
           </label>
           <label>
             <input id="adminAccess-management-roles" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.management.roles" ng-false-value="undefined" />

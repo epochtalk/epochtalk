@@ -12,7 +12,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
   var adminManagementRedirect = ['$state', 'Session', function($state, Session) {
     if (Session.hasPermission('adminAccess.management.boards')) { $state.go('admin-management.boards'); }
     else if (Session.hasPermission('adminAccess.management.users')) { $state.go('admin-management.users'); }
-    else if (Session.hasPermission('adminAccess.management.moderators')) { $state.go('admin-management.moderators'); }
     else if (Session.hasPermission('adminAccess.management.roles')) { $state.go('admin-management.roles'); }
     else { $state.go('admin'); }
   }];
@@ -32,7 +31,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           this.tab = null;
           if (Session.hasPermission('adminAccess.management.boards')) { this.tab = 'boards'; }
           else if (Session.hasPermission('adminAccess.management.users')) { this.tab = 'users'; }
-          else if (Session.hasPermission('adminAccess.management.moderators')) { this.tab = 'moderators'; }
           else if (Session.hasPermission('adminAccess.management.roles')) { this.tab = 'roles'; }
         }],
         controllerAs: 'AdminManagementCtrl',
@@ -179,54 +177,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         };
         return AdminRoles.users(query).$promise
         .then(function(userData) { return userData; });
-      }]
-    }
-  })
-  .state('admin-management.moderators', {
-    url: '/moderators?page&limit&field&desc',
-    views: {
-      'data@admin-management': {
-        controller: 'ModeratorsCtrl',
-        controllerAs: 'AdminManagementCtrl',
-        templateUrl: '/static/templates/admin/management/moderators.html'
-      }
-    },
-    resolve: {
-      userAccess: adminCheck('management'),
-      $title: function() { return 'Moderator Management'; },
-      loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
-        var deferred = $q.defer();
-        require.ensure([], function() {
-          var ctrl = require('./moderators.controller');
-          $ocLazyLoad.load({ name: 'ept.admin.management.moderators.ctrl' });
-          deferred.resolve(ctrl);
-        });
-        return deferred.promise;
-      }],
-      moderators: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
-        var query = {
-          field: $stateParams.field,
-          desc: $stateParams.desc,
-          limit: Number($stateParams.limit) || 25,
-          page: Number($stateParams.page) || 1
-        };
-        return AdminUsers.pageModerators(query).$promise;
-      }],
-      moderatorsCount: ['AdminUsers', function(AdminUsers) {
-        return AdminUsers.countModerators().$promise
-        .then(function(moderatorsCount) { return moderatorsCount.count; });
-      }],
-      field: ['$stateParams', function($stateParams) {
-        return $stateParams.field;
-      }],
-      desc: ['$stateParams', function($stateParams) {
-        return $stateParams.desc || false;
-      }],
-      page: ['$stateParams', function($stateParams) {
-        return Number($stateParams.page) || 1;
-      }],
-      limit: ['$stateParams', function($stateParams) {
-        return Number($stateParams.limit) || 25;
       }]
     }
   });

@@ -35,14 +35,6 @@ var app = angular.module('ept', [
   require('./admin')
 ]);
 
-app.constant('USER_ROLES', {
-  user: 'User',
-  mod: 'Moderator',
-  globalMod: 'Global Moderator',
-  admin: 'Administrator',
-  superAdmin: 'Super Administrator'
-});
-
 require('./filters');
 require('./services');
 require('./resources');
@@ -51,10 +43,7 @@ require('./components');
 // Set Angular Configs
 app
 .config(require('./config'))
-.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', 'USER_ROLES', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc, USER_ROLES) {
-
-  // Set ROLES to rootscope to be used in templates
-  $rootScope.USER_ROLES = USER_ROLES;
+.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc) {
 
   // Fetch website configs (title, logo, favicon)
   $rootScope.$webConfigs = forumData;

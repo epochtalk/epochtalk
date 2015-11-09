@@ -30,7 +30,6 @@ module.exports = function() {
     fs.unlinkSync(templatePath + '/admin/analytics/index.html');
     fs.unlinkSync(templatePath + '/admin/management/index.html');
     fs.unlinkSync(templatePath + '/admin/management/boards.html');
-    fs.unlinkSync(templatePath + '/admin/management/moderators.html');
     fs.unlinkSync(templatePath + '/admin/management/roles.html');
     fs.unlinkSync(templatePath + '/admin/management/users.html');
     fs.unlinkSync(templatePath + '/admin/moderation/index.html');
@@ -68,7 +67,6 @@ module.exports = function() {
     fs.symlinkSync(appPath + '/admin/analytics/index.html', templatePath + '/admin/analytics/index.html');
     fs.symlinkSync(appPath + '/admin/management/index.html', templatePath + '/admin/management/index.html');
     fs.symlinkSync(appPath + '/admin/management/boards.html', templatePath + '/admin/management/boards.html');
-    fs.symlinkSync(appPath + '/admin/management/moderators.html', templatePath + '/admin/management/moderators.html');
     fs.symlinkSync(appPath + '/admin/management/roles.html', templatePath + '/admin/management/roles.html');
     fs.symlinkSync(appPath + '/admin/management/users.html', templatePath + '/admin/management/users.html');
     fs.symlinkSync(appPath + '/admin/moderation/index.html', templatePath + '/admin/moderation/index.html');

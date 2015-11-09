@@ -28,7 +28,7 @@
   </div>
   <div ng-if="AdminManagementCtrl.usersWithBadPermissions && AdminManagementCtrl.usersWithBadPermissions.length">
     <p>
-      User(s) were successfully added to the list of moderators for <span ng-bind-html="AdminManagementCtrl.modBoard.name"></span> but the following users do not have a role with moderation permissions assigned:
+      User(s) were successfully added to the list of moderators for <strong><span ng-bind-html="AdminManagementCtrl.modBoard.name"></span></strong> but the following user(s) do not have a role with moderation permissions assigned:
     </p>
     <ul class="indent">
       <li ng-repeat="username in AdminManagementCtrl.usersWithBadPermissions">
@@ -36,7 +36,7 @@
       </li>
     </ul>
     <p>
-       Visit the <a ui-sref="admin-management.roles">Roles Management</a> page to add a moderation type role. The user(s) will appear in the list of board moderators, but until an appropriate role is added they will not be able to perform any moderation tasks.
+       Visit the <a ui-sref="admin-management.roles">Roles Management</a> page to add a moderation type role. The user(s) will appear in the list of board moderators, but until an appropriate role is assigned they will not be able to perform any moderation tasks.
     </p>
     <div class="clear">
       <button class="fill-row" ng-click="AdminManagementCtrl.closeModerators()">Okay</button>

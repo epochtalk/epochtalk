@@ -41,19 +41,9 @@ module.exports = ['$resource',
         isArray: true,
         ignoreLoadingBar: true
       },
-      countModerators: {
-        method: 'GET',
-        url: '/api/admin/users/moderators/count',
-        ignoreLoadingBar: true
-      },
       page: {
         method: 'GET',
         url: '/api/admin/users',
-        isArray: true
-      },
-      pageModerators: {
-        method: 'GET',
-        url: '/api/admin/users/moderators',
         isArray: true
       }
     });
