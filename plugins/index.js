@@ -65,7 +65,8 @@ plugins.install = function(pluginName) {
     return new Promise(function(resolve, reject) {
       var filePath = nodeModulesPath + pluginName + '/migrations/up.sql';
       var migration = fs.readFile(filePath, 'utf8', function(err, data) {
-          // TODO: still insecure
+        // TODO: still insecure
+        if (err) { return resolve(); }
         if (!err) { return db.plugins.migrateUp(data).then(resolve); }
       });
     });
@@ -83,7 +84,7 @@ plugins.update = function(pluginName) {
     var child = exec('npm update ' + pluginName, function(err) {
       if (err) { return reject(err); }
       else { return resolve(); }
-    })
+    });
   });
 };
 
@@ -95,7 +96,8 @@ plugins.uninstall = function(pluginName) {
     return new Promise(function(resolve, reject) {
       var filePath = nodeModulesPath + pluginName + '/migrations/down.sql';
       var migration = fs.readFile(filePath, 'utf8', function(err, data) {
-          // TODO: still insecure
+        // TODO: still insecure
+        if (err) { return resolve(); }
         if (!err) { return db.plugins.migrateUp(data).then(resolve); }
       });
     });
@@ -113,7 +115,7 @@ plugins.uninstall = function(pluginName) {
 };
 
 function loadPlugin(pluginName) {
-  try { return require(pluginName); }
+  try { return require(pluginName)(db); }
   catch(ex) { console.log('Cannot load Plugin -- ' + pluginName + ': ', ex); return; }
 }
 
