@@ -53,7 +53,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'S
       // replace current threads with new threads
       Watchlist.index(query).$promise
       .then(function(pageData) {
-        ctrl.hasMoreThreadss = pageData.hasMoreThreads;
+        ctrl.hasMoreThreads = pageData.hasMoreThreads;
         ctrl.threads = pageData.threads;
         ctrl.threads.forEach(threadPageCount);
         $timeout($anchorScroll);
