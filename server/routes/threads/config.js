@@ -183,6 +183,28 @@ exports.viewed = {
   }
 };
 
+exports.recent = {
+  auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'threads.recent' },
+  validate: {
+    query: {
+      page: Joi.number().default(1),
+      limit: Joi.number().integer().min(1).max(100).default(25)
+    }
+  },
+  pre: [ { method: pre.accessBoardWithBoardId } ],
+  handler: function(request, reply) {
+    var userId;
+    if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
+    var opts = {
+      limit: request.query.limit,
+      page: request.query.page
+    };
+
+    return reply(db.threads.recent(userId, opts));
+  }
+};
+
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads
