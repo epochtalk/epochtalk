@@ -10,6 +10,7 @@ var Promise = require('bluebird');
 var through2 = require('through2');
 var images = require(path.normalize(__dirname + '/index'));
 var config = require(path.normalize(__dirname + '/../../config'));
+var NotUsedError = Promise.OperationalError;
 var Magic = mmm.Magic;
 
 // S3 Configurations
@@ -159,7 +160,7 @@ var checkFileType = function(filename) {
 
 s3.initClient = function(accessKey, secretKey, region) {
   return new Promise(function(resolve, reject) {
-    if (config.images.storage !== 's3') { return reject(); }
+    if (config.images.storage !== 's3') { throw Error('S3 Not Configured'); }
     accessKey = accessKey || config.images.s3.accessKey;
     secretKey = secretKey || config.images.s3.secretKey;
     region = region || config.images.s3.region;
@@ -267,11 +268,13 @@ s3.removeImage = function(imageUrl) {
   function(err) { if (err) { console.log(err); } });
 };
 
-s3.initClient()
-.then(s3.checkAccount)
-.then(function() {
-  return s3.checkBucket()
-  // bucket does not exist
-  .catch(function() { return s3.createBucket(); });
-})
-.catch(function(err) { console.log('S3 not configured'); });
+if (config.images.storage === 's3') {
+  s3.initClient()
+  .then(s3.checkAccount)
+  .then(function() {
+    return s3.checkBucket()
+    // bucket does not exist
+    .catch(function() { return s3.createBucket(); });
+  })
+  .catch(function(err) { console.log('S3 Integration is Broken'); });
+}
