@@ -141,6 +141,24 @@ exports.update = {
           access_key: Joi.string().allow(''),
           secret_key: Joi.string().allow('')
         })
+      }),
+      rate_limiting: Joi.object().keys({
+        namespace: Joi.string().default('ept:'),
+        get: {
+          interval: Joi.number().min(-1),
+          max_in_interval: Joi.number().min(1),
+          min_difference: Joi.number()
+        },
+        post: {
+          interval: Joi.number().min(-1),
+          max_in_interval: Joi.number().min(1),
+          min_difference: Joi.number()
+        },
+        delete: {
+          interval: Joi.number().min(-1),
+          max_in_interval: Joi.number().min(1),
+          min_difference: Joi.number()
+        }
       })
     }).options({ stripUnknown: false, abortEarly: true })
   },
@@ -151,7 +169,7 @@ exports.update = {
         config[key] = newConfig[key];
       });
       reply(request.payload);
-    });
+    }).catch(console.log);
   }
 };
 

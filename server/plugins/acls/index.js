@@ -114,9 +114,7 @@ function verifyRoles() {
       roles[dbRole.lookup] = newRole;
     }
     return;
-  }).then(function(){
-    return;
-  });
+  }).then(function() { return; }); // need to return undefined
 }
 
 function getACLValue(auth, acl) {
