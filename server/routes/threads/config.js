@@ -192,7 +192,6 @@ exports.recent = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
-  pre: [ { method: pre.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     var userId;
     if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
