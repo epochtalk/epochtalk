@@ -6,9 +6,11 @@ var Good = require('good');
 var mkdirp = require('mkdirp');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
+var setup = require(path.normalize(__dirname + '/../setup'));
+var config = require(path.normalize(__dirname + '/../config'));
 var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
-var config = require(path.normalize(__dirname + '/../config'));
+var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var defaultRegisterCb = function(err) { if (err) throw(err); };
@@ -38,6 +40,7 @@ setup().then(function() {
     options.reporters = [ consoleReporter, opsReporter, errsReporter, reqsReporter ];
     server.register({ register: Good, options: options}, defaultRegisterCb);
   }
+
   // auth via jwt
   server.register(Auth, function(err) {
     if (err) throw err;
@@ -47,8 +50,12 @@ setup().then(function() {
     };
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
+
   // route acls
   server.register(acls, defaultRegisterCb);
+
+  // rate limiter
+  server.register({ register: limiter, options: config.rateLimiting }, defaultRegisterCb);
 
   // render views
   server.views({

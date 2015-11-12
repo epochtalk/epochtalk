@@ -50,7 +50,9 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
       })
       .catch(function(err) {
         ctrl.exitEditor = false;
-        Alert.error('Could not create thread: ' + err.data.message);
+        var error = 'Could not create thread: ' + err.data.message;
+        if (err.status === 429) { error = 'New Thread Rate Limit Exceeded'; }
+        Alert.error(error);
       });
     };
   }
