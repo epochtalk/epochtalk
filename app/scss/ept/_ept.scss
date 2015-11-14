@@ -9,6 +9,7 @@ html, body {
   padding: 0;
   font-size: $base-font-size;
   font-family: $base-font-sans;
+  background-color: $base-background-color;
   color: $base-font-color;
   line-height: $base-line-height;
   font-weight: normal;
@@ -47,12 +48,12 @@ table {
 }
 a {
   cursor: pointer;
-  color: $color-active;
+  color: $color-primary;
   text-decoration: none;
   @include transition(color 0.15s ease, background-color 0.15s ease);
   &:hover, &:focus {
     @include transition(color 0.15s ease, background-color 0.15s ease);
-    color: $color-active-dark;
+    color: $color-primary-alt;
   }
 }
 img {
@@ -65,7 +66,7 @@ img {
 label {
   font-family: $base-font-sans;
   font-size: 0.875rem;
-  color: $color-gray;
+  color: $base-font-color;
   cursor: pointer;
   display: block;
   font-weight: normal;
@@ -115,7 +116,7 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   margin: 0 auto;
   position: fixed;
   z-index: 10000;
-  background-color: #fff;
+  background-color: $base-background-color;
   box-shadow: 4px 4px 80px #000;
   p { margin-bottom: 1rem; }
   button, .button { margin-bottom: 0; }
@@ -134,7 +135,7 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  color: $color-gray-disabled;
+  color: $secondary-font-color-light;
   cursor: pointer;
   font-size: 1.25rem;
   display: inline-block;
@@ -146,17 +147,17 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   &:before, &:after { content: " "; display: table; }
   &:after { clear: both; }
   & dd { position: relative; margin-bottom: 0; list-style: none; float: left; }
-  & dd > a { display: block; background-color: #EFEFEF; color: #222222; padding: 1rem 2rem; font-size: 1rem; }
+  & dd > a { display: block; background-color: $base-background-color; color: $base-font-color; padding: 1rem 2rem; font-size: 1rem; }
   & dd > a:hover { background-color: #e1e1e1; }
   & dd > a:focus { outline: none; }
-  & dd.active a { background-color: #FFFFFF; color: #222222; }
+  & dd.active a { background-color: $base-background-color; color: $base-font-color; }
 }
 .button, button {
   @include border-radius(2px);
   @include transition(color 0.15s ease, background-color 0.15s ease);
   border: 0;
-  background-color: $color-active-fill;
-  border-color: $color-active-fill;
+  background-color: $color-primary;
+  border-color: $color-primary;
   font-size: 1rem;
   font-family: $base-font-sans;
   outline: none;
@@ -166,19 +167,19 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   cursor: pointer;
   margin: 0 0 1.25rem;
   position: relative;
-  color: #fff;
+  color: $button-text-color;
   text-decoration: none;
   text-align: center;
   -webkit-appearance: none;
   &:hover, &:focus {
    @include transition(color 0.15s ease, background-color 0.15s ease);
-   background-color: $color-active-dark;
-   border-color: $color-active-dark;
-   color: #fff;
+   background-color: $color-primary-alt;
+   border-color: $color-primary-alt;
+   color: $button-text-color;
   }
   &.disabled, &.disabled:hover, &.disabled:focus, &[disabled], &[disabled]:hover, &[disabled]:focus {
-    background-color: $color-gray-disabled;
-    border-color: $color-gray-disabled;
+    background-color: $secondary-font-color-light;
+    border-color: $secondary-font-color-light;
   }
 }
 .disable-animations {
@@ -196,8 +197,8 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   }
 }
 .error-label { @include label(error,  0.6875rem, 2px, 0.1rem); }
-.thin-underline { @include clearfix; border-bottom: 1px solid $color-gray-light; margin-bottom: 0.625rem; }
-hr { margin: 1rem 0; border: none; height: 1px; color: $color-gray-light; background-color: $color-gray-light; }
+.thin-underline { @include clearfix; border-bottom: 1px solid $border-color; margin-bottom: 0.625rem; }
+hr { margin: 1rem 0; border: none; height: 1px; color: $border-color; background-color: $border-color; }
 .post-body {
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -235,31 +236,30 @@ ul.pagination {
   min-height: 1.3rem;
   li {
     line-height: 1.3rem;
-    color: #222222;
     font-size: 0.875rem;
     margin-left: 0.3125rem;
     float: left;
     display: block;
     &.unavailable a:hover { background-color: transparent; }
-    &.current a { color: #fff; }
+    &.current a, &.current a:hover { color: $base-background-color; }
     &.arrow { font-family: 'Zapf Dingbats'; }
     a {
       @include transition(background-color 300ms ease-out);
       display: block;
       padding: 0.0325rem 0.325rem 0.0325rem;
-      color: $color-gray-med;
+      color: $secondary-font-color;
       background: none;
       border-radius: 3px;
       font-weight: normal;
       font-size: 1rem;
       line-height: inherit;
-      &:hover { background-color: $color-gray-light; }
+      &:hover { color: $secondary-font-color-dark; background-color: $secondary-font-color-light; }
     }
   }
-  li.unavailable a { cursor: default; color: #999999; }
+  li.unavailable a { cursor: default; color: $secondary-font-color; }
   li.current a {
-    background: $color-active-fill;
-    &:hover, &:focus { background: $color-active-dark; }
+    background: $color-primary;
+    &:hover, &:focus { background: $color-primary-alt; }
   }
   @include media($mobile) { margin-top: 1rem; }
 }
@@ -275,7 +275,7 @@ input.toggle-switch + label {
   padding: 2px;
   width: 3.75rem;
   height: 2rem;
-  background-color: lighten($color-gray-med, 10%);
+  background-color: $secondary-font-color;
   margin: 0;
   float: right;
 }
@@ -287,7 +287,7 @@ input.toggle-switch + label:before {
   left: 2px;
   bottom: 2px;
   right: 2px;
-  background-color: #fff;
+  background-color: $base-background-color;
 }
 input.toggle-switch + label:after {
   @include border-radius(2px);
@@ -296,21 +296,21 @@ input.toggle-switch + label:after {
   left: 4px;
   bottom: 4px;
   width: 1.5625rem;
-  background-color: lighten($color-gray-med, 10%);
+  background-color: $secondary-font-color;
 
   @include media($mobile) { width: 1.45rem; }
 }
-input.toggle-switch:checked + label { background-color: $color-active-fill; }
-input.toggle-switch:checked + label:after { margin-left: 1.6875rem; background-color: $color-active-fill; }
+input.toggle-switch:checked + label { background-color: $color-primary; }
+input.toggle-switch:checked + label:after { margin-left: 1.6875rem; background-color: $color-primary; }
 input[disabled].toggle-switch + label,
-input[disabled].toggle-switch + label:after { background-color: $color-gray-light }
+input[disabled].toggle-switch + label:after { background-color: $secondary-font-color-light; }
 input[disabled].toggle-switch:checked + label,
-input[disabled].toggle-switch:checked + label:after { background-color: lighten($color-active-fill, 20%); }
+input[disabled].toggle-switch:checked + label:after { background-color: lighten($color-primary, 20%); }
 input[type], textarea {
   box-shadow: none;
   &.ng-invalid,
   &.ng-invalid-mismatch { border-color: red; }
-  &.ng-untouched { border-color: #ccc; }
+  &.ng-untouched { border-color: $border-color; }
   &:focus { box-shadow: none; }
 }
 .input-info { @include label(default, 0.6875rem, 0, 0 0.3125rem); }
@@ -343,17 +343,15 @@ select {
   cursor: pointer;
   -webkit-appearance: none;
   border-radius: 0;
-  background-color: $color-gray-sub;
+  background-color: $sub-header-color;
   background-position: 99% center;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP1BMVEUAAAAAAABMTExVVVVPT09SUlJSUlJQUFBQUFBOTk5RUVFPT09QUFBRUVFRUVFRUVFQUFBRUVFRUVFRUVFRUVG88hzBAAAAFHRSTlMAAQoMEB8iIykqL2N8fYSTsdLe4uDLe30AAABOSURBVBjTY2CgDuBggdCMXMxgmltEiBXM5xMRZAIxBETAIkC+iAgHSIBNGCQC5vNA9LKDRPiBfF6YqSARZD5UhBfZZqAID6pbWDjJ9wcA8qMDufUl8j0AAAAASUVORK5CYII=");
   background-repeat: no-repeat;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #cccccc;
+  border: 1px solid $border-color;
   padding: 0.5rem;
   font-size: 0.875rem;
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  color: rgba(0, 0, 0, 0.75);
+  color: $base-font-color;
   line-height: normal;
   border-radius: 0;
   height: 2.3125rem;
@@ -375,10 +373,10 @@ tags-input .tags {
   overflow: hidden;
   word-wrap: break-word;
   cursor: text;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: $input-background-color;
+  border: 1px solid $border-color;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  color: rgba(0, 0, 0, 0.75);
+  color: $input-font-color;
   height: 2.3125rem;
 }
 tags-input .tags.focused { outline: none; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); }
@@ -392,8 +390,8 @@ tags-input .tags .tag-item {
   height: 1.8rem;
   line-height: 1.8rem;
   border-radius: 3px;
-  color: #fff;
-  background-color: $color-active-fill;
+  color: $base-background-color;
+  background-color: $color-primary;
 }
 tags-input .tags .tag-item.selected { background-color: #ff5c5c; }
 tags-input .tags .tag-item .remove-button {
@@ -404,7 +402,7 @@ tags-input .tags .tag-item .remove-button {
   cursor: pointer;
   vertical-align: middle;
   font: bold 1rem;
-  color: #fff;
+  color: $base-background-color;
 }
 tags-input .tags .tag-item .remove-button:active { color: #ff0000; }
 tags-input .tags .input {
@@ -423,7 +421,7 @@ tags-input .tags .input::-ms-clear { display: none; }
 tags-input.ng-invalid .tags { border: 1px solid #ff0000; }
 tags-input[disabled] .host:focus { outline: none; }
 tags-input[disabled] .tags { background-color: #eee; cursor: default; }
-tags-input[disabled] .tags .tag-item { opacity: 0.65; color: #fff; background-color: $color-gray-sub; }
+tags-input[disabled] .tags .tag-item { opacity: 0.65; color: #fff; background-color: $sub-header-color; }
 tags-input[disabled] .tags .tag-item .remove-button { cursor: default; }
 tags-input[disabled] .tags .tag-item .remove-button:active { color: #585858; }
 tags-input[disabled] .tags .input { background-color: #eee; cursor: default; }
@@ -433,10 +431,10 @@ tags-input .autocomplete {
   padding: 0.3125rem 0;
   z-index: 999;
   width: 100%;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: $input-background-color;
+  border: 1px solid $border-color;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  color: rgba(0, 0, 0, 0.75);
+  color: $input-font-color;
 }
 tags-input .autocomplete .suggestion-list {
   margin: 0;
@@ -452,12 +450,12 @@ tags-input .autocomplete .suggestion-item {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #000;
-  background-color: #fff;
+  color: $input-font-color;
+  background-color: $input-background-color;
 }
 tags-input .autocomplete .suggestion-item.selected { color: #fff; background-color: #3599FF; }
 tags-input .autocomplete .suggestion-item.selected em { color: #fff; background-color: #3599FF; }
-tags-input .autocomplete .suggestion-item em { color: #000; background-color: #fff; }
+tags-input .autocomplete .suggestion-item em { color: $input-font-color; }
 
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"],
 input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"],
@@ -466,11 +464,11 @@ input[type="url"], input[type="color"], textarea, .input-text {
   @include border-radius(0);
   @include transition(all 0.15s linear);
   -webkit-appearance: none;
-  background-color: #FFFFFF;
+  background-color: $input-background-color;
   font-family: inherit;
-  border: 1px solid #ccc;
+  border: 1px solid $border-color;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  color: rgba(0, 0, 0, 0.75);
+  color: $input-font-color;
   display: block;
   font-size: 0.875rem;
   margin: 0 0 1rem 0;
@@ -480,7 +478,7 @@ input[type="url"], input[type="color"], textarea, .input-text {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  &:disabled, &[disabled] { background-color: $color-gray-light; }
+  &:disabled, &[disabled] { background-color: $sub-header-color; }
 }
 input[type="checkbox"] { margin-bottom: 1rem; }
 input[type="checkbox"] + label, input[type="radio"] + label {
@@ -505,12 +503,12 @@ input[type="checkbox"] + label, input[type="radio"] + label {
   }
   .image-picker-cell {
     margin-bottom: 0.5rem;
-    border: 2px solid $color-gray-med;
+    border: 2px solid $border-color;
     .header {
-      background-color: $color-gray;
-      color: #fff;
+      background-color: $border-color-alt;
+      color: $base-font-color;
       padding-left: 0.3125rem;
-      border-bottom: 2px solid $color-gray-med;
+      border-bottom: 2px solid $border-color;
       font-size: 0.8125rem;
     }
     .picker-body {
@@ -549,35 +547,36 @@ input[type="checkbox"] + label, input[type="radio"] + label {
   transform: translate(-50%, 0);
 }
 main #public-content table.striped, main #admin-content table.striped {
-  background: #FFFFFF;
+  background: $base-background-color;
   margin-bottom: 1.25rem;
-  border: solid 1px $color-gray-light;
+  border: solid 1px $border-color;
   table-layout: auto;
   thead {
-    background: $color-gray-med-light;
+    background: darken($sub-header-color, 4%);
     tr th, tr td {
       padding: 0.5rem 0.625rem 0.625rem;
       font-size: 0.875rem;
       font-weight: bold;
-      color: $color-gray;
+      color: $secondary-font-color;
     }
+    tr th { color: lighten($base-font-color, 15%); }
   }
   tr th, tr td {
     padding: 0.5625rem 0.625rem;
     font-size: 0.875rem;
-    color: $color-gray;
+    color: $secondary-font-color;
     text-align: left;
   }
-  tr:nth-of-type(even) { background: $color-gray-sub; }
+  tr:nth-of-type(even) { background: $sub-header-color; }
   tr { border: 0; }
   thead tr th, tbody tr th, tbody tr td, tr td { display: table-cell; line-height: 1.125rem; }
 }
 .progress {
-  background-color: $color-gray-sub;
+  background-color: $sub-header-color;
   height: 1.5625rem;
-  border: 1px solid $color-gray-light;
+  border: 1px solid $border-color;
   margin-bottom: 0.625rem;
-  .meter { background: $color-active-fill; height: 100%; display: block; }
+  .meter { background: $color-primary; height: 100%; display: block; }
 }
 .alertService {
   position: absolute;
@@ -597,7 +596,7 @@ main #public-content table.striped, main #admin-content table.striped {
     display: block;
     padding: 0.5rem 1rem;
     color: #fff;
-    &:first-child { padding-bottom:}
+    &:first-child { padding-bottom: 0.5rem; }
     &:before { padding-right: 0.5rem; font: normal normal normal 14px/1 FontAwesome; }
     &.warning:before { color: #FD8D40; content: "\f06a"; }
     &.info:before { color: #49AED0; content: "\f05a"; }
@@ -683,7 +682,7 @@ header {
               @include border-radius(100px);
               height: 2.1875rem;
               width: 2.1875rem;
-              border: 2px solid white;
+              border: 2px solid $header-logo-font-color;
             }
             a { padding-left: 0.8rem; }
           }
@@ -698,7 +697,7 @@ header {
             position: absolute;
             z-index: 9999;
             li, li a { float: none; display: block; height: 2.2rem; line-height: 2.2rem; }
-            li a { @include pad(0); &:hover { color: $color-active-fill; } }
+            li a { @include pad(0); &:hover { color: $color-primary; } }
           }
         }
         #user-dropdown-wrap:hover {
@@ -719,7 +718,7 @@ header {
           height: inherit;
           vertical-align: middle;
         }
-        .menu-btn-selected { background-color: $header-dropdown-bg-color; border-bottom: 2px solid $color-active-fill; }
+        .menu-btn-selected { background-color: $header-dropdown-bg-color; border-bottom: 2px solid $color-primary; }
       }
       #menu-right {
         float: right;
@@ -855,7 +854,7 @@ main #error-404 {
   text-align: center;
   line-height: normal;
   .code { @include span-columns(12); @include omega; font-size: 12.5rem; font-weight: 100; }
-  .message { @include span-columns(12); @include omega; font-size: 1.875rem; color: $color-active; }
+  .message { @include span-columns(12); @include omega; font-size: 1.875rem; color: $color-primary; }
 
   // Mobile 404 Layout
   @include media($mobile) {
@@ -917,11 +916,11 @@ main #public-content {
     @include pad(0.5rem 0 1.5rem 0);
     a {
       @include border-radius(3px);
-      color: $color-gray-med;
+      color: $secondary-font-color;
       padding: 0.625rem 1rem;
-      border: 1px solid $color-gray-light;
+      border: 1px solid $border-color;
       i { margin-right: 0.375rem; }
-      &:hover { background-color: $color-active-fill; border-color: $color-active-fill; color: #fff; }
+      &:hover { background-color: $color-primary; border-color: $color-primary; color: #fff; }
     }
   }
   .board-data {
@@ -951,7 +950,7 @@ main #public-content {
       font-size: 0.95rem;
       .subject {
         @include span-columns(7);
-        .title i { color: $color-gray; }
+        .title i { color: $secondary-font-color; }
         .thread-title {
           word-wrap: break-word;
           overflow-wrap: break-word;
@@ -1042,12 +1041,12 @@ main #public-content {
       #stickyThread, #lockThread {
         display:none;
         font-family: "epoch-icons";
-        & + label:before { font-size: 2rem; color: $color-gray-light; display: block; }
-        &:checked + label:before { color: $color-active-fill; }
+        & + label:before { font-size: 2rem; color: $secondary-font-color-light; display: block; }
+        &:checked + label:before { color: $color-primary; }
       }
       #purgeThread {
-        color: $color-gray-light;
-        &.clicked { color: $color-active-fill; }
+        color: $secondary-font-color-light;
+        &.clicked { color: $color-primary; }
         &:before { font-size: 2rem; }
         label { display: block; }
       }
@@ -1068,7 +1067,7 @@ main #public-content {
       @include transition(background-color 250ms ease-in);
       position: relative;
       min-height: 8rem;
-      border-bottom: 1px solid $color-gray-light;
+      border-bottom: 1px solid $border-color;
       &.highlighted { background-color: $color-highlighted; }
       .post-user {
         width: 5rem;
@@ -1085,7 +1084,7 @@ main #public-content {
         }
         .user-role {
           padding-top: 0.625rem;
-          color: $color-gray-med;
+          color: $secondary-font-color;
           font-size: 0.8125em;
           text-align: center;
           text-transform: uppercase;
@@ -1096,7 +1095,7 @@ main #public-content {
         display: block;
         margin-left: 5rem;
         .post-title {
-          color: $color-gray-med;
+          color: $secondary-font-color;
           margin-bottom: 0.5rem;
           width: 100%;
           a.username {
@@ -1104,11 +1103,11 @@ main #public-content {
             margin-right: 0.75rem;
             color: $base-font-color;
             font-weight: 900;
-            &:hover { color: $color-active; }
+            &:hover { color: $color-primary; }
           }
           .timestamp {
             display: inline-block;
-            color: $color-gray-med;
+            color: $secondary-font-color;
             line-height: 1.3rem;
             font-size: 0.8125rem;
             font-weight: 400;
@@ -1118,37 +1117,37 @@ main #public-content {
             @include list-clean;
             float: right;
             line-height: 1.3rem;
-            color: $color-gray-med;
+            color: $secondary-font-color;
             li {
               @include list-flat;
               a {
-                color: $color-gray-light;
-                &:hover { color: $color-active; }
+                color: $secondary-font-color-light;
+                &:hover { color: $color-primary; }
               }
             }
-            &:hover a { color: $color-gray-med; }
+            &:hover a { color: $secondary-font-color; }
           }
-          &:hover .post-action a { color: $color-gray-med; }
+          &:hover .post-action a { color: $secondary-font-color; }
           .clear { @include clearfix; }
         }
         .post-sig-border {
           clear: both;
           width: 250px;
-          border-top: 1px solid $color-gray-light;
+          border-top: 1px solid $border-color;
           margin-bottom: 0.5rem;
           margin-top: 0.5rem;
         }
         .post-signature {
           @include truncate-ellipsis;
           clear: both;
-          color: $color-gray-med;
+          color: $secondary-font-color;
           font-size: 13px;
           max-height: 80px;
           word-wrap: break-word;
           white-space: pre-wrap;
           a {
-            color: $color-gray-med;
-            &:hover { color: $color-active; }
+            color: $secondary-font-color;
+            &:hover { color: $color-primary; }
           }
         }
       }
@@ -1278,52 +1277,52 @@ main #public-content {
     @include span-columns(3);
     margin-bottom: 2rem;
     .list {
-      border: 1px solid $color-gray-light;
+      border: 1px solid $border-color;
       margin-bottom: 1rem;
       .cell {
         @include fill-parent;
         @include truncate-ellipsis;
         @include pad(0.2rem 0.8rem);
-        border-bottom: 1px solid $color-gray-light;
+        border-bottom: 1px solid $border-color;
         font-size: 0.8rem;
         line-height: 0.95rem;
         cursor: pointer;
-        .msg-preview { color: darken($color-gray-med, 5); }
-        &:hover { background-color: $color-gray-sub; }
-        &.active { background-color: $color-gray-light; }
+        .msg-preview { color: $secondary-font-color; }
+        &:hover { background-color: $sub-header-color; }
+        &.active { background-color: darken($sub-header-color, 5%); }
         &:last-child { border-bottom: 0; }
       }
     }
     #recentMessagesHeader {
       @include clearfix;
       cursor: pointer;
-      color: $color-gray-med;
+      color: $secondary-font-color;
       margin-bottom: 1rem;
       .inbox {
         @include span-columns(4);
         @include transition(color 0.15s ease);
-        &:hover { @include transition(color 0.15s ease); color: $color-gray; }
+        &:hover { @include transition(color 0.15s ease); color: $secondary-font-color-dark; }
       }
       .add {
         @include span-columns(8);
         @include omega;
-        color: $color-active;
+        color: $color-primary;
         text-align: right;
         @include transition(color 0.15s ease);
-        &:hover { @include transition(color 0.15s ease); color: $color-active-dark; }
+        &:hover { @include transition(color 0.15s ease); color: $color-primary-alt; }
       }
     }
     #pageConvos {
       @include clearfix;
       height: 2.1875rem;
       margin-bottom: 1rem;
-      background-color: $color-gray-sub;
+      background-color: $sub-header-color;
       .prev, .next {
         @include span-columns(3);
         button { display: inline-block; padding: 0.5rem; margin: 0; }
       }
       .next { @include omega; button { float: right; } }
-      .page { @include span-columns(6); color: $color-gray-med; text-align: center; line-height: 2.1875rem; }
+      .page { @include span-columns(6); color: $secondary-font-color; text-align: center; line-height: 2.1875rem; }
     }
   }
   .messages {
@@ -1335,9 +1334,9 @@ main #public-content {
       h4 { margin-bottom: 0; display: inline-block;}
     }
     .reply {
-      border: 1px solid $color-gray-light;
+      border: 1px solid $border-color;
       border-top: 0;
-      background-color: $color-gray-sub;
+      background-color: $sub-header-color;
       padding: 1rem;
       margin-bottom: 1rem;
       .preview {
@@ -1348,7 +1347,7 @@ main #public-content {
         white-space: pre-wrap;
         overflow-y: auto;
         padding: 0.5rem;
-        border: 1px solid $color-gray-light;
+        border: 1px solid $border-color;
       }
       button { margin-bottom: 0; }
     }
@@ -1356,9 +1355,9 @@ main #public-content {
       .message {
         @include clearfix;
         @include pad(1rem);
-        border-bottom: 1px solid $color-gray-light;
+        border-bottom: 1px solid $border-color;
         &:last-child { margin-bottom: 2rem; }
-        &.sender { background-color: $color-gray-sub; }
+        &.sender { background-color: $sub-header-color; }
         .avatar {
           @include span-columns(1);
           img {
@@ -1371,9 +1370,9 @@ main #public-content {
           @include span-columns(11);
           .title {
             margin-bottom: 0.5rem;
-            .date { @include pad(0 0 0 0.25rem); font-size: 0.8rem; color: $color-gray-med; }
-            .action { color: $color-gray-med; }
-            &:hover .action { color: $color-gray; }
+            .date { @include pad(0 0 0 0.25rem); font-size: 0.8rem; color: $secondary-font-color; }
+            .action { color: $secondary-font-color; }
+            &:hover .action { color: $secondary-font-color-dark; }
           }
         }
       }
@@ -1400,7 +1399,7 @@ main #admin-content {
       padding-left: 1.5625rem;
       font-size: 1rem;
       dd {
-        &.active a { border: 1px solid $color-active; border-radius: 3px; color: $color-active; }
+        &.active a { border: 1px solid $color-primary; border-radius: 3px; color: $color-primary; }
         a { background-color: transparent; padding: 0.4rem 1rem; }
       }
     }
@@ -1412,20 +1411,20 @@ main #admin-content {
       text-align: left;
       font-size: 0.875rem;
       background-color: transparent;
-      tr { border-bottom: 1px solid $color-gray-light; }
-      th { color: $color-gray-med; font-weight: 400; padding-bottom: 0.5rem; }
+      tr { border-bottom: 1px solid $border-color; }
+      th { color: $secondary-font-color; font-weight: 400; padding-bottom: 0.5rem; }
     }
     tr {
-      border-bottom: 1px solid $color-gray-sub;
+      border-bottom: 1px solid $border-color-alt;
       vertical-align: top;
       &.unbanned { background-color: #FFAEAE }
       &.selectable-row { @include no-select; }
-      &.selectable-row:hover { background-color: $color-gray-sub; }
-      &.active-row, &.active-row:nth-of-type(even) { background-color:  $color-active-fill; }
-      &.active-row.selectable-row:hover { background-color:  $color-active-fill }
+      &.selectable-row:hover { background-color: $sub-header-color; }
+      &.active-row, &.active-row:nth-of-type(even) { background-color:  $color-primary; }
+      &.active-row.selectable-row:hover { background-color:  $color-primary }
       &.active-row td { color: #fff; }
-      &.active-row td a { color: darken($color-active-dark, 10%); }
-      &.active-row td a:hover { color: $color-active-dark; }
+      &.active-row td a { color: darken($color-primary-alt, 10%); }
+      &.active-row td a:hover { color: $color-primary-alt; }
       &:nth-of-type(even) { background: transparent; }
       &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
       td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: middle; }
@@ -1443,7 +1442,7 @@ main #admin-content {
   .admin-table-header {
     @include clearfix;
     @include row;
-    background-color: $color-gray-sub;
+    background-color: $sub-header-color;
     @include pad(1.25rem 3rem 0);
     margin: 0 -3rem 2rem;
   }
@@ -1460,12 +1459,12 @@ main #admin-content {
     line-height: 1.25rem;
     font-size: 0.8125rem;
     z-index: 2;
-    background: $color-gray-light;
+    background: $secondary-font-color-light;
     color: #fff;
     text-align: center;
   }
   .nested-input-container .nested-clear-btn:hover,
-  .nested-input-container .nested-clear-btn:focus { background-color:  $color-gray-med; }
+  .nested-input-container .nested-clear-btn:focus { background-color:  $secondary-font-color; }
   .nested-btn, .nested-btn-disabled {
     @include border-radius(2px);
     position: absolute;
@@ -1477,12 +1476,12 @@ main #admin-content {
     line-height: 1.875rem;
     font-size: 0.8125rem;
     z-index: 2;
-    background: $color-active-fill;
-    color: #fff;
+    background: $color-primary;
+    color: $button-text-color;
     text-align: center;
   }
   .nested-btn:hover,
-  .nested-btn:focus { background-color: $color-active-dark; border-color: $color-active-dark; color: #fff; }
+  .nested-btn:focus { background-color: $color-primary-alt; border-color: $color-primary-alt; color: #fff; }
   .nested-btn-disabled { color: #fff; background-color: #ccc; border-color: #ccc; pointer-events: none; }
   .radio-button label {
     @include truncate-ellipsis;
@@ -1494,7 +1493,7 @@ main #admin-content {
     line-height: 36px;
     text-align: center;
   }
-  .radio-button input[type="radio"]:checked + label { background: $color-active-fill; color: #fff; margin-left: 0px; }
+  .radio-button input[type="radio"]:checked + label { background: $color-primary; color: $button-text-color; margin-left: 0px; }
   .radio-button input[type="radio"] + label { margin-left: 0px; }
   input[type].hide-radio { display: none; }
   .user-search { @include span-columns(6); @include omega; }
@@ -1522,7 +1521,7 @@ main #admin-content {
     .section-header-top-spacing { padding-top: 2.1875rem; clear: both; }
     &.section-header-top-spacing { padding-top: 0; }
     .desc, .switch-desc { @include span-columns(9); }
-    .desc-label { color: $color-gray-med; }
+    .desc-label { color: $secondary-font-color; }
     .button { @include span-columns(3); @include omega; font-size: 0.875rem; padding: 0.625rem; }
     .switch-block { @include span-columns(3); @include omega; padding-top: 0.25rem; }
     .smtp-server-wrap { @include span-columns(9); }
@@ -1541,12 +1540,19 @@ main #admin-content {
       @include omega(3n);
       .setting { @include span-columns(4); }
     }
+    .input-block { @include span-columns(3); @include omega; margin-bottom: 0; }
+    .swatch-input {
+      @include span-columns(3); @include omega;
+      position: relative;
+      input { margin-bottom: 0; }
+      div { position: absolute; top: 0.2rem; right: 0.2rem; height: 1.925rem; width: 1rem; border: 1px solid $border-color; }
+    }
   }
 
   @include media($mobile) {
     .settings.half-column {
       &.section-header-top-spacing { padding-top: 2.1875rem; }
-      .desc, .button, .fixed-img-wrap .setting { @include span-columns(8); @include omega; }
+      .desc, .button, .fixed-img-wrap .setting, .input-block, .swatch-input { @include span-columns(8); @include omega; }
       .img-wrap .img-server-wrap { @include span-columns(8); @include omega; }
       .img-wrap .radio-button { @include span-columns(4); padding-top: 0.5rem; }
     }
@@ -1596,12 +1602,12 @@ main #admin-content {
       list-style-type: none;
       li { display: block }
       li a { display: block; padding: 0.5rem 0; padding-left: 0.5rem; }
-      li a:hover { background-color: $color-gray-sub; }
-      li a.active { background-color: $color-active-fill; color: #fff; }
+      li a:hover { background-color: $sub-header-color; }
+      li a.active { background-color: $color-primary; color: #fff; }
     }
     .left-column {
       @include span-columns(2);;
-      border-right: 1px solid $color-gray-light;
+      border-right: 1px solid $border-color;
     }
     .right-column {
       @include span-columns(9);
@@ -1652,7 +1658,7 @@ main #admin-content {
   table.report-details {
     td.field {
       font-size: 0.8125rem;
-      color: $color-gray-med;
+      color: $secondary-font-color;
       width: 9.375rem;
       padding-left: 0;
       vertical-align: top;
@@ -1672,7 +1678,7 @@ main #admin-content {
     font-size: 13px;
     padding-top: 5px;
     padding-bottom: 5px;
-    .note-date { color: $color-gray-med; }
+    .note-date { color: $secondary-font-color; }
   }
 
   @include media($mobile) {

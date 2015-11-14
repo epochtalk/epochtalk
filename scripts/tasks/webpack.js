@@ -12,7 +12,7 @@ var webpackConfigs = {
     publicPath: '/static/js/',
     filename: 'bundle.js',
     chunkFilename: '[id].bundle.js',
-    sourceMapFilename: "bundle.map"
+    sourceMapFilename: 'bundle.map'
   },
   resolve: {
     root: [bowerComponentsPath],

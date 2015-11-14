@@ -1,5 +1,7 @@
 var fs = require('fs');
+var readLine = require('readline');
 var Joi = require('joi');
+var Boom = require('boom');
 var path = require('path');
 var _ = require('lodash');
 var renameKeys = require('deep-rename-keys');
@@ -7,6 +9,9 @@ var changeCase = require('change-case');
 var pre = require(path.normalize(__dirname + '/pre'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
+var customVarsPath = path.normalize(__dirname.split(path.sep + 'server')[0] + '/app/scss/ept/_custom-variables.scss');
+var sass = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'sass'));
+var copyCss = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'copy_files'));
 
 var camelCaseToUnderscore = function(obj) {
   if (_.isObject(obj)) {
@@ -143,6 +148,86 @@ exports.update = {
         config[key] = newConfig[key];
       });
       reply(request.payload);
+    });
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Settings
+  * @api {GET} /admin/settings/theme (Admin) Get Theme
+  * @apiName GetTheme
+  * @apiDescription Used to fetch theme vars in _custom-variables.scss
+  *
+  * @apiSuccess {object} theme Object containing theme vars and values
+  */
+exports.getTheme = {
+  handler: function(request, reply) {
+    var rl = readLine.createInterface({
+      input: fs.createReadStream(customVarsPath),
+      terminal: false
+    });
+    var theme = {};
+    rl.on('line', function (line) {
+      if (line.charAt(0) === '$') {
+        var lineArr = line.split(':');
+        var key = lineArr[0].split('$')[1].trim();
+        var val = lineArr[1].split(';')[0].trim();
+        theme[key] = val;
+      }
+    })
+    .on('close', function() { reply(theme); });
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Settings
+  * @api {PUT} /admin/settings/theme (Admin) Set Theme
+  * @apiName SetTheme
+  * @apiDescription Used to set theme vars in _custom-variables.scss
+  *
+  * @apiSuccess {object} theme Object containing theme vars and values
+  */
+exports.setTheme = {
+  validate: {
+    payload: Joi.object().keys({
+      'base-line-height': Joi.string(),
+      'base-background-color': Joi.string(),
+      'color-primary': Joi.string(),
+      'base-font-sans': Joi.string(),
+      'base-font-color': Joi.string(),
+      'base-font-size': Joi.string(),
+      'secondary-font-color': Joi.string(),
+      'input-font-color': Joi.string(),
+      'input-background-color': Joi.string(),
+      'border-color': Joi.string(),
+      'header-color': Joi.string(),
+      'header-font-color': Joi.string(),
+      'sub-header-color': Joi.string(),
+      'header-bg-color': Joi.string(),
+      'header-logo-font-color': Joi.string()
+
+    })
+  },
+  handler: function(request, reply) {
+    var theme = request.payload;
+    var keys = Object.keys(theme);
+    var stream = fs.createWriteStream(customVarsPath);
+    stream.once('open', function() {
+      keys.forEach(function(key) {
+        stream.write('$' + key + ': ' + theme[key].toLowerCase() + ';\n');
+      });
+      stream.end();
+    })
+    .on('close', function() {
+      copyCss()
+      .then(sass)
+      .then(function() { reply(theme); })
+      .catch(function(err) {
+        var jsonErr = JSON.parse(err);
+        reply(Boom.badRequest(jsonErr.message));
+      });
     });
   }
 };

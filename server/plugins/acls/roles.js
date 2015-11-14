@@ -225,7 +225,8 @@ roles.superAdministrator = {
   adminAccess: {
     settings: {
       general: true,
-      forum: true
+      forum: true,
+      theme: true
     },
     management: {
       boards: true,

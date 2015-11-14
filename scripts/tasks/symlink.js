@@ -38,6 +38,7 @@ module.exports = function() {
     fs.unlinkSync(templatePath + '/admin/moderation/users.html');
     fs.unlinkSync(templatePath + '/admin/settings/index.html');
     fs.unlinkSync(templatePath + '/admin/settings/forum.html');
+    fs.unlinkSync(templatePath + '/admin/settings/theme.html');
     fs.unlinkSync(templatePath + '/admin/settings/general.html');
     return resolve();
   })
@@ -75,6 +76,7 @@ module.exports = function() {
     fs.symlinkSync(appPath + '/admin/moderation/users.html', templatePath + '/admin/moderation/users.html');
     fs.symlinkSync(appPath + '/admin/settings/index.html', templatePath + '/admin/settings/index.html');
     fs.symlinkSync(appPath + '/admin/settings/forum.html', templatePath + '/admin/settings/forum.html');
+    fs.symlinkSync(appPath + '/admin/settings/theme.html', templatePath + '/admin/settings/theme.html');
     fs.symlinkSync(appPath + '/admin/settings/general.html', templatePath + '/admin/settings/general.html');
   });
 };

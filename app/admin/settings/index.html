@@ -7,6 +7,9 @@
     <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.forum')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab == 'forum'}">
       <a ui-sref=".forum" ng-click="AdminSettingsCtrl.tab = 'forum'">Forum</a>
     </dd>
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.theme')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab == 'theme'}">
+      <a ui-sref=".theme" ng-click="AdminSettingsCtrl.tab = 'theme'">Theme</a>
+    </dd>
   </dl>
 
   <div class="right mobile-buttons">
