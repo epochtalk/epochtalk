@@ -5,6 +5,12 @@ var ctrl = ['$scope', 'settings', 'AdminSettings', 'Alert', function($scope, set
   this.parent = $scope.$parent.AdminSettingsCtrl;
   this.parent.tab = 'forum';
 
+  // Reset button label
+  $scope.child.resetBtnLabel = 'Reset';
+
+  // This page has no validation
+  $scope.child.invalidForm = false;
+
   // Make copy of settings for a restore state
   this.originalSettings = angular.copy(settings);
   this.settings = angular.copy(settings);

@@ -83,7 +83,7 @@
     bottom: 10px;
     left: 10px;
     right: 10px;
-    background-color: white;
+    background-color: $base-background-color;
     z-index: 10;
     overflow: auto;
     padding: 2rem;
@@ -94,7 +94,7 @@
       cursor: pointer;
       line-height: 1;
       font-weight: bold;
-      color: #AAA;
+      color: $secondary-font-color;
       position: absolute;
       top: 10px;
       right: 10px;
@@ -123,7 +123,8 @@
     input[type],
     .editor-input,
     .editor-preview {
-      background-color: #fff;
+      color: $input-font-color;
+      background-color: $input-background-color;
       border: 1px solid $border-color;
       padding: 0.5rem;
       resize: none;
@@ -192,7 +193,7 @@
   }
   .editor-images:hover {
     background: rgba(0,0,0,0.1);
-    border: 2px dashed #777;
+    border: 2px dashed $secondary-font-color-dark;
     padding-top: 9px;
   }
 }
@@ -217,7 +218,7 @@
   text-align: right;
   width: 49%;
 
-  button.button {
+  button {
     // float: right;
     margin-right: 1.9%;
     width: 48%;
@@ -228,7 +229,7 @@
 
     &.cancel {
       background-color: transparent;
-      color: $secondary-font-color-light;
+      color: $secondary-font-color;
       width: 25%;
       &:hover {
         color: $color-primary;
@@ -270,7 +271,7 @@
 
 .thread-editor-container {
   position: relative;
-  background-color: white;
+  background-color: $base-background-color;
   height: 500px; }
 .thread-editor-container > .editor-form { top: 0px; }
 .editor-preview .imageContainer { display: inline; }

@@ -20,41 +20,20 @@ $light-text-default: rgb(255,255,255);
   }
 }
 
-// Spacing User Customizable
-$base-line-height: 1.3rem;
-
-// Primary Layout Colors User Customizable
-$base-background-color: rgb(255, 255, 255);
-$color-primary: rgb(255, 78, 0);
-
-// Fonts User Customizable
-$base-font-sans: "Lato", "Helvetica Neue", Helvetica, sans-serif; // user customizable
-$base-font-color: rgb(34, 34, 34); // user customizable
-$base-font-size: 16px; // user customizable
-$secondary-font-color: rgb(153, 153, 153); // user customizable
-
-// Components User Customizable
-$input-font-color: rgb(34, 34, 34); // user customizable
-$input-background-color: rgb(255, 255, 255); // user customizable
-$border-color: rgb(215, 215, 215); // user customizable
-
-// Header Colors
-$header-font-color: rgb(255, 255, 255);
-$header-bg-color: rgb(66, 71, 80);
-$sub-header-color: rgb(245, 245, 245);
+@import 'default-variables';
 
 @import 'custom-variables';
 
-// Spacing
+// Spacing Calculated
 $base-grid-padding: 1rem;
 
-// Primary Layout Colors
+// Primary Layout Colors Calculated
 @if (lightness($color-primary) > 50) { $color-primary-alt: darken($color-primary, 15%); }
 @else { $color-primary-alt: lighten($color-primary, 15%); }
 
-// Fonts
+// Fonts Calculated
 $button-text-color: color-contrast($color-primary);
-@if (lightness($secondary-font-color) > 50) {
+@if (lightness($base-background-color) > 50) {
   $secondary-font-color-dark: darken($secondary-font-color, 15%);
   $secondary-font-color-light: lighten($secondary-font-color, 20%);
 }
@@ -63,12 +42,18 @@ $button-text-color: color-contrast($color-primary);
   $secondary-font-color-light: darken($secondary-font-color, 20%);
 }
 
-// Components
+// Components Calculated
 $color-highlighted: HSL(60, 100%, 95%);
-@if (lightness($base-background-color) > 50) { $border-color-alt: lighten($border-color, 10%); }
-@else { $border-color-alt: darken($border-color, 30%); }
+@if (lightness($base-background-color) > 50) {
+  $border-color-alt: lighten($border-color, 10%);
+  $code-block-bg-color: #f8f8f8;
+}
+@else {
+  $border-color-alt: darken($border-color, 30%);
+  $code-block-bg-color: $dark-text-default;
+}
 
-//Header Colors
+//Header Colors Calculated
 $header-height: 3.125rem;
 $header-logo-font-size: 1.3rem;
 $header-logo-font-color: $header-font-color;
@@ -77,7 +62,7 @@ $header-login-font-color: $header-logo-font-color;
 $header-dropdown-bg-color: darken(rgba($header-bg-color, 0.98), 8%);
 $header-dropdown-shadow-color: rgba(0, 0, 0, 0.3);
 
-// Breadcrumbs
+// Breadcrumbs Calculated
 $breadcrumbs-height: 2.8125rem;
 $breadcrumbs-font-size: $header-login-font-size;
 $breadcrumbs-bg-color: $sub-header-color;
@@ -87,7 +72,7 @@ $breadcrumbs-border-color: darken($breadcrumbs-bg-color, 8%);
 $breadcrumbs-shadow-color: rgba(0, 0, 0, 0.1);
 $breadcrumbs-bottom-margin: 1rem;
 
-// Footer
+// Footer Calculated
 $footer-font-color: $secondary-font-color;
 $footer-bg-color: $sub-header-color;
 $footer-link-color: $footer-font-color;

@@ -34,7 +34,7 @@
       <th>Actions</th>
     </thead>
     <tbody>
-      <tr ng-repeat="user in AdminManagementCtrl.users track by user.username" ng-class="{unbanned: AdminManagementCtrl.tableFilter == 1 && !user.ban_expiration}">
+      <tr ng-repeat="user in AdminManagementCtrl.users track by user.username">
         <td><a ui-sref="profile({ username: user.username })" ng-bind="user.username"></a></td>
         <td class="email-column" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }"><a ng-href="mailto:{{user.email}}" ng-bind="user.email"></a></td>
         <td ng-show="AdminManagementCtrl.tableFilter == 1" ng-bind="user.ban_expiration | humanDate:true"></td>

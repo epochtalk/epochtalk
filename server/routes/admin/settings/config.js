@@ -3,6 +3,7 @@ var readLine = require('readline');
 var Joi = require('joi');
 var Boom = require('boom');
 var path = require('path');
+var Promise = require('bluebird');
 var _ = require('lodash');
 var renameKeys = require('deep-rename-keys');
 var changeCase = require('change-case');
@@ -10,6 +11,7 @@ var pre = require(path.normalize(__dirname + '/pre'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
 var customVarsPath = path.normalize(__dirname.split(path.sep + 'server')[0] + '/app/scss/ept/_custom-variables.scss');
+var defaultVarsPath = path.normalize(__dirname.split(path.sep + 'server')[0] + '/app/scss/ept/_default-variables.scss');
 var sass = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'sass'));
 var copyCss = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'copy_files'));
 
@@ -225,9 +227,25 @@ exports.setTheme = {
       .then(sass)
       .then(function() { reply(theme); })
       .catch(function(err) {
-        var jsonErr = JSON.parse(err);
-        reply(Boom.badRequest(jsonErr.message));
+        reply(Boom.badRequest(err));
       });
     });
+  }
+};
+
+exports.resetTheme = {
+  handler: function(request, reply) {
+    return new Promise(function(resolve, reject) {
+      var rd = fs.createReadStream(defaultVarsPath);
+      rd.on('error', reject);
+      var wr = fs.createWriteStream(customVarsPath);
+      wr.on('error', reject);
+      wr.on('finish', resolve);
+      rd.pipe(wr);
+    })
+    .then(copyCss)
+    .then(sass)
+    .then(reply)
+    .catch(function(err) { reply(Boom.badImplementation(err)); });
   }
 };

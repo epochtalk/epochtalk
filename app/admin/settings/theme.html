@@ -1,129 +1,137 @@
 <!-- Column One -->
-<div class="settings half-column">
-  <h5 class="thin-underline">Font Settings</h5>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="base-font-size">Base Font Size</label>
-      <label class="desc-label" for="base-font-size">Changes the base font size of entire forum</label>
+<form name="themeForm" class="css-form" novalidate>
+  <div class="settings half-column">
+    <h5 class="thin-underline">Font Settings</h5>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="base-font-size">Base Font Size</label>
+        <label class="desc-label" for="base-font-size">Changes the base font size of entire forum <strong>(Between 10px - 18px)</strong></label>
+      </div>
+      <div class="postfix-input">
+        <input id="base-font-size" type="text" ng-pattern="/^([1][0-8])/" ng-model="AdminSettingsCtrl.theme['base-font-size']" required />
+        <div>px</div>
+      </div>
     </div>
-    <input id="base-font-size" class="input-block" type="text" ng-model="AdminSettingsCtrl.theme['base-font-size']" />
-  </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="base-font-sans">Base Font Sans</label>
-      <label class="desc-label" for="base-font-sans">Changes the base font sans of entire forum</label>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="base-font-sans">Base Font Sans</label>
+        <label class="desc-label" for="base-font-sans">Changes the base font sans of entire forum</label>
+      </div>
+      <input id="base-font-sans" class="input-block" type="text" ng-model="AdminSettingsCtrl.theme['base-font-sans']" ng-style="{ 'font-family': AdminSettingsCtrl.theme['base-font-sans'] }" required/>
     </div>
-    <input id="base-font-sans" class="input-block" type="text" ng-model="AdminSettingsCtrl.theme['base-font-sans']" />
-  </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="base-line-height">Base Line Height</label>
-      <label class="desc-label" for="base-line-height">Changes the base line height of entire forum</label>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="base-line-height">Base Line Height</label>
+        <label class="desc-label" for="base-line-height">Changes the base line height of entire forum <strong>(Between 1.00rem - 2.00rem)</strong></label>
+      </div>
+      <div class="postfix-input">
+        <input id="base-line-height" type="text" ng-pattern="/^(?=.+)((?:[1]\d*)?(?:\.\d{1,4})|(1|2|[2]\.0{1,4}))?$/" ng-model="AdminSettingsCtrl.theme['base-line-height']" />
+        <div>rem</div>
+      </div>
     </div>
-    <input id="base-line-height" class="input-block" type="text" ng-model="AdminSettingsCtrl.theme['base-line-height']" />
-  </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="base-font-color">Primary Font Color</label>
-      <label class="desc-label" for="base-font-color">Changes the primary font color of entire forum</label>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="base-font-color">Primary Font Color</label>
+        <label class="desc-label" for="base-font-color">Changes the primary font color of entire forum</label>
+      </div>
+      <div class="swatch-input">
+        <input id="base-font-color" type="text" ng-model="AdminSettingsCtrl.theme['base-font-color']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['base-font-color'] }"></div>
+      </div>
     </div>
-    <div class="swatch-input">
-      <input id="base-font-color" type="text" ng-model="AdminSettingsCtrl.theme['base-font-color']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['base-font-color'] }"></div>
-    </div>
-  </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="secondary-font-color">Seconday Font Color</label>
-      <label class="desc-label" for="secondary-font-color">Changes the secondary font color of entire forum</label>
-    </div>
-    <div class="swatch-input">
-      <input id="secondary-font-color" type="text" ng-model="AdminSettingsCtrl.theme['secondary-font-color']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['secondary-font-color'] }"></div>
-    </div>
-  </div>
-</div>
-<!-- Column Two -->
-<div class="settings half-column">
-  <h5 class="thin-underline">Layout Settings</h5>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="base-background-color">Background Color</label>
-      <label class="desc-label" for="base-background-color">Changes the background color of entire forum</label>
-    </div>
-    <div class="swatch-input">
-      <input id="base-background-color" type="text" ng-model="AdminSettingsCtrl.theme['base-background-color']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['base-background-color'] }"></div>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="secondary-font-color">Seconday Font Color</label>
+        <label class="desc-label" for="secondary-font-color">Changes the secondary font color of entire forum</label>
+      </div>
+      <div class="swatch-input">
+        <input id="secondary-font-color" type="text" ng-model="AdminSettingsCtrl.theme['secondary-font-color']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['secondary-font-color'] }"></div>
+      </div>
     </div>
   </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="primary-color">Primary Color</label>
-      <label class="desc-label" for="primary-color">Changes the primary color of entire forum</label>
+  <!-- Column Two -->
+  <div class="settings half-column">
+    <h5 class="thin-underline">Layout Settings</h5>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="base-background-color">Background Color</label>
+        <label class="desc-label" for="base-background-color">Changes the background color of entire forum</label>
+      </div>
+      <div class="swatch-input">
+        <input id="base-background-color" type="text" ng-model="AdminSettingsCtrl.theme['base-background-color']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['base-background-color'] }"></div>
+      </div>
     </div>
-    <div class="swatch-input">
-      <input id="primary-color" type="text" ng-model="AdminSettingsCtrl.theme['color-primary']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['color-primary'] }"></div>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="primary-color">Primary Color</label>
+        <label class="desc-label" for="primary-color">Changes the primary color of entire forum</label>
+      </div>
+      <div class="swatch-input">
+        <input id="primary-color" type="text" ng-model="AdminSettingsCtrl.theme['color-primary']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['color-primary'] }"></div>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="header-bg-color">Header Background Color</label>
+        <label class="desc-label" for="header-bg-color">Changes the header background color</label>
+      </div>
+      <div class="swatch-input">
+        <input id="header-bg-color" type="text" ng-model="AdminSettingsCtrl.theme['header-bg-color']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['header-bg-color'] }"></div>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="header-font-color">Header Font Color</label>
+        <label class="desc-label" for="header-font-color">Changes the header font color</label>
+      </div>
+      <div class="swatch-input">
+        <input id="header-font-color" type="text" ng-model="AdminSettingsCtrl.theme['header-font-color']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['header-font-color'] }"></div>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="sub-header-color">Sub-Header Background Color</label>
+        <label class="desc-label" for="sub-header-color">Changes the sub-header background color</label>
+      </div>
+      <div class="swatch-input">
+        <input id="sub-header-color" type="text" ng-model="AdminSettingsCtrl.theme['sub-header-color']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['sub-header-color'] }"></div>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="border-color">Border Color</label>
+        <label class="desc-label" for="border-color">Changes the all border colors</label>
+      </div>
+      <div class="swatch-input">
+        <input id="border-color" type="text" ng-model="AdminSettingsCtrl.theme['border-color']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['border-color'] }"></div>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="input-background-color">Input Field Background Color</label>
+        <label class="desc-label" for="input-background-color">Changes the background color of input fields</label>
+      </div>
+      <div class="swatch-input">
+        <input id="input-background-color" type="text" ng-model="AdminSettingsCtrl.theme['input-background-color']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['input-background-color'] }"></div>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="desc">
+        <label for="input-font-color">Input Field Font Color</label>
+        <label class="desc-label" for="input-font-color">Changes the font color of input fields</label>
+      </div>
+      <div class="swatch-input">
+        <input id="input-font-color" type="text" ng-model="AdminSettingsCtrl.theme['input-font-color']" color-validator />
+        <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['input-font-color'] }"></div>
+      </div>
     </div>
   </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="header-bg-color">Header Background Color</label>
-      <label class="desc-label" for="header-bg-color">Changes the header background color</label>
-    </div>
-    <div class="swatch-input">
-      <input id="header-bg-color" type="text" ng-model="AdminSettingsCtrl.theme['header-bg-color']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['header-bg-color'] }"></div>
-    </div>
-  </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="header-font-color">Header Font Color</label>
-      <label class="desc-label" for="header-font-color">Changes the header font color</label>
-    </div>
-    <div class="swatch-input">
-      <input id="header-font-color" type="text" ng-model="AdminSettingsCtrl.theme['header-font-color']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['header-font-color'] }"></div>
-    </div>
-  </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="sub-header-color">Sub-Header Background Color</label>
-      <label class="desc-label" for="sub-header-color">Changes the sub-header background color</label>
-    </div>
-    <div class="swatch-input">
-      <input id="sub-header-color" type="text" ng-model="AdminSettingsCtrl.theme['sub-header-color']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['sub-header-color'] }"></div>
-    </div>
-  </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="border-color">Border Color</label>
-      <label class="desc-label" for="border-color">Changes the all border colors</label>
-    </div>
-    <div class="swatch-input">
-      <input id="border-color" type="text" ng-model="AdminSettingsCtrl.theme['border-color']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['border-color'] }"></div>
-    </div>
-  </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="input-background-color">Input Field Background Color</label>
-      <label class="desc-label" for="input-background-color">Changes the background color of input fields</label>
-    </div>
-    <div class="swatch-input">
-      <input id="input-background-color" type="text" ng-model="AdminSettingsCtrl.theme['input-background-color']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['input-background-color'] }"></div>
-    </div>
-  </div>
-  <div class="setting-row">
-    <div class="desc">
-      <label for="input-font-color">Input Field Font Color</label>
-      <label class="desc-label" for="input-font-color">Changes the font color of input fields</label>
-    </div>
-    <div class="swatch-input">
-      <input id="input-font-color" type="text" ng-model="AdminSettingsCtrl.theme['input-font-color']" />
-      <div ng-style="{ 'background-color': AdminSettingsCtrl.theme['input-font-color'] }"></div>
-    </div>
-  </div>
-</div>
+</form>

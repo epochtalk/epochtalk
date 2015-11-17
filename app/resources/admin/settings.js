@@ -11,6 +11,10 @@ module.exports = ['$resource',
       setTheme: {
         method: 'PUT',
         url: '/api/admin/settings/theme'
+      },
+      resetTheme: {
+        method: 'POST',
+        url: '/api/admin/settings/theme'
       }
     });
   }

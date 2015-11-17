@@ -13,8 +13,8 @@
   </dl>
 
   <div class="right mobile-buttons">
-    <a class="button" ng-click="child.save()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</a>&nbsp;
-    <a class="button" ng-click="child.reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset</a>
+    <button ng-click="child.save()" ng-disabled="child.invalidForm"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>&nbsp;
+    <button ng-click="child.reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;{{ child.resetBtnLabel || Reset}}</button>
   </div>
 </div>
 
