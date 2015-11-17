@@ -26,7 +26,6 @@ exports.all = {
     return reply(promise);
   }
 };
-
 /**
   * @apiVersion 0.3.0
   * @apiGroup Roles
@@ -321,7 +320,14 @@ exports.add = {
             some: Joi.boolean(),
             all: Joi.boolean()
           })
-        })
+        }),
+        limits: Joi.array().items({
+          path: Joi.string().required(),
+          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
+          interval: Joi.number().min(-1).required(),
+          maxInInterval: Joi.number().min(1).required(),
+          minDifference: Joi.number().min(1).optional()
+        }).sparse()
       }).required()
     }
   },
@@ -587,7 +593,14 @@ exports.update = {
             some: Joi.boolean(),
             all: Joi.boolean()
           })
-        })
+        }),
+        limits: Joi.array().items({
+          path: Joi.string().required(),
+          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
+          interval: Joi.number().min(-1).required(),
+          maxInInterval: Joi.number().min(1).required(),
+          minDifference: Joi.number().min(1).optional()
+        }).sparse()
       }).required()
     }
   },

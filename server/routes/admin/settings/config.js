@@ -143,7 +143,6 @@ exports.update = {
         })
       }),
       rate_limiting: Joi.object().keys({
-        namespace: Joi.string().default('ept:'),
         get: {
           interval: Joi.number().min(-1),
           max_in_interval: Joi.number().min(1),
@@ -154,13 +153,18 @@ exports.update = {
           max_in_interval: Joi.number().min(1),
           min_difference: Joi.number()
         },
+        put: {
+          interval: Joi.number().min(-1),
+          max_in_interval: Joi.number().min(1),
+          min_difference: Joi.number()
+        },
         delete: {
           interval: Joi.number().min(-1),
           max_in_interval: Joi.number().min(1),
           min_difference: Joi.number()
         }
       })
-    }).options({ stripUnknown: false, abortEarly: true })
+    }).options({ stripUnknown: true, abortEarly: true })
   },
   handler: function(request, reply) {
     var newConfig = underscoreToCamelCase(request.payload);

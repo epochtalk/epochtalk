@@ -48,6 +48,11 @@
       "maxInInterval": 2,
       "minDifference": 500
     },
+    "put": {
+      "interval": 1000,
+      "maxInInterval": 2,
+      "minDifference": 500
+    },
     "delete": {
       "interval": 1000,
       "maxInInterval": 2,
