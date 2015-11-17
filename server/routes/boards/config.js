@@ -79,8 +79,9 @@ exports.find = {
   * @api {GET} /boards All Categories
   * @apiName AllCategories
   * @apiDescription Used to retrieve all boards within their respective categories.
-  *
-  * @apiSuccess {array} categories Array containing all of the forums boards in their respective categories
+  * @apiParam (Query) {number} page=1 The page of threads to bring back
+ * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  * @apiSuccess {object} containing boards: [categories Array containing all of the forums boards in their respective categories], threads: [recent threads Array]
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving categories
   */
