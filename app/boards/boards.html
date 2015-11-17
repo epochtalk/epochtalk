@@ -66,6 +66,13 @@
 
 <!-- Threads -->
 <!-- Thread listing headers -->
+<div class="board-data" ng-if="!BoardsCtrl.recentThreads">
+  <div>
+    <div class="title">
+      <h4>No recently updated threads available</h4>
+    </div>
+  </div>
+</div>
 <div class="board-data" ng-if="BoardsCtrl.recentThreads">
   <div>
     <div class="title">
