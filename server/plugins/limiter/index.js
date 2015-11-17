@@ -33,9 +33,7 @@ var deleteDefaults = {
 };
 
 exports.register = function(plugin, options, next) {
-  var getSettings = Hoek.applyToDefaults(getDefaults, options.get);
-  var postSettings = Hoek.applyToDefaults(postDefaults, options.post);
-  var deleteSettings = Hoek.applyToDefaults(deleteDefaults, options.delete);
+  updateLimits(options);
   namespace = options.namespace || namespace;
 
   plugin.ext('onPostAuth', function(request, reply) {
@@ -77,11 +75,11 @@ exports.register = function(plugin, options, next) {
     }
 
     // default to global settings
-    if (!routeLimit && method === 'GET') { routeLimit = _.clone(getSettings); }
-    else if (!routeLimit && method === 'POST') { routeLimit = _.clone(postSettings); }
-    else if (!routeLimit && method === 'PUT') { routeLimit = _.clone(putSettings); }
-    else if (!routeLimit && method === 'DELETE') { routeLimit = _.clone(deleteSettings); }
-    else if (!routeLimit) { routeLimit = _.clone(postSettings); }
+    if (!routeLimit && method === 'GET') { routeLimit = _.clone(getDefaults); }
+    else if (!routeLimit && method === 'POST') { routeLimit = _.clone(postDefaults); }
+    else if (!routeLimit && method === 'PUT') { routeLimit = _.clone(putDefaults); }
+    else if (!routeLimit && method === 'DELETE') { routeLimit = _.clone(deleteDefaults); }
+    else if (!routeLimit) { routeLimit = _.clone(postDefaults); }
 
     // check if limits are valid, bypass if not
     if (routeLimit.interval < 0) { return reply.continue(); }
@@ -101,8 +99,18 @@ exports.register = function(plugin, options, next) {
     });
   });
 
+  // for modifing existing default rate limits
+  plugin.expose('updateLimits', updateLimits);
+
   next();
 };
+
+function updateLimits(newLimits) {
+  getDefaults = Hoek.applyToDefaults(getDefaults, newLimits.get);
+  postDefaults = Hoek.applyToDefaults(postDefaults, newLimits.post);
+  putDefaults = Hoek.applyToDefaults(putDefaults, newLimits.put);
+  deleteDefaults = Hoek.applyToDefaults(deleteDefaults, newLimits.delete);
+}
 
 exports.register.attributes = {
   name: 'rate-limiter',
