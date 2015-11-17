@@ -1,4 +1,3 @@
-
 <!-- Column One -->
 <div class="settings half-column">
   <!-- Web Configurations -->
@@ -33,6 +32,74 @@
     <label class="desc-label" for="database-migrate">Launches wizard to migrate data from other forums</label>
   </div>
   <a id="database-migrate" class="button" style="background-color: #CCC;">Migrate</a>
+
+  <!-- Rate Limiting -->
+  <h5 class="thin-underline section-header-top-spacing">Rate Limiting</h5>
+
+  <label>GET Global Rate Limits</label>
+  <div class="fixed-img-wrap">
+    <div class="setting">
+      <label class="desc-label" for="get-interval">Interval</label>
+      <input type="text" class="input-text" id="get-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.interval" placeholder="In MS (Ex: 1000)" />
+    </div>
+    <div class="setting">
+      <label class="desc-label" for="get-max-in-interval">Max In Interval</label>
+      <input type="text" class="input-text" id="get-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.max_in_interval" placeholder="Ex: 1" />
+    </div>
+    <div class="setting">
+      <label class="desc-label" for="get-min-difference">Mininum Difference</label>
+      <input type="text" class="input-text" id="get-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.min_difference" placeholder="In MS (Ex: 100)" />
+    </div>
+  </div>
+
+  <label>POST Global Rate Limits</label>
+  <div class="fixed-img-wrap">
+    <div class="setting">
+      <label class="desc-label" for="post-interval">Interval</label>
+      <input type="text" class="input-text" id="post-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.interval" placeholder="In MS (Ex: 1000)" />
+    </div>
+    <div class="setting">
+      <label class="desc-label" for="post-max-in-interval">Max In Interval</label>
+      <input type="text" class="input-text" id="post-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.max_in_interval" placeholder="Ex: 1" />
+    </div>
+    <div class="setting">
+      <label class="desc-label" for="post-min-difference">Mininum Difference</label>
+      <input type="text" class="input-text" id="post-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.min_difference" placeholder="In MS (Ex: 100)" />
+    </div>
+  </div>
+
+  <label>PUT Global Rate Limits</label>
+  <div class="fixed-img-wrap">
+    <div class="setting">
+      <label class="desc-label" for="put-interval">Interval</label>
+      <input type="text" class="input-text" id="put-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.interval" placeholder="In MS (Ex: 1000)" />
+    </div>
+    <div class="setting">
+      <label class="desc-label" for="put-max-in-interval">Max In Interval</label>
+      <input type="text" class="input-text" id="put-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.max_in_interval" placeholder="Ex: 1" />
+    </div>
+    <div class="setting">
+      <label class="desc-label" for="put-min-difference">Mininum Difference</label>
+      <input type="text" class="input-text" id="put-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.min_difference" placeholder="In MS (Ex: 100)" />
+    </div>
+  </div>
+
+  <label>DELETE Global Rate Limits</label>
+  <div class="fixed-img-wrap">
+    <div class="setting">
+      <label class="desc-label" for="delete-interval">Interval</label>
+      <input type="text" class="input-text" id="delete-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.interval" placeholder="In MS (Ex: 1000)" />
+    </div>
+    <div class="setting">
+      <label class="desc-label" for="delete-max-in-interval">Max In Interval</label>
+      <input type="text" class="input-text" id="delete-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.max_in_interval" placeholder="Ex: 1" />
+    </div>
+    <div class="setting">
+      <label class="desc-label" for="delete-min-difference">Mininum Difference</label>
+      <input type="text" class="input-text" id="delete-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.min_difference" placeholder="In MS (Ex: 100)" />
+    </div>
+  </div>
+
 </div>
 
 <!-- Column Two -->

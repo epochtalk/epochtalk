@@ -20,6 +20,12 @@ var postDefaults = {
   minDifference: 500
 };
 
+var putDefaults = {
+  interval: 1000,
+  maxInInterval: 2,
+  minDifference: 500
+};
+
 var deleteDefaults = {
   interval: 1000,
   maxInInterval: 2,
@@ -71,10 +77,11 @@ exports.register = function(plugin, options, next) {
     }
 
     // default to global settings
-    if (!routeLimit && method === 'GET') { routeLimit = getSettings; }
-    else if (!routeLimit && method === 'POST') { routeLimit = postSettings; }
-    else if (!routeLimit && method === 'DELETE') { routeLimit = deleteSettings; }
-    else if (!routeLimit) { routeLimit = postSettings; }
+    if (!routeLimit && method === 'GET') { routeLimit = _.clone(getSettings); }
+    else if (!routeLimit && method === 'POST') { routeLimit = _.clone(postSettings); }
+    else if (!routeLimit && method === 'PUT') { routeLimit = _.clone(putSettings); }
+    else if (!routeLimit && method === 'DELETE') { routeLimit = _.clone(deleteSettings); }
+    else if (!routeLimit) { routeLimit = _.clone(postSettings); }
 
     // check if limits are valid, bypass if not
     if (routeLimit.interval < 0) { return reply.continue(); }
