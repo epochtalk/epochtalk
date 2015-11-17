@@ -13,7 +13,7 @@ var route = ['$stateProvider', function($stateProvider) {
     },
     resolve: {
       $title: function() { return 'Home'; },
-      boards: ['Boards', function(Boards) {
+      pageData: ['Boards', function(Boards) {
         return Boards.query().$promise;
       }]
     }
