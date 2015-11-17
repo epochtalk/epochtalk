@@ -3,6 +3,7 @@ var path = require('path');
 var Boom = require('boom');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
+var Promise = require('bluebird');
 
 /**
   * @apiDefine BoardObjectSuccess
@@ -86,11 +87,67 @@ exports.find = {
 exports.allCategories = {
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'boards.allCategories' },
+  validate: {
+    query: {
+      page: Joi.number().default(1),
+      limit: Joi.number().integer().min(1).max(100).default(25)
+    }
+  },
   pre: [ { method: pre.userPriority, assign: 'priority' } ],
   handler: function(request, reply) {
+    var userId;
     var priority = request.pre.priority;
-    var opts = { hidePrivate: true }; // filter out private boards
-    var promise =  db.boards.allCategories(priority, opts);
+    var opts = {
+      hidePrivate: true,  // filter out private boards
+      limit: request.query.limit,
+      page: request.query.page
+    };
+    if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
+
+    var getAllCategories = db.boards.allCategories(priority, opts);
+    var getRecentThreads = db.threads.recent(userId, opts);
+    var promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
+      return {
+        boards: boards,
+        threads: threads
+      };
+    });
+
+    return reply(promise);
+  }
+};
+
+
+
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Categories
+  * @api {POST} /boards/categories Update Categories
+  * @apiName UpdateCategories
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to update boards within their categories.
+  *
+  * @apiParam (Payload) {object[]} boardMapping Array containing mapping of boards and categories
+  * @apiParam (Payload) {string} boardMapping.id The id of the category or board
+  * @apiParam (Payload) {string} boardMapping.name The name of the category or board
+  * @apiParam (Payload) {string="board","category"} boardMapping.type The type of the mapping object
+  * @apiParam (Payload) {number} boardMapping.view_order The view order of the board or category
+  * @apiParam (Payload) {string} [boardMapping.category_id] If type is "board" the id of the category the board belongs to
+  * @apiParam (Payload) {string} [boardMapping.parent_id] If type is "board" and the board is a child board, the id of the parent board
+  *
+  * @apiSuccess {array} operations Array containing all of the operations performed while updating categories
+  *
+  * @apiError (Error 500) InternalServerError There was an issue updating categories/boards
+  */
+exports.updateCategories = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'boards.updateCategories' },
+  validate: { payload: { boardMapping: Joi.array().required() } },
+  handler: function(request, reply) {
+    // update board on db
+    var boardMapping = request.payload.boardMapping;
+    var promise = db.boards.updateCategories(boardMapping);
     return reply(promise);
   }
 };
