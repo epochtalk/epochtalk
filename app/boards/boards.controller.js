@@ -1,6 +1,16 @@
-module.exports = ['$timeout', '$anchorScroll', 'boards',
-  function($timeout, $anchorScroll, boards) {
-    this.categorizedBoards = boards;
+module.exports = ['$timeout', '$anchorScroll', 'pageData',
+  function($timeout, $anchorScroll, pageData) {
+    var ctrl = this;
+    this.categorizedBoards = pageData.boards;
+    this.recentThreads = pageData.threads;
+    this.toggles = {};
+
+    // Category toggling
+    var i = 0;
+    this.categorizedBoards.forEach(function() { ctrl.toggles[i++] = false; });
+    this.toggle = function(index){
+      ctrl.toggles[index] = !ctrl.toggles[index];
+    };
 
     // set total_thread_count and total_post_count for all boards
     this.categorizedBoards.map(function(category) {

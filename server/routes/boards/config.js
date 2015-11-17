@@ -118,9 +118,6 @@ exports.allCategories = {
   }
 };
 
-
-
-
 /**
   * @apiVersion 0.3.0
   * @apiGroup Categories
