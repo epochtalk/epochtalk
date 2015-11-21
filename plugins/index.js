@@ -5,7 +5,7 @@ var _ = require('lodash');
 var path = require('path');
 var exec = require('child_process').exec;
 var db = require(path.normalize(__dirname + '/../db'));
-var nodeModulesPath = path.normalize(__dirname + '/../node_modules/');
+var pluginsPath = path.normalize(__dirname);
 var endpointCache = {
   "before-post": [],
   "after-post": []
@@ -52,23 +52,26 @@ plugins.checkInstallation = function(pluginName) {
   // TODO: check that directive is installed
 
 plugins.install = function(pluginName) {
-  // install plugin by pluginName using npm
   return new Promise(function(resolve, reject) {
-    // TODO: security risk - clean pluginName
-    var child = exec('npm install ' + pluginName, function(err) {
-      if (err) { return reject(err); }
-      else { return resolve(); }
+    fs.stat(path.join(pluginsPath, pluginName), function(err, stats) {
+      if (err) {
+        return reject(err);
+      }
+      else if (stats.isDirectory() || stats.isFile()) {
+        return resolve();
+      }
+      else {
+        return reject();
+      }
     });
   })
-  // run migration script
   .then(function() {
-    return new Promise(function(resolve, reject) {
-      var filePath = nodeModulesPath + pluginName + '/migrations/up.sql';
-      var migration = fs.readFile(filePath, 'utf8', function(err, data) {
-        // TODO: still insecure
-        if (err) { return resolve(); }
-        if (!err) { return db.plugins.migrateUp(data).then(resolve); }
-      });
+    var filePath = path.join(pluginsPath, pluginName, 'migrations', 'up.sql');
+    console.log(filePath);
+    var migration = fs.readFile(filePath, 'utf8', function(err, data) {
+      // TODO: still insecure
+      if (err) { return; }
+      if (!err) { return db.plugins.migrateUp(data); }
     });
   })
   // add plugin to database
