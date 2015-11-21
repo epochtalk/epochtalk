@@ -14,6 +14,7 @@ exports.register = function (server, options, next) {
     var userACLs = [];
     var authenticated = request.auth.isAuthenticated;
     var err = Boom.unauthorized('You must log in to see this content.');
+    console.log(authenticated);
     if (authenticated) {
       userACLs = _.filter(request.auth.credentials.roles.map(function(roleName) { return roles[roleName]; }), undefined);
       if (!userACLs.length) { userACLs = [ roles.user ]; }

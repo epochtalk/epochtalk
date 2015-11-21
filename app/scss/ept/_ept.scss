@@ -56,6 +56,7 @@ a {
     color: $color-primary-alt;
   }
 }
+a.ng-show, a.ng-hide { @include transition(none !important); }
 img {
   max-width: 100%;
   height: auto;
@@ -240,7 +241,7 @@ ul.pagination {
     float: left;
     display: block;
     &.unavailable a:hover { background-color: transparent; }
-    &.current a, &.current a:hover { color: $base-background-color; }
+    &.current a, &.current a:hover { color: $button-text-color; }
     &.arrow { font-family: 'Zapf Dingbats'; }
     a {
       @include transition(background-color 300ms ease-out);
@@ -455,7 +456,6 @@ tags-input .autocomplete .suggestion-item {
 tags-input .autocomplete .suggestion-item.selected { color: #fff; background-color: #3599FF; }
 tags-input .autocomplete .suggestion-item.selected em { color: #fff; background-color: #3599FF; }
 tags-input .autocomplete .suggestion-item em { color: $input-font-color; }
-
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"],
 input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"],
 input[type="number"], input[type="search"], input[type="tel"], input[type="time"],
@@ -563,7 +563,7 @@ main #public-content table.striped, main #admin-content table.striped {
   tr th, tr td {
     padding: 0.5625rem 0.625rem;
     font-size: 0.875rem;
-    color: $secondary-font-color;
+    color: $secondary-font-color-dark;
     text-align: left;
   }
   tr:nth-of-type(even) { background: $sub-header-color; }
@@ -614,6 +614,23 @@ main #public-content table.striped, main #admin-content table.striped {
 
 #wrapper { min-height:100%; position:relative; }
 
+#wrapper #preview-banner {
+  @include pad(0 $base-grid-padding);
+  background-color: orange;
+  height: 2rem;
+  line-height: 2rem;
+  color: $dark-text-default;
+  border-bottom: 1px solid darken(orange, 10%);
+  a {
+    @include border-radius(2px);
+    padding: 0 0.5rem;
+    color: $dark-text-default;
+    &:hover { color: black; }
+    &:last-child { margin-right: 0; }
+  }
+  @include media($mobile) { a span { display: none; } }
+}
+
 header {
   #menu-wrap {
     @include clearfix();
@@ -655,6 +672,10 @@ header {
         .search {
           position: relative;
           height: inherit;
+          ::-webkit-input-placeholder { color: $placeholder-text-color; }
+          :-moz-placeholder { color: $placeholder-text-color; }
+          ::-moz-placeholder { color: $placeholder-text-color; }
+          :-ms-input-placeholder { color: $placeholder-text-color; }
           .search-input {
             height: inherit;
             display: inline-block;
@@ -1428,7 +1449,6 @@ main #admin-content {
       &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
       td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: middle; }
       td input { margin-bottom: 0; }
-      td a.ng-show, a.ng-hide { @include transition(none !important); }
     }
   }
   .ng-modal-dialog-content input[type="radio"] { margin-bottom: 1rem; }
@@ -1497,6 +1517,7 @@ main #admin-content {
   input[type].hide-radio { display: none; }
   .user-search { @include span-columns(6); @include omega; }
   .roles.user-search, .roles.add-role { @include span-columns(12); @include clearfix; }
+  .mobile-buttons button { margin: 0; }
 
   @include media($mobile) {
     @include pad(0);
@@ -1507,8 +1528,9 @@ main #admin-content {
     .mobile-buttons {
       @include fill-parent;
       @include row;
-      @include pad(1rem 0);
-      .button { @include span-columns(8); @include omega; margin: 0; }
+      @include pad(1rem 0 0 0);
+      button { @include span-columns(8); @include omega; margin: 0; margin-bottom: 1rem; }
+      & button:last-child { margin-bottom: 0; }
     }
   }
 }
@@ -1559,8 +1581,12 @@ main #admin-content {
         padding: 0.5rem;
         font-size: 0.875rem;
         box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-        color: $secondary-font-color;
+        color: $secondary-font-color-dark;
       }
+    }
+    a.header-link {
+      font-size: 0.875rem;
+      &.show-mobile { display: none; }
     }
   }
 
@@ -1570,6 +1596,10 @@ main #admin-content {
       .desc, .button, .fixed-img-wrap .setting, .input-block, .swatch-input, .postfix-input { @include span-columns(8); @include omega; }
       .img-wrap .img-server-wrap { @include span-columns(8); @include omega; }
       .img-wrap .radio-button { @include span-columns(4); padding-top: 0.5rem; }
+      a.header-link {
+        &.show-mobile { display: inline-block; }
+        &.hide-mobile { display: none; }
+      }
     }
   }
 }

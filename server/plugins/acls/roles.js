@@ -14,7 +14,8 @@ module.exports = roles;
     adminAccess: {
       settings: {
         general: true,
-        forum: true
+        forum: true,
+        theme: true
       },
       management: {
         boards: true,
@@ -61,7 +62,11 @@ module.exports = roles;
     },
     adminSettings: {
       find: true,
-      update: true
+      update: true,
+      getTheme: true,
+      setTheme: true,
+      resetTheme: true,
+      previewTheme: true
     },
     adminUsers: {
       privilegedUpdate: {
@@ -273,7 +278,11 @@ roles.superAdministrator = {
   },
   adminSettings: {
     find: true,
-    update: true
+    update: true,
+    getTheme: true,
+    setTheme: true,
+    resetTheme: true,
+    previewTheme: true
   },
   adminUsers: {
     privilegedUpdate: {

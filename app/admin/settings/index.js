@@ -24,9 +24,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     parent: 'admin-layout',
     views: {
       'content': {
-        controller: ['$scope', 'Session', function($scope, Session) {
+        controller: ['$scope', 'Session', 'ThemeSVC', function($scope, Session, ThemeSVC) {
+          var ctrl = this;
           this.hasPermission = Session.hasPermission;
           this.tab = null;
+          this.previewActive = ThemeSVC.previewActive();
+          $scope.$watch(function() { return ThemeSVC.previewActive(); }, function(val) { ctrl.previewActive = val; });
           if (Session.hasPermission('adminAccess.settings.general')) { this.tab = 'general'; }
           else if (Session.hasPermission('adminAccess.settings.forum')) { this.tab = 'users'; }
           else if (Session.hasPermission('adminAccess.settings.theme')) { this.tab = 'theme'; }
@@ -96,7 +99,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     }
   })
   .state('admin-settings.theme', {
-    url: '/theme',
+    url: '/theme?preview',
     views: {
       'data@admin-settings': {
         controller: 'ThemeSettingsCtrl',
@@ -107,8 +110,11 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.theme'),
       $title: function() { return 'Theme Settings'; },
-      theme: ['AdminSettings', function(AdminSettings) {
-        return AdminSettings.getTheme().$promise
+      theme: ['AdminSettings', '$stateParams', function(AdminSettings, $stateParams) {
+        var preview = $stateParams.preview;
+        var params;
+        if (preview) { params = { preview: preview }; }
+        return AdminSettings.getTheme(params).$promise
         .then(function(theme) {
           return theme;
         });

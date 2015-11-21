@@ -114,6 +114,7 @@ exports.add = {
           settings: Joi.object().keys({
             general: Joi.boolean(),
             forum: Joi.boolean(),
+            theme: Joi.boolean()
           }),
           management: Joi.object().keys({
             boards: Joi.boolean(),
@@ -159,7 +160,11 @@ exports.add = {
         }),
         adminSettings: Joi.object().keys({
           find: Joi.boolean(),
-          update: Joi.boolean()
+          update: Joi.boolean(),
+          getTheme: Joi.boolean(),
+          setTheme: Joi.boolean(),
+          resetTheme: Joi.boolean(),
+          previewTheme: Joi.boolean()
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
@@ -367,6 +372,7 @@ exports.update = {
           settings: Joi.object().keys({
             general: Joi.boolean(),
             forum: Joi.boolean(),
+            theme: Joi.boolean()
           }),
           management: Joi.object().keys({
             boards: Joi.boolean(),
@@ -412,7 +418,11 @@ exports.update = {
         }),
         adminSettings: Joi.object().keys({
           find: Joi.boolean(),
-          update: Joi.boolean()
+          update: Joi.boolean(),
+          getTheme: Joi.boolean(),
+          setTheme: Joi.boolean(),
+          resetTheme: Joi.boolean(),
+          previewTheme: Joi.boolean()
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({

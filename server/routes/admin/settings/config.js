@@ -10,8 +10,9 @@ var changeCase = require('change-case');
 var pre = require(path.normalize(__dirname + '/pre'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
-var customVarsPath = path.normalize(__dirname.split(path.sep + 'server')[0] + '/app/scss/ept/_custom-variables.scss');
-var defaultVarsPath = path.normalize(__dirname.split(path.sep + 'server')[0] + '/app/scss/ept/_default-variables.scss');
+var customVarsPath = path.normalize(__dirname + '/../../../../app/scss/ept/_custom-variables.scss');
+var previewVarsPath = path.normalize(__dirname + '/../../../../app/scss/ept/_preview-variables.scss');
+var defaultVarsPath = path.normalize(__dirname + '/../../../../app/scss/ept/_default-variables.scss');
 var sass = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'sass'));
 var copyCss = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'copy_files'));
 
@@ -164,9 +165,15 @@ exports.update = {
   * @apiSuccess {object} theme Object containing theme vars and values
   */
 exports.getTheme = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminSettings.getTheme' },
+  validate: { query: { preview: Joi.boolean() } },
   handler: function(request, reply) {
+    var preview = request.query.preview;
+    var previewExists = fs.statSync(previewVarsPath).size;
+    var readFilePath = preview && previewExists ? previewVarsPath : customVarsPath;
     var rl = readLine.createInterface({
-      input: fs.createReadStream(customVarsPath),
+      input: fs.createReadStream(readFilePath),
       terminal: false
     });
     var theme = {};
@@ -192,6 +199,8 @@ exports.getTheme = {
   * @apiSuccess {object} theme Object containing theme vars and values
   */
 exports.setTheme = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminSettings.setTheme' },
   validate: {
     payload: Joi.object().keys({
       'base-line-height': Joi.string(),
@@ -209,7 +218,6 @@ exports.setTheme = {
       'sub-header-color': Joi.string(),
       'header-bg-color': Joi.string(),
       'header-logo-font-color': Joi.string()
-
     })
   },
   handler: function(request, reply) {
@@ -223,6 +231,7 @@ exports.setTheme = {
       stream.end();
     })
     .on('close', function() {
+      fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
       copyCss()
       .then(sass)
       .then(function() { reply(theme); })
@@ -233,8 +242,20 @@ exports.setTheme = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Settings
+  * @api {POST} /admin/settings/theme (Admin) Reset Theme
+  * @apiName ResetTheme
+  * @apiDescription Used reset custom variables to fall back to _default-variables.scss
+  *
+  * @apiSuccess {object} theme Object containing theme vars and values
+  */
 exports.resetTheme = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminSettings.resetTheme' },
   handler: function(request, reply) {
+    fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
     return new Promise(function(resolve, reject) {
       var rd = fs.createReadStream(defaultVarsPath);
       rd.on('error', reject);
@@ -245,7 +266,74 @@ exports.resetTheme = {
     })
     .then(copyCss)
     .then(sass)
-    .then(reply)
+    .then(function() { // read theme from file and return vars in reply
+      var rl = readLine.createInterface({
+        input: fs.createReadStream(customVarsPath),
+        terminal: false
+      });
+      var theme = {};
+      rl.on('line', function (line) {
+        if (line.charAt(0) === '$') {
+          var lineArr = line.split(':');
+          var key = lineArr[0].split('$')[1].trim();
+          var val = lineArr[1].split(';')[0].trim();
+          theme[key] = val;
+        }
+      })
+      .on('close', function() { reply(theme); });
+    })
     .catch(function(err) { reply(Boom.badImplementation(err)); });
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Settings
+  * @api {PUT} /admin/settings/theme/preview (Admin) Preview Theme
+  * @apiName PreviewTheme
+  * @apiDescription Used preview theme vars are compiled from _preview-variables.scss
+  *
+  * @apiSuccess {object} theme Object containing theme vars and values
+  */
+exports.previewTheme = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminSettings.previewTheme' },
+  validate: {
+    payload: Joi.object().keys({
+      'base-line-height': Joi.string(),
+      'base-background-color': Joi.string(),
+      'color-primary': Joi.string(),
+      'base-font-sans': Joi.string(),
+      'base-font-color': Joi.string(),
+      'base-font-size': Joi.string(),
+      'secondary-font-color': Joi.string(),
+      'input-font-color': Joi.string(),
+      'input-background-color': Joi.string(),
+      'border-color': Joi.string(),
+      'header-color': Joi.string(),
+      'header-font-color': Joi.string(),
+      'sub-header-color': Joi.string(),
+      'header-bg-color': Joi.string(),
+      'header-logo-font-color': Joi.string()
+    })
+  },
+  handler: function(request, reply) {
+    var theme = request.payload;
+    var keys = Object.keys(theme);
+    var stream = fs.createWriteStream(previewVarsPath);
+    stream.once('open', function() {
+      keys.forEach(function(key) {
+        stream.write('$' + key + ': ' + theme[key].toLowerCase() + ';\n');
+      });
+      stream.end();
+    })
+    .on('close', function() {
+      copyCss()
+      .then(function () { return sass('./public/css/preview.css'); })
+      .then(function() { reply(theme); })
+      .catch(function(err) {
+        reply(Boom.badRequest(err));
+      });
+    });
   }
 };

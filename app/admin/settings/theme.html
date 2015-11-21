@@ -1,7 +1,7 @@
 <!-- Column One -->
 <form name="themeForm" class="css-form" novalidate>
   <div class="settings half-column">
-    <h5 class="thin-underline">Font Settings</h5>
+    <h5 class="thin-underline">Font Settings<a class="right header-link show-mobile" ng-click="AdminSettingsCtrl.revert()">Revert to Default Theme</a></h5>
     <div class="setting-row">
       <div class="desc">
         <label for="base-font-size">Base Font Size</label>
@@ -51,8 +51,8 @@
     </div>
   </div>
   <!-- Column Two -->
-  <div class="settings half-column">
-    <h5 class="thin-underline">Layout Settings</h5>
+  <div class="settings half-column section-header-top-spacing">
+    <h5 class="thin-underline">Layout Settings<a class="right header-link hide-mobile" ng-click="AdminSettingsCtrl.revert()">Revert to Default Theme</a></h5>
     <div class="setting-row">
       <div class="desc">
         <label for="base-background-color">Background Color</label>

@@ -23,6 +23,21 @@
   <div id="wrapper">
     <!-- Header -->
     <div ng-controller="HeaderCtrl as HeaderCtrl">
+      <div id="preview-banner" ng-if="HeaderCtrl.previewActive" ng-cloak>
+        <strong>Preview Mode</strong>
+        <div class="right">
+          <a ng-click="HeaderCtrl.savePreview()">
+            <i class="fa fa-save"></i><span>&nbsp;&nbsp;Save</span>
+          </a>
+          <a ng-click="HeaderCtrl.continueEditing()">
+            <i class="fa fa-pencil"></i><span>&nbsp;&nbsp;Continue Editing</span>
+          </a>
+          <a ng-click="HeaderCtrl.cancelPreview()">
+            <i class="fa fa-times"></i><span>&nbsp;&nbsp;Cancel</span>
+          </a>
+        </div>
+      </div>
+
       <header ui-view="header" ng-cloak></header>
       <div ui-view="modals" ng-cloak></div>
     </div>

@@ -1,20 +1,28 @@
 <div id="admin-subnav" class="fill-row">
   <h2>Settings</h2>
   <dl class="tabs custom-tabs">
-    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.general')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab == 'general'}">
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.general')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'general'}">
       <a ui-sref=".general" ng-click="AdminSettingsCtrl.tab = 'general'">General</a>
     </dd>
-    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.forum')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab == 'forum'}">
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.forum')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'forum'}">
       <a ui-sref=".forum" ng-click="AdminSettingsCtrl.tab = 'forum'">Forum</a>
     </dd>
-    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.theme')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab == 'theme'}">
-      <a ui-sref=".theme" ng-click="AdminSettingsCtrl.tab = 'theme'">Theme</a>
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.theme')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'theme'}">
+      <a ng-hide="AdminSettingsCtrl.previewActive" ui-sref=".theme" ng-click="AdminSettingsCtrl.tab = 'theme'">Theme</a>
+      <a ng-show="AdminSettingsCtrl.previewActive" ui-sref=".theme({ preview: true })" ng-click="AdminSettingsCtrl.tab = 'theme'">Theme</a>
     </dd>
   </dl>
 
   <div class="right mobile-buttons">
-    <button ng-click="child.save()" ng-disabled="child.invalidForm"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>&nbsp;
-    <button ng-click="child.reset()"><i class="fa fa-refresh"></i>&nbsp;&nbsp;{{ child.resetBtnLabel || Reset}}</button>
+    <button ng-if="AdminSettingsCtrl.tab === 'theme'" ng-click="child.preview()" ng-disabled="child.invalidForm || child.pristineForm">
+      <i class="fa fa-eye"></i>&nbsp;&nbsp;Preview
+    </button>
+    <button ng-click="child.save()" ng-disabled="child.invalidForm">
+      <i class="fa fa-save"></i>&nbsp;&nbsp;Save
+    </button>
+    <button ng-click="child.reset()">
+      <i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset
+    </button>
   </div>
 </div>
 
