@@ -15,6 +15,7 @@ doc
 results
 config.json
 plugin-conf.js
+plugins/*/
 
 npm-debug.log
 node_modules
