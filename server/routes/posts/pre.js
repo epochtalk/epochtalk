@@ -160,8 +160,8 @@ module.exports = {
       var userId = request.auth.credentials.id;
       promise = db.users.find(userId)
       .then(function(user) {
-        var active = Boom.forbidden();
-        if (user) { active = !user.deleted; }
+        var active = Boom.forbidden('User Account Not Active');
+        if (user && !user.deleted) { active = true; }
         return active;
       });
     }

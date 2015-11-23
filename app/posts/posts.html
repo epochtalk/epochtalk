@@ -22,6 +22,7 @@
   </div>
 </div>
 
+<!-- Board Controls -->
 <div class="fill-row" ng-if="PostsParentCtrl.loggedIn()">
   <a class="inverted-button" ng-click="PostsParentCtrl.watchThread()" ng-if="!PostsParentCtrl.thread.watched">
     <i class="icon-epoch-watch"></i>Watch This Thread
@@ -58,6 +59,27 @@
     <select name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name for board in PostsParentCtrl.boards"></select>
     <a class="button" ng-click="PostsParentCtrl.moveThread()"><i class="fa fa-arrow-circle-left"></i>&nbsp;&nbsp;&nbsp;Move</a>
   </div>
+</div>
+
+<!-- Polls -->
+<div ng-if="PostsParentCtrl.thread.poll" style="border: 1px solid #ddd; border-radius: 5px; padding: 1rem;">
+  <h4 ng-bind="PostsParentCtrl.thread.poll.question"></h4>
+  <hr>
+  <div ng-repeat="answer in PostsParentCtrl.thread.poll.answers" style="height: 25px; margin: 0.5rem 0 0.5rem 0;">
+    <label style="position: relative">
+      <div style="position: absolute; left: 0; width: 35px; text-align: center; ">
+        <input type="radio" ng-model="PostsParentCtrl.pollAnswerId" ng-value="answer.id" />
+      </div>
+      <div style="position: absolute; left: 35px; right: 0px; border-radius: 8px; background-color: #aaa">
+        <span ng-bind="'(' + answer.percentage + '%) ' + answer.answer" style="position: absolute; left: 10px; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis" ></span>
+        <section ng-style="answer.style" style="background-color: #5A8BC8; height: 25px; border-radius: 8px;"></section>
+      </div>
+    </label>
+  </div>
+
+  <button ng-if="!PostsParentCtrl.thread.poll.hasVoted" ng-click="PostsParentCtrl.vote()" ng-disabled="PostsParentCtrl.pollAnswerId.length === 0" style="margin: 0.5rem 0 0">
+    Vote
+  </button>
 </div>
 
 <!-- Posts Listing -->
