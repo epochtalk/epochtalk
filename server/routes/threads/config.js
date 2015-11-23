@@ -436,6 +436,85 @@ exports.purge = {
   }
 };
 
+exports.vote = {
+  app: { thread_id: 'params.threadId' },
+  auth: { strategy: 'jwt' },
+  validate: {
+    params: {
+      threadId: Joi.string().required(),
+      pollId: Joi.string().required()
+    },
+    payload: { answerId: Joi.string().required() }
+  },
+  pre: [ [
+      { method: pre.accessBoardWithThreadId },
+      { method: pre.isRequesterActive },
+      { method: pre.pollExists },
+      { method: pre.hasVoted },
+      { method: pre.isPollUnlocked }
+      // isVotable - has voting privileges (true/false)
+    ] ],
+  handler: function(request, reply) {
+    var pollId = request.params.pollId;
+    var answerId = request.payload.answerId;
+
+    var promise = db.polls.vote(pollId, answerId);
+    return reply(promise);
+  }
+};
+
+exports.lockPoll = {
+  app: {
+    thread_id: 'params.threadId',
+    poll_id: 'params.pollId'
+  },
+  auth: { strategy: 'jwt' },
+  validate: {
+    params: {
+      threadId: Joi.string().required(),
+      pollId: Joi.string().required()
+    }
+  },
+  pre: [ [
+      { method: pre.accessBoardWithThreadId },
+      { method: pre.isRequesterActive },
+      { method: pre.pollExists },
+      { method: pre.isPollUnlocked }
+      // isLockable - has locking privileges (some/all), poll owner
+    ] ],
+  handler: function(request, reply) {
+    var pollId = request.params.pollId;
+    var promise = db.polls.lock(pollId);
+    return reply(promise);
+  }
+};
+
+exports.unlockPoll = {
+  app: {
+    thread_id: 'params.threadId',
+    poll_id: 'params.pollId'
+  },
+  auth: { strategy: 'jwt' },
+  validate: {
+    params: {
+      threadId: Joi.string().required(),
+      pollId: Joi.string().required()
+    }
+  },
+  pre: [ [
+      { method: pre.accessBoardWithThreadId },
+      { method: pre.isRequesterActive },
+      { method: pre.pollExists },
+      { method: pre.isPollLocked }
+      // isLockable - has locking privileges (some/all), poll owner
+    ] ],
+  handler: function(request, reply) {
+    var pollId = request.params.pollId;
+    var promise = db.polls.unlock(pollId);
+    return reply(promise);
+  }
+};
+
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads

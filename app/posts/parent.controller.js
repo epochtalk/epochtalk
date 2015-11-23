@@ -134,7 +134,6 @@ var ctrl = [
     };
 
     /* Poll Methods */
-
     this.createPoll = function() {
       if (!ctrl.pollValid) { return; }
 
@@ -145,7 +144,10 @@ var ctrl = [
         ctrl.addPoll = false;
         ctrl.resetPoll = true;
       })
-      .catch(function(err) { Alert.error('Error: + err'); });
+      .catch(function(err) {
+        Alert.error('There was an error creating the poll');
+        console.log(err); // TODO: Remove this
+      });
     };
 
     /* Post Methods */

@@ -46,6 +46,30 @@
       <label for="threadPoll">Add a Poll</label>
     </div>
   </div>
+
+  <!-- polls -->
+  <div> <!-- ng-if="NewThreadCtrl.controlAccess.privilegedSticky"> -->
+    <div class="fill-row" style="padding-top: 20px;">
+      <label>Create a Poll:</label>
+      <div class="option">
+        <label for="stickyThread">Question:</label>
+        <input type="text" id="stickyThread" ng-model="NewThreadCtrl.poll.question" ng-disabled="!NewThreadCtrl.loggedIn()">
+      </div>
+    </div>
+    <div class="fill-row" ng-repeat="answer in NewThreadCtrl.poll.answers track by $index">
+      <div class="option">
+        <label for="stickyThread">Answer:</label>
+        <input type="text" id="stickyThread" ng-model="NewThreadCtrl.poll.answers[$index]" ng-disabled="!NewThreadCtrl.loggedIn()">
+      </div>
+    </div>
+    <div class="fill-row" style="padding-top: 10px">
+      <div class="option">
+        <button ng-click="NewThreadCtrl.addPollAnswer()" ng-disabled="!NewThreadCtrl.loggedIn()">
+          Add Answer
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <poll-creator poll="NewThreadCtrl.poll" valid="NewThreadCtrl.pollValid" ng-if="NewThreadCtrl.addPoll"></poll-creator>
