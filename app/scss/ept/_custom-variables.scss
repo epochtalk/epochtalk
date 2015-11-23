@@ -1,13 +1,22 @@
+// Spacing User Customizable
 $base-line-height: 1.3rem;
+
+// Primary Layout Colors User Customizable
 $base-background-color: rgb(255, 255, 255);
-$color-primary: red;
-$base-font-sans: "lato", "helvetica neue", helvetica, sans-serif;
+$color-primary: rgb(255, 100, 0);
+
+// Fonts User Customizable
+$base-font-sans: "Lato", "Helvetica Neue", Helvetica, sans-serif;
 $base-font-color: rgb(34, 34, 34);
 $base-font-size: 16px;
 $secondary-font-color: rgb(153, 153, 153);
+
+// Components User Customizable
 $input-font-color: rgb(34, 34, 34);
 $input-background-color: rgb(255, 255, 255);
 $border-color: rgb(215, 215, 215);
+
+// Header Colors User Customizable
 $header-font-color: rgb(255, 255, 255);
 $header-bg-color: rgb(66, 71, 80);
 $sub-header-color: rgb(245, 245, 245);
