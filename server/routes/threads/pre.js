@@ -60,8 +60,8 @@ module.exports = {
       var userId = request.auth.credentials.id;
       promise = db.users.find(userId)
       .then(function(user) {
-        var active = Boom.forbidden();
-        if (user) { active = !user.deleted; }
+        var active = Boom.forbidden('User Account Not Active');
+        if (user && !user.deleted) { active = true; }
         return active;
       });
     }
@@ -103,6 +103,63 @@ module.exports = {
       if (all) { result = true; }
       else if (some && mod) { result = true; }
       return result;
+    });
+
+    return reply(promise);
+  },
+  pollExists: function(request, reply) {
+    // Check if has poll exists
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+    promise = db.polls.exists(threadId)
+    .then(function(exists) {
+      var pollExists = Boom.badRequest('Poll Does Not Exists');
+      if (exists) { pollExists = exists; }
+      return pollExists;
+    });
+
+    return reply(promise);
+  },
+  isVotable: function(request, reply) {
+    // TODO: Check for voting privilege
+    return reply();
+  },
+  isLockable: function(request, reply) {
+    // TODO: Check for locking privileges
+    return reply();
+  },
+  hasVoted: function(request, reply) {
+    // Check if has voted already
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+    var userId = request.auth.credentials.id;
+    promise = db.polls.hasVoted(threadId, userId)
+    .then(function(voted) {
+      var canVote = Boom.badRequest('Already Voted');
+      if (!voted) { canVote = true; }
+      return canVote;
+    });
+
+    return reply(promise);
+  },
+  isPollLocked: function(request, reply) {
+    // Check if has poll is locked
+    var pollId = _.get(request, request.route.settings.app.poll_id);
+    promise = db.polls.isLocked(threadId)
+    .then(function(locked) {
+      var canUnlock = Boom.badRequest('Poll is Locked');
+      if (locked) { canUnlock = locked; }
+      return canUnlock;
+    });
+
+    return reply(promise);
+  },
+  isPollUnlocked: function(request, reply) {
+    // Check if has poll is unlocked
+    var pollId = _.get(request, request.route.settings.app.poll_id);
+    promise = db.polls.isLocked(threadId)
+    .then(function(locked) {
+      var canLock = Boom.badRequest('Poll is Unlocked');
+      if (!locked) { canLock = true; }
+      return canLock;
     });
 
     return reply(promise);

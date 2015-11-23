@@ -125,6 +125,17 @@ var ctrl = [
       .finally(function() { ctrl.showPurgeThreadModal = false; });
     };
 
+    /* Poll Methods */
+    this.pollAnswerId = "";
+    this.vote = function() {
+      console.log(ctrl.pollAnswerId);
+      var threadId = '';
+      var pollId = '';
+      var answerId = '';
+
+      // Threads.vote({ threadId: threadId, pollId: pollId, answerId: answerId}).$promise
+    };
+
     /* Post Methods */
 
     var discardAlert = function() {
