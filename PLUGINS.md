@@ -52,14 +52,12 @@ Current bootstrap options for a plugin are...
 
 ```
 {
-  name:  <string>,
   db: <database_methods>,
   endpoints: <endpoints>,
-  routes: <routes>
+  routes: <routes>,
+  templateHooks: <hooks>
 }
 ```
-
-name is the name of the plugin; duh...
 
 db contains methods to be tacked onto whatever core is being used.  they are
 added as dot methods (ex:  `db.whateverMethod()`)
@@ -74,3 +72,14 @@ parameter, with whatever value was passed as the second parameter
 
 routes is an array of routes.  it is returned in the final `.then` clause of
 `plugins.bootstrap`
+
+templateHooks
+  'boards-before': [],
+  'boards-after': [],
+  'board-actions': [],
+  'thread-actions': [],
+  'post-profile': [],
+  'post-actions': [],
+  'post-body-after': [],
+  'profile-details': [],
+  'profile-display': []
