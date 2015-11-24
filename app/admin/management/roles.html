@@ -167,32 +167,36 @@
         <div class="indent" ng-if="modAccess">
           <label>
             <input id="modAccess-users" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.users" ng-false-value="undefined" />
-            Users moderation tab
+            Users Moderation Tab
           </label>
           <label>
             <input id="modAccess-posts" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.posts" ng-false-value="undefined" />
-            Posts moderation tab
+            Posts Moderation Tab
           </label>
           <label>
             <input id="modAccess-messages" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.messages" ng-false-value="undefined" />
-            Messages moderation tab
+            Messages Moderation Tab
           </label>
         </div>
         <div class="clear"></div>
         <h4><br />Administration View Permissions</h4>
         <!-- View Admin Settings -->
         <label>
-          <input id="adminAccess-settings" type="checkbox" ng-init="settings = AdminManagementCtrl.newRole.permissions.adminAccess.settings.general || AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum" ng-model="settings" ng-change="!settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.general = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum = false : null;" />
+          <input id="adminAccess-settings" type="checkbox" ng-init="settings = AdminManagementCtrl.newRole.permissions.adminAccess.settings.general || AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum || AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme" ng-model="settings" ng-change="!settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.general = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme = false : null;" />
           Allow user to access admin settings view
         </label>
         <div class="indent" ng-if="settings">
           <label>
             <input id="adminAccess-settings-general" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.settings.general" ng-false-value="undefined" />
-            General settings tab
+            General Settings Tab
           </label>
           <label>
             <input id="adminAccess-settings-forum" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum" ng-false-value="undefined" />
-            Forum settings tab
+            Forum Settings Tab
+          </label>
+          <label>
+            <input id="adminAccess-settings-theme" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme" ng-false-value="undefined" />
+            Theme Settings Tab
           </label>
         </div>
 
@@ -204,15 +208,15 @@
         <div class="indent" ng-if="management">
           <label>
             <input id="adminAccess-management-boards" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.management.boards" ng-false-value="undefined" />
-            Boards Management tab
+            Boards Management Tab
           </label>
           <label>
             <input id="adminAccess-management-users" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.management.users" ng-false-value="undefined" />
-            Users Management tab
+            Users Management Tab
           </label>
           <label>
             <input id="adminAccess-management-roles" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.management.roles" ng-false-value="undefined" />
-            Roles Management tab
+            Roles Management Tab
           </label>
         </div>
 
@@ -412,6 +416,30 @@
         <label>
           <input id="adminSettings-update" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.update" ng-false-value="undefined" />
           Allow user to update all forum settings, used for admin settings page
+        </label>
+
+        <!-- Get forum theme settings -->
+        <label>
+          <input id="adminSettings-getTheme" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.getTheme" ng-false-value="undefined" />
+          Allow user to get forum theme, used for admin settings theme page
+        </label>
+
+        <!-- Set forum theme settings -->
+        <label>
+          <input id="adminSettings-setTheme" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.setTheme" ng-false-value="undefined" />
+          Allow user to set forum theme, used for admin settings theme page
+        </label>
+
+        <!-- Revert to default forum theme settings -->
+        <label>
+          <input id="adminSettings-resetTheme" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.resetTheme" ng-false-value="undefined" />
+          Allow user to revert forum theme to default, used for admin settings theme page
+        </label>
+
+        <!-- Preview forum theme settings -->
+        <label>
+          <input id="adminSettings-previewTheme" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.previewTheme" ng-false-value="undefined" />
+          Allow user to preview forum theme, used for admin settings theme page
         </label>
       </div>
 

@@ -22,7 +22,7 @@
 
   li {
     color: #fff;
-    background-color: $color-active-fill;
+    background-color: $color-primary;
     cursor: pointer;
     padding: 0.875rem 1.0625rem;
     width: 3rem;
@@ -30,7 +30,7 @@
     -webkit-border-radius:  1.5625rem;
     -moz-border-radius:     1.5625rem;
     border-radius:          1.5625rem;
-    box-shadow: 0px 0.3125rem 0.625rem $color-gray;
+    box-shadow: 0px 0.3125rem 0.625rem rgba(0, 0, 0, 0.1);
 
     span {
       font-weight: bold;
@@ -83,18 +83,18 @@
     bottom: 10px;
     left: 10px;
     right: 10px;
-    background-color: white;
+    background-color: $base-background-color;
     z-index: 10;
     overflow: auto;
     padding: 2rem;
 
-    h4 {  color: $color-active; }
+    h4 {  color: $color-primary; }
     .clear { clear: both; }
     .close-formatting {
       cursor: pointer;
       line-height: 1;
       font-weight: bold;
-      color: #AAA;
+      color: $secondary-font-color;
       position: absolute;
       top: 10px;
       right: 10px;
@@ -110,7 +110,7 @@
   right: 0.9375rem;
 
   label {
-    color: $color-gray-light;
+    color: $secondary-font-color-light;
     margin-top: 0;
   }
 
@@ -123,13 +123,14 @@
     input[type],
     .editor-input,
     .editor-preview {
-      background-color: #fff;
-      border: 1px solid $color-gray-med;
+      color: $input-font-color;
+      background-color: $input-background-color;
+      border: 1px solid $border-color;
       padding: 0.5rem;
       resize: none;
 
       &:focus {
-        outline: 1px solid $color-active;
+        outline: 1px solid $color-primary;
       }
     }
   }
@@ -162,7 +163,7 @@
   }
 
   .editor-footer {
-    color: $color-gray-light;
+    color: $secondary-font-color-light;
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: .875rem;
@@ -192,7 +193,7 @@
   }
   .editor-images:hover {
     background: rgba(0,0,0,0.1);
-    border: 2px dashed #777;
+    border: 2px dashed $secondary-font-color-dark;
     padding-top: 9px;
   }
 }
@@ -217,7 +218,7 @@
   text-align: right;
   width: 49%;
 
-  button.button {
+  button {
     // float: right;
     margin-right: 1.9%;
     width: 48%;
@@ -228,10 +229,10 @@
 
     &.cancel {
       background-color: transparent;
-      color: $color-gray-light;
+      color: $secondary-font-color;
       width: 25%;
       &:hover {
-        color: $color-active;
+        color: $color-primary;
       }
     }
   }
@@ -270,7 +271,7 @@
 
 .thread-editor-container {
   position: relative;
-  background-color: white;
+  background-color: $base-background-color;
   height: 500px; }
 .thread-editor-container > .editor-form { top: 0px; }
 .editor-preview .imageContainer { display: inline; }
@@ -297,10 +298,10 @@
     bottom: 0;
     left: 0;
     right: 0;
-    div label, .editor-form div label { margin: 0; color: $color-gray; }
+    div label, .editor-form div label { margin: 0; color: $secondary-font-color-dark; }
     .editor-body { top: 1.5625rem; }
     .editor-header, .editor-body, .editor-top-bar { @include pad(0); }
-    .editor-footer { padding-left: 0; padding-right: 0; color: $color-gray; }
+    .editor-footer { padding-left: 0; padding-right: 0; color: $secondary-font-color-dark; }
     .editor-images-container { @include pad(0); }
   }
   @include media($mobile) {
@@ -317,7 +318,7 @@
     .cancel {
       @include span-columns(6);
       background-color: transparent;
-      &:hover { color: $color-active; }
+      &:hover { color: $color-primary; }
     }
     .send { @include span-columns(6); @include omega; }
   }
