@@ -1763,3 +1763,7 @@ table.report-details {
   .filter.radio-button { @include span-columns(2.6); @include omega(3n); margin-bottom: 1rem; }
   .filter.header-spacer { display: none; }
 }
+
+.ng-enter { transition: 0.3s linear all; opacity: 0; }
+.ng-enter-active { opacity: 1; }
+.ng-leave { display: none; }

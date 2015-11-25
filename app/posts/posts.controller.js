@@ -141,6 +141,7 @@ var ctrl = [
         answer.percentage = percentage;
       });
     }
+    parent.calculatePollPercentage = calculatePollPercentage;
   }
 ];
 

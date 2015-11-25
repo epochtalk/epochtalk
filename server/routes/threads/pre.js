@@ -140,22 +140,10 @@ module.exports = {
 
     return reply(promise);
   },
-  isPollLocked: function(request, reply) {
-    // Check if has poll is locked
-    var pollId = _.get(request, request.route.settings.app.poll_id);
-    promise = db.polls.isLocked(threadId)
-    .then(function(locked) {
-      var canUnlock = Boom.badRequest('Poll is Locked');
-      if (locked) { canUnlock = locked; }
-      return canUnlock;
-    });
-
-    return reply(promise);
-  },
   isPollUnlocked: function(request, reply) {
     // Check if has poll is unlocked
     var pollId = _.get(request, request.route.settings.app.poll_id);
-    promise = db.polls.isLocked(threadId)
+    promise = db.polls.isLocked(pollId)
     .then(function(locked) {
       var canLock = Boom.badRequest('Poll is Unlocked');
       if (!locked) { canLock = true; }
