@@ -24,7 +24,7 @@
   <div ng-if="AdminManagementCtrl.search">
   Displaying {{AdminManagementCtrl.count | number}} search result(s) for "<strong>{{AdminManagementCtrl.search}}</strong>" in <strong>{{AdminManagementCtrl.filter ? 'Banned': 'All'}}</strong>:<br /><br />
   </div>
-  <table width="100%">
+  <table class="underlined" width="100%">
     <thead>
       <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Username</th>
       <th class="pointer" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }" ng-click="AdminManagementCtrl.setSortField('email')"><span ng-class="AdminManagementCtrl.getSortClass('email')"></span>&nbsp;Email</th>
