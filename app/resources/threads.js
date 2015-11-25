@@ -42,11 +42,6 @@ module.exports = ['$resource',
         method: 'POST',
         params: { threadId: '@threadId', pollId: '@pollId' },
         url: '/api/threads/:threadId/polls/:pollId/lock'
-      },
-      unlockPoll: {
-        method: 'POST',
-        params: { threadId: '@threadId', pollId: '@pollId' },
-        url: '/api/threads/:threadId/polls/:pollId/unlock'
       }
     });
   }

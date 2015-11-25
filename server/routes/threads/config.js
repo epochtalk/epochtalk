@@ -33,7 +33,7 @@ exports.create = {
       board_id: Joi.string().required(),
       poll: Joi.object().keys({
         question: Joi.string().required(),
-        answers: Joi.array().items(Joi.string()).required()
+        answers: Joi.array().items(Joi.string()).min(2).max(8).required()
       })
     })
   },
@@ -64,19 +64,14 @@ exports.create = {
     // create the thread
     var promise = db.threads.create(newThread)
     // save thread id to newPost
-    .then(function(thread) {
-      newPost.thread_id = thread.id;
-      return thread;
-    })
+    .tap(function(thread) { newPost.thread_id = thread.id; })
     // create any associated polls
     .then(function(thread) {
       if (request.payload.poll) {
-        var threadId = thread.id;
         var question = request.payload.poll.question;
         var answers = request.payload.poll.answers;
 
-        return db.polls.create(thread.id, question, answers)
-        .then(function() { return thread; });
+        return db.polls.create(thread.id, question, answers);
       }
     })
     // create the first post in this thread
@@ -451,8 +446,8 @@ exports.vote = {
   handler: function(request, reply) {
     var pollId = request.params.pollId;
     var answerId = request.payload.answerId;
-
-    var promise = db.polls.vote(pollId, answerId);
+    var userId = request.auth.credentials.id;
+    var promise = db.polls.vote(pollId, answerId, userId);
     return reply(promise);
   }
 };
@@ -467,44 +462,19 @@ exports.lockPoll = {
     params: {
       threadId: Joi.string().required(),
       pollId: Joi.string().required()
-    }
+    },
+    payload: { lockValue: Joi.boolean().required() }
   },
   pre: [ [
       { method: pre.accessBoardWithThreadId },
       { method: pre.isRequesterActive },
       { method: pre.pollExists },
-      { method: pre.isPollUnlocked }
       // isLockable - has locking privileges (some/all), poll owner
     ] ],
   handler: function(request, reply) {
     var pollId = request.params.pollId;
-    var promise = db.polls.lock(pollId);
-    return reply(promise);
-  }
-};
-
-exports.unlockPoll = {
-  app: {
-    thread_id: 'params.threadId',
-    poll_id: 'params.pollId'
-  },
-  auth: { strategy: 'jwt' },
-  validate: {
-    params: {
-      threadId: Joi.string().required(),
-      pollId: Joi.string().required()
-    }
-  },
-  pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.isPollLocked }
-      // isLockable - has locking privileges (some/all), poll owner
-    ] ],
-  handler: function(request, reply) {
-    var pollId = request.params.pollId;
-    var promise = db.polls.unlock(pollId);
+    var lockValue = request.payload.lockValue;
+    var promise = db.polls.lock(pollId, lockValue);
     return reply(promise);
   }
 };

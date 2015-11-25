@@ -128,12 +128,37 @@ var ctrl = [
     /* Poll Methods */
     this.pollAnswerId = "";
     this.vote = function() {
-      console.log(ctrl.pollAnswerId);
-      var threadId = '';
-      var pollId = '';
-      var answerId = '';
+      var threadId = ctrl.thread.id;
+      var pollId = ctrl.thread.poll.id;
+      var answerId = ctrl.pollAnswerId;
 
-      // Threads.vote({ threadId: threadId, pollId: pollId, answerId: answerId}).$promise
+      Threads.vote({ threadId: threadId, pollId: pollId, answerId: answerId}).$promise
+      .then(function(data) {
+        $timeout(function() {
+          var answers = ctrl.thread.poll.answers;
+          var chosen = answers.filter(function(current) { return current.id === data.id; });
+          chosen[0].votes++;
+          ctrl.calculatePollPercentage();
+          ctrl.thread.poll.hasVoted = true;
+        });
+        Alert.success('Voted in poll');
+      })
+      .catch(function() { Alert.error('Vote could not be processed'); });
+    };
+
+    this.updateLockPoll = function() {
+      $timeout(function() {
+        var input = {
+          threadId: ctrl.thread.id,
+          pollId: ctrl.thread.poll.id,
+          lockValue: ctrl.thread.poll.locked
+        };
+        return Threads.lockPoll(input).$promise
+        .catch(function() {
+          ctrl.thread.poll.locked = !ctrl.thread.poll.locked;
+          Alert.error('Error Locking Poll');
+        });
+      });
     };
 
     /* Post Methods */

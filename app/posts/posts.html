@@ -63,23 +63,42 @@
 
 <!-- Polls -->
 <div ng-if="PostsParentCtrl.thread.poll" style="border: 1px solid #ddd; border-radius: 5px; padding: 1rem;">
-  <h4 ng-bind="PostsParentCtrl.thread.poll.question"></h4>
+  <div class="control" style="position: relative; height: 25px">
+    <div style="position: absolute; top: 0; left: 0; right: 50px;">
+      <h5 ng-bind="PostsParentCtrl.thread.poll.question"></h5>
+    </div>
+    <!-- TODO: priviledge unlock -->
+    <div style="position: absolute; top: 0; right: 0; width: 50px; text-align: center;">
+      <input id="lockPoll" type="checkbox" ng-model="PostsParentCtrl.thread.poll.locked" style="display: none">
+      <label for="lockPoll" class="icon-epoch-lock" ng-click="PostsParentCtrl.updateLockPoll()">
+      </label>
+    </div>
+  </div>
   <hr>
-  <div ng-repeat="answer in PostsParentCtrl.thread.poll.answers" style="height: 25px; margin: 0.5rem 0 0.5rem 0;">
-    <label style="position: relative">
-      <div style="position: absolute; left: 0; width: 35px; text-align: center; ">
-        <input type="radio" ng-model="PostsParentCtrl.pollAnswerId" ng-value="answer.id" />
-      </div>
-      <div style="position: absolute; left: 35px; right: 0px; border-radius: 8px; background-color: #aaa">
-        <span ng-bind="'(' + answer.percentage + '%) ' + answer.answer" style="position: absolute; left: 10px; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis" ></span>
-        <section ng-style="answer.style" style="background-color: #5A8BC8; height: 25px; border-radius: 8px;"></section>
-      </div>
-    </label>
+  <!-- TODO: voting permission -->
+  <div ng-show="!PostsParentCtrl.thread.poll.hasVoted && !PostsParentCtrl.thread.poll.locked">
+    <div ng-repeat="answer in PostsParentCtrl.thread.poll.answers" style="height: 25px; margin: 0.5rem 0 0.5rem 0;">
+      <label style="position: relative">
+        <div style="position: absolute; left: 0; width: 35px; text-align: center; ">
+          <input type="radio" ng-model="PostsParentCtrl.pollAnswerId" ng-value="answer.id" />
+        </div>
+        <div style="position: absolute; left: 35px; right: 0px; border-radius: 8px; background-color: #aaa">
+          <span ng-bind="'(' + answer.percentage + '%) ' + answer.answer" style="position: absolute; left: 10px; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis" ></span>
+          <section ng-style="answer.style" style="background-color: #5A8BC8; height: 1.4rem; border-radius: 8px;"></section>
+        </div>
+      </label>
+    </div>
+    <button ng-click="PostsParentCtrl.vote()" ng-disabled="PostsParentCtrl.pollAnswerId.length === 0" style="margin: 0.5rem 0 0; width: 100%">
+      Vote
+    </button>
+  </div>
+  <div ng-show="PostsParentCtrl.thread.poll.hasVoted || PostsParentCtrl.thread.poll.locked" ng-repeat="answer in PostsParentCtrl.thread.poll.answers" style="position: relative; height: 25px; margin: 0.5rem 0 0.5rem 0;">
+    <div style="position: absolute; left: 0; right: 0; border-radius: 8px; background-color: #aaa">
+      <span ng-bind="'(' + answer.percentage + '%) ' + answer.answer" style="position: absolute; left: 10px; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis" ></span>
+      <section ng-style="answer.style" style="background-color: #5A8BC8; height: 1.4rem; border-radius: 8px;"></section>
+    </div>
   </div>
 
-  <button ng-if="!PostsParentCtrl.thread.poll.hasVoted" ng-click="PostsParentCtrl.vote()" ng-disabled="PostsParentCtrl.pollAnswerId.length === 0" style="margin: 0.5rem 0 0">
-    Vote
-  </button>
 </div>
 
 <!-- Posts Listing -->
