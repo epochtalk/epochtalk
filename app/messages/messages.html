@@ -9,7 +9,7 @@
       <i class="fa fa-plus"></i> New Message
     </div>
   </div>
-  <div id="pageConvos" ng-if="MessagesCtrl.pageMax > 0">
+  <div class="pagination-slide" ng-if="MessagesCtrl.pageMax > 0">
     <div class="prev">
       <button ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page - 1)" ng-disabled="MessagesCtrl.page === 1">&#10094;</button>
     </div>
