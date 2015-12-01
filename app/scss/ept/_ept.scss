@@ -723,6 +723,75 @@ table.striped {
   @include media($mobile) { width: 90%; margin: 0 0 0 -45%; }
 }
 .profile-avatar-container { width: 100%; text-align: center; img { height: 12.5rem; width: auto; } }
+
+.polls {
+  border: 1px solid $border-color;
+  @include border-radius(5px);
+  padding: 1rem;
+  margin-bottom: 1.875rem;
+  // header section
+  .poll-header {
+    position: relative;
+    height: 20px;
+    .poll-title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 25px;
+      .poll-question { display: inline-block; }
+    }
+    .poll-lock {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 25px;
+      text-align: center;
+      label { margin-left: 0; }
+      #lockPoll {
+        display: none;
+        & + label:before { font-size: 1.5rem; color: $secondary-font-color-light; }
+        &:checked + label:before { color: $color-primary; }
+      }
+    }
+  }
+  // answer section
+  .poll-answer {
+    position: relative;
+    height: 25px;
+    margin: 0.5rem 0 0.5rem 0;
+    .poll-select {
+      position: absolute;
+      left: 0;
+      width: 35px;
+      text-align: center;
+    }
+    & + button{ margin: 0.5rem 0 0; width: 100%; }
+    // votes bar
+    .poll-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      @include border-radius(8px);
+      background-color: $secondary-font-color;
+      span {
+        position: absolute;
+        top: 2px;
+        left: 10px;
+        color: $button-text-color;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      section {
+        background-color: $color-primary;
+        height: 25px;
+        @include border-radius(8px);
+      }
+      &.voting-mode { left: 35px; }
+    }
+  }
+}
+
 /*-------------- Index File -------------- */
 
 #wrapper { min-height:100%; position:relative; }
