@@ -51,7 +51,7 @@ var route = ['$stateProvider', function($stateProvider) {
         return deferred.promise;
       }],
       pageData: ['Watchlist', '$stateParams', function(Watchlist, $stateParams) {
-        var query = { limit: Number($stateParams.limit) || 25 };
+        var query = { limit: Number($stateParams.limit) || 10 };
         return Watchlist.edit(query).$promise;
       }]
     }

@@ -36,7 +36,7 @@
     Displaying {{ModerationCtrl.count | number}} search result(s) for "<strong>{{ModerationCtrl.search}}</strong>" in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong>:<br /><br />
   </div>
   <div class="fill-row admin-content-selectable">
-    <table width="100%">
+    <table class="underlined" width="100%">
       <thead>
         <th class="pointer hide-mobile" ng-click="ModerationCtrl.setSortField('reporter_username')"><span ng-class="ModerationCtrl.getSortClass('reporter_username')"></span>&nbsp;Reported By</th>
         <th class="pointer" ng-click="ModerationCtrl.setSortField('created_at')"><span ng-class="ModerationCtrl.getSortClass('created_at')"></span>&nbsp;Reported Date</th>

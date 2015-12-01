@@ -20,43 +20,43 @@ var ctrl = ['$timeout', '$anchorScroll', 'Session', 'Alert', 'Watchlist', 'pageD
 
     this.unwatchThread = function(threadId, threadTitle) {
       return Watchlist.unwatchThread({ threadId: threadId }).$promise
-      .then(function(data) {
+      .then(function() {
         $timeout(function() {
           Alert.success('No longer watching thread: ' + threadTitle);
           $anchorScroll();
         });
       })
-      .catch(function(err) {
+      .catch(function() {
         Alert.error('There was a problem unwatching that thread.');
       });
     };
 
     this.unwatchBoard = function(boardId, boardName) {
       return Watchlist.unwatchBoard({ boardId: boardId }).$promise
-      .then(function(data) {
+      .then(function() {
         Alert.success('No longer watching board: ' + boardName);
       })
-      .catch(function(err) {
+      .catch(function() {
         Alert.error('There was a problem unwatching that board.');
       });
     };
 
     this.watchThread = function(threadId, threadTitle) {
       return Watchlist.watchThread({ threadId: threadId }).$promise
-      .then(function(data) {
+      .then(function() {
         Alert.success('Watching thread: ' + threadTitle);
       })
-      .catch(function(err) {
+      .catch(function() {
         Alert.error('There was a problem unwatching that thread.');
       });
     };
 
     this.watchBoard = function(boardId, boardName) {
       return Watchlist.watchBoard({ boardId: boardId }).$promise
-      .then(function(data) {
+      .then(function() {
         Alert.success('Watching Board: ' + boardName);
       })
-      .catch(function(err) {
+      .catch(function() {
         Alert.error('There was a problem unwatching that board.');
       });
     };

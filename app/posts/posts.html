@@ -1,32 +1,37 @@
 <!-- Page Title -->
-<div class="thread-header">
-  <div class="title">
-    <!-- Show Title -->
-    <div ng-if="!PostsParentCtrl.editThread">
-      <h4 ng-bind-html="::PostsParentCtrl.thread.title"></h4>
-      <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
-      <i class="icon-epoch-verified" ng-if="PostsParentCtrl.thread.sticky"></i>
-      <a ng-href="#" ng-if="PostsParentCtrl.controlAccess.privilegedTitle" ng-click="PostsParentCtrl.openEditThread()">
-        <i class="icon-epoch-edit-pencil"></i>
-      </a>
-    </div>
-    <!-- Edit Title -->
-    <div ng-if="PostsParentCtrl.editThread">
-      <form ng-submit="PostsParentCtrl.updateThreadTitle()">
-        <input type="text" ng-model="PostsParentCtrl.thread.title">
-        <button type="submit" ng-disabled="PostsParentCtrl.thread.title.length === 0">Save</button>
-        <button class="cancel" ng-click="PostsParentCtrl.closeEditThread()">Cancel</button>
-      </form>
-    </div>
+<div class="page-header-split">
+  <!-- Show Title -->
+  <div ng-if="!PostsParentCtrl.editThread">
+    <h4 ng-bind-html="::PostsParentCtrl.thread.title"></h4>
+    <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
+    <i class="icon-epoch-verified" ng-if="PostsParentCtrl.thread.sticky"></i>
+    <a ng-href="#" ng-if="PostsParentCtrl.controlAccess.privilegedTitle" ng-click="PostsParentCtrl.openEditThread()">
+      <i class="icon-epoch-edit-pencil"></i>
+    </a>
   </div>
-  <div class="pagination-wrap">
+  <!-- Edit Title -->
+  <div ng-if="PostsParentCtrl.editThread">
+    <form ng-submit="PostsParentCtrl.updateThreadTitle()">
+      <input type="text" ng-model="PostsParentCtrl.thread.title">
+      <button type="submit" ng-disabled="PostsParentCtrl.thread.title.length === 0">Save</button>
+      <button ng-click="PostsParentCtrl.closeEditThread()">Cancel</button>
+    </form>
+  </div>
+  <div>
     <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
   </div>
 </div>
 
+<div class="fill-row" ng-if="PostsParentCtrl.loggedIn()">
+  <a class="inverted-button" ng-click="PostsParentCtrl.watchThread()" ng-if="!PostsParentCtrl.thread.watched">
+    <i class="icon-epoch-watch"></i>Watch This Thread
+  </a>
+</div>
+
 <!-- Thread Controls Section -->
+<div class="clear"></div>
 <h5 class="thin-underline" ng-if="PostsParentCtrl.showThreadControls">Thread Controls</h5>
-<div class="thread-controls thin-underline" ng-if="PostsParentCtrl.showThreadControls">
+<div class="thread-controls" ng-if="PostsParentCtrl.showThreadControls">
 
   <!-- Thread Lock -->
   <div class="control" ng-if="PostsParentCtrl.controlAccess.privilegedLock">
@@ -55,21 +60,12 @@
   </div>
 </div>
 
-
-<div class="board-controls" ng-if="PostsParentCtrl.loggedIn()">
-  <a ng-click="PostsParentCtrl.watchThread()" ng-if="!PostsParentCtrl.thread.watched">
-    <i class="icon-epoch-watch"></i>Watch This Thread
-  </a>
-</div>
-
 <!-- Posts Listing -->
 <div class="thread-data" ui-view="data"></div>
 
 <!-- Bottom Pagination -->
-<div class="thread-footer">
-  <div class="pagination-wrap">
-    <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
-  </div>
+<div class="fill-row">
+  <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
 </div>
 
 <!-- Editor -->

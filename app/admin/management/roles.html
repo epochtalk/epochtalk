@@ -7,7 +7,7 @@
       <input class="nested-input" ng-model="AdminManagementCtrl.newRole.name" type="text" id="add-role" placeholder="Enter new role name" ng-keydown="$event.which === 13 && AdminManagementCtrl.addRole()" />
     </div>
   </div>
-  <table sv-root sv-on-sort="AdminManagementCtrl.reprioritizeRoles()" sv-part="AdminManagementCtrl.roles" width="100%" class="admin-content-selectable">
+  <table sv-root sv-on-sort="AdminManagementCtrl.reprioritizeRoles()" sv-part="AdminManagementCtrl.roles" width="100%" class="admin-content-selectable underlined">
     <thead>
       <th>Role Name</th>
       <th>Priority</th>
@@ -54,7 +54,7 @@
         <input class="nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
       </div>
     </div>
-    <table width="100%">
+    <table class="underlined" width="100%">
       <thead>
         <th>Username</th>
         <th>Email</th>

@@ -1,31 +1,31 @@
 <!-- Page Header -->
-<div id="admin-subnav" class="fill-row" style="float: none;">
-  <h2 style="display: inline-block">Watchlist</h2>
-  <dl class="tabs custom-tabs" style="display: inline-block; margin-left: 50px;">
-    <dd class="no-select active" >
-      <a ui-sref="watchlist">Unread</a>
-    </dd>
-    <dd class="no-select">
-      <a ui-sref="watchlist.edit">Edit</a>
-    </dd>
-  </dl>
+<div class="watchlist-section">
+  <div class="leftcol">
+    <h2 class="inline-block">Watchlist</h2>
+    <dl class="tabs custom-tabs">
+      <dd class="no-select active" >
+        <a ui-sref="watchlist">Unread</a>
+      </dd>
+      <dd class="no-select">
+        <a ui-sref="watchlist.edit">Edit</a>
+      </dd>
+    </dl>
+  </div>
+  <div class="rightcol">
+    <div class="pagination-slide">
+      <div class="prev">
+        <button ng-disabled="WatchlistCtrl.page <= 1" ng-click="WatchlistCtrl.pullPage(-1);">&#10094; Newer</button>
+      </div>
+      <div class="page" ng-bind="WatchlistCtrl.page"></div>
+      <div class="next">
+        <button ng-disabled="!WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullPage(1);">Older &#10095;</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- All Threads -->
-<div class="board-data">
-
-  <!-- Top Pagination -->
-  <div class="board-header">
-    <button ng-if="WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullPage(1);" style="float: right; margin-left: 2rem;">
-      Older >
-    </button>
-    <div style="float: right; margin-left: 2rem"
-      ng-if="WatchlistCtrl.threads.length > 0"
-     ng-bind="WatchlistCtrl.page"></div>
-    <button ng-if="WatchlistCtrl.page > 1" ng-click="WatchlistCtrl.pullPage(-1);" style="float: right">
-      < Newer
-    </button>
-  </div>
+<div class="watchlist-data">
 
   <!-- All Threads Header -->
   <div class="threads-header" ng-if="WatchlistCtrl.threads">
@@ -99,23 +99,23 @@
   </div>
 
   <!-- No Threads Listed -->
-  <div class-"threads-data" ng-if="WatchlistCtrl.threads.length < 1" style="text-align: center; font-weight: bold;">
-    No Threads Being Watched
-  </div>
-
-  <!-- Bottom Pagination -->
-  <div class="board-header">
-    <button ng-if="WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullPage(1);" style="float: right; margin-left: 2rem;">
-      Older >
-    </button>
-    <div style="float: right; margin-left: 2rem"
-      ng-if="WatchlistCtrl.threads.length > 0"
-     ng-bind="WatchlistCtrl.page"></div>
-    <button ng-if="WatchlistCtrl.page > 1" ng-click="WatchlistCtrl.pullPage(-1);" style="float: right;">
-      < Newer
-    </button>
+  <div class-"threads-data" ng-if="WatchlistCtrl.threads.length < 1" class="centered-text">
+    <h5>No Threads Being Watched</h5>
   </div>
 
 </div>
 
-<div class="board-footer"></div>
+<div class="watchlist-section">
+  <div class="leftcol">&nbsp;</div>
+  <div class="rightcol">
+    <div class="pagination-slide">
+      <div class="prev">
+        <button ng-disabled="WatchlistCtrl.page <= 1" ng-click="WatchlistCtrl.pullPage(-1);">&#10094; Newer</button>
+      </div>
+      <div class="page" ng-bind="WatchlistCtrl.page"></div>
+      <div class="next">
+        <button ng-disabled="!WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullPage(1);">Older &#10095;</button>
+      </div>
+    </div>
+  </div>
+</div>
