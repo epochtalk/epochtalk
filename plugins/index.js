@@ -119,7 +119,7 @@ plugins.uninstall = function(pluginName) {
 };
 
 function loadPlugin(pluginName) {
-  try { return require(pluginName)(db); }
+  try { return require(path.join(pluginsPath, pluginName))(db); }
   catch(ex) { console.log('Cannot load Plugin -- ' + pluginName + ': ', ex); return; }
 }
 
