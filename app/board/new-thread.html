@@ -48,23 +48,32 @@
   </div>
 
   <!-- polls -->
-  <div> <!-- ng-if="NewThreadCtrl.controlAccess.privilegedSticky"> -->
-    <div class="fill-row" style="padding-top: 20px;">
-      <label>Create a Poll:</label>
+  <div class="fill-row" ng-if="NewThreadCtrl.addPoll" style="border: 1px solid #ddd; border-radius: 5px; margin-top: 20px; padding: 1rem 1rem 0 1rem;">
+    <!-- Poll Question -->
+    <div class="fill-row">
       <div class="option">
         <label for="stickyThread">Question:</label>
         <input type="text" id="stickyThread" ng-model="NewThreadCtrl.poll.question" ng-disabled="!NewThreadCtrl.loggedIn()">
       </div>
     </div>
-    <div class="fill-row" ng-repeat="answer in NewThreadCtrl.poll.answers track by $index">
+    <hr class="fill-row"/>
+    <!-- Poll Answers -->
+    <div class="fill-row" ng-repeat="answer in NewThreadCtrl.poll.answers track by $index" style="padding-bottom: 10px; height: 70px">
       <div class="option">
         <label for="stickyThread">Answer:</label>
-        <input type="text" id="stickyThread" ng-model="NewThreadCtrl.poll.answers[$index]" ng-disabled="!NewThreadCtrl.loggedIn()">
+        <div style="position: relative">
+          <div style="position: absolute; left: 0; right: 50px;">
+            <input type="text" id="stickyThread" ng-model="NewThreadCtrl.poll.answers[$index]" ng-disabled="!NewThreadCtrl.loggedIn()">
+          </div>
+          <button ng-click="NewThreadCtrl.removePollAnswer($index)" style="position: absolute; right: 0; width: 25px; margin-bottom: 0; text-align: center;"><i class="fa fa-minus-circle"></i>
+          </button>
+        </div>
       </div>
     </div>
+    <!-- Add Answer Button -->
     <div class="fill-row" style="padding-top: 10px">
       <div class="option">
-        <button ng-click="NewThreadCtrl.addPollAnswer()" ng-disabled="!NewThreadCtrl.loggedIn()">
+        <button ng-click="NewThreadCtrl.addPollAnswer()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.poll.answers.length > 7" style="width: 100%">
           Add Answer
         </button>
       </div>

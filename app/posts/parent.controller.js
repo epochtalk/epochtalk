@@ -20,6 +20,7 @@ var ctrl = [
     this.resetPoll = false;
     this.poll = {};
     this.controlAccess = {};
+    this.pollControlAccess = {};
     this.reportControlAccess = {
       reportPosts: Session.hasPermission('reportControls.reportPosts'),
       reportUsers: Session.hasPermission('reportControls.reportUsers')

@@ -439,6 +439,7 @@ exports.purge = {
 exports.vote = {
   app: { thread_id: 'params.threadId' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'polls.vote' },
   validate: {
     params: {
       threadId: Joi.string().required(),
@@ -450,9 +451,8 @@ exports.vote = {
       { method: pre.accessBoardWithThreadId },
       { method: pre.isRequesterActive },
       { method: pre.pollExists },
-      { method: pre.hasVoted },
+      { method: pre.canVote },
       { method: pre.isPollUnlocked }
-      // isVotable - has voting privileges (true/false)
     ] ],
   handler: function(request, reply) {
     var pollId = request.params.pollId;
@@ -466,9 +466,11 @@ exports.vote = {
 exports.lockPoll = {
   app: {
     thread_id: 'params.threadId',
-    poll_id: 'params.pollId'
+    poll_id: 'params.pollId',
+    isPollOwner: 'polls.privilegedLock'
   },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'polls.lock' },
   validate: {
     params: {
       threadId: Joi.string().required(),

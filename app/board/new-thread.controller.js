@@ -23,6 +23,19 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
 
     this.addPollAnswer = function() { ctrl.poll.answers.push(''); };
     this.removePollAnswer = function(index) { ctrl.poll.answers.splice(index, 1); };
+    this.pollValid = function() {
+      if (!ctrl.addPoll) { return true; }
+
+      var valid = true;
+      if (ctrl.poll.question.length === 0) { valid = false; }
+      if (ctrl.poll.answers.length < 2) { valid = false; }
+      if (ctrl.poll.answers.length > 9) { valid = false; }
+      ctrl.poll.answers.map(function(answer) {
+        if (answer.length === 0) { valid = false; }
+      });
+
+      return valid;
+    };
 
     this.output = function() { console.log(ctrl.poll); };
 
