@@ -312,6 +312,15 @@ exports.add = {
           deactivate: Joi.boolean(),
           reactivate: Joi.boolean(),
           delete: Joi.boolean()
+        }),
+        polls: Joi.object().keys({
+          create: Joi.boolean(),
+          vote: Joi.boolean(),
+          lock: Joi.boolean(),
+          privilegedLock: Joi.object().keys({
+            some: Joi.boolean(),
+            all: Joi.boolean()
+          })
         })
       }).required()
     }
@@ -569,6 +578,15 @@ exports.update = {
           deactivate: Joi.boolean(),
           reactivate: Joi.boolean(),
           delete: Joi.boolean()
+        }),
+        polls: Joi.object().keys({
+          create: Joi.boolean(),
+          vote: Joi.boolean(),
+          lock: Joi.boolean(),
+          privilegedLock: Joi.object().keys({
+            some: Joi.boolean(),
+            all: Joi.boolean()
+          })
         })
       }).required()
     }
@@ -657,4 +675,3 @@ exports.reprioritize = {
     return reply(promise);
   }
 };
-

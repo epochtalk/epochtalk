@@ -97,6 +97,15 @@ function getMaskedPermissions(userRoles) {
       title: maskPermission('threads.title'),
       lock: maskPermission('threads.lock')
     },
+    pollControls: {
+      privilegedLock: maskPermission('polls.privilegedLock') ? {
+        some: maskPermission('polls.privilegedLock.some'),
+        all: maskPermission('polls.privilegedLock.all')
+      } : undefined,
+      create: maskPermission('polls.create'),
+      vote: maskPermission('polls.vote'),
+      lock: maskPermission('polls.lock')
+    },
     postControls: {
       privilegedUpdate: maskPermission('posts.privilegedUpdate') ? {
         some: maskPermission('posts.privilegedUpdate.some'),
