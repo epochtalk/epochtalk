@@ -119,15 +119,41 @@ module.exports = {
 
     return reply(promise);
   },
-  isVotable: function(request, reply) {
-    // TODO: Check for voting privilege
-    return reply();
+  isPollOwner: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var privilege = request.route.settings.app.isPollOwner;
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var privilegedAll = getACLValue(request.auth, privilege + '.all');
+    var privilegedSome = getACLValue(request.auth, privilege +'.some');
+    var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
+    var isThreadOwner = db.threads.getThreadOwner(threadId)
+    .then(function(owner) { return owner.user_id === userId; });
+
+    var promise = Promise.join(isThreadOwner, privilegedAll, privilegedSome, isMod, function(owner, all, some, mod) {
+      var result = Boom.forbidden();
+      if (owner || all) { result = true; }
+      else if (some && mod) { result = true; }
+      return result;
+    });
+
+    return reply(promise);
   },
-  isLockable: function(request, reply) {
-    // TODO: Check for locking privileges
-    return reply();
+  isPollCreatable: function(request, reply) {
+    var poll = request.payload.poll;
+
+    if (!poll) { return reply(); }
+
+    var privilege = request.route.settings.app.isPollCreatable;
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var canCreate = getACLValue(request.auth, privilege);
+
+    var result = Boom.forbidden();
+    if (canCreate) { result = true; }
+    return reply(result);
   },
-  hasVoted: function(request, reply) {
+  canVote: function(request, reply) {
     // Check if has voted already
     var threadId = _.get(request, request.route.settings.app.thread_id);
     var userId = request.auth.credentials.id;

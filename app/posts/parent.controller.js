@@ -16,6 +16,7 @@ var ctrl = [
     this.moveBoard = {};
     this.boards = [];
     this.controlAccess = {};
+    this.pollControlAccess = {};
     this.reportControlAccess = {
       reportPosts: Session.hasPermission('reportControls.reportPosts'),
       reportUsers: Session.hasPermission('reportControls.reportUsers')
@@ -38,6 +39,14 @@ var ctrl = [
       delete ctrl.privilegedControlAccess.title;
       delete ctrl.privilegedControlAccess.create;
       ctrl.showThreadControls = some(ctrl.privilegedControlAccess);
+
+      // poll control access
+      ctrl.pollControlAccess = Session.getControlAccess('pollControls', boardId);
+      if (ctrl.user.id === ctrl.thread.user.id) {
+        ctrl.pollControlAccess.privilegedLock = ctrl.pollControlAccess.lock;
+      }
+
+      // get boards for mods and admins
       ctrl.getBoards();
     });
 

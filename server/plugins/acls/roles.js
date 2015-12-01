@@ -194,6 +194,14 @@ module.exports = roles;
       move: true,
       purge: true
     },
+    polls: {
+      create: true,
+      vote: true,
+      lock: true,
+      privilegedLock: {
+        all: true
+      }
+    },
     users: {
       privilegedDeactivate: {
         samePriority: true,
@@ -398,6 +406,14 @@ roles.superAdministrator = {
     move: true,
     purge: true
   },
+  polls: {
+    create: true,
+    vote: true,
+    lock: true,
+    privilegedLock: {
+      all: true
+    }
+  },
   users: {
     privilegedDeactivate: {
       lowerPriority: true
@@ -579,6 +595,14 @@ roles.administrator = {
     move: true,
     purge: true
   },
+  polls: {
+    create: true,
+    vote: true,
+    lock: true,
+    privilegedLock: {
+      all: true
+    }
+  },
   users: {
     privilegedDeactivate: {
       lowerPriority: true
@@ -719,6 +743,14 @@ roles.globalModerator = {
     move: true,
     purge: true
   },
+  polls: {
+    create: true,
+    vote: true,
+    lock: true,
+    privilegedLock: {
+      all: true
+    }
+  },
   users: {
     viewDeleted: true,
     update: true,
@@ -848,6 +880,14 @@ roles.moderator = {
     move: true,
     purge: true
   },
+  polls: {
+    create: true,
+    vote: true,
+    lock: true,
+    privilegedLock: {
+      some: true
+    }
+  },
   users: {
     viewDeleted: true,
     update: true,
@@ -898,6 +938,11 @@ roles.user = {
     byBoard: true,
     viewed: true,
     title: true,
+    lock: true
+  },
+  polls: {
+    create: true,
+    vote: true,
     lock: true
   },
   users: {

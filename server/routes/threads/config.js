@@ -20,7 +20,10 @@ var postPre = require(path.normalize(__dirname + '/../posts/pre'));
   * @apiError (Error 500) InternalServerError There was an issue creating the thread
   */
 exports.create = {
-  app: { board_id: 'payload.board_id' },
+  app: {
+    board_id: 'payload.board_id',
+    isPollCreatable: 'polls.create'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.create' },
   validate: {
@@ -40,7 +43,8 @@ exports.create = {
   pre: [
     [
       { method: pre.accessBoardWithBoardId },
-      { method: pre.isRequesterActive }
+      { method: pre.isRequesterActive },
+      { method: pre.isPollCreatable }
     ],
     { method: postPre.clean },
     { method: postPre.parseEncodings },
@@ -428,6 +432,7 @@ exports.purge = {
 exports.vote = {
   app: { thread_id: 'params.threadId' },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'polls.vote' },
   validate: {
     params: {
       threadId: Joi.string().required(),
@@ -439,9 +444,8 @@ exports.vote = {
       { method: pre.accessBoardWithThreadId },
       { method: pre.isRequesterActive },
       { method: pre.pollExists },
-      { method: pre.hasVoted },
+      { method: pre.canVote },
       { method: pre.isPollUnlocked }
-      // isVotable - has voting privileges (true/false)
     ] ],
   handler: function(request, reply) {
     var pollId = request.params.pollId;
@@ -455,9 +459,11 @@ exports.vote = {
 exports.lockPoll = {
   app: {
     thread_id: 'params.threadId',
-    poll_id: 'params.pollId'
+    poll_id: 'params.pollId',
+    isPollOwner: 'polls.privilegedLock'
   },
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'polls.lock' },
   validate: {
     params: {
       threadId: Joi.string().required(),
@@ -469,7 +475,7 @@ exports.lockPoll = {
       { method: pre.accessBoardWithThreadId },
       { method: pre.isRequesterActive },
       { method: pre.pollExists },
-      // isLockable - has locking privileges (some/all), poll owner
+      { method: pre.isPollOwner }
     ] ],
   handler: function(request, reply) {
     var pollId = request.params.pollId;

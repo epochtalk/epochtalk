@@ -65,18 +65,19 @@
 <div ng-if="PostsParentCtrl.thread.poll" style="border: 1px solid #ddd; border-radius: 5px; padding: 1rem;">
   <div class="control" style="position: relative; height: 25px">
     <div style="position: absolute; top: 0; left: 0; right: 50px;">
-      <h5 ng-bind="PostsParentCtrl.thread.poll.question"></h5>
+      <span ng-if="PostsParentCtrl.thread.poll.locked" style="display: inline-block">
+        <i  class="icon-epoch-lock"></i>
+      </span>
+      <span class="poll-question" ng-bind="PostsParentCtrl.thread.poll.question" style="font-size: 1.125rem; line-height: 1.5rem; color: #222"></span>
     </div>
-    <!-- TODO: priviledge unlock -->
-    <div style="position: absolute; top: 0; right: 0; width: 50px; text-align: center;">
+    <div ng-if="PostsParentCtrl.pollControlAccess.privilegedLock" style="position: absolute; top: 0; right: 0; width: 50px; text-align: center;">
       <input id="lockPoll" type="checkbox" ng-model="PostsParentCtrl.thread.poll.locked" style="display: none">
       <label for="lockPoll" class="icon-epoch-lock" ng-click="PostsParentCtrl.updateLockPoll()">
       </label>
     </div>
   </div>
   <hr>
-  <!-- TODO: voting permission -->
-  <div ng-show="!PostsParentCtrl.thread.poll.hasVoted && !PostsParentCtrl.thread.poll.locked">
+  <div ng-if="!PostsParentCtrl.thread.poll.hasVoted && !PostsParentCtrl.thread.poll.locked && PostsParentCtrl.pollControlAccess.vote">
     <div ng-repeat="answer in PostsParentCtrl.thread.poll.answers" style="height: 25px; margin: 0.5rem 0 0.5rem 0;">
       <label style="position: relative">
         <div style="position: absolute; left: 0; width: 35px; text-align: center; ">
@@ -92,7 +93,7 @@
       Vote
     </button>
   </div>
-  <div ng-show="PostsParentCtrl.thread.poll.hasVoted || PostsParentCtrl.thread.poll.locked" ng-repeat="answer in PostsParentCtrl.thread.poll.answers" style="position: relative; height: 25px; margin: 0.5rem 0 0.5rem 0;">
+  <div ng-if="PostsParentCtrl.thread.poll.hasVoted || PostsParentCtrl.thread.poll.locked || !PostsParentCtrl.pollControlAccess.vote" ng-repeat="answer in PostsParentCtrl.thread.poll.answers" style="position: relative; height: 25px; margin: 0.5rem 0 0.5rem 0;">
     <div style="position: absolute; left: 0; right: 0; border-radius: 8px; background-color: #aaa">
       <span ng-bind="'(' + answer.percentage + '%) ' + answer.answer" style="position: absolute; left: 10px; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis" ></span>
       <section ng-style="answer.style" style="background-color: #5A8BC8; height: 1.4rem; border-radius: 8px;"></section>
