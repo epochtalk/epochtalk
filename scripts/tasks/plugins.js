@@ -39,15 +39,17 @@ module.exports = function() {
     var plugin = require(path.join(pluginsPath, dbPlugin.name))(db);
     var hooks = plugin.templateHooks;
 
-    // template dir for this plugin
-    outputText += 'require(\'' + dbPlugin.name + '/templates\');\n';
+    if (hooks && Object.keys(hooks).length) {
+      // template dir for this plugin
+      outputText += 'require(\'' + dbPlugin.name + '/templates\');\n';
 
-    // directive hook points for this plugin
-    hookCacheKeys.forEach(function(key) {
-      if (hooks[key] && hooks[key].length > 0) {
-        hookCache[key] = hookCache[key].concat(hooks[key]);
-      }
-    });
+      // directive hook points for this plugin
+      hookCacheKeys.forEach(function(key) {
+        if (hooks[key] && hooks[key].length > 0) {
+          hookCache[key] = hookCache[key].concat(hooks[key]);
+        }
+      });
+    }
   })
   // append directive hook points to output
   .then(function() {
