@@ -3,7 +3,8 @@ var _ = require('lodash');
 var path = require('path');
 var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../db'));
-var plugins = require(path.normalize(__dirname + '/../../plugins'));
+var pluginsPath = path.join(__dirname, '..', '..', 'plugins');
+var plugins = require(pluginsPath);
 
 var predefinedPlugins = require(path.normalize(__dirname + '/../../plugin-conf'));
 var hookCache = {
@@ -35,7 +36,7 @@ module.exports = function() {
   .then(db.plugins.all)
   // aggregate template hooks and template dirs
   .each(function(dbPlugin) {
-    var plugin = require(dbPlugin.name)(db);
+    var plugin = require(path.join(pluginsPath, dbPlugin.name))(db);
     var hooks = plugin.templateHooks;
 
     // template dir for this plugin
