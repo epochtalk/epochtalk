@@ -6,6 +6,7 @@ var fs = require('fs');
 var path = require('path');
 var exec = require('child_process').exec;
 var db = require(path.normalize(__dirname + '/../db'));
+var redis = require(path.join(__dirname, '..', 'redis'));
 var pluginsPath = path.normalize(__dirname);
 var endpointCache = {
   "before-post": [],
@@ -20,7 +21,7 @@ plugins.bootstrap = function() {
   return db.plugins.all()
   .each(function(dbPlugin) {
     // check if plugin exists in node_modules folder
-    var plugin = loadPlugin(dbPlugin.name);
+    var plugin = plugins.load(dbPlugin.name);
     if (!plugin) { return; }
     else { plugin.name = dbPlugin.name; }
 
@@ -118,8 +119,8 @@ plugins.uninstall = function(pluginName) {
   });
 };
 
-function loadPlugin(pluginName) {
-  try { return require(path.join(pluginsPath, pluginName))(db); }
+plugins.load = function(pluginName) {
+  try { return require(path.join(pluginsPath, pluginName))(db, redis); }
   catch(ex) { console.log('Cannot load Plugin -- ' + pluginName + ': ', ex); return; }
 }
 

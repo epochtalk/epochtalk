@@ -36,7 +36,7 @@ module.exports = function() {
   .then(db.plugins.all)
   // aggregate template hooks and template dirs
   .each(function(dbPlugin) {
-    var plugin = require(path.join(pluginsPath, dbPlugin.name))(db);
+    var plugin = plugins.load(dbPlugin.name);
     var hooks = plugin.templateHooks;
 
     if (hooks && Object.keys(hooks).length) {
