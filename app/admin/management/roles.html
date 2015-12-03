@@ -134,19 +134,9 @@
         <input ng-model="AdminManagementCtrl.newRole.name" id="name" type="text" placeholder="Enter new role name" ng-required="true" />
         <label for="desc">Role Description</label>
         <textarea id="desc" ng-model="AdminManagementCtrl.newRole.description" placeholder="Enter a short description of this role" ng-required="true"></textarea>
-        <div>
-          <div class="half-column">
-            <label for="priority">
-              Role Priority
-              <div class="input-info right">Priority can be changed after role is added</div>
-            </label>
-            <input ng-model="AdminManagementCtrl.newRole.priority" type="number" ng-disabled="true" required />
-          </div>
-          <div class="half-column">
-            <label for="highlight">Highlight Color <a ng-href="#" class="right" ng-if="AdminManagementCtrl.newRole.highlight_color" ng-click="AdminManagementCtrl.newRole.highlight_color = undefined">Remove Highlight</a></label>
-            <input ng-model="AdminManagementCtrl.newRole.highlight_color" id="highlight" type="color" placeholder="Enter a hex value for role highlight color" />
-          </div>
-        </div>
+
+          <label for="highlight">Highlight Color <a ng-href="#" class="right" ng-if="AdminManagementCtrl.newRole.highlight_color" ng-click="AdminManagementCtrl.newRole.highlight_color = undefined">Remove Highlight</a></label>
+          <input ng-model="AdminManagementCtrl.newRole.highlight_color" id="highlight" type="color" placeholder="Enter a hex value for role highlight color" />
         <label for="basedRole">
           Base Permissions (Optional)
           <div class="input-info right">Set base permissions to that of an existing role</div>
@@ -996,108 +986,156 @@
       <!-- Rate Limits Tab -->
       <div ng-if="AdminManagementCtrl.selectedTab === 'rateLimiting'">
         <!-- Conversation Create -->
-        <section ng-if="AdminManagementCtrl.limits.conversationCreate.use = AdminManagementCtrl.newRole.permissions.conversations.create">
-          <label>Conversation Create Rate Limits</label> <hr />
-          <label class="desc-label" for="conversationCreate-interval">Interval</label>
-          <input type="text" class="input-text" id="conversationCreate-interval" ng-model="AdminManagementCtrl.limits.conversationCreate.interval" placeholder="In MS (Ex: 1000)" />
-          <label class="desc-label" for="conversationCreate-max-in-interval">Max In Interval</label>
-          <input type="text" class="input-text" id="conversationCreate-max-in-interval" ng-model="AdminManagementCtrl.limits.conversationCreate.maxInInterval" placeholder="Ex: 1" />
-          <label class="desc-label" for="conversationCreate-min-difference">Mininum Difference</label>
-          <input type="text" class="input-text" id="conversationCreate-min-difference" ng-model="AdminManagementCtrl.limits.conversationCreate.minDifference" placeholder="In MS (Ex: 100)" />
+        <section class="boxed-section" ng-if="AdminManagementCtrl.limits.conversationCreate.use = AdminManagementCtrl.newRole.permissions.conversations.create">
+          <div class="header"><h6>Conversations <span class="post right">CREATE</span></h6></div>
+          <div class="content input-three-col">
+            <div>
+              <label class="desc-label" for="conversationCreate-interval">Interval</label>
+              <input type="text" class="input-text" id="conversationCreate-interval" ng-model="AdminManagementCtrl.limits.conversationCreate.interval" placeholder="In MS (Ex: 1000)" />
+            </div>
+            <div>
+              <label class="desc-label" for="conversationCreate-max-in-interval">Max In Interval</label>
+              <input type="text" class="input-text" id="conversationCreate-max-in-interval" ng-model="AdminManagementCtrl.limits.conversationCreate.maxInInterval" placeholder="Ex: 1" />
+            </div>
+            <div>
+              <label class="desc-label" for="conversationCreate-min-difference">Min Difference</label>
+              <input type="text" class="input-text" id="conversationCreate-min-difference" ng-model="AdminManagementCtrl.limits.conversationCreate.minDifference" placeholder="In MS (Ex: 100)" />
+            </div>
+          </div>
         </section>
-
-        <br />
 
         <!-- Message Create -->
-        <section ng-if="AdminManagementCtrl.limits.messageCreate.use = AdminManagementCtrl.newRole.permissions.messages.create">
-          <label>Message Create Rate Limits</label> <hr />
-          <label class="desc-label" for="messageCreate-interval">Interval</label>
-          <input type="text" class="input-text" id="messageCreate-interval" ng-model="AdminManagementCtrl.limits.messageCreate.interval" placeholder="In MS (Ex: 1000)" />
-          <label class="desc-label" for="messageCreate-max-in-interval">Max In Interval</label>
-          <input type="text" class="input-text" id="messageCreate-max-in-interval" ng-model="AdminManagementCtrl.limits.messageCreate.maxInInterval" placeholder="Ex: 1" />
-          <label class="desc-label" for="messageCreate-min-difference">Mininum Difference</label>
-          <input type="text" class="input-text" id="messageCreate-min-difference" ng-model="AdminManagementCtrl.limits.messageCreate.minDifference" placeholder="In MS (Ex: 100)" />
+        <section class="boxed-section" ng-if="AdminManagementCtrl.limits.messageCreate.use = AdminManagementCtrl.newRole.permissions.messages.create">
+          <div class="header"><h6>Messages <span class="post right">CREATE</span></h6></div>
+          <div class="content input-three-col">
+            <div>
+              <label class="desc-label" for="messageCreate-interval">Interval</label>
+              <input type="text" class="input-text" id="messageCreate-interval" ng-model="AdminManagementCtrl.limits.messageCreate.interval" placeholder="In MS (Ex: 1000)" />
+            </div>
+            <div>
+              <label class="desc-label" for="messageCreate-max-in-interval">Max In Interval</label>
+              <input type="text" class="input-text" id="messageCreate-max-in-interval" ng-model="AdminManagementCtrl.limits.messageCreate.maxInInterval" placeholder="Ex: 1" />
+            </div>
+            <div>
+              <label class="desc-label" for="messageCreate-min-difference">Min Difference</label>
+              <input type="text" class="input-text" id="messageCreate-min-difference" ng-model="AdminManagementCtrl.limits.messageCreate.minDifference" placeholder="In MS (Ex: 100)" />
+            </div>
+          </div>
         </section>
-
-        <br />
 
         <!-- Post Create -->
-        <section ng-if="AdminManagementCtrl.limits.postCreate.use = AdminManagementCtrl.newRole.permissions.posts.create">
-          <label>Post Create Rate Limits</label> <hr />
-          <label class="desc-label" for="postCreate-interval">Interval</label>
-          <input type="text" class="input-text" id="postCreate-interval" ng-model="AdminManagementCtrl.limits.postCreate.interval" placeholder="In MS (Ex: 1000)" />
-          <label class="desc-label" for="postCreate-max-in-interval">Max In Interval</label>
-          <input type="text" class="input-text" id="postCreate-max-in-interval" ng-model="AdminManagementCtrl.limits.postCreate.maxInInterval" placeholder="Ex: 1" />
-          <label class="desc-label" for="postCreate-min-difference">Mininum Difference</label>
-          <input type="text" class="input-text" id="postCreate-min-difference" ng-model="AdminManagementCtrl.limits.postCreate.minDifference" placeholder="In MS (Ex: 100)" />
+        <section class="boxed-section" ng-if="AdminManagementCtrl.limits.postCreate.use = AdminManagementCtrl.newRole.permissions.posts.create">
+          <div class="header"><h6>Posts <span class="post right">CREATE</span></h6></div>
+          <div class="content input-three-col">
+            <div>
+              <label class="desc-label" for="postCreate-interval">Interval</label>
+              <input type="text" class="input-text" id="postCreate-interval" ng-model="AdminManagementCtrl.limits.postCreate.interval" placeholder="In MS (Ex: 1000)" />
+            </div>
+            <div>
+              <label class="desc-label" for="postCreate-max-in-interval">Max In Interval</label>
+              <input type="text" class="input-text" id="postCreate-max-in-interval" ng-model="AdminManagementCtrl.limits.postCreate.maxInInterval" placeholder="Ex: 1" />
+            </div>
+            <div>
+              <label class="desc-label" for="postCreate-min-difference">Min Difference</label>
+              <input type="text" class="input-text" id="postCreate-min-difference" ng-model="AdminManagementCtrl.limits.postCreate.minDifference" placeholder="In MS (Ex: 100)" />
+            </div>
+          </div>
         </section>
-
-        <br />
 
         <!-- Post Update -->
-        <section ng-if="AdminManagementCtrl.limits.postUpdate.use = AdminManagementCtrl.newRole.permissions.posts.update">
-          <label>Post Update Rate Limits</label> <hr />
-          <label class="desc-label" for="postUpdate-interval">Interval</label>
-          <input type="text" class="input-text" id="postUpdate-interval" ng-model="AdminManagementCtrl.limits.postUpdate.interval" placeholder="In MS (Ex: 1000)" />
-          <label class="desc-label" for="postUpdate-max-in-interval">Max In Interval</label>
-          <input type="text" class="input-text" id="postUpdate-max-in-interval" ng-model="AdminManagementCtrl.limits.postUpdate.maxInInterval" placeholder="Ex: 1" />
-          <label class="desc-label" for="postUpdate-min-difference">Mininum Difference</label>
-          <input type="text" class="input-text" id="postUpdate-min-difference" ng-model="AdminManagementCtrl.limits.postUpdate.minDifference" placeholder="In MS (Ex: 100)" />
+        <section class="boxed-section" ng-if="AdminManagementCtrl.limits.postUpdate.use = AdminManagementCtrl.newRole.permissions.posts.update">
+          <div class="header"><h6>Posts <span class="put right">UPDATE</span></h6></div>
+          <div class="content input-three-col">
+            <div>
+              <label class="desc-label" for="postUpdate-interval">Interval</label>
+              <input type="text" class="input-text" id="postUpdate-interval" ng-model="AdminManagementCtrl.limits.postUpdate.interval" placeholder="In MS (Ex: 1000)" />
+            </div>
+            <div>
+              <label class="desc-label" for="postUpdate-max-in-interval">Max In Interval</label>
+              <input type="text" class="input-text" id="postUpdate-max-in-interval" ng-model="AdminManagementCtrl.limits.postUpdate.maxInInterval" placeholder="Ex: 1" />
+            </div>
+            <div>
+              <label class="desc-label" for="postUpdate-min-difference">Min Difference</label>
+              <input type="text" class="input-text" id="postUpdate-min-difference" ng-model="AdminManagementCtrl.limits.postUpdate.minDifference" placeholder="In MS (Ex: 100)" />
+            </div>
+          </div>
         </section>
-
-        <br />
 
         <!-- Thread Create -->
-        <section ng-if="AdminManagementCtrl.limits.threadCreate.use = AdminManagementCtrl.newRole.permissions.threads.create">
-          <label>Thread Create Rate Limits</label> <hr />
-          <label class="desc-label" for="threadCreate-interval">Interval</label>
-          <input type="text" class="input-text" id="threadCreate-interval" ng-model="AdminManagementCtrl.limits.threadCreate.interval" placeholder="In MS (Ex: 1000)" />
-          <label class="desc-label" for="threadCreate-max-in-interval">Max In Interval</label>
-          <input type="text" class="input-text" id="threadCreate-max-in-interval" ng-model="AdminManagementCtrl.limits.threadCreate.maxInInterval" placeholder="Ex: 1" />
-          <label class="desc-label" for="threadCreate-min-difference">Mininum Difference</label>
-          <input type="text" class="input-text" id="threadCreate-min-difference" ng-model="AdminManagementCtrl.limits.threadCreate.minDifference" placeholder="In MS (Ex: 100)" />
+        <section class="boxed-section" ng-if="AdminManagementCtrl.limits.threadCreate.use = AdminManagementCtrl.newRole.permissions.threads.create">
+          <div class="header"><h6>Threads <span class="post right">CREATE</span></h6></div>
+          <div class="content input-three-col">
+            <div>
+              <label class="desc-label" for="threadCreate-interval">Interval</label>
+              <input type="text" class="input-text" id="threadCreate-interval" ng-model="AdminManagementCtrl.limits.threadCreate.interval" placeholder="In MS (Ex: 1000)" />
+            </div>
+            <div>
+              <label class="desc-label" for="threadCreate-max-in-interval">Max In Interval</label>
+              <input type="text" class="input-text" id="threadCreate-max-in-interval" ng-model="AdminManagementCtrl.limits.threadCreate.maxInInterval" placeholder="Ex: 1" />
+            </div>
+            <div>
+              <label class="desc-label" for="threadCreate-min-difference">Min Difference</label>
+              <input type="text" class="input-text" id="threadCreate-min-difference" ng-model="AdminManagementCtrl.limits.threadCreate.minDifference" placeholder="In MS (Ex: 100)" />
+            </div>
+          </div>
         </section>
-
-        <br />
 
         <!-- Report User -->
-        <section ng-if="AdminManagementCtrl.limits.reportUser.use = AdminManagementCtrl.newRole.permissions.reports.createUserReport">
-          <label>Report User Rate Limits</label> <hr />
-          <label class="desc-label" for="reportUser-interval">Interval</label>
-          <input type="text" class="input-text" id="reportUser-interval" ng-model="AdminManagementCtrl.limits.reportUser.interval" placeholder="In MS (Ex: 1000)" />
-          <label class="desc-label" for="reportUser-max-in-interval">Max In Interval</label>
-          <input type="text" class="input-text" id="reportUser-max-in-interval" ng-model="AdminManagementCtrl.limits.reportUser.maxInInterval" placeholder="Ex: 1" />
-          <label class="desc-label" for="reportUser-min-difference">Mininum Difference</label>
-          <input type="text" class="input-text" id="reportUser-min-difference" ng-model="AdminManagementCtrl.limits.reportUser.minDifference" placeholder="In MS (Ex: 100)" />
+        <section class="boxed-section" ng-if="AdminManagementCtrl.limits.reportUser.use = AdminManagementCtrl.newRole.permissions.reports.createUserReport">
+          <div class="header"><h6>User Reports <span class="post right">CREATE</span></h6></div>
+          <div class="content input-three-col">
+            <div>
+              <label class="desc-label" for="reportUser-interval">Interval</label>
+              <input type="text" class="input-text" id="reportUser-interval" ng-model="AdminManagementCtrl.limits.reportUser.interval" placeholder="In MS (Ex: 1000)" />
+            </div>
+            <div>
+              <label class="desc-label" for="reportUser-max-in-interval">Max In Interval</label>
+              <input type="text" class="input-text" id="reportUser-max-in-interval" ng-model="AdminManagementCtrl.limits.reportUser.maxInInterval" placeholder="Ex: 1" />
+            </div>
+            <div>
+              <label class="desc-label" for="reportUser-min-difference">Min Difference</label>
+              <input type="text" class="input-text" id="reportUser-min-difference" ng-model="AdminManagementCtrl.limits.reportUser.minDifference" placeholder="In MS (Ex: 100)" />
+            </div>
+          </div>
         </section>
-
-        <br />
 
         <!-- Report Message -->
-        <section ng-if="AdminManagementCtrl.limits.reportMessage.use = AdminManagementCtrl.newRole.permissions.reports.createMessageReport">
-          <label>Report Message Rate Limits</label> <hr />
-          <label class="desc-label" for="reportMessage-interval">Interval</label>
-          <input type="text" class="input-text" id="reportMessage-interval" ng-model="AdminManagementCtrl.limits.reportMessage.interval" placeholder="In MS (Ex: 1000)" />
-          <label class="desc-label" for="reportMessage-max-in-interval">Max In Interval</label>
-          <input type="text" class="input-text" id="reportMessage-max-in-interval" ng-model="AdminManagementCtrl.limits.reportMessage.maxInInterval" placeholder="Ex: 1" />
-          <label class="desc-label" for="reportMessage-min-difference">Mininum Difference</label>
-          <input type="text" class="input-text" id="reportMessage-min-difference" ng-model="AdminManagementCtrl.limits.reportMessage.minDifference" placeholder="In MS (Ex: 100)" />
+        <section class="boxed-section" ng-if="AdminManagementCtrl.limits.reportMessage.use = AdminManagementCtrl.newRole.permissions.reports.createMessageReport">
+          <div class="header"><h6>Message Reports <span class="post right">CREATE</span></h6></div>
+          <div class="content input-three-col">
+            <div>
+              <label class="desc-label" for="reportMessage-interval">Interval</label>
+              <input type="text" class="input-text" id="reportMessage-interval" ng-model="AdminManagementCtrl.limits.reportMessage.interval" placeholder="In MS (Ex: 1000)" />
+            </div>
+            <div>
+              <label class="desc-label" for="reportMessage-max-in-interval">Max In Interval</label>
+              <input type="text" class="input-text" id="reportMessage-max-in-interval" ng-model="AdminManagementCtrl.limits.reportMessage.maxInInterval" placeholder="Ex: 1" />
+            </div>
+            <div>
+              <label class="desc-label" for="reportMessage-min-difference">Min Difference</label>
+              <input type="text" class="input-text" id="reportMessage-min-difference" ng-model="AdminManagementCtrl.limits.reportMessage.minDifference" placeholder="In MS (Ex: 100)" />
+            </div>
+          </div>
         </section>
-
-        <br />
 
         <!-- Report Post -->
-        <section ng-if="AdminManagementCtrl.limits.reportPost.use = AdminManagementCtrl.newRole.permissions.reports.createPostReport">
-          <label>Report Post Rate Limits</label> <hr />
-          <label class="desc-label" for="reportPost-interval">Interval</label>
-          <input type="text" class="input-text" id="reportPost-interval" ng-model="AdminManagementCtrl.limits.reportPost.interval" placeholder="In MS (Ex: 1000)" />
-          <label class="desc-label" for="reportPost-max-in-interval">Max In Interval</label>
-          <input type="text" class="input-text" id="reportPost-max-in-interval" ng-model="AdminManagementCtrl.limits.reportPost.maxInInterval" placeholder="Ex: 1" />
-          <label class="desc-label" for="reportPost-min-difference">Mininum Difference</label>
-          <input type="text" class="input-text" id="reportPost-min-difference" ng-model="AdminManagementCtrl.limits.reportPost.minDifference" placeholder="In MS (Ex: 100)" />
+        <section class="boxed-section" ng-if="AdminManagementCtrl.limits.reportPost.use = AdminManagementCtrl.newRole.permissions.reports.createPostReport">
+          <div class="header"><h6>Post Reports <span class="post right">CREATE</span></h6></div>
+          <div class="content input-three-col">
+            <div>
+              <label class="desc-label" for="reportPost-interval">Interval</label>
+              <input type="text" class="input-text" id="reportPost-interval" ng-model="AdminManagementCtrl.limits.reportPost.interval" placeholder="In MS (Ex: 1000)" />
+            </div>
+            <div>
+              <label class="desc-label" for="reportPost-max-in-interval">Max In Interval</label>
+              <input type="text" class="input-text" id="reportPost-max-in-interval" ng-model="AdminManagementCtrl.limits.reportPost.maxInInterval" placeholder="Ex: 1" />
+            </div>
+            <div>
+              <label class="desc-label" for="reportPost-min-difference">Min Difference</label>
+              <input type="text" class="input-text" id="reportPost-min-difference" ng-model="AdminManagementCtrl.limits.reportPost.minDifference" placeholder="In MS (Ex: 100)" />
+            </div>
+          </div>
         </section>
-
-        <br />
 
         <div ng-if="!AdminManagementCtrl.hasLimits()">
           <strong>

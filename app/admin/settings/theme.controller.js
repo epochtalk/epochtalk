@@ -1,4 +1,4 @@
-var ctrl = ['$scope', '$state', '$timeout', 'settings', 'theme', 'AdminSettings', 'Alert', 'ThemeSVC', function($scope, $state, $timeout, settings, theme, AdminSettings, Alert, ThemeSVC) {
+var ctrl = ['$scope', '$state', '$timeout', 'theme', 'AdminSettings', 'Alert', 'ThemeSVC', function($scope, $state, $timeout, theme, AdminSettings, Alert, ThemeSVC) {
   var ctrl = this;
 
   // Tab control

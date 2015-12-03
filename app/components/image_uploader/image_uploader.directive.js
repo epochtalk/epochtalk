@@ -32,6 +32,10 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Ima
       }
 
       function upload(images) {
+        if (images.length > 10) {
+          $timeout(function() { Alert.error('Image upload failed: Exceeded 10 images. Try again.'); });
+          return;
+        }
         $scope.imagesUploading = true;
         $scope.imagesProgress = 0;
         if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.images = []; }
@@ -57,12 +61,13 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Ima
               imageProgress.status = 'Uploading';
               updateImagesUploading();
             })
-            .error(function() {
+            .error(function(err) {
               imageProgress.progress = '--';
               imageProgress.status = 'Failed';
               updateImagesUploading();
-              var message = 'Image upload failed for: ' + imageProgress.name + '.';
-              message += 'Please ensure images are within size limits.';
+              var message = 'Image upload failed for: ' + imageProgress.name + '. ';
+              if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
+              else { message += 'Please ensure images are within size limits.'; }
               Alert.error(message);
             })
             .success(function(url) {
@@ -74,12 +79,13 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Ima
               if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.model = url; }
             });
           })
-          .catch(function() {
+          .catch(function(err) {
             imageProgress.progress = '--';
             imageProgress.status = 'Failed';
             updateImagesUploading();
-            var message = 'Image upload failed for: ' + imageProgress.name + '.';
-            message += 'Please ensure images are within size limits.';
+            var message = 'Image upload failed for: ' + imageProgress.name + '. ';
+            if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
+            else { message += 'Please ensure images are within size limits.'; }
             Alert.error(message);
           });
         });
@@ -128,7 +134,7 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Ima
       $parent.on('dragover', cancelEvent);
       $parent.on('drop', function(e) {
         cancelEvent(e);
-        var dt = e.dataTransfer;
+        var dt = e.dataTransfer || e.originalEvent.dataTransfer;
         var fileList = dt.files;
         var images = [];
         for (var i = 0; i < fileList.length; i++) {
