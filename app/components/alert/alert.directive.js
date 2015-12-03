@@ -4,7 +4,7 @@ module.exports = ['$timeout', 'Alert', function($timeout, Alert) {
   return {
     restrict: 'E',
     template: require('./alert.html'),
-    link: function($scope, $element, $attr) {
+    link: function($scope) {
       $scope.alerts = Alert.getAlerts();
       $scope.visibleAlerts = [];
 

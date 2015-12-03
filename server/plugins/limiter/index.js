@@ -32,6 +32,12 @@ var deleteDefaults = {
   minDifference: 500
 };
 
+// TODO: Remove this, modify image upload to accept batch uploads
+var imageUploadOverrides = {
+  interval: 5000,
+  maxInInterval: 10
+};
+
 exports.register = function(plugin, options, next) {
   updateLimits(options);
   namespace = options.namespace || namespace;
@@ -47,6 +53,9 @@ exports.register = function(plugin, options, next) {
 
     // ignore static paths
     if (path === '/static/{path*}' || path === '/{path*}') { return reply.continue(); }
+    // TODO: Remove this eventually once we fix admin->moderations->users
+    if (path.indexOf('/api/admin') === 0) { return reply.continue(); }
+
 
     // check if user is authenticated
     if (authenticated) {
@@ -62,9 +71,11 @@ exports.register = function(plugin, options, next) {
       var limits;
       userRoles.forEach(function(role) {
         var userRole = roles[role];
-        var userLimits = userRole.limits;
-        var priorityValid = priority === undefined || userRole.priority > priority;
-        if (userLimits && priorityValid) { limits = userLimits; }
+        if (userRole) { // fix for when role is removed, but "undefined" remains in redis
+          var userLimits = userRole.limits;
+          var priorityValid = priority === undefined || userRole.priority > priority;
+          if (userLimits && priorityValid) { limits = userLimits; }
+        }
       });
 
       if (limits) {
@@ -74,8 +85,12 @@ exports.register = function(plugin, options, next) {
       }
     }
 
+    // TODO: Remove this, modify image upload to accept batch uploads
+    if (!routeLimit && path === '/images/policy') {
+      routeLimit = _.clone(imageUploadOverrides);
+    }
     // default to global settings
-    if (!routeLimit && method === 'GET') { routeLimit = _.clone(getDefaults); }
+    else if (!routeLimit && method === 'GET') { routeLimit = _.clone(getDefaults); }
     else if (!routeLimit && method === 'POST') { routeLimit = _.clone(postDefaults); }
     else if (!routeLimit && method === 'PUT') { routeLimit = _.clone(putDefaults); }
     else if (!routeLimit && method === 'DELETE') { routeLimit = _.clone(deleteDefaults); }

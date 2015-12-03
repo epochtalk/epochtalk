@@ -22,9 +22,8 @@
   </div>
 </div>
 
-<!-- Board Controls -->
-<div class="fill-row" ng-if="PostsParentCtrl.loggedIn()">
-  <a class="inverted-button" ng-click="PostsParentCtrl.watchThread()" ng-if="!PostsParentCtrl.thread.watched">
+<div class="fill-row" ng-if="PostsParentCtrl.loggedIn() && !PostsParentCtrl.thread.watched">
+  <a class="inverted-button" ng-click="PostsParentCtrl.watchThread()">
     <i class="icon-epoch-watch"></i>Watch This Thread
   </a>
 </div>

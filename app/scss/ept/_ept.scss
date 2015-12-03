@@ -5,6 +5,7 @@
 /*-------------- Global Layout -------------- */
 html, body {
   height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
   font-size: $base-font-size;
@@ -78,6 +79,7 @@ label {
   margin-bottom: 0;
 }
 datalist { z-index: 10001; }
+.desc-label { color: $secondary-font-color; }
 .pointer { cursor: pointer; }
 .inline-block { display: inline-block; }
 .bold { font-weight: bold; }
@@ -153,6 +155,30 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
   .next { @include omega; button { float: right; } }
   .page { @include span-columns(6); color: $secondary-font-color; text-align: center; line-height: 2.1875rem; }
 }
+span {
+  &.get { @include label(info, 0.6875rem, 2px, 0 0.5rem); }
+  &.post { @include label(success, 0.6875rem, 2px, 0 0.5rem); }
+  &.put {  @include label(warning, 0.6875rem, 2px, 0 0.5rem); }
+  &.delete {  @include label(error, 0.6875rem, 2px, 0 0.5rem); }
+  &.large { font-size: 0.8rem; font-weight: bold; line-height: 1.5rem; }
+}
+.boxed-section {
+  @include clearfix;
+  border-collapse: collapse;
+  border: 1px solid $border-color;
+  margin-bottom: 1rem;
+  .header {
+    @include pad(0.2rem 0.5rem);
+    border-bottom: 1px solid $border-color;
+    font-color: $secondary-font-color-dark;
+    background-color: $sub-header-color;
+    overflow: auto;
+  }
+  .content {
+    @include pad(0.5rem);
+    input { margin-bottom: 0.5rem; }
+  }
+}
 table.underlined, table.report-details {
   border: none;
   margin-bottom: 1rem;
@@ -196,24 +222,25 @@ table.underlined, table.report-details {
   @include span-columns(4, block-collapse);
   left: 0;
   right: 0;
-  top: 10rem;
+  top: 10vh;
   margin: 0 auto;
   position: fixed;
   z-index: 10000;
   background-color: $base-background-color;
   box-shadow: 4px 4px 80px #000;
+  overflow-y: auto;
+  max-height: 80vh;
   p { margin-bottom: 1rem; }
   button, .button { margin-bottom: 0; }
   @include media($desktop-small) { @include span-columns(6, block-collapse); }
-  @include media($mobile) { @include span-columns(7, block-collapse); top: 1rem; }
+  @include media($mobile) { @include span-columns(7, block-collapse); top: 5vh; max-height: 90vh; }
 }
 .ng-modal.medium .ng-modal-dialog {
   @include span-columns(7, block-collapse);
-  top: 10rem;
   @include media($desktop-small) { @include span-columns(9, block-collapse); }
-  @include media($mobile) { @include span-columns(7, block-collapse); top: 1rem; }
+  @include media($mobile) { @include span-columns(7, block-collapse); top: 5vh; max-height: 90vh; }
 }
-.ng-modal.image-modal .ng-modal-dialog { top: 5%; max-height: 90%; overflow: auto; }
+.ng-modal.image-modal .ng-modal-dialog { top: 10vh; max-height: 80vh; overflow: auto; }
 .ng-modal-dialog-content { padding: 2rem; text-align: left; }
 .ng-modal-close {
   position: absolute;
@@ -598,6 +625,23 @@ input[type="checkbox"] + label, input[type="radio"] + label {
   margin-left: 0.5rem;
   margin-right: 1rem;
   vertical-align: baseline;
+}
+.input-nine-three-col {
+  @include omega(2n);
+  div:first-child { @include span-columns(9); }
+  div:last-child { @include span-columns(3); }
+}
+.input-two-col {
+  @include omega(2n);
+  div { @include span-columns(6); }
+}
+.input-three-col {
+  @include omega(3n);
+  div { @include span-columns(4); }
+
+  @include media($mobile) {
+    div { @include span-columns(8); @include omega; }
+  }
 }
 .img-picker-list {
   margin-left: 0;
@@ -1447,7 +1491,7 @@ main #error-404 {
     @include span-columns(9);
     @include omega;
     word-wrap: break-word;
-    #myChart { height: 375px !important; width: auto !important; }
+    #myChart { height: 375px !important; width: 100% !important; }
     .stats {
       @include span-columns(4);
       @include omega(3n);
@@ -1684,13 +1728,8 @@ input[type].hide-radio { display: none; }
   .section-header-top-spacing { padding-top: 2.1875rem; clear: both; }
   &.section-header-top-spacing { padding-top: 0; }
   .desc, .switch-desc { @include span-columns(9); }
-  .desc-label { color: $secondary-font-color; }
   .button { @include span-columns(3); @include omega; font-size: 0.875rem; padding: 0.625rem; }
   .switch-block { @include span-columns(3); @include omega; padding-top: 0.25rem; }
-  .smtp-server-wrap { @include span-columns(9); }
-  .smtp-port-wrap { @include span-columns(3); @include omega; }
-  .smtp-user-wrap { @include span-columns(6); }
-  .smtp-pass-wrap { @include span-columns(6); @include omega; }
   .setting-row { @include clearfix; padding-bottom: 1rem; }
   .img-wrap {
     @include omega(3n);
@@ -1698,10 +1737,6 @@ input[type].hide-radio { display: none; }
     padding-bottom: 1rem;
     .img-server-wrap { @include span-columns(8); }
     .radio-button { @include span-columns(2); }
-  }
-  .fixed-img-wrap {
-    @include omega(3n);
-    .setting { @include span-columns(4); }
   }
   .input-block { @include span-columns(3); @include omega; margin-bottom: 0; }
   .swatch-input {
@@ -1735,7 +1770,7 @@ input[type].hide-radio { display: none; }
 @include media($mobile) {
   .settings.half-column {
     &.section-header-top-spacing { padding-top: 2.1875rem; }
-    .desc, .button, .fixed-img-wrap .setting, .input-block, .swatch-input, .postfix-input { @include span-columns(8); @include omega; }
+    .desc, .button, .input-block, .swatch-input, .postfix-input { @include span-columns(8); @include omega; }
     .img-wrap .img-server-wrap { @include span-columns(8); @include omega; }
     .img-wrap .radio-button { @include span-columns(4); padding-top: 0.5rem; }
     a.header-link {
@@ -1781,7 +1816,7 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
   margin: 1rem 0;
   h4 { margin-bottom: 0.75rem; }
   input[type="checkbox"], input[type="radio"] { margin-bottom: 0.5rem; }
-  label { @include no-select; }
+  label { @include no-select; clear: both; }
   .indent { padding-left: 1rem; }
   ul {
     list-style-type: none;
@@ -1795,7 +1830,7 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
     border-right: 1px solid $border-color;
   }
   .right-column {
-    @include span-columns(9);
+    @include span-columns(10);
     @include omega;
   }
 }
@@ -1810,7 +1845,10 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
   .autocomplete-wrap { @include span-columns(8); @include omega; }
   .permissions-modal {
     .left-column { @include span-columns(3); }
-    .right-column { @include span-columns(5); @include omega; }
+    .right-column {
+      @include span-columns(5);
+      @include omega;
+    }
   }
 }
 

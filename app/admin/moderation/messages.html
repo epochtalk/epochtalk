@@ -130,7 +130,7 @@
     <form name="$parent.form" class="css-form">
       <textarea name="reportNote" ng-model="ModerationCtrl.reportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3" required></textarea>
       <div class="clear">
-        <button class="fill-row" ng-click="ModerationCtrl.submitReportNote()"
+        <button class="fill-row" ng-click="ModerationCtrl.submitReportNote(); $parent.form.$setUntouched()"
           ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.noteSubmitted" ng-bind="ModerationCtrl.submitBtnLabel"></button>
       </div>
     </form>
