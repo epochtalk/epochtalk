@@ -769,26 +769,52 @@ table.striped {
 .profile-avatar-container { width: 100%; text-align: center; img { height: 12.5rem; width: auto; } }
 
 .polls {
+  @include border-radius(4px);
   border: 1px solid $border-color;
-  @include border-radius(5px);
   padding: 1rem;
-  margin-bottom: 1.875rem;
+  margin-bottom: 1rem;
+  .ng-enter { @include transition(0.3s linear all); opacity: 0;; }
+  .ng-enter-active { opacity: 1; }
+  .ng-leave { display: none; }
+  &.poll-form {
+    button { margin-bottom: 0; }
+    .answer-row {
+      @include row;
+      margin-bottom: 0.625rem;
+      &:last-of-type { margin-bottom: 1rem; }
+      div {
+        @include span-columns(12);
+        position: relative;
+        input { display: inline-block;  margin-bottom: 0; }
+        button {
+          display: inline-block;
+          margin-bottom: 0;
+          right: 0.25rem;
+          top: 0.25rem;
+          padding: 0;
+          height: 1.825rem;
+          width: 1.825rem;
+          position: absolute;
+        }
+      }
+    }
+  }
   // header section
   .poll-header {
     position: relative;
-    height: 20px;
+    height: 1.25rem;
     .poll-title {
       position: absolute;
       top: 0;
       left: 0;
-      right: 25px;
+      right: 1.5625rem;
       .poll-question { display: inline-block; }
     }
     .poll-lock {
       position: absolute;
       top: 0;
       right: 0;
-      width: 25px;
+      width: 1.5625rem;
       text-align: center;
       label { margin-left: 0; }
       #lockPoll {
@@ -801,12 +827,11 @@ table.striped {
   // answer section
   .poll-answer {
     position: relative;
-    height: 25px;
+    height: 1.5625rem;
     margin: 0.5rem 0 0.5rem 0;
     .poll-select {
       position: absolute;
       left: 0;
-      width: 35px;
       text-align: center;
     }
     & + button{ margin: 0.5rem 0 0; width: 100%; }
@@ -819,19 +844,28 @@ table.striped {
       background-color: $secondary-font-color;
       span {
         position: absolute;
-        top: 2px;
-        left: 10px;
+        line-height: 1.5625rem;
+        left: 0.625rem;
         color: $button-text-color;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        &:first-child { max-width: 75%; }
+        &:last-of-type { max-width: 20%; left: initial; right: 0.625rem; }
       }
       section {
         background-color: $color-primary;
-        height: 25px;
+        height: 1.5625rem;
         @include border-radius(8px);
       }
-      &.voting-mode { left: 35px; }
+      &.voting-mode { left: 1.5rem; }
+    }
+  }
+
+  @include media($mobile) {
+    .poll-answer .poll-bar span {
+      &:first-child { max-width: 60%; }
+      &:last-of-type { max-width: 30%; }
     }
   }
 }
@@ -1171,7 +1205,11 @@ main #error-404 {
     font-size: 0.95rem;
     .subject {
       @include span-columns(7);
-      .title i { color: $secondary-font-color-dark; }
+      .title i {
+        color: $secondary-font-color-dark;
+        padding-left: 0.25rem;
+        &.icon-fix { margin-top: 0.2rem; font-size: 0.95rem; }
+      }
       .thread-title {
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -1870,7 +1908,3 @@ table.report-details {
   .filter.radio-button { @include span-columns(2.6); @include omega(3n); margin-bottom: 1rem; }
   .filter.header-spacer { display: none; }
 }
-
-.ng-enter { transition: 0.3s linear all; opacity: 0; }
-.ng-enter-active { opacity: 1; }
-.ng-leave { display: none; }

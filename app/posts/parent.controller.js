@@ -135,7 +135,7 @@ var ctrl = [
     };
 
     /* Poll Methods */
-    this.pollAnswerId = "";
+    this.pollAnswerId = '';
     this.vote = function() {
       var threadId = ctrl.thread.id;
       var pollId = ctrl.thread.poll.id;
