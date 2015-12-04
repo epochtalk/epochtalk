@@ -213,6 +213,33 @@ module.exports = {
 
     return reply(promise);
   },
+  isPostDeletable: function(request, reply) {
+    var privilege = request.route.settings.app.isPostDeletable;
+    var postId = _.get(request, request.route.settings.app.post_id);
+    var userId = request.auth.credentials.id;
+
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var updateAll = getACLValue(request.auth, privilege + '.all');
+    var updateSome = getACLValue(request.auth, privilege + '.some');
+    var hasSMPrivilege = getACLValue(request.auth, 'threads.moderated');
+    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
+    var isThreadModerated = db.posts.isPostsThreadModerated(postId);
+    var isThreadOwner = db.posts.isPostsThreadOwner(postId, userId);
+    var postOwner = db.posts.find(postId)
+    .then(function(post) { return userId === post.user.id; });
+
+    var promise = Promise.join(postOwner, updateAll, updateSome, isMod, isThreadModerated, isThreadOwner, hasSMPrivilege, function(owner, all, some, mod, threadSM, threadOwner, userSM) {
+      var result = Boom.forbidden();
+
+      if (owner || all) { result = true; }
+      else if (some && mod) { result = true; }
+      else if (threadSM && threadOwner && userSM) { result = true; }
+
+      return result;
+    }).catch(console.log);
+
+    return reply(promise);
+  },
   isCDRPost: function(request, reply) {
     var postId = _.get(request, request.route.settings.app.post_id);
     var promise = db.posts.getThreadFirstPost(postId)

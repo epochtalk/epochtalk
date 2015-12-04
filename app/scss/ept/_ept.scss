@@ -948,6 +948,16 @@ table.striped {
   }
 }
 
+.banner {
+  @include span-columns(12);
+  @include border-radius(5px);
+  border: 1px solid $border-color;
+  margin-bottom: 1rem;
+  padding: 0.875rem;
+  text-align: center;
+  &.warning { background-color: #FCFC79; }
+}
+
 /*-------------- Index File -------------- */
 
 #wrapper { min-height:100%; position:relative; }

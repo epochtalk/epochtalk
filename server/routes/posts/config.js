@@ -296,14 +296,14 @@ exports.update = {
 exports.delete = {
   app: {
     post_id: 'params.id',
-    isPostOwner: 'posts.privilegedDelete'
+    isPostDeletable: 'posts.privilegedDelete'
   },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.delete' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
-    { method: pre.isPostOwner },
+    { method: pre.isPostDeletable },
     { method: pre.accessBoardWithPostId },
     { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }
@@ -333,14 +333,14 @@ exports.delete = {
 exports.undelete = {
   app: {
     post_id: 'params.id',
-    isPostOwner: 'posts.privilegedDelete'
+    isPostDeletable: 'posts.privilegedDelete'
   },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.undelete' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
-    { method: pre.isPostOwner },
+    { method: pre.isPostDeletable },
     { method: pre.accessBoardWithPostId },
     { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }

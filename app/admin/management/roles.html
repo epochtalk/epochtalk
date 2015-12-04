@@ -725,6 +725,11 @@
               <input id="polls-vote" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.vote" ng-change="AdminManagementCtrl.newRole.permissions.polls.vote ? AdminManagementCtrl.newRole.permissions.threads.byBoard = true : null" ng-false-value="undefined" />
               Allow user to vote on polls
             </label>
+            <!-- Moderate Thread -->
+            <label>
+              <input id="threads-moderate" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.moderated" ng-false-value="undefined" />
+              Allow user to moderate threads (delete)
+            </label>
           </div>
           <div class="half-column">
             <!-- Edit Thread Title -->

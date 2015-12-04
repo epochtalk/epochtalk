@@ -292,6 +292,7 @@ exports.add = {
           lock: Joi.boolean(),
           sticky: Joi.boolean(),
           move: Joi.boolean(),
+          moderated: Joi.boolean(),
           purge: Joi.boolean()
         }),
         users: Joi.object().keys({
@@ -567,6 +568,7 @@ exports.update = {
           lock: Joi.boolean(),
           sticky: Joi.boolean(),
           move: Joi.boolean(),
+          moderated: Joi.boolean(),
           purge: Joi.boolean()
         }),
         users: Joi.object().keys({

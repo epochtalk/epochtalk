@@ -34,6 +34,7 @@ exports.create = {
     payload: Joi.object().keys({
       locked: Joi.boolean().default(false),
       sticky: Joi.boolean().default(false),
+      moderated: Joi.boolean().default(false),
       title: Joi.string().min(1).max(255).required(),
       body: Joi.string().allow(''),
       raw_body: Joi.string().required(),
@@ -54,7 +55,8 @@ exports.create = {
       { method: pre.isRequesterActive },
       { method: pre.isPollCreatable },
       { method: pre.validateMaxAnswers },
-      { method: pre.validateDisplayMode }
+      { method: pre.validateDisplayMode },
+      { method: pre.canModerate }
     ],
     { method: postPre.clean },
     { method: postPre.parseEncodings },
@@ -66,7 +68,8 @@ exports.create = {
     var newThread = {
       board_id: request.payload.board_id,
       locked: request.payload.locked,
-      sticky: request.payload.sticky
+      sticky: request.payload.sticky,
+      moderated: request.payload.moderated
     };
     var newPost = {
       title: request.payload.title,
