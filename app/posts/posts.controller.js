@@ -133,10 +133,11 @@ var ctrl = [
     function calculatePollPercentage() {
       if (!ctrl.thread.poll) { return; }
 
-      var totalVotes = 0;
-      ctrl.thread.poll.answers.forEach(function(answer) { totalVotes += answer.votes; });
+      ctrl.thread.poll.totalVotes = 0;
+      ctrl.thread.poll.answers.forEach(function(answer) { ctrl.thread.poll.totalVotes += answer.votes; });
       ctrl.thread.poll.answers.map(function(answer) {
-        var percentage = Math.ceil(answer.votes/totalVotes * 100) || 0;
+        var percentage = (answer.votes/ctrl.thread.poll.totalVotes) * 100 || 0;
+        percentage = +percentage.toFixed(1);
         answer.style = { width: percentage + '%' };
         answer.percentage = percentage;
       });

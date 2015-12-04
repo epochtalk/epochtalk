@@ -45,44 +45,31 @@
       <label for="threadPoll">Add a Poll</label>
     </div>
   </div>
+</div>
 
-  <!-- polls -->
-  <div class="fill-row" ng-if="NewThreadCtrl.addPoll" style="border: 1px solid #ddd; border-radius: 5px; margin-top: 20px; padding: 1rem 1rem 0 1rem;">
-    <!-- Poll Question -->
-    <div class="fill-row">
-      <div class="option">
-        <label for="stickyThread">Question:</label>
-        <input type="text" id="stickyThread" ng-model="NewThreadCtrl.poll.question" ng-disabled="!NewThreadCtrl.loggedIn()">
-      </div>
-    </div>
-    <hr class="fill-row"/>
-    <!-- Poll Answers -->
-    <div class="fill-row" ng-repeat="answer in NewThreadCtrl.poll.answers track by $index" style="padding-bottom: 10px; height: 70px">
-      <div class="option">
-        <label for="stickyThread">Answer:</label>
-        <div style="position: relative">
-          <div style="position: absolute; left: 0; right: 50px;">
-            <input type="text" id="stickyThread" ng-model="NewThreadCtrl.poll.answers[$index]" ng-disabled="!NewThreadCtrl.loggedIn()">
-          </div>
-          <button ng-click="NewThreadCtrl.removePollAnswer($index)" style="position: absolute; right: 0; width: 25px; margin-bottom: 0; text-align: center;"><i class="fa fa-minus-circle"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-    <!-- Add Answer Button -->
-    <div class="fill-row" style="padding-top: 10px">
-      <div class="option">
-        <button ng-click="NewThreadCtrl.addPollAnswer()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.poll.answers.length > 7" style="width: 100%">
-          Add Answer
-        </button>
-      </div>
+<!-- polls -->
+<div class="fill-row polls poll-form" ng-if="NewThreadCtrl.addPoll">
+  <!-- Poll Question -->
+  <label for="question">Question:</label>
+  <input type="text" id="question" ng-model="NewThreadCtrl.poll.question" ng-disabled="!NewThreadCtrl.loggedIn()">
+  <div class="fill-row thin-underline"></div>
+  <!-- Poll Answers -->
+  <div class="answer-row" ng-repeat="answer in NewThreadCtrl.poll.answers track by $index">
+    <label for="answer-{{$index}}">Answer {{$index + 1}}:</label>
+    <div>
+      <input type="text" id="answer-{{$index}}" ng-model="NewThreadCtrl.poll.answers[$index]" ng-disabled="!NewThreadCtrl.loggedIn()">
+      <button ng-if="$index > 1" tabindex="-1" ng-click="NewThreadCtrl.removePollAnswer($index)"><i class="fa fa-minus-circle"></i></button>
     </div>
   </div>
+  <!-- Add Answer Button -->
+  <button ng-click="NewThreadCtrl.addPollAnswer()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.poll.answers.length > 7" style="width: 100%">
+    Add Answer
+  </button>
 </div>
 
 <!-- Submit Button -->
 <div class="padded-row">
-  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || NewThreadCtrl.thread.body.length === 0 || !NewThreadCtrl.pollValid() ">
+  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || NewThreadCtrl.thread.body.length === 0 || !NewThreadCtrl.pollValid()">
     Submit
   </button>
 </div>

@@ -82,7 +82,8 @@
           <input type="radio" ng-model="PostsParentCtrl.pollAnswerId" ng-value="answer.id" />
         </div>
         <div class="poll-bar voting-mode">
-          <span ng-bind="'(' + answer.percentage + '%) ' + answer.answer"></span>
+          <span ng-bind="answer.answer"></span>
+          <span ng-bind="'(' + answer.percentage + '%) ' + answer.votes + (answer.votes > 1 || answer.votes === 0 ? ' votes' : ' vote')"></span>
           <section ng-style="answer.style"></section>
         </div>
       </label>
@@ -94,7 +95,8 @@
   <div ng-if="PostsParentCtrl.thread.poll.hasVoted || PostsParentCtrl.thread.poll.locked || !PostsParentCtrl.pollControlAccess.vote" ng-repeat="answer in PostsParentCtrl.thread.poll.answers">
     <div class="poll-answer">
       <div class="poll-bar">
-        <span ng-bind="'(' + answer.percentage + '%) ' + answer.answer"></span>
+        <span ng-bind="answer.answer"></span>
+        <span ng-bind="'(' + answer.percentage + '%) ' + answer.votes + (answer.votes > 1 || answer.votes === 0 ? ' votes' : ' vote')"></span>
         <section ng-style="answer.style"></section>
       </div>
     </div>
