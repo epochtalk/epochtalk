@@ -47,9 +47,10 @@ exports.find = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.find' },
   handler: function(request, reply) {
-    db.configurations.get().then(function(configs) {
-      reply(camelCaseToUnderscore(configs));
-    });
+    var promise = db.configurations.get()
+    .then(function(configs) { return camelCaseToUnderscore(configs); });
+
+    return reply(promise);
   }
 };
 
@@ -141,17 +142,47 @@ exports.update = {
           access_key: Joi.string().allow(''),
           secret_key: Joi.string().allow('')
         })
+      }),
+      rate_limiting: Joi.object().keys({
+        get: {
+          interval: Joi.number().min(-1),
+          max_in_interval: Joi.number().min(1),
+          min_difference: Joi.number()
+        },
+        post: {
+          interval: Joi.number().min(-1),
+          max_in_interval: Joi.number().min(1),
+          min_difference: Joi.number()
+        },
+        put: {
+          interval: Joi.number().min(-1),
+          max_in_interval: Joi.number().min(1),
+          min_difference: Joi.number()
+        },
+        delete: {
+          interval: Joi.number().min(-1),
+          max_in_interval: Joi.number().min(1),
+          min_difference: Joi.number()
+        }
       })
-    }).options({ stripUnknown: false, abortEarly: true })
+    }).options({ stripUnknown: true, abortEarly: true })
   },
   handler: function(request, reply) {
     var newConfig = underscoreToCamelCase(request.payload);
-    db.configurations.update(newConfig).then(function() {
+    var promise = db.configurations.update(newConfig).then(function() {
       Object.keys(newConfig).forEach(function(key) {
         config[key] = newConfig[key];
       });
-      reply(request.payload);
-    });
+    })
+    // update rate default rate limits
+    .then(function() {
+      var updateLimits = request.server.plugins['rate-limiter'].updateLimits;
+      updateLimits(newConfig.rateLimiting);
+    })
+    // return payload
+    .then(function() { return request.payload; });
+
+    return reply(promise);
   }
 };
 

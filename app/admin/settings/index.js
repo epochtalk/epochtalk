@@ -40,16 +40,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       }
     },
     resolve: {
-      userAccess: adminCheck(),
-      settings: ['AdminSettings', function(AdminSettings) {
-        return AdminSettings.get().$promise
-        .then(function(settings) {
-          // Remove unsettable configs
-          delete settings.db;
-          delete settings.rootDir;
-          return settings;
-        });
-      }]
+      userAccess: adminCheck()
     }
   })
   .state('admin-settings.general', {
@@ -64,6 +55,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.general'),
       $title: function() { return 'General Settings'; },
+      settings: ['AdminSettings', function(AdminSettings) {
+        return AdminSettings.get().$promise
+        .then(function(settings) {
+          // Remove unsettable configs
+          delete settings.db;
+          delete settings.rootDir;
+          return settings;
+        });
+      }],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
@@ -87,6 +87,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.forum'),
       $title: function() { return 'Forum Settings'; },
+      settings: ['AdminSettings', function(AdminSettings) {
+        return AdminSettings.get().$promise
+        .then(function(settings) {
+          // Remove unsettable configs
+          delete settings.db;
+          delete settings.rootDir;
+          return settings;
+        });
+      }],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {

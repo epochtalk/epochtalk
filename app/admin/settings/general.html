@@ -1,4 +1,3 @@
-
 <!-- Column One -->
 <div class="settings half-column">
   <!-- Web Configurations -->
@@ -33,27 +32,108 @@
     <label class="desc-label" for="database-migrate">Launches wizard to migrate data from other forums</label>
   </div>
   <a id="database-migrate" class="button" style="background-color: #CCC;">Migrate</a>
+
+  <!-- Rate Limiting -->
+  <h5 class="thin-underline section-header-top-spacing">API Rate Limiting (Global Defaults)</h5>
+
+  <section class="boxed-section">
+    <div class="header"><span class="get large">GET Requests</span></div>
+    <div class="content input-three-col">
+      <div>
+        <label class="desc-label" for="get-interval">Interval</label>
+        <input type="text" class="input-text" id="get-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.interval" placeholder="In MS (Ex: 1000)" />
+      </div>
+      <div>
+        <label class="desc-label" for="get-max-in-interval">Max In Interval</label>
+        <input type="text" class="input-text" id="get-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.max_in_interval" placeholder="Ex: 1" />
+      </div>
+      <div>
+        <label class="desc-label" for="get-min-difference">Min Difference</label>
+        <input type="text" class="input-text" id="get-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.min_difference" placeholder="In MS (Ex: 100)" />
+      </div>
+    </div>
+  </section>
+
+  <section class="boxed-section">
+    <div class="header"><span class="post large">POST Requests</span></div>
+    <div class="content input-three-col">
+      <div>
+        <label class="desc-label" for="post-interval">Interval</label>
+        <input type="text" class="input-text" id="post-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.interval" placeholder="In MS (Ex: 1000)" />
+      </div>
+      <div>
+        <label class="desc-label" for="post-max-in-interval">Max In Interval</label>
+        <input type="text" class="input-text" id="post-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.max_in_interval" placeholder="Ex: 1" />
+      </div>
+      <div>
+        <label class="desc-label" for="post-min-difference">Min Difference</label>
+        <input type="text" class="input-text" id="post-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.min_difference" placeholder="In MS (Ex: 100)" />
+      </div>
+    </div>
+  </section>
+
+
+  <section class="boxed-section">
+    <div class="header"><span class="put large">PUT Requests</span></div>
+    <div class="content input-three-col">
+      <div>
+        <label class="desc-label" for="put-interval">Interval</label>
+        <input type="text" class="input-text" id="put-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.interval" placeholder="In MS (Ex: 1000)" />
+      </div>
+      <div>
+        <label class="desc-label" for="put-max-in-interval">Max In Interval</label>
+        <input type="text" class="input-text" id="put-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.max_in_interval" placeholder="Ex: 1" />
+      </div>
+      <div>
+        <label class="desc-label" for="put-min-difference">Min Difference</label>
+        <input type="text" class="input-text" id="put-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.min_difference" placeholder="In MS (Ex: 100)" />
+      </div>
+    </div>
+  </section>
+
+  <section class="boxed-section">
+    <div class="header"><span class="delete large">DELETE Requests</span></div>
+      <div class="content input-three-col">
+      <div>
+        <label class="desc-label" for="delete-interval">Interval</label>
+        <input type="text" class="input-text" id="delete-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.interval" placeholder="In MS (Ex: 1000)" />
+      </div>
+      <div>
+        <label class="desc-label" for="delete-max-in-interval">Max In Interval</label>
+        <input type="text" class="input-text" id="delete-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.max_in_interval" placeholder="Ex: 1" />
+      </div>
+      <div>
+        <label class="desc-label" for="delete-min-difference">Min Difference</label>
+        <input type="text" class="input-text" id="delete-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.min_difference" placeholder="In MS (Ex: 100)" />
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <!-- Column Two -->
 <div class="settings half-column section-header-top-spacing">
   <!-- SMTP Configurations -->
   <h5 class="thin-underline">SMTP Configurations</h5>
-  <div class="smtp-server-wrap">
-    <label for="smtp-server">SMTP Server</label>
-    <input type="text" class="input-text" id="smtp-server" ng-model="AdminSettingsCtrl.settings.emailer.host" placeholder="Example: http://smtp.gmail.com" />
+  <div class="input-nine-three-col">
+    <div>
+      <label for="smtp-server">SMTP Server</label>
+      <input type="text" class="input-text" id="smtp-server" ng-model="AdminSettingsCtrl.settings.emailer.host" placeholder="Example: http://smtp.gmail.com" />
+    </div>
+    <div>
+      <label for="smtp-port">SMTP Port</label>
+      <input type="text" class="input-text" id="smtp-port" ng-model="AdminSettingsCtrl.settings.emailer.port" placeholder="Example: 587" />
+    </div>
   </div>
-  <div class="smtp-port-wrap">
-    <label for="smtp-port">SMTP Port</label>
-    <input type="text" class="input-text" id="smtp-port" ng-model="AdminSettingsCtrl.settings.emailer.port" placeholder="Example: 587" />
-  </div>
-  <div class="smtp-user-wrap">
-    <label for="smtp-username">SMTP Username</label>
-    <input type="text" class="input-text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.user" placeholder="Username" />
-  </div>
-  <div class="smtp-pass-wrap">
-    <label for="smtp-password">SMTP Password</label>
-    <input class="secret" type="password" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.pass" placeholder="Password" />
+  <div class="input-two-col">
+    <div>
+      <label for="smtp-username">SMTP Username</label>
+      <input type="text" class="input-text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.user" placeholder="Username" />
+    </div>
+    <div>
+      <label for="smtp-password">SMTP Password</label>
+      <input class="secret" type="password" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.pass" placeholder="Password" />
+    </div>
   </div>
 
   <!-- Image Server Configurations -->
@@ -72,17 +152,17 @@
       <label for="image-type-s3">S3</label>
     </div>
   </div>
-  <div class="fixed-img-wrap">
-    <div class="setting">
+  <div class="input-three-col">
+    <div>
       <label for="image-size">Max Image Size</label>
       <input type="text" class="input-text" id="image-size" ng-model="AdminSettingsCtrl.settings.images.max_size" placeholder="Max Image Upload Size in MegaBytes ( Example: 10 )" />
     </div>
-    <div class="setting">
+    <div>
       <label for="image-expiration">Image Expiration</label>
       <input type="text" class="input-text" id="image-expiration" ng-model="AdminSettingsCtrl.settings.images.expiration" placeholder="Expiration in milliseconds for images that were uploaded but not posted ( Example: 7,200,000 )" />
     </div>
-    <div class="setting">
-      <label for="image-interval">Expiration Interval</label>
+    <div>
+      <label for="image-interval">Clean Interval</label>
       <input type="text" class="input-text" id="image-interval" ng-model="AdminSettingsCtrl.settings.images.interval" placeholder="How often to check for expired images in milliseconds ( Example: 900,000 )" />
     </div>
   </div>

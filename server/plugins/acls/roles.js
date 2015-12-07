@@ -213,7 +213,8 @@ module.exports = roles;
       deactivate: true,
       reactivate: true,
       delete: true // do we need this?
-    }
+    },
+    limits: []
   };
 */
 

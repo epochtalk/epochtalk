@@ -43,7 +43,7 @@ require('./components');
 // Set Angular Configs
 app
 .config(require('./config'))
-.run(['$rootScope', '$state', '$timeout', 'Auth', 'BreadcrumbSvc', function($rootScope, $state, $timeout, Auth, BreadcrumbSvc) {
+.run(['$rootScope', '$state', '$timeout', 'Alert', 'BreadcrumbSvc', function($rootScope, $state, $timeout, Alert, BreadcrumbSvc) {
 
   // Fetch website configs (title, logo, favicon)
   $rootScope.$webConfigs = forumData;
@@ -69,6 +69,7 @@ app
     }
     // Forbidden redirect home
     else if (error.status === 403 || error.statusText === 'Forbidden' && next.name !== 'boards') { $state.go('boards'); }
+    else if (error.status === 429) { Alert.error('Too Many Requests'); }
     // Otherwise 404
     else { $state.go('404'); }
   });

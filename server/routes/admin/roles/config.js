@@ -312,7 +312,14 @@ exports.add = {
           deactivate: Joi.boolean(),
           reactivate: Joi.boolean(),
           delete: Joi.boolean()
-        })
+        }),
+        limits: Joi.array().items({
+          path: Joi.string().required(),
+          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
+          interval: Joi.number().min(-1).required(),
+          maxInInterval: Joi.number().min(1).required(),
+          minDifference: Joi.number().min(1).optional()
+        }).sparse()
       }).required()
     }
   },
@@ -569,7 +576,14 @@ exports.update = {
           deactivate: Joi.boolean(),
           reactivate: Joi.boolean(),
           delete: Joi.boolean()
-        })
+        }),
+        limits: Joi.array().items({
+          path: Joi.string().required(),
+          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
+          interval: Joi.number().min(-1).required(),
+          maxInInterval: Joi.number().min(1).required(),
+          minDifference: Joi.number().min(1).optional()
+        }).sparse()
       }).required()
     }
   },
@@ -657,4 +671,3 @@ exports.reprioritize = {
     return reply(promise);
   }
 };
-

@@ -68,6 +68,7 @@
     "pg": "^4.2.0",
     "redis": "^0.12.1",
     "request": "^2.53.0",
+    "rolling-rate-limiter": "^0.1.2",
     "sanitize-html": "^1.4.3",
     "stream-meter": "^1.0.3",
     "through2": "^0.6.3",

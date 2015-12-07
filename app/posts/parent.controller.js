@@ -206,7 +206,11 @@ var ctrl = [
         }
       })
       .then(closeEditor)
-      .catch(function() { Alert.error('Post could not be saved'); });
+      .catch(function(err) {
+        var error = 'Post could not be saved';
+        if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
+        Alert.error(error);
+      });
     };
 
     this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };

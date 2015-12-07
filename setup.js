@@ -16,7 +16,7 @@ module.exports = function() {
         return db.configurations.get().then(parseConfigs);
       });
     }
-    else { return console.log(err) }
+    else { return console.log(err); }
   });
 };
 
@@ -48,7 +48,6 @@ function parseConfigs(configurations) {
   if (localPath.indexOf('/', localPath.length-1) === -1) {
     config.images.local.path = localPath + '/';
   }
-
 
   // parse images root and dir
   var s3root = config.images.s3.root;

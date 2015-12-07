@@ -27,6 +27,59 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
     lowerPriority: Session.hasPermission('roleControls.privilegedAddRoles.lowerPriority')
   } : undefined;
 
+  // rate limiting
+  this.limits = {
+    conversationCreate: { path: '/api/conversations', method: 'POST' },
+    messageCreate: { path: '/api/messages', method: 'POST' },
+    postCreate: { path: '/api/posts', method: 'POST' },
+    postUpdate: { path: '/api/posts/{id}', method: 'POST' },
+    threadCreate: { path: '/api/threads', method: 'POST' },
+    reportUser: { path: '/api/reports/users', method: 'POST' },
+    reportMessage: { path: '/api/reports/messages', method: 'POST' },
+    reportPost: { path: '/api/reports/posts', method: 'POST' }
+  };
+
+  this.limiter = [
+    this.limits.conversationCreate,
+    this.limits.messageCreate,
+    this.limits.postCreate,
+    this.limits.postUpdate,
+    this.limits.threadCreate,
+    this.limits.reportUser,
+    this.limits.reportMessage,
+    this.limits.reportPost
+  ];
+
+  this.hasLimits = function() {
+    var usedLimits = this.limiter.filter(function(limit) { return limit.use; });
+    return usedLimits.length > 0;
+  };
+
+  this.resetLimits = function(roleLimits) {
+    // clear our previous values
+    ctrl.limiter.map(function(limit) {
+      limit.interval = undefined;
+      limit.maxInInterval = undefined;
+      limit.minDifference = undefined;
+    });
+
+    if (!roleLimits || roleLimits.length === 0) { return; }
+
+    // set values from this role
+    roleLimits.map(function(limit) {
+      // find match limit in this.limiter
+      var memLimit = ctrl.limiter.filter(function(singleLimit) {
+        return singleLimit.path === limit.path && singleLimit.method === limit.method;
+      });
+
+      if (memLimit.length > 0) {
+        memLimit[0].interval = limit.interval;
+        memLimit[0].maxInInterval = limit.maxInInterval;
+        memLimit[0].minDifference = limit.minDifference;
+      }
+    });
+  };
+
   // Assign selected role if view is visited with roleId query param
   roles.forEach(function(role) {
     if (roleId && roleId === role.id) {
@@ -68,6 +121,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
     var successMsg = '';
     var errorMsg = '';
     ctrl.newRole.highlight_color = ctrl.newRole.highlight_color ? ctrl.newRole.highlight_color : undefined;
+    ctrl.newRole.permissions.limits = ctrl.limiter;
     if (ctrl.modifyingRole) {
       promise = AdminRoles.update(ctrl.newRole).$promise;
       successMsg = ctrl.newRole.name + ' successfully updated.';
@@ -81,9 +135,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
     promise
     .then(function() { Alert.success(successMsg); ctrl.pullPage(); })
     .catch(function() { Alert.error(errorMsg); })
-    .finally(function() {
-      ctrl.closeRole();
-    });
+    .finally(function() { ctrl.closeRole(); });
   };
 
   this.canViewAddUsersControl = function() {
@@ -252,6 +304,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
     if (editRole) {
       ctrl.modifyingRole = true;
       ctrl.newRole = angular.copy(editRole);
+      ctrl.resetLimits(angular.copy(editRole.permissions.limits));
     }
     else { ctrl.newRole.priority = ctrl.maxPriority + 1; }
   };
