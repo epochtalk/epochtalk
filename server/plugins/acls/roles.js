@@ -199,6 +199,7 @@ module.exports = roles;
       vote: true,
       lock: true,
       privilegedLock: {
+        some: true,
         all: true
       }
     },

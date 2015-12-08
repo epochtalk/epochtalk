@@ -201,6 +201,7 @@ table.underlined, table.report-details {
     background-color: transparent;
     tr { border-bottom: 1px solid $border-color; }
     th { color: $secondary-font-color; font-weight: 400; padding-bottom: 0.5rem; }
+    th.left-icon-col { width: 1.5rem; }
   }
   tr {
     border-bottom: 1px solid $border-color-alt;
@@ -214,6 +215,8 @@ table.underlined, table.report-details {
     &.active-row td a:hover { color: $color-primary-alt; }
     &:nth-of-type(even) { background: transparent; }
     &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    &.active-row td.left-icon-col { color: $button-text-color; }
+    td.left-icon-col { @include pad(0 0 0 0.5rem); color: $secondary-font-color; }
     td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: middle; }
     td input { margin-bottom: 0; }
   }
@@ -655,6 +658,10 @@ input[type="checkbox"] + label, input[type="radio"] + label {
   @include media($mobile) {
     div { @include span-columns(8); @include omega; }
   }
+}
+.option {
+  input { margin: 0; vertical-align: middle; }
+  input + label { @include no-select; display: inline-block; margin: 0 0 0 0.25rem; }
 }
 .img-picker-list {
   margin-left: 0;
@@ -1342,11 +1349,7 @@ main #error-404 {
 /*-------------- New Thread Layout -------------- */
 .padded-row { @include row; @include pad(0 0 1rem 0); }
 .logged-out { @include label(error, 0.8rem); }
-.padded-row {
-  .h4, .h6 { display: inline-block; }
-  .option label { display: inline-block; margin: 0; }
-  .option input { margin: 0; }
-}
+.padded-row { .h4, .h6 { display: inline-block; } }
 
 /*-------------- Posts (Thread View) Layout -------------- */
 .thread-controls {
@@ -1900,7 +1903,7 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
   th { @include truncate-ellipsis; }
   th.reason { width: 25rem; }
   th.user-actions { width: 9rem; }
-  th.post-actions { width: 13rem; }
+  th.post-actions { width: 13.5rem; }
   tr td {
     @include truncate-ellipsis;
     padding-right: 0.5rem;
@@ -1916,7 +1919,12 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
 }
 .report-details-wrap { @include span-columns(4); margin-bottom: 1rem; }
 .preview-wrap { @include span-columns(8); @include omega; margin-bottom: 1rem; }
-
+.indicator {
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  color: $secondary-font-color;
+  i { @include pad(0 0.5rem 0 0); }
+}
 table.report-details {
   td.field {
     font-size: 0.8125rem;

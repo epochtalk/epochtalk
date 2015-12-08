@@ -152,7 +152,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     }
   })
   .state('admin-moderation.posts', {
-    url: '/posts?page&limit&field&desc&filter&search&reportId',
+    url: '/posts?page&limit&field&desc&filter&search&reportId&allReports',
     reloadOnSearch: false,
     views: {
       'data@admin-moderation': {
@@ -194,28 +194,35 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       reportId: ['$stateParams', function($stateParams) {
         return $stateParams.reportId;
       }],
-      reportCount: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
-        var opts;
+      allReports: ['$stateParams', function($stateParams) {
+        return $stateParams.allReports;
+      }],
+      reportCount: ['AdminReports', '$stateParams', 'Session', function(AdminReports, $stateParams, Session) {
         var status = $stateParams.filter;
         var search = $stateParams.search;
+        var allReports = $stateParams.allReports;
+        var opts = { mod_id: allReports === 'true' ? undefined : Session.user.id };
+        if (Session.globalModeratorCheck()) { delete opts.mod_id; } // default to all if global mod
+
         if (status || search) {
-          opts = {
-            status: status,
-            search: search
-          };
+          opts.status = status;
+          opts.search = search;
         }
         return AdminReports.postReportsCount(opts).$promise
         .then(function(postReportsCount) { return postReportsCount.count; });
       }],
-      postReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
+      postReports: ['AdminReports', '$stateParams', 'Session', function(AdminReports, $stateParams, Session) {
         var query = {
           field: $stateParams.field,
           desc: $stateParams.desc || true,
           filter: $stateParams.filter,
           limit: Number($stateParams.limit) || 15,
           page: Number($stateParams.page) || 1,
-          search: $stateParams.search
+          search: $stateParams.search,
+          mod_id: $stateParams.allReports === 'true' ? undefined : Session.user.id
         };
+        if (Session.globalModeratorCheck()) { delete query.mod_id; } // default to all if global mod
+
         return AdminReports.pagePostReports(query).$promise;
       }]
     }
