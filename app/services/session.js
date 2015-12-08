@@ -129,6 +129,30 @@ module.exports = ['$window',
       return includes(user.moderating, boardId);
     }
 
+    function globalModeratorCheck() {
+      var globalMod = false;
+      if (user.permissions) {
+        var globalModPermissions = [
+          'postControls.privilegedUpdate',
+          'postControls.privilegedDelete',
+          'postControls.privilegedPurge',
+          'postControls.bypassLock',
+          'threadControls.privilegedTitle',
+          'threadControls.privilegedLock',
+          'threadControls.privilegedSticky',
+          'threadControls.privilegedMove',
+          'threadControls.privilegedPurge',
+          'pollControls.privilegedLock'
+        ];
+        // If user has any of the permissions above set to all they are a global mod
+        globalModPermissions.forEach(function(permission) {
+          var allPermission = get(user.permissions, permission + '.all');
+          globalMod = globalMod || allPermission;
+        });
+      }
+      return globalMod;
+    }
+
     function getControlAccess(permission, boardId) {
       var result = {};
       var isMod = moderatesBoard(boardId);
@@ -165,6 +189,7 @@ module.exports = ['$window',
       clearUser: clearUser,
       hasPermission: hasPermission,
       moderatesBoard: moderatesBoard,
+      globalModeratorCheck: globalModeratorCheck,
       getControlAccess: getControlAccess,
       getControlAccessWithPriority: getControlAccessWithPriority,
       user: user,

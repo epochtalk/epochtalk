@@ -474,6 +474,7 @@ exports.pagePostReports = {
       limit: Joi.number().integer().min(1).max(100).default(15),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_created_at', 'offender_title', 'offender_author_username'),
+      mod_id: Joi.string(),
       desc: Joi.boolean().default(false),
       search: Joi.string()
     }
@@ -485,7 +486,8 @@ exports.pagePostReports = {
       filter: request.query.filter,
       sortField: request.query.field,
       sortDesc: request.query.desc,
-      searchStr: request.query.search
+      searchStr: request.query.search,
+      modId: request.query.mod_id
     };
     db.reports.pagePostReports(opts)
     .then(function(reports) { reply(reports); });
@@ -761,17 +763,20 @@ exports.postReportsCount = {
   validate: {
     query: {
       status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
-      search: Joi.string()
+      search: Joi.string(),
+      mod_id: Joi.string()
     }
   },
   handler: function(request, reply) {
     var status = request.query.status;
     var search = request.query.search;
+    var modId = request.query.mod_id;
     var opts;
-    if (status || search) {
+    if (status || search || modId) {
       opts = {
         status: status,
-        searchStr: search
+        searchStr: search,
+        modId: modId
       };
     }
     db.reports.postReportsCount(opts)

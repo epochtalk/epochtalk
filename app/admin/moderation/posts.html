@@ -28,16 +28,27 @@
     </div>
   </div>
 </div>
-<div class="fill-row centered-text" ng-if="!ModerationCtrl.search && ModerationCtrl.count < 1">
-  <h4>No Post Reports to display in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong></h4>
+<div class="fill-row" ng-if="ModerationCtrl.search">
+  <h5>Displaying {{ModerationCtrl.count | number}} search result(s) for "<strong>{{ModerationCtrl.search}}</strong>" in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong>:</h5> <br />
 </div>
-<div class="fill-row" ng-if="ModerationCtrl.count > 0 || ModerationCtrl.search">
-  <div ng-if="ModerationCtrl.search">
-    Displaying {{ModerationCtrl.count | number}} search result(s) for "<strong>{{ModerationCtrl.search}}</strong>" in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong>:<br /><br />
+<div class="padded-row" ng-if="!ModerationCtrl.isGlobalModerator">
+  <div class="option">
+    <input type="checkbox" id="showModeratedOnly" ng-checked="ModerationCtrl.allReports" ng-click="ModerationCtrl.toggleModeratedBoards()" />
+    <label class="no-select" for="showModeratedOnly">Show <strong>Post Reports</strong> for all boards</label>
   </div>
+</div>
+<div class="fill-row centered-text" ng-if="!ModerationCtrl.search && ModerationCtrl.count < 1">
+  <h4>
+    <span ng-if="ModerationCtrl.allReports">No Post Reports to display in <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : 'All'}}</strong></span>
+    <span ng-if="!ModerationCtrl.allReports">No <strong>{{ModerationCtrl.filter ? ModerationCtrl.filter : ''}}</strong> Post Reports to display in the boards you moderate.</span>
+  </h4>
+  <a ng-if="!ModerationCtrl.allReports" ng-click="ModerationCtrl.toggleModeratedBoards()">View Post Reports for All Boards</a>
+</div>
+<div class="fill-row" ng-if="ModerationCtrl.count > 0">
   <div class="fill-row admin-content-selectable">
     <table class="underlined" width="100%">
       <thead>
+        <th class="left-icon-col"></th>
         <th class="pointer hide-mobile" ng-click="ModerationCtrl.setSortField('reporter_username')"><span ng-class="ModerationCtrl.getSortClass('reporter_username')"></span>&nbsp;Reported By</th>
         <th class="pointer" ng-click="ModerationCtrl.setSortField('created_at')"><span ng-class="ModerationCtrl.getSortClass('created_at')"></span>&nbsp;Reported Date</th>
         <th class="pointer" ng-click="ModerationCtrl.setSortField('priority')"><span ng-class="ModerationCtrl.getSortClass('priority')"></span>&nbsp;Status</th>
@@ -49,6 +60,7 @@
       </thead>
       <tbody>
         <tr ng-class="{ 'active-row' : ModerationCtrl.reportId === postReport.id }" class="selectable-row pointer" ng-click="ModerationCtrl.selectReport(postReport)" ng-repeat="postReport in ModerationCtrl.postReports track by postReport.id">
+          <td class="left-icon-col"><i ng-if="ModerationCtrl.isGlobalModerator || ModerationCtrl.moderatesBoard(postReport.board_id)" class="fa fa-star-o"></i></td>
           <td class="hide-mobile"><a ui-sref="profile({ username: postReport.reporter_username })" ng-bind="postReport.reporter_username"></td>
           <td ng-bind="postReport.created_at | date:'MM/dd/yy @ h:mma'"></td>
           <td ng-bind="postReport.status"></td>
@@ -57,18 +69,27 @@
           <td><a ui-sref="profile({ username: postReport.offender_author_username })" ng-bind="postReport.offender_author_username"></a></td>
           <td class="hide-mobile"><div ng-bind="postReport.reporter_reason"></div></td>
           <td>
-            <a ng-href="#" ng-click="ModerationCtrl.showSetStatus(postReport)">Status</a>&nbsp;&nbsp;
-            <span>Edit</span>&nbsp;&nbsp;
-            <span>Delete</span>&nbsp;&nbsp;
-            <span>Warn</span>&nbsp;&nbsp;
+            <a ng-href="#" ng-click="ModerationCtrl.showSetStatus(postReport)">Status</a>
+            &nbsp;&nbsp;
+            <span>Edit</span>
+            &nbsp;&nbsp;
+            <span>Delete</span>
+            &nbsp;&nbsp;
+            <span>Warn</span>
+            &nbsp;&nbsp;
             <a ng-href="#" ng-hide="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showBanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Ban</a>
             <a ng-href="#" ng-show="postReport.offender_ban_expiration" ng-click="ModerationCtrl.showUnbanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })">Unban</a>
           </td>
         </tr>
       </tbody>
     </table>
-    <div class="pagination-wrap">
+    <div class="fill-row">
+    <div class="half-column">
+      <div class="indicator"><i class="fa fa-star-o"></i> Indicates a report made in a board you moderate</div>
+    </div>
+    <div class="half-column">
       <pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination>
+    </div>
     </div>
   </div>
 </div>

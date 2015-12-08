@@ -1,4 +1,4 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Posts, postReports, reportCount, page, limit, field, desc, filter, search, reportId) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', 'allReports', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Posts, postReports, reportCount, page, limit, field, desc, filter, search, reportId, allReports) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'posts';
@@ -25,6 +25,21 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   this.field = field;
   this.desc = desc;
   this.filter = filter;
+
+  // Filter to only show reports in moderated baords
+  this.allReports = allReports === 'true';
+  this.moderatesBoard = Session.moderatesBoard;
+  this.isGlobalModerator = Session.globalModeratorCheck();
+  this.toggleModeratedBoards = function() {
+    ctrl.selectedPostReport = null;
+    ctrl.previewPost = null;
+    if (ctrl.allReports) { ctrl.queryParams.allReports = undefined; }
+    else { ctrl.queryParams.allReports = 'true'; }
+    delete ctrl.queryParams.reportId;
+    delete ctrl.queryParams.page;
+    $location.search(ctrl.queryParams);
+  };
+
 
   // Report Notes Vars
   this.reportNotes = null;
@@ -133,6 +148,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
         });
       }
       else { return; }
+    })
+    .catch(function(err) {
+      var msg = 'There was an error updating the report.';
+      if (err && err.data) { msg = err.data.message; }
+      Alert.error(msg);
+      ctrl.closeSetStatus();
     });
   };
 
@@ -302,6 +323,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   };
 
   // Handles case where users links directly to selected report
+  // Default to all reports
   if (this.reportId && this.postReports.length) {
     for (var i = 0; i < this.postReports.length; i++) {
       var curReport = this.postReports[i];
@@ -363,6 +385,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     var filter = params.filter;
     var search = params.search;
     var reportId = params.reportId;
+    var allReports = params.allReports;
     var descending;
     // desc when undefined defaults to true, since we are sorting created_at desc by default
     if (params.desc === undefined) { descending = true; }
@@ -374,6 +397,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     var filterChanged = false;
     var searchChanged = false;
     var reportIdChanged = false;
+    var allReportsChanged = false;
 
     if (page && page !== ctrl.page) {
       pageChanged = true;
@@ -403,26 +427,32 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       reportIdChanged = true;
       ctrl.reportId = reportId;
     }
-    if(pageChanged || limitChanged || fieldChanged || descChanged || filterChanged || searchChanged || reportIdChanged) { ctrl.pullPage(); }
+    if ((allReports === undefined || allReports) && allReports !== ctrl.allReports) {
+      allReportsChanged = true;
+      ctrl.allReports = allReports;
+    }
+    if(pageChanged || limitChanged || fieldChanged || descChanged || filterChanged || searchChanged || reportIdChanged || allReportsChanged) { ctrl.pullPage(); }
   });
   $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
   this.pullPage = function() {
+    var showAllReports = ctrl.allReports === 'true' || ctrl.isGlobalModerator;
+
     var query = {
       page: ctrl.page,
       limit: ctrl.limit,
       desc: ctrl.desc,
       field: ctrl.field,
       filter: ctrl.filter,
-      search: ctrl.search
+      search: ctrl.search,
+      mod_id: showAllReports ? undefined : ctrl.user.id
     };
 
-    var opts;
+    var opts = { mod_id: showAllReports ? undefined : Session.user.id };
+
     if (ctrl.filter || ctrl.search) {
-      opts = {
-        status: ctrl.filter,
-        search: ctrl.search
-      };
+      opts.status = ctrl.filter;
+      opts.search = ctrl.search;
     }
 
     // update report's page count
