@@ -247,10 +247,14 @@ exports.confirmAccount = {
     })
     // get user moderating boards
     .then(function(user) {
+      user.roles = []; // TODO: needs permanent fix in helper.saveSession
       return db.moderators.getUsersBoards(user.id)
       .then(function(boards) {
-        boards = boards.map(function(board) { return board.board_id; });
-        user.moderating = boards;
+        if (boards) { // TODO: hotfix, not sure if really borked.
+          boards = boards.map(function(board) { return board.board_id; });
+          user.moderating = boards;
+        }
+        else { user.moderating = []; }
       })
       .then(function() { return user; });
     })
