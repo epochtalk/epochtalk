@@ -9,6 +9,7 @@ module.exports = [
   { method: 'GET', path: '/register/email/{email}', config: auth.email },
   { method: 'GET', path: '/authenticate', config: auth.authenticate },
   { method: 'GET', path: '/recover/{query}', config: auth.recoverAccount },
+  { method: 'GET', path: '/reset/{username}/{token}/validate', config: auth.checkResetToken },
   { method: 'POST', path: '/reset', config: auth.resetPassword },
   { method: 'POST', path: '/confirm', config: auth.confirmAccount }
 ];
