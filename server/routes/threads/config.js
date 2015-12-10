@@ -35,8 +35,12 @@ exports.create = {
       raw_body: Joi.string().required(),
       board_id: Joi.string().required(),
       poll: Joi.object().keys({
+        max_answers: Joi.number().integer().min(1).default(1),
+        expiration: Joi.date().min('now'),
+        change_vote: Joi.boolean().default(false),
+        display_mode: Joi.string().valid('always', 'voted', 'expired').required(),
         question: Joi.string().required(),
-        answers: Joi.array().items(Joi.string()).min(2).max(8).required()
+        answers: Joi.array().items(Joi.string()).min(2).max(20).required()
       })
     })
   },
@@ -44,7 +48,9 @@ exports.create = {
     [
       { method: pre.accessBoardWithBoardId },
       { method: pre.isRequesterActive },
-      { method: pre.isPollCreatable }
+      { method: pre.isPollCreatable },
+      { method: pre.validateMaxAnswers },
+      { method: pre.validateDisplayMode }
     ],
     { method: postPre.clean },
     { method: postPre.parseEncodings },
@@ -72,10 +78,7 @@ exports.create = {
     // create any associated polls
     .then(function(thread) {
       if (request.payload.poll) {
-        var question = request.payload.poll.question;
-        var answers = request.payload.poll.answers;
-
-        return db.polls.create(thread.id, question, answers);
+        return db.polls.create(thread.id, request.payload.poll);
       }
     })
     // create the first post in this thread
@@ -430,7 +433,10 @@ exports.purge = {
 };
 
 exports.vote = {
-  app: { thread_id: 'params.threadId' },
+  app: {
+    thread_id: 'params.threadId',
+    poll_id: 'params.pollId'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'polls.vote' },
   validate: {
@@ -438,20 +444,76 @@ exports.vote = {
       threadId: Joi.string().required(),
       pollId: Joi.string().required()
     },
-    payload: { answerId: Joi.string().required() }
+    payload: { answerIds: Joi.array().items(Joi.string()).min(1).unique().required() }
   },
   pre: [ [
       { method: pre.accessBoardWithThreadId },
       { method: pre.isRequesterActive },
       { method: pre.pollExists },
       { method: pre.canVote },
-      { method: pre.isPollUnlocked }
+      { method: pre.isPollUnlocked },
+      { method: pre.isPollRunning },
+      { method: pre.isVoteValid }
     ] ],
   handler: function(request, reply) {
+    var threadId = request.params.threadId;
     var pollId = request.params.pollId;
-    var answerId = request.payload.answerId;
+    var answerIds = request.payload.answerIds;
     var userId = request.auth.credentials.id;
-    var promise = db.polls.vote(pollId, answerId, userId);
+    var promise = db.polls.vote(pollId, answerIds, userId)
+    .then(function() {
+      var getPoll = db.polls.byThread(threadId);
+      var hasVoted = db.polls.hasVoted(threadId, userId);
+
+      return Promise.join(getPoll, hasVoted, function(poll, voted) {
+        var hideVotes = poll.display_mode === 'expired' && poll.expiration > Date.now();
+        if (hideVotes) { poll.answers.map(function(answer) { answer.votes = 0; }); }
+        poll.hasVoted = voted;
+        return poll;
+      });
+    });
+    return reply(promise);
+  }
+};
+
+exports.removeVote = {
+  app: {
+    thread_id: 'params.threadId',
+    poll_id: 'params.pollId'
+  },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'polls.vote' },
+  validate: {
+    params: {
+      threadId: Joi.string().required(),
+      pollId: Joi.string().required()
+    }
+  },
+  pre: [ [
+      { method: pre.accessBoardWithThreadId },
+      { method: pre.isRequesterActive },
+      { method: pre.pollExists },
+      { method: pre.isPollUnlocked },
+      { method: pre.isPollRunning },
+      { method: pre.canChangeVote }
+    ] ],
+  handler: function(request, reply) {
+    var threadId = request.params.threadId;
+    var pollId = request.params.pollId;
+    var userId = request.auth.credentials.id;
+    var promise = db.polls.removeVote(pollId, userId)
+    .then(function() {
+      var getPoll = db.polls.byThread(threadId);
+      var hasVoted = db.polls.hasVoted(threadId, userId);
+
+      return Promise.join(getPoll, hasVoted, function(poll, voted) {
+        var hideVotes = poll.display_mode === 'voted' && !voted;
+        hideVotes = hideVotes || (poll.display_mode === 'expired' && poll.expiration > Date.now());
+        if (hideVotes) { poll.answers.map(function(answer) { answer.votes = 0; }); }
+        poll.hasVoted = voted;
+        return poll;
+      });
+    });
     return reply(promise);
   }
 };

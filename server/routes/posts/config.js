@@ -204,6 +204,9 @@ exports.byThread = {
       // check if thread is being Watched
       if (threadWatching) { thread.watched = true; }
       if (poll) {
+        var hideVotes = poll.display_mode === 'voted' && !voted;
+        hideVotes = hideVotes || (poll.display_mode === 'expired' && poll.expiration > Date.now());
+        if (hideVotes) { poll.answers.map(function(answer) { answer.votes = 0; }); }
         poll.hasVoted = voted;
         thread.poll = poll;
       }

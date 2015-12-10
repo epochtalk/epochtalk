@@ -12,7 +12,10 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
     };
     this.poll = {
       question: '',
-      answers: ['', '']
+      answers: ['', ''],
+      max_answers: 1,
+      change_vote: false,
+      display_mode: 'always'
     };
 
     this.controlAccess = Session.getControlAccess('threadControls', ctrl.thread.board_id);
@@ -27,12 +30,44 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
       var valid = true;
       if (ctrl.poll.question.length === 0) { valid = false; }
       if (ctrl.poll.answers.length < 2) { valid = false; }
-      if (ctrl.poll.answers.length > 9) { valid = false; }
-      ctrl.poll.answers.map(function(answer) {
-        if (answer.length === 0) { valid = false; }
-      });
+      if (ctrl.poll.answers.length > 21) { valid = false; }
+      ctrl.poll.answers.map(function(answer) { if (answer.length === 0) { valid = false; } });
+      if (!ctrl.poll.max_answers || ctrl.poll.max_answers < 1) { valid = false; }
+      if (ctrl.poll.max_answers > ctrl.poll.answers.length) { valid = false; }
+      if (ctrl.poll.expiration_date && !ctrl.poll.expiration) { valid = false; }
+      if (ctrl.poll.expiration_time && !ctrl.poll.expiration_date) { valid = false; }
+      if (ctrl.poll.expiration < Date.now()) { valid = false; }
+      if (ctrl.poll.display_mode !== 'always' && ctrl.poll.display_mode !== 'voted' && ctrl.poll.display_mode !== 'expired') { valid = false; }
 
       return valid;
+    };
+
+    this.calcExpiration = function() {
+      var month, day, year, hour, minutes, tz, valid = false;
+      if (ctrl.poll.expiration_date) {
+        var date = new Date(ctrl.poll.expiration_date);
+        valid = true;
+        month = date.getMonth();
+        day = date.getDate();
+        year = date.getFullYear();
+      }
+
+      if (valid && ctrl.poll.expiration_time) {
+        var time = new Date(ctrl.poll.expiration_time);
+        hour = time.getHours();
+        minutes = time.getMinutes();
+        tz = time.getTimezoneOffset();
+      }
+
+      if (valid) {
+        ctrl.poll.expiration = new Date(year, month, day, hour || 0, minutes || 0);
+        if (ctrl.poll.expiration < Date.now()) { ctrl.poll.expiration = undefined; }
+      }
+      else { ctrl.poll.expiration = undefined; }
+
+      if (!ctrl.poll.expiration && ctrl.poll.display_mode === 'expired') {
+        ctrl.poll.display_mode = 'always';
+      }
     };
 
     this.output = function() { console.log(ctrl.poll); };

@@ -153,6 +153,31 @@ module.exports = {
     if (canCreate) { result = true; }
     return reply(result);
   },
+  validateMaxAnswers: function(request, reply) {
+    var poll = request.payload.poll;
+    if (!poll) { return reply(); }
+
+    var maxAnswers = poll.max_answers;
+    var answersLength = poll.answers.length;
+
+    if (maxAnswers > answersLength) { request.payload.poll.max_answers = answersLength; }
+    return reply();
+  },
+  validateDisplayMode: function(request, reply) {
+    var poll = request.payload.poll;
+    if (!poll) { return reply(); }
+
+    // check for expiration on poll
+    var error;
+    var expiration = request.payload.poll.expiration;
+    var displayMode = request.payload.poll.display_mode;
+
+    if (displayMode === 'expired' && !expiration) {
+      error = Boom.badRequest('Poll: "expired" display mode requires an expiration');
+    }
+
+    return reply(error);
+  },
   canVote: function(request, reply) {
     // Check if has voted already
     var threadId = _.get(request, request.route.settings.app.thread_id);
@@ -167,13 +192,47 @@ module.exports = {
     return reply(promise);
   },
   isPollUnlocked: function(request, reply) {
-    // Check if has poll is unlocked
     var pollId = _.get(request, request.route.settings.app.poll_id);
     promise = db.polls.isLocked(pollId)
     .then(function(locked) {
       var canLock = Boom.badRequest('Poll is Unlocked');
       if (!locked) { canLock = true; }
       return canLock;
+    });
+
+    return reply(promise);
+  },
+  isPollRunning: function(request, reply) {
+    var pollId = _.get(request, request.route.settings.app.poll_id);
+    promise = db.polls.isRunning(pollId)
+    .then(function(running) {
+      var canVote = Boom.badRequest('Poll is Expired');
+      if (running) { canVote = true; }
+      return canVote;
+    });
+
+    return reply(promise);
+  },
+  isVoteValid: function(request, reply) {
+    var pollId = _.get(request, request.route.settings.app.poll_id);
+    var payloadLength = request.payload.answerIds.length;
+
+    promise = db.polls.maxAnswers(pollId)
+    .then(function(maxAnswers) {
+      var canVote = Boom.badRequest('Too Many Answers');
+      if (maxAnswers && maxAnswers >= payloadLength) { canVote = true; }
+      return canVote;
+    });
+
+    return reply(promise);
+  },
+  canChangeVote: function(request, reply) {
+    var pollId = _.get(request, request.route.settings.app.poll_id);
+    promise = db.polls.changeVote(pollId)
+    .then(function(changeVote) {
+      var canChange = Boom.badRequest('Votes cannot be changed');
+      if (changeVote) { canChange = true; }
+      return canChange;
     });
 
     return reply(promise);

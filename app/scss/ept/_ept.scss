@@ -773,9 +773,10 @@ table.striped {
   border: 1px solid $border-color;
   padding: 1rem;
   margin-bottom: 1rem;
-  .ng-enter { @include transition(0.3s linear all); opacity: 0;; }
+  .ng-enter { @include transition(0.3s ease-in all); opacity: 0; }
   .ng-enter-active { opacity: 1; }
   .ng-leave { display: none; }
+  // poll creation
   &.poll-form {
     button { margin-bottom: 0; }
     .answer-row {
@@ -798,6 +799,8 @@ table.striped {
         }
       }
     }
+    h4 { margin-bottom: 0.5rem; }
+    .poll-options { margin-top: 0.625rem; }
   }
   // header section
   .poll-header {
@@ -807,14 +810,14 @@ table.striped {
       position: absolute;
       top: 0;
       left: 0;
-      right: 1.5625rem;
+      right: 2rem;
       .poll-question { display: inline-block; }
     }
     .poll-lock {
       position: absolute;
       top: 0;
       right: 0;
-      width: 1.5625rem;
+      width: 2rem;
       text-align: center;
       label { margin-left: 0; }
       #lockPoll {
@@ -822,6 +825,24 @@ table.striped {
         & + label:before { font-size: 1.5rem; color: $secondary-font-color-light; }
         &:checked + label:before { color: $color-primary; }
       }
+    }
+  }
+  .poll-info {
+    margin-bottom: 1rem;
+    overflow: auto;
+    .third-columns {
+      @include row;
+      @include span-columns(3);
+      @include omega(4n);
+      @include media($mobile) { @include span-columns(8); @include omega; }
+      text-align: center;
+    }
+    .label {
+      background-color: $color-primary-alt;
+      color: $button-text-color;
+      line-height: 1.625rem;
+      font-size: 0.9rem;
+      @include border-radius(4px);
     }
   }
   // answer section
@@ -838,28 +859,27 @@ table.striped {
     // votes bar
     .poll-bar {
       position: absolute;
+      height: 1.5625rem;
       left: 0;
       right: 0;
-      @include border-radius(8px);
-      background-color: $secondary-font-color;
+      @include border-radius(15px);
+      border: 1px solid $border-color;
       span {
         position: absolute;
-        line-height: 1.5625rem;
-        left: 0.625rem;
-        color: $button-text-color;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        &:first-child { max-width: 75%; }
-        &:last-of-type { max-width: 20%; left: initial; right: 0.625rem; }
       }
+      .poll-answer-title { max-width: 75%; left: 0.625rem; line-height: 1.4625rem; }
+      .poll-answer-fill { max-width: 20%; left: initial; right: 0.625rem; line-height: 1.3625rem; }
       section {
         background-color: $color-primary;
         height: 1.5625rem;
-        @include border-radius(8px);
+        @include border-radius(15px);
       }
       &.voting-mode { left: 1.5rem; }
     }
+    .expand { width: 100%; }
   }
 
   @include media($mobile) {

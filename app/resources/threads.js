@@ -38,6 +38,11 @@ module.exports = ['$resource',
         params: { threadId: '@threadId', pollId: '@pollId' },
         url: '/api/threads/:threadId/polls/:pollId/vote'
       },
+      removeVote: {
+        method: 'DELETE',
+        params: { threadId: '@threadId', pollId: '@pollId' },
+        url: '/api/threads/:threadId/polls/:pollId/vote'
+      },
       lockPoll: {
         method: 'POST',
         params: { threadId: '@threadId', pollId: '@pollId' },
