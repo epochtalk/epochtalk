@@ -153,30 +153,54 @@ module.exports = {
     if (canCreate) { result = true; }
     return reply(result);
   },
+  canCreatePoll: function(request,reply) {
+    var threadId = request.params.thread_id;
+    var userId = request.auth.credentials.id;
+
+    // make sure thread exists
+    // make sure user is thread owner
+    var getThreadOwner = db.threads.getThreadOwner(threadId);
+    // make sure poll doesn't exist
+    var getPollExists = db.polls.exists(threadId);
+
+    var promise = Promise.join(getThreadOwner, getPollExists, function(owner, exists) {
+      var result = Boom.forbidden();
+      if (exists) { results = Boom.badRequest('Poll already exists'); }
+      else if (owner === userId) { result = true; }
+      return result;
+    });
+
+    return reply(promise);
+  },
   validateMaxAnswers: function(request, reply) {
-    var poll = request.payload.poll;
+    var poll = _.get(request, request.route.settings.app.poll);
     if (!poll) { return reply(); }
 
     var maxAnswers = poll.max_answers;
     var answersLength = poll.answers.length;
-
-    if (maxAnswers > answersLength) { request.payload.poll.max_answers = answersLength; }
+    if (maxAnswers > answersLength) { poll.max_answers = answersLength; }
     return reply();
   },
   validateDisplayMode: function(request, reply) {
-    var poll = request.payload.poll;
+    var poll = _.get(request, request.route.settings.app.poll);
     if (!poll) { return reply(); }
 
-    // check for expiration on poll
     var error;
-    var expiration = request.payload.poll.expiration;
-    var displayMode = request.payload.poll.display_mode;
-
-    if (displayMode === 'expired' && !expiration) {
-      error = Boom.badRequest('Poll: "expired" display mode requires an expiration');
+    if (poll.display_mode === 'expired' && !poll.expiration) {
+      error = Boom.badRequest('Showing results after expiration requires an expiration');
     }
 
     return reply(error);
+  },
+  validateMaxAnswersUpdate: function(request, reply) {
+    var pollId = request.params.pollId;
+    var maxAnswers = request.payload.max_answers;
+    var promise = db.polls.answers(pollId)
+    .then(function(answers) {
+      var answersLength = answers.length;
+      if (maxAnswers > answersLength) { request.payload.max_answers = answersLength; }
+    });
+    return reply(promise);
   },
   canVote: function(request, reply) {
     // Check if has voted already

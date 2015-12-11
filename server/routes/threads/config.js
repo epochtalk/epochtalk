@@ -15,12 +15,16 @@ var postPre = require(path.normalize(__dirname + '/../posts/pre'));
   * @apiDescription Used to create a new thread.
   *
   * @apiUse ThreadObjectPayload
+  * @apiParam (Payload) {object} smf Object containing SMF metadata
+  * @apiParam (Payload) {number} smf.ID_BOARD Legacy smf board id
+  * @apiParam (Payload) {number} smf.ID_TOPIC Legacy smf thread id
   * @apiUse ThreadObjectSuccess
   *
   * @apiError (Error 500) InternalServerError There was an issue creating the thread
   */
 exports.create = {
   app: {
+    poll: 'payload.poll',
     board_id: 'payload.board_id',
     isPollCreatable: 'polls.create'
   },
@@ -194,7 +198,7 @@ exports.byBoard = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads
-  * @api {GET} /threads/:id Find
+  * @api {POST} /threads/:id Find
   * @apiName FindThread
   * @apiDescription Used to find an existing thread.
   *
@@ -226,7 +230,7 @@ exports.viewed = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads
-  * @api {GET} /threads/:id Title
+  * @api {POST} /threads/:id Title
   * @apiName UpdateThreadTitle
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User (Thread Author Only)
   * @apiDescription Used to update the title of a thread.
@@ -271,7 +275,7 @@ exports.title = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads
-  * @api {GET} /threads/:id/lock Lock
+  * @api {POST} /threads/:id/lock Lock
   * @apiName LockThread
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User (Thread Author Only)
   * @apiDescription Used to lock a thread and prevent any additional posts.
@@ -316,7 +320,7 @@ exports.lock = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads
-  * @api {GET} /threads/:id/sticky Sticky
+  * @api {POST} /threads/:id/sticky Sticky
   * @apiName StickyThread
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to sticky a thread. This will cause the thread to show up at the top of the board it's posted within.
@@ -359,7 +363,7 @@ exports.sticky = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads
-  * @api {GET} /threads/:id/move Move
+  * @api {POST} /threads/:id/move Move
   * @apiName MoveThread
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to move a thread to a different board.
@@ -432,6 +436,23 @@ exports.purge = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Threads
+  * @api {POST} /threads/:threadId/polls/:pollId/vote Vote
+  * @apiName VotePoll
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User
+  * @apiDescription Used to vote in a poll.
+  *
+  * @apiParam (Param) {string} id The unique id of the thread the poll is in.
+  * @apiParam (Param) {string} id The unique id of the poll to vote in.
+  * @apiParam (Payload) {array} ids The ids of the answer tied to the vote.
+  *
+  * @apiUse ThreadObjectSuccess3
+  *
+  * @apiError Unauthorized User doesn't have permissions to vote in the poll
+  * @apiError (Error 500) InternalServerError There was an issue voting in the poll
+  */
 exports.vote = {
   app: {
     thread_id: 'params.threadId',
@@ -476,6 +497,22 @@ exports.vote = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Threads
+  * @api {DELETE} /threads/:threadId/polls/:pollId/vote Remove Vote
+  * @apiName RemoveVotePoll
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User
+  * @apiDescription Used to remove a vote in a poll.
+  *
+  * @apiParam (Param) {string} id The unique id of the thread the poll is in.
+  * @apiParam (Param) {string} id The unique id of the poll to remove a vote from.
+  *
+  * @apiUse ThreadObjectSuccess3
+  *
+  * @apiError Unauthorized User doesn't have permissions to vote in the poll
+  * @apiError (Error 500) InternalServerError There was an issue removing a vote in the poll
+  */
 exports.removeVote = {
   app: {
     thread_id: 'params.threadId',
@@ -518,6 +555,132 @@ exports.removeVote = {
   }
 };
 
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Threads
+  * @api {PUT} /threads/:threadId/polls/:pollId Edit Poll
+  * @apiName EditPoll
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User (that created the poll)
+  * @apiDescription Used to edit a poll.
+  *
+  * @apiParam (Param) {string} thread_id The unique id of the thread the poll is in.
+  * @apiParam (Param) {string} poll_id The unique id of the poll to vote in.
+  * @apiParam (Payload) {number} max_answers The max number of answers per vote.
+  * @apiParam (Payload) {date} expiration The expiration date of the poll.
+  * @apiParam (Payload) {boolean} change_vote Boolean indicating whether users can change their vote.
+  * @apiParam (Payload) {string} display_mode String indicating how the results are shown to users.
+  *
+  * @apiUse ThreadObjectSuccess3
+  *
+  * @apiError Unauthorized User doesn't have permissions to edit the poll
+  * @apiError (Error 500) InternalServerError There was an issue editing the thread
+  */
+exports.editPoll = {
+  app: {
+    poll: 'payload',
+    thread_id: 'params.threadId',
+    poll_id: 'params.pollId',
+    isPollOwner: 'polls.privilegedLock'
+  },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'polls.create' },
+  validate: {
+    params: {
+      threadId: Joi.string().required(),
+      pollId: Joi.string().required()
+    },
+    payload: Joi.object().keys({
+      max_answers: Joi.number().integer().min(1).required(),
+      expiration: Joi.date().min('now'),
+      change_vote: Joi.boolean().required(),
+      display_mode: Joi.string().valid('always', 'voted', 'expired').required()
+    })
+  },
+  pre: [ [
+    { method: pre.accessBoardWithThreadId },
+    { method: pre.isRequesterActive },
+    { method: pre.pollExists },
+    { method: pre.isPollOwner },
+    { method: pre.validateMaxAnswersUpdate },
+    { method: pre.validateDisplayMode }
+  ] ],
+  handler: function(request, reply) {
+    var promise = db.polls.update(request.payload);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Threads
+  * @api {POST} /threads/:threadId/polls Create Poll
+  * @apiName CreatePoll
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User (that created the thread)
+  * @apiDescription Used to create a poll.
+  *
+  * @apiParam (Param) {string} thread_id The unique id of the thread the poll is in.
+  * @apiParam (Param) {string} question The question asked in the poll.
+  * @apiParam (Param) {array} answers The list of the answers to the question of this poll.
+  * @apiParam (Payload) {number} max_answers The max number of answers per vote.
+  * @apiParam (Payload) {date} expiration The expiration date of the poll.
+  * @apiParam (Payload) {boolean} change_vote Boolean indicating whether users can change their vote.
+  * @apiParam (Payload) {string} display_mode String indicating how the results are shown to users.
+  *
+  * @apiUse ThreadObjectSuccess3
+  *
+  * @apiError Unauthorized User doesn't have permissions to create the poll
+  * @apiError (Error 500) InternalServerError There was an issue creating the thread
+  */
+exports.createPoll = {
+  app: {
+    poll: 'payload',
+    thread_id: 'params.thread_id'
+  },
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'polls.create' },
+  validate: {
+    params: { threadId: Joi.string().required() },
+    payload: Joi.object().keys({
+      question: Joi.string().required(),
+      answers: Joi.array().items(Joi.string()).min(2).max(20).required(),
+      max_answers: Joi.number().integer().min(1).default(1),
+      expiration: Joi.date().min('now'),
+      change_vote: Joi.boolean().default(false),
+      display_mode: Joi.string().valid('always', 'voted', 'expired').required()
+    })
+  },
+  pre: [ [
+    { method: pre.accessBoardWithThreadId },
+    { method: pre.isRequesterActive },
+    { method: pre.canCreatePoll },
+    { method: pre.validateMaxAnswers },
+    { method: pre.validateDisplayMode }
+  ] ],
+  handler: function(request, reply) {
+    var threadId = request.params.threadId;
+    var promise = db.polls.create(threadId, request.payload);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Threads
+  * @api {POST} /threads/:threadId/polls/:pollId/lock Lock Poll
+  * @apiName LockPoll
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User
+  * @apiDescription Used to lock a poll.
+  *
+  * @apiParam (Param) {string} id The unique id of the thread the poll is in.
+  * @apiParam (Param) {string} id The unique id of the poll to lock.
+  * @apiParam (Payload) {boolean} ids The value to set the poll's lock to.
+  *
+  * @apiSuccess {string} id The id of the poll
+  * @apiSuccess {boolean} lockValue The value the poll's lock
+  *
+  * @apiError Unauthorized User doesn't have permissions to lock the poll
+  * @apiError (Error 500) InternalServerError There was an issue locking in the poll
+  */
 exports.lockPoll = {
   app: {
     thread_id: 'params.threadId',
@@ -581,4 +744,17 @@ exports.lockPoll = {
   * @apiSuccess {string} user.username The username of the user who created the thread
   * @apiSuccess {timestamp} created_at Timestamp of when the thread was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the thread was updated
+  */
+
+/**
+  * @apiDefine ThreadObjectSuccess3
+  * @apiSuccess {string} id The unique id of the poll
+  * @apiSuccess {string} question The question asked in the poll
+  * @apiSuccess {array} answers The list of the answers to the question of this poll
+  * @apiSuccess {boolean} locked Boolean indicating whether the poll is locked
+  * @apiSuccess {number} max_answers The max number of answer per vote
+  * @apiSuccess {boolean} change_vote Boolean indicating whether users can change their vote
+  * @apiSuccess {date} expiration The expiration date of the poll
+  * @apiSuccess {string} display_mode String indicating how the results are shown to users
+  * @apiSuccess {boolean} hasVoted Boolean indicating whether this user has voted
   */
