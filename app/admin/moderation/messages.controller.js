@@ -1,32 +1,34 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Messages', 'messageReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Messages, messageReports, reportCount, page, limit, field, desc, filter, search, reportId) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Messages', 'messageReports', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Messages, messageReports, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'messages';
   this.previewReport = null;
   this.reportId = reportId;
-  this.messageReports = messageReports;
+  this.messageReports = messageReports.data;
   this.tableFilter = 0;
-  if (filter === 'Pending') { this.tableFilter = 1; }
-  else if (filter === 'Reviewed') { this.tableFilter = 2; }
-  else if (filter === 'Ignored') { this.tableFilter = 3; }
-  else if (filter === 'Bad Report') { this.tableFilter = 4; }
+  if (messageReports.filter === 'Pending') { this.tableFilter = 1; }
+  else if (messageReports.filter === 'Reviewed') { this.tableFilter = 2; }
+  else if (messageReports.filter === 'Ignored') { this.tableFilter = 3; }
+  else if (messageReports.filter === 'Bad Report') { this.tableFilter = 4; }
 
   // Search Vars
-  this.search = search;
-  this.searchStr = search;
-  this.count = reportCount;
+  this.search = messageReports.search;
+  this.searchStr = messageReports.search;
+  this.count = messageReports.count;
 
   // Report Pagination Vars
-  this.pageCount = Math.ceil(reportCount / limit);
+  this.pageCount = messageReports.page_count;
   this.queryParams = $location.search();
-  this.page = page;
-  this.limit = limit;
-  this.field = field;
-  this.desc = desc;
-  this.filter = filter;
+  this.page = messageReports.page;
+  this.limit = messageReports.limit;
+  this.field = messageReports.field;
+  this.desc = messageReports.desc;
+  this.filter = messageReports.filter;
 
   // Report Notes Vars
   this.reportNotes = null;
+  this.reportNotesPage = null;
+  this.reportNotesPageCount = null;
   this.reportNote = null;
   this.noteSubmitted = false;
   this.submitBtnLabel = 'Add Note';
@@ -251,22 +253,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       note: ctrl.reportNote
     };
     AdminReports.createMessageReportNote(params).$promise
-    .then(function(createdNote) {
-      ctrl.reportNotes.push(createdNote);
+    .then(function() {
       ctrl.submitBtnLabel = 'Add Note';
       ctrl.noteSubmitted = false;
       ctrl.reportNote = null;
       Alert.success('Note successfully created');
-    });
-  };
-
-  this.showPreview = function(report) {
-    ctrl.previewReport = report;
-    ctrl.reportId = report.id;
-
-    AdminReports.pageMessageReportsNotes({ report_id: report.id }).$promise
-    .then(function(reportNotes) {
-      ctrl.reportNotes = reportNotes;
+      ctrl.pageReportNotes(ctrl.reportId, ctrl.reportNotesPage);
     });
   };
 
@@ -288,10 +280,21 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     }
     else {
       if (!initialPageLoad) { $location.search('reportId', messageReport.id); }
-      ctrl.showPreview(messageReport);
+      ctrl.previewReport = messageReport;
+      ctrl.reportId = messageReport.id;
+      ctrl.pageReportNotes(ctrl.reportId);
     }
     // Update so pagination knows reportId changed
     ctrl.queryParams.reportId = ctrl.reportId;
+  };
+
+  this.pageReportNotes = function(reportId, page) {
+    AdminReports.pageMessageReportsNotes({ report_id: reportId, page: page }).$promise
+    .then(function(reportNotes) {
+      ctrl.reportNotes = reportNotes.data;
+      ctrl.reportNotesPage = reportNotes.page;
+      ctrl.reportNotesPageCount = reportNotes.page_count;
+    });
   };
 
   // Handles case where users links directly to selected report
@@ -320,7 +323,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   this.setSortField = function(sortField) {
     // Sort Field hasn't changed just toggle desc
     var unchanged = sortField === ctrl.field;
-    if (unchanged) { ctrl.desc = ctrl.desc === 'true' ? 'false' : 'true'; } // bool to str
+    if (unchanged) { ctrl.desc = ctrl.desc.toString() === 'true' ? 'false' : 'true'; } // bool to str
     // Sort Field changed default to ascending order
     else { ctrl.desc = 'false'; }
     ctrl.field = sortField;
@@ -411,25 +414,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       search: ctrl.search
     };
 
-    var opts;
-    if (ctrl.filter || ctrl.search) {
-      opts = {
-        status: ctrl.filter,
-        search: ctrl.search
-      };
-    }
-
-    // update mods's page count
-    AdminReports.messageReportsCount(opts).$promise
-    .then(function(updatedCount) {
-      ctrl.count = updatedCount.count;
-      ctrl.pageCount = Math.ceil(updatedCount.count / limit);
-    });
-
     // replace current reports with new mods
     AdminReports.pageMessageReports(query).$promise
     .then(function(newReports) {
-      ctrl.messageReports = newReports;
+      ctrl.messageReports = newReports.data;
+      ctrl.count = newReports.count;
+      ctrl.pageCount = newReports.page_count;
     });
   };
 }];

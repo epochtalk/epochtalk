@@ -149,13 +149,7 @@ exports.add = {
           pageMessageReports: Joi.boolean(),
           pageUserReportsNotes: Joi.boolean(),
           pagePostReportsNotes: Joi.boolean(),
-          pageMessageReportsNotes: Joi.boolean(),
-          userReportsCount: Joi.boolean(),
-          postReportsCount: Joi.boolean(),
-          messageReportsCount: Joi.boolean(),
-          userReportsNotesCount: Joi.boolean(),
-          postReportsNotesCount: Joi.boolean(),
-          messageReportsNotesCount: Joi.boolean()
+          pageMessageReportsNotes: Joi.boolean()
         }),
         adminSettings: Joi.object().keys({
           find: Joi.boolean(),
@@ -430,13 +424,7 @@ exports.update = {
           pageMessageReports: Joi.boolean(),
           pageUserReportsNotes: Joi.boolean(),
           pagePostReportsNotes: Joi.boolean(),
-          pageMessageReportsNotes: Joi.boolean(),
-          userReportsCount: Joi.boolean(),
-          postReportsCount: Joi.boolean(),
-          messageReportsCount: Joi.boolean(),
-          userReportsNotesCount: Joi.boolean(),
-          postReportsNotesCount: Joi.boolean(),
-          messageReportsNotesCount: Joi.boolean()
+          pageMessageReportsNotes: Joi.boolean()
         }),
         adminSettings: Joi.object().keys({
           find: Joi.boolean(),

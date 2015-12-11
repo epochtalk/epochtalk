@@ -44,13 +44,7 @@ module.exports = roles;
       pageMessageReports: true,
       pageUserReportsNotes: true,
       pagePostReportsNotes: true,
-      pageMessageReportsNotes: true,
-      userReportsCount: true,
-      postReportsCount: true,
-      messageReportsCount: true,
-      userReportsNotesCount: true,
-      postReportsNotesCount: true,
-      messageReportsNotesCount: true
+      pageMessageReportsNotes: true
     },
     adminRoles: {
       all: true,
@@ -270,13 +264,7 @@ roles.superAdministrator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminRoles: {
     all: true,
@@ -471,13 +459,7 @@ roles.administrator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminRoles: {
     all: true,
@@ -653,13 +635,7 @@ roles.globalModerator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminUsers: {
     privilegedUpdate: {
@@ -791,13 +767,7 @@ roles.moderator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminUsers: {
     privilegedUpdate: {

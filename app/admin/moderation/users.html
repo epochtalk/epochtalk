@@ -132,6 +132,15 @@
       </div>
       <div class="thin-underline"></div>
     </div>
+    <div class="pagination-slide" ng-if="ModerationCtrl.reportNotes.length">
+      <div class="prev">
+        <button ng-click="ModerationCtrl.pageReportNotes(ModerationCtrl.previewReport.id, ModerationCtrl.reportNotesPage - 1)" ng-disabled="ModerationCtrl.reportNotesPage <= 1" disabled="disabled">❮</button>
+      </div>
+      <div class="page">{{ModerationCtrl.reportNotesPage}} of {{ModerationCtrl.reportNotesPageCount}}</div>
+      <div class="next">
+        <button ng-click="ModerationCtrl.pageReportNotes(ModerationCtrl.previewReport.id, ModerationCtrl.reportNotesPage + 1)" ng-disabled="ModerationCtrl.reportNotesPage >= ModerationCtrl.reportNotesPageCount" disabled="disabled">❯</button>
+      </div>
+    </div>
     <form name="$parent.form" class="css-form">
       <textarea name="reportNote" ng-model="ModerationCtrl.reportNote" ng-disabled="ModerationCtrl.noteSubmitted" placeholder="Leave a note on this report..." rows="3" required></textarea>
       <div class="clear">
