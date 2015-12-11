@@ -1,30 +1,30 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', 'allReports', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Posts, postReports, reportCount, page, limit, field, desc, filter, search, reportId, allReports) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportId', 'allReports', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Posts, postReports, reportId, allReports) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'posts';
   this.previewPost = null;
   this.previewReport = null;
   this.reportId = reportId;
-  this.postReports = postReports;
+  this.postReports = postReports.data;
   this.tableFilter = 0;
-  if (filter === 'Pending') { this.tableFilter = 1; }
-  else if (filter === 'Reviewed') { this.tableFilter = 2; }
-  else if (filter === 'Ignored') { this.tableFilter = 3; }
-  else if (filter === 'Bad Report') { this.tableFilter = 4; }
+  if (postReports.filter === 'Pending') { this.tableFilter = 1; }
+  else if (postReports.filter === 'Reviewed') { this.tableFilter = 2; }
+  else if (postReports.filter === 'Ignored') { this.tableFilter = 3; }
+  else if (postReports.filter === 'Bad Report') { this.tableFilter = 4; }
 
   // Search Vars
-  this.search = search;
-  this.searchStr = search;
-  this.count = reportCount;
+  this.search = postReports.search;
+  this.searchStr = postReports.search;
+  this.count = postReports.count;
 
   // Report Pagination Vars
-  this.pageCount = Math.ceil(reportCount / limit);
+  this.pageCount = postReports.page_count;
   this.queryParams = $location.search();
-  this.page = page;
-  this.limit = limit;
-  this.field = field;
-  this.desc = desc;
-  this.filter = filter;
+  this.page = postReports.page;
+  this.limit = postReports.limit;
+  this.field = postReports.field;
+  this.desc = postReports.desc;
+  this.filter = postReports.filter;
 
   // Filter to only show reports in moderated baords
   this.allReports = allReports === 'true';
@@ -40,9 +40,10 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     $location.search(ctrl.queryParams);
   };
 
-
   // Report Notes Vars
   this.reportNotes = null;
+  this.reportNotesPage = null;
+  this.reportNotesPageCount = null;
   this.reportNote = null;
   this.noteSubmitted = false;
   this.submitBtnLabel = 'Add Note';
@@ -73,7 +74,8 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     ctrl.queryParams = {
       filter: ctrl.filter,
       field: 'created_at',
-      search: ctrl.searchStr
+      search: ctrl.searchStr,
+      allReports: ctrl.allReports ? ctrl.allReports.toString() : undefined
     };
     ctrl.selectedPostReport = null;
     ctrl.previewPost = null;
@@ -84,7 +86,8 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     ctrl.queryParams = {
       field: 'created_at',
       filter: ctrl.filter,
-      reportId: ctrl.reportId
+      reportId: ctrl.reportId,
+      allReports: ctrl.allReports ? ctrl.allReports.toString() : undefined
     };
     $location.search(ctrl.queryParams);
     ctrl.searchStr = null;
@@ -273,12 +276,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       note: ctrl.reportNote
     };
     AdminReports.createPostReportNote(params).$promise
-    .then(function(createdNote) {
-      ctrl.reportNotes.push(createdNote);
+    .then(function() {
       ctrl.submitBtnLabel = 'Add Note';
       ctrl.noteSubmitted = false;
       ctrl.reportNote = null;
       Alert.success('Note successfully created');
+      ctrl.pageReportNotes(ctrl.reportId, ctrl.reportNotesPage);
     });
   };
 
@@ -291,10 +294,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       ctrl.previewPost = post;
     });
 
-    AdminReports.pagePostReportsNotes({ report_id: report.id }).$promise
-    .then(function(reportNotes) {
-      ctrl.reportNotes = reportNotes;
-    });
+    ctrl.pageReportNotes(report.id);
   };
 
   this.selectReport = function(postReport, initialPageLoad) {
@@ -320,6 +320,15 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     }
     // Update so pagination knows reportId changed
     ctrl.queryParams.reportId = ctrl.reportId;
+  };
+
+  this.pageReportNotes = function(reportId, page) {
+    AdminReports.pagePostReportsNotes({ report_id: reportId, page: page }).$promise
+    .then(function(reportNotes) {
+      ctrl.reportNotes = reportNotes.data;
+      ctrl.reportNotesPage = reportNotes.page;
+      ctrl.reportNotesPageCount = reportNotes.page_count;
+    });
   };
 
   // Handles case where users links directly to selected report
@@ -348,7 +357,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   this.setSortField = function(sortField) {
     // Sort Field hasn't changed just toggle desc
     var unchanged = sortField === ctrl.field;
-    if (unchanged) { ctrl.desc = ctrl.desc === 'true' ? 'false' : 'true'; } // bool to str
+    if (unchanged) { ctrl.desc = ctrl.desc.toString() === 'true' ? 'false' : 'true'; } // bool to str
     // Sort Field changed default to ascending order
     else { ctrl.desc = 'false'; }
     ctrl.field = sortField;
@@ -427,7 +436,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       reportIdChanged = true;
       ctrl.reportId = reportId;
     }
-    if ((allReports === undefined || allReports) && allReports !== ctrl.allReports) {
+    if (((allReports === undefined && ctrl.allReports !== false) || allReports) && allReports !== ctrl.allReports) {
       allReportsChanged = true;
       ctrl.allReports = allReports;
     }
@@ -448,24 +457,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       mod_id: showAllReports ? undefined : ctrl.user.id
     };
 
-    var opts = { mod_id: showAllReports ? undefined : Session.user.id };
-
-    if (ctrl.filter || ctrl.search) {
-      opts.status = ctrl.filter;
-      opts.search = ctrl.search;
-    }
-
-    // update report's page count
-    AdminReports.postReportsCount(opts).$promise
-    .then(function(updatedCount) {
-      ctrl.count = updatedCount.count;
-      ctrl.pageCount = Math.ceil(updatedCount.count / limit);
-    });
-
     // replace current reports with new reports
     AdminReports.pagePostReports(query).$promise
     .then(function(newReports) {
-      ctrl.postReports = newReports;
+      ctrl.postReports = newReports.data;
+      ctrl.count = newReports.count;
+      ctrl.pageCount = newReports.page_count;
     });
   };
 }];

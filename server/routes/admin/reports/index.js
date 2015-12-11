@@ -14,13 +14,7 @@ module.exports = [
   { method: 'GET', path: '/reports/users', config: reports.pageUserReports },
   { method: 'GET', path: '/reports/posts', config: reports.pagePostReports },
   { method: 'GET', path: '/reports/messages', config: reports.pageMessageReports },
-  { method: 'GET', path: '/reports/users/count', config: reports.userReportsCount },
-  { method: 'GET', path: '/reports/posts/count', config: reports.postReportsCount },
-  { method: 'GET', path: '/reports/messages/count', config: reports.messageReportsCount },
   { method: 'GET', path: '/reports/usernotes/{report_id}', config: reports.pageUserReportsNotes },
   { method: 'GET', path: '/reports/postnotes/{report_id}', config: reports.pagePostReportsNotes },
-  { method: 'GET', path: '/reports/messagenotes/{report_id}', config: reports.pageMessageReportsNotes },
-  { method: 'GET', path: '/reports/usernotes/{report_id}/count', config: reports.userReportsNotesCount },
-  { method: 'GET', path: '/reports/postnotes/{report_id}/count', config: reports.postReportsNotesCount },
-  { method: 'GET', path: '/reports/messagenotes/{report_id}/count', config: reports.messageReportsNotesCount }
+  { method: 'GET', path: '/reports/messagenotes/{report_id}', config: reports.pageMessageReportsNotes }
 ];

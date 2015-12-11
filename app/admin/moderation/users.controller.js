@@ -1,34 +1,36 @@
 var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll',
-'Alert', 'Session', 'AdminReports', 'AdminUsers', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, User, userReports, reportCount, page, limit, field, desc, filter, search, reportId) {
+'Alert', 'Session', 'AdminReports', 'AdminUsers', 'User', 'userReports', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, User, userReports, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'users';
-  this.userReports = userReports;
+  this.userReports = userReports.data;
   this.reportId = reportId;
   this.previewReport = null;
   this.selectedUsername = null;
   this.tableFilter = 0;
-  if (filter === 'Pending') { this.tableFilter = 1; }
-  else if (filter === 'Reviewed') { this.tableFilter = 2; }
-  else if (filter === 'Ignored') { this.tableFilter = 3; }
-  else if (filter === 'Bad Report') { this.tableFilter = 4; }
+  if (userReports.filter === 'Pending') { this.tableFilter = 1; }
+  else if (userReports.filter === 'Reviewed') { this.tableFilter = 2; }
+  else if (userReports.filter === 'Ignored') { this.tableFilter = 3; }
+  else if (userReports.filter === 'Bad Report') { this.tableFilter = 4; }
 
   // Search Vars
-  this.search = search;
-  this.searchStr = search;
-  this.count = reportCount;
+  this.search = userReports.search;
+  this.searchStr = userReports.search;
+  this.count = userReports.count;
 
   // Report Pagination Vars
-  this.pageCount = Math.ceil(reportCount / limit);
+  this.pageCount = userReports.page_count;
   this.queryParams = $location.search();
-  this.page = page;
-  this.limit = limit;
-  this.field = field;
-  this.desc = desc;
-  this.filter = filter;
+  this.page = userReports.page;
+  this.limit = userReports.limit;
+  this.field = userReports.field;
+  this.desc = userReports.desc;
+  this.filter = userReports.filter;
 
   // Report Notes Vars
   this.reportNotes = null;
+  this.reportNotesPage = null;
+  this.reportNotesPageCount = null;
   this.reportNote = null;
   this.noteSubmitted = false;
   this.submitBtnLabel = 'Add Note';
@@ -255,12 +257,12 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
       note: ctrl.reportNote
     };
     AdminReports.createUserReportNote(params).$promise
-    .then(function(createdNote) {
-      ctrl.reportNotes.push(createdNote);
+    .then(function() {
       ctrl.submitBtnLabel = 'Add Note';
       ctrl.noteSubmitted = false;
       ctrl.reportNote = null;
       Alert.success('Note successfully created');
+      ctrl.pageReportNotes(ctrl.reportId, ctrl.reportNotesPage);
     });
   };
 
@@ -286,15 +288,21 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
       ctrl.selectedUsername = userReport.offender_username;
       ctrl.previewReport = userReport;
 
-      AdminReports.pageUserReportsNotes({ report_id: userReport.id }).$promise
-      .then(function(reportNotes) {
-        ctrl.reportNotes = reportNotes;
-      });
+      ctrl.pageReportNotes(userReport.id);
 
       if (initialPageLoad) {
         $state.go('admin-moderation.users.preview', { username: ctrl.selectedUsername }, { location: false, reload: 'admin-moderation.users.preview' });
       }
     }
+  };
+
+  this.pageReportNotes = function(reportId, page) {
+    AdminReports.pageUserReportsNotes({ report_id: reportId, page: page }).$promise
+    .then(function(reportNotes) {
+      ctrl.reportNotes = reportNotes.data;
+      ctrl.reportNotesPage = reportNotes.page;
+      ctrl.reportNotesPageCount = reportNotes.page_count;
+    });
   };
 
   // Handles case when linking to this state with reportId in query string already populated
@@ -323,7 +331,7 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
   this.setSortField = function(sortField) {
     // Sort Field hasn't changed just toggle desc
     var unchanged = sortField === ctrl.field;
-    if (unchanged) { ctrl.desc = ctrl.desc === 'true' ? 'false' : 'true'; } // bool to str
+    if (unchanged) { ctrl.desc = ctrl.desc.toString() === 'true' ? 'false' : 'true'; } // bool to str
     // Sort Field changed default to ascending order
     else { ctrl.desc = 'false'; }
     ctrl.field = sortField;
@@ -416,25 +424,12 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
       search: ctrl.search
     };
 
-    var opts;
-    if (ctrl.filter || ctrl.search) {
-      opts = {
-        status: ctrl.filter,
-        search: ctrl.search
-      };
-    }
-
-    // update report's page count
-    AdminReports.userReportsCount(opts).$promise
-    .then(function(updatedCount) {
-      ctrl.count = updatedCount.count;
-      ctrl.pageCount = Math.ceil(updatedCount.count / limit);
-    });
-
     // replace current reports with new reports
     AdminReports.pageUserReports(query).$promise
     .then(function(newReports) {
-      ctrl.userReports = newReports;
+      ctrl.userReports = newReports.data;
+      ctrl.count = newReports.count;
+      ctrl.pageCount = newReports.page_count;
     });
 
     // Location has already been updated using location.search, reload only child state
