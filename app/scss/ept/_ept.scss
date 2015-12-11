@@ -768,6 +768,14 @@ table.striped {
 }
 .profile-avatar-container { width: 100%; text-align: center; img { height: 12.5rem; width: auto; } }
 
+.slide {
+  @include transition(500ms cubic-bezier(0.075, 0.82, 0.165, 1) all);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  &.open { opacity: 1; margin-bottom: 1rem; }
+}
+
 .polls {
   @include border-radius(4px);
   border: 1px solid $border-color;
@@ -811,23 +819,25 @@ table.striped {
       position: absolute;
       top: 0;
       left: 0;
-      right: 2rem;
+      right: 4.2rem;
       .poll-question { display: inline-block; }
     }
     .poll-lock {
       position: absolute;
       top: 0;
       right: 0;
-      width: 2rem;
+      width: 4.2rem;
       text-align: center;
       label { margin-left: 0; }
-      #lockPoll {
+      label:last-child { margin-right: 0; }
+      .icon {
         display: none;
         & + label:before { font-size: 1.5rem; color: $secondary-font-color-light; }
         &:checked + label:before { color: $color-primary; }
       }
     }
   }
+  // poll information section
   .poll-info {
     margin-bottom: 1rem;
     overflow: auto;
@@ -846,7 +856,13 @@ table.striped {
       @include border-radius(4px);
     }
   }
-  // answer section
+  // poll edit section
+  .poll-edit {
+    background-color: #eee;
+    &.open { max-height: 306px; }
+    .poll-edit-container { padding: 1rem; overflow: hidden; }
+  }
+  // poll answers section
   .poll-answer {
     position: relative;
     height: 1.5625rem;

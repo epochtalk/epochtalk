@@ -36,7 +36,7 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
       if (ctrl.poll.max_answers > ctrl.poll.answers.length) { valid = false; }
       if (ctrl.poll.expiration_date && !ctrl.poll.expiration) { valid = false; }
       if (ctrl.poll.expiration_time && !ctrl.poll.expiration_date) { valid = false; }
-      if (ctrl.poll.expiration < Date.now()) { valid = false; }
+      if (ctrl.poll.expiration && ctrl.poll.expiration < Date.now()) { valid = false; }
       if (ctrl.poll.display_mode !== 'always' && ctrl.poll.display_mode !== 'voted' && ctrl.poll.display_mode !== 'expired') { valid = false; }
 
       return valid;

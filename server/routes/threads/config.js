@@ -605,7 +605,9 @@ exports.editPoll = {
     { method: pre.validateDisplayMode }
   ] ],
   handler: function(request, reply) {
-    var promise = db.polls.update(request.payload);
+    var options = request.payload;
+    options.id = request.params.pollId;
+    var promise = db.polls.update(options).catch(console.log);
     return reply(promise);
   }
 };

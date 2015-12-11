@@ -43,6 +43,16 @@ module.exports = ['$resource',
         params: { threadId: '@threadId', pollId: '@pollId' },
         url: '/api/threads/:threadId/polls/:pollId/vote'
       },
+      createPoll: {
+        method: 'POST',
+        params: { threadId: '@threadId', pollId: '@pollId' },
+        url: '/api/threads/:threadId/polls'
+      },
+      editPoll: {
+        method: 'PUT',
+        params: { threadId: '@threadId', pollId: '@pollId' },
+        url: '/api/threads/:threadId/polls/:pollId'
+      },
       lockPoll: {
         method: 'POST',
         params: { threadId: '@threadId', pollId: '@pollId' },
