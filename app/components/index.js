@@ -12,6 +12,7 @@ app.directive('imageLoader', require('./image_loader/image_loader.directive.js')
 app.directive('postProcessing', require('./post_processing/post-processing.directive.js'));
 app.directive('alert', require('./alert/alert.directive.js'));
 app.directive('imageUploader', require('./image_uploader/image_uploader.directive.js'));
+app.directive('pollViewer', require('./poll_viewer/poll_viewer.directive.js'));
 
 app.directive('categoryEditor', require('./category_editor/category-editor.directive.js'));
 app.directive('nestableBoards', require('./category_editor/nestable-boards.directive.js'));

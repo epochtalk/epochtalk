@@ -62,73 +62,7 @@
 </div>
 
 <!-- Polls -->
-<div class="polls" ng-if="PostsParentCtrl.thread.poll">
-  <!-- Poll Header -->
-  <div class="poll-header">
-    <div class="poll-title">
-      <span ng-if="PostsParentCtrl.thread.poll.locked"><i  class="icon-epoch-lock"></i></span>
-      <h5 class="poll-question" ng-bind="PostsParentCtrl.thread.poll.question"></h5>
-    </div>
-    <div class="poll-lock" ng-if="PostsParentCtrl.pollControlAccess.privilegedLock">
-      <input id="lockPoll" type="checkbox" ng-model="PostsParentCtrl.thread.poll.locked">
-      <label for="lockPoll" class="icon-epoch-lock" ng-click="PostsParentCtrl.updateLockPoll()">
-      </label>
-    </div>
-  </div>
-  <hr>
-
-  <!-- Poll Options Information -->
-  <div class="poll-info">
-    <div class="third-columns label">
-      <span ng-if="PostsParentCtrl.thread.poll.expired">Expired</span>
-      <span ng-if="!PostsParentCtrl.thread.poll.expired">{{(PostsParentCtrl.thread.poll.expiration|humanDate) || 'No Expiration'}}</span>
-    </div>
-    <div class="third-columns label">
-      <span>Up to {{PostsParentCtrl.thread.poll.max_answers}} Choices</span>
-    </div>
-    <div class="third-columns label">
-      <span ng-if="PostsParentCtrl.thread.poll.change_vote">Vote Can Be Change</span>
-      <span ng-if="!PostsParentCtrl.thread.poll.change_vote">Vote Permanent</span>
-    </div>
-    <div class="third-columns label">
-      Results
-      <span ng-if="PostsParentCtrl.thread.poll.display_mode === 'always'">Always Shown</span>
-      <span ng-if="PostsParentCtrl.thread.poll.display_mode === 'voted'">After Voting</span>
-      <span ng-if="PostsParentCtrl.thread.poll.display_mode === 'expired'">After Expiration</span>
-    </div>
-  </div>
-
-  <!-- Poll Results -->
-  <div ng-if="!PostsParentCtrl.thread.poll.hasVoted && !PostsParentCtrl.thread.poll.locked && !PostsParentCtrl.thread.poll.expired && PostsParentCtrl.pollControlAccess.vote">
-    <div class="poll-answer" ng-repeat="answer in PostsParentCtrl.thread.poll.answers">
-      <label>
-        <div class="poll-select">
-          <input type="checkbox" ng-click="PostsParentCtrl.toggleAnswer(answer.id)" ng-disabled="PostsParentCtrl.pollAnswers.length >= PostsParentCtrl.thread.poll.max_answers && PostsParentCtrl.pollAnswers.indexOf(answer.id) === -1"/>
-        </div>
-        <div class="poll-bar voting-mode">
-          <span class="poll-answer-title" ng-bind="answer.answer"></span>
-          <span class="poll-answer-fill" ng-bind="'(' + answer.percentage + '%) ' + answer.votes + (answer.votes > 1 || answer.votes === 0 ? ' votes' : ' vote')" ng-if="PostsParentCtrl.showPollResults()"></span>
-          <section ng-style="answer.style" ng-if="PostsParentCtrl.showPollResults()"></section>
-        </div>
-      </label>
-    </div>
-    <button ng-click="PostsParentCtrl.vote()" ng-disabled="PostsParentCtrl.pollAnswers.length === 0">
-      Vote
-    </button>
-  </div>
-  <div ng-if="PostsParentCtrl.thread.poll.hasVoted || PostsParentCtrl.thread.poll.locked || PostsParentCtrl.thread.poll.expired || !PostsParentCtrl.pollControlAccess.vote" >
-    <div class="poll-answer" ng-repeat="answer in PostsParentCtrl.thread.poll.answers">
-      <div class="poll-bar">
-        <span class="poll-answer-title" ng-bind="answer.answer"></span>
-        <span class="poll-answer-fill" ng-bind="'(' + answer.percentage + '%) ' + answer.votes + (answer.votes > 1 || answer.votes === 0 ? ' votes' : ' vote')" ng-if="PostsParentCtrl.showPollResults()"></span>
-        <section ng-style="answer.style" ng-if="PostsParentCtrl.showPollResults()"></section>
-      </div>
-    </div>
-    <button class="expand" ng-if="PostsParentCtrl.thread.poll.hasVoted && !PostsParentCtrl.thread.poll.locked && !PostsParentCtrl.thread.poll.expired && PostsParentCtrl.pollControlAccess.vote && PostsParentCtrl.thread.poll.change_vote" ng-click="PostsParentCtrl.removeVote()">
-      Remove Vote
-    </button>
-  </div>
-</div>
+<poll-viewer thread="PostsParentCtrl.thread"></poll-viewer>
 
 <!-- Posts Listing -->
 <div class="thread-data" ui-view="data"></div>

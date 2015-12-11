@@ -1,0 +1,52 @@
+<div class="polls" ng-if="poll">
+  <!-- Poll Header -->
+  <div class="poll-header">
+    <div class="poll-title">
+      <span ng-if="poll.locked"><i  class="icon-epoch-lock"></i></span>
+      <h5 class="poll-question" ng-bind="poll.question"></h5>
+    </div>
+    <div class="poll-lock" ng-if="permissions.privilegedLock">
+      <input id="lockPoll" type="checkbox" ng-model="poll.locked">
+      <label for="lockPoll" class="icon-epoch-lock" ng-click="updateLockPoll()">
+      </label>
+    </div>
+  </div>
+  <hr>
+
+  <!-- Poll Options Information -->
+  <div class="poll-info">
+    <div class="fourth-columns label">
+      <span ng-if="poll.expired">Expired</span>
+      <span ng-if="!poll.expired">{{(poll.expiration|humanDate) || 'No Expiration'}}</span>
+    </div>
+    <div class="fourth-columns label">
+      <span>Up to {{poll.max_answers}} Choices</span>
+    </div>
+    <div class="fourth-columns label">
+      <span ng-if="poll.change_vote">Vote Can Be Change</span>
+      <span ng-if="!poll.change_vote">Vote Permanent</span>
+    </div>
+    <div class="fourth-columns label">
+      Results
+      <span ng-if="poll.display_mode === 'always'">Always Shown</span>
+      <span ng-if="poll.display_mode === 'voted'">After Voting</span>
+      <span ng-if="poll.display_mode === 'expired'">After Expiration</span>
+    </div>
+  </div>
+
+  <!-- Poll Results -->
+  <div class="poll-answer" ng-repeat="answer in poll.answers">
+    <label>
+      <div class="poll-select" ng-if="canVote()">
+        <input type="checkbox" ng-click="toggleAnswer(answer.id)" ng-disabled="pollAnswers.length >= poll.max_answers && pollAnswers.indexOf(answer.id) === -1"/>
+      </div>
+      <div class="poll-bar">
+        <span class="poll-answer-title" ng-bind="answer.answer"></span>
+        <span class="poll-answer-fill" ng-bind="'(' + answer.percentage + '%) ' + answer.votes + (answer.votes > 1 || answer.votes === 0 ? ' votes' : ' vote')" ng-if="showPollResults()"></span>
+        <section ng-style="answer.style" ng-if="showPollResults()"></section>
+      </div>
+    </label>
+  </div>
+  <button ng-click="vote()" ng-disabled="pollAnswers.length === 0" ng-if="canVote()">Vote</button>
+  <button ng-if="canRemoveVote()" ng-click="removeVote()">Remove Vote</button>
+</div>

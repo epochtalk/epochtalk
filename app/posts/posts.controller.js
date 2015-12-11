@@ -23,7 +23,6 @@ var ctrl = [
 
     // init function
     (function() {
-      calculatePollPercentage();
       parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
       $timeout(function() { highlight($location.hash()); }, 500);
     })();
@@ -74,9 +73,8 @@ var ctrl = [
         ctrl.posts = pageData.posts;
         parent.posts = pageData.posts;
         parent.thread.post_count = pageData.thread.post_count;
-        parent.thread.poll.answers = pageData.thread.poll.answers;
+        parent.thread.poll = pageDate.thread.poll;
         parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
-        calculatePollPercentage();
         $timeout($anchorScroll);
       });
     };
@@ -129,20 +127,6 @@ var ctrl = [
       url += $location.path();
       return url;
     }
-
-    function calculatePollPercentage() {
-      if (!ctrl.thread.poll) { return; }
-
-      ctrl.thread.poll.totalVotes = 0;
-      ctrl.thread.poll.answers.forEach(function(answer) { ctrl.thread.poll.totalVotes += answer.votes; });
-      ctrl.thread.poll.answers.map(function(answer) {
-        var percentage = (answer.votes/ctrl.thread.poll.totalVotes) * 100 || 0;
-        percentage = +percentage.toFixed(1);
-        answer.style = { width: percentage + '%' };
-        answer.percentage = percentage;
-      });
-    }
-    parent.calculatePollPercentage = calculatePollPercentage;
   }
 ];
 

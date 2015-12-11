@@ -776,6 +776,7 @@ table.striped {
   .ng-enter { @include transition(0.3s ease-in all); opacity: 0; }
   .ng-enter-active { opacity: 1; }
   .ng-leave { display: none; }
+  button { margin: 0.5rem 0 0; width: 100%; }
   // poll creation
   &.poll-form {
     button { margin-bottom: 0; }
@@ -830,7 +831,7 @@ table.striped {
   .poll-info {
     margin-bottom: 1rem;
     overflow: auto;
-    .third-columns {
+    .fourth-columns {
       @include row;
       @include span-columns(3);
       @include omega(4n);
@@ -855,7 +856,6 @@ table.striped {
       left: 0;
       text-align: center;
     }
-    & + button{ margin: 0.5rem 0 0; width: 100%; }
     // votes bar
     .poll-bar {
       position: absolute;
@@ -877,16 +877,14 @@ table.striped {
         height: 1.5625rem;
         @include border-radius(15px);
       }
-      &.voting-mode { left: 1.5rem; }
     }
-    .expand { width: 100%; }
+    .poll-select + .poll-bar { left: 1.5rem; }
   }
 
   @include media($mobile) {
-    .poll-answer .poll-bar span {
-      &:first-child { max-width: 60%; }
-      &:last-of-type { max-width: 30%; }
-    }
+    .poll-info .fourth-columns { margin-bottom: 0.5rem; }
+    .poll-answer .poll-bar .poll-answer-title { max-width: 60%; }
+    .poll-answer .poll-bar .poll-answer-fill { max-width: 30%; }
   }
 }
 

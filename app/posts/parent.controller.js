@@ -16,7 +16,6 @@ var ctrl = [
     this.moveBoard = {};
     this.boards = [];
     this.controlAccess = {};
-    this.pollControlAccess = {};
     this.reportControlAccess = {
       reportPosts: Session.hasPermission('reportControls.reportPosts'),
       reportUsers: Session.hasPermission('reportControls.reportUsers')
@@ -39,18 +38,6 @@ var ctrl = [
       delete ctrl.privilegedControlAccess.title;
       delete ctrl.privilegedControlAccess.create;
       ctrl.showThreadControls = some(ctrl.privilegedControlAccess);
-
-      // poll control access
-      ctrl.pollControlAccess = Session.getControlAccess('pollControls', boardId);
-      if (ctrl.user.id === ctrl.thread.user.id) {
-        ctrl.pollControlAccess.privilegedLock = ctrl.pollControlAccess.lock;
-      }
-
-      // poll expiration
-      if (ctrl.thread.poll.expiration) {
-        var expiry = new Date(ctrl.thread.poll.expiration);
-        ctrl.thread.poll.expired = expiry < Date.now();
-      }
 
       // get boards for mods and admins
       ctrl.getBoards();
@@ -138,71 +125,6 @@ var ctrl = [
       .then(function() { $state.go('board.data', {boardId: ctrl.board_id}); })
       .catch(function() { Alert.error('Failed to purge Thread'); })
       .finally(function() { ctrl.showPurgeThreadModal = false; });
-    };
-
-    /* Poll Methods */
-    this.pollAnswers = [];
-
-    this.toggleAnswer = function(answerId) {
-      var maxAnswers = ctrl.thread.poll.max_answers;
-      var idx = ctrl.pollAnswers.indexOf(answerId);
-      if (idx > -1) { ctrl.pollAnswers.splice(idx, 1); }
-      else if (ctrl.pollAnswers.length < maxAnswers) { ctrl.pollAnswers.push(answerId); }
-    };
-
-    this.showPollResults = function() {
-      var show = false;
-      var displayMode = ctrl.thread.poll.display_mode;
-      var hasVoted = ctrl.thread.poll.hasVoted;
-      var expired = ctrl.thread.poll.expired;
-      if (displayMode === 'always') { show = true; }
-      else if (displayMode === 'voted' && hasVoted) { show = true; }
-      else if (displayMode === 'expired' && expired) { show = true; }
-      return show;
-    };
-
-    this.vote = function() {
-      var threadId = ctrl.thread.id;
-      var pollId = ctrl.thread.poll.id;
-      var answerIds = ctrl.pollAnswers;
-
-      Threads.vote({ threadId: threadId, pollId: pollId, answerIds: answerIds}).$promise
-      .then(function(data) {
-        ctrl.pollAnswers = [];
-        ctrl.thread.poll = data;
-        ctrl.calculatePollPercentage();
-        Alert.success('Voted in poll');
-      })
-      .catch(function() { Alert.error('Vote could not be processed'); });
-    };
-
-    this.removeVote = function() {
-      var threadId = ctrl.thread.id;
-      var pollId = ctrl.thread.poll.id;
-
-      Threads.removeVote({ threadId: threadId, pollId: pollId }).$promise
-      .then(function(data) {
-        ctrl.pollAnswers = [];
-        ctrl.thread.poll = data;
-        ctrl.calculatePollPercentage();
-        Alert.success('Removed Vote from Poll');
-      })
-      .catch(function(err) { Alert.error('Error: ' + err.data.message); });
-    };
-
-    this.updateLockPoll = function() {
-      $timeout(function() {
-        var input = {
-          threadId: ctrl.thread.id,
-          pollId: ctrl.thread.poll.id,
-          lockValue: ctrl.thread.poll.locked
-        };
-        return Threads.lockPoll(input).$promise
-        .catch(function() {
-          ctrl.thread.poll.locked = !ctrl.thread.poll.locked;
-          Alert.error('Error Locking Poll');
-        });
-      });
     };
 
     /* Post Methods */
