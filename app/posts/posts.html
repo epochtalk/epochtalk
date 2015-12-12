@@ -27,6 +27,9 @@
   <a class="inverted-button" ng-click="PostsParentCtrl.watchThread()">
     <i class="icon-epoch-watch"></i>Watch This Thread
   </a>
+  <a class="inverted-button" ng-click="PostsParentCtrl.addPoll = !PostsParentCtrl.addPoll" ng-if="!PostsParentCtrl.thread.poll">
+    <i class="icon-epoch-watch"></i>Add a Poll
+  </a>
 </div>
 
 <!-- Thread Controls Section -->
@@ -62,7 +65,11 @@
 </div>
 
 <!-- Polls -->
-<poll-viewer thread="PostsParentCtrl.thread"></poll-viewer>
+<div class="fill-row" ng-if="PostsParentCtrl.addPoll">
+  <poll-creator poll="PostsParentCtrl.poll" valid="PostsParentCtrl.pollValid"></poll-creator>
+  <button class="fill-row" ng-disabled="!PostsParentCtrl.pollValid" ng-click="PostsParentCtrl.createPoll()">Create Poll</button>
+</div>
+<poll-viewer thread="PostsParentCtrl.thread" reset="PostsParentCtrl.resetPoll"></poll-viewer>
 
 <!-- Posts Listing -->
 <div class="thread-data" ui-view="data"></div>

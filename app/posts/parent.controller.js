@@ -15,6 +15,10 @@ var ctrl = [
     this.resize = true;
     this.moveBoard = {};
     this.boards = [];
+    this.addPoll = false;
+    this.pollValid = false;
+    this.resetPoll = false;
+    this.poll = {};
     this.controlAccess = {};
     this.reportControlAccess = {
       reportPosts: Session.hasPermission('reportControls.reportPosts'),
@@ -24,6 +28,7 @@ var ctrl = [
       create: Session.hasPermission('postControls.create')
     };
     this.showThreadControls = false;
+
     // wait for board_id to be populated by child controller
     $scope.$watch(function() { return ctrl.board_id; }, function(boardId) {
       // Get access rights to page controls for authed user
@@ -125,6 +130,21 @@ var ctrl = [
       .then(function() { $state.go('board.data', {boardId: ctrl.board_id}); })
       .catch(function() { Alert.error('Failed to purge Thread'); })
       .finally(function() { ctrl.showPurgeThreadModal = false; });
+    };
+
+    /* Poll Methods */
+
+    this.createPoll = function() {
+      if (!ctrl.pollValid) { return; }
+
+      var requestParams = { threadId: ctrl.thread.id };
+      Threads.createPoll(requestParams, ctrl.poll).$promise
+      .then(function(data) {
+        ctrl.thread.poll = data;
+        ctrl.addPoll = false;
+        ctrl.resetPoll = true;
+      })
+      .catch(function(err) { Alert.error('Error: + err'); });
     };
 
     /* Post Methods */

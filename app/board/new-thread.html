@@ -14,7 +14,7 @@
 <div class="padded-row">
   <div class="fill-row">
     <label for="title">Title:</label>
-    <input type="text" class="input-text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" required autofocus/>
+    <input type="text" class="input-text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" ng-disabled="!NewThreadCtrl.loggedIn()" required autofocus/>
   </div>
 </div>
 
@@ -31,7 +31,7 @@
 <div class="padded-row">
   <div class="fill-row">
     <label>Options:</label>
-    <div class="option">
+    <div class="option" ng-if="NewThreadCtrl.controlAccess.lock">
       <input type="checkbox" id="lockThread" ng-model="NewThreadCtrl.thread.locked" ng-disabled="!NewThreadCtrl.loggedIn()">
       <label for="lockThread">Lock Thread</label>
     </div>
@@ -48,69 +48,11 @@
   </div>
 </div>
 
-<!-- Polls -->
-<div class="fill-row polls poll-form" ng-if="NewThreadCtrl.addPoll">
-  <!-- Poll Question -->
-  <h4>Question:</h4>
-  <input type="text" id="question" ng-model="NewThreadCtrl.poll.question" ng-disabled="!NewThreadCtrl.loggedIn()">
-  <div class="fill-row thin-underline"></div>
-  <!-- Poll Answers -->
-  <h4>Answers:</h4>
-  <div class="answer-row" ng-repeat="answer in NewThreadCtrl.poll.answers track by $index">
-    <div>
-      <input type="text" id="answer-{{$index}}" ng-model="NewThreadCtrl.poll.answers[$index]" ng-disabled="!NewThreadCtrl.loggedIn()">
-      <button ng-if="$index > 1" tabindex="-1" ng-click="NewThreadCtrl.removePollAnswer($index)"><i class="fa fa-minus-circle"></i></button>
-    </div>
-  </div>
-  <!-- Add Answer Button -->
-  <button ng-click="NewThreadCtrl.addPollAnswer()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.poll.answers.length > 7" style="width: 100%">
-    Add Answer
-  </button>
-
-  <hr />
-
-  <h4>Options:</h4>
-  <div class="poll-options">
-    <input type="checkbox" id="pollVote" ng-model="NewThreadCtrl.poll.change_vote" ng-disabled="!NewThreadCtrl.loggedIn()">
-    <label for="pollVote">Allow user to change vote</label>
-    <label for="pollMaxVote">Poll expires at -- {{(NewThreadCtrl.poll.expiration|humanDate) || 'No Expiration'}}</label>
-    <div class="fill-row">
-      <div class="half-column">
-        <input type="date" ng-model="NewThreadCtrl.poll.expiration_date" ng-change="NewThreadCtrl.calcExpiration()" ng-disabled="!NewThreadCtrl.loggedIn()">
-      </div>
-      <div class="half-column">
-        <input type="time" ng-model="NewThreadCtrl.poll.expiration_time" ng-change="NewThreadCtrl.calcExpiration()" ng-disabled="!NewThreadCtrl.loggedIn()">
-      </div>
-    </div>
-    <div class="fill-row">
-      <div class="half-column">
-        <label for="pollMaxVote">Maximum answers per vote:</label>
-        <input type="number" id="pollMaxVote" min="1" max="{{NewThreadCtrl.poll.answers.length}}" value="1" ng-model="NewThreadCtrl.poll.max_answers" ng-disabled="!NewThreadCtrl.loggedIn()">
-      </div>
-      <div class="half-column">
-        <label>Show poll results: </label>
-        <div class="fill-row thin-underline"></div>
-        <label for="displayAlways">
-          <input type="radio" id="displayAlways" ng-model="NewThreadCtrl.poll.display_mode"
-          value="always" ng-disabled="!NewThreadCtrl.loggedIn()">
-          Always
-        </label>
-        <label for="displayVoted">
-          <input type="radio" id="displayVoted" ng-model="NewThreadCtrl.poll.display_mode" value="voted" ng-disabled="!NewThreadCtrl.loggedIn()">
-          After voting
-        </label>
-        <label for="displayExpired">
-          <input type="radio" id="displayExpired" ng-model="NewThreadCtrl.poll.display_mode" value="expired" ng-disabled="!NewThreadCtrl.loggedIn() || !NewThreadCtrl.poll.expiration">
-          After expiration
-        </label>
-      </div>
-    </div>
-  </div>
-</div>
+<poll-creator poll="NewThreadCtrl.poll" valid="NewThreadCtrl.pollValid" ng-if="NewThreadCtrl.addPoll"></poll-creator>
 
 <!-- Submit Button -->
 <div class="padded-row">
-  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || NewThreadCtrl.thread.body.length === 0 || !NewThreadCtrl.pollValid()">
+  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || NewThreadCtrl.thread.body.length === 0 || (NewThreadCtrl.addPoll && !NewThreadCtrl.pollValid)">
     Submit
   </button>
 </div>

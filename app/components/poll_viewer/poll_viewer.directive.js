@@ -1,7 +1,7 @@
 module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, Alert, Threads, $timeout) {
   return {
     restrict: 'E',
-    scope: { thread: '=' },
+    scope: { thread: '=', reset: '=' },
     template: require('./poll_viewer.html'),
     link: function($scope, $element, $attr) {
       // poll selected answers
@@ -11,7 +11,13 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
       // $scope.poll and $scope.options set in watch
 
       // Initialization
-      $scope.$watch('thread', function() {
+      $scope.$watch('thread', function() { initialize(); });
+
+      $scope.$watch('reset', function(newValue) {
+        if (newValue === true) { initialize(); }
+      });
+
+      function initialize() {
         $scope.poll = $scope.thread.poll;
         if (!$scope.poll) { return; }
         $scope.options = {
@@ -35,7 +41,8 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
 
         // calculate poll votes
         $scope.calculatePollPercentage();
-      });
+        $scope.reset = false;
+      }
 
       $scope.toggleAnswer = function(answerId) {
         var maxAnswers = $scope.poll.max_answers;
@@ -177,6 +184,7 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
             var expiry = new Date($scope.poll.expiration);
             $scope.poll.expired = expiry < Date.now();
           }
+          $scope.switches.editPoll = false;
           Alert.success('Poll Options Changes Saved');
         })
         .catch(function(err) { Alert.error('Error: ' + err); });

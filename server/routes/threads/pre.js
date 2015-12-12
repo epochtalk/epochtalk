@@ -154,7 +154,7 @@ module.exports = {
     return reply(result);
   },
   canCreatePoll: function(request,reply) {
-    var threadId = request.params.thread_id;
+    var threadId = request.params.threadId;
     var userId = request.auth.credentials.id;
 
     // make sure thread exists
@@ -166,7 +166,7 @@ module.exports = {
     var promise = Promise.join(getThreadOwner, getPollExists, function(owner, exists) {
       var result = Boom.forbidden();
       if (exists) { results = Boom.badRequest('Poll already exists'); }
-      else if (owner === userId) { result = true; }
+      else if (owner.user_id === userId) { result = true; }
       return result;
     });
 

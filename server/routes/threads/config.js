@@ -636,7 +636,7 @@ exports.editPoll = {
 exports.createPoll = {
   app: {
     poll: 'payload',
-    thread_id: 'params.thread_id'
+    thread_id: 'params.threadId'
   },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'polls.create' },
@@ -660,7 +660,13 @@ exports.createPoll = {
   ] ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
-    var promise = db.polls.create(threadId, request.payload);
+    var poll = request.payload;
+    var promise = db.polls.create(threadId, poll)
+    .then(function(dbPoll) {
+      poll.id = dbPoll.id;
+      poll.answers = poll.answers.map(function(answer) { return { answer: answer }; });
+      return poll;
+    });
     return reply(promise);
   }
 };

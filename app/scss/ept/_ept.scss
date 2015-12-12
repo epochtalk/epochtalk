@@ -799,6 +799,7 @@ table.striped {
         button {
           display: inline-block;
           margin-bottom: 0;
+          margin-top: 0;
           right: 0.25rem;
           top: 0.25rem;
           padding: 0;
@@ -1374,6 +1375,7 @@ main #error-404 {
 }
 .thread-data {
   @include pad(0 0 1rem 0);
+  clear: both;
   .post-block {
     @include row;
     @include clearfix;
