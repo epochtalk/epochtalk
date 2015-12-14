@@ -814,22 +814,9 @@ table.striped {
   }
   // header section
   .poll-header {
-    position: relative;
-    height: 1.25rem;
-    .poll-title {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 4.2rem;
-      .poll-question { display: inline-block; }
-    }
-    .poll-lock {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 4.2rem;
-      text-align: center;
-      label { margin-left: 0; }
+    .poll-question { display: inline; }
+    .poll-control {
+      float: right;
       label:last-child { margin-right: 0; }
       .icon {
         display: none;

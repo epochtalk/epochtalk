@@ -814,16 +814,16 @@
             <!-- Lock Others Polls -->
             <label>
               <input id="threads-privilegedLockPoll" type="checkbox" ng-init="privilegedLockPoll = AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some || AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all" ng-model="privilegedLockPoll" ng-change="privilegedLockPoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some = true : AdminManagementCtrl.newRole.permissions.polls.privilegedLock = undefined; privilegedLockPoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all = undefined : null; privilegedLockPoll ? AdminManagementCtrl.newRole.permissions.polls.lock = true : null" ng-false-value="undefined" />
-              Allow user to lock other's polls
+              Allow user to edit/lock other's polls
             </label>
             <div class="indent">
               <label ng-if="privilegedLockPoll">
                 <input name="polls-privilegedLockPoll-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some" ng-click="AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all = undefined" ng-value="true" />
-                Lock polls in boards this user moderates
+                Edit/Lock polls in boards this user moderates
               </label>
               <label ng-if="privilegedLockPoll">
                 <input name="polls-privilegedLockPoll-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all" ng-click="AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some = undefined" ng-value="true" />
-                Lock polls across all boards
+                Edit/Lock polls across all boards
               </label>
             </div>
           </div>

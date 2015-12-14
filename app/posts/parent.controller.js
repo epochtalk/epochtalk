@@ -43,6 +43,7 @@ var ctrl = [
       delete ctrl.privilegedControlAccess.title;
       delete ctrl.privilegedControlAccess.create;
       ctrl.showThreadControls = some(ctrl.privilegedControlAccess);
+      ctrl.pollControlAccess =  { create: Session.hasPermission('pollControls.create') };
 
       // get boards for mods and admins
       ctrl.getBoards();

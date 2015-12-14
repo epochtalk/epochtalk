@@ -22,12 +22,14 @@
   </div>
 </div>
 
-<!-- Board Controls -->
+<!-- User Controls -->
 <div class="fill-row" ng-if="PostsParentCtrl.loggedIn() && !PostsParentCtrl.thread.watched">
+  <!-- Watch Thread -->
   <a class="inverted-button" ng-click="PostsParentCtrl.watchThread()">
     <i class="icon-epoch-watch"></i>Watch This Thread
   </a>
-  <a class="inverted-button" ng-click="PostsParentCtrl.addPoll = !PostsParentCtrl.addPoll" ng-if="!PostsParentCtrl.thread.poll">
+  <!-- Add Poll -->
+  <a class="inverted-button" ng-click="PostsParentCtrl.addPoll = !PostsParentCtrl.addPoll" ng-if="!PostsParentCtrl.thread.poll && PostsParentCtrl.user.id === PostsParentCtrl.thread.user.id && PostsParentCtrl.pollControlAccess.create">
     <i class="icon-epoch-watch"></i>Add a Poll
   </a>
 </div>
