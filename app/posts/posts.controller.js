@@ -92,6 +92,10 @@ var ctrl = [
       .catch(function(err) { Alert.error('Error watching this board'); });
     };
 
+    this.showEditDate = function(post) {
+      return new Date(post.created_at) < new Date(post.updated_at);
+    };
+
     this.avatarHighlight = function(color) {
       var style = {};
       if (color) {
