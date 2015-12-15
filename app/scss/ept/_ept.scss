@@ -773,7 +773,7 @@ table.striped {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  &.open { opacity: 1; margin-bottom: 1rem; }
+  &.open { opacity: 1; }
 }
 
 .polls {
@@ -814,40 +814,40 @@ table.striped {
   }
   // header section
   .poll-header {
+    margin-bottom: 0.5rem;
+    &:after { content: ""; display: table; clear: both; }
     .poll-question { display: inline; }
-    .poll-control {
+    .poll-controls {
       float: right;
-      label:last-child { margin-right: 0; }
+      width: 3.5rem;
+    }
+    .poll-control {
+      display: inline;
+      width: 1.5rem;
+      margin: 0 0.5rem 0rem 0;
+      label:last-child { margin: 0.5rem 0; }
       .icon {
         display: none;
-        & + label:before { font-size: 1.5rem; color: $secondary-font-color-light; }
+        & + label:before { font-size: 1.4rem; color: $secondary-font-color-light; }
         &:checked + label:before { color: $color-primary; }
       }
     }
-  }
-  // poll information section
-  .poll-info {
-    margin-bottom: 1rem;
-    overflow: auto;
-    .fourth-columns {
-      @include row;
-      @include span-columns(3);
-      @include omega(4n);
-      @include media($mobile) { @include span-columns(8); @include omega; }
-      text-align: center;
-    }
-    .label {
-      background-color: $color-primary-alt;
-      color: $button-text-color;
-      line-height: 1.625rem;
-      font-size: 0.9rem;
-      @include border-radius(4px);
+    .poll-details {
+      float: right;
+      width: 10rem;
+      padding: 0 0 0.5rem 1rem;
+      .poll-info {
+        color: $secondary-font-color-dark;
+        font-size: 0.7rem;
+        font-weight: bold;
+      }
+      &.small { width: 8rem; }
     }
   }
   // poll edit section
   .poll-edit {
     background-color: #eee;
-    &.open { max-height: 306px; }
+    &.open { max-height: 306px; margin-bottom: 1rem; }
     .poll-edit-container { padding: 1rem; overflow: hidden; }
   }
   // poll answers section
@@ -857,15 +857,15 @@ table.striped {
     margin: 0.5rem 0 0.5rem 0;
     .poll-select {
       position: absolute;
-      left: 0;
-      text-align: center;
+      top: 0.2rem;
+      left: 0.5rem;
+      &:checked + .poll-bar { background-color: $color-primary-transparent; }
     }
     // votes bar
     .poll-bar {
-      position: absolute;
+      @include transition(250ms linear all);
+      position: relative;
       height: 1.5625rem;
-      left: 0;
-      right: 0;
       @include border-radius(15px);
       border: 1px solid $border-color;
       span {
@@ -873,22 +873,25 @@ table.striped {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        line-height: 1.4625rem;
       }
-      .poll-answer-title { max-width: 75%; left: 0.625rem; line-height: 1.4625rem; }
-      .poll-answer-fill { max-width: 20%; left: initial; right: 0.625rem; line-height: 1.3625rem; }
+      .poll-answer-title { max-width: 100%; left: 2rem; }
+      .poll-answer-fill { max-width: 20%; right: 0.625rem; }
       section {
-        background-color: $color-primary;
-        height: 1.5625rem;
+        background-color: $color-primary-transparent;;
+        height: 1.4625rem;
         @include border-radius(15px);
       }
     }
-    .poll-select + .poll-bar { left: 1.5rem; }
   }
 
   @include media($mobile) {
     .poll-info .fourth-columns { margin-bottom: 0.5rem; }
     .poll-answer .poll-bar .poll-answer-title { max-width: 60%; }
     .poll-answer .poll-bar .poll-answer-fill { max-width: 30%; }
+    .poll-header .poll-controls { width: 100%; text-align: center; }
+    .poll-header .poll-control { margin: 0.5rem; }
+    .poll-header .poll-details, .poll-header .poll-details.small { width: 100%; text-align: center; padding-left: 0; }
   }
 }
 

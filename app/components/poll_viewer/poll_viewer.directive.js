@@ -35,8 +35,14 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
 
         // poll expiration
         if ($scope.poll.expiration) {
+          // set poll expired
           var expiry = new Date($scope.poll.expiration);
           $scope.poll.expired = expiry < Date.now();
+
+          // set options expiration
+          var datetime = new Date($scope.poll.expiration);
+          $scope.options.expiration_date = datetime;
+          $scope.options.expiration_time = datetime;
         }
 
         // calculate poll votes
