@@ -1,4 +1,4 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Messages', 'messageReports', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Messages, messageReports, reportId) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Messages', 'Conversations', 'messageReports', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Messages, Conversations, messageReports, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'messages';
@@ -349,6 +349,49 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     else { sortClass = 'fa fa-sort'; }
     return sortClass;
   };
+
+  // Warn users
+  this.newConversation = {};
+  this.showWarnModal = false;
+  this.warnSubmitted = false;
+  this.warnBtnLabel = 'Send Warning';
+
+  this.createConversation = function() {
+    ctrl.warnSubmitted = true;
+    ctrl.warnBtnLabel = 'Sending...';
+    // create a new conversation id to put this message under
+    var newMessage = {
+      receiver_id: ctrl.newConversation.receiver_id,
+      body: ctrl.newConversation.body,
+    };
+
+    Conversations.save(newMessage).$promise
+    .then(function() {
+      Alert.success('Warning has been sent to ' + ctrl.selectedUser.username);
+    })
+    .catch(function() { Alert.error('There was an error warning ' +  ctrl.selectedUser.username); })
+    .finally(function() { ctrl.closeWarn(); });
+  };
+
+  this.showWarn = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.newConversation.receiver_id = user.id;
+    ctrl.showWarnModal = true;
+  };
+
+  this.closeWarn = function() {
+    ctrl.selectedUser = null;
+    ctrl.warnSubmitted = false;
+    // Fix for modal not opening after closing
+    $timeout(function() { ctrl.showWarnModal = false; });
+
+    // Wait for modal to disappear then clear fields
+    $timeout(function() {
+      ctrl.newConversation = {};
+      ctrl.warnBtnLabel = 'Send Warning';
+    }, 1000);
+  };
+
 
   $timeout($anchorScroll);
 

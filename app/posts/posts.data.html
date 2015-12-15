@@ -15,6 +15,7 @@
     <div class="post-title">
       <a class="username css-tooltip" data-css-tooltip="{{post.user.role_name || 'User'}}" ui-sref="profile({ username: post.user.username})" ng-style="PostsCtrl.usernameHighlight(post.user.highlight_color)" ng-bind-html="::post.user.username"></a>
       <div class="timestamp" ng-bind="::post.created_at | humanDate"></div>
+      <div class="timestamp" ng-if="PostsCtrl.showEditDate(post)" ng-bind-html="'&nbsp;&mdash; Edited ' + (post.updated_at | humanDate)"></div>
 
       <ul class="post-action">
         <li ng-if="PostsCtrl.controlAccess.privilegedPurge && $index !== 0">

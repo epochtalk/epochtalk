@@ -1,4 +1,4 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Posts', 'postReports', 'reportId', 'allReports', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Posts, postReports, reportId, allReports) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Conversations', 'Posts', 'postReports', 'reportId', 'allReports', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Conversations, Posts, postReports, reportId, allReports) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'posts';
@@ -302,6 +302,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     // this prevents the row highlight when clicking links
     // within the row
     if (ctrl.selectedUser || ctrl.selectedPostReport) { return; }
+
     // Clear Report Notes
     ctrl.reportNotes = null;
     ctrl.reportNote = null;
@@ -383,6 +384,160 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     else { sortClass = 'fa fa-sort'; }
     return sortClass;
   };
+
+  // Purge, Delete, Undelete Post
+  this.showPostConfirmModal = false;
+  this.postActionSubmitted = false;
+  this.postActionParams = null;
+  this.postActionBtnLabel = 'Confirm';
+  this.showPostConfirm = function(params) {
+    ctrl.postActionParams = params;
+    ctrl.showPostConfirmModal = true;
+  };
+
+  this.closePostConfirm = function() {
+    ctrl.postActionSubmitted = false;
+    $timeout(function() { ctrl.showPostConfirmModal = false; });
+    $timeout(function() {
+      ctrl.postActionParams = null;
+      ctrl.postActionBtnLabel = 'Confirm';
+    }, 1000);
+  };
+
+  this.postAction = function() {
+    ctrl.postActionBtnLabel = 'Loading...';
+    ctrl.postActionSubmitted = true;
+    var promiseParam = { id: ctrl.postActionParams.postId };
+    var promise, errMsg, successMsg;
+    if (ctrl.postActionParams.purge) {
+      promise = Posts.purge(promiseParam).$promise;
+      successMsg = 'Post successfully purged';
+      errMsg = 'There was an error purging the post';
+    }
+    else if (ctrl.postActionParams.delete) {
+      promise = Posts.delete(promiseParam).$promise;
+      successMsg = 'Post successfully hidden';
+      errMsg = 'There was an error hiding the post';
+    }
+    else if (ctrl.postActionParams.undelete) {
+      promise = Posts.undelete(promiseParam).$promise;
+      successMsg = 'Post successfully unhidden';
+      errMsg = 'There was an error unhiding the post';
+    }
+    promise.then(function(post) {
+      ctrl.previewPost = post;
+      Alert.success(successMsg);
+    })
+    .catch(function() { Alert.error(errMsg); })
+    .finally(function() { ctrl.closePostConfirm(); });
+  };
+
+  // Warn users
+  this.newConversation = {};
+  this.showWarnModal = false;
+  this.warnSubmitted = false;
+  this.warnBtnLabel = 'Send Warning';
+
+  this.createConversation = function() {
+    ctrl.warnSubmitted = true;
+    ctrl.warnBtnLabel = 'Sending...';
+    // create a new conversation id to put this message under
+    var newMessage = {
+      receiver_id: ctrl.newConversation.receiver_id,
+      body: ctrl.newConversation.body,
+    };
+
+    Conversations.save(newMessage).$promise
+    .then(function() {
+      Alert.success('Warning has been sent to ' + ctrl.selectedUser.username);
+    })
+    .catch(function() { Alert.error('There was an error warning ' +  ctrl.selectedUser.username); })
+    .finally(function() { ctrl.closeWarn(); });
+  };
+
+  this.showWarn = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.newConversation.receiver_id = user.id;
+    ctrl.showWarnModal = true;
+  };
+
+  this.closeWarn = function() {
+    ctrl.selectedUser = null;
+    ctrl.warnSubmitted = false;
+    // Fix for modal not opening after closing
+    $timeout(function() { ctrl.showWarnModal = false; });
+
+    // Wait for modal to disappear then clear fields
+    $timeout(function() {
+      ctrl.newConversation = {};
+      ctrl.warnBtnLabel = 'Send Warning';
+    }, 1000);
+  };
+
+  //editor specific
+  this.dirtyEditor = false;
+  this.resetEditor = false;
+  this.showEditor = false;
+  this.focusEditor = false;
+  this.posting = { post: { body: '', raw_body: '' } };
+  this.editorPosition = 'editor-fixed-bottom';
+  this.resize = true;
+
+  this.savePost = function() {
+    var post = ctrl.posting.post;
+    Posts.update(post).$promise
+    .then(function(data) {
+      ctrl.previewPost.body = data.body;
+      ctrl.previewPost.raw_body = data.raw_body;
+      Alert.success('Post successfully updated');
+    })
+    .catch(function(err) {
+      var error = 'Post could not be updated';
+      if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
+      if (err.status === 403) { error = 'You do not have the proper permissions to update this post'; }
+      Alert.error(error);
+    })
+    .finally(closeEditor);
+  };
+
+  this.loadEditor = function() {
+    ctrl.loadPost(ctrl.previewPost);
+  };
+
+  this.loadPost = function(post) {
+    var editorPost = ctrl.posting.post;
+    editorPost.thread_id = post.thread_id;
+    editorPost.title = post.title || '';
+    editorPost.id = post.id || '';
+    editorPost.body = post.body || '';
+    editorPost.raw_body = post.raw_body || '';
+    ctrl.resetEditor = true;
+    ctrl.showEditor = true;
+    ctrl.focusEditor = true;
+  };
+
+  this.isMinimized = true;
+  this.fullscreen = function() {
+    if (ctrl.isMinimized) {
+      ctrl.isMinimized = false;
+      this.editorPosition = 'editor-full-screen';
+      this.resize = false;
+    }
+    else {
+      ctrl.isMinimized = true;
+      this.editorPosition = 'editor-fixed-bottom';
+      this.resize = true;
+    }
+  };
+
+  function closeEditor() {
+    ctrl.posting.post.raw_body = '';
+    ctrl.posting.post.body = '';
+    ctrl.resetEditor = true;
+    ctrl.showEditor = false;
+  }
+
+  this.cancelPost = function() { closeEditor(); };
 
   $timeout($anchorScroll);
 

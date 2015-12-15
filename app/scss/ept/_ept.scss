@@ -82,6 +82,7 @@ datalist { z-index: 10001; }
 .desc-label { color: $secondary-font-color; }
 .pointer { cursor: pointer; }
 .default-cursor { cursor: default; }
+.inline { display: inline; }
 .inline-block { display: inline-block; }
 .bold { font-weight: bold; }
 .right { float: right; }
@@ -220,6 +221,15 @@ table.underlined, table.report-details {
     td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: middle; }
     td input { margin-bottom: 0; }
   }
+}
+.post-editor-overlay {
+  background: rgba(0, 0, 0, 0.15);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
 }
 .ng-modal.ng-hide { opacity: 1; }
 .ng-modal { @include transition(opacity 0.2s linear); opacity: 1; }
@@ -707,6 +717,7 @@ input[type="checkbox"] + label, input[type="radio"] + label {
     }
   }
 }
+.css-tooltip.icon { margin-right: 0.75rem; }
 .css-tooltip { display: inline; position: relative; }
 .css-tooltip:hover:after {
   background: #333;
@@ -1902,17 +1913,16 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
   table-layout: fixed;
   th { @include truncate-ellipsis; }
   th.reason { width: 25rem; }
-  th.user-actions { width: 9rem; }
-  th.post-actions { width: 13.5rem; }
+  th.mod-actions { width: 5.25rem; }
   tr td {
     @include truncate-ellipsis;
     padding-right: 0.5rem;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
     font-size: 0.75rem;
+    &.inline { line-height: 1.65rem; }
     div {
       @include truncate-ellipsis;
-      display: inline-block;
       width: 24rem;
     }
   }
@@ -1926,6 +1936,7 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
   i { @include pad(0 0.5rem 0 0); }
 }
 table.report-details {
+  tr:first-child td { padding-top: 0; }
   td.field {
     font-size: 0.8125rem;
     color: $secondary-font-color;
@@ -1934,7 +1945,9 @@ table.report-details {
     vertical-align: top;
     padding-right: 0.5rem;
   }
-  td.desc { font-size: 0.875rem; }
+  td.desc {
+    font-size: 0.875rem;
+  }
 }
 
 .note-avatar-container {
