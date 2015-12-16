@@ -1,18 +1,16 @@
 <div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards">
   <!-- Category Title -->
-
-  <div>
-    <div class="title">
-      <div ng-click="BoardsCtrl.toggle($index)" class="collapse-section">
-        <a ng-class="{ 'fa-chevron-right' : BoardsCtrl.toggles[$index], 'fa-chevron-down': !BoardsCtrl.toggles[$index] }"
-        class="fa collapse-btn no-select"></a>
-        <h4 ng-bind-html="::cat.name"></h4>
-      </div>
-      <div class="thin-underline"></div>
+  <div class="title">
+    <div ng-click="cat.show = !cat.show" class="collapse-section">
+      <a ng-class="{ 'fa-chevron-right' : cat.show, 'fa-chevron-down': !cat.show }"
+      class="fa collapse-btn no-select"></a>
+      <h4 ng-bind-html="::cat.name"></h4>
     </div>
+    <div class="thin-underline"></div>
   </div>
+
   <!-- Boards in Category -->
-  <div slide-toggle="BoardsCtrl.toggles[$index]">
+  <div slide-toggle="cat.show" ng-init="cat.show = true">
     <div class="board" ng-repeat="board in cat.boards track by board.id">
       <!-- Board Info -->
       <div class="info">

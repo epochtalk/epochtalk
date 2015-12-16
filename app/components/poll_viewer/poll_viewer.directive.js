@@ -29,8 +29,10 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
 
         // get poll permissions
         $scope.permissions = Session.getControlAccess('pollControls', $scope.thread.board_id);
+        if ($scope.permissions.privilegedLock) { $scope.permissions.edit = true; }
         if ($scope.user.id === $scope.thread.user.id) {
           $scope.permissions.privilegedLock = $scope.permissions.lock;
+          if ($scope.permissions.create) { $scope.permissions.edit = true; }
         }
 
         // poll expiration

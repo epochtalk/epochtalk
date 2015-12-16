@@ -770,10 +770,9 @@ table.striped {
 
 .slide {
   @include transition(500ms cubic-bezier(0.075, 0.82, 0.165, 1) all);
-  opacity: 0;
-  max-height: 0;
   overflow: hidden;
   &.open { opacity: 1; }
+  &.closed { opacity: 0; max-height: 0; }
 }
 
 .polls {
@@ -847,7 +846,7 @@ table.striped {
   // poll edit section
   .poll-edit {
     background-color: #eee;
-    &.open { max-height: 306px; margin-bottom: 1rem; }
+    &.open { margin-bottom: 1rem; }
     .poll-edit-container { padding: 1rem; overflow: hidden; }
   }
   // poll answers section
@@ -1172,7 +1171,6 @@ main #error-404 {
 .category {
   @include row;
   .title {
-    @include span-columns(12);
     h4 { display: inline-block; padding-left: 0.5rem; }
     a { display: inline-block; width: 1rem; }
     .collapse-section { @include no-select; cursor: pointer; display: inline-block; }
