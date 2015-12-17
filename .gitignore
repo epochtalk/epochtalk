@@ -49,3 +49,4 @@ test/coverage/
 /app/scss/loading-bar.scss
 /app/.sass-cache/
 /app/plugins.js
+/app/resources/plugins.js

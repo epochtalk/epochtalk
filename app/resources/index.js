@@ -1,4 +1,5 @@
 require('./admin');
+require('./plugins');
 
 angular.module('ept')
   .factory('Breadcrumbs', require('./breadcrumbs.js'))
