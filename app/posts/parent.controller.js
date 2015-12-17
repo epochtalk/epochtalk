@@ -171,6 +171,7 @@ var ctrl = [
         ctrl.posting.index = index;
         var editorPost = ctrl.posting.post;
         editorPost.id = post.id || '';
+        editorPost.title = post.title || '';
         editorPost.body = post.body || '';
         editorPost.raw_body = post.raw_body || '';
         ctrl.resetEditor = true;
@@ -182,7 +183,7 @@ var ctrl = [
     this.savePost = function() {
       var post = ctrl.posting.post;
       var type = post.id ? 'update' : 'create';
-      post.title = 'Re: ' + ctrl.thread.title;
+      post.title = post.title || 'Re: ' + ctrl.thread.title;
       post.thread_id = ctrl.thread.id;
 
       var postPromise;

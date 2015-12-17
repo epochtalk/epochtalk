@@ -84,9 +84,7 @@ module.exports = ['$timeout', '$window', '$rootScope', function($timeout, $windo
       // -- Page Exit Eventing
 
       var confirmMessage = 'It looks like a post is being written.';
-      var exitFunction = function() {
-        if ($scope.dirty) { return confirmMessage; }
-      };
+      var exitFunction = function() { if ($scope.dirty) { return confirmMessage; } };
       $window.onbeforeunload = exitFunction;
 
       var routeLeaveFunction = function() {
