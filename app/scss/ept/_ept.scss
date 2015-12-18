@@ -203,6 +203,8 @@ table.underlined, table.report-details {
     tr { border-bottom: 1px solid $border-color; }
     th { color: $secondary-font-color; font-weight: 400; padding-bottom: 0.5rem; }
     th.left-icon-col { width: 1.5rem; }
+    th.mod-actions { width: 5.25rem; }
+    th.user-actions { width: 8rem; }
   }
   tr {
     border-bottom: 1px solid $border-color-alt;
@@ -212,8 +214,8 @@ table.underlined, table.report-details {
     &.active-row, &.active-row:nth-of-type(even) { background-color: $color-primary; }
     &.active-row.selectable-row:hover { background-color: $color-primary }
     &.active-row td { color: $button-text-color; }
-    &.active-row td a { color: darken($color-primary-alt, 10%); }
-    &.active-row td a:hover { color: $color-primary-alt; }
+    &.active-row td a, &.active-row td button { color: darken($color-primary-alt, 10%); }
+    &.active-row td a:hover, &.active-row td button:not([disabled]):hover { color: $color-primary-alt; }
     &:nth-of-type(even) { background: transparent; }
     &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
     &.active-row td.left-icon-col { color: $button-text-color; }
@@ -257,7 +259,7 @@ table.underlined, table.report-details {
   overflow-y: auto;
   max-height: 80vh;
   p { margin-bottom: 1rem; }
-  button, .button { margin-bottom: 0; }
+  button, .button, .clear button, button.fill-row { margin-bottom: 0; }
   @include media($desktop-small) { @include span-columns(6, block-collapse); }
   @include media($mobile) { @include span-columns(7, block-collapse); top: 5vh; max-height: 90vh; }
 }
@@ -717,7 +719,23 @@ input[type="checkbox"] + label, input[type="radio"] + label {
     }
   }
 }
-.css-tooltip.icon { margin-right: 0.75rem; }
+.css-tooltip.icon {
+  @include pad(0);
+  margin: 0 0.75rem 0 0;
+  background: none;
+  color: $color-primary;
+  font-size: 0.875rem;
+  &:hover, &:active {
+    color: $color-primary-alt;
+    background: none;
+    font-size: 0.875rem;
+  }
+  &:disabled {
+    color: $secondary-font-color-light;
+    background: none;
+    font-size: 0.875rem;
+  }
+}
 .css-tooltip { display: inline; position: relative; }
 .css-tooltip:hover:after {
   background: #333;
@@ -1913,7 +1931,6 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
   table-layout: fixed;
   th { @include truncate-ellipsis; }
   th.reason { width: 25rem; }
-  th.mod-actions { width: 5.25rem; }
   tr td {
     @include truncate-ellipsis;
     padding-right: 0.5rem;
@@ -1928,7 +1945,10 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
   }
 }
 .report-details-wrap { @include span-columns(4); margin-bottom: 1rem; }
-.preview-wrap { @include span-columns(8); @include omega; margin-bottom: 1rem; }
+.preview-wrap {
+  @include span-columns(8); @include omega; margin-bottom: 1rem;
+  h5 span { color: $secondary-font-color; }
+}
 .indicator {
   font-size: 0.75rem;
   margin-left: 0.5rem;
@@ -1947,6 +1967,11 @@ table.report-details {
   }
   td.desc {
     font-size: 0.875rem;
+    .note {
+      font-size: 0.65rem;
+      color: $secondary-font-color;
+      margin-top: 0.25rem;
+    }
   }
 }
 

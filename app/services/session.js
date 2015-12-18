@@ -166,6 +166,27 @@ module.exports = ['$window',
       return result;
     }
 
+    function getModPanelControlAccess() {
+      var result = {};
+      if (user.permissions) {
+        var perm = function(p) {
+          p = get(user.permissions, p);
+          p = p ? p : false; // change undefined to false
+          return (typeof p === 'boolean') ? p : (p.some || p.all || p.samePriority || p.lowerPriority || false);
+        };
+        // Retrieve specific permissions used to display mod actions in moderation pages
+        result.postControls = {
+          privilegedDelete: perm('postControls.privilegedDelete'),
+          privilegedUpdate: perm('postControls.privilegedUpdate'),
+          privilegedPurge: perm('postControls.privilegedPurge'),
+        };
+        result.userControls = { privilegedBan: perm('profileControls.privilegedBan') };
+        result.reportControls = hasPermission('reportControls');
+        result.messageControls = hasPermission('messageControls');
+      }
+      return result;
+    }
+
     function getControlAccessWithPriority(permission, othersPriority) {
       var result = {};
       if (user.permissions) {
@@ -190,6 +211,7 @@ module.exports = ['$window',
       hasPermission: hasPermission,
       moderatesBoard: moderatesBoard,
       globalModeratorCheck: globalModeratorCheck,
+      getModPanelControlAccess: getModPanelControlAccess,
       getControlAccess: getControlAccess,
       getControlAccessWithPriority: getControlAccessWithPriority,
       user: user,

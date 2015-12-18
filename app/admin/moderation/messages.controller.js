@@ -11,6 +11,9 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   else if (messageReports.filter === 'Ignored') { this.tableFilter = 3; }
   else if (messageReports.filter === 'Bad Report') { this.tableFilter = 4; }
 
+  // Get Action Control Access
+  this.actionAccess = Session.getModPanelControlAccess();
+
   // Search Vars
   this.search = messageReports.search;
   this.searchStr = messageReports.search;
@@ -126,10 +129,10 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
           note: ctrl.statusReportNote
         };
         return AdminReports.createMessageReportNote(params).$promise
-        .then(function(createdNote) {
+        .then(function() {
           // Add note if report is currently being previewed
           if (ctrl.reportNotes && ctrl.previewReport.id === ctrl.selectedMessageReport.id) {
-            ctrl.reportNotes.push(createdNote);
+            ctrl.pageReportNotes(ctrl.previewReport.id, ctrl.reportNotesPage);
           }
         });
       }
@@ -174,7 +177,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       return results;
     })
     .then(updateBanLabel)
-    .then(function() {
+    .catch(function(err) {
+      var msg = 'There was an error banning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmBan();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -206,7 +214,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       return results;
     })
     .then(updateBanLabel)
-    .then(function() {
+    .catch(function(err) {
+      var msg = 'There was an error unbanning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmUnban();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -221,6 +234,9 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
         // unbanning sets ban expiration to current time
         var expiration = new Date(params.expiration) > new Date() ? params.expiration : undefined;
         ctrl.messageReports[i].offender_ban_expiration = expiration;
+        if (ctrl.previewReport && ctrl.messageReports[i].id === ctrl.previewReport.id) {
+          ctrl.previewReport.offender_ban_expiration = expiration;
+        }
       }
     }
   };

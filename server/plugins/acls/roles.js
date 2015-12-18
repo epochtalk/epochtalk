@@ -75,6 +75,10 @@ module.exports = roles;
         samePriority: true,
         lowerPriority: true
       },
+      privilegedBan: {
+        samePriority: true,
+        lowerPriority: true
+      },
       update: true,
       find: true,
       addRoles: true,
@@ -284,12 +288,15 @@ roles.superAdministrator = {
   },
   adminUsers: {
     privilegedUpdate: {
-      lowerPriority: true
+      samePriority: true
     },
     privilegedAddRoles: {
       samePriority: true
     },
     privilegedRemoveRoles: {
+      samePriority: true
+    },
+    privilegedBan: {
       samePriority: true
     },
     update: true,
@@ -475,6 +482,9 @@ roles.administrator = {
     privilegedRemoveRoles: {
       lowerPriority: true
     },
+    privilegedBan: {
+      lowerPriority: true
+    },
     update: true,
     find: true,
     addRoles: true,
@@ -641,6 +651,9 @@ roles.globalModerator = {
     privilegedUpdate: {
       lowerPriority: true
     },
+    privilegedBan: {
+      lowerPriority: true
+    },
     update: true,
     find: true,
     ban: true,
@@ -771,6 +784,9 @@ roles.moderator = {
   },
   adminUsers: {
     privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedBan: {
       lowerPriority: true
     },
     update: true,
