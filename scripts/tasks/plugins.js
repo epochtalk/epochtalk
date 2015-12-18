@@ -45,7 +45,6 @@ module.exports = function() {
 
     return Promise.all([
       new Promise(function(resolve, reject) {
-        console.log('checking temprates');
         fs.stat(templatePath, function(err, stats) {
           if (!err && stats.isDirectory()) {
             // template dir for this plugin
