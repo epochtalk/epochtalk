@@ -67,6 +67,7 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Ima
               updateImagesUploading();
               var message = 'Image upload failed for: ' + imageProgress.name + '. ';
               if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
+              else if (err.message) { console.log(err); }
               else { message += 'Please ensure images are within size limits.'; }
               Alert.error(message);
             })

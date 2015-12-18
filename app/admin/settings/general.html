@@ -115,6 +115,10 @@
 <div class="settings half-column section-header-top-spacing">
   <!-- SMTP Configurations -->
   <h5 class="thin-underline">SMTP Configurations</h5>
+  <div>
+    <label for="smtp-sender">SMTP Sender Email Address</label>
+    <input type="text" class="input-text" id="smtp-sender" ng-model="AdminSettingsCtrl.settings.emailer.sender" placeholder="Example: ept@epochtalk.com" />
+  </div>
   <div class="input-nine-three-col">
     <div>
       <label for="smtp-server">SMTP Server</label>
