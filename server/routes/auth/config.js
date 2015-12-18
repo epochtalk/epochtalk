@@ -180,17 +180,12 @@ exports.register = {
     .then(function(user) {
       if (config.verifyRegistration) {  // send confirmation email
         var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
-        var emailParams = {
-          email: user.email, username: user.username, confirm_url: confirmUrl
-        };
+        var emailParams = { email: user.email, username: user.username, confirm_url: confirmUrl };
         request.server.log('debug', emailParams);
         emailer.send('confirmAccount', emailParams);
         return {
-          statusCode: 200,
           message: 'Successfully Created Account',
-          username: user.username,
-          confirm_token: user.confirmation_token,
-          confirm_url: confirmUrl
+          username: user.username
         };
       }
       else { // Log user in after registering
@@ -239,22 +234,17 @@ exports.confirmAccount = {
     .then(function(user) {
       var tokenMatch = confirmationToken === user.confirmation_token;
       if (user.confirmation_token && tokenMatch) {
-        return db.users.update({ confirmation_token: null, id: user.id });
+        return db.users.update({ confirmation_token: null, id: user.id })
+        .then(function() { return user; });
       }
-      else {
-        return Promise.reject(Boom.badRequest('Account Confirmation Error'));
-      }
+      else { return Promise.reject(Boom.badRequest('Account Confirmation Error')); }
     })
     // get user moderating boards
     .then(function(user) {
-      user.roles = []; // TODO: needs permanent fix in helper.saveSession
       return db.moderators.getUsersBoards(user.id)
       .then(function(boards) {
-        if (boards) { // TODO: hotfix, not sure if really borked.
-          boards = boards.map(function(board) { return board.board_id; });
-          user.moderating = boards;
-        }
-        else { user.moderating = []; }
+        boards = boards.map(function(board) { return board.board_id; });
+        user.moderating = boards;
       })
       .then(function() { return user; });
     })

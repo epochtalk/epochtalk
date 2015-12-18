@@ -165,6 +165,14 @@ function formatUserReply(token, user) {
   };
 }
 
+/**
+ * Assumes that the user parameter has
+  * id
+  * username
+  * roles
+  * moderating
+  * avatar
+ */
 helper.saveSession = function(user) {
   // build Token
   var tokenResult = buildToken(user.id);
@@ -172,7 +180,7 @@ helper.saveSession = function(user) {
   var token = tokenResult.token;
   user.roles = user.roles.map(function(role) { return role.lookup; });
   // default to user role
-  if (!user.roles || !user.roles.length) { user.roles = ['user']; }
+  if (!user.roles.length) { user.roles = ['user']; }
 
   // save username, avatar to redis hash under "user:{userId}"
   var userKey = 'user:' + user.id;
@@ -190,7 +198,9 @@ helper.saveSession = function(user) {
     var moderatingKey = 'user:' + user.id + ':moderating';
     return redis.delAsync(moderatingKey)
     .then(function() {
-      if (user.moderating && user.moderating.length) { return redis.saddAsync(moderatingKey, user.moderating); }
+      if (user.moderating && user.moderating.length) {
+        return redis.saddAsync(moderatingKey, user.moderating);
+      }
     });
   })
   // save session to redis key under "user:{userId}:session:{sessionId}"
