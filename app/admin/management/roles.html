@@ -39,7 +39,7 @@
   <br /><br />
   <div ng-show="AdminManagementCtrl.showAddUsers">
     <tags-input min-length="1" placeholder="Type username to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="AdminManagementCtrl.usersToAdd">
-      <auto-complete min-length="1" source="AdminManagementCtrl.loadTags($query)"></auto-complete>
+      <auto-complete min-length="1" debounce-delay="250" source="AdminManagementCtrl.loadTags($query)"></auto-complete>
     </tags-input>
     <div class="button-container">
       <button class="half-button" ng-click="AdminManagementCtrl.usersToAdd = null" ng-disabled="!AdminManagementCtrl.usersToAdd || AdminManagementCtrl.usersToAdd.length < 1">Clear</button>
