@@ -158,8 +158,8 @@ exports.byBoard = {
 
       return {
         board: board,
-        page: opts.page,
-        limit: opts.limit,
+        page: request.query.page,
+        limit: request.query.limit, // limit can be modified by query
         normal: threads.normal,
         sticky: threads.sticky
       };
