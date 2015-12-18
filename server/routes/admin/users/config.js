@@ -51,7 +51,10 @@ var commonPre = require(path.normalize(__dirname + '/../../common')).users;
   * @apiError (Error 500) InternalServerError There was error updating the user
   */
 exports.update = {
-  app: { user_id: 'payload.id' },
+  app: {
+    user_id: 'payload.id',
+    privilege: 'adminUsers.privilegedUpdate'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.update' },
   validate: {
@@ -412,6 +415,10 @@ exports.page = {
   * @apiError (Error 500) InternalServerError There was error banning the user
   */
 exports.ban = {
+  app: {
+    user_id: 'payload.user_id',
+    privilege: 'adminUsers.privilegedBan'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.ban' },
   validate: {
@@ -420,6 +427,7 @@ exports.ban = {
       expiration: Joi.date()
     }
   },
+  pre: [ { method: pre.matchPriority } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
@@ -448,9 +456,14 @@ exports.ban = {
   * @apiError (Error 500) InternalServerError There was error unbanning the user
   */
 exports.unban = {
+  app: {
+    user_id: 'payload.user_id',
+    privilege: 'adminUsers.privilegedBan'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.unban' },
   validate: { payload: { user_id: Joi.string().required() } },
+  pre: [ { method: pre.matchPriority } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var promise = db.users.unban(userId);

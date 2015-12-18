@@ -50,14 +50,15 @@ module.exports = {
   },
   matchPriority: function(request, reply) {
     var referencedUserId = _.get(request, request.route.settings.app.user_id);
+    var privilege = request.route.settings.app.privilege;
     var currentUserId = request.auth.credentials.id;
 
     if (referencedUserId === currentUserId) { return reply(); }
 
     // get user's permissions
     var getACLValue = request.server.plugins.acls.getACLValue;
-    var samePriority = getACLValue(request.auth, 'adminUsers.privilegedUpdate.samePriority');
-    var lowerPriority = getACLValue(request.auth, 'adminUsers.privilegedUpdate.lowerPriority');
+    var samePriority = getACLValue(request.auth, privilege + '.samePriority');
+    var lowerPriority = getACLValue(request.auth, privilege + '.lowerPriority');
 
     // get referenced user's priority
     var refPriority = db.users.find(referencedUserId)

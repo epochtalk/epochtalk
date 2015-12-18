@@ -12,6 +12,9 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   else if (postReports.filter === 'Ignored') { this.tableFilter = 3; }
   else if (postReports.filter === 'Bad Report') { this.tableFilter = 4; }
 
+  // Get Action Control Access
+  this.actionAccess = Session.getModPanelControlAccess();
+
   // Search Vars
   this.search = postReports.search;
   this.searchStr = postReports.search;
@@ -26,7 +29,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   this.desc = postReports.desc;
   this.filter = postReports.filter;
 
-  // Filter to only show reports in moderated baords
+  // Filter to only show reports in moderated boards
   this.allReports = allReports === 'true';
   this.moderatesBoard = Session.moderatesBoard;
   this.isGlobalModerator = Session.globalModeratorCheck();
@@ -143,10 +146,10 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
           note: ctrl.statusReportNote
         };
         return AdminReports.createPostReportNote(params).$promise
-        .then(function(createdNote) {
+        .then(function() {
           // Add note if report is currently being previewed
           if (ctrl.reportNotes && ctrl.previewReport.id === ctrl.selectedPostReport.id) {
-            ctrl.reportNotes.push(createdNote);
+            ctrl.pageReportNotes(ctrl.previewReport.id, ctrl.reportNotesPage);
           }
         });
       }
@@ -197,7 +200,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       return result;
     })
     .then(updateBanLabel)
-    .then(function() {
+    .catch(function(err) {
+      var msg = 'There was an error banning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmBan();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -229,7 +237,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       return result;
     })
     .then(updateBanLabel)
-    .then(function() {
+    .catch(function(err) {
+      var msg = 'There was an error unbanning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmUnban();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -244,6 +257,9 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
         // unbanning sets ban expiration to current time
         var expiration = new Date(params.expiration) > new Date() ? params.expiration : undefined;
         ctrl.postReports[i].offender_ban_expiration = expiration;
+        if (ctrl.previewReport && ctrl.postReports[i].id === ctrl.previewReport.id) {
+          ctrl.previewReport.offender_ban_expiration = expiration;
+        }
       }
     }
   };
@@ -297,6 +313,15 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     ctrl.pageReportNotes(report.id);
   };
 
+  this.deselectReport = function() {
+    ctrl.reportId = null;
+    ctrl.previewPost = null;
+    ctrl.previewReport = null;
+    var params = $location.search();
+    delete params.reportId;
+    $location.search(params);
+  };
+
   this.selectReport = function(postReport, initialPageLoad) {
     // do nothing if user is being selected to be banned
     // this prevents the row highlight when clicking links
@@ -307,14 +332,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     ctrl.reportNotes = null;
     ctrl.reportNote = null;
     ctrl.noteSubmitted = false;
-    if (ctrl.reportId === postReport.id && !initialPageLoad) {
-      ctrl.reportId = null;
-      ctrl.previewPost = null;
-      ctrl.previewReport = null;
-      var params = $location.search();
-      delete params.reportId;
-      $location.search(params);
-    }
+    if (ctrl.reportId === postReport.id && !initialPageLoad) { ctrl.deselectReport(); }
     else {
       if (!initialPageLoad) { $location.search('reportId', postReport.id); }
       ctrl.showPreview(postReport);
@@ -427,6 +445,8 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     promise.then(function(post) {
       ctrl.previewPost = post;
       Alert.success(successMsg);
+      // deselect report if post was purged
+      if (ctrl.postActionParams.purge) { ctrl.deselectReport(); }
     })
     .catch(function() { Alert.error(errMsg); })
     .finally(function() { ctrl.closePostConfirm(); });

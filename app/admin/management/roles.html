@@ -272,23 +272,27 @@
               Allow user to page through all forum moderators
             </label>
 
-            <!-- Ban Users -->
-            <label>
-              <input id="adminUsers-ban" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.ban" ng-false-value="undefined" />
-              Allow user to ban other users
-            </label>
-
-            <!-- Unban Users -->
-            <label>
-              <input id="adminUsers-unban" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.unban" ng-false-value="undefined" />
-              Allow user to unban other users
-            </label>
-
             <!-- View Deleted Users -->
             <label>
               <input id="users-viewDeleted" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.users.viewDeleted" ng-false-value="undefined" />
               Allow user to view deleted users profiles and information
             </label>
+
+            <!-- Ban/Unban User -->
+            <label>
+              <input id="adminUsers-privilegedBan" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.ban" ng-change="AdminManagementCtrl.newRole.permissions.adminUsers.ban ? AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.lowerPriority = true : AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan = undefined; AdminManagementCtrl.newRole.permissions.adminUsers.ban ? AdminManagementCtrl.newRole.permissions.adminUsers.unban = true : AdminManagementCtrl.newRole.permissions.adminUsers.unban = undefined" ng-false-value="undefined" />
+              Allow user to ban/unban other's accounts
+            </label>
+            <div class="indent">
+              <label ng-if="AdminManagementCtrl.newRole.permissions.adminUsers.ban">
+                <input name="users-ban-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.samePriority" ng-click="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.lowerPriority = undefined" ng-value="true" />
+                Users with the same or lesser role
+              </label>
+              <label ng-if="AdminManagementCtrl.newRole.permissions.adminUsers.ban">
+                <input name="users-ban-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.lowerPriority" ng-click="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.samePriority = undefined" ng-value="true" />
+                Only users with lesser roles
+              </label>
+            </div>
 
             <!-- Delete User -->
             <label>

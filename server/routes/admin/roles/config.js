@@ -164,6 +164,10 @@ exports.add = {
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
+          privilegedBan: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
           privilegedAddRoles: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
@@ -429,6 +433,10 @@ exports.update = {
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
+          privilegedBan: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
