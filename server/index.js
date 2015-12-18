@@ -27,17 +27,20 @@ setup().then(function() {
     var opsPath = path.normalize(__dirname +  '/../logs/server/operations');
     var errsPath = path.normalize(__dirname + '/../logs/server/errors');
     var reqsPath = path.normalize(__dirname + '/../logs/server/requests');
+    var logsPath = path.normalize(__dirname + '/../logs/server/logs');
     mkdirp.sync(opsPath);
     mkdirp.sync(errsPath);
     mkdirp.sync(reqsPath);
+    mkdirp.sync(logsPath);
     var configWithPath = function(path) {
       return { path: path, extension: 'log', rotate: 'daily', format: 'YYYY-MM-DD-X', prefix:'epochtalk' };
     };
-    var consoleReporter = new GoodConsole({ log: '*', response: '*' });
-    var opsReporter = new GoodFile(configWithPath(opsPath), { log: '*', ops: '*' });
-    var errsReporter = new GoodFile(configWithPath(errsPath), { log: '*', error: '*' });
-    var reqsReporter = new GoodFile(configWithPath(reqsPath), { log: '*', response: '*' });
-    options.reporters = [ consoleReporter, opsReporter, errsReporter, reqsReporter ];
+    var consoleReporter = new GoodConsole({ log: '*', response: '*', error: '*' });
+    var opsReporter = new GoodFile(configWithPath(opsPath), { ops: '*' });
+    var errsReporter = new GoodFile(configWithPath(errsPath), { error: '*' });
+    var reqsReporter = new GoodFile(configWithPath(reqsPath), { response: '*' });
+    var logsReporter = new GoodFile(configWithPath(logsPath), { log: '*' });
+    options.reporters = [ consoleReporter, opsReporter, errsReporter, reqsReporter, logsReporter ];
     server.register({ register: Good, options: options}, defaultRegisterCb);
   }
 

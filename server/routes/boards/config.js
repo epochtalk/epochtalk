@@ -159,7 +159,8 @@ exports.allCategories = {
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'boards.allCategories' },
   handler: function(request, reply) {
-    return reply(db.boards.allCategories());
+    var promise =  db.boards.allCategories();
+    return reply(promise);
   }
 };
 
