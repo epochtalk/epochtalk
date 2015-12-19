@@ -6,6 +6,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     this.previewActive = ThemeSVC.previewActive();
     this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
+    this.loginOrRecover = true;
 
     // Update preview mode on change
     $scope.$watch(function() { return ThemeSVC.previewActive(); }, function(val) {
