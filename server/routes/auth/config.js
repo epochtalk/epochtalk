@@ -417,6 +417,7 @@ exports.resetPassword = {
           id: user.id,
           reset_expiration: null,
           reset_token: null,
+          confirmation_token: null,
           password: password
         };
       }

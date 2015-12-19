@@ -12,7 +12,7 @@
   },
   "emailer": {
     "sender": "info@example.com",
-    "host": "smtp.gmail.com",
+    "host": "localhost",
     "port": 465,
     "user": "username",
     "pass": "password",
