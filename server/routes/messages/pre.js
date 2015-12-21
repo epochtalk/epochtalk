@@ -23,13 +23,11 @@ module.exports = {
     // isAdmin or message sender
     var userId = request.auth.credentials.id;
     var messageId = request.params.id;
-
     var getACLValue = request.server.plugins.acls.getACLValue;
     var isDeleteable = getACLValue(request.auth, 'messages.privilegedDelete');
     var isSender = db.messages.isMessageSender(messageId, userId);
-
     var promise = Promise.join(isSender, isDeleteable, function(sender, deleteable) {
-      var result = Boom.badRequest();
+      var result = Boom.forbidden();
       if (sender || deleteable) { result = ''; }
       return result;
     });

@@ -89,6 +89,8 @@
 
           <!-- Ban User -->
           <button class="icon css-tooltip" data-css-tooltip="{{ ModerationCtrl.previewReport.offender_ban_expiration ? 'Unban User' : 'Ban User' }}" ng-click="ModerationCtrl.previewReport.offender_ban_expiration ? ModerationCtrl.showUnbanConfirm({ id: ModerationCtrl.previewReport.offender_author_id, username: ModerationCtrl.previewReport.offender_author_username, email: ModerationCtrl.previewReport.offender_author_email, created_at: ModerationCtrl.previewReport.offender_author_created_at }) : ModerationCtrl.showBanConfirm({ id: ModerationCtrl.previewReport.offender_author_id, username: ModerationCtrl.previewReport.offender_author_username, email: ModerationCtrl.previewReport.offender_author_email, created_at: ModerationCtrl.previewReport.offender_author_created_at })" ng-disabled="!ModerationCtrl.actionAccess.userControls.privilegedBan"><i ng-class="{ 'fa fa-user':ModerationCtrl.previewReport.offender_ban_expiration, 'fa fa-user-times':!ModerationCtrl.previewReport.offender_ban_expiration }"></i></button>
+
+          <button class="icon css-tooltip" data-css-tooltip="Purge Message" ng-click="ModerationCtrl.showConfirmPurge(ModerationCtrl.previewReport.offender_message_id)" ng-disabled="!ModerationCtrl.actionAccess.messageControls.privilegedDelete"><i class="fa fa-trash"></i></button>
           </td>
         </tr>
         <tr>
@@ -281,6 +283,21 @@
     <div class="clear">
       <button class="fill-row" ng-click="ModerationCtrl.createConversation()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.warnSubmitted" ng-bind="ModerationCtrl.warnBtnLabel"></button>
+    </div>
+  </form>
+</modal>
+
+<!-- Confirm Purge Modal -->
+<modal show="ModerationCtrl.showConfirmPurgeModal" on-close="ModerationCtrl.closeConfirmPurge()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Confirm Purge Message</h3>
+    <p>Are you sure you want to <strong>Purge</strong> this message?</p>
+    <p class="bold">
+      Purging this message will completely remove it from the forum and database. This will also delete this message report, as the message no longer exists to reference.
+    </p>
+    <div class="clear">
+      <button class="fill-row" ng-click="ModerationCtrl.purgeMessage()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.purgeSubmitted" ng-bind="ModerationCtrl.purgeBtnLabel"></button>
     </div>
   </form>
 </modal>

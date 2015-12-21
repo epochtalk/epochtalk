@@ -103,20 +103,20 @@
             <!-- Modify Report -->
             <button class="icon css-tooltip" data-css-tooltip="Modify Report Status" ng-click="ModerationCtrl.showSetStatus(ModerationCtrl.previewReport)" ng-disabled="!ModerationCtrl.actionAccess.reportControls.updatePostReport"><i class="fa fa-cog"></i></button>
 
-            <!-- Edit Post -->
-            <button class="icon css-tooltip" data-css-tooltip="Edit Post" ng-disabled="!(ModerationCtrl.isGlobalModerator || ModerationCtrl.moderatesBoard(ModerationCtrl.previewReport.board_id)) || !ModerationCtrl.actionAccess.postControls.privilegedUpdate" ng-click="ModerationCtrl.loadEditor()" ><i class="fa fa-pencil"></i></a>
-
-            <!-- Purge Post -->
-            <button class="icon css-tooltip" data-css-tooltip="Purge Post" ng-disabled="ModerationCtrl.previewReport.offender_thread_starter || !(ModerationCtrl.isGlobalModerator || ModerationCtrl.moderatesBoard(ModerationCtrl.previewReport.board_id)) || !ModerationCtrl.actionAccess.postControls.privilegedPurge" ng-click="ModerationCtrl.showPostConfirm({ postId: ModerationCtrl.previewReport.offender_post_id, purge: true, label: 'Purge' })"><i class="fa fa-trash"></i></button>
-
-            <!-- Hide/Unhide Post -->
-            <button class="icon css-tooltip" data-css-tooltip="{{ ModerationCtrl.previewPost.deleted ? 'Unhide Post' : 'Hide Post' }}" ng-click="ModerationCtrl.previewPost.deleted ? ModerationCtrl.showPostConfirm({ postId: ModerationCtrl.previewReport.offender_post_id, undelete: true, label: 'Unhide' }) : ModerationCtrl.showPostConfirm({ postId: ModerationCtrl.previewReport.offender_post_id, delete: true, label: 'Hide' })" ng-disabled="ModerationCtrl.previewReport.offender_thread_starter || !(ModerationCtrl.isGlobalModerator || ModerationCtrl.moderatesBoard(ModerationCtrl.previewReport.board_id)) || !ModerationCtrl.actionAccess.postControls.privilegedDelete"><i ng-class="{ 'fa fa-eye':ModerationCtrl.previewPost.deleted, 'fa fa-eye-slash':!ModerationCtrl.previewPost.deleted }"></i></button>
-
             <!-- Warn User -->
             <button class="icon css-tooltip" data-css-tooltip="Warn User" ng-click="ModerationCtrl.showWarn({ id: ModerationCtrl.previewReport.offender_author_id, username: ModerationCtrl.previewReport.offender_author_username })" ng-disabled="!ModerationCtrl.actionAccess.messageControls.createConversations"><i class="fa fa-exclamation-circle"></i></button>
 
             <!-- Ban/Unban User -->
             <button class="icon css-tooltip" data-css-tooltip="{{ ModerationCtrl.previewReport.offender_ban_expiration ? 'Unban User' : 'Ban User' }}" ng-click="ModerationCtrl.previewReport.offender_ban_expiration ? ModerationCtrl.showUnbanConfirm({ id: ModerationCtrl.previewReport.offender_author_id, username: ModerationCtrl.previewReport.offender_author_username, email: ModerationCtrl.previewReport.offender_author_email, created_at: ModerationCtrl.previewReport.offender_author_created_at }) : ModerationCtrl.showBanConfirm({ id: ModerationCtrl.previewReport.offender_author_id, username: ModerationCtrl.previewReport.offender_author_username, email: ModerationCtrl.previewReport.offender_author_email, created_at: ModerationCtrl.previewReport.offender_author_created_at })" ng-disabled="!ModerationCtrl.actionAccess.userControls.privilegedBan"><i ng-class="{ 'fa fa-user':ModerationCtrl.previewReport.offender_ban_expiration, 'fa fa-user-times':!ModerationCtrl.previewReport.offender_ban_expiration }"></i></button>
+
+            <!-- Edit Post -->
+            <button class="icon css-tooltip" data-css-tooltip="Edit Post" ng-disabled="!(ModerationCtrl.isGlobalModerator || ModerationCtrl.moderatesBoard(ModerationCtrl.previewReport.board_id)) || !ModerationCtrl.actionAccess.postControls.privilegedUpdate" ng-click="ModerationCtrl.loadEditor()" ><i class="fa fa-pencil"></i></a>
+
+            <!-- Hide/Unhide Post -->
+            <button class="icon css-tooltip" data-css-tooltip="{{ ModerationCtrl.previewPost.deleted ? 'Unhide Post' : 'Hide Post' }}" ng-click="ModerationCtrl.previewPost.deleted ? ModerationCtrl.showPostConfirm({ postId: ModerationCtrl.previewReport.offender_post_id, undelete: true, label: 'Unhide' }) : ModerationCtrl.showPostConfirm({ postId: ModerationCtrl.previewReport.offender_post_id, delete: true, label: 'Hide' })" ng-disabled="ModerationCtrl.previewReport.offender_thread_starter || !(ModerationCtrl.isGlobalModerator || ModerationCtrl.moderatesBoard(ModerationCtrl.previewReport.board_id)) || !ModerationCtrl.actionAccess.postControls.privilegedDelete"><i ng-class="{ 'fa fa-eye':ModerationCtrl.previewPost.deleted, 'fa fa-eye-slash':!ModerationCtrl.previewPost.deleted }"></i></button>
+
+            <!-- Purge Post -->
+            <button class="icon css-tooltip" data-css-tooltip="Purge Post" ng-disabled="ModerationCtrl.previewReport.offender_thread_starter || !(ModerationCtrl.isGlobalModerator || ModerationCtrl.moderatesBoard(ModerationCtrl.previewReport.board_id)) || !ModerationCtrl.actionAccess.postControls.privilegedPurge" ng-click="ModerationCtrl.showPostConfirm({ postId: ModerationCtrl.previewReport.offender_post_id, purge: true, label: 'Purge' })"><i class="fa fa-trash"></i></button>
 
             <div ng-show="ModerationCtrl.previewReport.offender_thread_starter" class="note">First post in thread cannot be purged or hidden</div>
           </td>
@@ -436,7 +436,7 @@
     <h3 class="thin-underline">Confirm {{ModerationCtrl.postActionParams.label}} Post</h3>
     <p>Are you sure you want to <strong>{{ModerationCtrl.postActionParams.label}}</strong> this post?</p>
     <p ng-if="ModerationCtrl.postActionParams.purge" class="bold">
-      Purging this report will completely remove it from the forum and database alltogether. This will also delete this post report, as the post no longer exists to reference.
+      Purging this post will completely remove it from the forum and database. This will also delete this post report, as the post no longer exists to reference.
     </p>
     <div class="clear">
       <button class="fill-row" ng-click="ModerationCtrl.postAction()"
