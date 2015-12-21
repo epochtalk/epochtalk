@@ -274,7 +274,7 @@ exports.find = {
   *
   * @apiParam {string} id The userId of the user to deactivate
   *
-  * @apiSuccess {} STATUS 200 OK
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an error deactivating the user
   */
@@ -303,7 +303,7 @@ exports.deactivate = {
   *
   * @apiParam {string} id The userId of the user to reactivate
   *
-  * @apiSuccess {} STATUS 200 OK
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an error reactivating the user
   */
@@ -332,7 +332,7 @@ exports.reactivate = {
   *
   * @apiParam {string} id The userId of the user to delete
   *
-  * @apiSuccess {} STATUS 200 OK
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an error deleteing the user
   */

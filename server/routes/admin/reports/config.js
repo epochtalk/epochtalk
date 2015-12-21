@@ -560,7 +560,7 @@ exports.pagePostReports = {
   * @apiVersion 0.3.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/messages (Admin) Page Message Report
-  * @apiName PagePostReport
+  * @apiName PageMessageReport
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to page through message moderation reports.
   *

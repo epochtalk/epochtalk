@@ -15,7 +15,7 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
   * @apiParam (Payload) {string} user_id The id of the user to add as a moderator.
   * @apiParam (Payload) {string} board_id The id of the board to add the moderator to.
   *
-  * @apiSuccess {} STATUS 200 OK
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue adding the moderator.
   */
@@ -57,7 +57,7 @@ exports.add = {
   * @apiParam (Payload) {string} user_id The id of the user to remove from being a moderator.
   * @apiParam (Payload) {string} board_id The id of the board to remove the moderator from.
   *
-  * @apiSuccess {} STATUS 200 OK
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue removing the moderator.
   */

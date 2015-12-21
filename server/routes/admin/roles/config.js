@@ -660,7 +660,7 @@ exports.remove = {
   *
   * @apiParam (Payload) {Array} roles with new priorities.
   *
-  * @apiSuccess {} 200 OK SUCCESS.
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue reprioritizing the roles.
   */

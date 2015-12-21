@@ -278,6 +278,14 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     });
   };
 
+  this.deselectReport = function() {
+    ctrl.reportId = null;
+    ctrl.previewReport = null;
+    var params = $location.search();
+    delete params.reportId;
+    $location.search(params);
+  };
+
   this.selectReport = function(messageReport, initialPageLoad) {
     // do nothing if user is being selected to be banned
     // this prevents the row highlight when clicking links
@@ -287,13 +295,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     ctrl.reportNotes = null;
     ctrl.reportNote = null;
     ctrl.noteSubmitted = false;
-    if (ctrl.reportId === messageReport.id && !initialPageLoad) {
-      ctrl.reportId = null;
-      ctrl.previewReport = null;
-      var params = $location.search();
-      delete params.reportId;
-      $location.search(params);
-    }
+    if (ctrl.reportId === messageReport.id && !initialPageLoad) { ctrl.deselectReport(); }
     else {
       if (!initialPageLoad) { $location.search('reportId', messageReport.id); }
       ctrl.previewReport = messageReport;
@@ -408,6 +410,37 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     }, 1000);
   };
 
+  this.messageToPurgeId = null;
+  this.showConfirmPurgeModal = false;
+  this.purgeSubmitted = false;
+  this.purgeBtnLabel = 'Confirm';
+
+  this.showConfirmPurge = function(id) {
+    ctrl.messageToPurgeId = id;
+    ctrl.showConfirmPurgeModal = true;
+  };
+
+  this.closeConfirmPurge = function() {
+    ctrl.messageToPurgeId = null;
+    ctrl.purgeSubmitted = false;
+    // Fix for modal not opening after closing
+    $timeout(function() { ctrl.showConfirmPurgeModal = false; });
+
+    // Wait for modal to disappear then clear fields
+    $timeout(function() { ctrl.purgeBtnLabel = 'Confirm'; }, 1000);
+  };
+
+  this.purgeMessage = function() {
+    ctrl.purgeSubmitted = true;
+    ctrl.purgeBtnLabel = 'Loading...';
+    Messages.delete({ id: ctrl.messageToPurgeId }).$promise
+    .then(function() {
+      Alert.success('Successfully purged message');
+      ctrl.deselectReport();
+    })
+    .catch(function() { Alert.error('There was an error purging this message'); })
+    .finally(function() { ctrl.closeConfirmPurge(); });
+  };
 
   $timeout($anchorScroll);
 

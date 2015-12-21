@@ -122,6 +122,7 @@ module.exports = roles;
       delete: true
     },
     messages: {
+      privilegedDelete: true,
       create: true,
       latest: true,
       findUser: true,
@@ -807,6 +808,7 @@ roles.moderator = {
     messages: true
   },
   messages: {
+    privilegedDelete: true,
     create: true,
     latest: true,
     findUser: true,
