@@ -591,7 +591,7 @@ exports.editPoll = {
     },
     payload: Joi.object().keys({
       max_answers: Joi.number().integer().min(1).required(),
-      expiration: Joi.date().min('now'),
+      expiration: Joi.date(),
       change_vote: Joi.boolean().required(),
       display_mode: Joi.string().valid('always', 'voted', 'expired').required()
     })
@@ -607,7 +607,7 @@ exports.editPoll = {
   handler: function(request, reply) {
     var options = request.payload;
     options.id = request.params.pollId;
-    var promise = db.polls.update(options).catch(console.log);
+    var promise = db.polls.update(options);
     return reply(promise);
   }
 };

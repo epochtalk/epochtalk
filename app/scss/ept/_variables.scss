@@ -34,7 +34,7 @@ $base-grid-padding: 1rem;
 @if (lightness($color-primary) > 50) { $color-primary-alt: darken($color-primary, 15%); }
 @else { $color-primary-alt: lighten($color-primary, 30%); }
 // transparent version
-$color-primary-transparent: rgba($color-primary, 0.1);
+$color-primary-transparent: rgba($color-primary, 0.4);
 
 // Fonts Calculated
 $button-text-color: color-contrast($color-primary);

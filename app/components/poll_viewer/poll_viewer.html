@@ -18,11 +18,12 @@
     <div class="poll-details">
       <div class="poll-info" ng-if="poll.display_mode === 'always'">Results Always Shown</div>
       <div class="poll-info" ng-if="poll.display_mode === 'voted'">Results After Voting</div>
-      <div class="poll-info" ng-if="poll.display_mode === 'expired'">Results After Expiration</div>
-      <div class="poll-info">{{(poll.expiration|humanDate) || 'No Expiration'}}</div>
+      <div class="poll-info" ng-class="{'highlight':!poll.expired && !canVote() }" ng-if="poll.display_mode === 'expired'">Results After Expiration</div>
+      <div class="poll-info" ng-class="{'highlight':poll.expired}">
+      {{ poll.expiration ? 'Exp: ' + (poll.expiration | date : 'short') : 'No Expiration'}}</div>
     </div>
     <div class="poll-details small">
-      <div class="poll-info">{{poll.max_answers + ' choice(s)'}}</div>
+      <div class="poll-info" ng-class="{'highlight':pollAnswers.length===poll.max_answers}">{{poll.max_answers + ' choice' + (poll.max_answers > 1 ? 's':'')}}</div>
       <div class="poll-info" ng-if="!poll.change_vote">Votes are Permanent</div>
       <div class="poll-info" ng-if="poll.change_vote">Votes can be changed</div>
     </div>
@@ -80,15 +81,22 @@
   </div>
 
   <!-- Poll Results -->
-  <div class="poll-answer" ng-repeat="answer in poll.answers">
-    <label>
-      <input class="poll-select" type="checkbox" ng-click="toggleAnswer(answer.id)" ng-disabled="pollAnswers.length >= poll.max_answers && pollAnswers.indexOf(answer.id) === -1" ng-if="canVote()"/>
-      <div class="poll-bar">
-        <span class="poll-answer-title" ng-bind="answer.answer"></span>
-        <span class="poll-answer-fill" ng-bind="'(' + answer.percentage + '%) ' + answer.votes + (answer.votes > 1 || answer.votes === 0 ? ' votes' : ' vote')" ng-if="showPollResults()"></span>
-        <section ng-style="answer.style" ng-if="showPollResults()"></section>
+  <div class="poll-answer column-container" ng-repeat="answer in poll.answers">
+    <div class="fill-row">
+      <div ng-class="{ 'two-thirds-column':showPollResults() }">
+        <label class="poll-select" ng-class="{ 'active':pollAnswers.indexOf(answer.id) > -1, 'default-cursor':!canVote() }">
+          <input ng-if="poll.max_answers === 1 && canVote()" ng-click="pollAnswers.pop(); toggleAnswer(answer.id);" name="pollanswer" type="radio">
+          <input type="checkbox" ng-click="toggleAnswer(answer.id)" ng-disabled="pollAnswers.length >= poll.max_answers && pollAnswers.indexOf(answer.id) === -1" ng-checked="pollAnswers.indexOf(answer.id) > -1" ng-if="poll.max_answers > 1 && canVote()"/>
+          <span ng-bind="answer.answer"></span>
+        </label>
       </div>
-    </label>
+      <div ng-if="showPollResults()" class="one-third-column last-column">
+        <span class="poll-results" ng-bind="'(' + answer.percentage + '%) ' + answer.votes + (answer.votes > 1 || answer.votes === 0 ? ' votes' : ' vote')"></span>
+        <div class="poll-bar">
+          <section ng-style="answer.style"></section>
+        </div>
+      </div>
+    </div>
   </div>
   <button ng-click="vote()" ng-disabled="pollAnswers.length === 0" ng-if="canVote()">Vote</button>
   <button ng-if="canRemoveVote()" ng-click="removeVote()">Remove Vote</button>

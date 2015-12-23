@@ -193,9 +193,13 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
             $scope.poll.expired = expiry < Date.now();
           }
           $scope.switches.editPoll = false;
+          $scope.pollAnswers.length = 0;
           Alert.success('Poll Options Changes Saved');
         })
-        .catch(function(err) { Alert.error('Error: ' + err); });
+        .catch(function(err) {
+          Alert.error('There was an error updating the poll');
+          console.log(err); // TODO: REMOVE THIS
+        });
       };
     }
   };

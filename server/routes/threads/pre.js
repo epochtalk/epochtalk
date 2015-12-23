@@ -110,7 +110,7 @@ module.exports = {
   pollExists: function(request, reply) {
     // Check if has poll exists
     var threadId = _.get(request, request.route.settings.app.thread_id);
-    promise = db.polls.exists(threadId)
+    var promise = db.polls.exists(threadId)
     .then(function(exists) {
       var pollExists = Boom.badRequest('Poll Does Not Exists');
       if (exists) { pollExists = exists; }
@@ -165,7 +165,7 @@ module.exports = {
 
     var promise = Promise.join(getThreadOwner, getPollExists, function(owner, exists) {
       var result = Boom.forbidden();
-      if (exists) { results = Boom.badRequest('Poll already exists'); }
+      if (exists) { result = Boom.badRequest('Poll already exists'); }
       else if (owner.user_id === userId) { result = true; }
       return result;
     });
@@ -206,7 +206,7 @@ module.exports = {
     // Check if has voted already
     var threadId = _.get(request, request.route.settings.app.thread_id);
     var userId = request.auth.credentials.id;
-    promise = db.polls.hasVoted(threadId, userId)
+    var promise = db.polls.hasVoted(threadId, userId)
     .then(function(voted) {
       var canVote = Boom.badRequest('Already Voted');
       if (!voted) { canVote = true; }
@@ -217,7 +217,7 @@ module.exports = {
   },
   isPollUnlocked: function(request, reply) {
     var pollId = _.get(request, request.route.settings.app.poll_id);
-    promise = db.polls.isLocked(pollId)
+    var promise = db.polls.isLocked(pollId)
     .then(function(locked) {
       var canLock = Boom.badRequest('Poll is Unlocked');
       if (!locked) { canLock = true; }
@@ -228,7 +228,7 @@ module.exports = {
   },
   isPollRunning: function(request, reply) {
     var pollId = _.get(request, request.route.settings.app.poll_id);
-    promise = db.polls.isRunning(pollId)
+    var promise = db.polls.isRunning(pollId)
     .then(function(running) {
       var canVote = Boom.badRequest('Poll is Expired');
       if (running) { canVote = true; }
@@ -241,7 +241,7 @@ module.exports = {
     var pollId = _.get(request, request.route.settings.app.poll_id);
     var payloadLength = request.payload.answerIds.length;
 
-    promise = db.polls.maxAnswers(pollId)
+    var promise = db.polls.maxAnswers(pollId)
     .then(function(maxAnswers) {
       var canVote = Boom.badRequest('Too Many Answers');
       if (maxAnswers && maxAnswers >= payloadLength) { canVote = true; }
@@ -252,7 +252,7 @@ module.exports = {
   },
   canChangeVote: function(request, reply) {
     var pollId = _.get(request, request.route.settings.app.poll_id);
-    promise = db.polls.changeVote(pollId)
+    var promise = db.polls.changeVote(pollId)
     .then(function(changeVote) {
       var canChange = Boom.badRequest('Votes cannot be changed');
       if (changeVote) { canChange = true; }
