@@ -151,6 +151,7 @@ function getMaskedPermissions(userRoles) {
     messageControls: {
       createConversations: maskPermission('conversations.create'),
       createMessages: maskPermission('messages.create'),
+      deleteMessages: maskPermission('messages.delete'),
       privilegedDelete: maskPermission('messages.privilegedDelete')
     },
     reportControls: {
