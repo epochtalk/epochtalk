@@ -22,9 +22,15 @@
   </div>
 </div>
 
+<!-- User Controls -->
 <div class="fill-row" ng-if="PostsParentCtrl.loggedIn() && !PostsParentCtrl.thread.watched">
+  <!-- Watch Thread -->
   <a class="inverted-button" ng-click="PostsParentCtrl.watchThread()">
     <i class="icon-epoch-watch"></i>Watch This Thread
+  </a>
+  <!-- Add Poll -->
+  <a class="inverted-button" ng-click="PostsParentCtrl.addPoll = !PostsParentCtrl.addPoll" ng-if="!PostsParentCtrl.thread.poll && PostsParentCtrl.user.id === PostsParentCtrl.thread.user.id && PostsParentCtrl.pollControlAccess.create">
+    <i class="icon-epoch-watch"></i>Add a Poll
   </a>
 </div>
 
@@ -59,6 +65,13 @@
     <a class="button" ng-click="PostsParentCtrl.moveThread()"><i class="fa fa-arrow-circle-left"></i>&nbsp;&nbsp;&nbsp;Move</a>
   </div>
 </div>
+
+<!-- Polls -->
+<div class="fill-row" ng-if="PostsParentCtrl.addPoll">
+  <poll-creator poll="PostsParentCtrl.poll" valid="PostsParentCtrl.pollValid"></poll-creator>
+  <button class="fill-row" ng-disabled="!PostsParentCtrl.pollValid" ng-click="PostsParentCtrl.createPoll()">Create Poll</button>
+</div>
+<poll-viewer thread="PostsParentCtrl.thread" reset="PostsParentCtrl.resetPoll"></poll-viewer>
 
 <!-- Posts Listing -->
 <div class="thread-data" ui-view="data"></div>

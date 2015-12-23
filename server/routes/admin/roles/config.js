@@ -319,7 +319,16 @@ exports.add = {
           interval: Joi.number().min(-1).required(),
           maxInInterval: Joi.number().min(1).required(),
           minDifference: Joi.number().min(1).optional()
-        }).sparse()
+        }).sparse(),
+        polls: Joi.object().keys({
+          create: Joi.boolean(),
+          vote: Joi.boolean(),
+          lock: Joi.boolean(),
+          privilegedLock: Joi.object().keys({
+            some: Joi.boolean(),
+            all: Joi.boolean()
+          })
+        })
       }).required()
     }
   },
@@ -583,7 +592,16 @@ exports.update = {
           interval: Joi.number().min(-1).required(),
           maxInInterval: Joi.number().min(1).required(),
           minDifference: Joi.number().min(1).optional()
-        }).sparse()
+        }).sparse(),
+        polls: Joi.object().keys({
+          create: Joi.boolean(),
+          vote: Joi.boolean(),
+          lock: Joi.boolean(),
+          privilegedLock: Joi.object().keys({
+            some: Joi.boolean(),
+            all: Joi.boolean()
+          })
+        })
       }).required()
     }
   },

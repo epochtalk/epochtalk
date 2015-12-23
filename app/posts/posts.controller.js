@@ -73,6 +73,7 @@ var ctrl = [
         ctrl.posts = pageData.posts;
         parent.posts = pageData.posts;
         parent.thread.post_count = pageData.thread.post_count;
+        parent.thread.poll = pageDate.thread.poll;
         parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
         $timeout($anchorScroll);
       });
