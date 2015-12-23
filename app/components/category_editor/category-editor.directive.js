@@ -32,6 +32,7 @@ module.exports = ['$state', function($state) {
       $scope.clearAddBoardFields = function() {
         $('#newBoardName').val('');
         $('#newBoardDesc').val('');
+        $('#newBoardViewable').val('');
       };
 
       /* Edit Category */
@@ -39,6 +40,7 @@ module.exports = ['$state', function($state) {
         var editCat = $scope.nestableMap[dataId];
         editCatDataId = dataId;
         $('#editCatName').val(editCat.name);
+        $('#editCatViewable').val(editCat.viewable_by);
         $scope.showEditCategory = true;
       };
 
@@ -56,10 +58,12 @@ module.exports = ['$state', function($state) {
         editCatData.name = $('#editCatName').val();
         var editCat = $scope.nestableMap[editCatDataId];
         editCat.name = $('#editCatName').val();
+        editCat.viewable_by = $('#editCatViewable').val();
 
         // Reset and close
         editCatDataId = '';
         $('#editCatName').val('');
+        $('#editCatViewable').val('');
         $scope.showEditCategory = false;
       };
 
@@ -74,6 +78,7 @@ module.exports = ['$state', function($state) {
         editBoardId = editBoard.id;
         $('#editBoardName').val(editBoard.name);
         $('#editBoardDesc').val(editBoard.description);
+        $('#editBoardViewable').val(editBoard.viewable_by);
         $scope.showEditBoard = true;
       };
 
@@ -84,6 +89,7 @@ module.exports = ['$state', function($state) {
             if (newBoard.dataId === editBoardDataId) {
               newBoard.name = $('#editBoardName').val();
               newBoard.description = $('#editBoardDesc').val();
+              newBoard.viewable_by = $('#editBoardViewable').val();
             }
           });
         }
@@ -92,7 +98,8 @@ module.exports = ['$state', function($state) {
           var editedBoard = {
             id: editBoardId,
             name: $('#editBoardName').val(),
-            description: $('#editBoardDesc').val()
+            description: $('#editBoardDesc').val(),
+            viewable_by: $('#editBoardViewable').val() || null
           };
          $scope.editedBoards.push(editedBoard);
         }
@@ -109,12 +116,14 @@ module.exports = ['$state', function($state) {
         var board = $scope.nestableMap[editBoardDataId];
         board.name = $('#editBoardName').val();
         board.description = $('#editBoardDesc').val();
+        board.viewable_by = $('#editBoardViewable').val();
 
         // Reset scope params for editing board
         editBoardDataId = '';
         editBoardId = '';
         $('#editBoardName').val('');
         $('#editBoardDesc').val('');
+        $('#editBoardViewable').val('');
         $scope.showEditBoard = false;
       };
 
@@ -216,7 +225,8 @@ module.exports = ['$state', function($state) {
         catsArr.forEach(function(cat, index) {
           // add this cat as a row entry
           var catId = $scope.nestableMap[cat.id].id;
-          var row = { type: 'category', id: catId, name: cat.name, view_order: index };
+          var catViewableBy = $scope.nestableMap[cat.id].viewable_by;
+          var row = { type: 'category', id: catId, name: cat.name, viewable_by: catViewableBy, view_order: index };
           boardMapping.push(row);
 
           // add children boards as entries recursively
@@ -224,10 +234,12 @@ module.exports = ['$state', function($state) {
           cat.children.forEach(function(catBoard, index) {
             // add this cat board as a row entry
             var boardId = $scope.nestableMap[catBoard.id].id;
+            var boardViewableBy = $scope.nestableMap[catBoard.id].viewable_by;
             var boardRow = {
               type: 'board',
               id: boardId,
               category_id: catId,
+              viewable_by: boardViewableBy,
               view_order: index
             };
             boardMapping.push(boardRow);

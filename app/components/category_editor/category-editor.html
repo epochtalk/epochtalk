@@ -37,6 +37,9 @@
   <label>Board Description
     <textarea rows="5" id="newBoardDesc" placeholder="Board Description"></textarea>
   </label>
+  <label>Board Viewable By:
+    <input type="number" id="newBoardViewable" placeholder="User Priority" min="0"></input>
+  </label>
   <div class="clear">
     <button ng-click="insertNewBoard()" class="fill-row">Add Board</button>
   </div>
@@ -49,6 +52,9 @@
   </label>
   <label>Board Description
     <textarea rows="5" id="editBoardDesc" ng-model="editBoardDesc" placeholder="Board Description"></textarea>
+  </label>
+  <label>Board Viewable By:
+    <input type="number" id="editBoardViewable" placeholder="User Priority" min="0" />
   </label>
   <div class="clear">
     <button ng-click="editBoard()" class="fill-row">Edit Board</button>
@@ -72,6 +78,9 @@
   <h3 class="thin-underline">Edit Category</h3>
   <label>Category Name
     <input type="text" class="input-text" id="editCatName" placeholder="Category Name" />
+  </label>
+  <label>Category Viewable By:
+    <input type="number" id="editCatViewable" placeholder="User Priority" min="0"/>
   </label>
   <div class="clear">
     <button ng-click="editCategory()" class="fill-row">Edit Category</button>

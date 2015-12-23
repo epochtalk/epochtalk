@@ -194,7 +194,7 @@ var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScr
     $scope.processEditedBoards = function() {
       console.log('2) Handling edited boards: \n' + JSON.stringify($scope.editedBoards, null, 2));
       return $q.all($scope.editedBoards.map(function(editedBoard) {
-        var board = { name: editedBoard.name, description: editedBoard.description };
+        var board = { name: editedBoard.name, description: editedBoard.description, viewable_by: editedBoard.viewable_by };
         return Boards.update({ id: editedBoard.id }, board).$promise
         .catch(function(response) { console.log(response); });
       }));

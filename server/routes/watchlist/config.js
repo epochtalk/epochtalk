@@ -2,6 +2,7 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
+var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 
 /**
@@ -213,10 +214,11 @@ exports.pageBoards = {
 exports.watchThread = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
+  pre: [ { method: pre.accessBoardWithThreadId } ],
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
-    var boardId = request.params.id;
-    var promise = db.watchlist.watchThread(userId, boardId);
+    var threadId = request.params.id;
+    var promise = db.watchlist.watchThread(userId, threadId);
     return reply(promise);
   }
 };
@@ -261,6 +263,7 @@ exports.unwatchThread = {
 exports.watchBoard = {
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
+  pre : [ { method: pre.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;

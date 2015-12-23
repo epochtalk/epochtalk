@@ -346,7 +346,7 @@ exports.sticky = {
   },
   pre: [ [
     { method: pre.hasPermission },
-    { method: pre.getThread, assign: 'thread' }
+    { method: pre.getThread, assign: 'thread' } // TODO: remove this
   ] ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
@@ -390,7 +390,7 @@ exports.move = {
   },
   pre: [ [
     { method: pre.hasPermission },
-    { method: pre.getThread, assign: 'thread' }
+    { method: pre.getThread, assign: 'thread' } // TODO: remove this
   ] ],
   handler: function(request, reply) {
     var newBoardId = request.payload.newBoardId;

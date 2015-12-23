@@ -35,7 +35,8 @@ exports.create = {
   validate: {
     payload: {
       name: Joi.string().min(1).max(255).required(),
-      description: Joi.string().allow('')
+      description: Joi.string().allow(''),
+      viewable_by: Joi.number()
     }
   },
   pre: [ { method: pre.clean } ],
@@ -116,10 +117,7 @@ exports.find = {
   auth: { mode:'try', strategy: 'jwt' },
   plugins: { acls: 'boards.find' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ [
-    { method: pre.accessBoardWithBoardId },
-    { method: pre.accessPrivateBoardWithBoardId }
-  ] ],
+  pre: [ { method: pre.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     return reply(db.boards.find(request.params.id));
   }
@@ -158,8 +156,10 @@ exports.all = {
 exports.allCategories = {
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'boards.allCategories' },
+  pre: [ { method: pre.userPriority, assign: 'priority' } ],
   handler: function(request, reply) {
-    var promise =  db.boards.allCategories();
+    var priority = request.pre.priority;
+    var promise =  db.boards.allCategories(priority);
     return reply(promise);
   }
 };
@@ -219,7 +219,8 @@ exports.update = {
   validate: {
     payload: {
       name: Joi.string().min(1).max(255),
-      description: Joi.string().allow('')
+      description: Joi.string().allow(''),
+      viewable_by: Joi.number().allow(null)
     },
     params: { id: Joi.string().required() }
   },
