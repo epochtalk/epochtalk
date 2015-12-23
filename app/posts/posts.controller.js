@@ -89,7 +89,7 @@ var ctrl = [
         parent.thread.watched = true;
         Alert.success('This thread is being watched');
       })
-      .catch(function(err) { Alert.error('Error watching this board'); });
+      .catch(function() { Alert.error('Error watching this board'); });
     };
 
     this.showEditDate = function(post) {

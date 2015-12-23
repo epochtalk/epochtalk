@@ -230,6 +230,7 @@ var ctrl = [
           var editPost = ctrl.posts[ctrl.posting.index];
           editPost.body = data.body;
           editPost.raw_body = data.raw_body;
+          editPost.updated_at = data.updated_at;
         }
       })
       .then(closeEditor)

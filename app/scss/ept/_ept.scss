@@ -908,8 +908,9 @@ table.striped {
     .one-third-column { padding-top: 0.2rem; }
     .poll-select {
       @include pad(0.5rem);
-      border: 1px solid $secondary-font-color-light;
+      border: 1px solid $border-color;
       input { margin-bottom: 0; }
+      &.voted { border: none; }
       &.active { border-color: $color-primary-transparent; background-color: $color-primary-transparent; }
     }
     // votes bar
