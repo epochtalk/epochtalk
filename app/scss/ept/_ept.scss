@@ -82,6 +82,7 @@ datalist { z-index: 10001; }
 .desc-label { color: $secondary-font-color; }
 .pointer { cursor: pointer; }
 .default-cursor { cursor: default; }
+.inline { display: inline; }
 .inline-block { display: inline-block; }
 .bold { font-weight: bold; }
 .right { float: right; }
@@ -201,6 +202,9 @@ table.underlined, table.report-details {
     background-color: transparent;
     tr { border-bottom: 1px solid $border-color; }
     th { color: $secondary-font-color; font-weight: 400; padding-bottom: 0.5rem; }
+    th.left-icon-col { width: 1.5rem; }
+    th.mod-actions { width: 5.25rem; }
+    th.user-actions { width: 8rem; }
   }
   tr {
     border-bottom: 1px solid $border-color-alt;
@@ -210,13 +214,24 @@ table.underlined, table.report-details {
     &.active-row, &.active-row:nth-of-type(even) { background-color: $color-primary; }
     &.active-row.selectable-row:hover { background-color: $color-primary }
     &.active-row td { color: $button-text-color; }
-    &.active-row td a { color: darken($color-primary-alt, 10%); }
-    &.active-row td a:hover { color: $color-primary-alt; }
+    &.active-row td a, &.active-row td button { color: darken($color-primary-alt, 10%); }
+    &.active-row td a:hover, &.active-row td button:not([disabled]):hover { color: $color-primary-alt; }
     &:nth-of-type(even) { background: transparent; }
     &:nth td { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    &.active-row td.left-icon-col { color: $button-text-color; }
+    td.left-icon-col { @include pad(0 0 0 0.5rem); color: $secondary-font-color; }
     td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: middle; }
     td input { margin-bottom: 0; }
   }
+}
+.post-editor-overlay {
+  background: rgba(0, 0, 0, 0.15);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
 }
 .ng-modal.ng-hide { opacity: 1; }
 .ng-modal { @include transition(opacity 0.2s linear); opacity: 1; }
@@ -244,7 +259,7 @@ table.underlined, table.report-details {
   overflow-y: auto;
   max-height: 80vh;
   p { margin-bottom: 1rem; }
-  button, .button { margin-bottom: 0; }
+  button, .button, .clear button, button.fill-row { margin-bottom: 0; }
   @include media($desktop-small) { @include span-columns(6, block-collapse); }
   @include media($mobile) { @include span-columns(7, block-collapse); top: 5vh; max-height: 90vh; }
 }
@@ -656,6 +671,10 @@ input[type="checkbox"] + label, input[type="radio"] + label {
     div { @include span-columns(8); @include omega; }
   }
 }
+.option {
+  input { margin: 0; vertical-align: middle; }
+  input + label { @include no-select; display: inline-block; margin: 0 0 0 0.25rem; }
+}
 .img-picker-list {
   margin-left: 0;
   &.one-col {
@@ -698,6 +717,23 @@ input[type="checkbox"] + label, input[type="radio"] + label {
         background: rgba(0, 0, 0, 0.3);
       }
     }
+  }
+}
+.css-tooltip.icon {
+  @include pad(0);
+  margin: 0 0.75rem 0 0;
+  background: none;
+  color: $color-primary;
+  font-size: 0.875rem;
+  &:hover, &:active {
+    color: $color-primary-alt;
+    background: none;
+    font-size: 0.875rem;
+  }
+  &:disabled {
+    color: $secondary-font-color-light;
+    background: none;
+    font-size: 0.875rem;
   }
 }
 .css-tooltip { display: inline; position: relative; }
@@ -872,8 +908,9 @@ table.striped {
     .one-third-column { padding-top: 0.2rem; }
     .poll-select {
       @include pad(0.5rem);
-      border: 1px solid $secondary-font-color-light;
+      border: 1px solid $border-color;
       input { margin-bottom: 0; }
+      &.voted { border: none; }
       &.active { border-color: $color-primary-transparent; background-color: $color-primary-transparent; }
     }
     // votes bar
@@ -1342,11 +1379,7 @@ main #error-404 {
 /*-------------- New Thread Layout -------------- */
 .padded-row { @include row; @include pad(0 0 1rem 0); }
 .logged-out { @include label(error, 0.8rem); }
-.padded-row {
-  .h4, .h6 { display: inline-block; }
-  .option label { display: inline-block; margin: 0; }
-  .option input { margin: 0; }
-}
+.padded-row { .h4, .h6 { display: inline-block; } }
 
 /*-------------- Posts (Thread View) Layout -------------- */
 .thread-controls {
@@ -1899,25 +1932,32 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
   table-layout: fixed;
   th { @include truncate-ellipsis; }
   th.reason { width: 25rem; }
-  th.user-actions { width: 9rem; }
-  th.post-actions { width: 13rem; }
   tr td {
     @include truncate-ellipsis;
     padding-right: 0.5rem;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
     font-size: 0.75rem;
+    &.inline { line-height: 1.65rem; }
     div {
       @include truncate-ellipsis;
-      display: inline-block;
       width: 24rem;
     }
   }
 }
 .report-details-wrap { @include span-columns(4); margin-bottom: 1rem; }
-.preview-wrap { @include span-columns(8); @include omega; margin-bottom: 1rem; }
-
+.preview-wrap {
+  @include span-columns(8); @include omega; margin-bottom: 1rem;
+  h5 span { color: $secondary-font-color; }
+}
+.indicator {
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  color: $secondary-font-color;
+  i { @include pad(0 0.5rem 0 0); }
+}
 table.report-details {
+  tr:first-child td { padding-top: 0; }
   td.field {
     font-size: 0.8125rem;
     color: $secondary-font-color;
@@ -1926,7 +1966,14 @@ table.report-details {
     vertical-align: top;
     padding-right: 0.5rem;
   }
-  td.desc { font-size: 0.875rem; }
+  td.desc {
+    font-size: 0.875rem;
+    .note {
+      font-size: 0.65rem;
+      color: $secondary-font-color;
+      margin-top: 0.25rem;
+    }
+  }
 }
 
 .note-avatar-container {

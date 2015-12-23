@@ -20,6 +20,7 @@ var ctrl = [
     this.resetPoll = false;
     this.poll = {};
     this.controlAccess = {};
+    this.pollControlAccess = {};
     this.reportControlAccess = {
       reportPosts: Session.hasPermission('reportControls.reportPosts'),
       reportUsers: Session.hasPermission('reportControls.reportUsers')
@@ -134,7 +135,6 @@ var ctrl = [
     };
 
     /* Poll Methods */
-
     this.createPoll = function() {
       if (!ctrl.pollValid) { return; }
 
@@ -145,7 +145,10 @@ var ctrl = [
         ctrl.addPoll = false;
         ctrl.resetPoll = true;
       })
-      .catch(function(err) { Alert.error('Error: + err'); });
+      .catch(function(err) {
+        Alert.error('There was an error creating the poll');
+        console.log(err); // TODO: Remove this
+      });
     };
 
     /* Post Methods */
@@ -227,6 +230,7 @@ var ctrl = [
           var editPost = ctrl.posts[ctrl.posting.index];
           editPost.body = data.body;
           editPost.raw_body = data.raw_body;
+          editPost.updated_at = data.updated_at;
         }
       })
       .then(closeEditor)

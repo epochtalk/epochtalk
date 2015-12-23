@@ -157,15 +157,15 @@
         </label>
         <div class="indent" ng-if="modAccess">
           <label>
-            <input id="modAccess-users" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.users" ng-false-value="undefined" />
+            <input id="modAccess-users" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.users" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.users ? AdminManagementCtrl.newRole.permissions.adminReports.pageUserReports = true : AdminManagementCtrl.newRole.permissions.adminReports.pageUserReports = undefined" ng-false-value="undefined" />
             Users Moderation Tab
           </label>
           <label>
-            <input id="modAccess-posts" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.posts" ng-false-value="undefined" />
+            <input id="modAccess-posts" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.posts" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.posts ? AdminManagementCtrl.newRole.permissions.adminReports.pagePostReports = true : AdminManagementCtrl.newRole.permissions.adminReports.pagePostReports = undefined" ng-false-value="undefined" />
             Posts Moderation Tab
           </label>
           <label>
-            <input id="modAccess-messages" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.messages" ng-false-value="undefined" />
+            <input id="modAccess-messages" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.messages" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.messages ? AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReports = true : AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReports = undefined" ng-false-value="undefined" />
             Messages Moderation Tab
           </label>
         </div>
@@ -272,23 +272,27 @@
               Allow user to page through all forum moderators
             </label>
 
-            <!-- Ban Users -->
-            <label>
-              <input id="adminUsers-ban" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.ban" ng-false-value="undefined" />
-              Allow user to ban other users
-            </label>
-
-            <!-- Unban Users -->
-            <label>
-              <input id="adminUsers-unban" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.unban" ng-false-value="undefined" />
-              Allow user to unban other users
-            </label>
-
             <!-- View Deleted Users -->
             <label>
               <input id="users-viewDeleted" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.users.viewDeleted" ng-false-value="undefined" />
               Allow user to view deleted users profiles and information
             </label>
+
+            <!-- Ban/Unban User -->
+            <label>
+              <input id="adminUsers-privilegedBan" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.ban" ng-change="AdminManagementCtrl.newRole.permissions.adminUsers.ban ? AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.lowerPriority = true : AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan = undefined; AdminManagementCtrl.newRole.permissions.adminUsers.ban ? AdminManagementCtrl.newRole.permissions.adminUsers.unban = true : AdminManagementCtrl.newRole.permissions.adminUsers.unban = undefined" ng-false-value="undefined" />
+              Allow user to ban/unban other's accounts
+            </label>
+            <div class="indent">
+              <label ng-if="AdminManagementCtrl.newRole.permissions.adminUsers.ban">
+                <input name="users-ban-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.samePriority" ng-click="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.lowerPriority = undefined" ng-value="true" />
+                Users with the same or lesser role
+              </label>
+              <label ng-if="AdminManagementCtrl.newRole.permissions.adminUsers.ban">
+                <input name="users-ban-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.lowerPriority" ng-click="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedBan.samePriority = undefined" ng-value="true" />
+                Only users with lesser roles
+              </label>
+            </div>
 
             <!-- Delete User -->
             <label>
@@ -465,37 +469,37 @@
           <div class="half-column">
             <!-- View User Reports -->
             <label>
-              <input id="adminReports-pageUserReports" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pageUserReports" ng-change="AdminManagementCtrl.newRole.permissions.adminReports.pageUserReports ? AdminManagementCtrl.newRole.permissions.adminReports.userReportsCount = true : AdminManagementCtrl.newRole.permissions.adminReports.userReportsCount = undefined" ng-false-value="undefined" />
+              <input id="adminReports-pageUserReports" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pageUserReports" ng-change="AdminManagementCtrl.newRole.permissions.adminReports.pageUserReports ? AdminManagementCtrl.newRole.permissions.modAccess.users = true : AdminManagementCtrl.newRole.permissions.modAccess.users = undefined" ng-false-value="undefined" />
               Allow user to view user reports
             </label>
 
             <!-- View Post Reports -->
             <label>
-              <input id="adminReports-pagePostReports" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pagePostReports" ng-change="AdminManagementCtrl.newRole.permissions.adminReports.pagePostReports ? AdminManagementCtrl.newRole.permissions.adminReports.postReportsCount = true : AdminManagementCtrl.newRole.permissions.adminReports.postReportsCount = undefined" ng-false-value="undefined" />
+              <input id="adminReports-pagePostReports" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pagePostReports" ng-change="AdminManagementCtrl.newRole.permissions.adminReports.pagePostReports ? AdminManagementCtrl.newRole.permissions.modAccess.posts = true : AdminManagementCtrl.newRole.permissions.modAccess.posts = undefined" ng-false-value="undefined" />
               Allow user to view post reports
             </label>
 
             <!-- View Message Reports -->
             <label>
-              <input id="adminReports-pageMessageReports" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReports" ng-change="AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReports ? AdminManagementCtrl.newRole.permissions.adminReports.messageReportsCount = true : AdminManagementCtrl.newRole.permissions.adminReports.messageReportsCount = undefined" ng-false-value="undefined" />
+              <input id="adminReports-pageMessageReports" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReports" ng-change="AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReports ? AdminManagementCtrl.newRole.permissions.modAccess.messages = true : AdminManagementCtrl.newRole.permissions.modAccess.messages = undefined" ng-false-value="undefined" />
               Allow user to view message reports
             </label>
 
             <!-- View User Reports Notes -->
             <label>
-              <input id="adminReports-pageUserReportsNotes" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pageUserReportsNotes" ng-change="AdminManagementCtrl.newRole.permissions.adminReports.pageUserReportsNotes ? AdminManagementCtrl.newRole.permissions.adminReports.userReportsNotesCount = true : AdminManagementCtrl.newRole.permissions.adminReports.userReportsNotesCount = undefined" ng-false-value="undefined" />
+              <input id="adminReports-pageUserReportsNotes" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pageUserReportsNotes" ng-false-value="undefined" />
               Allow user to view user report notes
             </label>
 
             <!-- View Post Reports Notes -->
             <label>
-              <input id="adminReports-pagePostReportsNotes" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pagePostReportsNotes" ng-change="AdminManagementCtrl.newRole.permissions.adminReports.pagePostReportsNotes ? AdminManagementCtrl.newRole.permissions.adminReports.postReportsNotesCount = true : AdminManagementCtrl.newRole.permissions.adminReports.postReportsNotesCount = undefined" ng-false-value="undefined" />
+              <input id="adminReports-pagePostReportsNotes" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pagePostReportsNotes" ng-false-value="undefined" />
               Allow user to view post report notes
             </label>
 
             <!-- View Message Reports Notes -->
             <label>
-              <input id="adminReports-pageMessageReportsNotes" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReportsNotes" ng-change="AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReportsNotes ? AdminManagementCtrl.newRole.permissions.adminReports.messageReportsNotesCount = true : AdminManagementCtrl.newRole.permissions.adminReports.messageReportsNotesCount = undefined" ng-false-value="undefined" />
+              <input id="adminReports-pageMessageReportsNotes" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReportsNotes" ng-false-value="undefined" />
               Allow user to view message report notes
             </label>
 

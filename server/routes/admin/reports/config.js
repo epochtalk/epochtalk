@@ -1,3 +1,4 @@
+var Promise = require('bluebird');
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
@@ -385,20 +386,29 @@ exports.updateMessageReportNote = {
   * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
   * @apiParam (Query) {string} [search] String used to search for a report by username
   *
-  * @apiSuccess {object[]} userReports An array of user reports. Sort order varies depending on the query parameters passed in.
-  * @apiSuccess {string} userReports.id The unique id of the user report
-  * @apiSuccess {string} userReports.status The status of the user report
-  * @apiSuccess {string} userReports.reviewer_user_id The unique id of the user who reviewed the user report
-  * @apiSuccess {timestamp} userReports.offender_ban_expiration If the user is banned, the expiration of their ban
-  * @apiSuccess {timestamp} userReports.offender_created_at When the offending user created their account
-  * @apiSuccess {string} userReports.offender_email The email of the offending user
-  * @apiSuccess {string} userReports.offender_user_id The unique id of the offending user
-  * @apiSuccess {string} userReports.offender_username The username of the offending user
-  * @apiSuccess {string} userReports.reporter_reason The reason for the report
-  * @apiSuccess {string} userReports.reporter_user_id The unique id of the reporting user
-  * @apiSuccess {string} userReports.reporter_username The username of the reporting user
-  * @apiSuccess {timestamp} userReports.created_at Timestamp of when the user report was created
-  * @apiSuccess {timestamp} userReports.updated_at Timestamp of when the user report was last updated
+  * @apiSuccess {object} userReports An object containing user reports and page data
+  * @apiSuccess {number} userReports.count The total number of reports
+  * @apiSuccess {number} userReports.limit The number of reports to bring back per page
+  * @apiSuccess {number} userReports.page The current page of reports brought back
+  * @apiSuccess {number} userReports.page_count The total number of pages
+  * @apiSuccess {string} userReports.filter Indicates the status type of the report being brought back
+  * @apiSuccess {string} userReports.field Indicates the field the reports are sorted by
+  * @apiSuccess {string} userReports.search Indicates the search string
+  * @apiSuccess {boolean} userReports.desc Boolean indicating if the results are in descending order
+  * @apiSuccess {object[]} userReports.data An array of user reports. Sort order varies depending on the query parameters passed in.
+  * @apiSuccess {string} userReports.data.id The unique id of the user report
+  * @apiSuccess {string} userReports.data.status The status of the user report
+  * @apiSuccess {string} userReports.data.reviewer_user_id The unique id of the user who reviewed the user report
+  * @apiSuccess {timestamp} userReports.data.offender_ban_expiration If the user is banned, the expiration of their ban
+  * @apiSuccess {timestamp} userReports.data.offender_created_at When the offending user created their account
+  * @apiSuccess {string} userReports.data.offender_email The email of the offending user
+  * @apiSuccess {string} userReports.data.offender_user_id The unique id of the offending user
+  * @apiSuccess {string} userReports.data.offender_username The username of the offending user
+  * @apiSuccess {string} userReports.data.reporter_reason The reason for the report
+  * @apiSuccess {string} userReports.data.reporter_user_id The unique id of the reporting user
+  * @apiSuccess {string} userReports.data.reporter_username The username of the reporting user
+  * @apiSuccess {timestamp} userReports.data.created_at Timestamp of when the user report was created
+  * @apiSuccess {timestamp} userReports.data.updated_at Timestamp of when the user report was last updated
   *
   * @apiError (Error 500) InternalServerError There was an error retrieving the user reports
   */
@@ -424,8 +434,25 @@ exports.pageUserReports = {
       sortDesc: request.query.desc,
       searchStr: request.query.search
     };
-    db.reports.pageUserReports(opts)
-    .then(function(reports) { reply(reports); });
+
+    var userReports = db.reports.pageUserReports(opts);
+    var userReportsCount = db.reports.userReportsCount(opts);
+
+    var promise = Promise.join(userReports, userReportsCount, function(reports, count) {
+      return {
+        data: reports,
+        count: count,
+        limit: opts.limit,
+        page: opts.page,
+        page_count: Math.ceil(count / opts.limit),
+        filter: opts.filter,
+        field: opts.sortField,
+        desc: opts.sortDesc,
+        search: opts.searchStr
+      };
+    });
+
+    return reply(promise);
   }
 };
 
@@ -443,25 +470,35 @@ exports.pageUserReports = {
   * @apiParam (Query) {string="created_at","priority","reporter_username","offender_created_at","offender_title","offender_author_username"} field=created_at Indicates which column to sort by, used for table sorting
   * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
   * @apiParam (Query) {string} [search] String used to search for a report by username
+  * @apiParam (Query) {string} [mod_id] If moderators user id is passed in, only returns reports made in boards this user moderates
   *
-  * @apiSuccess {object[]} postReports An array of post reports. Sort order varies depending on the query parameters passed in.
-  * @apiSuccess {string} postReports.id The unique id of the post report
-  * @apiSuccess {string} postReports.status The status of the post report
-  * @apiSuccess {string} postReports.reviewer_user_id The unique id of the user who reviewed the post report
-  * @apiSuccess {timestamp} postReports.offender_ban_expiration If the user is banned, the expiration of their ban
-  * @apiSuccess {string} postReports.offender_post_id The unique id of the offending post
-  * @apiSuccess {string} postReports.offender_thread_id The unique id of the offending post's thread
-  * @apiSuccess {string} postReports.offender_title The title of the offending post
-  * @apiSuccess {timestamp} postReports.offender_created_at Timestamp of the offending post was created
-  * @apiSuccess {timestamp} postReports.offender_author_created_at Timestamp of the offending post's author created date
-  * @apiSuccess {string} postReports.offender_author_username The username of the offending post's author
-  * @apiSuccess {string} postReports.offender_author_email The email of the user who created the offending post
-  * @apiSuccess {string} postReports.offender_author_id The unique id of the offending post's author
-  * @apiSuccess {string} postReports.reporter_reason The reason for the report
-  * @apiSuccess {string} postReports.reporter_user_id The unique id of the reporting user
-  * @apiSuccess {string} postReports.reporter_username The username of the reporting user
-  * @apiSuccess {timestamp} postReports.created_at Timestamp of when the post report was created
-  * @apiSuccess {timestamp} postReports.updated_at Timestamp of when the post report was last updated
+  * @apiSuccess {object} postReports An object containing post reports and page data
+  * @apiSuccess {number} postReports.count The total number of reports
+  * @apiSuccess {number} postReports.limit The number of reports to bring back per page
+  * @apiSuccess {number} postReports.page The current page of reports brought back
+  * @apiSuccess {number} postReports.page_count The total number of pages
+  * @apiSuccess {string} postReports.filter Indicates the status type of the report being brought back
+  * @apiSuccess {string} postReports.field Indicates the field the reports are sorted by
+  * @apiSuccess {string} postReports.search Indicates the search string
+  * @apiSuccess {boolean} postReports.desc Boolean indicating if the results are in descending order
+  * @apiSuccess {object[]} postReports.data An array of post reports. Sort order varies depending on the query parameters passed in.
+  * @apiSuccess {string} postReports.data.id The unique id of the post report
+  * @apiSuccess {string} postReports.data.status The status of the post report
+  * @apiSuccess {string} postReports.data.reviewer_user_id The unique id of the user who reviewed the post report
+  * @apiSuccess {timestamp} postReports.data.offender_ban_expiration If the user is banned, the expiration of their ban
+  * @apiSuccess {string} postReports.data.offender_post_id The unique id of the offending post
+  * @apiSuccess {string} postReports.data.offender_thread_id The unique id of the offending post's thread
+  * @apiSuccess {string} postReports.data.offender_title The title of the offending post
+  * @apiSuccess {timestamp} postReports.data.offender_created_at Timestamp of the offending post was created
+  * @apiSuccess {timestamp} postReports.data.offender_author_created_at Timestamp of the offending post's author created date
+  * @apiSuccess {string} postReports.data.offender_author_username The username of the offending post's author
+  * @apiSuccess {string} postReports.data.offender_author_email The email of the user who created the offending post
+  * @apiSuccess {string} postReports.data.offender_author_id The unique id of the offending post's author
+  * @apiSuccess {string} postReports.data.reporter_reason The reason for the report
+  * @apiSuccess {string} postReports.data.reporter_user_id The unique id of the reporting user
+  * @apiSuccess {string} postReports.data.reporter_username The username of the reporting user
+  * @apiSuccess {timestamp} postReports.data.created_at Timestamp of when the post report was created
+  * @apiSuccess {timestamp} postReports.data.updated_at Timestamp of when the post report was last updated
   *
   * @apiError (Error 500) InternalServerError There was an error retrieving the post reports
   */
@@ -474,6 +511,7 @@ exports.pagePostReports = {
       limit: Joi.number().integer().min(1).max(100).default(15),
       filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
       field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_created_at', 'offender_title', 'offender_author_username'),
+      mod_id: Joi.string(),
       desc: Joi.boolean().default(false),
       search: Joi.string()
     }
@@ -485,10 +523,36 @@ exports.pagePostReports = {
       filter: request.query.filter,
       sortField: request.query.field,
       sortDesc: request.query.desc,
-      searchStr: request.query.search
+      searchStr: request.query.search,
+      modId: request.query.mod_id
     };
-    db.reports.pagePostReports(opts)
-    .then(function(reports) { reply(reports); });
+
+    // duplicating opts, if pagePostReports deslugifies modId,
+    // it gets re-deslugified in postReportsCount, giving the wrong user id
+    var countOpts = {
+      filter: request.query.filter,
+      searchStr: request.query.search,
+      modId: request.query.mod_id
+    };
+
+    var postReports = db.reports.pagePostReports(opts);
+    var postReportsCount = db.reports.postReportsCount(countOpts);
+
+    var promise = Promise.join(postReports, postReportsCount, function(reports, count) {
+      return {
+        data: reports,
+        count: count,
+        limit: opts.limit,
+        page: opts.page,
+        page_count: Math.ceil(count / opts.limit),
+        filter: opts.filter,
+        field: opts.sortField,
+        desc: opts.sortDesc,
+        search: opts.searchStr
+      };
+    });
+
+    return reply(promise);
   }
 };
 
@@ -496,7 +560,7 @@ exports.pagePostReports = {
   * @apiVersion 0.3.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/messages (Admin) Page Message Report
-  * @apiName PagePostReport
+  * @apiName PageMessageReport
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to page through message moderation reports.
   *
@@ -507,23 +571,32 @@ exports.pagePostReports = {
   * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
   * @apiParam (Query) {string} [search] String used to search for a report by username
   *
-  * @apiSuccess {object[]} messageReports An array of message reports. Sort order varies depending on the query parameters passed in.
-  * @apiSuccess {string} messageReports.id The unique id of the message report
-  * @apiSuccess {string} messageReports.status The status of the message report
-  * @apiSuccess {string} messageReports.reviewer_user_id The unique id of the user who reviewed the message report
-  * @apiSuccess {timestamp} messageReports.offender_ban_expiration If the user is banned, the expiration of their ban
-  * @apiSuccess {string} messageReports.offender_message_id The unique id of the offending message
-  * @apiSuccess {string} messageReports.offender_message The body of the offending message
-  * @apiSuccess {timestamp} messageReports.offender_created_at Timestamp of the offending message was created
-  * @apiSuccess {timestamp} messageReports.offender_author_created_at Timestamp of the offending message's author created date
-  * @apiSuccess {string} messageReports.offender_author_username The username of the offending message's author
-  * @apiSuccess {string} messageReports.offender_author_email The email of the user who created the offending message
-  * @apiSuccess {string} messageReports.offender_author_id The unique id of the offending message's author
-  * @apiSuccess {string} messageReports.reporter_reason The reason for the report
-  * @apiSuccess {string} messageReports.reporter_user_id The unique id of the reporting user
-  * @apiSuccess {string} messageReports.reporter_username The username of the reporting user
-  * @apiSuccess {timestamp} messageReports.created_at Timestamp of when the message report was created
-  * @apiSuccess {timestamp} messageReports.updated_at Timestamp of when the message report was last updated
+  * @apiSuccess {object} messageReports An object containing message reports and page data
+  * @apiSuccess {number} messageReports.count The total number of reports
+  * @apiSuccess {number} messageReports.limit The number of reports to bring back per page
+  * @apiSuccess {number} messageReports.page The current page of reports brought back
+  * @apiSuccess {number} messageReports.page_count The total number of pages
+  * @apiSuccess {string} messageReports.filter Indicates the status type of the report being brought back
+  * @apiSuccess {string} messageReports.field Indicates the field the reports are sorted by
+  * @apiSuccess {string} messageReports.search Indicates the search string
+  * @apiSuccess {boolean} messageReports.desc Boolean indicating if the results are in descending order
+  * @apiSuccess {object[]} messageReports.data An array of message reports. Sort order varies depending on the query parameters passed in.
+  * @apiSuccess {string} messageReports.data.id The unique id of the message report
+  * @apiSuccess {string} messageReports.data.status The status of the message report
+  * @apiSuccess {string} messageReports.data.reviewer_user_id The unique id of the user who reviewed the message report
+  * @apiSuccess {timestamp} messageReports.data.offender_ban_expiration If the user is banned, the expiration of their ban
+  * @apiSuccess {string} messageReports.data.offender_message_id The unique id of the offending message
+  * @apiSuccess {string} messageReports.data.offender_message The body of the offending message
+  * @apiSuccess {timestamp} messageReports.data.offender_created_at Timestamp of the offending message was created
+  * @apiSuccess {timestamp} messageReports.data.offender_author_created_at Timestamp of the offending message's author created date
+  * @apiSuccess {string} messageReports.data.offender_author_username The username of the offending message's author
+  * @apiSuccess {string} messageReports.data.offender_author_email The email of the user who created the offending message
+  * @apiSuccess {string} messageReports.data.offender_author_id The unique id of the offending message's author
+  * @apiSuccess {string} messageReports.data.reporter_reason The reason for the report
+  * @apiSuccess {string} messageReports.data.reporter_user_id The unique id of the reporting user
+  * @apiSuccess {string} messageReports.data.reporter_username The username of the reporting user
+  * @apiSuccess {timestamp} messageReports.data.created_at Timestamp of when the message report was created
+  * @apiSuccess {timestamp} messageReports.data.updated_at Timestamp of when the message report was last updated
   *
   * @apiError (Error 500) InternalServerError There was an error retrieving the message reports
   */
@@ -549,8 +622,24 @@ exports.pageMessageReports = {
       sortDesc: request.query.desc,
       searchStr: request.query.search
     };
-    db.reports.pageMessageReports(opts)
-    .then(function(reports) { reply(reports); });
+    var messageReports = db.reports.pageMessageReports(opts);
+    var messageReportsCount = db.reports.messageReportsCount(opts);
+
+    var promise = Promise.join(messageReports, messageReportsCount, function(reports, count) {
+      return {
+        data: reports,
+        count: count,
+        limit: opts.limit,
+        page: opts.page,
+        page_count: Math.ceil(count / opts.limit),
+        filter: opts.filter,
+        field: opts.sortField,
+        desc: opts.sortDesc,
+        search: opts.searchStr
+      };
+    });
+
+    return reply(promise);
   }
 };
 
@@ -565,17 +654,23 @@ exports.pageMessageReports = {
   * @apiParam {string} userReportId The unique id of the user report to retrieve notes for
   *
   * @apiParam (Query) {number} page=1 The page of user report notes to retrieve
-  * @apiParam (Query) {number} limit=15 The number of user report notes to retrieve per page
-  * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
+  * @apiParam (Query) {number} limit=10 The number of user report notes to retrieve per page
+  * @apiParam (Query) {boolean} desc=true Boolean indicating whether or not to sort the results in descending order
   *
-  * @apiSuccess {object[]} userReportNotes An array of user report note objects.
-  * @apiSuccess {string} userReportNotes.id The unique id of the user report note
-  * @apiSuccess {string} userReportNotes.report_id The unique id of the user report this note is for
-  * @apiSuccess {string} userReportNotes.user_id The unique id of the user who left the note
-  * @apiSuccess {string} userReportNotes.avatar The URL to the avatar of the user who left the note
-  * @apiSuccess {string} userReportNotes.note The note message that was left on the report
-  * @apiSuccess {timestamp} userReportNotes.created_at Timestamp of when the report note was created
-  * @apiSuccess {timestamp} userReportNotes.updated_at Timestamp of when the report note was last updated
+  * @apiSuccess {object} userReportNotes An object containing user report notes and page data
+  * @apiSuccess {number} userReportNotes.count The total number of report notes
+  * @apiSuccess {number} userReportNotes.limit The number of report notes to bring back per page
+  * @apiSuccess {number} userReportNotes.page The current page of report notes brought back
+  * @apiSuccess {number} userReportNotes.page_count The total number of pages
+  * @apiSuccess {boolean} userReportNotes.desc Boolean indicating if the results are in descending order
+  * @apiSuccess {object[]} userReportNotes.data An array of user report note objects.
+  * @apiSuccess {string} userReportNotes.data.id The unique id of the user report note
+  * @apiSuccess {string} userReportNotes.data.report_id The unique id of the user report this note is for
+  * @apiSuccess {string} userReportNotes.data.user_id The unique id of the user who left the note
+  * @apiSuccess {string} userReportNotes.data.avatar The URL to the avatar of the user who left the note
+  * @apiSuccess {string} userReportNotes.data.note The note message that was left on the report
+  * @apiSuccess {timestamp} userReportNotes.data.created_at Timestamp of when the report note was created
+  * @apiSuccess {timestamp} userReportNotes.data.updated_at Timestamp of when the report note was last updated
   *
   * @apiError (Error 500) InternalServerError There was an error retrieving the user report notes
   */
@@ -586,8 +681,8 @@ exports.pageUserReportsNotes = {
     params: { report_id: Joi.string().required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).max(100).default(15),
-      desc: Joi.boolean().default(false)
+      limit: Joi.number().integer().min(1).max(100).default(10),
+      desc: Joi.boolean().default(true)
     }
   },
   handler: function(request, reply) {
@@ -598,8 +693,21 @@ exports.pageUserReportsNotes = {
       sortDesc: request.query.desc
     };
 
-    db.reports.pageUserReportsNotes(reportId, opts)
-    .then(function(reports) { reply(reports); });
+    var reportNotes = db.reports.pageUserReportsNotes(reportId, opts);
+    var reportNotesCount = db.reports.userReportsNotesCount(reportId);
+
+    var promise = Promise.join(reportNotes, reportNotesCount, function(notes, count) {
+      return {
+        data: notes,
+        count: count,
+        limit: opts.limit,
+        page: opts.page,
+        page_count: Math.ceil(count / opts.limit),
+        desc: opts.desc
+      };
+    });
+
+    return reply(promise);
   }
 };
 
@@ -614,17 +722,23 @@ exports.pageUserReportsNotes = {
   * @apiParam {string} postReportId The unique id of the post report to retrieve notes for
   *
   * @apiParam (Query) {number} page=1 The page of post report notes to retrieve
-  * @apiParam (Query) {number} limit=15 The number of post report notes to retrieve per page
-  * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
+  * @apiParam (Query) {number} limit=10 The number of post report notes to retrieve per page
+  * @apiParam (Query) {boolean} desc=true Boolean indicating whether or not to sort the results in descending order
   *
-  * @apiSuccess {object[]} postReportNotes An array of post report note objects.
-  * @apiSuccess {string} postReportNotes.id The unique id of the post report note
-  * @apiSuccess {string} postReportNotes.report_id The unique id of the post report this note is for
-  * @apiSuccess {string} postReportNotes.user_id The unique id of the user who left the note
-  * @apiSuccess {string} postReportNotes.avatar The URL to the avatar of the user who left the note
-  * @apiSuccess {string} postReportNotes.note The note message that was left on the report
-  * @apiSuccess {timestamp} postReportNotes.created_at Timestamp of when the report note was created
-  * @apiSuccess {timestamp} postReportNotes.updated_at Timestamp of when the report note was last updated
+  * @apiSuccess {object} postReportNotes An object containing post report notes and page data
+  * @apiSuccess {number} postReportNotes.count The total number of report notes
+  * @apiSuccess {number} postReportNotes.limit The number of report notes to bring back per page
+  * @apiSuccess {number} postReportNotes.page The current page of report notes brought back
+  * @apiSuccess {number} postReportNotes.page_count The total number of pages
+  * @apiSuccess {boolean} postReportNotes.desc Boolean indicating if the results are in descending order
+  * @apiSuccess {object[]} postReportNotes.data An array of post report note objects
+  * @apiSuccess {string} postReportNotes.data.id The unique id of the post report note
+  * @apiSuccess {string} postReportNotes.data.report_id The unique id of the post report this note is for
+  * @apiSuccess {string} postReportNotes.data.user_id The unique id of the user who left the note
+  * @apiSuccess {string} postReportNotes.data.avatar The URL to the avatar of the user who left the note
+  * @apiSuccess {string} postReportNotes.data.note The note message that was left on the report
+  * @apiSuccess {timestamp} postReportNotes.data.created_at Timestamp of when the report note was created
+  * @apiSuccess {timestamp} postReportNotes.data.updated_at Timestamp of when the report note was last updated
   *
   * @apiError (Error 500) InternalServerError There was an error retrieving the post report notes
   */
@@ -635,8 +749,8 @@ exports.pagePostReportsNotes = {
     params: { report_id: Joi.string().required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).max(100).default(15),
-      desc: Joi.boolean().default(false)
+      limit: Joi.number().integer().min(1).max(100).default(10),
+      desc: Joi.boolean().default(true)
     }
   },
   handler: function(request, reply) {
@@ -646,8 +760,22 @@ exports.pagePostReportsNotes = {
       page: request.query.page,
       sortDesc: request.query.desc
     };
-    db.reports.pagePostReportsNotes(reportId, opts)
-    .then(function(reports) { reply(reports); });
+
+    var reportNotes = db.reports.pagePostReportsNotes(reportId, opts);
+    var reportNotesCount = db.reports.postReportsNotesCount(reportId);
+
+    var promise = Promise.join(reportNotes, reportNotesCount, function(notes, count) {
+      return {
+        data: notes,
+        count: count,
+        limit: opts.limit,
+        page: opts.page,
+        page_count: Math.ceil(count / opts.limit),
+        desc: opts.desc
+      };
+    });
+
+    return reply(promise);
   }
 };
 
@@ -662,17 +790,23 @@ exports.pagePostReportsNotes = {
   * @apiParam {string} messageReportId The unique id of the message report to retrieve notes for
   *
   * @apiParam (Query) {number} page=1 The page of message report notes to retrieve
-  * @apiParam (Query) {number} limit=15 The number of message report notes to retrieve per page
-  * @apiParam (Query) {boolean} desc=false Boolean indicating whether or not to sort the results in descending order
+  * @apiParam (Query) {number} limit=10 The number of message report notes to retrieve per page
+  * @apiParam (Query) {boolean} desc=true Boolean indicating whether or not to sort the results in descending order
   *
-  * @apiSuccess {object[]} messageReportNotes An array of message report note objects.
-  * @apiSuccess {string} messageReportNotes.id The unique id of the message report note
-  * @apiSuccess {string} messageReportNotes.report_id The unique id of the message report this note is for
-  * @apiSuccess {string} messageReportNotes.user_id The unique id of the user who left the note
-  * @apiSuccess {string} messageReportNotes.avatar The URL to the avatar of the user who left the note
-  * @apiSuccess {string} messageReportNotes.note The note message that was left on the report
-  * @apiSuccess {timestamp} messageReportNotes.created_at Timestamp of when the report note was created
-  * @apiSuccess {timestamp} messageReportNotes.updated_at Timestamp of when the report note was last updated
+  * @apiSuccess {object} messageReportNotes An object containing message report notes and page data
+  * @apiSuccess {number} messageReportNotes.count The total number of report notes
+  * @apiSuccess {number} messageReportNotes.limit The number of report notes to bring back per page
+  * @apiSuccess {number} messageReportNotes.page The current page of report notes brought back
+  * @apiSuccess {number} messageReportNotes.page_count The total number of pages
+  * @apiSuccess {boolean} messageReportNotes.desc Boolean indicating if the results are in descending order
+  * @apiSuccess {object[]} messageReportNotes.data An array of message report note objects.
+  * @apiSuccess {string} messageReportNotes.data.id The unique id of the message report note
+  * @apiSuccess {string} messageReportNotes.data.report_id The unique id of the message report this note is for
+  * @apiSuccess {string} messageReportNotes.data.user_id The unique id of the user who left the note
+  * @apiSuccess {string} messageReportNotes.data.avatar The URL to the avatar of the user who left the note
+  * @apiSuccess {string} messageReportNotes.data.note The note message that was left on the report
+  * @apiSuccess {timestamp} messageReportNotes.data.created_at Timestamp of when the report note was created
+  * @apiSuccess {timestamp} messageReportNotes.data.updated_at Timestamp of when the report note was last updated
   *
   * @apiError (Error 500) InternalServerError There was an error retrieving the message report notes
   */
@@ -683,8 +817,8 @@ exports.pageMessageReportsNotes = {
     params: { report_id: Joi.string().required() },
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).max(100).default(15),
-      desc: Joi.boolean().default(false)
+      limit: Joi.number().integer().min(1).max(100).default(10),
+      desc: Joi.boolean().default(true)
     }
   },
   handler: function(request, reply) {
@@ -694,205 +828,21 @@ exports.pageMessageReportsNotes = {
       page: request.query.page,
       sortDesc: request.query.desc
     };
-    db.reports.pageMessageReportsNotes(reportId, opts)
-    .then(function(reports) { reply(reports); });
-  }
-};
 
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Reports
-  * @api {GET} /admin/reports/users/count (Admin) Count User Reports
-  * @apiName CountUserReports
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Used to count how many user moderation reports there are. This is
-  * used to determine how many pages to show for paginating through reports.
-  *
-  * @apiParam (Query) {string="Pending","Reviewed","Ignored","Bad Report"} [status] The status of the user reports you want a count for
-  * @apiParam (Query) {string} [search] Allows user to filter count by their search string
-  *
-  * @apiSuccess {number} count The number of user reports
-  *
-  * @apiError (Error 500) InternalServerError There was an error retrieving the user report count.
-  */
-exports.userReportsCount = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.userReportsCount' },
-  validate: {
-    query: {
-      status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
-      search: Joi.string()
-    }
-  },
-  handler: function(request, reply) {
-    var status = request.query.status;
-    var search = request.query.search;
-    var opts;
-    if (status || search) {
-      opts = {
-        status: status,
-        searchStr: search
+    var reportNotes = db.reports.pageMessageReportsNotes(reportId, opts);
+    var reportNotesCount = db.reports.messageReportsNotesCount(reportId);
+
+    var promise = Promise.join(reportNotes, reportNotesCount, function(notes, count) {
+      return {
+        data: notes,
+        count: count,
+        limit: opts.limit,
+        page: opts.page,
+        page_count: Math.ceil(count / opts.limit),
+        desc: opts.desc
       };
-    }
-    db.reports.userReportsCount(opts)
-    .then(function(count) { reply(count); });
-  }
-};
+    });
 
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Reports
-  * @api {GET} /admin/reports/posts/count (Admin) Count Post Reports
-  * @apiName CountPostReports
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Used to count how many post moderation reports there are. This is
-  * used to determine how many pages to show for paginating through reports.
-  *
-  * @apiParam (Query) {string="Pending","Reviewed","Ignored","Bad Report"} [status] The status of the post reports you want a count for
-  * @apiParam (Query) {string} [search] Allows user to filter count by their search string
-  *
-  * @apiSuccess {number} count The number of post reports
-  *
-  * @apiError (Error 500) InternalServerError There was an error retrieving the post report count.
-  */
-exports.postReportsCount = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.postReportsCount' },
-  validate: {
-    query: {
-      status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
-      search: Joi.string()
-    }
-  },
-  handler: function(request, reply) {
-    var status = request.query.status;
-    var search = request.query.search;
-    var opts;
-    if (status || search) {
-      opts = {
-        status: status,
-        searchStr: search
-      };
-    }
-    db.reports.postReportsCount(opts)
-    .then(function(count) { reply(count); });
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Reports
-  * @api {GET} /admin/reports/message/count (Admin) Count Message Reports
-  * @apiName CountMessageReports
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Used to count how many message moderation reports there are. This is
-  * used to determine how many pages to show for paginating through reports.
-  *
-  * @apiParam (Query) {string="Pending","Reviewed","Ignored","Bad Report"} [status] The status of the message reports you want a count for
-  * @apiParam (Query) {string} [search] Allows user to filter count by their search string
-  *
-  * @apiSuccess {number} count The number of message reports
-  *
-  * @apiError (Error 500) InternalServerError There was an error retrieving the message report count.
-  */
-exports.messageReportsCount = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.messageReportsCount' },
-  validate: {
-    query: {
-      status: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
-      search: Joi.string()
-    }
-  },
-  handler: function(request, reply) {
-    var status = request.query.status;
-    var search = request.query.search;
-    var opts;
-    if (status || search) {
-      opts = {
-        status: status,
-        searchStr: search
-      };
-    }
-    db.reports.messageReportsCount(opts)
-    .then(function(count) { reply(count); });
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Reports
-  * @api {GET} /admin/reports/usernotes/:userReportId/count (Admin) Count User Report Notes
-  * @apiName CountUserReportNotes
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Used to count how many user moderation report notes there are for a particular report. This is
-  * used to determine how many pages to show for paginating through report notes.
-  *
-  * @apiParam {string} userReportId The unique id of the user report to retrieve notes for
-  *
-  * @apiSuccess {number} count The number of user report notes for the provided user report id
-  *
-  * @apiError (Error 500) InternalServerError There was an error retrieving the user report notes count.
-  */
-exports.userReportsNotesCount = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.userReportsNotesCount' },
-  validate: { params: { report_id: Joi.string().required() } },
-  handler: function(request, reply) {
-    var reportId = request.params.report_id;
-    db.reports.userReportsNotesCount(reportId)
-    .then(function(count) { reply(count); });
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Reports
-  * @api {GET} /admin/reports/postnotes/:postReportId/count (Admin) Count Post Report Notes
-  * @apiName CountPostReportNotes
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Used to count how many post moderation report notes there are for a particular report. This is
-  * used to determine how many pages to show for paginating through report notes.
-  *
-  * @apiParam {string} postReportId The unique id of the post report to retrieve notes for
-  *
-  * @apiSuccess {number} count The number of post report notes for the provided post report id
-  *
-  * @apiError (Error 500) InternalServerError There was an error retrieving the post report notes count.
-  */
-exports.postReportsNotesCount = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.postReportsNotesCount' },
-  validate: { params: { report_id: Joi.string().required() } },
-  handler: function(request, reply) {
-    var reportId = request.params.report_id;
-    db.reports.postReportsNotesCount(reportId)
-    .then(function(count) { reply(count); });
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Reports
-  * @api {GET} /admin/reports/messagenotes/:messageReportId/count (Admin) Count Message Report Notes
-  * @apiName CountMessageReportNotes
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Used to count how many message moderation report notes there are for a particular report. This is
-  * used to determine how many pages to show for paginating through report notes.
-  *
-  * @apiParam {string} messageReportId The unique id of the message report to retrieve notes for
-  *
-  * @apiSuccess {number} count The number of message report notes for the provided message report id
-  *
-  * @apiError (Error 500) InternalServerError There was an error retrieving the message report notes count.
-  */
-exports.messageReportsNotesCount = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.messageReportsNotesCount' },
-  validate: { params: { report_id: Joi.string().required() } },
-  handler: function(request, reply) {
-    var reportId = request.params.report_id;
-    db.reports.messageReportsNotesCount(reportId)
-    .then(function(count) { reply(count); });
+    return reply(promise);
   }
 };

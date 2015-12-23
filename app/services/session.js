@@ -129,6 +129,30 @@ module.exports = ['$window',
       return includes(user.moderating, boardId);
     }
 
+    function globalModeratorCheck() {
+      var globalMod = false;
+      if (user.permissions) {
+        var globalModPermissions = [
+          'postControls.privilegedUpdate',
+          'postControls.privilegedDelete',
+          'postControls.privilegedPurge',
+          'postControls.bypassLock',
+          'threadControls.privilegedTitle',
+          'threadControls.privilegedLock',
+          'threadControls.privilegedSticky',
+          'threadControls.privilegedMove',
+          'threadControls.privilegedPurge',
+          'pollControls.privilegedLock'
+        ];
+        // If user has any of the permissions above set to all they are a global mod
+        globalModPermissions.forEach(function(permission) {
+          var allPermission = get(user.permissions, permission + '.all');
+          globalMod = globalMod || allPermission;
+        });
+      }
+      return globalMod;
+    }
+
     function getControlAccess(permission, boardId) {
       var result = {};
       var isMod = moderatesBoard(boardId);
@@ -138,6 +162,27 @@ module.exports = ['$window',
           if (typeof obj[key] === 'boolean') { result[key] = obj[key]; }
           else { result[key] = (isMod && obj[key].some) || obj[key].all; }
         }
+      }
+      return result;
+    }
+
+    function getModPanelControlAccess() {
+      var result = {};
+      if (user.permissions) {
+        var perm = function(p) {
+          p = get(user.permissions, p);
+          p = p ? p : false; // change undefined to false
+          return (typeof p === 'boolean') ? p : (p.some || p.all || p.samePriority || p.lowerPriority || false);
+        };
+        // Retrieve specific permissions used to display mod actions in moderation pages
+        result.postControls = {
+          privilegedDelete: perm('postControls.privilegedDelete'),
+          privilegedUpdate: perm('postControls.privilegedUpdate'),
+          privilegedPurge: perm('postControls.privilegedPurge'),
+        };
+        result.userControls = { privilegedBan: perm('profileControls.privilegedBan') };
+        result.reportControls = hasPermission('reportControls');
+        result.messageControls = hasPermission('messageControls');
       }
       return result;
     }
@@ -165,6 +210,8 @@ module.exports = ['$window',
       clearUser: clearUser,
       hasPermission: hasPermission,
       moderatesBoard: moderatesBoard,
+      globalModeratorCheck: globalModeratorCheck,
+      getModPanelControlAccess: getModPanelControlAccess,
       getControlAccess: getControlAccess,
       getControlAccessWithPriority: getControlAccessWithPriority,
       user: user,

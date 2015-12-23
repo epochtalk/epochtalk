@@ -26,7 +26,6 @@ exports.all = {
     return reply(promise);
   }
 };
-
 /**
   * @apiVersion 0.3.0
   * @apiGroup Roles
@@ -150,13 +149,7 @@ exports.add = {
           pageMessageReports: Joi.boolean(),
           pageUserReportsNotes: Joi.boolean(),
           pagePostReportsNotes: Joi.boolean(),
-          pageMessageReportsNotes: Joi.boolean(),
-          userReportsCount: Joi.boolean(),
-          postReportsCount: Joi.boolean(),
-          messageReportsCount: Joi.boolean(),
-          userReportsNotesCount: Joi.boolean(),
-          postReportsNotesCount: Joi.boolean(),
-          messageReportsNotesCount: Joi.boolean()
+          pageMessageReportsNotes: Joi.boolean()
         }),
         adminSettings: Joi.object().keys({
           find: Joi.boolean(),
@@ -168,6 +161,10 @@ exports.add = {
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
+          privilegedBan: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
@@ -328,7 +325,14 @@ exports.add = {
             some: Joi.boolean(),
             all: Joi.boolean()
           })
-        })
+        }),
+        limits: Joi.array().items({
+          path: Joi.string().required(),
+          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
+          interval: Joi.number().min(-1).required(),
+          maxInInterval: Joi.number().min(1).required(),
+          minDifference: Joi.number().min(1).optional()
+        }).sparse()
       }).required()
     }
   },
@@ -424,13 +428,7 @@ exports.update = {
           pageMessageReports: Joi.boolean(),
           pageUserReportsNotes: Joi.boolean(),
           pagePostReportsNotes: Joi.boolean(),
-          pageMessageReportsNotes: Joi.boolean(),
-          userReportsCount: Joi.boolean(),
-          postReportsCount: Joi.boolean(),
-          messageReportsCount: Joi.boolean(),
-          userReportsNotesCount: Joi.boolean(),
-          postReportsNotesCount: Joi.boolean(),
-          messageReportsNotesCount: Joi.boolean()
+          pageMessageReportsNotes: Joi.boolean()
         }),
         adminSettings: Joi.object().keys({
           find: Joi.boolean(),
@@ -442,6 +440,10 @@ exports.update = {
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
+          privilegedBan: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
@@ -601,7 +603,14 @@ exports.update = {
             some: Joi.boolean(),
             all: Joi.boolean()
           })
-        })
+        }),
+        limits: Joi.array().items({
+          path: Joi.string().required(),
+          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
+          interval: Joi.number().min(-1).required(),
+          maxInInterval: Joi.number().min(1).required(),
+          minDifference: Joi.number().min(1).optional()
+        }).sparse()
       }).required()
     }
   },
@@ -665,7 +674,7 @@ exports.remove = {
   *
   * @apiParam (Payload) {Array} roles with new priorities.
   *
-  * @apiSuccess {} 200 OK SUCCESS.
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue reprioritizing the roles.
   */

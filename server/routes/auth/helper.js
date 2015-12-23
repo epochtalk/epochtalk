@@ -59,6 +59,10 @@ function getMaskedPermissions(userRoles) {
         samePriority: maskPermission('adminUsers.privilegedUpdate.samePriority'),
         lowerPriority: maskPermission('adminUsers.privilegedUpdate.lowerPriority')
       } : undefined,
+      privilegedBan: maskPermission('adminUsers.privilegedBan') ? {
+        samePriority: maskPermission('adminUsers.privilegedBan.samePriority'),
+        lowerPriority: maskPermission('adminUsers.privilegedBan.lowerPriority')
+      } : undefined,
       privilegedDeactivate: maskPermission('users.privilegedDeactivate') ? {
         samePriority: maskPermission('users.privilegedDeactivate.samePriority'),
         lowerPriority: maskPermission('users.privilegedDeactivate.lowerPriority')
@@ -147,12 +151,22 @@ function getMaskedPermissions(userRoles) {
     messageControls: {
       createConversations: maskPermission('conversations.create'),
       createMessages: maskPermission('messages.create'),
-      deleteMessages: maskPermission('messages.delete')
+      deleteMessages: maskPermission('messages.delete'),
+      privilegedDelete: maskPermission('messages.privilegedDelete')
     },
     reportControls: {
       reportPosts: maskPermission('reports.createPostReport'),
       reportUsers: maskPermission('reports.createUserReport'),
-      reportMessages: maskPermission('reports.createMessageReport')
+      reportMessages: maskPermission('reports.createMessageReport'),
+      updateUserReport: maskPermission('adminReports.updateUserReport') || undefined,
+      updatePostReport: maskPermission('adminReports.updatePostReport') || undefined,
+      updateMessageReport: maskPermission('adminReports.updateMessageReport') || undefined,
+      createUserReportNote: maskPermission('adminReports.createUserReportNote') || undefined,
+      createPostReportNote: maskPermission('adminReports.createPostReportNote') || undefined,
+      createMessageReportNote: maskPermission('adminReports.createMessageReportNote') || undefined,
+      updateUserReportNote: maskPermission('adminReports.updateUserReportNote') || undefined,
+      updatePostReportNote: maskPermission('adminReports.updatePostReportNote') || undefined,
+      updateMessageReportNote: maskPermission('adminReports.updateMessageReportNote') || undefined
     }
   };
 }
@@ -228,6 +242,8 @@ helper.saveSession = function(user) {
 helper.updateRoles = function(user) {
   // pull user role's lookup
   user.roles = user.roles.map(function(role) { return role.lookup; });
+  // default to user role
+  if (!user.roles.length) { user.roles = ['user']; }
 
   // save roles to redis set under "user:{userId}:roles"
   var roleKey = 'user:' + user.id + ':roles';

@@ -5,63 +5,30 @@ module.exports = ['$resource',
   function($resource) {
     return $resource('/api/admin/reports/users', {}, {
       pageUserReports: {
-        method: 'GET',
-        isArray: true
+        method: 'GET'
       },
       pagePostReports: {
         method: 'GET',
-        url: '/api/admin/reports/posts',
-        isArray: true
+        url: '/api/admin/reports/posts'
       },
       pageMessageReports: {
         method: 'GET',
-        url: '/api/admin/reports/messages',
-        isArray: true
-      },
-      userReportsCount: {
-        method: 'GET',
-        url: '/api/admin/reports/users/count'
-      },
-      postReportsCount: {
-        method: 'GET',
-        url: '/api/admin/reports/posts/count'
-      },
-      messageReportsCount: {
-        method: 'GET',
-        url: '/api/admin/reports/messages/count'
+        url: '/api/admin/reports/messages'
       },
       pageUserReportsNotes: {
         method: 'GET',
         url: '/api/admin/reports/usernotes/:report_id',
-        params: { report_id: '@report_id' },
-        isArray: true,
+        params: { report_id: '@report_id' }
       },
       pagePostReportsNotes: {
         method: 'GET',
         url: '/api/admin/reports/postnotes/:report_id',
-        params: { report_id: '@report_id' },
-        isArray: true,
+        params: { report_id: '@report_id' }
       },
       pageMessageReportsNotes: {
         method: 'GET',
         url: '/api/admin/reports/messagenotes/:report_id',
-        params: { report_id: '@report_id' },
-        isArray: true,
-      },
-      userReportsNotesCount: {
-        method: 'GET',
-        url: '/api/admin/reports/usernotes/:report_id/count',
-        params: { report_id: '@report_id' },
-      },
-      postReportsNotesCount: {
-        method: 'GET',
-        url: '/api/admin/reports/postnotes/:report_id/count',
-        params: { report_id: '@report_id' },
-      },
-      messageReportsNotesCount: {
-        method: 'GET',
-        url: '/api/admin/reports/messagenotes/:report_id/count',
-        params: { report_id: '@report_id' },
+        params: { report_id: '@report_id' }
       },
       createUserReportNote: {
         method: 'POST',

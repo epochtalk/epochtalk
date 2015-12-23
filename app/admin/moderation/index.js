@@ -78,39 +78,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      limit: ['$stateParams', function($stateParams) {
-        return $stateParams.limit || 15;
-      }],
-      page: ['$stateParams', function($stateParams) {
-        return Number($stateParams.page) || 1;
-      }],
-      filter: ['$stateParams', function($stateParams) {
-        return $stateParams.filter;
-      }],
-      field: ['$stateParams', function($stateParams) {
-        return $stateParams.field;
-      }],
-      desc: ['$stateParams', function($stateParams) {
-        return $stateParams.desc || true;
-      }],
-      search: ['$stateParams', function($stateParams) {
-        return $stateParams.search;
-      }],
       reportId: ['$stateParams', function($stateParams) {
         return $stateParams.reportId;
-      }],
-      reportCount: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
-        var opts;
-        var status = $stateParams.filter;
-        var search = $stateParams.search;
-        if (status || search) {
-          opts = {
-            status: status,
-            search: search
-          };
-        }
-        return AdminReports.userReportsCount(opts).$promise
-        .then(function(userReportsCount) { return userReportsCount.count; });
       }],
       userReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
         var query = {
@@ -152,7 +121,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     }
   })
   .state('admin-moderation.posts', {
-    url: '/posts?page&limit&field&desc&filter&search&reportId',
+    url: '/posts?page&limit&field&desc&filter&search&reportId&allReports',
     reloadOnSearch: false,
     views: {
       'data@admin-moderation': {
@@ -173,49 +142,23 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      limit: ['$stateParams', function($stateParams) {
-        return $stateParams.limit || 15;
-      }],
-      page: ['$stateParams', function($stateParams) {
-        return Number($stateParams.page) || 1;
-      }],
-      filter: ['$stateParams', function($stateParams) {
-        return $stateParams.filter;
-      }],
-      field: ['$stateParams', function($stateParams) {
-        return $stateParams.field;
-      }],
-      desc: ['$stateParams', function($stateParams) {
-        return $stateParams.desc || true;
-      }],
-      search: ['$stateParams', function($stateParams) {
-        return $stateParams.search;
-      }],
       reportId: ['$stateParams', function($stateParams) {
         return $stateParams.reportId;
       }],
-      reportCount: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
-        var opts;
-        var status = $stateParams.filter;
-        var search = $stateParams.search;
-        if (status || search) {
-          opts = {
-            status: status,
-            search: search
-          };
-        }
-        return AdminReports.postReportsCount(opts).$promise
-        .then(function(postReportsCount) { return postReportsCount.count; });
+      allReports: ['$stateParams', function($stateParams) {
+        return $stateParams.allReports;
       }],
-      postReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
+      postReports: ['AdminReports', '$stateParams', 'Session', function(AdminReports, $stateParams, Session) {
         var query = {
           field: $stateParams.field,
           desc: $stateParams.desc || true,
           filter: $stateParams.filter,
           limit: Number($stateParams.limit) || 15,
           page: Number($stateParams.page) || 1,
-          search: $stateParams.search
+          search: $stateParams.search,
+          mod_id: $stateParams.allReports === 'true' ? undefined : Session.user.id
         };
+        if (Session.globalModeratorCheck()) { delete query.mod_id; } // default to all if global mod
         return AdminReports.pagePostReports(query).$promise;
       }]
     }
@@ -242,39 +185,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      limit: ['$stateParams', function($stateParams) {
-        return $stateParams.limit || 15;
-      }],
-      page: ['$stateParams', function($stateParams) {
-        return Number($stateParams.page) || 1;
-      }],
-      filter: ['$stateParams', function($stateParams) {
-        return $stateParams.filter;
-      }],
-      field: ['$stateParams', function($stateParams) {
-        return $stateParams.field;
-      }],
-      desc: ['$stateParams', function($stateParams) {
-        return $stateParams.desc || true;
-      }],
-      search: ['$stateParams', function($stateParams) {
-        return $stateParams.search;
-      }],
       reportId: ['$stateParams', function($stateParams) {
         return $stateParams.reportId;
-      }],
-      reportCount: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
-        var opts;
-        var status = $stateParams.filter;
-        var search = $stateParams.search;
-        if (status || search) {
-          opts = {
-            status: status,
-            search: search
-          };
-        }
-        return AdminReports.messageReportsCount(opts).$promise
-        .then(function(messageReportsCount) { return messageReportsCount.count; });
       }],
       messageReports: ['AdminReports', '$stateParams', function(AdminReports, $stateParams) {
         var query = {

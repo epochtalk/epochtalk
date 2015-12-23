@@ -1,34 +1,39 @@
 var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll',
-'Alert', 'Session', 'AdminReports', 'AdminUsers', 'User', 'userReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, User, userReports, reportCount, page, limit, field, desc, filter, search, reportId) {
+'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Conversations', 'User', 'userReports', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Conversations, User, userReports, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'users';
-  this.userReports = userReports;
+  this.userReports = userReports.data;
   this.reportId = reportId;
   this.previewReport = null;
   this.selectedUsername = null;
   this.tableFilter = 0;
-  if (filter === 'Pending') { this.tableFilter = 1; }
-  else if (filter === 'Reviewed') { this.tableFilter = 2; }
-  else if (filter === 'Ignored') { this.tableFilter = 3; }
-  else if (filter === 'Bad Report') { this.tableFilter = 4; }
+  if (userReports.filter === 'Pending') { this.tableFilter = 1; }
+  else if (userReports.filter === 'Reviewed') { this.tableFilter = 2; }
+  else if (userReports.filter === 'Ignored') { this.tableFilter = 3; }
+  else if (userReports.filter === 'Bad Report') { this.tableFilter = 4; }
+
+  // Get Action Control Access
+  this.actionAccess = Session.getModPanelControlAccess();
 
   // Search Vars
-  this.search = search;
-  this.searchStr = search;
-  this.count = reportCount;
+  this.search = userReports.search;
+  this.searchStr = userReports.search;
+  this.count = userReports.count;
 
   // Report Pagination Vars
-  this.pageCount = Math.ceil(reportCount / limit);
+  this.pageCount = userReports.page_count;
   this.queryParams = $location.search();
-  this.page = page;
-  this.limit = limit;
-  this.field = field;
-  this.desc = desc;
-  this.filter = filter;
+  this.page = userReports.page;
+  this.limit = userReports.limit;
+  this.field = userReports.field;
+  this.desc = userReports.desc;
+  this.filter = userReports.filter;
 
   // Report Notes Vars
   this.reportNotes = null;
+  this.reportNotesPage = null;
+  this.reportNotesPageCount = null;
   this.reportNote = null;
   this.noteSubmitted = false;
   this.submitBtnLabel = 'Add Note';
@@ -128,10 +133,10 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
           note: ctrl.statusReportNote
         };
         return AdminReports.createUserReportNote(params).$promise
-        .then(function(createdNote) {
+        .then(function() {
           // Add note if report is currently being previewed
           if (ctrl.reportNotes && ctrl.previewReport.id === ctrl.selectedUserReport.id) {
-            ctrl.reportNotes.push(createdNote);
+            ctrl.pageReportNotes(ctrl.previewReport.id, ctrl.reportNotesPage);
           }
         });
       }
@@ -176,7 +181,12 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
       return result;
     })
     .then(updateBanLabel)
-    .then(function() {
+    .catch(function(err) {
+      var msg = 'There was an error unbanning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmBan();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -208,7 +218,12 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
       return results;
     })
     .then(updateBanLabel)
-    .then(function() {
+    .catch(function(err) {
+      var msg = 'There was an error unbanning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmUnban();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -223,6 +238,9 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
         // unbanning sets ban expiration to current time
         var expiration = new Date(params.expiration) > new Date() ? params.expiration : undefined;
         ctrl.userReports[i].offender_ban_expiration = expiration;
+        if (ctrl.previewReport && ctrl.userReports[i].id === ctrl.previewReport.id) {
+          ctrl.previewReport.offender_ban_expiration = expiration;
+        }
       }
     }
   };
@@ -255,12 +273,12 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
       note: ctrl.reportNote
     };
     AdminReports.createUserReportNote(params).$promise
-    .then(function(createdNote) {
-      ctrl.reportNotes.push(createdNote);
+    .then(function() {
       ctrl.submitBtnLabel = 'Add Note';
       ctrl.noteSubmitted = false;
       ctrl.reportNote = null;
       Alert.success('Note successfully created');
+      ctrl.pageReportNotes(ctrl.reportId, ctrl.reportNotesPage);
     });
   };
 
@@ -286,15 +304,21 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
       ctrl.selectedUsername = userReport.offender_username;
       ctrl.previewReport = userReport;
 
-      AdminReports.pageUserReportsNotes({ report_id: userReport.id }).$promise
-      .then(function(reportNotes) {
-        ctrl.reportNotes = reportNotes;
-      });
+      ctrl.pageReportNotes(userReport.id);
 
       if (initialPageLoad) {
         $state.go('admin-moderation.users.preview', { username: ctrl.selectedUsername }, { location: false, reload: 'admin-moderation.users.preview' });
       }
     }
+  };
+
+  this.pageReportNotes = function(reportId, page) {
+    AdminReports.pageUserReportsNotes({ report_id: reportId, page: page }).$promise
+    .then(function(reportNotes) {
+      ctrl.reportNotes = reportNotes.data;
+      ctrl.reportNotesPage = reportNotes.page;
+      ctrl.reportNotesPageCount = reportNotes.page_count;
+    });
   };
 
   // Handles case when linking to this state with reportId in query string already populated
@@ -323,7 +347,7 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
   this.setSortField = function(sortField) {
     // Sort Field hasn't changed just toggle desc
     var unchanged = sortField === ctrl.field;
-    if (unchanged) { ctrl.desc = ctrl.desc === 'true' ? 'false' : 'true'; } // bool to str
+    if (unchanged) { ctrl.desc = ctrl.desc.toString() === 'true' ? 'false' : 'true'; } // bool to str
     // Sort Field changed default to ascending order
     else { ctrl.desc = 'false'; }
     ctrl.field = sortField;
@@ -348,6 +372,48 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
     else if (ctrl.field === sortField && !sortDesc) { sortClass = 'fa fa-sort-asc'; }
     else { sortClass = 'fa fa-sort'; }
     return sortClass;
+  };
+
+  // Warn users
+  this.newConversation = {};
+  this.showWarnModal = false;
+  this.warnSubmitted = false;
+  this.warnBtnLabel = 'Send Warning';
+
+  this.createConversation = function() {
+    ctrl.warnSubmitted = true;
+    ctrl.warnBtnLabel = 'Sending...';
+    // create a new conversation id to put this message under
+    var newMessage = {
+      receiver_id: ctrl.newConversation.receiver_id,
+      body: ctrl.newConversation.body,
+    };
+
+    Conversations.save(newMessage).$promise
+    .then(function() {
+      Alert.success('Warning has been sent to ' + ctrl.selectedUser.username);
+    })
+    .catch(function() { Alert.error('There was an error warning ' +  ctrl.selectedUser.username); })
+    .finally(function() { ctrl.closeWarn(); });
+  };
+
+  this.showWarn = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.newConversation.receiver_id = user.id;
+    ctrl.showWarnModal = true;
+  };
+
+  this.closeWarn = function() {
+    ctrl.selectedUser = null;
+    ctrl.warnSubmitted = false;
+    // Fix for modal not opening after closing
+    $timeout(function() { ctrl.showWarnModal = false; });
+
+    // Wait for modal to disappear then clear fields
+    $timeout(function() {
+      ctrl.newConversation = {};
+      ctrl.warnBtnLabel = 'Send Warning';
+    }, 1000);
   };
 
   $timeout($anchorScroll);
@@ -416,25 +482,12 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
       search: ctrl.search
     };
 
-    var opts;
-    if (ctrl.filter || ctrl.search) {
-      opts = {
-        status: ctrl.filter,
-        search: ctrl.search
-      };
-    }
-
-    // update report's page count
-    AdminReports.userReportsCount(opts).$promise
-    .then(function(updatedCount) {
-      ctrl.count = updatedCount.count;
-      ctrl.pageCount = Math.ceil(updatedCount.count / limit);
-    });
-
     // replace current reports with new reports
     AdminReports.pageUserReports(query).$promise
     .then(function(newReports) {
-      ctrl.userReports = newReports;
+      ctrl.userReports = newReports.data;
+      ctrl.count = newReports.count;
+      ctrl.pageCount = newReports.page_count;
     });
 
     // Location has already been updated using location.search, reload only child state

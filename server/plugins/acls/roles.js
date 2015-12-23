@@ -44,13 +44,7 @@ module.exports = roles;
       pageMessageReports: true,
       pageUserReportsNotes: true,
       pagePostReportsNotes: true,
-      pageMessageReportsNotes: true,
-      userReportsCount: true,
-      postReportsCount: true,
-      messageReportsCount: true,
-      userReportsNotesCount: true,
-      postReportsNotesCount: true,
-      messageReportsNotesCount: true
+      pageMessageReportsNotes: true
     },
     adminRoles: {
       all: true,
@@ -78,6 +72,10 @@ module.exports = roles;
         lowerPriority: true
       },
       privilegedRemoveRoles: {
+        samePriority: true,
+        lowerPriority: true
+      },
+      privilegedBan: {
         samePriority: true,
         lowerPriority: true
       },
@@ -124,6 +122,7 @@ module.exports = roles;
       delete: true
     },
     messages: {
+      privilegedDelete: true,
       create: true,
       latest: true,
       findUser: true,
@@ -199,6 +198,7 @@ module.exports = roles;
       vote: true,
       lock: true,
       privilegedLock: {
+        some: true,
         all: true
       }
     },
@@ -269,13 +269,7 @@ roles.superAdministrator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminRoles: {
     all: true,
@@ -295,12 +289,15 @@ roles.superAdministrator = {
   },
   adminUsers: {
     privilegedUpdate: {
-      lowerPriority: true
+      samePriority: true
     },
     privilegedAddRoles: {
       samePriority: true
     },
     privilegedRemoveRoles: {
+      samePriority: true
+    },
+    privilegedBan: {
       samePriority: true
     },
     update: true,
@@ -470,13 +467,7 @@ roles.administrator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminRoles: {
     all: true,
@@ -490,6 +481,9 @@ roles.administrator = {
       lowerPriority: true
     },
     privilegedRemoveRoles: {
+      lowerPriority: true
+    },
+    privilegedBan: {
       lowerPriority: true
     },
     update: true,
@@ -652,16 +646,13 @@ roles.globalModerator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminUsers: {
     privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedBan: {
       lowerPriority: true
     },
     update: true,
@@ -790,16 +781,13 @@ roles.moderator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminUsers: {
     privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedBan: {
       lowerPriority: true
     },
     update: true,
@@ -820,6 +808,7 @@ roles.moderator = {
     messages: true
   },
   messages: {
+    privilegedDelete: true,
     create: true,
     latest: true,
     findUser: true,

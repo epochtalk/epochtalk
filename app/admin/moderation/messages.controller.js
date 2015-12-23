@@ -1,32 +1,37 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Messages', 'messageReports', 'reportCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Messages, messageReports, reportCount, page, limit, field, desc, filter, search, reportId) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Messages', 'Conversations', 'messageReports', 'reportId', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Messages, Conversations, messageReports, reportId) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'messages';
   this.previewReport = null;
   this.reportId = reportId;
-  this.messageReports = messageReports;
+  this.messageReports = messageReports.data;
   this.tableFilter = 0;
-  if (filter === 'Pending') { this.tableFilter = 1; }
-  else if (filter === 'Reviewed') { this.tableFilter = 2; }
-  else if (filter === 'Ignored') { this.tableFilter = 3; }
-  else if (filter === 'Bad Report') { this.tableFilter = 4; }
+  if (messageReports.filter === 'Pending') { this.tableFilter = 1; }
+  else if (messageReports.filter === 'Reviewed') { this.tableFilter = 2; }
+  else if (messageReports.filter === 'Ignored') { this.tableFilter = 3; }
+  else if (messageReports.filter === 'Bad Report') { this.tableFilter = 4; }
+
+  // Get Action Control Access
+  this.actionAccess = Session.getModPanelControlAccess();
 
   // Search Vars
-  this.search = search;
-  this.searchStr = search;
-  this.count = reportCount;
+  this.search = messageReports.search;
+  this.searchStr = messageReports.search;
+  this.count = messageReports.count;
 
   // Report Pagination Vars
-  this.pageCount = Math.ceil(reportCount / limit);
+  this.pageCount = messageReports.page_count;
   this.queryParams = $location.search();
-  this.page = page;
-  this.limit = limit;
-  this.field = field;
-  this.desc = desc;
-  this.filter = filter;
+  this.page = messageReports.page;
+  this.limit = messageReports.limit;
+  this.field = messageReports.field;
+  this.desc = messageReports.desc;
+  this.filter = messageReports.filter;
 
   // Report Notes Vars
   this.reportNotes = null;
+  this.reportNotesPage = null;
+  this.reportNotesPageCount = null;
   this.reportNote = null;
   this.noteSubmitted = false;
   this.submitBtnLabel = 'Add Note';
@@ -124,10 +129,10 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
           note: ctrl.statusReportNote
         };
         return AdminReports.createMessageReportNote(params).$promise
-        .then(function(createdNote) {
+        .then(function() {
           // Add note if report is currently being previewed
           if (ctrl.reportNotes && ctrl.previewReport.id === ctrl.selectedMessageReport.id) {
-            ctrl.reportNotes.push(createdNote);
+            ctrl.pageReportNotes(ctrl.previewReport.id, ctrl.reportNotesPage);
           }
         });
       }
@@ -172,7 +177,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       return results;
     })
     .then(updateBanLabel)
-    .then(function() {
+    .catch(function(err) {
+      var msg = 'There was an error banning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmBan();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -204,7 +214,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       return results;
     })
     .then(updateBanLabel)
-    .then(function() {
+    .catch(function(err) {
+      var msg = 'There was an error unbanning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmUnban();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -219,6 +234,9 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
         // unbanning sets ban expiration to current time
         var expiration = new Date(params.expiration) > new Date() ? params.expiration : undefined;
         ctrl.messageReports[i].offender_ban_expiration = expiration;
+        if (ctrl.previewReport && ctrl.messageReports[i].id === ctrl.previewReport.id) {
+          ctrl.previewReport.offender_ban_expiration = expiration;
+        }
       }
     }
   };
@@ -251,23 +269,21 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       note: ctrl.reportNote
     };
     AdminReports.createMessageReportNote(params).$promise
-    .then(function(createdNote) {
-      ctrl.reportNotes.push(createdNote);
+    .then(function() {
       ctrl.submitBtnLabel = 'Add Note';
       ctrl.noteSubmitted = false;
       ctrl.reportNote = null;
       Alert.success('Note successfully created');
+      ctrl.pageReportNotes(ctrl.reportId, ctrl.reportNotesPage);
     });
   };
 
-  this.showPreview = function(report) {
-    ctrl.previewReport = report;
-    ctrl.reportId = report.id;
-
-    AdminReports.pageMessageReportsNotes({ report_id: report.id }).$promise
-    .then(function(reportNotes) {
-      ctrl.reportNotes = reportNotes;
-    });
+  this.deselectReport = function() {
+    ctrl.reportId = null;
+    ctrl.previewReport = null;
+    var params = $location.search();
+    delete params.reportId;
+    $location.search(params);
   };
 
   this.selectReport = function(messageReport, initialPageLoad) {
@@ -279,19 +295,24 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     ctrl.reportNotes = null;
     ctrl.reportNote = null;
     ctrl.noteSubmitted = false;
-    if (ctrl.reportId === messageReport.id && !initialPageLoad) {
-      ctrl.reportId = null;
-      ctrl.previewReport = null;
-      var params = $location.search();
-      delete params.reportId;
-      $location.search(params);
-    }
+    if (ctrl.reportId === messageReport.id && !initialPageLoad) { ctrl.deselectReport(); }
     else {
       if (!initialPageLoad) { $location.search('reportId', messageReport.id); }
-      ctrl.showPreview(messageReport);
+      ctrl.previewReport = messageReport;
+      ctrl.reportId = messageReport.id;
+      ctrl.pageReportNotes(ctrl.reportId);
     }
     // Update so pagination knows reportId changed
     ctrl.queryParams.reportId = ctrl.reportId;
+  };
+
+  this.pageReportNotes = function(reportId, page) {
+    AdminReports.pageMessageReportsNotes({ report_id: reportId, page: page }).$promise
+    .then(function(reportNotes) {
+      ctrl.reportNotes = reportNotes.data;
+      ctrl.reportNotesPage = reportNotes.page;
+      ctrl.reportNotesPageCount = reportNotes.page_count;
+    });
   };
 
   // Handles case where users links directly to selected report
@@ -320,7 +341,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   this.setSortField = function(sortField) {
     // Sort Field hasn't changed just toggle desc
     var unchanged = sortField === ctrl.field;
-    if (unchanged) { ctrl.desc = ctrl.desc === 'true' ? 'false' : 'true'; } // bool to str
+    if (unchanged) { ctrl.desc = ctrl.desc.toString() === 'true' ? 'false' : 'true'; } // bool to str
     // Sort Field changed default to ascending order
     else { ctrl.desc = 'false'; }
     ctrl.field = sortField;
@@ -345,6 +366,80 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     else if (ctrl.field === sortField && !sortDesc) { sortClass = 'fa fa-sort-asc'; }
     else { sortClass = 'fa fa-sort'; }
     return sortClass;
+  };
+
+  // Warn users
+  this.newConversation = {};
+  this.showWarnModal = false;
+  this.warnSubmitted = false;
+  this.warnBtnLabel = 'Send Warning';
+
+  this.createConversation = function() {
+    ctrl.warnSubmitted = true;
+    ctrl.warnBtnLabel = 'Sending...';
+    // create a new conversation id to put this message under
+    var newMessage = {
+      receiver_id: ctrl.newConversation.receiver_id,
+      body: ctrl.newConversation.body,
+    };
+
+    Conversations.save(newMessage).$promise
+    .then(function() {
+      Alert.success('Warning has been sent to ' + ctrl.selectedUser.username);
+    })
+    .catch(function() { Alert.error('There was an error warning ' +  ctrl.selectedUser.username); })
+    .finally(function() { ctrl.closeWarn(); });
+  };
+
+  this.showWarn = function(user) {
+    ctrl.selectedUser = user;
+    ctrl.newConversation.receiver_id = user.id;
+    ctrl.showWarnModal = true;
+  };
+
+  this.closeWarn = function() {
+    ctrl.selectedUser = null;
+    ctrl.warnSubmitted = false;
+    // Fix for modal not opening after closing
+    $timeout(function() { ctrl.showWarnModal = false; });
+
+    // Wait for modal to disappear then clear fields
+    $timeout(function() {
+      ctrl.newConversation = {};
+      ctrl.warnBtnLabel = 'Send Warning';
+    }, 1000);
+  };
+
+  this.messageToPurgeId = null;
+  this.showConfirmPurgeModal = false;
+  this.purgeSubmitted = false;
+  this.purgeBtnLabel = 'Confirm';
+
+  this.showConfirmPurge = function(id) {
+    ctrl.messageToPurgeId = id;
+    ctrl.showConfirmPurgeModal = true;
+  };
+
+  this.closeConfirmPurge = function() {
+    ctrl.messageToPurgeId = null;
+    ctrl.purgeSubmitted = false;
+    // Fix for modal not opening after closing
+    $timeout(function() { ctrl.showConfirmPurgeModal = false; });
+
+    // Wait for modal to disappear then clear fields
+    $timeout(function() { ctrl.purgeBtnLabel = 'Confirm'; }, 1000);
+  };
+
+  this.purgeMessage = function() {
+    ctrl.purgeSubmitted = true;
+    ctrl.purgeBtnLabel = 'Loading...';
+    Messages.delete({ id: ctrl.messageToPurgeId }).$promise
+    .then(function() {
+      Alert.success('Successfully purged message');
+      ctrl.deselectReport();
+    })
+    .catch(function() { Alert.error('There was an error purging this message'); })
+    .finally(function() { ctrl.closeConfirmPurge(); });
   };
 
   $timeout($anchorScroll);
@@ -411,25 +506,12 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       search: ctrl.search
     };
 
-    var opts;
-    if (ctrl.filter || ctrl.search) {
-      opts = {
-        status: ctrl.filter,
-        search: ctrl.search
-      };
-    }
-
-    // update mods's page count
-    AdminReports.messageReportsCount(opts).$promise
-    .then(function(updatedCount) {
-      ctrl.count = updatedCount.count;
-      ctrl.pageCount = Math.ceil(updatedCount.count / limit);
-    });
-
     // replace current reports with new mods
     AdminReports.pageMessageReports(query).$promise
     .then(function(newReports) {
-      ctrl.messageReports = newReports;
+      ctrl.messageReports = newReports.data;
+      ctrl.count = newReports.count;
+      ctrl.pageCount = newReports.page_count;
     });
   };
 }];
