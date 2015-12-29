@@ -1,6 +1,6 @@
 var bbcodeParser = require('epochtalk-bbcode-parser');
 
-module.exports = ['$timeout', '$window', '$rootScope', function($timeout, $window, $rootScope) {
+module.exports = ['$timeout', '$window', '$rootScope', '$filter', function($timeout, $window, $rootScope, $filter) {
   return {
     restrict: 'E',
     scope: {
@@ -105,11 +105,11 @@ module.exports = ['$timeout', '$window', '$rootScope', function($timeout, $windo
       var initEditor = function() {
         // on load ng-model body to editor and preview
         if ($scope.rawBody && $scope.rawBody.length > 0) {
-          $editor.val($scope.rawBody);
+          $editor.val($filter('decode')($scope.rawBody));
           $scope.originalText = $scope.rawBody;
         }
         else {
-          $editor.val($scope.body);
+          $editor.val($filter('decode')($scope.body));
           $scope.originalText = $scope.body;
           $scope.rawBody = $scope.body;
         }
@@ -124,7 +124,7 @@ module.exports = ['$timeout', '$window', '$rootScope', function($timeout, $windo
         quote += ' date=' + newQuote.createdAt + ']';
         quote += newQuote.body;
         quote += '[/quote]';
-        $editor.val($editor.val() + quote);
+        $editor.val($editor.val() + $filter('decode')(quote));
         $scope.quote = '';
         editor.blur();
       };

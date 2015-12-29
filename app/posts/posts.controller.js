@@ -16,7 +16,7 @@ var ctrl = [
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
     this.openReportModal = parent.openReportModal;
-    $timeout($anchorScroll, 100);
+    $timeout($anchorScroll, 1000);
 
     // Get access rights to page controls for authed user
     this.controlAccess = Session.getControlAccess('postControls', pageData.thread.board_id);
@@ -99,10 +99,7 @@ var ctrl = [
 
     this.avatarHighlight = function(color) {
       var style = {};
-      if (color) {
-        style.background = color;
-        style.padding = '0.2rem';
-      }
+      if (color) { style.border = '0.225rem solid ' + color; }
       return style;
     };
 

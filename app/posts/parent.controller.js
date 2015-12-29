@@ -1,8 +1,7 @@
 var some = require('lodash/collection/some');
 
-var ctrl = [
-  '$scope', '$timeout', '$location', '$state', 'Session', 'AdminBoards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
-  function($scope, $timeout, $location, $state, Session, AdminBoards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
+var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 'AdminBoards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
+  function($scope, $timeout, $location, $filter, $state, Session, AdminBoards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -67,6 +66,7 @@ var ctrl = [
           ctrl.boards = allBoards || [];
           ctrl.boards.map(function(board) {
             if (board.id === ctrl.thread.board_id) { ctrl.moveBoard = board; }
+            board.name = $filter('decode')(board.name); // decode html entities
           });
         });
       }

@@ -1445,7 +1445,7 @@ main #error-404 {
         background: no-repeat center center;
         height: 3.75rem;
         width: 3.75rem;
-        img { @include border-radius(100px); width: 100%; height: 100%; object-fit: cover;}
+        img { @include border-radius(100px); width: 100%; height: 100%; object-fit: cover; }
       }
       .user-role {
         padding-top: 0.625rem;
