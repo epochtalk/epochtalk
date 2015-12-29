@@ -436,33 +436,6 @@ exports.purge = {
   }
 };
 
-exports.vote = {
-  app: { thread_id: 'params.threadId' },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'polls.vote' },
-  validate: {
-    params: {
-      threadId: Joi.string().required(),
-      pollId: Joi.string().required()
-    },
-    payload: { answerId: Joi.string().required() }
-  },
-  pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.canVote },
-      { method: pre.isPollUnlocked }
-    ] ],
-  handler: function(request, reply) {
-    var pollId = request.params.pollId;
-    var answerId = request.payload.answerId;
-
-    var promise = db.polls.vote(pollId, answerId);
-    return reply(promise);
-  }
-};
-
 exports.lockPoll = {
   app: {
     thread_id: 'params.threadId',
@@ -562,7 +535,7 @@ exports.vote = {
     var pollId = request.params.pollId;
     var answerIds = request.payload.answerIds;
     var userId = request.auth.credentials.id;
-    var promise = db.polls.vote(pollId, answerIds, userId)
+    var promise = db.polls.vote(answerIds, userId)
     .then(function() {
       var getPoll = db.polls.byThread(threadId);
       var hasVoted = db.polls.hasVoted(threadId, userId);
