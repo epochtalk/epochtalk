@@ -698,3 +698,14 @@ exports.reprioritize = {
     return reply(promise);
   }
 };
+
+exports.priorities = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminRoles.all' },
+  validate: { payload: { user_id: Joi.string().required() } },
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var promise = db.roles.priorities(userId);
+    return reply(promise);
+  }
+};

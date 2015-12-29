@@ -4,14 +4,15 @@ var some = require('lodash/collection/some');
 var filter = require('lodash/collection/filter');
 var Promise = require('bluebird');
 
-var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories',
-  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, AdminUsers, AdminModerators, boards, categories) {
+var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories', 'roles',
+  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, AdminUsers, AdminModerators, boards, categories, roles) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     var ctrl = this;
     // Category and Board Data
     $scope.catListData = categories; // Data backing left side of page
     $scope.boardListData = boards; // Data backing right side of page
+    $scope.roles = roles;
     // Category and Board reference map
     $scope.nestableMap = {};
     // New/Edited/Deleted Boards

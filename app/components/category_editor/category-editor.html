@@ -38,7 +38,10 @@
     <textarea rows="5" id="newBoardDesc" placeholder="Board Description"></textarea>
   </label>
   <label>Board Viewable By:
-    <input type="number" id="newBoardViewable" placeholder="User Priority" min="0"></input>
+    <select id="newBoardViewable">
+      <option value="">Minimum role level</option>
+      <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
+    </select>
   </label>
   <div class="clear">
     <button ng-click="insertNewBoard()" class="fill-row">Add Board</button>
@@ -54,7 +57,10 @@
     <textarea rows="5" id="editBoardDesc" ng-model="editBoardDesc" placeholder="Board Description"></textarea>
   </label>
   <label>Board Viewable By:
-    <input type="number" id="editBoardViewable" placeholder="User Priority" min="0" />
+    <select id="editBoardViewable">
+      <option value="">Minimum role level</option>
+      <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
+    </select>
   </label>
   <div class="clear">
     <button ng-click="editBoard()" class="fill-row">Edit Board</button>
@@ -79,8 +85,11 @@
   <label>Category Name
     <input type="text" class="input-text" id="editCatName" placeholder="Category Name" />
   </label>
-  <label>Category Viewable By:
-    <input type="number" id="editCatViewable" placeholder="User Priority" min="0"/>
+  <label>Board Viewable By:
+    <select id="editCatViewable">
+      <option value="">Minimum role level</option>
+      <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
+    </select>
   </label>
   <div class="clear">
     <button ng-click="editCategory()" class="fill-row">Edit Category</button>
