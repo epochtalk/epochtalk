@@ -15,16 +15,21 @@ clean()
 .then(pack)
 .then(livereload)
 .then(function() { // nodemon
-  var nmOpts = {
-    script: './server/index.js',
-    ignore: [
-      './app',
-      './cli',
-      './public',
-      './repl',
-      './scripts',
-      './tests',
-    ]
-  };
-  nodemon(nmOpts);
+  if (process.env.NODE_ENV === 'production') {
+    require(path.join(__dirname, '..', 'server', 'index'));
+  }
+  else {
+    var nmOpts = {
+      script: './server/index.js',
+      ignore: [
+        './app',
+        './cli',
+        './public',
+        './repl',
+        './scripts',
+        './tests',
+      ]
+    };
+nodemon(nmOpts);
+  }
 });

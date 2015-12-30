@@ -1,7 +1,9 @@
 var livereload = require('livereload');
 
 module.exports = function() {
-  livereload = require('livereload');
-  server = livereload.createServer();
-  server.watch('./public/');
+  if (process.env.NODE_ENV !== 'production') {
+    livereload = require('livereload');
+    server = livereload.createServer();
+    server.watch('./public/');
+  }
 };
