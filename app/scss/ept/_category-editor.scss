@@ -237,6 +237,8 @@
 .modified {
   color: #40BFFF;
   display: inline-block !important;
+  float: left;
+  padding-top: 0.25rem;
 }
 
 .modified::before {

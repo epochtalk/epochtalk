@@ -263,6 +263,7 @@ table.underlined, table.report-details {
   @include media($desktop-small) { @include span-columns(6, block-collapse); }
   @include media($mobile) { @include span-columns(7, block-collapse); top: 5vh; max-height: 90vh; }
 }
+.ng-modal.overflow .ng-modal-dialog { overflow: visible; }
 .ng-modal.medium .ng-modal-dialog {
   @include span-columns(7, block-collapse);
   @include media($desktop-small) { @include span-columns(9, block-collapse); }
