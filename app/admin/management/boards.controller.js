@@ -4,8 +4,8 @@ var some = require('lodash/collection/some');
 var filter = require('lodash/collection/filter');
 var Promise = require('bluebird');
 
-var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories', 'roles',
-  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, AdminUsers, AdminModerators, boards, categories, roles) {
+var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'AdminBoards', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories', 'roles',
+  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, AdminBoards, Boards, Categories, AdminUsers, AdminModerators, boards, categories, roles) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     var ctrl = this;
@@ -222,7 +222,7 @@ var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScr
     // 5) Updated all Categories
     $scope.processCategories = function(boardMapping) {
       console.log('5) Updating board mapping: \n' + JSON.stringify(boardMapping, null, 2));
-      return Boards.updateCategories({ boardMapping: boardMapping }).$promise
+      return AdminBoards.updateCategories({ boardMapping: boardMapping }).$promise
       .catch(function(response) { console.log(response); });
     };
 

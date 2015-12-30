@@ -29,6 +29,12 @@ module.exports = roles;
       messages: true
     },
     // ACLs
+    adminBoards: {
+      categories: true,
+      boards: true,
+      moveBoards: true,
+      updateCategories: true
+    },
     adminReports: {
       createUserReportNote: true,
       createPostReportNote: true,
@@ -104,9 +110,7 @@ module.exports = roles;
       },
       create: true, // creating new boards
       find: true, // standard user permission
-      all: true, // moving boards
       allCategories: true, // all boards in categories
-      updateCategories: true, // recategorizing boards and updating categories
       update: true, // Update individual board
       delete: true // Removes individual boards
     },
@@ -254,6 +258,12 @@ roles.superAdministrator = {
     messages: true
   },
   // ACLs
+  adminBoards: {
+    categories: true,
+    boards: true,
+    moveBoards: true,
+    updateCategories: true
+  },
   adminReports: {
     createUserReportNote: true,
     createPostReportNote: true,
@@ -324,9 +334,7 @@ roles.superAdministrator = {
     },
     create: true,
     find: true,
-    all: true,
     allCategories: true,
-    updateCategories: true,
     update: true,
     delete: true
   },
@@ -452,6 +460,12 @@ roles.administrator = {
     messages: true
   },
   // ACLs
+  adminBoards: {
+    categories: true,
+    boards: true,
+    moveBoards: true,
+    updateCategories: true
+  },
   adminReports: {
     createUserReportNote: true,
     createPostReportNote: true,
@@ -510,9 +524,7 @@ roles.administrator = {
     },
     create: true,
     find: true,
-    all: true,
     allCategories: true,
-    updateCategories: true,
     update: true,
     delete: true
   },
@@ -631,6 +643,9 @@ roles.globalModerator = {
     messages: true
   },
   // ACLs
+  adminBoards: {
+    moveBoards: true
+  },
   adminReports: {
     createUserReportNote: true,
     createPostReportNote: true,
@@ -665,7 +680,6 @@ roles.globalModerator = {
       all: true
     },
     find: true,
-    all: true,
     allCategories: true,
   },
   conversations: {
@@ -766,6 +780,9 @@ roles.moderator = {
     messages: true
   },
   // ACLs
+  adminBoards: {
+    moveBoards: true
+  },
   adminReports: {
     createUserReportNote: true,
     createPostReportNote: true,
@@ -800,7 +817,6 @@ roles.moderator = {
       some: true
     },
     find: true,
-    all: true,
     allCategories: true
   },
   conversations: {

@@ -1,8 +1,8 @@
 var some = require('lodash/collection/some');
 
 var ctrl = [
-  '$scope', '$timeout', '$location', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
-  function($scope, $timeout, $location, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
+  '$scope', '$timeout', '$location', '$state', 'Session', 'AdminBoards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
+  function($scope, $timeout, $location, $state, Session, AdminBoards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -62,7 +62,7 @@ var ctrl = [
 
     this.getBoards = function() {
       if (ctrl.controlAccess.privilegedMove) {
-        return Boards.all().$promise
+        return AdminBoards.moveBoards().$promise
         .then(function(allBoards) {
           ctrl.boards = allBoards || [];
           ctrl.boards.map(function(board) {
