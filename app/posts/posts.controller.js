@@ -20,6 +20,7 @@ var ctrl = [
 
     // Get access rights to page controls for authed user
     this.controlAccess = Session.getControlAccess('postControls', pageData.thread.board_id);
+    this.moderatedControlAccess = Session.getControlAccess('threadControls.moderated');
 
     // init function
     (function() {

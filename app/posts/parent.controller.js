@@ -245,61 +245,52 @@ var ctrl = [
 
     this.deletePostIndex = -1;
     this.showDeleteModal = false;
-    this.closeDeleteModal = function() {
-      $timeout(function() { ctrl.showDeleteModal = false; });
-    };
     this.openDeleteModal = function(index) {
       ctrl.deletePostIndex = index;
       ctrl.showDeleteModal = true;
     };
     this.deletePost = function() {
+      ctrl.showDeleteModal = false;
       var index = ctrl.deletePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.delete({id: post.id}).$promise
-        .then(function() { post.deleted = true; })
-        .catch(function() { Alert.error('Failed to delete post'); })
-        .finally(function() { ctrl.showDeleteModal = false; });
+        .then(function() { $state.go($state.$current, null, {reload:true}); })
+        .catch(function() { Alert.error('Failed to delete post'); });
       }
     };
 
     this.undeletePostIndex = -1;
     this.showUndeleteModal = false;
-    this.closeUndeleteModal = function() {
-      $timeout(function() { ctrl.showUndeleteModal = false; });
-    };
     this.openUndeleteModal = function(index) {
       ctrl.undeletePostIndex = index;
       ctrl.showUndeleteModal = true;
     };
     this.undeletePost = function() {
+      ctrl.showUndeleteModal = false;
       var index = ctrl.undeletePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.undelete({id: post.id}).$promise
-        .then(function() { post.deleted = false; })
-        .catch(function() { Alert.error('Failed to Undelete Post'); })
-        .finally(function() { ctrl.showUndeleteModal = false; });
+        .then(function() { $state.go($state.$current, null, {reload:true}); })
+        .catch(function() { Alert.error('Failed to Undelete Post'); });
       }
     };
 
     this.purgePostIndex = -1;
     this.showPurgeModal = false;
-    this.closePurgeModal = function() {
-      $timeout(function() { ctrl.showPurgeModal = false; });
-    };
     this.openPurgeModal = function(index) {
       ctrl.purgePostIndex = index;
       ctrl.showPurgeModal = true;
     };
     this.purgePost = function() {
+      ctrl.showPurgeModal = false;
       var index = ctrl.purgePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.purge({id: post.id}).$promise
         .then(function() { $state.go($state.$current, null, {reload:true}); })
-        .catch(function() { Alert.error('Failed to purge Post'); })
-        .finally(function() { ctrl.showPurgeModal = false; });
+        .catch(function() { Alert.error('Failed to purge Post'); });
       }
     };
 

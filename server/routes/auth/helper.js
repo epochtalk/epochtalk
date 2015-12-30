@@ -99,7 +99,8 @@ function getMaskedPermissions(userRoles) {
       } : undefined,
       create: maskPermission('threads.create'),
       title: maskPermission('threads.title'),
-      lock: maskPermission('threads.lock')
+      lock: maskPermission('threads.lock'),
+      moderated: maskPermission('threads.moderated')
     },
     pollControls: {
       privilegedLock: maskPermission('polls.privilegedLock') ? {

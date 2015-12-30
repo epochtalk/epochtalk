@@ -263,6 +263,17 @@ module.exports = {
 
     return reply(promise);
   },
+  canModerate: function(request, reply) {
+    if (!request.payload.moderated) { return reply(); }
+
+    var userId = request.auth.credentials.id;
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var hasPrivilege = getACLValue(request.auth, 'threads.moderated');
+    var result = Boom.forbidden();
+    if (hasPrivilege) { result = true; }
+
+    return reply(result);
+  },
   getThread: function(request, reply) {
     var threadId = _.get(request, request.route.settings.app.thread_id);
     db.threads.find(threadId)

@@ -195,6 +195,7 @@ module.exports = roles;
       lock: true,
       sticky: true,
       move: true,
+      moderated: true,
       purge: true
     },
     polls: {
@@ -409,6 +410,7 @@ roles.superAdministrator = {
     lock: true,
     sticky: true,
     move: true,
+    moderated: true,
     purge: true
   },
   polls: {
@@ -599,6 +601,7 @@ roles.administrator = {
     lock: true,
     sticky: true,
     move: true,
+    moderated: true,
     purge: true
   },
   polls: {
@@ -746,6 +749,7 @@ roles.globalModerator = {
     lock: true,
     sticky: true,
     move: true,
+    moderated: true,
     purge: true
   },
   polls: {
@@ -883,6 +887,7 @@ roles.moderator = {
     lock: true,
     sticky: true,
     move: true,
+    moderated: true,
     purge: true
   },
   polls: {
@@ -943,6 +948,7 @@ roles.user = {
     byBoard: true,
     viewed: true,
     title: true,
+    moderated: true,
     lock: true
   },
   polls: {
