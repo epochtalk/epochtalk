@@ -6,7 +6,6 @@ module.exports = [
   { method: 'POST', path: '/threads', config: threads.create },
   { method: 'GET', path: '/threads', config: threads.byBoard },
   { method: 'POST', path: '/threads/{id}', config: threads.title },
-  { method: 'POST', path: '/threads/import', config: threads.import },
   { method: 'POST', path: '/threads/{id}/viewed', config: threads.viewed },
   { method: 'POST', path: '/threads/{id}/lock', config: threads.lock },
   { method: 'POST', path: '/threads/{id}/sticky', config: threads.sticky },

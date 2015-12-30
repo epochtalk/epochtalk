@@ -48,57 +48,6 @@ exports.create = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Boards
-  * @api {POST} /boards/import Import
-  * @apiName ImportBoard
-  * @apiPermission Super Administrator
-  * @apiDescription Used to import a board. Currently only SMF is supported for import.
-  *
-  * @apiParam (Payload) {object} smf Object containing SMF metadata
-  * @apiParam (Payload) {number} smf.ID_BOARD Legacy smf board id
-  * @apiParam (Payload) {string} id The board's unique id
-  * @apiParam (Payload) {string} name The board's name
-  * @apiParam (Payload) {string} description The boards description
-  * @apiParam (Payload) {timestamp} created_at Timestamp of when the board was created
-  * @apiParam (Payload) {timestamp} updated_at Timestamp of when the board was updated
-  * @apiParam (Payload) {timestamp} imported_at Timestamp of when the board was imported
-  *
-  * @apiUse BoardObjectSuccess
-  * @apiSuccess {object} smf Object containing SMF metadata
-  * @apiSuccess {number} smf.ID_BOARD Legacy smf board id
-  *
-  * @apiError (Error 500) InternalServerError There was an issue creating the board
-  */
-exports.import = {
-  // validate: {
-  //   payload: {
-  //     name: Joi.string().required(),
-  //     description: Joi.string(),
-  //     category_id: [ Joi.string(), Joi.number() ],
-  //     created_at: Joi.date(),
-  //     updated_at: Joi.date(),
-  //     parent_id: [ Joi.string(), Joi.number() ],
-  //     children_ids: [ Joi.array(Joi.string()), Joi.array(Joi.number()) ],
-  //     deleted: Joi.boolean(),
-  //     smf: Joi.object().keys({
-  //       ID_BOARD: Joi.number(),
-  //       ID_PARENT: Joi.number()
-  //     })
-  //   }
-  // },
-  pre: [ { method: pre.clean } ],
-  handler: function(request, reply) {
-    var promise = db.boards.import(request.payload)
-    .catch(function(err) {
-      request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      return Boom.badImplementation(err);
-    });
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Boards
   * @api {POST} /boards/:id Find
   * @apiName FindBoard
   * @apiDescription Used to find a board.

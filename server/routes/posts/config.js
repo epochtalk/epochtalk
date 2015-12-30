@@ -60,53 +60,6 @@ exports.create = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Posts
-  * @api {POST} /posts/import Import
-  * @apiName ImportPost
-  * @apiPermission Super Administrator
-  * @apiDescription Used to import a post. Currently only SMF is supported.
-  *
-  * @apiUse PostObjectPayload
-  * @apiParam (Payload) {object} smf Object containing SMF metadata
-  * @apiParam (Payload) {number} smf.ID_MEMBER Legacy smf user id
-  * @apiParam (Payload) {number} smf.ID_TOPIC Legacy smf thread id
-  * @apiParam (Payload) {number} smf.ID_MSG Legacy smf post id
-  * @apiParam (Payload) {string} smf.posterName Legacy smf username
-  *
-  * @apiUse PostObjectSuccess
-  *
-  * @apiError (Error 500) InternalServerError There was an issue importing the post
-  */
-exports.import = {
-  // auth: { strategy: 'jwt' },
-  // validate: {
-  //   payload: Joi.object().keys({
-  //     title: Joi.string().min(1).max(255).required(),
-  //     body: Joi.string().allow(''),
-  //     raw_body: Joi.string().required(),
-  //     thread_id: Joi.string().required()
-  //   })
-  // },
-  pre: [
-    { method: pre.clean },
-    { method: pre.adjustQuoteDate },
-    { method: pre.parseEncodings }
-    // { method: pre.subImages }
-  ],
-  handler: function(request, reply) {
-    // build the post object from payload and params
-    var promise = db.posts.import(request.payload)
-    // TODO: handle image references
-    .catch(function(err) {
-      request.log('error', 'Import post: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      return Boom.badRequest('Import post failed');
-    });
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Posts
   * @api {GET} /posts/:id Find
   * @apiName FindPost
   * @apiDescription Used to find a post.

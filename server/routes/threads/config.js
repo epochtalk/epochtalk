@@ -97,53 +97,6 @@ exports.create = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Threads
-  * @api {POST} /threads/import Import
-  * @apiName ImportThread
-  * @apiPermission Super Administrator
-  * @apiDescription Used to import an existing thread. Currently only SMF is supported.
-  *
-  * @apiUse ThreadObjectPayload
-  * @apiParam (Payload) {object} smf Object containing SMF metadata
-  * @apiParam (Payload) {number} smf.ID_BOARD Legacy smf board id
-  * @apiParam (Payload) {number} smf.ID_TOPIC Legacy smf thread id
-  *
-  * @apiUse ThreadObjectSuccess
-  * @apiSuccess {timestamp} updated_at Timestamp of when the thread was updated
-  * @apiSuccess {timestamp} imported_at Timestamp of when the thread was imported
-  *
-  * @apiError (Error 500) InternalServerError There was an issue importing the thread
-  */
-exports.import = {
-  // auth: { strategy: 'jwt' },
-  // validate: {
-  //   payload: Joi.object().keys({
-  //     sticky: Joi.boolean().default(false),
-  //     locked: Joi.boolean().default(false),
-  //     board_id: Joi.string().required(),
-  //     created_at: Joi.date(),
-  //     updated_at: Joi.date(),
-  //     view_count: Joi.number(),
-  //     deleted: Joi.boolean(),
-  //     smf: Joi.object().keys({
-  //       ID_MEMBER: Joi.number(),
-  //       ID_TOPIC: Joi.number(),
-  //       ID_FIRST_MSG: Joi.number()
-  //     })
-  //   })
-  // },
-  handler: function(request, reply) {
-    var promise = db.threads.import(request.payload)
-    .catch(function(err) {
-      request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      reply(Boom.badImplementation(err));
-    });
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Threads
   * @api {GET} /threads Page By Board
   * @apiName PageThreadsByBoard
   * @apiDescription Used to page through a board's threads.
@@ -435,60 +388,6 @@ exports.purge = {
   pre: [ { method: pre.hasPermission } ],
   handler: function(request, reply) {
     var promise = db.threads.purge(request.params.id);
-    return reply(promise);
-  }
-};
-
-exports.lockPoll = {
-  app: {
-    thread_id: 'params.threadId',
-    poll_id: 'params.pollId',
-    isPollOwner: 'polls.privilegedLock'
-  },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'polls.lock' },
-  validate: {
-    params: {
-      threadId: Joi.string().required(),
-      pollId: Joi.string().required()
-    }
-  },
-  pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.isPollUnlocked }
-      // isLockable - has locking privileges (some/all), poll owner
-    ] ],
-  handler: function(request, reply) {
-    var pollId = request.params.pollId;
-    var promise = db.polls.lock(pollId);
-    return reply(promise);
-  }
-};
-
-exports.unlockPoll = {
-  app: {
-    thread_id: 'params.threadId',
-    poll_id: 'params.pollId'
-  },
-  auth: { strategy: 'jwt' },
-  validate: {
-    params: {
-      threadId: Joi.string().required(),
-      pollId: Joi.string().required()
-    }
-  },
-  pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.isPollLocked }
-      // isLockable - has locking privileges (some/all), poll owner
-    ] ],
-  handler: function(request, reply) {
-    var pollId = request.params.pollId;
-    var promise = db.polls.unlock(pollId);
     return reply(promise);
   }
 };
