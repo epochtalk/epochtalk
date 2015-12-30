@@ -52,7 +52,8 @@ exports.byType = {
         var nextType, nextId;
         if (curType === type.category) { // Category
           var catName = obj.name;
-          crumbs.push({ label: catName, state: ''});
+          var anchor = (obj.name + '-' + obj.view_order).replace(/\s+/g, '-').toLowerCase();
+          crumbs.push({ label: catName, state: '^.boards', opts: { '#': anchor }});
         }
         else if (curType === type.board) { // Board
           if (!obj.parent_id && obj.category_id) { // Has no Parent

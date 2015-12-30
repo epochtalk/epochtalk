@@ -1419,7 +1419,7 @@ main #error-404 {
     @include span-columns(12);
     label { font-size: 1rem; color: $base-font-color; }
     select { @include span-columns(9); }
-    .button { @include span-columns(3); @include omega;}
+    .button { @include span-columns(3); @include omega; height: 2.3125rem; }
   }
 }
 .thread-data {
@@ -1528,6 +1528,7 @@ main #error-404 {
       @include omega;
       & a.button { margin-top: 0.5rem; }
     }
+    .control-full-width select { margin-bottom: 0; }
   }
   .thread-data .post-block .post-user { display: none; }
   .thread-data .post-block .post-content { margin-left: 0; }

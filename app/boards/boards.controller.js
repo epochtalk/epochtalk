@@ -1,6 +1,5 @@
 module.exports = ['$timeout', '$anchorScroll', 'boards',
   function($timeout, $anchorScroll, boards) {
-    var ctrl = this;
     this.categorizedBoards = boards;
 
     // set total_thread_count and total_post_count for all boards
@@ -29,6 +28,11 @@ module.exports = ['$timeout', '$anchorScroll', 'boards',
 
       return {thread_count: thread_count, post_count: post_count};
     }
+
+    this.generateCatId = function(name, viewOrder) {
+      var anchorId = (name + '-' + viewOrder).replace(/\s+/g, '-').toLowerCase();
+      return anchorId;
+    };
 
     $timeout($anchorScroll);
   }

@@ -1,6 +1,6 @@
 <div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards">
   <!-- Category Title -->
-  <div class="title">
+  <div id="{{BoardsCtrl.generateCatId(cat.name, cat.view_order)}}" class="title">
     <div ng-click="cat.show = !cat.show" class="collapse-section">
       <a ng-class="{ 'fa-chevron-right' : cat.show, 'fa-chevron-down': !cat.show }"
       class="fa collapse-btn no-select"></a>
