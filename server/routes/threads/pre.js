@@ -13,12 +13,13 @@ module.exports = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var threadId = _.get(request, request.route.settings.app.thread_id);
 
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
-    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId)
-    .then(function(board) { return !!board; });
+    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId, priority);
 
     var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
@@ -36,12 +37,13 @@ module.exports = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var boardId = _.get(request, request.route.settings.app.board_id);
 
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, boardId);
-    var boardVisible = db.boards.getBoardInBoardMapping(boardId)
-    .then(function(board) { return !!board; });
+    var boardVisible = db.boards.getBoardInBoardMapping(boardId, priority);
 
     var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();

@@ -25,6 +25,7 @@ module.exports = ['$compile', function($compile) {
             id: board.id,
             name: board.name,
             description: board.description,
+            viewable_by: board.viewable_by,
             children: board.children || [],
             moderators: board.moderators || []
           };
@@ -51,7 +52,8 @@ module.exports = ['$compile', function($compile) {
       scope.insertNewBoard = function() {
         var board = {
           name: $('#newBoardName').val() || '',
-          description: $('#newBoardDesc').val() || ''
+          description: $('#newBoardDesc').val() || '',
+          viewable_by: $('#newBoardViewable').val() || undefined
         };
 
         if (board.name !== '') {
@@ -61,6 +63,7 @@ module.exports = ['$compile', function($compile) {
             id: -1,
             name: board.name,
             description: board.description,
+            viewable_by: board.viewable_by,
             children: board.children || [],
             moderators: board.moderators || []
           };
@@ -89,6 +92,7 @@ module.exports = ['$compile', function($compile) {
         scope.showAddBoard = false;
         $('#newBoardName').val('');
         $('#newBoardDesc').val('');
+        $('#newBoardViewable').val('');
       };
 
     }

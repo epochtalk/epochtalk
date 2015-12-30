@@ -71,12 +71,13 @@ module.exports = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var postId = _.get(request, request.route.settings.app.post_id);
 
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
     var isMod = db.moderators.isModeratorWithPostId(userId, postId);
-    var boardVisible = db.posts.getPostsBoardInBoardMapping(postId)
-    .then(function(board) { return !!board; });
+    var boardVisible = db.posts.getPostsBoardInBoardMapping(postId, priority);
 
     var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
@@ -94,12 +95,13 @@ module.exports = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var threadId = _.get(request, request.route.settings.app.thread_id);
 
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
-    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId)
-    .then(function(board) { return !!board; });
+    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId, priority);
 
     var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
@@ -166,14 +168,6 @@ module.exports = {
       });
     }
     return reply(promise);
-  },
-  accessPrivateBoardWithPostId: function(request, reply) {
-    // TODO: Implement private board check
-    return reply(true);
-  },
-  accessPrivateBoardWithThreadId: function(request, reply) {
-    // TODO: Implement private board check
-    return reply(true);
   },
   isPostWriteable: function(request, reply) {
     var privilege = request.route.settings.app.isPostWriteable;

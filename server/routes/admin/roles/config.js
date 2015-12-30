@@ -134,6 +134,12 @@ exports.add = {
           remove: Joi.boolean(),
           reprioritize: Joi.boolean()
         }),
+        adminBoards: Joi.object().keys({
+          categories: Joi.boolean(),
+          boards: Joi.boolean(),
+          moveBoards: Joi.boolean(),
+          updateCategories: Joi.boolean()
+        }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),
           createPostReportNote: Joi.boolean(),
@@ -201,9 +207,7 @@ exports.add = {
           }),
           create: Joi.boolean(),
           find: Joi.boolean(),
-          all: Joi.boolean(),
           allCategories: Joi.boolean(),
-          updateCategories: Joi.boolean(),
           update: Joi.boolean(),
           delete: Joi.boolean()
         }),
@@ -325,14 +329,7 @@ exports.add = {
             some: Joi.boolean(),
             all: Joi.boolean()
           })
-        }),
-        limits: Joi.array().items({
-          path: Joi.string().required(),
-          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
-          interval: Joi.number().min(-1).required(),
-          maxInInterval: Joi.number().min(1).required(),
-          minDifference: Joi.number().min(1).optional()
-        }).sparse()
+        })
       }).required()
     }
   },
@@ -413,6 +410,12 @@ exports.update = {
           remove: Joi.boolean(),
           reprioritize: Joi.boolean()
         }),
+        adminBoards: Joi.object().keys({
+          categories: Joi.boolean(),
+          boards: Joi.boolean(),
+          moveBoards: Joi.boolean(),
+          updateCategories: Joi.boolean()
+        }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),
           createPostReportNote: Joi.boolean(),
@@ -480,9 +483,7 @@ exports.update = {
           }),
           create: Joi.boolean(),
           find: Joi.boolean(),
-          all: Joi.boolean(),
           allCategories: Joi.boolean(),
-          updateCategories: Joi.boolean(),
           update: Joi.boolean(),
           delete: Joi.boolean()
         }),
@@ -603,14 +604,7 @@ exports.update = {
             some: Joi.boolean(),
             all: Joi.boolean()
           })
-        }),
-        limits: Joi.array().items({
-          path: Joi.string().required(),
-          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
-          interval: Joi.number().min(-1).required(),
-          maxInInterval: Joi.number().min(1).required(),
-          minDifference: Joi.number().min(1).optional()
-        }).sparse()
+        })
       }).required()
     }
   },
@@ -695,6 +689,17 @@ exports.reprioritize = {
       rolesHelper.reprioritizeRoles(roles);
       return result;
     });
+    return reply(promise);
+  }
+};
+
+exports.priorities = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminRoles.all' },
+  validate: { payload: { user_id: Joi.string().required() } },
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var promise = db.roles.priorities(userId);
     return reply(promise);
   }
 };

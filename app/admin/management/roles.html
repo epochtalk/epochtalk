@@ -199,7 +199,7 @@
         <div class="indent" ng-if="management">
           <label>
             <input id="adminAccess-management-boards" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.management.boards" ng-false-value="undefined" />
-            Boards Management Tab
+            Boards Management Tab (Requres the 'Allow user view all roles' option in 'Roles')
           </label>
           <label>
             <input id="adminAccess-management-users" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.management.users" ng-false-value="undefined" />
@@ -610,6 +610,11 @@
           <input id="categories-create" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.categories.create" ng-false-value="undefined" />
           Allow user to create new categories
         </label>
+        <!-- View Categories -->
+        <label>
+          <input id="adminBoards-categories" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminBoards.categories" ng-false-value="undefined" />
+          Allow user to view all (including private) categories and boards
+        </label>
         <!-- Delete Categories -->
         <label>
           <input id="categories-delete" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.categories.delete" ng-false-value="undefined" />
@@ -650,12 +655,17 @@
             </label>
             <!-- Recategorize Boards -->
             <label>
-              <input id="boards-updateCategories" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.boards.updateCategories" ng-false-value="undefined" />
+              <input id="adminBoards-updateCategories" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminBoards.updateCategories" ng-false-value="undefined" />
               Allow user to recategorize boards
             </label>
-            <!-- View All Boards -->
+            <!-- View All Boards (Including Private) -->
             <label>
-              <input id="boards-all" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.boards.all" ng-false-value="undefined" />
+              <input id="adminBoards-boards" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminBoards.boards" ng-false-value="undefined" />
+              Allow user to view all boards, used for board management
+            </label>
+            <!-- View Move Boards -->
+            <label>
+              <input id="adminBoards-moveBoards" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminBoards.moveBoards" ng-false-value="undefined" />
               Allow user to view all boards, used for moving threads
             </label>
           </div>

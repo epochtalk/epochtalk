@@ -37,7 +37,6 @@ exports.create = {
   },
   pre: [
     [
-      { method: pre.accessPrivateBoardWithThreadId },
       { method: pre.accessBoardWithThreadId },
       { method: pre.accessLockedThreadWithThreadId },
       { method: pre.isRequesterActive }
@@ -124,7 +123,6 @@ exports.find = {
   plugins: { acls: 'posts.find' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.accessPrivateBoardWithPostId },
     { method: pre.accessBoardWithPostId },
     { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
@@ -173,10 +171,7 @@ exports.byThread = {
     }).without('start', 'page')
   },
   // TODO: Highlight deleted post and to show mods
-  pre: [ [
-    { method: pre.accessPrivateBoardWithThreadId },
-    { method: pre.accessBoardWithThreadId }
-  ] ],
+  pre: [ { method: pre.accessBoardWithThreadId } ],
   handler: function(request, reply) {
     // ready parameters
     var userId = '';
@@ -266,7 +261,6 @@ exports.update = {
     [
       { method: pre.isPostOwner },
       { method: pre.isPostWriteable },
-      { method: pre.accessPrivateBoardWithThreadId },
       { method: pre.accessBoardWithThreadId },
       { method: pre.accessLockedThreadWithThreadId },
       { method: pre.isRequesterActive }
@@ -310,7 +304,6 @@ exports.delete = {
   pre: [ [
     { method: pre.isCDRPost },
     { method: pre.isPostOwner },
-    { method: pre.accessPrivateBoardWithPostId },
     { method: pre.accessBoardWithPostId },
     { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }
@@ -348,7 +341,6 @@ exports.undelete = {
   pre: [ [
     { method: pre.isCDRPost },
     { method: pre.isPostOwner },
-    { method: pre.accessPrivateBoardWithPostId },
     { method: pre.accessBoardWithPostId },
     { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }

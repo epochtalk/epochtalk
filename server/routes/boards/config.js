@@ -35,7 +35,8 @@ exports.create = {
   validate: {
     payload: {
       name: Joi.string().min(1).max(255).required(),
-      description: Joi.string().allow('')
+      description: Joi.string().allow(''),
+      viewable_by: Joi.number()
     }
   },
   pre: [ { method: pre.clean } ],
@@ -116,31 +117,9 @@ exports.find = {
   auth: { mode:'try', strategy: 'jwt' },
   plugins: { acls: 'boards.find' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ [
-    { method: pre.accessBoardWithBoardId },
-    { method: pre.accessPrivateBoardWithBoardId }
-  ] ],
+  pre: [ { method: pre.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     return reply(db.boards.find(request.params.id));
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Boards
-  * @api {GET} /boards/all All
-  * @apiName AllBoard
-  * @apiDescription Used to find all boards.
-  *
-  * @apiSuccess {array} boards Array containing all of the forums boards
-  *
-  * @apiError (Error 500) InternalServerError There was an issue finding all boards
-  */
-exports.all = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.all' },
-  handler: function(request, reply) {
-    return reply(db.boards.all());
   }
 };
 
@@ -158,40 +137,11 @@ exports.all = {
 exports.allCategories = {
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'boards.allCategories' },
+  pre: [ { method: pre.userPriority, assign: 'priority' } ],
   handler: function(request, reply) {
-    var promise =  db.boards.allCategories();
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Categories
-  * @api {POST} /boards/categories Update Categories
-  * @apiName UpdateCategories
-  * @apiPermission Super Administrator, Administrator
-  * @apiDescription Used to update boards within their categories.
-  *
-  * @apiParam (Payload) {object[]} boardMapping Array containing mapping of boards and categories
-  * @apiParam (Payload) {string} boardMapping.id The id of the category or board
-  * @apiParam (Payload) {string} boardMapping.name The name of the category or board
-  * @apiParam (Payload) {string="board","category"} boardMapping.type The type of the mapping object
-  * @apiParam (Payload) {number} boardMapping.view_order The view order of the board or category
-  * @apiParam (Payload) {string} [boardMapping.category_id] If type is "board" the id of the category the board belongs to
-  * @apiParam (Payload) {string} [boardMapping.parent_id] If type is "board" and the board is a child board, the id of the parent board
-  *
-  * @apiSuccess {array} operations Array containing all of the operations performed while updating categories
-  *
-  * @apiError (Error 500) InternalServerError There was an issue updating categories/boards
-  */
-exports.updateCategories = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.updateCategories' },
-  validate: { payload: { boardMapping: Joi.array().required() } },
-  handler: function(request, reply) {
-    // update board on db
-    var boardMapping = request.payload.boardMapping;
-    var promise = db.boards.updateCategories(boardMapping);
+    var priority = request.pre.priority;
+    var opts = { hidePrivate: true }; // filter out private boards
+    var promise =  db.boards.allCategories(priority, opts);
     return reply(promise);
   }
 };
@@ -219,7 +169,8 @@ exports.update = {
   validate: {
     payload: {
       name: Joi.string().min(1).max(255),
-      description: Joi.string().allow('')
+      description: Joi.string().allow(''),
+      viewable_by: Joi.number().allow(null)
     },
     params: { id: Joi.string().required() }
   },
