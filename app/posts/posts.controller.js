@@ -16,7 +16,9 @@ var ctrl = [
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
     this.openReportModal = parent.openReportModal;
-    $timeout($anchorScroll, 1000);
+
+    if ($location.hash().length) { $timeout($anchorScroll, 1000); }
+    else { $timeout($anchorScroll); }
 
     // Get access rights to page controls for authed user
     this.controlAccess = Session.getControlAccess('postControls', pageData.thread.board_id);

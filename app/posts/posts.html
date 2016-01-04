@@ -102,8 +102,8 @@
       <!-- Editor Header -->
       <div class="editor-top-bar">
         <div class="buttons">
-          <button ng-click="PostsParentCtrl.showFormatting = true">formatting</button>
-          <button ng-click="PostsParentCtrl.fullscreen()">fullscreen</button>
+          <button ng-click="PostsParentCtrl.showFormatting = true"><i class="fa fa-code"></i>&nbsp;&nbsp;Format</button>
+          <button ng-click="PostsParentCtrl.fullscreen()"><i class="fa" ng-class="{ 'fa-expand': PostsParentCtrl.isMinimized, 'fa-compress': !PostsParentCtrl.isMinimized }"></i>&nbsp;&nbsp;{{ PostsParentCtrl.isMinimized ? 'Fullscreen' : 'Minimize' }}</button>
         </div>
 
         <div class="editor-formatting" ng-if="PostsParentCtrl.showFormatting">

@@ -294,15 +294,15 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       }
     };
 
-    var isFullscreen = true;
+    this.isMinimized = true;
     this.fullscreen = function() {
-      if (isFullscreen) {
-        isFullscreen = false;
+      if (ctrl.isMinimized) {
+        ctrl.isMinimized = false;
         this.editorPosition = 'editor-full-screen';
         this.resize = false;
       }
       else {
-        isFullscreen = true;
+        ctrl.isMinimized = true;
         this.editorPosition = 'editor-fixed-bottom';
         this.resize = true;
       }

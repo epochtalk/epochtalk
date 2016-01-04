@@ -213,8 +213,8 @@
       <!-- Editor Header -->
       <div class="editor-top-bar">
         <div class="buttons">
-          <button ng-click="ModerationCtrl.showFormatting = true">formatting</button>
-          <button ng-click="ModerationCtrl.fullscreen()">{{ ModerationCtrl.isMinimized ? 'fullscreen' : 'minimize' }}</button>
+        <button ng-click="ModerationCtrl.showFormatting = true"><i class="fa fa-code"></i>&nbsp;&nbsp;Format</button>
+        <button ng-click="ModerationCtrl.fullscreen()"><i class="fa" ng-class="{ 'fa-expand': ModerationCtrl.isMinimized, 'fa-compress': !ModerationCtrl.isMinimized }"></i>&nbsp;&nbsp;{{ ModerationCtrl.isMinimized ? 'Fullscreen' : 'Minimize' }}</button>
         </div>
 
         <div class="editor-formatting" ng-if="ModerationCtrl.showFormatting">
