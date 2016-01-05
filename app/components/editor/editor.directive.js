@@ -105,11 +105,13 @@ module.exports = ['$timeout', '$window', '$rootScope', '$filter', function($time
       var initEditor = function() {
         // on load ng-model body to editor and preview
         if ($scope.rawBody && $scope.rawBody.length > 0) {
-          $editor.val($filter('decode')($scope.rawBody));
+          $scope.rawBody = $filter('decode')($scope.rawBody);
+          $editor.val($scope.rawBody);
           $scope.originalText = $scope.rawBody;
         }
         else {
-          $editor.val($filter('decode')($scope.body));
+          $scope.body = $filter('decode')($scope.body);
+          $editor.val($scope.body);
           $scope.originalText = $scope.body;
           $scope.rawBody = $scope.body;
         }

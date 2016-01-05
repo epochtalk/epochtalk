@@ -5,7 +5,7 @@ module.exports = [function () {
   var e = document.createElement('textarea'); // only create one textarea
 
   return function(text) {
-    e.innerHTML = text;
-    return e.childNodes[0].nodeValue;
+    e.innerHTML = text || '';
+    return e.childNodes[0] ? e.childNodes[0].nodeValue : '';
   };
 }];
