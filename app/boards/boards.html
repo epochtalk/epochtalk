@@ -1,6 +1,6 @@
 <div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards">
   <!-- Category Title -->
-  <div class="title">
+  <div id="{{BoardsCtrl.generateCatId(cat.name, cat.view_order)}}" class="title">
     <div ng-click="cat.show = !cat.show" class="collapse-section">
       <a ng-class="{ 'fa-chevron-right' : cat.show, 'fa-chevron-down': !cat.show }"
       class="fa collapse-btn no-select"></a>
@@ -53,7 +53,7 @@
         </div>
         <div ng-if="board.last_thread_title">
           in thread
-          <a ui-sref="posts.data({ threadId: board.last_thread_id, start: board.last_post_position })" ng-bind-html="::board.last_thread_title | truncate:25"></a>
+          <a ui-sref="posts.data({ threadId: board.last_thread_id, start: board.last_post_position })" ng-bind-html="::board.last_thread_title | decode | truncate:25" title="{{board.last_thread_title | decode}}"></a>
         </div>
         <div ng-if="board.last_post_created_at">
           <i ng-bind="::board.last_post_created_at | humanDate"></i>

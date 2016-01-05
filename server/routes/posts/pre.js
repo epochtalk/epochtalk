@@ -323,8 +323,12 @@ module.exports = {
       if (parsedBody === raw_body) { request.payload.raw_body = ''; }
     }
     else {
+      // convert all unicode characters to their numeric representation
+      // this is so we can save it to the db and present it to any encoding
+      raw_body = textToEntities(raw_body);
+
       // nothing to parse, just move raw_body to body
-      request.payload.body = request.payload.raw_body;
+      request.payload.body = raw_body;
       request.payload.raw_body = '';
     }
 

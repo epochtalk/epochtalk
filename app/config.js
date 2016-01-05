@@ -36,6 +36,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     $locationProvider.html5Mode(true);
+    $locationProvider.hashPrefix('!');
     $httpProvider.interceptors.push('AuthInterceptor');
     $httpProvider.interceptors.push('ViewInterceptor');
     // loading bar latency (For testing only)

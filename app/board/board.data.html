@@ -38,7 +38,7 @@
       </div>
       <div ng-if="childBoard.last_thread_title">
         in thread
-        <a ui-sref="posts.data({ threadId: childBoard.last_thread_id, start: childBoard.last_post_position })" ng-bind-html="childBoard.last_thread_title | truncate:25"></a>
+        <a ui-sref="posts.data({ threadId: childBoard.last_thread_id, start: childBoard.last_post_position })" ng-bind-html="childBoard.last_thread_title | decode | truncate:25" title="{{childBoard.last_thread_title | decode}}"></a>
       </div>
       <div ng-if="childBoard.last_post_created_at">
         <span ng-bind="childBoard.last_post_created_at | humanDate"></span>
