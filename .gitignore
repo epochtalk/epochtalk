@@ -39,6 +39,7 @@ test/coverage/
 /public/templates/admin/moderation/*.html
 /public/templates/admin/settings/*.html
 /public/templates/board/*.html
+/public/templates/category/*.html
 /public/templates/layout/*.html
 /public/templates/messages/*.html
 /public/templates/posts/*.html
