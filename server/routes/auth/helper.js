@@ -8,11 +8,11 @@ var redis = require(path.normalize(__dirname + '/../../../redis'));
 var config = require(path.normalize(__dirname + '/../../../config'));
 var roles = require(path.normalize(__dirname + '/../../plugins/acls/roles'));
 
-// TODO: handle token expiration?
-function buildToken(userId) {
+function buildToken(userId, expiration) {
   // build jwt token from decodedToken and privateKey
   var decodedToken = { userId: userId, sessionId: uuid.v4(), timestamp: Date.now() };
-  var encodedToken = jwt.sign(decodedToken, config.privateKey, { algorithm: 'HS256' });
+  var options = { algorithm: 'HS256', expiresInSeconds: expiration, noTimestamp: true };
+  var encodedToken = jwt.sign(decodedToken, config.privateKey, options);
   return { decodedToken: decodedToken, token: encodedToken };
 }
 
@@ -199,7 +199,7 @@ function formatUserReply(token, user) {
  */
 helper.saveSession = function(user) {
   // build Token
-  var tokenResult = buildToken(user.id);
+  var tokenResult = buildToken(user.id, user.expiration);
   var decodedToken = tokenResult.decodedToken;
   var token = tokenResult.token;
   user.roles = user.roles.map(function(role) { return role.lookup; });

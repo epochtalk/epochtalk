@@ -32,7 +32,8 @@ exports.login = {
   validate: {
     payload: {
       username: Joi.string().min(1).max(255).required(),
-      password: Joi.string().min(8).max(72).required()
+      password: Joi.string().min(8).max(72).required(),
+      rememberMe: Joi.boolean().default(false)
     }
   },
   handler: function(request, reply) {
@@ -44,6 +45,7 @@ exports.login = {
 
     var username = request.payload.username;
     var password = request.payload.password;
+    var rememberMe = request.payload.rememberMe;
     var promise = db.users.userByUsername(username) // get full user info
     // check user exists
     .then(function(user) {
@@ -75,6 +77,11 @@ exports.login = {
         user.moderating = boards;
       })
       .then(function() { return user; });
+    })
+    .then(function(user) {
+      if (rememberMe) { user.expiration = undefined; } // forever
+      else { user.expiration = 1209600; } // 14 days
+      return user;
     })
     // builds token, saves session, returns request output
     .then(helper.saveSession);

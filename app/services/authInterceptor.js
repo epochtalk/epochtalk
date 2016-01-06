@@ -10,12 +10,9 @@ module.exports = ['$q', '$window', 'Session',
       if (token) { config.headers.Authorization = 'Bearer ' + token; }
       return config;
     },
-    response: function (response) {
-      if (response.status === 401 ||
-          response.headers('Authorization') === 'Revoked') {
-        Session.clearUser();
-      }
-      return response || $q.when(response);
+    responseError: function(rejection) {
+      if (rejection.status === 401) { Session.clearUser(); }
+      return $q.reject(rejection);
     }
   };
 }];
