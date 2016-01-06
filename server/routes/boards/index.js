@@ -6,6 +6,7 @@ module.exports = [
   { method: 'GET', path: '/boards/{id}', config: boards.find },
   { method: 'GET', path: '/boards/all', config: boards.all },
   { method: 'GET', path: '/boards', config: boards.allCategories },
+  { method: 'GET', path: '/categoryboards', config: boards.byCategory },
   { method: 'POST', path: '/boards/categories', config: boards.updateCategories },
   { method: 'POST', path: '/boards/{id}', config: boards.update },
   { method: 'DELETE', path: '/boards/{id}', config: boards.delete },
