@@ -310,6 +310,7 @@ roles.superAdministrator = {
     find: true,
     all: true,
     allCategories: true,
+    byCategory: true,
     updateCategories: true,
     update: true,
     delete: true
@@ -491,6 +492,7 @@ roles.administrator = {
     find: true,
     all: true,
     allCategories: true,
+    byCategory: true,
     updateCategories: true,
     update: true,
     delete: true
@@ -641,6 +643,7 @@ roles.globalModerator = {
     find: true,
     all: true,
     allCategories: true,
+    byCategory: true
   },
   conversations: {
     create: true,
@@ -770,7 +773,8 @@ roles.moderator = {
     },
     find: true,
     all: true,
-    allCategories: true
+    allCategories: true,
+    byCategory: true
   },
   conversations: {
     create: true,
@@ -856,7 +860,8 @@ roles.user = {
   // ACLs
   boards: {
     find: true,
-    allCategories: true
+    allCategories: true,
+    byCategory: true
   },
   conversations: {
     create: true,
@@ -907,7 +912,8 @@ roles.banned = {
   // ACLs
   boards: {
     find: true,
-    allCategories: true
+    allCategories: true,
+    byCategory: true
   },
   conversations: {
     create: true,
@@ -942,7 +948,8 @@ roles.anonymous = {
   // ACLs
   boards: {
     find: true,
-    allCategories: true
+    allCategories: true,
+    byCategory: true
   },
   posts: {
     find: true,
