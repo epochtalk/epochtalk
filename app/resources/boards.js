@@ -9,6 +9,10 @@ module.exports = ['$resource',
         url: '/api/boards/all',
         isArray: true
       },
+      byCategory: {
+        method: 'GET',
+        url: '/api/categoryboards'
+      },
       update: {
         method: 'POST',
         params: { id: '@id' }
