@@ -7,6 +7,8 @@ var templatePath = path.join(__dirname, '/../../public/templates');
 
 module.exports = function() {
   return new Promise(function(resolve, reject) {
+    fs.unlinkSync(templatePath + '/category/category.html');
+    fs.unlinkSync(templatePath + '/category/category.data.html');
     fs.unlinkSync(templatePath + '/board/board.html');
     fs.unlinkSync(templatePath + '/board/board.data.html');
     fs.unlinkSync(templatePath + '/thread/new-thread.html');
@@ -44,6 +46,8 @@ module.exports = function() {
   .catch(function() {})
   .then(function() {
     // symlink html files
+    fs.symlinkSync(appPath + '/category/category.html', templatePath + '/category/category.html');
+    fs.symlinkSync(appPath + '/category/category.data.html', templatePath + '/category/category.data.html');
     fs.symlinkSync(appPath + '/board/board.html', templatePath + '/board/board.html');
     fs.symlinkSync(appPath + '/board/board.data.html', templatePath + '/board/board.data.html');
     fs.symlinkSync(appPath + '/board/new-thread.html', templatePath + '/thread/new-thread.html');
