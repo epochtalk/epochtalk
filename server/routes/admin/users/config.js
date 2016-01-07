@@ -208,7 +208,7 @@ exports.addRoles = {
     var roleId = request.payload.role_id;
     var promise = db.users.addRoles(usernames, roleId)
     .map(function(user) {
-      return authHelper.updateRoles(user)
+      return authHelper.updateRoles(user.id, user.roles)
       .then(function() { return user; });
     });
     return reply(promise);
@@ -257,7 +257,7 @@ exports.removeRoles = {
     var roleId = request.payload.role_id;
     var promise = db.users.removeRoles(userId, roleId)
     .then(function(user) {
-      return authHelper.updateRoles(user)
+      return authHelper.updateRoles(user.id, user.roles)
       .then(function() { return user; });
     });
     return reply(promise);
@@ -431,7 +431,11 @@ exports.ban = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
-    var promise = db.users.ban(userId, expiration);
+    var promise = db.users.ban(userId, expiration)
+    .then(function(user) {
+      return authHelper.updateRoles(user.user_id, user.roles)
+      .then(function() { return user; });
+    });
     return reply(promise);
   }
 };
@@ -466,7 +470,11 @@ exports.unban = {
   pre: [ { method: pre.matchPriority } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    var promise = db.users.unban(userId);
+    var promise = db.users.unban(userId)
+    .then(function(user) {
+      return authHelper.updateRoles(user.user_id, user.roles)
+      .then(function() { return user; });
+    });
     return reply(promise);
   }
 };

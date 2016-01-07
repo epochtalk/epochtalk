@@ -140,11 +140,13 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
 
   this.canViewAddUsersControl = function() {
     var view = false;
-    if (ctrl.controlAccess.privilegedAddRoles && ctrl.controlAccess.privilegedAddRoles.samePriority) {
-      view = ctrl.selectedRole.priority >= Session.user.permissions.priority;
-    }
-    else if (ctrl.controlAccess.privilegedAddRoles && ctrl.controlAccess.privilegedAddRoles.lowerPriority) {
-      view = ctrl.selectedRole.priority > Session.user.permissions.priority;
+    if (ctrl.selectedRole.lookup !== 'banned') {
+      if (ctrl.controlAccess.privilegedAddRoles && ctrl.controlAccess.privilegedAddRoles.samePriority) {
+        view = ctrl.selectedRole.priority >= Session.user.permissions.priority;
+      }
+      else if (ctrl.controlAccess.privilegedAddRoles && ctrl.controlAccess.privilegedAddRoles.lowerPriority) {
+        view = ctrl.selectedRole.priority > Session.user.permissions.priority;
+      }
     }
     if (ctrl.showAddUsers) { ctrl.showAddUsers = view; }
     return view;

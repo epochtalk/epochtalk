@@ -1915,7 +1915,7 @@ ul.mod-list {
 ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
 
 .role-header { display: inline-block; }
-.add-users { float: right; }
+.add-users { float: right;  line-height: 1.5rem; }
 .management-users.radio-button, .header-spacer { @include span-columns(2); }
 .autocomplete-wrap { @include span-columns(6); }
 .switch-block label { float: none; }

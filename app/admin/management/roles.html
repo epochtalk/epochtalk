@@ -35,7 +35,15 @@
 
 <div class="half-column" ng-if="AdminManagementCtrl.selectedRole !== null && !AdminManagementCtrl.selectedRole.message">
   <br />
-  <h3 class="role-header">{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3>  <a ng-if="AdminManagementCtrl.canViewAddUsersControl()" ng-click="AdminManagementCtrl.showAddUsers = !AdminManagementCtrl.showAddUsers" class="add-users"><i class="fa fa-plus"></i> Add Users</a>
+  <h3 class="role-header">{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3>
+  <div class="add-users">
+    <a ng-show="AdminManagementCtrl.canViewAddUsersControl()" ng-click="AdminManagementCtrl.showAddUsers = !AdminManagementCtrl.showAddUsers">
+      <i class="fa fa-plus"></i> Add Users
+    </a>
+    <span ng-show="AdminManagementCtrl.selectedRole.lookup === 'banned'">
+      Visit the <a ui-sref="^.users">Users Tab</a> to ban
+    </span>
+  </div>
   <br /><br />
   <div ng-show="AdminManagementCtrl.showAddUsers">
     <tags-input min-length="1" placeholder="Type username to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="AdminManagementCtrl.usersToAdd">
@@ -78,7 +86,7 @@
     </div>
   </div>
   <div ng-if="AdminManagementCtrl.userData.count < 1">
-  <h5>This role has no users to display. To add users to this role click the "Add Users" button in the top-right corner.</h5>
+    <h5>This role has no users to display. {{ AdminManagementCtrl.selectedRole.lookup === 'banned' ? '' : 'To add users to this role click the "Add Users" button in the top-right corner.' }}</h5>
   </div>
 </div>
 
