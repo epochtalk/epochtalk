@@ -106,7 +106,7 @@ exports.allCategories = {
     if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
 
     var getAllCategories = db.boards.allCategories(priority, opts);
-    var getRecentThreads = db.threads.recent(userId, opts);
+    var getRecentThreads = db.threads.recent(userId, priority, opts);
     var promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
       return {
         boards: boards,
