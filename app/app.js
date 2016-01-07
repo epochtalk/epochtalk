@@ -25,6 +25,7 @@ var appThings = [
   require('./boards'),
   require('./board'),
   require('./board/new-thread-index'),
+  require('./category'),
   require('./messages'),
   require('./posts'),
   require('./user'),
