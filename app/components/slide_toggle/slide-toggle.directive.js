@@ -2,21 +2,26 @@ module.exports = ['$timeout', function($timeout) {
   return {
     restrict: 'A',
     link: function($scope, $element, $attr) {
-      var clientHeight = 0;
+      // add slide class to element
+      $element.addClass('slide');
 
-      // run in a timeout to allow element to load
-      $timeout(function () {
-        clientHeight = $element[0].clientHeight + 'px';
-        $element.addClass('slide');
-
+      // watch for changes
+      $timeout(function() {
         $scope.$watch($attr.slideToggle, function(newState, oldState) {
+          var wrapperHeight = $element[0].querySelector('.slide-wrapper').clientHeight + 'px';
+
           if (newState) {
-            $element[0].style.maxHeight = clientHeight;
+            $element[0].style.maxHeight = wrapperHeight;
             $element.removeClass('closed').addClass('open');
+            $timeout(function() { $element[0].style.maxHeight = 'inherit'; }, 100);
           }
           else {
-            $element[0].style.maxHeight = '';
-            $element.removeClass('open').addClass('closed');
+            if ($element[0].clientHeight === 0) { return; }
+            $element[0].style.maxHeight = wrapperHeight;
+            $timeout(function() {
+              $element[0].style.maxHeight = '0';
+              $element.removeClass('open').addClass('closed');
+            });
           }
         });
       });

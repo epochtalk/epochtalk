@@ -819,7 +819,7 @@ table.striped {
 .profile-avatar-container { width: 100%; text-align: center; img { height: 12.5rem; width: auto; } }
 
 .slide {
-  @include transition(500ms cubic-bezier(0.075, 0.82, 0.165, 1) all);
+  @include transition(300ms cubic-bezier(0.075, 0.82, 0.165, 1) all);
   overflow: hidden;
   &.open { opacity: 1; }
   &.closed { opacity: 0; max-height: 0; }
@@ -897,6 +897,7 @@ table.striped {
   }
   // poll edit section
   .poll-edit {
+    max-height: 0;
     background-color: #eee;
     &.open { margin-bottom: 1rem; }
     .poll-edit-container { padding: 1rem; overflow: hidden; }
