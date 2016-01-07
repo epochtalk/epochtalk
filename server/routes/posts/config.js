@@ -366,15 +366,15 @@ exports.pageByUser = {
   },
   pre: [ [
     { method: pre.accessUser },
+    { method: pre.userPriority, assign: 'priority' },
     { method: pre.canViewDeletedPosts, assign: 'viewables' }
   ] ],
   handler: function(request, reply) {
-    // TODO: handle posts from private boards
-    // ready parameters
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
     var viewables = request.pre.viewables;
+    var priority = request.pre.priority;
     var username = querystring.unescape(request.params.username);
     var opts = {
       limit: request.query.limit,
@@ -383,7 +383,7 @@ exports.pageByUser = {
       sortDesc: request.query.desc
     };
 
-    var getPosts = db.posts.pageByUser(username, opts);
+    var getPosts = db.posts.pageByUser(username, priority, opts);
     var getCount = db.posts.pageByUserCount(username);
 
     // get user's posts
@@ -421,18 +421,18 @@ function cleanPosts(posts, currentUserId, viewContext) {
 
     // remove deleted users or post information
     if (post.deleted || post.user.deleted || post.board_visible === false) {
-      post.body = '';
-      post.raw_body = '';
-      post.thread_title = 'deleted';
-
-      delete post.avatar;
-      delete post.created_at;
-      delete post.updated_at;
-      delete post.imported_at;
-      delete post.user.signature;
-      delete post.user.role;
-      delete post.user.username;
-      delete post.user.id;
+      var deletedPost = {
+        id: post.id,
+        deleted: true,
+        thread_title: 'deleted',
+        user: {}
+      };
+      post = deletedPost;
+    }
+    else {
+      delete post.board_visible;
+      delete post.deleted;
+      delete post.user.deleted;
     }
 
     return post;

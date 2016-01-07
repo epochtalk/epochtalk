@@ -24,7 +24,7 @@
 
     <div class="profile-row centered-text" ng-if="ProfileCtrl.controlAccess.reactivate || ProfileCtrl.controlAccess.deactivate || ProfileCtrl.controlAccess.privilegedDeactivate || ProfileCtrl.controlAccess.privilegedReactivate">
       <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showDeactivate = true" ng-hide="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedDeactivate || ProfileCtrl.controlAccess.deactivate">Deactivate Account</a>
-      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showReactivate = true" ng-show="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedReactivate || ProfileCtrl.controlAccess.reactivate"">Reactivate Account</a>
+      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showReactivate = true" ng-show="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedReactivate || ProfileCtrl.controlAccess.reactivate">Reactivate Account</a>
       <br>
       <a ng-href="#" ng-click="ProfileCtrl.showDelete = true" ng-if="ProfileCtrl.controlAccess.privilegedDelete">Delete Account</a>
     </div>

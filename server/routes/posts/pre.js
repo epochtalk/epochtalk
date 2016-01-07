@@ -278,6 +278,11 @@ module.exports = {
 
     return reply(promise);
   },
+  userPriority: function(request, reply) {
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
+    return reply(priority);
+  },
   clean: function(request, reply) {
     request.payload.title = sanitizer.strip(request.payload.title);
     request.payload.raw_body = sanitizer.bbcode(request.payload.raw_body);

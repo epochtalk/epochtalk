@@ -197,5 +197,5 @@ module.exports = {
     });
 
     return reply(promise);
-  },
+  }
 };
