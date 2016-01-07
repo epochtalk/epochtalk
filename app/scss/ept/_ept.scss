@@ -1309,6 +1309,11 @@ main #error-404 {
     .replies, .views { @include span-columns(1); @include info-text; text-align: center; }
     .last-reply, .actions { @include span-columns(3); @include omega; @include info-text; }
   }
+  .threads-data.compact {
+    @include pad(0 0 0.25rem 0);
+    .subject{ @include span-columns(9); }
+    .updated-at { @include span-columns(3); @include omega; @include info-text; }
+  }
 }
 
 // Mobile Board Layout

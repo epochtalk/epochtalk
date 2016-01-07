@@ -91,7 +91,7 @@ exports.allCategories = {
   validate: {
     query: {
       page: Joi.number().default(1),
-      limit: Joi.number().integer().min(1).max(100).default(25)
+      limit: Joi.number().integer().min(1).max(100).default(5)
     }
   },
   pre: [ { method: pre.userPriority, assign: 'priority' } ],
