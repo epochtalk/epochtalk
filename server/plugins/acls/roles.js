@@ -405,7 +405,6 @@ roles.superAdministrator = {
     },
     create: true,
     byBoard: true,
-    recent: true,
     viewed: true,
     title: true,
     lock: true,
@@ -597,7 +596,6 @@ roles.administrator = {
     },
     create: true,
     byBoard: true,
-    recent: true,
     viewed: true,
     title: true,
     lock: true,
@@ -746,7 +744,6 @@ roles.globalModerator = {
     },
     create: true,
     byBoard: true,
-    recent: true,
     viewed: true,
     title: true,
     lock: true,
@@ -885,7 +882,6 @@ roles.moderator = {
     },
     create: true,
     byBoard: true,
-    recent: true,
     viewed: true,
     title: true,
     lock: true,
@@ -950,7 +946,6 @@ roles.user = {
   threads: {
     create: true,
     byBoard: true,
-    recent: true,
     viewed: true,
     title: true,
     moderated: true,
@@ -997,7 +992,6 @@ roles.banned = {
   },
   threads: {
     byBoard: true,
-    recent: true,
     viewed: true
   },
   users: {
@@ -1024,7 +1018,6 @@ roles.anonymous = {
   },
   threads: {
     byBoard: true,
-    recent: true,
     viewed: true
   },
   users: {

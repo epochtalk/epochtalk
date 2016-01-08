@@ -91,7 +91,7 @@ datalist { z-index: 10001; }
 .row-section { @include clearfix; @include row; }
 .clear { @include clearfix; }
 .show-mobile { display: none; @include media($mobile) { display: inline-block; } }
-.hide-mobile { @include media($mobile) { display: none; } }
+.hide-mobile { @include media($mobile) { display: none !important; } }
 .spoiler { color: black; background-color: black; &:hover { color: white; } }
 *:focus { outline: 0; }
 input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
@@ -1310,7 +1310,10 @@ main #error-404 {
     .last-reply, .actions { @include span-columns(3); @include omega; @include info-text; }
   }
   .threads-data.compact {
+    @include clearfix;
     @include pad(0 0 0.25rem 0);
+    color: $secondary-font-color-dark;
+    &:last-child { @include pad(0 0 1rem 0); }
     .subject{ @include span-columns(9); }
     .updated-at { @include span-columns(3); @include omega; @include info-text; }
   }
@@ -1320,7 +1323,7 @@ main #error-404 {
 @include media($mobile) {
   .board-data, .watchlist-data {
     .child-boards .board {
-      .info { @include span-columns(8);}
+      .info { @include span-columns(8); }
       .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
       .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
     }
@@ -1329,6 +1332,12 @@ main #error-404 {
       .subject, .replies, .views, .last-reply { display: none; }
     }
     .threads-data {
+      @include clearfix;
+      &.compact {
+        @include pad(0 0 0.5rem 0);
+        .subject { @include span-columns(6.5); }
+        .show-mobile { @include span-columns(1.5); @include omega; }
+      }
       .subject { @include span-columns(8); @include omega; }
       .subject .mobile-stats { display: block; }
       .replies, .views, .last-reply { display: none; }

@@ -87,9 +87,9 @@
           (<a ui-sref="board.data({ boardId: thread.board_id })" ng-bind-html="thread.board_name"></a>)
         </small>
 
-        <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-        <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
-        <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
+        <i class="icon-epoch-lock right hide-mobile" ng-if="thread.locked"></i>
+        <i class="icon-epoch-verified right hide-mobile" ng-if="thread.sticky"></i>
+        <i class="fa fa-bar-chart icon-fix right hide-mobile" ng-if="thread.poll"></i>
       </div>
 
       <div class="mobile-stats">
@@ -98,7 +98,11 @@
         <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
       </div>
     </div>
-
+    <div class="show-mobile">
+      <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
+      <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
+      <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
+    </div>
     <div class="last-reply">
       <div ng-bind="thread.last_post_created_at | humanDate"></div>
     </div>
