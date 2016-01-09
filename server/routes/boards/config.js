@@ -190,16 +190,7 @@ exports.byCategory = {
     var userId;
     if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
     var categoryId = request.query.category_id;
-    var getBoards = db.boards.byCategory(categoryId, userId);
-    var getCategory = db.categories.find(categoryId);
-
-    var promise = Promise.join(getBoards, getCategory, function(boards, category) {
-
-      return {
-        category: category,
-        boards: boards
-      };
-    });
+    var promise = db.boards.byCategory(categoryId, userId);
 
     return reply(promise);
   }
