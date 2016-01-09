@@ -1,7 +1,7 @@
 module.exports = ['$timeout', '$anchorScroll', 'boardsByCategory',
   function($timeout, $anchorScroll, boardsByCategory) {
     var ctrl = this;
-    this.category = boardsByCategory.category;
+    this.category = boardsByCategory;
     this.boards = boardsByCategory.boards;
     this.toggles = false;
 
@@ -9,6 +9,15 @@ module.exports = ['$timeout', '$anchorScroll', 'boardsByCategory',
     this.toggle = function(index){
       ctrl.toggles = !ctrl.toggles;
     };
+
+    // set total_thread_count and total_post_count for all boards
+    var boards = this.boards;
+    boards.map(function(board) {
+      console.log(board);
+      var children = countTotals(board.children);
+      board.total_thread_count = children.thread_count + board.thread_count;
+      board.total_post_count = children.post_count + board.post_count;
+    });
 
     function countTotals(countBoards) {
       var thread_count = 0;
