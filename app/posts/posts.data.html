@@ -1,9 +1,9 @@
-<div id="{{::post.id}}" ng-repeat="post in PostsCtrl.posts track by post.id" class="post-block" ng-class="{ 'highlighted': post.highlighted, 'deleted': post.deleted }">
+<div id="{{::post.id}}" ng-repeat="post in PostsCtrl.posts track by post.id" class="post-block" ng-class="{ 'highlighted': post.highlighted, 'hidden': post.hidden, 'deleted': post._deleted }">
   <!-- Delete Post View -->
-  <div ng-if="post.deleted">Post Deleted</div>
+  <div class="deleted" ng-if="post._deleted">Post Deleted</div>
 
   <!-- Visible Post View -->
-  <div ng-if="!post.deleted">
+  <div ng-if="!post._deleted">
     <!-- Post Profile Section -->
     <div class="post-user">
       <a ui-sref="profile({ username: post.user.username})">

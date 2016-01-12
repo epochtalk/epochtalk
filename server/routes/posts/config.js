@@ -123,8 +123,10 @@ exports.byThread = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }).without('start', 'page')
   },
-  // TODO: Highlight deleted post and to show mods
-  pre: [ { method: pre.accessBoardWithThreadId } ],
+  pre: [ [
+    { method: pre.accessBoardWithThreadId },
+    { method: pre.canViewDeletedPosts, assign: 'viewables' }
+  ] ],
   handler: function(request, reply) {
     // ready parameters
     var userId = '';
@@ -134,6 +136,7 @@ exports.byThread = {
     var threadId = request.query.thread_id;
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
+    var viewables = request.pre.viewables;
 
     var opts = { limit: limit, start: 0, page: 1 };
     if (start) { opts.page = Math.ceil(start / limit); }
@@ -147,7 +150,6 @@ exports.byThread = {
     var getPoll = db.polls.byThread(threadId);
     var hasVoted = db.polls.hasVoted(threadId, userId);
 
-    // TODO: Show admin deleted posts but style them differently, see canFind method
     var promise = Promise.join(getPosts, getThread, getThreadWatching, getPoll, hasVoted, function(posts, thread, threadWatching, poll, voted) {
       // check if thread is being Watched
       if (threadWatching) { thread.watched = true; }
@@ -163,7 +165,7 @@ exports.byThread = {
         thread: thread,
         limit: opts.limit,
         page: opts.page,
-        posts: cleanPosts(posts, userId)
+        posts: cleanPosts(posts, userId, viewables)
       };
     })
     // handle page or start out of range
@@ -402,39 +404,48 @@ exports.pageByUser = {
   }
 };
 
+/**
+ *  ViewContext can be an array of boards or a boolean
+ */
 function cleanPosts(posts, currentUserId, viewContext) {
   posts = [].concat(posts);
   var viewables = viewContext;
   var viewablesType = 'boolean';
+  var boards = [];
   if (_.isArray(viewContext)) {
-    viewContext = viewContext.map(function(vd) { return vd.board_id; });
+    boards = viewContext.map(function(vd) { return vd.board_id; });
     viewablesType = 'array';
   }
 
   return posts.map(function(post) {
+
     // if currentUser owns post, show everything
-    if (currentUserId === post.user.id) { return post; }
+    var viewable = false;
+    if (currentUserId === post.user.id) { viewable = true; }
     // if viewables is an array, check if user is moderating this post
-    else if (viewablesType === 'array' && _.contains(viewContext, post.board_id)) { return post; }
+    else if (viewablesType === 'array' && _.contains(boards, post.board_id)) { viewable = true; }
     // if viewables is a true, view all posts
-    else if (viewables) { return post; }
+    else if (viewables) { viewable = true; }
 
     // remove deleted users or post information
-    if (post.deleted || post.user.deleted || post.board_visible === false) {
-      var deletedPost = {
+    var deleted = false;
+    if (post.deleted || post.user.deleted || post.board_visible === false) { deleted = true; }
+
+    // format post
+    if (viewable && deleted) { post.hidden = true; }
+    else if (deleted) {
+      post = {
         id: post.id,
-        deleted: true,
+        hidden: true,
+        _deleted: true,
         thread_title: 'deleted',
         user: {}
       };
-      post = deletedPost;
-    }
-    else {
-      delete post.board_visible;
-      delete post.deleted;
-      delete post.user.deleted;
     }
 
+    if (!post.deleted) { delete post.deleted; }
+    delete post.board_visible;
+    delete post.user.deleted;
     return post;
   });
 }

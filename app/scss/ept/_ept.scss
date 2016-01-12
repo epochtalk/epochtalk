@@ -1450,13 +1450,13 @@ main #error-404 {
     border-bottom: 1px solid $border-color;
     &:first-child { border-top: 1px solid $border-color; }
     &.highlighted { background-color: $color-highlighted; }
+    &.hidden { background-color: $sub-header-color; }
     &.deleted {
       min-height: 0;
       padding: 0.5rem 0.5rem;
-      background-color: $sub-header-color;
       color: $secondary-font-color;
       text-align: center;
-     }
+    }
     .post-user {
       width: 5rem;
       padding-right: 1.25rem;
