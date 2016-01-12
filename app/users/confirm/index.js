@@ -6,7 +6,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'ConfirmCtrl',
         controllerAs: 'ConfirmCtrl',
-        templateUrl: '/static/templates/user/confirm.html'
+        templateUrl: '/static/templates/users/confirm/confirm.html'
       }
     },
     resolve: {

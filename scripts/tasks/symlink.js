@@ -9,7 +9,9 @@ module.exports = function() {
   return new Promise(function(resolve, reject) {
     fs.unlinkSync(templatePath + '/board/board.html');
     fs.unlinkSync(templatePath + '/board/board.data.html');
-    fs.unlinkSync(templatePath + '/thread/new-thread.html');
+    fs.unlinkSync(templatePath + '/threads/new/new.html');
+    fs.unlinkSync(templatePath + '/threads/posted/posted.html');
+    fs.unlinkSync(templatePath + '/threads/posted/posted.data.html');
     fs.unlinkSync(templatePath + '/layout/404.html');
     fs.unlinkSync(templatePath + '/layout/admin-content.html');
     fs.unlinkSync(templatePath + '/layout/footer.html');
@@ -21,10 +23,10 @@ module.exports = function() {
     fs.unlinkSync(templatePath + '/messages/messages.html');
     fs.unlinkSync(templatePath + '/posts/posts.html');
     fs.unlinkSync(templatePath + '/posts/posts.data.html');
-    fs.unlinkSync(templatePath + '/user/confirm.html');
-    fs.unlinkSync(templatePath + '/user/posts.html');
-    fs.unlinkSync(templatePath + '/user/profile.html');
-    fs.unlinkSync(templatePath + '/user/reset.html');
+    fs.unlinkSync(templatePath + '/users/confirm/confirm.html');
+    fs.unlinkSync(templatePath + '/users/profile/posts.html');
+    fs.unlinkSync(templatePath + '/users/profile/profile.html');
+    fs.unlinkSync(templatePath + '/users/reset/reset.html');
     fs.unlinkSync(templatePath + '/watchlist/watchlist.html');
     fs.unlinkSync(templatePath + '/watchlist/watchlist.edit.html');
     fs.unlinkSync(templatePath + '/admin/analytics/index.html');
@@ -47,7 +49,9 @@ module.exports = function() {
     // symlink html files
     fs.symlinkSync(appPath + '/board/board.html', templatePath + '/board/board.html');
     fs.symlinkSync(appPath + '/board/board.data.html', templatePath + '/board/board.data.html');
-    fs.symlinkSync(appPath + '/board/new-thread.html', templatePath + '/thread/new-thread.html');
+    fs.symlinkSync(appPath + '/threads/new/new.html', templatePath + '/threads/new/new.html');
+    fs.symlinkSync(appPath + '/threads/posted/posted.html', templatePath + '/threads/posted/posted.html');
+    fs.symlinkSync(appPath + '/threads/posted/posted.data.html', templatePath + '/threads/posted/posted.data.html');
     fs.symlinkSync(appPath + '/layout/404.html', templatePath + '/layout/404.html');
     fs.symlinkSync(appPath + '/layout/admin-content.html', templatePath + '/layout/admin-content.html');
     fs.symlinkSync(appPath + '/layout/footer.html', templatePath + '/layout/footer.html');
@@ -59,10 +63,10 @@ module.exports = function() {
     fs.symlinkSync(appPath + '/messages/messages.html', templatePath + '/messages/messages.html');
     fs.symlinkSync(appPath + '/posts/posts.html', templatePath + '/posts/posts.html');
     fs.symlinkSync(appPath + '/posts/posts.data.html', templatePath + '/posts/posts.data.html');
-    fs.symlinkSync(appPath + '/user/confirm.html', templatePath + '/user/confirm.html');
-    fs.symlinkSync(appPath + '/user/posts.html', templatePath + '/user/posts.html');
-    fs.symlinkSync(appPath + '/user/profile.html', templatePath + '/user/profile.html');
-    fs.symlinkSync(appPath + '/user/reset.html', templatePath + '/user/reset.html');
+    fs.symlinkSync(appPath + '/users/confirm/confirm.html', templatePath + '/users/confirm/confirm.html');
+    fs.symlinkSync(appPath + '/users/profile/posts.html', templatePath + '/users/profile/posts.html');
+    fs.symlinkSync(appPath + '/users/profile/profile.html', templatePath + '/users/profile/profile.html');
+    fs.symlinkSync(appPath + '/users/reset/reset.html', templatePath + '/users/reset/reset.html');
     fs.symlinkSync(appPath + '/watchlist/watchlist.html', templatePath + '/watchlist/watchlist.html');
     fs.symlinkSync(appPath + '/watchlist/watchlist.edit.html', templatePath + '/watchlist/watchlist.edit.html');
     fs.symlinkSync(appPath + '/admin/analytics/index.html', templatePath + '/admin/analytics/index.html');

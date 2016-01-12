@@ -274,6 +274,11 @@ module.exports = {
 
     return reply(result);
   },
+  userPriority: function(request, reply) {
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
+    return reply(priority);
+  },
   getThread: function(request, reply) {
     var threadId = _.get(request, request.route.settings.app.thread_id);
     db.threads.find(threadId)

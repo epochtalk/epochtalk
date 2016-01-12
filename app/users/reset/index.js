@@ -6,7 +6,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'ResetCtrl',
         controllerAs: 'ResetCtrl',
-        templateUrl:'/static/templates/user/reset.html'
+        templateUrl:'/static/templates/users/reset/reset.html'
       }
     },
     resolve: {

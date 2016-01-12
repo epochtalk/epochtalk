@@ -6,7 +6,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'NewThreadCtrl',
         controllerAs: 'NewThreadCtrl',
-        templateUrl: '/static/templates/thread/new-thread.html'
+        templateUrl: '/static/templates/threads/new/new.html'
       }
     },
     resolve: {
@@ -14,7 +14,7 @@ var route = ['$stateProvider', function($stateProvider) {
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
-          var ctrl = require('./new-thread.controller');
+          var ctrl = require('./new.controller');
           $ocLazyLoad.load({ name: 'ept.newThread.ctrl' });
           deferred.resolve(ctrl);
         });

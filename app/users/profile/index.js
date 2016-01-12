@@ -7,7 +7,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'ProfileCtrl',
         controllerAs: 'ProfileCtrl',
-        templateUrl: '/static/templates/user/profile.html'
+        templateUrl: '/static/templates/users/profile/profile.html'
       }
     },
     resolve: {
@@ -38,7 +38,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'posts@profile': {
         controller: 'ProfilePostsCtrl',
         controllerAs: 'ProfilePostsCtrl',
-        templateUrl: '/static/templates/user/posts.html'
+        templateUrl: '/static/templates/users/profile/posts.html'
       }
     },
     resolve: {
@@ -72,7 +72,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'ProfilePostsCtrl',
         controllerAs: 'ProfilePostsCtrl',
-        templateUrl: '/static/templates/user/posts.html'
+        templateUrl: '/static/templates/users/profile/posts.html'
       }
     },
     resolve: {

@@ -715,15 +715,10 @@
               <input id="threads-byBoard" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.byBoard" ng-change="AdminManagementCtrl.newRole.permissions.threads.byBoard ? AdminManagementCtrl.newRole.permissions.threads.viewed = true : AdminManagementCtrl.newRole.permissions.polls.vote = AdminManagementCtrl.newRole.permissions.threads.viewed = undefined" ng-false-value="undefined" />
               Allow user to page/view threads
             </label>
-            <!-- Create Polls -->
+            <!-- View Recently Posted In -->
             <label>
-              <input id="polls-create" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.create" ng-change="AdminManagementCtrl.newRole.permissions.polls.create ? AdminManagementCtrl.newRole.permissions.threads.create = true : null" ng-false-value="undefined" />
-              Allow user to create polls
-            </label>
-            <!-- Vote on Polls -->
-            <label>
-              <input id="polls-vote" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.vote" ng-change="AdminManagementCtrl.newRole.permissions.polls.vote ? AdminManagementCtrl.newRole.permissions.threads.byBoard = true : null" ng-false-value="undefined" />
-              Allow user to vote on polls
+              <input id="threads-posted" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.posted"  ng-false-value="undefined" />
+              View recent threads they've posted in
             </label>
             <!-- Moderate Thread -->
             <label>
@@ -741,6 +736,16 @@
             <label>
               <input id="threads-lock" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.lock" ng-change="AdminManagementCtrl.newRole.permissions.threads.lock ? null : AdminManagementCtrl.newRole.permissions.threads.privilegedLock = undefined; AdminManagementCtrl.newRole.permissions.threads.lock ? null : privilegedLock = undefined" ng-false-value="undefined" />
               Allow user lock their own threads
+            </label>
+            <!-- Create Polls -->
+            <label>
+              <input id="polls-create" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.create" ng-change="AdminManagementCtrl.newRole.permissions.polls.create ? AdminManagementCtrl.newRole.permissions.threads.create = true : null" ng-false-value="undefined" />
+              Allow user to create polls
+            </label>
+            <!-- Vote on Polls -->
+            <label>
+              <input id="polls-vote" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.vote" ng-change="AdminManagementCtrl.newRole.permissions.polls.vote ? AdminManagementCtrl.newRole.permissions.threads.byBoard = true : null" ng-false-value="undefined" />
+              Allow user to vote on polls
             </label>
             <!-- Lock Own Poll -->
             <label>
