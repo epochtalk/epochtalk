@@ -4,6 +4,7 @@ var Boom = require('boom');
 var Promise = require('bluebird');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
+var Promise = require('bluebird');
 
 /**
   * @apiDefine BoardObjectSuccess
@@ -36,63 +37,13 @@ exports.create = {
   validate: {
     payload: {
       name: Joi.string().min(1).max(255).required(),
-      description: Joi.string().allow('')
+      description: Joi.string().allow(''),
+      viewable_by: Joi.number()
     }
   },
   pre: [ { method: pre.clean } ],
   handler: function(request, reply) {
     return reply(db.boards.create(request.payload));
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Boards
-  * @api {POST} /boards/import Import
-  * @apiName ImportBoard
-  * @apiPermission Super Administrator
-  * @apiDescription Used to import a board. Currently only SMF is supported for import.
-  *
-  * @apiParam (Payload) {object} smf Object containing SMF metadata
-  * @apiParam (Payload) {number} smf.ID_BOARD Legacy smf board id
-  * @apiParam (Payload) {string} id The board's unique id
-  * @apiParam (Payload) {string} name The board's name
-  * @apiParam (Payload) {string} description The boards description
-  * @apiParam (Payload) {timestamp} created_at Timestamp of when the board was created
-  * @apiParam (Payload) {timestamp} updated_at Timestamp of when the board was updated
-  * @apiParam (Payload) {timestamp} imported_at Timestamp of when the board was imported
-  *
-  * @apiUse BoardObjectSuccess
-  * @apiSuccess {object} smf Object containing SMF metadata
-  * @apiSuccess {number} smf.ID_BOARD Legacy smf board id
-  *
-  * @apiError (Error 500) InternalServerError There was an issue creating the board
-  */
-exports.import = {
-  // validate: {
-  //   payload: {
-  //     name: Joi.string().required(),
-  //     description: Joi.string(),
-  //     category_id: [ Joi.string(), Joi.number() ],
-  //     created_at: Joi.date(),
-  //     updated_at: Joi.date(),
-  //     parent_id: [ Joi.string(), Joi.number() ],
-  //     children_ids: [ Joi.array(Joi.string()), Joi.array(Joi.number()) ],
-  //     deleted: Joi.boolean(),
-  //     smf: Joi.object().keys({
-  //       ID_BOARD: Joi.number(),
-  //       ID_PARENT: Joi.number()
-  //     })
-  //   }
-  // },
-  pre: [ { method: pre.clean } ],
-  handler: function(request, reply) {
-    var promise = db.boards.import(request.payload)
-    .catch(function(err) {
-      request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      return Boom.badImplementation(err);
-    });
-    return reply(promise);
   }
 };
 
@@ -117,31 +68,9 @@ exports.find = {
   auth: { mode:'try', strategy: 'jwt' },
   plugins: { acls: 'boards.find' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ [
-    { method: pre.accessBoardWithBoardId },
-    { method: pre.accessPrivateBoardWithBoardId }
-  ] ],
+  pre: [ { method: pre.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     return reply(db.boards.find(request.params.id));
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Boards
-  * @api {GET} /boards/all All
-  * @apiName AllBoard
-  * @apiDescription Used to find all boards.
-  *
-  * @apiSuccess {array} boards Array containing all of the forums boards
-  *
-  * @apiError (Error 500) InternalServerError There was an issue finding all boards
-  */
-exports.all = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.all' },
-  handler: function(request, reply) {
-    return reply(db.boards.all());
   }
 };
 
@@ -151,16 +80,42 @@ exports.all = {
   * @api {GET} /boards All Categories
   * @apiName AllCategories
   * @apiDescription Used to retrieve all boards within their respective categories.
-  *
-  * @apiSuccess {array} categories Array containing all of the forums boards in their respective categories
+  * @apiParam (Query) {number} page=1 The page of threads to bring back
+ * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  * @apiSuccess {object} containing boards: [categories Array containing all of the forums boards in their respective categories], threads: [recent threads Array]
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving categories
   */
 exports.allCategories = {
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'boards.allCategories' },
+  validate: {
+    query: {
+      page: Joi.number().default(1),
+      limit: Joi.number().integer().min(1).max(100).default(5)
+    }
+  },
+  pre: [ { method: pre.userPriority, assign: 'priority' } ],
   handler: function(request, reply) {
-    return reply(db.boards.allCategories());
+    var userId;
+    var priority = request.pre.priority;
+    var opts = {
+      hidePrivate: true,  // filter out private boards
+      limit: request.query.limit,
+      page: request.query.page
+    };
+    if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
+
+    var getAllCategories = db.boards.allCategories(priority, opts);
+    var getRecentThreads = db.threads.recent(userId, priority, opts);
+    var promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
+      return {
+        boards: boards,
+        threads: threads
+      };
+    });
+
+    return reply(promise);
   }
 };
 
@@ -251,7 +206,8 @@ exports.update = {
   validate: {
     payload: {
       name: Joi.string().min(1).max(255),
-      description: Joi.string().allow('')
+      description: Joi.string().allow(''),
+      viewable_by: Joi.number().allow(null)
     },
     params: { id: Joi.string().required() }
   },

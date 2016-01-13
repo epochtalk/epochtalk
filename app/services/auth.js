@@ -15,17 +15,8 @@ module.exports = ['$window', 'User', 'Session',
       },
 
       login: function(user) {
-        // get username and rememberMe
-        var rememberMe = user.rememberMe;
-        // Can't delete user.rememberMe without UI Flicker, copy user instead
-        var userCopy = {};
-        userCopy.username = user.username;
-        userCopy.password = user.password;
-
-        return User.login(userCopy).$promise
-        .then(function(resource) {
-          Session.setUser(resource, rememberMe);
-        });
+        return User.login(user).$promise
+        .then(function(resource) { Session.setUser(resource); });
       },
 
       logout: function() {
@@ -36,8 +27,7 @@ module.exports = ['$window', 'User', 'Session',
       authenticate: function() {
         if (Session.getToken()) {
           User.ping().$promise
-          .then(function(user) { Session.setUser(user); })
-          .catch(function() { Session.clearUser(); });
+          .then(function(user) { Session.setUser(user); });
         }
         else { Session.clearUser(); }
       }

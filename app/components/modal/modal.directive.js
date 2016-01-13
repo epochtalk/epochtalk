@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = ['$document', function($document) {
   return {
     restrict: 'E',
     scope: {
@@ -26,11 +26,16 @@ module.exports = function() {
         }
         if (scope.onClose) { scope.onClose(); }
       };
-
       scope.$watch('show', function(show) {
-        if (show) { scope.focus = true; }
-        else { scope.close(); }
+        if (show) {
+          scope.focus = true;
+          $document[0].body.style.overflow = 'hidden';
+        }
+        else {
+          scope.close();
+          $document[0].body.style.overflow = 'auto';
+        }
       });
     }
   };
-};
+}];

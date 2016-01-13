@@ -18,8 +18,11 @@
     </thead>
     <tbody>
       <tr ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
-        <td><a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title | truncate:50"></a></td>
-        <td ng-bind="(post.raw_body || post.body) | truncate:250"></td>
+        <td>
+          <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title | truncate:50" ng-if="!post.deleted"></a>
+          <span ng-if="post.deleted">Deleted</span>
+        </td>
+        <td ng-bind="(post.raw_body || post.body) | truncate:250 | decode"></td>
         <td ng-bind="post.created_at | humanDate"></td>
       </tr>
     </tbody>

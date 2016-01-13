@@ -6,9 +6,11 @@ var Good = require('good');
 var mkdirp = require('mkdirp');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
+var setup = require(path.normalize(__dirname + '/../setup'));
+var config = require(path.normalize(__dirname + '/../config'));
 var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
-var config = require(path.normalize(__dirname + '/../config'));
+var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var defaultRegisterCb = function(err) { if (err) throw(err); };
@@ -28,19 +30,23 @@ setup()
     var opsPath = path.normalize(__dirname +  '/../logs/server/operations');
     var errsPath = path.normalize(__dirname + '/../logs/server/errors');
     var reqsPath = path.normalize(__dirname + '/../logs/server/requests');
+    var logsPath = path.normalize(__dirname + '/../logs/server/logs');
     mkdirp.sync(opsPath);
     mkdirp.sync(errsPath);
     mkdirp.sync(reqsPath);
+    mkdirp.sync(logsPath);
     var configWithPath = function(path) {
       return { path: path, extension: 'log', rotate: 'daily', format: 'YYYY-MM-DD-X', prefix:'epochtalk' };
     };
-    var consoleReporter = new GoodConsole({ log: '*', response: '*' });
-    var opsReporter = new GoodFile(configWithPath(opsPath), { log: '*', ops: '*' });
-    var errsReporter = new GoodFile(configWithPath(errsPath), { log: '*', error: '*' });
-    var reqsReporter = new GoodFile(configWithPath(reqsPath), { log: '*', response: '*' });
-    options.reporters = [ consoleReporter, opsReporter, errsReporter, reqsReporter ];
+    var consoleReporter = new GoodConsole({ log: '*', response: '*', error: '*' });
+    var opsReporter = new GoodFile(configWithPath(opsPath), { ops: '*' });
+    var errsReporter = new GoodFile(configWithPath(errsPath), { error: '*' });
+    var reqsReporter = new GoodFile(configWithPath(reqsPath), { response: '*' });
+    var logsReporter = new GoodFile(configWithPath(logsPath), { log: '*' });
+    options.reporters = [ consoleReporter, opsReporter, errsReporter, reqsReporter, logsReporter ];
     server.register({ register: Good, options: options}, defaultRegisterCb);
   }
+
   // auth via jwt
   server.register(Auth, function(err) {
     if (err) throw err;
@@ -50,8 +56,12 @@ setup()
     };
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
+
   // route acls
   server.register(acls, defaultRegisterCb);
+
+  // rate limiter
+  server.register({ register: limiter, options: config.rateLimiting }, defaultRegisterCb);
 
   // render views
   server.views({

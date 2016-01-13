@@ -62,7 +62,6 @@ internals.implementation = function (server, options) {
           return reply.continue({ credentials: decoded });
         }
 
-
         settings.validateFunc(decoded, token, function (err, isValid, credentials) {
           credentials = credentials || null;
 

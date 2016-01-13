@@ -30,11 +30,27 @@ exports.register = function (server, options, next) {
   });
 
   server.expose('getACLValue', getACLValue);
-
+  server.expose('getUserPriority', getUserPriority);
   server.expose('verifyRoles', verifyRoles);
 
   return verifyRoles().then(next);
 };
+
+function getUserPriority(auth) {
+  var roleNames = [];
+
+  // find matching user roles
+  if (auth.isAuthenticated && _.isArray(auth.credentials.roles)) {
+    roleNames = auth.credentials.roles.map(function(roleName) { return roles[roleName].priority; });
+  }
+  else if (auth.isAuthenticated) { roleNames = [ roles.user.priority ]; }
+  else if (config.loginRequired) { roleNames = [ roles.private.priority ]; }
+  else { roleNames = [ roles.anonymous.priority ]; }
+
+  var userPriority = _.min(roleNames);
+
+  return userPriority;
+}
 
 function verifyRoles() {
   // get all the roles from the DB
@@ -114,9 +130,7 @@ function verifyRoles() {
       roles[dbRole.lookup] = newRole;
     }
     return;
-  }).then(function(){
-    return;
-  });
+  }).then(function() { return; }); // need to return undefined
 }
 
 function getACLValue(auth, acl) {

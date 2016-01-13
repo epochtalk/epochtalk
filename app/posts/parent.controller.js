@@ -1,8 +1,7 @@
 var some = require('lodash/collection/some');
 
-var ctrl = [
-  '$scope', '$timeout', '$location', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
-  function($scope, $timeout, $location, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
+var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 'AdminBoards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
+  function($scope, $timeout, $location, $filter, $state, Session, AdminBoards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -15,7 +14,12 @@ var ctrl = [
     this.resize = true;
     this.moveBoard = {};
     this.boards = [];
+    this.addPoll = false;
+    this.pollValid = false;
+    this.resetPoll = false;
+    this.poll = {};
     this.controlAccess = {};
+    this.pollControlAccess = {};
     this.reportControlAccess = {
       reportPosts: Session.hasPermission('reportControls.reportPosts'),
       reportUsers: Session.hasPermission('reportControls.reportUsers')
@@ -24,6 +28,7 @@ var ctrl = [
       create: Session.hasPermission('postControls.create')
     };
     this.showThreadControls = false;
+
     // wait for board_id to be populated by child controller
     $scope.$watch(function() { return ctrl.board_id; }, function(boardId) {
       // Get access rights to page controls for authed user
@@ -38,6 +43,9 @@ var ctrl = [
       delete ctrl.privilegedControlAccess.title;
       delete ctrl.privilegedControlAccess.create;
       ctrl.showThreadControls = some(ctrl.privilegedControlAccess);
+      ctrl.pollControlAccess =  { create: Session.hasPermission('pollControls.create') };
+
+      // get boards for mods and admins
       ctrl.getBoards();
     });
 
@@ -53,11 +61,12 @@ var ctrl = [
 
     this.getBoards = function() {
       if (ctrl.controlAccess.privilegedMove) {
-        return Boards.all().$promise
+        return AdminBoards.moveBoards().$promise
         .then(function(allBoards) {
           ctrl.boards = allBoards || [];
           ctrl.boards.map(function(board) {
             if (board.id === ctrl.thread.board_id) { ctrl.moveBoard = board; }
+            board.name = $filter('decode')(board.name); // decode html entities
           });
         });
       }
@@ -125,6 +134,23 @@ var ctrl = [
       .finally(function() { ctrl.showPurgeThreadModal = false; });
     };
 
+    /* Poll Methods */
+    this.createPoll = function() {
+      if (!ctrl.pollValid) { return; }
+
+      var requestParams = { threadId: ctrl.thread.id };
+      Threads.createPoll(requestParams, ctrl.poll).$promise
+      .then(function(data) {
+        ctrl.thread.poll = data;
+        ctrl.addPoll = false;
+        ctrl.resetPoll = true;
+      })
+      .catch(function(err) {
+        Alert.error('There was an error creating the poll');
+        console.log(err); // TODO: Remove this
+      });
+    };
+
     /* Post Methods */
 
     var discardAlert = function() {
@@ -171,6 +197,7 @@ var ctrl = [
         ctrl.posting.index = index;
         var editorPost = ctrl.posting.post;
         editorPost.id = post.id || '';
+        editorPost.title = post.title || '';
         editorPost.body = post.body || '';
         editorPost.raw_body = post.raw_body || '';
         ctrl.resetEditor = true;
@@ -182,7 +209,7 @@ var ctrl = [
     this.savePost = function() {
       var post = ctrl.posting.post;
       var type = post.id ? 'update' : 'create';
-      post.title = 'Re: ' + ctrl.thread.title;
+      post.title = post.title || 'Re: ' + ctrl.thread.title;
       post.thread_id = ctrl.thread.id;
 
       var postPromise;
@@ -203,83 +230,79 @@ var ctrl = [
           var editPost = ctrl.posts[ctrl.posting.index];
           editPost.body = data.body;
           editPost.raw_body = data.raw_body;
+          editPost.updated_at = data.updated_at;
         }
       })
       .then(closeEditor)
-      .catch(function() { Alert.error('Post could not be saved'); });
+      .catch(function(err) {
+        var error = 'Post could not be saved';
+        if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
+        Alert.error(error);
+      });
     };
 
     this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };
 
     this.deletePostIndex = -1;
     this.showDeleteModal = false;
-    this.closeDeleteModal = function() {
-      $timeout(function() { ctrl.showDeleteModal = false; });
-    };
     this.openDeleteModal = function(index) {
       ctrl.deletePostIndex = index;
       ctrl.showDeleteModal = true;
     };
     this.deletePost = function() {
+      ctrl.showDeleteModal = false;
       var index = ctrl.deletePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.delete({id: post.id}).$promise
-        .then(function() { post.deleted = true; })
-        .catch(function() { Alert.error('Failed to delete post'); })
-        .finally(function() { ctrl.showDeleteModal = false; });
+        .then(function() { $state.go($state.$current, null, {reload:true}); })
+        .catch(function() { Alert.error('Failed to delete post'); });
       }
     };
 
     this.undeletePostIndex = -1;
     this.showUndeleteModal = false;
-    this.closeUndeleteModal = function() {
-      $timeout(function() { ctrl.showUndeleteModal = false; });
-    };
     this.openUndeleteModal = function(index) {
       ctrl.undeletePostIndex = index;
       ctrl.showUndeleteModal = true;
     };
     this.undeletePost = function() {
+      ctrl.showUndeleteModal = false;
       var index = ctrl.undeletePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.undelete({id: post.id}).$promise
-        .then(function() { post.deleted = false; })
-        .catch(function() { Alert.error('Failed to Undelete Post'); })
-        .finally(function() { ctrl.showUndeleteModal = false; });
+        .then(function() { $state.go($state.$current, null, {reload:true}); })
+        .catch(function() { Alert.error('Failed to Undelete Post'); });
       }
     };
 
     this.purgePostIndex = -1;
     this.showPurgeModal = false;
-    this.closePurgeModal = function() {
-      $timeout(function() { ctrl.showPurgeModal = false; });
-    };
     this.openPurgeModal = function(index) {
       ctrl.purgePostIndex = index;
       ctrl.showPurgeModal = true;
     };
     this.purgePost = function() {
+      ctrl.showPurgeModal = false;
       var index = ctrl.purgePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.purge({id: post.id}).$promise
         .then(function() { $state.go($state.$current, null, {reload:true}); })
-        .catch(function() { Alert.error('Failed to purge Post'); })
-        .finally(function() { ctrl.showPurgeModal = false; });
+        .catch(function() { Alert.error('Failed to purge Post'); });
       }
     };
 
-    var isFullscreen = true;
+    this.isMinimized = true;
     this.fullscreen = function() {
-      if (isFullscreen) {
-        isFullscreen = false;
+      if (ctrl.isMinimized) {
+        ctrl.isMinimized = false;
         this.editorPosition = 'editor-full-screen';
         this.resize = false;
       }
       else {
-        isFullscreen = true;
+        ctrl.isMinimized = true;
         this.editorPosition = 'editor-fixed-bottom';
         this.resize = true;
       }

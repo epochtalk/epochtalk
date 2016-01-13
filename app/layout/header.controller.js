@@ -1,10 +1,30 @@
-var ctrl = ['$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert',
-  function($location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert) {
+var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert', 'ThemeSVC',
+  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert, ThemeSVC) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.hasPermission = Session.hasPermission;
+    this.previewActive = ThemeSVC.previewActive();
     this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
+    this.loginOrRecover = true;
+
+    // Update preview mode on change
+    $scope.$watch(function() { return ThemeSVC.previewActive(); }, function(val) {
+      ctrl.previewActive = val;
+    });
+
+    this.cancelPreview = function() {
+      ThemeSVC.toggleCSS(false);
+      $state.go('admin-settings.theme', { preview: undefined }, { reload: true });
+    };
+
+    this.savePreview = function() {
+      ThemeSVC.saveTheme();
+    };
+
+    this.continueEditing = function() {
+      $state.go('admin-settings.theme', { preview: true }, { reload: false });
+    };
 
     this.checkAdminRoute = function(route) {
       var pathArr = $location.path().split('/');

@@ -11,91 +11,6 @@ var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
 /**
   * @apiVersion 0.3.0
   * @apiGroup Users
-  * @api {POST} /users/import Import
-  * @apiName ImportUser
-  * @apiPermission Super Administrator
-  * @apiDescription Import a user from an existing forum. Currently only SMF is supported
-  *
-  * @apiParam (Payload) {string} username The user's username
-  * @apiParam (Payload) {string} [email] The user's email
-  * @apiParam (Payload) {string} [name] The user's name
-  * @apiParam (Payload) {string} [website] URL to user's website
-  * @apiParam (Payload) {string} [btcAddress] User's bitcoin wallet address
-  * @apiParam (Payload) {string} [gender] The user's gender
-  * @apiParam (Payload) {string} [dob] String version of the user's dob
-  * @apiParam (Payload) {string} [location] The user's geographical location
-  * @apiParam (Payload) {string} [language] The user's native language
-  * @apiParam (Payload) {string} [position] The user's position title
-  * @apiParam (Payload) {string} [raw_signature] The user's signature as it was entered in the editor by the user
-  * @apiParam (Payload) {string} [avatar] URL to the user's avatar
-  * @apiParam (Payload) {date} created_at Date that the user's account was created
-  * @apiParam (Payload) {date} updated_at Date that the user's account was last updated
-  * @apiParam (Payload) {object} smf Object containing the user's legacy SMF data
-  * @apiParam (Payload) {number} smf.ID_MEMBER The user's legacy smf id
-  *
-  * @apiSuccess {string} id The user's unique id
-  * @apiSuccess {string} username The user's username
-  * @apiSuccess {string} [email] The user's email
-  * @apiSuccess {string} [name] The user's name
-  * @apiSuccess {string} [website] URL to user's website
-  * @apiSuccess {string} [btcAddress] User's bitcoin wallet address
-  * @apiSuccess {string} [gender] The user's gender
-  * @apiSuccess {timestamp} [dob] Timestamp of the user's dob
-  * @apiSuccess {string} [location] The user's geographical location
-  * @apiSuccess {string} [language] The user's native language
-  * @apiSuccess {string} [position] The user's position title
-  * @apiSuccess {string} [raw_signature] The user's signature as it was entered in the editor by the user
-  * @apiSuccess {string} [avatar] URL to the user's avatar
-  * @apiSuccess {timestamp} created_at Timestamp of when the user's account was created
-  * @apiSuccess {timestamp} updated_at Timestamp of when the user's account was last updated
-  * @apiSuccess {object} smf Object containing the user's legacy SMF data
-  * @apiSuccess {number} smf.ID_MEMBER The user's legacy smf id
-  *
-  * @apiError (Error 500) InternalServerError There was error importing the user
-  */
-exports.import = {
-  // auth: { strategy: 'jwt' },
-  validate: {
-    payload: Joi.object().keys({
-      username: Joi.string().required(),
-      email: Joi.string(), // should be required?
-      created_at: Joi.date(),
-      updated_at: Joi.date(),
-      name: Joi.string().allow(''),
-      website: Joi.string().allow(''),
-      btcAddress: Joi.string().allow(''),
-      gender: Joi.string().allow(''),
-      dob: Joi.string().allow(''),
-      location: Joi.string().allow(''),
-      language: Joi.string(),
-      position: Joi.string(),
-      raw_signature: Joi.string().allow(''),
-      avatar: Joi.string().allow(''),
-      status: Joi.string(),
-      smf: Joi.object().keys({
-        ID_MEMBER: Joi.number().required()
-      })
-    })
-  },
-  pre: [
-    { method: commonPre.clean },
-    { method: commonPre.parseSignature },
-    { method: commonPre.handleImages },
-  ],
-  handler: function(request, reply) {
-    var promise = db.users.import(request.payload)
-    .catch(function(err) {
-      request.log('error', 'Import board: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      return Boom.badImplementation(err);
-    });
-
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Users
   * @api {PUT} /users Update
   * @apiName UpdateUser
   * @apiPermission User (Users may update their own account)
@@ -274,7 +189,7 @@ exports.find = {
   *
   * @apiParam {string} id The userId of the user to deactivate
   *
-  * @apiSuccess {} STATUS 200 OK
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an error deactivating the user
   */
@@ -303,7 +218,7 @@ exports.deactivate = {
   *
   * @apiParam {string} id The userId of the user to reactivate
   *
-  * @apiSuccess {} STATUS 200 OK
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an error reactivating the user
   */
@@ -332,7 +247,7 @@ exports.reactivate = {
   *
   * @apiParam {string} id The userId of the user to delete
   *
-  * @apiSuccess {} STATUS 200 OK
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an error deleteing the user
   */

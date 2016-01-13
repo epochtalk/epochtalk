@@ -14,15 +14,6 @@ exports.create = {
   }
 };
 
-exports.import = {
-  // validate: { payload: { name: Joi.string().min(1).max(255).required(), } },
-  pre: [ { method: pre.clean } ],
-  handler: function(request, reply) {
-    var promise = db.categories.import(request.payload);
-    return reply(promise);
-  }
-};
-
 exports.find = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'categories.find' },

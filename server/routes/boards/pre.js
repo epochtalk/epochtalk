@@ -6,21 +6,18 @@ var db = require(path.normalize(__dirname + '/../../../db'));
 var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
 
 module.exports = {
-  accessPrivateBoardWithBoardId: function(request, reply) {
-    // TODO: Implement private board check
-    return reply(true);
-  },
   accessBoardWithBoardId: function(request, reply) {
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
     var boardId = _.get(request, request.route.settings.app.board_id);
 
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
-    var boardVisible = db.boards.getBoardInBoardMapping(boardId)
-    .then(function(board) { return !!board; });
+    var boardVisible = db.boards.getBoardInBoardMapping(boardId, priority);
     var isModerator = db.moderators.isModerator(userId, boardId);
 
     var promise = Promise.join(boardVisible, viewSome, viewAll, isModerator, function(visible, some, all, isMod) {
@@ -32,6 +29,11 @@ module.exports = {
       return result;
     });
     return reply(promise);
+  },
+  userPriority: function(request, reply) {
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
+    return reply(priority);
   },
   clean: function(request, reply) {
     request.payload.name = sanitizer.strip(request.payload.name);

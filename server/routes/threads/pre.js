@@ -13,12 +13,13 @@ module.exports = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var threadId = _.get(request, request.route.settings.app.thread_id);
 
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
-    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId)
-    .then(function(board) { return !!board; });
+    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId, priority);
 
     var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
@@ -36,12 +37,13 @@ module.exports = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var boardId = _.get(request, request.route.settings.app.board_id);
 
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, boardId);
-    var boardVisible = db.boards.getBoardInBoardMapping(boardId)
-    .then(function(board) { return !!board; });
+    var boardVisible = db.boards.getBoardInBoardMapping(boardId, priority);
 
     var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
@@ -60,8 +62,8 @@ module.exports = {
       var userId = request.auth.credentials.id;
       promise = db.users.find(userId)
       .then(function(user) {
-        var active = Boom.forbidden();
-        if (user) { active = !user.deleted; }
+        var active = Boom.forbidden('User Account Not Active');
+        if (user && !user.deleted) { active = true; }
         return active;
       });
     }
@@ -106,6 +108,171 @@ module.exports = {
     });
 
     return reply(promise);
+  },
+  pollExists: function(request, reply) {
+    // Check if has poll exists
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+    var promise = db.polls.exists(threadId)
+    .then(function(exists) {
+      var pollExists = Boom.badRequest('Poll Does Not Exists');
+      if (exists) { pollExists = exists; }
+      return pollExists;
+    });
+
+    return reply(promise);
+  },
+  isPollOwner: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var privilege = request.route.settings.app.isPollOwner;
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var privilegedAll = getACLValue(request.auth, privilege + '.all');
+    var privilegedSome = getACLValue(request.auth, privilege +'.some');
+    var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
+    var isThreadOwner = db.threads.getThreadOwner(threadId)
+    .then(function(owner) { return owner.user_id === userId; });
+
+    var promise = Promise.join(isThreadOwner, privilegedAll, privilegedSome, isMod, function(owner, all, some, mod) {
+      var result = Boom.forbidden();
+      if (owner || all) { result = true; }
+      else if (some && mod) { result = true; }
+      return result;
+    });
+
+    return reply(promise);
+  },
+  isPollCreatable: function(request, reply) {
+    var poll = request.payload.poll;
+
+    if (!poll) { return reply(); }
+
+    var privilege = request.route.settings.app.isPollCreatable;
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var canCreate = getACLValue(request.auth, privilege);
+
+    var result = Boom.forbidden();
+    if (canCreate) { result = true; }
+    return reply(result);
+  },
+  canCreatePoll: function(request,reply) {
+    var threadId = request.params.threadId;
+    var userId = request.auth.credentials.id;
+
+    // make sure thread exists
+    // make sure user is thread owner
+    var getThreadOwner = db.threads.getThreadOwner(threadId);
+    // make sure poll doesn't exist
+    var getPollExists = db.polls.exists(threadId);
+
+    var promise = Promise.join(getThreadOwner, getPollExists, function(owner, exists) {
+      var result = Boom.forbidden();
+      if (exists) { result = Boom.badRequest('Poll already exists'); }
+      else if (owner.user_id === userId) { result = true; }
+      return result;
+    });
+
+    return reply(promise);
+  },
+  validateMaxAnswers: function(request, reply) {
+    var poll = _.get(request, request.route.settings.app.poll);
+    if (!poll) { return reply(); }
+
+    var maxAnswers = poll.max_answers;
+    var answersLength = poll.answers.length;
+    if (maxAnswers > answersLength) { poll.max_answers = answersLength; }
+    return reply();
+  },
+  validateDisplayMode: function(request, reply) {
+    var poll = _.get(request, request.route.settings.app.poll);
+    if (!poll) { return reply(); }
+
+    var error;
+    if (poll.display_mode === 'expired' && !poll.expiration) {
+      error = Boom.badRequest('Showing results after expiration requires an expiration');
+    }
+
+    return reply(error);
+  },
+  validateMaxAnswersUpdate: function(request, reply) {
+    var pollId = request.params.pollId;
+    var maxAnswers = request.payload.max_answers;
+    var promise = db.polls.answers(pollId)
+    .then(function(answers) {
+      var answersLength = answers.length;
+      if (maxAnswers > answersLength) { request.payload.max_answers = answersLength; }
+    });
+    return reply(promise);
+  },
+  canVote: function(request, reply) {
+    // Check if has voted already
+    var threadId = _.get(request, request.route.settings.app.thread_id);
+    var userId = request.auth.credentials.id;
+    var promise = db.polls.hasVoted(threadId, userId)
+    .then(function(voted) {
+      var canVote = Boom.badRequest('Already Voted');
+      if (!voted) { canVote = true; }
+      return canVote;
+    });
+
+    return reply(promise);
+  },
+  isPollUnlocked: function(request, reply) {
+    var pollId = _.get(request, request.route.settings.app.poll_id);
+    var promise = db.polls.isLocked(pollId)
+    .then(function(locked) {
+      var canLock = Boom.badRequest('Poll is Unlocked');
+      if (!locked) { canLock = true; }
+      return canLock;
+    });
+
+    return reply(promise);
+  },
+  isPollRunning: function(request, reply) {
+    var pollId = _.get(request, request.route.settings.app.poll_id);
+    var promise = db.polls.isRunning(pollId)
+    .then(function(running) {
+      var canVote = Boom.badRequest('Poll is Expired');
+      if (running) { canVote = true; }
+      return canVote;
+    });
+
+    return reply(promise);
+  },
+  isVoteValid: function(request, reply) {
+    var pollId = _.get(request, request.route.settings.app.poll_id);
+    var payloadLength = request.payload.answerIds.length;
+
+    var promise = db.polls.maxAnswers(pollId)
+    .then(function(maxAnswers) {
+      var canVote = Boom.badRequest('Too Many Answers');
+      if (maxAnswers && maxAnswers >= payloadLength) { canVote = true; }
+      return canVote;
+    });
+
+    return reply(promise);
+  },
+  canChangeVote: function(request, reply) {
+    var pollId = _.get(request, request.route.settings.app.poll_id);
+    var promise = db.polls.changeVote(pollId)
+    .then(function(changeVote) {
+      var canChange = Boom.badRequest('Votes cannot be changed');
+      if (changeVote) { canChange = true; }
+      return canChange;
+    });
+
+    return reply(promise);
+  },
+  canModerate: function(request, reply) {
+    if (!request.payload.moderated) { return reply(); }
+
+    var userId = request.auth.credentials.id;
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var hasPrivilege = getACLValue(request.auth, 'threads.moderated');
+    var result = Boom.forbidden();
+    if (hasPrivilege) { result = true; }
+
+    return reply(result);
   },
   getThread: function(request, reply) {
     var threadId = _.get(request, request.route.settings.app.thread_id);

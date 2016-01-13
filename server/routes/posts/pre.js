@@ -71,12 +71,13 @@ module.exports = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var postId = _.get(request, request.route.settings.app.post_id);
 
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
     var isMod = db.moderators.isModeratorWithPostId(userId, postId);
-    var boardVisible = db.posts.getPostsBoardInBoardMapping(postId)
-    .then(function(board) { return !!board; });
+    var boardVisible = db.posts.getPostsBoardInBoardMapping(postId, priority);
 
     var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
@@ -94,12 +95,13 @@ module.exports = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var threadId = _.get(request, request.route.settings.app.thread_id);
 
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
     var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
-    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId)
-    .then(function(board) { return !!board; });
+    var boardVisible = db.threads.getThreadsBoardInBoardMapping(threadId, priority);
 
     var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
@@ -160,20 +162,12 @@ module.exports = {
       var userId = request.auth.credentials.id;
       promise = db.users.find(userId)
       .then(function(user) {
-        var active = Boom.forbidden();
-        if (user) { active = !user.deleted; }
+        var active = Boom.forbidden('User Account Not Active');
+        if (user && !user.deleted) { active = true; }
         return active;
       });
     }
     return reply(promise);
-  },
-  accessPrivateBoardWithPostId: function(request, reply) {
-    // TODO: Implement private board check
-    return reply(true);
-  },
-  accessPrivateBoardWithThreadId: function(request, reply) {
-    // TODO: Implement private board check
-    return reply(true);
   },
   isPostWriteable: function(request, reply) {
     var privilege = request.route.settings.app.isPostWriteable;
@@ -219,6 +213,33 @@ module.exports = {
 
     return reply(promise);
   },
+  isPostDeletable: function(request, reply) {
+    var privilege = request.route.settings.app.isPostDeletable;
+    var postId = _.get(request, request.route.settings.app.post_id);
+    var userId = request.auth.credentials.id;
+
+    var getACLValue = request.server.plugins.acls.getACLValue;
+    var updateAll = getACLValue(request.auth, privilege + '.all');
+    var updateSome = getACLValue(request.auth, privilege + '.some');
+    var hasSMPrivilege = getACLValue(request.auth, 'threads.moderated');
+    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
+    var isThreadModerated = db.posts.isPostsThreadModerated(postId);
+    var isThreadOwner = db.posts.isPostsThreadOwner(postId, userId);
+    var postOwner = db.posts.find(postId)
+    .then(function(post) { return userId === post.user.id; });
+
+    var promise = Promise.join(postOwner, updateAll, updateSome, isMod, isThreadModerated, isThreadOwner, hasSMPrivilege, function(owner, all, some, mod, threadSM, threadOwner, userSM) {
+      var result = Boom.forbidden();
+
+      if (owner || all) { result = true; }
+      else if (some && mod) { result = true; }
+      else if (threadSM && threadOwner && userSM) { result = true; }
+
+      return result;
+    }).catch(console.log);
+
+    return reply(promise);
+  },
   isCDRPost: function(request, reply) {
     var postId = _.get(request, request.route.settings.app.post_id);
     var promise = db.posts.getThreadFirstPost(postId)
@@ -256,6 +277,11 @@ module.exports = {
     });
 
     return reply(promise);
+  },
+  userPriority: function(request, reply) {
+    var getUserPriority = request.server.plugins.acls.getUserPriority;
+    var priority = getUserPriority(request.auth);
+    return reply(priority);
   },
   clean: function(request, reply) {
     request.payload.title = sanitizer.strip(request.payload.title);
@@ -302,8 +328,12 @@ module.exports = {
       if (parsedBody === raw_body) { request.payload.raw_body = ''; }
     }
     else {
+      // convert all unicode characters to their numeric representation
+      // this is so we can save it to the db and present it to any encoding
+      raw_body = textToEntities(raw_body);
+
       // nothing to parse, just move raw_body to body
-      request.payload.body = request.payload.raw_body;
+      request.payload.body = raw_body;
       request.payload.raw_body = '';
     }
 

@@ -1,4 +1,4 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', 'Alert', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, Alert, AdminUsers, users, usersCount, page, limit, field, desc, filter, search) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', 'Session', 'Alert', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, Session, Alert, AdminUsers, users, usersCount, page, limit, field, desc, filter, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'users';
@@ -15,6 +15,9 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
   this.search = search;
   this.searchStr = null;
   if (filter === 'banned') { this.tableFilter = 1; }
+
+  // Action Control Access
+  this.actionAccess = Session.getModPanelControlAccess();
 
   // Banning Vars
   this.showConfirmBanModal = false; // confirmation ban modal visible bool
@@ -66,11 +69,13 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
 
   this.saveUserEdit = function() {
     AdminUsers.update(ctrl.selectedUser).$promise
-    .then(function() {
-      ctrl.closeEditUser();
-      Alert.success('Successfully updated profile for ' + ctrl.selectedUser.username);
+    .then(function() { Alert.success('Successfully updated profile for ' + ctrl.selectedUser.username); })
+    .catch(function(err) {
+      var msg = 'There was an error updating user ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
     })
-    .catch(function() { Alert.error('There was an error updating user ' + ctrl.selectedUser.username); });
+    .finally(function() { ctrl.closeEditUser(); });
   };
 
   this.minDate = function() {
@@ -109,6 +114,13 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
       if (ctrl.tableFilter === 0) { ctrl.pullPage(); }
       else { ctrl.selectedUser.ban_expiration = ban.expiration; }
       Alert.success(ctrl.selectedUser.username + ' has been banned');
+    })
+    .catch(function(err) {
+      var msg = 'There was an error banning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmBan();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';
@@ -139,6 +151,13 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
       if (ctrl.tableFilter === 0) { ctrl.pullPage(); }
       else { ctrl.selectedUser.ban_expiration = null; }
       Alert.success(ctrl.selectedUser.username + ' has been unbanned');
+    })
+    .catch(function(err) {
+      var msg = 'There was an error unbanning ' + ctrl.selectedUser.username;
+      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      Alert.error(msg);
+    })
+    .finally(function() {
       ctrl.closeConfirmUnban();
       $timeout(function() { // wait for modal to close
         ctrl.confirmBanBtnLabel = 'Confirm';

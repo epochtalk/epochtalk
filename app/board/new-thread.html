@@ -14,7 +14,7 @@
 <div class="padded-row">
   <div class="fill-row">
     <label for="title">Title:</label>
-    <input type="text" class="input-text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" required autofocus tabIndex="1" />
+    <input type="text" class="input-text" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" ng-disabled="!NewThreadCtrl.loggedIn()" required autofocus/>
   </div>
 </div>
 
@@ -22,29 +22,42 @@
 <div class="padded-row">
   <div class="fill-row thread-editor-container">
     <form name="form" class="editor-form" novalidate>
-      <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" raw-body="NewThreadCtrl.thread.raw_body" reset-switch="NewThreadCtrl.resetEditor" exit-switch="NewThreadCtrl.exitEditor" dirty="NewThreadCtrl.dirtyEditor" tabIndex="2"></epochtalk-editor>
+      <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" raw-body="NewThreadCtrl.thread.raw_body" reset-switch="NewThreadCtrl.resetEditor" exit-switch="NewThreadCtrl.exitEditor" dirty="NewThreadCtrl.dirtyEditor"></epochtalk-editor>
     </form>
   </div>
 </div>
 
+<!-- Thread Options -->
 <div class="padded-row">
   <div class="fill-row">
     <label>Options:</label>
-    <div class="option">
-      <input type="checkbox" id="lockThread" ng-model="NewThreadCtrl.thread.locked" ng-disabled="!NewThreadCtrl.loggedIn()" tabIndex="3">
+    <div class="option" ng-if="NewThreadCtrl.controlAccess.lock">
+      <input type="checkbox" id="lockThread" ng-model="NewThreadCtrl.thread.locked" ng-disabled="!NewThreadCtrl.loggedIn()">
       <label for="lockThread">Lock Thread</label>
     </div>
 
     <div class="option" ng-if="NewThreadCtrl.controlAccess.privilegedSticky">
-      <input type="checkbox" id="stickyThread" ng-model="NewThreadCtrl.thread.sticky" ng-disabled="!NewThreadCtrl.loggedIn()" tabIndex="4">
+      <input type="checkbox" id="stickyThread" ng-model="NewThreadCtrl.thread.sticky" ng-disabled="!NewThreadCtrl.loggedIn()">
       <label for="stickyThread">Sticky Thread</label>
+    </div>
+
+    <div class="option" ng-if="NewThreadCtrl.controlAccess.moderated">
+      <input type="checkbox" id="moderateThread" ng-model="NewThreadCtrl.thread.moderated" ng-disabled="!NewThreadCtrl.loggedIn()">
+      <label for="moderateThread">Moderate Thread</label>
+    </div>
+
+    <div class="option" ng-if="NewThreadCtrl.pollControlAccess.create">
+      <input type="checkbox" id="threadPoll" ng-model="NewThreadCtrl.addPoll" ng-disabled="!NewThreadCtrl.loggedIn()">
+      <label for="threadPoll">Add a Poll</label>
     </div>
   </div>
 </div>
 
+<poll-creator poll="NewThreadCtrl.poll" valid="NewThreadCtrl.pollValid" ng-if="NewThreadCtrl.addPoll"></poll-creator>
+
 <!-- Submit Button -->
 <div class="padded-row">
-  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || !NewThreadCtrl.dirtyEditor" tabIndex="5">
+  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || NewThreadCtrl.thread.body.length === 0 || (NewThreadCtrl.addPoll && !NewThreadCtrl.pollValid)">
     Submit
   </button>
 </div>

@@ -24,17 +24,17 @@
   <div ng-if="AdminManagementCtrl.search">
   Displaying {{AdminManagementCtrl.count | number}} search result(s) for "<strong>{{AdminManagementCtrl.search}}</strong>" in <strong>{{AdminManagementCtrl.filter ? 'Banned': 'All'}}</strong>:<br /><br />
   </div>
-  <table width="100%">
+  <table class="underlined" width="100%">
     <thead>
       <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Username</th>
       <th class="pointer" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }" ng-click="AdminManagementCtrl.setSortField('email')"><span ng-class="AdminManagementCtrl.getSortClass('email')"></span>&nbsp;Email</th>
       <th class="pointer" ng-show="AdminManagementCtrl.tableFilter == 1" ng-click="AdminManagementCtrl.setSortField('ban_expiration')"><span ng-class="AdminManagementCtrl.getSortClass('ban_expiration')"></span>&nbsp;Ban Expiration</th>
       <th class="pointer hide-mobile" ng-click="AdminManagementCtrl.setSortField('created_at')"><span ng-class="AdminManagementCtrl.getSortClass('created_at')"></span>&nbsp;Registered Date</th>
       <th class="hide-mobile">Last Active Date</th>
-      <th>Actions</th>
+      <th class="user-actions">Actions</th>
     </thead>
     <tbody>
-      <tr ng-repeat="user in AdminManagementCtrl.users track by user.username" ng-class="{unbanned: AdminManagementCtrl.tableFilter == 1 && !user.ban_expiration}">
+      <tr ng-repeat="user in AdminManagementCtrl.users track by user.username">
         <td><a ui-sref="profile({ username: user.username })" ng-bind="user.username"></a></td>
         <td class="email-column" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }"><a ng-href="mailto:{{user.email}}" ng-bind="user.email"></a></td>
         <td ng-show="AdminManagementCtrl.tableFilter == 1" ng-bind="user.ban_expiration | humanDate:true"></td>
@@ -42,10 +42,13 @@
         <!-- TODO: CHANGE THIS TO LAST LOGIN DATE -->
         <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
         <td>
-          <a ui-sref="users-posts({ username: user.username })" ui-sref-opts="{ reload: true }">View Posts</a>&nbsp;&nbsp;
-          <a ng-href="#" ng-click="AdminManagementCtrl.showEditUser(user.username)">Edit</a>&nbsp;&nbsp;
-          <a ng-href="#" ng-hide="user.ban_expiration" ng-click="AdminManagementCtrl.showBanConfirm(user);">Ban</a>
-          <a ng-href="#" ng-show="user.ban_expiration" ng-click="AdminManagementCtrl.showUnbanConfirm(user);">Unban</a>
+          <a ui-sref="users-posts({ username: user.username })" ui-sref-opts="{ reload: true }">
+            <button class="icon css-tooltip" data-css-tooltip="View Posts"><i class="fa fa-file-text-o"></i></button>
+          </a>
+
+          <button class="icon css-tooltip" data-css-tooltip="Edit Profile" ng-click="AdminManagementCtrl.showEditUser(user.username)"><i class="fa fa-pencil"></i></button>
+
+          <button class="icon css-tooltip" data-css-tooltip="{{ user.ban_expiration ? 'Unban User' : 'Ban User' }}" ng-click="user.ban_expiration ? AdminManagementCtrl.showUnbanConfirm(user) : AdminManagementCtrl.showBanConfirm(user)" ng-disabled="!AdminManagementCtrl.actionAccess.userControls.privilegedBan"><i ng-class="{ 'fa fa-user':user.ban_expiration, 'fa fa-user-times':!user.ban_expiration }"></i></button>
         </td>
       </tr>
     </tbody>

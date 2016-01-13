@@ -1,46 +1,84 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300,700,900);
 
-// Epochtalk Vars
-$base-font-sans: "Lato", "Helvetica Neue", Helvetica, sans-serif;
-$base-font-color: RGB(34, 34, 34);
-$base-font-size: 16px;
-$base-line-height: 1.3rem;
+$dark-text-default: rgb(34, 34, 34);
+$light-text-default: rgb(255,255,255);
+
+@function brightness($color) {
+  @if type-of($color) == color {
+    @return (red($color) * 0.299 + green($color) * 0.587 + blue($color) * 0.114) / 255 * 100%;
+  }
+  @else { @return unquote("brightness(#{$color})"); }
+}
+
+@function color-contrast($color, $dark: $dark-text-default, $light: $light-text-default) {
+  @if $color == null { @return null; }
+  @else {
+    $color-brightness: brightness($color);
+    $light-text-brightness: brightness($light);
+    $dark-text-brightness: brightness($dark);
+    @return if(abs($color-brightness - $light-text-brightness) > abs($color-brightness - $dark-text-brightness), $light, $dark);
+  }
+}
+
+@import 'custom-variables';
+@import 'preview-variables';
+
+// Placeholder text color
+@if (lightness($header-bg-color) > 50) { $placeholder-text-color: darken($header-bg-color, 20%); }
+@else { $placeholder-text-color: lighten($header-bg-color, 20%); }
+
+// Spacing Calculated
 $base-grid-padding: 1rem;
 
-// Primary layout colors
-$color-active: rgb(255, 78, 0);
-$color-active-fill: rgb(255, 116, 66);
-$color-active-dark: darken($color-active, 15);
+// Primary Layout Colors Calculated
+@if (lightness($color-primary) > 50) { $color-primary-alt: darken($color-primary, 15%); }
+@else { $color-primary-alt: lighten($color-primary, 30%); }
+// transparent version
+$color-primary-transparent: rgba($color-primary, 0.4);
 
-$color-gray: #444;
-$color-gray-med: lighten($color-gray, 33.5%);
-$color-gray-light: lighten($color-gray, 60%);
-$color-gray-med-light: lighten($color-gray, 65%);
-$color-gray-disabled: lighten($color-gray, 40%);
-$color-gray-sub: lighten($color-gray, 71%);
-$color-gray-dark: darken($color-gray, 10%);
+// Fonts Calculated
+$button-text-color: color-contrast($color-primary);
+@if (lightness($base-background-color) > 50) {
+  $secondary-font-color-dark: darken($secondary-font-color, 15%);
+  $secondary-font-color-light: lighten($secondary-font-color, 20%);
+}
+@else {
+  $secondary-font-color-dark: lighten($secondary-font-color, 15%);
+  $secondary-font-color-light: darken($secondary-font-color, 20%);
+}
+
+// Components Calculated
 $color-highlighted: HSL(60, 100%, 95%);
+@if (lightness($base-background-color) > 50) {
+  $border-color-alt: lighten($border-color, 10%);
+  $code-block-bg-color: #f8f8f8;
+}
+@else {
+  $border-color-alt: darken($border-color, 30%);
+  $code-block-bg-color: $dark-text-default;
+}
 
+//Header Colors Calculated
 $header-height: 3.125rem;
-$header-bg-color: RGB(66, 71, 80);
-$header-border-color: RGB(166, 168, 172);
 $header-logo-font-size: 1.3rem;
-$header-logo-font-color: RGB(255, 255, 255);
+$header-logo-font-color: $header-font-color;
 $header-login-font-size: 0.815rem;
 $header-login-font-color: $header-logo-font-color;
-$header-dropdown-bg-color: RGBA(46, 50, 58, 0.98);
-$header-dropdown-shadow-color: RGBA(0, 0, 0, 0.3);
+$header-dropdown-bg-color: darken(rgba($header-bg-color, 0.98), 8%);
+$header-dropdown-shadow-color: rgba(0, 0, 0, 0.3);
 
+// Breadcrumbs Calculated
 $breadcrumbs-height: 2.8125rem;
 $breadcrumbs-font-size: $header-login-font-size;
-$breadcrumbs-bg-color: RGB(244, 244, 244);
-$breadcrumbs-link-color: $base-font-color;
-$breadcrumbs-dead-link-color: RGB(153, 153, 153);
-$breadcrumbs-border-color: RGB(227, 227, 227);
-$breadcrumbs-shadow-color: RGBA(0, 0, 0, 0.1);
+$breadcrumbs-bg-color: $sub-header-color;
+$breadcrumbs-link-color: color-contrast($breadcrumbs-bg-color);
+$breadcrumbs-dead-link-color: $secondary-font-color;
+$breadcrumbs-border-color: darken($breadcrumbs-bg-color, 8%);
+$breadcrumbs-shadow-color: rgba(0, 0, 0, 0.1);
 $breadcrumbs-bottom-margin: 1rem;
 
-$footer-bg-color: $color-gray-sub;
-$footer-font-color: lighten($color-gray, 20%);
+// Footer Calculated
+$footer-font-color: $secondary-font-color;
+$footer-bg-color: $sub-header-color;
 $footer-link-color: $footer-font-color;
-$footer-link-hover-color: $color-active;
+$footer-link-hover-color: $color-primary;

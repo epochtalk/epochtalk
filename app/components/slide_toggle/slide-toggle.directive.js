@@ -1,16 +1,29 @@
-module.exports = [function() {
+module.exports = ['$timeout', function($timeout) {
   return {
     restrict: 'A',
-    link: function(scope, element, attributes) {
-      var duration = attributes.slideToggleDuration || 'fast';
-      scope.$watch(attributes.slideToggle, function(newState, oldState) {
-        if (newState === oldState) { return; }
-        if (newState) {
-          $(element).stop(true, true).slideUp(duration);
-        }
-        else {
-          $(element).stop(true, true).slideDown(duration);
-        }
+    link: function($scope, $element, $attr) {
+      // add slide class to element
+      $element.addClass('slide');
+
+      // watch for changes
+      $timeout(function() {
+        $scope.$watch($attr.slideToggle, function(newState, oldState) {
+          var wrapperHeight = $element[0].querySelector('.slide-wrapper').clientHeight + 'px';
+
+          if (newState) {
+            $element[0].style.maxHeight = wrapperHeight;
+            $element.removeClass('closed').addClass('open');
+            $timeout(function() { $element[0].style.maxHeight = 'inherit'; }, 100);
+          }
+          else {
+            if ($element[0].clientHeight === 0) { return; }
+            $element[0].style.maxHeight = wrapperHeight;
+            $timeout(function() {
+              $element[0].style.maxHeight = '0';
+              $element.removeClass('open').addClass('closed');
+            });
+          }
+        });
       });
     }
   };

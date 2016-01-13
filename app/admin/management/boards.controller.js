@@ -4,14 +4,15 @@ var some = require('lodash/collection/some');
 var filter = require('lodash/collection/filter');
 var Promise = require('bluebird');
 
-var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories',
-  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, AdminUsers, AdminModerators, boards, categories) {
+var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'AdminBoards', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories', 'roles',
+  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, AdminBoards, Boards, Categories, AdminUsers, AdminModerators, boards, categories, roles) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     var ctrl = this;
     // Category and Board Data
     $scope.catListData = categories; // Data backing left side of page
     $scope.boardListData = boards; // Data backing right side of page
+    $scope.roles = roles;
     // Category and Board reference map
     $scope.nestableMap = {};
     // New/Edited/Deleted Boards
@@ -194,7 +195,7 @@ var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScr
     $scope.processEditedBoards = function() {
       console.log('2) Handling edited boards: \n' + JSON.stringify($scope.editedBoards, null, 2));
       return $q.all($scope.editedBoards.map(function(editedBoard) {
-        var board = { name: editedBoard.name, description: editedBoard.description };
+        var board = { name: editedBoard.name, description: editedBoard.description, viewable_by: editedBoard.viewable_by };
         return Boards.update({ id: editedBoard.id }, board).$promise
         .catch(function(response) { console.log(response); });
       }));
@@ -221,7 +222,7 @@ var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScr
     // 5) Updated all Categories
     $scope.processCategories = function(boardMapping) {
       console.log('5) Updating board mapping: \n' + JSON.stringify(boardMapping, null, 2));
-      return Boards.updateCategories({ boardMapping: boardMapping }).$promise
+      return AdminBoards.updateCategories({ boardMapping: boardMapping }).$promise
       .catch(function(response) { console.log(response); });
     };
 

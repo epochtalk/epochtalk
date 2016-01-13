@@ -45,8 +45,8 @@
   text-indent: 100%;
   white-space: nowrap;
   overflow: hidden;
-  border: 1px solid #ddd;
-  background: #fff;
+  border: 1px solid $border-color;
+  background: $base-background-color;
   border-radius: 2px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -76,8 +76,8 @@
   text-indent: 100%;
   white-space: nowrap;
   overflow: hidden;
-  border-right: 1px solid #fff;
-  background: $color-active-fill;
+  border-right: 1px solid $base-background-color;
+  background: $color-primary;
   border-radius: 2px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -92,7 +92,7 @@
   width: 100%;
   text-align: center;
   text-indent: 0;
-  color: #fff;
+  color: $base-background-color;
   font-size: 1.25rem;
   font-weight: normal;
 }
@@ -103,25 +103,25 @@
   cursor: pointer;
   margin: 0.3125rem 0;
   padding: 0.3125rem 0.625rem 0.3125rem 3.125rem;
-  color: #333;
+  color: $base-font-color;
   text-decoration: none;
   font-weight: bold;
-  border: 1px solid #ddd;
-  background: #fff;
+  border: 1px solid $border-color;
+  background: $base-background-color;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   border-radius: 2px;
 }
 
 .dd-root-handle {
-  color: #fff;
-  border: 1px solid $color-active-fill;
-  background: $color-active-fill;
+  color: $base-background-color;
+  border: 1px solid $color-primary;
+  background: $color-primary;
   border-radius: 2px;
 }
 
 .dd-root-item > button:before {
-  color: #fff !important;
+  color: $base-background-color !important;
 }
 
 .dd-item > button {
@@ -145,7 +145,7 @@
 }
 
 .dd-item > button:before {
-  color:#000;
+  color: $base-font-color;
   content: '▸';
   display: block;
   position: absolute;
@@ -162,16 +162,16 @@
   margin: 0.3125rem 0;
   padding: 0;
   height: 1.875rem;
-  background: #f2fbff;
-  border: 1px dashed #b6bcbf;
+  background: $sub-header-color;
+  border: 1px dashed $border-color;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
 
 .dd-empty {
-  border: 1px dashed #bbb;
+  border: 1px dashed $border-color;
   min-height: 1.875rem;
-  background-color: #e5e5e5;
+  background-color: $sub-header-color;
   background-image:
     -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
     -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
@@ -217,7 +217,7 @@
 
 .dd-desc > span {
   font-weight: normal;
-  color: #999;
+  color: $secondary-font-color-dark;
   font-size: 0.6875rem;
   padding-left: 10px;
 }
@@ -237,6 +237,8 @@
 .modified {
   color: #40BFFF;
   display: inline-block !important;
+  float: left;
+  padding-top: 0.25rem;
 }
 
 .modified::before {

@@ -14,7 +14,8 @@ module.exports = roles;
     adminAccess: {
       settings: {
         general: true,
-        forum: true
+        forum: true,
+        theme: true
       },
       management: {
         boards: true,
@@ -28,6 +29,12 @@ module.exports = roles;
       messages: true
     },
     // ACLs
+    adminBoards: {
+      categories: true,
+      boards: true,
+      moveBoards: true,
+      updateCategories: true
+    },
     adminReports: {
       createUserReportNote: true,
       createPostReportNote: true,
@@ -43,13 +50,7 @@ module.exports = roles;
       pageMessageReports: true,
       pageUserReportsNotes: true,
       pagePostReportsNotes: true,
-      pageMessageReportsNotes: true,
-      userReportsCount: true,
-      postReportsCount: true,
-      messageReportsCount: true,
-      userReportsNotesCount: true,
-      postReportsNotesCount: true,
-      messageReportsNotesCount: true
+      pageMessageReportsNotes: true
     },
     adminRoles: {
       all: true,
@@ -61,7 +62,11 @@ module.exports = roles;
     },
     adminSettings: {
       find: true,
-      update: true
+      update: true,
+      getTheme: true,
+      setTheme: true,
+      resetTheme: true,
+      previewTheme: true
     },
     adminUsers: {
       privilegedUpdate: {
@@ -73,6 +78,10 @@ module.exports = roles;
         lowerPriority: true
       },
       privilegedRemoveRoles: {
+        samePriority: true,
+        lowerPriority: true
+      },
+      privilegedBan: {
         samePriority: true,
         lowerPriority: true
       },
@@ -101,9 +110,7 @@ module.exports = roles;
       },
       create: true, // creating new boards
       find: true, // standard user permission
-      all: true, // moving boards
       allCategories: true, // all boards in categories
-      updateCategories: true, // recategorizing boards and updating categories
       update: true, // Update individual board
       delete: true // Removes individual boards
     },
@@ -119,6 +126,7 @@ module.exports = roles;
       delete: true
     },
     messages: {
+      privilegedDelete: true,
       create: true,
       latest: true,
       findUser: true,
@@ -187,7 +195,17 @@ module.exports = roles;
       lock: true,
       sticky: true,
       move: true,
+      moderated: true,
       purge: true
+    },
+    polls: {
+      create: true,
+      vote: true,
+      lock: true,
+      privilegedLock: {
+        some: true,
+        all: true
+      }
     },
     users: {
       privilegedDeactivate: {
@@ -208,7 +226,8 @@ module.exports = roles;
       deactivate: true,
       reactivate: true,
       delete: true // do we need this?
-    }
+    },
+    limits: []
   };
 */
 
@@ -225,7 +244,8 @@ roles.superAdministrator = {
   adminAccess: {
     settings: {
       general: true,
-      forum: true
+      forum: true,
+      theme: true
     },
     management: {
       boards: true,
@@ -239,6 +259,12 @@ roles.superAdministrator = {
     messages: true
   },
   // ACLs
+  adminBoards: {
+    categories: true,
+    boards: true,
+    moveBoards: true,
+    updateCategories: true
+  },
   adminReports: {
     createUserReportNote: true,
     createPostReportNote: true,
@@ -254,13 +280,7 @@ roles.superAdministrator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminRoles: {
     all: true,
@@ -272,16 +292,23 @@ roles.superAdministrator = {
   },
   adminSettings: {
     find: true,
-    update: true
+    update: true,
+    getTheme: true,
+    setTheme: true,
+    resetTheme: true,
+    previewTheme: true
   },
   adminUsers: {
     privilegedUpdate: {
-      lowerPriority: true
+      samePriority: true
     },
     privilegedAddRoles: {
       samePriority: true
     },
     privilegedRemoveRoles: {
+      samePriority: true
+    },
+    privilegedBan: {
       samePriority: true
     },
     update: true,
@@ -308,10 +335,8 @@ roles.superAdministrator = {
     },
     create: true,
     find: true,
-    all: true,
     allCategories: true,
     byCategory: true,
-    updateCategories: true,
     update: true,
     delete: true
   },
@@ -386,7 +411,16 @@ roles.superAdministrator = {
     lock: true,
     sticky: true,
     move: true,
+    moderated: true,
     purge: true
+  },
+  polls: {
+    create: true,
+    vote: true,
+    lock: true,
+    privilegedLock: {
+      all: true
+    }
   },
   users: {
     privilegedDeactivate: {
@@ -429,6 +463,12 @@ roles.administrator = {
     messages: true
   },
   // ACLs
+  adminBoards: {
+    categories: true,
+    boards: true,
+    moveBoards: true,
+    updateCategories: true
+  },
   adminReports: {
     createUserReportNote: true,
     createPostReportNote: true,
@@ -444,13 +484,7 @@ roles.administrator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminRoles: {
     all: true,
@@ -464,6 +498,9 @@ roles.administrator = {
       lowerPriority: true
     },
     privilegedRemoveRoles: {
+      lowerPriority: true
+    },
+    privilegedBan: {
       lowerPriority: true
     },
     update: true,
@@ -490,10 +527,8 @@ roles.administrator = {
     },
     create: true,
     find: true,
-    all: true,
     allCategories: true,
     byCategory: true,
-    updateCategories: true,
     update: true,
     delete: true
   },
@@ -568,7 +603,16 @@ roles.administrator = {
     lock: true,
     sticky: true,
     move: true,
+    moderated: true,
     purge: true
+  },
+  polls: {
+    create: true,
+    vote: true,
+    lock: true,
+    privilegedLock: {
+      all: true
+    }
   },
   users: {
     privilegedDeactivate: {
@@ -604,6 +648,9 @@ roles.globalModerator = {
     messages: true
   },
   // ACLs
+  adminBoards: {
+    moveBoards: true
+  },
   adminReports: {
     createUserReportNote: true,
     createPostReportNote: true,
@@ -619,16 +666,13 @@ roles.globalModerator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminUsers: {
     privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedBan: {
       lowerPriority: true
     },
     update: true,
@@ -641,7 +685,6 @@ roles.globalModerator = {
       all: true
     },
     find: true,
-    all: true,
     allCategories: true,
     byCategory: true
   },
@@ -709,7 +752,16 @@ roles.globalModerator = {
     lock: true,
     sticky: true,
     move: true,
+    moderated: true,
     purge: true
+  },
+  polls: {
+    create: true,
+    vote: true,
+    lock: true,
+    privilegedLock: {
+      all: true
+    }
   },
   users: {
     viewDeleted: true,
@@ -735,6 +787,9 @@ roles.moderator = {
     messages: true
   },
   // ACLs
+  adminBoards: {
+    moveBoards: true
+  },
   adminReports: {
     createUserReportNote: true,
     createPostReportNote: true,
@@ -750,16 +805,13 @@ roles.moderator = {
     pageMessageReports: true,
     pageUserReportsNotes: true,
     pagePostReportsNotes: true,
-    pageMessageReportsNotes: true,
-    userReportsCount: true,
-    postReportsCount: true,
-    messageReportsCount: true,
-    userReportsNotesCount: true,
-    postReportsNotesCount: true,
-    messageReportsNotesCount: true
+    pageMessageReportsNotes: true
   },
   adminUsers: {
     privilegedUpdate: {
+      lowerPriority: true
+    },
+    privilegedBan: {
       lowerPriority: true
     },
     update: true,
@@ -772,7 +824,6 @@ roles.moderator = {
       some: true
     },
     find: true,
-    all: true,
     allCategories: true,
     byCategory: true
   },
@@ -781,6 +832,7 @@ roles.moderator = {
     messages: true
   },
   messages: {
+    privilegedDelete: true,
     create: true,
     latest: true,
     findUser: true,
@@ -839,7 +891,16 @@ roles.moderator = {
     lock: true,
     sticky: true,
     move: true,
+    moderated: true,
     purge: true
+  },
+  polls: {
+    create: true,
+    vote: true,
+    lock: true,
+    privilegedLock: {
+      some: true
+    }
   },
   users: {
     viewDeleted: true,
@@ -892,6 +953,12 @@ roles.user = {
     byBoard: true,
     viewed: true,
     title: true,
+    moderated: true,
+    lock: true
+  },
+  polls: {
+    create: true,
+    vote: true,
     lock: true
   },
   users: {

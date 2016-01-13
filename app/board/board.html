@@ -1,8 +1,8 @@
-<div class="board-header">
-  <div class="title">
+<div class="page-header-split">
+  <div>
     <h4 ng-bind-html="BoardWrapperCtrl.board.name"></h4>
   </div>
-  <div class="pagination-wrap">
+  <div>
     <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
   </div>
   <div class="moderators" ng-if="BoardWrapperCtrl.board.moderators.length > 0">
@@ -11,9 +11,9 @@
   </div>
 </div>
 
-<div class="board-controls" ng-if="BoardWrapperCtrl.loggedIn() && BoardWrapperCtrl.controlAccess.createPost && BoardWrapperCtrl.controlAccess.createThread">
-  <a ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})"><i class="icon-epoch-add"></i>Start a New Thread</a>
-  <a ng-click="BoardWrapperCtrl.watchBoard()" ng-if="!BoardWrapperCtrl.board.watched">
+<div class="fill-row" ng-if="BoardWrapperCtrl.loggedIn() && BoardWrapperCtrl.controlAccess.createPost && BoardWrapperCtrl.controlAccess.createThread">
+  <a class="inverted-button" ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})"><i class="icon-epoch-add"></i>Start a New Thread</a>
+  <a class="inverted-button" ng-click="BoardWrapperCtrl.watchBoard()" ng-if="!BoardWrapperCtrl.board.watched">
     <i class="icon-epoch-watch"></i>Watch This Board
   </a>
 </div>
@@ -22,8 +22,6 @@
 
 <div class="board-data" ui-view="data"></div>
 
-<div class="board-footer">
-  <div class="pagination-wrap">
-    <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
-  </div>
+<div class="fill-row">
+  <pagination page-count="BoardWrapperCtrl.pageCount" page="BoardWrapperCtrl.page"></pagination>
 </div>

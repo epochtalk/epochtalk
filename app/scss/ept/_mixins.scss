@@ -16,7 +16,7 @@
 }
 
 @mixin info-text($size: 0.8rem) {
-  color: $color-gray-med;
+  color: $secondary-font-color;
   font-size: $size;
 }
 
@@ -50,7 +50,6 @@
   @include border-radius($border-radius);
   font-weight: normal;
   text-align: center;
-  white-space: nowrap;
   display: inline-block;
   position: relative;
   padding: $padding;

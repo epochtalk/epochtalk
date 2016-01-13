@@ -16,13 +16,17 @@ var ctrl = [
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
     this.openReportModal = parent.openReportModal;
-    $timeout($anchorScroll, 100);
+
+    if ($location.hash().length) { $timeout($anchorScroll, 1000); }
+    else { $timeout($anchorScroll); }
 
     // Get access rights to page controls for authed user
     this.controlAccess = Session.getControlAccess('postControls', pageData.thread.board_id);
+    this.moderatedControlAccess = Session.getControlAccess('threadControls.moderated');
 
     // init function
     (function() {
+      calculatePollPercentage();
       parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
       $timeout(function() { highlight($location.hash()); }, 500);
     })();
@@ -73,7 +77,9 @@ var ctrl = [
         ctrl.posts = pageData.posts;
         parent.posts = pageData.posts;
         parent.thread.post_count = pageData.thread.post_count;
+        parent.thread.poll = pageData.thread.poll;
         parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
+        calculatePollPercentage();
         $timeout($anchorScroll);
       });
     };
@@ -86,15 +92,16 @@ var ctrl = [
         parent.thread.watched = true;
         Alert.success('This thread is being watched');
       })
-      .catch(function(err) { Alert.error('Error watching this board'); });
+      .catch(function() { Alert.error('Error watching this board'); });
+    };
+
+    this.showEditDate = function(post) {
+      return new Date(post.created_at) < new Date(post.updated_at);
     };
 
     this.avatarHighlight = function(color) {
       var style = {};
-      if (color) {
-        style.background = color;
-        style.padding = '0.2rem';
-      }
+      if (color) { style.border = '0.225rem solid ' + color; }
       return style;
     };
 
@@ -125,6 +132,18 @@ var ctrl = [
       if ($location.port() !== 80) { url += ':' + $location.port(); }
       url += $location.path();
       return url;
+    }
+
+    function calculatePollPercentage() {
+      if (!ctrl.thread.poll) { return; }
+
+      var totalVotes = 0;
+      ctrl.thread.poll.answers.forEach(function(answer) { totalVotes += answer.votes; });
+      ctrl.thread.poll.answers.map(function(answer) {
+        var percentage = Math.ceil(answer.votes/totalVotes * 100) || 0;
+        answer.style = { width: percentage + '%' };
+        answer.percentage = percentage;
+      });
     }
   }
 ];

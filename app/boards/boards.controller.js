@@ -1,7 +1,8 @@
-module.exports = ['$timeout', '$anchorScroll', 'boards',
-  function($timeout, $anchorScroll, boards) {
+module.exports = ['$timeout', '$anchorScroll', 'pageData',
+  function($timeout, $anchorScroll, pageData) {
     var ctrl = this;
-    this.categorizedBoards = boards;
+    this.categorizedBoards = pageData.boards;
+    this.recentThreads = pageData.threads;
     this.toggles = {};
 
     // Category toggling
@@ -37,6 +38,11 @@ module.exports = ['$timeout', '$anchorScroll', 'boards',
 
       return {thread_count: thread_count, post_count: post_count};
     }
+
+    this.generateCatId = function(name, viewOrder) {
+      var anchorId = (name + '-' + viewOrder).replace(/\s+/g, '-').toLowerCase();
+      return anchorId;
+    };
 
     $timeout($anchorScroll);
   }

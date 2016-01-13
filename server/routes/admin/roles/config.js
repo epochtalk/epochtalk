@@ -26,7 +26,6 @@ exports.all = {
     return reply(promise);
   }
 };
-
 /**
   * @apiVersion 0.3.0
   * @apiGroup Roles
@@ -114,6 +113,7 @@ exports.add = {
           settings: Joi.object().keys({
             general: Joi.boolean(),
             forum: Joi.boolean(),
+            theme: Joi.boolean()
           }),
           management: Joi.object().keys({
             boards: Joi.boolean(),
@@ -134,6 +134,12 @@ exports.add = {
           remove: Joi.boolean(),
           reprioritize: Joi.boolean()
         }),
+        adminBoards: Joi.object().keys({
+          categories: Joi.boolean(),
+          boards: Joi.boolean(),
+          moveBoards: Joi.boolean(),
+          updateCategories: Joi.boolean()
+        }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),
           createPostReportNote: Joi.boolean(),
@@ -149,20 +155,22 @@ exports.add = {
           pageMessageReports: Joi.boolean(),
           pageUserReportsNotes: Joi.boolean(),
           pagePostReportsNotes: Joi.boolean(),
-          pageMessageReportsNotes: Joi.boolean(),
-          userReportsCount: Joi.boolean(),
-          postReportsCount: Joi.boolean(),
-          messageReportsCount: Joi.boolean(),
-          userReportsNotesCount: Joi.boolean(),
-          postReportsNotesCount: Joi.boolean(),
-          messageReportsNotesCount: Joi.boolean()
+          pageMessageReportsNotes: Joi.boolean()
         }),
         adminSettings: Joi.object().keys({
           find: Joi.boolean(),
-          update: Joi.boolean()
+          update: Joi.boolean(),
+          getTheme: Joi.boolean(),
+          setTheme: Joi.boolean(),
+          resetTheme: Joi.boolean(),
+          previewTheme: Joi.boolean()
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
+          privilegedBan: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
@@ -199,9 +207,7 @@ exports.add = {
           }),
           create: Joi.boolean(),
           find: Joi.boolean(),
-          all: Joi.boolean(),
           allCategories: Joi.boolean(),
-          updateCategories: Joi.boolean(),
           update: Joi.boolean(),
           delete: Joi.boolean()
         }),
@@ -286,6 +292,7 @@ exports.add = {
           lock: Joi.boolean(),
           sticky: Joi.boolean(),
           move: Joi.boolean(),
+          moderated: Joi.boolean(),
           purge: Joi.boolean()
         }),
         users: Joi.object().keys({
@@ -307,6 +314,22 @@ exports.add = {
           deactivate: Joi.boolean(),
           reactivate: Joi.boolean(),
           delete: Joi.boolean()
+        }),
+        limits: Joi.array().items({
+          path: Joi.string().required(),
+          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
+          interval: Joi.number().min(-1).required(),
+          maxInInterval: Joi.number().min(1).required(),
+          minDifference: Joi.number().min(1).optional()
+        }).sparse(),
+        polls: Joi.object().keys({
+          create: Joi.boolean(),
+          vote: Joi.boolean(),
+          lock: Joi.boolean(),
+          privilegedLock: Joi.object().keys({
+            some: Joi.boolean(),
+            all: Joi.boolean()
+          })
         })
       }).required()
     }
@@ -367,6 +390,7 @@ exports.update = {
           settings: Joi.object().keys({
             general: Joi.boolean(),
             forum: Joi.boolean(),
+            theme: Joi.boolean()
           }),
           management: Joi.object().keys({
             boards: Joi.boolean(),
@@ -387,6 +411,12 @@ exports.update = {
           remove: Joi.boolean(),
           reprioritize: Joi.boolean()
         }),
+        adminBoards: Joi.object().keys({
+          categories: Joi.boolean(),
+          boards: Joi.boolean(),
+          moveBoards: Joi.boolean(),
+          updateCategories: Joi.boolean()
+        }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),
           createPostReportNote: Joi.boolean(),
@@ -402,20 +432,22 @@ exports.update = {
           pageMessageReports: Joi.boolean(),
           pageUserReportsNotes: Joi.boolean(),
           pagePostReportsNotes: Joi.boolean(),
-          pageMessageReportsNotes: Joi.boolean(),
-          userReportsCount: Joi.boolean(),
-          postReportsCount: Joi.boolean(),
-          messageReportsCount: Joi.boolean(),
-          userReportsNotesCount: Joi.boolean(),
-          postReportsNotesCount: Joi.boolean(),
-          messageReportsNotesCount: Joi.boolean()
+          pageMessageReportsNotes: Joi.boolean()
         }),
         adminSettings: Joi.object().keys({
           find: Joi.boolean(),
-          update: Joi.boolean()
+          update: Joi.boolean(),
+          getTheme: Joi.boolean(),
+          setTheme: Joi.boolean(),
+          resetTheme: Joi.boolean(),
+          previewTheme: Joi.boolean()
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean()
+          }),
+          privilegedBan: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
@@ -452,9 +484,7 @@ exports.update = {
           }),
           create: Joi.boolean(),
           find: Joi.boolean(),
-          all: Joi.boolean(),
           allCategories: Joi.boolean(),
-          updateCategories: Joi.boolean(),
           update: Joi.boolean(),
           delete: Joi.boolean()
         }),
@@ -538,6 +568,7 @@ exports.update = {
           lock: Joi.boolean(),
           sticky: Joi.boolean(),
           move: Joi.boolean(),
+          moderated: Joi.boolean(),
           purge: Joi.boolean()
         }),
         users: Joi.object().keys({
@@ -559,6 +590,22 @@ exports.update = {
           deactivate: Joi.boolean(),
           reactivate: Joi.boolean(),
           delete: Joi.boolean()
+        }),
+        limits: Joi.array().items({
+          path: Joi.string().required(),
+          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
+          interval: Joi.number().min(-1).required(),
+          maxInInterval: Joi.number().min(1).required(),
+          minDifference: Joi.number().min(1).optional()
+        }).sparse(),
+        polls: Joi.object().keys({
+          create: Joi.boolean(),
+          vote: Joi.boolean(),
+          lock: Joi.boolean(),
+          privilegedLock: Joi.object().keys({
+            some: Joi.boolean(),
+            all: Joi.boolean()
+          })
         })
       }).required()
     }
@@ -623,7 +670,7 @@ exports.remove = {
   *
   * @apiParam (Payload) {Array} roles with new priorities.
   *
-  * @apiSuccess {} 200 OK SUCCESS.
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue reprioritizing the roles.
   */
@@ -648,3 +695,13 @@ exports.reprioritize = {
   }
 };
 
+exports.priorities = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminRoles.all' },
+  validate: { payload: { user_id: Joi.string().required() } },
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var promise = db.roles.priorities(userId);
+    return reply(promise);
+  }
+};

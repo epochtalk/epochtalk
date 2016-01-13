@@ -12,7 +12,7 @@ var webpackConfigs = {
     publicPath: '/static/js/',
     filename: 'bundle.js',
     chunkFilename: '[id].bundle.js',
-    sourceMapFilename: "bundle.map"
+    sourceMapFilename: 'bundle.map'
   },
   resolve: {
     root: [bowerComponentsPath],
@@ -47,14 +47,16 @@ var webpackConfigs = {
   }
 };
 
-module.exports = function(opts) {
+module.exports = function() {
+  var opts = { watch: true, prod: false };
+  if (process.env.NODE_ENV === 'production') {
+    opts = { watch: false, prod: true };
+  }
+
   // webpack watching
-  opts = opts || {};
-  if (opts.watch === undefined) { opts.watch = true; }
   webpackConfigs.watch = webpackConfigs.cache = opts.watch;
 
   // webpack minification
-  opts.prod = opts.prod || false;
   if (opts.prod) {
     var minify = new webpack.optimize.UglifyJsPlugin({
       mangle: true,

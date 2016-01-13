@@ -31,6 +31,7 @@ var adminRoute = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     if (Session.hasPermission('adminAccess.settings')) {
       if (Session.hasPermission('adminAccess.settings.general')) { $state.go('admin-settings.general'); }
       else if (Session.hasPermission('adminAccess.settings.forum')) { $state.go('admin-settings.forum'); }
+      else if (Session.hasPermission('adminAccess.settings.theme')) { $state.go('admin-settings.theme'); }
       else { $state.go('boards'); }
     }
     else if (Session.hasPermission('adminAccess.management')) {

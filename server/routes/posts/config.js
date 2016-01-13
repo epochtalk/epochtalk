@@ -37,7 +37,6 @@ exports.create = {
   },
   pre: [
     [
-      { method: pre.accessPrivateBoardWithThreadId },
       { method: pre.accessBoardWithThreadId },
       { method: pre.accessLockedThreadWithThreadId },
       { method: pre.isRequesterActive }
@@ -61,53 +60,6 @@ exports.create = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Posts
-  * @api {POST} /posts/import Import
-  * @apiName ImportPost
-  * @apiPermission Super Administrator
-  * @apiDescription Used to import a post. Currently only SMF is supported.
-  *
-  * @apiUse PostObjectPayload
-  * @apiParam (Payload) {object} smf Object containing SMF metadata
-  * @apiParam (Payload) {number} smf.ID_MEMBER Legacy smf user id
-  * @apiParam (Payload) {number} smf.ID_TOPIC Legacy smf thread id
-  * @apiParam (Payload) {number} smf.ID_MSG Legacy smf post id
-  * @apiParam (Payload) {string} smf.posterName Legacy smf username
-  *
-  * @apiUse PostObjectSuccess
-  *
-  * @apiError (Error 500) InternalServerError There was an issue importing the post
-  */
-exports.import = {
-  // auth: { strategy: 'jwt' },
-  // validate: {
-  //   payload: Joi.object().keys({
-  //     title: Joi.string().min(1).max(255).required(),
-  //     body: Joi.string().allow(''),
-  //     raw_body: Joi.string().required(),
-  //     thread_id: Joi.string().required()
-  //   })
-  // },
-  pre: [
-    { method: pre.clean },
-    { method: pre.adjustQuoteDate },
-    { method: pre.parseEncodings }
-    // { method: pre.subImages }
-  ],
-  handler: function(request, reply) {
-    // build the post object from payload and params
-    var promise = db.posts.import(request.payload)
-    // TODO: handle image references
-    .catch(function(err) {
-      request.log('error', 'Import post: ' + JSON.stringify(err, ['stack', 'message'], 2));
-      return Boom.badRequest('Import post failed');
-    });
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
-  * @apiGroup Posts
   * @api {GET} /posts/:id Find
   * @apiName FindPost
   * @apiDescription Used to find a post.
@@ -124,7 +76,6 @@ exports.find = {
   plugins: { acls: 'posts.find' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.accessPrivateBoardWithPostId },
     { method: pre.accessBoardWithPostId },
     { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
@@ -172,10 +123,9 @@ exports.byThread = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }).without('start', 'page')
   },
-  // TODO: Highlight deleted post and to show mods
   pre: [ [
-    { method: pre.accessPrivateBoardWithThreadId },
-    { method: pre.accessBoardWithThreadId }
+    { method: pre.accessBoardWithThreadId },
+    { method: pre.canViewDeletedPosts, assign: 'viewables' }
   ] ],
   handler: function(request, reply) {
     // ready parameters
@@ -186,6 +136,7 @@ exports.byThread = {
     var threadId = request.query.thread_id;
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
+    var viewables = request.pre.viewables;
 
     var opts = { limit: limit, start: 0, page: 1 };
     if (start) { opts.page = Math.ceil(start / limit); }
@@ -196,17 +147,25 @@ exports.byThread = {
     var getPosts = db.posts.byThread(threadId, opts);
     var getThread = db.threads.find(threadId);
     var getThreadWatching = db.threads.watching(threadId, userId);
+    var getPoll = db.polls.byThread(threadId);
+    var hasVoted = db.polls.hasVoted(threadId, userId);
 
-    // TODO: Show admin deleted posts but style them differently, see canFind method
-    var promise = Promise.join(getPosts, getThread, getThreadWatching, function(posts, thread, threadWatching) {
+    var promise = Promise.join(getPosts, getThread, getThreadWatching, getPoll, hasVoted, function(posts, thread, threadWatching, poll, voted) {
       // check if thread is being Watched
       if (threadWatching) { thread.watched = true; }
-      
+      if (poll) {
+        var hideVotes = poll.display_mode === 'voted' && !voted;
+        hideVotes = hideVotes || (poll.display_mode === 'expired' && poll.expiration > Date.now());
+        if (hideVotes) { poll.answers.map(function(answer) { answer.votes = 0; }); }
+        poll.hasVoted = voted;
+        thread.poll = poll;
+      }
+
       return {
         thread: thread,
         limit: opts.limit,
         page: opts.page,
-        posts: cleanPosts(posts, userId)
+        posts: cleanPosts(posts, userId, viewables)
       };
     })
     // handle page or start out of range
@@ -257,7 +216,6 @@ exports.update = {
     [
       { method: pre.isPostOwner },
       { method: pre.isPostWriteable },
-      { method: pre.accessPrivateBoardWithThreadId },
       { method: pre.accessBoardWithThreadId },
       { method: pre.accessLockedThreadWithThreadId },
       { method: pre.isRequesterActive }
@@ -293,15 +251,14 @@ exports.update = {
 exports.delete = {
   app: {
     post_id: 'params.id',
-    isPostOwner: 'posts.privilegedDelete'
+    isPostDeletable: 'posts.privilegedDelete'
   },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.delete' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
-    { method: pre.isPostOwner },
-    { method: pre.accessPrivateBoardWithPostId },
+    { method: pre.isPostDeletable },
     { method: pre.accessBoardWithPostId },
     { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }
@@ -331,15 +288,14 @@ exports.delete = {
 exports.undelete = {
   app: {
     post_id: 'params.id',
-    isPostOwner: 'posts.privilegedDelete'
+    isPostDeletable: 'posts.privilegedDelete'
   },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.undelete' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
     { method: pre.isCDRPost },
-    { method: pre.isPostOwner },
-    { method: pre.accessPrivateBoardWithPostId },
+    { method: pre.isPostDeletable },
     { method: pre.accessBoardWithPostId },
     { method: pre.accessLockedThreadWithPostId },
     { method: pre.isRequesterActive }
@@ -412,15 +368,15 @@ exports.pageByUser = {
   },
   pre: [ [
     { method: pre.accessUser },
+    { method: pre.userPriority, assign: 'priority' },
     { method: pre.canViewDeletedPosts, assign: 'viewables' }
   ] ],
   handler: function(request, reply) {
-    // TODO: handle posts from private boards
-    // ready parameters
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
     var viewables = request.pre.viewables;
+    var priority = request.pre.priority;
     var username = querystring.unescape(request.params.username);
     var opts = {
       limit: request.query.limit,
@@ -429,7 +385,7 @@ exports.pageByUser = {
       sortDesc: request.query.desc
     };
 
-    var getPosts = db.posts.pageByUser(username, opts);
+    var getPosts = db.posts.pageByUser(username, priority, opts);
     var getCount = db.posts.pageByUserCount(username);
 
     // get user's posts
@@ -448,39 +404,48 @@ exports.pageByUser = {
   }
 };
 
+/**
+ *  ViewContext can be an array of boards or a boolean
+ */
 function cleanPosts(posts, currentUserId, viewContext) {
   posts = [].concat(posts);
   var viewables = viewContext;
   var viewablesType = 'boolean';
+  var boards = [];
   if (_.isArray(viewContext)) {
-    viewContext = viewContext.map(function(vd) { return vd.board_id; });
+    boards = viewContext.map(function(vd) { return vd.board_id; });
     viewablesType = 'array';
   }
 
   return posts.map(function(post) {
+
     // if currentUser owns post, show everything
-    if (currentUserId === post.user.id) { return post; }
+    var viewable = false;
+    if (currentUserId === post.user.id) { viewable = true; }
     // if viewables is an array, check if user is moderating this post
-    else if (viewablesType === 'array' && _.contains(viewContext, post.board_id)) { return post; }
+    else if (viewablesType === 'array' && _.contains(boards, post.board_id)) { viewable = true; }
     // if viewables is a true, view all posts
-    else if (viewables) { return post; }
+    else if (viewables) { viewable = true; }
 
     // remove deleted users or post information
-    if (post.deleted || post.user.deleted || post.board_visible === false) {
-      post.body = '';
-      post.raw_body = '';
-      post.thread_title = 'deleted';
+    var deleted = false;
+    if (post.deleted || post.user.deleted || post.board_visible === false) { deleted = true; }
 
-      delete post.avatar;
-      delete post.created_at;
-      delete post.updated_at;
-      delete post.imported_at;
-      delete post.user.signature;
-      delete post.user.role;
-      delete post.user.username;
-      delete post.user.id;
+    // format post
+    if (viewable && deleted) { post.hidden = true; }
+    else if (deleted) {
+      post = {
+        id: post.id,
+        hidden: true,
+        _deleted: true,
+        thread_title: 'deleted',
+        user: {}
+      };
     }
 
+    if (!post.deleted) { delete post.deleted; }
+    delete post.board_visible;
+    delete post.user.deleted;
     return post;
   });
 }

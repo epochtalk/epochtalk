@@ -1,6 +1,6 @@
 <category-editor></category-editor>
 
-<modal show="AdminManagementCtrl.showModeratorsModal" on-close="AdminManagementCtrl.closeModerators()">
+<modal class="overflow" show="AdminManagementCtrl.showModeratorsModal" on-close="AdminManagementCtrl.closeModerators()">
   <h3 class="thin-underline">Manage Moderators of <span ng-bind-html="AdminManagementCtrl.modBoard.name"></span></h3>
   <div ng-if="AdminManagementCtrl.usersWithBadPermissions && !AdminManagementCtrl.usersWithBadPermissions.length">
     <label>Current Moderators</label>

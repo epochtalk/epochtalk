@@ -32,7 +32,8 @@ exports.login = {
   validate: {
     payload: {
       username: Joi.string().min(1).max(255).required(),
-      password: Joi.string().min(8).max(72).required()
+      password: Joi.string().min(8).max(72).required(),
+      rememberMe: Joi.boolean().default(false)
     }
   },
   handler: function(request, reply) {
@@ -44,6 +45,7 @@ exports.login = {
 
     var username = request.payload.username;
     var password = request.payload.password;
+    var rememberMe = request.payload.rememberMe;
     var promise = db.users.userByUsername(username) // get full user info
     // check user exists
     .then(function(user) {
@@ -75,6 +77,11 @@ exports.login = {
         user.moderating = boards;
       })
       .then(function() { return user; });
+    })
+    .then(function(user) {
+      if (rememberMe) { user.expiration = undefined; } // forever
+      else { user.expiration = 1209600; } // 14 days
+      return user;
     })
     // builds token, saves session, returns request output
     .then(helper.saveSession);
@@ -180,17 +187,12 @@ exports.register = {
     .then(function(user) {
       if (config.verifyRegistration) {  // send confirmation email
         var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
-        var emailParams = {
-          email: user.email, username: user.username, confirm_url: confirmUrl
-        };
+        var emailParams = { email: user.email, username: user.username, confirm_url: confirmUrl };
         request.server.log('debug', emailParams);
         emailer.send('confirmAccount', emailParams);
         return {
-          statusCode: 200,
           message: 'Successfully Created Account',
-          username: user.username,
-          confirm_token: user.confirmation_token,
-          confirm_url: confirmUrl
+          username: user.username
         };
       }
       else { // Log user in after registering
@@ -239,11 +241,10 @@ exports.confirmAccount = {
     .then(function(user) {
       var tokenMatch = confirmationToken === user.confirmation_token;
       if (user.confirmation_token && tokenMatch) {
-        return db.users.update({ confirmation_token: null, id: user.id });
+        return db.users.update({ confirmation_token: null, id: user.id })
+        .then(function() { return user; });
       }
-      else {
-        return Promise.reject(Boom.badRequest('Account Confirmation Error'));
-      }
+      else { return Promise.reject(Boom.badRequest('Account Confirmation Error')); }
     })
     // get user moderating boards
     .then(function(user) {
@@ -423,6 +424,7 @@ exports.resetPassword = {
           id: user.id,
           reset_expiration: null,
           reset_token: null,
+          confirmation_token: null,
           password: password
         };
       }

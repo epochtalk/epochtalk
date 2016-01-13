@@ -90,7 +90,7 @@ exports.latest = {
   * @apiVersion 0.3.0
   * @apiGroup Messages
   * @api {GET} /messages/users/{username} Get ID for username
-  * @apiName FindUser
+  * @apiName FindUserMessages
   * @apiPermission User
   * @apiDescription Get the id for the given username
   *

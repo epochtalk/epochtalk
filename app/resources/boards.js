@@ -4,10 +4,9 @@
 module.exports = ['$resource',
   function($resource) {
     return $resource('/api/boards/:id', {}, {
-      all: {
+      query: {
         method: 'GET',
-        url: '/api/boards/all',
-        isArray: true
+        url: '/api/boards'
       },
       byCategory: {
         method: 'GET',
@@ -16,11 +15,6 @@ module.exports = ['$resource',
       update: {
         method: 'POST',
         params: { id: '@id' }
-      },
-      updateCategories: {
-        method: 'POST',
-        url: '/api/boards/categories',
-        isArray: true
       }
     });
   }

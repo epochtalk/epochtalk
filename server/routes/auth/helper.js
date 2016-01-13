@@ -8,11 +8,11 @@ var redis = require(path.normalize(__dirname + '/../../../redis'));
 var config = require(path.normalize(__dirname + '/../../../config'));
 var roles = require(path.normalize(__dirname + '/../../plugins/acls/roles'));
 
-// TODO: handle token expiration?
-function buildToken(userId) {
+function buildToken(userId, expiration) {
   // build jwt token from decodedToken and privateKey
   var decodedToken = { userId: userId, sessionId: uuid.v4(), timestamp: Date.now() };
-  var encodedToken = jwt.sign(decodedToken, config.privateKey, { algorithm: 'HS256' });
+  var options = { algorithm: 'HS256', expiresInSeconds: expiration, noTimestamp: true };
+  var encodedToken = jwt.sign(decodedToken, config.privateKey, options);
   return { decodedToken: decodedToken, token: encodedToken };
 }
 
@@ -37,7 +37,8 @@ function getMaskedPermissions(userRoles) {
     adminAccess: maskPermission('adminAccess') ? {
       settings: maskPermission('adminAccess.settings') ? {
         general: maskPermission('adminAccess.settings.general'),
-        forum: maskPermission('adminAccess.settings.forum')
+        forum: maskPermission('adminAccess.settings.forum'),
+        theme: maskPermission('adminAccess.settings.theme')
       } : undefined,
       management: maskPermission('adminAccess.management') ? {
         boards: maskPermission('adminAccess.management.boards'),
@@ -57,6 +58,10 @@ function getMaskedPermissions(userRoles) {
       privilegedUpdate: maskPermission('adminUsers.privilegedUpdate') ? {
         samePriority: maskPermission('adminUsers.privilegedUpdate.samePriority'),
         lowerPriority: maskPermission('adminUsers.privilegedUpdate.lowerPriority')
+      } : undefined,
+      privilegedBan: maskPermission('adminUsers.privilegedBan') ? {
+        samePriority: maskPermission('adminUsers.privilegedBan.samePriority'),
+        lowerPriority: maskPermission('adminUsers.privilegedBan.lowerPriority')
       } : undefined,
       privilegedDeactivate: maskPermission('users.privilegedDeactivate') ? {
         samePriority: maskPermission('users.privilegedDeactivate.samePriority'),
@@ -94,7 +99,17 @@ function getMaskedPermissions(userRoles) {
       } : undefined,
       create: maskPermission('threads.create'),
       title: maskPermission('threads.title'),
-      lock: maskPermission('threads.lock')
+      lock: maskPermission('threads.lock'),
+      moderated: maskPermission('threads.moderated')
+    },
+    pollControls: {
+      privilegedLock: maskPermission('polls.privilegedLock') ? {
+        some: maskPermission('polls.privilegedLock.some'),
+        all: maskPermission('polls.privilegedLock.all')
+      } : undefined,
+      create: maskPermission('polls.create'),
+      vote: maskPermission('polls.vote'),
+      lock: maskPermission('polls.lock')
     },
     postControls: {
       privilegedUpdate: maskPermission('posts.privilegedUpdate') ? {
@@ -137,12 +152,22 @@ function getMaskedPermissions(userRoles) {
     messageControls: {
       createConversations: maskPermission('conversations.create'),
       createMessages: maskPermission('messages.create'),
-      deleteMessages: maskPermission('messages.delete')
+      deleteMessages: maskPermission('messages.delete'),
+      privilegedDelete: maskPermission('messages.privilegedDelete')
     },
     reportControls: {
       reportPosts: maskPermission('reports.createPostReport'),
       reportUsers: maskPermission('reports.createUserReport'),
-      reportMessages: maskPermission('reports.createMessageReport')
+      reportMessages: maskPermission('reports.createMessageReport'),
+      updateUserReport: maskPermission('adminReports.updateUserReport') || undefined,
+      updatePostReport: maskPermission('adminReports.updatePostReport') || undefined,
+      updateMessageReport: maskPermission('adminReports.updateMessageReport') || undefined,
+      createUserReportNote: maskPermission('adminReports.createUserReportNote') || undefined,
+      createPostReportNote: maskPermission('adminReports.createPostReportNote') || undefined,
+      createMessageReportNote: maskPermission('adminReports.createMessageReportNote') || undefined,
+      updateUserReportNote: maskPermission('adminReports.updateUserReportNote') || undefined,
+      updatePostReportNote: maskPermission('adminReports.updatePostReportNote') || undefined,
+      updateMessageReportNote: maskPermission('adminReports.updateMessageReportNote') || undefined
     }
   };
 }
@@ -164,14 +189,22 @@ function formatUserReply(token, user) {
   };
 }
 
+/**
+ * Assumes that the user parameter has
+  * id
+  * username
+  * roles
+  * moderating
+  * avatar
+ */
 helper.saveSession = function(user) {
   // build Token
-  var tokenResult = buildToken(user.id);
+  var tokenResult = buildToken(user.id, user.expiration);
   var decodedToken = tokenResult.decodedToken;
   var token = tokenResult.token;
   user.roles = user.roles.map(function(role) { return role.lookup; });
   // default to user role
-  if (!user.roles || !user.roles.length) { user.roles = ['user']; }
+  if (!user.roles.length) { user.roles = ['user']; }
 
   // save username, avatar to redis hash under "user:{userId}"
   var userKey = 'user:' + user.id;
@@ -189,7 +222,9 @@ helper.saveSession = function(user) {
     var moderatingKey = 'user:' + user.id + ':moderating';
     return redis.delAsync(moderatingKey)
     .then(function() {
-      if (user.moderating && user.moderating.length) { return redis.saddAsync(moderatingKey, user.moderating); }
+      if (user.moderating && user.moderating.length) {
+        return redis.saddAsync(moderatingKey, user.moderating);
+      }
     });
   })
   // save session to redis key under "user:{userId}:session:{sessionId}"
@@ -208,6 +243,8 @@ helper.saveSession = function(user) {
 helper.updateRoles = function(user) {
   // pull user role's lookup
   user.roles = user.roles.map(function(role) { return role.lookup; });
+  // default to user role
+  if (!user.roles.length) { user.roles = ['user']; }
 
   // save roles to redis set under "user:{userId}:roles"
   var roleKey = 'user:' + user.id + ':roles';

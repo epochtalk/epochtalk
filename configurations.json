@@ -12,7 +12,7 @@
   },
   "emailer": {
     "sender": "info@example.com",
-    "host": "smtp.gmail.com",
+    "host": "localhost",
     "port": 465,
     "user": "username",
     "pass": "password",
@@ -34,6 +34,29 @@
       "region": "region",
       "accessKey": "",
       "secretKey": ""
+    }
+  },
+  "rateLimiting": {
+    "namespace": "ept:",
+    "get": {
+      "interval": 1000,
+      "maxInInterval": 10,
+      "minDifference": 100
+    },
+    "post": {
+      "interval": 1000,
+      "maxInInterval": 2,
+      "minDifference": 500
+    },
+    "put": {
+      "interval": 1000,
+      "maxInInterval": 2,
+      "minDifference": 500
+    },
+    "delete": {
+      "interval": 1000,
+      "maxInInterval": 2,
+      "minDifference": 500
     }
   }
 }

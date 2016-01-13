@@ -12,6 +12,7 @@ var posts = require(path.normalize(__dirname + '/posts'));
 var users = require(path.normalize(__dirname + '/users'));
 var auth = require(path.normalize(__dirname + '/auth'));
 var reports = require(path.normalize(__dirname + '/reports'));
+var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 var adminSettings = require(path.normalize(__dirname + '/admin/settings'));
 var adminUsers = require(path.normalize(__dirname + '/admin/users'));
 var adminReports = require(path.normalize(__dirname + '/admin/reports'));
@@ -26,7 +27,7 @@ function buildEndpoints() {
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminSettings, adminUsers, adminReports, adminRoles, adminModerators);
+  return [].concat(adminBoards, adminSettings, adminUsers, adminReports, adminRoles, adminModerators);
 }
 
 exports.endpoints = function() {
