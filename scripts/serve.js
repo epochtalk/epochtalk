@@ -11,8 +11,8 @@ var plugins = require(path.join(__dirname, 'tasks', 'plugins'));
 
 clean()
 .then(copy_css)
-.then(plugins)
 .then(sass)
+.then(plugins)
 .then(symlink)
 .then(pack)
 .then(livereload)
