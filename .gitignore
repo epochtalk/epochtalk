@@ -14,6 +14,8 @@ logs
 doc
 results
 config.json
+plugin-conf.js
+plugins/*/
 
 npm-debug.log
 node_modules
@@ -37,6 +39,7 @@ test/coverage/
 /public/templates/admin/moderation/*.html
 /public/templates/admin/settings/*.html
 /public/templates/board/*.html
+/public/templates/category/*.html
 /public/templates/layout/*.html
 /public/templates/messages/*.html
 /public/templates/posts/*.html
@@ -46,3 +49,5 @@ test/coverage/
 
 /app/scss/loading-bar.scss
 /app/.sass-cache/
+/app/plugins.js
+/app/resources/plugins.js

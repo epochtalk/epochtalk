@@ -11,6 +11,7 @@
           <img ng-style="PostsCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar}}">
         </div>
         <div class="user-role">Hero</div>
+        <template-hook hook="post-profile" />
       </a>
     </div>
 
@@ -58,11 +59,13 @@
               <i class="icon-epoch-link"></i>
             </a>
           </li>
+          <template-hook hook="post-actions" />
         </ul>
         <div class="clear"></div>
       </div>
       <!-- Post Body -->
       <div class="post-body" post-processing="post.body" style-fix="true"></div>
+      <template-hook hook="post-body-after" />
       <div ng-if="post.user.signature">
         <div class="post-sig-border"></div>
         <div class="post-signature" post-processing="post.user.signature" style-fix="true"></div>

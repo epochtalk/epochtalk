@@ -11,4 +11,7 @@ clean()
 .then(plugins)
 .then(sass)
 .then(symlink)
-.then(pack);
+.then(function() {
+  var opts = { watch: false, prod: true };
+  return pack(opts);
+});

@@ -7,10 +7,12 @@ var pack = require(path.join(__dirname, 'tasks', 'webpack'));
 var symlink = require(path.join(__dirname, 'tasks', 'symlink'));
 var copy_css = require(path.join(__dirname, 'tasks', 'copy_files'));
 var livereload = require(path.join(__dirname, 'tasks', 'livereload'));
+var plugins = require(path.join(__dirname, 'tasks', 'plugins'));
 
 clean()
 .then(copy_css)
 .then(sass)
+.then(plugins)
 .then(symlink)
 .then(pack)
 .then(livereload)
@@ -32,4 +34,8 @@ clean()
     };
 nodemon(nmOpts);
   }
+})
+.catch(function(err) {
+  console.log(err);
+  process.exit(1);
 });

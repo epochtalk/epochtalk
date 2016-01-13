@@ -1,3 +1,5 @@
+<template-hook hook="boards-before" />
+
 <div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards">
   <!-- Category Title -->
   <div id="{{BoardsCtrl.generateCatId(cat.name, cat.view_order)}}" class="title">
@@ -111,3 +113,5 @@
     </div>
   </div>
 </div>
+
+<template-hook hook="boards-after" />

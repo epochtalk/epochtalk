@@ -1,6 +1,7 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
+var Promise = require('bluebird');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 var Promise = require('bluebird');
@@ -113,6 +114,38 @@ exports.allCategories = {
         threads: threads
       };
     });
+
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Boards
+  * @api {GET} /boards By Category
+  * @apiName BoardsByCategory
+  * @apiDescription Used to get a category's boards.
+  *
+  * @apiParam (Query) {string} category_id The category whose boards to get
+  * @apiSuccess {array} threads An array containing boards for the requested category
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the boards
+  */
+exports.byCategory = {
+  app: { category_id: 'query.category_id' },
+  auth: { mode: 'try', strategy: 'jwt' },
+  plugins: { acls: 'boards.byCategory' },
+  validate: {
+    query: {
+      category_id: Joi.string().required()
+    }
+  },
+  // pre: [ { method: pre.accessBoardWithBoardId } ],
+  handler: function(request, reply) {
+    var userId;
+    if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
+    var categoryId = request.query.category_id;
+    var promise = db.boards.byCategory(categoryId, userId);
 
     return reply(promise);
   }

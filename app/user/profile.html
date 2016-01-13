@@ -49,6 +49,8 @@
       <div><span ng-bind="ProfileCtrl.displayUser.language"></span></div>
       <div><span ng-bind="ProfileCtrl.userLocalTime"></span></div>
     </div>
+
+    <template-hook hook="profile-details" />
   </div>
 
   <!-- Right Side Content -->
@@ -67,6 +69,8 @@
         <span class="stat-text" ng-bind="ProfileCtrl.displayUser.updated_at | date:'mediumDate'"></span>
       </div>
     </div>
+
+    <template-hook hook="profile-display" />
 
     <div class="profile-row">
       <div class="fill-row"><strong>Posts over time:</strong></div>

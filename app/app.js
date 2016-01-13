@@ -12,8 +12,7 @@ require('ngLoadingBar');
 require('angularSortable');
 require('ngTagsInput');
 
-// Create Angular App
-var app = angular.module('ept', [
+var appThings = [
   'ngResource',
   'ngSanitize',
   'ngAnimate',
@@ -26,6 +25,7 @@ var app = angular.module('ept', [
   require('./boards'),
   require('./board'),
   require('./board/new-thread-index'),
+  require('./category'),
   require('./messages'),
   require('./posts'),
   require('./user'),
@@ -33,7 +33,10 @@ var app = angular.module('ept', [
   require('./user/reset-index'),
   require('./watchlist'),
   require('./admin')
-]);
+].concat(require('./plugins'));
+
+// Create Angular App
+var app = angular.module('ept', appThings);
 
 require('./filters');
 require('./services');
