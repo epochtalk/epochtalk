@@ -142,7 +142,7 @@ var ctrl = ['$scope', '$timeout', 'settings', 'blacklist', 'AdminSettings', 'Ale
     ctrl.editRuleBtnLabel = 'Loading...';
 
     var ruleToUpdate = formatIPRule(ctrl.selectedRule);
-    console.log(ruleToUpdate);
+
     AdminSettings.updateBlacklist(ruleToUpdate).$promise
     .then(function(updatedBlacklist) {
       ctrl.blacklist = updatedBlacklist;

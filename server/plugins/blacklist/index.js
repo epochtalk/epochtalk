@@ -1,4 +1,5 @@
 var path = require('path');
+var _ = require('lodash');
 var db = require(path.normalize(__dirname + '/../../../db'));
 var Boom = require('boom');
 var ipAddress = require('ip-address');
@@ -35,15 +36,22 @@ function ipBlacklisted(requesterIp) {
       var blacklistObj = blacklist[i];
 
       // Wildcard Type: Check if ip starts with wildcard
-      if (blacklistObj.type === 0) { blocked = requesterIp.indexOf(blacklistObj.ip_data.split('*')[0]) === 0; }
+      if (blacklistObj.type === 0) {
+        var ipArr = requesterIpObj.parsedAddress;
+        var blArr = blacklistObj.ip_data.split('.');
+        blocked = (blArr[0] === '*' || blArr[0] === ipArr[0]) &&
+          (blArr[1] === '*' || blArr[1] === ipArr[1]) &&
+          (blArr[2] === '*' || blArr[2] === ipArr[2]) &&
+          (blArr[3] === '*' || blArr[3] === ipArr[3]);
+      }
       // Rage IP Type: Check if requester ip falls within range
       else if (blacklistObj.type === 1) {
         var requesterBigInt = requesterIpObj.bigInteger();
         blocked = requesterBigInt.compareTo(blacklistObj.start) > -1 &&
           requesterBigInt.compareTo(blacklistObj.end) < 1;
       }
-      // Standard IP Type: check for exact match
-      else { blocked = requesterIp === blacklistObj.ip_data; }
+      // Standard IP Type: check for exact match on parsed address
+      else { blocked = _.isEqual(requesterIpObj.parsedAddress, blacklistObj.parsedAddress); }
 
       // break loop if we find a match on blacklisted ip
       if (blocked) { break; }
@@ -77,7 +85,12 @@ function retrieveBlacklist() {
       ipInfo.end = end.bigInteger();
     }
     // standard ip: check for exact match
-    else { ipInfo.type = 2; }
+    else {
+      ipInfo.type = 2;
+      var addr = new Address4(ipData);
+      if (!addr.valid) { addr = new Address6(ipData); }
+      ipInfo.parsedAddress  = addr.parsedAddress;
+    }
 
     return ipInfo;
   })
