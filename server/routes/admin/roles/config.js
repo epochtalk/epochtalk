@@ -112,7 +112,7 @@ exports.add = {
         adminAccess: Joi.object().keys({
           settings: Joi.object().keys({
             general: Joi.boolean(),
-            forum: Joi.boolean(),
+            advanced: Joi.boolean(),
             theme: Joi.boolean()
           }),
           management: Joi.object().keys({
@@ -389,7 +389,7 @@ exports.update = {
         adminAccess: Joi.object().keys({
           settings: Joi.object().keys({
             general: Joi.boolean(),
-            forum: Joi.boolean(),
+            advanced: Joi.boolean(),
             theme: Joi.boolean()
           }),
           management: Joi.object().keys({

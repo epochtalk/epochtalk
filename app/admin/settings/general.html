@@ -1,5 +1,28 @@
 <!-- Column One -->
 <div class="settings half-column">
+  <!-- Forum Configurations -->
+  <h5 class="thin-underline">Forum Configurations</h5>
+  <div class="setting-row">
+    <div class="switch-desc">
+      <label for="public-forum">Public Forum</label>
+      <label class="desc-label" for="public-forum">Allow guests to view forum content</label>
+    </div>
+    <div class="switch-block">
+      <input id="public-forum" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.login_required" ng-true-value="false" ng-false-value="true">
+      <label for="public-forum"></label>
+    </div>
+  </div>
+  <div class="setting-row">
+    <div class="switch-desc">
+      <label for="verify-registration">Verify Registration</label>
+      <label class="desc-label" for="verify-registration">Users must verify their accounts when registering</label>
+    </div>
+    <div class="switch-block">
+      <input id="verify-registration" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.verify_registration">
+      <label for="verify-registration"></label>
+    </div>
+  </div>
+
   <!-- Web Configurations -->
   <h5 class="thin-underline">Web Configurations</h5>
   <label for="website-title">Website Title</label>
@@ -32,82 +55,6 @@
     <label class="desc-label" for="database-migrate">Launches wizard to migrate data from other forums</label>
   </div>
   <a id="database-migrate" class="button" style="background-color: #CCC;">Migrate</a>
-
-  <!-- Rate Limiting -->
-  <h5 class="thin-underline section-header-top-spacing">API Rate Limiting (Global Defaults)</h5>
-
-  <section class="boxed-section">
-    <div class="header"><span class="get large">GET Requests</span></div>
-    <div class="content input-three-col">
-      <div>
-        <label class="desc-label" for="get-interval">Interval</label>
-        <input type="text" class="input-text" id="get-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.interval" placeholder="In MS (Ex: 1000)" />
-      </div>
-      <div>
-        <label class="desc-label" for="get-max-in-interval">Max In Interval</label>
-        <input type="text" class="input-text" id="get-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.max_in_interval" placeholder="Ex: 1" />
-      </div>
-      <div>
-        <label class="desc-label" for="get-min-difference">Min Difference</label>
-        <input type="text" class="input-text" id="get-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.min_difference" placeholder="In MS (Ex: 100)" />
-      </div>
-    </div>
-  </section>
-
-  <section class="boxed-section">
-    <div class="header"><span class="post large">POST Requests</span></div>
-    <div class="content input-three-col">
-      <div>
-        <label class="desc-label" for="post-interval">Interval</label>
-        <input type="text" class="input-text" id="post-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.interval" placeholder="In MS (Ex: 1000)" />
-      </div>
-      <div>
-        <label class="desc-label" for="post-max-in-interval">Max In Interval</label>
-        <input type="text" class="input-text" id="post-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.max_in_interval" placeholder="Ex: 1" />
-      </div>
-      <div>
-        <label class="desc-label" for="post-min-difference">Min Difference</label>
-        <input type="text" class="input-text" id="post-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.min_difference" placeholder="In MS (Ex: 100)" />
-      </div>
-    </div>
-  </section>
-
-
-  <section class="boxed-section">
-    <div class="header"><span class="put large">PUT Requests</span></div>
-    <div class="content input-three-col">
-      <div>
-        <label class="desc-label" for="put-interval">Interval</label>
-        <input type="text" class="input-text" id="put-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.interval" placeholder="In MS (Ex: 1000)" />
-      </div>
-      <div>
-        <label class="desc-label" for="put-max-in-interval">Max In Interval</label>
-        <input type="text" class="input-text" id="put-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.max_in_interval" placeholder="Ex: 1" />
-      </div>
-      <div>
-        <label class="desc-label" for="put-min-difference">Min Difference</label>
-        <input type="text" class="input-text" id="put-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.min_difference" placeholder="In MS (Ex: 100)" />
-      </div>
-    </div>
-  </section>
-
-  <section class="boxed-section">
-    <div class="header"><span class="delete large">DELETE Requests</span></div>
-      <div class="content input-three-col">
-      <div>
-        <label class="desc-label" for="delete-interval">Interval</label>
-        <input type="text" class="input-text" id="delete-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.interval" placeholder="In MS (Ex: 1000)" />
-      </div>
-      <div>
-        <label class="desc-label" for="delete-max-in-interval">Max In Interval</label>
-        <input type="text" class="input-text" id="delete-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.max_in_interval" placeholder="Ex: 1" />
-      </div>
-      <div>
-        <label class="desc-label" for="delete-min-difference">Min Difference</label>
-        <input type="text" class="input-text" id="delete-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.min_difference" placeholder="In MS (Ex: 100)" />
-      </div>
-    </div>
-  </section>
 
 </div>
 

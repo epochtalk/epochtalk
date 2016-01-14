@@ -181,7 +181,7 @@
         <h4><br />Administration View Permissions</h4>
         <!-- View Admin Settings -->
         <label>
-          <input id="adminAccess-settings" type="checkbox" ng-init="settings = AdminManagementCtrl.newRole.permissions.adminAccess.settings.general || AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum || AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme" ng-model="settings" ng-change="!settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.general = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme = false : null;" />
+          <input id="adminAccess-settings" type="checkbox" ng-init="settings = AdminManagementCtrl.newRole.permissions.adminAccess.settings.general || AdminManagementCtrl.newRole.permissions.adminAccess.settings.advanced || AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme" ng-model="settings" ng-change="!settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.general = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.advanced = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme = false : null;" />
           Allow user to access admin settings view
         </label>
         <div class="indent" ng-if="settings">
@@ -190,8 +190,8 @@
             General Settings Tab
           </label>
           <label>
-            <input id="adminAccess-settings-forum" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum" ng-false-value="undefined" />
-            Forum Settings Tab
+            <input id="adminAccess-settings-advanced" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.settings.advanced" ng-false-value="undefined" />
+            Advanced Settings Tab
           </label>
           <label>
             <input id="adminAccess-settings-theme" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme" ng-false-value="undefined" />

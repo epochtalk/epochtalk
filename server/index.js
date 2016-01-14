@@ -10,6 +10,7 @@ var setup = require(path.normalize(__dirname + '/../setup'));
 var config = require(path.normalize(__dirname + '/../config'));
 var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
+var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
@@ -56,6 +57,9 @@ setup().then(function() {
 
   // route acls
   server.register(acls, defaultRegisterCb);
+
+  // blacklist
+  server.register(blacklist, defaultRegisterCb);
 
   // rate limiter
   server.register({ register: limiter, options: config.rateLimiting }, defaultRegisterCb);

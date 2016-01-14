@@ -4,8 +4,8 @@
     <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.general')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'general'}">
       <a ui-sref=".general" ng-click="AdminSettingsCtrl.tab = 'general'">General</a>
     </dd>
-    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.forum')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'forum'}">
-      <a ui-sref=".forum" ng-click="AdminSettingsCtrl.tab = 'forum'">Forum</a>
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.advanced')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'advanced'}">
+      <a ui-sref=".advanced" ng-click="AdminSettingsCtrl.tab = 'advanced'">Advanced</a>
     </dd>
     <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.theme')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'theme'}">
       <a ng-hide="AdminSettingsCtrl.previewActive" ui-sref=".theme" ng-click="AdminSettingsCtrl.tab = 'theme'">Theme</a>

@@ -260,6 +260,10 @@ table.underlined, table.report-details {
   max-height: 80vh;
   p { margin-bottom: 1rem; }
   button, .button, .clear button, button.fill-row { margin-bottom: 0; }
+  .wildcard {
+    input { @include span-columns(3); text-align: center;}
+    input:last-child { @include omega;}
+  }
   @include media($desktop-small) { @include span-columns(6, block-collapse); }
   @include media($mobile) { @include span-columns(7, block-collapse); top: 5vh; max-height: 90vh; }
 }
@@ -375,6 +379,7 @@ hr { margin: 1rem 0; border: none; height: 1px; color: $border-color; background
   overflow-wrap: break-word;
   .imageContainer.loaded { background: none; }
   .imageContainer { background: url('/static/img/loading.gif') no-repeat center; display: inline;}
+  ul, ol { @include pad(0 0 0 1.15rem); }
   img.loaded { opacity: 1; }
   img { @include transition(opacity 0.5s ease-in); opacity: 0; }
 }
@@ -773,9 +778,14 @@ table.striped {
     color: $secondary-font-color-dark;
     text-align: left;
   }
-  tr:nth-of-type(even) { background: $sub-header-color; }
+  tr:nth-of-type(even), tbody:nth-of-type(even) { background: $sub-header-color; }
   tr { border: 0; }
   thead tr th, tbody tr th, tbody tr td, tr td { display: table-cell; line-height: 1.125rem; }
+  &.rulesTable {
+    tr td:first-child { width: 25%; }
+    tr td h6 { @include pad(1.5rem 0); text-align: center; }
+    tr td:nth-child(2) { font-family: courier; }
+  }
 }
 .progress {
   background-color: $sub-header-color;

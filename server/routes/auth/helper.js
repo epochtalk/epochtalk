@@ -41,7 +41,7 @@ function getMaskedPermissions(userRoles) {
     adminAccess: maskPermission('adminAccess') ? {
       settings: maskPermission('adminAccess.settings') ? {
         general: maskPermission('adminAccess.settings.general'),
-        forum: maskPermission('adminAccess.settings.forum'),
+        advanced: maskPermission('adminAccess.settings.advanced'),
         theme: maskPermission('adminAccess.settings.theme')
       } : undefined,
       management: maskPermission('adminAccess.management') ? {

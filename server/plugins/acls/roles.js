@@ -14,7 +14,7 @@ module.exports = roles;
     adminAccess: {
       settings: {
         general: true,
-        forum: true,
+        advanced: true,
         theme: true
       },
       management: {
@@ -244,7 +244,7 @@ roles.superAdministrator = {
   adminAccess: {
     settings: {
       general: true,
-      forum: true,
+      advanced: true,
       theme: true
     },
     management: {
