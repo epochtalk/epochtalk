@@ -39,9 +39,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         templateUrl: '/static/templates/admin/settings/index.html'
       }
     },
-    resolve: {
-      userAccess: adminCheck()
-    }
+    resolve: { userAccess: adminCheck() }
   })
   .state('admin-settings.general', {
     url: '/general',

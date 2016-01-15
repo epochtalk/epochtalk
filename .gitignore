@@ -30,19 +30,7 @@ test/coverage/
 /public/images/*.jpeg
 /public/images/*.png
 /public/images/*.gif
-/public/templates/*.html
-/public/templates/admin/*.html
-/public/templates/admin/analytics/*.html
-/public/templates/admin/management/*.html
-/public/templates/admin/moderation/*.html
-/public/templates/admin/settings/*.html
-/public/templates/board/*.html
-/public/templates/layout/*.html
-/public/templates/messages/*.html
-/public/templates/posts/*.html
-/public/templates/thread/*.html
-/public/templates/user/*.html
-/public/templates/watchlist/*.html
+/public/templates/*
 
 /app/scss/loading-bar.scss
 /app/.sass-cache/
