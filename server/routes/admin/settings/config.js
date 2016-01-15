@@ -189,6 +189,107 @@ exports.update = {
 /**
   * @apiVersion 0.3.0
   * @apiGroup Settings
+  * @api {GET} /admin/settings/blacklist (Admin) Get Blacklist
+  * @apiName GetBlacklist
+  * @apiDescription Used to fetch the IP blacklist
+  *
+  * @apiSuccess {object} blacklist Object containing blacklisted IPs
+  */
+exports.getBlacklist = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminSettings.getBlacklist' },
+  handler: function(request, reply) {
+    var promise = db.blacklist.all();
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Settings
+  * @api {POST} /admin/settings/blacklist (Admin) Add IP Rule to Blacklist
+  * @apiName AddToBlacklist
+  * @apiDescription Used to add an IP Rule to the blacklist
+  *
+  * @apiSuccess {object} blacklist Object containing blacklisted IPs
+  */
+exports.addToBlacklist = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminSettings.addToBlacklist' },
+  validate: {
+    payload: {
+      ip_data: Joi.string().min(1).max(100),
+      note: Joi.string().min(1).max(255)
+    }
+  },
+  handler: function(request, reply) {
+    var rule = request.payload;
+    var promise = db.blacklist.addRule(rule)
+    .then(function(blacklist) {
+      request.server.plugins.blacklist.retrieveBlacklist();
+      return blacklist;
+    });
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Settings
+  * @api {PUT} /admin/settings/blacklist (Admin) Update existing IP Rule in Blacklist
+  * @apiName UpdateBlacklist
+  * @apiDescription Used to update an existing IP Rule in the blacklist
+  *
+  * @apiSuccess {object} blacklist Object containing blacklisted IPs
+  */
+exports.updateBlacklist = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminSettings.updateBlacklist' },
+  validate: {
+    payload: {
+      id: Joi.string().required(),
+      ip_data: Joi.string().min(1).max(100),
+      note: Joi.string().min(1).max(255)
+    }
+  },
+  handler: function(request, reply) {
+    var updatedRule = request.payload;
+    var promise = db.blacklist.updateRule(updatedRule)
+    .then(function(blacklist) {
+      request.server.plugins.blacklist.retrieveBlacklist();
+      return blacklist;
+    });
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Settings
+  * @api {DELETE} /admin/settings/blacklist (Admin) Delete existing IP Rule from Blacklist
+  * @apiName DeleteBlacklist
+  * @apiDescription Used to update an existing IP Rule in the blacklist
+  *
+  * @apiSuccess {object} blacklist Object containing blacklisted IPs
+  */
+exports.deleteFromBlacklist = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminSettings.deleteFromBlacklist' },
+  validate: { params: { id: Joi.string().required() } },
+  handler: function(request, reply) {
+    var id = request.params.id;
+    var promise = db.blacklist.deleteRule(id)
+    .then(function(blacklist) {
+      request.server.plugins.blacklist.retrieveBlacklist();
+      return blacklist;
+    });
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.3.0
+  * @apiGroup Settings
   * @api {GET} /admin/settings/theme (Admin) Get Theme
   * @apiName GetTheme
   * @apiDescription Used to fetch theme vars in _custom-variables.scss
@@ -219,6 +320,7 @@ exports.getTheme = {
     .on('close', function() { reply(theme); });
   }
 };
+
 
 /**
   * @apiVersion 0.3.0

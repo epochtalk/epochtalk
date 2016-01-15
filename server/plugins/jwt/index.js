@@ -1,5 +1,4 @@
 // Load modules
-var path = require('path');
 var Boom = require('boom');
 var Hoek = require('hoek');
 var jwt  = require('jsonwebtoken');
