@@ -4,7 +4,7 @@
 
 Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Browserify](https://www.npmjs.org/package/browserify), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
 
-![Epochtalk Forums](http://i.imgur.com/iWEvbvF.png)
+![Epochtalk Forums](http://i.imgur.com/4U8my8E.png)
 
 ## Index
 * [Features](#features)
@@ -47,49 +47,54 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * angular-loading-bar `0.7.1`
 * nestable [slickage/Nestable](http://github.com/slickage/Nestable)
 * angular-ui-router `~0.2.15`
-* angular-ui-router-title `0.0.3`
+* angular-sortable-view" `~0.0.13`
+* ng-tags-input `3.0.0`
 * jquery `~2.1.4`
 
 ### NPM
-* async `^0.9.0`
 * aws-sdk `^2.1.20`
 * bcrypt `^0.8.0`
 * bluebird `^2.6.4`
 * boom `^2.6.1`
-* brfs `^1.3.0`
-* browserify `^8.1.3`
+* bower `^1.5.2`
+* change-case `^2.3.0`
 * cheerio `^0.18.0`
 * commander `^2.5.1`
 * db-migrate `^0.8.0`
 * deep-rename-keys `^0.1.0`
+* del `^1.1.1`
 * dot `^1.0.3`
+* dotenv `^1.2.0`
 * epochtalk-bbcode-parser `^1.0.0`
-* epochtalk-core-pg `^0.9.11`
+* epochtalk-core-pg `epochtalk/core-pg`
 * fs-extra `^0.16.5`
 * good `^5.1.1`
 * good-console `^4.1.0`
 * good-file `^4.0.1`
-* hapi `^8.2.0`
+* handlebars `^4.0.3`
+* hapi `^8.8.1`
 * hoek `^2.12.0`
+* html-loader `^0.3.0`
+* ip-address `^5.0.2`
 * joi `^6.0.8`
 * json `^9.0.3`
 * jsonwebtoken `^5.0.0`
-* levelup `^0.19.0`
-* lodash `^2.4.1`
-* lout `^6.1.0`
-* medium-editor `^1.8.14`
-* memdown `^0.11.0`
+* lodash `^3.10.1`
 * mkdirp `^0.5.0`
 * mmmagic `^0.3.11`
-* node-sass `^2.1.1`
+* node-sass `^3.4.2`
 * node-uuid `^1.4.1`
 * nodemailer `^1.3.2`
+* oclazyload `^1.0.6`
 * pg `^4.2.0`
+* redis `^0.12.1`
 * request `^2.53.0`
+* rolling-rate-limiter `^0.1.2`
 * sanitize-html `^1.4.3`
 * stream-meter `^1.0.3`
 * through2 `^0.6.3`
-* yargs `^1.2.1`
+* webpack `^1.12.2`
+* yargs `^1.2.1"
 
 
 ## Installation
@@ -153,13 +158,13 @@ REDIS_AUTH_PASS=""
 ```
 ### Admin Panel Configuration
 Configurations can also be set using the settings tab in the administration panel.
-![Admin Settings](http://i.imgur.com/kIxs86V.png)
+![Admin Settings](http://i.imgur.com/Y1tkpFX.png)
 
 ## API
 The Epochtalk API can be accessed at `http://localhost:8080/api/` while the server is running. To see full documentation for the api visit the [Epochtalk API Documentation](https://github.com/epochtalk/epochtalk/wiki/Epochtalk-API-Documentation) wiki page.
 
 ##Editor
-![Editor](http://i.imgur.com/5JPc0ui.png)
+![Editor](http://i.imgur.com/InwzPEl.png)
 
 Each post is crafted through a unique editor with a live content preview.
 
@@ -169,7 +174,7 @@ As for BBCode, the tags that are parsed are based off the SMF 1.0 BBCode spec bu
 
 To view the list of supported BBCode tags click the ``formatting`` button at the top right of the editor:
 
-![Formatting](http://i.imgur.com/4GQwfmh.png)
+![Formatting](http://i.imgur.com/tHbfIke.png)
 
 ### Security
 
