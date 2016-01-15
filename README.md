@@ -4,7 +4,7 @@
 
 Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Browserify](https://www.npmjs.org/package/browserify), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
 
-![Epochtalk Forums](http://i.imgur.com/4U8my8E.png)
+![Epochtalk Forums](http://i.imgur.com/D2Lizk5.png)
 
 ## Index
 * [Features](#features)
@@ -157,14 +157,14 @@ REDIS_PORT="6379"
 REDIS_AUTH_PASS=""
 ```
 ### Admin Panel Configuration
-Configurations can also be set using the settings tab in the administration panel.
-![Admin Settings](http://i.imgur.com/Y1tkpFX.png)
+Some configurations can also be set using the settings tab in the administration panel.
+![Admin Settings](http://i.imgur.com/DNygrYN.png)
 
 ## API
 The Epochtalk API can be accessed at `http://localhost:8080/api/` while the server is running. To see full documentation for the api visit the [Epochtalk API Documentation](https://github.com/epochtalk/epochtalk/wiki/Epochtalk-API-Documentation) wiki page.
 
 ##Editor
-![Editor](http://i.imgur.com/InwzPEl.png)
+![Editor](http://i.imgur.com/exmYQyV.png)
 
 Each post is crafted through a unique editor with a live content preview.
 
@@ -172,9 +172,9 @@ Each post is crafted through a unique editor with a live content preview.
 
 As for BBCode, the tags that are parsed are based off the SMF 1.0 BBCode spec but with some modifications as per the BitcoinTalk forum. Due to the fact that BBCode differs from forum to forum, a preview window is provided to the right of the main user input to preview what the post will look like once it has been sent to the server. The editor itself will parse the user input in real time with a 250 millisecond debounce. So user can continue to type and the text will not be parsed until 250 millisecond after the last keypress.
 
-To view the list of supported BBCode tags click the ``formatting`` button at the top right of the editor:
+To view the list of supported BBCode tags click the ``Format`` button at the top right of the editor:
 
-![Formatting](http://i.imgur.com/tHbfIke.png)
+![Formatting](http://i.imgur.com/wpJZ5Uv.png)
 
 ### Security
 
