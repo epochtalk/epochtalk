@@ -62,7 +62,7 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * commander `^2.5.1`
 * db-migrate `^0.8.0`
 * deep-rename-keys `^0.1.0`
-* del `^1.1.1`
+* del `^2.2.0`
 * dot `^1.0.3`
 * dotenv `^1.2.0`
 * epochtalk-bbcode-parser `^1.0.0`
