@@ -163,7 +163,11 @@ exports.add = {
           getTheme: Joi.boolean(),
           setTheme: Joi.boolean(),
           resetTheme: Joi.boolean(),
-          previewTheme: Joi.boolean()
+          previewTheme: Joi.boolean(),
+          getBlacklist: Joi.boolean(),
+          addToBlacklist: Joi.boolean(),
+          updateBlacklist: Joi.boolean(),
+          deleteFromBlacklist: Joi.boolean()
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
@@ -440,7 +444,11 @@ exports.update = {
           getTheme: Joi.boolean(),
           setTheme: Joi.boolean(),
           resetTheme: Joi.boolean(),
-          previewTheme: Joi.boolean()
+          previewTheme: Joi.boolean(),
+          getBlacklist: Joi.boolean(),
+          addToBlacklist: Joi.boolean(),
+          updateBlacklist: Joi.boolean(),
+          deleteFromBlacklist: Joi.boolean()
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({

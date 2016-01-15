@@ -66,7 +66,11 @@ module.exports = roles;
       getTheme: true,
       setTheme: true,
       resetTheme: true,
-      previewTheme: true
+      previewTheme: true,
+      getBlacklist: true,
+      addToBlacklist: true,
+      updateBlacklist: true,
+      deleteFromBlacklist: true
     },
     adminUsers: {
       privilegedUpdate: {
@@ -296,7 +300,11 @@ roles.superAdministrator = {
     getTheme: true,
     setTheme: true,
     resetTheme: true,
-    previewTheme: true
+    previewTheme: true,
+    getBlacklist: true,
+    addToBlacklist: true,
+    updateBlacklist: true,
+    deleteFromBlacklist: true
   },
   adminUsers: {
     privilegedUpdate: {

@@ -197,7 +197,7 @@ exports.update = {
   */
 exports.getBlacklist = {
   auth: { strategy: 'jwt' },
-//  plugins: { acls: 'adminSettings.getBlacklist' },
+  plugins: { acls: 'adminSettings.getBlacklist' },
   handler: function(request, reply) {
     var promise = db.blacklist.all();
     return reply(promise);
@@ -215,7 +215,7 @@ exports.getBlacklist = {
   */
 exports.addToBlacklist = {
   auth: { strategy: 'jwt' },
-//  plugins: { acls: 'adminSettings.getBlacklist' },
+  plugins: { acls: 'adminSettings.addToBlacklist' },
   validate: {
     payload: {
       ip_data: Joi.string().min(1).max(100),
@@ -244,7 +244,7 @@ exports.addToBlacklist = {
   */
 exports.updateBlacklist = {
   auth: { strategy: 'jwt' },
-//  plugins: { acls: 'adminSettings.getBlacklist' },
+  plugins: { acls: 'adminSettings.updateBlacklist' },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -274,7 +274,7 @@ exports.updateBlacklist = {
   */
 exports.deleteFromBlacklist = {
   auth: { strategy: 'jwt' },
-//  plugins: { acls: 'adminSettings.getBlacklist' },
+  plugins: { acls: 'adminSettings.deleteFromBlacklist' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var id = request.params.id;

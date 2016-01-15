@@ -86,6 +86,12 @@ var ctrl = ['$scope', '$timeout', 'settings', 'blacklist', 'AdminSettings', 'Ale
     else { ctrl.saveContinueBtnLabel = 'Loading...'; }
 
     var ruleToAdd = formatIPRule(ctrl.rule);
+    if (!ruleToAdd) {
+      ctrl.addSubmitted = false;
+      ctrl.saveRuleBtnLabel = 'Save';
+      ctrl.saveContinueBtnLabel = 'Save and Continue';
+      return;
+    }
 
     AdminSettings.addToBlacklist(ruleToAdd).$promise
     .then(function(updatedBlacklist) {
@@ -142,6 +148,11 @@ var ctrl = ['$scope', '$timeout', 'settings', 'blacklist', 'AdminSettings', 'Ale
     ctrl.editRuleBtnLabel = 'Loading...';
 
     var ruleToUpdate = formatIPRule(ctrl.selectedRule);
+    if (!ruleToUpdate) {
+      ctrl.editSubmitted = false;
+      ctrl.editRuleBtnLabel = 'Confirm Edit';
+      return;
+    }
 
     AdminSettings.updateBlacklist(ruleToUpdate).$promise
     .then(function(updatedBlacklist) {

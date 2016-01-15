@@ -12,7 +12,7 @@ exports.register = function(server, options, next) {
   server.ext('onRequest', function(request, reply) {
     var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
     if (Object.keys(blacklist).length && ipBlacklisted(ip)) {
-      var err = Boom.forbidden('This IP adress has been blacklisted.');
+      var err = Boom.forbidden();
       return reply(err);
     }
     else { return reply.continue(); }
@@ -44,7 +44,7 @@ function ipBlacklisted(requesterIp) {
           (blArr[2] === '*' || blArr[2] === ipArr[2]) &&
           (blArr[3] === '*' || blArr[3] === ipArr[3]);
       }
-      // Rage IP Type: Check if requester ip falls within range
+      // Range IP Type: Check if requester ip falls within range
       else if (blacklistObj.type === 1) {
         var requesterBigInt = requesterIpObj.bigInteger();
         blocked = requesterBigInt.compareTo(blacklistObj.start) > -1 &&

@@ -444,6 +444,30 @@
           <input id="adminSettings-previewTheme" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.previewTheme" ng-false-value="undefined" />
           Allow user to preview forum theme, used for admin settings theme page
         </label>
+
+        <!-- Get forum blacklist settings -->
+        <label>
+          <input id="adminSettings-getBlacklist" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.getBlacklist" ng-false-value="undefined" />
+          Allow user to retrieve the IP blacklist, used for admin advanced settings page
+        </label>
+
+        <!-- Add to forum blacklist settings -->
+        <label>
+          <input id="adminSettings-addToBlacklist" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.addToBlacklist" ng-false-value="undefined" />
+          Allow user to add rules to the IP blacklist, used for admin advanced settings page
+        </label>
+
+        <!-- Update forum blacklist settings -->
+        <label>
+          <input id="adminSettings-updateBlacklist" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.updateBlacklist" ng-false-value="undefined" />
+          Allow user to update rules in the IP blacklist, used for admin advanced settings page
+        </label>
+
+        <!-- Delete forum blacklist settings -->
+        <label>
+          <input id="adminSettings-deleteFromBlacklist" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.deleteFromBlacklist" ng-false-value="undefined" />
+          Allow user to delete rules from the IP blacklist, used for admin advanced settings page
+        </label>
       </div>
 
       <!-- Reports Tab -->
