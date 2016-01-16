@@ -2,7 +2,7 @@
 
 ####**Warning this project is under active development, design is subject to change**
 
-Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Browserify](https://www.npmjs.org/package/browserify), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
+Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Webpack](https://webpack.github.io), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
 
 ![Epochtalk Forums](http://i.imgur.com/D2Lizk5.png)
 
@@ -29,8 +29,10 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 ## Features
 * Epochtalk is a single page web application created with [AngularJS](https://angularjs.org)
 * Web/Mobile ready responsive design using [Bourbon](http://bourbon.io/)
-* JavaScript and CSS is bundled and minimized for performance using [Browserify](https://www.npmjs.org/package/browserify) and [Uglify-js](https://www.npmjs.org/package/uglify-js)
-* Designed with performance in mind. Epochtalk's backend, [Epochtalk-Core-PG](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
+* Code is bundled and loaded as needed, for performance, using [Webpack](https://webpack.github.io)
+* Designed with performance in mind. Epochtalk's backend, [epochtalk-core-pg](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
+* Customizable Theming (Branding, coloring, fonts, sizes)
+* Fully modular permissions system with roles
 
 ## Dependencies
 ### System
@@ -38,6 +40,7 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
 * [bower](https://github.com/bower/bower)
 * [Postgres](http://www.postgresql.org/)
+* [Redis](http://redis.io/)
 
 ### Bower
 * angular `1.4.4`
@@ -94,7 +97,7 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * stream-meter `^1.0.3`
 * through2 `^0.6.3`
 * webpack `^1.12.2`
-* yargs `^1.2.1"
+* yargs `^1.2.1`
 
 
 ## Installation
@@ -131,7 +134,7 @@ $ node cli --create
 ```
 
 #### 6) Start the Epochtalk server
-Running the `npm run serve` command, Epochtalk will start the webserver. Once the server is running, the forum can be viewed at `http://localhost:8080`
+Running the `npm run serve` command will start the Epochtalk webserver and compile all JavaScript and css. Once the server is running, the forum can be viewed at `http://localhost:8080`
 ```sh
 $ npm run serve
 ```
@@ -146,7 +149,7 @@ Since both [Epochtalk](https://github.com/epochtalk/epochtalk) and [core-pg](htt
 Forum configurations can be set either manually or using the admin panel.
 
 ### Manual Configuration
-The forum server configs can and must be set manually with a [.env](http://ddollar.github.io/foreman/#ENVIRONMENT) file in the root directory of the project.
+The forum server configs can and must be set manually with a `.env` file in the root directory of the project.
 ```sh
 DATABASE_URL="postgres://localhost/epochtalk_dev"
 HOST="localhost"
@@ -193,12 +196,6 @@ Title like inputs are stripped of all html while description like inputs are all
 
 ## Contributions
 Epochtalk is an open source project and we are planning to accept contributions. If you would like to contribute to Epochtalk please email [info@slickage.com](mailto:info@slickage.com).
-
-## Planned Changes
-* Redesign of frontend user interface (Current UI is temporary). Design is currently a low priority until the all the forum features are fully fleshed out.
-* Dockerizing Epochtalk
-
-To see planned backend changes, visit the core-pg [issues page](https://github.com/epochtalk/core-pg/issues)
 
 ## Feedback
 Please leave us feedback using [github issues](https://github.com/epochtalk/epochtalk/issues)
