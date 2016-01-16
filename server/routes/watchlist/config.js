@@ -211,6 +211,7 @@ exports.pageBoards = {
   * @apiError (Error 500) InternalServerError There was an issue watching the thread
   */
 exports.watchThread = {
+  app: { thread_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: pre.accessBoardWithThreadId } ],
@@ -260,6 +261,7 @@ exports.unwatchThread = {
   * @apiError (Error 500) InternalServerError There was an issue watching the board
   */
 exports.watchBoard = {
+  app: { board_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   pre : [ { method: pre.accessBoardWithBoardId } ],
