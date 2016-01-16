@@ -9,7 +9,7 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 var commonPre = require(path.normalize(__dirname + '/../../common')).users;
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users (Admin) Update
   * @apiName UpdateUserAdmin
@@ -107,7 +107,7 @@ exports.update = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /admin/users/:username (Admin) Find
   * @apiName FindUserAdmin
@@ -163,7 +163,7 @@ exports.find = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users/roles/add (Admin) Add Roles
   * @apiName AddUserRoleAdmin
@@ -216,7 +216,7 @@ exports.addRoles = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users/roles/remove (Admin) Remove Roles
   * @apiName RemoveUserRoleAdmin
@@ -265,7 +265,7 @@ exports.removeRoles = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /admin/users/search (Admin) Search Usernames
   * @apiName SearchUsernamesAdmin
@@ -300,7 +300,7 @@ exports.searchUsernames = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /admin/users/count (Admin) Count Users
   * @apiName CountUsersAdmin
@@ -342,7 +342,7 @@ exports.count = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /admin/users (Admin) Page Users
   * @apiName PageUsersAdmin
@@ -395,7 +395,7 @@ exports.page = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users/ban (Admin) Ban
   * @apiName BanUsersAdmin
@@ -441,7 +441,7 @@ exports.ban = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users/unban (Admin) Unban
   * @apiName UnbanUsersAdmin

@@ -14,7 +14,7 @@ var config = require(path.normalize(__dirname + '/../../../config'));
   * @api {POST} /login Login
   * @apiName Login
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to log a user into their account.
   *
   * @apiParam (Payload) {string} username User's unique username
@@ -93,7 +93,7 @@ exports.login = {
   * @api {DELETE} /logout Logout
   * @apiName Logout
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to log a user out of their account.
   *
   * @apiSuccess {boolean} success true if user is successfully logged out
@@ -118,7 +118,7 @@ exports.logout = {
   * @api {POST} /register Register (w/o account verification)
   * @apiName RegisterNoVerify
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to register a new account with account verification disabled in admin settings.
   *
   * @apiParam (Payload) {string} username User's unique username.
@@ -137,7 +137,7 @@ exports.logout = {
   * @api {POST} /register Register (w/ account verification)
   * @apiName RegisterVerify
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to register a new account with account verification enabled in admin settings.
   * This will send an email to the user with the account verification link.
   *
@@ -208,7 +208,7 @@ exports.register = {
   * @api {POST} /confirm Confirm Account
   * @apiName Confirm Account
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to confirm a newly registered account when account verification
   * is enabled in the admin panel.
   *
@@ -265,7 +265,7 @@ exports.confirmAccount = {
   * @api {GET} /authenticate Authenticate User
   * @apiName Authenticate User
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to check the logged in user's authentication.
   *
   * @apiSuccess {string} id User's unique id
@@ -292,7 +292,7 @@ exports.authenticate = {
   * @api {GET} /register/username/:username Username Availability
   * @apiName Username Availability
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to check if a username is available when registering a new account.
   *
   * @apiParam {string} username The username to check
@@ -313,7 +313,7 @@ exports.username = {
   * @api {GET} /register/email/:email Email Availability
   * @apiName Email Availability
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to check if an email is available when registering a new account.
   *
   * @apiParam {string} email The email to check
@@ -334,7 +334,7 @@ exports.email = {
   * @api {GET} /recover/:query Recover Account
   * @apiName AccountRecoveryReq
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to recover an account by username or email. Sends an email with
   * a URL to visit to reset the user's account password.
   *
@@ -384,7 +384,7 @@ exports.recoverAccount = {
   * @api {POST} /reset Reset Account Password
   * @apiName AccountRecoveryReset
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to reset an account password after recovering an account.
   *
   * @apiParam (Payload) {string} username The username of the user whose password is being reset
@@ -443,7 +443,7 @@ exports.resetPassword = {
   * @api {GET} /reset/:username/:token/validate Validate Account Reset Token
   * @apiName AccountRecoveryToken
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to check the validity of the reset token. Verifys that the reset
   * token is for the correct user and that it is not expired.
   *

@@ -6,7 +6,7 @@ var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /admin/reports/usernotes (Admin) Create User Report Note
   * @apiName CreateUserReportNote
@@ -47,7 +47,7 @@ exports.createUserReportNote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /admin/reports/postnotes (Admin) Create Post Report Note
   * @apiName CreatePostReportNote
@@ -88,7 +88,7 @@ exports.createPostReportNote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /admin/reports/messagenotes (Admin) Create Message Report Note
   * @apiName CreateMessageReportNote
@@ -129,7 +129,7 @@ exports.createMessageReportNote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/users (Admin) Update User Report
   * @apiName UpdateUserReport
@@ -170,7 +170,7 @@ exports.updateUserReport = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/posts (Admin) Update Post Report
   * @apiName UpdatePostReport
@@ -211,7 +211,7 @@ exports.updatePostReport = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/messages (Admin) Update Message Report
   * @apiName UpdateMessageReport
@@ -252,7 +252,7 @@ exports.updateMessageReport = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/usernotes (Admin) Update User Report Note
   * @apiName UpdateUserReportNote
@@ -292,7 +292,7 @@ exports.updateUserReportNote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/usernotes (Admin) Update Post Report Note
   * @apiName UpdatePostReportNote
@@ -332,10 +332,10 @@ exports.updatePostReportNote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/messagenotes (Admin) Update Message Report Note
-  * @apiName UpdatePostReportNote
+  * @apiName UpdateMessageReportNote
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update an existing note on message moderation reports.
   *
@@ -372,7 +372,7 @@ exports.updateMessageReportNote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/users (Admin) Page User Report
   * @apiName PageUserReport
@@ -457,7 +457,7 @@ exports.pageUserReports = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/posts (Admin) Page Post Report
   * @apiName PagePostReport
@@ -557,7 +557,7 @@ exports.pagePostReports = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/messages (Admin) Page Message Report
   * @apiName PageMessageReport
@@ -644,7 +644,7 @@ exports.pageMessageReports = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/usernotes/:userReportId (Admin) Page User Report Notes
   * @apiName PageUserReportNotes
@@ -712,7 +712,7 @@ exports.pageUserReportsNotes = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/postnotes/:postReportId (Admin) Page Post Report Notes
   * @apiName PagePostReportNotes
@@ -780,7 +780,7 @@ exports.pagePostReportsNotes = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/messagenotes/:messageReportId (Admin) Page Message Report Notes
   * @apiName PageMessageReportNotes

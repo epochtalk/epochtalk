@@ -4,7 +4,7 @@ var Boom = require('boom');
 var db = require(path.normalize(__dirname + '/../../../db'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Breadcrumbs
   * @api {GET} /breadcrumbs Find
   * @apiName FindBreadcrumbs

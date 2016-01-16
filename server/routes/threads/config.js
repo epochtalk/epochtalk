@@ -7,7 +7,7 @@ var db = require(path.normalize(__dirname + '/../../../db'));
 var postPre = require(path.normalize(__dirname + '/../posts/pre'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads Create
   * @apiName CreateThread
@@ -95,7 +95,7 @@ exports.create = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {GET} /threads Page By Board
   * @apiName PageThreadsByBoard
@@ -152,7 +152,7 @@ exports.byBoard = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {GET} /threads/posted Page Recently Posted In Threads
   * @apiName RecentlyPostedInThreads
@@ -203,7 +203,7 @@ exports.posted = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id Find
   * @apiName FindThread
@@ -235,7 +235,7 @@ exports.viewed = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id Title
   * @apiName UpdateThreadTitle
@@ -280,7 +280,7 @@ exports.title = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id/lock Lock
   * @apiName LockThread
@@ -325,7 +325,7 @@ exports.lock = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id/sticky Sticky
   * @apiName StickyThread
@@ -368,7 +368,7 @@ exports.sticky = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id/move Move
   * @apiName MoveThread
@@ -414,7 +414,7 @@ exports.move = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {DELETE} /threads/:id/purge Purge
   * @apiName PurgeThread
@@ -444,7 +444,7 @@ exports.purge = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:threadId/polls/:pollId/vote Vote
   * @apiName VotePoll
@@ -505,7 +505,7 @@ exports.vote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {DELETE} /threads/:threadId/polls/:pollId/vote Remove Vote
   * @apiName RemoveVotePoll
@@ -563,7 +563,7 @@ exports.removeVote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {PUT} /threads/:threadId/polls/:pollId Edit Poll
   * @apiName EditPoll
@@ -620,7 +620,7 @@ exports.editPoll = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:threadId/polls Create Poll
   * @apiName CreatePoll
@@ -679,7 +679,7 @@ exports.createPoll = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:threadId/polls/:pollId/lock Lock Poll
   * @apiName LockPoll

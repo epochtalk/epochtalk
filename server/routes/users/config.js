@@ -9,7 +9,7 @@ var commonPre = require(path.normalize(__dirname + '/../common')).users;
 var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /users Update
   * @apiName UpdateUser
@@ -115,7 +115,7 @@ exports.update = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /users/:username Find
   * @apiName FindUser
@@ -181,7 +181,7 @@ exports.find = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {POST} /users/:userId/deactivate Deactivate
   * @apiName DeactivateUser
@@ -210,7 +210,7 @@ exports.deactivate = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {POST} /users/:userId/reactivate Reactivate
   * @apiName ReactivateUser
@@ -239,7 +239,7 @@ exports.reactivate = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {DELETE} /users/:userId Delete
   * @apiName DeleteUser

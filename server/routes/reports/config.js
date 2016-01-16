@@ -4,7 +4,7 @@ var Boom = require('boom');
 var db = require(path.normalize(__dirname + '/../../../db'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /reports/users Create User Report
   * @apiName CreateUserReport
@@ -44,7 +44,7 @@ exports.createUserReport = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /reports/users Create Post Report
   * @apiName CreatePostReport
@@ -84,7 +84,7 @@ exports.createPostReport = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /reports/messages Create Message Report
   * @apiName CreateMessageReport

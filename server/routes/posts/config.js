@@ -10,7 +10,7 @@ var imageStore = require(path.normalize(__dirname + '/../../images'));
 var querystring = require('querystring');
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Posts
   * @api {POST} /posts Create
   * @apiName CreatePost
@@ -58,7 +58,7 @@ exports.create = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Posts
   * @api {GET} /posts/:id Find
   * @apiName FindPost
@@ -95,7 +95,7 @@ exports.find = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Posts
   * @api {GET} /posts Page By Thread
   * @apiName PagePostsByThread
@@ -180,7 +180,7 @@ exports.byThread = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Posts
   * @api {POST} /posts/:id Update
   * @apiName UpdatePost
@@ -234,7 +234,7 @@ exports.update = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Posts
   * @api {DELETE} /posts/:id Delete
   * @apiName DeletePost
@@ -271,7 +271,7 @@ exports.delete = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Posts
   * @api {POST} /posts/:id Undelete
   * @apiName UndeletePost
@@ -308,7 +308,7 @@ exports.undelete = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Posts
   * @api {DELETE} /posts/:id/purge Purge
   * @apiName PurgePost
@@ -337,7 +337,7 @@ exports.purge = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Posts
   * @api {GET} /posts/user/:username Page By User
   * @apiName PagePostsByUser

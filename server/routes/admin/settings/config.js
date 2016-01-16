@@ -34,7 +34,7 @@ var underscoreToCamelCase = function(obj) {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
   * @api {GET} /admin/settings (Admin) Find
   * @apiName FindSettings
@@ -55,7 +55,7 @@ exports.find = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
   * @api {POST} /admin/settings (Admin) Update
   * @apiName UpdateSettings
@@ -187,13 +187,17 @@ exports.update = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
   * @api {GET} /admin/settings/blacklist (Admin) Get Blacklist
   * @apiName GetBlacklist
   * @apiDescription Used to fetch the IP blacklist
   *
-  * @apiSuccess {object} blacklist Object containing blacklisted IPs
+  * @apiSuccess {object[]} blacklist Array containing blacklisted IPs and info
+  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
+  * @apiSuccess {string} blacklist.ip_data A single ip, ip range or wildcard ip.
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the blacklist.
   */
 exports.getBlacklist = {
   auth: { strategy: 'jwt' },
@@ -205,13 +209,17 @@ exports.getBlacklist = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
   * @api {POST} /admin/settings/blacklist (Admin) Add IP Rule to Blacklist
   * @apiName AddToBlacklist
   * @apiDescription Used to add an IP Rule to the blacklist
   *
-  * @apiSuccess {object} blacklist Object containing blacklisted IPs
+  * @apiSuccess {object[]} blacklist Array containing blacklisted IPs and info
+  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
+  * @apiSuccess {string} blacklist.ip_data A single ip, ip range or wildcard ip.
+  *
+  * @apiError (Error 500) InternalServerError There was an issue adding to the blacklist.
   */
 exports.addToBlacklist = {
   auth: { strategy: 'jwt' },
@@ -234,13 +242,17 @@ exports.addToBlacklist = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
   * @api {PUT} /admin/settings/blacklist (Admin) Update existing IP Rule in Blacklist
   * @apiName UpdateBlacklist
   * @apiDescription Used to update an existing IP Rule in the blacklist
   *
-  * @apiSuccess {object} blacklist Object containing blacklisted IPs
+  * @apiSuccess {object[]} blacklist Array containing blacklisted IPs and info
+  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
+  * @apiSuccess {string} blacklist.ip_data A single ip, ip range or wildcard ip.
+  *
+  * @apiError (Error 500) InternalServerError There was an issue updating the blacklist.
   */
 exports.updateBlacklist = {
   auth: { strategy: 'jwt' },
@@ -264,13 +276,19 @@ exports.updateBlacklist = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {DELETE} /admin/settings/blacklist (Admin) Delete existing IP Rule from Blacklist
+  * @api {DELETE} /admin/settings/blacklist/:id (Admin) Delete existing IP Rule from Blacklist
   * @apiName DeleteBlacklist
   * @apiDescription Used to update an existing IP Rule in the blacklist
   *
-  * @apiSuccess {object} blacklist Object containing blacklisted IPs
+  * @apiParam {string} id The id of the blacklist rule to delete
+  *
+  * @apiSuccess {object[]} blacklist Array containing blacklisted IPs and info
+  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
+  * @apiSuccess {string} blacklist.ip_data A single ip, ip range or wildcard ip.
+  *
+  * @apiError (Error 500) InternalServerError There was an issue deleting from the blacklist.
   */
 exports.deleteFromBlacklist = {
   auth: { strategy: 'jwt' },
@@ -288,13 +306,15 @@ exports.deleteFromBlacklist = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
   * @api {GET} /admin/settings/theme (Admin) Get Theme
   * @apiName GetTheme
   * @apiDescription Used to fetch theme vars in _custom-variables.scss
   *
   * @apiSuccess {object} theme Object containing theme vars and values
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the theme.
   */
 exports.getTheme = {
   auth: { strategy: 'jwt' },
@@ -323,13 +343,42 @@ exports.getTheme = {
 
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
   * @api {PUT} /admin/settings/theme (Admin) Set Theme
   * @apiName SetTheme
   * @apiDescription Used to set theme vars in _custom-variables.scss
   *
+  * @apiParam (Payload) {string} base-line-height Base line height for entire forum
+  * @apiParam (Payload) {string} base-background-color The background color for the entire forum
+  * @apiParam (Payload) {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiParam (Payload) {string} base-font-sans Font family for the entire forum
+  * @apiParam (Payload) {string} base-font-color Base font color for entire forum
+  * @apiParam (Payload) {string} base-font-size Base font size for entire forum
+  * @apiParam (Payload) {string} secondary-font-color Secondary font color, used for description text
+  * @apiParam (Payload) {string} input-font-color Font color for input fields
+  * @apiParam (Payload) {string} input-background-color Background color for all input fields
+  * @apiParam (Payload) {string} border-color Color for all borders used in the forum
+  * @apiParam (Payload) {string} header-bg-color Color for the forum header background
+  * @apiParam (Payload) {string} header-font-color Font color for the forum header
+  * @apiParam (Payload) {string} sub-header-color Color for sub headers and footers
+  *
   * @apiSuccess {object} theme Object containing theme vars and values
+  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
+  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
+  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
+  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
+  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
+  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} theme.input-font-color Font color for input fields
+  * @apiSuccess {string} theme.input-background-color Background color for all input fields
+  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
+  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
+  * @apiSuccess {string} theme.header-font-color Font color for the forum header
+  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  *
+  * @apiError (Error 500) InternalServerError There was an issue setting the theme.
   */
 exports.setTheme = {
   auth: { strategy: 'jwt' },
@@ -346,11 +395,9 @@ exports.setTheme = {
       'input-font-color': Joi.string(),
       'input-background-color': Joi.string(),
       'border-color': Joi.string(),
-      'header-color': Joi.string(),
       'header-font-color': Joi.string(),
       'sub-header-color': Joi.string(),
-      'header-bg-color': Joi.string(),
-      'header-logo-font-color': Joi.string()
+      'header-bg-color': Joi.string()
     })
   },
   handler: function(request, reply) {
@@ -376,13 +423,28 @@ exports.setTheme = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
   * @api {POST} /admin/settings/theme (Admin) Reset Theme
   * @apiName ResetTheme
   * @apiDescription Used reset custom variables to fall back to _default-variables.scss
   *
   * @apiSuccess {object} theme Object containing theme vars and values
+  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
+  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
+  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
+  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
+  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
+  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} theme.input-font-color Font color for input fields
+  * @apiSuccess {string} theme.input-background-color Background color for all input fields
+  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
+  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
+  * @apiSuccess {string} theme.header-font-color Font color for the forum header
+  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  *
+  * @apiError (Error 500) InternalServerError There was an issue resetting the theme.
   */
 exports.resetTheme = {
   auth: { strategy: 'jwt' },
@@ -420,13 +482,42 @@ exports.resetTheme = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Settings
   * @api {PUT} /admin/settings/theme/preview (Admin) Preview Theme
   * @apiName PreviewTheme
   * @apiDescription Used preview theme vars are compiled from _preview-variables.scss
   *
+  * @apiParam (Payload) {string} base-line-height Base line height for entire forum
+  * @apiParam (Payload) {string} base-background-color The background color for the entire forum
+  * @apiParam (Payload) {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiParam (Payload) {string} base-font-sans Font family for the entire forum
+  * @apiParam (Payload) {string} base-font-color Base font color for entire forum
+  * @apiParam (Payload) {string} base-font-size Base font size for entire forum
+  * @apiParam (Payload) {string} secondary-font-color Secondary font color, used for description text
+  * @apiParam (Payload) {string} input-font-color Font color for input fields
+  * @apiParam (Payload) {string} input-background-color Background color for all input fields
+  * @apiParam (Payload) {string} border-color Color for all borders used in the forum
+  * @apiParam (Payload) {string} header-bg-color Color for the forum header background
+  * @apiParam (Payload) {string} header-font-color Font color for the forum header
+  * @apiParam (Payload) {string} sub-header-color Color for sub headers and footers
+  *
   * @apiSuccess {object} theme Object containing theme vars and values
+  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
+  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
+  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
+  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
+  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
+  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} theme.input-font-color Font color for input fields
+  * @apiSuccess {string} theme.input-background-color Background color for all input fields
+  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
+  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
+  * @apiSuccess {string} theme.header-font-color Font color for the forum header
+  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  *
+  * @apiError (Error 500) InternalServerError There was an issue previewing the theme.
   */
 exports.previewTheme = {
   auth: { strategy: 'jwt' },
@@ -443,11 +534,9 @@ exports.previewTheme = {
       'input-font-color': Joi.string(),
       'input-background-color': Joi.string(),
       'border-color': Joi.string(),
-      'header-color': Joi.string(),
       'header-font-color': Joi.string(),
       'sub-header-color': Joi.string(),
-      'header-bg-color': Joi.string(),
-      'header-logo-font-color': Joi.string()
+      'header-bg-color': Joi.string()
     })
   },
   handler: function(request, reply) {

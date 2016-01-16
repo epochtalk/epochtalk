@@ -7,7 +7,7 @@ var rolesHelper = require(path.normalize(__dirname + '/../../../plugins/acls/hel
 var _ = require('lodash');
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {GET} /admin/roles/all All Roles
   * @apiName AllRoles
@@ -27,7 +27,7 @@ exports.all = {
   }
 };
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {GET} /admin/roles/:id/users Page Users with Role
   * @apiName PageUserWithRole
@@ -79,7 +79,7 @@ exports.users = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {POST} /admin/roles/add Add Roles
   * @apiName AddRoles
@@ -360,7 +360,7 @@ exports.add = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {PUT} /admin/roles/update Add Roles
   * @apiName UpdateRoles
@@ -640,7 +640,7 @@ exports.update = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {DELETE} /admin/roles/remove/:id Remove Roles
   * @apiName RemoveRoles
@@ -671,7 +671,7 @@ exports.remove = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {UPDATE} /admin/roles/reprioritize Reprioritize Roles
   * @apiName ReprioritizeRoles

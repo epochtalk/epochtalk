@@ -22,7 +22,6 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
   * [Security](#security)
   * [Planned Features](#planned-features)
 * [Contributions](#contributions)
-* [Planned Changes](#planned-changes)
 * [Feedback](#feedback)
 * [License](#license)
 

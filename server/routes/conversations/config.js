@@ -5,7 +5,7 @@ var db = require(path.normalize(__dirname + '/../../../db'));
 var messagePre = require(path.normalize(__dirname + '/../messages/pre'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Conversations
   * @api {POST} /conversations Create
   * @apiName CreateConversation
@@ -45,7 +45,7 @@ exports.create = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Conversations
   * @api {GET} /conversations Messages in Conversation
   * @apiName GetRecentMessages
@@ -106,7 +106,7 @@ exports.messages = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Conversations
   * @api {DELETE} /conversations/:id Delete
   * @apiName DeleteConversation

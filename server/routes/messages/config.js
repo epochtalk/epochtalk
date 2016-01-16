@@ -6,7 +6,7 @@ var db = require(path.normalize(__dirname + '/../../../db'));
 var pre = require(path.normalize(__dirname + '/pre'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {POST} /messages Create
   * @apiName CreateMessage
@@ -44,7 +44,7 @@ exports.create = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {GET} /messages Get Recent Messages
   * @apiName LatestMessages
@@ -87,7 +87,7 @@ exports.latest = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {GET} /messages/users/{username} Get ID for username
   * @apiName FindUserMessages
@@ -111,7 +111,7 @@ exports.findUser = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {DELETE} /messages/:id Delete
   * @apiName DeleteMessage

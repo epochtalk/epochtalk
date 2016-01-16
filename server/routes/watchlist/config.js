@@ -1,12 +1,11 @@
 var Joi = require('joi');
 var path = require('path');
-var Boom = require('boom');
 var Promise = require('bluebird');
 var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
   * @api {GET} /watchlist/unread Page Watchlist Unread
   * @apiName PageWatchlistUnread
@@ -53,7 +52,7 @@ exports.unread = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
   * @api {GET} /watchlist Edit Watchlist
   * @apiName EditWatchlist
@@ -105,7 +104,7 @@ exports.edit = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
   * @api {GET} /watchlist Page Watchlist Threads
   * @apiName PageWatchlistThreads
@@ -152,7 +151,7 @@ exports.pageThreads = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
   * @api {GET} /watchlist Page Watchlist Boards
   * @apiName PageWatchlistThreadsBoards
@@ -199,9 +198,9 @@ exports.pageBoards = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
-  * @api {POST} /watchlist/threads/:id WatchThread
+  * @api {POST} /watchlist/threads/:id Watch Thread
   * @apiName WatchThread
   * @apiPermission User
   * @apiDescription Used to mark a user as watching a thread.
@@ -224,9 +223,9 @@ exports.watchThread = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
-  * @api {DELETE} /watchlist/threads/:id UnwatchThread
+  * @api {DELETE} /watchlist/threads/:id Unwatch Thread
   * @apiName UnwatchThread
   * @apiPermission User
   * @apiDescription Used to unmark a user as watching a thread.
@@ -248,9 +247,9 @@ exports.unwatchThread = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
-  * @api {POST} /watchlist/boards/:id WatchBoard
+  * @api {POST} /watchlist/boards/:id Watch Board
   * @apiName WatchBoard
   * @apiPermission User
   * @apiDescription Used to mark a user as watching a board.
@@ -273,9 +272,9 @@ exports.watchBoard = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
-  * @api {DELETE} /watchlist/boards/:id UnwatchBoard
+  * @api {DELETE} /watchlist/boards/:id Unwatch Board
   * @apiName UnwatchBoard
   * @apiPermission User
   * @apiDescription Used to unmark a user as watching a board.

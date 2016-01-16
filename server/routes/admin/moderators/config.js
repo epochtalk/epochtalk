@@ -1,11 +1,10 @@
 var Joi = require('joi');
 var path = require('path');
-var Boom = require('boom');
 var db = require(path.normalize(__dirname + '/../../../../db'));
 var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Moderators
   * @api {POST} /admin/moderators Add Moderator
   * @apiName AddModerator
@@ -47,7 +46,7 @@ exports.add = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Moderators
   * @api {POST} /admin/moderators/remove Remove Moderator
   * @apiName RemoveModerator

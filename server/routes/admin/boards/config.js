@@ -3,10 +3,10 @@ var path = require('path');
 var db = require(path.normalize(__dirname + '/../../../../db'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Categories
-  * @api {GET} /admin/categories All Categories
-  * @apiName AdminCategories
+  * @api {GET} /admin/categories All Categories (Includes Private)
+  * @apiName AdminCategoriesUnfiltered
   * @apiDescription Used to retrieve all boards within their respective categories not filtering private boards.
   *
   * @apiSuccess {array} categories Array containing all of the forums boards in their respective categories
@@ -23,7 +23,7 @@ exports.categories = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Boards
   * @api {GET} /admin/boards All Boards
   * @apiName AllBoard
@@ -42,7 +42,7 @@ exports.boards = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Boards
   * @api {GET} /admin/boards/move Move Boards
   * @apiName MoveBoard
@@ -61,7 +61,7 @@ exports.moveBoards = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Categories
   * @api {POST} /boards/categories Update Categories
   * @apiName UpdateCategories
