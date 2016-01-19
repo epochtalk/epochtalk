@@ -46,7 +46,7 @@
     "dot": "^1.0.3",
     "dotenv": "^1.2.0",
     "epochtalk-bbcode-parser": "^1.0.0",
-    "epochtalk-core-pg": "epochtalk/core-pg",
+    "epochtalk-core-pg": "git://github.com/epochtalk/core-pg.git#plugin-system",
     "fs-extra": "^0.16.5",
     "good": "^5.1.1",
     "good-console": "^4.1.0",
