@@ -20,7 +20,7 @@ RUN apt-get -y update \
   && gem install foreman
 
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION 0.12.2
+ENV NODE_VERSION 0.12.7
 
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash \
   && source $NVM_DIR/nvm.sh \
@@ -30,6 +30,9 @@ RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh
 
 ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+# update npm version
+RUN npm install npm -g
 
 # install bower
 RUN npm install -g bower
