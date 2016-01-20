@@ -4,11 +4,11 @@ var Boom = require('boom');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
-var pre = require(path.normalize(__dirname + '/pre'));
 var helper = require(path.normalize(__dirname + '/helper'));
 var db = require(path.normalize(__dirname + '/../../../db'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
 var config = require(path.normalize(__dirname + '/../../../config'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @api {POST} /login Login
@@ -165,8 +165,8 @@ exports.register = {
   },
   pre: [
     [
-      { method: pre.checkUniqueEmail },
-      { method: pre.checkUniqueUsername }
+      { method: authorization.checkUniqueEmail },
+      { method: authorization.checkUniqueUsername }
     ]
   ],
   handler: function(request, reply) {

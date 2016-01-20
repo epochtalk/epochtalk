@@ -1,20 +1,20 @@
 var fs = require('fs');
-var readLine = require('readline');
+var _ = require('lodash');
 var Joi = require('joi');
 var Boom = require('boom');
 var path = require('path');
 var Promise = require('bluebird');
-var _ = require('lodash');
-var renameKeys = require('deep-rename-keys');
+var readLine = require('readline');
 var changeCase = require('change-case');
-var pre = require(path.normalize(__dirname + '/pre'));
-var config = require(path.normalize(__dirname + '/../../../../config'));
+var renameKeys = require('deep-rename-keys');
 var db = require(path.normalize(__dirname + '/../../../../db'));
+var common = require(path.normalize(__dirname + '/../../../common'));
+var config = require(path.normalize(__dirname + '/../../../../config'));
+var sass = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'sass'));
+var copyCss = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'copy_files'));
 var customVarsPath = path.normalize(__dirname + '/../../../../app/scss/ept/_custom-variables.scss');
 var previewVarsPath = path.normalize(__dirname + '/../../../../app/scss/ept/_preview-variables.scss');
 var defaultVarsPath = path.normalize(__dirname + '/../../../../app/scss/ept/_default-variables.scss');
-var sass = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'sass'));
-var copyCss = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'copy_files'));
 
 var camelCaseToUnderscore = function(obj) {
   if (_.isObject(obj)) {
@@ -103,7 +103,7 @@ exports.find = {
 exports.update = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.update' },
-  pre: [ { method: pre.handleImages } ],
+  pre: [ { method: common.handleSiteImages } ],
   validate: {
     payload: Joi.object().keys({
       log_enabled: Joi.boolean(),

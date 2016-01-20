@@ -2,9 +2,9 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
-var postPre = require(path.normalize(__dirname + '/../posts/pre'));
+var common = require(path.normalize(__dirname + '/../../common'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -51,16 +51,16 @@ exports.create = {
   },
   pre: [
     [
-      { method: pre.accessBoardWithBoardId },
-      { method: pre.isRequesterActive },
-      { method: pre.isPollCreatable },
-      { method: pre.validateMaxAnswers },
-      { method: pre.validateDisplayMode },
-      { method: pre.canModerate }
+      { method: authorization.accessBoardWithBoardId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.isPollCreatable },
+      { method: authorization.validateMaxAnswers },
+      { method: authorization.validateDisplayMode },
+      { method: authorization.canModerate }
     ],
-    { method: postPre.clean },
-    { method: postPre.parseEncodings },
-    { method: postPre.subImages }
+    { method: common.cleanPost },
+    { method: common.parseEncodings },
+    { method: common.subImages }
   ],
   handler: function(request, reply) {
     // build the thread post object from payload and params
@@ -120,7 +120,7 @@ exports.byBoard = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
-  pre: [ { method: pre.accessBoardWithBoardId } ],
+  pre: [ { method: authorization.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     var userId;
     if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
@@ -177,7 +177,7 @@ exports.posted = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
-  pre: [ [ { method: pre.userPriority, assign: 'priority' } ] ],
+  pre: [ [ { method: authorization.userPriority, assign: 'priority' } ] ],
   handler: function(request, reply) {
     var opts = {
       userId: request.auth.credentials.id,
@@ -221,10 +221,10 @@ exports.viewed = {
   plugins: { acls: 'threads.viewed' },
   validate: { params: { id: Joi.string().required() } },
   pre: [
-    [ { method: pre.accessBoardWithThreadId } ],
+    [ { method: authorization.accessBoardWithThreadId } ],
     [
-      { method: pre.checkViewValidity, assign: 'newViewId' },
-      { method: pre.updateUserThreadViews }
+      { method: common.checkViewValidity, assign: 'newViewId' },
+      { method: common.updateUserThreadViews }
     ]
   ],
   handler: function(request, reply) {
@@ -262,10 +262,10 @@ exports.title = {
     payload: { title: Joi.string().required().min(1) }
   },
   pre: [ [
-    { method: pre.accessBoardWithThreadId },
-    { method: pre.isRequesterActive },
-    { method: pre.isThreadOwner },
-    { method: pre.threadFirstPost, assign: 'post' }
+    { method: authorization.accessBoardWithThreadId },
+    { method: authorization.isRequesterActive },
+    { method: authorization.isThreadOwner },
+    { method: authorization.threadFirstPost, assign: 'post' }
   ] ],
   handler: function(request, reply) {
     var post = {
@@ -307,10 +307,10 @@ exports.lock = {
     payload: { status: Joi.boolean().default(true) }
   },
   pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.isThreadOwner },
-      { method: pre.getThread, assign: 'thread' }
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.isThreadOwner },
+      { method: common.getThread, assign: 'thread' }
     ] ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
@@ -352,8 +352,8 @@ exports.sticky = {
     payload: { status: Joi.boolean().default(true) }
   },
   pre: [ [
-    { method: pre.hasPermission },
-    { method: pre.getThread, assign: 'thread' } // TODO: remove this
+    { method: authorization.hasPermission },
+    { method: common.getThread, assign: 'thread' } // TODO: remove this
   ] ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
@@ -396,8 +396,8 @@ exports.move = {
     payload: { newBoardId: Joi.string().required() }
   },
   pre: [ [
-    { method: pre.hasPermission },
-    { method: pre.getThread, assign: 'thread' } // TODO: remove this
+    { method: authorization.hasPermission },
+    { method: common.getThread, assign: 'thread' } // TODO: remove this
   ] ],
   handler: function(request, reply) {
     var newBoardId = request.payload.newBoardId;
@@ -436,7 +436,7 @@ exports.purge = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.purge' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.hasPermission } ],
+  pre: [ { method: authorization.hasPermission } ],
   handler: function(request, reply) {
     var promise = db.threads.purge(request.params.id);
     return reply(promise);
@@ -475,13 +475,13 @@ exports.vote = {
     payload: { answerIds: Joi.array().items(Joi.string()).min(1).unique().required() }
   },
   pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.canVote },
-      { method: pre.isPollUnlocked },
-      { method: pre.isPollRunning },
-      { method: pre.isVoteValid }
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.pollExists },
+      { method: authorization.canVote },
+      { method: authorization.isPollUnlocked },
+      { method: authorization.isPollRunning },
+      { method: authorization.isVoteValid }
     ] ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
@@ -534,12 +534,12 @@ exports.removeVote = {
     }
   },
   pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.isPollUnlocked },
-      { method: pre.isPollRunning },
-      { method: pre.canChangeVote }
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.pollExists },
+      { method: authorization.isPollUnlocked },
+      { method: authorization.isPollRunning },
+      { method: authorization.canChangeVote }
     ] ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
@@ -604,12 +604,12 @@ exports.editPoll = {
     })
   },
   pre: [ [
-    { method: pre.accessBoardWithThreadId },
-    { method: pre.isRequesterActive },
-    { method: pre.pollExists },
-    { method: pre.isPollOwner },
-    { method: pre.validateMaxAnswersUpdate },
-    { method: pre.validateDisplayMode }
+    { method: authorization.accessBoardWithThreadId },
+    { method: authorization.isRequesterActive },
+    { method: authorization.pollExists },
+    { method: authorization.isPollOwner },
+    { method: authorization.validateMaxAnswersUpdate },
+    { method: authorization.validateDisplayMode }
   ] ],
   handler: function(request, reply) {
     var options = request.payload;
@@ -659,11 +659,11 @@ exports.createPoll = {
     })
   },
   pre: [ [
-    { method: pre.accessBoardWithThreadId },
-    { method: pre.isRequesterActive },
-    { method: pre.canCreatePoll },
-    { method: pre.validateMaxAnswers },
-    { method: pre.validateDisplayMode }
+    { method: authorization.accessBoardWithThreadId },
+    { method: authorization.isRequesterActive },
+    { method: authorization.canCreatePoll },
+    { method: authorization.validateMaxAnswers },
+    { method: authorization.validateDisplayMode }
   ] ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
@@ -712,10 +712,10 @@ exports.lockPoll = {
     payload: { lockValue: Joi.boolean().required() }
   },
   pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.isPollOwner }
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.pollExists },
+      { method: authorization.isPollOwner }
     ] ],
   handler: function(request, reply) {
     var pollId = request.params.pollId;

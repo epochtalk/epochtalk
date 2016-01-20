@@ -1,8 +1,8 @@
 var Joi = require('joi');
 var path = require('path');
 var Promise = require('bluebird');
-var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../db'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -214,7 +214,7 @@ exports.watchThread = {
   app: { thread_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.accessBoardWithThreadId } ],
+  pre: [ { method: authorization.accessBoardWithThreadId } ],
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var threadId = request.params.id;
@@ -264,7 +264,7 @@ exports.watchBoard = {
   app: { board_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre : [ { method: pre.accessBoardWithBoardId } ],
+  pre : [ { method: authorization.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;

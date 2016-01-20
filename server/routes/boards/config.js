@@ -1,8 +1,9 @@
 var Joi = require('joi');
 var path = require('path');
-var pre = require(path.normalize(__dirname + '/pre'));
-var db = require(path.normalize(__dirname + '/../../../db'));
 var Promise = require('bluebird');
+var db = require(path.normalize(__dirname + '/../../../db'));
+var common = require(path.normalize(__dirname + '/../../common'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiDefine BoardObjectSuccess
@@ -39,7 +40,7 @@ exports.create = {
       viewable_by: Joi.number()
     }
   },
-  pre: [ { method: pre.clean } ],
+  pre: [ { method: common.cleanBoard } ],
   handler: function(request, reply) {
     return reply(db.boards.create(request.payload));
   }
@@ -66,7 +67,7 @@ exports.find = {
   auth: { mode:'try', strategy: 'jwt' },
   plugins: { acls: 'boards.find' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.accessBoardWithBoardId } ],
+  pre: [ { method: authorization.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     return reply(db.boards.find(request.params.id));
   }
@@ -93,7 +94,7 @@ exports.allCategories = {
       limit: Joi.number().integer().min(1).max(100).default(5)
     }
   },
-  pre: [ { method: pre.userPriority, assign: 'priority' } ],
+  pre: [ { method: authorization.userPriority, assign: 'priority' } ],
   handler: function(request, reply) {
     var userId;
     var priority = request.pre.priority;
@@ -145,7 +146,7 @@ exports.update = {
     },
     params: { id: Joi.string().required() }
   },
-  pre: [ { method: pre.clean } ],
+  pre: [ { method: common.cleanBoard } ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = request.payload;

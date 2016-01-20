@@ -1,10 +1,10 @@
 var Joi = require('joi');
+var _ = require('lodash');
 var Boom = require('boom');
 var path = require('path');
-var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
+var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 var rolesHelper = require(path.normalize(__dirname + '/../../../plugins/acls/helper'));
-var _ = require('lodash');
 
 /**
   * @apiVersion 0.4.0
@@ -26,6 +26,7 @@ exports.all = {
     return reply(promise);
   }
 };
+
 /**
   * @apiVersion 0.4.0
   * @apiGroup Roles
@@ -657,7 +658,7 @@ exports.remove = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.remove' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.preventDefaultRoleDeletion } ],
+  pre: [ { method: authorization.preventDefaultRoleDeletion } ],
   handler: function(request, reply) {
     var id = request.params.id;
     var promise = db.roles.remove(id)

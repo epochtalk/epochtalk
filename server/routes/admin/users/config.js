@@ -3,10 +3,10 @@ var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var querystring = require('querystring');
-var pre = require(path.normalize(__dirname + '/pre'));
 var db = require(path.normalize(__dirname + '/../../../../db'));
+var common = require(path.normalize(__dirname + '/../../../common'));
 var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
-var commonPre = require(path.normalize(__dirname + '/../../common')).users;
+var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -81,13 +81,13 @@ exports.update = {
     [
       // TODO: password should be needed to change email
       // TODO: password should be not updated by an admin role
-      { method: pre.matchPriority },
-      { method: pre.isNewUsernameUnique },
-      { method: pre.isNewEmailUnique }
+      { method: authorization.matchPriority },
+      { method: authorization.isNewUsernameUniqueAdmin },
+      { method: authorization.isNewEmailUniqueAdmin }
     ],
-    { method: commonPre.clean },
-    { method: commonPre.parseSignature },
-    { method: commonPre.handleImages }
+    { method: common.cleanUser },
+    { method: common.parseSignature },
+    { method: common.handleSignatureImages }
   ],
   handler: function(request, reply) {
     var promise = db.users.update(request.payload)
@@ -200,8 +200,8 @@ exports.addRoles = {
     }
   },
   pre: [
-    { method: pre.hasAccessToRole },
-    { method: pre.hasSufficientPriorityToAddRole }
+    { method: authorization.hasAccessToRole },
+    { method: authorization.hasSufficientPriorityToAddRole }
   ],
   handler: function(request, reply) {
     var usernames = request.payload.usernames;
@@ -251,7 +251,7 @@ exports.removeRoles = {
       role_id: Joi.string().required()
     }
   },
-  pre: [ { method: pre.hasSufficientPriorityToRemoveRole }, ],
+  pre: [ { method: authorization.hasSufficientPriorityToRemoveRole }, ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roleId = request.payload.role_id;
@@ -427,7 +427,7 @@ exports.ban = {
       expiration: Joi.date()
     }
   },
-  pre: [ { method: pre.matchPriority } ],
+  pre: [ { method: authorization.matchPriority } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
@@ -467,7 +467,7 @@ exports.unban = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.unban' },
   validate: { payload: { user_id: Joi.string().required() } },
-  pre: [ { method: pre.matchPriority } ],
+  pre: [ { method: authorization.matchPriority } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var promise = db.users.unban(userId)

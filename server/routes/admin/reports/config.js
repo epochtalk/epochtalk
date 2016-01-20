@@ -1,9 +1,9 @@
-var Promise = require('bluebird');
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var pre = require(path.normalize(__dirname + '/pre'));
+var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../../../db'));
+var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -276,7 +276,7 @@ exports.updateMessageReport = {
 exports.updateUserReportNote = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updateUserReportNote' },
-  pre: [ { method: pre.canUpdateUserReportNote } ],
+  pre: [ { method: authorization.canUpdateUserReportNote } ],
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -316,7 +316,7 @@ exports.updateUserReportNote = {
 exports.updatePostReportNote = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updatePostReportNote' },
-  pre: [ { method: pre.canUpdatePostReportNote } ],
+  pre: [ { method: authorization.canUpdatePostReportNote } ],
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -356,7 +356,7 @@ exports.updatePostReportNote = {
 exports.updateMessageReportNote = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updateMessageReportNote' },
-  pre: [ { method: pre.canUpdateMessageReportNote } ],
+  pre: [ { method: authorization.canUpdateMessageReportNote } ],
   validate: {
     payload: {
       id: Joi.string().required(),

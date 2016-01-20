@@ -4,10 +4,12 @@ var path = require('path');
 var Boom = require('boom');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
-var pre = require(path.normalize(__dirname + '/pre'));
-var db = require(path.normalize(__dirname + '/../../../db'));
-var imageStore = require(path.normalize(__dirname + '/../../images'));
 var querystring = require('querystring');
+var db = require(path.normalize(__dirname + '/../../../db'));
+var common = require(path.normalize(__dirname + '/../../common'));
+var imageStore = require(path.normalize(__dirname + '/../../images'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
+
 
 /**
   * @apiVersion 0.4.0
@@ -37,13 +39,13 @@ exports.create = {
   },
   pre: [
     [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.accessLockedThreadWithThreadId },
-      { method: pre.isRequesterActive }
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.accessLockedThreadWithThreadId },
+      { method: authorization.isRequesterActive }
     ],
-    { method: pre.clean },
-    { method: pre.parseEncodings },
-    { method: pre.subImages }
+    { method: common.cleanPost },
+    { method: common.parseEncodings },
+    { method: common.subImages }
   ],
   handler: function(request, reply) {
     // build the post object from payload and params
@@ -76,8 +78,8 @@ exports.find = {
   plugins: { acls: 'posts.find' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.accessBoardWithPostId },
-    { method: pre.canViewDeletedPost, assign: 'viewDeleted' }
+    { method: authorization.accessBoardWithPostId },
+    { method: authorization.canViewDeletedPost, assign: 'viewDeleted' }
   ] ],
   handler: function(request, reply) {
     // retrieve post
@@ -124,8 +126,8 @@ exports.byThread = {
     }).without('start', 'page')
   },
   pre: [ [
-    { method: pre.accessBoardWithThreadId },
-    { method: pre.canViewDeletedPosts, assign: 'viewables' }
+    { method: authorization.accessBoardWithThreadId },
+    { method: authorization.canViewDeletedPosts, assign: 'viewables' }
   ] ],
   handler: function(request, reply) {
     // ready parameters
@@ -214,15 +216,15 @@ exports.update = {
   },
   pre: [
     [
-      { method: pre.isPostOwner },
-      { method: pre.isPostWriteable },
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.accessLockedThreadWithThreadId },
-      { method: pre.isRequesterActive }
+      { method: authorization.isPostOwner },
+      { method: authorization.isPostWriteable },
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.accessLockedThreadWithThreadId },
+      { method: authorization.isRequesterActive }
     ],
-    { method: pre.clean },
-    { method: pre.parseEncodings },
-    { method: pre.subImages }
+    { method: common.cleanPost },
+    { method: common.parseEncodings },
+    { method: common.subImages }
   ],
   handler: function(request, reply) {
     var updatePost = request.payload;
@@ -257,11 +259,11 @@ exports.delete = {
   plugins: { acls: 'posts.delete' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.isCDRPost },
-    { method: pre.isPostDeletable },
-    { method: pre.accessBoardWithPostId },
-    { method: pre.accessLockedThreadWithPostId },
-    { method: pre.isRequesterActive }
+    { method: authorization.isCDRPost },
+    { method: authorization.isPostDeletable },
+    { method: authorization.accessBoardWithPostId },
+    { method: authorization.accessLockedThreadWithPostId },
+    { method: authorization.isRequesterActive }
   ] ], //handle permissions
   handler: function(request, reply) {
     var promise = db.posts.delete(request.params.id)
@@ -294,11 +296,11 @@ exports.undelete = {
   plugins: { acls: 'posts.undelete' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.isCDRPost },
-    { method: pre.isPostDeletable },
-    { method: pre.accessBoardWithPostId },
-    { method: pre.accessLockedThreadWithPostId },
-    { method: pre.isRequesterActive }
+    { method: authorization.isCDRPost },
+    { method: authorization.isPostDeletable },
+    { method: authorization.accessBoardWithPostId },
+    { method: authorization.accessLockedThreadWithPostId },
+    { method: authorization.isRequesterActive }
   ] ], //handle permissions
   handler: function(request, reply) {
     var promise = db.posts.undelete(request.params.id)
@@ -327,8 +329,8 @@ exports.purge = {
   plugins: { acls: 'posts.purge' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.isPostPurgeable },
-    { method: pre.isCDRPost }
+    { method: authorization.isPostPurgeable },
+    { method: authorization.isCDRPost }
   ] ], //handle permissions
   handler: function(request, reply) {
     var promise = db.posts.purge(request.params.id);
@@ -367,9 +369,9 @@ exports.pageByUser = {
     }
   },
   pre: [ [
-    { method: pre.accessUser },
-    { method: pre.userPriority, assign: 'priority' },
-    { method: pre.canViewDeletedPosts, assign: 'viewables' }
+    { method: authorization.accessUser },
+    { method: authorization.userPriority, assign: 'priority' },
+    { method: authorization.canViewDeletedPosts, assign: 'viewables' }
   ] ],
   handler: function(request, reply) {
     var userId = '';
