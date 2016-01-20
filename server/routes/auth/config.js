@@ -157,7 +157,7 @@ exports.register = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
     payload: {
-      username: Joi.string().min(1).max(255).required(),
+      username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
       email: Joi.string().email().required(),
       password: Joi.string().min(8).max(72).required(),
       confirmation: Joi.ref('password')

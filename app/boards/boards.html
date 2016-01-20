@@ -51,7 +51,7 @@
         <div class="last-post">
           <div ng-if="board.last_post_username">
             Last post by
-            <a ui-sref="profile({ username: board.last_post_username })" ng-bind-html="::board.last_post_username"></a>
+            <a ui-sref="profile({ username: board.last_post_username })" ng-bind="::board.last_post_username"></a>
           </div>
           <div ng-if="board.last_thread_title">
             in thread
@@ -104,7 +104,7 @@
 
         <div class="mobile-stats">
           <span>Last post by </span>
-          <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+          <a ui-sref="profile({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
           <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
         </div>
       </div>

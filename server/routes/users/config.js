@@ -59,7 +59,7 @@ exports.update = {
     payload: Joi.object().keys({
       id: Joi.string().required(),
       email: Joi.string().email(),
-      username: Joi.string().min(1).max(255),
+      username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
       old_password: Joi.string().min(8).max(72),
       password: Joi.string().min(8).max(72),
       confirmation: Joi.ref('password'),

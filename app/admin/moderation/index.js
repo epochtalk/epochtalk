@@ -101,7 +101,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       'preview@admin-moderation.users': {
         controller: 'ProfileCtrl',
         controllerAs: 'ProfileCtrl',
-        templateUrl: '/static/templates/user/profile.html'
+        templateUrl: '/static/templates/users/profile/profile.html'
       }
     },
     resolve: {
@@ -109,7 +109,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
-          var ctrl = require('../../user/profile.controller');
+          var ctrl = require('../../users/profile/profile.controller');
           $ocLazyLoad.load({ name: 'ept.profile.ctrl' });
           deferred.resolve(ctrl);
         });

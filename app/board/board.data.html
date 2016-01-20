@@ -34,7 +34,7 @@
     <div class="last-post">
       <div ng-if="childBoard.last_post_username">
         Last post by
-         <a ui-sref="profile({ username: childBoard.last_post_username })" ng-bind-html="childBoard.last_post_username"></a>
+         <a ui-sref="profile({ username: childBoard.last_post_username })" ng-bind="childBoard.last_post_username"></a>
       </div>
       <div ng-if="childBoard.last_thread_title">
         in thread
@@ -92,7 +92,7 @@
       <span> Views</span>
       <br />
       <span>Last post by </span>
-      <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+      <a ui-sref="profile({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
       <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
     </div>
 
@@ -110,7 +110,7 @@
 
   <div class="last-reply">
     <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
-     by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+     by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
     <div ng-if="thread.has_new_post">
       <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
@@ -139,7 +139,7 @@
       <span> Views</span>
       <br />
       <span>Last post by </span>
-      <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+      <a ui-sref="profile({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
       <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
     </div>
 
@@ -157,7 +157,7 @@
 
   <div class="last-reply">
     <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
-    by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+    by <a ui-sref="profile({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
     <div ng-if="thread.has_new_post">
       <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
