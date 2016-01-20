@@ -71,6 +71,7 @@ COPY . .
 ENTRYPOINT /etc/init.d/postgresql start \
   && service redis-server start \
   && npm run db-migrate \
+  && npm run db-migrate-plugins \
   && node cli --create \
   && npm run serve
 
