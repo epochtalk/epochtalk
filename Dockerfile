@@ -62,7 +62,7 @@ COPY package.json .
 RUN npm install
 
 # configure .env
-COPY .env .env
+COPY dotenv .env
 RUN echo "DATABASE_URL=\"postgres://docker:docker@localhost:5432/docker\"" >> .env \
   && echo "HOST=0.0.0.0" >> .env
 
