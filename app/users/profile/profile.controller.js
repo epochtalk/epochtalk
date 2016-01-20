@@ -73,6 +73,7 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.saveAvatar = function() {
       var changeAvatarUser = {
         id: ctrl.user.id,
+        username: ctrl.user.username,
         avatar: ctrl.user.avatar,
       };
 
@@ -99,6 +100,7 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.saveSignature = function() {
       var changeSigUser = {
         id: ctrl.user.id,
+        username: ctrl.user.username,
         raw_signature: ctrl.user.raw_signature
       };
 
@@ -120,13 +122,16 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
 
     // Edit Password
     this.editPassword = false;
-    this.passData = { id: ctrl.user.id };
+    this.passData = { id: ctrl.user.id, username: ctrl.user.username };
     this.clearPasswordFields = function() {
-      $timeout(function() { ctrl.passData = { id: ctrl.user.id }; }, 500);
+      $timeout(function() {
+        ctrl.passData = { id: ctrl.user.id, username: ctrl.user.username };
+      }, 500);
     };
 
     this.savePassword = function() {
       var promise;
+      console.log(ctrl.passData);
       if (ctrl.adminVisitor) { promise = AdminUsers.update(ctrl.passData).$promise; }
       else { promise = User.update(ctrl.passData).$promise; }
       promise.then(function() {
