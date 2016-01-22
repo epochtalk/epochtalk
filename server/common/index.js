@@ -1,14 +1,9 @@
 var _ = require('lodash');
 var path = require('path');
-var Boom = require('boom');
-var bcrypt = require('bcrypt');
 var uuid = require('node-uuid');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
-var querystring = require('querystring');
 var bbcodeParser = require('epochtalk-bbcode-parser');
-var db = require(path.normalize(__dirname + '/../../db'));
-var redis = require(path.normalize(__dirname + '/../../redis'));
 var config = require(path.normalize(__dirname + '/../../config'));
 var imageStore = require(path.normalize(__dirname + '/../images'));
 var sanitizer = require(path.normalize(__dirname + '/../sanitizer'));
@@ -183,9 +178,8 @@ module.exports = {
   },
   getThread: function(request, reply) {
     var threadId = _.get(request, request.route.settings.app.thread_id);
-    db.threads.find(threadId)
-    .then(function(thread) { return reply(thread); })
-    .catch(function(err) { return reply(err); });
+    var promise = request.db.threads.find(threadId);
+    return reply(promise);
   },
   checkViewValidity: function(request, reply) {
     var threadId = _.get(request, request.route.settings.app.thread_id);
@@ -194,31 +188,31 @@ module.exports = {
 
     // Check if viewerId and threadId is found
     var viewerIdKey = viewerId + threadId;
-    var promise = checkViewKey(viewerIdKey)
+    var promise = checkViewKey(viewerIdKey, request.redis)
     .then(function(valid) { // viewId found
-      if (valid) { return db.threads.incViewCount(threadId); }
+      if (valid) { return request.db.threads.incViewCount(threadId); }
     })
     .catch(function() { // viewId not found
       // save this viewerId to redis
-      if (viewerId) { redis.setAsync(viewerIdKey, Date.now()); }
+      if (viewerId) { request.redis.setAsync(viewerIdKey, Date.now()); }
       // create new viewerId and save to redis
       else {
         newViewerId = uuid.v4();
-        redis.setAsync(newViewerId + threadId, Date.now());
+        request.redis.setAsync(newViewerId + threadId, Date.now());
       }
 
       // Check if ip address and threadId is found
       var viewerAddress = request.info.remoteAddress;
       var addressKey = viewerAddress + threadId;
-      return checkViewKey(addressKey)
+      return checkViewKey(addressKey, request.redis)
       .then(function(valid) { // address found
-        if (valid) { return db.threads.incViewCount(threadId); }
+        if (valid) { return request.db.threads.incViewCount(threadId); }
       })
       .catch(function() { // address not found
         // save this address + threadId combo to redis
-        redis.setAsync(addressKey, Date.now());
+        request.redis.setAsync(addressKey, Date.now());
         // increment view count
-        return db.threads.incViewCount(threadId);
+        return request.db.threads.incViewCount(threadId);
       });
     })
     .then(function() { return newViewerId; });
@@ -231,7 +225,7 @@ module.exports = {
 
     var threadId = _.get(request, request.route.settings.app.thread_id);
     var userId = request.auth.credentials.id;
-    var promise = db.users.putUserThreadViews(userId, threadId);
+    var promise = request.db.users.putUserThreadViews(userId, threadId);
     return reply(promise);
   },
 };
@@ -248,7 +242,7 @@ function textToEntities(text) {
   return entities;
 }
 
-function checkViewKey(key) {
+function checkViewKey(key, redis) {
   return redis.getAsync(key)
   .then(function(storedTime) {
     if (storedTime) { return storedTime; }

@@ -5,11 +5,9 @@ var Boom = require('boom');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
 var querystring = require('querystring');
-var db = require(path.normalize(__dirname + '/../../../db'));
 var common = require(path.normalize(__dirname + '/../../common'));
 var imageStore = require(path.normalize(__dirname + '/../../images'));
 var authorization = require(path.normalize(__dirname + '/../../authorization'));
-
 
 /**
   * @apiVersion 0.4.0
@@ -53,7 +51,7 @@ exports.create = {
     newPost.user_id = request.auth.credentials.id;
 
     // create the post in db
-    var promise = db.posts.create(newPost)
+    var promise = request.db.posts.create(newPost)
     .then(createImageReferences); // handle image references
     return reply(promise);
   }
@@ -88,7 +86,7 @@ exports.find = {
     if (authenticated) { userId = request.auth.credentials.id; }
     var viewDeleted = request.pre.viewDeleted;
     var id = request.params.id;
-    var promise = db.posts.find(id)
+    var promise = request.db.posts.find(id)
     .then(function(post) { return cleanPosts(post, userId, viewDeleted); })
     .then(function(posts) { return posts[0]; })
     .error(function(err) { return Boom.badRequest(err.message); });
@@ -146,11 +144,11 @@ exports.byThread = {
     opts.start = ((opts.page * limit) - limit);
 
     // retrieve posts for this thread
-    var getPosts = db.posts.byThread(threadId, opts);
-    var getThread = db.threads.find(threadId);
-    var getThreadWatching = db.threads.watching(threadId, userId);
-    var getPoll = db.polls.byThread(threadId);
-    var hasVoted = db.polls.hasVoted(threadId, userId);
+    var getPosts = request.db.posts.byThread(threadId, opts);
+    var getThread = request.db.threads.find(threadId);
+    var getThreadWatching = request.db.threads.watching(threadId, userId);
+    var getPoll = request.db.polls.byThread(threadId);
+    var hasVoted = request.db.polls.hasVoted(threadId, userId);
 
     var promise = Promise.join(getPosts, getThread, getThreadWatching, getPoll, hasVoted, function(posts, thread, threadWatching, poll, voted) {
       // check if thread is being Watched
@@ -229,7 +227,7 @@ exports.update = {
   handler: function(request, reply) {
     var updatePost = request.payload;
     updatePost.id = request.params.id;
-    var promise = db.posts.update(updatePost)
+    var promise = request.db.posts.update(updatePost)
     .then(updateImageReferences); // handle image references
     return reply(promise);
   }
@@ -266,7 +264,7 @@ exports.delete = {
     { method: authorization.isRequesterActive }
   ] ], //handle permissions
   handler: function(request, reply) {
-    var promise = db.posts.delete(request.params.id)
+    var promise = request.db.posts.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }
@@ -303,7 +301,7 @@ exports.undelete = {
     { method: authorization.isRequesterActive }
   ] ], //handle permissions
   handler: function(request, reply) {
-    var promise = db.posts.undelete(request.params.id)
+    var promise = request.db.posts.undelete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }
@@ -333,7 +331,7 @@ exports.purge = {
     { method: authorization.isCDRPost }
   ] ], //handle permissions
   handler: function(request, reply) {
-    var promise = db.posts.purge(request.params.id);
+    var promise = request.db.posts.purge(request.params.id);
     return reply(promise);
   }
 };
@@ -387,8 +385,8 @@ exports.pageByUser = {
       sortDesc: request.query.desc
     };
 
-    var getPosts = db.posts.pageByUser(username, priority, opts);
-    var getCount = db.posts.pageByUserCount(username);
+    var getPosts = request.db.posts.pageByUser(username, priority, opts);
+    var getCount = request.db.posts.pageByUserCount(username);
 
     // get user's posts
     var promise = Promise.join(getPosts, getCount, function(posts, count) {

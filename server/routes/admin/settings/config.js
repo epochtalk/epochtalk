@@ -7,7 +7,6 @@ var Promise = require('bluebird');
 var readLine = require('readline');
 var changeCase = require('change-case');
 var renameKeys = require('deep-rename-keys');
-var db = require(path.normalize(__dirname + '/../../../../db'));
 var common = require(path.normalize(__dirname + '/../../../common'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
 var sass = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'sass'));
@@ -47,7 +46,7 @@ exports.find = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.find' },
   handler: function(request, reply) {
-    var promise = db.configurations.get()
+    var promise = request.db.configurations.get()
     .then(function(configs) { return camelCaseToUnderscore(configs); });
 
     return reply(promise);
@@ -169,7 +168,7 @@ exports.update = {
   },
   handler: function(request, reply) {
     var newConfig = underscoreToCamelCase(request.payload);
-    var promise = db.configurations.update(newConfig).then(function() {
+    var promise = request.db.configurations.update(newConfig).then(function() {
       Object.keys(newConfig).forEach(function(key) {
         config[key] = newConfig[key];
       });
@@ -203,7 +202,7 @@ exports.getBlacklist = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.getBlacklist' },
   handler: function(request, reply) {
-    var promise = db.blacklist.all();
+    var promise = request.db.blacklist.all();
     return reply(promise);
   }
 };
@@ -232,7 +231,7 @@ exports.addToBlacklist = {
   },
   handler: function(request, reply) {
     var rule = request.payload;
-    var promise = db.blacklist.addRule(rule)
+    var promise = request.db.blacklist.addRule(rule)
     .then(function(blacklist) {
       request.server.plugins.blacklist.retrieveBlacklist();
       return blacklist;
@@ -266,7 +265,7 @@ exports.updateBlacklist = {
   },
   handler: function(request, reply) {
     var updatedRule = request.payload;
-    var promise = db.blacklist.updateRule(updatedRule)
+    var promise = request.db.blacklist.updateRule(updatedRule)
     .then(function(blacklist) {
       request.server.plugins.blacklist.retrieveBlacklist();
       return blacklist;
@@ -296,7 +295,7 @@ exports.deleteFromBlacklist = {
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var id = request.params.id;
-    var promise = db.blacklist.deleteRule(id)
+    var promise = request.db.blacklist.deleteRule(id)
     .then(function(blacklist) {
       request.server.plugins.blacklist.retrieveBlacklist();
       return blacklist;
@@ -340,7 +339,6 @@ exports.getTheme = {
     .on('close', function() { reply(theme); });
   }
 };
-
 
 /**
   * @apiVersion 0.4.0

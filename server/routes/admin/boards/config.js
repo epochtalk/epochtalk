@@ -1,6 +1,5 @@
 var Joi = require('joi');
 var path = require('path');
-var db = require(path.normalize(__dirname + '/../../../../db'));
 
 /**
   * @apiVersion 0.4.0
@@ -17,7 +16,7 @@ exports.categories = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.categories' },
   handler: function(request, reply) {
-    var promise =  db.boards.allCategories();
+    var promise =  request.db.boards.allCategories();
     return reply(promise);
   }
 };
@@ -37,7 +36,7 @@ exports.boards = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.boards' },
   handler: function(request, reply) {
-    return reply(db.boards.all());
+    return reply(request.db.boards.all());
   }
 };
 
@@ -56,7 +55,7 @@ exports.moveBoards = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.moveBoards' },
   handler: function(request, reply) {
-    return reply(db.boards.all());
+    return reply(request.db.boards.all());
   }
 };
 
@@ -87,7 +86,7 @@ exports.updateCategories = {
   handler: function(request, reply) {
     // update board on db
     var boardMapping = request.payload.boardMapping;
-    var promise = db.boards.updateCategories(boardMapping);
+    var promise = request.db.boards.updateCategories(boardMapping);
     return reply(promise);
   }
 };

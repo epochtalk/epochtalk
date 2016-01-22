@@ -1,7 +1,6 @@
 var Joi = require('joi');
 var path = require('path');
 var Promise = require('bluebird');
-var db = require(path.normalize(__dirname + '/../../../db'));
 var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
@@ -33,7 +32,7 @@ exports.unread = {
       limit: request.query.limit
     };
 
-    var promise = db.watchlist.unread(userId, opts)
+    var promise = request.db.watchlist.unread(userId, opts)
     .then(function(threads) {
       var hasMoreThreads = false;
       if (threads.length > request.query.limit) {
@@ -77,8 +76,8 @@ exports.edit = {
     var threadOpts = { page: 1, limit: request.query.limit };
     var boardOpts = { page: 1, limit: request.query.limit };
 
-    var getThreads = db.watchlist.userWatchThreads(userId, threadOpts);
-    var getBoards = db.watchlist.userWatchBoards(userId, boardOpts);
+    var getThreads = request.db.watchlist.userWatchThreads(userId, threadOpts);
+    var getBoards = request.db.watchlist.userWatchBoards(userId, boardOpts);
 
     var promise = Promise.join(getThreads, getBoards, function(threads, boards) {
       var hasMoreThreads = false, hasMoreBoards = false;
@@ -132,7 +131,7 @@ exports.pageThreads = {
       limit: request.query.limit
     };
 
-    var promise = db.watchlist.userWatchThreads(userId, opts)
+    var promise = request.db.watchlist.userWatchThreads(userId, opts)
     .then(function(threads){
       var hasMoreThreads = false;
       if (threads.length > request.query.limit) {
@@ -179,7 +178,7 @@ exports.pageBoards = {
       limit: request.query.limit
     };
 
-    var promise = db.watchlist.userWatchBoards(userId, opts)
+    var promise = request.db.watchlist.userWatchBoards(userId, opts)
     .then(function(boards) {
       var hasMoreBoards = false;
       if (boards.length > request.query.limit) {
@@ -218,7 +217,7 @@ exports.watchThread = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var threadId = request.params.id;
-    var promise = db.watchlist.watchThread(userId, threadId);
+    var promise = request.db.watchlist.watchThread(userId, threadId);
     return reply(promise);
   }
 };
@@ -242,7 +241,7 @@ exports.unwatchThread = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
-    var promise = db.watchlist.unwatchThread(userId, boardId);
+    var promise = request.db.watchlist.unwatchThread(userId, boardId);
     return reply(promise);
   }
 };
@@ -268,7 +267,7 @@ exports.watchBoard = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
-    var promise = db.watchlist.watchBoard(userId, boardId);
+    var promise = request.db.watchlist.watchBoard(userId, boardId);
     return reply(promise);
   }
 };
@@ -292,7 +291,7 @@ exports.unwatchBoard = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
-    var promise = db.watchlist.unwatchBoard(userId, boardId);
+    var promise = request.db.watchlist.unwatchBoard(userId, boardId);
     return reply(promise);
   }
 };

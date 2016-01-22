@@ -1,7 +1,6 @@
 var Joi = require('joi');
 var path = require('path');
 var Promise = require('bluebird');
-var db = require(path.normalize(__dirname + '/../../../db'));
 var common = require(path.normalize(__dirname + '/../../common'));
 var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
@@ -42,7 +41,7 @@ exports.create = {
   },
   pre: [ { method: common.cleanBoard } ],
   handler: function(request, reply) {
-    return reply(db.boards.create(request.payload));
+    return reply(request.db.boards.create(request.payload));
   }
 };
 
@@ -69,7 +68,7 @@ exports.find = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: authorization.accessBoardWithBoardId } ],
   handler: function(request, reply) {
-    return reply(db.boards.find(request.params.id));
+    return reply(request.db.boards.find(request.params.id));
   }
 };
 
@@ -105,8 +104,8 @@ exports.allCategories = {
     };
     if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
 
-    var getAllCategories = db.boards.allCategories(priority, opts);
-    var getRecentThreads = db.threads.recent(userId, priority, opts);
+    var getAllCategories = request.db.boards.allCategories(priority, opts);
+    var getRecentThreads = request.db.threads.recent(userId, priority, opts);
     var promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
       return {
         boards: boards,
@@ -153,7 +152,7 @@ exports.update = {
     updateBoard.id = request.params.id;
 
     // update board on db
-    return reply(db.boards.update(updateBoard));
+    return reply(request.db.boards.update(updateBoard));
   }
 };
 
@@ -176,6 +175,6 @@ exports.delete = {
   plugins: { acls: 'boards.delete' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
-    return reply(db.boards.delete(request.params.id));
+    return reply(request.db.boards.delete(request.params.id));
   }
 };

@@ -3,7 +3,6 @@ var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var querystring = require('querystring');
-var db = require(path.normalize(__dirname + '/../../../../db'));
 var common = require(path.normalize(__dirname + '/../../../common'));
 var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 var authorization = require(path.normalize(__dirname + '/../../../authorization'));
@@ -90,7 +89,7 @@ exports.update = {
     { method: common.handleSignatureImages }
   ],
   handler: function(request, reply) {
-    var promise = db.users.update(request.payload)
+    var promise = request.db.users.update(request.payload)
     .then(function(user) {
       delete user.confirmation_token;
       delete user.reset_token;
@@ -148,9 +147,9 @@ exports.find = {
   validate: { params: { username: Joi.string().required() } },
   handler: function(request, reply) {
     var username = querystring.unescape(request.params.username);
-    var promise = db.users.userByUsername(username)
+    var promise = request.db.users.userByUsername(username)
     .then(function(user) {
-      if (!user) { return Boom.badRequest('User doesn\'t exist.'); }
+      if (!user) { return Boom.notFound(); }
       delete user.passhash;
       delete user.confirmation_token;
       delete user.reset_token;
@@ -206,7 +205,7 @@ exports.addRoles = {
   handler: function(request, reply) {
     var usernames = request.payload.usernames;
     var roleId = request.payload.role_id;
-    var promise = db.users.addRoles(usernames, roleId)
+    var promise = request.db.users.addRoles(usernames, roleId)
     .map(function(user) {
       return authHelper.updateRoles(user.id, user.roles)
       .then(function() { return user; });
@@ -255,7 +254,7 @@ exports.removeRoles = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roleId = request.payload.role_id;
-    var promise = db.users.removeRoles(userId, roleId)
+    var promise = request.db.users.removeRoles(userId, roleId)
     .then(function(user) {
       return authHelper.updateRoles(user.id, user.roles)
       .then(function() { return user; });
@@ -294,7 +293,7 @@ exports.searchUsernames = {
     // get user by username
     var searchStr = request.query.username;
     var limit = request.query.limit;
-    var promise = db.users.searchUsernames(searchStr, limit);
+    var promise = request.db.users.searchUsernames(searchStr, limit);
     return reply(promise);
   }
 };
@@ -336,7 +335,7 @@ exports.count = {
       };
     }
 
-    var promise = db.users.count(opts);
+    var promise = request.db.users.count(opts);
     return reply(promise);
   }
 };
@@ -389,7 +388,7 @@ exports.page = {
       filter: request.query.filter,
       searchStr: request.query.search
     };
-    var promise = db.users.page(opts);
+    var promise = request.db.users.page(opts);
     return reply(promise);
   }
 };
@@ -431,7 +430,7 @@ exports.ban = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
-    var promise = db.users.ban(userId, expiration)
+    var promise = request.db.users.ban(userId, expiration)
     .then(function(user) {
       return authHelper.updateRoles(user.user_id, user.roles)
       .then(function() { return user; });
@@ -470,7 +469,7 @@ exports.unban = {
   pre: [ { method: authorization.matchPriority } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    var promise = db.users.unban(userId)
+    var promise = request.db.users.unban(userId)
     .then(function(user) {
       return authHelper.updateRoles(user.user_id, user.roles)
       .then(function() { return user; });

@@ -2,7 +2,6 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var db = require(path.normalize(__dirname + '/../../../../db'));
 var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 
 /**
@@ -40,9 +39,8 @@ exports.createUserReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.createUserReportNote(reportNote)
-    .then(function(createdReportNote) { reply(createdReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.createUserReportNote(reportNote);
+    return reply(promise);
   }
 };
 
@@ -81,9 +79,8 @@ exports.createPostReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.createPostReportNote(reportNote)
-    .then(function(createdReportNote) { reply(createdReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.createPostReportNote(reportNote);
+    return reply(promise);
   }
 };
 
@@ -122,9 +119,8 @@ exports.createMessageReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.createMessageReportNote(reportNote)
-    .then(function(createdReportNote) { reply(createdReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.createMessageReportNote(reportNote);
+    return reply(promise);
   }
 };
 
@@ -163,9 +159,8 @@ exports.updateUserReport = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    db.reports.updateUserReport(report)
-    .then(function(updatedReport) { reply(updatedReport); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updateUserReport(report);
+    return reply(promise);
   }
 };
 
@@ -204,9 +199,8 @@ exports.updatePostReport = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    db.reports.updatePostReport(report)
-    .then(function(updatedReport) { reply(updatedReport); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updatePostReport(report);
+    return reply(promise);
   }
 };
 
@@ -245,9 +239,8 @@ exports.updateMessageReport = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    db.reports.updateMessageReport(report)
-    .then(function(updatedReport) { reply(updatedReport); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updateMessageReport(report);
+    return reply(promise);
   }
 };
 
@@ -285,9 +278,8 @@ exports.updateUserReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.updateUserReportNote(reportNote)
-    .then(function(updatedReportNote) { reply(updatedReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updateUserReportNote(reportNote);
+    return reply(promise);
   }
 };
 
@@ -325,9 +317,8 @@ exports.updatePostReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.updatePostReportNote(reportNote)
-    .then(function(updatedReportNote) { reply(updatedReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updatePostReportNote(reportNote);
+    return reply(promise);
   }
 };
 
@@ -365,9 +356,8 @@ exports.updateMessageReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.updateMessageReportNote(reportNote)
-    .then(function(updatedReportNote) { reply(updatedReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updateMessageReportNote(reportNote);
+    return reply(promise);
   }
 };
 
@@ -435,8 +425,8 @@ exports.pageUserReports = {
       searchStr: request.query.search
     };
 
-    var userReports = db.reports.pageUserReports(opts);
-    var userReportsCount = db.reports.userReportsCount(opts);
+    var userReports = request.db.reports.pageUserReports(opts);
+    var userReportsCount = request.db.reports.userReportsCount(opts);
 
     var promise = Promise.join(userReports, userReportsCount, function(reports, count) {
       return {
@@ -535,8 +525,8 @@ exports.pagePostReports = {
       modId: request.query.mod_id
     };
 
-    var postReports = db.reports.pagePostReports(opts);
-    var postReportsCount = db.reports.postReportsCount(countOpts);
+    var postReports = request.db.reports.pagePostReports(opts);
+    var postReportsCount = request.db.reports.postReportsCount(countOpts);
 
     var promise = Promise.join(postReports, postReportsCount, function(reports, count) {
       return {
@@ -622,8 +612,8 @@ exports.pageMessageReports = {
       sortDesc: request.query.desc,
       searchStr: request.query.search
     };
-    var messageReports = db.reports.pageMessageReports(opts);
-    var messageReportsCount = db.reports.messageReportsCount(opts);
+    var messageReports = request.db.reports.pageMessageReports(opts);
+    var messageReportsCount = request.db.reports.messageReportsCount(opts);
 
     var promise = Promise.join(messageReports, messageReportsCount, function(reports, count) {
       return {
@@ -693,8 +683,8 @@ exports.pageUserReportsNotes = {
       sortDesc: request.query.desc
     };
 
-    var reportNotes = db.reports.pageUserReportsNotes(reportId, opts);
-    var reportNotesCount = db.reports.userReportsNotesCount(reportId);
+    var reportNotes = request.db.reports.pageUserReportsNotes(reportId, opts);
+    var reportNotesCount = request.db.reports.userReportsNotesCount(reportId);
 
     var promise = Promise.join(reportNotes, reportNotesCount, function(notes, count) {
       return {
@@ -761,8 +751,8 @@ exports.pagePostReportsNotes = {
       sortDesc: request.query.desc
     };
 
-    var reportNotes = db.reports.pagePostReportsNotes(reportId, opts);
-    var reportNotesCount = db.reports.postReportsNotesCount(reportId);
+    var reportNotes = request.db.reports.pagePostReportsNotes(reportId, opts);
+    var reportNotesCount = request.db.reports.postReportsNotesCount(reportId);
 
     var promise = Promise.join(reportNotes, reportNotesCount, function(notes, count) {
       return {
@@ -829,8 +819,8 @@ exports.pageMessageReportsNotes = {
       sortDesc: request.query.desc
     };
 
-    var reportNotes = db.reports.pageMessageReportsNotes(reportId, opts);
-    var reportNotesCount = db.reports.messageReportsNotesCount(reportId);
+    var reportNotes = request.db.reports.pageMessageReportsNotes(reportId, opts);
+    var reportNotesCount = request.db.reports.messageReportsNotesCount(reportId);
 
     var promise = Promise.join(reportNotes, reportNotesCount, function(notes, count) {
       return {

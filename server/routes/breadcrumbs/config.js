@@ -1,7 +1,6 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var db = require(path.normalize(__dirname + '/../../../db'));
 
 /**
   * @apiVersion 0.4.0
@@ -31,10 +30,10 @@ exports.byType = {
 
     // method type enum
     var findType = {
-      board: db.boards.breadcrumb,
-      category: db.categories.find,
-      thread: db.threads.breadcrumb,
-      post: db.posts.find
+      board: request.db.boards.breadcrumb,
+      category: request.db.categories.find,
+      thread: request.db.threads.breadcrumb,
+      post: request.db.posts.find
     };
 
     // Type enum

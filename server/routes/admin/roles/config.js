@@ -2,7 +2,6 @@ var Joi = require('joi');
 var _ = require('lodash');
 var Boom = require('boom');
 var path = require('path');
-var db = require(path.normalize(__dirname + '/../../../../db'));
 var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 var rolesHelper = require(path.normalize(__dirname + '/../../../plugins/acls/helper'));
 
@@ -22,7 +21,7 @@ exports.all = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.all' },
   handler: function(request, reply) {
-    var promise = db.roles.all();
+    var promise = request.db.roles.all();
     return reply(promise);
   }
 };
@@ -67,7 +66,7 @@ exports.users = {
       limit: request.query.limit,
       searchStr: request.query.search
     };
-    var promise = db.roles.users(roleId, opts)
+    var promise = request.db.roles.users(roleId, opts)
     .then(function(userData) {
       userData.users.map(function(user) {
         user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
@@ -342,7 +341,7 @@ exports.add = {
   },
   handler: function(request, reply) {
     var role = request.payload;
-    var promise = db.roles.add(role)
+    var promise = request.db.roles.add(role)
     .then(function(result) {
       role.id = result.id;
       role.lookup = result.id;
@@ -623,7 +622,7 @@ exports.update = {
   },
   handler: function(request, reply) {
     var role = request.payload;
-    var promise = db.roles.update(role)
+    var promise = request.db.roles.update(role)
     .then(function(result) {
       role.id = result.id; // undoes deslugify which happens in core
       // Update role in the in memory role object
@@ -661,7 +660,7 @@ exports.remove = {
   pre: [ { method: authorization.preventDefaultRoleDeletion } ],
   handler: function(request, reply) {
     var id = request.params.id;
-    var promise = db.roles.remove(id)
+    var promise = request.db.roles.remove(id)
     .then(function(result) {
       // Remove deleted role from in memory object
       rolesHelper.deleteRole(id);
@@ -696,7 +695,7 @@ exports.reprioritize = {
   },
   handler: function(request, reply) {
     var roles = request.payload;
-    var promise = db.roles.reprioritize(roles)
+    var promise = request.db.roles.reprioritize(roles)
     .then(function(result) {
       // update priorities for in memory roles object
       rolesHelper.reprioritizeRoles(roles);
@@ -712,7 +711,7 @@ exports.priorities = {
   validate: { payload: { user_id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    var promise = db.roles.priorities(userId);
+    var promise = request.db.roles.priorities(userId);
     return reply(promise);
   }
 };

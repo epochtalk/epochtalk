@@ -115,8 +115,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      user: [ 'User', '$stateParams', function(User, $stateParams) {
-        return User.get({ id: $stateParams.username }).$promise;
+      user: [ 'AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+        return AdminUsers.find({ username: $stateParams.username }).$promise;
       }]
     }
   })

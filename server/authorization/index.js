@@ -1,15 +1,8 @@
 var _ = require('lodash');
-var path = require('path');
 var Boom = require('boom');
 var bcrypt = require('bcrypt');
-var cheerio = require('cheerio');
 var Promise = require('bluebird');
 var querystring = require('querystring');
-var bbcodeParser = require('epochtalk-bbcode-parser');
-var db = require(path.normalize(__dirname + '/../../db'));
-var config = require(path.normalize(__dirname + '/../../config'));
-var imageStore = require(path.normalize(__dirname + '/../images'));
-var sanitizer = require(path.normalize(__dirname + '/../sanitizer'));
 
 // -- Fact functions --
 
@@ -48,20 +41,20 @@ function checkAuth(conditions, error) {
 function isBoardVisible(request) {
   var priority = getPriority(request);
   var boardId = _.get(request, request.route.settings.app.board_id);
-  return db.boards.getBoardInBoardMapping(boardId, priority);
+  return request.db.boards.getBoardInBoardMapping(boardId, priority);
 }
 
 function isBoardVisibleThreadId(request) {
   var priority = getPriority(request);
   var threadId = _.get(request, request.route.settings.app.thread_id);
-  return db.threads.getThreadsBoardInBoardMapping(threadId, priority);
+  return request.db.threads.getThreadsBoardInBoardMapping(threadId, priority);
 }
 
 function isModAndPermission(request, permission) {
   var userId = getUserId(request);
   var some = hasPermission(request, permission);
   var boardId = _.get(request, request.route.settings.app.board_id);
-  return db.moderators.isModerator(userId, boardId)
+  return request.db.moderators.isModerator(userId, boardId)
   .then(function(mod) { return mod && some; });
 }
 
@@ -69,15 +62,17 @@ function isModAndPermissionThreadId(request, permission) {
   var userId = getUserId(request);
   var some = hasPermission(request, 'boards.viewUncategorized.some');
   var threadId = _.get(request, request.route.settings.app.thread_id);
-  return db.moderators.isModeratorWithThreadId(userId, threadId)
+  return request.db.moderators.isModeratorWithThreadId(userId, threadId)
   .then(function(mod) { return mod && some; });
 }
 
 function isUserActive(request, username) {
-  return db.users.userByUsername(username)
+  var userId = getUserId(request);
+  return request.db.users.userByUsername(username)
   .then(function(user) {
     var active = false;
-    if (user) { active = !user.deleted; }
+    if (user && user.id === userId) { active = true; }
+    else if (user) { active = !user.deleted; }
     return active;
   });
 }
@@ -89,7 +84,7 @@ module.exports = {
   isRequesterActive: function(request, reply) {
     var promise = Boom.unauthorized();
     if (request.auth.isAuthenticated) {
-      promise = db.users.find(request.auth.credentials.id)
+      promise = request.db.users.find(request.auth.credentials.id)
       .then(function(user) {
         var active = Boom.forbidden('User Account Not Active');
         if (user && !user.deleted) { active = true; }
@@ -104,7 +99,7 @@ module.exports = {
   // -- Auth
   checkUniqueEmail: function(request, reply) {
     var email = request.payload.email;
-    var promise = db.users.userByEmail(email)
+    var promise = request.db.users.userByEmail(email)
     .then(function(user) {
       var result = true;
       if (user) { result = Boom.badRequest('Email Already Exists'); }
@@ -114,7 +109,7 @@ module.exports = {
   },
   checkUniqueUsername: function(request, reply) {
     var username = request.payload.username;
-    var promise = db.users.userByUsername(username)
+    var promise = request.db.users.userByUsername(username)
     .then(function(user) {
       var result = true;
       if (user) { result = Boom.badRequest('Username Already Exists'); }
@@ -148,8 +143,8 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var privilegedAll = getACLValue(request.auth, privilege + '.all');
     var privilegedSome = getACLValue(request.auth, privilege +'.some');
-    var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
-    var isThreadOwner = db.threads.getThreadOwner(threadId)
+    var isMod = request.db.moderators.isModeratorWithThreadId(userId, threadId);
+    var isThreadOwner = request.db.threads.getThreadOwner(threadId)
     .then(function(owner) { return owner.user_id === userId; });
 
     var promise = Promise.join(isThreadOwner, privilegedAll, privilegedSome, isMod, function(owner, all, some, mod) {
@@ -169,7 +164,7 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var privilegedAll = getACLValue(request.auth, privilege + '.all');
     var privilegedSome = getACLValue(request.auth, privilege +'.some');
-    var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
+    var isMod = request.db.moderators.isModeratorWithThreadId(userId, threadId);
     var promise = Promise.join(privilegedAll, privilegedSome, isMod, function(all, some, mod) {
 
       var result = Boom.forbidden();
@@ -183,7 +178,7 @@ module.exports = {
   pollExists: function(request, reply) {
     // Check if has poll exists
     var threadId = _.get(request, request.route.settings.app.thread_id);
-    var promise = db.polls.exists(threadId)
+    var promise = request.db.polls.exists(threadId)
     .then(function(exists) {
       var pollExists = Boom.badRequest('Poll Does Not Exists');
       if (exists) { pollExists = exists; }
@@ -200,8 +195,8 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var privilegedAll = getACLValue(request.auth, privilege + '.all');
     var privilegedSome = getACLValue(request.auth, privilege +'.some');
-    var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
-    var isThreadOwner = db.threads.getThreadOwner(threadId)
+    var isMod = request.db.moderators.isModeratorWithThreadId(userId, threadId);
+    var isThreadOwner = request.db.threads.getThreadOwner(threadId)
     .then(function(owner) { return owner.user_id === userId; });
 
     var promise = Promise.join(isThreadOwner, privilegedAll, privilegedSome, isMod, function(owner, all, some, mod) {
@@ -232,9 +227,9 @@ module.exports = {
 
     // make sure thread exists
     // make sure user is thread owner
-    var getThreadOwner = db.threads.getThreadOwner(threadId);
+    var getThreadOwner = request.db.threads.getThreadOwner(threadId);
     // make sure poll doesn't exist
-    var getPollExists = db.polls.exists(threadId);
+    var getPollExists = request.db.polls.exists(threadId);
 
     var promise = Promise.join(getThreadOwner, getPollExists, function(owner, exists) {
       var result = Boom.forbidden();
@@ -268,7 +263,7 @@ module.exports = {
   validateMaxAnswersUpdate: function(request, reply) {
     var pollId = request.params.pollId;
     var maxAnswers = request.payload.max_answers;
-    var promise = db.polls.answers(pollId)
+    var promise = request.db.polls.answers(pollId)
     .then(function(answers) {
       var answersLength = answers.length;
       if (maxAnswers > answersLength) { request.payload.max_answers = answersLength; }
@@ -279,7 +274,7 @@ module.exports = {
     // Check if has voted already
     var threadId = _.get(request, request.route.settings.app.thread_id);
     var userId = request.auth.credentials.id;
-    var promise = db.polls.hasVoted(threadId, userId)
+    var promise = request.db.polls.hasVoted(threadId, userId)
     .then(function(voted) {
       var canVote = Boom.badRequest('Already Voted');
       if (!voted) { canVote = true; }
@@ -290,7 +285,7 @@ module.exports = {
   },
   isPollUnlocked: function(request, reply) {
     var pollId = _.get(request, request.route.settings.app.poll_id);
-    var promise = db.polls.isLocked(pollId)
+    var promise = request.db.polls.isLocked(pollId)
     .then(function(locked) {
       var canLock = Boom.badRequest('Poll is Unlocked');
       if (!locked) { canLock = true; }
@@ -301,7 +296,7 @@ module.exports = {
   },
   isPollRunning: function(request, reply) {
     var pollId = _.get(request, request.route.settings.app.poll_id);
-    var promise = db.polls.isRunning(pollId)
+    var promise = request.db.polls.isRunning(pollId)
     .then(function(running) {
       var canVote = Boom.badRequest('Poll is Expired');
       if (running) { canVote = true; }
@@ -314,7 +309,7 @@ module.exports = {
     var pollId = _.get(request, request.route.settings.app.poll_id);
     var payloadLength = request.payload.answerIds.length;
 
-    var promise = db.polls.maxAnswers(pollId)
+    var promise = request.db.polls.maxAnswers(pollId)
     .then(function(maxAnswers) {
       var canVote = Boom.badRequest('Too Many Answers');
       if (maxAnswers && maxAnswers >= payloadLength) { canVote = true; }
@@ -325,7 +320,7 @@ module.exports = {
   },
   canChangeVote: function(request, reply) {
     var pollId = _.get(request, request.route.settings.app.poll_id);
-    var promise = db.polls.changeVote(pollId)
+    var promise = request.db.polls.changeVote(pollId)
     .then(function(changeVote) {
       var canChange = Boom.badRequest('Votes cannot be changed');
       if (changeVote) { canChange = true; }
@@ -347,7 +342,7 @@ module.exports = {
   },
   threadFirstPost: function(request, reply) {
     var threadId = _.get(request, request.route.settings.app.thread_id);
-    var promise = db.threads.getThreadFirstPost(threadId)
+    var promise = request.db.threads.getThreadFirstPost(threadId)
     .error(function() { return Boom.notFound(); });
     return reply(promise);
   },
@@ -361,7 +356,7 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'posts.viewDeleted.all');
     var viewSome = getACLValue(request.auth, 'posts.viewDeleted.some');
-    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
+    var isMod = request.db.moderators.isModeratorWithPostId(userId, postId);
 
     var promise = Promise.join(viewAll, viewSome, isMod, function(all, some, mod) {
       var result = false;
@@ -379,7 +374,7 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'posts.viewDeleted.all');
     var viewSome = getACLValue(request.auth, 'posts.viewDeleted.some');
-    var modBoards = db.moderators.getUsersBoards(userId);
+    var modBoards = request.db.moderators.getUsersBoards(userId);
 
     var promise = Promise.join(viewAll, viewSome, modBoards, function(all, some, boards) {
       var result = false;
@@ -396,7 +391,7 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var purgeAll = getACLValue(request.auth, 'posts.privilegedPurge.all');
     var purgeSome = getACLValue(request.auth, 'posts.privilegedPurge.some');
-    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
+    var isMod = request.db.moderators.isModeratorWithPostId(userId, postId);
 
     var promise = Promise.join(purgeAll, purgeSome, isMod, function(all, some, mod) {
       var result = false;
@@ -417,8 +412,8 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, 'boards.viewUncategorized.all');
     var viewSome = getACLValue(request.auth, 'boards.viewUncategorized.some');
-    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
-    var boardVisible = db.posts.getPostsBoardInBoardMapping(postId, priority);
+    var isMod = request.db.moderators.isModeratorWithPostId(userId, postId);
+    var boardVisible = request.db.posts.getPostsBoardInBoardMapping(postId, priority);
 
     var promise = Promise.join(boardVisible, viewAll, viewSome, isMod, function(visible, all, some, mod) {
       var result = Boom.notFound();
@@ -437,8 +432,8 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var bypassAll = getACLValue(request.auth, 'posts.bypassLock.all');
     var bypassSome = getACLValue(request.auth, 'posts.bypassLock.some');
-    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
-    var threadLocked = db.posts.getPostsThread(postId)
+    var isMod = request.db.moderators.isModeratorWithPostId(userId, postId);
+    var threadLocked = request.db.posts.getPostsThread(postId)
     .then(function(thread) { return thread.locked; });
 
     var promise = Promise.join(threadLocked, bypassAll, bypassSome, isMod, function(locked, all, some, mod) {
@@ -458,8 +453,8 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var bypassAll = getACLValue(request.auth, 'posts.bypassLock.all');
     var bypassSome = getACLValue(request.auth, 'posts.bypassLock.some');
-    var isMod = db.moderators.isModeratorWithThreadId(userId, threadId);
-    var threadLocked = db.threads.find(threadId)
+    var isMod = request.db.moderators.isModeratorWithThreadId(userId, threadId);
+    var threadLocked = request.db.threads.find(threadId)
     .then(function(thread) { return thread.locked; });
 
     var promise = Promise.join(threadLocked, bypassAll, bypassSome, isMod, function(locked, all, some, mod) {
@@ -480,8 +475,8 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var viewAll = getACLValue(request.auth, privilege + '.all');
     var viewSome = getACLValue(request.auth, privilege + '.some');
-    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
-    var postWriteable = db.posts.find(postId).then(function(post) { return !post.deleted; });
+    var isMod = request.db.moderators.isModeratorWithPostId(userId, postId);
+    var postWriteable = request.db.posts.find(postId).then(function(post) { return !post.deleted; });
 
     var promise = Promise.join(postWriteable, viewAll, viewSome, isMod, function(writeable, all, some, mod) {
       var result = Boom.forbidden();
@@ -501,8 +496,8 @@ module.exports = {
     var getACLValue = request.server.plugins.acls.getACLValue;
     var updateAll = getACLValue(request.auth, privilege + '.all');
     var updateSome = getACLValue(request.auth, privilege + '.some');
-    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
-    var postOwner = db.posts.find(postId)
+    var isMod = request.db.moderators.isModeratorWithPostId(userId, postId);
+    var postOwner = request.db.posts.find(postId)
     .then(function(post) { return userId === post.user.id; });
 
     var promise = Promise.join(postOwner, updateAll, updateSome, isMod, function(owner, all, some, mod) {
@@ -525,10 +520,10 @@ module.exports = {
     var updateAll = getACLValue(request.auth, privilege + '.all');
     var updateSome = getACLValue(request.auth, privilege + '.some');
     var hasSMPrivilege = getACLValue(request.auth, 'threads.moderated');
-    var isMod = db.moderators.isModeratorWithPostId(userId, postId);
-    var isThreadModerated = db.posts.isPostsThreadModerated(postId);
-    var isThreadOwner = db.posts.isPostsThreadOwner(postId, userId);
-    var postOwner = db.posts.find(postId)
+    var isMod = request.db.moderators.isModeratorWithPostId(userId, postId);
+    var isThreadModerated = request.db.posts.isPostsThreadModerated(postId);
+    var isThreadOwner = request.db.posts.isPostsThreadOwner(postId, userId);
+    var postOwner = request.db.posts.find(postId)
     .then(function(post) { return userId === post.user.id; });
 
     var promise = Promise.join(postOwner, updateAll, updateSome, isMod, isThreadModerated, isThreadOwner, hasSMPrivilege, function(owner, all, some, mod, threadSM, threadOwner, userSM) {
@@ -545,7 +540,7 @@ module.exports = {
   },
   isCDRPost: function(request, reply) {
     var postId = _.get(request, request.route.settings.app.post_id);
-    var promise = db.posts.getThreadFirstPost(postId)
+    var promise = request.db.posts.getThreadFirstPost(postId)
     .then(function(post) {
       var result = true; // return true if not first post
       if (post.id === postId) { result = Boom.forbidden(); } // forbidden if first post
@@ -558,7 +553,7 @@ module.exports = {
     var userId = request.auth.credentials.id;
     var conversationId = request.payload.conversation_id;
 
-    var promise = db.conversations.isConversationMember(conversationId, userId)
+    var promise = request.db.conversations.isConversationMember(conversationId, userId)
     .then(function(isMember) {
       var result = Boom.badRequest();
       if (isMember) { result = ''; }
@@ -572,7 +567,7 @@ module.exports = {
     var messageId = request.params.id;
     var getACLValue = request.server.plugins.acls.getACLValue;
     var isDeleteable = getACLValue(request.auth, 'messages.privilegedDelete');
-    var isSender = db.messages.isMessageSender(messageId, userId);
+    var isSender = request.db.messages.isMessageSender(messageId, userId);
     var promise = Promise.join(isSender, isDeleteable, function(sender, deleteable) {
       var result = Boom.forbidden();
       if (sender || deleteable) { result = ''; }
@@ -591,11 +586,11 @@ module.exports = {
     var lower = hasPermission(request, 'users.privilegedDeactivate.lowerPriority');
 
     // get referenced user's priority
-    var refPriority = db.users.find(referencedUserId)
+    var refPriority = request.db.users.find(referencedUserId)
     .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); });
 
     // get authed user priority
-    var curPriority = db.users.find(currentUserId)
+    var curPriority = request.db.users.find(currentUserId)
     .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
 
     var promise = Promise.join(refPriority, curPriority, function(referenced, current) {
@@ -623,11 +618,11 @@ module.exports = {
     var lower = hasPermission(request, 'users.privilegedReactivate.lowerPriority');
 
     // get referenced user's priority
-    var refPriority = db.users.find(referencedUserId)
+    var refPriority = request.db.users.find(referencedUserId)
     .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); });
 
     // get authed user priority
-    var curPriority = db.users.find(currentUserId)
+    var curPriority = request.db.users.find(currentUserId)
     .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
 
     var promise = Promise.join(refPriority, curPriority, function(referenced, current) {
@@ -647,7 +642,7 @@ module.exports = {
   },
   isReferencedUserActive: function(request, reply) {
     var userId = _.get(request, request.route.settings.app.user_id);
-    var promise = db.users.find(userId)
+    var promise = request.db.users.find(userId)
     .then(function(user) {
       var result = true;
       if (user.deleted) { result = Boom.badRequest('Account is Not Active'); }
@@ -658,7 +653,7 @@ module.exports = {
   },
   isReferencedUserDeactive: function(request, reply) {
     var userId = _.get(request, request.route.settings.app.user_id);
-    var promise = db.users.find(userId)
+    var promise = request.db.users.find(userId)
     .then(function(user) {
       var result = Boom.badRequest('Account is Active');
       if (user.deleted) { result = true; }
@@ -675,7 +670,7 @@ module.exports = {
     if (!oldPassword) { return reply(true); }
 
     // check if oldPassword matches what's in the db
-    var promise = db.users.find(userId)
+    var promise = request.db.users.find(userId)
     .then(function(user) {
       var valid = Boom.badRequest();
       if (bcrypt.compareSync(oldPassword, user.passhash)) { valid = true; }
@@ -691,7 +686,7 @@ module.exports = {
     if (!username) { return reply(true); }
 
     // check if user exists with this email
-    var promise = db.users.userByUsername(username)
+    var promise = request.db.users.userByUsername(username)
     .then(function(user) {
       var unique = Boom.badRequest();
       // username hasn't changed
@@ -713,7 +708,7 @@ module.exports = {
     if (!email) { return reply(true); }
 
     // check if user exists with this email
-    var promise = db.users.userByEmail(email)
+    var promise = request.db.users.userByEmail(email)
     .then(function(user) {
       var unique = Boom.badRequest();
       // email hasn't changed
@@ -743,35 +738,35 @@ module.exports = {
   canUpdateUserReportNote: function(request, reply) {
     var userId = request.auth.credentials.id;
     var noteId = request.payload.id;
-    db.reports.findUserReportNote(noteId)
+    var promise = request.db.reports.findUserReportNote(noteId)
     .then(function(note) {
-      var noteUserId = note.user_id;
-      if (noteUserId === userId) { return reply(); }
-      else { return reply(Boom.unauthorized('Only the author of this user report note can update it')); }
-    })
-    .catch(function(err) { return reply(Boom.badRequest(err)); });
+      var retVal = Boom.unauthorized('Only the author of this user report note can update it');
+      if (note.user_id === userId) { retVal = true; }
+      return retVal;
+    });
+    return reply(promise);
   },
   canUpdatePostReportNote: function(request, reply) {
     var userId = request.auth.credentials.id;
     var noteId = request.payload.id;
-    db.reports.findPostReportNote(noteId)
+    var promise = request.db.reports.findPostReportNote(noteId)
     .then(function(note) {
-      var noteUserId = note.user_id;
-      if (noteUserId === userId) { return reply(); }
-      else { return reply(Boom.unauthorized('Only the author of this post report note can update it')); }
-    })
-    .catch(function(err) { return reply(Boom.badRequest(err)); });
+      var retVal = Boom.unauthorized('Only the author of this post report note can update it');
+      if (note.user_id === userId) { retVal = true; }
+      return retVal;
+    });
+    return reply(promise);
   },
   canUpdateMessageReportNote: function(request, reply) {
     var userId = request.auth.credentials.id;
     var noteId = request.payload.id;
-    db.reports.findMessageReportNote(noteId)
+    var promise = request.db.reports.findMessageReportNote(noteId)
     .then(function(note) {
-      var noteUserId = note.user_id;
-      if (noteUserId === userId) { return reply(); }
-      else { return reply(Boom.unauthorized('Only the author of this message report note can update it')); }
-    })
-    .catch(function(err) { return reply(Boom.badRequest(err)); });
+      var retVal = Boom.unauthorized('Only the author of this message report note can update it');
+      if (note.user_id === userId) { retVal = true; }
+      return retVal;
+    });
+    return reply(promise);
   },
   // -- Admin Roles
   preventDefaultRoleDeletion: function(request, reply) {
@@ -802,7 +797,7 @@ module.exports = {
     if (!username) { return reply(true); }
 
     // check if user exists with this email
-    var promise = db.users.userByUsername(username)
+    var promise = request.db.users.userByUsername(username)
     .then(function(user) {
       var unique = Boom.badRequest();
       // username hasn't changed
@@ -823,7 +818,7 @@ module.exports = {
     if (!email) { return reply(true); }
 
     // check if user exists with this email
-    var promise = db.users.userByEmail(email)
+    var promise = request.db.users.userByEmail(email)
     .then(function(user) {
       var unique = Boom.badRequest();
       // email hasn't changed
@@ -849,11 +844,11 @@ module.exports = {
     var lowerPriority = getACLValue(request.auth, privilege + '.lowerPriority');
 
     // get referenced user's priority
-    var refPriority = db.users.find(referencedUserId)
+    var refPriority = request.db.users.find(referencedUserId)
     .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); });
 
     // get authed user priority
-    var curPriority = db.users.find(currentUserId)
+    var curPriority = request.db.users.find(currentUserId)
     .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
 
     var promise = Promise.join(refPriority, curPriority, samePriority, lowerPriority, function(referenced, current, same, lower) {
@@ -875,10 +870,10 @@ module.exports = {
     var authedUserId = request.auth.credentials.id;
     var roleId = request.payload.role_id;
     var authedPriority, refRole;
-    var promise = db.users.find(authedUserId)
+    var promise = request.db.users.find(authedUserId)
     .then(function(curUser) {  // get authed user priority
       authedPriority = _.min(_.pluck(curUser.roles, 'priority'));
-      return db.roles.all();
+      return request.db.roles.all();
     })
     .then(function(roles) { // get role were trying to ad users to
       refRole = _.find(roles, _.matchesProperty('id', roleId));
@@ -907,12 +902,12 @@ module.exports = {
       var authedUserId = request.auth.credentials.id;
 
       // get authed user priority
-      var authedPriority = db.users.find(authedUserId)
+      var authedPriority = request.db.users.find(authedUserId)
       .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
       var refUsername;
       promise = Promise.each(usernames, function(username) {
         refUsername = username;
-        var refPriority = db.users.userByUsername(username)
+        var refPriority = request.db.users.userByUsername(username)
         .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); });
 
         // users can modify themselves
@@ -949,10 +944,10 @@ module.exports = {
       var refUsername;
 
       // get authed user priority
-      var authedPriority = db.users.find(authedUserId)
+      var authedPriority = request.db.users.find(authedUserId)
       .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
 
-      var refPriority = db.users.find(refUserId)
+      var refPriority = request.db.users.find(refUserId)
       .then(function(refUser) {
         refUsername = refUser.username;
         return _.min(_.pluck(refUser.roles, 'priority'));

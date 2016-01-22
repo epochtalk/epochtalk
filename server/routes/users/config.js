@@ -3,7 +3,6 @@ var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var querystring = require('querystring');
-var db = require(path.normalize(__dirname + '/../../../db'));
 var common = require(path.normalize(__dirname + '/../../common'));
 var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
 var authorization = require(path.normalize(__dirname + '/../../authorization'));
@@ -95,7 +94,7 @@ exports.update = {
     request.payload.id = request.auth.credentials.id;
 
     // update the user in db
-    var promise = db.users.update(request.payload)
+    var promise = request.db.users.update(request.payload)
     .then(function(user) {
       delete user.confirmation_token;
       delete user.reset_token;
@@ -161,11 +160,8 @@ exports.find = {
 
     // get user by username
     var username = querystring.unescape(request.params.username);
-    var promise = db.users.userByUsername(username)
+    var promise = request.db.users.userByUsername(username)
     .then(function(user) {
-      if (!user) { return Boom.notFound(); }
-      if (user.deleted && user.id !== userId) { return Boom.notFound(); }
-
       delete user.passhash;
       delete user.confirmation_token;
       delete user.reset_token;
@@ -204,7 +200,7 @@ exports.deactivate = {
   ] ],
   handler: function(request, reply) {
     var userId = request.params.id;
-    var promise = db.users.deactivate(userId);
+    var promise = request.db.users.deactivate(userId);
     return reply(promise);
   }
 };
@@ -233,7 +229,7 @@ exports.reactivate = {
   ] ],
   handler: function(request, reply) {
     var userId = request.params.id;
-    var promise = db.users.reactivate(userId);
+    var promise = request.db.users.reactivate(userId);
     return reply(promise);
   }
 };
@@ -257,7 +253,7 @@ exports.delete = {
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.params.id;
-    var promise = db.users.delete(userId);
+    var promise = request.db.users.delete(userId);
     return reply(promise);
   }
 };

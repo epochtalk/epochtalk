@@ -5,7 +5,6 @@ var crypto = require('crypto');
 var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
 var helper = require(path.normalize(__dirname + '/helper'));
-var db = require(path.normalize(__dirname + '/../../../db'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
 var config = require(path.normalize(__dirname + '/../../../config'));
 var authorization = require(path.normalize(__dirname + '/../../authorization'));
@@ -46,7 +45,7 @@ exports.login = {
     var username = request.payload.username;
     var password = request.payload.password;
     var rememberMe = request.payload.rememberMe;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     // check user exists
     .then(function(user) {
       if (user) { return user; }
@@ -71,7 +70,7 @@ exports.login = {
     })
     // get user moderating boards
     .then(function(user) {
-      return db.moderators.getUsersBoards(user.id)
+      return request.db.moderators.getUsersBoards(user.id)
       .then(function(boards) {
         boards = boards.map(function(board) { return board.board_id; });
         user.moderating = boards;
@@ -183,7 +182,7 @@ exports.register = {
       confirmation_token: config.verifyRegistration ? crypto.randomBytes(20).toString('hex') : null
     };
     // check that username or email does not already exist
-    var promise = db.users.create(newUser)
+    var promise = request.db.users.create(newUser)
     .then(function(user) {
       if (config.verifyRegistration) {  // send confirmation email
         var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
@@ -233,7 +232,7 @@ exports.confirmAccount = {
   handler: function(request, reply) {
     var username = request.payload.username;
     var confirmationToken = request.payload.token;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('Account Not Found')); }
@@ -241,14 +240,14 @@ exports.confirmAccount = {
     .then(function(user) {
       var tokenMatch = confirmationToken === user.confirmation_token;
       if (user.confirmation_token && tokenMatch) {
-        return db.users.update({ confirmation_token: null, id: user.id })
+        return request.db.users.update({ confirmation_token: null, id: user.id })
         .then(function() { return user; });
       }
       else { return Promise.reject(Boom.badRequest('Account Confirmation Error')); }
     })
     // get user moderating boards
     .then(function(user) {
-      return db.moderators.getUsersBoards(user.id)
+      return request.db.moderators.getUsersBoards(user.id)
       .then(function(boards) {
         boards = boards.map(function(board) { return board.board_id; });
         user.moderating = boards;
@@ -303,7 +302,7 @@ exports.username = {
   validate: { params: { username: Joi.string().min(1).max(255).required() } },
   handler: function(request, reply) {
     var username = request.params.username;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     .then(function(user) { return { found: !!user }; });
     return reply(promise);
   }
@@ -324,7 +323,7 @@ exports.email = {
   validate: { params: { email: Joi.string().email().required() } },
   handler: function(request, reply) {
     var email = request.params.email;
-    var promise = db.users.userByEmail(email) // get full user info
+    var promise = request.db.users.userByEmail(email) // get full user info
     .then(function(user) { return { found: !!user }; });
     return reply(promise);
   }
@@ -348,12 +347,12 @@ exports.recoverAccount = {
   validate: { params: { query: Joi.string().min(1).max(255).required(), } },
   handler: function(request, reply) {
     var query = request.params.query;
-    var promise = db.users.userByUsername(query) // get full user info
+    var promise = request.db.users.userByUsername(query) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('No Account Found')); }
     })
-    .catch(function() { return db.users.userByEmail(query); })
+    .catch(function() { return request.db.users.userByEmail(query); })
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('No Account Found')); }
@@ -365,7 +364,7 @@ exports.recoverAccount = {
       updateUser.reset_expiration = Date.now() + 1000 * 60 * 60; // 1 hr
       updateUser.id = user.id;
       // Store token and expiration to user object
-      return db.users.update(updateUser);
+      return request.db.users.update(updateUser);
     })
     .then(function(user) {
       // Email user reset information here
@@ -410,7 +409,7 @@ exports.resetPassword = {
     var username = request.payload.username;
     var password = request.payload.password;
     var token = request.payload.token;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('Account Not Found')); }
@@ -430,7 +429,7 @@ exports.resetPassword = {
       }
       else { return Promise.reject(Boom.badRequest('Invalid Reset Token.')); }
     })
-    .then(db.users.update)
+    .then(request.db.users.update)
     .then(function(updatedUser) {
       // TODO: Send password reset confirmation email here
       return 'Password Successfully Reset';
@@ -465,7 +464,7 @@ exports.checkResetToken = {
   handler: function(request, reply) {
     var username = request.params.username;
     var token = request.params.token;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('No Account Found.')); }

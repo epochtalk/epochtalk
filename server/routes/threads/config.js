@@ -2,7 +2,6 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var db = require(path.normalize(__dirname + '/../../../db'));
 var common = require(path.normalize(__dirname + '/../../common'));
 var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
@@ -79,17 +78,17 @@ exports.create = {
     };
 
     // create the thread
-    var promise = db.threads.create(newThread)
+    var promise = request.db.threads.create(newThread)
     // save thread id to newPost
     .tap(function(thread) { newPost.thread_id = thread.id; })
     // create any associated polls
     .then(function(thread) {
       if (request.payload.poll) {
-        return db.polls.create(thread.id, request.payload.poll);
+        return request.db.polls.create(thread.id, request.payload.poll);
       }
     })
     // create the first post in this thread
-    .then(function() { return db.posts.create(newPost); });
+    .then(function() { return request.db.posts.create(newPost); });
     return reply(promise);
   }
 };
@@ -130,9 +129,9 @@ exports.byBoard = {
       page: request.query.page
     };
 
-    var getThreads = db.threads.byBoard(boardId, userId, opts);
-    var getBoard = db.boards.find(boardId);
-    var getBoardWatching = db.boards.watching(boardId, userId);
+    var getThreads = request.db.threads.byBoard(boardId, userId, opts);
+    var getBoard = request.db.boards.find(boardId);
+    var getBoardWatching = request.db.boards.watching(boardId, userId);
 
     var promise = Promise.join(getThreads, getBoard, getBoardWatching, function(threads, board, boardWatching) {
       // check if board is being Watched
@@ -186,8 +185,8 @@ exports.posted = {
       page: request.query.page
     };
 
-    var getThreads = db.threads.posted(opts);
-    var getCount = db.threads.postedCount(opts);
+    var getThreads = request.db.threads.posted(opts);
+    var getCount = request.db.threads.postedCount(opts);
 
     var promise = Promise.join(getThreads, getCount, function(threads, count) {
       return {
@@ -273,7 +272,7 @@ exports.title = {
       thread_id: request.params.id,
       title: request.payload.title
     };
-    var promise = db.posts.update(post)
+    var promise = request.db.posts.update(post)
     .error(function() { return Boom.notFound(); });
     return reply(promise);
   }
@@ -317,7 +316,7 @@ exports.lock = {
     thread.locked = request.payload.status;
 
     // lock thread
-    var promise = db.threads.lock(thread.id, thread.locked)
+    var promise = request.db.threads.lock(thread.id, thread.locked)
     .then(function() { return thread; });
 
     return reply(promise);
@@ -360,7 +359,7 @@ exports.sticky = {
     thread.sticky = request.payload.status;
 
     // sticky thread
-    var promise = db.threads.sticky(thread.id, thread.sticky)
+    var promise = request.db.threads.sticky(thread.id, thread.sticky)
     .then(function() { return thread; });
 
     return reply(promise);
@@ -405,7 +404,7 @@ exports.move = {
     thread.board_id = newBoardId;
 
     // move thread
-    var promise = db.threads.move(thread.id, thread.board_id)
+    var promise = request.db.threads.move(thread.id, thread.board_id)
     .then(function() { return thread; })
     .error(function(err) { return Boom.badRequest(err.message); });
 
@@ -438,7 +437,7 @@ exports.purge = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: authorization.hasPermission } ],
   handler: function(request, reply) {
-    var promise = db.threads.purge(request.params.id);
+    var promise = request.db.threads.purge(request.params.id);
     return reply(promise);
   }
 };
@@ -488,10 +487,10 @@ exports.vote = {
     var pollId = request.params.pollId;
     var answerIds = request.payload.answerIds;
     var userId = request.auth.credentials.id;
-    var promise = db.polls.vote(answerIds, userId)
+    var promise = request.db.polls.vote(answerIds, userId)
     .then(function() {
-      var getPoll = db.polls.byThread(threadId);
-      var hasVoted = db.polls.hasVoted(threadId, userId);
+      var getPoll = request.db.polls.byThread(threadId);
+      var hasVoted = request.db.polls.hasVoted(threadId, userId);
 
       return Promise.join(getPoll, hasVoted, function(poll, voted) {
         var hideVotes = poll.display_mode === 'expired' && poll.expiration > Date.now();
@@ -545,10 +544,10 @@ exports.removeVote = {
     var threadId = request.params.threadId;
     var pollId = request.params.pollId;
     var userId = request.auth.credentials.id;
-    var promise = db.polls.removeVote(pollId, userId)
+    var promise = request.db.polls.removeVote(pollId, userId)
     .then(function() {
-      var getPoll = db.polls.byThread(threadId);
-      var hasVoted = db.polls.hasVoted(threadId, userId);
+      var getPoll = request.db.polls.byThread(threadId);
+      var hasVoted = request.db.polls.hasVoted(threadId, userId);
 
       return Promise.join(getPoll, hasVoted, function(poll, voted) {
         var hideVotes = poll.display_mode === 'voted' && !voted;
@@ -614,7 +613,7 @@ exports.editPoll = {
   handler: function(request, reply) {
     var options = request.payload;
     options.id = request.params.pollId;
-    var promise = db.polls.update(options);
+    var promise = request.db.polls.update(options);
     return reply(promise);
   }
 };
@@ -668,7 +667,7 @@ exports.createPoll = {
   handler: function(request, reply) {
     var threadId = request.params.threadId;
     var poll = request.payload;
-    var promise = db.polls.create(threadId, poll)
+    var promise = request.db.polls.create(threadId, poll)
     .then(function(dbPoll) {
       poll.id = dbPoll.id;
       poll.answers = poll.answers.map(function(answer) { return { answer: answer }; });
@@ -720,7 +719,7 @@ exports.lockPoll = {
   handler: function(request, reply) {
     var pollId = request.params.pollId;
     var lockValue = request.payload.lockValue;
-    var promise = db.polls.lock(pollId, lockValue);
+    var promise = request.db.polls.lock(pollId, lockValue);
     return reply(promise);
   }
 };

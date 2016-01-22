@@ -2,7 +2,6 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var db = require(path.normalize(__dirname + '/../../../db'));
 var common = require(path.normalize(__dirname + '/../../common'));
 var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
@@ -39,7 +38,7 @@ exports.create = {
     message.sender_id = request.auth.credentials.id;
 
     // create the message in db
-    var promise = db.messages.create(message);
+    var promise = request.db.messages.create(message);
     return reply(promise);
   }
 };
@@ -73,8 +72,8 @@ exports.latest = {
     };
 
     // get latest messages for userId
-    var getMessages = db.messages.latest(userId, opts);
-    var getCount = db.messages.conversationCount(userId);
+    var getMessages = request.db.messages.latest(userId, opts);
+    var getCount = request.db.messages.conversationCount(userId);
     var promise = Promise.join(getMessages, getCount, function(messages, count) {
       return {
         messages: messages,
@@ -106,7 +105,7 @@ exports.findUser = {
   handler: function(request, reply) {
     // get id for username
     var username = request.params.username;
-    var promise = db.messages.findUser(username);
+    var promise = request.db.messages.findUser(username);
     return reply(promise);
   }
 };
@@ -132,7 +131,7 @@ exports.delete = {
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: authorization.isMessageOwner } ],
   handler: function(request, reply) {
-    var promise = db.messages.delete(request.params.id)
+    var promise = request.db.messages.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }

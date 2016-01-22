@@ -2,10 +2,15 @@ var _ = require('lodash');
 var Boom = require('boom');
 var path = require('path');
 var roles = require(path.normalize(__dirname + '/roles'));
-var db = require(path.normalize(__dirname + '/../../../db'));
-var config = require(path.normalize(__dirname + '/../../../config'));
+
+var db, config;
 
 exports.register = function (server, options, next) {
+  if (!options.db) { return next(new Error('No DB found in ACLS')); }
+  if (!options.config) { return next(new Error('No Configs found in ACLS')); }
+  db = options.db;
+  config = options.config;
+
   // Check ACL roles on each route
   server.ext('onPostAuth', function (request, reply) {
     var routeACL = request.route.settings.plugins.acls;

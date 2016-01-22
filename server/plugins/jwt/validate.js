@@ -1,17 +1,17 @@
 var Boom = require('boom');
 var path = require('path');
 var Promise = require('bluebird');
-var redis = require(path.normalize(__dirname + '/../../../redis'));
 
 /**
  * JWT
  * decodedToken, the decrypted value in the token
  *   -- { username, user_id, email }
+ * token, the encrypted token value
  * cb(err, isValid, credentials),
  *   -- isValid, if true if decodedToken matches a user token
  *   -- credentials, the user short object to be tied to request.auth.credentials
  */
-module.exports = function(decodedToken, token, cb) {
+module.exports = function(decodedToken, token, redis, cb) {
   var userInfo, userRoles, userModerating;
   var userId = decodedToken.userId;
   var sessionId = decodedToken.sessionId;

@@ -6,9 +6,12 @@ var jwt  = require('jsonwebtoken');
 
 // Declare internals
 var internals = {};
+var redis;
 
 
 exports.register = function (server, options, next) {
+  if (!options.redis) { return next(new Error('Redis not found in jwt')); }
+  redis = options.redis;
   server.auth.scheme('jwt', internals.implementation);
   next();
 };
@@ -61,7 +64,7 @@ internals.implementation = function (server, options) {
           return reply.continue({ credentials: decoded });
         }
 
-        settings.validateFunc(decoded, token, function (err, isValid, credentials) {
+        settings.validateFunc(decoded, token, redis, function (err, isValid, credentials) {
           credentials = credentials || null;
 
           if (err) { return reply(err, null, { credentials: credentials }); }
