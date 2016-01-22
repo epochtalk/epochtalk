@@ -2,6 +2,7 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var common = require(path.normalize(__dirname + '/../../common'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -16,16 +17,17 @@ var common = require(path.normalize(__dirname + '/../../common'));
   * @apiError (Error 500) InternalServerError There was an issue creating the conversation
   */
 exports.create = {
+  app: { user_id: 'payload.receiver_id' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'conversations.create' },
   validate: {
     payload: {
       receiver_id: Joi.string().required(),
-      copied_ids: Joi.array().items(Joi.string()).default([]),
       body: Joi.string().min(1).required()
     }
   },
   pre: [
+    { method: authorization.isPriorityRestricted },
     { method: common.cleanMessage },
     { method: common.parseMessage }
   ],

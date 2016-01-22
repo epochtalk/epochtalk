@@ -40,25 +40,49 @@ exports.register = function (server, options, next) {
 
   server.expose('getACLValue', getACLValue);
   server.expose('getUserPriority', getUserPriority);
+  server.expose('getPriorityRestrictions', getPriorityRestrictions);
   server.expose('verifyRoles', verifyRoles);
 
   return verifyRoles().then(next);
 };
 
 function getUserPriority(auth) {
-  var roleNames = [];
+  var rolePriorities = [];
 
   // find matching user roles
   if (auth.isAuthenticated && _.isArray(auth.credentials.roles)) {
-    roleNames = auth.credentials.roles.map(function(roleName) { return roles[roleName].priority; });
+    rolePriorities = auth.credentials.roles.map(function(roleName) { return roles[roleName].priority; });
   }
-  else if (auth.isAuthenticated) { roleNames = [ roles.user.priority ]; }
-  else if (config.loginRequired) { roleNames = [ roles.private.priority ]; }
-  else { roleNames = [ roles.anonymous.priority ]; }
+  else if (auth.isAuthenticated) { rolePriorities = [ roles.user.priority ]; }
+  else if (config.loginRequired) { rolePriorities = [ roles.private.priority ]; }
+  else { rolePriorities = [ roles.anonymous.priority ]; }
 
-  var userPriority = _.min(roleNames);
+  var userPriority = _.min(rolePriorities);
 
   return userPriority;
+}
+
+function getPriorityRestrictions(auth) {
+  var priorityRestrictions;
+  var curPriority;
+  // Take priority restrictions from the highest priority role 0 being the highest
+  if (auth.isAuthenticated && _.isArray(auth.credentials.roles)) {
+    var roleNames = auth.credentials.roles;
+    for (var i = 0; i < roleNames.length; i++) {
+      var roleName = roleNames[i];
+      var curRole = roles[roleName];
+      if (curPriority > curRole.priority || !curPriority) {
+        priorityRestrictions = curRole.priorityRestrictions;
+        // Banned role takes precedence
+        if (curRole.lookup === 'banned') { break; }
+      }
+      curPriority = curRole.priority;
+    }
+  }
+  else if (auth.isAuthenticated) { priorityRestrictions = roles.user.priorityRestrictions; }
+  else if (config.loginRequired) { priorityRestrictions = roles.private.priorityRestrictions; }
+  else { priorityRestrictions = roles.anonymous.priorityRestrictions; }
+  return priorityRestrictions;
 }
 
 function verifyRoles() {
@@ -136,6 +160,7 @@ function verifyRoles() {
       newRole.description = dbRole.description;
       newRole.lookup = dbRole.lookup;
       newRole.priority = dbRole.priority;
+      newRole.highlight_color = dbRole.highlight_color;
       roles[dbRole.lookup] = newRole;
     }
     return;

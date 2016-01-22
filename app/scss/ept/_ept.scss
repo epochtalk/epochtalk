@@ -1927,7 +1927,6 @@ ul.mod-list {
   }
 }
 ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
-
 .role-header { display: inline-block; }
 .add-users { float: right;  line-height: 1.5rem; }
 .management-users.radio-button, .header-spacer { @include span-columns(2); }
@@ -1946,6 +1945,12 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
     li a { display: block; padding: 0.5rem 0; padding-left: 0.5rem; }
     li a:hover { background-color: $sub-header-color; }
     li a.active { background-color: $color-primary; color: #fff; }
+    &.roles {
+      @include set-columns(2);
+      @include pad(0.5rem 1rem 0.25rem 1rem);
+      background-color: $sub-header-color;
+      border: 1px solid $border-color;
+    }
   }
   .left-column {
     @include span-columns(2);;
@@ -1971,6 +1976,7 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
       @include span-columns(5);
       @include omega;
     }
+    ul.roles { @include set-columns(1); }
   }
 }
 

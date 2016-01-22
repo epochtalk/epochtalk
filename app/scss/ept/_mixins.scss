@@ -15,6 +15,17 @@
   -o-border-radius: $radius;
 }
 
+@mixin set-columns($cols: 2, $spacing: 0) {
+  -moz-column-count: $cols;
+  -webkit-column-count: $cols;
+  -o-column-count:$cols;
+  column-count: $cols;
+  -moz-column-gap: $spacing;
+  -webkit-column-gap: $spacing;
+  -o-column-gap: $spacing;
+  column-gap: $spacing;
+}
+
 @mixin info-text($size: 0.8rem) {
   color: $secondary-font-color;
   font-size: $size;

@@ -108,6 +108,12 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   };
   this.init();
 
+  this.toggleRestriction = function(priority) {
+    var index = ctrl.newRole.permissions.priorityRestrictions.indexOf(priority);
+    if (index > -1) { ctrl.newRole.permissions.priorityRestrictions.splice(index, 1); }
+    else { ctrl.newRole.permissions.priorityRestrictions.push(priority); }
+  };
+
   this.setBasePermissions = function() {
     var permissions = {};
     roles.forEach(function(role) {

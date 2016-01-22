@@ -109,6 +109,7 @@ exports.add = {
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
       highlight_color: Joi.string(),
       permissions: Joi.object().keys({
+        priorityRestrictions: Joi.array().items(Joi.number()),
         adminAccess: Joi.object().keys({
           settings: Joi.object().keys({
             general: Joi.boolean(),
@@ -391,6 +392,7 @@ exports.update = {
       highlight_color: Joi.string(),
       lookup: Joi.string().required(),
       permissions: Joi.object().keys({
+        priorityRestrictions: Joi.array().items(Joi.number()),
         adminAccess: Joi.object().keys({
           settings: Joi.object().keys({
             general: Joi.boolean(),

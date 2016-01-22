@@ -985,6 +985,7 @@ roles.banned = {
   lookup: 'banned',
   description: 'Read only access with content creation disabled',
   priority: 5,
+  priorityRestrictions: [0, 1, 2, 3],
   // ACLs
   boards: {
     find: true,
