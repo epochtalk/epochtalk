@@ -71,6 +71,7 @@ RUN echo "DATABASE_URL=\"postgres://docker:docker@localhost:5432/docker\"" >> .e
 COPY . .
 ENTRYPOINT /etc/init.d/postgresql start \
   && service redis-server start \
+  && sleep 30 \
   && npm run db-migrate \
   && node cli --create \
   && npm run serve
