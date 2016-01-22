@@ -20,7 +20,7 @@ RUN apt-get -y update \
   && gem install foreman
 
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION 0.12.2
+ENV NODE_VERSION 0.12.7
 
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash \
   && source $NVM_DIR/nvm.sh \
@@ -30,6 +30,9 @@ RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh
 
 ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+# update npm version
+RUN npm install npm -g
 
 # install bower
 RUN npm install -g bower
@@ -61,14 +64,15 @@ RUN npm install
 # configure .env
 COPY example.env .env
 RUN echo "DATABASE_URL=\"postgres://docker:docker@localhost:5432/docker\"" >> .env \
+  && echo "NODE_ENV=\"production\"" >> .env \
   && echo "HOST=0.0.0.0" >> .env
 
 # run the server
 COPY . .
 ENTRYPOINT /etc/init.d/postgresql start \
   && service redis-server start \
-  && foreman start build \
-  && foreman start initialize \
-  && foreman start server
+  && npm run db-migrate \
+  && node cli --create \
+  && npm run serve
 
 EXPOSE 8080
