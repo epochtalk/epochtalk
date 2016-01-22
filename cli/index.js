@@ -6,8 +6,7 @@ var db = require(path.normalize(__dirname + '/../db'));
 
 program
   .version('0.0.1')
-  .option('--create', 'Create database. Populates with initial user/board.')
-  .option('--recreate', 'Drop/Create database. Populates with initial user/board.')
+  .option('--seed', 'Seed database. Populates with initial user/board.')
   .parse(process.argv);
 
 var genericArgs = {
@@ -66,20 +65,8 @@ var seed = function() {
   });
 };
 
-
-if (program.create) {
-  var exec = require('child_process').exec;
-  exec('npm run db-create && npm run db-migrate', function (error, stdout) {
-    console.log(stdout);
-    seed();
-  });
-}
-else if (program.recreate) {
-  var exec = require('child_process').exec;
-  exec('npm run db-recreate', function (error, stdout) {
-    console.log(stdout);
-    seed();
-  });
+if (program.seed) {
+  seed();
 }
 else {
   program.help();
