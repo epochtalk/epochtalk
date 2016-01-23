@@ -42,6 +42,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       delete ctrl.privilegedControlAccess.lock; // remove non privileged permissions
       delete ctrl.privilegedControlAccess.title;
       delete ctrl.privilegedControlAccess.create;
+      delete ctrl.privilegedControlAccess.moderated;
       ctrl.showThreadControls = some(ctrl.privilegedControlAccess);
       ctrl.pollControlAccess =  { create: Session.hasPermission('pollControls.create') };
 
