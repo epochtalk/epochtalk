@@ -3,6 +3,8 @@ var path = require('path');
 var Hapi = require('hapi');
 var Hoek = require('hoek');
 var Good = require('good');
+var Inert = require('inert');
+var Vision = require('vision');
 var mkdirp = require('mkdirp');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
@@ -62,6 +64,20 @@ setup()
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
 
+  // vision templating
+  server.register(Vision, (err) => {
+    if (err) { throw err; }
+
+    // render views
+    server.views({
+      engines: { html: require('handlebars') },
+      path: path.normalize(__dirname + '/../') + 'public'
+    });
+  });
+
+  // inert static file serving
+  server.register(Inert, defaultRegisterCb);
+
   // route acls
   var aclOptions = { db: db, config: config };
   server.register({register: acls, options: aclOptions }, defaultRegisterCb);
@@ -74,13 +90,6 @@ setup()
   var rlOptions = Hoek.clone(config.rateLimiting);
   rlOptions.redis = redis;
   server.register({ register: limiter, options: rlOptions }, defaultRegisterCb);
-
-  // render views
-  server.views({
-    engines: { html: require('handlebars') },
-    relativeTo: path.normalize(__dirname + '/../'),
-    path: 'public'
-  });
 
   // server routes
   var routes = require(path.normalize(__dirname + '/routes'));
