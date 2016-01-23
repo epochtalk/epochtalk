@@ -81,7 +81,7 @@
     "nodemon": "^1.1.1"
   },
   "engines": {
-    "node": "0.12.x"
+    "node": "5.4.x"
   },
   "bin": {
     "epoch": "cli/index.js"
