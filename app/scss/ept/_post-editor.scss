@@ -128,7 +128,7 @@
       border: 1px solid $border-color;
       padding: 0.5rem;
       resize: none;
-
+      ul, ol { margin-left: 1.25rem; }
       &:focus {
         outline: 1px solid $color-primary;
       }
