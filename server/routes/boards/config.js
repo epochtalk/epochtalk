@@ -1,10 +1,8 @@
 var Joi = require('joi');
 var path = require('path');
-var Boom = require('boom');
 var Promise = require('bluebird');
-var pre = require(path.normalize(__dirname + '/pre'));
-var db = require(path.normalize(__dirname + '/../../../db'));
-var Promise = require('bluebird');
+var common = require(path.normalize(__dirname + '/../../common'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiDefine BoardObjectSuccess
@@ -17,7 +15,7 @@ var Promise = require('bluebird');
   */
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Boards
   * @api {POST} /boards Create
   * @apiName CreateBoard
@@ -41,14 +39,14 @@ exports.create = {
       viewable_by: Joi.number()
     }
   },
-  pre: [ { method: pre.clean } ],
+  pre: [ { method: common.cleanBoard } ],
   handler: function(request, reply) {
-    return reply(db.boards.create(request.payload));
+    return reply(request.db.boards.create(request.payload));
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Boards
   * @api {POST} /boards/:id Find
   * @apiName FindBoard
@@ -68,16 +66,16 @@ exports.find = {
   auth: { mode:'try', strategy: 'jwt' },
   plugins: { acls: 'boards.find' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.accessBoardWithBoardId } ],
+  pre: [ { method: authorization.accessBoardWithBoardId } ],
   handler: function(request, reply) {
-    return reply(db.boards.find(request.params.id));
+    return reply(request.db.boards.find(request.params.id));
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Categories
-  * @api {GET} /boards All Categories
+  * @api {GET} /boards All Categories (Filters Private)
   * @apiName AllCategories
   * @apiDescription Used to retrieve all boards within their respective categories.
   * @apiParam (Query) {number} page=1 The page of threads to bring back
@@ -95,7 +93,7 @@ exports.allCategories = {
       limit: Joi.number().integer().min(1).max(100).default(5)
     }
   },
-  pre: [ { method: pre.userPriority, assign: 'priority' } ],
+  pre: [ { method: authorization.userPriority, assign: 'priority' } ],
   handler: function(request, reply) {
     var userId;
     var priority = request.pre.priority;
@@ -106,8 +104,8 @@ exports.allCategories = {
     };
     if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
 
-    var getAllCategories = db.boards.allCategories(priority, opts);
-    var getRecentThreads = db.threads.recent(userId, priority, opts);
+    var getAllCategories = request.db.boards.allCategories(priority, opts);
+    var getRecentThreads = request.db.threads.recent(userId, priority, opts);
     var promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
       return {
         boards: boards,
@@ -120,7 +118,7 @@ exports.allCategories = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Boards
   * @api {GET} /boards By Category
   * @apiName BoardsByCategory
@@ -152,39 +150,7 @@ exports.byCategory = {
 };
 
 /**
-  * @apiVersion 0.3.0
-  * @apiGroup Categories
-  * @api {POST} /boards/categories Update Categories
-  * @apiName UpdateCategories
-  * @apiPermission Super Administrator, Administrator
-  * @apiDescription Used to update boards within their categories.
-  *
-  * @apiParam (Payload) {object[]} boardMapping Array containing mapping of boards and categories
-  * @apiParam (Payload) {string} boardMapping.id The id of the category or board
-  * @apiParam (Payload) {string} boardMapping.name The name of the category or board
-  * @apiParam (Payload) {string="board","category"} boardMapping.type The type of the mapping object
-  * @apiParam (Payload) {number} boardMapping.view_order The view order of the board or category
-  * @apiParam (Payload) {string} [boardMapping.category_id] If type is "board" the id of the category the board belongs to
-  * @apiParam (Payload) {string} [boardMapping.parent_id] If type is "board" and the board is a child board, the id of the parent board
-  *
-  * @apiSuccess {array} operations Array containing all of the operations performed while updating categories
-  *
-  * @apiError (Error 500) InternalServerError There was an issue updating categories/boards
-  */
-exports.updateCategories = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.updateCategories' },
-  validate: { payload: { boardMapping: Joi.array().required() } },
-  handler: function(request, reply) {
-    // update board on db
-    var boardMapping = request.payload.boardMapping;
-    var promise = db.boards.updateCategories(boardMapping);
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Boards
   * @api {POST} /boards/:id Update
   * @apiName UpdateBoard
@@ -211,19 +177,19 @@ exports.update = {
     },
     params: { id: Joi.string().required() }
   },
-  pre: [ { method: pre.clean } ],
+  pre: [ { method: common.cleanBoard } ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = request.payload;
     updateBoard.id = request.params.id;
 
     // update board on db
-    return reply(db.boards.update(updateBoard));
+    return reply(request.db.boards.update(updateBoard));
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Boards
   * @api {DELETE} /boards/:id Delete
   * @apiName DeleteBoard
@@ -241,6 +207,6 @@ exports.delete = {
   plugins: { acls: 'boards.delete' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
-    return reply(db.boards.delete(request.params.id));
+    return reply(request.db.boards.delete(request.params.id));
   }
 };

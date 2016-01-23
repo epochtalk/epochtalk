@@ -3,13 +3,12 @@ var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var querystring = require('querystring');
-var pre = require(path.normalize(__dirname + '/pre'));
-var db = require(path.normalize(__dirname + '/../../../db'));
-var commonPre = require(path.normalize(__dirname + '/../common')).users;
+var common = require(path.normalize(__dirname + '/../../common'));
 var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /users Update
   * @apiName UpdateUser
@@ -59,7 +58,7 @@ exports.update = {
     payload: Joi.object().keys({
       id: Joi.string().required(),
       email: Joi.string().email(),
-      username: Joi.string().min(1).max(255),
+      username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
       old_password: Joi.string().min(8).max(72),
       password: Joi.string().min(8).max(72),
       confirmation: Joi.ref('password'),
@@ -80,22 +79,22 @@ exports.update = {
   },
   pre: [
     [
-      // TODO: password should be need to update email
-      { method: pre.isOldPasswordValid },
-      { method: pre.isNewUsernameUnique },
-      { method: pre.isNewEmailUnique },
-      { method: pre.isRequesterActive }
+      // TODO: password should be needed to update email
+      { method: authorization.isOldPasswordValid },
+      { method: authorization.isNewUsernameUnique },
+      { method: authorization.isNewEmailUnique },
+      { method: authorization.isRequesterActive }
     ],
-    { method: commonPre.clean },
-    { method: commonPre.parseSignature },
-    { method: commonPre.handleImages },
+    { method: common.cleanUser },
+    { method: common.parseSignature },
+    { method: common.handleSignatureImages },
   ],
   handler: function(request, reply) {
     // set editing user to current user
     request.payload.id = request.auth.credentials.id;
 
     // update the user in db
-    var promise = db.users.update(request.payload)
+    var promise = request.db.users.update(request.payload)
     .then(function(user) {
       delete user.confirmation_token;
       delete user.reset_token;
@@ -115,7 +114,7 @@ exports.update = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /users/:username Find
   * @apiName FindUser
@@ -152,7 +151,7 @@ exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'users.find' },
   validate: { params: { username: Joi.string().required() } },
-  pre: [ { method: pre.accessUser } ],
+  pre: [ { method: authorization.accessUser } ],
   handler: function(request, reply) {
     // get logged in user id
     var userId = '';
@@ -161,11 +160,8 @@ exports.find = {
 
     // get user by username
     var username = querystring.unescape(request.params.username);
-    var promise = db.users.userByUsername(username)
+    var promise = request.db.users.userByUsername(username)
     .then(function(user) {
-      if (!user) { return Boom.notFound(); }
-      if (user.deleted && user.id !== userId) { return Boom.notFound(); }
-
       delete user.passhash;
       delete user.confirmation_token;
       delete user.reset_token;
@@ -181,7 +177,7 @@ exports.find = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {POST} /users/:userId/deactivate Deactivate
   * @apiName DeactivateUser
@@ -199,18 +195,18 @@ exports.deactivate = {
   plugins: { acls: 'users.deactivate' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.isReferencedUserActive },
-    { method: pre.deactivateAuthorized, assign: 'userId' }
+    { method: authorization.isReferencedUserActive },
+    { method: authorization.deactivateAuthorized }
   ] ],
   handler: function(request, reply) {
-    var userId = request.pre.userId;
-    var promise = db.users.deactivate(userId);
+    var userId = request.params.id;
+    var promise = request.db.users.deactivate(userId);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {POST} /users/:userId/reactivate Reactivate
   * @apiName ReactivateUser
@@ -228,18 +224,18 @@ exports.reactivate = {
   plugins: { acls: 'users.reactivate' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ [
-    { method: pre.isReferencedUserDeactive },
-    { method: pre.reactivateAuthorized, assign: 'userId' }
+    { method: authorization.isReferencedUserDeactive },
+    { method: authorization.reactivateAuthorized }
   ] ],
   handler: function(request, reply) {
-    var userId = request.pre.userId;
-    var promise = db.users.reactivate(userId);
+    var userId = request.params.id;
+    var promise = request.db.users.reactivate(userId);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {DELETE} /users/:userId Delete
   * @apiName DeleteUser
@@ -257,7 +253,7 @@ exports.delete = {
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.params.id;
-    var promise = db.users.delete(userId);
+    var promise = request.db.users.delete(userId);
     return reply(promise);
   }
 };

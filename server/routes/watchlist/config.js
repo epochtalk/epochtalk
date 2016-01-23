@@ -1,12 +1,10 @@
 var Joi = require('joi');
 var path = require('path');
-var Boom = require('boom');
 var Promise = require('bluebird');
-var pre = require(path.normalize(__dirname + '/pre'));
-var db = require(path.normalize(__dirname + '/../../../db'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
   * @api {GET} /watchlist/unread Page Watchlist Unread
   * @apiName PageWatchlistUnread
@@ -34,7 +32,7 @@ exports.unread = {
       limit: request.query.limit
     };
 
-    var promise = db.watchlist.unread(userId, opts)
+    var promise = request.db.watchlist.unread(userId, opts)
     .then(function(threads) {
       var hasMoreThreads = false;
       if (threads.length > request.query.limit) {
@@ -53,7 +51,7 @@ exports.unread = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
   * @api {GET} /watchlist Edit Watchlist
   * @apiName EditWatchlist
@@ -78,8 +76,8 @@ exports.edit = {
     var threadOpts = { page: 1, limit: request.query.limit };
     var boardOpts = { page: 1, limit: request.query.limit };
 
-    var getThreads = db.watchlist.userWatchThreads(userId, threadOpts);
-    var getBoards = db.watchlist.userWatchBoards(userId, boardOpts);
+    var getThreads = request.db.watchlist.userWatchThreads(userId, threadOpts);
+    var getBoards = request.db.watchlist.userWatchBoards(userId, boardOpts);
 
     var promise = Promise.join(getThreads, getBoards, function(threads, boards) {
       var hasMoreThreads = false, hasMoreBoards = false;
@@ -105,7 +103,7 @@ exports.edit = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
   * @api {GET} /watchlist Page Watchlist Threads
   * @apiName PageWatchlistThreads
@@ -133,7 +131,7 @@ exports.pageThreads = {
       limit: request.query.limit
     };
 
-    var promise = db.watchlist.userWatchThreads(userId, opts)
+    var promise = request.db.watchlist.userWatchThreads(userId, opts)
     .then(function(threads){
       var hasMoreThreads = false;
       if (threads.length > request.query.limit) {
@@ -152,7 +150,7 @@ exports.pageThreads = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
   * @api {GET} /watchlist Page Watchlist Boards
   * @apiName PageWatchlistThreadsBoards
@@ -180,7 +178,7 @@ exports.pageBoards = {
       limit: request.query.limit
     };
 
-    var promise = db.watchlist.userWatchBoards(userId, opts)
+    var promise = request.db.watchlist.userWatchBoards(userId, opts)
     .then(function(boards) {
       var hasMoreBoards = false;
       if (boards.length > request.query.limit) {
@@ -199,9 +197,9 @@ exports.pageBoards = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
-  * @api {POST} /watchlist/threads/:id WatchThread
+  * @api {POST} /watchlist/threads/:id Watch Thread
   * @apiName WatchThread
   * @apiPermission User
   * @apiDescription Used to mark a user as watching a thread.
@@ -212,21 +210,22 @@ exports.pageBoards = {
   * @apiError (Error 500) InternalServerError There was an issue watching the thread
   */
 exports.watchThread = {
+  app: { thread_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.accessBoardWithThreadId } ],
+  pre: [ { method: authorization.accessBoardWithThreadId } ],
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var threadId = request.params.id;
-    var promise = db.watchlist.watchThread(userId, threadId);
+    var promise = request.db.watchlist.watchThread(userId, threadId);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
-  * @api {DELETE} /watchlist/threads/:id UnwatchThread
+  * @api {DELETE} /watchlist/threads/:id Unwatch Thread
   * @apiName UnwatchThread
   * @apiPermission User
   * @apiDescription Used to unmark a user as watching a thread.
@@ -242,15 +241,15 @@ exports.unwatchThread = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
-    var promise = db.watchlist.unwatchThread(userId, boardId);
+    var promise = request.db.watchlist.unwatchThread(userId, boardId);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
-  * @api {POST} /watchlist/boards/:id WatchBoard
+  * @api {POST} /watchlist/boards/:id Watch Board
   * @apiName WatchBoard
   * @apiPermission User
   * @apiDescription Used to mark a user as watching a board.
@@ -261,21 +260,22 @@ exports.unwatchThread = {
   * @apiError (Error 500) InternalServerError There was an issue watching the board
   */
 exports.watchBoard = {
+  app: { board_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre : [ { method: pre.accessBoardWithBoardId } ],
+  pre : [ { method: authorization.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
-    var promise = db.watchlist.watchBoard(userId, boardId);
+    var promise = request.db.watchlist.watchBoard(userId, boardId);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Watchlist
-  * @api {DELETE} /watchlist/boards/:id UnwatchBoard
+  * @api {DELETE} /watchlist/boards/:id Unwatch Board
   * @apiName UnwatchBoard
   * @apiPermission User
   * @apiDescription Used to unmark a user as watching a board.
@@ -291,7 +291,7 @@ exports.unwatchBoard = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
-    var promise = db.watchlist.unwatchBoard(userId, boardId);
+    var promise = request.db.watchlist.unwatchBoard(userId, boardId);
     return reply(promise);
   }
 };

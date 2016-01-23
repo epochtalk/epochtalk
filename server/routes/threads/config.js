@@ -2,12 +2,11 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var pre = require(path.normalize(__dirname + '/pre'));
-var db = require(path.normalize(__dirname + '/../../../db'));
-var postPre = require(path.normalize(__dirname + '/../posts/pre'));
+var common = require(path.normalize(__dirname + '/../../common'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads Create
   * @apiName CreateThread
@@ -51,16 +50,16 @@ exports.create = {
   },
   pre: [
     [
-      { method: pre.accessBoardWithBoardId },
-      { method: pre.isRequesterActive },
-      { method: pre.isPollCreatable },
-      { method: pre.validateMaxAnswers },
-      { method: pre.validateDisplayMode },
-      { method: pre.canModerate }
+      { method: authorization.accessBoardWithBoardId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.isPollCreatable },
+      { method: authorization.validateMaxAnswers },
+      { method: authorization.validateDisplayMode },
+      { method: authorization.canModerate }
     ],
-    { method: postPre.clean },
-    { method: postPre.parseEncodings },
-    { method: postPre.subImages }
+    { method: common.cleanPost },
+    { method: common.parseEncodings },
+    { method: common.subImages }
   ],
   handler: function(request, reply) {
     // build the thread post object from payload and params
@@ -79,23 +78,23 @@ exports.create = {
     };
 
     // create the thread
-    var promise = db.threads.create(newThread)
+    var promise = request.db.threads.create(newThread)
     // save thread id to newPost
     .tap(function(thread) { newPost.thread_id = thread.id; })
     // create any associated polls
     .then(function(thread) {
       if (request.payload.poll) {
-        return db.polls.create(thread.id, request.payload.poll);
+        return request.db.polls.create(thread.id, request.payload.poll);
       }
     })
     // create the first post in this thread
-    .then(function() { return db.posts.create(newPost); });
+    .then(function() { return request.db.posts.create(newPost); });
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {GET} /threads Page By Board
   * @apiName PageThreadsByBoard
@@ -120,7 +119,7 @@ exports.byBoard = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
-  pre: [ { method: pre.accessBoardWithBoardId } ],
+  pre: [ { method: authorization.accessBoardWithBoardId } ],
   handler: function(request, reply) {
     var userId;
     if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
@@ -130,9 +129,9 @@ exports.byBoard = {
       page: request.query.page
     };
 
-    var getThreads = db.threads.byBoard(boardId, userId, opts);
-    var getBoard = db.boards.find(boardId);
-    var getBoardWatching = db.boards.watching(boardId, userId);
+    var getThreads = request.db.threads.byBoard(boardId, userId, opts);
+    var getBoard = request.db.boards.find(boardId);
+    var getBoardWatching = request.db.boards.watching(boardId, userId);
 
     var promise = Promise.join(getThreads, getBoard, getBoardWatching, function(threads, board, boardWatching) {
       // check if board is being Watched
@@ -152,7 +151,58 @@ exports.byBoard = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
+  * @apiGroup Threads
+  * @api {GET} /threads/posted Page Recently Posted In Threads
+  * @apiName RecentlyPostedInThreads
+  * @apiDescription Used to page through recent threads posted in by the user.
+  *
+  * @apiParam (Query) {number} page=1 The page of threads to bring back
+  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  *
+  * @apiSuccess {array} threads An array containing recently posted in threads.
+  * @apiSuccess {number} page The currently viewing page.
+  * @apiSuccess {number} limit The limit of threads for this page.
+  * @apiSuccess {number} count The total number of threads for this user.
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the threads
+  */
+exports.posted = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'threads.posted' },
+  validate: {
+    query: {
+      page: Joi.number().default(1),
+      limit: Joi.number().integer().min(1).max(100).default(25)
+    }
+  },
+  pre: [ [ { method: authorization.userPriority, assign: 'priority' } ] ],
+  handler: function(request, reply) {
+    var opts = {
+      userId: request.auth.credentials.id,
+      priority: request.pre.priority,
+      limit: request.query.limit,
+      page: request.query.page
+    };
+
+    var getThreads = request.db.threads.posted(opts);
+    var getCount = request.db.threads.postedCount(opts);
+
+    var promise = Promise.join(getThreads, getCount, function(threads, count) {
+      return {
+        threads: threads,
+        page: request.query.page,
+        limit: request.query.limit,
+        count: count
+      };
+    });
+
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id Find
   * @apiName FindThread
@@ -170,10 +220,10 @@ exports.viewed = {
   plugins: { acls: 'threads.viewed' },
   validate: { params: { id: Joi.string().required() } },
   pre: [
-    [ { method: pre.accessBoardWithThreadId } ],
+    [ { method: authorization.accessBoardWithThreadId } ],
     [
-      { method: pre.checkViewValidity, assign: 'newViewId' },
-      { method: pre.updateUserThreadViews }
+      { method: common.checkViewValidity, assign: 'newViewId' },
+      { method: common.updateUserThreadViews }
     ]
   ],
   handler: function(request, reply) {
@@ -184,7 +234,7 @@ exports.viewed = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id Title
   * @apiName UpdateThreadTitle
@@ -211,10 +261,10 @@ exports.title = {
     payload: { title: Joi.string().required().min(1) }
   },
   pre: [ [
-    { method: pre.accessBoardWithThreadId },
-    { method: pre.isRequesterActive },
-    { method: pre.isThreadOwner },
-    { method: pre.threadFirstPost, assign: 'post' }
+    { method: authorization.accessBoardWithThreadId },
+    { method: authorization.isRequesterActive },
+    { method: authorization.isThreadOwner },
+    { method: authorization.threadFirstPost, assign: 'post' }
   ] ],
   handler: function(request, reply) {
     var post = {
@@ -222,14 +272,14 @@ exports.title = {
       thread_id: request.params.id,
       title: request.payload.title
     };
-    var promise = db.posts.update(post)
+    var promise = request.db.posts.update(post)
     .error(function() { return Boom.notFound(); });
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id/lock Lock
   * @apiName LockThread
@@ -256,17 +306,17 @@ exports.lock = {
     payload: { status: Joi.boolean().default(true) }
   },
   pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.isThreadOwner },
-      { method: pre.getThread, assign: 'thread' }
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.isThreadOwner },
+      { method: common.getThread, assign: 'thread' }
     ] ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
     thread.locked = request.payload.status;
 
     // lock thread
-    var promise = db.threads.lock(thread.id, thread.locked)
+    var promise = request.db.threads.lock(thread.id, thread.locked)
     .then(function() { return thread; });
 
     return reply(promise);
@@ -274,7 +324,7 @@ exports.lock = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id/sticky Sticky
   * @apiName StickyThread
@@ -301,15 +351,15 @@ exports.sticky = {
     payload: { status: Joi.boolean().default(true) }
   },
   pre: [ [
-    { method: pre.hasPermission },
-    { method: pre.getThread, assign: 'thread' } // TODO: remove this
+    { method: authorization.hasPermission },
+    { method: common.getThread, assign: 'thread' } // TODO: remove this
   ] ],
   handler: function(request, reply) {
     var thread = request.pre.thread;
     thread.sticky = request.payload.status;
 
     // sticky thread
-    var promise = db.threads.sticky(thread.id, thread.sticky)
+    var promise = request.db.threads.sticky(thread.id, thread.sticky)
     .then(function() { return thread; });
 
     return reply(promise);
@@ -317,7 +367,7 @@ exports.sticky = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:id/move Move
   * @apiName MoveThread
@@ -345,8 +395,8 @@ exports.move = {
     payload: { newBoardId: Joi.string().required() }
   },
   pre: [ [
-    { method: pre.hasPermission },
-    { method: pre.getThread, assign: 'thread' } // TODO: remove this
+    { method: authorization.hasPermission },
+    { method: common.getThread, assign: 'thread' } // TODO: remove this
   ] ],
   handler: function(request, reply) {
     var newBoardId = request.payload.newBoardId;
@@ -354,7 +404,7 @@ exports.move = {
     thread.board_id = newBoardId;
 
     // move thread
-    var promise = db.threads.move(thread.id, thread.board_id)
+    var promise = request.db.threads.move(thread.id, thread.board_id)
     .then(function() { return thread; })
     .error(function(err) { return Boom.badRequest(err.message); });
 
@@ -363,7 +413,7 @@ exports.move = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {DELETE} /threads/:id/purge Purge
   * @apiName PurgeThread
@@ -385,15 +435,15 @@ exports.purge = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.purge' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.hasPermission } ],
+  pre: [ { method: authorization.hasPermission } ],
   handler: function(request, reply) {
-    var promise = db.threads.purge(request.params.id);
+    var promise = request.db.threads.purge(request.params.id);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:threadId/polls/:pollId/vote Vote
   * @apiName VotePoll
@@ -424,23 +474,23 @@ exports.vote = {
     payload: { answerIds: Joi.array().items(Joi.string()).min(1).unique().required() }
   },
   pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.canVote },
-      { method: pre.isPollUnlocked },
-      { method: pre.isPollRunning },
-      { method: pre.isVoteValid }
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.pollExists },
+      { method: authorization.canVote },
+      { method: authorization.isPollUnlocked },
+      { method: authorization.isPollRunning },
+      { method: authorization.isVoteValid }
     ] ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
     var pollId = request.params.pollId;
     var answerIds = request.payload.answerIds;
     var userId = request.auth.credentials.id;
-    var promise = db.polls.vote(answerIds, userId)
+    var promise = request.db.polls.vote(answerIds, userId)
     .then(function() {
-      var getPoll = db.polls.byThread(threadId);
-      var hasVoted = db.polls.hasVoted(threadId, userId);
+      var getPoll = request.db.polls.byThread(threadId);
+      var hasVoted = request.db.polls.hasVoted(threadId, userId);
 
       return Promise.join(getPoll, hasVoted, function(poll, voted) {
         var hideVotes = poll.display_mode === 'expired' && poll.expiration > Date.now();
@@ -454,7 +504,7 @@ exports.vote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {DELETE} /threads/:threadId/polls/:pollId/vote Remove Vote
   * @apiName RemoveVotePoll
@@ -483,21 +533,21 @@ exports.removeVote = {
     }
   },
   pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.isPollUnlocked },
-      { method: pre.isPollRunning },
-      { method: pre.canChangeVote }
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.pollExists },
+      { method: authorization.isPollUnlocked },
+      { method: authorization.isPollRunning },
+      { method: authorization.canChangeVote }
     ] ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
     var pollId = request.params.pollId;
     var userId = request.auth.credentials.id;
-    var promise = db.polls.removeVote(pollId, userId)
+    var promise = request.db.polls.removeVote(pollId, userId)
     .then(function() {
-      var getPoll = db.polls.byThread(threadId);
-      var hasVoted = db.polls.hasVoted(threadId, userId);
+      var getPoll = request.db.polls.byThread(threadId);
+      var hasVoted = request.db.polls.hasVoted(threadId, userId);
 
       return Promise.join(getPoll, hasVoted, function(poll, voted) {
         var hideVotes = poll.display_mode === 'voted' && !voted;
@@ -512,7 +562,7 @@ exports.removeVote = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {PUT} /threads/:threadId/polls/:pollId Edit Poll
   * @apiName EditPoll
@@ -553,23 +603,23 @@ exports.editPoll = {
     })
   },
   pre: [ [
-    { method: pre.accessBoardWithThreadId },
-    { method: pre.isRequesterActive },
-    { method: pre.pollExists },
-    { method: pre.isPollOwner },
-    { method: pre.validateMaxAnswersUpdate },
-    { method: pre.validateDisplayMode }
+    { method: authorization.accessBoardWithThreadId },
+    { method: authorization.isRequesterActive },
+    { method: authorization.pollExists },
+    { method: authorization.isPollOwner },
+    { method: authorization.validateMaxAnswersUpdate },
+    { method: authorization.validateDisplayMode }
   ] ],
   handler: function(request, reply) {
     var options = request.payload;
     options.id = request.params.pollId;
-    var promise = db.polls.update(options);
+    var promise = request.db.polls.update(options);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:threadId/polls Create Poll
   * @apiName CreatePoll
@@ -608,16 +658,16 @@ exports.createPoll = {
     })
   },
   pre: [ [
-    { method: pre.accessBoardWithThreadId },
-    { method: pre.isRequesterActive },
-    { method: pre.canCreatePoll },
-    { method: pre.validateMaxAnswers },
-    { method: pre.validateDisplayMode }
+    { method: authorization.accessBoardWithThreadId },
+    { method: authorization.isRequesterActive },
+    { method: authorization.canCreatePoll },
+    { method: authorization.validateMaxAnswers },
+    { method: authorization.validateDisplayMode }
   ] ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
     var poll = request.payload;
-    var promise = db.polls.create(threadId, poll)
+    var promise = request.db.polls.create(threadId, poll)
     .then(function(dbPoll) {
       poll.id = dbPoll.id;
       poll.answers = poll.answers.map(function(answer) { return { answer: answer }; });
@@ -628,7 +678,7 @@ exports.createPoll = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Threads
   * @api {POST} /threads/:threadId/polls/:pollId/lock Lock Poll
   * @apiName LockPoll
@@ -661,15 +711,15 @@ exports.lockPoll = {
     payload: { lockValue: Joi.boolean().required() }
   },
   pre: [ [
-      { method: pre.accessBoardWithThreadId },
-      { method: pre.isRequesterActive },
-      { method: pre.pollExists },
-      { method: pre.isPollOwner }
+      { method: authorization.accessBoardWithThreadId },
+      { method: authorization.isRequesterActive },
+      { method: authorization.pollExists },
+      { method: authorization.isPollOwner }
     ] ],
   handler: function(request, reply) {
     var pollId = request.params.pollId;
     var lockValue = request.payload.lockValue;
-    var promise = db.polls.lock(pollId, lockValue);
+    var promise = request.db.polls.lock(pollId, lockValue);
     return reply(promise);
   }
 };

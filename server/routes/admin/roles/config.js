@@ -1,13 +1,12 @@
 var Joi = require('joi');
+var _ = require('lodash');
 var Boom = require('boom');
 var path = require('path');
-var pre = require(path.normalize(__dirname + '/pre'));
-var db = require(path.normalize(__dirname + '/../../../../db'));
+var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 var rolesHelper = require(path.normalize(__dirname + '/../../../plugins/acls/helper'));
-var _ = require('lodash');
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {GET} /admin/roles/all All Roles
   * @apiName AllRoles
@@ -22,12 +21,13 @@ exports.all = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.all' },
   handler: function(request, reply) {
-    var promise = db.roles.all();
+    var promise = request.db.roles.all();
     return reply(promise);
   }
 };
+
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {GET} /admin/roles/:id/users Page Users with Role
   * @apiName PageUserWithRole
@@ -66,7 +66,7 @@ exports.users = {
       limit: request.query.limit,
       searchStr: request.query.search
     };
-    var promise = db.roles.users(roleId, opts)
+    var promise = request.db.roles.users(roleId, opts)
     .then(function(userData) {
       userData.users.map(function(user) {
         user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
@@ -79,7 +79,7 @@ exports.users = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {POST} /admin/roles/add Add Roles
   * @apiName AddRoles
@@ -112,7 +112,7 @@ exports.add = {
         adminAccess: Joi.object().keys({
           settings: Joi.object().keys({
             general: Joi.boolean(),
-            forum: Joi.boolean(),
+            advanced: Joi.boolean(),
             theme: Joi.boolean()
           }),
           management: Joi.object().keys({
@@ -163,7 +163,11 @@ exports.add = {
           getTheme: Joi.boolean(),
           setTheme: Joi.boolean(),
           resetTheme: Joi.boolean(),
-          previewTheme: Joi.boolean()
+          previewTheme: Joi.boolean(),
+          getBlacklist: Joi.boolean(),
+          addToBlacklist: Joi.boolean(),
+          updateBlacklist: Joi.boolean(),
+          deleteFromBlacklist: Joi.boolean()
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
@@ -287,6 +291,7 @@ exports.add = {
           }),
           create: Joi.boolean(),
           byBoard: Joi.boolean(),
+          posted: Joi.boolean(),
           viewed: Joi.boolean(),
           title: Joi.boolean(),
           lock: Joi.boolean(),
@@ -336,7 +341,7 @@ exports.add = {
   },
   handler: function(request, reply) {
     var role = request.payload;
-    var promise = db.roles.add(role)
+    var promise = request.db.roles.add(role)
     .then(function(result) {
       role.id = result.id;
       role.lookup = result.id;
@@ -355,7 +360,7 @@ exports.add = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {PUT} /admin/roles/update Add Roles
   * @apiName UpdateRoles
@@ -389,7 +394,7 @@ exports.update = {
         adminAccess: Joi.object().keys({
           settings: Joi.object().keys({
             general: Joi.boolean(),
-            forum: Joi.boolean(),
+            advanced: Joi.boolean(),
             theme: Joi.boolean()
           }),
           management: Joi.object().keys({
@@ -440,7 +445,11 @@ exports.update = {
           getTheme: Joi.boolean(),
           setTheme: Joi.boolean(),
           resetTheme: Joi.boolean(),
-          previewTheme: Joi.boolean()
+          previewTheme: Joi.boolean(),
+          getBlacklist: Joi.boolean(),
+          addToBlacklist: Joi.boolean(),
+          updateBlacklist: Joi.boolean(),
+          deleteFromBlacklist: Joi.boolean()
         }),
         adminUsers: Joi.object().keys({
           privilegedUpdate: Joi.object().keys({
@@ -563,6 +572,7 @@ exports.update = {
           }),
           create: Joi.boolean(),
           byBoard: Joi.boolean(),
+          posted: Joi.boolean(),
           viewed: Joi.boolean(),
           title: Joi.boolean(),
           lock: Joi.boolean(),
@@ -612,7 +622,7 @@ exports.update = {
   },
   handler: function(request, reply) {
     var role = request.payload;
-    var promise = db.roles.update(role)
+    var promise = request.db.roles.update(role)
     .then(function(result) {
       role.id = result.id; // undoes deslugify which happens in core
       // Update role in the in memory role object
@@ -630,7 +640,7 @@ exports.update = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {DELETE} /admin/roles/remove/:id Remove Roles
   * @apiName RemoveRoles
@@ -647,10 +657,10 @@ exports.remove = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.remove' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.preventDefaultRoleDeletion } ],
+  pre: [ { method: authorization.preventDefaultRoleDeletion } ],
   handler: function(request, reply) {
     var id = request.params.id;
-    var promise = db.roles.remove(id)
+    var promise = request.db.roles.remove(id)
     .then(function(result) {
       // Remove deleted role from in memory object
       rolesHelper.deleteRole(id);
@@ -661,7 +671,7 @@ exports.remove = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Roles
   * @api {UPDATE} /admin/roles/reprioritize Reprioritize Roles
   * @apiName ReprioritizeRoles
@@ -685,7 +695,7 @@ exports.reprioritize = {
   },
   handler: function(request, reply) {
     var roles = request.payload;
-    var promise = db.roles.reprioritize(roles)
+    var promise = request.db.roles.reprioritize(roles)
     .then(function(result) {
       // update priorities for in memory roles object
       rolesHelper.reprioritizeRoles(roles);
@@ -701,7 +711,7 @@ exports.priorities = {
   validate: { payload: { user_id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    var promise = db.roles.priorities(userId);
+    var promise = request.db.roles.priorities(userId);
     return reply(promise);
   }
 };

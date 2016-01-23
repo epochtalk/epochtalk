@@ -30,7 +30,7 @@ var adminRoute = ['$stateProvider', '$urlRouterProvider', function($stateProvide
   var adminRedirect = ['$state', 'Session', function($state, Session) {
     if (Session.hasPermission('adminAccess.settings')) {
       if (Session.hasPermission('adminAccess.settings.general')) { $state.go('admin-settings.general'); }
-      else if (Session.hasPermission('adminAccess.settings.forum')) { $state.go('admin-settings.forum'); }
+      else if (Session.hasPermission('adminAccess.settings.advanced')) { $state.go('admin-settings.advanced'); }
       else if (Session.hasPermission('adminAccess.settings.theme')) { $state.go('admin-settings.theme'); }
       else { $state.go('boards'); }
     }

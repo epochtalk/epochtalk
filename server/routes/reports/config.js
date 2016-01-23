@@ -1,10 +1,9 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var db = require(path.normalize(__dirname + '/../../../db'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /reports/users Create User Report
   * @apiName CreateUserReport
@@ -38,13 +37,13 @@ exports.createUserReport = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    var promise = db.reports.createUserReport(report);
+    var promise = request.db.reports.createUserReport(report);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /reports/users Create Post Report
   * @apiName CreatePostReport
@@ -78,13 +77,13 @@ exports.createPostReport = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    var promise = db.reports.createPostReport(report);
+    var promise = request.db.reports.createPostReport(report);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /reports/messages Create Message Report
   * @apiName CreateMessageReport
@@ -118,7 +117,7 @@ exports.createMessageReport = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    var promise = db.reports.createMessageReport(report);
+    var promise = request.db.reports.createMessageReport(report);
     return reply(promise);
   }
 };

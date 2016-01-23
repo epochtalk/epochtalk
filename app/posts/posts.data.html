@@ -19,9 +19,15 @@
     <div class="post-content">
       <!-- Post Title -->
       <div class="post-title">
-        <a class="username css-tooltip" data-css-tooltip="{{post.user.role_name || 'User'}}" ui-sref="profile({ username: post.user.username})" ng-style="PostsCtrl.usernameHighlight(post.user.highlight_color)" ng-bind-html="::post.user.username"></a>
-        <div class="timestamp" ng-bind="::post.created_at | humanDate"></div>
-        <div class="timestamp" ng-if="PostsCtrl.showEditDate(post)" ng-bind-html="'&nbsp;&mdash; Edited ' + (post.updated_at | humanDate)"></div>
+        <a class="username css-tooltip" data-css-tooltip="{{post.user.role_name || 'User'}}" ui-sref="profile({ username: post.user.username})" ng-style="PostsCtrl.usernameHighlight(post.user.highlight_color)" ng-bind="::post.user.username"></a>
+        <div title="::post.user.name" ng-if="post.user.name" class="display-name">
+          <span ng-bind-html="::post.user.name | truncate:33"></span>
+          <span class="hide-mobile">&nbsp;&mdash;&nbsp;</span>
+        </div>
+        <div class="timestamp">
+          <span ng-bind="::post.created_at | humanDate"></span>
+          <span ng-if="PostsCtrl.showEditDate(post)" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
+        </div>
 
         <ul class="post-action">
           <li ng-if="PostsCtrl.controlAccess.privilegedPurge && $index !== 0">

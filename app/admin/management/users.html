@@ -131,10 +131,13 @@
         <div ng-if="$parent.form.username.$error.unique" class="invalid right">
           Username already taken
         </div>
-        <input type="text" class="input-text" name="username" ng-model="AdminManagementCtrl.selectedUser.username" unique-username="{{::AdminManagementCtrl.selectedUser.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" auto-focus="$parent.focus"/>
+        <div ng-if="$parent.form.username.$error.pattern" class="invalid right">
+          Usernames may only contain A-Z, 0-9, -, _ and .
+        </div>
+        <input type="text" class="input-text" name="username" ng-model="AdminManagementCtrl.selectedUser.username" unique-username="{{::AdminManagementCtrl.selectedUser.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ auto-focus="$parent.focus"/>
       </label>
 
-      <label>Name
+      <label>Display Name
         <input type="text" class="input-text" placeholder="Name" ng-model="AdminManagementCtrl.selectedUser.name">
       </label>
 

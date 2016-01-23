@@ -1,11 +1,9 @@
 var Joi = require('joi');
 var path = require('path');
-var Boom = require('boom');
-var db = require(path.normalize(__dirname + '/../../../../db'));
 var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Moderators
   * @api {POST} /admin/moderators Add Moderator
   * @apiName AddModerator
@@ -31,10 +29,10 @@ exports.add = {
   handler: function(request, reply) {
     var usernames = request.payload.usernames;
     var boardId = request.payload.board_id;
-    var promise = db.moderators.add(usernames, boardId)
+    var promise = request.db.moderators.add(usernames, boardId)
     // update redis with new moderating boads
     .map(function(user) {
-      return db.moderators.getUsersBoards(user.id)
+      return request.db.moderators.getUsersBoards(user.id)
       .then(function(moderating) {
         moderating = moderating.map(function(b) { return b.board_id; });
         var moderatingUser = { id: user.id, moderating: moderating };
@@ -47,7 +45,7 @@ exports.add = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Moderators
   * @api {POST} /admin/moderators/remove Remove Moderator
   * @apiName RemoveModerator
@@ -73,10 +71,10 @@ exports.remove = {
   handler: function(request, reply) {
     var usernames = request.payload.usernames;
     var boardId = request.payload.board_id;
-    var promise = db.moderators.remove(usernames, boardId)
+    var promise = request.db.moderators.remove(usernames, boardId)
     // update redis with new moderating boads
     .map(function(user) {
-      return db.moderators.getUsersBoards(user.id)
+      return request.db.moderators.getUsersBoards(user.id)
       .then(function(moderating) {
         moderating = moderating.map(function(b) { return b.board_id; });
         var moderatingUser = { id: user.id, moderating: moderating };

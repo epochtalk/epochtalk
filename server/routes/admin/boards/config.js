@@ -1,12 +1,11 @@
 var Joi = require('joi');
 var path = require('path');
-var db = require(path.normalize(__dirname + '/../../../../db'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Categories
-  * @api {GET} /admin/categories All Categories
-  * @apiName AdminCategories
+  * @api {GET} /admin/categories All Categories (Includes Private)
+  * @apiName AdminCategoriesUnfiltered
   * @apiDescription Used to retrieve all boards within their respective categories not filtering private boards.
   *
   * @apiSuccess {array} categories Array containing all of the forums boards in their respective categories
@@ -17,13 +16,13 @@ exports.categories = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.categories' },
   handler: function(request, reply) {
-    var promise =  db.boards.allCategories();
+    var promise =  request.db.boards.allCategories();
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Boards
   * @api {GET} /admin/boards All Boards
   * @apiName AllBoard
@@ -37,12 +36,12 @@ exports.boards = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.boards' },
   handler: function(request, reply) {
-    return reply(db.boards.all());
+    return reply(request.db.boards.all());
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Boards
   * @api {GET} /admin/boards/move Move Boards
   * @apiName MoveBoard
@@ -56,12 +55,12 @@ exports.moveBoards = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.moveBoards' },
   handler: function(request, reply) {
-    return reply(db.boards.all());
+    return reply(request.db.boards.all());
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Categories
   * @api {POST} /boards/categories Update Categories
   * @apiName UpdateCategories
@@ -87,7 +86,7 @@ exports.updateCategories = {
   handler: function(request, reply) {
     // update board on db
     var boardMapping = request.payload.boardMapping;
-    var promise = db.boards.updateCategories(boardMapping);
+    var promise = request.db.boards.updateCategories(boardMapping);
     return reply(promise);
   }
 };

@@ -1,9 +1,9 @@
-module.exports = ['User', '$q', '$timeout',
-  function(User, $q, $timeout) {
+module.exports = ['User', '$q',
+  function(User, $q) {
     return {
       require: 'ngModel',
       link: function(scope, elm, attrs, ctrl) {
-        ctrl.$asyncValidators.unique = function(modelValue, viewValue) {
+        ctrl.$asyncValidators.unique = function(modelValue) {
           var originalUsername = attrs.uniqueUsername;
 
           // check if the input is empty
@@ -24,7 +24,7 @@ module.exports = ['User', '$q', '$timeout',
               if (result.found) { def.reject(); }
               else { def.resolve(); }
             },
-            function(err) { def.reject(); }
+            function() { def.reject(); }
           );
 
           return def.promise;

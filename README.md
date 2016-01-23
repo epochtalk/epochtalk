@@ -2,9 +2,9 @@
 
 ####**Warning this project is under active development, design is subject to change**
 
-Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Browserify](https://www.npmjs.org/package/browserify), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
+Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Webpack](https://webpack.github.io), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
 
-![Epochtalk Forums](http://i.imgur.com/iWEvbvF.png)
+![Epochtalk Forums](http://i.imgur.com/D2Lizk5.png)
 
 ## Index
 * [Features](#features)
@@ -22,15 +22,16 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
   * [Security](#security)
   * [Planned Features](#planned-features)
 * [Contributions](#contributions)
-* [Planned Changes](#planned-changes)
 * [Feedback](#feedback)
 * [License](#license)
 
 ## Features
 * Epochtalk is a single page web application created with [AngularJS](https://angularjs.org)
 * Web/Mobile ready responsive design using [Bourbon](http://bourbon.io/)
-* JavaScript and CSS is bundled and minimized for performance using [Browserify](https://www.npmjs.org/package/browserify) and [Uglify-js](https://www.npmjs.org/package/uglify-js)
-* Designed with performance in mind. Epochtalk's backend, [Epochtalk-Core-PG](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
+* Code is bundled and loaded as needed, for performance, using [Webpack](https://webpack.github.io)
+* Designed with performance in mind. Epochtalk's backend, [epochtalk-core-pg](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
+* Customizable Theming (Branding, coloring, fonts, sizes)
+* Fully modular permissions system with roles
 
 ## Dependencies
 ### System
@@ -38,6 +39,7 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
 * [bower](https://github.com/bower/bower)
 * [Postgres](http://www.postgresql.org/)
+* [Redis](http://redis.io/)
 
 ### Bower
 * angular `1.4.4`
@@ -47,48 +49,53 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * angular-loading-bar `0.7.1`
 * nestable [slickage/Nestable](http://github.com/slickage/Nestable)
 * angular-ui-router `~0.2.15`
-* angular-ui-router-title `0.0.3`
+* angular-sortable-view" `~0.0.13`
+* ng-tags-input `3.0.0`
 * jquery `~2.1.4`
 
 ### NPM
-* async `^0.9.0`
 * aws-sdk `^2.1.20`
 * bcrypt `^0.8.0`
 * bluebird `^2.6.4`
 * boom `^2.6.1`
-* brfs `^1.3.0`
-* browserify `^8.1.3`
+* bower `^1.5.2`
+* change-case `^2.3.0`
 * cheerio `^0.18.0`
 * commander `^2.5.1`
 * db-migrate `^0.8.0`
 * deep-rename-keys `^0.1.0`
+* del `^2.2.0`
 * dot `^1.0.3`
+* dotenv `^1.2.0`
 * epochtalk-bbcode-parser `^1.0.0`
-* epochtalk-core-pg `^0.9.11`
+* epochtalk-core-pg `epochtalk/core-pg`
 * fs-extra `^0.16.5`
 * good `^5.1.1`
 * good-console `^4.1.0`
 * good-file `^4.0.1`
-* hapi `^8.2.0`
+* handlebars `^4.0.3`
+* hapi `^8.8.1`
 * hoek `^2.12.0`
+* html-loader `^0.3.0`
+* ip-address `^5.0.2`
 * joi `^6.0.8`
 * json `^9.0.3`
 * jsonwebtoken `^5.0.0`
-* levelup `^0.19.0`
-* lodash `^2.4.1`
-* lout `^6.1.0`
-* medium-editor `^1.8.14`
-* memdown `^0.11.0`
+* lodash `^3.10.1`
 * mkdirp `^0.5.0`
 * mmmagic `^0.3.11`
-* node-sass `^2.1.1`
+* node-sass `^3.4.2`
 * node-uuid `^1.4.1`
 * nodemailer `^1.3.2`
+* oclazyload `^1.0.6`
 * pg `^4.2.0`
+* redis `^0.12.1`
 * request `^2.53.0`
+* rolling-rate-limiter `^0.1.2`
 * sanitize-html `^1.4.3`
 * stream-meter `^1.0.3`
 * through2 `^0.6.3`
+* webpack `^1.12.2`
 * yargs `^1.2.1`
 
 
@@ -126,7 +133,7 @@ $ node cli --create
 ```
 
 #### 6) Start the Epochtalk server
-Running the `npm run serve` command, Epochtalk will start the webserver. Once the server is running, the forum can be viewed at `http://localhost:8080`
+Running the `npm run serve` command will start the Epochtalk webserver and compile all JavaScript and css. Once the server is running, the forum can be viewed at `http://localhost:8080`
 ```sh
 $ npm run serve
 ```
@@ -141,7 +148,7 @@ Since both [Epochtalk](https://github.com/epochtalk/epochtalk) and [core-pg](htt
 Forum configurations can be set either manually or using the admin panel.
 
 ### Manual Configuration
-The forum server configs can and must be set manually with a [.env](http://ddollar.github.io/foreman/#ENVIRONMENT) file in the root directory of the project.
+The forum server configs can and must be set manually with a `.env` file in the root directory of the project.
 ```sh
 DATABASE_URL="postgres://localhost/epochtalk_dev"
 HOST="localhost"
@@ -152,14 +159,14 @@ REDIS_PORT="6379"
 REDIS_AUTH_PASS=""
 ```
 ### Admin Panel Configuration
-Configurations can also be set using the settings tab in the administration panel.
-![Admin Settings](http://i.imgur.com/kIxs86V.png)
+Some configurations can also be set using the settings tab in the administration panel.
+![Admin Settings](http://i.imgur.com/DNygrYN.png)
 
 ## API
 The Epochtalk API can be accessed at `http://localhost:8080/api/` while the server is running. To see full documentation for the api visit the [Epochtalk API Documentation](https://github.com/epochtalk/epochtalk/wiki/Epochtalk-API-Documentation) wiki page.
 
 ##Editor
-![Editor](http://i.imgur.com/5JPc0ui.png)
+![Editor](http://i.imgur.com/exmYQyV.png)
 
 Each post is crafted through a unique editor with a live content preview.
 
@@ -167,9 +174,9 @@ Each post is crafted through a unique editor with a live content preview.
 
 As for BBCode, the tags that are parsed are based off the SMF 1.0 BBCode spec but with some modifications as per the BitcoinTalk forum. Due to the fact that BBCode differs from forum to forum, a preview window is provided to the right of the main user input to preview what the post will look like once it has been sent to the server. The editor itself will parse the user input in real time with a 250 millisecond debounce. So user can continue to type and the text will not be parsed until 250 millisecond after the last keypress.
 
-To view the list of supported BBCode tags click the ``formatting`` button at the top right of the editor:
+To view the list of supported BBCode tags click the ``Format`` button at the top right of the editor:
 
-![Formatting](http://i.imgur.com/4GQwfmh.png)
+![Formatting](http://i.imgur.com/wpJZ5Uv.png)
 
 ### Security
 
@@ -189,19 +196,13 @@ Title like inputs are stripped of all html while description like inputs are all
 ## Contributions
 Epochtalk is an open source project and we are planning to accept contributions. If you would like to contribute to Epochtalk please email [info@slickage.com](mailto:info@slickage.com).
 
-## Planned Changes
-* Redesign of frontend user interface (Current UI is temporary). Design is currently a low priority until the all the forum features are fully fleshed out.
-* Dockerizing Epochtalk
-
-To see planned backend changes, visit the core-pg [issues page](https://github.com/epochtalk/core-pg/issues)
-
 ## Feedback
 Please leave us feedback using [github issues](https://github.com/epochtalk/epochtalk/issues)
 
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2015 Epochtalk
+Copyright (c) 2016 Epochtalk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

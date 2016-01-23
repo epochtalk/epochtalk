@@ -1,11 +1,10 @@
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var db = require(path.normalize(__dirname + '/../../../db'));
-var messagePre = require(path.normalize(__dirname + '/../messages/pre'));
+var common = require(path.normalize(__dirname + '/../../common'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Conversations
   * @api {POST} /conversations Create
   * @apiName CreateConversation
@@ -27,25 +26,25 @@ exports.create = {
     }
   },
   pre: [
-    { method: messagePre.clean },
-    { method: messagePre.parseEncodings }
+    { method: common.cleanMessage },
+    { method: common.parseMessage }
   ],
   handler: function(request, reply) {
     // create the conversation in db
-    var promise = db.conversations.create()
+    var promise = request.db.conversations.create()
     .then(function(conversation) {
       var message = request.payload;
       message.conversation_id = conversation.id;
       message.sender_id = request.auth.credentials.id;
       return message;
     })
-    .then(db.messages.create);
+    .then(request.db.messages.create);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Conversations
   * @api {GET} /conversations Messages in Conversation
   * @apiName GetRecentMessages
@@ -77,7 +76,7 @@ exports.messages = {
     };
 
     // create the conversation in db
-    var promise = db.conversations.messages(conversationId, userId, opts)
+    var promise = request.db.conversations.messages(conversationId, userId, opts)
     .then(function(messages) {
       // default return values
       var payload = { id: request.params.conversationId };
@@ -106,7 +105,7 @@ exports.messages = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Conversations
   * @api {DELETE} /conversations/:id Delete
   * @apiName DeleteConversation
@@ -125,7 +124,7 @@ exports.delete = {
   plugins: { acls: 'conversations.delete' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
-    var promise = db.conversations.delete(request.params.id)
+    var promise = request.db.conversations.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }

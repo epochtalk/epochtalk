@@ -3,13 +3,12 @@ var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var querystring = require('querystring');
-var pre = require(path.normalize(__dirname + '/pre'));
-var db = require(path.normalize(__dirname + '/../../../../db'));
+var common = require(path.normalize(__dirname + '/../../../common'));
 var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
-var commonPre = require(path.normalize(__dirname + '/../../common')).users;
+var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users (Admin) Update
   * @apiName UpdateUserAdmin
@@ -61,7 +60,7 @@ exports.update = {
     payload: Joi.object().keys({
       id: Joi.string().required(),
       email: Joi.string().email(),
-      username: Joi.string().min(1).max(255),
+      username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
       password: Joi.string().min(8).max(72),
       name: Joi.string().allow(''),
       website: Joi.string().allow(''),
@@ -81,16 +80,16 @@ exports.update = {
     [
       // TODO: password should be needed to change email
       // TODO: password should be not updated by an admin role
-      { method: pre.matchPriority },
-      { method: pre.isNewUsernameUnique },
-      { method: pre.isNewEmailUnique }
+      { method: authorization.matchPriority },
+      { method: authorization.isNewUsernameUniqueAdmin },
+      { method: authorization.isNewEmailUniqueAdmin }
     ],
-    { method: commonPre.clean },
-    { method: commonPre.parseSignature },
-    { method: commonPre.handleImages }
+    { method: common.cleanUser },
+    { method: common.parseSignature },
+    { method: common.handleSignatureImages }
   ],
   handler: function(request, reply) {
-    var promise = db.users.update(request.payload)
+    var promise = request.db.users.update(request.payload)
     .then(function(user) {
       delete user.confirmation_token;
       delete user.reset_token;
@@ -107,7 +106,7 @@ exports.update = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /admin/users/:username (Admin) Find
   * @apiName FindUserAdmin
@@ -148,9 +147,9 @@ exports.find = {
   validate: { params: { username: Joi.string().required() } },
   handler: function(request, reply) {
     var username = querystring.unescape(request.params.username);
-    var promise = db.users.userByUsername(username)
+    var promise = request.db.users.userByUsername(username)
     .then(function(user) {
-      if (!user) { return Boom.badRequest('User doesn\'t exist.'); }
+      if (!user) { return Boom.notFound(); }
       delete user.passhash;
       delete user.confirmation_token;
       delete user.reset_token;
@@ -163,7 +162,7 @@ exports.find = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users/roles/add (Admin) Add Roles
   * @apiName AddUserRoleAdmin
@@ -200,15 +199,15 @@ exports.addRoles = {
     }
   },
   pre: [
-    { method: pre.hasAccessToRole },
-    { method: pre.hasSufficientPriorityToAddRole }
+    { method: authorization.hasAccessToRole },
+    { method: authorization.hasSufficientPriorityToAddRole }
   ],
   handler: function(request, reply) {
     var usernames = request.payload.usernames;
     var roleId = request.payload.role_id;
-    var promise = db.users.addRoles(usernames, roleId)
+    var promise = request.db.users.addRoles(usernames, roleId)
     .map(function(user) {
-      return authHelper.updateRoles(user)
+      return authHelper.updateRoles(user.id, user.roles)
       .then(function() { return user; });
     });
     return reply(promise);
@@ -216,7 +215,7 @@ exports.addRoles = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users/roles/remove (Admin) Remove Roles
   * @apiName RemoveUserRoleAdmin
@@ -251,13 +250,13 @@ exports.removeRoles = {
       role_id: Joi.string().required()
     }
   },
-  pre: [ { method: pre.hasSufficientPriorityToRemoveRole }, ],
+  pre: [ { method: authorization.hasSufficientPriorityToRemoveRole }, ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roleId = request.payload.role_id;
-    var promise = db.users.removeRoles(userId, roleId)
+    var promise = request.db.users.removeRoles(userId, roleId)
     .then(function(user) {
-      return authHelper.updateRoles(user)
+      return authHelper.updateRoles(user.id, user.roles)
       .then(function() { return user; });
     });
     return reply(promise);
@@ -265,7 +264,7 @@ exports.removeRoles = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /admin/users/search (Admin) Search Usernames
   * @apiName SearchUsernamesAdmin
@@ -294,13 +293,13 @@ exports.searchUsernames = {
     // get user by username
     var searchStr = request.query.username;
     var limit = request.query.limit;
-    var promise = db.users.searchUsernames(searchStr, limit);
+    var promise = request.db.users.searchUsernames(searchStr, limit);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /admin/users/count (Admin) Count Users
   * @apiName CountUsersAdmin
@@ -336,13 +335,13 @@ exports.count = {
       };
     }
 
-    var promise = db.users.count(opts);
+    var promise = request.db.users.count(opts);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {GET} /admin/users (Admin) Page Users
   * @apiName PageUsersAdmin
@@ -389,13 +388,13 @@ exports.page = {
       filter: request.query.filter,
       searchStr: request.query.search
     };
-    var promise = db.users.page(opts);
+    var promise = request.db.users.page(opts);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users/ban (Admin) Ban
   * @apiName BanUsersAdmin
@@ -427,17 +426,21 @@ exports.ban = {
       expiration: Joi.date()
     }
   },
-  pre: [ { method: pre.matchPriority } ],
+  pre: [ { method: authorization.matchPriority } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
-    var promise = db.users.ban(userId, expiration);
+    var promise = request.db.users.ban(userId, expiration)
+    .then(function(user) {
+      return authHelper.updateRoles(user.user_id, user.roles)
+      .then(function() { return user; });
+    });
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Users
   * @api {PUT} /admin/users/unban (Admin) Unban
   * @apiName UnbanUsersAdmin
@@ -463,10 +466,14 @@ exports.unban = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.unban' },
   validate: { payload: { user_id: Joi.string().required() } },
-  pre: [ { method: pre.matchPriority } ],
+  pre: [ { method: authorization.matchPriority } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    var promise = db.users.unban(userId);
+    var promise = request.db.users.unban(userId)
+    .then(function(user) {
+      return authHelper.updateRoles(user.user_id, user.roles)
+      .then(function() { return user; });
+    });
     return reply(promise);
   }
 };

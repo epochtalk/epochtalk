@@ -24,13 +24,14 @@ var appThings = [
   require('./layout/header.controller'),
   require('./boards'),
   require('./board'),
-  require('./board/new-thread-index'),
   require('./category'),
+  require('./threads/new'),
+  require('./threads/posted'),
   require('./messages'),
   require('./posts'),
-  require('./user'),
-  require('./user/confirm-index'),
-  require('./user/reset-index'),
+  require('./users/profile'),
+  require('./users/confirm'),
+  require('./users/reset'),
   require('./watchlist'),
   require('./admin')
 ].concat(require('./plugins'));
@@ -63,6 +64,8 @@ app
   // Handle if there is an error changing state
   $rootScope.$on('$stateChangeError', function(event, next, nextParams, prev, prevParams, error) {
     event.preventDefault();
+
+    console.log(error);
 
     // Unauthorized is redirected to login, save next so we can redirect after login
     if (error.status === 401 || error.statusText === 'Unauthorized') {

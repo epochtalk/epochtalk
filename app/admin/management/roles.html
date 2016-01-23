@@ -35,7 +35,15 @@
 
 <div class="half-column" ng-if="AdminManagementCtrl.selectedRole !== null && !AdminManagementCtrl.selectedRole.message">
   <br />
-  <h3 class="role-header">{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3>  <a ng-if="AdminManagementCtrl.canViewAddUsersControl()" ng-click="AdminManagementCtrl.showAddUsers = !AdminManagementCtrl.showAddUsers" class="add-users"><i class="fa fa-plus"></i> Add Users</a>
+  <h3 class="role-header">{{AdminManagementCtrl.selectedRole.name}} ({{AdminManagementCtrl.userData.count}} users)</h3>
+  <div class="add-users">
+    <a ng-show="AdminManagementCtrl.canViewAddUsersControl()" ng-click="AdminManagementCtrl.showAddUsers = !AdminManagementCtrl.showAddUsers">
+      <i class="fa fa-plus"></i> Add Users
+    </a>
+    <span ng-show="AdminManagementCtrl.selectedRole.lookup === 'banned'">
+      Visit the <a ui-sref="^.users">Users Tab</a> to ban
+    </span>
+  </div>
   <br /><br />
   <div ng-show="AdminManagementCtrl.showAddUsers">
     <tags-input min-length="1" placeholder="Type username to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="AdminManagementCtrl.usersToAdd">
@@ -78,7 +86,7 @@
     </div>
   </div>
   <div ng-if="AdminManagementCtrl.userData.count < 1">
-  <h5>This role has no users to display. To add users to this role click the "Add Users" button in the top-right corner.</h5>
+    <h5>This role has no users to display. {{ AdminManagementCtrl.selectedRole.lookup === 'banned' ? '' : 'To add users to this role click the "Add Users" button in the top-right corner.' }}</h5>
   </div>
 </div>
 
@@ -173,7 +181,7 @@
         <h4><br />Administration View Permissions</h4>
         <!-- View Admin Settings -->
         <label>
-          <input id="adminAccess-settings" type="checkbox" ng-init="settings = AdminManagementCtrl.newRole.permissions.adminAccess.settings.general || AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum || AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme" ng-model="settings" ng-change="!settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.general = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme = false : null;" />
+          <input id="adminAccess-settings" type="checkbox" ng-init="settings = AdminManagementCtrl.newRole.permissions.adminAccess.settings.general || AdminManagementCtrl.newRole.permissions.adminAccess.settings.advanced || AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme" ng-model="settings" ng-change="!settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.general = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.advanced = false : null; !settings ? AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme = false : null;" />
           Allow user to access admin settings view
         </label>
         <div class="indent" ng-if="settings">
@@ -182,8 +190,8 @@
             General Settings Tab
           </label>
           <label>
-            <input id="adminAccess-settings-forum" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.settings.forum" ng-false-value="undefined" />
-            Forum Settings Tab
+            <input id="adminAccess-settings-advanced" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.settings.advanced" ng-false-value="undefined" />
+            Advanced Settings Tab
           </label>
           <label>
             <input id="adminAccess-settings-theme" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminAccess.settings.theme" ng-false-value="undefined" />
@@ -435,6 +443,30 @@
         <label>
           <input id="adminSettings-previewTheme" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.previewTheme" ng-false-value="undefined" />
           Allow user to preview forum theme, used for admin settings theme page
+        </label>
+
+        <!-- Get forum blacklist settings -->
+        <label>
+          <input id="adminSettings-getBlacklist" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.getBlacklist" ng-false-value="undefined" />
+          Allow user to retrieve the IP blacklist, used for admin advanced settings page
+        </label>
+
+        <!-- Add to forum blacklist settings -->
+        <label>
+          <input id="adminSettings-addToBlacklist" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.addToBlacklist" ng-false-value="undefined" />
+          Allow user to add rules to the IP blacklist, used for admin advanced settings page
+        </label>
+
+        <!-- Update forum blacklist settings -->
+        <label>
+          <input id="adminSettings-updateBlacklist" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.updateBlacklist" ng-false-value="undefined" />
+          Allow user to update rules in the IP blacklist, used for admin advanced settings page
+        </label>
+
+        <!-- Delete forum blacklist settings -->
+        <label>
+          <input id="adminSettings-deleteFromBlacklist" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminSettings.deleteFromBlacklist" ng-false-value="undefined" />
+          Allow user to delete rules from the IP blacklist, used for admin advanced settings page
         </label>
       </div>
 
@@ -715,15 +747,10 @@
               <input id="threads-byBoard" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.byBoard" ng-change="AdminManagementCtrl.newRole.permissions.threads.byBoard ? AdminManagementCtrl.newRole.permissions.threads.viewed = true : AdminManagementCtrl.newRole.permissions.polls.vote = AdminManagementCtrl.newRole.permissions.threads.viewed = undefined" ng-false-value="undefined" />
               Allow user to page/view threads
             </label>
-            <!-- Create Polls -->
+            <!-- View Recently Posted In -->
             <label>
-              <input id="polls-create" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.create" ng-change="AdminManagementCtrl.newRole.permissions.polls.create ? AdminManagementCtrl.newRole.permissions.threads.create = true : null" ng-false-value="undefined" />
-              Allow user to create polls
-            </label>
-            <!-- Vote on Polls -->
-            <label>
-              <input id="polls-vote" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.vote" ng-change="AdminManagementCtrl.newRole.permissions.polls.vote ? AdminManagementCtrl.newRole.permissions.threads.byBoard = true : null" ng-false-value="undefined" />
-              Allow user to vote on polls
+              <input id="threads-posted" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.posted"  ng-false-value="undefined" />
+              View recent threads they've posted in
             </label>
             <!-- Moderate Thread -->
             <label>
@@ -741,6 +768,16 @@
             <label>
               <input id="threads-lock" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.lock" ng-change="AdminManagementCtrl.newRole.permissions.threads.lock ? null : AdminManagementCtrl.newRole.permissions.threads.privilegedLock = undefined; AdminManagementCtrl.newRole.permissions.threads.lock ? null : privilegedLock = undefined" ng-false-value="undefined" />
               Allow user lock their own threads
+            </label>
+            <!-- Create Polls -->
+            <label>
+              <input id="polls-create" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.create" ng-change="AdminManagementCtrl.newRole.permissions.polls.create ? AdminManagementCtrl.newRole.permissions.threads.create = true : null" ng-false-value="undefined" />
+              Allow user to create polls
+            </label>
+            <!-- Vote on Polls -->
+            <label>
+              <input id="polls-vote" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.vote" ng-change="AdminManagementCtrl.newRole.permissions.polls.vote ? AdminManagementCtrl.newRole.permissions.threads.byBoard = true : null" ng-false-value="undefined" />
+              Allow user to vote on polls
             </label>
             <!-- Lock Own Poll -->
             <label>

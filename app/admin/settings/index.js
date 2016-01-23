@@ -11,7 +11,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
 
   var adminSettingsRedirect = ['$state', 'Session', function($state, Session) {
     if (Session.hasPermission('adminAccess.settings.general')) { $state.go('admin-settings.general'); }
-    else if (Session.hasPermission('adminAccess.settings.forum')) { $state.go('admin-settings.forum'); }
+    else if (Session.hasPermission('adminAccess.settings.advanced')) { $state.go('admin-settings.advanced'); }
     else if (Session.hasPermission('adminAccess.settings.theme')) { $state.go('admin-settings.theme'); }
     else { $state.go('admin'); }
   }];
@@ -31,7 +31,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           this.previewActive = ThemeSVC.previewActive();
           $scope.$watch(function() { return ThemeSVC.previewActive(); }, function(val) { ctrl.previewActive = val; });
           if (Session.hasPermission('adminAccess.settings.general')) { this.tab = 'general'; }
-          else if (Session.hasPermission('adminAccess.settings.forum')) { this.tab = 'users'; }
+          else if (Session.hasPermission('adminAccess.settings.advanced')) { this.tab = 'advanced'; }
           else if (Session.hasPermission('adminAccess.settings.theme')) { this.tab = 'theme'; }
           $scope.child = {};
         }],
@@ -39,9 +39,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         templateUrl: '/static/templates/admin/settings/index.html'
       }
     },
-    resolve: {
-      userAccess: adminCheck()
-    }
+    resolve: { userAccess: adminCheck() }
   })
   .state('admin-settings.general', {
     url: '/general',
@@ -75,18 +73,18 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       }],
     }
   })
-  .state('admin-settings.forum', {
-    url: '/forum',
+  .state('admin-settings.advanced', {
+    url: '/advanced',
     views: {
       'data@admin-settings': {
-        controller: 'ForumSettingsCtrl',
+        controller: 'AdvancedSettingsCtrl',
         controllerAs: 'AdminSettingsCtrl',
-        templateUrl: '/static/templates/admin/settings/forum.html'
+        templateUrl: '/static/templates/admin/settings/advanced.html'
       }
     },
     resolve: {
-      userAccess: adminCheck('settings.forum'),
-      $title: function() { return 'Forum Settings'; },
+      userAccess: adminCheck('settings.advanced'),
+      $title: function() { return 'Advanced Settings'; },
       settings: ['AdminSettings', function(AdminSettings) {
         return AdminSettings.get().$promise
         .then(function(settings) {
@@ -96,11 +94,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           return settings;
         });
       }],
+      blacklist: ['AdminSettings', function(AdminSettings) {
+        return AdminSettings.getBlacklist().$promise
+        .then(function(blacklist) { return blacklist; });
+      }],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
-          var ctrl = require('./forum.controller');
-          $ocLazyLoad.load({ name: 'ept.admin.settings.forum.ctrl' });
+          var ctrl = require('./advanced.controller');
+          $ocLazyLoad.load({ name: 'ept.admin.settings.advanced.ctrl' });
           deferred.resolve(ctrl);
         });
         return deferred.promise;

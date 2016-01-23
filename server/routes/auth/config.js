@@ -4,17 +4,16 @@ var Boom = require('boom');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
-var pre = require(path.normalize(__dirname + '/pre'));
 var helper = require(path.normalize(__dirname + '/helper'));
-var db = require(path.normalize(__dirname + '/../../../db'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
 var config = require(path.normalize(__dirname + '/../../../config'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @api {POST} /login Login
   * @apiName Login
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to log a user into their account.
   *
   * @apiParam (Payload) {string} username User's unique username
@@ -46,7 +45,7 @@ exports.login = {
     var username = request.payload.username;
     var password = request.payload.password;
     var rememberMe = request.payload.rememberMe;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     // check user exists
     .then(function(user) {
       if (user) { return user; }
@@ -71,7 +70,7 @@ exports.login = {
     })
     // get user moderating boards
     .then(function(user) {
-      return db.moderators.getUsersBoards(user.id)
+      return request.db.moderators.getUsersBoards(user.id)
       .then(function(boards) {
         boards = boards.map(function(board) { return board.board_id; });
         user.moderating = boards;
@@ -93,7 +92,7 @@ exports.login = {
   * @api {DELETE} /logout Logout
   * @apiName Logout
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to log a user out of their account.
   *
   * @apiSuccess {boolean} success true if user is successfully logged out
@@ -118,7 +117,7 @@ exports.logout = {
   * @api {POST} /register Register (w/o account verification)
   * @apiName RegisterNoVerify
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to register a new account with account verification disabled in admin settings.
   *
   * @apiParam (Payload) {string} username User's unique username.
@@ -137,7 +136,7 @@ exports.logout = {
   * @api {POST} /register Register (w/ account verification)
   * @apiName RegisterVerify
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to register a new account with account verification enabled in admin settings.
   * This will send an email to the user with the account verification link.
   *
@@ -157,7 +156,7 @@ exports.register = {
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
     payload: {
-      username: Joi.string().min(1).max(255).required(),
+      username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
       email: Joi.string().email().required(),
       password: Joi.string().min(8).max(72).required(),
       confirmation: Joi.ref('password')
@@ -165,8 +164,8 @@ exports.register = {
   },
   pre: [
     [
-      { method: pre.checkUniqueEmail },
-      { method: pre.checkUniqueUsername }
+      { method: authorization.checkUniqueEmail },
+      { method: authorization.checkUniqueUsername }
     ]
   ],
   handler: function(request, reply) {
@@ -183,7 +182,7 @@ exports.register = {
       confirmation_token: config.verifyRegistration ? crypto.randomBytes(20).toString('hex') : null
     };
     // check that username or email does not already exist
-    var promise = db.users.create(newUser)
+    var promise = request.db.users.create(newUser)
     .then(function(user) {
       if (config.verifyRegistration) {  // send confirmation email
         var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
@@ -208,7 +207,7 @@ exports.register = {
   * @api {POST} /confirm Confirm Account
   * @apiName Confirm Account
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to confirm a newly registered account when account verification
   * is enabled in the admin panel.
   *
@@ -233,7 +232,7 @@ exports.confirmAccount = {
   handler: function(request, reply) {
     var username = request.payload.username;
     var confirmationToken = request.payload.token;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('Account Not Found')); }
@@ -241,14 +240,14 @@ exports.confirmAccount = {
     .then(function(user) {
       var tokenMatch = confirmationToken === user.confirmation_token;
       if (user.confirmation_token && tokenMatch) {
-        return db.users.update({ confirmation_token: null, id: user.id })
+        return request.db.users.update({ confirmation_token: null, id: user.id })
         .then(function() { return user; });
       }
       else { return Promise.reject(Boom.badRequest('Account Confirmation Error')); }
     })
     // get user moderating boards
     .then(function(user) {
-      return db.moderators.getUsersBoards(user.id)
+      return request.db.moderators.getUsersBoards(user.id)
       .then(function(boards) {
         boards = boards.map(function(board) { return board.board_id; });
         user.moderating = boards;
@@ -265,7 +264,7 @@ exports.confirmAccount = {
   * @api {GET} /authenticate Authenticate User
   * @apiName Authenticate User
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to check the logged in user's authentication.
   *
   * @apiSuccess {string} id User's unique id
@@ -292,7 +291,7 @@ exports.authenticate = {
   * @api {GET} /register/username/:username Username Availability
   * @apiName Username Availability
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to check if a username is available when registering a new account.
   *
   * @apiParam {string} username The username to check
@@ -303,7 +302,7 @@ exports.username = {
   validate: { params: { username: Joi.string().min(1).max(255).required() } },
   handler: function(request, reply) {
     var username = request.params.username;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     .then(function(user) { return { found: !!user }; });
     return reply(promise);
   }
@@ -313,7 +312,7 @@ exports.username = {
   * @api {GET} /register/email/:email Email Availability
   * @apiName Email Availability
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to check if an email is available when registering a new account.
   *
   * @apiParam {string} email The email to check
@@ -324,7 +323,7 @@ exports.email = {
   validate: { params: { email: Joi.string().email().required() } },
   handler: function(request, reply) {
     var email = request.params.email;
-    var promise = db.users.userByEmail(email) // get full user info
+    var promise = request.db.users.userByEmail(email) // get full user info
     .then(function(user) { return { found: !!user }; });
     return reply(promise);
   }
@@ -334,7 +333,7 @@ exports.email = {
   * @api {GET} /recover/:query Recover Account
   * @apiName AccountRecoveryReq
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to recover an account by username or email. Sends an email with
   * a URL to visit to reset the user's account password.
   *
@@ -348,12 +347,12 @@ exports.recoverAccount = {
   validate: { params: { query: Joi.string().min(1).max(255).required(), } },
   handler: function(request, reply) {
     var query = request.params.query;
-    var promise = db.users.userByUsername(query) // get full user info
+    var promise = request.db.users.userByUsername(query) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('No Account Found')); }
     })
-    .catch(function() { return db.users.userByEmail(query); })
+    .catch(function() { return request.db.users.userByEmail(query); })
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('No Account Found')); }
@@ -365,7 +364,7 @@ exports.recoverAccount = {
       updateUser.reset_expiration = Date.now() + 1000 * 60 * 60; // 1 hr
       updateUser.id = user.id;
       // Store token and expiration to user object
-      return db.users.update(updateUser);
+      return request.db.users.update(updateUser);
     })
     .then(function(user) {
       // Email user reset information here
@@ -384,7 +383,7 @@ exports.recoverAccount = {
   * @api {POST} /reset Reset Account Password
   * @apiName AccountRecoveryReset
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to reset an account password after recovering an account.
   *
   * @apiParam (Payload) {string} username The username of the user whose password is being reset
@@ -410,7 +409,7 @@ exports.resetPassword = {
     var username = request.payload.username;
     var password = request.payload.password;
     var token = request.payload.token;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('Account Not Found')); }
@@ -430,7 +429,7 @@ exports.resetPassword = {
       }
       else { return Promise.reject(Boom.badRequest('Invalid Reset Token.')); }
     })
-    .then(db.users.update)
+    .then(request.db.users.update)
     .then(function(updatedUser) {
       // TODO: Send password reset confirmation email here
       return 'Password Successfully Reset';
@@ -443,7 +442,7 @@ exports.resetPassword = {
   * @api {GET} /reset/:username/:token/validate Validate Account Reset Token
   * @apiName AccountRecoveryToken
   * @apiGroup Auth
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiDescription Used to check the validity of the reset token. Verifys that the reset
   * token is for the correct user and that it is not expired.
   *
@@ -465,7 +464,7 @@ exports.checkResetToken = {
   handler: function(request, reply) {
     var username = request.params.username;
     var token = request.params.token;
-    var promise = db.users.userByUsername(username) // get full user info
+    var promise = request.db.users.userByUsername(username) // get full user info
     .then(function(user) {
       if (user) { return user; }
       else { return Promise.reject(Boom.badRequest('No Account Found.')); }

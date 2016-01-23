@@ -1,6 +1,7 @@
-module.exports = ['$timeout', '$anchorScroll', 'pageData',
-  function($timeout, $anchorScroll, pageData) {
+module.exports = ['$timeout', '$anchorScroll', 'Session', 'pageData',
+  function($timeout, $anchorScroll, Session, pageData) {
     var ctrl = this;
+    this.loggedIn = Session.isAuthenticated;
     this.categorizedBoards = pageData.boards;
     this.recentThreads = pageData.threads;
     this.toggles = {};

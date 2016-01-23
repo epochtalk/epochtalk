@@ -12,6 +12,10 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/threads/recent'
       },
+      posted: {
+        method: 'GET',
+        url: '/api/threads/posted'
+      },
       title: {
         method: 'POST',
         params: { id: '@id' },

@@ -1,20 +1,22 @@
 require('dotenv').load();
-var _ = require('lodash');
 var path = require('path');
 var Hapi = require('hapi');
+var Hoek = require('hoek');
 var Good = require('good');
 var mkdirp = require('mkdirp');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
+var db = require(path.normalize(__dirname + '/../db'));
+var redis = require(path.normalize(__dirname + '/../redis'));
 var setup = require(path.normalize(__dirname + '/../setup'));
 var config = require(path.normalize(__dirname + '/../config'));
 var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
+var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var defaultRegisterCb = function(err) { if (err) throw(err); };
-var setup = require(path.normalize(__dirname + '/../setup'));
 var plugins = require(path.normalize(__dirname + '/../plugins'));
 
 setup()
@@ -23,6 +25,10 @@ setup()
   // create server object
   var server = new Hapi.Server();
   server.connection(serverOptions);
+
+  // DB decoration
+  server.decorate('request', 'db', db);
+  server.decorate('request', 'redis', redis);
 
   // server logging only registered if config enabled
   var options = {};
@@ -48,7 +54,8 @@ setup()
   }
 
   // auth via jwt
-  server.register(Auth, function(err) {
+  var authOptions = { redis: redis };
+  server.register({ register: Auth, options: authOptions }, function(err) {
     if (err) throw err;
     var strategyOptions = {
       key: config.privateKey,
@@ -58,10 +65,17 @@ setup()
   });
 
   // route acls
-  server.register(acls, defaultRegisterCb);
+  var aclOptions = { db: db, config: config };
+  server.register({register: acls, options: aclOptions }, defaultRegisterCb);
+
+  // blacklist
+  var blacklistOptions = { db: db };
+  server.register({ register: blacklist, options: blacklistOptions }, defaultRegisterCb);
 
   // rate limiter
-  server.register({ register: limiter, options: config.rateLimiting }, defaultRegisterCb);
+  var rlOptions = Hoek.clone(config.rateLimiting);
+  rlOptions.redis = redis;
+  server.register({ register: limiter, options: rlOptions }, defaultRegisterCb);
 
   // render views
   server.views({
@@ -77,7 +91,7 @@ setup()
 
   // start server
   server.start(function () {
-    var configClone = _.cloneDeep(config);
+    var configClone = Hoek.clone(config);
     configClone.privateKey = configClone.privateKey.replace(/./g, '*');
     configClone.emailer.pass = configClone.emailer.pass.replace(/./g, '*');
     configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*');

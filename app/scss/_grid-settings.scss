@@ -3,6 +3,7 @@ $max-width: 960px;
 
 $tablet: 768px;
 $desktop: 1200px;
+$mobile-portrait: new-breakpoint(max-width ($tablet - 1) orientation portrait 8);
 $mobile: new-breakpoint(max-width $tablet - 1 8);
 $desktop-small: new-breakpoint(max-width $desktop 12);
 

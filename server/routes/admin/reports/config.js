@@ -1,12 +1,11 @@
-var Promise = require('bluebird');
 var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
-var pre = require(path.normalize(__dirname + '/pre'));
-var db = require(path.normalize(__dirname + '/../../../../db'));
+var Promise = require('bluebird');
+var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /admin/reports/usernotes (Admin) Create User Report Note
   * @apiName CreateUserReportNote
@@ -40,14 +39,13 @@ exports.createUserReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.createUserReportNote(reportNote)
-    .then(function(createdReportNote) { reply(createdReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.createUserReportNote(reportNote);
+    return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /admin/reports/postnotes (Admin) Create Post Report Note
   * @apiName CreatePostReportNote
@@ -81,14 +79,13 @@ exports.createPostReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.createPostReportNote(reportNote)
-    .then(function(createdReportNote) { reply(createdReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.createPostReportNote(reportNote);
+    return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /admin/reports/messagenotes (Admin) Create Message Report Note
   * @apiName CreateMessageReportNote
@@ -122,14 +119,13 @@ exports.createMessageReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.createMessageReportNote(reportNote)
-    .then(function(createdReportNote) { reply(createdReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.createMessageReportNote(reportNote);
+    return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/users (Admin) Update User Report
   * @apiName UpdateUserReport
@@ -163,14 +159,13 @@ exports.updateUserReport = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    db.reports.updateUserReport(report)
-    .then(function(updatedReport) { reply(updatedReport); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updateUserReport(report);
+    return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/posts (Admin) Update Post Report
   * @apiName UpdatePostReport
@@ -204,14 +199,13 @@ exports.updatePostReport = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    db.reports.updatePostReport(report)
-    .then(function(updatedReport) { reply(updatedReport); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updatePostReport(report);
+    return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/messages (Admin) Update Message Report
   * @apiName UpdateMessageReport
@@ -245,14 +239,13 @@ exports.updateMessageReport = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    db.reports.updateMessageReport(report)
-    .then(function(updatedReport) { reply(updatedReport); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updateMessageReport(report);
+    return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/usernotes (Admin) Update User Report Note
   * @apiName UpdateUserReportNote
@@ -276,7 +269,7 @@ exports.updateMessageReport = {
 exports.updateUserReportNote = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updateUserReportNote' },
-  pre: [ { method: pre.canUpdateUserReportNote } ],
+  pre: [ { method: authorization.canUpdateUserReportNote } ],
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -285,14 +278,13 @@ exports.updateUserReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.updateUserReportNote(reportNote)
-    .then(function(updatedReportNote) { reply(updatedReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updateUserReportNote(reportNote);
+    return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/usernotes (Admin) Update Post Report Note
   * @apiName UpdatePostReportNote
@@ -316,7 +308,7 @@ exports.updateUserReportNote = {
 exports.updatePostReportNote = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updatePostReportNote' },
-  pre: [ { method: pre.canUpdatePostReportNote } ],
+  pre: [ { method: authorization.canUpdatePostReportNote } ],
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -325,17 +317,16 @@ exports.updatePostReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.updatePostReportNote(reportNote)
-    .then(function(updatedReportNote) { reply(updatedReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updatePostReportNote(reportNote);
+    return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {PUT} /admin/reports/messagenotes (Admin) Update Message Report Note
-  * @apiName UpdatePostReportNote
+  * @apiName UpdateMessageReportNote
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update an existing note on message moderation reports.
   *
@@ -356,7 +347,7 @@ exports.updatePostReportNote = {
 exports.updateMessageReportNote = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updateMessageReportNote' },
-  pre: [ { method: pre.canUpdateMessageReportNote } ],
+  pre: [ { method: authorization.canUpdateMessageReportNote } ],
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -365,14 +356,13 @@ exports.updateMessageReportNote = {
   },
   handler: function(request, reply) {
     var reportNote = request.payload;
-    db.reports.updateMessageReportNote(reportNote)
-    .then(function(updatedReportNote) { reply(updatedReportNote); })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    var promise = request.db.reports.updateMessageReportNote(reportNote);
+    return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/users (Admin) Page User Report
   * @apiName PageUserReport
@@ -435,8 +425,8 @@ exports.pageUserReports = {
       searchStr: request.query.search
     };
 
-    var userReports = db.reports.pageUserReports(opts);
-    var userReportsCount = db.reports.userReportsCount(opts);
+    var userReports = request.db.reports.pageUserReports(opts);
+    var userReportsCount = request.db.reports.userReportsCount(opts);
 
     var promise = Promise.join(userReports, userReportsCount, function(reports, count) {
       return {
@@ -457,7 +447,7 @@ exports.pageUserReports = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/posts (Admin) Page Post Report
   * @apiName PagePostReport
@@ -535,8 +525,8 @@ exports.pagePostReports = {
       modId: request.query.mod_id
     };
 
-    var postReports = db.reports.pagePostReports(opts);
-    var postReportsCount = db.reports.postReportsCount(countOpts);
+    var postReports = request.db.reports.pagePostReports(opts);
+    var postReportsCount = request.db.reports.postReportsCount(countOpts);
 
     var promise = Promise.join(postReports, postReportsCount, function(reports, count) {
       return {
@@ -557,7 +547,7 @@ exports.pagePostReports = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/messages (Admin) Page Message Report
   * @apiName PageMessageReport
@@ -622,8 +612,8 @@ exports.pageMessageReports = {
       sortDesc: request.query.desc,
       searchStr: request.query.search
     };
-    var messageReports = db.reports.pageMessageReports(opts);
-    var messageReportsCount = db.reports.messageReportsCount(opts);
+    var messageReports = request.db.reports.pageMessageReports(opts);
+    var messageReportsCount = request.db.reports.messageReportsCount(opts);
 
     var promise = Promise.join(messageReports, messageReportsCount, function(reports, count) {
       return {
@@ -644,7 +634,7 @@ exports.pageMessageReports = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/usernotes/:userReportId (Admin) Page User Report Notes
   * @apiName PageUserReportNotes
@@ -693,8 +683,8 @@ exports.pageUserReportsNotes = {
       sortDesc: request.query.desc
     };
 
-    var reportNotes = db.reports.pageUserReportsNotes(reportId, opts);
-    var reportNotesCount = db.reports.userReportsNotesCount(reportId);
+    var reportNotes = request.db.reports.pageUserReportsNotes(reportId, opts);
+    var reportNotesCount = request.db.reports.userReportsNotesCount(reportId);
 
     var promise = Promise.join(reportNotes, reportNotesCount, function(notes, count) {
       return {
@@ -712,7 +702,7 @@ exports.pageUserReportsNotes = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/postnotes/:postReportId (Admin) Page Post Report Notes
   * @apiName PagePostReportNotes
@@ -761,8 +751,8 @@ exports.pagePostReportsNotes = {
       sortDesc: request.query.desc
     };
 
-    var reportNotes = db.reports.pagePostReportsNotes(reportId, opts);
-    var reportNotesCount = db.reports.postReportsNotesCount(reportId);
+    var reportNotes = request.db.reports.pagePostReportsNotes(reportId, opts);
+    var reportNotesCount = request.db.reports.postReportsNotesCount(reportId);
 
     var promise = Promise.join(reportNotes, reportNotesCount, function(notes, count) {
       return {
@@ -780,7 +770,7 @@ exports.pagePostReportsNotes = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {GET} /admin/reports/messagenotes/:messageReportId (Admin) Page Message Report Notes
   * @apiName PageMessageReportNotes
@@ -829,8 +819,8 @@ exports.pageMessageReportsNotes = {
       sortDesc: request.query.desc
     };
 
-    var reportNotes = db.reports.pageMessageReportsNotes(reportId, opts);
-    var reportNotesCount = db.reports.messageReportsNotesCount(reportId);
+    var reportNotes = request.db.reports.pageMessageReportsNotes(reportId, opts);
+    var reportNotesCount = request.db.reports.messageReportsNotesCount(reportId);
 
     var promise = Promise.join(reportNotes, reportNotesCount, function(notes, count) {
       return {

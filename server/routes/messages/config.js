@@ -2,11 +2,11 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var db = require(path.normalize(__dirname + '/../../../db'));
-var pre = require(path.normalize(__dirname + '/pre'));
+var common = require(path.normalize(__dirname + '/../../common'));
+var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {POST} /messages Create
   * @apiName CreateMessage
@@ -29,22 +29,22 @@ exports.create = {
     }
   },
   pre: [
-    { method: pre.isConversationMember },
-    { method: pre.clean },
-    { method: pre.parseEncodings }
+    { method: authorization.isConversationMember },
+    { method: common.cleanMessage },
+    { method: common.parseMessage }
   ],
   handler: function(request, reply) {
     var message = request.payload;
     message.sender_id = request.auth.credentials.id;
 
     // create the message in db
-    var promise = db.messages.create(message);
+    var promise = request.db.messages.create(message);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {GET} /messages Get Recent Messages
   * @apiName LatestMessages
@@ -72,8 +72,8 @@ exports.latest = {
     };
 
     // get latest messages for userId
-    var getMessages = db.messages.latest(userId, opts);
-    var getCount = db.messages.conversationCount(userId);
+    var getMessages = request.db.messages.latest(userId, opts);
+    var getCount = request.db.messages.conversationCount(userId);
     var promise = Promise.join(getMessages, getCount, function(messages, count) {
       return {
         messages: messages,
@@ -87,7 +87,7 @@ exports.latest = {
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {GET} /messages/users/{username} Get ID for username
   * @apiName FindUserMessages
@@ -105,13 +105,13 @@ exports.findUser = {
   handler: function(request, reply) {
     // get id for username
     var username = request.params.username;
-    var promise = db.messages.findUser(username);
+    var promise = request.db.messages.findUser(username);
     return reply(promise);
   }
 };
 
 /**
-  * @apiVersion 0.3.0
+  * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {DELETE} /messages/:id Delete
   * @apiName DeleteMessage
@@ -129,9 +129,9 @@ exports.delete = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'messages.delete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: pre.isMessageOwner } ],
+  pre: [ { method: authorization.isMessageOwner } ],
   handler: function(request, reply) {
-    var promise = db.messages.delete(request.params.id)
+    var promise = request.db.messages.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }

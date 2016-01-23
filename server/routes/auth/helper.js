@@ -17,7 +17,11 @@ function buildToken(userId, expiration) {
 }
 
 function getMaskedPermissions(userRoles) {
-  var permissions = userRoles.map(function(roleName) { return roles[roleName]; });
+  var permissions;
+
+  // Banned overrules all other roles
+  if (userRoles.indexOf(roles.banned.lookup) > -1) { permissions = [ roles.banned ]; }
+  else { permissions = userRoles.map(function(roleName) { return roles[roleName]; }); }
 
   var maskPermission = function(permissionName) {
     var allPermissions = permissions.map(function(acl) { return _.get(acl, permissionName); });
@@ -37,7 +41,7 @@ function getMaskedPermissions(userRoles) {
     adminAccess: maskPermission('adminAccess') ? {
       settings: maskPermission('adminAccess.settings') ? {
         general: maskPermission('adminAccess.settings.general'),
-        forum: maskPermission('adminAccess.settings.forum'),
+        advanced: maskPermission('adminAccess.settings.advanced'),
         theme: maskPermission('adminAccess.settings.theme')
       } : undefined,
       management: maskPermission('adminAccess.management') ? {
@@ -240,19 +244,20 @@ helper.saveSession = function(user) {
   .then(function() { return formatUserReply(token, user); });
 };
 
-helper.updateRoles = function(user) {
+helper.updateRoles = function(userId, roles) {
   // pull user role's lookup
-  user.roles = user.roles.map(function(role) { return role.lookup; });
+  roles = roles || [];
+  roles = roles.map(function(role) { return role.lookup; });
   // default to user role
-  if (!user.roles.length) { user.roles = ['user']; }
+  if (!roles.length) { roles = ['user']; }
 
   // save roles to redis set under "user:{userId}:roles"
-  var roleKey = 'user:' + user.id + ':roles';
+  var roleKey = 'user:' + userId + ':roles';
   return redis.existsAsync(roleKey)
   .then(function(exists) {
     if (exists > 0) {
       return redis.delAsync(roleKey)
-      .then(function() { return redis.saddAsync(roleKey, user.roles); });
+      .then(function() { return redis.saddAsync(roleKey, roles); });
     }
   });
 };

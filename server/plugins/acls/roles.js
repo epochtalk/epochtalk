@@ -14,7 +14,7 @@ module.exports = roles;
     adminAccess: {
       settings: {
         general: true,
-        forum: true,
+        advanced: true,
         theme: true
       },
       management: {
@@ -66,7 +66,11 @@ module.exports = roles;
       getTheme: true,
       setTheme: true,
       resetTheme: true,
-      previewTheme: true
+      previewTheme: true,
+      getBlacklist: true,
+      addToBlacklist: true,
+      updateBlacklist: true,
+      deleteFromBlacklist: true
     },
     adminUsers: {
       privilegedUpdate: {
@@ -190,6 +194,7 @@ module.exports = roles;
       },
       create: true,
       byBoard: true,
+      posted: true,
       viewed: true,
       title: true,
       lock: true,
@@ -244,7 +249,7 @@ roles.superAdministrator = {
   adminAccess: {
     settings: {
       general: true,
-      forum: true,
+      advanced: true,
       theme: true
     },
     management: {
@@ -296,7 +301,11 @@ roles.superAdministrator = {
     getTheme: true,
     setTheme: true,
     resetTheme: true,
-    previewTheme: true
+    previewTheme: true,
+    getBlacklist: true,
+    addToBlacklist: true,
+    updateBlacklist: true,
+    deleteFromBlacklist: true
   },
   adminUsers: {
     privilegedUpdate: {
@@ -406,6 +415,7 @@ roles.superAdministrator = {
     },
     create: true,
     byBoard: true,
+    posted: true,
     viewed: true,
     title: true,
     lock: true,
@@ -598,6 +608,7 @@ roles.administrator = {
     },
     create: true,
     byBoard: true,
+    posted: true,
     viewed: true,
     title: true,
     lock: true,
@@ -747,6 +758,7 @@ roles.globalModerator = {
     },
     create: true,
     byBoard: true,
+    posted: true,
     viewed: true,
     title: true,
     lock: true,
@@ -886,6 +898,7 @@ roles.moderator = {
     },
     create: true,
     byBoard: true,
+    posted: true,
     viewed: true,
     title: true,
     lock: true,
@@ -951,6 +964,7 @@ roles.user = {
   threads: {
     create: true,
     byBoard: true,
+    posted: true,
     viewed: true,
     title: true,
     moderated: true,

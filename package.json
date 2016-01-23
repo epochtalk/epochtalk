@@ -1,6 +1,6 @@
 {
   "name": "epochtalk",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Epochtalk forum software",
   "main": "server",
   "scripts": {
@@ -32,7 +32,6 @@
     "url": "/api"
   },
   "dependencies": {
-    "async": "^0.9.0",
     "aws-sdk": "^2.1.20",
     "bcrypt": "^0.8.0",
     "bluebird": "^2.6.4",
@@ -43,7 +42,7 @@
     "commander": "^2.5.1",
     "db-migrate": "^0.8.0",
     "deep-rename-keys": "^0.1.0",
-    "del": "^1.1.1",
+    "del": "^2.2.0",
     "dot": "^1.0.3",
     "dotenv": "^1.2.0",
     "epochtalk-bbcode-parser": "^1.0.0",
@@ -56,6 +55,7 @@
     "hapi": "^8.8.1",
     "hoek": "^2.12.0",
     "html-loader": "^0.3.0",
+    "ip-address": "^5.0.2",
     "joi": "^6.0.8",
     "json": "^9.0.3",
     "jsonwebtoken": "^5.0.0",

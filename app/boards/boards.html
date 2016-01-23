@@ -53,7 +53,7 @@
         <div class="last-post">
           <div ng-if="board.last_post_username">
             Last post by
-            <a ui-sref="profile({ username: board.last_post_username })" ng-bind-html="::board.last_post_username"></a>
+            <a ui-sref="profile({ username: board.last_post_username })" ng-bind="::board.last_post_username"></a>
           </div>
           <div ng-if="board.last_thread_title">
             in thread
@@ -70,46 +70,54 @@
 </div>
 
 <!-- Threads -->
-<!-- Thread listing headers -->
-<div class="board-data" ng-if="!BoardsCtrl.recentThreads">
-  <div class="title">
-    <h4>No recently updated threads available</h4>
-  </div>
-</div>
-<div class="board-data" ng-if="BoardsCtrl.recentThreads">
-  <div class="title">
-    <h4>Recent Threads</h4>
-  </div>
-  <div class="thin-underline"></div>
-  <!-- Thread listing -->
-  <div class="threads-data compact" ng-repeat="thread in BoardsCtrl.recentThreads track by thread.id">
-    <div class="subject">
-      <div class="title">
-        <a ng-class="thread.title_class" class="thread-title" ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
-        <small>
-          by
-          <a ui-sref="profile({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
-          (<a ui-sref="board.data({ boardId: thread.board_id })" ng-bind-html="thread.board_name"></a>)
-        </small>
-
-        <i class="icon-epoch-lock right hide-mobile" ng-if="thread.locked"></i>
-        <i class="icon-epoch-verified right hide-mobile" ng-if="thread.sticky"></i>
-        <i class="fa fa-bar-chart icon-fix right hide-mobile" ng-if="thread.poll"></i>
-      </div>
-
-      <div class="mobile-stats">
-        <span>Last post by </span>
-        <a ui-sref="profile({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
-        <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
+<div class="board-data">
+  <div class="title column-container">
+    <div class="half-column">
+      <h4>Recent Threads</h4>
+    </div>
+    <div class="half-column">
+      <div class="right" ng-if="BoardsCtrl.loggedIn()">
+        <a ui-sref="posted.data()">Threads Posted In</a>
       </div>
     </div>
-    <div class="show-mobile">
-      <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-      <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
-      <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
-    </div>
-    <div class="last-reply">
-      <div ng-bind="thread.last_post_created_at | humanDate"></div>
+  </div>
+
+  <div class="centered-text" ng-if="!BoardsCtrl.recentThreads">
+    <h5>No recently updated threads available</h5>
+  </div>
+
+  <div ng-if="BoardsCtrl.recentThreads">
+    <div class="thin-underline"></div>
+    <!-- Thread listing -->
+    <div class="threads-data compact" ng-repeat="thread in BoardsCtrl.recentThreads track by thread.id">
+      <div class="subject">
+        <div class="title">
+          <a ng-class="thread.title_class" class="thread-title" ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
+          <small>
+            by
+            <a ui-sref="profile({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
+            (<a ui-sref="board.data({ boardId: thread.board_id })" ng-bind-html="thread.board_name"></a>)
+          </small>
+
+          <i class="icon-epoch-lock right hide-mobile" ng-if="thread.locked"></i>
+          <i class="icon-epoch-verified right hide-mobile" ng-if="thread.sticky"></i>
+          <i class="fa fa-bar-chart icon-fix right hide-mobile" ng-if="thread.poll"></i>
+        </div>
+
+        <div class="mobile-stats">
+          <span>Last post by </span>
+          <a ui-sref="profile({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
+          <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
+        </div>
+      </div>
+      <div class="show-mobile">
+        <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
+        <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
+        <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
+      </div>
+      <div class="last-reply">
+        <div ng-bind="thread.last_post_created_at | humanDate"></div>
+      </div>
     </div>
   </div>
 </div>

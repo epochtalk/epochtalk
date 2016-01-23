@@ -4,7 +4,7 @@ var Boom = require('boom');
 var Hoek = require('hoek');
 var limiter = require('rolling-rate-limiter');
 var roles = require(path.normalize(__dirname + '/../acls/roles'));
-var redis = require(path.normalize(__dirname + '/../../../redis'));
+var redis;
 
 var namespace = 'ept:';
 
@@ -39,6 +39,8 @@ var imageUploadOverrides = {
 };
 
 exports.register = function(plugin, options, next) {
+  if (!options.redis) { return next(new Error('Redis not found in limiter')); }
+  redis = options.redis;
   updateLimits(options);
   namespace = options.namespace || namespace;
 
