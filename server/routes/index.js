@@ -38,8 +38,7 @@ exports.endpoints = function() {
       path: '/static/{path*}',
       handler: {
         directory: {
-          path: path.join(__dirname, '..', '..', 'public'),
-          index: false
+          path: path.join(__dirname, '..', '..', 'public')
         }
       }
     },
@@ -93,7 +92,7 @@ exports.endpoints = function() {
           // make sure image file exists
           var file = request.payload.file;
           if (!file) { return reply(Boom.badRequest('No File Attached')); }
-          file.on('end', function (err) { return reply().code(204); });
+          file.on('end', function () { return reply().code(204); });
 
           // decode policy
           var policyPayload = request.payload.policy;

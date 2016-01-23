@@ -20,7 +20,7 @@ RUN apt-get -y update \
   && gem install foreman
 
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION 0.12.7
+ENV NODE_VERSION 5.4.1
 
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash \
   && source $NVM_DIR/nvm.sh \
@@ -32,7 +32,7 @@ ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 # update npm version
-RUN npm install npm -g
+# RUN npm install npm -g
 
 # install bower
 RUN npm install -g bower
@@ -47,7 +47,7 @@ RUN /etc/init.d/postgresql start \
 USER root
 
 # Adjust PostgreSQL configuration so that remote connections to the
-# database are possible. 
+# database are possible.
 RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.4/main/pg_hba.conf
 
 # And add ``listen_addresses`` to ``/etc/postgresql/9.3/main/postgresql.conf``
@@ -73,7 +73,7 @@ ENTRYPOINT /etc/init.d/postgresql start \
   && service redis-server start \
   && npm run db-migrate \
   && npm run db-migrate-plugins \
-  && node cli --create \
+  && node cli --seed \
   && npm run serve
 
 EXPOSE 8080
