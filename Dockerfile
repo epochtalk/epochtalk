@@ -37,21 +37,7 @@ ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 # install bower
 RUN npm install -g bower
 
-# set up postgres
-USER postgres
-
-RUN /etc/init.d/postgresql start \
-  && psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" \
-  && createdb -O docker docker
-
 USER root
-
-# Adjust PostgreSQL configuration so that remote connections to the
-# database are possible.
-RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.4/main/pg_hba.conf
-
-# And add ``listen_addresses`` to ``/etc/postgresql/9.3/main/postgresql.conf``
-RUN echo "listen_addresses='*'" >> /etc/postgresql/9.4/main/postgresql.conf
 
 # install bower dependencies
 COPY bower.json .
@@ -63,14 +49,13 @@ RUN npm install
 
 # configure .env
 COPY dotenv .env
-RUN echo "DATABASE_URL=\"postgres://docker:docker@localhost:5432/docker\"" >> .env \
+RUN echo "DATABASE_URL=\"postgres://docker:docker@database:5432/docker\"" >> .env \
   && echo "NODE_ENV=\"production\"" >> .env \
   && echo "HOST=0.0.0.0" >> .env
 
 # run the server
 COPY . .
-ENTRYPOINT /etc/init.d/postgresql start \
-  && service redis-server start \
+ENTRYPOINT service redis-server start \
   && npm run db-migrate \
   && npm run db-migrate-plugins \
   && node cli --seed \
