@@ -1,3 +1,5 @@
+var intersection = require('lodash/array/intersection');
+
 var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, AdminRoles, AdminUsers, roles, userData, roleId, limit, page, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
@@ -88,8 +90,16 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
     }
   });
 
+  this.allPriorities;
+
   this.init = function() {
     ctrl.maxPriority = null;
+
+    ctrl.allPriorities = [];
+    ctrl.roles.forEach(function(role) { // remove private and anoymous priorities
+      if (role.lookup !== 'private' && role.lookup !== 'anonymous') { ctrl.allPriorities.push(role.priority); }
+    });
+
     ctrl.roles.forEach(function(role) {
       if (!ctrl.maxPriority) { ctrl.maxPriority = role.priority; }
       else { ctrl.maxPriority = ctrl.maxPriority < role.priority ? role.priority : ctrl.maxPriority;}
@@ -103,10 +113,29 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       if (role.lookup === 'private') {
         role.message = 'The ' + role.name + ' role is assigned by default to forum visitors who are not authenticated.  This role is only used if the "Public Forum" is set to off via the forum settings page.  This requires all visitors to log in before they can view the forum content.  The user base of this role may not be manually edited.  Permission changes to this role will affect all unauthenticated users visiting the forum.';
       }
+
+      // Invert Priority Restrictions
+      role.permissions.invertedRestrictions = ctrl.allPriorities;
+      if (role.permissions.priorityRestrictions && role.permissions.priorityRestrictions.length) {
+        role.permissions.invertedRestrictions = intersection(ctrl.allPriorities, role.permissions.priorityRestrictions);
+      }
     });
+
     ctrl.backupPriorities = angular.copy(ctrl.roles);
   };
+
   this.init();
+
+  this.toggleRestriction = function(priority) {
+    var index = ctrl.newRole.permissions.invertedRestrictions.indexOf(priority);
+    if (index > -1) { ctrl.newRole.permissions.invertedRestrictions.splice(index, 1); }
+    else { ctrl.newRole.permissions.invertedRestrictions.push(priority); }
+    var intersect = intersection(ctrl.newRole.permissions.invertedRestrictions, ctrl.allPriorities);
+    if (intersect && intersect.length === ctrl.allPriorities.length) {
+      ctrl.newRole.permissions.priorityRestrictions = undefined;
+    }
+    else { ctrl.newRole.permissions.priorityRestrictions = intersect; }
+  };
 
   this.setBasePermissions = function() {
     var permissions = {};

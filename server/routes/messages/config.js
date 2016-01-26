@@ -18,18 +18,19 @@ var authorization = require(path.normalize(__dirname + '/../../authorization'));
   * @apiError (Error 500) InternalServerError There was an issue creating the message
   */
 exports.create = {
+  app: { user_id: 'payload.receiver_id' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'messages.create' },
   validate: {
     payload: {
       conversation_id: Joi.string().required(),
       receiver_id: Joi.string().required(),
-      copied_ids: Joi.array().items(Joi.string()).default([]),
       body: Joi.string().min(1).required()
     }
   },
   pre: [
     { method: authorization.isConversationMember },
+    { method: authorization.isPriorityRestricted },
     { method: common.cleanMessage },
     { method: common.parseMessage }
   ],
@@ -143,7 +144,6 @@ exports.delete = {
   * @apiSuccess {string} conversation_id The unique id of the conversation this message belongs to
   * @apiSuccess {string} sender_id The unique id of the user that sent this message
   * @apiSuccess {string} receiver_id The unique id of the user that sent this message
-  * @apiSuccess {array} copied_ids The unique id of the users that were copied on this message
   * @apiSuccess {string} body The contents of this message
   * @apiSuccess {boolean} viewed The flag showing if the receiver viewed this message
   * @apiSuccess {timestamp} created_at Timestamp of when the conversation was created

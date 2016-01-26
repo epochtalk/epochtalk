@@ -146,7 +146,11 @@ var ctrl = [
         Alert.success('New Conversation Started!');
         ctrl.loadRecentMessages();
       })
-      .catch(function() { Alert.error('Failed to create conversation'); })
+      .catch(function(err) {
+        var msg = 'Failed to create conversation';
+        if (err && err.status === 403) { msg = err.data.message; }
+        Alert.error(msg);
+      })
       .finally(function() { ctrl.showConvoModal = false; });
     };
 
@@ -192,7 +196,11 @@ var ctrl = [
         ctrl.newMessage.body = '';
         ctrl.newMessage.previewBody = '';
       })
-      .catch(function() { Alert.error('Message could not be sent'); });
+      .catch(function(err) {
+        var msg = 'Message could not be sent';
+        if (err && err.status === 403) { msg = err.data.message; }
+        Alert.error(msg);
+      });
     };
 
     this.deleteMessageId = '';

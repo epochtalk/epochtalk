@@ -1046,13 +1046,30 @@
             <!-- Autocomplete usernames -->
             <label>
               <input id="messages-findUser" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.messages.findUser" ng-false-value="undefined" />
-              Allow user to autocomplete usernames when initiating a private message
+              Allow user to autocomplete recepient username
             </label>
             <!-- Delete Message -->
             <label>
               <input id="messages-delete" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.messages.delete" ng-false-value="undefined" />
               Allow user to delete their own messages in a conversation
             </label>
+          </div>
+        </div>
+        <div ng-if="AdminManagementCtrl.newRole.lookup !== 'private' && AdminManagementCtrl.newRole.lookup !== 'anonymous'">
+          <div class="fill-row">
+            <br />
+            <!-- Restrict Messaging -->
+            <label>
+               Allow user to message the following roles:
+            </label>
+            <ul class="roles">
+              <li ng-repeat="restrictRole in AdminManagementCtrl.roles track by restrictRole.id" ng-if="restrictRole.lookup !== 'private' && restrictRole.lookup !== 'anonymous'">
+                <label>
+                  <input ng-init="checked = AdminManagementCtrl.newRole.permissions.invertedRestrictions.indexOf(restrictRole.priority) > -1" ng-model="checked" ng-click="AdminManagementCtrl.toggleRestriction(restrictRole.priority)" type="checkbox" />
+                  {{restrictRole.name}}
+                </label>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="clear"></div>

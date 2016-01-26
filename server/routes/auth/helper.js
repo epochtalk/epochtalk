@@ -38,6 +38,7 @@ function getMaskedPermissions(userRoles) {
 
   return {
     priority: getPriority(),
+    priorityRestrictions: maskPermission('priorityRestrictions') || undefined,
     adminAccess: maskPermission('adminAccess') ? {
       settings: maskPermission('adminAccess.settings') ? {
         general: maskPermission('adminAccess.settings.general'),

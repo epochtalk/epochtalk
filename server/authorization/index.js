@@ -60,7 +60,7 @@ function isModAndPermission(request, permission) {
 
 function isModAndPermissionThreadId(request, permission) {
   var userId = getUserId(request);
-  var some = hasPermission(request, 'boards.viewUncategorized.some');
+  var some = hasPermission(request, permission);
   var threadId = _.get(request, request.route.settings.app.thread_id);
   return request.db.moderators.isModeratorWithThreadId(userId, threadId)
   .then(function(mod) { return mod && some; });
@@ -332,7 +332,6 @@ module.exports = {
   canModerate: function(request, reply) {
     if (!request.payload.moderated) { return reply(); }
 
-    var userId = request.auth.credentials.id;
     var getACLValue = request.server.plugins.acls.getACLValue;
     var hasPrivilege = getACLValue(request.auth, 'threads.moderated');
     var result = Boom.forbidden();
@@ -962,6 +961,25 @@ module.exports = {
         // current has higher priority than referenced
         else if (lower && current < referenced) { result = true; }
 
+        return result;
+      });
+    }
+    return reply(promise);
+  },
+  isPriorityRestricted: function(request, reply) {
+    var getPriorityRestrictions = request.server.plugins.acls.getPriorityRestrictions;
+    var priorityRestrictions = getPriorityRestrictions(request.auth);
+    var promise;
+    if (priorityRestrictions && priorityRestrictions.length) {
+      var refUserId = _.get(request, request.route.settings.app.user_id);
+      promise = request.db.users.find(refUserId)
+      .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); })
+      .then(function(refPriority) {
+        var result = true;
+        // check if the user being messaged has a priority the authed user has access to msg
+        if (priorityRestrictions.indexOf(refPriority) < 0) {
+          result = Boom.forbidden('You have been restricted from performing this action, please contact an administrator');
+        }
         return result;
       });
     }
