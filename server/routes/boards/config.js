@@ -143,7 +143,7 @@ exports.byCategory = {
     var userId;
     if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
     var categoryId = request.query.category_id;
-    var promise = db.boards.byCategory(categoryId, userId);
+    var promise = request.db.boards.byCategory(categoryId, userId);
 
     return reply(promise);
   }

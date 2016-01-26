@@ -5,6 +5,7 @@ var del = require('del');
 var mkdirp = require('mkdirp');
 
 var files = [
+  { path: '/category', name: 'category.html' },
   { path: '/board', name: 'board.html' },
   { path: '/board', name: 'board.data.html' },
   { path: '/threads/new', name: 'new.html' },
