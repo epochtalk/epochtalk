@@ -1055,24 +1055,21 @@
             </label>
           </div>
         </div>
-        <div>
+        <div ng-if="AdminManagementCtrl.newRole.lookup !== 'private' && AdminManagementCtrl.newRole.lookup !== 'anonymous'">
           <div class="fill-row">
+            <br />
             <!-- Restrict Messaging -->
             <label>
-              <input id="messages-delete" type="checkbox" ng-init="priorityRestrictions = AdminManagementCtrl.newRole.permissions.priorityRestrictions.length > 0" ng-model="priorityRestrictions" ng-change="priorityRestrictions ? AdminManagementCtrl.newRole.permissions.priorityRestrictions = [] : AdminManagementCtrl.newRole.permissions.priorityRestrictions = undefined" />
-               Restrict which roles user can message
+               Allow user to message the following roles:
             </label>
-            <div ng-if="priorityRestrictions">
-              <ul class="roles">
-                <li ng-repeat="restrictRole in AdminManagementCtrl.roles track by restrictRole.id" ng-if="restrictRole.lookup !== 'private' && restrictRole.lookup !== 'anonymous'">
-                  <label>
-                    <input ng-init="checked = AdminManagementCtrl.newRole.permissions.priorityRestrictions.indexOf(restrictRole.priority) > -1" ng-model="checked" ng-click="AdminManagementCtrl.toggleRestriction(restrictRole.priority)" type="checkbox" />
-                    {{restrictRole.name}}
-                  </label>
-                </li>
-              </ul>
-              <span class="fill-row delete">Restrictions are taken from a user's highest priority role, with the exception of the banned role which takes precedence.</span>
-            </div>
+            <ul class="roles">
+              <li ng-repeat="restrictRole in AdminManagementCtrl.roles track by restrictRole.id" ng-if="restrictRole.lookup !== 'private' && restrictRole.lookup !== 'anonymous'">
+                <label>
+                  <input ng-init="checked = AdminManagementCtrl.newRole.permissions.invertedRestrictions.indexOf(restrictRole.priority) > -1" ng-model="checked" ng-click="AdminManagementCtrl.toggleRestriction(restrictRole.priority)" type="checkbox" />
+                  {{restrictRole.name}}
+                </label>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="clear"></div>
