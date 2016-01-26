@@ -1,7 +1,7 @@
-var rem = require('lodash/array/remove');
-var get = require('lodash/object/get');
-var some = require('lodash/collection/some');
-var filter = require('lodash/collection/filter');
+var rem = require('lodash/remove');
+var get = require('lodash/get');
+var some = require('lodash/some');
+var filter = require('lodash/filter');
 var Promise = require('bluebird');
 
 var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'AdminBoards', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories', 'roles',

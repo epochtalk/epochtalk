@@ -1,7 +1,7 @@
 'use strict';
 /* jslint node: true */
-var includes = require('lodash/collection/includes');
-var get = require('lodash/object/get');
+var includes = require('lodash/includes');
+var get = require('lodash/get');
 
 module.exports = ['$window', function($window) {
     var user = {};

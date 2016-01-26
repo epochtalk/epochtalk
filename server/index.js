@@ -5,7 +5,6 @@ var Hoek = require('hoek');
 var Good = require('good');
 var Inert = require('inert');
 var Vision = require('vision');
-var mkdirp = require('mkdirp');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
 var db = require(path.normalize(__dirname + '/../db'));
@@ -31,25 +30,38 @@ setup()
   server.decorate('request', 'redis', redis);
 
   // server logging only registered if config enabled
-  var options = {};
   if (config.logEnabled) {
-    var opsPath = path.normalize(__dirname +  '/../logs/server/operations');
-    var errsPath = path.normalize(__dirname + '/../logs/server/errors');
-    var reqsPath = path.normalize(__dirname + '/../logs/server/requests');
-    var logsPath = path.normalize(__dirname + '/../logs/server/logs');
-    mkdirp.sync(opsPath);
-    mkdirp.sync(errsPath);
-    mkdirp.sync(reqsPath);
-    mkdirp.sync(logsPath);
     var configWithPath = function(path) {
       return { path: path, extension: 'log', rotate: 'daily', format: 'YYYY-MM-DD-X', prefix:'epochtalk' };
     };
-    var consoleReporter = new GoodConsole({ log: '*', response: '*', error: '*' });
-    var opsReporter = new GoodFile(configWithPath(opsPath), { ops: '*' });
-    var errsReporter = new GoodFile(configWithPath(errsPath), { error: '*' });
-    var reqsReporter = new GoodFile(configWithPath(reqsPath), { response: '*' });
-    var logsReporter = new GoodFile(configWithPath(logsPath), { log: '*' });
-    options.reporters = [ consoleReporter, opsReporter, errsReporter, reqsReporter, logsReporter ];
+    var options = {
+      reporters: [
+        {
+          reporter: GoodConsole,
+          events: { log: '*', response: '*', error: '*' }
+        },
+        {
+          reporter: GoodFile,
+          events: { ops: '*' },
+          config: configWithPath(path.normalize(__dirname +  '/../logs/server/operations'))
+        },
+        {
+          reporter: GoodFile,
+          events: { error: '*' },
+          config: configWithPath(path.normalize(__dirname + '/../logs/server/errors'))
+        },
+        {
+          reporter: GoodFile,
+          events: { response: '*' },
+          config: configWithPath(path.normalize(__dirname + '/../logs/server/requests'))
+        },
+        {
+          reporter: GoodFile,
+          events: { log: '*' },
+          config: configWithPath(path.normalize(__dirname + '/../logs/server/logs'))
+        }
+      ]
+    };
     server.register({ register: Good, options: options}, defaultRegisterCb);
   }
 

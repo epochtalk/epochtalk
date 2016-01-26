@@ -1,4 +1,4 @@
-var some = require('lodash/collection/some');
+var some = require('lodash/some');
 
 var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 'AdminBoards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
   function($scope, $timeout, $location, $filter, $state, Session, AdminBoards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {

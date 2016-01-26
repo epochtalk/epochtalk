@@ -1,4 +1,4 @@
-var forIn = require('lodash/object/forIn');
+var forIn = require('lodash/forIn');
 
 module.exports = ['$location', '$filter', function($location, $filter) {
   return {

@@ -1,4 +1,4 @@
-var sortBy = require('lodash/collection/sortBy');
+var sortBy = require('lodash/sortBy');
 
 module.exports = ['$compile', function($compile) {
   return {

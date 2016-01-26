@@ -1,9 +1,9 @@
 'use strict';
 /* jslint node: true */
 
-var without = require('lodash/array/without');
-var intersection = require('lodash/array/intersection');
-var isEmpty = require('lodash/lang/isEmpty');
+var without = require('lodash/without');
+var intersection = require('lodash/intersection');
+var isEmpty = require('lodash/isEmpty');
 
 module.exports = ['$stateParams', '$location', 'Breadcrumbs',
 function ($stateParams, $location, Breadcrumbs) {

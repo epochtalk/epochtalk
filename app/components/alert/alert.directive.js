@@ -1,4 +1,4 @@
-var remove = require('lodash/array/remove');
+var remove = require('lodash/remove');
 
 module.exports = ['$timeout', 'Alert', function($timeout, Alert) {
   return {

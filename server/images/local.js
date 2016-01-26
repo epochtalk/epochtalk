@@ -3,6 +3,7 @@ module.exports = local;
 
 var fs = require('fs');
 var path = require('path');
+var Boom = require('boom');
 var mmm = require('mmmagic');
 var crypto = require('crypto');
 var request = require('request');

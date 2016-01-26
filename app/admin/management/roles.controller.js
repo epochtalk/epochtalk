@@ -1,4 +1,4 @@
-var intersection = require('lodash/array/intersection');
+var intersection = require('lodash/intersection');
 
 var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, AdminRoles, AdminUsers, roles, userData, roleId, limit, page, search) {
   var ctrl = this;
