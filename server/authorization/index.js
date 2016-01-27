@@ -586,11 +586,11 @@ module.exports = {
 
     // get referenced user's priority
     var refPriority = request.db.users.find(referencedUserId)
-    .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); });
+    .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
 
     // get authed user priority
     var curPriority = request.db.users.find(currentUserId)
-    .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
+    .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
 
     var promise = Promise.join(refPriority, curPriority, function(referenced, current) {
       var result = Boom.forbidden();
@@ -618,11 +618,11 @@ module.exports = {
 
     // get referenced user's priority
     var refPriority = request.db.users.find(referencedUserId)
-    .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); });
+    .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
 
     // get authed user priority
     var curPriority = request.db.users.find(currentUserId)
-    .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
+    .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
 
     var promise = Promise.join(refPriority, curPriority, function(referenced, current) {
       var result = Boom.forbidden();
@@ -844,11 +844,11 @@ module.exports = {
 
     // get referenced user's priority
     var refPriority = request.db.users.find(referencedUserId)
-    .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); });
+    .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
 
     // get authed user priority
     var curPriority = request.db.users.find(currentUserId)
-    .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
+    .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
 
     var promise = Promise.join(refPriority, curPriority, samePriority, lowerPriority, function(referenced, current, same, lower) {
       var result = Boom.forbidden();
@@ -871,7 +871,7 @@ module.exports = {
     var authedPriority, refRole;
     var promise = request.db.users.find(authedUserId)
     .then(function(curUser) {  // get authed user priority
-      authedPriority = _.min(_.pluck(curUser.roles, 'priority'));
+      authedPriority = _.min(_.map(curUser.roles, 'priority'));
       return request.db.roles.all();
     })
     .then(function(roles) { // get role were trying to ad users to
@@ -902,12 +902,12 @@ module.exports = {
 
       // get authed user priority
       var authedPriority = request.db.users.find(authedUserId)
-      .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
+      .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
       var refUsername;
       promise = Promise.each(usernames, function(username) {
         refUsername = username;
         var refPriority = request.db.users.userByUsername(username)
-        .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); });
+        .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
 
         // users can modify themselves
         if (refUsername === request.auth.credentials.username) { return true; }
@@ -944,12 +944,12 @@ module.exports = {
 
       // get authed user priority
       var authedPriority = request.db.users.find(authedUserId)
-      .then(function(curUser) { return _.min(_.pluck(curUser.roles, 'priority')); });
+      .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
 
       var refPriority = request.db.users.find(refUserId)
       .then(function(refUser) {
         refUsername = refUser.username;
-        return _.min(_.pluck(refUser.roles, 'priority'));
+        return _.min(_.map(refUser.roles, 'priority'));
       });
 
       promise = Promise.join(refPriority, authedPriority, samePriority, lowerPriority, function(referenced, current, same, lower) {
@@ -973,7 +973,7 @@ module.exports = {
     if (priorityRestrictions && priorityRestrictions.length) {
       var refUserId = _.get(request, request.route.settings.app.user_id);
       promise = request.db.users.find(refUserId)
-      .then(function(refUser) { return _.min(_.pluck(refUser.roles, 'priority')); })
+      .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); })
       .then(function(refPriority) {
         var result = true;
         // check if the user being messaged has a priority the authed user has access to msg

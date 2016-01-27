@@ -7,7 +7,7 @@ var defaultConfigurations = require(path.join(__dirname, 'configurations.json'))
 module.exports = function() {
   return db.configurations.get()
   // if admin options are not yet configured
-  .error(function(err) {
+  .error(function() {
     // create with defaults
     console.log('Not configured yet; using default configurations...');
     return db.configurations.create(defaultConfigurations)

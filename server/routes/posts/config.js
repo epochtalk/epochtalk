@@ -423,7 +423,7 @@ function cleanPosts(posts, currentUserId, viewContext) {
     var viewable = false;
     if (currentUserId === post.user.id) { viewable = true; }
     // if viewables is an array, check if user is moderating this post
-    else if (viewablesType === 'array' && _.contains(boards, post.board_id)) { viewable = true; }
+    else if (viewablesType === 'array' && _.includes(boards, post.board_id)) { viewable = true; }
     // if viewables is a true, view all posts
     else if (viewables) { viewable = true; }
 
