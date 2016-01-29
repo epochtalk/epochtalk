@@ -1,7 +1,5 @@
 var Joi = require('joi');
-var path = require('path');
 var Promise = require('bluebird');
-var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -210,10 +208,9 @@ exports.pageBoards = {
   * @apiError (Error 500) InternalServerError There was an issue watching the thread
   */
 exports.watchThread = {
-  app: { thread_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: authorization.accessBoardWithThreadId } ],
+  pre: [ { method: 'auth.watchThread(server, auth, params.id)' } ],
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var threadId = request.params.id;
@@ -260,10 +257,9 @@ exports.unwatchThread = {
   * @apiError (Error 500) InternalServerError There was an issue watching the board
   */
 exports.watchBoard = {
-  app: { board_id: 'params.id' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
-  pre : [ { method: authorization.accessBoardWithBoardId } ],
+  pre: [ { method: 'auth.watchBoard(server, auth, params.id)' }],
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;

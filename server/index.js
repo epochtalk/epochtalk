@@ -10,13 +10,14 @@ var GoodConsole = require('good-console');
 var db = require(path.normalize(__dirname + '/../db'));
 var redis = require(path.normalize(__dirname + '/../redis'));
 var setup = require(path.normalize(__dirname + '/../setup'));
+var jwt = require(path.normalize(__dirname + '/plugins/jwt'));
 var config = require(path.normalize(__dirname + '/../config'));
-var Auth = require(path.normalize(__dirname + '/plugins/jwt'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
+var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
 var defaultRegisterCb = function(err) { if (err) throw(err); };
 
 setup()
@@ -27,6 +28,7 @@ setup()
 
   // DB decoration
   server.decorate('request', 'db', db);
+  server.decorate('server', 'db', db);
   server.decorate('request', 'redis', redis);
 
   // server logging only registered if config enabled
@@ -65,9 +67,12 @@ setup()
     server.register({ register: Good, options: options}, defaultRegisterCb);
   }
 
+  // authorization methods
+  server.register({ register: authorization }, defaultRegisterCb);
+
   // auth via jwt
   var authOptions = { redis: redis };
-  server.register({ register: Auth, options: authOptions }, function(err) {
+  server.register({ register: jwt, options: authOptions }, function(err) {
     if (err) throw err;
     var strategyOptions = {
       key: config.privateKey,
