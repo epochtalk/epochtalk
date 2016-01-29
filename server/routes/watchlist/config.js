@@ -16,6 +16,7 @@ var Promise = require('bluebird');
   * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
   */
 exports.unread = {
+  app: { action_type: 'watchlist.unread' },
   auth: { strategy: 'jwt' },
   validate: {
     query: {
@@ -63,6 +64,7 @@ exports.unread = {
   * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
   */
 exports.edit = {
+  app: { action_type: 'watchlist.edit' },
   auth: { strategy: 'jwt' },
   validate: {
     query: {
@@ -115,6 +117,7 @@ exports.edit = {
   * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
   */
 exports.pageThreads = {
+  app: { action_type: 'watchlist.pageThreads' },
   auth: { strategy: 'jwt' },
   validate: {
     query: {
@@ -162,6 +165,7 @@ exports.pageThreads = {
   * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
   */
 exports.pageBoards = {
+  app: { action_type: 'watchlist.pageBoards' },
   auth: { strategy: 'jwt' },
   validate: {
     query: {
@@ -233,6 +237,7 @@ exports.watchThread = {
   * @apiError (Error 500) InternalServerError There was an issue unwatching the thread
   */
 exports.unwatchThread = {
+  app: { action_type: 'watchlist.unwatchThread' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
@@ -282,6 +287,7 @@ exports.watchBoard = {
   * @apiError (Error 500) InternalServerError There was an issue unwatching the board
   */
 exports.unwatchBoard = {
+  app: { action_type: 'watchlist.unwatchBoard' },
   auth: { strategy: 'jwt' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {

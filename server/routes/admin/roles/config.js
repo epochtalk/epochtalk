@@ -98,6 +98,12 @@ exports.users = {
   * @apiError (Error 500) InternalServerError There was an issue adding the role.
   */
 exports.add = {
+  app: {
+    mod_log: {
+      type: 'adminRoles.add',
+      data: { name: 'payload.name' }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.add' },
   validate: {
@@ -380,6 +386,15 @@ exports.add = {
   * @apiError (Error 500) InternalServerError There was an issue adding the role.
   */
 exports.update = {
+  app: {
+    mod_log: {
+      type: 'adminRoles.update',
+      data: {
+        id: 'payload.id',
+        name: 'payload.name'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.update' },
   validate: {
@@ -655,6 +670,12 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue removing the role.
   */
 exports.remove = {
+  app: {
+    mod_log: {
+      type: 'adminRoles.remove',
+      data: { id: 'params.id' }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.remove' },
   validate: { params: { id: Joi.string().required() } },
@@ -686,6 +707,7 @@ exports.remove = {
   * @apiError (Error 500) InternalServerError There was an issue reprioritizing the roles.
   */
 exports.reprioritize = {
+  app: { mod_log: { type: 'adminRoles.reprioritize' } },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.reprioritize' },
   validate: {

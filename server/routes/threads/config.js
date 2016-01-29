@@ -152,6 +152,7 @@ exports.byBoard = {
   * @apiError (Error 500) InternalServerError There was an issue retrieving the threads
   */
 exports.posted = {
+  app: { action_type: 'threads.posted' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.posted' },
   validate: {

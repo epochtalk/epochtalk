@@ -1,4 +1,8 @@
 var Joi = require('joi');
+<<<<<<< HEAD
+=======
+var path = require('path');
+>>>>>>> WIP: Mod log server-side implementation
 var Promise = require('bluebird');
 
 /**
@@ -25,6 +29,15 @@ var Promise = require('bluebird');
   * @apiError (Error 500) InternalServerError There was an error creating the user report note
   */
 exports.createUserReportNote = {
+  app: {
+    mod_log: {
+      type: 'adminReports.createUserReportNote',
+      data: {
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.createUserReportNote' },
   validate: {
@@ -65,6 +78,15 @@ exports.createUserReportNote = {
   * @apiError (Error 500) InternalServerError There was an error creating the post report note
   */
 exports.createPostReportNote = {
+  app: {
+    mod_log: {
+      type: 'adminReports.createPostReportNote',
+      data: {
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.createPostReportNote' },
   validate: {
@@ -105,6 +127,15 @@ exports.createPostReportNote = {
   * @apiError (Error 500) InternalServerError There was an error creating the message report note
   */
 exports.createMessageReportNote = {
+  app: {
+    mod_log: {
+      type: 'adminReports.createMessageReportNote',
+      data: {
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.createMessageReportNote' },
   validate: {
@@ -129,7 +160,7 @@ exports.createMessageReportNote = {
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update the status of a user moderation report.
   *
-  * @apiParam (Payload) {string} id The id of the user report note
+  * @apiParam (Payload) {string} id The id of the user report
   * @apiParam (Payload) {string="Pending","Reviewed","Ignored","Bad Report"} status The updated note status
   * @apiParam (Payload) {string} reviewer_user_id The id of the user updating the user report
   *
@@ -145,6 +176,15 @@ exports.createMessageReportNote = {
   * @apiError (Error 500) InternalServerError There was an error updating the user report
   */
 exports.updateUserReport = {
+  app: {
+    mod_log: {
+      type: 'adminReports.updateUserReport',
+      data: {
+        id: 'payload.id',
+        status: 'payload.status'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updateUserReport' },
   validate: {
@@ -173,7 +213,7 @@ exports.updateUserReport = {
   * @apiParam (Payload) {string="Pending","Reviewed","Ignored","Bad Report"} status The updated note status
   * @apiParam (Payload) {string} reviewer_user_id The id of the user updating the post report
   *
-  * @apiSuccess {string} id The unique id of the post report which was created
+  * @apiSuccess {string} id The unique id of the post report which was updated
   * @apiSuccess {string} status The status of the report
   * @apiSuccess {string} reporter_user_id The unique id of the user initiating the report
   * @apiSuccess {string} reporter_reason The reporter's reason for reporting the offending post
@@ -185,6 +225,15 @@ exports.updateUserReport = {
   * @apiError (Error 500) InternalServerError There was an error updating the post report
   */
 exports.updatePostReport = {
+  app: {
+    mod_log: {
+      type: 'adminReports.updatePostReport',
+      data: {
+        id: 'payload.id',
+        status: 'payload.status'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updatePostReport' },
   validate: {
@@ -209,7 +258,7 @@ exports.updatePostReport = {
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update the status of a message moderation report.
   *
-  * @apiParam (Payload) {string} id The id of the message report note
+  * @apiParam (Payload) {string} id The id of the message report
   * @apiParam (Payload) {string="Pending","Reviewed","Ignored","Bad Report"} status The updated note status
   * @apiParam (Payload) {string} reviewer_user_id The id of the user updating the message report
   *
@@ -225,6 +274,15 @@ exports.updatePostReport = {
   * @apiError (Error 500) InternalServerError There was an error updating the message report
   */
 exports.updateMessageReport = {
+  app: {
+    mod_log: {
+      type: 'adminReports.updateMessageReport',
+      data: {
+        id: 'payload.id',
+        status: 'payload.status'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updateMessageReport' },
   validate: {

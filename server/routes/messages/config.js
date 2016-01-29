@@ -15,7 +15,10 @@ var Promise = require('bluebird');
   * @apiError (Error 500) InternalServerError There was an issue creating the message
   */
 exports.create = {
-  app: { user_id: 'payload.receiver_id' },
+  app: {
+    action_type: 'messages.create',
+    user_id: 'payload.receiver_id'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'messages.create' },
   validate: {
@@ -53,6 +56,7 @@ exports.create = {
   * @apiError (Error 500) InternalServerError There was an issue getting the messages
   */
 exports.latest = {
+  app: { action_type: 'messages.latest' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'messages.latest' },
   validate: {
@@ -96,6 +100,7 @@ exports.latest = {
   * @apiError (Error 500) InternalServerError There was an issue getting the messages
   */
 exports.findUser = {
+  app: { action_type: 'messages.findUser' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'messages.findUser' },
   validate: { params: { username: Joi.string().required() } },
@@ -123,6 +128,7 @@ exports.findUser = {
   * @apiError (Error 500) InternalServerError There was an issue deleting the message
   */
 exports.delete = {
+  app: { action_type: 'messages.delete' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'messages.delete' },
   validate: { params: { id: Joi.string().required() } },

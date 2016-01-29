@@ -180,6 +180,15 @@ exports.find = {
   * @apiError (Error 500) InternalServerError There was error adding roles to the user
   */
 exports.addRoles = {
+  app: {
+    mod_log: {
+      type: 'adminUsers.addRoles',
+      data: {
+        usernames: 'payload.usernames',
+        role_id: 'payload.role_id'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.addRoles' },
   validate: {
@@ -229,6 +238,15 @@ exports.addRoles = {
   * @apiError (Error 500) InternalServerError There was error removing roles from the user
   */
 exports.removeRoles = {
+  app: {
+    mod_log: {
+      type: 'adminUsers.removeRoles',
+      data: {
+        user_id: 'payload.user_id',
+        role_id: 'payload.role_id'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.removeRoles' },
   validate: {
@@ -402,6 +420,13 @@ exports.page = {
   */
 exports.ban = {
   app: {
+    mod_log: {
+      type: 'adminUsers.ban',
+      data: {
+        user_id: 'payload.user_id',
+        expiration: 'payload.expiration'
+      }
+    },
     user_id: 'payload.user_id',
     privilege: 'adminUsers.privilegedBan'
   },
@@ -447,6 +472,10 @@ exports.ban = {
   */
 exports.unban = {
   app: {
+    mod_log: {
+      type: 'adminUsers.unban',
+      data: { user_id: 'payload.user_id' }
+    },
     user_id: 'payload.user_id',
     privilege: 'adminUsers.privilegedBan'
   },

@@ -27,6 +27,16 @@ var Promise = require('bluebird');
   * @apiError (Error 500) InternalServerError There was an issue creating the board
   */
 exports.create = {
+  app: {
+    mod_log: {
+      type: 'boards.create',
+      data: {
+        name: 'payload.name',
+        description: 'payload.description',
+        viewable_by: 'payload.viewable_by'
+      }
+    },
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'boards.create' },
   validate: {
@@ -131,6 +141,17 @@ exports.allCategories = {
   * @apiError (Error 500) InternalServerError There was an issue updating the board
   */
 exports.update = {
+  app: {
+    mod_log: {
+      type: 'boards.update',
+      data: {
+        id: 'params.id',
+        name: 'payload.name',
+        description: 'payload.description',
+        viewable_by: 'payload.viewable_by'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'boards.update' },
   validate: {
@@ -167,6 +188,12 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue deleting the board
   */
 exports.delete = {
+  app: {
+    mod_log: {
+      type: 'boards.delete',
+      data: { id: 'params.id' }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'boards.delete' },
   validate: { params: { id: Joi.string().required() } },

@@ -49,6 +49,7 @@ var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
   * @apiError (Error 500) InternalServerError There was error updating the user
   */
 exports.update = {
+  app: { action_type: 'users.update' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'users.update' },
   validate: {
@@ -140,6 +141,7 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was error looking up the user
   */
 exports.find = {
+  app: { action_type: 'users.find' },
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'users.find' },
   validate: { params: { username: Joi.string().required() } },
@@ -182,7 +184,10 @@ exports.find = {
   * @apiError (Error 500) InternalServerError There was an error deactivating the user
   */
 exports.deactivate = {
-  app: { user_id: 'params.id' },
+  app: {
+    action_type: 'users.deactivate',
+    user_id: 'params.id'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'users.deactivate' },
   validate: { params: { id: Joi.string().required() } },
@@ -208,7 +213,10 @@ exports.deactivate = {
   * @apiError (Error 500) InternalServerError There was an error reactivating the user
   */
 exports.reactivate = {
-  app: { user_id: 'params.id' },
+  app: {
+    action_type: 'users.reactivate',
+    user_id: 'params.id'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'users.reactivate' },
   validate: { params: { id: Joi.string().required() } },
@@ -234,6 +242,7 @@ exports.reactivate = {
   * @apiError (Error 500) InternalServerError There was an error deleteing the user
   */
 exports.delete = {
+  app: { action_type: 'users.delete' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'users.delete' },
   validate: { params: { id: Joi.string().required() } },

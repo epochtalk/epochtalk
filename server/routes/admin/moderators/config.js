@@ -18,6 +18,15 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
   * @apiError (Error 500) InternalServerError There was an issue adding the moderator.
   */
 exports.add = {
+  app: {
+    mod_log: {
+      type: 'adminModerators.add',
+      data: {
+        usernames: 'payload.usernames',
+        board_id: 'payload.board_id'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminModerators.add' },
   validate: {
@@ -60,6 +69,15 @@ exports.add = {
   * @apiError (Error 500) InternalServerError There was an issue removing the moderator.
   */
 exports.remove = {
+  app: {
+    mod_log: {
+      type: 'adminModerators.remove',
+      data: {
+        usernames: 'payload.usernames',
+        board_id: 'payload.board_id'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminModerators.remove' },
   validate: {

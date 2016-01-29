@@ -250,6 +250,7 @@ exports.delete = {
   */
 exports.undelete = {
   app: {
+    action_type: 'posts.undelete',
     post_id: 'params.id',
     isPostDeletable: 'posts.privilegedDelete'
   },
@@ -279,7 +280,10 @@ exports.undelete = {
   * @apiError (Error 500) InternalServerError There was an issue purging the post
   */
 exports.purge = {
-  app: { post_id: 'params.id' },
+  app: {
+    action_type: 'posts.purge',
+    post_id: 'params.id'
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.purge' },
   validate: { params: { id: Joi.string().required() } },
@@ -309,6 +313,7 @@ exports.purge = {
   * @apiError (Error 500) InternalServerError There was an issue finding posts for the user
   */
 exports.pageByUser = {
+  app: { action_type: 'posts.pageByUser' },
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'posts.pageByUser' },
   validate: {

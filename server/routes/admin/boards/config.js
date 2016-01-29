@@ -79,6 +79,9 @@ exports.moveBoards = {
   * @apiError (Error 500) InternalServerError There was an issue updating categories/boards
   */
 exports.updateCategories = {
+  app: {
+    mod_log: { type: 'adminBoards.updateCategories' }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.updateCategories' },
   validate: { payload: { boardMapping: Joi.array().required() } },

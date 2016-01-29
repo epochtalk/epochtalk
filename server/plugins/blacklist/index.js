@@ -8,7 +8,7 @@ var blacklist = {};
 var db;
 
 exports.register = function(server, options, next) {
-  if (!options.db) { return next(new Error('No DB found in ACLS')); }
+  if (!options.db) { return next(new Error('No DB found in IP Blacklist')); }
   db = options.db;
 
   server.ext('onRequest', function(request, reply) {

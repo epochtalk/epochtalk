@@ -99,6 +99,7 @@ exports.find = {
   * @apiSuccess {object} config Same object that was passed in is returned upon success
   */
 exports.update = {
+  app: { mod_log: { type: 'adminSettings.update' } },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.update' },
   pre: [ { method: 'common.images.site(imageStore, payload)' } ],
@@ -220,6 +221,15 @@ exports.getBlacklist = {
   * @apiError (Error 500) InternalServerError There was an issue adding to the blacklist.
   */
 exports.addToBlacklist = {
+  app: {
+    mod_log: {
+      type: 'adminSettings.addToBlacklist',
+      data: {
+        ip_data: 'payload.ip_data',
+        note: 'payload.note'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.addToBlacklist' },
   validate: {
@@ -253,6 +263,16 @@ exports.addToBlacklist = {
   * @apiError (Error 500) InternalServerError There was an issue updating the blacklist.
   */
 exports.updateBlacklist = {
+  app: {
+    mod_log: {
+      type: 'adminSettings.updateBlacklist',
+      data: {
+        id: 'payload.id',
+        ip_data: 'payload.ip_data',
+        note: 'payload.note'
+      }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.updateBlacklist' },
   validate: {
@@ -289,6 +309,12 @@ exports.updateBlacklist = {
   * @apiError (Error 500) InternalServerError There was an issue deleting from the blacklist.
   */
 exports.deleteFromBlacklist = {
+  app: {
+    mod_log: {
+      type: 'adminSettings.deleteFromBlacklist',
+      data: { id: 'params.id' }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.deleteFromBlacklist' },
   validate: { params: { id: Joi.string().required() } },
@@ -378,6 +404,12 @@ exports.getTheme = {
   * @apiError (Error 500) InternalServerError There was an issue setting the theme.
   */
 exports.setTheme = {
+  app: {
+    mod_log: {
+      type: 'adminSettings.setTheme',
+      data: { theme: 'payload' }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.setTheme' },
   validate: {
@@ -444,6 +476,7 @@ exports.setTheme = {
   * @apiError (Error 500) InternalServerError There was an issue resetting the theme.
   */
 exports.resetTheme = {
+  app: { mod_log: { type: 'adminSettings.resetTheme' } },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.resetTheme' },
   handler: function(request, reply) {
