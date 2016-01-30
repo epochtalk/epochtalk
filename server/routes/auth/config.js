@@ -26,7 +26,6 @@ var config = require(path.normalize(__dirname + '/../../../config'));
   * @apiError (Error 500) InternalServerError There was an issue looking up the user in the db
   */
 exports.login = {
-  app: { action_type: 'auth.login' },
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
     payload: {
@@ -101,7 +100,6 @@ exports.login = {
   * @apiError (Error 500) InternalServerError There was an issue deleteing user's web token
   */
 exports.logout = {
-  app: { action_type: 'auth.logout' },
   auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
     // check if already logged in with jwt
@@ -154,7 +152,6 @@ exports.logout = {
   * @apiError BadRequest There was an error creating the user
   */
 exports.register = {
-  app: { action_type: 'auth.register' },
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
     payload: {
@@ -220,7 +217,6 @@ exports.register = {
   * @apiError (Error 500) InternalServerError There was an issue looking up the user in the db
   */
 exports.confirmAccount = {
-  app: { action_type: 'auth.confirmAccount' },
   validate: {
     payload: {
       username: Joi.string().min(1).max(255).required(),
@@ -273,7 +269,6 @@ exports.confirmAccount = {
   * @apiError Unauthorized returned when user is not authenticated
   */
 exports.authenticate = {
-  app: { action_type: 'auth.authenticate' },
   auth: { mode: 'try', strategy: 'jwt' },
   handler: function(request, reply) {
     // check if already logged in with jwt
@@ -298,7 +293,6 @@ exports.authenticate = {
   * @apiSuccess {boolean} found true if username exists false if not
   */
 exports.username = {
-  app: { action_type: 'auth.username' },
   validate: { params: { username: Joi.string().min(1).max(255).required() } },
   handler: function(request, reply) {
     var username = request.params.username;
@@ -320,7 +314,6 @@ exports.username = {
   * @apiSuccess {boolean} found true if email exists false if not
   */
 exports.email = {
-  app: { action_type: 'auth.email' },
   validate: { params: { email: Joi.string().email().required() } },
   handler: function(request, reply) {
     var email = request.params.email;
@@ -345,7 +338,6 @@ exports.email = {
   * @apiError (Error 500) InternalServerError There was an error updating the user account's reset token information
   */
 exports.recoverAccount = {
-  app: { action_type: 'auth.recoverAccount' },
   validate: { params: { query: Joi.string().min(1).max(255).required(), } },
   handler: function(request, reply) {
     var query = request.params.query;
@@ -399,7 +391,6 @@ exports.recoverAccount = {
   * @apiError (Error 500) InternalServerError There was an error updating the user account's reset token information
   */
 exports.resetPassword = {
-  app: { action_type: 'auth.resetPassword' },
   validate: {
     payload: {
       username: Joi.string().min(1).max(255).required(),
@@ -458,7 +449,6 @@ exports.resetPassword = {
   * @apiError BadRequest The user account could not be found
   */
 exports.checkResetToken = {
-  app: { action_type: 'auth.checkResetToken' },
   validate: {
     params: {
       username: Joi.string().min(1).max(255).required(),

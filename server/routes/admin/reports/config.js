@@ -1,8 +1,4 @@
 var Joi = require('joi');
-<<<<<<< HEAD
-=======
-var path = require('path');
->>>>>>> WIP: Mod log server-side implementation
 var Promise = require('bluebird');
 
 /**
@@ -48,7 +44,7 @@ exports.createUserReportNote = {
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.createUserReportNote(reportNote);
     return reply(promise);
   }
@@ -97,7 +93,7 @@ exports.createPostReportNote = {
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.createPostReportNote(reportNote);
     return reply(promise);
   }
@@ -146,7 +142,7 @@ exports.createMessageReportNote = {
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.createMessageReportNote(reportNote);
     return reply(promise);
   }
@@ -195,7 +191,7 @@ exports.updateUserReport = {
     }
   },
   handler: function(request, reply) {
-    var report = request.payload;
+    var report = Object.assign({}, request.payload);
     var promise = request.db.reports.updateUserReport(report);
     return reply(promise);
   }
@@ -244,7 +240,7 @@ exports.updatePostReport = {
     }
   },
   handler: function(request, reply) {
-    var report = request.payload;
+    var report = Object.assign({}, request.payload);
     var promise = request.db.reports.updatePostReport(report);
     return reply(promise);
   }
@@ -293,7 +289,7 @@ exports.updateMessageReport = {
     }
   },
   handler: function(request, reply) {
-    var report = request.payload;
+    var report = Object.assign({}, request.payload);
     var promise = request.db.reports.updateMessageReport(report);
     return reply(promise);
   }
@@ -329,11 +325,12 @@ exports.updateUserReportNote = {
   validate: {
     payload: {
       id: Joi.string().required(),
+      report_id: Joi.string().required(),
       note: Joi.string()
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.updateUserReportNote(reportNote);
     return reply(promise);
   }
@@ -369,11 +366,12 @@ exports.updatePostReportNote = {
   validate: {
     payload: {
       id: Joi.string().required(),
+      report_id: Joi.string().required(),
       note: Joi.string()
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.updatePostReportNote(reportNote);
     return reply(promise);
   }
@@ -409,11 +407,12 @@ exports.updateMessageReportNote = {
   validate: {
     payload: {
       id: Joi.string().required(),
+      report_id: Joi.string().required(),
       note: Joi.string()
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.updateMessageReportNote(reportNote);
     return reply(promise);
   }

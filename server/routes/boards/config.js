@@ -191,13 +191,23 @@ exports.delete = {
   app: {
     mod_log: {
       type: 'boards.delete',
-      data: { id: 'params.id' }
+      data: {
+        id: 'params.id',
+        name: 'params.name'
+      }
     }
   },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'boards.delete' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
-    return reply(request.db.boards.delete(request.params.id));
+    var promise = request.db.boards.delete(request.params.id)
+    .then(function(result) {
+      // store results on params so plugin has access
+      request.params.name = result.name;
+
+      return result;
+    });
+    return reply(promise);
   }
 };

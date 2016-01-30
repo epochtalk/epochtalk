@@ -101,7 +101,11 @@ exports.add = {
   app: {
     mod_log: {
       type: 'adminRoles.add',
-      data: { name: 'payload.name' }
+      data: {
+        id: 'payload.id',
+        name: 'payload.name',
+        description: 'payload.description'
+      }
     }
   },
   auth: { strategy: 'jwt' },
@@ -673,7 +677,10 @@ exports.remove = {
   app: {
     mod_log: {
       type: 'adminRoles.remove',
-      data: { id: 'params.id' }
+      data: {
+        id: 'params.id',
+        name: 'params.name'
+      }
     }
   },
   auth: { strategy: 'jwt' },
@@ -684,6 +691,9 @@ exports.remove = {
     var id = request.params.id;
     var promise = request.db.roles.remove(id)
     .then(function(result) {
+      // Add deleted role name to params so plugin can read it
+      request.params.name = result.name;
+
       // Remove deleted role from in memory object
       rolesHelper.deleteRole(id);
       return result;

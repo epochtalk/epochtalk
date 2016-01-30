@@ -1,4 +1,3 @@
-var path = require('path');
 var _ = require('lodash');
 var Boom = require('boom');
 var ipAddress = require('ip-address');

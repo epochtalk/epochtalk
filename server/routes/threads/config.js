@@ -152,7 +152,6 @@ exports.byBoard = {
   * @apiError (Error 500) InternalServerError There was an issue retrieving the threads
   */
 exports.posted = {
-  app: { action_type: 'threads.posted' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.posted' },
   validate: {
@@ -225,7 +224,7 @@ exports.viewed = {
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User (Thread Author Only)
   * @apiDescription Used to update the title of a thread.
   *
-  * @apiParam {string} id The unique id of the thread to lock
+  * @apiParam {string} id The unique id of the thread to update
   * @apiParam (Payload) {string} The new title for this thread.
   *
   * @apiUse ThreadObjectSuccess2

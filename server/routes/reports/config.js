@@ -24,7 +24,6 @@ var Joi = require('joi');
   * @apiError (Error 500) InternalServerError There was an issue creating the user report
   */
 exports.createUserReport = {
-  app: { action_type: 'reports.createUserReport' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'reports.createUserReport' },
   validate: {
@@ -65,7 +64,6 @@ exports.createUserReport = {
   * @apiError (Error 500) InternalServerError There was an issue creating the post report
   */
 exports.createPostReport = {
-  app: { action_type: 'reports.createPostReport' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'reports.createPostReport' },
   validate: {
@@ -106,7 +104,6 @@ exports.createPostReport = {
   * @apiError (Error 500) InternalServerError There was an issue creating the private message report
   */
 exports.createMessageReport = {
-  app: { action_type: 'reports.createMessageReport' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'reports.createMessageReport' },
   validate: {

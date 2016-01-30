@@ -247,6 +247,7 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
 
   this.updateReportNote = function(note) {
     delete note.edit;
+    note.report_id = ctrl.reportId;
     AdminReports.updateUserReportNote(note).$promise
     .then(function(updatedNote) {
       for (var i = 0; i < ctrl.reportNotes.length; i++) {

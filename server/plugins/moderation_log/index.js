@@ -1,7 +1,8 @@
 var db;
 var path = require('path');
-var templates = require(path.normalize(__dirname + '/templates'));
+var Promise = require('bluebird');
 var _ = require('lodash');
+var templates = require(path.normalize(__dirname + '/templates'));
 
 exports.register = function(server, options, next) {
   if (!options.db) { return next(new Error('No DB found in Moderation Log')); }
@@ -9,36 +10,51 @@ exports.register = function(server, options, next) {
 
   server.ext('onPostHandler', function(request, reply) {
     reply.continue();
+
     var modLog = _.get(request, 'route.settings.app.mod_log');
     var actionTemplate;
     if (modLog) { actionTemplate = templates[modLog.type]; }
 
     if (actionTemplate) {
+      // Log object to store
+      var log = {};
+
       // Build moderator user object
-      var moderator = {
+      log.moderator = {
         username: request.auth.credentials.username,
         id: request.auth.credentials.id,
         ip: request.headers['x-forwarded-for'] || request.info.remoteAddress
       };
 
       // Build actionObj from action object template
-      var actionObj = _.reduce(_.keys(modLog.data), function(o, key) {
+      log.actionObj = _.reduce(_.keys(modLog.data), function(o, key) {
         o[key] = _.get(request, modLog.data[key]);
         return o;
       }, {});
+      log.actionObj = _.isEmpty(log.actionObj) ? null : log.actionObj;
 
-      // Generate Display Text and URL
-      var displayText = actionTemplate.genDisplayText(actionObj);
-      var displayUrl = actionTemplate.genDisplayUrl(actionObj);
+      // Generates display text from templates
+      var generateDisplayInfo = function() {
+        log.displayText = actionTemplate.genDisplayText(log.actionObj);
+        log.displayUrl = actionTemplate.genDisplayUrl(log.actionObj);
+      };
 
+      // Store to db
+      var storeToDb = function() {
+        console.log(JSON.stringify(log, null, 2));
+      };
+      // var storeToDb = request.db.moderationLog.create(log);
 
-      console.log('\n');
-      console.log('Action Type:', modLog.type);
-      console.log('Moderator:', JSON.stringify(moderator,null,2));
-      console.log('Action Object:', JSON.stringify(actionObj,null,2));
-      console.log('Display Text:', displayText);
-      console.log('Display URL:', displayUrl);
-      console.log('\n');
+      // Determine if dataQuery is present
+      var promise = Promise.resolve();
+      if (actionTemplate.dataQuery) {
+        promise = actionTemplate.dataQuery(log.actionObj, request);
+      }
+
+      // Execute dataQuery if present, generate display text, then write log to the db
+      promise.then(function() { return generateDisplayInfo(); })
+      .then(function() { return storeToDb(); })
+      .catch(function(err) { if (err) { throw err; } });
     }
   });
 

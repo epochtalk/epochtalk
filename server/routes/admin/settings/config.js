@@ -312,7 +312,10 @@ exports.deleteFromBlacklist = {
   app: {
     mod_log: {
       type: 'adminSettings.deleteFromBlacklist',
-      data: { id: 'params.id' }
+      data: {
+        note: 'params.note',
+        ip_data: 'params.ip_data'
+      }
     }
   },
   auth: { strategy: 'jwt' },
@@ -321,9 +324,13 @@ exports.deleteFromBlacklist = {
   handler: function(request, reply) {
     var id = request.params.id;
     var promise = request.db.blacklist.deleteRule(id)
-    .then(function(blacklist) {
+    .then(function(results) {
+      // Assign deleted obj info to params so plugin can read
+      request.params.note = results.rule.note;
+      request.params.ip_data = results.rule.ip_data;
+
       request.server.plugins.blacklist.retrieveBlacklist();
-      return blacklist;
+      return results.blacklist;
     });
     return reply(promise);
   }

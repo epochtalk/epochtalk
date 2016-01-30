@@ -18,7 +18,6 @@ var Boom = require('boom');
   * @apiError (Error 500) InternalServerError There was an issue retrieving the breadcrumbs
   */
 exports.byType = {
-  app: { action_type: 'breadcrumbs.byType' },
   auth: { mode: 'try', strategy: 'jwt' },
   validate: {
     query: {

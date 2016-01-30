@@ -250,7 +250,10 @@ exports.delete = {
   */
 exports.undelete = {
   app: {
-    action_type: 'posts.undelete',
+    mod_log: {
+      type: 'posts.undelete',
+      data: { id: 'params.id' }
+    },
     post_id: 'params.id',
     isPostDeletable: 'posts.privilegedDelete'
   },
@@ -281,7 +284,10 @@ exports.undelete = {
   */
 exports.purge = {
   app: {
-    action_type: 'posts.purge',
+    mod_log: {
+      type: 'posts.purge',
+      data: { id: 'params.id' }
+    },
     post_id: 'params.id'
   },
   auth: { strategy: 'jwt' },
@@ -313,7 +319,6 @@ exports.purge = {
   * @apiError (Error 500) InternalServerError There was an issue finding posts for the user
   */
 exports.pageByUser = {
-  app: { action_type: 'posts.pageByUser' },
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'posts.pageByUser' },
   validate: {

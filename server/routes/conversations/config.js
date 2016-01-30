@@ -14,10 +14,7 @@ var Boom = require('boom');
   * @apiError (Error 500) InternalServerError There was an issue creating the conversation
   */
 exports.create = {
-  app: {
-    action_type: 'conversations.create',
-    user_id: 'payload.receiver_id'
-  },
+  app: { user_id: 'payload.receiver_id' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'conversations.create' },
   validate: {
@@ -58,7 +55,6 @@ exports.create = {
   * @apiError (Error 500) InternalServerError There was an issue getting messages for this conversation
   */
 exports.messages = {
-  app: { action_type: 'conversations.messages' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'conversations.messages' },
   validate: {
@@ -123,7 +119,12 @@ exports.messages = {
   * @apiError (Error 500) InternalServerError There was an issue deleting the conversation
   */
 exports.delete = {
-  app: { action_type: 'conversations.delete' },
+  app: {
+    mod_log: {
+      type: 'conversations.delete',
+      data: { id: 'params.id' }
+    }
+  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'conversations.delete' },
   validate: { params: { id: Joi.string().required() } },
