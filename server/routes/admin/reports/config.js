@@ -25,7 +25,9 @@ var Promise = require('bluebird');
   * @apiError (Error 500) InternalServerError There was an error creating the user report note
   */
 exports.createUserReportNote = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminReports.createUserReportNote',
     mod_log: {
       type: 'adminReports.createUserReportNote',
       data: {
@@ -34,8 +36,6 @@ exports.createUserReportNote = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.createUserReportNote' },
   validate: {
     payload: {
       report_id: Joi.string().required(),
@@ -74,7 +74,9 @@ exports.createUserReportNote = {
   * @apiError (Error 500) InternalServerError There was an error creating the post report note
   */
 exports.createPostReportNote = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminReports.createPostReportNote',
     mod_log: {
       type: 'adminReports.createPostReportNote',
       data: {
@@ -83,8 +85,6 @@ exports.createPostReportNote = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.createPostReportNote' },
   validate: {
     payload: {
       report_id: Joi.string().required(),
@@ -123,7 +123,9 @@ exports.createPostReportNote = {
   * @apiError (Error 500) InternalServerError There was an error creating the message report note
   */
 exports.createMessageReportNote = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminReports.createMessageReportNote',
     mod_log: {
       type: 'adminReports.createMessageReportNote',
       data: {
@@ -132,8 +134,6 @@ exports.createMessageReportNote = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.createMessageReportNote' },
   validate: {
     payload: {
       report_id: Joi.string().required(),
@@ -172,7 +172,9 @@ exports.createMessageReportNote = {
   * @apiError (Error 500) InternalServerError There was an error updating the user report
   */
 exports.updateUserReport = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminReports.updateUserReport',
     mod_log: {
       type: 'adminReports.updateUserReport',
       data: {
@@ -181,8 +183,6 @@ exports.updateUserReport = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updateUserReport' },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -221,7 +221,9 @@ exports.updateUserReport = {
   * @apiError (Error 500) InternalServerError There was an error updating the post report
   */
 exports.updatePostReport = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminReports.updatePostReport',
     mod_log: {
       type: 'adminReports.updatePostReport',
       data: {
@@ -230,8 +232,6 @@ exports.updatePostReport = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updatePostReport' },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -270,7 +270,9 @@ exports.updatePostReport = {
   * @apiError (Error 500) InternalServerError There was an error updating the message report
   */
 exports.updateMessageReport = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminReports.updateMessageReport',
     mod_log: {
       type: 'adminReports.updateMessageReport',
       data: {
@@ -279,8 +281,6 @@ exports.updateMessageReport = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updateMessageReport' },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -320,7 +320,17 @@ exports.updateMessageReport = {
 exports.updateUserReportNote = {
   app: { auth: { type: 'user'} },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updateUserReportNote' },
+  plugins: {
+    acls: 'adminReports.updateUserReportNote',
+    mod_log: {
+      type: 'adminReports.updateUserReportNote',
+      data: {
+        id: 'payload.id',
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
   validate: {
     payload: {
@@ -361,7 +371,17 @@ exports.updateUserReportNote = {
 exports.updatePostReportNote = {
   app: { auth: { type: 'post'} },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updatePostReportNote' },
+  plugins: {
+    acls: 'adminReports.updatePostReportNote',
+    mod_log: {
+      type: 'adminReports.updatePostReportNote',
+      data: {
+        id: 'payload.id',
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
   validate: {
     payload: {
@@ -402,8 +422,18 @@ exports.updatePostReportNote = {
 exports.updateMessageReportNote = {
   app: { auth: { type: 'message'} },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updateMessageReportNote' },
-    pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
+  plugins: {
+    acls: 'adminReports.updateMessageReportNote',
+    mod_log: {
+      type: 'adminReports.updateMessageReportNote',
+      data: {
+        id: 'payload.id',
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
+  pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
   validate: {
     payload: {
       id: Joi.string().required(),

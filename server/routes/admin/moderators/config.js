@@ -18,7 +18,9 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
   * @apiError (Error 500) InternalServerError There was an issue adding the moderator.
   */
 exports.add = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminModerators.add',
     mod_log: {
       type: 'adminModerators.add',
       data: {
@@ -27,8 +29,6 @@ exports.add = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminModerators.add' },
   validate: {
     payload: {
       usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
@@ -69,7 +69,9 @@ exports.add = {
   * @apiError (Error 500) InternalServerError There was an issue removing the moderator.
   */
 exports.remove = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminModerators.remove',
     mod_log: {
       type: 'adminModerators.remove',
       data: {
@@ -78,8 +80,6 @@ exports.remove = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminModerators.remove' },
   validate: {
     payload: {
       usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),

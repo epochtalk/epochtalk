@@ -1,4 +1,5 @@
 var Promise = require('bluebird');
+
 module.exports = {
   // =========== Admin Board Routes ===========
   'adminBoards.updateCategories': {
@@ -9,7 +10,7 @@ module.exports = {
   // =========== Admin Moderator Routes ===========
   'adminModerators.add': {
     genDisplayText: function(data) {
-      return `added user(s) ${data.usernames.toString().replace(/,/g, ', ')} to list of moderators for board ${data.board_name}`;
+      return `added user(s) "${data.usernames.toString().replace(/,/g, ', ')}" to list of moderators for board "${data.board_name}"`;
     },
     genDisplayUrl: function(data) { return `^.board.data({ boardId: ${data.board_id} })`; },
     dataQuery: function(data, request) {
@@ -22,7 +23,7 @@ module.exports = {
   },
   'adminModerators.remove': {
     genDisplayText: function(data) {
-      return `removed user(s) ${data.usernames.toString().replace(/,/g, ', ')} from list of moderators for board ${data.board_name}`;
+      return `removed user(s) "${data.usernames.toString().replace(/,/g, ', ')}" from list of moderators for board "${data.board_name}"`;
     },
     genDisplayUrl: function(data) { return `^.board.data({ boardId: ${data.board_id} })`; },
     dataQuery: function(data, request) {
@@ -36,7 +37,7 @@ module.exports = {
 
    // =========== Admin Reports Routes ===========
   'adminReports.updateMessageReport': {
-    genDisplayText: function() { return `updated a message report`; },
+    genDisplayText: function(data) { return `updated the status of message report to "${data.status}"`; },
     genDisplayUrl: function(data) {
       return `admin-moderation.messages({ reportId: ${data.id} })`;
     }
@@ -54,7 +55,7 @@ module.exports = {
     }
   },
   'adminReports.updatePostReport': {
-    genDisplayText: function() { return `updated a post report`; },
+    genDisplayText: function(data) { return `updated the status of post report to "${data.status}"`; },
     genDisplayUrl: function(data) {
       return `admin-moderation.posts({ reportId: ${data.report_id} })`;
     }
@@ -72,7 +73,7 @@ module.exports = {
     }
   },
   'adminReports.updateUserReport': {
-    genDisplayText: function() { return `updated a user report`; },
+    genDisplayText: function(data) { return `updated the status of user report to "${data.status}"`; },
     genDisplayUrl: function(data) {
       return `admin-moderation.users({ reportId: ${data.id} })`;
     }
@@ -92,39 +93,50 @@ module.exports = {
 
    // =========== Admin Roles Routes ===========
   'adminRoles.add': {
-    genDisplayText: function(data) { return `created a new role named ${data.name}`; },
+    genDisplayText: function(data) { return `created a new role named "${data.name}"`; },
     genDisplayUrl: function(data) { return `admin-management.roles({ roleId: ${data.id} })`; },
   },
   'adminRoles.remove': {
-    genDisplayText: function(data) { return `removed the role named ${data.name} `; },
+    genDisplayText: function(data) { return `removed the role named "${data.name}"`; },
     genDisplayUrl: function() { return `admin-management.roles`; }
   },
   'adminRoles.update': {
-    genDisplayText: function(data) { return `updated the role named ${data.name}`; },
+    genDisplayText: function(data) { return `updated the role named "${data.name}"`; },
     genDisplayUrl: function(data) {
       return `admin-management.roles({ roleId: ${data.id} })`;
     }
   },
   'adminRoles.reprioritize': {
     genDisplayText: function() { return `reordered role priorities`; },
-    genDisplayUrl: function() { return `admin-management.roles`; }
+    genDisplayUrl: function() { return `admin-management.roles`; },
+    dataQuery: function(data, request) {
+      data.priorities = {};
+      return request.db.roles.all()
+      .each(function(role) {
+        data.priorities[role.priority] = {
+          id: role.id,
+          lookup: role.lookup,
+          name: role.name
+        };
+      });
+    }
   },
 
    // =========== Admin Settings Routes ===========
   'adminSettings.update': {
     genDisplayText: function() { return `Updated forum settings`; },
-    genDisplayUrl: function() { return `admin-settings.general`; }
+    genDisplayUrl: function() { return `admin-settings`; }
   },
   'adminSettings.addToBlacklist': {
-    genDisplayText: function(data) { return `added ip blacklist rule named ${data.note}`; },
+    genDisplayText: function(data) { return `added ip blacklist rule named "${data.note}:"`; },
     genDisplayUrl: function() { return `admin-settings.advanced`; }
   },
   'adminSettings.updateBlacklist': {
-    genDisplayText: function(data) { return `updated ip blacklist rule named ${data.note}`; },
+    genDisplayText: function(data) { return `updated ip blacklist rule named "${data.note}"`; },
     genDisplayUrl: function() { return `admin-settings.advanced`; }
   },
   'adminSettings.deleteFromBlacklist': {
-    genDisplayText: function(data) { return `deleted ip blacklist rule "${data.note}"`; },
+    genDisplayText: function(data) { return `deleted ip blacklist rule named "${data.note}"`; },
     genDisplayUrl: function() { return `admin-settings.advanced`; }
   },
   'adminSettings.setTheme': {
@@ -143,7 +155,7 @@ module.exports = {
   },
   'adminUsers.addRoles': {
     genDisplayText: function(data) {
-      return `added role ${data.role_id} to user(s) ${data.usernames.toString().replace(/,/g, ', ')} `;
+      return `added role "${data.role_name}" to user(s) "${data.usernames.toString().replace(/,/g, ', ')}"`;
     },
     genDisplayUrl: function(data) {
       return `admin-management.roles({ roleId: ${data.role_id }})`;
@@ -153,9 +165,9 @@ module.exports = {
       .then(function(role) { data.role_name = role.name; });
     }
   },
-  'adminUsers.removeRoles': { // TODO: send role name in payload and username
+  'adminUsers.removeRoles': {
     genDisplayText: function(data) {
-      return `removed role ${data.role_id} from user ${data.user_id} `;
+      return `removed role "${data.role_name}" from user "${data.username}"`;
     },
     genDisplayUrl: function(data) {
       return `admin-management.roles({ roleId: ${data.role_id }})`;
@@ -169,25 +181,28 @@ module.exports = {
       .then(function(user) { data.username = user.username; });
     }
   },
-  'adminUsers.ban': { // TODO: lookup username for user
+  'adminUsers.ban': {
     genDisplayText: function(data) {
-      return `banned user ${data.username} until ${data.expiration}`;
+      var humanDate;
+      if (data.expiration) {
+        humanDate = data.expiration.toLocaleDateString('en-GB', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+      }
+      return humanDate ? `temporarily banned user "${data.username}" until ${humanDate}` :
+        `permanently banned user "${data.username}"`;
     },
-    genDisplayUrl: function() {
-      return `admin-management.users({ filter: 'banned' })`;
-    },
+    genDisplayUrl: function(data) { return `^.profile({ username: ${data.username} })`; },
     dataQuery: function(data, request) {
       return request.db.users.find(data.user_id)
       .then(function(user) { data.username = user.username; });
     }
   },
   'adminUsers.unban': {
-    genDisplayText: function(data) {
-      return `unbanned user ${data.username}`;
-    },
-    genDisplayUrl: function() {
-      return `admin-management.users`;
-    },
+    genDisplayText: function(data) { return `unbanned user "${data.username}"`; },
+    genDisplayUrl: function(data) { return `^.profile({ username: ${data.username} })`; },
     dataQuery: function(data, request) {
       return request.db.users.find(data.user_id)
       .then(function(user) { data.username = user.username; });
@@ -196,29 +211,28 @@ module.exports = {
 
    // =========== Boards Routes ===========
   'boards.create': {
-    genDisplayText: function(data) { return `created board named ${data.name}`; },
+    genDisplayText: function(data) { return `created board named "${data.name}"`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
   'boards.update': {
-    genDisplayText: function(data) { return `updated board named ${data.name}`; },
+    genDisplayText: function(data) { return `updated board named "${data.name}"`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
   'boards.delete': {
-    genDisplayText: function(data) { return `deleted board named ${data.name}`; },
+    genDisplayText: function(data) { return `deleted board named "${data.name}"`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
 
    // =========== Threads Routes ===========
   'threads.title': {
-    genDisplayText: function(data) { return `updated the title of a thread to "${data.title}"`; },
+    genDisplayText: function(data) { return `updated the title of a thread created by user "${data.author.username}" to "${data.title}"`; },
     genDisplayUrl: function(data) { return `^.posts.data({ threadId: ${data.id} })`; },
-    dataQuery: function(data, request) { return retrieveThread(data, request); }
+    dataQuery: retrieveThread
   },
   'threads.lock': {
     genDisplayText: function(data) {
-      var msg = `unlocked thread "${data.title}"`;
-      if (data.locked) { msg = `locked thread "${data.title}"`; }
-      return msg;
+      var prefix = data.locked ? 'locked' : 'unlocked';
+      return prefix + ` the thread "${data.title}" created by user "${data.author.username}"`;
     },
     genDisplayUrl: function(data) { return `^.posts.data({ threadId: ${data.id} })`; },
     dataQuery: function(data, request) {
@@ -228,9 +242,8 @@ module.exports = {
   },
   'threads.sticky': {
     genDisplayText: function(data) {
-      var msg = `unstickied thread "${data.title}"`;
-      if (data.stickied) { msg = `stickied thread ${data.id}`; }
-      return msg;
+      var prefix = data.stickied ? 'stickied' : 'unstickied';
+      return prefix + ` the thread "${data.title}" created by user "${data.author.username}"`;
     },
     genDisplayUrl: function(data) { return `^.posts.data({ threadId: ${data.id} })`; },
     dataQuery: function(data, request) {
@@ -238,9 +251,9 @@ module.exports = {
       .then(function(thread) { data.title = thread.title; });
     }
   },
-  'threads.move': { // TODO: Retrieve old board name
+  'threads.move': {
     genDisplayText: function(data) {
-      return `moved thread "${data.title}" to board "${data.new_board_name}"`;
+      return `moved the thread named "${data.title}" created by user "${data.author.username}" from board "${data.old_board_name}" to "${data.new_board_name}"`;
     },
     genDisplayUrl: function(data) { return `^.posts.data({ threadId: ${data.id} })`; },
     dataQuery: function(data, request) {
@@ -252,12 +265,27 @@ module.exports = {
       .then(function(board) { data.new_board_name = board.name; });
     }
   },
-  'threads.purge': { // TODO: retrieve name before purge
-    genDisplayText: function(data) { return `purged thread with id ${data}`; },
-    genDisplayUrl: function() { return null; }
+  'threads.purge': {
+    genDisplayText: function(data) { return `purged thread "${data.title}" created by user "${data.author.username}" from board "${data.board_name}"`; },
+    genDisplayUrl: function() { return null; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.user_id)
+      .then(function(user) {
+        delete data.user_id;
+        data.author = {
+          id: user.id,
+          username: user.username,
+          email: user.email
+        };
+        return request.db.boards.find(data.board_id);
+      })
+      .then(function(board) { data.board_name = board.name; });
+    }
   },
   'threads.editPoll': {
-    genDisplayText: function(data) { return `edited a poll in thread "${data.thread_title}"`; },
+    genDisplayText: function(data) {
+      return `edited a poll in thread named "${data.thread_title}" created by user "${data.author.username}"`;
+    },
     genDisplayUrl: function(data) { return `^.posts.data({ threadId: ${data.thread_id} })`; },
     dataQuery: function(data, request) {
       return retrieveThread(data, request)
@@ -265,7 +293,9 @@ module.exports = {
     }
   },
   'threads.createPoll': {
-    genDisplayText: function(data) { return `created a poll in thread "${data.thread_title}"`; },
+    genDisplayText: function(data) {
+      return `created a poll in thread named "${data.thread_title}" created by user "${data.author.username}"`;
+    },
     genDisplayUrl: function(data) { return `^.posts.data({ threadId: ${data.thread_id} })`; },
     dataQuery: function(data, request) {
       return retrieveThread(data, request)
@@ -274,9 +304,8 @@ module.exports = {
   },
   'threads.lockPoll': {
     genDisplayText: function(data) {
-      var msg = `unlocked poll in thread "${data.thread_title}"`;
-      if (data.locked) { msg = `locked poll in thread "${data.thread_title}"`; }
-      return msg;
+      var prefix = data.locked ? 'locked' : 'unlocked';
+      return prefix + ` poll in thread named "${data.thread_title}" created by user "${data.author.username}"`;
     },
     genDisplayUrl: function(data) { return `^.posts.data({ threadId: ${data.thread_id} })`; },
     dataQuery: function(data, request) {
@@ -287,78 +316,89 @@ module.exports = {
 
    // =========== Posts Routes ===========
   'posts.update': {
-    genDisplayText: function(data) { return `updated post in thread ${data.thread_id}`; },
+    genDisplayText: function(data) { return `updated post created by user "${data.author.username}" in thread named "${data.thread_title}"`; },
     genDisplayUrl: function(data) {
       return `^.posts.data({ threadId: ${data.thread_id}, start: ${data.position}, '#': ${data.id} })`;
     },
-    dataQuery: function(data, request) {
-      return retrievePost(data, request);
-    }
+    dataQuery: retrievePost
   },
   'posts.delete': {
-    genDisplayText: function(data) { return `hid post by ${data.author.username} in thread "${data.thread_title}"`; },
+    genDisplayText: function(data) { return `hid post created by user "${data.author.username}" in thread "${data.thread_title}"`; },
     genDisplayUrl: function(data) {
-      return `^.posts.data({ threadId: ${data.thread_id}, '#': ${data.id} })`;
+      return `^.posts.data({ threadId: ${data.thread_id}, start: ${data.position}, '#': ${data.id} })`;
     },
-    dataQuery: function(data, request) {
-      return retrievePost(data, request)
-      .then(function(post) {
-        data.thread_id = post.thread_id;
-        return request.db.threads.find(data.thread_id);
-      })
-      .then(function(thread) { data.thread_title = thread.title; });
-    }
+    dataQuery: retrievePost
   },
   'posts.undelete': {
-    genDisplayText: function(data) { return `unhid post by ${data.author.username} in thread "${data.thread_title}"`; },
+    genDisplayText: function(data) { return `unhid post created by user "${data.author.username}" in thread "${data.thread_title}"`; },
     genDisplayUrl: function(data) {
-      return `^.posts.data({ threadId: ${data.thread_id}, '#': ${data.id} })`;
+      return `^.posts.data({ threadId: ${data.thread_id}, start: ${data.position}, '#': ${data.id} })`;
     },
+    dataQuery: retrievePost
+  },
+  'posts.purge': {
+    genDisplayText: function(data) {
+      return `purged post created by user "${data.author.username}" in thread "${data.thread_title}"`;
+    },
+    genDisplayUrl: function(data) { return `^.posts.data({ threadId: ${data.thread_id} })`; },
     dataQuery: function(data, request) {
-      return retrievePost(data, request)
-      .then(function(post) {
-        data.thread_id = post.thread_id;
+      return request.db.users.find(data.user_id)
+      .then(function(user) {
+        data.author = {
+          id: user.id,
+          username: user.username,
+          email: user.email
+        };
         return request.db.threads.find(data.thread_id);
       })
       .then(function(thread) { data.thread_title = thread.title; });
-    }
-  },
-  'posts.purge': { // TODO: query for thread title, id and user info
-    genDisplayText: function(data) { return `purged post ${data.id}`; },
-    genDisplayUrl: function(data) {
-      // return `^.posts.data({ threadId: ${data.thread_id}, '#': ${data.id} })`;
-      return null;
     }
   },
 
    // =========== Users Routes ===========
-  // 'users.update': { // Mods/Admins us adminUsers.update
-  //   genDisplayText: function(data) { return ``; },
-  //   genDisplayUrl: function(data) { return ``; }
-  // },
-  'users.deactivate': { // TODO: Query for user by id
-    genDisplayText: function(data) { return `deactivated user ${data.id}`; },
-    genDisplayUrl: function(data) { return ``; }
+  'users.deactivate': {
+    genDisplayText: function(data) { return `deactivated user account "${data.username}"`; },
+    genDisplayUrl: function(data) { return `^.profile({ username: ${data.username} })`; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.id)
+      .then(function(user) {
+        data.username = user.username;
+        data.email = user.email;
+      });
+    }
   },
-  'users.reactivate': { // TODO: Query for user by id
-    genDisplayText: function(data) { return `reactivated user ${data.id}`; },
-    genDisplayUrl: function(data) { return ``; }
+  'users.reactivate': {
+    genDisplayText: function(data) { return `reactivated user account "${data.username}"`; },
+    genDisplayUrl: function(data) { return `^.profile({ username: ${data.username} })`; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.id)
+      .then(function(user) {
+        data.username = user.username;
+        data.email = user.email;
+      });
+    }
   },
   'users.delete': {
-    genDisplayText: function(data) { return `purged user ${data.id}`; },
+    genDisplayText: function(data) { return `purged user account "${data.username}"`; },
     genDisplayUrl: function() { return null; }
   },
 
    // =========== Conversations Routes ===========
-  'conversations.delete': { // TODO: Query receiver and sender
-    genDisplayText: function(data) { return `deleted conversation between x and y`; },
-    genDisplayUrl: function() { return null; }
+  'conversations.delete': {
+    genDisplayText: function(data) {
+      return `deleted conversation between users "${data.sender.username}" and "${data.receiver.username}"`;
+    },
+    genDisplayUrl: function() { return null; },
+    dataQuery: retrieveParticipants
   },
 
    // =========== Messages Routes ===========
-  'messages.delete': { // TODO: Query receiver and sender
-    genDisplayText: function(data) { return `deleted message from x sent to y`; },
-    genDisplayUrl: function() { return null; }
+  'messages.delete': {
+    genDisplayText: function(data) {
+      return `deleted message sent from user "${data.sender.username}" to "${data.receiver.username}"`;
+    },
+    genDisplayUrl: function() { return null; },
+    dataQuery: retrieveParticipants
   }
 };
 
@@ -390,5 +430,34 @@ function retrievePost(data, request) {
     };
     data.position = post.position;
     return post;
+  })
+  .then(function(post) {
+    data.thread_id = post.thread_id;
+    return request.db.threads.find(data.thread_id);
+  })
+  .then(function(thread) { data.thread_title = thread.title; });
+}
+
+// Conversations and Messages helper function
+function retrieveParticipants(data, request) {
+  return request.db.users.find(data.sender_id)
+  .then(function(sender) {
+    // We dont care if user is deleting a conversation they started
+    if (sender.id === request.auth.credentials.id) { return Promise.reject(); }
+    delete data.sender_id;
+    data.sender = {
+      id: sender.id,
+      username: sender.username,
+      email: sender.email
+    };
+    return request.db.users.find(data.receiver_id);
+  })
+  .then(function(receiver) {
+    delete data.receiver_id;
+    data.receiver = {
+      id: receiver.id,
+      username: receiver.username,
+      email: receiver.email
+    };
   });
 }

@@ -113,23 +113,37 @@ exports.messages = {
   *
   * @apiParam {string} id The Id of the conversation to delete
   *
-  * @apiUse ConversationObjectSuccess
+  * @apiSuccess {string} id The unique id of the conversation being deleted
+  * @apiSuccess {string} sender_id The unique id of the sender
+  * @apiSuccess {string} receiver_id The unique id of the receiver
   *
   * @apiError (Error 400) BadRequest Conversation Already Deleted
   * @apiError (Error 500) InternalServerError There was an issue deleting the conversation
   */
 exports.delete = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'conversations.delete',
     mod_log: {
       type: 'conversations.delete',
-      data: { id: 'params.id' }
+      data: {
+        id: 'params.id',
+        sender_id: 'route.settings.plugins.mod_log.metadata.sender_id',
+        receiver_id: 'route.settings.plugins.mod_log.metadata.receiver_id'
+       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'conversations.delete' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var promise = request.db.conversations.delete(request.params.id)
+    .then(function(deletedConvo) {
+      // append receiver and sender ids to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        sender_id: deletedConvo.sender_id,
+        receiver_id: deletedConvo.receiver_id
+      };
+      return deletedConvo;
+    })
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }

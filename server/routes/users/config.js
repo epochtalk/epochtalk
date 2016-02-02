@@ -182,15 +182,15 @@ exports.find = {
   * @apiError (Error 500) InternalServerError There was an error deactivating the user
   */
 exports.deactivate = {
-  app: {
+  app: { user_id: 'params.id' },
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'users.deactivate',
     mod_log: {
       type: 'users.deactivate',
       data: { id: 'params.id' }
-    },
-    user_id: 'params.id'
+    }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'users.deactivate' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.users.deactivate(server, auth, params.id)' } ],
   handler: function(request, reply) {
@@ -214,15 +214,15 @@ exports.deactivate = {
   * @apiError (Error 500) InternalServerError There was an error reactivating the user
   */
 exports.reactivate = {
-  app: {
+  app: { user_id: 'params.id' },
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'users.reactivate',
     mod_log: {
       type: 'users.reactivate',
       data: { id: 'params.id' }
-    },
-    user_id: 'params.id'
+    }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'users.reactivate' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.users.activate(server, auth, params.id)' } ],
   handler: function(request, reply) {
@@ -241,23 +241,36 @@ exports.reactivate = {
   *
   * @apiParam {string} id The userId of the user to delete
   *
-  * @apiSuccess {object} STATUS 200 OK
+  * @apiSuccess {string} username The deleted user's username
+  * @apiSuccess {string} email The deleted user's email
   *
   * @apiError (Error 500) InternalServerError There was an error deleteing the user
   */
 exports.delete = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'users.delete',
     mod_log: {
       type: 'users.delete',
-      data: { id: 'params.id' }
-    },
+      data: {
+        id: 'params.id',
+        username: 'request.route.settings.plugins.mod_log.metadata.username',
+        email: 'request.route.settings.plugins.mod_log.metadata.email'
+      }
+    }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'users.delete' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.params.id;
-    var promise = request.db.users.delete(userId);
+    var promise = request.db.users.delete(userId)
+    .then(function(deletedUser) {
+      // Add deleted user info to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        username: deletedUser.username,
+        email: deletedUser.email
+      };
+      return deletedUser;
+    });
     return reply(promise);
   }
 };

@@ -49,7 +49,28 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
   */
 exports.update = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.update' },
+  plugins: {
+    acls: 'adminUsers.update',
+    mod_log: {
+      type: 'adminUsers.update',
+      data: {
+        id: 'payload.id',
+        email: 'payload.email',
+        username: 'payload.username',
+        name: 'payload.name',
+        website: 'payload.website',
+        btcAddress: 'payload.btcAddress',
+        gender: 'payload.gender',
+        dob: 'payload.dob',
+        location: 'payload.location',
+        language: 'payload.language',
+        position: 'payload.position',
+        raw_signature: 'payload.raw_signature',
+        signature: 'payload.signature',
+        avatar: 'payload.avatar',
+      }
+    }
+  },
   validate: {
     payload: Joi.object().keys({
       id: Joi.string().required(),
@@ -180,7 +201,9 @@ exports.find = {
   * @apiError (Error 500) InternalServerError There was error adding roles to the user
   */
 exports.addRoles = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminUsers.addRoles',
     mod_log: {
       type: 'adminUsers.addRoles',
       data: {
@@ -189,8 +212,6 @@ exports.addRoles = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.addRoles' },
   validate: {
     payload: {
       usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
@@ -238,7 +259,9 @@ exports.addRoles = {
   * @apiError (Error 500) InternalServerError There was error removing roles from the user
   */
 exports.removeRoles = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminUsers.removeRoles',
     mod_log: {
       type: 'adminUsers.removeRoles',
       data: {
@@ -247,8 +270,6 @@ exports.removeRoles = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.removeRoles' },
   validate: {
     payload: {
       user_id: Joi.string().required(),
@@ -420,18 +441,20 @@ exports.page = {
   */
 exports.ban = {
   app: {
+    user_id: 'payload.user_id',
+    privilege: 'adminUsers.privilegedBan'
+  },
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminUsers.ban',
     mod_log: {
       type: 'adminUsers.ban',
       data: {
         user_id: 'payload.user_id',
         expiration: 'payload.expiration'
       }
-    },
-    user_id: 'payload.user_id',
-    privilege: 'adminUsers.privilegedBan'
+    }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.ban' },
   validate: {
     payload: {
       user_id: Joi.string().required(),
@@ -472,15 +495,17 @@ exports.ban = {
   */
 exports.unban = {
   app: {
-    mod_log: {
-      type: 'adminUsers.unban',
-      data: { user_id: 'payload.user_id' }
-    },
     user_id: 'payload.user_id',
     privilege: 'adminUsers.privilegedBan'
   },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.unban' },
+  plugins: {
+    acls: 'adminUsers.unban',
+    mod_log: {
+      type: 'adminUsers.unban',
+      data: { user_id: 'payload.user_id' }
+    }
+  },
   validate: { payload: { user_id: Joi.string().required() } },
   pre: [ { method: 'auth.admin.users.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {

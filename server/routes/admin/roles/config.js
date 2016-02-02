@@ -98,7 +98,9 @@ exports.users = {
   * @apiError (Error 500) InternalServerError There was an issue adding the role.
   */
 exports.add = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminRoles.add',
     mod_log: {
       type: 'adminRoles.add',
       data: {
@@ -108,8 +110,6 @@ exports.add = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.add' },
   validate: {
     payload: {
       id: Joi.string(),
@@ -390,7 +390,9 @@ exports.add = {
   * @apiError (Error 500) InternalServerError There was an issue adding the role.
   */
 exports.update = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminRoles.update',
     mod_log: {
       type: 'adminRoles.update',
       data: {
@@ -399,8 +401,6 @@ exports.update = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.update' },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -529,6 +529,7 @@ exports.update = {
           delete: Joi.boolean()
         }),
         messages: Joi.object().keys({
+          privilegedDelete: Joi.boolean(),
           create: Joi.boolean(),
           latest: Joi.boolean(),
           findUser: Joi.boolean(),
@@ -674,25 +675,27 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue removing the role.
   */
 exports.remove = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminRoles.remove',
     mod_log: {
       type: 'adminRoles.remove',
       data: {
         id: 'params.id',
-        name: 'params.name'
+        name: 'route.settings.plugins.mod_log.metadata.name'
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.remove' },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.admin.roles.remove(params.id)' } ],
   handler: function(request, reply) {
     var id = request.params.id;
     var promise = request.db.roles.remove(id)
     .then(function(result) {
-      // Add deleted role name to params so plugin can read it
-      request.params.name = result.name;
+      // Add deleted role name to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        name: result.name
+      };
 
       // Remove deleted role from in memory object
       rolesHelper.deleteRole(id);
@@ -717,9 +720,11 @@ exports.remove = {
   * @apiError (Error 500) InternalServerError There was an issue reprioritizing the roles.
   */
 exports.reprioritize = {
-  app: { mod_log: { type: 'adminRoles.reprioritize' } },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.reprioritize' },
+  plugins: {
+    acls: 'adminRoles.reprioritize',
+    mod_log: { type: 'adminRoles.reprioritize' }
+  },
   validate: {
     payload: Joi.array(Joi.object().keys({
       id: Joi.string().required(),

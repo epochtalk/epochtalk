@@ -27,7 +27,9 @@ var Promise = require('bluebird');
   * @apiError (Error 500) InternalServerError There was an issue creating the board
   */
 exports.create = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'boards.create',
     mod_log: {
       type: 'boards.create',
       data: {
@@ -37,8 +39,6 @@ exports.create = {
       }
     },
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.create' },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255).required(),
@@ -141,7 +141,9 @@ exports.allCategories = {
   * @apiError (Error 500) InternalServerError There was an issue updating the board
   */
 exports.update = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'boards.update',
     mod_log: {
       type: 'boards.update',
       data: {
@@ -152,8 +154,6 @@ exports.update = {
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.update' },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255),
@@ -188,23 +188,25 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue deleting the board
   */
 exports.delete = {
-  app: {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'boards.delete',
     mod_log: {
       type: 'boards.delete',
       data: {
         id: 'params.id',
-        name: 'params.name'
+        name: 'route.settings.plugins.mod_log.metadata.name'
       }
     }
   },
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.delete' },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var promise = request.db.boards.delete(request.params.id)
     .then(function(result) {
-      // store results on params so plugin has access
-      request.params.name = result.name;
+      // store results on plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        name: result.name
+      };
 
       return result;
     });
