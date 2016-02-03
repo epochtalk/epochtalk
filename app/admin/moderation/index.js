@@ -200,5 +200,38 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         return AdminReports.pageMessageReports(query).$promise;
       }]
     }
+  })
+  .state('admin-moderation.logs', {
+    url: '/logs?page&limit&filterCol&filter',
+    reloadOnSearch: false,
+    views: {
+      'data@admin-moderation': {
+        controller: 'ModLogsCtrl',
+        controllerAs: 'ModerationCtrl',
+        templateUrl: '/static/templates/admin/moderation/logs.html'
+      }
+    },
+    resolve: {
+      userAccess: modCheck('messages'),
+      $title: function() { return 'Moderation Log'; },
+      loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
+        var deferred = $q.defer();
+        require.ensure([], function() {
+          var ctrl = require('./logs.controller');
+          $ocLazyLoad.load({ name: 'ept.admin.moderation.logs.ctrl' });
+          deferred.resolve(ctrl);
+        });
+        return deferred.promise;
+      }],
+      moderationLogs: ['AdminModerationLogs', '$stateParams', function(AdminModerationLogs, $stateParams) {
+        var query = {
+          filterCol: $stateParams.field,
+          filter: $stateParams.filter,
+          limit: Number($stateParams.limit) || 15,
+          page: Number($stateParams.page) || 1
+        };
+        return AdminModerationLogs.page(query).$promise;
+      }]
+    }
   });
 }];

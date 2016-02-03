@@ -17,6 +17,7 @@ var adminUsers = require(path.normalize(__dirname + '/admin/users'));
 var adminReports = require(path.normalize(__dirname + '/admin/reports'));
 var adminRoles = require(path.normalize(__dirname + '/admin/roles'));
 var adminModerators = require(path.normalize(__dirname + '/admin/moderators'));
+var adminModerationLog = require(path.normalize(__dirname + '/admin/moderation_log'));
 var conversations = require(path.normalize(__dirname + '/conversations'));
 var messages = require(path.normalize(__dirname + '/messages'));
 var watchlist = require(path.normalize(__dirname + '/watchlist'));
@@ -26,7 +27,7 @@ function buildEndpoints() {
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminBoards, adminSettings, adminUsers, adminReports, adminRoles, adminModerators);
+  return [].concat(adminBoards, adminSettings, adminUsers, adminReports, adminRoles, adminModerators, adminModerationLog);
 }
 
 exports.endpoints = function() {

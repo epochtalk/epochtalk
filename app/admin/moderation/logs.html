@@ -1,0 +1,27 @@
+<div class="admin-table-header">
+  <div class="filter header-spacer">&nbsp;</div>
+  <div class="user-search clear">
+    <div class="nested-input-container">
+      <a ng-if="ModerationCtrl.search" ng-click="ModerationCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
+      <a ng-click="ModerationCtrl.searchReports()" class="nested-btn">Search</a>
+      <input class="input-text nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="messages-search" placeholder="Search reported messages" ng-keydown="$event.which === 13 && ModerationCtrl.searchReports()" ng-keyup="$event.which === 27 && ModerationCtrl.clearSearch()" />
+    </div>
+  </div>
+</div>
+<div class="fill-row">
+  <table class="underlined" width="100%">
+    <thead>
+      <th>Mod Username</th>
+      <th>Action</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="log in ModerationCtrl.logs track by log.position">
+        <td ng-bind="log.mod_username"></td>
+        <td><a ui-sref="{{log.action_display_url}}" ng-bind-html="log.action_display_text"></a></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagination-wrap">
+    <pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination>
+  </div>
+</div>
