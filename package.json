@@ -5,8 +5,6 @@
   "main": "server",
   "scripts": {
     "db-migrate": "./node_modules/.bin/db-migrate -m ./node_modules/epochtalk-core-pg/migrations up && node ./scripts/db-dump-schema",
-    "db-recreate": "npm run db-drop && npm run db-create && npm run db-migrate",
-    "db-devseed": "node ./tests/seed/devseed.js",
     "sass": "node ./scripts/sass.js",
     "build": "node ./scripts/build.js",
     "serve": "node ./scripts/serve.js",
