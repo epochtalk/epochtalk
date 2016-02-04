@@ -1,7 +1,6 @@
 var Joi = require('joi');
 var _ = require('lodash');
 var path = require('path');
-var Boom = require('boom');
 var querystring = require('querystring');
 var common = require(path.normalize(__dirname + '/../../common'));
 var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
@@ -78,13 +77,8 @@ exports.update = {
     .with('signature', 'raw_signature')
   },
   pre: [
-    [
-      // TODO: password should be needed to update email
-      { method: authorization.isOldPasswordValid },
-      { method: authorization.isNewUsernameUnique },
-      { method: authorization.isNewEmailUnique },
-      { method: authorization.isRequesterActive }
-    ],
+    // TODO: password should be needed to update email
+    [ { method: 'auth.users.update(server, auth, payload)' } ],
     { method: common.cleanUser },
     { method: common.parseSignature },
     { method: common.handleSignatureImages },
@@ -151,7 +145,7 @@ exports.find = {
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'users.find' },
   validate: { params: { username: Joi.string().required() } },
-  pre: [ { method: authorization.accessUser } ],
+  pre: [ { method: 'auth.users.find(server, auth, params)' } ],
   handler: function(request, reply) {
     // get logged in user id
     var userId = '';
@@ -194,10 +188,7 @@ exports.deactivate = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'users.deactivate' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ [
-    { method: authorization.isReferencedUserActive },
-    { method: authorization.deactivateAuthorized }
-  ] ],
+  pre: [ { method: 'auth.users.deactivate(server, auth, params.id)' } ],
   handler: function(request, reply) {
     var userId = request.params.id;
     var promise = request.db.users.deactivate(userId);
@@ -223,10 +214,7 @@ exports.reactivate = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'users.reactivate' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ [
-    { method: authorization.isReferencedUserDeactive },
-    { method: authorization.reactivateAuthorized }
-  ] ],
+  pre: [ { method: 'auth.users.activate(server, auth, params.id)' } ],
   handler: function(request, reply) {
     var userId = request.params.id;
     var promise = request.db.users.reactivate(userId);

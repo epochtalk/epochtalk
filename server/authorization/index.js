@@ -533,7 +533,7 @@ module.exports = {
       else if (threadSM && threadOwner && userSM) { result = true; }
 
       return result;
-    }).catch(console.log);
+    });
 
     return reply(promise);
   },

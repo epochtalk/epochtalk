@@ -24,7 +24,6 @@ var authorization = require(path.normalize(__dirname + '/../../authorization'));
   * @apiError (Error 500) InternalServerError There was an issue creating the post
   */
 exports.create = {
-  app: { thread_id: 'payload.thread_id' },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.create' },
   validate: {
@@ -36,11 +35,7 @@ exports.create = {
     })
   },
   pre: [
-    [
-      { method: authorization.accessBoardWithThreadId },
-      { method: authorization.accessLockedThreadWithThreadId },
-      { method: authorization.isRequesterActive }
-    ],
+    { method: 'auth.posts.create(server, auth, payload.thread_id)' },
     { method: common.cleanPost },
     { method: common.parseEncodings },
     { method: common.subImages }
@@ -71,14 +66,10 @@ exports.create = {
   * @apiError (Error 500) InternalServerError There was an issue finding the post
   */
 exports.find = {
-  app: { post_id: 'params.id' },
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'posts.find' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ [
-    { method: authorization.accessBoardWithPostId },
-    { method: authorization.canViewDeletedPost, assign: 'viewDeleted' }
-  ] ],
+  pre: [ { method: 'auth.posts.find(server, auth, params.id)', assign: 'viewDeleted' } ],
   handler: function(request, reply) {
     // retrieve post
     var userId = '';
@@ -112,7 +103,6 @@ exports.find = {
   * @apiError (Error 500) InternalServerError There was an issue finding the posts for thread
   */
 exports.byThread = {
-  app: { thread_id: 'query.thread_id'},
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'posts.byThread' },
   validate: {
@@ -123,10 +113,7 @@ exports.byThread = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }).without('start', 'page')
   },
-  pre: [ [
-    { method: authorization.accessBoardWithThreadId },
-    { method: authorization.canViewDeletedPosts, assign: 'viewables' }
-  ] ],
+  pre: [ { method: 'auth.posts.byThread(server, auth, query.thread_id)', assign: 'viewables' } ],
   handler: function(request, reply) {
     // ready parameters
     var userId = '';
@@ -195,12 +182,6 @@ exports.byThread = {
   * @apiError (Error 500) InternalServerError There was an issue updating the post
   */
 exports.update = {
-  app: {
-    thread_id: 'payload.thread_id',
-    post_id: 'params.id',
-    isPostOwner: 'posts.privilegedUpdate',
-    isPostWriteable: 'posts.privilegedUpdate'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.update' },
   validate: {
@@ -213,13 +194,7 @@ exports.update = {
     params: { id: Joi.string().required() }
   },
   pre: [
-    [
-      { method: authorization.isPostOwner },
-      { method: authorization.isPostWriteable },
-      { method: authorization.accessBoardWithThreadId },
-      { method: authorization.accessLockedThreadWithThreadId },
-      { method: authorization.isRequesterActive }
-    ],
+    { method: 'auth.posts.update(server, auth, params.id, payload.thread_id)' },
     { method: common.cleanPost },
     { method: common.parseEncodings },
     { method: common.subImages }
@@ -249,20 +224,10 @@ exports.update = {
   * @apiError (Error 500) InternalServerError There was an issue deleting the post
   */
 exports.delete = {
-  app: {
-    post_id: 'params.id',
-    isPostDeletable: 'posts.privilegedDelete'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.delete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ [
-    { method: authorization.isCDRPost },
-    { method: authorization.isPostDeletable },
-    { method: authorization.accessBoardWithPostId },
-    { method: authorization.accessLockedThreadWithPostId },
-    { method: authorization.isRequesterActive }
-  ] ], //handle permissions
+  pre: [ { method: 'auth.posts.delete(server, auth, params.id)'} ],
   handler: function(request, reply) {
     var promise = request.db.posts.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
@@ -293,13 +258,7 @@ exports.undelete = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.undelete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ [
-    { method: authorization.isCDRPost },
-    { method: authorization.isPostDeletable },
-    { method: authorization.accessBoardWithPostId },
-    { method: authorization.accessLockedThreadWithPostId },
-    { method: authorization.isRequesterActive }
-  ] ], //handle permissions
+  pre: [ { method: 'auth.posts.delete(server, auth, params.id)'} ],
   handler: function(request, reply) {
     var promise = request.db.posts.undelete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });
@@ -326,10 +285,7 @@ exports.purge = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'posts.purge' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ [
-    { method: authorization.isPostPurgeable },
-    { method: authorization.isCDRPost }
-  ] ], //handle permissions
+  pre: [ { method: 'auth.posts.purge(server, auth, params.id)' } ],
   handler: function(request, reply) {
     var promise = request.db.posts.purge(request.params.id);
     return reply(promise);
@@ -366,17 +322,14 @@ exports.pageByUser = {
       desc: Joi.boolean().default(false)
     }
   },
-  pre: [ [
-    { method: authorization.accessUser },
-    { method: authorization.userPriority, assign: 'priority' },
-    { method: authorization.canViewDeletedPosts, assign: 'viewables' }
-  ] ],
+  pre: [ { method: 'auth.posts.pageByUser(server, auth, params.username)', assign: 'auth' } ],
   handler: function(request, reply) {
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    var viewables = request.pre.viewables;
-    var priority = request.pre.priority;
+    console.log(request.pre.auth);
+    var viewables = request.pre.auth.viewables;
+    var priority = request.pre.auth.priority;
     var username = querystring.unescape(request.params.username);
     var opts = {
       limit: request.query.limit,
