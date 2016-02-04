@@ -4,9 +4,7 @@
   "description": "Epochtalk forum software",
   "main": "server",
   "scripts": {
-    "db-create": "createdb epochtalk_dev",
-    "db-drop": "dropdb epochtalk_dev",
-    "db-migrate": "./node_modules/.bin/db-migrate -m ./node_modules/epochtalk-core-pg/migrations up",
+    "db-migrate": "./node_modules/.bin/db-migrate -m ./node_modules/epochtalk-core-pg/migrations up && node ./scripts/db-dump-schema",
     "db-recreate": "npm run db-drop && npm run db-create && npm run db-migrate",
     "db-devseed": "node ./tests/seed/devseed.js",
     "sass": "node ./scripts/sass.js",
@@ -79,7 +77,8 @@
   "devDependencies": {
     "livereload": "^0.4.0",
     "mocha": "^2.4.1",
-    "nodemon": "^1.1.1"
+    "nodemon": "^1.1.1",
+    "parse-database-url": "^0.3.0"
   },
   "engines": {
     "node": "5.4.x"
