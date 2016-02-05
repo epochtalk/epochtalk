@@ -2,7 +2,6 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var common = require(path.normalize(__dirname + '/../../common'));
-var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -27,7 +26,7 @@ exports.create = {
     }
   },
   pre: [
-    { method: authorization.isPriorityRestricted },
+    { method: 'auth.conversations.create(server, auth, payload.receiver_id)' },
     { method: common.cleanMessage },
     { method: common.parseMessage }
   ],

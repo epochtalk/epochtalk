@@ -1605,7 +1605,81 @@ function messagesDelete(server, auth, messageId) {
   return server.helper.stitch(Boom.forbidden(), conditions, 'any');
 }
 
+// -- Conversations
 
+function conversationsCreate(server, auth, receiverId) {
+  // priority restriction
+  var priority;
+  var em = 'Action Restricted. Please contact an administrator.';
+  var admissions = server.plugins.acls.getPriorityRestrictions(auth);
+  if (!admissions || admissions.length <= 0) { priority = Promise.resolve(true); }
+  else {
+    priority = server.db.users.find(receiverId)
+    .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); })
+    // check if the user being messaged has a priority the authed user has access to msg
+    .then(function(refPriority) {
+      if (admissions.indexOf(refPriority) >= 0) { return true; }
+      else { return Promise.reject(Boom.forbidden(em)); }
+    });
+  }
+  return priority;
+}
+
+// -- Boards
+
+function boardsFind(server, auth, boardId) {
+  var userId = auth.credentials.id;
+
+  var conditions = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.boards.getBoardInBoardMapping,
+      args: [boardId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModerator,
+      args: [userId, boardId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+
+  return server.helper.stitch(Boom.notFound(), conditions, 'any');
+}
+
+function boardsAllCategories(server, auth) {
+  return server.plugins.acls.getUserPriority(auth);
+}
+
+// -- Auth
+
+function authRegister(server, email, username) {
+
+  // check unique email
+  var emailCond = server.db.users.userByEmail(email)
+  .then(function(user) {
+    if (user) { return Promise.reject(Boom.badRequest('Email Already Exists')); }
+    else { return true; }
+  });
+
+  // check unique username
+  var usernameCond = server.db.users.userByUsername(username)
+  .then(function(user) {
+    if (user) { return Promise.reject(Boom.badRequest('Username Already Exists')); }
+    else { return true;}
+  });
+
+  return Promise.all([emailCond, usernameCond]);
+}
 
 // -- API
 
@@ -1652,6 +1726,14 @@ exports.register = function(server, options, next) {
   // -- messages
   server.method('auth.messages.create', messagesCreate, { callback: false });
   server.method('auth.messages.delete', messagesDelete, { callback: false });
+  // -- conversations
+  server.method('auth.conversations.create', conversationsCreate, { callback: false });
+  // -- boards
+  server.method('auth.boards.find', boardsFind, { callback: false });
+  server.method('auth.boards.allCategories', boardsAllCategories, { callback: false });
+  // -- auth
+  server.method('auth.auth.register', authRegister, { callback: false });
+
 
   next();
 };

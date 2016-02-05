@@ -7,7 +7,6 @@ var Promise = require('bluebird');
 var helper = require(path.normalize(__dirname + '/helper'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
 var config = require(path.normalize(__dirname + '/../../../config'));
-var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @api {POST} /login Login
@@ -162,12 +161,7 @@ exports.register = {
       confirmation: Joi.ref('password')
     }
   },
-  pre: [
-    [
-      { method: authorization.checkUniqueEmail },
-      { method: authorization.checkUniqueUsername }
-    ]
-  ],
+  pre: [ { method: 'auth.auth.register(server, payload.email, payload.username)' } ],
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
@@ -430,7 +424,7 @@ exports.resetPassword = {
       else { return Promise.reject(Boom.badRequest('Invalid Reset Token.')); }
     })
     .then(request.db.users.update)
-    .then(function(updatedUser) {
+    .then(function() {
       // TODO: Send password reset confirmation email here
       return 'Password Successfully Reset';
     });

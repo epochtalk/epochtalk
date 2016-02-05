@@ -2,7 +2,6 @@ var Joi = require('joi');
 var path = require('path');
 var Promise = require('bluebird');
 var common = require(path.normalize(__dirname + '/../../common'));
-var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiDefine BoardObjectSuccess
@@ -62,11 +61,10 @@ exports.create = {
   * @apiError (Error 500) InternalServerError There was an issue finding the board
   */
 exports.find = {
-  app: { board_id: 'params.id' },
   auth: { mode:'try', strategy: 'jwt' },
   plugins: { acls: 'boards.find' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: authorization.accessBoardWithBoardId } ],
+  pre: [ { method: 'auth.boards.find(server, auth, params.id)' } ],
   handler: function(request, reply) {
     return reply(request.db.boards.find(request.params.id));
   }
@@ -93,7 +91,7 @@ exports.allCategories = {
       limit: Joi.number().integer().min(1).max(100).default(5)
     }
   },
-  pre: [ { method: authorization.userPriority, assign: 'priority' } ],
+  pre: [ { method: 'auth.boards.allCategories(server, auth)', assign: 'priority' } ],
   handler: function(request, reply) {
     var userId;
     var priority = request.pre.priority;
