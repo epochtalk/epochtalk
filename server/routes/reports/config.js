@@ -1,6 +1,4 @@
 var Joi = require('joi');
-var path = require('path');
-var Boom = require('boom');
 
 /**
   * @apiVersion 0.4.0

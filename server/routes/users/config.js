@@ -4,7 +4,6 @@ var path = require('path');
 var querystring = require('querystring');
 var common = require(path.normalize(__dirname + '/../../common'));
 var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
-var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiVersion 0.4.0

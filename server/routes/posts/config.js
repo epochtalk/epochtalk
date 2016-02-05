@@ -7,7 +7,6 @@ var Promise = require('bluebird');
 var querystring = require('querystring');
 var common = require(path.normalize(__dirname + '/../../common'));
 var imageStore = require(path.normalize(__dirname + '/../../images'));
-var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiVersion 0.4.0

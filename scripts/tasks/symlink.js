@@ -48,7 +48,6 @@ module.exports = function() {
   .then(function() {
     return Promise.map(files, function(file) {
       var dirPath = path.join(__dirname, '/../../public/templates', file.path);
-      var filePath = path.join(dirPath, file.name);
 
       return new Promise(function(resolve, reject) {
         mkdirp(dirPath, function(err) {

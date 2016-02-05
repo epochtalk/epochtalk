@@ -3,7 +3,6 @@ var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
 var common = require(path.normalize(__dirname + '/../../common'));
-var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -29,8 +28,7 @@ exports.create = {
     }
   },
   pre: [
-    { method: authorization.isConversationMember },
-    { method: authorization.isPriorityRestricted },
+    { method: 'auth.messages.create(server, auth, payload.receiver_id, payload.conversation_id)' },
     { method: common.cleanMessage },
     { method: common.parseMessage }
   ],
@@ -130,7 +128,7 @@ exports.delete = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'messages.delete' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: authorization.isMessageOwner } ],
+  pre: [ { method: 'auth.messages.delete(server, auth, params.id)' } ],
   handler: function(request, reply) {
     var promise = request.db.messages.delete(request.params.id)
     .error(function(err) { return Boom.badRequest(err.message); });

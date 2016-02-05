@@ -88,6 +88,13 @@ var helper = {
       else { return Promise.reject(error); }
     });
   },
+  isThreadOwner: (error, method, args, userId) => {
+    return method(...args)
+    .then(function(value) {
+      if (value.user_id === userId) { return true; }
+      else { return Promise.reject(error); }
+    });
+  },
   isNotFirstPost: (error, method, args) => {
     return method(...args)
     .then(function(value) {
@@ -117,6 +124,7 @@ function build(opts) {
       promise = helper[opts.type](error, opts.method, opts.args, opts.permission);
       break;
     case 'isOwner':
+    case 'isThreadOwner':
     case 'isUnique':
       promise = helper[opts.type](error, opts.method, opts.args, opts.userId);
       break;
@@ -856,6 +864,748 @@ function postsPageByUser(server, auth, username) {
 
 // -- Threads
 
+function threadsCreate(server, auth, payload) {
+  var poll = payload.poll;
+  var boardId = payload.board_id;
+  var userId = auth.credentials.id;
+
+  // access board
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.boards.getBoardInBoardMapping,
+      args: [boardId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModerator,
+      args: [userId, boardId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  var access = server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+
+  // is requester active
+  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+
+  // poll based authorization
+  var pollCond = [
+    // poll createable
+    new Promise(function(resolve, reject) {
+      if (!poll) { return resolve(); }
+      var canCreate = server.plugins.acls.getACLValue(auth, 'polls.create');
+      if (!canCreate) { return reject(Boom.forbidden()); }
+      else { return resolve(poll); }
+    }),
+    // validate poll max answers
+    new Promise(function(resolve) {
+      if (!poll) { return resolve(); }
+      var maxAnswers = poll.max_answers;
+      var answersLength = poll.answers.length;
+      if (maxAnswers > answersLength) { poll.max_answers = answersLength; }
+      return resolve(poll);
+    }),
+    // validate Display Mode
+    new Promise(function(resolve, reject) {
+      if (!poll) { return resolve(); }
+      if (poll.display_mode === 'expired' && !poll.expiration) {
+        return reject(Boom.badRequest('Showing results after expiration requires an expiration'));
+      }
+      else { return resolve(poll); }
+    })
+  ];
+  var pollData = server.helper.stitch(Boom.badRequest(), pollCond, 'all')
+  .then(function() { return poll; });
+
+  // can moderate
+  var moderated = new Promise(function(resolve, reject) {
+    if (!payload.moderated) { return resolve(); }
+    var hasPrivilege = server.plugins.acls.getACLValue(auth, 'threads.moderated');
+    if (hasPrivilege) { return resolve(true); }
+    else { return reject(Boom.forbidden()); }
+  });
+
+  return Promise.all([access, active, pollData, moderated]);
+}
+
+function threadsByBoard(server, auth, boardId) {
+  var userId;
+  if (auth.isAuthenticated) { userId = auth.credentials.id; }
+
+  // access board
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.boards.getBoardInBoardMapping,
+      args: [boardId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModerator,
+      args: [userId, boardId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  return server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+}
+
+function threadsPosted(server, auth) {
+  return server.plugins.acls.getUserPriority(auth);
+}
+
+function threadsViewed(server, auth, threadId) {
+  // try mode on
+  var userId;
+  if (auth.isAuthenticated) { userId = auth.credentials.id; }
+
+  // Access to board with thread id
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.threads.getThreadsBoardInBoardMapping,
+      args: [threadId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  return server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+}
+
+function threadsTitle(server, auth, threadId) {
+  var userId = auth.credentials.id;
+
+  // Access to board with thread id
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.threads.getThreadsBoardInBoardMapping,
+      args: [threadId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  var access = server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+
+  // is requester active
+  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+
+  // is thread owner
+  var ownerCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'threads.privilegedTitle.all'
+    },
+    {
+      // is owner
+      type: 'isThreadOwner',
+      method: server.db.threads.getThreadOwner,
+      args: [threadId],
+      userId: userId,
+    },
+    {
+      // is board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedTitle.some')
+    }
+  ];
+  var owner = server.helper.stitch(Boom.forbidden(), ownerCond, 'any').tap(console.log);
+
+  // get thread first post
+  var first = server.db.threads.getThreadFirstPost(threadId)
+  .error(function() { return Promise.reject(Boom.notFound()); });
+
+  return Promise.all([access, active, owner, first])
+  .then(function(data) { return data[3]; });
+}
+
+function threadsLock(server, auth, threadId) {
+  var userId = auth.credentials.id;
+
+  // Access to board with thread id
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.threads.getThreadsBoardInBoardMapping,
+      args: [threadId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  var access = server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+
+  // is requester active
+  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+
+  // is thread owner
+  var ownerCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'threads.privilegedLock.all'
+    },
+    {
+      // is owner
+      type: 'isThreadOwner',
+      method: server.db.threads.getThreadOwner,
+      args: [threadId],
+      userId: userId,
+    },
+    {
+      // is board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedLock.some')
+    }
+  ];
+  var owner = server.helper.stitch(Boom.forbidden(), ownerCond, 'any');
+
+  return Promise.all([access, active, owner]);
+}
+
+function threadsSticky(server, auth, threadId) {
+  var userId = auth.credentials.id;
+
+  var conditions = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'threads.privilegedSticky.all'
+    },
+    {
+      // is this user a board moderator
+      error: Boom.badRequest(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedSticky.some')
+    }
+  ];
+
+  return server.helper.stitch(Boom.badRequest(), conditions, 'any');
+}
+
+function threadsMove(server, auth, threadId) {
+  var userId = auth.credentials.id;
+
+  var conditions = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'threads.privilegedMove.all'
+    },
+    {
+      // is this user a board moderator
+      error: Boom.badRequest(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedMove.some')
+    }
+  ];
+
+  return server.helper.stitch(Boom.badRequest(), conditions, 'any');
+}
+
+function threadsPurge(server, auth, threadId) {
+  var userId = auth.credentials.id;
+
+  var conditions = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'threads.privilegedPurge.all'
+    },
+    {
+      // is this user a board moderator
+      error: Boom.badRequest(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedPurge.some')
+    }
+  ];
+
+  return server.helper.stitch(Boom.badRequest(), conditions, 'any');
+}
+
+function threadsVote(server, auth, params, payload) {
+  var threadId = params.threadId;
+  var pollId = params.pollId;
+  var answerLength = payload.answerIds.length;
+  var userId = auth.credentials.id;
+
+  // Access to board with thread id
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.threads.getThreadsBoardInBoardMapping,
+      args: [threadId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // is requester active
+  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+
+  // Check if has poll exists
+  var exists = server.db.polls.exists(threadId)
+  .then(function(exists) {
+    if (exists) { return true; }
+    else { return Promise.reject(Boom.badRequest('Poll Does Not Exists')); }
+  });
+
+  // Check if has voted already
+  var vote = server.db.polls.hasVoted(threadId, userId)
+  .then(function(voted) {
+    if (!voted) { return true; }
+    else { return Promise.reject(Boom.forbidden('Already Voted')); }
+  });
+
+  // Check if poll is unlocked
+  var unlocked = server.db.polls.isLocked(pollId)
+  .then(function(locked) {
+    if (!locked) { return true; }
+    else { return Promise.reject(Boom.forbidden('Poll is Locked')); }
+  });
+
+  // Check if poll is still running
+  var running = server.db.polls.isRunning(pollId)
+  .then(function(running) {
+    if (running) { return true; }
+    else { return Promise.reject(Boom.forbidden('Poll is Expired')); }
+  });
+
+  // Check if vote is valid
+  var valid = server.db.polls.maxAnswers(pollId)
+  .then(function(maxAnswers) {
+    if (maxAnswers && maxAnswers >= answerLength) { return true; }
+    else { return Promise.reject(Boom.badRequest('Too Many Answers')); }
+  });
+
+  return Promise.all([access, active, exists, vote, unlocked, running, valid]);
+}
+
+function threadsRemoveVote(server, auth, threadId, pollId) {
+  var userId = auth.credentials.id;
+
+  // Access to board with thread id
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.threads.getThreadsBoardInBoardMapping,
+      args: [threadId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // is requester active
+  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+
+  // Check if has poll exists
+  var exists = server.db.polls.exists(threadId)
+  .then(function(exists) {
+    if (exists) { return true; }
+    else { return Promise.reject(Boom.badRequest('Poll Does Not Exists')); }
+  });
+
+  // Check if poll is unlocked
+  var unlocked = server.db.polls.isLocked(pollId)
+  .then(function(locked) {
+    if (!locked) { return true; }
+    else { return Promise.reject(Boom.forbidden('Poll is Locked')); }
+  });
+
+  // Check if poll is still running
+  var running = server.db.polls.isRunning(pollId)
+  .then(function(running) {
+    if (running) { return true; }
+    else { return Promise.reject(Boom.forbidden('Poll is Expired')); }
+  });
+
+  // Check if vote can be removed
+  var change = server.db.polls.changeVote(pollId)
+  .then(function(changeVote) {
+    if (changeVote) { return true; }
+    else { return Promise.reject(Boom.badRequest('Votes cannot be changed')); }
+  });
+
+  return Promise.all([access, active, exists, unlocked, running, change]);
+}
+
+function threadsEditPoll(server, auth, params, payload) {
+  var poll = payload;
+  var pollId = params.pollId;
+  var threadId = params.threadId;
+  var userId = auth.credentials.id;
+
+  // Access to board with thread id
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.threads.getThreadsBoardInBoardMapping,
+      args: [threadId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // is requester active
+  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+
+  // Check if has poll exists
+  var exists = server.db.polls.exists(threadId)
+  .then(function(exists) {
+    if (exists) { return true; }
+    else { return Promise.reject(Boom.badRequest('Poll Does Not Exists')); }
+  });
+
+  // is poll owner
+  var ownerCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'polls.privilegedLock.all'
+    },
+    {
+      // is thread owner
+      type: 'isThreadOwner',
+      method: server.db.threads.getThreadOwner,
+      args: [threadId],
+      userId: userId
+    },
+    {
+      // is board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'polls.privilegedLock.some')
+    }
+  ];
+  var owner = server.helper.stitch(Boom.forbidden(), ownerCond, 'any');
+
+  // validate display mode
+  var display = new Promise(function(resolve, reject) {
+    if (!poll) { return resolve(); }
+    if (poll.display_mode === 'expired' && !poll.expiration) {
+      return reject(Boom.badRequest('Showing results after expiration requires an expiration'));
+    }
+    else { return resolve(poll); }
+  });
+
+  // validate max answers update // TODO: limit low end of maxAnswers?
+  var answers = server.db.polls.answers(pollId)
+  .then(function(pollAnswers) {
+    var maxAnswers = payload.max_answers;
+    var answersLength = pollAnswers.length;
+    if (maxAnswers > answersLength) { payload.max_answers = answersLength; }
+  });
+
+  return Promise.all([access, active, exists, owner, display, answers]);
+}
+
+function threadsCreatePoll(server, auth, threadId, poll) {
+  var userId = auth.credentials.id;
+
+  // Access to board with thread id
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.threads.getThreadsBoardInBoardMapping,
+      args: [threadId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // is requester active
+  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+
+  // can create poll
+  var getThreadOwner = server.db.threads.getThreadOwner(threadId);
+  var getPollExists = server.db.polls.exists(threadId);
+  var create = Promise.join(getThreadOwner, getPollExists, function(owner, pollExists) {
+    if (pollExists) { return Promise.reject(Boom.badRequest('Poll already exists')); }
+    else if (owner.user_id === userId) { return true; }
+    else { return Promise.reject(Boom.forbidden()); }
+  })
+  .error(() => { return Promise.reject(Boom.notFound()); });
+
+  // poll based authorization
+  var pollCond = [
+    // validate poll max answers
+    new Promise(function(resolve) {
+      if (!poll) { return resolve(); }
+      var maxAnswers = poll.max_answers;
+      var answersLength = poll.answers.length;
+      if (maxAnswers > answersLength) { poll.max_answers = answersLength; }
+      return resolve(poll);
+    }),
+    // validate Display Mode
+    new Promise(function(resolve, reject) {
+      if (!poll) { return resolve(); }
+      if (poll.display_mode === 'expired' && !poll.expiration) {
+        return reject(Boom.badRequest('Showing results after expiration requires an expiration'));
+      }
+      else { return resolve(poll); }
+    })
+  ];
+  var pollData = server.helper.stitch(Boom.badRequest(), pollCond, 'all')
+  .then(function() { return poll; });
+
+  return Promise.all([access, active, create, pollData]);
+}
+
+function threadsLockPoll(server, auth, threadId) {
+  var userId = auth.credentials.id;
+
+  // Access to board with thread id
+  var accessCond = [
+    {
+      // Permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'boards.viewUncategorized.all'
+    },
+    {
+      // is the board visible
+      type: 'dbValue',
+      method: server.db.threads.getThreadsBoardInBoardMapping,
+      args: [threadId, server.plugins.acls.getUserPriority(auth)]
+    },
+    {
+      // is this user a board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
+    }
+  ];
+  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // is requester active
+  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+
+  // Check if has poll exists
+  var exists = server.db.polls.exists(threadId)
+  .then(function(exists) {
+    if (exists) { return true; }
+    else { return Promise.reject(Boom.badRequest('Poll Does Not Exists')); }
+  });
+
+  // is poll owner
+  var ownerCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'polls.privilegedLock.all'
+    },
+    {
+      // is thread owner
+      type: 'isThreadOwner',
+      method: server.db.threads.getThreadOwner,
+      args: [threadId],
+      userId: userId
+    },
+    {
+      // is board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'polls.privilegedLock.some')
+    }
+  ];
+  var owner = server.helper.stitch(Boom.forbidden(), ownerCond, 'any');
+
+  return Promise.all([access, active, exists, owner]);
+}
+
+// -- Messages
+
+function messagesCreate(server, auth, receiverId, convoId) {
+  var userId = auth.credentials.id;
+
+  // is a member of the conversation
+  var convoMember = server.db.conversations.isConversationMember(convoId, userId)
+  .then(function(isMember) {
+    if (isMember) { return true; }
+    else { return Promise.reject(Boom.forbidden('Not a part of this conversation')); }
+  });
+
+  // priority restriction
+  var priority;
+  var em = 'Action Restricted. Please contact an administrator.';
+  var admissions = server.plugins.acls.getPriorityRestrictions(auth);
+  if (!admissions || admissions.length <= 0) { priority = Promise.resolve(true); }
+  else {
+    priority = server.db.users.find(receiverId)
+    .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); })
+    // check if the user being messaged has a priority the authed user has access to msg
+    .then(function(refPriority) {
+      if (admissions.indexOf(refPriority) >= 0) { return true; }
+      else { return Promise.reject(Boom.forbidden(em)); }
+    });
+  }
+
+  return Promise.all([convoMember, priority]);
+}
+
+function messagesDelete(server, auth, messageId) {
+  var userId = auth.credentials.id;
+
+  var conditions = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'messages.privilegedDelete'
+    },
+    // is message owner
+    {
+      type: 'dbValue',
+      method: server.db.messages.isMessageSender,
+      args: [messageId, userId]
+    }
+  ];
+
+  return server.helper.stitch(Boom.forbidden(), conditions, 'any');
+}
+
+
 
 // -- API
 
@@ -884,6 +1634,24 @@ exports.register = function(server, options, next) {
   server.method('auth.posts.delete', postsDelete, { callback: false });
   server.method('auth.posts.purge', postsPurge, { callback: false });
   server.method('auth.posts.pageByUser', postsPageByUser, { callback: false });
+  // -- threads
+  server.method('auth.threads.create', threadsCreate, { callback: false });
+  server.method('auth.threads.byBoard', threadsByBoard, { callback: false });
+  server.method('auth.threads.posted', threadsPosted, { callback: false });
+  server.method('auth.threads.viewed', threadsViewed, { callback: false });
+  server.method('auth.threads.title', threadsTitle, { callback: false });
+  server.method('auth.threads.lock', threadsLock, { callback: false });
+  server.method('auth.threads.sticky', threadsSticky, { callback: false });
+  server.method('auth.threads.move', threadsMove, { callback: false });
+  server.method('auth.threads.purge', threadsPurge, { callback: false });
+  server.method('auth.threads.vote', threadsVote, { callback: false });
+  server.method('auth.threads.removeVote', threadsRemoveVote, { callback: false });
+  server.method('auth.threads.editPoll', threadsEditPoll, { callback: false });
+  server.method('auth.threads.createPoll', threadsCreatePoll, { callback: false });
+  server.method('auth.threads.lockPoll', threadsLockPoll, { callback: false });
+  // -- messages
+  server.method('auth.messages.create', messagesCreate, { callback: false });
+  server.method('auth.messages.delete', messagesDelete, { callback: false });
 
   next();
 };

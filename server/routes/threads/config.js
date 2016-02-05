@@ -3,7 +3,6 @@ var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
 var common = require(path.normalize(__dirname + '/../../common'));
-var authorization = require(path.normalize(__dirname + '/../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -22,11 +21,6 @@ var authorization = require(path.normalize(__dirname + '/../../authorization'));
   * @apiError (Error 500) InternalServerError There was an issue creating the thread
   */
 exports.create = {
-  app: {
-    poll: 'payload.poll',
-    board_id: 'payload.board_id',
-    isPollCreatable: 'polls.create'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.create' },
   validate: {
@@ -49,14 +43,7 @@ exports.create = {
     })
   },
   pre: [
-    [
-      { method: authorization.accessBoardWithBoardId },
-      { method: authorization.isRequesterActive },
-      { method: authorization.isPollCreatable },
-      { method: authorization.validateMaxAnswers },
-      { method: authorization.validateDisplayMode },
-      { method: authorization.canModerate }
-    ],
+    { method: 'auth.threads.create(server, auth, payload)' },
     { method: common.cleanPost },
     { method: common.parseEncodings },
     { method: common.subImages }
@@ -109,7 +96,6 @@ exports.create = {
   * @apiError (Error 500) InternalServerError There was an issue retrieving the threads
   */
 exports.byBoard = {
-  app: { board_id: 'query.board_id' },
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'threads.byBoard' },
   validate: {
@@ -119,7 +105,7 @@ exports.byBoard = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
-  pre: [ { method: authorization.accessBoardWithBoardId } ],
+  pre: [ { method: 'auth.threads.byBoard(server, auth, query.board_id)' } ],
   handler: function(request, reply) {
     var userId;
     if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
@@ -176,7 +162,7 @@ exports.posted = {
       limit: Joi.number().integer().min(1).max(100).default(25)
     }
   },
-  pre: [ [ { method: authorization.userPriority, assign: 'priority' } ] ],
+  pre: [ { method: 'auth.threads.posted(server, auth)', assign: 'priority' } ],
   handler: function(request, reply) {
     var opts = {
       userId: request.auth.credentials.id,
@@ -215,12 +201,11 @@ exports.posted = {
   * @apiError (Error 500) InternalServerError There was an issue looking up the thread
   */
 exports.viewed = {
-  app: { thread_id: 'params.id' },
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'threads.viewed' },
   validate: { params: { id: Joi.string().required() } },
   pre: [
-    [ { method: authorization.accessBoardWithThreadId } ],
+    [ { method: 'auth.threads.viewed(server, auth, params.id)' } ],
     [
       { method: common.checkViewValidity, assign: 'newViewId' },
       { method: common.updateUserThreadViews }
@@ -250,22 +235,13 @@ exports.viewed = {
   * @apiError (Error 500) InternalServerError There was an issue updating the thread title.
   */
 exports.title = {
-  app: {
-    thread_id: 'params.id',
-    isThreadOwner: 'threads.privilegedTitle'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.title' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { title: Joi.string().required().min(1) }
   },
-  pre: [ [
-    { method: authorization.accessBoardWithThreadId },
-    { method: authorization.isRequesterActive },
-    { method: authorization.isThreadOwner },
-    { method: authorization.threadFirstPost, assign: 'post' }
-  ] ],
+  pre: [ { method: 'auth.threads.title(server, auth, params.id)', assign: 'post' } ],
   handler: function(request, reply) {
     var post = {
       id: request.pre.post.id,
@@ -295,29 +271,20 @@ exports.title = {
   * @apiError (Error 500) InternalServerError There was an issue locking the thread
   */
 exports.lock = {
-  app: {
-    thread_id: 'params.id',
-    isThreadOwner: 'threads.privilegedLock'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.lock' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { status: Joi.boolean().default(true) }
   },
-  pre: [ [
-      { method: authorization.accessBoardWithThreadId },
-      { method: authorization.isRequesterActive },
-      { method: authorization.isThreadOwner },
-      { method: common.getThread, assign: 'thread' }
-    ] ],
+  pre: [ { method: 'auth.threads.lock(server, auth, params.id)' } ],
   handler: function(request, reply) {
-    var thread = request.pre.thread;
-    thread.locked = request.payload.status;
+    var threadId = request.params.id;
+    var locked = request.payload.status;
 
     // lock thread
-    var promise = request.db.threads.lock(thread.id, thread.locked)
-    .then(function() { return thread; });
+    var promise = request.db.threads.lock(threadId, locked)
+    .then(() => { return { id: threadId, locked: locked }; });
 
     return reply(promise);
   }
@@ -340,28 +307,20 @@ exports.lock = {
   * @apiError (Error 500) InternalServerError There was an issue stickying the thread
   */
 exports.sticky = {
-  app: {
-    thread_id: 'params.id',
-    hasPermission: 'threads.privilegedSticky'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.sticky' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { status: Joi.boolean().default(true) }
   },
-  pre: [ [
-    { method: authorization.hasPermission },
-    { method: common.getThread, assign: 'thread' } // TODO: remove this
-  ] ],
+  pre: [ { method: 'auth.threads.sticky(server, auth, params.id)' } ],
   handler: function(request, reply) {
-    var thread = request.pre.thread;
-    thread.sticky = request.payload.status;
+    var threadId = request.params.id;
+    var sticky = request.payload.status;
 
     // sticky thread
-    var promise = request.db.threads.sticky(thread.id, thread.sticky)
-    .then(function() { return thread; });
-
+    var promise = request.db.threads.sticky(threadId, sticky)
+    .then(() => { return { id: threadId, sticky: sticky }; });
     return reply(promise);
   }
 };
@@ -384,30 +343,21 @@ exports.sticky = {
   * @apiError (Error 500) InternalServerError There was an issue moving the thread
   */
 exports.move = {
-  app: {
-    thread_id: 'params.id',
-    hasPermission: 'threads.privilegedMove'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.move' },
   validate: {
     params: { id: Joi.string().required() },
     payload: { newBoardId: Joi.string().required() }
   },
-  pre: [ [
-    { method: authorization.hasPermission },
-    { method: common.getThread, assign: 'thread' } // TODO: remove this
-  ] ],
+  pre: [ { method: 'auth.threads.move(server, auth, params.id)' } ],
   handler: function(request, reply) {
+    var threadId = request.params.id;
     var newBoardId = request.payload.newBoardId;
-    var thread = request.pre.thread;
-    thread.board_id = newBoardId;
 
     // move thread
-    var promise = request.db.threads.move(thread.id, thread.board_id)
-    .then(function() { return thread; })
+    var promise = request.db.threads.move(threadId, newBoardId)
+    .then(function() { return {id: threadId, board_id: newBoardId }; })
     .error(function(err) { return Boom.badRequest(err.message); });
-
     return reply(promise);
   }
 };
@@ -428,14 +378,10 @@ exports.move = {
   * @apiError (Error 500) InternalServerError There was an issue purging the thread
   */
 exports.purge = {
-  app: {
-    thread_id: 'params.id',
-    hasPermission: 'threads.privilegedPurge'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'threads.purge' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: authorization.hasPermission } ],
+  pre: [ { method: 'auth.threads.purge(server, auth, params.id)' } ],
   handler: function(request, reply) {
     var promise = request.db.threads.purge(request.params.id);
     return reply(promise);
@@ -460,10 +406,6 @@ exports.purge = {
   * @apiError (Error 500) InternalServerError There was an issue voting in the poll
   */
 exports.vote = {
-  app: {
-    thread_id: 'params.threadId',
-    poll_id: 'params.pollId'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'polls.vote' },
   validate: {
@@ -473,18 +415,9 @@ exports.vote = {
     },
     payload: { answerIds: Joi.array().items(Joi.string()).min(1).unique().required() }
   },
-  pre: [ [
-      { method: authorization.accessBoardWithThreadId },
-      { method: authorization.isRequesterActive },
-      { method: authorization.pollExists },
-      { method: authorization.canVote },
-      { method: authorization.isPollUnlocked },
-      { method: authorization.isPollRunning },
-      { method: authorization.isVoteValid }
-    ] ],
+  pre: [ { method: 'auth.threads.vote(server, auth, params, payload)' } ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
-    var pollId = request.params.pollId;
     var answerIds = request.payload.answerIds;
     var userId = request.auth.credentials.id;
     var promise = request.db.polls.vote(answerIds, userId)
@@ -520,10 +453,6 @@ exports.vote = {
   * @apiError (Error 500) InternalServerError There was an issue removing a vote in the poll
   */
 exports.removeVote = {
-  app: {
-    thread_id: 'params.threadId',
-    poll_id: 'params.pollId'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'polls.vote' },
   validate: {
@@ -532,14 +461,7 @@ exports.removeVote = {
       pollId: Joi.string().required()
     }
   },
-  pre: [ [
-      { method: authorization.accessBoardWithThreadId },
-      { method: authorization.isRequesterActive },
-      { method: authorization.pollExists },
-      { method: authorization.isPollUnlocked },
-      { method: authorization.isPollRunning },
-      { method: authorization.canChangeVote }
-    ] ],
+  pre: [ { method: 'auth.threads.removeVote(server, auth, params.threadId, params.pollId)' } ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
     var pollId = request.params.pollId;
@@ -582,12 +504,6 @@ exports.removeVote = {
   * @apiError (Error 500) InternalServerError There was an issue editing the thread
   */
 exports.editPoll = {
-  app: {
-    poll: 'payload',
-    thread_id: 'params.threadId',
-    poll_id: 'params.pollId',
-    isPollOwner: 'polls.privilegedLock'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'polls.create' },
   validate: {
@@ -602,14 +518,7 @@ exports.editPoll = {
       display_mode: Joi.string().valid('always', 'voted', 'expired').required()
     })
   },
-  pre: [ [
-    { method: authorization.accessBoardWithThreadId },
-    { method: authorization.isRequesterActive },
-    { method: authorization.pollExists },
-    { method: authorization.isPollOwner },
-    { method: authorization.validateMaxAnswersUpdate },
-    { method: authorization.validateDisplayMode }
-  ] ],
+  pre: [ { method: 'auth.threads.editPoll(server, auth, params, payload)' } ],
   handler: function(request, reply) {
     var options = request.payload;
     options.id = request.params.pollId;
@@ -640,10 +549,6 @@ exports.editPoll = {
   * @apiError (Error 500) InternalServerError There was an issue creating the thread
   */
 exports.createPoll = {
-  app: {
-    poll: 'payload',
-    thread_id: 'params.threadId'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'polls.create' },
   validate: {
@@ -657,13 +562,7 @@ exports.createPoll = {
       display_mode: Joi.string().valid('always', 'voted', 'expired').required()
     })
   },
-  pre: [ [
-    { method: authorization.accessBoardWithThreadId },
-    { method: authorization.isRequesterActive },
-    { method: authorization.canCreatePoll },
-    { method: authorization.validateMaxAnswers },
-    { method: authorization.validateDisplayMode }
-  ] ],
+  pre: [ { method: 'auth.threads.createPoll(server, auth, params.threadId, payload)' } ],
   handler: function(request, reply) {
     var threadId = request.params.threadId;
     var poll = request.payload;
@@ -696,11 +595,6 @@ exports.createPoll = {
   * @apiError (Error 500) InternalServerError There was an issue locking in the poll
   */
 exports.lockPoll = {
-  app: {
-    thread_id: 'params.threadId',
-    poll_id: 'params.pollId',
-    isPollOwner: 'polls.privilegedLock'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'polls.lock' },
   validate: {
@@ -710,12 +604,7 @@ exports.lockPoll = {
     },
     payload: { lockValue: Joi.boolean().required() }
   },
-  pre: [ [
-      { method: authorization.accessBoardWithThreadId },
-      { method: authorization.isRequesterActive },
-      { method: authorization.pollExists },
-      { method: authorization.isPollOwner }
-    ] ],
+  pre: [ { method: 'auth.threads.lockPoll(server, auth, params.threadId)' } ],
   handler: function(request, reply) {
     var pollId = request.params.pollId;
     var lockValue = request.payload.lockValue;
