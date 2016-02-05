@@ -1681,6 +1681,212 @@ function authRegister(server, email, username) {
   return Promise.all([emailCond, usernameCond]);
 }
 
+// -- Admin Users
+
+function adminUsersUpdate(server, auth, payload) {
+  // match priority
+  var userId = payload.id;
+  var currentUserId = auth.credentials.id;
+  var samePriority = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedUpdate.samePriority');
+  var lowerPriority = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedUpdate.lowerPriority');
+
+  // get referenced user's priority
+  var refPriority = server.db.users.find(userId)
+  .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
+
+  // get authed user priority
+  var curPriority = server.db.users.find(currentUserId)
+  .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
+
+  var match = Promise.join(refPriority, curPriority, samePriority, lowerPriority, function(referenced, current, same, lower) {
+    if (userId === currentUserId) { return; }
+    // current has same or higher priority than referenced
+    if (same && current <= referenced) { return userId; }
+    // current has higher priority than referenced
+    else if (lower && current < referenced) { return userId; }
+    else { return Promise.reject(Boom.forbidden()); }
+  });
+
+  // is new username unique admin
+  var username = payload.username ? querystring.unescape(payload.username) : undefined;
+  var usernameUnique = server.db.users.userByUsername(username)
+  .then(function(user) {
+    // no username given
+    if (!username) { return true; }
+    // not unique
+    if (user && user.id !== userId) { return Promise.reject(Boom.badRequest()); }
+    else { return true; }
+  });
+
+  // is new email uniqu admin
+  var email = payload.email;
+  var emailUnique = server.db.users.userByEmail(email)
+  .then(function(user) {
+    // no email given
+    if (!email) { return true;}
+    // not unique
+    if (user && user.id !== userId) { return Promise.reject(Boom.badRequest()); }
+    else { return true; }
+  });
+
+  return Promise.all([match, usernameUnique, emailUnique]);
+}
+
+function adminRolesAdd(server, auth, roleId, usernames) {
+  var currentUserId = auth.credentials.id;
+
+  // has access to role
+  var authedPriority, refRole;
+  var accessRole = server.db.users.find(currentUserId)
+  // get current user's priority
+  .then(function(curUser) { authedPriority = _.min(_.map(curUser.roles, 'priority')); })
+  // get all roles
+  .then(server.db.roles.all)
+  // get role were trying to ad users to
+  .then(function(roles) { refRole = _.find(roles, _.matchesProperty('id', roleId)); })
+  // make sure authed user is adding to a role with their priority or lower
+  // this prevents admins from adding themselves/others as super admins
+  .then(function() {
+    var errMessage = 'You don\'t have permission to add users to the ' + refRole.name + ' role.';
+    if (refRole.priority < authedPriority) { return Promise.reject(Boom.forbidden(errMessage)); }
+    else { return true; }
+  });
+
+  // can add to role
+  var addToRole;
+  var samePriority = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedAddRoles.samePriority');
+  var lowerPriority = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedAddRoles.lowerPriority');
+
+  if (!samePriority && !lowerPriority) { addToRole = Promise.reject(Boom.forbidden()); }
+  else {
+    // get current user's priority
+    var currentPriority = server.db.users.find(currentUserId)
+    .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
+
+    // compare the priority of all usernames
+    addToRole = Promise.each(usernames, function(username) {
+      // short circuit: users can modify themselves
+      if (username === auth.credentials.username) { return true; }
+
+      // get each username's priority
+      var refPriority = server.db.users.userByUsername(username)
+      .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
+
+      // compare priorities
+      return Promise.join(refPriority, currentPriority, function(referenced, current) {
+        var err = Boom.forbidden('You don\'t have permission to add roles to ' + username);
+        // current has same or higher priority than referenced
+        if (samePriority && current <= referenced) { return true; }
+        // current has higher priority than referenced
+        else if (lowerPriority && current < referenced) { return true; }
+        else { return Promise.reject(err); }
+      });
+    });
+  }
+
+  return Promise.all([accessRole, addToRole]);
+}
+
+function adminRolesDelete(server, auth, userId) {
+  // can delete role from user
+  var currentUserId = auth.credentials.id;
+  var samePriority = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedRemoveRoles.samePriority');
+  var lowerPriority = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedRemoveRoles.lowerPriority');
+
+  var promise;
+  if (userId === currentUserId) { promise = true; }
+  else if (samePriority || lowerPriority) {
+    // get current user's priority
+    var authedPriority = server.db.users.find(currentUserId)
+    .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
+
+    // get referenced user's priority and username
+    var refUsername;
+    var refPriority = server.db.users.find(userId)
+    .then(function(refUser) {
+      refUsername = refUser.username;
+      return _.min(_.map(refUser.roles, 'priority'));
+    });
+
+    // compare priorities
+    promise = Promise.join(refPriority, authedPriority, function(referenced, current) {
+      var err = Boom.forbidden('Insufficient permissions to remove role from ' + refUsername);
+      // current has same or higher priority than referenced
+      if (samePriority && current <= referenced) { return true; }
+      // current has higher priority than referenced
+      else if (lowerPriority && current < referenced) { return true; }
+      else { return Promise.reject(err); }
+    });
+  }
+  else { promise = Promise.reject(Boom.forbidden()); }
+  return promise;
+}
+
+function adminUsersBan(server, auth, userId) {
+  // match priority
+  var currentUserId = auth.credentials.id;
+  var same = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBan.samePriority');
+  var lower = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBan.lowerPriority');
+
+  // get referenced user's priority
+  var refPriority = server.db.users.find(userId)
+  .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
+
+  // get authed user priority
+  var curPriority = server.db.users.find(currentUserId)
+  .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
+
+  // compare priorities
+  var match = Promise.join(refPriority, curPriority, function(referenced, current) {
+    if (userId === currentUserId) { return; }
+    // current has same or higher priority than referenced
+    if (same && current <= referenced) { return userId; }
+    // current has higher priority than referenced
+    else if (lower && current < referenced) { return userId; }
+    else { return Promise.reject(Boom.forbidden()); }
+  });
+
+  return match;
+}
+
+// -- Admin Roles
+// test this one
+function adminRolesRemove(roleId){
+  var defaultRoleIds = [
+    'irXvScLORCGVJLtF8onULA', // Super Administrator
+    'BoYOb5rATCqNnEFzQwYvuA', // Administrator
+    '-w9wtzZST32hZgXuaOdCjQ', // Global Moderator
+    'wNOXcRVBS3GRIq8HNsrSPQ', // Moderator
+    '7c2Pd840RDO6hRf5sXo7YA', // User
+    'Z6qgHsx0TD2bP1am9lRwmA', // Banned
+    '2j9S2kjDRIeFm7uyloUD4Q', // Anonymous
+    '80kyFis5QceKXgR1Qo0q9A', // Private
+  ];
+
+  var canDelete = true;
+  if (defaultRoleIds.indexOf(roleId) > -1) {
+    canDelete = Promise.reject(Boom.badRequest('You may not delete the default roles.'));
+  }
+  return canDelete;
+}
+
+// -- Admin Reports
+
+function adminReportsUpdateNote(server, auth, noteId, type) {
+  var userId = auth.credentials.id;
+
+  var promise;
+  if (type === 'user') { promise = server.db.reports.findUserReportNote(noteId); }
+  else if (type === 'post') { promise = server.db.reports.findPostReportNote(noteId); }
+  else if (type === 'message') { promise = server.db.reports.findMessageReportNote(noteId); }
+
+  return promise
+  .then(function(note) {
+    if (note.user_id === userId) { return true; }
+    else { return Promise.reject(Boom.forbidden('Only the author can update this note')); }
+  });
+}
+
 // -- API
 
 exports.register = function(server, options, next) {
@@ -1733,7 +1939,15 @@ exports.register = function(server, options, next) {
   server.method('auth.boards.allCategories', boardsAllCategories, { callback: false });
   // -- auth
   server.method('auth.auth.register', authRegister, { callback: false });
-
+  // -- admin users
+  server.method('auth.admin.users.update', adminUsersUpdate, { callback: false });
+  server.method('auth.admin.users.addRole', adminRolesAdd, { callback: false });
+  server.method('auth.admin.users.deleteRole', adminRolesDelete, { callback: false });
+  server.method('auth.admin.users.ban', adminUsersBan, { callback: false });
+  // -- admin roles
+  server.method('auth.admin.roles.remove', adminRolesRemove, { callback: false });
+  // -- admin reports
+  server.method('auth.admin.reports.updateNote', adminReportsUpdateNote, { callback: false });
 
   next();
 };

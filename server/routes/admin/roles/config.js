@@ -659,7 +659,7 @@ exports.remove = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.remove' },
   validate: { params: { id: Joi.string().required() } },
-  pre: [ { method: authorization.preventDefaultRoleDeletion } ],
+  pre: [ { method: 'auth.admin.roles.remove(params.id)' } ],
   handler: function(request, reply) {
     var id = request.params.id;
     var promise = request.db.roles.remove(id)

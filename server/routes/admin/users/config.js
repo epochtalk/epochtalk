@@ -5,7 +5,6 @@ var Boom = require('boom');
 var querystring = require('querystring');
 var common = require(path.normalize(__dirname + '/../../../common'));
 var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
-var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 
 /**
   * @apiVersion 0.4.0
@@ -50,10 +49,6 @@ var authorization = require(path.normalize(__dirname + '/../../../authorization'
   * @apiError (Error 500) InternalServerError There was error updating the user
   */
 exports.update = {
-  app: {
-    user_id: 'payload.id',
-    privilege: 'adminUsers.privilegedUpdate'
-  },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.update' },
   validate: {
@@ -77,13 +72,9 @@ exports.update = {
     .with('signature', 'raw_signature')
   },
   pre: [
-    [
-      // TODO: password should be needed to change email
-      // TODO: password should be not updated by an admin role
-      { method: authorization.matchPriority },
-      { method: authorization.isNewUsernameUniqueAdmin },
-      { method: authorization.isNewEmailUniqueAdmin }
-    ],
+    // TODO: password should be needed to change email
+    // TODO: password should be not updated by an admin role
+    { method: 'auth.admin.users.update(server, auth, payload)' },
     { method: common.cleanUser },
     { method: common.parseSignature },
     { method: common.handleSignatureImages }
@@ -198,10 +189,7 @@ exports.addRoles = {
       role_id: Joi.string().required()
     }
   },
-  pre: [
-    { method: authorization.hasAccessToRole },
-    { method: authorization.hasSufficientPriorityToAddRole }
-  ],
+  pre: [ { method: 'auth.admin.users.addRole(server, auth, payload.role_id, payload.usernames)' } ],
   handler: function(request, reply) {
     var usernames = request.payload.usernames;
     var roleId = request.payload.role_id;
@@ -250,7 +238,7 @@ exports.removeRoles = {
       role_id: Joi.string().required()
     }
   },
-  pre: [ { method: authorization.hasSufficientPriorityToRemoveRole }, ],
+  pre: [ { method: 'auth.admin.users.deleteRole(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roleId = request.payload.role_id;
@@ -426,7 +414,7 @@ exports.ban = {
       expiration: Joi.date()
     }
   },
-  pre: [ { method: authorization.matchPriority } ],
+  pre: [ { method: 'auth.admin.users.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
@@ -466,7 +454,7 @@ exports.unban = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminUsers.unban' },
   validate: { payload: { user_id: Joi.string().required() } },
-  pre: [ { method: authorization.matchPriority } ],
+  pre: [ { method: 'auth.admin.users.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var promise = request.db.users.unban(userId)

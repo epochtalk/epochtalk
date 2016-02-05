@@ -1,6 +1,5 @@
 var Joi = require('joi');
 var path = require('path');
-var Boom = require('boom');
 var Promise = require('bluebird');
 var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 
@@ -267,9 +266,10 @@ exports.updateMessageReport = {
   * @apiError (Error 500) InternalServerError There was an error updating the user report note
   */
 exports.updateUserReportNote = {
+  app: { auth: { type: 'user'} },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updateUserReportNote' },
-  pre: [ { method: authorization.canUpdateUserReportNote } ],
+  pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -306,9 +306,10 @@ exports.updateUserReportNote = {
   * @apiError (Error 500) InternalServerError There was an error updating the post report note
   */
 exports.updatePostReportNote = {
+  app: { auth: { type: 'post'} },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updatePostReportNote' },
-  pre: [ { method: authorization.canUpdatePostReportNote } ],
+  pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -345,9 +346,10 @@ exports.updatePostReportNote = {
   * @apiError (Error 500) InternalServerError There was an error updating the message report note
   */
 exports.updateMessageReportNote = {
+  app: { auth: { type: 'message'} },
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminReports.updateMessageReportNote' },
-  pre: [ { method: authorization.canUpdateMessageReportNote } ],
+    pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
   validate: {
     payload: {
       id: Joi.string().required(),

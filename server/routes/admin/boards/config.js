@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var path = require('path');
 
 /**
   * @apiVersion 0.4.0
