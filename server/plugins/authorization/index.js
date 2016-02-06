@@ -4,9 +4,7 @@ var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
 var querystring = require('querystring');
 
-var helper = {
-  build: build,
-  stitch: stitch,
+var common = {
   hasPermission: (error, server, auth, permission) => {
     return new Promise(function(resolve, reject) {
       var all = server.plugins.acls.getACLValue(auth, permission);
@@ -110,33 +108,33 @@ function build(opts) {
 
   switch(opts.type) {
     case 'hasPermission':
-      promise = helper[opts.type](error, opts.server, opts.auth, opts.permission);
+      promise = common[opts.type](error, opts.server, opts.auth, opts.permission);
       break;
     case 'isNotFirstPost':
     case 'dbValue':
-      promise = helper[opts.type](error, opts.method, opts.args);
+      promise = common[opts.type](error, opts.method, opts.args);
       break;
     case 'dbProp':
     case 'dbNotProp':
-      promise = helper[opts.type](error, opts.method, opts.args, opts.prop);
+      promise = common[opts.type](error, opts.method, opts.args, opts.prop);
       break;
     case 'isMod':
-      promise = helper[opts.type](error, opts.method, opts.args, opts.permission);
+      promise = common[opts.type](error, opts.method, opts.args, opts.permission);
       break;
     case 'isOwner':
     case 'isThreadOwner':
     case 'isUnique':
-      promise = helper[opts.type](error, opts.method, opts.args, opts.userId);
+      promise = common[opts.type](error, opts.method, opts.args, opts.userId);
       break;
     case 'validatePassword':
-      promise = helper[opts.type](error, opts.server, opts.userId, opts.password);
+      promise = common[opts.type](error, opts.server, opts.userId, opts.password);
       break;
     case 'isActive':
     case 'isInactive':
-      promise = helper[opts.type](error, opts.server, opts.userId);
+      promise = common[opts.type](error, opts.server, opts.userId);
       break;
     case 'isAccountActive':
-      promise = helper[opts.type](error, opts.server, opts.username, opts.userId);
+      promise = common[opts.type](error, opts.server, opts.username, opts.userId);
       break;
     default:
       promise = Promise.reject(Boom.badImplementation('Incorrect Format'));
@@ -190,7 +188,7 @@ function watchBoard(server, auth, boardId) {
     }
   ];
 
-  return server.helper.stitch(Boom.notFound(), conditions, 'any');
+  return server.authorization.stitch(Boom.notFound(), conditions, 'any');
 }
 
 function watchThread(server, auth, threadId) {
@@ -221,7 +219,7 @@ function watchThread(server, auth, threadId) {
     }
   ];
 
-  return server.helper.stitch(Boom.notFound(), conditions, 'any');
+  return server.authorization.stitch(Boom.notFound(), conditions, 'any');
 }
 
 // -- USERS
@@ -271,12 +269,12 @@ function userUpdate(server, auth, payload) {
   // is this profile's account active
   var requesterActive;
   if (auth.isAuthenticated) {
-    requesterActive = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+    requesterActive = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
   }
   else { requesterActive = Promise.reject(Boom.unauthorized()); }
   conditions.push(requesterActive);
 
-  return server.helper.stitch(error, conditions, 'all');
+  return server.authorization.stitch(error, conditions, 'all');
 }
 
 function userFind(server, auth, params) {
@@ -302,13 +300,13 @@ function userFind(server, auth, params) {
     }
   ];
 
-  return server.helper.stitch(Boom.notFound(), conditions, 'any');
+  return server.authorization.stitch(Boom.notFound(), conditions, 'any');
 }
 
 function userDeactivate(server, auth, userId) {
   // -- is User Account Active
   var error = Boom.badRequest('Account Already Inactive');
-  var isActive = server.helper.isActive(error, server, userId);
+  var isActive = server.authorization.common.isActive(error, server, userId);
 
   // -- does the requester have the authority to deactivate
   var paramUserId = userId;
@@ -353,7 +351,7 @@ function userDeactivate(server, auth, userId) {
 function userActivate(server, auth, userId) {
   // -- is User Account Inactive
   var error = Boom.badRequest('Account Already Active');
-  var isInactive = server.helper.isInactive(error, server, userId);
+  var isInactive = server.authorization.common.isInactive(error, server, userId);
 
   // -- does the requester have the authority to activate
   var paramUserId = userId;
@@ -425,7 +423,7 @@ function postsCreate(server, auth, threadId) {
       permission: some
     }
   ];
-  var access = server.helper.stitch(Boom.notFound('Board Not Found'), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.notFound('Board Not Found'), accessCond, 'any');
 
   // Access to locked thread with thread id
   var tlSome = server.plugins.acls.getACLValue(auth, 'posts.bypassLock.some');
@@ -452,10 +450,10 @@ function postsCreate(server, auth, threadId) {
       permission: tlSome
     }
   ];
-  var locked = server.helper.stitch(Boom.forbidden('Thread Is Locked'), lockCond, 'any');
+  var locked = server.authorization.stitch(Boom.forbidden('Thread Is Locked'), lockCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // final promise
   return Promise.all([access, locked, active]);
@@ -493,19 +491,19 @@ function postsFind(server, auth, postId) {
       args: [postId, priority]
     }
   ];
-  var access = server.helper.stitch(error, accessCond, 'any');
+  var access = server.authorization.stitch(error, accessCond, 'any');
 
   // view deleted
   var deletedSome = server.plugins.acls.getACLValue(auth, 'posts.viewDeleted.some');
   var deletedCond = [
-    build({
+    server.authorization.build({
       // permission based override
       type: 'hasPermission',
       server: server,
       auth: auth,
       permission: 'posts.viewDeleted.all'
     }),
-    build({
+    server.authorization.build({
       // is board moderator
       type: 'isMod',
       method: server.db.moderators.isModeratorWithPostId,
@@ -555,7 +553,7 @@ function postsByThread(server, auth, threadId) {
       permission: some
     }
   ];
-  var access = server.helper.stitch(error, accessCond, 'any');
+  var access = server.authorization.stitch(error, accessCond, 'any');
 
   // view deleted
   var viewAll = server.plugins.acls.getACLValue(auth, 'posts.viewDeleted.all');
@@ -600,7 +598,7 @@ function postsUpdate(server, auth, postId, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'posts.privilegedUpdate.some')
     }
   ];
-  var owner = server.helper.stitch(error, ownerCond, 'any');
+  var owner = server.authorization.stitch(error, ownerCond, 'any');
 
   // can write to post
   var writeCond = [
@@ -626,7 +624,7 @@ function postsUpdate(server, auth, postId, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'posts.privilegedUpdate.some')
     }
   ];
-  var writer = server.helper.stitch(error, writeCond, 'any');
+  var writer = server.authorization.stitch(error, writeCond, 'any');
 
   // access board
   var accessCond = [
@@ -651,7 +649,7 @@ function postsUpdate(server, auth, postId, threadId) {
       args: [postId, server.plugins.acls.getUserPriority(auth)]
     }
   ];
-  var access = server.helper.stitch(error, accessCond, 'any');
+  var access = server.authorization.stitch(error, accessCond, 'any');
 
   // is thread locked
   var lockedCond = [
@@ -677,10 +675,10 @@ function postsUpdate(server, auth, postId, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'posts.bypassLock.some')
     }
   ];
-  var locked = server.helper.stitch(error, lockedCond, 'any');
+  var locked = server.authorization.stitch(error, lockedCond, 'any');
 
   // -- is User Account Active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // final promise
   return Promise.all([owner, writer, access, locked, active]);
@@ -690,7 +688,7 @@ function postsDelete(server, auth, postId) {
   var userId = auth.credentials.id;
 
   // is not first post
-  var notFirst = server.helper.build({
+  var notFirst = server.authorization.build({
     error: Boom.forbidden(),
     type: 'isNotFirstPost',
     method: server.db.posts.getThreadFirstPost,
@@ -728,7 +726,7 @@ function postsDelete(server, auth, postId) {
       else { return Promise.reject(Boom.forbidden()); }
     })
   ];
-  var deleted = server.helper.stitch(Boom.forbidden(), deleteCond, 'any');
+  var deleted = server.authorization.stitch(Boom.forbidden(), deleteCond, 'any');
 
   // access board with post id
   var accessCond = [
@@ -753,7 +751,7 @@ function postsDelete(server, auth, postId) {
       args: [postId, server.plugins.acls.getUserPriority(auth)]
     }
   ];
-  var access = server.helper.stitch(Boom.notFound(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.notFound(), accessCond, 'any');
 
   // is thread locked
   var lockedCond = [
@@ -779,10 +777,10 @@ function postsDelete(server, auth, postId) {
       permission: server.plugins.acls.getACLValue(auth, 'posts.bypassLock.some')
     }
   ];
-  var locked = server.helper.stitch(Boom.forbidden(), lockedCond, 'any');
+  var locked = server.authorization.stitch(Boom.forbidden(), lockedCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   return Promise.all([notFirst, deleted, access, locked, active]);
 }
@@ -791,7 +789,7 @@ function postsPurge(server, auth, postId) {
   var userId = auth.credentials.id;
 
   // is not first post
-  var notFirst = server.helper.build({
+  var notFirst = server.authorization.build({
     error: Boom.forbidden(),
     type: 'isNotFirstPost',
     method: server.db.posts.getThreadFirstPost,
@@ -814,7 +812,7 @@ function postsPurge(server, auth, postId) {
       permission: server.plugins.acls.getACLValue(auth, 'posts.privilegedPurge.some')
     }
   ];
-  var purge = server.helper.stitch(Boom.forbidden(), purgeCond, 'any');
+  var purge = server.authorization.stitch(Boom.forbidden(), purgeCond, 'any');
 
   return Promise.all([notFirst, purge]);
 }
@@ -842,7 +840,7 @@ function postsPageByUser(server, auth, username) {
       permission: 'users.viewDeleted'
     }
   ];
-  var access = server.helper.stitch(Boom.notFound(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.notFound(), accessCond, 'any');
 
   // user priority
   var priority = server.plugins.acls.getUserPriority(auth);
@@ -892,10 +890,10 @@ function threadsCreate(server, auth, payload) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  var access = server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.badRequest(), accessCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // poll based authorization
   var pollCond = [
@@ -923,7 +921,7 @@ function threadsCreate(server, auth, payload) {
       else { return resolve(poll); }
     })
   ];
-  var pollData = server.helper.stitch(Boom.badRequest(), pollCond, 'all')
+  var pollData = server.authorization.stitch(Boom.badRequest(), pollCond, 'all')
   .then(function() { return poll; });
 
   // can moderate
@@ -964,7 +962,7 @@ function threadsByBoard(server, auth, boardId) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  return server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+  return server.authorization.stitch(Boom.badRequest(), accessCond, 'any');
 }
 
 function threadsPosted(server, auth) {
@@ -999,7 +997,7 @@ function threadsViewed(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  return server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+  return server.authorization.stitch(Boom.badRequest(), accessCond, 'any');
 }
 
 function threadsTitle(server, auth, threadId) {
@@ -1028,10 +1026,10 @@ function threadsTitle(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  var access = server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.badRequest(), accessCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // is thread owner
   var ownerCond = [
@@ -1057,7 +1055,7 @@ function threadsTitle(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedTitle.some')
     }
   ];
-  var owner = server.helper.stitch(Boom.forbidden(), ownerCond, 'any').tap(console.log);
+  var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any').tap(console.log);
 
   // get thread first post
   var first = server.db.threads.getThreadFirstPost(threadId)
@@ -1093,10 +1091,10 @@ function threadsLock(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  var access = server.helper.stitch(Boom.badRequest(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.badRequest(), accessCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // is thread owner
   var ownerCond = [
@@ -1122,7 +1120,7 @@ function threadsLock(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedLock.some')
     }
   ];
-  var owner = server.helper.stitch(Boom.forbidden(), ownerCond, 'any');
+  var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
   return Promise.all([access, active, owner]);
 }
@@ -1148,7 +1146,7 @@ function threadsSticky(server, auth, threadId) {
     }
   ];
 
-  return server.helper.stitch(Boom.badRequest(), conditions, 'any');
+  return server.authorization.stitch(Boom.badRequest(), conditions, 'any');
 }
 
 function threadsMove(server, auth, threadId) {
@@ -1172,7 +1170,7 @@ function threadsMove(server, auth, threadId) {
     }
   ];
 
-  return server.helper.stitch(Boom.badRequest(), conditions, 'any');
+  return server.authorization.stitch(Boom.badRequest(), conditions, 'any');
 }
 
 function threadsPurge(server, auth, threadId) {
@@ -1196,7 +1194,7 @@ function threadsPurge(server, auth, threadId) {
     }
   ];
 
-  return server.helper.stitch(Boom.badRequest(), conditions, 'any');
+  return server.authorization.stitch(Boom.badRequest(), conditions, 'any');
 }
 
 function threadsVote(server, auth, params, payload) {
@@ -1228,10 +1226,10 @@ function threadsVote(server, auth, params, payload) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // Check if has poll exists
   var exists = server.db.polls.exists(threadId)
@@ -1297,10 +1295,10 @@ function threadsRemoveVote(server, auth, threadId, pollId) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // Check if has poll exists
   var exists = server.db.polls.exists(threadId)
@@ -1362,10 +1360,10 @@ function threadsEditPoll(server, auth, params, payload) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // Check if has poll exists
   var exists = server.db.polls.exists(threadId)
@@ -1398,7 +1396,7 @@ function threadsEditPoll(server, auth, params, payload) {
       permission: server.plugins.acls.getACLValue(auth, 'polls.privilegedLock.some')
     }
   ];
-  var owner = server.helper.stitch(Boom.forbidden(), ownerCond, 'any');
+  var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
   // validate display mode
   var display = new Promise(function(resolve, reject) {
@@ -1446,10 +1444,10 @@ function threadsCreatePoll(server, auth, threadId, poll) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // can create poll
   var getThreadOwner = server.db.threads.getThreadOwner(threadId);
@@ -1480,7 +1478,7 @@ function threadsCreatePoll(server, auth, threadId, poll) {
       else { return resolve(poll); }
     })
   ];
-  var pollData = server.helper.stitch(Boom.badRequest(), pollCond, 'all')
+  var pollData = server.authorization.stitch(Boom.badRequest(), pollCond, 'all')
   .then(function() { return poll; });
 
   return Promise.all([access, active, create, pollData]);
@@ -1512,10 +1510,10 @@ function threadsLockPoll(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
-  var access = server.helper.stitch(Boom.forbidden(), accessCond, 'any');
+  var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
 
   // is requester active
-  var active = server.helper.isActive(Boom.forbidden('Account Not Active'), server, userId);
+  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // Check if has poll exists
   var exists = server.db.polls.exists(threadId)
@@ -1548,7 +1546,7 @@ function threadsLockPoll(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'polls.privilegedLock.some')
     }
   ];
-  var owner = server.helper.stitch(Boom.forbidden(), ownerCond, 'any');
+  var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
   return Promise.all([access, active, exists, owner]);
 }
@@ -1602,7 +1600,7 @@ function messagesDelete(server, auth, messageId) {
     }
   ];
 
-  return server.helper.stitch(Boom.forbidden(), conditions, 'any');
+  return server.authorization.stitch(Boom.forbidden(), conditions, 'any');
 }
 
 // -- Conversations
@@ -1653,7 +1651,7 @@ function boardsFind(server, auth, boardId) {
     }
   ];
 
-  return server.helper.stitch(Boom.notFound(), conditions, 'any');
+  return server.authorization.stitch(Boom.notFound(), conditions, 'any');
 }
 
 function boardsAllCategories(server, auth) {
@@ -1891,63 +1889,229 @@ function adminReportsUpdateNote(server, auth, noteId, type) {
 
 exports.register = function(server, options, next) {
   options = options || {};
+  options.methods = options.methods || [];
+
+  // append hardcoded auth methods to the server
+  var internalMethods = [
+    // -- watchlist
+    {
+      name: 'auth.watchThread',
+      method: watchThread,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.watchBoard',
+      method: watchBoard,
+      options: { callback: false }
+    },
+    // -- users
+    {
+      name: 'auth.users.update',
+      method: userUpdate,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.users.find',
+      method: userFind,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.users.deactivate',
+      method: userDeactivate,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.users.activate',
+      method: userActivate,
+      options: { callback: false }
+    },
+    // -- posts
+    {
+      name: 'auth.posts.create',
+      method: postsCreate,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.posts.find',
+      method: postsFind,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.posts.byThread',
+      method: postsByThread,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.posts.update',
+      method: postsUpdate,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.posts.delete',
+      method: postsDelete,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.posts.purge',
+      method: postsPurge,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.posts.pageByUser',
+      method: postsPageByUser,
+      options: { callback: false }
+    },
+    // -- threads
+    {
+      name: 'auth.threads.create',
+      method: threadsCreate,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.byBoard',
+      method: threadsByBoard,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.posted',
+      method: threadsPosted,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.viewed',
+      method: threadsViewed,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.title',
+      method: threadsTitle,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.lock',
+      method: threadsLock,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.sticky',
+      method: threadsSticky,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.move',
+      method: threadsMove,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.purge',
+      method: threadsPurge,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.vote',
+      method: threadsVote,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.removeVote',
+      method: threadsRemoveVote,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.editPoll',
+      method: threadsEditPoll,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.createPoll',
+      method: threadsCreatePoll,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.threads.lockPoll',
+      method: threadsLockPoll,
+      options: { callback: false }
+    },
+    // -- messages
+    {
+      name: 'auth.messages.create',
+      method: messagesCreate,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.messages.delete',
+      method: messagesDelete,
+      options: { callback: false }
+    },
+    // -- conversations
+    {
+      name: 'auth.conversations.create',
+      method: conversationsCreate,
+      options: { callback: false }
+    },
+    // -- boards
+    {
+      name: 'auth.boards.find',
+      method: boardsFind,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.boards.allCategories',
+      method: boardsAllCategories,
+      options: { callback: false }
+    },
+    // -- auth
+    {
+      name: 'auth.auth.register',
+      method: authRegister,
+      options: { callback: false }
+    },
+    // -- admin users
+    {
+      name: 'auth.admin.users.update',
+      method: adminUsersUpdate,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.admin.users.addRole',
+      method: adminRolesAdd,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.admin.users.deleteRole',
+      method: adminRolesDelete,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.admin.users.ban',
+      method: adminUsersBan,
+      options: { callback: false }
+    },
+    // -- admin roles
+    {
+      name: 'auth.admin.roles.remove',
+      method: adminRolesRemove,
+      options: { callback: false }
+    },
+    // -- admin reports
+    {
+      name: 'auth.admin.reports.updateNote',
+      method: adminReportsUpdateNote,
+      options: { callback: false }
+    },
+  ];
 
   // append any new methods to authMethods from options
+  var methods = [].concat(options.methods, internalMethods);
+  server.method(methods);
 
-  // append the helper Object
-  server.decorate('server', 'helper', helper);
-
-  // expose each method as a server method
-  // -- watchlist
-  server.method('auth.watchThread', watchThread, { callback: false });
-  server.method('auth.watchBoard', watchBoard, { callback: false });
-  // -- users
-  server.method('auth.users.update', userUpdate, { callback: false });
-  server.method('auth.users.find', userFind, { callback: false });
-  server.method('auth.users.deactivate', userDeactivate, { callback: false });
-  server.method('auth.users.activate', userActivate, { callback: false });
-  // -- posts
-  server.method('auth.posts.create', postsCreate, { callback: false });
-  server.method('auth.posts.find', postsFind, { callback: false });
-  server.method('auth.posts.byThread', postsByThread, { callback: false });
-  server.method('auth.posts.update', postsUpdate, { callback: false });
-  server.method('auth.posts.delete', postsDelete, { callback: false });
-  server.method('auth.posts.purge', postsPurge, { callback: false });
-  server.method('auth.posts.pageByUser', postsPageByUser, { callback: false });
-  // -- threads
-  server.method('auth.threads.create', threadsCreate, { callback: false });
-  server.method('auth.threads.byBoard', threadsByBoard, { callback: false });
-  server.method('auth.threads.posted', threadsPosted, { callback: false });
-  server.method('auth.threads.viewed', threadsViewed, { callback: false });
-  server.method('auth.threads.title', threadsTitle, { callback: false });
-  server.method('auth.threads.lock', threadsLock, { callback: false });
-  server.method('auth.threads.sticky', threadsSticky, { callback: false });
-  server.method('auth.threads.move', threadsMove, { callback: false });
-  server.method('auth.threads.purge', threadsPurge, { callback: false });
-  server.method('auth.threads.vote', threadsVote, { callback: false });
-  server.method('auth.threads.removeVote', threadsRemoveVote, { callback: false });
-  server.method('auth.threads.editPoll', threadsEditPoll, { callback: false });
-  server.method('auth.threads.createPoll', threadsCreatePoll, { callback: false });
-  server.method('auth.threads.lockPoll', threadsLockPoll, { callback: false });
-  // -- messages
-  server.method('auth.messages.create', messagesCreate, { callback: false });
-  server.method('auth.messages.delete', messagesDelete, { callback: false });
-  // -- conversations
-  server.method('auth.conversations.create', conversationsCreate, { callback: false });
-  // -- boards
-  server.method('auth.boards.find', boardsFind, { callback: false });
-  server.method('auth.boards.allCategories', boardsAllCategories, { callback: false });
-  // -- auth
-  server.method('auth.auth.register', authRegister, { callback: false });
-  // -- admin users
-  server.method('auth.admin.users.update', adminUsersUpdate, { callback: false });
-  server.method('auth.admin.users.addRole', adminRolesAdd, { callback: false });
-  server.method('auth.admin.users.deleteRole', adminRolesDelete, { callback: false });
-  server.method('auth.admin.users.ban', adminUsersBan, { callback: false });
-  // -- admin roles
-  server.method('auth.admin.roles.remove', adminRolesRemove, { callback: false });
-  // -- admin reports
-  server.method('auth.admin.reports.updateNote', adminReportsUpdateNote, { callback: false });
+  // append the authorization common object to server
+  var authorization = {
+    common: common,
+    stitch: stitch,
+    build: build
+  };
+  server.decorate('server', 'authorization', authorization);
 
   next();
 };

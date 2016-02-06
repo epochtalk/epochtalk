@@ -2,7 +2,6 @@ var Joi = require('joi');
 var _ = require('lodash');
 var Boom = require('boom');
 var path = require('path');
-var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 var rolesHelper = require(path.normalize(__dirname + '/../../../plugins/acls/helper'));
 
 /**
