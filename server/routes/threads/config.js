@@ -201,6 +201,7 @@ exports.posted = {
   * @apiError (Error 500) InternalServerError There was an issue looking up the thread
   */
 exports.viewed = {
+  app: { thread_id: 'params.id' },
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'threads.viewed' },
   validate: { params: { id: Joi.string().required() } },
