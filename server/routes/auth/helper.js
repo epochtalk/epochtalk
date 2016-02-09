@@ -54,7 +54,8 @@ function getMaskedPermissions(userRoles) {
     modAccess: maskPermission('modAccess') ? {
       users: maskPermission('modAccess.users'),
       posts: maskPermission('modAccess.posts'),
-      messages: maskPermission('modAccess.messages')
+      messages: maskPermission('modAccess.messages'),
+      logs: maskPermission('modAccess.logs')
     } : undefined,
     profileControls: maskPermission('adminUsers') || maskPermission('users.privilegedDeactive') || maskPermission('users.privilegedReactivate') || maskPermission('users.deactivate') || maskPermission('users.reactivate') ? {
       viewUserEmail: maskPermission('adminUsers.find'),

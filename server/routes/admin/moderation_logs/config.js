@@ -2,6 +2,7 @@ var Joi = require('joi');
 
 exports.page = {
   auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminModerationLogs.page' },
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
@@ -16,6 +17,6 @@ exports.page = {
     }
   },
   handler: function(request, reply) {
-    return reply(request.db.moderationLog.page(request.query));
+    return reply(request.db.moderationLogs.page(request.query));
   }
 };

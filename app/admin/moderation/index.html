@@ -10,7 +10,7 @@
     <dd ng-if="ModerationCtrl.hasPermission('modAccess.messages')" class="no-select" ng-class="{'active': ModerationCtrl.tab == 'messages'}">
       <a ui-sref=".messages({ filter: 'Pending' })" ng-click="ModerationCtrl.tab = 'messages'">Messages</a>
     </dd>
-    <dd ng-if="ModerationCtrl.hasPermission('modAccess.messages')" class="no-select" ng-class="{'active': ModerationCtrl.tab == 'logs'}">
+    <dd ng-if="ModerationCtrl.hasPermission('modAccess.logs')" class="no-select" ng-class="{'active': ModerationCtrl.tab == 'logs'}">
       <a ui-sref=".logs" ng-click="ModerationCtrl.tab = 'logs'">Logs</a>
     </dd>
   </dl>

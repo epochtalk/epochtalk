@@ -134,7 +134,8 @@ exports.add = {
         modAccess: Joi.object().keys({
           users: Joi.boolean(),
           posts: Joi.boolean(),
-          messages: Joi.boolean()
+          messages: Joi.boolean(),
+          logs: Joi.boolean()
         }),
         adminRoles: Joi.object().keys({
           all: Joi.boolean(),
@@ -149,6 +150,9 @@ exports.add = {
           boards: Joi.boolean(),
           moveBoards: Joi.boolean(),
           updateCategories: Joi.boolean()
+        }),
+        adminModerationLogs: Joi.object().keys({
+          page: Joi.boolean()
         }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),
@@ -426,7 +430,8 @@ exports.update = {
         modAccess: Joi.object().keys({
           users: Joi.boolean(),
           posts: Joi.boolean(),
-          messages: Joi.boolean()
+          messages: Joi.boolean(),
+          logs: Joi.boolean()
         }),
         adminRoles: Joi.object().keys({
           all: Joi.boolean(),
@@ -441,6 +446,9 @@ exports.update = {
           boards: Joi.boolean(),
           moveBoards: Joi.boolean(),
           updateCategories: Joi.boolean()
+        }),
+        adminModerationLogs: Joi.object().keys({
+          page: Joi.boolean()
         }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),

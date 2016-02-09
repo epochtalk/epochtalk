@@ -47,7 +47,7 @@ exports.register = function(server, options, next) {
       };
 
       // Store to db
-      var storeToDb = function() { request.db.moderationLog.create(log); };
+      var storeToDb = function() { request.db.moderationLogs.create(log); };
 
       // var storeToDb = request.db.moderationLog.create(log);
 

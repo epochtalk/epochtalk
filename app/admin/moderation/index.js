@@ -1,19 +1,9 @@
 module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
-  // Checks if user is an admin
-  var adminCheck = function(route) {
-    return ['$q', 'Session', function($q, Session) {
-      if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
-      if (route && Session.hasPermission('adminAccess' + '.' + route)) { return true; }
-      else if (!route && Session.hasPermission('adminAccess')) { return true; }
-      else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
-    }];
-  };
 
   // Checks if user is a moderator
   var modCheck = function(route) {
     return ['$q', 'Session', function($q, Session) {
       if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
-
 
       if (route && Session.hasPermission('modAccess' + '.' + route)) { return true; }
       else if (!route && Session.hasPermission('modAccess')) { return true; }
@@ -31,6 +21,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     else if (Session.hasPermission('modAccess.messages')) {
       $state.go('admin-moderation.messages', { filter: 'Pending'}, { location: true, reload: true });
     }
+    else if (Session.hasPermission('modAccess.logs')) { $state.go('admin-moderation.logs'); }
     else { $state.go('admin'); }
   }];
 
@@ -49,6 +40,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           if (Session.hasPermission('modAccess.users')) { this.tab = 'users'; }
           else if (Session.hasPermission('modAccess.posts')) { this.tab = 'posts'; }
           else if (Session.hasPermission('modAccess.messages')) { this.tab = 'messages'; }
+          else if (Session.hasPermission('modAccess.logs')) { this.tab = 'logs'; }
         }],
         controllerAs: 'ModerationCtrl',
         templateUrl: '/static/templates/admin/moderation/index.html'
@@ -212,7 +204,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       }
     },
     resolve: {
-      userAccess: modCheck('messages'),
+      userAccess: modCheck('logs'),
       $title: function() { return 'Moderation Log'; },
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
