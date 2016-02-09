@@ -10,7 +10,6 @@ var Promise = require('bluebird');
 var through2 = require('through2');
 var images = require(path.normalize(__dirname + '/index'));
 var config = require(path.normalize(__dirname + '/../../config'));
-var NotUsedError = Promise.OperationalError;
 var Magic = mmm.Magic;
 
 // S3 Configurations
@@ -276,5 +275,5 @@ if (config.images.storage === 's3') {
     // bucket does not exist
     .catch(function() { return s3.createBucket(); });
   })
-  .catch(function(err) { console.log('S3 Integration is Broken'); });
+  .catch(function() { console.log('S3 Integration is Broken'); });
 }

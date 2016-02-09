@@ -1,8 +1,6 @@
 var Joi = require('joi');
-var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var common = require(path.normalize(__dirname + '/../../common'));
 
 /**
   * @apiVersion 0.4.0
@@ -29,8 +27,8 @@ exports.create = {
   },
   pre: [
     { method: 'auth.messages.create(server, auth, payload.receiver_id, payload.conversation_id)' },
-    { method: common.cleanMessage },
-    { method: common.parseMessage }
+    { method: 'common.messages.clean(payload)' },
+    { method: 'common.messages.parse(payload)' }
   ],
   handler: function(request, reply) {
     var message = request.payload;

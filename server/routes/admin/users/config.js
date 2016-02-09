@@ -3,7 +3,6 @@ var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var querystring = require('querystring');
-var common = require(path.normalize(__dirname + '/../../../common'));
 var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 
 /**
@@ -75,9 +74,9 @@ exports.update = {
     // TODO: password should be needed to change email
     // TODO: password should be not updated by an admin role
     { method: 'auth.admin.users.update(server, auth, payload)' },
-    { method: common.cleanUser },
-    { method: common.parseSignature },
-    { method: common.handleSignatureImages }
+    { method: 'common.users.clean(payload)' },
+    { method: 'common.users.parse(payload)' },
+    { method: 'common.images.signature(payload)' }
   ],
   handler: function(request, reply) {
     var promise = request.db.users.update(request.payload)

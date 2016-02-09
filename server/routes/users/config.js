@@ -2,7 +2,6 @@ var Joi = require('joi');
 var _ = require('lodash');
 var path = require('path');
 var querystring = require('querystring');
-var common = require(path.normalize(__dirname + '/../../common'));
 var authHelper = require(path.normalize(__dirname + '/../auth/helper'));
 
 /**
@@ -78,9 +77,9 @@ exports.update = {
   pre: [
     // TODO: password should be needed to update email
     [ { method: 'auth.users.update(server, auth, payload)' } ],
-    { method: common.cleanUser },
-    { method: common.parseSignature },
-    { method: common.handleSignatureImages },
+    { method: 'common.users.clean(payload)' },
+    { method: 'common.users.parse(payload)' },
+    { method: 'common.images.signature(payload)' },
   ],
   handler: function(request, reply) {
     // set editing user to current user

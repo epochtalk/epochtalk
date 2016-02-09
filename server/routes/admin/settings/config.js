@@ -7,7 +7,6 @@ var Promise = require('bluebird');
 var readLine = require('readline');
 var changeCase = require('change-case');
 var renameKeys = require('deep-rename-keys');
-var common = require(path.normalize(__dirname + '/../../../common'));
 var config = require(path.normalize(__dirname + '/../../../../config'));
 var sass = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'sass'));
 var copyCss = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'copy_files'));
@@ -102,7 +101,7 @@ exports.find = {
 exports.update = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.update' },
-  pre: [ { method: common.handleSiteImages } ],
+  pre: [ { method: 'common.images.site(payload)' } ],
   validate: {
     payload: Joi.object().keys({
       log_enabled: Joi.boolean(),

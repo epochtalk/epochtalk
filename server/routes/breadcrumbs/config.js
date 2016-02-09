@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var path = require('path');
 var Boom = require('boom');
 
 /**

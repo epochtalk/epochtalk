@@ -1,7 +1,5 @@
 var Joi = require('joi');
-var path = require('path');
 var Boom = require('boom');
-var common = require(path.normalize(__dirname + '/../../common'));
 
 /**
   * @apiVersion 0.4.0
@@ -27,8 +25,8 @@ exports.create = {
   },
   pre: [
     { method: 'auth.conversations.create(server, auth, payload.receiver_id)' },
-    { method: common.cleanMessage },
-    { method: common.parseMessage }
+    { method: 'common.messages.clean(payload)' },
+    { method: 'common.messages.parse(payload)' }
   ],
   handler: function(request, reply) {
     // create the conversation in db

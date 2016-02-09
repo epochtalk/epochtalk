@@ -1,7 +1,5 @@
 var Joi = require('joi');
-var path = require('path');
 var Promise = require('bluebird');
-var common = require(path.normalize(__dirname + '/../../common'));
 
 /**
   * @apiDefine BoardObjectSuccess
@@ -38,7 +36,7 @@ exports.create = {
       viewable_by: Joi.number()
     }
   },
-  pre: [ { method: common.cleanBoard } ],
+  pre: [ { method: 'common.boards.clean(payload)' } ],
   handler: function(request, reply) {
     return reply(request.db.boards.create(request.payload));
   }
@@ -143,7 +141,7 @@ exports.update = {
     },
     params: { id: Joi.string().required() }
   },
-  pre: [ { method: common.cleanBoard } ],
+  pre: [ { method: 'common.boards.clean(payload)' } ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = request.payload;

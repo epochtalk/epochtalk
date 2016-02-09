@@ -1,8 +1,6 @@
 var Joi = require('joi');
-var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var common = require(path.normalize(__dirname + '/../../common'));
 
 /**
   * @apiVersion 0.4.0
@@ -44,9 +42,9 @@ exports.create = {
   },
   pre: [
     { method: 'auth.threads.create(server, auth, payload)' },
-    { method: common.cleanPost },
-    { method: common.parseEncodings },
-    { method: common.subImages }
+    { method: 'common.posts.clean(payload)' },
+    { method: 'common.posts.parse(payload)' },
+    { method: 'common.images.sub(payload)' }
   ],
   handler: function(request, reply) {
     // build the thread post object from payload and params
@@ -201,15 +199,14 @@ exports.posted = {
   * @apiError (Error 500) InternalServerError There was an issue looking up the thread
   */
 exports.viewed = {
-  app: { thread_id: 'params.id' },
   auth: { mode: 'try', strategy: 'jwt' },
   plugins: { acls: 'threads.viewed' },
   validate: { params: { id: Joi.string().required() } },
   pre: [
     [ { method: 'auth.threads.viewed(server, auth, params.id)' } ],
     [
-      { method: common.checkViewValidity, assign: 'newViewId' },
-      { method: common.updateUserThreadViews }
+      { method: 'common.threads.checkView(server, headers, info, params.id)', assign: 'newViewId' },
+      { method: 'common.threads.updateView(server, auth, params.id)' }
     ]
   ],
   handler: function(request, reply) {

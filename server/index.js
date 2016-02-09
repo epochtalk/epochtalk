@@ -30,6 +30,7 @@ setup()
   server.decorate('request', 'db', db);
   server.decorate('server', 'db', db);
   server.decorate('request', 'redis', redis);
+  server.decorate('server', 'redis', redis);
 
   // server logging only registered if config enabled
   if (config.logEnabled) {
@@ -66,6 +67,10 @@ setup()
     };
     server.register({ register: Good, options: options}, defaultRegisterCb);
   }
+
+  // common methods
+  var common = require(path.normalize(__dirname + '/plugins/common'));
+  server.register({ register: common }, defaultRegisterCb);
 
   // authorization methods
   server.register({ register: authorization }, defaultRegisterCb);

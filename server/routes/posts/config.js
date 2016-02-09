@@ -5,7 +5,6 @@ var Boom = require('boom');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
 var querystring = require('querystring');
-var common = require(path.normalize(__dirname + '/../../common'));
 var imageStore = require(path.normalize(__dirname + '/../../images'));
 
 /**
@@ -35,9 +34,9 @@ exports.create = {
   },
   pre: [
     { method: 'auth.posts.create(server, auth, payload.thread_id)' },
-    { method: common.cleanPost },
-    { method: common.parseEncodings },
-    { method: common.subImages }
+    { method: 'common.posts.clean(payload)' },
+    { method: 'common.posts.parse(payload)' },
+    { method: 'common.images.sub(payload)' }
   ],
   handler: function(request, reply) {
     // build the post object from payload and params
@@ -194,9 +193,9 @@ exports.update = {
   },
   pre: [
     { method: 'auth.posts.update(server, auth, params.id, payload.thread_id)' },
-    { method: common.cleanPost },
-    { method: common.parseEncodings },
-    { method: common.subImages }
+    { method: 'common.posts.clean(payload)' },
+    { method: 'common.posts.parse(payload)' },
+    { method: 'common.images.sub(payload)' }
   ],
   handler: function(request, reply) {
     var updatePost = request.payload;
@@ -326,7 +325,6 @@ exports.pageByUser = {
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    console.log(request.pre.auth);
     var viewables = request.pre.auth.viewables;
     var priority = request.pre.auth.priority;
     var username = querystring.unescape(request.params.username);
