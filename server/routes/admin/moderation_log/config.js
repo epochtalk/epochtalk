@@ -1,7 +1,4 @@
 var Joi = require('joi');
-var path = require('path');
-var Promise = require('bluebird');
-var authorization = require(path.normalize(__dirname + '/../../../authorization'));
 
 exports.page = {
   auth: { strategy: 'jwt' },
