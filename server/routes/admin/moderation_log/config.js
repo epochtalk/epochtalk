@@ -8,9 +8,14 @@ exports.page = {
   validate: {
     query: {
       page: Joi.number().integer().min(1).default(1),
-      limit: Joi.number().integer().min(1).max(100).default(15),
-      filterCol: Joi.string().valid('mod_username', 'mod_id', 'mod_ip', 'action_api_url', 'action_api_method', 'action_taken_at', 'action_type'),
-      filter: Joi.string()
+      limit: Joi.number().integer().min(1).max(100).default(25),
+      mod: Joi.string(),
+      action: Joi.string(),
+      keyword: Joi.string(),
+      bdate: Joi.date(),
+      adate: Joi.date(),
+      sdate: Joi.date(),
+      edate: Joi.date()
     }
   },
   handler: function(request, reply) {

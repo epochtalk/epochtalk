@@ -202,7 +202,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     }
   })
   .state('admin-moderation.logs', {
-    url: '/logs?page&limit&filterCol&filter',
+    url: '/logs?page&limit&mod&action&keyword&bdate&adate&sdate&edate',
     reloadOnSearch: false,
     views: {
       'data@admin-moderation': {
@@ -225,10 +225,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       }],
       moderationLogs: ['AdminModerationLogs', '$stateParams', function(AdminModerationLogs, $stateParams) {
         var query = {
-          filterCol: $stateParams.field,
-          filter: $stateParams.filter,
-          limit: Number($stateParams.limit) || 15,
-          page: Number($stateParams.page) || 1
+          limit: Number($stateParams.limit) || undefined,
+          page: Number($stateParams.page) || undefined,
+          mod: $stateParams.mod,
+          action: $stateParams.action,
+          keyword: $stateParams.keyword,
+          bdate: $stateParams.bdate,
+          adate: $stateParams.adate,
+          sdate: $stateParams.sdate,
+          edate: $stateParams.edate
         };
         return AdminModerationLogs.page(query).$promise;
       }]

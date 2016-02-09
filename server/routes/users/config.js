@@ -254,8 +254,8 @@ exports.delete = {
       type: 'users.delete',
       data: {
         id: 'params.id',
-        username: 'request.route.settings.plugins.mod_log.metadata.username',
-        email: 'request.route.settings.plugins.mod_log.metadata.email'
+        username: 'route.settings.plugins.mod_log.metadata.username',
+        email: 'route.settings.plugins.mod_log.metadata.email'
       }
     }
   },

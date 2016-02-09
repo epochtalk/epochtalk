@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 module.exports = {
   // =========== Admin Board Routes ===========
   'adminBoards.updateCategories': {
-    genDisplayText: function() { return `Updated boards and categories`; },
+    genDisplayText: function() { return `updated boards and categories`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
 
@@ -57,7 +57,7 @@ module.exports = {
   'adminReports.updatePostReport': {
     genDisplayText: function(data) { return `updated the status of post report to "${data.status}"`; },
     genDisplayUrl: function(data) {
-      return `^.posts({ reportId: '${data.report_id}' })`;
+      return `^.posts({ reportId: '${data.id}' })`;
     }
   },
   'adminReports.createPostReportNote': {
@@ -124,11 +124,11 @@ module.exports = {
 
    // =========== Admin Settings Routes ===========
   'adminSettings.update': {
-    genDisplayText: function() { return `Updated forum settings`; },
+    genDisplayText: function() { return `updated forum settings`; },
     genDisplayUrl: function() { return `admin-settings`; }
   },
   'adminSettings.addToBlacklist': {
-    genDisplayText: function(data) { return `added ip blacklist rule named "${data.note}:"`; },
+    genDisplayText: function(data) { return `added ip blacklist rule named "${data.note}"`; },
     genDisplayUrl: function() { return `admin-settings.advanced`; }
   },
   'adminSettings.updateBlacklist': {
@@ -150,7 +150,7 @@ module.exports = {
 
    // =========== Admin Users Routes ===========
   'adminUsers.update': {
-    genDisplayText: function(data) { return `updated user ${data.username}`; },
+    genDisplayText: function(data) { return `updated user "${data.username}"`; },
     genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; }
   },
   'adminUsers.addRoles': {
