@@ -30,9 +30,11 @@
     </div>
 
     <!-- User Information -->
+
     <div class="profile-row">
       <h4 ng-bind="ProfileCtrl.displayUser.username"></h4>
       <div><span ng-bind="ProfileCtrl.displayUser.name"></span></div>
+      <div ng-if="ProfileCtrl.banned"><h5 class="red-text">This user is Banned</h5></div>
       <div><span ng-bind="ProfileCtrl.displayUser.position"></span></div>
       <div><span ng-bind="ProfileCtrl.displayUser.status"></span></div>
       <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.displayUser.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>

@@ -7,6 +7,8 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.user.dob = $filter('date')(this.user.dob, 'longDate');
     this.user.post_count = this.user.post_count || 0;
     this.user.raw_signature = this.user.raw_signature || this.user.signature;
+    this.banned = this.user.roles.indexOf('banned') > -1;
+
     // This isn't the profile users true local time, just a placeholder
     this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
     this.displayPostsUrl = false;
