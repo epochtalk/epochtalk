@@ -7,8 +7,6 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.user.dob = $filter('date')(this.user.dob, 'longDate');
     this.user.post_count = this.user.post_count || 0;
     this.user.raw_signature = this.user.raw_signature || this.user.signature;
-    this.banned = this.user.roles.indexOf('banned') > -1;
-
     // This isn't the profile users true local time, just a placeholder
     this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
     this.displayPostsUrl = false;
@@ -19,6 +17,9 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.controlAccess.reactivate = this.controlAccess.reactivate && Session.user.id === user.id;
     this.editable = Session.user.id === user.id || this.controlAccess.privilegedUpdate;
     this.adminVisitor = Session.user.id !== user.id && this.controlAccess.privilegedUpdate;
+
+    // Check if user is banned
+    this.ban_expiration = this.user.ban_expiration && Session.user.id !== user.id ? $filter('humanDate')(this.user.ban_expiration, true) : null;
 
     var calcAge = function(dob) {
       if (!dob) { return '';}

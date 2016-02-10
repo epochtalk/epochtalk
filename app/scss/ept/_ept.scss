@@ -79,7 +79,7 @@ label {
   margin-bottom: 0;
 }
 datalist { z-index: 10001; }
-.red-text { color: red; }
+.logged-out, .error-label { @include label(error, 0.8rem); }
 .desc-label { color: $secondary-font-color; }
 .pointer { cursor: pointer; }
 .default-cursor { cursor: default; }
@@ -1014,6 +1014,16 @@ table.striped {
 }
 
 header {
+  #ban-notice {
+    @include pad(0.2rem 0);
+    text-align: center;
+    margin-top: -$breadcrumbs-bottom-margin;
+    margin-bottom: $breadcrumbs-bottom-margin;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #ffffff;
+    background-color: #ff0000;
+  }
   #menu-wrap {
     @include clearfix();
     @include pad(0 $base-grid-padding);
@@ -1436,7 +1446,6 @@ main #error-404 {
 
 /*-------------- New Thread Layout -------------- */
 .padded-row { @include row; @include pad(0 0 1rem 0); }
-.logged-out { @include label(error, 0.8rem); }
 .padded-row { .h4, .h6 { display: inline-block; } }
 
 /*-------------- Posts (Thread View) Layout -------------- */

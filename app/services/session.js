@@ -26,8 +26,9 @@ module.exports = ['$window', function($window) {
       user = {
         id: storage.id,
         username: storage.username,
-        avatar: storage.avatar
+        avatar: storage.avatar,
       };
+      if (storage.ban_expiration) { user.ban_expiration = storage.ban_expiration }
       if (storage.roles) { user.roles = JSON.parse(storage.roles); }
       if (storage.moderatings) { user.moderating = JSON.parse(storage).moderating; }
       if (storage.permissions) { user.permissions = JSON.parse(storage.permissions); }
@@ -39,6 +40,7 @@ module.exports = ['$window', function($window) {
       container.id = newUser.id;
       container.username = newUser.username;
       container.avatar = newUser.avatar || 'https://fakeimg.pl/400x400/ccc/444/?text=' + user.username;
+      if (newUser.ban_expiration) { container.ban_expiration = newUser.ban_expiration; }
       if (isStorage) {
         container.token = newUser.token;
         container.roles = JSON.stringify(newUser.roles || []);
@@ -56,6 +58,7 @@ module.exports = ['$window', function($window) {
       delete container.id;
       delete container.username;
       delete container.avatar;
+      delete container.ban_expiration;
       delete container.roles;
       delete container.moderating;
       delete container.permissions;

@@ -67,6 +67,18 @@ exports.login = {
       if (bcrypt.compareSync(password, user.passhash)) { return user; }
       else { return Promise.reject(Boom.badRequest('Invalid Credentials')); }
     })
+    // TODO: There could be a better place to do this
+    // check if users ban expired and remove if it has
+    .then(function(user) {
+      if (user.ban_expiration && user.ban_expiration < new Date()) {
+        return request.db.users.unban(user.id)
+        .then(function(unbannedUser) {
+          user.roles = unbannedUser.roles; // update user roles
+          return user;
+        });
+      }
+      else { return user; }
+    })
     // get user moderating boards
     .then(function(user) {
       return request.db.moderators.getUsersBoards(user.id)
