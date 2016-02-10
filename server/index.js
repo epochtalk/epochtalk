@@ -18,6 +18,7 @@ var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
+var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
 var defaultRegisterCb = function(err) { if (err) throw(err); };
 
 setup()
@@ -66,6 +67,10 @@ setup()
     };
     server.register({ register: Good, options: options}, defaultRegisterCb);
   }
+
+  // notification methods
+  var notificationsOptions = { db: db };
+  server.register({ register: notifications, options: notificationsOptions }, defaultRegisterCb);
 
   // authorization methods
   server.register({ register: authorization }, defaultRegisterCb);
