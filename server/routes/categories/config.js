@@ -4,7 +4,7 @@ exports.create = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'categories.create' },
   validate: { payload: { name: Joi.string().min(1).max(255).required() } },
-  pre: [ { method: 'common.categories.clean(payload)' } ],
+  pre: [ { method: 'common.categories.clean(sanitizer, payload)' } ],
   handler: function(request, reply) {
     var promise = request.db.categories.create(request.payload);
     return reply(promise);

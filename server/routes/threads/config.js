@@ -42,7 +42,7 @@ exports.create = {
   },
   pre: [
     { method: 'auth.threads.create(server, auth, payload)' },
-    { method: 'common.posts.clean(payload)' },
+    { method: 'common.posts.clean(sanitizer, payload)' },
     { method: 'common.posts.parse(payload)' },
     { method: 'common.images.sub(payload)' }
   ],

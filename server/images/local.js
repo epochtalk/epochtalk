@@ -8,7 +8,7 @@ var mmm = require('mmmagic');
 var crypto = require('crypto');
 var request = require('request');
 var through2 = require('through2');
-var images = require(path.normalize(__dirname + '/index'));
+var images = require(path.normalize(__dirname + '/index'))();
 var config = require(path.normalize(__dirname + '/../../config'));
 var Magic = mmm.Magic;
 

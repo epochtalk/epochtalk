@@ -4,16 +4,15 @@ var cheerio = require('cheerio');
 var Promise = require('bluebird');
 var bbcodeParser = require('epochtalk-bbcode-parser');
 var config = require(path.normalize(__dirname + '/../../../config'));
-var imageStore = require(path.normalize(__dirname + '/../../images'));
-var sanitizer = require(path.normalize(__dirname + '/../../sanitizer'));
+var imageStore = require(path.normalize(__dirname + '/../../images'))();
 
 // -- internal methods
 
-function categoriesClean(payload) {
+function categoriesClean(sanitizer, payload) {
   payload.name = sanitizer.strip(payload.name);
 }
 
-function boardsClean(payload) {
+function boardsClean(sanitizer, payload) {
   // name
   payload.name = sanitizer.strip(payload.name);
 
@@ -23,7 +22,7 @@ function boardsClean(payload) {
   }
 }
 
-function usersClean(payload) {
+function usersClean(sanitizer, payload) {
   var keys = ['username', 'email', 'name', 'website', 'btcAddress', 'gender', 'location', 'language', 'avatar', 'position'];
   keys.map(function(key) {
     if (payload[key]) { payload[key] = sanitizer.strip(payload[key]); }
@@ -35,12 +34,12 @@ function usersClean(payload) {
   });
 }
 
-function postsClean(payload) {
+function postsClean(sanitizer, payload) {
   payload.title = sanitizer.strip(payload.title);
   payload.raw_body = sanitizer.bbcode(payload.raw_body);
 }
 
-function messagesClean(payload) {
+function messagesClean(sanitizer, payload) {
   payload.body = sanitizer.bbcode(payload.body);
 }
 

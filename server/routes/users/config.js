@@ -77,7 +77,7 @@ exports.update = {
   pre: [
     // TODO: password should be needed to update email
     [ { method: 'auth.users.update(server, auth, payload)' } ],
-    { method: 'common.users.clean(payload)' },
+    { method: 'common.users.clean(sanitizer, payload)' },
     { method: 'common.users.parse(payload)' },
     { method: 'common.images.signature(payload)' },
   ],

@@ -36,7 +36,7 @@ exports.create = {
       viewable_by: Joi.number()
     }
   },
-  pre: [ { method: 'common.boards.clean(payload)' } ],
+  pre: [ { method: 'common.boards.clean(sanitizer, payload)' } ],
   handler: function(request, reply) {
     return reply(request.db.boards.create(request.payload));
   }
@@ -141,7 +141,7 @@ exports.update = {
     },
     params: { id: Joi.string().required() }
   },
-  pre: [ { method: 'common.boards.clean(payload)' } ],
+  pre: [ { method: 'common.boards.clean(sanitizer, payload)' } ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = request.payload;

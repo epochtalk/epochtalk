@@ -74,7 +74,7 @@ exports.update = {
     // TODO: password should be needed to change email
     // TODO: password should be not updated by an admin role
     { method: 'auth.admin.users.update(server, auth, payload)' },
-    { method: 'common.users.clean(payload)' },
+    { method: 'common.users.clean(sanitizer, payload)' },
     { method: 'common.users.parse(payload)' },
     { method: 'common.images.signature(payload)' }
   ],

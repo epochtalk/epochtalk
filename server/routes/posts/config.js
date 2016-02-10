@@ -5,7 +5,7 @@ var Boom = require('boom');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
 var querystring = require('querystring');
-var imageStore = require(path.normalize(__dirname + '/../../images'));
+var imageStore = require(path.normalize(__dirname + '/../../images'))();
 
 /**
   * @apiVersion 0.4.0
@@ -34,7 +34,7 @@ exports.create = {
   },
   pre: [
     { method: 'auth.posts.create(server, auth, payload.thread_id)' },
-    { method: 'common.posts.clean(payload)' },
+    { method: 'common.posts.clean(sanitizer, payload)' },
     { method: 'common.posts.parse(payload)' },
     { method: 'common.images.sub(payload)' }
   ],
@@ -193,7 +193,7 @@ exports.update = {
   },
   pre: [
     { method: 'auth.posts.update(server, auth, params.id, payload.thread_id)' },
-    { method: 'common.posts.clean(payload)' },
+    { method: 'common.posts.clean(sanitizer, payload)' },
     { method: 'common.posts.parse(payload)' },
     { method: 'common.images.sub(payload)' }
   ],

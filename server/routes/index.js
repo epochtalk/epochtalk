@@ -2,7 +2,6 @@ var Joi = require('joi');
 var Boom = require('boom');
 var path = require('path');
 var crypto = require('crypto');
-var images = require(path.normalize(__dirname + '/../images'));
 var config = require(path.normalize(__dirname + '/../../config'));
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var categories = require(path.normalize(__dirname + '/categories'));
@@ -67,7 +66,7 @@ exports.endpoints = function() {
         handler: function(request, reply) {
           var filename = request.payload.filename;
           var storage = config.images.storage;
-          var result = images[storage].uploadPolicy(filename);
+          var result = request.images[storage].uploadPolicy(filename);
           return reply(result);
         }
       }
@@ -116,7 +115,7 @@ exports.endpoints = function() {
             return reply(Boom.badRequest('Policy Timed Out'));
           }
 
-          images.local.uploadImage(file, filename, reply);
+          request.images.local.uploadImage(file, filename, reply);
         }
       }
     }

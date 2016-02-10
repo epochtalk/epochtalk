@@ -13,17 +13,25 @@ var setup = require(path.normalize(__dirname + '/../setup'));
 var jwt = require(path.normalize(__dirname + '/plugins/jwt'));
 var config = require(path.normalize(__dirname + '/../config'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
+var imageStore = require(path.normalize(__dirname + '/images'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
+var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
-var defaultRegisterCb = function(err) { if (err) throw(err); };
 
+var server;
+
+// setup configration file and sync with DB
 setup()
+
+// TODO: load modules
+
+// create server instance and add dbs
 .then(function() {
   // create server object
-  var server = new Hapi.Server();
+  server = new Hapi.Server();
   server.connection(serverOptions);
 
   // DB decoration
@@ -32,6 +40,13 @@ setup()
   server.decorate('request', 'redis', redis);
   server.decorate('server', 'redis', redis);
 
+  // imageStore decoration
+  var is = imageStore();
+  server.decorate('request', 'images', is);
+  server.decorate('server', 'images', is);
+})
+// server logging
+.then(function() {
   // server logging only registered if config enabled
   if (config.logEnabled) {
     var configWithPath = function(path) {
@@ -65,54 +80,61 @@ setup()
         }
       ]
     };
-    server.register({ register: Good, options: options}, defaultRegisterCb);
+    return server.register({ register: Good, options: options});
   }
-
-  // common methods
+})
+// sanitizer
+.then(function() { return server.register({ register: sanitizer }); })
+// common methods
+.then(function() {
+  // TODO: move to top after posts and threads modularization
   var common = require(path.normalize(__dirname + '/plugins/common'));
-  server.register({ register: common }, defaultRegisterCb);
-
-  // authorization methods
-  server.register({ register: authorization }, defaultRegisterCb);
-
-  // auth via jwt
+  return server.register({ register: common });
+})
+// authorization methods
+.then(function() { return server.register({ register: authorization }); })
+// auth via jwt
+.then(function() {
   var authOptions = { redis: redis };
-  server.register({ register: jwt, options: authOptions }, function(err) {
-    if (err) throw err;
+  return server.register({ register: jwt, options: authOptions })
+  .then(function() {
     var strategyOptions = {
       key: config.privateKey,
       validateFunc: AuthValidate
     };
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
-
-  // vision templating
-  server.register(Vision, (err) => {
-    if (err) { throw err; }
-
+})
+// vision templating
+.then(function() {
+  return server.register(Vision)
+  .then(function() {
     // render views
     server.views({
       engines: { html: require('handlebars') },
       path: path.normalize(__dirname + '/../') + 'public'
     });
   });
-
-  // inert static file serving
-  server.register(Inert, defaultRegisterCb);
-
-  // route acls
+})
+// inert static file serving
+.then(function() { return server.register(Inert); })
+// route acls
+.then(function() {
   var aclOptions = { db: db, config: config };
-  server.register({register: acls, options: aclOptions }, defaultRegisterCb);
-
-  // blacklist
+  return server.register({register: acls, options: aclOptions });
+})
+// blacklist
+.then(function() {
   var blacklistOptions = { db: db };
-  server.register({ register: blacklist, options: blacklistOptions }, defaultRegisterCb);
-
-  // rate limiter
+  return server.register({ register: blacklist, options: blacklistOptions });
+})
+// rate limiter
+.then(function() {
   var rlOptions = Hoek.clone(config.rateLimiting);
   rlOptions.redis = redis;
-  server.register({ register: limiter, options: rlOptions }, defaultRegisterCb);
-
+  return server.register({ register: limiter, options: rlOptions });
+})
+.then(function() {
   // server routes
   var routes = require(path.normalize(__dirname + '/routes'));
   server.route(routes.endpoints());

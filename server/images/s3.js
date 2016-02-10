@@ -1,5 +1,18 @@
 var s3 = {};
-module.exports = s3;
+module.exports = function() {
+  if (config.images.storage === 's3') {
+    s3.initClient()
+    .then(s3.checkAccount)
+    .then(function() {
+      return s3.checkBucket()
+      // bucket does not exist
+      .catch(function() { return s3.createBucket(); });
+    })
+    .catch(function() { console.log('S3 Integration is Broken'); });
+  }
+
+  return s3;
+};
 
 var path = require('path');
 var mmm = require('mmmagic');
@@ -8,7 +21,7 @@ var crypto = require('crypto');
 var request = require('request');
 var Promise = require('bluebird');
 var through2 = require('through2');
-var images = require(path.normalize(__dirname + '/index'));
+var images = require(path.normalize(__dirname + '/../images'))();
 var config = require(path.normalize(__dirname + '/../../config'));
 var Magic = mmm.Magic;
 
@@ -266,14 +279,3 @@ s3.removeImage = function(imageUrl) {
   },
   function(err) { if (err) { console.log(err); } });
 };
-
-if (config.images.storage === 's3') {
-  s3.initClient()
-  .then(s3.checkAccount)
-  .then(function() {
-    return s3.checkBucket()
-    // bucket does not exist
-    .catch(function() { return s3.createBucket(); });
-  })
-  .catch(function() { console.log('S3 Integration is Broken'); });
-}

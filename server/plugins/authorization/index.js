@@ -1055,7 +1055,7 @@ function threadsTitle(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedTitle.some')
     }
   ];
-  var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any').tap(console.log);
+  var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
   // get thread first post
   var first = server.db.threads.getThreadFirstPost(threadId)

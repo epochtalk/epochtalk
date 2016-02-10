@@ -1,15 +1,26 @@
 var images = {};
-module.exports = images;
+var started = false;
+module.exports = function() {
+  // TODO: make into singleton
+  if (started) { return images; }
+  else { started = true; }
+
+  // TODO: build an interface for these two libs
+  // TODO: pass config object in rather than relying on require
+  images.s3 = require(path.normalize(__dirname + '/s3'))();
+  images.local = require(path.normalize(__dirname + '/local'));
+
+  setInterval(expire, config.images.interval);
+  setInterval(clearImageReferences, config.images.interval);
+
+  return images;
+};
+
 
 var path = require('path');
 var crypto = require('crypto');
-var s3 = require(path.normalize(__dirname + '/s3'));
 var db = require(path.normalize(__dirname + '/../../db'));
-var local = require(path.normalize(__dirname + '/local'));
 var config = require(path.normalize(__dirname + '/../../config'));
-
-images.s3 = s3;
-images.local = local;
 
 // Image Shared
 images.generateHotlinkFilename = function(filename) {
@@ -52,6 +63,7 @@ var expire = function() {
 };
 
 // Image References
+// TODO: should respect where the images are saved to
 
 images.addPostImageReference = function(postId, imageUrl) {
   return db.images.addPostImage(postId, imageUrl);
@@ -88,6 +100,3 @@ var checkImageReferences = function(imageUrl) {
   })
   .then(function() { return noMoreReferences; });
 };
-
-setInterval(expire, config.images.interval);
-setInterval(clearImageReferences, config.images.interval);

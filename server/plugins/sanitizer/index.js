@@ -1,7 +1,6 @@
-var sanitizer = {};
-module.exports = sanitizer;
-
 var sanitize = require('sanitize-html');
+
+var sanitizer = {};
 
 sanitizer.strip = function(input) {
   // remove all html
@@ -58,4 +57,18 @@ sanitizer.bbcode = function(input) {
     // URL schemes we permit
     allowedSchemes: [ 'http', 'https', 'ftp', 'mailto' ]
   });
+};
+
+exports.register = function(server, options, next) {
+  options = options || {};
+
+  server.decorate('server', 'sanitizer', sanitizer);
+  server.decorate('request', 'sanitizer', sanitizer);
+
+  next();
+};
+
+exports.register.attributes = {
+  name: 'sanitizer',
+  version: '1.0.0'
 };
