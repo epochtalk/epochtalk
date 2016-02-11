@@ -101,7 +101,7 @@ exports.find = {
 exports.update = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.update' },
-  pre: [ { method: 'common.images.site(payload)' } ],
+  pre: [ { method: 'common.images.site(imageStore, payload)' } ],
   validate: {
     payload: Joi.object().keys({
       log_enabled: Joi.boolean(),

@@ -1,28 +1,47 @@
 var images = {};
-var started = false;
-module.exports = function() {
-  // TODO: make into singleton
-  if (started) { return images; }
-  else { started = true; }
-
-  // TODO: build an interface for these two libs
-  // TODO: pass config object in rather than relying on require
-  images.s3 = require(path.normalize(__dirname + '/s3'))();
-  images.local = require(path.normalize(__dirname + '/local'));
-
-  setInterval(expire, config.images.interval);
-  setInterval(clearImageReferences, config.images.interval);
-
-  return images;
-};
-
+module.exports = images;
 
 var path = require('path');
 var crypto = require('crypto');
-var db = require(path.normalize(__dirname + '/../../db'));
-var config = require(path.normalize(__dirname + '/../../config'));
+var s3 = require(path.normalize(__dirname + '/s3'));
+var local = require(path.normalize(__dirname + '/local'));
+var imageHandlers = {};
+var expireHandle;
+var clearHandle;
+var config;
+var db;
 
-// Image Shared
+images.init = function(opts) {
+  opts = opts || {};
+  db = opts.db;
+  config = opts.config;
+
+  s3.init(opts);
+  local.init(opts);
+  imageHandlers.s3 = s3;
+  imageHandlers.local = local;
+
+  clearInterval(expireHandle);
+  expireHandle = setInterval(expire, config.images.interval);
+
+  clearInterval(clearHandle);
+  clearHandle = setInterval(clearImageReferences, config.images.interval);
+};
+
+// interface api
+
+images.saveImage = (imgSrc) => {
+  return imageHandlers[config.images.storage].saveImage(imgSrc);
+};
+
+images.uploadPolicy = (filename) => {
+  return imageHandlers[config.images.storage].uploadPolicy(filename);
+};
+
+images.uploadImage = local.uploadImage;
+
+// -- public api
+
 images.generateHotlinkFilename = function(filename) {
   var ext = path.extname(filename);
   var hash = crypto.createHash('sha1')
@@ -51,17 +70,6 @@ images.clearExpiration = function(url) {
   db.images.clearImageExpiration(url);
 };
 
-var expire = function() {
-  var storageType = config.images.storage;
-  db.images.getExpiredImages()
-  .each(function(image) {
-    // remove from cdn
-    images[storageType].removeImage(image.image_url);
-    // clear from db
-    images.clearExpiration(image.image_url);
-  });
-};
-
 // Image References
 // TODO: should respect where the images are saved to
 
@@ -73,6 +81,19 @@ images.removePostImageReferences = function(postId) {
   return db.images.removePostImages(postId);
 };
 
+// image cleaning intervals
+
+var expire = function() {
+  var storageType = config.images.storage;
+  db.images.getExpiredImages()
+  .each(function(image) {
+    // remove from cdn
+    imageHandlers[storageType].removeImage(image.image_url);
+    // clear from db
+    images.clearExpiration(image.image_url);
+  });
+};
+
 var clearImageReferences = function() {
   var storageType = config.images.storage;
   db.images.getDeletedPostImages()
@@ -81,14 +102,13 @@ var clearImageReferences = function() {
     // if true, delete image
     .then(function(noMoreReferences) {
       if (noMoreReferences) {
-        images[storageType].removeImage(imageReference.image_url);
+        imageHandlers[storageType].removeImage(imageReference.image_url);
       }
     })
     // delete this reference
     .then(function() {
       db.images.deleteImageReference(imageReference.id);
-    })
-    ;
+    });
   });
 };
 

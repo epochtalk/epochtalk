@@ -79,7 +79,7 @@ exports.update = {
     [ { method: 'auth.users.update(server, auth, payload)' } ],
     { method: 'common.users.clean(sanitizer, payload)' },
     { method: 'common.users.parse(payload)' },
-    { method: 'common.images.signature(payload)' },
+    { method: 'common.images.signature(imageStore, payload)' },
   ],
   handler: function(request, reply) {
     // set editing user to current user

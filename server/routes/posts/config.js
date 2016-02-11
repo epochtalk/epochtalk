@@ -1,11 +1,9 @@
 var _ = require('lodash');
 var Joi = require('joi');
-var path = require('path');
 var Boom = require('boom');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
 var querystring = require('querystring');
-var imageStore = require(path.normalize(__dirname + '/../../images'))();
 
 /**
   * @apiVersion 0.4.0
@@ -36,7 +34,7 @@ exports.create = {
     { method: 'auth.posts.create(server, auth, payload.thread_id)' },
     { method: 'common.posts.clean(sanitizer, payload)' },
     { method: 'common.posts.parse(payload)' },
-    { method: 'common.images.sub(payload)' }
+    { method: 'common.images.sub(imageStore, payload)' }
   ],
   handler: function(request, reply) {
     // build the post object from payload and params
@@ -45,7 +43,8 @@ exports.create = {
 
     // create the post in db
     var promise = request.db.posts.create(newPost)
-    .then(createImageReferences); // handle image references
+    // handle image references
+    .then((post) => { return createImageReferences(request.imageStore, post); });
     return reply(promise);
   }
 };
@@ -195,13 +194,14 @@ exports.update = {
     { method: 'auth.posts.update(server, auth, params.id, payload.thread_id)' },
     { method: 'common.posts.clean(sanitizer, payload)' },
     { method: 'common.posts.parse(payload)' },
-    { method: 'common.images.sub(payload)' }
+    { method: 'common.images.sub(imageStore, payload)' }
   ],
   handler: function(request, reply) {
     var updatePost = request.payload;
     updatePost.id = request.params.id;
     var promise = request.db.posts.update(updatePost)
-    .then(updateImageReferences); // handle image references
+    // handle image references
+    .then((post) => { return updateImageReferences(request.imageStore, post); });
     return reply(promise);
   }
 };
@@ -400,7 +400,7 @@ function cleanPosts(posts, currentUserId, viewContext) {
   });
 }
 
-function createImageReferences(post) {
+function createImageReferences(imageStore, post) {
   // load html in post.body into cheerio
   var html = post.body;
   var $ = cheerio.load(html);
@@ -420,7 +420,7 @@ function createImageReferences(post) {
   return post;
 }
 
-function updateImageReferences(post) {
+function updateImageReferences(imageStore, post) {
   // load html in post.body into cheerio
   var html = post.body;
   var $ = cheerio.load(html);

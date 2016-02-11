@@ -13,11 +13,11 @@ var setup = require(path.normalize(__dirname + '/../setup'));
 var jwt = require(path.normalize(__dirname + '/plugins/jwt'));
 var config = require(path.normalize(__dirname + '/../config'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
-var imageStore = require(path.normalize(__dirname + '/images'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
+var imageStore = require(path.normalize(__dirname + '/plugins/imageStore'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
 
@@ -39,11 +39,6 @@ setup()
   server.decorate('server', 'db', db);
   server.decorate('request', 'redis', redis);
   server.decorate('server', 'redis', redis);
-
-  // imageStore decoration
-  var is = imageStore();
-  server.decorate('request', 'images', is);
-  server.decorate('server', 'images', is);
 })
 // server logging
 .then(function() {
@@ -82,6 +77,11 @@ setup()
     };
     return server.register({ register: Good, options: options});
   }
+})
+// imageStore
+.then(function() {
+  var imageOptions = { config, db };
+  return server.register({ register: imageStore, options: imageOptions });
 })
 // sanitizer
 .then(function() { return server.register({ register: sanitizer }); })

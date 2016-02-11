@@ -44,7 +44,7 @@ exports.create = {
     { method: 'auth.threads.create(server, auth, payload)' },
     { method: 'common.posts.clean(sanitizer, payload)' },
     { method: 'common.posts.parse(payload)' },
-    { method: 'common.images.sub(payload)' }
+    { method: 'common.images.sub(imageStore, payload)' }
   ],
   handler: function(request, reply) {
     // build the thread post object from payload and params

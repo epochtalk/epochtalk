@@ -1,10 +1,7 @@
-var path = require('path');
 var uuid = require('node-uuid');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
 var bbcodeParser = require('epochtalk-bbcode-parser');
-var config = require(path.normalize(__dirname + '/../../../config'));
-var imageStore = require(path.normalize(__dirname + '/../../images'))();
 
 // -- internal methods
 
@@ -121,7 +118,7 @@ function usersParse(payload) {
   else if (raw_signature === '') { payload.signature = ''; }
 }
 
-function imagesSub(payload) {
+function imagesSub(imageStore, payload) {
   var html = payload.body;
   // load html in post.body into cheerio
   var $ = cheerio.load(html);
@@ -135,8 +132,7 @@ function imagesSub(payload) {
   // convert each image's src to cdn version
   return Promise.map(images, function(element) {
     var imgSrc = $(element).attr('src');
-    var storage = config.images.storage;
-    var savedUrl = imageStore[storage].saveImage(imgSrc);
+    var savedUrl = imageStore.saveImage(imgSrc);
 
     if (savedUrl) {
       // move original src to data-canonical-src
@@ -148,7 +144,7 @@ function imagesSub(payload) {
   .then(function() { payload.body = $.html(); });
 }
 
-function imagesSignature(payload) {
+function imagesSignature(imageStore, payload) {
   // remove images in signature
   if (payload.signature) {
     var $ = cheerio.load(payload.signature);
@@ -162,7 +158,7 @@ function imagesSignature(payload) {
   }
 }
 
-function imagesSite(payload) {
+function imagesSite(imageStore, payload) {
   // clear the expiration on logo/favicon
   if (payload.website.logo) {
     imageStore.clearExpiration(payload.website.logo);

@@ -65,8 +65,7 @@ exports.endpoints = function() {
         validate: { payload: { filename: Joi.string().required() } },
         handler: function(request, reply) {
           var filename = request.payload.filename;
-          var storage = config.images.storage;
-          var result = request.images[storage].uploadPolicy(filename);
+          var result = request.imageStore.uploadPolicy(filename);
           return reply(result);
         }
       }
@@ -115,7 +114,7 @@ exports.endpoints = function() {
             return reply(Boom.badRequest('Policy Timed Out'));
           }
 
-          request.images.local.uploadImage(file, filename, reply);
+          request.imageStore.uploadImage(file, filename, reply);
         }
       }
     }

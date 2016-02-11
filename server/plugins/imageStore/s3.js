@@ -1,18 +1,5 @@
 var s3 = {};
-module.exports = function() {
-  if (config.images.storage === 's3') {
-    s3.initClient()
-    .then(s3.checkAccount)
-    .then(function() {
-      return s3.checkBucket()
-      // bucket does not exist
-      .catch(function() { return s3.createBucket(); });
-    })
-    .catch(function() { console.log('S3 Integration is Broken'); });
-  }
-
-  return s3;
-};
+module.exports = s3;
 
 var path = require('path');
 var mmm = require('mmmagic');
@@ -21,9 +8,9 @@ var crypto = require('crypto');
 var request = require('request');
 var Promise = require('bluebird');
 var through2 = require('through2');
-var images = require(path.normalize(__dirname + '/../images'))();
-var config = require(path.normalize(__dirname + '/../../config'));
+var imageStore = require(path.normalize(__dirname + '/common'));
 var Magic = mmm.Magic;
+var config;
 
 // S3 Configurations
 var client;
@@ -170,21 +157,34 @@ var checkFileType = function(filename) {
   else { return ''; }
 };
 
-s3.initClient = function(accessKey, secretKey, region) {
-  return new Promise(function(resolve, reject) {
-    if (config.images.storage !== 's3') { throw Error('S3 Not Configured'); }
-    accessKey = accessKey || config.images.s3.accessKey;
-    secretKey = secretKey || config.images.s3.secretKey;
-    region = region || config.images.s3.region;
+s3.init = function(opts) {
+  opts = opts || {};
+  config = opts.config;
 
-    AWS.config.update({
-      secretAccessKey: secretKey,
-      accessKeyId: accessKey,
-      region: region
-    });
-    client = new AWS.S3();
-    return resolve(client);
+  if (config.images.storage === 's3') {
+    s3.initClient()
+    .then(s3.checkAccount)
+    .then(function() {
+      return s3.checkBucket()
+      // bucket does not exist
+      .catch(function() { return s3.createBucket(); });
+    })
+    .catch(function() { console.log('S3 Integration is Broken'); });
+  }
+};
+
+s3.initClient = function(accessKey, secretKey, region) {
+  accessKey = accessKey || config.images.s3.accessKey;
+  secretKey = secretKey || config.images.s3.secretKey;
+  region = region || config.images.s3.region;
+
+  AWS.config.update({
+    secretAccessKey: secretKey,
+    accessKeyId: accessKey,
+    region: region
   });
+  client = new AWS.S3();
+  return Promise.resolve(client);
 };
 
 s3.checkAccount = function() {
@@ -218,7 +218,7 @@ s3.createBucket = function() {
 };
 
 s3.uploadPolicy = function(filename) {
-  var imageName = images.generateUploadFilename(filename);
+  var imageName = imageStore.generateUploadFilename(filename);
   var imageUrl = generateImageUrl(imageName);
   var key = config.images.s3.dir + imageName;
 
@@ -240,7 +240,7 @@ s3.uploadPolicy = function(filename) {
   var signature = crypto.createHmac('sha1', config.images.s3.secretKey).update(new Buffer(policy)).digest('base64');
 
   // add this imageUrl to the image expiration
-  images.setExpiration(config.images.expiration, imageUrl);
+  imageStore.setExpiration(config.images.expiration, imageUrl);
 
   return {
     policy: policy,
@@ -258,11 +258,11 @@ s3.saveImage = function(imgSrc) {
   // image uploaded by client
   if (imgSrc.indexOf(config.images.s3.root) === 0) {
     // clear any expirations
-    images.clearExpiration(imgSrc);
+    imageStore.clearExpiration(imgSrc);
   }
   // hotlink image
   else {
-    var filename = images.generateHotlinkFilename(imgSrc);
+    var filename = imageStore.generateHotlinkFilename(imgSrc);
     uploadImage(imgSrc, filename);
     url = generateImageUrl(filename);
   }
