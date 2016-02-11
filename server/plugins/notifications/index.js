@@ -24,13 +24,13 @@ exports.register.attributes = {
 };
 
 function spawnNotification(datas) {
-  db.notifications.create({ sender_id: datas.sender_id, receiver_id: datas.receiver_id, data: datas.data });
+  db.notifications.create(datas);
 }
 
 function getNotifications(datas) {
-  db.notifications.latest(datas.user_id, datas.opts);
+  db.notifications.latest(datas);
 }
 
 function getNotificationsCount(datas) {
-  db.notifications.count(datas.user_id);
+  db.notifications.count(datas);
 }
