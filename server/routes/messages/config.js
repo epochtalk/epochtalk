@@ -37,7 +37,14 @@ exports.create = {
     message.sender_id = request.auth.credentials.id;
 
     // create the message in db
-    var promise = request.db.messages.create(message);
+    var promise = request.db.messages.create(message)
+    .tap(function(dbMessage) {
+      var notification = {
+        sender_id: request.auth.credentials.id,
+        receiver_id: request.payload.receiver_id
+      };
+      request.server.plugins.notifications.spawnNotification(notification);
+    });
     return reply(promise);
   }
 };
