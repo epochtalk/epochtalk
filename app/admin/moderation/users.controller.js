@@ -492,7 +492,9 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
     });
 
     // Location has already been updated using location.search, reload only child state
-    $state.go('admin-moderation.users.preview', { username: ctrl.selectedUsername }, { location: false, reload: 'admin-moderation.users.preview' });
+    if (ctrl.selectedUsername) {
+      $state.go('admin-moderation.users.preview', { username: ctrl.selectedUsername }, { location: false, reload: 'admin-moderation.users.preview' });
+    }
   };
 }];
 
