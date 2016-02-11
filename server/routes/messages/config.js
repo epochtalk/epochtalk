@@ -3,6 +3,7 @@ var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
 var common = require(path.normalize(__dirname + '/../../common'));
+var _ = require('lodash');
 
 /**
   * @apiVersion 0.4.0
@@ -39,9 +40,14 @@ exports.create = {
     // create the message in db
     var promise = request.db.messages.create(message)
     .tap(function(dbMessage) {
+      var messageClone = _.cloneDeep(dbMessage);
       var notification = {
+        type: 'message',
         sender_id: request.auth.credentials.id,
-        receiver_id: request.payload.receiver_id
+        receiver_id: request.payload.receiver_id,
+        data: {
+          id: messageClone.id
+        }
       };
       request.server.plugins.notifications.spawnNotification(notification);
     });

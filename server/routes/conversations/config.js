@@ -2,6 +2,7 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var common = require(path.normalize(__dirname + '/../../common'));
+var _ = require('lodash');
 
 /**
   * @apiVersion 0.4.0
@@ -41,9 +42,14 @@ exports.create = {
     })
     .then(request.db.messages.create)
     .tap(function(dbMessage) {
+      var messageClone = _.cloneDeep(dbMessage)
       var notification = {
+        type: 'message',
         sender_id: request.auth.credentials.id,
-        receiver_id: request.payload.receiver_id
+        receiver_id: request.payload.receiver_id,
+        data: {
+          id: messageClone.id
+        }
       };
       request.server.plugins.notifications.spawnNotification(notification);
     });
