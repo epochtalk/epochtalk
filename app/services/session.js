@@ -28,7 +28,11 @@ module.exports = ['$window', function($window) {
         username: storage.username,
         avatar: storage.avatar,
       };
-      if (storage.ban_expiration) { user.ban_expiration = storage.ban_expiration }
+      if (storage.ban_expiration) {
+        user.ban_expiration = storage.ban_expiration;
+        // check if ban has expired remove if it has
+        if (new Date(storage.ban_expiration) < new Date()) { delete storage.ban_expiration; }
+      }
       if (storage.roles) { user.roles = JSON.parse(storage.roles); }
       if (storage.moderatings) { user.moderating = JSON.parse(storage).moderating; }
       if (storage.permissions) { user.permissions = JSON.parse(storage.permissions); }
@@ -40,7 +44,11 @@ module.exports = ['$window', function($window) {
       container.id = newUser.id;
       container.username = newUser.username;
       container.avatar = newUser.avatar || 'https://fakeimg.pl/400x400/ccc/444/?text=' + user.username;
-      if (newUser.ban_expiration) { container.ban_expiration = newUser.ban_expiration; }
+      if (newUser.ban_expiration) {
+        container.ban_expiration = newUser.ban_expiration;
+        // check if ban has expired remove if it has
+        if (new Date(container.ban_expiration) < new Date()) { delete container.ban_expiration; }
+      }
       if (isStorage) {
         container.token = newUser.token;
         container.roles = JSON.stringify(newUser.roles || []);
