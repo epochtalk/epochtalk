@@ -37,6 +37,9 @@ setup()
   server = new Hapi.Server();
   server.connection(serverOptions);
 
+  // config decoration
+  server.app.config = config;
+
   // DB decoration
   server.decorate('request', 'db', db);
   server.decorate('server', 'db', db);
@@ -82,9 +85,7 @@ setup()
   }
 })
 // imageStore
-.then(function() {
-  return server.register({ register: imageStore, options: { config, db } });
-})
+.then(function() { return server.register({ register: imageStore, options: { config, db } }); })
 // sanitizer
 .then(function() { return server.register({ register: sanitizer }); })
 // common methods
@@ -118,13 +119,9 @@ setup()
 // inert static file serving
 .then(function() { return server.register(Inert); })
 // route acls
-.then(function() {
-  return server.register({register: acls, options: { db, config } });
-})
+.then(function() { return server.register({register: acls, options: { db, config } }); })
 // blacklist
-.then(function() {
-  return server.register({ register: blacklist, options: { db } });
-})
+.then(function() { return server.register({ register: blacklist, options: { db } }); })
 // rate limiter
 .then(function() {
   var rlOptions = Hoek.clone(config.rateLimiting);
@@ -132,14 +129,11 @@ setup()
   return server.register({ register: limiter, options: rlOptions });
 })
 // moderation log
-.then(function() {
-  var modLogOptions = { db: db };
-  server.register({ register: moderationLog, options: modLogOptions });
-})
+.then(function() { server.register({ register: moderationLog, options: { db } }); })
 .then(function() {
   // server routes
   var routes = require(path.normalize(__dirname + '/routes'));
-  server.route(routes.endpoints());
+  server.route(routes.endpoints(config));
 
   // start server
   server.start(function () {

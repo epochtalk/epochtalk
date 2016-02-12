@@ -7,7 +7,6 @@ var Promise = require('bluebird');
 var readLine = require('readline');
 var changeCase = require('change-case');
 var renameKeys = require('deep-rename-keys');
-var config = require(path.normalize(__dirname + '/../../../../config'));
 var sass = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'sass'));
 var copyCss = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'copy_files'));
 var customVarsPath = path.normalize(__dirname + '/../../../../app/scss/ept/_custom-variables.scss');
@@ -169,10 +168,11 @@ exports.update = {
     }).options({ stripUnknown: true, abortEarly: true })
   },
   handler: function(request, reply) {
+    var internalConfig = request.server.app.config;
     var newConfig = underscoreToCamelCase(request.payload);
     var promise = request.db.configurations.update(newConfig).then(function() {
       Object.keys(newConfig).forEach(function(key) {
-        config[key] = newConfig[key];
+        internalConfig[key] = newConfig[key];
       });
     })
     // update rate default rate limits

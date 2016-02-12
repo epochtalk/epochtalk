@@ -6,7 +6,6 @@ var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
 var helper = require(path.normalize(__dirname + '/helper'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
-var config = require(path.normalize(__dirname + '/../../../config'));
 
 /**
   * @api {POST} /login Login
@@ -181,6 +180,7 @@ exports.register = {
       return reply(helper.formatUserReply(loggedInUser.token, loggedInUser));
     }
 
+    var config = request.server.app.config;
     var newUser = {
       username: request.payload.username,
       email: request.payload.email,
@@ -352,6 +352,7 @@ exports.email = {
 exports.recoverAccount = {
   validate: { params: { query: Joi.string().min(1).max(255).required(), } },
   handler: function(request, reply) {
+    var config = request.server.app.config;
     var query = request.params.query;
     var promise = request.db.users.userByUsername(query) // get full user info
     .then(function(user) {
