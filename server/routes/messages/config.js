@@ -28,7 +28,7 @@ exports.create = {
   pre: [
     { method: 'auth.messages.create(server, auth, payload.receiver_id, payload.conversation_id)' },
     { method: 'common.messages.clean(sanitizer, payload)' },
-    { method: 'common.messages.parse(payload)' }
+    { method: 'common.messages.parse(parser, payload)' }
   ],
   handler: function(request, reply) {
     var message = request.payload;

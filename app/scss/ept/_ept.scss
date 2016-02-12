@@ -1651,6 +1651,19 @@ main #error-404 {
       text-align: center;
       .stat-text { font-size: 1.625rem; }
     }
+    .signature {
+      @include truncate-ellipsis;
+      clear: both;
+      color: $secondary-font-color;
+      font-size: 13px;
+      max-height: 80px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      a {
+        color: $secondary-font-color;
+        &:hover { color: $color-primary; }
+      }
+    }
   }
 }
 .profile-posts, & {

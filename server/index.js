@@ -13,6 +13,8 @@ var setup = require(path.normalize(__dirname + '/../setup'));
 var jwt = require(path.normalize(__dirname + '/plugins/jwt'));
 var config = require(path.normalize(__dirname + '/../config'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
+var parser = require(path.normalize(__dirname + '/plugins/parser'));
+var common = require(path.normalize(__dirname + '/plugins/common'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
@@ -81,23 +83,19 @@ setup()
 })
 // imageStore
 .then(function() {
-  var imageOptions = { config, db };
-  return server.register({ register: imageStore, options: imageOptions });
+  return server.register({ register: imageStore, options: { config, db } });
 })
 // sanitizer
 .then(function() { return server.register({ register: sanitizer }); })
 // common methods
-.then(function() {
-  // TODO: move to top after posts and threads modularization
-  var common = require(path.normalize(__dirname + '/plugins/common'));
-  return server.register({ register: common });
-})
+.then(function() { return server.register({ register: common }); })
 // authorization methods
 .then(function() { return server.register({ register: authorization }); })
+// parser
+.then(function() { return server.register({ register: parser }); })
 // auth via jwt
 .then(function() {
-  var authOptions = { redis: redis };
-  return server.register({ register: jwt, options: authOptions })
+  return server.register({ register: jwt, options: { redis } })
   .then(function() {
     var strategyOptions = {
       key: config.privateKey,
@@ -121,13 +119,11 @@ setup()
 .then(function() { return server.register(Inert); })
 // route acls
 .then(function() {
-  var aclOptions = { db: db, config: config };
-  return server.register({register: acls, options: aclOptions });
+  return server.register({register: acls, options: { db, config } });
 })
 // blacklist
 .then(function() {
-  var blacklistOptions = { db: db };
-  return server.register({ register: blacklist, options: blacklistOptions });
+  return server.register({ register: blacklist, options: { db } });
 })
 // rate limiter
 .then(function() {

@@ -96,7 +96,7 @@ exports.update = {
     // TODO: password should be not updated by an admin role
     { method: 'auth.admin.users.update(server, auth, payload)' },
     { method: 'common.users.clean(sanitizer, payload)' },
-    { method: 'common.users.parse(payload)' },
+    { method: 'common.users.parse(parser, payload)' },
     { method: 'common.images.signature(imageStore, payload)' }
   ],
   handler: function(request, reply) {

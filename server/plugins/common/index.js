@@ -40,82 +40,19 @@ function messagesClean(sanitizer, payload) {
   payload.body = sanitizer.bbcode(payload.body);
 }
 
-function postsParse(payload) {
-  var raw_body = payload.raw_body;
-  // check if raw_body has any bbcode
-  if (raw_body.indexOf('[') >= 0) {
-    // convert all (<, &lt;) and (>, &gt;) to decimal to escape the regex
-    // in the bbcode parser that'll unescape those chars
-    raw_body = raw_body.replace(/(?:<|&lt;)/g, '&#60;');
-    raw_body = raw_body.replace(/(?:>|&gt;)/g, '&#62;');
+function postsParse(parser, payload) {
+  payload.body = parser.parse(payload.raw_body);
 
-    // convert all unicode characters to their numeric representation
-    // this is so we can save it to the db and present it to any encoding
-    raw_body = textToEntities(raw_body);
-
-    // parse raw_body to generate body
-    var parsedBody = bbcodeParser.process({text: raw_body}).html;
-    payload.body = parsedBody;
-
-    // check if parsing was needed
-    // it wasn't need so remove raw_body
-    if (parsedBody === raw_body) { payload.raw_body = ''; }
-  }
-  else {
-    // convert all unicode characters to their numeric representation
-    // this is so we can save it to the db and present it to any encoding
-    raw_body = textToEntities(raw_body);
-
-    // nothing to parse, just move raw_body to body
-    payload.body = raw_body;
-    payload.raw_body = '';
-  }
+  // check if parsing was needed
+  if (payload.body === payload.raw_body) { payload.raw_body = ''; }
 }
 
-function messagesParse(payload) {
-  var raw_body = payload.body;
-  // check if raw_body has any bbcode
-  if (raw_body.indexOf('[') >= 0) {
-    // convert all (<, &lt;) and (>, &gt;) to decimal to escape the regex
-    // in the bbcode parser that'll unescape those chars
-    raw_body = raw_body.replace(/(?:<|&lt;)/g, '&#60;');
-    raw_body = raw_body.replace(/(?:>|&gt;)/g, '&#62;');
-
-    // convert all unicode characters to their numeric representation
-    // this is so we can save it to the db and present it to any encoding
-    raw_body = textToEntities(raw_body);
-
-    // save back to request.payload.body
-    payload.body = bbcodeParser.process({text: raw_body}).html;
-  }
-  else { payload.body = textToEntities(raw_body); }
+function messagesParse(parser, payload) {
+  payload.body = parser.parse(payload.body);
 }
 
-function usersParse(payload) {
-  var raw_signature = payload.raw_signature;
-  // check if raw_signature has any bbcode
-  if (raw_signature && raw_signature.indexOf('[') >= 0) {
-    // convert all &lt; and &gt; to decimal to escape the regex
-    // in the bbcode parser that'll unescape those chars
-    raw_signature = raw_signature.replace(/(?:\r\n|\r|\n)/g, '<br />');
-    raw_signature = raw_signature.replace(/&gt;/g, '&#62;');
-    raw_signature = raw_signature.replace(/&lt;/g, '&#60;');
-
-    // convert all unicode characters to their numeric representation
-    // this is so we can save it to the db and present it to any encoding
-    raw_signature = textToEntities(raw_signature);
-
-    // parse raw_signature to generate body
-    payload.signature = bbcodeParser.process({text: raw_signature}).html;
-  }
-  else if (raw_signature) {
-    raw_signature = raw_signature.replace(/(?:\r\n|\r|\n)/g, '<br />');
-
-    // convert all unicode characters to their numeric representation
-    // this is so we can save it to the db and present it to any encoding
-    payload.signature = textToEntities(raw_signature);
-  }
-  else if (raw_signature === '') { payload.signature = ''; }
+function usersParse(parser, payload) {
+  payload.raw_signature = parser.parse(payload.raw_signature);
 }
 
 function imagesSub(imageStore, payload) {
@@ -216,18 +153,6 @@ function updateView(server, auth, threadId) {
 }
 
 // private methods
-
-function textToEntities(text) {
-  var entities = '';
-  for (var i = 0; i < text.length; i++) {
-    if (text.charCodeAt(i) > 127) {
-      entities += '&#' + text.charCodeAt(i) + ';';
-    }
-    else { entities += text.charAt(i); }
-  }
-
-  return entities;
-}
 
 function checkViewKey(key, redis) {
   return redis.getAsync(key)

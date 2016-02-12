@@ -33,7 +33,7 @@ exports.create = {
   pre: [
     { method: 'auth.posts.create(server, auth, payload.thread_id)' },
     { method: 'common.posts.clean(sanitizer, payload)' },
-    { method: 'common.posts.parse(payload)' },
+    { method: 'common.posts.parse(parser, payload)' },
     { method: 'common.images.sub(imageStore, payload)' }
   ],
   handler: function(request, reply) {
@@ -205,7 +205,7 @@ exports.update = {
   pre: [
     { method: 'auth.posts.update(server, auth, params.id, payload.thread_id)' },
     { method: 'common.posts.clean(sanitizer, payload)' },
-    { method: 'common.posts.parse(payload)' },
+    { method: 'common.posts.parse(parser, payload)' },
     { method: 'common.images.sub(imageStore, payload)' }
   ],
   handler: function(request, reply) {
