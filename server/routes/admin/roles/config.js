@@ -99,7 +99,17 @@ exports.users = {
   */
 exports.add = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.add' },
+  plugins: {
+    acls: 'adminRoles.add',
+    mod_log: {
+      type: 'adminRoles.add',
+      data: {
+        id: 'payload.id',
+        name: 'payload.name',
+        description: 'payload.description'
+      }
+    }
+  },
   validate: {
     payload: {
       id: Joi.string(),
@@ -124,7 +134,8 @@ exports.add = {
         modAccess: Joi.object().keys({
           users: Joi.boolean(),
           posts: Joi.boolean(),
-          messages: Joi.boolean()
+          messages: Joi.boolean(),
+          logs: Joi.boolean()
         }),
         adminRoles: Joi.object().keys({
           all: Joi.boolean(),
@@ -139,6 +150,9 @@ exports.add = {
           boards: Joi.boolean(),
           moveBoards: Joi.boolean(),
           updateCategories: Joi.boolean()
+        }),
+        adminModerationLogs: Joi.object().keys({
+          page: Joi.boolean()
         }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),
@@ -381,7 +395,16 @@ exports.add = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.update' },
+  plugins: {
+    acls: 'adminRoles.update',
+    mod_log: {
+      type: 'adminRoles.update',
+      data: {
+        id: 'payload.id',
+        name: 'payload.name'
+      }
+    }
+  },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -407,7 +430,8 @@ exports.update = {
         modAccess: Joi.object().keys({
           users: Joi.boolean(),
           posts: Joi.boolean(),
-          messages: Joi.boolean()
+          messages: Joi.boolean(),
+          logs: Joi.boolean()
         }),
         adminRoles: Joi.object().keys({
           all: Joi.boolean(),
@@ -422,6 +446,9 @@ exports.update = {
           boards: Joi.boolean(),
           moveBoards: Joi.boolean(),
           updateCategories: Joi.boolean()
+        }),
+        adminModerationLogs: Joi.object().keys({
+          page: Joi.boolean()
         }),
         adminReports: Joi.object().keys({
           createUserReportNote: Joi.boolean(),
@@ -510,6 +537,7 @@ exports.update = {
           delete: Joi.boolean()
         }),
         messages: Joi.object().keys({
+          privilegedDelete: Joi.boolean(),
           create: Joi.boolean(),
           latest: Joi.boolean(),
           findUser: Joi.boolean(),
@@ -656,13 +684,27 @@ exports.update = {
   */
 exports.remove = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.remove' },
+  plugins: {
+    acls: 'adminRoles.remove',
+    mod_log: {
+      type: 'adminRoles.remove',
+      data: {
+        id: 'params.id',
+        name: 'route.settings.plugins.mod_log.metadata.name'
+      }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.admin.roles.remove(params.id)' } ],
   handler: function(request, reply) {
     var id = request.params.id;
     var promise = request.db.roles.remove(id)
     .then(function(result) {
+      // Add deleted role name to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        name: result.name
+      };
+
       // Remove deleted role from in memory object
       rolesHelper.deleteRole(id);
       return result;
@@ -687,7 +729,10 @@ exports.remove = {
   */
 exports.reprioritize = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.reprioritize' },
+  plugins: {
+    acls: 'adminRoles.reprioritize',
+    mod_log: { type: 'adminRoles.reprioritize' }
+  },
   validate: {
     payload: Joi.array(Joi.object().keys({
       id: Joi.string().required(),

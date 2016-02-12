@@ -224,7 +224,7 @@ exports.viewed = {
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User (Thread Author Only)
   * @apiDescription Used to update the title of a thread.
   *
-  * @apiParam {string} id The unique id of the thread to lock
+  * @apiParam {string} id The unique id of the thread to update
   * @apiParam (Payload) {string} The new title for this thread.
   *
   * @apiUse ThreadObjectSuccess2
@@ -234,7 +234,16 @@ exports.viewed = {
   */
 exports.title = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'threads.title' },
+  plugins: {
+    acls: 'threads.title',
+    mod_log: {
+      type: 'threads.title',
+      data: {
+        title: 'payload.title',
+        id: 'params.id'
+      }
+    }
+  },
   validate: {
     params: { id: Joi.string().required() },
     payload: { title: Joi.string().required().min(1) }
@@ -270,7 +279,16 @@ exports.title = {
   */
 exports.lock = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'threads.lock' },
+  plugins: {
+    acls: 'threads.lock',
+    mod_log: {
+      type: 'threads.lock',
+      data: {
+        id: 'params.id',
+        locked: 'payload.status'
+      }
+    }
+  },
   validate: {
     params: { id: Joi.string().required() },
     payload: { status: Joi.boolean().default(true) }
@@ -306,7 +324,16 @@ exports.lock = {
   */
 exports.sticky = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'threads.sticky' },
+  plugins: {
+    acls: 'threads.sticky',
+    mod_log: {
+      type: 'threads.sticky',
+      data: {
+        id: 'params.id',
+        stickied: 'payload.status'
+      }
+    }
+  },
   validate: {
     params: { id: Joi.string().required() },
     payload: { status: Joi.boolean().default(true) }
@@ -342,7 +369,18 @@ exports.sticky = {
   */
 exports.move = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'threads.move' },
+  plugins: {
+    acls: 'threads.move',
+    mod_log: {
+      type: 'threads.move',
+      data: {
+        id: 'params.id',
+        new_board_id: 'payload.newBoardId',
+        old_board_id: 'route.settings.plugins.mod_log.metadata.old_board_id',
+        old_board_name: 'route.settings.plugins.mod_log.metadata.old_board_name'
+      }
+    }
+  },
   validate: {
     params: { id: Joi.string().required() },
     payload: { newBoardId: Joi.string().required() }
@@ -354,7 +392,14 @@ exports.move = {
 
     // move thread
     var promise = request.db.threads.move(threadId, newBoardId)
-    .then(function() { return {id: threadId, board_id: newBoardId }; })
+    .then(function(oldBoard) {
+      // append old board info to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        old_board_id: oldBoard.old_board_id,
+        old_board_name: oldBoard.old_board_name
+      };
+      return { id: threadId, board_id: newBoardId };
+    })
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }
@@ -377,11 +422,30 @@ exports.move = {
   */
 exports.purge = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'threads.purge' },
+  plugins: {
+    acls: 'threads.purge',
+    mod_log: {
+      type: 'threads.purge',
+      data: {
+        id: 'params.id',
+        title: 'route.settings.plugins.mod_log.metadata.title',
+        user_id: 'route.settings.plugins.mod_log.metadata.user_id',
+        board_id: 'route.settings.plugins.mod_log.metadata.board_id'
+      }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.threads.purge(server, auth, params.id)' } ],
   handler: function(request, reply) {
-    var promise = request.db.threads.purge(request.params.id);
+    var promise = request.db.threads.purge(request.params.id)
+    .then(function(purgedThread) {
+      // append purged thread data to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        title: purgedThread.title,
+        user_id: purgedThread.user_id,
+        board_id: purgedThread.board_id
+      };
+    });
     return reply(promise);
   }
 };
@@ -503,7 +567,17 @@ exports.removeVote = {
   */
 exports.editPoll = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'polls.create' },
+  plugins: {
+    acls: 'polls.create',
+    mod_log: {
+      type: 'threads.editPoll',
+      data: {
+        thread_id: 'params.threadId',
+        poll_id: 'params.pollId',
+        poll_data: 'payload'
+      }
+    }
+  },
   validate: {
     params: {
       threadId: Joi.string().required(),
@@ -548,7 +622,16 @@ exports.editPoll = {
   */
 exports.createPoll = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'polls.create' },
+  plugins: {
+    acls: 'polls.create',
+    mod_log: {
+      type: 'threads.createPoll',
+      data: {
+        thread_id: 'params.threadId',
+        poll_data: 'payload'
+      }
+    }
+  },
   validate: {
     params: { threadId: Joi.string().required() },
     payload: Joi.object().keys({
@@ -594,7 +677,17 @@ exports.createPoll = {
   */
 exports.lockPoll = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'polls.lock' },
+  plugins: {
+    acls: 'polls.lock',
+    mod_log: {
+      type: 'threads.lockPoll',
+      data: {
+        thread_id: 'params.threadId',
+        poll_id: 'params.pollId',
+        locked: 'payload.lockValue'
+      }
+    }
+  },
   validate: {
     params: {
       threadId: Joi.string().required(),

@@ -36,6 +36,7 @@ var files = [
   { path: '/admin/moderation', name: 'messages.html' },
   { path: '/admin/moderation', name: 'posts.html' },
   { path: '/admin/moderation', name: 'users.html' },
+  { path: '/admin/moderation', name: 'logs.html' },
   { path: '/admin/settings', name: 'index.html' },
   { path: '/admin/settings', name: 'advanced.html' },
   { path: '/admin/settings', name: 'theme.html' },

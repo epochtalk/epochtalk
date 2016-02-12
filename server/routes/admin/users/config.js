@@ -49,7 +49,28 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
   */
 exports.update = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.update' },
+  plugins: {
+    acls: 'adminUsers.update',
+    mod_log: {
+      type: 'adminUsers.update',
+      data: {
+        id: 'payload.id',
+        email: 'payload.email',
+        username: 'payload.username',
+        name: 'payload.name',
+        website: 'payload.website',
+        btcAddress: 'payload.btcAddress',
+        gender: 'payload.gender',
+        dob: 'payload.dob',
+        location: 'payload.location',
+        language: 'payload.language',
+        position: 'payload.position',
+        raw_signature: 'payload.raw_signature',
+        signature: 'payload.signature',
+        avatar: 'payload.avatar',
+      }
+    }
+  },
   validate: {
     payload: Joi.object().keys({
       id: Joi.string().required(),
@@ -181,7 +202,16 @@ exports.find = {
   */
 exports.addRoles = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.addRoles' },
+  plugins: {
+    acls: 'adminUsers.addRoles',
+    mod_log: {
+      type: 'adminUsers.addRoles',
+      data: {
+        usernames: 'payload.usernames',
+        role_id: 'payload.role_id'
+      }
+    }
+  },
   validate: {
     payload: {
       usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
@@ -230,7 +260,16 @@ exports.addRoles = {
   */
 exports.removeRoles = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.removeRoles' },
+  plugins: {
+    acls: 'adminUsers.removeRoles',
+    mod_log: {
+      type: 'adminUsers.removeRoles',
+      data: {
+        user_id: 'payload.user_id',
+        role_id: 'payload.role_id'
+      }
+    }
+  },
   validate: {
     payload: {
       user_id: Joi.string().required(),
@@ -406,7 +445,16 @@ exports.ban = {
     privilege: 'adminUsers.privilegedBan'
   },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.ban' },
+  plugins: {
+    acls: 'adminUsers.ban',
+    mod_log: {
+      type: 'adminUsers.ban',
+      data: {
+        user_id: 'payload.user_id',
+        expiration: 'payload.expiration'
+      }
+    }
+  },
   validate: {
     payload: {
       user_id: Joi.string().required(),
@@ -451,7 +499,13 @@ exports.unban = {
     privilege: 'adminUsers.privilegedBan'
   },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.unban' },
+  plugins: {
+    acls: 'adminUsers.unban',
+    mod_log: {
+      type: 'adminUsers.unban',
+      data: { user_id: 'payload.user_id' }
+    }
+  },
   validate: { payload: { user_id: Joi.string().required() } },
   pre: [ { method: 'auth.admin.users.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {

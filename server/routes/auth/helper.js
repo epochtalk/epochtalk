@@ -11,7 +11,7 @@ var roles = require(path.normalize(__dirname + '/../../plugins/acls/roles'));
 function buildToken(userId, expiration) {
   // build jwt token from decodedToken and privateKey
   var decodedToken = { userId: userId, sessionId: uuid.v4(), timestamp: Date.now() };
-  var options = { algorithm: 'HS256', expiresInSeconds: expiration, noTimestamp: true };
+  var options = { algorithm: 'HS256', expiresIn: expiration, noTimestamp: true };
   var encodedToken = jwt.sign(decodedToken, config.privateKey, options);
   return { decodedToken: decodedToken, token: encodedToken };
 }
@@ -54,7 +54,8 @@ function getMaskedPermissions(userRoles) {
     modAccess: maskPermission('modAccess') ? {
       users: maskPermission('modAccess.users'),
       posts: maskPermission('modAccess.posts'),
-      messages: maskPermission('modAccess.messages')
+      messages: maskPermission('modAccess.messages'),
+      logs: maskPermission('modAccess.logs')
     } : undefined,
     profileControls: maskPermission('adminUsers') || maskPermission('users.privilegedDeactive') || maskPermission('users.privilegedReactivate') || maskPermission('users.deactivate') || maskPermission('users.reactivate') ? {
       viewUserEmail: maskPermission('adminUsers.find'),
@@ -190,7 +191,8 @@ function formatUserReply(token, user) {
     avatar: user.avatar,
     roles: filteredRoles,
     moderating: user.moderating,
-    permissions: getMaskedPermissions(filteredRoles)
+    permissions: getMaskedPermissions(filteredRoles),
+    ban_expiration: user.ban_expiration
   };
 }
 

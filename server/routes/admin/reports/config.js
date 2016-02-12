@@ -26,7 +26,16 @@ var Promise = require('bluebird');
   */
 exports.createUserReportNote = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.createUserReportNote' },
+  plugins: {
+    acls: 'adminReports.createUserReportNote',
+    mod_log: {
+      type: 'adminReports.createUserReportNote',
+      data: {
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   validate: {
     payload: {
       report_id: Joi.string().required(),
@@ -35,7 +44,7 @@ exports.createUserReportNote = {
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.createUserReportNote(reportNote);
     return reply(promise);
   }
@@ -66,7 +75,16 @@ exports.createUserReportNote = {
   */
 exports.createPostReportNote = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.createPostReportNote' },
+  plugins: {
+    acls: 'adminReports.createPostReportNote',
+    mod_log: {
+      type: 'adminReports.createPostReportNote',
+      data: {
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   validate: {
     payload: {
       report_id: Joi.string().required(),
@@ -75,7 +93,7 @@ exports.createPostReportNote = {
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.createPostReportNote(reportNote);
     return reply(promise);
   }
@@ -106,7 +124,16 @@ exports.createPostReportNote = {
   */
 exports.createMessageReportNote = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.createMessageReportNote' },
+  plugins: {
+    acls: 'adminReports.createMessageReportNote',
+    mod_log: {
+      type: 'adminReports.createMessageReportNote',
+      data: {
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   validate: {
     payload: {
       report_id: Joi.string().required(),
@@ -115,7 +142,7 @@ exports.createMessageReportNote = {
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.createMessageReportNote(reportNote);
     return reply(promise);
   }
@@ -129,7 +156,7 @@ exports.createMessageReportNote = {
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update the status of a user moderation report.
   *
-  * @apiParam (Payload) {string} id The id of the user report note
+  * @apiParam (Payload) {string} id The id of the user report
   * @apiParam (Payload) {string="Pending","Reviewed","Ignored","Bad Report"} status The updated note status
   * @apiParam (Payload) {string} reviewer_user_id The id of the user updating the user report
   *
@@ -146,7 +173,16 @@ exports.createMessageReportNote = {
   */
 exports.updateUserReport = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updateUserReport' },
+  plugins: {
+    acls: 'adminReports.updateUserReport',
+    mod_log: {
+      type: 'adminReports.updateUserReport',
+      data: {
+        id: 'payload.id',
+        status: 'payload.status'
+      }
+    }
+  },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -155,7 +191,7 @@ exports.updateUserReport = {
     }
   },
   handler: function(request, reply) {
-    var report = request.payload;
+    var report = Object.assign({}, request.payload);
     var promise = request.db.reports.updateUserReport(report);
     return reply(promise);
   }
@@ -173,7 +209,7 @@ exports.updateUserReport = {
   * @apiParam (Payload) {string="Pending","Reviewed","Ignored","Bad Report"} status The updated note status
   * @apiParam (Payload) {string} reviewer_user_id The id of the user updating the post report
   *
-  * @apiSuccess {string} id The unique id of the post report which was created
+  * @apiSuccess {string} id The unique id of the post report which was updated
   * @apiSuccess {string} status The status of the report
   * @apiSuccess {string} reporter_user_id The unique id of the user initiating the report
   * @apiSuccess {string} reporter_reason The reporter's reason for reporting the offending post
@@ -186,7 +222,16 @@ exports.updateUserReport = {
   */
 exports.updatePostReport = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updatePostReport' },
+  plugins: {
+    acls: 'adminReports.updatePostReport',
+    mod_log: {
+      type: 'adminReports.updatePostReport',
+      data: {
+        id: 'payload.id',
+        status: 'payload.status'
+      }
+    }
+  },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -195,7 +240,7 @@ exports.updatePostReport = {
     }
   },
   handler: function(request, reply) {
-    var report = request.payload;
+    var report = Object.assign({}, request.payload);
     var promise = request.db.reports.updatePostReport(report);
     return reply(promise);
   }
@@ -209,7 +254,7 @@ exports.updatePostReport = {
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update the status of a message moderation report.
   *
-  * @apiParam (Payload) {string} id The id of the message report note
+  * @apiParam (Payload) {string} id The id of the message report
   * @apiParam (Payload) {string="Pending","Reviewed","Ignored","Bad Report"} status The updated note status
   * @apiParam (Payload) {string} reviewer_user_id The id of the user updating the message report
   *
@@ -226,7 +271,16 @@ exports.updatePostReport = {
   */
 exports.updateMessageReport = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updateMessageReport' },
+  plugins: {
+    acls: 'adminReports.updateMessageReport',
+    mod_log: {
+      type: 'adminReports.updateMessageReport',
+      data: {
+        id: 'payload.id',
+        status: 'payload.status'
+      }
+    }
+  },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -235,7 +289,7 @@ exports.updateMessageReport = {
     }
   },
   handler: function(request, reply) {
-    var report = request.payload;
+    var report = Object.assign({}, request.payload);
     var promise = request.db.reports.updateMessageReport(report);
     return reply(promise);
   }
@@ -266,16 +320,27 @@ exports.updateMessageReport = {
 exports.updateUserReportNote = {
   app: { auth: { type: 'user'} },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updateUserReportNote' },
+  plugins: {
+    acls: 'adminReports.updateUserReportNote',
+    mod_log: {
+      type: 'adminReports.updateUserReportNote',
+      data: {
+        id: 'payload.id',
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
   validate: {
     payload: {
       id: Joi.string().required(),
+      report_id: Joi.string().required(),
       note: Joi.string()
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.updateUserReportNote(reportNote);
     return reply(promise);
   }
@@ -306,16 +371,27 @@ exports.updateUserReportNote = {
 exports.updatePostReportNote = {
   app: { auth: { type: 'post'} },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updatePostReportNote' },
+  plugins: {
+    acls: 'adminReports.updatePostReportNote',
+    mod_log: {
+      type: 'adminReports.updatePostReportNote',
+      data: {
+        id: 'payload.id',
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
   pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
   validate: {
     payload: {
       id: Joi.string().required(),
+      report_id: Joi.string().required(),
       note: Joi.string()
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.updatePostReportNote(reportNote);
     return reply(promise);
   }
@@ -346,16 +422,27 @@ exports.updatePostReportNote = {
 exports.updateMessageReportNote = {
   app: { auth: { type: 'message'} },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminReports.updateMessageReportNote' },
-    pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
+  plugins: {
+    acls: 'adminReports.updateMessageReportNote',
+    mod_log: {
+      type: 'adminReports.updateMessageReportNote',
+      data: {
+        id: 'payload.id',
+        report_id: 'payload.report_id',
+        note: 'payload.note'
+      }
+    }
+  },
+  pre: [ { method: 'auth.admin.reports.updateNote(server, auth, payload.id, route.settings.app.auth.type)' } ],
   validate: {
     payload: {
       id: Joi.string().required(),
+      report_id: Joi.string().required(),
       note: Joi.string()
     }
   },
   handler: function(request, reply) {
-    var reportNote = request.payload;
+    var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.updateMessageReportNote(reportNote);
     return reply(promise);
   }

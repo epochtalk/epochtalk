@@ -100,7 +100,10 @@ exports.find = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminSettings.update' },
+  plugins: {
+    acls: 'adminSettings.update',
+    mod_log: { type: 'adminSettings.update' }
+  },
   pre: [ { method: 'common.images.site(imageStore, payload)' } ],
   validate: {
     payload: Joi.object().keys({
@@ -221,7 +224,16 @@ exports.getBlacklist = {
   */
 exports.addToBlacklist = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminSettings.addToBlacklist' },
+  plugins: {
+    acls: 'adminSettings.addToBlacklist',
+    mod_log: {
+      type: 'adminSettings.addToBlacklist',
+      data: {
+        ip_data: 'payload.ip_data',
+        note: 'payload.note'
+      }
+    }
+  },
   validate: {
     payload: {
       ip_data: Joi.string().min(1).max(100),
@@ -254,7 +266,17 @@ exports.addToBlacklist = {
   */
 exports.updateBlacklist = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminSettings.updateBlacklist' },
+  plugins: {
+    acls: 'adminSettings.updateBlacklist',
+    mod_log: {
+      type: 'adminSettings.updateBlacklist',
+      data: {
+        id: 'payload.id',
+        ip_data: 'payload.ip_data',
+        note: 'payload.note'
+      }
+    }
+  },
   validate: {
     payload: {
       id: Joi.string().required(),
@@ -290,14 +312,29 @@ exports.updateBlacklist = {
   */
 exports.deleteFromBlacklist = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminSettings.deleteFromBlacklist' },
+  plugins: {
+    acls: 'adminSettings.deleteFromBlacklist',
+    mod_log: {
+      type: 'adminSettings.deleteFromBlacklist',
+      data: {
+        note: 'route.settings.plugins.mod_log.metadata.note',
+        ip_data: 'route.settings.plugins.mod_log.metadata.ip_data'
+      }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var id = request.params.id;
     var promise = request.db.blacklist.deleteRule(id)
-    .then(function(blacklist) {
+    .then(function(results) {
+      // Assign deleted obj info to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        note: results.rule.note,
+        ip_data: results.rule.ip_data
+      };
+
       request.server.plugins.blacklist.retrieveBlacklist();
-      return blacklist;
+      return results.blacklist;
     });
     return reply(promise);
   }
@@ -379,7 +416,13 @@ exports.getTheme = {
   */
 exports.setTheme = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminSettings.setTheme' },
+  plugins: {
+    acls: 'adminSettings.setTheme',
+    mod_log: {
+      type: 'adminSettings.setTheme',
+      data: { theme: 'payload' }
+    }
+  },
   validate: {
     payload: Joi.object().keys({
       'base-line-height': Joi.string(),
@@ -445,7 +488,10 @@ exports.setTheme = {
   */
 exports.resetTheme = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminSettings.resetTheme' },
+  plugins: {
+    acls: 'adminSettings.resetTheme',
+    mod_log: { type: 'adminSettings.resetTheme' }
+  },
   handler: function(request, reply) {
     fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
     return new Promise(function(resolve, reject) {

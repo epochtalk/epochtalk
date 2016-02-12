@@ -28,7 +28,17 @@ var Promise = require('bluebird');
   */
 exports.create = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.create' },
+  plugins: {
+    acls: 'boards.create',
+    mod_log: {
+      type: 'boards.create',
+      data: {
+        name: 'payload.name',
+        description: 'payload.description',
+        viewable_by: 'payload.viewable_by'
+      }
+    },
+  },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255).required(),
@@ -132,7 +142,18 @@ exports.allCategories = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.update' },
+  plugins: {
+    acls: 'boards.update',
+    mod_log: {
+      type: 'boards.update',
+      data: {
+        id: 'params.id',
+        name: 'payload.name',
+        description: 'payload.description',
+        viewable_by: 'payload.viewable_by'
+      }
+    }
+  },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255),
@@ -168,9 +189,27 @@ exports.update = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.delete' },
+  plugins: {
+    acls: 'boards.delete',
+    mod_log: {
+      type: 'boards.delete',
+      data: {
+        id: 'params.id',
+        name: 'route.settings.plugins.mod_log.metadata.name'
+      }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
-    return reply(request.db.boards.delete(request.params.id));
+    var promise = request.db.boards.delete(request.params.id)
+    .then(function(result) {
+      // store results on plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        name: result.name
+      };
+
+      return result;
+    });
+    return reply(promise);
   }
 };

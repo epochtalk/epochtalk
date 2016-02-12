@@ -184,7 +184,13 @@ exports.find = {
 exports.deactivate = {
   app: { user_id: 'params.id' },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'users.deactivate' },
+  plugins: {
+    acls: 'users.deactivate',
+    mod_log: {
+      type: 'users.deactivate',
+      data: { id: 'params.id' }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.users.deactivate(server, auth, params.id)' } ],
   handler: function(request, reply) {
@@ -210,7 +216,13 @@ exports.deactivate = {
 exports.reactivate = {
   app: { user_id: 'params.id' },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'users.reactivate' },
+  plugins: {
+    acls: 'users.reactivate',
+    mod_log: {
+      type: 'users.reactivate',
+      data: { id: 'params.id' }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.users.activate(server, auth, params.id)' } ],
   handler: function(request, reply) {
@@ -229,17 +241,36 @@ exports.reactivate = {
   *
   * @apiParam {string} id The userId of the user to delete
   *
-  * @apiSuccess {object} STATUS 200 OK
+  * @apiSuccess {string} username The deleted user's username
+  * @apiSuccess {string} email The deleted user's email
   *
   * @apiError (Error 500) InternalServerError There was an error deleteing the user
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'users.delete' },
+  plugins: {
+    acls: 'users.delete',
+    mod_log: {
+      type: 'users.delete',
+      data: {
+        id: 'params.id',
+        username: 'route.settings.plugins.mod_log.metadata.username',
+        email: 'route.settings.plugins.mod_log.metadata.email'
+      }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.params.id;
-    var promise = request.db.users.delete(userId);
+    var promise = request.db.users.delete(userId)
+    .then(function(deletedUser) {
+      // Add deleted user info to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        username: deletedUser.username,
+        email: deletedUser.email
+      };
+      return deletedUser;
+    });
     return reply(promise);
   }
 };

@@ -180,7 +180,19 @@ exports.byThread = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'posts.update' },
+  plugins: {
+    acls: 'posts.update',
+    mod_log: {
+      type: 'posts.update',
+      data: {
+        id: 'params.id',
+        title: 'payload.title',
+        body: 'payload.body',
+        raw_body: 'payload.raw_body',
+        thread_id: 'payload.thread_id'
+      }
+    }
+  },
   validate: {
     payload: {
       title: Joi.string().min(1).max(255).required(),
@@ -223,7 +235,13 @@ exports.update = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'posts.delete' },
+  plugins: {
+    acls: 'posts.delete',
+    mod_log: {
+      type: 'posts.delete',
+      data: { id: 'params.id' }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.posts.delete(server, auth, params.id)'} ],
   handler: function(request, reply) {
@@ -254,7 +272,13 @@ exports.undelete = {
     isPostDeletable: 'posts.privilegedDelete'
   },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'posts.undelete' },
+  plugins: {
+    acls: 'posts.undelete',
+    mod_log: {
+      type: 'posts.undelete',
+      data: { id: 'params.id' }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.posts.delete(server, auth, params.id)'} ],
   handler: function(request, reply) {
@@ -281,11 +305,28 @@ exports.undelete = {
 exports.purge = {
   app: { post_id: 'params.id' },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'posts.purge' },
+  plugins: {
+    acls: 'posts.purge',
+    mod_log: {
+      type: 'posts.purge',
+      data: {
+        id: 'params.id',
+        user_id: 'route.settings.plugins.mod_log.metadata.user_id',
+        thread_id: 'route.settings.plugins.mod_log.metadata.thread_id',
+      }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.posts.purge(server, auth, params.id)' } ],
   handler: function(request, reply) {
-    var promise = request.db.posts.purge(request.params.id);
+    var promise = request.db.posts.purge(request.params.id)
+    .then(function(purgedPost) {
+      // append purged post data to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        user_id: purgedPost.user_id,
+        thread_id: purgedPost.thread_id
+      };
+    });
     return reply(promise);
   }
 };

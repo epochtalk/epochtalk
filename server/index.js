@@ -16,6 +16,7 @@ var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
+var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var imageStore = require(path.normalize(__dirname + '/plugins/imageStore'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
@@ -133,6 +134,11 @@ setup()
   var rlOptions = Hoek.clone(config.rateLimiting);
   rlOptions.redis = redis;
   return server.register({ register: limiter, options: rlOptions });
+})
+// moderation log
+.then(function() {
+  var modLogOptions = { db: db };
+  server.register({ register: moderationLog, options: modLogOptions });
 })
 .then(function() {
   // server routes

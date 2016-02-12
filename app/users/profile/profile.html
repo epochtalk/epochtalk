@@ -1,3 +1,10 @@
+<div class="padded-row" ng-if="ProfileCtrl.ban_expiration">
+  <div class="error-label fill-row">
+    {{ ProfileCtrl.displayUser.username }}
+    <span ng-if="ProfileCtrl.ban_expiration !== 'Permanent'"> is banned until {{ ProfileCtrl.ban_expiration }}</span>
+    <span ng-if="ProfileCtrl.ban_expiration === 'Permanent'"> is permanently banned</span>
+  </div>
+</div>
 <div class="profile-content">
   <!-- Left Sidebar -->
   <div class="profile-left">
@@ -30,6 +37,7 @@
     </div>
 
     <!-- User Information -->
+
     <div class="profile-row">
       <h4 ng-bind="ProfileCtrl.displayUser.username"></h4>
       <div><span ng-bind="ProfileCtrl.displayUser.name"></span></div>
