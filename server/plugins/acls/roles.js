@@ -431,6 +431,9 @@ roles.superAdministrator = {
       all: true
     }
   },
+  notifications: {
+    counts: true
+  },
   users: {
     privilegedDeactivate: {
       lowerPriority: true
@@ -623,6 +626,9 @@ roles.administrator = {
       all: true
     }
   },
+  notifications: {
+    counts: true
+  },
   users: {
     privilegedDeactivate: {
       lowerPriority: true
@@ -772,6 +778,9 @@ roles.globalModerator = {
       all: true
     }
   },
+  notifications: {
+    counts: true
+  },
   users: {
     viewDeleted: true,
     update: true,
@@ -911,6 +920,9 @@ roles.moderator = {
       some: true
     }
   },
+  notifications: {
+    counts: true
+  },
   users: {
     viewDeleted: true,
     update: true,
@@ -969,6 +981,9 @@ roles.user = {
     create: true,
     vote: true,
     lock: true
+  },
+  notifications: {
+    counts: true
   },
   users: {
     update: true,
