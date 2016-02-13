@@ -1,5 +1,5 @@
-var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert', 'ThemeSVC',
-  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert, ThemeSVC) {
+var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'Notifications',
+  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert, ThemeSVC, Notifications) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.hasPermission = Session.hasPermission;
@@ -33,6 +33,18 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       return pathArr[0].toLowerCase() === 'admin' && pathArr[1].toLowerCase() === route;
     };
 
+    // Notifications
+    this.notifications = {
+      messages: 0
+    };
+    this.refreshNotificationsCounts = function() {
+      return Notifications.counts().$promise
+      .then(function(counts) {
+        ctrl.notifications.messages = counts.message;
+      });
+    };
+    ctrl.refreshNotificationsCounts();
+
     // Login/LogOut
     this.user = {};
     this.showLogin = false;
@@ -53,6 +65,10 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
           $state.nextParams = undefined; //clear out next state info after redirect
         }
         else { $state.go($state.current, $stateParams, { reload: true }); }
+      })
+      .then(function() {
+        // initialize notifications
+        return ctrl.refreshNotificationsCounts();
       })
       .catch(function(err) {
         if (err.data && err.data.message) { Alert.error(err.data.message); }
