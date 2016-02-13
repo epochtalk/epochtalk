@@ -31,6 +31,7 @@
         <div>
           <img ng-src="{{ HeaderCtrl.currentUser.avatar }}" class="avatar">
           <a ui-sref="profile({ username: HeaderCtrl.currentUser.username })" ui-sref-opts="{ reload: true }" ng-bind-html="HeaderCtrl.currentUser.username"></a>
+          <button class="icon-epoch-active-very" ng-click="HeaderCtrl.refreshNotificationsCounts()"></button>
         </div>
         <ul id="user-dropdown">
           <li ng-if="HeaderCtrl.hasPermission('adminAccess')">
