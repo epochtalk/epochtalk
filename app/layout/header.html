@@ -46,7 +46,9 @@
             <a ui-sref="profile({ username: HeaderCtrl.currentUser.username })" ui-sref-opts="{ reload: true }">Profile</a>
           </li>
           <li>
-            <a ui-sref="messages" ui-sref-opts="{ reload: true }">Messages</a>
+          <a ui-sref="messages" ui-sref-opts="{ reload: true }">Messages <button
+              ng-if="HeaderCtrl.notifications.messages > 0"
+              ng-bind-html="HeaderCtrl.notifications.messages"></button> </a>
           </li>
           <li>
             <a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a>
