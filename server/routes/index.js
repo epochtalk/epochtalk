@@ -21,9 +21,10 @@ var adminModerators = require(path.normalize(__dirname + '/admin/moderators'));
 var conversations = require(path.normalize(__dirname + '/conversations'));
 var messages = require(path.normalize(__dirname + '/messages'));
 var watchlist = require(path.normalize(__dirname + '/watchlist'));
+var notifications = require(path.normalize(__dirname + '/notifications'));
 
 function buildEndpoints() {
-  return [].concat(breadcrumbs, categories, boards, threads, posts, users, auth, reports, conversations, messages, watchlist);
+  return [].concat(breadcrumbs, categories, boards, threads, posts, users, auth, reports, conversations, messages, watchlist, notifications);
 }
 
 function buildAdminEndpoints() {
