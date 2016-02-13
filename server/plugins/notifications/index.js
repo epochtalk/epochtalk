@@ -24,11 +24,11 @@ exports.register.attributes = {
 };
 
 function spawnNotification(datas) {
-  db.notifications.create(datas);
+  return db.notifications.create(datas);
 }
 
 function getNotifications(datas) {
-  db.notifications.latest(datas);
+  return db.notifications.latest(datas);
 }
 
 function getNotificationsCounts(datas) {
