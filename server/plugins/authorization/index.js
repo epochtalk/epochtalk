@@ -100,6 +100,13 @@ var common = {
       else { return true; }
     });
   },
+  isNotBannedFromBoard: (error, server, userId, opts) => {
+    return server.db.users.isNotBannedFromBoard(userId, opts)
+    .then((notBanned) => {
+      if (notBanned) { return true; }
+      else { return Promise.reject(error); }
+    });
+  }
 };
 
 function build(opts) {
@@ -425,6 +432,9 @@ function postsCreate(server, auth, threadId) {
   ];
   var access = server.authorization.stitch(Boom.notFound('Board Not Found'), accessCond, 'any');
 
+  // user is not banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
+
   // Access to locked thread with thread id
   var tlSome = server.plugins.acls.getACLValue(auth, 'posts.bypassLock.some');
   var lockCond = [
@@ -456,7 +466,7 @@ function postsCreate(server, auth, threadId) {
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // final promise
-  return Promise.all([access, locked, active]);
+  return Promise.all([access, notBannedFromBoard, locked, active]);
 }
 
 function postsFind(server, auth, postId) {
@@ -651,6 +661,9 @@ function postsUpdate(server, auth, postId, threadId) {
   ];
   var access = server.authorization.stitch(error, accessCond, 'any');
 
+  // user is not banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
+
   // is thread locked
   var lockedCond = [
     {
@@ -681,7 +694,7 @@ function postsUpdate(server, auth, postId, threadId) {
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
   // final promise
-  return Promise.all([owner, writer, access, locked, active]);
+  return Promise.all([owner, writer, access, notBannedFromBoard, locked, active]);
 }
 
 function postsDelete(server, auth, postId) {
@@ -753,6 +766,9 @@ function postsDelete(server, auth, postId) {
   ];
   var access = server.authorization.stitch(Boom.notFound(), accessCond, 'any');
 
+  // user is not banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { postId: postId });
+
   // is thread locked
   var lockedCond = [
     {
@@ -782,7 +798,7 @@ function postsDelete(server, auth, postId) {
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
-  return Promise.all([notFirst, deleted, access, locked, active]);
+  return Promise.all([notFirst, deleted, access, notBannedFromBoard, locked, active]);
 }
 
 function postsPurge(server, auth, postId) {
@@ -795,6 +811,9 @@ function postsPurge(server, auth, postId) {
     method: server.db.posts.getThreadFirstPost,
     args: [postId]
   });
+
+  // user is not banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { postId: postId });
 
   var purgeCond = [
     {
@@ -814,7 +833,7 @@ function postsPurge(server, auth, postId) {
   ];
   var purge = server.authorization.stitch(Boom.forbidden(), purgeCond, 'any');
 
-  return Promise.all([notFirst, purge]);
+  return Promise.all([notFirst, notBannedFromBoard, purge]);
 }
 
 function postsPageByUser(server, auth, username) {
@@ -890,7 +909,11 @@ function threadsCreate(server, auth, payload) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
+
   var access = server.authorization.stitch(Boom.badRequest(), accessCond, 'any');
+
+  // user is not banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { boardId: boardId });
 
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
@@ -932,7 +955,7 @@ function threadsCreate(server, auth, payload) {
     else { return reject(Boom.forbidden()); }
   });
 
-  return Promise.all([access, active, pollData, moderated]);
+  return Promise.all([access, notBannedFromBoard, active, pollData, moderated]);
 }
 
 function threadsByBoard(server, auth, boardId) {
@@ -962,6 +985,7 @@ function threadsByBoard(server, auth, boardId) {
       permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
     }
   ];
+
   return server.authorization.stitch(Boom.badRequest(), accessCond, 'any');
 }
 
@@ -1028,6 +1052,9 @@ function threadsTitle(server, auth, threadId) {
   ];
   var access = server.authorization.stitch(Boom.badRequest(), accessCond, 'any');
 
+  // user is not banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
+
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
@@ -1061,8 +1088,8 @@ function threadsTitle(server, auth, threadId) {
   var first = server.db.threads.getThreadFirstPost(threadId)
   .error(function() { return Promise.reject(Boom.notFound()); });
 
-  return Promise.all([access, active, owner, first])
-  .then(function(data) { return data[3]; });
+  return Promise.all([access, notBannedFromBoard, active, owner, first])
+  .then(function(data) { return data[4]; });
 }
 
 function threadsLock(server, auth, threadId) {
@@ -1093,6 +1120,9 @@ function threadsLock(server, auth, threadId) {
   ];
   var access = server.authorization.stitch(Boom.badRequest(), accessCond, 'any');
 
+  // user is not banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
+
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
@@ -1122,7 +1152,7 @@ function threadsLock(server, auth, threadId) {
   ];
   var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
-  return Promise.all([access, active, owner]);
+  return Promise.all([access, notBannedFromBoard, active, owner]);
 }
 
 function threadsSticky(server, auth, threadId) {
@@ -1146,7 +1176,11 @@ function threadsSticky(server, auth, threadId) {
     }
   ];
 
-  return server.authorization.stitch(Boom.badRequest(), conditions, 'any');
+  var access = server.authorization.stitch(Boom.badRequest(), conditions, 'any');
+
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
+
+  return Promise.all([access, notBannedFromBoard]);
 }
 
 function threadsMove(server, auth, threadId) {
@@ -1169,8 +1203,11 @@ function threadsMove(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedMove.some')
     }
   ];
+  var access = server.authorization.stitch(Boom.badRequest(), conditions, 'any');
 
-  return server.authorization.stitch(Boom.badRequest(), conditions, 'any');
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
+
+  return Promise.all([access, notBannedFromBoard]);
 }
 
 function threadsPurge(server, auth, threadId) {
@@ -1193,8 +1230,11 @@ function threadsPurge(server, auth, threadId) {
       permission: server.plugins.acls.getACLValue(auth, 'threads.privilegedPurge.some')
     }
   ];
+  var access = server.authorization.stitch(Boom.badRequest(), conditions, 'any');
 
-  return server.authorization.stitch(Boom.badRequest(), conditions, 'any');
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
+
+  return Promise.all([access, notBannedFromBoard]);
 }
 
 function threadsVote(server, auth, params, payload) {
@@ -1227,6 +1267,9 @@ function threadsVote(server, auth, params, payload) {
     }
   ];
   var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // Check that user isn't banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
 
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
@@ -1266,7 +1309,7 @@ function threadsVote(server, auth, params, payload) {
     else { return Promise.reject(Boom.badRequest('Too Many Answers')); }
   });
 
-  return Promise.all([access, active, exists, vote, unlocked, running, valid]);
+  return Promise.all([access, notBannedFromBoard, active, exists, vote, unlocked, running, valid]);
 }
 
 function threadsRemoveVote(server, auth, threadId, pollId) {
@@ -1296,6 +1339,9 @@ function threadsRemoveVote(server, auth, threadId, pollId) {
     }
   ];
   var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // Check that user isn't banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
 
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
@@ -1328,7 +1374,7 @@ function threadsRemoveVote(server, auth, threadId, pollId) {
     else { return Promise.reject(Boom.badRequest('Votes cannot be changed')); }
   });
 
-  return Promise.all([access, active, exists, unlocked, running, change]);
+  return Promise.all([access, notBannedFromBoard, active, exists, unlocked, running, change]);
 }
 
 function threadsEditPoll(server, auth, params, payload) {
@@ -1361,6 +1407,9 @@ function threadsEditPoll(server, auth, params, payload) {
     }
   ];
   var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // Check that user isn't banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
 
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
@@ -1415,7 +1464,7 @@ function threadsEditPoll(server, auth, params, payload) {
     if (maxAnswers > answersLength) { payload.max_answers = answersLength; }
   });
 
-  return Promise.all([access, active, exists, owner, display, answers]);
+  return Promise.all([access, notBannedFromBoard, active, exists, owner, display, answers]);
 }
 
 function threadsCreatePoll(server, auth, threadId, poll) {
@@ -1445,6 +1494,9 @@ function threadsCreatePoll(server, auth, threadId, poll) {
     }
   ];
   var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // Check that user isn't banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
 
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
@@ -1481,7 +1533,7 @@ function threadsCreatePoll(server, auth, threadId, poll) {
   var pollData = server.authorization.stitch(Boom.badRequest(), pollCond, 'all')
   .then(function() { return poll; });
 
-  return Promise.all([access, active, create, pollData]);
+  return Promise.all([access, notBannedFromBoard, active, create, pollData]);
 }
 
 function threadsLockPoll(server, auth, threadId) {
@@ -1511,6 +1563,9 @@ function threadsLockPoll(server, auth, threadId) {
     }
   ];
   var access = server.authorization.stitch(Boom.forbidden(), accessCond, 'any');
+
+  // Check that user isn't banned from this board
+  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
 
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
@@ -1548,7 +1603,7 @@ function threadsLockPoll(server, auth, threadId) {
   ];
   var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
-  return Promise.all([access, active, exists, owner]);
+  return Promise.all([access, notBannedFromBoard, active, exists, owner]);
 }
 
 // -- Messages

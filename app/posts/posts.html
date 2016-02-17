@@ -1,6 +1,11 @@
 <!-- Moderated Thread Banner -->
-<div class="banner warning" ng-if="PostsParentCtrl.thread.moderated">
-  Moderated Thread - <em>Thread starter can <strong>delete</strong> posts.</em>
+<div class="banner-container">
+  <div class="banner error" ng-if="PostsParentCtrl.bannedFromBoard">
+    Read Only Access &mdash; You are banned from this board
+  </div>
+  <div class="banner warning" ng-if="PostsParentCtrl.thread.moderated">
+    Moderated Thread &mdash; <em>Thread starter can <strong>delete</strong> posts.</em>
+  </div>
 </div>
 
 <!-- Page Title -->

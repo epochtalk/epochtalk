@@ -518,3 +518,35 @@ exports.unban = {
     return reply(promise);
   }
 };
+
+// TODO: Documentation, permissions, mod_log
+exports.banFromBoards = {
+  validate: {
+    payload: {
+      user_id: Joi.string().required(),
+      board_ids: Joi.array().items(Joi.string().required()).unique().min(1).required()
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var boardIds = request.payload.board_ids;
+    var promise = request.db.users.banFromBoards(userId, boardIds);
+    return reply(promise);
+  }
+};
+
+// TODO: Documentation, permissions, mod_log
+exports.unbanFromBoards = {
+  validate: {
+    payload: {
+      user_id: Joi.string().required(),
+      board_ids: Joi.array().items(Joi.string().required()).unique().min(1).required()
+    }
+  },
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var boardIds = request.payload.board_ids;
+    var promise = request.db.users.unbanFromBoards(userId, boardIds);
+    return reply(promise);
+  }
+};

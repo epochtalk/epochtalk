@@ -10,5 +10,7 @@ module.exports = [
   { method: 'PUT', path: '/users/roles/add', config: users.addRoles },
   { method: 'PUT', path: '/users/roles/remove', config: users.removeRoles },
   { method: 'PUT', path: '/users/ban', config: users.ban },
-  { method: 'PUT', path: '/users/unban', config: users.unban }
+  { method: 'PUT', path: '/users/unban', config: users.unban },
+  { method: 'PUT', path: '/users/ban/boards', config: users.banFromBoards },
+  { method: 'PUT', path: '/users/unban/boards', config: users.unbanFromBoards }
 ];

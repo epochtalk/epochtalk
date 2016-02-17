@@ -13,6 +13,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.board  = pageData.board;
     this.parent.page = pageData.page;
     this.parent.pageCount = Math.ceil(this.board.thread_count / this.limit);
+    this.parent.bannedFromBoard = pageData.bannedFromBoard;
 
     this.parent.controlAccess = {
       createPost: Session.hasPermission('postControls.create'),

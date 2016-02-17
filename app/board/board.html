@@ -1,3 +1,9 @@
+<div class="banner-container">
+  <div class="banner error" ng-if="BoardWrapperCtrl.bannedFromBoard">
+    Read Only Access &mdash; You are banned from this board
+  </div>
+</div>
+
 <div class="page-header-split">
   <div>
     <h4 ng-bind-html="BoardWrapperCtrl.board.name"></h4>

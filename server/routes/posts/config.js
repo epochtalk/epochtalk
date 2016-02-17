@@ -133,8 +133,10 @@ exports.byThread = {
     var getThreadWatching = request.db.threads.watching(threadId, userId);
     var getPoll = request.db.polls.byThread(threadId);
     var hasVoted = request.db.polls.hasVoted(threadId, userId);
+    var getUserBoardBan = request.db.users.isNotBannedFromBoard(userId, { threadId: threadId })
+    .then((notBanned) => { return !notBanned || undefined; });
 
-    var promise = Promise.join(getPosts, getThread, getThreadWatching, getPoll, hasVoted, function(posts, thread, threadWatching, poll, voted) {
+    var promise = Promise.join(getPosts, getThread, getThreadWatching, getPoll, hasVoted, getUserBoardBan, function(posts, thread, threadWatching, poll, voted, bannedFromBoard) {
       // check if thread is being Watched
       if (threadWatching) { thread.watched = true; }
       if (poll) {
@@ -147,6 +149,7 @@ exports.byThread = {
 
       return {
         thread: thread,
+        bannedFromBoard: bannedFromBoard,
         limit: opts.limit,
         page: opts.page,
         posts: cleanPosts(posts, userId, viewables)

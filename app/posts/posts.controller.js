@@ -9,6 +9,7 @@ var ctrl = [
     parent.posts = pageData.posts;
     parent.thread = pageData.thread;
     parent.board_id = pageData.thread.board_id;
+    parent.bannedFromBoard = pageData.bannedFromBoard;
     this.rootUrl = generateBaseUrl();
     this.user = Session.user;
     this.posts = pageData.posts;
