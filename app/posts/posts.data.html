@@ -29,17 +29,17 @@
         </div>
 
         <ul class="post-action">
-          <li ng-if="PostsCtrl.controlAccess.privilegedPurge && $index !== 0">
+          <li ng-if="PostsCtrl.controlAccess.privilegedPurge && $index !== 0 && !PostsParentCtrl.bannedFromBoard">
             <a ng-href="#" class="css-tooltip" data-css-tooltip="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
               <i class="fa fa-trash"></i>
             </a>
           </li>
-          <li ng-if="((post.user.id === PostsCtrl.user.id && PostsCtrl.controlAccess.delete) || PostsCtrl.controlAccess.privilegedDelete || (PostsCtrl.thread.user.id === PostsCtrl.user.id && PostsCtrl.thread.moderated && PostsCtrl.moderatedControlAccess)) && $index !== 0 && !post.deleted">
+          <li ng-if="((post.user.id === PostsCtrl.user.id && PostsCtrl.controlAccess.delete) || PostsCtrl.controlAccess.privilegedDelete || (PostsCtrl.thread.user.id === PostsCtrl.user.id && PostsCtrl.thread.moderated && PostsCtrl.moderatedControlAccess)) && $index !== 0 && !post.deleted && !PostsParentCtrl.bannedFromBoard">
             <a ng-href="#" class="css-tooltip" data-css-tooltip="Delete" ng-click="PostsParentCtrl.openDeleteModal($index)">
               <i class="fa fa-eye-slash"></i>
             </a>
           </li>
-          <li ng-if="((post.user.id === PostsCtrl.user.id && PostsCtrl.controlAccess.undelete) || PostsCtrl.controlAccess.privilegedDelete || (PostsCtrl.thread.user.id === PostsCtrl.user.id && PostsCtrl.thread.moderated && PostsCtrl.moderatedControlAccess)) && post.deleted === true">
+          <li ng-if="((post.user.id === PostsCtrl.user.id && PostsCtrl.controlAccess.undelete) || PostsCtrl.controlAccess.privilegedDelete || (PostsCtrl.thread.user.id === PostsCtrl.user.id && PostsCtrl.thread.moderated && PostsCtrl.moderatedControlAccess)) && post.deleted === true && !PostsParentCtrl.bannedFromBoard">
             <a ng-href="#" class="css-tooltip" data-css-tooltip="Undelete" ng-click="PostsParentCtrl.openUndeleteModal($index)">
               <i class="fa fa-eye"></i>
             </a>
@@ -49,12 +49,12 @@
               <i class="icon-epoch-flag"></i>
             </a>
           </li>
-          <li ng-if="(post.user.id === PostsCtrl.user.id && PostsCtrl.controlAccess.update && !PostsParentCtrl.thread_locked) || PostsCtrl.controlAccess.privilegedUpdate">
+          <li ng-if="((post.user.id === PostsCtrl.user.id && PostsCtrl.controlAccess.update && !PostsParentCtrl.thread_locked) || PostsCtrl.controlAccess.privilegedUpdate) && !PostsParentCtrl.bannedFromBoard">
             <a ng-href="#" class="css-tooltip" data-css-tooltip="Edit" ng-click="PostsCtrl.loadEditor($index)">
               <i class="icon-epoch-edit-pencil"></i>
             </a>
           </li>
-          <li ng-if="PostsParentCtrl.loggedIn() && PostsCtrl.controlAccess.create && !PostsParentCtrl.thread_locked">
+          <li ng-if="PostsParentCtrl.loggedIn() && PostsCtrl.controlAccess.create && !PostsParentCtrl.thread_locked && !PostsParentCtrl.bannedFromBoard">
             <a ng-href="#" class="css-tooltip" data-css-tooltip="Quote" ng-click="PostsCtrl.addQuote($index)">
               <i class="icon-epoch-quote"></i>
             </a>
