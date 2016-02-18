@@ -15,22 +15,20 @@ var config = require(path.normalize(__dirname + '/../config'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var parser = require(path.normalize(__dirname + '/plugins/parser'));
 var common = require(path.normalize(__dirname + '/plugins/common'));
+var modules = require(path.normalize(__dirname + '/plugins/modules'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
-var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var imageStore = require(path.normalize(__dirname + '/plugins/imageStore'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
+var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 
-var server;
+var server, additionalRoutes, commonMethods, authMethods;
 
 // setup configration file and sync with DB
 setup()
-
-// TODO: load modules
-
 // create server instance and add dbs
 .then(function() {
   // create server object
@@ -84,16 +82,6 @@ setup()
     return server.register({ register: Good, options: options});
   }
 })
-// imageStore
-.then(function() { return server.register({ register: imageStore, options: { config, db } }); })
-// sanitizer
-.then(function() { return server.register({ register: sanitizer }); })
-// common methods
-.then(function() { return server.register({ register: common }); })
-// authorization methods
-.then(function() { return server.register({ register: authorization }); })
-// parser
-.then(function() { return server.register({ register: parser }); })
 // auth via jwt
 .then(function() {
   return server.register({ register: jwt, options: { redis } })
@@ -104,6 +92,39 @@ setup()
     };
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
+})
+// route acls
+.then(function() { return server.register({register: acls, options: { db, config } }); })
+// blacklist
+.then(function() { return server.register({ register: blacklist, options: { db } }); })
+// rate limiter
+.then(function() {
+  var rlOptions = Hoek.clone(config.rateLimiting);
+  rlOptions.redis = redis;
+  return server.register({ register: limiter, options: rlOptions });
+})
+// imageStore
+.then(function() { return server.register({ register: imageStore, options: { config, db } }); })
+// sanitizer
+.then(function() { return server.register({ register: sanitizer }); })
+// parser
+.then(function() { return server.register({ register: parser }); })
+// load modules
+.then(function() {
+  return server.register({ register: modules, options: { db } })
+  .then(function(output) {
+    additionalRoutes = output.routes;
+    commonMethods = output.common;
+    authMethods = output.authorization;
+  });
+})
+// common methods
+.then(function() {
+  return server.register({ register: common, options: { methods: commonMethods } });
+})
+// authorization methods
+.then(function() {
+  return server.register({ register: authorization, options: { methods: authMethods } });
 })
 // vision templating
 .then(function() {
@@ -118,22 +139,15 @@ setup()
 })
 // inert static file serving
 .then(function() { return server.register(Inert); })
-// route acls
-.then(function() { return server.register({register: acls, options: { db, config } }); })
-// blacklist
-.then(function() { return server.register({ register: blacklist, options: { db } }); })
-// rate limiter
-.then(function() {
-  var rlOptions = Hoek.clone(config.rateLimiting);
-  rlOptions.redis = redis;
-  return server.register({ register: limiter, options: rlOptions });
-})
 // moderation log
 .then(function() { server.register({ register: moderationLog, options: { db } }); })
+// routes and server start
 .then(function() {
   // server routes
   var routes = require(path.normalize(__dirname + '/routes'));
-  server.route(routes.endpoints(config));
+  var allRoutes = routes.endpoints(config);
+  allRoutes = allRoutes.concat(additionalRoutes);
+  server.route(allRoutes);
 
   // start server
   server.start(function () {

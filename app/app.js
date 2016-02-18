@@ -2,7 +2,7 @@
 window.jQuery = window.$ = require('jquery');
 require('nestable');
 
-// Angular Dependencies
+// load Angular Dependencies
 require('angular');
 require('ngResource');
 require('ngSanitize');
@@ -12,8 +12,15 @@ require('ngLoadingBar');
 require('angularSortable');
 require('ngTagsInput');
 
+// load all dynamic modules
+var moduleNames = [];
+var moduleContext = require.context('./modules', true, /index.js$/);
+moduleContext.keys().forEach(function(args) {
+  moduleNames.push(moduleContext(args));
+});
+
 // Create Angular App
-var app = angular.module('ept', [
+var ngDeps = [
   'ngResource',
   'ngSanitize',
   'ngAnimate',
@@ -34,7 +41,11 @@ var app = angular.module('ept', [
   require('./users/reset'),
   require('./watchlist'),
   require('./admin')
-]);
+].concat(moduleNames);
+var app = angular.module('ept', ngDeps);
+
+var resourceContext = require.context('./modules', true, /resource.js$/);
+resourceContext.keys().forEach(function(args) { resourceContext(args); });
 
 require('./filters');
 require('./services');
