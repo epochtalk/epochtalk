@@ -1,4 +1,3 @@
-var fs = require('fs');
 var path = require('path');
 var fse = require('fs-extra');
 var Promise = require('bluebird');
@@ -62,7 +61,7 @@ function load(moduleName) {
 // check if client dir exists and is a directory
 function checkDir(inDir) {
   return new Promise(function(resolve) {
-    fs.stat(inDir, function(err, stats) {
+    fse.stat(inDir, function(err, stats) {
       if (err || !stats.isDirectory()) { return resolve(false); }
       else { return resolve(true); }
     });

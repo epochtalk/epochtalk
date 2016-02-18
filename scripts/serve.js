@@ -32,6 +32,6 @@ clean()
         './tests',
       ]
     };
-nodemon(nmOpts);
+    nodemon(nmOpts).once('exit', () => { process.exit(); });
   }
 });
