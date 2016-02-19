@@ -1050,17 +1050,15 @@ header {
           label { color: $header-logo-font-color; position: absolute; left: 0.4rem; top: 1rem; bottom: 1rem; }
         }
         #notifications-tray {
-          @include pad(0 2rem);
           line-height: $header-height;
           height: inherit;
-          margin: 0 1rem;
           .tray-icon {
+            @include pad(0 1rem);
             cursor: pointer;
             display: inline-block;
             color: $header-logo-font-color;
-            margin-right: 2rem;
             position: relative;
-            &:last-child { padding-right: 0; }
+            &:hover { background-color:  $header-dropdown-bg-color; }
             .count {
               @include pad(0 0.125rem);
               @include border-radius(0.2rem);
@@ -1073,7 +1071,7 @@ header {
               font-size: 0.5rem;
               font-weight: bolder;
               top: 0.5rem;
-              left: 0.6rem;
+              right: 0.45rem;
             }
           }
         }
