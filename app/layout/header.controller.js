@@ -35,12 +35,14 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
 
     // Notifications
     this.notifications = {
-      messages: 0
+      messages: 0,
+      mentions: 0
     };
     this.refreshNotificationsCounts = function() {
       return Notifications.counts().$promise
       .then(function(counts) {
         ctrl.notifications.messages = counts.message;
+        ctrl.notifications.mentions = counts.mention;
       });
     };
     ctrl.refreshNotificationsCounts();
