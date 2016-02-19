@@ -32,6 +32,9 @@ clean()
         './tests',
       ]
     };
-    nodemon(nmOpts).once('exit', () => { process.exit(); });
+    nodemon(nmOpts);
+    process.once('SIGINT', function() {
+      process.exit(0);
+    });
   }
 });
