@@ -27,11 +27,20 @@
           </div>
         </form>
       </li>
+      <li id="notifications-tray">
+        <div class="tray-icon" ui-sref="messages" ui-sref-opts="{ reload: true }">
+          <i class="fa fa-envelope"></i>
+          <div class="count" ng-if="HeaderCtrl.notifications.messages" ng-bind-html="HeaderCtrl.notifications.messages"></div>
+        </div>
+        <div class="tray-icon">
+          <i class="fa fa-globe"></i>
+          <div class="count" ng-if="HeaderCtrl.notifications.other" ng-bind-html="HeaderCtrl.notifications.other"></div>
+        </div>
+      </li>
       <li id="user-dropdown-wrap">
         <div>
           <img ng-src="{{ HeaderCtrl.currentUser.avatar }}" class="avatar">
           <a ui-sref="profile({ username: HeaderCtrl.currentUser.username })" ui-sref-opts="{ reload: true }" ng-bind-html="HeaderCtrl.currentUser.username"></a>
-          <button class="icon-epoch-active-very" ng-click="HeaderCtrl.refreshNotificationsCounts()"></button>
         </div>
         <ul id="user-dropdown">
           <li ng-if="HeaderCtrl.hasPermission('adminAccess')">
@@ -45,11 +54,6 @@
           </li>
           <li>
             <a ui-sref="profile({ username: HeaderCtrl.currentUser.username })" ui-sref-opts="{ reload: true }">Profile</a>
-          </li>
-          <li>
-          <a ui-sref="messages" ui-sref-opts="{ reload: true }">Messages <button
-              ng-if="HeaderCtrl.notifications.messages > 0"
-              ng-bind-html="HeaderCtrl.notifications.messages"></button> </a>
           </li>
           <li>
             <a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a>

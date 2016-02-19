@@ -1049,6 +1049,33 @@ header {
           }
           label { color: $header-logo-font-color; position: absolute; left: 0.4rem; top: 1rem; bottom: 1rem; }
         }
+        #notifications-tray {
+          @include pad(0 2rem);
+          line-height: $header-height;
+          height: inherit;
+          margin: 0 1rem;
+          .tray-icon {
+            display: inline-block;
+            color: $header-logo-font-color;
+            padding-right: 2rem;
+            position: relative;
+            &:last-child { padding-right: 0; }
+            .count {
+              @include pad(0 0.125rem);
+              @include border-radius(0.2rem);
+              border: 1px solid $header-bg-color;
+              position: absolute;
+              background-color: red;
+              height: 1rem;
+              line-height: 0.85rem;
+              min-width: 1rem;
+              font-size: 0.5rem;
+              font-weight: bolder;
+              top: 0.5rem;
+              left: 0.6rem;
+            }
+          }
+        }
         #user-dropdown-wrap {
           min-width: 125px;
           position: relative;
