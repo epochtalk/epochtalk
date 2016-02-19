@@ -1058,7 +1058,7 @@ header {
             cursor: pointer;
             display: inline-block;
             color: $header-logo-font-color;
-            padding-right: 2rem;
+            margin-right: 2rem;
             position: relative;
             &:last-child { padding-right: 0; }
             .count {
