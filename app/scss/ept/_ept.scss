@@ -1055,6 +1055,7 @@ header {
           height: inherit;
           margin: 0 1rem;
           .tray-icon {
+            cursor: pointer;
             display: inline-block;
             color: $header-logo-font-color;
             padding-right: 2rem;
