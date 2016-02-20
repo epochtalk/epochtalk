@@ -15,6 +15,7 @@ exports.register = function (plugin, options, next) {
   plugin.expose('spawnNotification', spawnNotification);
   plugin.expose('getNotifications', getNotifications);
   plugin.expose('getNotificationsCounts', getNotificationsCounts);
+  plugin.expose('dismissNotifications', dismissNotifications);
   next();
 };
 
@@ -33,4 +34,8 @@ function getNotifications(datas) {
 
 function getNotificationsCounts(datas) {
   return db.notifications.counts(datas);
+}
+
+function dismissNotifications(datas) {
+  return db.notifications.dismiss(datas);
 }
