@@ -432,6 +432,7 @@ roles.superAdministrator = {
     }
   },
   notifications: {
+    dismiss: true,
     counts: true
   },
   users: {
@@ -627,6 +628,7 @@ roles.administrator = {
     }
   },
   notifications: {
+    dismiss: true,
     counts: true
   },
   users: {
@@ -779,6 +781,7 @@ roles.globalModerator = {
     }
   },
   notifications: {
+    dismiss: true,
     counts: true
   },
   users: {
@@ -921,6 +924,7 @@ roles.moderator = {
     }
   },
   notifications: {
+    dismiss: true,
     counts: true
   },
   users: {
@@ -983,6 +987,7 @@ roles.user = {
     lock: true
   },
   notifications: {
+    dismiss: true,
     counts: true
   },
   users: {

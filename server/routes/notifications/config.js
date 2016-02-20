@@ -28,3 +28,19 @@ exports.counts = {
     return reply(promise);
   }
 };
+
+exports.dismiss = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'notifications.dismiss' },
+  handler: function(request, reply) {
+    // dismiss notifications for receiver_id
+    var params = {
+      receiver_id: request.auth.credentials.id,
+      type: request.query.type
+    };
+    var dismiss = request.server.plugins.notifications.dismissNotifications(params);
+
+    var promise = dismiss;
+    return reply(promise);
+  }
+};
