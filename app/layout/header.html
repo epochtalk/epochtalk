@@ -32,7 +32,7 @@
           <i class="fa fa-at"></i>
           <div class="count" ng-if="HeaderCtrl.notifications.mentions" ng-bind-html="HeaderCtrl.notifications.mentions"></div>
         </div>
-        <div class="tray-icon" ui-sref="messages" ui-sref-opts="{ reload: true }">
+        <div class="tray-icon" ui-sref="messages" ui-sref-opts="{ reload: true }" ng-click="HeaderCtrl.dismissNotifications('message')">
           <i class="fa fa-envelope"></i>
           <div class="count" ng-if="HeaderCtrl.notifications.messages" ng-bind-html="HeaderCtrl.notifications.messages"></div>
         </div>

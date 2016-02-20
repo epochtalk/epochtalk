@@ -45,6 +45,15 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
         ctrl.notifications.mentions = counts.mention;
       });
     };
+    this.dismissNotifications = function(type) {
+      var query = {
+        type: type
+      };
+      return Notifications.dismiss(query).$promise
+      .then(function() {
+        ctrl.refreshNotificationsCounts();
+      });
+    };
     ctrl.refreshNotificationsCounts();
 
     // Login/LogOut
