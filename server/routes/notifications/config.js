@@ -46,6 +46,11 @@ exports.counts = {
 exports.dismiss = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'notifications.dismiss' },
+  validate: {
+    query: Joi.object().keys({
+      type: Joi.string().valid('message', 'mention', 'other').required()
+    })
+  },
   handler: function(request, reply) {
     // dismiss notifications for receiver_id
     var params = {
