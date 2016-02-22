@@ -6,8 +6,8 @@ module.exports = ['$resource',
     return $resource('/api/notifications/:id', {}, {
       dismiss: {
         params: { type: '@type' },
-        method: 'GET',
-        url: '/api/notifications/dismiss'
+        method: 'DELETE',
+        url: '/api/notifications'
       },
       counts: {
         method: 'GET',
