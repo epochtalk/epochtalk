@@ -29,6 +29,20 @@ exports.counts = {
   }
 };
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Notifications
+  * @api {DELETE} /notifications Dismiss
+  * @apiName DismissNotification
+  * @apiPermission User
+  * @apiDescription Used to dismiss all notifications of a type.
+  *
+  * @apiParam {string} type The type of notifications to dismiss
+  *
+  * @apiUse NotificationsObjectSuccess
+  *
+  * @apiError (Error 500) InternalServerError There was an issue dismissing the notifications
+  */
 exports.dismiss = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'notifications.dismiss' },
