@@ -7,7 +7,7 @@ module.exports = ['$resource',
       dismiss: {
         params: { type: '@type' },
         method: 'POST',
-        url: '/api/notifications'
+        url: '/api/notifications/dismiss'
       },
       counts: {
         method: 'GET',
