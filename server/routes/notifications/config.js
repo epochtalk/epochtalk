@@ -11,7 +11,10 @@ var Promise = require('bluebird');
   * @apiPermission User
   * @apiDescription Get the notifications counts for this user.
   *
-  * @apiUse NotificationsCountObjectSuccess
+  * @apiSuccess {object} notificationsCounts
+  * @apiSuccess {number} notificationsCounts.message
+  * @apiSuccess {number} notificationsCounts.mention
+  * @apiSuccess {number} notificationsCounts.other
   *
   * @apiError (Error 500) InternalServerError There was an issue getting the notifications counts
   */
@@ -36,9 +39,9 @@ exports.counts = {
   * @apiPermission User
   * @apiDescription Used to dismiss all notifications of a type.
   *
-  * @apiParam {string} type The type of notifications to dismiss
+  * @apiParam (Query) {string="message", "mention", "other"} type The type of notifications to dismiss
   *
-  * @apiUse NotificationsObjectSuccess
+  * @apiSuccess {object} STATUS 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue dismissing the notifications
   */
