@@ -31,7 +31,7 @@ exports.counts = {
 /**
   * @apiVersion 0.4.0
   * @apiGroup Notifications
-  * @api {DELETE} /notifications Dismiss
+  * @api {POST} /notifications Dismiss
   * @apiName DismissNotification
   * @apiPermission User
   * @apiDescription Used to dismiss all notifications of a type.
