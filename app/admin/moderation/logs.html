@@ -1,0 +1,92 @@
+<div class="admin-table-header log-filter">
+    <span>Show me</span>
+    <span class="css-tooltip" data-css-tooltip="Mod Username, IP or ID">
+      <input ng-model="ModerationCtrl.filter.mod" ng-keydown="$event.which === 13 && ModerationCtrl.filterResults()" type="text" placeholder="Any Moderator"/>
+    </span>
+
+    <span>who</span>
+
+    <span class="css-tooltip" data-css-tooltip="Mod Action Performed">
+      <select ng-keydown="$event.which === 13 && ModerationCtrl.filterResults()" ng-model="ModerationCtrl.filter.action" ng-options="action.value as action.desc group by action.group for action in ModerationCtrl.actionTypes">
+        <option value="">Did Anything</option>
+      </select>
+    </span>
+
+    <span>with</span>
+
+    <span class="css-tooltip" data-css-tooltip="Mod Action Keyword">
+      <input ng-keydown="$event.which === 13 && ModerationCtrl.filterResults()" type="text" ng-model="ModerationCtrl.filter.keyword" placeholder="Keyword" />
+    </span>
+    <span class="css-tooltip" data-css-tooltip="Optional Date Range">
+      <select ng-model="ModerationCtrl.selectedDateFilterType" ng-options="k as v for (k, v) in ModerationCtrl.dateFilterTypes" ng-change="ModerationCtrl.filter.bdate = undefined;ModerationCtrl.filter.adate = undefined;ModerationCtrl.filter.sdate = undefined;ModerationCtrl.filter.edate = undefined;">
+        <option value="">At Anytime</option>
+      </select>
+    </span>
+
+    <span ng-show="ModerationCtrl.selectedDateFilterType === 'after'" class="css-tooltip" data-css-tooltip="After Date">
+      <input ng-keydown="$event.which === 13 && ModerationCtrl.filterResults()" ng-model="ModerationCtrl.filter.adate" type="date" />
+    </span>
+
+    <span ng-show="ModerationCtrl.selectedDateFilterType === 'before'" class="css-tooltip" data-css-tooltip="Before Date">
+      <input ng-keydown="$event.which === 13 && ModerationCtrl.filterResults()" ng-model="ModerationCtrl.filter.bdate" type="date" />
+    </span>
+
+    <div class="inline-block" ng-show="ModerationCtrl.selectedDateFilterType === 'between'" >
+      <span class="css-tooltip" data-css-tooltip="Start Date">
+        <input ng-model="ModerationCtrl.filter.sdate" type="date" />
+      </span>
+      <span>and</span>
+      <span class="css-tooltip" data-css-tooltip="End Date">
+        <input ng-keydown="$event.which === 13 && ModerationCtrl.filterResults()" ng-model="ModerationCtrl.filter.edate" type="date" />
+      </span>
+    </div>
+
+    <button ng-disabled="ModerationCtrl.disableFilter()" ng-click="ModerationCtrl.filterResults()">Filter</button>
+    <button ng-disabled="ModerationCtrl.disableClear()" ng-click="ModerationCtrl.clearFilter()">Clear</button>
+
+</div>
+<div class="fill-row">
+  <table class="underlined log" width="100%">
+    <thead>
+      <th>Date</th>
+      <th>Mod Username</th>
+      <th>Mod Action</th>
+      <th class="centered-text">Link</th>
+      <th class="centered-text">Raw</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="log in ModerationCtrl.logs">
+        <td ng-bind="log.action_taken_at | humanDate"></td>
+        <td>
+          <a ui-sref="profile({ username: '{{log.mod_username}}' })" target="_blank" ng-bind="log.mod_username"></a>
+        </td>
+        <td ng-bind-html="log.action_display_text"></td>
+        <td class="centered-text">
+          <a ng-if="log.action_display_url" ui-sref="{{log.action_display_url}}" target="_blank"><i class="fa fa-external-link-square"></i></a>
+          <i ng-if="!log.action_display_url" class="fa fa-external-link-square no-link"></i>
+        </td>
+        <td class="centered-text">
+          <a ng-click="ModerationCtrl.showRawObject(log)"><i class="fa fa-file-code-o"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 ng-if="ModerationCtrl.logs.length < 1" class="centered-text">No Logs to Display</h3>
+  <div class="pagination-simple">
+    <a ng-show="ModerationCtrl.prev" ui-sref=".({ page: ModerationCtrl.prev })">
+      &#10094; Newer
+    </a>
+    <span ng-hide="ModerationCtrl.prev">&#10094; Newer</span>
+    &nbsp;&nbsp;&nbsp;
+    <a ng-show="ModerationCtrl.next" ui-sref=".({ page: ModerationCtrl.next })">
+       Older &#10095;
+    </a>
+    <span ng-hide="ModerationCtrl.next">Older &#10095;</span>
+
+  </div>
+</div>
+
+<modal class="medium" show="ModerationCtrl.showRawObjectModal" on-close="ModerationCtrl.showRawObjectModal = false">
+  <h3 class="thin-underline">Raw Log Data</h3>
+  <pre class="json" ng-bind-html="ModerationCtrl.syntaxHighlight(ModerationCtrl.selectedLog)"></pre>
+</modal>

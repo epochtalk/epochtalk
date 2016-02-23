@@ -2,8 +2,6 @@ var Joi = require('joi');
 var Boom = require('boom');
 var path = require('path');
 var crypto = require('crypto');
-var images = require(path.normalize(__dirname + '/../images'));
-var config = require(path.normalize(__dirname + '/../../config'));
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var categories = require(path.normalize(__dirname + '/categories'));
 var boards = require(path.normalize(__dirname + '/boards'));
@@ -18,6 +16,7 @@ var adminUsers = require(path.normalize(__dirname + '/admin/users'));
 var adminReports = require(path.normalize(__dirname + '/admin/reports'));
 var adminRoles = require(path.normalize(__dirname + '/admin/roles'));
 var adminModerators = require(path.normalize(__dirname + '/admin/moderators'));
+var adminModerationLogs = require(path.normalize(__dirname + '/admin/moderation_logs'));
 var conversations = require(path.normalize(__dirname + '/conversations'));
 var messages = require(path.normalize(__dirname + '/messages'));
 var watchlist = require(path.normalize(__dirname + '/watchlist'));
@@ -28,10 +27,10 @@ function buildEndpoints() {
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminBoards, adminSettings, adminUsers, adminReports, adminRoles, adminModerators);
+  return [].concat(adminBoards, adminSettings, adminUsers, adminReports, adminRoles, adminModerators, adminModerationLogs);
 }
 
-exports.endpoints = function() {
+exports.endpoints = function(internalConfig) {
   var localRoutes = [
     // static assets
     {
@@ -48,6 +47,7 @@ exports.endpoints = function() {
       method: 'GET',
       path: '/{path*}',
       handler: function(request, reply) {
+        var config = request.server.app.config;
         var data = {
           title: config.website.title,
           description: config.website.description,
@@ -67,8 +67,7 @@ exports.endpoints = function() {
         validate: { payload: { filename: Joi.string().required() } },
         handler: function(request, reply) {
           var filename = request.payload.filename;
-          var storage = config.images.storage;
-          var result = images[storage].uploadPolicy(filename);
+          var result = request.imageStore.uploadPolicy(filename);
           return reply(result);
         }
       }
@@ -80,12 +79,13 @@ exports.endpoints = function() {
       config: {
         auth: { strategy: 'jwt' },
         payload: {
-          maxBytes: config.images.maxSize,
+          maxBytes: internalConfig.images.maxSize,
           output: 'stream',
           parse: true
         },
         handler: function(request, reply) {
           // check we're using local storage
+          var config = request.server.app.config;
           if (config.images.storage !== 'local') {
             return reply(Boom.notFound());
           }
@@ -117,7 +117,7 @@ exports.endpoints = function() {
             return reply(Boom.badRequest('Policy Timed Out'));
           }
 
-          images.local.uploadImage(file, filename, reply);
+          request.imageStore.uploadImage(file, filename, reply);
         }
       }
     }

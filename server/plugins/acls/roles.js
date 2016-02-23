@@ -26,7 +26,8 @@ module.exports = roles;
     modAccess: {
       users: true,
       posts: true,
-      messages: true
+      messages: true,
+      logs: true
     },
     // ACLs
     adminBoards: {
@@ -34,6 +35,9 @@ module.exports = roles;
       boards: true,
       moveBoards: true,
       updateCategories: true
+    },
+    adminModerationLogs: {
+      page: true
     },
     adminReports: {
       createUserReportNote: true,
@@ -261,7 +265,8 @@ roles.superAdministrator = {
   modAccess: {
     users: true,
     posts: true,
-    messages: true
+    messages: true,
+    logs: true,
   },
   // ACLs
   adminBoards: {
@@ -269,6 +274,9 @@ roles.superAdministrator = {
     boards: true,
     moveBoards: true,
     updateCategories: true
+  },
+  adminModerationLogs: {
+    page: true
   },
   adminReports: {
     createUserReportNote: true,
@@ -473,7 +481,8 @@ roles.administrator = {
   modAccess: {
     users: true,
     posts: true,
-    messages: true
+    messages: true,
+    logs: true
   },
   // ACLs
   adminBoards: {
@@ -481,6 +490,9 @@ roles.administrator = {
     boards: true,
     moveBoards: true,
     updateCategories: true
+  },
+  adminModerationLogs: {
+    page: true
   },
   adminReports: {
     createUserReportNote: true,

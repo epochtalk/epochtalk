@@ -176,6 +176,10 @@
             <input id="modAccess-messages" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.messages" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.messages ? AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReports = true : AdminManagementCtrl.newRole.permissions.adminReports.pageMessageReports = undefined" ng-false-value="undefined" />
             Messages Moderation Tab
           </label>
+          <label>
+            <input id="modAccess-logs" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.logs" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.logs ? AdminManagementCtrl.newRole.permissions.adminModerationLogs.page = true : AdminManagementCtrl.newRole.permissions.adminModerationLogs.page = undefined" ng-false-value="undefined" />
+            Logs Moderation Tab
+          </label>
         </div>
         <div class="clear"></div>
         <h4><br />Administration View Permissions</h4>

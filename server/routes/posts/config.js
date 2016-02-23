@@ -1,12 +1,9 @@
 var _ = require('lodash');
 var Joi = require('joi');
-var path = require('path');
 var Boom = require('boom');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
 var querystring = require('querystring');
-var common = require(path.normalize(__dirname + '/../../common'));
-var imageStore = require(path.normalize(__dirname + '/../../images'));
 
 /**
   * @apiVersion 0.4.0
@@ -35,9 +32,9 @@ exports.create = {
   },
   pre: [
     { method: 'auth.posts.create(server, auth, payload.thread_id)' },
-    { method: common.cleanPost },
-    { method: common.parseEncodings },
-    { method: common.subImages }
+    { method: 'common.posts.clean(sanitizer, payload)' },
+    { method: 'common.posts.parse(parser, payload)' },
+    { method: 'common.images.sub(imageStore, payload)' }
   ],
   handler: function(request, reply) {
     // build the post object from payload and params
@@ -46,7 +43,8 @@ exports.create = {
 
     // create the post in db
     var promise = request.db.posts.create(newPost)
-    .then(createImageReferences); // handle image references
+    // handle image references
+    .then((post) => { return createImageReferences(request.imageStore, post); });
     return reply(promise);
   }
 };
@@ -182,7 +180,19 @@ exports.byThread = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'posts.update' },
+  plugins: {
+    acls: 'posts.update',
+    mod_log: {
+      type: 'posts.update',
+      data: {
+        id: 'params.id',
+        title: 'payload.title',
+        body: 'payload.body',
+        raw_body: 'payload.raw_body',
+        thread_id: 'payload.thread_id'
+      }
+    }
+  },
   validate: {
     payload: {
       title: Joi.string().min(1).max(255).required(),
@@ -194,15 +204,16 @@ exports.update = {
   },
   pre: [
     { method: 'auth.posts.update(server, auth, params.id, payload.thread_id)' },
-    { method: common.cleanPost },
-    { method: common.parseEncodings },
-    { method: common.subImages }
+    { method: 'common.posts.clean(sanitizer, payload)' },
+    { method: 'common.posts.parse(parser, payload)' },
+    { method: 'common.images.sub(imageStore, payload)' }
   ],
   handler: function(request, reply) {
     var updatePost = request.payload;
     updatePost.id = request.params.id;
     var promise = request.db.posts.update(updatePost)
-    .then(updateImageReferences); // handle image references
+    // handle image references
+    .then((post) => { return updateImageReferences(request.imageStore, post); });
     return reply(promise);
   }
 };
@@ -224,7 +235,13 @@ exports.update = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'posts.delete' },
+  plugins: {
+    acls: 'posts.delete',
+    mod_log: {
+      type: 'posts.delete',
+      data: { id: 'params.id' }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.posts.delete(server, auth, params.id)'} ],
   handler: function(request, reply) {
@@ -255,7 +272,13 @@ exports.undelete = {
     isPostDeletable: 'posts.privilegedDelete'
   },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'posts.undelete' },
+  plugins: {
+    acls: 'posts.undelete',
+    mod_log: {
+      type: 'posts.undelete',
+      data: { id: 'params.id' }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.posts.delete(server, auth, params.id)'} ],
   handler: function(request, reply) {
@@ -282,11 +305,28 @@ exports.undelete = {
 exports.purge = {
   app: { post_id: 'params.id' },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'posts.purge' },
+  plugins: {
+    acls: 'posts.purge',
+    mod_log: {
+      type: 'posts.purge',
+      data: {
+        id: 'params.id',
+        user_id: 'route.settings.plugins.mod_log.metadata.user_id',
+        thread_id: 'route.settings.plugins.mod_log.metadata.thread_id',
+      }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.posts.purge(server, auth, params.id)' } ],
   handler: function(request, reply) {
-    var promise = request.db.posts.purge(request.params.id);
+    var promise = request.db.posts.purge(request.params.id)
+    .then(function(purgedPost) {
+      // append purged post data to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        user_id: purgedPost.user_id,
+        thread_id: purgedPost.thread_id
+      };
+    });
     return reply(promise);
   }
 };
@@ -326,7 +366,6 @@ exports.pageByUser = {
     var userId = '';
     var authenticated = request.auth.isAuthenticated;
     if (authenticated) { userId = request.auth.credentials.id; }
-    console.log(request.pre.auth);
     var viewables = request.pre.auth.viewables;
     var priority = request.pre.auth.priority;
     var username = querystring.unescape(request.params.username);
@@ -402,7 +441,7 @@ function cleanPosts(posts, currentUserId, viewContext) {
   });
 }
 
-function createImageReferences(post) {
+function createImageReferences(imageStore, post) {
   // load html in post.body into cheerio
   var html = post.body;
   var $ = cheerio.load(html);
@@ -422,7 +461,7 @@ function createImageReferences(post) {
   return post;
 }
 
-function updateImageReferences(post) {
+function updateImageReferences(imageStore, post) {
   // load html in post.body into cheerio
   var html = post.body;
   var $ = cheerio.load(html);

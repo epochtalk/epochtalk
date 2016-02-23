@@ -4,7 +4,7 @@
     <!-- Logo Section -->
     <h3>
       <a ui-sref="boards" ng-if="$webConfigs.logo"><img ng-src="{{$webConfigs.logo}}" id="logo" /></a>
-      <a ui-sref="boards" id="logo-text" ng-bind="$webConfigs.title">Epochtalk</a>
+      <a ui-sref="boards" id="logo-text" ng-bind="$webConfigs.title | decode">Epochtalk</a>
     </h3>
 
     <!-- Login Section -->
@@ -76,5 +76,10 @@
     </ul>
   </div>
 </div>
+
+<div id="ban-notice" ng-if="HeaderCtrl.currentUser.ban_expiration">
+  {{ (HeaderCtrl.currentUser.ban_expiration | humanDate:true) === 'Permanent' ? 'You have been permanently banned' : 'You have been banned until ' + (HeaderCtrl.currentUser.ban_expiration | humanDate:true) }}
+</div>
+
 
 <alert></alert>

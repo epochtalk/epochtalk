@@ -80,8 +80,12 @@ exports.moveBoards = {
   */
 exports.updateCategories = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminBoards.updateCategories' },
+  plugins: {
+    acls: 'adminBoards.updateCategories',
+    mod_log: { type: 'adminBoards.updateCategories' }
+  },
   validate: { payload: { boardMapping: Joi.array().required() } },
+  // TODO: clean inputs?
   handler: function(request, reply) {
     // update board on db
     var boardMapping = request.payload.boardMapping;

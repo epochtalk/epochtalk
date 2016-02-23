@@ -4,7 +4,7 @@
     <!-- Logo Section -->
     <h3 class="hide-mobile">
       <a ui-sref="admin" ng-if="$webConfigs.logo"><img ng-src="{{$webConfigs.logo}}" id="logo" /></a>
-      <a ui-sref="admin" id="logo-text" ng-bind="$webConfigs.title">Epochtalk</a>
+      <a ui-sref="admin" id="logo-text" ng-bind="$webConfigs.title | decode">Epochtalk</a>
     </h3>
 
     <ul id="menu-left">

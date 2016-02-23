@@ -1,7 +1,5 @@
 var Joi = require('joi');
-var path = require('path');
 var Promise = require('bluebird');
-var common = require(path.normalize(__dirname + '/../../common'));
 
 /**
   * @apiDefine BoardObjectSuccess
@@ -30,7 +28,17 @@ var common = require(path.normalize(__dirname + '/../../common'));
   */
 exports.create = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.create' },
+  plugins: {
+    acls: 'boards.create',
+    mod_log: {
+      type: 'boards.create',
+      data: {
+        name: 'payload.name',
+        description: 'payload.description',
+        viewable_by: 'payload.viewable_by'
+      }
+    },
+  },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255).required(),
@@ -38,7 +46,7 @@ exports.create = {
       viewable_by: Joi.number()
     }
   },
-  pre: [ { method: common.cleanBoard } ],
+  pre: [ { method: 'common.boards.clean(sanitizer, payload)' } ],
   handler: function(request, reply) {
     return reply(request.db.boards.create(request.payload));
   }
@@ -134,7 +142,18 @@ exports.allCategories = {
   */
 exports.update = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.update' },
+  plugins: {
+    acls: 'boards.update',
+    mod_log: {
+      type: 'boards.update',
+      data: {
+        id: 'params.id',
+        name: 'payload.name',
+        description: 'payload.description',
+        viewable_by: 'payload.viewable_by'
+      }
+    }
+  },
   validate: {
     payload: {
       name: Joi.string().min(1).max(255),
@@ -143,7 +162,7 @@ exports.update = {
     },
     params: { id: Joi.string().required() }
   },
-  pre: [ { method: common.cleanBoard } ],
+  pre: [ { method: 'common.boards.clean(sanitizer, payload)' } ],
   handler: function(request, reply) {
     // build updateBoard object from params and payload
     var updateBoard = request.payload;
@@ -170,9 +189,27 @@ exports.update = {
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'boards.delete' },
+  plugins: {
+    acls: 'boards.delete',
+    mod_log: {
+      type: 'boards.delete',
+      data: {
+        id: 'params.id',
+        name: 'route.settings.plugins.mod_log.metadata.name'
+      }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
-    return reply(request.db.boards.delete(request.params.id));
+    var promise = request.db.boards.delete(request.params.id)
+    .then(function(result) {
+      // store results on plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        name: result.name
+      };
+
+      return result;
+    });
+    return reply(promise);
   }
 };

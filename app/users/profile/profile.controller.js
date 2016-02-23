@@ -18,6 +18,9 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.editable = Session.user.id === user.id || this.controlAccess.privilegedUpdate;
     this.adminVisitor = Session.user.id !== user.id && this.controlAccess.privilegedUpdate;
 
+    // Check if user is banned
+    this.ban_expiration = this.user.ban_expiration && Session.user.id !== user.id ? $filter('humanDate')(this.user.ban_expiration, true) : null;
+
     var calcAge = function(dob) {
       if (!dob) { return '';}
       dob = new Date(dob);

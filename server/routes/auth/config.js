@@ -6,7 +6,6 @@ var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
 var helper = require(path.normalize(__dirname + '/helper'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
-var config = require(path.normalize(__dirname + '/../../../config'));
 
 /**
   * @api {POST} /login Login
@@ -66,6 +65,18 @@ exports.login = {
     .then(function(user) {
       if (bcrypt.compareSync(password, user.passhash)) { return user; }
       else { return Promise.reject(Boom.badRequest('Invalid Credentials')); }
+    })
+    // TODO: There could be a better place to do this
+    // check if users ban expired and remove if it has
+    .then(function(user) {
+      if (user.ban_expiration && user.ban_expiration < new Date()) {
+        return request.db.users.unban(user.id)
+        .then(function(unbannedUser) {
+          user.roles = unbannedUser.roles; // update user roles
+          return user;
+        });
+      }
+      else { return user; }
     })
     // get user moderating boards
     .then(function(user) {
@@ -169,6 +180,7 @@ exports.register = {
       return reply(helper.formatUserReply(loggedInUser.token, loggedInUser));
     }
 
+    var config = request.server.app.config;
     var newUser = {
       username: request.payload.username,
       email: request.payload.email,
@@ -340,6 +352,7 @@ exports.email = {
 exports.recoverAccount = {
   validate: { params: { query: Joi.string().min(1).max(255).required(), } },
   handler: function(request, reply) {
+    var config = request.server.app.config;
     var query = request.params.query;
     var promise = request.db.users.userByUsername(query) // get full user info
     .then(function(user) {

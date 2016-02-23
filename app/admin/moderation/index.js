@@ -1,19 +1,9 @@
 module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
-  // Checks if user is an admin
-  var adminCheck = function(route) {
-    return ['$q', 'Session', function($q, Session) {
-      if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
-      if (route && Session.hasPermission('adminAccess' + '.' + route)) { return true; }
-      else if (!route && Session.hasPermission('adminAccess')) { return true; }
-      else { return $q.reject({ status: 403, statusText: 'Forbidden' }); }
-    }];
-  };
 
   // Checks if user is a moderator
   var modCheck = function(route) {
     return ['$q', 'Session', function($q, Session) {
       if (!Session.isAuthenticated()) {  return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
-
 
       if (route && Session.hasPermission('modAccess' + '.' + route)) { return true; }
       else if (!route && Session.hasPermission('modAccess')) { return true; }
@@ -31,6 +21,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     else if (Session.hasPermission('modAccess.messages')) {
       $state.go('admin-moderation.messages', { filter: 'Pending'}, { location: true, reload: true });
     }
+    else if (Session.hasPermission('modAccess.logs')) { $state.go('admin-moderation.logs'); }
     else { $state.go('admin'); }
   }];
 
@@ -49,6 +40,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           if (Session.hasPermission('modAccess.users')) { this.tab = 'users'; }
           else if (Session.hasPermission('modAccess.posts')) { this.tab = 'posts'; }
           else if (Session.hasPermission('modAccess.messages')) { this.tab = 'messages'; }
+          else if (Session.hasPermission('modAccess.logs')) { this.tab = 'logs'; }
         }],
         controllerAs: 'ModerationCtrl',
         templateUrl: '/static/templates/admin/moderation/index.html'
@@ -198,6 +190,44 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           search: $stateParams.search
         };
         return AdminReports.pageMessageReports(query).$promise;
+      }]
+    }
+  })
+  .state('admin-moderation.logs', {
+    url: '/logs?page&limit&mod&action&keyword&bdate&adate&sdate&edate',
+    reloadOnSearch: false,
+    views: {
+      'data@admin-moderation': {
+        controller: 'ModLogsCtrl',
+        controllerAs: 'ModerationCtrl',
+        templateUrl: '/static/templates/admin/moderation/logs.html'
+      }
+    },
+    resolve: {
+      userAccess: modCheck('logs'),
+      $title: function() { return 'Moderation Log'; },
+      loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
+        var deferred = $q.defer();
+        require.ensure([], function() {
+          var ctrl = require('./logs.controller');
+          $ocLazyLoad.load({ name: 'ept.admin.moderation.logs.ctrl' });
+          deferred.resolve(ctrl);
+        });
+        return deferred.promise;
+      }],
+      moderationLogs: ['AdminModerationLogs', '$stateParams', function(AdminModerationLogs, $stateParams) {
+        var query = {
+          limit: Number($stateParams.limit) || undefined,
+          page: Number($stateParams.page) || undefined,
+          mod: $stateParams.mod,
+          action: $stateParams.action,
+          keyword: $stateParams.keyword,
+          bdate: $stateParams.bdate,
+          adate: $stateParams.adate,
+          sdate: $stateParams.sdate,
+          edate: $stateParams.edate
+        };
+        return AdminModerationLogs.page(query).$promise;
       }]
     }
   });

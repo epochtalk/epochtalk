@@ -1,8 +1,6 @@
 var Joi = require('joi');
-var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var common = require(path.normalize(__dirname + '/../../common'));
 var _ = require('lodash');
 
 /**
@@ -30,8 +28,8 @@ exports.create = {
   },
   pre: [
     { method: 'auth.messages.create(server, auth, payload.receiver_id, payload.conversation_id)' },
-    { method: common.cleanMessage },
-    { method: common.parseMessage }
+    { method: 'common.messages.clean(sanitizer, payload)' },
+    { method: 'common.messages.parse(parser, payload)' }
   ],
   handler: function(request, reply) {
     var message = request.payload;
@@ -132,18 +130,38 @@ exports.findUser = {
   *
   * @apiParam {string} id The Id of the message to delete
   *
-  * @apiUse MessageObjectSuccess
+  * @apiSuccess {string} id The unique id of the message being deleted
+  * @apiSuccess {string} sender_id The unique id of the user that sent this message
+  * @apiSuccess {string} receiver_id The unique id of the user that sent this message
   *
   * @apiError (Error 400) BadRequest Message Already Deleted
   * @apiError (Error 500) InternalServerError There was an issue deleting the message
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'messages.delete' },
+  plugins: {
+    acls: 'messages.delete',
+    mod_log: {
+      type: 'messages.delete',
+      data: {
+        id: 'params.id',
+        sender_id: 'route.settings.plugins.mod_log.metadata.sender_id',
+        receiver_id: 'route.settings.plugins.mod_log.metadata.receiver_id'
+      }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   pre: [ { method: 'auth.messages.delete(server, auth, params.id)' } ],
   handler: function(request, reply) {
     var promise = request.db.messages.delete(request.params.id)
+    .then(function(deletedMessage) {
+      // appender receiver and sender ids to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        sender_id: deletedMessage.sender_id,
+        receiver_id: deletedMessage.receiver_id
+      };
+      return deletedMessage;
+    })
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }

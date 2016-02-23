@@ -1,7 +1,5 @@
 var Joi = require('joi');
-var path = require('path');
 var Boom = require('boom');
-var common = require(path.normalize(__dirname + '/../../common'));
 var _ = require('lodash');
 
 /**
@@ -28,8 +26,8 @@ exports.create = {
   },
   pre: [
     { method: 'auth.conversations.create(server, auth, payload.receiver_id)' },
-    { method: common.cleanMessage },
-    { method: common.parseMessage }
+    { method: 'common.messages.clean(sanitizer,payload)' },
+    { method: 'common.messages.parse(parser, payload)' }
   ],
   handler: function(request, reply) {
     // create the conversation in db
@@ -128,17 +126,37 @@ exports.messages = {
   *
   * @apiParam {string} id The Id of the conversation to delete
   *
-  * @apiUse ConversationObjectSuccess
+  * @apiSuccess {string} id The unique id of the conversation being deleted
+  * @apiSuccess {string} sender_id The unique id of the sender
+  * @apiSuccess {string} receiver_id The unique id of the receiver
   *
   * @apiError (Error 400) BadRequest Conversation Already Deleted
   * @apiError (Error 500) InternalServerError There was an issue deleting the conversation
   */
 exports.delete = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'conversations.delete' },
+  plugins: {
+    acls: 'conversations.delete',
+    mod_log: {
+      type: 'conversations.delete',
+      data: {
+        id: 'params.id',
+        sender_id: 'route.settings.plugins.mod_log.metadata.sender_id',
+        receiver_id: 'route.settings.plugins.mod_log.metadata.receiver_id'
+       }
+    }
+  },
   validate: { params: { id: Joi.string().required() } },
   handler: function(request, reply) {
     var promise = request.db.conversations.delete(request.params.id)
+    .then(function(deletedConvo) {
+      // append receiver and sender ids to plugin metadata
+      request.route.settings.plugins.mod_log.metadata = {
+        sender_id: deletedConvo.sender_id,
+        receiver_id: deletedConvo.receiver_id
+      };
+      return deletedConvo;
+    })
     .error(function(err) { return Boom.badRequest(err.message); });
     return reply(promise);
   }

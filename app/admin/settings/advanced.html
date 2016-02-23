@@ -177,13 +177,13 @@
     </label>
 
     <label for="ruleType">Select Rule Type:</label>
-    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.selectedRule.type" ng-value="0" id="single-edit" ng-click="AdminSettingsCtrl.selectedRule = { id: note: AdminSettingsCtrl.selectedRule.id, note: AdminSettingsCtrl.selectedRule.note, type: 0 }" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.selectedRule.type" ng-value="0" id="single-edit" ng-click="AdminSettingsCtrl.selectedRule = { id: AdminSettingsCtrl.selectedRule.id, note: AdminSettingsCtrl.selectedRule.note, type: 0 }" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
     <label for="single-edit">Single IP</label>
 
-    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.selectedRule.type" ng-value="1" id="range-edit" ng-click="AdminSettingsCtrl.selectedRule = { id: note: AdminSettingsCtrl.selectedRule.id, note: AdminSettingsCtrl.selectedRule.note, type: 1 }" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.selectedRule.type" ng-value="1" id="range-edit" ng-click="AdminSettingsCtrl.selectedRule = { id: AdminSettingsCtrl.selectedRule.id, note: AdminSettingsCtrl.selectedRule.note, type: 1 }" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
     <label for="range-edit">IP Range</label>
 
-    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.selectedRule.type" ng-value="2" id="wildcard-edit" ng-click="AdminSettingsCtrl.selectedRule = { id: note: AdminSettingsCtrl.selectedRule.id, note: AdminSettingsCtrl.selectedRule.note, type: 2 }" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.selectedRule.type" ng-value="2" id="wildcard-edit" ng-click="AdminSettingsCtrl.selectedRule = { id: AdminSettingsCtrl.selectedRule.id, note: AdminSettingsCtrl.selectedRule.note, type: 2 }" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
     <label for="wildcard-edit">Wildcard IP</label>
 
     <div ng-if="AdminSettingsCtrl.selectedRule.type === 0">

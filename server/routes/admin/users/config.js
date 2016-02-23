@@ -3,7 +3,6 @@ var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
 var querystring = require('querystring');
-var common = require(path.normalize(__dirname + '/../../../common'));
 var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 
 /**
@@ -50,7 +49,28 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
   */
 exports.update = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.update' },
+  plugins: {
+    acls: 'adminUsers.update',
+    mod_log: {
+      type: 'adminUsers.update',
+      data: {
+        id: 'payload.id',
+        email: 'payload.email',
+        username: 'payload.username',
+        name: 'payload.name',
+        website: 'payload.website',
+        btcAddress: 'payload.btcAddress',
+        gender: 'payload.gender',
+        dob: 'payload.dob',
+        location: 'payload.location',
+        language: 'payload.language',
+        position: 'payload.position',
+        raw_signature: 'payload.raw_signature',
+        signature: 'payload.signature',
+        avatar: 'payload.avatar',
+      }
+    }
+  },
   validate: {
     payload: Joi.object().keys({
       id: Joi.string().required(),
@@ -75,9 +95,9 @@ exports.update = {
     // TODO: password should be needed to change email
     // TODO: password should be not updated by an admin role
     { method: 'auth.admin.users.update(server, auth, payload)' },
-    { method: common.cleanUser },
-    { method: common.parseSignature },
-    { method: common.handleSignatureImages }
+    { method: 'common.users.clean(sanitizer, payload)' },
+    { method: 'common.users.parse(parser, payload)' },
+    { method: 'common.images.signature(imageStore, payload)' }
   ],
   handler: function(request, reply) {
     var promise = request.db.users.update(request.payload)
@@ -182,7 +202,16 @@ exports.find = {
   */
 exports.addRoles = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.addRoles' },
+  plugins: {
+    acls: 'adminUsers.addRoles',
+    mod_log: {
+      type: 'adminUsers.addRoles',
+      data: {
+        usernames: 'payload.usernames',
+        role_id: 'payload.role_id'
+      }
+    }
+  },
   validate: {
     payload: {
       usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
@@ -231,7 +260,16 @@ exports.addRoles = {
   */
 exports.removeRoles = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.removeRoles' },
+  plugins: {
+    acls: 'adminUsers.removeRoles',
+    mod_log: {
+      type: 'adminUsers.removeRoles',
+      data: {
+        user_id: 'payload.user_id',
+        role_id: 'payload.role_id'
+      }
+    }
+  },
   validate: {
     payload: {
       user_id: Joi.string().required(),
@@ -407,7 +445,16 @@ exports.ban = {
     privilege: 'adminUsers.privilegedBan'
   },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.ban' },
+  plugins: {
+    acls: 'adminUsers.ban',
+    mod_log: {
+      type: 'adminUsers.ban',
+      data: {
+        user_id: 'payload.user_id',
+        expiration: 'payload.expiration'
+      }
+    }
+  },
   validate: {
     payload: {
       user_id: Joi.string().required(),
@@ -452,7 +499,13 @@ exports.unban = {
     privilege: 'adminUsers.privilegedBan'
   },
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.unban' },
+  plugins: {
+    acls: 'adminUsers.unban',
+    mod_log: {
+      type: 'adminUsers.unban',
+      data: { user_id: 'payload.user_id' }
+    }
+  },
   validate: { payload: { user_id: Joi.string().required() } },
   pre: [ { method: 'auth.admin.users.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {

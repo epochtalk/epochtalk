@@ -35,3 +35,6 @@ test/coverage/
 
 /app/scss/loading-bar.scss
 /app/.sass-cache/
+/app/modules
+
+/modules/etc

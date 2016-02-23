@@ -19,7 +19,16 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
   */
 exports.add = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminModerators.add' },
+  plugins: {
+    acls: 'adminModerators.add',
+    mod_log: {
+      type: 'adminModerators.add',
+      data: {
+        usernames: 'payload.usernames',
+        board_id: 'payload.board_id'
+      }
+    }
+  },
   validate: {
     payload: {
       usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
@@ -61,7 +70,16 @@ exports.add = {
   */
 exports.remove = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminModerators.remove' },
+  plugins: {
+    acls: 'adminModerators.remove',
+    mod_log: {
+      type: 'adminModerators.remove',
+      data: {
+        usernames: 'payload.usernames',
+        board_id: 'payload.board_id'
+      }
+    }
+  },
   validate: {
     payload: {
       usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),

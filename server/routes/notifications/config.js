@@ -2,7 +2,6 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var Promise = require('bluebird');
-var common = require(path.normalize(__dirname + '/../../common'));
 
 /**
   * @apiVersion 0.4.0
