@@ -20,7 +20,7 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
 
     // Check if user is banned
     this.ban_expiration = null;
-    if (Session.user.id !== user.id && this.user.ban_expiration && new Date(this.user.ban_expiration) > new Date()) {
+    if (this.adminVisitor && this.user.ban_expiration && new Date(this.user.ban_expiration) > new Date()) {
       this.ban_expiration = $filter('humanDate')(this.user.ban_expiration, true);
     }
 

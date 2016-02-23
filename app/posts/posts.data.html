@@ -44,7 +44,7 @@
               <i class="fa fa-eye"></i>
             </a>
           </li>
-          <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers)">
+          <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers) && !PostsParentCtrl.bannedFromBoard">
             <a ng-href="#" class="css-tooltip" data-css-tooltip="Report" ng-click="PostsCtrl.openReportModal(post)">
               <i class="icon-epoch-flag"></i>
             </a>

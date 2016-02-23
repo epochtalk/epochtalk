@@ -9,6 +9,21 @@ module.exports = ['$resource',
         params: { username: '@username' },
         ignoreLoadingBar: true
       },
+      getBannedBoards: {
+        method: 'GET',
+        params: { username: '@username' },
+        url: '/api/admin/users/:username/bannedboards',
+        isArray: true,
+        ignoreLoadingBar: true
+      },
+      banFromBoards: {
+        method: 'PUT',
+        url: '/api/admin/users/ban/boards'
+      },
+      unbanFromBoards: {
+        method: 'PUT',
+        url: '/api/admin/users/unban/boards'
+      },
       update: {
         method: 'PUT',
         url: '/api/admin/users'

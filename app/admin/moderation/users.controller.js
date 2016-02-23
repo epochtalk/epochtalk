@@ -1,10 +1,13 @@
-var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorScroll',
-'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Conversations', 'User', 'userReports', 'reportId', function($rootScope, $scope, $state, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Conversations, User, userReports, reportId) {
+var difference = require('lodash/difference');
+
+var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$state', '$location', '$timeout', '$anchorScroll',
+'Alert', 'Session', 'AdminReports', 'AdminUsers', 'Conversations', 'User', 'userReports', 'reportId', 'boards', function($rootScope, $scope, $q, $filter, $state, $location, $timeout, $anchorScroll, Alert, Session, AdminReports, AdminUsers, Conversations, User, userReports, reportId, boards) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'users';
   this.userReports = userReports.data;
   this.reportId = reportId;
+  this.boards = boards;
   this.previewReport = null;
   this.selectedUsername = null;
   this.tableFilter = 0;
@@ -40,13 +43,13 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
   this.user = Session.user;
 
   // Banning Vars
-  this.showConfirmBanModal = false; // confirmation ban modal visible bool
-  this.showConfirmUnbanModal = false; // confirmation unban modal visible bool
+  this.showManageBansModal = false; // manage ban modal visibility boolean
   this.banSubmitted = false; // form submitted bool
   this.selectedUser = null; //  model backing selected user
   this.confirmBanBtnLabel = 'Confirm'; // modal button label
   this.permanentBan = undefined; // boolean indicating if ban is permanent
-  this.banUntil = null; // model
+  this.banUntil = null; // model backing temporary ban date
+  this.boardBanList = []; // model backing list of banned boards
 
   // Set Status Vars
   this.showSetStatusModal  = false;
@@ -154,95 +157,179 @@ var ctrl = ['$rootScope', '$scope', '$state', '$location', '$timeout', '$anchorS
     return [year, month, day].join('-');
   };
 
-  this.showBanConfirm = function(user) {
+  this.showManageBans = function(user) {
     ctrl.selectedUser = user;
-    ctrl.showConfirmBanModal = true;
+
+    // Pre select Global ban type radio button if the user is banned
+    if (user.ban_expiration) {
+      var maxDate = new Date(8640000000000000);
+      var banDate = new Date(user.ban_expiration);
+      ctrl.permanentBan = banDate.getTime() === maxDate.getTime();
+      ctrl.banUntil = ctrl.permanentBan ? undefined : banDate;
+      ctrl.selectedUser.permanent_ban = ctrl.banUntil ? false : true;
+    }
+
+    // Lookup users board bans
+    // TODO: make sure user has permissions before doing this
+    AdminUsers.getBannedBoards({ username: user.username }).$promise
+    .then(function(bannedBoards) {
+      // Names of boards the user is currently banned from
+      ctrl.selectedUser.banned_board_names = bannedBoards.map(function(board) { return board.name; });
+      // Model backing checklist tree of boards to ban user from
+      ctrl.boardBanList = bannedBoards.map(function(board) { return board.id; });
+      // Store bans that the user is currently banned from for diffing later
+      ctrl.selectedUser.banned_board_ids = angular.copy(ctrl.boardBanList);
+      ctrl.showManageBansModal = true;
+    });
   };
 
-  this.closeConfirmBan = function() {
+  this.closeManageBans = function() {
     ctrl.selectedUser = null;
     ctrl.permanentBan = undefined;
     ctrl.banUntil = null;
-
+    ctrl.boardBanList = [];
     // Fix for modal not opening after closing
-    $timeout(function() { ctrl.showConfirmBanModal = false; });
+    $timeout(function() { ctrl.showManageBansModal = false; });
   };
 
-  this.banUser = function() {
-    ctrl.confirmBanBtnLabel = 'Loading...';
-    ctrl.banSubmitted = true;
-    var params = {
-      user_id: ctrl.selectedUser.id,
-      expiration: ctrl.banUntil || undefined
-    };
-    AdminUsers.ban(params).$promise
-    .then(function(result) {
-      Alert.success(ctrl.selectedUser.username + ' has been banned');
-      return result;
-    })
-    .then(updateBanLabel)
-    .catch(function(err) {
-      var msg = 'There was an error unbanning ' + ctrl.selectedUser.username;
-      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
-      Alert.error(msg);
-    })
-    .finally(function() {
-      ctrl.closeConfirmBan();
-      $timeout(function() { // wait for modal to close
-        ctrl.confirmBanBtnLabel = 'Confirm';
-        ctrl.banSubmitted = false;
-      }, 500);
+  this.uncheckModBoards = function() {
+    ctrl.user.moderating.forEach(function(id) {
+      var index = ctrl.boardBanList.indexOf(id);
+      if (index > -1) { ctrl.boardBanList.splice(index, 1); }
     });
   };
 
-  this.showUnbanConfirm = function(user) {
-    ctrl.selectedUser = user;
-    ctrl.showConfirmUnbanModal = true;
-  };
-
-  this.closeConfirmUnban = function() {
-    ctrl.selectedUser = null;
-    // Fix for modal not opening after closing
-    $timeout(function() { ctrl.showConfirmUnbanModal = false; });
-  };
-
-  this.unbanUser = function() {
-    ctrl.confirmBanBtnLabel = 'Loading...';
-    ctrl.banSubmitted = true;
-    var params = {
-      user_id: ctrl.selectedUser.id,
-    };
-    AdminUsers.unban(params).$promise
-    .then(function(results) {
-      Alert.success(ctrl.selectedUser.username + ' has been unbanned');
-      return results;
-    })
-    .then(updateBanLabel)
-    .catch(function(err) {
-      var msg = 'There was an error unbanning ' + ctrl.selectedUser.username;
-      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
-      Alert.error(msg);
-    })
-    .finally(function() {
-      ctrl.closeConfirmUnban();
-      $timeout(function() { // wait for modal to close
-        ctrl.confirmBanBtnLabel = 'Confirm';
-        ctrl.banSubmitted = false;
-      }, 500);
+  this.checkModBoards = function() {
+    ctrl.user.moderating.forEach(function(id) {
+      var index = ctrl.boardBanList.indexOf(id);
+      if (index < 0) { ctrl.boardBanList.push(id); }
     });
   };
 
-  var updateBanLabel = function(params) {
+  this.toggleBoardBan = function(boardId) {
+    var index = ctrl.boardBanList.indexOf(boardId);
+    if (index > -1) { ctrl.boardBanList.splice(index, 1); }
+    else { ctrl.boardBanList.push(boardId); }
+  };
+
+  var updateReportBans = function(params) {
+    // Loop reports and update ban info on reports with matching offender ids
     for (var i = 0; i < ctrl.userReports.length; i++) {
       if (params.user_id === ctrl.userReports[i].offender_user_id) {
-        // unbanning sets ban expiration to current time
-        var expiration = new Date(params.expiration) > new Date() ? params.expiration : undefined;
-        ctrl.userReports[i].offender_ban_expiration = expiration;
-        if (ctrl.previewReport && ctrl.userReports[i].id === ctrl.previewReport.id) {
-          ctrl.previewReport.offender_ban_expiration = expiration;
+        if (params.expiration) {
+          // unbanning sets ban expiration to current time
+          var expiration = new Date(params.expiration) > new Date() ? params.expiration : undefined;
+          ctrl.userReports[i].offender_ban_expiration = expiration;
+          // Handle updating ban info on report being previewed
+          if (ctrl.previewReport && ctrl.userReports[i].id === ctrl.previewReport.id) {
+            ctrl.previewReport.offender_ban_expiration = expiration;
+          }
         }
+        // Handle Board Bans update
+        ctrl.userReports[i].offender_board_banned = ctrl.boardBanList.length > 0;
       }
     }
+  };
+
+  this.updateBans = function() {
+    ctrl.confirmBanBtnLabel = 'Loading...';
+    ctrl.banSubmitted = true;
+    // Used to update reports in table
+    var results = { user_id: ctrl.selectedUser.id };
+    // Used for updating global bans
+    var globalBanParams = {
+      user_id: ctrl.selectedUser.id,
+      expiration: ctrl.permanentBan ? undefined : ctrl.banUntil
+    };
+    // Used for updating banned boards
+    var banBoardParams = {
+      user_id: ctrl.selectedUser.id,
+      board_ids: difference(ctrl.boardBanList, ctrl.selectedUser.banned_board_ids)
+    };
+    // Used for updating unbanned boards
+    var unbanBoardParams = {
+      user_id: ctrl.selectedUser.id,
+      board_ids: difference(ctrl.selectedUser.banned_board_ids, ctrl.boardBanList)
+    };
+
+    // Ban diffing variables
+    var newBanIsTemp = ctrl.permanentBan === false && ctrl.banUntil;
+    var newBanIsPerm = ctrl.permanentBan;
+    var newBanIsRemoved = ctrl.permanentBan === undefined;
+    var oldBanIsTemp = ctrl.selectedUser.permanent_ban === false;
+    var oldBanIsPerm = ctrl.selectedUser.permanent_ban;
+    var userWasntBanned = ctrl.selectedUser.permanent_ban === undefined;
+
+    // Check if user wasn't banned and is now banned, or the ban type changed
+    var userBanned = (newBanIsTemp && (oldBanIsPerm || userWasntBanned)) || (newBanIsPerm && (oldBanIsTemp || userWasntBanned));
+    // Check if user was banned previously and is now unbanned
+    var userUnbanned = newBanIsRemoved && (oldBanIsTemp || oldBanIsPerm);
+
+    var promises = [];
+    // User is being banned globally either permanently or temporarily
+    if (userBanned) {
+      promises.push(AdminUsers.ban(globalBanParams).$promise
+        .then(function(banInfo) {
+          Alert.success(ctrl.selectedUser.username + ' has been globally banned ' + (ctrl.permanentBan ? 'permanently' : ' until ' + $filter('humanDate')(ctrl.banUntil, true)));
+          results = banInfo;
+        })
+        .catch(function(err) {
+          var msg = 'There was an error globally banning ' + ctrl.selectedUser.username;
+          if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions than you, cannot globally ban'; }
+          Alert.error(msg);
+        })
+      );
+    }
+    // User is being unbanned globally, ensure user is currently banned
+    else if (userUnbanned) {
+      promises.push(AdminUsers.unban(globalBanParams).$promise
+        .then(function(unbanInfo) {
+          Alert.success(ctrl.selectedUser.username + ' has been globally unbanned');
+          results = unbanInfo;
+        })
+        .catch(function(err) {
+          var msg = 'There was an error globally unbanning ' + ctrl.selectedUser.username;
+          if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions, cannot globally unban'; }
+          Alert.error(msg);
+        })
+      );
+    }
+    // User is being banned from new boards
+    if (banBoardParams.board_ids.length) {
+      promises.push(AdminUsers.banFromBoards(banBoardParams).$promise
+        .then(function() {
+          Alert.success(ctrl.selectedUser.username + ' has been banned from boards');
+        })
+        .catch(function(err) {
+          var msg = 'There was an error banning ' + ctrl.selectedUser.username + ' from boards';
+          if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions, cannot ban from boards'; }
+          Alert.error(msg);
+        })
+      );
+    }
+    // User is being unbanned from boards
+    if (unbanBoardParams.board_ids.length) {
+      promises.push(AdminUsers.unbanFromBoards(unbanBoardParams).$promise
+        .then(function() {
+          Alert.success(ctrl.selectedUser.username + ' has been unbanned from boards');
+        })
+        .catch(function(err) {
+          var msg = 'There was an error unbanning ' + ctrl.selectedUser.username + ' from boards';
+          if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions, cannot unban from boards'; }
+          Alert.error(msg);
+        })
+      );
+    }
+
+    $q.all(promises)
+    .then(function() { updateReportBans(results); })
+    .finally(function() {
+      ctrl.closeManageBans();
+      $timeout(function() { // wait for modal to close
+        ctrl.confirmBanBtnLabel = 'Confirm';
+        ctrl.banSubmitted = false;
+      }, 500);
+    });
   };
 
   this.updateReportNote = function(note) {

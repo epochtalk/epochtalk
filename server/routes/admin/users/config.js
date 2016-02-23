@@ -550,3 +550,12 @@ exports.unbanFromBoards = {
     return reply(promise);
   }
 };
+
+exports.getBannedBoards = {
+  validate: { params: { username: Joi.string().required() } },
+  handler: function(request, reply) {
+    var username = request.params.username;
+    var promise = request.db.users.getBannedBoards(username);
+    return reply(promise);
+  }
+};
