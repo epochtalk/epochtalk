@@ -207,7 +207,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     }
   })
   .state('admin-moderation.board-bans', {
-    url: '/boardbans',
+    url: '/boardbans?page&limit&board&modded',
     reloadOnSearch: false,
     views: {
       'data@admin-moderation': {
@@ -227,6 +227,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           deferred.resolve(ctrl);
         });
         return deferred.promise;
+      }],
+      bannedBoards: [ 'AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+        var query = {
+          limit: Number($stateParams.limit) || undefined,
+          page: Number($stateParams.page) || undefined,
+          modded: $stateParams.modded,
+          board: $stateParams.board
+        };
+        return AdminUsers.byBannedBoards(query).$promise;
       }]
     }
   })

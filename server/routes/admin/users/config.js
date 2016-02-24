@@ -559,3 +559,25 @@ exports.getBannedBoards = {
     return reply(promise);
   }
 };
+
+exports.byBannedBoards = {
+  auth: { strategy: 'jwt' },
+  validate: {
+    query: {
+      page: Joi.number().integer().min(1).default(1),
+      limit: Joi.number().integer().min(1).max(100).default(25),
+      board: Joi.string(),
+      modded: Joi.boolean()
+    }
+  },
+  handler: function(request, reply) {
+    var opts = {
+      page: request.query.page,
+      limit: request.query.limit,
+      boardId: request.query.board,
+      userId: request.query.modded ? request.auth.credentials.id : undefined
+    };
+    var promise = request.db.users.byBannedBoards(opts);
+    return reply(promise);
+  }
+};

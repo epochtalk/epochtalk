@@ -16,6 +16,10 @@ module.exports = ['$resource',
         isArray: true,
         ignoreLoadingBar: true
       },
+      byBannedBoards: {
+        method: 'GET',
+        url: '/api/admin/users/banned'
+      },
       banFromBoards: {
         method: 'PUT',
         url: '/api/admin/users/ban/boards'

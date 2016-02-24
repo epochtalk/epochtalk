@@ -7,6 +7,7 @@ module.exports = [
   { method: 'GET', path: '/users/count', config: users.count },
   { method: 'GET', path: '/users/{username}', config: users.find },
   { method: 'GET', path: '/users/{username}/bannedboards', config: users.getBannedBoards },
+  { method: 'GET', path: '/users/banned', config: users.byBannedBoards },
   { method: 'PUT', path: '/users', config: users.update },
   { method: 'PUT', path: '/users/roles/add', config: users.addRoles },
   { method: 'PUT', path: '/users/roles/remove', config: users.removeRoles },
