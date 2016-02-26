@@ -566,6 +566,7 @@ exports.byBannedBoards = {
     query: {
       page: Joi.number().integer().min(1).default(1),
       limit: Joi.number().integer().min(1).max(100).default(25),
+      search: Joi.string(),
       board: Joi.string(),
       modded: Joi.boolean()
     }
@@ -574,6 +575,7 @@ exports.byBannedBoards = {
     var opts = {
       page: request.query.page,
       limit: request.query.limit,
+      search: request.query.search,
       boardId: request.query.board,
       userId: request.query.modded ? request.auth.credentials.id : undefined
     };

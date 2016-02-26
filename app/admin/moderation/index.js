@@ -207,7 +207,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     }
   })
   .state('admin-moderation.board-bans', {
-    url: '/boardbans?page&limit&board&modded',
+    url: '/boardbans?page&limit&board&modded&search',
     reloadOnSearch: false,
     views: {
       'data@admin-moderation': {
@@ -233,9 +233,20 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           limit: Number($stateParams.limit) || undefined,
           page: Number($stateParams.page) || undefined,
           modded: $stateParams.modded,
-          board: $stateParams.board
+          board: $stateParams.board,
+          search: $stateParams.search
         };
         return AdminUsers.byBannedBoards(query).$promise;
+      }],
+      boards: ['AdminBoards', '$filter', function(AdminBoards, $filter) {
+        return AdminBoards.moveBoards().$promise
+        .then(function(allBoards) {
+          allBoards = allBoards || [];
+          allBoards.map(function(board) {
+            board.name = $filter('decode')(board.name); // decode html entities
+          });
+          return allBoards;
+        });
       }]
     }
   })

@@ -1,9 +1,21 @@
 <div class="admin-table-header">
+  <div class="half-column">
+    <select class="banned-boards-select" ng-change="ModerationCtrl.updateQueryParams()" ng-model="ModerationCtrl.board" ng-options="board.id as board.name for board in ModerationCtrl.selectBoards">
+      <option value="">Filter by All {{ModerationCtrl.modded ? 'My Moderated' : '' }} Boards</option>
+    </select>
+    <label class="inline-block">
+      <input ng-change="ModerationCtrl.updateQueryParams()" ng-model="ModerationCtrl.modded" class="pointer" type="checkbox" />
+      Show only my moderated boards
+    </label>
+    <label ng-if="ModerationCtrl.board || ModerationCtrl.modded" class="inline-block right">
+      <a ng-click="ModerationCtrl.modded = undefined; ModerationCtrl.board=undefined; ModerationCtrl.updateQueryParams()"><i class="fa fa-times"></i> Clear Filters</a>
+    </label>
+  </div>
   <div class="user-search clear">
     <div class="nested-input-container">
       <a ng-if="ModerationCtrl.search" ng-click="ModerationCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
-      <a ng-click="ModerationCtrl.searchReports()" class="nested-btn">Search</a>
-      <input class="input-text nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="users-search" placeholder="Search reported users" ng-keydown="$event.which === 13 && ModerationCtrl.searchReports()" ng-keyup="$event.which === 27 && ModerationCtrl.clearSearch()" />
+      <a ng-click="ModerationCtrl.searchBannedUsers()" class="nested-btn">Search</a>
+      <input class="input-text nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="users-search" placeholder="Find banned users (username, email, or id)" ng-keydown="$event.which === 13 && ModerationCtrl.searchBannedUsers()" ng-keyup="$event.which === 27 && ModerationCtrl.clearSearch()" />
     </div>
   </div>
 </div>
@@ -17,6 +29,7 @@
   <div class="fill-row">
     <table class="underlined log" width="100%">
       <thead>
+        <th class="left-icon-col"></th>
         <th>User</th>
         <th>Email</th>
         <th>Banned Boards</th>
@@ -24,6 +37,9 @@
       </thead>
       <tbody>
         <tr ng-repeat="row in ModerationCtrl.bannedBoards">
+          <td class="left-icon-col">
+            <i ng-if="ModerationCtrl.bannedFromModeratedBoard(row.board_ids)" class="fa fa-star-o"></i>
+          </td>
           <td>
             <a ui-sref="profile({ username: row.username })" ng-bind="row.username"></a>
           </td>
@@ -41,16 +57,23 @@
       </tbody>
     </table>
   </div>
-  <div class="pagination-simple">
-    <a ng-show="ModerationCtrl.prev" ui-sref=".({ page: ModerationCtrl.prev, limit: ModerationCtrl.limit })">
-      &#10094; Previous
-    </a>
-    <span ng-hide="ModerationCtrl.prev">&#10094; Newer</span>
-    &nbsp;&nbsp;&nbsp;
-    <a ng-show="ModerationCtrl.next" ui-sref=".({ page: ModerationCtrl.next, limit: ModerationCtrl.limit })">
-       Next &#10095;
-    </a>
-    <span ng-hide="ModerationCtrl.next">Older &#10095;</span>
+  <div class="fill-row">
+    <div class="half-column">
+      <div class="indicator"><i class="fa fa-star-o"></i> Indicates a user that has been banned from a board you moderate</div>
+    </div>
+    <div class="half-column">
+      <div class="pagination-simple">
+        <a ng-show="ModerationCtrl.prev" ui-sref=".({ page: ModerationCtrl.prev, limit: ModerationCtrl.limit })">
+          &#10094; Previous
+        </a>
+        <span ng-hide="ModerationCtrl.prev">&#10094; Previous</span>
+        &nbsp;&nbsp;&nbsp;
+        <a ng-show="ModerationCtrl.next" ui-sref=".({ page: ModerationCtrl.next, limit: ModerationCtrl.limit })">
+           Next &#10095;
+        </a>
+        <span ng-hide="ModerationCtrl.next">Next &#10095;</span>
 
+      </div>
+    </div>
   </div>
 </div>

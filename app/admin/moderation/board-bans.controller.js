@@ -1,9 +1,10 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminUsers', 'bannedBoards',  function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminUsers, bannedBoards) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Session', 'AdminUsers', 'bannedBoards', 'boards', function($rootScope, $scope, $location, $timeout, $anchorScroll, Session, AdminUsers, bannedBoards, boards) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'board-bans';
 
-  this.search = null;
+  this.search = bannedBoards.search;
+  this.searchStr = bannedBoards.search;
   this.page = bannedBoards.page;
   this.limit = bannedBoards.limit;
   this.next = bannedBoards.next;
@@ -12,7 +13,50 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   this.board = bannedBoards.board;
   this.bannedBoards = bannedBoards.data;
 
+  this.allBoards = boards;
+  this.moderating = Session.user.moderating;
+  this.moderatedBoards = boards.filter(function(board) {
+    var modded = ctrl.moderating.indexOf(board.id) > -1;
+    if (modded) { return board; }
+  });
+  if (ctrl.modded) { ctrl.selectBoards = ctrl.moderatedBoards; }
+  else { ctrl.selectBoards = ctrl.allBoards; }
   // Call init
+
+  this.updateQueryParams = function() {
+    $location.search('board', ctrl.board || undefined);
+    $location.search('modded', ctrl.modded ? 'true' : undefined);
+    $location.search('page', undefined); // reset to page one on filter apply
+
+    if (ctrl.modded) { ctrl.selectBoards = ctrl.moderatedBoards; }
+    else { ctrl.selectBoards = ctrl.allBoards; }
+  };
+
+  this.searchBannedUsers = function() {
+    if (!ctrl.searchStr || !ctrl.searchStr.length) {
+      ctrl.clearSearch();
+      return;
+    }
+    $location.search({
+      search: ctrl.searchStr || undefined,
+      board: ctrl.board || undefined,
+      modded: ctrl.modded || undefined,
+      page: undefined
+    });
+  };
+
+  this.clearSearch = function() {
+    $location.search('search', undefined);
+    ctrl.searchStr = null;
+  };
+
+  this.bannedFromModeratedBoard = function(boardIds) {
+    // TODO: RETURN true if the user is a globalModerator
+    return boardIds.filter(function(id) {
+      var modded = ctrl.moderating.indexOf(id) > -1;
+      if (modded) { return id; }
+    }).length;
+  };
 
   $timeout($anchorScroll);
 
@@ -22,11 +66,13 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     var limit = Number(params.limit) || undefined;
     var modded = params.modded;
     var board = params.board;
+    var search = params.search;
 
     var pageChanged = false;
     var limitChanged = false;
     var moddedChanged = false;
     var boardChanged = false;
+    var searchChanged = false;
 
     if ((page === undefined || page) && page !== ctrl.page) {
       pageChanged = true;
@@ -44,8 +90,11 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       boardChanged = true;
       ctrl.board = board;
     }
-
-    if (pageChanged || limitChanged || moddedChanged || boardChanged) { ctrl.pullPage(); }
+    if ((search === undefined || search) && search !== ctrl.search) {
+      searchChanged = true;
+      ctrl.search = search;
+    }
+    if (pageChanged || limitChanged || moddedChanged || boardChanged || searchChanged) { ctrl.pullPage(); }
   });
   $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
@@ -54,7 +103,8 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       limit: ctrl.limit,
       page: ctrl.page || undefined,
       modded: ctrl.modded,
-      board: ctrl.board
+      board: ctrl.board,
+      search: ctrl.search
     };
 
     AdminUsers.byBannedBoards(query).$promise
@@ -66,6 +116,8 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       ctrl.modded = newBannedBoards.modded;
       ctrl.board = newBannedBoards.board;
       ctrl.bannedBoards = newBannedBoards.data;
+      ctrl.search = newBannedBoards.search;
+      ctrl.searchActive = newBannedBoards.search ? true : false;
     });
   };
 }];
