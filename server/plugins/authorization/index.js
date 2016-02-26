@@ -1,3 +1,4 @@
+var Joi = require('joi');
 var _ = require('lodash');
 var Boom = require('boom');
 var bcrypt = require('bcrypt');
@@ -398,485 +399,6 @@ function userActivate(server, auth, userId) {
   .catch(() => { return Promise.reject(Boom.badRequest()); });
 
   return Promise.all([isInactive, canActivate]);
-}
-
-// -- POSTS
-
-function postsCreate(server, auth, threadId) {
-  var userId = auth.credentials.id;
-
-  // Access to board with thread id
-  var priority = server.plugins.acls.getUserPriority(auth);
-  var some = server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some');
-  var accessCond = [
-    {
-      // Permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'boards.viewUncategorized.all'
-    },
-    {
-      // is the board visible
-      type: 'dbValue',
-      method: server.db.threads.getThreadsBoardInBoardMapping,
-      args: [threadId, priority]
-    },
-    {
-      // is this user a board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: some
-    }
-  ];
-  var access = server.authorization.stitch(Boom.notFound('Board Not Found'), accessCond, 'any');
-
-  // user is not banned from this board
-  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
-
-  // Access to locked thread with thread id
-  var tlSome = server.plugins.acls.getACLValue(auth, 'posts.bypassLock.some');
-  var lockCond = [
-    {
-      // Permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'posts.bypassLock.all'
-    },
-    {
-      // thread not locked
-      type: 'dbNotProp',
-      method: server.db.threads.find,
-      args: [threadId],
-      prop: 'locked'
-    },
-    {
-      // is user a board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: tlSome
-    }
-  ];
-  var locked = server.authorization.stitch(Boom.forbidden('Thread Is Locked'), lockCond, 'any');
-
-  // is requester active
-  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
-
-  // final promise
-  return Promise.all([access, notBannedFromBoard, locked, active]);
-}
-
-function postsFind(server, auth, postId) {
-  // try mode on: must check user is authed
-  var userId = '';
-  var authenticated = auth.isAuthenticated;
-  if (authenticated) { userId = auth.credentials.id; }
-  var error = Boom.notFound();
-
-  // access board
-  var accessSome = server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some');
-  var priority = server.plugins.acls.getUserPriority(auth);
-  var accessCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'boards.viewUncategorized.all'
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: accessSome
-    },
-    {
-      // is board visible
-      type: 'dbValue',
-      method: server.db.posts.getPostsBoardInBoardMapping,
-      args: [postId, priority]
-    }
-  ];
-  var access = server.authorization.stitch(error, accessCond, 'any');
-
-  // view deleted
-  var deletedSome = server.plugins.acls.getACLValue(auth, 'posts.viewDeleted.some');
-  var deletedCond = [
-    server.authorization.build({
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'posts.viewDeleted.all'
-    }),
-    server.authorization.build({
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args:[userId, postId],
-      permission: deletedSome
-    })
-  ];
-
-  var deleted = Promise.any(deletedCond)
-  .then(() => { return true; })
-  .catch(() => { return false; });
-
-  // final promise
-  return Promise.all([access, deleted])
-  .then((dataArr) => { return dataArr[1]; });
-}
-
-function postsByThread(server, auth, threadId) {
-  // try mode on
-  var userId = '';
-  var authenticated = auth.isAuthenticated;
-  if (authenticated) { userId = auth.credentials.id; }
-  var error = Boom.notFound();
-
-  // access board
-  var some = server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some');
-  var priority = server.plugins.acls.getUserPriority(auth);
-  var accessCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'boards.viewUncategorized.all'
-    },
-    {
-      // is board visible
-      type: 'dbValue',
-      method: server.db.threads.getThreadsBoardInBoardMapping,
-      args: [threadId, priority]
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: some
-    }
-  ];
-  var access = server.authorization.stitch(error, accessCond, 'any');
-
-  // view deleted
-  var viewAll = server.plugins.acls.getACLValue(auth, 'posts.viewDeleted.all');
-  var viewSome = server.plugins.acls.getACLValue(auth, 'posts.viewDeleted.some');
-  var viewDeleted = server.db.moderators.getUsersBoards(userId)
-  .then(function(boards) {
-    var result = false;
-    if (viewAll) { result = true; }
-    else if (viewSome && boards.length > 0) { result = boards; }
-    return result;
-  });
-
-  return Promise.all([access, viewDeleted])
-  .then((data) => { return data[1]; });
-}
-
-function postsUpdate(server, auth, postId, threadId) {
-  var userId = auth.credentials.id;
-  var error = Boom.forbidden();
-
-  // is post owner
-  var ownerCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'posts.privilegedUpdate.all'
-    },
-    {
-      // is post owner
-      type: 'isOwner',
-      method: server.db.posts.find,
-      args: [postId],
-      userId: userId
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.privilegedUpdate.some')
-    }
-  ];
-  var owner = server.authorization.stitch(error, ownerCond, 'any');
-
-  // can write to post
-  var writeCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'posts.privilegedUpdate.all'
-    },
-    {
-      // is post not deleted
-      type: 'dbNotProp',
-      method: server.db.posts.find,
-      args: [postId],
-      prop: 'deleted'
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method:  server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.privilegedUpdate.some')
-    }
-  ];
-  var writer = server.authorization.stitch(error, writeCond, 'any');
-
-  // access board
-  var accessCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'boards.viewUncategorized.all'
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
-    },
-    {
-      // is board visible
-      type: 'dbValue',
-      method: server.db.posts.getPostsBoardInBoardMapping,
-      args: [postId, server.plugins.acls.getUserPriority(auth)]
-    }
-  ];
-  var access = server.authorization.stitch(error, accessCond, 'any');
-
-  // user is not banned from this board
-  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
-
-  // is thread locked
-  var lockedCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'posts.bypassLock.all'
-    },
-    {
-      // is thread locked
-      type: 'dbNotProp',
-      method: server.db.threads.find,
-      args: [threadId],
-      prop: 'locked'
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.bypassLock.some')
-    }
-  ];
-  var locked = server.authorization.stitch(error, lockedCond, 'any');
-
-  // -- is User Account Active
-  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
-
-  // final promise
-  return Promise.all([owner, writer, access, notBannedFromBoard, locked, active]);
-}
-
-function postsDelete(server, auth, postId) {
-  var userId = auth.credentials.id;
-
-  // is not first post
-  var notFirst = server.authorization.build({
-    error: Boom.forbidden(),
-    type: 'isNotFirstPost',
-    method: server.db.posts.getThreadFirstPost,
-    args: [postId]
-  });
-
-  // is post alright to delete
-  var hasSMPrivilege = server.plugins.acls.getACLValue(auth, 'threads.moderated');
-  var isThreadModerated = server.db.posts.isPostsThreadModerated(postId);
-  var isThreadOwner = server.db.posts.isPostsThreadOwner(postId, userId);
-  var deleteCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'posts.privilegedDelete.all'
-    },
-    {
-      // is post owner
-      type: 'isOwner',
-      method: server.db.posts.find,
-      args: [postId],
-      userId: userId
-    },
-    {
-      // is board mod
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.privilegedDelete.some')
-    },
-    Promise.join(isThreadModerated, isThreadOwner, hasSMPrivilege, function(threadSM, owner, userSM) {
-      if (threadSM && owner && userSM) { return true; }
-      else { return Promise.reject(Boom.forbidden()); }
-    })
-  ];
-  var deleted = server.authorization.stitch(Boom.forbidden(), deleteCond, 'any');
-
-  // access board with post id
-  var accessCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'boards.viewUncategorized.all'
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
-    },
-    {
-      // is board visible
-      type: 'dbValue',
-      method: server.db.posts.getPostsBoardInBoardMapping,
-      args: [postId, server.plugins.acls.getUserPriority(auth)]
-    }
-  ];
-  var access = server.authorization.stitch(Boom.notFound(), accessCond, 'any');
-
-  // user is not banned from this board
-  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { postId: postId });
-
-  // is thread locked
-  var lockedCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'posts.bypassLock.all'
-    },
-    {
-      // is thread locked
-      type: 'dbNotProp',
-      method: server.db.posts.getPostsThread,
-      args: [postId],
-      prop: 'locked'
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.bypassLock.some')
-    }
-  ];
-  var locked = server.authorization.stitch(Boom.forbidden(), lockedCond, 'any');
-
-  // is requester active
-  var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
-
-  return Promise.all([notFirst, deleted, access, notBannedFromBoard, locked, active]);
-}
-
-function postsPurge(server, auth, postId) {
-  var userId = auth.credentials.id;
-
-  // is not first post
-  var notFirst = server.authorization.build({
-    error: Boom.forbidden(),
-    type: 'isNotFirstPost',
-    method: server.db.posts.getThreadFirstPost,
-    args: [postId]
-  });
-
-  // user is not banned from this board
-  var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { postId: postId });
-
-  var purgeCond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'posts.privilegedPurge.all'
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.privilegedPurge.some')
-    }
-  ];
-  var purge = server.authorization.stitch(Boom.forbidden(), purgeCond, 'any');
-
-  return Promise.all([notFirst, notBannedFromBoard, purge]);
-}
-
-function postsPageByUser(server, auth, username) {
-  // try mode on: must check user is authed
-
-  var userId;
-  if (auth.isAuthenticated) { userId = auth.credentials.id; }
-
-  // access user
-  var accessCond = [
-    {
-      // is the user account we're looking for active
-      type: 'isAccountActive',
-      server: server,
-      username: querystring.unescape(username),
-      userId: userId
-    },
-    {
-      // Permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'users.viewDeleted'
-    }
-  ];
-  var access = server.authorization.stitch(Boom.notFound(), accessCond, 'any');
-
-  // user priority
-  var priority = server.plugins.acls.getUserPriority(auth);
-
-  // view deleted profile posts
-  var viewAll = server.plugins.acls.getACLValue(auth, 'posts.viewDeleted.all');
-  var viewSome = server.plugins.acls.getACLValue(auth, 'posts.viewDeleted.some');
-  var deleted = server.db.moderators.getUsersBoards(userId)
-  .then(function(boards) {
-    var result = false;
-    if (viewAll) { result = true; }
-    else if (viewSome && boards.length > 0) { result = boards; }
-    return result;
-  });
-
-  return Promise.all([access, priority, deleted])
-  .then((data) => { return { priority: data[1], viewables: data[2] }; });
 }
 
 // -- Threads
@@ -1961,6 +1483,239 @@ function adminRolesRemove(roleId){
   return canDelete;
 }
 
+function adminRolesValidate(roles, payload) {
+  var moduleValidations = roles.validations;
+
+  var schema =  Joi.object().keys({
+    priorityRestrictions: Joi.array().items(Joi.number()),
+    adminAccess: Joi.object().keys({
+      settings: Joi.object().keys({
+        general: Joi.boolean(),
+        advanced: Joi.boolean(),
+        theme: Joi.boolean()
+      }),
+      management: Joi.object().keys({
+        boards: Joi.boolean(),
+        users: Joi.boolean(),
+        roles: Joi.boolean()
+      })
+    }),
+    modAccess: Joi.object().keys({
+      users: Joi.boolean(),
+      posts: Joi.boolean(),
+      messages: Joi.boolean(),
+      boardBans: Joi.boolean(),
+      logs: Joi.boolean()
+    }),
+    adminRoles: Joi.object().keys({
+      all: Joi.boolean(),
+      users: Joi.boolean(),
+      add: Joi.boolean(),
+      update: Joi.boolean(),
+      remove: Joi.boolean(),
+      reprioritize: Joi.boolean()
+    }),
+    adminBoards: Joi.object().keys({
+      categories: Joi.boolean(),
+      boards: Joi.boolean(),
+      moveBoards: Joi.boolean(),
+      updateCategories: Joi.boolean()
+    }),
+    adminModerationLogs: Joi.object().keys({
+      page: Joi.boolean()
+    }),
+    adminReports: Joi.object().keys({
+      createUserReportNote: Joi.boolean(),
+      createPostReportNote: Joi.boolean(),
+      createMessageReportNote: Joi.boolean(),
+      updateUserReport: Joi.boolean(),
+      updatePostReport: Joi.boolean(),
+      updateMessageReport: Joi.boolean(),
+      updateUserReportNote: Joi.boolean(),
+      updatePostReportNote: Joi.boolean(),
+      updateMessageReportNote: Joi.boolean(),
+      pageUserReports: Joi.boolean(),
+      pagePostReports: Joi.boolean(),
+      pageMessageReports: Joi.boolean(),
+      pageUserReportsNotes: Joi.boolean(),
+      pagePostReportsNotes: Joi.boolean(),
+      pageMessageReportsNotes: Joi.boolean()
+    }),
+    adminSettings: Joi.object().keys({
+      find: Joi.boolean(),
+      update: Joi.boolean(),
+      getTheme: Joi.boolean(),
+      setTheme: Joi.boolean(),
+      resetTheme: Joi.boolean(),
+      previewTheme: Joi.boolean(),
+      getBlacklist: Joi.boolean(),
+      addToBlacklist: Joi.boolean(),
+      updateBlacklist: Joi.boolean(),
+      deleteFromBlacklist: Joi.boolean()
+    }),
+    adminUsers: Joi.object().keys({
+      privilegedUpdate: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean()
+      }),
+      privilegedBan: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean()
+      }),
+      privilegedBanFromBoards: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean(),
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
+      privilegedAddRoles: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean()
+      }),
+      privilegedRemoveRoles: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean()
+      }),
+      update: Joi.boolean(),
+      find: Joi.boolean(),
+      addRoles: Joi.boolean(),
+      removeRoles: Joi.boolean(),
+      searchUsernames: Joi.boolean(),
+      count: Joi.boolean(),
+      countAdmins: Joi.boolean(),
+      countModerators: Joi.boolean(),
+      page: Joi.boolean(),
+      pageAdmins: Joi.boolean(),
+      pageModerators: Joi.boolean(),
+      ban: Joi.boolean(),
+      unban: Joi.boolean(),
+      banFromBoards: Joi.boolean(),
+      unbanFromBoards: Joi.boolean(),
+      getBannedBoards: Joi.boolean(),
+      byBannedBoards: Joi.boolean()
+    }),
+    adminModerators: Joi.object().keys({
+      add: Joi.boolean(),
+      remove: Joi.boolean()
+    }),
+    boards: Joi.object().keys({
+      viewUncategorized: Joi.object().keys({
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
+      create: Joi.boolean(),
+      find: Joi.boolean(),
+      allCategories: Joi.boolean(),
+      update: Joi.boolean(),
+      delete: Joi.boolean()
+    }),
+    categories: Joi.object().keys({
+      create: Joi.boolean(),
+      find: Joi.boolean(),
+      all: Joi.boolean(),
+      delete: Joi.boolean()
+    }),
+    conversations: Joi.object().keys({
+      create: Joi.boolean(),
+      messages: Joi.boolean(),
+      delete: Joi.boolean()
+    }),
+    messages: Joi.object().keys({
+      privilegedDelete: Joi.boolean(),
+      create: Joi.boolean(),
+      latest: Joi.boolean(),
+      findUser: Joi.boolean(),
+      delete: Joi.boolean()
+    }),
+    posts: moduleValidations.posts,
+    reports: Joi.object().keys({
+      createUserReport: Joi.boolean(),
+      createPostReport: Joi.boolean(),
+      createMessageReport: Joi.boolean()
+    }),
+    threads: Joi.object().keys({
+      privilegedTitle: Joi.object().keys({
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
+      privilegedLock: Joi.object().keys({
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
+      privilegedSticky: Joi.object().keys({
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
+      privilegedMove: Joi.object().keys({
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
+      privilegedPurge: Joi.object().keys({
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
+      create: Joi.boolean(),
+      byBoard: Joi.boolean(),
+      posted: Joi.boolean(),
+      viewed: Joi.boolean(),
+      title: Joi.boolean(),
+      lock: Joi.boolean(),
+      sticky: Joi.boolean(),
+      move: Joi.boolean(),
+      moderated: Joi.boolean(),
+      purge: Joi.boolean()
+    }),
+    users: Joi.object().keys({
+      privilegedDeactivate: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean()
+      }),
+      privilegedReactivate: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean()
+      }),
+      privilegedDelete: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean()
+      }),
+      viewDeleted: Joi.boolean(),
+      update: Joi.boolean(),
+      find: Joi.boolean(),
+      deactivate: Joi.boolean(),
+      reactivate: Joi.boolean(),
+      delete: Joi.boolean()
+    }),
+    limits: Joi.array().items({
+      path: Joi.string().required(),
+      method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
+      interval: Joi.number().min(-1).required(),
+      maxInInterval: Joi.number().min(1).required(),
+      minDifference: Joi.number().min(1).optional()
+    }).sparse(),
+    polls: Joi.object().keys({
+      create: Joi.boolean(),
+      vote: Joi.boolean(),
+      lock: Joi.boolean(),
+      privilegedLock: Joi.object().keys({
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      })
+    })
+  }).required();
+
+  var promise = new Promise(function(resolve, reject) {
+    Joi.validate(payload.permissions, schema, { stripUnknown: true }, function(err, value) {
+      if (err) { return reject(Boom.badRequest(err)); }
+      else {
+        payload.permissions = value;
+        return resolve();
+      }
+    });
+  });
+
+  return promise;
+}
+
 // -- Admin Reports
 
 function adminReportsUpdateNote(server, auth, noteId, type) {
@@ -2016,42 +1771,6 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.users.activate',
       method: userActivate,
-      options: { callback: false }
-    },
-    // -- posts
-    {
-      name: 'auth.posts.create',
-      method: postsCreate,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.posts.find',
-      method: postsFind,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.posts.byThread',
-      method: postsByThread,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.posts.update',
-      method: postsUpdate,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.posts.delete',
-      method: postsDelete,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.posts.purge',
-      method: postsPurge,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.posts.pageByUser',
-      method: postsPageByUser,
       options: { callback: false }
     },
     // -- threads
@@ -2189,6 +1908,11 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.admin.roles.remove',
       method: adminRolesRemove,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.admin.roles.validate',
+      method: adminRolesValidate,
       options: { callback: false }
     },
     // -- admin reports

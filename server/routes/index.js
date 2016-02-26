@@ -6,7 +6,6 @@ var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var categories = require(path.normalize(__dirname + '/categories'));
 var boards = require(path.normalize(__dirname + '/boards'));
 var threads = require(path.normalize(__dirname + '/threads'));
-var posts = require(path.normalize(__dirname + '/posts'));
 var users = require(path.normalize(__dirname + '/users'));
 var auth = require(path.normalize(__dirname + '/auth'));
 var reports = require(path.normalize(__dirname + '/reports'));
@@ -22,7 +21,7 @@ var messages = require(path.normalize(__dirname + '/messages'));
 var watchlist = require(path.normalize(__dirname + '/watchlist'));
 
 function buildEndpoints() {
-  return [].concat(breadcrumbs, categories, boards, threads, posts, users, auth, reports, conversations, messages, watchlist);
+  return [].concat(breadcrumbs, categories, boards, threads, users, auth, reports, conversations, messages, watchlist);
 }
 
 function buildAdminEndpoints() {

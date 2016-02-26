@@ -16,7 +16,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 
   // Get Action Control Access
   this.actionAccess = Session.getModPanelControlAccess();
-  this.hasGlobalModPerms = Session.hasPermission('userControls.privilegedBanFromBoards.all');
+  this.hasGlobalModPerms = Session.hasPermission('adminUsers.privilegedBanFromBoards.all');
 
   // Search Vars
   this.search = messageReports.search;

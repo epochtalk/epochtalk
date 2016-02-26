@@ -1,6 +1,5 @@
 var helper = {};
 module.exports = helper;
-var _ = require('lodash');
 var path = require('path');
 var uuid = require('node-uuid');
 var jwt = require('jsonwebtoken');
@@ -16,173 +15,66 @@ function buildToken(userId, expiration) {
   return { decodedToken: decodedToken, token: encodedToken };
 }
 
-function getMaskedPermissions(userRoles) {
-  var permissions;
+function getMaskedPermissions(userRoleNames) {
+  var userRoles, mergedRoles = {};
 
   // Banned overrules all other roles
-  if (userRoles.indexOf(roles.banned.lookup) > -1) { permissions = [ roles.banned ]; }
-  else { permissions = userRoles.map(function(roleName) { return roles[roleName]; }); }
+  if (userRoleNames.indexOf(roles.banned.lookup) > -1) { userRoles = [ roles.banned ]; }
+  else { userRoles = userRoleNames.map(function(roleName) { return roles[roleName]; }); }
+  userRoles.forEach(function(role) { mergedRoles = mergeRoles(mergedRoles, role); });
 
-  var maskPermission = function(permissionName) {
-    var allPermissions = permissions.map(function(acl) { return _.get(acl, permissionName); });
-    var maskedPermission = false;
-    allPermissions.forEach(function(val) { maskedPermission = val || maskedPermission; });
-    return maskedPermission;
-  };
+  return mergedRoles;
+}
 
-  var getPriority = function() {
-    var priority = _.min(permissions.map(function(role) { return role ? role.priority : Number.MAX_VALUE; }));
-    if (priority > -1) { return priority; }
-    else { return Number.MAX_VALUE; }
-  };
+function mergeRoles(target, source) {
+  var sourceKeys = Object.keys(source);
 
-  return {
-    priority: getPriority(),
-    priorityRestrictions: maskPermission('priorityRestrictions') || undefined,
-    adminAccess: maskPermission('adminAccess') ? {
-      settings: maskPermission('adminAccess.settings') ? {
-        general: maskPermission('adminAccess.settings.general'),
-        advanced: maskPermission('adminAccess.settings.advanced'),
-        theme: maskPermission('adminAccess.settings.theme')
-      } : undefined,
-      management: maskPermission('adminAccess.management') ? {
-        boards: maskPermission('adminAccess.management.boards'),
-        users: maskPermission('adminAccess.management.users'),
-        roles: maskPermission('adminAccess.management.roles')
-      } : undefined
-    } : undefined,
-    modAccess: maskPermission('modAccess') ? {
-      users: maskPermission('modAccess.users'),
-      posts: maskPermission('modAccess.posts'),
-      messages: maskPermission('modAccess.messages'),
-      boardBans: maskPermission('modAccess.boardBans'),
-      logs: maskPermission('modAccess.logs')
-    } : undefined,
-    profileControls: maskPermission('adminUsers') || maskPermission('users.privilegedDeactive') || maskPermission('users.privilegedReactivate') || maskPermission('users.deactivate') || maskPermission('users.reactivate') ? {
-      viewUserEmail: maskPermission('adminUsers.find'),
-      deactivate: maskPermission('users.deactivate'),
-      reactivate: maskPermission('users.reactivate'),
-      privilegedUpdate: maskPermission('adminUsers.privilegedUpdate') ? {
-        samePriority: maskPermission('adminUsers.privilegedUpdate.samePriority'),
-        lowerPriority: maskPermission('adminUsers.privilegedUpdate.lowerPriority')
-      } : undefined,
-      privilegedBan: maskPermission('adminUsers.privilegedBan') ? {
-        samePriority: maskPermission('adminUsers.privilegedBan.samePriority'),
-        lowerPriority: maskPermission('adminUsers.privilegedBan.lowerPriority')
-      } : undefined,
-      privilegedDeactivate: maskPermission('users.privilegedDeactivate') ? {
-        samePriority: maskPermission('users.privilegedDeactivate.samePriority'),
-        lowerPriority: maskPermission('users.privilegedDeactivate.lowerPriority')
-      } : undefined,
-      privilegedReactivate: maskPermission('users.privilegedReactivate') ? {
-        samePriority: maskPermission('users.privilegedReactivate.samePriority'),
-        lowerPriority: maskPermission('users.privilegedReactivate.lowerPriority')
-      } : undefined,
-      privilegedDelete: maskPermission('users.privilegedDelete') ? {
-        samePriority: maskPermission('users.privilegedDelete.samePriority'),
-        lowerPriority: maskPermission('users.privilegedDelete.lowerPriority')
-      } : undefined
-    } : undefined,
-    threadControls: {
-      privilegedTitle: maskPermission('threads.privilegedTitle') ? {
-        some: maskPermission('threads.privilegedTitle.some'),
-        all: maskPermission('threads.privilegedTitle.all')
-      } : undefined,
-      privilegedLock: maskPermission('threads.privilegedLock') ? {
-        some: maskPermission('threads.privilegedLock.some'),
-        all: maskPermission('threads.privilegedLock.all')
-      } : undefined,
-      privilegedSticky: maskPermission('threads.privilegedSticky') ? {
-        some: maskPermission('threads.privilegedSticky.some'),
-        all: maskPermission('threads.privilegedSticky.all')
-      } : undefined,
-      privilegedMove: maskPermission('threads.privilegedMove') ? {
-        some: maskPermission('threads.privilegedMove.some'),
-        all: maskPermission('threads.privilegedMove.all')
-      } : undefined,
-      privilegedPurge: maskPermission('threads.privilegedPurge') ? {
-        some: maskPermission('threads.privilegedPurge.some'),
-        all: maskPermission('threads.privilegedPurge.all')
-      } : undefined,
-      create: maskPermission('threads.create'),
-      title: maskPermission('threads.title'),
-      lock: maskPermission('threads.lock'),
-      moderated: maskPermission('threads.moderated')
-    },
-    pollControls: {
-      privilegedLock: maskPermission('polls.privilegedLock') ? {
-        some: maskPermission('polls.privilegedLock.some'),
-        all: maskPermission('polls.privilegedLock.all')
-      } : undefined,
-      create: maskPermission('polls.create'),
-      vote: maskPermission('polls.vote'),
-      lock: maskPermission('polls.lock')
-    },
-    postControls: {
-      privilegedUpdate: maskPermission('posts.privilegedUpdate') ? {
-        some: maskPermission('posts.privilegedUpdate.some'),
-        all: maskPermission('posts.privilegedUpdate.all')
-      } : undefined,
-      privilegedDelete: maskPermission('posts.privilegedDelete') ? {
-        some: maskPermission('posts.privilegedDelete.some'),
-        all: maskPermission('posts.privilegedDelete.all')
-      } : undefined,
-      privilegedPurge: maskPermission('posts.privilegedPurge') ? {
-        some: maskPermission('posts.privilegedPurge.some'),
-        all: maskPermission('posts.privilegedPurge.all')
-      } : undefined,
-      bypassLock: maskPermission('posts.bypassLock') ? {
-        some: maskPermission('posts.bypassLock.some'),
-        all: maskPermission('posts.bypassLock.all')
-      } : undefined,
-      create: maskPermission('posts.create'),
-      update: maskPermission('posts.update'),
-      delete: maskPermission('posts.delete'),
-      undelete: maskPermission('posts.undelete')
-    },
-    userControls: {
-      privilegedBanFromBoards: maskPermission('adminUsers.privilegedBanFromBoards') ? {
-        some: maskPermission('adminUsers.privilegedBanFromBoards.some'),
-        all: maskPermission('adminUsers.privilegedBanFromBoards.all')
-      } : undefined,
-    },
-    roleControls: maskPermission('adminRoles') ? {
-      privilegedAddRoles: maskPermission('adminUsers.privilegedAddRoles') ? {
-        samePriority: maskPermission('adminUsers.privilegedAddRoles.samePriority'),
-        lowerPriority: maskPermission('adminUsers.privilegedAddRoles.lowerPriority')
-      } : undefined,
-      privilegedRemoveRoles: maskPermission('adminUsers.privilegedRemoveRoles') ? {
-        samePriority: maskPermission('adminUsers.privilegedRemoveRoles.samePriority'),
-        lowerPriority: maskPermission('adminUsers.privilegedRemoveRoles.lowerPriority')
-      } : undefined,
-      all: maskPermission('adminRoles.all'),
-      users: maskPermission('adminRoles.users'),
-      add: maskPermission('adminRoles.add'),
-      remove: maskPermission('adminRoles.remove'),
-      update: maskPermission('adminRoles.update'),
-      reprioritize: maskPermission('adminRoles.reprioritize')
-    } : undefined,
-    messageControls: {
-      createConversations: maskPermission('conversations.create'),
-      createMessages: maskPermission('messages.create'),
-      deleteMessages: maskPermission('messages.delete'),
-      privilegedDelete: maskPermission('messages.privilegedDelete')
-    },
-    reportControls: {
-      reportPosts: maskPermission('reports.createPostReport'),
-      reportUsers: maskPermission('reports.createUserReport'),
-      reportMessages: maskPermission('reports.createMessageReport'),
-      updateUserReport: maskPermission('adminReports.updateUserReport') || undefined,
-      updatePostReport: maskPermission('adminReports.updatePostReport') || undefined,
-      updateMessageReport: maskPermission('adminReports.updateMessageReport') || undefined,
-      createUserReportNote: maskPermission('adminReports.createUserReportNote') || undefined,
-      createPostReportNote: maskPermission('adminReports.createPostReportNote') || undefined,
-      createMessageReportNote: maskPermission('adminReports.createMessageReportNote') || undefined,
-      updateUserReportNote: maskPermission('adminReports.updateUserReportNote') || undefined,
-      updatePostReportNote: maskPermission('adminReports.updatePostReportNote') || undefined,
-      updateMessageReportNote: maskPermission('adminReports.updateMessageReportNote') || undefined
+  sourceKeys.map(function(key) {
+    // skip id, name, lookup, description, highlightcolor
+    if (key === 'id' ||
+        key === 'name' ||
+        key === 'lookup' ||
+        key === 'description' ||
+        key === 'highlightColor') { return; }
+
+    // priorityRestrictions
+    if (key === 'priorityRestrictions') {
+      if ((!target.priority || target.priority > source.priority) &&
+          source.priorityRestrictions &&
+          source.priorityRestrictions.length > 0) {
+        target.priorityRestrictions = source.priorityRestrictions;
+      }
+      return;
     }
-  };
+
+    // handle priority
+    if (key === 'priority' && (!target.priority || target.priority > source.priority)) {
+      target.priority = source.priority;
+      return;
+    }
+
+    // handle permission
+    if (typeof source[key] === 'object') {
+      target[key] = mergeObjects(target[key], source[key]);
+    }
+  });
+
+  return target;
+}
+
+function mergeObjects(target, source) {
+  if (!target) { target = {}; }
+  var sourceKeys = Object.keys(source);
+
+  sourceKeys.map(function(key) {
+    if (typeof source[key] === 'boolean' && source[key]) { target[key] = source[key]; }
+
+    if (typeof source[key] === 'object') {
+      target[key] = mergeObjects(target[key], source[key]);
+    }
+  });
+
+  return target;
 }
 
 function formatUserReply(token, user) {

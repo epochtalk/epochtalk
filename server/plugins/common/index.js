@@ -1,7 +1,6 @@
 var uuid = require('node-uuid');
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
-var bbcodeParser = require('epochtalk-bbcode-parser');
 
 // -- internal methods
 
@@ -31,20 +30,8 @@ function usersClean(sanitizer, payload) {
   });
 }
 
-function postsClean(sanitizer, payload) {
-  payload.title = sanitizer.strip(payload.title);
-  payload.raw_body = sanitizer.bbcode(payload.raw_body);
-}
-
 function messagesClean(sanitizer, payload) {
   payload.body = sanitizer.bbcode(payload.body);
-}
-
-function postsParse(parser, payload) {
-  payload.body = parser.parse(payload.raw_body);
-
-  // check if parsing was needed
-  if (payload.body === payload.raw_body) { payload.raw_body = ''; }
 }
 
 function messagesParse(parser, payload) {
@@ -53,32 +40,6 @@ function messagesParse(parser, payload) {
 
 function usersParse(parser, payload) {
   payload.raw_signature = parser.parse(payload.raw_signature);
-}
-
-function imagesSub(imageStore, payload) {
-  var html = payload.body;
-  // load html in post.body into cheerio
-  var $ = cheerio.load(html);
-
-  // collect all the images in the body
-  var images = [];
-  $('img').each(function(index, element) {
-    images.push(element);
-  });
-
-  // convert each image's src to cdn version
-  return Promise.map(images, function(element) {
-    var imgSrc = $(element).attr('src');
-    var savedUrl = imageStore.saveImage(imgSrc);
-
-    if (savedUrl) {
-      // move original src to data-canonical-src
-      $(element).attr('data-canonical-src', imgSrc);
-      // update src with new url
-      $(element).attr('src', savedUrl);
-    }
-  })
-  .then(function() { payload.body = $.html(); });
 }
 
 function imagesSignature(imageStore, payload) {
@@ -205,17 +166,6 @@ exports.register = function(server, options, next) {
       method: usersParse,
       options: { callback: false }
     },
-    // -- posts
-    {
-      name: 'common.posts.clean',
-      method: postsClean,
-      options: { callback: false }
-    },
-    {
-      name: 'common.posts.parse',
-      method: postsParse,
-      options: { callback: false }
-    },
     // -- messages
     {
       name: 'common.messages.clean',
@@ -228,11 +178,6 @@ exports.register = function(server, options, next) {
       options: { callback: false }
     },
     // -- images
-    {
-      name: 'common.images.sub',
-      method: imagesSub,
-      options: { callback: false }
-    },
     {
       name: 'common.images.signature',
       method: imagesSignature,

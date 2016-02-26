@@ -3,13 +3,18 @@ var Boom = require('boom');
 var path = require('path');
 var roles = require(path.normalize(__dirname + '/roles'));
 
-var db, config;
+var db, config, defaultPerms, validations, layouts;
 
 exports.register = function (server, options, next) {
   if (!options.db) { return next(new Error('No DB found in ACLS')); }
   if (!options.config) { return next(new Error('No Configs found in ACLS')); }
   db = options.db;
   config = options.config;
+  defaultPerms = options.permissions.defaults;
+  validations = options.permissions.validations;
+  layouts = options.permissions.layouts;
+
+  buildRoles(defaultPerms);
 
   // Check ACL roles on each route
   server.ext('onPostAuth', function (request, reply) {
@@ -43,8 +48,27 @@ exports.register = function (server, options, next) {
   server.expose('getPriorityRestrictions', getPriorityRestrictions);
   server.expose('verifyRoles', verifyRoles);
 
+
+  var roleData = {
+    layouts: layouts,
+    validations: validations
+  };
+  server.decorate('server', 'roles', roleData);
+  server.decorate('request', 'roles', roleData);
+
   return verifyRoles().then(next);
 };
+
+function buildRoles(permissions) {
+  var moduleKeys = Object.keys(permissions);
+  moduleKeys.forEach(function(moduleName) {
+    roles = _.mapValues(roles, function(role) {
+      var lookup = role.lookup;
+      role[moduleName] = permissions[moduleName][lookup];
+      return role;
+    });
+  });
+}
 
 function getUserPriority(auth) {
   var rolePriorities = [];
@@ -57,9 +81,7 @@ function getUserPriority(auth) {
   else if (config.loginRequired) { rolePriorities = [ roles.private.priority ]; }
   else { rolePriorities = [ roles.anonymous.priority ]; }
 
-  var userPriority = _.min(rolePriorities);
-
-  return userPriority;
+  return _.min(rolePriorities);
 }
 
 function getPriorityRestrictions(auth) {

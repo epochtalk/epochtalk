@@ -151,36 +151,7 @@ module.exports = roles;
       findUser: true,
       delete: true
     },
-    posts: {
-      privilegedUpdate: {
-        some: true,
-        all: true
-      },
-      privilegedDelete: {
-        some: true,
-        all: true
-      },
-      privilegedPurge: {
-        some: true,
-        all: true
-      },
-      viewDeleted: {
-        some: true,
-        all: true
-      },
-      bypassLock: {
-        some: true,
-        all: true
-      },
-      create: true,
-      find: true,
-      byThread: true,
-      update: true,
-      delete: true,
-      undelete: true,
-      purge: true,
-      pageByUser: true
-    },
+    // posts
     reports: {
       createUserReport: true,
       createPostReport: true,
@@ -394,31 +365,7 @@ roles.superAdministrator = {
     findUser: true,
     delete: true
   },
-  posts: {
-    privilegedUpdate: {
-      all: true
-    },
-    privilegedDelete: {
-      all: true
-    },
-    privilegedPurge: {
-      all: true
-    },
-    viewDeleted: {
-      all: true
-    },
-    bypassLock: {
-      all: true
-    },
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    purge: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -599,31 +546,7 @@ roles.administrator = {
     findUser: true,
     delete: true
   },
-  posts: {
-    privilegedUpdate: {
-      all: true
-    },
-    privilegedDelete: {
-      all: true
-    },
-    privilegedPurge: {
-      all: true
-    },
-    viewDeleted: {
-      all: true
-    },
-    bypassLock: {
-      all: true
-    },
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    purge: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -758,31 +681,7 @@ roles.globalModerator = {
     findUser: true,
     delete: true
   },
-  posts: {
-    privilegedUpdate: {
-      all: true
-    },
-    privilegedDelete: {
-      all: true
-    },
-    privilegedPurge: {
-      all: true
-    },
-    viewDeleted: {
-      all: true
-    },
-    bypassLock: {
-      all: true
-    },
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    purge: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -902,31 +801,7 @@ roles.moderator = {
     findUser: true,
     delete: true
   },
-  posts: {
-    privilegedUpdate: {
-      some: true
-    },
-    privilegedDelete: {
-      some: true
-    },
-    privilegedPurge: {
-      some: true
-    },
-    viewDeleted: {
-      some: true,
-    },
-    bypassLock: {
-      some: true
-    },
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    purge: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -998,15 +873,7 @@ roles.user = {
     findUser: true,
     delete: true
   },
-  posts: {
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -1056,11 +923,7 @@ roles.banned = {
     latest: true,
     findUser: true
   },
-  posts: {
-    find: true,
-    byThread: true,
-    pageByUser: true
-  },
+  // posts
   threads: {
     byBoard: true,
     viewed: true
@@ -1082,11 +945,7 @@ roles.anonymous = {
     find: true,
     allCategories: true
   },
-  posts: {
-    find: true,
-    byThread: true,
-    pageByUser: true
-  },
+  // posts
   threads: {
     byBoard: true,
     viewed: true

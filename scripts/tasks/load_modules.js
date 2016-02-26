@@ -36,9 +36,6 @@ function loadModules() {
   // extract client code from modules
   var modules = Object.keys(ept_modules);
 
-  /// TESTING ONLY
-  modules.push('ept-posts');
-
   return Promise.each(modules, function(key) { return load(key); });
 }
 

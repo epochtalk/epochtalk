@@ -35,7 +35,6 @@ var ngDeps = [
   require('./threads/new'),
   require('./threads/posted'),
   require('./messages'),
-  require('./posts'),
   require('./users/profile'),
   require('./users/confirm'),
   require('./users/reset'),

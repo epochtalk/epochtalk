@@ -9,7 +9,12 @@ modules.install = (db) => {
     routes: [],
     common: [],
     authorization: [],
-    apiMethods: {}
+    apiMethods: {},
+    permissions: {
+      defaults: {},
+      validations: {},
+      layouts: {}
+    },
   };
 
   // get a list of all modules in modules/package.json
@@ -37,6 +42,9 @@ modules.load = (moduleName, master) => {
   master.authorization = master.authorization.concat(module.authorization);
   master.apiMethods[name] = module.api;
   master.db[name] = module.db;
+  master.permissions.defaults[name] = module.permissions.defaults;
+  master.permissions.validations[name] = module.permissions.validation;
+  master.permissions.layouts[name] = module.permissions.layout;
 };
 
 

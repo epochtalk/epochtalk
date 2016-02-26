@@ -25,7 +25,7 @@ var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
 var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 
-var server, additionalRoutes, commonMethods, authMethods;
+var server, additionalRoutes, commonMethods, authMethods, permissions;
 
 // setup configration file and sync with DB
 setup()
@@ -93,8 +93,6 @@ setup()
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
 })
-// route acls
-.then(function() { return server.register({register: acls, options: { db, config } }); })
 // blacklist
 .then(function() { return server.register({ register: blacklist, options: { db } }); })
 // rate limiter
@@ -116,7 +114,12 @@ setup()
     additionalRoutes = output.routes;
     commonMethods = output.common;
     authMethods = output.authorization;
+    permissions = output.permissions;
   });
+})
+// route acls
+.then(function() {
+  return server.register({register: acls, options: { db, config, permissions } });
 })
 // common methods
 .then(function() {
