@@ -86,7 +86,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         return AdminReports.pageUserReports(query).$promise;
       }],
       boards: ['Boards', function(Boards) {
-        return Boards.query().$promise
+        return Boards.query({ stripped: true }).$promise
         .then(function(data) { return data.boards; });
       }]
     }
@@ -159,7 +159,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         return AdminReports.pagePostReports(query).$promise;
       }],
       boards: ['Boards', function(Boards) {
-        return Boards.query().$promise
+        return Boards.query({ stripped: true }).$promise
         .then(function(data) { return data.boards; });
       }]
     }
@@ -201,7 +201,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         return AdminReports.pageMessageReports(query).$promise;
       }],
       boards: ['Boards', function(Boards) {
-        return Boards.query().$promise
+        return Boards.query({ stripped: true }).$promise
         .then(function(data) { return data.boards; });
       }]
     }
@@ -238,7 +238,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         };
         return AdminUsers.byBannedBoards(query).$promise;
       }],
-      boards: ['AdminBoards', '$filter', function(AdminBoards, $filter) {
+      selectBoards: ['AdminBoards', '$filter', function(AdminBoards, $filter) {
         return AdminBoards.moveBoards().$promise
         .then(function(allBoards) {
           allBoards = allBoards || [];
@@ -247,6 +247,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           });
           return allBoards;
         });
+      }],
+      boards: ['Boards', function(Boards) {
+        return Boards.query({ stripped: true }).$promise
+        .then(function(data) { return data.boards; });
       }]
     }
   })

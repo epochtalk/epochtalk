@@ -71,7 +71,7 @@
   <!-- Move Thread -->
   <div class="control-full-width"  ng-if="PostsParentCtrl.controlAccess.privilegedMove">
     <label>Move Thread</label>
-    <select name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name for board in PostsParentCtrl.boards"></select>
+    <select name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name group by board.parent_name for board in PostsParentCtrl.boards | orderBy:board.view_order"></select>
     <a class="button" ng-click="PostsParentCtrl.moveThread()"><i class="fa fa-arrow-circle-left"></i>&nbsp;&nbsp;&nbsp;Move</a>
   </div>
 </div>

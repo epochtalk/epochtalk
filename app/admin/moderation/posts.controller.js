@@ -61,7 +61,6 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
   this.selectedUser = null; //  model backing selected user
   this.confirmBanBtnLabel = 'Confirm'; // modal button label
   this.permanentBan = undefined; // boolean indicating if ban is permanent
-  this.banUntil = null; // model
   this.banUntil = null; // model backing temporary ban date
   this.boardBanList = []; // model backing list of banned boards
 
@@ -177,7 +176,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     return [year, month, day].join('-');
   };
 
-this.showManageBans = function(user) {
+  this.showManageBans = function(user) {
     ctrl.selectedUser = user;
 
     // Pre select Global ban type radio button if the user is banned
