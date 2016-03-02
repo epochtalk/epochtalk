@@ -58,7 +58,6 @@ exports.register = function(plugin, options, next) {
     // TODO: Remove this eventually once we fix admin->moderations->users
     if (path.indexOf('/api/admin') === 0) { return reply.continue(); }
 
-
     // check if user is authenticated
     if (authenticated) {
       key = request.auth.credentials.id + ':' + path + ':' + method;

@@ -20,14 +20,14 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   this.newRole = {};
   this.basedRoleId = null;
   this.modifyingRole = false;
-  this.controlAccess = Session.getControlAccessWithPriority('roleControls');
+  this.controlAccess = Session.getControlAccessWithPriority('adminUsers');
   this.controlAccess.privilegedRemoveRoles = this.controlAccess.privilegedAddRoles ? {
-    samePriority: Session.hasPermission('roleControls.privilegedRemoveRoles.samePriority'),
-    lowerPriority: Session.hasPermission('roleControls.privilegedRemoveRoles.lowerPriority')
+    samePriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.samePriority'),
+    lowerPriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.lowerPriority')
   } : undefined;
   this.controlAccess.privilegedAddRoles = this.controlAccess.privilegedAddRoles ? {
-    samePriority: Session.hasPermission('roleControls.privilegedAddRoles.samePriority'),
-    lowerPriority: Session.hasPermission('roleControls.privilegedAddRoles.lowerPriority')
+    samePriority: Session.hasPermission('adminUsers.privilegedAddRoles.samePriority'),
+    lowerPriority: Session.hasPermission('adminUsers.privilegedAddRoles.lowerPriority')
   } : undefined;
 
   // rate limiting

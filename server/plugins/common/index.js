@@ -9,13 +9,16 @@ function categoriesClean(sanitizer, payload) {
 }
 
 function boardsClean(sanitizer, payload) {
-  // name
-  payload.name = sanitizer.strip(payload.name);
+  // payload is an array
+  payload.map(function(board) {
+    // name
+    board.name = sanitizer.strip(board.name);
 
-  // description
-  if (payload.description) {
-    payload.description = sanitizer.display(payload.description);
-  }
+    // description
+    if (board.description) {
+      board.description = sanitizer.display(board.description);
+    }
+  });
 }
 
 function usersClean(sanitizer, payload) {

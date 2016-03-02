@@ -166,21 +166,21 @@ exports.update = {
     }
   },
   validate: {
-    payload: {
+    payload: Joi.array().items(Joi.object().keys({
+      id: Joi.string().required(),
       name: Joi.string().min(1).max(255),
       description: Joi.string().allow(''),
       viewable_by: Joi.number().allow(null)
-    },
-    params: { id: Joi.string().required() }
+    })).unique().min(1)
   },
   pre: [ { method: 'common.boards.clean(sanitizer, payload)' } ],
   handler: function(request, reply) {
-    // build updateBoard object from params and payload
-    var updateBoard = request.payload;
-    updateBoard.id = request.params.id;
-
     // update board on db
-    return reply(request.db.boards.update(updateBoard));
+    var promise = Promise.map(request.payload, function(board) {
+      return request.db.boards.update(board);
+    });
+
+    return reply(promise);
   }
 };
 

@@ -8,10 +8,7 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/boards'
       },
-      update: {
-        method: 'POST',
-        params: { id: '@id' }
-      }
+      update: { method: 'PUT', isArray: true }
     });
   }
 ];

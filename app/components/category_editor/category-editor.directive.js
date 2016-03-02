@@ -1,4 +1,5 @@
 var remove = require('lodash/remove');
+var find = require('lodash/find');
 
 module.exports = ['$state', function($state) {
   return {
@@ -101,7 +102,16 @@ module.exports = ['$state', function($state) {
             description: $('#editBoardDesc').val(),
             viewable_by: $('#editBoardViewable').val() || null
           };
-         $scope.editedBoards.push(editedBoard);
+          // check if board already exists in editedBoards
+          var foundBoard = find($scope.editedBoards, function(b) {
+            return b.id === editedBoard.id
+          });
+          if (foundBoard) {
+            foundBoard.name = editedBoard.name;
+            foundBoard.description = editedBoard.description;
+            foundBoard.viewable_by = editedBoard.viewable_by;
+          }
+          else { $scope.editedBoards.push(editedBoard); }
         }
 
         var editBoardEl = $('li[data-id="' + editBoardDataId + '"]');

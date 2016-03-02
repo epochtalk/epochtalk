@@ -1317,7 +1317,7 @@ function adminRolesAdd(server, auth, roleId, usernames) {
   .then(function(curUser) { authedPriority = _.min(_.map(curUser.roles, 'priority')); })
   // get all roles
   .then(server.db.roles.all)
-  // get role were trying to ad users to
+  // get role were trying to add users to
   .then(function(roles) { refRole = _.find(roles, _.matchesProperty('id', roleId)); })
   // make sure authed user is adding to a role with their priority or lower
   // this prevents admins from adding themselves/others as super admins

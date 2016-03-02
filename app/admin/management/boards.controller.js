@@ -4,15 +4,15 @@ var some = require('lodash/some');
 var filter = require('lodash/filter');
 var Promise = require('bluebird');
 
-var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'AdminBoards', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories', 'roles',
-  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, AdminBoards, Boards, Categories, AdminUsers, AdminModerators, boards, categories, roles) {
+var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'AdminBoards', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories', 'roleData',
+  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, AdminBoards, Boards, Categories, AdminUsers, AdminModerators, boards, categories, roleData) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     var ctrl = this;
     // Category and Board Data
     $scope.catListData = categories; // Data backing left side of page
     $scope.boardListData = boards; // Data backing right side of page
-    $scope.roles = roles;
+    $scope.roles = roleData.roles;
     // Category and Board reference map
     $scope.nestableMap = {};
     // New/Edited/Deleted Boards
@@ -194,11 +194,8 @@ var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScr
     // 2) Handle Boards which have been edited
     $scope.processEditedBoards = function() {
       console.log('2) Handling edited boards: \n' + JSON.stringify($scope.editedBoards, null, 2));
-      return $q.all($scope.editedBoards.map(function(editedBoard) {
-        var board = { name: editedBoard.name, description: editedBoard.description, viewable_by: editedBoard.viewable_by };
-        return Boards.update({ id: editedBoard.id }, board).$promise
-        .catch(function(response) { console.log(response); });
-      }));
+      return Boards.update($scope.editedBoards).$promise
+      .catch(function(err) { console.log(err); });
     };
 
     // 3) Handle Boards which have been deleted
