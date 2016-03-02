@@ -132,7 +132,10 @@ module.exports = ['$window', function($window) {
           privilegedUpdate: perm('postControls.privilegedUpdate'),
           privilegedPurge: perm('postControls.privilegedPurge'),
         };
-        result.userControls = { privilegedBan: perm('profileControls.privilegedBan') };
+        result.userControls = {
+          privilegedBan: perm('profileControls.privilegedBan'),
+          privilegedBanFromBoards: perm('userControls.privilegedBanFromBoards')
+        };
         result.reportControls = hasPermission('reportControls');
         result.messageControls = hasPermission('messageControls');
       }

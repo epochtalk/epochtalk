@@ -217,7 +217,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       }
     },
     resolve: {
-      userAccess: modCheck('messages'),
+      userAccess: modCheck('boardBans'),
       $title: function() { return 'Board Bans'; },
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();

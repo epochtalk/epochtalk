@@ -55,6 +55,7 @@ function getMaskedPermissions(userRoles) {
       users: maskPermission('modAccess.users'),
       posts: maskPermission('modAccess.posts'),
       messages: maskPermission('modAccess.messages'),
+      boardBans: maskPermission('modAccess.boardBans'),
       logs: maskPermission('modAccess.logs')
     } : undefined,
     profileControls: maskPermission('adminUsers') || maskPermission('users.privilegedDeactive') || maskPermission('users.privilegedReactivate') || maskPermission('users.deactivate') || maskPermission('users.reactivate') ? {
@@ -138,6 +139,12 @@ function getMaskedPermissions(userRoles) {
       update: maskPermission('posts.update'),
       delete: maskPermission('posts.delete'),
       undelete: maskPermission('posts.undelete')
+    },
+    userControls: {
+      privilegedBanFromBoards: maskPermission('adminUsers.privilegedBanFromBoards') ? {
+        some: maskPermission('adminUsers.privilegedBanFromBoards.some'),
+        all: maskPermission('adminUsers.privilegedBanFromBoards.all')
+      } : undefined,
     },
     roleControls: maskPermission('adminRoles') ? {
       privilegedAddRoles: maskPermission('adminUsers.privilegedAddRoles') ? {

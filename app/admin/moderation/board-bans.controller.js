@@ -12,8 +12,12 @@ var ctrl = ['$q', '$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.next = bannedBoards.next;
   this.prev = bannedBoards.prev;
   this.modded = bannedBoards.modded;
+  this.moddedFilter = this.modded;
   this.board = bannedBoards.board;
+  this.boardFilter = this.board;
   this.bannedBoards = bannedBoards.data;
+
+  this.hasGlobalModPerms = Session.hasPermission('userControls.privilegedBanFromBoards.all');
 
   this.boards = boards;
   this.allBoards = selectBoards; // used to populate filter select
@@ -26,11 +30,10 @@ var ctrl = ['$q', '$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   else { ctrl.selectBoards = ctrl.allBoards; }
 
   this.updateQueryParams = function() {
-    $location.search('board', ctrl.board || undefined);
-    $location.search('modded', ctrl.modded ? 'true' : undefined);
+    $location.search('board', ctrl.boardFilter || undefined);
+    $location.search('modded', ctrl.moddedFilter ? 'true' : undefined);
     $location.search('page', undefined); // reset to page one on filter apply
-
-    if (ctrl.modded) { ctrl.selectBoards = ctrl.moderatedBoards; }
+    if (ctrl.moddedFilter) { ctrl.selectBoards = ctrl.moderatedBoards; }
     else { ctrl.selectBoards = ctrl.allBoards; }
   };
 
@@ -53,7 +56,7 @@ var ctrl = ['$q', '$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   };
 
   this.bannedFromModeratedBoard = function(boardIds) {
-    // TODO: RETURN true if the user is a globalModerator
+    if (ctrl.hasGlobalModPerms) { return true; }
     return boardIds.filter(function(id) {
       var modded = ctrl.moderating.indexOf(id) > -1;
       if (modded) { return id; }
@@ -67,9 +70,8 @@ var ctrl = ['$q', '$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.confirmBanBtnLabel = 'Confirm'; // modal button label
   this.boardBanList = []; // model backing list of banned boards
 
-  this.showManageBans = function(user) {
+  var setSelectedUser = function(user) {
     ctrl.selectedUser = user;
-
     // Lookup users board bans
     // TODO: make sure user has permissions before doing this
     AdminUsers.getBannedBoards({ username: user.username }).$promise
@@ -84,6 +86,13 @@ var ctrl = ['$q', '$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     });
   };
 
+  this.showManageBans = function(user) {
+    if (!user) { ctrl.showManageBansModal = true; }
+    else { setSelectedUser(user); }
+  };
+
+  this.selectBanUser = function(user) { setSelectedUser(user); };
+
   this.closeManageBans = function() {
     ctrl.selectedUser = null;
     ctrl.banUntil = null;
@@ -92,18 +101,26 @@ var ctrl = ['$q', '$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
     $timeout(function() { ctrl.showManageBansModal = false; });
   };
 
+  this.allBoardIds = []; // populated by init of inputs
+
   this.uncheckModBoards = function() {
-    ctrl.moderating.forEach(function(id) {
-      var index = ctrl.boardBanList.indexOf(id);
-      if (index > -1) { ctrl.boardBanList.splice(index, 1); }
-    });
+    if (ctrl.hasGlobalModPerms) { ctrl.boardBanList = []; }
+    else {
+      ctrl.moderating.forEach(function(id) {
+        var index = ctrl.boardBanList.indexOf(id);
+        if (index > -1) { ctrl.boardBanList.splice(index, 1); }
+      });
+    }
   };
 
   this.checkModBoards = function() {
-    ctrl.moderating.forEach(function(id) {
-      var index = ctrl.boardBanList.indexOf(id);
-      if (index < 0) { ctrl.boardBanList.push(id); }
-    });
+    if (ctrl.hasGlobalModPerms) { ctrl.boardBanList = ctrl.allBoardIds; }
+    else {
+      ctrl.moderating.forEach(function(id) {
+        var index = ctrl.boardBanList.indexOf(id);
+        if (index < 0) { ctrl.boardBanList.push(id); }
+      });
+    }
   };
 
   this.toggleBoardBan = function(boardId) {
@@ -137,7 +154,9 @@ var ctrl = ['$q', '$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
         })
         .catch(function(err) {
           var msg = 'There was an error banning ' + ctrl.selectedUser.username + ' from boards';
-          if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions, cannot ban from boards'; }
+          if (err.status === 403) {
+            msg = err.data.message ? err.data.message : ctrl.selectedUser.username + ' has higher permissions, cannot ban from boards';
+          }
           Alert.error(msg);
         })
       );
@@ -150,7 +169,9 @@ var ctrl = ['$q', '$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
         })
         .catch(function(err) {
           var msg = 'There was an error unbanning ' + ctrl.selectedUser.username + ' from boards';
-          if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions, cannot unban from boards'; }
+          if (err.status === 403) {
+            msg = err.data.message ? err.data.message : ctrl.selectedUser.username + ' has higher permissions, cannot unban from boards';
+          }
           Alert.error(msg);
         })
       );

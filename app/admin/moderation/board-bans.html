@@ -1,14 +1,14 @@
 <div class="admin-table-header">
   <div class="half-column">
-    <select class="banned-boards-select" ng-change="ModerationCtrl.updateQueryParams()" ng-model="ModerationCtrl.board" ng-options="board.id as board.name group by board.parent_name for board in ModerationCtrl.selectBoards | orderBy:board.view_order">
+    <select class="banned-boards-select" ng-change="ModerationCtrl.updateQueryParams()" ng-model="ModerationCtrl.boardFilter" ng-options="board.id as board.name group by board.parent_name for board in ModerationCtrl.selectBoards | orderBy:board.view_order">
       <option value="">Filter by All {{ModerationCtrl.modded ? 'My Moderated' : '' }} Boards</option>
     </select>
-    <label class="inline-block">
-      <input ng-change="ModerationCtrl.updateQueryParams()" ng-model="ModerationCtrl.modded" class="pointer" type="checkbox" />
+    <label ng-if="!ModerationCtrl.hasGlobalModPerms" class="inline-block">
+      <input ng-change="ModerationCtrl.updateQueryParams()" ng-model="ModerationCtrl.moddedFilter" class="pointer" type="checkbox" />
       Show only my moderated boards
     </label>
-    <label ng-if="ModerationCtrl.board || ModerationCtrl.modded" class="inline-block right">
-      <a ng-click="ModerationCtrl.modded = undefined; ModerationCtrl.board=undefined; ModerationCtrl.updateQueryParams()"><i class="fa fa-times"></i> Clear Filters</a>
+    <label ng-if="!ModerationCtrl.hasGlobalModPerms && (ModerationCtrl.board || ModerationCtrl.modded)" class="inline-block right">
+      <a ng-click="ModerationCtrl.moddedFilter = undefined; ModerationCtrl.boardFilter = undefined; ModerationCtrl.updateQueryParams()"><i class="fa fa-times"></i> Clear Filters</a>
     </label>
   </div>
   <div class="user-search clear">
@@ -18,6 +18,9 @@
       <input class="input-text nested-input" ng-model="ModerationCtrl.searchStr" type="text" id="users-search" placeholder="Find banned users (username, email, or id)" ng-keydown="$event.which === 13 && ModerationCtrl.searchBannedUsers()" ng-keyup="$event.which === 27 && ModerationCtrl.clearSearch()" />
     </div>
   </div>
+</div>
+<div class="fill-row">
+  <a ng-click="ModerationCtrl.showManageBans()"><i class="fa fa-plus"></i> Add New Board Ban</a>
 </div>
 <div class="fill-row centered-text" ng-if="!ModerationCtrl.search && !ModerationCtrl.bannedBoards.length">
   <h4>No Board Banned Users to Display</h4>
@@ -45,7 +48,7 @@
           </td>
           <td><a ng-href="mailto:{{row.email}}" ng-bind="row.email"></a></td>
           <td>
-            <span ng-repeat="boardName in row.board_names">
+            <span ng-repeat="boardName in row.board_names track by $index">
               <a ng-bind-html="boardName" ui-sref="board.data({ boardId: row.board_ids[$index] })"></a>{{ !$last ? ', ' : '' }}
             </span>
           </td>
@@ -82,39 +85,46 @@
 <modal show="ModerationCtrl.showManageBansModal" on-close="ModerationCtrl.closeManageBans()">
   <form name="$parent.form" class="css-form">
     <h3 class="thin-underline">Manage Bans</h3>
-    <label class="bold">User Information</label>
-    <table class="striped" width="100%">
-      <tr>
-        <td>Username</td>
-        <td ng-bind="ModerationCtrl.selectedUser.username"></td>
-      </tr>
-      <tr>
-        <td>Email</td>
-        <td ng-bind="ModerationCtrl.selectedUser.email"></td>
-      </tr>
-      <tr>
-        <td>Register Date</td>
-        <td ng-bind="ModerationCtrl.selectedUser.created_at | humanDate"></td>
-      </tr>
-      <tr ng-if="ModerationCtrl.selectedUser.banned_board_names.length">
-        <td>Banned From Boards</td>
-        <td>
-          <span ng-repeat="boardName in ModerationCtrl.selectedUser.banned_board_names" ng-bind-html="$last ? boardName : boardName + ', '"></span>
-        </td>
-      </tr>
-    </table>
-
+    <div ng-if="ModerationCtrl.selectedUser">
+      <label class="bold">User Information</label>
+      <table class="striped" width="100%">
+        <tr>
+          <td>Username</td>
+          <td ng-bind="ModerationCtrl.selectedUser.username"></td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td ng-bind="ModerationCtrl.selectedUser.email"></td>
+        </tr>
+        <tr>
+          <td>Register Date</td>
+          <td ng-bind="ModerationCtrl.selectedUser.created_at | humanDate"></td>
+        </tr>
+        <tr ng-if="ModerationCtrl.selectedUser.banned_board_names.length">
+          <td>Banned From Boards</td>
+          <td>
+            <span ng-repeat="boardName in ModerationCtrl.selectedUser.banned_board_names track by $index" ng-bind-html="$last ? boardName : boardName + ', '"></span>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div ng-if="!ModerationCtrl.selectedUser">
+      <label><strong>User to Board Ban</strong>
+        <autocomplete-username button-action="ModerationCtrl.selectBanUser(user)" input-placeholder="Type username of user to board ban" button-text="Select User"></autocomplete-username>
+      </label>
+    </div>
     <label>
       <strong>Ban from my Boards</strong>
-      <div class="right">
+      <div ng-if="ModerationCtrl.selectedUser" class="right">
         <a ng-href="#" ng-click="ModerationCtrl.checkModBoards();"><i class="fa fa-check-square-o"></i> Check All</a>
         &nbsp;&nbsp;
         <a ng-href="#" ng-click="ModerationCtrl.uncheckModBoards();"><i class="fa fa-square-o"></i> Uncheck All</a>
       </div>
     </label>
     <div class="board-bans-list">
+
       <script type="text/ng-template" id="board_renderer.html">
-        <input id="{{board.id}}" ng-checked="ModerationCtrl.boardBanList.indexOf(board.id) > -1" value="{{board.id}}" ng-click="ModerationCtrl.toggleBoardBan(board.id)" ng-disabled="ModerationCtrl.moderating.indexOf(board.id) < 0" type="checkbox" />
+        <input ng-init="(ModerationCtrl.hasGlobalModPerms && ModerationCtrl.allBoardIds.indexOf(board.id) < 0) ? ModerationCtrl.allBoardIds.push(board.id) : null" id="{{board.id}}" ng-checked="ModerationCtrl.boardBanList.indexOf(board.id) > -1" value="{{board.id}}" ng-click="ModerationCtrl.toggleBoardBan(board.id)" ng-disabled="(ModerationCtrl.moderating.indexOf(board.id) < 0 && !ModerationCtrl.hasGlobalModPerms) || !ModerationCtrl.selectedUser" type="checkbox" />
         <label for="{{board.id}}" ng-bind-html="board.name"></label>
         <ul>
           <li ng-repeat="board in board.children track by board.id" ng-include="'board_renderer.html'"></li>
@@ -131,7 +141,7 @@
 
     <div class="clear">
       <button class="fill-row" ng-click="ModerationCtrl.updateBans()"
-        ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.banSubmitted" ng-bind="ModerationCtrl.confirmBanBtnLabel"></button>
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.banSubmitted || !ModerationCtrl.selectedUser" ng-bind="ModerationCtrl.confirmBanBtnLabel"></button>
     </div>
   </form>
 </modal>

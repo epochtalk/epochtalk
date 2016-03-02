@@ -16,6 +16,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 
   // Get Action Control Access
   this.actionAccess = Session.getModPanelControlAccess();
+  this.hasGlobalModPerms = Session.hasPermission('userControls.privilegedBanFromBoards.all');
 
   // Search Vars
   this.search = messageReports.search;
@@ -189,18 +190,26 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     $timeout(function() { ctrl.showManageBansModal = false; });
   };
 
+  this.allBoardIds = []; // populated by init of inputs
+
   this.uncheckModBoards = function() {
-    ctrl.user.moderating.forEach(function(id) {
-      var index = ctrl.boardBanList.indexOf(id);
-      if (index > -1) { ctrl.boardBanList.splice(index, 1); }
-    });
+    if (ctrl.hasGlobalModPerms) { ctrl.boardBanList = []; }
+    else {
+      ctrl.user.moderating.forEach(function(id) {
+        var index = ctrl.boardBanList.indexOf(id);
+        if (index > -1) { ctrl.boardBanList.splice(index, 1); }
+      });
+    }
   };
 
   this.checkModBoards = function() {
-    ctrl.user.moderating.forEach(function(id) {
-      var index = ctrl.boardBanList.indexOf(id);
-      if (index < 0) { ctrl.boardBanList.push(id); }
-    });
+    if (ctrl.hasGlobalModPerms) { ctrl.boardBanList = ctrl.allBoardIds; }
+    else {
+      ctrl.user.moderating.forEach(function(id) {
+        var index = ctrl.boardBanList.indexOf(id);
+        if (index < 0) { ctrl.boardBanList.push(id); }
+      });
+    }
   };
 
   this.toggleBoardBan = function(boardId) {
@@ -214,7 +223,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     for (var i = 0; i < ctrl.messageReports.length; i++) {
       if (params.user_id === ctrl.messageReports[i].offender_author_id) {
         // unbanning sets ban expiration to current time
-        if (params.expiration) {
+        if (!params.banError && params.expiration) {
           var expiration = new Date(params.expiration) > new Date() ? params.expiration : undefined;
           ctrl.messageReports[i].offender_ban_expiration = expiration;
           // Handle updating ban info on report being previewed
@@ -223,7 +232,9 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
           }
         }
         // Handle Board Bans update
-        ctrl.messageReports[i].offender_board_banned = ctrl.boardBanList.length > 0;
+        if (!params.boardBanError) {
+          ctrl.messageReports[i].offender_board_banned = ctrl.boardBanList.length > 0;
+        }
       }
     }
   };
@@ -271,6 +282,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
           results = banInfo;
         })
         .catch(function(err) {
+          results.banError = err;
           var msg = 'There was an error globally banning ' + ctrl.selectedUser.username;
           if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions than you, cannot globally ban'; }
           Alert.error(msg);
@@ -285,6 +297,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
           results = unbanInfo;
         })
         .catch(function(err) {
+          results.banError = err;
           var msg = 'There was an error globally unbanning ' + ctrl.selectedUser.username;
           if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions, cannot globally unban'; }
           Alert.error(msg);
@@ -298,6 +311,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
           Alert.success(ctrl.selectedUser.username + ' has been banned from boards');
         })
         .catch(function(err) {
+          results.boardBanError = err;
           var msg = 'There was an error banning ' + ctrl.selectedUser.username + ' from boards';
           if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions, cannot ban from boards'; }
           Alert.error(msg);
@@ -311,6 +325,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
           Alert.success(ctrl.selectedUser.username + ' has been unbanned from boards');
         })
         .catch(function(err) {
+          results.boardBanError = err;
           var msg = 'There was an error unbanning ' + ctrl.selectedUser.username + ' from boards';
           if (err.status === 403) { msg = ctrl.selectedUser.username + ' has higher permissions, cannot unban from boards'; }
           Alert.error(msg);

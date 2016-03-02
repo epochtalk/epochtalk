@@ -1902,6 +1902,44 @@ function adminUsersBan(server, auth, userId) {
   return match;
 }
 
+function adminUsersBanFromBoards(server, auth, userId, boardIds) {
+  // match priority
+  var currentUserId = auth.credentials.id;
+  var same = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.samePriority');
+  var lower = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.lowerPriority');
+
+  // Check if the user has global mod permissions
+  var some = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.some');
+  var all = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.all');
+
+  // get referenced user's priority
+  var refPriority = server.db.users.find(userId)
+  .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
+
+  // get authed user priority
+  var curPriority = server.db.users.find(currentUserId)
+  .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
+
+
+  // compare priorities
+  var match = Promise.join(refPriority, curPriority, function(referenced, current) {
+    if (userId === currentUserId) { return; }
+    // User is a normal mod and try to ban from a board they do not moderate
+    if ((!all && some && _.difference(boardIds, auth.credentials.moderating).length) || !all && !some) {
+      return Promise.reject(Boom.forbidden('You can only modify user\'s bans for boards you moderate'));
+    }
+
+    // current has same or higher priority than referenced
+    if (same && current <= referenced) { return userId; }
+    // current has higher priority than referenced
+    else if (lower && current < referenced) { return userId; }
+    else { return Promise.reject(Boom.forbidden()); }
+  });
+
+  return match;
+}
+
+
 // -- Admin Roles
 // test this one
 function adminRolesRemove(roleId){
@@ -2140,6 +2178,11 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.admin.users.ban',
       method: adminUsersBan,
+      options: { callback: false }
+    },
+    {
+      name: 'auth.admin.users.banFromBoards',
+      method: adminUsersBanFromBoards,
       options: { callback: false }
     },
     // -- admin roles
