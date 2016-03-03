@@ -28,7 +28,7 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
         };
 
         // get poll permissions
-        $scope.permissions = Session.getControlAccess('pollControls', $scope.thread.board_id);
+        $scope.permissions = Session.getControlAccess('polls', $scope.thread.board_id);
         if ($scope.permissions.privilegedLock) { $scope.permissions.edit = true; }
         if ($scope.user.id === $scope.thread.user.id) {
           $scope.permissions.privilegedLock = $scope.permissions.lock;
@@ -196,10 +196,7 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
           $scope.pollAnswers.length = 0;
           Alert.success('Poll Options Changes Saved');
         })
-        .catch(function(err) {
-          Alert.error('There was an error updating the poll');
-          console.log(err); // TODO: REMOVE THIS
-        });
+        .catch(function() { Alert.error('There was an error updating the poll'); });
       };
     }
   };

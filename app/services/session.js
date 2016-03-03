@@ -131,8 +131,24 @@ module.exports = ['$window', function($window) {
           privilegedBan: perm('adminUsers.privilegedBan'),
           privilegedBanFromBoards: perm('adminUsers.privilegedBanFromBoards')
         };
-        result.reportControls = hasPermission('reports');
         result.messageControls = hasPermission('messages');
+        if (result.messageControls) {
+          result.messageControls.createConversations = perm('conversations.create');
+        }
+        result.reportControls = hasPermission('reports');
+        if (result.reportControls) {
+          result.reportControls.updateUserReport = perm('adminReports.updateUserReport');
+          result.reportControls.updatePostReport = perm('adminReports.updatePostReport');
+          result.reportControls.updateMessageReport = perm('adminReports.updateMessageReport');
+
+          result.reportControls.createUserReportNote = perm('adminReports.createUserReportNote');
+          result.reportControls.createPostReportNote = perm('adminReports.createPostReportNote');
+          result.reportControls.createMessageReportNote = perm('adminReports.createMessageReportNote');
+
+          result.reportControls.updateUserReportNote = perm('adminReports.updateUserReportNote');
+          result.reportControls.updatePostReportNote = perm('adminReports.updatePostReportNote');
+          result.reportControls.updateMessageReportNote = perm('adminReports.updateMessageReportNote');
+        }
       }
       return result;
     }

@@ -16,14 +16,14 @@ function buildToken(userId, expiration) {
 }
 
 function getMaskedPermissions(userRoleNames) {
-  var userRoles, mergedRoles = {};
+  var userRoles, mergedRole = {};
 
   // Banned overrules all other roles
   if (userRoleNames.indexOf(roles.banned.lookup) > -1) { userRoles = [ roles.banned ]; }
   else { userRoles = userRoleNames.map(function(roleName) { return roles[roleName]; }); }
-  userRoles.forEach(function(role) { mergedRoles = mergeRoles(mergedRoles, role); });
+  userRoles.forEach(function(role) { mergedRole = mergeRoles(mergedRole, role); });
 
-  return mergedRoles;
+  return mergedRole;
 }
 
 function mergeRoles(target, source) {
@@ -39,7 +39,7 @@ function mergeRoles(target, source) {
 
     // priorityRestrictions
     if (key === 'priorityRestrictions') {
-      if ((!target.priority || target.priority > source.priority) &&
+      if ((target.priority === undefined || target.priority > source.priority) &&
           source.priorityRestrictions &&
           source.priorityRestrictions.length > 0) {
         target.priorityRestrictions = source.priorityRestrictions;
@@ -48,7 +48,7 @@ function mergeRoles(target, source) {
     }
 
     // handle priority
-    if (key === 'priority' && (!target.priority || target.priority > source.priority)) {
+    if (key === 'priority' && (target.priority === undefined || target.priority > source.priority)) {
       target.priority = source.priority;
       return;
     }

@@ -23,7 +23,7 @@ var route = ['$stateProvider', function($stateProvider) {
       }],
       user: ['AdminUsers', 'Session', 'User', '$stateParams', function(AdminUsers, Session, User, $stateParams) {
         var promise;
-        if (Session.hasPermission('profileControls.viewUserEmail')) {
+        if (Session.hasPermission('adminUsers.find')) {
           promise = AdminUsers.find({ username: $stateParams.username }).$promise;
         }
         else { promise = User.get({ id: $stateParams.username }).$promise; }

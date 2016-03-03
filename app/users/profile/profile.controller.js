@@ -11,8 +11,14 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
     this.displayPostsUrl = false;
 
-    this.controlAccess = Session.getControlAccessWithPriority('profileControls', user.priority);
+    this.controlAccess = Session.getControlAccessWithPriority('users', user.priority);
     // Only allow reactivating/deactivating of own account
+    this.controlAccess.viewUserEmail = Session.hasPermission('adminUsers.find') || Session.user.id === user.id;
+    this.controlAccess.privilegedBan = Session.hasPermission('adminUsers.privilegedBan');
+    this.controlAccess.privilegedUpdate = Session.hasPermission('adminUsers.privilegedUpdate');
+    this.controlAccess.privilegedDeactivate = Session.hasPermission('users.privilegedDeactivate');
+    this.controlAccess.privilegedReactivate = Session.hasPermission('users.privilegedReactivate');
+    this.controlAccess.privilegedDelete = Session.hasPermission('users.privilegedDelete');
     this.controlAccess.deactivate = this.controlAccess.deactivate && Session.user.id === user.id;
     this.controlAccess.reactivate = this.controlAccess.reactivate && Session.user.id === user.id;
     this.editable = Session.user.id === user.id || this.controlAccess.privilegedUpdate;
@@ -137,7 +143,6 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
 
     this.savePassword = function() {
       var promise;
-      console.log(ctrl.passData);
       if (ctrl.adminVisitor) { promise = AdminUsers.update(ctrl.passData).$promise; }
       else { promise = User.update(ctrl.passData).$promise; }
       promise.then(function() {
@@ -171,7 +176,7 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.closeDeactivateModal = function() {
       $timeout(function() { ctrl.showDeactivate = false; });
     };
-    this.openDeactivateModal = function(index) { ctrl.showDeactivate = true; };
+    this.openDeactivateModal = function() { ctrl.showDeactivate = true; };
     this.deactivateUser = function() {
       User.deactivate({ id: ctrl.user.id }).$promise
       .then(function() {
@@ -187,7 +192,7 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.closeReactivateModal = function() {
       $timeout(function() { ctrl.showReactivate = false; });
     };
-    this.openReactivateModal = function(index) { ctrl.showReactivate = true; };
+    this.openReactivateModal = function() { ctrl.showReactivate = true; };
     this.reactivateUser = function() {
       User.reactivate({ id: ctrl.user.id }).$promise
       .then(function() {
@@ -203,35 +208,13 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.closeDeleteModal = function() {
       $timeout(function() { ctrl.showDelete = false; });
     };
-    this.openDeleteModal = function(index) { ctrl.showDelete = true; };
+    this.openDeleteModal = function() { ctrl.showDelete = true; };
     this.deleteUser = function() {
       User.delete({ id: ctrl.user.id }).$promise
       .then(function() { Alert.success('Account Deleted.'); })
       .catch(function() { Alert.error('Error Deleting Account'); })
       .finally(function() { ctrl.showDelete = false; });
     };
-
-
-    // DUMMY CHART DATA
-    // var data = {
-    //   labels: ['August', 'September', 'October', 'November', 'December', 'January', 'February'],
-    //   datasets: [
-    //     {
-    //       label: 'My First dataset',
-    //       fillColor: 'rgba(220,220,220,0.2)',
-    //       strokeColor: 'rgba(220,220,220,1)',
-    //       pointColor: 'rgba(220,220,220,1)',
-    //       pointStrokeColor: '#fff',
-    //       pointHighlightFill: '#fff',
-    //       pointHighlightStroke: 'rgba(220,220,220,1)',
-    //       data: [65, 59, 80, 81, 56, 55, 40]
-    //     }
-    //   ]
-    // };
-    // Chart.defaults.global.responsive = true;
-    // Chart.defaults.global.maintainAspectRatio = false;
-    // var ctx = document.getElementById('myChart').getContext('2d');
-    // var myNewChart = new Chart(ctx).Line(data);
 
     // Only show user's posts if viewing via the profile state
     if ($state.current.name === 'profile') {
