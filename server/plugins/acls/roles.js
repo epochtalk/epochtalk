@@ -193,6 +193,11 @@ module.exports = roles;
       create: true,
       vote: true,
       lock: true,
+      privilegedCreate: {
+        some: true,
+        all: true,
+      }
+    }
       privilegedLock: {
         some: true,
         all: true
@@ -402,9 +407,8 @@ roles.superAdministrator = {
     create: true,
     vote: true,
     lock: true,
-    privilegedLock: {
-      all: true
-    }
+    privilegedCreate: { all: true },
+    privilegedLock: { all: true }
   },
   users: {
     privilegedDeactivate: {
@@ -583,9 +587,8 @@ roles.administrator = {
     create: true,
     vote: true,
     lock: true,
-    privilegedLock: {
-      all: true
-    }
+    privilegedCreate: { all: true },
+    privilegedLock: { all: true }
   },
   users: {
     privilegedDeactivate: {
@@ -718,9 +721,8 @@ roles.globalModerator = {
     create: true,
     vote: true,
     lock: true,
-    privilegedLock: {
-      all: true
-    }
+    privilegedCreate: { all: true },
+    privilegedLock: { all: true }
   },
   users: {
     viewDeleted: true,
@@ -838,9 +840,8 @@ roles.moderator = {
     create: true,
     vote: true,
     lock: true,
-    privilegedLock: {
-      some: true
-    }
+    privilegedCreate: { some: true },
+    privilegedLock: { some: true }
   },
   users: {
     viewDeleted: true,

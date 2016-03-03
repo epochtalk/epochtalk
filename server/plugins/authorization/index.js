@@ -1023,15 +1023,35 @@ function threadsCreatePoll(server, auth, threadId, poll) {
   // is requester active
   var active = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
 
-  // can create poll
-  var getThreadOwner = server.db.threads.getThreadOwner(threadId);
-  var getPollExists = server.db.polls.exists(threadId);
-  var create = Promise.join(getThreadOwner, getPollExists, function(owner, pollExists) {
-    if (pollExists) { return Promise.reject(Boom.badRequest('Poll already exists')); }
-    else if (owner.user_id === userId) { return true; }
-    else { return Promise.reject(Boom.forbidden()); }
-  })
-  .error(() => { return Promise.reject(Boom.notFound()); });
+  // can create poll / ownership
+  var ownerCond = [
+    {
+      // Permission based override
+      error: Boom.badRequest('not admin'),
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'polls.privilegedCreate.all'
+    },
+    {
+      // is board moderator
+      error: Boom.badRequest('not mod'),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'polls.privilegedCreate.some')
+    },
+    new Promise(function(resolve) {
+      var getPollExists = server.db.polls.exists(threadId);
+      var getThreadOwner = server.db.threads.getThreadOwner(threadId);
+      return resolve(Promise.join(getThreadOwner, getPollExists, function(owner, pollExists) {
+        if (pollExists) { return Promise.reject(Boom.badRequest('Poll already exists')); }
+        else if (owner.user_id === userId) { return true; }
+        else { return Promise.reject(Boom.forbidden()); }
+      }));
+    })
+  ];
+  var owner = server.authorization.stitch(Boom.badRequest(), ownerCond, 'any');
 
   // poll based authorization
   var pollCond = [
@@ -1055,7 +1075,7 @@ function threadsCreatePoll(server, auth, threadId, poll) {
   var pollData = server.authorization.stitch(Boom.badRequest(), pollCond, 'all')
   .then(function() { return poll; });
 
-  return Promise.all([access, notBannedFromBoard, active, create, pollData]);
+  return Promise.all([access, notBannedFromBoard, active, owner, pollData]);
 }
 
 function threadsLockPoll(server, auth, threadId) {
@@ -1696,6 +1716,10 @@ function adminRolesValidate(roles, payload) {
       create: Joi.boolean(),
       vote: Joi.boolean(),
       lock: Joi.boolean(),
+      privilegedCreate: Joi.object().keys({
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
       privilegedLock: Joi.object().keys({
         some: Joi.boolean(),
         all: Joi.boolean()

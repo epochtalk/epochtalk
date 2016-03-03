@@ -900,6 +900,21 @@
                 Purge threads across all boards
               </label>
             </div>
+            <!-- Create Polls in other threads -->
+            <label>
+              <input id="threads-privilegedCreatePoll" type="checkbox" ng-init="privilegedCreatePoll = AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.some || AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.all" ng-model="privilegedCreatePoll" ng-change="privilegedCreatePoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.some = true : AdminManagementCtrl.newRole.permissions.polls.privilegedCreate = undefined; privilegedCreatePoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.all = undefined : null; privilegedCreatePoll ? AdminManagementCtrl.newRole.permissions.polls.create = true : null" ng-false-value="undefined" />
+              Allow user to create polls in other threads
+            </label>
+            <div class="indent">
+              <label ng-if="privilegedCreatePoll">
+                <input name="polls-privilegedCreatePoll-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.some" ng-click="AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.all = undefined" ng-value="true" />
+                Create polls in boards this user moderates
+              </label>
+              <label ng-if="privilegedCreatePoll">
+                <input name="polls-privilegedCreatePoll-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.all" ng-click="AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.some = undefined" ng-value="true" />
+                Create polls across all boards
+              </label>
+            </div>
             <!-- Lock Others Polls -->
             <label>
               <input id="threads-privilegedLockPoll" type="checkbox" ng-init="privilegedLockPoll = AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some || AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all" ng-model="privilegedLockPoll" ng-change="privilegedLockPoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some = true : AdminManagementCtrl.newRole.permissions.polls.privilegedLock = undefined; privilegedLockPoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all = undefined : null; privilegedLockPoll ? AdminManagementCtrl.newRole.permissions.polls.lock = true : null" ng-false-value="undefined" />
