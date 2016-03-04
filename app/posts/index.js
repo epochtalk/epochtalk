@@ -22,6 +22,7 @@ var route = ['$stateProvider', function($stateProvider) {
     },
     resolve: {
       $title: ['pageData', function(pageData) { return pageData.thread.title; }],
+      $boardBanned: ['pageData', function(pageData) { return pageData.bannedFromBoard; }],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {

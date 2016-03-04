@@ -1,9 +1,3 @@
-<div class="banner-container">
-  <div class="banner error" ng-if="BoardWrapperCtrl.bannedFromBoard">
-    Read Only Access &mdash; You are banned from this board
-  </div>
-</div>
-
 <div class="page-header-split">
   <div>
     <h4 ng-bind-html="BoardWrapperCtrl.board.name"></h4>
@@ -17,8 +11,8 @@
   </div>
 </div>
 
-<div class="fill-row" ng-if="BoardWrapperCtrl.loggedIn() && BoardWrapperCtrl.controlAccess.createPost && BoardWrapperCtrl.controlAccess.createThread">
-  <a ng-if="!BoardWrapperCtrl.bannedFromBoard" class="inverted-button" ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})"><i class="icon-epoch-add"></i>Start a New Thread</a>
+<div class="fill-row" ng-if="BoardWrapperCtrl.loggedIn()">
+  <a ng-if="!BoardWrapperCtrl.bannedFromBoard && BoardWrapperCtrl.controlAccess.createPost && BoardWrapperCtrl.controlAccess.createThread" class="inverted-button" ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})"><i class="icon-epoch-add"></i>Start a New Thread</a>
   <a class="inverted-button" ng-click="BoardWrapperCtrl.watchBoard()" ng-if="!BoardWrapperCtrl.board.watched">
     <i class="icon-epoch-watch"></i>Watch This Board
   </a>

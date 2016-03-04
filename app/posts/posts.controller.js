@@ -1,6 +1,6 @@
 var ctrl = [
-  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Alert', 'Watchlist', 'Session', 'Threads', 'Posts', 'pageData',
-  function($rootScope, $scope, $timeout, $anchorScroll, $location, Alert, Watchlist, Session, Threads, Posts, pageData) {
+  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Alert', 'BanSvc', 'Watchlist', 'Session', 'Threads', 'Posts', 'pageData',
+  function($rootScope, $scope, $timeout, $anchorScroll, $location, Alert, BanSvc, Watchlist, Session, Threads, Posts, pageData) {
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
     parent.loggedIn = Session.isAuthenticated;
@@ -9,7 +9,9 @@ var ctrl = [
     parent.posts = pageData.posts;
     parent.thread = pageData.thread;
     parent.board_id = pageData.thread.board_id;
-    parent.bannedFromBoard = pageData.bannedFromBoard;
+    // TODO: This will not be here once actual boards are stored in this array
+    parent.bannedFromBoard = BanSvc.banStatus().boards.length > 0;
+
     this.rootUrl = generateBaseUrl();
     this.user = Session.user;
     this.posts = pageData.posts;
