@@ -62,11 +62,15 @@ exports.endpoints = function(internalConfig) {
       path: '/images/policy',
       config: {
         auth: { strategy: 'jwt' },
-        validate: { payload: { filename: Joi.string().required() } },
+        validate: { payload: Joi.array().items(Joi.string().required()).min(1) },
         handler: function(request, reply) {
-          var filename = request.payload.filename;
-          var result = request.imageStore.uploadPolicy(filename);
-          return reply(result);
+          var filenames = request.payload;
+
+          var policies = filenames.map(function(filename) {
+            return request.imageStore.uploadPolicy(filename);
+          });
+
+          return reply(policies);
         }
       }
     },
@@ -91,7 +95,6 @@ exports.endpoints = function(internalConfig) {
           // make sure image file exists
           var file = request.payload.file;
           if (!file) { return reply(Boom.badRequest('No File Attached')); }
-          file.on('end', function () { return reply().code(204); });
 
           // decode policy
           var policyPayload = request.payload.policy;

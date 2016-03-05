@@ -70,22 +70,27 @@ var generateImageUrl = function(filename) {
 };
 
 local.uploadImage = function(source, filename, reply) {
-  var pathToFile = path.normalize(__dirname + '/../../public/images');
+  var pathToFile = path.normalize(__dirname + '/../../../public/images');
   pathToFile = pathToFile + '/' + filename;
   var exists = fs.existsSync(pathToFile);  // check if file already exists
 
   if (exists) {
-    if (reply) { reply().code(204); }
-    return;
+    if (reply) { return reply().code(204); }
   }
   else {
     // grab image
-    var puller;
+    var puller, error;
     if (reply) { puller = source; }
     else { puller = request(source); }
     puller.on('error', function(err) {
       deleteImage(err, pathToFile);
-      if (reply) { reply(Boom.badRequest('Could not process image')); }
+      if (reply) { error = Boom.badRequest('Could not process image'); }
+    });
+    puller.on('end', function () {
+      if (reply) {
+        if (error) { return reply(Boom.badImplementation(error)); }
+        else { return reply().code(204); }
+      }
     });
 
     // check file type
@@ -110,7 +115,7 @@ local.uploadImage = function(source, filename, reply) {
     });
     ftc.on('error', function(err) {
       deleteImage(err, pathToFile);
-      if (reply) { reply(Boom.unsupportedMediaType('File is not an image')); }
+      if (reply) { error = Boom.unsupportedMediaType('File is not an image'); }
     });
 
     // check file size
@@ -125,14 +130,14 @@ local.uploadImage = function(source, filename, reply) {
     });
     sc.on('error', function(err) {
       deleteImage(err, pathToFile);
-      if (reply) { reply(Boom.badRequest('Image Size Limit Exceeded')); }
+      if (reply) { error = Boom.badRequest('Image Size Limit Exceeded'); }
     });
 
     // write to disk
     var writer = fs.createWriteStream(pathToFile);
     writer.on('error', function (err) {
       deleteImage(err, pathToFile);
-      if (reply) { reply(Boom.badImplementation()); }
+      if (reply) { error = Boom.badImplementation(); }
     });
 
     puller.pipe(ftc).pipe(sc).pipe(writer);
@@ -149,7 +154,7 @@ var deleteImage = function(err, pathToFile) {
 
 local.removeImage = function(imageUrl) {
   var pathArray = imageUrl.split('/');
-  var filepath = path.normalize(__dirname + '/../../public/images');
+  var filepath = path.normalize(__dirname + '/../../../public/images');
   filepath = filepath + '/' + pathArray[pathArray.length-1];
   deleteImage(undefined, filepath);
 };

@@ -10,11 +10,12 @@ var local = require(path.normalize(__dirname + '/local'));
 var imageHandlers = {};
 var expireHandle;
 var clearHandle;
+var options;
 var config;
 var db;
 
 images.init = function(opts) {
-  opts = opts || {};
+  options = opts = opts || {};
   db = opts.db;
   config = opts.config;
 
@@ -31,6 +32,8 @@ images.init = function(opts) {
   clearInterval(clearHandle);
   clearHandle = setInterval(clearImageReferences, config.images.interval);
 };
+
+images.reinit = function() { images.init(options); }
 
 // -- interface api
 

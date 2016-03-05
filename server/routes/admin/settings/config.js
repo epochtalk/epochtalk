@@ -180,6 +180,8 @@ exports.update = {
       var updateLimits = request.server.plugins['rate-limiter'].updateLimits;
       updateLimits(newConfig.rateLimiting);
     })
+    // re-init image clients
+    .then(function() { request.imageStore.reinit(); })
     // return payload
     .then(function() { return request.payload; });
 

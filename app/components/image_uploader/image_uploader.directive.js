@@ -31,67 +31,81 @@ module.exports = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Ima
         $(inputElement).attr('accept', 'image/x-icon, image/png');
       }
 
-      function upload(images) {
-        if (images.length > 10) {
-          $timeout(function() { Alert.error('Image upload failed: Exceeded 10 images. Try again.'); });
-          return;
+      // image upload function
+      function upload(fsImages) {
+        if (fsImages.length > 10) {
+          return $timeout(function() { Alert.error('Error: Exceeded 10 images.'); });
         }
+
+        // (re)prime loading and progress variables
+        if ($scope.purpose !== 'editor') { $scope.images = []; }
         $scope.imagesUploading = true;
         $scope.imagesProgress = 0;
-        if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.images = []; }
-        // upload each image
-        images.forEach(function(image) {
-          var imageProgress = {
+
+        /**
+         * Image = {
+         *   name: {string} The filename of the string (provided by host computer),
+         *   file: {ImageOjbect} The image itself,
+         *   status: {string} The status of the image upload,
+         *   progress: {number} Progession of the upload as percent,
+         *   policy: {policyObject} S3 or local policy object,
+         *   url: {string} The url where the image is hosted (upon upload completion)
+         */
+         // prep each image
+        fsImages.forEach(function(fsImage) {
+          var image = {
+            name: fsImage.name,
+            file: fsImage,
             status: 'Initializing',
-            name: image.name,
             progress: 0
           };
-          $scope.images.push(imageProgress);
+          $scope.images.push(image);
+        });
 
-          // get policy for this image
-          s3ImageUpload.policy(image.name)
-          .then(function(policy) {
-            imageProgress.id = policy.data.filename;
-            imageProgress.status = 'Starting';
-
-            // upload image to s3
-            return s3ImageUpload.upload(policy, image)
+        // append a policy on to each image
+        return s3ImageUpload.policy($scope.images)
+        // upload each image
+        .then(function(images) {
+          images.forEach(function(image) {
+            image.status = 'Starting';
+            return s3ImageUpload.upload(image)
             .progress(function(percent) {
-              imageProgress.progress = percent;
-              imageProgress.status = 'Uploading';
+              image.progress = percent;
+              image.status = 'Uploading';
               updateImagesUploading();
             })
             .error(function(err) {
-              imageProgress.progress = '--';
-              imageProgress.status = 'Failed';
+              image.progress = '--';
+              image.status = 'Failed';
               updateImagesUploading();
-              var message = 'Image upload failed for: ' + imageProgress.name + '. ';
+              var message = 'Image upload failed for: ' + image.name + '. ';
               if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
               else if (err.message) { console.log(err); }
-              else { message += 'Please ensure images are within size limits.'; }
+              else { message += 'Error: ' + err.message; }
               Alert.error(message);
             })
             .success(function(url) {
-              imageProgress.progress = 100;
-              imageProgress.status = 'Complete';
-              imageProgress.url = url;
+              image.progress = 100;
+              image.status = 'Complete';
+              image.url = url;
               updateImagesUploading();
               if ($scope.onDone) { $scope.onDone({data: url}); }
               if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.model = url; }
+            })
+            .catch(function(err) {
+              image.progress = '--';
+              image.status = 'Failed';
+              updateImagesUploading();
+              var message = 'Image upload failed for: ' + image.name + '. ';
+              if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
+              else { message += 'Error: ' + err.message; }
+              Alert.error(message);
             });
-          })
-          .catch(function(err) {
-            imageProgress.progress = '--';
-            imageProgress.status = 'Failed';
-            updateImagesUploading();
-            var message = 'Image upload failed for: ' + imageProgress.name + '. ';
-            if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
-            else { message += 'Please ensure images are within size limits.'; }
-            Alert.error(message);
           });
         });
       }
 
+      // update loading status
       function updateImagesUploading() {
         var uploading = false;
         var percentComplete = 0;
