@@ -275,8 +275,8 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
 
     var params = $location.search();
-    var page = Number(params.page) || undefined;
-    var limit = Number(params.limit) || undefined;
+    var page = Number(params.page) || 1;
+    var limit = Number(params.limit) || 25;
     var mod = params.mod;
     var action = params.action;
     var keyword = params.keyword;
@@ -299,7 +299,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       pageChanged = true;
       ctrl.page = page;
     }
-    if (limit && limit !== ctrl.limit) {
+    if ((limit === undefined || limit) && limit !== ctrl.limit) {
       limitChanged = true;
       ctrl.limit = limit;
     }

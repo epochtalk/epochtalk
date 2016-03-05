@@ -54,7 +54,7 @@ exports.moveBoards = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.moveBoards' },
   handler: function(request, reply) {
-    return reply(request.db.boards.all());
+    return reply(request.db.boards.allSelect());
   }
 };
 

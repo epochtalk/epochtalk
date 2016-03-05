@@ -208,6 +208,44 @@ module.exports = {
       .then(function(user) { data.username = user.username; });
     }
   },
+  'adminUsers.banFromBoards': {
+    genDisplayText: function(data) {
+      return `banned user "${data.username}" from boards: "${data.boards}"`;
+    },
+    genDisplayUrl: function() { return `^.board-bans`; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.user_id)
+      .then(function(user) {
+        data.username = user.username;
+        return Promise.map(data.board_ids, function(boardId) {
+          return request.db.boards.find(boardId)
+          .then(function(board) { return board.name; });
+        });
+      })
+      .then(function(boards) {
+        data.boards = boards.join(', ');
+      });
+    }
+  },
+  'adminUsers.unbanFromBoards': {
+    genDisplayText: function(data) {
+      return `unbanned user "${data.username}" from boards: "${data.boards}"`;
+    },
+    genDisplayUrl: function() { return `^.board-bans`; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.user_id)
+      .then(function(user) {
+        data.username = user.username;
+        return Promise.map(data.board_ids, function(boardId) {
+          return request.db.boards.find(boardId)
+          .then(function(board) { return board.name; });
+        });
+      })
+      .then(function(boards) {
+        data.boards = boards.join(', ');
+      });
+    }
+  },
 
    // =========== Boards Routes ===========
   'boards.create': {

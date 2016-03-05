@@ -22,6 +22,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       $state.go('admin-moderation.messages', { filter: 'Pending'}, { location: true, reload: true });
     }
     else if (Session.hasPermission('modAccess.logs')) { $state.go('admin-moderation.logs'); }
+    else if (Session.hasPermission('modAccess.boardBans')) { $state.go('admin-moderation.board-bans'); }
     else { $state.go('admin'); }
   }];
 
@@ -83,6 +84,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           search: $stateParams.search
         };
         return AdminReports.pageUserReports(query).$promise;
+      }],
+      boards: ['Boards', function(Boards) {
+        return Boards.query({ stripped: true }).$promise
+        .then(function(data) { return data.boards; });
       }]
     }
   })
@@ -152,6 +157,10 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         };
         if (Session.globalModeratorCheck()) { delete query.mod_id; } // default to all if global mod
         return AdminReports.pagePostReports(query).$promise;
+      }],
+      boards: ['Boards', function(Boards) {
+        return Boards.query({ stripped: true }).$promise
+        .then(function(data) { return data.boards; });
       }]
     }
   })
@@ -190,6 +199,58 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           search: $stateParams.search
         };
         return AdminReports.pageMessageReports(query).$promise;
+      }],
+      boards: ['Boards', function(Boards) {
+        return Boards.query({ stripped: true }).$promise
+        .then(function(data) { return data.boards; });
+      }]
+    }
+  })
+  .state('admin-moderation.board-bans', {
+    url: '/boardbans?page&limit&board&modded&search',
+    reloadOnSearch: false,
+    views: {
+      'data@admin-moderation': {
+        controller: 'ModBoardBansCtrl',
+        controllerAs: 'ModerationCtrl',
+        templateUrl: '/static/templates/admin/moderation/board-bans.html'
+      }
+    },
+    resolve: {
+      userAccess: modCheck('boardBans'),
+      $title: function() { return 'Board Bans'; },
+      loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
+        var deferred = $q.defer();
+        require.ensure([], function() {
+          var ctrl = require('./board-bans.controller');
+          $ocLazyLoad.load({ name: 'ept.admin.moderation.boardBans.ctrl' });
+          deferred.resolve(ctrl);
+        });
+        return deferred.promise;
+      }],
+      bannedBoards: [ 'AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+        var query = {
+          limit: Number($stateParams.limit) || undefined,
+          page: Number($stateParams.page) || undefined,
+          modded: $stateParams.modded,
+          board: $stateParams.board,
+          search: $stateParams.search
+        };
+        return AdminUsers.byBannedBoards(query).$promise;
+      }],
+      selectBoards: ['AdminBoards', '$filter', function(AdminBoards, $filter) {
+        return AdminBoards.moveBoards().$promise
+        .then(function(allBoards) {
+          allBoards = allBoards || [];
+          allBoards.map(function(board) {
+            board.name = $filter('decode')(board.name); // decode html entities
+          });
+          return allBoards;
+        });
+      }],
+      boards: ['Boards', function(Boards) {
+        return Boards.query({ stripped: true }).$promise
+        .then(function(data) { return data.boards; });
       }]
     }
   })

@@ -73,12 +73,12 @@
   </table>
   <h3 ng-if="ModerationCtrl.logs.length < 1" class="centered-text">No Logs to Display</h3>
   <div class="pagination-simple">
-    <a ng-show="ModerationCtrl.prev" ui-sref=".({ page: ModerationCtrl.prev })">
+    <a ng-show="ModerationCtrl.prev" ui-sref=".({ page: ModerationCtrl.prev, limit: ModerationCtrl.limit })">
       &#10094; Newer
     </a>
     <span ng-hide="ModerationCtrl.prev">&#10094; Newer</span>
     &nbsp;&nbsp;&nbsp;
-    <a ng-show="ModerationCtrl.next" ui-sref=".({ page: ModerationCtrl.next })">
+    <a ng-show="ModerationCtrl.next" ui-sref=".({ page: ModerationCtrl.next, limit: ModerationCtrl.limit })">
        Older &#10095;
     </a>
     <span ng-hide="ModerationCtrl.next">Older &#10095;</span>

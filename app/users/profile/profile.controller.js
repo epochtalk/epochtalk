@@ -19,7 +19,10 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.adminVisitor = Session.user.id !== user.id && this.controlAccess.privilegedUpdate;
 
     // Check if user is banned
-    this.ban_expiration = this.user.ban_expiration && Session.user.id !== user.id ? $filter('humanDate')(this.user.ban_expiration, true) : null;
+    this.ban_expiration = null;
+    if (this.adminVisitor && this.user.ban_expiration && new Date(this.user.ban_expiration) > new Date()) {
+      this.ban_expiration = $filter('humanDate')(this.user.ban_expiration, true);
+    }
 
     var calcAge = function(dob) {
       if (!dob) { return '';}

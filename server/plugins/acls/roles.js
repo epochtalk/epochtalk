@@ -27,6 +27,7 @@ module.exports = roles;
       users: true,
       posts: true,
       messages: true,
+      boardBans: true,
       logs: true
     },
     // ACLs
@@ -93,6 +94,12 @@ module.exports = roles;
         samePriority: true,
         lowerPriority: true
       },
+      privilegedBanFromBoards: {
+        samePriority: true,
+        lowerPriority: true
+        all: true,
+        some: true,
+      },
       update: true,
       find: true,
       addRoles: true,
@@ -105,7 +112,11 @@ module.exports = roles;
       pageAdmins: true,
       pageModerators: true,
       ban: true,
-      unban: true
+      unban: true,
+      banFromBoards: true,
+      unbanFromBoards: true,
+      getBannedBoards: true,
+      byBannedBoards: true
     },
     adminModerators: {
       add: true,
@@ -266,6 +277,7 @@ roles.superAdministrator = {
     users: true,
     posts: true,
     messages: true,
+    boardBans: true,
     logs: true,
   },
   // ACLs
@@ -328,6 +340,10 @@ roles.superAdministrator = {
     privilegedBan: {
       samePriority: true
     },
+    privilegedBanFromBoards: {
+      samePriority: true,
+      all: true
+    },
     update: true,
     find: true,
     addRoles: true,
@@ -340,7 +356,11 @@ roles.superAdministrator = {
     pageAdmins: true,
     pageModerators: true,
     ban: true,
-    unban: true
+    unban: true,
+    banFromBoards: true,
+    unbanFromBoards: true,
+    getBannedBoards: true,
+    byBannedBoards: true
   },
   adminModerators: {
     add: true,
@@ -478,6 +498,7 @@ roles.administrator = {
     users: true,
     posts: true,
     messages: true,
+    boardBans: true,
     logs: true
   },
   // ACLs
@@ -524,6 +545,10 @@ roles.administrator = {
     privilegedBan: {
       lowerPriority: true
     },
+    privilegedBanFromBoards: {
+      lowerPriority: true,
+      all: true
+    },
     update: true,
     find: true,
     addRoles: true,
@@ -536,7 +561,11 @@ roles.administrator = {
     pageAdmins: true,
     pageModerators: true,
     ban: true,
-    unban: true
+    unban: true,
+    banFromBoards: true,
+    unbanFromBoards: true,
+    getBannedBoards: true,
+    byBannedBoards: true
   },
   adminModerators: {
     add: true,
@@ -666,7 +695,8 @@ roles.globalModerator = {
   modAccess: {
     users: true,
     posts: true,
-    messages: true
+    messages: true,
+    boardBans: true
   },
   // ACLs
   adminBoards: {
@@ -696,10 +726,19 @@ roles.globalModerator = {
     privilegedBan: {
       lowerPriority: true
     },
+    privilegedBanFromBoards : {
+      lowerPriority: true,
+      all: true
+    },
     update: true,
     find: true,
+    searchUsernames: true,
     ban: true,
-    unban: true
+    unban: true,
+    banFromBoards: true,
+    unbanFromBoards: true,
+    getBannedBoards: true,
+    byBannedBoards: true
   },
   boards: {
     viewUncategorized: {
@@ -805,7 +844,8 @@ roles.moderator = {
   modAccess: {
     users: true,
     posts: true,
-    messages: true
+    messages: true,
+    boardBans: true
   },
   // ACLs
   adminBoards: {
@@ -832,13 +872,17 @@ roles.moderator = {
     privilegedUpdate: {
       lowerPriority: true
     },
-    privilegedBan: {
-      lowerPriority: true
+    privilegedBanFromBoards: {
+      lowerPriority: true,
+      some: true
     },
     update: true,
     find: true,
-    ban: true,
-    unban: true
+    searchUsernames: true,
+    banFromBoards: true,
+    unbanFromBoards: true,
+    getBannedBoards: true,
+    byBannedBoards: true
   },
   boards: {
     viewUncategorized: {

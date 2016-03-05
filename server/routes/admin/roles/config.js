@@ -135,6 +135,7 @@ exports.add = {
           users: Joi.boolean(),
           posts: Joi.boolean(),
           messages: Joi.boolean(),
+          boardBans: Joi.boolean(),
           logs: Joi.boolean()
         }),
         adminRoles: Joi.object().keys({
@@ -192,6 +193,12 @@ exports.add = {
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
+          privilegedBanFromBoards: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean(),
+            some: Joi.boolean(),
+            all: Joi.boolean()
+          }),
           privilegedAddRoles: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
@@ -212,7 +219,11 @@ exports.add = {
           pageAdmins: Joi.boolean(),
           pageModerators: Joi.boolean(),
           ban: Joi.boolean(),
-          unban: Joi.boolean()
+          unban: Joi.boolean(),
+          banFromBoards: Joi.boolean(),
+          unbanFromBoards: Joi.boolean(),
+          getBannedBoards: Joi.boolean(),
+          byBannedBoards: Joi.boolean()
         }),
         adminModerators: Joi.object().keys({
           add: Joi.boolean(),
@@ -431,6 +442,7 @@ exports.update = {
           users: Joi.boolean(),
           posts: Joi.boolean(),
           messages: Joi.boolean(),
+          boardBans: Joi.boolean(),
           logs: Joi.boolean()
         }),
         adminRoles: Joi.object().keys({
@@ -488,6 +500,12 @@ exports.update = {
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
           }),
+          privilegedBanFromBoards: Joi.object().keys({
+            samePriority: Joi.boolean(),
+            lowerPriority: Joi.boolean(),
+            some: Joi.boolean(),
+            all: Joi.boolean()
+          }),
           privilegedAddRoles: Joi.object().keys({
             samePriority: Joi.boolean(),
             lowerPriority: Joi.boolean()
@@ -508,7 +526,11 @@ exports.update = {
           pageAdmins: Joi.boolean(),
           pageModerators: Joi.boolean(),
           ban: Joi.boolean(),
-          unban: Joi.boolean()
+          unban: Joi.boolean(),
+          banFromBoards: Joi.boolean(),
+          unbanFromBoards: Joi.boolean(),
+          getBannedBoards: Joi.boolean(),
+          byBannedBoards: Joi.boolean()
         }),
         adminModerators: Joi.object().keys({
           add: Joi.boolean(),

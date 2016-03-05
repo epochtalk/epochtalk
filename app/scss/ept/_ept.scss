@@ -79,7 +79,6 @@ label {
   margin-bottom: 0;
 }
 datalist { z-index: 10001; }
-.logged-out, .error-label { @include label(error, 0.8rem); }
 .desc-label { color: $secondary-font-color; }
 .pointer { cursor: pointer; }
 .default-cursor { cursor: default; }
@@ -98,6 +97,23 @@ datalist { z-index: 10001; }
 input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
 
 /*-------------- Global Components -------------- */
+.banner-container {
+  @include row;
+  .banner {
+    @include span-columns(6);
+    margin-bottom: 1rem;
+    &:only-child { @include span-columns(12); }
+    &.warning { @include label(warning, 0.8rem); }
+    &.error { @include label(error, 0.8rem); }
+
+    @include media($mobile) {
+      @include span-columns(8);
+      margin-bottom: 0.5rem;
+      &:last-child { margin-bottom: 1rem; }
+    }
+  }
+}
+
 .column-container { @include clearfix; }
 .half-column {
   @include row;
@@ -165,6 +181,7 @@ input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
 }
 .pagination-simple {
   float: right;
+  margin-bottom: 1rem;
   span { color: $secondary-font-color; }
 }
 .pagination-slide {
@@ -980,16 +997,6 @@ table.striped {
     .poll-header .poll-details .poll-info { display: block; }
     .poll-header .poll-details, .poll-header .poll-details.small { width: 100%; text-align: center; padding-left: 0; }
   }
-}
-
-.banner {
-  @include span-columns(12);
-  @include border-radius(5px);
-  border: 1px solid $border-color;
-  margin-bottom: 1rem;
-  padding: 0.875rem;
-  text-align: center;
-  &.warning { background-color: #FCFC79; }
 }
 
 /*-------------- Index File -------------- */
@@ -2057,7 +2064,25 @@ ul.indent { margin-left: 2rem; margin-bottom: 1rem; }
   }
   span { margin-right: 0.2rem; }
 }
-
+.banned-boards-select { margin-bottom: 0; }
+.board-bans-list {
+  @include pad(0.5rem);
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  max-height: 18.75rem;
+  overflow-y: scroll;
+  background-color: $sub-header-color;
+  border: 1px solid $border-color;
+  li {
+    list-style: none;
+    input {
+      margin-bottom: 0;
+      & + label { margin-left: 0.2rem; }
+      &:disabled + label { color: $secondary-font-color; }
+    }
+    ul { margin-left: 1.25rem; }
+  }
+}
 table.log {
   tr td {
     font-size: 0.75rem;

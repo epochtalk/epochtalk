@@ -1,11 +1,12 @@
-var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert', 'ThemeSVC',
-  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert, ThemeSVC) {
+var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'BanSvc',
+  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert, ThemeSVC, BanSvc) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.hasPermission = Session.hasPermission;
     this.previewActive = ThemeSVC.previewActive();
     this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
+    this.isBanned = BanSvc.isBanned;
     this.loginOrRecover = true;
 
     // Update preview mode on change

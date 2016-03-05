@@ -96,7 +96,8 @@ exports.allCategories = {
   validate: {
     query: {
       page: Joi.number().default(1),
-      limit: Joi.number().integer().min(1).max(100).default(5)
+      limit: Joi.number().integer().min(1).max(100).default(5),
+      stripped: Joi.boolean()
     }
   },
   pre: [ { method: 'auth.boards.allCategories(server, auth)', assign: 'priority' } ],
@@ -105,6 +106,7 @@ exports.allCategories = {
     var priority = request.pre.priority;
     var opts = {
       hidePrivate: true,  // filter out private boards
+      stripped: request.query.stripped, // only retrieve boards and categories no other metadata
       limit: request.query.limit,
       page: request.query.page
     };
@@ -112,13 +114,22 @@ exports.allCategories = {
 
     var getAllCategories = request.db.boards.allCategories(priority, opts);
     var getRecentThreads = request.db.threads.recent(userId, priority, opts);
-    var promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
-      return {
-        boards: boards,
-        threads: threads
-      };
-    });
 
+    var promise;
+    if (opts.stripped) {
+      promise = getAllCategories
+      .then(function(boards) {
+        return { boards: boards };
+      });
+    }
+    else {
+      promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
+        return {
+          boards: boards,
+          threads: threads
+        };
+      });
+    }
     return reply(promise);
   }
 };

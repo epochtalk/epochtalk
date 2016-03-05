@@ -10,7 +10,7 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
   * @apiPermission Super Administrator, Administrator,
   * @apiDescription Add a moderator to a board.
   *
-  * @apiParam (Payload) {string} user_id The id of the user to add as a moderator.
+  * @apiParam (Payload) {string[]} usernames Array of ids of the user to add as a moderator.
   * @apiParam (Payload) {string} board_id The id of the board to add the moderator to.
   *
   * @apiSuccess {object} STATUS 200 OK
@@ -61,7 +61,7 @@ exports.add = {
   * @apiPermission Super Administrator, Administrator,
   * @apiDescription Remove a moderator from a board.
   *
-  * @apiParam (Payload) {string} user_id The id of the user to remove from being a moderator.
+  * @apiParam (Payload) {string[]} username Array of user ids of the user to remove from being a moderator.
   * @apiParam (Payload) {string} board_id The id of the board to remove the moderator from.
   *
   * @apiSuccess {object} STATUS 200 OK
