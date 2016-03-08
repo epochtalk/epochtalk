@@ -8,7 +8,6 @@ var symlink = require(path.join(__dirname, 'tasks', 'symlink'));
 var copy_css = require(path.join(__dirname, 'tasks', 'copy_files'));
 var livereload = require(path.join(__dirname, 'tasks', 'livereload'));
 var installModules = require(path.join(__dirname, 'tasks', 'load_modules'));
-
 clean()
 .then(installModules)
 .then(copy_css)

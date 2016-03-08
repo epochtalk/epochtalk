@@ -1,0 +1,176 @@
+/*-- General --*/
+.pointer { cursor: pointer; }
+.default-cursor { cursor: default; }
+.error-label { @include label(error,  0.6875rem, 2px, 0.1rem); }
+.thin-underline { @include clearfix; border-bottom: 1px solid $border-color; margin-bottom: 0.625rem; }
+.desc-label { color: $secondary-font-color; }
+.bold { font-weight: bold; }
+.spoiler { color: black; background-color: black; &:hover { color: white; } }
+.disable-animations {
+  // Use this for transitions
+  &.ng-enter,
+  &.ng-leave,
+  &.ng-animate {
+    -webkit-transition: none !important;
+    transition: none !important;
+  }
+  // Use this for keyframe animations
+  &.ng-animate {
+    -webkit-animation: none 0s;
+    animation: none 0s;
+  }
+}
+
+/*-- HTTP Labels --*/
+span {
+  &.get { @include label(info, 0.6875rem, 2px, 0 0.5rem); }
+  &.post { @include label(success, 0.6875rem, 2px, 0 0.5rem); }
+  &.put {  @include label(warning, 0.6875rem, 2px, 0 0.5rem); }
+  &.delete {  @include label(error, 0.6875rem, 2px, 0 0.5rem); }
+  &.large { font-size: 0.8rem; font-weight: bold; line-height: 1.5rem; }
+}
+
+/*-- JSON Pretty Print --*/
+pre.json {
+  @include pad(1rem);
+  font-size: 0.875rem;
+  background-color: $sub-header-color;
+  overflow: scroll;
+  max-height: 65vh;
+  .string { color: #ff5722; }
+  .number { color: #4caf50; }
+  .boolean { color: #e91e63; }
+  .null { color: #9c27b0; }
+  .key { color: #2196f3; }
+}
+
+/*-- Bordered Box --*/
+.boxed-section {
+  @include clearfix;
+  border-collapse: collapse;
+  border: 1px solid $border-color;
+  margin-bottom: 1rem;
+  .header {
+    @include pad(0.2rem 0.5rem);
+    border-bottom: 1px solid $border-color;
+    font-color: $secondary-font-color-dark;
+    background-color: $sub-header-color;
+    overflow: auto;
+  }
+  .content {
+    @include pad(0.5rem);
+    input { margin-bottom: 0.5rem; }
+  }
+}
+
+/*-- Toggle Switch --*/
+.switch-block label { float: none; }
+.toggle-switch { position: absolute; margin-left: -9999px; visibility: hidden; }
+input.toggle-switch + label {
+  @include no-select;
+  @include border-radius(3px);
+  @include transition(background 0.3s);
+  display: block;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  padding: 2px;
+  width: 3.75rem;
+  height: 2rem;
+  background-color: $secondary-font-color;
+  margin: 0;
+  float: right;
+}
+input.toggle-switch + label:before,
+input.toggle-switch + label:after { display: block; position: absolute; content: ""; }
+input.toggle-switch + label:before {
+  @include transition(background 0.3s);
+  top: 2px;
+  left: 2px;
+  bottom: 2px;
+  right: 2px;
+  background-color: $base-background-color;
+}
+input.toggle-switch + label:after {
+  @include border-radius(2px);
+  @include transition(margin 0.3s, background 0.3s);
+  top: 4px;
+  left: 4px;
+  bottom: 4px;
+  width: 1.5625rem;
+  background-color: $secondary-font-color;
+
+  @include media($mobile) { width: 1.45rem; }
+}
+input.toggle-switch:checked + label { background-color: $color-primary; }
+input.toggle-switch:checked + label:after { margin-left: 1.6875rem; background-color: $color-primary; }
+input[disabled].toggle-switch + label,
+input[disabled].toggle-switch + label:after { background-color: $secondary-font-color-light; }
+input[disabled].toggle-switch:checked + label,
+input[disabled].toggle-switch:checked + label:after { background-color: lighten($color-primary, 20%); }
+.input-info { @include label(default, 0.6875rem, 0, 0 0.3125rem); }
+.option {
+  input[type] { margin: 0; vertical-align: middle; }
+  input + label { @include no-select; display: inline-block; margin: 0 0 0 0.25rem; }
+}
+
+/*-- Style for Avatar Container  (Shared by Profiles Page and Edit User Modal --*/
+.profile-avatar-container { width: 100%; text-align: center; img { height: 12.5rem; width: auto; } }
+
+/*-- Radio Button Styling --*/
+.radio-button {
+  & input[type="radio"]:checked + label { background: $color-primary; color: $button-text-color; margin-left: 0px; }
+  & input[type="radio"] + label { margin-left: 0px; }
+
+  @include media($mobile) { margin-bottom: 0.5rem; }
+}
+input[type].hide-radio { display: none; }
+
+/*-- Input With Nested Button --*/
+.nested-input-container { position: relative; }
+input[type].nested-input.valid-username { color: green; }
+.nested-input-container .nested-clear-btn {
+  @include border-radius(30px);
+  position: absolute;
+  right: 9.75rem;
+  top: 0.563rem;
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  line-height: 1.25rem;
+  font-size: 0.8125rem;
+  z-index: 2;
+  background: $secondary-font-color-light;
+  color: #fff;
+  text-align: center;
+}
+.nested-input-container .nested-clear-btn:hover,
+.nested-input-container .nested-clear-btn:focus { background-color:  $secondary-font-color; }
+.nested-btn, .nested-btn-disabled {
+  @include border-radius(2px);
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  bottom: 4px;
+  display: inline-block;
+  width: 8.75rem;
+  line-height: 1.875rem;
+  font-size: 0.8125rem;
+  z-index: 2;
+  background: $color-primary;
+  color: $button-text-color;
+  text-align: center;
+}
+.nested-btn:hover,
+.nested-btn:focus { background-color: $color-primary-alt; border-color: $color-primary-alt; color: #fff; }
+.nested-btn-disabled { color: #fff; background-color: #ccc; border-color: #ccc; pointer-events: none; }
+.radio-button label {
+  @include truncate-ellipsis;
+  display: inline-block;
+  height: 36px;
+  width: 100%;
+  border-radius: 2px;
+  font-size: 13px;
+  line-height: 36px;
+  text-align: center;
+}
