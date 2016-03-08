@@ -8,7 +8,8 @@ var appModulesDir = path.normalize(__dirname + '/../../app/modules');
 
 module.exports = function() {
   return npmInstall()
-  .then(loadModules);
+  .then(loadModules)
+  .catch(console.log);
 };
 
 // calls `npm install` on the /modules dir
