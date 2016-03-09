@@ -1,6 +1,6 @@
 <div id="admin-subnav" class="fill-row">
   <h2>Management</h2>
-  <dl class="tabs custom-tabs">
+  <dl class="tabs">
     <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.boards')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'boards'}">
       <a ui-sref=".boards" ng-click="AdminManagementCtrl.tab = 'boards'">Boards</a>
     </dd>

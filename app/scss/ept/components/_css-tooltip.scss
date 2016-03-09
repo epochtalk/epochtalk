@@ -1,0 +1,32 @@
+.css-tooltip.icon {
+  @include pad(0);
+  margin: 0 0.75rem 0 0;
+  background: none;
+  color: $color-primary;
+  font-size: 0.875rem;
+  &:hover, &:active {
+    color: $color-primary-alt;
+    background: none;
+    font-size: 0.875rem;
+  }
+  &:disabled {
+    color: $secondary-font-color-light;
+    background: none;
+    font-size: 0.875rem;
+  }
+}
+.css-tooltip { display: inline; position: relative; }
+.css-tooltip:hover:after {
+  background: #333;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  bottom: 120%;
+  color: #FFF;
+  content: attr(data-css-tooltip);
+  left: 50%;
+  padding: 5px 15px;
+  position: absolute;
+  z-index: 10;
+  text-align: center;
+  transform: translate(-50%, 0);
+}

@@ -1,0 +1,155 @@
+/*-------------- Posts (Thread View) Layout -------------- */
+.thread-controls {
+  @include row;
+  margin-bottom: 0.625rem;
+  .control {
+    @include span-columns(4);
+    @include omega(3n);
+    text-align: center;
+    margin: 1rem 0;
+    label { display: inline-block; font-size: 1rem; color: $base-font-color; }
+    #stickyThread, #lockThread {
+      display:none;
+      font-family: "epoch-icons";
+      & + label:before { font-size: 2rem; color: $secondary-font-color-light; display: block; }
+      &:checked + label:before { color: $color-primary; }
+    }
+    #purgeThread {
+      color: $secondary-font-color-light;
+      &.clicked { color: $color-primary; }
+      &:before { font-size: 2rem; }
+      label { display: block; }
+    }
+  }
+  .control-full-width {
+    @include span-columns(12);
+    label { font-size: 1rem; color: $base-font-color; }
+    select { @include span-columns(9); }
+    .button { @include span-columns(3); @include omega; height: 2.3125rem; }
+  }
+}
+.thread-data {
+  @include pad(0 0 1rem 0);
+  clear: both;
+  .post-block {
+    @include row;
+    @include clearfix;
+    @include pad(1.25rem 0.5rem);
+    @include transition(background-color 250ms ease-in);
+    position: relative;
+    min-height: 8rem;
+    border-bottom: 1px solid $border-color;
+    &:first-child { border-top: 1px solid $border-color; }
+    &.highlighted { background-color: $color-highlighted; }
+    &.hidden { background-color: $sub-header-color; }
+    &.deleted {
+      min-height: 0;
+      padding: 0.5rem 0.5rem;
+      color: $secondary-font-color;
+      text-align: center;
+    }
+    .post-user {
+      width: 5rem;
+      padding-right: 1.25rem;
+      display: inline-block;
+      position: absolute;
+      a { display: block; }
+      .user-avatar {
+        @include bg-cover;
+        background: no-repeat center center;
+        height: 3.75rem;
+        width: 3.75rem;
+        img { @include border-radius(100px); width: 100%; height: 100%; object-fit: cover; }
+      }
+      .user-role {
+        padding-top: 0.625rem;
+        color: $secondary-font-color;
+        font-size: 0.8125em;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+      }
+    }
+    .post-content {
+      display: block;
+      margin-left: 5rem;
+      .post-title {
+        color: $secondary-font-color;
+        margin-bottom: 0.5rem;
+        width: 100%;
+        a.username {
+          float: left;
+          margin-right: 0.75rem;
+          color: $base-font-color;
+          font-weight: 900;
+          &:hover { color: $color-primary; }
+        }
+        .timestamp, .display-name {
+          display: inline-block;
+          color: $secondary-font-color;
+          line-height: 1.3rem;
+          font-size: 0.8125rem;
+          font-weight: 400;
+          float: left;
+        }
+        .display-name { color: $secondary-font-color-dark; }
+        .post-action {
+          @include list-clean;
+          float: right;
+          line-height: 1.3rem;
+          color: $secondary-font-color;
+          li {
+            @include list-flat;
+            a {
+              color: $secondary-font-color-light;
+              &:hover { color: $color-primary; }
+            }
+          }
+          &:hover a { color: $secondary-font-color; }
+        }
+        &:hover .post-action a { color: $secondary-font-color; }
+        .clear { @include clearfix; }
+      }
+      .post-sig-border {
+        clear: both;
+        width: 250px;
+        border-top: 1px solid $border-color;
+        margin-bottom: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      .post-signature {
+        @include truncate-ellipsis;
+        clear: both;
+        color: $secondary-font-color;
+        font-size: 13px;
+        max-height: 80px;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        a {
+          color: $secondary-font-color;
+          &:hover { color: $color-primary; }
+        }
+      }
+    }
+  }
+}
+
+// Posts Layout Mobile
+@include media($mobile-portrait) {
+  .thread-data .post-block .post-content .display-name { float: none; width: 100%; }
+}
+@include media($mobile) {
+  .thread-controls {
+    .control-full-width, .control-full-width select, .control-full-width .button {
+      @include span-columns(8);
+      @include omega;
+      & a.button { margin-top: 0.5rem; }
+    }
+    .control-full-width select { margin-bottom: 0; }
+  }
+  .thread-data .post-block .post-user { display: none; }
+  .thread-data .post-block .post-content { margin-left: 0; }
+  .thread-data .post-block .post-content .post-title { position: relative; }
+  .thread-data .post-block .post-content .timestamp { float: none; width: 100%; }
+  .thread-data .post-block .post-content .post-action { position: absolute; top:0; right:0; }
+}
