@@ -67,6 +67,7 @@
     "request": "^2.53.0",
     "rolling-rate-limiter": "^0.1.2",
     "sanitize-html": "^1.4.3",
+    "socketcluster-client": "^4.3.7",
     "stream-meter": "^1.0.3",
     "through2": "^2.0.0",
     "vision": "^4.0.1",
