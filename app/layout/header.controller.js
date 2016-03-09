@@ -1,5 +1,5 @@
-var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'Notifications',
-  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert, ThemeSVC, Notifications) {
+var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'Notifications', 'Websocket',
+  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert, ThemeSVC, Notifications, Websocket) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.hasPermission = Session.hasPermission;
@@ -55,6 +55,12 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       });
     };
     ctrl.refreshNotificationsCounts();
+    Websocket.on('refresh', function(data, response) {
+      console.log('refreshing:', data);
+      ctrl.refreshNotificationsCounts();
+      response(null, 'Success');
+    });
+
 
     // Login/LogOut
     this.user = {};
