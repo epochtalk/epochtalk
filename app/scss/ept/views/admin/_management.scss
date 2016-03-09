@@ -61,11 +61,31 @@ ul {
   }
   .left-column { @include span-columns(2); border-right: 1px solid $border-color; }
   .right-column { @include span-columns(10); @include omega; }
-
+  .permission {
+    margin-bottom: 0.625rem;
+    .permission-title { font-size: 0.875rem; font-weight: bold; }
+    .bypass { line-height: 1.8rem; }
+    .bypass-header {
+      width: 50%;
+      display: inline-block;
+      label { margin-left: 2rem; }
+      .bypass-description { font-size: 0.875rem; }
+      .bypass-description.disabled { color: $secondary-font-color-light; }
+    }
+    .bypass-control {
+      width: 50%;
+      float: right;
+      display: inline-block;
+      label { display: inline; font-weight: normal; margin-left: 2rem; }
+      label.disabled { color: $secondary-font-color-light; }
+    }
+  }
   @include media($mobile) {
     .left-column { @include span-columns(3); }
     .right-column { @include span-columns(5); @include omega; }
     ul.roles { @include set-columns(1); }
+    .permission .bypass-header { width: 100%; }
+    .permission .bypass-control { width: 100%; }
   }
 }
 
