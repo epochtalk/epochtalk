@@ -53,7 +53,9 @@ exports.endpoints = function(internalConfig) {
           description: config.website.description,
           keywords: config.website.keywords,
           logo: config.website.logo,
-          favicon: config.website.favicon
+          favicon: config.website.favicon,
+          websocket_host: config.websocket_host,
+          websocket_port: config.websocket_port
         };
         return reply.view('index', data);
       }
