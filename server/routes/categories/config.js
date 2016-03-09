@@ -1,12 +1,20 @@
 var Joi = require('joi');
+var Promise = require('bluebird');
 
 exports.create = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'categories.create' },
-  validate: { payload: { name: Joi.string().min(1).max(255).required() } },
+  validate: {
+    payload: Joi.array().items(Joi.object().keys({
+      name: Joi.string().min(1).max(255).required()
+    })).unique().min(1)
+  },
   pre: [ { method: 'common.categories.clean(sanitizer, payload)' } ],
   handler: function(request, reply) {
-    var promise = request.db.categories.create(request.payload);
+    var promise = Promise.map(request.payload, function(cat) {
+      return request.db.categories.create(cat);
+    });
+
     return reply(promise);
   }
 };
@@ -32,9 +40,13 @@ exports.all = {
 exports.delete = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'categories.delete' },
-  validate: { params: { id: Joi.string().required() } },
+  validate: { payload: Joi.array().items(Joi.string().required()).unique().min(1) },
   handler: function(request, reply) {
-    var promise = request.db.categories.delete(request.params.id);
+    var promise = Promise.map(request.payload, function(catId) {
+      return request.db.categories.delete(catId)
+      .then(function() { return catId; });
+    });
+
     return reply(promise);
   }
 };

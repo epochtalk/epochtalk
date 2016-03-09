@@ -5,7 +5,9 @@ var Promise = require('bluebird');
 // -- internal methods
 
 function categoriesClean(sanitizer, payload) {
-  payload.name = sanitizer.strip(payload.name);
+  payload.map(function(cat) {
+    cat.name = sanitizer.strip(cat.name);
+  });
 }
 
 function boardsClean(sanitizer, payload) {

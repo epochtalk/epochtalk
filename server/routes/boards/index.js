@@ -6,5 +6,5 @@ module.exports = [
   { method: 'GET', path: '/boards/{id}', config: boards.find },
   { method: 'GET', path: '/boards', config: boards.allCategories },
   { method: 'PUT', path: '/boards', config: boards.update },
-  { method: 'DELETE', path: '/boards/{id}', config: boards.delete }
+  { method: 'POST', path: '/boards/delete', config: boards.delete }
 ];

@@ -249,15 +249,15 @@ module.exports = {
 
    // =========== Boards Routes ===========
   'boards.create': {
-    genDisplayText: function(data) { return `created board named "${data.name}"`; },
+    genDisplayText: function(data) { return `created board named "${data.boards.map(function(board) { return board.name; }).join(', ') }"`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
   'boards.update': {
-    genDisplayText: function(data) { return `updated board named "${data.name}"`; },
+    genDisplayText: function(data) { return `updated board named "${data.boards.map(function(board) { return board.name; }).join(', ') }"`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
   'boards.delete': {
-    genDisplayText: function(data) { return `deleted board named "${data.name}"`; },
+    genDisplayText: function(data) { return `deleted board named "${data.names}"`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
 
