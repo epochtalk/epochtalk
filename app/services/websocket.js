@@ -10,7 +10,7 @@ module.exports = ['$window', 'Session',
       port: forumData.websocket_port
     })
     .on('connect', function () {
-      socket.emit('register', Session.user);
+      socket.authenticate(Session.getToken());
     })
     .on('error', function(err) {
       socket.disconnect();
