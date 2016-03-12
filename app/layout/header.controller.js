@@ -55,10 +55,9 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       });
     };
     ctrl.refreshNotificationsCounts();
-    Websocket.on('refresh', function(data, response) {
+    Websocket.subscribe('/u/' + Session.user.id, {waitForAuth: true}).watch(function(data) {
       console.log('refreshing:', data);
       ctrl.refreshNotificationsCounts();
-      response(null, 'Success');
     });
 
 
