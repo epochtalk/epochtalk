@@ -1,4 +1,4 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', 'Session', 'Alert', 'AdminUsers', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, Session, Alert, AdminUsers, users, usersCount, page, limit, field, desc, filter, search) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', 'Session', 'Alert', 'AdminUsers', 'User', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, Session, Alert, AdminUsers, User, users, usersCount, page, limit, field, desc, filter, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'users';
@@ -54,7 +54,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
   this.showEditUserModal = false;
 
   this.showEditUser = function(username) {
-    AdminUsers.find({ username: username }).$promise
+    User.get({ username: username }).$promise
     .then(function(userData) {
       ctrl.selectedUser = userData;
       ctrl.selectedUser.dob = $filter('date')(ctrl.selectedUser.dob, 'longDate');
@@ -68,7 +68,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
   };
 
   this.saveUserEdit = function() {
-    AdminUsers.update(ctrl.selectedUser).$promise
+    User.update(ctrl.selectedUser).$promise
     .then(function() { Alert.success('Successfully updated profile for ' + ctrl.selectedUser.username); })
     .catch(function(err) {
       var msg = 'There was an error updating user ' + ctrl.selectedUser.username;

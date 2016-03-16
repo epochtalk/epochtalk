@@ -17,10 +17,10 @@ var ctrl = [
     this.newMessage = {body: '', receiver_id: '', previewBody: '' };
     this.showReply = false;
     this.controlAccess = {
-      createConversations: Session.hasPermission('messages.createConversations'),
-      createMessages: Session.hasPermission('messages.createMessages'),
-      deleteMessages: Session.hasPermission('messages.deleteMessages'),
-      reportMessages: Session.hasPermission('reports.reportMessages')
+      createConversations: Session.hasPermission('conversations.create'),
+      createMessages: Session.hasPermission('messages.create'),
+      deleteMessages: Session.hasPermission('messages.delete'),
+      reportMessages: Session.hasPermission('reports.createMessageReport')
     };
 
     // page exiting functions

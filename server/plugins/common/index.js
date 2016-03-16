@@ -23,28 +23,12 @@ function boardsClean(sanitizer, payload) {
   });
 }
 
-function usersClean(sanitizer, payload) {
-  var keys = ['username', 'email', 'name', 'website', 'btcAddress', 'gender', 'location', 'language', 'avatar', 'position'];
-  keys.map(function(key) {
-    if (payload[key]) { payload[key] = sanitizer.strip(payload[key]); }
-  });
-
-  var displayKeys = ['signature', 'raw_signature'];
-  displayKeys.map(function(key) {
-    if (payload[key]) { payload[key] = sanitizer.display(payload[key]); }
-  });
-}
-
 function messagesClean(sanitizer, payload) {
   payload.body = sanitizer.bbcode(payload.body);
 }
 
 function messagesParse(parser, payload) {
   payload.body = parser.parse(payload.body);
-}
-
-function usersParse(parser, payload) {
-  payload.raw_signature = parser.parse(payload.raw_signature);
 }
 
 function imagesSignature(imageStore, payload) {
@@ -158,17 +142,6 @@ exports.register = function(server, options, next) {
     {
       name: 'common.boards.clean',
       method: boardsClean,
-      options: { callback: false }
-    },
-    // -- users
-    {
-      name: 'common.users.clean',
-      method: usersClean,
-      options: { callback: false }
-    },
-    {
-      name: 'common.users.parse',
-      method: usersParse,
       options: { callback: false }
     },
     // -- messages

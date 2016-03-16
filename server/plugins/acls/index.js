@@ -43,20 +43,30 @@ exports.register = function (server, options, next) {
     else { return reply(err); }
   });
 
+  // server exposed objects
   server.expose('getACLValue', getACLValue);
   server.expose('getUserPriority', getUserPriority);
   server.expose('getPriorityRestrictions', getPriorityRestrictions);
   server.expose('verifyRoles', verifyRoles);
 
+  // server decoration
+  server.decorate('server', 'roles', roles);
+  server.decorate('request', 'roles', roles);
+  server.decorate('server', 'roleLayouts', layouts);
+  server.decorate('request', 'roleLayouts', layouts);
+  server.decorate('server', 'roleValidations', validations);
+  server.decorate('request', 'roleValidations', validations);
 
-  var roleData = {
-    layouts: layouts,
-    validations: validations
+  var rolesAPI = {
+    addRole: addRole,
+    updateRole: updateRole,
+    deleteRole: deleteRole,
+    reprioritizeRoles: reprioritizeRoles
   };
-  server.decorate('server', 'roles', roleData);
-  server.decorate('request', 'roles', roleData);
+  server.decorate('server', 'rolesAPI', rolesAPI);
+  server.decorate('request', 'rolesAPI', rolesAPI);
 
-  return verifyRoles().then(next);
+  return verifyRoles().then(function() { return next(roles); });
 };
 
 function buildRoles(permissions) {
@@ -163,7 +173,7 @@ function verifyRoles() {
           highlightColor: role.highlightColor,
           permissions: clonedAddRole
         };
-        return db.roles.add(addRole);
+        return db.roles.create(addRole);
       }
     });
 
@@ -211,6 +221,44 @@ function getACLValue(auth, acl) {
 
   return validACL;
 }
+
+function addRole(role) {
+  // Add role to the in memory role object
+  roles[role.lookup] = role.permissions;
+  roles[role.lookup].id = role.id;
+  roles[role.lookup].name = role.name;
+  roles[role.lookup].lookup = role.lookup;
+  roles[role.lookup].description = role.description;
+  roles[role.lookup].priority = role.priority;
+  roles[role.lookup].highlightColor = role.highlight_color;
+}
+
+function updateRole(role) {
+  // Update role in the in memory role object
+  var parsedPermissions;
+  try { parsedPermissions = JSON.parse(role.permissions); } // parse new permissions
+  catch(e) { parsedPermissions = roles[role.lookup]; } // this shouldn't happen, keep old permissions on error
+  roles[role.lookup] = parsedPermissions;
+  roles[role.lookup].id = role.id;
+  roles[role.lookup].name = role.name;
+  roles[role.lookup].lookup = role.lookup;
+  roles[role.lookup].description = role.description;
+  roles[role.lookup].priority = role.priority;
+  roles[role.lookup].highlightColor = role.highlight_color;
+}
+
+function deleteRole(roleId) {
+  var lookupToDelete;
+  Object.keys(roles).forEach(function(roleLookup) {
+    if (roles[roleLookup].id === roleId) { lookupToDelete = roleLookup; }
+  });
+  delete roles[lookupToDelete];
+}
+
+function reprioritizeRoles(allRoles) {
+  allRoles.forEach(function(role) { roles[role.lookup].priority = role.priority; });
+}
+
 
 exports.register.attributes = {
   name: 'acls',

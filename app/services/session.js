@@ -79,6 +79,13 @@ module.exports = ['$window', function($window) {
       return includes(user.moderating, boardId);
     }
 
+    function getPriority() {
+      var priority = Number.MAX_SAFE_INTEGER;
+      if (user.permissions) { priority = user.permissions.priority; }
+      if (!isNaN(parseFloat(priority)) && isFinite(priority)) { return priority; }
+      else { return Number.MAX_SAFE_INTEGER; }
+    }
+
     function globalModeratorCheck() {
       var globalMod = false;
       if (user.permissions) {
@@ -185,6 +192,7 @@ module.exports = ['$window', function($window) {
         clearContainer(user);
         clearContainer(storage);
       },
+      getPriority: getPriority,
       hasPermission: hasPermission,
       moderatesBoard: moderatesBoard,
       globalModeratorCheck: globalModeratorCheck,

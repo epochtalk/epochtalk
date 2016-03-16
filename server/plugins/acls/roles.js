@@ -78,10 +78,6 @@ module.exports = roles;
       deleteFromBlacklist: true
     },
     adminUsers: {
-      privilegedUpdate: {
-        samePriority: true,
-        lowerPriority: true
-      },
       privilegedAddRoles: {
         samePriority: true,
         lowerPriority: true
@@ -100,8 +96,6 @@ module.exports = roles;
         all: true,
         some: true,
       },
-      update: true,
-      find: true,
       addRoles: true,
       removeRoles: true,
       searchUsernames: true,
@@ -203,26 +197,6 @@ module.exports = roles;
         all: true
       }
     },
-    users: {
-      privilegedDeactivate: {
-        samePriority: true,
-        lowerPriority: true
-      },
-      privilegedReactivate: {
-        samePriority: true,
-        lowerPriority: true
-      },
-      privilegedDelete: {
-        samePriority: true,
-        lowerPriority: true
-      },
-      viewDeleted: true,
-      update: true,
-      find: true,
-      deactivate: true,
-      reactivate: true,
-      delete: true // do we need this?
-    },
     limits: []
   };
 */
@@ -304,9 +278,6 @@ roles.superAdministrator = {
     deleteFromBlacklist: true
   },
   adminUsers: {
-    privilegedUpdate: {
-      samePriority: true
-    },
     privilegedAddRoles: {
       samePriority: true
     },
@@ -320,8 +291,6 @@ roles.superAdministrator = {
       samePriority: true,
       all: true
     },
-    update: true,
-    find: true,
     addRoles: true,
     removeRoles: true,
     searchUsernames: true,
@@ -409,23 +378,6 @@ roles.superAdministrator = {
     lock: true,
     privilegedCreate: { all: true },
     privilegedLock: { all: true }
-  },
-  users: {
-    privilegedDeactivate: {
-      lowerPriority: true
-    },
-    privilegedReactivate: {
-      lowerPriority: true
-    },
-    privilegedDelete: {
-      lowerPriority: true
-    },
-    viewDeleted: true,
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true,
-    delete: true
   }
 };
 
@@ -484,9 +436,6 @@ roles.administrator = {
     users: true,
   },
   adminUsers: {
-    privilegedUpdate: {
-      lowerPriority: true
-    },
     privilegedAddRoles: {
       lowerPriority: true
     },
@@ -500,8 +449,6 @@ roles.administrator = {
       lowerPriority: true,
       all: true
     },
-    update: true,
-    find: true,
     addRoles: true,
     removeRoles: true,
     searchUsernames: true,
@@ -589,23 +536,6 @@ roles.administrator = {
     lock: true,
     privilegedCreate: { all: true },
     privilegedLock: { all: true }
-  },
-  users: {
-    privilegedDeactivate: {
-      lowerPriority: true
-    },
-    privilegedReactivate: {
-      lowerPriority: true
-    },
-    privilegedDelete: {
-      lowerPriority: true
-    },
-    viewDeleted: true,
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true,
-    delete: true
   }
 };
 
@@ -646,9 +576,6 @@ roles.globalModerator = {
     pageMessageReportsNotes: true
   },
   adminUsers: {
-    privilegedUpdate: {
-      lowerPriority: true
-    },
     privilegedBan: {
       lowerPriority: true
     },
@@ -656,8 +583,6 @@ roles.globalModerator = {
       lowerPriority: true,
       all: true
     },
-    update: true,
-    find: true,
     searchUsernames: true,
     ban: true,
     unban: true,
@@ -723,13 +648,6 @@ roles.globalModerator = {
     lock: true,
     privilegedCreate: { all: true },
     privilegedLock: { all: true }
-  },
-  users: {
-    viewDeleted: true,
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true,
   }
 };
 
@@ -770,15 +688,10 @@ roles.moderator = {
     pageMessageReportsNotes: true
   },
   adminUsers: {
-    privilegedUpdate: {
-      lowerPriority: true
-    },
     privilegedBanFromBoards: {
       lowerPriority: true,
       some: true
     },
-    update: true,
-    find: true,
     searchUsernames: true,
     banFromBoards: true,
     unbanFromBoards: true,
@@ -842,13 +755,6 @@ roles.moderator = {
     lock: true,
     privilegedCreate: { some: true },
     privilegedLock: { some: true }
-  },
-  users: {
-    viewDeleted: true,
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true
   }
 };
 
@@ -893,12 +799,6 @@ roles.user = {
     create: true,
     vote: true,
     lock: true
-  },
-  users: {
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true
   }
 };
 
@@ -928,9 +828,6 @@ roles.banned = {
   threads: {
     byBoard: true,
     viewed: true
-  },
-  users: {
-    find: true
   }
 };
 
@@ -950,9 +847,6 @@ roles.anonymous = {
   threads: {
     byBoard: true,
     viewed: true
-  },
-  users: {
-    find: true
   }
 };
 

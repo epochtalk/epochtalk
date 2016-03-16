@@ -9,6 +9,7 @@
   "author": "Edward Kim",
   "license": "ISC",
   "dependencies": {
-    "ept-posts": "0.0.1"
+    "ept-posts": "0.0.1",
+    "ept-users": "0.0.1"
   }
 }

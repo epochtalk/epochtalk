@@ -4,7 +4,6 @@ var Boom = require('boom');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
-var helper = require(path.normalize(__dirname + '/helper'));
 var emailer = require(path.normalize(__dirname + '/../../emailer'));
 
 /**
@@ -37,7 +36,7 @@ exports.login = {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      return reply(helper.formatUserReply(loggedInUser.token, loggedInUser));
+      return reply(request.session.formatUserReply(loggedInUser.token, loggedInUser));
     }
 
     var username = request.payload.username;
@@ -70,7 +69,7 @@ exports.login = {
     // check if users ban expired and remove if it has
     .then(function(user) {
       if (user.ban_expiration && user.ban_expiration < new Date()) {
-        return request.db.users.unban(user.id)
+        return request.db.bans.unban(user.id)
         .then(function(unbannedUser) {
           user.roles = unbannedUser.roles; // update user roles
           return user;
@@ -93,7 +92,7 @@ exports.login = {
       return user;
     })
     // builds token, saves session, returns request output
-    .then(helper.saveSession);
+    .then(request.session.save);
     return reply(promise);
   }
 };
@@ -118,7 +117,7 @@ exports.logout = {
 
     // deletes session, deletes user, no return
     var creds = request.auth.credentials;
-    var promise = helper.deleteSession(creds.sessionId, creds.id);
+    var promise = request.session.delete(creds.sessionId, creds.id);
     return reply(promise);
   }
 };
@@ -177,7 +176,7 @@ exports.register = {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      return reply(helper.formatUserReply(loggedInUser.token, loggedInUser));
+      return reply(request.session.formatUserReply(loggedInUser.token, loggedInUser));
     }
 
     var config = request.server.app.config;
@@ -202,7 +201,7 @@ exports.register = {
       }
       else { // Log user in after registering
         // builds token, saves session, returns request output
-        return helper.saveSession(user);
+        return request.session.save(user);
       }
     });
     return reply(promise);
@@ -261,7 +260,7 @@ exports.confirmAccount = {
       .then(function() { return user; });
     })
     // builds token, saves session, returns request output
-    .then(helper.saveSession);
+    .then(request.session.save);
     return reply(promise);
   }
 };
@@ -287,7 +286,7 @@ exports.authenticate = {
     var ret = Boom.unauthorized();
     if (request.auth.isAuthenticated) {
       var user = request.auth.credentials;
-      ret = helper.formatUserReply(user.token, user);
+      ret = request.session.formatUserReply(user.token, user);
     }
     return reply(ret);
   }

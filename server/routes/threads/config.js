@@ -116,7 +116,7 @@ exports.byBoard = {
     var getThreads = request.db.threads.byBoard(boardId, userId, opts);
     var getBoard = request.db.boards.find(boardId);
     var getBoardWatching = request.db.boards.watching(boardId, userId);
-    var getUserBoardBan = request.db.users.isNotBannedFromBoard(userId, { boardId: boardId })
+    var getUserBoardBan = request.db.bans.isNotBannedFromBoard(userId, { boardId: boardId })
     .then((notBanned) => { return !notBanned || undefined; });
 
     var promise = Promise.join(getThreads, getBoard, getBoardWatching, getUserBoardBan, function(threads, board, boardWatching, bannedFromBoard) {

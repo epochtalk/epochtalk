@@ -1,7 +1,7 @@
 var db;
+var _ = require('lodash');
 var path = require('path');
 var Promise = require('bluebird');
-var _ = require('lodash');
 var templates = require(path.normalize(__dirname + '/templates'));
 
 exports.register = function(server, options, next) {
@@ -17,7 +17,15 @@ exports.register = function(server, options, next) {
       var actionTemplate;
       if (modLog) { actionTemplate = templates[modLog.type]; }
 
-      if (actionTemplate) {
+      // double check routes available to both users and above
+      var validRouteInstance = false;
+      if (modLog && modLog.diffUser) {
+        var diffUser = _.get(request, modLog.diffUser);
+        if (request.auth.credentials.id !== diffUser) { validRouteInstance = true; }
+      }
+      else { validRouteInstance = true; }
+
+      if (validRouteInstance && actionTemplate) {
         // Log object to store
         var log = {};
 

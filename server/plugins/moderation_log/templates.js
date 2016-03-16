@@ -149,10 +149,6 @@ module.exports = {
   },
 
    // =========== Admin Users Routes ===========
-  'adminUsers.update': {
-    genDisplayText: function(data) { return `updated user "${data.username}"`; },
-    genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; }
-  },
   'adminUsers.addRoles': {
     genDisplayText: function(data) {
       return `added role "${data.role_name}" to user(s) "${data.usernames.toString().replace(/,/g, ', ')}"`;
@@ -394,6 +390,10 @@ module.exports = {
   },
 
    // =========== Users Routes ===========
+   'users.update': {
+     genDisplayText: function(data) { return `Updated user account "${data.username}"`; },
+     genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; }
+   },
   'users.deactivate': {
     genDisplayText: function(data) { return `deactivated user account "${data.username}"`; },
     genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; },

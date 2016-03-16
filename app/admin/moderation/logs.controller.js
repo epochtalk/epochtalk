@@ -82,7 +82,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       desc: 'Reverted to the Default Forum Theme' },
 
     { group: 'User Actions',
-      value: 'adminUsers.update',
+      value: 'users.update',
       desc: 'Updated User' },
     { group: 'User Actions',
       value: 'adminUsers.ban',

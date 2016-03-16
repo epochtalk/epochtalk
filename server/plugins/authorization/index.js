@@ -102,7 +102,7 @@ var common = {
     });
   },
   isNotBannedFromBoard: (error, server, userId, opts) => {
-    return server.db.users.isNotBannedFromBoard(userId, opts)
+    return server.db.bans.isNotBannedFromBoard(userId, opts)
     .then((notBanned) => {
       if (notBanned) { return true; }
       else { return Promise.reject(error); }
@@ -228,177 +228,6 @@ function watchThread(server, auth, threadId) {
   ];
 
   return server.authorization.stitch(Boom.notFound(), conditions, 'any');
-}
-
-// -- USERS
-
-function userUpdate(server, auth, payload) {
-  var error = Boom.badRequest();
-  var userId = auth.credentials.id;
-
-  var conditions = [];
-
-  // old password valid
-  var validatePassword = true;
-  if (payload.old_password) {
-    validatePassword = {
-      type: 'validatePassword',
-      server: server,
-      userId: userId,
-      password: payload.old_password
-    };
-  }
-  conditions.push(validatePassword);
-
-  // new username unique
-  var uniqueUsername = true;
-  if (payload.username) {
-    uniqueUsername = {
-      type: 'isUnique',
-      method: server.db.users.userByUsername,
-      args: [querystring.unescape(payload.username)],
-      userId: userId
-    };
-  }
-  conditions.push(uniqueUsername);
-
-  // new email unique
-  var uniqueEmail = true;
-  if (payload.email) {
-    uniqueEmail = {
-      type: 'isUnique',
-      method: server.db.users.userByEmail,
-      args: [payload.email],
-      userId: userId
-    };
-  }
-  conditions.push(uniqueEmail);
-
-  // is this profile's account active
-  var requesterActive;
-  if (auth.isAuthenticated) {
-    requesterActive = server.authorization.common.isActive(Boom.forbidden('Account Not Active'), server, userId);
-  }
-  else { requesterActive = Promise.reject(Boom.unauthorized()); }
-  conditions.push(requesterActive);
-
-  return server.authorization.stitch(error, conditions, 'all');
-}
-
-function userFind(server, auth, params) {
-  // try mode on: must check user is authed
-
-  var userId;
-  if (auth.isAuthenticated) { userId = auth.credentials.id; }
-
-  var conditions = [
-    {
-      // is the user account we're looking for active
-      type: 'isAccountActive',
-      server: server,
-      username: querystring.unescape(params.username),
-      userId: userId
-    },
-    {
-      // Permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'users.viewDeleted'
-    }
-  ];
-
-  return server.authorization.stitch(Boom.notFound(), conditions, 'any');
-}
-
-function userDeactivate(server, auth, userId) {
-  // -- is User Account Active
-  var error = Boom.badRequest('Account Already Inactive');
-  var isActive = server.authorization.common.isActive(error, server, userId);
-
-  // -- does the requester have the authority to deactivate
-  var paramUserId = userId;
-  var authedUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'users.privilegedDeactivate.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'users.privilegedDeactivate.lowerPriority');
-
-  // check if user is deactivating their own page
-  var sameUser = () => {
-    return new Promise(function(resolve, reject) {
-      if (paramUserId === authedUserId) { return resolve(); }
-      else { return reject(Boom.badRequest()); }
-    });
-  };
-
-  // get referenced user's priority
-  var paramPriority = server.db.users.find(paramUserId)
-  .then(function(paramUser) { return _.min(_.map(paramUser.roles, 'priority')); })
-  .error(() => { return Promise.reject(Boom.badRequest()); });
-
-  // get authed user's priority
-  var authedPriority = server.db.users.find(authedUserId)
-  .then(function(authUser) { return _.min(_.map(authUser.roles, 'priority')); })
-  .error(() => { return Promise.reject(Boom.badRequest()); });
-
-  var promise = Promise.join(paramPriority, authedPriority, function(paramId, authedId) {
-    // current has same or higher priority than referenced
-    if (same && authedId <= paramId) { return; }
-    // current has higher priority than referenced
-    else if (lower && authedId < paramId) { return; }
-    else { return Promise.reject(Boom.badRequest()); }
-  });
-
-  // Scenario 1: This is the user
-  // Scenario 2 & 3: same or lower priority win
-  var canDeactivate = Promise.any([sameUser(), promise])
-  .catch(() => { return Promise.reject(Boom.badRequest()); });
-
-  return Promise.all([isActive, canDeactivate]);
-}
-
-function userActivate(server, auth, userId) {
-  // -- is User Account Inactive
-  var error = Boom.badRequest('Account Already Active');
-  var isInactive = server.authorization.common.isInactive(error, server, userId);
-
-  // -- does the requester have the authority to activate
-  var paramUserId = userId;
-  var authedUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'users.privilegedReactivate.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'users.privilegedReactivate.lowerPriority');
-
-  // check if user is activating their own page
-  var sameUser = () => {
-    return new Promise(function(resolve, reject) {
-      if (paramUserId === authedUserId) { return resolve(); }
-      else { return reject(Boom.badRequest()); }
-    });
-  };
-
-  // get referenced user's priority
-  var paramPriority = server.db.users.find(paramUserId)
-  .then(function(paramUser) { return _.min(_.map(paramUser.roles, 'priority')); })
-  .error(() => { return Promise.reject(Boom.badRequest()); });
-
-  // get authed user's priority
-  var authedPriority = server.db.users.find(authedUserId)
-  .then(function(authUser) { return _.min(_.map(authUser.roles, 'priority')); })
-  .error(() => { return Promise.reject(Boom.badRequest()); });
-
-  var promise = Promise.join(paramPriority, authedPriority, function(paramId, authedId) {
-    // current has same or higher priority than referenced
-    if (same && authedId <= paramId) { return; }
-    // current has higher priority than referenced
-    else if (lower && authedId < paramId) { return; }
-    else { return Promise.reject(Boom.badRequest()); }
-  });
-
-  // Scenario 1: This is the user
-  // Scenario 2 & 3: same or lower priority win
-  var canActivate = Promise.any([sameUser(), promise])
-  .catch(() => { return Promise.reject(Boom.badRequest()); });
-
-  return Promise.all([isInactive, canActivate]);
 }
 
 // -- Threads
@@ -1278,55 +1107,6 @@ function authRegister(server, email, username) {
 
 // -- Admin Users
 
-function adminUsersUpdate(server, auth, payload) {
-  // match priority
-  var userId = payload.id;
-  var currentUserId = auth.credentials.id;
-  var samePriority = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedUpdate.samePriority');
-  var lowerPriority = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedUpdate.lowerPriority');
-
-  // get referenced user's priority
-  var refPriority = server.db.users.find(userId)
-  .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
-
-  // get authed user priority
-  var curPriority = server.db.users.find(currentUserId)
-  .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
-
-  var match = Promise.join(refPriority, curPriority, samePriority, lowerPriority, function(referenced, current, same, lower) {
-    if (userId === currentUserId) { return; }
-    // current has same or higher priority than referenced
-    if (same && current <= referenced) { return userId; }
-    // current has higher priority than referenced
-    else if (lower && current < referenced) { return userId; }
-    else { return Promise.reject(Boom.forbidden()); }
-  });
-
-  // is new username unique admin
-  var username = payload.username ? querystring.unescape(payload.username) : undefined;
-  var usernameUnique = server.db.users.userByUsername(username)
-  .then(function(user) {
-    // no username given
-    if (!username) { return true; }
-    // not unique
-    if (user && user.id !== userId) { return Promise.reject(Boom.badRequest()); }
-    else { return true; }
-  });
-
-  // is new email uniqu admin
-  var email = payload.email;
-  var emailUnique = server.db.users.userByEmail(email)
-  .then(function(user) {
-    // no email given
-    if (!email) { return true;}
-    // not unique
-    if (user && user.id !== userId) { return Promise.reject(Boom.badRequest()); }
-    else { return true; }
-  });
-
-  return Promise.all([match, usernameUnique, emailUnique]);
-}
-
 function adminRolesAdd(server, auth, roleId, usernames) {
   var currentUserId = auth.credentials.id;
 
@@ -1503,9 +1283,7 @@ function adminRolesRemove(roleId){
   return canDelete;
 }
 
-function adminRolesValidate(roles, payload) {
-  var moduleValidations = roles.validations;
-
+function adminRolesValidate(validations, payload) {
   var schema =  Joi.object().keys({
     priorityRestrictions: Joi.array().items(Joi.number()),
     adminAccess: Joi.object().keys({
@@ -1647,7 +1425,7 @@ function adminRolesValidate(roles, payload) {
       findUser: Joi.boolean(),
       delete: Joi.boolean()
     }),
-    posts: moduleValidations.posts,
+    posts: validations.posts,
     reports: Joi.object().keys({
       createUserReport: Joi.boolean(),
       createPostReport: Joi.boolean(),
@@ -1685,26 +1463,7 @@ function adminRolesValidate(roles, payload) {
       moderated: Joi.boolean(),
       purge: Joi.boolean()
     }),
-    users: Joi.object().keys({
-      privilegedDeactivate: Joi.object().keys({
-        samePriority: Joi.boolean(),
-        lowerPriority: Joi.boolean()
-      }),
-      privilegedReactivate: Joi.object().keys({
-        samePriority: Joi.boolean(),
-        lowerPriority: Joi.boolean()
-      }),
-      privilegedDelete: Joi.object().keys({
-        samePriority: Joi.boolean(),
-        lowerPriority: Joi.boolean()
-      }),
-      viewDeleted: Joi.boolean(),
-      update: Joi.boolean(),
-      find: Joi.boolean(),
-      deactivate: Joi.boolean(),
-      reactivate: Joi.boolean(),
-      delete: Joi.boolean()
-    }),
+    users: validations.users,
     limits: Joi.array().items({
       path: Joi.string().required(),
       method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
@@ -1774,27 +1533,6 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.watchBoard',
       method: watchBoard,
-      options: { callback: false }
-    },
-    // -- users
-    {
-      name: 'auth.users.update',
-      method: userUpdate,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.users.find',
-      method: userFind,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.users.deactivate',
-      method: userDeactivate,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.users.activate',
-      method: userActivate,
       options: { callback: false }
     },
     // -- threads
@@ -1903,11 +1641,6 @@ exports.register = function(server, options, next) {
       options: { callback: false }
     },
     // -- admin users
-    {
-      name: 'auth.admin.users.update',
-      method: adminUsersUpdate,
-      options: { callback: false }
-    },
     {
       name: 'auth.admin.users.addRole',
       method: adminRolesAdd,

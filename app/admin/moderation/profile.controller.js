@@ -1,5 +1,5 @@
-var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeout', '$filter', '$state', '$location',
-  function(user, AdminUsers, User, Session, Alert, $scope, $timeout, $filter, $state, $location) {
+var ctrl = ['user', 'User', 'Session', 'Alert', '$timeout', '$filter', '$state', '$location',
+  function(user, User, Session, Alert, $timeout, $filter, $state, $location) {
     var ctrl = this;
     this.user = user;
     this.displayUser = angular.copy(user);
@@ -9,26 +9,6 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.user.raw_signature = this.user.raw_signature || this.user.signature;
     // This isn't the profile users true local time, just a placeholder
     this.userLocalTime = $filter('date')(Date.now(), 'h:mm a (Z)');
-    this.displayPostsUrl = false;
-
-    this.controlAccess = Session.getControlAccessWithPriority('users', user.priority);
-    // Only allow reactivating/deactivating of own account
-    this.controlAccess.viewUserEmail = Session.hasPermission('adminUsers.find') || Session.user.id === user.id;
-    this.controlAccess.privilegedBan = Session.hasPermission('adminUsers.privilegedBan');
-    this.controlAccess.privilegedUpdate = Session.hasPermission('adminUsers.privilegedUpdate');
-    this.controlAccess.privilegedDeactivate = Session.hasPermission('users.privilegedDeactivate');
-    this.controlAccess.privilegedReactivate = Session.hasPermission('users.privilegedReactivate');
-    this.controlAccess.privilegedDelete = Session.hasPermission('users.privilegedDelete');
-    this.controlAccess.deactivate = this.controlAccess.deactivate && Session.user.id === user.id;
-    this.controlAccess.reactivate = this.controlAccess.reactivate && Session.user.id === user.id;
-    this.editable = Session.user.id === user.id || this.controlAccess.privilegedUpdate;
-    this.adminVisitor = Session.user.id !== user.id && this.controlAccess.privilegedUpdate;
-
-    // Check if user is banned
-    this.ban_expiration = null;
-    if (this.adminVisitor && this.user.ban_expiration && new Date(this.user.ban_expiration) > new Date()) {
-      this.ban_expiration = $filter('humanDate')(this.user.ban_expiration, true);
-    }
 
     var calcAge = function(dob) {
       if (!dob) { return '';}
@@ -39,11 +19,89 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     };
     this.userAge = calcAge(this.displayUser.dob);
 
+    // Permission (deprecated)
+    this.controlAccess = Session.getControlAccessWithPriority('users', user.priority);
+    this.controlAccess.privilegedBan = Session.hasPermission('adminUsers.privilegedBan');
+
+    // Permissions
+    this.pageOwner = Session.user.id === user.id;
+    this.pagePriority = ctrl.user.priority;
+    this.viewerPriority = Session.getPriority();
+
+    this.canUpdate = function() {
+      var valid = false;
+      if (!Session.isAuthenticated()) { return false; }
+      if (!Session.hasPermission('users.update.allow')) { return false; }
+
+      var same = Session.hasPermission('users.update.bypass.priority.admin');
+      var lower = Session.hasPermission('users.update.bypass.priority.mod');
+
+      if (ctrl.pageOwner) { valid = true; }
+      else if (same) { valid = ctrl.viewerPriority <= ctrl.pagePriority; }
+      else if (lower) { valid = ctrl.viewerPriority < ctrl.pagePriority; }
+
+      return valid;
+    };
+
+    this.canUpdatePassword = function() { return ctrl.canUpdate() && ctrl.pageOwner; };
+
+    this.canDeactivate = function() {
+      var valid = false;
+      if (!Session.isAuthenticated()) { return false; }
+      if (!Session.hasPermission('users.deactivate.allow')) { return false; }
+      if (ctrl.user.deleted) { return false; }
+
+      var same = Session.hasPermission('users.deactivate.bypass.priority.admin');
+      var lower = Session.hasPermission('users.deactivate.bypass.priority.mod');
+
+      if (ctrl.pageOwner) { valid = true; }
+      else if (same) { valid = ctrl.viewerPriority <= ctrl.pagePriority; }
+      else if (lower) { valid = ctrl.viewerPriority < ctrl.pagePriority; }
+
+      return valid;
+    };
+
+    this.canReactivate = function() {
+      var valid = false;
+      if (!Session.isAuthenticated()) { return false; }
+      if (!Session.hasPermission('users.reactivate.allow')) { return false; }
+      if (!ctrl.user.deleted) { return false; }
+
+      var same = Session.hasPermission('users.reactivate.bypass.priority.admin');
+      var lower = Session.hasPermission('users.reactivate.bypass.priority.mod');
+
+      if (ctrl.pageOwner) { valid = true; }
+      else if (same) { valid = ctrl.viewerPriority <= ctrl.pagePriority; }
+      else if (lower) { valid = ctrl.viewerPriority < ctrl.pagePriority; }
+
+      return valid;
+    };
+
+    this.canDelete = function() {
+      var valid = false;
+      if (!Session.isAuthenticated()) { return false; }
+      if (!Session.hasPermission('users.delete.allow')) { return false; }
+
+      var same = Session.hasPermission('users.delete.bypass.priority.admin');
+      var lower = Session.hasPermission('users.delete.bypass.priority.mod');
+
+      if (ctrl.pageOwner) { valid = true; }
+      else if (same) { valid = ctrl.viewerPriority <= ctrl.pagePriority; }
+      else if (lower) { valid = ctrl.viewerPriority < ctrl.pagePriority; }
+
+      return valid;
+    };
+
+    // Check if user is banned
+    this.ban_expiration = null;
+    if (this.controlAccess.privilegedBan && this.user.ban_expiration && new Date(this.user.ban_expiration) > new Date()) {
+      this.ban_expiration = $filter('humanDate')(this.user.ban_expiration, true);
+    }
+
     // Edit Profile
     this.editProfile = false;
     this.saveProfile = function() {
       var changeProfileUser = {
-        id: ctrl.user.id,
         username: ctrl.user.username,
         name: ctrl.user.name,
         email: ctrl.user.email,
@@ -55,14 +113,12 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
         language: ctrl.user.language
       };
 
-      var promise;
-      if (ctrl.adminVisitor) { promise = AdminUsers.update(changeProfileUser).$promise; }
-      else { promise = User.update(changeProfileUser).$promise; }
-      promise.then(function(data) {
+      User.update({ id: ctrl.user.id }, changeProfileUser).$promise
+      .then(function(data) {
         Alert.success('Successfully saved profile');
         // redirect page if username changed
         if (ctrl.displayUser.username !== data.username) {
-          if (!ctrl.adminVisitor) { Session.setUsername(ctrl.user.username); }
+          if (ctrl.pageOwner) { Session.setUsername(ctrl.user.username); }
           var params = { username: ctrl.user.username};
           $state.go('profile', params, { location: true, reload: false });
         }
@@ -84,18 +140,15 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.editAvatar = false;
     this.saveAvatar = function() {
       var changeAvatarUser = {
-        id: ctrl.user.id,
         username: ctrl.user.username,
         avatar: ctrl.user.avatar,
       };
 
-      var promise;
-      if (ctrl.adminVisitor) { promise = AdminUsers.update(changeAvatarUser).$promise; }
-      else { promise = User.update(changeAvatarUser).$promise; }
-      promise.then(function(data) {
+      User.update({ id: ctrl.user.id }, changeAvatarUser).$promise
+      .then(function(data) {
         ctrl.updateDisplayUser(data);
         ctrl.displayUser.avatar = ctrl.displayUser.avatar || 'https://fakeimg.pl/400x400/ccc/444/?text=' + ctrl.displayUser.username;
-        if(!ctrl.adminVisitor) { Session.setAvatar(ctrl.displayUser.avatar); }
+        if(ctrl.pageOwner) { Session.setAvatar(ctrl.displayUser.avatar); }
         Alert.success('Successfully updated avatar');
       })
       .catch(function() { Alert.error('Avatar could not be updated'); })
@@ -111,15 +164,12 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     this.editSignature = false;
     this.saveSignature = function() {
       var changeSigUser = {
-        id: ctrl.user.id,
         username: ctrl.user.username,
         raw_signature: ctrl.user.raw_signature
       };
 
-      var promise;
-      if (ctrl.adminVisitor) { promise = AdminUsers.update(changeSigUser).$promise; }
-      else { promise = User.update(changeSigUser).$promise; }
-      promise.then(function(data) {
+      User.update({ id: ctrl.user.id }, changeSigUser).$promise
+      .then(function(data) {
         ctrl.updateDisplayUser(data);
         Alert.success('Successfully updated signature');
       })
@@ -134,7 +184,7 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
 
     // Edit Password
     this.editPassword = false;
-    this.passData = { id: ctrl.user.id, username: ctrl.user.username };
+    this.passData = { username: ctrl.user.username };
     this.clearPasswordFields = function() {
       $timeout(function() {
         ctrl.passData = { id: ctrl.user.id, username: ctrl.user.username };
@@ -142,10 +192,8 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
     };
 
     this.savePassword = function() {
-      var promise;
-      if (ctrl.adminVisitor) { promise = AdminUsers.update(ctrl.passData).$promise; }
-      else { promise = User.update(ctrl.passData).$promise; }
-      promise.then(function() {
+      User.update({ id: ctrl.user.id }, ctrl.passData).$promise
+      .then(function() {
         ctrl.clearPasswordFields();
         Alert.success('Sucessfully changed account password');
       })
@@ -215,17 +263,9 @@ var ctrl = ['user', 'AdminUsers', 'User', 'Session', 'Alert', '$scope', '$timeou
       .catch(function() { Alert.error('Error Deleting Account'); })
       .finally(function() { ctrl.showDelete = false; });
     };
-
-    // Only show user's posts if viewing via the profile state
-    if ($state.current.name === 'profile') {
-      // Load posts state with proper state params
-      var params = $location.search();
-      $state.go('profile.posts', params, { location: false, reload: 'profile.posts' });
-    }
-    else { this.displayPostsUrl = true; }
   }
 ];
 
-module.exports = angular.module('ept.profile.ctrl', [])
+module.exports = angular.module('ept.admin.profile.ctrl', [])
 .controller('ProfileCtrl', ctrl)
 .name;

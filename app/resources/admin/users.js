@@ -4,11 +4,6 @@
 module.exports = ['$resource',
   function($resource) {
     return $resource('/api/admin/users/:username/', {}, {
-      find: {
-        method: 'GET',
-        params: { username: '@username' },
-        ignoreLoadingBar: true
-      },
       getBannedBoards: {
         method: 'GET',
         params: { username: '@username' },
@@ -27,10 +22,6 @@ module.exports = ['$resource',
       unbanFromBoards: {
         method: 'PUT',
         url: '/api/admin/users/unban/boards'
-      },
-      update: {
-        method: 'PUT',
-        url: '/api/admin/users'
       },
       ban: {
         method: 'PUT',

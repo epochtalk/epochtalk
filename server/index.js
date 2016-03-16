@@ -16,6 +16,7 @@ var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var parser = require(path.normalize(__dirname + '/plugins/parser'));
 var common = require(path.normalize(__dirname + '/plugins/common'));
 var modules = require(path.normalize(__dirname + '/plugins/modules'));
+var session = require(path.normalize(__dirname + '/plugins/session'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
@@ -25,7 +26,7 @@ var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
 var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 
-var server, additionalRoutes, commonMethods, authMethods, permissions;
+var server, additionalRoutes, commonMethods, authMethods, permissions, roles;
 
 // setup configration file and sync with DB
 setup()
@@ -119,7 +120,12 @@ setup()
 })
 // route acls
 .then(function() {
-  return server.register({register: acls, options: { db, config, permissions } });
+  return server.register({register: acls, options: { db, config, permissions } })
+  .then(function(output) { roles = output; });
+})
+// user sessions
+.then(function() {
+  return server.register({ register: session, options: { roles, redis, config } });
 })
 // common methods
 .then(function() {

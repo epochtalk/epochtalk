@@ -1,39 +1,46 @@
 <div class="padded-row" ng-if="ProfileCtrl.ban_expiration">
   <div class="error-label fill-row">
     {{ ProfileCtrl.displayUser.username }}
-    <span ng-if="ProfileCtrl.ban_expiration !== 'Permanent'"> is banned until {{ ProfileCtrl.ban_expiration }}</span>
-    <span ng-if="ProfileCtrl.ban_expiration === 'Permanent'"> is permanently banned</span>
+    <span ng-if="ProfileCtrl.ban_expiration !== 'Permanent'">
+      is banned until {{ ProfileCtrl.ban_expiration }}
+    </span>
+    <span ng-if="ProfileCtrl.ban_expiration === 'Permanent'">
+       is permanently banned
+     </span>
   </div>
 </div>
+
 <div class="profile-content">
   <!-- Left Sidebar -->
   <div class="profile-left">
     <!-- User's Avatar -->
     <div class="profile-row">
       <div class="profile-avatar-container">
-        <a ng-href="#" ng-if="ProfileCtrl.editable" ng-click="ProfileCtrl.editAvatar = true">
+        <a ng-href="#" ng-if="ProfileCtrl.canUpdate()" ng-click="ProfileCtrl.editAvatar = true">
           <img ng-src="{{ProfileCtrl.displayUser.avatar}}" />
         </a>
-        <img ng-if="!ProfileCtrl.editable" ng-src="{{ProfileCtrl.displayUser.avatar}}" />
-        <a ng-href="#" class="after" ng-if="ProfileCtrl.editable" ng-click="ProfileCtrl.editAvatar = true">
+        <img ng-if="!ProfileCtrl.canUpdate()" ng-src="{{ProfileCtrl.displayUser.avatar}}" />
+        <a ng-href="#" class="after" ng-if="ProfileCtrl.canUpdate()" ng-click="ProfileCtrl.editAvatar = true">
           <div>Change Avatar</div>
         </a>
       </div>
     </div>
 
     <!-- Edit Profile Controls -->
-    <div class="profile-row centered-text" ng-if="ProfileCtrl.editable">
-      Edit:
-      <a ng-href="#" ng-click="ProfileCtrl.editProfile = true">Profile</a>
-      |
-      <a ng-href="#" ng-click="ProfileCtrl.editPassword = true">Password</a>
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.canUpdate()">
+      <a ng-href="#" ng-click="ProfileCtrl.editProfile = true">Edit Profile</a>
     </div>
-
-    <div class="profile-row centered-text" ng-if="ProfileCtrl.controlAccess.reactivate || ProfileCtrl.controlAccess.deactivate || ProfileCtrl.controlAccess.privilegedDeactivate || ProfileCtrl.controlAccess.privilegedReactivate">
-      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showDeactivate = true" ng-hide="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedDeactivate || ProfileCtrl.controlAccess.deactivate">Deactivate Account</a>
-      <a ng-href="#" class="disable-animations" ng-click="ProfileCtrl.showReactivate = true" ng-show="ProfileCtrl.user.deleted" ng-if="ProfileCtrl.controlAccess.privilegedReactivate || ProfileCtrl.controlAccess.reactivate">Reactivate Account</a>
-      <br>
-      <a ng-href="#" ng-click="ProfileCtrl.showDelete = true" ng-if="ProfileCtrl.controlAccess.privilegedDelete">Delete Account</a>
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.canUpdatePassword()">
+      <a ng-href="#" ng-click="ProfileCtrl.editPassword = true">Edit Password</a>
+    </div>
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.canDeactivate()">
+      <a ng-href="#" ng-click="ProfileCtrl.showDeactivate = true">Deactivate Account</a>
+    </div>
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.canReactivate()">
+      <a ng-href="#" ng-click="ProfileCtrl.showReactivate = true">Reactivate Account</a>
+    </div>
+    <div class="profile-row centered-text" ng-if="ProfileCtrl.canDelete()">
+      <a ng-href="#" ng-click="ProfileCtrl.showDelete = true">Delete Account</a>
     </div>
 
     <!-- User Information -->
@@ -43,13 +50,12 @@
       <div><span ng-bind="ProfileCtrl.displayUser.name"></span></div>
       <div><span ng-bind="ProfileCtrl.displayUser.position"></span></div>
       <div><span ng-bind="ProfileCtrl.displayUser.status"></span></div>
-      <div ng-if="ProfileCtrl.displayPostsUrl"><a ui-sref="users-posts({ username: ProfileCtrl.displayUser.username })" ui-sref-opts="{ reload: true }">View Posts</a></div>
       <hr ng-if="ProfileCtrl.displayUser.email || ProfileCtrl.displayUser.btcAddress || ProfileCtrl.displayUser.website">
-      <div ng-if="ProfileCtrl.displayUser.email && ProfileCtrl.controlAccess.viewUserEmail">
-        <a ng-href="mailto:{{ProfileCtrl.displayUser.email}}" ng-bind="ProfileCtrl.displayUser.email"></a>
-      </div>
+      <a ng-href="mailto:{{ProfileCtrl.displayUser.email}}" target="_blank" ng-bind="ProfileCtrl.displayUser.email"></a>
       <div><span ng-bind="ProfileCtrl.displayUser.btcAddress"></span></div>
-      <div><a ng-href="{{ProfileCtrl.displayUser.website}}">{{ProfileCtrl.displayUser.website}}</a></div>
+      <div>
+        <a ng-href="{{ProfileCtrl.displayUser.website}}" target="_blank" ng-bind="ProfileCtrl.displayUser.website"></a>
+      </div>
       <hr>
       <div><span ng-bind="ProfileCtrl.displayUser.gender"></span></div>
       <div><span ng-bind="ProfileCtrl.userAge"></span></div>
@@ -77,17 +83,12 @@
     </div>
 
     <div class="profile-row">
-      <div class="fill-row"><strong>Posts over time:</strong></div>
-    </div>
-
-    <div class="profile-row">
-      <canvas class="fill-row" id="myChart"></canvas>
     </div>
 
     <div class="profile-row">
       <div class="fill-row">
         <strong>Signature:</strong>
-        <a ng-href="#" ng-click="ProfileCtrl.editSignature = true" ng-if="ProfileCtrl.editable">
+        <a ng-href="#" ng-click="ProfileCtrl.editSignature = true" ng-if="ProfileCtrl.canUpdate()">
           <i class="icon-epoch-edit-pencil"></i>
         </a>
       </div>
@@ -102,23 +103,9 @@
 
 </div>
 
-<div class="profile-posts" ui-view="posts"></div>
-
 <!-- Change Password Modal -->
 <modal show="ProfileCtrl.editPassword" on-close="ProfileCtrl.clearPasswordFields()">
-  <form ng-if="ProfileCtrl.adminVisitor" name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Change Password</h3>
-    <label>Minimum 8 characters</label>
-    <input type="password" auto-focus="$parent.focus" name="pass" placeholder="New Password" ng-model="ProfileCtrl.passData.password">
-    <!-- Submit Button -->
-    <div class="clear">
-      <button class="fill-row" ng-click="ProfileCtrl.savePassword(); $parent.form.$setPristine(); $parent.form.$setUntouched()"
-        ng-disabled="!ProfileCtrl.passData.password || ProfileCtrl.passData.password.length < 8">
-        Confirm
-      </button>
-    </div>
-  </form>
-  <form ng-if="!ProfileCtrl.adminVisitor" name="$parent.form" class="css-form" novalidate>
+  <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-underline">Change Password</h3>
 
     <!-- Old Password -->
@@ -208,7 +195,7 @@
         <div ng-if="$parent.form.email.$error.unique" class="invalid right">
           Email already taken
         </div>
-        <input type="email" name="email" ng-model="ProfileCtrl.user.email" unique-email="{{ProfileCtrl.displayUser.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
+        <input type="email" name="email" ng-model="ProfileCtrl.user.email" unique-email="{{ProfileCtrl.displayUser.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" ng-disabled="!ProfileCtrl.pageOwner" />
       </label>
 
       <label>Website

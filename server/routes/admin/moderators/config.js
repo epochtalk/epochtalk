@@ -1,6 +1,4 @@
 var Joi = require('joi');
-var path = require('path');
-var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 
 /**
   * @apiVersion 0.4.0
@@ -45,7 +43,7 @@ exports.add = {
       .then(function(moderating) {
         moderating = moderating.map(function(b) { return b.board_id; });
         var moderatingUser = { id: user.id, moderating: moderating };
-        return authHelper.updateModerating(moderatingUser)
+        return request.session.updateModerating(moderatingUser)
         .then(function() { return user; });
       });
     });
@@ -96,7 +94,7 @@ exports.remove = {
       .then(function(moderating) {
         moderating = moderating.map(function(b) { return b.board_id; });
         var moderatingUser = { id: user.id, moderating: moderating };
-        return authHelper.updateModerating(moderatingUser)
+        return request.session.updateModerating(moderatingUser)
         .then(function() { return user; });
       });
     });

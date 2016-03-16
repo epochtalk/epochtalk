@@ -1,8 +1,6 @@
 var Joi = require('joi');
 var _ = require('lodash');
 var Boom = require('boom');
-var path = require('path');
-var rolesHelper = require(path.normalize(__dirname + '/../../../plugins/acls/helper'));
 
 /**
   * @apiVersion 0.4.0
@@ -21,7 +19,7 @@ exports.all = {
   plugins: { acls: 'adminRoles.all' },
   handler: function(request, reply) {
     var promise = request.db.roles.all()
-    .then((roles) => { return { roles: roles, layouts: request.roles.layouts }; });
+    .then((roles) => { return { roles: roles, layouts: request.roleLayouts }; });
     return reply(promise);
   }
 };
@@ -121,15 +119,15 @@ exports.add = {
       permissions: Joi.object().required()
     }
   },
-  pre: [ { method: 'auth.admin.roles.validate(roles, payload)' } ],
+  pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
   handler: function(request, reply) {
     var role = request.payload;
-    var promise = request.db.roles.add(role)
+    var promise = request.db.roles.create(role)
     .then(function(result) {
       role.id = result.id;
       role.lookup = result.id;
       // Add role to the in memory role object
-      rolesHelper.addRole(role);
+      request.rolesAPI.addRole(role);
       return result;
     })
     .catch(function(err) {
@@ -185,14 +183,14 @@ exports.update = {
       permissions: Joi.object().required()
     }
   },
-  pre: [ { method: 'auth.admin.roles.validate(roles, payload)' } ],
+  pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
   handler: function(request, reply) {
     var role = request.payload;
     var promise = request.db.roles.update(role)
     .then(function(result) {
       role.id = result.id; // undoes deslugify which happens in core
       // Update role in the in memory role object
-      rolesHelper.updateRole(role);
+      request.rolesAPI.updateRole(role);
       return result;
     })
     .catch(function(err) {
@@ -235,7 +233,7 @@ exports.remove = {
   pre: [ { method: 'auth.admin.roles.remove(params.id)' } ],
   handler: function(request, reply) {
     var id = request.params.id;
-    var promise = request.db.roles.remove(id)
+    var promise = request.db.roles.delete(id)
     .then(function(result) {
       // Add deleted role name to plugin metadata
       request.route.settings.plugins.mod_log.metadata = {
@@ -243,7 +241,7 @@ exports.remove = {
       };
 
       // Remove deleted role from in memory object
-      rolesHelper.deleteRole(id);
+      request.rolesAPI.deleteRole(id);
       return result;
     });
     return reply(promise);
@@ -281,7 +279,7 @@ exports.reprioritize = {
     var promise = request.db.roles.reprioritize(roles)
     .then(function(result) {
       // update priorities for in memory roles object
-      rolesHelper.reprioritizeRoles(roles);
+      request.rolesAPI.reprioritizeRoles(roles);
       return result;
     });
     return reply(promise);

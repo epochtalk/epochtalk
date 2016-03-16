@@ -122,7 +122,8 @@
       <ul>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'general'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'general'}" ng-href="#">General</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'views'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'views'}" ng-href="#">Views</a></li>
-        <li><a ng-click="AdminManagementCtrl.selectedTab = 'user'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'user'}" ng-href="#">User</a></li>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'users'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'users'}" ng-href="#">Users</a></li>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'advUsers'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'advUsers'}" ng-href="#">Users Adv</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'settings'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'settings'}" ng-href="#">Settings</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'reports'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'reports'}" ng-href="#">Reports</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'roles'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'roles'}" ng-href="#">Roles</a></li>
@@ -230,46 +231,67 @@
       </div>
 
       <!-- User Tab -->
-      <div ng-if="AdminManagementCtrl.selectedTab === 'user'">
-        <h4>Standard Permissions</h4>
+      <div ng-if="AdminManagementCtrl.selectedTab === 'users'">
+        <section class="permission" ng-repeat="(model, details) in AdminManagementCtrl.layouts.users">
+          <!-- Main Permission -->
+          <label>
+            <input type="checkbox"
+              ng-change="AdminManagementCtrl.newRole.permissions.users[model].allow ? null : AdminManagementCtrl.newRole.permissions.users[model] = undefined"
+              ng-model="AdminManagementCtrl.newRole.permissions.users[model].allow"
+              ng-false-value="undefined" />
+            <span class="permission-title" ng-bind="details.title"></span>
+          </label>
+          <!-- Bypasses -->
+          <div class="bypass" ng-repeat="bypass in details.bypasses">
+            <!-- Boolean Bypass View -->
+            <div class="bypass-header" ng-if="bypass.type === 'boolean'">
+              <label>
+                <input type="checkbox"
+                  ng-disabled="!AdminManagementCtrl.newRole.permissions.users[model].allow"
+                  ng-model="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control]"
+                  ng-false-value="undefined" />
+                <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.users[model].allow }" ng-bind-html="bypass.description"></span>
+              </label>
+            </div>
+            <!-- Object Bypass View -->
+            <div ng-if="bypass.type === 'object' || !bypass.type">
+              <div class="bypass-header">
+                <label>
+                  <input type="checkbox"
+                    ng-init="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].show = AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].admin || AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].mod; AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].show ? null : AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control] = undefined"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.users[model].allow"
+                    ng-change="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].show ? AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].mod = true : AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control] = undefined"
+                    ng-model="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].show"
+                    ng-false-value="undefined" />
+                  <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.users[model].allow }" ng-bind-html="bypass.description"></span>
+                </label>
+              </div>
+              <div class="bypass-control">
+                <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].show }">
+                  <input type="radio"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].show"
+                    ng-model="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].admin"
+                    ng-click="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].mod = undefined" ng-value="true" />
+                  All
+                </label>
+                <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].show }">
+                  <input type="radio"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].show"
+                    ng-model="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].mod"
+                    ng-click="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control].admin = undefined" ng-value="true" />
+                  Moderated
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- User Adv Tab -->
+      <div ng-if="AdminManagementCtrl.selectedTab === 'advUsers'">
+        <h4>Advanced Permissions</h4>
         <div>
           <div class="half-column">
-            <!-- Find Users -->
-            <label>
-              <input id="users-find" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.users.find" ng-false-value="undefined" />
-              Allow user to lookup users data, used for viewing profiles
-            </label>
-
-            <!-- Update Self -->
-            <label>
-              <input id="users-update" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.users.update" ng-false-value="undefined" />
-              Allow user to update their own profile and information
-            </label>
-          </div>
-          <div class="half-column">
-            <!-- Deactivate Self -->
-            <label>
-              <input id="users-deactivate-self" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.users.deactivate" ng-change="AdminManagementCtrl.newRole.permissions.users.deactivate ? null: privilegedDeactivate = undefined" ng-false-value="undefined" />
-              Allow user to deactivate their account
-            </label>
-
-            <!-- Reactivate Self -->
-            <label>
-              <input id="users-reactivate-self" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.users.reactivate" ng-change="AdminManagementCtrl.newRole.permissions.users.reactivate ? null: privilegedReactivate = undefined" ng-false-value="undefined" />
-              Allow user to reactivate their account
-            </label>
-          </div>
-        </div>
-        <div class="clear"></div>
-        <h4><br />Elevated Permissions</h4>
-        <div>
-          <div class="half-column">
-            <!-- Find Users -->
-            <label>
-              <input id="adminUsers-find" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.find" ng-false-value="undefined" />
-              Allow user to lookup users data (email included)
-            </label>
-
             <!-- Search Usernames -->
             <label>
               <input id="adminUsers-searchUsernames" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.searchUsernames" ng-false-value="undefined" />
@@ -286,12 +308,6 @@
             <label>
               <input id="adminUsers-pageModerators" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.pageModerators" ng-change="AdminManagementCtrl.newRole.permissions.adminUsers.pageModerators ? AdminManagementCtrl.newRole.permissions.adminUsers.countModerators = true : AdminManagementCtrl.newRole.permissions.adminUsers.countModerators = undefined" ng-false-value="undefined" />
               Allow user to page through all forum moderators
-            </label>
-
-            <!-- View Deleted Users -->
-            <label>
-              <input id="users-viewDeleted" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.users.viewDeleted" ng-false-value="undefined" />
-              Allow user to view deleted users profiles and information
             </label>
 
             <!-- Ban/Unban User -->
@@ -335,73 +351,9 @@
               </label>
             </div>
 
-            <!-- Delete User -->
-            <label>
-              <input id="users-delete" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.users.delete" ng-change="AdminManagementCtrl.newRole.permissions.users.delete ? AdminManagementCtrl.newRole.permissions.users.privilegedDelete.lowerPriority = true : AdminManagementCtrl.newRole.permissions.users.privilegedDelete = undefined" ng-false-value="undefined" />
-              Allow user to delete other's accounts
-            </label>
-            <div class="indent">
-              <label ng-if="AdminManagementCtrl.newRole.permissions.users.delete">
-                <input name="users-delete-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.users.privilegedDelete.samePriority" ng-click="AdminManagementCtrl.newRole.permissions.users.privilegedDelete.lowerPriority = undefined" ng-value="true" />
-                Users with the same or lesser role
-              </label>
-              <label ng-if="AdminManagementCtrl.newRole.permissions.users.delete">
-                <input name="users-delete-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.users.privilegedDelete.lowerPriority" ng-click="AdminManagementCtrl.newRole.permissions.users.privilegedDelete.samePriority = undefined" ng-value="true" />
-                Only users with lesser roles
-              </label>
-            </div>
-
           </div>
 
           <div class="half-column">
-            <!-- Deactivate User -->
-            <label>
-              <input id="users-privilegedDeactivate" type="checkbox" ng-init="privilegedDeactivate = AdminManagementCtrl.newRole.permissions.users.privilegedDeactivate.lowerPriority || AdminManagementCtrl.newRole.permissions.users.privilegedDeactivate.samePriority" ng-model="privilegedDeactivate" ng-change="privilegedDeactivate ? AdminManagementCtrl.newRole.permissions.users.privilegedDeactivate.lowerPriority = true : AdminManagementCtrl.newRole.permissions.users.privilegedDeactivate = undefined; privilegedDeactivate ? AdminManagementCtrl.newRole.permissions.users.privilegedDeactivate.samePriority = undefined : null; privilegedDeactivate ? AdminManagementCtrl.newRole.permissions.users.deactivate = true : null" ng-false-value="undefined" />
-              Allow user to deactivate other's accounts
-            </label>
-            <div class="indent">
-              <label ng-if="privilegedDeactivate">
-                <input name="users-privilegedDeactivate-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.users.privilegedDeactivate.samePriority" ng-click="AdminManagementCtrl.newRole.permissions.users.privilegedDeactivate.lowerPriority = undefined" ng-value="true" />
-                Users with the same or lesser role
-              </label>
-              <label ng-if="privilegedDeactivate">
-                <input name="users-privilegedDeactivate-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.users.privilegedDeactivate.lowerPriority" ng-click="AdminManagementCtrl.newRole.permissions.users.privilegedDeactivate.samePriority = undefined" ng-value="true" />
-                Only users with lesser roles
-              </label>
-            </div>
-
-            <!-- Reactivate User -->
-            <label>
-              <input id="users-privilegedReactivate" type="checkbox" ng-init="privilegedReactivate = AdminManagementCtrl.newRole.permissions.users.privilegedReactivate.lowerPriority || AdminManagementCtrl.newRole.permissions.users.privilegedReactivate.samePriority" ng-model="privilegedReactivate" ng-change="privilegedReactivate ? AdminManagementCtrl.newRole.permissions.users.privilegedReactivate.lowerPriority = true : AdminManagementCtrl.newRole.permissions.users.privilegedReactivate = undefined; privilegedReactivate ? AdminManagementCtrl.newRole.permissions.users.privilegedReactivate.samePriority = undefined : null; privilegedReactivate ? AdminManagementCtrl.newRole.permissions.users.reactivate = true : null" ng-false-value="undefined" />
-              Allow user to reactivate other's accounts
-            </label>
-            <div class="indent">
-              <label ng-if="privilegedReactivate">
-                <input name="users-privilegedReactivate-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.users.privilegedReactivate.samePriority" ng-click="AdminManagementCtrl.newRole.permissions.users.privilegedReactivate.lowerPriority = undefined" ng-value="true" />
-                Users with the same or lesser role
-              </label>
-              <label ng-if="privilegedReactivate">
-                <input name="users-privilegedReactivate-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.users.privilegedReactivate.lowerPriority" ng-click="AdminManagementCtrl.newRole.permissions.users.privilegedReactivate.samePriority = undefined" ng-value="true" />
-                Only users with lesser roles
-              </label>
-            </div>
-
-            <!-- Update User -->
-            <label>
-              <input id="adminUsers-update" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.update" ng-change="AdminManagementCtrl.newRole.permissions.adminUsers.update ? AdminManagementCtrl.newRole.permissions.adminUsers.privilegedUpdate.lowerPriority = true : AdminManagementCtrl.newRole.permissions.adminUsers.privilegedUpdate = undefined" ng-false-value="undefined" />
-              Allow user to update other's profiles
-            </label>
-            <div class="indent">
-              <label ng-if="AdminManagementCtrl.newRole.permissions.adminUsers.update">
-                <input name="adminUsers-update-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedUpdate.samePriority" ng-click="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedUpdate.lowerPriority = undefined" ng-value="true" />
-                Users with the same or lesser role
-              </label>
-              <label ng-if="AdminManagementCtrl.newRole.permissions.adminUsers.update">
-                <input name="adminUsers-update-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedUpdate.lowerPriority" ng-click="AdminManagementCtrl.newRole.permissions.adminUsers.privilegedUpdate.samePriority = undefined" ng-value="true" />
-                Only users with lesser roles
-              </label>
-            </div>
-
             <!-- Add Roles -->
             <label>
               <input id="adminUsers-addRoles" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminUsers.addRoles" ng-change="AdminManagementCtrl.newRole.permissions.adminUsers.addRoles ? AdminManagementCtrl.newRole.permissions.adminUsers.privilegedAddRoles.lowerPriority = true : AdminManagementCtrl.newRole.permissions.adminUsers.privilegedAddRoles = undefined" ng-false-value="undefined" />
@@ -947,32 +899,45 @@
           </label>
           <!-- Bypasses -->
           <div class="bypass" ng-repeat="bypass in details.bypasses">
-            <div class="bypass-header">
+            <!-- Boolean Bypass View -->
+            <div class="bypass-header" ng-if="bypass.type === 'boolean'">
               <label>
                 <input type="checkbox"
-                  ng-init="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show = AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].admin || AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].mod"
                   ng-disabled="!AdminManagementCtrl.newRole.permissions.posts[model].allow"
-                  ng-change="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show ? AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].mod = true : AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control] = undefined"
-                  ng-model="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show"
+                  ng-model="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control]"
                   ng-false-value="undefined" />
                 <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.posts[model].allow }" ng-bind-html="bypass.description"></span>
               </label>
             </div>
-            <div class="bypass-control">
-              <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show }">
-                <input type="radio"
-                  ng-disabled="!AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show"
-                  ng-model="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].admin"
-                  ng-click="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].mod = undefined" ng-value="true" />
-                All
-              </label>
-              <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show }">
-                <input type="radio"
-                  ng-disabled="!AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show"
-                  ng-model="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].mod"
-                  ng-click="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].admin = undefined" ng-value="true" />
-                Moderated
-              </label>
+            <!-- Object Bypass View -->
+            <div ng-if="bypass.type === 'object' || !bypass.type">
+              <div class="bypass-header">
+                <label>
+                  <input type="checkbox"
+                    ng-init="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show = AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].admin || AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].mod; AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show ? null : AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control] = undefined"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.posts[model].allow"
+                    ng-change="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show ? AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].mod = true : AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control] = undefined"
+                    ng-model="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show"
+                    ng-false-value="undefined" />
+                  <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.posts[model].allow }" ng-bind-html="bypass.description"></span>
+                </label>
+              </div>
+              <div class="bypass-control">
+                <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show }">
+                  <input type="radio"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show"
+                    ng-model="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].admin"
+                    ng-click="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].mod = undefined" ng-value="true" />
+                  All
+                </label>
+                <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show }">
+                  <input type="radio"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].show"
+                    ng-model="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].mod"
+                    ng-click="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control].admin = undefined" ng-value="true" />
+                  Moderated
+                </label>
+              </div>
             </div>
           </div>
         </section>

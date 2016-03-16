@@ -6,7 +6,6 @@ angular.module('ept')
   .factory('Categories', require('./categories.js'))
   .factory('Threads', require('./threads.js'))
   .factory('Reports', require('./reports.js'))
-  .factory('User', require('./user.js'))
   .factory('Messages', require('./messages.js'))
   .factory('Conversations', require('./conversations.js'))
   .factory('Watchlist', require('./watchlist.js'));

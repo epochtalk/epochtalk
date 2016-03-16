@@ -1,99 +1,7 @@
-var helper = {};
-module.exports = helper;
-var path = require('path');
 var uuid = require('node-uuid');
 var jwt = require('jsonwebtoken');
-var redis = require(path.normalize(__dirname + '/../../../redis'));
-var config = require(path.normalize(__dirname + '/../../../config'));
-var roles = require(path.normalize(__dirname + '/../../plugins/acls/roles'));
-
-function buildToken(userId, expiration) {
-  // build jwt token from decodedToken and privateKey
-  var decodedToken = { userId: userId, sessionId: uuid.v4(), timestamp: Date.now() };
-  var options = { algorithm: 'HS256', expiresIn: expiration, noTimestamp: true };
-  var encodedToken = jwt.sign(decodedToken, config.privateKey, options);
-  return { decodedToken: decodedToken, token: encodedToken };
-}
-
-function getMaskedPermissions(userRoleNames) {
-  var userRoles, mergedRole = {};
-
-  // Banned overrules all other roles
-  if (userRoleNames.indexOf(roles.banned.lookup) > -1) { userRoles = [ roles.banned ]; }
-  else { userRoles = userRoleNames.map(function(roleName) { return roles[roleName]; }); }
-  userRoles.forEach(function(role) { mergedRole = mergeRoles(mergedRole, role); });
-
-  return mergedRole;
-}
-
-function mergeRoles(target, source) {
-  var sourceKeys = Object.keys(source);
-
-  sourceKeys.map(function(key) {
-    // skip id, name, lookup, description, highlightcolor
-    if (key === 'id' ||
-        key === 'name' ||
-        key === 'lookup' ||
-        key === 'description' ||
-        key === 'highlightColor') { return; }
-
-    // priorityRestrictions
-    if (key === 'priorityRestrictions') {
-      if ((target.priority === undefined || target.priority > source.priority) &&
-          source.priorityRestrictions &&
-          source.priorityRestrictions.length > 0) {
-        target.priorityRestrictions = source.priorityRestrictions;
-      }
-      return;
-    }
-
-    // handle priority
-    if (key === 'priority' && (target.priority === undefined || target.priority > source.priority)) {
-      target.priority = source.priority;
-      return;
-    }
-
-    // handle permission
-    if (typeof source[key] === 'object') {
-      target[key] = mergeObjects(target[key], source[key]);
-    }
-  });
-
-  return target;
-}
-
-function mergeObjects(target, source) {
-  if (!target) { target = {}; }
-  var sourceKeys = Object.keys(source);
-
-  sourceKeys.map(function(key) {
-    if (typeof source[key] === 'boolean' && source[key]) { target[key] = source[key]; }
-
-    if (typeof source[key] === 'object') {
-      target[key] = mergeObjects(target[key], source[key]);
-    }
-  });
-
-  return target;
-}
-
-function formatUserReply(token, user) {
-  var filteredRoles = [];
-  user.roles.forEach(function(roleName) {
-    if(roles[roleName]) { filteredRoles.push(roleName); }
-  });
-  if (!filteredRoles.length) { filteredRoles = ['user']; }
-  return {
-    token: token,
-    id: user.id,
-    username: user.username,
-    avatar: user.avatar,
-    roles: filteredRoles,
-    moderating: user.moderating,
-    permissions: getMaskedPermissions(filteredRoles),
-    ban_expiration: user.ban_expiration
-  };
-}
+var session = {};
+var redis, config, roles;
 
 /**
  * Assumes that the user parameter has
@@ -103,7 +11,7 @@ function formatUserReply(token, user) {
   * moderating
   * avatar
  */
-helper.saveSession = function(user) {
+session.save = function(user) {
   // build Token
   var tokenResult = buildToken(user.id, user.expiration);
   var decodedToken = tokenResult.decodedToken;
@@ -146,7 +54,7 @@ helper.saveSession = function(user) {
   .then(function() { return formatUserReply(token, user); });
 };
 
-helper.updateRoles = function(userId, roles) {
+session.updateRoles = function(userId, roles) {
   // pull user role's lookup
   roles = roles || [];
   roles = roles.map(function(role) { return role.lookup; });
@@ -164,7 +72,7 @@ helper.updateRoles = function(userId, roles) {
   });
 };
 
-helper.updateModerating = function(user) {
+session.updateModerating = function(user) {
   // save roles to redis set under "user:{userId}:roles"
   var moderatingKey = 'user:' + user.id + ':moderating';
   return redis.existsAsync(moderatingKey)
@@ -176,7 +84,7 @@ helper.updateModerating = function(user) {
   });
 };
 
-helper.updateUserInfo = function(user) {
+session.updateUserInfo = function(user) {
   // save username, avatar to redis hash under "user:{userId}"
   var userKey = 'user:' + user.id;
   // check username for update
@@ -203,7 +111,7 @@ helper.updateUserInfo = function(user) {
   });
 };
 
-helper.deleteSession = function(sessionId, userId) {
+session.delete = function(sessionId, userId) {
   // delete session with key "user:{userId}:session:{sessionId}"
   var sessionKey = 'user:' + userId + ':session:' + sessionId;
   return redis.delAsync(sessionKey)
@@ -242,4 +150,118 @@ helper.deleteSession = function(sessionId, userId) {
   });
 };
 
-helper.formatUserReply = formatUserReply;
+session.formatUserReply = formatUserReply;
+
+// private methods
+
+function buildToken(userId, expiration) {
+  // build jwt token from decodedToken and privateKey
+  var decodedToken = { userId: userId, sessionId: uuid.v4(), timestamp: Date.now() };
+  var options = { algorithm: 'HS256', expiresIn: expiration, noTimestamp: true };
+  var encodedToken = jwt.sign(decodedToken, config.privateKey, options);
+  return { decodedToken: decodedToken, token: encodedToken };
+}
+
+function getMaskedPermissions(userRoleNames) {
+  var userRoles, mergedRole = {};
+
+  // Banned overrules all other roles
+  if (userRoleNames.indexOf(roles.banned.lookup) > -1) { userRoles = [ roles.banned ]; }
+  else { userRoles = userRoleNames.map(function(roleName) { return roles[roleName]; }); }
+  userRoles.forEach(function(role) { mergedRole = mergeRoles(mergedRole, role); });
+
+  return mergedRole;
+}
+
+function mergeRoles(target, source) {
+  var sourceKeys = Object.keys(source);
+
+  sourceKeys.map(function(key) {
+    // skip id, name, lookup, description, highlightcolor
+    if (key === 'id' ||
+        key === 'name' ||
+        key === 'lookup' ||
+        key === 'description') { return; }
+
+    // priorityRestrictions
+    if (key === 'priorityRestrictions') {
+      if ((target.priority === undefined || target.priority > source.priority) &&
+          source.priorityRestrictions &&
+          source.priorityRestrictions.length > 0) {
+        target.priorityRestrictions = source.priorityRestrictions;
+      }
+      return;
+    }
+
+    // handle priority
+    if (key === 'priority' && (target.priority === undefined || target.priority > source.priority)) {
+      target.priority = source.priority;
+      target.highlight_color = source.highlight_color;
+      return;
+    }
+
+    // handle permission
+    if (typeof source[key] === 'object') {
+      target[key] = mergeObjects(target[key], source[key]);
+    }
+  });
+
+  return target;
+}
+
+function mergeObjects(target, source) {
+  if (!target) { target = {}; }
+  if (!source) { target = source; return target; }
+
+  var sourceKeys = Object.keys(source);
+
+  sourceKeys.map(function(key) {
+    if (typeof source[key] === 'boolean' && source[key]) { target[key] = source[key]; }
+
+    if (typeof source[key] === 'object') {
+      target[key] = mergeObjects(target[key], source[key]);
+    }
+  });
+
+  return target;
+}
+
+function formatUserReply(token, user) {
+  var filteredRoles = [];
+  user.roles.forEach(function(roleName) {
+    if (roles[roleName]) { filteredRoles.push(roleName); }
+  });
+  if (!filteredRoles.length) { filteredRoles = ['user']; }
+  return {
+    token: token,
+    id: user.id,
+    username: user.username,
+    avatar: user.avatar,
+    roles: filteredRoles,
+    moderating: user.moderating,
+    permissions: getMaskedPermissions(filteredRoles),
+    ban_expiration: user.ban_expiration
+  };
+}
+
+// -- API
+
+exports.register = function(server, options, next) {
+  options = options || {};
+  if (!options.roles) { return next(new Error('Session: Roles not found in options')); }
+  if (!options.redis) { return next(new Error('Session: Redis not found in options')); }
+  if (!options.config) { return next(new Error('Session: Config not found in options')); }
+  redis = options.redis;
+  config = options.config;
+  roles = options.roles;
+
+  server.decorate('server', 'session', session);
+  server.decorate('request', 'session', session);
+
+  next();
+};
+
+exports.register.attributes = {
+  name: 'session',
+  version: '1.0.0'
+};

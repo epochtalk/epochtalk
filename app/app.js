@@ -35,9 +35,6 @@ var ngDeps = [
   require('./threads/new'),
   require('./threads/posted'),
   require('./messages'),
-  require('./users/profile'),
-  require('./users/confirm'),
-  require('./users/reset'),
   require('./watchlist'),
   require('./admin')
 ].concat(moduleNames);
