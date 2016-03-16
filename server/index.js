@@ -165,6 +165,7 @@ setup()
     configClone.emailer.pass = configClone.emailer.pass.replace(/./g, '*');
     configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*');
     configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*');
+    server.log('debug', 'DB Connection: ' + process.env.DATABASE_URL);
     server.log('debug', 'config: ' + JSON.stringify(configClone, undefined, 2));
     server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
   });
