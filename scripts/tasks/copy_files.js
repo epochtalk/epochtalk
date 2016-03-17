@@ -1,4 +1,5 @@
 var fse = require('fs-extra');
+var fs = require('fs');
 var Promise = require('bluebird');
 
 module.exports = function() {
@@ -12,6 +13,31 @@ module.exports = function() {
     });
   });
 
-  return Promise.join(loadingBarCss, function() {})
+  var customVariablesCss = new Promise(function(resolve, reject) {
+    var filepath = './app/scss/ept/variables/_default-variables.scss';
+    var dest = './app/scss/ept/variables/_custom-variables.scss';
+    if (fs.existsSync(dest)) { return resolve(); }
+    else {
+      fse.copy(filepath, dest, function(err) {
+        if (err) { return reject(err); }
+        console.log('Custom Variables CSS Copied.');
+        return resolve();
+      });
+    }
+  });
+
+  var previewVariablesCss = new Promise(function(resolve, reject) {
+    var filepath = './app/scss/ept/variables/_preview-variables.scss';
+    if (fs.existsSync(filepath)) { return resolve(); }
+    else {
+      fs.writeFile(filepath, '', function(err) {
+        if (err) { return reject(err); }
+        console.log('Preview Variables CSS Copied.');
+        return resolve();
+      });
+    }
+  });
+
+  return Promise.join(loadingBarCss, customVariablesCss, previewVariablesCss,function() {})
   .catch(function(err) { console.log(err); });
 };

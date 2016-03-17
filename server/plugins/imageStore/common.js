@@ -33,7 +33,7 @@ images.init = function(opts) {
   clearHandle = setInterval(clearImageReferences, config.images.interval);
 };
 
-images.reinit = function() { images.init(options); }
+images.reinit = function() { images.init(options); };
 
 // -- interface api
 
