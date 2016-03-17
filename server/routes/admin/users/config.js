@@ -292,14 +292,16 @@ exports.ban = {
   validate: {
     payload: {
       user_id: Joi.string().required(),
-      expiration: Joi.date()
+      expiration: Joi.date(),
+      ip_ban: Joi.boolean().default(false)
     }
   },
   pre: [ { method: 'auth.admin.users.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
-    var promise = request.db.bans.ban(userId, expiration)
+    var ipBan = request.payload.ip_ban;
+    var promise = request.db.users.ban(userId, expiration, ipBan)
     .then(function(user) {
       return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return request.session.updateBanInfo(user.user_id, user.expiration); })

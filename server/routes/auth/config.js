@@ -171,7 +171,7 @@ exports.register = {
       confirmation: Joi.ref('password')
     }
   },
-  pre: [ { method: 'auth.auth.register(server, payload.email, payload.username)' } ],
+  pre: [ { method: 'auth.auth.register(server, payload.email, payload.username)', assign: 'ipBanned' } ],
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
