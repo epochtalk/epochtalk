@@ -206,14 +206,14 @@
     </table>
 
     <div ng-if="ModerationCtrl.actionAccess.userControls.privilegedBan">
-      <label class="bold" for="banType">
-        Ban Globally
+      <label for="banType">
+        <strong>Ban Globally</strong>
+        <a class="right" ng-click="ModerationCtrl.permanentBan = undefined; ModerationCtrl.banUntil = undefined;" ng-show="ModerationCtrl.permanentBan !== undefined">
+          <i class="fa fa-times"></i> Remove Global Ban
+        </a>
       </label>
       <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="true" id="permanent" ng-disabled="ModerationCtrl.banSubmitted"><label for="permanent">Permanent</label>
       <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="false" id="temporary" ng-disabled="ModerationCtrl.banSubmitted"><label for="temporary">Temporary</label>
-      <a class="right" ng-click="ModerationCtrl.permanentBan = undefined; ModerationCtrl.banUntil = undefined;" ng-show="ModerationCtrl.permanentBan !== undefined">
-        <i class="fa fa-times"></i> Remove Global Ban
-      </a>
 
       <div ng-show="ModerationCtrl.permanentBan === false">
         <label for="banUntil">Enter Ban Expiration Date:</label>
