@@ -1,5 +1,5 @@
-/*-------------- 404 Layout -------------- */
-main #error-404 {
+/*-------------- Error Layout -------------- */
+main #http-error {
   @include outer-container;
   @include row;
   text-align: center;
@@ -7,7 +7,7 @@ main #error-404 {
   .code { @include span-columns(12); @include omega; font-size: 12.5rem; font-weight: 100; }
   .message { @include span-columns(12); @include omega; font-size: 1.875rem; color: $color-primary; }
 
-  // Mobile 404 Layout
+  // Mobile HTTP Error Layout
   @include media($mobile) {
     .code { font-size: 8rem; }
     .message { font-size: 1.5rem; }

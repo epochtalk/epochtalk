@@ -69,20 +69,21 @@ app
 
   // Handle if there is an error changing state
   $rootScope.$on('$stateChangeError', function(event, next, nextParams, prev, prevParams, error) {
-    event.preventDefault();
+      event.preventDefault();
 
-    console.log(error);
-
-    // Unauthorized is redirected to login, save next so we can redirect after login
-    if (error.status === 401 || error.statusText === 'Unauthorized') {
-      $state.go('login');
-      $state.next = next;
-      $state.nextParams = nextParams;
-    }
-    // Forbidden redirect home
-    else if (error.status === 403 || error.statusText === 'Forbidden' && next.name !== 'boards') { $state.go('boards'); }
-    else if (error.status === 429) { Alert.error('Too Many Requests'); }
-    // Otherwise 404
-    else { $state.go('404'); }
+      console.log(error);
+      // Unauthorized is redirected to login, save next so we can redirect after login
+      if (error.status === 401 || error.statusText === 'Unauthorized') {
+        $state.go('login');
+        $state.next = next;
+        $state.nextParams = nextParams;
+      }
+      // Forbidden redirect home
+      else if (error.status === 403 || error.statusText === 'Forbidden' && next.name !== 'boards') { $state.go('boards'); }
+      else if (error.status === 429) { Alert.error('Too Many Requests'); }
+      // 404 Not Found
+      else if (error.status === 404) { $state.go('404'); }
+      // 503 Service Unavailable
+      else { $state.go('503'); }
   });
 }]);

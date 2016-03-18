@@ -7,14 +7,7 @@
     @include omega(3n);
     text-align: center;
     margin: 1rem 0;
-    label { display: inline-block; font-size: 1rem; color: $base-font-color; }
-    #stickyThread, #lockThread {
-      display:none;
-      font-family: "epoch-icons";
-      & + label:before { font-size: 2rem; color: $secondary-font-color-light; display: block; }
-      &:checked + label:before { color: $color-primary; }
-    }
-    #purgeThread {
+    a {
       color: $secondary-font-color-light;
       &.clicked { color: $color-primary; }
       &:before { font-size: 2rem; }

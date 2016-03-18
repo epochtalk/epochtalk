@@ -24,8 +24,13 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
     });
 
     $stateProvider.state('404', {
-      views: { 'body': { templateUrl: '/static/templates/layout/404.html' } },
+      views: { 'body': { template: require('./layout/404.html') } },
       resolve: { $title: function() { return '404 Not Found'; } }
+    });
+
+    $stateProvider.state('503', {
+      views: { 'body': { template: require('./layout/503.html') } },
+      resolve: { $title: function() { return '503 Service Unavailable'; } }
     });
 
     // 404 without redirecting user from current url
