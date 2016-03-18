@@ -31,20 +31,6 @@ function messagesParse(parser, payload) {
   payload.body = parser.parse(payload.body);
 }
 
-function imagesSignature(imageStore, payload) {
-  // remove images in signature
-  if (payload.signature) {
-    var $ = cheerio.load(payload.signature);
-    $('img').remove();
-    payload.signature = $.html();
-  }
-
-  // clear the expiration on user's avatar
-  if (payload.avatar) {
-    imageStore.clearExpiration(payload.avatar);
-  }
-}
-
 function imagesSite(imageStore, payload) {
   // clear the expiration on logo/favicon
   if (payload.website.logo) {
@@ -156,11 +142,6 @@ exports.register = function(server, options, next) {
       options: { callback: false }
     },
     // -- images
-    {
-      name: 'common.images.signature',
-      method: imagesSignature,
-      options: { callback: false }
-    },
     {
       name: 'common.images.site',
       method: imagesSite,
