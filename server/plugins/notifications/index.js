@@ -8,6 +8,11 @@ var jwt  = require('jsonwebtoken');
 var internals = {};
 var redis;
 
+// Use websocket
+var path = require('path');
+var websocketAPIKey = require(path.join(__dirname, '../../../config')).websocketAPIKey;
+var socket = require(path.join(__dirname, '../../../websocket'));
+
 exports.register = function (plugin, options, next) {
   if (!options.db) { return next(new Error('No db found in notifications')); }
   db = options.db;
@@ -25,7 +30,14 @@ exports.register.attributes = {
 };
 
 function spawnNotification(datas) {
-  return db.notifications.create(datas);
+  return db.notifications.create(datas)
+  .tap(function(dbNotification) {
+    var options = {
+      APIKey: websocketAPIKey,
+      userId: dbNotification.receiver_id
+    };
+    socket.emit('notify', options);
+  });
 }
 
 function getNotifications(datas) {
