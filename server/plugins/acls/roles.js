@@ -27,6 +27,7 @@ module.exports = roles;
       users: true,
       posts: true,
       messages: true,
+      boardBans: true,
       logs: true
     },
     // ACLs
@@ -77,10 +78,6 @@ module.exports = roles;
       deleteFromBlacklist: true
     },
     adminUsers: {
-      privilegedUpdate: {
-        samePriority: true,
-        lowerPriority: true
-      },
       privilegedAddRoles: {
         samePriority: true,
         lowerPriority: true
@@ -93,8 +90,12 @@ module.exports = roles;
         samePriority: true,
         lowerPriority: true
       },
-      update: true,
-      find: true,
+      privilegedBanFromBoards: {
+        samePriority: true,
+        lowerPriority: true
+        all: true,
+        some: true,
+      },
       addRoles: true,
       removeRoles: true,
       searchUsernames: true,
@@ -105,7 +106,11 @@ module.exports = roles;
       pageAdmins: true,
       pageModerators: true,
       ban: true,
-      unban: true
+      unban: true,
+      banFromBoards: true,
+      unbanFromBoards: true,
+      getBannedBoards: true,
+      byBannedBoards: true
     },
     adminModerators: {
       add: true,
@@ -140,36 +145,7 @@ module.exports = roles;
       findUser: true,
       delete: true
     },
-    posts: {
-      privilegedUpdate: {
-        some: true,
-        all: true
-      },
-      privilegedDelete: {
-        some: true,
-        all: true
-      },
-      privilegedPurge: {
-        some: true,
-        all: true
-      },
-      viewDeleted: {
-        some: true,
-        all: true
-      },
-      bypassLock: {
-        some: true,
-        all: true
-      },
-      create: true,
-      find: true,
-      byThread: true,
-      update: true,
-      delete: true,
-      undelete: true,
-      purge: true,
-      pageByUser: true
-    },
+    // posts
     reports: {
       createUserReport: true,
       createPostReport: true,
@@ -211,30 +187,15 @@ module.exports = roles;
       create: true,
       vote: true,
       lock: true,
+      privilegedCreate: {
+        some: true,
+        all: true,
+      }
+    }
       privilegedLock: {
         some: true,
         all: true
       }
-    },
-    users: {
-      privilegedDeactivate: {
-        samePriority: true,
-        lowerPriority: true
-      },
-      privilegedReactivate: {
-        samePriority: true,
-        lowerPriority: true
-      },
-      privilegedDelete: {
-        samePriority: true,
-        lowerPriority: true
-      },
-      viewDeleted: true,
-      update: true,
-      find: true,
-      deactivate: true,
-      reactivate: true,
-      delete: true // do we need this?
     },
     limits: []
   };
@@ -266,6 +227,7 @@ roles.superAdministrator = {
     users: true,
     posts: true,
     messages: true,
+    boardBans: true,
     logs: true,
   },
   // ACLs
@@ -316,9 +278,6 @@ roles.superAdministrator = {
     deleteFromBlacklist: true
   },
   adminUsers: {
-    privilegedUpdate: {
-      samePriority: true
-    },
     privilegedAddRoles: {
       samePriority: true
     },
@@ -328,8 +287,10 @@ roles.superAdministrator = {
     privilegedBan: {
       samePriority: true
     },
-    update: true,
-    find: true,
+    privilegedBanFromBoards: {
+      samePriority: true,
+      all: true
+    },
     addRoles: true,
     removeRoles: true,
     searchUsernames: true,
@@ -340,7 +301,11 @@ roles.superAdministrator = {
     pageAdmins: true,
     pageModerators: true,
     ban: true,
-    unban: true
+    unban: true,
+    banFromBoards: true,
+    unbanFromBoards: true,
+    getBannedBoards: true,
+    byBannedBoards: true
   },
   adminModerators: {
     add: true,
@@ -374,31 +339,7 @@ roles.superAdministrator = {
     findUser: true,
     delete: true
   },
-  posts: {
-    privilegedUpdate: {
-      all: true
-    },
-    privilegedDelete: {
-      all: true
-    },
-    privilegedPurge: {
-      all: true
-    },
-    viewDeleted: {
-      all: true
-    },
-    bypassLock: {
-      all: true
-    },
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    purge: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -435,30 +376,12 @@ roles.superAdministrator = {
     create: true,
     vote: true,
     lock: true,
-    privilegedLock: {
-      all: true
-    }
+    privilegedCreate: { all: true },
+    privilegedLock: { all: true }
   },
   notifications: {
     dismiss: true,
     counts: true
-  },
-  users: {
-    privilegedDeactivate: {
-      lowerPriority: true
-    },
-    privilegedReactivate: {
-      lowerPriority: true
-    },
-    privilegedDelete: {
-      lowerPriority: true
-    },
-    viewDeleted: true,
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true,
-    delete: true
   }
 };
 
@@ -482,6 +405,7 @@ roles.administrator = {
     users: true,
     posts: true,
     messages: true,
+    boardBans: true,
     logs: true
   },
   // ACLs
@@ -516,9 +440,6 @@ roles.administrator = {
     users: true,
   },
   adminUsers: {
-    privilegedUpdate: {
-      lowerPriority: true
-    },
     privilegedAddRoles: {
       lowerPriority: true
     },
@@ -528,8 +449,10 @@ roles.administrator = {
     privilegedBan: {
       lowerPriority: true
     },
-    update: true,
-    find: true,
+    privilegedBanFromBoards: {
+      lowerPriority: true,
+      all: true
+    },
     addRoles: true,
     removeRoles: true,
     searchUsernames: true,
@@ -540,7 +463,11 @@ roles.administrator = {
     pageAdmins: true,
     pageModerators: true,
     ban: true,
-    unban: true
+    unban: true,
+    banFromBoards: true,
+    unbanFromBoards: true,
+    getBannedBoards: true,
+    byBannedBoards: true
   },
   adminModerators: {
     add: true,
@@ -574,31 +501,7 @@ roles.administrator = {
     findUser: true,
     delete: true
   },
-  posts: {
-    privilegedUpdate: {
-      all: true
-    },
-    privilegedDelete: {
-      all: true
-    },
-    privilegedPurge: {
-      all: true
-    },
-    viewDeleted: {
-      all: true
-    },
-    bypassLock: {
-      all: true
-    },
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    purge: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -635,30 +538,12 @@ roles.administrator = {
     create: true,
     vote: true,
     lock: true,
-    privilegedLock: {
-      all: true
-    }
+    privilegedCreate: { all: true },
+    privilegedLock: { all: true }
   },
   notifications: {
     dismiss: true,
     counts: true
-  },
-  users: {
-    privilegedDeactivate: {
-      lowerPriority: true
-    },
-    privilegedReactivate: {
-      lowerPriority: true
-    },
-    privilegedDelete: {
-      lowerPriority: true
-    },
-    viewDeleted: true,
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true,
-    delete: true
   }
 };
 
@@ -674,7 +559,8 @@ roles.globalModerator = {
   modAccess: {
     users: true,
     posts: true,
-    messages: true
+    messages: true,
+    boardBans: true
   },
   // ACLs
   adminBoards: {
@@ -698,16 +584,20 @@ roles.globalModerator = {
     pageMessageReportsNotes: true
   },
   adminUsers: {
-    privilegedUpdate: {
-      lowerPriority: true
-    },
     privilegedBan: {
       lowerPriority: true
     },
-    update: true,
-    find: true,
+    privilegedBanFromBoards : {
+      lowerPriority: true,
+      all: true
+    },
+    searchUsernames: true,
     ban: true,
-    unban: true
+    unban: true,
+    banFromBoards: true,
+    unbanFromBoards: true,
+    getBannedBoards: true,
+    byBannedBoards: true
   },
   boards: {
     viewUncategorized: {
@@ -727,31 +617,7 @@ roles.globalModerator = {
     findUser: true,
     delete: true
   },
-  posts: {
-    privilegedUpdate: {
-      all: true
-    },
-    privilegedDelete: {
-      all: true
-    },
-    privilegedPurge: {
-      all: true
-    },
-    viewDeleted: {
-      all: true
-    },
-    bypassLock: {
-      all: true
-    },
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    purge: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -788,20 +654,12 @@ roles.globalModerator = {
     create: true,
     vote: true,
     lock: true,
-    privilegedLock: {
-      all: true
-    }
+    privilegedCreate: { all: true },
+    privilegedLock: { all: true }
   },
   notifications: {
     dismiss: true,
     counts: true
-  },
-  users: {
-    viewDeleted: true,
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true,
   }
 };
 
@@ -817,7 +675,8 @@ roles.moderator = {
   modAccess: {
     users: true,
     posts: true,
-    messages: true
+    messages: true,
+    boardBans: true
   },
   // ACLs
   adminBoards: {
@@ -841,16 +700,15 @@ roles.moderator = {
     pageMessageReportsNotes: true
   },
   adminUsers: {
-    privilegedUpdate: {
-      lowerPriority: true
+    privilegedBanFromBoards: {
+      lowerPriority: true,
+      some: true
     },
-    privilegedBan: {
-      lowerPriority: true
-    },
-    update: true,
-    find: true,
-    ban: true,
-    unban: true
+    searchUsernames: true,
+    banFromBoards: true,
+    unbanFromBoards: true,
+    getBannedBoards: true,
+    byBannedBoards: true
   },
   boards: {
     viewUncategorized: {
@@ -870,31 +728,7 @@ roles.moderator = {
     findUser: true,
     delete: true
   },
-  posts: {
-    privilegedUpdate: {
-      some: true
-    },
-    privilegedDelete: {
-      some: true
-    },
-    privilegedPurge: {
-      some: true
-    },
-    viewDeleted: {
-      some: true,
-    },
-    bypassLock: {
-      some: true
-    },
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    purge: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -931,20 +765,12 @@ roles.moderator = {
     create: true,
     vote: true,
     lock: true,
-    privilegedLock: {
-      some: true
-    }
+    privilegedCreate: { some: true },
+    privilegedLock: { some: true }
   },
   notifications: {
     dismiss: true,
     counts: true
-  },
-  users: {
-    viewDeleted: true,
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true
   }
 };
 
@@ -970,15 +796,7 @@ roles.user = {
     findUser: true,
     delete: true
   },
-  posts: {
-    create: true,
-    find: true,
-    byThread: true,
-    update: true,
-    delete: true,
-    undelete: true,
-    pageByUser: true
-  },
+  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -1001,12 +819,6 @@ roles.user = {
   notifications: {
     dismiss: true,
     counts: true
-  },
-  users: {
-    update: true,
-    find: true,
-    deactivate: true,
-    reactivate: true
   }
 };
 
@@ -1032,17 +844,10 @@ roles.banned = {
     latest: true,
     findUser: true
   },
-  posts: {
-    find: true,
-    byThread: true,
-    pageByUser: true
-  },
+  // posts
   threads: {
     byBoard: true,
     viewed: true
-  },
-  users: {
-    find: true
   }
 };
 
@@ -1058,17 +863,10 @@ roles.anonymous = {
     find: true,
     allCategories: true
   },
-  posts: {
-    find: true,
-    byThread: true,
-    pageByUser: true
-  },
+  // posts
   threads: {
     byBoard: true,
     viewed: true
-  },
-  users: {
-    find: true
   }
 };
 

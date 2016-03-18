@@ -8,7 +8,8 @@ var appModulesDir = path.normalize(__dirname + '/../../app/modules');
 
 module.exports = function() {
   return npmInstall()
-  .then(loadModules);
+  .then(loadModules)
+  .catch(console.log);
 };
 
 // calls `npm install` on the /modules dir
@@ -35,9 +36,6 @@ function loadModules() {
 
   // extract client code from modules
   var modules = Object.keys(ept_modules);
-
-  /// TESTING ONLY
-  modules.push('ept-posts');
 
   return Promise.each(modules, function(key) { return load(key); });
 }

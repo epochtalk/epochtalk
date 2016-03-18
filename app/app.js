@@ -35,10 +35,6 @@ var ngDeps = [
   require('./threads/new'),
   require('./threads/posted'),
   require('./messages'),
-  require('./posts'),
-  require('./users/profile'),
-  require('./users/confirm'),
-  require('./users/reset'),
   require('./watchlist'),
   require('./admin')
 ].concat(moduleNames);
@@ -55,7 +51,7 @@ require('./components');
 // Set Angular Configs
 app
 .config(require('./config'))
-.run(['$rootScope', '$state', '$timeout', 'Alert', 'BreadcrumbSvc', function($rootScope, $state, $timeout, Alert, BreadcrumbSvc) {
+.run(['$rootScope', '$state', '$timeout', 'Alert', 'BreadcrumbSvc', 'BanSvc', function($rootScope, $state, $timeout, Alert, BreadcrumbSvc, BanSvc) {
 
   // Fetch website configs (title, logo, favicon)
   $rootScope.$webConfigs = forumData;
@@ -67,6 +63,8 @@ app
     if (title) { $timeout(function() { $rootScope.$title = title; }); }
     // update breadcrumbs
     BreadcrumbSvc.update();
+    // update banInfo
+    BanSvc.update();
   });
 
   // Handle if there is an error changing state

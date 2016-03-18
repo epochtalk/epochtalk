@@ -11,8 +11,10 @@
   </div>
 </div>
 
-<div class="fill-row" ng-if="BoardWrapperCtrl.loggedIn() && BoardWrapperCtrl.controlAccess.createPost && BoardWrapperCtrl.controlAccess.createThread">
-  <a class="inverted-button" ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})"><i class="icon-epoch-add"></i>Start a New Thread</a>
+<div class="fill-row" ng-if="BoardWrapperCtrl.loggedIn()">
+  <a ng-if="!BoardWrapperCtrl.bannedFromBoard && BoardWrapperCtrl.controlAccess.createThread" class="inverted-button" ui-sref="newThread({boardId: BoardWrapperCtrl.board.id})">
+    <i class="icon-epoch-add"></i>Start a New Thread
+  </a>
   <a class="inverted-button" ng-click="BoardWrapperCtrl.watchBoard()" ng-if="!BoardWrapperCtrl.board.watched">
     <i class="icon-epoch-watch"></i>Watch This Board
   </a>

@@ -8,6 +8,12 @@ exports.register = function(server, options, next) {
   server.decorate('request', 'imageStore', images);
   server.decorate('server', 'imageStore', images);
 
+  server.method({
+    name: 'common.images.sub',
+    method: images.imageSub,
+    options: { callback: false }
+  });
+
   return next();
 };
 

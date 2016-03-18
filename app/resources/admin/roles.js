@@ -5,8 +5,7 @@ module.exports = ['$resource',
   function($resource) {
     return $resource('/api/admin/roles/all', {}, {
       all: {
-        method: 'GET',
-        isArray: true
+        method: 'GET'
       },
       users: {
         method: 'GET',

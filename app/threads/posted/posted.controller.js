@@ -12,8 +12,8 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'S
     this.parent.pageCount = Math.ceil(pageData.count / this.limit);
 
     this.parent.controlAccess = {
-      createPost: Session.hasPermission('postControls.create'),
-      createThread: Session.hasPermission('threadControls.create')
+      createPost: Session.hasPermission('posts.create'),
+      createThread: Session.hasPermission('threads.create')
     };
 
     // generate page listing for each thread

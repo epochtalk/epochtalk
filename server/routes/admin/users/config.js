@@ -1,176 +1,4 @@
 var Joi = require('joi');
-var _ = require('lodash');
-var path = require('path');
-var Boom = require('boom');
-var querystring = require('querystring');
-var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
-
-/**
-  * @apiVersion 0.4.0
-  * @apiGroup Users
-  * @api {PUT} /admin/users (Admin) Update
-  * @apiName UpdateUserAdmin
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Used to update user information such as profile fields, or passwords. Allows admins and mods to update user's account if neccessary.
-  *
-  * @apiParam (Payload) {string} id The user's unique id
-  * @apiParam (Payload) {string} [username] The user's username
-  * @apiParam (Payload) {string} [email] The user's email
-  * @apiParam (Payload) {string} [password] The user's new passowrd (used for changing password)
-  * @apiParam (Payload) {string} [confirmation] The user's new password confirmation (used for changing password)
-  * @apiParam (Payload) {string} [name] The user's name
-  * @apiParam (Payload) {string} [website] URL to user's website
-  * @apiParam (Payload) {string} [btcAddress] User's bitcoin wallet address
-  * @apiParam (Payload) {string} [gender] The user's gender
-  * @apiParam (Payload) {date} [dob] Date version of the user's dob
-  * @apiParam (Payload) {string} [location] The user's geographical location
-  * @apiParam (Payload) {string} [language] The user's native language
-  * @apiParam (Payload) {string} [position] The user's position title
-  * @apiParam (Payload) {string} [raw_signature] The user's signature as it was entered in the editor by the user
-  * @apiParam (Payload) {string} [signature] The user's signature with any markup tags converted and parsed into html elements
-  * @apiParam (Payload) {string} [avatar] URL to the user's avatar
-  *
-  * @apiSuccess {string} id The user's unique id
-  * @apiSuccess {string} [username] The user's username
-  * @apiSuccess {string} [email] The user's email
-  * @apiSuccess {string} [name] The user's name
-  * @apiSuccess {string} [website] URL to user's website
-  * @apiSuccess {string} [btcAddress] User's bitcoin wallet address
-  * @apiSuccess {string} [gender] The user's gender
-  * @apiSuccess {timestamp} [dob] Timestamp of the user's dob
-  * @apiSuccess {string} [location] The user's geographical location
-  * @apiSuccess {string} [language] The user's native language
-  * @apiSuccess {string} [position] The user's position title
-  * @apiSuccess {string} [raw_signature] The user's signature as it was entered in the editor by the user
-  * @apiSuccess {string} [signature] The user's signature with any markup tags converted and parsed into html elements
-  * @apiSuccess {string} [avatar] URL to the user's avatar
-  *
-  * @apiError (Error 500) InternalServerError There was error updating the user
-  */
-exports.update = {
-  auth: { strategy: 'jwt' },
-  plugins: {
-    acls: 'adminUsers.update',
-    mod_log: {
-      type: 'adminUsers.update',
-      data: {
-        id: 'payload.id',
-        email: 'payload.email',
-        username: 'payload.username',
-        name: 'payload.name',
-        website: 'payload.website',
-        btcAddress: 'payload.btcAddress',
-        gender: 'payload.gender',
-        dob: 'payload.dob',
-        location: 'payload.location',
-        language: 'payload.language',
-        position: 'payload.position',
-        raw_signature: 'payload.raw_signature',
-        signature: 'payload.signature',
-        avatar: 'payload.avatar',
-      }
-    }
-  },
-  validate: {
-    payload: Joi.object().keys({
-      id: Joi.string().required(),
-      email: Joi.string().email(),
-      username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
-      password: Joi.string().min(8).max(72),
-      name: Joi.string().allow(''),
-      website: Joi.string().allow(''),
-      btcAddress: Joi.string().allow(''),
-      gender: Joi.string().allow(''),
-      dob: Joi.date().allow(''),
-      location: Joi.string().allow(''),
-      language: Joi.string().allow(''),
-      position: Joi.string().allow(''),
-      raw_signature: Joi.string().allow(''),
-      signature: Joi.string().allow(''),
-      avatar: Joi.string().allow('')
-    })
-    .with('signature', 'raw_signature')
-  },
-  pre: [
-    // TODO: password should be needed to change email
-    // TODO: password should be not updated by an admin role
-    { method: 'auth.admin.users.update(server, auth, payload)' },
-    { method: 'common.users.clean(sanitizer, payload)' },
-    { method: 'common.users.parse(parser, payload)' },
-    { method: 'common.images.signature(imageStore, payload)' }
-  ],
-  handler: function(request, reply) {
-    var promise = request.db.users.update(request.payload)
-    .then(function(user) {
-      delete user.confirmation_token;
-      delete user.reset_token;
-      delete user.reset_expiration;
-      delete user.password;
-      return user;
-    })
-    .then(function(user) {
-      return authHelper.updateUserInfo(user)
-      .then(function() { return user; });
-    });
-    return reply(promise);
-  }
-};
-
-/**
-  * @apiVersion 0.4.0
-  * @apiGroup Users
-  * @api {GET} /admin/users/:username (Admin) Find
-  * @apiName FindUserAdmin
-  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
-  * @apiDescription Find a user by their username. (Includes user's email)
-  *
-  * @apiParam {string} username The username of the user to find
-  *
-  * @apiSuccess {string} id The user's unique id
-  * @apiSuccess {string} username The user's username
-  * @apiSuccess {string} avatar URL to the user's avatar image
-  * @apiSuccess {string} signature The user's signature with any markup tags converted and parsed into html elements
-  * @apiSuccess {string} raw_signature The user's signature as it was entered in the editor by the user
-  * @apiSuccess {number} post_count The number of posts made by this user
-  * @apiSuccess {string} name The user's actual name (e.g. John Doe)
-  * @apiSuccess {string} email The user's email address
-  * @apiSuccess {string} website URL to the user's website
-  * @apiSuccess {string} gender The user's gender
-  * @apiSuccess {timestamp} dob The user's date of birth
-  * @apiSuccess {string} location The user's location
-  * @apiSuccess {string} language The user's native language (e.g. English)
-  * @apiSuccess {timestamp} created_at Timestamp of when the user's account was created
-  * @apiSuccess {timestamp} updated_at Timestamp of when the user's account was last updated
-  * @apiSuccess {object[]} roles An array containing the users role objects
-  * @apiSuccess {string} roles.id The unique id of the role
-  * @apiSuccess {string} roles.name The name of the role
-  * @apiSuccess {string} roles.description The description of the role
-  * @apiSuccess {object} roles.permissions The permissions that this role has
-  * @apiSuccess {timestamp} roles.created_at Timestamp of when the role was created
-  * @apiSuccess {timestamp} roles.updated_at Timestamp of when the role was last updated
-  *
-  * @apiError BadRequest The user doesn't exist
-  * @apiError (Error 500) InternalServerError There was error looking up the user
-  */
-exports.find = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminUsers.find' },
-  validate: { params: { username: Joi.string().required() } },
-  handler: function(request, reply) {
-    var username = querystring.unescape(request.params.username);
-    var promise = request.db.users.userByUsername(username)
-    .then(function(user) {
-      if (!user) { return Boom.notFound(); }
-      delete user.passhash;
-      delete user.confirmation_token;
-      delete user.reset_token;
-      user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
-      user.roles = user.roles.map(function(role) { return role.lookup; });
-      return user;
-    });
-    return reply(promise);
-  }
-};
 
 /**
   * @apiVersion 0.4.0
@@ -222,9 +50,9 @@ exports.addRoles = {
   handler: function(request, reply) {
     var usernames = request.payload.usernames;
     var roleId = request.payload.role_id;
-    var promise = request.db.users.addRoles(usernames, roleId)
+    var promise = request.db.roles.addRoles(usernames, roleId)
     .map(function(user) {
-      return authHelper.updateRoles(user.id, user.roles)
+      return request.session.updateRoles(user.id, user.roles)
       .then(function() { return user; });
     });
     return reply(promise);
@@ -237,7 +65,7 @@ exports.addRoles = {
   * @api {PUT} /admin/users/roles/remove (Admin) Remove Roles
   * @apiName RemoveUserRoleAdmin
   * @apiPermission Super Administrator, Administrator
-  * @apiDescription Used to remove a role or roles to a user. This allows Administrators to remove
+  * @apiDescription Used to remove a role or roles from a user. This allows Administrators to remove
   * roles from an account.
   *
   * @apiParam (Payload) {string} user_id The unique id of the user to remove the role from
@@ -280,9 +108,9 @@ exports.removeRoles = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var roleId = request.payload.role_id;
-    var promise = request.db.users.removeRoles(userId, roleId)
+    var promise = request.db.roles.removeRoles(userId, roleId)
     .then(function(user) {
-      return authHelper.updateRoles(user.id, user.roles)
+      return request.session.updateRoles(user.id, user.roles)
       .then(function() { return user; });
     });
     return reply(promise);
@@ -465,9 +293,9 @@ exports.ban = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
-    var promise = request.db.users.ban(userId, expiration)
+    var promise = request.db.bans.ban(userId, expiration)
     .then(function(user) {
-      return authHelper.updateRoles(user.user_id, user.roles)
+      return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return user; });
     });
     return reply(promise);
@@ -510,11 +338,190 @@ exports.unban = {
   pre: [ { method: 'auth.admin.users.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    var promise = request.db.users.unban(userId)
+    var promise = request.db.bans.unban(userId)
     .then(function(user) {
-      return authHelper.updateRoles(user.user_id, user.roles)
+      return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return user; });
     });
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Users
+  * @api {PUT} /admin/users/ban/board (Admin) Ban From Boards
+  * @apiName BanFromBoardsAdmin
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
+  * @apiDescription This allows Administrators and Moderators to ban users from boards.
+  *
+  * @apiParam (Payload) {string} user_id The unique id of the user to ban from boards
+  * @apiParam (Payload) {string[]} board_ids Array of board ids to ban the user from
+  *
+  * @apiSuccess {string} user_id The unique id of the user being banned from boards
+  * @apiSuccess {string} board_ids Array of board ids to ban the user from
+  *
+  * @apiError (Error 500) InternalServerError There was error banning the user from Boards
+  * @apiError (Error 403) Forbidden User tried to ban from a board they do not moderate, or tried
+  * to ban a user with higher permissions than themselves
+  */
+exports.banFromBoards = {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminUsers.banFromBoards',
+    mod_log: {
+      type: 'adminUsers.banFromBoards',
+      data: {
+        user_id: 'payload.user_id',
+        board_ids: 'payload.board_ids'
+      }
+    }
+  },
+  validate: {
+    payload: {
+      user_id: Joi.string().required(),
+      board_ids: Joi.array().items(Joi.string().required()).unique().min(1).required()
+    }
+  },
+  pre: [ { method: 'auth.admin.users.banFromBoards(server, auth, payload.user_id, payload.board_ids)' } ],
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var boardIds = request.payload.board_ids;
+    var promise = request.db.bans.banFromBoards(userId, boardIds);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Users
+  * @api {PUT} /admin/users/unban/board (Admin) Unban From Boards
+  * @apiName UnbanFromBoardsAdmin
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
+  * @apiDescription This allows Administrators and Moderators to unban users from boards.
+  *
+  * @apiParam (Payload) {string} user_id The unique id of the user to unban from boards
+  * @apiParam (Payload) {string[]} board_ids Array of board ids to unban the user from
+  *
+  * @apiSuccess {string} user_id The unique id of the user being unbanned from boards
+  * @apiSuccess {string} board_ids Array of board ids to unban the user from
+  *
+  * @apiError (Error 500) InternalServerError There was error unbanning the user from Boards
+  * @apiError (Error 403) Forbidden User tried to unban from a board they do not moderate, or tried
+  * to unban a user with higher permissions than themselves
+  */
+exports.unbanFromBoards = {
+  auth: { strategy: 'jwt' },
+  plugins: {
+    acls: 'adminUsers.unbanFromBoards',
+    mod_log: {
+      type: 'adminUsers.unbanFromBoards',
+      data: {
+        user_id: 'payload.user_id',
+        board_ids: 'payload.board_ids'
+      }
+    }
+  },
+  validate: {
+    payload: {
+      user_id: Joi.string().required(),
+      board_ids: Joi.array().items(Joi.string().required()).unique().min(1).required()
+    }
+  },
+  pre: [ { method: 'auth.admin.users.banFromBoards(server, auth, payload.user_id, payload.board_ids)' } ],
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var boardIds = request.payload.board_ids;
+    var promise = request.db.bans.unbanFromBoards(userId, boardIds);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Users
+  * @api {GET} /users/:username/bannedboards (Admin) Get User's Banned Boards
+  * @apiName GetBannedBoardsAdmin
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
+  * @apiDescription This allows Administrators and Moderators to retrieve a list of boards
+  * that a user has been banned from.
+  *
+  * @apiParam {string} username The username of the user to get banned boards for
+  *
+  * @apiSuccess {object[]} banned_boards An array of boards that the user is banned from
+  * @apiSuccess {string} banned_boards.id The id of the board the user is banned from
+  * @apiSuccess {string} banned_boards.name The name of the board the user is banned from
+  *
+  * @apiError (Error 500) InternalServerError There was error retrieving the user's banned boards
+  * @apiError (Error 403) Forbidden User doesn't have permission to query for user's banned boards
+  */
+exports.getBannedBoards = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.getBannedBoards' },
+  validate: { params: { username: Joi.string().required() } },
+  handler: function(request, reply) {
+    var username = request.params.username;
+    var promise = request.db.bans.getBannedBoards(username);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Users
+  * @api {GET} /users/banned (Admin) Page by Banned Boards
+  * @apiName PageByBannedBoardsAdmin
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
+  * @apiDescription This allows Administrators and Moderators to page through users who have been
+  * banned from boards.
+  *
+  * @apiParam (Query) {number{1..n}} [page=1] The page of results to return
+  * @apiParam (Query) {number{1..100}} [limit=25] The number of results per page to return
+  * @apiParam (Query) {string} [search] username, email, or user id to filter results by
+  * @apiParam (Query) {string} [board] board id to filter results by
+  * @apiParam (Query) {boolean} [modded] booolean which indicates to only retun users who were banned
+  * from boards in which the logged in user moderates
+  *
+  * @apiSuccess {number} page The current page of results that is being returned
+  * @apiSuccess {number} limit The current number of results that is being returned per page
+  * @apiSuccess {boolean} next boolean indicating if there is a next page
+  * @apiSuccess {boolean} prev boolean indicating if there is a previous page
+  * @apiSuccess {string} search The search text that the results are being filtered by
+  * @apiSuccess {string} board The board id that the results are being filtered by
+  * @apiSuccess {boolean} modded boolean indicating that the results being returned are within the
+  * users moderated boards
+  * @apiSuccess {object[]} data An array of board banned users and board data
+  * @apiSuccess {string} data.username The username of the board banned user
+  * @apiSuccess {string} data.user_id The user id of the board banned user
+  * @apiSuccess {string} data.email The email of the board banned user
+  * @apiSuccess {string} data.created_at The created_at date of the board banned user's account
+  * @apiSuccess {string[]} data.board_ids An array of the board ids this user is banned from
+  * @apiSuccess {string[]} data.board_names An array of the board names this user is banned from
+  *
+  * @apiError (Error 500) InternalServerError There was error paging board banned users
+  * @apiError (Error 403) Forbidden User doesn't have permission to query board banned users
+  */
+exports.byBannedBoards = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminUsers.byBannedBoards' },
+  validate: {
+    query: {
+      page: Joi.number().integer().min(1).default(1),
+      limit: Joi.number().integer().min(1).max(100).default(25),
+      search: Joi.string(),
+      board: Joi.string(),
+      modded: Joi.boolean()
+    }
+  },
+  handler: function(request, reply) {
+    var opts = {
+      page: request.query.page,
+      limit: request.query.limit,
+      search: request.query.search,
+      boardId: request.query.board,
+      userId: request.query.modded ? request.auth.credentials.id : undefined
+    };
+    var promise = request.db.bans.byBannedBoards(opts);
     return reply(promise);
   }
 };

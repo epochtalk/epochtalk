@@ -54,6 +54,7 @@
         <th class="pointer" ng-click="ModerationCtrl.setSortField('priority')"><span ng-class="ModerationCtrl.getSortClass('priority')"></span>&nbsp;Status</th>
         <th class="pointer hide-mobile" ng-click="ModerationCtrl.setSortField('offender_created_at')"><span ng-class="ModerationCtrl.getSortClass('offender_created_at')"></span>&nbsp;Posted Date</th>
         <th class="pointer hide-mobile" style="" ng-click="ModerationCtrl.setSortField('offender_title')"><span ng-class="ModerationCtrl.getSortClass('offender_title')"></span>&nbsp;Title</th>
+        <th width="25"></th>
         <th class="pointer" ng-click="ModerationCtrl.setSortField('offender_author_username')"><span ng-class="ModerationCtrl.getSortClass('offender_author_username')"></span>&nbsp;Author</th>
         <th class="reason hide-mobile">Reason</th>
         <th class="mod-actions">Actions</th>
@@ -66,6 +67,9 @@
           <td ng-bind="postReport.status"></td>
           <td class="hide-mobile" ng-bind="postReport.offender_created_at | date:'MM/dd/yy @ h:mma'"></td>
           <td class="hide-mobile"><a ui-sref="posts.data({ threadId: postReport.offender_thread_id, '#': postReport.offender_post_id })" ng-bind="postReport.offender_title"></a></td>
+          <td>
+            <i ng-show="postReport.offender_ban_expiration || postReport.offender_board_banned" class="fa fa-user-times"></i>
+          </td>
           <td><a ui-sref="profile({ username: postReport.offender_author_username })" ng-bind="postReport.offender_author_username"></a></td>
           <td class="hide-mobile"><div ng-bind="postReport.reporter_reason"></div></td>
           <td class="inline">
@@ -76,18 +80,18 @@
             <button class="icon css-tooltip" data-css-tooltip="Warn User" ng-click="ModerationCtrl.showWarn({ id: postReport.offender_author_id, username: postReport.offender_author_username })" ng-disabled="!ModerationCtrl.actionAccess.messageControls.createConversations"><i class="fa fa-exclamation-circle"></i></button>
 
             <!-- Ban User -->
-            <button class="icon css-tooltip" data-css-tooltip="{{ postReport.offender_ban_expiration ? 'Unban User' : 'Ban User' }}" ng-click="postReport.offender_ban_expiration ? ModerationCtrl.showUnbanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at }) : ModerationCtrl.showBanConfirm({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at })" ng-disabled="!ModerationCtrl.actionAccess.userControls.privilegedBan"><i ng-class="{ 'fa fa-user':postReport.offender_ban_expiration, 'fa fa-user-times':!postReport.offender_ban_expiration }"></i></button>
+            <button class="icon css-tooltip" data-css-tooltip="Manage Bans" ng-click="ModerationCtrl.showManageBans({ id: postReport.offender_author_id, username: postReport.offender_author_username, email: postReport.offender_author_email, created_at: postReport.offender_author_created_at, ban_expiration: postReport.offender_ban_expiration })" ng-disabled="!ModerationCtrl.actionAccess.userControls.privilegedBan && !ModerationCtrl.actionAccess.userControls.privilegedBanFromBoards"><i class="fa fa-ban"></i></button>
           </td>
         </tr>
       </tbody>
     </table>
     <div class="fill-row">
-    <div class="half-column">
-      <div class="indicator"><i class="fa fa-star-o"></i> Indicates a report made in a board you moderate</div>
-    </div>
-    <div class="half-column">
-      <pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination>
-    </div>
+      <div class="half-column">
+        <div class="indicator"><i class="fa fa-star-o"></i> Indicates a report made in a board you moderate</div>
+      </div>
+      <div class="half-column">
+        <pagination page-count="ModerationCtrl.pageCount" page="ModerationCtrl.page" query-params="ModerationCtrl.queryParams"></pagination>
+      </div>
     </div>
   </div>
 </div>
@@ -107,7 +111,7 @@
             <button class="icon css-tooltip" data-css-tooltip="Warn User" ng-click="ModerationCtrl.showWarn({ id: ModerationCtrl.previewReport.offender_author_id, username: ModerationCtrl.previewReport.offender_author_username })" ng-disabled="!ModerationCtrl.actionAccess.messageControls.createConversations"><i class="fa fa-exclamation-circle"></i></button>
 
             <!-- Ban/Unban User -->
-            <button class="icon css-tooltip" data-css-tooltip="{{ ModerationCtrl.previewReport.offender_ban_expiration ? 'Unban User' : 'Ban User' }}" ng-click="ModerationCtrl.previewReport.offender_ban_expiration ? ModerationCtrl.showUnbanConfirm({ id: ModerationCtrl.previewReport.offender_author_id, username: ModerationCtrl.previewReport.offender_author_username, email: ModerationCtrl.previewReport.offender_author_email, created_at: ModerationCtrl.previewReport.offender_author_created_at }) : ModerationCtrl.showBanConfirm({ id: ModerationCtrl.previewReport.offender_author_id, username: ModerationCtrl.previewReport.offender_author_username, email: ModerationCtrl.previewReport.offender_author_email, created_at: ModerationCtrl.previewReport.offender_author_created_at })" ng-disabled="!ModerationCtrl.actionAccess.userControls.privilegedBan"><i ng-class="{ 'fa fa-user':ModerationCtrl.previewReport.offender_ban_expiration, 'fa fa-user-times':!ModerationCtrl.previewReport.offender_ban_expiration }"></i></button>
+            <button class="icon css-tooltip" data-css-tooltip="Manage Bans" ng-click="ModerationCtrl.showManageBans({ id: ModerationCtrl.previewReport.offender_author_id, username: ModerationCtrl.previewReport.offender_author_username, email: ModerationCtrl.previewReport.offender_author_email, created_at: ModerationCtrl.previewReport.offender_author_created_at, ban_expiration: ModerationCtrl.previewReport.offender_ban_expiration })" ng-disabled="!ModerationCtrl.actionAccess.userControls.privilegedBan && !ModerationCtrl.actionAccess.userControls.privilegedBanFromBoards"><i class="fa fa-ban"></i></button>
 
             <!-- Edit Post -->
             <button class="icon css-tooltip" data-css-tooltip="Edit Post" ng-disabled="!(ModerationCtrl.isGlobalModerator || ModerationCtrl.moderatesBoard(ModerationCtrl.previewReport.board_id)) || !ModerationCtrl.actionAccess.postControls.privilegedUpdate" ng-click="ModerationCtrl.loadEditor()" ><i class="fa fa-pencil"></i></a>
@@ -309,11 +313,11 @@
   </div>
 </div>
 
-<!-- Confirm Ban Modal -->
-<modal show="ModerationCtrl.showConfirmBanModal" on-close="ModerationCtrl.closeConfirmBan()">
+<!-- Manage Bans Modal -->
+<modal show="ModerationCtrl.showManageBansModal" on-close="ModerationCtrl.closeManageBans()">
   <form name="$parent.form" class="css-form">
-    <h3 class="thin-underline">Confirm Ban</h3>
-    <label>User Information</label>
+    <h3 class="thin-underline">Manage Bans</h3>
+    <label class="bold">User Information</label>
     <table class="striped" width="100%">
       <tr>
         <td>Username</td>
@@ -327,44 +331,61 @@
         <td>Register Date</td>
         <td ng-bind="ModerationCtrl.selectedUser.created_at | humanDate"></td>
       </tr>
-    </table>
-
-    <label for="banType">Select Ban Type:</label>
-    <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="true" id="permanent" ng-disabled="ModerationCtrl.banSubmitted" required><label for="permanent">Permanent</label>
-    <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="false" id="temporary" ng-disabled="ModerationCtrl.banSubmitted" required><label for="temporary">Temporary</label>
-    <div ng-show="ModerationCtrl.permanentBan === false">
-      <label for="banUntil">Enter Ban Expiration Date:</label>
-      <input type="date" ng-model="ModerationCtrl.banUntil" min="{{ModerationCtrl.minDate()}}" name="banUntil" ng-required="ModerationCtrl.permanentBan === false" />
-    </div>
-    <div class="clear">
-      <button class="fill-row" ng-click="ModerationCtrl.banUser()"
-        ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.banSubmitted" ng-bind="ModerationCtrl.confirmBanBtnLabel"></button>
-    </div>
-  </form>
-</modal>
-
-<!-- Confirm Unban Modal -->
-<modal show="ModerationCtrl.showConfirmUnbanModal" on-close="ModerationCtrl.closeConfirmUnban()">
-  <form name="$parent.form" class="css-form">
-    <h3 class="thin-underline">Confirm Unban</h3>
-    <label>User Information</label>
-    <table class="striped" width="100%">
-      <tr>
-        <td>Username</td>
-        <td ng-bind="ModerationCtrl.selectedUser.username"></td>
+      <tr ng-if="ModerationCtrl.selectedUser.ban_expiration">
+        <td>Global Ban Expiration</td>
+        <td ng-bind="ModerationCtrl.selectedUser.ban_expiration | humanDate:true"></td>
       </tr>
-      <tr>
-        <td>Email</td>
-        <td ng-bind="ModerationCtrl.selectedUser.email"></td>
-      </tr>
-      <tr>
-        <td>Register Date</td>
-        <td ng-bind="ModerationCtrl.selectedUser.created_at | humanDate"></td>
+      <tr ng-if="ModerationCtrl.selectedUser.banned_board_names.length">
+        <td>Banned From Boards</td>
+        <td>
+          <span ng-repeat="boardName in ModerationCtrl.selectedUser.banned_board_names track by $index" ng-bind-html="$last ? boardName : boardName + ', '"></span>
+        </td>
       </tr>
     </table>
 
+    <div ng-if="ModerationCtrl.actionAccess.userControls.privilegedBan">
+      <label for="banType">
+        <strong>Ban Globally</strong>
+        <a class="right" ng-click="ModerationCtrl.permanentBan = undefined; ModerationCtrl.banUntil = undefined;" ng-show="ModerationCtrl.permanentBan !== undefined">
+          <i class="fa fa-times"></i> Remove Global Ban
+        </a>
+      </label>
+      <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="true" id="permanent" ng-disabled="ModerationCtrl.banSubmitted"><label for="permanent">Permanent</label>
+      <input type="radio" name="banType" ng-model="ModerationCtrl.permanentBan" ng-value="false" id="temporary" ng-disabled="ModerationCtrl.banSubmitted"><label for="temporary">Temporary</label>
+
+      <div ng-show="ModerationCtrl.permanentBan === false">
+        <label for="banUntil">Enter Ban Expiration Date:</label>
+        <input type="date" ng-model="ModerationCtrl.banUntil" min="{{ModerationCtrl.minDate()}}" name="banUntil" ng-required="ModerationCtrl.permanentBan === false" />
+      </div>
+    </div>
+
+    <label>
+      <strong>Ban from my Boards</strong>
+      <div class="right">
+        <a ng-href="#" ng-click="ModerationCtrl.checkModBoards();"><i class="fa fa-check-square-o"></i> Check All</a>
+        &nbsp;&nbsp;
+        <a ng-href="#" ng-click="ModerationCtrl.uncheckModBoards();"><i class="fa fa-square-o"></i> Uncheck All</a>
+      </div>
+    </label>
+    <div class="board-bans-list">
+      <script type="text/ng-template" id="board_renderer.html">
+        <input ng-init="(ModerationCtrl.hasGlobalModPerms && ModerationCtrl.allBoardIds.indexOf(board.id) < 0) ? ModerationCtrl.allBoardIds.push(board.id) : null" id="{{board.id}}" ng-checked="ModerationCtrl.boardBanList.indexOf(board.id) > -1" value="{{board.id}}" ng-click="ModerationCtrl.toggleBoardBan(board.id)" ng-disabled="ModerationCtrl.user.moderating.indexOf(board.id) < 0 && !ModerationCtrl.hasGlobalModPerms" type="checkbox" />
+        <label for="{{board.id}}" ng-bind-html="board.name"></label>
+        <ul>
+          <li ng-repeat="board in board.children track by board.id" ng-include="'board_renderer.html'"></li>
+        </ul>
+      </script>
+      <div ng-repeat="cat in ModerationCtrl.boards track by cat.id">
+        <label class="bold" ng-bind-html="cat.name"></label>
+        <ul>
+          <li ng-repeat="board in cat.boards track by board.id" ng-include="'board_renderer.html'">
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <div class="clear">
-      <button class="fill-row" ng-click="ModerationCtrl.unbanUser()"
+      <button class="fill-row" ng-click="ModerationCtrl.updateBans()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || ModerationCtrl.banSubmitted" ng-bind="ModerationCtrl.confirmBanBtnLabel"></button>
     </div>
   </form>

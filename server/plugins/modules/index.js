@@ -9,7 +9,12 @@ modules.install = (db) => {
     routes: [],
     common: [],
     authorization: [],
-    apiMethods: {}
+    apiMethods: {},
+    permissions: {
+      defaults: {},
+      validations: {},
+      layouts: {}
+    },
   };
 
   // get a list of all modules in modules/package.json
@@ -31,12 +36,41 @@ modules.load = (moduleName, master) => {
   var module = require(path.normalize(modulesNMDir + '/' + moduleName));
   var name = module.name;
 
-  // move all the parts to all the right places
-  master.routes = master.routes.concat(module.routes);
-  master.common = master.common.concat(module.common);
-  master.authorization = master.authorization.concat(module.authorization);
-  master.apiMethods[name] = module.api;
-  master.db[name] = module.db;
+  // Module Routes
+  if (module.routes && module.routes.length > 0) {
+    master.routes = master.routes.concat(module.routes);
+  }
+
+  // Module Common methods
+  if (module.common && module.common.length > 0) {
+    master.common = master.common.concat(module.common);
+  }
+
+  // Module Authorization methods
+  if (module.authorization && module.authorization.length > 0) {
+    master.authorization = master.authorization.concat(module.authorization);
+  }
+
+  // Module API Methods
+  if (module.api) { master.apiMethods[name] = module.api; }
+
+  // Module DB Methods
+  if (module.db) { master.db[name] = module.db; }
+
+  // Module Permssion Defaults
+  if (module.permissions && module.permissions.defaults) {
+    master.permissions.defaults[name] = module.permissions.defaults;
+  }
+
+  // Module Permission validation methods
+  if (module.permissions && module.permissions.validation) {
+    master.permissions.validations[name] = module.permissions.validation;
+  }
+
+  // Module Permission layouts
+  if (module.permissions && module.permissions.layout) {
+    master.permissions.layouts[name] = module.permissions.layout;
+  }
 };
 
 

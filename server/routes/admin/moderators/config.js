@@ -1,6 +1,4 @@
 var Joi = require('joi');
-var path = require('path');
-var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
 
 /**
   * @apiVersion 0.4.0
@@ -10,7 +8,7 @@ var authHelper = require(path.normalize(__dirname + '/../../auth/helper'));
   * @apiPermission Super Administrator, Administrator,
   * @apiDescription Add a moderator to a board.
   *
-  * @apiParam (Payload) {string} user_id The id of the user to add as a moderator.
+  * @apiParam (Payload) {string[]} usernames Array of ids of the user to add as a moderator.
   * @apiParam (Payload) {string} board_id The id of the board to add the moderator to.
   *
   * @apiSuccess {object} STATUS 200 OK
@@ -45,7 +43,7 @@ exports.add = {
       .then(function(moderating) {
         moderating = moderating.map(function(b) { return b.board_id; });
         var moderatingUser = { id: user.id, moderating: moderating };
-        return authHelper.updateModerating(moderatingUser)
+        return request.session.updateModerating(moderatingUser)
         .then(function() { return user; });
       });
     });
@@ -61,7 +59,7 @@ exports.add = {
   * @apiPermission Super Administrator, Administrator,
   * @apiDescription Remove a moderator from a board.
   *
-  * @apiParam (Payload) {string} user_id The id of the user to remove from being a moderator.
+  * @apiParam (Payload) {string[]} username Array of user ids of the user to remove from being a moderator.
   * @apiParam (Payload) {string} board_id The id of the board to remove the moderator from.
   *
   * @apiSuccess {object} STATUS 200 OK
@@ -96,7 +94,7 @@ exports.remove = {
       .then(function(moderating) {
         moderating = moderating.map(function(b) { return b.board_id; });
         var moderatingUser = { id: user.id, moderating: moderating };
-        return authHelper.updateModerating(moderatingUser)
+        return request.session.updateModerating(moderatingUser)
         .then(function() { return user; });
       });
     });

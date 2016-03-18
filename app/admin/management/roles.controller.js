@@ -1,10 +1,11 @@
 var intersection = require('lodash/intersection');
 
-var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles', 'AdminUsers', 'roles', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, AdminRoles, AdminUsers, roles, userData, roleId, limit, page, search) {
+var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles', 'AdminUsers', 'pageData', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, AdminRoles, AdminUsers, pageData, userData, roleId, limit, page, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
-  this.roles = roles;
+  this.roles = pageData.roles;
+  this.layouts = pageData.layouts;
   this.queryParams = $location.search();
   this.pageCount = Math.ceil(userData.count / limit);
   this.page = page;
@@ -19,15 +20,15 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   this.newRole = {};
   this.basedRoleId = null;
   this.modifyingRole = false;
-  this.controlAccess = Session.getControlAccessWithPriority('roleControls');
-  this.controlAccess.privilegedRemoveRoles = this.controlAccess.privilegedAddRoles ? {
-    samePriority: Session.hasPermission('roleControls.privilegedRemoveRoles.samePriority'),
-    lowerPriority: Session.hasPermission('roleControls.privilegedRemoveRoles.lowerPriority')
-  } : undefined;
-  this.controlAccess.privilegedAddRoles = this.controlAccess.privilegedAddRoles ? {
-    samePriority: Session.hasPermission('roleControls.privilegedAddRoles.samePriority'),
-    lowerPriority: Session.hasPermission('roleControls.privilegedAddRoles.lowerPriority')
-  } : undefined;
+  this.controlAccess = Session.getControlAccessWithPriority('adminRoles');
+  this.controlAccess.privilegedRemoveRoles =  {
+    samePriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.samePriority'),
+    lowerPriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.lowerPriority')
+  };
+  this.controlAccess.privilegedAddRoles = {
+    samePriority: Session.hasPermission('adminUsers.privilegedAddRoles.samePriority'),
+    lowerPriority: Session.hasPermission('adminUsers.privilegedAddRoles.lowerPriority')
+  };
 
   // rate limiting
   this.limits = {
@@ -83,14 +84,14 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   };
 
   // Assign selected role if view is visited with roleId query param
-  roles.forEach(function(role) {
+  pageData.roles.forEach(function(role) {
     if (roleId && roleId === role.id) {
       ctrl.selectedRole = role;
       $location.search(ctrl.queryParams);
     }
   });
 
-  this.allPriorities;
+  this.allPriorities = [];
 
   this.init = function() {
     ctrl.maxPriority = null;
@@ -139,7 +140,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
 
   this.setBasePermissions = function() {
     var permissions = {};
-    roles.forEach(function(role) {
+    ctrl.roles.forEach(function(role) {
       if (role.id === ctrl.basedRoleId) { permissions = angular.copy(role.permissions); }
     });
     ctrl.newRole.permissions = permissions;
@@ -396,8 +397,9 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       });
     }
     AdminRoles.all(query).$promise
-    .then(function(allRoles) {
-      ctrl.roles = allRoles;
+    .then(function(pageData) {
+      ctrl.roles = pageData.roles;
+      ctrl.layouts = pageData.layouts;
       ctrl.init();
     });
   };

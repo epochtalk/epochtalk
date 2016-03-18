@@ -60,7 +60,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      roles: ['AdminRoles', function(AdminRoles) { return AdminRoles.all().$promise; }],
+      roleData: ['AdminRoles', function(AdminRoles) { return AdminRoles.all().$promise; }],
       categories: ['AdminBoards', function(AdminBoards) { return AdminBoards.categories().$promise; }],
       boards: ['AdminBoards', function(AdminBoards) { return AdminBoards.boards().$promise; }]
     }
@@ -153,9 +153,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      roles: ['AdminRoles', function(AdminRoles) {
+      pageData: ['AdminRoles', function(AdminRoles) {
         return AdminRoles.all().$promise
-        .then(function(roles) { return roles; });
+        .then(function(pageData) { return pageData; });
       }],
       page: ['$stateParams', function($stateParams) {
         return Number($stateParams.page) || 1;

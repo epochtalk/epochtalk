@@ -32,23 +32,24 @@ exports.create = {
     acls: 'boards.create',
     mod_log: {
       type: 'boards.create',
-      data: {
-        name: 'payload.name',
-        description: 'payload.description',
-        viewable_by: 'payload.viewable_by'
-      }
+      data: { boards: 'payload' }
     },
   },
   validate: {
-    payload: {
+    payload: Joi.array().items(Joi.object().keys({
       name: Joi.string().min(1).max(255).required(),
       description: Joi.string().allow(''),
       viewable_by: Joi.number()
-    }
+    })).unique().min(1)
   },
   pre: [ { method: 'common.boards.clean(sanitizer, payload)' } ],
   handler: function(request, reply) {
-    return reply(request.db.boards.create(request.payload));
+    // create each board
+    var promise = Promise.map(request.payload, function(board) {
+      return request.db.boards.create(board);
+    });
+
+    return reply(promise);
   }
 };
 
@@ -96,7 +97,8 @@ exports.allCategories = {
   validate: {
     query: {
       page: Joi.number().default(1),
-      limit: Joi.number().integer().min(1).max(100).default(5)
+      limit: Joi.number().integer().min(1).max(100).default(5),
+      stripped: Joi.boolean()
     }
   },
   pre: [ { method: 'auth.boards.allCategories(server, auth)', assign: 'priority' } ],
@@ -105,6 +107,7 @@ exports.allCategories = {
     var priority = request.pre.priority;
     var opts = {
       hidePrivate: true,  // filter out private boards
+      stripped: request.query.stripped, // only retrieve boards and categories no other metadata
       limit: request.query.limit,
       page: request.query.page
     };
@@ -112,13 +115,22 @@ exports.allCategories = {
 
     var getAllCategories = request.db.boards.allCategories(priority, opts);
     var getRecentThreads = request.db.threads.recent(userId, priority, opts);
-    var promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
-      return {
-        boards: boards,
-        threads: threads
-      };
-    });
 
+    var promise;
+    if (opts.stripped) {
+      promise = getAllCategories
+      .then(function(boards) {
+        return { boards: boards };
+      });
+    }
+    else {
+      promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
+        return {
+          boards: boards,
+          threads: threads
+        };
+      });
+    }
     return reply(promise);
   }
 };
@@ -146,30 +158,25 @@ exports.update = {
     acls: 'boards.update',
     mod_log: {
       type: 'boards.update',
-      data: {
-        id: 'params.id',
-        name: 'payload.name',
-        description: 'payload.description',
-        viewable_by: 'payload.viewable_by'
-      }
+      data: { boards: 'payload' }
     }
   },
   validate: {
-    payload: {
+    payload: Joi.array().items(Joi.object().keys({
+      id: Joi.string().required(),
       name: Joi.string().min(1).max(255),
       description: Joi.string().allow(''),
       viewable_by: Joi.number().allow(null)
-    },
-    params: { id: Joi.string().required() }
+    })).unique().min(1)
   },
   pre: [ { method: 'common.boards.clean(sanitizer, payload)' } ],
   handler: function(request, reply) {
-    // build updateBoard object from params and payload
-    var updateBoard = request.payload;
-    updateBoard.id = request.params.id;
+    // update each board
+    var promise = Promise.map(request.payload, function(board) {
+      return request.db.boards.update(board);
+    });
 
-    // update board on db
-    return reply(request.db.boards.update(updateBoard));
+    return reply(promise);
   }
 };
 
@@ -194,22 +201,24 @@ exports.delete = {
     mod_log: {
       type: 'boards.delete',
       data: {
-        id: 'params.id',
-        name: 'route.settings.plugins.mod_log.metadata.name'
+        boards: 'payload',
+        names: 'route.settings.plugins.mod_log.metadata.names'
       }
     }
   },
-  validate: { params: { id: Joi.string().required() } },
+  validate: { payload: Joi.array().items(Joi.string().required()).unique().min(1) },
   handler: function(request, reply) {
-    var promise = request.db.boards.delete(request.params.id)
-    .then(function(result) {
-      // store results on plugin metadata
-      request.route.settings.plugins.mod_log.metadata = {
-        name: result.name
-      };
 
-      return result;
+    var promise = Promise.map(request.payload, function(boardId) {
+      return request.db.boards.delete(boardId);
+    })
+    .then(function(boards) {
+      var names = [];
+      boards.forEach(function(board) { names.push(board.name); });
+      request.route.settings.plugins.mod_log.metadata = { names: names.join(', ') };
+      return boards;
     });
+
     return reply(promise);
   }
 };

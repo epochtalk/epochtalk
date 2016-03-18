@@ -1,6 +1,6 @@
 <div id="admin-subnav" class="fill-row">
   <h2>Settings</h2>
-  <dl class="tabs custom-tabs">
+  <dl class="tabs">
     <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.general')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'general'}">
       <a ui-sref=".general" ng-click="AdminSettingsCtrl.tab = 'general'">General</a>
     </dd>

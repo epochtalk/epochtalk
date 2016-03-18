@@ -77,8 +77,7 @@
   </div>
 </div>
 
-<div id="ban-notice" ng-if="HeaderCtrl.currentUser.ban_expiration">
-  {{ (HeaderCtrl.currentUser.ban_expiration | humanDate:true) === 'Permanent' ? 'You have been permanently banned' : 'You have been banned until ' + (HeaderCtrl.currentUser.ban_expiration | humanDate:true) }}
+<div id="ban-notice" ng-if="HeaderCtrl.isBanned()" ng-bind-html="HeaderCtrl.isBanned()">
 </div>
 
 

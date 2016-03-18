@@ -4,15 +4,15 @@ var some = require('lodash/some');
 var filter = require('lodash/filter');
 var Promise = require('bluebird');
 
-var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'AdminBoards', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories', 'roles',
-  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, AdminBoards, Boards, Categories, AdminUsers, AdminModerators, boards, categories, roles) {
+var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'AdminBoards', 'Boards', 'Categories', 'AdminUsers', 'AdminModerators', 'boards', 'categories', 'roleData',
+  function($timeout, $location, $stateParams, $scope, $q, $anchorScroll, Alert, AdminBoards, Boards, Categories, AdminUsers, AdminModerators, boards, categories, roleData) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     var ctrl = this;
     // Category and Board Data
     $scope.catListData = categories; // Data backing left side of page
     $scope.boardListData = boards; // Data backing right side of page
-    $scope.roles = roles;
+    $scope.roles = roleData.roles;
     // Category and Board reference map
     $scope.nestableMap = {};
     // New/Edited/Deleted Boards
@@ -163,65 +163,81 @@ var ctrl = ['$timeout', '$location', '$stateParams', '$scope', '$q', '$anchorScr
 
     // 0) Create Categories which have been added
     $scope.processNewCategories = function() {
+      if ($scope.newCategories.length < 1) { return $q.resolve(); }
       console.log('0) Adding new Categories: \n' + JSON.stringify($scope.newCategories, null, 2));
-      return $q.all($scope.newCategories.map(function(newCategory) {
-        var dataId = newCategory.dataId;
-        delete newCategory.dataId;
-        return Categories.save(newCategory).$promise
-        .then(function(category) {
-          console.log('Created New Category: ' + JSON.stringify(category));
-          $scope.nestableMap[dataId].id = category.id;
-        })
-        .catch(function(response) { console.log(response); });
-      }));
+
+      return Categories.save($scope.newCategories).$promise
+      .then(function(cats) {
+        // append all the new cats back on to the page
+        cats.forEach(function(cat, index) {
+          var dataId = $scope.newCategories[index].dataId;
+          $scope.nestableMap[dataId].id = cat.id;
+        });
+      })
+      .then(function() {
+        while($scope.newCategories.length > 0) { $scope.newCategories.pop(); }
+      })
+      .catch(function(err) { console.log(err); });
     };
 
     // 1) Create Boards which have been added
     $scope.processNewBoards = function() {
+      if ($scope.newBoards.length < 1) { return $q.resolve(); }
       console.log('1) Adding new Boards: \n' + JSON.stringify($scope.newBoards, null, 2));
-      return $q.all($scope.newBoards.map(function(newBoard) {
-        var dataId = newBoard.dataId;
-        delete newBoard.dataId;
-        return Boards.save(newBoard).$promise
-        .then(function(board) {
-          console.log('Created New Board: ' + JSON.stringify(board));
+
+      return Boards.save($scope.newBoards).$promise
+      .then(function(boards) {
+        // append all the new boards back on to the page
+        boards.forEach(function(board, index) {
+          var dataId = $scope.newBoards[index].dataId;
           $scope.nestableMap[dataId].id = board.id;
-        })
-        .catch(function(response) { console.log(response); });
-      }));
+        });
+      })
+      .then(function() {
+        while($scope.newBoards.length > 0) { $scope.newBoards.pop(); }
+      })
+      .catch(function(err) { console.log(err); });
     };
 
     // 2) Handle Boards which have been edited
     $scope.processEditedBoards = function() {
+      if ($scope.editedBoards.length < 1) { return $q.resolve(); }
       console.log('2) Handling edited boards: \n' + JSON.stringify($scope.editedBoards, null, 2));
-      return $q.all($scope.editedBoards.map(function(editedBoard) {
-        var board = { name: editedBoard.name, description: editedBoard.description, viewable_by: editedBoard.viewable_by };
-        return Boards.update({ id: editedBoard.id }, board).$promise
-        .catch(function(response) { console.log(response); });
-      }));
+
+      return Boards.update($scope.editedBoards).$promise
+      .then(function() {
+        while($scope.editedBoards.length > 0) { $scope.editedBoards.pop(); }
+      })
+      .catch(function(err) { console.log(err); });
     };
 
     // 3) Handle Boards which have been deleted
     $scope.processDeletedBoards = function() {
+      if ($scope.deletedBoards.length < 1) { return $q.resolve(); }
       console.log('3) Handling deleted boards: \n' + JSON.stringify($scope.deletedBoards, null, 2));
-      return $q.all($scope.deletedBoards.map(function(deletedBoard) {
-        return Boards.delete({ id: deletedBoard }).$promise
-        .catch(function(response) { console.log(response); });
-      }));
+
+      return Boards.delete($scope.deletedBoards).$promise
+      .then(function() {
+        while($scope.deletedBoards.length > 0) { $scope.deletedBoards.pop(); }
+      })
+      .catch(function(err) { console.log(err); });
     };
 
     // 4) Handle Categories which have been deleted
     $scope.processDeletedCategories = function() {
+      if ($scope.deletedCategories.length < 1) { return $q.resolve(); }
       console.log('4) Handling deleted categories: \n' + JSON.stringify($scope.deletedCategories, null, 2));
-      return $q.all($scope.deletedCategories.map(function(deletedCategory) {
-        return Categories.delete({ id: deletedCategory }).$promise
-        .catch(function(response) { console.log(response); });
-      }));
+
+      return Categories.delete($scope.deletedCategories).$promise
+      .then(function() {
+        while($scope.deletedCategories.length > 0) { $scope.deletedCategories.pop(); }
+      })
+      .catch(function(err) { console.log(err); });
     };
 
     // 5) Updated all Categories
     $scope.processCategories = function(boardMapping) {
-      console.log('5) Updating board mapping: \n' + JSON.stringify(boardMapping, null, 2));
+      // console.log('5) Updating board mapping: \n' + JSON.stringify(boardMapping, null, 2));
       return AdminBoards.updateCategories({ boardMapping: boardMapping }).$promise
       .catch(function(response) { console.log(response); });
     };

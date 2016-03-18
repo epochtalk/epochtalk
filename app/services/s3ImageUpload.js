@@ -1,25 +1,34 @@
-'use strict';
-/* jslint node: true */
-
-module.exports = ['$q', '$http', '$window', 'Session',
-function ($q, $http, $window, Session) {
+module.exports = ['$q', '$http', 'Session',
+function ($q, $http, Session) {
   return {
-    policy: function(filename) {
-      return $http.post('/images/policy', { filename: filename });
+    policy: function(images) {
+      // get all the image filenames
+      var names = [];
+      images.forEach(function(image) { names.push(image.name); });
+
+      // get policy for each name
+      return $http.post('/images/policy', names)
+      .then(function(response) {
+        response = response.data;
+        for (var i = 0; i < names.length; i++) {
+          images[i].policy = response[i];
+        }
+
+        return images;
+      });
     },
-    upload: function (policyResponse, image) {
+    upload: function (image) {
       var deferred = $q.defer();
       var promise = deferred.promise;
 
       // get policy and signature
-      var data = policyResponse.data;
-      var policy = data.policy;
-      var signature = data.signature;
-      var accessKey = data.accessKey;
-      var url = data.uploadUrl;
-      var key = data.key;
-      var imageUrl = data.imageUrl;
-      var storageType = data.storageType;
+      var policy = image.policy.policy;
+      var signature = image.policy.signature;
+      var accessKey = image.policy.accessKey;
+      var url = image.policy.uploadUrl;
+      var key = image.policy.key;
+      var imageUrl = image.policy.imageUrl;
+      var storageType = image.policy.storageType;
 
       var token;
       if (storageType === 'local') { token = Session.getToken(); }
@@ -28,11 +37,11 @@ function ($q, $http, $window, Session) {
       var fd = new FormData();
       fd.append('key', key);
       fd.append('acl', 'public-read');
-      fd.append('Content-Type', image.type);
+      fd.append('Content-Type', image.file.type);
       fd.append('AWSAccessKeyId', accessKey);
       fd.append('policy', policy);
       fd.append('signature', signature);
-      fd.append('file', image);
+      fd.append('file', image.file);
 
       // upload request and event bindings
       var xhr = new XMLHttpRequest();

@@ -1,8 +1,5 @@
-'use strict';
-/* jslint node: true */
-
-module.exports = ['$window', 'User', 'Session',
-  function($window, User, Session) {
+module.exports = ['User', 'Session',
+  function(User, Session) {
     // Service API
     var serviceAPI = {
       register: function(user) {

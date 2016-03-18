@@ -59,6 +59,7 @@
     "mkdirp": "^0.5.0",
     "mmmagic": "^0.4.1",
     "node-sass": "^3.4.2",
+    "node-sass-globbing": "0.0.23",
     "node-uuid": "^1.4.1",
     "nodemailer": "^2.0.0",
     "oclazyload": "^1.0.6",

@@ -44,7 +44,7 @@ exports.create = {
     { method: 'auth.threads.create(server, auth, payload)' },
     { method: 'common.posts.clean(sanitizer, payload)' },
     { method: 'common.posts.parse(parser, payload)' },
-    { method: 'common.images.sub(imageStore, payload)' }
+    { method: 'common.images.sub(payload)' }
   ],
   handler: function(request, reply) {
     // build the thread post object from payload and params
@@ -116,13 +116,16 @@ exports.byBoard = {
     var getThreads = request.db.threads.byBoard(boardId, userId, opts);
     var getBoard = request.db.boards.find(boardId);
     var getBoardWatching = request.db.boards.watching(boardId, userId);
+    var getUserBoardBan = request.db.bans.isNotBannedFromBoard(userId, { boardId: boardId })
+    .then((notBanned) => { return !notBanned || undefined; });
 
-    var promise = Promise.join(getThreads, getBoard, getBoardWatching, function(threads, board, boardWatching) {
+    var promise = Promise.join(getThreads, getBoard, getBoardWatching, getUserBoardBan, function(threads, board, boardWatching, bannedFromBoard) {
       // check if board is being Watched
       if (boardWatching) { board.watched = true; }
 
       return {
         board: board,
+        bannedFromBoard: bannedFromBoard,
         page: request.query.page,
         limit: request.query.limit, // limit can be modified by query
         normal: threads.normal,

@@ -3,16 +3,19 @@ module.exports = images;
 
 var path = require('path');
 var crypto = require('crypto');
+var cheerio = require('cheerio');
+var Promise = require('bluebird');
 var s3 = require(path.normalize(__dirname + '/s3'));
 var local = require(path.normalize(__dirname + '/local'));
 var imageHandlers = {};
 var expireHandle;
 var clearHandle;
+var options;
 var config;
 var db;
 
 images.init = function(opts) {
-  opts = opts || {};
+  options = opts = opts || {};
   db = opts.db;
   config = opts.config;
 
@@ -21,6 +24,8 @@ images.init = function(opts) {
   imageHandlers.s3 = s3;
   imageHandlers.local = local;
 
+  // image cleaning intervals
+
   clearInterval(expireHandle);
   expireHandle = setInterval(expire, config.images.interval);
 
@@ -28,7 +33,9 @@ images.init = function(opts) {
   clearHandle = setInterval(clearImageReferences, config.images.interval);
 };
 
-// interface api
+images.reinit = function() { images.init(options); };
+
+// -- interface api
 
 images.saveImage = (imgSrc) => {
   return imageHandlers[config.images.storage].saveImage(imgSrc);
@@ -70,19 +77,6 @@ images.clearExpiration = function(url) {
   db.images.clearImageExpiration(url);
 };
 
-// Image References
-// TODO: should respect where the images are saved to
-
-images.addPostImageReference = function(postId, imageUrl) {
-  return db.images.addPostImage(postId, imageUrl);
-};
-
-images.removePostImageReferences = function(postId) {
-  return db.images.removePostImages(postId);
-};
-
-// image cleaning intervals
-
 var expire = function() {
   var storageType = config.images.storage;
   db.images.getExpiredImages()
@@ -92,6 +86,81 @@ var expire = function() {
     // clear from db
     images.clearExpiration(image.image_url);
   });
+};
+
+// Image References
+// TODO: should respect where the images are saved to
+
+images.imageSub = (post) => {
+  var html = post.body;
+  // load html in post.body into cheerio
+  var $ = cheerio.load(html);
+
+  // collect all the images in the body
+  var postImages = [];
+  $('img').each((index, element) => { postImages.push(element); });
+
+  // convert each image's src to cdn version
+  return Promise.map(postImages, (element) => {
+    var imgSrc = $(element).attr('src');
+    var savedUrl = images.saveImage(imgSrc);
+
+    if (savedUrl) {
+      // move original src to data-canonical-src
+      $(element).attr('data-canonical-src', imgSrc);
+      // update src with new url
+      $(element).attr('src', savedUrl);
+    }
+  })
+  .then(() => { post.body = $.html(); });
+};
+
+images.addPostImageReference = function(postId, imageUrl) {
+  return db.images.addPostImage(postId, imageUrl);
+};
+
+images.removePostImageReferences = function(postId) {
+  return db.images.removePostImages(postId);
+};
+
+images.createImageReferences = (post) => {
+  // load html in post.body into cheerio
+  var html = post.body;
+  var $ = cheerio.load(html);
+
+  // collect all the images in the body
+  var postImages = [];
+  $('img').each((index, element) => { postImages.push(element); });
+
+  // save all images with a reference to post
+  postImages.map(function(element) {
+    var imgSrc = $(element).attr('src');
+    images.addPostImageReference(post.id, imgSrc);
+  });
+
+  return post;
+};
+
+images.updateImageReferences = (post) => {
+  // load html in post.body into cheerio
+  var html = post.body;
+  var $ = cheerio.load(html);
+
+  // collect all the images in the body
+  var postImages = [];
+  $('img').each((index, element) => { postImages.push(element); });
+
+  // delete all image references for this post
+  images.removePostImageReferences(post.id)
+  .then(function() {
+    // convert each image's src to cdn version
+    postImages.map(function(element) {
+      var imgSrc = $(element).attr('src');
+      images.addPostImageReference(post.id, imgSrc);
+    });
+  });
+
+  return post;
 };
 
 var clearImageReferences = function() {

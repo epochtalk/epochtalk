@@ -3,13 +3,18 @@ var Boom = require('boom');
 var path = require('path');
 var roles = require(path.normalize(__dirname + '/roles'));
 
-var db, config;
+var db, config, defaultPerms, validations, layouts;
 
 exports.register = function (server, options, next) {
   if (!options.db) { return next(new Error('No DB found in ACLS')); }
   if (!options.config) { return next(new Error('No Configs found in ACLS')); }
   db = options.db;
   config = options.config;
+  defaultPerms = options.permissions.defaults;
+  validations = options.permissions.validations;
+  layouts = options.permissions.layouts;
+
+  buildRoles(defaultPerms);
 
   // Check ACL roles on each route
   server.ext('onPostAuth', function (request, reply) {
@@ -38,13 +43,42 @@ exports.register = function (server, options, next) {
     else { return reply(err); }
   });
 
+  // server exposed objects
   server.expose('getACLValue', getACLValue);
   server.expose('getUserPriority', getUserPriority);
   server.expose('getPriorityRestrictions', getPriorityRestrictions);
   server.expose('verifyRoles', verifyRoles);
 
-  return verifyRoles().then(next);
+  // server decoration
+  server.decorate('server', 'roles', roles);
+  server.decorate('request', 'roles', roles);
+  server.decorate('server', 'roleLayouts', layouts);
+  server.decorate('request', 'roleLayouts', layouts);
+  server.decorate('server', 'roleValidations', validations);
+  server.decorate('request', 'roleValidations', validations);
+
+  var rolesAPI = {
+    addRole: addRole,
+    updateRole: updateRole,
+    deleteRole: deleteRole,
+    reprioritizeRoles: reprioritizeRoles
+  };
+  server.decorate('server', 'rolesAPI', rolesAPI);
+  server.decorate('request', 'rolesAPI', rolesAPI);
+
+  return verifyRoles().then(function() { return next(roles); });
 };
+
+function buildRoles(permissions) {
+  var moduleKeys = Object.keys(permissions);
+  moduleKeys.forEach(function(moduleName) {
+    roles = _.mapValues(roles, function(role) {
+      var lookup = role.lookup;
+      role[moduleName] = permissions[moduleName][lookup];
+      return role;
+    });
+  });
+}
 
 function getUserPriority(auth) {
   var rolePriorities = [];
@@ -57,9 +91,7 @@ function getUserPriority(auth) {
   else if (config.loginRequired) { rolePriorities = [ roles.private.priority ]; }
   else { rolePriorities = [ roles.anonymous.priority ]; }
 
-  var userPriority = _.min(rolePriorities);
-
-  return userPriority;
+  return _.min(rolePriorities);
 }
 
 function getPriorityRestrictions(auth) {
@@ -141,7 +173,7 @@ function verifyRoles() {
           highlightColor: role.highlightColor,
           permissions: clonedAddRole
         };
-        return db.roles.add(addRole);
+        return db.roles.create(addRole);
       }
     });
 
@@ -189,6 +221,44 @@ function getACLValue(auth, acl) {
 
   return validACL;
 }
+
+function addRole(role) {
+  // Add role to the in memory role object
+  roles[role.lookup] = role.permissions;
+  roles[role.lookup].id = role.id;
+  roles[role.lookup].name = role.name;
+  roles[role.lookup].lookup = role.lookup;
+  roles[role.lookup].description = role.description;
+  roles[role.lookup].priority = role.priority;
+  roles[role.lookup].highlightColor = role.highlight_color;
+}
+
+function updateRole(role) {
+  // Update role in the in memory role object
+  var parsedPermissions;
+  try { parsedPermissions = JSON.parse(role.permissions); } // parse new permissions
+  catch(e) { parsedPermissions = roles[role.lookup]; } // this shouldn't happen, keep old permissions on error
+  roles[role.lookup] = parsedPermissions;
+  roles[role.lookup].id = role.id;
+  roles[role.lookup].name = role.name;
+  roles[role.lookup].lookup = role.lookup;
+  roles[role.lookup].description = role.description;
+  roles[role.lookup].priority = role.priority;
+  roles[role.lookup].highlightColor = role.highlight_color;
+}
+
+function deleteRole(roleId) {
+  var lookupToDelete;
+  Object.keys(roles).forEach(function(roleLookup) {
+    if (roles[roleLookup].id === roleId) { lookupToDelete = roleLookup; }
+  });
+  delete roles[lookupToDelete];
+}
+
+function reprioritizeRoles(allRoles) {
+  allRoles.forEach(function(role) { roles[role.lookup].priority = role.priority; });
+}
+
 
 exports.register.attributes = {
   name: 'acls',

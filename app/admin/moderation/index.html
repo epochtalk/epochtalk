@@ -1,6 +1,6 @@
 <div id="admin-subnav" class="fill-row">
   <h2>Moderation</h2>
-  <dl class="tabs custom-tabs">
+  <div class="tabs">
     <dd ng-if="ModerationCtrl.hasPermission('modAccess.users')" class="no-select" ng-class="{'active': ModerationCtrl.tab == 'users'}">
       <a ui-sref=".users({ filter: 'Pending' })" ng-click="ModerationCtrl.tab = 'users'">Users</a>
     </dd>
@@ -10,9 +10,12 @@
     <dd ng-if="ModerationCtrl.hasPermission('modAccess.messages')" class="no-select" ng-class="{'active': ModerationCtrl.tab == 'messages'}">
       <a ui-sref=".messages({ filter: 'Pending' })" ng-click="ModerationCtrl.tab = 'messages'">Messages</a>
     </dd>
+    <dd ng-if="ModerationCtrl.hasPermission('modAccess.boardBans')" class="no-select" ng-class="{'active': ModerationCtrl.tab == 'board-bans'}">
+      <a ui-sref=".board-bans" ng-click="ModerationCtrl.tab = 'board-bans'">Board Bans</a>
+    </dd>
     <dd ng-if="ModerationCtrl.hasPermission('modAccess.logs')" class="no-select" ng-class="{'active': ModerationCtrl.tab == 'logs'}">
       <a ui-sref=".logs" ng-click="ModerationCtrl.tab = 'logs'">Logs</a>
     </dd>
-  </dl>
+  </div>
 </div>
 <div ui-view="data" id="admin-data" class="fill-row"></div>

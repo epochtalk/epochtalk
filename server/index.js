@@ -16,6 +16,7 @@ var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var parser = require(path.normalize(__dirname + '/plugins/parser'));
 var common = require(path.normalize(__dirname + '/plugins/common'));
 var modules = require(path.normalize(__dirname + '/plugins/modules'));
+var session = require(path.normalize(__dirname + '/plugins/session'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
@@ -26,7 +27,7 @@ var authorization = require(path.normalize(__dirname + '/plugins/authorization')
 var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
 var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 
-var server, additionalRoutes, commonMethods, authMethods;
+var server, additionalRoutes, commonMethods, authMethods, permissions, roles;
 
 // setup configration file and sync with DB
 setup()
@@ -99,8 +100,6 @@ setup()
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
 })
-// route acls
-.then(function() { return server.register({register: acls, options: { db, config } }); })
 // blacklist
 .then(function() { return server.register({ register: blacklist, options: { db } }); })
 // rate limiter
@@ -122,7 +121,17 @@ setup()
     additionalRoutes = output.routes;
     commonMethods = output.common;
     authMethods = output.authorization;
+    permissions = output.permissions;
   });
+})
+// route acls
+.then(function() {
+  return server.register({register: acls, options: { db, config, permissions } })
+  .then(function(output) { roles = output; });
+})
+// user sessions
+.then(function() {
+  return server.register({ register: session, options: { roles, redis, config } });
 })
 // common methods
 .then(function() {
@@ -162,6 +171,7 @@ setup()
     configClone.emailer.pass = configClone.emailer.pass.replace(/./g, '*');
     configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*');
     configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*');
+    server.log('debug', 'DB Connection: ' + process.env.DATABASE_URL);
     server.log('debug', 'config: ' + JSON.stringify(configClone, undefined, 2));
     server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
   });

@@ -1,4 +1,4 @@
-module.exports = ['AdminUsers', function(AdminUsers) {
+module.exports = ['AdminUsers', 'User', function(AdminUsers, User) {
   return {
     restrict: 'E',
     template: require('./autocomplete-username.html'),
@@ -12,7 +12,8 @@ module.exports = ['AdminUsers', function(AdminUsers) {
       $scope.usernameIsValid = false;
 
       $scope.performAction = function() {
-        AdminUsers.find({ username: $scope.searchStr }).$promise
+        if (!$scope.usernameIsValid) { return; }
+        User.get({ username: $scope.searchStr }).$promise
         .then(function(user) {
           $scope.buttonAction({ user: user });
           $scope.searchStr = null;

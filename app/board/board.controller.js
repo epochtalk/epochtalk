@@ -1,5 +1,5 @@
-var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Alert', 'Session', 'Boards', 'Threads', 'Watchlist', 'pageData',
-  function($rootScope, $scope, $anchorScroll, $location, $timeout, Alert, Session, Boards, Threads, Watchlist, pageData) {
+var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Alert', 'BanSvc', 'Session', 'Threads', 'Watchlist', 'pageData',
+  function($rootScope, $scope, $anchorScroll, $location, $timeout, Alert, BanSvc, Session, Threads, Watchlist, pageData) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated; // check Auth
     this.board = pageData.board;
@@ -13,10 +13,11 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.board  = pageData.board;
     this.parent.page = pageData.page;
     this.parent.pageCount = Math.ceil(this.board.thread_count / this.limit);
+    // TODO: This will not be here once actual boards are stored in this array
+    this.parent.bannedFromBoard = BanSvc.banStatus().boards.length > 0;
 
     this.parent.controlAccess = {
-      createPost: Session.hasPermission('postControls.create'),
-      createThread: Session.hasPermission('threadControls.create')
+      createThread: Session.hasPermission('threads.create')
     };
 
     // set total_thread_count and total_post_count for all boards
@@ -126,7 +127,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
         ctrl.parent.board.watched = true;
         Alert.success('This board is being watched');
       })
-      .catch(function(err) { Alert.error('Error watching this board'); });
+      .catch(function() { Alert.error('Error watching this board'); });
     };
 
   }

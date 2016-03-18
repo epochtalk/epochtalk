@@ -17,8 +17,8 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
       answers: ['', '']
     };
 
-    this.controlAccess = Session.getControlAccess('threadControls', ctrl.thread.board_id);
-    this.pollControlAccess =  { create: Session.hasPermission('pollControls.create') };
+    this.controlAccess = Session.getControlAccess('threads', ctrl.thread.board_id);
+    this.pollControlAccess =  { create: Session.hasPermission('polls.create') };
     this.loggedIn = Session.isAuthenticated;
 
     this.addPollAnswer = function() { ctrl.poll.answers.push(''); };

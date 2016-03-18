@@ -6,8 +6,6 @@ var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var categories = require(path.normalize(__dirname + '/categories'));
 var boards = require(path.normalize(__dirname + '/boards'));
 var threads = require(path.normalize(__dirname + '/threads'));
-var posts = require(path.normalize(__dirname + '/posts'));
-var users = require(path.normalize(__dirname + '/users'));
 var auth = require(path.normalize(__dirname + '/auth'));
 var reports = require(path.normalize(__dirname + '/reports'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
@@ -23,7 +21,7 @@ var watchlist = require(path.normalize(__dirname + '/watchlist'));
 var notifications = require(path.normalize(__dirname + '/notifications'));
 
 function buildEndpoints() {
-  return [].concat(breadcrumbs, categories, boards, threads, posts, users, auth, reports, conversations, messages, watchlist, notifications);
+  return [].concat(breadcrumbs, categories, boards, threads, auth, reports, conversations, messages, watchlist, notifications);
 }
 
 function buildAdminEndpoints() {
@@ -66,11 +64,15 @@ exports.endpoints = function(internalConfig) {
       path: '/images/policy',
       config: {
         auth: { strategy: 'jwt' },
-        validate: { payload: { filename: Joi.string().required() } },
+        validate: { payload: Joi.array().items(Joi.string().required()).min(1) },
         handler: function(request, reply) {
-          var filename = request.payload.filename;
-          var result = request.imageStore.uploadPolicy(filename);
-          return reply(result);
+          var filenames = request.payload;
+
+          var policies = filenames.map(function(filename) {
+            return request.imageStore.uploadPolicy(filename);
+          });
+
+          return reply(policies);
         }
       }
     },
@@ -95,7 +97,6 @@ exports.endpoints = function(internalConfig) {
           // make sure image file exists
           var file = request.payload.file;
           if (!file) { return reply(Boom.badRequest('No File Attached')); }
-          file.on('end', function () { return reply().code(204); });
 
           // decode policy
           var policyPayload = request.payload.policy;

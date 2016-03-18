@@ -1,8 +1,6 @@
 var Joi = require('joi');
 var _ = require('lodash');
 var Boom = require('boom');
-var path = require('path');
-var rolesHelper = require(path.normalize(__dirname + '/../../../plugins/acls/helper'));
 
 /**
   * @apiVersion 0.4.0
@@ -20,7 +18,8 @@ exports.all = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminRoles.all' },
   handler: function(request, reply) {
-    var promise = request.db.roles.all();
+    var promise = request.db.roles.all()
+    .then((roles) => { return { roles: roles, layouts: request.roleLayouts }; });
     return reply(promise);
   }
 };
@@ -117,250 +116,18 @@ exports.add = {
       description: Joi.string().min(1).max(1000).required(),
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
       highlight_color: Joi.string(),
-      permissions: Joi.object().keys({
-        priorityRestrictions: Joi.array().items(Joi.number()),
-        adminAccess: Joi.object().keys({
-          settings: Joi.object().keys({
-            general: Joi.boolean(),
-            advanced: Joi.boolean(),
-            theme: Joi.boolean()
-          }),
-          management: Joi.object().keys({
-            boards: Joi.boolean(),
-            users: Joi.boolean(),
-            roles: Joi.boolean()
-          })
-        }),
-        modAccess: Joi.object().keys({
-          users: Joi.boolean(),
-          posts: Joi.boolean(),
-          messages: Joi.boolean(),
-          logs: Joi.boolean()
-        }),
-        adminRoles: Joi.object().keys({
-          all: Joi.boolean(),
-          users: Joi.boolean(),
-          add: Joi.boolean(),
-          update: Joi.boolean(),
-          remove: Joi.boolean(),
-          reprioritize: Joi.boolean()
-        }),
-        adminBoards: Joi.object().keys({
-          categories: Joi.boolean(),
-          boards: Joi.boolean(),
-          moveBoards: Joi.boolean(),
-          updateCategories: Joi.boolean()
-        }),
-        adminModerationLogs: Joi.object().keys({
-          page: Joi.boolean()
-        }),
-        adminReports: Joi.object().keys({
-          createUserReportNote: Joi.boolean(),
-          createPostReportNote: Joi.boolean(),
-          createMessageReportNote: Joi.boolean(),
-          updateUserReport: Joi.boolean(),
-          updatePostReport: Joi.boolean(),
-          updateMessageReport: Joi.boolean(),
-          updateUserReportNote: Joi.boolean(),
-          updatePostReportNote: Joi.boolean(),
-          updateMessageReportNote: Joi.boolean(),
-          pageUserReports: Joi.boolean(),
-          pagePostReports: Joi.boolean(),
-          pageMessageReports: Joi.boolean(),
-          pageUserReportsNotes: Joi.boolean(),
-          pagePostReportsNotes: Joi.boolean(),
-          pageMessageReportsNotes: Joi.boolean()
-        }),
-        adminSettings: Joi.object().keys({
-          find: Joi.boolean(),
-          update: Joi.boolean(),
-          getTheme: Joi.boolean(),
-          setTheme: Joi.boolean(),
-          resetTheme: Joi.boolean(),
-          previewTheme: Joi.boolean(),
-          getBlacklist: Joi.boolean(),
-          addToBlacklist: Joi.boolean(),
-          updateBlacklist: Joi.boolean(),
-          deleteFromBlacklist: Joi.boolean()
-        }),
-        adminUsers: Joi.object().keys({
-          privilegedUpdate: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedBan: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedAddRoles: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedRemoveRoles: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          update: Joi.boolean(),
-          find: Joi.boolean(),
-          addRoles: Joi.boolean(),
-          removeRoles: Joi.boolean(),
-          searchUsernames: Joi.boolean(),
-          count: Joi.boolean(),
-          countAdmins: Joi.boolean(),
-          countModerators: Joi.boolean(),
-          page: Joi.boolean(),
-          pageAdmins: Joi.boolean(),
-          pageModerators: Joi.boolean(),
-          ban: Joi.boolean(),
-          unban: Joi.boolean()
-        }),
-        adminModerators: Joi.object().keys({
-          add: Joi.boolean(),
-          remove: Joi.boolean()
-        }),
-        boards: Joi.object().keys({
-          viewUncategorized: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          create: Joi.boolean(),
-          find: Joi.boolean(),
-          allCategories: Joi.boolean(),
-          update: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        categories: Joi.object().keys({
-          create: Joi.boolean(),
-          find: Joi.boolean(),
-          all: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        conversations: Joi.object().keys({
-          create: Joi.boolean(),
-          messages: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        messages: Joi.object().keys({
-          privilegedDelete: Joi.boolean(),
-          create: Joi.boolean(),
-          latest: Joi.boolean(),
-          findUser: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        posts: Joi.object().keys({
-          privilegedUpdate: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedDelete: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedPurge: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          viewDeleted: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          bypassLock: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          create: Joi.boolean(),
-          find: Joi.boolean(),
-          byThread: Joi.boolean(),
-          update: Joi.boolean(),
-          delete: Joi.boolean(),
-          undelete: Joi.boolean(),
-          purge: Joi.boolean(),
-          pageByUser: Joi.boolean()
-        }),
-        reports: Joi.object().keys({
-          createUserReport: Joi.boolean(),
-          createPostReport: Joi.boolean(),
-          createMessageReport: Joi.boolean()
-        }),
-        threads: Joi.object().keys({
-          privilegedTitle: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedLock: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedSticky: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedMove: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedPurge: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          create: Joi.boolean(),
-          byBoard: Joi.boolean(),
-          posted: Joi.boolean(),
-          viewed: Joi.boolean(),
-          title: Joi.boolean(),
-          lock: Joi.boolean(),
-          sticky: Joi.boolean(),
-          move: Joi.boolean(),
-          moderated: Joi.boolean(),
-          purge: Joi.boolean()
-        }),
-        users: Joi.object().keys({
-          privilegedDeactivate: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedReactivate: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedDelete: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          viewDeleted: Joi.boolean(),
-          update: Joi.boolean(),
-          find: Joi.boolean(),
-          deactivate: Joi.boolean(),
-          reactivate: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        limits: Joi.array().items({
-          path: Joi.string().required(),
-          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
-          interval: Joi.number().min(-1).required(),
-          maxInInterval: Joi.number().min(1).required(),
-          minDifference: Joi.number().min(1).optional()
-        }).sparse(),
-        polls: Joi.object().keys({
-          create: Joi.boolean(),
-          vote: Joi.boolean(),
-          lock: Joi.boolean(),
-          privilegedLock: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          })
-        })
-      }).required()
+      permissions: Joi.object().required()
     }
   },
+  pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
   handler: function(request, reply) {
     var role = request.payload;
-    var promise = request.db.roles.add(role)
+    var promise = request.db.roles.create(role)
     .then(function(result) {
       role.id = result.id;
       role.lookup = result.id;
       // Add role to the in memory role object
-      rolesHelper.addRole(role);
+      request.rolesAPI.addRole(role);
       return result;
     })
     .catch(function(err) {
@@ -413,249 +180,17 @@ exports.update = {
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
       highlight_color: Joi.string(),
       lookup: Joi.string().required(),
-      permissions: Joi.object().keys({
-        priorityRestrictions: Joi.array().items(Joi.number()),
-        adminAccess: Joi.object().keys({
-          settings: Joi.object().keys({
-            general: Joi.boolean(),
-            advanced: Joi.boolean(),
-            theme: Joi.boolean()
-          }),
-          management: Joi.object().keys({
-            boards: Joi.boolean(),
-            users: Joi.boolean(),
-            roles: Joi.boolean()
-          })
-        }),
-        modAccess: Joi.object().keys({
-          users: Joi.boolean(),
-          posts: Joi.boolean(),
-          messages: Joi.boolean(),
-          logs: Joi.boolean()
-        }),
-        adminRoles: Joi.object().keys({
-          all: Joi.boolean(),
-          users: Joi.boolean(),
-          add: Joi.boolean(),
-          update: Joi.boolean(),
-          remove: Joi.boolean(),
-          reprioritize: Joi.boolean()
-        }),
-        adminBoards: Joi.object().keys({
-          categories: Joi.boolean(),
-          boards: Joi.boolean(),
-          moveBoards: Joi.boolean(),
-          updateCategories: Joi.boolean()
-        }),
-        adminModerationLogs: Joi.object().keys({
-          page: Joi.boolean()
-        }),
-        adminReports: Joi.object().keys({
-          createUserReportNote: Joi.boolean(),
-          createPostReportNote: Joi.boolean(),
-          createMessageReportNote: Joi.boolean(),
-          updateUserReport: Joi.boolean(),
-          updatePostReport: Joi.boolean(),
-          updateMessageReport: Joi.boolean(),
-          updateUserReportNote: Joi.boolean(),
-          updatePostReportNote: Joi.boolean(),
-          updateMessageReportNote: Joi.boolean(),
-          pageUserReports: Joi.boolean(),
-          pagePostReports: Joi.boolean(),
-          pageMessageReports: Joi.boolean(),
-          pageUserReportsNotes: Joi.boolean(),
-          pagePostReportsNotes: Joi.boolean(),
-          pageMessageReportsNotes: Joi.boolean()
-        }),
-        adminSettings: Joi.object().keys({
-          find: Joi.boolean(),
-          update: Joi.boolean(),
-          getTheme: Joi.boolean(),
-          setTheme: Joi.boolean(),
-          resetTheme: Joi.boolean(),
-          previewTheme: Joi.boolean(),
-          getBlacklist: Joi.boolean(),
-          addToBlacklist: Joi.boolean(),
-          updateBlacklist: Joi.boolean(),
-          deleteFromBlacklist: Joi.boolean()
-        }),
-        adminUsers: Joi.object().keys({
-          privilegedUpdate: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedBan: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedAddRoles: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedRemoveRoles: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          update: Joi.boolean(),
-          find: Joi.boolean(),
-          addRoles: Joi.boolean(),
-          removeRoles: Joi.boolean(),
-          searchUsernames: Joi.boolean(),
-          count: Joi.boolean(),
-          countAdmins: Joi.boolean(),
-          countModerators: Joi.boolean(),
-          page: Joi.boolean(),
-          pageAdmins: Joi.boolean(),
-          pageModerators: Joi.boolean(),
-          ban: Joi.boolean(),
-          unban: Joi.boolean()
-        }),
-        adminModerators: Joi.object().keys({
-          add: Joi.boolean(),
-          remove: Joi.boolean()
-        }),
-        boards: Joi.object().keys({
-          viewUncategorized: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          create: Joi.boolean(),
-          find: Joi.boolean(),
-          allCategories: Joi.boolean(),
-          update: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        categories: Joi.object().keys({
-          create: Joi.boolean(),
-          find: Joi.boolean(),
-          all: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        conversations: Joi.object().keys({
-          create: Joi.boolean(),
-          messages: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        messages: Joi.object().keys({
-          privilegedDelete: Joi.boolean(),
-          create: Joi.boolean(),
-          latest: Joi.boolean(),
-          findUser: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        posts: Joi.object().keys({
-          privilegedUpdate: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedDelete: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedPurge: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          viewDeleted: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          bypassLock: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          create: Joi.boolean(),
-          find: Joi.boolean(),
-          byThread: Joi.boolean(),
-          update: Joi.boolean(),
-          delete: Joi.boolean(),
-          undelete: Joi.boolean(),
-          purge: Joi.boolean(),
-          pageByUser: Joi.boolean()
-        }),
-        reports: Joi.object().keys({
-          createUserReport: Joi.boolean(),
-          createPostReport: Joi.boolean(),
-          createMessageReport: Joi.boolean()
-        }),
-        threads: Joi.object().keys({
-          privilegedTitle: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedLock: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedSticky: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedMove: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          privilegedPurge: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          }),
-          create: Joi.boolean(),
-          byBoard: Joi.boolean(),
-          posted: Joi.boolean(),
-          viewed: Joi.boolean(),
-          title: Joi.boolean(),
-          lock: Joi.boolean(),
-          sticky: Joi.boolean(),
-          move: Joi.boolean(),
-          moderated: Joi.boolean(),
-          purge: Joi.boolean()
-        }),
-        users: Joi.object().keys({
-          privilegedDeactivate: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedReactivate: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          privilegedDelete: Joi.object().keys({
-            samePriority: Joi.boolean(),
-            lowerPriority: Joi.boolean()
-          }),
-          viewDeleted: Joi.boolean(),
-          update: Joi.boolean(),
-          find: Joi.boolean(),
-          deactivate: Joi.boolean(),
-          reactivate: Joi.boolean(),
-          delete: Joi.boolean()
-        }),
-        limits: Joi.array().items({
-          path: Joi.string().required(),
-          method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
-          interval: Joi.number().min(-1).required(),
-          maxInInterval: Joi.number().min(1).required(),
-          minDifference: Joi.number().min(1).optional()
-        }).sparse(),
-        polls: Joi.object().keys({
-          create: Joi.boolean(),
-          vote: Joi.boolean(),
-          lock: Joi.boolean(),
-          privilegedLock: Joi.object().keys({
-            some: Joi.boolean(),
-            all: Joi.boolean()
-          })
-        })
-      }).required()
+      permissions: Joi.object().required()
     }
   },
+  pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
   handler: function(request, reply) {
     var role = request.payload;
     var promise = request.db.roles.update(role)
     .then(function(result) {
       role.id = result.id; // undoes deslugify which happens in core
       // Update role in the in memory role object
-      rolesHelper.updateRole(role);
+      request.rolesAPI.updateRole(role);
       return result;
     })
     .catch(function(err) {
@@ -698,7 +233,7 @@ exports.remove = {
   pre: [ { method: 'auth.admin.roles.remove(params.id)' } ],
   handler: function(request, reply) {
     var id = request.params.id;
-    var promise = request.db.roles.remove(id)
+    var promise = request.db.roles.delete(id)
     .then(function(result) {
       // Add deleted role name to plugin metadata
       request.route.settings.plugins.mod_log.metadata = {
@@ -706,7 +241,7 @@ exports.remove = {
       };
 
       // Remove deleted role from in memory object
-      rolesHelper.deleteRole(id);
+      request.rolesAPI.deleteRole(id);
       return result;
     });
     return reply(promise);
@@ -744,7 +279,7 @@ exports.reprioritize = {
     var promise = request.db.roles.reprioritize(roles)
     .then(function(result) {
       // update priorities for in memory roles object
-      rolesHelper.reprioritizeRoles(roles);
+      request.rolesAPI.reprioritizeRoles(roles);
       return result;
     });
     return reply(promise);

@@ -149,10 +149,6 @@ module.exports = {
   },
 
    // =========== Admin Users Routes ===========
-  'adminUsers.update': {
-    genDisplayText: function(data) { return `updated user "${data.username}"`; },
-    genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; }
-  },
   'adminUsers.addRoles': {
     genDisplayText: function(data) {
       return `added role "${data.role_name}" to user(s) "${data.usernames.toString().replace(/,/g, ', ')}"`;
@@ -208,18 +204,56 @@ module.exports = {
       .then(function(user) { data.username = user.username; });
     }
   },
+  'adminUsers.banFromBoards': {
+    genDisplayText: function(data) {
+      return `banned user "${data.username}" from boards: "${data.boards}"`;
+    },
+    genDisplayUrl: function() { return `^.board-bans`; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.user_id)
+      .then(function(user) {
+        data.username = user.username;
+        return Promise.map(data.board_ids, function(boardId) {
+          return request.db.boards.find(boardId)
+          .then(function(board) { return board.name; });
+        });
+      })
+      .then(function(boards) {
+        data.boards = boards.join(', ');
+      });
+    }
+  },
+  'adminUsers.unbanFromBoards': {
+    genDisplayText: function(data) {
+      return `unbanned user "${data.username}" from boards: "${data.boards}"`;
+    },
+    genDisplayUrl: function() { return `^.board-bans`; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.user_id)
+      .then(function(user) {
+        data.username = user.username;
+        return Promise.map(data.board_ids, function(boardId) {
+          return request.db.boards.find(boardId)
+          .then(function(board) { return board.name; });
+        });
+      })
+      .then(function(boards) {
+        data.boards = boards.join(', ');
+      });
+    }
+  },
 
    // =========== Boards Routes ===========
   'boards.create': {
-    genDisplayText: function(data) { return `created board named "${data.name}"`; },
+    genDisplayText: function(data) { return `created board named "${data.boards.map(function(board) { return board.name; }).join(', ') }"`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
   'boards.update': {
-    genDisplayText: function(data) { return `updated board named "${data.name}"`; },
+    genDisplayText: function(data) { return `updated board named "${data.boards.map(function(board) { return board.name; }).join(', ') }"`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
   'boards.delete': {
-    genDisplayText: function(data) { return `deleted board named "${data.name}"`; },
+    genDisplayText: function(data) { return `deleted board named "${data.names}"`; },
     genDisplayUrl: function() { return `admin-management.boards`; }
   },
 
@@ -356,6 +390,10 @@ module.exports = {
   },
 
    // =========== Users Routes ===========
+   'users.update': {
+     genDisplayText: function(data) { return `Updated user account "${data.username}"`; },
+     genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; }
+   },
   'users.deactivate': {
     genDisplayText: function(data) { return `deactivated user account "${data.username}"`; },
     genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; },

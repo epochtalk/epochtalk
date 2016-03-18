@@ -1,0 +1,40 @@
+/*-- View Layout Wrappers --*/
+#public-content { margin-top: 1.5rem; }
+#admin-content {
+  margin: 1.5rem ($base-grid-padding * 2) 0;
+  @include media($mobile) { margin: 1.5rem 0 0; }
+}
+
+/*-------------- Index File -------------- */
+#wrapper { min-height:100%; position:relative; }
+#wrapper #preview-banner {
+  @include pad(0 $base-grid-padding);
+  background-color: orange;
+  height: 2rem;
+  line-height: 2rem;
+  color: $dark-text-default;
+  border-bottom: 1px solid darken(orange, 10%);
+  a {
+    @include border-radius(2px);
+    padding: 0 0.5rem;
+    color: $dark-text-default;
+    &:hover { color: black; }
+    &:last-child { margin-right: 0; }
+  }
+  @include media($mobile) { a span { display: none; } }
+}
+
+#admin-subnav {
+  margin-bottom: 1rem;
+  h2 { display: inline-block; float: left; }
+}
+
+.admin-table-header {
+  @include clearfix;
+  @include row;
+  @include pad(1.25rem 3rem 0);
+  background-color: $sub-header-color;
+  margin: 0 -3rem 2rem;
+
+  @include media($mobile) { @include pad(1.25rem 1rem 0); margin: 0 -1rem 2rem; }
+}

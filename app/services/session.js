@@ -1,5 +1,3 @@
-'use strict';
-/* jslint node: true */
 var includes = require('lodash/includes');
 var get = require('lodash/get');
 
@@ -74,27 +72,31 @@ module.exports = ['$window', function($window) {
     }
 
     function hasPermission(permission) {
-      return user.permissions && get(user.permissions, permission);
+      return get(user.permissions, permission);
     }
 
     function moderatesBoard(boardId) {
       return includes(user.moderating, boardId);
     }
 
+    function getPriority() {
+      var priority = Number.MAX_SAFE_INTEGER;
+      if (user.permissions) { priority = user.permissions.priority; }
+      if (!isNaN(parseFloat(priority)) && isFinite(priority)) { return priority; }
+      else { return Number.MAX_SAFE_INTEGER; }
+    }
+
     function globalModeratorCheck() {
       var globalMod = false;
       if (user.permissions) {
         var globalModPermissions = [
-          'postControls.privilegedUpdate',
-          'postControls.privilegedDelete',
-          'postControls.privilegedPurge',
-          'postControls.bypassLock',
-          'threadControls.privilegedTitle',
-          'threadControls.privilegedLock',
-          'threadControls.privilegedSticky',
-          'threadControls.privilegedMove',
-          'threadControls.privilegedPurge',
-          'pollControls.privilegedLock'
+          'posts.update.bypass.owner.admin',
+          'threads.privilegedTitle',
+          'threads.privilegedLock',
+          'threads.privilegedSticky',
+          'threads.privilegedMove',
+          'threads.privilegedPurge',
+          'polls.privilegedLock'
         ];
         // If user has any of the permissions above set to all they are a global mod
         globalModPermissions.forEach(function(permission) {
@@ -128,13 +130,32 @@ module.exports = ['$window', function($window) {
         };
         // Retrieve specific permissions used to display mod actions in moderation pages
         result.postControls = {
-          privilegedDelete: perm('postControls.privilegedDelete'),
-          privilegedUpdate: perm('postControls.privilegedUpdate'),
-          privilegedPurge: perm('postControls.privilegedPurge'),
+          privilegedDelete: perm('posts.delete.bypass.locked'),
+          privilegedUpdate: perm('posts.update.bypass.owner'),
+          privilegedPurge: perm('posts.purge.bypass.purge'),
         };
-        result.userControls = { privilegedBan: perm('profileControls.privilegedBan') };
-        result.reportControls = hasPermission('reportControls');
-        result.messageControls = hasPermission('messageControls');
+        result.userControls = {
+          privilegedBan: perm('adminUsers.privilegedBan'),
+          privilegedBanFromBoards: perm('adminUsers.privilegedBanFromBoards')
+        };
+        result.messageControls = hasPermission('messages');
+        if (result.messageControls) {
+          result.messageControls.createConversations = perm('conversations.create');
+        }
+        result.reportControls = hasPermission('reports');
+        if (result.reportControls) {
+          result.reportControls.updateUserReport = perm('adminReports.updateUserReport');
+          result.reportControls.updatePostReport = perm('adminReports.updatePostReport');
+          result.reportControls.updateMessageReport = perm('adminReports.updateMessageReport');
+
+          result.reportControls.createUserReportNote = perm('adminReports.createUserReportNote');
+          result.reportControls.createPostReportNote = perm('adminReports.createPostReportNote');
+          result.reportControls.createMessageReportNote = perm('adminReports.createMessageReportNote');
+
+          result.reportControls.updateUserReportNote = perm('adminReports.updateUserReportNote');
+          result.reportControls.updatePostReportNote = perm('adminReports.updatePostReportNote');
+          result.reportControls.updateMessageReportNote = perm('adminReports.updateMessageReportNote');
+        }
       }
       return result;
     }
@@ -171,6 +192,7 @@ module.exports = ['$window', function($window) {
         clearContainer(user);
         clearContainer(storage);
       },
+      getPriority: getPriority,
       hasPermission: hasPermission,
       moderatesBoard: moderatesBoard,
       globalModeratorCheck: globalModeratorCheck,

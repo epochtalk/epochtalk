@@ -6,5 +6,5 @@ module.exports = [
   { method: 'POST', path: '/categories', config: categories.create },
   { method: 'GET', path: '/categories/{id}', config: categories.find },
   { method: 'GET', path: '/categories', config: categories.all },
-  { method: 'DELETE', path: '/categories/{id}', config: categories.delete }
+  { method: 'POST', path: '/categories/delete', config: categories.delete }
 ];
