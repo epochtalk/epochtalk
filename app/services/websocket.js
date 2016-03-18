@@ -9,9 +9,6 @@ module.exports = ['$window', 'Session',
       hostname: forumData.websocket_host,
       port: forumData.websocket_port
     })
-    .on('connect', function () {
-      socket.authenticate(Session.getToken());
-    })
     .on('error', function(err) {
       socket.disconnect();
       console.log('Oh hey, a websocket error ocurred!', err);

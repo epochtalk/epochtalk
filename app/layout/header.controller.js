@@ -54,12 +54,20 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
         ctrl.refreshNotificationsCounts();
       });
     };
-    ctrl.refreshNotificationsCounts();
-    Websocket.subscribe('/u/' + Session.user.id, {waitForAuth: true}).watch(function(data) {
-      console.log('refreshing:', data);
-      ctrl.refreshNotificationsCounts();
-    });
 
+    $scope.$watch(function() { return Session.getToken(); }, function(token) {
+      if (token) {
+        Websocket.authenticate(token);
+        Websocket.subscribe('/u/' + Session.user.id, {waitForAuth: true}).watch(function(data) {
+          console.log('refreshing:', data);
+          ctrl.refreshNotificationsCounts();
+        });
+        ctrl.refreshNotificationsCounts();
+      }
+      else {
+        Websocket.deauthenticate();
+      }
+    });
 
     // Login/LogOut
     this.user = {};
@@ -81,10 +89,6 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
           $state.nextParams = undefined; //clear out next state info after redirect
         }
         else { $state.go($state.current, $stateParams, { reload: true }); }
-      })
-      .then(function() {
-        // initialize notifications
-        return ctrl.refreshNotificationsCounts();
       })
       .catch(function(err) {
         if (err.data && err.data.message) { Alert.error(err.data.message); }
