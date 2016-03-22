@@ -11,7 +11,7 @@ module.exports = ['$window', 'Session',
       autoReconnect: true
     })
     .on('error', function(err) {
-      console.log('Oh hey, a websocket error ocurred!', err);
+      console.log('Websocket error:', err);
     });
     return socket;
   }
