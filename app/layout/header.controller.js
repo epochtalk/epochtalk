@@ -60,7 +60,6 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       if (token) {
         Websocket.authenticate(token);
         Websocket.subscribe('/u/' + Session.user.id, {waitForAuth: true}).watch(function(data) {
-          console.log('refreshing:', data);
           ctrl.refreshNotificationsCounts();
         });
         ctrl.refreshNotificationsCounts();
