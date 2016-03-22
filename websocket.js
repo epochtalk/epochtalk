@@ -9,7 +9,7 @@ module.exports = socketcluster.connect({
     initialDelay: 1000,
     randomness: 1000,
     multiplier: 1.5,
-    maxDelay: 60000
+    maxDelay: 10000
   }
 })
 .on('error', function(){});
