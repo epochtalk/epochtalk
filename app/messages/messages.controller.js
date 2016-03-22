@@ -1,8 +1,8 @@
 var bbcodeParser = require('epochtalk-bbcode-parser');
 
 var ctrl = [
-  '$scope', '$rootScope', '$timeout', '$window', '$location', '$anchorScroll', 'Session', 'Alert', 'Messages', 'Conversations', 'Reports', 'pageData',
-  function($scope, $rootScope, $timeout, $window, $location, $anchorScroll, Session, Alert, Messages, Conversations, Reports, pageData) {
+  '$scope', '$rootScope', '$timeout', '$window', '$location', '$anchorScroll', 'Session', 'Alert', 'Messages', 'Conversations', 'Reports', 'pageData', 'Websocket',
+  function($scope, $rootScope, $timeout, $window, $location, $anchorScroll, Session, Alert, Messages, Conversations, Reports, pageData, Websocket) {
     var ctrl = this;
     this.currentUserId = Session.user.id;
     this.recentMessages = pageData.messages;
@@ -155,6 +155,12 @@ var ctrl = [
     };
 
     // Messages
+    Websocket.subscribe('/u/' + Session.user.id, { waitForAuth: true }).watch(function(data) {
+      ctrl.loadRecentMessages(ctrl.page, ctrl.limit);
+      if (ctrl.selectedConversationId) {
+        ctrl.loadConversation(ctrl.selectedConversationId);
+      }
+    });
 
     this.loadRecentMessages = function(page, limit) {
       if (page <= 0 || page > ctrl.pageMax) { return; }
