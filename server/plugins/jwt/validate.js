@@ -1,5 +1,4 @@
 var Boom = require('boom');
-var path = require('path');
 var Promise = require('bluebird');
 
 /**
@@ -12,10 +11,9 @@ var Promise = require('bluebird');
  *   -- credentials, the user short object to be tied to request.auth.credentials
  */
 module.exports = function(decodedToken, token, redis, cb) {
-  var userInfo, userRoles, userModerating;
+  var userInfo, userRoles, banInfo, userModerating;
   var userId = decodedToken.userId;
   var sessionId = decodedToken.sessionId;
-
   // get session information
   var sessionKey = 'user:' + userId + ':session:' + sessionId;
   return redis.getAsync(sessionKey)
@@ -37,6 +35,12 @@ module.exports = function(decodedToken, token, redis, cb) {
     return redis.smembersAsync(userRoleKey)
     .then(function(value) { userRoles = value || []; });
   })
+  // get user ban info
+  .then(function() {
+    var userBanKey = 'user:' + userId + ':baninfo';
+    return redis.hgetallAsync(userBanKey)
+    .then(function(value) { banInfo = value; });
+  })
   // get user moderating boards
   .then(function() {
     var userModeratingKey = 'user:' + userId + ':moderating';
@@ -52,11 +56,12 @@ module.exports = function(decodedToken, token, redis, cb) {
       username: userInfo.username,
       avatar: userInfo.avatar,
       roles: userRoles,
-      moderating: userModerating
+      moderating: userModerating,
+      ban_expiration: banInfo && banInfo.expiration ? new Date(banInfo.expiration) : undefined
     };
     return cb(null, true, credentials);
   })
-  .catch(function(err) {
+  .catch(function() {
     var error = Boom.unauthorized('Session is no longer valid.');
     return cb(error, false, {});
   });

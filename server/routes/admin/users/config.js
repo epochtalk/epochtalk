@@ -111,6 +111,12 @@ exports.removeRoles = {
     var promise = request.db.roles.removeRoles(userId, roleId)
     .then(function(user) {
       return request.session.updateRoles(user.id, user.roles)
+      .then(function() {
+        var roleNames = user.roles.map(function(role) { return role.lookup; });
+        // If they had the banned role removed, update the users ban info in redis/session
+        if (roleNames.indexOf('banned') > -1) { return request.session.updateBanInfo(user.id); }
+        else { return; }
+      })
       .then(function() { return user; });
     });
     return reply(promise);
@@ -296,6 +302,7 @@ exports.ban = {
     var promise = request.db.bans.ban(userId, expiration)
     .then(function(user) {
       return request.session.updateRoles(user.user_id, user.roles)
+      .then(function() { return request.session.updateBanInfo(user.user_id, user.expiration); })
       .then(function() { return user; });
     });
     return reply(promise);
@@ -341,6 +348,7 @@ exports.unban = {
     var promise = request.db.bans.unban(userId)
     .then(function(user) {
       return request.session.updateRoles(user.user_id, user.roles)
+      .then(function() { return request.session.updateBanInfo(user.user_id); })
       .then(function() { return user; });
     });
     return reply(promise);

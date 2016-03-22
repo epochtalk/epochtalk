@@ -19,7 +19,6 @@ session.save = function(user) {
   user.roles = user.roles.map(function(role) { return role.lookup; });
   // default to user role
   if (!user.roles.length) { user.roles = ['user']; }
-
   // save username, avatar to redis hash under "user:{userId}"
   var userKey = 'user:' + user.id;
   var userValue = { username: user.username};
@@ -30,6 +29,16 @@ session.save = function(user) {
     var roleKey = 'user:' + user.id + ':roles';
     return redis.delAsync(roleKey)
     .then(function() { return redis.saddAsync(roleKey, user.roles); });
+  })
+  // save ban_expiration to redis set under "user:{userId}:baninfo"
+  .then(function() {
+    var banKey = 'user:' + user.id + ':baninfo';
+    var banInfo = {};
+    if (user.ban_expiration) { banInfo.expiration = user.ban_expiration; }
+    return redis.delAsync(banKey)
+    .then(function() {
+      return user.ban_expiration ? redis.hmsetAsync(banKey, banInfo) : null;
+    });
   })
   // save moderting boards to redis set under "user:{userId}:moderating"
   .then(function() {
@@ -65,22 +74,35 @@ session.updateRoles = function(userId, roles) {
   var roleKey = 'user:' + userId + ':roles';
   return redis.existsAsync(roleKey)
   .then(function(exists) {
-    if (exists > 0) {
-      return redis.delAsync(roleKey)
-      .then(function() { return redis.saddAsync(roleKey, roles); });
-    }
+    // Delete the key if it exists
+    var promise = exists ? redis.delAsync(roleKey) : undefined;
+
+    // Updatinging existing roles
+    if (promise) { promise.then(function() { return redis.saddAsync(roleKey, roles); }); }
+    // User never had roles add new role to redis
+    else { promise = redis.saddAsync(roleKey, roles); }
+
+    return promise;
   });
 };
 
 session.updateModerating = function(user) {
-  // save roles to redis set under "user:{userId}:roles"
+  // save moderated board ids to redis set under "user:{userId}:moderating"
   var moderatingKey = 'user:' + user.id + ':moderating';
   return redis.existsAsync(moderatingKey)
   .then(function(exists) {
-    if (exists > 0) {
-      return redis.delAsync(moderatingKey)
-      .then(function() { return redis.saddAsync(moderatingKey, user.moderating); });
+    // Delete the key if it exists
+    var promise = exists ? redis.delAsync(moderatingKey) : undefined;
+
+    // Updatinging existing array for moderating
+    if (promise && user.moderating.length) {
+      promise.then(function() { return redis.saddAsync(moderatingKey, user.moderating); });
+    } // Creating new array for moderating
+    else if (user.moderating.length) {
+      promise = redis.saddAsync(moderatingKey, user.moderating);
     }
+
+    return promise;
   });
 };
 
@@ -108,6 +130,20 @@ session.updateUserInfo = function(user) {
         return redis.hdelAsync(userKey, 'avatar');
       }
     });
+  });
+};
+
+session.updateBanInfo = function(userId, banExpiration) {
+  // save ban info to redis hash under "user:{userId}:baninfo"
+  var banKey = 'user:' + userId + ':baninfo';
+  return redis.hexistsAsync(banKey, 'expiration')
+  .then(function(exists) {
+    if (exists >= 0 && banExpiration) {
+      return redis.hmsetAsync(banKey, { expiration: banExpiration });
+    }
+    else if (exists > 0 && !banExpiration) {
+      return redis.hdelAsync(banKey, 'expiration');
+    }
   });
 };
 
@@ -232,7 +268,7 @@ function formatUserReply(token, user) {
     if (roles[roleName]) { filteredRoles.push(roleName); }
   });
   if (!filteredRoles.length) { filteredRoles = ['user']; }
-  return {
+  var reply = {
     token: token,
     id: user.id,
     username: user.username,
@@ -242,6 +278,7 @@ function formatUserReply(token, user) {
     permissions: getMaskedPermissions(filteredRoles),
     ban_expiration: user.ban_expiration
   };
+  return reply;
 }
 
 // -- API

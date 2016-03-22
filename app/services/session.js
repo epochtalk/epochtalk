@@ -47,6 +47,9 @@ module.exports = ['$window', function($window) {
         // check if ban has expired remove if it has
         if (new Date(container.ban_expiration) < new Date()) { delete container.ban_expiration; }
       }
+      else if (container.ban_expiration && !newUser.ban_expiration) {
+        delete container.ban_expiration;
+      }
       if (isStorage) {
         container.token = newUser.token;
         container.roles = JSON.stringify(newUser.roles || []);
