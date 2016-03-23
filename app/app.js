@@ -31,9 +31,6 @@ var ngDeps = [
   require('oclazyload'),
   require('./layout/header.controller'),
   require('./boards'),
-  require('./board'),
-  require('./threads/new'),
-  require('./threads/posted'),
   require('./messages'),
   require('./watchlist'),
   require('./admin')

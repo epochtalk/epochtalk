@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "ept-posts": "epochtalk/ept-posts",
-    "ept-users": "epochtalk/ept-users"
+    "ept-users": "epochtalk/ept-users",
+    "ept-threads": "epochtalk/ept-threads"
   }
 }

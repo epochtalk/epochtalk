@@ -719,171 +719,59 @@
 
       <!-- Threads Tab -->
       <div ng-if="AdminManagementCtrl.selectedTab === 'threads'">
-        <h4>Standard Permissions</h4>
-        <div>
-          <div class="half-column">
-            <!-- Create Thread -->
-            <label>
-              <input id="threads-create" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.create" ng-change="AdminManagementCtrl.newRole.permissions.threads.create ? null : AdminManagementCtrl.newRole.permissions.polls.create = undefined" ng-false-value="undefined" />
-              Allow user to create new threads
-            </label>
-            <!-- View Thread -->
-            <label>
-              <input id="threads-byBoard" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.byBoard" ng-change="AdminManagementCtrl.newRole.permissions.threads.byBoard ? AdminManagementCtrl.newRole.permissions.threads.viewed = true : AdminManagementCtrl.newRole.permissions.polls.vote = AdminManagementCtrl.newRole.permissions.threads.viewed = undefined" ng-false-value="undefined" />
-              Allow user to page/view threads
-            </label>
-            <!-- View Recently Posted In -->
-            <label>
-              <input id="threads-posted" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.posted"  ng-false-value="undefined" />
-              View recent threads they've posted in
-            </label>
-            <!-- Moderate Thread -->
-            <label>
-              <input id="threads-moderate" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.moderated" ng-false-value="undefined" />
-              Allow user to moderate threads (delete)
-            </label>
-          </div>
-          <div class="half-column">
-            <!-- Edit Thread Title -->
-            <label>
-              <input id="threads-title" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.title" ng-change="AdminManagementCtrl.newRole.permissions.threads.title ? null : privilegedTitle = undefined" ng-false-value="undefined" />
-              Allow user edit their thread titles
-            </label>
-            <!-- Lock Own Thread -->
-            <label>
-              <input id="threads-lock" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.threads.lock" ng-change="AdminManagementCtrl.newRole.permissions.threads.lock ? null : AdminManagementCtrl.newRole.permissions.threads.privilegedLock = undefined; AdminManagementCtrl.newRole.permissions.threads.lock ? null : privilegedLock = undefined" ng-false-value="undefined" />
-              Allow user lock their own threads
-            </label>
-            <!-- Create Polls -->
-            <label>
-              <input id="polls-create" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.create" ng-change="AdminManagementCtrl.newRole.permissions.polls.create ? AdminManagementCtrl.newRole.permissions.threads.create = true : null" ng-false-value="undefined" />
-              Allow user to create polls
-            </label>
-            <!-- Vote on Polls -->
-            <label>
-              <input id="polls-vote" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.vote" ng-change="AdminManagementCtrl.newRole.permissions.polls.vote ? AdminManagementCtrl.newRole.permissions.threads.byBoard = true : null" ng-false-value="undefined" />
-              Allow user to vote on polls
-            </label>
-            <!-- Lock Own Poll -->
-            <label>
-              <input id="polls-lock" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.polls.lock" ng-change="AdminManagementCtrl.newRole.permissions.polls.lock ? null : privilegedLockPoll = undefined" ng-false-value="undefined" />
-              Allow user lock their own polls
-            </label>
-          </div>
-        </div>
-        <div class="clear"></div>
-        <h4><br />Elevated Permissions</h4>
-        <div>
-          <div class="half-column">
-            <!-- Edit Others Threads -->
-            <label>
-              <input id="threads-privilegedTitle" type="checkbox" ng-init="privilegedTitle = AdminManagementCtrl.newRole.permissions.threads.privilegedTitle.some || AdminManagementCtrl.newRole.permissions.threads.privilegedTitle.all" ng-model="privilegedTitle" ng-change="privilegedTitle ? AdminManagementCtrl.newRole.permissions.threads.privilegedTitle.some = true : AdminManagementCtrl.newRole.permissions.threads.privilegedTitle = undefined; privilegedTitle ? AdminManagementCtrl.newRole.permissions.threads.privilegedTitle.all = undefined : null; privilegedTitle ? AdminManagementCtrl.newRole.permissions.threads.title = true : null" ng-false-value="undefined" />
-              Allow user to edit the title of other's threads
-            </label>
-            <div class="indent">
-              <label ng-if="privilegedTitle">
-                <input name="threads-privilegedTitle-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedTitle.some" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedTitle.all = undefined" ng-value="true" />
-                Edit thread titles in boards this user moderates
-              </label>
-              <label ng-if="privilegedTitle">
-                <input name="threads-privilegedTitle-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedTitle.all" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedTitle.some = undefined" ng-value="true" />
-                Edit thread titles across all boards
+        <section class="permission" ng-repeat="(model, details) in AdminManagementCtrl.layouts.threads">
+          <!-- Main Permission -->
+          <label>
+            <input type="checkbox"
+              ng-change="AdminManagementCtrl.newRole.permissions.threads[model].allow ? null : AdminManagementCtrl.newRole.permissions.threads[model] = undefined"
+              ng-model="AdminManagementCtrl.newRole.permissions.threads[model].allow"
+              ng-false-value="undefined" />
+            <span class="permission-title" ng-bind="details.title"></span>
+          </label>
+          <!-- Bypasses -->
+          <div class="bypass" ng-repeat="bypass in details.bypasses">
+            <!-- Boolean Bypass View -->
+            <div class="bypass-header" ng-if="bypass.type === 'boolean'">
+              <label>
+                <input type="checkbox"
+                  ng-disabled="!AdminManagementCtrl.newRole.permissions.threads[model].allow"
+                  ng-model="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control]"
+                  ng-false-value="undefined" />
+                <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.threads[model].allow }" ng-bind-html="bypass.description"></span>
               </label>
             </div>
-            <!-- Lock Others Threads -->
-            <label>
-              <input id="threads-privilegedLock" type="checkbox" ng-init="privilegedLock = AdminManagementCtrl.newRole.permissions.threads.privilegedLock.some || AdminManagementCtrl.newRole.permissions.threads.privilegedLock.all" ng-model="privilegedLock" ng-change="privilegedLock ? AdminManagementCtrl.newRole.permissions.threads.privilegedLock.some = true : AdminManagementCtrl.newRole.permissions.threads.privilegedLock = undefined; privilegedLock ? AdminManagementCtrl.newRole.permissions.threads.privilegedLock.all = undefined : null; privilegedLock ? AdminManagementCtrl.newRole.permissions.threads.lock = true : null" ng-false-value="undefined" />
-              Allow user to lock other's threads
-            </label>
-            <div class="indent">
-              <label ng-if="AdminManagementCtrl.newRole.permissions.threads.privilegedLock">
-                <input name="threads-privilegedLock-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedLock.some" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedLock.all = undefined" ng-value="true" />
-                Lock threads in boards this user moderates
-              </label>
-              <label ng-if="AdminManagementCtrl.newRole.permissions.threads.privilegedLock">
-                <input name="threads-privilegedLock-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedLock.all" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedLock.some = undefined" ng-value="true" />
-                Lock threads across all boards
-              </label>
-            </div>
-            <!-- Sticky Others Threads -->
-            <label>
-              <input id="threads-privilegedSticky" type="checkbox" ng-init="privilegedSticky = AdminManagementCtrl.newRole.permissions.threads.privilegedSticky.some || AdminManagementCtrl.newRole.permissions.threads.privilegedSticky.all" ng-model="privilegedSticky" ng-change="privilegedSticky ? AdminManagementCtrl.newRole.permissions.threads.privilegedSticky.some = true : AdminManagementCtrl.newRole.permissions.threads.privilegedSticky = undefined; privilegedSticky ? AdminManagementCtrl.newRole.permissions.threads.privilegedSticky.all = undefined : null; privilegedSticky ? AdminManagementCtrl.newRole.permissions.threads.sticky = true : AdminManagementCtrl.newRole.permissions.threads.sticky = undefined" ng-false-value="undefined" />
-              Allow user to sticky other's threads
-            </label>
-            <div class="indent">
-              <label ng-if="AdminManagementCtrl.newRole.permissions.threads.privilegedSticky">
-                <input name="threads-privilegedSticky-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedSticky.some" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedSticky.all = undefined" ng-value="true" />
-                Sticky threads in boards this user moderates
-              </label>
-              <label ng-if="AdminManagementCtrl.newRole.permissions.threads.privilegedSticky">
-                <input name="threads-privilegedSticky-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedSticky.all" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedSticky.some = undefined" ng-value="true" />
-                Sticky threads across all boards
-              </label>
+            <!-- Object Bypass View -->
+            <div ng-if="bypass.type === 'object' || !bypass.type">
+              <div class="bypass-header">
+                <label>
+                  <input type="checkbox"
+                    ng-init="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].show = AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].admin || AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].mod; AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].show ? null : AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control] = undefined"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.threads[model].allow"
+                    ng-change="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].show ? AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].mod = true : AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control] = undefined"
+                    ng-model="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].show"
+                    ng-false-value="undefined" />
+                  <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.threads[model].allow }" ng-bind-html="bypass.description"></span>
+                </label>
+              </div>
+              <div class="bypass-control">
+                <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].show }">
+                  <input type="radio"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].show"
+                    ng-model="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].admin"
+                    ng-click="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].mod = undefined" ng-value="true" />
+                  All
+                </label>
+                <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].show }">
+                  <input type="radio"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].show"
+                    ng-model="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].mod"
+                    ng-click="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control].admin = undefined" ng-value="true" />
+                  Moderated
+                </label>
+              </div>
             </div>
           </div>
-          <div class="half-column">
-            <!-- Move Others Threads -->
-            <label>
-              <input id="threads-privilegedMove" type="checkbox" ng-init="privilegedMove = AdminManagementCtrl.newRole.permissions.threads.privilegedMove.some || AdminManagementCtrl.newRole.permissions.threads.privilegedMove.all" ng-model="privilegedMove" ng-change="privilegedMove ? AdminManagementCtrl.newRole.permissions.threads.privilegedMove.some = true : AdminManagementCtrl.newRole.permissions.threads.privilegedMove = undefined; privilegedMove ? AdminManagementCtrl.newRole.permissions.threads.privilegedMove.all = undefined : null; privilegedMove ? AdminManagementCtrl.newRole.permissions.threads.move = true : AdminManagementCtrl.newRole.permissions.threads.move = undefined" ng-false-value="undefined" />
-              Allow user to move other's threads
-            </label>
-            <div class="indent">
-              <label ng-if="AdminManagementCtrl.newRole.permissions.threads.privilegedMove">
-                <input name="threads-privilegedMove-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedMove.some" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedMove.all = undefined" ng-value="true" />
-                Move threads in boards this user moderates
-              </label>
-              <label ng-if="AdminManagementCtrl.newRole.permissions.threads.privilegedMove">
-                <input name="threads-privilegedMove-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedMove.all" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedMove.some = undefined" ng-value="true" />
-                Move threads across all boards
-              </label>
-            </div>
-            <!-- Purge Others Threads -->
-            <label>
-              <input id="threads-privilegedPurge" type="checkbox" ng-init="privilegedPurgeThread = AdminManagementCtrl.newRole.permissions.threads.privilegedPurge.all || AdminManagementCtrl.newRole.permissions.threads.privilegedPurge.some" ng-model="privilegedPurgeThread" ng-change="privilegedPurgeThread ? AdminManagementCtrl.newRole.permissions.threads.privilegedPurge.some = true : AdminManagementCtrl.newRole.permissions.threads.privilegedPurge = undefined; privilegedPurgeThread ? AdminManagementCtrl.newRole.permissions.threads.privilegedPurge.all = undefined : null; privilegedPurgeThread ? AdminManagementCtrl.newRole.permissions.threads.purge = true : AdminManagementCtrl.newRole.permissions.threads.purge = undefined" ng-false-value="undefined" />
-              Allow user to purge other's threads
-            </label>
-            <div class="indent">
-              <label ng-if="AdminManagementCtrl.newRole.permissions.threads.privilegedPurge">
-                <input name="threads-privilegedPurge-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedPurge.some" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedPurge.all = undefined" ng-value="true" />
-                Purge threads in boards this user moderates
-              </label>
-              <label ng-if="AdminManagementCtrl.newRole.permissions.threads.privilegedPurge">
-                <input name="threads-privilegedPurge-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads.privilegedPurge.all" ng-click="AdminManagementCtrl.newRole.permissions.threads.privilegedPurge.some = undefined" ng-value="true" />
-                Purge threads across all boards
-              </label>
-            </div>
-            <!-- Create Polls in other threads -->
-            <label>
-              <input id="threads-privilegedCreatePoll" type="checkbox" ng-init="privilegedCreatePoll = AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.some || AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.all" ng-model="privilegedCreatePoll" ng-change="privilegedCreatePoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.some = true : AdminManagementCtrl.newRole.permissions.polls.privilegedCreate = undefined; privilegedCreatePoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.all = undefined : null; privilegedCreatePoll ? AdminManagementCtrl.newRole.permissions.polls.create = true : null" ng-false-value="undefined" />
-              Allow user to create polls in other threads
-            </label>
-            <div class="indent">
-              <label ng-if="privilegedCreatePoll">
-                <input name="polls-privilegedCreatePoll-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.some" ng-click="AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.all = undefined" ng-value="true" />
-                Create polls in boards this user moderates
-              </label>
-              <label ng-if="privilegedCreatePoll">
-                <input name="polls-privilegedCreatePoll-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.all" ng-click="AdminManagementCtrl.newRole.permissions.polls.privilegedCreate.some = undefined" ng-value="true" />
-                Create polls across all boards
-              </label>
-            </div>
-            <!-- Lock Others Polls -->
-            <label>
-              <input id="threads-privilegedLockPoll" type="checkbox" ng-init="privilegedLockPoll = AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some || AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all" ng-model="privilegedLockPoll" ng-change="privilegedLockPoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some = true : AdminManagementCtrl.newRole.permissions.polls.privilegedLock = undefined; privilegedLockPoll ? AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all = undefined : null; privilegedLockPoll ? AdminManagementCtrl.newRole.permissions.polls.lock = true : null" ng-false-value="undefined" />
-              Allow user to edit/lock other's polls
-            </label>
-            <div class="indent">
-              <label ng-if="privilegedLockPoll">
-                <input name="polls-privilegedLockPoll-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some" ng-click="AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all = undefined" ng-value="true" />
-                Edit/Lock polls in boards this user moderates
-              </label>
-              <label ng-if="privilegedLockPoll">
-                <input name="polls-privilegedLockPoll-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.polls.privilegedLock.all" ng-click="AdminManagementCtrl.newRole.permissions.polls.privilegedLock.some = undefined" ng-value="true" />
-                Edit/Lock polls across all boards
-              </label>
-            </div>
-          </div>
-        </div>
+        </section>
       </div>
 
       <!-- Posts Tab -->

@@ -1,4 +1,4 @@
-module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, Alert, Threads, $timeout) {
+module.exports = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(Session, BanSvc, Alert, Threads, $timeout) {
   return {
     restrict: 'E',
     scope: { thread: '=', reset: '=' },
@@ -7,8 +7,67 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
       // poll selected answers
       $scope.pollAnswers = [];
       $scope.user = Session.user;
+      $scope.banned = BanSvc.banStatus().boards.length > 0;
       $scope.switches = { editPoll: false };
       // $scope.poll and $scope.options set in watch
+
+      // Poll Permissions
+      $scope.canVote = function() {
+        var vote = true;
+        var poll = $scope.poll;
+        if (!Session.isAuthenticated()) { vote = false; }
+        if ($scope.banned) { vote = false; }
+        if (!Session.hasPermission('threads.vote.allow')) { vote = false; }
+        if (poll.hasVoted) { vote = false; }
+        if (poll.locked) { vote = false; }
+        if (poll.expired) { vote = false; }
+        return vote;
+      };
+
+      $scope.canRemoveVote = function() {
+        var vote = true;
+        var poll = $scope.poll;
+        if (!Session.isAuthenticated()) { vote = false; }
+        if ($scope.banned) { vote = false; }
+        if (!Session.hasPermission('threads.removeVote.allow')) { vote = false; }
+        if (!poll.hasVoted) { vote = false; }
+        if (poll.locked) { vote = false; }
+        if (poll.expired) { vote = false; }
+        if (!poll.change_vote) { vote = false; }
+        return vote;
+      };
+
+      $scope.canEdit = function() {
+        if (!Session.isAuthenticated()) { return false; }
+        if ($scope.banned) { return false; }
+        if (!Session.hasPermission('threads.editPoll.allow')) { return false; }
+
+        var edit = false;
+        if ($scope.thread.user.id === Session.user.id) { edit = true; }
+        else {
+          if (Session.hasPermission('threads.editPoll.bypass.owner.admin')) { edit = true; }
+          else if (Session.hasPermission('threads.editPoll.bypass.owner.mod')) {
+            if (Session.moderatesBoard($scope.thread.board_id)) { edit = true; }
+          }
+        }
+        return edit;
+      };
+
+      $scope.canLock = function() {
+        if (!Session.isAuthenticated()) { return false; }
+        if ($scope.banned) { return false; }
+        if (!Session.hasPermission('threads.lockPoll.allow')) { return false; }
+
+        var lock = false;
+        if ($scope.thread.user.id === Session.user.id) { lock = true; }
+        else {
+          if (Session.hasPermission('threads.lockPoll.bypass.owner.admin')) { lock = true; }
+          else if (Session.hasPermission('threads.lockPoll.bypass.owner.mod')) {
+            if (Session.moderatesBoard($scope.thread.board_id)) { lock = true; }
+          }
+        }
+        return lock;
+      };
 
       // Initialization
       $scope.$watch('thread', function() { initialize(); });
@@ -26,14 +85,6 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
           max_answers: $scope.poll.max_answers,
           display_mode: $scope.poll.display_mode
         };
-
-        // get poll permissions
-        $scope.permissions = Session.getControlAccess('polls', $scope.thread.board_id);
-        if ($scope.permissions.privilegedLock) { $scope.permissions.edit = true; }
-        if ($scope.user.id === $scope.thread.user.id) {
-          $scope.permissions.privilegedLock = $scope.permissions.lock;
-          if ($scope.permissions.create) { $scope.permissions.edit = true; }
-        }
 
         // poll expiration
         if ($scope.poll.expiration) {
@@ -125,20 +176,6 @@ module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, A
           answer.style = { width: percentage + '%' };
           answer.percentage = percentage;
         });
-      };
-
-      $scope.canVote = function() {
-        var result = false;
-        var poll = $scope.poll;
-        if (!poll.hasVoted && !poll.locked && !poll.expired && $scope.permissions.vote) { result = true; }
-        return result;
-      };
-
-      $scope.canRemoveVote = function() {
-        var result = false;
-        var poll = $scope.poll;
-        if (poll.hasVoted && !poll.locked && !poll.expired && $scope.permissions.vote && poll.change_vote) { result = true; }
-        return result;
       };
 
       $scope.pollValid = function() {

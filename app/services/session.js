@@ -19,8 +19,8 @@ module.exports = ['$window', function($window) {
       catch (error) { return false; }
     }
 
-     // Attempt to retrieve and auth user from storage
-     try {
+    // Attempt to retrieve and auth user from storage
+    try {
       user = {
         id: storage.id,
         username: storage.username,
@@ -35,8 +35,8 @@ module.exports = ['$window', function($window) {
       if (storage.moderatings) { user.moderating = JSON.parse(storage).moderating; }
       if (storage.permissions) { user.permissions = JSON.parse(storage.permissions); }
       if (storage.token) { authenticated = true; }
-     }
-     catch(err) { console.log('Error parsing user from storage: ', err); }
+    }
+    catch(err) { console.log('Error parsing user from storage: ', err); }
 
     function loadContainer(newUser, container, isStorage) {
       container.id = newUser.id;

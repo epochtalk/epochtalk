@@ -62,7 +62,7 @@ exports.byType = {
             nextType = type.board;
             nextId = obj.parent_id;
           }
-          crumbs.push({ label: obj.name, state: 'board.data', opts: { boardId: id } });
+          crumbs.push({ label: obj.name, state: 'threads.data', opts: { boardId: id } });
         }
         else if (curType === type.thread) { // Thread
           crumbs.push({ label: obj.title, state: 'posts.data', opts: { threadId: id } });

@@ -4,12 +4,12 @@
     <!-- Poll Details -->
     <div class="poll-controls">
       <!-- Poll Controls -->
-      <div class="poll-control" ng-if="permissions.privilegedLock">
+      <div class="poll-control" ng-if="canLock()">
         <input id="lockPoll" class="icon" type="checkbox" ng-model="poll.locked">
         <label for="lockPoll" class="icon-epoch-lock" ng-click="updateLockPoll()">
         </label>
       </div>
-      <div class="poll-control" ng-if="permissions.edit">
+      <div class="poll-control" ng-if="canEdit()">
         <input id="editPoll" class="icon" type="checkbox" ng-model="switches.editPoll">
         <label for="editPoll" class="icon-epoch-edit">
         </label>
@@ -33,7 +33,7 @@
   </div>
 
   <!-- Poll Edit -->
-  <div class="poll-edit" slide-toggle="switches.editPoll" ng-if="permissions.edit">
+  <div class="poll-edit" slide-toggle="switches.editPoll" ng-if="canEdit()">
     <div class="poll-edit-container slide-wrapper">
       <h5>Edit Poll Options:</h5>
       <input type="checkbox" id="pollVote" ng-model="options.change_vote">

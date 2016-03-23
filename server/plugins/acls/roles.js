@@ -145,58 +145,15 @@ module.exports = roles;
       findUser: true,
       delete: true
     },
-    // posts
     reports: {
       createUserReport: true,
       createPostReport: true,
       createMessageReport: true
     },
-    threads: {
-      privilegedTitle: {
-        some: true,
-        all: true
-      },
-      privilegedLock: {
-        some: true,
-        all: true
-      },
-      privilegedSticky: {
-        some: true,
-        all: true
-      },
-      privilegedMove: {
-        some: true,
-        all: true
-      },
-      privilegedPurge: {
-        some: true,
-        all: true
-      },
-      create: true,
-      byBoard: true,
-      posted: true,
-      viewed: true,
-      title: true,
-      lock: true,
-      sticky: true,
-      move: true,
-      moderated: true,
-      purge: true
-    },
-    polls: {
-      create: true,
-      vote: true,
-      lock: true,
-      privilegedCreate: {
-        some: true,
-        all: true,
-      }
+    notifications: {
+      dismiss: true,
+      counts: true
     }
-      privilegedLock: {
-        some: true,
-        all: true
-      }
-    },
     limits: []
   };
 */
@@ -339,45 +296,10 @@ roles.superAdministrator = {
     findUser: true,
     delete: true
   },
-  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
     createMessageReport: true
-  },
-  threads: {
-    privilegedTitle: {
-      all: true
-    },
-    privilegedLock: {
-      all: true
-    },
-    privilegedSticky: {
-      all: true
-    },
-    privilegedMove: {
-      all: true
-    },
-    privilegedPurge: {
-      all: true
-    },
-    create: true,
-    byBoard: true,
-    posted: true,
-    viewed: true,
-    title: true,
-    lock: true,
-    sticky: true,
-    move: true,
-    moderated: true,
-    purge: true
-  },
-  polls: {
-    create: true,
-    vote: true,
-    lock: true,
-    privilegedCreate: { all: true },
-    privilegedLock: { all: true }
   },
   notifications: {
     dismiss: true,
@@ -501,45 +423,10 @@ roles.administrator = {
     findUser: true,
     delete: true
   },
-  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
     createMessageReport: true
-  },
-  threads: {
-    privilegedTitle: {
-      all: true
-    },
-    privilegedLock: {
-      all: true
-    },
-    privilegedSticky: {
-      all: true
-    },
-    privilegedMove: {
-      all: true
-    },
-    privilegedPurge: {
-      all: true
-    },
-    create: true,
-    byBoard: true,
-    posted: true,
-    viewed: true,
-    title: true,
-    lock: true,
-    sticky: true,
-    move: true,
-    moderated: true,
-    purge: true
-  },
-  polls: {
-    create: true,
-    vote: true,
-    lock: true,
-    privilegedCreate: { all: true },
-    privilegedLock: { all: true }
   },
   notifications: {
     dismiss: true,
@@ -617,45 +504,10 @@ roles.globalModerator = {
     findUser: true,
     delete: true
   },
-  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
     createMessageReport: true
-  },
-  threads: {
-    privilegedTitle: {
-      all: true
-    },
-    privilegedLock: {
-      all: true
-    },
-    privilegedSticky: {
-      all: true
-    },
-    privilegedMove: {
-      all: true
-    },
-    privilegedPurge: {
-      all: true
-    },
-    create: true,
-    byBoard: true,
-    posted: true,
-    viewed: true,
-    title: true,
-    lock: true,
-    sticky: true,
-    move: true,
-    moderated: true,
-    purge: true
-  },
-  polls: {
-    create: true,
-    vote: true,
-    lock: true,
-    privilegedCreate: { all: true },
-    privilegedLock: { all: true }
   },
   notifications: {
     dismiss: true,
@@ -728,45 +580,10 @@ roles.moderator = {
     findUser: true,
     delete: true
   },
-  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
     createMessageReport: true
-  },
-  threads: {
-    privilegedTitle: {
-      some: true
-    },
-    privilegedLock: {
-      some: true
-    },
-    privilegedSticky: {
-      some: true
-    },
-    privilegedMove: {
-      some: true
-    },
-    privilegedPurge: {
-      some: true
-    },
-    create: true,
-    byBoard: true,
-    posted: true,
-    viewed: true,
-    title: true,
-    lock: true,
-    sticky: true,
-    move: true,
-    moderated: true,
-    purge: true
-  },
-  polls: {
-    create: true,
-    vote: true,
-    lock: true,
-    privilegedCreate: { some: true },
-    privilegedLock: { some: true }
   },
   notifications: {
     dismiss: true,
@@ -796,25 +613,10 @@ roles.user = {
     findUser: true,
     delete: true
   },
-  // posts
   reports: {
     createUserReport: true,
     createPostReport: true,
     createMessageReport: true
-  },
-  threads: {
-    create: true,
-    byBoard: true,
-    posted: true,
-    viewed: true,
-    title: true,
-    moderated: true,
-    lock: true
-  },
-  polls: {
-    create: true,
-    vote: true,
-    lock: true
   },
   notifications: {
     dismiss: true,
@@ -843,11 +645,6 @@ roles.banned = {
     create: true,
     latest: true,
     findUser: true
-  },
-  // posts
-  threads: {
-    byBoard: true,
-    viewed: true
   }
 };
 
@@ -862,11 +659,6 @@ roles.anonymous = {
   boards: {
     find: true,
     allCategories: true
-  },
-  // posts
-  threads: {
-    byBoard: true,
-    viewed: true
   }
 };
 

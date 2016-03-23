@@ -1,7 +1,3 @@
-var uuid = require('node-uuid');
-var cheerio = require('cheerio');
-var Promise = require('bluebird');
-
 // -- internal methods
 
 function categoriesClean(sanitizer, payload) {
@@ -41,75 +37,6 @@ function imagesSite(imageStore, payload) {
   }
 }
 
-function checkView(server, headers, info, threadId) {
-  var viewerId = headers['epoch-viewer'];
-  var newViewerId = '';
-
-  // Check if viewerId and threadId is found
-  var viewerIdKey = viewerId + threadId;
-  var promise = checkViewKey(viewerIdKey, server.redis)
-  .then(function(valid) { // viewId found
-    if (valid) { return server.db.threads.incViewCount(threadId); }
-  })
-  .catch(function() { // viewId not found
-    // save this viewerId to redis
-    if (viewerId) { server.redis.setAsync(viewerIdKey, Date.now()); }
-    // create new viewerId and save to redis
-    else {
-      newViewerId = uuid.v4();
-      server.redis.setAsync(newViewerId + threadId, Date.now());
-    }
-
-    // Check if ip address and threadId is found
-    var viewerAddress = info.remoteAddress;
-    var addressKey = viewerAddress + threadId;
-    return checkViewKey(addressKey, server.redis)
-    .then(function(valid) { // address found
-      if (valid) { return server.db.threads.incViewCount(threadId); }
-    })
-    .catch(function() { // address not found
-      // save this address + threadId combo to redis
-      server.redis.setAsync(addressKey, Date.now());
-      // increment view count
-      return server.db.threads.incViewCount(threadId);
-    });
-  })
-  .then(function() { return newViewerId; });
-
-  return promise;
-}
-
-function updateView(server, auth, threadId) {
-  var promise;
-  if (auth.isAuthenticated) {
-    var userId = auth.credentials.id;
-    promise = server.db.users.putUserThreadViews(userId, threadId);
-  }
-  return promise;
-}
-
-// private methods
-
-function checkViewKey(key, redis) {
-  return redis.getAsync(key)
-  .then(function(storedTime) {
-    if (storedTime) { return storedTime; }
-    else { return Promise.reject(); } // value is null
-  })
-  .then(function(storedTime) {
-    var timeElapsed = Date.now() - storedTime;
-    // key exists and is past the cooling period
-    // update key with new value and return true
-    if (timeElapsed > 1000 * 60) {
-      return redis.setAsync(key, Date.now())
-      .then(function() { return true; });
-    }
-    // key exists but before cooling period
-    // do nothing and return false
-    else { return false; }
-  });
-}
-
 // -- API
 
 exports.register = function(server, options, next) {
@@ -146,18 +73,7 @@ exports.register = function(server, options, next) {
       name: 'common.images.site',
       method: imagesSite,
       options: { callback: false }
-    },
-    // -- threads
-    {
-      name: 'common.threads.checkView',
-      method: checkView,
-      options: { callback: false }
-    },
-    {
-      name: 'common.threads.updateView',
-      method: updateView,
-      options: { callback: false }
-    },
+    }
   ];
 
   // append any new methods to methods from options

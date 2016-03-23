@@ -33,7 +33,7 @@
     "boom": "^3.1.2",
     "bower": "^1.7.5",
     "change-case": "^2.3.1",
-    "cheerio": "^0.19.0",
+    "cheerio": "^0.20.0",
     "commander": "^2.5.1",
     "db-migrate": "^0.9.23",
     "deep-rename-keys": "^0.1.0",

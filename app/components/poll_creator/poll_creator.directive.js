@@ -1,4 +1,4 @@
-module.exports = ['Session', 'Alert', 'Threads', '$timeout', function(Session, Alert, Threads, $timeout) {
+module.exports = ['Session', function(Session) {
   return {
     restrict: 'E',
     scope: { poll: '=', valid: '=' },

@@ -49,7 +49,7 @@
           <td><a ng-href="mailto:{{row.email}}" ng-bind="row.email"></a></td>
           <td>
             <span ng-repeat="boardName in row.board_names track by $index">
-              <a ng-bind-html="boardName" ui-sref="board.data({ boardId: row.board_ids[$index] })"></a>{{ !$last ? ', ' : '' }}
+              <a ng-bind-html="boardName" ui-sref="threads.data({ boardId: row.board_ids[$index] })"></a>{{ !$last ? ', ' : '' }}
             </span>
           </td>
           <td class="centered-text">

@@ -18,7 +18,7 @@
         <div class="info">
           <!-- Board Name -->
           <h5>
-            <a ui-sref="board.data({ boardId: board.id })" class="board-name" ng-bind-html="board.name"></a>
+            <a ui-sref="threads.data({ boardId: board.id })" class="board-name" ng-bind-html="board.name"></a>
           </h5>
           <!-- Moderators -->
           <div ng-if="board.moderators.length > 0">
@@ -32,7 +32,7 @@
           <div class="childboards" ng-if="board.children.length > 0">
             <strong>Child Boards:</strong>
             <span ng-repeat="child in board.children">
-              <a ui-sref="board.data({ boardId: child.id })" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
+              <a ui-sref="threads.data({ boardId: child.id })" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
             </span>
           </div>
         </div>
@@ -94,7 +94,7 @@
           <small>
             by
             <a ui-sref="profile({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
-            (<a ui-sref="board.data({ boardId: thread.board_id })" ng-bind-html="thread.board_name"></a>)
+            (<a ui-sref="threads.data({ boardId: thread.board_id })" ng-bind-html="thread.board_name"></a>)
           </small>
 
           <i class="icon-epoch-lock right hide-mobile" ng-if="thread.locked"></i>
