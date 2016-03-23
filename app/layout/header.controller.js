@@ -1,5 +1,5 @@
-var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'BanSvc',
-  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert, ThemeSVC, BanSvc) {
+var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'User', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'Notifications', 'Websocket', 'BanSvc',
+  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, User, BreadcrumbSvc, Alert, ThemeSVC, Notifications, Websocket, BanSvc) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.hasPermission = Session.hasPermission;
@@ -33,6 +33,41 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       if (pathArr.length < 2) { return false; }
       return pathArr[0].toLowerCase() === 'admin' && pathArr[1].toLowerCase() === route;
     };
+
+    // Notifications
+    this.notifications = {
+      messages: 0,
+      mentions: 0
+    };
+    this.refreshNotificationsCounts = function() {
+      return Notifications.counts().$promise
+      .then(function(counts) {
+        ctrl.notifications.messages = counts.message;
+        ctrl.notifications.mentions = counts.mention;
+      });
+    };
+    this.dismissNotifications = function(type) {
+      var query = {
+        type: type
+      };
+      return Notifications.dismiss(query).$promise
+      .then(function() {
+        ctrl.refreshNotificationsCounts();
+      });
+    };
+
+    $scope.$watch(function() { return Session.getToken(); }, function(token) {
+      if (token) {
+        Websocket.authenticate(token);
+        Websocket.subscribe('/u/' + Session.user.id, {waitForAuth: true}).watch(function(data) {
+          ctrl.refreshNotificationsCounts();
+        });
+        ctrl.refreshNotificationsCounts();
+      }
+      else {
+        Websocket.deauthenticate();
+      }
+    });
 
     // Login/LogOut
     this.user = {};

@@ -18,9 +18,10 @@ var adminModerationLogs = require(path.normalize(__dirname + '/admin/moderation_
 var conversations = require(path.normalize(__dirname + '/conversations'));
 var messages = require(path.normalize(__dirname + '/messages'));
 var watchlist = require(path.normalize(__dirname + '/watchlist'));
+var notifications = require(path.normalize(__dirname + '/notifications'));
 
 function buildEndpoints() {
-  return [].concat(breadcrumbs, categories, boards, threads, auth, reports, conversations, messages, watchlist);
+  return [].concat(breadcrumbs, categories, boards, threads, auth, reports, conversations, messages, watchlist, notifications);
 }
 
 function buildAdminEndpoints() {
@@ -50,7 +51,9 @@ exports.endpoints = function(internalConfig) {
           description: config.website.description,
           keywords: config.website.keywords,
           logo: config.website.logo,
-          favicon: config.website.favicon
+          favicon: config.website.favicon,
+          websocket_host: config.websocket_host,
+          websocket_port: config.websocket_port
         };
         return reply.view('index', data);
       }

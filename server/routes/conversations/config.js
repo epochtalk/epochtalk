@@ -1,5 +1,6 @@
 var Joi = require('joi');
 var Boom = require('boom');
+var _ = require('lodash');
 
 /**
   * @apiVersion 0.4.0
@@ -37,7 +38,19 @@ exports.create = {
       message.sender_id = request.auth.credentials.id;
       return message;
     })
-    .then(request.db.messages.create);
+    .then(request.db.messages.create)
+    .tap(function(dbMessage) {
+      var messageClone = _.cloneDeep(dbMessage)
+      var notification = {
+        type: 'message',
+        sender_id: request.auth.credentials.id,
+        receiver_id: request.payload.receiver_id,
+        data: {
+          id: messageClone.id
+        }
+      };
+      request.server.plugins.notifications.spawnNotification(notification);
+    });
     return reply(promise);
   }
 };

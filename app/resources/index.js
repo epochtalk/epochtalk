@@ -8,4 +8,5 @@ angular.module('ept')
   .factory('Reports', require('./reports.js'))
   .factory('Messages', require('./messages.js'))
   .factory('Conversations', require('./conversations.js'))
-  .factory('Watchlist', require('./watchlist.js'));
+  .factory('Watchlist', require('./watchlist.js'))
+  .factory('Notifications', require('./notifications.js'));

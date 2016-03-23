@@ -378,6 +378,10 @@ roles.superAdministrator = {
     lock: true,
     privilegedCreate: { all: true },
     privilegedLock: { all: true }
+  },
+  notifications: {
+    dismiss: true,
+    counts: true
   }
 };
 
@@ -536,6 +540,10 @@ roles.administrator = {
     lock: true,
     privilegedCreate: { all: true },
     privilegedLock: { all: true }
+  },
+  notifications: {
+    dismiss: true,
+    counts: true
   }
 };
 
@@ -648,6 +656,10 @@ roles.globalModerator = {
     lock: true,
     privilegedCreate: { all: true },
     privilegedLock: { all: true }
+  },
+  notifications: {
+    dismiss: true,
+    counts: true
   }
 };
 
@@ -755,6 +767,10 @@ roles.moderator = {
     lock: true,
     privilegedCreate: { some: true },
     privilegedLock: { some: true }
+  },
+  notifications: {
+    dismiss: true,
+    counts: true
   }
 };
 
@@ -799,6 +815,10 @@ roles.user = {
     create: true,
     vote: true,
     lock: true
+  },
+  notifications: {
+    dismiss: true,
+    counts: true
   }
 };
 

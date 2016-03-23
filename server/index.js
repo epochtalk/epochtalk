@@ -24,6 +24,7 @@ var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var imageStore = require(path.normalize(__dirname + '/plugins/imageStore'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
+var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
 var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 
 var server, additionalRoutes, commonMethods, authMethods, permissions, roles;
@@ -82,6 +83,11 @@ setup()
     };
     return server.register({ register: Good, options: options});
   }
+})
+// notifications
+.then(function() {
+  // notification methods
+  return server.register({ register: notifications, options: { db }});
 })
 // auth via jwt
 .then(function() {
