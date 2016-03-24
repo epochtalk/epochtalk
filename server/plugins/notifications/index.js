@@ -3,19 +3,18 @@ var Boom = require('boom');
 var Hoek = require('hoek');
 var jwt  = require('jsonwebtoken');
 
-
-// Declare internals
-var internals = {};
-var redis;
+var db, websocketAPIKey;
 
 // Use websocket
 var path = require('path');
-var websocketAPIKey = require(path.join(__dirname, '../../../config')).websocketAPIKey;
 var socket = require(path.join(__dirname, '../../../websocket'));
 
 exports.register = function (plugin, options, next) {
   if (!options.db) { return next(new Error('No db found in notifications')); }
   db = options.db;
+
+  if (!options.config) { return next(new Error('No config found in notifications')); }
+  websocketAPIKey = options.config.websocketAPIKey;
 
   plugin.expose('spawnNotification', spawnNotification);
   plugin.expose('getNotifications', getNotifications);

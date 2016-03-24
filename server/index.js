@@ -87,7 +87,7 @@ setup()
 // notifications
 .then(function() {
   // notification methods
-  return server.register({ register: notifications, options: { db }});
+  return server.register({ register: notifications, options: { db, config }});
 })
 // auth via jwt
 .then(function() {
