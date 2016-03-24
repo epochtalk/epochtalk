@@ -33,6 +33,16 @@ var ngDeps = [
   require('./boards'),
   require('./messages'),
   require('./watchlist'),
+  // users
+  require('./users/confirm'),
+  require('./users/profile'),
+  require('./users/reset'),
+  // threads
+  require('./threads/new'),
+  require('./threads/posted'),
+  require('./threads/threads'),
+  // posts
+  require('./posts'),
   require('./admin')
 ].concat(moduleNames);
 var app = angular.module('ept', ngDeps);
@@ -44,6 +54,9 @@ require('./filters');
 require('./services');
 require('./resources');
 require('./components');
+require('./threads/resource');
+require('./posts/resource');
+require('./users/resource');
 
 // Set Angular Configs
 app

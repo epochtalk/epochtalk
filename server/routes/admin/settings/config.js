@@ -10,9 +10,11 @@ var renameKeys = require('deep-rename-keys');
 var sass = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'sass'));
 var copyCss = require(path.join(__dirname + '/../../../../scripts', 'tasks', 'copy_files'));
 var varsDir = '/../../../../app/scss/ept/variables';
-var customVarsPath = path.normalize(__dirname + varsDir + '/_custom-variables.scss');
 var previewVarsPath = path.normalize(__dirname + varsDir + '/_preview-variables.scss');
 var defaultVarsPath = path.normalize(__dirname + varsDir + '/_default-variables.scss');
+var customPath = '/../../../../content/sass/_custom-variables.scss';
+var customVarsPath = path.normalize(__dirname + customPath);
+
 
 var camelCaseToUnderscore = function(obj) {
   if (_.isObject(obj)) {

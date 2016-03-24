@@ -1,5 +1,4 @@
 var fse = require('fs-extra');
-var fs = require('fs');
 var Promise = require('bluebird');
 
 module.exports = function() {
@@ -15,8 +14,8 @@ module.exports = function() {
 
   var customVariablesCss = new Promise(function(resolve, reject) {
     var filepath = './app/scss/ept/variables/_default-variables.scss';
-    var dest = './app/scss/ept/variables/_custom-variables.scss';
-    if (fs.existsSync(dest)) { return resolve(); }
+    var dest = './content/sass/_custom-variables.scss';
+    if (fse.existsSync(dest)) { return resolve(); }
     else {
       fse.copy(filepath, dest, function(err) {
         if (err) { return reject(err); }
@@ -28,9 +27,9 @@ module.exports = function() {
 
   var previewVariablesCss = new Promise(function(resolve, reject) {
     var filepath = './app/scss/ept/variables/_preview-variables.scss';
-    if (fs.existsSync(filepath)) { return resolve(); }
+    if (fse.existsSync(filepath)) { return resolve(); }
     else {
-      fs.writeFile(filepath, '', function(err) {
+      fse.writeFile(filepath, '', function(err) {
         if (err) { return reject(err); }
         console.log('Preview Variables CSS Copied.');
         return resolve();

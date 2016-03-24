@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var exec = require('child_process').exec;
 var modulesDir = path.normalize(__dirname + '/../../modules');
 var modulesNMDir = path.normalize(__dirname + '/../../modules/node_modules');
-var appModulesDir = path.normalize(__dirname + '/../../app/modules');
+var appModulesDir = path.normalize(__dirname + '/../../app');
 
 module.exports = function() {
   return npmInstall()
@@ -31,8 +31,8 @@ function loadModules() {
   var packageJson = require(path.normalize(modulesDir + '/package.json'));
   var ept_modules = packageJson.dependencies;
 
-  // empty /app/modules dir, ensure /app/modules dir exists
-  fse.emptyDirSync(appModulesDir);
+  // empty /app dir, ensure /app dir exists
+  fse.removeSync(appModulesDir);
 
   // extract client code from modules
   var modules = Object.keys(ept_modules);
@@ -44,9 +44,15 @@ function loadModules() {
 // 2.) if it exists, symlink to /app/modules/{moduleName}
 // 3.) symlink any HTML files if they exists
 function load(moduleName) {
+  // require module
+  var thisModule = require(path.normalize(modulesNMDir + '/' + moduleName));
   // load the index.js for the given moduleName
   var inDir = path.normalize(modulesNMDir + '/' + moduleName + '/client');
-  var outDir = path.normalize(appModulesDir + '/' + moduleName);
+
+  // Figure out where to put the client files
+  var outDir; // TODO: check if there is more than one frontend-core
+  if (thisModule.type === 'frontend-core') { outDir = appModulesDir; }
+  else { outDir = appModulesDir + '/modules/' + moduleName; }
 
   // copy client files if they exists
   return checkDir(inDir)

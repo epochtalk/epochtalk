@@ -40,3 +40,5 @@ test/coverage/
 /app/modules
 
 /modules/etc
+
+/content/sass/_custom-variables.scss
