@@ -1,6 +1,0 @@
-.slide {
-  @include transition(300ms cubic-bezier(0.075, 0.82, 0.165, 1) all);
-  overflow: hidden;
-  &.open { opacity: 1; }
-  &.closed { opacity: 0; max-height: 0; }
-}
