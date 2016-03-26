@@ -31,12 +31,6 @@ module.exports = roles;
       logs: true
     },
     // ACLs
-    adminBoards: {
-      categories: true,
-      boards: true,
-      moveBoards: true,
-      updateCategories: true
-    },
     adminModerationLogs: {
       page: true
     },
@@ -115,17 +109,6 @@ module.exports = roles;
     adminModerators: {
       add: true,
       remove: true
-    },
-    boards: {
-      viewUncategorized: {
-        some: true,
-        all: true
-      },
-      create: true, // creating new boards
-      find: true, // standard user permission
-      allCategories: true, // all boards in categories
-      update: true, // Update individual board
-      delete: true // Removes individual boards
     },
     categories: {
       create: true, // Create a new categories
@@ -268,16 +251,6 @@ roles.superAdministrator = {
     add: true,
     remove: true
   },
-  boards: {
-    viewUncategorized: {
-      all: true
-    },
-    create: true,
-    find: true,
-    allCategories: true,
-    update: true,
-    delete: true
-  },
   categories: {
     create: true,
     find: true,
@@ -395,16 +368,6 @@ roles.administrator = {
     add: true,
     remove: true
   },
-  boards: {
-    viewUncategorized: {
-      all: true
-    },
-    create: true,
-    find: true,
-    allCategories: true,
-    update: true,
-    delete: true
-  },
   categories: {
     create: true,
     find: true,
@@ -486,13 +449,6 @@ roles.globalModerator = {
     getBannedBoards: true,
     byBannedBoards: true
   },
-  boards: {
-    viewUncategorized: {
-      all: true
-    },
-    find: true,
-    allCategories: true,
-  },
   conversations: {
     create: true,
     messages: true
@@ -562,13 +518,6 @@ roles.moderator = {
     getBannedBoards: true,
     byBannedBoards: true
   },
-  boards: {
-    viewUncategorized: {
-      some: true
-    },
-    find: true,
-    allCategories: true
-  },
   conversations: {
     create: true,
     messages: true
@@ -599,10 +548,6 @@ roles.user = {
   lookup: 'user',
   priority: 4,
   // ACLs
-  boards: {
-    find: true,
-    allCategories: true
-  },
   conversations: {
     create: true,
     messages: true
@@ -633,10 +578,6 @@ roles.banned = {
   priority: 5,
   priorityRestrictions: [0, 1, 2, 3],
   // ACLs
-  boards: {
-    find: true,
-    allCategories: true
-  },
   conversations: {
     create: true,
     messages: true
@@ -654,12 +595,7 @@ roles.anonymous = {
   name: 'Anonymous',
   lookup: 'anonymous',
   description: 'Read only access',
-  priority: 6,
-  // ACLs
-  boards: {
-    find: true,
-    allCategories: true
-  }
+  priority: 6
 };
 
 roles.private = {

@@ -3,7 +3,6 @@ var _ = require('lodash');
 var Boom = require('boom');
 var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
-var querystring = require('querystring');
 
 var common = {
   hasPermission: (error, server, auth, permission) => {
@@ -300,41 +299,6 @@ function conversationsCreate(server, auth, receiverId) {
     });
   }
   return priority;
-}
-
-// -- Boards
-
-function boardsFind(server, auth, boardId) {
-  var userId = auth.credentials.id;
-
-  var conditions = [
-    {
-      // Permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'boards.viewUncategorized.all'
-    },
-    {
-      // is the board visible
-      type: 'dbValue',
-      method: server.db.boards.getBoardInBoardMapping,
-      args: [boardId, server.plugins.acls.getUserPriority(auth)]
-    },
-    {
-      // is this user a board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModerator,
-      args: [userId, boardId],
-      permission: server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some')
-    }
-  ];
-
-  return server.authorization.stitch(Boom.notFound(), conditions, 'any');
-}
-
-function boardsAllCategories(server, auth) {
-  return server.plugins.acls.getUserPriority(auth);
 }
 
 // -- Auth
@@ -649,17 +613,7 @@ function adminRolesValidate(validations, payload) {
       add: Joi.boolean(),
       remove: Joi.boolean()
     }),
-    boards: Joi.object().keys({
-      viewUncategorized: Joi.object().keys({
-        some: Joi.boolean(),
-        all: Joi.boolean()
-      }),
-      create: Joi.boolean(),
-      find: Joi.boolean(),
-      allCategories: Joi.boolean(),
-      update: Joi.boolean(),
-      delete: Joi.boolean()
-    }),
+    boards: validations.boards,
     categories: Joi.object().keys({
       create: Joi.boolean(),
       find: Joi.boolean(),
@@ -759,17 +713,6 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.conversations.create',
       method: conversationsCreate,
-      options: { callback: false }
-    },
-    // -- boards
-    {
-      name: 'auth.boards.find',
-      method: boardsFind,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.boards.allCategories',
-      method: boardsAllCategories,
       options: { callback: false }
     },
     // -- auth

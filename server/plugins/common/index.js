@@ -6,19 +6,6 @@ function categoriesClean(sanitizer, payload) {
   });
 }
 
-function boardsClean(sanitizer, payload) {
-  // payload is an array
-  payload.map(function(board) {
-    // name
-    board.name = sanitizer.strip(board.name);
-
-    // description
-    if (board.description) {
-      board.description = sanitizer.display(board.description);
-    }
-  });
-}
-
 function messagesClean(sanitizer, payload) {
   payload.body = sanitizer.bbcode(payload.body);
 }
@@ -49,12 +36,6 @@ exports.register = function(server, options, next) {
     {
       name: 'common.categories.clean',
       method: categoriesClean,
-      options: { callback: false }
-    },
-    // -- boards
-    {
-      name: 'common.boards.clean',
-      method: boardsClean,
       options: { callback: false }
     },
     // -- messages
