@@ -9,7 +9,6 @@ exports.register = function(server, options, next) {
     reply.continue();
     // If credentials are present and track_ip is true
     if (request.auth.credentials && _.get(request, 'route.settings.plugins.track_ip')) {
-      console.log(request.info);
       var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
       db.users.trackIp(request.auth.credentials.id, ip);
     }
