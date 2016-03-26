@@ -110,12 +110,6 @@ module.exports = roles;
       add: true,
       remove: true
     },
-    categories: {
-      create: true, // Create a new categories
-      find: true, // unused
-      all: true, // unused
-      delete: true // Removes a category
-    },
     conversations: {
       create: true,
       messages: true,
@@ -251,12 +245,6 @@ roles.superAdministrator = {
     add: true,
     remove: true
   },
-  categories: {
-    create: true,
-    find: true,
-    all: true,
-    delete: true
-  },
   conversations: {
     create: true,
     messages: true,
@@ -367,12 +355,6 @@ roles.administrator = {
   adminModerators: {
     add: true,
     remove: true
-  },
-  categories: {
-    create: true,
-    find: true,
-    all: true,
-    delete: true
   },
   conversations: {
     create: true,

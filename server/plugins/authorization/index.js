@@ -478,7 +478,6 @@ function adminUsersBanFromBoards(server, auth, userId, boardIds) {
   return match;
 }
 
-
 // -- Admin Roles
 // test this one
 function adminRolesRemove(roleId){

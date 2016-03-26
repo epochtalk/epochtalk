@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "ept-frontend": "epochtalk/ept-frontend",
+    "ept-categories": "epochtalk/ept-categories",
     "ept-boards": "epochtalk/ept-boards",
     "ept-posts": "epochtalk/ept-posts",
     "ept-users": "epochtalk/ept-users",

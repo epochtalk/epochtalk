@@ -1,11 +1,5 @@
 // -- internal methods
 
-function categoriesClean(sanitizer, payload) {
-  payload.map(function(cat) {
-    cat.name = sanitizer.strip(cat.name);
-  });
-}
-
 function messagesClean(sanitizer, payload) {
   payload.body = sanitizer.bbcode(payload.body);
 }
@@ -32,12 +26,6 @@ exports.register = function(server, options, next) {
 
   // append hardcoded methods to the server
   var internalMethods = [
-    // -- categories
-    {
-      name: 'common.categories.clean',
-      method: categoriesClean,
-      options: { callback: false }
-    },
     // -- messages
     {
       name: 'common.messages.clean',

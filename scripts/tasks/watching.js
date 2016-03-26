@@ -7,6 +7,7 @@ var installModules = require(path.normalize(__dirname + '/load_modules'));
 var monitors = [];
 var nmPath = path.normalize(__dirname + '/../../modules/node_modules');
 var backendDirs = [
+  'ept-categories',
   'ept-boards',
   'ept-threads',
   'ept-posts',

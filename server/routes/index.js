@@ -3,7 +3,6 @@ var Boom = require('boom');
 var path = require('path');
 var crypto = require('crypto');
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
-var categories = require(path.normalize(__dirname + '/categories'));
 var auth = require(path.normalize(__dirname + '/auth'));
 var reports = require(path.normalize(__dirname + '/reports'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
@@ -19,7 +18,7 @@ var watchlist = require(path.normalize(__dirname + '/watchlist'));
 var notifications = require(path.normalize(__dirname + '/notifications'));
 
 function buildEndpoints() {
-  return [].concat(breadcrumbs, categories, auth, reports, conversations, messages, watchlist, notifications);
+  return [].concat(breadcrumbs, auth, reports, conversations, messages, watchlist, notifications);
 }
 
 function buildAdminEndpoints() {
