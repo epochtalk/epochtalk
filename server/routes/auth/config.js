@@ -189,6 +189,15 @@ exports.register = {
     // check that username or email does not already exist
     var promise = request.db.users.create(newUser)
     .then(function(user) {
+      // calculate user's malicious score
+      var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
+      return request.db.bans.getMaliciousScore(ip)
+      .then(function(maliciousScore) {
+        user.maliciousScore = maliciousScore;
+        return user;
+      });
+    })
+    .then(function(user) {
       if (config.verifyRegistration) {  // send confirmation email
         var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
         var emailParams = { email: user.email, username: user.username, confirm_url: confirmUrl };
@@ -200,8 +209,20 @@ exports.register = {
         };
       }
       else { // Log user in after registering
-        // builds token, saves session, returns request output
-        return request.session.save(user);
+        // User has a malicious score less than 1 let them register
+        if (user.maliciousScore < 1) {
+          // builds token, saves session, returns request output
+          return request.session.save(user);
+        }
+        // User has a malicious score higher than 1 ban the account
+        else {
+         return request.db.bans.ban(user.id)
+        .then(function(banInfo) {
+           user.roles = banInfo.roles;
+           user.ban_expiration = banInfo.expiration;
+           return request.session.save(user);
+         });
+        }
       }
     });
     return reply(promise);

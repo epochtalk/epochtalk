@@ -8,19 +8,20 @@ exports.getMaliciousScore = {
   }
 };
 
-exports.addAddress = {
+exports.addAddresses = {
   auth: { strategy: 'jwt' },
-  plugins: { acls: 'bans.addAddress' },
+//  plugins: { acls: 'bans.addAddresses' },
   validate: {
-    payload: Joi.object().keys({
+    payload: Joi.array(Joi.object().keys({
       hostname: Joi.string(),
       ip: Joi.string(),
-      weight: Joi.number(),
+      weight: Joi.number().required(),
       decay: Joi.boolean()
-    }).without('hostname', 'ip')
+    }).without('hostname', 'ip'))
   },
   handler: function(request, reply) {
-    var promise =  request.db.bans.addAddress();
+    var addresses = request.payload;
+    var promise =  request.db.bans.addAddresses(addresses);
     return reply(promise);
   }
 };
