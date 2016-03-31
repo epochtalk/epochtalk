@@ -7,12 +7,13 @@ var installModules = require(path.normalize(__dirname + '/load_modules'));
 var monitors = [];
 var nmPath = path.normalize(__dirname + '/../../modules/node_modules');
 var backendDirs = [
+  'epochtalk-core-pg',
   'ept-categories',
   'ept-boards',
-  'ept-threads',
+  'ept-messages',
   'ept-posts',
-  'ept-users',
-  'epochtalk-core-pg'
+  'ept-threads',
+  'ept-users'
 ];
 var frontendDir = 'ept-frontend';
 

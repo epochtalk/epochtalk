@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var path = require('path');
 var modulesDir = path.normalize(__dirname + '/../../../modules');
 var modulesNMDir = path.normalize(__dirname + '/../../../modules/node_modules');
@@ -55,7 +56,19 @@ modules.load = (moduleName, master) => {
   if (module.api) { master.apiMethods[name] = module.api; }
 
   // Module DB Methods
-  if (module.db) { master.db[name] = module.db; }
+  if (module.db && _.isArray(module.db)) {
+    module.db.forEach(function(item) { master.db[item.name] = item.data; });
+  }
+  else if (module.db) { master.db[name] = module.db; }
+
+  // Module Permissions as an Array
+  if (module.permissions && _.isArray(module.permissions)) {
+    module.permissions.forEach(function(item) {
+      if (item.data.defaults) { master.permissions.defaults[item.name] = item.data.defaults; }
+      if (item.data.validation) { master.permissions.validations[item.name] = item.data.validation; }
+      if (item.data.layout) { master.permissions.layouts[item.name] = item.data.layout; }
+    });
+  }
 
   // Module Permssion Defaults
   if (module.permissions && module.permissions.defaults) {

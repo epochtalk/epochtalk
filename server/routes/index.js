@@ -12,13 +12,11 @@ var adminReports = require(path.normalize(__dirname + '/admin/reports'));
 var adminRoles = require(path.normalize(__dirname + '/admin/roles'));
 var adminModerators = require(path.normalize(__dirname + '/admin/moderators'));
 var adminModerationLogs = require(path.normalize(__dirname + '/admin/moderation_logs'));
-var conversations = require(path.normalize(__dirname + '/conversations'));
-var messages = require(path.normalize(__dirname + '/messages'));
 var watchlist = require(path.normalize(__dirname + '/watchlist'));
 var notifications = require(path.normalize(__dirname + '/notifications'));
 
 function buildEndpoints() {
-  return [].concat(breadcrumbs, auth, reports, conversations, messages, watchlist, notifications);
+  return [].concat(breadcrumbs, auth, reports, watchlist, notifications);
 }
 
 function buildAdminEndpoints() {

@@ -110,18 +110,6 @@ module.exports = roles;
       add: true,
       remove: true
     },
-    conversations: {
-      create: true,
-      messages: true,
-      delete: true
-    },
-    messages: {
-      privilegedDelete: true,
-      create: true,
-      latest: true,
-      findUser: true,
-      delete: true
-    },
     reports: {
       createUserReport: true,
       createPostReport: true,
@@ -245,18 +233,6 @@ roles.superAdministrator = {
     add: true,
     remove: true
   },
-  conversations: {
-    create: true,
-    messages: true,
-    delete: true
-  },
-  messages: {
-    privilegedDelete: true,
-    create: true,
-    latest: true,
-    findUser: true,
-    delete: true
-  },
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -356,18 +332,6 @@ roles.administrator = {
     add: true,
     remove: true
   },
-  conversations: {
-    create: true,
-    messages: true,
-    delete: true
-  },
-  messages: {
-    privilegedDelete: true,
-    create: true,
-    latest: true,
-    findUser: true,
-    delete: true
-  },
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -431,17 +395,6 @@ roles.globalModerator = {
     getBannedBoards: true,
     byBannedBoards: true
   },
-  conversations: {
-    create: true,
-    messages: true
-  },
-  messages: {
-    privilegedDelete: true,
-    create: true,
-    latest: true,
-    findUser: true,
-    delete: true
-  },
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -500,17 +453,6 @@ roles.moderator = {
     getBannedBoards: true,
     byBannedBoards: true
   },
-  conversations: {
-    create: true,
-    messages: true
-  },
-  messages: {
-    privilegedDelete: true,
-    create: true,
-    latest: true,
-    findUser: true,
-    delete: true
-  },
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -530,16 +472,6 @@ roles.user = {
   lookup: 'user',
   priority: 4,
   // ACLs
-  conversations: {
-    create: true,
-    messages: true
-  },
-  messages: {
-    create: true,
-    latest: true,
-    findUser: true,
-    delete: true
-  },
   reports: {
     createUserReport: true,
     createPostReport: true,
@@ -560,15 +492,6 @@ roles.banned = {
   priority: 5,
   priorityRestrictions: [0, 1, 2, 3],
   // ACLs
-  conversations: {
-    create: true,
-    messages: true
-  },
-  messages: {
-    create: true,
-    latest: true,
-    findUser: true
-  }
 };
 
 roles.anonymous = {

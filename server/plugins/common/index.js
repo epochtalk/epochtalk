@@ -1,13 +1,5 @@
 // -- internal methods
 
-function messagesClean(sanitizer, payload) {
-  payload.body = sanitizer.bbcode(payload.body);
-}
-
-function messagesParse(parser, payload) {
-  payload.body = parser.parse(payload.body);
-}
-
 function imagesSite(imageStore, payload) {
   // clear the expiration on logo/favicon
   if (payload.website.logo) {
@@ -26,17 +18,6 @@ exports.register = function(server, options, next) {
 
   // append hardcoded methods to the server
   var internalMethods = [
-    // -- messages
-    {
-      name: 'common.messages.clean',
-      method: messagesClean,
-      options: { callback: false }
-    },
-    {
-      name: 'common.messages.parse',
-      method: messagesParse,
-      options: { callback: false }
-    },
     // -- images
     {
       name: 'common.images.site',

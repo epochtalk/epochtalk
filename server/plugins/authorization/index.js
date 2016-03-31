@@ -229,78 +229,6 @@ function watchThread(server, auth, threadId) {
   return server.authorization.stitch(Boom.notFound(), conditions, 'any');
 }
 
-// -- Messages
-
-function messagesCreate(server, auth, receiverId, convoId) {
-  var userId = auth.credentials.id;
-
-  // is a member of the conversation
-  var convoMember = server.db.conversations.isConversationMember(convoId, userId)
-  .then(function(isMember) {
-    if (isMember) { return true; }
-    else { return Promise.reject(Boom.forbidden('Not a part of this conversation')); }
-  });
-
-  // priority restriction
-  var priority;
-  var em = 'Action Restricted. Please contact an administrator.';
-  var admissions = server.plugins.acls.getPriorityRestrictions(auth);
-  if (!admissions || admissions.length <= 0) { priority = Promise.resolve(true); }
-  else {
-    priority = server.db.users.find(receiverId)
-    .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); })
-    // check if the user being messaged has a priority the authed user has access to msg
-    .then(function(refPriority) {
-      if (admissions.indexOf(refPriority) >= 0) { return true; }
-      else { return Promise.reject(Boom.forbidden(em)); }
-    });
-  }
-
-  return Promise.all([convoMember, priority]);
-}
-
-function messagesDelete(server, auth, messageId) {
-  var userId = auth.credentials.id;
-
-  var conditions = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'messages.privilegedDelete'
-    },
-    // is message owner
-    {
-      type: 'dbValue',
-      method: server.db.messages.isMessageSender,
-      args: [messageId, userId]
-    }
-  ];
-
-  return server.authorization.stitch(Boom.forbidden(), conditions, 'any');
-}
-
-// -- Conversations
-
-function conversationsCreate(server, auth, receiverId) {
-  // priority restriction
-  var priority;
-  var em = 'Action Restricted. Please contact an administrator.';
-  var admissions = server.plugins.acls.getPriorityRestrictions(auth);
-  if (!admissions || admissions.length <= 0) { priority = Promise.resolve(true); }
-  else {
-    priority = server.db.users.find(receiverId)
-    .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); })
-    // check if the user being messaged has a priority the authed user has access to msg
-    .then(function(refPriority) {
-      if (admissions.indexOf(refPriority) >= 0) { return true; }
-      else { return Promise.reject(Boom.forbidden(em)); }
-    });
-  }
-  return priority;
-}
-
 // -- Auth
 
 function authRegister(server, email, username) {
@@ -613,24 +541,9 @@ function adminRolesValidate(validations, payload) {
       remove: Joi.boolean()
     }),
     boards: validations.boards,
-    categories: Joi.object().keys({
-      create: Joi.boolean(),
-      find: Joi.boolean(),
-      all: Joi.boolean(),
-      delete: Joi.boolean()
-    }),
-    conversations: Joi.object().keys({
-      create: Joi.boolean(),
-      messages: Joi.boolean(),
-      delete: Joi.boolean()
-    }),
-    messages: Joi.object().keys({
-      privilegedDelete: Joi.boolean(),
-      create: Joi.boolean(),
-      latest: Joi.boolean(),
-      findUser: Joi.boolean(),
-      delete: Joi.boolean()
-    }),
+    categories: validations.categories,
+    conversations: validations.conversations,
+    messages: validations.messages,
     threads: validations.threads,
     posts: validations.posts,
     users: validations.users,
@@ -695,23 +608,6 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.watchBoard',
       method: watchBoard,
-      options: { callback: false }
-    },
-    // -- messages
-    {
-      name: 'auth.messages.create',
-      method: messagesCreate,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.messages.delete',
-      method: messagesDelete,
-      options: { callback: false }
-    },
-    // -- conversations
-    {
-      name: 'auth.conversations.create',
-      method: conversationsCreate,
       options: { callback: false }
     },
     // -- auth

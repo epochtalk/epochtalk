@@ -9,11 +9,12 @@
   "author": "Edward Kim",
   "license": "ISC",
   "dependencies": {
-    "ept-frontend": "epochtalk/ept-frontend",
-    "ept-categories": "epochtalk/ept-categories",
     "ept-boards": "epochtalk/ept-boards",
+    "ept-categories": "epochtalk/ept-categories",
+    "ept-frontend": "epochtalk/ept-frontend",
+    "ept-messages": "epochtalk/ept-messages",
     "ept-posts": "epochtalk/ept-posts",
-    "ept-users": "epochtalk/ept-users",
-    "ept-threads": "epochtalk/ept-threads"
+    "ept-threads": "epochtalk/ept-threads",
+    "ept-users": "epochtalk/ept-users"
   }
 }
