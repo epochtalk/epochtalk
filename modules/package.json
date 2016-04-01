@@ -15,6 +15,7 @@
     "ept-messages": "epochtalk/ept-messages",
     "ept-posts": "epochtalk/ept-posts",
     "ept-threads": "epochtalk/ept-threads",
-    "ept-users": "epochtalk/ept-users"
+    "ept-users": "epochtalk/ept-users",
+    "ept-watchlist": "epochtalk/ept-watchlist"
   }
 }

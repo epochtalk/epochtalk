@@ -13,7 +13,8 @@ var backendDirs = [
   'ept-messages',
   'ept-posts',
   'ept-threads',
-  'ept-users'
+  'ept-users',
+  'ept-watchlist'
 ];
 var frontendDir = 'ept-frontend';
 

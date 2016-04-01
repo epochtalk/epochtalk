@@ -165,70 +165,6 @@ function stitch(error, conditions, type) {
   }
 }
 
-// -- WATCHLIST
-
-function watchBoard(server, auth, boardId) {
-  var userId = auth.credentials.id;
-  var priority = server.plugins.acls.getUserPriority(auth);
-  var some = server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some');
-
-  var conditions = [
-    {
-      // Permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'boards.viewUncategorized.all'
-    },
-    {
-      // is the board visible
-      type: 'dbValue',
-      method: server.db.boards.getBoardInBoardMapping,
-      args: [boardId, priority]
-    },
-    {
-      // is this user a board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModerator,
-      args: [userId, boardId],
-      permission: some
-    }
-  ];
-
-  return server.authorization.stitch(Boom.notFound(), conditions, 'any');
-}
-
-function watchThread(server, auth, threadId) {
-  var userId = auth.credentials.id;
-  var priority = server.plugins.acls.getUserPriority(auth);
-  var some = server.plugins.acls.getACLValue(auth, 'boards.viewUncategorized.some');
-
-  var conditions = [
-    {
-      // Permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'boards.viewUncategorized.all'
-    },
-    {
-      // is the board visible
-      type: 'dbValue',
-      method: server.db.threads.getThreadsBoardInBoardMapping,
-      args: [threadId, priority]
-    },
-    {
-      // is this user a board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: some
-    }
-  ];
-
-  return server.authorization.stitch(Boom.notFound(), conditions, 'any');
-}
-
 // -- Auth
 
 function authRegister(server, email, username) {
@@ -552,6 +488,7 @@ function adminRolesValidate(validations, payload) {
       createPostReport: Joi.boolean(),
       createMessageReport: Joi.boolean()
     }),
+    watchlist: validations.watchlist,
     limits: Joi.array().items({
       path: Joi.string().required(),
       method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
@@ -599,17 +536,6 @@ exports.register = function(server, options, next) {
 
   // append hardcoded auth methods to the server
   var internalMethods = [
-    // -- watchlist
-    {
-      name: 'auth.watchThread',
-      method: watchThread,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.watchBoard',
-      method: watchBoard,
-      options: { callback: false }
-    },
     // -- auth
     {
       name: 'auth.auth.register',
