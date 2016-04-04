@@ -77,14 +77,14 @@ exports.login = {
       }
       else { return user; }
     })
-    // get user moderating boards
+    // Get Moderated Boards
     .then(function(user) {
       return request.db.moderators.getUsersBoards(user.id)
       .then(function(boards) {
         boards = boards.map(function(board) { return board.board_id; });
         user.moderating = boards;
-      })
-      .then(function() { return user; });
+        return user;
+      });
     })
     .then(function(user) {
       if (rememberMe) { user.expiration = undefined; } // forever
@@ -186,17 +186,8 @@ exports.register = {
       password: request.payload.password,
       confirmation_token: config.verifyRegistration ? crypto.randomBytes(20).toString('hex') : null
     };
-    // check that username or email does not already exist
+
     var promise = request.db.users.create(newUser)
-    .then(function(user) {
-      // calculate user's malicious score
-      var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
-      return request.db.bans.getMaliciousScore(ip)
-      .then(function(maliciousScore) {
-        user.maliciousScore = maliciousScore;
-        return user;
-      });
-    })
     .then(function(user) {
       if (config.verifyRegistration) {  // send confirmation email
         var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
@@ -205,26 +196,37 @@ exports.register = {
         emailer.send('confirmAccount', emailParams);
         return {
           message: 'Successfully Created Account',
-          username: user.username
+          username: user.username,
+          confirm_token: user.confirmation_token
         };
       }
-      else { // Log user in after registering
-        // User has a malicious score less than 1 let them register
-        if (user.maliciousScore < 1) {
-          // builds token, saves session, returns request output
-          return request.session.save(user);
-        }
-        // User has a malicious score higher than 1 ban the account
-        else {
-         return request.db.bans.ban(user.id)
-        .then(function(banInfo) {
-           user.roles = banInfo.roles;
-           user.ban_expiration = banInfo.expiration;
-           return request.session.save(user);
-         });
-        }
+      else { return user; }
+    })
+    // TODO: Move to post handler code
+    .then(function(createdUser) {
+      if (config.verifyRegistration) { return createdUser; }
+      else {
+        var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
+        var opts = { ip: ip, userId: createdUser.id };
+        return request.db.bans.getMaliciousScore(opts)
+        .then(function(score) {
+          // User has a malicious score less than 1 let them register
+          if (score < 1) { return createdUser; }
+          // User has a malicious score higher than 1 ban the account
+          else {
+            return request.db.bans.ban(createdUser.id)
+            .then(function(banInfo) {
+              createdUser.malicious_score = score;
+              createdUser.roles = banInfo.roles;
+              createdUser.ban_expiration = banInfo.expiration;
+              return createdUser;
+            });
+          }
+        })
+        .then(request.session.save);
       }
     });
+
     return reply(promise);
   }
 };
@@ -271,7 +273,7 @@ exports.confirmAccount = {
       }
       else { return Promise.reject(Boom.badRequest('Account Confirmation Error')); }
     })
-    // get user moderating boards
+    // Get Moderated Boards
     .then(function(user) {
       return request.db.moderators.getUsersBoards(user.id)
       .then(function(boards) {
@@ -279,6 +281,26 @@ exports.confirmAccount = {
         user.moderating = boards;
       })
       .then(function() { return user; });
+    })
+    // TODO: Move to post handler code
+    .then(function(createdUser) {
+      var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
+      var opts = { ip: ip, userId: createdUser.id };
+      return request.db.bans.getMaliciousScore(opts)
+      .then(function(score) {
+        // User has a malicious score less than 1 let them register
+        if (score < 1) { return createdUser; }
+        // User has a malicious score higher than 1 ban the account
+        else {
+          return request.db.bans.ban(createdUser.id)
+          .then(function(banInfo) {
+            createdUser.malicious_score = score;
+            createdUser.roles = banInfo.roles;
+            createdUser.ban_expiration = banInfo.expiration;
+            return createdUser;
+          });
+        }
+      });
     })
     // builds token, saves session, returns request output
     .then(request.session.save);

@@ -1,13 +1,5 @@
 var Joi = require('joi');
 
-exports.getMaliciousScore = {
-  handler: function(request, reply) {
-    var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
-    var promise =  request.db.bans.getMaliciousScore(ip);
-    return reply(promise);
-  }
-};
-
 exports.addAddresses = {
   auth: { strategy: 'jwt' },
 //  plugins: { acls: 'bans.addAddresses' },

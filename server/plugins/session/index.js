@@ -35,9 +35,12 @@ session.save = function(user) {
     var banKey = 'user:' + user.id + ':baninfo';
     var banInfo = {};
     if (user.ban_expiration) { banInfo.expiration = user.ban_expiration; }
+    if (user.malicious_score >= 1) {
+      banInfo.malicious_score = user.malicious_score;
+    }
     return redis.delAsync(banKey)
     .then(function() {
-      return user.ban_expiration ? redis.hmsetAsync(banKey, banInfo) : null;
+      return Object.keys(banInfo).length ? redis.hmsetAsync(banKey, banInfo) : null;
     });
   })
   // save moderting boards to redis set under "user:{userId}:moderating"
@@ -120,10 +123,7 @@ session.updateUserInfo = function(user) {
   .then(function() {
     return redis.hexistsAsync(userKey, 'avatar')
     .then(function(exists) {
-      if (exists > 0 && user.avatar) {
-        return redis.hmsetAsync(userKey, { avatar: user.avatar });
-      }
-      else if (exists === 0 && user.avatar) {
+      if (exists >= 0 && user.avatar) {
         return redis.hmsetAsync(userKey, { avatar: user.avatar });
       }
       else if (exists > 0 && !user.avatar) {
@@ -133,7 +133,7 @@ session.updateUserInfo = function(user) {
   });
 };
 
-session.updateBanInfo = function(userId, banExpiration) {
+session.updateBanInfo = function(userId, banExpiration, maliciousScore) {
   // save ban info to redis hash under "user:{userId}:baninfo"
   var banKey = 'user:' + userId + ':baninfo';
   return redis.hexistsAsync(banKey, 'expiration')
@@ -144,6 +144,17 @@ session.updateBanInfo = function(userId, banExpiration) {
     else if (exists > 0 && !banExpiration) {
       return redis.hdelAsync(banKey, 'expiration');
     }
+  })
+  .then(function() {
+    return redis.hexistsAsync(banKey, 'malicious_score')
+    .then(function(exists) {
+      if (exists >= 0 && maliciousScore) {
+        return redis.hmsetAsync(banKey, { malicious_score: maliciousScore });
+      }
+      else if (exists > 0 && !maliciousScore) {
+        return redis.hdelAsync(banKey, 'malicious_score');
+      }
+    });
   });
 };
 
@@ -276,7 +287,8 @@ function formatUserReply(token, user) {
     roles: filteredRoles,
     moderating: user.moderating,
     permissions: getMaskedPermissions(filteredRoles),
-    ban_expiration: user.ban_expiration
+    ban_expiration: user.ban_expiration,
+    malicious_score: user.malicious_score
   };
   return reply;
 }
