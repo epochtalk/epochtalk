@@ -13,6 +13,7 @@ var setup = require(path.normalize(__dirname + '/../setup'));
 var jwt = require(path.normalize(__dirname + '/plugins/jwt'));
 var config = require(path.normalize(__dirname + '/../config'));
 var acls = require(path.normalize(__dirname + '/plugins/acls'));
+var hooks = require(path.normalize(__dirname + '/plugins/hooks'));
 var parser = require(path.normalize(__dirname + '/plugins/parser'));
 var common = require(path.normalize(__dirname + '/plugins/common'));
 var modules = require(path.normalize(__dirname + '/plugins/modules'));
@@ -27,7 +28,7 @@ var authorization = require(path.normalize(__dirname + '/plugins/authorization')
 var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
 var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 
-var server, additionalRoutes, commonMethods, authMethods, permissions, roles;
+var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods;
 
 // setup configration file and sync with DB
 setup()
@@ -122,6 +123,7 @@ setup()
     commonMethods = output.common;
     authMethods = output.authorization;
     permissions = output.permissions;
+    hookMethods = output.hooks;
   });
 })
 // route acls
@@ -140,6 +142,10 @@ setup()
 // authorization methods
 .then(function() {
   return server.register({ register: authorization, options: { methods: authMethods } });
+})
+// hook methods
+.then(function() {
+  return server.register({ register: hooks, options: { hooks: hookMethods } });
 })
 // vision templating
 .then(function() {

@@ -11,6 +11,7 @@ modules.install = (db) => {
     common: [],
     authorization: [],
     apiMethods: {},
+    hooks: {},
     permissions: {
       defaults: {},
       validations: {},
@@ -52,14 +53,20 @@ modules.load = (moduleName, master) => {
     master.authorization = master.authorization.concat(module.authorization);
   }
 
-  // Module API Methods
-  if (module.api) { master.apiMethods[name] = module.api; }
-
   // Module DB Methods
   if (module.db && _.isArray(module.db)) {
     module.db.forEach(function(item) { master.db[item.name] = item.data; });
   }
   else if (module.db) { master.db[name] = module.db; }
+
+  // Module hooks
+  if (module.hooks && _.isArray(module.hooks)) {
+    module.hooks.forEach(function (hook) {
+      var hookEndpoint = _.get(master.hooks, hook.path);
+      if (hookEndpoint) { hookEndpoint.push(hook.method); }
+      else { _.set(master.hooks, hook.path, [hook.method]); }
+    });
+  }
 
   // Module Permissions as an Array
   if (module.permissions && _.isArray(module.permissions)) {
@@ -88,15 +95,12 @@ modules.load = (moduleName, master) => {
 
 
 exports.register = (server, options, next) => {
+  server = server || {};
   options = options || {};
   var db = options.db || {};
 
   // load all the code from each module installed
   var output = modules.install(db);
-
-  // decorate hapi with module apis
-  server.decorate('server', 'modules', output.apiMethods);
-  server.decorate('request', 'modules', output.apiMethods);
 
   return next(output);
 };

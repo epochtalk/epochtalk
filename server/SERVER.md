@@ -25,6 +25,7 @@
  * [roleValidations] = {Object} Role validation functions for all roles
  * [rolesAPI] = {Object} Role helper functions
  * [session] = {Object} Helper Functions built around user sessions
+ * [hooks] = {Object} Pre and Post hooks by route
 
 
 ### Server Extensions
