@@ -77,7 +77,7 @@ session.updateRoles = function(userId, roles) {
     // Delete the key if it exists
     var promise = exists ? redis.delAsync(roleKey) : undefined;
 
-    // Updatinging existing roles
+    // Update existing roles
     if (promise) { promise.then(function() { return redis.saddAsync(roleKey, roles); }); }
     // User never had roles add new role to redis
     else { promise = redis.saddAsync(roleKey, roles); }
@@ -94,7 +94,7 @@ session.updateModerating = function(user) {
     // Delete the key if it exists
     var promise = exists ? redis.delAsync(moderatingKey) : undefined;
 
-    // Updatinging existing array for moderating
+    // Update existing array for moderating
     if (promise && user.moderating.length) {
       promise.then(function() { return redis.saddAsync(moderatingKey, user.moderating); });
     } // Creating new array for moderating
