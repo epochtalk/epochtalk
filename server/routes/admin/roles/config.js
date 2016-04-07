@@ -187,6 +187,15 @@ exports.update = {
   handler: function(request, reply) {
     var role = request.payload;
     var promise = request.db.roles.update(role)
+    .tap(function(dbRole) {
+      var roleClone = _.cloneDeep(dbRole);
+      var notification = {
+        channel: '/r/' + roleClone.lookup,
+        data: {}
+      };
+      console.log('dbRole', roleClone);
+      request.server.plugins.notifications.systemNotification(notification);
+    })
     .then(function(result) {
       role.id = result.id; // undoes deslugify which happens in core
       // Update role in the in memory role object
