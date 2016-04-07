@@ -31,12 +31,8 @@ exports.register.attributes = {
 
 function spawnNotification(datas) {
   return db.notifications.create(datas)
-  .tap(function(dbNotification) {
-    var options = {
-      APIKey: websocketAPIKey,
-      userId: dbNotification.receiver_id
-    };
-    socket.emit('notify', options);
+  .tap(function() {
+    systemNotification(datas);
   });
 }
 
