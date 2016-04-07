@@ -54,6 +54,15 @@ exports.addRoles = {
     var promise = request.db.roles.addRoles(usernames, roleId)
     .tap(function(users) {
       return Promise.map(users, function(user) {
+        var notification = {
+          channel: '/u/' + user.id,
+          data: { action: 'reauthenticate' }
+        };
+        request.server.plugins.notifications.systemNotification(notification);
+      });
+    })
+    .tap(function(users) {
+      return Promise.map(users, function(user) {
         return request.session.updateRoles(user.id, user.roles);
       });
     });
@@ -111,6 +120,13 @@ exports.removeRoles = {
     var userId = request.payload.user_id;
     var roleId = request.payload.role_id;
     var promise = request.db.roles.removeRoles(userId, roleId)
+    .tap(function(user) {
+      var notification = {
+        channel: '/u/' + user.id,
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    })
     .then(function(user) {
       return request.session.updateRoles(user.id, user.roles)
       .then(function() {
