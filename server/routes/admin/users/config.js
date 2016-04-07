@@ -1,4 +1,5 @@
 var Joi = require('joi');
+var Promise = require('bluebird');
 
 /**
   * @apiVersion 0.4.0
@@ -51,9 +52,10 @@ exports.addRoles = {
     var usernames = request.payload.usernames;
     var roleId = request.payload.role_id;
     var promise = request.db.roles.addRoles(usernames, roleId)
-    .map(function(user) {
-      return request.session.updateRoles(user.id, user.roles)
-      .then(function() { return user; });
+    .tap(function(users) {
+      return Promise.map(users, function(user) {
+        return request.session.updateRoles(user.id, user.roles);
+      });
     });
     return reply(promise);
   }
