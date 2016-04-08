@@ -2,7 +2,7 @@ var Joi = require('joi');
 
 exports.addAddresses = {
   auth: { strategy: 'jwt' },
-//  plugins: { acls: 'bans.addAddresses' },
+  plugins: { acls: 'adminBans.addAddresses' },
   validate: {
     payload: Joi.array(Joi.object().keys({
       hostname: Joi.string(),
@@ -17,3 +17,23 @@ exports.addAddresses = {
     return reply(promise);
   }
 };
+
+exports.pageBannedAddresses = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminBans.pageBannedAddresses' },
+  validate: {
+    query: {
+      page: Joi.number().min(1),
+      limit: Joi.number().min(1).max(100),
+      desc: Joi.boolean().default(true),
+      field: Joi.string().valid('created_at', 'updates', 'decay', 'weight', 'hostname', 'update_count'),
+      search: Joi.string().optional()
+    }
+  },
+  handler: function(request, reply) {
+    var opts = request.query;
+    var promise =  request.db.bans.pageBannedAddresses(opts);
+    return reply(promise);
+  }
+};
+

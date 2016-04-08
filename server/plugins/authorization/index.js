@@ -375,7 +375,8 @@ function adminRolesValidate(validations, payload) {
       management: Joi.object().keys({
         boards: Joi.boolean(),
         users: Joi.boolean(),
-        roles: Joi.boolean()
+        roles: Joi.boolean(),
+        bannedAddresses: Joi.boolean()
       })
     }),
     modAccess: Joi.object().keys({
@@ -458,6 +459,10 @@ function adminRolesValidate(validations, payload) {
     adminModerators: Joi.object().keys({
       add: Joi.boolean(),
       remove: Joi.boolean()
+    }),
+    adminBans: Joi.object().keys({
+      addAddresses: Joi.boolean(),
+      pageBannedAddresses: Joi.boolean()
     }),
     boards: validations.boards,
     categories: validations.categories,

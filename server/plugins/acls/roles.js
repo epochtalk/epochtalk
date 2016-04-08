@@ -20,7 +20,8 @@ module.exports = roles;
       management: {
         boards: true,
         users: true,
-        roles: true
+        roles: true,
+        bannedAddresses: true
       }
     },
     modAccess: {
@@ -93,6 +94,10 @@ module.exports = roles;
       add: true,
       remove: true
     },
+    adminBans: {
+      addAddresses: true,
+      pageBannedAddresses: true
+    },
     notifications: {
       dismiss: true,
       counts: true
@@ -120,7 +125,8 @@ roles.superAdministrator = {
     management: {
       boards: true,
       users: true,
-      roles: true
+      roles: true,
+      bannedAddresses: true
     }
   },
   modAccess: {
@@ -194,6 +200,10 @@ roles.superAdministrator = {
     add: true,
     remove: true
   },
+  adminBans: {
+    addAddresses: true,
+    pageBannedAddresses: true
+  },
   notifications: {
     dismiss: true,
     counts: true
@@ -213,7 +223,8 @@ roles.administrator = {
     management: {
       boards: true,
       users: true,
-      roles: true
+      roles: true,
+      bannedAddresses: true
     }
   },
   modAccess: {
@@ -270,6 +281,10 @@ roles.administrator = {
   adminModerators: {
     add: true,
     remove: true
+  },
+  adminBans: {
+    addAddresses: true,
+    pageBannedAddresses: true
   },
   notifications: {
     dismiss: true,
