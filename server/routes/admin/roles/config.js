@@ -193,7 +193,6 @@ exports.update = {
         channel: '/r/' + roleClone.lookup,
         data: {}
       };
-      console.log('dbRole', roleClone);
       request.server.plugins.notifications.systemNotification(notification);
     })
     .then(function(result) {
