@@ -40,14 +40,8 @@ RUN bower install --allow-root
 COPY package.json .
 RUN npm install
 
-# configure .env
-COPY example.env .env
-RUN echo "DATABASE_URL=\"postgres://docker:docker@database:5432/docker\"" >> .env \
-  && echo "NODE_ENV=\"production\"" >> .env \
-  && echo "HOST=0.0.0.0" >> .env
-
 # run the server
-COPY . .
+ADD . .
 ENTRYPOINT service redis-server start \
   && npm run db-migrate \
   && node cli --seed \
