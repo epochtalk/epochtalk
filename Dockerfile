@@ -12,8 +12,6 @@ RUN apt-get -y update \
     curl \
     git \
     libpq-dev \
-    postgresql \
-    postgresql-contrib \
     python \
     redis-server \
     ruby \
