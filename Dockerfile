@@ -1,4 +1,4 @@
-from debian:jessie
+FROM debian:jessie
 MAINTAINER boka <boka@slickage.com>
 
 # Replace shell with bash so we can source files
