@@ -37,8 +37,6 @@ ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 # install bower
 RUN npm install -g bower
 
-USER root
-
 # install bower dependencies
 COPY bower.json .
 RUN bower install --allow-root
