@@ -8,7 +8,7 @@ exports.addAddresses = {
       hostname: Joi.string(),
       ip: Joi.string(),
       weight: Joi.number().required(),
-      decay: Joi.boolean()
+      decay: Joi.boolean().default(false),
     }).without('hostname', 'ip'))
   },
   handler: function(request, reply) {
