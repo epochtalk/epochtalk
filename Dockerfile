@@ -43,8 +43,6 @@ RUN npm install
 # run the server
 ADD . .
 ENTRYPOINT service redis-server start \
-  && npm run db-migrate \
-  && node cli --seed \
   && npm run serve
 
 EXPOSE 8080
