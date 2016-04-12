@@ -402,23 +402,6 @@ function adminRolesValidate(validations, payload) {
     adminModerationLogs: Joi.object().keys({
       page: Joi.boolean()
     }),
-    adminReports: Joi.object().keys({
-      createUserReportNote: Joi.boolean(),
-      createPostReportNote: Joi.boolean(),
-      createMessageReportNote: Joi.boolean(),
-      updateUserReport: Joi.boolean(),
-      updatePostReport: Joi.boolean(),
-      updateMessageReport: Joi.boolean(),
-      updateUserReportNote: Joi.boolean(),
-      updatePostReportNote: Joi.boolean(),
-      updateMessageReportNote: Joi.boolean(),
-      pageUserReports: Joi.boolean(),
-      pagePostReports: Joi.boolean(),
-      pageMessageReports: Joi.boolean(),
-      pageUserReportsNotes: Joi.boolean(),
-      pagePostReportsNotes: Joi.boolean(),
-      pageMessageReportsNotes: Joi.boolean()
-    }),
     adminSettings: Joi.object().keys({
       find: Joi.boolean(),
       update: Joi.boolean(),
@@ -483,11 +466,7 @@ function adminRolesValidate(validations, payload) {
     threads: validations.threads,
     posts: validations.posts,
     users: validations.users,
-    reports: Joi.object().keys({
-      createUserReport: Joi.boolean(),
-      createPostReport: Joi.boolean(),
-      createMessageReport: Joi.boolean()
-    }),
+    reports: validations.reports,
     watchlist: validations.watchlist,
     limits: Joi.array().items({
       path: Joi.string().required(),
@@ -509,23 +488,6 @@ function adminRolesValidate(validations, payload) {
   });
 
   return promise;
-}
-
-// -- Admin Reports
-
-function adminReportsUpdateNote(server, auth, noteId, type) {
-  var userId = auth.credentials.id;
-
-  var promise;
-  if (type === 'user') { promise = server.db.reports.findUserReportNote(noteId); }
-  else if (type === 'post') { promise = server.db.reports.findPostReportNote(noteId); }
-  else if (type === 'message') { promise = server.db.reports.findMessageReportNote(noteId); }
-
-  return promise
-  .then(function(note) {
-    if (note.user_id === userId) { return true; }
-    else { return Promise.reject(Boom.forbidden('Only the author can update this note')); }
-  });
 }
 
 // -- API
@@ -573,13 +535,7 @@ exports.register = function(server, options, next) {
       name: 'auth.admin.roles.validate',
       method: adminRolesValidate,
       options: { callback: false }
-    },
-    // -- admin reports
-    {
-      name: 'auth.admin.reports.updateNote',
-      method: adminReportsUpdateNote,
-      options: { callback: false }
-    },
+    }
   ];
 
   // append any new methods to authMethods from options

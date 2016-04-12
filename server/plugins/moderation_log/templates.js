@@ -36,55 +36,55 @@ module.exports = {
   },
 
    // =========== Admin Reports Routes ===========
-  'adminReports.updateMessageReport': {
+  'reports.updateMessageReport': {
     genDisplayText: function(data) { return `updated the status of message report to "${data.status}"`; },
     genDisplayUrl: function(data) {
       return `^.messages({ reportId: '${data.id}' })`;
     }
   },
-  'adminReports.createMessageReportNote': {
+  'reports.createMessageReportNote': {
     genDisplayText: function() { return `created a note on a message report`; },
     genDisplayUrl: function(data) {
       return `^.messages({ reportId: '${data.report_id }' })`;
     }
   },
-  'adminReports.updateMessageReportNote': {
+  'reports.updateMessageReportNote': {
     genDisplayText: function() { return `edited their note on a message report`; },
     genDisplayUrl: function(data) {
       return `^.messages({ reportId: '${data.report_id }' })`;
     }
   },
-  'adminReports.updatePostReport': {
+  'reports.updatePostReport': {
     genDisplayText: function(data) { return `updated the status of post report to "${data.status}"`; },
     genDisplayUrl: function(data) {
       return `^.posts({ reportId: '${data.id}' })`;
     }
   },
-  'adminReports.createPostReportNote': {
+  'reports.createPostReportNote': {
     genDisplayText: function() { return `created a note on a post report`; },
     genDisplayUrl: function(data) {
       return `^.posts({ reportId: '${data.report_id}' })`;
     }
   },
-  'adminReports.updatePostReportNote': {
+  'reports.updatePostReportNote': {
     genDisplayText: function() { return `edited their note on a post report`; },
     genDisplayUrl: function(data) {
       return `^.posts({ reportId: '${data.report_id}' })`;
     }
   },
-  'adminReports.updateUserReport': {
+  'reports.updateUserReport': {
     genDisplayText: function(data) { return `updated the status of user report to "${data.status}"`; },
     genDisplayUrl: function(data) {
       return `^.users({ reportId: '${data.id}' })`;
     }
   },
-  'adminReports.createUserReportNote': {
+  'reports.createUserReportNote': {
     genDisplayText: function() { return `created a note on a user report`; },
     genDisplayUrl: function(data) {
       return `^.users({ reportId: '${data.report_id}' })`;
     }
   },
-  'adminReports.updateUserReportNote': {
+  'reports.updateUserReportNote': {
     genDisplayText: function() { return `edited their note on a user report`; },
     genDisplayUrl: function(data) {
       return `^.users({ reportId: '${data.report_id}' })`;

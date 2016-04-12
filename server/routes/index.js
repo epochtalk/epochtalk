@@ -4,22 +4,20 @@ var path = require('path');
 var crypto = require('crypto');
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var auth = require(path.normalize(__dirname + '/auth'));
-var reports = require(path.normalize(__dirname + '/reports'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 var adminSettings = require(path.normalize(__dirname + '/admin/settings'));
 var adminUsers = require(path.normalize(__dirname + '/admin/users'));
-var adminReports = require(path.normalize(__dirname + '/admin/reports'));
 var adminRoles = require(path.normalize(__dirname + '/admin/roles'));
 var adminModerators = require(path.normalize(__dirname + '/admin/moderators'));
 var adminModerationLogs = require(path.normalize(__dirname + '/admin/moderation_logs'));
 var notifications = require(path.normalize(__dirname + '/notifications'));
 
 function buildEndpoints() {
-  return [].concat(breadcrumbs, auth, reports, notifications);
+  return [].concat(breadcrumbs, auth, notifications);
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminBoards, adminSettings, adminUsers, adminReports, adminRoles, adminModerators, adminModerationLogs);
+  return [].concat(adminBoards, adminSettings, adminUsers, adminRoles, adminModerators, adminModerationLogs);
 }
 
 exports.endpoints = function(internalConfig) {
