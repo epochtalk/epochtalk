@@ -96,6 +96,8 @@ module.exports = roles;
     },
     adminBans: {
       addAddresses: true,
+      editAddress: true,
+      deleteAddress: true,
       pageBannedAddresses: true
     },
     notifications: {
@@ -202,6 +204,8 @@ roles.superAdministrator = {
   },
   adminBans: {
     addAddresses: true,
+    editAddress: true,
+    deleteAddress: true,
     pageBannedAddresses: true
   },
   notifications: {
@@ -284,6 +288,8 @@ roles.administrator = {
   },
   adminBans: {
     addAddresses: true,
+    editAddress: true,
+    deleteAddress: true,
     pageBannedAddresses: true
   },
   notifications: {

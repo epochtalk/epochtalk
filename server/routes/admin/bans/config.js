@@ -37,3 +37,37 @@ exports.pageBannedAddresses = {
   }
 };
 
+exports.editAddress = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminBans.editAddress' },
+  validate: {
+    payload: Joi.object().keys({
+      hostname: Joi.string(),
+      ip: Joi.string(),
+      weight: Joi.number().required(),
+      decay: Joi.boolean().default(false),
+    }).without('hostname', 'ip')
+  },
+  handler: function(request, reply) {
+    var address = request.payload;
+    console.log(address);
+    var promise =  request.db.bans.editAddress(address);
+    return reply(promise);
+  }
+};
+
+exports.deleteAddress = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'adminBans.deleteAddress' },
+  validate: {
+    query:{
+      hostname: Joi.string(),
+      ip: Joi.string()
+    }
+  },
+  handler: function(request, reply) {
+    var address = request.query;
+    var promise =  request.db.bans.deleteAddress(address);
+    return reply(promise);
+  }
+};
