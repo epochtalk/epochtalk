@@ -33,6 +33,17 @@ exports.endpoints = function(internalConfig) {
         }
       }
     },
+    // favicon
+    {
+      method: 'GET',
+      path: '/favicon.ico',
+      handler: function(request, reply) {
+        var config = request.server.app.config;
+        var iconPath = config.website.favicon;
+        if (!iconPath) { iconPath = path.join(__dirname, '../../public/favicon.ico'); }
+        return reply.file(iconPath);
+      }
+    },
     // index page
     {
       method: 'GET',
@@ -44,7 +55,6 @@ exports.endpoints = function(internalConfig) {
           description: config.website.description,
           keywords: config.website.keywords,
           logo: config.website.logo,
-          favicon: config.website.favicon,
           websocket_host: config.websocket_host,
           websocket_port: config.websocket_port
         };
