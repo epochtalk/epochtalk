@@ -20,7 +20,8 @@ module.exports = roles;
       management: {
         boards: true,
         users: true,
-        roles: true
+        roles: true,
+        bannedAddresses: true
       }
     },
     modAccess: {
@@ -33,23 +34,6 @@ module.exports = roles;
     // ACLs
     adminModerationLogs: {
       page: true
-    },
-    adminReports: {
-      createUserReportNote: true,
-      createPostReportNote: true,
-      createMessageReportNote: true,
-      updateUserReport: true,
-      updatePostReport: true,
-      updateMessageReport: true,
-      updateUserReportNote: true,
-      updatePostReportNote: true,
-      updateMessageReportNote: true,
-      pageUserReports: true,
-      pagePostReports: true,
-      pageMessageReports: true,
-      pageUserReportsNotes: true,
-      pagePostReportsNotes: true,
-      pageMessageReportsNotes: true
     },
     adminRoles: {
       all: true,
@@ -110,10 +94,11 @@ module.exports = roles;
       add: true,
       remove: true
     },
-    reports: {
-      createUserReport: true,
-      createPostReport: true,
-      createMessageReport: true
+    adminBans: {
+      addAddresses: true,
+      editAddress: true,
+      deleteAddress: true,
+      pageBannedAddresses: true
     },
     notifications: {
       dismiss: true,
@@ -142,7 +127,8 @@ roles.superAdministrator = {
     management: {
       boards: true,
       users: true,
-      roles: true
+      roles: true,
+      bannedAddresses: true
     }
   },
   modAccess: {
@@ -161,23 +147,6 @@ roles.superAdministrator = {
   },
   adminModerationLogs: {
     page: true
-  },
-  adminReports: {
-    createUserReportNote: true,
-    createPostReportNote: true,
-    createMessageReportNote: true,
-    updateUserReport: true,
-    updatePostReport: true,
-    updateMessageReport: true,
-    updateUserReportNote: true,
-    updatePostReportNote: true,
-    updateMessageReportNote: true,
-    pageUserReports: true,
-    pagePostReports: true,
-    pageMessageReports: true,
-    pageUserReportsNotes: true,
-    pagePostReportsNotes: true,
-    pageMessageReportsNotes: true
   },
   adminRoles: {
     all: true,
@@ -233,10 +202,11 @@ roles.superAdministrator = {
     add: true,
     remove: true
   },
-  reports: {
-    createUserReport: true,
-    createPostReport: true,
-    createMessageReport: true
+  adminBans: {
+    addAddresses: true,
+    editAddress: true,
+    deleteAddress: true,
+    pageBannedAddresses: true
   },
   notifications: {
     dismiss: true,
@@ -257,7 +227,8 @@ roles.administrator = {
     management: {
       boards: true,
       users: true,
-      roles: true
+      roles: true,
+      bannedAddresses: true
     }
   },
   modAccess: {
@@ -276,23 +247,6 @@ roles.administrator = {
   },
   adminModerationLogs: {
     page: true
-  },
-  adminReports: {
-    createUserReportNote: true,
-    createPostReportNote: true,
-    createMessageReportNote: true,
-    updateUserReport: true,
-    updatePostReport: true,
-    updateMessageReport: true,
-    updateUserReportNote: true,
-    updatePostReportNote: true,
-    updateMessageReportNote: true,
-    pageUserReports: true,
-    pagePostReports: true,
-    pageMessageReports: true,
-    pageUserReportsNotes: true,
-    pagePostReportsNotes: true,
-    pageMessageReportsNotes: true
   },
   adminRoles: {
     all: true,
@@ -332,10 +286,11 @@ roles.administrator = {
     add: true,
     remove: true
   },
-  reports: {
-    createUserReport: true,
-    createPostReport: true,
-    createMessageReport: true
+  adminBans: {
+    addAddresses: true,
+    editAddress: true,
+    deleteAddress: true,
+    pageBannedAddresses: true
   },
   notifications: {
     dismiss: true,
@@ -362,23 +317,6 @@ roles.globalModerator = {
   adminBoards: {
     moveBoards: true
   },
-  adminReports: {
-    createUserReportNote: true,
-    createPostReportNote: true,
-    createMessageReportNote: true,
-    updateUserReport: true,
-    updatePostReport: true,
-    updateMessageReport: true,
-    updateUserReportNote: true,
-    updatePostReportNote: true,
-    updateMessageReportNote: true,
-    pageUserReports: true,
-    pagePostReports: true,
-    pageMessageReports: true,
-    pageUserReportsNotes: true,
-    pagePostReportsNotes: true,
-    pageMessageReportsNotes: true
-  },
   adminUsers: {
     privilegedBan: {
       lowerPriority: true
@@ -394,11 +332,6 @@ roles.globalModerator = {
     unbanFromBoards: true,
     getBannedBoards: true,
     byBannedBoards: true
-  },
-  reports: {
-    createUserReport: true,
-    createPostReport: true,
-    createMessageReport: true
   },
   notifications: {
     dismiss: true,
@@ -425,23 +358,6 @@ roles.moderator = {
   adminBoards: {
     moveBoards: true
   },
-  adminReports: {
-    createUserReportNote: true,
-    createPostReportNote: true,
-    createMessageReportNote: true,
-    updateUserReport: true,
-    updatePostReport: true,
-    updateMessageReport: true,
-    updateUserReportNote: true,
-    updatePostReportNote: true,
-    updateMessageReportNote: true,
-    pageUserReports: true,
-    pagePostReports: true,
-    pageMessageReports: true,
-    pageUserReportsNotes: true,
-    pagePostReportsNotes: true,
-    pageMessageReportsNotes: true
-  },
   adminUsers: {
     privilegedBanFromBoards: {
       lowerPriority: true,
@@ -452,11 +368,6 @@ roles.moderator = {
     unbanFromBoards: true,
     getBannedBoards: true,
     byBannedBoards: true
-  },
-  reports: {
-    createUserReport: true,
-    createPostReport: true,
-    createMessageReport: true
   },
   notifications: {
     dismiss: true,
@@ -472,11 +383,6 @@ roles.user = {
   lookup: 'user',
   priority: 4,
   // ACLs
-  reports: {
-    createUserReport: true,
-    createPostReport: true,
-    createMessageReport: true
-  },
   notifications: {
     dismiss: true,
     counts: true

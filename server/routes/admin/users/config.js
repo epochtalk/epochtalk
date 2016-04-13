@@ -1,5 +1,5 @@
 var Joi = require('joi');
-
+var Promise = require('bluebird');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Users
@@ -292,20 +292,31 @@ exports.ban = {
   validate: {
     payload: {
       user_id: Joi.string().required(),
-      expiration: Joi.date()
+      expiration: Joi.date(),
+      ip_ban: Joi.boolean().default(false)
     }
   },
   pre: [ { method: 'auth.admin.users.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
-    var promise = request.db.bans.ban(userId, expiration)
+    var ipBan = request.payload.ip_ban;
+    var banPromise = request.db.bans.ban(userId, expiration)
     .then(function(user) {
       return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return request.session.updateBanInfo(user.user_id, user.expiration); })
       .then(function() { return user; });
     });
-    return reply(promise);
+    // If user is being ip banned copy their known ips into banned_addresses
+    if (ipBan) {
+      // TODO: Can be customized by passing weight and decay in payload
+      var opts = { userId: userId, weight: 50, decay: true };
+      var ipBanPromise = request.db.bans.copyUserIps(opts);
+      return Promise.join(banPromise, ipBanPromise, function(result) {
+        return reply(result);
+      });
+    }
+    else { return reply(banPromise); }
   }
 };
 
