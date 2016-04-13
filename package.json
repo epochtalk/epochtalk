@@ -41,7 +41,7 @@
     "dot": "^1.0.3",
     "dotenv": "^2.0.0",
     "epochtalk-bbcode-parser": "^1.0.2",
-    "epochtalk-core-pg": "epochtalk/core-pg",
+    "epochtalk-core-pg": "epochtalk/core-pg#docker-lock",
     "fs-extra": "^0.26.4",
     "good": "^6.4.0",
     "good-console": "^5.3.0",
