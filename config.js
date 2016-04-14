@@ -3,6 +3,7 @@ var config = {
   host: process.env.HOST,
   port: process.env.PORT,
   websocket_host: process.env.WEBSOCKET_HOST,
+  websocket_client_host: process.env.WEBSOCKET_CLIENT_HOST,
   websocket_port: process.env.WEBSOCKET_PORT,
   websocketAPIKey: process.env.WEBSOCKET_API_KEY,
   redis: {
