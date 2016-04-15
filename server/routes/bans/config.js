@@ -2,6 +2,88 @@ var Joi = require('joi');
 
 /*----- Banned Addresses -----*/
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Bans
+  * @api {GET} /ban/addresses (Admin) Page by Banned Addresses
+  * @apiName PageBannedAddressesAdmin
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription This allows Administrators to page through banned addresses.
+  *
+  * @apiParam (Query) {number{1..n}} [page=1] The page of results to return
+  * @apiParam (Query) {number{1..100}} [limit=25] The number of results per page to return
+  * @apiParam (Query) {string} [search] hostname or IP address to search for
+  * @apiParam (Query) {boolean} [desc] boolean indicating whether or not to sort results in
+  * descending order
+  * @apiParam (Query) {string="created_at","updates","decay","weight", "update_count"} [field]
+  * sorts results by specified field
+  *
+  * @apiSuccess {number} page The current page of results that is being returned
+  * @apiSuccess {number} limit The current number of results that is being returned per page
+  * @apiSuccess {boolean} next boolean indicating if there is a next page
+  * @apiSuccess {boolean} prev boolean indicating if there is a previous page
+  * @apiSuccess {string} search The search text that the results are being filtered by
+  * @apiSuccess {boolean} desc boolean indicating if the results are in descending order
+  * @apiSuccess {string} field field results are being sorted by
+  * @apiSuccess {object[]} data An array of banned addresses
+  * @apiSuccess {string} data.hostname The banned hostname
+  * @apiSuccess {string} data.ip The banned IP address
+  * @apiSuccess {boolean} data.decay Boolean indicating if the weight decays or not
+  * @apiSuccess {number} data.weight The weight of the address
+  * @apiSuccess {string} data.created_at The created_at date of the banned address
+  * @apiSuccess {string} data.updated_at The most reason updated date of the banned address
+  * @apiSuccess {string[]} data.updates An array of dates when the banned address was updated
+  * @apiSuccess {number} data.update_count The number of times the banned address has been updated
+  *
+  * @apiError (Error 500) InternalServerError There was error paging banned addresses
+  * @apiError (Error 403) Forbidden User doesn't have permission to query banned addresses
+  */
+exports.pageBannedAddresses = {
+  auth: { strategy: 'jwt' },
+  plugins: { acls: 'bans.pageBannedAddresses' },
+  validate: {
+    query: {
+      page: Joi.number().min(1),
+      limit: Joi.number().min(1).max(100),
+      desc: Joi.boolean().default(true),
+      field: Joi.string().valid('created_at', 'updates', 'decay', 'weight', 'update_count'),
+      search: Joi.string().optional()
+    }
+  },
+  handler: function(request, reply) {
+    var opts = request.query;
+    var promise =  request.db.bans.pageBannedAddresses(opts);
+    return reply(promise);
+  }
+};
+
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Bans
+  * @api {POST} /ban/addresses (Admin) Add Ban Addresses
+  * @apiName BanAddressesAdmin
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription This allows Administrators to ban hostnames and addresses. When a user
+  * registers from a banned address, their account is automatically banned
+  *
+  * @apiParam (Payload) {object[]} data An array of addresses to ban
+  * @apiParam (Payload) {string} data.hostname The hostname to ban. If hostname is present IP
+  * should not be
+  * @apiParam (Payload) {string} data.ip The IP address to ban. If IP is present hostname should
+  * not be
+  * @apiParam (Payload) {boolean} data.decay Boolean indicating if the weight decays or not
+  * @apiParam (Payload) {number} data.weight The weight of the address
+  *
+  * @apiSuccess {object[]} data An array of banned addresses
+  * @apiSuccess {string} data.hostname The banned hostname
+  * @apiSuccess {string} data.ip The banned IP address
+  * @apiSuccess {boolean} data.decay Boolean indicating if the weight decays or not
+  * @apiSuccess {number} data.weight The weight of the address
+  * @apiSuccess {string} data.created_at The created_at date of the banned address
+  * @apiSuccess {string[]} data.updates An array of dates when the banned address was updated
+  *
+  * @apiError (Error 500) InternalServerError There was error banning the addresses
+  */
 exports.addAddresses = {
   auth: { strategy: 'jwt' },
   plugins: {
@@ -26,25 +108,31 @@ exports.addAddresses = {
   }
 };
 
-exports.pageBannedAddresses = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'bans.pageBannedAddresses' },
-  validate: {
-    query: {
-      page: Joi.number().min(1),
-      limit: Joi.number().min(1).max(100),
-      desc: Joi.boolean().default(true),
-      field: Joi.string().valid('created_at', 'updates', 'decay', 'weight', 'hostname', 'update_count'),
-      search: Joi.string().optional()
-    }
-  },
-  handler: function(request, reply) {
-    var opts = request.query;
-    var promise =  request.db.bans.pageBannedAddresses(opts);
-    return reply(promise);
-  }
-};
-
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Bans
+  * @api {PUT} /ban/addresses (Admin) Edit Ban Address
+  * @apiName EditBannedAddressAdmin
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription This allows Administrators to edit banned hostnames and addresses.
+  *
+  * @apiParam (Payload) {string} hostname The hostname to update. If hostname is present IP should
+  * not be.
+  * @apiParam (Payload) {string} ip The IP address to update. If IP is present hostname should not
+  * be.
+  * @apiParam (Payload) {boolean} decay The updated boolean indicating if the weight decays
+  * or not.
+  * @apiParam (Payload) {number} weight The updated weight of the address
+  *
+  * @apiSuccess {string} hostname The updated banned hostname
+  * @apiSuccess {string} ip The updated banned IP address
+  * @apiSuccess {boolean} decay The updated boolean indicating if the weight decays or not
+  * @apiSuccess {number} weight The updated weight of the address
+  * @apiSuccess {string} created_at The created_at date of the banned address
+  * @apiSuccess {string[]} updates An array of dates when the banned address was updated
+  *
+  * @apiError (Error 500) InternalServerError There was error updating the banned address
+  */
 exports.editAddress = {
   auth: { strategy: 'jwt' },
   plugins: {
@@ -69,12 +157,33 @@ exports.editAddress = {
   },
   handler: function(request, reply) {
     var address = request.payload;
-    console.log(address);
     var promise =  request.db.bans.editAddress(address);
     return reply(promise);
   }
 };
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Bans
+  * @api {DELETE} /ban/addresses (Admin) Delete Ban Address
+  * @apiName DeleteBannedAddressAdmin
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription This allows Administrators to delete banned hostnames and addresses.
+  *
+  * @apiParam (Query) {string} hostname The hostname to delete. If hostname is present IP should
+  * not be.
+  * @apiParam (Query) {string} ip The IP address to delete. If IP is present hostname should not
+  * be.
+  *
+  * @apiSuccess {string} hostname The deleted banned hostname
+  * @apiSuccess {string} ip The deleted banned IP address
+  * @apiSuccess {boolean} decay The deleted boolean indicating if the weight decays or not
+  * @apiSuccess {number} weight The deleted weight of the address
+  * @apiSuccess {string} created_at The created_at date of the deleted banned address
+  * @apiSuccess {string[]} updates An array of dates when the deleted banned address was updated
+  *
+  * @apiError (Error 500) InternalServerError There was error deleting the banned address
+  */
 exports.deleteAddress = {
   auth: { strategy: 'jwt' },
   plugins: {
@@ -104,8 +213,8 @@ exports.deleteAddress = {
 
 /**
   * @apiVersion 0.4.0
-  * @apiGroup Users
-  * @api {PUT} /admin/users/ban (Admin) Ban
+  * @apiGroup Bans
+  * @api {PUT} /users/ban (Admin) Ban
   * @apiName BanUsersAdmin
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription This allows Administrators and Moderators to ban users.
@@ -171,8 +280,8 @@ exports.ban = {
 
 /**
   * @apiVersion 0.4.0
-  * @apiGroup Users
-  * @api {PUT} /admin/users/unban (Admin) Unban
+  * @apiGroup Bans
+  * @api {PUT} /users/unban (Admin) Unban
   * @apiName UnbanUsersAdmin
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription This allows Administrators and Moderators to unban users. Ban expiration
@@ -219,8 +328,8 @@ exports.unban = {
 
 /**
   * @apiVersion 0.4.0
-  * @apiGroup Users
-  * @api {PUT} /admin/users/ban/board (Admin) Ban From Boards
+  * @apiGroup Bans
+  * @api {PUT} /users/ban/board (Admin) Ban From Boards
   * @apiName BanFromBoardsAdmin
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription This allows Administrators and Moderators to ban users from boards.
@@ -264,8 +373,8 @@ exports.banFromBoards = {
 
 /**
   * @apiVersion 0.4.0
-  * @apiGroup Users
-  * @api {PUT} /admin/users/unban/board (Admin) Unban From Boards
+  * @apiGroup Bans
+  * @api {PUT} /users/unban/board (Admin) Unban From Boards
   * @apiName UnbanFromBoardsAdmin
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription This allows Administrators and Moderators to unban users from boards.
@@ -309,7 +418,7 @@ exports.unbanFromBoards = {
 
 /**
   * @apiVersion 0.4.0
-  * @apiGroup Users
+  * @apiGroup Bans
   * @api {GET} /users/:username/bannedboards (Admin) Get User's Banned Boards
   * @apiName GetBannedBoardsAdmin
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
@@ -338,7 +447,7 @@ exports.getBannedBoards = {
 
 /**
   * @apiVersion 0.4.0
-  * @apiGroup Users
+  * @apiGroup Bans
   * @api {GET} /users/banned (Admin) Page by Banned Boards
   * @apiName PageByBannedBoardsAdmin
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
