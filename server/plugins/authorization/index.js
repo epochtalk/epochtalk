@@ -278,11 +278,11 @@ function adminRolesDelete(server, auth, userId) {
   return promise;
 }
 
-function adminUsersBan(server, auth, userId) {
+function bansBan(server, auth, userId) {
   // match priority
   var currentUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBan.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBan.lowerPriority');
+  var same = server.plugins.acls.getACLValue(auth, 'bans.privilegedBan.samePriority');
+  var lower = server.plugins.acls.getACLValue(auth, 'bans.privilegedBan.lowerPriority');
 
   // get referenced user's priority
   var refPriority = server.db.users.find(userId)
@@ -305,15 +305,15 @@ function adminUsersBan(server, auth, userId) {
   return match;
 }
 
-function adminUsersBanFromBoards(server, auth, userId, boardIds) {
+function bansBanFromBoards(server, auth, userId, boardIds) {
   // match priority
   var currentUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.lowerPriority');
+  var same = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.samePriority');
+  var lower = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.lowerPriority');
 
   // Check if the user has global mod permissions
-  var some = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.some');
-  var all = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.all');
+  var some = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.some');
+  var all = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.all');
 
   // get referenced user's priority
   var refPriority = server.db.users.find(userId)
@@ -420,16 +420,6 @@ function adminRolesValidate(validations, payload) {
         samePriority: Joi.boolean(),
         lowerPriority: Joi.boolean()
       }),
-      privilegedBan: Joi.object().keys({
-        samePriority: Joi.boolean(),
-        lowerPriority: Joi.boolean()
-      }),
-      privilegedBanFromBoards: Joi.object().keys({
-        samePriority: Joi.boolean(),
-        lowerPriority: Joi.boolean(),
-        some: Joi.boolean(),
-        all: Joi.boolean()
-      }),
       privilegedAddRoles: Joi.object().keys({
         samePriority: Joi.boolean(),
         lowerPriority: Joi.boolean()
@@ -448,19 +438,29 @@ function adminRolesValidate(validations, payload) {
       countModerators: Joi.boolean(),
       page: Joi.boolean(),
       pageAdmins: Joi.boolean(),
-      pageModerators: Joi.boolean(),
-      ban: Joi.boolean(),
-      unban: Joi.boolean(),
-      banFromBoards: Joi.boolean(),
-      unbanFromBoards: Joi.boolean(),
-      getBannedBoards: Joi.boolean(),
-      byBannedBoards: Joi.boolean()
+      pageModerators: Joi.boolean()
     }),
     adminModerators: Joi.object().keys({
       add: Joi.boolean(),
       remove: Joi.boolean()
     }),
-    adminBans: Joi.object().keys({
+    bans: Joi.object().keys({
+      privilegedBan: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean()
+      }),
+      privilegedBanFromBoards: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean(),
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
+      ban: Joi.boolean(),
+      unban: Joi.boolean(),
+      banFromBoards: Joi.boolean(),
+      unbanFromBoards: Joi.boolean(),
+      getBannedBoards: Joi.boolean(),
+      byBannedBoards: Joi.boolean(),
       addAddresses: Joi.boolean(),
       editAddress: Joi.boolean(),
       deleteAddress: Joi.boolean(),
@@ -522,14 +522,15 @@ exports.register = function(server, options, next) {
       method: adminRolesDelete,
       options: { callback: false }
     },
+    // -- admin bans
     {
-      name: 'auth.admin.users.ban',
-      method: adminUsersBan,
+      name: 'auth.admin.bans.ban',
+      method: bansBan,
       options: { callback: false }
     },
     {
-      name: 'auth.admin.users.banFromBoards',
-      method: adminUsersBanFromBoards,
+      name: 'auth.admin.bans.banFromBoards',
+      method: bansBanFromBoards,
       options: { callback: false }
     },
     // -- admin roles
