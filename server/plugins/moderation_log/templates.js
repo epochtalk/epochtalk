@@ -183,7 +183,8 @@ module.exports = {
     genDisplayText: function(data) {
       var addresses = [];
       data.addresses.forEach(function(addrInfo) {
-        addresses.push(addrInfo.hostname.toString().replace(/%/g, '*') || addrInfo.ip);
+        var address = addrInfo.hostname || addrInfo.ip;
+        addresses.push(address.toString().replace(/%/g, '*'));
       });
       return `banned the following addresses "${addresses.toString().replace(/,/g, ', ')}"`;
     },
@@ -191,13 +192,15 @@ module.exports = {
   },
   'bans.editAddress': {
     genDisplayText: function(data) {
-      return `edited banned address "${data.hostname.toString().replace(/%/g, '*') || data.ip}" to ${data.decay ? 'decay' : 'not decay'} with a weight of ${data.weight}`;
+      var address = data.hostname || data.ip;
+      return `edited banned address "${address.hostname.toString().replace(/%/g, '*')}" to ${data.decay ? 'decay' : 'not decay'} with a weight of ${data.weight}`;
     },
     genDisplayUrl: function(data) { return `admin-management.banned-addresses({ search: '${data.hostname || data.ip}' })`; },
   },
   'bans.deleteAddress': {
     genDisplayText: function(data) {
-      return `deleted banned address "${data.hostname.toString().replace(/%/g, '*') || data.ip}"`;
+      var address = data.hostname || data.ip;
+      return `deleted banned address "${address.toString().replace(/%/g, '*')}"`;
     },
     genDisplayUrl: function() { return `admin-management.banned-addresses`; },
   },
