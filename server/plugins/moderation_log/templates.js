@@ -193,7 +193,7 @@ module.exports = {
   'bans.editAddress': {
     genDisplayText: function(data) {
       var address = data.hostname || data.ip;
-      return `edited banned address "${address.hostname.toString().replace(/%/g, '*')}" to ${data.decay ? 'decay' : 'not decay'} with a weight of ${data.weight}`;
+      return `edited banned address "${address.toString().replace(/%/g, '*')}" to ${data.decay ? 'decay' : 'not decay'} with a weight of ${data.weight}`;
     },
     genDisplayUrl: function(data) { return `admin-management.banned-addresses({ search: '${data.hostname || data.ip}' })`; },
   },
