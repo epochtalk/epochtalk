@@ -177,7 +177,34 @@ module.exports = {
       .then(function(user) { data.username = user.username; });
     }
   },
-  'adminUsers.ban': {
+
+  // =========== Banning Routes ===========
+  'bans.addAddresses': {
+    genDisplayText: function(data) {
+      var addresses = [];
+      data.addresses.forEach(function(addrInfo) {
+        var address = addrInfo.hostname || addrInfo.ip;
+        addresses.push(address.toString().replace(/%/g, '*'));
+      });
+      return `banned the following addresses "${addresses.toString().replace(/,/g, ', ')}"`;
+    },
+    genDisplayUrl: function() { return `admin-management.banned-addresses`; },
+  },
+  'bans.editAddress': {
+    genDisplayText: function(data) {
+      var address = data.hostname || data.ip;
+      return `edited banned address "${address.toString().replace(/%/g, '*')}" to ${data.decay ? 'decay' : 'not decay'} with a weight of ${data.weight}`;
+    },
+    genDisplayUrl: function(data) { return `admin-management.banned-addresses({ search: '${data.hostname || data.ip}' })`; },
+  },
+  'bans.deleteAddress': {
+    genDisplayText: function(data) {
+      var address = data.hostname || data.ip;
+      return `deleted banned address "${address.toString().replace(/%/g, '*')}"`;
+    },
+    genDisplayUrl: function() { return `admin-management.banned-addresses`; },
+  },
+  'bans.ban': {
     genDisplayText: function(data) {
       var humanDate;
       if (data.expiration) {
@@ -196,7 +223,7 @@ module.exports = {
       .then(function(user) { data.username = user.username; });
     }
   },
-  'adminUsers.unban': {
+  'bans.unban': {
     genDisplayText: function(data) { return `unbanned user "${data.username}"`; },
     genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; },
     dataQuery: function(data, request) {
@@ -204,7 +231,7 @@ module.exports = {
       .then(function(user) { data.username = user.username; });
     }
   },
-  'adminUsers.banFromBoards': {
+  'bans.banFromBoards': {
     genDisplayText: function(data) {
       return `banned user "${data.username}" from boards: "${data.boards}"`;
     },
@@ -223,7 +250,7 @@ module.exports = {
       });
     }
   },
-  'adminUsers.unbanFromBoards': {
+  'bans.unbanFromBoards': {
     genDisplayText: function(data) {
       return `unbanned user "${data.username}" from boards: "${data.boards}"`;
     },
