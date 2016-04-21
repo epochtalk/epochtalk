@@ -47,7 +47,7 @@ exports.pageBannedAddresses = {
       page: Joi.number().min(1),
       limit: Joi.number().min(1).max(100),
       desc: Joi.boolean().default(true),
-      field: Joi.string().valid('created_at', 'updates', 'decay', 'weight', 'update_count'),
+      field: Joi.string().valid('created_at', 'updates', 'decay', 'weight', 'update_count', 'imported_at'),
       search: Joi.string().optional()
     }
   },
