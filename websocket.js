@@ -11,6 +11,7 @@ module.exports = socketcluster.connect({
     multiplier: 1.5,
     maxDelay: 10000
   },
-  secure: config.websocketSecure
+  secure: config.websocketSecure,
+  rejectUnauthorized: config.websocketRejectUnauthorized
 })
 .on('error', function(){});
