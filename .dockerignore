@@ -43,5 +43,4 @@ test/coverage/
 /public/templates/thread/*.html
 /public/templates/user/*.html
 
-/app/scss/loading-bar.scss
-/app/.sass-cache/
+/app
