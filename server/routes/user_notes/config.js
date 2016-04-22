@@ -6,6 +6,7 @@ exports.page = {
 //  plugins: { acls: 'userNotes.page' },
   validate: {
     query: {
+      user_id: Joi.string().required(),
       page: Joi.number().min(1),
       limit: Joi.number().min(1).max(100)
     }
