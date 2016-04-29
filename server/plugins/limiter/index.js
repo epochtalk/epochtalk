@@ -55,8 +55,6 @@ exports.register = function(plugin, options, next) {
 
     // ignore static paths
     if (path === '/static/{path*}' || path === '/{path*}') { return reply.continue(); }
-    // TODO: Remove this eventually once we fix admin->moderations->users
-    if (path.indexOf('/api/admin') === 0) { return reply.continue(); }
 
     // check if user is authenticated
     if (authenticated) {

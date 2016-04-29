@@ -4,22 +4,21 @@ var path = require('path');
 var crypto = require('crypto');
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var auth = require(path.normalize(__dirname + '/auth'));
-var reports = require(path.normalize(__dirname + '/reports'));
+var bans = require(path.normalize(__dirname + '/bans'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 var adminSettings = require(path.normalize(__dirname + '/admin/settings'));
 var adminUsers = require(path.normalize(__dirname + '/admin/users'));
-var adminReports = require(path.normalize(__dirname + '/admin/reports'));
 var adminRoles = require(path.normalize(__dirname + '/admin/roles'));
 var adminModerators = require(path.normalize(__dirname + '/admin/moderators'));
 var adminModerationLogs = require(path.normalize(__dirname + '/admin/moderation_logs'));
 var notifications = require(path.normalize(__dirname + '/notifications'));
 
 function buildEndpoints() {
-  return [].concat(breadcrumbs, auth, reports, notifications);
+  return [].concat(bans, breadcrumbs, auth, notifications);
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminBoards, adminSettings, adminUsers, adminReports, adminRoles, adminModerators, adminModerationLogs);
+  return [].concat(adminBoards, adminSettings, adminUsers, adminRoles, adminModerators, adminModerationLogs);
 }
 
 exports.endpoints = function(internalConfig) {
@@ -34,6 +33,17 @@ exports.endpoints = function(internalConfig) {
         }
       }
     },
+    // favicon
+    {
+      method: 'GET',
+      path: '/favicon.ico',
+      handler: function(request, reply) {
+        var config = request.server.app.config;
+        var iconPath = config.website.favicon;
+        if (!iconPath) { iconPath = path.join(__dirname, '../../public/favicon.ico'); }
+        return reply.file(iconPath);
+      }
+    },
     // index page
     {
       method: 'GET',
@@ -45,8 +55,7 @@ exports.endpoints = function(internalConfig) {
           description: config.website.description,
           keywords: config.website.keywords,
           logo: config.website.logo,
-          favicon: config.website.favicon,
-          websocket_host: config.websocket_host,
+          websocket_host: config.websocket_client_host,
           websocket_port: config.websocket_port
         };
         return reply.view('index', data);

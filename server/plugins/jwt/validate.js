@@ -57,7 +57,8 @@ module.exports = function(decodedToken, token, redis, cb) {
       avatar: userInfo.avatar,
       roles: userRoles,
       moderating: userModerating,
-      ban_expiration: banInfo && banInfo.expiration ? new Date(banInfo.expiration) : undefined
+      ban_expiration: banInfo && banInfo.expiration ? new Date(banInfo.expiration) : undefined,
+      malicious_score: banInfo && banInfo.malicious_score >= 1 ? banInfo.malicious_score : undefined
     };
     return cb(null, true, credentials);
   })

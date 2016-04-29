@@ -278,11 +278,11 @@ function adminRolesDelete(server, auth, userId) {
   return promise;
 }
 
-function adminUsersBan(server, auth, userId) {
+function bansBan(server, auth, userId) {
   // match priority
   var currentUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBan.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBan.lowerPriority');
+  var same = server.plugins.acls.getACLValue(auth, 'bans.privilegedBan.samePriority');
+  var lower = server.plugins.acls.getACLValue(auth, 'bans.privilegedBan.lowerPriority');
 
   // get referenced user's priority
   var refPriority = server.db.users.find(userId)
@@ -305,15 +305,15 @@ function adminUsersBan(server, auth, userId) {
   return match;
 }
 
-function adminUsersBanFromBoards(server, auth, userId, boardIds) {
+function bansBanFromBoards(server, auth, userId, boardIds) {
   // match priority
   var currentUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.lowerPriority');
+  var same = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.samePriority');
+  var lower = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.lowerPriority');
 
   // Check if the user has global mod permissions
-  var some = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.some');
-  var all = server.plugins.acls.getACLValue(auth, 'adminUsers.privilegedBanFromBoards.all');
+  var some = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.some');
+  var all = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.all');
 
   // get referenced user's priority
   var refPriority = server.db.users.find(userId)
@@ -375,7 +375,8 @@ function adminRolesValidate(validations, payload) {
       management: Joi.object().keys({
         boards: Joi.boolean(),
         users: Joi.boolean(),
-        roles: Joi.boolean()
+        roles: Joi.boolean(),
+        bannedAddresses: Joi.boolean()
       })
     }),
     modAccess: Joi.object().keys({
@@ -402,23 +403,6 @@ function adminRolesValidate(validations, payload) {
     adminModerationLogs: Joi.object().keys({
       page: Joi.boolean()
     }),
-    adminReports: Joi.object().keys({
-      createUserReportNote: Joi.boolean(),
-      createPostReportNote: Joi.boolean(),
-      createMessageReportNote: Joi.boolean(),
-      updateUserReport: Joi.boolean(),
-      updatePostReport: Joi.boolean(),
-      updateMessageReport: Joi.boolean(),
-      updateUserReportNote: Joi.boolean(),
-      updatePostReportNote: Joi.boolean(),
-      updateMessageReportNote: Joi.boolean(),
-      pageUserReports: Joi.boolean(),
-      pagePostReports: Joi.boolean(),
-      pageMessageReports: Joi.boolean(),
-      pageUserReportsNotes: Joi.boolean(),
-      pagePostReportsNotes: Joi.boolean(),
-      pageMessageReportsNotes: Joi.boolean()
-    }),
     adminSettings: Joi.object().keys({
       find: Joi.boolean(),
       update: Joi.boolean(),
@@ -435,16 +419,6 @@ function adminRolesValidate(validations, payload) {
       privilegedUpdate: Joi.object().keys({
         samePriority: Joi.boolean(),
         lowerPriority: Joi.boolean()
-      }),
-      privilegedBan: Joi.object().keys({
-        samePriority: Joi.boolean(),
-        lowerPriority: Joi.boolean()
-      }),
-      privilegedBanFromBoards: Joi.object().keys({
-        samePriority: Joi.boolean(),
-        lowerPriority: Joi.boolean(),
-        some: Joi.boolean(),
-        all: Joi.boolean()
       }),
       privilegedAddRoles: Joi.object().keys({
         samePriority: Joi.boolean(),
@@ -464,17 +438,33 @@ function adminRolesValidate(validations, payload) {
       countModerators: Joi.boolean(),
       page: Joi.boolean(),
       pageAdmins: Joi.boolean(),
-      pageModerators: Joi.boolean(),
+      pageModerators: Joi.boolean()
+    }),
+    adminModerators: Joi.object().keys({
+      add: Joi.boolean(),
+      remove: Joi.boolean()
+    }),
+    bans: Joi.object().keys({
+      privilegedBan: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean()
+      }),
+      privilegedBanFromBoards: Joi.object().keys({
+        samePriority: Joi.boolean(),
+        lowerPriority: Joi.boolean(),
+        some: Joi.boolean(),
+        all: Joi.boolean()
+      }),
       ban: Joi.boolean(),
       unban: Joi.boolean(),
       banFromBoards: Joi.boolean(),
       unbanFromBoards: Joi.boolean(),
       getBannedBoards: Joi.boolean(),
-      byBannedBoards: Joi.boolean()
-    }),
-    adminModerators: Joi.object().keys({
-      add: Joi.boolean(),
-      remove: Joi.boolean()
+      byBannedBoards: Joi.boolean(),
+      addAddresses: Joi.boolean(),
+      editAddress: Joi.boolean(),
+      deleteAddress: Joi.boolean(),
+      pageBannedAddresses: Joi.boolean()
     }),
     boards: validations.boards,
     categories: validations.categories,
@@ -483,11 +473,7 @@ function adminRolesValidate(validations, payload) {
     threads: validations.threads,
     posts: validations.posts,
     users: validations.users,
-    reports: Joi.object().keys({
-      createUserReport: Joi.boolean(),
-      createPostReport: Joi.boolean(),
-      createMessageReport: Joi.boolean()
-    }),
+    reports: validations.reports,
     watchlist: validations.watchlist,
     limits: Joi.array().items({
       path: Joi.string().required(),
@@ -509,23 +495,6 @@ function adminRolesValidate(validations, payload) {
   });
 
   return promise;
-}
-
-// -- Admin Reports
-
-function adminReportsUpdateNote(server, auth, noteId, type) {
-  var userId = auth.credentials.id;
-
-  var promise;
-  if (type === 'user') { promise = server.db.reports.findUserReportNote(noteId); }
-  else if (type === 'post') { promise = server.db.reports.findPostReportNote(noteId); }
-  else if (type === 'message') { promise = server.db.reports.findMessageReportNote(noteId); }
-
-  return promise
-  .then(function(note) {
-    if (note.user_id === userId) { return true; }
-    else { return Promise.reject(Boom.forbidden('Only the author can update this note')); }
-  });
 }
 
 // -- API
@@ -553,14 +522,15 @@ exports.register = function(server, options, next) {
       method: adminRolesDelete,
       options: { callback: false }
     },
+    // -- admin bans
     {
-      name: 'auth.admin.users.ban',
-      method: adminUsersBan,
+      name: 'auth.admin.bans.ban',
+      method: bansBan,
       options: { callback: false }
     },
     {
-      name: 'auth.admin.users.banFromBoards',
-      method: adminUsersBanFromBoards,
+      name: 'auth.admin.bans.banFromBoards',
+      method: bansBanFromBoards,
       options: { callback: false }
     },
     // -- admin roles
@@ -573,13 +543,7 @@ exports.register = function(server, options, next) {
       name: 'auth.admin.roles.validate',
       method: adminRolesValidate,
       options: { callback: false }
-    },
-    // -- admin reports
-    {
-      name: 'auth.admin.reports.updateNote',
-      method: adminReportsUpdateNote,
-      options: { callback: false }
-    },
+    }
   ];
 
   // append any new methods to authMethods from options

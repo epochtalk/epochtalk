@@ -6,7 +6,6 @@ lib-cov
 *.out
 *.pid
 *.gz
-.env
 .DS_Store
 
 pids
@@ -18,6 +17,7 @@ config.json
 npm-debug.log
 node_modules
 bower_components
+modules/node_modules
 
 test/coverage/
 /public/js/bundle.js

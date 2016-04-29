@@ -27,6 +27,7 @@ var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
 var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
 var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
+var trackIp = require(path.normalize(__dirname + '/plugins/track_ip'));
 
 var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods;
 
@@ -162,6 +163,8 @@ setup()
 .then(function() { return server.register(Inert); })
 // moderation log
 .then(function() { server.register({ register: moderationLog, options: { db } }); })
+// Track IP
+.then(function() { server.register({ register: trackIp, options: { db } }); })
 // routes and server start
 .then(function() {
   // server routes
