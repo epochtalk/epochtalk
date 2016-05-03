@@ -466,6 +466,12 @@ function adminRolesValidate(validations, payload) {
       deleteAddress: Joi.boolean(),
       pageBannedAddresses: Joi.boolean()
     }),
+    userNotes: Joi.object().keys({
+      page: Joi.boolean(),
+      create: Joi.boolean(),
+      update: Joi.boolean(),
+      delete: Joi.boolean()
+    }),
     boards: validations.boards,
     categories: validations.categories,
     conversations: validations.conversations,
@@ -497,6 +503,18 @@ function adminRolesValidate(validations, payload) {
   return promise;
 }
 
+// -- user notes
+
+function userNotesIsOwner(server, auth, noteId) {
+  var userId = auth.credentials.id;
+  var isOwner = server.db.userNotes.find(noteId)
+  .then(function(note) {
+    if (note.author_id === userId) { return true; }
+    else { return Promise.reject(Boom.forbidden('Only the author can modify this usernote')); }
+  });
+  return isOwner;
+}
+
 // -- API
 
 exports.register = function(server, options, next) {
@@ -522,14 +540,14 @@ exports.register = function(server, options, next) {
       method: adminRolesDelete,
       options: { callback: false }
     },
-    // -- admin bans
+    // -- bans
     {
-      name: 'auth.admin.bans.ban',
+      name: 'auth.bans.ban',
       method: bansBan,
       options: { callback: false }
     },
     {
-      name: 'auth.admin.bans.banFromBoards',
+      name: 'auth.bans.banFromBoards',
       method: bansBanFromBoards,
       options: { callback: false }
     },
@@ -542,6 +560,12 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.admin.roles.validate',
       method: adminRolesValidate,
+      options: { callback: false }
+    },
+    // -- user notes
+    {
+      name: 'auth.userNotes.isOwner',
+      method: userNotesIsOwner,
       options: { callback: false }
     }
   ];

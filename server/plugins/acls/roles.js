@@ -100,6 +100,12 @@ module.exports = roles;
       deleteAddress: true,
       pageBannedAddresses: true
     },
+    userNotes: {
+      page: true,
+      create: true,
+      update: true,
+      delete: true
+    },
     notifications: {
       dismiss: true,
       counts: true
@@ -208,6 +214,12 @@ roles.superAdministrator = {
     deleteAddress: true,
     pageBannedAddresses: true
   },
+  userNotes: {
+    page: true,
+    create: true,
+    update: true,
+    delete: true
+  },
   notifications: {
     dismiss: true,
     counts: true
@@ -292,6 +304,12 @@ roles.administrator = {
     deleteAddress: true,
     pageBannedAddresses: true
   },
+  userNotes: {
+    page: true,
+    create: true,
+    update: true,
+    delete: true
+  },
   notifications: {
     dismiss: true,
     counts: true
@@ -335,6 +353,12 @@ roles.globalModerator = {
     getBannedBoards: true,
     byBannedBoards: true
   },
+  userNotes: {
+    page: true,
+    create: true,
+    update: true,
+    delete: true
+  },
   notifications: {
     dismiss: true,
     counts: true
@@ -372,6 +396,12 @@ roles.moderator = {
     unbanFromBoards: true,
     getBannedBoards: true,
     byBannedBoards: true
+  },
+  userNotes: {
+    page: true,
+    create: true,
+    update: true,
+    delete: true
   },
   notifications: {
     dismiss: true,

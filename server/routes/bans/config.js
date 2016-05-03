@@ -255,7 +255,7 @@ exports.ban = {
       ip_ban: Joi.boolean().default(false)
     }
   },
-  pre: [ { method: 'auth.admin.bans.ban(server, auth, payload.user_id)' } ],
+  pre: [ { method: 'auth.bans.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
@@ -312,7 +312,7 @@ exports.unban = {
     }
   },
   validate: { payload: { user_id: Joi.string().required() } },
-  pre: [ { method: 'auth.admin.bans.ban(server, auth, payload.user_id)' } ],
+  pre: [ { method: 'auth.bans.ban(server, auth, payload.user_id)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var promise = request.db.bans.unban(userId)
@@ -363,7 +363,7 @@ exports.banFromBoards = {
       board_ids: Joi.array().items(Joi.string().required()).unique().min(1).required()
     }
   },
-  pre: [ { method: 'auth.admin.bans.banFromBoards(server, auth, payload.user_id, payload.board_ids)' } ],
+  pre: [ { method: 'auth.bans.banFromBoards(server, auth, payload.user_id, payload.board_ids)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var boardIds = request.payload.board_ids;
@@ -408,7 +408,7 @@ exports.unbanFromBoards = {
       board_ids: Joi.array().items(Joi.string().required()).unique().min(1).required()
     }
   },
-  pre: [ { method: 'auth.admin.bans.banFromBoards(server, auth, payload.user_id, payload.board_ids)' } ],
+  pre: [ { method: 'auth.bans.banFromBoards(server, auth, payload.user_id, payload.board_ids)' } ],
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var boardIds = request.payload.board_ids;

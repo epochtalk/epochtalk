@@ -178,6 +178,38 @@ module.exports = {
     }
   },
 
+  // =========== User Notes Routes ===========
+  'userNotes.create': {
+    genDisplayText: function(data) {
+      return `created a moderation note for user "${data.username}"`;
+    },
+    genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.user_id)
+      .then(function(user) { data.username = user.username; });
+    }
+  },
+  'userNotes.update': {
+    genDisplayText: function(data) {
+      return `edited their moderation note for user "${data.username}"`;
+    },
+    genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.user_id)
+      .then(function(user) { data.username = user.username; });
+    }
+  },
+  'userNotes.delete': {
+    genDisplayText: function(data) {
+      return `deleted their moderation note for user "${data.username}"`;
+    },
+    genDisplayUrl: function(data) { return `profile({ username: '${data.username}' })`; },
+    dataQuery: function(data, request) {
+      return request.db.users.find(data.user_id)
+      .then(function(user) { data.username = user.username; });
+    }
+  },
+
   // =========== Banning Routes ===========
   'bans.addAddresses': {
     genDisplayText: function(data) {
