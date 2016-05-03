@@ -17,6 +17,7 @@ exports.register = function (plugin, options, next) {
   websocketAPIKey = options.config.websocketAPIKey;
 
   plugin.expose('spawnNotification', spawnNotification);
+  plugin.expose('systemNotification', systemNotification);
   plugin.expose('getNotifications', getNotifications);
   plugin.expose('getNotificationsCounts', getNotificationsCounts);
   plugin.expose('dismissNotifications', dismissNotifications);
@@ -30,13 +31,18 @@ exports.register.attributes = {
 
 function spawnNotification(datas) {
   return db.notifications.create(datas)
-  .tap(function(dbNotification) {
-    var options = {
-      APIKey: websocketAPIKey,
-      userId: dbNotification.receiver_id
-    };
-    socket.emit('notify', options);
+  .tap(function() {
+    systemNotification(datas);
   });
+}
+
+function systemNotification(datas) {
+  var options = {
+    APIKey: websocketAPIKey,
+    channel: datas.channel,
+    data: datas.data
+  };
+  socket.emit('notify', options);
 }
 
 function getNotifications(datas) {
