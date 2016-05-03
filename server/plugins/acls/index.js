@@ -82,16 +82,21 @@ function buildRoles(permissions) {
 
 function getUserPriority(auth) {
   var rolePriorities = [];
+  var bannedPriority;
 
   // find matching user roles
   if (auth.isAuthenticated && _.isArray(auth.credentials.roles)) {
-    rolePriorities = auth.credentials.roles.map(function(roleName) { return roles[roleName].priority; });
+    rolePriorities = auth.credentials.roles.map(function(roleName) {
+      if (roleName === 'banned') { bannedPriority = roles[roleName].priority; }
+      return roles[roleName].priority;
+    });
   }
   else if (auth.isAuthenticated) { rolePriorities = [ roles.user.priority ]; }
   else if (config.loginRequired) { rolePriorities = [ roles.private.priority ]; }
   else { rolePriorities = [ roles.anonymous.priority ]; }
 
-  return _.min(rolePriorities);
+  if (bannedPriority) { return bannedPriority; }
+  else { return _.min(rolePriorities); }
 }
 
 function getPriorityRestrictions(auth) {

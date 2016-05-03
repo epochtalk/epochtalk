@@ -46,7 +46,7 @@ var common = {
       if (bcrypt.compareSync(password, user.passhash)) { return true; }
       else { return Promise.reject(error); }
     })
-    .error(function() { return Promise.reject(Boom.notFound()); });
+    .error(function() { return Promise.reject(error); });
   },
   isUnique: (error, method, args, userId) => {
     return method(...args)
@@ -61,7 +61,7 @@ var common = {
       if (!user.deleted) { return true; }
       else { return Promise.reject(error); }
     })
-    .error(() => { return Promise.reject(Boom.notFound()); });
+    .error(() => { return Promise.reject(error); });
   },
   isInactive: (error, server, userId) => {
     return server.db.users.find(userId)
@@ -69,7 +69,7 @@ var common = {
       if (user.deleted) { return true; }
       else { return Promise.reject(error); }
     })
-    .error(function() { return Promise.reject(Boom.notFound()); });
+    .error(function() { return Promise.reject(error); });
   },
   isAccountActive: (error, server, username, userId) => {
     return server.db.users.userByUsername(username)
