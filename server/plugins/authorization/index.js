@@ -487,7 +487,11 @@ function adminRolesValidate(validations, payload) {
       interval: Joi.number().min(-1).required(),
       maxInInterval: Joi.number().min(1).required(),
       minDifference: Joi.number().min(1).optional()
-    }).sparse()
+    }).sparse(),
+    notifications: Joi.object().keys({
+      dismiss: Joi.boolean(),
+      counts: Joi.boolean()
+    })
   }).required();
 
   var promise = new Promise(function(resolve, reject) {
