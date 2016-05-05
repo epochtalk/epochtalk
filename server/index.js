@@ -16,6 +16,7 @@ var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var hooks = require(path.normalize(__dirname + '/plugins/hooks'));
 var parser = require(path.normalize(__dirname + '/plugins/parser'));
 var common = require(path.normalize(__dirname + '/plugins/common'));
+var emailer = require(path.normalize(__dirname + '/plugins/emailer'));
 var modules = require(path.normalize(__dirname + '/plugins/modules'));
 var session = require(path.normalize(__dirname + '/plugins/session'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
@@ -161,6 +162,8 @@ setup()
 })
 // inert static file serving
 .then(function() { return server.register(Inert); })
+// emailer
+.then(function() { server.register({ register: emailer, options: { config } }); })
 // moderation log
 .then(function() { server.register({ register: moderationLog, options: { db } }); })
 // Track IP

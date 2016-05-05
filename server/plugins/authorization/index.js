@@ -165,27 +165,6 @@ function stitch(error, conditions, type) {
   }
 }
 
-// -- Auth
-
-function authRegister(server, email, username) {
-
-  // check unique email
-  var emailCond = server.db.users.userByEmail(email)
-  .then(function(user) {
-    if (user) { return Promise.reject(Boom.badRequest('Email Already Exists')); }
-    else { return true; }
-  });
-
-  // check unique username
-  var usernameCond = server.db.users.userByUsername(username)
-  .then(function(user) {
-    if (user) { return Promise.reject(Boom.badRequest('Username Already Exists')); }
-    else { return true;}
-  });
-
-  return Promise.all([emailCond, usernameCond]);
-}
-
 // -- Admin Users
 
 function adminRolesAdd(server, auth, roleId, usernames) {
@@ -527,12 +506,6 @@ exports.register = function(server, options, next) {
 
   // append hardcoded auth methods to the server
   var internalMethods = [
-    // -- auth
-    {
-      name: 'auth.auth.register',
-      method: authRegister,
-      options: { callback: false }
-    },
     // -- admin users
     {
       name: 'auth.admin.users.addRole',
