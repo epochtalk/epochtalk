@@ -39,7 +39,7 @@ function spawnNotification(datas) {
 function systemNotification(datas) {
   var options = {
     APIKey: websocketAPIKey,
-    channel: datas.channel,
+    channel: JSON.stringify(datas.channel),
     data: datas.data
   };
   socket.emit('notify', options);
