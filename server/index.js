@@ -20,6 +20,7 @@ var emailer = require(path.normalize(__dirname + '/plugins/emailer'));
 var modules = require(path.normalize(__dirname + '/plugins/modules'));
 var session = require(path.normalize(__dirname + '/plugins/session'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
+var patroller = require(path.normalize(__dirname + '/plugins/patroller'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
@@ -168,6 +169,8 @@ setup()
 .then(function() { server.register({ register: moderationLog, options: { db } }); })
 // Track IP
 .then(function() { server.register({ register: trackIp, options: { db } }); })
+// Patrollers
+.then(function() { server.register({ register: patroller }); })
 // routes and server start
 .then(function() {
   // server routes
