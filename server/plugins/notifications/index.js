@@ -2,6 +2,7 @@
 var Boom = require('boom');
 var Hoek = require('hoek');
 var jwt  = require('jsonwebtoken');
+var _ = require('lodash');
 
 var db, websocketAPIKey;
 
@@ -30,7 +31,8 @@ exports.register.attributes = {
 };
 
 function spawnNotification(datas) {
-  return db.notifications.create(datas)
+  var cloneDatas = _.cloneDeep(datas);
+  return db.notifications.create(cloneDatas)
   .tap(function() {
     systemNotification(datas);
   });
@@ -39,7 +41,7 @@ function spawnNotification(datas) {
 function systemNotification(datas) {
   var options = {
     APIKey: websocketAPIKey,
-    channel: datas.channel,
+    channel: JSON.stringify(datas.channel),
     data: datas.data
   };
   socket.emit('notify', options);
