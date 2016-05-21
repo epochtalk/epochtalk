@@ -100,6 +100,12 @@ module.exports = roles;
       deleteAddress: true,
       pageBannedAddresses: true
     },
+    userNotes: {
+      page: true,
+      create: true,
+      update: true,
+      delete: true
+    },
     notifications: {
       dismiss: true,
       counts: true
@@ -208,6 +214,12 @@ roles.superAdministrator = {
     deleteAddress: true,
     pageBannedAddresses: true
   },
+  userNotes: {
+    page: true,
+    create: true,
+    update: true,
+    delete: true
+  },
   notifications: {
     dismiss: true,
     counts: true
@@ -292,6 +304,12 @@ roles.administrator = {
     deleteAddress: true,
     pageBannedAddresses: true
   },
+  userNotes: {
+    page: true,
+    create: true,
+    update: true,
+    delete: true
+  },
   notifications: {
     dismiss: true,
     counts: true
@@ -335,6 +353,12 @@ roles.globalModerator = {
     getBannedBoards: true,
     byBannedBoards: true
   },
+  userNotes: {
+    page: true,
+    create: true,
+    update: true,
+    delete: true
+  },
   notifications: {
     dismiss: true,
     counts: true
@@ -373,6 +397,26 @@ roles.moderator = {
     getBannedBoards: true,
     byBannedBoards: true
   },
+  userNotes: {
+    page: true,
+    create: true,
+    update: true,
+    delete: true
+  },
+  notifications: {
+    dismiss: true,
+    counts: true
+  }
+};
+
+roles.patroller = {
+  // business logic (none)
+  id: 'd62dc470-12f5-4093-a6c6-ef674985d5b6',
+  name: 'Patroller',
+  description: 'Moderates Newbies only',
+  lookup: 'patroller',
+  priority: 4,
+  // ACLs
   notifications: {
     dismiss: true,
     counts: true
@@ -385,7 +429,21 @@ roles.user = {
   name: 'User',
   description: 'Standard account with access to create threads and post',
   lookup: 'user',
-  priority: 4,
+  priority: 5,
+  // ACLs
+  notifications: {
+    dismiss: true,
+    counts: true
+  }
+};
+
+roles.newbie = {
+  // business logic (none)
+  id: '08dd21e5-9781-4c6a-8c6f-3c1574c59a85',
+  name: 'Newbie',
+  description: 'Brand new users',
+  lookup: 'newbie',
+  priority: 6,
   // ACLs
   notifications: {
     dismiss: true,
@@ -399,9 +457,8 @@ roles.banned = {
   name: 'Banned',
   lookup: 'banned',
   description: 'Read only access with content creation disabled',
-  priority: 5,
-  priorityRestrictions: [0, 1, 2, 3],
-  // ACLs
+  priority: 7,
+  priorityRestrictions: [0, 1, 2, 3]
 };
 
 roles.anonymous = {
@@ -410,7 +467,7 @@ roles.anonymous = {
   name: 'Anonymous',
   lookup: 'anonymous',
   description: 'Read only access',
-  priority: 6
+  priority: 8
 };
 
 roles.private = {
@@ -419,8 +476,7 @@ roles.private = {
   name: 'Private',
   lookup: 'private',
   description: 'Role assigned to unauthorized users when public forum is disabled',
-  priority: 7
-  // ACLs none
+  priority: 9
 };
 
 // read from DB to replace defaults

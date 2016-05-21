@@ -46,7 +46,7 @@ var common = {
       if (bcrypt.compareSync(password, user.passhash)) { return true; }
       else { return Promise.reject(error); }
     })
-    .error(function() { return Promise.reject(Boom.notFound()); });
+    .error(function() { return Promise.reject(error); });
   },
   isUnique: (error, method, args, userId) => {
     return method(...args)
@@ -61,7 +61,7 @@ var common = {
       if (!user.deleted) { return true; }
       else { return Promise.reject(error); }
     })
-    .error(() => { return Promise.reject(Boom.notFound()); });
+    .error(() => { return Promise.reject(error); });
   },
   isInactive: (error, server, userId) => {
     return server.db.users.find(userId)
@@ -69,7 +69,7 @@ var common = {
       if (user.deleted) { return true; }
       else { return Promise.reject(error); }
     })
-    .error(function() { return Promise.reject(Boom.notFound()); });
+    .error(function() { return Promise.reject(error); });
   },
   isAccountActive: (error, server, username, userId) => {
     return server.db.users.userByUsername(username)
@@ -163,27 +163,6 @@ function stitch(error, conditions, type) {
     return Promise.any(conditions)
     .catch(() => { return Promise.reject(error); });
   }
-}
-
-// -- Auth
-
-function authRegister(server, email, username) {
-
-  // check unique email
-  var emailCond = server.db.users.userByEmail(email)
-  .then(function(user) {
-    if (user) { return Promise.reject(Boom.badRequest('Email Already Exists')); }
-    else { return true; }
-  });
-
-  // check unique username
-  var usernameCond = server.db.users.userByUsername(username)
-  .then(function(user) {
-    if (user) { return Promise.reject(Boom.badRequest('Username Already Exists')); }
-    else { return true;}
-  });
-
-  return Promise.all([emailCond, usernameCond]);
 }
 
 // -- Admin Users
@@ -466,6 +445,12 @@ function adminRolesValidate(validations, payload) {
       deleteAddress: Joi.boolean(),
       pageBannedAddresses: Joi.boolean()
     }),
+    userNotes: Joi.object().keys({
+      page: Joi.boolean(),
+      create: Joi.boolean(),
+      update: Joi.boolean(),
+      delete: Joi.boolean()
+    }),
     boards: validations.boards,
     categories: validations.categories,
     conversations: validations.conversations,
@@ -481,7 +466,11 @@ function adminRolesValidate(validations, payload) {
       interval: Joi.number().min(-1).required(),
       maxInInterval: Joi.number().min(1).required(),
       minDifference: Joi.number().min(1).optional()
-    }).sparse()
+    }).sparse(),
+    notifications: Joi.object().keys({
+      dismiss: Joi.boolean(),
+      counts: Joi.boolean()
+    })
   }).required();
 
   var promise = new Promise(function(resolve, reject) {
@@ -497,6 +486,18 @@ function adminRolesValidate(validations, payload) {
   return promise;
 }
 
+// -- user notes
+
+function userNotesIsOwner(server, auth, noteId) {
+  var userId = auth.credentials.id;
+  var isOwner = server.db.userNotes.find(noteId)
+  .then(function(note) {
+    if (note.author_id === userId) { return true; }
+    else { return Promise.reject(Boom.forbidden('Only the author can modify this usernote')); }
+  });
+  return isOwner;
+}
+
 // -- API
 
 exports.register = function(server, options, next) {
@@ -505,12 +506,6 @@ exports.register = function(server, options, next) {
 
   // append hardcoded auth methods to the server
   var internalMethods = [
-    // -- auth
-    {
-      name: 'auth.auth.register',
-      method: authRegister,
-      options: { callback: false }
-    },
     // -- admin users
     {
       name: 'auth.admin.users.addRole',
@@ -522,14 +517,14 @@ exports.register = function(server, options, next) {
       method: adminRolesDelete,
       options: { callback: false }
     },
-    // -- admin bans
+    // -- bans
     {
-      name: 'auth.admin.bans.ban',
+      name: 'auth.bans.ban',
       method: bansBan,
       options: { callback: false }
     },
     {
-      name: 'auth.admin.bans.banFromBoards',
+      name: 'auth.bans.banFromBoards',
       method: bansBanFromBoards,
       options: { callback: false }
     },
@@ -542,6 +537,12 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.admin.roles.validate',
       method: adminRolesValidate,
+      options: { callback: false }
+    },
+    // -- user notes
+    {
+      name: 'auth.userNotes.isOwner',
+      method: userNotesIsOwner,
       options: { callback: false }
     }
   ];
