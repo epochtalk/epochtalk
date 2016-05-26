@@ -190,7 +190,7 @@ exports.update = {
     .tap(function(dbRole) {
       var roleClone = _.cloneDeep(dbRole);
       var notification = {
-        channel: '/r/' + roleClone.lookup,
+        channel: { type: 'role', id: roleClone.lookup },
         data: {}
       };
       request.server.plugins.notifications.systemNotification(notification);

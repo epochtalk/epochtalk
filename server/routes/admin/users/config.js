@@ -54,7 +54,7 @@ exports.addRoles = {
     .tap(function(users) {
       return Promise.map(users, function(user) {
         var notification = {
-          channel: '/u/' + user.id,
+          channel: { type: 'user', id: user.id },
           data: { action: 'reauthenticate' }
         };
         request.server.plugins.notifications.systemNotification(notification);
@@ -121,7 +121,7 @@ exports.removeRoles = {
     var promise = request.db.roles.removeRoles(userId, roleId)
     .tap(function(user) {
       var notification = {
-        channel: '/u/' + user.id,
+        channel: { type: 'user', id: user.id },
         data: { action: 'reauthenticate' }
       };
       request.server.plugins.notifications.systemNotification(notification);
