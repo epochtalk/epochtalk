@@ -16,7 +16,8 @@ var backendDirs = [
   'ept-users',
   'ept-watchlist',
   'ept-reports',
-  'ept-auth'
+  'ept-auth',
+  'ept-ignore-users'
 ];
 var frontendDir = 'ept-frontend';
 

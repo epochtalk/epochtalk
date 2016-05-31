@@ -14,6 +14,7 @@
     "ept-boards": "epochtalk/ept-boards",
     "ept-categories": "epochtalk/ept-categories",
     "ept-frontend": "epochtalk/ept-frontend",
+    "ept-ignore-users": "epochtalk/ept-ignore-users",
     "ept-messages": "epochtalk/ept-messages",
     "ept-posts": "epochtalk/ept-posts",
     "ept-threads": "epochtalk/ept-threads",
