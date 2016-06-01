@@ -9,7 +9,7 @@
   <meta name="description" content="{{description}}" />
   <meta name="keywords" content="{{keywords}}" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" href="{{#if favicon}}{{favicon}}{{else}}/favicon.ico{{/if}}" />
   <link rel="stylesheet" href="/static/css/app.css"/>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
   <style>
@@ -67,6 +67,7 @@
   <!-- Load App Bundle -->
   <script type="text/javascript" async>
     var forumData = {
+      favicon: '{{favicon}}',
       title: '{{title}}',
       logo: '{{logo}}',
       websocket_host: '{{websocket_host}}',
