@@ -12,15 +12,31 @@ function preProcessing(request) {
 
   // return the result of each method as any array
   return Promise.map(methods, function(method) {
+    var output =  method(request);
+    // short circuit out of hapi route using a Boom error
+    if (output && output.isBoom) { return Promise.reject(output); }
+    else { return output; }
+  });
+}
+
+function parallelProcessing(request) {
+  // find hookId for this route
+  var hookId = _.get(request, 'route.settings.app.hook');
+
+  // get methods by hookId
+  var methods = _.get(request, 'hooks.' + hookId + '.parallel') || [];
+
+  // return the result of each method as any array
+  return Promise.map(methods, function(method) {
     return method(request);
   });
 }
 
 function mergeProcessing(request) {
-  var preprocessed = request.pre.preprocessed || [];
+  var parallelProcessed = request.pre.parallelProcessed || [];
   var processed = request.pre.processed;
 
-  preprocessed.map(function(result) {
+  parallelProcessed.map(function(result) {
     if (!_.get(processed, result.path)) {
       _.set(processed, result.path, result.data); }
   });
@@ -51,6 +67,11 @@ exports.register = function(server, options, next) {
     {
       name: 'hooks.preProcessing',
       method: preProcessing,
+      options: { callback: false }
+    },
+    {
+      name: 'hooks.parallelProcessing',
+      method: parallelProcessing,
       options: { callback: false }
     },
     {
