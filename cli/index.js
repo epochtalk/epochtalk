@@ -2,7 +2,9 @@
 require('dotenv').load();
 var path = require('path');
 var program = require('commander');
-var db = require(path.normalize(__dirname + '/../db'));
+var users = require(path.normalize(__dirname + '/../modules/node_modules/ept-users')).db;
+var categories = require(path.normalize(__dirname + '/../modules/node_modules/ept-categories')).db;
+var boards = require(path.normalize(__dirname + '/../modules/node_modules/ept-boards')).db;
 
 program
   .version('0.0.1')
@@ -22,10 +24,10 @@ var seed = function() {
     confirmation: 'admin1234'
   };
   var createdCategory;
-  db.users.create(adminUser, true)
+  return users.create(adminUser, true)
   .then(function() {
     var generalCategory = { name: 'General' };
-    return db.categories.create(generalCategory);
+    return categories.create(generalCategory);
   })
   .then(function(category) {
     console.log('Created category: ' + category.name);
@@ -34,7 +36,7 @@ var seed = function() {
       name: 'General Discussion',
       description: 'The art of discussing, generally.'
     };
-    return db.boards.create(generalBoard);
+    return boards.create(generalBoard);
   })
   .then(function(board) {
     console.log('Created board: ' + board.name);
@@ -53,15 +55,13 @@ var seed = function() {
         view_order: 0
       }
     ];
-    return db.boards.updateCategories(boardMapping);
+    return boards.updateCategories(boardMapping);
   })
   .then(function() {
     console.log('Added board to category');
-    db.close();
   })
   .catch(function(err) {
     console.log(err);
-    db.close();
   });
 };
 
