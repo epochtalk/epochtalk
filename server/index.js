@@ -16,9 +16,11 @@ var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var hooks = require(path.normalize(__dirname + '/plugins/hooks'));
 var parser = require(path.normalize(__dirname + '/plugins/parser'));
 var common = require(path.normalize(__dirname + '/plugins/common'));
+var emailer = require(path.normalize(__dirname + '/plugins/emailer'));
 var modules = require(path.normalize(__dirname + '/plugins/modules'));
 var session = require(path.normalize(__dirname + '/plugins/session'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
+var patroller = require(path.normalize(__dirname + '/plugins/patroller'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
@@ -27,6 +29,7 @@ var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
 var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
 var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
+var trackIp = require(path.normalize(__dirname + '/plugins/track_ip'));
 
 var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods;
 
@@ -160,8 +163,14 @@ setup()
 })
 // inert static file serving
 .then(function() { return server.register(Inert); })
+// emailer
+.then(function() { server.register({ register: emailer, options: { config } }); })
 // moderation log
 .then(function() { server.register({ register: moderationLog, options: { db } }); })
+// Track IP
+.then(function() { server.register({ register: trackIp, options: { db } }); })
+// Patrollers
+.then(function() { server.register({ register: patroller }); })
 // routes and server start
 .then(function() {
   // server routes

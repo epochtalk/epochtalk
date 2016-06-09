@@ -185,6 +185,8 @@ exports.update = {
     })
     // re-init image clients
     .then(function() { request.imageStore.reinit(); })
+    // re-init emailer
+    .then(function() { request.emailer.init(); })
     // return payload
     .then(function() { return request.payload; });
 

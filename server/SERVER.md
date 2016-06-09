@@ -11,6 +11,7 @@
  * [roleValidations] = {Object} Role validation functions for all roles
  * [rolesAPI] = {Object} Role helper functions
  * [session] = {Object} Helper Functions built around user sessions
+ * [emailer] = {Object} Init and Send functions for emails
 
 
 ### Request Decorations
@@ -26,6 +27,7 @@
  * [rolesAPI] = {Object} Role helper functions
  * [session] = {Object} Helper Functions built around user sessions
  * [hooks] = {Object} Pre and Post hooks by route
+ * [emailer] = {Object} Init and Send functions for emails
 
 
 ### Server Extensions
