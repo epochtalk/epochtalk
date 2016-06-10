@@ -1,6 +1,5 @@
 {
   "logEnabled": true,
-  "privateKey": "Change this to something more secure",
   "verifyRegistration": false,
   "loginRequired": false,
   "website": {
