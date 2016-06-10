@@ -1,4 +1,5 @@
 var config = {
+  privateKey: process.env.PRIVATE_KEY,
   publicUrl: process.env.PUBLIC_URL,
   host: process.env.HOST,
   port: process.env.PORT,
