@@ -460,6 +460,7 @@ function adminRolesValidate(validations, payload) {
     users: validations.users,
     reports: validations.reports,
     watchlist: validations.watchlist,
+    autoModeration: validations.autoModeration,
     limits: Joi.array().items({
       path: Joi.string().required(),
       method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
