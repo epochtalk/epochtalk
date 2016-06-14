@@ -82,51 +82,53 @@ function parseConfigs(configurations) {
 }
 
 function checkEmailerConfig(emailer) {
-  if (!emailer) { return 'Emailer configuration not found.'; }
+  return new Promise(function(resolve, reject) {
+    if (!emailer) { return reject(new Error('Emailer configuration not found.')); }
 
-  var error = [];
-  if (!emailer.sender) { error.push('Emailer Sender not found.'); }
-  if (!emailer.host) { error.push('Emailer Host not found.'); }
-  if (!emailer.port) { error.push('Emailer Post not found.'); }
-  if (!emailer.user) { error.push('Emailer User not found.'); }
-  if (!emailer.pass) { error.push('Emailer Password not found.'); }
+    var errors = [];
+    if (!emailer.sender) { errors.push('Emailer Sender not found.'); }
+    if (!emailer.host) { errors.push('Emailer Host not found.'); }
+    if (!emailer.port) { errors.push('Emailer Post not found.'); }
+    if (!emailer.user) { errors.push('Emailer User not found.'); }
+    if (!emailer.pass) { errors.push('Emailer Password not found.'); }
 
-  if (error.length > 0) { error = error.join('\n'); }
-  else { error = ''; }
-  return error;
+    if (errors.length > 0) { return reject(new Error(errors.join('\n'))); }
+    else { return resolve(); }
+  });
 }
 
 function checkImagesConfig(images) {
-  if (!images) { return 'Images configuration not found'; }
+  return new Promise(function(resolve, reject) {
+    if (!images) { return reject(new Error('Images configuration not found')); }
 
-  var error = [];
-  var storageType = images.storage;
+    var errors = [];
+    var storageType = images.storage;
 
-  if (!storageType) { error.push('Image Storage Type not found.'); }
-  else if (storageType !== 'local' && storageType !== 's3') {
-    error.push('Image Type is not "local" or "s3"');
-  }
-  if (!images.maxSize) { error.push('Max Image Size not set.'); }
-  if (!images.expiration) { error.push('Image Expiration Interval not set.'); }
-  if (!images.interval) { error.push('Image Check Interval not set.'); }
+    if (!storageType) { errors.push('Image Storage Type not found.'); }
+    else if (storageType !== 'local' && storageType !== 's3') {
+      errors.push('Image Type is not "local" or "s3"');
+    }
+    if (!images.maxSize) { errors.push('Max Image Size not set.'); }
+    if (!images.expiration) { errors.push('Image Expiration Interval not set.'); }
+    if (!images.interval) { errors.push('Image Check Interval not set.'); }
 
-  // local
-  if (storageType === 'local') {
-    if (!images.local.dir) { error.push('Local Images dir not set.'); }
-    if (!images.local.path) { error.push('Local Images public path not set.'); }
-  }
+    // local
+    if (storageType === 'local') {
+      if (!images.local.dir) { errors.push('Local Images dir not set.'); }
+      if (!images.local.path) { errors.push('Local Images public path not set.'); }
+    }
 
-  // s3
-  if (storageType === 's3') {
-    if (!images.s3.root) { error.push('S3 root URL not set.'); }
-    if (!images.s3.dir) { error.push('S3 dir not set.'); }
-    if (!images.s3.bucket) { error.push('S3 bucket not set.'); }
-    if (!images.s3.region) { error.push('S3 region not set.'); }
-    if (!images.s3.accessKey) { error.push('S3 Access Key not set.'); }
-    if (!images.s3.secretKey) { error.push('S3 Secret Key not set.'); }
-  }
+    // s3
+    if (storageType === 's3') {
+      if (!images.s3.root) { errors.push('S3 root URL not set.'); }
+      if (!images.s3.dir) { errors.push('S3 dir not set.'); }
+      if (!images.s3.bucket) { errors.push('S3 bucket not set.'); }
+      if (!images.s3.region) { errors.push('S3 region not set.'); }
+      if (!images.s3.accessKey) { errors.push('S3 Access Key not set.'); }
+      if (!images.s3.secretKey) { errors.push('S3 Secret Key not set.'); }
+    }
 
-  if (error.length > 0) { error = error.join('\n'); }
-  else { error = ''; }
-  return error;
+    if (errors.length > 0) { return reject(new Error(errors.join('\n'))); }
+    else { return resolve(); }
+  });
 }
