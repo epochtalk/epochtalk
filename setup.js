@@ -1,3 +1,4 @@
+var Promise = require('bluebird');
 var path = require('path');
 var config = require(path.normalize(__dirname + '/config'));
 var db = require(path.normalize(__dirname + '/db'));
@@ -14,71 +15,62 @@ module.exports = function() {
     // then load admin options from database
     .then(db.configurations.get);
   })
-  .then(parseConfigs)
-  .catch(function(err) {
-    console.log('Exiting: Configurations could not be built.');
-    console.log(err);
-    process.exit(1);
-  });
+  .then(parseConfigs);
 };
 
 function parseConfigs(configurations) {
-  Object.keys(configurations).forEach(function(key) {
-    config[key] = configurations[key];
+  return new Promise(function(resolve, reject) {
+    Object.keys(configurations).forEach(function(key) {
+      config[key] = configurations[key];
+    });
+
+    // parse public url
+    var publicUrl = config.publicUrl;
+    if (publicUrl.indexOf('/', publicUrl.length-1) === publicUrl.length-1) {
+      config.publicUrl = publicUrl.substring(0, publicUrl.length-1);
+    }
+
+    // parse images local dir
+    var localDir = config.images.local.dir;
+    if (localDir.indexOf('/') !== 0) {
+      config.images.local.dir = '/' + localDir;
+      localDir =  '/' + localDir;
+    }
+    if (localDir.indexOf('/', localDir.length-1) === -1) {
+      config.images.local.dir = localDir + '/';
+    }
+    // parse images public dir
+    var localPath = config.images.local.path;
+    if (localPath.indexOf('/') !== 0) {
+      config.images.local.path = '/' + localPath;
+      localPath = '/' + localPath;
+    }
+    if (localPath.indexOf('/', localPath.length-1) === -1) {
+      config.images.local.path = localPath + '/';
+    }
+
+    // parse images root and dir
+    var s3root = config.images.s3.root;
+    if (s3root.indexOf('/', s3root.length-1) === -1) {
+      config.images.s3.root = s3root + '/';
+    }
+    var s3dir = config.images.s3.dir;
+    if (s3dir.indexOf('/', s3dir.length-1) === -1) {
+      s3dir += '/';
+      config.images.s3.dir = s3dir;
+    }
+    if (s3dir.indexOf('/') === 0) {
+      config.images.s3.dir = s3dir.substring(1);
+    }
+
+    return resolve();
+  })
+  .then(function() {
+    return checkEmailerConfig(config.emailer);
+  })
+  .then(function() {
+    return checkImagesConfig(config.images);
   });
-
-  // parse public url
-  var publicUrl = config.publicUrl;
-  if (publicUrl.indexOf('/', publicUrl.length-1) === publicUrl.length-1) {
-    config.publicUrl = publicUrl.substring(0, publicUrl.length-1);
-  }
-
-  // parse images local dir
-  var localDir = config.images.local.dir;
-  if (localDir.indexOf('/') !== 0) {
-    config.images.local.dir = '/' + localDir;
-    localDir =  '/' + localDir;
-  }
-  if (localDir.indexOf('/', localDir.length-1) === -1) {
-    config.images.local.dir = localDir + '/';
-  }
-  // parse images public dir
-  var localPath = config.images.local.path;
-  if (localPath.indexOf('/') !== 0) {
-    config.images.local.path = '/' + localPath;
-    localPath = '/' + localPath;
-  }
-  if (localPath.indexOf('/', localPath.length-1) === -1) {
-    config.images.local.path = localPath + '/';
-  }
-
-  // parse images root and dir
-  var s3root = config.images.s3.root;
-  if (s3root.indexOf('/', s3root.length-1) === -1) {
-    config.images.s3.root = s3root + '/';
-  }
-  var s3dir = config.images.s3.dir;
-  if (s3dir.indexOf('/', s3dir.length-1) === -1) {
-    s3dir += '/';
-    config.images.s3.dir = s3dir;
-  }
-  if (s3dir.indexOf('/') === 0) {
-    config.images.s3.dir = s3dir.substring(1);
-  }
-
-  // check that email vars exists
-  var emailerError = checkEmailerConfig(config.emailer);
-  if (emailerError) {
-    console.error('Email configurations are not properly defined.');
-    console.error(emailerError);
-  }
-
-  // check if image vars are valid
-  var imagesError = checkImagesConfig(config.images);
-  if (imagesError) {
-    console.error('Images configuration are not properly defined.');
-    console.error(imagesError);
-  }
 }
 
 function checkEmailerConfig(emailer) {
