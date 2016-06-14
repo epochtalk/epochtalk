@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var Promise = require('bluebird');
 var path = require('path');
 var config = require(path.normalize(__dirname + '/config'));
@@ -23,6 +24,11 @@ function parseConfigs(configurations) {
     Object.keys(configurations).forEach(function(key) {
       config[key] = configurations[key];
     });
+
+    // check if the private key is configured
+    if (!_.isString(config.privateKey)) {
+      return reject(new Error('PRIVATE_KEY is not set to a valid value.'));
+    }
 
     // parse public url
     var publicUrl = config.publicUrl;
