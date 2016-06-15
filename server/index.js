@@ -190,4 +190,8 @@ setup()
     server.log('debug', 'config: ' + JSON.stringify(configClone, undefined, 2));
     server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
   });
+})
+.catch(function(err) {
+  console.error(err);
+  process.exit(1);
 });
