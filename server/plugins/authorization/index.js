@@ -461,6 +461,7 @@ function adminRolesValidate(validations, payload) {
     reports: validations.reports,
     watchlist: validations.watchlist,
     autoModeration: validations.autoModeration,
+    ads: validations.ads,
     limits: Joi.array().items({
       path: Joi.string().required(),
       method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),
@@ -471,7 +472,7 @@ function adminRolesValidate(validations, payload) {
     notifications: Joi.object().keys({
       dismiss: Joi.boolean(),
       counts: Joi.boolean()
-    })
+    }),
   }).required();
 
   var promise = new Promise(function(resolve, reject) {

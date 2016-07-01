@@ -8,6 +8,7 @@ var monitors = [];
 var nmPath = path.normalize(__dirname + '/../../modules/node_modules');
 var backendDirs = [
   'epochtalk-core-pg',
+  'ept-ads',
   'ept-categories',
   'ept-boards',
   'ept-messages',

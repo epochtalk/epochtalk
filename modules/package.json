@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bct-activity": "epochtalk/bct-activity",
+    "ept-ads": "epochtalk/ept-ads",
     "ept-auth": "epochtalk/ept-auth",
     "ept-auto-moderation": "epochtalk/ept-auto-moderation",
     "ept-boards": "epochtalk/ept-boards",
