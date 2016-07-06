@@ -11,6 +11,7 @@
   "dependencies": {
     "bct-activity": "epochtalk/bct-activity",
     "ept-ads": "epochtalk/ept-ads",
+    "bct-trust": "epochtalk/bct-trust",
     "ept-auth": "epochtalk/ept-auth",
     "ept-auto-moderation": "epochtalk/ept-auto-moderation",
     "ept-bbcode-parser": "epochtalk/ept-bbcode-parser",
