@@ -31,7 +31,7 @@ var notifications = require(path.normalize(__dirname + '/plugins/notifications')
 var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 var trackIp = require(path.normalize(__dirname + '/plugins/track_ip'));
 
-var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods;
+var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods, parsers;
 
 // setup configration file and sync with DB
 setup()
@@ -116,8 +116,6 @@ setup()
 .then(function() { return server.register({ register: imageStore, options: { config, db } }); })
 // sanitizer
 .then(function() { return server.register({ register: sanitizer }); })
-// parser
-.then(function() { return server.register({ register: parser }); })
 // load modules
 .then(function() {
   return server.register({ register: modules, options: { db } })
@@ -127,8 +125,11 @@ setup()
     authMethods = output.authorization;
     permissions = output.permissions;
     hookMethods = output.hooks;
+    parsers = output.parsers;
   });
 })
+// parser
+.then(function() { return server.register({ register: parser, options: { parsers } }); })
 // route acls
 .then(function() {
   return server.register({register: acls, options: { db, config, permissions } })

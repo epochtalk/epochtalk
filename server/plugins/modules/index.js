@@ -12,6 +12,7 @@ modules.install = (db) => {
     authorization: [],
     apiMethods: {},
     hooks: {},
+    parsers: [],
     permissions: {
       defaults: {},
       validations: {},
@@ -66,6 +67,10 @@ modules.load = (moduleName, master) => {
       if (hookEndpoint) { hookEndpoint.push(hook.method); }
       else { _.set(master.hooks, hook.path, [hook.method]); }
     });
+  }
+
+  if (module.parser) {
+    master.parsers = master.parsers.concat(module.parser);
   }
 
   // Module Permissions as an Array

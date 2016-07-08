@@ -13,6 +13,7 @@
     "ept-ads": "epochtalk/ept-ads",
     "ept-auth": "epochtalk/ept-auth",
     "ept-auto-moderation": "epochtalk/ept-auto-moderation",
+    "ept-bbcode-parser": "epochtalk/ept-bbcode-parser",
     "ept-boards": "epochtalk/ept-boards",
     "ept-categories": "epochtalk/ept-categories",
     "ept-frontend": "epochtalk/ept-frontend",

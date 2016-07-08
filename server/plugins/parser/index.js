@@ -1,23 +1,14 @@
-var bbcodeParser = require('epochtalk-bbcode-parser');
-
-var parser = { parse: parse };
+var parsers = [];
 
 function parse(input) {
-  if (!input) { return ''; }
+  if (!input) { input = ''; }
 
   // convert all unicode characters to their numeric representation
   // this is so we can save it to the db and present it to any encoding
   input = textToEntities(input);
 
-  if (input.indexOf('[') >= 0) {
-    // convert all (<, &lt;) and (>, &gt;) to decimal to escape the regex
-    // in the bbcode parser that'll unescape those chars
-    input = input.replace(/(?:<|&lt;)/g, '&#60;');
-    input = input.replace(/(?:>|&gt;)/g, '&#62;');
-
-    // parse input to generate body
-    input = bbcodeParser.process({text: input}).html;
-  }
+  // run through all parsers
+  parsers.forEach(function(parser) { input = parser.parse(input); });
 
   return input;
 }
@@ -36,9 +27,10 @@ function textToEntities(text) {
 
 exports.register = function(server, options, next) {
   options = options || {};
+  parsers = options.parsers;
 
-  server.decorate('server', 'parser', parser);
-  server.decorate('request', 'parser', parser);
+  server.decorate('server', 'parser', { parse });
+  server.decorate('request', 'parser', { parse });
   return next();
 };
 
