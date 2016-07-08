@@ -9,9 +9,11 @@ var nmPath = path.normalize(__dirname + '/../../modules/node_modules');
 var backendDirs = [
   'epochtalk-core-pg',
   'ept-ads',
+  'ept-bbcode-parser',
   'ept-categories',
   'ept-boards',
   'ept-messages',
+  'ept-md-parser',
   'ept-posts',
   'ept-threads',
   'ept-users',
