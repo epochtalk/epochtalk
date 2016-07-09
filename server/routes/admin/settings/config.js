@@ -110,7 +110,6 @@ exports.update = {
   validate: {
     payload: Joi.object().keys({
       log_enabled: Joi.boolean(),
-      private_key: Joi.string(),
       verify_registration: Joi.boolean(),
       login_required: Joi.boolean(),
       website: Joi.object().keys({
@@ -619,21 +618,10 @@ exports.previewTheme = {
 function sanitizeConfigs(configurations) {
   var config = {};
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve) {
     Object.keys(configurations).forEach(function(key) {
       config[key] = configurations[key];
     });
-
-    // check if the private key is configured
-    if (!_.isString(config.privateKey)) {
-      return reject(new Error('PRIVATE_KEY is not set to a valid value.'));
-    }
-
-    // parse public url
-    var publicUrl = config.publicUrl;
-    if (publicUrl && publicUrl.indexOf('/', publicUrl.length-1) === publicUrl.length-1) {
-      config.publicUrl = publicUrl.substring(0, publicUrl.length-1);
-    }
 
     // parse images local dir
     var localDir = config.images.local.dir;
