@@ -12,9 +12,11 @@ module.exports = function() {
   .error(function() {
     // create with defaults
     console.log('Not configured yet; using default configurations...');
-    return db.configurations.create(defaultConfigurations)
-    // then load admin options from database
-    .then(db.configurations.get);
+    return parseConfigs(defaultConfigurations)
+    .then(function() {
+      return db.configurations.create(config);
+    })
+    .then(function() { return config; });
   })
   .then(parseConfigs);
 };

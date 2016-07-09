@@ -173,9 +173,14 @@ exports.update = {
   handler: function(request, reply) {
     var internalConfig = request.server.app.config;
     var newConfig = underscoreToCamelCase(request.payload);
-    var promise = request.db.configurations.update(newConfig).then(function() {
-      Object.keys(newConfig).forEach(function(key) {
-        internalConfig[key] = newConfig[key];
+    var promise = sanitizeConfigs(newConfig)
+    .then(function(sanitizedConfig) {
+      newConfig = sanitizedConfig;
+      return request.db.configurations.update(sanitizedConfig)
+      .then(function() {
+        Object.keys(sanitizedConfig).forEach(function(key) {
+          internalConfig[key] = sanitizedConfig[key];
+        });
       });
     })
     // update rate default rate limits
@@ -609,3 +614,119 @@ exports.previewTheme = {
     });
   }
 };
+
+
+function sanitizeConfigs(configurations) {
+  var config = {};
+
+  return new Promise(function(resolve, reject) {
+    Object.keys(configurations).forEach(function(key) {
+      config[key] = configurations[key];
+    });
+
+    // check if the private key is configured
+    if (!_.isString(config.privateKey)) {
+      return reject(new Error('PRIVATE_KEY is not set to a valid value.'));
+    }
+
+    // parse public url
+    var publicUrl = config.publicUrl;
+    if (publicUrl && publicUrl.indexOf('/', publicUrl.length-1) === publicUrl.length-1) {
+      config.publicUrl = publicUrl.substring(0, publicUrl.length-1);
+    }
+
+    // parse images local dir
+    var localDir = config.images.local.dir;
+    if (localDir.indexOf('/') !== 0) {
+      config.images.local.dir = '/' + localDir;
+      localDir =  '/' + localDir;
+    }
+    if (localDir.indexOf('/', localDir.length-1) === -1) {
+      config.images.local.dir = localDir + '/';
+    }
+    // parse images public dir
+    var localPath = config.images.local.path;
+    if (localPath.indexOf('/') !== 0) {
+      config.images.local.path = '/' + localPath;
+      localPath = '/' + localPath;
+    }
+    if (localPath.indexOf('/', localPath.length-1) === -1) {
+      config.images.local.path = localPath + '/';
+    }
+
+    // parse images root and dir
+    var s3root = config.images.s3.root;
+    if (s3root.indexOf('/', s3root.length-1) === -1) {
+      config.images.s3.root = s3root + '/';
+    }
+    var s3dir = config.images.s3.dir;
+    if (s3dir.indexOf('/', s3dir.length-1) === -1) {
+      s3dir += '/';
+      config.images.s3.dir = s3dir;
+    }
+    if (s3dir.indexOf('/') === 0) {
+      config.images.s3.dir = s3dir.substring(1);
+    }
+
+    return resolve();
+  })
+  .then(function() {
+    return checkEmailerConfig(config.emailer);
+  })
+  .then(function() {
+    return checkImagesConfig(config.images);
+  })
+  .then(function() { return config; });
+}
+
+function checkEmailerConfig(emailer) {
+  return new Promise(function(resolve, reject) {
+    if (!emailer) { return reject(new Error('Emailer configuration not found.')); }
+
+    var errors = [];
+    if (!emailer.sender) { errors.push('Emailer Sender not found.'); }
+    if (!emailer.host) { errors.push('Emailer Host not found.'); }
+    if (!emailer.port) { errors.push('Emailer Post not found.'); }
+    if (!emailer.user) { errors.push('Emailer User not found.'); }
+    if (!emailer.pass) { errors.push('Emailer Password not found.'); }
+
+    if (errors.length > 0) { return reject(new Error(errors.join('\n'))); }
+    else { return resolve(); }
+  });
+}
+
+function checkImagesConfig(images) {
+  return new Promise(function(resolve, reject) {
+    if (!images) { return reject(new Error('Images configuration not found')); }
+
+    var errors = [];
+    var storageType = images.storage;
+
+    if (!storageType) { errors.push('Image Storage Type not found.'); }
+    else if (storageType !== 'local' && storageType !== 's3') {
+      errors.push('Image Type is not "local" or "s3"');
+    }
+    if (!images.maxSize) { errors.push('Max Image Size not set.'); }
+    if (!images.expiration) { errors.push('Image Expiration Interval not set.'); }
+    if (!images.interval) { errors.push('Image Check Interval not set.'); }
+
+    // local
+    if (storageType === 'local') {
+      if (!images.local.dir) { errors.push('Local Images dir not set.'); }
+      if (!images.local.path) { errors.push('Local Images public path not set.'); }
+    }
+
+    // s3
+    if (storageType === 's3') {
+      if (!images.s3.root) { errors.push('S3 root URL not set.'); }
+      if (!images.s3.dir) { errors.push('S3 dir not set.'); }
+      if (!images.s3.bucket) { errors.push('S3 bucket not set.'); }
+      if (!images.s3.region) { errors.push('S3 region not set.'); }
+      if (!images.s3.accessKey) { errors.push('S3 Access Key not set.'); }
+      if (!images.s3.secretKey) { errors.push('S3 Secret Key not set.'); }
+    }
+
+    if (errors.length > 0) { return reject(new Error(errors.join('\n'))); }
+    else { return resolve(); }
+  });
+}

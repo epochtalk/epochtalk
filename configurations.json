@@ -28,7 +28,7 @@
     },
     "s3": {
       "root": "http://example.com",
-      "dir": "/images",
+      "dir": "images/",
       "bucket": "bukkit",
       "region": "region",
       "accessKey": "",
