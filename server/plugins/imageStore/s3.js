@@ -18,7 +18,6 @@ var client;
 var createBucketPolicy = function() {
   return new Promise(function(resolve, reject) {
     var dir = config.images.s3.dir;
-    dir = dir.substring(0, dir.length - 1);
     var policy = {
       Id: 'Policy' + Date.now(),
       Version: '2012-10-17',
@@ -27,7 +26,7 @@ var createBucketPolicy = function() {
           Sid: 'Stmt' + Date.now(),
           Action: ['s3:GetObject'],
           Effect: 'Allow',
-          Resource: 'arn:aws:s3:::' + config.images.s3.bucket + '/' + dir,
+          Resource: 'arn:aws:s3:::' + config.images.s3.bucket + '/' + dir + '*',
           Principal: '*'
         }
       ]
