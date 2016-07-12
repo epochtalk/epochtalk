@@ -67,7 +67,6 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * del `^2.2.0`
 * dot `^1.0.3`
 * dotenv `^2.0.0`
-* epochtalk-bbcode-parser `^1.0.2`
 * epochtalk-core-pg `epochtalk/core-pg`
 * fs-extra `^0.26.4`
 * good `^6.4.0`
