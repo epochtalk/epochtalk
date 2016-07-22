@@ -1,7 +1,4 @@
 // Load modules
-var Boom = require('boom');
-var Hoek = require('hoek');
-var jwt  = require('jsonwebtoken');
 var _ = require('lodash');
 
 var db, websocketAPIKey;

@@ -170,7 +170,7 @@ session.delete = function(sessionId, userId) {
   // delete user data if no more sessions
   .then(function() {
     // get user-session listing
-    var userSessionKey = 'users:' + userId + ':sessions';
+    var userSessionKey = 'user:' + userId + ':sessions';
     return redis.smembersAsync(userSessionKey)
     .then(function(setMembers) {
       // no more sessions
