@@ -213,11 +213,18 @@ function getACLValue(auth, acl) {
 
   // find matching user roles
   if (auth.isAuthenticated && _.isArray(auth.credentials.roles)) {
-    userACLs = auth.credentials.roles.map(function(roleName) { return roles[roleName]; });
+    var userBanned = auth.credentials.roles.indexOf(roles.banned.lookup) > -1;
+    if (userBanned) {
+      userACLs = [ roles.banned ];
+    }
+    else {
+      userACLs = auth.credentials.roles.map(function(roleName) { return roles[roleName]; });
+    }
   }
   else if (auth.isAuthenticated) { userACLs = [ roles.user ]; }
   else if (config.loginRequired) { userACLs = [ roles.private ]; }
   else { userACLs = [ roles.anonymous ]; }
+
 
   // grab single permission from each role
   var ACLValues = userACLs.map(function(userACL) { return _.get(userACL, acl); });
