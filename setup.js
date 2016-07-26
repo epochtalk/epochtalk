@@ -34,6 +34,10 @@ function parseConfigs(configurations) {
 
     // parse public url
     var publicUrl = config.publicUrl;
+    if (!publicUrl.startsWith('http')) {
+      return reject(new Error('PUBLIC URL does not start with http'));
+    }
+
     if (publicUrl.indexOf('/', publicUrl.length-1) === publicUrl.length-1) {
       config.publicUrl = publicUrl.substring(0, publicUrl.length-1);
     }
