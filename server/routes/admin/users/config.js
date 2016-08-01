@@ -198,17 +198,20 @@ exports.count = {
   validate: {
     query: {
       filter: Joi.string().valid('banned'),
-      search: Joi.string()
+      search: Joi.string(),
+      ip: Joi.boolean()
     }
   },
   handler: function(request, reply) {
     var opts;
     var filter = request.query.filter;
     var search = request.query.search;
+    var ip = request.query.ip;
     if (filter || search) {
       opts = {
         filter: filter,
-        searchStr: search
+        searchStr: search,
+        ip: ip
       };
     }
 
@@ -253,7 +256,8 @@ exports.page = {
       field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'imported_at', 'ban_expiration'),
       desc: Joi.boolean().default(false),
       filter: Joi.string().valid('banned'),
-      search: Joi.string()
+      search: Joi.string(),
+      ip: Joi.boolean()
     }
   },
   handler: function(request, reply) {
@@ -263,7 +267,8 @@ exports.page = {
       sortField: request.query.field,
       sortDesc: request.query.desc,
       filter: request.query.filter,
-      searchStr: request.query.search
+      searchStr: request.query.search,
+      ip: request.query.ip
     };
     var promise = request.db.users.page(opts);
     return reply(promise);
