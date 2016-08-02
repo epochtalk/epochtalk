@@ -88,12 +88,20 @@ exports.register = function(plugin, options, next) {
     if (!routeLimit && path === '/images/upload') {
       routeLimit = _.clone(imageUploadOverrides);
     }
+
     // default to global settings
     else if (!routeLimit && method === 'GET') { routeLimit = _.clone(getDefaults); }
     else if (!routeLimit && method === 'POST') { routeLimit = _.clone(postDefaults); }
     else if (!routeLimit && method === 'PUT') { routeLimit = _.clone(putDefaults); }
     else if (!routeLimit && method === 'DELETE') { routeLimit = _.clone(deleteDefaults); }
     else if (!routeLimit) { routeLimit = _.clone(postDefaults); }
+
+    // override for /api/recover route
+    if (path.startsWith('/api/recover')) {
+      routeLimit.interval = 1000 * 60 * 60 * 24;
+      routeLimit.maxInInterval = 5;
+      routeLimit.minDifference = 100;
+    }
 
     // check if limits are valid, bypass if not
     if (routeLimit.interval < 0) { return reply.continue(); }
