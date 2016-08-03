@@ -96,13 +96,6 @@ exports.register = function(plugin, options, next) {
     else if (!routeLimit && method === 'DELETE') { routeLimit = _.clone(deleteDefaults); }
     else if (!routeLimit) { routeLimit = _.clone(postDefaults); }
 
-    // override for /api/recover route
-    if (path.startsWith('/api/recover')) {
-      routeLimit.interval = 1000 * 60 * 60 * 24;
-      routeLimit.maxInInterval = 5;
-      routeLimit.minDifference = 100;
-    }
-
     // check if limits are valid, bypass if not
     if (routeLimit.interval < 0) { return reply.continue(); }
 
