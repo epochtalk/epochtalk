@@ -8,6 +8,34 @@
   <title ng-bind-html="$webConfigs.title + ' - ' + ($title || 'Home')">{{title}}</title>
   <meta name="description" content="{{description}}" />
   <meta name="keywords" content="{{keywords}}" />
+
+  <!-- OG tags -->
+  {{#if ogTitle}}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ogTitle}}" />
+  {{/if}}
+  {{#if ogDescription}}
+    <meta propery="og:description" content="{{ogDescription}}" />
+  {{/if}}
+
+  <!-- Twitter tags -->
+  {{#if twTitle}}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{{twTitle}}" />
+  {{/if}}
+  {{#if twDescription}}
+    <meta name="twitter:description" content="{{twDescription}}" />
+  {{/if}}
+  {{#if twLabel1}}
+    <meta name="twitter:label1" value="{{twLabel1}}" />
+    <meta name="twitter:data1" value="{{twData1}}" />
+  {{/if}}
+  {{#if twLabel1}}
+    <meta name="twitter:label2" value="{{twLabel2}}" />
+    <meta name="twitter:data2" value="{{twData2}}" />
+  {{/if}}
+
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
   <link rel="icon" href="{{#if favicon}}{{favicon}}{{else}}/favicon.ico{{/if}}" />
   <link rel="stylesheet" href="/static/css/app.css"/>
