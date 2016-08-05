@@ -17,24 +17,31 @@
   {{#if ogDescription}}
     <meta property="og:description" content="{{ogDescription}}" />
   {{/if}}
+  {{#if ogImage}}
+    <meta property="og:image" content="{{ogImage}}" />
+  {{/if}}
 
   <!-- Twitter tags -->
-  {{#if twTitle}}
+  {{#if twImage}}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="{{twImage}}" />
+  {{else}}
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="{{twTitle}}" />
+  {{/if}}
+  {{#if twTitle}}
+    <meta name="twitter:title" value="{{twTitle}}" />
   {{/if}}
   {{#if twDescription}}
-    <meta name="twitter:description" content="{{twDescription}}" />
+    <meta name="twitter:description" value="{{twDescription}}" />
   {{/if}}
   {{#if twLabel1}}
     <meta name="twitter:label1" value="{{twLabel1}}" />
     <meta name="twitter:data1" value="{{twData1}}" />
   {{/if}}
-  {{#if twLabel1}}
+  {{#if twLabel2}}
     <meta name="twitter:label2" value="{{twLabel2}}" />
     <meta name="twitter:data2" value="{{twData2}}" />
   {{/if}}
-
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
   <link rel="icon" href="{{#if favicon}}{{favicon}}{{else}}/favicon.ico{{/if}}" />
