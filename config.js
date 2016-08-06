@@ -8,6 +8,28 @@ var config = {
   websocket_port: process.env.WEBSOCKET_PORT,
   websocketAPIKey: process.env.WEBSOCKET_API_KEY,
   websocketSecure: process.env.WEBSOCKET_SECURE === 'true',
+  emailer: {
+    sender: process.env.EMAILER_SENDER,
+    host: process.env.EMAILER_HOST,
+    port: process.env.EMAILER_PORT,
+    user: process.env.EMAILER_USER,
+    pass: process.env.EMAILER_PASS,
+    secure: process.env.EMAILER_SECURE === 'true'
+  },
+  images: {
+    storage: process.env.IMAGES_STORAGE,
+    maxSize: process.env.IMAGES_MAX_SIZE,
+    expiration: process.env.IMAGES_EXPIRATION,
+    interval: process.env.IMAGES_INTERVAL,
+    s3: {
+      root: process.env.IMAGES_S3_ROOT,
+      dir: process.env.IMAGES_S3_DIR,
+      bucket: process.env.IMAGES_S3_BUCKET,
+      region: process.env.IMAGES_S3_REGION,
+      accessKey: process.env.IMAGES_S3_ACCESS_KEY,
+      secretKey: process.env.IMAGES_S3_SECRET_KEY
+    }
+  },
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
