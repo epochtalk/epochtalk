@@ -14,7 +14,7 @@ var config = {
     port: process.env.EMAILER_PORT,
     user: process.env.EMAILER_USER,
     pass: process.env.EMAILER_PASS,
-    secure: process.env.EMAILER_SECURE === 'true'
+    secure: process.env.EMAILER_SECURE === 'true' || undefined
   },
   images: {
     storage: process.env.IMAGES_STORAGE,
