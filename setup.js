@@ -23,9 +23,7 @@ module.exports = function() {
 
 function parseConfigs(configurations) {
   return new Promise(function(resolve, reject) {
-    Object.keys(configurations).forEach(function(key) {
-      config[key] = configurations[key];
-    });
+    _.defaultsDeep(config, configurations);
 
     // check if the private key is configured
     if (!_.isString(config.privateKey)) {
