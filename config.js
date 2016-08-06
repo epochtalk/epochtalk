@@ -8,6 +8,8 @@ var config = {
   websocket_port: process.env.WEBSOCKET_PORT,
   websocketAPIKey: process.env.WEBSOCKET_API_KEY,
   websocketSecure: process.env.WEBSOCKET_SECURE === 'true',
+  recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
+  recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY,
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,

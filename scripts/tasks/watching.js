@@ -49,16 +49,20 @@ module.exports = function() {
 var launchNodemon = function() {
   var nmOpts = {
     script: './server/index.js',
-    watch: [ './server', ],
+    watch: [ './server', './public' ],
     ignore: [
-      './app',
-      './cli',
-      './content',
-      './public',
-      './repl',
-      './scripts',
-      './tests',
-    ]
+      './app/*',
+      './cli/*',
+      './content/*',
+      './public/js/*',
+      './public/css/*',
+      './public/fonts/*',
+      './public/images/*',
+      './repl/*',
+      './scripts/*',
+      './tests/*',
+    ],
+    ext: 'js html'
   };
   return nodemon(nmOpts);
 };
