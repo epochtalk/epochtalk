@@ -30,6 +30,8 @@ var config = {
       secretKey: process.env.IMAGES_S3_SECRET_KEY
     }
   },
+  recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
+  recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY,
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,

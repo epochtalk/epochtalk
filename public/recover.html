@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base href="/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}" />
+  <meta name="keywords" content="{{keywords}}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="icon" href="{{#if favicon}}{{favicon}}{{else}}/favicon.ico{{/if}}" />
+  <link rel="stylesheet" href="/static/css/app.css"/>
+  <style>
+    body { background-color: #fff; }
+    h2 { margin-bottom: 2rem; border-bottom: 1px solid #ddd; }
+    input[type="text"] { margin-bottom: 2rem; padding-bottom: 0; }
+    .recover {
+      padding-top: 5em;
+      width: 30em;
+      margin: 0 auto;
+    }
+    #recover-form {
+      background-color: #eee;
+      padding: 2rem;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 5px 5px 5px #ddd;
+    }
+    #recover-submit {
+      width: 100%;
+      margin-bottom: 0;
+      margin-top: 2rem;
+    }
+    .success-modal {
+      background-color: #eee;
+      padding: 2rem;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 5px 5px 5px #ddd;
+      opacity: 0;
+      text-align: center;
+    }
+    .g-recaptcha { width: 304px; margin: auto; }
+  </style>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+</head>
+
+<body>
+  <div class="recover">
+
+    <div id='recover-form'>
+      <h2>Recover your account</h2>
+      <input type="text" id="recover-input" name="query" placeholder="Username or Email" />
+
+      <div class="g-recaptcha" data-sitekey="{{siteKey}}"></div>
+
+      <button id="recover-submit">Submit</button>
+    </div>
+
+    <div class="success-modal">
+      <strong>
+        An email with a link to reset your password has been sent.
+      </strong>
+    </div>
+
+  </div>
+
+  <!-- Load App Bundle -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+      $('#recover-submit').click(function() {
+        $.ajax({
+          type: "POST",
+          url: '/api/recover',
+          data: {
+            query: $('#recover-input').val(),
+            recaptcha: $('#g-recaptcha-response').val()
+          }
+        })
+        .done(function(msg) {
+          $('#recover-form').hide();
+          $('.success-modal').animate({opacity: 1});
+        })
+        .fail(function(xhr) {
+          var error = JSON.parse(xhr.responseText);
+          alert(error.message);
+        });
+      });
+
+    });
+  </script>
+</body>
+
+</html>

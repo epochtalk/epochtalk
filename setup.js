@@ -34,6 +34,15 @@ function parseConfigs(configurations) {
       return reject(new Error('PRIVATE_KEY is not set to a valid value.'));
     }
 
+    // check if the recaptcha site key is configured
+    if (!_.isString(config.recaptchaSiteKey)) {
+      return reject(new Error('RECAPTCHA_SITE_KEY is not set.'));
+    }
+
+    if (!_.isString(config.recaptchaSecretKey)) {
+      return reject(new Error('RECAPTCHA_SECRET_KEY is not set.'));
+    }
+
     // parse public url
     var publicUrl = config.publicUrl;
     if (!publicUrl.startsWith('http')) {

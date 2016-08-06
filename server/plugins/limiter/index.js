@@ -88,6 +88,7 @@ exports.register = function(plugin, options, next) {
     if (!routeLimit && path === '/images/upload') {
       routeLimit = _.clone(imageUploadOverrides);
     }
+
     // default to global settings
     else if (!routeLimit && method === 'GET') { routeLimit = _.clone(getDefaults); }
     else if (!routeLimit && method === 'POST') { routeLimit = _.clone(postDefaults); }

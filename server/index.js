@@ -16,6 +16,7 @@ var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var hooks = require(path.normalize(__dirname + '/plugins/hooks'));
 var parser = require(path.normalize(__dirname + '/plugins/parser'));
 var common = require(path.normalize(__dirname + '/plugins/common'));
+var backoff = require(path.normalize(__dirname + '/plugins/backoff'));
 var emailer = require(path.normalize(__dirname + '/plugins/emailer'));
 var modules = require(path.normalize(__dirname + '/plugins/modules'));
 var session = require(path.normalize(__dirname + '/plugins/session'));
@@ -106,6 +107,8 @@ setup()
 })
 // blacklist
 .then(function() { return server.register({ register: blacklist, options: { db } }); })
+// backoff
+.then(function() { return server.register({ register: backoff }); })
 // rate limiter
 .then(function() {
   var rlOptions = Hoek.clone(config.rateLimiting);
