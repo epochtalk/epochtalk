@@ -8,7 +8,7 @@ var config = {
   websocket_port: process.env.WEBSOCKET_PORT,
   websocketAPIKey: process.env.WEBSOCKET_API_KEY,
   websocketSecure: process.env.WEBSOCKET_SECURE === 'true',
-  emailer: {
+  emailer_env: {
     sender: process.env.EMAILER_SENDER,
     host: process.env.EMAILER_HOST,
     port: process.env.EMAILER_PORT,
@@ -16,7 +16,7 @@ var config = {
     pass: process.env.EMAILER_PASS,
     secure: process.env.EMAILER_SECURE === 'true' || undefined
   },
-  images: {
+  images_env: {
     storage: process.env.IMAGES_STORAGE,
     maxSize: process.env.IMAGES_MAX_SIZE,
     expiration: process.env.IMAGES_EXPIRATION,
