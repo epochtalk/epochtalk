@@ -32,6 +32,7 @@ var config = {
   },
   recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY,
+  gaKey: process.env.GA_KEY || 'UA-XXXXX-Y',
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,

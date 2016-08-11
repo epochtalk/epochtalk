@@ -417,7 +417,8 @@ function adminRolesValidate(validations, payload) {
       countModerators: Joi.boolean(),
       page: Joi.boolean(),
       pageAdmins: Joi.boolean(),
-      pageModerators: Joi.boolean()
+      pageModerators: Joi.boolean(),
+      resetPassword: Joi.boolean()
     }),
     adminModerators: Joi.object().keys({
       add: Joi.boolean(),

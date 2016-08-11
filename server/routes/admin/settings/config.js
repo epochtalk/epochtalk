@@ -112,6 +112,7 @@ exports.update = {
       log_enabled: Joi.boolean(),
       verify_registration: Joi.boolean(),
       login_required: Joi.boolean(),
+      ga_key: Joi.string().allow(''),
       website: Joi.object().keys({
         title: Joi.string(),
         description: Joi.string(),

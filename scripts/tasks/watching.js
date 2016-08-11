@@ -58,6 +58,7 @@ var launchNodemon = function() {
       './public/css/*',
       './public/fonts/*',
       './public/images/*',
+      './public/templates',
       './repl/*',
       './scripts/*',
       './tests/*',

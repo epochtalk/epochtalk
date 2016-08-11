@@ -72,7 +72,8 @@ module.exports = roles;
       countModerators: true,
       page: true,
       pageAdmins: true,
-      pageModerators: true
+      pageModerators: true,
+      resetPassword: true
     },
     adminModerators: {
       add: true,
@@ -189,7 +190,8 @@ roles.superAdministrator = {
     countModerators: true,
     page: true,
     pageAdmins: true,
-    pageModerators: true
+    pageModerators: true,
+    resetPassword: true
   },
   adminModerators: {
     add: true,
@@ -279,7 +281,8 @@ roles.administrator = {
     countModerators: true,
     page: true,
     pageAdmins: true,
-    pageModerators: true
+    pageModerators: true,
+    resetPassword: true
   },
   adminModerators: {
     add: true,
