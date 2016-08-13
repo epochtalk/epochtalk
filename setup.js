@@ -118,7 +118,7 @@ function checkImagesConfig(images) {
     if (!images) { return reject(new Error('Images configuration not found')); }
 
     var errors = [];
-    var storageType = images.storage;
+    var storageType = images.storage.toLowerCase();
 
     if (!storageType) { errors.push('Image Storage Type not found.'); }
     else if (storageType !== 'local' && storageType !== 's3') {
