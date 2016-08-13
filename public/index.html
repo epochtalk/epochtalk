@@ -81,7 +81,40 @@
     <main ui-view="body" ng-cloak></main>
 
     <!-- Footer -->
-    <footer ui-view="footer" ng-cloak></footer>
+    <footer>
+      <div id="footer">
+        <div class="row">
+          <div class="links">
+            <ul>
+              <li class="title">Legal</li>
+              <li>
+                <a ng-href="/legal#tos" target="_blank" rel="noopener noreferrer">
+                  Terms of Service
+                </a>
+              </li>
+              <li>
+                <a ng-href="/legal#privacy" target="_blank" rel="noopener noreferrer">
+                  Privacy Policy
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="links">
+            <ul>
+              <li class="title">Misc</li>
+              <li>
+                <a ng-href="/legal#disclaimer" target="_blank" rel="noopener noreferrer">
+                  Disclaimer
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="info">
+            <span class="copyright">&copy; {{currentYear}} {{title}}</span>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
 
   <!-- Noscript Message -->

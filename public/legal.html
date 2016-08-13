@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html ng-app="ept">
+
+<head>
+  <base href="/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title ng-bind-html="$webConfigs.title + ' - ' + ($title || 'Home')">{{title}}</title>
+  <meta name="description" content="{{description}}" />
+  <meta name="keywords" content="{{keywords}}" />
+
+  <!-- OG tags -->
+  {{#if ogTitle}}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ogTitle}}" />
+  {{/if}}
+  {{#if ogDescription}}
+    <meta property="og:description" content="{{ogDescription}}" />
+  {{/if}}
+
+  <!-- Twitter tags -->
+  <meta name="twitter:card" content="summary" />
+  {{#if twTitle}}
+    <meta name="twitter:title" value="{{twTitle}}" />
+  {{/if}}
+  {{#if twDescription}}
+    <meta name="twitter:description" value="{{twDescription}}" />
+  {{/if}}
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="icon" href="{{#if favicon}}{{favicon}}{{else}}/favicon.ico{{/if}}" />
+  <link rel="stylesheet" href="/static/css/app.css"/>
+  <style>
+    body {
+      background-color: #fff;
+      padding: 0 1em;
+      line-height: 1.5;
+      color: #555;
+      font-family: "Helvetica", "Arial", sans-serif;
+    }
+    h2 { margin-top: 1rem; margin-bottom: 1rem; border-bottom: 1px solid #ddd; }
+    h3 { margin-top: 1rem; margin-bottom: 1rem; }
+    ol, ul { margin-left: 2rem; }
+    h1, h2, strong { color: #333; }
+    .center { text-align: center; }
+    .legal {
+      padding-top: 2em;
+      max-width: 50em;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="legal" id="tos">
+    {{{tos}}}
+  </div>
+
+  <div class="legal" id="privacy">
+    {{{privacy}}}
+  </div>
+
+  <div class="legal" id="disclaimer">
+    {{{disclaimer}}}
+  </div>
+
+  <div class="legal center">
+    <a href="/">Go Back</a><br><br><br>
+  </div>
+
+  <!-- Google Analytics -->
+  <script>
+      window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+      ga('create','{{GAKey}}','auto');ga('send','pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+
+</html>

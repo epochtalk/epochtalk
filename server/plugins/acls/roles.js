@@ -129,6 +129,7 @@ roles.superAdministrator = {
     settings: {
       general: true,
       advanced: true,
+      legal: true,
       theme: true
     },
     management: {
@@ -174,6 +175,11 @@ roles.superAdministrator = {
     addToBlacklist: true,
     updateBlacklist: true,
     deleteFromBlacklist: true
+  },
+  adminLegal: {
+    text: true,
+    update: true,
+    reset: true
   },
   adminUsers: {
     privilegedAddRoles: {

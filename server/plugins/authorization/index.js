@@ -349,6 +349,7 @@ function adminRolesValidate(validations, payload) {
       settings: Joi.object().keys({
         general: Joi.boolean(),
         advanced: Joi.boolean(),
+        legal: Joi.boolean(),
         theme: Joi.boolean()
       }),
       management: Joi.object().keys({
@@ -393,6 +394,11 @@ function adminRolesValidate(validations, payload) {
       addToBlacklist: Joi.boolean(),
       updateBlacklist: Joi.boolean(),
       deleteFromBlacklist: Joi.boolean()
+    }),
+    adminLegal: Joi.object().keys({
+      text: Joi.boolean(),
+      update: Joi.boolean(),
+      reset: Joi.boolean()
     }),
     adminUsers: Joi.object().keys({
       privilegedUpdate: Joi.object().keys({
