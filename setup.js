@@ -23,9 +23,12 @@ module.exports = function() {
 
 function parseConfigs(configurations) {
   return new Promise(function(resolve, reject) {
-    Object.keys(configurations).forEach(function(key) {
-      config[key] = configurations[key];
-    });
+    // set config values from configurations
+    _.merge(config, configurations);
+
+    // override config with env, if available
+    _.merge(config.emailer, config.emailer_env);
+    _.merge(config.images, config.images_env);
 
     // check if the private key is configured
     if (!_.isString(config.privateKey)) {
