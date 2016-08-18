@@ -42,7 +42,7 @@
     <table align="center" class="body">
       <tr>
         <td class="header" align="left" valign="middle">
-            EpochTalk Forums
+            {{=it.siteName}}
         </td>
       </tr>
       <tr>
@@ -51,12 +51,12 @@
           Password has successfully been reset for the account <strong>{{=it.username}}</strong>.
           <br />
           <br />
-          <a href="{{=it.forumUrl}}">Login to Forum</a>
+          <a href="{{=it.forumUrl}}">Login</a>
         </td>
       </tr>
       <tr>
         <td align="center" valign="top">
-            <div class="footer">&copy; 2014-2016 EpochTalk</div>
+            <div class="footer">&copy; {{=it.currentYear}} {{=it.siteName}}</div>
         </td>
       </tr>
     </table>
