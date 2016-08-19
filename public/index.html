@@ -17,9 +17,9 @@
   {{#if ogDescription}}
     <meta property="og:description" content="{{ogDescription}}" />
   {{/if}}
-  {{#if ogImage}}
-    <meta property="og:image" content="{{ogImage}}" />
-  {{/if}}
+  {{#each ogImages}}
+    <meta property="og:image" content="{{this}}" />
+  {{/each}}
 
   <!-- Twitter tags -->
   {{#if twImage}}
