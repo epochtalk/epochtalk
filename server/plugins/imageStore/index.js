@@ -14,6 +14,12 @@ exports.register = function(server, options, next) {
     options: { callback: false }
   });
 
+  server.method({
+    name: 'common.images.avatarSub',
+    method: images.avatarSub,
+    options: { callback: false }
+  });
+
   return next();
 };
 

@@ -115,6 +115,14 @@ images.imageSub = (post) => {
   .then(() => { post.body = $.html(); });
 };
 
+images.avatarSub = (user) => {
+  return new Promise(function(resolve) {
+    var savedUrl = images.saveImage(user.avatar);
+    if (savedUrl) { user.avatar = savedUrl; }
+    return resolve();
+  });
+};
+
 images.addPostImageReference = function(postId, imageUrl) {
   return db.images.addPostImage(postId, imageUrl);
 };
