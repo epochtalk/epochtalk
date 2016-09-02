@@ -39,6 +39,10 @@ var config = {
     options: {
       auth_pass:  process.env.REDIS_AUTH_PASS || null
     }
+  },
+  portal: {
+    enabled: process.env.PORTAL_ENABLED || undefined,
+    boardId: process.env.PORTAL_BOARD_ID || ''
   }
 };
 

@@ -33,6 +33,16 @@ var underscoreToCamelCase = function(obj) {
   return obj;
 };
 
+function validatePortalParams(request, reply) {
+  // validate portal params
+  if (request.payload.portal &&
+      request.payload.portal.enabled &&
+      !request.payload.portal.board_id) {
+    return reply(Boom.badRequest('Portal must include a board'));
+  }
+  else { return reply(); }
+}
+
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
@@ -106,7 +116,10 @@ exports.update = {
     acls: 'adminSettings.update',
     mod_log: { type: 'adminSettings.update' }
   },
-  pre: [ { method: 'common.images.site(imageStore, payload)' } ],
+  pre: [
+    { method: validatePortalParams },
+    { method: 'common.images.site(imageStore, payload)' }
+  ],
   validate: {
     payload: Joi.object().keys({
       log_enabled: Joi.boolean(),
@@ -167,6 +180,10 @@ exports.update = {
           max_in_interval: Joi.number().min(1),
           min_difference: Joi.number()
         }
+      }),
+      portal: Joi.object().keys({
+        enabled: Joi.boolean().default(false),
+        board_id: Joi.string().default(null)
       })
     }).options({ stripUnknown: true, abortEarly: true })
   },

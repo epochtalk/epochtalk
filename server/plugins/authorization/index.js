@@ -470,6 +470,7 @@ function adminRolesValidate(validations, payload) {
     autoModeration: validations.autoModeration,
     ads: validations.ads,
     userTrust: validations.userTrust,
+    portal: validations.portal,
     limits: Joi.array().items({
       path: Joi.string().required(),
       method: Joi.string().valid('GET', 'PUT', 'POST', 'DELETE').required(),

@@ -21,7 +21,8 @@ var backendDirs = [
   'ept-reports',
   'ept-auth',
   'ept-ignore-users',
-  'ept-auto-moderation'
+  'ept-auto-moderation',
+  'ept-portal'
 ];
 var frontendDir = 'ept-frontend';
 

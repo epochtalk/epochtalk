@@ -58,5 +58,9 @@
       "maxInInterval": 2,
       "minDifference": 500
     }
+  },
+  "portal": {
+    "enabled": false,
+    "boardId": ""
   }
 }
