@@ -13,10 +13,7 @@ module.exports = {
     },
     security: {
       hsts: true,
-      xframe: {
-        rule: 'allow-from',
-        source: 'https://youtube.com'
-      },
+      xframe: true,
       xss: true,
       noOpen: true,
       noSniff: true
