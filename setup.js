@@ -30,6 +30,8 @@ function parseConfigs(configurations) {
     _.merge(config.emailer, config.emailer_env);
     _.merge(config.images, config.images_env);
 
+    if (!config.portal.enabled) { config.portal.enabled = false; }
+
     // check if the private key is configured
     if (!_.isString(config.privateKey)) {
       return reject(new Error('PRIVATE_KEY is not set to a valid value.'));
