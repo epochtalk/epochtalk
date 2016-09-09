@@ -41,7 +41,7 @@ var config = {
     }
   },
   portal: {
-    enabled: process.env.PORTAL_ENABLED || undefined,
+    enabled: process.env.PORTAL_ENABLED || false,
     boardId: process.env.PORTAL_BOARD_ID || ''
   }
 };
