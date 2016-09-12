@@ -1,7 +1,7 @@
-FROM node:5-onbuild
-MAINTAINER boka <boka@slickage.com>
-RUN npm update epochtalk-core-pg
+FROM node:onbuild
+MAINTAINER Bronson Oka <boka@slickage.com>
 RUN npm install -g bower
 RUN bower install --allow-root
-CMD npm run db-migrate && npm --prefix ./modules upgrade && npm run serve
+RUN npm --prefix ./modules install
+CMD npm run db-migrate && npm run serve
 EXPOSE 8080

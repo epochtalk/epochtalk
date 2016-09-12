@@ -7,21 +7,9 @@ var modulesNMDir = path.normalize(__dirname + '/../../modules/node_modules');
 var appModulesDir = path.normalize(__dirname + '/../../app');
 
 module.exports = function() {
-  return npmInstall()
-  .then(loadModules)
+  return loadModules()
   .catch(console.log);
 };
-
-// calls `npm install` on the /modules dir
-function npmInstall() {
-  return new Promise(function(resolve, reject) {
-    var command = 'npm --prefix ./modules install';
-    exec(command, (error) => {
-      if (error) { return reject(error); }
-      else { return resolve(); }
-    });
-  });
-}
 
 // 1.) loads the package.json from the /modules dir and retrieves all the deps as modules
 // 2.) cleans out the /app/modules dir and ensure that dir exists
