@@ -1,4 +1,4 @@
-FROM node:6.5.0-onbuild
+FROM node:onbuild
 MAINTAINER Bronson Oka <boka@slickage.com>
 RUN npm install -g bower
 RUN bower install --allow-root
