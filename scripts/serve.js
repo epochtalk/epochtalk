@@ -1,4 +1,4 @@
-require('dotenv').load();
+require('dotenv').load({silent: true});
 var path = require('path');
 var sass = require(path.join(__dirname, 'tasks', 'sass'));
 var clean = require(path.join(__dirname, 'tasks', 'clean'));

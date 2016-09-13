@@ -1,4 +1,4 @@
-require('dotenv').load();
+require('dotenv').load({silent: true});
 var parseDatabaseUrl = require("parse-database-url");
 var dbConfig = parseDatabaseUrl(process.env["DATABASE_URL"]);
 const exec = require('child_process').exec;
