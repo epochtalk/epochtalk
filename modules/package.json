@@ -23,9 +23,9 @@
     "ept-messages": "~1.0.0",
     "ept-posts": "~1.0.0",
     "ept-threads": "~1.0.0",
-    "ept-users": "1.0.2",
+    "ept-users": "1.0.3",
     "ept-watchlist": "~1.0.0",
-    "ept-reports": "1.0.2",
+    "ept-reports": "1.0.3",
     "ept-portal": "1.0.0"
   }
 }
