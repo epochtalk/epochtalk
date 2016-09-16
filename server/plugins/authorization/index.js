@@ -356,7 +356,8 @@ function adminRolesValidate(validations, payload) {
         boards: Joi.boolean(),
         users: Joi.boolean(),
         roles: Joi.boolean(),
-        bannedAddresses: Joi.boolean()
+        bannedAddresses: Joi.boolean(),
+        invitations: Joi.boolean()
       })
     }),
     modAccess: Joi.object().keys({

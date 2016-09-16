@@ -21,7 +21,8 @@ module.exports = roles;
         boards: true,
         users: true,
         roles: true,
-        bannedAddresses: true
+        bannedAddresses: true,
+        invitations: true,
       }
     },
     modAccess: {
@@ -136,7 +137,8 @@ roles.superAdministrator = {
       boards: true,
       users: true,
       roles: true,
-      bannedAddresses: true
+      bannedAddresses: true,
+      invitations: true
     }
   },
   modAccess: {
@@ -248,7 +250,8 @@ roles.administrator = {
       boards: true,
       users: true,
       roles: true,
-      bannedAddresses: true
+      bannedAddresses: true,
+      invitations: true
     }
   },
   modAccess: {

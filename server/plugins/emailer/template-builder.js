@@ -53,3 +53,18 @@ exports.confirmAccount = function(sender, params) {
     })
   };
 };
+
+exports.invite = function(sender, params) {
+  var template = doT.template(templateFile('invitation.html'));
+  var currentYear = new Date().getFullYear();
+  return {
+    from: sender,
+    to: params.email,
+    subject: `[${params.siteName}] You've been sent an invitation`,
+    html: template({
+      siteName: params.siteName,
+      currentYear: currentYear,
+      inviteUrl: params.invite_url
+    })
+  };
+};

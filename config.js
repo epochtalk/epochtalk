@@ -1,6 +1,7 @@
 var config = {
   privateKey: process.env.PRIVATE_KEY,
   publicUrl: process.env.PUBLIC_URL,
+  inviteOnly: process.env.INVITE_ONLY,
   host: process.env.HOST,
   port: process.env.PORT,
   websocket_host: process.env.WEBSOCKET_HOST,

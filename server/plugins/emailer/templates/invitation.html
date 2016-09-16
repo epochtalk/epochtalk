@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width"/>
+    <style type="text/css">
+      body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        background-color: #f4f4f4;
+      }
+      .header {
+        background-color: #008CBA;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 25px;
+        padding-left: 25px;
+        height: 50px;
+        vertical-align: middle;
+      }
+      .body {
+        min-width: 80%;
+        background-color: #fff;
+        border: 1px solid #dfdfdf;
+        border-collapse: collapse;;
+      }
+      .content {
+        padding: 25px;
+        padding-top: 10px;
+        color: #5e5e5e;
+      }
+      .footer {
+        background-color: #f4f4f4;
+        color: #bababa;
+        margin: 5px;
+        line-height: 30px;
+        height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <table align="center" class="body">
+      <tr>
+        <td class="header" align="left" valign="middle">
+            {{=it.siteName}}
+        </td>
+      </tr>
+      <tr>
+        <td class="content" align="left" valign="top">
+          <h3>Join us</h3>
+          Please visit the link below to join our community.<br /><br />
+          <a href="{{=it.inviteUrl}}">Confirm Account</a>
+          <br /><br />
+        </td>
+      </tr>
+      <tr>
+        <td align="center" valign="middle">
+            <div class="footer">&copy; {{=it.currentYear}} {{=it.siteName}}</div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

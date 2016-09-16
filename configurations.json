@@ -2,6 +2,7 @@
   "logEnabled": true,
   "verifyRegistration": false,
   "loginRequired": false,
+  "inviteOnly": false,
   "gaKey": "UA-XXXXX-Y",
   "website": {
     "title": "Epochtalk Forums",
