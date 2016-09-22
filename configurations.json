@@ -3,6 +3,7 @@
   "verifyRegistration": false,
   "loginRequired": false,
   "inviteOnly": false,
+  "saasMode": false,
   "gaKey": "UA-XXXXX-Y",
   "website": {
     "title": "Epochtalk Forums",

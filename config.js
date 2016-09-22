@@ -1,9 +1,13 @@
 var config = {
-  privateKey: process.env.PRIVATE_KEY,
-  publicUrl: process.env.PUBLIC_URL,
-  inviteOnly: process.env.INVITE_ONLY,
   host: process.env.HOST,
   port: process.env.PORT,
+  publicUrl: process.env.PUBLIC_URL,
+  privateKey: process.env.PRIVATE_KEY,
+  inviteOnly: process.env.INVITE_ONLY === 'true' || false,
+  saasMode: process.env.SAAS_MODE === 'true' || false,
+  recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
+  recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY,
+  gaKey: process.env.GA_KEY || 'UA-XXXXX-Y',
   websocket_host: process.env.WEBSOCKET_HOST,
   websocket_client_host: process.env.WEBSOCKET_CLIENT_HOST,
   websocket_port: process.env.WEBSOCKET_PORT,
@@ -31,9 +35,6 @@ var config = {
       secretKey: process.env.IMAGES_S3_SECRET_KEY
     }
   },
-  recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
-  recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY,
-  gaKey: process.env.GA_KEY || 'UA-XXXXX-Y',
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
@@ -42,7 +43,7 @@ var config = {
     }
   },
   portal: {
-    enabled: process.env.PORTAL_ENABLED || false,
+    enabled: process.env.PORTAL_ENABLED === 'true' || false,
     boardId: process.env.PORTAL_BOARD_ID || ''
   }
 };

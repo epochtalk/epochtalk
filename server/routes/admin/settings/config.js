@@ -57,10 +57,23 @@ exports.find = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.find' },
   handler: function(request, reply) {
-    var promise = request.db.configurations.get()
-    .then(function(configs) { return camelCaseToUnderscore(configs); });
+    var config = request.server.app.config;
+    var retVal = {
+      logEnabled: config.logEnabled,
+      loginRequired: config.loginRequired,
+      verifyRegistration: config.verifyRegistration,
+      inviteOnly: config.inviteOnly,
+      gaKey: config.gaKey,
+      website: config.website,
+      portal: config.portal,
+      emailer: config.saasMode ? {} : config.emailer,
+      images: config.saasMode ? {local:{}, s_3:{}} : config.images,
+      rateLimiting: config.rateLimiting,
+      saasMode: config.saasMode
+    };
+    retVal = camelCaseToUnderscore(retVal);
 
-    return reply(promise);
+    return reply(retVal);
   }
 };
 
@@ -191,12 +204,13 @@ exports.update = {
   handler: function(request, reply) {
     var internalConfig = request.server.app.config;
     var newConfig = underscoreToCamelCase(request.payload);
-    var promise = sanitizeConfigs(newConfig)
+    var promise = sanitizeConfigs(newConfig, internalConfig.saasMode)
     .then(function(sanitizedConfig) {
       newConfig = sanitizedConfig;
       return request.db.configurations.update(sanitizedConfig)
       .then(function() {
         Object.keys(sanitizedConfig).forEach(function(key) {
+          if ((key === 'emailer' || key === 'images') && internalConfig.saasMode) { return; }
           internalConfig[key] = sanitizedConfig[key];
         });
       });
@@ -634,7 +648,10 @@ exports.previewTheme = {
 };
 
 
-function sanitizeConfigs(configurations) {
+function sanitizeConfigs(configurations, saasMode) {
+  // skip sanitization if in saas mode
+  if (saasMode) { return Promise.resolve(configurations); }
+
   var config = {};
 
   return new Promise(function(resolve) {
