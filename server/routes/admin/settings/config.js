@@ -63,7 +63,7 @@ exports.find = {
       loginRequired: config.loginRequired,
       verifyRegistration: config.verifyRegistration,
       inviteOnly: config.inviteOnly,
-      gaKey: config.gaKey,
+      gaKey: config.gaKey || '',
       website: config.website,
       portal: config.portal,
       emailer: config.saasMode ? {} : config.emailer,

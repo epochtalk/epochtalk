@@ -161,6 +161,9 @@ REDIS_AUTH_PASS=""
 Some configurations can also be set using the settings tab in the administration panel.
 ![Admin Settings](http://i.imgur.com/DNygrYN.png)
 
+### Saas mode
+This can be set in the .env file by setting the var SAAS_MODE to true. What this basically does is the emailer and images config are hidden in the admin/settings/general view. These configs can only be edited through the .env file or directly in the database only and requires a restart for the changes to take effect.
+
 ## API
 The Epochtalk API can be accessed at `http://localhost:8080/api/` while the server is running. To see full documentation for the api visit the [Epochtalk API Documentation](https://github.com/epochtalk/epochtalk/wiki/Epochtalk-API-Documentation) wiki page.
 
@@ -186,7 +189,7 @@ All user typed HTML is escaped using their decimal encoding while any other HTML
 Title like inputs are stripped of all html while description like inputs are allowed only formatting based html tags (```<b>```, ```<em>```, ```<table>``` but not ```<div>```, ```<img>```, and ```<span>```). Posts and Signatures are given the full treatment as described above but allow more html like ```<img>```.
 
 ### Anti-Abuse
-Marked routes are protected from spam or abuse by tracking the number of times a user access an API endpoint. The first two uses of the endpoint are free of any penalties. Any use of the endpoint afterward is penalized with longer and longer cool down periods, starting from 1 minutes and ranging up to 65536 minutes or roughly 45 days from the last known incident. Proper use of the endpoint will trigger a function to remove all cool down periods. Improper use of the endpoint duing the cool down period will only increase the cool down period. 
+Marked routes are protected from spam or abuse by tracking the number of times a user access an API endpoint. The first two uses of the endpoint are free of any penalties. Any use of the endpoint afterward is penalized with longer and longer cool down periods, starting from 1 minutes and ranging up to 65536 minutes or roughly 45 days from the last known incident. Proper use of the endpoint will trigger a function to remove all cool down periods. Improper use of the endpoint duing the cool down period will only increase the cool down period.
 
 ### Planned Features:
 * Markdown Support
