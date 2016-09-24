@@ -17,7 +17,6 @@ exports.register = function(plugin, options, next) {
     // get lastActive for this user
     request.db.users.getLastActive(userId)
     .then(function(lastActive) {
-      console.log(lastActive);
       // if no lastActive, then just update
       if (!lastActive) { return true; }
 
