@@ -26,6 +26,7 @@ var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var imageStore = require(path.normalize(__dirname + '/plugins/imageStore'));
+var lastActive = require(path.normalize(__dirname + '/plugins/last_active'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
 var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
@@ -175,6 +176,8 @@ setup()
 .then(function() { server.register({ register: trackIp, options: { db } }); })
 // Patrollers
 .then(function() { server.register({ register: patroller }); })
+// Last Active
+.then(function() { server.register({ register: lastActive }); })
 // routes and server start
 .then(function() {
   // server routes
