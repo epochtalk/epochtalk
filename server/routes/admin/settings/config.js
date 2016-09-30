@@ -38,7 +38,7 @@ function validatePortalParams(request, reply) {
   if (request.payload.portal &&
       request.payload.portal.enabled &&
       !request.payload.portal.board_id) {
-    return reply(Boom.badRequest('Portal must include a board'));
+    return reply(Boom.badData('Portal Configurations must include a Board to Show'));
   }
   else { return reply(); }
 }
@@ -197,7 +197,7 @@ exports.update = {
       }),
       portal: Joi.object().keys({
         enabled: Joi.boolean().default(false),
-        board_id: Joi.string().default(null)
+        board_id: Joi.string().allow('').default(null)
       })
     }).options({ stripUnknown: true, abortEarly: true })
   },
