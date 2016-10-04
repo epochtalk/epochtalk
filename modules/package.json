@@ -13,7 +13,7 @@
     "ept-ads": "~1.0.0",
     "bct-trust": "1.0.2",
     "ept-auth": "1.0.2",
-    "ept-auto-moderation": "1.0.2",
+    "ept-auto-moderation": "1.0.3",
     "ept-bbcode-parser": "~1.0.0",
     "ept-boards": "~1.0.0",
     "ept-categories": "~1.0.0",
