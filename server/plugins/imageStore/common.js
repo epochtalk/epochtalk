@@ -117,6 +117,7 @@ images.imageSub = (post) => {
 
 images.avatarSub = (user) => {
   return new Promise(function(resolve) {
+    if (!user.avatar) { return resolve(); }
     var savedUrl = images.saveImage(user.avatar);
     if (savedUrl) { user.avatar = savedUrl; }
     return resolve();
