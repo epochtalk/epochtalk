@@ -19,6 +19,17 @@ exports.register = function(server, opts, next) {
   return next();
 };
 
+exports.expose = function(emailer) {
+  options = {
+    config: {
+      emailer: emailer
+    }
+  };
+
+  init();
+  return { send, init };
+};
+
 function init() {
   emailerConfig = options.config.emailer;
   transporter = nodemailer.createTransport({
