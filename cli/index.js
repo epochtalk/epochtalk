@@ -104,10 +104,16 @@ var seed = function() {
 };
 
 if (program.seed) {
-  seed();
+  seed()
+  .then(function() {
+    process.exit(0);
+  });
 }
 else if (program.admin) {
-  return admin(program.admin);
+  return admin(program.admin)
+  .then(function() {
+    process.exit(0);
+  });
 }
 else {
   program.help();
