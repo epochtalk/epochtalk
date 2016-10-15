@@ -107,7 +107,7 @@ if (program.seed) {
   seed();
 }
 else if (program.admin) {
-  admin(program.admin);
+  return admin(program.admin);
 }
 else {
   program.help();
