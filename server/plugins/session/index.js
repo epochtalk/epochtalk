@@ -1,4 +1,4 @@
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var jwt = require('jsonwebtoken');
 var session = {};
 var redis, config, roles;
