@@ -84,7 +84,7 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * mkdirp `^0.5.0`
 * mmmagic `^0.4.1`
 * node-sass `^3.4.2`
-* node-uuid `^1.4.1`
+* uuid `^3.0.0`
 * nodemailer `^2.0.0`
 * oclazyload `^1.0.6`
 * pg `^4.2.0`
