@@ -168,7 +168,7 @@ s3.init = function(opts) {
       // bucket does not exist
       .catch(function() { return s3.createBucket(); });
     })
-    .catch(function() { console.log('S3 Integration is Broken'); });
+    .catch(function(error) { console.log('S3 Integration is Broken', error); });
   }
 };
 
