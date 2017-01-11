@@ -162,12 +162,7 @@ s3.init = function(opts) {
 
   if (config.images.storage === 's3') {
     s3.initClient()
-    .then(s3.checkAccount)
-    .then(function() {
-      return s3.checkBucket()
-      // bucket does not exist
-      .catch(function() { return s3.createBucket(); });
-    })
+    .then(s3.checkBucket)
     .catch(function(error) { console.log('S3 Integration is Broken', error); });
   }
 };
@@ -184,15 +179,6 @@ s3.initClient = function(accessKey, secretKey, region) {
   });
   client = new AWS.S3();
   return Promise.resolve(client);
-};
-
-s3.checkAccount = function() {
-  return new Promise(function(resolve, reject) {
-    client.listBuckets(function(err, data) {
-      if (err) { return reject(err); }
-      if (data) { return resolve(data); }
-    });
-  });
 };
 
 s3.checkBucket = function() {
