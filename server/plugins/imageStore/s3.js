@@ -162,7 +162,11 @@ s3.init = function(opts) {
 
   if (config.images.storage === 's3') {
     s3.initClient()
-    .then(s3.checkBucket)
+    .then(function() {
+      return s3.checkBucket()
+      // bucket does not exist
+      .catch(function() { return s3.createBucket(); });
+    })
     .catch(function(error) { console.log('S3 Integration is Broken', error); });
   }
 };
