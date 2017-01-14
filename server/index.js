@@ -190,6 +190,10 @@ setup()
   server.start(function () {
     var configClone = Hoek.clone(config);
     configClone.privateKey = configClone.privateKey.replace(/./g, '*');
+    if (configClone.emailer.transporter === 'ses') {
+      configClone.emailer.ses.accessKey = configClone.emailer.ses.accessKey.replace(/./g, '*');
+      configClone.emailer.ses.secretKey = configClone.emailer.ses.secretKey.replace(/./g, '*');
+    }
     if (configClone.emailer.pass) { configClone.emailer.pass = configClone.emailer.pass.replace(/./g, '*'); }
     configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*');
     configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*');
