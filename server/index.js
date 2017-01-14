@@ -190,7 +190,7 @@ setup()
   server.start(function () {
     var configClone = Hoek.clone(config);
     configClone.privateKey = configClone.privateKey.replace(/./g, '*');
-    configClone.emailer.pass = configClone.emailer.pass.replace(/./g, '*');
+    if (configClone.emailer.pass) { configClone.emailer.pass = configClone.emailer.pass.replace(/./g, '*'); }
     configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*');
     configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*');
     server.log('debug', 'DB Connection: ' + process.env.DATABASE_URL);
