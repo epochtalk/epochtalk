@@ -36,7 +36,7 @@ function init() {
   if (emailerConfig.transporter === 'ses') {
     transporter = nodemailer.createTransport(ses({
       accessKeyId: emailerConfig.ses.accessKey,
-      secretKeyId: emailerConfig.ses.secretKey,
+      secretAccessKey: emailerConfig.ses.secretKey,
       region: emailerConfig.ses.region
     }));
   }

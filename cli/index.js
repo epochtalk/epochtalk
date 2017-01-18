@@ -6,15 +6,9 @@ var crypto = require('crypto');
 var users = require(path.normalize(__dirname + '/../modules/node_modules/ept-users')).db;
 var categories = require(path.normalize(__dirname + '/../modules/node_modules/ept-categories')).db;
 var boards = require(path.normalize(__dirname + '/../modules/node_modules/ept-boards')).db;
+var config = require(path.join(__dirname, '..', 'config'));
 
-var emailerOptions = {
-  sender: process.env.EMAILER_SENDER,
-  host: process.env.EMAILER_HOST,
-  port: process.env.EMAILER_PORT,
-  secure: process.env.EMAILER_SECURE === 'true' || undefined,
-  user: process.env.EMAILER_USER,
-  pass: process.env.EMAILER_PASS
-};
+var emailerOptions = config.emailer_env;
 var emailer = require(path.normalize(__dirname + '/../server/plugins/emailer')).expose(emailerOptions);
 
 program
