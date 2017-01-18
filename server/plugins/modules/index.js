@@ -103,7 +103,7 @@ exports.register = (server, options, next) => {
   server = server || {};
   options = options || {};
   var db = options.db || {};
-
+  console.log(db);
   // load all the code from each module installed
   var output = modules.install(db);
 
