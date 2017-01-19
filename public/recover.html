@@ -31,7 +31,6 @@
     #recover-submit {
       width: 100%;
       margin-bottom: 0;
-      margin-top: 2rem;
     }
     .success-modal {
       background-color: #eee;
@@ -42,6 +41,13 @@
       box-shadow: 5px 5px 5px #ddd;
       opacity: 0;
       text-align: center;
+    }
+    #attempts {
+      color: red;
+      font-size: 0.8rem;
+      text-align: center;
+      margin: 1rem 0;
+      min-height: 0.01rem;
     }
     .g-recaptcha { width: 304px; margin: auto; }
     @media screen and (max-width: 480px) {
@@ -59,9 +65,11 @@
       <h2>Recover your account</h2>
       <input type="text" id="recover-input" name="query" placeholder="Email" />
 
-      <div class="g-recaptcha" data-sitekey="{{siteKey}}"></div>
+      <div class="g-recaptcha" data-callback="unlockSubmit" data-sitekey="{{siteKey}}"></div>
 
-      <button id="recover-submit">Submit</button>
+      <div id="attempts"></div>
+
+      <button id="recover-submit" disabled>Submit</button>
     </div>
 
     <div class="success-modal">
@@ -75,7 +83,32 @@
   <!-- Load App Bundle -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script type="text/javascript">
+    function unlockSubmit() {
+      if ($('#recover-input').val()) {
+        $('#recover-submit').removeAttr('disabled');
+      }
+    };
+
     $(document).ready(function() {
+      var lockout = {{{lockout}}};
+      var attempts = {{{attempts}}};
+      var failedTries = attempts.length;
+      var $attemptsMsg = $("#attempts");
+      function getWarningMessage() {
+        var msg = "";
+        if (failedTries > 0 && failedTries < 3) {
+          msg = 'You have ' + (3 - failedTries) + ' more tries before being temporarily locked out.';
+        }
+        else if (failedTries >= 3 && failedTries < 8) {
+          msg = 'You have been temporarily banned from performing this action. Please return later and try again.';
+        }
+        else if (failedTries >= 8) {
+          msg = 'You have been banned from performing this action. Please contact an administrator.';
+        }
+        return msg;
+      }
+
+      $attemptsMsg.text(getWarningMessage());
 
       $('#recover-submit').click(function() {
         $.ajax({
@@ -89,13 +122,22 @@
         .done(function(msg) {
           $('#recover-form').hide();
           $('.success-modal').animate({opacity: 1});
+          $attemptsMsg.text('');
         })
         .fail(function(xhr) {
           var error = JSON.parse(xhr.responseText);
-          alert(error.message);
+          grecaptcha.reset();
+          failedTries++;
+          $attemptsMsg.text('Error: ' + error.message + '. ' + getWarningMessage());
+          $('#recover-submit').attr('disabled', true);
         });
       });
 
+      $('#recover-input').keyup(function() {
+        if ($(this).val() && grecaptcha.getResponse().length > 0) {
+          $('#recover-submit').removeAttr('disabled');
+        }
+      })
     });
   </script>
   <!-- Google Analytics -->
