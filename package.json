@@ -29,7 +29,7 @@
   "dependencies": {
     "aws-sdk": "^2.7.22",
     "bcrypt": "^0.8.0",
-    "bluebird": "^3.1.5",
+    "bluebird": "^3.3.1",
     "boom": "^3.1.2",
     "bower": "^1.8.0",
     "change-case": "^2.3.1",
@@ -54,7 +54,7 @@
     "joi": "^7.2.2",
     "json": "^9.0.3",
     "jsonwebtoken": "^5.0.0",
-    "lodash": "^4.0.1",
+    "lodash": "^4.5.0",
     "mkdirp": "^0.5.0",
     "mmmagic": "^0.4.1",
     "node-sass": "^4.3.0",
