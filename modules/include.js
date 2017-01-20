@@ -1,5 +1,6 @@
 module.exports = [
   'ept-posts',
   'ept-threads',
-  'ept-boards'
+  'ept-boards',
+  'ept-categories'
 ];
