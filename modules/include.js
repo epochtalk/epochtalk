@@ -1,3 +1,4 @@
 module.exports = [
-  'ept-posts'
+  'ept-posts',
+  'ept-threads'
 ];

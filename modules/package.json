@@ -21,7 +21,6 @@
     "ept-ignore-users": "~1.0.2",
     "ept-md-parser": "1.0.3",
     "ept-messages": "~1.0.0",
-    "ept-threads": "1.0.4",
     "ept-users": "1.0.7",
     "ept-watchlist": "~1.0.0",
     "ept-reports": "1.0.3",
