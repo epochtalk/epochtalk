@@ -27,8 +27,14 @@ function loadModules() {
   // extract client code from modules
   var modules = Object.keys(ept_modules);
 
-  var loadNPMModules = Promise.each(modules, function(key) { return load(key); });
-  var loadIncludeModules = Promise.each(moduleIncludes, function(key) { return load(key); });
+  var loadNPMModules = Promise.each(modules, function(key) {
+    var moduleDir = path.normalize(modulesNMDir + '/' + key);
+    return load(moduleDir, key);
+  });
+  var loadIncludeModules = Promise.each(moduleIncludes, function(key) {
+    var moduleDir = path.normalize(modulesDir + '/' + key);
+    return load(moduleDir, key);
+  });
 
   return Promise.join(loadIncludeModules, loadNPMModules);
 }
@@ -36,11 +42,11 @@ function loadModules() {
 // 1.) checks if each module has a client dir
 // 2.) if it exists, symlink to /app/modules/{moduleName}
 // 3.) symlink any HTML files if they exists
-function load(moduleName) {
+function load(moduleDir, moduleName) {
   // require module
-  var thisModule = require(path.normalize(modulesNMDir + '/' + moduleName));
+  var thisModule = require(moduleDir);
   // load the index.js for the given moduleName
-  var inDir = path.normalize(modulesNMDir + '/' + moduleName + '/client');
+  var inDir = path.normalize(moduleDir + '/client');
 
   // Figure out where to put the client files
   var outDir; // TODO: check if there is more than one frontend-core
