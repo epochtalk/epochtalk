@@ -19,13 +19,18 @@ function loadModules() {
   var packageJson = require(path.normalize(modulesDir + '/package.json'));
   var ept_modules = packageJson.dependencies;
 
+  var moduleIncludes = require(path.normalize(modulesDir + '/include'));
+
   // empty /app dir, ensure /app dir exists
   fse.removeSync(appModulesDir);
 
   // extract client code from modules
   var modules = Object.keys(ept_modules);
 
-  return Promise.each(modules, function(key) { return load(key); });
+  var loadNPMModules = Promise.each(modules, function(key) { return load(key); });
+  var loadIncludeModules = Promise.each(moduleIncludes, function(key) { return load(key); });
+
+  return Promise.join(loadIncludeModules, loadNPMModules);
 }
 
 // 1.) checks if each module has a client dir
