@@ -1,0 +1,36 @@
+.rule-condition {
+  margin-top: 0.5rem;
+  border-bottom: 1px solid $border-color;
+}
+.rule-condition:first-child { margin-top: 0; }
+.rule-condition:last-child { border-bottom: 0; }
+.rule-action {
+  border: 1px solid $border-color;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  input { margin-bottom: 0; }
+}
+.rule-action.checked { background-color: $color-primary; }
+.rule-action.checked label { color: $button-text-color; }
+.rule-remove-cond { margin-top: 1.1rem; }
+.rule-red { color: red; }
+.input-text.rule-red-border { border-color: red; }
+.rule-description { word-wrap: break-word; white-space: pre-wrap; }
+.rule-regex-slash {
+  float: left;
+  color: $border-color;
+  width: 10%;
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  margin-top: 0.2rem;
+}
+.rule-regex-input { float: left; width: 60%; }
+.rule-regex-flags { float: left; width: 20%; }
+.rule-no-selections {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}

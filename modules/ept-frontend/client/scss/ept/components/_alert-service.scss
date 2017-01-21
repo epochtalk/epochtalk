@@ -1,0 +1,30 @@
+.alertService {
+  position: fixed;
+  top: $header-height;
+  width: 960px;
+  margin: auto;
+  left: 0;
+  right: 0;
+  z-index: 9000;
+  @include border-radius(0 0 3px 3px);
+  background-color: $header-dropdown-bg-color;
+  max-height: 6.75rem;
+  overflow: auto;
+  .alert-box {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    &:first-child { padding-bottom: 0.5rem; }
+    &:before { padding-right: 0.5rem; font: normal normal normal 14px/1 FontAwesome; }
+    &.warning:before { color: #FD8D40; content: "\f06a"; }
+    &.info:before { color: #49AED0; content: "\f05a"; }
+    &.success:before { color: #43AC6A; content: "\f058"; }
+    &.error:before { color: #E65239; content: "\f056"; }
+  }
+  .repeated-item.ng-enter,
+  .repeated-item.ng-leave,
+  .repeated-item.ng-move { @include transition(0.15s linear all); opacity:0; }
+  .repeated-item.ng-enter.ng-enter-active, .repeated-item.ng-leave { opacity: 1; }
+  .repeated-item.ng-leave.ng-leave-active { opacity: 0; }
+  @include media($mobile) { width: 90%; }
+}

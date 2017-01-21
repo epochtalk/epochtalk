@@ -1,0 +1,35 @@
+/*-------------- Watchlist Layout --------------- */
+.patrol-section {
+  @include clearfix;
+  @include row;
+  .leftcol {
+    @include span-columns(6);
+    h2 { display: inline-block; }
+    margin-bottom: 1.5rem;
+  }
+  .rightcol {
+    @include span-columns(6);
+    @include omega;
+    .pagination-slide {
+      @include span-columns(8);
+      @include omega;
+      float: right;
+      .prev, .next, .page { @include span-columns(4); }
+    }
+  }
+}
+
+.thread-title { margin-bottom: 0.5rem; }
+
+@include media($mobile) {
+  .watchlist-section {
+    .leftcol {
+      @include span-columns(8);
+    }
+    .rightcol {
+      @include span-columns(8);
+      @include omega;
+      .pagination-slide { @include fill-parent; }
+    }
+  }
+}

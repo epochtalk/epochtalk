@@ -1,0 +1,6 @@
+<div class="nested-input-container">
+  <input class="input-text nested-input" ng-class="{ 'valid-username': usernameIsValid }" ng-model="username" ng-model-options="{ debounce: 300 }" type="text" list="usernames" id="user-search" placeholder="{{inputPlaceholder}}" style="padding-right: 0px"/>
+  <datalist id="usernames">
+    <option ng-repeat="result in searchResults track by result.id" value="{{result.username}}" ng-click="selectUser(username)">
+  </datalist>
+</div>

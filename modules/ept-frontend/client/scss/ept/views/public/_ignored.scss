@@ -1,0 +1,78 @@
+/*-------------- Ignore Users Layout --------------- */
+.ignored-section {
+  @include clearfix;
+  @include row;
+  .leftcol {
+    @include span-columns(6);
+    h2 { display: inline-block; }
+    margin-bottom: 1.5rem;
+  }
+  .rightcol {
+    @include span-columns(6);
+    @include omega;
+    .pagination-slide {
+      @include span-columns(8);
+      @include omega;
+      float: right;
+      .prev, .next, .page { @include span-columns(4); }
+    }
+  }
+}
+
+@include media($mobile) {
+  .ignored-section {
+    .leftcol { @include span-columns(8); }
+    .rightcol {
+      @include span-columns(8);
+      @include omega;
+      .pagination-slide { @include fill-parent; }
+    }
+  }
+}
+
+.ignore-user-input {
+  div:first-child {
+    @include span-columns(9);
+    div { width: 100%; }
+  }
+  div:last-child {
+    @include span-columns(3);
+    .button { width: 100%; }
+  }
+
+  @include media($mobile) {
+    div:first-child, div:last-child { @include span-columns(8); }
+  }
+}
+
+.ignored-users {
+  table-layout: fixed;
+  thead th:first-child { width: 4rem; }
+  .user-avatar {
+    @include bg-cover;
+    background: no-repeat center center;
+    text-align: center;
+    img {
+      @include border-radius(100px);
+      height: 2.75rem;
+      width: 2.75rem;
+      object-fit: cover;
+    }
+  }
+  .user-username {
+    font-weight: 900;
+    color: $color-primary;
+    padding-right: 0.5rem;
+  }
+  .no-data-mobile { display: none; }
+  @include media($mobile) {
+    .no-data-mobile { display: table-cell; }
+    .no-data { display: none; }
+  }
+}
+
+/*-------------- Ignore Users Directive Layout --------------- */
+
+.thread-data .post-block .post-user .ignore-directive > a {
+  display: inline; padding-right: 0.225rem;
+}

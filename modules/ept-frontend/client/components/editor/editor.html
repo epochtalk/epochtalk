@@ -1,0 +1,22 @@
+<div class="editor-header">
+  <a ng-href="#" class="first" ng-class="{'selected': !preview }" ng-click="preview = false">Compose</a>
+  <a ng-href="#" ng-class="{'selected': preview }" ng-click="preview = true">Preview</a>
+</div>
+
+<div class="editor-body" ng-init="preview = false;">
+  <div class="editor-column-input" ng-class="{ 'hidden': preview }">
+    <textarea class="editor-input" placeholder="Enter your reply here. (BTW, you can drag and drop images directly into the editor panel)" maxlength="5000"></textarea>
+    <div class="editor-drag-container">
+      <div class="editor-drag">
+        <div class="editor-drag-text">Drag and Drop Images</div>
+      </div>
+    </div>
+  </div>
+  <div class="editor-column-preview"  ng-class="{ 'hidden': !preview }">
+    <div class="editor-preview" post-processing="body" style-fix="false"></div>
+  </div>
+</div>
+
+<div class="editor-footer">
+  <image-uploader class="editor-image-uploader" purpose="editor" reset="resetImages" on-done="insertImageUrl(data)"></image-uploader>
+</div>

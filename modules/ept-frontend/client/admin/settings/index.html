@@ -1,0 +1,32 @@
+<div id="admin-subnav" class="fill-row">
+  <h2>Settings</h2>
+  <dl class="tabs">
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.general')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'general'}">
+      <a ui-sref=".general" ng-click="AdminSettingsCtrl.tab = 'general'">General</a>
+    </dd>
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.advanced')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'advanced'}">
+      <a ui-sref=".advanced" ng-click="AdminSettingsCtrl.tab = 'advanced'">Advanced</a>
+    </dd>
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.legal')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'legal'}">
+      <a ui-sref=".legal" ng-click="AdminSettingsCtrl.tab = 'legal'">Legal</a>
+    </dd>
+    <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.theme')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'theme'}">
+      <a ng-hide="AdminSettingsCtrl.previewActive" ui-sref=".theme" ng-click="AdminSettingsCtrl.tab = 'theme'">Theme</a>
+      <a ng-show="AdminSettingsCtrl.previewActive" ui-sref=".theme({ preview: true })" ng-click="AdminSettingsCtrl.tab = 'theme'">Theme</a>
+    </dd>
+  </dl>
+
+  <div class="right mobile-buttons">
+    <button ng-if="AdminSettingsCtrl.tab === 'theme'" ng-click="child.preview()" ng-disabled="child.invalidForm || child.pristineForm">
+      <i class="fa fa-eye"></i>&nbsp;&nbsp;Preview
+    </button>
+    <button ng-click="child.save()" ng-disabled="child.invalidForm">
+      <i class="fa fa-save"></i>&nbsp;&nbsp;Save
+    </button>
+    <button ng-click="child.reset()">
+      <i class="fa fa-refresh"></i>&nbsp;&nbsp;Reset
+    </button>
+  </div>
+</div>
+
+<div ui-view="data" id="admin-data" class="fill-row"></div>

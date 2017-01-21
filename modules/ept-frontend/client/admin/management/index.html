@@ -1,0 +1,22 @@
+<div id="admin-subnav" class="fill-row">
+  <h2>Management</h2>
+  <dl class="tabs">
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.boards')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'boards'}">
+      <a ui-sref=".boards" ng-click="AdminManagementCtrl.tab = 'boards'">Boards</a>
+    </dd>
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.users')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'users'}">
+      <a ui-sref=".users" ng-click="AdminManagementCtrl.tab = 'users'">Users</a>
+    </dd>
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.roles')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'roles'}">
+      <a ui-sref=".roles" ng-click="AdminManagementCtrl.tab = 'roles'">Roles</a>
+    </dd>
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.bannedAddresses')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'bannedAddresses'}">
+      <a ui-sref=".banned-addresses" ng-click="AdminManagementCtrl.tab = 'bannedAddresses'">Banned Addresses</a>
+    </dd>
+    <dd ng-if="AdminManagementCtrl.hasPermission('adminAccess.management.invitations')" class="no-select" ng-class="{'active': AdminManagementCtrl.tab == 'invitations'}">
+      <a ui-sref=".invitations" ng-click="AdminManagementCtrl.tab = 'invitations'">Invitations</a>
+    </dd>
+  </dl>
+</div>
+
+<div ui-view="data" id="admin-data" class="fill-row"></div>

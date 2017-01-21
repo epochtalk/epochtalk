@@ -1,0 +1,131 @@
+/*-------------- Admin Panel - Moderation Layout -------------- */
+.filter.header-spacer {
+  @include span-columns(1);
+  @include media($mobile) { display: none; }
+}
+
+.filter.radio-button {
+  @include span-columns(1);
+  @include media($mobile) { @include span-columns(2.6); @include omega(3n); margin-bottom: 1rem; }
+}
+
+.admin-content-selectable table {
+  table-layout: fixed;
+  th { @include truncate-ellipsis; }
+  th.reason { width: 25rem; }
+  tr td {
+    @include truncate-ellipsis;
+    padding-right: 0.5rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-size: 0.75rem;
+    &.inline { line-height: 1.65rem; }
+    div {
+      @include truncate-ellipsis;
+      width: 24rem;
+    }
+  }
+}
+
+.log-filter {
+  span { display: inline-block; margin-bottom: 0.5rem; }
+  input, select { margin:0; height: 2rem; line-height: 1rem; padding: 0 0.25rem; width: auto; display: inline-block; }
+  select { padding-right: 1.5rem; }
+  button {
+    display: inline-block;
+    margin-right: 0.2rem;
+    padding: 0 1.8rem;
+    line-height: 2rem;
+    height: 2rem;
+  }
+  span { margin-right: 0.2rem; }
+}
+
+.banned-boards-select { margin-bottom: 0; }
+
+.board-bans-list {
+  @include pad(0.5rem);
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  max-height: 18.75rem;
+  overflow-y: scroll;
+  background-color: $sub-header-color;
+  border: 1px solid $border-color;
+  li {
+    list-style: none;
+    input {
+      margin-bottom: 0;
+      & + label { margin-left: 0.2rem; }
+      &:disabled + label { color: $secondary-font-color; }
+    }
+    ul { margin-left: 1.25rem; }
+  }
+}
+
+.report-details-wrap {
+  @include span-columns(4);
+  margin-bottom: 1rem;
+  @include media($mobile) { @include span-columns(8); @include omega; }
+}
+
+.preview-wrap {
+  @include span-columns(8);
+  @include omega;
+  margin-bottom: 1rem;
+  h5 span { color: $secondary-font-color; }
+
+  @include media($mobile) { @include span-columns(8); }
+}
+
+.indicator {
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  color: $secondary-font-color;
+  i { @include pad(0 0.5rem 0 0); }
+}
+
+table {
+  &.report-details {
+    tr:first-child td { padding-top: 0; }
+    td.field {
+      font-size: 0.8125rem;
+      color: $secondary-font-color;
+      width: 9.375rem;
+      padding-left: 0;
+      vertical-align: top;
+      padding-right: 0.5rem;
+    }
+    td.desc {
+      font-size: 0.875rem;
+      .note {
+        font-size: 0.65rem;
+        color: $secondary-font-color;
+        margin-top: 0.25rem;
+      }
+    }
+  }
+  &.log {
+    table-layout: fixed;
+    tr td {
+      word-wrap: break-word;
+      font-size: 0.75rem;
+      line-height: 0.75rem;
+      i.no-link { color: $secondary-font-color-light; }
+    }
+    tbody tr:hover { background-color: $sub-header-color; }
+  }
+}
+
+.note-avatar-container {
+  float: left;
+  width: 60px;
+  height: 60px;
+  .note-avatar { width: 50px; height: 50px; }
+}
+
+.note-details {
+  font-size: 13px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  .note-date { color: $secondary-font-color; }
+}

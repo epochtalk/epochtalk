@@ -1,0 +1,53 @@
+.ng-modal.ng-hide { opacity: 1; }
+.ng-modal { @include transition(opacity 0.2s linear); opacity: 1; }
+.ng-modal-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+.ng-modal.ng-hide .ng-modal-dialog { @include transition(all 0.2s); @include transform(scale(1.2)); opacity: 0; }
+.ng-modal .ng-modal-dialog { @include transition(all 0.2s); @include transform(scale(1)); opacity: 1; }
+.ng-modal-dialog {
+  @include span-columns(4, block-collapse);
+  left: 0;
+  right: 0;
+  top: 10vh;
+  margin: 0 auto;
+  position: fixed;
+  z-index: 10000;
+  background-color: $base-background-color;
+  box-shadow: 4px 4px 80px #000;
+  overflow-y: auto;
+  max-height: 80vh;
+  p { margin-bottom: 1rem; }
+  button, .button, .clear button, button.fill-row { margin-bottom: 0; }
+  .wildcard {
+    input { @include span-columns(3); text-align: center;}
+    input:last-child { @include omega;}
+  }
+  @include media($desktop-small) { @include span-columns(6, block-collapse); }
+  @include media($mobile) { @include span-columns(7, block-collapse); top: 5vh; max-height: 90vh; }
+}
+.ng-modal.overflow .ng-modal-dialog { overflow: visible; }
+.ng-modal.medium .ng-modal-dialog {
+  @include span-columns(7, block-collapse);
+  @include media($desktop-small) { @include span-columns(9, block-collapse); }
+  @include media($mobile) { @include span-columns(7, block-collapse); top: 5vh; max-height: 90vh; }
+}
+.ng-modal.image-modal .ng-modal-dialog { top: 10vh; max-height: 80vh; overflow: auto; }
+.ng-modal-dialog-content { padding: 2rem; text-align: left; }
+.ng-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  color: $secondary-font-color-light;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: inline-block;
+  font-weight: bold;
+}
+.ng-modal-dialog-content input[type="radio"] { margin-bottom: 1rem; }

@@ -1,0 +1,542 @@
+.editor-fixed-bottom {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000; }
+.editor-full-screen {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  z-index: 1000; }
+
+.post-toolbar {
+  position: fixed;
+  bottom: 1.25rem;
+  list-style: none;
+  right: 1.25rem;
+  z-index: 10;
+  margin: 0;
+
+  li {
+    color: #fff;
+    background-color: $color-primary;
+    cursor: pointer;
+    padding: 0 1.0625rem;
+    line-height: 3rem;
+    height: 3rem;
+    -webkit-border-radius:  1.5625rem;
+    -moz-border-radius:     1.5625rem;
+    border-radius:          1.5625rem;
+    box-shadow: 0px 0.3125rem 0.625rem rgba(0, 0, 0, 0.1);
+
+    span {
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.editor-container {
+  background-color: $base-background-color;
+  position: relative;
+  height: 100%;
+  max-width: $max-width;
+  margin: 0 auto;
+  border: 1px solid $border-color;
+  border-bottom: 0;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+.editor-container-bar {
+  display: block;
+  position: absolute;
+  top: 5px;
+  left: 40%;
+  right: 40%;
+  height: 10px;
+  z-index: 10;
+  cursor: ns-resize;
+  .bar {
+    height: 5px;
+    width: 35px;
+    border-radius: 10px;
+    background-color: gray;
+    margin: auto;
+  }
+}
+
+.editor-top-bar {
+  height: 65px;
+  background-color: $sub-header-color;
+  div:first-child {
+    padding-left: 0.5rem;
+    text-align: right;
+    .toolbar-title {
+      text-align: left;
+      width: 50%;
+      padding-top: 15px;
+      color: $secondary-font-color;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      .underline { text-decoration: underline; }
+      a { color: $color-primary; }
+    }
+  }
+
+  button {
+    height: 25px;
+    padding: 2px 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  .editor-formatting {
+    position: absolute;
+    top: 10px;
+    bottom: 83px;
+    left: 10px;
+    right: 10px;
+    background-color: $sub-header-color;
+    z-index: 10;
+    overflow: auto;
+    padding: 2rem;
+    border: 1px solid $border-color;
+    h4 {  color: $color-primary; }
+    .clear { clear: both; }
+    .close-formatting {
+      cursor: pointer;
+      line-height: 1;
+      font-weight: bold;
+      color: $secondary-font-color;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  }
+}
+
+.editor-form {
+  position: absolute;
+  top: 30px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  label {
+    color: $secondary-font-color-light;
+    margin-top: 0;
+  }
+
+  .editor-body {
+    width: 100%;
+    position: absolute;
+    top: 35px;
+    bottom: 4.5rem;
+
+    input[type],
+    .editor-input,
+    .editor-preview {
+      color: $input-font-color;
+      background-color: $input-background-color;
+      border: 0;
+      border-top: 1px solid $border-color;
+      border-bottom: 1px solid $border-color;
+      padding: 1rem;
+      resize: none;
+      ul, ol { margin-left: 1.25rem; }
+      ul { white-space: normal; }
+    }
+    .editor-drag-container {
+      display: none;
+      position: absolute;
+      top: 0;
+      z-index: 899;
+      left: 0;
+      right: 0;
+      text-align: center;
+      height: 100%;
+      margin: 0rem;
+
+      &.visible { display: block; }
+      .editor-drag {
+        position: relative;
+        top: 50%;
+        height: 75%;
+        margin: 0px 4%;
+        border: 0.5rem dashed rgba($border-color, 0.9);
+        background-color: rgba($sub-header-color, 0.75);
+        transform: translateY(-50%);
+        bottom: -14rem;
+        .editor-drag-text {
+          position: relative;
+          top: 50%;
+          transform: translateY(-50%);
+          color: $secondary-font-color-dark;
+          font-size: 2rem;
+        }
+      }
+    }
+  }
+
+  .editor-column-input,
+  .editor-column-preview {
+    height: 100%;
+    &.hidden { display: none; }
+  }
+
+  .editor-input {
+    white-space: pre-wrap;
+    overflow: auto;
+    height: 100%;
+
+    p { margin: 0; }
+    span {
+      font-family: inherit;
+      font-size: 1rem;
+      line-height: 1.6; }
+  }
+
+  .editor-preview {
+    white-space: pre-wrap;
+    overflow: auto;
+    height: 100%;
+    word-wrap: break-word;
+
+    p { margin: 0; }
+  }
+
+  .editor-footer {
+    color: $secondary-font-color-light;
+    font-size: .875rem;
+    position: absolute;
+    bottom: 0px;
+    left: -50px;
+    width: 110%;
+    background-color: $base-background-color;
+    height: 3rem;
+    border-top: 1px solid $border-color;
+    .upload-editor {
+      text-align: left;
+      width: $max-width / 2;
+      margin-left: 50px;
+      padding-left: 1rem;
+      position: absolute;
+      top: -1.35rem;
+      z-index: 500;
+      a {
+        color: $secondary-font-color-dark;
+        &:hover { color: $secondary-font-color; }
+      }
+    }
+  }
+
+  .editor-images-container {
+    height: 100%;
+    padding-left: 0px;
+    padding-right: 5px;
+    line-height: 3rem;
+  }
+
+  .editor-image-uploader {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .editor-images {
+    height: 100%;
+    width: 100%;
+  }
+  .editor-images:hover {
+    background: rgba(0,0,0,0.1);
+    border: 2px dashed $secondary-font-color-dark;
+    padding-top: 9px;
+  }
+}
+
+
+
+.editor-button-container.admin {
+  padding-left: $base-grid-padding;
+  padding-right: $base-grid-padding;
+}
+
+  .editor-form.admin .editor-footer {
+    left: 0;
+    width: 100%;
+
+    .progress-editor {
+      margin-left: 0;
+      @include media($mobile) {
+        margin-left: 0;
+      }
+    }
+    .upload-editor {
+      margin-left: 0;
+    }
+  }
+
+.child-elements {
+   pointer-events: none;
+}
+.editor-tools {
+  position: absolute;
+  bottom: 3rem;
+  color: $secondary-font-color-dark;
+  left: 0;
+  right: 0;
+  padding: 0 1rem;
+  line-height: 1.5rem;
+  height: 1.5rem;
+  a {
+    color: $secondary-font-color-dark;
+    &:hover { color: $secondary-font-color; }
+  }
+  .tools {
+    @include span-columns(12);
+    text-align: right;
+    .expand { margin-left: 1rem; }
+  }
+}
+.editor-form div label { margin-top: 10px; }
+.editor-form small {
+  display: block;
+  line-height: 1;
+  padding: 0.25rem 0.5rem 0.375rem;
+  font-size: 0.6875rem;
+  margin: 0; }
+.posts-editor {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+.editor-button-container {
+  position: absolute;
+  padding: 0.5rem 0;
+  bottom: 0;
+  right: 0;
+  height: 3rem;
+  text-align: right;
+  width: 100%;
+
+  button {
+    // float: right;
+    margin-right: 1.9%;
+    padding: 0.35rem 1rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.send { display: inline-block; border: 1px solid transparent; }
+    &.cancel {
+      background-color: transparent;
+      color: $secondary-font-color;
+      display: inline-block;
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+}
+
+.editor-form.new-thread {
+  .editor-header a {
+    line-height: 1rem;
+    height: 1.45rem;
+  }
+  .editor-body .editor-input, .editor-body .editor-preview { border: 1px solid $border-color; }
+  .editor-footer {
+    border-top: 0;
+    height: 0;
+    .progress .meter { margin-top: -0.5rem; }
+    .upload-editor {
+      width: $max-width;
+      padding-left: 0;
+      i::after{
+        font-family: $base-font-sans;
+        margin-left: 0.35rem;
+        content: "Click here or drag and drop images in the compose pane to upload";
+        @include media($mobile) {
+          content: "Click here to upload images";
+        }
+      }
+    }
+  }
+  .editor-body { bottom: 2rem; }
+}
+
+.image-picker {
+  .header {
+    background-color: #4b4b4b;
+    color: #777777;
+    padding-left: 5px;
+    border-bottom: 5px solid #ccc;
+    font-size: smaller;
+  }
+  .picker-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .picker-body img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+.picker-body .after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  color: #FFF;
+  padding: 45px;
+  text-align: center;
+  background: rgba(0, 0, 0, .6);
+}
+
+.thread-editor-container {
+  position: relative;
+  background-color: $base-background-color;
+  height: 500px; }
+.thread-editor-container > .editor-form { top: 0px; }
+.editor-preview .imageContainer { display: inline; }
+
+// Bourbon/Neat Grid
+.editor-header {
+  a {
+    line-height: 2.75rem;
+    display: inline-block;
+    height: 2.2rem;
+    width: 6rem;
+    text-align: center;
+    color: $secondary-font-color-dark;
+    &.first { margin-left: 0.25rem; }
+    &.selected { color: $color-primary; border-bottom: 2px solid $color-primary; }
+  }
+}
+.editor-header, .editor-body, .editor-footer, .editor-top-bar {
+  @include fill-parent;
+  @include pad(0);
+  @include row;
+  .editor-column-input {
+    @include span-columns(12);
+  }
+  .editor-column-preview {
+    @include span-columns(12);
+    @include omega;
+  }
+}
+
+@include media($mobile) {
+  .editor-form .editor-body {
+    bottom: 5rem;
+  }
+  .editor-form .editor-header {
+    height: 2.6rem;
+    line-height: 3.5rem;
+  }
+  .editor-tools {
+    bottom: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    padding: 0 2rem;
+    left: 50vw;
+    z-index: 999;
+    a {
+      font-size: 1.25rem;
+      height: 100%;
+      display: inline-block;
+      padding: 0 0.5rem;
+      &:last-child {
+        margin-right: -0.5rem;
+      }
+    }
+    .tools {
+      float: none;
+      height: 100%;
+      .expand { margin-left: 0; }
+    }
+  }
+  .editor-button-container {
+    @include row;
+    @include pad(0 $base-grid-padding);
+    height: 2.5rem;
+    padding-top: 0.425rem;
+    border-top: 1px solid $border-color;
+    button {
+      @include span-columns(4);
+      @include omega(2n);
+      margin-bottom: 0;
+      padding: 0.15rem 0.76rem;
+    }
+  }
+  .editor-form .editor-footer {
+    background-color: transparent;
+    border: 0;
+    .upload-editor {
+      top: -2rem;
+      padding-left: 2rem;
+      height: 2.5rem;
+      line-height: 2.5rem;
+      span a { font-size: 0.875rem; }
+      a {
+        i { font-size: 0.875rem; }
+        font-size: 1.25rem;
+        height: 100%;
+        display: inline-block;
+        padding: 0 0.5rem;
+        margin-left: -0.5rem;
+      }
+    }
+  }
+}
+
+.thread-editor-container {
+  .editor-form {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    div label, .editor-form div label { margin: 0; color: $secondary-font-color-dark; }
+    .editor-body { top: 1.5625rem; }
+    .editor-header, .editor-body, .editor-top-bar { @include pad(0); }
+    .editor-footer { padding-left: 0; padding-right: 0; color: $secondary-font-color-dark; }
+    .editor-images-container { @include pad(0); }
+  }
+  @include media($mobile) {
+    height: 300px;
+    .editor-column-left { @include span-columns(8); @include omega; }
+    .editor-form .editor-body { bottom: 2.5rem; top: 2.7rem; }
+  }
+}
+
+.editor-fixed-bottom, .editor-full-screen {
+  .editor-images-container { @include span-columns(6); @include pad(0); }
+  .editor-button-container {
+  }
+  @include media($mobile) {
+    .editor-top-bar .buttons { @include fill-parent; @include pad(0 $base-grid-padding); }
+    .editor-top-bar button:first-child { float: left; }
+    .editor-top-bar button:first-child { float: left; }
+    .editor-top-bar, .editor-body, .editor-header { @include pad(0); }
+    .editor-column-left { @include span-columns(8); @include omega; }
+    .editor-formatting h4 { display: inline-block; }
+  }
+}
+
+.post-editor-overlay {
+  background: rgba(0, 0, 0, 0.15);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}

@@ -1,0 +1,135 @@
+<div class="admin-table-header">
+  <div class="half-column">
+    <button ng-click="AdminManagementCtrl.showBanAddresses = true" class="fill-row"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Manually Ban Addresses</button>
+  </div>
+  <div class="half-column">
+    <div class="nested-input-container">
+      <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
+      <a ng-click="AdminManagementCtrl.searchAddresses()" class="nested-btn">Search</a>
+      <input class="input-text nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search addresses" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchAddresses()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
+    </div>
+  </div>
+  <div class="clear"></div>
+</div>
+<div class="fill-row centered-text" ng-if="!AdminManagementCtrl.addresses.length">
+  <h4>No Banned Addresses to display</h4>
+</div>
+<div class="fill-row" ng-if="AdminManagementCtrl.addresses.length">
+  <table class="underlined log" width="100%">
+    <thead>
+      <th>Address</th>
+      <th class="pointer" ng-click="AdminManagementCtrl.setSortField('weight')"><span ng-class="AdminManagementCtrl.getSortClass('weight')"></span>&nbsp;Weight</th>
+      <th class="pointer" ng-click="AdminManagementCtrl.setSortField('created_at')"><span ng-class="AdminManagementCtrl.getSortClass('created_at')"></span>&nbsp;Date Banned</th>
+      <th class="pointer" ng-click="AdminManagementCtrl.setSortField('decay')"><span ng-class="AdminManagementCtrl.getSortClass('decay')"></span>&nbsp;Decays</th>
+      <th class="pointer" ng-click="AdminManagementCtrl.setSortField('updates')"><span ng-class="AdminManagementCtrl.getSortClass('updates')"></span>&nbsp;Last Updated</th>
+      <th class="pointer" ng-click="AdminManagementCtrl.setSortField('update_count')"><span ng-class="AdminManagementCtrl.getSortClass('update_count')"></span>&nbsp;Update Count</th>
+      <th class="pointer" ng-click="AdminManagementCtrl.setSortField('imported_at')"><span ng-class="AdminManagementCtrl.getSortClass('imported_at')"></span>&nbsp;Date Imported</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="address in AdminManagementCtrl.addresses">
+        <td ng-bind="address.hostname || address.ip"></td>
+        <td ng-bind="address.weight"></td>
+        <td ng-bind="address.created_at | humanDate"></td>
+        <td ng-bind="address.decay ? 'YES' : 'NO'"></td>
+        <td ng-bind="(address.updated_at | humanDate) || 'N/A'"></td>
+        <td ng-bind="address.update_count || 0"></td>
+        <td ng-bind="(address.imported_at | humanDate) || 'N/A'"></td>
+        <th>
+          <button ng-click="AdminManagementCtrl.showEditAddressModal(address)" class="icon" data-balloon="Edit Address">
+            <i class="fa fa-pencil"></i>
+          </button>
+          <button ng-click="AdminManagementCtrl.showConfirmDeleteAddressModal(address)" class="icon" data-balloon="Delete Address">
+            <i class="fa fa-trash"></i>
+          </button>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagination-simple">
+    <a ng-show="AdminManagementCtrl.prev" ui-sref=".({ page: AdminManagementCtrl.prev, limit: AdminManagementCtrl.limit, search: AdminManagementCtrl.search, field: AdminManagementCtrl.field, desc: AdminManagementCtrl.desc })">
+      &#10094; Previous
+    </a>
+    <span ng-hide="AdminManagementCtrl.prev">&#10094; Previous</span>
+    &nbsp;&nbsp;&nbsp;
+    <a ng-show="AdminManagementCtrl.next" ui-sref=".({ page: AdminManagementCtrl.next, limit: AdminManagementCtrl.limit, search: AdminManagementCtrl.search, field: AdminManagementCtrl.field, desc: AdminManagementCtrl.desc })">
+       Next &#10095;
+    </a>
+    <span ng-hide="AdminManagementCtrl.next">Next &#10095;</span>
+  </div>
+</div>
+
+<modal show="AdminManagementCtrl.showEditAddress" on-close="AdminManagementCtrl.closeEditAddress()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Edit Banned Address</h3>
+    <p>Edit weight and decay properties of banned address: <strong ng-bind="AdminManagementCtrl.selectedAddress.hostname || AdminManagementCtrl.selectedAddress.ip"></strong></p>
+    <label for="addrWeight"><strong>Weight</strong></label>
+      <input type="number" id="addrWeight" name="addrWeight" ng-model="AdminManagementCtrl.selectedAddress.weight" ng-required />
+    <label for="addrDecay"><strong>Decays</strong></label>
+    <input type="radio" name="addrDecay" id="decayYes" ng-value="true" ng-model="AdminManagementCtrl.selectedAddress.decay" ng-required />
+    <label for="decayYes">Yes</label>
+      <input type="radio" name="addrDecay" id="decayNo" ng-value="false" ng-model="AdminManagementCtrl.selectedAddress.decay" ng-required />
+    <label for="decayNo">No</label>
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminManagementCtrl.editAddress()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminManagementCtrl.editAddressSubmitted" ng-bind="AdminManagementCtrl.editAddressBtnLabel"></button>
+    </div>
+  </form>
+</modal>
+
+<modal show="AdminManagementCtrl.showConfirmDeleteAddress" on-close="AdminManagementCtrl.closeConfirmDeleteAddress()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Confirm Deletion of Banned Address</h3>
+    <p>
+      Are you sure you want to delete the address <strong ng-bind="AdminManagementCtrl.selectedAddress.hostname || AdminManagementCtrl.selectedAddress.ip"></strong>?
+    </p>
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminManagementCtrl.deleteAddress()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminManagementCtrl.deleteAddressSubmitted" ng-bind="AdminManagementCtrl.deleteAddressBtnLabel"></button>
+    </div>
+  </form>
+</modal>
+
+<!-- Ban New Addresses Modal -->
+<modal show="AdminManagementCtrl.showBanAddresses" on-close="AdminManagementCtrl.closeBanAddresses()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Manually Ban Addresses</h3>
+    <table class="striped ban-addresses" width="100%">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Address</th>
+          <th width="5%">Decays</th>
+          <th width="20%">Weight</th>
+        </tr>
+      </thead>
+      <tr ng-repeat="addr in AdminManagementCtrl.addressesToBan track by $index">
+        <td>
+          <select class="type" ng-init="addr.typeIp = true" ng-model="addr.typeIp" ng-change="addr.typeIp ? addr.hostname = undefined : addr.ip = undefined" ng-options="o.v as o.n for o in [{ n: 'IP Address', v: true }, { n: 'Hostname', v: false }]">
+          </select>
+        </td>
+        <td ng-if="addr.typeIp">
+          <input ng-model="addr.ip" type="text" ng-pattern="AdminManagementCtrl.ipRegex" class="address" placeholder="IP Address to ban" />
+        </td>
+        <td ng-if="!addr.typeIp">
+          <input ng-model="addr.hostname" type="text" ng-pattern="AdminManagementCtrl.hostnameRegex" class="address" placeholder="Hostname to ban" />
+        </td>
+        <td>
+          <input ng-init="addr.decay = true" ng-model="addr.decay" class="decay" type="checkbox" />
+        </td>
+        <td>
+          <input ng-init="addr.weight = 50" ng-model="addr.weight" type="number" min="0" class="weight" placeholder="Weight" ng-keydown="!$event.shiftKey && ($event.which === 9 || $event.which === 13) && AdminManagementCtrl.addressesToBan.length === ($index + 1) &&AdminManagementCtrl.addressesToBan.push({})" />
+        </td>
+      </tr>
+      <tfoot>
+        <tr>
+          <td colspan="4"><a class="right" ng-click="AdminManagementCtrl.addressesToBan.push({})" href="#"><i class="fa fa-plus"></i>&nbsp;Add another address</a></td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminManagementCtrl.banAddresses()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminManagementCtrl.banAddressesSubmitted || AdminManagementCtrl.checkAddresses()" ng-bind="AdminManagementCtrl.banAddressesBtnLabel"></button>
+    </div>
+  </form>
+</modal>

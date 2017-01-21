@@ -1,0 +1,432 @@
+<div class="padded-row" ng-if="vm.ban_expiration()">
+  <div class="error-label fill-row">
+    {{ vm.user.username }}
+    <span ng-if="vm.ban_expiration() !== 'Permanent'">
+      is banned until {{ vm.ban_expiration() }}
+    </span>
+    <span ng-if="vm.ban_expiration() === 'Permanent'">
+       is permanently banned
+     </span>
+  </div>
+</div>
+
+<div class="profile-content">
+  <!-- Left Sidebar -->
+  <div class="profile-left">
+    <!-- User's Avatar -->
+    <div class="profile-row">
+      <div class="profile-avatar-container">
+        <a ng-href="#" ng-if="vm.canUpdate()" ng-click="vm.openEditAvatar()">
+          <img ng-src="{{vm.user.avatar }}" class="image-loader" />
+        </a>
+        <img ng-if="!vm.canUpdate()" ng-src="{{vm.user.avatar}}" class="image-loader"/>
+        <a ng-href="#" class="after" ng-if="vm.canUpdate()" ng-click="vm.openEditAvatar()">
+          <div>Change Avatar</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- User Information -->
+    <div class="profile-row">
+      <h4>
+        <span class="green" ng-if="vm.isOnline"><i class="fa fa-circle"></i></span>
+        <span class="green" ng-if="!vm.isOnline"><i class="fa fa-circle-o"></i></span>
+        &nbsp;
+        <span ng-bind="vm.user.username"></span>
+      </h4>
+      <div><span ng-bind="vm.user.name"></span></div>
+      <div><span ng-bind="vm.user.position"></span></div>
+      <div><span ng-bind="vm.user.status"></span></div>
+      <br />
+      <div ng-if="vm.user.activity > -1">Activity:&nbsp;&nbsp;<span ng-bind="vm.user.activity"></span></div>
+      <trust-profile ng-if="vm.isLoggedIn()" username="vm.user.username"></trust-profile>
+      <hr ng-if="vm.user.email || vm.user.gender || vm.user.dob || vm.user.location || vm.user.language || vm.userLocalTime">
+      <a ng-href="mailto:{{vm.user.email}}" target="_blank" ng-bind="vm.user.email"></a>
+      <div><span ng-bind="vm.user.btcAddress"></span></div>
+      <div>
+        <a ng-href="{{vm.user.website}}" target="_blank" ng-bind="vm.user.website"></a>
+      </div>
+      <div><span ng-bind="vm.user.gender"></span></div>
+      <div><span ng-bind="vm.userAge(vm.user.dob)"></span></div>
+      <div><span ng-bind="vm.user.location"></span></div>
+      <div><span ng-bind="vm.user.language"></span></div>
+      <div><span ng-bind="vm.userLocalTime | date:'h:mm a (Z)'"></span></div>
+      <hr ng-if="vm.canUpdate() || vm.canUpdatePrivate() || vm.pageOwner() || vm.canDeactivate() || vm.canReactivate() || vm.canDelete() || vm.canPageUserNotes() || vm.canBanUser() || vm.canMessage()">
+    </div>
+
+    <!-- Edit Profile Controls -->
+    <div class="profile-row profile-action" ng-if="vm.canUpdate()">
+      <a ng-href="#" ng-click="vm.openEditProfile()">Edit Profile</a>
+    </div>
+    <div class="profile-row profile-action" ng-if="vm.canUpdatePrivate()">
+      <a ng-href="#" ng-click="vm.openEditPassword()">Edit Password</a>
+    </div>
+    <div class="profile-row profile-action" ng-if="vm.canUpdatePrivate()">
+      <a ng-href="#" ng-click="vm.openEditEmail()">Edit Email</a>
+    </div>
+    <div class="profile-row profile-action" ng-if="vm.pageOwner()">
+      <a ng-href="#" ng-click="vm.openEditPreferences()">Edit Preferences</a>
+    </div>
+    <trust-link ng-if="vm.pageOwner()"></trust-link>
+    <div class="profile-row profile-action" ng-if="vm.canDeactivate()">
+      <a ng-href="#" ng-click="vm.showDeactivate = true">Deactivate Account</a>
+    </div>
+    <div class="profile-row profile-action" ng-if="vm.canReactivate()">
+      <a ng-href="#" ng-click="vm.showReactivate = true">Reactivate Account</a>
+    </div>
+    <div class="profile-row profile-action" ng-if="vm.canDelete()">
+      <a ng-href="#" ng-click="vm.showDelete = true">Delete Account</a>
+    </div>
+    <div class="profile-row profile-action" ng-if="vm.canMessage()">
+      <a ng-href="#" ng-click="vm.openConvoModal()">Message This User</a>
+    </div>
+    <ignore-user-profile ng-if="vm.isLoggedIn()" user="ProfileCtrl.user"></ignore-user-profile>
+    <div class="profile-row profile-action" ng-if="vm.canPageUserNotes()">
+      <a ng-href="#" ng-click="vm.showModNotes = true">
+        Moderation Notes
+        <i class="fa fa-comment" ng-if="vm.user.hasNotes"></i>
+        <i class="fa fa-comment-o" ng-if="!vm.user.hasNotes"></i>
+      </a>
+    </div>
+    <div class="profile-row profile-action" ng-if="vm.canBanUser()">
+      <a ng-href="#" ng-click="vm.showManageBans({ id: vm.user.id, username: vm.user.username, email: vm.user.email, created_at: vm.user.created_at, ban_expiration: vm.user.ban_expiration })">Manage Bans</a>
+    </div>
+
+    <reset-password user="vm.user"></reset-password>
+  </div>
+
+  <!-- Right Side Content -->
+  <div class="profile-right">
+    <div class="profile-row">
+      <div class="stats centered-text">
+        Account Created On:<br>
+        <span class="stat-text" ng-bind="vm.user.created_at | date:'mediumDate'"></span>
+      </div>
+      <div class="stats">
+        Number of Posts:<br>
+        <span class="stat-text" ng-bind="(vm.user.post_count || 0) + ' Posts'"></span>
+      </div>
+      <div class="stats">
+        Account Last Used:<br>
+        <span class="stat-text" ng-bind="vm.user.last_active | date:'mediumDate'"></span>
+      </div>
+    </div>
+
+    <div class="profile-row">
+      <div class="fill-row">
+        <strong>Signature:</strong>
+        <a ng-href="#" ng-click="vm.openEditSignature()" ng-if="vm.canUpdate()">
+          <i class="icon-epoch-edit-pencil"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="profile-row">
+      <div class="fill-row">
+        <div class="signature" post-processing="vm.user.signature || vm.user.raw_signature" style-fix="true"></div>
+      </div>
+    </div>
+
+    <div class="profile-row">
+      <div class="fill-row">
+        <div class="profile-posts" ui-view="posts"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<modal class="medium" show="vm.showModNotes">
+  <h3 class="thin-underline">Moderator Notes for {{vm.user.username}}</h3>
+  <usernotes user-id="vm.user.id" user="vm.user"></usernotes>
+</modal>
+
+<!-- Change Password Modal -->
+<modal show="vm.editPassword">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Change Password</h3>
+
+    <!-- Old Password -->
+    <div class='input-section'>
+      <label>&nbsp;
+        <!-- input error -->
+        <div ng-if="$parent.form.oldPass.$touched && $parent.form.oldPass.$error.required" class="invalid right">
+          Old password is required
+        </div>
+        <!-- old password input -->
+        <input type="password" name="oldPass" placeholder="Old Password" ng-model="vm.passData.old_password" auto-focus="$parent.focus" maxlength="255" required>
+        <i ng-if="$parent.form.oldPass.$touched && !$parent.form.oldPass.$error.required" class="fa fa-check input-icon valid"></i>
+        <i ng-if="$parent.form.oldPass.$touched && $parent.form.oldPass.$error.required" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
+
+    <!-- New Password -->
+    <div class='input-section'>
+      <label>
+        <div ng-if="$parent.form.pass.$touched && $parent.form.pass.$error.required" class="input-error invalid right">
+          New password is required
+        </div>
+        <div ng-if="$parent.form.pass.$touched && $parent.form.passConf.$touched && vm.passData.password !== vm.passData.confirmation && !$parent.form.pass.$error.required" class="input-error invalid right">
+          Password and confirmation do not match
+        </div>
+        <input type="password" name="pass" placeholder="New Password" ng-model="vm.passData.password" ng-class="{'ng-invalid-mismatch' : vm.passData.password !== vm.passData.confirmation }" maxlength="255" required>
+        <i ng-if="($parent.form.pass.$touched && !$parent.form.passConf.$touched && !$parent.form.pass.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && vm.passData.password === vm.passData.confirmation && !$parent.form.pass.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.pass.$touched && $parent.form.pass.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && vm.passData.password !== vm.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
+
+    <!-- Confirm Password -->
+    <div class='input-section'>
+      <label>
+        <div ng-if="$parent.form.passConf.$touched && $parent.form.passConf.$error.required" class="input-error invalid right">
+          Password confirmation is required
+        </div>
+        <div ng-if="$parent.form.passConf.$touched && $parent.form.passConf.$touched && vm.passData.password !== vm.passData.confirmation && !$parent.form.passConf.$error.required" class="input-error invalid right">
+          Password and confirmation do not match
+        </div>
+        <input type="password" name="passConf" placeholder="Confirm New Password" ng-model="vm.passData.confirmation" ng-class="{'ng-invalid-mismatch' : vm.passData.password !== vm.passData.confirmation }" maxlength="255" required>
+        <i ng-if="($parent.form.passConf.$touched  && vm.passData.confirmation !== '' && !$parent.form.pass.$touched && !$parent.form.passConf.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && vm.passData.password === vm.passData.confirmation && !$parent.form.passConf.$error.required)" class="fa fa-check input-icon valid"></i>
+        <i ng-if="($parent.form.passConf.$touched && $parent.form.passConf.$error.required) || ($parent.form.pass.$touched && $parent.form.passConf.$touched && vm.passData.password !== vm.passData.confirmation)" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.savePassword(); $parent.form.$setPristine(); $parent.form.$setUntouched()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || vm.passData.password !== vm.passData.confirmation">
+        Confirm
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Edit Email Modal -->
+<modal show="vm.editEmail">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Change Email</h3>
+
+    <!-- Email -->
+    <div class='input-section'>
+      <label>Email
+        <div ng-if="$parent.form.email.$error.email" class="invalid right">
+          Email is not valid
+        </div>
+        <div ng-if="$parent.form.email.$error.unique" class="invalid right">
+          Email already taken
+        </div>
+        <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.required" class="invalid right">
+          Email is required
+        </div>
+        <input type="email" name="email" ng-model="vm.emailData.email" unique-email="{{vm.user.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" ng-disabled="!vm.pageOwner" required />
+      </label>
+    </div>
+
+    <!-- Password -->
+    <div class='input-section'>
+      <label>Password
+        <div ng-if="$parent.form.pass.$touched && $parent.form.pass.$error.required" class="input-error invalid right">
+          Password is required
+        </div>
+        <input type="password" name="pass" ng-model="vm.emailData.emailPassword" maxlength="255" required />
+      </label>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.saveEmail(); $parent.form.$setPristine(); $parent.form.$setUntouched()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+        Confirm
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Edit Profile Modal -->
+<modal class="medium" show="vm.editProfile">
+  <h3 class="thin-underline">Edit Profile</h3>
+  <form name="$parent.form" class="css-form" novalidate>
+    <!-- Profile Fields -->
+    <div class="half-column">
+      <label>Username
+        <div ng-if="vm.editProfileUser.username.length === 0" class="right">
+          Username will not be changed
+        </div>
+        <div ng-if="$parent.form.username.$error.unique" class="invalid right">
+          Username already taken
+        </div>
+        <div ng-if="$parent.form.username.$error.pattern" class="invalid right">
+          Usernames may only contain A-Z, 0-9, -, _ and .
+        </div>
+        <input type="text" name="username" ng-model="vm.editProfileUser.username" unique-username="{{vm.user.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ maxlength="255" auto-focus="$parent.focus"/>
+      </label>
+
+      <label>Display Name
+        <input type="text" placeholder="Name" ng-model="vm.editProfileUser.name" maxlength="255">
+      </label>
+
+      <label>Website
+        <input type="text" placeholder="Website" ng-model="vm.editProfileUser.website">
+      </label>
+
+      <label>Bitcoin Address
+        <input type="text" placeholder="Bitcoin Address" ng-model="vm.editProfileUser.btcAddress" maxlength="255">
+      </label>
+    </div>
+
+    <div class="half-column">
+      <label>Gender
+        <input type="text" placeholder="Gender" ng-model="vm.editProfileUser.gender" maxlength="255">
+      </label>
+
+      <label>Date of Birth
+        <input type="date" placeholder="Date of Birth" ng-model="vm.editProfileUser.dob">
+      </label>
+
+      <label>Location
+        <input type="text" placeholder="Location" ng-model="vm.editProfileUser.location" maxlength="255">
+      </label>
+
+      <label>Language
+        <input type="text" placeholder="Language" ng-model="vm.editProfileUser.language" maxlength="255">
+      </label>
+    </div>
+
+    <!-- Save Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.saveProfile()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+        Save
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Change Avatar Modal -->
+<modal class="medium" show="vm.editAvatar">
+  <form name="$parent.form" novalidate>
+    <h3 class="thin-underline">Edit Avatar</h3>
+    <label>
+      Avatar URL
+      <br>
+      <small>Hotlinked images will receive a new url</small>
+      <input type="text" name="avatar" ng-model="vm.editAvatarUser.avatar" auto-focus="$parent.focus" />
+    </label>
+    <image-uploader model="vm.editAvatarUser.avatar" purpose="avatar"></image-uploader>
+    <br />
+    <!-- Save Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.saveAvatar()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+        Save
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Change Signature Modal -->
+<modal class="medium" show="vm.editSignature">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Edit Signature</h3>
+    <label>Signature
+      (<span ng-bind="vm.editSigUser.raw_signature.length || 0"></span>/5000)
+      <textarea type="text" rows="10" placeholder="Signature" ng-model="vm.editSigUser.raw_signature" auto-focus="$parent.focus" maxlength="5000"></textarea>
+    </label>
+    <!-- Save Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.saveSignature()" ng-disabled="$parent.form.$invalid || $parent.form.errors">
+        Save
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Deactivate Account Modal -->
+<modal show="vm.showDeactivate">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Deactivate Account</h3>
+    <p>
+      Are you sure you want to deactivate your account? Your information and posts will be hidden from other users. You will not be able to create, edit, or delete your posts and threads.
+    </p>
+    <!-- Deactivate Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.deactivateUser()">
+        Deactivate Account
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Reactivate Account Modal -->
+<modal show="vm.showReactivate">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Reactivate Account</h3>
+    <p>
+      Reactivate your account? All your threads and posts will be viewable to the public again. You will also be able to create, edit, and delete your posts and threads like normal.
+    </p>
+    <!-- Reactivate Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.reactivateUser()">
+        Reactivate Account
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Delete Account Modal -->
+<modal show="vm.showDelete">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Delete Account</h3>
+    <p>
+      Are you sure you want to delete this account? This will delete the user's account and all their posts and threads. Any threads this user has started will be deleted and any posts from other users within that thread will be deleted as well.
+    </p>
+    <!-- Delete Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.deleteUser()">
+        Delete Account
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Create Conversation Modal -->
+<modal show="vm.showConvoModal" on-close="vm.closeConvoModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">New Message</h3>
+    <!-- Select User -->
+    <label>To: <span ng-bind="vm.user.username"></span></label>
+
+    <!-- Message Body -->
+    <label>Message:
+      <textarea type="text" rows="10" ng-model="vm.newConversation.body" maxlength="5000"></textarea>
+    </label>
+
+    <!-- Save Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.createConversation()" ng-disabled="!vm.newConversation.body">
+        Start Conversation
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Manage Bans Modal -->
+<ban-modal show-modal="vm.showBanModal" selected-user="vm.selectedUser" callback="vm.updateUser"></ban-modal>
+
+<!-- Edit Preferences Modal -->
+<modal class="medium" show="vm.editPreferences">
+  <h3 class="thin-underline">Edit Preferences</h3>
+  <form name="$parent.form" class="css-form" novalidate>
+    <!-- Preferences Fields -->
+    <label>Posts Per Page
+      <input type="number" name="posts_per_page" ng-model="vm.tempPreferences.posts_per_page" placeholder="25" min="25" step="1" max="100" auto-focus="$parent.focus"/>
+    </label>
+
+    <label>Threads Per Page
+      <input type="number" name="threads_per_page" ng-model="vm.tempPreferences.threads_per_page" placeholder="25" min="25" step="1" max="100"/>
+    </label>
+
+    <!-- Save Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.savePreferences()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+        Save
+      </button>
+    </div>
+  </form>
+</modal>

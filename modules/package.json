@@ -14,7 +14,6 @@
     "bct-trust": "1.0.3",
     "ept-auto-moderation": "1.0.3",
     "ept-bbcode-parser": "~1.0.0",
-    "ept-frontend": "1.0.15",
     "ept-ignore-users": "~1.0.2",
     "ept-md-parser": "1.0.3",
     "ept-messages": "~1.0.0",

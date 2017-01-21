@@ -1,0 +1,42 @@
+.comments {
+  @include span-columns(12);
+  @include omega;
+  margin-top: -0.625rem;
+  .comment-container {
+    .comment {
+      @include clearfix;
+      @include pad(1rem);
+      border-bottom: 1px solid $border-color;
+      &:nth-of-type(odd) { background-color: $sub-header-color; }
+      &:last-child { margin-bottom: 1rem; }
+      .avatar {
+        @include span-columns(1);
+        img {
+          @include border-radius(100px);
+          height: 2.5rem;
+          width: 2.5rem;
+        }
+      }
+      .content {
+        @include span-columns(11);
+        .title {
+          margin-bottom: 0.5rem;
+          .date { @include pad(0 0 0 0.25rem); font-size: 0.8rem; color: $secondary-font-color; }
+          .action { color: $secondary-font-color; }
+          &:hover .action { color: $secondary-font-color-dark; }
+          &:hover .action:hover { color: $color-primary;; }
+        }
+        textarea { min-height: 3.25rem; }
+      }
+    }
+
+    @include media($mobile) {
+      .comment {
+        .avatar { display: none; }
+        .content { @include span-columns(8); }
+      }
+    }
+  }
+}
+h5.no-comments { text-align: center; margin-bottom: 0.625rem; }
+textarea.usernote-reply { min-height: 4.5rem; }

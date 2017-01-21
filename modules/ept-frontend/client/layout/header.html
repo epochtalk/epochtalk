@@ -1,0 +1,160 @@
+<!-- Menu -->
+<div id="menu-wrap" ng-class="{ 'mobile-expanded' : HeaderCtrl.focusSearch }">
+  <nav id="menu">
+    <!-- Logo Section -->
+    <h3>
+      <a ui-sref="home" ng-if="$webConfigs.logo"><img ng-src="{{$webConfigs.logo}}" id="logo" /></a>
+      <a ui-sref="home" ui-sref-opts="{ reload: true }" id="logo-text" ng-bind="$webConfigs.title | decode">
+        Epochtalk
+      </a>
+    </h3>
+
+    <!-- Login Section -->
+    <ul class="signed-out" ng-if="!HeaderCtrl.loggedIn()">
+      <li>
+        <a ng-click="HeaderCtrl.showRegister = true">REGISTER</a>
+      </li>
+      <li>
+        <a ng-click="HeaderCtrl.showLogin = true">LOGIN</a>
+      </li>
+    </ul>
+
+    <!-- User Dropdown Mobile -->
+    <ul ng-if="HeaderCtrl.loggedIn()" class="burger-icon">
+      <div class="burger-notification show-mobile" ng-if="HeaderCtrl.notificationMessages()"></div>
+      <i ng-click="HeaderCtrl.showMobileMenu = true" class="fa fa-bars fa-lg burger" aria-hidden="true"></i>
+    </ul>
+    <div class="burger-close-overlay" ng-if="HeaderCtrl.showMobileMenu" ng-click="HeaderCtrl.showMobileMenu = false"></div>
+    <div class="burger-menu show-mobile" ng-class="{ 'open' : HeaderCtrl.showMobileMenu }">
+      <a ng-click="HeaderCtrl.showMobileMenu = false" class="profile" ui-sref="profile.posts({ username: HeaderCtrl.currentUser.username })">
+        <img ng-src="{{ HeaderCtrl.currentUser.avatar }}" class="avatar image-loader">
+        <span class="username" ng-bind-html="HeaderCtrl.currentUser.username"></span>
+      </a>
+      <div class="close-menu" ng-click="HeaderCtrl.showMobileMenu = false">
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </div>
+      <ul>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" ng-if="HeaderCtrl.hasPermission('adminAccess')">
+          <a ui-sref="^.admin"><i class="fa fa-cogs" aria-hidden="true"></i>Admin Panel</a>
+        </li>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" ng-if="HeaderCtrl.hasPermission('modAccess') && !HeaderCtrl.hasPermission('adminAccess')">
+          <a ui-sref="^.admin-moderation"><i class="fa fa-cogs" aria-hidden="true"></i>Mod Panel</a>
+        </li>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" ng-if="HeaderCtrl.isPatroller()">
+          <a ui-sref="patrol.data"><i class="fa fa-binoculars" aria-hidden="true"></i>Patrol</a>
+        </li>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" >
+          <a ui-sref="profile.posts({ username: HeaderCtrl.currentUser.username })"><i class="fa fa-user" aria-hidden="true"></i>Profile</a>
+        </li>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" >
+          <a ui-sref="user-search" ui-sref-opts="{ reload: true }"><i class="fa fa-users" aria-hidden="true"></i>Member Search</a>
+        </li>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" >
+          <a ui-sref="messages" ng-click="HeaderCtrl.dismissNotifications('message')"><i class="fa fa-envelope" aria-hidden="true"></i>Messages</a>
+          <div class="count" ng-if="HeaderCtrl.notificationMessages()" ng-bind-html="HeaderCtrl.notificationMessages()"></div>
+        </li>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" >
+          <a ui-sref="ignored-users"><i class="fa fa-user-times" aria-hidden="true"></i>Ignored Users</a>
+        </li>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" >
+          <a ui-sref="watchlist"><i class="fa fa-eye" aria-hidden="true"></i>Watchlist</a>
+        </li>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" ng-if="HeaderCtrl.canInvite()">
+          <a ng-click="HeaderCtrl.showInvite = true">
+            <i class="fa fa-user-plus" aria-hidden="true"></i>Invite User
+          </a>
+        </li>
+        <li ng-click="HeaderCtrl.showMobileMenu = false" >
+          <a ng-href="#" ng-click="HeaderCtrl.logout()"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- User Dropdown -->
+    <ul ng-if="HeaderCtrl.loggedIn()">
+      <li ng-if="HeaderCtrl.hasPermission('posts.search.allow')" class="search" ng-init="HeaderCtrl.focusSearch = false" >
+        <form action="." class="search-btn" autocomplete="off" ng-submit="$event.preventDefault(); HeaderCtrl.searchForum()">
+          <div class="balloon" data-balloon="Search" data-balloon-pos="down">
+            <label for="search" class="fa fa-search" ng-class="{ 'search-label-expanded' : HeaderCtrl.searchExpanded || HeaderCtrl.focusSearch }" ng-click="HeaderCtrl.toggleFocusSearch()"></label>
+            <input class="search-input" ng-model="HeaderCtrl.searchTerms" ng-class="{ 'search-input-expanded' : HeaderCtrl.focusSearch, 'search-input-minimized' : !HeaderCtrl.focusSearch }" type="search" name="search" placeholder="Search" autocomplete="off" disable-init-focus="true" auto-focus="HeaderCtrl.focusSearch" />
+          </div>
+        </form>
+      </li>
+      <li id="notifications-tray" class="hide-mobile">
+        <!-- <div class="tray-icon">
+          <i class="fa fa-at"></i>
+          <div class="count" ng-if="HeaderCtrl.notificationMentions()" ng-bind-html="HeaderCtrl.notificationMentions()"></div>
+        </div> -->
+        <div ng-if="HeaderCtrl.hasPermission('users.pagePublic.allow')" class="tray-icon" ui-sref="user-search" ui-sref-opts="{ reload: true }" data-balloon="Member Search" data-balloon-pos="down">
+          <i class="fa fa-users"></i>
+        </div>
+        <div class="tray-icon" ui-sref="messages" ui-sref-opts="{ reload: true }" ng-click="HeaderCtrl.dismissNotifications('message')" data-balloon="Messages" data-balloon-pos="down">
+          <i class="fa fa-envelope"></i>
+          <div class="count" ng-if="HeaderCtrl.notificationMessages()" ng-bind-html="HeaderCtrl.notificationMessages()"></div>
+        </div>
+        <!-- <div class="tray-icon">
+          <i class="fa fa-globe"></i>
+          <div class="count" ng-if="HeaderCtrl.notificationOther" ng-bind-html="HeaderCtrl.notificationOther"></div>
+        </div> -->
+      </li>
+      <li id="user-dropdown-wrap" class="hide-mobile">
+        <div>
+          <a ui-sref="profile.posts({ username: HeaderCtrl.currentUser.username })">
+            <img ng-src="{{ HeaderCtrl.currentUser.avatar }}" class="avatar image-loader">
+            <span ng-bind-html="HeaderCtrl.currentUser.username"></span>
+          </a>
+        </div>
+        <ul id="user-dropdown">
+          <li ng-if="HeaderCtrl.hasPermission('adminAccess')">
+            <a ui-sref="^.admin">Admin Panel</a>
+          </li>
+          <li ng-if="HeaderCtrl.hasPermission('modAccess') && !HeaderCtrl.hasPermission('adminAccess')">
+            <a ui-sref="^.admin-moderation">Mod Panel</a>
+          </li>
+          <li ng-if="HeaderCtrl.isPatroller()">
+            <a ui-sref="patrol.data">Patrol</a>
+          </li>
+          <li>
+            <a ui-sref="profile.posts({ username: HeaderCtrl.currentUser.username })">Profile</a>
+          </li>
+          <li>
+            <a ui-sref="messages">Messages</a>
+          </li>
+          <li>
+            <a ui-sref="ignored-users">Ignored Users</a>
+          </li>
+          <li>
+            <a ui-sref="watchlist">Watchlist</a>
+          </li>
+          <li ng-if="HeaderCtrl.canInvite()">
+            <a ng-click="HeaderCtrl.showInvite = true">
+              Invite User
+            </a>
+          </li>
+          <li>
+            <a ng-href="#" ng-click="HeaderCtrl.logout()">Logout</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<!-- Breadcrumbs -->
+<div id="breadcrumbs-wrap">
+  <div id="breadcrumbs">
+    <ul>
+      <li ng-repeat="breadcrumb in HeaderCtrl.breadcrumbs()" ng-if="breadcrumb.label" ng-class="{ active: $last }">
+          <a ng-if="!$last && breadcrumb.state" title="{{breadcrumb.label}}" ui-sref="{{breadcrumb.state}}({{breadcrumb.opts}})" ui-sref-opts="{ reload: true }" ng-bind-html="breadcrumb.label | truncate:30"></a>
+          <span ng-if="$last || !breadcrumb.state" title="{{breadcrumb.label}}" ng-bind-html="breadcrumb.label | truncate:30"></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div id="ban-notice" ng-if="HeaderCtrl.isBanned()" ng-bind-html="HeaderCtrl.isBanned()">
+</div>
+
+<invite show="HeaderCtrl.showInvite"></invite>
+
+<alert></alert>

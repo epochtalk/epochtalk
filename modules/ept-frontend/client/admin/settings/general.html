@@ -1,0 +1,159 @@
+<!-- Forum Configurations -->
+<div class="settings half-column">
+  <h5 class="thin-underline">Forum Configurations</h5>
+  <div class="setting-row">
+    <div class="switch-desc">
+      <label for="public-forum">Public Forum</label>
+      <label class="desc-label" for="public-forum">Allow guests to view forum content</label>
+    </div>
+    <div class="switch-block">
+      <input id="public-forum" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.login_required" ng-true-value="false" ng-false-value="true">
+      <label for="public-forum"></label>
+    </div>
+  </div>
+  <div class="setting-row">
+    <div class="switch-desc">
+      <label for="verify-registration">Verify Registration</label>
+      <label class="desc-label" for="verify-registration">Users must verify their accounts when registering</label>
+    </div>
+    <div class="switch-block">
+      <input id="verify-registration" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.verify_registration">
+      <label for="verify-registration"></label>
+    </div>
+  </div>
+  <div class="setting-row">
+    <div class="switch-desc">
+      <label for="invite-only">Invite Only</label>
+      <label class="desc-label" for="invite-only">Disable public registration</label>
+    </div>
+    <div class="switch-block">
+      <input id="invite-only" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.invite_only">
+      <label for="invite-only"></label>
+    </div>
+  </div>
+
+  <!-- Portal Configurations -->
+  <h5 class="thin-underline section-header-top-spacing">Portal Configurations</h5>
+  <div class="setting-row">
+    <div class="switch-desc">
+      <label for="public-forum">Enable Portal</label>
+      <label class="desc-label" for="public-forum">Default the homepage to the portal</label>
+    </div>
+    <div class="switch-block">
+      <input id="portal-enabled" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.portal.enabled">
+      <label for="portal-enabled"></label>
+    </div>
+  </div>
+  <div class="setting-row">
+    <label for="portal-boardId">Board to Show</label>
+    <div class="control-full-width">
+      <select name="boards" id="portal-boardId" ng-model="AdminSettingsCtrl.settings.portal.board_id" ng-options="board.id as board.name group by board.parent_name for board in AdminSettingsCtrl.boards | orderBy:board.view_order"></select>
+    </div>
+  </div>
+
+  <!-- Analytics -->
+  <h5 class="thin-underline section-header-top-spacing">Google Analytics</h5>
+  <label for="google-analytics-key">Google Analytics Key</label>
+  <input type="text" class="input-text" id="google-analytics-key" ng-model="AdminSettingsCtrl.settings.ga_key" placeholder="UA-XXXXX-Y" />
+
+  <!-- SMTP Configurations -->
+  <div ng-if="!AdminSettingsCtrl.settings.saas_mode">
+    <h5 class="thin-underline section-header-top-spacing">SMTP Configurations</h5>
+    <div>
+      <label for="smtp-sender">SMTP Sender Email Address</label>
+      <input type="text" class="input-text" id="smtp-sender" ng-model="AdminSettingsCtrl.settings.emailer.sender" placeholder="Example: ept@epochtalk.com" />
+    </div>
+    <div class="input-nine-three-col">
+      <div>
+        <label for="smtp-server">SMTP Server</label>
+        <input type="text" class="input-text" id="smtp-server" ng-model="AdminSettingsCtrl.settings.emailer.host" placeholder="Example: http://smtp.gmail.com" />
+      </div>
+      <div>
+        <label for="smtp-port">SMTP Port</label>
+        <input type="text" class="input-text" id="smtp-port" ng-model="AdminSettingsCtrl.settings.emailer.port" placeholder="Example: 587" />
+      </div>
+    </div>
+    <div class="input-two-col">
+      <div>
+        <label for="smtp-username">SMTP Username</label>
+        <input type="text" class="input-text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.user" placeholder="Username" />
+      </div>
+      <div>
+        <label for="smtp-password">SMTP Password</label>
+        <input class="secret" type="password" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.pass" placeholder="Password" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Web Configurations -->
+<div class="settings half-column section-header-top-spacing">
+  <h5 class="thin-underline">Web Configurations</h5>
+  <label for="website-title">Website Title</label>
+  <input type="text" class="input-text" id="website-title" ng-model="AdminSettingsCtrl.settings.website.title" placeholder="Example: Epochtalk Forums" />
+  <label for="website-description">Website Description</label>
+  <input type="text" class="input-text" id="website-description" ng-model="AdminSettingsCtrl.settings.website.description" placeholder="Example: Support forums for Epochtalk software" />
+  <label for="website-keywords">Website Keywords</label>
+  <input type="text" class="input-text" id="website-keywords" ng-model="AdminSettingsCtrl.settings.website.keywords" placeholder="Example: epochtalk, forum, open source, support" />
+  <label for="website-logo-upload-btn">Website Logo</label>
+  <image-uploader class="editor-image-uploader" model="AdminSettingsCtrl.settings.website.logo" purpose="logo"></image-uploader>
+  <input type="text" class="input-text" id="website-logo" ng-model="AdminSettingsCtrl.settings.website.logo" placeholder="default_logo.png" />
+  <label for="website-favicon-upload-btn">Website Favicon</label>
+  <image-uploader class="editor-image-uploader" model="AdminSettingsCtrl.settings.website.favicon" purpose="favicon"></image-uploader>
+  <input type="text" class="input-text" id="website-favicon" ng-model="AdminSettingsCtrl.settings.website.favicon" placeholder="favicon.ico" />
+
+  <!-- Image Server Configurations -->
+  <div ng-if="!AdminSettingsCtrl.settings.saas_mode">
+    <h5 class="thin-underline section-header-top-spacing">Image Server Configurations</h5>
+    <div class="img-wrap">
+      <div class="img-server-wrap">
+        <label>Image Server Host</label>
+        <label class="desc-label">Host image server locally or on Amazon S3</label>
+      </div>
+      <div class="radio-button">
+        <input type="radio" class="hide-radio" name="image-type" ng-value="true" ng-click="AdminSettingsCtrl.settings.images.storage = 'local'" ng-model="AdminSettingsCtrl.localImageServer" id="image-type-local" />
+        <label for="image-type-local">Local</label>
+      </div>
+      <div class="radio-button">
+        <input type="radio" class="hide-radio" name="image-type" ng-value="false" ng-click="AdminSettingsCtrl.settings.images.storage = 's3'" id="image-type-s3" ng-model="AdminSettingsCtrl.localImageServer" />
+        <label for="image-type-s3">S3</label>
+      </div>
+    </div>
+    <div class="input-three-col">
+      <div>
+        <label for="image-size">Max Image Size</label>
+        <input type="text" class="input-text" id="image-size" ng-model="AdminSettingsCtrl.settings.images.max_size" placeholder="Max Image Upload Size in MegaBytes ( Example: 10 )" />
+      </div>
+      <div>
+        <label for="image-expiration">Image Expiration</label>
+        <input type="text" class="input-text" id="image-expiration" ng-model="AdminSettingsCtrl.settings.images.expiration" placeholder="Expiration in milliseconds for images that were uploaded but not posted ( Example: 7,200,000 )" />
+      </div>
+      <div>
+        <label for="image-interval">Clean Interval</label>
+        <input type="text" class="input-text" id="image-interval" ng-model="AdminSettingsCtrl.settings.images.interval" placeholder="How often to check for expired images in milliseconds ( Example: 900,000 )" />
+      </div>
+    </div>
+    <!-- Only shown if Local is selected as image server host -->
+    <div ng-if="AdminSettingsCtrl.localImageServer">
+      <label for="image-local-dir">Local Image Directory</label>
+      <input type="text" class="input-text" id="image-local-dir" ng-model="AdminSettingsCtrl.settings.images.local.dir" placeholder="Enter the http directory where images should be saved" />
+      <label for="image-local-path">Local Image Path</label>
+      <input type="text" class="input-text" id="image-local-path" ng-model="AdminSettingsCtrl.settings.images.local.path" placeholder="Enter the path where images should be saved" />
+    </div>
+    <!-- Only shown if S3 is selected as image server host -->
+    <div ng-if="!AdminSettingsCtrl.localImageServer">
+      <label for="image-s3-root">S3 Root URL</label>
+      <input type="text" class="input-text" id="image-s3-root" ng-model="AdminSettingsCtrl.settings.images.s_3.root" placeholder="Example: http://example.com" />
+      <label for="image-s3-dir">S3 Directory</label>
+      <input type="text" class="input-text" id="image-s3-dir" ng-model="AdminSettingsCtrl.settings.images.s_3.dir" placeholder="Example: /epochtalk" />
+      <label for="image-s3-bucket">S3 Bucket</label>
+      <input type="text" class="input-text" id="image-s3-bucket" ng-model="AdminSettingsCtrl.settings.images.s_3.bucket" placeholder="Example: bukkit" />
+      <label for="image-region">S3 Region</label>
+      <input type="text" class="input-text" id="image-s3-region" ng-model="AdminSettingsCtrl.settings.images.s_3.region" placeholder="Example: US West" />
+      <label for="image-s3-access-key">S3 Access Key</label>
+      <input class="input-text" type="text" id="image-s3-access-key" ng-model="AdminSettingsCtrl.settings.images.s_3.access_key" placeholder="Amazon S3 Access Key" />
+      <label for="image-s3-secret-key">S3 Secret Key</label>
+      <input class="secret" type="password" id="image-s3-secret-key" ng-model="AdminSettingsCtrl.settings.images.s_3.secret_key" placeholder="Amazon S3 Secret Key" />
+    </div>
+  </div>
+</div>

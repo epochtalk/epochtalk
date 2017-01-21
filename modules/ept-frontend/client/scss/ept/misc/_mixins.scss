@@ -1,0 +1,88 @@
+@mixin no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@mixin border-radius($radius) {
+  border-radius: $radius;
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  -o-border-radius: $radius;
+}
+
+@mixin set-columns($cols: 2, $spacing: 0) {
+  -moz-column-count: $cols;
+  -webkit-column-count: $cols;
+  -o-column-count:$cols;
+  column-count: $cols;
+  -moz-column-gap: $spacing;
+  -webkit-column-gap: $spacing;
+  -o-column-gap: $spacing;
+  column-gap: $spacing;
+}
+
+@mixin info-text($size: 0.8rem) {
+  color: $secondary-font-color;
+  font-size: $size;
+}
+
+@mixin truncate-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin list-clean {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin list-flat {
+  display: inline-block;
+  padding-right: 1rem;
+  &:last-child {
+    padding-right: 0;
+  }
+}
+
+@mixin bg-cover {
+  -webkit-background-size:  cover;
+  -moz-background-size:     cover;
+  background-size:          cover;
+}
+
+@mixin label($type, $font-size: 0.6875rem, $border-radius: 2px, $padding: 0.25rem 0.5rem 0.25rem) {
+  @include border-radius($border-radius);
+  font-weight: normal;
+  text-align: center;
+  display: inline-block;
+  position: relative;
+  padding: $padding;
+  font-size: $font-size;
+  @if $type == error {
+    background-color: #f04124;
+    color: #FFFFFF;
+  }
+  @else if $type == warning {
+    background-color: #f08a24;
+    color: #FFFFFF;
+  }
+  @else if $type == success {
+    background-color: #43AC6A;
+    color: #FFFFFF;
+  }
+  @else if $type == info {
+    background-color: #a0d3e8;
+    color: #333333;
+  }
+  @else {
+    background-color: #e7e7e7;
+    color: #333333;
+  }
+}

@@ -1,0 +1,261 @@
+<!-- Column One -->
+<div class="settings half-column">
+  <!-- Black List -->
+  <h5 class="thin-underline section-header-top-spacing">IP Blacklist Rules <a ng-click="AdminSettingsCtrl.showAddModal = true" class="right"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Rule</a></h5>
+
+  <table class="striped rulesTable" width="100%">
+    <thead>
+      <th>Rule Name</th>
+      <th>Rule</th>
+      <th>Actions</th>
+    </thead>
+    <tbody ng-if="!AdminSettingsCtrl.blacklist.length">
+      <tr>
+        <td colspan="3">
+          <h6>There are currently no IP blacklist rules. Click "+ Add Rule" above to create a new rule.</h6>
+        </td>
+    </tbody>
+    <tbody ng-if="AdminSettingsCtrl.blacklist.length" ng-repeat="rule in AdminSettingsCtrl.blacklist track by rule.id">
+      <tr>
+        <td class="name" ng-bind="rule.note"></td>
+        <td ng-bind-html="rule.ip_data | replace: '-' : ' - ' "></td>
+        <td>
+          <a ng-click="AdminSettingsCtrl.openEditModal(rule)"><i class="fa fa-pencil"></i></a>
+          &nbsp;&nbsp;&nbsp;
+          <a ng-click="AdminSettingsCtrl.selectedRule = rule; AdminSettingsCtrl.showDeleteModal = true"><i class="fa fa-trash"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <auto-moderation></auto-moderation>
+</div>
+
+<!-- Column Two -->
+<div class="settings half-column">
+  <!-- Rate Limiting -->
+  <h5 class="thin-underline section-header-top-spacing">API Rate Limiting (Global Defaults)</h5>
+
+  <section class="boxed-section">
+    <div class="header"><span class="get large">GET Requests</span></div>
+    <div class="content input-three-col">
+      <div>
+        <label class="desc-label" for="get-interval">Interval</label>
+        <input type="text" class="input-text" id="get-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.interval" placeholder="In MS (Ex: 1000)" />
+      </div>
+      <div>
+        <label class="desc-label" for="get-max-in-interval">Max In Interval</label>
+        <input type="text" class="input-text" id="get-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.max_in_interval" placeholder="Ex: 1" />
+      </div>
+      <div>
+        <label class="desc-label" for="get-min-difference">Min Difference</label>
+        <input type="text" class="input-text" id="get-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.min_difference" placeholder="In MS (Ex: 100)" />
+      </div>
+    </div>
+  </section>
+
+  <section class="boxed-section">
+    <div class="header"><span class="post large">POST Requests</span></div>
+    <div class="content input-three-col">
+      <div>
+        <label class="desc-label" for="post-interval">Interval</label>
+        <input type="text" class="input-text" id="post-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.interval" placeholder="In MS (Ex: 1000)" />
+      </div>
+      <div>
+        <label class="desc-label" for="post-max-in-interval">Max In Interval</label>
+        <input type="text" class="input-text" id="post-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.max_in_interval" placeholder="Ex: 1" />
+      </div>
+      <div>
+        <label class="desc-label" for="post-min-difference">Min Difference</label>
+        <input type="text" class="input-text" id="post-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.min_difference" placeholder="In MS (Ex: 100)" />
+      </div>
+    </div>
+  </section>
+
+  <section class="boxed-section">
+    <div class="header"><span class="put large">PUT Requests</span></div>
+    <div class="content input-three-col">
+      <div>
+        <label class="desc-label" for="put-interval">Interval</label>
+        <input type="text" class="input-text" id="put-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.interval" placeholder="In MS (Ex: 1000)" />
+      </div>
+      <div>
+        <label class="desc-label" for="put-max-in-interval">Max In Interval</label>
+        <input type="text" class="input-text" id="put-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.max_in_interval" placeholder="Ex: 1" />
+      </div>
+      <div>
+        <label class="desc-label" for="put-min-difference">Min Difference</label>
+        <input type="text" class="input-text" id="put-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.min_difference" placeholder="In MS (Ex: 100)" />
+      </div>
+    </div>
+  </section>
+
+  <section class="boxed-section">
+    <div class="header"><span class="delete large">DELETE Requests</span></div>
+      <div class="content input-three-col">
+      <div>
+        <label class="desc-label" for="delete-interval">Interval</label>
+        <input type="text" class="input-text" id="delete-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.interval" placeholder="In MS (Ex: 1000)" />
+      </div>
+      <div>
+        <label class="desc-label" for="delete-max-in-interval">Max In Interval</label>
+        <input type="text" class="input-text" id="delete-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.max_in_interval" placeholder="Ex: 1" />
+      </div>
+      <div>
+        <label class="desc-label" for="delete-min-difference">Min Difference</label>
+        <input type="text" class="input-text" id="delete-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.min_difference" placeholder="In MS (Ex: 100)" />
+      </div>
+    </div>
+  </section>
+
+  <trust-admin-settings></trust-admin-settings>
+</div>
+
+<trust-list default-trust="true"></trust-list>
+
+<!-- Full Row -->
+<div class="ad-settings">
+  <ad-manager></ad-manager>
+</div>
+
+<!-- Add Rule Modal -->
+<modal show="AdminSettingsCtrl.showAddModal" on-close="AdminSettingsCtrl.closeAdd()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Add IP Blacklist Rule</h3>
+
+    <label>Enter Rule Name
+      <input type="text" placeholder="Rule Name" ng-model="AdminSettingsCtrl.rule.note" ng-disabled="AdminSettingsCtrl.addSubmitted" required />
+    </label>
+
+    <label for="ruleType">Select Rule Type:</label>
+    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.rule.type" ng-value="0" id="single" ng-disabled="AdminSettingsCtrl.addSubmitted" required />
+    <label for="single">Single IP</label>
+
+    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.rule.type" ng-value="1" id="range" ng-disabled="AdminSettingsCtrl.addSubmitted" required />
+    <label for="range">IP Range</label>
+
+    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.rule.type" ng-value="2" id="wildcard" ng-disabled="AdminSettingsCtrl.addSubmitted" required />
+    <label for="wildcard">Wildcard IP</label>
+
+    <div ng-if="AdminSettingsCtrl.rule.type === 0" ng-init="AdminSettingsCtrl.rule = { note: AdminSettingsCtrl.rule.note, type: 0 }">
+      <label>Enter a single IPV4 or IPV6 address
+        <input type="text" ng-model="AdminSettingsCtrl.rule.ip" placeholder="Ex: 203.0.113.15 or 2001:0db8:0f61:a1ff:0000:0000:0000:0080" ng-pattern="AdminSettingsCtrl.ipRegex" required />
+      </label>
+    </div>
+
+    <div ng-if="AdminSettingsCtrl.rule.type === 1" ng-init="AdminSettingsCtrl.rule = { note: AdminSettingsCtrl.rule.note, type: 1 }">
+      <label>Enter a range of IPV4 or IPV6 addresses</label>
+      <div>
+        <div class="half-column">
+          <input type="text" ng-model="AdminSettingsCtrl.rule.start" placeholder="Start Ex: 203.0.113.0 or 2001:0db8:0000:0000:0000:0000:0000:0000" ng-pattern="AdminSettingsCtrl.ipRegex" ng-disabled="AdminSettingsCtrl.addSubmitted" required />
+        </div>
+        <div class="half-column">
+          <input type="text" ng-model="AdminSettingsCtrl.rule.end" placeholder="End Ex: 203.0.113.255 or 2001:0db8:ffff:ffff:ffff:ffff:ffff:ffff" ng-pattern="AdminSettingsCtrl.ipRegex" ng-disabled="AdminSettingsCtrl.addSubmitted" required />
+        </div>
+      </div>
+    </div>
+
+    <div ng-if="AdminSettingsCtrl.rule.type === 2" ng-init="AdminSettingsCtrl.rule = { note: AdminSettingsCtrl.rule.note, type: 2 }">
+      <label>Enter an IPV4 wildcard</label>
+      <div class="wildcard">
+        <input type="text" ng-model="AdminSettingsCtrl.rule.blockOne" ng-pattern="AdminSettingsCtrl.blockRegex" placeholder="203" maxlength="3" ng-disabled="AdminSettingsCtrl.addSubmitted" required />
+        <input type="text" ng-model="AdminSettingsCtrl.rule.blockTwo" ng-disabled="AdminSettingsCtrl.addSubmitted" ng-pattern="AdminSettingsCtrl.blockWildcardRegex" placeholder="0" maxlength="3" required />
+        <input type="text" ng-model="AdminSettingsCtrl.rule.blockThree" ng-disabled="AdminSettingsCtrl.addSubmitted" ng-pattern="AdminSettingsCtrl.blockWildcardRegex" placeholder="113" maxlength="3" required />
+        <input type="text" ng-model="AdminSettingsCtrl.rule.blockFour" ng-pattern="AdminSettingsCtrl.blockWildcardRegex" placeholder="*" maxlength="3" ng-disabled="AdminSettingsCtrl.addSubmitted" required />
+      </div>
+    </div>
+
+    <div class="clear">
+      <div class="half-column">
+        <button class="fill-row" ng-click="AdminSettingsCtrl.addRule()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminSettingsCtrl.addSubmitted" ng-bind="AdminSettingsCtrl.saveRuleBtnLabel"></button>
+      </div>
+      <div class="half-column">
+        <button class="fill-row" ng-click="AdminSettingsCtrl.addRule($parent.form)"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminSettingsCtrl.addSubmitted" ng-bind="AdminSettingsCtrl.saveContinueBtnLabel"></button>
+      </div>
+    </div>
+  </form>
+</modal>
+
+<!-- Edit Rule Modal -->
+<modal show="AdminSettingsCtrl.showEditModal" on-close="AdminSettingsCtrl.closeEdit()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Edit IP Blacklist Rule</h3>
+
+    <label>Rule Name
+      <input type="text" placeholder="Rule Name" ng-model="AdminSettingsCtrl.selectedRule.note" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+    </label>
+
+    <label for="ruleType">Select Rule Type:</label>
+    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.selectedRule.type" ng-value="0" id="single-edit" ng-click="AdminSettingsCtrl.selectedRule = { id: AdminSettingsCtrl.selectedRule.id, note: AdminSettingsCtrl.selectedRule.note, type: 0 }" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+    <label for="single-edit">Single IP</label>
+
+    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.selectedRule.type" ng-value="1" id="range-edit" ng-click="AdminSettingsCtrl.selectedRule = { id: AdminSettingsCtrl.selectedRule.id, note: AdminSettingsCtrl.selectedRule.note, type: 1 }" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+    <label for="range-edit">IP Range</label>
+
+    <input type="radio" class="pointer" name="ruleType" ng-model="AdminSettingsCtrl.selectedRule.type" ng-value="2" id="wildcard-edit" ng-click="AdminSettingsCtrl.selectedRule = { id: AdminSettingsCtrl.selectedRule.id, note: AdminSettingsCtrl.selectedRule.note, type: 2 }" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+    <label for="wildcard-edit">Wildcard IP</label>
+
+    <div ng-if="AdminSettingsCtrl.selectedRule.type === 0">
+      <label>Enter a single IPV4 or IPV6 address
+        <input type="text" ng-model="AdminSettingsCtrl.selectedRule.ip" placeholder="Ex: 203.0.113.15 or 2001:0db8:0f61:a1ff:0000:0000:0000:0080" ng-pattern="AdminSettingsCtrl.ipRegex" required />
+      </label>
+    </div>
+
+    <div ng-if="AdminSettingsCtrl.selectedRule.type === 1">
+      <label>Enter a range of IPV4 or IPV6 addresses</label>
+      <div>
+        <div class="half-column">
+          <input type="text" ng-model="AdminSettingsCtrl.selectedRule.start" placeholder="Start Ex: 203.0.113.0 or 2001:0db8:0000:0000:0000:0000:0000:0000" ng-pattern="AdminSettingsCtrl.ipRegex" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+        </div>
+        <div class="half-column">
+          <input type="text" ng-model="AdminSettingsCtrl.selectedRule.end" placeholder="End Ex: 203.0.113.255 or 2001:0db8:ffff:ffff:ffff:ffff:ffff:ffff" ng-pattern="AdminSettingsCtrl.ipRegex" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+        </div>
+      </div>
+    </div>
+
+    <div ng-if="AdminSettingsCtrl.selectedRule.type === 2">
+      <label>Enter an IPV4 wildcard</label>
+      <div class="wildcard">
+        <input type="text" ng-model="AdminSettingsCtrl.selectedRule.blockOne" ng-pattern="AdminSettingsCtrl.blockRegex" placeholder="203" maxlength="3" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+        <input type="text" ng-model="AdminSettingsCtrl.selectedRule.blockTwo" ng-disabled="AdminSettingsCtrl.editSubmitted" ng-pattern="AdminSettingsCtrl.blockWildcardRegex" placeholder="0" maxlength="3" required />
+        <input type="text" ng-model="AdminSettingsCtrl.selectedRule.blockThree" ng-disabled="AdminSettingsCtrl.editSubmitted" ng-pattern="AdminSettingsCtrl.blockWildcardRegex" placeholder="113" maxlength="3" required />
+        <input type="text" ng-model="AdminSettingsCtrl.selectedRule.blockFour" ng-pattern="AdminSettingsCtrl.blockWildcardRegex" placeholder="*" maxlength="3" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+      </div>
+    </div>
+
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminSettingsCtrl.editRule()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminSettingsCtrl.editSubmitted" ng-bind="AdminSettingsCtrl.editRuleBtnLabel"></button>
+    </div>
+  </form>
+</modal>
+
+<!-- Delete Rule Modal -->
+<modal show="AdminSettingsCtrl.showDeleteModal" on-close="AdminSettingsCtrl.closeDelete()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Confirm Rule Deletion</h3>
+    <table class="striped" width="100%">
+      <thead>
+        <tr>
+          <th colspan="2">
+          Rule to Delete
+          </th>
+        </tr>
+      </thead>
+      <tr>
+        <td>Rule Name</td>
+        <td ng-bind="AdminSettingsCtrl.selectedRule.note"></td>
+      </tr>
+      <tr>
+        <td>IP Rule</td>
+        <td ng-bind="AdminSettingsCtrl.selectedRule.ip_data"></td>
+      </tr>
+    </table>
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminSettingsCtrl.deleteRule(AdminSettingsCtrl.selectedRule)"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || AdminSettingsCtrl.deleteSubmitted" ng-bind="AdminSettingsCtrl.deleteRuleBtnLabel"></button>
+    </div>
+  </form>
+</modal>

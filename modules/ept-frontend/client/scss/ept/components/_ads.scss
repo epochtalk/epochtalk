@@ -1,0 +1,107 @@
+// ads viewer
+#eptAd { padding-bottom: 1rem; }
+.ad-text { text-align: center; }
+.ad-disclaimer { text-align: center; font-size: 0.8rem; }
+
+// ad settings
+.ad-settings {
+  float: left;
+  display: block;
+  width: 100%;
+  padding-top: 2rem;
+}
+.ad-tabs { margin-top: -0.5rem; padding-bottom: 0.8rem; }
+
+.rounds-view {
+  @include clearfix;
+  @include row;
+  .leftcol {
+    @include span-columns(6);
+    h2 { display: inline-block; }
+    margin-bottom: 1.5rem;
+    span { font-size: 1.25rem; };
+  }
+  .rightcol {
+    @include span-columns(6);
+    @include omega;
+    .pagination-slide {
+      @include span-columns(10);
+      @include omega;
+      float: right;
+      .prev, .next, .page { @include span-columns(4); }
+    }
+  }
+}
+
+.ads-controls { clear: both; padding-top: 1rem; text-align: center; }
+.ads-container {
+  @include clearfix;
+  @include row;
+  clear: both;
+  .ad-item {
+    @include row;
+    margin: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+.round-controls { padding-top: 2rem; }
+
+.factoids-view {
+  @include clearfix;
+  @include row;
+  .leftcol {
+    @include span-columns(6);
+    h2 { display: inline-block; }
+    margin-bottom: 1.5rem;
+    span { font-size: 1.25rem; };
+  }
+  .rightcol {
+    @include span-columns(6);
+    @include omega;
+  }
+}
+
+.factoids-container {
+  @include clearfix;
+  @include row;
+  clear: both;
+  .factoid-item {
+    @include row;
+    margin: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+// Ad Information
+.page-header { margin-bottom: 0.5rem; }
+.info-text { margin-bottom: 1.5rem; }
+.container-header { font-weight: bold; }
+.container-subheader { margin-bottom: 1rem; }
+.ads-container.info { padding-bottom: 1rem; }
+.ad-item.info {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid $border-color;
+}
+.ad-item.info:first-child { padding-top: 0px; }
+.ad-item.info:last-child { border-bottom: 0px; padding-bottom: 0px; }
+.factoid-header { margin-top: 1.5rem; }
+.factoids-listing li { margin-left: 1.5rem; }
+
+
+// Ad Analytics
+.text-right th, .text-right td { text-align: right; }
+.analytics-view {
+  @include clearfix;
+  @include row;
+  .leftcol {
+    @include span-columns(6);
+  }
+  .rightcol {
+    @include span-columns(6);
+    @include omega;
+  }
+}
