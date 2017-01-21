@@ -3,5 +3,6 @@ module.exports = [
   'ept-threads',
   'ept-boards',
   'ept-categories',
-  'ept-users'
+  'ept-users',
+  'ept-auth'
 ];
