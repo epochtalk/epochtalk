@@ -10,5 +10,6 @@ module.exports = [
   'ept-messages',
   'ept-watchlist',
   'ept-md-parser',
-  'ept-bbcode-parser'
+  'ept-bbcode-parser',
+  'ept-portal'
 ];
