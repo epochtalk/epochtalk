@@ -13,5 +13,6 @@ module.exports = [
   'ept-bbcode-parser',
   'ept-portal',
   'ept-auto-moderation',
-  'ept-ads'
+  'ept-ads',
+  'ept-ignore-users'
 ];
