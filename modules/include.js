@@ -11,5 +11,6 @@ module.exports = [
   'ept-watchlist',
   'ept-md-parser',
   'ept-bbcode-parser',
-  'ept-portal'
+  'ept-portal',
+  'ept-auto-moderation'
 ];

@@ -12,7 +12,6 @@
     "bct-activity": "~1.0.1",
     "ept-ads": "~1.0.0",
     "bct-trust": "1.0.3",
-    "ept-auto-moderation": "1.0.3",
     "ept-ignore-users": "~1.0.2"
   }
 }

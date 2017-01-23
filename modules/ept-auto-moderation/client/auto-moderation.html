@@ -1,0 +1,215 @@
+<div ng-if="vm.canViewRules()">
+  <h5 class="thin-underline section-header-top-spacing">
+    Auto Moderation Rules
+    <a ng-click="vm.createRule()" class="right" ng-if="vm.canCreateRule()">
+      <i class="fa fa-plus"></i>&nbsp;&nbsp;Add Rule
+    </a>
+  </h5>
+
+  <div class="rules-data">
+    <section class="boxed-section" ng-repeat="rule in vm.rules track by rule.id" >
+      <div class="header">
+        <span class="large" ng-bind="rule.name"></span>
+        <div class="right">
+          <a ng-click="vm.viewRule(rule)" ng-if="vm.canEditRule()">
+            <i class="fa fa-pencil"></i>
+          </a>
+          &nbsp;&nbsp;&nbsp;
+          <a ng-click="vm.deleteRule(rule)" ng-if="vm.canRemoveRule()">
+            <i class="fa fa-trash"></i>
+          </a>
+        </div>
+      </div>
+      <div class="content">
+        <div class="desc-label rule-description" ng-bind="rule.description"></div>
+        <div class="desc-label rule-description" ng-if="!rule.description">No Description Given</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Edit Rule Modal -->
+<modal class="medium" show="vm.viewable">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Rule Information</h5>
+
+    <!-- Name -->
+    <label class="desc-label">Name</label>
+    <input type="text" class="input-text" ng-model="vm.viewedRule.name" required />
+
+    <!-- Description -->
+    <label class="desc-label">Description</label>
+    <textarea class="input-text" ng-model="vm.viewedRule.description"></textarea>
+
+    <br />
+
+    <!-- Conditions -->
+    <div class="column-container">
+      <div class="half-column">
+        <h5 ng-class="{'rule-red':vm.viewedRule.conditions.length<1}">
+          Conditions <small><i>(add at least 1)</i></small>
+        </h5>
+      </div>
+      <!-- Add Condition -->
+      <div class="half-column">
+        <a href="#" class="right" ng-click="vm.addCondition()">
+          <i class="fa fa-plus"></i>&nbsp;&nbsp;Add Condition
+        </a>
+      </div>
+    </div>
+    <div class="thin-underline"></div>
+
+    <section class="boxed-section" ng-repeat="cond in vm.viewedRule.conditions">
+      <div class="header">
+        Condition {{$index+1}}
+        <div class="right">
+          <a ng-click="vm.removeCondition($index)">
+            <i class="fa fa-trash"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="fill-row">
+          <label class="desc-label">
+            Parameter
+          </label>
+          <select type="text" class="input-text" ng-model="cond.param" required >
+            <option value="body">Post Body</option>
+            <option value="thread_id">Thread ID</option>
+            <option value="user_id">User ID</option>
+            <option value="title">Post Title</option>
+          </select>
+        </div>
+
+        <label class="desc-label">Regex</label>
+        <div class="column-container">
+          <div class="rule-regex-slash">/</div>
+          <div class="rule-regex-input">
+            <input type="text" class="input-text" ng-model="cond.regex.pattern" required />
+          </div>
+          <div class="rule-regex-slash">/</div>
+          <div class="rule-regex-flags">
+            <input type="text" class="input-text" ng-model="cond.regex.flags" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule-no-selections" ng-if="vm.viewedRule.conditions.length === 0">
+      Please add at least one condition
+    </section>
+
+    <br /><br />
+
+    <!-- Actions -->
+    <h5 class="thin-underline" ng-class="{'rule-red': vm.viewedRule.actions.length < 1}">
+      Actions <small><i>(choose at least 1)</i></small>
+    </h5>
+    <div class="column-container">
+      <div class="half-column rule-action" ng-class="{checked: vm.viewedRule.actions.indexOf('reject') > -1}" ng-click="vm.toggleActionSelection('reject')">
+          <label class="desc-label">Reject Post</label>
+      </div>
+      <div class="half-column rule-action" ng-class="{checked: vm.viewedRule.actions.indexOf('edit') > -1}" ng-click="vm.toggleActionSelection('edit')">
+          <label class="desc-label">Edit Post Body</label>
+      </div>
+      <div class="half-column rule-action" ng-class="{checked: vm.viewedRule.actions.indexOf('ban') > -1}" ng-click="vm.toggleActionSelection('ban')">
+          <label class="desc-label">Ban User</label>
+      </div>
+      <div class="half-column rule-action" ng-class="{checked: vm.viewedRule.actions.indexOf('delete') > -1}" ng-click="vm.toggleActionSelection('delete')">
+          <label class="desc-label">Allow Post but display as deleted</label>
+      </div>
+    </div>
+
+    <br /><br />
+
+    <!-- Options -->
+    <h5 class="thin-underline">Options</h5>
+
+    <section class="rule-no-selections" ng-if="vm.viewedRule.actions.length === 0 || (vm.viewedRule.actions.length === 1 && vm.viewedRule.actions[0] === 'delete')">
+      No Options to display
+    </section>
+
+    <!-- Reject -->
+    <section class="boxed-section" ng-if="vm.viewedRule.actions.indexOf('reject') > -1">
+      <div class="header">Rejection Options</div>
+      <div class="content">
+        <label class="desc-label">Error Message</label>
+        <input type="text" class="input-text" ng-model="vm.viewedRule.message" ng-disabled="vm.viewedRule.actions.indexOf('reject') < 0" />
+      </div>
+    </section>
+
+    <!-- Ban -->
+    <section class="boxed-section" ng-if="vm.viewedRule.actions.indexOf('ban') > -1">
+      <div class="header">Banning Options</div>
+      <div class="content">
+        <label class="desc-label">Days Banned <i>(leave blank for permanent)</i></label>
+        <input type="number" ng-model="vm.viewedRule.options.banInterval" min="0" ng-disabled="vm.viewedRule.actions.indexOf('ban') < 0" />
+      </div>
+    </section>
+
+    <!-- Edit -->
+    <section class="boxed-section" ng-if="vm.viewedRule.actions.indexOf('edit') > -1">
+      <div class="header">Editing Options</div>
+      <div class="content">
+        <!-- Edit Template -->
+        <label class="desc-label">Template</label>
+        <textarea class="input-text" ng-model="vm.viewedRule.options.edit.template" ng-class="{'rule-red-border': vm.viewedRule.options.edit.template.length && vm.viewedRule.options.edit.template.indexOf('{body}') < 0}" ng-disabled="vm.viewedRule.actions.indexOf('edit') < 0" placeholder="*Pre-append message* {body} *Post-apprend message*" ></textarea>
+
+        <br /><hr /><br />
+
+        <!-- Edit Replace -->
+        <div class="fill-row">
+          <label class="desc-label">Text to Replace</label>
+          <input type="text" class="input-text" ng-model="vm.viewedRule.options.edit.replace.text" ng-disabled="vm.viewedRule.actions.indexOf('edit') < 0" />
+        </div>
+
+        <label class="desc-label">Regex </label>
+        <div class="column-container">
+          <div class="rule-regex-slash">/</div>
+          <div class="rule-regex-input">
+            <input type="text" class="input-text" ng-model="vm.viewedRule.options.edit.replace.regex.pattern" ng-disabled="vm.viewedRule.actions.indexOf('edit') < 0" />
+          </div>
+          <div class="rule-regex-slash">/</div>
+          <div class="rule-regex-flags">
+            <input type="text" class="input-text" ng-model="vm.viewedRule.options.edit.replace.regex.flags" ng-disabled="vm.viewedRule.actions.indexOf('edit') < 0" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <br />
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.saveRule(vm.viewedRule)" ng-disabled="vm.submitDisabled()">
+        Save
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Edit Rule Modal -->
+<modal class="medium" show="vm.deletable">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Delete Rule?</h5>
+
+    <p>Are you sure you want to delete this rule?</p>
+
+    <section class="boxed-section">
+      <div class="header">
+        <span class="large" ng-bind="vm.deletedRule.name"></span>
+      </div>
+      <div class="content">
+        <div class="desc-label" ng-bind="vm.deletedRule.description"></div>
+      </div>
+    </section>
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.removeRule(vm.deletedRule)">
+        Delete
+      </button>
+    </div>
+  </form>
+</modal>
