@@ -1,0 +1,13 @@
+var path = require('path');
+var dbc = require(path.normalize(__dirname + '/../db'));
+var helper = dbc.helper;
+var db = dbc.db;
+
+module.exports = function(conversationId, userId) {
+  conversationId = helper.deslugify(conversationId);
+  userId = helper.deslugify(userId);
+
+  var q = 'SELECT id FROM private_messages WHERE conversation_id = $1 AND (sender_id = $2 OR receiver_id = $2)';
+  return db.sqlQuery(q, [conversationId, userId])
+  .then(function(rows) { return rows.length > 0; });
+};

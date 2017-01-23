@@ -6,5 +6,6 @@ module.exports = [
   'ept-users',
   'ept-auth',
   'ept-frontend',
-  'ept-reports'
+  'ept-reports',
+  'ept-messages'
 ];
