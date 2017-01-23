@@ -9,5 +9,6 @@ module.exports = [
   'ept-reports',
   'ept-messages',
   'ept-watchlist',
-  'ept-md-parser'
+  'ept-md-parser',
+  'ept-bbcode-parser'
 ];
