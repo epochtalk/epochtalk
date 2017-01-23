@@ -1,0 +1,30 @@
+<!-- Page Header -->
+<h2 class="page-header">Advertisement Information</h2>
+<div class="info-text" ng-bind-html="AdInfoCtrl.infoText">
+</div>
+
+<h5 class="container-header">Main Slots (1 in {{ AdInfoCtrl.adSize }} chance)</h5>
+<div class="container-subheader">Nine are auctioned off. One is the factoid slot.</div>
+
+<!-- Ads container -->
+<section class="ads-container info">
+  <section class="ad-item info" ng-repeat="ad in AdInfoCtrl.ads track by ad.id">
+    <div id="ad-{{$index}}"></div>
+  </section>
+</section>
+
+<h5 class="container-header factoid-header">
+  Factoid Slots (1 in {{ 10 * AdInfoCtrl.factoidSize}} chance)
+</h5>
+<div class="container-subheader">
+  Interesting facts, funny quotes, hints, info and ads given away to supporters.
+</div>
+
+<!-- Factoid container -->
+<section class="factoids-container">
+  <ul class="factoids-listing">
+    <li ng-repeat="factoid in AdInfoCtrl.factoids track by factoid.id">
+      <div id="factoid-{{$index}}"></div>
+    </li>
+  </ul>
+</section>

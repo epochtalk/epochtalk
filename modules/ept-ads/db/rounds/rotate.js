@@ -1,0 +1,38 @@
+var path = require('path');
+var Promise = require('bluebird');
+var using = Promise.using;
+var AlreadyUsedError = Promise.OperationalError;
+var RoundNotFoundError = Promise.OperationalError;
+var dbc = require(path.normalize(__dirname + '/../db'));
+var db = dbc.db;
+
+module.exports = function(round) {
+  return using(db.createTransaction(), function(client) {
+    // check if round can be rotated
+    var check = `SELECT start_time FROM ads.rounds WHERE round = $1`;
+    return client.queryAsync(check, [round])
+    .then(function(response) {
+      if (response.rows.length < 1) {
+        throw new RoundNotFoundError('This round does not exists');
+      }
+      else if (response.rows[0].start_time) {
+        throw new AlreadyUsedError('This round has already been in use');
+      }
+    })
+    // lock table from being read
+    .then(function() {
+      var lock = `LOCK TABLE ads.rounds IN ACCESS EXCLUSIVE MODE;`;
+      return client.queryAsync(lock);
+    })
+    // update end_time for current round
+    .then(function() {
+      var q = `UPDATE ads.rounds SET (current, end_time) = (false, now()) WHERE current = true;`;
+      return client.queryAsync(q);
+    })
+    // update start time for new round
+    .then(function() {
+      var q = `UPDATE ads.rounds SET (current, start_time) = (true, now()) WHERE round = $1`;
+      return client.queryAsync(q, [round]);
+    });
+  });
+};

@@ -1,0 +1,315 @@
+<div ng-if="vm.showDirective">
+
+<h5 class="thin-underline">
+  <!-- Title -->
+  Advertisements
+
+  <!-- Tabs -->
+  <dl class="tabs ad-tabs right">
+    <dd class="no-select" ng-class="{'active': vm.tab === 'text'}">
+      <a ng-click="vm.tab = 'text'">Text</a>
+    </dd>
+    <dd class="no-select" ng-class="{'active': vm.tab === 'rounds'}">
+      <a ng-click="vm.tab = 'rounds'">Rounds</a>
+    </dd>
+    <dd class="no-select" ng-class="{'active': vm.tab === 'factoids'}">
+      <a ng-click="vm.tab = 'factoids'">Factoids</a>
+    </dd>
+  </dl>
+</h5>
+
+<!-- Rounds View -->
+<div class="text-view" ng-show="vm.tab === 'text'">
+  <!-- Ad Disclaimer -->
+  <div class="fill-row">
+    <label class="desc-label">Ad Disclaimer</label>
+    <textarea ng-model="vm.text.disclaimer"></textarea>
+  </div>
+
+  <!-- Ad Disclaimer -->
+  <div class="fill-row">
+    <label class="desc-label">Ad Information sub-header</label>
+    <textarea ng-model="vm.text.info"></textarea>
+  </div>
+
+  <button ng-click="vm.saveText()">
+    Save
+  </button>
+</div>
+
+<!-- Rounds View -->
+<div class="rounds-view" ng-show="vm.tab === 'rounds'">
+  <!-- Round Controls Upper -->
+  <div class="leftcol">
+    <!-- label to show that this round is the current one -->
+    <span class="put large" ng-if="vm.currentRound === vm.round && vm.currentRound">Current</span>
+    <!-- Round Number -->
+    <span>Viewing Round: </span>
+    <span ng-bind="vm.round || 'None'"></span>
+    --
+    <span>Current Round: </span>
+    <span ng-bind="vm.currentRound || 'None'"></span>
+  </div>
+
+  <div class="rightcol">
+    <!-- move to round/paginate rounds -->
+    <div class="pagination-slide">
+      <div class="prev">
+        <button ng-disabled="!vm.nextRound" ng-click="vm.pullRound(vm.nextRound);">
+          &#10094; Newer
+        </button>
+      </div>
+      <div class="page" ng-if="vm.round" ng-bind="vm.round"></div>
+      <div class="page" ng-if="!vm.round">N/A</div>
+      <div class="next">
+        <button ng-disabled="!vm.previousRound" ng-click="vm.pullRound(vm.previousRound);">
+          Older &#10095;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ads -->
+  <h5 class="ads-controls" ng-if="vm.round">
+    <span ng-if="vm.ads.length">Ads in this Round</span>
+    <span ng-if="!vm.ads.length">No Ads for this Round</span>
+    <a ng-click="vm.openCreateAd()"><i class="fa fa-plus"></i></a>
+  </h5>
+
+  <!-- Ads container -->
+  <section class="ads-container">
+    <section class="ad-item" ng-repeat="ad in vm.ads track by ad.id">
+      <h5 class="thin-underline">
+        Ad #{{$index+1}}
+        <div class="right">
+          <a data-balloon="Duplicate" ng-click="vm.duplicateAd(ad.id)"><i class="fa fa-files-o"></i></a>
+          &nbsp;&nbsp;&nbsp;
+          <a data-balloon="Edit" ng-click="vm.openEditAd(ad)"><i class="fa fa-pencil"></i></a>
+          &nbsp;&nbsp;&nbsp;
+          <a data-balloon="Delete" ng-click="vm.openDeleteAd(ad)"><i class="fa fa-trash"></i></a>
+        </div>
+      </h5>
+      <div id="ad-{{$index}}"></div>
+    </section>
+  </section>
+
+  <!-- Round Controls Lower -->
+  <div class="round-controls">
+    <div class="leftcol">
+      <!-- create new round -->
+      <button ng-click="vm.showCreateRound = true">
+        <i class="fa fa-plus"></i>&nbsp;&nbsp;Create New Round
+      </button>
+      <!-- rotate this round -->
+      <button ng-click="vm.showRotateRound = true" ng-if="(!vm.currentRound && vm.round) || vm.round > vm.currentRound">
+        <i class="fa fa-toggle-right"></i>&nbsp;&nbsp;Use These Ads
+      </button>
+    </div>
+
+    <div class="rightcol">
+      <!-- move to round/paginate rounds -->
+      <div class="pagination-slide">
+        <div class="prev">
+          <button ng-disabled="!vm.nextRound" ng-click="vm.pullRound(vm.nextRound);">
+            &#10094; Newer
+          </button>
+        </div>
+        <div class="page" ng-if="vm.round" ng-bind="vm.round"></div>
+        <div class="page" ng-if="!vm.round">N/A</div>
+        <div class="next">
+          <button ng-disabled="!vm.previousRound" ng-click="vm.pullRound(vm.previousRound);">
+            Older &#10095;
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Factoids View -->
+<div class="factoids-view" ng-show="vm.tab === 'factoids'">
+  <div class="leftcol">
+    <span>All Factoids</span>
+  </div>
+
+  <div class="rightcol">
+    <a class="right" ng-click="vm.showDisableAllFactoids = 'true'">
+      <i class="fa fa-eye-slash"></i>
+      &nbsp;&nbsp;&nbsp;
+      Disable All
+      &nbsp;&nbsp;&nbsp;
+    </a>
+    <a class="right" ng-click="vm.showEnableAllFactoids = true">
+      <i class="fa fa-eye"></i>
+      &nbsp;&nbsp;&nbsp;
+      Enable All
+      &nbsp;&nbsp;&nbsp;
+    </a>
+    <a class="right" ng-click="vm.openCreateFactoid()">
+      <i class="fa fa-plus"></i>
+      &nbsp;&nbsp;&nbsp;
+      Create
+      &nbsp;&nbsp;&nbsp;
+    </a>
+  </div>
+
+  <section class="factoids-container">
+    <section class="factoid-item" ng-repeat="factoid in vm.factoids track by factoid.id" >
+      <h5 class="thin-underline">
+        <span class="post large" ng-if="factoid.enabled" ng-click="vm.disableFactoid(factoid.id)">Enabled</span>
+        <span class="delete large" ng-if="!factoid.enabled" ng-click="vm.enableFactoid(factoid.id)">Disabled</span>
+        Factoid #{{$index+1}}
+        <div class="right">
+          <a ng-click="vm.openEditFactoid(factoid)"><i class="fa fa-pencil"></i></a>
+          &nbsp;&nbsp;&nbsp;
+          <a ng-click="vm.openDeleteFactoid(factoid)"><i class="fa fa-trash"></i></a>
+        </div>
+      </h5>
+      <div id="factoid-{{$index}}"></div>
+    </section>
+  </section>
+</div>
+
+<!-- Create Round Modal -->
+<modal class="medium" show="vm.showCreateRound">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Create New Round?</h5>
+
+    <p>This will create a new round (Rounds cannot be deleted)</p>
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.createRound()">
+        Create
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Rotate Round Modal -->
+<modal class="medium" show="vm.showRotateRound">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Move Ads into Circulation?</h5>
+
+    <p>This will put the ads from round {{ vm.round }} into circulation, Are you sure you want to do this? (It will also end the previous round, and start this round. Previous rounds cannot be activated again.)</p>
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.rotateRound()">
+        Put into Circulation
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Create/Edit Ad Modal -->
+<modal class="medium" show="vm.showWriteAd">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Ad for round {{ vm.round }}</h5>
+
+    <!-- HTML -->
+    <label class="desc-label">HTML (use ${hash} to obfuscate css classes)</label>
+    <textarea class="input-text" ng-model="vm.tempAd.html"></textarea>
+
+    <br />
+
+    <!-- CSS -->
+    <label class="desc-label">CSS (use ${hash} to obfuscate css classes)</label>
+    <textarea class="input-text" ng-model="vm.tempAd.css"></textarea>
+
+    <br />
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.saveAd()" ng-disabled="vm.adValidation()">
+        Save
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Delete Ad Modal -->
+<modal class="medium" show="vm.showDeleteAd">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Delete Ad for round {{ vm.round }}</h5>
+
+    <p>This will also delete any analytics attached to this ad.</p>
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.deleteAd()">
+        Delete
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Create/Edit Factoid Modal -->
+<modal class="medium" show="vm.showWriteFactoid">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Factoid</h5>
+
+    <!-- TEXT -->
+    <label class="desc-label">Factoid text (HTML ok):</label>
+    <textarea class="input-text" ng-model="vm.tempFactoid.text"></textarea>
+
+    <br />
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.saveFactoid()" ng-disabled="vm.factoidValidation()">
+        Save
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Delete Factoid Modal -->
+<modal class="medium" show="vm.showDeleteFactoid">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Delete Factoid?</h5>
+
+    <p>This will also delete any analytics attached to this Factoid.</p>
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.deleteFactoid()">
+        Delete
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Enable All Factoids Modal -->
+<modal class="medium" show="vm.showEnableAllFactoids">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Enable All Factoids?</h5>
+
+    <p>Are you sure you want to enable all Factoids?</p>
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.enableAllFactoids()">
+        Enable All Factoids
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Disable All Factoids Modal -->
+<modal class="medium" show="vm.showDisableAllFactoids">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h5 class="thin-underline">Disable All Factoids?</h5>
+
+    <p>Are you sure you want to disable all Factoids?</p>
+
+    <!-- Save Button -->
+    <div class="column-container">
+      <button class="fill-row" ng-click="vm.disableAllFactoids()">
+        Disable All Factoids
+      </button>
+    </div>
+  </form>
+</modal>
+
+</div>

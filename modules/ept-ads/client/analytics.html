@@ -1,0 +1,86 @@
+<div class="analytics-view">
+  <!-- Page Header -->
+  <div class="leftcol">
+    <h2 class="page-header">Advertisement Analytics</h2>
+    <div class="page-subheader">This page lists ~exact impression counts for ads.</div>
+  </div>
+
+  <div class="rightcol">
+    <!-- move to round/paginate rounds -->
+    <div class="pagination-slide">
+      <div class="prev">
+        <button ng-disabled="!AdAnalyticsCtrl.nextRound" ng-click="AdAnalyticsCtrl.pullRound('next');">
+          &#10094; Newer
+        </button>
+      </div>
+      <div class="page" ng-if="AdAnalyticsCtrl.round" ng-bind="AdAnalyticsCtrl.round"></div>
+      <div class="page" ng-if="!AdAnalyticsCtrl.round">N/A</div>
+      <div class="next">
+        <button ng-disabled="!AdAnalyticsCtrl.previousRound" ng-click="AdAnalyticsCtrl.pullRound('previous');">
+          Older &#10095;
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h5 class="container-header">
+  <span class="put large" ng-if="AdAnalyticsCtrl.currentRound === AdAnalyticsCtrl.round && AdAnalyticsCtrl.currentRound">Current</span>
+  Round {{ AdAnalyticsCtrl.round }}
+</h5>
+<div class="container-subheader">
+  From
+  <span ng-if="AdAnalyticsCtrl.roundStartTime" ng-bind="(AdAnalyticsCtrl.roundStartTime | date: 'yyyy-M-d, HH:m:s') + ' (local time)'"></span>
+  <span ng-if="!AdAnalyticsCtrl.roundStartTime">This Round hasn't start yet</span>
+  <br>
+  To
+  <span ng-if="AdAnalyticsCtrl.roundEndTime" ng-bind="(AdAnalyticsCtrl.roundEndTime | date: 'yyyy-M-d, HH:m:s') + ' (local time)'"></span>
+  <span ng-if="!AdAnalyticsCtrl.roundEndTime">This Round hasn't ended yet</span>
+  <span ng-if='AdAnalyticsCtrl.roundPeriod'>
+    <br>
+    Elapsed Time: <span ng-bind="AdAnalyticsCtrl.roundPeriod"></span>
+  </span>
+</div>
+
+<!-- Reports Table -->
+<div class="fill-row">
+  <div class="fill-row admin-content-selectable">
+    <table class="underlined text-right" width="100%">
+
+      <thead>
+        <th >Ad Slot #</th>
+        <th>Total Impressions</th>
+        <th title="Impressions from Logged-in Users">Impressions from Logged-in Users</th>
+        <th>Unique IPs</th>
+        <th>Unique Logged-in Users</th>
+      </thead>
+
+      <tbody>
+        <tr class="selectable-row pointer" ng-repeat="view in AdAnalyticsCtrl.analytics">
+          <td ng-bind="$index + 1"></td>
+          <td ng-bind="view.total_impressions"></td>
+          <td ng-bind="view.total_authed_impressions"></td>
+          <td ng-bind="view.total_unique_ip_impressions"></td>
+          <td ng-bind="view.total_unique_authed_users_impressions"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="fill-row">
+  <div class="pagination-slide">
+    <div class="prev">
+      <button ng-disabled="!AdAnalyticsCtrl.nextRound" ng-click="AdAnalyticsCtrl.pullRound('next');">
+        &#10094; Newer
+      </button>
+    </div>
+    <div class="page" ng-if="AdAnalyticsCtrl.round" ng-bind="AdAnalyticsCtrl.round"></div>
+    <div class="page" ng-if="!AdAnalyticsCtrl.round">N/A</div>
+    <div class="next">
+      <button ng-disabled="!AdAnalyticsCtrl.previousRound" ng-click="AdAnalyticsCtrl.pullRound('previous');">
+        Older &#10095;
+      </button>
+    </div>
+  </div>
+</div>
