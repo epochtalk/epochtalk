@@ -8,5 +8,6 @@ module.exports = [
   'ept-frontend',
   'ept-reports',
   'ept-messages',
-  'ept-watchlist'
+  'ept-watchlist',
+  'ept-md-parser'
 ];

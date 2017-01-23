@@ -55,6 +55,7 @@
     "json": "^9.0.3",
     "jsonwebtoken": "^5.0.0",
     "lodash": "^4.5.0",
+    "marked": "^0.3.6",
     "mkdirp": "^0.5.0",
     "mmmagic": "^0.4.1",
     "node-sass": "^4.3.0",

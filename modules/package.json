@@ -15,7 +15,6 @@
     "ept-auto-moderation": "1.0.3",
     "ept-bbcode-parser": "~1.0.0",
     "ept-ignore-users": "~1.0.2",
-    "ept-md-parser": "1.0.3",
     "ept-portal": "1.0.0"
   }
 }
