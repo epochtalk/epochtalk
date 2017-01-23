@@ -5,5 +5,6 @@ module.exports = [
   'ept-categories',
   'ept-users',
   'ept-auth',
-  'ept-frontend'
+  'ept-frontend',
+  'ept-reports'
 ];

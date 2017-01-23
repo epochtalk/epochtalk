@@ -5,7 +5,7 @@ function(Conversations, User, Session, Alert, PreferencesSvc, $filter, $state, $
     scope: true,
     bindToController: { user: '=' },
     template: require('./profile.html'),
-    controllerAs: 'vm',
+    controllerAs: 'vmProfile',
     controller: [function() {
       var ctrl = this;
 

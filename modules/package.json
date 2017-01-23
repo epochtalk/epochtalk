@@ -18,7 +18,6 @@
     "ept-md-parser": "1.0.3",
     "ept-messages": "~1.0.0",
     "ept-watchlist": "~1.0.0",
-    "ept-reports": "1.0.3",
     "ept-portal": "1.0.0"
   }
 }
