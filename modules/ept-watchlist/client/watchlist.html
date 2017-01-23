@@ -1,0 +1,127 @@
+<!-- Page Header -->
+<div class="watchlist-section">
+  <div class="leftcol">
+    <h2 class="inline-block">Watchlist</h2>
+    <dl class="tabs">
+      <dd class="no-select active" >
+        <a ui-sref="watchlist">Unread</a>
+      </dd>
+      <dd class="no-select">
+        <a ui-sref="watchlist.edit">Edit</a>
+      </dd>
+    </dl>
+  </div>
+  <div class="rightcol">
+    <div class="pagination-slide">
+      <div class="prev">
+        <button ng-disabled="WatchlistCtrl.page <= 1" ng-click="WatchlistCtrl.pullPage(-1);">&#10094; Newer</button>
+      </div>
+      <div class="page" ng-bind="WatchlistCtrl.page"></div>
+      <div class="next">
+        <button ng-disabled="!WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullPage(1);">Older &#10095;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- All Threads -->
+<div class="watchlist-data">
+
+  <!-- All Threads Header -->
+  <div class="threads-header" ng-if="WatchlistCtrl.threads">
+    <div class="mobile-header">
+      <h5>Threads</h5>
+    </div>
+    <div class="subject">
+      <h5>Subject</h5>
+    </div>
+    <div class="replies">
+      <h5>Replies</h5>
+    </div>
+    <div class="views">
+      <h5>Views</h5>
+    </div>
+    <div class="last-reply">
+      <h5>Last Post</h5>
+    </div>
+  </div>
+  <div class="thin-underline"></div>
+
+  <!-- All Thread listing -->
+  <div class="threads-data" ng-repeat="thread in WatchlistCtrl.threads track by thread.id">
+
+    <div class="subject">
+      <div class="title">
+        <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
+        <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
+        <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
+      </div>
+
+      <div class="started-by">
+        Started by
+        <span ng-if="thread.user.deleted">deleted</span>
+        <a ng-if="!thread.user.deleted" ui-sref="profile.posts({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
+        <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
+      </div>
+
+      <div class="mobile-stats">
+        <strong class="mobile-replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></strong>
+        <span> Replies and </span>
+        <strong class="mobile-views" ng-bind="(thread.view_count | number:0) || 0"></strong>
+        <span> Views</span>
+        <br />
+        <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
+        by
+        <span ng-if="thread.last_deleted">deleted</span>
+        <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+        <em ng-bind="thread.last_post_created_at | humanDate"></em>
+        <div ng-if="thread.has_new_post">
+          <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
+        </div>
+      </div>
+
+      <div class="pages" ng-if="thread.page_count > 1">
+        <span ng-repeat="pageKey in thread.page_keys">
+          <a ng-if="pageKey.threadId !== null" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
+          <span ng-if="pageKey.threadId === null" ng-bind-html="pageKey.val"></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></div>
+
+    <div class="views" ng-bind="(thread.view_count | number:0) || 0"></div>
+
+    <div class="last-reply">
+      <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
+      by
+      <span ng-if="thread.last_deleted">deleted</span>
+      <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind-html="thread.last_post_username"></a>
+      <div><em ng-bind="thread.last_post_created_at | humanDate"></em></div>
+      <div ng-if="thread.has_new_post">
+        <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Threads Listed -->
+  <div class-"threads-data" ng-if="WatchlistCtrl.threads.length < 1" class="centered-text">
+    <h5>No Threads Being Watched</h5>
+  </div>
+
+</div>
+
+<div class="watchlist-section">
+  <div class="leftcol">&nbsp;</div>
+  <div class="rightcol">
+    <div class="pagination-slide">
+      <div class="prev">
+        <button ng-disabled="WatchlistCtrl.page <= 1" ng-click="WatchlistCtrl.pullPage(-1);">&#10094; Newer</button>
+      </div>
+      <div class="page" ng-bind="WatchlistCtrl.page"></div>
+      <div class="next">
+        <button ng-disabled="!WatchlistCtrl.hasMoreThreads" ng-click="WatchlistCtrl.pullPage(1);">Older &#10095;</button>
+      </div>
+    </div>
+  </div>
+</div>
