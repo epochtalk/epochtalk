@@ -470,7 +470,11 @@ roles.banned = {
   lookup: 'banned',
   description: 'Read only access with content creation disabled',
   priority: 7,
-  priorityRestrictions: [0, 1, 2, 3]
+  priorityRestrictions: [0, 1, 2, 3],
+  notifications: {
+    dismiss: true,
+    counts: true
+  }
 };
 
 roles.anonymous = {
