@@ -323,6 +323,13 @@ exports.unban = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var promise = request.db.bans.unban(userId)
+    .tap(function(user) {
+      var notification = {
+        channel: { type: 'user', id: user.id },
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    })
     .then(function(user) {
       return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return request.session.updateBanInfo(user.user_id); })
