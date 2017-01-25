@@ -3,9 +3,9 @@ require('dotenv').load();
 var path = require('path');
 var program = require('commander');
 var crypto = require('crypto');
-var users = require(path.normalize(__dirname + '/../modules/node_modules/ept-users')).db;
-var categories = require(path.normalize(__dirname + '/../modules/node_modules/ept-categories')).db;
-var boards = require(path.normalize(__dirname + '/../modules/node_modules/ept-boards')).db;
+var users = require(path.normalize(__dirname + '/../modules/ept-users')).db;
+var categories = require(path.normalize(__dirname + '/../modules/ept-categories')).db;
+var boards = require(path.normalize(__dirname + '/../modules/ept-boards')).db;
 var config = require(path.join(__dirname, '..', 'config'));
 
 var emailerOptions = config.emailer_env;
