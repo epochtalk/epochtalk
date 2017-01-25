@@ -62,7 +62,12 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
     Session.user.roles.forEach(function(role) {
       var channel = JSON.stringify({ type: 'role', id: role });
       socket.subscribe(channel, options)
-      .watch(function() { Auth.authenticate(); });
+      .watch(function(data) {
+        if ($window.websocketLogs) {
+          console.log('Received role channel message.', data);
+        }
+        Auth.authenticate();
+      });
     });
   });
 
