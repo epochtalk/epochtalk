@@ -1,0 +1,121 @@
+/*------------- Board Header -----------------------------*/
+.portal-header {
+  padding: 0 0 2rem;
+  .page-header-split {
+    margin-bottom: 0;
+    .button { margin-bottom: 0; }
+  }
+}
+
+/*-------------- Posts (Thread View) Layout -------------- */
+.portal-threads {
+  @include pad(0 0 1rem 0);
+  clear: both;
+  &:last-child { margin-bottom: 2rem; }
+  .thread-title { display: inline; }
+  .deleted-container {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid $border-color;
+    .deleted {
+      background-color: $sub-header-color;
+      color: $secondary-font-color;
+      height: 2.5rem;
+      padding-top: 0.5rem;
+    }
+  }
+  .post-block {
+    @include row;
+    @include clearfix;
+    @include pad(0.5rem 0.5rem 1.25rem);
+    position: relative;
+    min-height: 10rem;
+    border-bottom: 1px solid $border-color;
+    &:first-child { border-top: 1px solid $border-color; }
+    .post-user {
+      width: 5rem;
+      padding-right: 1.25rem;
+      display: inline-block;
+      position: absolute;
+      a { display: block; }
+      .user-avatar {
+        @include bg-cover;
+        background: no-repeat center center;
+        height: 3.75rem;
+        width: 3.75rem;
+        img { @include border-radius(100px); width: 100%; height: 100%; object-fit: cover; }
+      }
+      .user-role, .user-activity {
+        padding-top: 0.5rem;
+        line-height: 0.625rem;
+        color: $secondary-font-color;
+        font-size: 0.625em;
+        overflow: hidden;
+        white-space: nowrap;
+        text-align: center;
+        text-transform: uppercase;
+        text-overflow: ellipsis;
+        width: 100%;
+      }
+    }
+    .post-content {
+      display: block;
+      margin-left: 5rem;
+      .post-title {
+        width: 100%;
+        display: block;
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
+        color: $secondary-font-color;
+        border-bottom: 1px solid $border-color;
+        a.username {
+          float: left;
+          margin-right: 0.75rem;
+          color: $base-font-color;
+          font-weight: 900;
+          &:hover { color: $color-primary; }
+        }
+        .timestamp, .display-name {
+          display: inline-block;
+          color: $secondary-font-color;
+          line-height: 1.3rem;
+          font-size: 0.8125rem;
+          font-weight: 400;
+          float: left;
+        }
+        .display-name { color: $secondary-font-color-dark; }
+        .clear { @include clearfix; }
+      }
+      .post-sig-border {
+        clear: both;
+        width: 250px;
+        border-top: 1px solid $border-color;
+        margin-bottom: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      .post-signature {
+        @include truncate-ellipsis;
+        clear: both;
+        color: $secondary-font-color;
+        font-size: 13px;
+        max-height: 50px;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        a {
+          color: $secondary-font-color;
+          &:hover { color: $color-primary; }
+        }
+      }
+    }
+  }
+}
+
+// Posts Layout Mobile
+@include media($mobile-portrait) {
+  .portal-threads .post-block .post-content .display-name { float: none; width: 100%; }
+}
+@include media($mobile) {
+  .portal-threads .post-block .post-user { display: none; }
+  .portal-threads .post-block .post-content { margin-left: 0; }
+  .portal-threads .post-block .post-title { position: relative; }
+  .portal-threads .post-block .post-title .timestamp { float: none; width: 100%; }
+}

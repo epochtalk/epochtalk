@@ -1,0 +1,131 @@
+<div id="{{::post.id}}" ng-repeat="post in PatrolCtrl.posts track by post.id" class="post-block" ng-class="{ 'highlighted': post.highlighted, 'hidden': post.hidden, 'deleted': post._deleted, 'editing': post.id === PatrolParentCtrl.posting.post.id }">
+  <!-- Delete Post View -->
+  <div class="deleted" ng-if="post._deleted">Post Deleted</div>
+
+  <!-- Visible Post View -->
+  <div ng-if="!post._deleted">
+    <!-- Post Profile Section -->
+    <div class="post-user">
+      <a ui-sref="profile.posts({ username: post.user.username})">
+        <div class="user-avatar">
+          <img ng-style="PatrolCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar}}">
+        </div>
+        <div class="user-role" ng-bind="post.user.role_name || 'user'"></div>
+      </a>
+    </div>
+
+    <!-- Post Body Section -->
+    <div class="post-content">
+      <!-- Post Title -->
+      <div class="post-title">
+        <span ng-if="post.user.online" class="online green"><i class="fa fa-circle"></i></span>
+        <span ng-if="!post.user.online" class="online green"><i class="fa fa-circle-o"></i></span>
+        <a class="username" data-balloon="{{post.user.role_name || 'User'}}" ui-sref="profile.posts({ username: post.user.username})" ng-style="PatrolCtrl.usernameHighlight(post.user.highlight_color)" ng-bind="::post.user.username"></a>
+        <div title="{{post.user.name}}" ng-if="post.user.name" class="display-name">
+          <span ng-bind-html="::post.user.name | truncate:33"></span>
+          <span class="hide-mobile">&nbsp;&mdash;&nbsp;</span>
+        </div>
+        <div class="timestamp">
+          <span ng-bind="::post.created_at | humanDate"></span>
+          <span ng-if="PatrolCtrl.showEditDate(post)" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
+        </div>
+
+        <ul class="post-action">
+          <li ng-if="PatrolCtrl.canDelete(post) && !post.deleted && post.position !== 1">
+            <a ng-href="#" data-balloon="Delete" ng-click="PatrolParentCtrl.openDeleteModal($index)">
+              <i class="fa fa-eye-slash"></i>
+            </a>
+          </li>
+          <li ng-if="PatrolCtrl.canDelete(post) && post.deleted">
+            <a ng-href="#" data-balloon="Undelete" ng-click="PatrolParentCtrl.openUndeleteModal($index)">
+              <i class="fa fa-eye"></i>
+            </a>
+          </li>
+          <li ng-if="PatrolCtrl.canPostLock(post) && !post.locked">
+            <a ng-href="#" data-balloon="Lock Post" ng-click="PatrolParentCtrl.lockPost(post)">
+              <i class="icon-epoch-lock"></i>
+            </a>
+          </li>
+          <li ng-if="PatrolCtrl.canPostLock(post) && post.locked">
+            <a ng-href="#" data-balloon="Unlock Post" ng-click="PatrolParentCtrl.unlockPost(post)">
+              <i class="icon-epoch-lock clicked"></i>
+            </a>
+          </li>
+          <li ng-if="PatrolParentCtrl.loggedIn() && post.user.id !== PatrolCtrl.user.id && (PatrolParentCtrl.reportControlAccess.reportPosts || PatrolParentCtrl.reportControlAccess.reportUsers)">
+            <a ng-href="#" data-balloon="Report" ng-click="PatrolCtrl.openReportModal(post)">
+              <i class="icon-epoch-flag"></i>
+            </a>
+          </li>
+          <li ng-if="PatrolCtrl.canUpdate(post)">
+            <a ng-href="#" data-balloon="Edit" ng-click="PatrolCtrl.loadEditor(post)">
+              <i class="icon-epoch-edit-pencil"></i>
+            </a>
+          </li>
+        </ul>
+        <div class="clear"></div>
+      </div>
+      <!-- Thread title -->
+      <div class="thread-title">
+        <a ui-sref="threads.data({ boardId: post.board_id })">
+          <span ng-bind-html="post.board_name"></span>
+        </a>
+        /
+        <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })">
+          <span ng-bind-html="post.thread_title"></span>
+        </a>
+      </div>
+      <!-- Post Body -->
+      <div class="post-body" post-processing="post.body" style-fix="true"></div>
+      <div ng-if="post.user.signature">
+        <div class="post-sig-border"></div>
+        <div class="post-signature" post-processing="post.user.signature" style-fix="true"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Post Modal -->
+<modal show="PatrolParentCtrl.showDeleteModal">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Delete Post</h3>
+    <p>Are you sure you want to delete this post?</p>
+    <label ng-if="PatrolParentCtrl.canPostLockQuick(PatrolParentCtrl.deletePostIndex)">
+      <input type="checkbox" ng-model="PatrolParentCtrl.deleteAndLock" />
+      Lock Post (poster cannot delete/edit this post)?
+    </label>
+    <!-- Delete Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="PatrolParentCtrl.deletePost()">
+        Delete Post
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Undelete Post Modal -->
+<modal show="PatrolParentCtrl.showUndeleteModal">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Undelete Post</h3>
+    <p>Are you sure you want to Undelete this post?</p>
+    <!-- Undelete Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="PatrolParentCtrl.undeletePost()">
+        Undelete Post
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Purge Post Modal -->
+<modal show="PatrolParentCtrl.showPurgeModal">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Purge Post</h3>
+    <p>Are you sure you want to permanently delete this post?</p>
+    <!-- Save Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="PatrolParentCtrl.purgePost()">
+        Purge Post
+      </button>
+    </div>
+  </form>
+</modal>

@@ -1,0 +1,27 @@
+<modal show="vm.show">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h4 class="thin-underline">Invite User</h4>
+    <!-- Email Input -->
+    <div class='input-section'>
+      <label>
+          Enter an email:
+        <div ng-if="$parent.form.email.$dirty && $parent.form.email.$error.required" class="invalid right">
+          Email is required
+        </div>
+        <div ng-if="$parent.form.email.$dirty && $parent.form.email.$error.email" class="invalid right">
+          Email is invalid
+        </div>
+        <input type="email" class="icon-padding" name="email" maxlength="255" ng-model="vm.email" ng-model-options="{ updateOn: 'default', debounce: {'default': 500 }}" placeholder="Email" auto-focus="$parent.focus" required>
+        <i ng-if="$parent.form.email.$dirty && !$parent.form.email.$error.email && !$parent.form.email.$error.required" class="fa fa-check input-icon valid"></i>
+        <i ng-if="$parent.form.email.$dirty && ($parent.form.email.$error.email || $parent.form.email.$error.required)" class="fa fa-times input-icon invalid"></i>
+      </label>
+    </div>
+    <!-- Save Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.invite()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+        Send Email
+      </button>
+    </div>
+    <div ng-if="vm.errorMessage" class="red centered padding-top" ng-bind="vm.errorMessage"></div>
+  </form>
+</modal>

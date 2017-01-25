@@ -1,0 +1,38 @@
+.row-section { @include clearfix; @include row; }
+.column-container { @include clearfix; }
+.half-column {
+  @include row;
+  @include span-columns(6);
+  @include omega(2n);
+  @include media($mobile) { @include span-columns(8); @include omega; }
+}
+.one-sixth-column {
+  @include row;
+  @include span-columns(2);
+  @include media($mobile) { @include span-columns(8); @include omega; }
+}
+.one-third-column {
+  @include row;
+  @include span-columns(4);
+  @include media($mobile) { @include span-columns(8); @include omega; }
+}
+.two-thirds-column {
+  @include row;
+  @include span-columns(8);
+  @include media($mobile) { @include span-columns(8); @include omega; }
+}
+.last-column { @include omega; }
+.fill-row {
+  @include clearfix;
+  @include span-columns(12);
+  @include omega;
+  pagination { display: inline-block; float: right; margin-bottom: 1rem; }
+  @include media($mobile) {
+    pagination {
+      @include span-columns(8);
+      @include omega;
+      text-align: center;
+      float: none;
+    }
+  }
+}

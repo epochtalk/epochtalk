@@ -1,7 +1,9 @@
 var _ = require('lodash');
 var path = require('path');
+var localModules = require(path.normalize(__dirname + '/../../../modules/include'));
 var modulesDir = path.normalize(__dirname + '/../../../modules');
 var modulesNMDir = path.normalize(__dirname + '/../../../modules/node_modules');
+var localModulesDir = path.normalize(__dirname + '/../../../modules');
 var modules = {};
 
 modules.install = (db) => {
@@ -26,17 +28,22 @@ modules.install = (db) => {
 
   // extract code from modules
   for (var moduleName in ept_modules) {
-    modules.load(moduleName, master);
+    modules.load(path.normalize(modulesNMDir + '/' + moduleName), master);
   }
+
+  // extract code from local modules
+  localModules.forEach(function(moduleName) {
+    modules.load(path.normalize(localModulesDir + '/' + moduleName), master);
+  });
 
   // return collection of code from modules
   return master;
 };
 
 
-modules.load = (moduleName, master) => {
+modules.load = (dir, master) => {
   // load the index.js for the given moduleName
-  var module = require(path.normalize(modulesNMDir + '/' + moduleName));
+  var module = require(dir);
   var name = module.name;
 
   // Module Routes
@@ -103,7 +110,6 @@ exports.register = (server, options, next) => {
   server = server || {};
   options = options || {};
   var db = options.db || {};
-
   // load all the code from each module installed
   var output = modules.install(db);
 

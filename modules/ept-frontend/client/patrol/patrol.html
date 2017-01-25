@@ -1,0 +1,169 @@
+<!-- Page Title -->
+<div class="patrol-section">
+  <!-- Show Title -->
+  <div class="leftcol">
+    <h4>Patrol</h4>
+  </div>
+
+  <!-- Pagination -->
+  <div class="rightcol">
+    <div class="pagination-slide">
+      <div class="prev">
+        <button ng-disabled="PatrolParentCtrl.page <= 1" ng-click="PatrolParentCtrl.changePage(-1);">&#10094; Newer</button>
+      </div>
+      <div class="page" ng-bind="PatrolParentCtrl.page"></div>
+      <div class="next">
+        <button ng-disabled="!PatrolParentCtrl.hasMorePosts" ng-click="PatrolParentCtrl.changePage(1);">Older &#10095;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Posts Listing -->
+<div class="thread-data" ui-view="data"></div>
+
+<!-- Bottom Pagination -->
+<div class="pagination-slide">
+  <div class="prev">
+    <button ng-disabled="PatrolParentCtrl.page <= 1" ng-click="PatrolParentCtrl.changePage(-1);">&#10094; Newer</button>
+  </div>
+  <div class="page" ng-bind="PatrolParentCtrl.page"></div>
+  <div class="next">
+    <button ng-disabled="!PatrolParentCtrl.hasMorePosts" ng-click="PatrolParentCtrl.changePage(1);">Older &#10095;</button>
+  </div>
+</div>
+
+
+<!-- spacer for editor -->
+<div id="post-spacer"></div>
+
+<!-- Editor -->
+<div>
+
+  <div ng-class="PatrolParentCtrl.editorPosition" ng-show="PatrolParentCtrl.showEditor" resizeable="PatrolParentCtrl.resize">
+    <!-- Editor Container-->
+    <div class="editor-container">
+      <!-- Editor Header -->
+      <div class="editor-top-bar">
+        <div class="buttons">
+          <button ng-click="PatrolParentCtrl.showFormatting = true">
+            <i class="fa fa-code"></i>&nbsp;&nbsp;Format
+          </button>
+          <button ng-click="PatrolParentCtrl.fullscreen()"><i class="fa" ng-class="{ 'fa-expand': PatrolParentCtrl.isMinimized, 'fa-compress': !PatrolParentCtrl.isMinimized }"></i>&nbsp;&nbsp;{{ PatrolParentCtrl.isMinimized ? 'Fullscreen' : 'Minimize' }}</button>
+
+          <div class="left hide-mobile toolbar-title" title="Click to go to this post" ng-if="PatrolParentCtrl.posting.post.id">
+            <a ui-sref="posts.data({ threadId: PatrolParentCtrl.posting.post.thread_id, page: PatrolParentCtrl.posting.post.page, '#': PatrolParentCtrl.posting.post.id })">
+              Editing: <span class="underline">{{ PatrolParentCtrl.posting.post.id }}</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="editor-formatting" ng-if="PatrolParentCtrl.showFormatting">
+          <a class="close-formatting" ng-click="PatrolParentCtrl.showFormatting = false">X</a>
+          <div class="thin-underline fill-row">
+            <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank" rel="noopener norefferer">
+              <h4>BBCode Lookup</h4>
+            </a>
+          </div>
+          <div class="half-column">
+            <strong>Bold</strong>:<div class="right">[b][/b]</div><br />
+            <em>Italics</em>:<div class="right">[i][/i]</div><br />
+            <u>Underline</u>:<div class="right">[u][/u]</div><br />
+            <del>Strikethrough</del>:<div class="right">[s][/s]</div><br />
+            BTC:<div class="right">[btc][/btc]</div><br />
+            <span style="background-color: green">Glow</span>:
+            <div class="right">[glow={color}][/glow]</div><br />
+            <span style="text-shadow: red 1px 1px 5px;">Shadow</span>:
+            <div class="right">[shadow={color}, {direction}, {blur}][/shadow]</div><br />
+            Font Size:<div class="right">[size={size}][/size]</div><br />
+            <sup>Superscript</sup>:<div class="right">[sup][/sup]</div><br />
+            <sub>Subscript</sub>:<div class="right">[sub][/sub]</div><br />
+
+            <hr class="clear" />
+
+            <code class="preview">Code</code>:<div class="right">[code][/code]</div><br />
+            <tt>TeleText</tt>:<div class="right">[tt][/tt]</div><br />
+            Preformatted Text:<div class="right">[pre][/pre]</div><br />
+            Justify Left:<div class="right">[left][/left]</div><br />
+            Justify Right:<div class="right">[right][/right]</div><br />
+            Justify Center:<div class="right">[center][/center]</div><br />
+
+            <hr class="clear" />
+
+            Horizontal Rule:<div class="right">[hr][/hr]</div><br /><br />
+          </div>
+          <div class="half-column">
+            Black:<div class="right">[black][/black]</div><br />
+            Blue:<div class="right">[blue][/blue]</div><br />
+            Green:<div class="right">[green][/green]</div><br />
+            Red:<div class="right">[red][/red]</div><br />
+            White:<div class="right">[white][/white]</div><br />
+            Additional Colors:<div class="right">[color={color}][/color]</div><br />
+
+            <hr class="clear" />
+
+            Image:<div class="right">[img]{URL}[/img]</div><br />
+            URL:<div class="right">[url={URL}][/url]</div><br />
+            Email:<div class="right">[email={email}][/email]</div><br />
+            FTP:<div class="right">[ftp={URL}][/ftp]</div><br />
+
+            <hr class="clear" />
+
+            Lists:
+            <div class="right">
+              [list]<br />
+              &nbsp;&nbsp;[li][/li]<br />
+              &nbsp;&nbsp;[li][/li]<br />
+              [/list]<br /><br />
+            </div>
+
+            <hr class="clear" />
+
+            Tables:
+            <div class="right">
+              [table]<br />
+              &nbsp;&nbsp;[tr]<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;[td][/td]<br />
+              &nbsp;&nbsp;[/tr]<br />
+              [/table]
+            </div><br />
+          </div>
+        </div>
+      </div>
+      <!-- Editor -->
+      <form name="form" class="editor-form" novalidate>
+        <epochtalk-editor class="posts-editor" body="PatrolParentCtrl.posting.post.body" raw-body="PatrolParentCtrl.posting.post.raw_body" reset-switch="PatrolParentCtrl.resetEditor" focus-switch="PatrolParentCtrl.focusEditor" dirty="PatrolParentCtrl.dirtyEditor">
+        </epochtalk-editor>
+      </form>
+      <!-- Editor Controls -->
+      <div class="editor-button-container">
+        <button class="cancel" ng-click="PatrolParentCtrl.cancelPost()">
+          Cancel
+        </button>
+        <button class="send" ng-click="PatrolParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PatrolParentCtrl.canSave()">
+          Send
+        </button>
+
+        <span class="label alert" ng-if="PatrolParentCtrl.posting.error" ng-bind="PatrolParentCtrl.posting.error.message"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reporting Modal -->
+<modal show="PatrolParentCtrl.showReportModal" on-close="PatrolParentCtrl.closeReportModal()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline" ng-if="PatrolParentCtrl.reportControlAccess.reportPosts && PatrolParentCtrl.reportControlAccess.reportUsers">Report User/Post</h3>
+    <h3 class="thin-underline" ng-if="PatrolParentCtrl.reportControlAccess.reportPosts && !PatrolParentCtrl.reportControlAccess.reportUsers">Report Post</h3>
+    <h3 class="thin-underline" ng-if="!PatrolParentCtrl.reportControlAccess.reportPosts && PatrolParentCtrl.reportControlAccess.reportUsers">Report User</h3>
+    <label ng-if="PatrolParentCtrl.reportControlAccess.reportPosts && PatrolParentCtrl.reportControlAccess.reportUsers">Which would you like to report?</label>
+    <input ng-if="PatrolParentCtrl.reportControlAccess.reportUsers" type="radio" name="reportPost" ng-model="PatrolParentCtrl.offendingId" ng-value="PatrolParentCtrl.reportedPost.user.id" id="reportUser" ng-disabled="PatrolParentCtrl.reportSubmitted" required><label ng-if="PatrolParentCtrl.reportControlAccess.reportUsers" for="reportUser">{{PatrolParentCtrl.reportedPost.user.username}}</label>
+    <input ng-if="PatrolParentCtrl.reportControlAccess.reportPosts" type="radio" name="reportPost" ng-model="PatrolParentCtrl.offendingId" ng-value="PatrolParentCtrl.reportedPost.id" id="reportPost" ng-disabled="PatrolParentCtrl.reportSubmitted" required><label ng-if="PatrolParentCtrl.reportControlAccess.reportPosts" for="reportPost">{{PatrolParentCtrl.reportedPost.user.username}}'s Post</label>
+    <label>Reason for Report</label>
+    <textarea name="reportReason" ng-model="PatrolParentCtrl.reportReason" ng-disabled="PatrolParentCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required maxlength="255"></textarea>
+    <div class="clear">
+      <button class="fill-row" ng-click="PatrolParentCtrl.submitReport()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || PatrolParentCtrl.reportSubmitted" ng-bind="PatrolParentCtrl.reportBtnLabel"></button>
+    </div>
+  </form>
+</modal>

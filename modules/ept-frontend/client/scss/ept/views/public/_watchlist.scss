@@ -1,0 +1,55 @@
+/*-------------- Watchlist Layout --------------- */
+.watchlist-section {
+  @include clearfix;
+  @include row;
+  .leftcol {
+    @include span-columns(6);
+    h2 { display: inline-block; }
+    margin-bottom: 1.5rem;
+  }
+  .rightcol {
+    @include span-columns(6);
+    @include omega;
+    .pagination-slide {
+      @include span-columns(8);
+      @include omega;
+      float: right;
+      .prev, .next, .page { @include span-columns(4); }
+    }
+  }
+}
+
+.watchlist-data-edit {
+  .threads-header, .threads-data {
+    .mobile-header { display: none; }
+    .subject { @include span-columns(9); }
+    .replies, .views { @include span-columns(1); text-align: center; }
+    .actions { @include span-columns(1); @include omega; }
+  }
+}
+
+.watchlist-data-spacer { margin-bottom: 2.5rem; }
+
+@include media($mobile) {
+  .watchlist-section {
+    .leftcol {
+      @include span-columns(8);
+    }
+    .rightcol {
+      @include span-columns(8);
+      @include omega;
+      .pagination-slide { @include fill-parent; }
+    }
+  }
+  .watchlist-data-edit {
+    .threads-header {
+      .mobile-header { @include span-columns(8); @include omega; display: block; }
+      .subject, .replies, .views, .actions { display: none; }
+    }
+    .threads-data {
+      .subject { @include span-columns(8); @include omega; }
+      .subject .mobile-stats { display: block; }
+      .replies, .views, .actions { display: none; }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+<div class="row clear">
+  <div class="comments">
+    <div class="comment-container">
+      <div class="comment" ng-repeat="comment in usernotesvm.usernotes track by comment.id">
+        <div class="avatar">
+          <img ng-style="usernotesvm.avatarHighlight(comment.author_highlight_color)" ng-src="{{comment.author_avatar}}" />
+        </div>
+        <div class="content">
+          <div class="title">
+            <div class="bold inline-block" ng-style="usernotesvm.usernameHighlight(comment.author_highlight_color)">{{ comment.author_name}}</div>
+            <span class="date">{{ comment.created_at | humanDate }}</span>
+            <span ng-if="comment.created_at !== comment.updated_at" class="date hide-mobile">&mdash;&nbsp;Edited {{ comment.updated_at | humanDate }}</span>
+            <div class="right" ng-if="comment.author_id === usernotesvm.authedUser.id">
+              <a ng-if="usernotesvm.accessControl.delete" ng-hide="comment.showConfirmDelete" ng-href="#" class="action" ng-click="comment.showConfirmDelete = true;" data-balloon="Delete">
+                <i class="fa fa-trash"></i>
+              </a>
+              <a ng-show="comment.showConfirmDelete" ng-href="#" ng-click="usernotesvm.deleteUserNote(comment);">&nbsp;Confirm&nbsp;</a>
+              <a ng-show="comment.showConfirmDelete" ng-href="#" ng-click="comment.showConfirmDelete = false;">&nbsp;Cancel&nbsp;</a>
+              &nbsp;&nbsp;
+              <a ng-if="usernotesvm.accessControl.update" ng-href="#" class="action" ng-click="comment.showEdit = !comment.showEdit" data-balloon="Edit">
+                <i class="fa fa-pencil"></i>
+              </a>
+            </div>
+            <span ng-if="comment.created_at !== comment.updated_at" class="date inline-block show-mobile">Edited {{ comment.updated_at | humanDate }}</span>
+
+          </div>
+          <div ng-if="!comment.showEdit">{{ comment.note }}</div>
+          <div ng-if="comment.showEdit">
+            <textarea ng-init="comment.noteEdit = comment.note" ng-model="comment.noteEdit"></textarea>
+            <div class="right">
+              <span ng-show="comment.noteEdit.length < 3 || comment.noteEdit === comment.note">&nbsp;Save&nbsp;</span>
+              <a ng-show="comment.noteEdit.length > 2 && comment.noteEdit !== comment.note" ng-href="#" ng-click="usernotesvm.editUserNote(comment)">&nbsp;Save&nbsp;</a>
+              <a ng-href="#" ng-click="comment.showEdit = false;">&nbsp;Cancel&nbsp;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row clear">
+  <div class="pagination-slide" ng-if="usernotesvm.usernotes.length">
+    <div class="prev">
+      <button ng-click="usernotesvm.pageUserNotes(usernotesvm.prev)" ng-disabled="!usernotesvm.prev" disabled="disabled">❮</button>
+    </div>
+    <div class="page">Page {{usernotesvm.page}}</div>
+    <div class="next">
+      <button ng-click="usernotesvm.pageUserNotes(usernotesvm.next)" ng-disabled="!usernotesvm.next" disabled="disabled">❯</button>
+    </div>
+  </div>
+  <h5 ng-if="!usernotesvm.usernotes.length" class="no-comments">This user has no moderation comments yet.</h5>
+</div>
+<div ng-if="usernotesvm.accessControl.create" class="row clear">
+  <form name="$parent.form" class="css-form">
+    <textarea class="usernote-reply" name="userNote" ng-model="usernotesvm.userNote" ng-disabled="usernotesvm.noteSubmitted" ng-change="usernotesvm.userNote.length ? null : $parent.form.$setUntouched();" placeholder="Leave a comment on this user's profile..." rows="2" required maxlength="2000"></textarea>
+    <div class="clear">
+      <button class="fill-row" ng-click="usernotesvm.submitUserNote(); $parent.form.$setUntouched()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || usernotesvm.noteSubmitted" ng-bind="usernotesvm.submitBtnLabel"></button>
+    </div>
+  </form>
+</div>

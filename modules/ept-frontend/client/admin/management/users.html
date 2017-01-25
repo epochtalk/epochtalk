@@ -1,0 +1,169 @@
+<div class="admin-table-header">
+  <div class="management-users radio-button">
+    <input type="radio" class="hide-radio" name="table-filter" value="0" id="users-filter-0" ng-model="AdminManagementCtrl.tableFilter" ng-click="AdminManagementCtrl.setFilter()" />
+    <label for="users-filter-0">All</label>
+  </div>
+  <div class="management-users radio-button">
+    <input type="radio" class="hide-radio" name="table-filter" value="1" id="users-filter-1" ng-model="AdminManagementCtrl.tableFilter" ng-click="AdminManagementCtrl.setFilter('banned')" />
+    <label for="users-filter-1">Banned</label>
+  </div>
+  <div class="header-spacer">
+    <select ng-change="AdminManagementCtrl.searchStr = ''"ng-model="AdminManagementCtrl.searchIps" ng-options="o.v as o.n for o in [{ n: 'Search by Username', v: false }, { n: 'Search by IP Address', v: true }]">
+    </select>
+  </div>
+  <div class="user-search">
+    <div class="nested-input-container" ng-hide="AdminManagementCtrl.searchIps">
+      <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
+      <a ng-click="AdminManagementCtrl.searchUsers()" class="nested-btn">Search</a>
+      <input class="input-text nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
+    </div>
+    <div class="nested-input-container" ng-show="AdminManagementCtrl.searchIps">
+      <a ng-if="AdminManagementCtrl.search" ng-click="AdminManagementCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
+      <a ng-click="AdminManagementCtrl.searchUsers()" class="nested-btn">Search</a>
+      <input class="input-text nested-input" ng-model="AdminManagementCtrl.searchStr" type="text" id="search-users" ng-pattern="AdminManagementCtrl.ipRegex" placeholder="Search users by IP address" ng-keydown="$event.which === 13 && AdminManagementCtrl.searchUsers()" ng-keyup="$event.which === 27 && AdminManagementCtrl.clearSearch()" />
+    </div>
+  </div>
+  <div class="clear"></div>
+</div>
+<div class="fill-row centered-text" ng-if="!AdminManagementCtrl.search && AdminManagementCtrl.count < 1">
+  <h4>No Users to display in <strong>{{AdminManagementCtrl.filter ? 'Banned' : 'All'}}</strong></h4>
+</div>
+<div class="fill-row" ng-if="AdminManagementCtrl.count > 0 || AdminManagementCtrl.search">
+  <div ng-if="AdminManagementCtrl.search">
+  Displaying {{AdminManagementCtrl.count | number}} search result(s) for "<strong>{{AdminManagementCtrl.search}}</strong>" in <strong>{{AdminManagementCtrl.filter ? 'Banned': 'All'}}</strong>:<br /><br />
+  </div>
+  <table class="underlined" width="100%">
+    <thead>
+      <th class="pointer" ng-click="AdminManagementCtrl.setSortField('username')"><span ng-class="AdminManagementCtrl.getSortClass('username')"></span>&nbsp;Username</th>
+      <th class="pointer" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }" ng-click="AdminManagementCtrl.setSortField('email')"><span ng-class="AdminManagementCtrl.getSortClass('email')"></span>&nbsp;Email</th>
+      <th class="pointer" ng-show="AdminManagementCtrl.tableFilter == 1" ng-click="AdminManagementCtrl.setSortField('ban_expiration')"><span ng-class="AdminManagementCtrl.getSortClass('ban_expiration')"></span>&nbsp;Ban Expiration</th>
+      <th class="pointer hide-mobile" ng-click="AdminManagementCtrl.setSortField('created_at')"><span ng-class="AdminManagementCtrl.getSortClass('created_at')"></span>&nbsp;Registered Date</th>
+      <th class="hide-mobile">Last Active Date</th>
+      <th class="hide-mobile">IP Addresses</th>
+      <th class="user-actions">Actions</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in AdminManagementCtrl.users track by user.username">
+        <td><a ui-sref="profile.posts({ username: user.username })" ng-bind="user.username"></a>
+        <i ng-show="user.ban_expiration" class="fa fa-user-times right"></i>
+        </td>
+        <td class="email-column" ng-class="{'hide-mobile': AdminManagementCtrl.tableFilter == 1 }"><a ng-href="mailto:{{user.email}}" ng-bind="user.email"></a></td>
+        <td ng-show="AdminManagementCtrl.tableFilter == 1" ng-bind="user.ban_expiration | humanDate:true"></td>
+        <td class="hide-mobile" ng-bind="user.created_at | humanDate"></td>
+        <td class="hide-mobile" ng-bind="(user.last_active | humanDate) || '--'"></td>
+        <td class="hide-mobile">
+          <span ng-repeat="ip in user.user_ips track by $index">
+            <span ng-bind="ip"></span>{{ !$last ? ', ' : '' }}
+          </span>
+          <span ng-if="!user.user_ips.length">Not Available</span>
+        </td>
+        <td>
+          <a ui-sref="users-posts({ username: user.username })">
+            <button class="icon" data-balloon="View Posts">
+              <i class="fa fa-file-text-o"></i>
+            </button>
+          </a>
+
+          <button class="icon" data-balloon="Edit Profile" ng-click="AdminManagementCtrl.showEditUser(user.username)">
+            <i class="fa fa-pencil"></i>
+          </button>
+
+          <button class="icon" data-balloon="Manage Bans" ng-click="AdminManagementCtrl.showManageBans(user)" ng-disabled="!AdminManagementCtrl.actionAccess.userControls.privilegedBan">
+            <i class="fa fa-ban"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagination-wrap">
+    <pagination page-count="AdminManagementCtrl.pageCount" page="AdminManagementCtrl.page" query-params="AdminManagementCtrl.queryParams"></pagination>
+  </div>
+</div>
+
+<!-- Manage Bans Modal -->
+<ban-modal show-modal="AdminManagementCtrl.showConfirmBanModal" selected-user="AdminManagementCtrl.selectedUser" callback="AdminManagementCtrl.updateViewBans" disable-board-bans="true"></ban-modal>
+
+<!-- Edit Profile Modal -->
+<modal class="medium" show="AdminManagementCtrl.showEditUserModal" on-close="AdminManagementCtrl.closeEditUser()">
+  <form ng-if="AdminManagementCtrl.selectedUser" name="$parent.form" class="css-form" novalidate>
+    <!-- Profile Fields -->
+    <div class="half-column">
+      <label>Username
+        <div ng-if="AdminManagementCtrl.selectedUser.username.length === 0" class="right">
+          Username will not be changed
+        </div>
+        <div ng-if="$parent.form.username.$error.unique" class="invalid right">
+          Username already taken
+        </div>
+        <div ng-if="$parent.form.username.$error.pattern" class="invalid right">
+          Usernames may only contain A-Z, 0-9, -, _ and .
+        </div>
+        <input type="text" class="input-text" name="username" ng-model="AdminManagementCtrl.selectedUser.username" unique-username="{{::AdminManagementCtrl.selectedUser.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ auto-focus="$parent.focus" maxlength="255"/>
+      </label>
+
+      <label>Display Name
+        <input type="text" class="input-text" placeholder="Name" ng-model="AdminManagementCtrl.selectedUser.name" maxlength="255">
+      </label>
+
+      <label>Email
+        <div ng-if="$parent.form.email.$error.email" class="invalid right">
+          Email is not valid
+        </div>
+        <div ng-if="AdminManagementCtrl.user.email.length === 0" class="right">
+          Email will not be changed
+        </div>
+        <div ng-if="$parent.form.email.$error.unique" class="invalid right">
+          Email already taken
+        </div>
+        <input type="email" name="email" ng-model="AdminManagementCtrl.selectedUser.email" unique-email="{{::AdminManagementCtrl.selectedUser.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
+      </label>
+
+      <label>New Password
+        <input type="password" placeholder="New Password" ng-model="AdminManagementCtrl.selectedUser.password" maxlength="255">
+      </label>
+
+      <label>Avatar
+        <image-uploader class="editor-image-uploader" model="AdminManagementCtrl.selectedUser.avatar" purpose="avatar"></image-uploader>
+        <input type="text" class="input-text" ng-model="AdminManagementCtrl.selectedUser.avatar" placeholder="URL to avatar image" />
+      </label>
+
+      <label>Signature
+        <textarea type="text" rows="5" placeholder="Signature" ng-model="AdminManagementCtrl.selectedUser.raw_signature" maxlength="5000"></textarea>
+      </label>
+    </div>
+
+    <div class="half-column">
+      <label>Website
+        <input type="text" class="input-text" placeholder="Website" ng-model="AdminManagementCtrl.selectedUser.website">
+      </label>
+
+      <label>Bitcoin Address
+        <input type="text" class="input-text" placeholder="Bitcoin Address" ng-model="AdminManagementCtrl.selectedUser.btcAddress" maxlength="255">
+      </label>
+
+      <label>Gender
+        <input type="text" class="input-text" placeholder="Gender" ng-model="AdminManagementCtrl.selectedUser.gender" maxlength="255">
+      </label>
+
+      <label>Date of Birth
+        <input type="date" class="input-text" placeholder="Date of Birth" ng-model="AdminManagementCtrl.selectedUser.dob">
+      </label>
+
+      <label>Location
+        <input type="text" class="input-text" placeholder="Location" ng-model="AdminManagementCtrl.selectedUser.location" maxlength="255">
+      </label>
+
+      <label>Language
+        <input type="text" class="input-text" placeholder="Language" ng-model="AdminManagementCtrl.selectedUser.language" maxlength="255">
+      </label>
+    </div>
+
+    <!-- Save Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminManagementCtrl.saveUserEdit()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+        Save
+      </button>
+    </div>
+  </form>
+
+</modal>

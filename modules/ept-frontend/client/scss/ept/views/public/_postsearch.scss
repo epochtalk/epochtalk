@@ -1,0 +1,54 @@
+
+.search-data {
+  @include pad(0 0 1rem 0);
+  clear: both;
+  .post-block {
+    @include row;
+    @include clearfix;
+    @include pad(2rem 0);
+    @include transition(background-color 250ms ease-in);
+    position: relative;
+    border-top: 1px solid $border-color;
+    &.first { border-top: 0; padding-top: 0.5rem; }
+    &.hidden { background-color: $sub-header-color; }
+    &.deleted { display: none; }
+    mark { background-color: $color-highlighted; font-weight: bold; display:inline; color: $base-font-color; }
+    .post-body {
+      color: $secondary-font-color-dark;
+    }
+    .post-content {
+      display: block;
+      .thread-title {
+        color: $secondary-font-color-dark;
+        margin-bottom: 0.5rem;
+        width: 100%;
+        .board-name {
+          color: $base-font-color;
+          margin-right: 0.25rem;
+          float: left;
+          &:hover { color: $color-primary; }
+        }
+        .posted-in { margin-right: 0.25rem; float: left; }
+        h5 { margin-bottom: 0; color: $base-font-color; }
+        .online { float: left; margin-right: 0.5rem; }
+        a.username {
+          float: left;
+          color: $base-font-color;
+          font-weight: 900;
+          margin-right: 0.25rem;
+          &:hover { color: $color-primary; }
+        }
+        .timestamp, .display-name {
+          display: inline-block;
+          color: $secondary-font-color;
+          line-height: 1.3rem;
+          font-size: 0.8125rem;
+          font-weight: 400;
+          float: left;
+        }
+        .display-name { color: $secondary-font-color-dark; }
+        .clear { @include clearfix; }
+      }
+    }
+  }
+}

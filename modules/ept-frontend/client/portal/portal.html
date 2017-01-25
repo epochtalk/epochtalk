@@ -1,0 +1,128 @@
+<!-- Board info -->
+<div class="portal-header">
+  <div class="page-header-split">
+    <div>
+      <h3>
+        Feed: <a ui-sref="threads.data({boardId: PortalCtrl.board.id})" ng-bind-html="PortalCtrl.board.name"></a>
+      </h3>
+      <div class="moderators" ng-if="PortalCtrl.board.moderators.length > 0">
+        <span class="label">Moderators: </span>
+        <a ui-sref="profile.posts({ username: mod.username })" ng-repeat="mod in PortalCtrl.board.moderators" ng-bind="mod.username + ($last ? '' : ', ')"></a>
+      </div>
+    </div>
+    <div>
+      <a class="button right" ui-sref="boards">
+        Board Listing&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Board threads -->
+<div> <!-- box in portal-threads for :last-child -->
+  <div class="portal-threads" ng-repeat="thread in PortalCtrl.threads track by thread.id">
+    <!-- Post Visibility -->
+    <div ng-if="thread.last_deleted || thread.user_deleted" class="centered deleted-container">
+      <div class="deleted">Post Deleted</div>
+    </div>
+
+    <div ng-if="!thread.last_deleted && !thread.user_deleted">
+      <!-- Page Title -->
+      <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">
+        <h5 class="thread-title" ng-bind-html="::thread.title"></h5>
+        <i class="icon-epoch-lock" ng-if="thread.locked"></i>
+        <i class="icon-epoch-verified" ng-if="thread.sticky"></i>
+      </a>
+
+      <!-- Posts Listing -->
+      <div class="post-block">
+        <!-- Post Profile Section -->
+        <div class="post-user">
+          <a ui-sref="profile.posts({ username: thread.last_post_username})">
+            <div class="user-avatar">
+              <img ng-style="PortalCtrl.avatarHighlight(thread.post_highlight_color)" ng-src="{{::thread.post_avatar}}">
+            </div>
+            <div title="{{thread.post_role_name || 'user'}}" class="user-role" ng-bind="thread.post_role_name || 'user'"></div>
+          </a>
+        </div>
+
+        <!-- Post Body Section -->
+        <div class="post-content">
+          <!-- Post Username -->
+          <div class="post-title">
+            <a class="username" data-balloon="{{thread.post_role_name || 'User'}}" ui-sref="profile.posts({ username: thread.last_post_username})" ng-style="PortalCtrl.usernameHighlight(thread.post_highlight_color)" ng-bind="::thread.last_post_username"></a>
+            <div title="{{thread.post_user_name}}" ng-if="thread.post_user_name" class="display-name">
+              <span ng-bind-html="::thread.post_user_name | truncate:33"></span>
+              <span class="hide-mobile">&nbsp;&mdash;&nbsp;</span>
+            </div>
+            <div class="timestamp">
+              <span ng-bind="::thread.last_post_created_at | humanDate"></span>
+              <span ng-if="PortalCtrl.showEditDate(thread)" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (thread.last_post_updated_at | humanDate)"></span>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <!-- Post Body -->
+          <div class="post-body" post-processing="thread.post_body" style-fix="true"></div>
+          <div ng-if="thread.post_signature">
+            <div class="post-sig-border"></div>
+            <div class="post-signature" post-processing="thread.post_signature" style-fix="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Recent Threads -->
+<div class="board-data">
+  <div class="title column-container">
+    <div class="half-column">
+      <h4>Recent Threads</h4>
+    </div>
+    <div class="half-column">
+      <div class="right" ng-if="PortalCtrl.loggedIn()">
+        <a ui-sref="posted.data()">Threads Posted In</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="centered-text" ng-if="!PortalCtrl.recent">
+    <h5>No recently updated threads available</h5>
+  </div>
+
+  <div ng-if="PortalCtrl.recent">
+    <div class="thin-underline"></div>
+    <!-- Thread listing -->
+    <div class="threads-data compact" ng-repeat="thread in PortalCtrl.recent track by thread.id">
+      <div class="subject">
+        <div class="title">
+          <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ threadId: thread.id, start: thread.post.position })" ng-bind-html="thread.title"></a>
+          <small>
+            by
+            <span ng-if="thread.deleted">deleted</span>
+            <a ng-if="!thread.deleted" ui-sref="profile.posts({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
+            (<a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name"></a>)
+            <a ng-if="thread.latest" ui-sref="posts.data({ threadId: thread.id, start: thread.latest.position, '#': thread.latest.id })"><strong>new</strong></a>
+          </small>
+
+          <i class="icon-epoch-lock right hide-mobile" ng-if="thread.locked"></i>
+          <i class="icon-epoch-verified right hide-mobile" ng-if="thread.sticky"></i>
+          <i class="fa fa-bar-chart icon-fix right hide-mobile" ng-if="thread.poll"></i>
+        </div>
+
+        <div class="mobile-stats">
+          <em ng-bind="thread.post.created_at | humanDate"></em>
+        </div>
+      </div>
+      <div class="show-mobile">
+        <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
+        <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
+        <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
+      </div>
+      <div class="last-reply">
+        <div ng-bind="thread.post.created_at | humanDate"></div>
+      </div>
+    </div>
+  </div>
+</div>

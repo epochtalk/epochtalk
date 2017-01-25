@@ -1,0 +1,77 @@
+<div class="admin-table-header" ng-if="AdminManagementCtrl.canInvite()">
+  <div class="fill-row">
+    <div class="nested-input-container">
+      <a ng-if="AdminManagementCtrl.inviteEmail" ng-click="AdminManagementCtrl.inviteEmail = ''" class="nested-clear-btn fa fa-times"></a>
+      <a ng-click="AdminManagementCtrl.invite()" class="nested-btn">Invite</a>
+      <input class="input-text nested-input" ng-model="AdminManagementCtrl.inviteEmail" type="email" id="search-users" placeholder="Email" ng-keydown="$event.which === 13 && AdminManagementCtrl.invite()"/>
+    </div>
+  </div>
+  <div class="clear"></div>
+</div>
+
+<div class="fill-row centered-text" ng-if="!AdminManagementCtrl.invitations.length">
+  <h4>No Invitations to display</h4>
+</div>
+
+<div class="fill-row" ng-if="AdminManagementCtrl.invitations.length">
+  <table class="underlined log" width="100%">
+    <thead>
+      <th>Email</th>
+      <th>Sent</th>
+      <th class="right">Actions</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="invite in AdminManagementCtrl.invitations">
+        <td ng-bind="invite.email"></td>
+        <td ng-bind="invite.created_at | humanDate"></td>
+        <td class="right">
+          <button ng-click="AdminManagementCtrl.openResendModal(invite)" ng-if="AdminManagementCtrl.canResend()" class="icon" data-balloon="Resend Invitation">
+            <i class="fa fa-retweet"></i>
+          </button>
+          <button ng-click="AdminManagementCtrl.openRemoveModal(invite)" ng-if="AdminManagementCtrl.canRemove()" class="icon" data-balloon="Delete Invitation">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagination-simple">
+    <a ng-show="AdminManagementCtrl.prev" ui-sref=".({ page: AdminManagementCtrl.prev, limit: AdminManagementCtrl.limit })">
+      &#10094; Previous
+    </a>
+    <span ng-hide="AdminManagementCtrl.prev">&#10094; Previous</span>
+    &nbsp;&nbsp;&nbsp;
+    <a ng-show="AdminManagementCtrl.next" ui-sref=".({ page: AdminManagementCtrl.next, limit: AdminManagementCtrl.limit })">
+       Next &#10095;
+    </a>
+    <span ng-hide="AdminManagementCtrl.next">Next &#10095;</span>
+  </div>
+</div>
+
+<modal show="AdminManagementCtrl.showResendModal">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Confirm resending invitation</h3>
+    <p>
+      Are you sure you want to resend an invitation to <strong ng-bind="AdminManagementCtrl.resendEmail"></strong>?
+    </p>
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminManagementCtrl.resend()">
+        Resend Invitation
+      </button>
+    </div>
+  </form>
+</modal>
+
+<modal show="AdminManagementCtrl.showRemoveModal">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Confirm deletion of invitation</h3>
+    <p>
+      Are you sure you want to delete the invitation for <strong ng-bind="AdminManagementCtrl.removeEmail"></strong>?
+    </p>
+    <div class="clear">
+      <button class="fill-row" ng-click="AdminManagementCtrl.remove()">
+        Delete Invitation
+      </button>
+    </div>
+  </form>
+</modal>

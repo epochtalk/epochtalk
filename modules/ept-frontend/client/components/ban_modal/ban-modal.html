@@ -1,0 +1,81 @@
+<!-- Manage Bans Modal -->
+<modal show="vmBan.showModal" on-close="vmBan.closeManageBans()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Manage Bans</h3>
+    <label class="bold">User Information</label>
+    <table class="striped" width="100%">
+      <tr>
+        <td>Username</td>
+        <td ng-bind="vmBan.selectedUser.username"></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td ng-bind="vmBan.selectedUser.email"></td>
+      </tr>
+      <tr>
+        <td>Register Date</td>
+        <td ng-bind="vmBan.selectedUser.created_at | humanDate"></td>
+      </tr>
+      <tr ng-if="vmBan.selectedUser.ban_expiration">
+        <td>Global Ban Expiration</td>
+        <td ng-bind="vmBan.selectedUser.ban_expiration | humanDate:true"></td>
+      </tr>
+      <tr ng-if="vmBan.selectedUser.banned_board_names.length">
+        <td>Banned From Boards</td>
+        <td>
+          <span ng-repeat="boardName in vmBan.selectedUser.banned_board_names track by $index" ng-bind-html="$last ? boardName : boardName + ', '"></span>
+        </td>
+      </tr>
+    </table>
+
+    <div ng-if="vmBan.canGlobalBanUser()">
+      <label for="banType">
+        <strong>Ban Globally</strong>
+        <a class="right" ng-click="vmBan.permanentBan = undefined; vmBan.banUntil = undefined;" ng-show="vmBan.permanentBan !== undefined">
+          <i class="fa fa-times"></i> Remove Global Ban
+        </a>
+      </label>
+      <input type="radio" name="banType" ng-model="vmBan.permanentBan" ng-value="true" id="permanent" ng-disabled="vmBan.banSubmitted"><label for="permanent">Permanent</label>
+      <input type="radio" name="banType" ng-model="vmBan.permanentBan" ng-value="false" id="temporary" ng-disabled="vmBan.banSubmitted"><label for="temporary">Temporary</label>
+
+      <div ng-show="vmBan.permanentBan === false">
+        <label for="banUntil">Enter Ban Expiration Date:</label>
+        <input type="date" ng-model="vmBan.banUntil" min="{{vmBan.minDate()}}" name="banUntil" ng-required="vmBan.permanentBan === false" />
+      </div>
+
+      <div ng-show="vmBan.showIpBan && vmBan.permanentBan === true">
+        <input type="checkbox" ng-model="vmBan.banUserIp" ng-disabled="vmBan.banSubmitted" name="ipBan" id="ipBan" /><label for="ipBan">Ban all of {{vmBan.selectedUser.username}}'s known IP addresses</label>
+      </div>
+    </div>
+
+    <label ng-if="!vmBan.disableBoardBans">
+      <strong>Ban from my Boards</strong>
+      <div class="right">
+        <a ng-href="#" ng-click="vmBan.checkModBoards();"><i class="fa fa-check-square-o"></i> Check All</a>
+        &nbsp;&nbsp;
+        <a ng-href="#" ng-click="vmBan.uncheckModBoards();"><i class="fa fa-square-o"></i> Uncheck All</a>
+      </div>
+    </label>
+    <div class="board-bans-list" ng-if="!vmBan.disableBoardBans">
+      <script type="text/ng-template" id="board_renderer.html">
+        <input ng-init="vmBan.loadBoardBans(board.id)" id="{{board.id}}" ng-checked="vmBan.boardBanList.indexOf(board.id) > -1" value="{{board.id}}" ng-click="vmBan.toggleBoardBan(board.id)" ng-disabled="!vmBan.canBoardBanUser(board.id)" type="checkbox" />
+        <label for="{{board.id}}" ng-bind-html="board.name"></label>
+        <ul>
+          <li ng-repeat="board in board.children track by board.id" ng-include="'board_renderer.html'"></li>
+        </ul>
+      </script>
+      <div ng-repeat="cat in vmBan.boards track by cat.id">
+        <label class="bold" ng-bind-html="cat.name"></label>
+        <ul>
+          <li ng-repeat="board in cat.boards track by board.id" ng-include="'board_renderer.html'">
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="clear">
+      <button class="fill-row" ng-click="vmBan.updateBans()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || vmBan.banSubmitted" ng-bind="vmBan.confirmBanBtnLabel"></button>
+    </div>
+  </form>
+</modal>

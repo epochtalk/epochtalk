@@ -1,0 +1,45 @@
+<modal class="overflow" show="vm.show" on-close="vm.closeModerators()">
+  <h3 class="thin-underline">Manage Moderators of <span ng-bind-html="vm.board.name"></span></h3>
+
+  <div ng-if="vm.usersWithBadPermissions && !vm.usersWithBadPermissions.length">
+    <label>Current Moderators</label>
+    <div class="clear">
+      <ul class="mod-list" ng-if="vm.mods.length" >
+        <li ng-repeat="mod in vm.mods">
+          <div><span ng-bind-html="mod.username"></span>&nbsp;<a ng-click="vm.markModForRemoval(mod.username)"><i class="fa fa-times-circle"></i></a></div>
+        </li>
+      </ul>
+    </div>
+    <p ng-if="!vm.mods.length">
+    This board has no moderators.
+    </p>
+    <br />
+    <div>
+      <label>Add Moderators</label>
+      <tags-input min-length="1" placeholder="Type username of moderator(s) to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="vm.modsToAdd">
+        <auto-complete min-length="1" source="vm.loadTags($query)"></auto-complete>
+      </tags-input>
+    </div>
+    <div class="clear">
+      <label>Note: Moderator changes will take affect upon clicking save changes.</label>
+      <button class="fill-row" ng-click="vm.saveModChanges()">Save Changes</button>
+    </div>
+  </div>
+
+  <div ng-if="vm.usersWithBadPermissions && vm.usersWithBadPermissions.length">
+    <p>
+      User(s) were successfully added to the list of moderators for <strong><span ng-bind-html="vm.board.name"></span></strong> but the following user(s) do not have a role with moderation permissions assigned:
+    </p>
+    <ul class="indent">
+      <li ng-repeat="username in vm.usersWithBadPermissions">
+        <a ui-sref="profile.posts({ username: username })" ng-bind-html="username"></a>
+      </li>
+    </ul>
+    <p>
+       Visit the <a ui-sref="admin-management.roles">Roles Management</a> page to add a moderation type role. The user(s) will appear in the list of board moderators, but until an appropriate role is assigned they will not be able to perform any moderation tasks.
+    </p>
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.closeModerators()">Okay</button>
+    </div>
+  </div>
+</modal>
