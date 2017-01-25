@@ -50,6 +50,7 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
     var userChannelKey = JSON.stringify({ type: 'user', id: Session.user.id });
     userChannel = socket.subscribe(userChannelKey, options);
     userChannel.watch(function(data) {
+      if ($window.websocketLogs) { console.log('Received user channel message', data.action); }
       if (data.action === 'reauthenticate') { Auth.authenticate(); }
       else if (data.action === 'logout' && data.sessionId === socket.getAuthToken().sessionId) {
         Auth.logout();
