@@ -261,6 +261,13 @@ exports.ban = {
     var expiration = request.payload.expiration || null;
     var ipBan = request.payload.ip_ban;
     var banPromise = request.db.bans.ban(userId, expiration)
+    .tap(function(user) {
+      var notification = {
+        channel: { type: 'user', id: user.id },
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    })
     .then(function(user) {
       return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return request.session.updateBanInfo(user.user_id, user.expiration); })
