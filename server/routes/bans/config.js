@@ -264,7 +264,7 @@ exports.ban = {
     .tap(function(user) {
       console.log('server/routes/bans/config.js ban', user, request.server.plugins.notifications);
       var notification = {
-        channel: { type: 'user', id: user.id },
+        channel: { type: 'user', id: user.user_id },
         data: { action: 'reauthenticate' }
       };
       request.server.plugins.notifications.systemNotification(notification);
@@ -327,7 +327,7 @@ exports.unban = {
     .tap(function(user) {
       console.log('server/routes/bans/config.js unban', user, request.server.plugins.notifications);
       var notification = {
-        channel: { type: 'user', id: user.id },
+        channel: { type: 'user', id: user.user_id },
         data: { action: 'reauthenticate' }
       };
       request.server.plugins.notifications.systemNotification(notification);
