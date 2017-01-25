@@ -51,9 +51,6 @@
       </div>
     </div>
     <div class="clear"></div>
-    <span ng-show="AdminManagementCtrl.selectedRole.lookup === 'banned'">
-      Visit the <a ui-sref="^.users">Users Tab</a> to ban users
-    </span>
   </div>
   <div ng-show="AdminManagementCtrl.canViewAddUsersControl()">
     <tags-input min-length="1" placeholder="Type username to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="AdminManagementCtrl.usersToAdd">
@@ -89,7 +86,15 @@
     </div>
   </div>
   <div ng-if="AdminManagementCtrl.userData.count < 1">
-    <h5>This role has no users to display. {{ AdminManagementCtrl.selectedRole.lookup === 'banned' ? '' : 'To add users to this role click use the form above.' }}</h5>
+    <h5>
+      This role has no users to display. {{ AdminManagementCtrl.selectedRole.lookup === 'banned' ? '' : 'To add users to this role click use the form above.' }}
+      <span ng-if="AdminManagementCtrl.selectedRole.lookup !== 'banned'">
+        To add users to this role click use the form above.
+      </span>
+      <span ng-if="AdminManagementCtrl.selectedRole.lookup === 'banned'">
+        Visit the <a ui-sref="^.users">Users Tab</a> to ban users
+      </span>
+    </h5>
   </div>
 </div>
 
