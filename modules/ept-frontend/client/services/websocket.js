@@ -66,7 +66,7 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
         socket.subscribe(channel, options)
         .watch(function(data) {
           if ($window.websocketLogs) {
-            console.log('Received role channel message.', channel, data);
+            console.log('Received role channel message.', data);
           }
           Auth.authenticate();
         });
