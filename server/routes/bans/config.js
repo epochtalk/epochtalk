@@ -262,6 +262,7 @@ exports.ban = {
     var ipBan = request.payload.ip_ban;
     var banPromise = request.db.bans.ban(userId, expiration)
     .tap(function(user) {
+      console.log('server/routes/bans/config.js ban', user, request.server.plugins.notifications);
       var notification = {
         channel: { type: 'user', id: user.id },
         data: { action: 'reauthenticate' }
@@ -324,6 +325,7 @@ exports.unban = {
     var userId = request.payload.user_id;
     var promise = request.db.bans.unban(userId)
     .tap(function(user) {
+      console.log('server/routes/bans/config.js unban', user, request.server.plugins.notifications);
       var notification = {
         channel: { type: 'user', id: user.id },
         data: { action: 'reauthenticate' }
