@@ -170,6 +170,9 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
 
   this.canViewAddUsersControl = function() {
     var view = false;
+    console.log(ctrl.selectedRole.lookup);
+    console.log(Session.user.permissions.priority, ctrl.selectedRole.priority);
+    console.log(ctrl.controlAccess.privilegedAddRoles, ctrl.controlAccess.privilegedAddRoles.samePriority);
     if (ctrl.selectedRole.lookup !== 'banned') {
       if (ctrl.controlAccess.privilegedAddRoles && ctrl.controlAccess.privilegedAddRoles.samePriority) {
         view = ctrl.selectedRole.priority >= Session.user.permissions.priority;
@@ -179,6 +182,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       }
     }
     if (ctrl.showFilterUsers) { ctrl.showFilterUsers = view; }
+    console.log(view);
     return view;
   };
 
