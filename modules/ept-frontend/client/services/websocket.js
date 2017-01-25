@@ -59,16 +59,18 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
     });
 
     // subscribe to roles channels
-    Session.user.roles.forEach(function(role) {
-      var channel = JSON.stringify({ type: 'role', id: role });
-      socket.subscribe(channel, options)
-      .watch(function(data) {
-        if ($window.websocketLogs) {
-          console.log('Received role channel message.', channel, data);
-        }
-        Auth.authenticate();
+    if (Session.user.roles) {
+      Session.user.roles.forEach(function(role) {
+        var channel = JSON.stringify({ type: 'role', id: role });
+        socket.subscribe(channel, options)
+        .watch(function(data) {
+          if ($window.websocketLogs) {
+            console.log('Received role channel message.', channel, data);
+          }
+          Auth.authenticate();
+        });
       });
-    });
+    }
   });
 
   // Handle LoginEvent
