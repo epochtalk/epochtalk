@@ -381,7 +381,14 @@ exports.banFromBoards = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var boardIds = request.payload.board_ids;
-    var promise = request.db.bans.banFromBoards(userId, boardIds);
+    var promise = request.db.bans.banFromBoards(userId, boardIds)
+    .tap(function(user) {
+      var notification = {
+        channel: { type: 'user', id: user.user_id },
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    });
     return reply(promise);
   }
 };
@@ -426,7 +433,14 @@ exports.unbanFromBoards = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var boardIds = request.payload.board_ids;
-    var promise = request.db.bans.unbanFromBoards(userId, boardIds);
+    var promise = request.db.bans.unbanFromBoards(userId, boardIds)
+    .tap(function(user) {
+      var notification = {
+        channel: { type: 'user', id: user.user_id },
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    });
     return reply(promise);
   }
 };
