@@ -4,8 +4,8 @@
 var socket;
 var socketcluster = require('socketcluster-client');
 
-module.exports = ['Alert', 'Auth', 'NotificationSvc', 'Session', 'BanSvc', '$window', '$rootScope',
-function(Alert, Auth, NotificationSvc, Session, BanSvc, $window, $rootScope) {
+module.exports = ['Alert', 'Auth', 'NotificationSvc', 'Session', '$window', '$rootScope',
+function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
   // Public channel idenitfier and general options
   var options = { waitForAuth: true };
   var publicChannelKey = JSON.stringify({ type: 'public' });
@@ -53,7 +53,6 @@ function(Alert, Auth, NotificationSvc, Session, BanSvc, $window, $rootScope) {
       if ($window.websocketLogs) { console.log('Received user channel message', data); }
       if (data.action === 'reauthenticate') {
         Auth.authenticate();
-        BanSvc.update();
       }
       else if (data.action === 'logout' && data.sessionId === socket.getAuthToken().sessionId) {
         Auth.logout();
