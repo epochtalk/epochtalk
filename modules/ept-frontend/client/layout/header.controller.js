@@ -10,6 +10,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
 
     // Update preview mode on change
     $scope.$watch(function() { return BanSvc.isBanned(); }, function(val) {
+      console.log(val);
       ctrl.isBanned = val;
     });
 
