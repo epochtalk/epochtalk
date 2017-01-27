@@ -10,20 +10,22 @@ module.exports = ['Session', '$state', '$filter', function(Session, $state, $fil
       console.log('Board Banned', boardBanned);
       console.log('Ban Expiration', banExpiration);
       console.log('Before Update', message);
-      // Clears ban message assuming the ban isn't global
-      if (!boardBanned && !banExpiration) { message = undefined; }
+
       // Sets board ban message, ignored if global ban is set
-      else if (boardBanned && !banExpiration) {
+      if (boardBanned && !banExpiration) {
         message = 'Read Only Access &mdash; You have been banned from this board';
       }
       // Sets global ban message if not already set
-      else if (banExpiration) {
+      else if (!boardBanned && banExpiration) {
         var expirationStr = $filter('humanDate')(banExpiration, true);
         message = 'You have been banned ' +
           (expirationStr === 'Permanent' ?
           'Permanently' :
           'until ' + expirationStr);
       }
+      // Clears ban message assuming the ban isn't global
+      else { message = undefined; }
+
       console.log('After Update', message);
       return message;
     },
