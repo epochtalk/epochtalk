@@ -7,6 +7,9 @@ module.exports = ['Session', '$state', '$filter', function(Session, $state, $fil
     update: function() {
       var banExpiration = Session.user.ban_expiration;
       var boardBanned = $state.$current.locals.globals.$boardBanned;
+      console.log('Board Banned', boardBanned);
+      console.log('Ban Expiration', banExpiration);
+      console.log('Before Update', message);
       // Clears ban message assuming the ban isn't global
       if (!boardBanned && !banExpiration) { message = undefined; }
       // Sets board ban message, ignored if global ban is set
@@ -21,6 +24,7 @@ module.exports = ['Session', '$state', '$filter', function(Session, $state, $fil
           'Permanently' :
           'until ' + expirationStr);
       }
+      console.log('After Update', message);
       return message;
     },
     isBanned: function() { return message; },
