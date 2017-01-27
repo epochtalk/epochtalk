@@ -6,7 +6,12 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     this.previewActive = ThemeSVC.previewActive();
     this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
-    this.isBanned = BanSvc.isBanned;
+    this.isBanned = BanSvc.isBanned();
+
+    // Update preview mode on change
+    $scope.$watch(function() { return BanSvc.isBanned(); }, function(val) {
+      ctrl.isBanned = val;
+    });
 
     // Update preview mode on change
     $scope.$watch(function() { return ThemeSVC.previewActive(); }, function(val) {

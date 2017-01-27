@@ -50,7 +50,10 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
     var userChannelKey = JSON.stringify({ type: 'user', id: Session.user.id });
     userChannel = socket.subscribe(userChannelKey, options);
     userChannel.watch(function(data) {
-      if (data.action === 'reauthenticate') { Auth.authenticate(); }
+      if ($window.websocketLogs) { console.log('Received user channel message', data); }
+      if (data.action === 'reauthenticate') {
+        Auth.authenticate();
+      }
       else if (data.action === 'logout' && data.sessionId === socket.getAuthToken().sessionId) {
         Auth.logout();
         Alert.warning('You have been logged out from another window.');
@@ -59,11 +62,18 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
     });
 
     // subscribe to roles channels
-    Session.user.roles.forEach(function(role) {
-      var channel = JSON.stringify({ type: 'role', id: role });
-      socket.subscribe(channel, options)
-      .watch(function() { Auth.authenticate(); });
-    });
+    if (Session.user.roles) {
+      Session.user.roles.forEach(function(role) {
+        var channel = JSON.stringify({ type: 'role', id: role });
+        socket.subscribe(channel, options)
+        .watch(function(data) {
+          if ($window.websocketLogs) {
+            console.log('Received role channel message.', data);
+          }
+          Auth.authenticate();
+        });
+      });
+    }
   });
 
   // Handle LoginEvent

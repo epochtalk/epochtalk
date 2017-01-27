@@ -261,6 +261,13 @@ exports.ban = {
     var expiration = request.payload.expiration || null;
     var ipBan = request.payload.ip_ban;
     var banPromise = request.db.bans.ban(userId, expiration)
+    .tap(function(user) {
+      var notification = {
+        channel: { type: 'user', id: user.user_id },
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    })
     .then(function(user) {
       return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return request.session.updateBanInfo(user.user_id, user.expiration); })
@@ -316,6 +323,13 @@ exports.unban = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var promise = request.db.bans.unban(userId)
+    .tap(function(user) {
+      var notification = {
+        channel: { type: 'user', id: user.user_id },
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    })
     .then(function(user) {
       return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return request.session.updateBanInfo(user.user_id); })
@@ -367,7 +381,14 @@ exports.banFromBoards = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var boardIds = request.payload.board_ids;
-    var promise = request.db.bans.banFromBoards(userId, boardIds);
+    var promise = request.db.bans.banFromBoards(userId, boardIds)
+    .tap(function(user) {
+      var notification = {
+        channel: { type: 'user', id: user.user_id },
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    });
     return reply(promise);
   }
 };
@@ -412,7 +433,14 @@ exports.unbanFromBoards = {
   handler: function(request, reply) {
     var userId = request.payload.user_id;
     var boardIds = request.payload.board_ids;
-    var promise = request.db.bans.unbanFromBoards(userId, boardIds);
+    var promise = request.db.bans.unbanFromBoards(userId, boardIds)
+    .tap(function(user) {
+      var notification = {
+        channel: { type: 'user', id: user.user_id },
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    });
     return reply(promise);
   }
 };
