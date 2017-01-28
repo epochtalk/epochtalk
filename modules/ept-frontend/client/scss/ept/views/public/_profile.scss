@@ -68,7 +68,7 @@
     }
   }
 }
-.profile-posts, & {
+.profile-posts {
   .profile-row {
     .title { @include span-columns(3); font-weight: 600; }
     .pagination-wrap {
