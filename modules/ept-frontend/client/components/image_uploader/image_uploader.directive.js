@@ -75,11 +75,11 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
             status: 'Initializing',
             progress: 0
           };
-          if (fsImage.size < maxImageSize) {
-            $scope.currentImages.push(image);
+          if (fsImage.size > maxImageSize) {
+            errImages.push(fsImage.name);
           }
           else {
-            errImages.push(fsImage.name);
+            $scope.currentImages.push(image);
           }
         });
 
