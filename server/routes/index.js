@@ -62,6 +62,7 @@ exports.endpoints = function(internalConfig) {
           favicon: config.website.favicon,
           websocket_host: config.websocket_client_host,
           websocket_port: config.websocket_port,
+          max_image_size: internalConfig.images.maxSize,
           portal: { enabled: config.portal.enabled },
           GAKey: config.gaKey,
           currentYear: new Date().getFullYear()
