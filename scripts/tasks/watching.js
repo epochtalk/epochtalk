@@ -5,9 +5,12 @@ var Promise = require('bluebird');
 var installModules = require(path.normalize(__dirname + '/load_modules'));
 
 var monitors = [];
-var nmPath = path.normalize(__dirname + '/../../modules/node_modules');
+var localModulesPath = path.normalize(__dirname + '/../../modules');
+var nodeModulesPath = path.normalize(__dirname + '/../../node_modules');
+
+var coreDir = 'epochtalk-core-pg';
+
 var backendDirs = [
-  'epochtalk-core-pg',
   'ept-ads',
   'ept-bbcode-parser',
   'ept-categories',
@@ -30,9 +33,13 @@ module.exports = function() {
   // deploy nodemon first
   var nm = launchNodemon();
 
+  // watch core-pg dir
+  monitorBEDir(coreDir, nodeModulesPath, nm)
+  .then(function(monitor) { monitors.push(monitor); });
+
   // watch backend dirs
-  backendDirs.map(function(dir) {
-    return monitorBEDir(dir, nm)
+  backendDirs.map(function(module) {
+    return monitorBEDir(module, localModulesPath, nm)
     .then(function(monitor) { monitors.push(monitor); });
   });
 
@@ -70,9 +77,9 @@ var launchNodemon = function() {
 };
 
 // watching the watcher
-var monitorBEDir = function(dir, nm) {
+var monitorBEDir = function(module, path, nm) {
   return new Promise(function(resolve) {
-    var dirPath = nmPath + '/' + dir;
+    var dirPath = path + '/' + module;
     watch.createMonitor(dirPath, function(monitor) {
       monitor.on('created', function() { nm.emit('restart'); });
       monitor.on('changed', function() { nm.emit('restart'); });
@@ -84,7 +91,7 @@ var monitorBEDir = function(dir, nm) {
 
 var monitorFEDir = function(dir) {
   return new Promise(function(resolve) {
-    var dirPath = nmPath + '/' + dir;
+    var dirPath = localModulesPath + '/' + dir;
     watch.createMonitor(dirPath, function(monitor) {
       monitor.on('created', function() { installModules(); });
       monitor.on('changed', function() { installModules(); });
