@@ -65,7 +65,6 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
          *   url: {string} The url where the image is hosted (upon upload completion)
          */
          // prep each image
-        var warningMsg = 'Some images exceeded the max image upload size: ';
         var errImages = [];
         fsImages.forEach(function(fsImage) {
           var maxImageSize = forumData.max_image_size;
@@ -83,10 +82,8 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
           }
         });
 
-        // CALCULATE WARNING MESSAGE HERE ITERATE THROUGH errIMAGES
-
-
         if (!$scope.currentImages.length) {
+          var warningMsg = `Some images exceeded the max image upload size: [${errImages.join(', ')}]`;
           return $timeout(function() { Alert.warning(warningMsg); });
         }
         // append a policy on to each image
