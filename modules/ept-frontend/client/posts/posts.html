@@ -29,6 +29,10 @@
     <div>
       <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
     </div>
+    <!-- Co-owners -->
+    <div class="fill-row" ng-if="!PostsParentCtrl.editThread">
+      <em>Co-owners</em>: <span ng-repeat="user in PostsParentCtrl.thread.coOwners">{{user}}{{$last ? '' : ', '}}</span>
+    </div>
   </div>
 
   <!-- User Controls -->
@@ -46,7 +50,12 @@
           <i class="fa fa-bar-chart"></i>Add a Poll
         </a>
       </span>
-      <span ng-if="!PostsParentCtrl.showUserControls()">&nbsp;</span>
+      <!-- Update users -->
+      <span ng-if="PostsParentCtrl.showUserControls()">
+        <a class="inverted-button" ng-if="PostsParentCtrl.canUpdateOwners()" ng-click="PostsParentCtrl.triggerCoOwnerForm()">
+          <i class="fa fa-user-plus"></i>Update Thread owners
+        </a>
+      </span>
     </div>
     <div class="half-column">
       <div>
@@ -94,6 +103,9 @@
   <poll-viewer thread="PostsParentCtrl.thread" reset="PostsParentCtrl.resetPoll"></poll-viewer>
   <div class="clear"></div>
 
+  <!-- Owners -->
+  <co-owners-editor ng-if="PostsParentCtrl.updateOwners"></co-owners-editor>
+  <div class="clear"></div>
 </div>
 
 <!-- Ads -->

@@ -30,6 +30,9 @@ module.exports = {
         title: Joi.string().min(1).max(255).required(),
         raw_body: Joi.string().min(1).max(64000).required(),
         board_id: Joi.string().required(),
+        coOwners: Joi.object().keys({
+          users: Joi.array().items(Joi.string()).min(1).max(255).required()
+        }),
         poll: Joi.object().keys({
           max_answers: Joi.number().integer().min(1).default(1),
           expiration: Joi.date().min('now'),
@@ -66,7 +69,9 @@ function processing(request, reply) {
     board_id: request.payload.board_id,
     locked: request.payload.locked,
     sticky: request.payload.sticky,
-    moderated: request.payload.moderated
+    moderated: request.payload.moderated,
+    user_id: user.id,
+    coOwners: request.payload.coOwners
   };
   var newPost = {
     title: request.payload.title,

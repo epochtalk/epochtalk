@@ -14,7 +14,7 @@
 <div class="padded-row" ng-if="NewThreadCtrl.loggedIn()">
   <div class="fill-row">
     <label for="title">Title:</label>
-    <input type="text" class="input-text thread-title" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" maxlength="255" required autofocus/>
+    <input type="text" class="input-text thread-title" id="title" name="title" placeholder="Title" ng-model="NewThreadCtrl.thread.title" maxlength="255" required autofocus/>
   </div>
 </div>
 
@@ -50,14 +50,20 @@
       <input type="checkbox" id="threadPoll" ng-model="NewThreadCtrl.addPoll" ng-disabled="!NewThreadCtrl.loggedIn()">
       <label for="threadPoll">Add a Poll</label>
     </div>
+
+    <div class="option" ng-if="NewThreadCtrl.canAddCoOwners()">
+      <input type="checkbox" id="addCoOwners" ng-model="NewThreadCtrl.addCoOwners" ng-disabled="!NewThreadCtrl.loggedIn()">
+      <label for="addCoOwners">Add co-owners</label>
+    </div>
   </div>
 </div>
 
+<co-owners co-owners="NewThreadCtrl.coOwners" valid="NewThreadCtrl.coOwnersValid" ng-if="NewThreadCtrl.addCoOwners"></co-owners>
 <poll-creator poll="NewThreadCtrl.poll" valid="NewThreadCtrl.pollValid" ng-if="NewThreadCtrl.addPoll"></poll-creator>
 
 <!-- Submit Button -->
 <div class="padded-row" ng-if="NewThreadCtrl.loggedIn()">
-  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || NewThreadCtrl.thread.body.length === 0 || (NewThreadCtrl.addPoll && !NewThreadCtrl.pollValid)">
+  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || NewThreadCtrl.thread.body.length === 0 || (NewThreadCtrl.addCoOwners && !NewThreadCtrl.coOwnersValid) || (NewThreadCtrl.addPoll && !NewThreadCtrl.pollValid)">
     Submit
   </button>
 </div>

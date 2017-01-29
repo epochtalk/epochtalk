@@ -14,11 +14,25 @@ module.exports = function(id) {
   var query = 'SELECT ' + columns + ' FROM ( ' + q1 + ') t LEFT JOIN LATERAL ( ' + q2 + ' ) p ON true';
 
   var params = [id];
+  var formatted_thread = null;
   return db.sqlQuery(query, params)
   .then(function(rows) {
     if (rows.length > 0) { return rows[0]; }
     else { throw new NotFoundError('Thread Not Found'); }
   })
   .then(common.formatThread)
+  .then(function(thread){
+      formatted_thread = thread;
+      return db.sqlQuery('SELECT u.username FROM thread_owners_mapping tom LEFT JOIN users u ON tom.user_id=u.id WHERE thread_id = $1;', params)
+  })
+  .then(function (rows) {
+      if (rows.length > 0) {
+          formatted_thread.coOwners = rows.map(function(item){
+              return item.username;
+          });
+      }
+
+      return formatted_thread;
+  })
   .then(helper.slugify);
 };

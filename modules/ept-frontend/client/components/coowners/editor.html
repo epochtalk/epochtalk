@@ -1,0 +1,40 @@
+<div class="fill-row polls" ng-if="PostsParentCtrl.updateOwners">
+    <form name="multipleOwnersForm">
+        <div ng-if="PostsParentCtrl.coOwners.length === 0">
+            <div>
+                <label for="user-0">Enter username:</label>
+                <input type="text" id="user-0" username-exists
+                       ng-model="PostsParentCtrl.coOwners[0]"
+                       ng-model-options="{ debounce: 500 }"
+                       ng-maxlength="255" ng-minlength="1" ng-required />
+
+                <div ng-if="multipleOwnersForm.$error.usernameExists">
+                    <div ng-if="multipleOwnersForm.$error.$viewValue == PostsParentCtrl.coOwners[0]">Username does not exist</div>
+                </div>
+            </div>
+        </div>
+        <div class="user-row" ng-if="PostsParentCtrl.coOwners.length >= 1" ng-repeat="user in PostsParentCtrl.coOwners track by $index">
+            <div>
+                <label for="user-{{$index}}">Enter username:</label>
+                <input type="text" id="user-{{$index}}"
+                       username-exists="{ initial: '{{PostsParentCtrl.coOwners[$index]}}'}"
+                       ng-model="PostsParentCtrl.coOwners[$index]"
+                       ng-model-options="{ debounce: 500 }"
+                       ng-maxlength="255" ng-minlength="1" ng-required />
+
+                <div ng-if="multipleOwnersForm.$error.usernameExists">
+                    <div ng-if="multipleOwnersForm.$error.$viewValue == PostsParentCtrl.coOwners[$index]">Username does not exist</div>
+                </div>
+
+                <button tabindex="-1" ng-if="$index >= 1" ng-click="PostsParentCtrl.removeCoOwner($index)">
+                    <i class="fa fa-minus-circle"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="fill-row" ng-if="PostsParentCtrl.updateOwners">
+    <button ng-click="PostsParentCtrl.triggerCoOwnerForm()">Cancel</button>
+    <button ng-click="PostsParentCtrl.addCoOwner()">Add User</button>
+    <button ng-click="PostsParentCtrl.saveCoOwners()">Save</button>
+</div>

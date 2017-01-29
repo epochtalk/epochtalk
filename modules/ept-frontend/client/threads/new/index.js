@@ -18,8 +18,10 @@ var route = ['$stateProvider', function($stateProvider) {
           $ocLazyLoad.load([
             { name: 'ept.newThread.ctrl' },
             { name: 'ept.directives.poll-creator' },
+            { name: 'ept.directives.co-owners' },
             { name: 'ept.directives.image-uploader' },
-            { name: 'ept.directives.epochtalk-editor' }
+            { name: 'ept.directives.epochtalk-editor' },
+            { name: 'ept.directives.username-exists' }
           ]);
           deferred.resolve();
         });

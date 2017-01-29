@@ -1,0 +1,29 @@
+<div class="fill-row coowners coowners-form">
+    <!-- Users -->
+    <h4>Users:</h4>
+    <form name="coOwnersForm">
+        <div class="user-row" ng-repeat="user in coOwners.users track by $index">
+            <div>
+                <label for="user-{{$index}}">Enter username:</label>
+                <input type="text" id="user-{{$index}}"
+                       ng-model="coOwners.users[$index]"
+                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                       ng-maxlength="255"
+                       ng-minlength="1"
+                       ng-required
+                       username-exists
+                >
+
+                <div ng-if="coOwnersForm.$error.usernameExists">
+                    <div ng-if="$error.$viewValue == coOwners.users[$index]">Username does not exist</div>
+                </div>
+
+                <button ng-if="$index > 0" tabindex="-1" ng-click="removeCoOwner($index)">
+                    <i class="fa fa-minus-circle"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    <!-- Add User Button -->
+    <button ng-click="addCoOwner()">Add User</button>
+</div>

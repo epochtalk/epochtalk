@@ -23,6 +23,21 @@ module.exports = function(thread) {
     .then(function() {
       q = 'INSERT INTO metadata.threads (thread_id, views) VALUES($1, 0);';
       return client.queryAsync(q, [thread.id]);
+    })
+    // insert users
+    .then(function() {
+        if(thread.coOwners) {
+            Object.keys(thread.coOwners.users).forEach(function(key){
+                var username = thread.coOwners.users[key];
+                q = 'SELECT id FROM users WHERE username = $1';
+                client.queryAsync(q, [username])
+                .then(function(results) {
+                  var user_owner_id = results.rows[0].id;
+                  q = 'INSERT INTO thread_owners_mapping (thread_id, user_id) VALUES($1, $2);';
+                  client.queryAsync(q, [thread.id, user_owner_id]);
+                });
+            });
+        }
     });
   })
   .then(function() { return helper.slugify(thread); });

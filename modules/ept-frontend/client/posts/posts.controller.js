@@ -64,6 +64,8 @@ var ctrl = [
       // owner
       if (post.user.id === ctrl.user.id) { validBypass = true; }
       else {
+        // Is user a co_owner?
+        if (ctrl.posts[0].id === post.id && ctrl.thread.coOwners.includes(Session.user.username)) { validBypass = true; }
         if (Session.hasPermission('posts.update.bypass.owner.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
@@ -187,7 +189,6 @@ var ctrl = [
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
     parent.pullPage = function() {
-
       var query = {
         thread_id: parent.thread.id,
         page: isNaN($location.search().start) ? parent.page : undefined,

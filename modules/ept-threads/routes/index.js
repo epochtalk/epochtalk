@@ -15,5 +15,6 @@ module.exports = [
   require(path.normalize(__dirname + '/removeVote')),
   require(path.normalize(__dirname + '/editPoll')),
   require(path.normalize(__dirname + '/createPoll')),
-  require(path.normalize(__dirname + '/lockPoll'))
+  require(path.normalize(__dirname + '/lockPoll')),
+  require(path.normalize(__dirname + '/editCoOwners'))
 ];
