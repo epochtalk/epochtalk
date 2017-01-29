@@ -89,11 +89,8 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         var classString = styleString.replace('class="bbcode-', '');
         classString = classString.replace('"', '');
 
-        if (classString.indexOf('color-_') === 0) {
-          var colorCode = classString.replace('color-_', '');
-          return 'ng-style="{ \'color\': \'#' + colorCode + '\' }"';
-        }
-        else if (classString.indexOf('color') === 0) {
+        if (classString.indexOf('color') === 0) {
+          console.log(classString);
           var color = classString.replace('color-', '');
           return 'ng-style="{ \'color\': \'' + color + '\' }"';
         }
@@ -152,6 +149,9 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         // image loading
         var images = $($element[0]).find('img');
         images.each(function(index, image) {
+          if ($(image).parent().attr('class').indexOf('bbcode-column') > 0) {
+            $(image).addClass('column-image-resize');
+          }
           $(image).addClass('image-loader');
         });
 
