@@ -82,7 +82,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
           }
         });
 
-        if (errImages.length) {
+        if (!$scope.currentImages.length) {
           var warningMsg = 'Some images exceeded the max image upload size: [' + errImages.join(', ') + ']';
           return $timeout(function() { Alert.warning(warningMsg); });
         }
@@ -116,6 +116,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               if ($scope.onDone) { $scope.onDone({data: url}); }
               if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.model = url; }
               else { $scope.images.push(image); }
+              if (warningMsg) { Alert.warning(warningMsg); }
             })
             .catch(function(err) {
               image.progress = '--';
