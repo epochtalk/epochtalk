@@ -83,7 +83,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         });
 
         if (errImages.length) {
-          var warningMsg = `Some images exceeded the max image upload size: [${errImages.join(', ')}]`;
+          var warningMsg = 'Some images exceeded the max image upload size: [' + errImages.join(', ') + ']';
           return $timeout(function() { Alert.warning(warningMsg); });
         }
         // append a policy on to each image
