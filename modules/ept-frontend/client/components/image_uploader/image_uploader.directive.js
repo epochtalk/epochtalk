@@ -117,7 +117,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               if ($scope.onDone) { $scope.onDone({data: url}); }
               if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.model = url; }
               else { $scope.images.push(image); }
-              if (warningMsg) { Alert.warning(warningMsg); }
+              if (errImages.length) { Alert.warning(warningMsg); }
             })
             .catch(function(err) {
               image.progress = '--';
