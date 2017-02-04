@@ -65,16 +65,28 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
          *   url: {string} The url where the image is hosted (upon upload completion)
          */
          // prep each image
+        var errImages = [];
         fsImages.forEach(function(fsImage) {
+          var maxImageSize = forumData.max_image_size;
           var image = {
             name: fsImage.name,
             file: fsImage,
             status: 'Initializing',
             progress: 0
           };
-          $scope.currentImages.push(image);
+          if (fsImage.size > maxImageSize) {
+            errImages.push(fsImage.name);
+          }
+          else {
+            $scope.currentImages.push(image);
+          }
         });
 
+        var warningMsg = 'Some images exceeded the max image upload size: [' + errImages.join(', ') + ']';
+
+        if (!$scope.currentImages.length) {
+          return $timeout(function() { Alert.warning(warningMsg); });
+        }
         // append a policy on to each image
         return s3ImageUpload.policy($scope.currentImages)
         // upload each image
@@ -105,6 +117,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               if ($scope.onDone) { $scope.onDone({data: url}); }
               if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.model = url; }
               else { $scope.images.push(image); }
+              if (errImages.length) { Alert.warning(warningMsg); }
             })
             .catch(function(err) {
               image.progress = '--';
