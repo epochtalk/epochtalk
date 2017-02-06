@@ -1,3 +1,4 @@
+var Promise = require('bluebird');
 var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3ImageUpload, Alert) {
   return {
     restrict: 'E',
@@ -91,7 +92,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         return s3ImageUpload.policy($scope.currentImages)
         // upload each image
         .then(function(images) {
-          images.forEach(function(image) {
+          return Promise.mapSeries(images, function(image) {
             image.status = 'Starting';
             return s3ImageUpload.upload(image)
             .progress(function(percent) {
@@ -117,7 +118,6 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               if ($scope.onDone) { $scope.onDone({data: url}); }
               if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.model = url; }
               else { $scope.images.push(image); }
-              if (errImages.length) { Alert.warning(warningMsg); }
             })
             .catch(function(err) {
               image.progress = '--';
@@ -128,6 +128,10 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               else { message += 'Error: ' + err.message; }
               Alert.error(message);
             });
+          },
+          // log error images after all uploads finish
+          function() {
+            if (errImages.length) { Alert.warning(warningMsg); }
           });
         });
       }
