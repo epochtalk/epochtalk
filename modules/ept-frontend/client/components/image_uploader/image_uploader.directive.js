@@ -130,9 +130,9 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               else { message += 'Error: ' + err.message; }
               Alert.error(message);
             });
-          },
-          // log error images after all uploads finish
-          function() {
+          })
+          .then(function() {
+            // log error images after all uploads finish
             console.log('finished image uploads');
             if (errImages.length) { Alert.warning(warningMsg); }
           });
