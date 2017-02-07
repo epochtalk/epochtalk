@@ -92,7 +92,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         return s3ImageUpload.policy($scope.currentImages)
         // upload each image
         .then(function(images) {
-          return Promise.mapSeries(images, function(image) {
+          return Promise.map(images, function(image) {
             image.status = 'Starting';
             return s3ImageUpload.upload(image)
             .progress(function(percent) {
