@@ -164,6 +164,9 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
 
         $scope.imagesProgress = $scope.imagesProgressSum / $scope.currentImages.length + '%';
 
+        if (!($scope.uploadingImages > 0)) {
+          $scope.imagesUploading = false;
+        }
       }
 
       function cullImages(fileList) {
