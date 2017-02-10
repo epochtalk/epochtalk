@@ -102,9 +102,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               updateImagesUploading(index, percent);
             })
             .error(function(err) {
-              image.progress = '--';
-              image.status = 'Failed';
-              updateImagesUploading();
+              updateImagesUploading(index);
               var message = 'Image upload failed for: ' + image.name + '. ';
               if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
               else if (err.message) { console.log(err); }
@@ -118,9 +116,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               else { $scope.images.push(image); }
             })
             .catch(function(err) {
-              image.progress = '--';
-              image.status = 'Failed';
-              updateImagesUploading();
+              updateImagesUploading(index);
               var message = 'Image upload failed for: ' + image.name + '. ';
               if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
               else { message += 'Error: ' + err.message; }
@@ -160,6 +156,10 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         }
         // on upload error or failure
         else {
+          $scope.imagesProgressSum = $scope.imagesProgressSum - $scope.currentImages[index].progress;
+          $scope.currentImages[index].progress = '--';
+          image.status = 'Failed';
+          $scope.uploadingImages--;
         }
 
         $scope.imagesProgress = $scope.imagesProgressSum / $scope.currentImages.length + '%';
