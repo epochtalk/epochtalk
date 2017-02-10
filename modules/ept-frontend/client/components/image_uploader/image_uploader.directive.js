@@ -112,10 +112,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               Alert.error(message);
             })
             .success(function(url) {
-              image.progress = 100;
-              image.status = 'Complete';
-              image.url = url;
-              updateImagesUploading();
+              updateImagesUploading(index, 100, url);
               if ($scope.onDone) { $scope.onDone({data: url}); }
               if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.model = url; }
               else { $scope.images.push(image); }
@@ -150,6 +147,12 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
           $scope.currentImages[index].progress = percent;
           // update the image's properties
           if (percent === 100 && url) {
+            // on complete, with url populated
+            // set the image URL
+            // and remove from currentlyUploadingImages
+            $scope.currentImages[index].status = 'Complete';
+            $scope.currentImages[index].url = url;
+            $scope.uploadingImages--;
           }
           else {
             $scope.currentImages[index].status = 'Uploading';
