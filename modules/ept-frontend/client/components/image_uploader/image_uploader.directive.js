@@ -140,23 +140,8 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
 
       // update loading status
       function updateImagesUploading() {
-        var uploading = false;
-        var percentComplete = 0;
-        var validImages = $scope.currentImages.length;
 
-        // check each image for it's status
-        $scope.currentImages.map(function(imageProgress) {
-          if (imageProgress.status === 'Uploading') { uploading = true; }
-          if (imageProgress.progress === '--') { validImages = validImages - 1; }
-          else { percentComplete = percentComplete + imageProgress.progress; }
-        });
 
-        // compute percent complete
-        $scope.imagesProgress = Math.round(percentComplete / validImages) + '%';
-
-        // check if there are any images still uploading
-        if (uploading) { return; }
-        else { $scope.imagesUploading = false; }
       }
 
       function cullImages(fileList) {
