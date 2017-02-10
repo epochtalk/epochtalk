@@ -55,6 +55,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         // (re)prime loading and progress variables
         $scope.imagesUploading = true;
         $scope.imagesProgress = 0;
+        $scope.imagesProgressSum = 0;
 
         /**
          * Image = {
@@ -88,6 +89,8 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         if (!$scope.currentImages.length) {
           return $timeout(function() { Alert.warning(warningMsg); });
         }
+        // the number of images that are still being uploaded
+        $scope.uploadingImages = $scope.currentImages.length;
         // append a policy on to each image
         return s3ImageUpload.policy($scope.currentImages)
         // upload each image
@@ -96,9 +99,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
             $scope.currentImages[index].status = 'Starting';
             return s3ImageUpload.upload(image)
             .progress(function(percent) {
-              image.progress = percent;
-              image.status = 'Uploading';
-              updateImagesUploading();
+              updateImagesUploading(index, percent);
             })
             .error(function(err) {
               image.progress = '--';
@@ -139,8 +140,26 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
       }
 
       // update loading status
-      function updateImagesUploading() {
+      function updateImagesUploading(index, percent, url) {
+        // on successful update
+        if (percent) {
+          // update images' progress sum
+          // (subtract old value and add new value)
+          $scope.imagesProgressSum = $scope.imagesProgressSum - $scope.currentImages[index].progress + percent;
+          // update the image's progress
+          $scope.currentImages[index].progress = percent;
+          // update the image's properties
+          if (percent === 100 && url) {
+          }
+          else {
+            $scope.currentImages[index].status = 'Uploading';
+          }
+        }
+        // on upload error or failure
+        else {
+        }
 
+        $scope.imagesProgress = $scope.imagesProgressSum / $scope.currentImages.length + '%';
 
       }
 
