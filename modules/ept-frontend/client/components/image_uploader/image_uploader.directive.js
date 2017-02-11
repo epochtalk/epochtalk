@@ -55,6 +55,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         // (re)prime loading and progress variables
         $scope.imagesUploading = true;
         $scope.imagesProgress = 0;
+        $scope.imagesProgressSum = 0;
 
         /**
          * Image = {
@@ -88,22 +89,20 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         if (!$scope.currentImages.length) {
           return $timeout(function() { Alert.warning(warningMsg); });
         }
+        // the number of images that are still being uploaded
+        $scope.uploadingImages = $scope.currentImages.length;
         // append a policy on to each image
         return s3ImageUpload.policy($scope.currentImages)
         // upload each image
         .then(function(images) {
-          return Promise.mapSeries(images, function(image) {
-            image.status = 'Starting';
+          return Promise.map(images, function(image, index) {
+            $scope.currentImages[index].status = 'Starting';
             return s3ImageUpload.upload(image)
             .progress(function(percent) {
-              image.progress = percent;
-              image.status = 'Uploading';
-              updateImagesUploading();
+              updateImagesUploading(index, percent);
             })
             .error(function(err) {
-              image.progress = '--';
-              image.status = 'Failed';
-              updateImagesUploading();
+              updateImagesUploading(index);
               var message = 'Image upload failed for: ' + image.name + '. ';
               if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
               else if (err.message) { console.log(err); }
@@ -111,18 +110,13 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               Alert.error(message);
             })
             .success(function(url) {
-              image.progress = 100;
-              image.status = 'Complete';
-              image.url = url;
-              updateImagesUploading();
+              updateImagesUploading(index, 100, url);
               if ($scope.onDone) { $scope.onDone({data: url}); }
               if ($scope.purpose === 'avatar' || $scope.purpose === 'logo' || $scope.purpose === 'favicon') { $scope.model = url; }
               else { $scope.images.push(image); }
             })
             .catch(function(err) {
-              image.progress = '--';
-              image.status = 'Failed';
-              updateImagesUploading();
+              updateImagesUploading(index);
               var message = 'Image upload failed for: ' + image.name + '. ';
               if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
               else { message += 'Error: ' + err.message; }
@@ -139,24 +133,40 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
       }
 
       // update loading status
-      function updateImagesUploading() {
-        var uploading = false;
-        var percentComplete = 0;
-        var validImages = $scope.currentImages.length;
+      function updateImagesUploading(index, percent, url) {
+        // on successful update
+        if (percent) {
+          // update images' progress sum
+          // (subtract old value and add new value)
+          $scope.imagesProgressSum = $scope.imagesProgressSum - $scope.currentImages[index].progress + percent;
+          // update the image's progress
+          $scope.currentImages[index].progress = percent;
+          // update the image's properties
+          if (percent === 100 && url) {
+            // on complete, with url populated
+            // set the image URL
+            // and remove from currentlyUploadingImages
+            $scope.currentImages[index].status = 'Complete';
+            $scope.currentImages[index].url = url;
+            $scope.uploadingImages--;
+          }
+          else {
+            $scope.currentImages[index].status = 'Uploading';
+          }
+        }
+        // on upload error or failure
+        else {
+          $scope.imagesProgressSum = $scope.imagesProgressSum - $scope.currentImages[index].progress;
+          $scope.currentImages[index].progress = '--';
+          image.status = 'Failed';
+          $scope.uploadingImages--;
+        }
 
-        // check each image for it's status
-        $scope.currentImages.map(function(imageProgress) {
-          if (imageProgress.status === 'Uploading') { uploading = true; }
-          if (imageProgress.progress === '--') { validImages = validImages - 1; }
-          else { percentComplete = percentComplete + imageProgress.progress; }
-        });
+        $scope.imagesProgress = $scope.imagesProgressSum / $scope.currentImages.length + '%';
 
-        // compute percent complete
-        $scope.imagesProgress = Math.round(percentComplete / validImages) + '%';
-
-        // check if there are any images still uploading
-        if (uploading) { return; }
-        else { $scope.imagesUploading = false; }
+        if (!($scope.uploadingImages > 0)) {
+          $scope.imagesUploading = false;
+        }
       }
 
       function cullImages(fileList) {
