@@ -176,7 +176,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
       desc: 'Locked Thread Poll' },
     { group: 'Thread Actions',
       value: 'threads.editCoOwners',
-      desc: 'Edit Owners Thread' },
+      desc: 'Edit Co-owners Thread' },
 
     { group: 'Post Actions',
       value: 'posts.update',

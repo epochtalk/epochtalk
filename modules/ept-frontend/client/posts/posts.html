@@ -30,7 +30,7 @@
       <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
     </div>
     <!-- Co-owners -->
-    <div class="fill-row" ng-if="!PostsParentCtrl.editThread">
+    <div class="fill-row" ng-if="PostsParentCtrl.showCoOwnerList()">
       <em>Co-owners</em>: <span ng-repeat="user in PostsParentCtrl.thread.coOwners">{{user}}{{$last ? '' : ', '}}</span>
     </div>
   </div>
@@ -41,19 +41,19 @@
       <!-- Watch Thread -->
       <span ng-if="PostsParentCtrl.showUserControls()">
         <a class="inverted-button" ng-if="!PostsParentCtrl.thread.watched" ng-click="PostsParentCtrl.watchThread()">
-          <i class="icon-epoch-watch"></i>Watch This Thread
+          <i class="icon-epoch-watch"></i>Watch thread
         </a>
       </span>
       <!-- Add Poll -->
       <span ng-if="PostsParentCtrl.showUserControls()">
         <a class="inverted-button" ng-if="PostsParentCtrl.canCreatePoll()" ng-click="PostsParentCtrl.addPoll = !PostsParentCtrl.addPoll">
-          <i class="fa fa-bar-chart"></i>Add a Poll
+          <i class="fa fa-bar-chart"></i>Add Poll
         </a>
       </span>
       <!-- Update users -->
       <span ng-if="PostsParentCtrl.showUserControls()">
         <a class="inverted-button" ng-if="PostsParentCtrl.canUpdateOwners()" ng-click="PostsParentCtrl.triggerCoOwnerForm()">
-          <i class="fa fa-user-plus"></i>Update Thread owners
+          <i class="fa fa-user-plus"></i>Change co-owners
         </a>
       </span>
     </div>

@@ -26,7 +26,7 @@
                     <div ng-if="multipleOwnersForm.$error.$viewValue == PostsParentCtrl.coOwners[$index]">Username does not exist</div>
                 </div>
 
-                <button tabindex="-1" ng-if="$index >= 1" ng-click="PostsParentCtrl.removeCoOwner($index)">
+                <button tabindex="-1" ng-click="PostsParentCtrl.removeCoOwner($index)">
                     <i class="fa fa-minus-circle"></i>
                 </button>
             </div>

@@ -34,13 +34,12 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
       var title = false;
       if (ctrl.thread.user.id === Session.user.id) { title = true; }
-      if (ctrl.thread.coOwners.includes(Session.user.username)) { title = true; }
-      else {
-        if (Session.hasPermission('threads.title.bypass.owner.admin')) { title = true; }
-        else if (Session.hasPermission('threads.title.bypass.owner.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id)) { title = true; }
-        }
+      else if (ctrl.thread.coOwners && ctrl.thread.coOwners.includes(Session.user.username)) { title = true; }
+      else if (Session.hasPermission('threads.title.bypass.owner.admin')) { title = true; }
+      else if (Session.hasPermission('threads.title.bypass.owner.mod')) {
+        if (Session.moderatesBoard(ctrl.thread.board_id)) { title = true; }
       }
+
       return title;
     };
 
@@ -101,6 +100,10 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
         if (Session.moderatesBoard(ctrl.thread.board_id)) { move = true; }
       }
       return move;
+    };
+
+    this.showCoOwnerList = function () {
+        return !ctrl.editThread && ctrl.thread.coOwners && ctrl.thread.coOwners.length >= 1;
     };
 
     this.showUserControls = function() {
