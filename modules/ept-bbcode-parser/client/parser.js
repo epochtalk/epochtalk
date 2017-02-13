@@ -3,7 +3,6 @@ var bbcodeDumbCompiler = require('./bbcode-dumb');
 
 module.exports = {
     parse: function (input) {
-        console.log("!");
         if (!input) {
             input = '';
         }

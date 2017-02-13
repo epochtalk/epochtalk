@@ -90,7 +90,6 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         classString = classString.replace('"', '');
 
         if (classString.indexOf('color') === 0) {
-          console.log(classString);
           var color = classString.replace('color-', '');
           return 'ng-style="{ \'color\': \'' + color + '\' }"';
         }
