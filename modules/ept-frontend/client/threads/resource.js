@@ -62,6 +62,11 @@ var resource = ['$resource',
         method: 'POST',
         params: { threadId: '@threadId', pollId: '@pollId' },
         url: '/api/threads/:threadId/polls/:pollId/lock'
+      },
+      editCoOwners: {
+        method: 'PUT',
+        params: { threadId: '@threadId' },
+        url: '/api/threads/:threadId/coOwners'
       }
     });
   }

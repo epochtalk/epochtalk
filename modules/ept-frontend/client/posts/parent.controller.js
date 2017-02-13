@@ -12,10 +12,12 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
     this.resize = true;
     this.moveBoard = {};
     this.boards = [];
+    this.updateOwners = false;
     this.addPoll = false;
     this.resetPoll = false;
     this.poll = { question: '', answers: ['',''] };
     this.pollValid = false;
+    this.coOwners = [];
 
     // Report Permission
     this.reportControlAccess = {
@@ -32,12 +34,12 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
       var title = false;
       if (ctrl.thread.user.id === Session.user.id) { title = true; }
-      else {
-        if (Session.hasPermission('threads.title.bypass.owner.admin')) { title = true; }
-        else if (Session.hasPermission('threads.title.bypass.owner.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id)) { title = true; }
-        }
+      else if (ctrl.thread.coOwners && ctrl.thread.coOwners.includes(Session.user.username)) { title = true; }
+      else if (Session.hasPermission('threads.title.bypass.owner.admin')) { title = true; }
+      else if (Session.hasPermission('threads.title.bypass.owner.mod')) {
+        if (Session.moderatesBoard(ctrl.thread.board_id)) { title = true; }
       }
+
       return title;
     };
 
@@ -100,12 +102,17 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       return move;
     };
 
+    this.showCoOwnerList = function () {
+        return !ctrl.editThread && ctrl.thread.coOwners && ctrl.thread.coOwners.length >= 1;
+    };
+
     this.showUserControls = function() {
       if (!ctrl.loggedIn()) { return false; }
 
       var show = false;
       if (!ctrl.thread.watched) { show = true; }
       if (ctrl.canCreatePoll()) { show = true; }
+      if (ctrl.canUpdateOwners()) { show = true; }
       return show;
     };
 
@@ -137,6 +144,17 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
         }
       }
       return create;
+    };
+
+    this.canUpdateOwners = function () {
+        if (!ctrl.writeAccess) {
+            return false;
+        }
+        if (ctrl.bannedFromBoard) {
+            return false;
+        }
+
+        return (ctrl.thread.user.id === Session.user.id);
     };
 
     // Post Permissions
@@ -267,6 +285,55 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
         ctrl.resetPoll = true;
       })
       .catch(function() { Alert.error('There was an error creating the poll'); });
+    };
+
+    /* Co-owner Methods */
+
+    this.triggerCoOwnerForm = function () {
+      if (typeof ctrl.thread.coOwners !== 'undefined') {
+        ctrl.coOwners = angular.copy(ctrl.thread.coOwners);
+      }
+      ctrl.coOwners.filter(function (name) {
+        return (name !== '');
+      });
+      ctrl.updateOwners = !ctrl.updateOwners;
+    };
+    this.addCoOwner = function () {
+      if (typeof ctrl.coOwners === 'object') {
+        ctrl.coowners_object = angular.copy(ctrl.coOwners);
+
+        ctrl.coOwners = [];
+        Object.values(ctrl.coowners_object).forEach(function (name) {
+          ctrl.coOwners.push(name);
+        });
+      }
+
+      if (ctrl.coOwners.length === 0) ctrl.coOwners.push('');
+      ctrl.coOwners.push('');
+    };
+    this.removeCoOwner = function (index) {
+      ctrl.coOwners.splice(index, 1);
+    };
+    this.saveCoOwners = function () {
+      if (typeof ctrl.coOwners === 'object') {
+        ctrl.coowners_object = angular.copy(ctrl.coOwners);
+
+        ctrl.coOwners = [];
+        Object.values(ctrl.coowners_object).forEach(function (name) {
+          ctrl.coOwners.push(name);
+        });
+      }
+
+      var owners = ctrl.coOwners.filter(function (name) {
+        return (name !== '');
+      });
+
+      Threads.editCoOwners({threadId: ctrl.thread.id}, {users: ctrl.coOwners}).$promise
+      .then(function () {
+        ctrl.thread.coOwners = owners;
+        ctrl.updateOwners = !ctrl.updateOwners;
+        Alert.success('Thread co-owners have been updated!');
+      });
     };
 
     /* Post Methods */
@@ -505,6 +572,13 @@ require('../components/poll_viewer/poll_viewer.directive');
 require('../components/editor/editor.directive');
 require('../components/resizeable/resizeable.directive');
 require('../components/image_uploader/image_uploader.directive');
+require('../components/username_exists/username_exists.directive');
 
 module.exports = angular.module('ept.posts.parentCtrl', [])
-.controller('PostsParentCtrl', ctrl);
+.controller('PostsParentCtrl', ctrl)
+.directive('coOwnersEditor', function() {
+    return {
+        restrict: 'E',
+        template: require('../components/coowners/editor.html')
+    };
+});

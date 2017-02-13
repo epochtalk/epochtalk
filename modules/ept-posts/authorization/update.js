@@ -30,6 +30,13 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       userId: userId
     },
     {
+      // is thread owner
+      type: 'isOneOfThreadOwners',
+      method: server.db.threads.getThreadOwners,
+      args: [threadId],
+      userId: userId
+    },
+    {
       // is board moderator
       type: 'isMod',
       method: server.db.moderators.isModeratorWithPostId,

@@ -54,7 +54,14 @@ module.exports = function (server, auth, threadId) {
       type: 'isThreadOwner',
       method: server.db.threads.getThreadOwner,
       args: [threadId],
-      userId: userId,
+      userId: userId
+    },
+    {
+      // is thread owner
+      type: 'isOneOfThreadOwners',
+      method: server.db.threads.getThreadOwners,
+      args: [threadId],
+      userId: userId
     },
     {
       // is board moderator

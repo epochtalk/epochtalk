@@ -93,6 +93,17 @@ var common = {
       else { return Promise.reject(error); }
     });
   },
+  isOneOfThreadOwners: (error, method, args, userId) => {
+    return method(...args)
+    .then(function(owners) {
+        var owner_ids = owners.map(function(owner){
+            return owner.user_id;
+        });
+
+        if (owner_ids.includes(userId)) { return true; }
+        else { return Promise.reject(error); }
+    });
+  },
   isNotFirstPost: (error, method, args) => {
     return method(...args)
     .then(function(value) {
@@ -130,6 +141,7 @@ function build(opts) {
       break;
     case 'isOwner':
     case 'isThreadOwner':
+    case 'isOneOfThreadOwners':
     case 'isUnique':
       promise = common[opts.type](error, opts.method, opts.args, opts.userId);
       break;
