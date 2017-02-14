@@ -8,6 +8,7 @@ lib-cov
 *.gz
 .env
 .DS_Store
+.idea
 
 pids
 logs
@@ -48,3 +49,4 @@ test/coverage/
 
 
 /app
+/modules/ept-frontend/client/scss/loading-bar.scss
