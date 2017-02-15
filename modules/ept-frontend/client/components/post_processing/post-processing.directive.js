@@ -89,7 +89,11 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         var classString = styleString.replace('class="bbcode-', '');
         classString = classString.replace('"', '');
 
-        if (classString.indexOf('color') === 0) {
+        if (classString.indexOf('color-_') === 0) {
+            var colorCode = classString.replace('color-_', '');
+            return 'ng-style="{ \'color\': \'#' + colorCode + '\' }"';
+        }
+        else if (classString.indexOf('color') === 0) {
           var color = classString.replace('color-', '');
           return 'ng-style="{ \'color\': \'' + color + '\' }"';
         }

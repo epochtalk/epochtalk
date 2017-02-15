@@ -44,7 +44,7 @@ var XBBCODE = (function () {
     var me = {},
         urlPattern = /^(?:https?|file|c):(?:\/{1,3}|\\{1})[-a-zA-Z0-9:;@#%&()~_?\+=\/\\\.]*$/,
         ftpPattern = /^(?:ftps?|c):(?:\/{1,3}|\\{1})[-a-zA-Z0-9:;@#%&()~_?\+=\/\\\.]*$/,
-        colorCodePattern = /^#?[a-fA-F0-9]{6}$/,
+        colorCodePattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
         emailPattern = /[^\s@]+@[^\s@]+\.[^\s@]+/,
         sizePattern = /([1-9][\d]?p[xt]|(?:x-)?small(?:er)?|(?:x-)?large[r]?)/,
         anchorPattern = /[#]?([A-Za-z][A-Za-z0-9_-]*)/,
@@ -188,7 +188,9 @@ var XBBCODE = (function () {
                 colorCode = colorCode.toLowerCase();
                 colorCode = colorCode.trim();
 
-                return '<span class="bbcode-color-' + colorCode + '" style="color:' + colorCode + '">';
+                var simpleColor = colorCode.replace(/#/gi, '_');
+
+                return '<span class="bbcode-color-' + simpleColor + '" style="color:' + colorCode + '">';
             },
             closeTag: function () {
                 return '</span>';
@@ -261,23 +263,16 @@ var XBBCODE = (function () {
                 var options = params.substr(1) || '';
                 options = options.replace(/<.*?>/g, '');
 
-                var simpleColor = '';
+                var simpleColor = 'inherit';
                 var color = options.split(',')[0];
                 color = color.trim();
                 color = color.toLowerCase();
                 colorCodePattern.lastIndex = 0;
-                if (!colorCodePattern.test(color)) {
-                    color = 'inherit';
-                    simpleColor = 'inherit';
+                if (colorCodePattern.test(color)) {
+                    simpleColor = color.replace(/#/gi, '_')
                 }
                 else {
-                    if (color.substr(0, 1) !== "#") {
-                        simpleColor = '_' + color;
-                        color = '#' + color;
-                    }
-                    else {
-                        simpleColor = '_' + color.substr(1);
-                    }
+                    simpleColor = color;
                 }
 
 
