@@ -1,3 +1,4 @@
+var Promise = require('bluebird');
 var route = ['$stateProvider', function($stateProvider) {
   $stateProvider.state('posts', {
     parent: 'public-layout',
@@ -48,7 +49,7 @@ var route = ['$stateProvider', function($stateProvider) {
         });
         return deferred.promise;
       }],
-      pageData: ['Posts', 'Threads', 'PreferencesSvc', '$stateParams', function(Posts, Threads, PreferencesSvc, $stateParams) {
+      pageData: ['Posts', 'Threads', 'PreferencesSvc', '$stateParams', '$window', function(Posts, Threads, PreferencesSvc, $stateParams, $window) {
         var pref = PreferencesSvc.preferences;
         var query = {
           thread_id: $stateParams.threadId,
@@ -57,7 +58,29 @@ var route = ['$stateProvider', function($stateProvider) {
           start: $stateParams.start
         };
         Threads.viewed({ id: $stateParams.threadId });
-        return Posts.byThread(query).$promise;
+        return Posts.byThread(query).$promise
+        .then(function(pageData) {
+          return Promise.map(pageData.posts, function(post) {
+            // run parsers on raw_body if post body is null
+            if (post.body === '') {
+              console.log('postsindex', post.raw_body);
+              return Promise.reduce($window.parsers, function(parsedBody, parser) {
+                return parser.parse(parsedBody);
+              }, post.raw_body)
+              .then(function(parsedBody) {
+                post.body = parsedBody;
+                return post;
+              });
+            }
+            else {
+              return post;
+            }
+          })
+          .then(function(mappedPosts) {
+            pageData.posts = mappedPosts;
+            return pageData;
+          });
+        });
       }]
     }
   })
