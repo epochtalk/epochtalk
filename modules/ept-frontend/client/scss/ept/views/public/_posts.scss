@@ -99,10 +99,12 @@
     .post-content {
       display: block;
       margin-left: 5rem;
-      img.column-image-resize {
-        max-width: 350px;
-        margin: 5px auto;
-        display: inline;
+      .bbcode-column {
+        img.image-loader.loaded {
+          max-width: 350px;
+          margin: 5px auto;
+          display: inline;
+        }
       }
       .post-title {
         color: $secondary-font-color;

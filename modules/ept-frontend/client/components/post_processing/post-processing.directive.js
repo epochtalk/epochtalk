@@ -152,9 +152,6 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         // image loading
         var images = $($element[0]).find('img');
         images.each(function(index, image) {
-          if ($(image).parent().attr('class').indexOf('bbcode-column') > 0) {
-            $(image).addClass('column-image-resize');
-          }
           $(image).addClass('image-loader');
         });
 
