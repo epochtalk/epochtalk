@@ -662,15 +662,6 @@ var XBBCODE = (function () {
                 color = options.split(',')[0];
                 color = color.trim();
                 color = color.toLowerCase();
-                colorCodePattern.lastIndex = 0;
-                if (!colorCodePattern.test(color)) {
-                    color = "black";
-                }
-                else {
-                    if (color.substr(0, 1) !== "#") {
-                        color = "#" + color;
-                    }
-                }
 
                 // direction
                 direction = options.split(',')[1] || '';
