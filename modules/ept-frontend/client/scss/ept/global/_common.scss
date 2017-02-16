@@ -7,7 +7,7 @@
 .thin-underline { @include clearfix; border-bottom: 1px solid $border-color; margin-bottom: 0.625rem; }
 .desc-label { color: $secondary-font-color; }
 .bold { font-weight: bold; }
-.spoiler { color: black; background-color: black; &:hover { color: white; } }
+.spoiler { color: black; background-color: black; display: inline-block; .imageContainer.loaded img { opacity: 0; } &:hover { color: white; .imageContainer.loaded img  { opacity: 1; } } }
 .disable-animations {
   // Use this for transitions
   &.ng-enter,
