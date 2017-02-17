@@ -1,7 +1,6 @@
-var Promise = require('bluebird');
 var ctrl = [
-  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Alert', 'BanSvc', 'Watchlist', 'Session', 'Posts', 'pageData', 'Websocket', '$window',
-  function($rootScope, $scope, $timeout, $anchorScroll, $location, Alert, BanSvc, Watchlist, Session, Posts, pageData, Websocket, $window) {
+  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Alert', 'BanSvc', 'Watchlist', 'Session', 'Posts', 'pageData', 'Websocket',
+  function($rootScope, $scope, $timeout, $anchorScroll, $location, Alert, BanSvc, Watchlist, Session, Posts, pageData, Websocket) {
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
     parent.loggedIn = Session.isAuthenticated;
@@ -198,29 +197,6 @@ var ctrl = [
 
       // replace current posts with new posts
       Posts.byThread(query).$promise
-      // check for posts with null body
-      .then(function(pageData) {
-        return Promise.map(pageData.posts, function(post) {
-          // run parsers on raw_body if post body is null
-          if (post.body === '') {
-            post.raw_body = post.raw_body.replace(/<br \/>/g, '\n');
-            return Promise.reduce($window.parsers, function(parsedBody, parser) {
-              return parser.parse(parsedBody);
-            }, post.raw_body)
-            .then(function(parsedBody) {
-              post.body = parsedBody;
-              return post;
-            });
-          }
-          else {
-            return post;
-          }
-        })
-        .then(function(mappedPosts) {
-          pageData.posts = mappedPosts;
-          return pageData;
-        });
-      })
       .then(function(pageData) {
         ctrl.posts = pageData.posts;
         parent.writeAccess = pageData.writeAccess;
