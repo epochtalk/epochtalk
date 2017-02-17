@@ -203,7 +203,7 @@ var ctrl = [
         return Promise.map(pageData.posts, function(post) {
           // run parsers on raw_body if post body is null
           if (post.body === '') {
-            console.log('postscontroller', post.raw_body);
+            post.raw_body = post.raw_body.split('<br />').join('\n');
             return Promise.reduce($window.parsers, function(parsedBody, parser) {
               return parser.parse(parsedBody);
             }, post.raw_body)
