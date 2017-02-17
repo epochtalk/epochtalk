@@ -25,9 +25,13 @@
   }
   .controls.two-thirds-column {
     text-align: right;
-    .control:last-child { margin-right: 0.5rem; }
+    .control:last-child {
+      margin-right: 0.5rem;
+    }
   }
-  a { color: $secondary-font-color; }
+  a {
+    color: $secondary-font-color;
+  }
 }
 
 .thread-data {
@@ -41,10 +45,18 @@
     position: relative;
     min-height: 10rem;
     border-bottom: 1px solid $border-color;
-    &:first-child { border-top: 1px solid $border-color; }
-    &.highlighted { background-color: $color-highlighted; }
-    &.editing { background-color: RGBA(235, 200,120, 0.5); }
-    &.hidden { background-color: $sub-header-color; }
+    &:first-child {
+      border-top: 1px solid $border-color;
+    }
+    &.highlighted {
+      background-color: $color-highlighted;
+    }
+    &.editing {
+      background-color: RGBA(235, 200, 120, 0.5);
+    }
+    &.hidden {
+      background-color: $sub-header-color;
+    }
     &.deleted {
       min-height: 0;
       padding: 0.5rem 0.5rem;
@@ -56,13 +68,20 @@
       padding-right: 1.25rem;
       display: inline-block;
       position: absolute;
-      a { display: block; }
+      a {
+        display: block;
+      }
       .user-avatar {
         @include bg-cover;
         background: no-repeat center center;
         height: 3.75rem;
         width: 3.75rem;
-        img { @include border-radius(100px); width: 100%; height: 100%; object-fit: cover; }
+        img {
+          @include border-radius(100px);
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
       }
       .user-role, .user-activity {
         padding-top: 0.5rem;
@@ -80,17 +99,29 @@
     .post-content {
       display: block;
       margin-left: 5rem;
+      .bbcode-column {
+        img.image-loader.loaded {
+          max-width: 350px;
+          margin: 5px auto;
+          display: inline;
+        }
+      }
       .post-title {
         color: $secondary-font-color;
         margin-bottom: 0.5rem;
         width: 100%;
-        .online { float: left; margin-right: 0.5rem; }
+        .online {
+          float: left;
+          margin-right: 0.5rem;
+        }
         a.username {
           float: left;
           margin-right: 0.75rem;
           color: $base-font-color;
           font-weight: 900;
-          &:hover { color: $color-primary; }
+          &:hover {
+            color: $color-primary;
+          }
         }
         .timestamp, .display-name {
           display: inline-block;
@@ -100,7 +131,9 @@
           font-weight: 400;
           float: left;
         }
-        .display-name { color: $secondary-font-color-dark; }
+        .display-name {
+          color: $secondary-font-color-dark;
+        }
         .post-action {
           @include list-clean;
           float: right;
@@ -110,14 +143,24 @@
             @include list-flat;
             a {
               color: $secondary-font-color-light;
-              &:hover { color: $color-primary; }
+              &:hover {
+                color: $color-primary;
+              }
             }
-            .clicked { color: $color-primary; }
+            .clicked {
+              color: $color-primary;
+            }
           }
-          &:hover a { color: $secondary-font-color; }
+          &:hover a {
+            color: $secondary-font-color;
+          }
         }
-        &:hover .post-action a { color: $secondary-font-color; }
-        .clear { @include clearfix; }
+        &:hover .post-action a {
+          color: $secondary-font-color;
+        }
+        .clear {
+          @include clearfix;
+        }
       }
       .post-sig-border {
         clear: both;
@@ -136,14 +179,18 @@
         white-space: pre-wrap;
         a {
           color: $secondary-font-color;
-          &:hover { color: $color-primary; }
+          &:hover {
+            color: $color-primary;
+          }
         }
       }
     }
   }
 }
 
-#post-spacer { min-height: 175px; }
+#post-spacer {
+  min-height: 175px;
+}
 
 #post-tools-fixed {
   position: fixed;
@@ -159,14 +206,19 @@
     margin: 0 auto;
     .tool-container {
       line-height: 3rem;
-      .button { margin: 0; padding: 0.35rem 1rem; }
+      .button {
+        margin: 0;
+        padding: 0.35rem 1rem;
+      }
       .left-col {
         font-weight: bold;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .right-col { text-align: right; }
+      .right-col {
+        text-align: right;
+      }
     }
   }
 }
@@ -179,7 +231,9 @@
     margin-right: 1.5rem;
     a {
       color: $secondary-font-color;
-      &.clicked { color: $color-primary; }
+      &.clicked {
+        color: $color-primary;
+      }
     }
   }
 }
@@ -191,46 +245,79 @@
     .controls.two-thirds-column {
       text-align: center;
       @include span-columns(6);
-      .control:last-child { margin-right: 1rem; }
+      .control:last-child {
+        margin-right: 1rem;
+      }
     }
     .controls.one-third-column {
       @include span-columns(6);
-      .button { @include span-columns(12); }
+      .button {
+        @include span-columns(12);
+      }
     }
   }
 }
+
 @include media($mobile-portrait) {
-  .thread-data .post-block .post-content .display-name { float: none; width: 100%; }
+  .thread-data .post-block .post-content .display-name {
+    float: none;
+    width: 100%;
+  }
   .thread-controls-wrap {
-    .controls.one-third-column { @include span-columns(8); }
+    .controls.one-third-column {
+      @include span-columns(8);
+    }
     .controls.two-thirds-column {
       text-align: center;
       @include span-columns(8);
-      .control:last-child { margin-right: 0; }
+      .control:last-child {
+        margin-right: 0;
+      }
     }
   }
   #post-tools-fixed .tool-wrap {
     .right-col .button {
       width: 100%;
-      .hide-post { display: none; }
+      .hide-post {
+        display: none;
+      }
     }
   }
 }
+
 @include media($mobile) {
-  .thread-data .post-block .post-user { display: none; }
-  .thread-data .post-block .post-content { margin-left: 0; }
-  .thread-data .post-block .post-content .post-title { position: relative; }
-  .thread-data .post-block .post-content .timestamp { float: none; width: 100%; }
-  .thread-data .post-block .post-content .post-action { position: absolute; top:0; right:0; }
+  .thread-data .post-block .post-user {
+    display: none;
+  }
+  .thread-data .post-block .post-content {
+    margin-left: 0;
+  }
+  .thread-data .post-block .post-content .post-title {
+    position: relative;
+  }
+  .thread-data .post-block .post-content .timestamp {
+    float: none;
+    width: 100%;
+  }
+  .thread-data .post-block .post-content .post-action {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
   #post-tools-fixed {
     height: 2.5rem;
     .tool-wrap .tool-container {
       line-height: 2.5rem;
       padding: 0 $base-grid-padding;
-      .left-col { @include span-columns(5); }
+      .left-col {
+        @include span-columns(5);
+      }
       .right-col {
         @include span-columns(3);
-        .button { padding: 0.15rem 0.76rem; display: inline-block; }
+        .button {
+          padding: 0.15rem 0.76rem;
+          display: inline-block;
+        }
       }
     }
   }

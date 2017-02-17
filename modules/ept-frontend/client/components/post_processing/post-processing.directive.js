@@ -90,8 +90,8 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         classString = classString.replace('"', '');
 
         if (classString.indexOf('color-_') === 0) {
-          var colorCode = classString.replace('color-_', '');
-          return 'ng-style="{ \'color\': \'#' + colorCode + '\' }"';
+            var colorCode = classString.replace('color-_', '');
+            return 'ng-style="{ \'color\': \'#' + colorCode + '\' }"';
         }
         else if (classString.indexOf('color') === 0) {
           var color = classString.replace('color-', '');

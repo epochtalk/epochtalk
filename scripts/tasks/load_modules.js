@@ -1,7 +1,6 @@
 var path = require('path');
 var fse = require('fs-extra');
 var Promise = require('bluebird');
-var exec = require('child_process').exec;
 var modulesDir = path.normalize(__dirname + '/../../modules');
 var modulesNMDir = path.normalize(__dirname + '/../../modules/node_modules');
 var appModulesDir = path.normalize(__dirname + '/../../app');
