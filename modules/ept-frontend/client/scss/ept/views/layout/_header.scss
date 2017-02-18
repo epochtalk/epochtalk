@@ -39,10 +39,9 @@ header {
       .imageContainer.loaded { background: none; }
       .avatar.loaded { opacity: 1; }
       .avatar {
-        @include transition(opacity 0.5s ease-in);
         @include border-radius(100px);
         border: 2px solid $header-logo-font-color;
-        opacity: 0;
+        opacity: 1;
         height: 2.1875rem;
         width: 2.1875rem;
         object-fit: cover;
