@@ -159,9 +159,13 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
     this.canSave = function() {
       var text = ctrl.posting.post.body;
-      text = text.replace(/(<([^>]+)>)/ig,'');
-      text = text.trim();
-      return text.length > 0;
+      var imagePost = text.trim().indexOf('<img src') === 0 && text.trim().indexOf('<img src="" />') !== 0;
+      if (imagePost) { return imagePost; }
+      else {
+        text = text.replace(/(<([^>]+)>)/ig,'');
+        text = text.trim();
+        return text.length > 0;
+      }
     };
 
     // wait for board_id to be populated by child controller
