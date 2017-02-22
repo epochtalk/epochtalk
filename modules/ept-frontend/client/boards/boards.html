@@ -52,6 +52,7 @@
           <div ng-if="board.last_post_username">
             Last post by
             <span ng-if="board.user_deleted || board.post_deleted">deleted</span>
+            <img ng-if="!board.user_deleted && !board.post_deleted" class="avatar-small" ng-src="{{::board.last_post_avatar}}" />
             <a ng-if="!board.user_deleted && !board.post_deleted" ui-sref="profile.posts({ username: board.last_post_username })" ng-bind="::board.last_post_username"></a>
           </div>
           <div ng-if="board.last_thread_title">

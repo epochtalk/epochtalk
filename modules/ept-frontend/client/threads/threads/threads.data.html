@@ -35,6 +35,7 @@
       <div ng-if="childBoard.last_thread_id">
         Last post by
         <span ng-if="!childBoard.last_post_username">deleted</span>
+        <img ng-if="childBoard.last_post_username" class="avatar-small" ng-src="{{childBoard.last_post_avatar}}" />
         <a ng-if="childBoard.last_post_username" ui-sref="profile.posts({ username: childBoard.last_post_username })" ng-bind="childBoard.last_post_username"></a>
       </div>
       <div ng-if="childBoard.last_thread_id">
@@ -96,6 +97,7 @@
       <br />
       <span>Last post by </span>
       <span ng-if="thread.last_deleted">deleted</span>
+      <img ng-if="!thread.last_deleted" class="avatar-small" ng-src="{{thread.last_post_avatar}}" />
       <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
       <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
     </div>
@@ -116,6 +118,7 @@
     <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
      by
      <span ng-if="thread.last_deleted">deleted</span>
+     <img ng-if="!thread.last_deleted" class="avatar-small" ng-src="{{thread.last_post_avatar}}" />
      <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
     <div ng-if="thread.has_new_post">
@@ -148,6 +151,7 @@
       <br />
       <span>Last post by </span>
       <span ng-if="thread.last_deleted">deleted</span>
+      <img ng-if="!thread.last_deleted" class="avatar-small" ng-src="{{thread.last_post_avatar}}" />
       <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
       <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
     </div>
@@ -168,6 +172,7 @@
     <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
     by
     <span ng-if="thread.last_deleted">deleted</span>
+    <img ng-if="!thread.last_deleted" class="avatar-small" ng-src="{{thread.last_post_avatar}}" />
     <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
     <div ng-bind="thread.last_post_created_at | humanDate"></div>
     <div ng-if="thread.has_new_post">
