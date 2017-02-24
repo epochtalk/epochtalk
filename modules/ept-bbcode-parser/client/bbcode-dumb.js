@@ -171,7 +171,7 @@ var dumbParser = {};
     var tags = {
         "br": {
             "bbcode": "[br]{TEXT}",
-            "html": "<hr />{TEXT}"
+            "html": "<br />{TEXT}"
         },
         "btc": {
             "bbcode": "[btc]{TEXT}",
