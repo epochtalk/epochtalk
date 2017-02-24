@@ -50,6 +50,16 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
       return true;
     };
 
+    this.canSave = function() {
+      var text = ctrl.thread.body;
+      var imgSrcRegex = /<img[^>]+src="((http:\/\/|\/)[^">]+)"/g;
+      var stripTagsRegex = /(<([^>]+)>)/ig;
+      var images = imgSrcRegex.exec(text);
+      text = text.replace(stripTagsRegex, '');
+      text = text.trim();
+      return text.length || images;
+    };
+
     this.addPollAnswer = function() { ctrl.poll.answers.push(''); };
     this.removePollAnswer = function(index) { ctrl.poll.answers.splice(index, 1); };
 
