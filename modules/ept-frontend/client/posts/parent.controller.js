@@ -159,7 +159,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
     this.canSave = function() {
       var text = ctrl.posting.post.body;
-      var imgSrcRegex = /<img[^>]+src="((http:\/\/|\/)[^">]+)"/g;
+      var imgSrcRegex = /<img[^>]+src="((http:\/\/|https:\/\/|\/)[^">]+)"/g;
       var stripTagsRegex = /(<([^>]+)>)/ig;
       var images = imgSrcRegex.exec(text);
       text = text.replace(stripTagsRegex, '');
