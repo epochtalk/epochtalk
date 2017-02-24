@@ -52,7 +52,7 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
 
     this.canSave = function() {
       var text = ctrl.thread.body;
-      var imgSrcRegex = /<img[^>]+src="((http:\/\/|\/)[^">]+)"/g;
+      var imgSrcRegex = /<img[^>]+src="((http:\/\/|https:\/\/|\/)[^">]+)"/g;
       var stripTagsRegex = /(<([^>]+)>)/ig;
       var images = imgSrcRegex.exec(text);
       text = text.replace(stripTagsRegex, '');
