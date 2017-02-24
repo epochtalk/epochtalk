@@ -42,6 +42,7 @@ var XBBCODE = (function () {
     // -----------------------------------------------------------------------------
 
     var me = {},
+        imgPattern = /^((?:https?|file|c):(?:\/{1,3}|\\{1})|\/)[-a-zA-Z0-9:;@#%&()~_?\+=\/\\\.]*$/,
         urlPattern = /^(?:https?|file|c):(?:\/{1,3}|\\{1})[-a-zA-Z0-9:;@#%&()~_?\+=\/\\\.]*$/,
         ftpPattern = /^(?:ftps?|c):(?:\/{1,3}|\\{1})[-a-zA-Z0-9:;@#%&()~_?\+=\/\\\.]*$/,
         colorCodePattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
@@ -303,8 +304,8 @@ var XBBCODE = (function () {
                 // url
                 var myUrl = content;
                 myUrl = myUrl.trim();
-                urlPattern.lastIndex = 0;
-                if (!urlPattern.test(myUrl)) {
+                imgPattern.lastIndex = 0;
+                if (!imgPattern.test(myUrl)) {
                     myUrl = "";
                 }
                 if (!params) {
