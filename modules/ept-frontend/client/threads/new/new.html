@@ -57,7 +57,7 @@
 
 <!-- Submit Button -->
 <div class="padded-row" ng-if="NewThreadCtrl.loggedIn()">
-  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || NewThreadCtrl.thread.body.length === 0 || (NewThreadCtrl.addPoll && !NewThreadCtrl.pollValid)">
+  <button class="fill-row" ng-click="NewThreadCtrl.save()" ng-disabled="!NewThreadCtrl.loggedIn() || NewThreadCtrl.thread.title.length === 0 || !NewThreadCtrl.canSave() || (NewThreadCtrl.addPoll && !NewThreadCtrl.pollValid)">
     Submit
   </button>
 </div>
