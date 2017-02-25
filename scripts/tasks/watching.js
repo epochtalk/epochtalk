@@ -10,23 +10,8 @@ var nodeModulesPath = path.normalize(__dirname + '/../../node_modules');
 
 var coreDir = 'epochtalk-core-pg';
 
-var backendDirs = [
-  'ept-ads',
-  'ept-bbcode-parser',
-  'ept-categories',
-  'ept-boards',
-  'ept-messages',
-  'ept-md-parser',
-  'ept-posts',
-  'ept-threads',
-  'ept-users',
-  'ept-watchlist',
-  'ept-reports',
-  'ept-auth',
-  'ept-ignore-users',
-  'ept-auto-moderation',
-  'ept-portal'
-];
+var backendDirs = require(path.normalize(localModulesPath + '/include'));
+
 var frontendDir = 'ept-frontend';
 
 module.exports = function() {
