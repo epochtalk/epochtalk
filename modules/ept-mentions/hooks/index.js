@@ -5,9 +5,8 @@ var mentionsRegex = /(@[a-zA-Z\d-_.]+)/g;
 var userIdRegex = /<@[^>]+>/g;
 
 function userIdToUsername(request) {
-  console.log('POST BY THREAD POST', request.pre.processed.posts);
-
-  return Promise.each(request.pre.processed.posts, post => {
+  var posts = request.pre.processed.posts || [ request.payload ];
+  return Promise.each(posts, post => {
     var userIds = post.body.match(userIdRegex) || [];
     userIds = userIds.map(x => x.substring(2, x.length - 1));
     return Promise.each(userIds, userId => {
@@ -67,5 +66,6 @@ module.exports = [
   { path: 'posts.byThread.post', method: userIdToUsername },
   { path: 'posts.create.pre', method: usernameToUserId },
   { path: 'posts.update.pre', method: usernameToUserId },
+  { path: 'posts.update.post', method: userIdToUsername },
   { path: 'threads.create.pre', method: usernameToUserId }
 ];
