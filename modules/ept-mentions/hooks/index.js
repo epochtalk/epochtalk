@@ -8,9 +8,11 @@ function userIdToUsername(request) {
   console.log('POST BY THREAD POST', request.pre.processed.posts);
 
   return Promise.each(request.pre.processed.posts, post => {
-    var userIds = post.body.match(userIdRegex).map(x => x.substring(2, x.length - 1));
+    var userIds = post.body.match(userIdRegex) || [];
+    userIds = userIds.map(x => x.substring(2, x.length - 1));
     return Promise.each(userIds, userId => {
       // TODO: cache looked up users
+      console.log(userId);
       return request.db.users.find(userId)
       .then(user => {
         var idRegex = new RegExp('<@' + userId + '>', 'g');
@@ -34,7 +36,7 @@ function userIdToUsername(request) {
 function usernameToUserId(request) {
   var body = request.payload.body;
   var rawBody = request.payload.raw_body;
-  var usernamesArr = body.match(mentionsRegex);
+  var usernamesArr =  _.uniqWith(body.match(mentionsRegex) || [], _.isEqual);
 
   body = body.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
   rawBody = rawBody.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
@@ -46,9 +48,11 @@ function usernameToUserId(request) {
       mentions.push({ replacer: '<@' + user.id + '>', replacee: '<@' + user.username.toLowerCase() + '>' });
       return mentions;
     })
-    .catch(function() { return mentions; });
+    .catch(function() {
+      mentions.push({ replacer: '@' + username, replacee: '<@' + username + '>' });
+      return mentions;
+    });
   }, [])
-  .then(function(mentions) { return _.uniqWith(mentions, _.isEqual); })
   .each(function(mention) {
     body = body.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
     rawBody = rawBody.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
