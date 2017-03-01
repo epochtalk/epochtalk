@@ -280,6 +280,41 @@ header {
               top: 0.5rem;
               right: 0.45rem;
             }
+
+            &#mentions-icon {
+              #mentions-dropdown {
+                @include pad(0);
+                display: none;
+                width: 20rem;
+                height: auto;
+                text-align: left;
+                margin-top: -1px;
+                margin-left: -18.125rem;
+                background-color: $sub-header-color;
+                border: 1px solid $border-color;
+                position: absolute;
+                z-index: 9999;
+                li {
+                  @include pad(0.5rem 1rem);
+                  float: none;
+                  display: -webkit-box;
+                  font-size: 0.875rem;
+                  line-height: 1rem;
+                  max-height: 2rem;
+                  overflow: hidden;
+                  background-color: red;
+                  -webkit-line-clamp: 2;
+                  -webkit-box-orient: vertical;
+                  text-overflow: ellipsis;
+                }
+                li a { @include pad(0); &:hover { color: $color-primary; } }
+              }
+              &:hover {
+                box-shadow: 0 2px 4px $header-dropdown-shadow-color;
+                background-color: $header-dropdown-bg-color;
+                #mentions-dropdown { display: block; box-shadow: 0 2px 4px $header-dropdown-shadow-color; }
+              }
+            }
           }
         }
         #user-dropdown-wrap {

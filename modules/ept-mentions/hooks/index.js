@@ -10,7 +10,6 @@ function userIdToUsername(request) {
     var userIds = post.body.match(userIdRegex) || [];
     userIds = _.uniqWith(userIds, _.isEqual);
     userIds = userIds.map(x => x.substring(2, x.length - 1));
-
     return Promise.each(userIds, userId => {
       return request.db.users.find(userId)
       .then(user => {
@@ -40,11 +39,13 @@ function usernameToUserId(request) {
 
   body = body.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
   rawBody = rawBody.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
+  var mentionedIds = [];
 
   return Promise.reduce(usernamesArr, function(mentions, username) {
     username = username.substring(1);
     return request.db.users.userByUsername(username)
     .then(function(user) {
+      mentionedIds.push(user.id);
       mentions.push({ replacer: '<@' + user.id + '>', replacee: '<@' + user.username.toLowerCase() + '>' });
       return mentions;
     })
@@ -60,13 +61,48 @@ function usernameToUserId(request) {
   .then(function() {
     request.payload.body = body;
     request.payload.raw_body = rawBody;
+    request.payload.mentionedIds = mentionedIds;
+  });
+}
+
+function createMention(request) {
+  var post = request.pre.processed;
+  var mentionedIds = post.mentionedIds.slice(0);
+  delete request.pre.processed.mentionedIds;
+  Promise.each(mentionedIds, function(mentioneeId) {
+    var mention = {
+      threadId: post.thread_id,
+      postId: post.id,
+      mentionerId: post.user_id,
+      mentioneeId: mentioneeId
+    };
+
+    // create the mention in db
+    request.db.mentions.create(mention)
+    .tap(function(dbMention) {
+      var mentionClone = _.cloneDeep(dbMention);
+      var notification = {
+        type: 'mention',
+        sender_id: post.user_id,
+        receiver_id: mentioneeId,
+        channel: { type: 'user', id: mentioneeId },
+        data: {
+          action: 'newMention',
+          mentionId: mentionClone.id
+        }
+      };
+      request.server.plugins.notifications.spawnNotification(notification);
+    });
   });
 }
 
 module.exports = [
   { path: 'posts.byThread.post', method: userIdToUsername },
+  { path: 'posts.pageByUser.post', method: userIdToUsername },
+  { path: 'posts.update.post', method: userIdToUsername },
   { path: 'posts.create.pre', method: usernameToUserId },
   { path: 'posts.update.pre', method: usernameToUserId },
-  { path: 'posts.update.post', method: userIdToUsername },
-  { path: 'threads.create.pre', method: usernameToUserId }
+  { path: 'threads.create.pre', method: usernameToUserId },
+  { path: 'posts.create.post', method: createMention },
+  { path: 'threads.create.post', method: createMention }
 ];

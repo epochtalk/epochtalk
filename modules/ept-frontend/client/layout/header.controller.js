@@ -59,6 +59,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     // Notifications
     this.notificationMessages = NotificationSvc.getMessages;
     this.notificationMentions = NotificationSvc.getMentions;
+    this.notificationMentionsList = NotificationSvc.getMentionsList;
     this.dismissNotifications = NotificationSvc.dismiss;
 
     // Search

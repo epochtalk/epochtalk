@@ -1,14 +1,18 @@
 'use strict';
 /* jslint node: true */
 
-module.exports = ['Notifications', function(Notifications) {
+module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions) {
 
   var messages = 0;
   var mentions = 0;
+  var mentionsList = [];
 
-  function getMessages() { return messages; }
-
-  function getMentions() { return mentions; }
+  function refreshMentionsList() {
+    return Mentions.latest({ limit: 15 }).$promise
+    .then(function(dbMentionsList) {
+      mentionsList = dbMentionsList;
+    });
+  }
 
   function refresh() {
     return Notifications.counts().$promise
@@ -24,10 +28,20 @@ module.exports = ['Notifications', function(Notifications) {
     .then(function() { refresh(); });
   }
 
+  function getMentionsList() {
+    return mentionsList;
+  }
+
+  function getMessages() { return messages; }
+
+  function getMentions() { return mentions; }
+
   return {
     getMessages: getMessages,
     getMentions: getMentions,
     refresh: refresh,
-    dismiss: dismiss
+    dismiss: dismiss,
+    refreshMentionsList: refreshMentionsList,
+    getMentionsList: getMentionsList
   };
 }];
