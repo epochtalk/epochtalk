@@ -49,7 +49,7 @@ exports.dismiss = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'notifications.dismiss' },
   validate: {
-    query: Joi.object().keys({
+    payload: Joi.object().keys({
       type: Joi.string().valid('message', 'mention', 'other').required()
     })
   },
@@ -57,7 +57,7 @@ exports.dismiss = {
     // dismiss notifications for receiver_id
     var params = {
       receiver_id: request.auth.credentials.id,
-      type: request.query.type
+      type: request.payload.type
     };
     var dismiss = request.server.plugins.notifications.dismissNotifications(params);
 
