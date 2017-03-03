@@ -23,8 +23,8 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
   }
 
   function dismiss(type) {
-    var query = { type: type };
-    return Notifications.dismiss(query).$promise
+    var opts = { type: type };
+    return Notifications.dismiss(opts).$promise
     .then(function() { refresh(); });
   }
 

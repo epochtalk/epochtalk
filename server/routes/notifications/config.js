@@ -20,11 +20,16 @@ var Promise = require('bluebird');
   */
 exports.counts = {
   auth: { strategy: 'jwt' },
+  validate: {
+    query: Joi.object().keys({
+      max: Joi.number()
+    })
+  },
   plugins: { acls: 'notifications.counts' },
   handler: function(request, reply) {
     // get notifications counts for userId
     var userId = request.auth.credentials.id;
-    var getNotificationsCounts = request.server.plugins.notifications.getNotificationsCounts(userId);
+    var getNotificationsCounts = request.server.plugins.notifications.getNotificationsCounts(userId, { max: request.query.max});
 
     var promise = getNotificationsCounts;
     return reply(promise);
@@ -49,7 +54,7 @@ exports.dismiss = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'notifications.dismiss' },
   validate: {
-    query: Joi.object().keys({
+    payload: Joi.object().keys({
       type: Joi.string().valid('message', 'mention', 'other').required()
     })
   },
@@ -57,7 +62,7 @@ exports.dismiss = {
     // dismiss notifications for receiver_id
     var params = {
       receiver_id: request.auth.credentials.id,
-      type: request.query.type
+      type: request.payload.type
     };
     var dismiss = request.server.plugins.notifications.dismissNotifications(params);
 

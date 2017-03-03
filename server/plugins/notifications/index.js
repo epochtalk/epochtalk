@@ -48,8 +48,8 @@ function getNotifications(datas) {
   return db.notifications.latest(datas);
 }
 
-function getNotificationsCounts(datas) {
-  return db.notifications.counts(datas);
+function getNotificationsCounts(userId, max) {
+  return db.notifications.counts(userId, max);
 }
 
 function dismissNotifications(datas) {
