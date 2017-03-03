@@ -48,14 +48,23 @@ var route = ['$stateProvider', function($stateProvider) {
         });
         return deferred.promise;
       }],
-      pageData: ['Posts', 'Threads', 'PreferencesSvc', '$stateParams', function(Posts, Threads, PreferencesSvc, $stateParams) {
+      pageData: ['Posts', 'Threads', 'PreferencesSvc', '$stateParams', '$location', function(Posts, Threads, PreferencesSvc, $stateParams, $location) {
+
+        // If start is present page should not be present
+        if ($stateParams.start && $stateParams.page) {
+          delete $stateParams.page;
+          $location.search('page', undefined);
+        }
+
         var pref = PreferencesSvc.preferences;
+
         var query = {
           thread_id: $stateParams.threadId,
           page: $stateParams.page,
           limit: $stateParams.limit || pref.posts_per_page || 25,
           start: $stateParams.start
         };
+
         Threads.viewed({ id: $stateParams.threadId });
         return Posts.byThread(query).$promise;
       }]
