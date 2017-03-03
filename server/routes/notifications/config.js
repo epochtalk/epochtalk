@@ -20,11 +20,16 @@ var Promise = require('bluebird');
   */
 exports.counts = {
   auth: { strategy: 'jwt' },
+  validate: {
+    query: Joi.object().keys({
+      max: Joi.number()
+    })
+  },
   plugins: { acls: 'notifications.counts' },
   handler: function(request, reply) {
     // get notifications counts for userId
     var userId = request.auth.credentials.id;
-    var getNotificationsCounts = request.server.plugins.notifications.getNotificationsCounts(userId);
+    var getNotificationsCounts = request.server.plugins.notifications.getNotificationsCounts(userId, { max: request.query.max});
 
     var promise = getNotificationsCounts;
     return reply(promise);
