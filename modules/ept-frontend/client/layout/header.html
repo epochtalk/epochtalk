@@ -90,6 +90,9 @@
           <div class="count" ng-if="HeaderCtrl.notificationMentions()" ng-bind-html="HeaderCtrl.notificationMentions()"></div>
           <ul id="mentions-dropdown">
             <li>Recent Mentions</li>
+            <li ng-if="!HeaderCtrl.notificationMentionsList().length">
+              You currently have no mentions.
+            </li>
             <li ng-repeat="mention in HeaderCtrl.notificationMentionsList()">
               <a ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })">
                 <div class="mention-avatar">
