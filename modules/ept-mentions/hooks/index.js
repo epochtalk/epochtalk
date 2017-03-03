@@ -68,8 +68,9 @@ function usernameToUserId(request) {
 
 function createMention(request) {
   var post = request.pre.processed;
-  var mentionedIds = post.mentionedIds.slice(0);
+  var mentionedIds = request.payload.mentionedIds.slice(0);
   delete request.pre.processed.mentionedIds;
+  delete request.payload.mentionedIds;
   Promise.each(mentionedIds, function(mentioneeId) {
     var mention = {
       threadId: post.thread_id,
