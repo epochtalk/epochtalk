@@ -89,9 +89,19 @@
           <i class="fa fa-at"></i>
           <div class="count" ng-if="HeaderCtrl.notificationMentions()" ng-bind-html="HeaderCtrl.notificationMentions()"></div>
           <ul id="mentions-dropdown">
+            <li>Recent Mentions</li>
             <li ng-repeat="mention in HeaderCtrl.notificationMentionsList()">
-              {{mention.mentioner}} mentioned you in thread "{{mention.title}}"
+              <a ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })">
+                <div class="mention-avatar">
+                  <img src="{{mention.mentioner_avatar}}" />
+                </div>
+                <div class="mention-content">
+                  <div class="msg"><strong>{{mention.mentioner}}</strong> mentioned you in <strong>{{mention.title}}</strong></div>
+                  <div class="timestamp">{{mention.created_at | humanDate}}</div>
+                </div>
+              </a>
             </li>
+            <li>View All</li>
           </ul>
         </div>
 

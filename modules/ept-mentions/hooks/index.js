@@ -7,6 +7,7 @@ var userIdRegex = /<@[^>]+>/g;
 function userIdToUsername(request) {
   var posts = request.pre.processed.posts || [ request.payload ];
   return Promise.each(posts, post => {
+    if (!post.body) { return; }
     var userIds = post.body.match(userIdRegex) || [];
     userIds = _.uniqWith(userIds, _.isEqual);
     userIds = userIds.map(x => x.substring(2, x.length - 1));

@@ -17,7 +17,7 @@ function create(mention) {
 function latest(mentioneeId, limit) {
   mentioneeId = helper.deslugify(mentioneeId);
   limit = limit || 15;
-  var q = 'SELECT m.thread_id, (SELECT p.title FROM posts p WHERE p.thread_id = m.thread_id ORDER BY p.created_at ASC LIMIT 1), m.post_id, (SELECT p.position FROM posts p WHERE p.id = m.post_id) as post_start, (SELECT u.username from users u WHERE m.mentioner_id = u.id) as mentioner, m.created_at, n.viewed FROM mentions.mentions m JOIN notifications n ON (m.id = uuid(n.data->>\'mentionId\')) WHERE m.mentionee_id = $1 ORDER BY created_at DESC LIMIT $2';
+  var q = 'SELECT m.thread_id, (SELECT p.title FROM posts p WHERE p.thread_id = m.thread_id ORDER BY p.created_at ASC LIMIT 1), m.post_id, (SELECT p.position FROM posts p WHERE p.id = m.post_id) as post_start, (SELECT u.username from users u WHERE m.mentioner_id = u.id) as mentioner, (SELECT up.avatar from users.profiles up where up.user_id = m.mentioner_id) as mentioner_avatar, m.created_at, n.id as notification_id, n.viewed FROM mentions.mentions m JOIN notifications n ON (m.id = uuid(n.data->>\'mentionId\')) WHERE m.mentionee_id = $1 ORDER BY created_at DESC LIMIT $2';
   return db.sqlQuery(q, [mentioneeId, limit])
   .then(helper.slugify);
 }
