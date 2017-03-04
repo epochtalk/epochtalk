@@ -29,9 +29,9 @@ exports.counts = {
   handler: function(request, reply) {
     // get notifications counts for userId
     var userId = request.auth.credentials.id;
-    var getNotificationsCounts = request.server.plugins.notifications.getNotificationsCounts(userId, { max: request.query.max});
+    var opts =  { max: request.query.max };
 
-    var promise = getNotificationsCounts;
+    var promise = request.db.notifications.counts(userId, opts);
     return reply(promise);
   }
 };
@@ -55,18 +55,18 @@ exports.dismiss = {
   plugins: { acls: 'notifications.dismiss' },
   validate: {
     payload: Joi.object().keys({
-      type: Joi.string().valid('message', 'mention', 'other').required()
+      type: Joi.string().valid('message', 'mention', 'other').required(),
+      id: Joi.string()
     })
   },
   handler: function(request, reply) {
     // dismiss notifications for receiver_id
     var params = {
       receiver_id: request.auth.credentials.id,
-      type: request.payload.type
+      type: request.payload.type,
+      id: request.payload.id
     };
-    var dismiss = request.server.plugins.notifications.dismissNotifications(params);
-
-    var promise = dismiss;
+    var promise = request.db.notifications.dismiss(params);
     return reply(promise);
   }
 };

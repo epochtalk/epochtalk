@@ -15,15 +15,14 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
   }
 
   function refresh() {
-    return Notifications.counts().$promise
+    return Notifications.counts({ max: 99 }).$promise
     .then(function(counts) {
       messages = counts.message;
       mentions = counts.mention;
     });
   }
 
-  function dismiss(type) {
-    var opts = { type: type };
+  function dismiss(opts) {
     return Notifications.dismiss(opts).$promise
     .then(function() { refresh(); });
   }

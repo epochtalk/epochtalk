@@ -59,7 +59,10 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
         Alert.warning('You have been logged out from another window.');
       }
       else if (data.action === 'newMessage') { NotificationSvc.refresh(); }
-      else if (data.action === 'newMention') { NotificationSvc.refreshMentionsList(); }
+      else if (data.action === 'newMention') {
+        NotificationSvc.refresh();
+        NotificationSvc.refreshMentionsList();
+     }
     });
 
     // subscribe to roles channels

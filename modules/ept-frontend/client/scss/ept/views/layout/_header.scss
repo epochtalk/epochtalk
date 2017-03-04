@@ -342,11 +342,19 @@ header {
                   }
                   &:first-child {
                     @include pad(0.5rem 1rem);
+                    font-weight: bold;
                     color: $secondary-font-color-dark;
                     height: 2rem;
                     line-height: 1rem;
                     background-color: $secondary-font-color-light;
                     font-variant: small-caps;
+                    cursor: default;
+                    .dismiss-all {
+                      cursor: pointer;
+                      float: right;
+                      font-variant: normal;
+                      font-size: 0.8rem;
+                    }
                   }
                   &:last-child {
                     @include pad(0.5rem 1rem);

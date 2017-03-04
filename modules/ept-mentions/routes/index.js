@@ -32,8 +32,7 @@ var remove = {
 
     // find the mention by the mentionee ID in db
     // QUERY LATEST
-    var promise = request.server.plugins.notifications.latest();
-    return reply(promise);
+    return reply('delete mention here');
   }
 };
 
