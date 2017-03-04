@@ -20,21 +20,35 @@ module.exports = {
   method: 'GET',
   path: '/api/posts/{id}',
   config: {
+    app: { hook: 'posts.find' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.posts.find(server, auth, params.id)', assign: 'viewDeleted' } ],
+    pre: [
+      { method: 'auth.posts.find(server, auth, params.id)', assign: 'viewDeleted' },
+      { method: 'hooks.preProcessing' },
+      [
+        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: processing, assign: 'processed' },
+      ],
+      { method: 'hooks.merge' },
+      { method: 'hooks.postProcessing' }
+    ],
     handler: function(request, reply) {
-      // retrieve post
-      var userId = '';
-      var authenticated = request.auth.isAuthenticated;
-      if (authenticated) { userId = request.auth.credentials.id; }
-      var viewDeleted = request.pre.viewDeleted;
-      var id = request.params.id;
-      var promise = request.db.posts.find(id)
-      .then(function(post) { return common.cleanPosts(post, userId, viewDeleted); })
-      .then(function(posts) { return posts[0]; })
-      .error(function(err) { return Boom.badRequest(err.message); });
-      return reply(promise);
+      return reply(request.pre.processed);
     }
   }
 };
+
+function processing(request, reply) {
+  // retrieve post
+  var userId = '';
+  var authenticated = request.auth.isAuthenticated;
+  if (authenticated) { userId = request.auth.credentials.id; }
+  var viewDeleted = request.pre.viewDeleted;
+  var id = request.params.id;
+  var promise = request.db.posts.find(id)
+  .then(function(post) { return common.cleanPosts(post, userId, viewDeleted); })
+  .then(function(posts) { return posts[0]; })
+  .error(function(err) { return Boom.badRequest(err.message); });
+  return reply(promise);
+}

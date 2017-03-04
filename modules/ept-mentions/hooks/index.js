@@ -3,15 +3,30 @@ var _ = require('lodash');
 
 var mentionsRegex = /(@[a-zA-Z\d-_.]+)/g;
 var userIdRegex = /<@[^>]+>/g;
+var slugIdRegex = /^[A-Za-z0-9_-]{22}$/;
 
 function userIdToUsername(request) {
-  var posts = request.pre.processed.posts || [ request.payload ];
+  var posts;
+  if (request.pre.processed.posts) {
+    posts = request.pre.processed.posts;
+  }
+  else if (request.pre.processed.body) {
+    posts = [ request.pre.processed ];
+  }
+  else if (request.pre.processed.threads) {
+    posts = request.pre.processed.threads;
+  }
+  else { posts = [ request.payload ]; }
+
   return Promise.each(posts, post => {
+    if (post.post_body) { post.body = post.post_body; }
     if (!post.body) { return; }
     var userIds = post.body.match(userIdRegex) || [];
     userIds = _.uniqWith(userIds, _.isEqual);
     userIds = userIds.map(x => x.substring(2, x.length - 1));
     return Promise.each(userIds, userId => {
+      var validId = new RegExp(slugIdRegex).test(userId);
+      if (!validId) { return; }
       return request.db.users.find(userId)
       .then(user => {
         var idRegex = new RegExp('<@' + userId + '>', 'g');
@@ -27,6 +42,9 @@ function userIdToUsername(request) {
         // body: <@123> -> <a ui-sref=".profiles('kkid')">kkid</a>
         var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\'})">' + '@' + user.username + '</a>';
         post.body = post.body.replace(idRegex, profileLink);
+        if (post.post_body) {
+          post.post_body = post.body;
+        }
       });
     });
   });
@@ -101,6 +119,9 @@ function createMention(request) {
 module.exports = [
   { path: 'posts.byThread.post', method: userIdToUsername },
   { path: 'posts.pageByUser.post', method: userIdToUsername },
+  { path: 'posts.find.post', method: userIdToUsername },
+  { path: 'posts.search.post', method: userIdToUsername },
+  { path: 'portal.view.post', method: userIdToUsername },
   { path: 'posts.update.post', method: userIdToUsername },
   { path: 'posts.create.pre', method: usernameToUserId },
   { path: 'posts.update.pre', method: usernameToUserId },
