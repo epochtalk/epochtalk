@@ -2,14 +2,12 @@ var html = `<div id="mentions-icon" class="tray-icon">
           <i class="fa fa-at"></i>
           <div class="count" ng-if="vmMentions.mentionsCount()" ng-bind-html="vmMentions.mentionsCount()"></div>
           <ul id="mentions-dropdown">
-            <li>Recent Mentions</li>
+            <li>Recent Mentions <div ng-click="vmMentions.dismissNotification({ type: 'mention'})" class="dismiss-all">Dismiss All</div></li>
             <li ng-if="!vmMentions.mentions().length">
               You currently have no mentions.
-              {{vmMentions.mentions()}}
-              {{vmMentions.mentionsCount()}}
             </li>
-            <li ng-repeat="mention in vmMentions.mentions()">
-              <a ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })">
+            <li ng-repeat="mention in vmMentions.mentions()" ng-class="{ 'dismissed': mention.viewed }">
+              <a ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })" ng-click="vmMentions.dismissNotification({ type: 'mention', id: mention.notification_id })">
                 <div class="mention-avatar">
                   <img src="{{mention.mentioner_avatar}}" />
                 </div>
@@ -23,14 +21,31 @@ var html = `<div id="mentions-icon" class="tray-icon">
           </ul>
         </div>`;
 
-var directive = [function() {
+var directive = ['NotificationSvc', function(NotificationSvc) {
   return {
     restrict: 'E',
     template: html,
     scope: true,
-    bindToController: { mentions: '=', mentionsCount: '=' },
     controllerAs: 'vmMentions',
     controller: [function() {
+      var ctrl = this;
+
+      this.refreshMentions = NotificationSvc.refreshMentionsList;
+      this.refresh = NotificationSvc.refresh;
+
+      this.mentions = NotificationSvc.getMentionsList;
+      this.mentionsCount = NotificationSvc.getMentions;
+
+      this.dismiss = NotificationSvc.dismiss;
+
+      this.dismissNotification = function(opts) {
+        return ctrl.dismiss(opts)
+        .then(function() {
+          ctrl.refreshMentions();
+          ctrl.refresh();
+        });
+      };
+
     }]
   };
 }];
