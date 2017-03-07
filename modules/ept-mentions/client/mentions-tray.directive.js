@@ -1,4 +1,5 @@
-var html = `<div id="mentions-icon" class="tray-icon">
+var html = `<div id="mentions-icon" class="tray-icon" ng-class="{'open': vmMentions.open}" ng-click="vmMentions.open = true">
+          <div class="hoverable" data-balloon="Mentions" data-balloon-pos="down"></div>
           <i class="fa fa-at"></i>
           <div class="count" ng-if="vmMentions.mentionsCount()" ng-bind-html="vmMentions.mentionsCount()"></div>
           <ul id="mentions-dropdown">
@@ -19,7 +20,8 @@ var html = `<div id="mentions-icon" class="tray-icon">
             </li>
             <li>View All</li>
           </ul>
-        </div>`;
+        </div>
+        <div id="mentions-overlay" ng-if="vmMentions.open" ng-click="vmMentions.open = false"></div>`;
 
 var directive = ['NotificationSvc', function(NotificationSvc) {
   return {
@@ -28,24 +30,10 @@ var directive = ['NotificationSvc', function(NotificationSvc) {
     scope: true,
     controllerAs: 'vmMentions',
     controller: [function() {
-      var ctrl = this;
-
-      this.refreshMentions = NotificationSvc.refreshMentionsList;
-      this.refresh = NotificationSvc.refresh;
-
+      this.open = false;
       this.mentions = NotificationSvc.getMentionsList;
       this.mentionsCount = NotificationSvc.getMentions;
-
       this.dismiss = NotificationSvc.dismiss;
-
-      this.dismissNotification = function(opts) {
-        return ctrl.dismiss(opts)
-        .then(function() {
-          ctrl.refreshMentions();
-          ctrl.refresh();
-        });
-      };
-
     }]
   };
 }];
