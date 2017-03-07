@@ -23,8 +23,15 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
   }
 
   function dismiss(opts) {
-    return Notifications.dismiss(opts).$promise
-    .then(function() { refresh(); });
+    if (opts.viewed) { return; }
+    else {
+      delete opts.viewed;
+      return Notifications.dismiss(opts).$promise
+      .then(function() {
+        refresh();
+        refreshMentionsList();
+      });
+    }
   }
 
   function getMentionsList() {
