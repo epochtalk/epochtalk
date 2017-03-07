@@ -322,12 +322,16 @@ header {
                 position: absolute;
                 z-index: 9999;
                 li {
-                  @include pad(0.35rem 1rem);
                   @include clearfix;
                   float: none;
                   color: $secondary-font-color;
                   border-bottom: 1px solid $border-color;
-                  a { color: inherit; font-size: inherit; }
+                  a {
+                    @include display(flex);
+                    @include pad(0.35rem 1rem);
+                    color: inherit;
+                    font-size: inherit;
+                  }
                   &:hover {
                     background-color: darken($sub-header-color, 3%);
                   }
@@ -386,13 +390,17 @@ header {
                     }
                   }
                   &:last-child {
-                    @include pad(0.5rem 1rem);
+                    @include pad(0);
                     color: $secondary-font-color-dark;
                     background-color: $secondary-font-color-light;
                     height: 2rem;
                     line-height: 1rem;
                     text-align: center;
                     border-bottom: none;
+                    a {
+                      @include display(block);
+                      @include pad(0.5rem 1rem);
+                    }
                   }
                 }
               }

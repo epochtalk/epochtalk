@@ -18,7 +18,7 @@ var html = `<div id="mentions-icon" class="tray-icon" ng-class="{'open': vmMenti
                 </div>
               </a>
             </li>
-            <li><a ui-sref="mentions">View All</a></li>
+            <li><a ui-sref="mentions" ui-sref-opts="{reload: true}">View All</a></li>
           </ul>
         </div>
         <div id="mentions-overlay" ng-if="vmMentions.open" ng-click="vmMentions.open = false"></div>`;
