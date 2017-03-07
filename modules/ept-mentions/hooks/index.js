@@ -78,7 +78,7 @@ function usernameToUserId(request) {
     rawBody = rawBody.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
   })
   .then(function() {
-    request.payload.body = body;
+    request.payload.body = body || ' ';
     request.payload.raw_body = rawBody;
     request.payload.mentionedIds = mentionedIds;
   });
