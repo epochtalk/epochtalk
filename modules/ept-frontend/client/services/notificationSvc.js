@@ -8,9 +8,9 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
   var mentionsList = [];
 
   function refreshMentionsList() {
-    return Mentions.latest({ limit: 10 }).$promise
-    .then(function(dbMentionsList) {
-      mentionsList = dbMentionsList;
+    return Mentions.page({ limit: 10 }).$promise
+    .then(function(dbMentions) {
+      mentionsList = dbMentions.data;
     });
   }
 

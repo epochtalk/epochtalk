@@ -1,11 +1,11 @@
 var resource = ['$resource',
   function($resource) {
     return $resource('/api/mentions', {}, {
-      latest: {
+      page: {
         method: 'GET',
-        isArray: true,
         params: {
-          limit: '@limit'
+          limit: '@limit',
+          page: '@page'
         }
       }
     });

@@ -1,6 +1,6 @@
 var Joi = require('joi');
 
-var find = {
+var page = {
   method: 'GET',
   path: '/api/mentions',
   config: {
@@ -8,14 +8,18 @@ var find = {
     plugins: { track_ip: true },
     validate: {
       query: {
-        limit: Joi.number()
+        limit: Joi.number(),
+        page: Joi.number()
       }
     }
   },
   handler: function(request, reply) {
     var mentioneeId = request.auth.credentials.id;
-    var limit = request.query.limit;
-    var promise = request.db.mentions.latest(mentioneeId, limit);
+    var opts = {
+      limit: request.query.limit,
+      page: request.query.page
+    };
+    var promise = request.db.mentions.page(mentioneeId, opts);
     return reply(promise);
   }
 };
@@ -25,16 +29,15 @@ var remove = {
   path: '/api/mentions',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { track_ip: true }
+    plugins: { track_ip: true },
+    validate: { params: { id: Joi.string().required() } },
   },
   handler: function(request, reply) {
-    var mentioneeId = request.auth.credentials.id;
-
-    // find the mention by the mentionee ID in db
-    // QUERY LATEST
-    return reply('delete mention here');
+    var mentionId = request.params.id;
+    var promise = request.db.mentions.page(mentionId);
+    return reply(promise);
   }
 };
 
 
-module.exports = [find, remove];
+module.exports = [page, remove];
