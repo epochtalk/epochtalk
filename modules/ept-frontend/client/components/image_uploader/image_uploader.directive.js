@@ -158,13 +158,13 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         else {
           $scope.imagesProgressSum = $scope.imagesProgressSum - $scope.currentImages[index].progress;
           $scope.currentImages[index].progress = '--';
-          image.status = 'Failed';
+          $scope.currentImages[index].status = 'Failed';
           $scope.uploadingImages--;
         }
 
         $scope.imagesProgress = $scope.imagesProgressSum / $scope.currentImages.length + '%';
 
-        if (!($scope.uploadingImages > 0)) {
+        if ($scope.uploadingImages <= 0) {
           $scope.imagesUploading = false;
         }
       }

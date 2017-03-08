@@ -56,10 +56,12 @@ module.exports = function(id, userPriority) {
         pl.created_at as last_post_created_at,
         pl.position as last_post_position,
         u.username as last_post_username,
+        up.avatar as last_post_avatar,
         u.id as user_id,
         u.deleted as user_deleted
       FROM posts pl
       LEFT JOIN users u ON pl.user_id = u.id
+      LEFT JOIN users.profiles up ON pl.user_id = up.user_id
       WHERE blist.last_thread_id = pl.thread_id
       ORDER BY pl.created_at DESC
       LIMIT 1
@@ -96,6 +98,7 @@ module.exports = function(id, userPriority) {
         }
         if (!b.user_id) {
           b.last_post_username = undefined;
+          b.last_post_avatar = undefined;
           b.last_post_created_at = undefined;
           b.last_thread_id = undefined;
           b.last_thread_title = undefined;
