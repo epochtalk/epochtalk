@@ -15,7 +15,7 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
   }
 
   function refresh() {
-    return Notifications.counts({ max: 99 }).$promise
+    return Notifications.counts().$promise
     .then(function(counts) {
       messages = counts.message;
       mentions = counts.mention;
