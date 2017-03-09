@@ -21,9 +21,16 @@ var route = ['$stateProvider', function($stateProvider) {
         });
         return deferred.promise;
       }],
-      // pageData: ['NotificationSvc', function(NotificationSvc) {
-      //   return NotificationSvc.getMentionsList;
-      // }]
+      pageData: ['Mentions', '$stateParams', function(Mentions, $stateParams) {
+        var page = Number($stateParams.page);
+        // Only supply page query param if above page 1
+        page = page > 1 ? page : undefined;
+        var query = {
+          page: page,
+          limit: Number($stateParams.limit) || 25
+        };
+        return Mentions.page(query).$promise;
+      }]
     }
   });
 
