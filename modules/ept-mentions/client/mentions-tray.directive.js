@@ -9,6 +9,7 @@ var html = `<div id="mentions-icon" class="tray-icon" ng-class="{'open': vmMenti
             </li>
             <li ng-repeat="mention in vmMentions.mentions()" ng-class="{ 'dismissed': mention.viewed }">
               <a ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="vmMentions.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
+                <div class="mention-unread"></div>
                 <div class="mention-avatar">
                   <img src="{{mention.mentioner_avatar}}" />
                 </div>
@@ -18,7 +19,7 @@ var html = `<div id="mentions-icon" class="tray-icon" ng-class="{'open': vmMenti
                 </div>
               </a>
             </li>
-            <li><a ui-sref="mentions" ui-sref-opts="{reload: true}">View All</a></li>
+            <li><a ui-sref="mentions" ui-sref-opts="{reload: true}">View all mentions</a></li>
           </ul>
         </div>
         <div id="mentions-overlay" ng-if="vmMentions.open" ng-click="vmMentions.open = false"></div>`;

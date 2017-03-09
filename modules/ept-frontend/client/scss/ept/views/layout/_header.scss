@@ -305,26 +305,25 @@ header {
                 background-color: $header-dropdown-bg-color;
                 #mentions-dropdown {
                   display: block;
-                  border: 3px solid #424750;
-                  box-shadow: 0px 2px 4px 2px rgba(0,0,0,0.2);
-                  border-top: none;
                 }
               }
               #mentions-dropdown {
                 @include pad(0);
                 display: none;
+                box-shadow: 0px 2px 4px 2px rgba(0,0,0,0.2);
                 width: 22rem;
                 height: auto;
                 text-align: left;
                 margin-left: -20.1rem;
-                background-color: $sub-header-color;
+                background-color: darken($header-dropdown-bg-color, 8%);
                 position: absolute;
                 z-index: 9999;
                 li {
                   @include clearfix;
                   float: none;
-                  color: $secondary-font-color;
-                  border-bottom: 1px solid $border-color;
+                  position: relative;
+                  color: $header-login-font-color;
+                  border-bottom: 1px solid $secondary-font-color-dark;
                   a {
                     @include display(flex);
                     @include pad(0.35rem 1rem);
@@ -332,11 +331,21 @@ header {
                     font-size: inherit;
                   }
                   &:hover {
-                    background-color: darken($sub-header-color, 3%);
+                    background-color: darken($header-dropdown-bg-color, 2%);
+                  }
+                  .mention-unread {
+                    position:absolute;
+                    height: 0.3125rem;
+                    width: 0.3125rem;
+                    border-radius: 100%;
+                    background-color: $color-primary;
+                    left: 0.625rem;
+                    top: 1.25rem;
                   }
                   .mention-avatar {
                     float: left;
                     img {
+                      margin-left: 0.625rem;
                       float: left;
                       height: 2rem;
                       width: 2rem;
@@ -368,37 +377,36 @@ header {
                     }
                   }
                   &.dismissed, .dismissed div {
-                    img { opacity: 0.5; }
-                    color: $secondary-font-color-light;
-                    background-color: $base-background-color;
+                    background-color: $header-bg-color;
+                    .mention-unread { display: none; }
                   }
                   &:first-child {
                     @include pad(0.5rem 1rem);
-                    font-weight: bold;
-                    color: $secondary-font-color-dark;
                     height: 2rem;
                     line-height: 1rem;
-                    background-color: $secondary-font-color-light;
-                    font-variant: small-caps;
+                    font-size: 0.8rem;
+                    background-color: $header-bg-color;
                     cursor: default;
                     .dismiss-all {
                       cursor: pointer;
                       float: right;
                       font-variant: normal;
+                      color: $color-primary;
                       font-size: 0.8rem;
                     }
                   }
                   &:last-child {
                     @include pad(0);
-                    color: $secondary-font-color-dark;
-                    background-color: $secondary-font-color-light;
+                    background-color: $header-bg-color;
                     height: 2rem;
                     line-height: 1rem;
+                    font-size: 0.8rem;
                     text-align: center;
                     border-bottom: none;
                     a {
                       @include display(block);
                       @include pad(0.5rem 1rem);
+                      color: $color-primary;
                     }
                   }
                 }
