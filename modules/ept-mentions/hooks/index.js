@@ -99,19 +99,21 @@ function createMention(request) {
 
     // create the mention in db
     request.db.mentions.create(mention)
-    .tap(function(dbMention) {
-      var mentionClone = _.cloneDeep(dbMention);
-      var notification = {
-        type: 'mention',
-        sender_id: post.user_id,
-        receiver_id: mentioneeId,
-        channel: { type: 'user', id: mentioneeId },
-        data: {
-          action: 'newMention',
-          mentionId: mentionClone.id
-        }
-      };
-      request.server.plugins.notifications.spawnNotification(notification);
+    .then(function(dbMention) {
+      if (dbMention) {
+        var mentionClone = _.cloneDeep(dbMention);
+        var notification = {
+          type: 'mention',
+          sender_id: post.user_id,
+          receiver_id: mentioneeId,
+          channel: { type: 'user', id: mentioneeId },
+          data: {
+            action: 'newMention',
+            mentionId: mentionClone.id
+          }
+        };
+        request.server.plugins.notifications.spawnNotification(notification);
+      }
     });
   });
 }

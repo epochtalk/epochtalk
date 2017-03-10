@@ -1,4 +1,15 @@
-<code>
-  {{MentionsCtrl.mentions}}
-</code>
-<br />
+<h3 class="thin-underline ng-binding">Recent Mentions</h3>
+<ul>
+  <li ng-repeat="mention in MentionsCtrl.mentions" ng-class="{ 'dismissed': mention.viewed }">
+    <a ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="vmMentions.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
+      <div class="mention-unread"></div>
+      <div class="mention-avatar">
+        <img src="{{mention.mentioner_avatar}}" />
+      </div>
+      <div class="mention-content">
+        <div class="msg"><strong>{{mention.mentioner}}</strong> mentioned you in <strong>{{mention.title}}</strong></div>
+        <div class="timestamp">{{mention.created_at | humanDate}}</div>
+      </div>
+    </a>
+  </li>
+</ul>

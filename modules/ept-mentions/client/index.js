@@ -27,7 +27,8 @@ var route = ['$stateProvider', function($stateProvider) {
         page = page > 1 ? page : undefined;
         var query = {
           page: page,
-          limit: Number($stateParams.limit) || 25
+          limit: Number($stateParams.limit) || 25,
+          extended: true
         };
         return Mentions.page(query).$promise;
       }]

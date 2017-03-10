@@ -4,7 +4,7 @@ var html = `<div id="mentions-icon" class="tray-icon" ng-class="{'open': vmMenti
           <div class="count" ng-if="vmMentions.mentionsCount()" ng-bind-html="vmMentions.mentionsCount()"></div>
           <ul id="mentions-dropdown">
             <li>Recent Mentions <div ng-click="vmMentions.dismiss({ type: 'mention'})" class="dismiss-all">Dismiss All</div></li>
-            <li ng-if="!vmMentions.mentions().length">
+            <li class="centered" ng-if="!vmMentions.mentions().length">
               You currently have no mentions.
             </li>
             <li ng-repeat="mention in vmMentions.mentions()" ng-class="{ 'dismissed': mention.viewed }">
