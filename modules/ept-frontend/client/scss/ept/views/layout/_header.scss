@@ -329,6 +329,7 @@ header {
                     @include pad(0.35rem 1rem);
                     color: inherit;
                     font-size: inherit;
+                    span { @include pad(0); }
                   }
                   &:hover {
                     background-color: darken($header-dropdown-bg-color, 2%);

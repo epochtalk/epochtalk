@@ -19,7 +19,7 @@ var html = `<div id="mentions-icon" class="tray-icon" ng-class="{'open': vmMenti
                 </div>
               </a>
             </li>
-            <li><a ui-sref="mentions" ui-sref-opts="{reload: true}">View all mentions</a></li>
+            <li><a ui-sref="mentions" ui-sref-opts="{reload: true}">View all mentions <span ng-bind="::vmMentions.unseenMentionsText()"></span></a></li>
           </ul>
         </div>
         <div id="mentions-overlay" ng-if="vmMentions.open" ng-click="vmMentions.open = false"></div>`;
@@ -31,10 +31,20 @@ var directive = ['NotificationSvc', function(NotificationSvc) {
     scope: true,
     controllerAs: 'vmMentions',
     controller: [function() {
+      var ctrl = this;
       this.open = false;
       this.mentions = NotificationSvc.getMentionsList;
       this.mentionsCount = NotificationSvc.getMentions;
       this.dismiss = NotificationSvc.dismiss;
+
+      this.unseenMentionsText = function() {
+        var unseenInList = 0;
+        ctrl.mentions().forEach(function(mention) {
+          if (!mention.viewed) { unseenInList++; }
+        });
+        var unseenHiddenCount = ctrl.mentionsCount() - unseenInList;
+        return unseenHiddenCount > 0 ? '(' + unseenHiddenCount + ' unread)' : '';
+      };
     }]
   };
 }];
