@@ -4,6 +4,7 @@ var page = {
   method: 'GET',
   path: '/api/mentions',
   config: {
+    app: { hook: 'mentions.page' },
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
@@ -12,19 +13,32 @@ var page = {
         page: Joi.number(),
         extended: Joi.boolean()
       }
-    }
+    },
+    pre: [
+      { method: 'hooks.preProcessing' },
+      [
+        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: processing, assign: 'processed' },
+      ],
+      { method: 'hooks.merge' },
+      { method: 'hooks.postProcessing' }
+    ]
   },
   handler: function(request, reply) {
-    var mentioneeId = request.auth.credentials.id;
-    var opts = {
-      limit: request.query.limit,
-      page: request.query.page,
-      extended: request.query.extended
-    };
-    var promise = request.db.mentions.page(mentioneeId, opts);
-    return reply(promise);
+    return reply(request.pre.processed);
   }
 };
+
+function processing(request, reply) {
+  var mentioneeId = request.auth.credentials.id;
+  var opts = {
+    limit: request.query.limit,
+    page: request.query.page,
+    extended: request.query.extended
+  };
+  var promise = request.db.mentions.page(mentioneeId, opts);
+  return reply(promise);
+}
 
 var remove = {
   method: 'DELETE',

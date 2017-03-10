@@ -16,6 +16,9 @@ function userIdToUsername(request) {
   else if (request.pre.processed.threads) {
     posts = request.pre.processed.threads;
   }
+  else if (request.pre.processed.data) {
+    posts = request.pre.processed.data;
+  }
   else { posts = [ request.payload ]; }
 
   return Promise.each(posts, post => {
@@ -123,6 +126,7 @@ module.exports = [
   { path: 'posts.pageByUser.post', method: userIdToUsername },
   { path: 'posts.find.post', method: userIdToUsername },
   { path: 'posts.search.post', method: userIdToUsername },
+  { path: 'mentions.page.post', method: userIdToUsername },
   { path: 'portal.view.post', method: userIdToUsername },
   { path: 'posts.update.post', method: userIdToUsername },
   { path: 'posts.create.pre', method: usernameToUserId },
