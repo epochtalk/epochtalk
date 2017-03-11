@@ -1,15 +1,38 @@
-<h3 class="thin-underline ng-binding">Recent Mentions</h3>
-<ul>
-  <li ng-repeat="mention in MentionsCtrl.mentions" ng-class="{ 'dismissed': mention.viewed }">
-    <a ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="vmMentions.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
-      <div class="mention-unread"></div>
-      <div class="mention-avatar">
-        <img src="{{mention.mentioner_avatar}}" />
+<h3 class="thin-underline recent-mentions-header">Recent Mentions</h3>
+<div class="fill-row recent-mentions">
+  <div class="mention" ng-repeat="mention in MentionsCtrl.mentions" ng-class="{ 'dismissed': mention.viewed }">
+    <a class="mention-content" ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="MentionsCtrl.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
+      <div class="mention-header">
+        <div class="mention-unread">
+          <div class="dot"></div>
+        </div>
+        <div class="avatar">
+          <img src="{{mention.mentioner_avatar}}" />
+        </div>
+        <div class="msg">
+          <strong>{{mention.mentioner}}</strong> mentioned you in <strong><span ng-bind-html="mention.board_name"></span></strong> > <strong>{{mention.title}}</strong>
+          <br>
+          {{mention.created_at | humanDate}}
+        </div>
       </div>
-      <div class="mention-content">
-        <div class="msg"><strong>{{mention.mentioner}}</strong> mentioned you in <strong>{{mention.title}}</strong></div>
-        <div class="timestamp">{{mention.created_at | humanDate}}</div>
+      <div class="mention-body">
+        <div post-processing="mention.body" style-fix="true"></div>
       </div>
-    </a>
-  </li>
-</ul>
+    </div>
+  </div>
+</div>
+
+<div class="pagination-simple">
+  <a ng-show="MentionsCtrl.prev" ui-sref=".({ page: MentionsCtrl.page - 1, limit: MentionsCtrl.limit })">
+    &#10094; Previous
+  </a>
+  <span ng-show="!MentionsCtrl.prev">&#10094; Previous</span>
+  &nbsp;&nbsp;&nbsp;
+  <a ng-show="MentionsCtrl.next" ui-sref=".({ page: MentionsCtrl.page + 1, limit: MentionsCtrl.limit })">
+     Next &#10095;
+  </a>
+  <span ng-show="!MentionsCtrl.next">Next &#10095;</span>
+</div>
+<div class="fill-row search-data" ng-if="MentionsCtrl.mentions.length <= 0">
+No mentions
+</div>

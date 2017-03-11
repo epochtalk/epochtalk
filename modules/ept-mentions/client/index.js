@@ -11,7 +11,7 @@ var route = ['$stateProvider', function($stateProvider) {
       }
     },
     resolve: {
-      $title: [ function() { return 'Watchlist'; } ],
+      $title: [ function() { return 'Mentions'; } ],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
