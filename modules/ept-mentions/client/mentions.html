@@ -10,8 +10,9 @@
           <img src="{{mention.mentioner_avatar}}" />
         </div>
         <div class="msg">
-          <strong>{{mention.mentioner}}</strong> mentioned you in <strong><span ng-bind-html="mention.board_name"></span></strong> > <strong>{{mention.title}}</strong>
-          <br>
+          <div>
+            <strong>{{mention.mentioner}}</strong> mentioned you in <span class="hidden-mobile"><strong><span ng-bind-html="mention.board_name"></span></strong> &#x27A4; </span><strong>{{mention.title}}</strong>
+          </div>
           {{mention.created_at | humanDate}}
         </div>
       </div>

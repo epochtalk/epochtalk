@@ -21,7 +21,7 @@
 
     <!-- User Dropdown Mobile -->
     <ul ng-if="HeaderCtrl.loggedIn()" class="burger-icon">
-      <div class="burger-notification show-mobile" ng-if="HeaderCtrl.notificationMessages()"></div>
+      <div class="burger-notification show-mobile" ng-if="HeaderCtrl.notificationMessages() || HeaderCtrl.notificationMentions()"></div>
       <i ng-click="HeaderCtrl.showMobileMenu = true" class="fa fa-bars fa-lg burger" aria-hidden="true"></i>
     </ul>
     <div class="burger-close-overlay" ng-if="HeaderCtrl.showMobileMenu" ng-click="HeaderCtrl.showMobileMenu = false"></div>
@@ -49,6 +49,7 @@
         <li ng-click="HeaderCtrl.showMobileMenu = false" >
           <a ui-sref="user-search" ui-sref-opts="{ reload: true }"><i class="fa fa-users" aria-hidden="true"></i>Member Search</a>
         </li>
+        <mentions-menu></mentions-menu>
         <li ng-click="HeaderCtrl.showMobileMenu = false" >
           <a ui-sref="messages" ng-click="HeaderCtrl.dismissNotifications({ type: 'message' })"><i class="fa fa-envelope" aria-hidden="true"></i>Messages</a>
           <div class="count" ng-if="HeaderCtrl.notificationMessages()" ng-bind-html="HeaderCtrl.notificationMessages()"></div>
