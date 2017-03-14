@@ -43,6 +43,7 @@ function page(mentioneeId, opts) {
   var extBoardId = extended ? 'b.id as board_id,' : '';
   var extThreadId = extended ? 'p.thread_id,' : '';
   var q = `SELECT
+      m.id,
       m.thread_id,
       (SELECT p2.title FROM posts p2 WHERE p2.thread_id = m.thread_id ORDER BY p2.created_at ASC LIMIT 1),
       m.post_id,
@@ -81,11 +82,12 @@ function page(mentioneeId, opts) {
 function remove(mentionId) {
   mentionId = helper.deslugify(mentionId);
   var q = 'DELETE FROM mentions.mentions WHERE id = $1';
-  return db.sqlQuery(q, [mentionId]);
+  return db.sqlQuery(q, [mentionId])
+  .then(function() { return { id: helper.slugify(mentionId) }; });
 }
 
 module.exports = {
   create: create,
   page: page,
-  delete: remove
+  remove: remove
 };

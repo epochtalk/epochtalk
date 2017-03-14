@@ -18,6 +18,17 @@ var html = `<div id="mentions-icon" class="tray-icon" ng-class="{'open': vmMenti
                   <div class="timestamp">{{mention.created_at | humanDate}}</div>
                 </div>
               </a>
+              <div class="mention-actions">
+                <div ng-click="vmMentions.delete({ id: mention.id, type: 'mention', notification_id: mention.notification_id }) && vmMentions.refreshMentionsView(true)" class="delete" data-balloon="Delete" data-balloon-pos="right">
+                  <i class="fa fa-times"></i>
+                </div>
+                <div ng-if="!mention.viewed" ng-click="vmMentions.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed }) && vmMentions.refreshMentionsView(true)" class="unmarked" data-balloon="Mark Read" data-balloon-pos="right">
+                  <i class="fa fa-circle-o"></i>
+                </div>
+                <div ng-if="mention.viewed" class="marked" data-balloon="Read" data-balloon-pos="right">
+                  <i class="fa fa-check-circle-o"></i>
+                </div>
+              </div>
             </li>
             <li><a ui-sref="mentions" ui-sref-opts="{reload: true}">View all mentions <span ng-bind="::vmMentions.unseenMentionsText()"></span></a></li>
           </ul>
@@ -36,6 +47,8 @@ var directive = ['NotificationSvc', function(NotificationSvc) {
       this.mentions = NotificationSvc.getMentionsList;
       this.mentionsCount = NotificationSvc.getMentions;
       this.dismiss = NotificationSvc.dismiss;
+      this.delete = NotificationSvc.deleteMention;
+      this.refreshMentionsView = NotificationSvc.setRefreshPage;
 
       this.unseenMentionsText = function() {
         var unseenInList = 0;

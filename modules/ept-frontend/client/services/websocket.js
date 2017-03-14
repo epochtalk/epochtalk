@@ -62,6 +62,7 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
       else if (data.action === 'newMention') {
         NotificationSvc.refresh();
         NotificationSvc.refreshMentionsList();
+        NotificationSvc.setRefreshPage(true);
      }
     });
 

@@ -7,6 +7,8 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
   var mentions = 0;
   var mentionsList = [];
 
+  var refreshPage = false;
+
   function refreshMentionsList() {
     return Mentions.page({ limit: 10 }).$promise
     .then(function(dbMentions) {
@@ -34,6 +36,19 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
     }
   }
 
+  function deleteMention(opts) {
+    // TODO: This should go away once we get rid of the Notifications table
+    return Notifications.dismiss({ type: opts.type, id: opts.notification_id }).$promise
+    .then(function() {
+      return Mentions.remove(opts).$promise;
+    })
+    .then(function() {
+      refresh();
+      refreshMentionsList();
+      refreshPage = true; // Trigger mentions page refresh on delete
+    });
+  }
+
   function getMentionsList() {
     return mentionsList;
   }
@@ -42,12 +57,19 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
 
   function getMentions() { return mentions; }
 
+  function getRefreshPage() { return refreshPage; }
+
+  function setRefreshPage(newVal) { refreshPage = newVal; }
+
   return {
     getMessages: getMessages,
     getMentions: getMentions,
     refresh: refresh,
     dismiss: dismiss,
     refreshMentionsList: refreshMentionsList,
-    getMentionsList: getMentionsList
+    getMentionsList: getMentionsList,
+    deleteMention: deleteMention,
+    getRefreshPage: getRefreshPage,
+    setRefreshPage: setRefreshPage
   };
 }];

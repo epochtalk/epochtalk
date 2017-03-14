@@ -6,7 +6,15 @@ var resource = ['$resource',
         params: {
           limit: '@limit',
           page: '@page'
-        }
+        },
+        ignoreLoadingBar: true
+      },
+      delete: {
+        method: 'DELETE',
+        params: {
+          page: '@id'
+        },
+        ignoreLoadingBar: true
       }
     });
   }

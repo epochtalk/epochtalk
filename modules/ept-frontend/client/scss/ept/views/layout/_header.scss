@@ -342,25 +342,36 @@ header {
                     @include pad(0.35rem 1rem);
                     color: inherit;
                     font-size: inherit;
+                    width: 90%;
+                    height: 3.5rem;
                     span { @include pad(0); }
                   }
                   &:hover {
                     background-color: darken($header-dropdown-bg-color, 2%);
+                    .mention-actions div {
+                      i {
+                        opacity: 0.5;
+                        &:hover { opacity: 0.8; }
+                      }
+                      &.marked i:hover { opacity: 0.5; }
+                    }
                   }
                   .mention-unread {
-                    position:absolute;
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
                     height: 0.3125rem;
                     width: 0.3125rem;
                     border-radius: 100%;
                     background-color: $color-primary;
                     left: 0.625rem;
-                    top: 1.25rem;
                   }
                   .mention-avatar {
-                    float: left;
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
                     img {
                       margin-left: 0.625rem;
-                      float: left;
                       height: 2rem;
                       width: 2rem;
                       border-radius: 100%;
@@ -368,10 +379,31 @@ header {
                       object-fit: cover;
                     }
                   }
+                  .mention-actions {
+                    position: absolute;
+                    width: 10%;
+                    height: 55px;
+                    top: 0;
+                    right: 0;
+                    cursor: default;
+                    div {
+                      position: absolute;
+                      left: 50%;
+                      cursor: pointer;
+                      transform: translateX(-50%);
+                      height: 1rem;
+                      width: 1rem;
+                      i { position: absolute; opacity: 0; }
+                      &.delete { top: 15%; }
+                      &.marked { bottom: 15%; }
+                      &.unmarked { bottom: 15%; }
+                    }
+                  }
                   .mention-content {
-                    float: left;
-                    padding-left: 1rem;
-                    width: 17.625rem;
+                    position: absolute;
+                    top: 50%;
+                    transform: translate(3.5rem,-50%);
+                    width: 70%;
                     .msg {
                       font-size: 0.85rem;
                       line-height: 0.9rem;
@@ -421,6 +453,7 @@ header {
                       @include display(block);
                       @include pad(0.5rem 1rem);
                       color: $color-primary;
+                      width: 100%;
                     }
                   }
                 }

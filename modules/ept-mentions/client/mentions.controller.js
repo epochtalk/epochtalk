@@ -5,6 +5,20 @@ var ctrl = ['$anchorScroll', '$scope', '$rootScope', '$location', '$timeout', 'S
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dismiss = NotificationSvc.dismiss;
+    this.delete = NotificationSvc.deleteMention;
+
+    this.markRead = function(opts) {
+      ctrl.dismiss(opts)
+      .then(function() {
+        for (var i = 0; i < ctrl.mentions.length; i++) {
+          var mention = ctrl.mentions[i];
+          if (mention.notification_id === opts.id) {
+            mention.viewed = true;
+            break;
+          }
+        }
+      });
+    };
 
     // index variables
     this.page = pageData.page;
@@ -23,6 +37,7 @@ var ctrl = ['$anchorScroll', '$scope', '$rootScope', '$location', '$timeout', 'S
       var pageChanged = false;
       var limitChanged = false;
 
+
       if (page && page !== ctrl.page) {
         pageChanged = true;
         ctrl.page = page;
@@ -34,6 +49,14 @@ var ctrl = ['$anchorScroll', '$scope', '$rootScope', '$location', '$timeout', 'S
       if(pageChanged || limitChanged) { ctrl.pullPage(); }
     });
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
+
+    this.initialLoad = true;
+    $scope.$watch(function() { return NotificationSvc.getRefreshPage(); }, function(refresh) {
+      if (refresh) {
+        ctrl.pullPage();
+        NotificationSvc.setRefreshPage(false);
+      }
+    });
 
     this.pullPage = function() {
       ctrl.page = ctrl.page;

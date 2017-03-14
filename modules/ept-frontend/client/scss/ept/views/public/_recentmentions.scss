@@ -1,13 +1,42 @@
 .recent-mentions-header { margin: 0; }
 .recent-mentions {
+  margin-bottom: 1.5rem;
+  h4 { margin-top: 1.5rem; }
   .mention {
     padding: 0.5rem;
     background-color: $sub-header-color;
     border-bottom: 1px solid $border-color;
+    position: relative;
+    .actions {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 3.125rem;
+      width: 2rem;
+      div {
+        width: 1rem;
+        height: 1rem;
+        position: absolute;
+        right: 0.5rem;
+        cursor: pointer;
+        color: $secondary-font-color-dark;
+        z-index: 999;
+        &.delete { top: 15%; }
+        &.marked, &.unmarked { top: 60%; }
+        i { opacity: 0; }
+        @include media($mobile) {
+          i { opacity: 0.5; }
+        }
+      }
+    }
     @include clearfix;
     @include span-columns(12);
     &:hover {
       background-color: darken($sub-header-color, 2%);
+      .actions div {
+        i { opacity: 0.5; }
+        &:hover:not(.marked) i { opacity: 1; }
+      }
     }
     &.dismissed, &.dismissed:hover {
       .mention-content .mention-header .mention-unread .dot {
@@ -55,7 +84,7 @@
           padding-top: 0.5rem;
           line-height: 1rem;
           float: left;
-          width: calc(100% - 4.4375rem);
+          width: calc(100% - 6.4375rem);
           font-size: 0.875rem;
           div {
             display: inline-block;

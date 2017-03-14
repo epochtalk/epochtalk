@@ -19,8 +19,23 @@
       <div class="mention-body">
         <div post-processing="mention.body" style-fix="true"></div>
       </div>
+    </a>
+    <div class="actions">
+      <div ng-click="MentionsCtrl.delete({ id: mention.id, type: 'mention', notification_id: mention.notification_id })" class="delete" data-balloon="Delete" data-balloon-pos="left">
+        <i class="fa fa-times"></i>
+      </div>
+      <div ng-if="!mention.viewed" ng-click="MentionsCtrl.markRead({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })" class="unmarked" data-balloon="Mark Read" data-balloon-pos="left">
+        <i class="fa fa-circle-o"></i>
+      </div>
+      <div ng-if="mention.viewed" class="marked" data-balloon="Read" data-balloon-pos="left">
+        <i class="fa fa-check-circle-o"></i>
+      </div>
     </div>
   </div>
+</div>
+
+<div class="fill-row recent-mentions centered-text" ng-if="MentionsCtrl.mentions.length <= 0">
+  <h4>You currently have no mentions</h4>
 </div>
 
 <div class="pagination-simple">
@@ -33,7 +48,4 @@
      Next &#10095;
   </a>
   <span ng-show="!MentionsCtrl.next">Next &#10095;</span>
-</div>
-<div class="fill-row search-data" ng-if="MentionsCtrl.mentions.length <= 0">
-No mentions
 </div>
