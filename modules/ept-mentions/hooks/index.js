@@ -54,69 +54,79 @@ function userIdToUsername(request) {
 }
 
 function usernameToUserId(request) {
-  var body = request.payload.body;
-  var rawBody = request.payload.raw_body;
-  var usernamesArr = body.match(mentionsRegex) || [];
-  usernamesArr = _.uniqWith(usernamesArr, _.isEqual);
+  return request.server.methods.auth.mentions.create(request.server, request.auth)
+  .then(function(hasPermission) {
+    if (!hasPermission) { return; }
 
-  body = body.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
-  rawBody = rawBody.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
-  var mentionedIds = [];
+    var body = request.payload.body;
+    var rawBody = request.payload.raw_body;
+    var usernamesArr = body.match(mentionsRegex) || [];
+    usernamesArr = _.uniqWith(usernamesArr, _.isEqual);
 
-  return Promise.reduce(usernamesArr, function(mentions, username) {
-    username = username.substring(1);
-    return request.db.users.userByUsername(username)
-    .then(function(user) {
-      mentionedIds.push(user.id);
-      mentions.push({ replacer: '<@' + user.id + '>', replacee: '<@' + user.username.toLowerCase() + '>' });
-      return mentions;
+    body = body.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
+    rawBody = rawBody.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
+    var mentionedIds = [];
+
+    return Promise.reduce(usernamesArr, function(mentions, username) {
+      username = username.substring(1);
+      return request.db.users.userByUsername(username)
+      .then(function(user) {
+        mentionedIds.push(user.id);
+        mentions.push({ replacer: '<@' + user.id + '>', replacee: '<@' + user.username.toLowerCase() + '>' });
+        return mentions;
+      })
+      .catch(function() {
+        mentions.push({ replacer: '@' + username, replacee: '<@' + username + '>' });
+        return mentions;
+      });
+    }, [])
+    .each(function(mention) {
+      body = body.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
+      rawBody = rawBody.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
     })
-    .catch(function() {
-      mentions.push({ replacer: '@' + username, replacee: '<@' + username + '>' });
-      return mentions;
+    .then(function() {
+      request.payload.body = body || ' ';
+      request.payload.raw_body = rawBody;
+      request.payload.mentionedIds = mentionedIds;
     });
-  }, [])
-  .each(function(mention) {
-    body = body.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
-    rawBody = rawBody.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
-  })
-  .then(function() {
-    request.payload.body = body || ' ';
-    request.payload.raw_body = rawBody;
-    request.payload.mentionedIds = mentionedIds;
   });
 }
 
 function createMention(request) {
-  var post = request.pre.processed;
-  var mentionedIds = request.payload.mentionedIds.slice(0);
-  delete request.pre.processed.mentionedIds;
-  delete request.payload.mentionedIds;
-  Promise.each(mentionedIds, function(mentioneeId) {
-    var mention = {
-      threadId: post.thread_id,
-      postId: post.id,
-      mentionerId: post.user_id,
-      mentioneeId: mentioneeId
-    };
+  return request.server.methods.auth.mentions.create(request.server, request.auth)
+  .then(function(hasPermission) {
+    if (!hasPermission) { return; }
 
-    // create the mention in db
-    request.db.mentions.create(mention)
-    .then(function(dbMention) {
-      if (dbMention) {
-        var mentionClone = _.cloneDeep(dbMention);
-        var notification = {
-          type: 'mention',
-          sender_id: post.user_id,
-          receiver_id: mentioneeId,
-          channel: { type: 'user', id: mentioneeId },
-          data: {
-            action: 'newMention',
-            mentionId: mentionClone.id
-          }
-        };
-        request.server.plugins.notifications.spawnNotification(notification);
-      }
+    var post = request.pre.processed;
+    var mentionedIds = request.payload.mentionedIds.slice(0);
+    delete request.pre.processed.mentionedIds;
+    delete request.payload.mentionedIds;
+    Promise.each(mentionedIds, function(mentioneeId) {
+      var mention = {
+        threadId: post.thread_id,
+        postId: post.id,
+        mentionerId: post.user_id,
+        mentioneeId: mentioneeId
+      };
+
+      // create the mention in db
+      request.db.mentions.create(mention)
+      .then(function(dbMention) {
+        if (dbMention) {
+          var mentionClone = _.cloneDeep(dbMention);
+          var notification = {
+            type: 'mention',
+            sender_id: post.user_id,
+            receiver_id: mentioneeId,
+            channel: { type: 'user', id: mentioneeId },
+            data: {
+              action: 'newMention',
+              mentionId: mentionClone.id
+            }
+          };
+          request.server.plugins.notifications.spawnNotification(notification);
+        }
+      });
     });
   });
 }

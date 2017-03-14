@@ -15,6 +15,7 @@ var page = {
       }
     },
     pre: [
+      { method: 'auth.mentions.page(server, auth)' },
       { method: 'hooks.preProcessing' },
       [
         { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
@@ -46,12 +47,12 @@ var remove = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
-    validate: { params: { id: Joi.string().required() } },
+    validate: { query: { id: Joi.string().required() } },
+    pre: [{ method: 'auth.mentions.delete(server, auth)' }],
   },
   handler: function(request, reply) {
-    var mentionId = request.params.id;
-
-    var promise = request.db.mentions.page(mentionId);
+    var mentionId = request.query.id;
+    var promise = request.db.mentions.remove(mentionId);
     return reply(promise);
   }
 };
