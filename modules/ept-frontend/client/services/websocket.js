@@ -59,10 +59,9 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
         Alert.warning('You have been logged out from another window.');
       }
       else if (data.action === 'newMessage') { NotificationSvc.refresh(); }
-      else if (data.action === 'newMention') {
+      else if (data.action === 'refreshMentions') {
         NotificationSvc.refresh();
         NotificationSvc.refreshMentionsList();
-        NotificationSvc.setRefreshPage(true);
      }
     });
 

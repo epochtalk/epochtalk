@@ -47,12 +47,20 @@ var remove = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
-    validate: { query: { id: Joi.string().required() } },
+    validate: { query: { id: Joi.string() } },
     pre: [{ method: 'auth.mentions.delete(server, auth)' }],
   },
   handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
     var mentionId = request.query.id;
-    var promise = request.db.mentions.remove(mentionId);
+    var promise = request.db.mentions.remove(mentionId, userId)
+    .tap(function() {
+      var notification = {
+        channel: { type: 'user', id: userId },
+        data: { action: 'refreshMentions' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    });
     return reply(promise);
   }
 };

@@ -1,4 +1,12 @@
-<h3 class="thin-underline recent-mentions-header">Recent Mentions</h3>
+<div class="fill-row recent-mentions-header">
+  <h3 class="thin-underline">
+    Recent Mentions
+    <div ng-if="MentionsCtrl.mentions.length" class="mention-actions">
+      <a ng-click="MentionsCtrl.delete({ type: 'mention' })"><i class="fa fa-trash-o"></i> Delete all</a>
+      <a ng-click="MentionsCtrl.dismiss({ type: 'mention' })"><i class="fa fa-book"></i> Mark all read</a>
+    </div>
+  </h3>
+</div>
 <div class="fill-row recent-mentions">
   <div class="mention" ng-repeat="mention in MentionsCtrl.mentions" ng-class="{ 'dismissed': mention.viewed }">
     <a class="mention-content" ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="MentionsCtrl.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
@@ -24,7 +32,7 @@
       <div ng-click="MentionsCtrl.delete({ id: mention.id, type: 'mention', notification_id: mention.notification_id })" class="delete" data-balloon="Delete" data-balloon-pos="left">
         <i class="fa fa-times"></i>
       </div>
-      <div ng-if="!mention.viewed" ng-click="MentionsCtrl.markRead({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })" class="unmarked" data-balloon="Mark Read" data-balloon-pos="left">
+      <div ng-if="!mention.viewed" ng-click="MentionsCtrl.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })" class="unmarked" data-balloon="Mark Read" data-balloon-pos="left">
         <i class="fa fa-circle-o"></i>
       </div>
       <div ng-if="mention.viewed" class="marked" data-balloon="Read" data-balloon-pos="left">

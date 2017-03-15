@@ -120,7 +120,7 @@ function createMention(request) {
             receiver_id: mentioneeId,
             channel: { type: 'user', id: mentioneeId },
             data: {
-              action: 'newMention',
+              action: 'refreshMentions',
               mentionId: mentionClone.id
             }
           };

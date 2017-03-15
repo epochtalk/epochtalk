@@ -7,7 +7,6 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
   var mentions = 0;
   var mentionsList = [];
 
-  var refreshPage = false;
 
   function refreshMentionsList() {
     return Mentions.page({ limit: 10 }).$promise
@@ -28,11 +27,7 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
     if (opts.viewed) { return; }
     else {
       delete opts.viewed;
-      return Notifications.dismiss(opts).$promise
-      .then(function() {
-        refresh();
-        refreshMentionsList();
-      });
+      return Notifications.dismiss(opts).$promise;
     }
   }
 
@@ -41,11 +36,6 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
     return Notifications.dismiss({ type: opts.type, id: opts.notification_id }).$promise
     .then(function() {
       return Mentions.remove(opts).$promise;
-    })
-    .then(function() {
-      refresh();
-      refreshMentionsList();
-      refreshPage = true; // Trigger mentions page refresh on delete
     });
   }
 
@@ -57,10 +47,6 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
 
   function getMentions() { return mentions; }
 
-  function getRefreshPage() { return refreshPage; }
-
-  function setRefreshPage(newVal) { refreshPage = newVal; }
-
   return {
     getMessages: getMessages,
     getMentions: getMentions,
@@ -68,8 +54,6 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
     dismiss: dismiss,
     refreshMentionsList: refreshMentionsList,
     getMentionsList: getMentionsList,
-    deleteMention: deleteMention,
-    getRefreshPage: getRefreshPage,
-    setRefreshPage: setRefreshPage
+    deleteMention: deleteMention
   };
 }];

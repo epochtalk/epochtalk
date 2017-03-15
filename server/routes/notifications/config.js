@@ -66,7 +66,16 @@ exports.dismiss = {
       type: request.payload.type,
       id: request.payload.id
     };
-    var promise = request.db.notifications.dismiss(params);
+    var promise = request.db.notifications.dismiss(params)
+    .tap(function() {
+      var userId = request.auth.credentials.id;
+      var notification = {
+        channel: { type: 'user', id: userId },
+        data: { action: 'refreshMentions' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+
+    });
     return reply(promise);
   }
 };

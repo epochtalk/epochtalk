@@ -79,11 +79,21 @@ function page(mentioneeId, opts) {
   .then(helper.slugify);
 }
 
-function remove(mentionId) {
-  mentionId = helper.deslugify(mentionId);
-  var q = 'DELETE FROM mentions.mentions WHERE id = $1';
-  return db.sqlQuery(q, [mentionId])
-  .then(function() { return { id: helper.slugify(mentionId) }; });
+function remove(mentionId, userId) {
+  var q;
+  var id;
+  // If mentionId is specified delete specific mention
+  if (mentionId) {
+    id = helper.deslugify(mentionId);
+    q = 'DELETE FROM mentions.mentions WHERE id = $1';
+  }
+  // If mentionId is not specified delete all mentions
+  else {
+    id = helper.deslugify(userId);
+    q = 'DELETE FROM mentions.mentions WHERE mentionee_id = $1';
+  }
+  return db.sqlQuery(q, [id])
+  .then(function() { return { deleted: true }; });
 }
 
 module.exports = {

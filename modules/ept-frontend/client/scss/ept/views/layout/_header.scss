@@ -353,6 +353,7 @@ header {
                         opacity: 0.5;
                         &:hover { opacity: 0.8; }
                       }
+                      &.marked { cursor: default; }
                       &.marked i:hover { opacity: 0.5; }
                     }
                   }
@@ -433,13 +434,13 @@ header {
                     font-size: 0.8rem;
                     background-color: $header-bg-color;
                     cursor: default;
-                    .dismiss-all {
+                    .delete-all, .dismiss-all {
                       cursor: pointer;
                       float: right;
-                      font-variant: normal;
                       color: $color-primary;
                       font-size: 0.8rem;
                     }
+                    .dismiss-all { margin-left: 1rem; }
                   }
                   &:last-child {
                     @include pad(0);
