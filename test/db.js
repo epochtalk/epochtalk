@@ -1,5 +1,3 @@
 var path = require('path');
-module.exports = {
-  categories: require(path.normalize(__dirname + '/../modules/ept-categories')).db,
-  boards: require(path.normalize(__dirname + '/../modules/ept-boards')).db
-};
+var core = require(path.join(__dirname, '..'));
+module.exports = core({ conString: 'epoch_test' });
