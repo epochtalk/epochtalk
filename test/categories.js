@@ -21,7 +21,7 @@ lab.experiment('Categories', function() {
     .then(function() { done(); });
   });
   lab.test('should return all categories', function(done) {
-    db.categories.all(function(categories) {
+    db.categories.all().then(function(categories) {
       expect(categories).to.be.an.array();
       expect(categories).to.have.length(runtime.categories.length);
     })
