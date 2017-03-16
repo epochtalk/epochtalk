@@ -96,8 +96,58 @@ function remove(mentionId, userId) {
   .then(function() { return { deleted: true }; });
 }
 
+function getUserIgnored(userId, ignoredUserId) {
+  userId = helper.deslugify(userId);
+  ignoredUserId = helper.deslugify(ignoredUserId);
+  var q = 'SELECT ignored_user_id FROM mentions.ignored WHERE user_id = $1 AND ignored_user_id = $2';
+  return db.scalar(q, [userId, ignoredUserId])
+  .then(function(ignoredUserId) {
+    return { ignored: ignoredUserId ? true : false };
+  });
+}
+
+function getIgnoredUsers(userId) {
+  userId = helper.deslugify(userId);
+  var q = 'SELECT u.username, u.id FROM mentions.ignored JOIN users u ON (u.id = ignored_user_id) WHERE user_id = $1';
+  return db.sqlQuery(q, [userId])
+  .then(helper.slugify);
+}
+
+function ignoreUser(userId, ignoredUserId) {
+  userId = helper.deslugify(userId);
+  ignoredUserId = helper.deslugify(ignoredUserId);
+  var q = 'INSERT INTO mentions.ignored(user_id, ignored_user_id) VALUES($1, $2)';
+  return db.sqlQuery(q, [userId, ignoredUserId])
+  .then(function() {
+    return { ignoredUserId: helper.slugify(ignoredUserId) };
+  });
+}
+
+function unignoreUser(userId, ignoredUserId) {
+  userId = helper.deslugify(userId);
+  ignoredUserId = helper.deslugify(ignoredUserId);
+  var q, params;
+  if (ignoredUserId) { // Delete specific ignored user
+    q = 'DELETE FROM mentions.ignored WHERE user_id = $1 AND ignored_user_id = $2';
+    params = [userId, ignoredUserId];
+  }
+  else { // Delete all ignored users
+    q = 'DELETE FROM mentions.ignored WHERE user_id = $1';
+    params = [userId];
+  }
+  return db.sqlQuery(q, params)
+  .then(function() {
+    return { success: true };
+  });
+}
+
+
 module.exports = {
   create: create,
   page: page,
-  remove: remove
+  remove: remove,
+  getUserIgnored: getUserIgnored,
+  getIgnoredUsers: getIgnoredUsers,
+  ignoreUser: ignoreUser,
+  unignoreUser: unignoreUser
 };

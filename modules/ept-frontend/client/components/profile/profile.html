@@ -81,6 +81,7 @@
       <a ng-href="#" ng-click="vmProfile.openConvoModal()">Message This User</a>
     </div>
     <ignore-user-profile ng-if="vmProfile.isLoggedIn()" user="vmProfile.user"></ignore-user-profile>
+    <mentions-ignore-profile ng-if="vmProfile.isLoggedIn() && !vmProfile.pageOwner()"></mentions-ignore-profile>
     <div class="profile-row profile-action" ng-if="vmProfile.canPageUserNotes()">
       <a ng-href="#" ng-click="vmProfile.showModNotes = true">
         Moderation Notes
@@ -91,6 +92,7 @@
     <div class="profile-row profile-action" ng-if="vmProfile.canBanUser()">
       <a ng-href="#" ng-click="vmProfile.showManageBans({ id: vmProfile.user.id, username: vmProfile.user.username, email: vmProfile.user.email, created_at: vmProfile.user.created_at, ban_expiration: vmProfile.user.ban_expiration })">Manage Bans</a>
     </div>
+
 
     <reset-password user="vmProfile.user"></reset-password>
   </div>
