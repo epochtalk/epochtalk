@@ -17,7 +17,7 @@ lab.experiment('Boards', function() {
     expect(board.id).to.equal(seededBoard.id);
   };
   lab.before({timeout: 5000}, function(done) {
-    return seed(fixture)
+    seed(fixture)
     .then(function(results) {
       runtime = results;
     })
@@ -50,7 +50,7 @@ lab.experiment('Boards', function() {
     });
   });
   lab.test('should fail to find a board by invalid id', function(done) {
-    return db.boards.find()
+    db.boards.find()
     .then(function(board) {
       throw new Error('Should not have found a board');
     })
