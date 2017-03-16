@@ -16,8 +16,7 @@ lab.experiment('Categories', function() {
     expect(category.name).to.equal(seededCategory.name);
   };
   lab.before(function(done) {
-    return seed(fixture)
-    .tap('here')
+    seed(fixture)
     .then(function(results) { runtime = results; })
     .then(function() { done(); });
   });
