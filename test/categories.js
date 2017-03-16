@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 var db = require(path.join(__dirname, 'db'));
 var seed = require(path.join(__dirname, 'seed', 'populate'));
 var fixture = require(path.join(__dirname, 'fixtures', 'categories'));
+var clean = require(path.join(__dirname, 'seed', 'clean'));
 var NotFoundError = Promise.OperationalError;
 
 lab.experiment('Categories', function() {
@@ -44,6 +45,11 @@ lab.experiment('Categories', function() {
     .catch(function(err) {
       expect(err).to.be.an.instanceof(NotFoundError);
       expect(err.cause).to.be.a.string().and.to.equal('Category Not Found');
+      done();
+    });
+  });
+  lab.after(function(done) {
+    clean().then(function() {
       done();
     });
   });
