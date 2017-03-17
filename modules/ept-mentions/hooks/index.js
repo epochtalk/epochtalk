@@ -109,23 +109,27 @@ function createMention(request) {
         mentioneeId: mentioneeId
       };
 
-      // create the mention in db
-      request.db.mentions.create(mention)
-      .then(function(dbMention) {
-        if (dbMention) {
-          var mentionClone = _.cloneDeep(dbMention);
-          var notification = {
-            type: 'mention',
-            sender_id: post.user_id,
-            receiver_id: mentioneeId,
-            channel: { type: 'user', id: mentioneeId },
-            data: {
-              action: 'refreshMentions',
-              mentionId: mentionClone.id
-            }
-          };
-          request.server.plugins.notifications.spawnNotification(notification);
-        }
+      // create the mention in db if user isn't being ignored
+      request.db.mentions.getUserIgnored(mentioneeId, post.user_id)
+      .then(function(user) {
+        if (user.ignored) { return; }
+        return request.db.mentions.create(mention)
+        .then(function(dbMention) {
+          if (dbMention) {
+            var mentionClone = _.cloneDeep(dbMention);
+            var notification = {
+              type: 'mention',
+              sender_id: post.user_id,
+              receiver_id: mentioneeId,
+              channel: { type: 'user', id: mentioneeId },
+              data: {
+                action: 'refreshMentions',
+                mentionId: mentionClone.id
+              }
+            };
+            request.server.plugins.notifications.spawnNotification(notification);
+          }
+        });
       });
     });
   });
