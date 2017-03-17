@@ -1,9 +1,9 @@
 var html = `<div class="profile-row profile-action">
     <a ng-show="vmMentionsProfile.userIsIgnored" ng-click="vmMentionsProfile.unignoreUser()">
-      Unignore Mentions
+      Unignore All Mentions By User
     </a>
     <a ng-hide="vmMentionsProfile.userIsIgnored" ng-click="vmMentionsProfile.ignoreUser()">
-      Ignore Mentions
+      Ignore All Mentions By User
     </a>
   </div>`;
 
