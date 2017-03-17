@@ -5,10 +5,10 @@ var html = `<div id="mentions-icon" class="tray-icon" ng-class="{'open': vmMenti
           <ul id="mentions-dropdown">
             <li>
               Recent Mentions
-              <div ng-click="vmMentions.dismiss({ type: 'mention'})" class="dismiss-all">
+              <div ng-if="vmMentions.mentions().length" ng-click="vmMentions.dismiss({ type: 'mention'})" class="dismiss-all">
                 <i class="fa fa-book"></i> Mark all read
               </div>
-              <div ng-click="vmMentions.delete({ type: 'mention'})" class="delete-all">
+              <div ng-if="vmMentions.mentions().length" ng-click="vmMentions.delete({ type: 'mention'})" class="delete-all">
                 <i class="fa fa-trash-o"></i> Delete all
               </div>
             </li>
