@@ -7,21 +7,20 @@ var html = `<div class="profile-row profile-action">
     </a>
   </div>`;
 
-var directive = ['$stateParams', 'Mentions', 'Alert', function($stateParams, Mentions, Alert) {
+var directive = ['Mentions', 'Alert', function(Mentions, Alert) {
   return {
     restrict: 'E',
     template: html,
     scope: true,
+    bindToController: { user: '=' },
     controllerAs: 'vmMentionsProfile',
     controller: [function() {
       var ctrl = this;
-      this.userIsIgnored = false;
 
-      Mentions.getUserIgnored({ username: $stateParams.username }).$promise
-      .then(function(user) { ctrl.userIsIgnored = user.ignored; });
+      this.userIsIgnored = this.user.ignoreMentions;
 
       this.ignoreUser = function() {
-        var username = $stateParams.username;
+        var username = ctrl.user.username;
         return Mentions.ignoreUser({ username: username }).$promise
         .then(function() {
           ctrl.userIsIgnored = true;
@@ -33,7 +32,7 @@ var directive = ['$stateParams', 'Mentions', 'Alert', function($stateParams, Men
       };
 
       this.unignoreUser = function() {
-        var username = $stateParams.username;
+        var username = ctrl.user.username;
         return Mentions.unignoreUser({ username: username }).$promise
         .then(function() {
           ctrl.userIsIgnored = false;

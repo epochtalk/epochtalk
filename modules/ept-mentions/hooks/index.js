@@ -131,6 +131,20 @@ function createMention(request) {
   });
 }
 
+function userIgnoredMentions(request) {
+  var user = request.pre.processed;
+  var authedUserId;
+  if (request.auth.isAuthenticated) { authedUserId = request.auth.credentials.id; }
+  else { return user; }
+  return request.db.mentions.getUserIgnored(authedUserId, user.id)
+  .then(function(mentions) {
+    if (mentions && mentions.ignored) {
+      user.ignoreMentions = true;
+    }
+    return user;
+  });
+}
+
 module.exports = [
   { path: 'posts.byThread.post', method: userIdToUsername },
   { path: 'posts.pageByUser.post', method: userIdToUsername },
@@ -143,5 +157,6 @@ module.exports = [
   { path: 'posts.update.pre', method: usernameToUserId },
   { path: 'threads.create.pre', method: usernameToUserId },
   { path: 'posts.create.post', method: createMention },
-  { path: 'threads.create.post', method: createMention }
+  { path: 'threads.create.post', method: createMention },
+  { path: 'users.find.post', method: userIgnoredMentions },
 ];
