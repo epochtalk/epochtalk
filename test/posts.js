@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 var db = require(path.join(__dirname, 'db'));
 var seed = require(path.join(__dirname, 'seed', 'populate'));
 var fixture = require(path.join(__dirname, 'fixtures', 'posts'));
+var clean = require(path.join(__dirname, 'seed', 'clean'));
 var NotFoundError = Promise.OperationalError;
 
 lab.experiment('Posts', function() {
@@ -16,7 +17,7 @@ lab.experiment('Posts', function() {
     expect(post.id).to.equal(seededPost.id);
   };
   lab.before({timeout: 5000}, function(done) {
-    return seed(fixture)
+    seed(fixture)
     .then(function(results) {
       runtime = results;
     })
@@ -39,7 +40,7 @@ lab.experiment('Posts', function() {
     });
   });
   lab.test('should fail to find a post by invalid id', function(done) {
-    return db.posts.find()
+    db.posts.find()
     .then(function(post) {
       throw new Error('Should not have found a post');
     })
@@ -50,7 +51,7 @@ lab.experiment('Posts', function() {
     });
   });
   lab.test('should find posts by thread', function(done) {
-    return Promise.map(runtime.posts, function(seededPost) {
+    Promise.map(runtime.posts, function(seededPost) {
       return db.posts.byThread(seededPost.thread_id)
       .then(function(posts) {
         expect(posts.length).to.equal(1);
@@ -65,7 +66,7 @@ lab.experiment('Posts', function() {
     });
   });
   lab.test('should not find posts by thread', function(done) {
-    return db.posts.byThread(runtime.threads[10].id)
+    db.posts.byThread(runtime.threads[10].id)
     .then(function(posts) {
       expect(posts).to.be.an.array();
       expect(posts).to.have.length(0);
@@ -78,7 +79,7 @@ lab.experiment('Posts', function() {
     });
   });
   lab.test('should return no posts for an invalid thread', function(done) {
-    return db.posts.byThread()
+    db.posts.byThread()
     .then(function(posts) {
       expect(posts).to.be.an.array();
       expect(posts).to.have.length(0);
@@ -91,7 +92,7 @@ lab.experiment('Posts', function() {
     });
   });
   lab.test('should increment thread\'s post count', function(done) {
-    return Promise.map(runtime.threads.slice(0, 9), function(seededThread) {
+    Promise.map(runtime.threads.slice(0, 9), function(seededThread) {
       return db.threads.find(seededThread.id)
       .then(function(thread) {
         expect(thread.post_count).to.equal(1);
@@ -121,6 +122,11 @@ lab.experiment('Posts', function() {
       });
     })
     .then(function() {
+      done();
+    });
+  });
+  lab.after(function(done) {
+    clean().then(function() {
       done();
     });
   });
