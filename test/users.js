@@ -18,7 +18,7 @@ lab.experiment('Users', function() {
     expect(user.id).to.equal(seededUser.id);
   };
   lab.before({timeout: 5000}, function(done) {
-    return seed(fixture).then(function(results) {
+    seed(fixture).then(function(results) {
       runtime = results;
     })
     .then(function() {
@@ -26,7 +26,7 @@ lab.experiment('Users', function() {
     });
   });
   lab.test('should fail to create a user with invalid parameters', function(done) {
-    return db.users.create({})
+    db.users.create({})
     .then(function(user) {
       expect(user).to.not.exist();
       throw new Error('User creation should have failed');
@@ -49,7 +49,7 @@ lab.experiment('Users', function() {
     });
   });
   lab.test('should not return a user by invalid username', function(done) {
-    return db.users.userByUsername().then(function(user) {
+    db.users.userByUsername().then(function(user) {
       expect(user).to.not.exist();
     })
     .then(function() {
@@ -73,7 +73,7 @@ lab.experiment('Users', function() {
     });
   });
   lab.test('should not return a user by invalid email', function(done) {
-    return db.users.userByEmail().then(function(user) {
+    db.users.userByEmail().then(function(user) {
       expect(user).to.be.undefined();
     })
     .then(function() {
@@ -97,7 +97,7 @@ lab.experiment('Users', function() {
     });
   });
   lab.test('should fail to find a user by invalid id', function(done) {
-    return db.users.find()
+    db.users.find()
     .then(function(user) {
       throw new Error('Should not have found a user');
     })
