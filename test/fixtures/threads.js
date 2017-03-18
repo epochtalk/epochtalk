@@ -8,15 +8,23 @@ module.exports = {
     'users',
     'categories',
     'boards',
-    'threads'
+    'threads',
+    'posts'
   ],
   methods: {
     users: fake.users,
     categories: fake.categories,
     boards: fake.boards,
-    threads: fake.threads
+    threads: fake.threads,
+    posts: fake.posts
   },
   data: {
+    users: [
+      {},
+      {},
+      {},
+      {}
+    ],
     categories: [
       {},
       {},
@@ -40,6 +48,19 @@ module.exports = {
       { board_id: 'boards.2.id' },
       { board_id: 'boards.2.id' },
       { board_id: 'boards.2.id' }
+    ],
+    posts: [
+      { thread_id: 'threads.0.id', user_id: 'users.0.id' },
+      { thread_id: 'threads.0.id', user_id: 'users.1.id' },
+      { thread_id: 'threads.0.id', user_id: 'users.2.id' },
+      { thread_id: 'threads.1.id', user_id: 'users.0.id' },
+      { thread_id: 'threads.2.id', user_id: 'users.1.id' },
+      { thread_id: 'threads.3.id', user_id: 'users.2.id' },
+      { thread_id: 'threads.4.id', user_id: 'users.0.id' },
+      { thread_id: 'threads.5.id', user_id: 'users.1.id' },
+      { thread_id: 'threads.6.id', user_id: 'users.2.id' },
+      { thread_id: 'threads.7.id', user_id: 'users.0.id' },
+      { thread_id: 'threads.8.id', user_id: 'users.1.id' }
     ]
   }
 };
