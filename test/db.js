@@ -6,5 +6,7 @@ module.exports = {
   notifications: core.notifications,
   users: require(path.normalize(__dirname + '/../modules/ept-users')).db,
   categories: require(path.normalize(__dirname + '/../modules/ept-categories')).db,
-  boards: require(path.normalize(__dirname + '/../modules/ept-boards')).db
+  boards: require(path.normalize(__dirname + '/../modules/ept-boards')).db,
+  threads: require(path.normalize(__dirname + '/../modules/ept-threads')).db,
+  posts: require(path.normalize(__dirname + '/../modules/ept-posts')).db
 };
