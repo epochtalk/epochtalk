@@ -1,4 +1,4 @@
-require('dotenv').load();
+require('dotenv').load({ silent: true });
 process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
 var path = require('path');
 var core = require('epochtalk-core-pg')({ conString: process.env.DATABASE_URL });
