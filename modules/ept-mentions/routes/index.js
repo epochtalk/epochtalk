@@ -66,41 +66,29 @@ var remove = {
   }
 };
 
-
-var getUserIgnored = {
+var getIgnoredUsers = {
   method: 'GET',
   path: '/api/mentions/ignored',
   config: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
-    validate: { query: { username: Joi.string().required() } }
+    validate: {
+      query: {
+        limit: Joi.number(),
+        page: Joi.number()
+      }
+    }
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
-    var ignoredUser = request.query.username;
-    var promise = request.db.users.userByUsername(ignoredUser)
-    .then(function(user) {
-      return request.db.mentions.getUserIgnored(userId, user.id);
-    })
-    .catch(function() { return Boom.badRequest('Invalid Username'); });
+    var opts = {
+      limit: request.query.limit,
+      page: request.query.page
+    };
+    var promise = request.db.mentions.getIgnoredUsers(userId, opts);
     return reply(promise);
   }
 };
-
-var getIgnoredUsers = {
-  method: 'GET',
-  path: '/api/mentions/ignored/all',
-  config: {
-    auth: { strategy: 'jwt' },
-    plugins: { track_ip: true }
-  },
-  handler: function(request, reply) {
-    var userId = request.auth.credentials.id;
-    var promise = request.db.mentions.getIgnoredUsers(userId);
-    return reply(promise);
-  }
-};
-
 
 var ignoreUser = {
   method: 'POST',
@@ -121,7 +109,6 @@ var ignoreUser = {
     return reply(promise);
   }
 };
-
 
 var unignoreUser = {
   method: 'POST',
@@ -149,11 +136,9 @@ var unignoreUser = {
   }
 };
 
-
 module.exports = [
   page,
   remove,
-  getUserIgnored,
   getIgnoredUsers,
   ignoreUser,
   unignoreUser

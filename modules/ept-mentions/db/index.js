@@ -106,10 +106,25 @@ function getUserIgnored(userId, ignoredUserId) {
   });
 }
 
-function getIgnoredUsers(userId) {
+function getIgnoredUsers(userId, opts) {
   userId = helper.deslugify(userId);
-  var q = 'SELECT u.username, u.id FROM mentions.ignored JOIN users u ON (u.id = ignored_user_id) WHERE user_id = $1';
-  return db.sqlQuery(q, [userId])
+  var limit = opts.limit || 25;
+  var page = opts.page || 1;
+  var offset = (page * limit) - limit;
+  var results = {
+    page: page,
+    limit: limit,
+    prev: page > 1
+  };
+  limit = limit + 1;
+  var q = 'SELECT u.username, u.id FROM mentions.ignored JOIN users u ON (u.id = ignored_user_id) WHERE user_id = $1 LIMIT $2 OFFSET $3';
+  return db.sqlQuery(q, [userId, limit, offset])
+  .then(function(data) {
+    results.next = data.length === limit;
+    if (results.next) { data.pop(); }
+    results.data = data;
+    return results;
+  })
   .then(helper.slugify);
 }
 

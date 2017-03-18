@@ -16,19 +16,10 @@ var resource = ['$resource',
         },
         ignoreLoadingBar: true
       },
-      getUserIgnored: {
-        method: 'GET',
-        url: '/api/mentions/ignored',
-        params: {
-          limit: '@username',
-        },
-        ignoreLoadingBar: true
-      },
       getIgnoredUsers: {
         method: 'GET',
-        url: '/api/mentions/ignored/all',
+        url: '/api/mentions/ignored',
         ignoreLoadingBar: true,
-        isArray: true
       },
       ignoreUser: {
         method: 'POST',
