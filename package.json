@@ -8,7 +8,8 @@
     "sass": "node ./scripts/sass.js",
     "build": "node ./scripts/build.js",
     "serve": "node ./scripts/serve.js",
-    "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && DATABASE_URL=postgres://localhost/epoch_test npm run db-migrate && npm run test-categories && npm run test-boards",
+    "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && DATABASE_URL=postgres://localhost/epoch_test npm run db-migrate && npm run test-categories && npm run test-boards && npm run test-notifications",
+    "test-notifications": "./node_modules/.bin/lab test/notifications.js --flat -v",
     "test-categories": "./node_modules/.bin/lab test/categories.js --flat -v",
     "test-boards": "./node_modules/.bin/lab test/boards.js --flat -v",
     "start": "npm run db-migrate && ./node_modules/.bin/bower install && npm run build && node cli/index.js --create && node server"
