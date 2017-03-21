@@ -22,7 +22,6 @@ module.exports = function() {
   })
   .then(function(user) {
     // clear rows from all tables
-    console.log('Clearing rows from tables...');
     return db.sqlQuery(`SELECT truncate_tables($1)`, [user.current_user]);
   })
   .then(function(nothing) {
@@ -30,7 +29,6 @@ module.exports = function() {
     return db.sqlQuery(`DROP FUNCTION truncate_tables(username VARCHAR);`);
   })
   .then(function() {
-    console.log('Finished clearing rows from tables!');
     close();
   })
   .catch(function(error) {
