@@ -25,7 +25,7 @@ var directive = ['Mentions', 'Alert', function(Mentions, Alert) {
           Alert.success('You are now ignoring mentions from ' + username);
         })
         .catch(function() {
-          Alert.success('There was an error ignoring mentions from ' + username + '. Please try again later.');
+          Alert.error('There was an error ignoring mentions from ' + username + '. Please try again later.');
         });
       };
 
@@ -37,7 +37,7 @@ var directive = ['Mentions', 'Alert', function(Mentions, Alert) {
           Alert.success('You stopped ignoring mentions from ' + username);
         })
         .catch(function() {
-          Alert.success('There was an error unignoring mentions from ' + username + '. Please try again later.');
+          Alert.error('There was an error unignoring mentions from ' + username + '. Please try again later.');
         });
       };
 

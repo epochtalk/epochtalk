@@ -1,0 +1,54 @@
+<!-- Page Header -->
+<h3 class="thin-underline">Ignored User Mentions</h3>
+<!-- All Users -->
+<table class="striped ignored-users" width="100%">
+  <thead>
+    <th></th>
+    <th>Username</th>
+    <th>Action</th>
+  </thead>
+  <tbody ng-if="vmIgnoreUserMentions.users.length < 1">
+    <tr>
+      <td class="centered-text no-data" colspan="3"><h5>No User Posts Being Ignored</h5></td>
+    </tr>
+  </tbody>
+  <tbody ng-repeat="user in vmIgnoreUserMentions.users track by user.id">
+    <tr>
+      <td>
+        <div class="user-avatar">
+          <a ui-sref="profile.posts({ username: user.username })">
+            <img ng-src="{{::user.avatar}}">
+          </a>
+        </div>
+      </td>
+      <td>
+        <a class="user-username" ui-sref="profile.posts({ username: user.username })" ng-bind-html="user.username"></a>
+      </td>
+      <td ng-if="user.ignored">
+        <a ng-click="vmIgnoreUserMentions.unignore(user)">
+          <i class="fa fa-user"></i>&nbsp;&nbsp;
+          Stop Ignoring<span class="hide-mobile"> User's Mentions</span>
+        </a>
+      </td>
+      <td ng-if="!user.ignored">
+        <a ng-click="vmIgnoreUserMentions.ignore(user)">
+          <i class="fa fa-user-times"></i>&nbsp;&nbsp;
+          Ignore<span class="hide-mobile"> User's Mentions</span>
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="pagination-simple">
+  <a ng-show="vmIgnoreUserMentions.prev" ng-click="vmIgnoreUserMentions.pullPage(-1)">
+    &#10094; Previous
+  </a>
+  <span ng-show="!vmIgnoreUserMentions.prev">&#10094; Previous</span>
+  &nbsp;&nbsp;&nbsp;
+  <a ng-show="vmIgnoreUserMentions.next" ng-click="vmIgnoreUserMentions.pullPage(1)">
+     Next &#10095;
+  </a>
+  <span ng-show="!vmIgnoreUserMentions.next">Next &#10095;</span>
+</div>
+

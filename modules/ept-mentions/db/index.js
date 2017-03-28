@@ -117,7 +117,11 @@ function getIgnoredUsers(userId, opts) {
     prev: page > 1
   };
   limit = limit + 1;
-  var q = 'SELECT u.username, u.id FROM mentions.ignored JOIN users u ON (u.id = ignored_user_id) WHERE user_id = $1 LIMIT $2 OFFSET $3';
+  var q = `SELECT u.username, u.id, up.avatar, True as ignored
+    FROM mentions.ignored i
+    JOIN users u ON (u.id = i.ignored_user_id)
+    JOIN users.profiles up ON (up.user_id = i.ignored_user_id)
+    WHERE i.user_id = $1 LIMIT $2 OFFSET $3`;
   return db.sqlQuery(q, [userId, limit, offset])
   .then(function(data) {
     results.next = data.length === limit;

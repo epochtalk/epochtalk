@@ -25,7 +25,7 @@ var resource = ['$resource',
         method: 'POST',
         url: '/api/mentions/ignore',
         params: {
-          limit: '@username',
+          username: '@username',
         },
         ignoreLoadingBar: true
       },
@@ -33,7 +33,7 @@ var resource = ['$resource',
         method: 'POST',
         url: '/api/mentions/unignore',
         params: {
-          limit: '@username',
+          username: '@username',
         },
         ignoreLoadingBar: true
       }

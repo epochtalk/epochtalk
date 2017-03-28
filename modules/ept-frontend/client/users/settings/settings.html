@@ -1,0 +1,90 @@
+<div class="half-column">
+  <div ng-if="SettingsCtrl.canUpdatePrefs()">
+    <h3 class="thin-underline">Pagination</h3>
+    <form name="$parent.form" class="css-form" novalidate>
+      <!-- Preferences Fields -->
+      <label>Posts Per Page <small>(Min: 10, Max: 100)</small>
+      <input type="number" name="posts_per_page" ng-model="SettingsCtrl.tempPreferences.posts_per_page" placeholder="25" min="10" step="1" max="100" auto-focus="$parent.focus"/>
+      </label>
+
+      <label>Threads Per Page <small>(Min: 10, Max: 100)</small>
+        <input type="number" name="threads_per_page" ng-model="SettingsCtrl.tempPreferences.threads_per_page" placeholder="25" min="10" step="1" max="100"/>
+      </label>
+
+      <!-- Save Button -->
+      <div class="clear">
+        <div class="half-column">
+          <button class="fill-row" ng-click="SettingsCtrl.resetPrefrences()">
+          Reset to Default
+          </button>
+        </div>
+        <div class="half-column">
+          <button class="fill-row" ng-click="SettingsCtrl.savePreferences()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+            Save
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <ignore-mentions-settings></ignore-mentions-settings>
+</div>
+
+<div class="half-column">
+  <ignore-user-settings></ignore-user-settings>
+</div>
+
+<!-- <div class="half-column">
+
+  <h3 class="thin-underline">Ignored User Mentions</h3>
+  <table class="striped" width="100%">
+    <thead>
+      <th>Username</th>
+      <th>Action</th>
+    </thead>
+    <tbody ng-if="SettingsCtrl.users.length < 1">
+      <tr>
+        <td class="centered-text no-data" colspan="2"><h5>No User Mentions Being Ignored</h5></td>
+      </tr>
+    </tbody>
+    <tbody ng-repeat="user in SettingsCtrl.users track by user.id">
+      <tr>
+        <td class="hide-mobile">
+          <div class="user-avatar">
+            <a ui-sref="profile.posts({ username: user.username })">
+              <img ng-style="SettingsCtrl.avatarHighlight(user.highlight_color)" ng-src="{{::user.avatar}}">
+            </a>
+          </div>
+        </td>
+        <td>
+          <a class="user-username" ng-style="SettingsCtrl.usernameHighlight(user.highlight_color)" ui-sref="profile.posts({ username: user.username })" ng-bind-html="user.username"></a>
+        </td>
+        <td ng-if="user.ignored">
+          <a ng-click="SettingsCtrl.unignore(user)">
+            <i class="fa fa-user"></i>&nbsp;&nbsp;
+            Stop Ignoring User's Mentions
+          </a>
+        </td>
+        <td ng-if="!user.ignored">
+          <a ng-click="SettingsCtrl.ignore(user)">
+            <i class="fa fa-user-times"></i>&nbsp;&nbsp;
+            Ignore User's Mentions
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination-simple">
+    <a ng-show="SettingsCtrl.prev" ui-sref=".({ page: SettingsCtrl.page - 1, limit: SettingsCtrl.limit })">
+      &#10094; Previous
+    </a>
+    <span ng-show="!SettingsCtrl.prev">&#10094; Previous</span>
+    &nbsp;&nbsp;&nbsp;
+    <a ng-show="SettingsCtrl.next" ui-sref=".({ page: SettingsCtrl.page + 1, limit: SettingsCtrl.limit })">
+       Next &#10095;
+    </a>
+    <span ng-show="!SettingsCtrl.next">Next &#10095;</span>
+  </div>
+
+</div>
+ -->

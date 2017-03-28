@@ -54,8 +54,8 @@
     text-align: center;
     img {
       @include border-radius(100px);
-      height: 2.75rem;
-      width: 2.75rem;
+      height: 1.5rem;
+      width: 1.5rem;
       object-fit: cover;
     }
   }
