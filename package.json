@@ -40,7 +40,7 @@
     "del": "^2.2.0",
     "dot": "^1.0.3",
     "dotenv": "^2.0.0",
-    "epochtalk-core-pg": "epochtalk/core-pg#mentions",
+    "epochtalk-core-pg": "epochtalk/core-pg",
     "fs-extra": "^1.0.0",
     "good": "^6.4.0",
     "good-console": "^5.3.0",
