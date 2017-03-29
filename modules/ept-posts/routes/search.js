@@ -37,6 +37,7 @@ module.exports = {
   method: 'GET',
   path: '/api/search/posts',
   config: {
+    app: { hook: 'posts.search' },
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -46,17 +47,30 @@ module.exports = {
         search: Joi.string()
       }
     },
-    pre: [ { method: 'auth.posts.search(server, auth)' } ],
+    pre: [
+      { method: 'auth.posts.search(server, auth)' },
+      { method: 'hooks.preProcessing' },
+      [
+        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: processing, assign: 'processed' },
+      ],
+      { method: 'hooks.merge' },
+      { method: 'hooks.postProcessing' }
+    ]
   },
   handler: function(request, reply) {
-    var opts = {
-      limit: request.query.limit,
-      page: request.query.page,
-      desc: request.query.desc,
-      search: request.query.search
-    };
-    var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
-    var promise = request.db.posts.search(opts, userPriority);
-    return reply(promise);
+    return reply(request.pre.processed);
   }
 };
+
+function processing(request, reply) {
+  var opts = {
+    limit: request.query.limit,
+    page: request.query.page,
+    desc: request.query.desc,
+    search: request.query.search
+  };
+  var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
+  var promise = request.db.posts.search(opts, userPriority);
+  return reply(promise);
+}

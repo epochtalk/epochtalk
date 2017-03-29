@@ -25,6 +25,7 @@ module.exports = {
   method: 'GET',
   path: '/api/posts/user/{username}',
   config: {
+    app: { hook: 'posts.pageByUser' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       params: { username: Joi.string().required() },
@@ -34,35 +35,48 @@ module.exports = {
         desc: Joi.boolean().default(true)
       }
     },
-    pre: [ { method: 'auth.posts.pageByUser(server, auth, params.username)', assign: 'auth' } ],
+    pre: [
+      { method: 'auth.posts.pageByUser(server, auth, params.username)', assign: 'auth' },
+      { method: 'hooks.preProcessing' },
+      [
+        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: processing, assign: 'processed' },
+      ],
+      { method: 'hooks.merge' },
+      { method: 'hooks.postProcessing' }
+    ],
     handler: function(request, reply) {
-      var userId = '';
-      var authenticated = request.auth.isAuthenticated;
-      if (authenticated) { userId = request.auth.credentials.id; }
-      var viewables = request.pre.auth.viewables;
-      var priority = request.pre.auth.priority;
-      var username = querystring.unescape(request.params.username);
-      var opts = {
-        limit: request.query.limit,
-        page: request.query.page,
-        sortDesc: request.query.desc
-      };
-
-      var getPosts = request.db.posts.pageByUser(username, priority, opts);
-      var getCount = request.db.posts.pageByUserCount(username);
-
-      // get user's posts
-      var promise = Promise.join(getPosts, getCount, function(posts, count) {
-        return {
-          page: opts.page,
-          limit: opts.limit,
-          sortDesc: opts.sortDesc,
-          posts: common.cleanPosts(posts, userId, viewables),
-          count: count
-        };
-      });
-
-      return reply(promise);
+      return reply(request.pre.processed);
     }
   }
 };
+
+function processing(request, reply) {
+  var userId = '';
+  var authenticated = request.auth.isAuthenticated;
+  if (authenticated) { userId = request.auth.credentials.id; }
+  var viewables = request.pre.auth.viewables;
+  var priority = request.pre.auth.priority;
+  var username = querystring.unescape(request.params.username);
+  var opts = {
+    limit: request.query.limit,
+    page: request.query.page,
+    sortDesc: request.query.desc
+  };
+
+  var getPosts = request.db.posts.pageByUser(username, priority, opts);
+  var getCount = request.db.posts.pageByUserCount(username);
+
+  // get user's posts
+  var promise = Promise.join(getPosts, getCount, function(posts, count) {
+    return {
+      page: opts.page,
+      limit: opts.limit,
+      sortDesc: opts.sortDesc,
+      posts: common.cleanPosts(posts, userId, viewables),
+      count: count
+    };
+  });
+
+  return reply(promise);
+}

@@ -43,7 +43,7 @@
     "get": {
       "interval": 1000,
       "maxInInterval": 10,
-      "minDifference": 50
+      "minDifference": 0
     },
     "post": {
       "interval": 1000,

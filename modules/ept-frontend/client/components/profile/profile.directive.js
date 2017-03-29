@@ -111,7 +111,7 @@ function(Conversations, User, Session, Alert, PreferencesSvc, $filter, $state, $
         .then(function(data) {
           // redirect page if username changed
           if (ctrl.user.username !== data.username) {
-            if (this.pageOwner()) { Session.setUsername(ctrl.user.username); }
+            if (ctrl.pageOwner()) { Session.setUsername(ctrl.user.username); }
             var params = { username: ctrl.user.username};
             $state.go('profile.posts', params, { location: true, reload: false });
           }
