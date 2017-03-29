@@ -16,7 +16,7 @@ var resource = ['$resource',
         },
         ignoreLoadingBar: true
       },
-      getIgnoredUsers: {
+      pageIgnoredUsers: {
         method: 'GET',
         url: '/api/mentions/ignored',
         ignoreLoadingBar: true,

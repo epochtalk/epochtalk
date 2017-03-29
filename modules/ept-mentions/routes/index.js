@@ -66,7 +66,7 @@ var remove = {
   }
 };
 
-var getIgnoredUsers = {
+var pageIgnoredUsers = {
   method: 'GET',
   path: '/api/mentions/ignored',
   config: {
@@ -85,7 +85,7 @@ var getIgnoredUsers = {
       limit: request.query.limit,
       page: request.query.page
     };
-    var promise = request.db.mentions.getIgnoredUsers(userId, opts);
+    var promise = request.db.mentions.pageIgnoredUsers(userId, opts);
     return reply(promise);
   }
 };
@@ -139,7 +139,7 @@ var unignoreUser = {
 module.exports = [
   page,
   remove,
-  getIgnoredUsers,
+  pageIgnoredUsers,
   ignoreUser,
   unignoreUser
 ];

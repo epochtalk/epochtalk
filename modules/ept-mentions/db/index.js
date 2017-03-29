@@ -106,7 +106,7 @@ function getUserIgnored(userId, ignoredUserId) {
   });
 }
 
-function getIgnoredUsers(userId, opts) {
+function pageIgnoredUsers(userId, opts) {
   userId = helper.deslugify(userId);
   var limit = opts.limit || 25;
   var page = opts.page || 1;
@@ -166,7 +166,7 @@ module.exports = {
   page: page,
   remove: remove,
   getUserIgnored: getUserIgnored,
-  getIgnoredUsers: getIgnoredUsers,
+  pageIgnoredUsers: pageIgnoredUsers,
   ignoreUser: ignoreUser,
   unignoreUser: unignoreUser
 };

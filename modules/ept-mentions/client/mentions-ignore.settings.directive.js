@@ -12,7 +12,7 @@ var directive = ['Mentions', '$timeout',
 
       (function init() {
         var query = { limit: 10 };
-        return Mentions.getIgnoredUsers(query).$promise
+        return Mentions.pageIgnoredUsers(query).$promise
         .then(function(ignored) {
           // index variables
           ctrl.page = ignored.page;
@@ -33,8 +33,6 @@ var directive = ['Mentions', '$timeout',
       };
 
       this.ignore = function(user) {
-        console.log(user);
-
         return Mentions.ignoreUser({username: user.username}).$promise
         .then(function(res) { $timeout(function() { user.ignored = true; }); return res; });
       };
@@ -45,7 +43,7 @@ var directive = ['Mentions', '$timeout',
         var query = { page: ctrl.page, limit: ctrl.limit };
 
         // replace current threads with new threads
-        Mentions.getIgnoredUsers(query).$promise
+        Mentions.pageIgnoredUsers(query).$promise
         .then(function(pageData) {
           ctrl.prev = pageData.prev;
           ctrl.next = pageData.next;
