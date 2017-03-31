@@ -15,6 +15,7 @@ program
   .version('0.0.1')
   .option('--seed', 'Seed database. Populates with initial user/board.')
   .option('--admin <email>', 'Seed database with admin account.')
+  .option('--password <password>', 'Seed database with admin password.')
   .parse(process.argv);
 
 var genericArgs = {
@@ -43,6 +44,14 @@ var admin = function(adminEmail) {
     };
     return emailer.send('recoverAccount', emailParams);
   })
+  .catch(function(err) {
+    console.log(err);
+  });
+};
+
+var adminWithPassword = function(adminPassword, adminEmail) {
+  console.log('Creating admin with password:', adminPassword, adminEmail);
+  return users.create({ username: 'admin', email: adminEmail || 'admin@epochtalk.com', password: adminPassword, confirmation: adminPassword }, true)
   .catch(function(err) {
     console.log(err);
   });
@@ -99,6 +108,12 @@ var seed = function() {
 
 if (program.seed) {
   seed()
+  .then(function() {
+    process.exit(0);
+  });
+}
+else if (program.password) {
+  return adminWithPassword(program.password)
   .then(function() {
     process.exit(0);
   });
