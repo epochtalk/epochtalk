@@ -12,6 +12,7 @@ jobs:
       - checkout
       - run:
           name: Install node dependencies
+          command: npm install
       - run:
           name: Run npm tests
           command: npm test
