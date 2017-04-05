@@ -4,3 +4,42 @@ machine:
   environment:
     DATABASE_URL: postgres://localhost/epoch_test
     TEST_DATABASE_URL: postgres://localhost/epoch_test
+deployment:
+  apidoc:
+    branch: master
+    docker:
+      - image: node:7.4.0
+    working_directory: ~/api-to-html
+    steps:
+      - checkout
+      - run:
+          name: Get aws cli
+          command: |
+            apt-get update \
+            && apt-get upgrade -y \
+            && apt-get install -y --no-install-recommends \
+            build-essential g++ python2.7 python2.7-dev unzip curl \
+            && rm -rf /var/lib/apt/lists/* \
+            && mkdir -p /tmp \
+            && cd /tmp \
+            && curl -O https://bootstrap.pypa.io/get-pip.py \
+            && python get-pip.py \
+            && pip install awscli \
+            && rm -f /tmp/get-pip.py
+      - run:
+          name: Download EpochTalk
+          command: |
+            wget https://github.com/epochtalk/epochtalk/archive/master.zip
+            unzip master.zip
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - deploy:
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              # set env for epochtalk path (unzipped dir)
+              echo "EPOCHTALK_PATH=epochtalk-master" > .env
+              node .
+              # push to S3
+              aws s3 cp api.html $S3_URI --region $S3_REGION
+            fi
