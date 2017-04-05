@@ -2,9 +2,9 @@ version: 2
 
 jobs:
   build:
-    working_directory: /tmp
     docker:
       - image: node:7.4.0
+    working_directory: /tmp
     environment:
       DATABASE_URL: postgres://localhost/epoch_test
       TEST_DATABASE_URL: postgres://localhost/epoch_test
