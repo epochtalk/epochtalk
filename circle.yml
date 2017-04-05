@@ -5,6 +5,8 @@ jobs:
     docker:
       - image: node:7.4.0
       - image: postgres:9.6.1
+        environment:
+          POSTGRES_USER: root
       - image: redis:3.2.6
     working_directory: ~/epochtalk
     environment:
