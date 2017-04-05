@@ -59,3 +59,25 @@ function processing(request, reply) {
   .then((post) => { return request.imageStore.createImageReferences(post); });
   return reply(promise);
 }
+
+
+/**
+  * @apiDefine PostObjectPayload
+  * @apiParam (Payload) {string} title The title of the post
+  * @apiParam (Payload) {string} body The post's body with any markup tags converted and parsed into html elements
+  * @apiParam (Payload) {string} raw_body The post's body as it was entered in the editor by the user
+  * @apiParam (Payload) {string} thread_id The unique id of the thread the post belongs to
+  */
+
+/**
+  * @apiDefine PostObjectSuccess
+  * @apiSuccess {string} id The unique id of the post
+  * @apiSuccess {string} thread_id The unique id of the thread the post belongs to
+  * @apiSuccess {string} user_id The unique id of the user who created the post
+  * @apiSuccess {string} title The title of the post
+  * @apiSuccess {string} body The post's body with any markup tags converted and parsed into html elements
+  * @apiSuccess {string} raw_body The post's body as it was entered in the editor by the user
+  * @apiSuccess {timestamp} created_at Timestamp of when the post was created
+  * @apiSuccess {timestamp} updated_at Timestamp of when the post was updated
+  * @apiSuccess {timestamp} imported_at Timestamp of when the post was imported
+  */
