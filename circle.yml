@@ -4,54 +4,49 @@ jobs:
   build:
     docker:
       - image: node:7.4.0
-    working_directory: /tmp
+    working_directory: ~/epochtalk
     environment:
       DATABASE_URL: postgres://localhost/epoch_test
       TEST_DATABASE_URL: postgres://localhost/epoch_test
     steps:
+      - checkout
+      - run:
+          name: Install node dependencies
       - run:
           name: Run npm tests
           command: npm test
+      - run:
+        name: Get aws cli
+        command: |
+          apt-get update \
+          && apt-get upgrade -y \
+          && apt-get install -y --no-install-recommends \
+          build-essential g++ python2.7 python2.7-dev unzip curl \
+          && rm -rf /var/lib/apt/lists/* \
+          && mkdir -p /tmp \
+          && cd /tmp \
+          && curl -O https://bootstrap.pypa.io/get-pip.py \
+          && python get-pip.py \
+          && pip install awscli \
+          && rm -f /tmp/get-pip.py
+      - run:
+        name: Download EpochTalk API generator
+        command: |
+          cd ..
+          wget https://github.com/epochtalk/api-to-html/archive/master.zip
+          unzip master.zip # api-to-html-master/
+      - run:
+        name: Install Dependencies
+        command: |
+          cd ../api-to-html-master
+          npm install
       - deploy:
-          prod:
-            branch: api-doc-ci
-            docker:
-              - image: node:7.4.0
-            working_directory: ~/epochtalk
-            steps:
-              - checkout
-              - run:
-                  name: Get aws cli
-                  command: |
-                    apt-get update \
-                    && apt-get upgrade -y \
-                    && apt-get install -y --no-install-recommends \
-                    build-essential g++ python2.7 python2.7-dev unzip curl \
-                    && rm -rf /var/lib/apt/lists/* \
-                    && mkdir -p /tmp \
-                    && cd /tmp \
-                    && curl -O https://bootstrap.pypa.io/get-pip.py \
-                    && python get-pip.py \
-                    && pip install awscli \
-                    && rm -f /tmp/get-pip.py
-              - run:
-                  name: Download EpochTalk API generator
-                  command: |
-                    cd ..
-                    wget https://github.com/epochtalk/api-to-html/archive/master.zip
-                    unzip master.zip # api-to-html-master/
-              - run:
-                  name: Install Dependencies
-                  command: |
-                    cd ../api-to-html-master
-                    npm install
-              - deploy:
-                  command: |
-                    if [ "${CIRCLE_BRANCH}" == "api-doc-ci" ]; then
-                      cd ../api-to-html-master
-                      # set env for epochtalk path (unzipped dir)
-                      echo "EPOCHTALK_PATH=../epochtalk" > .env
-                      node .
-                      # push to S3
-                      aws s3 cp api.html $S3_URI --region $S3_REGION
-                    fi
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "api-doc-ci" ]; then
+              cd ../api-to-html-master
+              # set env for epochtalk path (unzipped dir)
+              echo "EPOCHTALK_PATH=../epochtalk" > .env
+              node .
+              # push to S3
+              aws s3 cp api.html $S3_URI --region $S3_REGION
+            fi
