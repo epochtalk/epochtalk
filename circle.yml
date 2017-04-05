@@ -16,30 +16,30 @@ jobs:
           name: Run npm tests
           command: npm test
       - run:
-        name: Get aws cli
-        command: |
-          apt-get update \
-          && apt-get upgrade -y \
-          && apt-get install -y --no-install-recommends \
-          build-essential g++ python2.7 python2.7-dev unzip curl \
-          && rm -rf /var/lib/apt/lists/* \
-          && mkdir -p /tmp \
-          && cd /tmp \
-          && curl -O https://bootstrap.pypa.io/get-pip.py \
-          && python get-pip.py \
-          && pip install awscli \
-          && rm -f /tmp/get-pip.py
+          name: Get aws cli
+          command: |
+            apt-get update \
+            && apt-get upgrade -y \
+            && apt-get install -y --no-install-recommends \
+            build-essential g++ python2.7 python2.7-dev unzip curl \
+            && rm -rf /var/lib/apt/lists/* \
+            && mkdir -p /tmp \
+            && cd /tmp \
+            && curl -O https://bootstrap.pypa.io/get-pip.py \
+            && python get-pip.py \
+            && pip install awscli \
+            && rm -f /tmp/get-pip.py
       - run:
-        name: Download EpochTalk API generator
-        command: |
-          cd ..
-          wget https://github.com/epochtalk/api-to-html/archive/master.zip
-          unzip master.zip # api-to-html-master/
+          name: Download EpochTalk API generator
+          command: |
+            cd ..
+            wget https://github.com/epochtalk/api-to-html/archive/master.zip
+            unzip master.zip # api-to-html-master/
       - run:
-        name: Install Dependencies
-        command: |
-          cd ../api-to-html-master
-          npm install
+          name: Install Dependencies
+          command: |
+            cd ../api-to-html-master
+            npm install
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "api-doc-ci" ]; then
