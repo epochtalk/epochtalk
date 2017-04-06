@@ -19,13 +19,12 @@ deployment:
       # && python get-pip.py \
       # && pip install awscli \
       # && rm -f /tmp/get-pip.py
-      cd ..
       wget https://github.com/epochtalk/api-to-html/archive/master.zip
       unzip master.zip # api-to-html-master/
       cd api-to-html-master
       npm install
       # set env for epochtalk path (unzipped dir)
-      echo "EPOCHTALK_PATH=../epochtalk" > .env
+      echo "EPOCHTALK_PATH=../" > .env
       node .
       # push to S3
       aws s3 cp api.html $S3_URI --region $S3_REGION
