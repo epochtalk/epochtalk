@@ -1,10 +1,11 @@
 var path = require('path');
 var Promise = require('bluebird');
 var using = Promise.using;
-var AlreadyUsedError = Promise.OperationalError;
-var RoundNotFoundError = Promise.OperationalError;
 var dbc = require(path.normalize(__dirname + '/../db'));
 var db = dbc.db;
+var errors = dbc.errors;
+var NotFoundError = errors.NotFoundError;
+var ConflictError = errors.ConflictError;
 
 module.exports = function(round) {
   return using(db.createTransaction(), function(client) {
@@ -13,10 +14,10 @@ module.exports = function(round) {
     return client.queryAsync(check, [round])
     .then(function(response) {
       if (response.rows.length < 1) {
-        throw new RoundNotFoundError('This round does not exists');
+        throw new NotFoundError('This round does not exists');
       }
       else if (response.rows[0].start_time) {
-        throw new AlreadyUsedError('This round has already been in use');
+        throw new ConflictError('This round has already been in use');
       }
     })
     // lock table from being read

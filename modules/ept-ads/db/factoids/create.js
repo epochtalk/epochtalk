@@ -2,6 +2,8 @@ var path = require('path');
 var dbc = require(path.normalize(__dirname + '/../db'));
 var db = dbc.db;
 var helper = dbc.helper;
+var errors = dbc.errors;
+var CreationError = errors.CreationError;
 
 module.exports = function(factoid) {
   var q = `
@@ -16,7 +18,7 @@ module.exports = function(factoid) {
       factoid.id = rows[0].id;
       return factoid;
     }
-    else { throw Error('Could Not Create Factoid'); }
+    else { throw new CreationError('Could Not Create Factoid'); }
   })
   .then(helper.slugify);
 };

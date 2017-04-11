@@ -2,6 +2,8 @@ var path = require('path');
 var dbc = require(path.normalize(__dirname + '/../db'));
 var db = dbc.db;
 var helper = dbc.helper;
+var errors = dbc.errors;
+var CreationError = errors.CreationError;
 
 module.exports = function(adId) {
   adId = helper.deslugify(adId);
@@ -13,7 +15,7 @@ module.exports = function(adId) {
   return db.sqlQuery(q, [adId])
   .then(function(rows) {
     if (rows.length > 0) { return rows[0]; }
-    else { throw Error('Could Not Create Ad'); }
+    else { throw new CreationError('Could Not Create Ad'); }
   })
   // create ads.analytics row for this ad
   .tap(function(dupAd) {

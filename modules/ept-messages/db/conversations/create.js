@@ -1,10 +1,11 @@
 var path = require('path');
 var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/../db'));
-var CreationError = Promise.OperationalError;
 var using = Promise.using;
 var helper = dbc.helper;
 var db = dbc.db;
+var errors = dbc.errors;
+var CreationError = errors.CreationError;
 
 module.exports = function() {
   var conversation = {};

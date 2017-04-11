@@ -3,8 +3,9 @@ var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
-var NotFoundError = Promise.OperationalError;
-var MoveError = Promise.OperationalError;
+var errors = dbc.errors;
+var NotFoundError = errors.NotFoundError;
+var ConflictError = errors.ConflictError;
 var using = Promise.using;
 
 module.exports = function(threadId, newBoardId) {
@@ -24,7 +25,7 @@ module.exports = function(threadId, newBoardId) {
     })
     .then(function() {
       if (thread.board_id === newBoardId) {
-        throw new MoveError('New Board Id matches current Board Id');
+        throw new ConflictError('New Board Id matches current Board Id');
       }
     })
     // lock thread's current board/Meta row
