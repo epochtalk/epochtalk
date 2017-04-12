@@ -16,6 +16,14 @@ var errorMap = {
 
 module.exports = {
   toHttpError: function(error) {
-    return errorMap(error.name)(error.message) || Boom.badImplementation(error.message);
+    var errType = errorMap[error.name];
+
+    var boomErr;
+    if (errType) { boomErr = errType(); }
+    else { boomErr = Boom.badImplementation(); }
+
+    // Update boom error message
+    boomErr.output.payload.message = error.message || boomErr.output.payload.message;
+    return boomErr;
   }
 };
