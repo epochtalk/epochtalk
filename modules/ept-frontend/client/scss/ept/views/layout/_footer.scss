@@ -32,7 +32,7 @@ footer {
 
   // Mobile Footer Layout
   @include media($mobile) {
-    height: 11.5rem;
+    bottom: -3rem;
     #footer .row .links { @include span-columns(4); @include omega(2n); text-align: center; }
     #footer .row .info { @include span-columns(8); text-align: center; padding-top: 1rem; }
   }

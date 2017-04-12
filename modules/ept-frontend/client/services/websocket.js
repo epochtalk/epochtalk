@@ -59,6 +59,10 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
         Alert.warning('You have been logged out from another window.');
       }
       else if (data.action === 'newMessage') { NotificationSvc.refresh(); }
+      else if (data.action === 'refreshMentions') {
+        NotificationSvc.refresh();
+        NotificationSvc.refreshMentionsList();
+     }
     });
 
     // subscribe to roles channels
@@ -92,6 +96,7 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
   function socketLogin() {
     socket.authenticate(Session.getToken());
     NotificationSvc.refresh();
+    NotificationSvc.refreshMentionsList();
   }
 
   // API Functions

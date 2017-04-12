@@ -7,6 +7,7 @@ var Inert = require('inert');
 var Vision = require('vision');
 var GoodFile = require('good-file');
 var GoodConsole = require('good-console');
+var errorMap = require(path.normalize(__dirname + '/errorMap'));
 var db = require(path.normalize(__dirname + '/../db'));
 var redis = require(path.normalize(__dirname + '/../redis'));
 var setup = require(path.normalize(__dirname + '/../setup'));
@@ -48,8 +49,11 @@ setup()
 
   // DB decoration
   server.decorate('request', 'db', db);
-  server.decorate('server', 'db', db);
+  server.decorate('request', 'errorMap', errorMap);
   server.decorate('request', 'redis', redis);
+
+  server.decorate('server', 'db', db);
+  server.decorate('server', 'errorMap', errorMap);
   server.decorate('server', 'redis', redis);
 })
 // server logging

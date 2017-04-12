@@ -20,13 +20,18 @@ var Promise = require('bluebird');
   */
 exports.counts = {
   auth: { strategy: 'jwt' },
+  validate: {
+    query: Joi.object().keys({
+      max: Joi.number()
+    })
+  },
   plugins: { acls: 'notifications.counts' },
   handler: function(request, reply) {
     // get notifications counts for userId
     var userId = request.auth.credentials.id;
-    var getNotificationsCounts = request.server.plugins.notifications.getNotificationsCounts(userId);
+    var opts =  { max: request.query.max };
 
-    var promise = getNotificationsCounts;
+    var promise = request.db.notifications.counts(userId, opts);
     return reply(promise);
   }
 };
@@ -49,19 +54,28 @@ exports.dismiss = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'notifications.dismiss' },
   validate: {
-    query: Joi.object().keys({
-      type: Joi.string().valid('message', 'mention', 'other').required()
+    payload: Joi.object().keys({
+      type: Joi.string().valid('message', 'mention', 'other').required(),
+      id: Joi.string()
     })
   },
   handler: function(request, reply) {
     // dismiss notifications for receiver_id
     var params = {
       receiver_id: request.auth.credentials.id,
-      type: request.query.type
+      type: request.payload.type,
+      id: request.payload.id
     };
-    var dismiss = request.server.plugins.notifications.dismissNotifications(params);
+    var promise = request.db.notifications.dismiss(params)
+    .tap(function() {
+      var userId = request.auth.credentials.id;
+      var notification = {
+        channel: { type: 'user', id: userId },
+        data: { action: 'refreshMentions' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
 
-    var promise = dismiss;
+    });
     return reply(promise);
   }
 };

@@ -7,6 +7,7 @@ module.exports = [
   'ept-auth',
   'ept-frontend',
   'ept-reports',
+  'ept-mentions',
   'ept-messages',
   'ept-watchlist',
   'ept-bbcode-parser',

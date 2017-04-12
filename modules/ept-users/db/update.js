@@ -6,7 +6,8 @@ var common = require(path.normalize(__dirname + '/../common'));
 var db = dbc.db;
 var helper = dbc.helper;
 var using = Promise.using;
-var CreationError = Promise.OperationalError;
+var errors = dbc.errors;
+var CreationError = errors.CreationError;
 
 /* returns values including email, confirm and reset tokens */
 module.exports = function(user) {

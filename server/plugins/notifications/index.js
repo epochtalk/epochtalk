@@ -16,9 +16,6 @@ exports.register = function (plugin, options, next) {
 
   plugin.expose('spawnNotification', spawnNotification);
   plugin.expose('systemNotification', systemNotification);
-  plugin.expose('getNotifications', getNotifications);
-  plugin.expose('getNotificationsCounts', getNotificationsCounts);
-  plugin.expose('dismissNotifications', dismissNotifications);
   next();
 };
 
@@ -42,16 +39,4 @@ function systemNotification(datas) {
     data: datas.data
   };
   socket.emit('notify', options);
-}
-
-function getNotifications(datas) {
-  return db.notifications.latest(datas);
-}
-
-function getNotificationsCounts(datas) {
-  return db.notifications.counts(datas);
-}
-
-function dismissNotifications(datas) {
-  return db.notifications.dismiss(datas);
 }

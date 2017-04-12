@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var Promise = require('bluebird');
 
 module.exports = {
   method: 'GET',
@@ -20,19 +19,7 @@ module.exports = {
       limit: request.query.limit
     };
 
-    var promise = request.db.ignoreUsers.ignored(userId, opts)
-    .then(function(users) {
-      var hasMore = false;
-      if (users.length > request.query.limit) { hasMore = true;
-      }
-      return {
-        hasMore: hasMore,
-        page: request.query.page,
-        limit: request.query.limit,
-        ignored: users
-      };
-    });
-
+    var promise = request.db.ignoreUsers.ignored(userId, opts);
     return reply(promise);
   }
 };

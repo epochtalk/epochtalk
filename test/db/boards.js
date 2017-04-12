@@ -55,9 +55,11 @@ lab.experiment('Boards', function() {
     .then(function(board) {
       throw new Error('Should not have found a board');
     })
-    .catch(function(err) {
-      expect(err).to.be.an.instanceof(NotFoundError);
-      expect(err.cause).to.be.a.string().and.to.equal('Board Not Found');
+    .catch(function(error) {
+      expect(error).to.include('name');
+      expect(error).to.include('isOperational');
+      expect(error.name).to.be.a.string('NotFoundError');
+      expect(error.isOperational).to.be.true();
       done();
     });
   });

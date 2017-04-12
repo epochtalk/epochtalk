@@ -5,6 +5,12 @@ var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
 
 var common = {
+  getPermissionValue: (server, auth, permission) => {
+    return new Promise(function(resolve) {
+      var all = server.plugins.acls.getACLValue(auth, permission);
+      return resolve(all);
+    });
+  },
   hasPermission: (error, server, auth, permission) => {
     return new Promise(function(resolve, reject) {
       var all = server.plugins.acls.getACLValue(auth, permission);
@@ -114,6 +120,9 @@ function build(opts) {
   var error = opts.error;
 
   switch(opts.type) {
+    case 'getPermissionValue':
+      promise = common[opts.type](opts.server, opts.auth, opts.permission);
+      break;
     case 'hasPermission':
       promise = common[opts.type](error, opts.server, opts.auth, opts.permission);
       break;
@@ -468,6 +477,7 @@ function adminRolesValidate(validations, payload) {
     users: validations.users,
     reports: validations.reports,
     watchlist: validations.watchlist,
+    mentions: validations.mentions,
     autoModeration: validations.autoModeration,
     ads: validations.ads,
     userTrust: validations.userTrust,

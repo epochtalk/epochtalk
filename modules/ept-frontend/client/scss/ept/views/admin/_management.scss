@@ -48,6 +48,7 @@ table.ban-addresses {
 }
 .centered-checkbox { margin: 0 auto; display: block; }
 
+.medium.roles-modal .ng-modal-dialog { top: 5vh; max-height: 90vh; }
 .permissions-modal {
   @include row;
   margin: 1rem 0;

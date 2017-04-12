@@ -7,7 +7,8 @@ var resource = ['$resource',
           limit: '@limit',
           page: '@page'
         },
-        url: '/api/ignoreUsers/ignored'
+        url: '/api/ignoreUsers/ignored',
+        ignoreLoadingBar: true
       },
       ignore: {
         method: 'POST',

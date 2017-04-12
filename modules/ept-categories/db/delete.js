@@ -3,8 +3,9 @@ var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
-var NotFoundError = Promise.OperationalError;
 var using = Promise.using;
+var errors = dbc.errors;
+var NotFoundError = errors.NotFoundError;
 
 module.exports = function(catId) {
   catId = helper.deslugify(catId);
