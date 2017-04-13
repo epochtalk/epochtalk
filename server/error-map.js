@@ -19,11 +19,17 @@ module.exports = {
     var errType = errorMap[error.name];
 
     var boomErr;
-    if (errType) { boomErr = errType(); }
-    else { boomErr = Boom.badImplementation(); }
+    if (errType) {
+     boomErr = errType(null, error);
 
-    // Update boom error message
-    boomErr.output.payload.message = error.message || boomErr.output.payload.message;
+     // Update boom error message
+     boomErr.output.payload.message = error.message || boomErr.output.payload.message;
+    }
+    else { boomErr = Boom.badImplementation(null, error); }
+
+    // Copy stack from original error
+    boomErr.stack = error.stack;
+
     return boomErr;
   }
 };
