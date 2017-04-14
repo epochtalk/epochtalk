@@ -71,7 +71,8 @@ function processing(request, reply) {
       normal: threads.normal,
       sticky: threads.sticky
     };
-  });
+  })
+  .error(request.errorMap.toHttpError);
 
   return reply(promise);
 }

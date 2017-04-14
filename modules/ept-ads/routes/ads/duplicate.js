@@ -25,7 +25,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var adId = request.params.id;
-    var promise = db.ads.duplicate(adId);
+    var promise = db.ads.duplicate(adId)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

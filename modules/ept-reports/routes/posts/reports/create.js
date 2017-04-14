@@ -41,7 +41,7 @@ module.exports = {
   handler: function(request, reply) {
     var report = request.payload;
     var promise = request.db.reports.createPostReport(report)
-    .error(function(err) { return Boom.badRequest(err); });
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

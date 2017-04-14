@@ -42,7 +42,9 @@ module.exports = {
 
     // sticky thread
     var promise = request.db.threads.sticky(threadId, sticky)
-    .then(() => { return { id: threadId, sticky: sticky }; });
+    .then(() => { return { id: threadId, sticky: sticky }; })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

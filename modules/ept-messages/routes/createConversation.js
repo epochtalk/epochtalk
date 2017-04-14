@@ -62,7 +62,9 @@ module.exports = {
         }
       };
       request.server.plugins.notifications.spawnNotification(notification);
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

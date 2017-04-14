@@ -39,7 +39,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    var promise = request.db.reports.createUserReport(report);
+    var promise = request.db.reports.createUserReport(report)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

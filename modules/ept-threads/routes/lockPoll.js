@@ -46,7 +46,8 @@ module.exports = {
     var pollId = request.params.pollId;
     var lockValue = request.payload.lockValue;
 
-    var promise = request.db.polls.lock(pollId, lockValue);
+    var promise = request.db.polls.lock(pollId, lockValue)
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

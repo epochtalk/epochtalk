@@ -65,7 +65,9 @@ exports.addRoles = {
       return Promise.map(users, function(user) {
         return request.session.updateRoles(user.id, user.roles);
       });
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -136,7 +138,9 @@ exports.removeRoles = {
         else { return; }
       })
       .then(function() { return user; });
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -171,7 +175,9 @@ exports.searchUsernames = {
     // get user by username
     var searchStr = request.query.username;
     var limit = request.query.limit;
-    var promise = request.db.users.searchUsernames(searchStr, limit);
+    var promise = request.db.users.searchUsernames(searchStr, limit)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -216,7 +222,9 @@ exports.count = {
       };
     }
 
-    var promise = request.db.users.count(opts);
+    var promise = request.db.users.count(opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -271,7 +279,9 @@ exports.page = {
       searchStr: request.query.search,
       ip: request.query.ip
     };
-    var promise = request.db.users.page(opts);
+    var promise = request.db.users.page(opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

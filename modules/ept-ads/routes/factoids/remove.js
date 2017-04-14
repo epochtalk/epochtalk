@@ -25,7 +25,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var factoidId = request.params.id;
-    var promise = db.factoids.remove(factoidId);
+    var promise = db.factoids.remove(factoidId)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

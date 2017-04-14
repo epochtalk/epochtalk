@@ -57,7 +57,9 @@ module.exports = {
     var rule = request.payload;
     rule.id = ruleId;
     var promise = db.editRule(rule)
-    .tap(function(rule) { autoModerator.editRule(rule); });
+    .tap(function(rule) { autoModerator.editRule(rule); })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

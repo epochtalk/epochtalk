@@ -30,7 +30,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var userId = request.params.id;
-    var promise = request.db.users.reactivate(userId);
+    var promise = request.db.users.reactivate(userId)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

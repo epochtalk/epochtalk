@@ -31,7 +31,9 @@ exports.counts = {
     var userId = request.auth.credentials.id;
     var opts =  { max: request.query.max };
 
-    var promise = request.db.notifications.counts(userId, opts);
+    var promise = request.db.notifications.counts(userId, opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -74,8 +76,9 @@ exports.dismiss = {
         data: { action: 'refreshMentions' }
       };
       request.server.plugins.notifications.systemNotification(notification);
+    })
+    .error(request.errorMap.toHttpError);
 
-    });
     return reply(promise);
   }
 };

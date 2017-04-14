@@ -47,7 +47,9 @@ exports.text = {
         privacy: privacy,
         disclaimer: disclaimer
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -99,7 +101,8 @@ exports.update = {
 
     var promise = Promise.join(writeTos, writePrivacy, writeDisclaimer, function() {
       return request.payload;
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }
@@ -147,7 +150,8 @@ exports.reset = {
         privacy: privacy,
         disclaimer: disclaimer
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

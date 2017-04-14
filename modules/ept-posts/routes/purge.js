@@ -23,7 +23,9 @@ module.exports = {
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: 'auth.posts.purge(server, auth, params.id)' } ],
     handler: function(request, reply) {
-      var promise = request.db.posts.purge(request.params.id);
+      var promise = request.db.posts.purge(request.params.id)
+      .error(request.errorMap.toHttpError);
+
       return reply(promise);
     }
   }

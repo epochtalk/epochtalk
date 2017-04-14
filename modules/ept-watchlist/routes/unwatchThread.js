@@ -24,7 +24,9 @@ module.exports = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
-    var promise = request.db.watchlist.unwatchThread(userId, boardId);
+    var promise = request.db.watchlist.unwatchThread(userId, boardId)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

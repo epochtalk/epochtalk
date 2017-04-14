@@ -14,7 +14,8 @@ module.exports = {
     var promise = Promise.map(request.payload, function(catId) {
       return request.db.categories.delete(catId)
       .then(function() { return catId; });
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

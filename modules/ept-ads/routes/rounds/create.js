@@ -22,7 +22,9 @@ module.exports = {
     pre: [ { method: auth } ]
   },
   handler: function(request, reply) {
-    var promise = db.rounds.create();
+    var promise = db.rounds.create()
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

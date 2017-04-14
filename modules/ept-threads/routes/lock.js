@@ -42,7 +42,8 @@ module.exports = {
 
     // lock thread
     var promise = request.db.threads.lock(threadId, locked)
-    .then(() => { return { id: threadId, locked: locked }; });
+    .then(() => { return { id: threadId, locked: locked }; })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

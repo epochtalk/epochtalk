@@ -46,7 +46,9 @@ exports.add = {
         return request.session.updateModerating(moderatingUser)
         .then(function() { return user; });
       });
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -97,7 +99,9 @@ exports.remove = {
         return request.session.updateModerating(moderatingUser)
         .then(function() { return user; });
       });
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

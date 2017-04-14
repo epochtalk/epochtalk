@@ -225,7 +225,8 @@ exports.update = {
     // re-init emailer
     .then(function() { request.emailer.init(); })
     // return payload
-    .then(function() { return request.payload; });
+    .then(function() { return request.payload; })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }
@@ -248,7 +249,9 @@ exports.getBlacklist = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.getBlacklist' },
   handler: function(request, reply) {
-    var promise = request.db.blacklist.all();
+    var promise = request.db.blacklist.all()
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -290,7 +293,9 @@ exports.addToBlacklist = {
     .then(function(blacklist) {
       request.server.plugins.blacklist.retrieveBlacklist();
       return blacklist;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -334,7 +339,9 @@ exports.updateBlacklist = {
     .then(function(blacklist) {
       request.server.plugins.blacklist.retrieveBlacklist();
       return blacklist;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -379,7 +386,9 @@ exports.deleteFromBlacklist = {
 
       request.server.plugins.blacklist.retrieveBlacklist();
       return results.blacklist;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -499,9 +508,7 @@ exports.setTheme = {
       copyCss()
       .then(sass)
       .then(function() { reply(theme); })
-      .catch(function(err) {
-        reply(Boom.badRequest(err));
-      });
+      .error(request.errorMap.toHttpError);
     });
   }
 };
@@ -564,7 +571,7 @@ exports.resetTheme = {
       })
       .on('close', function() { reply(theme); });
     })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    .error(request.errorMap.toHttpError);
   }
 };
 
@@ -640,9 +647,7 @@ exports.previewTheme = {
       copyCss()
       .then(function () { return sass('./public/css/preview.css'); })
       .then(function() { reply(theme); })
-      .catch(function(err) {
-        reply(Boom.badRequest(err));
-      });
+      .error(request.errorMap.toHttpError);
     });
   }
 };

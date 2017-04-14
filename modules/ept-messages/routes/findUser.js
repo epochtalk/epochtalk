@@ -23,7 +23,9 @@ module.exports = {
   handler: function(request, reply) {
     // get id for username
     var username = request.params.username;
-    var promise = request.db.messages.findUser(username);
+    var promise = request.db.messages.findUser(username)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

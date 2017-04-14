@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var Promise = require('bluebird');
 
 exports.page = {
  auth: { strategy: 'jwt' },
@@ -13,7 +12,9 @@ exports.page = {
   },
   handler: function(request, reply) {
     var opts = request.query;
-    var promise =  request.db.userNotes.page(opts);
+    var promise =  request.db.userNotes.page(opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -47,7 +48,9 @@ exports.create = {
     .then(function(createdNote) {
       request.route.settings.plugins.mod_log.metadata = createdNote;
       return createdNote;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -81,7 +84,9 @@ exports.update = {
     .then(function(updatedNote) {
       request.route.settings.plugins.mod_log.metadata = updatedNote;
       return updatedNote;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -110,7 +115,9 @@ exports.delete = {
     .then(function(deletedNote) {
       request.route.settings.plugins.mod_log.metadata = deletedNote;
       return deletedNote;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

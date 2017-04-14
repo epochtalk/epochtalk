@@ -50,7 +50,9 @@ module.exports = {
         invitations: invitations,
         hasMore: hasMore
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

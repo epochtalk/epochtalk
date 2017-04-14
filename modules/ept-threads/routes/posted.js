@@ -49,7 +49,8 @@ module.exports = {
         limit: request.query.limit,
         count: count
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

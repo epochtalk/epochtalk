@@ -128,7 +128,8 @@ module.exports = {
         })
         .then(request.session.save);
       }
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

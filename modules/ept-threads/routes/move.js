@@ -54,7 +54,8 @@ module.exports = {
       };
       return { id: threadId, board_id: newBoardId };
     })
-    .error(function(err) { return Boom.badRequest(err.message); });
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

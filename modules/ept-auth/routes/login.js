@@ -93,7 +93,9 @@ module.exports = {
       return user;
     })
     // builds token, saves session, returns request output
-    .then(request.session.save);
+    .then(request.session.save)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

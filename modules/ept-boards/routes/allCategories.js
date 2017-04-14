@@ -46,7 +46,8 @@ module.exports = {
       promise = getAllCategories
       .then(function(boards) {
         return { boards: boards };
-      });
+      })
+     .error(request.errorMap.toHttpError);
     }
     else {
       promise = Promise.join(getAllCategories, getRecentThreads, function(boards, threads) {
@@ -54,7 +55,8 @@ module.exports = {
           boards: boards,
           threads: threads
         };
-      });
+      })
+      .error(request.errorMap.toHttpError);
     }
     return reply(promise);
   }

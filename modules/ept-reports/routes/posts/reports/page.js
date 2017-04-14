@@ -99,7 +99,8 @@ module.exports = {
         desc: opts.sortDesc,
         search: opts.searchStr
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

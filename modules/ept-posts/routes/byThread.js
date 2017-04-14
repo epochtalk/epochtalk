@@ -99,7 +99,8 @@ function processing(request, reply) {
     var retVal = Boom.notFound();
     if (ret.posts.length > 0) { retVal = ret; }
     return retVal;
-  });
+  })
+  .error(request.errorMap.toHttpError);
 
   return reply(promise);
 }

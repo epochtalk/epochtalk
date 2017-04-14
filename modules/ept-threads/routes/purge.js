@@ -43,7 +43,9 @@ module.exports = {
         user_id: purgedThread.user_id,
         board_id: purgedThread.board_id
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

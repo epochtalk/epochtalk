@@ -36,7 +36,8 @@ module.exports = {
           return request.db.posts.lock(request.params.id);
         }
       })
-      .error(function(err) { return Boom.badRequest(err.message); });
+      .error(request.errorMap.toHttpError);
+
       return reply(promise);
     }
   }

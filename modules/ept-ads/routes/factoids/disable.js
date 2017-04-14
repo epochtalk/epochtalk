@@ -28,10 +28,12 @@ module.exports = {
     var factoidId = request.params.id;
 
     if (factoidId === 'all') {
-      promise = db.factoids.disableAll();
+      promise = db.factoids.disableAll()
+      .error(request.errorMap.toHttpError);
     }
     else {
-      promise = db.factoids.disable(factoidId);
+      promise = db.factoids.disable(factoidId)
+      .error(request.errorMap.toHttpError);
     }
 
     return reply(promise);

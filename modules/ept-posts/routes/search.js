@@ -71,6 +71,8 @@ function processing(request, reply) {
     search: request.query.search
   };
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
-  var promise = request.db.posts.search(opts, userPriority);
+  var promise = request.db.posts.search(opts, userPriority)
+  .error(request.errorMap.toHttpError);
+
   return reply(promise);
 }

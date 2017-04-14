@@ -13,7 +13,8 @@ module.exports = {
     var ignoreUserId = request.params.userId;
 
     var promise = request.db.ignoreUsers.unignore(userId, ignoreUserId)
-    .then(function() { return { userId: ignoreUserId, ignored: false }; });
+    .then(function() { return { userId: ignoreUserId, ignored: false }; })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

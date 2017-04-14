@@ -29,7 +29,9 @@ module.exports = {
   handler: function(request, reply) {
     var factoid = request.payload;
     factoid.id = request.params.id;
-    var promise = db.factoids.edit(factoid);
+    var promise = db.factoids.edit(factoid)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

@@ -42,7 +42,8 @@ module.exports = {
         message: 'Successfully Resent Invitation',
         confirm_token: invitation.hash
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

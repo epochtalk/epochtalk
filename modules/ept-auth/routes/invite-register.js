@@ -67,7 +67,8 @@ module.exports = {
     .tap(function(user) {
       return request.db.roles.addRoles([user.username], 'CN0h5ZeBTGqMbzwVdMWahQ');
     })
-    .then(request.session.save);
+    .then(request.session.save)
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

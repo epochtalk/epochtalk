@@ -44,7 +44,8 @@ module.exports = {
       title: request.payload.title
     };
     var promise = request.db.posts.update(post)
-    .error(function() { return Boom.notFound(); });
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

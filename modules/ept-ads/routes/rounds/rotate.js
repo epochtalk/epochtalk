@@ -26,7 +26,8 @@ module.exports = {
   handler: function(request, reply) {
     var round = request.payload.round;
     var promise = db.rounds.rotate(round)
-    .error(function(err) { return Boom.badRequest(err.message); });
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

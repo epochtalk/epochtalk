@@ -57,7 +57,9 @@ module.exports = {
       sortDesc: request.query.desc,
       searchStr: request.query.search
     };
-    var promise = request.db.users.pagePublic(opts);
+    var promise = request.db.users.pagePublic(opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

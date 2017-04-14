@@ -42,7 +42,8 @@ module.exports = {
       boards.forEach(function(board) { names.push(board.name); });
       request.route.settings.plugins.mod_log.metadata = { names: names.join(', ') };
       return boards;
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

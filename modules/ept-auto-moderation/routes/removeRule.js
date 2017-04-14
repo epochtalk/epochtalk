@@ -27,7 +27,9 @@ module.exports = {
   handler: function(request, reply) {
     var ruleId = request.params.id;
     var promise = db.removeRule(ruleId)
-    .tap(function() { autoModerator.removeRule(ruleId); });
+    .tap(function() { autoModerator.removeRule(ruleId); })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
