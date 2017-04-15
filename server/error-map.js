@@ -1,35 +1,30 @@
 var Boom = require('boom');
 
+const INTERNAL = 500;
+const NOT_FOUND = 404;
+
 var errorMap = {
-  'IntegrityContraintViolationError': Boom.badImplementation,
-  'RestrictViolationError': Boom.badImplementation,
-  'NotNullViolationError': Boom.badImplementation,
-  'ForeignKeyViolationError': Boom.badImplementation,
-  'UniqueViolationError': Boom.badImplementation,
-  'CheckViolationError': Boom.badImplementation,
-  'ExclusionViolationError': Boom.badImplementation,
-  'CreationError': Boom.badImplementation,
-  'DeletionError': Boom.badImplementation,
-  'ConflictError': Boom.badImplementation,
-  'NotFoundError': Boom.notFound
+  'IntegrityContraintViolationError': INTERNAL,
+  'RestrictViolationError': INTERNAL,
+  'NotNullViolationError': INTERNAL,
+  'ForeignKeyViolationError': INTERNAL,
+  'UniqueViolationError': INTERNAL,
+  'CheckViolationError': INTERNAL,
+  'ExclusionViolationError': INTERNAL,
+  'CreationError': INTERNAL,
+  'DeletionError': INTERNAL,
+  'ConflictError': INTERNAL,
+  'NotFoundError': NOT_FOUND
 };
 
 module.exports = {
   toHttpError: function(error) {
-    var errType = errorMap[error.name];
-
-    var boomErr;
-    if (errType) {
-     boomErr = errType(null, error);
-
-     // Update boom error message
-     boomErr.output.payload.message = error.message || boomErr.output.payload.message;
+    var errCode = errorMap[error.name];
+    var boomErr = Boom.wrap(error, errCode);
+    // Pass error message if coming from our custom errors
+    if (errCode) {
+      boomErr.output.payload.message = error.message || boomErr.output.payload.message;
     }
-    else { boomErr = Boom.badImplementation(null, error); }
-
-    // Copy stack from original error
-    boomErr.stack = error.stack;
-
     return boomErr;
   }
 };
