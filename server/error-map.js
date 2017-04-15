@@ -21,10 +21,7 @@ module.exports = {
   toHttpError: function(error) {
     var errCode = errorMap[error.name];
     var boomErr = Boom.wrap(error, errCode);
-    // Pass error message if coming from our custom errors
-    if (errCode) {
-      boomErr.output.payload.message = error.message || boomErr.output.payload.message;
-    }
+    boomErr.output.payload.message = error.message || boomErr.output.payload.message;
     return boomErr;
   }
 };
