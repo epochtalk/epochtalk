@@ -54,6 +54,8 @@ function processing(request, reply) {
       threads: threads,
       recent: recent
     };
-  });
+  })
+  .error(request.errorMap.toHttpError);
+
   return reply(promise);
 }

@@ -54,7 +54,8 @@ module.exports = {
     // create each board
     var promise = Promise.map(request.payload, function(board) {
       return request.db.boards.create(board);
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

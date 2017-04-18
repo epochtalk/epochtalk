@@ -25,7 +25,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var factoid = request.payload;
-    var promise = db.factoids.create(factoid);
+    var promise = db.factoids.create(factoid)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

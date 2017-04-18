@@ -98,7 +98,8 @@ module.exports = {
         ad.displayHtml = ad.html.replace('${hash}', randomHash);
         return ad;
       });
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

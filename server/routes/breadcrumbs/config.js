@@ -76,6 +76,6 @@ exports.byType = {
     // Build the breadcrumbs and reply
     return buildCrumbs(request.query.id, request.query.type, [])
     .then(function(breadcrumbs) { reply(breadcrumbs.reverse()); })
-    .catch(function(err) { reply(Boom.badImplementation(err));});
+    .error(request.errorMap.toHttpError);
   }
 };

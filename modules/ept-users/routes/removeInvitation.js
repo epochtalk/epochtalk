@@ -27,7 +27,9 @@ module.exports = {
     // remove invitation
     var email = request.payload.email;
     var promise = request.db.users.removeInvite(email)
-    .then(function() { return { message: 'Invitation Removed.' }; });
+    .then(function() { return { message: 'Invitation Removed.' }; })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

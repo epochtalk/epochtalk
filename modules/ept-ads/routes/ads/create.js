@@ -31,7 +31,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var ad = request.payload;
-    var promise = db.ads.create(ad);
+    var promise = db.ads.create(ad)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

@@ -79,7 +79,9 @@ module.exports = {
       });
     })
     // builds token, saves session, returns request output
-    .then(request.session.save);
+    .then(request.session.save)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

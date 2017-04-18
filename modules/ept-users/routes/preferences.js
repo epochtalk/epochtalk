@@ -25,7 +25,8 @@ module.exports = {
 
     // get user's preferences`
     var promise = request.db.users.preferences(userId)
-    .then(function(user) { return user; });
+    .then(function(user) { return user; })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

@@ -70,7 +70,8 @@ module.exports = {
         },
         analytics: views
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

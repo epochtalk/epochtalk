@@ -54,7 +54,9 @@ module.exports = {
   handler: function(request, reply) {
     var rule = request.payload;
     var promise = db.addRule(rule)
-    .tap(function(rule) { autoModerator.addRule(rule); });
+    .tap(function(rule) { autoModerator.addRule(rule); })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

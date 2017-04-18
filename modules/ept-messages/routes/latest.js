@@ -43,7 +43,9 @@ module.exports = {
         page: opts.page,
         limit: opts.limit
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

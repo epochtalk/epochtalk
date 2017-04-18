@@ -17,6 +17,9 @@ exports.page = {
     }
   },
   handler: function(request, reply) {
-    return reply(request.db.moderationLogs.page(request.query));
+    var promise = request.db.moderationLogs.page(request.query)
+    .error(request.errorMap.toHttpError);
+
+    return reply(promise);
   }
 };

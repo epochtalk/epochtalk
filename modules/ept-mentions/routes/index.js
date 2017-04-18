@@ -38,7 +38,9 @@ function processing(request, reply) {
     page: request.query.page,
     extended: request.query.extended
   };
-  var promise = request.db.mentions.page(mentioneeId, opts);
+  var promise = request.db.mentions.page(mentioneeId, opts)
+  .error(request.errorMap.toHttpError);
+
   return reply(promise);
 }
 
@@ -61,7 +63,9 @@ var remove = {
         data: { action: 'refreshMentions' }
       };
       request.server.plugins.notifications.systemNotification(notification);
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -85,7 +89,9 @@ var pageIgnoredUsers = {
       limit: request.query.limit,
       page: request.query.page
     };
-    var promise = request.db.mentions.pageIgnoredUsers(userId, opts);
+    var promise = request.db.mentions.pageIgnoredUsers(userId, opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -105,7 +111,8 @@ var ignoreUser = {
     .then(function(user) {
       return request.db.mentions.ignoreUser(userId, user.id);
     })
-    .catch(function() { return Boom.badRequest('Invalid Username'); });
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -127,10 +134,11 @@ var unignoreUser = {
       .then(function(user) {
         return request.db.mentions.unignoreUser(userId, user.id);
       })
-      .catch(function() { return Boom.badRequest('Invalid Username'); });
+      .error(request.errorMap.toHttpError);
     }
     else { // unignore all
-      promise = request.db.mentions.unignoreUser(userId);
+      promise = request.db.mentions.unignoreUser(userId)
+      .error(request.errorMap.toHttpError);
     }
     return reply(promise);
   }

@@ -91,7 +91,8 @@ function processing(request, reply) {
     user.roles = user.roles.map(function(role) { return role.lookup; });
     if (user.roles.length < 1) { user.roles.push('user'); }
     return user;
-  });
+  })
+  .error(request.errorMap.toHttpError);
 
   return reply(promise);
 }

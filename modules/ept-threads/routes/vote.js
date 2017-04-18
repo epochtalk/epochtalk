@@ -48,7 +48,8 @@ module.exports = {
         poll.hasVoted = voted;
         return poll;
       });
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

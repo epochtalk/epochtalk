@@ -47,7 +47,8 @@ module.exports = {
     // update each board
     var promise = Promise.map(request.payload, function(board) {
       return request.db.boards.update(board);
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

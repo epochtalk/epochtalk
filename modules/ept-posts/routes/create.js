@@ -56,7 +56,9 @@ function processing(request, reply) {
   // create the post in db
   var promise = request.db.posts.create(newPost)
   // handle any image references
-  .then((post) => { return request.imageStore.createImageReferences(post); });
+  .then((post) => { return request.imageStore.createImageReferences(post); })
+  .error(request.errorMap.toHttpError);
+
   return reply(promise);
 }
 

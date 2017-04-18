@@ -19,7 +19,9 @@ module.exports = {
       limit: request.query.limit
     };
 
-    var promise = request.db.ignoreUsers.ignored(userId, opts);
+    var promise = request.db.ignoreUsers.ignored(userId, opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

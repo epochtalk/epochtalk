@@ -25,7 +25,8 @@ module.exports = {
     pre: [ { method: 'auth.posts.delete(server, auth, params.id)'} ],
     handler: function(request, reply) {
       var promise = request.db.posts.undelete(request.params.id)
-      .error(function(err) { return Boom.badRequest(err.message); });
+      .error(request.errorMap.toHttpError);
+
       return reply(promise);
     }
   }

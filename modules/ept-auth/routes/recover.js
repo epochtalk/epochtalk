@@ -90,7 +90,9 @@ module.exports = {
       };
       request.server.log('debug', emailParams);
       return request.emailer.send('recoverAccount', emailParams);
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

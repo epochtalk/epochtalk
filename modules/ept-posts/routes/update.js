@@ -54,6 +54,8 @@ function processing(request, reply) {
   updatePost.id = request.params.id;
   var promise = request.db.posts.update(updatePost)
   // handle image references
-  .then((post) => { return request.imageStore.updateImageReferences(post); });
+  .then((post) => { return request.imageStore.updateImageReferences(post); })
+  .error(request.errorMap.toHttpError);
+
   return reply(promise);
 }

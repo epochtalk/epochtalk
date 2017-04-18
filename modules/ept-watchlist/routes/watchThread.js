@@ -24,7 +24,9 @@ module.exports = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var threadId = request.params.id;
-    var promise = request.db.watchlist.watchThread(userId, threadId);
+    var promise = request.db.watchlist.watchThread(userId, threadId)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

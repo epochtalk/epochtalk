@@ -49,6 +49,7 @@ function processing(request, reply) {
   var promise = request.db.posts.find(id)
   .then(function(post) { return common.cleanPosts(post, userId, viewDeleted); })
   .then(function(posts) { return posts[0]; })
-  .error(function(err) { return Boom.badRequest(err.message); });
+  .error(request.errorMap.toHttpError);
+
   return reply(promise);
 }

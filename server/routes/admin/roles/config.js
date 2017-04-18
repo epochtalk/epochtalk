@@ -19,7 +19,9 @@ exports.all = {
   plugins: { acls: 'adminRoles.all' },
   handler: function(request, reply) {
     var promise = request.db.roles.all()
-    .then((roles) => { return { roles: roles, layouts: request.roleLayouts }; });
+    .then((roles) => { return { roles: roles, layouts: request.roleLayouts }; })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -71,7 +73,9 @@ exports.users = {
         user.roles = user.roles.map(function(role) { return role.lookup; });
       });
       return userData;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -130,12 +134,8 @@ exports.add = {
       request.rolesAPI.addRole(role);
       return result;
     })
-    .catch(function(err) {
-      if (err.cause && err.cause.code === '23505') {
-        return Boom.badRequest('Role name must be unique.');
-      }
-      else { return Boom.badImplementation(err); }
-    });
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -179,13 +179,13 @@ exports.update = {
       description: Joi.string().min(1).max(1000).required(),
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
       highlight_color: Joi.string(),
-      lookup: Joi.string().required(),
       permissions: Joi.object().required()
     }
   },
   pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
   handler: function(request, reply) {
     var role = request.payload;
+    role.lookup = role.id;
     var promise = request.db.roles.update(role)
     .tap(function(dbRole) {
       var roleClone = _.cloneDeep(dbRole);
@@ -201,12 +201,8 @@ exports.update = {
       request.rolesAPI.updateRole(role);
       return result;
     })
-    .catch(function(err) {
-      if (err.cause && err.cause.code === '23505') {
-        return Boom.badRequest('Role name must be unique.');
-      }
-      else { return Boom.badImplementation(err); }
-    });
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -251,7 +247,9 @@ exports.remove = {
       // Remove deleted role from in memory object
       request.rolesAPI.deleteRole(id);
       return result;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -289,7 +287,9 @@ exports.reprioritize = {
       // update priorities for in memory roles object
       request.rolesAPI.reprioritizeRoles(roles);
       return result;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -300,7 +300,9 @@ exports.priorities = {
   validate: { payload: { user_id: Joi.string().required() } },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
-    var promise = request.db.roles.priorities(userId);
+    var promise = request.db.roles.priorities(userId)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

@@ -53,7 +53,9 @@ module.exports = {
         boards: boards,
         hasMoreBoards: hasMoreBoards
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

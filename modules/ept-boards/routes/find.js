@@ -28,7 +28,8 @@ module.exports = {
     var boardId = request.params.id;
     var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
 
-    var promise = request.db.boards.find(boardId, userPriority);
+    var promise = request.db.boards.find(boardId, userPriority)
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

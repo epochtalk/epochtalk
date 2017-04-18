@@ -67,7 +67,8 @@ module.exports = {
         page_count: Math.ceil(count / opts.limit),
         desc: opts.desc
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

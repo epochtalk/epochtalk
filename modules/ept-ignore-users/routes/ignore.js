@@ -16,7 +16,7 @@ module.exports = {
     .then(function() { return { userId: ignoreUserId, ignored: true }; })
     .error(function(err) {
       if (err.constraint) { return {}; }
-      throw err;
+      return request.errorMap.toHttpError(err);
     });
 
     return reply(promise);

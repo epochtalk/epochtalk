@@ -23,7 +23,9 @@ module.exports = {
     pre: [ { method: auth } ]
   },
   handler: function(request, reply) {
-    var promise = db.rules();
+    var promise = db.rules()
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

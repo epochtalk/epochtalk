@@ -49,7 +49,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var reportNote = Object.assign({}, request.payload);
-    var promise = request.db.reports.updateUserReportNote(reportNote);
+    var promise = request.db.reports.updateUserReportNote(reportNote)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

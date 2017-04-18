@@ -60,7 +60,9 @@ module.exports = {
       }
 
       return payload;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

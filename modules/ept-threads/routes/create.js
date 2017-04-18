@@ -86,7 +86,9 @@ function processing(request, reply) {
     }
   })
   // create the first post in this thread
-  .then(function() { return request.db.posts.create(newPost); });
+  .then(function() { return request.db.posts.create(newPost); })
+  .error(request.errorMap.toHttpError);
+
   return reply(promise);
 }
 

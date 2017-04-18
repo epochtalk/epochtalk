@@ -32,7 +32,9 @@ module.exports = {
   handler: function(request, reply) {
     var ad = request.payload;
     ad.id = request.params.id;
-    var promise = db.ads.edit(ad);
+    var promise = db.ads.edit(ad)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

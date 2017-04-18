@@ -52,7 +52,9 @@ module.exports = {
   handler: function(request, reply) {
     var options = request.payload;
     options.id = request.params.pollId;
-    var promise = request.db.polls.update(options);
+    var promise = request.db.polls.update(options)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

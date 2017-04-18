@@ -76,7 +76,8 @@ function processing(request, reply) {
       posts: common.cleanPosts(posts, userId, viewables),
       count: count
     };
-  });
+  })
+  .error(request.errorMap.toHttpError);
 
   return reply(promise);
 }

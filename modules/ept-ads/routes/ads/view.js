@@ -78,7 +78,8 @@ module.exports = {
     .then(function(ad) {
       ad.disclaimer = adText.getDisclaimer();
       return ad;
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

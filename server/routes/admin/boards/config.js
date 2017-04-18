@@ -15,7 +15,9 @@ exports.categories = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.categories' },
   handler: function(request, reply) {
-    var promise =  request.db.boards.allCategories();
+    var promise =  request.db.boards.allCategories()
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -35,7 +37,10 @@ exports.boards = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.boards' },
   handler: function(request, reply) {
-    return reply(request.db.boards.all());
+    var promise = request.db.boards.all()
+    .error(request.errorMap.toHttpError);
+
+    return reply(promise);
   }
 };
 
@@ -54,7 +59,10 @@ exports.moveBoards = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminBoards.moveBoards' },
   handler: function(request, reply) {
-    return reply(request.db.boards.allSelect());
+    var promise = request.db.boards.allSelect()
+    .error(request.errorMap.toHttpError);
+
+    return reply(promise);
   }
 };
 
@@ -89,7 +97,9 @@ exports.updateCategories = {
   handler: function(request, reply) {
     // update board on db
     var boardMapping = request.payload.boardMapping;
-    var promise = request.db.boards.updateCategories(boardMapping);
+    var promise = request.db.boards.updateCategories(boardMapping)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

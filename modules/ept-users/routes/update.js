@@ -124,7 +124,8 @@ module.exports = {
     .then(function(user) {
       return request.session.updateUserInfo(user)
       .then(function() { return user; });
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

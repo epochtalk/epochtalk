@@ -47,7 +47,9 @@ module.exports = {
         threads: threads,
         hasMoreThreads: hasMoreThreads
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
