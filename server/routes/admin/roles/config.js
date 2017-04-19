@@ -1,6 +1,5 @@
 var Joi = require('joi');
 var _ = require('lodash');
-var Boom = require('boom');
 
 /**
   * @apiVersion 0.4.0
@@ -10,7 +9,14 @@ var Boom = require('boom');
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Retrieve all role.
   *
-  * @apiSuccess {array} roles An array of all the roles.
+  * @apiSuccess {object[]} roles An array of all the roles.
+  * @apiSuccess {string} roles.id The unique id of the role
+  * @apiSuccess {string} roles.name The name of the role
+  * @apiSuccess {string} roles.description The description of the role
+  * @apiSuccess {string} roles.lookup A unique identifier for the role
+  * @apiSuccess {number{0..n}} roles.priority The priority of the role, with 0 being the highest priority
+  * @apiSuccess {string} roles.highlight_color An html hex value color used to highlight users based on their role
+  * @apiSuccess {object} permissions An object containing all this roles permissions
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the roles.
   */
@@ -42,9 +48,10 @@ exports.all = {
   * @apiSuccess {object} userData An object containing user data.
   * @apiSuccess {object[]} userData.users An array holding users with this role
   * @apiSuccess {string} userData.users.id The id of the user
-  * @apiSuccess {string} userData.users.user The The username of the user
+  * @apiSuccess {string} userData.users.username The The username of the user
   * @apiSuccess {string} userData.users.email The email of the user
-  * @apiSuccess {number} userData.count The total number of users within this role. Used for paging
+  * @apiSuccess {string[]} userData.users.roles An array containing the lookups values of all the roles this user has
+  * @apiSuccess {number} userData.users.priority The user's highest role priority
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the user data.
   */
@@ -218,6 +225,7 @@ exports.update = {
   * @apiParam (Params) {string} role_id The id of the role to remove.
   *
   * @apiSuccess {string} id The unique id of the removed role.
+  * @apiSuccess {string} name The name of the removed role.
   *
   * @apiError (Error 500) InternalServerError There was an issue removing the role.
   */
@@ -262,7 +270,8 @@ exports.remove = {
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Reprioritizes all roles.
   *
-  * @apiParam (Payload) {Array} roles with new priorities.
+  * @apiParam (Payload) {string} roles.id The id of the role
+  * @apiParam (Payload) {string} roles.priority The updated priorty of the role
   *
   * @apiSuccess {object} STATUS 200 OK
   *
@@ -288,19 +297,6 @@ exports.reprioritize = {
       request.rolesAPI.reprioritizeRoles(roles);
       return result;
     })
-    .error(request.errorMap.toHttpError);
-
-    return reply(promise);
-  }
-};
-
-exports.priorities = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.all' },
-  validate: { payload: { user_id: Joi.string().required() } },
-  handler: function(request, reply) {
-    var userId = request.payload.user_id;
-    var promise = request.db.roles.priorities(userId)
     .error(request.errorMap.toHttpError);
 
     return reply(promise);

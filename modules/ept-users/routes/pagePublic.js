@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Users
-  * @api {GET} /search/users (Admin) Page Users
+  * @api {GET} /search/users Page Users
   * @apiName PageUsersPublic
   * @apiPermission User
   * @apiDescription This allows users to page through all registered users.
@@ -17,12 +17,12 @@ var Joi = require('joi');
   *
   * @apiSuccess {object} pageData An object containing users and query options
   * @apiSuccess {string} pageData.field The field the results are sorted by
-  * @apiSuccess {string} pageData.desc The order the results are sorted in
-  * @apiSuccess {string} pageData.page The current page of the results
-  * @apiSuccess {string} pageData.page_count Total number of pages in results
+  * @apiSuccess {boolean} pageData.desc The order the results are sorted in
+  * @apiSuccess {number} pageData.page The current page of the results
+  * @apiSuccess {number} pageData.page_count Total number of pages in results
   * @apiSuccess {string} pageData.search The search term used in query
-  * @apiSuccess {string} pageData.limit The number of results returned per page
-  * @apiSuccess {string} pageData.count The total number of results
+  * @apiSuccess {number} pageData.limit The number of results returned per page
+  * @apiSuccess {number} pageData.count The total number of results
   * @apiSuccess {object[]} pageData.users An array of user objects
   * @apiSuccess {string} pageData.users.id The unique id of the user
   * @apiSuccess {string} pageData.users.username The username of the user

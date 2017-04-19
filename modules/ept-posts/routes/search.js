@@ -2,34 +2,36 @@ var Joi = require('joi');
 
 /**
   * @apiVersion 0.4.0
-  * @apiGroup Users
-  * @api {GET} /search/users (Admin) Page Users
-  * @apiName PageUsersPublic
+  * @apiGroup Posts
+  * @api {GET} /search/posts Search Posts
+  * @apiName PostsSearch
   * @apiPermission User
-  * @apiDescription This allows users to page through all registered users.
+  * @apiDescription This allows users to search forum posts.
   *
-  * @apiParam (Query) {number{1..n}} [page=1] The page of registered users to retrieve
-  * @apiParam (Query) {number{1..n}} [limit=25] The number of users to retrieve per page
-  * @apiParam (Query) {string="username","role","created_at","post_count"} [field=username] The db field to sort the results by
-  * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results
-  * in descending order
-  * @apiParam (Query) {string} [search] Username to search for
+  * @apiParam (Query) {number{1..n}} [page=1] The page of search results to retrieve
+  * @apiParam (Query) {number{1..100}} [limit=25] The number of search results per page
+  * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results in descending order
+  * @apiParam (Query) {string} [search] The term to search posts for
   *
-  * @apiSuccess {object} pageData An object containing users and query options
-  * @apiSuccess {string} pageData.field The field the results are sorted by
-  * @apiSuccess {string} pageData.desc The order the results are sorted in
+  * @apiSuccess {object} pageData An object containing posts and query options
+  * @apiSuccess {number} pageData.limit The number of results returned per page
   * @apiSuccess {string} pageData.page The current page of the results
-  * @apiSuccess {string} pageData.page_count Total number of pages in results
-  * @apiSuccess {string} pageData.search The search term used in query
-  * @apiSuccess {string} pageData.limit The number of results returned per page
-  * @apiSuccess {string} pageData.count The total number of results
-  * @apiSuccess {object[]} pageData.users An array of user objects
-  * @apiSuccess {string} pageData.users.id The unique id of the user
-  * @apiSuccess {string} pageData.users.username The username of the user
-  * @apiSuccess {string} pageData.users.role The role of the user
-  * @apiSuccess {timestamp} pageData.users.created_at Timestamp of when the user was created
-  * @apiSuccess {timestamp} pageData.users.post_count The number of posts this user has made
-  * @apiSuccess {timestamp} pageData.users.avatar The user's avatar
+  * @apiSuccess {number} pageData.desc The order the results are sorted in
+  * @apiSuccess {string} pageData.search The search term used in query for posts
+  * @apiSuccess {number} pageData.next The number of the next page of search results
+  * @apiSuccess {number} pageData.prev The number of the previous page of search results
+  * @apiSuccess {object[]} pageData.posts An array of post objects
+  * @apiSuccess {string} pageData.posts.id The unique id of the post
+  * @apiSuccess {string} pageData.posts.thread_title The title of the thread the post belongs to
+  * @apiSuccess {string} pageData.posts.user_id The id of the author of the post
+  * @apiSuccess {timestamp} pageData.posts.created_at Timestamp of when the post was created
+  * @apiSuccess {string} pageData.posts.thread_id The id of the thread the post belongs to
+  * @apiSuccess {number} pageData.posts.position The position of the post within the thread
+  * @apiSuccess {string} pageData.posts.body The body of the post
+  * @apiSuccess {string} pageData.posts.board_id The id of the board the post belongs to
+  * @apiSuccess {string} pageData.posts.board_name The name of the board the post belongs to
+  * @apiSuccess {string} pageData.posts.user User object containing info about user who made post
+  * @apiSuccess {string} pageData.posts.user.username Username of the user who made the post
   *
   * @apiError (Error 500) InternalServerError There was error retrieving the users
   */
