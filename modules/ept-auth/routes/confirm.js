@@ -13,13 +13,16 @@ var Promise = require('bluebird');
   * @apiParam (Payload) {string} username User's unique username.
   * @apiParam (Payload) {string} token User's confirmation token.
   *
-  * @apiSuccess {string} token User's authentication token
+  * @apiSuccess {string} token User's unique session token
   * @apiSuccess {string} id User's unique id
+  * @apiSuccess {string} username User's username
   * @apiSuccess {string} avatar User's avatar url
-  * @apiSuccess {array} roles Array of user's roles
+  * @apiSuccess {string[]} roles Array of user's roles lookup strings
+  * @apiSuccess {string[]} moderating Array of user's moderatered board ids
+  * @apiSuccess {object} permissions Object containing user's permissions
   *
   * @apiError BadRequest Account was not found or confirmation token doesn't match
-  * @apiError (Error 500) InternalServerError There was an issue looking up the user in the db
+  * @apiError (Error 500) InternalServerError There was an issue confirming the user account
   */
 module.exports = {
   method: 'POST',

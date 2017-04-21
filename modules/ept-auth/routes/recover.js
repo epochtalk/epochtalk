@@ -12,10 +12,12 @@ var Promise = require('bluebird');
   * @apiDescription Used to recover an account by username or email. Sends an email with
   * a URL to visit to reset the user's account password.
   *
-  * @apiParam {string} query The email or username to attempt to recover
+  * @apiParam (Payload) {string} query The email or username to attempt to recover
+  * @apiParam (Payload) {string} recaptcha The recaptcha token
   *
   * @apiSuccess {boolean} success true if recovery email is sent
-  * @apiError BadRequest The username or email is not found
+  * @apiError (Error 400) BadRequest Recaptcha not submitted
+  * @apiError (Error 400) BadRequest The username or email is not found
   * @apiError (Error 500) InternalServerError There was an error updating the user account's reset token information
   */
 module.exports = {
