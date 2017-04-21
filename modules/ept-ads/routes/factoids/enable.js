@@ -15,6 +15,20 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {PUT} /ads/factoids/:id/enable Enable Factoid
+  * @apiName EnableFactoidsAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to enable factoids
+  *
+  * @apiParam {string} id The unique id of the factoid to enable, pass 'all' in to enable all factoids
+  *
+  * @apiSuccess {Object} Sucess 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was error enabling the factoid
+  */
 module.exports = {
   method: 'PUT',
   path: '/api/ads/factoids/{id}/enable',

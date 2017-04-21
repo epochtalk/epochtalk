@@ -14,6 +14,18 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {POST} /ads/rounds Create Ad Round
+  * @apiName CreateRoundAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to create a new ad round
+  *
+  * @apiSuccess {number} round The number of the round which was created
+  *
+  * @apiError (Error 500) InternalServerError There was error creating the ad round
+  */
 module.exports = {
   method: 'POST',
   path: '/api/ads/rounds',
