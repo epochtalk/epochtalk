@@ -3,7 +3,7 @@ var Boom = require('boom');
 var Promise = require('bluebird');
 
 /**
-  * @api {POST} /invitation/register Register (via invitation)
+  * @api {POST} /join Register (via invitation)
   * @apiName InvitationRegister
   * @apiGroup Auth
   * @apiVersion 0.4.0
