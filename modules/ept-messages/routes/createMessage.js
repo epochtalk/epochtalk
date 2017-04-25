@@ -2,23 +2,16 @@ var Joi = require('joi');
 var _ = require('lodash');
 
 /**
-  * @apiDefine MessageObjectSuccess
-  * @apiSuccess {string} id The unique id of the message
-  * @apiSuccess {string} conversation_id The unique id of the conversation this message belongs to
-  * @apiSuccess {string} sender_id The unique id of the user that sent this message
-  * @apiSuccess {string} receiver_id The unique id of the user that sent this message
-  * @apiSuccess {string} body The contents of this message
-  * @apiSuccess {boolean} viewed The flag showing if the receiver viewed this message
-  * @apiSuccess {timestamp} created_at Timestamp of when the conversation was created
-  */
-
-/**
   * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {POST} /messages Create
   * @apiName CreateMessage
   * @apiPermission User
   * @apiDescription Used to create a new message.
+  *
+  * @apiParam (Payload) {string} conversation_id The id of the conversation the message should be created in
+  * @apiParam (Payload) {string} receiver_id The id of the user receiving the message/conversation
+  * @apiParam (Payload) {string} body The content of the message/conversation
   *
   * @apiUse MessageObjectSuccess
   *
