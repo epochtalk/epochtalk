@@ -42,23 +42,23 @@
     "namespace": "ept:",
     "get": {
       "interval": 1000,
-      "maxInInterval": 1000,
-      "minDifference": 0
+      "maxInInterval": 10,
+      "minDifference": 50
     },
     "post": {
       "interval": 1000,
-      "maxInInterval": 1000,
-      "minDifference": 0
+      "maxInInterval": 2,
+      "minDifference": 500
     },
     "put": {
       "interval": 1000,
-      "maxInInterval": 1000,
-      "minDifference": 0
+      "maxInInterval": 2,
+      "minDifference": 500
     },
     "delete": {
       "interval": 1000,
-      "maxInInterval": 1000,
-      "minDifference": 0
+      "maxInInterval": 2,
+      "minDifference": 500
     }
   },
   "portal": {
