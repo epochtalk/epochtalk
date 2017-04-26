@@ -33,7 +33,14 @@ exports.expose = function(emailer) {
 
 function init() {
   emailerConfig = options.config.emailer;
-  if (emailerConfig.transporter === 'ses') {
+  if (emailerConfig.maildev) {
+    transporter = nodemailer.createTransport({
+      host: emailerConfig.host,
+      port: emailerConfig.port,
+      ignoreTLS: true
+    });
+  }
+  else if (emailerConfig.transporter === 'ses') {
     transporter = nodemailer.createTransport(ses({
       accessKeyId: emailerConfig.ses.accessKey,
       secretAccessKey: emailerConfig.ses.secretKey,
