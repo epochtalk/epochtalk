@@ -13,25 +13,24 @@ var Joi = require('joi');
   * @apiParam (Query) {boolean} [desc=false] Boolean indicating whether or not to sort the results in descending order
   * @apiParam (Query) {string} [search] The term to search posts for
   *
-  * @apiSuccess {object} pageData An object containing posts and query options
-  * @apiSuccess {number} pageData.limit The number of results returned per page
-  * @apiSuccess {string} pageData.page The current page of the results
-  * @apiSuccess {number} pageData.desc The order the results are sorted in
-  * @apiSuccess {string} pageData.search The search term used in query for posts
-  * @apiSuccess {number} pageData.next The number of the next page of search results
-  * @apiSuccess {number} pageData.prev The number of the previous page of search results
-  * @apiSuccess {object[]} pageData.posts An array of post objects
-  * @apiSuccess {string} pageData.posts.id The unique id of the post
-  * @apiSuccess {string} pageData.posts.thread_title The title of the thread the post belongs to
-  * @apiSuccess {string} pageData.posts.user_id The id of the author of the post
-  * @apiSuccess {timestamp} pageData.posts.created_at Timestamp of when the post was created
-  * @apiSuccess {string} pageData.posts.thread_id The id of the thread the post belongs to
-  * @apiSuccess {number} pageData.posts.position The position of the post within the thread
-  * @apiSuccess {string} pageData.posts.body The body of the post
-  * @apiSuccess {string} pageData.posts.board_id The id of the board the post belongs to
-  * @apiSuccess {string} pageData.posts.board_name The name of the board the post belongs to
-  * @apiSuccess {string} pageData.posts.user User object containing info about user who made post
-  * @apiSuccess {string} pageData.posts.user.username Username of the user who made the post
+  * @apiSuccess {number} limit The number of results returned per page
+  * @apiSuccess {string} page The current page of the results
+  * @apiSuccess {number} desc The order the results are sorted in
+  * @apiSuccess {string} search The search term used in query for posts
+  * @apiSuccess {number} next The number of the next page of search results
+  * @apiSuccess {number} prev The number of the previous page of search results
+  * @apiSuccess {object[]} posts An array of post objects
+  * @apiSuccess {string} posts.id The unique id of the post
+  * @apiSuccess {string} posts.thread_title The title of the thread the post belongs to
+  * @apiSuccess {string} posts.user_id The id of the author of the post
+  * @apiSuccess {timestamp} posts.created_at Timestamp of when the post was created
+  * @apiSuccess {string} posts.thread_id The id of the thread the post belongs to
+  * @apiSuccess {number} posts.position The position of the post within the thread
+  * @apiSuccess {string} posts.body The body of the post
+  * @apiSuccess {string} posts.board_id The id of the board the post belongs to
+  * @apiSuccess {string} posts.board_name The name of the board the post belongs to
+  * @apiSuccess {string} posts.user User object containing info about user who made post
+  * @apiSuccess {string} posts.user.username Username of the user who made the post
   *
   * @apiError (Error 500) InternalServerError There was error retrieving the users
   */

@@ -10,7 +10,8 @@ var Joi = require('joi');
   *
   * @apiParam {string} id The Id of the post to purge
   *
-  * @apiUse PostObjectSuccess
+  * @apiSuccess {string} user_id The id of the user who created the post
+  * @apiSuccess {string} thread_id The id of the thread that the post belonged to
   *
   * @apiError (Error 500) InternalServerError There was an issue purging the post
   */
