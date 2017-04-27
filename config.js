@@ -14,6 +14,7 @@ var config = {
   websocketAPIKey: process.env.WEBSOCKET_API_KEY,
   websocketSecure: process.env.WEBSOCKET_SECURE === 'true',
   emailer_env: {
+    maildev: process.env.EMAILER_MAILDEV === 'true',
     transporter: process.env.EMAILER_TRANSPORTER,
     ses: {
       region: process.env.EMAILER_SES_REGION,
