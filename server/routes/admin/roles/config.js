@@ -160,6 +160,7 @@ exports.add = {
   * @apiParam (Payload) {string} description The updated description of the role.
   * @apiParam (Payload) {string} priority The updated priorty of the role.
   * @apiParam (Payload) {string} [highlightColor] The updated highlight color.
+  * @apiParam (Payload) {string} lookup The lookup string of the role.
   * @apiParam (Payload) {Object} permissions The updated permission set.
   *
   * @apiSuccess {string} id The unique id of the updated role.
@@ -186,13 +187,13 @@ exports.update = {
       description: Joi.string().min(1).max(1000).required(),
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
       highlight_color: Joi.string(),
+      lookup: Joi.string().required(),
       permissions: Joi.object().required()
     }
   },
   pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
   handler: function(request, reply) {
     var role = request.payload;
-    role.lookup = role.id;
     var promise = request.db.roles.update(role)
     .tap(function(dbRole) {
       var roleClone = _.cloneDeep(dbRole);
