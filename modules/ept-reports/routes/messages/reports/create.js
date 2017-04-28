@@ -1,12 +1,11 @@
 var Joi = require('joi');
-var Boom = require('boom');
 
 /**
   * @apiVersion 0.4.0
   * @apiGroup Reports
   * @api {POST} /reports/messages Create Message Report
   * @apiName CreateMessageReport
-  * @apiPermission Users
+  * @apiPermission User
   * @apiDescription Used to report a private message for moderators/administrators to review.
   *
   * @apiParam (Payload) {string} reporter_user_id The unique id of the user initiating the report
@@ -22,7 +21,7 @@ var Boom = require('boom');
   * @apiSuccess {timestamp} created_at Timestamp of when the private message report was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the private message report was updated
   *
-  * @apiError (Error 500) InternalServerError There was an issue creating the private message report
+  * @apiError (Error 500) InternalServerError There was an issue reporting the message report
   */
 module.exports = {
   method: 'POST',
