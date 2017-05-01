@@ -9,12 +9,22 @@ var Promise = require('bluebird');
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User
   * @apiDescription Used to remove a vote in a poll.
   *
-  * @apiParam (Param) {string} id The unique id of the thread the poll is in.
-  * @apiParam (Param) {string} id The unique id of the poll to remove a vote from.
+  * @apiParam {string} id The unique id of the thread the poll is in.
+  * @apiParam {string} id The unique id of the poll to remove a vote from.
   *
-  * @apiUse ThreadObjectSuccess3
+  * @apiSuccess {string} id The unique id of the poll
+  * @apiSuccess {string} question The question asked in the poll
+  * @apiSuccess {object[]} answers The list of the answers to the question of this poll
+  * @apiSuccess {string} answers.answer The answer to the question of this poll
+  * @apiSuccess {string} answers.id The id of the answer
+  * @apiSuccess {number} answers.votes The number of votes for this answer
+  * @apiSuccess {number} max_answers The max number of answer per vote
+  * @apiSuccess {boolean} hasVoted Boolean indicating whether the user has voted
+  * @apiSuccess {boolean} change_vote Boolean indicating whether users can change their vote
+  * @apiSuccess {date} expiration The expiration date of the poll
+  * @apiSuccess {string} display_mode String indicating how the results are shown to users
   *
-  * @apiError Unauthorized User doesn't have permissions to vote in the poll
+  * @apiError (Error 401) Unauthorized User doesn't have permissions to vote in the poll
   * @apiError (Error 500) InternalServerError There was an issue removing a vote in the poll
   */
 module.exports = {

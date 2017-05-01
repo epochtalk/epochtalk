@@ -3,15 +3,15 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Threads
-  * @api {POST} /threads/:id Find
-  * @apiName FindThread
-  * @apiDescription Used to find an existing thread.
+  * @api {POST} /threads/:id Mark Thread Viewed
+  * @apiName ViewThread
+  * @apiDescription Used to mark a thread as viewed
   *
-  * @apiParam {string} id The unique id of the thread to find
+  * @apiParam {string} id The unique id of the thread to mark as viewed
   *
-  * @apiUse ThreadObjectSuccess2
+  * @apiSuccess {object} success 200 OK
   *
-  * @apiError (Error 500) InternalServerError There was an issue looking up the thread
+  * @apiError (Error 500) InternalServerError There was an issue marking the thread viewed
   */
 module.exports = {
   method: 'POST',

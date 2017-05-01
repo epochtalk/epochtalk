@@ -15,9 +15,13 @@ var Joi = require('joi');
   * @apiParam (Payload) {boolean} change_vote Boolean indicating whether users can change their vote.
   * @apiParam (Payload) {string} display_mode String indicating how the results are shown to users.
   *
-  * @apiUse ThreadObjectSuccess3
+  * @apiSuccess {string} id The unique id of the poll
+  * @apiSuccess {number} max_answers The max number of answer per vote
+  * @apiSuccess {boolean} change_vote Boolean indicating whether users can change their vote
+  * @apiSuccess {date} expiration The expiration date of the poll
+  * @apiSuccess {string} display_mode String indicating how the results are shown to users
   *
-  * @apiError Unauthorized User doesn't have permissions to edit the poll
+  * @apiError (Error 401) Unauthorized User doesn't have permissions to edit the poll
   * @apiError (Error 500) InternalServerError There was an issue editing the thread
   */
 module.exports = {

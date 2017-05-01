@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var Boom = require('boom');
 
 /**
   * @apiVersion 0.4.0
@@ -12,10 +11,10 @@ var Boom = require('boom');
   * @apiParam {string} id The unique id of the thread to move
   * @apiParam (Payload) {string} newBoardId The unique id of the board to move this thread into.
   *
-  * @apiUse ThreadObjectSuccess2
+  * @apiSuccess {string} id The id of the thread which was moved
+  * @apiSuccess {string} board_id The id of the board which the thread was moved to
   *
-  * @apiError BadRequest User attempted to move the thread to the same board it is already in
-  * @apiError Unauthorized User doesn't have permissions to move the thread
+  * @apiError (Error 401) Unauthorized User doesn't have permissions to move the thread
   * @apiError (Error 500) InternalServerError There was an issue moving the thread
   */
 module.exports = {

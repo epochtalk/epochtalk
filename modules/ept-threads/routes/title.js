@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var Boom = require('boom');
 
 /**
   * @apiVersion 0.4.0
@@ -12,9 +11,14 @@ var Boom = require('boom');
   * @apiParam {string} id The unique id of the thread to update
   * @apiParam (Payload) {string} The new title for this thread.
   *
-  * @apiUse ThreadObjectSuccess2
+  * @apiSuccess {string} id The unique id of the thread
+  * @apiSuccess {string} title The title of the thread
+  * @apiSuccess {string} body The thread's body with any markup tags converted and parsed into html elements
+  * @apiSuccess {string} raw_body The thread's body as it was entered in the editor by the user
+  * @apiSuccess {string} thread_id The unqiue id of the thread
+  * @apiSuccess {timestamp} updated_at Timestamp of when the thread was updated
   *
-  * @apiError Unauthorized User doesn't have permissions to update the thread title.
+  * @apiError (Error 401) Unauthorized User doesn't have permissions to update the thread title.
   * @apiError (Error 500) InternalServerError There was an issue updating the thread title.
   */
 module.exports = {

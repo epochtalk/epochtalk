@@ -9,11 +9,12 @@ var Joi = require('joi');
   * @apiDescription Used to sticky a thread. This will cause the thread to show up at the top of the board it's posted within.
   *
   * @apiParam {string} id The unique id of the thread to sticky
-  * @apiParam (Payload) {boolean} status=true Boolean indicating sticky status, true if stickied false if not.
+  * @apiParam (Payload) {boolean} [status=true] Boolean indicating sticky status, true if stickied false if not.
   *
-  * @apiUse ThreadObjectSuccess2
+  * @apiSuccess {string} id The id of the thread which was stickied
+  * @apiSuccess {boolean} sticky Boolean indicating if the thread is stickied
   *
-  * @apiError Unauthorized User doesn't have permissions to sticky the thread
+  * @apiError (Error 401) Unauthorized User doesn't have permissions to sticky the thread
   * @apiError (Error 500) InternalServerError There was an issue stickying the thread
   */
 module.exports = {

@@ -8,11 +8,29 @@ var Joi = require('joi');
   * @apiPermission User
   * @apiDescription Used to create a new thread.
   *
-  * @apiUse ThreadObjectPayload
-  * @apiParam (Payload) {object} smf Object containing SMF metadata
-  * @apiParam (Payload) {number} smf.ID_BOARD Legacy smf board id
-  * @apiParam (Payload) {number} smf.ID_TOPIC Legacy smf thread id
-  * @apiUse ThreadObjectSuccess
+  * @apiParam (Payload) {string} title The title of the thread
+  * @apiParam (Payload) {string} raw_body The thread's body as it was entered in the editor by the user
+  * @apiParam (Payload) {string} board_id The unique id of the board this thread is being created within
+  * @apiParam (Payload) {boolean} [locked=false] Boolean indicating whether the thread is locked or unlocked
+  * @apiParam (Payload) {boolean} [sticky=false] Boolean indicating whether the thread is stickied or not
+  * @apiParam (Payload) {boolean} [moderated=false] Boolean indicating whether the thread is self-moderated or not
+  * @apiParam (Payload) {object} poll Object containing poll data
+  * @apiParam (Payload) {number} [poll.max_answers=1] The max answers allowed for poll
+  * @apiParam (Payload) {timestamp} [poll.expiration] Timestamp of when the poll expires
+  * @apiParam (Payload) {boolean} [poll.change_vote=false] Boolean indicating if you can change your vote
+  * @apiParam (Payload) {string="always", "voted", "expired"} poll.display_mode Used for the UI display mode of the poll
+  * @apiParam (Payload) {string[]} questions An array of poll questions
+  * @apiParam (Payload) {string[]} answers An array of poll answers
+  *
+  * @apiSuccess {string} id The unqiue id of the post the thread is wrapping
+  * @apiSuccess {string} thread_id The unqiue id of the thread
+  * @apiSuccess {string} user_id The unique id of the user who created the thread
+  * @apiSuccess {string} title The title of the thread
+  * @apiSuccess {boolean} deleted Boolean indicating if the thread has been deleted
+  * @apiSuccess {boolean} locked Boolean indicating if the thread has been locked
+  * @apiSuccess {string} body The thread's body with any markup tags converted and parsed into html elements
+  * @apiSuccess {string} raw_body The thread's body as it was entered in the editor by the user
+  * @apiSuccess {timestamp} created_at Timestamp of when the thread was created
   *
   * @apiError (Error 500) InternalServerError There was an issue creating the thread
   */
@@ -91,52 +109,3 @@ function processing(request, reply) {
 
   return reply(promise);
 }
-
-/**
-  * @apiDefine ThreadObjectPayload
-  * @apiParam (Payload) {string} title The title of the thread
-  * @apiParam (Payload) {string} body The thread's body with any markup tags converted and parsed into html elements
-  * @apiParam (Payload) {string} raw_body The thread's body as it was entered in the editor by the user
-  * @apiParam (Payload) {string} board_id The unique id of the board this thread is being created within
-  * @apiParam (Payload) {boolean} locked=false Boolean indicating whether the thread is locked or unlocked
-  * @apiParam (Payload) {boolean} sticky=false Boolean indicating whether the thread is stickied or not
-  */
-
-/**
-  * @apiDefine ThreadObjectSuccess
-  * @apiSuccess {string} id The unqiue id of the post the thread is wrapping
-  * @apiSuccess {string} thread_id The unqiue id of the thread
-  * @apiSuccess {string} user_id The unique id of the user who created the thread
-  * @apiSuccess {string} title The title of the thread
-  * @apiSuccess {string} body The thread's body with any markup tags converted and parsed into html elements
-  * @apiSuccess {string} raw_body The thread's body as it was entered in the editor by the user
-  * @apiSuccess {timestamp} created_at Timestamp of when the thread was created
-  */
-
-/**
-  * @apiDefine ThreadObjectSuccess2
-  * @apiSuccess {string} id The unique id of the thread
-  * @apiSuccess {string} board_id The unique id of the board the thread belongs to
-  * @apiSuccess {string} title The title of the thread
-  * @apiSuccess {boolean} locked Boolean indicating whether or not the thread is locked
-  * @apiSuccess {boolean} sticky Boolean indicating whether or not the thread is stickied
-  * @apiSuccess {number} post_count The number of posts this thread contains
-  * @apiSuccess {object} user Object containing info about user who created the thread
-  * @apiSuccess {string} user.id The unique id of the user who created the thread
-  * @apiSuccess {string} user.username The username of the user who created the thread
-  * @apiSuccess {timestamp} created_at Timestamp of when the thread was created
-  * @apiSuccess {timestamp} updated_at Timestamp of when the thread was updated
-  */
-
-/**
-  * @apiDefine ThreadObjectSuccess3
-  * @apiSuccess {string} id The unique id of the poll
-  * @apiSuccess {string} question The question asked in the poll
-  * @apiSuccess {array} answers The list of the answers to the question of this poll
-  * @apiSuccess {boolean} locked Boolean indicating whether the poll is locked
-  * @apiSuccess {number} max_answers The max number of answer per vote
-  * @apiSuccess {boolean} change_vote Boolean indicating whether users can change their vote
-  * @apiSuccess {date} expiration The expiration date of the poll
-  * @apiSuccess {string} display_mode String indicating how the results are shown to users
-  * @apiSuccess {boolean} hasVoted Boolean indicating whether this user has voted
-  */
