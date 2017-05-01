@@ -3,14 +3,15 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Users
-  * @api {PUT} /users Update
+  * @api {PUT} /users/:id Update
   * @apiName UpdateUser
   * @apiPermission User (Users may update their own account)
   * @apiDescription Used to update user information such as profile fields, or passwords.
   *
-  * @apiParam (Payload) {string} id The user's unique id
+  * @apiParam {string} id The user's unique id
   * @apiParam (Payload) {string} [username] The user's username
   * @apiParam (Payload) {string} [email] The user's email
+  * @apiParam (Payload) {string} [emailPassword] The user's password used for updating email
   * @apiParam (Payload) {string} [old_password] The user's old password (used for changing password)
   * @apiParam (Payload) {string} [password] The user's new passowrd (used for changing password)
   * @apiParam (Payload) {string} [confirmation] The user's new password confirmation (used for changing password)
@@ -25,6 +26,9 @@ var Joi = require('joi');
   * @apiParam (Payload) {string} [raw_signature] The user's signature as it was entered in the editor by the user
   * @apiParam (Payload) {string} [signature] The user's signature with any markup tags converted and parsed into html elements
   * @apiParam (Payload) {string} [avatar] URL to the user's avatar
+  * @apiParam (Payload) {numbers} [posts_per_page] Preference for how many post to view per page
+  * @apiParam (Payload) {numbers} [threads_per_page] Preference for how many threads to view per page
+  * @apiParam (Payload) {string[]} [collapsed_categories] Array of category id's which the user has collapsed
   *
   * @apiSuccess {string} id The user's unique id
   * @apiSuccess {string} [username] The user's username
@@ -40,6 +44,9 @@ var Joi = require('joi');
   * @apiSuccess {string} [raw_signature] The user's signature as it was entered in the editor by the user
   * @apiSuccess {string} [signature] The user's signature with any markup tags converted and parsed into html elements
   * @apiSuccess {string} [avatar] URL to the user's avatar
+  * @apiSuccess {string[]} collapsed_categories Array containing id of categories the user collapsed
+  * @apiSuccess {number} posts_per_page Preference indicating the number of posts the user wants to view per page
+  * @apiSuccess {number} threads_per_page Preference indicating the number of threads the user wants to view per page
   *
   * @apiError BadRequest Occurs when resetting password and an invalid old password is provided
   * @apiError (Error 500) InternalServerError There was error updating the user

@@ -7,10 +7,16 @@ var Joi = require('joi');
   * @apiVersion 0.4.0
   * @apiDescription Used to page through current invitations.
   *
-  * @apiParam (Payload) {string} page=1 The page of invitations to bring back.
-  * @apiParam (Payload) {string} limit=25 The number of invitations to bring back.
+  * @apiParam (Payload) {string} [page=1] The page of invitations to bring back.
+  * @apiParam (Payload) {string} [limit=25] The number of invitations to bring back.
   *
-  * @apiSuccess {array} invitations An array containing invitations.
+  * @apiSuccess {number} page The page of invitations to return
+  * @apiSuccess {number} limit The number of invitations to return per page
+  * @apiSuccess {boolean} hasMore Boolean indicating if there are more results on the next page
+  * @apiSuccess {object[]} invitations An array containing invitations.
+  * @apiSuccess {string} invitations.email The email of the user who was invited
+  * @apiSuccess {string} invitations.hash The user's invite has
+  * @apiSuccess {timestamp} invitations.created_at The invite created at timestamp
   *
   * @apiError BadRequest There was an error paging invitations.
   */
