@@ -229,11 +229,12 @@ exports.deleteAddress = {
   * @apiDescription This allows Administrators and Moderators to ban users.
   *
   * @apiParam (Payload) {string} user_id The unique id of the user to ban
-  * @apiParam (Payload) {date} expiration The expiration date for the ban, when not defined ban is
-  * considered permanent
+  * @apiParam (Payload) {date} expiration The expiration date for the ban, when not defined ban is considered permanent
+  * @apiParam (Payload) {boolean=false} ip_ban Boolean indicating that the user should be ip banned as well, this will make it so they cannot register from any of their known ips for a new account
   *
   * @apiSuccess {string} id The unique id of the row in users.bans
   * @apiSuccess {string} user_id The unique id of the user being banned
+  * @apiSuccess {object[]} roles Array containing users roles
   * @apiSuccess {timestamp} expiration Timestamp of when the user's ban expires
   * @apiSuccess {timestamp} created_at Timestamp of when the ban was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the ban was last updated
@@ -310,6 +311,7 @@ exports.ban = {
   *
   * @apiSuccess {string} id The unique id of the row in users.bans
   * @apiSuccess {string} user_id The unique id of the user being unbanned
+  * @apiSuccess {object[]} roles Array containing users roles
   * @apiSuccess {timestamp} expiration Timestamp of when the user's ban expires (current timestamp)
   * @apiSuccess {timestamp} created_at Timestamp of when the ban was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the ban was last updated
@@ -366,7 +368,7 @@ exports.unban = {
   * @apiParam (Payload) {string[]} board_ids Array of board ids to ban the user from
   *
   * @apiSuccess {string} user_id The unique id of the user being banned from boards
-  * @apiSuccess {string} board_ids Array of board ids to ban the user from
+  * @apiSuccess {string[]} board_ids Array of board ids to ban the user from
   *
   * @apiError (Error 500) InternalServerError There was error banning the user from Boards
   * @apiError (Error 403) Forbidden User tried to ban from a board they do not moderate, or tried
@@ -420,7 +422,7 @@ exports.banFromBoards = {
   * @apiParam (Payload) {string[]} board_ids Array of board ids to unban the user from
   *
   * @apiSuccess {string} user_id The unique id of the user being unbanned from boards
-  * @apiSuccess {string} board_ids Array of board ids to unban the user from
+  * @apiSuccess {string[]} board_ids Array of board ids to unban the user from
   *
   * @apiError (Error 500) InternalServerError There was error unbanning the user from Boards
   * @apiError (Error 403) Forbidden User tried to unban from a board they do not moderate, or tried

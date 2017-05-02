@@ -10,6 +10,8 @@ var Joi = require('joi');
   * @apiParam {string} email The email to check
   *
   * @apiSuccess {boolean} found true if email exists false if not
+  *
+  * @apiError (Error 500) InternalServerError There was an issue checking email availability
   */
 module.exports = {
   method: 'GET',

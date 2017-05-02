@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Reports
-  * @api {POST} /admin/reports/usernotes (Admin) Create User Report Note
+  * @api {POST} /reports/usernotes (Admin) Create User Report Note
   * @apiName CreateUserReportNote
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to leave a note on user moderation reports.

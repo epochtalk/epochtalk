@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var Boom = require('boom');
 
 /**
   * @apiVersion 0.4.0
@@ -15,7 +14,6 @@ var Boom = require('boom');
   * @apiSuccess {string} sender_id The unique id of the sender
   * @apiSuccess {string} receiver_id The unique id of the receiver
   *
-  * @apiError (Error 400) BadRequest Conversation Already Deleted
   * @apiError (Error 500) InternalServerError There was an issue deleting the conversation
   */
 module.exports = {

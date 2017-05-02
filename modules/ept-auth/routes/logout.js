@@ -7,9 +7,10 @@ var Boom = require('boom');
   * @apiVersion 0.4.0
   * @apiDescription Used to log a user out of their account.
   *
-  * @apiSuccess {boolean} success true if user is successfully logged out
+  * @apiSuccess {object} success 200 OK
   *
-  * @apiError BadRequest No user is currently logged in
+  * @apiError (Error 401) Unauthorized Occurs when logging out on a view that requires special permissions
+  * @apiError (Error 400) BadRequest No user is currently logged in
   * @apiError (Error 500) InternalServerError There was an issue deleteing user's web token
   */
 module.exports = {

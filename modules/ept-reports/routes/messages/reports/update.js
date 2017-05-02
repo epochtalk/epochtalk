@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Reports
-  * @api {PUT} /admin/reports/messages (Admin) Update Message Report
+  * @api {PUT} /reports/messages (Admin) Update Message Report
   * @apiName UpdateMessageReport
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update the status of a message moderation report.

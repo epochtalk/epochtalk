@@ -268,6 +268,7 @@ var ctrl = [
     this.showReportModal = false;
     this.reportSubmitted = false;
     this.closeReportModal = function() {
+      if (!ctrl.reportSubmitted) { ctrl.reportedMessage = null; }
       $timeout(function() {
         if (ctrl.reportedMessage) { ctrl.reportedMessage.reported = true; }
         ctrl.showReportModal = false;

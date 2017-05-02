@@ -4,11 +4,32 @@ var Joi = require('joi');
   * @apiVersion 0.4.0
   * @apiGroup Conversations
   * @api {GET} /conversations Messages in Conversation
-  * @apiName GetRecentMessages
+  * @apiName GetConversationMessages
   * @apiPermission User
   * @apiDescription Used to get messages for this conversation.
   *
-  * @apiUse ConversationObjectSuccess
+  * @apiParam (Query) {timestamp} The timestamp to look for messages before
+  * @apiParam (Query) {string} The id of the last message
+  * @apiParam (Query) {number} How many messages to return per page
+  *
+  * @apiSuccess {string} id The id of the conversation
+  * @apiSuccess {boolean} hasNext Boolean indicating if there are more messages
+  * @apiSuccess {timestamp} last_message_timestamp timestamp of the last message
+  * @apiSuccess {timestamp} last_message_id timestamp of the last message
+  * @apiSuccess {object[]} messages An array of messages in this conversation
+  * @apiSuccess {string} messages.id The unique id of the message
+  * @apiSuccess {string} messages.conversation_id The unique id of the conversation this message belongs to
+  * @apiSuccess {string} messages.sender_id The unique id of the user that sent this message
+  * @apiSuccess {string} messages.receiver_id The unique id of the user that sent this message
+  * @apiSuccess {string} messages.body The contents of this message
+  * @apiSuccess {boolean} messages.viewed The flag showing if the receiver viewed this message
+  * @apiSuccess {timestamp} messages.created_at Timestamp of when the conversation was created
+  * @apiSuccess {string} messages.sender_username The username of the sender
+  * @apiSuccess {boolean} messages.sender_deleted Boolean indicating if the sender's account is deleted
+  * @apiSuccess {string} messages.sender_avatar The avatar of the sender
+  * @apiSuccess {string} messages.receiver_username The username of the receiver
+  * @apiSuccess {boolean} messages.receiver_deleted Boolean indicating if the receiver's account is deleted
+  * @apiSuccess {string} messages.receiver_avatar The avatar of the receiver
   *
   * @apiError (Error 500) InternalServerError There was an issue getting messages for this conversation
   */

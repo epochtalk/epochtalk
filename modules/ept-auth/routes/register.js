@@ -17,8 +17,10 @@ var crypto = require('crypto');
   *
   * @apiSuccess {string} token User's authentication token
   * @apiSuccess {string} id User's unique id
+  * @apiSuccess {string} username The user account username
   * @apiSuccess {string} avatar User's avatar url
-  * @apiSuccess {array} roles Array of user's roles
+  * @apiSuccess {object} permissions Object containing user's permissions
+  * @apiSuccess {string[]} roles Array of user's roles
   *
   * @apiError BadRequest There was an error creating the user
   */
@@ -27,8 +29,7 @@ var crypto = require('crypto');
   * @apiName RegisterVerify
   * @apiGroup Auth
   * @apiVersion 0.4.0
-  * @apiDescription Used to register a new account with account verification enabled in admin settings.
-  * This will send an email to the user with the account verification link.
+  * @apiDescription Used to register a new account with account verification enabled in admin settings. This will send an email to the user with the account verification link.
   *
   * @apiParam (Payload) {string} username User's unique username.
   * @apiParam (Payload) {string} email User's email address.
@@ -38,9 +39,9 @@ var crypto = require('crypto');
   * @apiSuccess {string} message Account creation success message
   * @apiSuccess {string} username Created user's username
   * @apiSuccess {string} confirm_token Created user's account confirmation token
-  * @apiSuccess {string} confirm_url URL to visit to confirm user's account
+  * @apiSuccess {string} avatar User's avatar url
   *
-  * @apiError BadRequest There was an error creating the user
+  * @apiError (Error 400) BadRequest There was an error registering the user
   */
 module.exports = {
   method: 'POST',

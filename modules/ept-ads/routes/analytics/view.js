@@ -30,6 +30,29 @@ function defaultRoundNumber(request, reply) {
   return reply(roundNumber);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {GET} /ads/analytics/:round Ad Analytics
+  * @apiName AnalyticsAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Returns analytics for the current ad round
+  *
+  * @apiSuccess {object} round Object containing data about the round
+  * @apiSuccess {number} round.viewing The round of ads that analytics are being displayed for
+  * @apiSuccess {number} round.current The round of ads that are currentlying running
+  * @apiSuccess {number} round.previous The previous round
+  * @apiSuccess {number} round.next The next round
+  * @apiSuccess {timestamp} round.startTime The timestamp of when the round started
+  * @apiSuccess {timestamp} round.endTime The timestamp of when the round ended
+  * @apiSuccess {object[]} analytics Object containing analytics data about each ad in the round, index of ad corresponds the ad number
+  * @apiSuccess {number} analytics.total_impressions The total number of impressions for this ad
+  * @apiSuccess {number} analytics.total_authed_impressions The total number of impressions for this ad from authorized users (not unique)
+  * @apiSuccess {number} analytics.total_unique_ip_impressions The total number of impressions for this ad from unique ip addresses
+  * @apiSuccess {number} analytics.total_unique_authed_users_impressions The total number of impressions for this ad from authorized users (unique)
+  *
+  * @apiError (Error 500) InternalServerError There was error viewing the analytics for ads
+  */
 module.exports = {
   method: 'GET',
   path: '/api/ads/analytics/{round}',

@@ -15,6 +15,23 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {PUT} /ads/factoids/:id Update Factoid
+  * @apiName UpdateFactoidAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to update a factoid
+  *
+  * @apiParam {string} id The unique id of the factoid to update
+  * @apiParam (Payload) {string} text The updated factoid text
+  *
+  * @apiSuccess {string} id The unique id of the factoid which was update
+  * @apiSuccess {string} text The updated factoid text
+  *
+  * @apiError (Error 500) InternalServerError There was error updating the factoid
+  */
 module.exports = {
   method: 'PUT',
   path: '/api/ads/factoids/{id}',

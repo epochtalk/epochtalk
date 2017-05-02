@@ -15,6 +15,20 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {DELETE} /ads/:id Remove Ad
+  * @apiName RemoveAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to remove an ad
+  *
+  * @apiParam {string} id The unique id of the ad to remove
+  *
+  * @apiSuccess {object} HTTP Code STATUS 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was error removing the ad
+  */
 module.exports = {
   method: 'DELETE',
   path: '/api/ads/{id}',

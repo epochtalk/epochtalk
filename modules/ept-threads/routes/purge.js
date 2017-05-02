@@ -10,9 +10,9 @@ var Joi = require('joi');
   *
   * @apiParam {string} id The unique id of the thread to purge
   *
-  * @apiUse ThreadObjectSuccess2
+  * @apiSuccess {object} success 200 OK
   *
-  * @apiError Unauthorized User doesn't have permissions to purge the thread
+  * @apiError (Error 401) Unauthorized User doesn't have permissions to purge the thread
   * @apiError (Error 500) InternalServerError There was an issue purging the thread
   */
 module.exports = {

@@ -9,11 +9,12 @@ var Joi = require('joi');
   * @apiDescription Used to lock a thread and prevent any additional posts.
   *
   * @apiParam {string} id The unique id of the thread to lock
-  * @apiParam (Payload) {boolean} status=true Boolean indicating lock status, true if locked false if unlocked.
+  * @apiParam (Payload) {boolean} [status=true] Boolean indicating lock status, true if locked false if unlocked.
   *
-  * @apiUse ThreadObjectSuccess2
+  * @apiSuccess {string} id The unique id of the poll
+  * @apiSuccess {boolean} locked Boolean indicating if the poll is locked
   *
-  * @apiError Unauthorized User doesn't have permissions to lock the thread
+  * @apiError (Error 401) Unauthorized User doesn't have permissions to lock the thread
   * @apiError (Error 500) InternalServerError There was an issue locking the thread
   */
 module.exports = {

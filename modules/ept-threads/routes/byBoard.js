@@ -9,10 +9,75 @@ var Promise = require('bluebird');
   * @apiDescription Used to page through a board's threads.
   *
   * @apiParam (Query) {string} board_id The board whose threads to page through
-  * @apiParam (Query) {number} page=1 The page of threads to bring back
-  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  * @apiParam (Query) {number} [page=1] The page of threads to bring back
+  * @apiParam (Query) {number} [limit=25] The number of threads to bring back per page
   *
-  * @apiSuccess {array} threads An array containing threads for the requested board, page and limit
+  * @apiSuccess {number} page The page of threads to bring back
+  * @apiSuccess {number} limit The number or threads per page to bring back
+  * @apiSuccess {boolean} writeAccess Boolean indicating if the authed user has write access to this thread
+  *
+  * @apiSuccess {object} board Object containing information about the board the thread is in
+  * @apiSuccess {string} board.id The id of the board
+  * @apiSuccess {string} board.name The name of the board
+  * @apiSuccess {string} board.parent_id The id of the parent board if applicable
+  * @apiSuccess {boolean} board.watched Boolean indicating if the authed user is watching this board
+  * @apiSuccess {number} board.viewable_by The minimum priority to be able to view the board, null for no restriction
+  * @apiSuccess {number} board.postable_by The minimum priority to be able to post to the board, null for no restriction
+  * @apiSuccess {string} board.description The board description text
+  * @apiSuccess {number} board.thread_count The number of threads within the board
+  * @apiSuccess {number} board.post_count The number of posts within the board
+  * @apiSuccess {object[]} board.children An array containing child boards if applicable
+  * @apiSuccess {object[]} board.moderators Array containing data about the moderators of the board
+  * @apiSuccess {string} board.moderators.id The id of the moderator
+  * @apiSuccess {string} board.moderators.username The username of the moderator
+  * @apiSuccess {timestamp} board.created_at The created at timestamp of the board
+  * @apiSuccess {timestamp} board.updated_at The updated at timestamp of the board
+  * @apiSuccess {timestamp} board.imported_at The imported at timestamp of the board
+  *
+  * @apiSuccess {object[]} sticky An array of sticky threads within the board
+  * @apiSuccess {string} sticky.id The id of the stickied thread
+  * @apiSuccess {boolean} sticky.locked Boolean indicating if the thread is locked
+  * @apiSuccess {boolean} sticky.sticky Boolean indicating if the thread is stickied
+  * @apiSuccess {boolean} sticky.moderated Boolean indicating if the thread is self-moderated
+  * @apiSuccess {boolean} sticky.poll Boolean indicating if there is a poll in this thread
+  * @apiSuccess {timestamp} sticky.created_at Timestamp indicating when the thread was created
+  * @apiSuccess {timestamp} sticky.updated_at Timestamp indicating when the thread was last updated
+  * @apiSuccess {number} sticky.view_count The number of views this thread has received
+  * @apiSuccess {number} sticky.post_count The number of posts in this thread
+  * @apiSuccess {string} sticky.title The title of the thread
+  * @apiSuccess {string} sticky.last_post_id The id of the last post in the thread
+  * @apiSuccess {number} sticky.last_post_position The position of the last post in the thread
+  * @apiSuccess {timestamp} sticky.last_post_created_at Timestamp of when the last post was created
+  * @apiSuccess {string} sticky.last_post_username The username of the author of the last post
+  * @apiSuccess {string} sticky.last_post_avatar The avatar of the author of the last post
+  * @apiSuccess {object} sticky.user Object containg user data about the last post author
+  * @apiSuccess {string} sticky.user.id The id of the last post's author
+  * @apiSuccess {string} sticky.user.username The username of the last post's author
+  * @apiSuccess {boolean} sticky.user.deleted Boolean indicating if the last post's author has had their account deleted
+  * @apiSuccess {boolean} sticky.has_new_posts Boolean indicating if the thread has new posts since it was last viewed
+  * @apiSuccess {number} sticky.lastest_unread_position The position of the last unread post
+  * @apiSuccess {number} sticky.lastest_unread_post_id The id of the last unread post
+  *
+  * @apiSuccess {object[]} normal An array of threads within the board
+  * @apiSuccess {string} normal.id The id of the thread
+  * @apiSuccess {boolean} normal.locked Boolean indicating if the thread is locked
+  * @apiSuccess {boolean} normal.normal Boolean indicating if the thread is stickied
+  * @apiSuccess {boolean} normal.moderated Boolean indicating if the thread is self-moderated
+  * @apiSuccess {boolean} normal.poll Boolean indicating if there is a poll in this thread
+  * @apiSuccess {timestamp} normal.created_at Timestamp indicating when the thread was created
+  * @apiSuccess {timestamp} normal.updated_at Timestamp indicating when the thread was last updated
+  * @apiSuccess {number} normal.view_count The number of views this thread has received
+  * @apiSuccess {number} normal.post_count The number of posts in this thread
+  * @apiSuccess {string} normal.title The title of the thread
+  * @apiSuccess {string} normal.last_post_id The id of the last post in the thread
+  * @apiSuccess {number} normal.last_post_position The position of the last post in the thread
+  * @apiSuccess {timestamp} normal.last_post_created_at Timestamp of when the last post was created
+  * @apiSuccess {string} normal.last_post_username The username of the author of the last post
+  * @apiSuccess {string} normal.last_post_avatar The avatar of the author of the last post
+  * @apiSuccess {object} normal.user Object containg user data about the last post author
+  * @apiSuccess {string} normal.user.id The id of the thread's author
+  * @apiSuccess {string} normal.user.username The username of the thread's author
+  * @apiSuccess {boolean} normal.user.deleted Boolean indicating if the thread's author has had their account deleted
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the threads
   */

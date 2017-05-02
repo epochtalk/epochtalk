@@ -138,7 +138,7 @@ function ignoreUser(userId, ignoredUserId) {
   var q = 'INSERT INTO mentions.ignored(user_id, ignored_user_id) VALUES($1, $2)';
   return db.sqlQuery(q, [userId, ignoredUserId])
   .then(function() {
-    return { ignoredUserId: helper.slugify(ignoredUserId) };
+    return { success: true };
   });
 }
 

@@ -9,7 +9,7 @@ var Joi = require('joi');
   *
   * @apiParam {string} id The userId of the user to deactivate
   *
-  * @apiSuccess {object} STATUS 200 OK
+  * @apiSuccess {object} status 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an error deactivating the user
   */
@@ -31,6 +31,7 @@ module.exports = {
   handler: function(request, reply) {
     var userId = request.params.id;
     var promise = request.db.users.deactivate(userId)
+    .then(function() { return {}; })
     .error(request.errorMap.toHttpError);
 
     return reply(promise);

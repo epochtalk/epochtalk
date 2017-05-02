@@ -13,13 +13,31 @@ var common = require(path.normalize(__dirname + '/../common'));
   *
   * @apiParam {string} username The username of the user's whose posts to page through
   *
-  * @apiParam (Query) {number} page=1 Which page of the user's posts to retrieve
-  * @apiParam (Query) {number} limit=25 How many posts to return per page
-  * @apiParam (Query) {boolean} desc=true True to sort descending, false to sort ascending
+  * @apiParam (Query) {number{1..n}} [page=1] Which page of the user's posts to retrieve
+  * @apiParam (Query) {number{1..100}} [limit=25] How many posts to return per page
+  * @apiParam (Query) {boolean} [desc=true] True to sort descending, false to sort ascending
   *
-  * @apiSuccess {array} posts Array containing posts for a particular user
+  * @apiSuccess {number} page The page of posts to return
+  * @apiSuccess {number} limit The number of posts to return per page
+  * @apiSuccess {boolean} sortDesc Boolean indicating the sort order of the posts
+  * @apiSuccess {object[]} posts Object containing users posts
+  * @apiSuccess {string} posts.id The id of the post
+  * @apiSuccess {string} posts.thread_id The id of the thread containing the post
+  * @apiSuccess {string} posts.raw_body The unprocessed body of the post
+  * @apiSuccess {string} posts.body The processed body of the post
+  * @apiSuccess {number} posts.position The position of the post in the thread
+  * @apiSuccess {boolean} posts.deleted Boolean indicating if the post is deleted
+  * @apiSuccess {boolean} posts.hidden Boolean indicating if the post is hidden (true if user is owner of deleted post)
+  * @apiSuccess {timestamp} posts.created_at The created at timestamp of the post
+  * @apiSuccess {timestamp} posts.updated_at The updated at timestamp of the post
+  * @apiSuccess {timestamp} posts.imported_at The imported at timestamp of the post
+  * @apiSuccess {string} posts.board_id The id of the board containing the post
+  * @apiSuccess {string} posts.thread_title The title of the thread the post is in
+  * @apiSuccess {string} posts.avatar The avatar of the user who made the post
+  * @apiSuccess {object} posts.user Object containing user data about the author of the post
+  * @apiSuccess {string} posts.user.id The id of the user
   *
-  * @apiError (Error 500) InternalServerError There was an issue finding posts for the user
+  * @apiError (Error 500) InternalServerError There was an issue paging posts for user
   */
 module.exports = {
   method: 'GET',

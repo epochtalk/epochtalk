@@ -7,16 +7,18 @@ var Promise = require('bluebird');
   * @api {POST} /boards/:id Update
   * @apiName UpdateBoard
   * @apiPermission Super Administrator, Administrator
-  * @apiDescription Used to update an existing boards information.
+  * @apiDescription Used to update an existing information for boards
   *
-  * @apiParam {string} id The id of the board being updated
-  *
-  * @apiParam (Payload) {string} name The name of the board to be created
-  * @apiParam (Payload) {string} description The description text for the board
+  * @apiParam (Payload) {object[]} boards Array containing the boards to create
+  * @apiParam (Payload) {string} id The board id
+  * @apiParam (Payload) {string{1..255}} name The name for the board
+  * @apiParam (Payload) {string{0..255}} description The description text for the board
+  * @apiParam (Payload) {number} viewable_by The minimum priority required to view the board, null for no restriction
+  * @apiParam (Payload) {number} postable_by The minimum priority required to post in the board, null for no restriction
   *
   * @apiUse BoardObjectSuccess
   *
-  * @apiError (Error 500) InternalServerError There was an issue updating the board
+  * @apiError (Error 500) InternalServerError There was an issue updating the boards
   */
 module.exports = {
   method: 'PUT',

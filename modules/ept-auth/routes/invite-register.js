@@ -3,7 +3,7 @@ var Boom = require('boom');
 var Promise = require('bluebird');
 
 /**
-  * @api {POST} /invitation/register Register (via invitation)
+  * @api {POST} /join Register (via invitation)
   * @apiName InvitationRegister
   * @apiGroup Auth
   * @apiVersion 0.4.0
@@ -17,10 +17,14 @@ var Promise = require('bluebird');
   *
   * @apiSuccess {string} token User's authentication token
   * @apiSuccess {string} id User's unique id
+  * @apiSuccess {string} username The user account username
   * @apiSuccess {string} avatar User's avatar url
-  * @apiSuccess {array} roles Array of user's roles
+  * @apiSuccess {object} permissions Object containing user's permissions
+  * @apiSuccess {string[]} moderating Array of user's moderated board ids
+  * @apiSuccess {string[]} roles Array of user's roles
   *
-  * @apiError BadRequest There was an error creating the user via invitation.
+  * @apiError (Error 400) BadRequest There was an error creating the user via invitation.
+  * @apiError (Error 500) InternalServerError There was an issue registering user
   */
 module.exports = {
   method: 'POST',

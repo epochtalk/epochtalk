@@ -9,13 +9,24 @@ var Promise = require('bluebird');
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User
   * @apiDescription Used to vote in a poll.
   *
-  * @apiParam (Param) {string} id The unique id of the thread the poll is in.
-  * @apiParam (Param) {string} id The unique id of the poll to vote in.
-  * @apiParam (Payload) {array} ids The ids of the answer tied to the vote.
+  * @apiParam {string} id The unique id of the thread the poll is in.
+  * @apiParam {string} id The unique id of the poll to vote in.
+  * @apiParam (Payload) {string[]} ids The ids of the answers tied to the vote.
   *
-  * @apiUse ThreadObjectSuccess3
+  * @apiSuccess {string} id The unique id of the poll
+  * @apiSuccess {string} question The question asked in the poll
+  * @apiSuccess {object[]} answers The list of the answers to the question of this poll
+  * @apiSuccess {string} answers.answer The answer to the question of this poll
+  * @apiSuccess {string} answers.id The id of the answer
+  * @apiSuccess {number} answers.votes The number of votes for this answer
+  * @apiSuccess {number} max_answers The max number of answer per vote
+  * @apiSuccess {boolean} hasVoted Boolean indicating whether the user has voted
+  * @apiSuccess {boolean} locked Boolean indicating whether the poll is locked
+  * @apiSuccess {boolean} change_vote Boolean indicating whether users can change their vote
+  * @apiSuccess {date} expiration The expiration date of the poll
+  * @apiSuccess {string} display_mode String indicating how the results are shown to users
   *
-  * @apiError Unauthorized User doesn't have permissions to vote in the poll
+  * @apiError (Error 401) Unauthorized User doesn't have permissions to vote in the poll
   * @apiError (Error 500) InternalServerError There was an issue voting in the poll
   */
 module.exports = {
