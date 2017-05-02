@@ -465,20 +465,19 @@ exports.deleteFromBlacklist = {
   * @apiName GetTheme
   * @apiDescription Used to fetch theme vars in _custom-variables.scss
   *
-  * @apiSuccess {object} theme Object containing theme vars and values
-  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
-  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
-  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
-  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
-  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
-  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
-  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
-  * @apiSuccess {string} theme.input-font-color Font color for input fields
-  * @apiSuccess {string} theme.input-background-color Background color for all input fields
-  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
-  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
-  * @apiSuccess {string} theme.header-font-color Font color for the forum header
-  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  * @apiSuccess {string} base-line-height Base line height for entire forum
+  * @apiSuccess {string} base-background-color The background color for the entire forum
+  * @apiSuccess {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} base-font-sans Font family for the entire forum
+  * @apiSuccess {string} base-font-color Base font color for entire forum
+  * @apiSuccess {string} base-font-size Base font size for entire forum
+  * @apiSuccess {string} secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} input-font-color Font color for input fields
+  * @apiSuccess {string} input-background-color Background color for all input fields
+  * @apiSuccess {string} border-color Color for all borders used in the forum
+  * @apiSuccess {string} header-bg-color Color for the forum header background
+  * @apiSuccess {string} header-font-color Font color for the forum header
+  * @apiSuccess {string} sub-header-color Color for sub headers and footers
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the theme.
   */
@@ -528,20 +527,19 @@ exports.getTheme = {
   * @apiParam (Payload) {string} header-font-color Font color for the forum header
   * @apiParam (Payload) {string} sub-header-color Color for sub headers and footers
   *
-  * @apiSuccess {object} theme Object containing theme vars and values
-  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
-  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
-  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
-  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
-  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
-  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
-  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
-  * @apiSuccess {string} theme.input-font-color Font color for input fields
-  * @apiSuccess {string} theme.input-background-color Background color for all input fields
-  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
-  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
-  * @apiSuccess {string} theme.header-font-color Font color for the forum header
-  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  * @apiSuccess {string} base-line-height Base line height for entire forum
+  * @apiSuccess {string} base-background-color The background color for the entire forum
+  * @apiSuccess {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} base-font-sans Font family for the entire forum
+  * @apiSuccess {string} base-font-color Base font color for entire forum
+  * @apiSuccess {string} base-font-size Base font size for entire forum
+  * @apiSuccess {string} secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} input-font-color Font color for input fields
+  * @apiSuccess {string} input-background-color Background color for all input fields
+  * @apiSuccess {string} border-color Color for all borders used in the forum
+  * @apiSuccess {string} header-bg-color Color for the forum header background
+  * @apiSuccess {string} header-font-color Font color for the forum header
+  * @apiSuccess {string} sub-header-color Color for sub headers and footers
   *
   * @apiError (Error 500) InternalServerError There was an issue setting the theme.
   */
@@ -598,20 +596,19 @@ exports.setTheme = {
   * @apiName ResetTheme
   * @apiDescription Used reset custom variables to fall back to _default-variables.scss
   *
-  * @apiSuccess {object} theme Object containing theme vars and values
-  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
-  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
-  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
-  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
-  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
-  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
-  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
-  * @apiSuccess {string} theme.input-font-color Font color for input fields
-  * @apiSuccess {string} theme.input-background-color Background color for all input fields
-  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
-  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
-  * @apiSuccess {string} theme.header-font-color Font color for the forum header
-  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  * @apiSuccess {string} base-line-height Base line height for entire forum
+  * @apiSuccess {string} base-background-color The background color for the entire forum
+  * @apiSuccess {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} base-font-sans Font family for the entire forum
+  * @apiSuccess {string} base-font-color Base font color for entire forum
+  * @apiSuccess {string} base-font-size Base font size for entire forum
+  * @apiSuccess {string} secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} input-font-color Font color for input fields
+  * @apiSuccess {string} input-background-color Background color for all input fields
+  * @apiSuccess {string} border-color Color for all borders used in the forum
+  * @apiSuccess {string} header-bg-color Color for the forum header background
+  * @apiSuccess {string} header-font-color Font color for the forum header
+  * @apiSuccess {string} sub-header-color Color for sub headers and footers
   *
   * @apiError (Error 500) InternalServerError There was an issue resetting the theme.
   */
@@ -674,20 +671,19 @@ exports.resetTheme = {
   * @apiParam (Payload) {string} header-font-color Font color for the forum header
   * @apiParam (Payload) {string} sub-header-color Color for sub headers and footers
   *
-  * @apiSuccess {object} theme Object containing theme vars and values
-  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
-  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
-  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
-  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
-  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
-  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
-  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
-  * @apiSuccess {string} theme.input-font-color Font color for input fields
-  * @apiSuccess {string} theme.input-background-color Background color for all input fields
-  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
-  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
-  * @apiSuccess {string} theme.header-font-color Font color for the forum header
-  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  * @apiSuccess {string} base-line-height Base line height for entire forum
+  * @apiSuccess {string} base-background-color The background color for the entire forum
+  * @apiSuccess {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} base-font-sans Font family for the entire forum
+  * @apiSuccess {string} base-font-color Base font color for entire forum
+  * @apiSuccess {string} base-font-size Base font size for entire forum
+  * @apiSuccess {string} secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} input-font-color Font color for input fields
+  * @apiSuccess {string} input-background-color Background color for all input fields
+  * @apiSuccess {string} border-color Color for all borders used in the forum
+  * @apiSuccess {string} header-bg-color Color for the forum header background
+  * @apiSuccess {string} header-font-color Font color for the forum header
+  * @apiSuccess {string} sub-header-color Color for sub headers and footers
   *
   * @apiError (Error 500) InternalServerError There was an issue previewing the theme.
   */

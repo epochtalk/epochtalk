@@ -8,8 +8,8 @@ var Joi = require('joi');
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription This allows Administrators and Moderators to page through user notes
   *
-  * @apiParam (Query) {number{1..n}} [page] The page of results to return
-  * @apiParam (Query) {number{1..100}} [limit] The number of results per page to return
+  * @apiParam (Query) {number{1..n}} [page=1] The page of results to return
+  * @apiParam (Query) {number{1..100}} [limit=25] The number of results per page to return
   * @apiParam (Query) {string} user_id The id of the user whose notes to page through
   *
   * @apiSuccess {string} user_id The id of the user whose notes are being returned
@@ -36,8 +36,8 @@ exports.page = {
   validate: {
     query: {
       user_id: Joi.string().required(),
-      page: Joi.number().min(1),
-      limit: Joi.number().min(1).max(100)
+      page: Joi.number().min(1).default(1),
+      limit: Joi.number().min(1).max(100).default(25)
     }
   },
   handler: function(request, reply) {

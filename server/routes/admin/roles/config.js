@@ -42,16 +42,16 @@ exports.all = {
   *
   * @apiParam (Payload) {string} id The id of the role to find users for
   *
-  * @apiParam (Query) {number} page=1 The page of users to retrieve
-  * @apiParam (Query) {number} limit=15 The number of users to retrieve per page
+  * @apiParam (Query) {number} [page=1] The page of users to retrieve
+  * @apiParam (Query) {number} [limit=15] The number of users to retrieve per page
+  * @apiParam (Query) {string} [search] Allows user to filter the search results
   *
-  * @apiSuccess {object} userData An object containing user data.
-  * @apiSuccess {object[]} userData.users An array holding users with this role
-  * @apiSuccess {string} userData.users.id The id of the user
-  * @apiSuccess {string} userData.users.username The The username of the user
-  * @apiSuccess {string} userData.users.email The email of the user
-  * @apiSuccess {string[]} userData.users.roles An array containing the lookups values of all the roles this user has
-  * @apiSuccess {number} userData.users.priority The user's highest role priority
+  * @apiSuccess {object[]} users An array holding users with this role
+  * @apiSuccess {string} users.id The id of the user
+  * @apiSuccess {string} users.username The The username of the user
+  * @apiSuccess {string} users.email The email of the user
+  * @apiSuccess {string[]} users.roles An array containing the lookups values of all the roles this user has
+  * @apiSuccess {number} users.priority The user's highest role priority
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the user data.
   */
@@ -99,7 +99,7 @@ exports.users = {
   * @apiParam (Payload) {string} name The name of the role to add.
   * @apiParam (Payload) {string} description The description of the role to add.
   * @apiParam (Payload) {string} priority The priorty of the role to add.
-  * @apiParam (Payload) {string} highlightColor The highlight color of the role to add.
+  * @apiParam (Payload) {string} [highlight_color] The highlight color of the role to add.
   * @apiParam (Payload) {Object} permissions The permission set for this role.
   *
   * @apiSuccess {string} id The unique id of the added role.
@@ -159,7 +159,7 @@ exports.add = {
   * @apiParam (Payload) {string} name The updated name of the role.
   * @apiParam (Payload) {string} description The updated description of the role.
   * @apiParam (Payload) {string} priority The updated priorty of the role.
-  * @apiParam (Payload) {string} [highlightColor] The updated highlight color.
+  * @apiParam (Payload) {string} [highlight_color] The updated highlight color.
   * @apiParam (Payload) {string} lookup The lookup string of the role.
   * @apiParam (Payload) {Object} permissions The updated permission set.
   *
@@ -223,7 +223,7 @@ exports.update = {
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Remove a role.
   *
-  * @apiParam (Params) {string} role_id The id of the role to remove.
+  * @apiParam {string} id The id of the role to remove.
   *
   * @apiSuccess {string} id The unique id of the removed role.
   * @apiSuccess {string} name The name of the removed role.
@@ -271,6 +271,7 @@ exports.remove = {
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Reprioritizes all roles.
   *
+  * @apiParam (Payload) {object[]} roles Array containing role objects
   * @apiParam (Payload) {string} roles.id The id of the role
   * @apiParam (Payload) {string} roles.priority The updated priorty of the role
   *

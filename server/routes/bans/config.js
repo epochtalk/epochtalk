@@ -229,8 +229,8 @@ exports.deleteAddress = {
   * @apiDescription This allows Administrators and Moderators to ban users.
   *
   * @apiParam (Payload) {string} user_id The unique id of the user to ban
-  * @apiParam (Payload) {date} expiration The expiration date for the ban, when not defined ban is considered permanent
-  * @apiParam (Payload) {boolean=false} ip_ban Boolean indicating that the user should be ip banned as well, this will make it so they cannot register from any of their known ips for a new account
+  * @apiParam (Payload) {timestamp} [expiration] The expiration date for the ban, when not defined ban is considered permanent
+  * @apiParam (Payload) {boolean=false} [ip_ban=false] Boolean indicating that the user should be ip banned as well, this will make it so they cannot register from any of their known ips for a new account
   *
   * @apiSuccess {string} id The unique id of the row in users.bans
   * @apiSuccess {string} user_id The unique id of the user being banned
