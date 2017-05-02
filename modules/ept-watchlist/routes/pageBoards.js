@@ -7,12 +7,19 @@ var Joi = require('joi');
   * @apiName PageWatchlistThreadsBoards
   * @apiDescription Page though a user's watched boards
   *
-  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
-  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  * @apiParam (Query) {number} [page=1] The page of watchlist to bring back
+  * @apiParam (Query) {number} [limit=25] The number of threads to bring back per page
   *
-  * @apiSuccess {array} threads An array of boards being watched
+  * @apiSuccess {number} page The page of results being returned
+  * @apiSuccess {number} limit The number of results per page
+  * @apiSuccess {boolean} hasMoreBoards Boolean indicating if there are more pages of boards
+  * @apiSuccess {object[]} boards An array containing watched board data
+  * @apiSuccess {string} boards.id The unique id of the watched board
+  * @apiSuccess {string} boards.name The name of the watched board
+  * @apiSuccess {number} boards.post_count The post count of the watched board
+  * @apiSuccess {number} boards.thread_count The thread count of the watched board
   *
-  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the board watchlist threads.
   */
 module.exports = {
   method: 'GET',
