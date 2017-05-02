@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Users
-  * @api {GET} /search/users (Admin) Page Users
+  * @api {GET} /search/users Page Users
   * @apiName PageUsersPublic
   * @apiPermission User
   * @apiDescription This allows users to page through all registered users.
@@ -15,21 +15,20 @@ var Joi = require('joi');
   * in descending order
   * @apiParam (Query) {string} [search] Username to search for
   *
-  * @apiSuccess {object} pageData An object containing users and query options
-  * @apiSuccess {string} pageData.field The field the results are sorted by
-  * @apiSuccess {string} pageData.desc The order the results are sorted in
-  * @apiSuccess {string} pageData.page The current page of the results
-  * @apiSuccess {string} pageData.page_count Total number of pages in results
-  * @apiSuccess {string} pageData.search The search term used in query
-  * @apiSuccess {string} pageData.limit The number of results returned per page
-  * @apiSuccess {string} pageData.count The total number of results
-  * @apiSuccess {object[]} pageData.users An array of user objects
-  * @apiSuccess {string} pageData.users.id The unique id of the user
-  * @apiSuccess {string} pageData.users.username The username of the user
-  * @apiSuccess {string} pageData.users.role The role of the user
-  * @apiSuccess {timestamp} pageData.users.created_at Timestamp of when the user was created
-  * @apiSuccess {timestamp} pageData.users.post_count The number of posts this user has made
-  * @apiSuccess {timestamp} pageData.users.avatar The user's avatar
+  * @apiSuccess {string} field The field the results are sorted by
+  * @apiSuccess {boolean} desc The order the results are sorted in
+  * @apiSuccess {number} page The current page of the results
+  * @apiSuccess {number} page_count Total number of pages in results
+  * @apiSuccess {string} search The search term used in query
+  * @apiSuccess {number} limit The number of results returned per page
+  * @apiSuccess {number} count The total number of results
+  * @apiSuccess {object[]} users An array of user objects
+  * @apiSuccess {string} users.id The unique id of the user
+  * @apiSuccess {string} users.username The username of the user
+  * @apiSuccess {string} users.role The role of the user
+  * @apiSuccess {timestamp} users.created_at Timestamp of when the user was created
+  * @apiSuccess {timestamp} users.post_count The number of posts this user has made
+  * @apiSuccess {timestamp} users.avatar The user's avatar
   *
   * @apiError (Error 500) InternalServerError There was error retrieving the users
   */
@@ -57,7 +56,9 @@ module.exports = {
       sortDesc: request.query.desc,
       searchStr: request.query.search
     };
-    var promise = request.db.users.pagePublic(opts);
+    var promise = request.db.users.pagePublic(opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

@@ -10,15 +10,22 @@ var Joi = require('joi');
   *
   * @apiParam (Param) {string} thread_id The unique id of the thread the poll is in.
   * @apiParam (Param) {string} question The question asked in the poll.
-  * @apiParam (Param) {array} answers The list of the answers to the question of this poll.
-  * @apiParam (Payload) {number} max_answers The max number of answers per vote.
-  * @apiParam (Payload) {date} expiration The expiration date of the poll.
-  * @apiParam (Payload) {boolean} change_vote Boolean indicating whether users can change their vote.
-  * @apiParam (Payload) {string} display_mode String indicating how the results are shown to users.
+  * @apiParam (Param) {string[]} answers The list of the answers to the question of this poll.
+  * @apiParam (Payload) {number} [max_answers=1] The max number of answers per vote.
+  * @apiParam (Payload) {date} [expiration] The expiration date of the poll.
+  * @apiParam (Payload) {boolean} [change_vote] Boolean indicating whether users can change their vote.
+  * @apiParam (Payload) {string="always", "voted", "expired"} display_mode String indicating how the results are shown to users.
   *
-  * @apiUse ThreadObjectSuccess3
+  * @apiSuccess {string} id The unique id of the poll
+  * @apiSuccess {string} question The question asked in the poll
+  * @apiSuccess {object[]} answers The list of the answers to the question of this poll
+  * @apiSuccess {string} answers.answer The answer to the question of this poll
+  * @apiSuccess {number} max_answers The max number of answer per vote
+  * @apiSuccess {boolean} change_vote Boolean indicating whether users can change their vote
+  * @apiSuccess {date} expiration The expiration date of the poll
+  * @apiSuccess {string} display_mode String indicating how the results are shown to users
   *
-  * @apiError Unauthorized User doesn't have permissions to create the poll
+  * @apiError (Error 401) Unauthorized User doesn't have permissions to create the poll
   * @apiError (Error 500) InternalServerError There was an issue creating the thread
   */
 module.exports = {
@@ -57,7 +64,8 @@ module.exports = {
       poll.id = dbPoll.id;
       poll.answers = poll.answers.map(function(answer) { return { answer: answer }; });
       return poll;
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

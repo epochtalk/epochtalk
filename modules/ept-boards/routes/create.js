@@ -6,9 +6,8 @@ var Promise = require('bluebird');
   * @apiSuccess {string} id The board's unique id
   * @apiSuccess {string} name The board's name
   * @apiSuccess {string} description The boards description
-  * @apiSuccess {timestamp} created_at Timestamp of when the board was created
-  * @apiSuccess {timestamp} updated_at Timestamp of when the board was updated
-  * @apiSuccess {timestamp} imported_at Timestamp of when the board was imported
+  * @apiSuccess {number} viewable_by The minimum priority required to view the board, null for no restriction
+  * @apiSuccess {number} postable_by The minimum priority required to post in the board, null for no restriction
   */
 
 /**
@@ -19,8 +18,11 @@ var Promise = require('bluebird');
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Used to create a new board
   *
-  * @apiParam (Payload) {string} name The name of the board to be created
-  * @apiParam (Payload) {string} description The description text for the board
+  * @apiParam (Payload) {object[]} boards Array containing the boards to create
+  * @apiParam (Payload) {string{1..255}} name The name for the board
+  * @apiParam (Payload) {string{0..255}} description The description text for the board
+  * @apiParam (Payload) {number} viewable_by The minimum priority required to view the board, null for no restriction
+  * @apiParam (Payload) {number} postable_by The minimum priority required to post in the board, null for no restriction
   *
   * @apiUse BoardObjectSuccess
   *
@@ -54,7 +56,8 @@ module.exports = {
     // create each board
     var promise = Promise.map(request.payload, function(board) {
       return request.db.boards.create(board);
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

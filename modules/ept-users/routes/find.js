@@ -15,9 +15,15 @@ var querystring = require('querystring');
   * @apiSuccess {string} id The user's unique id
   * @apiSuccess {string} username The user's username
   * @apiSuccess {string} avatar URL to the user's avatar image
+  * @apiSuccess {boolean} ignored Boolean idicating if user is being ignored
+  * @apiSuccess {number} activity The user's activity number
   * @apiSuccess {string} signature The user's signature with any markup tags converted and parsed into html elements
   * @apiSuccess {string} raw_signature The user's signature as it was entered in the editor by the user
+  * @apiSuccess {number} priority The user's role priority
   * @apiSuccess {number} post_count The number of posts made by this user
+  * @apiSuccess {string[]} collapsed_categories Array containing id of categories the user collapsed
+  * @apiSuccess {number} posts_per_page Preference indicating the number of posts the user wants to view per page
+  * @apiSuccess {number} threads_per_page Preference indicating the number of threads the user wants to view per page
   * @apiSuccess {string} name The user's actual name (e.g. John Doe)
   * @apiSuccess {string} website URL to the user's website
   * @apiSuccess {string} gender The user's gender
@@ -26,15 +32,9 @@ var querystring = require('querystring');
   * @apiSuccess {string} language The user's native language (e.g. English)
   * @apiSuccess {timestamp} created_at Timestamp of when the user's account was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the user's account was last updated
-  * @apiSuccess {object[]} roles An array containing the users role objects
-  * @apiSuccess {string} roles.id The unique id of the role
-  * @apiSuccess {string} roles.name The name of the role
-  * @apiSuccess {string} roles.description The description of the role
-  * @apiSuccess {object} roles.permissions The permissions that this role has
-  * @apiSuccess {timestamp} roles.created_at Timestamp of when the role was created
-  * @apiSuccess {timestamp} roles.updated_at Timestamp of when the role was last updated
+  * @apiSuccess {string[]} roles An array containing the users role lookups
   *
-  * @apiError BadRequest The user doesn't exist
+  * @apiError (Error 404) NotFound The user was not found
   * @apiError (Error 500) InternalServerError There was error looking up the user
   */
 module.exports = {
@@ -91,7 +91,8 @@ function processing(request, reply) {
     user.roles = user.roles.map(function(role) { return role.lookup; });
     if (user.roles.length < 1) { user.roles.push('user'); }
     return user;
-  });
+  })
+  .error(request.errorMap.toHttpError);
 
   return reply(promise);
 }

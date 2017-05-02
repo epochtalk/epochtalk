@@ -8,8 +8,9 @@ var Joi = require('joi');
   * @apiPermission User
   * @apiDescription Used to unmark a user as watching a board.
   *
-  * @apiUse WatchlistObjectPayload
-  * @apiUse WatchlistObjectSuccess
+  * @apiParam {string} id The unique id of the board being unwatched
+  *
+  * @apiSuccess {object} status 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue unwatching the board
   */
@@ -24,17 +25,9 @@ module.exports = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
-    var promise = request.db.watchlist.unwatchBoard(userId, boardId);
+    var promise = request.db.watchlist.unwatchBoard(userId, boardId)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
-
-/**
-  * @apiDefine WatchlistObjectPayload
-  * @apiParam (Payload) {string} id The unique id of the model being watched
-  */
-
-/**
-  * @apiDefine WatchlistObjectSuccess
-  * @apiSuccess {Object} HTTP Code STATUS 200 OK
-  */

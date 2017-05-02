@@ -11,10 +11,30 @@ var Promise = require('bluebird');
   * @apiParam (Query) {number} page=1 The page of threads to bring back
   * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
   *
-  * @apiSuccess {array} threads An array containing recently posted in threads.
   * @apiSuccess {number} page The currently viewing page.
   * @apiSuccess {number} limit The limit of threads for this page.
   * @apiSuccess {number} count The total number of threads for this user.
+  * @apiSuccess {object[]} threads An array containing recently posted in threads.
+  * @apiSuccess {string} threads.id The id of the thread
+  * @apiSuccess {string} threads.board_id The id of the board the thread is in
+  * @apiSuccess {string} threads.board_name The name of the board the thread is in
+  * @apiSuccess {boolean} threads.locked Boolean indicating if the thread is locked
+  * @apiSuccess {boolean} threads.threads Boolean indicating if the thread is stickied
+  * @apiSuccess {boolean} threads.moderated Boolean indicating if the thread is self-moderated
+  * @apiSuccess {boolean} threads.poll Boolean indicating if there is a poll in this thread
+  * @apiSuccess {timestamp} threads.created_at Timestamp indicating when the thread was created
+  * @apiSuccess {timestamp} threads.updated_at Timestamp indicating when the thread was last updated
+  * @apiSuccess {number} threads.view_count The number of views this thread has received
+  * @apiSuccess {number} threads.post_count The number of posts in this thread
+  * @apiSuccess {string} threads.title The title of the thread
+  * @apiSuccess {string} threads.last_post_id The id of the last post in the thread
+  * @apiSuccess {number} threads.last_post_position The position of the last post in the thread
+  * @apiSuccess {timestamp} threads.last_post_created_at Timestamp of when the last post was created
+  * @apiSuccess {string} threads.last_post_username The username of the author of the last post
+  * @apiSuccess {string} threads.last_post_avatar The avatar of the author of the last post
+  * @apiSuccess {object} threads.user Object containg user data about the thread author
+  * @apiSuccess {string} threads.user.id The id of the thread's author
+  * @apiSuccess {string} threads.user.username The username of the thread's author
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the threads
   */
@@ -49,7 +69,8 @@ module.exports = {
         limit: request.query.limit,
         count: count
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

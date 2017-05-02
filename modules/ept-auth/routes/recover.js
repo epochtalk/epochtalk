@@ -5,18 +5,21 @@ var Request = require('request');
 var Promise = require('bluebird');
 
 /**
-  * @api {GET} /recover/:query Recover Account
+  * @api {POST} /recover/ Recover Account
   * @apiName AccountRecoveryReq
   * @apiGroup Auth
   * @apiVersion 0.4.0
   * @apiDescription Used to recover an account by username or email. Sends an email with
   * a URL to visit to reset the user's account password.
   *
-  * @apiParam {string} query The email or username to attempt to recover
+  * @apiParam (Payload) {string} query The email or username to attempt to recover
+  * @apiParam (Payload) {string} recaptcha The recaptcha token
   *
-  * @apiSuccess {boolean} success true if recovery email is sent
-  * @apiError BadRequest The username or email is not found
-  * @apiError (Error 500) InternalServerError There was an error updating the user account's reset token information
+  * @apiSuccess {object} success 200 OK
+  *
+  * @apiError (Error 400) BadRequest Recaptcha not submitted
+  * @apiError (Error 400) BadRequest The username or email is not found
+  * @apiError (Error 500) InternalServerError There was an error recovering the user's account
   */
 module.exports = {
   method: 'POST',
@@ -90,7 +93,9 @@ module.exports = {
       };
       request.server.log('debug', emailParams);
       return request.emailer.send('recoverAccount', emailParams);
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

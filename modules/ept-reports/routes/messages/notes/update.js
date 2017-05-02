@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Reports
-  * @api {PUT} /admin/reports/messagenotes (Admin) Update Message Report Note
+  * @api {PUT} /reports/messagenotes (Admin) Update Message Report Note
   * @apiName UpdateMessageReportNote
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update an existing note on message moderation reports.
@@ -20,6 +20,7 @@ var Joi = require('joi');
   * @apiSuccess {timestamp} created_at Timestamp of when the message report note was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the message report note was last updated
   *
+  * @apiError (Error 400) BadRequest Note must not be empty
   * @apiError (Error 500) InternalServerError There was an error updating the message report note
   */
 module.exports = {
@@ -48,7 +49,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var reportNote = Object.assign({}, request.payload);
-    var promise = request.db.reports.updateMessageReportNote(reportNote);
+    var promise = request.db.reports.updateMessageReportNote(reportNote)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

@@ -16,7 +16,7 @@ var Promise = require('bluebird');
   *
   * @apiSuccess {string} message Password Successfully Reset
   *
-  * @apiError BadRequest The user account could not be found or the reset token is invalid
+  * @apiError (Error 400) BadRequest The user account could not be found or the reset token is invalid
   * @apiError (Error 500) InternalServerError There was an error updating the user account's reset token information
   */
 module.exports = {
@@ -66,7 +66,9 @@ module.exports = {
     .then(function() {
       // TODO: Send password reset confirmation email here
       return 'Password Successfully Reset';
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

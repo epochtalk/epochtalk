@@ -3,7 +3,8 @@ var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
-var NotFoundError = Promise.OperationalError;
+var errors = dbc.errors;
+var NotFoundError = errors.NotFoundError;
 
 module.exports = function(boardId, userPriority) {
   boardId = helper.deslugify(boardId);
@@ -12,7 +13,7 @@ module.exports = function(boardId, userPriority) {
   return db.sqlQuery(q, [boardId])
   .then(function(rows) {
     if (rows.length > 0 ) { return rows[0].postable_by; }
-    else { throw new NotFoundError(); }
+    else { throw new NotFoundError('Field \'postable_by\' Not Found'); }
   })
   .then(function(postable_by) {
     var postable = false;

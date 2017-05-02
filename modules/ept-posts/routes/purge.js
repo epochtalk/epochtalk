@@ -10,7 +10,8 @@ var Joi = require('joi');
   *
   * @apiParam {string} id The Id of the post to purge
   *
-  * @apiUse PostObjectSuccess
+  * @apiSuccess {string} user_id The id of the user who created the post
+  * @apiSuccess {string} thread_id The id of the thread that the post belonged to
   *
   * @apiError (Error 500) InternalServerError There was an issue purging the post
   */
@@ -23,7 +24,9 @@ module.exports = {
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: 'auth.posts.purge(server, auth, params.id)' } ],
     handler: function(request, reply) {
-      var promise = request.db.posts.purge(request.params.id);
+      var promise = request.db.posts.purge(request.params.id)
+      .error(request.errorMap.toHttpError);
+
       return reply(promise);
     }
   }

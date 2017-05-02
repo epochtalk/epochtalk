@@ -1,7 +1,5 @@
 var Joi = require('joi');
-var path = require('path');
-var Boom = require('boom');
-var Promise = require('bluebird');
+
 
 /**
   * @apiVersion 0.4.0
@@ -11,10 +9,10 @@ var Promise = require('bluebird');
   * @apiPermission User
   * @apiDescription Get the notifications counts for this user.
   *
-  * @apiSuccess {object} notificationsCounts
-  * @apiSuccess {number} notificationsCounts.message
-  * @apiSuccess {number} notificationsCounts.mention
-  * @apiSuccess {number} notificationsCounts.other
+  * @apiSuccess {object} notificationsCounts Object containing notification count information
+  * @apiSuccess {number} notificationsCounts.message Number of message notifications
+  * @apiSuccess {number} notificationsCounts.mention Number of mention notifications
+  * @apiSuccess {number} notificationsCounts.other Number of other notifications
   *
   * @apiError (Error 500) InternalServerError There was an issue getting the notifications counts
   */
@@ -31,7 +29,9 @@ exports.counts = {
     var userId = request.auth.credentials.id;
     var opts =  { max: request.query.max };
 
-    var promise = request.db.notifications.counts(userId, opts);
+    var promise = request.db.notifications.counts(userId, opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -44,7 +44,8 @@ exports.counts = {
   * @apiPermission User
   * @apiDescription Used to dismiss all notifications of a type.
   *
-  * @apiParam (Query) {string="message", "mention", "other"} type The type of notifications to dismiss
+  * @apiParam (Payload) {string="message", "mention", "other"} type The type of notifications to dismiss
+  * @apiParam (Payload) {string} id The id of the specific notification to dismiss
   *
   * @apiSuccess {object} STATUS 200 OK
   *
@@ -74,8 +75,9 @@ exports.dismiss = {
         data: { action: 'refreshMentions' }
       };
       request.server.plugins.notifications.systemNotification(notification);
+    })
+    .error(request.errorMap.toHttpError);
 
-    });
     return reply(promise);
   }
 };

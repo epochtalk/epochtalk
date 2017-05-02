@@ -2,15 +2,15 @@ var Joi = require('joi');
 
 /**
   * @api {POST} /invites/resend Resend
-  * @apiName Resend Invitation
+  * @apiName ResendInvitation
   * @apiGroup Users
   * @apiVersion 0.4.0
-  * @apiDescription Used to resend an invitation to a user.
+  * @apiDescription Used to resend an invitation to a user
   *
-  * @apiParam (Payload) {string} email User's email address.
+  * @apiParam (Payload) {string} email User's email address
   *
   * @apiSuccess {string} message Invitation sent success message
-  * @apiSuccess {string} confirm_token Invitation token
+  * @apiSuccess {string} confirm_token Invitation confirmation token
   *
   * @apiError BadRequest There was an error resending the invitation
   */
@@ -42,7 +42,8 @@ module.exports = {
         message: 'Successfully Resent Invitation',
         confirm_token: invitation.hash
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

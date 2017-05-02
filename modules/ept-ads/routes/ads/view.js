@@ -18,6 +18,23 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {GET} /ads/ View Ad
+  * @apiName ViewAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Returns a random ad out of the round of circulated ads
+  *
+  * @apiSuccess {string} id The id of the ad
+  * @apiSuccess {string} round The round in which the ad is running
+  * @apiSuccess {string} html The html source for the ad
+  * @apiSuccess {string} css The css source for the ad
+  * @apiSuccess {timestamp} created_at The created at timestamp for the ad
+  * @apiSuccess {timestamp} updated_at The updated at timestamp for the ad
+  *
+  * @apiError (Error 500) InternalServerError There was error viewing the ad
+  */
 module.exports = {
   method: 'GET',
   path: '/api/ads',
@@ -78,7 +95,8 @@ module.exports = {
     .then(function(ad) {
       ad.disclaimer = adText.getDisclaimer();
       return ad;
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

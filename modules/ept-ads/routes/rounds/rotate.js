@@ -15,6 +15,20 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {POST} /ads/rounds/rotate Rotate Ad Round
+  * @apiName RotateRoundAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to duplicate an ad within a round
+  *
+  * @apiParam (Payload) {number} round The round of ads to rotate to
+  *
+  * @apiSuccess {object} Sucess 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was error rotating the ad round
+  */
 module.exports = {
   method: 'POST',
   path: '/api/ads/rounds/rotate',
@@ -26,7 +40,8 @@ module.exports = {
   handler: function(request, reply) {
     var round = request.payload.round;
     var promise = db.rounds.rotate(round)
-    .error(function(err) { return Boom.badRequest(err.message); });
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

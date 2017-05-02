@@ -15,6 +15,22 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {POST} /ads/factoids Create Factoid
+  * @apiName CreateFactoidsAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to create a new factoid
+  *
+  * @apiParam (Payload) {string} text The factoid text
+  *
+  * @apiSuccess {string} id The id of the created factoid
+  * @apiSuccess {string} text The factoid text
+  *
+  * @apiError (Error 500) InternalServerError There was error creating the factoid
+  */
 module.exports = {
   method: 'POST',
   path: '/api/ads/factoids',
@@ -25,7 +41,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var factoid = request.payload;
-    var promise = db.factoids.create(factoid);
+    var promise = db.factoids.create(factoid)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

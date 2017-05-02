@@ -10,7 +10,9 @@ module.exports = {
     pre: [ { method: 'auth.categories.find(server, auth)' } ],
   },
   handler: function(request, reply) {
-    var promise = request.db.categories.find(request.params.id);
+    var promise = request.db.categories.find(request.params.id)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
