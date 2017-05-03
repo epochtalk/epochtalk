@@ -14,10 +14,10 @@ module.exports = function(round) {
     return client.queryAsync(check, [round])
     .then(function(response) {
       if (response.rows.length < 1) {
-        throw new NotFoundError('This round does not exists');
+        throw new NotFoundError('This round does not exist');
       }
       else if (response.rows[0].start_time) {
-        throw new ConflictError('This round has already been in use');
+        throw new ConflictError('This round has already been used');
       }
     })
     // lock table from being read
