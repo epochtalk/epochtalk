@@ -11,7 +11,7 @@ var Joi = require('joi');
   *
   * @apiSuccess {string} message Invitation removal success message
   *
-  * @apiError (Error 500) InternalServerError There was error getting removing the invite
+  * @apiError (Error 500) InternalServerError There was error removing the invite
   */
 module.exports = {
   method: 'POST',
