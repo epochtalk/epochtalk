@@ -6,7 +6,7 @@ var Joi = require('joi');
   * @api {GET} /messages/users/{username} Message Receiver Lookup
   * @apiName FindUserMessages
   * @apiPermission User
-  * @apiDescription Querry possible username matches and returns their ids for use in message delivery
+  * @apiDescription Query possible username matches and returns their ids for use in message delivery
   *
   * @apiParam {string} username The name of the user to send the message to
   *

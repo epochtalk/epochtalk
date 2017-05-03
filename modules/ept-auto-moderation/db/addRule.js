@@ -26,7 +26,7 @@ module.exports = function(rule) {
       rule.id = rows[0].id;
       return rule;
     }
-    else { throw new CreationError('Could Not Create Rule'); }
+    else { throw new CreationError('Could not create rule'); }
   })
   .then(helper.slugify);
 };

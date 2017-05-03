@@ -20,7 +20,7 @@ var Joi = require('joi');
   * @apiSuccess {string} threads.board_name The name of the board the thread is in
   * @apiSuccess {string} threads.title The title of the thread being watched
   *
-  * @apiError (Error 500) InternalServerError There was an issue retrieving the thread watchlist threads.
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
   */
 module.exports = {
   method: 'GET',
