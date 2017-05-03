@@ -8,7 +8,7 @@
     "build": "node ./scripts/build.js",
     "serve": "node ./scripts/serve.js",
     "db-create": "node ./scripts/db-create",
-    "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && psql epoch_test < ./schema.sql && ./node_modules/.bin/lab --flat -v",
+    "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && psql epoch_test < ./schema.sql",
     "start": "./node_modules/.bin/bower install && npm run build && node cli/index.js --create && node server"
   },
   "repository": {
