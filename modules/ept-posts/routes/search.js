@@ -32,7 +32,7 @@ var Joi = require('joi');
   * @apiSuccess {string} posts.user User object containing info about user who made post
   * @apiSuccess {string} posts.user.username Username of the user who made the post
   *
-  * @apiError (Error 500) InternalServerError There was error retrieving the users
+  * @apiError (Error 500) InternalServerError There was an error retrieving the users
   */
 module.exports = {
   method: 'GET',

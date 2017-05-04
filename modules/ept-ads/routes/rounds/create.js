@@ -24,7 +24,7 @@ function auth(request, reply) {
   *
   * @apiSuccess {number} round The number of the round which was created
   *
-  * @apiError (Error 500) InternalServerError There was error creating the ad round
+  * @apiError (Error 500) InternalServerError There was an error creating the ad round
   */
 module.exports = {
   method: 'POST',

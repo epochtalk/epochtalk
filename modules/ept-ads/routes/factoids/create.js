@@ -29,7 +29,7 @@ function auth(request, reply) {
   * @apiSuccess {string} id The id of the created factoid
   * @apiSuccess {string} text The factoid text
   *
-  * @apiError (Error 500) InternalServerError There was error creating the factoid
+  * @apiError (Error 500) InternalServerError There was an error creating the factoid
   */
 module.exports = {
   method: 'POST',

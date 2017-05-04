@@ -27,7 +27,7 @@ var Joi = require('joi');
   * @apiSuccess {timestamp} data.created_at The created at timestamp of the note
   * @apiSuccess {timestamp} data.updated_at The updated at timestamp of the note
   *
-  * @apiError (Error 500) InternalServerError There was error paging user notes
+  * @apiError (Error 500) InternalServerError There was an error paging user notes
   * @apiError (Error 403) Forbidden User doesn't have permission to query user notes
   */
 exports.page = {
@@ -68,7 +68,7 @@ exports.page = {
   * @apiSuccess {timestamp} created_at The created at timestamp of the note
   * @apiSuccess {timestamp} updated_at The updated at timestamp of the note
   *
-  * @apiError (Error 500) InternalServerError There was error creating user note
+  * @apiError (Error 500) InternalServerError There was an error creating user note
   * @apiError (Error 403) Forbidden User doesn't have permission to create user note
   */
 exports.create = {
@@ -125,7 +125,7 @@ exports.create = {
   * @apiSuccess {timestamp} created_at The created at timestamp of the note
   * @apiSuccess {timestamp} updated_at The updated at timestamp of the note
   *
-  * @apiError (Error 500) InternalServerError There was error updating user note
+  * @apiError (Error 500) InternalServerError There was an error updating user note
   * @apiError (Error 403) Forbidden User doesn't have permission to update the user note
   */
 exports.update = {
@@ -181,7 +181,7 @@ exports.update = {
   * @apiSuccess {timestamp} created_at The created at timestamp of the note
   * @apiSuccess {timestamp} updated_at The updated at timestamp of the note
   *
-  * @apiError (Error 500) InternalServerError There was error deleting the user note
+  * @apiError (Error 500) InternalServerError There was an error deleting the user note
   * @apiError (Error 403) Forbidden User doesn't have permission to delete user note
   */
 exports.delete = {

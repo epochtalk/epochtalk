@@ -32,7 +32,7 @@ function auth(request, reply) {
   * @apiSuccess {string} html The updated html source
   * @apiSuccess {string} css The updated css source
   *
-  * @apiError (Error 500) InternalServerError There was error updating the ad
+  * @apiError (Error 500) InternalServerError There was an error updating the ad
   */
 module.exports = {
   method: 'PUT',

@@ -30,7 +30,7 @@ function auth(request, reply) {
   * @apiSuccess {string} id The unique id of the factoid which was update
   * @apiSuccess {string} text The updated factoid text
   *
-  * @apiError (Error 500) InternalServerError There was error updating the factoid
+  * @apiError (Error 500) InternalServerError There was an error updating the factoid
   */
 module.exports = {
   method: 'PUT',

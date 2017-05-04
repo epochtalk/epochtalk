@@ -35,7 +35,7 @@ var querystring = require('querystring');
   * @apiSuccess {string[]} roles An array containing the users role lookups
   *
   * @apiError (Error 404) NotFound The user was not found
-  * @apiError (Error 500) InternalServerError There was error looking up the user
+  * @apiError (Error 500) InternalServerError There was an error looking up the user
   */
 module.exports = {
   method: 'GET',

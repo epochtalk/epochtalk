@@ -13,7 +13,7 @@ var Joi = require('joi');
   * @apiSuccess {string} userId The id of the user whose posts are unignore
   * @apiSuccess {boolean} ignored Boolean indicating if the user's posts are being ignored
   *
-  * @apiError (Error 500) InternalServerError There was error unignoring the user's posts
+  * @apiError (Error 500) InternalServerError There was an error unignoring the user's posts
   */
 module.exports = {
   method: 'POST',

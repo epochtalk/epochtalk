@@ -27,7 +27,7 @@ function auth(request, reply) {
   *
   * @apiSuccess {object} HTTP Code STATUS 200 OK
   *
-  * @apiError (Error 500) InternalServerError There was error removing the ad
+  * @apiError (Error 500) InternalServerError There was an error removing the ad
   */
 module.exports = {
   method: 'DELETE',

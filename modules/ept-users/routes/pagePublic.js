@@ -30,7 +30,7 @@ var Joi = require('joi');
   * @apiSuccess {timestamp} users.post_count The number of posts this user has made
   * @apiSuccess {timestamp} users.avatar The user's avatar
   *
-  * @apiError (Error 500) InternalServerError There was error retrieving the users
+  * @apiError (Error 500) InternalServerError There was an error retrieving the users
   */
 module.exports = {
   method: 'GET',

@@ -30,7 +30,7 @@ var Promise = require('bluebird');
   * @apiSuccess {timestamp} users.roles.created_at Timestamp of when the role was created
   * @apiSuccess {timestamp} users.roles.updated_at Timestamp of when the role was last updated
   *
-  * @apiError (Error 500) InternalServerError There was error adding roles to the user
+  * @apiError (Error 500) InternalServerError There was an error adding roles to the user
   */
 exports.addRoles = {
   auth: { strategy: 'jwt' },
@@ -103,7 +103,7 @@ exports.addRoles = {
   * @apiSuccess {timestamp} roles.created_at Timestamp of when the role was created
   * @apiSuccess {timestamp} roles.updated_at Timestamp of when the role was last updated
   *
-  * @apiError (Error 500) InternalServerError There was error removing roles from the user
+  * @apiError (Error 500) InternalServerError There was an error removing roles from the user
   */
 exports.removeRoles = {
   auth: { strategy: 'jwt' },
@@ -165,7 +165,7 @@ exports.removeRoles = {
   *
   * @apiSuccess {string[]} usernames An array containing usernames with accounts on the forum
   *
-  * @apiError (Error 500) InternalServerError There was error searching for usernames
+  * @apiError (Error 500) InternalServerError There was an error searching for usernames
   */
 exports.searchUsernames = {
   auth: { strategy: 'jwt' },
@@ -203,7 +203,7 @@ exports.searchUsernames = {
   *
   * @apiSuccess {number} count The number of users registered given the passed in parameters
   *
-  * @apiError (Error 500) InternalServerError There was error calculating the user count
+  * @apiError (Error 500) InternalServerError There was an error calculating the user count
   */
 exports.count = {
   auth: { strategy: 'jwt' },
@@ -265,7 +265,7 @@ exports.count = {
   * @apiSuccess {timestamp} users.updated_at Timestamp of when the user was last updated
   * @apiSuccess {timestamp} users.imported_at Timestamp of when the user was imported, null if not imported
   *
-  * @apiError (Error 500) InternalServerError There was error retrieving the users
+  * @apiError (Error 500) InternalServerError There was an error retrieving the users
   */
 exports.page = {
   auth: { strategy: 'jwt' },

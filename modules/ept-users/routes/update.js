@@ -48,8 +48,8 @@ var Joi = require('joi');
   * @apiSuccess {number} posts_per_page Preference indicating the number of posts the user wants to view per page
   * @apiSuccess {number} threads_per_page Preference indicating the number of threads the user wants to view per page
   *
-  * @apiError BadRequest Occurs when resetting password and an invalid old password is provided
-  * @apiError (Error 500) InternalServerError There was error updating the user
+  * @apiError (Error 400) BadRequest Occurs when resetting password and an invalid old password is provided
+  * @apiError (Error 500) InternalServerError There was an error updating the user
   */
 module.exports = {
   method: 'PUT',

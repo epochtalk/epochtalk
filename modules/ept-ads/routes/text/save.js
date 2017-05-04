@@ -29,7 +29,7 @@ function auth(request, reply) {
   * @apiSuccess {string} disclaimer The disclaimer text html source for ads
   * @apiSuccess {string} info The information text html source for ads
   *
-  * @apiError (Error 500) InternalServerError There was error saving the ad view text
+  * @apiError (Error 500) InternalServerError There was an error saving the ad view text
   */
 module.exports = {
   method: 'POST',

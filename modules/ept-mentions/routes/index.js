@@ -33,7 +33,7 @@ var Joi = require('joi');
   * @apiSuccess {string} data.body The body of the post the mention is in (If extended=true)
   * @apiSuccess {string} data.raw_body The unprocess body of the post the mention is in (If extended=true)
   *
-  * @apiError (Error 500) InternalServerError There was error paging user mentions
+  * @apiError (Error 500) InternalServerError There was an error paging user mentions
   */
 var page = {
   method: 'GET',
@@ -141,7 +141,7 @@ var remove = {
   * @apiSuccess {string} data.avatar The avatar of the user being ignored
   * @apiSuccess {boolean} data.ignored Boolean indicating if the user's mentions are being ignored
   *
-  * @apiError (Error 500) InternalServerError There was error paging ignored users
+  * @apiError (Error 500) InternalServerError There was an error paging ignored users
   */
 var pageIgnoredUsers = {
   method: 'GET',
