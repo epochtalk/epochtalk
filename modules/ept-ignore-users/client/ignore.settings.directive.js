@@ -28,12 +28,12 @@ var directive = ['IgnoreUsers', '$timeout', '$anchorScroll',
       // page actions
 
       this.unignore = function(user) {
-        return IgnoreUsers.unignore({userId: user.id}).$promise
+        return IgnoreUsers.unignore({id: user.id}).$promise
         .then(function() { $timeout(function() { user.ignored = false; }); });
       };
 
       this.ignore = function(user) {
-        return IgnoreUsers.ignore({userId: user.id}).$promise
+        return IgnoreUsers.ignore({id: user.id}).$promise
         .then(function(res) { $timeout(function() { user.ignored = true; }); return res; });
       };
 
