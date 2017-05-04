@@ -34,7 +34,7 @@ function auth(request, reply) {
   * @apiParam (Payload) {string} conditions.regex.flags The regex flags
   * @apiParam (Payload) {string[]="reject","ban","edit","delete"} actions Array containing what action is taken when the rule is matched
   * @apiParam (Payload) {object} options Contains settings related to the action that is taken
-  * @apiParam (Payload) {number} options.banInterval How many days to ban the user for, leave blank for permanent ban
+  * @apiParam (Payload) {number} options.ban_interval How many days to ban the user for, leave blank for permanent ban
   * @apiParam (Payload) {object} options.edit Contains information for replacing matched rule text
   * @apiParam (Payload) {object} options.edit.replace Contains info for what text to replace
   * @apiParam (Payload) {object} options.edit.replace.regex Regex to match text to replace
@@ -54,7 +54,7 @@ function auth(request, reply) {
   * @apiSuccess {string} conditions.regex.flags The regex flags
   * @apiSuccess {string[]="reject","ban","edit","delete"} actions Array containing what action is taken when the rule is matched
   * @apiSuccess {object} options Contains settings related to the action that is taken
-  * @apiSuccess {number} options.banInterval How many days to ban the user for, leave blank for permanent ban
+  * @apiSuccess {number} options.ban_interval How many days to ban the user for, leave blank for permanent ban
   * @apiSuccess {object} options.edit Contains information for replacing matched rule text
   * @apiSuccess {object} options.edit.replace Contains info for what text to replace
   * @apiSuccess {object} options.edit.replace.regex Regex to match text to replace
@@ -84,7 +84,7 @@ module.exports = {
         })).min(1).required(),
         actions: Joi.array().items(Joi.string().valid('reject', 'ban', 'edit', 'delete')).min(1).required(),
         options: {
-          banInterval: Joi.number(),
+          ban_interval: Joi.number(),
           edit: {
             replace: {
               regex: Joi.object().keys({
