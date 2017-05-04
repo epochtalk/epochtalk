@@ -14,7 +14,7 @@ var Joi = require('joi');
   * @apiSuccess {boolean} token_valid true if the token is valid false if it is not
   * @apiSuccess {boolean} token_expired true if token is expired false if not. Undefined if token is invalid
   *
-  * @apiError BadRequest The user account could not be found
+  * @apiError (Error 400) BadRequest The user account could not be found
   */
 module.exports = {
   method: 'GET',
