@@ -49,8 +49,8 @@ function defaultRoundNumber(request, reply) {
   * @apiSuccess {number} ads.round The round number of the ad
   * @apiSuccess {string} ads.html The html source for the ad
   * @apiSuccess {string} ads.css The css source for the ad
-  * @apiSuccess {string} ads.displayHtml The compiled display html
-  * @apiSuccess {string} ads.displayCss The compiled display css
+  * @apiSuccess {string} ads.display_html The compiled display html
+  * @apiSuccess {string} ads.display_css The compiled display css
   * @apiSuccess {timestamp} ads.created_at The created at timestamp for the ad
   * @apiSuccess {timestamp} ads.updated_at The updated at timestamp for the ad
   * @apiSuccess {object[]} factoids An array of factoids in circulation
@@ -123,7 +123,7 @@ module.exports = {
     .tap(function(retVal) {
       retVal.ads.map(function(ad) {
         if (!ad.css) {
-          ad.displayHtml = ad.html;
+          ad.display_html = ad.html;
           return ad;
         }
         var time = Date.now().toString();
@@ -131,8 +131,8 @@ module.exports = {
         randomHash = randomHash.replace(/\d/g, function(match) {
           return String.fromCharCode(97 + Number(match));
         });
-        ad.displayCss = ad.css.replace('${hash}', randomHash);
-        ad.displayHtml = ad.html.replace('${hash}', randomHash);
+        ad.display_css = ad.css.replace('${hash}', randomHash);
+        ad.display_html = ad.html.replace('${hash}', randomHash);
         return ad;
       });
     })

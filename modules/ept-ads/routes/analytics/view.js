@@ -43,8 +43,8 @@ function defaultRoundNumber(request, reply) {
   * @apiSuccess {number} round.current The round of ads that are currentlying running
   * @apiSuccess {number} round.previous The previous round
   * @apiSuccess {number} round.next The next round
-  * @apiSuccess {timestamp} round.startTime The timestamp of when the round started
-  * @apiSuccess {timestamp} round.endTime The timestamp of when the round ended
+  * @apiSuccess {timestamp} round.start_time The timestamp of when the round started
+  * @apiSuccess {timestamp} round.end_time The timestamp of when the round ended
   * @apiSuccess {object[]} analytics Object containing analytics data about each ad in the round, index of ad corresponds the ad number
   * @apiSuccess {number} analytics.total_impressions The total number of impressions for this ad
   * @apiSuccess {number} analytics.total_authed_impressions The total number of impressions for this ad from authorized users (not unique)
@@ -88,8 +88,8 @@ module.exports = {
           current: current,
           next: next,
           previous: previous,
-          startTime: roundInfo.start_time,
-          endTime: roundInfo.end_time
+          start_time: roundInfo.start_time,
+          end_time: roundInfo.end_time
         },
         analytics: views
       };
