@@ -48,15 +48,15 @@ var directive = ['Ads', 'Alert', '$timeout', function(Ads, Alert, $timeout) {
         ctrl.ads.forEach(function(ad, index) {
           // render css
           var node = document.getElementById(ad.id);
-          if (!node && ad.displayCss) {
+          if (!node && ad.display_css) {
             ctrl.adsCss.push(ad.id); // keep track of what we loaded
             node = document.createElement('style');
             node.setAttribute('id', ad.id);
-            node.innerHTML = ad.displayCss;
+            node.innerHTML = ad.display_css;
             document.body.appendChild(node);
           }
           // render html
-          document.getElementById('ad-' + index).innerHTML = ad.displayHtml;
+          document.getElementById('ad-' + index).innerHTML = ad.display_html;
         });
       };
 

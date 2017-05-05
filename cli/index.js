@@ -39,7 +39,7 @@ var admin = function(adminEmail) {
     var emailParams = {
       email: user.email,
       username: user.username,
-      siteName: 'EpochTalk',
+      site_name: 'EpochTalk',
       reset_url: process.env.PUBLIC_URL + '/' + path.join('reset', user.username, user.reset_token)
     };
     return emailer.send('recoverAccount', emailParams);

@@ -37,14 +37,14 @@ var directive = ['IgnoreUsers', 'Session', 'Alert', '$state',
       };
 
       this.ignore = function() {
-        return IgnoreUsers.ignore({userId: ctrl.user.id}).$promise
+        return IgnoreUsers.ignore({id: ctrl.user.id}).$promise
         .then(function() { Alert.success('Ignoring ' + ctrl.user.username); })
         .then(function() { $state.go($state.$current, { page: undefined, start: ctrl.post.position, '#': ctrl.post.id }, {reload:true}); })
         .catch(function(){ Alert.error('Error trying to ignore user.'); });
       };
 
       this.unignore = function() {
-        return IgnoreUsers.unignore({userId: ctrl.user.id}).$promise
+        return IgnoreUsers.unignore({id: ctrl.user.id}).$promise
         .then(function() { Alert.success('No longer ignoring ' + ctrl.user.username); })
         .then(function() { $state.go($state.$current, { page: undefined, start: ctrl.post.position, '#': ctrl.post.id }, {reload:true}); })
         .catch(function(){ Alert.error('Error trying to stop ignoring user.'); });

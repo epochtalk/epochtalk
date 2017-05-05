@@ -21,7 +21,7 @@ var Promise = require('bluebird');
   * @apiSuccess {string[]} moderating Array of user's moderatered board ids
   * @apiSuccess {object} permissions Object containing user's permissions
   *
-  * @apiError BadRequest Account was not found or confirmation token doesn't match
+  * @apiError (Error 400) BadRequest Account was not found or confirmation token doesn't match
   * @apiError (Error 500) InternalServerError There was an issue confirming the user account
   */
 module.exports = {

@@ -116,7 +116,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
       if ($scope.deletedCategories.length < 1) { return $q.resolve(); }
       console.log('4) Handling deleted categories: \n' + JSON.stringify($scope.deletedCategories, null, 2));
 
-      return Categories.delete($scope.deletedCategories).$promise
+      return Categories.delete({ category_ids: $scope.deletedCategories }).$promise
       .then(function() {
         while($scope.deletedCategories.length > 0) { $scope.deletedCategories.pop(); }
       })

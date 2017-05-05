@@ -3,15 +3,24 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Users
-  * @api {GET} /ignoreUsers/ignored Ignore User Posts
-  * @apiName IgnoreUserPosts
+  * @api {GET} /ignoreUsers/ignored Page Ignored Users
+  * @apiName PageIgnoredUsers
   * @apiPermission User
-  * @apiDescription Used to ignore a particular user's posts
+  * @apiDescription Used to page through ignored users
   *
-  * @apiParam {string} userId The id of the user whose posts to ignore
+  * @apiParam {number} [page=1] The page of ignored users to return
+  * @apiParam {number} [limit=25] The number of ignored users to return per page
   *
-  * @apiSuccess {string} userId The id of the user whose posts are ignored
-  * @apiSuccess {boolean} ignored Boolean indicating if the user's posts are being ignored
+  * @apiSuccess {number} page The page of ignored users being returned
+  * @apiSuccess {number} limit The number of ignored users being returned per page
+  * @apiSuccess {boolean} prev Boolean indicating if there is a previous page
+  * @apiSuccess {boolean} next Boolean indicating if there is a next page
+  * @apiSuccess {object[]} data Array of ignored users
+  * @apiSuccess {string} data.id The id of the user being ignored
+  * @apiSuccess {timestamp} data.ignored_since Timestamp of when the user was ignored
+  * @apiSuccess {string} data.username The username of the user being ignored
+  * @apiSuccess {string} data.avatar The avatar of the user being ignored
+  * @apiSuccess {boolean} data.ignored Boolean indicating if the user is ignored
   *
   * @apiError (Error 500) InternalServerError There was an error ignoring the user's posts
   */
