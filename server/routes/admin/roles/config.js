@@ -1,6 +1,5 @@
 var Joi = require('joi');
 var _ = require('lodash');
-var Boom = require('boom');
 
 /**
   * @apiVersion 0.4.0
@@ -10,7 +9,14 @@ var Boom = require('boom');
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Retrieve all role.
   *
-  * @apiSuccess {array} roles An array of all the roles.
+  * @apiSuccess {object[]} roles An array of all the roles.
+  * @apiSuccess {string} roles.id The unique id of the role
+  * @apiSuccess {string} roles.name The name of the role
+  * @apiSuccess {string} roles.description The description of the role
+  * @apiSuccess {string} roles.lookup A unique identifier for the role
+  * @apiSuccess {number{0..n}} roles.priority The priority of the role, with 0 being the highest priority
+  * @apiSuccess {string} roles.highlight_color An html hex value color used to highlight users based on their role
+  * @apiSuccess {object} permissions An object containing all this roles permissions
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the roles.
   */
@@ -36,15 +42,16 @@ exports.all = {
   *
   * @apiParam (Payload) {string} id The id of the role to find users for
   *
-  * @apiParam (Query) {number} page=1 The page of users to retrieve
-  * @apiParam (Query) {number} limit=15 The number of users to retrieve per page
+  * @apiParam (Query) {number} [page=1] The page of users to retrieve
+  * @apiParam (Query) {number} [limit=15] The number of users to retrieve per page
+  * @apiParam (Query) {string} [search] Allows user to filter the search results
   *
-  * @apiSuccess {object} userData An object containing user data.
-  * @apiSuccess {object[]} userData.users An array holding users with this role
-  * @apiSuccess {string} userData.users.id The id of the user
-  * @apiSuccess {string} userData.users.user The The username of the user
-  * @apiSuccess {string} userData.users.email The email of the user
-  * @apiSuccess {number} userData.count The total number of users within this role. Used for paging
+  * @apiSuccess {object[]} users An array holding users with this role
+  * @apiSuccess {string} users.id The id of the user
+  * @apiSuccess {string} users.username The The username of the user
+  * @apiSuccess {string} users.email The email of the user
+  * @apiSuccess {string[]} users.roles An array containing the lookups values of all the roles this user has
+  * @apiSuccess {number} users.priority The user's highest role priority
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the user data.
   */
@@ -92,7 +99,7 @@ exports.users = {
   * @apiParam (Payload) {string} name The name of the role to add.
   * @apiParam (Payload) {string} description The description of the role to add.
   * @apiParam (Payload) {string} priority The priorty of the role to add.
-  * @apiParam (Payload) {string} highlightColor The highlight color of the role to add.
+  * @apiParam (Payload) {string} [highlight_color] The highlight color of the role to add.
   * @apiParam (Payload) {Object} permissions The permission set for this role.
   *
   * @apiSuccess {string} id The unique id of the added role.
@@ -152,7 +159,8 @@ exports.add = {
   * @apiParam (Payload) {string} name The updated name of the role.
   * @apiParam (Payload) {string} description The updated description of the role.
   * @apiParam (Payload) {string} priority The updated priorty of the role.
-  * @apiParam (Payload) {string} [highlightColor] The updated highlight color.
+  * @apiParam (Payload) {string} [highlight_color] The updated highlight color.
+  * @apiParam (Payload) {string} lookup The lookup string of the role.
   * @apiParam (Payload) {Object} permissions The updated permission set.
   *
   * @apiSuccess {string} id The unique id of the updated role.
@@ -179,13 +187,13 @@ exports.update = {
       description: Joi.string().min(1).max(1000).required(),
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
       highlight_color: Joi.string(),
+      lookup: Joi.string().required(),
       permissions: Joi.object().required()
     }
   },
   pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
   handler: function(request, reply) {
     var role = request.payload;
-    role.lookup = role.id;
     var promise = request.db.roles.update(role)
     .tap(function(dbRole) {
       var roleClone = _.cloneDeep(dbRole);
@@ -215,9 +223,10 @@ exports.update = {
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Remove a role.
   *
-  * @apiParam (Params) {string} role_id The id of the role to remove.
+  * @apiParam {string} id The id of the role to remove.
   *
   * @apiSuccess {string} id The unique id of the removed role.
+  * @apiSuccess {string} name The name of the removed role.
   *
   * @apiError (Error 500) InternalServerError There was an issue removing the role.
   */
@@ -262,7 +271,9 @@ exports.remove = {
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Reprioritizes all roles.
   *
-  * @apiParam (Payload) {Array} roles with new priorities.
+  * @apiParam (Payload) {object[]} roles Array containing role objects
+  * @apiParam (Payload) {string} roles.id The id of the role
+  * @apiParam (Payload) {string} roles.priority The updated priorty of the role
   *
   * @apiSuccess {object} STATUS 200 OK
   *
@@ -288,19 +299,6 @@ exports.reprioritize = {
       request.rolesAPI.reprioritizeRoles(roles);
       return result;
     })
-    .error(request.errorMap.toHttpError);
-
-    return reply(promise);
-  }
-};
-
-exports.priorities = {
-  auth: { strategy: 'jwt' },
-  plugins: { acls: 'adminRoles.all' },
-  validate: { payload: { user_id: Joi.string().required() } },
-  handler: function(request, reply) {
-    var userId = request.payload.user_id;
-    var promise = request.db.roles.priorities(userId)
     .error(request.errorMap.toHttpError);
 
     return reply(promise);

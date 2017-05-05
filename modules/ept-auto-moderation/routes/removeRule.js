@@ -16,6 +16,20 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup AutoModeration
+  * @api {DELETE} /automoderation/rules/:id Remove Rule
+  * @apiName RemoveRuleAutoModeration
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to remove an existing auto moderation rule
+  *
+  * @apiParam {string} id The unique id of the rule to remove
+  *
+  * @apiSuccess {object} HTTP Code STATUS 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was an error removing the auto moderation rule
+  */
 module.exports = {
   method: 'DELETE',
   path: '/api/automoderation/rules/{id}',

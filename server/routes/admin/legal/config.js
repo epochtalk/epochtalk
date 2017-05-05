@@ -12,7 +12,12 @@ var baseDefaultPath = __dirname + '/../../../../defaults/legal/';
   * @apiName LegalText
   * @apiDescription Used to fetch the ToS, privacy policy and disclaimer to be updated by the user.
   *
-  * @apiSuccess {object} config See config.js in the root of the project
+  * @apiSuccess {string} tos The source html for the terms of service page
+  * @apiSuccess {string} privacy The source html for the privacy page
+  * @apiSuccess {string} disclaimer The source html for the disclaimer page
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the ToS, privacy policy and disclaimer.
+  *
   */
 exports.text = {
   auth: { strategy: 'jwt' },
@@ -65,7 +70,12 @@ exports.text = {
   * @apiParam (Payload) {string} [privacy] The updated privacy policy.
   * @apiParam (Payload) {string} [disclaimers] The updated disclaimers.
   *
-  * @apiSuccess {object} config Same object that was passed in is returned upon success
+  * @apiSuccess {string} tos The source html for the terms of service page
+  * @apiSuccess {string} privacy The source html for the privacy page
+  * @apiSuccess {string} disclaimer The source html for the disclaimer page
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the ToS, privacy policy and disclaimer.
+  *
   */
 exports.update = {
   auth: { strategy: 'jwt' },
@@ -115,9 +125,12 @@ exports.update = {
   * @apiName ResetLegal
   * @apiDescription Used to reset legal text to default text
   *
-  * @apiSuccess {boolean} Status 200 OK
+  * @apiSuccess {string} tos The source html for the terms of service page
+  * @apiSuccess {string} privacy The source html for the privacy page
+  * @apiSuccess {string} disclaimer The source html for the disclaimer page
   *
-  * @apiError (Error 500) InternalServerError There was an issue retrieving the blacklist.
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the ToS, privacy policy and disclaimer.
+  *
   */
 exports.reset = {
   auth: { strategy: 'jwt' },

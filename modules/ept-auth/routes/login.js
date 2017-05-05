@@ -14,11 +14,15 @@ var Promise = require('bluebird');
   * @apiParam (Payload) {string} password User's password
   *
   * @apiSuccess {string} token User's authentication token
-  * @apiSuccess {string} username User's unique username
-  * @apiSuccess {string} userId User's unique id
+  * @apiSuccess {string} id User's unique id
+  * @apiSuccess {string} username The user account username
+  * @apiSuccess {string} avatar User's avatar url
+  * @apiSuccess {object} permissions Object containing user's permissions
+  * @apiSuccess {string[]} moderating Array of user's moderated board ids
+  * @apiSuccess {string[]} roles Array of user's roles
   *
-  * @apiError BadRequest Invalid credentials were provided or the account hasn't been confirmed
-  * @apiError (Error 500) InternalServerError There was an issue looking up the user in the db
+  * @apiError (Error 400) BadRequest Invalid credentials were provided or the account hasn't been confirmed
+  * @apiError (Error 500) InternalServerError There was an issue logging in
   */
 module.exports = {
   method: 'POST',

@@ -22,6 +22,34 @@ function currentRound(request, reply) {
   return reply(roundNumber);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {GET} /ads/rounds/info View Round Information
+  * @apiName ViewRoundInfoAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Returns information about the current ad round
+  *
+  * @apiSuccess {object[]} ads An array of ads in the current round
+  * @apiSuccess {string} ads.id The id of the ad
+  * @apiSuccess {number} ads.round The round number of the ad
+  * @apiSuccess {string} ads.html The html source for the ad
+  * @apiSuccess {string} ads.css The css source for the ad
+  * @apiSuccess {string} ads.displayHtml The compiled display html
+  * @apiSuccess {string} ads.displayCss The compiled display css
+  * @apiSuccess {timestamp} ads.created_at The created at timestamp for the ad
+  * @apiSuccess {timestamp} ads.updated_at The updated at timestamp for the ad
+  * @apiSuccess {object[]} factoids An array of factoids in circulation
+  * @apiSuccess {string} factoids.id The id of the factoid
+  * @apiSuccess {string} factoids.text The factoid text
+  * @apiSuccess {boolean} factoids.enabled Boolean indicating if factoid is enabled
+  * @apiSuccess {timestamp} factoids.created_at The created at timestamp for the factoid
+  * @apiSuccess {timestamp} factoids.updated_at The updated at timestamp for the factoid
+  * @apiSuccess {object} text Object which contains info to be displayed on the /ads/info view
+  * @apiSuccess {string} text.info HTML source to be displayed on the /ads/info view
+  *
+  * @apiError (Error 500) InternalServerError There was an error viewing the round information
+  */
 module.exports = {
   method: 'GET',
   path: '/api/ads/rounds/info',

@@ -15,6 +15,20 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {DELETE} /ads/factoids/:id Remove Factoid
+  * @apiName RemoveFactoidAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to remove a factoid
+  *
+  * @apiParam {string} id The unique id of the factoid to remove
+  *
+  * @apiSuccess {object} HTTP Code STATUS 200 OK
+  *
+  * @apiError (Error 500) InternalServerError There was an error removing the factoid
+  */
 module.exports = {
   method: 'DELETE',
   path: '/api/ads/factoids/{id}',

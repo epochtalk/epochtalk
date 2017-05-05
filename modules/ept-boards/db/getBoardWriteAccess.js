@@ -1,5 +1,4 @@
 var path = require('path');
-var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
@@ -13,7 +12,7 @@ module.exports = function(boardId, userPriority) {
   return db.sqlQuery(q, [boardId])
   .then(function(rows) {
     if (rows.length > 0 ) { return rows[0].postable_by; }
-    else { throw new NotFoundError('Field \'postable_by\' Not Found'); }
+    else { throw new NotFoundError('Unable to determine write access for board'); }
   })
   .then(function(postable_by) {
     var postable = false;

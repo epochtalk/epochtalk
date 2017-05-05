@@ -11,7 +11,7 @@ module.exports = function(postId, userPriority) {
   return db.sqlQuery(q, [postId])
   .then(function(rows) {
     if (rows.length > 0 ) { return rows[0].board_id; }
-    else { throw new NotFoundError('Field \'board_id\' Not Found'); }
+    else { throw new NotFoundError('Board Not Found'); }
   })
   .then(function(boardId) {
     var q =

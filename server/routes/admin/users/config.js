@@ -24,10 +24,13 @@ var Promise = require('bluebird');
   * @apiSuccess {string} users.roles.name The name of the role
   * @apiSuccess {string} users.roles.description The description of the role
   * @apiSuccess {object} users.roles.permissions The permissions that this role has
+  * @apiSuccess {number{1..n}} users.roles.priority The priority of this role
+  * @apiSuccess {string} users.roles.lookup The unique lookup string of this role
+  * @apiSuccess {string} users.roles.highlight_color The html highlight color for this role
   * @apiSuccess {timestamp} users.roles.created_at Timestamp of when the role was created
   * @apiSuccess {timestamp} users.roles.updated_at Timestamp of when the role was last updated
   *
-  * @apiError (Error 500) InternalServerError There was error adding roles to the user
+  * @apiError (Error 500) InternalServerError There was an error adding roles to the user
   */
 exports.addRoles = {
   auth: { strategy: 'jwt' },
@@ -94,10 +97,13 @@ exports.addRoles = {
   * @apiSuccess {string} roles.name The name of the role
   * @apiSuccess {string} roles.description The description of the role
   * @apiSuccess {object} roles.permissions The permissions that this role has
+  * @apiSuccess {number{1..n}} roles.priority The priority of this role
+  * @apiSuccess {string} roles.lookup The unique lookup string of this role
+  * @apiSuccess {string} roles.highlight_color The html highlight color for this role
   * @apiSuccess {timestamp} roles.created_at Timestamp of when the role was created
   * @apiSuccess {timestamp} roles.updated_at Timestamp of when the role was last updated
   *
-  * @apiError (Error 500) InternalServerError There was error removing roles from the user
+  * @apiError (Error 500) InternalServerError There was an error removing roles from the user
   */
 exports.removeRoles = {
   auth: { strategy: 'jwt' },
@@ -158,9 +164,8 @@ exports.removeRoles = {
   * @apiParam (Query) {number} [limit=15] The number of usernames to return while searching
   *
   * @apiSuccess {string[]} usernames An array containing usernames with accounts on the forum
-  * @apiSuccess {string} usernames.username Unique username of a user
   *
-  * @apiError (Error 500) InternalServerError There was error searching for usernames
+  * @apiError (Error 500) InternalServerError There was an error searching for usernames
   */
 exports.searchUsernames = {
   auth: { strategy: 'jwt' },
@@ -194,10 +199,11 @@ exports.searchUsernames = {
   * @apiParam (Query) {string="banned"} [filter] If banned is passed in, route will return count
   * of banned users.
   * @apiParam (Query) {string} [search] Used to filter count by search string
+  * @apiParam (Query) {boolean} [ip] Boolean indicating that search string is an ip address
   *
   * @apiSuccess {number} count The number of users registered given the passed in parameters
   *
-  * @apiError (Error 500) InternalServerError There was error calculating the user count
+  * @apiError (Error 500) InternalServerError There was an error calculating the user count
   */
 exports.count = {
   auth: { strategy: 'jwt' },
@@ -244,16 +250,22 @@ exports.count = {
   * in descending order
   * @apiParam (Query) {string="banned"} [filter] If banned is passed in only banned users are returned
   * @apiParam (Query) {string} [search] Username to search for
+  * @apiParam (Query) {boolean} [ip] Boolean indicating that search string is an ip address
   *
   * @apiSuccess {object[]} users An array of user objects
   * @apiSuccess {string} users.id The unique id of the user
   * @apiSuccess {string} users.username The username of the user
   * @apiSuccess {string} users.email The email of the user
+  * @apiSuccess {boolean} users.deleted Boolean indicating if the user's account is deleted
+  * @apiSuccess {string[]} users.user_ips Array of user's known IP addresses
+  * @apiSuccess {boolean} users.deleted Boolean indicating if the user's account is deleted
+  * @apiSuccess {timestamp} users.last_active Timestamp of when the user's account was last active
   * @apiSuccess {timestamp} users.ban_expiration Timestamp of when the user's ban expires
   * @apiSuccess {timestamp} users.created_at Timestamp of when the user was created
   * @apiSuccess {timestamp} users.updated_at Timestamp of when the user was last updated
+  * @apiSuccess {timestamp} users.imported_at Timestamp of when the user was imported, null if not imported
   *
-  * @apiError (Error 500) InternalServerError There was error retrieving the users
+  * @apiError (Error 500) InternalServerError There was an error retrieving the users
   */
 exports.page = {
   auth: { strategy: 'jwt' },

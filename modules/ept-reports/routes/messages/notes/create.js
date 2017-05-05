@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Reports
-  * @api {POST} /admin/reports/messagenotes (Admin) Create Message Report Note
+  * @api {POST} /reports/messagenotes (Admin) Create Message Report Note
   * @apiName CreateMessageReportNote
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to leave a note on message moderation reports.
@@ -25,7 +25,7 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'POST',
-  path: '/api/reports/messagesnotes',
+  path: '/api/reports/messagenotes',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {

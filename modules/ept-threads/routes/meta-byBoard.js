@@ -1,21 +1,5 @@
 var Joi = require('joi');
-var Boom = require('boom');
 
-/**
-  * @apiVersion 0.4.0
-  * @apiGroup Threads
-  * @api {GET} /threads Page By Board
-  * @apiName PageThreadsByBoard
-  * @apiDescription Used to page through a board's threads.
-  *
-  * @apiParam (Query) {string} board_id The board whose threads to page through
-  * @apiParam (Query) {number} page=1 The page of threads to bring back
-  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
-  *
-  * @apiSuccess {array} threads An array containing threads for the requested board, page and limit
-  *
-  * @apiError (Error 500) InternalServerError There was an issue retrieving the threads
-  */
 module.exports = {
   method: 'GET',
   path: '/boards/{board_id}',

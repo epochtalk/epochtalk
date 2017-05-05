@@ -8,8 +8,9 @@ var Joi = require('joi');
   * @apiPermission User
   * @apiDescription Used to unmark a user as watching a thread.
   *
-  * @apiUse WatchlistObjectPayload
-  * @apiUse WatchlistObjectSuccess
+  * @apiParam {string} id The unique id of the thread being unwatched
+  *
+  * @apiSuccess {object} status 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue unwatching the thread
   */
