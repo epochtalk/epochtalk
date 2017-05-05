@@ -28,7 +28,7 @@ function auth(request, reply) {
   *
   * @apiSuccess {object} HTTP Code STATUS 200 OK
   *
-  * @apiError (Error 500) InternalServerError There was error removing the auto moderation rule
+  * @apiError (Error 500) InternalServerError There was an error removing the auto moderation rule
   */
 module.exports = {
   method: 'DELETE',

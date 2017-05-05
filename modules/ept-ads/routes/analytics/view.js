@@ -51,7 +51,7 @@ function defaultRoundNumber(request, reply) {
   * @apiSuccess {number} analytics.total_unique_ip_impressions The total number of impressions for this ad from unique ip addresses
   * @apiSuccess {number} analytics.total_unique_authed_users_impressions The total number of impressions for this ad from authorized users (unique)
   *
-  * @apiError (Error 500) InternalServerError There was error viewing the analytics for ads
+  * @apiError (Error 500) InternalServerError There was an error viewing the analytics for ads
   */
 module.exports = {
   method: 'GET',

@@ -22,7 +22,7 @@ var Joi = require('joi');
   * @apiSuccess {string} data.avatar The avatar of the user being ignored
   * @apiSuccess {boolean} data.ignored Boolean indicating if the user is ignored
   *
-  * @apiError (Error 500) InternalServerError There was error paging ignored users
+  * @apiError (Error 500) InternalServerError There was an error ignoring the user's posts
   */
 module.exports = {
   method: 'GET',

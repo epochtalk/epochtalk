@@ -32,7 +32,7 @@ function auth(request, reply) {
   * @apiSuccess {string} html The html source for the ad
   * @apiSuccess {string} css The css source for the ad
   *
-  * @apiError (Error 500) InternalServerError There was error creating the ad
+  * @apiError (Error 500) InternalServerError There was an error creating the ad
   */
 module.exports = {
   method: 'POST',

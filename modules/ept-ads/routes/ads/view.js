@@ -33,7 +33,7 @@ function auth(request, reply) {
   * @apiSuccess {timestamp} created_at The created at timestamp for the ad
   * @apiSuccess {timestamp} updated_at The updated at timestamp for the ad
   *
-  * @apiError (Error 500) InternalServerError There was error viewing the ad
+  * @apiError (Error 500) InternalServerError There was an error viewing the ad
   */
 module.exports = {
   method: 'GET',

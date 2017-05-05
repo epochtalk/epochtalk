@@ -27,7 +27,7 @@ function auth(request, reply) {
   *
   * @apiSuccess {object} Sucess 200 OK
   *
-  * @apiError (Error 500) InternalServerError There was error rotating the ad round
+  * @apiError (Error 500) InternalServerError There was an error rotating the ad round
   */
 module.exports = {
   method: 'POST',

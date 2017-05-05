@@ -68,7 +68,7 @@ function defaultRoundNumber(request, reply) {
   * @apiSuccess {number} round.previous The previous round
   * @apiSuccess {number} round.next The next round
   *
-  * @apiError (Error 500) InternalServerError There was error viewing the round
+  * @apiError (Error 500) InternalServerError There was an error viewing the round
   */
 module.exports = {
   method: 'GET',

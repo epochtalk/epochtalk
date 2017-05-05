@@ -11,7 +11,7 @@ var Boom = require('boom');
   * @apiSuccess {number} threads_per_page The thread limit for this user
   * @apiSuccess {string} collapsed_categories The ids of the categories to collapse on boards view
   *
-  * @apiError (Error 500) InternalServerError There was error getting the user's preferences
+  * @apiError (Error 500) InternalServerError There was an error getting the user's preferences
   */
 module.exports = {
   method: 'GET',

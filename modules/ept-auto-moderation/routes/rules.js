@@ -44,7 +44,7 @@ function auth(request, reply) {
   * @apiSuccess {string} rules.options.edit.replace.text The text to replaced the matched text with
   * @apiSuccess {string} rules.options.edit.template Allows message to be replaced, prepended, or appended to
   *
-  * @apiError (Error 500) InternalServerError There was error viewing the auto moderation rules
+  * @apiError (Error 500) InternalServerError There was an error viewing the auto moderation rules
   */
 module.exports = {
   method: 'GET',

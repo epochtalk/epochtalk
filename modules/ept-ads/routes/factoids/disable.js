@@ -27,7 +27,7 @@ function auth(request, reply) {
   *
   * @apiSuccess {Object} Sucess 200 OK
   *
-  * @apiError (Error 500) InternalServerError There was error disabling the factoid
+  * @apiError (Error 500) InternalServerError There was an error disabling the factoid
   */
 module.exports = {
   method: 'PUT',

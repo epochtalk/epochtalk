@@ -48,7 +48,7 @@ function currentRound(request, reply) {
   * @apiSuccess {object} text Object which contains info to be displayed on the /ads/info view
   * @apiSuccess {string} text.info HTML source to be displayed on the /ads/info view
   *
-  * @apiError (Error 500) InternalServerError There was error viewing the round information
+  * @apiError (Error 500) InternalServerError There was an error viewing the round information
   */
 module.exports = {
   method: 'GET',

@@ -34,7 +34,7 @@ var Joi = require('joi');
   * @apiSuccess {string} action_display_text Text describing what action was taken
   * @apiSuccess {string} action_display_text Link to view where action was taken
   *
-  * @apiError (Error 500) InternalServerError There was error retrieving the moderation logs
+  * @apiError (Error 500) InternalServerError There was an error retrieving the moderation logs
   */
 exports.page = {
   auth: { strategy: 'jwt' },
