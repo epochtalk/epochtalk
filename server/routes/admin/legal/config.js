@@ -70,9 +70,7 @@ exports.text = {
   * @apiParam (Payload) {string} [privacy] The updated privacy policy.
   * @apiParam (Payload) {string} [disclaimers] The updated disclaimers.
   *
-  * @apiSuccess {string} tos The source html for the terms of service page
-  * @apiSuccess {string} privacy The source html for the privacy page
-  * @apiSuccess {string} disclaimer The source html for the disclaimer page
+  * @apiSuccess {object} success 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the ToS, privacy policy and disclaimer.
   *
@@ -109,9 +107,7 @@ exports.update = {
     var disclaimerCustomPath = path.normalize(baseCustomPath + 'disclaimer.txt');
     var writeDisclaimer = writeFile(disclaimerCustomPath, request.payload.disclaimer);
 
-    var promise = Promise.join(writeTos, writePrivacy, writeDisclaimer, function() {
-      return request.payload;
-    })
+    var promise = Promise.join(writeTos, writePrivacy, writeDisclaimer, function() { return; })
     .error(request.errorMap.toHttpError);
 
     return reply(promise);
