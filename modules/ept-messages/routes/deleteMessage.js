@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var Boom = require('boom');
 
 /**
   * @apiVersion 0.4.0
@@ -15,7 +14,6 @@ var Boom = require('boom');
   * @apiSuccess {string} sender_id The unique id of the user that sent this message
   * @apiSuccess {string} receiver_id The unique id of the user that sent this message
   *
-  * @apiError (Error 400) BadRequest Message Already Deleted
   * @apiError (Error 500) InternalServerError There was an issue deleting the message
   */
 module.exports = {
@@ -46,7 +44,8 @@ module.exports = {
       };
       return deletedMessage;
     })
-    .error(function(err) { return Boom.badRequest(err.message); });
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

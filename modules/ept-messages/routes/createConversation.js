@@ -2,8 +2,13 @@ var Joi = require('joi');
 var _ = require('lodash');
 
 /**
-  * @apiDefine ConversationObjectSuccess
-  * @apiSuccess {string} id The unique id of the conversation
+  * @apiDefine MessageObjectSuccess
+  * @apiSuccess {string} id The unique id of the message
+  * @apiSuccess {string} conversation_id The unique id of the conversation this message belongs to
+  * @apiSuccess {string} sender_id The unique id of the user that sent this message
+  * @apiSuccess {string} receiver_id The unique id of the user that sent this message
+  * @apiSuccess {string} body The contents of this message
+  * @apiSuccess {boolean} viewed The flag showing if the receiver viewed this message
   * @apiSuccess {timestamp} created_at Timestamp of when the conversation was created
   */
 
@@ -13,9 +18,12 @@ var _ = require('lodash');
   * @api {POST} /conversations Create
   * @apiName CreateConversation
   * @apiPermission User
-  * @apiDescription Used to create a new conversation.
+  * @apiDescription Used to create a new conversation and the first message of the conversation.
   *
-  * @apiUse ConversationObjectSuccess
+  * @apiParam (Payload) {string} receiver_id The id of the user receiving the message/conversation
+  * @apiParam (Payload) {string} body The content of the message/conversation
+  *
+  * @apiUse MessageObjectSuccess
   *
   * @apiError (Error 500) InternalServerError There was an issue creating the conversation
   */
@@ -62,7 +70,9 @@ module.exports = {
         }
       };
       request.server.plugins.notifications.spawnNotification(notification);
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

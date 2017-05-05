@@ -4,14 +4,27 @@ var Promise = require('bluebird');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Watchlist
-  * @api {GET} /watchlist Edit Watchlist
+  * @api {GET} /watchlist View Edit Watchlist
   * @apiName EditWatchlist
-  * @apiDescription Used to edit a user's watchlist.
+  * @apiDescription Used to view boards and threads for editing a user's watchlist.
   *
-  * @apiParam (Query) {number} page=1 The page of watchlist to bring back
-  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  * @apiParam (Query) {number} [limit=25] The number of threads/boards to bring back per page
   *
-  * @apiSuccess {array} threads Two arrays of watchlist threads and boards
+  * @apiSuccess {number} page The page of results being returned
+  * @apiSuccess {number} limit The number of results per page
+  * @apiSuccess {boolean} hasMoreThreads Boolean indicating if there are more pages of threads
+  * @apiSuccess {boolean} hasMoreBoards Boolean indicating if there are more pages of boards
+  * @apiSuccess {object[]} threads An array containing watched thread data
+  * @apiSuccess {string} threads.id The unique id of the watched thread
+  * @apiSuccess {number} threads.post_count The post count of the watched thread
+  * @apiSuccess {number} threads.view_count The view count of the watched thread
+  * @apiSuccess {string} threads.board_name The name of the board the thread is in
+  * @apiSuccess {string} threads.title The title of the thread being watched
+  * @apiSuccess {object[]} boards An array containing watched board data
+  * @apiSuccess {string} boards.id The unique id of the watched board
+  * @apiSuccess {string} boards.name The name of the watched board
+  * @apiSuccess {number} boards.post_count The post count of the watched board
+  * @apiSuccess {number} boards.thread_count The thread count of the watched board
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the watchlist threads.
   */
@@ -53,7 +66,9 @@ module.exports = {
         boards: boards,
         hasMoreBoards: hasMoreBoards
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

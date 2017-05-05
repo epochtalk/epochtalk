@@ -1,25 +1,7 @@
 var Joi = require('joi');
-var Boom = require('boom');
 var Promise = require('bluebird');
 var cheerio = require('cheerio');
 
-/**
-  * @apiVersion 0.4.0
-  * @apiGroup Posts
-  * @api {GET} /posts Page By Thread
-  * @apiName PagePostsByThread
-  * @apiDescription Used to page through posts by thread.
-  *
-  * @apiParam (Query) {string} thread_id Id of the thread to retrieve posts from
-  * @apiParam (Query) {number} page Specific page of posts to retrieve. Do not use with start.
-  * @apiParam (Query) {mixed} limit Number of posts to retrieve per page.
-  * @apiParam (Query) {number} start Specific post within the thread. Do not use with page.
-  *
-  * @apiSuccess {array} posts Object containing posts for particular page, the thread these Posts
-  * belong to, and the calculated page and limit constraints.
-  *
-  * @apiError (Error 500) InternalServerError There was an issue finding the posts for thread
-  */
 module.exports = {
   method: 'GET',
   path: '/threads/{thread_id}/posts',

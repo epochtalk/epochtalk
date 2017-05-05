@@ -8,8 +8,9 @@ var Joi = require('joi');
   * @apiPermission User
   * @apiDescription Used to mark a user as watching a thread.
   *
-  * @apiUse WatchlistObjectPayload
-  * @apiUse WatchlistObjectSuccess
+  * @apiParam {string} id The unique id of the thread being watched
+  *
+  * @apiSuccess {object} status 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue watching the thread
   */
@@ -24,7 +25,9 @@ module.exports = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var threadId = request.params.id;
-    var promise = request.db.watchlist.watchThread(userId, threadId);
+    var promise = request.db.watchlist.watchThread(userId, threadId)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

@@ -1,9 +1,9 @@
 var path = require('path');
-var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
-var NotFoundError = Promise.OperationalError;
 var db = dbc.db;
 var helper = dbc.helper;
+var errors = dbc.errors;
+var NotFoundError = errors.NotFoundError;
 
 module.exports = function(postId, userPriority) {
   postId = helper.deslugify(postId);
@@ -11,7 +11,7 @@ module.exports = function(postId, userPriority) {
   return db.sqlQuery(q, [postId])
   .then(function(rows) {
     if (rows.length > 0 ) { return rows[0].board_id; }
-    else { throw new NotFoundError(); }
+    else { throw new NotFoundError('Board Not Found'); }
   })
   .then(function(boardId) {
     var q =

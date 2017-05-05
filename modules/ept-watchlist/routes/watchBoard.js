@@ -8,8 +8,9 @@ var Joi = require('joi');
   * @apiPermission User
   * @apiDescription Used to mark a user as watching a board.
   *
-  * @apiUse WatchlistObjectPayload
-  * @apiUse WatchlistObjectSuccess
+  * @apiParam {string} id The unique id of the board being watched
+  *
+  * @apiSuccess {object} status 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an issue watching the board
   */
@@ -24,7 +25,9 @@ module.exports = {
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
-    var promise = request.db.watchlist.watchBoard(userId, boardId);
+    var promise = request.db.watchlist.watchBoard(userId, boardId)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

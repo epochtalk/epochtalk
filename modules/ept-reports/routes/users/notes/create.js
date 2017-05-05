@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Reports
-  * @api {POST} /admin/reports/usernotes (Admin) Create User Report Note
+  * @api {POST} /reports/usernotes (Admin) Create User Report Note
   * @apiName CreateUserReportNote
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to leave a note on user moderation reports.
@@ -48,7 +48,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var reportNote = Object.assign({}, request.payload);
-    var promise = request.db.reports.createUserReportNote(reportNote);
+    var promise = request.db.reports.createUserReportNote(reportNote)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

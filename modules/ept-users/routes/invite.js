@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var path = require('path');
 var crypto = require('crypto');
 
 /**
@@ -49,7 +48,9 @@ module.exports = {
         message: 'Successfully Sent Invitation',
         confirm_token: newUser.hash
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
 
     return reply(promise);
   }

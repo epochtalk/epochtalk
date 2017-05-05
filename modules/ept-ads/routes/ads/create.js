@@ -15,6 +15,25 @@ function auth(request, reply) {
   return reply(promise);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {POST} /ads Create Ad
+  * @apiName CreateAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to create a new ad within a round
+  *
+  * @apiParam (Payload) {number} round The number of the round to create ad for
+  * @apiParam (Payload) {string} html The html source of the ad
+  * @apiParam (Payload) {string} [css] The css backing the html source
+  *
+  * @apiSuccess {string} id The id of the created ad
+  * @apiSuccess {number} round The round in which the ad was created
+  * @apiSuccess {string} html The html source for the ad
+  * @apiSuccess {string} css The css source for the ad
+  *
+  * @apiError (Error 500) InternalServerError There was an error creating the ad
+  */
 module.exports = {
   method: 'POST',
   path: '/api/ads',
@@ -31,7 +50,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var ad = request.payload;
-    var promise = db.ads.create(ad);
+    var promise = db.ads.create(ad)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

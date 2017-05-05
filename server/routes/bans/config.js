@@ -36,7 +36,7 @@ var Promise = require('bluebird');
   * @apiSuccess {string[]} data.updates An array of dates when the banned address was updated
   * @apiSuccess {number} data.update_count The number of times the banned address has been updated
   *
-  * @apiError (Error 500) InternalServerError There was error paging banned addresses
+  * @apiError (Error 500) InternalServerError There was an error paging banned addresses
   * @apiError (Error 403) Forbidden User doesn't have permission to query banned addresses
   */
 exports.pageBannedAddresses = {
@@ -53,7 +53,9 @@ exports.pageBannedAddresses = {
   },
   handler: function(request, reply) {
     var opts = request.query;
-    var promise =  request.db.bans.pageBannedAddresses(opts);
+    var promise =  request.db.bans.pageBannedAddresses(opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -83,7 +85,7 @@ exports.pageBannedAddresses = {
   * @apiSuccess {string} data.created_at The created_at date of the banned address
   * @apiSuccess {string[]} data.updates An array of dates when the banned address was updated
   *
-  * @apiError (Error 500) InternalServerError There was error banning the addresses
+  * @apiError (Error 500) InternalServerError There was an error banning the addresses
   */
 exports.addAddresses = {
   auth: { strategy: 'jwt' },
@@ -104,7 +106,9 @@ exports.addAddresses = {
   },
   handler: function(request, reply) {
     var addresses = request.payload;
-    var promise =  request.db.bans.addAddresses(addresses);
+    var promise =  request.db.bans.addAddresses(addresses)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -132,7 +136,7 @@ exports.addAddresses = {
   * @apiSuccess {string} created_at The created_at date of the banned address
   * @apiSuccess {string[]} updates An array of dates when the banned address was updated
   *
-  * @apiError (Error 500) InternalServerError There was error updating the banned address
+  * @apiError (Error 500) InternalServerError There was an error updating the banned address
   */
 exports.editAddress = {
   auth: { strategy: 'jwt' },
@@ -158,7 +162,9 @@ exports.editAddress = {
   },
   handler: function(request, reply) {
     var address = request.payload;
-    var promise =  request.db.bans.editAddress(address);
+    var promise =  request.db.bans.editAddress(address)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -183,7 +189,7 @@ exports.editAddress = {
   * @apiSuccess {string} created_at The created_at date of the deleted banned address
   * @apiSuccess {string[]} updates An array of dates when the deleted banned address was updated
   *
-  * @apiError (Error 500) InternalServerError There was error deleting the banned address
+  * @apiError (Error 500) InternalServerError There was an error deleting the banned address
   */
 exports.deleteAddress = {
   auth: { strategy: 'jwt' },
@@ -205,7 +211,9 @@ exports.deleteAddress = {
   },
   handler: function(request, reply) {
     var address = request.query;
-    var promise =  request.db.bans.deleteAddress(address);
+    var promise =  request.db.bans.deleteAddress(address)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -221,16 +229,17 @@ exports.deleteAddress = {
   * @apiDescription This allows Administrators and Moderators to ban users.
   *
   * @apiParam (Payload) {string} user_id The unique id of the user to ban
-  * @apiParam (Payload) {date} expiration The expiration date for the ban, when not defined ban is
-  * considered permanent
+  * @apiParam (Payload) {timestamp} [expiration] The expiration date for the ban, when not defined ban is considered permanent
+  * @apiParam (Payload) {boolean=false} [ip_ban=false] Boolean indicating that the user should be ip banned as well, this will make it so they cannot register from any of their known ips for a new account
   *
   * @apiSuccess {string} id The unique id of the row in users.bans
   * @apiSuccess {string} user_id The unique id of the user being banned
+  * @apiSuccess {object[]} roles Array containing users roles
   * @apiSuccess {timestamp} expiration Timestamp of when the user's ban expires
   * @apiSuccess {timestamp} created_at Timestamp of when the ban was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the ban was last updated
   *
-  * @apiError (Error 500) InternalServerError There was error banning the user
+  * @apiError (Error 500) InternalServerError There was an error banning the user
   */
 exports.ban = {
   app: {
@@ -272,7 +281,9 @@ exports.ban = {
       return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return request.session.updateBanInfo(user.user_id, user.expiration); })
       .then(function() { return user; });
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     // If user is being ip banned copy their known ips into banned_addresses
     if (ipBan) {
       // TODO: Can be customized by passing weight and decay in payload
@@ -280,7 +291,8 @@ exports.ban = {
       var ipBanPromise = request.db.bans.copyUserIps(opts);
       return Promise.join(banPromise, ipBanPromise, function(result) {
         return reply(result);
-      });
+      })
+      .error(request.errorMap.toHttpError);
     }
     else { return reply(banPromise); }
   }
@@ -299,11 +311,12 @@ exports.ban = {
   *
   * @apiSuccess {string} id The unique id of the row in users.bans
   * @apiSuccess {string} user_id The unique id of the user being unbanned
+  * @apiSuccess {object[]} roles Array containing users roles
   * @apiSuccess {timestamp} expiration Timestamp of when the user's ban expires (current timestamp)
   * @apiSuccess {timestamp} created_at Timestamp of when the ban was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the ban was last updated
   *
-  * @apiError (Error 500) InternalServerError There was error unbanning the user
+  * @apiError (Error 500) InternalServerError There was an error unbanning the user
   */
 exports.unban = {
   app: {
@@ -334,7 +347,9 @@ exports.unban = {
       return request.session.updateRoles(user.user_id, user.roles)
       .then(function() { return request.session.updateBanInfo(user.user_id); })
       .then(function() { return user; });
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -353,9 +368,9 @@ exports.unban = {
   * @apiParam (Payload) {string[]} board_ids Array of board ids to ban the user from
   *
   * @apiSuccess {string} user_id The unique id of the user being banned from boards
-  * @apiSuccess {string} board_ids Array of board ids to ban the user from
+  * @apiSuccess {string[]} board_ids Array of board ids to ban the user from
   *
-  * @apiError (Error 500) InternalServerError There was error banning the user from Boards
+  * @apiError (Error 500) InternalServerError There was an error banning the user from Boards
   * @apiError (Error 403) Forbidden User tried to ban from a board they do not moderate, or tried
   * to ban a user with higher permissions than themselves
   */
@@ -388,7 +403,9 @@ exports.banFromBoards = {
         data: { action: 'reauthenticate' }
       };
       request.server.plugins.notifications.systemNotification(notification);
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -405,9 +422,9 @@ exports.banFromBoards = {
   * @apiParam (Payload) {string[]} board_ids Array of board ids to unban the user from
   *
   * @apiSuccess {string} user_id The unique id of the user being unbanned from boards
-  * @apiSuccess {string} board_ids Array of board ids to unban the user from
+  * @apiSuccess {string[]} board_ids Array of board ids to unban the user from
   *
-  * @apiError (Error 500) InternalServerError There was error unbanning the user from Boards
+  * @apiError (Error 500) InternalServerError There was an error unbanning the user from Boards
   * @apiError (Error 403) Forbidden User tried to unban from a board they do not moderate, or tried
   * to unban a user with higher permissions than themselves
   */
@@ -440,7 +457,9 @@ exports.unbanFromBoards = {
         data: { action: 'reauthenticate' }
       };
       request.server.plugins.notifications.systemNotification(notification);
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -460,7 +479,7 @@ exports.unbanFromBoards = {
   * @apiSuccess {string} banned_boards.id The id of the board the user is banned from
   * @apiSuccess {string} banned_boards.name The name of the board the user is banned from
   *
-  * @apiError (Error 500) InternalServerError There was error retrieving the user's banned boards
+  * @apiError (Error 500) InternalServerError There was an error retrieving the user's banned boards
   * @apiError (Error 403) Forbidden User doesn't have permission to query for user's banned boards
   */
 exports.getBannedBoards = {
@@ -469,7 +488,9 @@ exports.getBannedBoards = {
   validate: { params: { username: Joi.string().required() } },
   handler: function(request, reply) {
     var username = request.params.username;
-    var promise = request.db.bans.getBannedBoards(username);
+    var promise = request.db.bans.getBannedBoards(username)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -506,7 +527,7 @@ exports.getBannedBoards = {
   * @apiSuccess {string[]} data.board_ids An array of the board ids this user is banned from
   * @apiSuccess {string[]} data.board_names An array of the board names this user is banned from
   *
-  * @apiError (Error 500) InternalServerError There was error paging board banned users
+  * @apiError (Error 500) InternalServerError There was an error paging board banned users
   * @apiError (Error 403) Forbidden User doesn't have permission to query board banned users
   */
 exports.byBannedBoards = {
@@ -529,7 +550,9 @@ exports.byBannedBoards = {
       boardId: request.query.board,
       userId: request.query.modded ? request.auth.credentials.id : undefined
     };
-    var promise = request.db.bans.byBannedBoards(opts);
+    var promise = request.db.bans.byBannedBoards(opts)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

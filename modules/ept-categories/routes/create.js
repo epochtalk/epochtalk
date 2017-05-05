@@ -20,7 +20,8 @@ module.exports = {
   handler: function(request, reply) {
     var promise = Promise.map(request.payload, function(cat) {
       return request.db.categories.create(cat);
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

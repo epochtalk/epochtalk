@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Reports
-  * @api {PUT} /admin/reports/messages (Admin) Update Message Report
+  * @api {PUT} /reports/messages (Admin) Update Message Report
   * @apiName UpdateMessageReport
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update the status of a message moderation report.
@@ -48,7 +48,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var report = Object.assign({}, request.payload);
-    var promise = request.db.reports.updateMessageReport(report);
+    var promise = request.db.reports.updateMessageReport(report)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

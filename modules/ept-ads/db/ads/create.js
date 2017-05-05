@@ -2,6 +2,8 @@ var path = require('path');
 var dbc = require(path.normalize(__dirname + '/../db'));
 var db = dbc.db;
 var helper = dbc.helper;
+var errors = dbc.errors;
+var CreationError = errors.CreationError;
 
 module.exports = function(ad) {
   var q = `
@@ -15,7 +17,7 @@ module.exports = function(ad) {
       ad.id = rows[0].id;
       return ad;
     }
-    else { throw Error('Could Not Create Ad'); }
+    else { throw new CreationError('Could Not Create Ad'); }
   })
   // create ads.analytics row for this ad
   .tap(function(ad) {

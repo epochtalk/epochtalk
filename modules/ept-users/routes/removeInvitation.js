@@ -11,7 +11,7 @@ var Joi = require('joi');
   *
   * @apiSuccess {string} message Invitation removal success message
   *
-  * @apiError BadRequest There was an error removing the invitation
+  * @apiError (Error 500) InternalServerError There was an error removing the invite
   */
 module.exports = {
   method: 'POST',
@@ -27,7 +27,9 @@ module.exports = {
     // remove invitation
     var email = request.payload.email;
     var promise = request.db.users.removeInvite(email)
-    .then(function() { return { message: 'Invitation Removed.' }; });
+    .then(function() { return { message: 'Invitation Removed.' }; })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

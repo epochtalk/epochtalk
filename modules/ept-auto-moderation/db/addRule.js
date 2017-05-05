@@ -2,6 +2,8 @@ var path = require('path');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
+var errors = dbc.errors;
+var CreationError = errors.CreationError;
 
 module.exports = function(rule) {
   var q = `
@@ -24,7 +26,7 @@ module.exports = function(rule) {
       rule.id = rows[0].id;
       return rule;
     }
-    else { throw Error('Could Not Create Rule'); }
+    else { throw new CreationError('Could not create rule'); }
   })
   .then(helper.slugify);
 };

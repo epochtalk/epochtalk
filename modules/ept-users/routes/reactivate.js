@@ -9,7 +9,7 @@ var Joi = require('joi');
   *
   * @apiParam {string} id The userId of the user to reactivate
   *
-  * @apiSuccess {object} STATUS 200 OK
+  * @apiSuccess {object} status 200 OK
   *
   * @apiError (Error 500) InternalServerError There was an error reactivating the user
   */
@@ -30,7 +30,10 @@ module.exports = {
   },
   handler: function(request, reply) {
     var userId = request.params.id;
-    var promise = request.db.users.reactivate(userId);
+    var promise = request.db.users.reactivate(userId)
+    .then(function() { return {}; })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

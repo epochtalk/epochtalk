@@ -4,18 +4,17 @@ var Boom = require('boom');
 var crypto = require('crypto');
 
 /**
-  * @api {GET} /recover/:query Recover Account
-  * @apiName AccountRecoveryReq
+  * @api {POST} /admin/recover/ (Admin) Recover Account
+  * @apiName AccountRecoveryAdmin
   * @apiGroup Auth
   * @apiVersion 0.4.0
-  * @apiDescription Used to recover an account by username or email. Sends an email with
-  * a URL to visit to reset the user's account password.
+  * @apiDescription Used by admins to recover a user's account. Sends an email to the account holder with a URL to visit to reset the account password.
   *
-  * @apiParam {string} query The email or username to attempt to recover
+  * @apiParam (Payload) {string} userId The id of the user's account to recover
   *
-  * @apiSuccess {boolean} success true if recovery email is sent
-  * @apiError BadRequest The username or email is not found
-  * @apiError (Error 500) InternalServerError There was an error updating the user account's reset token information
+  * @apiSuccess {object} Sucess 200 OK
+  * @apiError (Error 400) BadRequest The user was not found
+  * @apiError (Error 500) InternalServerError There was an error recovering the user account
   */
 module.exports = {
   method: 'POST',
@@ -53,7 +52,9 @@ module.exports = {
       };
       request.server.log('debug', emailParams);
       return request.emailer.send('recoverAccount', emailParams);
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

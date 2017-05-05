@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var Boom = require('boom');
 
 /**
   * @apiVersion 0.4.0
@@ -12,8 +11,10 @@ var Boom = require('boom');
   * @apiParam {string} id The Id of the post to delete
   *
   * @apiUse PostObjectSuccess
+  * @apiSuccess {number} position The position of the post within the thread
+  * @apiSuccess {timestamp} updated_at The updated at timestamp of the post
+  * @apiSuccess {timestamp} imported_at The imported at timestamp of the post
   *
-  * @apiError (Error 400) BadRequest Post Already Deleted
   * @apiError (Error 500) InternalServerError There was an issue deleting the post
   */
 module.exports = {
@@ -36,7 +37,8 @@ module.exports = {
           return request.db.posts.lock(request.params.id);
         }
       })
-      .error(function(err) { return Boom.badRequest(err.message); });
+      .error(request.errorMap.toHttpError);
+
       return reply(promise);
     }
   }
