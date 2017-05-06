@@ -17,7 +17,6 @@ var Joi = require('joi');
   * @apiSuccess {string} title The title of the post
   * @apiSuccess {string} body The post's body with any markup tags converted and parsed into html elements
   * @apiSuccess {string} raw_body The post's body as it was entered in the editor by the user
-  * @apiSuccess {string[]} mentionIds User Id's that were mentioned in the post
   * @apiSuccess {timestamp} updated_at Timestamp of when the post was updated
   *
   * @apiError (Error 500) InternalServerError There was an issue updating the post
