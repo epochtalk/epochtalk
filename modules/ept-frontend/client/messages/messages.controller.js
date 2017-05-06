@@ -116,13 +116,13 @@ var ctrl = [
         ctrl.currentConversation.messages = ctrl.currentConversation.messages.concat(data.messages);
         ctrl.currentConversation.last_message_id = data.last_message_id;
         ctrl.currentConversation.last_message_timestamp = data.last_message_timestamp;
-        ctrl.currentConversation.hasNext = data.hasNext;
+        ctrl.currentConversation.has_next = data.has_next;
         loadConversationMembers(data.messages);
         return data;
       });
     };
 
-    this.hasMoreMessages = function() { return ctrl.currentConversation.hasNext; };
+    this.hasMoreMessages = function() { return ctrl.currentConversation.has_next; };
 
     function loadConversationMembers(messages) {
       messages.map(function(message) {

@@ -68,7 +68,7 @@ exports.text = {
   *
   * @apiParam (Payload) {string} [tos] The updated Terms of Service.
   * @apiParam (Payload) {string} [privacy] The updated privacy policy.
-  * @apiParam (Payload) {string} [disclaimers] The updated disclaimers.
+  * @apiParam (Payload) {string} [disclaimer] The updated disclaimer.
   *
   * @apiSuccess {object} success 200 OK
   *

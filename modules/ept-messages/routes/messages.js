@@ -13,7 +13,7 @@ var Joi = require('joi');
   * @apiParam (Query) {number} How many messages to return per page
   *
   * @apiSuccess {string} id The id of the conversation
-  * @apiSuccess {boolean} hasNext Boolean indicating if there are more messages
+  * @apiSuccess {boolean} has_next Boolean indicating if there are more messages
   * @apiSuccess {timestamp} last_message_timestamp timestamp of the last message
   * @apiSuccess {timestamp} last_message_id timestamp of the last message
   * @apiSuccess {object[]} messages An array of messages in this conversation
@@ -54,7 +54,7 @@ module.exports = {
     var opts = {
       timestamp: request.query.timestamp,
       messageId: request.query.messageId,
-      limit: request.query.limit + 1 // plus for hasNext testing
+      limit: request.query.limit + 1 // plus for has_next testing
     };
 
     // create the conversation in db
@@ -63,15 +63,15 @@ module.exports = {
       // default return values
       var payload = { id: request.params.conversationId };
 
-      // handle message hasNext and possible extra message
+      // handle message has_next and possible extra message
       if (messages.length === opts.limit) {
         messages.pop();
         payload.messages = messages;
-        payload.hasNext = true;
+        payload.has_next = true;
       }
       else {
         payload.messages = messages;
-        payload.hasNext = false;
+        payload.has_next = false;
       }
 
       // last message values if there are any messages
