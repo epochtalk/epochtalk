@@ -16,8 +16,8 @@ var common = require(path.normalize(__dirname + '/../common'));
   * @apiParam (Query) {number} limit Number of posts to retrieve per page.
   * @apiParam (Query) {number} start Specific post within the thread. Only valid when page param is not present.
   *
-  * @apiSuccess {boolean} writeAccess Boolean indicating if user has write access to thread
-  * @apiSuccess {boolean} bannedFromBoard Boolean indicating if user is banned from this board
+  * @apiSuccess {boolean} write_access Boolean indicating if user has write access to thread
+  * @apiSuccess {boolean} banned_from_board Boolean indicating if user is banned from this board
   * @apiSuccess {number} page The page of posts being returned
   * @apiSuccess {number} limit The number of posts per page being returned
   * @apiSuccess {object} thread Object containing thread metadata
@@ -131,8 +131,8 @@ function processing(request, reply) {
 
     return {
       thread: thread,
-      bannedFromBoard: bannedFromBoard,
-      writeAccess: writeAccess,
+      banned_from_board: bannedFromBoard,
+      write_access: writeAccess,
       limit: opts.limit,
       page: opts.page,
       posts: common.cleanPosts(posts, userId, viewables)
