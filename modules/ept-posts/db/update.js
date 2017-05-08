@@ -22,10 +22,9 @@ module.exports = function(post) {
       post.thread_id = post.thread_id || oldPost.thread_id;
     })
     .then(function() {
-      console.log("POST");
-      console.log(post);
-      q = 'UPDATE posts SET content = content || \'{"title": $1, "body": $2}\', thread_id = $3, updated_at = now() WHERE id = $4 RETURNING updated_at';
-      params = [post.title, post.body, post.thread_id, post.id];
+      let post_content = {title: post.title, body: post.body};
+      q = 'UPDATE posts SET content = $1, thread_id = $2, updated_at = now() WHERE id = $3 RETURNING updated_at';
+      params = [post_content, post.thread_id, post.id];
       return client.queryAsync(q, params)
       .then(function(results) { post.updated_at = results.rows[0].updated_at; });
     });
