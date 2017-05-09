@@ -262,7 +262,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
     /* Poll Methods */
 
     this.createPoll = function() {
-      var requestParams = { threadId: ctrl.thread.id };
+      var requestParams = { thread_id: ctrl.thread.id };
       Threads.createPoll(requestParams, ctrl.poll).$promise
       .then(function(data) {
         ctrl.thread.poll = data;

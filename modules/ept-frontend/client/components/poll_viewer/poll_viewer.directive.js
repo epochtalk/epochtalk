@@ -126,7 +126,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
         var pollId = $scope.poll.id;
         var answerIds = $scope.pollAnswers;
 
-        Threads.vote({ threadId: threadId, pollId: pollId, answer_ids: answerIds}).$promise
+        Threads.vote({ thread_id: threadId, poll_id: pollId, answer_ids: answerIds}).$promise
         .then(function(data) {
           $scope.pollAnswers = [];
           $scope.poll = data;
@@ -140,7 +140,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
         var threadId = $scope.thread.id;
         var pollId = $scope.poll.id;
 
-        Threads.removeVote({ threadId: threadId, pollId: pollId }).$promise
+        Threads.removeVote({ thread_id: threadId, poll_id: pollId }).$promise
         .then(function(data) {
           $scope.pollAnswers = [];
           $scope.poll = data;
@@ -153,8 +153,8 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
       $scope.updateLockPoll = function() {
         $timeout(function() {
           var input = {
-            threadId: $scope.thread.id,
-            pollId: $scope.poll.id,
+            thread_id: $scope.thread.id,
+            poll_id: $scope.poll.id,
             locked: $scope.poll.locked
           };
           return Threads.lockPoll(input).$promise
@@ -217,7 +217,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
       };
 
       $scope.saveOptions = function() {
-        var changes = { threadId: $scope.thread.id, pollId: $scope.poll.id };
+        var changes = { thread_id: $scope.thread.id, poll_id: $scope.poll.id };
         Threads.editPoll(changes, $scope.options).$promise
         .then(function(data) {
           $scope.poll.max_answers = data.max_answers;

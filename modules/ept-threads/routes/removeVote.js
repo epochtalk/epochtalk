@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Threads
-  * @api {DELETE} /threads/:threadId/polls/:pollId/vote Remove Vote
+  * @api {DELETE} /threads/:thread_id/polls/:poll_id/vote Remove Vote
   * @apiName RemoveVotePoll
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User
   * @apiDescription Used to remove a vote in a poll.
@@ -29,20 +29,20 @@ var Promise = require('bluebird');
   */
 module.exports = {
   method: 'DELETE',
-  path: '/api/threads/{threadId}/polls/{pollId}/vote',
+  path: '/api/threads/{thread_id}/polls/{poll_id}/vote',
   config: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {
-        threadId: Joi.string().required(),
-        pollId: Joi.string().required()
+        thread_id: Joi.string().required(),
+        poll_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.threads.removeVote(server, auth, params.threadId, params.pollId)' } ]
+    pre: [ { method: 'auth.threads.removeVote(server, auth, params.thread_id, params.poll_id)' } ]
   },
   handler: function(request, reply) {
-    var threadId = request.params.threadId;
-    var pollId = request.params.pollId;
+    var threadId = request.params.thread_id;
+    var pollId = request.params.poll_id;
     var userId = request.auth.credentials.id;
 
     var promise = request.db.polls.removeVote(pollId, userId)

@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Threads
-  * @api {PUT} /threads/:threadId/polls/:pollId Edit Poll
+  * @api {PUT} /threads/:thread_id/polls/:poll_id Edit Poll
   * @apiName EditPoll
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User (that created the poll)
   * @apiDescription Used to edit a poll.
@@ -26,23 +26,23 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'PUT',
-  path: '/api/threads/{threadId}/polls/{pollId}',
+  path: '/api/threads/{thread_id}/polls/{poll_id}',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
         type: 'threads.editPoll',
         data: {
-          thread_id: 'params.threadId',
-          poll_id: 'params.pollId',
+          thread_id: 'params.thread_id',
+          poll_id: 'params.poll_id',
           poll_data: 'payload'
         }
       }
     },
     validate: {
       params: {
-        threadId: Joi.string().required(),
-        pollId: Joi.string().required()
+        thread_id: Joi.string().required(),
+        poll_id: Joi.string().required()
       },
       payload: Joi.object().keys({
         max_answers: Joi.number().integer().min(1).required(),
@@ -55,7 +55,7 @@ module.exports = {
   },
   handler: function(request, reply) {
     var options = request.payload;
-    options.id = request.params.pollId;
+    options.id = request.params.poll_id;
     var promise = request.db.polls.update(options)
     .error(request.errorMap.toHttpError);
 

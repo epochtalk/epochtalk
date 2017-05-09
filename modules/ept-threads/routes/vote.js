@@ -4,13 +4,13 @@ var Promise = require('bluebird');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Threads
-  * @api {POST} /threads/:threadId/polls/:pollId/vote Vote
+  * @api {POST} /threads/:thread_id/polls/:poll_id/vote Vote
   * @apiName VotePoll
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User
   * @apiDescription Used to vote in a poll.
   *
-  * @apiParam {string} threadId The unique id of the thread the poll is in.
-  * @apiParam {string} pollId The unique id of the poll to vote in.
+  * @apiParam {string} thread_id The unique id of the thread the poll is in.
+  * @apiParam {string} poll_id The unique id of the poll to vote in.
   * @apiParam (Payload) {string[]} answer_ids The ids of the answers tied to the vote.
   *
   * @apiSuccess {string} id The unique id of the poll
@@ -31,20 +31,20 @@ var Promise = require('bluebird');
   */
 module.exports = {
   method: 'POST',
-  path: '/api/threads/{threadId}/polls/{pollId}/vote',
+  path: '/api/threads/{thread_id}/polls/{poll_id}/vote',
   config: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {
-        threadId: Joi.string().required(),
-        pollId: Joi.string().required()
+        thread_id: Joi.string().required(),
+        poll_id: Joi.string().required()
       },
       payload: { answer_ids: Joi.array().items(Joi.string()).min(1).unique().required() }
     },
     pre: [ { method: 'auth.threads.vote(server, auth, params, payload)' } ]
   },
   handler: function(request, reply) {
-    var threadId = request.params.threadId;
+    var threadId = request.params.thread_id;
     var answerIds = request.payload.answer_ids;
     var userId = request.auth.credentials.id;
 
