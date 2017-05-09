@@ -15,18 +15,22 @@ var config = {
   websocketSecure: process.env.WEBSOCKET_SECURE === 'true',
   rateLimitingEnv: {
     get: {
+      interval: process.env.RATE_LIMITING_GET_INTERVAL || undefined,
       maxInInterval: process.env.RATE_LIMITING_GET_MAX_IN_INTERVAL || undefined,
       minDifference: process.env.RATE_LIMITING_GET_MIN_DIFFERENCE || undefined
     },
     post: {
+      interval: process.env.RATE_LIMITING_POST_INTERVAL || undefined,
       maxInInterval: process.env.RATE_LIMITING_POST_MAX_IN_INTERVAL || undefined,
       minDifference: process.env.RATE_LIMITING_POST_MIN_DIFFERENCE || undefined
     },
     put: {
+      interval: process.env.RATE_LIMITING_PUT_INTERVAL || undefined,
       maxInInterval: process.env.RATE_LIMITING_PUT_MAX_IN_INTERVAL || undefined,
       minDifference: process.env.RATE_LIMITING_PUT_MIN_DIFFERENCE || undefined
     },
     delete: {
+      interval: process.env.RATE_LIMITING_DELETE_INTERVAL || undefined,
       maxInInterval: process.env.RATE_LIMITING_DELETE_MAX_IN_INTERVAL || undefined,
       minDifference: process.env.RATE_LIMITING_DELETE_MIN_DIFFERENCE || undefined
     }
