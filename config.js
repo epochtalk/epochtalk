@@ -13,6 +13,24 @@ var config = {
   websocket_port: process.env.WEBSOCKET_PORT,
   websocketAPIKey: process.env.WEBSOCKET_API_KEY,
   websocketSecure: process.env.WEBSOCKET_SECURE === 'true',
+  rateLimitingEnv: {
+    get: {
+      maxInInterval: process.env.RATE_LIMITING_GET_MAX_IN_INTERVAL,
+      minDifference: process.env.RATE_LIMITING_GET_MIN_DIFFERENCE
+    },
+    post: {
+      maxInInterval: process.env.RATE_LIMITING_POST_MAX_IN_INTERVAL,
+      minDifference: process.env.RATE_LIMITING_POST_MIN_DIFFERENCE
+    },
+    put: {
+      maxInInterval: process.env.RATE_LIMITING_PUT_MAX_IN_INTERVAL,
+      minDifference: process.env.RATE_LIMITING_PUT_MIN_DIFFERENCE
+    },
+    delete: {
+      maxInInterval: process.env.RATE_LIMITING_DELETE_MAX_IN_INTERVAL,
+      minDifference: process.env.RATE_LIMITING_DELETE_MIN_DIFFERENCE
+    }
+  },
   emailer_env: {
     maildev: process.env.EMAILER_MAILDEV === 'true',
     transporter: process.env.EMAILER_TRANSPORTER,
