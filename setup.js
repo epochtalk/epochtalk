@@ -29,6 +29,7 @@ function parseConfigs(configurations) {
     // override config with env, if available
     _.merge(config.emailer, config.emailer_env);
     _.merge(config.images, config.images_env);
+    _.merge(config.rateLimiting, config.rateLimitingEnv);
 
     if (!config.portal.enabled) { config.portal.enabled = false; }
 
