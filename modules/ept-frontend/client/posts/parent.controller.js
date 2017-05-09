@@ -241,7 +241,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
     this.openMoveThreadModal = function() { ctrl.showMoveThreadModal = true; };
     this.moveThread = function() {
       var newBoardId = ctrl.moveBoard.id;
-      return Threads.move({id: ctrl.thread.id}, {newBoardId: newBoardId}).$promise
+      return Threads.move({id: ctrl.thread.id}, {new_board_id: newBoardId}).$promise
       .then(function() { $state.go($state.$current, null, {reload:true}); })
       .catch(function() { Alert.error('Error Moving Thread'); })
       .finally(function() { ctrl.showMoveThreadModal = false; });

@@ -18,7 +18,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
         if (!Session.isAuthenticated()) { vote = false; }
         if ($scope.banned) { vote = false; }
         if (!Session.hasPermission('threads.vote.allow')) { vote = false; }
-        if (poll.hasVoted) { vote = false; }
+        if (poll.has_voted) { vote = false; }
         if (poll.locked) { vote = false; }
         if (poll.expired) { vote = false; }
         return vote;
@@ -30,7 +30,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
         if (!Session.isAuthenticated()) { vote = false; }
         if ($scope.banned) { vote = false; }
         if (!Session.hasPermission('threads.removeVote.allow')) { vote = false; }
-        if (!poll.hasVoted) { vote = false; }
+        if (!poll.has_voted) { vote = false; }
         if (poll.locked) { vote = false; }
         if (poll.expired) { vote = false; }
         if (!poll.change_vote) { vote = false; }
@@ -113,7 +113,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
       $scope.showPollResults = function() {
         var show = false;
         var displayMode = $scope.poll.display_mode;
-        var hasVoted = $scope.poll.hasVoted;
+        var hasVoted = $scope.poll.has_voted;
         var expired = $scope.poll.expired;
         if (displayMode === 'always') { show = true; }
         else if (displayMode === 'voted' && hasVoted) { show = true; }
@@ -126,7 +126,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
         var pollId = $scope.poll.id;
         var answerIds = $scope.pollAnswers;
 
-        Threads.vote({ threadId: threadId, pollId: pollId, answerIds: answerIds}).$promise
+        Threads.vote({ threadId: threadId, pollId: pollId, answer_ids: answerIds}).$promise
         .then(function(data) {
           $scope.pollAnswers = [];
           $scope.poll = data;
@@ -155,7 +155,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
           var input = {
             threadId: $scope.thread.id,
             pollId: $scope.poll.id,
-            lockValue: $scope.poll.locked
+            locked: $scope.poll.locked
           };
           return Threads.lockPoll(input).$promise
           .catch(function() {

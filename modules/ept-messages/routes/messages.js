@@ -3,14 +3,15 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Conversations
-  * @api {GET} /conversations Messages in Conversation
+  * @api {GET} /conversations/:id Messages in Conversation
   * @apiName GetConversationMessages
   * @apiPermission User
   * @apiDescription Used to get messages for this conversation.
   *
-  * @apiParam (Query) {timestamp} The timestamp to look for messages before
-  * @apiParam (Query) {string} The id of the last message
-  * @apiParam (Query) {number} How many messages to return per page
+  * @apiParam {string} id The id of the conversation to get
+  * @apiParam (Query) {timestamp} [timestamp] The timestamp to look for messages before
+  * @apiParam (Query) {string} [message_id] The id of the last message
+  * @apiParam (Query) {number} [limit=15] How many messages to return per page
   *
   * @apiSuccess {string} id The id of the conversation
   * @apiSuccess {boolean} has_next Boolean indicating if there are more messages
@@ -35,25 +36,25 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'GET',
-  path: '/api/conversations/{conversationId}',
+  path: '/api/conversations/{id}',
   config: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { conversationId: Joi.string() },
+      params: { id: Joi.string() },
       query: {
         timestamp: Joi.date(),
-        messageId: Joi.string(),
+        message_id: Joi.string(),
         limit: Joi.number().integer().min(1).max(100).default(15)
       }
     },
     pre: [ { method: 'auth.conversations.messages(server, auth)' } ],
   },
   handler: function(request, reply) {
-    var conversationId = request.params.conversationId;
+    var conversationId = request.params.id;
     var userId = request.auth.credentials.id;
     var opts = {
       timestamp: request.query.timestamp,
-      messageId: request.query.messageId,
+      messageId: request.query.message_id,
       limit: request.query.limit + 1 // plus for has_next testing
     };
 

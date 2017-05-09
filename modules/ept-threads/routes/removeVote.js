@@ -19,7 +19,7 @@ var Promise = require('bluebird');
   * @apiSuccess {string} answers.id The id of the answer
   * @apiSuccess {number} answers.votes The number of votes for this answer
   * @apiSuccess {number} max_answers The max number of answer per vote
-  * @apiSuccess {boolean} hasVoted Boolean indicating whether the user has voted
+  * @apiSuccess {boolean} has_voted Boolean indicating whether the user has voted
   * @apiSuccess {boolean} change_vote Boolean indicating whether users can change their vote
   * @apiSuccess {date} expiration The expiration date of the poll
   * @apiSuccess {string} display_mode String indicating how the results are shown to users
@@ -54,7 +54,7 @@ module.exports = {
         var hideVotes = poll.display_mode === 'voted' && !voted;
         hideVotes = hideVotes || (poll.display_mode === 'expired' && poll.expiration > Date.now());
         if (hideVotes) { poll.answers.map(function(answer) { answer.votes = 0; }); }
-        poll.hasVoted = voted;
+        poll.has_voted = voted;
         return poll;
       });
     })

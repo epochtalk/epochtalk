@@ -11,7 +11,7 @@ module.exports = ['$resource',
           id: '@id',
           limit: '@limit',
           timestamp: '@timestamp',
-          messageId: '@messageId'
+          message_id: '@message_id'
         }
       }
     });

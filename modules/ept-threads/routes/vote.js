@@ -9,9 +9,9 @@ var Promise = require('bluebird');
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User
   * @apiDescription Used to vote in a poll.
   *
-  * @apiParam {string} id The unique id of the thread the poll is in.
-  * @apiParam {string} id The unique id of the poll to vote in.
-  * @apiParam (Payload) {string[]} ids The ids of the answers tied to the vote.
+  * @apiParam {string} threadId The unique id of the thread the poll is in.
+  * @apiParam {string} pollId The unique id of the poll to vote in.
+  * @apiParam (Payload) {string[]} answer_ids The ids of the answers tied to the vote.
   *
   * @apiSuccess {string} id The unique id of the poll
   * @apiSuccess {string} question The question asked in the poll
@@ -20,7 +20,7 @@ var Promise = require('bluebird');
   * @apiSuccess {string} answers.id The id of the answer
   * @apiSuccess {number} answers.votes The number of votes for this answer
   * @apiSuccess {number} max_answers The max number of answer per vote
-  * @apiSuccess {boolean} hasVoted Boolean indicating whether the user has voted
+  * @apiSuccess {boolean} has_voted Boolean indicating whether the user has voted
   * @apiSuccess {boolean} locked Boolean indicating whether the poll is locked
   * @apiSuccess {boolean} change_vote Boolean indicating whether users can change their vote
   * @apiSuccess {date} expiration The expiration date of the poll
@@ -39,13 +39,13 @@ module.exports = {
         threadId: Joi.string().required(),
         pollId: Joi.string().required()
       },
-      payload: { answerIds: Joi.array().items(Joi.string()).min(1).unique().required() }
+      payload: { answer_ids: Joi.array().items(Joi.string()).min(1).unique().required() }
     },
     pre: [ { method: 'auth.threads.vote(server, auth, params, payload)' } ]
   },
   handler: function(request, reply) {
     var threadId = request.params.threadId;
-    var answerIds = request.payload.answerIds;
+    var answerIds = request.payload.answer_ids;
     var userId = request.auth.credentials.id;
 
     var promise = request.db.polls.vote(answerIds, userId)
@@ -56,7 +56,7 @@ module.exports = {
       return Promise.join(getPoll, hasVoted, function(poll, voted) {
         var hideVotes = poll.display_mode === 'expired' && poll.expiration > Date.now();
         if (hideVotes) { poll.answers.map(function(answer) { answer.votes = 0; }); }
-        poll.hasVoted = voted;
+        poll.has_voted = voted;
         return poll;
       });
     })

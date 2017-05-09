@@ -69,10 +69,11 @@ var ctrl = [
     this.loadConversation = function(conversationId, options) {
       options = options || {};
       ctrl.selectedConversationId = conversationId;
-      Conversations.messages({id: conversationId}).$promise
+      Conversations.messages({ id: conversationId }).$promise
       // build out conversation information
       .then(function(data) {
         ctrl.currentConversation = data;
+        ctrl.currentConversation.id = conversationId;
         ctrl.currentConversation.members = {};
         loadConversationMembers(data.messages);
         return data;
@@ -108,7 +109,7 @@ var ctrl = [
       var query = {
         id: ctrl.currentConversation.id,
         timestamp: ctrl.currentConversation.last_message_timestamp,
-        messageId: ctrl.currentConversation.last_message_id
+        message_id: ctrl.currentConversation.last_message_id
       };
       Conversations.messages(query).$promise
       // build out conversation information
