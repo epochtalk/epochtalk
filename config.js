@@ -35,7 +35,7 @@ var config = {
       minDifference: process.env.RATE_LIMITING_DELETE_MIN_DIFFERENCE || undefined
     }
   },
-  emailer_env: {
+  emailerEnv: {
     maildev: process.env.EMAILER_MAILDEV === 'true',
     transporter: process.env.EMAILER_TRANSPORTER,
     ses: {
