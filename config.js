@@ -15,20 +15,20 @@ var config = {
   websocketSecure: process.env.WEBSOCKET_SECURE === 'true',
   rateLimitingEnv: {
     get: {
-      maxInInterval: process.env.RATE_LIMITING_GET_MAX_IN_INTERVAL,
-      minDifference: process.env.RATE_LIMITING_GET_MIN_DIFFERENCE
+      maxInInterval: process.env.RATE_LIMITING_GET_MAX_IN_INTERVAL || undefined,
+      minDifference: process.env.RATE_LIMITING_GET_MIN_DIFFERENCE || undefined
     },
     post: {
-      maxInInterval: process.env.RATE_LIMITING_POST_MAX_IN_INTERVAL,
-      minDifference: process.env.RATE_LIMITING_POST_MIN_DIFFERENCE
+      maxInInterval: process.env.RATE_LIMITING_POST_MAX_IN_INTERVAL || undefined,
+      minDifference: process.env.RATE_LIMITING_POST_MIN_DIFFERENCE || undefined
     },
     put: {
-      maxInInterval: process.env.RATE_LIMITING_PUT_MAX_IN_INTERVAL,
-      minDifference: process.env.RATE_LIMITING_PUT_MIN_DIFFERENCE
+      maxInInterval: process.env.RATE_LIMITING_PUT_MAX_IN_INTERVAL || undefined,
+      minDifference: process.env.RATE_LIMITING_PUT_MIN_DIFFERENCE || undefined
     },
     delete: {
-      maxInInterval: process.env.RATE_LIMITING_DELETE_MAX_IN_INTERVAL,
-      minDifference: process.env.RATE_LIMITING_DELETE_MIN_DIFFERENCE
+      maxInInterval: process.env.RATE_LIMITING_DELETE_MAX_IN_INTERVAL || undefined,
+      minDifference: process.env.RATE_LIMITING_DELETE_MIN_DIFFERENCE || undefined
     }
   },
   emailer_env: {
