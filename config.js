@@ -50,7 +50,7 @@ var config = {
     pass: process.env.EMAILER_PASS,
     secure: process.env.EMAILER_SECURE === 'true' || undefined
   },
-  images_env: {
+  imagesEnv: {
     storage: process.env.IMAGES_STORAGE,
     maxSize: process.env.IMAGES_MAX_SIZE,
     expiration: process.env.IMAGES_EXPIRATION,
