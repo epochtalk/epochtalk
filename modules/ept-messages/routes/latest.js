@@ -9,7 +9,16 @@ var Promise = require('bluebird');
   * @apiPermission User
   * @apiDescription Get the latest messages for this user.
   *
+  * @apiParam (Query) {number} [page] The page of messages to return
+  * @apiParam (Query) {number} [limit] The number of messages per page
+  *
   * @apiUse MessageObjectSuccess
+  * @apiSuccess {string} sender_username The username of the sender
+  * @apiSuccess {boolean} sender_deleted Boolean indicating if the sender's account is deleted
+  * @apiSuccess {string} sender_avatar The avatar of the sender
+  * @apiSuccess {string} receiver_username The username of the receiver
+  * @apiSuccess {boolean} receiver_deleted Boolean indicating if the receiver's account is deleted
+  * @apiSuccess {string} receiver_avatar The avatar of the receiver
   *
   * @apiError (Error 500) InternalServerError There was an issue getting the messages
   */
@@ -43,7 +52,9 @@ module.exports = {
         page: opts.page,
         limit: opts.limit
       };
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

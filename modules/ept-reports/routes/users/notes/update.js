@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Reports
-  * @api {PUT} /admin/reports/usernotes (Admin) Update User Report Note
+  * @api {PUT} /reports/usernotes (Admin) Update User Report Note
   * @apiName UpdateUserReportNote
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
   * @apiDescription Used to update an existing note on user moderation reports.
@@ -20,6 +20,7 @@ var Joi = require('joi');
   * @apiSuccess {timestamp} created_at Timestamp of when the user report note was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the user report note was last updated
   *
+  * @apiError (Error 400) BadRequest Note must not be empty
   * @apiError (Error 500) InternalServerError There was an error updating the user report note
   */
 module.exports = {
@@ -49,7 +50,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var reportNote = Object.assign({}, request.payload);
-    var promise = request.db.reports.updateUserReportNote(reportNote);
+    var promise = request.db.reports.updateUserReportNote(reportNote)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

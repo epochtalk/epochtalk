@@ -3,7 +3,8 @@ var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
-var NotFoundError = Promise.OperationalError;
+var errors = dbc.errors;
+var NotFoundError = errors.NotFoundError;
 
 /* return all values */
 module.exports = function(id) {

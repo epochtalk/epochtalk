@@ -1,6 +1,4 @@
 var Joi = require('joi');
-var Boom = require('boom');
-var Promise = require('bluebird');
 
 /**
   * @api {GET} /reset/:username/:token/validate Validate Account Reset Token
@@ -33,10 +31,6 @@ module.exports = {
     var username = request.params.username;
     var token = request.params.token;
     var promise = request.db.users.userByUsername(username) // get full user info
-    .then(function(user) {
-      if (user) { return user; }
-      else { return Promise.reject(Boom.badRequest('No Account Found.')); }
-    })
     .then(function(user){
       var now = Date.now();
       var tokenValid = user.reset_token && user.reset_token === token;
@@ -46,6 +40,7 @@ module.exports = {
         token_expired: tokenValid ? tokenExpired : undefined
       };
     })
+    .error(request.errorMap.toHttpError)
     .catch(function() { return { token_valid: false }; });
     return reply(promise);
   }

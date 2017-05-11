@@ -42,7 +42,9 @@ module.exports = {
         email: deletedUser.email
       };
       return deletedUser;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

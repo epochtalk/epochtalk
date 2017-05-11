@@ -15,6 +15,8 @@ var defaultVarsPath = path.normalize(__dirname + varsDir + '/_default-variables.
 var customPath = '/../../../../content/sass/_custom-variables.scss';
 var customVarsPath = path.normalize(__dirname + customPath);
 
+var ConfigError = Promise.OperationalError;
+
 
 var camelCaseToUnderscore = function(obj) {
   if (_.isObject(obj)) {
@@ -51,7 +53,55 @@ function validatePortalParams(request, reply) {
   * @apiDescription Used to fetch all web app settings. Allows admins to grab settings defined
   * in config.js
   *
-  * @apiSuccess {object} config See config.js in the root of the project
+  * @apiSuccess {boolean} log_enabled Boolean indicating if the server should log to /logs
+  * @apiSuccess {boolean} verify_registration Boolean indicating if users need verify their accounts via email
+  * @apiSuccess {boolean} login_required Boolean indicating if users need to login to view posts
+  * @apiSuccess {boolean} invite_only Boolean indicating if forum is invite only
+  * @apiSuccess {boolean} saas_mode Boolean indicating if forum is in saas mode
+  * @apiSuccess {string} ga_key Google analytics key for reCaptcha
+  * @apiSuccess {object} website Object containing website configs
+  * @apiSuccess {string} website.title The title of the website
+  * @apiSuccess {string} website.description Website description text
+  * @apiSuccess {string} website.keywords Website keywords
+  * @apiSuccess {string} website.logo The logo for the website
+  * @apiSuccess {string} website.favicon The favicon for the website
+  * @apiSuccess {object} emailer Object containing configurations for the email server
+  * @apiSuccess {string} emailer.sender Email address that emails will be sent from
+  * @apiSuccess {string} emailer.host The SMTP host
+  * @apiSuccess {number} emailer.port The SMTP port
+  * @apiSuccess {string} emailer.user The SMTP username
+  * @apiSuccess {string} emailer.pass The SMTP password
+  * @apiSuccess {boolean} emailer.secure Boolean indicating whether or not to use SSL
+  * @apiSuccess {object} images Object containing image server configurations
+  * @apiSuccess {string="local","s3"} images.storage Where to store images
+  * @apiSuccess {number} images.max_size Max image file size
+  * @apiSuccess {number} images.expiration Expiration time for unused images
+  * @apiSuccess {number} images.interval Interval for checking for unused images
+  * @apiSuccess {object} images.local Object containing local image server configurations
+  * @apiSuccess {string} images.local.dir Path to directory to store uploaded images
+  * @apiSuccess {string} images.local.path Path to relative to host of where to serve images
+  * @apiSuccess {object} images.s3 Object containing s3 image server configurations
+  * @apiSuccess {string} images.s3.root The s3 root url
+  * @apiSuccess {string} images.s3.dir The s3 directory
+  * @apiSuccess {string} images.s3.bucket The s3 bucket
+  * @apiSuccess {string} images.s3.region The s3 region
+  * @apiSuccess {string} images.s3.access_key The s3 access key
+  * @apiSuccess {string} images.s3.secret_key The s3 secret key
+  * @apiSuccess {object} rate_limiting Object containing rate limit configurations
+  * @apiSuccess {string} rate_limiting.namespace Redis namespace prefix for rate limit configurations
+  * @apiSuccess {object} rate_limiting.get Object containing GET rate limit configurations
+  * @apiSuccess {number{-1...n}} rate_limiting.get.interval The amount of time to which you are limiting the number of request to (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiSuccess {number{1...n}} rate_limiting.get.max_in_interval How many requests you can make within the interval (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiSuccess {number} rate_limiting.get.min_difference How long between each request (e.g. how much time between each MAX_IN_INTERVAL)
+  * @apiSuccess {number{-1...n}} rate_limiting.post.interval The amount of time to which you are limiting the number of request to (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiSuccess {number{1...n}} rate_limiting.post.max_in_interval How many requests you can make within the interval (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiSuccess {number} rate_limiting.post.min_difference How long between each request (e.g. how much time between each MAX_IN_INTERVAL)
+  * @apiSuccess {number{-1...n}} rate_limiting.put.interval The amount of time to which you are limiting the number of request to (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiSuccess {number{1...n}} rate_limiting.put.max_in_interval How many requests you can make within the interval (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiSuccess {number} rate_limiting.put.min_difference How long between each request (e.g. how much time between each MAX_IN_INTERVAL)
+  * @apiSuccess {number{-1...n}} rate_limiting.delete.interval The amount of time to which you are limiting the number of request to (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiSuccess {number{1...n}} rate_limiting.delete.max_in_interval How many requests you can make within the interval (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiSuccess {number} rate_limiting.delete.min_difference How long between each request (e.g. how much time between each MAX_IN_INTERVAL)
   */
 exports.find = {
   auth: { strategy: 'jwt' },
@@ -84,14 +134,11 @@ exports.find = {
   * @apiName UpdateSettings
   * @apiDescription Used to update web app settings. Used in the admin panel.
   *
-  * @apiParam (Payload) {string} [root] Path to the root directory of the project
-  * @apiParam (Payload) {string} [host] The host address that the web app is running on
-  * @apiParam (Payload) {number} [port] The port the web app is running on
   * @apiParam (Payload) {boolean} [log_enabled] Boolean indicating if the server should log to /logs
-  * @apiParam (Payload) {string} [public_url] The public facing URL to access the web app
-  * @apiParam (Payload) {string} [private_key] The private key for the web app
   * @apiParam (Payload) {boolean} [verify_registration] Boolean indicating if users need verify their accounts via email
   * @apiParam (Payload) {boolean} [login_required] Boolean indicating if users need to login to view posts
+  * @apiParam (Payload) {boolean} [invite_only] Boolean indicating if forum is invite only
+  * @apiParam (Payload) {string} [ga_key] Google analytics key for reCaptcha
   * @apiParam (Payload) {object} [website] Object containing website configs
   * @apiParam (Payload) {string} [website.title] The title of the website
   * @apiParam (Payload) {string} [website.description] Website description text
@@ -120,6 +167,20 @@ exports.find = {
   * @apiParam (Payload) {string} [images.s3.region] The s3 region
   * @apiParam (Payload) {string} [images.s3.access_key] The s3 access key
   * @apiParam (Payload) {string} [images.s3.secret_key] The s3 secret key
+  * @apiParam (Payload) {object} [rate_limiting] Object containing rate limit configurations
+  * @apiParam (Payload) {object} [rate_limiting.get] Object containing GET rate limit configurations
+  * @apiParam (Payload) {number{-1...n}} [rate_limiting.get.interval] The amount of time to which you are limiting the number of request to (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiParam (Payload) {number{1...n}} [rate_limiting.get.max_in_interval] How many requests you can make within the interval (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiParam (Payload) {number} [rate_limiting.get.min_difference] How long between each request (e.g. how much time between each MAX_IN_INTERVAL)
+  * @apiParam (Payload) {number{-1...n}} [rate_limiting.post.interval] The amount of time to which you are limiting the number of request to (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiParam (Payload) {number{1...n}} [rate_limiting.post.max_in_interval] How many requests you can make within the interval (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiParam (Payload) {number} [rate_limiting.post.min_difference] How long between each request (e.g. how much time between each MAX_IN_INTERVAL)
+  * @apiParam (Payload) {number{-1...n}} [rate_limiting.put.interval] The amount of time to which you are limiting the number of request to (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiParam (Payload) {number{1...n}} [rate_limiting.put.max_in_interval] How many requests you can make within the interval (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiParam (Payload) {number} [rate_limiting.put.min_difference] How long between each request (e.g. how much time between each MAX_IN_INTERVAL)
+  * @apiParam (Payload) {number{-1...n}} [rate_limiting.delete.interval] The amount of time to which you are limiting the number of request to (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiParam (Payload) {number{1...n}} [rate_limiting.delete.max_in_interval] How many requests you can make within the interval (e.g. MAX_IN_INTERVAL requests every INTERVAL)
+  * @apiParam (Payload) {number} [rate_limiting.delete.min_difference] How long between each request (e.g. how much time between each MAX_IN_INTERVAL)
   *
   * @apiSuccess {object} config Same object that was passed in is returned upon success
   */
@@ -225,7 +286,8 @@ exports.update = {
     // re-init emailer
     .then(function() { request.emailer.init(); })
     // return payload
-    .then(function() { return request.payload; });
+    .then(function() { return request.payload; })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }
@@ -239,8 +301,9 @@ exports.update = {
   * @apiDescription Used to fetch the IP blacklist
   *
   * @apiSuccess {object[]} blacklist Array containing blacklisted IPs and info
-  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
+  * @apiSuccess {string} blacklist.id Unique id for the Blacklisted IP rule.
   * @apiSuccess {string} blacklist.ip_data A single ip, ip range or wildcard ip.
+  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the blacklist.
   */
@@ -248,7 +311,9 @@ exports.getBlacklist = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.getBlacklist' },
   handler: function(request, reply) {
-    var promise = request.db.blacklist.all();
+    var promise = request.db.blacklist.all()
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -261,8 +326,9 @@ exports.getBlacklist = {
   * @apiDescription Used to add an IP Rule to the blacklist
   *
   * @apiSuccess {object[]} blacklist Array containing blacklisted IPs and info
-  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
+  * @apiSuccess {string} blacklist.id Unique id for the Blacklisted IP rule.
   * @apiSuccess {string} blacklist.ip_data A single ip, ip range or wildcard ip.
+  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
   *
   * @apiError (Error 500) InternalServerError There was an issue adding to the blacklist.
   */
@@ -290,7 +356,9 @@ exports.addToBlacklist = {
     .then(function(blacklist) {
       request.server.plugins.blacklist.retrieveBlacklist();
       return blacklist;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -303,8 +371,9 @@ exports.addToBlacklist = {
   * @apiDescription Used to update an existing IP Rule in the blacklist
   *
   * @apiSuccess {object[]} blacklist Array containing blacklisted IPs and info
-  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
+  * @apiSuccess {string} blacklist.id Unique id for the Blacklisted IP rule.
   * @apiSuccess {string} blacklist.ip_data A single ip, ip range or wildcard ip.
+  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
   *
   * @apiError (Error 500) InternalServerError There was an issue updating the blacklist.
   */
@@ -334,7 +403,9 @@ exports.updateBlacklist = {
     .then(function(blacklist) {
       request.server.plugins.blacklist.retrieveBlacklist();
       return blacklist;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -349,8 +420,9 @@ exports.updateBlacklist = {
   * @apiParam {string} id The id of the blacklist rule to delete
   *
   * @apiSuccess {object[]} blacklist Array containing blacklisted IPs and info
-  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
+  * @apiSuccess {string} blacklist.id Unique id for the Blacklisted IP rule.
   * @apiSuccess {string} blacklist.ip_data A single ip, ip range or wildcard ip.
+  * @apiSuccess {string} blacklist.note A note/name for the Blacklisted IP rule.
   *
   * @apiError (Error 500) InternalServerError There was an issue deleting from the blacklist.
   */
@@ -379,7 +451,9 @@ exports.deleteFromBlacklist = {
 
       request.server.plugins.blacklist.retrieveBlacklist();
       return results.blacklist;
-    });
+    })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };
@@ -391,7 +465,19 @@ exports.deleteFromBlacklist = {
   * @apiName GetTheme
   * @apiDescription Used to fetch theme vars in _custom-variables.scss
   *
-  * @apiSuccess {object} theme Object containing theme vars and values
+  * @apiSuccess {string} base-line-height Base line height for entire forum
+  * @apiSuccess {string} base-background-color The background color for the entire forum
+  * @apiSuccess {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} base-font-sans Font family for the entire forum
+  * @apiSuccess {string} base-font-color Base font color for entire forum
+  * @apiSuccess {string} base-font-size Base font size for entire forum
+  * @apiSuccess {string} secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} input-font-color Font color for input fields
+  * @apiSuccess {string} input-background-color Background color for all input fields
+  * @apiSuccess {string} border-color Color for all borders used in the forum
+  * @apiSuccess {string} header-bg-color Color for the forum header background
+  * @apiSuccess {string} header-font-color Font color for the forum header
+  * @apiSuccess {string} sub-header-color Color for sub headers and footers
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the theme.
   */
@@ -441,20 +527,19 @@ exports.getTheme = {
   * @apiParam (Payload) {string} header-font-color Font color for the forum header
   * @apiParam (Payload) {string} sub-header-color Color for sub headers and footers
   *
-  * @apiSuccess {object} theme Object containing theme vars and values
-  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
-  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
-  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
-  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
-  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
-  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
-  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
-  * @apiSuccess {string} theme.input-font-color Font color for input fields
-  * @apiSuccess {string} theme.input-background-color Background color for all input fields
-  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
-  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
-  * @apiSuccess {string} theme.header-font-color Font color for the forum header
-  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  * @apiSuccess {string} base-line-height Base line height for entire forum
+  * @apiSuccess {string} base-background-color The background color for the entire forum
+  * @apiSuccess {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} base-font-sans Font family for the entire forum
+  * @apiSuccess {string} base-font-color Base font color for entire forum
+  * @apiSuccess {string} base-font-size Base font size for entire forum
+  * @apiSuccess {string} secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} input-font-color Font color for input fields
+  * @apiSuccess {string} input-background-color Background color for all input fields
+  * @apiSuccess {string} border-color Color for all borders used in the forum
+  * @apiSuccess {string} header-bg-color Color for the forum header background
+  * @apiSuccess {string} header-font-color Font color for the forum header
+  * @apiSuccess {string} sub-header-color Color for sub headers and footers
   *
   * @apiError (Error 500) InternalServerError There was an issue setting the theme.
   */
@@ -499,9 +584,7 @@ exports.setTheme = {
       copyCss()
       .then(sass)
       .then(function() { reply(theme); })
-      .catch(function(err) {
-        reply(Boom.badRequest(err));
-      });
+      .error(request.errorMap.toHttpError);
     });
   }
 };
@@ -513,20 +596,19 @@ exports.setTheme = {
   * @apiName ResetTheme
   * @apiDescription Used reset custom variables to fall back to _default-variables.scss
   *
-  * @apiSuccess {object} theme Object containing theme vars and values
-  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
-  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
-  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
-  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
-  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
-  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
-  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
-  * @apiSuccess {string} theme.input-font-color Font color for input fields
-  * @apiSuccess {string} theme.input-background-color Background color for all input fields
-  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
-  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
-  * @apiSuccess {string} theme.header-font-color Font color for the forum header
-  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  * @apiSuccess {string} base-line-height Base line height for entire forum
+  * @apiSuccess {string} base-background-color The background color for the entire forum
+  * @apiSuccess {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} base-font-sans Font family for the entire forum
+  * @apiSuccess {string} base-font-color Base font color for entire forum
+  * @apiSuccess {string} base-font-size Base font size for entire forum
+  * @apiSuccess {string} secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} input-font-color Font color for input fields
+  * @apiSuccess {string} input-background-color Background color for all input fields
+  * @apiSuccess {string} border-color Color for all borders used in the forum
+  * @apiSuccess {string} header-bg-color Color for the forum header background
+  * @apiSuccess {string} header-font-color Font color for the forum header
+  * @apiSuccess {string} sub-header-color Color for sub headers and footers
   *
   * @apiError (Error 500) InternalServerError There was an issue resetting the theme.
   */
@@ -564,7 +646,7 @@ exports.resetTheme = {
       })
       .on('close', function() { reply(theme); });
     })
-    .catch(function(err) { reply(Boom.badImplementation(err)); });
+    .error(request.errorMap.toHttpError);
   }
 };
 
@@ -589,20 +671,19 @@ exports.resetTheme = {
   * @apiParam (Payload) {string} header-font-color Font color for the forum header
   * @apiParam (Payload) {string} sub-header-color Color for sub headers and footers
   *
-  * @apiSuccess {object} theme Object containing theme vars and values
-  * @apiSuccess {string} theme.base-line-height Base line height for entire forum
-  * @apiSuccess {string} theme.base-background-color The background color for the entire forum
-  * @apiSuccess {string} theme.color-primary The primary color for the forum, used for buttons, etc...
-  * @apiSuccess {string} theme.base-font-sans Font family for the entire forum
-  * @apiSuccess {string} theme.base-font-color Base font color for entire forum
-  * @apiSuccess {string} theme.base-font-size Base font size for entire forum
-  * @apiSuccess {string} theme.secondary-font-color Secondary font color, used for description text
-  * @apiSuccess {string} theme.input-font-color Font color for input fields
-  * @apiSuccess {string} theme.input-background-color Background color for all input fields
-  * @apiSuccess {string} theme.border-color Color for all borders used in the forum
-  * @apiSuccess {string} theme.header-bg-color Color for the forum header background
-  * @apiSuccess {string} theme.header-font-color Font color for the forum header
-  * @apiSuccess {string} theme.sub-header-color Color for sub headers and footers
+  * @apiSuccess {string} base-line-height Base line height for entire forum
+  * @apiSuccess {string} base-background-color The background color for the entire forum
+  * @apiSuccess {string} color-primary The primary color for the forum, used for buttons, etc...
+  * @apiSuccess {string} base-font-sans Font family for the entire forum
+  * @apiSuccess {string} base-font-color Base font color for entire forum
+  * @apiSuccess {string} base-font-size Base font size for entire forum
+  * @apiSuccess {string} secondary-font-color Secondary font color, used for description text
+  * @apiSuccess {string} input-font-color Font color for input fields
+  * @apiSuccess {string} input-background-color Background color for all input fields
+  * @apiSuccess {string} border-color Color for all borders used in the forum
+  * @apiSuccess {string} header-bg-color Color for the forum header background
+  * @apiSuccess {string} header-font-color Font color for the forum header
+  * @apiSuccess {string} sub-header-color Color for sub headers and footers
   *
   * @apiError (Error 500) InternalServerError There was an issue previewing the theme.
   */
@@ -640,9 +721,7 @@ exports.previewTheme = {
       copyCss()
       .then(function () { return sass('./public/css/preview.css'); })
       .then(function() { reply(theme); })
-      .catch(function(err) {
-        reply(Boom.badRequest(err));
-      });
+      .error(request.errorMap.toHttpError);
     });
   }
 };
@@ -705,7 +784,7 @@ function sanitizeConfigs(configurations, saasMode) {
 
 function checkEmailerConfig(emailer) {
   return new Promise(function(resolve, reject) {
-    if (!emailer) { return reject(new Error('Emailer configuration not found.')); }
+    if (!emailer) { return reject(new ConfigError('Emailer configuration not found.')); }
 
     var errors = [];
     if (!emailer.sender) { errors.push('Emailer Sender not found.'); }
@@ -714,14 +793,14 @@ function checkEmailerConfig(emailer) {
     if (!emailer.user) { errors.push('Emailer User not found.'); }
     if (!emailer.pass) { errors.push('Emailer Password not found.'); }
 
-    if (errors.length > 0) { return reject(new Error(errors.join('\n'))); }
+    if (errors.length > 0) { return reject(new ConfigError(errors.join('\n'))); }
     else { return resolve(); }
   });
 }
 
 function checkImagesConfig(images) {
   return new Promise(function(resolve, reject) {
-    if (!images) { return reject(new Error('Images configuration not found')); }
+    if (!images) { return reject(new ConfigError('Images configuration not found')); }
 
     var errors = [];
     var storageType = images.storage;
@@ -750,7 +829,7 @@ function checkImagesConfig(images) {
       if (!images.s3.secretKey) { errors.push('S3 Secret Key not set.'); }
     }
 
-    if (errors.length > 0) { return reject(new Error(errors.join('\n'))); }
+    if (errors.length > 0) { return reject(new ConfigError(errors.join('\n'))); }
     else { return resolve(); }
   });
 }

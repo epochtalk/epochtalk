@@ -9,11 +9,13 @@ var Promise = require('bluebird');
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Used to delete an existing board from the forum.
   *
-  * @apiParam {string} id The id of the board being deleted
+  * @apiParam (Payload) {string[]} payload An array of board ids to delete
   *
-  * @apiUse BoardObjectSuccess
+  * @apiSuccess {object[]} boards An array of the deleted boards
+  * @apiSuccess {string} id The id of the deleted board
+  * @apiSuccess {string} name The name of the deleted board
   *
-  * @apiError (Error 500) InternalServerError There was an issue deleting the board
+  * @apiError (Error 500) InternalServerError There was an issue deleting the boards
   */
 module.exports = {
   method: 'POST',
@@ -42,7 +44,8 @@ module.exports = {
       boards.forEach(function(board) { names.push(board.name); });
       request.route.settings.plugins.mod_log.metadata = { names: names.join(', ') };
       return boards;
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

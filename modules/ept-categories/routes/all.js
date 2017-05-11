@@ -7,7 +7,9 @@ module.exports = {
     pre: [ { method: 'auth.categories.all(server, auth)' } ],
   },
   handler: function(request, reply) {
-    var promise = request.db.categories.all();
+    var promise = request.db.categories.all()
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

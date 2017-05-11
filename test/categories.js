@@ -42,9 +42,11 @@ lab.experiment('Categories', function() {
     .then(function() {
       throw new Error('Should not have found a category');
     })
-    .catch(function(err) {
-      expect(err).to.be.an.instanceof(NotFoundError);
-      expect(err.cause).to.be.a.string().and.to.equal('Category Not Found');
+    .catch(function(error) {
+      expect(error).to.include('name');
+      expect(error).to.include('isOperational');
+      expect(error.name).to.be.a.string('NotFoundError');
+      expect(error.isOperational).to.be.true();
       done();
     });
   });

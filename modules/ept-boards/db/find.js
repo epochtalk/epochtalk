@@ -1,11 +1,11 @@
 var _ = require('lodash');
 var path = require('path');
-var Promise = require('bluebird');
 var common = require(path.normalize(__dirname + '/../common'));
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
-var NotFoundError = Promise.OperationalError;
+var errors = dbc.errors;
+var NotFoundError = errors.NotFoundError;
 
 module.exports = function(id, userPriority) {
   id = helper.deslugify(id);

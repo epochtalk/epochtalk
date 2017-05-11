@@ -20,7 +20,9 @@ module.exports = {
   handler: function(request, reply) {
     var username = request.params.username;
     var promise = request.db.users.userByUsername(username) // get full user info
-    .then(function(user) { return { found: !!user }; });
+    .then(function(user) { return { found: !!user }; })
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

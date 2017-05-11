@@ -5,7 +5,7 @@ var Joi = require('joi');
   * @apiGroup Reports
   * @api {POST} /reports/users Create User Report
   * @apiName CreateUserReport
-  * @apiPermission Users
+  * @apiPermission User
   * @apiDescription Used to report a user for moderators/administrators to review.
   *
   * @apiParam (Payload) {string} reporter_user_id The unique id of the user initiating the report
@@ -21,7 +21,7 @@ var Joi = require('joi');
   * @apiSuccess {timestamp} created_at Timestamp of when the user report was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the user report was updated
   *
-  * @apiError (Error 500) InternalServerError There was an issue creating the user report
+  * @apiError (Error 500) InternalServerError There was an issue reporting the user
   */
 module.exports = {
   method: 'POST',
@@ -39,7 +39,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var report = request.payload;
-    var promise = request.db.reports.createUserReport(report);
+    var promise = request.db.reports.createUserReport(report)
+    .error(request.errorMap.toHttpError);
+
     return reply(promise);
   }
 };

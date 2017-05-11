@@ -9,9 +9,9 @@ var Boom = require('boom');
   *
   * @apiSuccess {number} posts_per_page The post limit for this user
   * @apiSuccess {number} threads_per_page The thread limit for this user
-  * @apiSuccess {array} collapsed_categories The categories to collapse on boards view
+  * @apiSuccess {string} collapsed_categories The ids of the categories to collapse on boards view
   *
-  * @apiError (Error 500) InternalServerError There was error looking up the user
+  * @apiError (Error 500) InternalServerError There was an error getting the user's preferences
   */
 module.exports = {
   method: 'GET',
@@ -23,9 +23,10 @@ module.exports = {
     // get logged in user id
     var userId = request.auth.credentials.id;
 
-    // get user's preferences`
+    // get user's preferences
     var promise = request.db.users.preferences(userId)
-    .then(function(user) { return user; });
+    .then(function(user) { return user; })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }

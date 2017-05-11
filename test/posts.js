@@ -44,9 +44,11 @@ lab.experiment('Posts', function() {
     .then(function(post) {
       throw new Error('Should not have found a post');
     })
-    .catch(function(err) {
-      expect(err).to.be.an.instanceof(NotFoundError);
-      expect(err.cause).to.be.a.string().and.to.equal('Post Not Found');
+    .catch(function(error) {
+      expect(error).to.include('name');
+      expect(error).to.include('isOperational');
+      expect(error.name).to.be.a.string('NotFoundError');
+      expect(error.isOperational).to.be.true();
       done();
     });
   });

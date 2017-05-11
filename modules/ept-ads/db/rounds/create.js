@@ -1,6 +1,8 @@
 var path = require('path');
 var dbc = require(path.normalize(__dirname + '/../db'));
 var db = dbc.db;
+var errors = dbc.errors;
+var CreationError = errors.CreationError;
 
 module.exports = function() {
   var round = {};
@@ -11,7 +13,7 @@ module.exports = function() {
       round.round = rows[0].round;
       return round;
     }
-    else { throw Error('Could Not Create Round'); }
+    else { throw new CreationError('Could Not Create Round'); }
   })
   // create analytics for factoids
   .then(function() {

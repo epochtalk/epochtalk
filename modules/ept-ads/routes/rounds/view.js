@@ -33,6 +33,43 @@ function defaultRoundNumber(request, reply) {
   return reply(roundNumber);
 }
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Ads
+  * @api {GET} /ads/rounds/:roundNumber View Ad Round
+  * @apiName ViewRoundAds
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Returns ads, factoids, and data for specified round
+  *
+  * @apiParam {string} roundNumber The round number to view, or "current" to view current round
+  * @apiParam (Query) {string="disclaimer","info","both"} [type] What html source text to bring back with the data
+  *
+  * @apiSuccess {object[]} ads An array of ads in the specified round
+  * @apiSuccess {string} ads.id The id of the ad
+  * @apiSuccess {number} ads.round The round number of the ad
+  * @apiSuccess {string} ads.html The html source for the ad
+  * @apiSuccess {string} ads.css The css source for the ad
+  * @apiSuccess {string} ads.displayHtml The compiled display html
+  * @apiSuccess {string} ads.displayCss The compiled display css
+  * @apiSuccess {timestamp} ads.created_at The created at timestamp for the ad
+  * @apiSuccess {timestamp} ads.updated_at The updated at timestamp for the ad
+  * @apiSuccess {object[]} factoids An array of factoids in circulation
+  * @apiSuccess {string} factoids.id The id of the factoid
+  * @apiSuccess {string} factoids.text The factoid text
+  * @apiSuccess {boolean} factoids.enabled Boolean indicating if factoid is enabled
+  * @apiSuccess {timestamp} factoids.created_at The created at timestamp for the factoid
+  * @apiSuccess {timestamp} factoids.updated_at The updated at timestamp for the factoid
+  * @apiSuccess {object} text Object which contains ad disclaimers and informations
+  * @apiSuccess {string} text.info HTML source for ad info to be displayed
+  * @apiSuccess {string} text.disclaimer HTML source for ads disclaimer to be displayed
+  * @apiSuccess {object} round Object containing data about the round
+  * @apiSuccess {number} round.viewing The round of ads that analytics are being displayed for
+  * @apiSuccess {number} round.current The round of ads that are currentlying running
+  * @apiSuccess {number} round.previous The previous round
+  * @apiSuccess {number} round.next The next round
+  *
+  * @apiError (Error 500) InternalServerError There was an error viewing the round
+  */
 module.exports = {
   method: 'GET',
   path: '/api/ads/rounds/{roundNumber}',
@@ -98,7 +135,8 @@ module.exports = {
         ad.displayHtml = ad.html.replace('${hash}', randomHash);
         return ad;
       });
-    });
+    })
+    .error(request.errorMap.toHttpError);
 
     return reply(promise);
   }
