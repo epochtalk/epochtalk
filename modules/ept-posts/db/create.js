@@ -12,8 +12,7 @@ module.exports = function(post) {
   post.deleted = post.deleted || false;
   post.locked = post.locked || false;
 
-  post_json = {title: post.title, body: post.body};
-  console.log(post_json);
+  var post_json = {title: post.title, body: post.body, raw_body: post.raw_body};
 
   var q, params;
   q = 'INSERT INTO posts(thread_id, user_id, content, deleted, locked, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, now(), now()) RETURNING id, created_at';
