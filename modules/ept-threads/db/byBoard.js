@@ -21,7 +21,7 @@ module.exports = function(boardId, userId, opts) {
     'FROM threads t1 ' +
     'LEFT JOIN metadata.threads mt ON tlist.id = mt.thread_id ' +
     'WHERE t1.id = tlist.id';
-  opts.q3 = 'SELECT p1.title, p1.user_id, u.username, u.deleted as user_deleted FROM posts p1 LEFT JOIN users u ON p1.user_id = u.id WHERE p1.thread_id = tlist.id ORDER BY p1.created_at LIMIT 1';
+  opts.q3 = 'SELECT p1.content ->> \'title\' as title, p1.user_id, u.username, u.deleted as user_deleted FROM posts p1 LEFT JOIN users u ON p1.user_id = u.id WHERE p1.thread_id = tlist.id ORDER BY p1.created_at LIMIT 1';
   opts.q4 = 'SELECT id, position FROM posts WHERE thread_id = tlist.id AND created_at >= t.time ORDER BY created_at LIMIT 1';
   opts.q5 = 'SELECT p.id AS last_post_id, p.position, p.created_at, p.deleted, u.id, u.username, u.deleted as user_deleted, up.avatar FROM posts p LEFT JOIN users u ON p.user_id = u.id LEFT JOIN users.profiles up ON p.user_id = up.user_id WHERE p.thread_id = tlist.id ORDER BY p.created_at DESC LIMIT 1';
 

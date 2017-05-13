@@ -34,7 +34,7 @@ module.exports = function(userPriority, opts) {
       LEFT JOIN metadata.boards mb ON b.id = mb.board_id
     ) blist
     LEFT JOIN LATERAL (
-      SELECT pf.title as last_thread_title
+      SELECT pf.content ->> 'title' as last_thread_title
       FROM posts pf
       WHERE pf.thread_id = blist.last_thread_id
       ORDER BY pf.created_at
