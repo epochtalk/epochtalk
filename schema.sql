@@ -943,15 +943,16 @@ CREATE TABLE board_moderators (
 
 CREATE TABLE boards (
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    name character varying(255),
-    description text,
+    name character varying(255) DEFAULT ''::character varying,
+    description text DEFAULT ''::text,
     post_count integer DEFAULT 0,
     thread_count integer DEFAULT 0,
     viewable_by integer,
     postable_by integer,
     created_at timestamp without time zone,
     imported_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    meta jsonb
 );
 
 
@@ -961,11 +962,14 @@ CREATE TABLE boards (
 
 CREATE TABLE categories (
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    name character varying(255) DEFAULT ''::character varying NOT NULL,
+    name character varying(255),
     view_order integer,
-    imported_at timestamp with time zone,
     viewable_by integer,
-    postable_by integer
+    postable_by integer,
+    created_at timestamp without time zone,
+    imported_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    meta jsonb
 );
 
 
@@ -1705,6 +1709,22 @@ ALTER TABLE ONLY blacklist
 
 ALTER TABLE ONLY trust_boards
     ADD CONSTRAINT board_id_unique UNIQUE (board_id);
+
+
+--
+-- Name: board_mapping board_mapping_unique_category; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY board_mapping
+    ADD CONSTRAINT board_mapping_unique_category UNIQUE (board_id, category_id);
+
+
+--
+-- Name: board_mapping board_mapping_unique_parent; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY board_mapping
+    ADD CONSTRAINT board_mapping_unique_parent UNIQUE (board_id, parent_id);
 
 
 --
