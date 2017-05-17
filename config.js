@@ -84,4 +84,16 @@ var config = {
   }
 };
 
+setIfDefined(config, 'emailerTemp.transporter', process.env.EMAILER_TRANSPORTER);
+setIfDefined(config, 'emailerTemp.options.ignoreTLS', process.env.EMAILER_IGNORE_TLS);
+setIfDefined(config, 'emailerTemp.options.ses.region', process.env.EMAILER_SES_REGION);
+setIfDefined(config, 'emailerTemp.options.ses.accessKey', process.env.EMAILER_SES_ACCESS_KEY);
+setIfDefined(config, 'emailerTemp.options.ses.secretKey', process.env.EMAILER_SES_SECRET_KEY);
+setIfDefined(config, 'emailerTemp.sender', process.env.EMAILER_SENDER);
+setIfDefined(config, 'emailerTemp.options.host', process.env.EMAILER_HOST);
+setIfDefined(config, 'emailerTemp.options.port', process.env.EMAILER_PORT);
+setIfDefined(config, 'emailerTemp.options.auth.user', process.env.EMAILER_USER);
+setIfDefined(config, 'emailerTemp.options.auth.pass', process.env.EMAILER_PASS);
+setIfDefined(config, 'emailerTemp.options.secure', process.env.EMAILER_SECURE);
+
 module.exports = config;
