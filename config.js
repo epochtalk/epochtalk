@@ -1,3 +1,10 @@
+var _ = require('lodash');
+var setIfDefined = function(object, path, source) {
+  if (!_.isUndefined(source)) {
+    _.set(object, path, source);
+  }
+};
+
 var config = {
   host: process.env.HOST,
   port: process.env.PORT,
