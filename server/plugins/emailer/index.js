@@ -1,10 +1,12 @@
 var path = require('path');
 var Promise = require('bluebird');
 var nodemailer = require('nodemailer');
-var ses = require('nodemailer-ses-transport');
 var templateBuilder = require(path.join(__dirname, 'template-builder'));
 
 var options;
+var transporters = {
+  ses: require('nodemailer-ses-transport')
+};
 var transporter = {};
 var emailerConfig = {};
 
@@ -33,8 +35,8 @@ exports.expose = function(emailer) {
 
 function init() {
   emailerConfig = options.config.emailerTemp;
-  if (emailerConfig.transporter === 'ses') {
-    transporter = nodemailer.createTransport(ses(emailerConfig.options));
+  if (emailerConfig.transporter) {
+    transporter = nodemailer.createTransport(transporters[emailerConfig.transporter](emailerConfig.options));
   }
   else {
     transporter = nodemailer.createTransport(emailerConfig.options);
