@@ -23,7 +23,7 @@ exports.register = function(server, opts, next) {
 exports.expose = function(emailer) {
   options = {
     config: {
-      emailer: emailer
+      emailerTemp: emailer
     }
   };
 
@@ -32,31 +32,12 @@ exports.expose = function(emailer) {
 };
 
 function init() {
-  emailerConfig = options.config.emailer;
-  if (emailerConfig.maildev) {
-    transporter = nodemailer.createTransport({
-      host: emailerConfig.host,
-      port: emailerConfig.port,
-      ignoreTLS: true
-    });
-  }
-  else if (emailerConfig.transporter === 'ses') {
-    transporter = nodemailer.createTransport(ses({
-      accessKeyId: emailerConfig.ses.accessKey,
-      secretAccessKey: emailerConfig.ses.secretKey,
-      region: emailerConfig.ses.region
-    }));
+  emailerConfig = options.config.emailerTemp;
+  if (emailerConfig.transporter === 'ses') {
+    transporter = nodemailer.createTransport(ses(emailerConfig.options));
   }
   else {
-    transporter = nodemailer.createTransport({
-      host: emailerConfig.host,
-      port: emailerConfig.port,
-      secure: emailerConfig.secure,
-      auth: {
-        user: emailerConfig.user,
-        pass: emailerConfig.pass
-      }
-    });
+    transporter = nodemailer.createTransport(emailerConfig.options);
   }
 }
 
