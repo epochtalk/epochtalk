@@ -93,34 +93,7 @@ function parseConfigs(configurations) {
     return resolve();
   })
   .then(function() {
-    return checkEmailerConfig(config.emailer);
-  })
-  .then(function() {
     return checkImagesConfig(config.images);
-  });
-}
-
-function checkEmailerConfig(emailer) {
-  return new Promise(function(resolve, reject) {
-    if (!emailer) { return reject(new Error('Emailer configuration not found.')); }
-
-    var errors = [];
-    if (emailer.transporter === 'ses') {
-      var sesConfig = emailer.ses;
-      if (!emailer.ses.region) { errors.push('Emailer SES Region not found.'); }
-      if (!emailer.ses.accessKey) { errors.push('Emailer SES Access Key not found.'); }
-      if (!emailer.ses.secretKey) { errors.push('Emailer SES Secret Key not found.'); }
-    }
-    else {
-      if (!emailer.host) { errors.push('Emailer Host not found.'); }
-      if (!emailer.port) { errors.push('Emailer Post not found.'); }
-      if (!emailer.user) { errors.push('Emailer User not found.'); }
-      if (!emailer.pass) { errors.push('Emailer Password not found.'); }
-    }
-    if (!emailer.sender) { errors.push('Emailer Sender not found.'); }
-
-    if (errors.length > 0) { return reject(new Error(errors.join('\n'))); }
-    else { return resolve(); }
   });
 }
 
