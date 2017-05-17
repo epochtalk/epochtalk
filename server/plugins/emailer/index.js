@@ -4,9 +4,7 @@ var nodemailer = require('nodemailer');
 var templateBuilder = require(path.join(__dirname, 'template-builder'));
 
 var options;
-var transporters = {
-  ses: require('nodemailer-ses-transport')
-};
+var transporters = require(path.join(__dirname, 'transporters'));
 var transporter = {};
 var emailerConfig = {};
 
