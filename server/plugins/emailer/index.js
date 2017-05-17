@@ -20,6 +20,8 @@ exports.register = function(server, opts, next) {
   return next();
 };
 
+// exposes this plugin as a javascript object
+// used in cli
 exports.expose = function(emailer) {
   options = {
     config: {
