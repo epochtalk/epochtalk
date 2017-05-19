@@ -12,7 +12,7 @@ var Joi = require('joi');
   *
   * @apiSuccess {number} page The page of results being returned
   * @apiSuccess {number} limit The number of results per page
-  * @apiSuccess {boolean} hasMoreThreads Boolean indicating if there are more pages of threads
+  * @apiSuccess {boolean} has_more_threads Boolean indicating if there are more pages of threads
   * @apiSuccess {object[]} threads An array containing watched thread data
   * @apiSuccess {string} threads.id The unique id of the watched thread
   * @apiSuccess {boolean} threads.locked Boolean indicating if the thread is locked
@@ -67,7 +67,7 @@ module.exports = {
         page: opts.page,
         limit: request.query.limit,
         threads: threads,
-        hasMoreThreads: hasMoreThreads
+        has_more_threads: hasMoreThreads
       };
     })
     .error(request.errorMap.toHttpError);
