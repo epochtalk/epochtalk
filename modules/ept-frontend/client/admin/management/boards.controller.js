@@ -104,7 +104,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
       if ($scope.deletedBoards.length < 1) { return $q.resolve(); }
       console.log('3) Handling deleted boards: \n' + JSON.stringify($scope.deletedBoards, null, 2));
 
-      return Boards.delete($scope.deletedBoards).$promise
+      return Boards.delete({ board_ids: $scope.deletedBoards }).$promise
       .then(function() {
         while($scope.deletedBoards.length > 0) { $scope.deletedBoards.pop(); }
       })

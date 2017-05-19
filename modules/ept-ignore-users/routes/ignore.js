@@ -10,7 +10,7 @@ var Joi = require('joi');
   *
   * @apiParam {string} id The id of the user whose posts to ignore
   *
-  * @apiSuccess {string} userId The id of the user whose posts are ignored
+  * @apiSuccess {string} user_id The id of the user whose posts are ignored
   * @apiSuccess {boolean} ignored Boolean indicating if the user's posts are being ignored
   *
   * @apiError (Error 500) InternalServerError There was an error ignoring the user's posts

@@ -8,9 +8,9 @@ var Promise = require('bluebird');
   * @apiName AllCategories
   * @apiDescription Used to retrieve all boards within their respective categories.
   *
-  * @apiParam (Query) {number} page=1 The page of threads to bring back for recent threads
-  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page for recent threads
-  * @apiParam (Query) {boolean} stripped If true brings back boards with no additional metadata
+  * @apiParam (Query) {number} [page=1] The page of threads to bring back for recent threads
+  * @apiParam (Query) {number{1..100}} [limit=25] The number of threads to bring back per page for recent threads
+  * @apiParam (Query) {boolean} [stripped] If true brings back boards with no additional metadata
   *
   * @apiSuccess {object} data Object containing boards and recent thread data
   * @apiSuccess {object[]} data.boards contains boards in their respective categories
