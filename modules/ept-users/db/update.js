@@ -64,7 +64,7 @@ module.exports = function(user) {
       user.fields = {};
       helper.updateAssign(user.fields, oldFields, user, 'name');
       helper.updateAssign(user.fields, oldFields, user, 'website');
-      helper.updateAssign(user.fields, oldFields, user, 'btcAddress');
+      helper.updateAssign(user.fields, oldFields, user, 'btc_address');
       helper.updateAssign(user.fields, oldFields, user, 'gender');
       helper.updateAssign(user.fields, oldFields, user, 'dob');
       helper.updateAssign(user.fields, oldFields, user, 'location');

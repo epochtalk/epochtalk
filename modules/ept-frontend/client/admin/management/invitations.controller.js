@@ -7,7 +7,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   this.limit = pageData.limit;
   this.prev = pageData.page - 1;
   this.next = 0;
-  if (pageData.hasMore) { ctrl.next = pageData.page + 1; }
+  if (pageData.has_more) { ctrl.next = pageData.page + 1; }
 
   $timeout($anchorScroll);
 
@@ -104,7 +104,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     .then(function(res) {
       ctrl.invitations = res.invitations;
       ctrl.prev = res.page - 1;
-      if (res.hasMore) { ctrl.next = res.page + 1; }
+      if (res.has_more) { ctrl.next = res.page + 1; }
       else { ctrl.next = 0; }
       $timeout($anchorScroll);
     });
