@@ -54,7 +54,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
       if ($scope.newCategories.length < 1) { return $q.resolve(); }
       console.log('0) Adding new Categories: \n' + JSON.stringify($scope.newCategories, null, 2));
 
-      return Categories.save($scope.newCategories).$promise
+      return Categories.save({ categories: $scope.newCategories }).$promise
       .then(function(cats) {
         // append all the new cats back on to the page
         cats.forEach(function(cat, index) {

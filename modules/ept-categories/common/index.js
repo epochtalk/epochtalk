@@ -2,7 +2,7 @@ var common = {};
 module.exports = common;
 
 function categoriesClean(sanitizer, payload) {
-  payload.map(function(cat) {
+  payload.categories.map(function(cat) {
     cat.name = sanitizer.strip(cat.name);
   });
 }
