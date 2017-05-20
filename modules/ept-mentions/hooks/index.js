@@ -47,6 +47,8 @@ function userIdToUsername(request) {
         post.body = post.body.replace(idRegex, profileLink);
         if (post.post_body) {
           post.post_body = post.body;
+          delete post.raw_body;
+          delete post.body;
         }
       });
     });
