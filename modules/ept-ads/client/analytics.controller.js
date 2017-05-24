@@ -9,8 +9,8 @@ var ctrl = ['Ads', 'Alert', 'pageData',
     this.currentRound = pageData.round.current;
     this.nextRound = pageData.round.next;
     this.previousRound = pageData.round.previous;
-    this.roundStartTime = pageData.round.startTime;
-    this.roundEndTime = pageData.round.endTime;
+    this.roundStartTime = pageData.round.start_time;
+    this.roundEndTime = pageData.round.end_time;
     this.roundPeriod = generateRoundPeriod(ctrl.roundStartTime, ctrl.roundEndTime);
 
     // pull round
@@ -24,8 +24,8 @@ var ctrl = ['Ads', 'Alert', 'pageData',
         ctrl.currentRound = data.round.current;
         ctrl.nextRound = data.round.next;
         ctrl.previousRound = data.round.previous;
-        ctrl.roundStartTime = data.round.startTime;
-        ctrl.roundEndTime = data.round.endTime;
+        ctrl.roundStartTime = data.round.start_time;
+        ctrl.roundEndTime = data.round.end_time;
         ctrl.roundPeriod = generateRoundPeriod(ctrl.roundStartTime, ctrl.roundEndTime);
       })
       .catch(function(err) { Alert.error(err.data.message); });

@@ -20,9 +20,9 @@ var Promise = require('bluebird');
   *
   * @apiParam (Payload) {object[]} boards Array containing the boards to create
   * @apiParam (Payload) {string{1..255}} name The name for the board
-  * @apiParam (Payload) {string{0..255}} description The description text for the board
-  * @apiParam (Payload) {number} viewable_by The minimum priority required to view the board, null for no restriction
-  * @apiParam (Payload) {number} postable_by The minimum priority required to post in the board, null for no restriction
+  * @apiParam (Payload) {string{0..255}} [description] The description text for the board
+  * @apiParam (Payload) {number} [viewable_by] The minimum priority required to view the board, null for no restriction
+  * @apiParam (Payload) {number} [postable_by] The minimum priority required to post in the board, null for no restriction
   *
   * @apiUse BoardObjectSuccess
   *

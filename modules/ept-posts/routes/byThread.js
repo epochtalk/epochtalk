@@ -16,8 +16,8 @@ var common = require(path.normalize(__dirname + '/../common'));
   * @apiParam (Query) {number} limit Number of posts to retrieve per page.
   * @apiParam (Query) {number} start Specific post within the thread. Only valid when page param is not present.
   *
-  * @apiSuccess {boolean} writeAccess Boolean indicating if user has write access to thread
-  * @apiSuccess {boolean} bannedFromBoard Boolean indicating if user is banned from this board
+  * @apiSuccess {boolean} write_access Boolean indicating if user has write access to thread
+  * @apiSuccess {boolean} banned_from_board Boolean indicating if user is banned from this board
   * @apiSuccess {number} page The page of posts being returned
   * @apiSuccess {number} limit The number of posts per page being returned
   * @apiSuccess {object} thread Object containing thread metadata
@@ -35,6 +35,18 @@ var common = require(path.normalize(__dirname + '/../common'));
   * @apiSuccess {string} thread.user.id The id of the user who started the thread
   * @apiSuccess {string} thread.user.username The username of the user who started the thread
   * @apiSuccess {boolean} thread.user.deleted Boolean indicating if the thread started has had their account deleted
+  * @apiSuccess {object} thread.poll Object that contains poll data, if thread has a poll
+  * @apiSuccess {string} thread.poll.id The unique id of the poll
+  * @apiSuccess {string} thread.poll.question The question asked in the poll
+  * @apiSuccess {object[]} thread.poll.answers The list of the answers to the question of this poll
+  * @apiSuccess {string} thread.poll.answers.answer The answer to the question of this poll
+  * @apiSuccess {number} thread.poll.max_answers The max number of answer per vote
+  * @apiSuccess {boolean} thread.poll.change_vote Boolean indicating whether users can change their vote
+  * @apiSuccess {boolean} thread.poll.locked Boolean indicating whether the poll is locked or not
+  * @apiSuccess {boolean} thread.poll.has_voted Boolean indicating whether or not the user has voted
+  * @apiSuccess {date} thread.poll.expiration The expiration date of the poll
+  * @apiSuccess {string} thread.poll.display_mode String indicating how the results are shown to users
+  *
   * @apiSuccess {object[]} posts Object containing thread posts
   * @apiSuccess {string} posts.id The id of the post
   * @apiSuccess {number} posts.position The position of the post in the thread
@@ -125,14 +137,14 @@ function processing(request, reply) {
       var hideVotes = poll.display_mode === 'voted' && !voted;
       hideVotes = hideVotes || (poll.display_mode === 'expired' && poll.expiration > Date.now());
       if (hideVotes) { poll.answers.map(function(answer) { answer.votes = 0; }); }
-      poll.hasVoted = voted;
+      poll.has_voted = voted;
       thread.poll = poll;
     }
 
     return {
       thread: thread,
-      bannedFromBoard: bannedFromBoard,
-      writeAccess: writeAccess,
+      banned_from_board: bannedFromBoard,
+      write_access: writeAccess,
       limit: opts.limit,
       page: opts.page,
       posts: common.cleanPosts(posts, userId, viewables)

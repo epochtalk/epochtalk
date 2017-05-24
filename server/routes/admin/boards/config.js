@@ -115,7 +115,7 @@ exports.moveBoards = {
 /**
   * @apiVersion 0.4.0
   * @apiGroup Categories
-  * @api {POST} /boards/categories Update Categories
+  * @api {POST} /categories Update Categories
   * @apiName UpdateCategories
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Used to update boards within their categories.

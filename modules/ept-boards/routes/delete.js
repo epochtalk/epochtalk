@@ -9,7 +9,7 @@ var Promise = require('bluebird');
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Used to delete an existing board from the forum.
   *
-  * @apiParam (Payload) {string[]} payload An array of board ids to delete
+  * @apiParam (Payload) {string[]} board_ids An array of board ids to delete
   *
   * @apiSuccess {object[]} boards An array of the deleted boards
   * @apiSuccess {string} id The id of the deleted board
@@ -26,17 +26,17 @@ module.exports = {
       mod_log: {
         type: 'boards.delete',
         data: {
-          boards: 'payload',
+          boards: 'payload.board_ids',
           names: 'route.settings.plugins.mod_log.metadata.names'
         }
       }
     },
-    validate: { payload: Joi.array().items(Joi.string().required()).unique().min(1) },
+    validate: { payload: { board_ids: Joi.array().items(Joi.string().required()).unique().min(1) } },
     pre: [ { method: 'auth.boards.delete(server, auth)' } ],
   },
   handler: function(request, reply) {
 
-    var promise = Promise.map(request.payload, function(boardId) {
+    var promise = Promise.map(request.payload.board_ids, function(boardId) {
       return request.db.boards.delete(boardId);
     })
     .then(function(boards) {
