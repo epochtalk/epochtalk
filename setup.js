@@ -27,7 +27,6 @@ function parseConfigs(configurations) {
     _.merge(config, configurations);
 
     // override config with env, if available
-    _.merge(config.emailer, config.emailerEnv);
     _.merge(config.images, config.imagesEnv);
     _.merge(config.rateLimiting, config.rateLimitingEnv);
 
