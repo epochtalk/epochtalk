@@ -76,7 +76,7 @@ setIfDefined(config, 'emailer.options.host', process.env.EMAILER_OPTIONS_HOST);
 setIfDefined(config, 'emailer.options.port', process.env.EMAILER_OPTIONS_PORT);
 setIfDefined(config, 'emailer.options.auth.user', process.env.EMAILER_OPTIONS_USER);
 setIfDefined(config, 'emailer.options.auth.pass', process.env.EMAILER_OPTIONS_PASS);
-setIfDefined(config, 'emailer.options.secure', process.env.EMAILER_OPTIONS_SECURE);
+setIfDefined(config, 'emailer.options.secure', process.env.EMAILER_OPTIONS_SECURE === 'true' || undefined);
 setIfDefined(config, 'emailer.options.ses.region', process.env.EMAILER_OPTIONS_SES_REGION);
 setIfDefined(config, 'emailer.options.ses.accessKey', process.env.EMAILER_OPTIONS_SES_ACCESS_KEY);
 setIfDefined(config, 'emailer.options.ses.secretKey', process.env.EMAILER_OPTIONS_SES_SECRET_KEY);
