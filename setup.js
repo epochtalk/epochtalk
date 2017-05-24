@@ -17,7 +17,7 @@ module.exports = function() {
       // clone config and delete emailer
       var configClone = _.cloneDeep(config);
       delete configClone.emailer;
-      return db.configurations.create(config);
+      return db.configurations.create(configClone);
     })
     .then(function() { return config; });
   })
