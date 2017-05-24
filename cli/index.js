@@ -8,7 +8,7 @@ var categories = require(path.normalize(__dirname + '/../modules/ept-categories'
 var boards = require(path.normalize(__dirname + '/../modules/ept-boards')).db;
 var config = require(path.join(__dirname, '..', 'config'));
 
-var emailerOptions = config.emailerTemp;
+var emailerOptions = config.emailer;
 var emailer = require(path.normalize(__dirname + '/../server/plugins/emailer')).expose(emailerOptions);
 
 program
