@@ -14,6 +14,9 @@ module.exports = function() {
     console.log('Not configured yet; using default configurations...');
     return parseConfigs(defaultConfigurations)
     .then(function() {
+      // clone config and delete emailer
+      var configClone = _.cloneDeep(config);
+      delete configClone.emailer;
       return db.configurations.create(config);
     })
     .then(function() { return config; });

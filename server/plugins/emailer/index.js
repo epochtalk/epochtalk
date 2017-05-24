@@ -25,7 +25,7 @@ exports.register = function(server, opts, next) {
 exports.expose = function(emailer) {
   options = {
     config: {
-      emailerTemp: emailer
+      emailer: emailer
     }
   };
 
@@ -34,7 +34,7 @@ exports.expose = function(emailer) {
 };
 
 function init() {
-  emailerConfig = options.config.emailerTemp;
+  emailerConfig = options.config.emailer;
   if (emailerConfig.transporter) {
     transporter = nodemailer.createTransport(transporters[emailerConfig.transporter](emailerConfig.options));
   }
