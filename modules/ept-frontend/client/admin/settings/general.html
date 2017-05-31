@@ -76,11 +76,11 @@
     <div class="input-two-col">
       <div>
         <label for="smtp-username">SMTP Username</label>
-        <input type="text" class="input-text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.options.user" placeholder="Username" />
+        <input type="text" class="input-text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.options.auth.user" placeholder="Username" />
       </div>
       <div>
         <label for="smtp-password">SMTP Password</label>
-        <input class="secret" type="password" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.options.pass" placeholder="Password" />
+        <input class="secret" type="password" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.options.auth.pass" placeholder="Password" />
       </div>
     </div>
   </div>

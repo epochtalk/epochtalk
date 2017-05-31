@@ -69,8 +69,8 @@ function validatePortalParams(request, reply) {
   * @apiSuccess {string} emailer.sender Email address that emails will be sent from
   * @apiSuccess {string} emailer.options.host The SMTP host
   * @apiSuccess {number} emailer.options.port The SMTP port
-  * @apiSuccess {string} emailer.options.user The SMTP username
-  * @apiSuccess {string} emailer.options.pass The SMTP password
+  * @apiSuccess {string} emailer.options.auth.user The SMTP username
+  * @apiSuccess {string} emailer.options.auth.pass The SMTP password
   * @apiSuccess {boolean} emailer.options.secure Boolean indicating whether or not to use SSL
   * @apiSuccess {object} images Object containing image server configurations
   * @apiSuccess {string="local","s3"} images.storage Where to store images
@@ -149,8 +149,8 @@ exports.find = {
   * @apiParam (Payload) {string} [emailer.sender] Email address that emails will be sent from
   * @apiParam (Payload) {string} [emailer.options.host] The SMTP host
   * @apiParam (Payload) {number} [emailer.options.port] The SMTP port
-  * @apiParam (Payload) {string} [emailer.options.user] The SMTP username
-  * @apiParam (Payload) {string} [emailer.options.pass] The SMTP password
+  * @apiParam (Payload) {string} [emailer.options.auth.user] The SMTP username
+  * @apiParam (Payload) {string} [emailer.options.auth.pass] The SMTP password
   * @apiParam (Payload) {boolean} [emailer.options.secure] Boolean indicating whether or not to use SSL
   * @apiParam (Payload) {object} [images] Object containing image server configurations
   * @apiParam (Payload) {string="local","s3"} [images.storage] Where to store images
@@ -214,8 +214,10 @@ exports.update = {
         options: Joi.object().keys({
           host: Joi.string(),
           port: Joi.number(),
-          user: Joi.string(),
-          pass: Joi.string()
+          auth: Joi.object().keys({
+            user: Joi.string(),
+            pass: Joi.string()
+          })
         })
       }),
       images: Joi.object().keys({
@@ -792,8 +794,8 @@ function checkEmailerConfig(emailer) {
     if (!emailer.sender) { errors.push('Emailer Sender not found.'); }
     if (!emailer.options.host) { errors.push('Emailer Host not found.'); }
     if (!emailer.options.port) { errors.push('Emailer Post not found.'); }
-    if (!emailer.options.user) { errors.push('Emailer User not found.'); }
-    if (!emailer.options.pass) { errors.push('Emailer Password not found.'); }
+    if (!emailer.options.auth.user) { errors.push('Emailer User not found.'); }
+    if (!emailer.options.auth.pass) { errors.push('Emailer Password not found.'); }
 
     if (errors.length > 0) { return reject(new ConfigError(errors.join('\n'))); }
     else { return resolve(); }
