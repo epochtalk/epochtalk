@@ -67,11 +67,11 @@ function validatePortalParams(request, reply) {
   * @apiSuccess {string} website.favicon The favicon for the website
   * @apiSuccess {object} emailer Object containing configurations for the email server
   * @apiSuccess {string} emailer.sender Email address that emails will be sent from
-  * @apiSuccess {string} emailer.host The SMTP host
-  * @apiSuccess {number} emailer.port The SMTP port
-  * @apiSuccess {string} emailer.user The SMTP username
-  * @apiSuccess {string} emailer.pass The SMTP password
-  * @apiSuccess {boolean} emailer.secure Boolean indicating whether or not to use SSL
+  * @apiSuccess {string} emailer.options.host The SMTP host
+  * @apiSuccess {number} emailer.options.port The SMTP port
+  * @apiSuccess {string} emailer.options.user The SMTP username
+  * @apiSuccess {string} emailer.options.pass The SMTP password
+  * @apiSuccess {boolean} emailer.options.secure Boolean indicating whether or not to use SSL
   * @apiSuccess {object} images Object containing image server configurations
   * @apiSuccess {string="local","s3"} images.storage Where to store images
   * @apiSuccess {number} images.max_size Max image file size
