@@ -790,10 +790,10 @@ function checkEmailerConfig(emailer) {
 
     var errors = [];
     if (!emailer.sender) { errors.push('Emailer Sender not found.'); }
-    if (!emailer.host) { errors.push('Emailer Host not found.'); }
-    if (!emailer.port) { errors.push('Emailer Post not found.'); }
-    if (!emailer.user) { errors.push('Emailer User not found.'); }
-    if (!emailer.pass) { errors.push('Emailer Password not found.'); }
+    if (!emailer.options.host) { errors.push('Emailer Host not found.'); }
+    if (!emailer.options.port) { errors.push('Emailer Post not found.'); }
+    if (!emailer.options.user) { errors.push('Emailer User not found.'); }
+    if (!emailer.options.pass) { errors.push('Emailer Password not found.'); }
 
     if (errors.length > 0) { return reject(new ConfigError(errors.join('\n'))); }
     else { return resolve(); }
