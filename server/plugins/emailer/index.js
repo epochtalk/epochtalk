@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var path = require('path');
 var Promise = require('bluebird');
 var nodemailer = require('nodemailer');
@@ -35,7 +36,15 @@ exports.expose = function(emailer) {
 
 function init() {
   emailerConfig = options.config.emailer;
-  if (emailerConfig.transporter) {
+  if (_.isUndefined(emailerConfig)) {
+    transporter = {
+      sendMail: function(email, callback) {
+        console.log(email);
+        callback();
+      }
+    };
+  }
+  else if (emailerConfig.transporter) {
     transporter = nodemailer.createTransport(transporters[emailerConfig.transporter](emailerConfig.options));
   }
   else {
