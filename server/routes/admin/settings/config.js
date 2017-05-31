@@ -147,11 +147,11 @@ exports.find = {
   * @apiParam (Payload) {string} [website.favicon] The favicon for the website
   * @apiParam (Payload) {object} [emailer] Object containing configurations for the email server
   * @apiParam (Payload) {string} [emailer.sender] Email address that emails will be sent from
-  * @apiParam (Payload) {string} [emailer.host] The SMTP host
-  * @apiParam (Payload) {number} [emailer.port] The SMTP port
-  * @apiParam (Payload) {string} [emailer.user] The SMTP username
-  * @apiParam (Payload) {string} [emailer.pass] The SMTP password
-  * @apiParam (Payload) {boolean} [emailer.secure] Boolean indicating whether or not to use SSL
+  * @apiParam (Payload) {string} [emailer.options.host] The SMTP host
+  * @apiParam (Payload) {number} [emailer.options.port] The SMTP port
+  * @apiParam (Payload) {string} [emailer.options.user] The SMTP username
+  * @apiParam (Payload) {string} [emailer.options.pass] The SMTP password
+  * @apiParam (Payload) {boolean} [emailer.options.secure] Boolean indicating whether or not to use SSL
   * @apiParam (Payload) {object} [images] Object containing image server configurations
   * @apiParam (Payload) {string="local","s3"} [images.storage] Where to store images
   * @apiParam (Payload) {number} [images.max_size] Max image file size
@@ -210,11 +210,13 @@ exports.update = {
       }),
       emailer: Joi.object().keys({
         sender: Joi.string(),
-        host: Joi.string(),
-        port: Joi.number(),
-        user: Joi.string(),
-        pass: Joi.string(),
-        secure: Joi.boolean()
+        secure: Joi.boolean(),
+        options: Joi.object().keys({
+          host: Joi.string(),
+          port: Joi.number(),
+          user: Joi.string(),
+          pass: Joi.string()
+        })
       }),
       images: Joi.object().keys({
         storage: Joi.string(),
