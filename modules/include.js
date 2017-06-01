@@ -1,4 +1,5 @@
 module.exports = [
+  'bct-patroller',
   'ept-posts',
   'ept-threads',
   'ept-boards',
