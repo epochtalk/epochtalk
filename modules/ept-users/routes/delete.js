@@ -7,7 +7,7 @@ var Joi = require('joi');
   * @apiName DeleteUser
   * @apiDescription Delete a user by userId
   *
-  * @apiParam {string} id The user id of the user to delete
+  * @apiParam {string} id The id of the user to delete
   *
   * @apiSuccess {string} username The deleted user's username
   * @apiSuccess {string} email The deleted user's email
