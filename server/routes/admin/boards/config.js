@@ -38,7 +38,7 @@ var Joi = require('joi');
   * @apiSuccess {string} categories.boards.user_id The id of the author of the last post within the board
   * @apiSuccess {boolean} categories.boards.user_deleted Boolean which indicates if the last user to post within the board has had their account deleted
   * @apiSuccess {object[]} categories.boards.moderators Array of boards moderators
-  * @apiSuccess {string} categories.boards.moderators.id The user id of the moderator
+  * @apiSuccess {string} categories.boards.moderators.id The id of the moderator
   * @apiSuccess {string} categories.boards.moderators.username The username of the moderator
   * @apiSuccess {object[]} categories.boards.children Array of child boards of this board
   *

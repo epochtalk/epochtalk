@@ -39,7 +39,7 @@ var Promise = require('bluebird');
   * @apiSuccess {timestamp} data.boards.boards.last_post_created_at The created at timestamp of the most recent post (stripped=false)
   * @apiSuccess {string} data.boards.boards.last_post_username The username of the user who created the most recent post (stripped=false)
   * @apiSuccess {string} data.boards.boards.last_post_avatar The avatar of the user who created the most recent post (stripped=false)
-  * @apiSuccess {string} data.boards.boards.user_id The user id of the user who created the most recent post (stripped=false)
+  * @apiSuccess {string} data.boards.boards.user_id The id of the user who created the most recent post (stripped=false)
   * @apiSuccess {boolean} data.boards.boards.user_deleted Boolean indicating if the user who created the most recent post has had their account deleted (stripped=false)
   * @apiSuccess {object[]} data.boards.boards.children An array containing child boards if applicable
   * @apiSuccess {object[]} data.boards.boards.moderators Array containing data about the moderators of the board (stripped=false)

@@ -7,7 +7,7 @@ var Joi = require('joi');
   * @apiName ReactivateUser
   * @apiDescription Reactivate a user by userId
   *
-  * @apiParam {string} id The user id of the user to reactivate
+  * @apiParam {string} id The id of the user to reactivate
   *
   * @apiSuccess {object} status 200 OK
   *

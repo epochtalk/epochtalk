@@ -521,7 +521,7 @@ exports.getBannedBoards = {
   * users moderated boards
   * @apiSuccess {object[]} data An array of board banned users and board data
   * @apiSuccess {string} data.username The username of the board banned user
-  * @apiSuccess {string} data.user_id The user id of the board banned user
+  * @apiSuccess {string} data.user_id The id of the board banned user
   * @apiSuccess {string} data.email The email of the board banned user
   * @apiSuccess {string} data.created_at The created_at date of the board banned user's account
   * @apiSuccess {string[]} data.board_ids An array of the board ids this user is banned from
