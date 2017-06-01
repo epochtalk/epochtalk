@@ -24,7 +24,7 @@ module.exports = function(boardId, userId, opts) {
     t.updated_at,
     t.views as view_count,
     t.post_count,
-    p.title,
+    p.content ->> 'title' as title,
     p.user_id,
     p.username,
     p.user_deleted,
