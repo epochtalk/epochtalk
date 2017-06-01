@@ -56,7 +56,13 @@ function send(templateName, emailParams) {
   return new Promise(function(resolve, reject) {
     var emailTemplate = templateBuilder[templateName];
     if (!emailTemplate) { reject(new Error('Invalid email template: ' + templateName)); }
-    var sender = emailerConfig.sender;
+    var sender;
+    if (_.isUndefined(emailerConfig)) {
+      sender = 'localhost';
+    }
+    else {
+      sender = emailerConfig.sender;
+    }
     var email = emailTemplate(sender, emailParams);
     transporter.sendMail(email, function(err) {
       if (err) { reject(new Error('Failed to Send Email (' + err.message + ')')); }
