@@ -53,7 +53,7 @@ module.exports = {
       limit: request.query.limit,
       page: request.query.page,
       sortField: request.query.field,
-      sortDesc: request.query.desc,
+      desc: request.query.desc,
       searchStr: request.query.search
     };
     var promise = request.db.users.pagePublic(opts)

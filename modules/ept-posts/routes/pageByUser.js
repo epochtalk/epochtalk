@@ -79,7 +79,7 @@ function processing(request, reply) {
   var opts = {
     limit: request.query.limit,
     page: request.query.page,
-    sortDesc: request.query.desc
+    desc: request.query.desc
   };
 
   var getPosts = request.db.posts.pageByUser(username, priority, opts);
@@ -90,7 +90,7 @@ function processing(request, reply) {
     return {
       page: opts.page,
       limit: opts.limit,
-      desc: opts.sortDesc,
+      desc: opts.desc,
       posts: common.cleanPosts(posts, userId, viewables),
       count: count
     };

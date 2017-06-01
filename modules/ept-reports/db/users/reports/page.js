@@ -13,7 +13,7 @@ module.exports = function(opts) {
   if (opts && opts.limit) { limit = opts.limit; }
   if (opts && opts.page) { page = opts.page; }
   if (opts && opts.sortField) { sortField = opts.sortField; }
-  if (opts && opts.sortDesc) { order = 'DESC'; }
+  if (opts && opts.desc) { order = 'DESC'; }
   var offset = (page * limit) - limit;
   if (opts && opts.filter && opts.searchStr) { // filter + search
     q = [q, 'WHERE rs.status = $1 AND o.username LIKE $2 ORDER BY', sortField, order, 'LIMIT $3 OFFSET $4'].join(' ');

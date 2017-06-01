@@ -47,7 +47,7 @@ module.exports = function(username, priority, opts) {
     opts = opts || {};
     var limit = opts.limit || 25;
     var page = opts.page || 1;
-    var order = opts.sortDesc ? 'DESC' : 'ASC';
+    var order = opts.desc ? 'DESC' : 'ASC';
     var offset = (page * limit) - limit;
 
     q = [q, order, 'LIMIT $3 OFFSET $4'].join(' ');
