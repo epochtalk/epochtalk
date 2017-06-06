@@ -302,14 +302,14 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 
   this.getSortClass = function(sortField) {
     var sortClass;
-    var sortDesc;
+    var desc;
     // if desc param is undefined default to true if sorting by created_at
-    if ($location.search().desc === undefined && sortField === 'created_at') { sortDesc = true; }
-    else { sortDesc = ctrl.desc === 'true'; }
+    if ($location.search().desc === undefined && sortField === 'created_at') { desc = true; }
+    else { desc = ctrl.desc === 'true'; }
     // created_at is sorted desc by default when ctrl.field is not present
-    if (sortField === 'created_at' && !ctrl.field && sortDesc) { sortClass = 'fa fa-sort-desc'; }
-    else if (ctrl.field === sortField && sortDesc) { sortClass = 'fa fa-sort-desc'; }
-    else if (ctrl.field === sortField && !sortDesc) { sortClass = 'fa fa-sort-asc'; }
+    if (sortField === 'created_at' && !ctrl.field && desc) { sortClass = 'fa fa-sort-desc'; }
+    else if (ctrl.field === sortField && desc) { sortClass = 'fa fa-sort-desc'; }
+    else if (ctrl.field === sortField && !desc) { sortClass = 'fa fa-sort-asc'; }
     else { sortClass = 'fa fa-sort'; }
     return sortClass;
   };

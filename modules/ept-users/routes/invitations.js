@@ -12,7 +12,7 @@ var Joi = require('joi');
   *
   * @apiSuccess {number} page The page of invitations to return
   * @apiSuccess {number} limit The number of invitations to return per page
-  * @apiSuccess {boolean} hasMore Boolean indicating if there are more results on the next page
+  * @apiSuccess {boolean} has_more Boolean indicating if there are more results on the next page
   * @apiSuccess {object[]} invitations An array containing invitations.
   * @apiSuccess {string} invitations.email The email of the user who was invited
   * @apiSuccess {string} invitations.hash The user's invite has
@@ -54,7 +54,7 @@ module.exports = {
         page: request.query.page,
         limit: request.query.limit,
         invitations: invitations,
-        hasMore: hasMore
+        has_more: hasMore
       };
     })
     .error(request.errorMap.toHttpError);

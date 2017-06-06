@@ -7,7 +7,7 @@ var Joi = require('joi');
   * @apiName DeactivateUser
   * @apiDescription Deactivate a user by userId
   *
-  * @apiParam {string} id The userId of the user to deactivate
+  * @apiParam {string} id The id of the user to deactivate
   *
   * @apiSuccess {object} status 200 OK
   *

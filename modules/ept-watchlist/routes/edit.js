@@ -12,8 +12,8 @@ var Promise = require('bluebird');
   *
   * @apiSuccess {number} page The page of results being returned
   * @apiSuccess {number} limit The number of results per page
-  * @apiSuccess {boolean} hasMoreThreads Boolean indicating if there are more pages of threads
-  * @apiSuccess {boolean} hasMoreBoards Boolean indicating if there are more pages of boards
+  * @apiSuccess {boolean} has_more_threads Boolean indicating if there are more pages of threads
+  * @apiSuccess {boolean} has_more_boards Boolean indicating if there are more pages of boards
   * @apiSuccess {object[]} threads An array containing watched thread data
   * @apiSuccess {string} threads.id The unique id of the watched thread
   * @apiSuccess {number} threads.post_count The post count of the watched thread
@@ -62,9 +62,9 @@ module.exports = {
         page: 1,
         limit: request.query.limit,
         threads: threads,
-        hasMoreThreads: hasMoreThreads,
+        has_more_threads: hasMoreThreads,
         boards: boards,
-        hasMoreBoards: hasMoreBoards
+        has_more_boards: hasMoreBoards
       };
     })
     .error(request.errorMap.toHttpError);

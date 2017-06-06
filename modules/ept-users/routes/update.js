@@ -11,13 +11,13 @@ var Joi = require('joi');
   * @apiParam {string} id The user's unique id
   * @apiParam (Payload) {string} [username] The user's username
   * @apiParam (Payload) {string} [email] The user's email
-  * @apiParam (Payload) {string} [emailPassword] The user's password used for updating email
+  * @apiParam (Payload) {string} [email_password] The user's password used for updating email
   * @apiParam (Payload) {string} [old_password] The user's old password (used for changing password)
   * @apiParam (Payload) {string} [password] The user's new passowrd (used for changing password)
   * @apiParam (Payload) {string} [confirmation] The user's new password confirmation (used for changing password)
   * @apiParam (Payload) {string} [name] The user's name
   * @apiParam (Payload) {string} [website] URL to user's website
-  * @apiParam (Payload) {string} [btcAddress] User's bitcoin wallet address
+  * @apiParam (Payload) {string} [btc_address] User's bitcoin wallet address
   * @apiParam (Payload) {string} [gender] The user's gender
   * @apiParam (Payload) {date} [dob] Date version of the user's dob
   * @apiParam (Payload) {string} [location] The user's geographical location
@@ -35,7 +35,7 @@ var Joi = require('joi');
   * @apiSuccess {string} [email] The user's email
   * @apiSuccess {string} [name] The user's name
   * @apiSuccess {string} [website] URL to user's website
-  * @apiSuccess {string} [btcAddress] User's bitcoin wallet address
+  * @apiSuccess {string} [btc_address] User's bitcoin wallet address
   * @apiSuccess {string} [gender] The user's gender
   * @apiSuccess {timestamp} [dob] Timestamp of the user's dob
   * @apiSuccess {string} [location] The user's geographical location
@@ -66,7 +66,7 @@ module.exports = {
           username: 'payload.username',
           name: 'payload.name',
           website: 'payload.website',
-          btcAddress: 'payload.btcAddress',
+          btc_address: 'payload.btc_address',
           gender: 'payload.gender',
           dob: 'payload.dob',
           location: 'payload.location',
@@ -82,14 +82,14 @@ module.exports = {
       params: { id: Joi.string().required() },
       payload: Joi.object().keys({
         email: Joi.string().email(),
-        emailPassword: Joi.string().min(8).max(255),
+        email_password: Joi.string().min(8).max(255),
         username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
         old_password: Joi.string().min(8).max(255),
         password: Joi.string().min(8).max(255),
         confirmation: Joi.ref('password'),
         name: Joi.string().max(255).allow(''),
         website: Joi.string().uri({scheme: ['http', 'https']}).allow(''),
-        btcAddress: Joi.string().max(255).allow(''),
+        btc_address: Joi.string().max(255).allow(''),
         gender: Joi.string().max(255).allow(''),
         dob: Joi.date().allow('', null),
         location: Joi.string().max(255).allow(''),
@@ -104,7 +104,7 @@ module.exports = {
       })
       .and('password', 'old_password', 'confirmation')
       .with('signature', 'raw_signature')
-      .with('email', 'emailPassword')
+      .with('email', 'email_password')
     },
     pre: [
       { method: 'auth.users.update(server, auth, params.id, payload)' },
@@ -125,7 +125,7 @@ module.exports = {
       delete user.old_password;
       delete user.password;
       delete user.confirmation;
-      delete user.emailPassword;
+      delete user.email_password;
       return user;
     })
     .then(function(user) {

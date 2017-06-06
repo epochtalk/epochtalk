@@ -11,7 +11,7 @@ var Promise = require('bluebird');
   *
   * @apiParam (Payload) {string} hash User's Invitation Hash.
   * @apiParam (Payload) {string} username User's unique username.
-  * @apiParam (Payload) {string} email User's email address.
+  * @apiParam (Payload) {string} email The email address to send the invite to.
   * @apiParam (Payload) {string} password User's password
   * @apiParam (Payload) {string} confirmation User's confirmed password
   *
@@ -34,7 +34,6 @@ module.exports = {
     validate: {
       payload: {
         hash: Joi.string().max(255).required(),
-        inviteEmail: Joi.string().email().required(),
         username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(8).max(72).required(),
@@ -51,7 +50,7 @@ module.exports = {
     }
 
     // verify hash
-    var invite = { hash: request.payload.hash, email: request.payload.inviteEmail };
+    var invite = { hash: request.payload.hash, email: request.payload.email };
     var promise = request.db.users.verifyInvite(invite)
     .then(function(inviteValid) {
       if (inviteValid) { return invite.email; }

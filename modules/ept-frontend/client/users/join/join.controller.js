@@ -3,7 +3,6 @@ var ctrl = ['$rootScope', '$location', '$timeout', '$stateParams', 'User', 'Aler
     var ctrl = this;
     this.joinUser = {
       hash: $stateParams.token,
-      inviteEmail: $stateParams.email,
       username: '',
       email: $stateParams.email,
       password: '',

@@ -12,7 +12,7 @@ var Joi = require('joi');
   *
   * @apiSuccess {number} page The page of results being returned
   * @apiSuccess {number} limit The number of results per page
-  * @apiSuccess {boolean} hasMoreBoards Boolean indicating if there are more pages of boards
+  * @apiSuccess {boolean} has_more_boards Boolean indicating if there are more pages of boards
   * @apiSuccess {object[]} boards An array containing watched board data
   * @apiSuccess {string} boards.id The unique id of the watched board
   * @apiSuccess {string} boards.name The name of the watched board
@@ -52,7 +52,7 @@ module.exports = {
         page: opts.page,
         limit: request.query.limit,
         boards: boards,
-        hasMoreBoards: hasMoreBoards
+        has_more_boards: hasMoreBoards
       };
     })
     .error(request.errorMap.toHttpError);

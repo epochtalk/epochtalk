@@ -3,8 +3,8 @@ var Promise = require('bluebird');
 
 module.exports = function (server, auth, params, payload) {
   var poll = payload;
-  var pollId = params.pollId;
-  var threadId = params.threadId;
+  var pollId = params.poll_id;
+  var threadId = params.thread_id;
   var userId = auth.credentials.id;
 
   // check base permission

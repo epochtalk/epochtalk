@@ -10,7 +10,7 @@ var ctrl = ['$anchorScroll', '$timeout', 'Session',  'Watchlist', 'pageData',
     this.page = pageData.page;
     this.limit = pageData.limit;
     this.threads = pageData.threads;
-    this.hasMoreThreads = pageData.hasMoreThreads;
+    this.hasMoreThreads = pageData.has_more_threads;
 
     // Scroll fix for nested state
     $timeout($anchorScroll);
@@ -52,7 +52,7 @@ var ctrl = ['$anchorScroll', '$timeout', 'Session',  'Watchlist', 'pageData',
       // replace current threads with new threads
       Watchlist.index(query).$promise
       .then(function(pageData) {
-        ctrl.hasMoreThreads = pageData.hasMoreThreads;
+        ctrl.hasMoreThreads = pageData.has_more_threads;
         ctrl.threads = pageData.threads;
         ctrl.threads.forEach(threadPageCount);
         $timeout($anchorScroll);

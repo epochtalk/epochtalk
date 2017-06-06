@@ -9,7 +9,7 @@ var Joi = require('joi');
   * @apiDescription Used to move a thread to a different board.
   *
   * @apiParam {string} id The unique id of the thread to move
-  * @apiParam (Payload) {string} newBoardId The unique id of the board to move this thread into.
+  * @apiParam (Payload) {string} new_board_id The unique id of the board to move this thread into.
   *
   * @apiSuccess {string} id The id of the thread which was moved
   * @apiSuccess {string} board_id The id of the board which the thread was moved to
@@ -27,7 +27,7 @@ module.exports = {
         type: 'threads.move',
         data: {
           id: 'params.id',
-          new_board_id: 'payload.newBoardId',
+          new_board_id: 'payload.new_board_id',
           old_board_id: 'route.settings.plugins.mod_log.metadata.old_board_id',
           old_board_name: 'route.settings.plugins.mod_log.metadata.old_board_name'
         }
@@ -35,13 +35,13 @@ module.exports = {
     },
     validate: {
       params: { id: Joi.string().required() },
-      payload: { newBoardId: Joi.string().required() }
+      payload: { new_board_id: Joi.string().required() }
     },
     pre: [ { method: 'auth.threads.move(server, auth, params.id)' } ]
   },
   handler: function(request, reply) {
     var threadId = request.params.id;
-    var newBoardId = request.payload.newBoardId;
+    var newBoardId = request.payload.new_board_id;
 
     // move thread
     var promise = request.db.threads.move(threadId, newBoardId)

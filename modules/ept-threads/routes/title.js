@@ -9,7 +9,7 @@ var Joi = require('joi');
   * @apiDescription Used to update the title of a thread.
   *
   * @apiParam {string} id The unique id of the thread to update
-  * @apiParam (Payload) {string} The new title for this thread.
+  * @apiParam (Payload) {string} title The new title for this thread.
   *
   * @apiSuccess {string} id The unique id of the thread
   * @apiSuccess {string} title The title of the thread

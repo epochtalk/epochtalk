@@ -1,4 +1,4 @@
-module.exports = ['$resource',
+var resource = ['$resource',
   function($resource) {
     return $resource('/api/categories/:id', {}, {
       all: {
@@ -11,3 +11,5 @@ module.exports = ['$resource',
     });
   }
 ];
+
+angular.module('ept').factory('Categories', resource);

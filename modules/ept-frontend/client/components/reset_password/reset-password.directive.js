@@ -18,7 +18,7 @@ function(AdminUsers, Session, Alert) {
 
       // Reset Password
       this.reset = function() {
-        AdminUsers.resetPassword({ userId: this.user.id }).$promise
+        AdminUsers.resetPassword({ user_id: this.user.id }).$promise
         .then(function() { Alert.success('Password Reset Email Sent'); })
         .catch(function() { Alert.error('Error resetting password'); });
       };

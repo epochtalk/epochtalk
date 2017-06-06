@@ -13,7 +13,7 @@ module.exports = function(opts) {
   if (opts && opts.limit) { limit = opts.limit; }
   if (opts && opts.page) { page = opts.page; }
   if (opts && opts.sortField) { sortField = opts.sortField; }
-  if (opts && opts.sortDesc) { order = 'DESC'; }
+  if (opts && opts.desc) { order = 'DESC'; }
   var offset = (page * limit) - limit;
   if (opts && opts.modId) { opts.modId = helper.deslugify(opts.modId); } // deslugify modId
   if (opts && opts.filter && opts.searchStr && opts.modId) { // filter + search + moderated boards

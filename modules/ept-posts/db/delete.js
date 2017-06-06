@@ -30,7 +30,11 @@ module.exports = function(id) {
       q = 'UPDATE posts SET deleted = TRUE WHERE id = $1';
       return client.queryAsync(q, [id]);
     })
-    .then(function() { return post; })
+    .then(function() {
+      // Strip unneeded return fields
+      delete post.tsv;
+      return post;
+    })
     .then(helper.slugify);
   });
 };

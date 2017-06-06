@@ -3,7 +3,7 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Threads
-  * @api {POST} /threads/:threadId/polls Create Poll
+  * @api {POST} /threads/:id/polls Create Poll
   * @apiName CreatePoll
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User (that created the thread)
   * @apiDescription Used to create a poll.
@@ -30,20 +30,20 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'POST',
-  path: '/api/threads/{threadId}/polls',
+  path: '/api/threads/{thread_id}/polls',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
         type: 'threads.createPoll',
         data: {
-          thread_id: 'params.threadId',
+          thread_id: 'params.thread_id',
           poll_data: 'payload'
         }
       }
     },
     validate: {
-      params: { threadId: Joi.string().required() },
+      params: { thread_id: Joi.string().required() },
       payload: Joi.object().keys({
         question: Joi.string().min(1).max(255).required(),
         answers: Joi.array().items(Joi.string()).min(1).max(255).required(),
@@ -53,10 +53,10 @@ module.exports = {
         display_mode: Joi.string().valid('always', 'voted', 'expired').required()
       })
     },
-    pre: [ { method: 'auth.threads.createPoll(server, auth, params.threadId, payload)' } ]
+    pre: [ { method: 'auth.threads.createPoll(server, auth, params.thread_id, payload)' } ]
   },
   handler: function(request, reply) {
-    var threadId = request.params.threadId;
+    var threadId = request.params.thread_id;
     var poll = request.payload;
 
     var promise = request.db.polls.create(threadId, poll)
