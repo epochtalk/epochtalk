@@ -12,9 +12,13 @@ module.exports = function(post) {
   post.deleted = post.deleted || false;
   post.locked = post.locked || false;
 
+  var post_json = {title: post.title, body: post.body, raw_body: post.raw_body};
+
   var q, params;
-  q = 'INSERT INTO posts(thread_id, user_id, title, body, raw_body, deleted, locked, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, now(), now()) RETURNING id, created_at';
-  params = [post.thread_id, post.user_id, post.title, post.body, post.raw_body, post.deleted, post.locked];
+  q = 'INSERT INTO posts(thread_id, user_id, content, deleted, locked, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, now(), now()) RETURNING id, created_at';
+  // q = 'INSERT INTO posts(thread_id, user_id, title, body, raw_body, deleted, locked, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, now(), now()) RETURNING id, created_at';
+  params = [post.thread_id, post.user_id, post_json, post.deleted, post.locked];
+
   return using(db.createTransaction(), function(client) {
     return client.queryAsync(q, params)
     .then(function(results) {
@@ -22,7 +26,9 @@ module.exports = function(post) {
         post.id = results.rows[0].id;
         post.created_at = results.rows[0].created_at;
       }
-      else { throw new CreationError('Post Could Not Be Saved'); }
+      else {
+        throw new CreationError('Post Could Not Be Saved');
+      }
     });
   })
   .then(function() { return helper.slugify(post); });
