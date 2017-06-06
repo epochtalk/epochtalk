@@ -40,28 +40,28 @@ var resource = ['$resource',
       },
       vote: {
         method: 'POST',
-        params: { threadId: '@threadId', pollId: '@pollId' },
-        url: '/api/threads/:threadId/polls/:pollId/vote'
+        params: { thread_id: '@thread_id', poll_id: '@poll_id' },
+        url: '/api/threads/:thread_id/polls/:poll_id/vote'
       },
       removeVote: {
         method: 'DELETE',
-        params: { threadId: '@threadId', pollId: '@pollId' },
-        url: '/api/threads/:threadId/polls/:pollId/vote'
+        params: { thread_id: '@thread_id', poll_id: '@poll_id' },
+        url: '/api/threads/:thread_id/polls/:poll_id/vote'
       },
       createPoll: {
         method: 'POST',
-        params: { threadId: '@threadId', pollId: '@pollId' },
-        url: '/api/threads/:threadId/polls'
+        params: { thread_id: '@thread_id', poll_id: '@poll_id' },
+        url: '/api/threads/:thread_id/polls'
       },
       editPoll: {
         method: 'PUT',
-        params: { threadId: '@threadId', pollId: '@pollId' },
-        url: '/api/threads/:threadId/polls/:pollId'
+        params: { thread_id: '@thread_id', poll_id: '@poll_id' },
+        url: '/api/threads/:thread_id/polls/:poll_id'
       },
       lockPoll: {
         method: 'POST',
-        params: { threadId: '@threadId', pollId: '@pollId' },
-        url: '/api/threads/:threadId/polls/:pollId/lock'
+        params: { thread_id: '@thread_id', poll_id: '@poll_id' },
+        url: '/api/threads/:thread_id/polls/:poll_id/lock'
       }
     });
   }

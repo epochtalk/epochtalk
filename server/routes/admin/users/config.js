@@ -286,7 +286,7 @@ exports.page = {
       limit: request.query.limit,
       page: request.query.page,
       sortField: request.query.field,
-      sortDesc: request.query.desc,
+      desc: request.query.desc,
       filter: request.query.filter,
       searchStr: request.query.search,
       ip: request.query.ip

@@ -10,13 +10,13 @@ var ctrl = ['$timeout', '$anchorScroll', 'Session', 'Alert', 'Watchlist', 'pageD
     this.threadPage = pageData.page;
     this.threadLimit = pageData.limit;
     this.threads = pageData.threads;
-    this.hasMoreThreads = pageData.hasMoreThreads;
+    this.hasMoreThreads = pageData.has_more_threads;
 
     // board variables
     this.boardPage = pageData.page;
     this.boardLimit = pageData.limit;
     this.boards = pageData.boards;
-    this.hasMoreBoards = pageData.hasMoreBoards;
+    this.hasMoreBoards = pageData.has_more_boards;
 
     this.unwatchThread = function(threadId, threadTitle) {
       return Watchlist.unwatchThread({ threadId: threadId }).$promise
@@ -68,7 +68,7 @@ var ctrl = ['$timeout', '$anchorScroll', 'Session', 'Alert', 'Watchlist', 'pageD
       // replace current threads with new threads
       Watchlist.pageThreads(query).$promise
       .then(function(pageData) {
-        ctrl.hasMoreThreads = pageData.hasMoreThreads;
+        ctrl.hasMoreThreads = pageData.has_more_threads;
         ctrl.threads = pageData.threads;
       });
     };
@@ -80,7 +80,7 @@ var ctrl = ['$timeout', '$anchorScroll', 'Session', 'Alert', 'Watchlist', 'pageD
       // replace current threads with new threads
       Watchlist.pageBoards(query).$promise
       .then(function(pageData) {
-        ctrl.hasMoreBoards = pageData.hasMoreBoards;
+        ctrl.hasMoreBoards = pageData.has_more_boards;
         ctrl.boards = pageData.boards;
       });
     };

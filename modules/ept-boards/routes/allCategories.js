@@ -8,9 +8,9 @@ var Promise = require('bluebird');
   * @apiName AllCategories
   * @apiDescription Used to retrieve all boards within their respective categories.
   *
-  * @apiParam (Query) {number} page=1 The page of threads to bring back for recent threads
-  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page for recent threads
-  * @apiParam (Query) {boolean} stripped If true brings back boards with no additional metadata
+  * @apiParam (Query) {number} [page=1] The page of threads to bring back for recent threads
+  * @apiParam (Query) {number{1..100}} [limit=25] The number of threads to bring back per page for recent threads
+  * @apiParam (Query) {boolean} [stripped] If true brings back boards with no additional metadata
   *
   * @apiSuccess {object} data Object containing boards and recent thread data
   * @apiSuccess {object[]} data.boards contains boards in their respective categories
@@ -39,7 +39,7 @@ var Promise = require('bluebird');
   * @apiSuccess {timestamp} data.boards.boards.last_post_created_at The created at timestamp of the most recent post (stripped=false)
   * @apiSuccess {string} data.boards.boards.last_post_username The username of the user who created the most recent post (stripped=false)
   * @apiSuccess {string} data.boards.boards.last_post_avatar The avatar of the user who created the most recent post (stripped=false)
-  * @apiSuccess {string} data.boards.boards.user_id The user id of the user who created the most recent post (stripped=false)
+  * @apiSuccess {string} data.boards.boards.user_id The id of the user who created the most recent post (stripped=false)
   * @apiSuccess {boolean} data.boards.boards.user_deleted Boolean indicating if the user who created the most recent post has had their account deleted (stripped=false)
   * @apiSuccess {object[]} data.boards.boards.children An array containing child boards if applicable
   * @apiSuccess {object[]} data.boards.boards.moderators Array containing data about the moderators of the board (stripped=false)

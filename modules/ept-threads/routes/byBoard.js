@@ -14,7 +14,8 @@ var Promise = require('bluebird');
   *
   * @apiSuccess {number} page The page of threads to bring back
   * @apiSuccess {number} limit The number or threads per page to bring back
-  * @apiSuccess {boolean} writeAccess Boolean indicating if the authed user has write access to this thread
+  * @apiSuccess {boolean} banned_from_board Boolean indicating if the authed user has been banned from the current thread's board
+  * @apiSuccess {boolean} write_access Boolean indicating if the authed user has write access to this thread
   *
   * @apiSuccess {object} board Object containing information about the board the thread is in
   * @apiSuccess {string} board.id The id of the board
@@ -129,8 +130,8 @@ function processing(request, reply) {
   var promise = Promise.join(getWriteAccess, getThreads, getBoard, boardBans, function(writeAccess, threads, board, banned) {
     return {
       board: board,
-      bannedFromBoard: banned,
-      writeAccess: writeAccess,
+      banned_from_board: banned,
+      write_access: writeAccess,
       page: request.query.page,
       limit: request.query.limit, // limit can be modified by query
       normal: threads.normal,

@@ -71,7 +71,7 @@ module.exports = {
       page: request.query.page,
       filter: request.query.filter,
       sortField: request.query.field,
-      sortDesc: request.query.desc,
+      desc: request.query.desc,
       searchStr: request.query.search,
       modId: request.query.mod_id
     };
@@ -96,7 +96,7 @@ module.exports = {
         page_count: Math.ceil(count / opts.limit),
         filter: opts.filter,
         field: opts.sortField,
-        desc: opts.sortDesc,
+        desc: opts.desc,
         search: opts.searchStr
       };
     })

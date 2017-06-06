@@ -12,13 +12,13 @@ var resource = ['$resource',
       },
       ignore: {
         method: 'POST',
-        url: '/api/ignoreUsers/ignore/:userId',
-        params: { userId: '@userId' }
+        url: '/api/ignoreUsers/ignore/:id',
+        params: { id: '@id' }
       },
       unignore: {
         method: 'POST',
-        url: '/api/ignoreUsers/unignore/:userId',
-        params: { userId: '@userId' }
+        url: '/api/ignoreUsers/unignore/:id',
+        params: { id: '@id' }
       }
     });
   }

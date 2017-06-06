@@ -52,7 +52,7 @@ module.exports = {
     var opts = {
       limit: request.query.limit,
       page: request.query.page,
-      sortDesc: request.query.desc
+      desc: request.query.desc
     };
 
     var reportNotes = request.db.reports.pagePostReportsNotes(reportId, opts);

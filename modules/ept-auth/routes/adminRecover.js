@@ -10,7 +10,7 @@ var crypto = require('crypto');
   * @apiVersion 0.4.0
   * @apiDescription Used by admins to recover a user's account. Sends an email to the account holder with a URL to visit to reset the account password.
   *
-  * @apiParam (Payload) {string} userId The id of the user's account to recover
+  * @apiParam (Payload) {string} user_id The id of the user's account to recover
   *
   * @apiSuccess {object} Sucess 200 OK
   * @apiError (Error 400) BadRequest The user was not found
@@ -22,10 +22,10 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'adminUsers.resetPassword' },
-    validate: { payload: { userId: Joi.string().required() } }
+    validate: { payload: { user_id: Joi.string().required() } }
   },
   handler: function(request, reply) {
-    var userId = request.payload.userId;
+    var userId = request.payload.user_id;
     var config = request.server.app.config;
 
     var promise = request.db.users.find(userId)
@@ -47,7 +47,7 @@ module.exports = {
       var emailParams = {
         email: user.email,
         username: user.username,
-        siteName: config.website.title,
+        site_name: config.website.title,
         reset_url: config.publicUrl + '/' + path.join('reset', user.username, user.reset_token)
       };
       request.server.log('debug', emailParams);

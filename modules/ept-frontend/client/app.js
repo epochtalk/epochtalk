@@ -30,7 +30,6 @@ var ngDeps = [
   'ngTagsInput',
   require('oclazyload'),
   require('./layout/header.controller'),
-  require('./portal'),
   require('./boards'),
   // users
   require('./users/confirm'),
@@ -72,7 +71,6 @@ require('./boards/resource');
 require('./threads/resource');
 require('./posts/resource');
 require('./patrol/resource');
-require('./portal/resource');
 
 // Set Angular Configs
 app

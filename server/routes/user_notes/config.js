@@ -19,7 +19,7 @@ var Joi = require('joi');
   * @apiSuccess {boolean} prev boolean indicating if there is a previous page
   * @apiSuccess {object[]} data An array of user notes
   * @apiSuccess {string} data.id The id of the user note
-  * @apiSuccess {string} data.author_id The user id of the admin or mod who left the note
+  * @apiSuccess {string} data.author_id The id of the admin or mod who left the note
   * @apiSuccess {string} data.author_name The username of the admin or mod who left the note
   * @apiSuccess {string} data.author_avatar The avatar of the admin or mod who left the note
   * @apiSuccess {string} data.author_highlight_color The highlight color of the admin or mod who left the note

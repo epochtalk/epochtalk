@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Threads
-  * @api {DELETE} /threads/:threadId/polls/:pollId/vote Remove Vote
+  * @api {DELETE} /threads/:thread_id/polls/:poll_id/vote Remove Vote
   * @apiName RemoveVotePoll
   * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator, User
   * @apiDescription Used to remove a vote in a poll.
@@ -19,7 +19,7 @@ var Promise = require('bluebird');
   * @apiSuccess {string} answers.id The id of the answer
   * @apiSuccess {number} answers.votes The number of votes for this answer
   * @apiSuccess {number} max_answers The max number of answer per vote
-  * @apiSuccess {boolean} hasVoted Boolean indicating whether the user has voted
+  * @apiSuccess {boolean} has_voted Boolean indicating whether the user has voted
   * @apiSuccess {boolean} change_vote Boolean indicating whether users can change their vote
   * @apiSuccess {date} expiration The expiration date of the poll
   * @apiSuccess {string} display_mode String indicating how the results are shown to users
@@ -29,20 +29,20 @@ var Promise = require('bluebird');
   */
 module.exports = {
   method: 'DELETE',
-  path: '/api/threads/{threadId}/polls/{pollId}/vote',
+  path: '/api/threads/{thread_id}/polls/{poll_id}/vote',
   config: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {
-        threadId: Joi.string().required(),
-        pollId: Joi.string().required()
+        thread_id: Joi.string().required(),
+        poll_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.threads.removeVote(server, auth, params.threadId, params.pollId)' } ]
+    pre: [ { method: 'auth.threads.removeVote(server, auth, params.thread_id, params.poll_id)' } ]
   },
   handler: function(request, reply) {
-    var threadId = request.params.threadId;
-    var pollId = request.params.pollId;
+    var threadId = request.params.thread_id;
+    var pollId = request.params.poll_id;
     var userId = request.auth.credentials.id;
 
     var promise = request.db.polls.removeVote(pollId, userId)
@@ -54,7 +54,7 @@ module.exports = {
         var hideVotes = poll.display_mode === 'voted' && !voted;
         hideVotes = hideVotes || (poll.display_mode === 'expired' && poll.expiration > Date.now());
         if (hideVotes) { poll.answers.map(function(answer) { answer.votes = 0; }); }
-        poll.hasVoted = voted;
+        poll.has_voted = voted;
         return poll;
       });
     })

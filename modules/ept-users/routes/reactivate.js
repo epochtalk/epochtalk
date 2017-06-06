@@ -3,11 +3,11 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Users
-  * @api {POST} /users/:userId/reactivate Reactivate
+  * @api {POST} /users/:id/reactivate Reactivate
   * @apiName ReactivateUser
   * @apiDescription Reactivate a user by userId
   *
-  * @apiParam {string} id The userId of the user to reactivate
+  * @apiParam {string} id The id of the user to reactivate
   *
   * @apiSuccess {object} status 200 OK
   *

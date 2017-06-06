@@ -8,11 +8,11 @@ var Promise = require('bluebird');
   * @apiName RecentlyPostedInThreads
   * @apiDescription Used to page through recent threads posted in by the user.
   *
-  * @apiParam (Query) {number} page=1 The page of threads to bring back
-  * @apiParam (Query) {number} limit=25 The number of threads to bring back per page
+  * @apiParam (Query) {number} [page=1] The page of threads to bring back
+  * @apiParam (Query) {number} [limit=25] The number of threads to bring back per page
   *
-  * @apiSuccess {number} page The currently viewing page.
-  * @apiSuccess {number} limit The limit of threads for this page.
+  * @apiSuccess {number} page The current page of threads.
+  * @apiSuccess {number} limit The number of threads returned per page.
   * @apiSuccess {number} count The total number of threads for this user.
   * @apiSuccess {object[]} threads An array containing recently posted in threads.
   * @apiSuccess {string} threads.id The id of the thread

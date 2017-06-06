@@ -13,7 +13,7 @@ module.exports = function(opts) {
   var page = opts.page || 1;
   var offset = (page * limit) - limit;
   var sortField = opts.sortField || 'username';
-  var order = opts.sortDesc ? 'DESC' : 'ASC';
+  var order = opts.desc ? 'DESC' : 'ASC';
   var params;
   if (opts && opts.searchStr) {
     q = [q, 'WHERE u.deleted = false AND u.username LIKE $1 ORDER BY', sortField, order, 'LIMIT $2 OFFSET $3'].join(' ');

@@ -54,7 +54,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
       if ($scope.newCategories.length < 1) { return $q.resolve(); }
       console.log('0) Adding new Categories: \n' + JSON.stringify($scope.newCategories, null, 2));
 
-      return Categories.save($scope.newCategories).$promise
+      return Categories.save({ categories: $scope.newCategories }).$promise
       .then(function(cats) {
         // append all the new cats back on to the page
         cats.forEach(function(cat, index) {
@@ -104,7 +104,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
       if ($scope.deletedBoards.length < 1) { return $q.resolve(); }
       console.log('3) Handling deleted boards: \n' + JSON.stringify($scope.deletedBoards, null, 2));
 
-      return Boards.delete($scope.deletedBoards).$promise
+      return Boards.delete({ board_ids: $scope.deletedBoards }).$promise
       .then(function() {
         while($scope.deletedBoards.length > 0) { $scope.deletedBoards.pop(); }
       })
@@ -116,7 +116,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
       if ($scope.deletedCategories.length < 1) { return $q.resolve(); }
       console.log('4) Handling deleted categories: \n' + JSON.stringify($scope.deletedCategories, null, 2));
 
-      return Categories.delete($scope.deletedCategories).$promise
+      return Categories.delete({ category_ids: $scope.deletedCategories }).$promise
       .then(function() {
         while($scope.deletedCategories.length > 0) { $scope.deletedCategories.pop(); }
       })

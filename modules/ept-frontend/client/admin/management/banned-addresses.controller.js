@@ -36,14 +36,14 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'S
 
   this.getSortClass = function(sortField) {
     var sortClass;
-    var sortDesc = ctrl.desc.toString() === 'true'; // str to bool
-    if (sortField === 'created_at' && !ctrl.field && sortDesc) {
+    var desc = ctrl.desc.toString() === 'true'; // str to bool
+    if (sortField === 'created_at' && !ctrl.field && desc) {
       sortClass = 'fa fa-sort-desc';
     }
-    else if (ctrl.field === sortField && sortDesc) {
+    else if (ctrl.field === sortField && desc) {
       sortClass = 'fa fa-sort-desc';
     }
-    else if (ctrl.field === sortField && !sortDesc) {
+    else if (ctrl.field === sortField && !desc) {
       sortClass = 'fa fa-sort-asc';
     }
     else { sortClass = 'fa fa-sort'; }

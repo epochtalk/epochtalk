@@ -9,7 +9,7 @@ var ctrl = [
     parent.posts = pageData.posts;
     parent.thread = pageData.thread;
     parent.board_id = pageData.thread.board_id;
-    parent.writeAccess = pageData.writeAccess;
+    parent.writeAccess = pageData.write_access;
     // TODO: This will not be here once actual boards are stored in this array
     parent.bannedFromBoard = BanSvc.banStatus().boards.length > 0;
     this.rootUrl = generateBaseUrl();
@@ -25,7 +25,7 @@ var ctrl = [
 
     // Posts Permissions
     this.canPost = function() {
-      if (!pageData.writeAccess) { return false; }
+      if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
       if (BanSvc.banStatus().boards.length > 0) { return false; }
       if (!Session.hasPermission('posts.create.allow')) { return false; }
@@ -43,7 +43,7 @@ var ctrl = [
     };
 
     this.canUpdate = function(post) {
-      if (!pageData.writeAccess) { return false; }
+      if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
       if (BanSvc.banStatus().boards.length > 0) { return false; }
       if (!Session.hasPermission('posts.update.allow')) { return false; }
@@ -88,7 +88,7 @@ var ctrl = [
     };
 
     this.canDelete = function(post) {
-      if (!pageData.writeAccess) { return false; }
+      if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
       if (BanSvc.banStatus().boards.length > 0) { return false; }
       if (!Session.hasPermission('posts.delete.allow')) { return false; }
@@ -121,7 +121,7 @@ var ctrl = [
     };
 
     this.canPostLock = function(post) {
-      if (!pageData.writeAccess) { return false; }
+      if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
       if (BanSvc.banStatus().boards.length > 0) { return false; }
       if (!Session.hasPermission('posts.lock.allow')) { return false; }
@@ -145,7 +145,7 @@ var ctrl = [
     };
 
     this.canPurge = function() {
-      if (!pageData.writeAccess) { return false; }
+      if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
       if (BanSvc.banStatus().boards.length > 0) { return false; }
       if (!Session.hasPermission('posts.purge.allow')) { return false; }
@@ -199,7 +199,7 @@ var ctrl = [
       Posts.byThread(query).$promise
       .then(function(pageData) {
         ctrl.posts = pageData.posts;
-        parent.writeAccess = pageData.writeAccess;
+        parent.writeAccess = pageData.write_access;
         parent.posts = pageData.posts;
         parent.thread.post_count = pageData.thread.post_count;
         parent.thread.poll = pageData.thread.poll;

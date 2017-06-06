@@ -12,10 +12,10 @@ exports.recoverAccount = function(sender, params) {
   return {
     from: sender,
     to: params.email,
-    subject: `[${params.siteName}] Account Recovery`,
+    subject: `[${params.site_name}] Account Recovery`,
     html: template({
       username: params.username,
-      siteName: params.siteName,
+      siteName: params.site_name,
       currentYear: currentYear,
       resetUrl: params.reset_url
     })
@@ -28,10 +28,10 @@ exports.recoverSuccess = function(sender, params) {
   return {
     from: sender,
     to: params.email,
-    subject: `[${params.siteName}] Account Recovery Success`,
+    subject: `[${params.site_name}] Account Recovery Success`,
     html: template({
       username: params.username,
-      siteName: params.siteName,
+      siteName: params.site_name,
       currentYear: currentYear,
       forumUrl: params.forum_url
     })
@@ -44,10 +44,10 @@ exports.confirmAccount = function(sender, params) {
   return {
     from: sender,
     to: params.email,
-    subject: `[${params.siteName}] Account Confirmation`,
+    subject: `[${params.site_name}] Account Confirmation`,
     html: template({
       username: params.username,
-      siteName: params.siteName,
+      siteName: params.site_name,
       currentYear: currentYear,
       confirmUrl: params.confirm_url
     })
@@ -60,9 +60,9 @@ exports.invite = function(sender, params) {
   return {
     from: sender,
     to: params.email,
-    subject: `[${params.siteName}] You've been sent an invitation`,
+    subject: `[${params.site_name}] You've been sent an invitation`,
     html: template({
-      siteName: params.siteName,
+      siteName: params.site_name,
       currentYear: currentYear,
       inviteUrl: params.invite_url
     })

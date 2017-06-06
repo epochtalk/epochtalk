@@ -125,15 +125,15 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
 
   this.getSortClass = function(sortField) {
     var sortClass;
-    var sortDesc = ctrl.desc === 'true'; // str to bool
+    var desc = ctrl.desc === 'true'; // str to bool
     // Username is sorted asc by default
-    if (sortField === 'username' && !ctrl.field && !sortDesc) {
+    if (sortField === 'username' && !ctrl.field && !desc) {
       sortClass = 'fa fa-sort-asc';
     }
-    else if (ctrl.field === sortField && sortDesc) {
+    else if (ctrl.field === sortField && desc) {
       sortClass = 'fa fa-sort-desc';
     }
-    else if (ctrl.field === sortField && !sortDesc) {
+    else if (ctrl.field === sortField && !desc) {
       sortClass = 'fa fa-sort-asc';
     }
     else { sortClass = 'fa fa-sort'; }

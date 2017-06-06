@@ -10,7 +10,7 @@ var Joi = require('joi');
   *
   * @apiParam (Query) {number} [page] The page of mentions to return
   * @apiParam (Query) {number} [limit] The number mentions to return per page
-  * @apiParam (Query) {boolean} extended Brings back extra data such as parts of the post body, board name, board id, etc...
+  * @apiParam (Query) {boolean} [extended] Brings back extra data such as parts of the post body, board name, board id, etc...
   *
   * @apiSuccess {number} page The page of mentions being returned
   * @apiSuccess {number} limit The number mentions being returned per page

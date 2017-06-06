@@ -69,7 +69,7 @@ module.exports = function(opts) {
   var page = opts.page || 1;
   var offset = (page * limit) - limit;
   var sortField = opts.sortField || 'username';
-  var order = opts.sortDesc ? 'DESC' : 'ASC';
+  var order = opts.desc ? 'DESC' : 'ASC';
   var params;
   if (opts && opts.searchStr) {
     if (opts.ip && opts.filter === 'banned') {
