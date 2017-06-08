@@ -17,13 +17,13 @@ module.exports = function(opts, priority) {
   var q = `SELECT * FROM
     (SELECT
       p.id,
-      ts_headline('simple', (SELECT title from posts WHERE thread_id = p.thread_id ORDER BY created_at LIMIT 1), q, 'StartSel=<mark>, StopSel=</mark>') as thread_title,
+      ts_headline('simple', (SELECT content ->> 'title' as title from posts WHERE thread_id = p.thread_id ORDER BY created_at LIMIT 1), q, 'StartSel=<mark>, StopSel=</mark>') as thread_title,
       p.user_id,
       p.created_at,
       u.username,
       p.thread_id,
       p.position,
-      ts_headline('simple', p.body, q, 'StartSel=<mark>, StopSel=</mark>, MaxWords=150, HighlightAll=FALSE, MaxFragments=0, FragmentDelimiter=" ... "') as body,
+      ts_headline('simple', p.content ->> 'body', q, 'StartSel=<mark>, StopSel=</mark>, MaxWords=150, HighlightAll=FALSE, MaxFragments=0, FragmentDelimiter=" ... "') as body,
       t.board_id,
       b.name AS board_name
       FROM posts p, users u, threads t, boards b, plainto_tsquery('simple', $1) AS q
