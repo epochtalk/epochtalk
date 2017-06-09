@@ -82,7 +82,10 @@ module.exports = {
     var promise = request.db.users.create(newUser)
     // set newbie role
     .tap(function(user) {
-      return request.db.roles.addRoles([user.username], 'CN0h5ZeBTGqMbzwVdMWahQ');
+      var newbieEnabled = request.server.app.config.newbieEnabled;
+      if (newbieEnabled) {
+        return request.db.roles.addRoles([user.username], 'CN0h5ZeBTGqMbzwVdMWahQ');
+      }
     })
     // send confirmation email
     .then(function(user) {
