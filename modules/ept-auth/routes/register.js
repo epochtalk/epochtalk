@@ -91,7 +91,7 @@ module.exports = {
         var emailParams = {
           email: user.email,
           username: user.username,
-          siteName: config.website.title,
+          site_name: config.website.title,
           confirm_url: confirmUrl
         };
         request.server.log('debug', emailParams);

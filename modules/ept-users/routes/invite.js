@@ -39,7 +39,7 @@ module.exports = {
       var inviteUrl = `${config.publicUrl}/join?token=${newUser.hash}&email=${newUser.email}`;
       var emailParams = {
         email: newUser.email,
-        siteName: config.website.title,
+        site_name: config.website.title,
         invite_url: inviteUrl
       };
       request.server.log('debug', emailParams);
