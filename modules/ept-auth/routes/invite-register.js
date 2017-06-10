@@ -68,7 +68,10 @@ module.exports = {
     .then(request.db.users.create)
     // set newbie role
     .tap(function(user) {
-      return request.db.roles.addRoles([user.username], 'CN0h5ZeBTGqMbzwVdMWahQ');
+      var newbieEnabled = request.server.app.config.newbieEnabled;
+      if (newbieEnabled) {
+        return request.db.roles.addRoles([user.username], 'CN0h5ZeBTGqMbzwVdMWahQ');
+      }
     })
     .then(request.session.save)
     .error(request.errorMap.toHttpError);
