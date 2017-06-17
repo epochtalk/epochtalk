@@ -22,7 +22,7 @@
 <div class="padded-row" ng-if="NewThreadCtrl.loggedIn()">
   <div class="fill-row thread-editor-container">
     <form name="form" class="editor-form new-thread" novalidate>
-      <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body" raw-body="NewThreadCtrl.thread.raw_body" reset-switch="NewThreadCtrl.resetEditor" exit-switch="NewThreadCtrl.exitEditor" dirty="NewThreadCtrl.dirtyEditor"></epochtalk-editor>
+      <epochtalk-editor class="posts-editor" body="NewThreadCtrl.thread.body_html" raw-body="NewThreadCtrl.thread.body" reset-switch="NewThreadCtrl.resetEditor" exit-switch="NewThreadCtrl.exitEditor" dirty="NewThreadCtrl.dirtyEditor"></epochtalk-editor>
     </form>
   </div>
 </div>

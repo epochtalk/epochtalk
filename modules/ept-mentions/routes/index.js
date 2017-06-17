@@ -30,8 +30,8 @@ var Joi = require('joi');
   * @apiSuccess {timestamp} data.created_at Timestamp of when the mention was created
   * @apiSuccess {string} data.board_id The id of the board the mention is in (If extended=true)
   * @apiSuccess {string} data.board_name The name of the board the mentions is in(If extended=true)
-  * @apiSuccess {string} data.body The body of the post the mention is in (If extended=true)
-  * @apiSuccess {string} data.raw_body The unprocess body of the post the mention is in (If extended=true)
+  * @apiSuccess {string} data.body_html The body of the post the mention is in (If extended=true)
+  * @apiSuccess {string} data.body The unprocess body of the post the mention is in (If extended=true)
   *
   * @apiError (Error 500) InternalServerError There was an error paging user mentions
   */

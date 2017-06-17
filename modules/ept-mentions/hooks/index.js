@@ -10,7 +10,7 @@ function userIdToUsername(request) {
   if (request.pre.processed.posts) {
     posts = request.pre.processed.posts;
   }
-  else if (request.pre.processed.body) {
+  else if (request.pre.processed.body_html) {
     posts = [ request.pre.processed ];
   }
   else if (request.pre.processed.threads) {
@@ -22,9 +22,9 @@ function userIdToUsername(request) {
   else { posts = [ request.payload ]; }
 
   return Promise.each(posts, post => {
-    if (post.post_body) { post.body = post.post_body; }
-    if (!post.body) { return; }
-    var userIds = post.body.match(userIdRegex) || [];
+    if (post.post_body) { post.body_html = post.post_body; }
+    if (!post.body_html) { return; }
+    var userIds = post.body_html.match(userIdRegex) || [];
     userIds = _.uniqWith(userIds, _.isEqual);
     userIds = userIds.map(x => x.substring(2, x.length - 1));
     return Promise.each(userIds, userId => {
@@ -34,21 +34,21 @@ function userIdToUsername(request) {
       .then(user => {
         var idRegex = new RegExp('<@' + userId + '>', 'g');
 
-        // raw_body: <@123> -> @kkid
-        if (post.raw_body) {
-          post.raw_body = post.raw_body.replace(idRegex, '@' + user.username);
+        // body: <@123> -> @kkid
+        if (post.body) {
+          post.body = post.body.replace(idRegex, '@' + user.username);
         }
         else {
-          post.raw_body = post.body.replace(idRegex, '@' + user.username);
+          post.body = post.body_html.replace(idRegex, '@' + user.username);
         }
 
-        // body: <@123> -> <a ui-sref=".profiles('kkid')">kkid</a>
+        // bodyHtml: <@123> -> <a ui-sref=".profiles('kkid')">kkid</a>
         var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\'})">' + '@' + user.username + '</a>';
-        post.body = post.body.replace(idRegex, profileLink);
+        post.body_html = post.body_html.replace(idRegex, profileLink);
         if (post.post_body) {
-          post.post_body = post.body;
-          delete post.raw_body;
+          post.post_body = post.body_html;
           delete post.body;
+          delete post.body_html;
         }
       });
     });
@@ -60,13 +60,13 @@ function usernameToUserId(request) {
   .then(function(hasPermission) {
     if (!hasPermission) { return; }
 
+    var bodyHtml = request.payload.body_html;
     var body = request.payload.body;
-    var rawBody = request.payload.raw_body;
-    var usernamesArr = body.match(mentionsRegex) || [];
+    var usernamesArr = bodyHtml.match(mentionsRegex) || [];
     usernamesArr = _.uniqWith(usernamesArr, _.isEqual);
 
+    bodyHtml = bodyHtml.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
     body = body.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
-    rawBody = rawBody.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
     var mentionedIds = [];
 
     return Promise.reduce(usernamesArr, function(mentions, username) {
@@ -83,12 +83,12 @@ function usernameToUserId(request) {
       });
     }, [])
     .each(function(mention) {
+      bodyHtml = bodyHtml.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
       body = body.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
-      rawBody = rawBody.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
     })
     .then(function() {
-      request.payload.body = body || ' ';
-      request.payload.raw_body = rawBody;
+      request.payload.body_html = bodyHtml || ' ';
+      request.payload.body = body;
       request.payload.mentioned_ids = mentionedIds;
     });
   });

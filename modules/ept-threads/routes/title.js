@@ -13,8 +13,8 @@ var Joi = require('joi');
   *
   * @apiSuccess {string} id The unique id of the thread
   * @apiSuccess {string} title The title of the thread
-  * @apiSuccess {string} body The thread's body with any markup tags converted and parsed into html elements
-  * @apiSuccess {string} raw_body The thread's body as it was entered in the editor by the user
+  * @apiSuccess {string} body_html The thread's body with any markup tags converted and parsed into html elements
+  * @apiSuccess {string} body The thread's body as it was entered in the editor by the user
   * @apiSuccess {string} thread_id The unqiue id of the thread
   * @apiSuccess {timestamp} updated_at Timestamp of when the thread was updated
   *

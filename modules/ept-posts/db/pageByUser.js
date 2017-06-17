@@ -17,7 +17,6 @@ module.exports = function(username, priority, opts) {
         p.id,
         p.thread_id,
         p.user_id,
-        p.content ->> 'body' as raw_body,
         p.content ->> 'body' as body,
         p.position,
         p.deleted,

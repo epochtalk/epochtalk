@@ -7,7 +7,7 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
     this.showEditor = false;
     this.focusEditor = false;
     this.quote = '';
-    this.posting = { post: { body: '', raw_body: '' } };
+    this.posting = { post: { body_html: '', body: '' } };
     this.editorPosition = 'editor-fixed-bottom';
     this.resize = true;
 
@@ -18,7 +18,7 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
     };
 
     this.canSave = function() {
-      var text = ctrl.posting.post.body;
+      var text = ctrl.posting.post.body_html;
       text = text.replace(/(<([^>]+)>)/ig,'');
       text = text.trim();
       return text.length > 0;
@@ -38,8 +38,8 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
     function closeEditor() {
       ctrl.posting.post.id = '';
       ctrl.posting.post.title = '';
+      ctrl.posting.post.body_html = '';
       ctrl.posting.post.body = '';
-      ctrl.posting.post.raw_body = '';
       ctrl.posting.page = '';
       ctrl.resetEditor = true;
       ctrl.showEditor = false;
@@ -51,9 +51,9 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
         var editorPost = ctrl.posting.post;
         editorPost.id = post.id || '';
         editorPost.title = post.title || '';
-        editorPost.body = post.body || '';
+        editorPost.body_html = post.body_html || '';
         editorPost.thread_id = post.thread_id || '';
-        editorPost.raw_body = post.raw_body || '';
+        editorPost.body = post.body || '';
         editorPost.page = ctrl.page || 1;
         ctrl.resetEditor = true;
         ctrl.showEditor = true;
@@ -67,8 +67,8 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
       .then(function(data) {
         var filtered = ctrl.posts.filter(function(p) { return p.id === data.id; });
         var editPost = filtered.length > 0 && filtered[0] || {};
+        editPost.body_html = data.body_html;
         editPost.body = data.body;
-        editPost.raw_body = data.raw_body;
         editPost.updated_at = data.updated_at;
       })
       .then(closeEditor)

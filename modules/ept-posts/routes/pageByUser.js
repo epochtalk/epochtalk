@@ -23,8 +23,8 @@ var common = require(path.normalize(__dirname + '/../common'));
   * @apiSuccess {object[]} posts Object containing users posts
   * @apiSuccess {string} posts.id The id of the post
   * @apiSuccess {string} posts.thread_id The id of the thread containing the post
-  * @apiSuccess {string} posts.raw_body The unprocessed body of the post
-  * @apiSuccess {string} posts.body The processed body of the post
+  * @apiSuccess {string} posts.body The unprocessed body of the post
+  * @apiSuccess {string} posts.body_html The processed body of the post
   * @apiSuccess {number} posts.position The position of the post in the thread
   * @apiSuccess {boolean} posts.deleted Boolean indicating if the post is deleted
   * @apiSuccess {boolean} posts.hidden Boolean indicating if the post is hidden (true if user is owner of deleted post)
