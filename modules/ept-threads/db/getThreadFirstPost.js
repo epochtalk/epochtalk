@@ -7,7 +7,7 @@ var NotFoundError = errors.NotFoundError;
 
 module.exports = function(threadId) {
   threadId = helper.deslugify(threadId);
-  var q = 'SELECT id, title, body, raw_body, thread_id FROM posts WHERE thread_id = $1 ORDER BY created_at LIMIT 1';
+  var q = 'SELECT id, content ->> \'title\' as title, content ->> \'body\' as body, content ->> \'raw_body\' as raw_body, thread_id FROM posts WHERE thread_id = $1 ORDER BY created_at LIMIT 1';
   return db.sqlQuery(q, [threadId])
   .then(function(rows) {
     if (rows.length > 0) { return rows[0]; }
