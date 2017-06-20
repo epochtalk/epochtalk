@@ -3386,3 +3386,8 @@ ALTER TABLE ONLY watch_threads
 -- PostgreSQL database dump complete
 --
 
+/* Insert report statuses */
+INSERT INTO administration.reports_statuses (status, priority) VALUES ('Pending', 1);
+INSERT INTO administration.reports_statuses (status, priority) VALUES ('Reviewed', 2);
+INSERT INTO administration.reports_statuses (status, priority) VALUES ('Ignored', 3);
+INSERT INTO administration.reports_statuses (status, priority) VALUES ('Bad Report', 4);

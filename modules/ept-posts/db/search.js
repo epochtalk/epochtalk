@@ -23,7 +23,7 @@ module.exports = function(opts, priority) {
       u.username,
       p.thread_id,
       p.position,
-      ts_headline('simple', p.content ->> 'body', q, 'StartSel=<mark>, StopSel=</mark>, MaxWords=150, HighlightAll=FALSE, MaxFragments=0, FragmentDelimiter=" ... "') as body,
+      ts_headline('simple', p.content ->> 'body', q, 'StartSel=<mark>, StopSel=</mark>, MaxWords=150, HighlightAll=FALSE, MaxFragments=0, FragmentDelimiter=" ... "') as body_html,
       t.board_id,
       b.name AS board_name
       FROM posts p, users u, threads t, boards b, plainto_tsquery('simple', $1) AS q

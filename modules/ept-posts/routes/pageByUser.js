@@ -61,6 +61,7 @@ module.exports = {
         { method: processing, assign: 'processed' },
       ],
       { method: 'hooks.merge' },
+      { method: 'common.posts.parseOut(parser, pre.processed.posts)' },
       { method: 'hooks.postProcessing' }
     ],
     handler: function(request, reply) {
