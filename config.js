@@ -81,16 +81,16 @@ var config = {
   }
 };
 
-setIfDefined(config, 'emailer.sender', process.env.EMAILER_SENDER);
-setIfDefined(config, 'emailer.transporter', process.env.EMAILER_TRANSPORTER);
-setIfDefined(config, 'emailer.options.ignoreTLS', process.env.EMAILER_OPTIONS_IGNORE_TLS);
-setIfDefined(config, 'emailer.options.host', process.env.EMAILER_OPTIONS_HOST);
-setIfDefined(config, 'emailer.options.port', process.env.EMAILER_OPTIONS_PORT);
-setIfDefined(config, 'emailer.options.auth.user', process.env.EMAILER_OPTIONS_AUTH_USER);
-setIfDefined(config, 'emailer.options.auth.pass', process.env.EMAILER_OPTIONS_AUTH_PASS);
-setIfDefined(config, 'emailer.options.secure', coerceEnvBoolean(process.env.EMAILER_OPTIONS_SECURE));
-setIfDefined(config, 'emailer.options.ses.region', process.env.EMAILER_OPTIONS_SES_REGION);
-setIfDefined(config, 'emailer.options.ses.accessKey', process.env.EMAILER_OPTIONS_SES_ACCESS_KEY);
-setIfDefined(config, 'emailer.options.ses.secretKey', process.env.EMAILER_OPTIONS_SES_SECRET_KEY);
+setIfDefined(config, 'emailerEnv.sender', process.env.EMAILER_SENDER);
+setIfDefined(config, 'emailerEnv.transporter', process.env.EMAILER_TRANSPORTER);
+setIfDefined(config, 'emailerEnv.options.ignoreTLS', process.env.EMAILER_OPTIONS_IGNORE_TLS);
+setIfDefined(config, 'emailerEnv.options.host', process.env.EMAILER_OPTIONS_HOST);
+setIfDefined(config, 'emailerEnv.options.port', process.env.EMAILER_OPTIONS_PORT);
+setIfDefined(config, 'emailerEnv.options.auth.user', process.env.EMAILER_OPTIONS_AUTH_USER);
+setIfDefined(config, 'emailerEnv.options.auth.pass', process.env.EMAILER_OPTIONS_AUTH_PASS);
+setIfDefined(config, 'emailerEnv.options.secure', coerceEnvBoolean(process.env.EMAILER_OPTIONS_SECURE));
+setIfDefined(config, 'emailerEnv.options.ses.region', process.env.EMAILER_OPTIONS_SES_REGION);
+setIfDefined(config, 'emailerEnv.options.ses.accessKey', process.env.EMAILER_OPTIONS_SES_ACCESS_KEY);
+setIfDefined(config, 'emailerEnv.options.ses.secretKey', process.env.EMAILER_OPTIONS_SES_SECRET_KEY);
 
 module.exports = config;
