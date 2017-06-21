@@ -22,9 +22,8 @@ function userIdToUsername(request) {
   else { posts = [ request.payload ]; }
 
   return Promise.each(posts, post => {
-    if (post.post_body) { post.body_html = post.post_body; }
-    if (!post.body_html) { return; }
-    var userIds = post.body_html.match(userIdRegex) || [];
+    if (post.post_body) { post.body = post.post_body; }
+    var userIds = post.body.match(userIdRegex) || [];
     userIds = _.uniqWith(userIds, _.isEqual);
     userIds = userIds.map(x => x.substring(2, x.length - 1));
     return Promise.each(userIds, userId => {
@@ -33,18 +32,15 @@ function userIdToUsername(request) {
       return request.db.users.find(userId)
       .then(user => {
         var idRegex = new RegExp('<@' + userId + '>', 'g');
-
+        var parsedIdRegex = new RegExp('&#60;@' + userId + '&#62;', 'g');
         // body: <@123> -> @kkid
-        if (post.body) {
-          post.body = post.body.replace(idRegex, '@' + user.username);
-        }
-        else {
-          post.body = post.body_html.replace(idRegex, '@' + user.username);
-        }
+        post.body = post.body.replace(idRegex, '@' + user.username);
 
         // bodyHtml: <@123> -> <a ui-sref=".profiles('kkid')">kkid</a>
         var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\'})">' + '@' + user.username + '</a>';
-        post.body_html = post.body_html.replace(idRegex, profileLink);
+        console.log(post.body_html);
+        console.log(post.body_html.replace(parsedIdRegex, profileLink));
+        post.body_html = post.body_html.replace(parsedIdRegex, profileLink);
         if (post.post_body) {
           post.post_body = post.body_html;
           delete post.body;
@@ -60,12 +56,10 @@ function usernameToUserId(request) {
   .then(function(hasPermission) {
     if (!hasPermission) { return; }
 
-    var bodyHtml = request.payload.body_html;
     var body = request.payload.body;
-    var usernamesArr = bodyHtml.match(mentionsRegex) || [];
+    var usernamesArr = body.match(mentionsRegex) || [];
     usernamesArr = _.uniqWith(usernamesArr, _.isEqual);
 
-    bodyHtml = bodyHtml.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
     body = body.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
     var mentionedIds = [];
 
@@ -83,11 +77,9 @@ function usernameToUserId(request) {
       });
     }, [])
     .each(function(mention) {
-      bodyHtml = bodyHtml.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
       body = body.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
     })
     .then(function() {
-      request.payload.body_html = bodyHtml || ' ';
       request.payload.body = body;
       request.payload.mentioned_ids = mentionedIds;
     });
