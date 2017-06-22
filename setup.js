@@ -16,6 +16,7 @@ module.exports = function() {
     return parseConfigs(defaultConfigurations)
     .then(function() {
       // clone config and delete emailer
+      // emailer is no longer configured by default
       var configClone = _.cloneDeep(config);
       delete configClone.emailer;
       return db.configurations.create(configClone);
