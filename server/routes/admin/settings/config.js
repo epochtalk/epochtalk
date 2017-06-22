@@ -209,11 +209,11 @@ exports.update = {
         favicon: Joi.string().allow('')
       }),
       emailer: Joi.object().keys({
-        sender: Joi.string(),
+        sender: Joi.string().allow(null),
         secure: Joi.boolean(),
         options: Joi.object().keys({
-          host: Joi.string(),
-          port: Joi.number(),
+          host: Joi.string().allow(null),
+          port: Joi.number().allow(null),
           auth: Joi.object().keys({
             user: Joi.string(),
             pass: Joi.string()
@@ -778,28 +778,9 @@ function sanitizeConfigs(configurations, saasMode) {
     return resolve();
   })
   .then(function() {
-    return checkEmailerConfig(config.emailer);
-  })
-  .then(function() {
     return checkImagesConfig(config.images);
   })
   .then(function() { return config; });
-}
-
-function checkEmailerConfig(emailer) {
-  return new Promise(function(resolve, reject) {
-    if (!emailer) { return reject(new ConfigError('Emailer configuration not found.')); }
-
-    var errors = [];
-    if (!emailer.sender) { errors.push('Emailer Sender not found.'); }
-    if (!emailer.options.host) { errors.push('Emailer Host not found.'); }
-    if (!emailer.options.port) { errors.push('Emailer Post not found.'); }
-    if (!emailer.options.auth.user) { errors.push('Emailer User not found.'); }
-    if (!emailer.options.auth.pass) { errors.push('Emailer Password not found.'); }
-
-    if (errors.length > 0) { return reject(new ConfigError(errors.join('\n'))); }
-    else { return resolve(); }
-  });
 }
 
 function checkImagesConfig(images) {
