@@ -12,49 +12,52 @@ var emailerOptions = config.emailer;
 var emailer = require(path.normalize(__dirname + '/../server/plugins/emailer')).expose(emailerOptions);
 
 program
-  .version('0.0.1')
-  .option('--seed', 'Seed database. Populates with initial user/board.')
-  .option('--admin <email>', 'Seed database with admin account.')
-  .option('--password <password>', 'Seed database with admin password.')
-  .parse(process.argv);
+  .version('0.0.1');
 
-var genericArgs = {
-  debug: program.debug,
-  verbose: program.verbose,
-};
+// the seed command
+program
+  .command('seed')
+  .description('Seed database. Populates with initial user/board.')
+  .action(function() {
+    seed()
+    .then(function() {
+      process.exit(0);
+    });
+  });
 
-var admin = function(adminEmail) {
-  console.log('Creating admin with email:', adminEmail);
-  return users.create({ username: 'admin', email: adminEmail }, true)
-  .then(function(user) {
-    var updateUser = {};
-    updateUser.reset_token = crypto.randomBytes(20).toString('hex');
-    updateUser.reset_expiration = Date.now() + 1000 * 60 * 60; // 1 hr
-    updateUser.id = user.id;
-    // Store token and expiration to user object
-    return users.update(updateUser);
-  })
-  // Email user reset information here
-  .then(function(user) {
-    var emailParams = {
-      email: user.email,
-      username: user.username,
-      siteName: 'EpochTalk',
-      reset_url: process.env.PUBLIC_URL + '/' + path.join('reset', user.username, user.reset_token)
+// the create-user command
+program
+  .command('create-user <username> <email>')
+  .description('Seed a user in the database')
+  .option('--password <password>', 'Password for user')
+  .option('--admin', 'Create the user as an admin account (default: false)')
+  .action(function(username, email, options) {
+    var options = {
+      username,
+      email,
+      password: options.password,
+      admin: options.admin || false
     };
-    return emailer.send('recoverAccount', emailParams);
-  })
-  .catch(function(err) {
-    console.log(err);
-  });
-};
 
-var adminWithPassword = function(adminPassword, adminEmail) {
-  console.log('Creating admin with password:', adminPassword, adminEmail);
-  return users.create({ username: 'admin', email: adminEmail || 'admin@epochtalk.com', password: adminPassword, confirmation: adminPassword }, true)
-  .catch(function(err) {
-    console.log(err);
+    createUser(options)
+    .then(function(result) {
+      console.log('Created user', result);
+      process.exit(0);
+    })
+    .catch(function(error) {
+      console.log('Error creating user:', error);
+      process.exit(1);
+    });
   });
+
+program.on('--help', function() {
+  console.log('  Help on specific command: ' + program.name() + ' [command] --help');
+});
+
+program.parse(process.argv);
+
+if (!program.args.length) {
+  program.help();
 };
 
 var seed = function() {
@@ -106,24 +109,42 @@ var seed = function() {
   });
 };
 
-if (program.seed) {
-  seed()
-  .then(function() {
-    process.exit(0);
-  });
-}
-else if (program.password) {
-  return adminWithPassword(program.password)
-  .then(function() {
-    process.exit(0);
-  });
-}
-else if (program.admin) {
-  return admin(program.admin)
-  .then(function() {
-    process.exit(0);
-  });
-}
-else {
-  program.help();
-}
+function createUser(options) { // use email for password reset link
+  var isAdmin = options.admin;
+
+  // if both password and email are not provided,
+  // don't create an account
+  if (!options.password && !options.email) {
+    return Promise.error('Email required for seed without password!');
+  }
+  // if no password is provided, but there is an email,
+  // send the user an email with their reset link
+  else if (!options.password && options.email) {
+    console.log('Creating user and emailing password reset link to:', options.email);
+    return users.create(options, isAdmin)
+    .then(function(user) {
+      var updateUser = {}; updateUser.reset_token = crypto.randomBytes(20).toString('hex');
+      updateUser.reset_expiration = Date.now() + 1000 * 60 * 60; // 1 hr
+      updateUser.id = user.id;
+      // Store token and expiration to user object
+      return users.update(updateUser);
+    })
+    // Email user reset information here
+    .then(function(user) {
+      var emailParams = {
+        email: user.email,
+        username: user.username,
+        siteName: 'EpochTalk',
+        reset_url: process.env.PUBLIC_URL + '/' + path.join('reset', user.username, user.reset_token)
+      };
+      return emailer.send('recoverAccount', emailParams);
+    });
+  }
+  // if a password is provided,
+  // seed user with the password and confirmation
+  else {
+    console.log('Creating user with password:', options.password);
+    options.confirmation = options.password;
+    return users.create(options, isAdmin);
+  }
+};
