@@ -85,7 +85,7 @@ module.exports = function(boardId, userId, opts) {
       p.position,
       p.created_at,
       p.updated_at,
-      p.body,
+      p.content ->>\'body\',
       p.deleted,
       u.id,
       u.username,

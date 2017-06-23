@@ -2,7 +2,7 @@ var Promise = require('bluebird');
 var _ = require('lodash');
 
 var mentionsRegex = /(@[a-zA-Z\d-_.]+)/g;
-var userIdRegex = /<@[^>]+>/g;
+var userIdRegex = /{@[^>]+}/g;
 var slugIdRegex = /^[A-Za-z0-9_-]{22}$/;
 
 function userIdToUsername(request) {
@@ -23,6 +23,7 @@ function userIdToUsername(request) {
 
   return Promise.each(posts, post => {
     if (post.post_body) { post.body = post.post_body; }
+    if (!post.body) { return; }
     var userIds = post.body.match(userIdRegex) || [];
     userIds = _.uniqWith(userIds, _.isEqual);
     userIds = userIds.map(x => x.substring(2, x.length - 1));
@@ -31,16 +32,14 @@ function userIdToUsername(request) {
       if (!validId) { return; }
       return request.db.users.find(userId)
       .then(user => {
-        var idRegex = new RegExp('<@' + userId + '>', 'g');
-        var parsedIdRegex = new RegExp('&#60;@' + userId + '&#62;', 'g');
-        // body: <@123> -> @kkid
+        var idRegex = new RegExp('{@' + userId + '}', 'g');
+        // body: {@123> -> @kkid
         post.body = post.body.replace(idRegex, '@' + user.username);
 
-        // bodyHtml: <@123> -> <a ui-sref=".profiles('kkid')">kkid</a>
+        // bodyHtml: {@123> -> <a ui-sref=".profiles('kkid')">kkid</a>
         var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\'})">' + '@' + user.username + '</a>';
-        console.log(post.body_html);
-        console.log(post.body_html.replace(parsedIdRegex, profileLink));
-        post.body_html = post.body_html.replace(parsedIdRegex, profileLink);
+
+        post.body_html = post.body_html.replace(idRegex, profileLink);
         if (post.post_body) {
           post.post_body = post.body_html;
           delete post.body;
@@ -60,7 +59,7 @@ function usernameToUserId(request) {
     var usernamesArr = body.match(mentionsRegex) || [];
     usernamesArr = _.uniqWith(usernamesArr, _.isEqual);
 
-    body = body.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
+    body = body.replace(mentionsRegex, u => '{' + u.toLowerCase() + '}');
     var mentionedIds = [];
 
     return Promise.reduce(usernamesArr, function(mentions, username) {
@@ -68,11 +67,11 @@ function usernameToUserId(request) {
       return request.db.users.userByUsername(username)
       .then(function(user) {
         mentionedIds.push(user.id);
-        mentions.push({ replacer: '<@' + user.id + '>', replacee: '<@' + user.username.toLowerCase() + '>' });
+        mentions.push({ replacer: '{@' + user.id + '}', replacee: '{@' + user.username.toLowerCase() + '}' });
         return mentions;
       })
       .catch(function() {
-        mentions.push({ replacer: '@' + username, replacee: '<@' + username + '>' });
+        mentions.push({ replacer: '@' + username, replacee: '{@' + username + '}' });
         return mentions;
       });
     }, [])
