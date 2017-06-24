@@ -52,7 +52,7 @@ LEFT JOIN LATERAL (
     up.signature,
     up.avatar,
     up.fields->'name' as name,
-    ( SELECT title
+    ( SELECT content ->> \'title\' as title
       FROM posts
       WHERE thread_id = p.thread_id
       ORDER BY created_at
