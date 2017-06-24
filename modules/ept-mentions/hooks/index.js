@@ -20,7 +20,6 @@ function userIdToUsername(request) {
     posts = request.pre.processed.data;
   }
   else { posts = [ request.payload ]; }
-
   return Promise.each(posts, post => {
     if (post.post_body) { post.body = post.post_body; }
     if (!post.body) { return; }
@@ -33,10 +32,10 @@ function userIdToUsername(request) {
       return request.db.users.find(userId)
       .then(user => {
         var idRegex = new RegExp('{@' + userId + '}', 'g');
-        // body: {@123> -> @kkid
+        // body: {@123} -> @kkid
         post.body = post.body.replace(idRegex, '@' + user.username);
 
-        // bodyHtml: {@123> -> <a ui-sref=".profiles('kkid')">kkid</a>
+        // bodyHtml: {@123} -> <a ui-sref=".profiles('kkid')">kkid</a>
         var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\'})">' + '@' + user.username + '</a>';
 
         post.body_html = post.body_html.replace(idRegex, profileLink);
