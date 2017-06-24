@@ -19,7 +19,7 @@ var common = require(path.normalize(__dirname + '/../common'));
   *
   * @apiSuccess {number} page The page of posts to return
   * @apiSuccess {number} limit The number of posts to return per page
-  * @apiSuccess {boolean} sortDesc Boolean indicating the sort order of the posts
+  * @apiSuccess {boolean} desc Boolean indicating the sort order of the posts
   * @apiSuccess {object[]} posts Object containing users posts
   * @apiSuccess {string} posts.id The id of the post
   * @apiSuccess {string} posts.thread_id The id of the thread containing the post
@@ -79,7 +79,7 @@ function processing(request, reply) {
   var opts = {
     limit: request.query.limit,
     page: request.query.page,
-    sortDesc: request.query.desc
+    desc: request.query.desc
   };
 
   var getPosts = request.db.posts.pageByUser(username, priority, opts);
@@ -90,7 +90,7 @@ function processing(request, reply) {
     return {
       page: opts.page,
       limit: opts.limit,
-      sortDesc: opts.sortDesc,
+      desc: opts.desc,
       posts: common.cleanPosts(posts, userId, viewables),
       count: count
     };

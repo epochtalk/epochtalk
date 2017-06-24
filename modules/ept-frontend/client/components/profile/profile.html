@@ -42,7 +42,7 @@
       <trust-profile ng-if="vmProfile.isLoggedIn()" username="vmProfile.user.username"></trust-profile>
       <hr ng-if="vmProfile.user.email || vmProfile.user.gender || vmProfile.user.dob || vmProfile.user.location || vmProfile.user.language || vmProfile.userLocalTime">
       <a ng-href="mailto:{{vmProfile.user.email}}" target="_blank" ng-bind="vmProfile.user.email"></a>
-      <div><span ng-bind="vmProfile.user.btcAddress"></span></div>
+      <div><span ng-bind="vmProfile.user.btc_address"></span></div>
       <div>
         <a ng-href="{{vmProfile.user.website}}" target="_blank" ng-bind="vmProfile.user.website"></a>
       </div>
@@ -229,7 +229,7 @@
         <div ng-if="$parent.form.pass.$touched && $parent.form.pass.$error.required" class="input-error invalid right">
           Password is required
         </div>
-        <input type="password" name="pass" ng-model="vmProfile.emailData.emailPassword" maxlength="255" required />
+        <input type="password" name="pass" ng-model="vmProfile.emailData.email_password" maxlength="255" required />
       </label>
     </div>
 
@@ -270,7 +270,7 @@
       </label>
 
       <label>Bitcoin Address
-        <input type="text" placeholder="Bitcoin Address" ng-model="vmProfile.editProfileUser.btcAddress" maxlength="255">
+        <input type="text" placeholder="Bitcoin Address" ng-model="vmProfile.editProfileUser.btc_address" maxlength="255">
       </label>
     </div>
 

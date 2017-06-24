@@ -18,7 +18,7 @@ function sameUser(server, auth, paramsId, payload) {
   var allowed = isAllowed(server, auth);
   var active = isActive(server, auth.credentials.id);
   var emailUnique = isEmailUnique(server, paramsId, payload.email);
-  var emailPassValid = isPasswordValid(server, paramsId, payload.emailPassword);
+  var emailPassValid = isPasswordValid(server, paramsId, payload.email_password);
   var usernameUnique = isUsernameUnique(server, paramsId, payload.username);
   var passValid = isPasswordValid(server, paramsId, payload.old_password);
   return Promise.all([allowed, active, emailUnique, emailPassValid, usernameUnique, passValid]);

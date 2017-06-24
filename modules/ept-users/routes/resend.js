@@ -33,7 +33,7 @@ module.exports = {
       var inviteUrl = `${config.publicUrl}/join?token=${invitation.hash}&email=${invitation.email}`;
       var emailParams = {
         email: invitation.email,
-        siteName: config.website.title,
+        site_name: config.website.title,
         invite_url: inviteUrl
       };
       request.server.log('debug', emailParams);

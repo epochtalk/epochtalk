@@ -4,7 +4,7 @@ module.exports = common;
 var cheerio = require('cheerio');
 
 function clean(sanitizer, payload) {
-  var keys = ['username', 'email', 'name', 'website', 'btcAddress', 'gender', 'location', 'language', 'avatar', 'position'];
+  var keys = ['username', 'email', 'name', 'website', 'btc_address', 'gender', 'location', 'language', 'avatar', 'position'];
   keys.map(function(key) {
     if (payload[key]) { payload[key] = sanitizer.strip(payload[key]); }
   });

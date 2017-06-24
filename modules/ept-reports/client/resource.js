@@ -1,4 +1,4 @@
-module.exports = ['$resource',
+var resource = ['$resource',
   function($resource) {
     return $resource('/api/reports', {}, {
       // Posts
@@ -82,3 +82,7 @@ module.exports = ['$resource',
     });
   }
 ];
+
+
+
+angular.module('ept').factory('Reports', resource);

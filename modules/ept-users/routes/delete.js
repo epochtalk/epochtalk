@@ -3,11 +3,11 @@ var Joi = require('joi');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Users
-  * @api {DELETE} /users/:userId Delete
+  * @api {DELETE} /users/:id Delete
   * @apiName DeleteUser
   * @apiDescription Delete a user by userId
   *
-  * @apiParam {string} id The userId of the user to delete
+  * @apiParam {string} id The id of the user to delete
   *
   * @apiSuccess {string} username The deleted user's username
   * @apiSuccess {string} email The deleted user's email

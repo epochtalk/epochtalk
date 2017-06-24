@@ -35,7 +35,7 @@ function auth(request, reply) {
   * @apiSuccess {string} rules.conditions.regex.flags The regex flags
   * @apiSuccess {string[]="reject","ban","edit","delete"} rules.actions Array containing what action is taken when the rule is matched
   * @apiSuccess {object} rules.options Contains settings related to the action that is taken
-  * @apiSuccess {number} rules.options.banInterval How many days to ban the user for, leave blank for permanent ban
+  * @apiSuccess {number} rules.options.ban_interval How many days to ban the user for, leave blank for permanent ban
   * @apiSuccess {object} rules.options.edit Contains information for replacing matched rule text
   * @apiSuccess {object} rules.options.edit.replace Contains info for what text to replace
   * @apiSuccess {object} rules.options.edit.replace.regex Regex to match text to replace

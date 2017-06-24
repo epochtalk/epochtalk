@@ -79,7 +79,7 @@ function moderate(request) {
 
       // pick the latest ban interval
       if (rule.actions.indexOf('ban') > -1) {
-        var interval = _.get(rule, 'options.banInterval');
+        var interval = _.get(rule, 'options.ban_interval');
         if (!banInterval) { banInterval = interval; }
         else if (banInterval) { banInterval = interval > banInterval ? interval : banInterval; }
       }

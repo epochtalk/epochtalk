@@ -24,6 +24,7 @@ var config = {
   privateKey: process.env.PRIVATE_KEY,
   inviteOnly: process.env.INVITE_ONLY === 'true' || false,
   saasMode: process.env.SAAS_MODE === 'true' || false,
+  newbieEnabled: process.env.NEWBIE_ENABLED === 'true' || false,
   recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY,
   gaKey: process.env.GA_KEY || 'UA-XXXXX-Y',

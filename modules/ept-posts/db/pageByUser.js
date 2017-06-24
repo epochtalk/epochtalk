@@ -17,8 +17,8 @@ module.exports = function(username, priority, opts) {
         p.id,
         p.thread_id,
         p.user_id,
-        p.raw_body,
-        p.body,
+        p.content ->> 'body' as raw_body,
+        p.content ->> 'body' as body,
         p.position,
         p.deleted,
         u.deleted as user_deleted,
@@ -32,7 +32,7 @@ module.exports = function(username, priority, opts) {
           WHERE board_id = b.id AND (b.viewable_by >= $2 OR b.viewable_by IS NULL)
         ) as board_visible,
         (
-          SELECT p2.title
+          SELECT p2.content ->> 'title' as title
           FROM posts p2
           WHERE p2.thread_id = p.thread_id
           ORDER BY p2.created_at
@@ -47,7 +47,7 @@ module.exports = function(username, priority, opts) {
     opts = opts || {};
     var limit = opts.limit || 25;
     var page = opts.page || 1;
-    var order = opts.sortDesc ? 'DESC' : 'ASC';
+    var order = opts.desc ? 'DESC' : 'ASC';
     var offset = (page * limit) - limit;
 
     q = [q, order, 'LIMIT $3 OFFSET $4'].join(' ');

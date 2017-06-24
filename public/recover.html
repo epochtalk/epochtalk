@@ -111,6 +111,7 @@
       $attemptsMsg.text(getWarningMessage());
 
       $('#recover-submit').click(function() {
+        $('#recover-submit').attr('disabled', true);
         $.ajax({
           type: "POST",
           url: '/api/recover',

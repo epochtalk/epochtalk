@@ -47,6 +47,8 @@ function userIdToUsername(request) {
         post.body = post.body.replace(idRegex, profileLink);
         if (post.post_body) {
           post.post_body = post.body;
+          delete post.raw_body;
+          delete post.body;
         }
       });
     });
@@ -87,9 +89,14 @@ function usernameToUserId(request) {
     .then(function() {
       request.payload.body = body || ' ';
       request.payload.raw_body = rawBody;
-      request.payload.mentionedIds = mentionedIds;
+      request.payload.mentioned_ids = mentionedIds;
     });
   });
+}
+
+function removeMentionIds(request) {
+  delete request.pre.processed.mentioned_ids;
+  delete request.payload.mentioned_ids;
 }
 
 function createMention(request) {
@@ -98,9 +105,9 @@ function createMention(request) {
     if (!hasPermission) { return; }
 
     var post = request.pre.processed;
-    var mentionedIds = request.payload.mentionedIds.slice(0);
-    delete request.pre.processed.mentionedIds;
-    delete request.payload.mentionedIds;
+    var mentionedIds = request.payload.mentioned_ids.slice(0);
+    delete request.pre.processed.mentioned_ids;
+    delete request.payload.mentioned_ids;
     Promise.each(mentionedIds, function(mentioneeId) {
       var mention = {
         threadId: post.thread_id,
@@ -161,6 +168,7 @@ module.exports = [
   { path: 'posts.update.pre', method: usernameToUserId },
   { path: 'threads.create.pre', method: usernameToUserId },
   { path: 'posts.create.post', method: createMention },
+  { path: 'posts.update.post', method: removeMentionIds },
   { path: 'threads.create.post', method: createMention },
   { path: 'users.find.post', method: userIgnoredMentions },
 ];

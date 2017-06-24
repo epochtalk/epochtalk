@@ -1,7 +1,4 @@
-'use strict';
-/* jslint node: true */
-
-module.exports = ['$resource',
+var resource = ['$resource',
   function($resource) {
     return $resource('/api/watchlist/:threadId', {}, {
       index: {
@@ -43,3 +40,5 @@ module.exports = ['$resource',
     });
   }
 ];
+
+angular.module('ept').factory('Watchlist', resource);

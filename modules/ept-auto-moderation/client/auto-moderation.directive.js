@@ -101,7 +101,7 @@ var directive = ['AutoModeration', 'Alert', 'Session',
 
       this.cleanRule = function(rule) {
         if (!rule.message) { delete rule.message; }
-        if (!rule.options.banInterval) { delete rule.options.banInterval; }
+        if (!rule.options.ban_interval) { delete rule.options.ban_interval; }
         if (!rule.options.edit.template) { delete rule.options.edit.template; }
 
         if (rule.options.edit.replace) {

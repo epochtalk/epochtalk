@@ -63,7 +63,7 @@ module.exports = function(userId, priority, opts) {
       WHERE t1.id = tlist.id
     ) t ON true
     LEFT JOIN LATERAL (
-      SELECT title
+      SELECT content ->> 'title' as title
       FROM posts
       WHERE thread_id = tlist.id
       ORDER BY created_at
