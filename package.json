@@ -8,7 +8,6 @@
     "sass": "node ./scripts/sass.js",
     "build": "node ./scripts/build.js",
     "serve": "node ./scripts/serve.js",
-    "api-test-prepare": "dropdb --if-exists epoch_test && createdb epoch_test && DATABASE_URL=postgres://localhost/epoch_test npm run db-migrate && node cli create-user admin admin@epochtalk.com --password password --admin && EMAILER_MAILDEV=true npm run serve",
     "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && DATABASE_URL=postgres://localhost/epoch_test npm run db-migrate && ./node_modules/.bin/lab --flat -v",
     "start": "npm run db-migrate && ./node_modules/.bin/bower install && npm run build && node cli/index.js --create && node server"
   },
