@@ -2,8 +2,8 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
   return {
     restrict: 'E',
     scope: {
+      bodyHtml: '=',
       body: '=',
-      rawBody: '=',
       quote: '=',
       resetSwitch: '=',
       focusSwitch: '=',
@@ -59,9 +59,9 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
         });
 
         // re-bind to scope
-        $scope.body = processed;
-        $scope.rawBody = rawText;
-        $scope.dirty = $scope.originalText !== $scope.rawBody;
+        $scope.bodyHtml = processed;
+        $scope.body = rawText;
+        $scope.dirty = $scope.originalText !== $scope.body;
         $scope.$apply();
       }
 
@@ -98,16 +98,16 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
       var initEditor = function() {
         // on load ng-model body to editor and preview
         $scope.preview = false; // show compose tab
-        if ($scope.rawBody && $scope.rawBody.length > 0) {
-          $scope.rawBody = $filter('decode')($scope.rawBody);
-          $editor.val($scope.rawBody);
-          $scope.originalText = $scope.rawBody;
-        }
-        else {
+        if ($scope.body && $scope.body.length > 0) {
           $scope.body = $filter('decode')($scope.body);
           $editor.val($scope.body);
           $scope.originalText = $scope.body;
-          $scope.rawBody = $scope.body;
+        }
+        else {
+          $scope.bodyHtml = $filter('decode')($scope.bodyHtml);
+          $editor.val($scope.bodyHtml);
+          $scope.originalText = $scope.bodyHtml;
+          $scope.body = $scope.bodyHtml;
         }
         onChange();
       };
