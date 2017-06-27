@@ -130,7 +130,7 @@ function createUser(options) { // use email for password reset link
       return users.update(updateUser);
     })
     // Email user reset information here
-    .then(function(user) {
+    .tap(function(user) {
       var emailParams = {
         email: user.email,
         username: user.username,
