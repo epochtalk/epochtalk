@@ -4,6 +4,9 @@ var _ = require('lodash');
 var mentionsRegex = /(@[a-zA-Z\d-_.]+)/g;
 var userIdRegex = /{@[^>]+?}/g;
 var slugIdRegex = /^[A-Za-z0-9_-]{22}$/;
+var noop = function() {
+  // The mention wasn't mentioning a valid user, just ignore
+};
 
 function userIdToUsername(request) {
   var posts;
@@ -45,7 +48,8 @@ function userIdToUsername(request) {
           delete post.body;
           delete post.body_html;
         }
-      });
+      })
+      .catch(noop);
     });
   });
 }
@@ -64,6 +68,7 @@ function usernameToUserId(request) {
 
     return Promise.reduce(usernamesArr, function(mentions, username) {
       username = username.substring(1);
+
       return request.db.users.userByUsername(username)
       .then(function(user) {
         mentionedIds.push(user.id);
@@ -129,7 +134,7 @@ function createMention(request) {
           }
         });
       });
-    });
+    }).catch(noop);
   });
 }
 
