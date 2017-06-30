@@ -2,7 +2,7 @@ var Promise = require('bluebird');
 var _ = require('lodash');
 
 var mentionsRegex = /(@[a-zA-Z\d-_.]+)/g;
-var userIdRegex = /{@[^>]+}/g;
+var userIdRegex = /{@[^>]+?}/g;
 var slugIdRegex = /^[A-Za-z0-9_-]{22}$/;
 
 function userIdToUsername(request) {
@@ -26,6 +26,7 @@ function userIdToUsername(request) {
     var userIds = post.body.match(userIdRegex) || [];
     userIds = _.uniqWith(userIds, _.isEqual);
     userIds = userIds.map(x => x.substring(2, x.length - 1));
+
     return Promise.each(userIds, userId => {
       var validId = new RegExp(slugIdRegex).test(userId);
       if (!validId) { return; }
