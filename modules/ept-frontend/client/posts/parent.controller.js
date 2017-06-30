@@ -308,7 +308,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
             page: ctrl.page,
             postId: post.id,
             createdAt: new Date(post.created_at).getTime(),
-            body_html: post.body || post.body_html
+            body: post.body || post.body_html
           };
         }
       }, timeDuration);
