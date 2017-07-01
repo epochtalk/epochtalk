@@ -147,4 +147,4 @@ function createUser(options) { // use email for password reset link
     options.confirmation = options.password;
     return users.create(options, isAdmin);
   }
-};
+}
