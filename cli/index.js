@@ -58,7 +58,7 @@ program.parse(process.argv);
 
 if (!program.args.length) {
   program.help();
-};
+}
 
 var seed = function() {
   var adminUser = {
