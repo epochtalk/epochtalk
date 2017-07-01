@@ -8,6 +8,7 @@ module.exports = common;
 
 common.clean = clean;
 common.parse = parse;
+common.parseOut = parseOut;
 common.cleanPosts = cleanPosts;
 
 common.export = () =>  {
@@ -20,6 +21,11 @@ common.export = () =>  {
     {
       name: 'common.posts.parse',
       method: parse,
+      options: { callback: false }
+    },
+    {
+      name: 'common.posts.parseOut',
+      method: parseOut,
       options: { callback: false }
     },
     {
@@ -41,15 +47,24 @@ common.apiExport = () => {
 
 function clean(sanitizer, payload) {
   payload.title = sanitizer.strip(payload.title);
-  payload.raw_body = sanitizer.bbcode(payload.raw_body);
+  payload.body = sanitizer.bbcode(payload.body);
 }
 
 function parse(parser, payload) {
-  payload.body = parser.parse(payload.raw_body);
+  payload.body_html = parser.parse(payload.body);
 
   // check if parsing was needed
-  if (payload.body === payload.raw_body) { payload.raw_body = ''; }
+  if (payload.body_html === payload.body) { payload.body_html = ''; }
 }
+
+function parseOut(parser, posts) {
+  if (!posts) { return; }
+  posts = posts.length ? posts : [ posts ];
+  Promise.each(posts, function(post) {
+    post.body_html = parser.parse(post.body);
+  });
+}
+
 
 function newbieImages(auth, payload) {
   // check if user is a newbie
@@ -59,8 +74,8 @@ function newbieImages(auth, payload) {
   });
   if (!isNewbie) { return; }
 
-  // load html in payload.body into cheerio
-  var html = payload.body;
+  // load html in payload.body_html into cheerio
+  var html = payload.body_html;
   var $ = cheerio.load(html);
 
   // collect all the images in the body
@@ -71,7 +86,7 @@ function newbieImages(auth, payload) {
     $(element).replaceWith(replacement);
   });
 
-  payload.body = $.html();
+  payload.body_html = $.html();
 }
 
 function checkLockedQuery(server, auth, postId, query) {

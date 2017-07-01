@@ -38,7 +38,7 @@ function page(mentioneeId, opts) {
     extended: extended
   };
   limit = limit + 1;
-  var extPostBody = extended ? 'p.body,' : '';
+  var extPostBody = extended ? 'p.content->>\'body\' as body,' : '';
   var extBoardName = extended ? 'b.name as board_name,' : '';
   var extBoardId = extended ? 'b.id as board_id,' : '';
   var extThreadId = extended ? 'p.thread_id,' : '';

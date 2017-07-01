@@ -92,8 +92,8 @@ var expire = function() {
 // TODO: should respect where the images are saved to
 
 images.imageSub = (post) => {
-  var html = post.body;
-  // load html in post.body into cheerio
+  var html = post.body_html;
+  // load html in post.body_html into cheerio
   var $ = cheerio.load(html);
 
   // collect all the images in the body
@@ -112,7 +112,7 @@ images.imageSub = (post) => {
       $(element).attr('src', savedUrl);
     }
   })
-  .then(() => { post.body = $.html(); });
+  .then(() => { post.body_html = $.html(); });
 };
 
 images.avatarSub = (user) => {
@@ -133,8 +133,8 @@ images.removePostImageReferences = function(postId) {
 };
 
 images.createImageReferences = (post) => {
-  // load html in post.body into cheerio
-  var html = post.body;
+  // load html in post.body_html into cheerio
+  var html = post.body_html;
   var $ = cheerio.load(html);
 
   // collect all the images in the body
@@ -151,8 +151,8 @@ images.createImageReferences = (post) => {
 };
 
 images.updateImageReferences = (post) => {
-  // load html in post.body into cheerio
-  var html = post.body;
+  // load html in post.body_html into cheerio
+  var html = post.body_html;
   var $ = cheerio.load(html);
 
   // collect all the images in the body

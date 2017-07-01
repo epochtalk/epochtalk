@@ -62,6 +62,7 @@ module.exports = function(opts, priority) {
     }
     results.posts = data.map(function(post) {
       post.user = { username: post.username };
+      post.body_html = post.body;
       delete post.username;
       return post;
     });

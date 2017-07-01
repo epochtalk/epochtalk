@@ -53,8 +53,8 @@ var common = require(path.normalize(__dirname + '/../common'));
   * @apiSuccess {string} posts.thread_id The id of the thread containing the post
   * @apiSuccess {string} posts.board_id The id of the board containing the post
   * @apiSuccess {string} posts.title The title of the post
-  * @apiSuccess {string} posts.body The processed body of the post
-  * @apiSuccess {string} posts.raw_body The unprocessed body of the post
+  * @apiSuccess {string} posts.body_html The processed body of the post
+  * @apiSuccess {string} posts.body The unprocessed body of the post
   * @apiSuccess {boolean} posts.locked Boolean indicating if the thread is locked
   * @apiSuccess {boolean} posts.reported Boolean indicating if the post has been reported
   * @apiSuccess {timestamp} posts.created_at The created at timestamp of the post
@@ -99,6 +99,7 @@ module.exports = {
         { method: processing, assign: 'processed' },
       ],
       { method: 'hooks.merge' },
+      { method: 'common.posts.parseOut(parser, pre.processed.posts)' },
       { method: 'hooks.postProcessing' }
     ],
     handler: function(request, reply) {

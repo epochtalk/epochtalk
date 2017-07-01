@@ -23,7 +23,7 @@ module.exports = {
     validate: {
       payload: Joi.object().keys({
         title: Joi.string().min(1).max(255).required(),
-        raw_body: Joi.string().min(1).max(64000).required(),
+        body: Joi.string().min(1).max(64000).required(),
         thread_id: Joi.string().required()
       })
     },
@@ -66,7 +66,7 @@ function processing(request, reply) {
 /**
   * @apiDefine PostObjectPayload
   * @apiParam (Payload) {string} title The title of the post
-  * @apiParam (Payload) {string} raw_body The post's body as it was entered in the editor by the user
+  * @apiParam (Payload) {string} body The post's body as it was entered in the editor by the user
   * @apiParam (Payload) {string} thread_id The unique id of the thread the post belongs to
   */
 
@@ -76,9 +76,9 @@ function processing(request, reply) {
   * @apiSuccess {string} thread_id The unique id of the thread the post belongs to
   * @apiSuccess {string} user_id The unique id of the user who created the post
   * @apiSuccess {string} title The title of the post
-  * @apiSuccess {string} body The post's body with any markup tags converted and parsed into html elements
+  * @apiSuccess {string} body_html The post's body with any markup tags converted and parsed into html elements
   * @apiSuccess {boolean} deleted boolean indicating if post has been deleted
   * @apiSuccess {boolean} locked boolean indicating if post has been locked
-  * @apiSuccess {string} raw_body The post's body as it was entered in the editor by the user
+  * @apiSuccess {string} body The post's body as it was entered in the editor by the user
   * @apiSuccess {timestamp} created_at Timestamp of when the post was created
   */
