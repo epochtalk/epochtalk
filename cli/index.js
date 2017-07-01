@@ -60,7 +60,7 @@ if (!program.args.length) {
   program.help();
 }
 
-var seed = function() {
+function seed() {
   var adminUser = {
     username: 'admin',
     email: 'admin@epochtalk.com',
@@ -107,7 +107,7 @@ var seed = function() {
   .catch(function(err) {
     console.log(err);
   });
-};
+}
 
 function createUser(options) { // use email for password reset link
   var isAdmin = options.admin;
