@@ -232,7 +232,7 @@
   <div class="preview-wrap">
     <h5 class="thin-underline">Reported Post <span ng-if="ModerationCtrl.previewReport.offender_thread_starter">(First Post in Thread)</span></h5>
     <!-- Post Body -->
-    <div class="post-body" post-processing="ModerationCtrl.previewPost.body" style-fix="true"></div>
+    <div class="post-body" post-processing="ModerationCtrl.previewPost.body_html" style-fix="true"></div>
   </div>
 </div>
 
@@ -331,7 +331,7 @@
       </div>
       <!-- Editor -->
       <form name="form" class="editor-form admin" novalidate>
-        <epochtalk-editor class="posts-editor" body="ModerationCtrl.posting.post.body" raw-body="ModerationCtrl.posting.post.raw_body" reset-switch="ModerationCtrl.resetEditor" focus-switch="ModerationCtrl.focusEditor" dirty="ModerationCtrl.dirtyEditor" quote="ModerationCtrl.quote">
+        <epochtalk-editor class="posts-editor" body-html="ModerationCtrl.posting.post.body_html" body="ModerationCtrl.posting.post.body" reset-switch="ModerationCtrl.resetEditor" focus-switch="ModerationCtrl.focusEditor" dirty="ModerationCtrl.dirtyEditor" quote="ModerationCtrl.quote">
         </epochtalk-editor>
       </form>
 

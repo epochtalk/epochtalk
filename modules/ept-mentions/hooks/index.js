@@ -2,15 +2,16 @@ var Promise = require('bluebird');
 var _ = require('lodash');
 
 var mentionsRegex = /(@[a-zA-Z\d-_.]+)/g;
-var userIdRegex = /<@[^>]+>/g;
+var userIdRegex = /{@[^>]+?}/g;
 var slugIdRegex = /^[A-Za-z0-9_-]{22}$/;
+var noop = function() {};
 
 function userIdToUsername(request) {
   var posts;
   if (request.pre.processed.posts) {
     posts = request.pre.processed.posts;
   }
-  else if (request.pre.processed.body) {
+  else if (request.pre.processed.body_html) {
     posts = [ request.pre.processed ];
   }
   else if (request.pre.processed.threads) {
@@ -20,37 +21,34 @@ function userIdToUsername(request) {
     posts = request.pre.processed.data;
   }
   else { posts = [ request.payload ]; }
-
   return Promise.each(posts, post => {
     if (post.post_body) { post.body = post.post_body; }
     if (!post.body) { return; }
     var userIds = post.body.match(userIdRegex) || [];
     userIds = _.uniqWith(userIds, _.isEqual);
     userIds = userIds.map(x => x.substring(2, x.length - 1));
+
     return Promise.each(userIds, userId => {
       var validId = new RegExp(slugIdRegex).test(userId);
       if (!validId) { return; }
       return request.db.users.find(userId)
       .then(user => {
-        var idRegex = new RegExp('<@' + userId + '>', 'g');
+        var idRegex = new RegExp('{@' + userId + '}', 'g');
+        // body: {@123} -> @kkid
+        post.body = post.body.replace(idRegex, '@' + user.username);
 
-        // raw_body: <@123> -> @kkid
-        if (post.raw_body) {
-          post.raw_body = post.raw_body.replace(idRegex, '@' + user.username);
-        }
-        else {
-          post.raw_body = post.body.replace(idRegex, '@' + user.username);
-        }
-
-        // body: <@123> -> <a ui-sref=".profiles('kkid')">kkid</a>
+        // bodyHtml: {@123} -> <a ui-sref=".profiles('kkid')">kkid</a>
         var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\'})">' + '@' + user.username + '</a>';
-        post.body = post.body.replace(idRegex, profileLink);
+
+        post.body_html = post.body_html.replace(idRegex, profileLink);
         if (post.post_body) {
-          post.post_body = post.body;
-          delete post.raw_body;
+          post.post_body = post.body_html;
           delete post.body;
+          delete post.body_html;
         }
-      });
+      })
+      // Ignore mention of invalid user
+      .catch(noop);
     });
   });
 }
@@ -61,34 +59,31 @@ function usernameToUserId(request) {
     if (!hasPermission) { return; }
 
     var body = request.payload.body;
-    var rawBody = request.payload.raw_body;
     var usernamesArr = body.match(mentionsRegex) || [];
     usernamesArr = _.uniqWith(usernamesArr, _.isEqual);
 
-    body = body.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
-    rawBody = rawBody.replace(mentionsRegex, u => '<' + u.toLowerCase() + '>');
+    body = body.replace(mentionsRegex, u => '{' + u.toLowerCase() + '}');
     var mentionedIds = [];
 
     return Promise.reduce(usernamesArr, function(mentions, username) {
       username = username.substring(1);
+
       return request.db.users.userByUsername(username)
       .then(function(user) {
         mentionedIds.push(user.id);
-        mentions.push({ replacer: '<@' + user.id + '>', replacee: '<@' + user.username.toLowerCase() + '>' });
+        mentions.push({ replacer: '{@' + user.id + '}', replacee: '{@' + user.username.toLowerCase() + '}' });
         return mentions;
       })
       .catch(function() {
-        mentions.push({ replacer: '@' + username, replacee: '<@' + username + '>' });
+        mentions.push({ replacer: '@' + username, replacee: '{@' + username + '}' });
         return mentions;
       });
     }, [])
     .each(function(mention) {
       body = body.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
-      rawBody = rawBody.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
     })
     .then(function() {
-      request.payload.body = body || ' ';
-      request.payload.raw_body = rawBody;
+      request.payload.body = body;
       request.payload.mentioned_ids = mentionedIds;
     });
   });
@@ -138,7 +133,8 @@ function createMention(request) {
           }
         });
       });
-    });
+    // Ignore mention of invalid user
+    }).catch(noop);
   });
 }
 

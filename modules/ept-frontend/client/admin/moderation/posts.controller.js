@@ -78,7 +78,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
   };
 
   this.canSave = function() {
-    var text = ctrl.posting.post.body;
+    var text = ctrl.posting.post.body_html;
     text = text.replace(/(<([^>]+)>)/ig,'');
     text = text.trim();
     return text.length > 0;
@@ -485,7 +485,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
   this.resetEditor = false;
   this.showEditor = false;
   this.focusEditor = false;
-  this.posting = { post: { body: '', raw_body: '' } };
+  this.posting = { post: { body_html: '', body: '' } };
   this.editorPosition = 'editor-fixed-bottom';
   this.resize = true;
 
@@ -493,8 +493,8 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     var post = ctrl.posting.post;
     Posts.update(post).$promise
     .then(function(data) {
+      ctrl.previewPost.body_html = data.body_html;
       ctrl.previewPost.body = data.body;
-      ctrl.previewPost.raw_body = data.raw_body;
       Alert.success('Post successfully updated');
     })
     .catch(function(err) {
@@ -515,8 +515,8 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     editorPost.thread_id = post.thread_id;
     editorPost.title = post.title || '';
     editorPost.id = post.id || '';
+    editorPost.body_html = post.body_html || '';
     editorPost.body = post.body || '';
-    editorPost.raw_body = post.raw_body || '';
     ctrl.resetEditor = true;
     ctrl.showEditor = true;
     ctrl.focusEditor = true;
@@ -537,8 +537,8 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
   };
 
   function closeEditor() {
-    ctrl.posting.post.raw_body = '';
     ctrl.posting.post.body = '';
+    ctrl.posting.post.body_html = '';
     ctrl.resetEditor = true;
     ctrl.showEditor = false;
   }

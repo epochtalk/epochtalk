@@ -7,7 +7,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
     this.showEditor = false;
     this.focusEditor = false;
     this.quote = '';
-    this.posting = { post: { body: '', raw_body: '' } };
+    this.posting = { post: { body_html: '', body: '' } };
     this.editorPosition = 'editor-fixed-bottom';
     this.resize = true;
     this.moveBoard = {};
@@ -158,7 +158,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
     };
 
     this.canSave = function() {
-      var text = ctrl.posting.post.body;
+      var text = ctrl.posting.post.body_html;
       var imgSrcRegex = /<img[^>]+src="((http:\/\/|https:\/\/|\/)[^">]+)"/g;
       var stripTagsRegex = /(<([^>]+)>)/ig;
       var images = imgSrcRegex.exec(text);
@@ -286,8 +286,8 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
     function closeEditor() {
       ctrl.posting.post.id = '';
       ctrl.posting.post.title = '';
+      ctrl.posting.post.body_html = '';
       ctrl.posting.post.body = '';
-      ctrl.posting.post.raw_body = '';
       ctrl.posting.page = '';
       ctrl.resetEditor = true;
       ctrl.showEditor = false;
@@ -308,7 +308,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
             page: ctrl.page,
             postId: post.id,
             createdAt: new Date(post.created_at).getTime(),
-            body: post.raw_body || post.body
+            body: post.body || post.body_html
           };
         }
       }, timeDuration);
@@ -320,8 +320,8 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
         var editorPost = ctrl.posting.post;
         editorPost.id = post.id || '';
         editorPost.title = post.title || '';
+        editorPost.body_html = post.body_html || '';
         editorPost.body = post.body || '';
-        editorPost.raw_body = post.raw_body || '';
         editorPost.page = ctrl.page || 1;
         ctrl.resetEditor = true;
         ctrl.showEditor = true;
@@ -352,8 +352,8 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
         else if (type === 'update') {
           var filtered = ctrl.posts.filter(function(p) { return p.id === data.id; });
           var editPost = filtered.length > 0 && filtered[0] || {};
+          editPost.body_html = data.body_html;
           editPost.body = data.body;
-          editPost.raw_body = data.raw_body;
           editPost.updated_at = data.updated_at;
         }
       })

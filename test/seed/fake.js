@@ -55,7 +55,6 @@ fake.posts = function(options) {
   }
   var post = {
     body: body,
-    raw_body: body,
     title: faker.hacker.ingverb() + ' the ' + faker.hacker.adjective() + ' ' + faker.hacker.noun()
   };
   if (options) {

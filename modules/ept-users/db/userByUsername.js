@@ -3,6 +3,8 @@ var Promise = require('bluebird');
 var common = require(path.normalize(__dirname + '/../common'));
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
+var errors = dbc.errors;
+var NotFoundError = errors.NotFoundError;
 var helper = dbc.helper;
 
 /* returns all values */
@@ -51,6 +53,7 @@ module.exports = function(username) {
   return db.sqlQuery(q, params)
   .then(function(rows) {
     if (rows.length > 0) { return common.formatUser(rows[0]); }
+    else { throw new NotFoundError('User Not Found'); }
   })
   .then(function(user) {
     if (user) {

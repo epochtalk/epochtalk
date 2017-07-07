@@ -9,7 +9,7 @@ var Joi = require('joi');
   * @apiDescription Used to create a new thread.
   *
   * @apiParam (Payload) {string} title The title of the thread
-  * @apiParam (Payload) {string} raw_body The thread's body as it was entered in the editor by the user
+  * @apiParam (Payload) {string} body The thread's body as it was entered in the editor by the user
   * @apiParam (Payload) {string} board_id The unique id of the board this thread is being created within
   * @apiParam (Payload) {boolean} [locked=false] Boolean indicating whether the thread is locked or unlocked
   * @apiParam (Payload) {boolean} [sticky=false] Boolean indicating whether the thread is stickied or not
@@ -28,8 +28,8 @@ var Joi = require('joi');
   * @apiSuccess {string} title The title of the thread
   * @apiSuccess {boolean} deleted Boolean indicating if the thread has been deleted
   * @apiSuccess {boolean} locked Boolean indicating if the thread has been locked
-  * @apiSuccess {string} body The thread's body with any markup tags converted and parsed into html elements
-  * @apiSuccess {string} raw_body The thread's body as it was entered in the editor by the user
+  * @apiSuccess {string} body_html The thread's body with any markup tags converted and parsed into html elements
+  * @apiSuccess {string} body The thread's body as it was entered in the editor by the user
   * @apiSuccess {timestamp} created_at Timestamp of when the thread was created
   *
   * @apiError (Error 500) InternalServerError There was an issue creating the thread
@@ -46,7 +46,7 @@ module.exports = {
         sticky: Joi.boolean().default(false),
         moderated: Joi.boolean().default(false),
         title: Joi.string().min(1).max(255).required(),
-        raw_body: Joi.string().min(1).max(64000).required(),
+        body: Joi.string().min(1).max(64000).required(),
         board_id: Joi.string().required(),
         poll: Joi.object().keys({
           max_answers: Joi.number().integer().min(1).default(1),
@@ -89,7 +89,6 @@ function processing(request, reply) {
   var newPost = {
     title: request.payload.title,
     body: request.payload.body,
-    raw_body: request.payload.raw_body,
     user_id: user.id
   };
 
