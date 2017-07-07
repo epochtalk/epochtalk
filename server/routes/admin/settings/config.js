@@ -107,23 +107,27 @@ exports.find = {
   auth: { strategy: 'jwt' },
   plugins: { acls: 'adminSettings.find' },
   handler: function(request, reply) {
-    var config = request.server.app.config;
-    var retVal = {
-      logEnabled: config.logEnabled,
-      loginRequired: config.loginRequired,
-      verifyRegistration: config.verifyRegistration,
-      inviteOnly: config.inviteOnly,
-      gaKey: config.gaKey || '',
-      website: config.website,
-      portal: config.portal,
-      emailer: config.saasMode ? {} : config.emailer,
-      images: config.saasMode ? {local:{}, s_3:{}} : config.images,
-      rateLimiting: config.rateLimiting,
-      saasMode: config.saasMode
-    };
-    retVal = camelCaseToUnderscore(retVal);
+    var promise = request.db.configurations.get()
+    .then(function(config) {
+       var retVal = {
+         logEnabled: config.logEnabled,
+         loginRequired: config.loginRequired,
+         verifyRegistration: config.verifyRegistration,
+         inviteOnly: config.inviteOnly,
+         gaKey: config.gaKey || '',
+         website: config.website,
+         portal: config.portal,
+         emailer: config.saasMode ? {} : config.emailer,
+         images: config.saasMode ? {local:{}, s_3:{}} : config.images,
+         rateLimiting: config.rateLimiting,
+         saasMode: config.saasMode
+       };
+       retVal = camelCaseToUnderscore(retVal);
 
-    return reply(retVal);
+       return retVal;
+    });
+
+    return reply(promise);
   }
 };
 

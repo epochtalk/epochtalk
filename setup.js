@@ -8,6 +8,7 @@ var defaultConfigurations = require(path.join(__dirname, 'configurations.json'))
 // load admin options from database
 module.exports = function() {
   return db.configurations.get()
+  .then(parseConfigs)
   // if admin options are not yet configured
   .error(function() {
     // create with defaults
@@ -17,8 +18,7 @@ module.exports = function() {
       return db.configurations.create(config);
     })
     .then(function() { return config; });
-  })
-  .then(parseConfigs);
+  });
 };
 
 function parseConfigs(configurations) {
