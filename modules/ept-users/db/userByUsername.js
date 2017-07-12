@@ -71,6 +71,7 @@ module.exports = function(username) {
           user.collapsed_categories = user.collapsed_categories.cats;
         }
         else { user.collapsed_categories = []; }
+        user.avatar = user.avatar || null;
         return user;
       });
     }
