@@ -66,21 +66,21 @@
     <div class="input-nine-three-col">
       <div>
         <label for="smtp-server">SMTP Server</label>
-        <input type="text" class="input-text" id="smtp-server" ng-model="AdminSettingsCtrl.settings.emailer.host" placeholder="Example: http://smtp.gmail.com" />
+        <input type="text" class="input-text" id="smtp-server" ng-model="AdminSettingsCtrl.settings.emailer.options.host" placeholder="Example: http://smtp.gmail.com" />
       </div>
       <div>
         <label for="smtp-port">SMTP Port</label>
-        <input type="text" class="input-text" id="smtp-port" ng-model="AdminSettingsCtrl.settings.emailer.port" placeholder="Example: 587" />
+        <input type="text" class="input-text" id="smtp-port" ng-model="AdminSettingsCtrl.settings.emailer.options.port" placeholder="Example: 587" />
       </div>
     </div>
     <div class="input-two-col">
       <div>
         <label for="smtp-username">SMTP Username</label>
-        <input type="text" class="input-text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.user" placeholder="Username" />
+        <input type="text" class="input-text" id="smtp-username" ng-model="AdminSettingsCtrl.settings.emailer.options.auth.user" placeholder="Username" />
       </div>
       <div>
         <label for="smtp-password">SMTP Password</label>
-        <input class="secret" type="password" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.pass" placeholder="Password" />
+        <input class="secret" type="password" id="smtp-password" ng-model="AdminSettingsCtrl.settings.emailer.options.auth.pass" placeholder="Password" />
       </div>
     </div>
   </div>

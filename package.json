@@ -34,7 +34,7 @@
     "bower": "^1.8.0",
     "change-case": "^2.3.1",
     "cheerio": "^0.20.0",
-    "commander": "^2.5.1",
+    "commander": "^2.9.0",
     "deep-rename-keys": "^0.1.0",
     "del": "^2.2.0",
     "dot": "^1.0.3",

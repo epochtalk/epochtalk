@@ -1,4 +1,5 @@
 require('dotenv').load({silent: true});
+var _ = require('lodash');
 var path = require('path');
 var Hapi = require('hapi');
 var Hoek = require('hoek');
@@ -194,11 +195,11 @@ setup()
   server.start(function () {
     var configClone = Hoek.clone(config);
     configClone.privateKey = configClone.privateKey.replace(/./g, '*');
-    if (configClone.emailer.transporter === 'ses') {
-      configClone.emailer.ses.accessKey = configClone.emailer.ses.accessKey.replace(/./g, '*');
-      configClone.emailer.ses.secretKey = configClone.emailer.ses.secretKey.replace(/./g, '*');
+    if (_.get(configClone, 'emailer.transporter') === 'ses') {
+      configClone.emailer.options.accessKey = configClone.emailer.options.accessKey.replace(/./g, '*');
+      configClone.emailer.options.secretKey = configClone.emailer.options.secretKey.replace(/./g, '*');
     }
-    if (configClone.emailer.pass) { configClone.emailer.pass = configClone.emailer.pass.replace(/./g, '*'); }
+    if (_.get(configClone, 'emailer.options.auth.pass')) { configClone.emailer.options.auth.pass = configClone.emailer.options.auth.pass.replace(/./g, '*'); }
     if (configClone.images.s3.accessKey) { configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*'); }
     if (configClone.images.s3.secretKey) { configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*'); }
     server.log('debug', 'DB Connection: ' + process.env.DATABASE_URL);

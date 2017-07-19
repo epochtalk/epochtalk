@@ -13,14 +13,6 @@
     "logo": "",
     "favicon": ""
   },
-  "emailer": {
-    "sender": "info@example.com",
-    "host": "localhost",
-    "port": 465,
-    "user": "username",
-    "pass": "password",
-    "secure": true
-  },
   "images": {
     "storage": "local",
     "maxSize": 10485760,

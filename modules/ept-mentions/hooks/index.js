@@ -4,7 +4,6 @@ var _ = require('lodash');
 var mentionsRegex = /(@[a-zA-Z\d-_.]+)/g;
 var userIdRegex = /{@[^>]+?}/g;
 var slugIdRegex = /^[A-Za-z0-9_-]{22}$/;
-var noop = function() {};
 
 function userIdToUsername(request) {
   var posts;
@@ -46,9 +45,7 @@ function userIdToUsername(request) {
           delete post.body;
           delete post.body_html;
         }
-      })
-      // Ignore mention of invalid user
-      .catch(noop);
+      });
     });
   });
 }
@@ -133,8 +130,7 @@ function createMention(request) {
           }
         });
       });
-    // Ignore mention of invalid user
-    }).catch(noop);
+    });
   });
 }
 

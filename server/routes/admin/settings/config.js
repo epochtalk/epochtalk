@@ -67,11 +67,11 @@ function validatePortalParams(request, reply) {
   * @apiSuccess {string} website.favicon The favicon for the website
   * @apiSuccess {object} emailer Object containing configurations for the email server
   * @apiSuccess {string} emailer.sender Email address that emails will be sent from
-  * @apiSuccess {string} emailer.host The SMTP host
-  * @apiSuccess {number} emailer.port The SMTP port
-  * @apiSuccess {string} emailer.user The SMTP username
-  * @apiSuccess {string} emailer.pass The SMTP password
-  * @apiSuccess {boolean} emailer.secure Boolean indicating whether or not to use SSL
+  * @apiSuccess {string} emailer.options.host The SMTP host
+  * @apiSuccess {number} emailer.options.port The SMTP port
+  * @apiSuccess {string} emailer.options.auth.user The SMTP username
+  * @apiSuccess {string} emailer.options.auth.pass The SMTP password
+  * @apiSuccess {boolean} emailer.options.secure Boolean indicating whether or not to use SSL
   * @apiSuccess {object} images Object containing image server configurations
   * @apiSuccess {string="local","s3"} images.storage Where to store images
   * @apiSuccess {number} images.max_size Max image file size
@@ -151,11 +151,11 @@ exports.find = {
   * @apiParam (Payload) {string} [website.favicon] The favicon for the website
   * @apiParam (Payload) {object} [emailer] Object containing configurations for the email server
   * @apiParam (Payload) {string} [emailer.sender] Email address that emails will be sent from
-  * @apiParam (Payload) {string} [emailer.host] The SMTP host
-  * @apiParam (Payload) {number} [emailer.port] The SMTP port
-  * @apiParam (Payload) {string} [emailer.user] The SMTP username
-  * @apiParam (Payload) {string} [emailer.pass] The SMTP password
-  * @apiParam (Payload) {boolean} [emailer.secure] Boolean indicating whether or not to use SSL
+  * @apiParam (Payload) {string} [emailer.options.host] The SMTP host
+  * @apiParam (Payload) {number} [emailer.options.port] The SMTP port
+  * @apiParam (Payload) {string} [emailer.options.auth.user] The SMTP username
+  * @apiParam (Payload) {string} [emailer.options.auth.pass] The SMTP password
+  * @apiParam (Payload) {boolean} [emailer.options.secure] Boolean indicating whether or not to use SSL
   * @apiParam (Payload) {object} [images] Object containing image server configurations
   * @apiParam (Payload) {string="local","s3"} [images.storage] Where to store images
   * @apiParam (Payload) {number} [images.max_size] Max image file size
@@ -213,12 +213,16 @@ exports.update = {
         favicon: Joi.string().allow('')
       }),
       emailer: Joi.object().keys({
-        sender: Joi.string(),
-        host: Joi.string(),
-        port: Joi.number(),
-        user: Joi.string(),
-        pass: Joi.string(),
-        secure: Joi.boolean()
+        sender: Joi.string().allow(null),
+        secure: Joi.boolean(),
+        options: Joi.object().keys({
+          host: Joi.string().allow(null),
+          port: Joi.number().allow(null),
+          auth: Joi.object().keys({
+            user: Joi.string(),
+            pass: Joi.string()
+          })
+        })
       }),
       images: Joi.object().keys({
         storage: Joi.string(),
@@ -778,28 +782,9 @@ function sanitizeConfigs(configurations, saasMode) {
     return resolve();
   })
   .then(function() {
-    return checkEmailerConfig(config.emailer);
-  })
-  .then(function() {
     return checkImagesConfig(config.images);
   })
   .then(function() { return config; });
-}
-
-function checkEmailerConfig(emailer) {
-  return new Promise(function(resolve, reject) {
-    if (!emailer) { return reject(new ConfigError('Emailer configuration not found.')); }
-
-    var errors = [];
-    if (!emailer.sender) { errors.push('Emailer Sender not found.'); }
-    if (!emailer.host) { errors.push('Emailer Host not found.'); }
-    if (!emailer.port) { errors.push('Emailer Post not found.'); }
-    if (!emailer.user) { errors.push('Emailer User not found.'); }
-    if (!emailer.pass) { errors.push('Emailer Password not found.'); }
-
-    if (errors.length > 0) { return reject(new ConfigError(errors.join('\n'))); }
-    else { return resolve(); }
-  });
 }
 
 function checkImagesConfig(images) {

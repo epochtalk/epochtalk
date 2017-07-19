@@ -1,3 +1,22 @@
+var _ = require('lodash');
+var setIfDefined = function(object, path, source) {
+  if (!_.isUndefined(source)) {
+    _.set(object, path, source);
+  }
+};
+
+var coerceEnvBoolean = function(envBoolean) {
+  if (envBoolean === 'true') {
+    return true;
+  }
+  else if (envBoolean === 'false') {
+    return false;
+  }
+  else {
+    return undefined;
+  }
+};
+
 var config = {
   host: process.env.HOST,
   port: process.env.PORT,
@@ -14,21 +33,29 @@ var config = {
   websocket_port: process.env.WEBSOCKET_PORT,
   websocketAPIKey: process.env.WEBSOCKET_API_KEY,
   websocketSecure: process.env.WEBSOCKET_SECURE === 'true',
-  emailer_env: {
-    transporter: process.env.EMAILER_TRANSPORTER,
-    ses: {
-      region: process.env.EMAILER_SES_REGION,
-      accessKey: process.env.EMAILER_SES_ACCESS_KEY,
-      secretKey: process.env.EMAILER_SES_SECRET_KEY
+  rateLimitingEnv: {
+    get: {
+      interval: process.env.RATE_LIMITING_GET_INTERVAL || undefined,
+      maxInInterval: process.env.RATE_LIMITING_GET_MAX_IN_INTERVAL || undefined,
+      minDifference: process.env.RATE_LIMITING_GET_MIN_DIFFERENCE || undefined
     },
-    sender: process.env.EMAILER_SENDER,
-    host: process.env.EMAILER_HOST,
-    port: process.env.EMAILER_PORT,
-    user: process.env.EMAILER_USER,
-    pass: process.env.EMAILER_PASS,
-    secure: process.env.EMAILER_SECURE === 'true' || undefined
+    post: {
+      interval: process.env.RATE_LIMITING_POST_INTERVAL || undefined,
+      maxInInterval: process.env.RATE_LIMITING_POST_MAX_IN_INTERVAL || undefined,
+      minDifference: process.env.RATE_LIMITING_POST_MIN_DIFFERENCE || undefined
+    },
+    put: {
+      interval: process.env.RATE_LIMITING_PUT_INTERVAL || undefined,
+      maxInInterval: process.env.RATE_LIMITING_PUT_MAX_IN_INTERVAL || undefined,
+      minDifference: process.env.RATE_LIMITING_PUT_MIN_DIFFERENCE || undefined
+    },
+    delete: {
+      interval: process.env.RATE_LIMITING_DELETE_INTERVAL || undefined,
+      maxInInterval: process.env.RATE_LIMITING_DELETE_MAX_IN_INTERVAL || undefined,
+      minDifference: process.env.RATE_LIMITING_DELETE_MIN_DIFFERENCE || undefined
+    }
   },
-  images_env: {
+  imagesEnv: {
     storage: process.env.IMAGES_STORAGE,
     maxSize: process.env.IMAGES_MAX_SIZE,
     expiration: process.env.IMAGES_EXPIRATION,
@@ -54,5 +81,17 @@ var config = {
     boardId: process.env.PORTAL_BOARD_ID || ''
   }
 };
+
+setIfDefined(config, 'emailerEnv.sender', process.env.EMAILER_SENDER);
+setIfDefined(config, 'emailerEnv.transporter', process.env.EMAILER_TRANSPORTER);
+setIfDefined(config, 'emailerEnv.options.ignoreTLS', process.env.EMAILER_OPTIONS_IGNORE_TLS);
+setIfDefined(config, 'emailerEnv.options.host', process.env.EMAILER_OPTIONS_HOST);
+setIfDefined(config, 'emailerEnv.options.port', process.env.EMAILER_OPTIONS_PORT);
+setIfDefined(config, 'emailerEnv.options.auth.user', process.env.EMAILER_OPTIONS_AUTH_USER);
+setIfDefined(config, 'emailerEnv.options.auth.pass', process.env.EMAILER_OPTIONS_AUTH_PASS);
+setIfDefined(config, 'emailerEnv.options.secure', coerceEnvBoolean(process.env.EMAILER_OPTIONS_SECURE));
+setIfDefined(config, 'emailerEnv.options.region', process.env.EMAILER_OPTIONS_REGION);
+setIfDefined(config, 'emailerEnv.options.accessKey', process.env.EMAILER_OPTIONS_ACCESS_KEY);
+setIfDefined(config, 'emailerEnv.options.secretKey', process.env.EMAILER_OPTIONS_SECRET_KEY);
 
 module.exports = config;
