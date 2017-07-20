@@ -60,11 +60,6 @@ module.exports = {
     var poll = request.payload;
 
     var promise = request.db.polls.create(threadId, poll)
-    .then(function(dbPoll) {
-      poll.id = dbPoll.id;
-      poll.answers = poll.answers.map(function(answer) { return { answer: answer }; });
-      return poll;
-    })
     .error(request.errorMap.toHttpError);
 
     return reply(promise);
