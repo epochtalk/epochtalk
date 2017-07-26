@@ -22,6 +22,7 @@ module.exports = {
       keywords: config.website.keywords,
       logo: config.website.logo,
       favicon: config.website.favicon,
+      default_avatar: config.website.defaultAvatar,
       websocket_host: config.websocket_client_host,
       websocket_port: config.websocket_port,
       max_image_size: config.images.maxSize,

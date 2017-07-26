@@ -27,7 +27,7 @@
       <tr ng-repeat="user in UserSearchCtrl.users track by user.username">
         <td>
           <a class="search-users user-avatar hide-mobile" ui-sref="profile.posts({ username: user.username})">
-            <img ng-src="{{ user.avatar }}">
+            <img ng-src="{{ user.avatar || $webConfigs.default_avatar }}">
           </a>
           <a ui-sref="profile.posts({ username: user.username })" ng-bind="user.username"></a>
         </td>

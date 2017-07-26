@@ -15,7 +15,7 @@
     <div class="post-user">
       <a ui-sref="profile.posts({ username: post.user.username})">
         <div class="user-avatar">
-          <img ng-style="PostsCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar}}">
+          <img ng-style="PostsCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar || $webConfigs.default_avatar}}">
         </div>
         <div title="{{post.user.role_name || 'user'}}" class="user-role" ng-bind="post.user.role_name || 'user'"></div>
         <div ng-if="post.user.activity > -1" title="{{ 'Activity: ' + post.user.activity }}" class="user-activity">Act: <span ng-bind="post.user.activity"></span></div>

@@ -8,7 +8,7 @@
     <div class="post-user">
       <a ui-sref="profile.posts({ username: post.user.username})">
         <div class="user-avatar">
-          <img ng-style="PatrolCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar}}">
+          <img ng-style="PatrolCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar || $webConfigs.default_avatar}}">
         </div>
         <div class="user-role" ng-bind="post.user.role_name || 'user'"></div>
       </a>
