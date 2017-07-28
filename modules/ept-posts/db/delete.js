@@ -41,10 +41,10 @@ module.exports = function(id) {
       if (!post.deleted) return client.queryAsync(queryUpdateThreadUpdatedAt, [post.thread_id]);
     })
     .then(function() {
-      return client.queryAsync(queryUpdatePostPositions, [post.position, post.thread.id]);
+      return client.queryAsync(queryUpdatePostPositions, [post.position, post.thread_id]);
     })
     .then(function() {
-      if (!post.deleted) return client.queryAsync(queryUpdateThreadPostCount, [post.thread.id]);
+      if (!post.deleted) return client.queryAsync(queryUpdateThreadPostCount, [post.thread_id]);
     })
     .then(function() {
       post.deleted = true;
