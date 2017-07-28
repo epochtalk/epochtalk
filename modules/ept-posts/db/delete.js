@@ -10,12 +10,18 @@ var DeletionError = errors.DeletionError;
 module.exports = function(id) {
   id = helper.deslugify(id);
   var post;
-  var q;
+  var querySelectPost = 'SELECT * from posts WHERE id = $1 FOR UPDATE';
+  // deletion flag
+  var queryDeletePost = 'UPDATE posts SET deleted = TRUE WHERE id = $1';
+  var queryUpdateUserPostCount = 'UPDATE users.profiles SET post_count = post_count - 1 WHERE user_id = $1'
+  var queryUpdateThreadUpdatedAt = 'UPDATE threads SET updated_at = (SELECT created_at FROM posts WHERE thread_id = $1 ORDER BY created_at DESC limit 1) WHERE id = $1';
+  var queryUpdatePostPositions = 'UPDATE posts SET position = position - 1 WHERE position > $1 AND thread_id = $2';
+  var queryUpdateThreadPostCount = 'UPDATE threads SET post_count = post_count - 1 WHERE id = $1';
+
 
   return using(db.createTransaction(), function(client) {
     // lock up post row
-    q = 'SELECT * from posts WHERE id = $1 FOR UPDATE';
-    return client.queryAsync(q, [id])
+    return client.queryAsync(querySelectPost, [id])
     .then(function(results) {
       if (results.rows.length > 0) { post = results.rows[0]; }
       else { return Promise.reject('Post Not Found'); }
@@ -26,11 +32,22 @@ module.exports = function(id) {
     })
     // set post deleted flag
     .then(function() {
-      post.deleted = true;
-      q = 'UPDATE posts SET deleted = TRUE WHERE id = $1';
-      return client.queryAsync(q, [id]);
+      return client.queryAsync(queryDeletePost, [id]);
     })
     .then(function() {
+      if (!post.deleted) return client.queryAsync(queryUpdateUserPostCount, [post.user_id]);
+    })
+    .then(function() {
+      if (!post.deleted) return client.queryAsync(queryUpdateThreadUpdatedAt, [post.thread_id]);
+    })
+    .then(function() {
+      return client.queryAsync(queryUpdatePostPositions, [post.position, post.thread_id]);
+    })
+    .then(function() {
+      if (!post.deleted) return client.queryAsync(queryUpdateThreadPostCount, [post.thread_id]);
+    })
+    .then(function() {
+      post.deleted = true;
       // Strip unneeded return fields
       delete post.tsv;
       return post;
