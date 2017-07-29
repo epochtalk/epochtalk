@@ -17,5 +17,5 @@ RUN npm install epochtalk-core-pg
 
 COPY . /usr/src/app
 
-CMD npm run serve
+CMD until node cli connect; do sleep 1; done; npm run serve
 EXPOSE 8080
