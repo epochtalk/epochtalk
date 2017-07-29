@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require('dotenv').load();
+require('dotenv').load({ silent: true });
 var path = require('path');
 var program = require('commander');
 var crypto = require('crypto');
