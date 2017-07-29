@@ -56,7 +56,8 @@ var common = require(path.normalize(__dirname + '/../common'));
   * @apiSuccess {string} posts.body_html The processed body of the post
   * @apiSuccess {string} posts.body The unprocessed body of the post
   * @apiSuccess {boolean} posts.locked Boolean indicating if the thread is locked
-  * @apiSuccess {boolean} posts.reported Boolean indicating if the post has been reported
+  * @apiSuccess {boolean} posts.reported Boolean indicating if the post has been reported by the authorized user
+  * @apiSuccess {boolean} posts.reported_author Boolean indicating if the post's author has been reported by the authorized user
   * @apiSuccess {timestamp} posts.created_at The created at timestamp of the post
   * @apiSuccess {timestamp} posts.updated_at The updated at timestamp of the post
   * @apiSuccess {timestamp} posts.imported_at The imported at timestamp of the post

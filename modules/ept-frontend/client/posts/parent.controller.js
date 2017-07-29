@@ -462,9 +462,14 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       ctrl.showReportModal = true;
     };
 
-    this.closeReportModal = function() {
+    this.closeReportModal = function(userReport) {
       $timeout(function() {
-        ctrl.reportedPost.reported = true;
+        if (userReport) {
+          ctrl.reportedPost.reported_author = true;
+        }
+        else {
+          ctrl.reportedPost.reported = true;
+        }
         ctrl.showReportModal = false;
         ctrl.offendingId = undefined;
         ctrl.reportReason = '';
@@ -482,8 +487,10 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
         reporter_reason: ctrl.reportReason
       };
       var reportPromise;
+      var reportUser = true;
       if (ctrl.offendingId === ctrl.reportedPost.id) { // Post report
         report.offender_post_id = ctrl.offendingId;
+        reportUser = false;
         reportPromise = Reports.createPostReport(report).$promise;
       }
       else { // User report
@@ -491,11 +498,11 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
         reportPromise = Reports.createUserReport(report).$promise;
       }
       reportPromise.then(function() {
-        ctrl.closeReportModal();
+        ctrl.closeReportModal(reportUser);
         $timeout(function() { Alert.success('Successfully sent report'); }, 500);
       })
       .catch(function() {
-        ctrl.closeReportModal();
+        ctrl.closeReportModal(reportUser);
         $timeout(function() { Alert.error('Error sending report, please try again later'); }, 500);
       });
     };
