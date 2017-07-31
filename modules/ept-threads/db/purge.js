@@ -16,7 +16,7 @@ module.exports = function(threadId) {
   var q;
 
   return using(db.createTransaction(), function(client) {
-    q = 'SELECT user_id, title FROM posts where thread_id = $1 ORDER BY created_at ASC LIMIT 1';
+    q = 'SELECT user_id, content ->> \'title\' FROM posts where thread_id = $1 ORDER BY created_at ASC LIMIT 1';
     return client.queryAsync(q, [threadId])
     .then(function(results) {
       var row = results.rows[0];
