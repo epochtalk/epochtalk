@@ -36,7 +36,7 @@ module.exports = function(post) {
       }
     })
     .then(function() {
-      return client.queryAsync(queryIncUserPostCount, [post.id]);
+      return client.queryAsync(queryIncUserPostCount, [post.user_id]);
     })
     .then(function() {
       return client.queryAsync(queryUpdateThreadCreatedAt, [post.thread_id]);
