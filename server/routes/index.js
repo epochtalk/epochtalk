@@ -59,6 +59,7 @@ exports.endpoints = function(internalConfig) {
           description: config.website.description,
           keywords: config.website.keywords,
           logo: config.website.logo,
+          default_avatar: config.website.defaultAvatar,
           favicon: config.website.favicon,
           websocket_host: config.websocket_client_host,
           websocket_port: config.websocket_port,

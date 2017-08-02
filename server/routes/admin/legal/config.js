@@ -46,7 +46,9 @@ exports.text = {
     var disclaimerDefaultDir = path.normalize(baseDefaultPath + 'disclaimer.txt');
     var getDisclaimer = getFile(disclaimerCustomDir, disclaimerDefaultDir);
 
+
     var promise = Promise.join(getTos, getPrivacy, getDisclaimer, function(tos, privacy, disclaimer) {
+      disclaimer = disclaimer === 'undefined' ? '' : disclaimer;
       return {
         tos: tos,
         privacy: privacy,

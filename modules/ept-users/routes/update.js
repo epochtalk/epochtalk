@@ -97,7 +97,7 @@ module.exports = {
         position: Joi.string().max(255).allow(''),
         raw_signature: Joi.string().max(5000).allow(''),
         signature: Joi.string().max(5000).allow(''),
-        avatar: Joi.string().uri({scheme: ['http', 'https']}).allow(''),
+        avatar: Joi.string().allow(''),
         posts_per_page: Joi.number().min(10).max(100).default(25),
         threads_per_page: Joi.number().min(10).max(100).default(25),
         collapsed_categories: Joi.array().items(Joi.string())
