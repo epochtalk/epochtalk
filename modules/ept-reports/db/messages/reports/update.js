@@ -8,7 +8,7 @@ var using = Promise.using;
 module.exports = function(messageReport) {
   messageReport = helper.deslugify(messageReport);
   return using(db.createTransaction(), function(client) {
-    var q = 'SELECT rm.id, rs.status, rm.status_id, rm.reporter_user_id, rm.reporter_reason, rm.reviewer_user_id, rm.offender_message_id, rm.created_at, rm.updated_at FROM administration.reports_messages rm JOIN administration.reports_statuses rs ON(rm.status_id = rs.id) WHERE rm.id = $1';
+    var q = 'SELECT rm.id, rm.status, rm.reporter_user_id, rm.reporter_reason, rm.reviewer_user_id, rm.offender_message_id, rm.created_at, rm.updated_at FROM administration.reports_messages rm WHERE rm.id = $1';
     var params = [messageReport.id];
     var existingReport;
     return client.queryAsync(q, params)
@@ -17,22 +17,11 @@ module.exports = function(messageReport) {
       if (rows.length) { return rows[0]; }
       else { return Promise.reject(); }
     })
-    .then(function(dbMessageReport) { // lookup status id by passed in status string (e.g "Reviewed" returns 2)
+    .then(function(dbMessageReport) {
       existingReport = dbMessageReport;
-      q = 'SELECT id FROM administration.reports_statuses WHERE status = $1';
-      params = [messageReport.status];
-      return client.queryAsync(q, params);
-    })
-    .then(function(results) { // extract statusId from row and return
-      var rows = results.rows;
-      if (rows.length) { return rows[0].id; }
-      else { return Promise.reject(); }
-    })
-    .then(function(statusId) { // update report with new status_id, reviewer_user_id, and updated_at
-      var newStatusId = statusId || existingReport.status_id;
       var newReviewerUserId = messageReport.reviewer_user_id || existingReport.reviewer_user_id;
-      q = 'UPDATE administration.reports_messages SET status_id = $1, reviewer_user_id = $2, updated_at = now() WHERE id = $3 RETURNING updated_at';
-      params = [newStatusId, newReviewerUserId, messageReport.id];
+      q = 'UPDATE administration.reports_messages SET status = $1, reviewer_user_id = $2, updated_at = now() WHERE id = $3 RETURNING updated_at';
+      params = [messageReport.status, newReviewerUserId, messageReport.id];
       return client.queryAsync(q, params);
     })
     .then(function(results) { // extract updated_at from row and return
@@ -44,7 +33,6 @@ module.exports = function(messageReport) {
       existingReport.updated_at = updatedAt;
       existingReport.status = messageReport.status || existingReport.status;
       existingReport.reviewer_user_id = messageReport.reviewer_user_id || existingReport.reviewer_user_id;
-      delete existingReport.status_id; // only return status string
       return existingReport;
     });
   })
