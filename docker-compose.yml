@@ -19,6 +19,12 @@ services:
       - postgres
     links:
       - postgres
+    environment:
+      MIX_ENV: prod
+      DATABASE_USER: docker
+      DATABASE_PASSWORD: docker
+      DATABASE_NAME: epochtalk
+      DATABASE_HOST: postgres
   redis:
     image: redis:4.0.1
     user: redis
