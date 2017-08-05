@@ -1,6 +1,29 @@
-machine:
-  node:
-    version: 7
-  environment:
-    DATABASE_URL: postgres://localhost/epoch_test
-    TEST_DATABASE_URL: postgres://localhost/epoch_test
+version: 2
+jobs:
+  build:
+    docker:
+      - image: node:7.10.0
+      - image: redis:4.0.1
+      - image: postgres:9.6.2
+        environment:
+          POSTGRES_USER: docker
+          POSTGRES_PASSWORD: docker
+    steps:
+      - checkout
+
+      # download and cache dependencies
+      - restore_cache:
+        keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+        paths:
+          - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run repo tests
+      - run: npm run test
