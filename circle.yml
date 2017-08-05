@@ -18,7 +18,13 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install
+      - run:
+          name: Install dependencies
+          command: |
+            npm install
+            npm --prefix ./modules install
+            npm install -g bower
+            bower install --allow-root
 
       - save_cache:
         paths:
