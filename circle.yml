@@ -27,9 +27,9 @@ jobs:
             bower install --allow-root
 
       - save_cache:
-        paths:
-          - node_modules
-        key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
 
       # run repo tests
       - run: npm run test
