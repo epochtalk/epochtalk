@@ -27,3 +27,30 @@ jobs:
 
       # run repo tests
       # - run: npm run test
+
+
+      # run api tests in docker-compose
+      - setup_remote_docker
+
+      - run:
+          name: Install Docker Compose
+          command: |
+            set -x
+            curl -L https://github.com/docker/compose/releases/download/1.15.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+
+      - run:
+          name: Start docker resources
+          command: |
+            set -e
+            docker-compose -f circleci-docker-compose.yml up -d redis
+            docker-compose -f circleci-docker-compose.yml up -d postgres
+            docker-compose -f circleci-docker-compose.yml up -d epochtalk
+            docker-compose -f circleci-docker-compose.yml run epochtalk "until node cli create-user admin admin@epochtalk.com --password password --admin; do sleep 5; done"
+            docker-compose -f circleci-docker-compose.yml up -d epoch
+
+      - run:
+          name: run test
+          command: |
+            set -eo pipefail
+            docker-compose -f circleci-docker-compose.yml up --exit-code-from epochtalk-api-tests epochtalk-api-tests
