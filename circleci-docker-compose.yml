@@ -1,0 +1,88 @@
+version: '3'
+services:
+  epochtalk-api-tests:
+    image: quay.io/epochtalk/epochtalk:dockerfile-elixir
+    ports:
+      - "1025:1025"
+    depends_on:
+      - epochtalk
+    links:
+      - epochtalk
+    environment:
+      HOST: http://epochtalk:8080
+    command: sh -c "./wait-for-it.sh epochtalk:8080 -t 120 && sleep 5 && npm run test"
+  epochtalk:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - postgres
+      - epoch
+    links:
+      - redis
+      - postgres
+    environment:
+      PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
+      DATABASE_URL: postgres://docker:docker@postgres:5432/epochtalk
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RECAPTCHA_SITE_KEY: ""
+      RECAPTCHA_SECRET_KEY: ""
+      HOST: 0.0.0.0
+      PORT: 8080
+      PUBLIC_URL: http://localhost:8080
+      EMAILER_SENDER: e@ma.il
+      EMAILER_OPTIONS_HOST: epochtalk-api-tests
+      EMAILER_OPTIONS_PORT: 1025
+      EMAILER_OPTIONS_IGNORE_TLS: "true"
+      EMAILER_OPTIONS_SECURE: "false"
+      RATE_LIMITING_GET_INTERVAL: -1
+      RATE_LIMITING_PUT_INTERVAL: -1
+      RATE_LIMITING_POST_INTERVAL: -1
+      RATE_LIMITING_DELETE_INTERVAL: -1
+  # epochtalk-seed:
+  #   image: quay.io/epochtalk/epochtalk:dockerfile-elixir
+  #   depends_on:
+  #     - postgres
+  #   links:
+  #     - postgres
+  #   environment:
+  #     PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
+  #     DATABASE_URL: postgres://docker:docker@postgres:5432/epochtalk
+  #     REDIS_HOST: redis
+  #     REDIS_PORT: 6379
+  #     RECAPTCHA_SITE_KEY: ""
+  #     RECAPTCHA_SECRET_KEY: ""
+  #     HOST: 0.0.0.0
+  #     PORT: 8080
+  #     PUBLIC_URL: http://localhost:8080
+  #     EMAILER_SENDER: e@ma.il
+  #     EMAILER_OPTIONS_HOST: epochtalk-api-tests
+  #     EMAILER_OPTIONS_PORT: 1025
+  #     EMAILER_OPTIONS_IGNORE_TLS: "true"
+  #     EMAILER_OPTIONS_SECURE: "false"
+  #     RATE_LIMITING_GET_INTERVAL: -1
+  #     RATE_LIMITING_PUT_INTERVAL: -1
+  #     RATE_LIMITING_POST_INTERVAL: -1
+  #     RATE_LIMITING_DELETE_INTERVAL: -1
+  epoch:
+    image: quay.io/epochtalk/epoch:docker
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    environment:
+      MIX_ENV: prod
+      DATABASE_USER: docker
+      DATABASE_PASSWORD: docker
+      DATABASE_NAME: epochtalk
+      DATABASE_HOST: postgres
+  redis:
+    image: redis:4.0.1
+    user: redis
+  postgres:
+    image: postgres:9.6.2
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
