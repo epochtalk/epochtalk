@@ -66,6 +66,7 @@ services:
       RATE_LIMITING_PUT_INTERVAL: -1
       RATE_LIMITING_POST_INTERVAL: -1
       RATE_LIMITING_DELETE_INTERVAL: -1
+    command: sh -c "until node cli create-user admin admin@epochtalk.com --password password --admin; do sleep 5; done"
   epoch:
     image: quay.io/epochtalk/epoch:docker
     depends_on:
