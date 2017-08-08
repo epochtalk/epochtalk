@@ -10,6 +10,7 @@ module.exports = {
         // this basically prevents html tags
         // convert all (<, &lt;) and (>, &gt;) to decimal to escape the regex
         // in the bbcode dumbBBcodeParser that'll unescape those chars
+        input = input.replace(/(?:<br \/>)/g, '\n');
         input = input.replace(/(?:<|&lt;)/g, '&#60;');
         input = input.replace(/(?:>|&gt;)/g, '&#62;');
 
