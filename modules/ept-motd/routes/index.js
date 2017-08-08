@@ -10,21 +10,15 @@ var get = {
   path: '/api/motd',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { track_ip: true },
+    plugins: { track_ip: true }
   },
   handler: function(request, reply) {
-    var getFile = function(dir) {
-      return new Promise(function(resolve) {
-        fse.stat(dir, function() {
-          return resolve(fse.readFileSync(dir, 'utf8'));
-        });
-      });
-    };
-    var promise = getFile(motdPath)
-    .then(function(motd) {
+    var promise = request.db.motd.get()
+    .then(function(data) {
       return {
-        motd: motd,
-        motd_html: request.parser.parse(motd)
+        motd: data.motd || "",
+        motd_html: request.parser.parse(data.motd),
+        main_view_only: data.main_view_only || false
       };
     })
     .error(request.errorMap.toHttpError);
@@ -38,23 +32,21 @@ var save = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
-    validate: { payload: { motd: Joi.string().allow('') } }
+    validate: {
+      payload: {
+        motd: Joi.string().allow(''),
+        main_view_only: Joi.boolean().default(false)
+      }
+    }
   },
   handler: function(request, reply) {
-    var writeFile = function(path, text) {
-      return new Promise(function(resolve, reject) {
-        fse.outputFile(path, text, function(err) {
-          if (err) { return reject(err); }
-          else { return resolve(); }
-        });
-      });
-    };
-    var motd = request.payload.motd;
-    var promise =  writeFile(motdPath, motd)
+    var data = request.payload;
+    var promise = request.db.motd.save(data)
     .then(function() {
       return {
-        motd: motd,
-        motd_html: request.parser.parse(motd)
+        motd: data.motd || "",
+        motd_html: request.parser.parse(data.motd),
+        main_view_only: data.main_view_only || false
       };
     });
     return reply(promise);
