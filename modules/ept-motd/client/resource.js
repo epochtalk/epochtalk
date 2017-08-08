@@ -5,10 +5,7 @@ var resource = ['$resource',
         method: 'GET',
       },
       save: {
-        method: 'PUT',
-        params: {
-          motd: '@motd',
-        }
+        method: 'PUT'
       }
     });
   }

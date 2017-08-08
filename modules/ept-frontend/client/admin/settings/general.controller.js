@@ -39,6 +39,7 @@ var ctrl = ['$scope', '$filter', 'settings', 'AdminSettings', 'AdminBoards', 'Al
     .then(function() {
       Alert.success('Successfully saved settings');
       ctrl.originalSettings = angular.copy(ctrl.settings);
+      $scope.child.saveSettings();
     })
     .catch(function(err) {
       if (err.status === 422) { Alert.error(err.data.message); }
