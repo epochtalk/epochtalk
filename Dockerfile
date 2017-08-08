@@ -13,7 +13,7 @@ RUN npm --prefix ./modules install --log-level warn
 COPY bower.json /usr/src/app/
 RUN bower install --allow-root
 
-RUN npm install epochtalk-core-pg
+RUN npm install epochtalk-core-pg --log-level warn
 
 COPY . /usr/src/app
 
