@@ -46,7 +46,7 @@ jobs:
             docker-compose -f circleci-docker-compose.yml up -d redis
             docker-compose -f circleci-docker-compose.yml up -d postgres
             docker-compose -f circleci-docker-compose.yml up -d epochtalk
-            docker-compose -f circleci-docker-compose.yml run epochtalk "until node cli create-user admin admin@epochtalk.com --password password --admin; do sleep 5; done"
+            docker-compose -f circleci-docker-compose.yml run epochtalk /bin/bash "until node cli create-user admin admin@epochtalk.com --password password --admin; do sleep 5; done"
             docker-compose -f circleci-docker-compose.yml up -d epoch
 
       - run:
