@@ -41,31 +41,31 @@ services:
       RATE_LIMITING_PUT_INTERVAL: -1
       RATE_LIMITING_POST_INTERVAL: -1
       RATE_LIMITING_DELETE_INTERVAL: -1
-  # epochtalk-seed:
-  #   image: quay.io/epochtalk/epochtalk:dockerfile-elixir
-  #   depends_on:
-  #     - postgres
-  #   links:
-  #     - postgres
-  #   environment:
-  #     PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
-  #     DATABASE_URL: postgres://docker:docker@postgres:5432/epochtalk
-  #     REDIS_HOST: redis
-  #     REDIS_PORT: 6379
-  #     RECAPTCHA_SITE_KEY: ""
-  #     RECAPTCHA_SECRET_KEY: ""
-  #     HOST: 0.0.0.0
-  #     PORT: 8080
-  #     PUBLIC_URL: http://localhost:8080
-  #     EMAILER_SENDER: e@ma.il
-  #     EMAILER_OPTIONS_HOST: epochtalk-api-tests
-  #     EMAILER_OPTIONS_PORT: 1025
-  #     EMAILER_OPTIONS_IGNORE_TLS: "true"
-  #     EMAILER_OPTIONS_SECURE: "false"
-  #     RATE_LIMITING_GET_INTERVAL: -1
-  #     RATE_LIMITING_PUT_INTERVAL: -1
-  #     RATE_LIMITING_POST_INTERVAL: -1
-  #     RATE_LIMITING_DELETE_INTERVAL: -1
+  epochtalk-seed:
+    image: build .
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    environment:
+      PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
+      DATABASE_URL: postgres://docker:docker@postgres:5432/epochtalk
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RECAPTCHA_SITE_KEY: ""
+      RECAPTCHA_SECRET_KEY: ""
+      HOST: 0.0.0.0
+      PORT: 8080
+      PUBLIC_URL: http://localhost:8080
+      EMAILER_SENDER: e@ma.il
+      EMAILER_OPTIONS_HOST: epochtalk-api-tests
+      EMAILER_OPTIONS_PORT: 1025
+      EMAILER_OPTIONS_IGNORE_TLS: "true"
+      EMAILER_OPTIONS_SECURE: "false"
+      RATE_LIMITING_GET_INTERVAL: -1
+      RATE_LIMITING_PUT_INTERVAL: -1
+      RATE_LIMITING_POST_INTERVAL: -1
+      RATE_LIMITING_DELETE_INTERVAL: -1
   epoch:
     image: quay.io/epochtalk/epoch:docker
     depends_on:
