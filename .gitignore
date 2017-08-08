@@ -6,7 +6,8 @@ lib-cov
 *.out
 *.pid
 *.gz
-*.env
+.env
+docker.env
 .DS_Store
 .idea
 
