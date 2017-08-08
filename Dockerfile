@@ -7,9 +7,9 @@ WORKDIR /usr/src/app
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 COPY package.json /usr/src/app/
-RUN npm install && npm cache clean --force
+RUN npm install --log-level warn && npm cache clean --force
 COPY modules/package.json /usr/src/app/modules/
-RUN npm --prefix ./modules install
+RUN npm --prefix ./modules install --log-level warn
 COPY bower.json /usr/src/app/
 RUN bower install --allow-root
 
