@@ -42,7 +42,7 @@ services:
       RATE_LIMITING_POST_INTERVAL: -1
       RATE_LIMITING_DELETE_INTERVAL: -1
   epochtalk-seed:
-    build: .
+    image: epochtalk
     depends_on:
       - postgres
     links:
