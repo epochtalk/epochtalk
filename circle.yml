@@ -18,7 +18,7 @@ jobs:
       - run:
           name: Start docker resources
           command: |
-            set -e
+            set -x
             docker-compose -f circleci-docker-compose.yml up -d redis
             docker-compose -f circleci-docker-compose.yml up -d postgres
             docker-compose -f circleci-docker-compose.yml up -d epochtalk
