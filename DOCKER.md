@@ -1,45 +1,47 @@
 # Dockerized instance of EpochTalk
 
-## Quickstart example
+## Docker Compose
 
-1. Create the Docker EpockTalk instance:
+The `docker-compose` deployment contains resources for:  Postgres, Redis, and
+[Epoch](https://github.com/epochtalk/epoch).  The recipe for installation is
+contained in the [docker-compose.yml](./docker-compose.yml) file
 
-  `docker build -t epochtalk . && docker run -d -P --name epochtalk epochtalk`
+### Configuration
 
-2. Wait until the build is finished by checking:
+Create `docker.env` with whatever options you would like.
 
-  `docker logs epochtalk`
+By default, `docker-compose` will expose port `8080` on the docker network.
 
-3. Access the server by finding the right ip/port:
 
-  `echo $(docker-machine ip default):$(docker port epochtalk 8080 | cut -f 2 -d :)`
+### Bring up the EpochTalk service
 
-## Dockumentation
+`docker-compose up`
 
-* start up the thing
+On the first run, this command will download and install containers for
+dependencies, and build the EpochTalk image. Because of this, it will take a bit
+longer to start.  Subsequent startups should be quicker.
 
-    * `docker build -t [image] . && docker run -d -P --name [container] [image]`
+This command currently runs in the foreground.  To exit, use `Ctrl+C`.
 
-* stop the thing
+** If there are changes to the project, you should build the image again
+before running. (See `Building the EpochTalk Image`) **
 
-    * `docker stop [contianer]`
 
-    * `docker rm [container]`
+### Building the EpochTalk Image
 
-    * `docker rmi [image]`
+`docker-compose build`
 
-* full ip/port details
+Builds the `epochtalk` image.  This must be done in order to include any new
+changes to the project in the `epochtalk` image.
 
-    * `echo $(docker-machine ip [machine]):$(docker port [container] 8080 | cut -f 2 -d :)`
+** You must stop and remove the EpochTalk service before running `docker-compose
+up` again.  Otherwise, the old container (with the old image) will be used
+again. **
 
-* what ip is the server accessible from?
 
-    * `docker-machine ip default`
+### Stop and remove the EpochTalk service
 
-* is the container running / what port is the server on?
+`docker-compose down`
 
-    * `docker ps`
-
-* is the server done loading up?
-
-    * `docker logs [container]`
+Stops all services and removes the stopped containers.  This allows you to use a
+new image if you built one.
