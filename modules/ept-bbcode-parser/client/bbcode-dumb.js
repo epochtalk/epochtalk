@@ -169,6 +169,14 @@ var dumbParser = {};
     }
 
     var tags = {
+        "center": {
+            "bbcode": "[center]{TEXT}",
+            "html": "{TEXT}"
+        },
+        "left": {
+            "bbcode": "{TEXT}",
+            "html": "{TEXT}"
+        },
         "br": {
             "bbcode": "[br]{TEXT}",
             "html": "<br />{TEXT}"
