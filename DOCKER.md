@@ -23,8 +23,8 @@ longer to start.  Subsequent startups should be quicker.
 
 This command currently runs in the foreground.  To exit, use `Ctrl+C`.
 
-** If there are changes to the project, you should build the image again
-before running. (See `Building the EpochTalk Image`) **
+**If there are changes to the project, you should build the image again
+before running. (See `Building the EpochTalk Image`)**
 
 
 ### Building the EpochTalk Image
@@ -34,9 +34,9 @@ before running. (See `Building the EpochTalk Image`) **
 Builds the `epochtalk` image.  This must be done in order to include any new
 changes to the project in the `epochtalk` image.
 
-** You must stop and remove the EpochTalk service before running `docker-compose
+**You must stop and remove the EpochTalk service before running `docker-compose
 up` again.  Otherwise, the old container (with the old image) will be used
-again. **
+again.**
 
 
 ### Stop and remove the EpochTalk service
