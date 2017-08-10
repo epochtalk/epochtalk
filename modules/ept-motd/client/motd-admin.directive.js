@@ -39,7 +39,7 @@ var directive = ['Motd', function(Motd) {
         .catch(console.log);
       };
 
-      $scope.$watch(function() { return ctrl.data.motd }, function() {  parseInput(); });
+      $scope.$watch(function() { return ctrl.data.motd; }, function() {  parseInput(); });
 
       function parseInput() {
         var processed = ctrl.data.motd;
