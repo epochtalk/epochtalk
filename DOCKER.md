@@ -18,8 +18,8 @@ By default, `docker-compose` will expose port `8080` on the docker network.
 `docker-compose up`
 
 On the first run, this command will download and install containers for
-dependencies, and build the EpochTalk image. Because of this, it will take a bit
-longer to start.  Subsequent startups should be quicker.
+dependencies, and build the EpochTalk image.  Because of this, it will take a
+bit longer to start.  Subsequent startups should be quicker.
 
 This command currently runs in the foreground.  To exit, use `Ctrl+C`.
 
