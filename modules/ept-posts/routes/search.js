@@ -64,6 +64,10 @@ module.exports = {
   }
 };
 
+function insert(str, index, value) {
+  return str.substr(0, index) + value + str.substr(index);
+}
+
 function processing(request, reply) {
   var opts = {
     limit: request.query.limit,
@@ -73,6 +77,32 @@ function processing(request, reply) {
   };
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
   var promise = request.db.posts.search(opts, userPriority)
+  .then(function(data) {
+    // Loop through all posts
+    data.posts.forEach(function(post) {
+      // Wrap matched text in body with start and end tag
+      var toMatch = post.body_match;
+      toMatch = toMatch.replace(/<mark>/g, '').replace(/<\/mark>/g, '');
+      var matchStart = post.body.indexOf(toMatch);
+      var startMark = '{START-' + post.id + '}';
+      post.body = insert(post.body, matchStart, startMark);
+
+      var matchEnd = matchStart + startMark.length + toMatch.length;
+      var endMark = '{END-' + post.id + '}';
+      post.body = insert(post.body, matchEnd, endMark);
+
+      // Parse the post
+      post.body = request.parser.parse(post.body)
+
+      // Replace start and end tags with html tags
+      // check for opening tag before match
+      post.body = post.body.replace(startMark, '<div class="search-relevant-text">');
+      post.body = post.body.replace(endMark, '</div>');
+      post.body_html = post.body;
+
+    });
+    return data
+  })
   .error(request.errorMap.toHttpError);
 
   return reply(promise);
