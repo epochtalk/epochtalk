@@ -42,7 +42,7 @@ services:
       RATE_LIMITING_POST_INTERVAL: -1
       RATE_LIMITING_DELETE_INTERVAL: -1
   epoch:
-    image: quay.io/epochtalk/epoch:docker
+    image: quay.io/epochtalk/epoch:latest
     depends_on:
       - postgres
     links:
