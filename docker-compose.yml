@@ -1,0 +1,35 @@
+version: '3'
+services:
+  epochtalk:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - postgres
+      - epoch
+    links:
+      - redis
+      - postgres
+    env_file:
+      - docker.env
+  epoch:
+    image: epoch:latest
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    environment:
+      MIX_ENV: prod
+      DATABASE_USER: docker
+      DATABASE_PASSWORD: docker
+      DATABASE_NAME: epochtalk
+      DATABASE_HOST: postgres
+  redis:
+    image: redis:4.0.1
+    user: redis
+  postgres:
+    image: postgres:9.6.2
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require('dotenv').load();
+require('dotenv').load({ silent: true });
 var path = require('path');
 var program = require('commander');
 var crypto = require('crypto');
@@ -11,8 +11,27 @@ var config = require(path.join(__dirname, '..', 'config'));
 var emailerOptions = config.emailer;
 var emailer = require(path.normalize(__dirname + '/../server/plugins/emailer')).expose(emailerOptions);
 
+var databaseUrl = process.env.DATABASE_URL;
+var testConnection = require('epochtalk-core-pg')({ conString: databaseUrl }).db.testConnection;
+
 program
   .version('0.0.1');
+
+// test connection command
+program
+  .command('connect')
+  .description('Check that database exists and connection is possible.')
+  .action(function() {
+    return testConnection()
+    .then(function() {
+      console.log(`Connection to ${databaseUrl} successful!`);
+      process.exit(0);
+    })
+    .catch(function() {
+      console.log(`Unable to connect to ${databaseUrl}.`);
+      process.exit(1);
+    });
+  });
 
 // the seed command
 program
