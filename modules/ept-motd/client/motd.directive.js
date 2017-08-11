@@ -6,25 +6,25 @@ var directive = ['Motd', function(Motd) {
     template: html,
     scope: true,
     controllerAs: 'vmMotd',
-    controller: ['$rootScope', '$state', function($rootScope, $state) {
+    controller: ['$rootScope', '$location', function($rootScope, $location) {
       var ctrl = this;
 
       this.data = '';
       this.hideAnnnouncement = false;
 
-      $rootScope.$on('$locationChangeSuccess', function() {
-        mainViewOnlyCheck();
-      });
-
       function mainViewOnlyCheck() {
         if (ctrl.data.main_view_only) {
-          var curState = $state.current.name;
+          var curPath = $location.path();
           // Only show on main views
-          if (curState !== 'boards' && curState !== 'home' && curState !== 'portal') {
+          if (curPath !== '/boards' && curPath !== '' && curPath !== '/') {
             ctrl.hideAnnnouncement = true;
           }
+          else { ctrl.hideAnnnouncement = false; }
         }
       }
+
+      // Enforces the main view only preference
+      $rootScope.$on('$locationChangeSuccess', function() {  mainViewOnlyCheck(); });
 
       Motd.get().$promise
       .then(function(data) {
