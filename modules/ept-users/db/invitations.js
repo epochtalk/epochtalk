@@ -16,5 +16,6 @@ module.exports = function(opts) {
     FROM invitations
     ORDER BY created_at DESC
     LIMIT $1 OFFSET $2`;
-  return db.sqlQuery(q, [opts.limit, opts.offset]);
+  // adjust limit to check if there's another page
+  return db.sqlQuery(q, [opts.limit + 1, opts.offset]);
 };
