@@ -15,5 +15,6 @@ module.exports = [
   'ept-portal',
   'ept-auto-moderation',
   'ept-ads',
+  'ept-motd',
   'ept-ignore-users'
 ];

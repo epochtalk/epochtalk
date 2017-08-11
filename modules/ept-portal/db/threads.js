@@ -24,7 +24,7 @@ module.exports = function(boardId, userId, opts) {
     t.updated_at,
     t.views as view_count,
     t.post_count,
-    p.content ->> 'title' as title,
+    p.title,
     p.user_id,
     p.username,
     p.user_deleted,
@@ -61,7 +61,7 @@ module.exports = function(boardId, userId, opts) {
       WHERE t1.id = tlist.id`;
   opts.q3 = `
     SELECT
-      p1.title,
+      p1.content->>\'title\' as title,
       p1.user_id,
       u.username,
       u.deleted as user_deleted
@@ -85,7 +85,7 @@ module.exports = function(boardId, userId, opts) {
       p.position,
       p.created_at,
       p.updated_at,
-      p.content ->>\'body\',
+      p.content ->>\'body\' as body,
       p.deleted,
       u.id,
       u.username,
