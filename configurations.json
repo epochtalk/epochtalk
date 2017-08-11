@@ -11,7 +11,8 @@
     "description": "Open source forum software",
     "keywords": "open source, free forum, forum software, forum",
     "logo": "",
-    "favicon": ""
+    "favicon": "",
+    "defaultAvatar": "/static/img/avatar.png"
   },
   "images": {
     "storage": "local",

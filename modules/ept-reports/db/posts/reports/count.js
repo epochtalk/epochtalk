@@ -9,15 +9,15 @@ module.exports = function(opts) {
   var params;
   if (opts && opts.modId) { opts.modId = helper.deslugify(opts.modId); } // deslugify modId
   if (opts && opts.filter && opts.searchStr && opts.modId) { // filter + search + moderated boards
-    q += ' JOIN administration.reports_statuses rs ON(rs.id = rp.status_id) JOIN posts p ON(rp.offender_post_id = p.id) JOIN users o ON(p.user_id = o.id) WHERE rs.status = $1 AND o.username LIKE $2 AND (SELECT board_id FROM threads t WHERE p.thread_id = t.id) IN (SELECT board_id FROM board_moderators WHERE user_id = $3)';
+    q += ' JOIN posts p ON(rp.offender_post_id = p.id) JOIN users o ON(p.user_id = o.id) WHERE rp.status = $1 AND o.username LIKE $2 AND (SELECT board_id FROM threads t WHERE p.thread_id = t.id) IN (SELECT board_id FROM board_moderators WHERE user_id = $3)';
     params = [opts.filter, opts.searchStr + '%', opts.modId];
   }
   else if (opts && opts.filter && opts.searchStr && !opts.modId) { // filter + search
-    q += ' JOIN administration.reports_statuses rs ON(rs.id = rp.status_id) JOIN posts p ON(rp.offender_post_id = p.id) JOIN users o ON(p.user_id = o.id) WHERE rs.status = $1 AND o.username LIKE $2';
+    q += ' JOIN posts p ON(rp.offender_post_id = p.id) JOIN users o ON(p.user_id = o.id) WHERE rp.status = $1 AND o.username LIKE $2';
     params = [opts.filter, opts.searchStr + '%'];
   }
   else if (opts && opts.filter && !opts.searchStr && opts.modId) { // filter + moderated boards
-    q += ' JOIN administration.reports_statuses rs ON(rs.id = rp.status_id) JOIN posts p ON(rp.offender_post_id = p.id) WHERE rs.status = $1 AND (SELECT board_id FROM threads t WHERE p.thread_id = t.id) IN (SELECT board_id FROM board_moderators WHERE user_id = $2)';
+    q += ' JOIN posts p ON(rp.offender_post_id = p.id) WHERE rp.status = $1 AND (SELECT board_id FROM threads t WHERE p.thread_id = t.id) IN (SELECT board_id FROM board_moderators WHERE user_id = $2)';
     params = [opts.filter, opts.modId];
   }
   else if (opts && !opts.filter && opts.searchStr && opts.modId) { // search + moderated boards
@@ -29,7 +29,7 @@ module.exports = function(opts) {
     params = [opts.modId];
   }
   else if (opts && opts.filter && !opts.searchStr && !opts.modId) { // filter only
-    q += ' JOIN administration.reports_statuses rs ON(rs.id = rp.status_id) WHERE rs.status = $1';
+    q += ' WHERE rp.status = $1';
     params = [opts.filter];
   }
   else if (opts && !opts.filter && opts.searchStr && !opts.modId) { // search only

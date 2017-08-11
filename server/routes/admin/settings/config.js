@@ -210,7 +210,8 @@ exports.update = {
         description: Joi.string(),
         keywords: Joi.string(),
         logo: Joi.string().allow(''),
-        favicon: Joi.string().allow('')
+        favicon: Joi.string().allow(''),
+        default_avatar: Joi.string().allow(''),
       }),
       emailer: Joi.object().keys({
         sender: Joi.string().allow(null),

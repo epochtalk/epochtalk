@@ -40,7 +40,7 @@
         <div class="post-user">
           <a ui-sref="profile.posts({ username: thread.last_post_username})">
             <div class="user-avatar">
-              <img ng-style="PortalCtrl.avatarHighlight(thread.post_highlight_color)" ng-src="{{::thread.post_avatar}}">
+              <img ng-style="PortalCtrl.avatarHighlight(thread.post_highlight_color)" ng-src="{{::thread.post_avatar || $webConfigs.default_avatar}}">
             </div>
             <div title="{{thread.post_role_name || 'user'}}" class="user-role" ng-bind="thread.post_role_name || 'user'"></div>
           </a>

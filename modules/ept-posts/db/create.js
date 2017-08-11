@@ -16,7 +16,12 @@ module.exports = function(post) {
 
   var q, params;
   q = 'INSERT INTO posts(thread_id, user_id, content, deleted, locked, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, now(), now()) RETURNING id, created_at';
-  // q = 'INSERT INTO posts(thread_id, user_id, title, body_html, body, deleted, locked, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, now(), now()) RETURNING id, created_at';
+  queryIncUserPostCount = 'UPDATE users.profiles SET post_count = post_count + 1 WHERE user_id = $1';
+  queryUpdateThreadCreatedAt = 'UPDATE threads SET created_at = (SELECT created_at FROM posts WHERE thread_id = $1 ORDER BY created_at limit 1) WHERE id = $1'
+  queryUpdateThreadUpdatedAt = 'UPDATE threads SET updated_at = (SELECT created_at FROM posts WHERE thread_id = $1 ORDER BY created_at DESC limit 1) WHERE id = $1'
+  queryUpdatePostPosition = 'UPDATE posts SET position = (SELECT post_count + 1 + (SELECT COUNT(id) FROM posts WHERE thread_id = $1 AND deleted = true) FROM threads WHERE id = $1) WHERE id = $2';
+  queryIncThreadPostCount = 'UPDATE threads SET post_count = post_count + 1 WHERE id = $1';
+
   params = [post.thread_id, post.user_id, post_json, post.deleted, post.locked];
 
   return using(db.createTransaction(), function(client) {
@@ -29,6 +34,21 @@ module.exports = function(post) {
       else {
         throw new CreationError('Post Could Not Be Saved');
       }
+    })
+    .then(function() {
+      return client.queryAsync(queryIncUserPostCount, [post.user_id]);
+    })
+    .then(function() {
+      return client.queryAsync(queryUpdateThreadCreatedAt, [post.thread_id]);
+    })
+    .then(function() {
+      return client.queryAsync(queryUpdateThreadUpdatedAt, [post.thread_id]);
+    })
+    .then(function() {
+      return client.queryAsync(queryUpdatePostPosition, [post.thread_id, post.id]);
+    })
+    .then(function() {
+      return client.queryAsync(queryIncThreadPostCount, [post.thread_id]);
     });
   })
   .then(function() { return helper.slugify(post); });

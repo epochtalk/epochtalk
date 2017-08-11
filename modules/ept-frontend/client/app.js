@@ -110,7 +110,7 @@ app
         $state.nextParams = nextParams;
       }
       // Forbidden
-      else if (error.status === 403 && error.statusText === 'Forbidden') {
+      else if (error.status === 403 && (error.statusText === 'Forbidden' || error.data.error === 'Forbidden')) {
         $state.go('403');
         $state.next = next;
         $state.nextParams = nextParams;

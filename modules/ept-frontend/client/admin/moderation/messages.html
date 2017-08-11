@@ -152,7 +152,7 @@
     </table>
     <div ng-repeat="note in ModerationCtrl.reportNotes track by note.id">
       <div class="note-avatar-container" ng-if="!note.edit">
-        <img class="note-avatar" ng-src="{{ note.avatar }}" />
+        <img class="note-avatar" ng-src="{{ note.avatar || $webConfigs.default_avatar }}" />
       </div>
       <div class="note-details" ng-if="!note.edit">
         <span class="note-author"><a ui-sref="profile.posts({ username: note.username })" ng-bind="note.username"></a>&nbsp;</span>

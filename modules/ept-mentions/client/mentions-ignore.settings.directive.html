@@ -17,7 +17,7 @@
       <td>
         <div class="user-avatar">
           <a ui-sref="profile.posts({ username: user.username })">
-            <img ng-src="{{::user.avatar}}">
+            <img ng-src="{{::user.avatar || $webConfigs.default_avatar}}">
           </a>
         </div>
       </td>

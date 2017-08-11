@@ -528,7 +528,6 @@ header {
     border-bottom: 1px solid $breadcrumbs-border-color;
     text-align: center;
     height: $breadcrumbs-height;
-    margin-bottom: $breadcrumbs-bottom-margin;
     #breadcrumbs {
       @include outer-container;
       min-width: 0;
@@ -556,6 +555,20 @@ header {
     @include media($mobile) {
       #breadcrumbs::-webkit-scrollbar { height: 0; width: 0; }
       #breadcrumbs { overflow: hidden; overflow-x: scroll; }
+    }
+  }
+
+  #motd-wrap {
+    @include clearfix();
+    @include pad(0 $base-grid-padding);
+    background-color: $breadcrumbs-bg-color;
+    border-bottom: 1px solid $breadcrumbs-border-color;
+    margin-bottom: $breadcrumbs-bottom-margin;
+    #motd {
+      @include outer-container;
+      clear: both;
+      padding: 0.5rem 0;
+      color: #666;
     }
   }
 }

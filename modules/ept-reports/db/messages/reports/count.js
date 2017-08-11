@@ -7,11 +7,11 @@ module.exports = function(opts) {
   var q = 'SELECT count(rm.id) FROM administration.reports_messages rm';
   var params;
   if (opts && opts.filter && opts.searchStr) { // filter + search
-    q += ' JOIN administration.reports_statuses rs ON(rs.id = rm.status_id) JOIN private_messages pm ON(rm.offender_message_id = pm.id) JOIN users o ON(pm.sender_id = o.id) WHERE rs.status = $1 AND o.username LIKE $2';
+    q += ' JOIN private_messages pm ON(rm.offender_message_id = pm.id) JOIN users o ON(pm.sender_id = o.id) WHERE rm.status = $1 AND o.username LIKE $2';
     params = [opts.filter, opts.searchStr + '%'];
   }
   else if (opts && opts.filter && !opts.searchStr) { // filter only
-    q += ' JOIN administration.reports_statuses rs ON(rs.id = rm.status_id) WHERE rs.status = $1';
+    q += ' WHERE rm.status = $1';
     params = [opts.filter];
   }
   else if (opts && !opts.filter && opts.searchStr) { // search only
