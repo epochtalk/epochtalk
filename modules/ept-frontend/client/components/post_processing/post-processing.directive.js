@@ -41,7 +41,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       };
 
       // Auto video embed Regex
-      var autoVideoRegex = /((http(s)?:\/\/)?)(www\.)?((youtube\.com\/)|(youtu.be\/))([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi;
+      var autoVideoRegex = /((http(s)?:\/\/)?)(www\.)?((youtube\.com\/)|(youtu.be\/))([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?(?![^<]*?(?:<\/a>|\/?>))/gi;
       var autoVideo = function(url) {
         var temp = new URL(url);
 
