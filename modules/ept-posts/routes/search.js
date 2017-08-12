@@ -82,6 +82,14 @@ function processing(request, reply) {
     data.posts.forEach(function(post) {
       // Wrap matched text in body with start and end tag
       var toMatch = post.body_match;
+
+      var highlightedWords = toMatch
+      .match(/<mark>(.*?)<\/mark>/g) || [];
+
+      highlightedWords = highlightedWords.map(function(val){
+        return val.replace(/<\/?mark>/g,'');
+      });
+
       toMatch = toMatch.replace(/<mark>/g, '').replace(/<\/mark>/g, '');
       var matchStart = post.body.indexOf(toMatch);
       var startMark = '{START-' + post.id + '}';
@@ -92,13 +100,34 @@ function processing(request, reply) {
       post.body = insert(post.body, matchEnd, endMark);
 
       // Parse the post
-      post.body = request.parser.parse(post.body)
+      post.body_html = request.parser.parse(post.body)
 
-      // Replace start and end tags with html tags
-      // check for opening tag before match
-      post.body = post.body.replace(startMark, '<div class="search-relevant-text">');
-      post.body = post.body.replace(endMark, '</div>');
-      post.body_html = post.body;
+      // extract matched text
+      var start = post.body_html.indexOf(startMark) + startMark.length;
+      var end = post.body_html.indexOf(endMark) - start;
+      var matchedText = post.body_html.substr(start, end);
+
+      // Grab and empty the tags before the match
+      matchStart = post.body_html.indexOf(startMark);
+      var beforeTags = post.body_html.substr(0, matchStart).replace(/>([^<]*)</g, '><');
+      beforeTags = beforeTags.substr(0, beforeTags.lastIndexOf('>') + 1);
+      beforeTags = beforeTags.substr(beforeTags.indexOf('<'), beforeTags.length);
+
+      // Grab and empty the tags after the match
+      matchEnd = post.body_html.indexOf(endMark) + endMark.length;
+      var afterTags = post.body_html.substr(matchEnd, post.body_html.length).replace(/>([^<]*)</g, '><');
+      afterTags = afterTags.substr(0, afterTags.lastIndexOf('>') + 1);
+      afterTags = afterTags.substr(afterTags.indexOf('<'), afterTags.length);
+
+      highlightedWords.forEach(function(word) {
+        matchedText = matchedText.replace(new RegExp('\\b' + word + '\\b', 'g'), '<mark>' + word + '</mark>');
+      });
+
+      // combine matched
+      post.body_html = beforeTags + matchedText + afterTags;
+      post.body = post.body.replace(startMark, '').replace(endMark, '');
+      delete post.body_match;
+
 
     });
     return data
