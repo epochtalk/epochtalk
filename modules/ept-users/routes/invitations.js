@@ -34,10 +34,9 @@ module.exports = {
     pre: [ { method: 'auth.users.invitations(server, auth)' } ]
   },
   handler: function(request, reply) {
-    // adjust limit to check if there's another page
     var opts = {
       page: request.query.page,
-      limit: request.query.limit + 1
+      limit: request.query.limit
     };
 
     // query invitations
