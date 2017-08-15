@@ -21,11 +21,14 @@ function auth(request, reply) {
   * @api {POST} /ads/rounds/rotate Rotate Ad Round
   * @apiName RotateRoundAds
   * @apiPermission Super Administrator, Administrator
-  * @apiDescription Used to duplicate an ad within a round
+  * @apiDescription Used to put a round of ads into rotation
   *
   * @apiParam (Payload) {number} round The round of ads to rotate to
   *
-  * @apiSuccess {object} Sucess 200 OK
+  * @apiSuccess {number} round The integer value of the round
+  * @apiSuccess {boolean} current Boolean indicating if this is the current round
+  * @apiSuccess {timestamp} start_time Start of the round timestamp
+  * @apiSuccess {timestamp} end_time End of the round timestamp
   *
   * @apiError (Error 500) InternalServerError There was an error rotating the ad round
   */

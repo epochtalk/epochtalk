@@ -32,8 +32,8 @@ module.exports = function(round) {
     })
     // update start time for new round
     .then(function() {
-      var q = `UPDATE ads.rounds SET (current, start_time) = (true, now()) WHERE round = $1`;
+      var q = `UPDATE ads.rounds SET (current, start_time) = (true, now()) WHERE round = $1 RETURNING round, current, start_time, end_time`;
       return client.queryAsync(q, [round]);
-    });
+    }).then(data => data.rows[0]);
   });
 };
