@@ -130,16 +130,18 @@ function(Conversations, User, Session, Alert, PreferencesSvc, $filter, $state, $
       this.editAvatarUser = {};
       this.openEditAvatar = function() {
         this.editAvatarUser = {
-          username: this.user.username,
-          avatar: this.user.avatar
+          username: ctrl.user.username,
+          avatar: ctrl.user.avatar
         };
-        this.editAvatar = true;
+        ctrl.editAvatar = true;
       };
+
       this.saveAvatar = function() {
-        User.update({ id: this.user.id }, this.editAvatarUser).$promise
+        User.update({ id: this.user.id }, ctrl.editAvatarUser).$promise
         .then(function(data) {
+          ctrl.user.avatar = ctrl.editAvatarUser.avatar;
           angular.extend(ctrl.user, data);
-          if(ctrl.pageOwner()) { Session.setAvatar(ctrl.user.avatar); }
+          if(ctrl.pageOwner()) { Session.setAvatar(ctrl.editAvatarUser.avatar); }
         })
         .then(function() { Alert.success('Successfully updated avatar'); })
         .catch(function() { Alert.error('Avatar could not be updated'); })
