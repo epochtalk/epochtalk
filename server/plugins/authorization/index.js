@@ -478,6 +478,7 @@ function adminRolesValidate(validations, payload) {
     reports: validations.reports,
     watchlist: validations.watchlist,
     mentions: validations.mentions,
+    motd: validations.motd,
     autoModeration: validations.autoModeration,
     ads: validations.ads,
     userTrust: validations.userTrust,

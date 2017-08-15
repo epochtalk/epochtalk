@@ -10,7 +10,8 @@ var get = {
   path: '/api/motd',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { track_ip: true }
+    plugins: { track_ip: true },
+    pre: [ { method: 'auth.motd.get(server, auth)' } ]
   },
   handler: function(request, reply) {
     var promise = request.db.motd.get()
@@ -37,7 +38,8 @@ var save = {
         motd: Joi.string().allow(''),
         main_view_only: Joi.boolean().default(false)
       }
-    }
+    },
+    pre: [ { method: 'auth.motd.save(server, auth)' } ]
   },
   handler: function(request, reply) {
     var data = request.payload;

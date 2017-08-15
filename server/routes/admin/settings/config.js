@@ -267,7 +267,7 @@ exports.update = {
       }),
       portal: Joi.object().keys({
         enabled: Joi.boolean().default(false),
-        board_id: Joi.string().allow('').default(null)
+        board_id: Joi.string().allow('').allow(null)
       })
     }).options({ stripUnknown: true, abortEarly: true })
   },

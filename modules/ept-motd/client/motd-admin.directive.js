@@ -11,8 +11,15 @@ var html = `
     </div>
   </div>
   <label for="motd">Announcement Text</label>
-  <textarea ng-model="vmMotdAdmin.data.motd"></textarea>
-
+  <label class="desc-label">
+    This is an announcement message that will be shown at the
+    top of the page to all users.
+  </label>
+  <textarea id="motd" ng-model="vmMotdAdmin.data.motd"></textarea>
+  <label ng-if="vmMotdAdmin.preview.length">Announcement Preview</label>
+  <div ng-if="vmMotdAdmin.preview.length" class="boxed-section">
+    <div class="content" post-processing="vmMotdAdmin.preview" style-fix="false"></div>
+  </div>
 `;
 
 var directive = ['Motd', function(Motd) {
@@ -21,19 +28,31 @@ var directive = ['Motd', function(Motd) {
     template: html,
     scope: true,
     controllerAs: 'vmMotdAdmin',
-    controller: ['$scope', function($scope) {
+    controller: ['$window', '$scope', function($window, $scope) {
       var ctrl = this;
 
       this.data = '';
+      this.preview = '';
 
       $scope.child.saveSettings = function() {
         Motd.save(ctrl.data).$promise
         .catch(console.log);
       };
 
+      $scope.$watch(function() { return ctrl.data.motd; }, function() {  parseInput(); });
+
+      function parseInput() {
+        var processed = ctrl.data.motd;
+        $window.parsers.forEach(function(parser) {
+          processed = parser.parse(processed);
+        });
+        ctrl.preview = processed;
+      }
+
       Motd.get().$promise
       .then(function(data) {
         ctrl.data = data;
+        parseInput();
       })
       .catch(console.log);
 
