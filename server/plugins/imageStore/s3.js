@@ -126,6 +126,9 @@ var uploadImage = function(url, filename) {
       });
       sc.on('error', function(err) { return console.log(err); });
 
+      // Handle relative paths
+      if (url[0] === '/') { url = config.publicUrl + url; }
+
       // get image from url and pipe to cdn
       var stream = request(url)
       .on('error', function(err) { console.log(err); })
