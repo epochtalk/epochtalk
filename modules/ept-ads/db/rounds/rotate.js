@@ -34,6 +34,8 @@ module.exports = function(round) {
     .then(function() {
       var q = `UPDATE ads.rounds SET (current, start_time) = (true, now()) WHERE round = $1 RETURNING round, current, start_time, end_time`;
       return client.queryAsync(q, [round]);
-    }).then(data => data.rows[0]);
+    }).then(function(data) {
+      return data.rows[0];
+    });
   });
 };
