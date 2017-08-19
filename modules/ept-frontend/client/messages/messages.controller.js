@@ -105,6 +105,11 @@ var ctrl = [
       .then(function() { $anchorScroll(); });
     };
 
+    if (this.recentMessages.length) {
+      this.loadConversation(this.recentMessages[0].conversation_id);
+    }
+
+
     this.loadMoreMessages = function() {
       var query = {
         id: ctrl.currentConversation.id,

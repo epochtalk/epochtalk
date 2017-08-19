@@ -1,4 +1,4 @@
-<div ng-if="MessagesCtrl.currentConversation.messages.length < 1">
+<div ng-if="MessagesCtrl.recentMessages.length < 1">
   <h4 class="centered-text">You're message inbox is currently empty, message someone to get started!</h4>
 
   <br /><br />
@@ -25,7 +25,7 @@
 
 
 <!-- Recent Conversations -->
-<div class="conversations" ng-if="MessagesCtrl.currentConversation.messages.length > 0">
+<div class="conversations" ng-if="MessagesCtrl.recentMessages.length > 0">
   <div id="recentMessagesHeader">
     <div class="inbox" ng-click="MessagesCtrl.loadRecentMessages();">
       <i class="fa fa-envelope"></i> Inbox
@@ -78,6 +78,9 @@
       <button class="fill-row" ng-click="MessagesCtrl.saveMessage(); MessagesCtrl.showReply = false; MessagesCtrl.newMessage.preview = false;" ng-disabled="!MessagesCtrl.newMessage.body || !MessagesCtrl.newMessage.receiver_id">Send</button>
     </div>
   </div>
+  <h4 ng-if="MessagesCtrl.currentConversation.messages.length < 1" class="centered-text">
+    No Conversation selected<br />
+  </h4>
 
   <!-- Conversation Messages -->
   <div class="msg-container">
