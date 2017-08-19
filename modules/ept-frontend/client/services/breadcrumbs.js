@@ -5,8 +5,8 @@ var without = require('lodash/without');
 var intersection = require('lodash/intersection');
 var isEmpty = require('lodash/isEmpty');
 
-module.exports = ['$stateParams', '$location', 'Breadcrumbs',
-function ($stateParams, $location, Breadcrumbs) {
+module.exports = ['$state', '$stateParams', '$location', 'Breadcrumbs',
+function ($state, $stateParams, $location, Breadcrumbs) {
   var breadcrumbsStore; // stores array of breadcrumb objects
 
   var pathLookup = {
@@ -35,6 +35,12 @@ function ($stateParams, $location, Breadcrumbs) {
       var breadcrumbs = [ pathLookup.home ];
       var path = $location.path();
       var routeParams = $stateParams;
+
+      // Handle 403 breadcrumb
+      if ($state.current.name === '403' || $state.current.name ===  '503') {
+        breadcrumbsStore = breadcrumbs;
+        return;
+      }
 
       // Strip query str params since stateParams includes query and route params together
       delete routeParams.limit;
@@ -80,6 +86,7 @@ function ($stateParams, $location, Breadcrumbs) {
         }
         breadcrumbsStore = breadcrumbs;
       }
+
     },
     crumbs: function() {
       if (breadcrumbsStore) {
