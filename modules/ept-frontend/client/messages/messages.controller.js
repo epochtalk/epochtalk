@@ -179,7 +179,10 @@ var ctrl = [
         if (err && err.status === 403) { msg = err.data.message; }
         Alert.error(msg);
       })
-      .finally(function() { ctrl.showConvoModal = false; });
+      .finally(function() {
+        ctrl.newConversation = {body: '', receiver_id: ''};
+        ctrl.showConvoModal = false;
+      });
     };
 
     // Websocket Handling
