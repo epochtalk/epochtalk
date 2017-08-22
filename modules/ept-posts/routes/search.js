@@ -92,20 +92,33 @@ function processing(request, reply) {
 
       toMatch = toMatch.replace(/<mark>/g, '').replace(/<\/mark>/g, '');
       var matchStart = post.body.indexOf(toMatch);
+
+      // Check that were not inside a bbcode tag when marking the start
+      if (toMatch.indexOf(']') < toMatch.indexOf('[')) {
+        matchStart = post.body.substr(0, matchStart).lastIndexOf('[');
+      }
+
       var startMark = '{START-' + post.id + '}';
       post.body = insert(post.body, matchStart, startMark);
 
-      var matchEnd = matchStart + startMark.length + toMatch.length;
+      var matchEnd = matchStart + startMark.length + toMatch.length + 1;
+
+      // Check that were not inside a bbcode tag when marking the end
+      if (toMatch.lastIndexOf(']') < toMatch.lastIndexOf('[')) {
+        matchEnd = matchEnd + post.body.substr(matchEnd, post.body.length).indexOf(']') + 1;
+      }
+
       var endMark = '{END-' + post.id + '}';
       post.body = insert(post.body, matchEnd, endMark);
 
       // Parse the post
-      post.body_html = request.parser.parse(post.body)
+      post.body_html = request.parser.parse(post.body);
 
       // extract matched text
       var start = post.body_html.indexOf(startMark) + startMark.length;
       var end = post.body_html.indexOf(endMark) - start;
       var matchedText = post.body_html.substr(start, end);
+
 
       // Grab and empty the tags before the match
       matchStart = post.body_html.indexOf(startMark);
@@ -120,17 +133,21 @@ function processing(request, reply) {
       afterTags = afterTags.substr(afterTags.indexOf('<'), afterTags.length);
 
       highlightedWords.forEach(function(word) {
-        matchedText = matchedText.replace(new RegExp('\\b' + word + '\\b', 'g'), '<mark>' + word + '</mark>');
+        // mark highlighted words that arent between quotes
+        matchedText = matchedText.replace(new RegExp('\\b' + word + '\\b(?!;|<|>|")', 'g'), '<mark>' + word + '</mark>');
       });
 
       // combine matched
+      var emptyTags = /<[^\/>][^>]*><\/[^>]+>/g;
       post.body_html = beforeTags + matchedText + afterTags;
+      post.body_html = post.body_html.replace(emptyTags, '');
+
       post.body = post.body.replace(startMark, '').replace(endMark, '');
       delete post.body_match;
 
 
     });
-    return data
+    return data;
   })
   .error(request.errorMap.toHttpError);
 
