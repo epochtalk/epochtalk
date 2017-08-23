@@ -80,72 +80,87 @@ function processing(request, reply) {
   .then(function(data) {
     // Loop through all posts
     data.posts.forEach(function(post) {
-      // Wrap matched text in body with start and end tag
+      // The search text were trying to match
       var toMatch = post.body_match;
 
+      // Remember which words were being highlighted
       var highlightedWords = toMatch
       .match(/<mark>(.*?)<\/mark>/g) || [];
-
       highlightedWords = highlightedWords.map(function(val){
         return val.replace(/<\/?mark>/g,'');
       });
 
+      // Remove all mark tags from the search results so it matches post body
       toMatch = toMatch.replace(/<mark>/g, '').replace(/<\/mark>/g, '');
+
+      // Index of the start of the match within post body
       var matchStart = post.body.indexOf(toMatch);
 
       // Check that were not inside a bbcode tag when marking the start
+      // if we are find the index of the opening bracket and update matchStart
       if (toMatch.indexOf(']') < toMatch.indexOf('[')) {
         matchStart = post.body.substr(0, matchStart).lastIndexOf('[');
       }
 
+      // Insert a unique marker for the start of the search results, so after it's
+      // run the the bbcode/markdown parser we know what section of text to grab
       var startMark = '{START-' + post.id + '}';
       post.body = insert(post.body, matchStart, startMark);
 
+      // Index of the end of the match within the post body
       var matchEnd = matchStart + startMark.length + toMatch.length + 1;
 
       // Check that were not inside a bbcode tag when marking the end
+      // if we are find the index of the closing bracket and update matchEnd
       if (toMatch.lastIndexOf(']') < toMatch.lastIndexOf('[')) {
         matchEnd = matchEnd + post.body.substr(matchEnd, post.body.length).indexOf(']') + 1;
       }
 
+      // Insert a unique marker for the end of the search results, so after it's
+      // run the the bbcode/markdown parser we know what section of text to grab
       var endMark = '{END-' + post.id + '}';
       post.body = insert(post.body, matchEnd, endMark);
 
-      // Parse the post
+      // Parse the post with our unique start and end markers
       post.body_html = request.parser.parse(post.body);
 
-      // extract matched text
+      // extract matched text using the start and end markers
       var start = post.body_html.indexOf(startMark) + startMark.length;
       var end = post.body_html.indexOf(endMark) - start;
       var matchedText = post.body_html.substr(start, end);
 
-
-      // Grab and empty the tags before the match
+      // Grab and empty the html tags before the matched text
       matchStart = post.body_html.indexOf(startMark);
       var beforeTags = post.body_html.substr(0, matchStart).replace(/>([^<]*)</g, '><');
       beforeTags = beforeTags.substr(0, beforeTags.lastIndexOf('>') + 1);
       beforeTags = beforeTags.substr(beforeTags.indexOf('<'), beforeTags.length);
 
-      // Grab and empty the tags after the match
+      // Grab and empty the html tags after the match text
       matchEnd = post.body_html.indexOf(endMark) + endMark.length;
       var afterTags = post.body_html.substr(matchEnd, post.body_html.length).replace(/>([^<]*)</g, '><');
       afterTags = afterTags.substr(0, afterTags.lastIndexOf('>') + 1);
       afterTags = afterTags.substr(afterTags.indexOf('<'), afterTags.length);
 
+      // Reapply the <mark> tag around words that should be highlighted
       highlightedWords.forEach(function(word) {
-        // mark highlighted words that arent between quotes
-        matchedText = matchedText.replace(new RegExp('\\b' + word + '\\b(?!;|<|>|")', 'g'), '<mark>' + word + '</mark>');
+        // ignore words between quotes and next to semicolons as they're probably an html attribute
+        matchedText = matchedText.replace(new RegExp('\\b' + word + '\\b(?!;|")', 'g'), '<mark>' + word + '</mark>');
       });
 
-      // combine matched
-      var emptyTags = /<[^\/>][^>]*><\/[^>]+>/g;
+      // Prepend/appened empty before and after tags to our matched text
+      // this is necessary incase our matched text was wrapped in an outer
+      // html tag which was not included in the returned search results
       post.body_html = beforeTags + matchedText + afterTags;
+
+      // Remove and empty tags as they're not necessary for rendering
+      var emptyTags = /<[^\/>][^>]*><\/[^>]+>/g;
       post.body_html = post.body_html.replace(emptyTags, '');
 
+      // Remove the start and end marks from post body
       post.body = post.body.replace(startMark, '').replace(endMark, '');
+
+      // Delete body_match which is the search match returned by ts_headline
       delete post.body_match;
-
-
     });
     return data;
   })
