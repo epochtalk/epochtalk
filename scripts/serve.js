@@ -21,5 +21,12 @@ clean()
   if (process.env.NODE_ENV === 'production') {
     require(path.join(__dirname, '..', 'server', 'index'));
   }
-  else { watchFiles(); }
+  else { 
+    // if there is no NODE_ENV set assume it is development
+    if (process.env.NODE_ENV === undefined) {
+      process.env.NODE_ENV = 'development';
+    }
+    
+    watchFiles(); 
+  }
 });
