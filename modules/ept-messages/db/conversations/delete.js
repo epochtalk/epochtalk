@@ -7,8 +7,9 @@ var db = dbc.db;
 var errors = dbc.errors;
 var DeletionError = errors.DeletionError;
 
-module.exports = function(id) {
+module.exports = function(id, userId) {
   id = helper.deslugify(id);
+  userId = helper.deslugify(userId);
   var result = { id: id };
   return using(db.createTransaction(), function(client) {
     // Check if conversation exists
@@ -29,8 +30,8 @@ module.exports = function(id) {
     })
     // delete the private conversation
     .then(function() {
-      q = 'DELETE FROM private_conversations WHERE id = $1';
-      return client.queryAsync(q, [id]);
+      q = 'UPDATE private_conversations SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE id = $2';
+      return client.queryAsync(q, [userId, id]);
     })
     .then(function() { return result; });
   })

@@ -35,7 +35,8 @@ module.exports = {
     pre: [ { method: 'auth.conversations.delete(server, auth)' } ],
   },
   handler: function(request, reply) {
-    var promise = request.db.conversations.delete(request.params.id)
+    var userId = request.auth.credentials.id;
+    var promise = request.db.conversations.delete(request.params.id, userId)
     .then(function(deletedConvo) {
       // append receiver and sender ids to plugin metadata
       request.route.settings.plugins.mod_log.metadata = {

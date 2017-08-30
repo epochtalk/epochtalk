@@ -35,7 +35,8 @@ module.exports = {
     pre: [ { method: 'auth.messages.delete(server, auth, params.id)' } ]
   },
   handler: function(request, reply) {
-    var promise = request.db.messages.delete(request.params.id)
+    var userId = request.auth.credentials.id;
+    var promise = request.db.messages.delete(request.params.id, userId)
     .then(function(deletedMessage) {
       // appender receiver and sender ids to plugin metadata
       request.route.settings.plugins.mod_log.metadata = {

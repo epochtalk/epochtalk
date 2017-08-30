@@ -139,12 +139,6 @@ var ctrl = [
         if (message.receiver_id !== Session.user.id) {
           ctrl.currentConversation.members[message.receiver_id] = message.receiver_username;
         }
-
-        message.copied.map(function(copied) {
-          if (copied.id !== Session.user.id) {
-            ctrl.currentConversation.members[copied.id] = copied.username;
-          }
-        });
       });
     }
 
