@@ -8,7 +8,16 @@ module.exports = function(userId, opts) {
   opts = opts || {};
 
   var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_id, mid.body, mid.created_at, mid.viewed, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar, r.username as receiver_username, r.deleted as receiver_deleted, r.avatar as receiver_avatar';
-  var q = ' SELECT * FROM ( SELECT DISTINCT ON (conversation_id) conversation_id, id, sender_id, receiver_id, body, created_at, viewed FROM private_messages WHERE $1 != ALL(deleted_by_user_ids) AND (sender_id = $1 OR receiver_id = $1) ORDER BY conversation_id, created_at DESC ) AS m ORDER BY m.created_at DESC LIMIT $2 OFFSET $3';
+  var q = ` SELECT * FROM
+    ( SELECT
+      DISTINCT ON (conversation_id) conversation_id, id, sender_id,
+      receiver_id, body, created_at, viewed
+      FROM private_messages
+      WHERE (SELECT $1 = ANY(pc.deleted_by_user_ids) as deleted
+      FROM private_conversations pc WHERE pc.id = conversation_id) IS FALSE AND $1 != ALL(deleted_by_user_ids)
+      AND (sender_id = $1 OR receiver_id = $1)
+      ORDER BY conversation_id, created_at DESC )
+      AS m ORDER BY m.created_at DESC LIMIT $2 OFFSET $3`;
   var q2 = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = mid.sender_id';
   var q3 = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = mid.receiver_id';
   var query = 'SELECT ' + columns + ' FROM ( ' +
@@ -27,3 +36,4 @@ module.exports = function(userId, opts) {
   return db.sqlQuery(query, params)
   .then(helper.slugify);
 };
+

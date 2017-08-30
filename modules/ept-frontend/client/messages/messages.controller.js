@@ -21,6 +21,12 @@ var ctrl = [
       return true;
     };
 
+    this.canDeleteConversation = function() {
+      if (!Session.isAuthenticated()) { return false; }
+      if (!Session.hasPermission('conversations.delete.allow')) { return false; }
+      return true;
+    };
+
     this.canDeleteMessage = function(messageUserId) {
       if (!Session.isAuthenticated()) { return false; }
       if (!Session.hasPermission('messages.delete.allow')) { return false; }
@@ -204,6 +210,7 @@ var ctrl = [
         ctrl.limit = data.limit;
         ctrl.page = data.page;
         ctrl.pageMax = Math.ceil(data.total_convo_count / data.limit);
+
       });
     };
 
@@ -264,6 +271,35 @@ var ctrl = [
       .catch(function() {Alert.error('Failed to delete message'); })
       .finally(function() { ctrl.showDeleteModal = false; });
     };
+
+
+    this.deleteConversationId = '';
+    this.showDeleteConvoModal = false;
+    this.closeDeleteConvoModal = function() {
+      $timeout(function() { ctrl.showDeleteConvoModal = false; });
+    };
+    this.openDeleteConvoModal = function(conversationId) {
+      ctrl.deleteConversationId = conversationId;
+      ctrl.showDeleteConvoModal = true;
+    };
+    this.deleteConversation = function() {
+      Conversations.delete({id: ctrl.deleteConversationId}).$promise
+      .then(function() {
+        var filteredMessages = ctrl.recentMessages.filter(function(el) {
+          return el.conversation_id != ctrl.deleteConversationId;
+        });
+
+        ctrl.recentMessages = filteredMessages;
+
+        if (ctrl.recentMessages.length) {
+          ctrl.loadConversation(ctrl.recentMessages[0].conversation_id);
+        }
+        else { ctrl.currentConversation = { messages: [] }; }
+      })
+      .catch(function() {Alert.error('Failed to delete conversation'); })
+      .finally(function() { ctrl.showDeleteConvoModal = false; });
+    };
+
 
     this.reportedMessage = null;
     this.reportReason = '';

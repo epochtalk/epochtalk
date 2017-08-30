@@ -51,6 +51,11 @@
       <strong>To:</strong> <span ng-bind="message.receiver_username"></span><br>
       <strong>From:</strong> <span ng-bind="message.sender_username"></span><br>
       <span class="msg-preview" ng-bind-html="message.body"></span>
+      <div class="right">
+        <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete">
+          <i class="fa fa-trash"></i>
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -149,6 +154,21 @@
     <div class="clear">
       <button class="fill-row" ng-click="MessagesCtrl.deleteMessage()">
         Delete Message
+      </button>
+    </div>
+  </form>
+</modal>
+
+<!-- Delete Conversation Modal -->
+<modal show="MessagesCtrl.showDeleteConvoModal" on-close="MessagesCtrl.closeDeleteConvoModal()">
+  <form name="$parent.form" class="css-form" novalidate>
+    <h3 class="thin-underline">Delete Conversation</h3>
+    <p>Are you sure you want to permanently delete this conversation?</p>
+
+    <!-- Save Button -->
+    <div class="clear">
+      <button class="fill-row" ng-click="MessagesCtrl.deleteConversation()">
+        Delete Conversation
       </button>
     </div>
   </form>
