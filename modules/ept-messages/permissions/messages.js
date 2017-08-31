@@ -60,21 +60,30 @@ var moderator = {
 
 var patroller = {
   create: { allow: true },
-  delete: { allow: true },
+  delete: {
+    allow: true,
+    bypass: { owner: true }
+  },
   latest: { allow: true },
   findUser: { allow: true }
 };
 
 var user = {
   create: { allow: true },
-  delete: { allow: true },
+  delete: {
+    allow: true,
+    bypass: { owner: true }
+  },
   latest: { allow: true },
   findUser: { allow: true }
 };
 
 var newbie = {
   create: { allow: true },
-  delete: { allow: true },
+  delete: {
+    allow: true,
+    bypass: { owner: true }
+  },
   latest: { allow: true },
   findUser: { allow: true }
 };
@@ -82,6 +91,10 @@ var newbie = {
 
 var banned = {
   create: { allow: true },
+  delete: {
+    allow: true,
+    bypass: { owner: true }
+  },
   latest: { allow: true },
   findUser: { allow: true }
 };

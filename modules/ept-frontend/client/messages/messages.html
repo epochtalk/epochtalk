@@ -51,11 +51,9 @@
       <strong>To:</strong> <span ng-bind="message.receiver_username"></span><br>
       <strong>From:</strong> <span ng-bind="message.sender_username"></span><br>
       <span class="msg-preview" ng-bind-html="message.body"></span>
-      <div class="right">
-        <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete">
-          <i class="fa fa-trash"></i>
-        </a>
-      </div>
+      <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete" data-balloon-pos="left">
+        <i class="fa fa-trash"></i>
+      </a>
     </div>
   </div>
 </div>

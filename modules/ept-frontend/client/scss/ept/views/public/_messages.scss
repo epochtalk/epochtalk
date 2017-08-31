@@ -13,6 +13,8 @@
       font-size: 0.8rem;
       line-height: 0.95rem;
       cursor: pointer;
+      position: relative;
+      .action { position: absolute; top: 0.5rem; right: 0.5rem; color: $secondary-font-color; }
       .msg-preview { color: $secondary-font-color; }
       &:hover { background-color: $sub-header-color; }
       &.active { background-color: darken($sub-header-color, 5%); }

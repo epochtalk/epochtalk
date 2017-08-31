@@ -26,31 +26,37 @@ var administrator = {
 
 var globalModerator = {
   create: { allow: true },
+  delete: { allow: true },
   messages: { allow: true }
 };
 
 var moderator = {
   create: { allow: true },
+  delete: { allow: true },
   messages: { allow: true }
 };
 
 var patroller = {
   create: { allow: true },
+  delete: { allow: true },
   messages: { allow: true }
 };
 
 var user = {
   create: { allow: true },
+  delete: { allow: true },
   messages: { allow: true }
 };
 
 var newbie = {
   create: { allow: true },
+  delete: { allow: true },
   messages: { allow: true }
 };
 
 var banned = {
   create: { allow: true },
+  delete: { allow: true },
   messages: { allow: true }
 };
 
