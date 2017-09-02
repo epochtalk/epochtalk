@@ -78,10 +78,14 @@ function processing(request, reply) {
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
   var promise = request.db.posts.search(opts, userPriority)
   .then(function(data) {
+
     // Loop through all posts
     data.posts.forEach(function(post) {
       // The search text were trying to match
       var toMatch = post.body_match;
+
+      // Remove BRs
+      post.body = post.body.replace(/(?:<br \/>)/g, ' ');
 
       // Remember which words were being highlighted
       var highlightedWords = toMatch
@@ -129,7 +133,6 @@ function processing(request, reply) {
       var end = post.body_html.indexOf(endMark) - start;
       var matchedText = post.body_html.substr(start, end);
 
-      // Grab and empty the html tags before the matched text
       matchStart = post.body_html.indexOf(startMark);
       var beforeTags = post.body_html.substr(0, matchStart).replace(/>([^<]*)</g, '><');
       beforeTags = beforeTags.substr(0, beforeTags.lastIndexOf('>') + 1);
