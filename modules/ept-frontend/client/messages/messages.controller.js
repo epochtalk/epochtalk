@@ -105,6 +105,11 @@ var ctrl = [
       .then(function() { $anchorScroll(); });
     };
 
+    if (this.recentMessages.length) {
+      this.loadConversation(this.recentMessages[0].conversation_id);
+    }
+
+
     this.loadMoreMessages = function() {
       var query = {
         id: ctrl.currentConversation.id,
@@ -174,7 +179,10 @@ var ctrl = [
         if (err && err.status === 403) { msg = err.data.message; }
         Alert.error(msg);
       })
-      .finally(function() { ctrl.showConvoModal = false; });
+      .finally(function() {
+        ctrl.newConversation = {body: '', receiver_id: ''};
+        ctrl.showConvoModal = false;
+      });
     };
 
     // Websocket Handling

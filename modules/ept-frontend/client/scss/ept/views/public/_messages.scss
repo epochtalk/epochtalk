@@ -81,7 +81,7 @@
         }
       }
       .content {
-        @include span-columns(11);
+        @include span-columns(12);
         .title {
           margin-bottom: 0.5rem;
           .date { @include pad(0 0 0 0.25rem); font-size: 0.8rem; color: $secondary-font-color; }

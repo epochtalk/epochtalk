@@ -14,7 +14,7 @@ module.exports = function(userId, opts) {
   var query = 'SELECT ' + columns + ' FROM ( ' +
     q + ' ) mid LEFT JOIN LATERAL ( ' +
     q2 + ' ) s ON true LEFT JOIN LATERAL ( ' +
-    q3 + ' ) r ON true';
+    q3 + ' ) r ON true ORDER BY mid.created_at DESC';
 
   var limit = 15;
   var page = 1;
