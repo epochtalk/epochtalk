@@ -3,6 +3,7 @@ var ctrl = [
   function($scope, $rootScope, $timeout, $window, $anchorScroll, Session, Alert, Messages, Conversations, Reports, pageData, Websocket) {
     var ctrl = this;
     this.currentUserId = Session.user.id;
+    this.username = Session.user.username;
     this.recentMessages = pageData.messages;
     this.totalMessageCount = pageData.total_convo_count;
     this.page = pageData.page;
@@ -11,8 +12,8 @@ var ctrl = [
     this.currentConversation = {messages: []};
     this.selectedConversationId = null;
     this.receiverName = null;
-    this.newConversation = {body: '', receiver_id: ''};
-    this.newMessage = {body: '', receiver_id: '', previewBody: '' };
+    this.newConversation = {subject: '', body: '', receiver_id: ''};
+    this.newMessage = {subject: '', body: '', receiver_id: '', previewBody: '' };
     this.showReply = false;
 
     this.canCreateMessage = function() {
@@ -87,10 +88,13 @@ var ctrl = [
       // build out reply information
       .then(function(data) {
         if (options.saveInput) {
+          ctrl.newMessage.subject = ctrl.newMessage.subject || ctrl.currentConversation.subject;
           ctrl.newMessage.body = ctrl.newMessage.body || '';
           ctrl.newMessage.previewBody = ctrl.newMessage.previewBody || '';
         }
-        else { ctrl.newMessage = { body: '', previewBody: '' }; }
+        else {
+          ctrl.newMessage = { subject: ctrl.currentConversation.subject, body: '', previewBody: '' };
+        }
         ctrl.newMessage.conversation_id = data.id;
         ctrl.newMessage.sender_id = Session.user.id;
         ctrl.newMessage.sender_username = Session.user.username;
@@ -160,6 +164,7 @@ var ctrl = [
       // create a new conversation id to put this message under
       var newMessage = {
         receiver_id: ctrl.newConversation.receiver_id,
+        subject: ctrl.newConversation.subject,
         body: ctrl.newConversation.body,
       };
 

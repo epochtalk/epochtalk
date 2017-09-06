@@ -10,6 +10,11 @@
       <autocomplete-user-id user-id="MessagesCtrl.newConversation.receiver_id" username="MessagesCtrl.newConversation.receiver_username" ></autocomplete-user-id>
     </label>
 
+    <!-- Subject -->
+    <label><h5>Subject</h5>
+      <input type="text" ng-model="MessagesCtrl.newConversation.subject" minlength="1" maxlength="255" />
+    </label>
+
     <!-- Message Body -->
     <label><h5>Message</h5>
       <textarea type="text" rows="10" ng-model="MessagesCtrl.newConversation.body" maxlength="5000"></textarea>
@@ -17,7 +22,7 @@
 
     <!-- Save Button -->
     <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.newConversation.body || !MessagesCtrl.newConversation.receiver_id">
+      <button class="fill-row" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.newConversation.subject || !MessagesCtrl.newConversation.body || !MessagesCtrl.newConversation.receiver_id">
         Send Message
       </button>
     </div>
@@ -48,9 +53,11 @@
 
   <div class="list" ng-if="MessagesCtrl.pageMax > 0">
     <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id}">
-      <strong>To:</strong> <span ng-bind="message.receiver_username"></span><br>
-      <strong>From:</strong> <span ng-bind="message.sender_username"></span><br>
-      <span class="msg-preview" ng-bind-html="message.body"></span>
+      <strong>{{ message.receiver_username === MessagesCtrl.username ? message.sender_username : message.receiver_username }}</strong>
+      <br />
+      <span class="msg-preview" ng-bind-html="message.updated_at | humanDate"></span>
+      <br />
+      <span class="msg-preview" ng-bind-html="message.subject"></span>
       <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete" data-balloon-pos="left">
         <i class="fa fa-trash"></i>
       </a>
@@ -128,6 +135,11 @@
       <autocomplete-user-id user-id="MessagesCtrl.newConversation.receiver_id" username="MessagesCtrl.newConversation.receiver_username" ></autocomplete-user-id>
     </label>
 
+    <!-- Subject -->
+    <label><h5>Subject</h5>
+      <input type="text" ng-model="MessagesCtrl.newConversation.subject" minlength="1" maxlength="255" />
+    </label>
+
     <!-- Message Body -->
     <label>Message
       <textarea type="text" rows="10" ng-model="MessagesCtrl.newConversation.body" maxlength="5000"></textarea>
@@ -135,7 +147,7 @@
 
     <!-- Save Button -->
     <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.newConversation.body || !MessagesCtrl.newConversation.receiver_id">
+      <button class="fill-row" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.newConversation.subject || !MessagesCtrl.newConversation.body || !MessagesCtrl.newConversation.receiver_id">
         Send Message
       </button>
     </div>

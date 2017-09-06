@@ -17,6 +17,7 @@ var Joi = require('joi');
   * @apiSuccess {boolean} has_next Boolean indicating if there are more messages
   * @apiSuccess {timestamp} last_message_timestamp timestamp of the last message
   * @apiSuccess {timestamp} last_message_id timestamp of the last message
+  * @apiSuccess {string} subject The subject of the conversation
   * @apiSuccess {object[]} messages An array of messages in this conversation
   * @apiSuccess {string} messages.id The unique id of the message
   * @apiSuccess {string} messages.conversation_id The unique id of the conversation this message belongs to
@@ -79,6 +80,7 @@ module.exports = {
       if (messages.length) {
         payload.last_message_timestamp = messages[messages.length - 1].created_at;
         payload.last_message_id = messages[messages.length - 1].id;
+        payload.subject = messages[0].subject;
       }
 
       return payload;

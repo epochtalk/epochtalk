@@ -8,6 +8,7 @@ var _ = require('lodash');
   * @apiSuccess {string} sender_id The unique id of the user that sent this message
   * @apiSuccess {string} receiver_id The unique id of the user that sent this message
   * @apiSuccess {string} body The contents of this message
+  * @apiSuccess {string} subject The subject of this message
   * @apiSuccess {boolean} viewed The flag showing if the receiver viewed this message
   * @apiSuccess {timestamp} created_at Timestamp of when the conversation was created
   */
@@ -22,6 +23,7 @@ var _ = require('lodash');
   *
   * @apiParam (Payload) {string} receiver_id The id of the user receiving the message/conversation
   * @apiParam (Payload) {string} body The content of the message/conversation
+  * @apiParam (Payload) {string} subject The subject of the message
   *
   * @apiUse MessageObjectSuccess
   *
@@ -37,7 +39,8 @@ module.exports = {
     validate: {
       payload: {
         receiver_id: Joi.string().required(),
-        body: Joi.string().min(1).max(5000).required()
+        body: Joi.string().min(1).max(5000).required(),
+        subject: Joi.string().min(1).max(255).required()
       }
     },
     pre: [

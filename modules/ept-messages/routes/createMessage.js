@@ -12,6 +12,7 @@ var _ = require('lodash');
   * @apiParam (Payload) {string} conversation_id The id of the conversation the message should be created in
   * @apiParam (Payload) {string} receiver_id The id of the user receiving the message/conversation
   * @apiParam (Payload) {string} body The content of the message/conversation
+  * @apiParam (Payload) {string} subject The subject of the message/conversation
   *
   * @apiUse MessageObjectSuccess
   *
@@ -28,7 +29,8 @@ module.exports = {
       payload: {
         conversation_id: Joi.string().required(),
         receiver_id: Joi.string().required(),
-        body: Joi.string().min(1).max(5000).required()
+        body: Joi.string().min(1).max(5000).required(),
+        subject: Joi.string().min(1).max(255).required()
       }
     },
     pre: [
