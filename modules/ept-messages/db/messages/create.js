@@ -20,6 +20,10 @@ module.exports = function(message) {
         message.viewed = false;
       }
       else { throw new CreationError('Private Message Could Not Be Saved'); }
+    })
+    .then(function() {
+      q = 'UPDATE private_conversations SET deleted_by_user_ids = $1 WHERE id = $2';
+      return client.queryAsync(q, [[], message.conversation_id]);
     });
   })
   .then(function() { return helper.slugify(message); });

@@ -28,6 +28,11 @@ module.exports = function(id, userId) {
       result.receiver_id = row.receiver_id;
       return;
     })
+    // delete the private messages within the conversation
+    .then(function() {
+      q = 'UPDATE private_messages SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE conversation_id = $2';
+      return client.queryAsync(q, [userId, id]);
+    })
     // delete the private conversation
     .then(function() {
       q = 'UPDATE private_conversations SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE id = $2';
