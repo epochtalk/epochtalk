@@ -12,7 +12,7 @@ var Joi = require('joi');
   *
   * @apiSuccess {string} id The unique id of the conversation being deleted
   * @apiSuccess {string} sender_id The unique id of the sender
-  * @apiSuccess {string} receiver_id The unique id of the receiver
+  * @apiSuccess {string} receiver_ids The unique ids of the receivers
   *
   * @apiError (Error 500) InternalServerError There was an issue deleting the conversation
   */
@@ -27,7 +27,7 @@ module.exports = {
         data: {
           id: 'params.id',
           sender_id: 'route.settings.plugins.mod_log.metadata.sender_id',
-          receiver_id: 'route.settings.plugins.mod_log.metadata.receiver_id'
+          receiver_ids: 'route.settings.plugins.mod_log.metadata.receiver_ids'
          }
       }
     },
@@ -38,10 +38,10 @@ module.exports = {
     var userId = request.auth.credentials.id;
     var promise = request.db.conversations.delete(request.params.id, userId)
     .then(function(deletedConvo) {
-      // append receiver and sender ids to plugin metadata
+      // append receivers and sender ids to plugin metadata
       request.route.settings.plugins.mod_log.metadata = {
         sender_id: deletedConvo.sender_id,
-        receiver_id: deletedConvo.receiver_id
+        receiver_ids: deletedConvo.receiver_ids
       };
       return deletedConvo;
     })

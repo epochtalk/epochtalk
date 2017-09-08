@@ -17,7 +17,7 @@ module.exports = function(id, userId) {
     return client.queryAsync(q, [id])
     .then(function(results) {
       if (results.rows.length < 1) { throw new DeletionError('Conversation Does Not Exist'); }
-      q = 'SELECT sender_id, receiver_id FROM private_messages WHERE conversation_id = $1 FOR UPDATE';
+      q = 'SELECT sender_id, receiver_ids FROM private_messages WHERE conversation_id = $1 FOR UPDATE';
       return client.queryAsync(q, [id]);
     })
     // append sender and receiver ids to reply
@@ -25,7 +25,7 @@ module.exports = function(id, userId) {
       if (results.rows.length < 1) { throw new DeletionError('Conversation Does Not Exist'); }
       var row = results.rows[0];
       result.sender_id = row.sender_id;
-      result.receiver_id = row.receiver_id;
+      result.receiver_ids = row.receiver_ids;
       return;
     })
     // delete the private messages within the conversation

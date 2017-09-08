@@ -7,9 +7,12 @@
   <form name="$parent.form" class="css-form" novalidate>
     <!-- Select User -->
     <label><h5>To</h5>
-      <autocomplete-user-id user-id="MessagesCtrl.newConversation.receiver_id" username="MessagesCtrl.newConversation.receiver_username" ></autocomplete-user-id>
-    </label>
 
+    <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers">
+      <auto-complete min-length="1" debounce-delay="250" source="MessagesCtrl.loadTags($query)"></auto-complete>
+    </tags-input>
+
+    </label>
     <!-- Subject -->
     <label><h5>Subject</h5>
       <input type="text" ng-model="MessagesCtrl.newConversation.subject" minlength="1" maxlength="255" />
@@ -27,7 +30,7 @@
 
     <!-- Save Button -->
     <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.newConversation.subject || !MessagesCtrl.newConversation.body || !MessagesCtrl.newConversation.receiver_id">
+      <button class="fill-row" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.newConversation.subject || !MessagesCtrl.newConversation.body || !MessagesCtrl.receivers.length">
         Send Message
       </button>
     </div>
@@ -58,7 +61,7 @@
 
   <div class="list" ng-if="MessagesCtrl.pageMax > 0">
     <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id}">
-      <strong>{{ message.receiver_username === MessagesCtrl.username ? message.sender_username : message.receiver_username }}</strong>
+      <strong ng-bind="::MessagesCtrl.listMessageReceivers(message)"></strong>
       <br />
       <span class="msg-preview" ng-bind-html="message.updated_at | humanDate"></span>
       <br />
@@ -77,7 +80,11 @@
     <a class="right no-select" ng-if='MessagesCtrl.canCreateMessage()' ng-click="MessagesCtrl.showReply = !MessagesCtrl.showReply">
       <i class="fa fa-reply"></i> Reply
     </a>
-    <h4>From: <strong><a ui-sref="profile.posts({ username: MessagesCtrl.receiverName})"></strong>{{MessagesCtrl.receiverName}}</a></h4>
+    <h4>Conversation with
+      <strong ng-repeat="name in MessagesCtrl.receiverNames">
+        <a ui-sref="profile.posts({ username: name})">{{name}}</a>{{ $last ? '' : ', '}}
+      </strong>
+    </h4>
     <h4>Subject: <strong>{{MessagesCtrl.currentConversation.subject}}</strong></h4>
   </div>
   <div ng-if="MessagesCtrl.currentConversation.messages.length > 0" class="reply" ng-show="MessagesCtrl.showReply">
@@ -88,7 +95,7 @@
       <div class="preview" ng-show="MessagesCtrl.newMessage.preview" post-processing="MessagesCtrl.newMessage.previewBody"></div>
     </label>
     <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.saveMessage(); MessagesCtrl.showReply = false; MessagesCtrl.newMessage.preview = false;" ng-disabled="!MessagesCtrl.newMessage.body || !MessagesCtrl.newMessage.receiver_id">Reply</button>
+      <button class="fill-row" ng-click="MessagesCtrl.saveMessage(); MessagesCtrl.showReply = false; MessagesCtrl.newMessage.preview = false;" ng-disabled="!MessagesCtrl.newMessage.body || !MessagesCtrl.newMessage.receiver_ids.length">Reply</button>
     </div>
   </div>
   <h4 ng-if="MessagesCtrl.recentMessages.length > 0 && MessagesCtrl.currentConversation.messages.length < 1" class="centered-text">
@@ -134,7 +141,9 @@
     <h3 class="thin-underline">New Message</h3>
     <!-- Select User -->
     <label>To
-      <autocomplete-user-id user-id="MessagesCtrl.newConversation.receiver_id" username="MessagesCtrl.newConversation.receiver_username" ></autocomplete-user-id>
+      <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers">
+        <auto-complete min-length="1" debounce-delay="250" source="MessagesCtrl.loadTags($query)"></auto-complete>
+      </tags-input>
     </label>
 
     <!-- Subject -->
@@ -154,7 +163,7 @@
 
     <!-- Save Button -->
     <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.newConversation.subject || !MessagesCtrl.newConversation.body || !MessagesCtrl.newConversation.receiver_id">
+      <button class="fill-row" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.newConversation.subject || !MessagesCtrl.newConversation.body || !MessagesCtrl.receivers.length">
         Send Message
       </button>
     </div>

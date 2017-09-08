@@ -9,8 +9,8 @@ var CreationError = errors.CreationError;
 
 module.exports = function(message) {
   message = helper.deslugify(message);
-  var q = 'INSERT INTO private_messages(conversation_id, sender_id, receiver_id, body, subject, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id, created_at';
-  var params = [message.conversation_id, message.sender_id, message.receiver_id, message.body, message.subject];
+  var q = 'INSERT INTO private_messages(conversation_id, sender_id, receiver_ids, body, subject, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id, created_at';
+  var params = [message.conversation_id, message.sender_id, message.receiver_ids, message.body, message.subject];
   return using(db.createTransaction(), function(client) {
     return client.queryAsync(q, params)
     .then(function(results) {

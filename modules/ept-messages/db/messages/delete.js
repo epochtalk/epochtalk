@@ -26,14 +26,14 @@ module.exports = function(id, userId) {
     })
     // delete the private message
     .then(function() {
-      q = 'UPDATE private_messages SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE id = $2 RETURNING sender_id, receiver_id';
+      q = 'UPDATE private_messages SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE id = $2 RETURNING sender_id, receiver_ids';
       return client.queryAsync(q, [userId, id]);
     })
     // clean up conversation if no more messages
     .then(function(results) {
       var row = results.rows[0];
       result.sender_id = row.sender_id;
-      result.receiver_id = row.receiver_id;
+      result.receiver_ids = row.receiver_ids;
       q = 'SELECT id FROM private_messages WHERE $1 != ALL(deleted_by_user_ids) AND conversation_id = $2';
       return client.queryAsync(q, [userId, conversationId])
       .then(function(results) {

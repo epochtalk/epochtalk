@@ -10,7 +10,7 @@ var _ = require('lodash');
   * @apiDescription Used to create a new message.
   *
   * @apiParam (Payload) {string} conversation_id The id of the conversation the message should be created in
-  * @apiParam (Payload) {string} receiver_id The id of the user receiving the message/conversation
+  * @apiParam (Payload) {string} receiver_ids The ids of the users receiving the message/conversation
   * @apiParam (Payload) {string} body The content of the message/conversation
   * @apiParam (Payload) {string} subject The subject of the message/conversation
   *
@@ -22,19 +22,18 @@ module.exports = {
   method: 'POST',
   path: '/api/messages',
   config: {
-    app: { user_id: 'payload.receiver_id' },
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
       payload: {
         conversation_id: Joi.string().required(),
-        receiver_id: Joi.string().required(),
+        receiver_ids: Joi.array().items(Joi.string()).min(1).required(),
         body: Joi.string().min(1).max(5000).required(),
         subject: Joi.string().min(1).max(255).required()
       }
     },
     pre: [
-      { method: 'auth.messages.create(server, auth, payload.receiver_id, payload.conversation_id)' },
+      { method: 'auth.messages.create(server, auth, payload.receiver_ids, payload.conversation_id)' },
       { method: 'common.messages.clean(sanitizer, payload)' },
       { method: 'common.messages.parse(parser, payload)' }
     ]
@@ -47,18 +46,20 @@ module.exports = {
     var promise = request.db.messages.create(message)
     .tap(function(dbMessage) {
       var messageClone = _.cloneDeep(dbMessage);
-      var notification = {
-        type: 'message',
-        sender_id: request.auth.credentials.id,
-        receiver_id: request.payload.receiver_id,
-        channel: { type: 'user', id: request.payload.receiver_id },
-        data: {
-          action: 'newMessage',
-          messageId: messageClone.id,
-          conversationId: messageClone.conversation_id
-        }
-      };
-      request.server.plugins.notifications.spawnNotification(notification);
+      request.payload.receiver_ids.forEach(function(receiverId) {
+        var notification = {
+          type: 'message',
+          sender_id: request.auth.credentials.id,
+          receiver_id: receiverId,
+          channel: { type: 'user', id: receiverId },
+          data: {
+            action: 'newMessage',
+            messageId: messageClone.id,
+            conversationId: messageClone.conversation_id
+          }
+        };
+        request.server.plugins.notifications.spawnNotification(notification);
+      });
     })
     .error(request.errorMap.toHttpError);
 

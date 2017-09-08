@@ -11,9 +11,9 @@ var ctrl = [
     this.pageMax = Math.ceil(pageData.total_convo_count / pageData.limit);
     this.currentConversation = {messages: []};
     this.selectedConversationId = null;
-    this.receiverName = null;
-    this.newConversation = {subject: '', body: '', receiver_id: '', previewBody: ''};
-    this.newMessage = {subject: '', body: '', receiver_id: '', previewBody: '' };
+    this.receiverNames = null;
+    this.newConversation = {subject: '', body: '', receiver_ids: [], previewBody: ''};
+    this.newMessage = {subject: '', body: '', receiver_ids: [], previewBody: '' };
     this.showReply = false;
 
     this.canCreateMessage = function() {
@@ -71,6 +71,27 @@ var ctrl = [
       if (destroyRouteBlocker) { destroyRouteBlocker(); }
     });
 
+    this.listMessageReceivers = function(message) {
+      var receiverNames = [];
+      message.receivers.forEach(function(receiver) {
+        receiverNames.push(receiver.username);
+      });
+      console.log(receiverNames);
+      var authedIndex = receiverNames.indexOf(Session.user.username);
+      if (authedIndex > -1) {
+        receiverNames.splice(authedIndex, 1);
+        receiverNames.push(message.sender_username);
+      }
+      return receiverNames.join(', ');
+    };
+
+    this.receivers = [];
+
+    this.loadTags = function(query) {
+      return Messages.findUser({ username: query }).$promise
+      .then(function(users) { return users; });
+    };
+
     // Conversations
 
     this.loadConversation = function(conversationId, options) {
@@ -81,12 +102,6 @@ var ctrl = [
       .then(function(data) {
         ctrl.currentConversation = data;
         ctrl.currentConversation.id = conversationId;
-        ctrl.currentConversation.members = {};
-        loadConversationMembers(data.messages);
-        return data;
-      })
-      // build out reply information
-      .then(function(data) {
         if (options.saveInput) {
           ctrl.newMessage.subject = ctrl.newMessage.subject || ctrl.currentConversation.subject;
           ctrl.newMessage.body = ctrl.newMessage.body || '';
@@ -99,17 +114,25 @@ var ctrl = [
         ctrl.newMessage.sender_id = Session.user.id;
         ctrl.newMessage.sender_username = Session.user.username;
         var lastMessage = data.messages[data.messages.length - 1];
-        var lastReceiverId = lastMessage.receiver_id;
+        var lastReceiverIds = lastMessage.receiver_ids;
+        var lastReceiverUsernames = lastMessage.receivers.map(function(receiver) { return receiver.username; });
         var lastSenderId = lastMessage.sender_id;
-        ctrl.receiverName = lastMessage.receiver_username;
-        if (Session.user.id === lastSenderId) {
-          ctrl.newMessage.receiver_id = lastReceiverId;
-          ctrl.newMessage.receiver_username = lastMessage.receiver_username;
+        var lastSenderUsername = lastMessage.sender_username;
+        if (Session.user.id !== lastSenderId) {
+          // Remove current users id from list of receivers and add senders id
+          var idIndex = lastReceiverIds.indexOf(Session.user.id);
+          if (idIndex > -1) { lastReceiverIds.splice(idIndex, 1); }
+          lastReceiverIds.push(lastSenderId);
+
+          // Remove current users username from list of receivers and add senders id
+          var usernameIndex = lastReceiverUsernames.indexOf(Session.user.username);
+          if (usernameIndex > -1) { lastReceiverUsernames.splice(usernameIndex, 1); }
+          lastReceiverUsernames.push(lastSenderUsername);
         }
-        else {
-          ctrl.newMessage.receiver_id = lastSenderId;
-          ctrl.newMessage.receiver_username = lastMessage.sender_username;
-        }
+        ctrl.newMessage.receiver_ids = lastReceiverIds;
+        ctrl.newMessage.receiver_usernames = lastReceiverUsernames;
+
+        ctrl.receiverNames = lastReceiverUsernames;
       })
       // scroll last message into view
       .then(function() { $anchorScroll(); });
@@ -133,24 +156,12 @@ var ctrl = [
         ctrl.currentConversation.last_message_id = data.last_message_id;
         ctrl.currentConversation.last_message_timestamp = data.last_message_timestamp;
         ctrl.currentConversation.has_next = data.has_next;
-        loadConversationMembers(data.messages);
         return data;
       });
     };
 
     this.hasMoreMessages = function() { return ctrl.currentConversation.has_next; };
 
-    function loadConversationMembers(messages) {
-      messages.map(function(message) {
-        if (message.sender_id !== Session.user.id) {
-          ctrl.currentConversation.members[message.sender_id] = message.sender_username;
-        }
-
-        if (message.receiver_id !== Session.user.id) {
-          ctrl.currentConversation.members[message.receiver_id] = message.receiver_username;
-        }
-      });
-    }
 
     this.showConvoModal = false;
     this.closeConvoModal = function() {
@@ -161,9 +172,12 @@ var ctrl = [
     };
     this.openConvoModal = function() { ctrl.showConvoModal = true; };
     this.createConversation = function() {
+      var receiverIds = [];
+      ctrl.receivers.forEach(function(user) { receiverIds.push(user.id); });
+
       // create a new conversation id to put this message under
       var newMessage = {
-        receiver_id: ctrl.newConversation.receiver_id,
+        receiver_ids: receiverIds,
         subject: ctrl.newConversation.subject,
         body: ctrl.newConversation.body,
       };
@@ -174,7 +188,7 @@ var ctrl = [
         ctrl.loadConversation(savedMessage.conversation_id);
 
         // Add message to list
-        savedMessage.receiver_username = ctrl.newConversation.receiver_username;
+        savedMessage.receiver_usernames = ctrl.newConversation.receiver_usernames;
         savedMessage.sender_username = Session.user.username;
         Alert.success('New Conversation Started!');
         ctrl.loadRecentMessages();
@@ -185,7 +199,8 @@ var ctrl = [
         Alert.error(msg);
       })
       .finally(function() {
-        ctrl.newConversation = {body: '', receiver_id: ''};
+        ctrl.receivers = [];
+        ctrl.newConversation = {body: '', receiver_ids: []};
         ctrl.showConvoModal = false;
       });
     };
@@ -248,11 +263,11 @@ var ctrl = [
     this.saveMessage = function() {
       Messages.save(ctrl.newMessage).$promise
       .then(function(message) {
-        message.receiver_username = ctrl.newMessage.receiver_username;
+        message.receiver_usernames = ctrl.newMessage.receiver_usernames;
         message.sender_username = ctrl.newMessage.sender_username;
         message.sender_avatar = Session.user.avatar;
         ctrl.currentConversation.messages.unshift(message);
-        Alert.success('Reply sent to ' + message.receiver_username);
+        Alert.success('Reply sent to ' + message.receiver_usernames.join(', '));
       })
       .then(ctrl.loadRecentMessages)
       .then(function() {
