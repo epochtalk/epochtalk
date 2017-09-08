@@ -12,7 +12,7 @@ var ctrl = [
     this.currentConversation = {messages: []};
     this.selectedConversationId = null;
     this.receiverName = null;
-    this.newConversation = {subject: '', body: '', receiver_id: ''};
+    this.newConversation = {subject: '', body: '', receiver_id: '', previewBody: ''};
     this.newMessage = {subject: '', body: '', receiver_id: '', previewBody: '' };
     this.showReply = false;
 
@@ -229,6 +229,19 @@ var ctrl = [
         });
         // re-bind to scope
         ctrl.newMessage.previewBody = processed;
+      }
+    });
+
+    $scope.$watch(function() { return ctrl.newConversation.body; }, function(body) {
+      if (body) {
+        // BBCode Parsing
+        var rawText = body;
+        var processed = rawText;
+        $window.parsers.forEach(function(parser) {
+          processed = parser.parse(processed);
+        });
+        // re-bind to scope
+        ctrl.newConversation.previewBody = processed;
       }
     });
 

@@ -6,7 +6,7 @@
 
   <form name="$parent.form" class="css-form" novalidate>
     <!-- Select User -->
-    <label><h5>Username</h5>
+    <label><h5>To</h5>
       <autocomplete-user-id user-id="MessagesCtrl.newConversation.receiver_id" username="MessagesCtrl.newConversation.receiver_username" ></autocomplete-user-id>
     </label>
 
@@ -16,8 +16,13 @@
     </label>
 
     <!-- Message Body -->
-    <label><h5>Message</h5>
+    <label><h5>Message ( <a ng-click="MessagesCtrl.newConversation.preview = !MessagesCtrl.newConversation.preview">Toggle Preview</a> )</h5>
       <textarea type="text" rows="10" ng-model="MessagesCtrl.newConversation.body" maxlength="5000"></textarea>
+    </label>
+
+    <label ng-show="MessagesCtrl.newConversation.preview">Message Preview
+      <div class="preview" ng-show="MessagesCtrl.newConversation.preview" post-processing="MessagesCtrl.newConversation.previewBody"></div>
+      <br />
     </label>
 
     <!-- Save Button -->
@@ -45,7 +50,7 @@
     <div class="prev">
       <button ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page - 1)" ng-disabled="MessagesCtrl.page === 1">&#10094;</button>
     </div>
-    <div class="page" ng-bind="MessagesCtrl.page + ' of ' + MessagesCtrl.pageMax"></div>
+    <div class="page" ng-bind="'Page ' + MessagesCtrl.page + ' of ' + MessagesCtrl.pageMax"></div>
     <div class="next">
       <button ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page + 1)" ng-disabled="MessagesCtrl.page === MessagesCtrl.pageMax">&#10095;</button>
     </div>
@@ -57,7 +62,7 @@
       <br />
       <span class="msg-preview" ng-bind-html="message.updated_at | humanDate"></span>
       <br />
-      <span class="msg-preview" ng-bind-html="message.subject"></span>
+      <strong><span class="msg-preview" ng-bind-html="message.subject"></span></strong>
       <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete" data-balloon-pos="left">
         <i class="fa fa-trash"></i>
       </a>
@@ -68,25 +73,22 @@
 <!-- Current Conversation -->
 <div class="messages">
   <!-- New Message -->
-  <div ng-if="MessagesCtrl.currentConversation.messages.length > 0" class="thin-underline">
-    <h4 ng-bind="'Conversation with ' + MessagesCtrl.receiverName"></h4>
+  <div ng-if="MessagesCtrl.currentConversation.messages.length > 0">
     <a class="right no-select" ng-if='MessagesCtrl.canCreateMessage()' ng-click="MessagesCtrl.showReply = !MessagesCtrl.showReply">
       <i class="fa fa-reply"></i> Reply
     </a>
+    <h4>From: <strong><a ui-sref="profile.posts({ username: MessagesCtrl.receiverName})"></strong>{{MessagesCtrl.receiverName}}</a></h4>
+    <h4>Subject: <strong>{{MessagesCtrl.currentConversation.subject}}</strong></h4>
   </div>
   <div ng-if="MessagesCtrl.currentConversation.messages.length > 0" class="reply" ng-show="MessagesCtrl.showReply">
-    <!-- Messages Receiver -->
-    <label>Receiver
-      <autocomplete-user-id user-id="MessagesCtrl.newMessage.receiver_id" username="MessagesCtrl.newMessage.receiver_username" ></autocomplete-user-id>
-    </label>
     <!-- Message Body and Send button-->
     <label>Message ( <a ng-click="MessagesCtrl.newMessage.preview = !MessagesCtrl.newMessage.preview">Toggle Preview</a> )
       <textarea ng-model="MessagesCtrl.newMessage.body" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }" maxlength="5000"></textarea>
-      <label ng-show="MessagesCtrl.newMessage.preview">Preview</label>
+      <label ng-show="MessagesCtrl.newMessage.preview">Message Preview</label>
       <div class="preview" ng-show="MessagesCtrl.newMessage.preview" post-processing="MessagesCtrl.newMessage.previewBody"></div>
     </label>
     <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.saveMessage(); MessagesCtrl.showReply = false; MessagesCtrl.newMessage.preview = false;" ng-disabled="!MessagesCtrl.newMessage.body || !MessagesCtrl.newMessage.receiver_id">Send</button>
+      <button class="fill-row" ng-click="MessagesCtrl.saveMessage(); MessagesCtrl.showReply = false; MessagesCtrl.newMessage.preview = false;" ng-disabled="!MessagesCtrl.newMessage.body || !MessagesCtrl.newMessage.receiver_id">Reply</button>
     </div>
   </div>
   <h4 ng-if="MessagesCtrl.recentMessages.length > 0 && MessagesCtrl.currentConversation.messages.length < 1" class="centered-text">
@@ -96,10 +98,10 @@
   <!-- Conversation Messages -->
   <div class="msg-container">
     <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="MessagesCtrl.currentUserId === message.sender_id ? 'sender' : ''">
-      <div class="avatar">
-       <img ng-if="message.sender_avatar" src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
-      </div>
       <div class="content">
+        <div class="avatar">
+          <img ng-src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
+        </div>
         <div class="title">
           <strong ng-bind="message.sender_username"></strong>
           <span class="date" ng-bind="message.created_at | humanDate"></span>
@@ -131,7 +133,7 @@
   <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-underline">New Message</h3>
     <!-- Select User -->
-    <label>Username
+    <label>To
       <autocomplete-user-id user-id="MessagesCtrl.newConversation.receiver_id" username="MessagesCtrl.newConversation.receiver_username" ></autocomplete-user-id>
     </label>
 
@@ -141,8 +143,13 @@
     </label>
 
     <!-- Message Body -->
-    <label>Message
+    <label>Message ( <a ng-click="MessagesCtrl.newConversation.preview = !MessagesCtrl.newConversation.preview">Toggle Preview</a> )
       <textarea type="text" rows="10" ng-model="MessagesCtrl.newConversation.body" maxlength="5000"></textarea>
+    </label>
+
+    <label ng-show="MessagesCtrl.newConversation.preview">Message Preview
+      <div class="preview" ng-show="MessagesCtrl.newConversation.preview" post-processing="MessagesCtrl.newConversation.previewBody"></div>
+      <br />
     </label>
 
     <!-- Save Button -->
@@ -157,13 +164,13 @@
 <!-- Delete Message Modal -->
 <modal show="MessagesCtrl.showDeleteModal" on-close="MessagesCtrl.closeDeleteModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Delete Message</h3>
-    <p>Are you sure you want to permanently delete this message?</p>
+    <h3 class="thin-underline">Delete Reply</h3>
+    <p>Are you sure you want to permanently delete this reply?</p>
 
     <!-- Save Button -->
     <div class="clear">
       <button class="fill-row" ng-click="MessagesCtrl.deleteMessage()">
-        Delete Message
+        Delete Reply
       </button>
     </div>
   </form>
@@ -172,13 +179,13 @@
 <!-- Delete Conversation Modal -->
 <modal show="MessagesCtrl.showDeleteConvoModal" on-close="MessagesCtrl.closeDeleteConvoModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Delete Conversation</h3>
-    <p>Are you sure you want to permanently delete this conversation?</p>
+    <h3 class="thin-underline">Delete Messages</h3>
+    <p>Are you sure you want to permanently delete this conversation and all its replies?</p>
 
     <!-- Save Button -->
     <div class="clear">
       <button class="fill-row" ng-click="MessagesCtrl.deleteConversation()">
-        Delete Conversation
+        Delete Messages
       </button>
     </div>
   </form>
