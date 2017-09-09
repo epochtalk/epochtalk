@@ -20,9 +20,8 @@ module.exports = function conversationsCreate(server, auth, receiverIds) {
   else {
     priority = Promise.all(Promise.map(receiverIds, function(receiverId) {
       return server.db.users.find(receiverId)
-      .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); })
-      // check if the user being messaged has a priority the authed user has access to msg
-      .then(function(refPriority) {
+      .then(function(refUser) {
+        var refPriority = _.min(_.map(refUser.roles, 'priority'));
         if (admissions.indexOf(refPriority) >= 0) { return true; }
         else { return Promise.reject(Boom.forbidden(em)); }
       });

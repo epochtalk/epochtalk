@@ -76,7 +76,6 @@ var ctrl = [
       message.receivers.forEach(function(receiver) {
         receiverNames.push(receiver.username);
       });
-      console.log(receiverNames);
       var authedIndex = receiverNames.indexOf(Session.user.username);
       if (authedIndex > -1) {
         receiverNames.splice(authedIndex, 1);
@@ -378,9 +377,6 @@ var ctrl = [
 
   }
 ];
-
-// require autocomplete-user-id directive
-require('../components/autocomplete_user_id/autocomplete-user-id.directive');
 
 module.exports = angular.module('ept.messages.ctrl', [])
 .controller('MessagesCtrl', ctrl);
