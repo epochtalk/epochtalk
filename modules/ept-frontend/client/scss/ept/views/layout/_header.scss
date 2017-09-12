@@ -3,7 +3,6 @@ header {
   #ban-notice {
     @include pad(0.2rem 0);
     text-align: center;
-    margin-top: -$breadcrumbs-bottom-margin;
     margin-bottom: $breadcrumbs-bottom-margin;
     font-weight: bold;
     font-size: 0.85rem;
