@@ -2,7 +2,7 @@ var _ = require('lodash');
 var Boom = require('boom');
 var Promise = require('bluebird');
 
-module.exports = function messagesCreate(server, auth, receiverId, convoId) {
+module.exports = function messagesCreate(server, auth, receiverIds, convoId) {
   var userId = auth.credentials.id;
 
   // allowed
@@ -27,14 +27,16 @@ module.exports = function messagesCreate(server, auth, receiverId, convoId) {
   var admissions = server.plugins.acls.getPriorityRestrictions(auth);
   if (!admissions || admissions.length <= 0) { priority = Promise.resolve(true); }
   else {
-    priority = server.db.users.find(receiverId)
-    .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); })
-    // check if the user being messaged has a priority the authed user has access to msg
-    .then(function(refPriority) {
-      if (admissions.indexOf(refPriority) >= 0) { return true; }
-      else { return Promise.reject(Boom.forbidden(em)); }
-    });
+    priority = Promise.all(Promise.map(receiverIds, function(receiverId) {
+      return server.db.users.find(receiverId)
+      .then(function(refUser) {
+        var refPriority = _.min(_.map(refUser.roles, 'priority'));
+        if (admissions.indexOf(refPriority) >= 0) { return true; }
+        else { return Promise.reject(Boom.forbidden(em)); }
+      });
+    }));
   }
 
   return Promise.all([allowed, convoMember, priority]);
 };
+

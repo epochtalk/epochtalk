@@ -3,20 +3,18 @@
   @include span-columns(3);
   margin-bottom: 2rem;
   .list {
-    border: 1px solid $border-color;
     margin-bottom: 1rem;
     .cell {
       @include fill-parent;
       @include truncate-ellipsis;
-      @include pad(0.2rem 0.8rem);
-      border-bottom: 1px solid $border-color;
+      @include pad(0.5rem 0.2rem);
       font-size: 0.8rem;
       line-height: 0.95rem;
       cursor: pointer;
+      position: relative;
+      .action { position: absolute; top: 0.5rem; right: 0.2rem; color: $secondary-font-color; }
       .msg-preview { color: $secondary-font-color; }
-      &:hover { background-color: $sub-header-color; }
-      &.active { background-color: darken($sub-header-color, 5%); }
-      &:last-child { border-bottom: 0; }
+      &.active { background-color: $sub-header-color; }
     }
   }
   #recentMessagesHeader {
@@ -48,11 +46,7 @@
     h4 { margin-bottom: 0; display: inline-block;}
   }
   .reply {
-    border: 1px solid $border-color;
-    border-top: 0;
-    background-color: $sub-header-color;
-    padding: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem;
     .preview {
       background-color: #fff;
       height: 7rem;
@@ -71,6 +65,7 @@
       @include pad(1rem);
       border-bottom: 1px solid $border-color;
       &:last-child { margin-bottom: 2rem; }
+      &:first-child { border-top: 1px solid $border-color; margin-top: 1rem;}
       &.sender { background-color: $sub-header-color; }
       .avatar {
         @include span-columns(1);
@@ -84,6 +79,7 @@
         @include span-columns(12);
         .title {
           margin-bottom: 0.5rem;
+          strong { font-size: 0.8rem; }
           .date { @include pad(0 0 0 0.25rem); font-size: 0.8rem; color: $secondary-font-color; }
           .action { color: $secondary-font-color; }
           &:hover .action { color: $secondary-font-color-dark; }

@@ -483,7 +483,7 @@ module.exports = {
    // =========== Conversations Routes ===========
   'conversations.delete': {
     genDisplayText: function(data) {
-      return `deleted conversation between users "${data.sender.username}" and "${data.receiver.username}"`;
+      return `deleted conversation between users "${data.sender.username}" and "${data.receivers.map(function(u) {return u.username;}).toString().replace(/,/g, ', ')}"`;
     },
     genDisplayUrl: function() { return null; },
     dataQuery: retrieveParticipants
@@ -492,7 +492,7 @@ module.exports = {
    // =========== Messages Routes ===========
   'messages.delete': {
     genDisplayText: function(data) {
-      return `deleted message sent from user "${data.sender.username}" to "${data.receiver.username}"`;
+      return `deleted message sent from user "${data.sender.username}" to "${data.receivers.map(function(u) {return u.username;}).toString().replace(/,/g, ', ')}"`;
     },
     genDisplayUrl: function() { return null; },
     dataQuery: retrieveParticipants
@@ -547,14 +547,17 @@ function retrieveParticipants(data, request) {
       username: sender.username,
       email: sender.email
     };
-    return request.db.users.find(data.receiver_id);
+    data.receivers = [];
+    return Promise.each(data.receiver_ids, function(id) {
+      return request.db.users.find(id)
+      .then(function(receiver) {
+        data.receivers.push({
+          id: receiver.id,
+          username: receiver.username,
+          email: receiver.email
+        });
+      });
+    });
   })
-  .then(function(receiver) {
-    delete data.receiver_id;
-    data.receiver = {
-      id: receiver.id,
-      username: receiver.username,
-      email: receiver.email
-    };
-  });
+  .then(function() { return data; });
 }

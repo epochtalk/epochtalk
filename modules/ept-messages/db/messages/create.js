@@ -9,8 +9,8 @@ var CreationError = errors.CreationError;
 
 module.exports = function(message) {
   message = helper.deslugify(message);
-  var q = 'INSERT INTO private_messages(conversation_id, sender_id, receiver_id, copied_ids, body, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id, created_at';
-  var params = [message.conversation_id, message.sender_id, message.receiver_id, message.copied_ids || [], message.body];
+  var q = 'INSERT INTO private_messages(conversation_id, sender_id, receiver_ids, body, subject, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id, created_at';
+  var params = [message.conversation_id, message.sender_id, message.receiver_ids, message.body, message.subject];
   return using(db.createTransaction(), function(client) {
     return client.queryAsync(q, params)
     .then(function(results) {
@@ -20,6 +20,10 @@ module.exports = function(message) {
         message.viewed = false;
       }
       else { throw new CreationError('Private Message Could Not Be Saved'); }
+    })
+    .then(function() {
+      q = 'UPDATE private_conversations SET deleted_by_user_ids = $1 WHERE id = $2';
+      return client.queryAsync(q, [[], message.conversation_id]);
     });
   })
   .then(function() { return helper.slugify(message); });

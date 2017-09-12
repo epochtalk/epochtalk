@@ -13,6 +13,7 @@ var Promise = require('bluebird');
   * @apiParam (Query) {number} [limit] The number of messages per page
   *
   * @apiUse MessageObjectSuccess
+  * @apiSuccess {timestamp} updated_at Timestamp of the last message received
   * @apiSuccess {string} sender_username The username of the sender
   * @apiSuccess {boolean} sender_deleted Boolean indicating if the sender's account is deleted
   * @apiSuccess {string} sender_avatar The avatar of the sender
