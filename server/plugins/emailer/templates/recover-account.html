@@ -7,11 +7,10 @@
       body {
         font-family: Helvetica, Arial, sans-serif;
         font-size: 12px;
-        background-color: #f4f4f4;
       }
       .header {
-        background-color: #008CBA;
-        color: #ffffff;
+        background-color: {{=it.css.headerBgColor}};
+        color: {{=it.css.headerFontColor}};
         font-weight: bold;
         font-size: 25px;
         padding-left: 25px;
@@ -20,22 +19,23 @@
       }
       .body {
         min-width: 80%;
-        background-color: #fff;
-        border: 1px solid #dfdfdf;
+        background-color: {{=it.css.baseBackgroundColor}};
+        border: 1px solid {{=it.css.borderColor}};
         border-collapse: collapse;;
       }
       .content {
         padding: 25px;
         padding-top: 10px;
-        color: #5e5e5e;
+        color: {{=it.css.baseFontColor}};
       }
       .footer {
-        background-color: #f4f4f4;
-        color: #bababa;
+        background-color: {{=it.css.subHeaderColor}};
+        color: {{=it.css.secondaryFontColor}};
         margin: 5px;
         line-height: 30px;
         height: 30px;
       }
+      a { color: {{=it.css.colorPrimary}}; }
     </style>
   </head>
   <body>
