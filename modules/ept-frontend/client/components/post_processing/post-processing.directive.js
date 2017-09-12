@@ -33,9 +33,13 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       var autoLink = function(url) {
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
+
+        anch.innerHTML = url;
+        if (url.indexOf('www') === 0) {
+          url = 'https://' + url;
+        }
         anch.href = url;
         anch.target = '_blank';
-        anch.innerHTML = url;
         wrap.appendChild(anch);
         return wrap.innerHTML;
       };
