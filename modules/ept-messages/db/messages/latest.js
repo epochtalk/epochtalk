@@ -8,11 +8,11 @@ module.exports = function(userId, opts) {
   userId = helper.deslugify(userId);
   opts = opts || {};
 
-  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.body, mid.subject, mid.created_at, mid.updated_at, mid.viewed, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar';
+  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.body, mid.subject, mid.created_at, mid.viewed, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar';
   var q = ` SELECT * FROM
     ( SELECT
       DISTINCT ON (conversation_id) conversation_id, id, sender_id,
-      receiver_ids, body, subject, created_at, viewed, (SELECT max(p.created_at) FROM private_messages p WHERE p.conversation_id = conversation_id) as updated_at
+      receiver_ids, body, subject, created_at, viewed
       FROM private_messages
       WHERE (SELECT $1 = ANY(pc.deleted_by_user_ids) as deleted
       FROM private_conversations pc WHERE pc.id = conversation_id) IS FALSE AND $1 != ALL(deleted_by_user_ids)
@@ -48,4 +48,3 @@ module.exports = function(userId, opts) {
   })
   .then(helper.slugify);
 };
-
