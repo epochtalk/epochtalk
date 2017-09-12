@@ -34,7 +34,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
         anch.href = url;
-        anch.target = "_blank";
+        anch.target = '_blank';
         anch.innerHTML = url;
         wrap.appendChild(anch);
         return wrap.innerHTML;
@@ -48,9 +48,9 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         // create query params dict
         var queryParams = {};
         var query = temp.search.substring(1);
-        var vars = query.split("&");
+        var vars = query.split('&');
         for (var i = 0; i < vars.length; i++) {
-          var pair = vars[i].split("=");
+          var pair = vars[i].split('=');
           queryParams[pair[0]] = pair[1];
         }
 
@@ -128,7 +128,9 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
           var size = classString.replace('size-', '');
           return 'ng-style="{ \'font-size\': \'' + size + '\' }"';
         }
-        else return styleString;
+        else {
+          return styleString;
+        }
       };
 
       var process = function() {
@@ -156,7 +158,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         });
 
         // noopener/noreferrer hack
-        $("a[target='_blank']").attr('rel', 'noopener noreferrer');
+        $('a[target="_blank"]').attr('rel', 'noopener noreferrer');
 
         // compile directives
         $compile($element.contents())($scope);

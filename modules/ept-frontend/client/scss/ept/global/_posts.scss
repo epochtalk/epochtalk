@@ -9,16 +9,19 @@
   ul { white-space: normal }
   img.loaded { opacity: 1; }
   img { @include transition(opacity 0.5s ease-in); opacity: 0; }
-  @include media($mobile) {
-    .video-wrap {
-      position: relative;
-      padding-bottom: 56.25%;
-      iframe {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-      }
-    }
+  .video-wrap {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 1.875rem;
+    height: 0;
+    overflow:hidden;
+  }
+  .video-wrap iframe, .video-wrap object, .video-wrap embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }
 .quoteHeader {
