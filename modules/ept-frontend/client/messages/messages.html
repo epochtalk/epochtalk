@@ -90,7 +90,7 @@
   <div ng-if="MessagesCtrl.currentConversation.messages.length > 0" class="reply" ng-show="MessagesCtrl.showReply">
     <!-- Message Body and Send button-->
     <label>Message ( <a ng-click="MessagesCtrl.newMessage.preview = !MessagesCtrl.newMessage.preview">Toggle Preview</a> )
-      <textarea ng-model="MessagesCtrl.newMessage.body" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }" maxlength="5000"></textarea>
+      <textarea ng-model="MessagesCtrl.newMessage.body" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }" maxlength="5000" modal-focus="{{MessagesCtrl.showReply}}"></textarea>
       <label ng-show="MessagesCtrl.newMessage.preview">Message Preview</label>
       <div class="preview" ng-show="MessagesCtrl.newMessage.preview" post-processing="MessagesCtrl.newMessage.previewBody"></div>
     </label>
@@ -141,7 +141,7 @@
     <h3 class="thin-underline">New Message</h3>
     <!-- Select User -->
     <label>To
-      <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers">
+      <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers" modal-focus="{{MessagesCtrl.showConvoModal}}">
         <auto-complete min-length="1" debounce-delay="250" source="MessagesCtrl.loadTags($query)"></auto-complete>
       </tags-input>
     </label>
