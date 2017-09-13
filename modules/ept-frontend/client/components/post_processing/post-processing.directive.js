@@ -29,15 +29,12 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       };
 
       // Auto Link Regex
-      var autoLinkRegex = /(?:https?\:\/\/|www\.)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/ig;
+      var autoLinkRegex = /(?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/ig;
       var autoLink = function(url) {
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
 
         anch.innerHTML = url;
-        if (url.indexOf('www') === 0) {
-          url = 'https://' + url;
-        }
         anch.href = url;
         anch.target = '_blank';
         wrap.appendChild(anch);
