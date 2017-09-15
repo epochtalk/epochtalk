@@ -124,7 +124,7 @@
     <h3 class="thin-underline">Add IP Blacklist Rule</h3>
 
     <label>Enter Rule Name
-      <input type="text" placeholder="Rule Name" ng-model="AdminSettingsCtrl.rule.note" ng-disabled="AdminSettingsCtrl.addSubmitted" required />
+      <input type="text" placeholder="Rule Name" ng-model="AdminSettingsCtrl.rule.note" ng-disabled="AdminSettingsCtrl.addSubmitted" modal-focus="{{AdminSettingsCtrl.showAddModal}}" required />
     </label>
 
     <label for="ruleType">Select Rule Type:</label>
@@ -184,7 +184,7 @@
     <h3 class="thin-underline">Edit IP Blacklist Rule</h3>
 
     <label>Rule Name
-      <input type="text" placeholder="Rule Name" ng-model="AdminSettingsCtrl.selectedRule.note" ng-disabled="AdminSettingsCtrl.editSubmitted" required />
+      <input type="text" placeholder="Rule Name" ng-model="AdminSettingsCtrl.selectedRule.note" ng-disabled="AdminSettingsCtrl.editSubmitted" modal-focus="{{AdminSettingsCtrl.showEditModal}}" required />
     </label>
 
     <label for="ruleType">Select Rule Type:</label>

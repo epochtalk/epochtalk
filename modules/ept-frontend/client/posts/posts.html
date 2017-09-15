@@ -276,7 +276,7 @@
     <input ng-if="PostsParentCtrl.reportControlAccess.reportUsers && !PostsParentCtrl.reportedPost.reported_author" type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.user.id" id="reportUser" ng-disabled="PostsParentCtrl.reportSubmitted" required><label ng-if="PostsParentCtrl.reportControlAccess.reportUsers && !PostsParentCtrl.reportedPost.reported_author" for="reportUser">{{PostsParentCtrl.reportedPost.user.username}}</label>
     <input ng-if="PostsParentCtrl.reportControlAccess.reportPosts && !PostsParentCtrl.reportedPost.reported" type="radio" name="reportPost" ng-model="PostsParentCtrl.offendingId" ng-value="PostsParentCtrl.reportedPost.id" id="reportPost" ng-disabled="PostsParentCtrl.reportSubmitted" required><label ng-if="PostsParentCtrl.reportControlAccess.reportPosts && !PostsParentCtrl.reportedPost.reported" for="reportPost">{{PostsParentCtrl.reportedPost.user.username}}'s Post</label>
     <label>Reason for Report</label>
-    <textarea name="reportReason" ng-model="PostsParentCtrl.reportReason" ng-disabled="PostsParentCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required maxlength="255"></textarea>
+    <textarea modal-focus="{{PostsParentCtrl.showReportModal}}" name="reportReason" ng-model="PostsParentCtrl.reportReason" ng-disabled="PostsParentCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required maxlength="255"></textarea>
     <div class="clear">
       <button class="fill-row" ng-click="PostsParentCtrl.submitReport()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || PostsParentCtrl.reportSubmitted" ng-bind="PostsParentCtrl.reportBtnLabel"></button>
@@ -298,13 +298,13 @@
   </form>
 </modal>
 
-<!-- Purge Thread Modal -->
+<!-- Move Thread Modal -->
 <modal show="PostsParentCtrl.showMoveThreadModal" on-close="PostsParentCtrl.closeMoveThreadModal()">
   <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-underline">Move Thread</h3>
     <label>Select a board to move this thread to:</label>
     <div class="control-full-width">
-      <select name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name group by board.parent_name for board in PostsParentCtrl.boards | orderBy:board.view_order"></select>
+      <select modal-focus="{{PostsParentCtrl.showMoveThreadModal}}" name="boards" id="moveThreadBoards" ng-model="PostsParentCtrl.moveBoard" ng-options="board.name group by board.parent_name for board in PostsParentCtrl.boards | orderBy:board.view_order"></select>
     </div>
     <!-- Save Button -->
     <div class="clear">

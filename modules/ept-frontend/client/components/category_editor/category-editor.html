@@ -32,7 +32,7 @@
 <modal show="showAddBoard" on-close="clearAddBoardFields()">
   <h3 class="thin-underline">Add New Board</h3>
   <label>Board Name
-    <input type="text" class="input-text" id="newBoardName" placeholder="Board Name" maxlength="255"/>
+    <input modal-focus="{{showAddBoard}}" type="text" class="input-text" id="newBoardName" placeholder="Board Name" maxlength="255"/>
   </label>
   <label>Board Description
     <textarea rows="5" id="newBoardDesc" placeholder="Board Description" maxlength="255"></textarea>
@@ -57,7 +57,7 @@
 <modal show="showEditBoard">
   <h3 class="thin-underline">Edit Board</h3>
   <label>Board Name
-    <input type="text" class="input-text" id="editBoardName" ng-model="editBoardName" placeholder="Board Name" maxlength="255"/>
+    <input modal-focus="{{showEditBoard}}" type="text" class="input-text" id="editBoardName" ng-model="editBoardName" placeholder="Board Name" maxlength="255"/>
   </label>
   <label>Board Description
     <textarea rows="5" id="editBoardDesc" ng-model="editBoardDesc" placeholder="Board Description" maxlength="255"></textarea>
@@ -95,7 +95,7 @@
 <modal show="showEditCategory">
   <h3 class="thin-underline">Edit Category</h3>
   <label>Category Name
-    <input type="text" class="input-text" id="editCatName" placeholder="Category Name" maxlength="255"/>
+    <input modal-focus="{{showEditCategory}}" type="text" class="input-text" id="editCatName" placeholder="Category Name" maxlength="255"/>
   </label>
   <label>Category Read Access:
     <select id="editCatViewable">

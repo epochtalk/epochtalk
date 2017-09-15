@@ -16,7 +16,7 @@
     <br />
     <div>
       <label>Add Moderators</label>
-      <tags-input min-length="1" placeholder="Type username of moderator(s) to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="vm.modsToAdd">
+      <tags-input modal-focus="{{vm.show}}" min-length="1" placeholder="Type username of moderator(s) to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="vm.modsToAdd">
         <auto-complete min-length="1" source="vm.loadTags($query)"></auto-complete>
       </tags-input>
     </div>
