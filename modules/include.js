@@ -1,6 +1,7 @@
 module.exports = [
   'ept-posts',
   'ept-threads',
+  'ept-thread-notifications',
   'ept-boards',
   'ept-categories',
   'ept-users',

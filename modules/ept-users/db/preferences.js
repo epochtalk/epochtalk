@@ -10,7 +10,9 @@ module.exports = function(userId) {
     SELECT
       posts_per_page,
       threads_per_page,
-      collapsed_categories
+      collapsed_categories,
+      notify_created_threads,
+      notify_replied_threads
     FROM users.preferences
     WHERE user_id = $1
   `;
@@ -21,7 +23,9 @@ module.exports = function(userId) {
       return {
         posts_per_page: 25,
         threads_per_page: 25,
-        collapsed_categories: { cats: [] }
+        collapsed_categories: { cats: [] },
+        notify_created_threads: true,
+        notify_replied_threads: true
       };
     }
   })
