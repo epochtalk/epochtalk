@@ -3,14 +3,14 @@ var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
 
-function getSubscriberEmails(threadId, userId) {
+function getSubscriberEmailData(threadId, userId) {
   threadId = helper.deslugify(threadId);
   userId = helper.deslugify(userId);
 
-  var q = 'SELECT ARRAY(SELECT email FROM users WHERE id = ANY(SELECT user_id FROM users.thread_subscriptions WHERE thread_id = $1 AND user_id != $2)) AS subscribers';
+  var q = `SELECT email, username, (SELECT content ->> 'title' as title from posts WHERE thread_id = $1 ORDER BY created_at LIMIT 1) as title FROM users WHERE id = ANY(SELECT user_id FROM users.thread_subscriptions WHERE thread_id = $1 AND user_id != $2)`;
   var params = [threadId, userId];
-  return db.scalar(q, params)
-  .then(function(data) { return data.subscribers });
+
+  return db.sqlQuery(q, params);
 }
 
 function subscribe(userId, threadId) {
@@ -24,5 +24,6 @@ function subscribe(userId, threadId) {
 
 module.exports = {
   subscribe: subscribe,
-  getSubscriberEmails: getSubscriberEmails
+  getSubscriberEmailData: getSubscriberEmailData
 };
+

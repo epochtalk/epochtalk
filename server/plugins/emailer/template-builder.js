@@ -103,3 +103,21 @@ exports.invite = function(sender, params) {
     })
   };
 };
+
+exports.threadNotification = function(sender, params) {
+  var template = doT.template(templateFile('thread-notification.html'));
+  var currentYear = new Date().getFullYear();
+  return {
+    from: sender,
+    to: params.email,
+    subject: `[${params.site_name}] New replies to thread "${params.thread_name}"`,
+    html: template({
+      css: css(),
+      threadName: params.thread_name,
+      username: params.username,
+      siteName: params.site_name,
+      currentYear: currentYear,
+      threadUrl: params.thread_url
+    })
+  };
+};

@@ -1,16 +1,27 @@
 function subscribeToThread(request) {
   var threadId = request.pre.processed.thread_id;
   var authedUserId = request.auth.credentials.id;
-  return request.db.threadNotifications.subscribe(authedUserId, threadId);
+  request.db.threadNotifications.subscribe(authedUserId, threadId);
+  return;
 }
 
 function emailSubscribers(request) {
   var threadId = request.pre.processed.thread_id;
+  var threadId = request.pre.processed.thread_id;
   var authedUserId = request.auth.credentials.id;
-  return request.db.threadNotifications.getSubscriberEmails(threadId, authedUserId)
-  .then(function(subscribers) {
-    // email subscribers here
+  var config = request.server.app.config;
+  request.db.threadNotifications.getSubscriberEmailData(threadId, authedUserId)
+  .each(function(emailData) {
+    var emailParams = {
+      email: emailData.email,
+      username: emailData.username,
+      thread_name: emailData.title,
+      site_name: config.website.title,
+      thread_url: config.publicUrl + '/threads/' + threadId + '/posts'
+    };
+    return request.emailer.send('threadNotification', emailParams);
   });
+  return;
 }
 
 module.exports = [
