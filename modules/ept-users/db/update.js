@@ -89,7 +89,6 @@ module.exports = function(user) {
         id: user.id,
         posts_per_page: user.posts_per_page || 25,
         threads_per_page: user.threads_per_page || 25,
-        notify_created_threads: user.notify_created_threads || true,
         notify_replied_threads: user.notify_replied_threads || true
       };
       if (user.collapsed_categories) {
