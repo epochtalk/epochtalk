@@ -39,8 +39,29 @@ function removeSubscriptions(userId) {
   return db.sqlQuery(q, params);
 }
 
+function enableNotifications(userId, enabled) {
+  userId = helper.deslugify(userId);
+
+  var q = `INSERT INTO users.preferences (user_id, notify_replied_threads)
+           VALUES ($1, $2)
+           ON CONFLICT (user_id) DO UPDATE SET notify_replied_threads = $2`;
+  var params = [ userId, enabled ];
+  return db.sqlQuery(q, params)
+  .then(function() { return { enabled: enabled }; });
+}
+
+function getNotificationSettings(userId) {
+  userId = helper.deslugify(userId);
+
+  var q = 'SELECT notify_replied_threads FROM users.preferences WHERE user_id = $1';
+  var params = [ userId ];
+  return db.scalar(q, params);
+}
+
 module.exports = {
   subscribe: subscribe,
+  getSubscriberEmailData: getSubscriberEmailData,
   removeSubscriptions: removeSubscriptions,
-  getSubscriberEmailData: getSubscriberEmailData
+  enableNotifications: enableNotifications,
+  getNotificationSettings: getNotificationSettings
 };

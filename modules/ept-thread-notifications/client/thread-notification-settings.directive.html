@@ -1,0 +1,18 @@
+<!-- Page Header -->
+<h3 class="thin-underline">Thread Notification Settings</h3>
+
+<div class="row">
+  <div class="two-thirds-column">
+    <label for="enable-thread-notifications">Enable Thread Notifications</label>
+    <label class="desc-label" for="enable-thread-notifications">Receive an email when there are replies to threads you have created or participated in</label>
+  </div>
+  <div class="one-third-column">
+    <input id="enable-thread-notifications" class="toggle-switch" type="checkbox" ng-model="vmThreadSettings.notificationsEnabled" ng-click="vmThreadSettings.enableNotifications()">
+    <label for="enable-thread-notifications"></label>
+  </div>
+</div>
+<div class="row">
+  <br /><br />
+  <br /><br />
+  <button class="fill-row" ng-click="vmThreadSettings.removeSubscriptions()">Remove All Subscriptions</button>
+</div>

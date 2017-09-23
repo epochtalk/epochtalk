@@ -1,7 +1,6 @@
 module.exports = [
   'ept-posts',
   'ept-threads',
-  'ept-thread-notifications',
   'ept-boards',
   'ept-categories',
   'ept-users',
@@ -17,5 +16,6 @@ module.exports = [
   'ept-auto-moderation',
   'ept-ads',
   'ept-motd',
-  'ept-ignore-users'
+  'ept-ignore-users',
+  'ept-thread-notifications'
 ];
