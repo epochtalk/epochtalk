@@ -34,9 +34,10 @@ function subscribe(userId, threadId) {
 function removeSubscriptions(userId) {
   userId = helper.deslugify(userId);
 
-  var q = 'DELETE FROM users.thread_subscriptions WHERE user_id = $1';
+  var q = 'DELETE FROM users.thread_subscriptions WHERE user_id = $1 RETURNING user_id';
   var params = [ userId ];
-  return db.sqlQuery(q, params);
+  return db.scalar(q, params)
+  .then(function() { return { deleted: true }; });
 }
 
 function enableNotifications(userId, enabled) {
@@ -55,7 +56,11 @@ function getNotificationSettings(userId) {
 
   var q = 'SELECT notify_replied_threads FROM users.preferences WHERE user_id = $1';
   var params = [ userId ];
-  return db.scalar(q, params);
+  return db.scalar(q, params)
+  .then(function(data) {
+    if (data === null) { return { notify_replied_threads: true }; }
+    else { return data; }
+  });
 }
 
 module.exports = {

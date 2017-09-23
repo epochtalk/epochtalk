@@ -1,4 +1,5 @@
 module.exports = [
+  'ept-thread-notifications',
   'ept-posts',
   'ept-threads',
   'ept-boards',
@@ -17,5 +18,4 @@ module.exports = [
   'ept-ads',
   'ept-motd',
   'ept-ignore-users',
-  'ept-thread-notifications'
 ];

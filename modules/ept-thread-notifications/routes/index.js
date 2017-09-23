@@ -23,7 +23,7 @@ var enableNotifications = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
-    validate: { payload: { enabled: Joi.boolean().default(true).required() } }
+    validate: { payload: { enabled: Joi.boolean().default(true) } }
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
@@ -41,8 +41,7 @@ var removeSubscriptions = {
   path: '/api/threadnotifications',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { track_ip: true },
-    validate: { payload: { username: Joi.string() } }
+    plugins: { track_ip: true }
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
