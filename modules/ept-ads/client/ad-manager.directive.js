@@ -133,11 +133,6 @@ var directive = ['Ads', 'Alert', '$timeout', function(Ads, Alert, $timeout) {
         ctrl.tempAd = {id: ad.id};
       };
 
-      // Ad validation
-      this.adValidation = function() {
-        return !ctrl.tempAd || !ctrl.tempAd.html || !ctrl.tmpAd.html.length;
-      };
-
       // Save Ad
       this.saveAd = function() {
         var promise, adId = ctrl.tempAd.id;

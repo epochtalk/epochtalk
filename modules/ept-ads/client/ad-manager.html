@@ -221,7 +221,7 @@
 
     <!-- Save Button -->
     <div class="column-container">
-      <button class="fill-row" ng-click="vm.saveAd()" ng-disabled="vm.adValidation()">
+      <button class="fill-row" ng-click="vm.saveAd()" ng-disabled="!vm.tempAd.html">
         Save
       </button>
     </div>
