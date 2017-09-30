@@ -16,16 +16,12 @@ module.exports = ['$location', '$state', function($location, $state) {
         // default to last page
         var page = scope.pageNum;
 
-        console.log(page, scope.pageCount);
-
         if (page > scope.pageCount) {
           page = scope.pageCount;
         }
         else if (scope.pageNum < 1) {
           page = 1;
         }
-        console.log(page);
-
 
         $state.go($state.current, { page: page });
         if (scope.clickAction) { scope.clickAction(); }
