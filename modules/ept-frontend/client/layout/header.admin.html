@@ -11,7 +11,7 @@
       <li ng-if="HeaderCtrl.hasPermission('adminAccess.settings')"><a ng-class="HeaderCtrl.checkAdminRoute('settings') ? 'menu-btn-selected' : 'menu-btn'" ui-sref="admin-settings" ui-sref-opts="{ reload: true }"><i class="fa fa-cogs"></i><span class="hide-mobile">&nbsp;&nbsp;&nbsp;Settings</span></a></li>
       <li ng-if="HeaderCtrl.hasPermission('adminAccess.management')"><a ng-class="HeaderCtrl.checkAdminRoute('management') ? 'menu-btn-selected' : 'menu-btn'" ui-sref="admin-management" ui-sref-opts="{ reload: true }"><i class="fa fa-briefcase"></i><span class="hide-mobile">&nbsp;&nbsp;&nbsp;Management</span></a></li>
       <li ng-if="HeaderCtrl.hasPermission('modAccess')"><a ng-class="HeaderCtrl.checkAdminRoute('moderation') ? 'menu-btn-selected' : 'menu-btn'" ui-sref="admin-moderation" ui-sref-opts="{ reload: true }"><i class="fa fa-users"></i><span class="hide-mobile">&nbsp;&nbsp;&nbsp;Moderation</span></a></li>
-      <li ng-if="HeaderCtrl.hasPermission('adminAccess')"><a ng-class="HeaderCtrl.checkAdminRoute('analytics') ? 'menu-btn-selected' : 'menu-btn'" ng-href="#" style="color: #888;"><i class="fa fa-line-chart"></i><span class="hide-mobile">&nbsp;&nbsp;&nbsp;Analytics</span></a></li>
+      <!--<li ng-if="HeaderCtrl.hasPermission('adminAccess')"><a ng-class="HeaderCtrl.checkAdminRoute('analytics') ? 'menu-btn-selected' : 'menu-btn'" ng-href="#" style="color: #888;"><i class="fa fa-line-chart"></i><span class="hide-mobile">&nbsp;&nbsp;&nbsp;Analytics</span></a></li>-->
     </ul>
 
     <!-- User Dropdown -->

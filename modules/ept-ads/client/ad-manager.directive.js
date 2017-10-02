@@ -136,7 +136,7 @@ var directive = ['Ads', 'Alert', '$timeout', function(Ads, Alert, $timeout) {
       // Ad validation
       this.adValidation = function() {
         var disabled = false;
-        if (ctrl.tempAd.html.length === 0) { disabled = true; }
+        if (!ctrl.tempAd || !ctrl.tempAd.html || !ctrl.tmpAd.html.length) { disabled = true; }
         return disabled;
       };
 

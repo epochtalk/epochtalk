@@ -64,9 +64,9 @@
     <div id='recover-form'>
       <h2>Recover your account</h2>
       <input type="text" id="recover-input" name="query" placeholder="Email" />
-
-      <div class="g-recaptcha" data-callback="unlockSubmit" data-sitekey="{{siteKey}}"></div>
-
+      {{#if siteKey}}
+      <div id="captcha" class="g-recaptcha" data-callback="unlockSubmit" data-sitekey="{{siteKey}}"></div>
+      {{/if}}
       <div id="attempts"></div>
 
       <button id="recover-submit" disabled>Submit</button>
@@ -83,7 +83,7 @@
   <!-- Load App Bundle -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script type="text/javascript">
-    function unlockSubmit() {
+    var unlockSubmit = function() {
       if ($('#recover-input').val()) {
         $('#recover-submit').removeAttr('disabled');
       }
@@ -109,15 +109,23 @@
       }
 
       $attemptsMsg.text(getWarningMessage());
+      var siteKey = '{{siteKey}}';
+
+      if (!siteKey) {
+        $('#g-recaptcha-response').css('display', 'none');
+      }
+
+      var recaptchaVal;
 
       $('#recover-submit').click(function() {
+        recaptchaVal = siteKey ? $('#g-recaptcha-response').val() : undefined;
         $('#recover-submit').attr('disabled', true);
         $.ajax({
           type: "POST",
           url: '/api/recover',
           data: {
             query: $('#recover-input').val(),
-            recaptcha: $('#g-recaptcha-response').val()
+            recaptcha: recaptchaVal
           }
         })
         .done(function(msg) {
@@ -127,7 +135,7 @@
         })
         .fail(function(xhr) {
           var error = JSON.parse(xhr.responseText);
-          grecaptcha.reset();
+          if (recaptchaVal) { grecaptcha.reset(); }
           failedTries++;
           $attemptsMsg.text('Error: ' + error.message + '. ' + getWarningMessage());
           $('#recover-submit').attr('disabled', true);
@@ -135,7 +143,7 @@
       });
 
       $('#recover-input').keyup(function() {
-        if ($(this).val() && grecaptcha.getResponse().length > 0) {
+        if ($(this).val() && (!siteKey || grecaptcha.getResponse().length > 0)) {
           $('#recover-submit').removeAttr('disabled');
         }
       })

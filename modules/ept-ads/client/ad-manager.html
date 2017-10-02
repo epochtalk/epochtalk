@@ -209,7 +209,7 @@
 
     <!-- HTML -->
     <label class="desc-label">HTML (use ${hash} to obfuscate css classes)</label>
-    <textarea class="input-text" ng-model="vm.tempAd.html"></textarea>
+    <textarea class="input-text" ng-model="vm.tempAd.html" modal-focus="{{vm.showWriteAd}}"></textarea>
 
     <br />
 
@@ -251,7 +251,7 @@
 
     <!-- TEXT -->
     <label class="desc-label">Factoid text (HTML ok):</label>
-    <textarea class="input-text" ng-model="vm.tempFactoid.text"></textarea>
+    <textarea class="input-text" ng-model="vm.tempFactoid.text" modal-focus="{{vm.showWriteFactoid}}"></textarea>
 
     <br />
 
