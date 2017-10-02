@@ -17,6 +17,8 @@ module.exports = ['$location', '$filter', function($location, $filter) {
       // Update pagination if any of the other query strings change
       scope.$watch('queryParams', function () { buildPages(); }, true);
 
+      scope.closeJump = function() { scope.showJump = false; };
+
       var buildPages = function() {
         scope.paginationKeys = [];
         var ellipsis;
