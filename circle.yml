@@ -11,6 +11,9 @@ jobs:
     steps:
       - checkout
 
+      # copy websocket environment variables
+      - cp circle.websocket.env websocket.env
+
       # download and cache dependencies
       - restore_cache:
           keys:
