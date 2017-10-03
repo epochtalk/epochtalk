@@ -3,6 +3,7 @@ var _ = require('lodash');
 var path = require('path');
 var Hapi = require('hapi');
 var Hoek = require('hoek');
+var websocketServer = require('epochtalk-websocket-server');
 var Good = require('good');
 var Inert = require('inert');
 var Vision = require('vision');
@@ -183,6 +184,10 @@ setup()
 .then(function() { server.register({ register: patroller }); })
 // Last Active
 .then(function() { server.register({ register: lastActive }); })
+// Start websocket server
+.then(function() {
+  websocketServer.start(path.normalize(__dirname + '/../websocket-configs.env'));
+})
 // routes and server start
 .then(function() {
   // server routes
