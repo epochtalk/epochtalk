@@ -54,3 +54,9 @@ jobs:
           command: |
             set -eo pipefail
             docker-compose -f circleci-docker-compose.yml up --exit-code-from epochtalk-api-tests epochtalk-api-tests
+
+      - run:
+          name: collect container logs
+          command: |
+            mkdir -p $CIRCLE_TEST_REPORTS
+            docker-compose logs epochtalk > $CIRCLE_TEST_REPORTS/epochtalk.log
