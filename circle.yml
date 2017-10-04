@@ -61,3 +61,6 @@ jobs:
           command: |
             set -eo pipefail
             docker-compose -f circleci-docker-compose.yml up --exit-code-from epochtalk-api-tests epochtalk-api-tests
+
+      - store_artifacts:
+          path: ~/circleci_logs
