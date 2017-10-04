@@ -58,6 +58,6 @@ jobs:
       - run:
           name: collect container logs
           command: |
-            mkdir -p $CIRCLE_TEST_REPORTS
-            docker-compose logs epochtalk > $CIRCLE_TEST_REPORTS/epochtalk.log
+            mkdir -p ~/circleci_logs
+            docker-compose logs epochtalk > ~/circleci_logs/epochtalk.log
           when: on_fail
