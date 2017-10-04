@@ -73,7 +73,7 @@
     "uuid": "^3.0.0",
     "vision": "^4.0.1",
     "webpack": "^1.12.2",
-    "epochtalk-websocket-server": "epochtalk/ept-websocket-server"
+    "epochtalk-websocket-server": "epochtalk/ept-websocket-server#enhancement/websocket-integration"
   },
   "devDependencies": {
     "brototype": "0.0.6",
