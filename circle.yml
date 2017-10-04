@@ -56,10 +56,9 @@ jobs:
             docker-compose -f circleci-docker-compose.yml up --exit-code-from epochtalk-api-tests epochtalk-api-tests
 
       - run:
-          name: collect container logs
+          name: output container logs to console
           command: |
-            mkdir -p ~/circleci_logs
-            docker-compose -f circleci-docker-compose.yml logs epochtalk > ~/circleci_logs/epochtalk.log
+            docker-compose -f circleci-docker-compose.yml logs epochtalk
           when: on_fail
 
       - store_artifacts:
