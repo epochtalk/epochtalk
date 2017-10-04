@@ -61,3 +61,6 @@ jobs:
             mkdir -p ~/circleci_logs
             docker-compose logs epochtalk > ~/circleci_logs/epochtalk.log
           when: on_fail
+
+      - store_artifacts:
+          path: ~/circleci_logs
