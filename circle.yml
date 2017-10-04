@@ -53,7 +53,7 @@ jobs:
           name: collect epochtalk container logs
           command: |
             mkdir -p ~/circleci_logs
-            docker-compose logs -f epochtalk > ~/circleci_logs/epochtalk.log
+            docker-compose -f circleci-docker-compose.yml logs -f epochtalk > ~/circleci_logs/epochtalk.log
           background: true
 
       - run:
