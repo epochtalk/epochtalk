@@ -13,9 +13,9 @@ jobs:
 
       # copy websocket environment variables
       - run:
-          name: Copy Websocket Environment Variables
-          command: |
-            cp circle.websocket.env websocket.env
+        name: Copy Websocket Environment Variables
+        command: |
+          cp circle.websocket.env websocket.env
 
       # download and cache dependencies
       - restore_cache:
