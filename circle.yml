@@ -59,7 +59,7 @@ jobs:
           name: collect container logs
           command: |
             mkdir -p ~/circleci_logs
-            docker-compose logs epochtalk > ~/circleci_logs/epochtalk.log
+            docker-compose -f circleci-docker-compose.yml logs epochtalk > ~/circleci_logs/epochtalk.log
           when: on_fail
 
       - store_artifacts:
