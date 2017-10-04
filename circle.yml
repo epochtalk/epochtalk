@@ -60,3 +60,4 @@ jobs:
           command: |
             mkdir -p $CIRCLE_TEST_REPORTS
             docker-compose logs epochtalk > $CIRCLE_TEST_REPORTS/epochtalk.log
+          when: on_fail
