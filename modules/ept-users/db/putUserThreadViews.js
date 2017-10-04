@@ -5,21 +5,6 @@ var db = dbc.db;
 var helper = dbc.helper;
 var using = Promise.using;
 
-module.exports = function(userId, threadId) {
-  userId = helper.deslugify(userId);
-  threadId = helper.deslugify(threadId);
-
-  return using(db.createTransaction(), function(client) {
-    // query for existing user-thread row for user view
-    return userThreadViewExists(userId, threadId, client)
-    // update or insert user-thread row
-    .then(function(row) {
-      if (row) { updateUserThreadview(userId, threadId, client); }
-      else { insertUserThreadview(userId, threadId, client); }
-    });
-  });
-};
-
 var userThreadViewExists = function(userId, threadId, client) {
   var q = 'SELECT * FROM users.thread_views WHERE user_id = $1 AND thread_id = $2 FOR UPDATE';
   var params = [userId, threadId];
@@ -41,3 +26,19 @@ var updateUserThreadview = function(userId, threadId, client) {
   var params = [userId, threadId];
   return client.queryAsync(q, params);
 };
+
+module.exports = function(userId, threadId) {
+  userId = helper.deslugify(userId);
+  threadId = helper.deslugify(threadId);
+
+  return using(db.createTransaction(), function(client) {
+    // query for existing user-thread row for user view
+    return userThreadViewExists(userId, threadId, client)
+    // update or insert user-thread row
+    .then(function(row) {
+      if (row) { return updateUserThreadview(userId, threadId, client); }
+      else { return insertUserThreadview(userId, threadId, client); }
+    });
+  });
+};
+
