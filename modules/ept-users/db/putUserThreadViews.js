@@ -16,7 +16,7 @@ var userThreadViewExists = function(userId, threadId, client) {
 };
 
 var insertUserThreadview = function(userId, threadId, client) {
-  var q = 'INSERT INTO users.thread_views (user_id, thread_id, time) VALUES ($1, $2, now())';
+  var q = 'INSERT INTO users.thread_views (user_id, thread_id, time) VALUES ($1, $2, now()) RETURNING thread_id';
   var params = [userId, threadId];
   return client.queryAsync(q, params);
 };
@@ -36,6 +36,7 @@ module.exports = function(userId, threadId) {
     return userThreadViewExists(userId, threadId, client)
     // update or insert user-thread row
     .then(function(row) {
+      console.log(row);
       if (row) { return updateUserThreadview(userId, threadId, client); }
       else { return insertUserThreadview(userId, threadId, client); }
     });
