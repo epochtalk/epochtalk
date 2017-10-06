@@ -72,7 +72,8 @@
     "through2": "^2.0.0",
     "uuid": "^3.0.0",
     "vision": "^4.0.1",
-    "webpack": "^1.12.2"
+    "webpack": "^1.12.2",
+    "epochtalk-websocket-server": "epochtalk/ept-websocket-server"
   },
   "devDependencies": {
     "brototype": "0.0.6",

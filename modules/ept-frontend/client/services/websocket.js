@@ -124,7 +124,6 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
   });
 
   return {
-    init: function() {},
     watchUserChannel: watchUserChannel,
     unwatchUserChannel: unwatchUserChannel,
     isOnline: isOnline
