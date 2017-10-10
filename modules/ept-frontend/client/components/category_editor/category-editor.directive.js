@@ -62,6 +62,24 @@ var directive = ['$state', function($state) {
         editCat.name = $('#editCatName').val();
         editCat.viewable_by = $('#editCatViewable').val();
 
+        var nestedBoardDataId;
+
+        // Automatically apply same viewable by settings to nested boards
+        editCatEl
+        .children()
+        .find('[data-id]')
+        .each(function() {
+          nestedBoardDataId = $(this).data('id');
+          var editBoard = $scope.nestableMap[nestedBoardDataId];
+          editBoardDataId = nestedBoardDataId;
+          editBoardId = editBoard.id;
+          $('#editBoardName').val(editBoard.name);
+          $('#editBoardDesc').val(editBoard.description);
+          $('#editBoardViewable').val($('#editCatViewable').val());
+          $('#editBoardPostable').val(editBoard.postable_by);
+          $scope.editBoard();
+        });
+
         // Reset and close
         editCatDataId = '';
         $('#editCatName').val('');
