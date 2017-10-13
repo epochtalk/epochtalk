@@ -222,8 +222,8 @@
       </tr>
     </table>
     <label for="newStatus">Select New Report Status:</label>
-    <input ng-if="ModerationCtrl.selectedMessageReport.status !== 'Pending'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Pending" id="pending" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedMessageReport.status !== 'Pending'" for="pending">Pending</label>
-    <input ng-if="ModerationCtrl.selectedMessageReport.status !== 'Reviewed'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Reviewed" id="reviewed" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedMessageReport.status !== 'Reviewed'" for="reviewed">Reviewed</label>
+    <input modal-focus="{{ModerationCtrl.showSetStatusModal}}" ng-if="ModerationCtrl.selectedMessageReport.status !== 'Pending'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Pending" id="pending" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedMessageReport.status !== 'Pending'" for="pending">Pending</label>
+    <input modal-focus="{{ModerationCtrl.showSetStatusModal}}" ng-if="ModerationCtrl.selectedMessageReport.status !== 'Reviewed'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Reviewed" id="reviewed" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedMessageReport.status !== 'Reviewed'" for="reviewed">Reviewed</label>
     <input ng-if="ModerationCtrl.selectedMessageReport.status !== 'Ignored'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Ignored" id="ignored" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedMessageReport.status !== 'Ignored'" for="ignored">Ignored</label>
     <input ng-if="ModerationCtrl.selectedMessageReport.status !== 'Bad Report'" type="radio" name="newStatus" ng-model="ModerationCtrl.selectedStatus" value="Bad Report" id="badReport" ng-disabled="ModerationCtrl.setStatusSubmitted" required><label ng-if="ModerationCtrl.selectedMessageReport.status !== 'Bad Report'" for="badReport">Bad Report</label>
     <label for="statusReportNote">Leave a note (optional):</label>
@@ -244,7 +244,7 @@
     </label>
 
     <label>Warning Message
-      <textarea type="text" rows="10" ng-model="ModerationCtrl.newConversation.body" maxlength="5000"></textarea>
+      <textarea type="text" rows="10" ng-model="ModerationCtrl.newConversation.body" maxlength="5000" modal-focus="{{ModerationCtrl.showWarnModal}}"></textarea>
     </label>
 
     <div class="clear">

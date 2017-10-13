@@ -2,7 +2,6 @@ var common = {};
 module.exports = common;
 
 var uuid = require('uuid');
-var Promise = require('bluebird');
 
 var formatThread = function(thread, userId) {
   // handle deleted user
@@ -98,20 +97,17 @@ function updateView(server, auth, threadId) {
 function checkViewKey(key, redis) {
   return redis.getAsync(key)
   .then(function(storedTime) {
-    if (storedTime) { return storedTime; }
-    else { return Promise.reject(); } // value is null
-  })
-  .then(function(storedTime) {
-    var timeElapsed = Date.now() - storedTime;
-    // key exists and is past the cooling period
-    // update key with new value and return true
-    if (timeElapsed > 1000 * 60) {
-      return redis.setAsync(key, Date.now())
-      .then(function() { return true; });
+    var returnPromise;
+    if (storedTime) {
+      var timeElapsed = Date.now() - storedTime;
+      // key exists and is past the cooling period
+      // update key with new value and return true
+      if (timeElapsed > 1000 * 60) {
+        returnPromise = redis.setAsync(key, Date.now())
+        .then(function() { return true; });
+      }
     }
-    // key exists but before cooling period
-    // do nothing and return false
-    else { return false; }
+    return returnPromise;
   });
 }
 

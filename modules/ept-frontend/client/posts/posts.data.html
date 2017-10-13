@@ -111,7 +111,7 @@
     <h3 class="thin-underline">Delete Post</h3>
     <p>Are you sure you want to delete this post?</p>
     <label ng-if="PostsParentCtrl.canPostLockQuick(PostsParentCtrl.deletePostIndex)">
-      <input type="checkbox" ng-model="PostsParentCtrl.deleteAndLock" />
+      <input type="checkbox" ng-model="PostsParentCtrl.deleteAndLock" modal-focus="{{PostsParentCtrl.showDeleteModal}}" />
       Lock Post (poster cannot delete/edit this post)?
     </label>
     <!-- Delete Button -->

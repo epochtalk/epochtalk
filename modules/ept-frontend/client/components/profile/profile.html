@@ -156,7 +156,7 @@
           Old password is required
         </div>
         <!-- old password input -->
-        <input type="password" name="oldPass" placeholder="Old Password" ng-model="vmProfile.passData.old_password" auto-focus="$parent.focus" maxlength="255" required>
+        <input type="password" name="oldPass" placeholder="Old Password" ng-model="vmProfile.passData.old_password" modal-focus="{{vmProfile.editPassword}}" maxlength="255" required>
         <i ng-if="$parent.form.oldPass.$touched && !$parent.form.oldPass.$error.required" class="fa fa-check input-icon valid"></i>
         <i ng-if="$parent.form.oldPass.$touched && $parent.form.oldPass.$error.required" class="fa fa-times input-icon invalid"></i>
       </label>
@@ -219,7 +219,7 @@
         <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.required" class="invalid right">
           Email is required
         </div>
-        <input type="email" name="email" ng-model="vmProfile.emailData.email" unique-email="{{vmProfile.user.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" ng-disabled="!vmProfile.pageOwner" required />
+        <input type="email" name="email" ng-model="vmProfile.emailData.email" unique-email="{{vmProfile.user.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" ng-disabled="!vmProfile.pageOwner" modal-focus="{{vmProfile.editEmail}}" required />
       </label>
     </div>
 
@@ -258,7 +258,7 @@
         <div ng-if="$parent.form.username.$error.pattern" class="invalid right">
           Usernames may only contain A-Z, 0-9, -, _ and .
         </div>
-        <input type="text" name="username" ng-model="vmProfile.editProfileUser.username" unique-username="{{vmProfile.user.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ maxlength="255" auto-focus="$parent.focus"/>
+        <input type="text" name="username" ng-model="vmProfile.editProfileUser.username" unique-username="{{vmProfile.user.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ maxlength="255" modal-focus="{{vmProfile.editProfile}}" />
       </label>
 
       <label>Display Name
@@ -309,7 +309,7 @@
       Avatar URL
       <br>
       <small>Hotlinked images will receive a new url</small>
-      <input type="text" name="avatar" ng-model="vmProfile.editAvatarUser.avatar" auto-focus="$parent.focus" />
+      <input type="text" name="avatar" ng-model="vmProfile.editAvatarUser.avatar" modal-focus="{{vmProfile.editAvatar}}" />
     </label>
     <image-uploader model="vmProfile.editAvatarUser.avatar" purpose="avatar"></image-uploader>
     <br />
@@ -328,7 +328,7 @@
     <h3 class="thin-underline">Edit Signature</h3>
     <label>Signature
       (<span ng-bind="vmProfile.editSigUser.raw_signature.length || 0"></span>/5000)
-      <textarea type="text" rows="10" placeholder="Signature" ng-model="vmProfile.editSigUser.raw_signature" auto-focus="$parent.focus" maxlength="5000"></textarea>
+      <textarea type="text" rows="10" placeholder="Signature" ng-model="vmProfile.editSigUser.raw_signature" modal-focus="{{vmProfile.editSignature}}" maxlength="5000"></textarea>
     </label>
     <!-- Save Button -->
     <div class="clear">
@@ -396,7 +396,7 @@
 
     <!-- Message Body -->
     <label>Message:
-      <textarea type="text" rows="10" ng-model="vmProfile.newConversation.body" maxlength="5000"></textarea>
+      <textarea type="text" rows="10" ng-model="vmProfile.newConversation.body" maxlength="5000" modal-focus="{{vmProfile.showConvoModal}}"></textarea>
     </label>
 
     <!-- Save Button -->
@@ -417,7 +417,7 @@
   <form name="$parent.form" class="css-form" novalidate>
     <!-- Preferences Fields -->
     <label>Posts Per Page
-      <input type="number" name="posts_per_page" ng-model="vmProfile.tempPreferences.posts_per_page" placeholder="25" min="25" step="1" max="100" auto-focus="$parent.focus"/>
+      <input type="number" name="posts_per_page" ng-model="vmProfile.tempPreferences.posts_per_page" placeholder="25" min="25" step="1" max="100" modal-focus="{{vmProfile.showBanModal}}" />
     </label>
 
     <label>Threads Per Page

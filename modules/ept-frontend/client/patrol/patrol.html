@@ -160,7 +160,7 @@
     <input ng-if="PatrolParentCtrl.reportControlAccess.reportUsers" type="radio" name="reportPost" ng-model="PatrolParentCtrl.offendingId" ng-value="PatrolParentCtrl.reportedPost.user.id" id="reportUser" ng-disabled="PatrolParentCtrl.reportSubmitted" required><label ng-if="PatrolParentCtrl.reportControlAccess.reportUsers" for="reportUser">{{PatrolParentCtrl.reportedPost.user.username}}</label>
     <input ng-if="PatrolParentCtrl.reportControlAccess.reportPosts" type="radio" name="reportPost" ng-model="PatrolParentCtrl.offendingId" ng-value="PatrolParentCtrl.reportedPost.id" id="reportPost" ng-disabled="PatrolParentCtrl.reportSubmitted" required><label ng-if="PatrolParentCtrl.reportControlAccess.reportPosts" for="reportPost">{{PatrolParentCtrl.reportedPost.user.username}}'s Post</label>
     <label>Reason for Report</label>
-    <textarea name="reportReason" ng-model="PatrolParentCtrl.reportReason" ng-disabled="PatrolParentCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required maxlength="255"></textarea>
+    <textarea modal-focus="{{PatrolParentCtrl.showReportModal}}" name="reportReason" ng-model="PatrolParentCtrl.reportReason" ng-disabled="PatrolParentCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required maxlength="255"></textarea>
     <div class="clear">
       <button class="fill-row" ng-click="PatrolParentCtrl.submitReport()"
         ng-disabled="$parent.form.$invalid || $parent.form.$errors || PatrolParentCtrl.reportSubmitted" ng-bind="PatrolParentCtrl.reportBtnLabel"></button>

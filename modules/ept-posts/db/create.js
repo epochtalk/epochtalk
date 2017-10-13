@@ -14,7 +14,7 @@ module.exports = function(post) {
 
   var post_json = {title: post.title, body: post.body};
 
-  var q, params;
+  var q, queryIncUserPostCount, queryUpdateThreadCreatedAt, queryUpdateThreadUpdatedAt,queryUpdatePostPosition, queryIncThreadPostCount, params;
   q = 'INSERT INTO posts(thread_id, user_id, content, deleted, locked, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, now(), now()) RETURNING id, created_at';
   queryIncUserPostCount = 'UPDATE users.profiles SET post_count = post_count + 1 WHERE user_id = $1';
   queryUpdateThreadCreatedAt = 'UPDATE threads SET created_at = (SELECT created_at FROM posts WHERE thread_id = $1 ORDER BY created_at limit 1) WHERE id = $1'

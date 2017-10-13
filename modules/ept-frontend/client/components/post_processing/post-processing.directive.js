@@ -29,19 +29,20 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       };
 
       // Auto Link Regex
-      var autoLinkRegex = /(?:https?\:\/\/|www\.)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/ig;
+      var autoLinkRegex = /(?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/ig;
       var autoLink = function(url) {
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
+
+        anch.innerHTML = url;
         anch.href = url;
         anch.target = '_blank';
-        anch.innerHTML = url;
         wrap.appendChild(anch);
         return wrap.innerHTML;
       };
 
       // Auto video embed Regex
-      var autoVideoRegex = /((http(s)?:\/\/)?)(www\.)?((youtube\.com\/)|(youtu.be\/))([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?(?![^<]*?(?:<\/a>|\/?>))/gi;
+      var autoVideoRegex = /(?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|\/youtu.be\/)([a-zA-Z0-9_-]{11})+(?:[a-zA-Z0-9;:@#?&%=+\/\$_.-]*)*(?:(t=(?:(\d+h)?(\d+m)?(\d+s)?)))*/gi;
       var autoVideo = function(url) {
         var temp = new URL(url);
 
@@ -61,6 +62,9 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
 
         // time search param
         var time = queryParams.t;
+        if (time.indexOf('s') === time.length - 1) {
+          time = time.slice(0, -1);
+        }
         var src = 'https://www.youtube.com/embed/' + key;
         if (time) { src += '?start=' + time; }
 

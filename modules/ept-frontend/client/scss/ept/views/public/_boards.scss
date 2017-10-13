@@ -12,6 +12,7 @@
     @include pad(0 0 1.25rem 0);
     .info {
       @include span-columns(7);
+      word-break: break-all;
       .description, .childboards { font-size: 0.875rem; }
     }
     .view-count { @include span-columns(2); @include info-text; }

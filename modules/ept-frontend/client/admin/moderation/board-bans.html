@@ -111,7 +111,7 @@
     <div ng-if="!ModerationCtrl.selectedUser">
       <label>
         <strong>User to Board Ban</strong>
-        <autocomplete-username button-action="ModerationCtrl.selectBanUser(user)" input-placeholder="Type username of user to board ban" button-text="Select User"></autocomplete-username>
+        <autocomplete-username button-action="ModerationCtrl.selectBanUser(user)" input-placeholder="Type username of user to board ban" button-text="Select User" modal-focus="{{ModerationCtrl.showManageBansModal}}"></autocomplete-username>
       </label>
     </div>
     <label>

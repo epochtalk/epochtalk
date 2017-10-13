@@ -1,5 +1,11 @@
 <ul class="pagination no-select">
- <span ng-repeat="pageKey in paginationKeys">
+  <li class="jump">
+    <span ng-click="showJump = !showJump">GOTO</span>
+    <div class="jump-tooltip" ng-if="showJump">
+      <jump-to-page page-count="pageCount" focus="showJump" click-action="closeJump"></jump-to-page>
+    </div>
+  </li>
+  <span ng-repeat="pageKey in paginationKeys">
     <li ng-class="pageKey.class">
       <a ng-href="{{pageKey.url}}" ng-bind-html="pageKey.val"></a>
     </li>

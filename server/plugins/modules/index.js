@@ -15,6 +15,7 @@ modules.install = (db) => {
     apiMethods: {},
     hooks: {},
     parsers: [],
+    initMethods: [],
     permissions: {
       defaults: {},
       validations: {},
@@ -39,7 +40,6 @@ modules.install = (db) => {
   // return collection of code from modules
   return master;
 };
-
 
 modules.load = (dir, master) => {
   // load the index.js for the given moduleName
@@ -98,6 +98,9 @@ modules.load = (dir, master) => {
   if (module.permissions && module.permissions.validation) {
     master.permissions.validations[name] = module.permissions.validation;
   }
+
+  // Module init methods
+  if (module.init) { module.init(); }
 
   // Module Permission layouts
   if (module.permissions && module.permissions.layout) {

@@ -160,7 +160,7 @@
       <!-- General Tab -->
       <div ng-if="AdminManagementCtrl.selectedTab === 'general'">
         <label for="name">Role Name</label>
-        <input ng-model="AdminManagementCtrl.newRole.name" id="name" type="text" placeholder="Enter new role name" ng-required="true" />
+        <input ng-model="AdminManagementCtrl.newRole.name" modal-focus="{{AdminManagementCtrl.showRoleModal}}" id="name" type="text" placeholder="Enter new role name" ng-required="true" />
         <label for="desc">Role Description</label>
         <textarea id="desc" ng-model="AdminManagementCtrl.newRole.description" placeholder="Enter a short description of this role" ng-required="true"></textarea>
 

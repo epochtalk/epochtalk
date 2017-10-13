@@ -54,3 +54,9 @@ jobs:
           command: |
             set -eo pipefail
             docker-compose -f circleci-docker-compose.yml up --exit-code-from epochtalk-api-tests epochtalk-api-tests
+
+      - run:
+          name: "Failure: output container logs to console"
+          command: |
+            docker-compose -f circleci-docker-compose.yml logs epochtalk
+          when: on_fail

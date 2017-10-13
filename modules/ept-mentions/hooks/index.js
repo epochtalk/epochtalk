@@ -100,7 +100,8 @@ function createMention(request) {
     var mentionedIds = request.payload.mentioned_ids.slice(0);
     delete request.pre.processed.mentioned_ids;
     delete request.payload.mentioned_ids;
-    Promise.each(mentionedIds, function(mentioneeId) {
+
+    return Promise.each(mentionedIds, function(mentioneeId) {
       var mention = {
         threadId: post.thread_id,
         postId: post.id,
@@ -130,7 +131,9 @@ function createMention(request) {
           }
         });
       });
+
     });
+
   });
 }
 

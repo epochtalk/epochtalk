@@ -4,7 +4,7 @@ ul.pagination {
   li {
     line-height: 1.3rem;
     font-size: 0.875rem;
-    margin-left: 0.3125rem;
+    margin-left: 0.125rem;
     float: left;
     display: block;
     &.unavailable a:hover { background-color: transparent; }
@@ -27,6 +27,66 @@ ul.pagination {
   li.current a {
     background: $color-primary;
     &:hover, &:focus { background: $color-primary-alt; }
+  }
+  li.jump {
+    @include transition(background-color 300ms ease-out);
+    display: block;
+    padding: 0.0325rem 0.325rem 0.0325rem;
+    color: $secondary-font-color;
+    background: none;
+    border-radius: 3px;
+    font-weight: normal;
+    font-size: 0.8rem;
+    line-height: inherit;
+    cursor: pointer;
+    position: relative;
+    .jump-tooltip {
+      text-align: center;
+      color: $secondary-font-color;
+      background: $secondary-font-color-light;
+      background-clip: padding-box;
+      border-radius: 3px;
+      position: absolute;
+      width: 7rem;
+      left: 50%;
+      margin-left: -3.5rem;
+      top: -3.5rem;
+      padding: 0.5rem;
+      z-index: 100;
+
+      &:before, &:after {
+        content: "";
+        position: absolute;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        top: 100%;
+        left: 50%;
+        margin-left: -10px;
+      }
+
+      &:after{
+        border-top: 10px solid $secondary-font-color-light;
+        z-index: 1;
+      }
+
+      .jump-to-page {
+        width: 100%;
+        input {
+          float: left;
+          display: block;
+          margin-bottom: 0;
+          width: 60%;
+          height: 2rem;
+        }
+        button {
+          float: left;
+          display: block;
+          padding: 0;
+          width: 40%;
+          height: 2rem;
+        }
+      }
+    }
   }
   @include media($mobile) { margin-top: 1rem; }
 }
