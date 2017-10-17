@@ -7,7 +7,7 @@ function getSubscriberEmailData(threadId, userId) {
   threadId = helper.deslugify(threadId);
   userId = helper.deslugify(userId);
 
-  var q = `SELECT email, username, (SELECT content ->> 'title' as title from posts WHERE thread_id = $1 ORDER BY created_at LIMIT 1) as title FROM users WHERE id = ANY(SELECT user_id FROM users.thread_subscriptions WHERE thread_id = $1 AND user_id != $2)`;
+  var q = `SELECT u.email, u.username, u.id as user_id, (SELECT (user_id = u.id) as thread_author from posts WHERE thread_id = $1 ORDER BY created_at LIMIT 1), (SELECT content ->> 'title' as title from posts WHERE thread_id = $1 ORDER BY created_at LIMIT 1) as title FROM users u WHERE u.id = ANY(SELECT user_id FROM users.thread_subscriptions WHERE thread_id = $1 AND user_id != $2)`;
   var params = [threadId, userId];
 
   return db.sqlQuery(q, params);
@@ -29,6 +29,15 @@ function subscribe(userId, threadId) {
     }
     else { return; }
   });
+}
+
+function removeSubscription(userId, threadId) {
+  userId = helper.deslugify(userId);
+  threadId = helper.deslugify(threadId);
+  var q = 'DELETE FROM users.thread_subscriptions WHERE user_id = $1 AND thread_id = $2 RETURNING user_id';
+  var params = [ userId, threadId ];
+  return db.scalar(q, params)
+  .then(function() { return { deleted: true }; });
 }
 
 function removeSubscriptions(userId) {
@@ -66,6 +75,7 @@ function getNotificationSettings(userId) {
 module.exports = {
   subscribe: subscribe,
   getSubscriberEmailData: getSubscriberEmailData,
+  removeSubscription: removeSubscription,
   removeSubscriptions: removeSubscriptions,
   enableNotifications: enableNotifications,
   getNotificationSettings: getNotificationSettings

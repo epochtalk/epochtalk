@@ -7,7 +7,6 @@ function subscribeToThread(request) {
 
 function emailSubscribers(request) {
   var threadId = request.pre.processed.thread_id;
-  var threadId = request.pre.processed.thread_id;
   var authedUserId = request.auth.credentials.id;
   var config = request.server.app.config;
   request.db.threadNotifications.getSubscriberEmailData(threadId, authedUserId)
@@ -19,7 +18,14 @@ function emailSubscribers(request) {
       site_name: config.website.title,
       thread_url: config.publicUrl + '/threads/' + threadId + '/posts'
     };
-    return request.emailer.send('threadNotification', emailParams);
+    return request.emailer.send('threadNotification', emailParams)
+    .then(function() {
+      if (!emailData.thread_author) {
+        var userId = request.db.helper.slugify(emailData.user_id);
+        return request.db.threadNotifications.removeSubscription(userId, threadId);
+      }
+    })
+    .catch(console.log);
   });
   return;
 }
