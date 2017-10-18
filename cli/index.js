@@ -7,6 +7,7 @@ var users = require(path.normalize(__dirname + '/../modules/ept-users')).db;
 var categories = require(path.normalize(__dirname + '/../modules/ept-categories')).db;
 var boards = require(path.normalize(__dirname + '/../modules/ept-boards')).db;
 var config = require(path.join(__dirname, '..', 'config'));
+var roles = require(path.join(__dirname, '..', 'server', 'plugins', 'acls'));
 
 var emailerOptions = config.emailer;
 var emailer = require(path.normalize(__dirname + '/../server/plugins/emailer')).expose(emailerOptions);
@@ -38,10 +39,14 @@ program
   .command('seed')
   .description('Seed database. Populates with initial user/board.')
   .action(function() {
-    seed()
+    roles.verifyRoles()
+    .then(function() {
+      return seed();
+    })
     .then(function() {
       process.exit(0);
-    });
+    })
+    .catch(console.log);
   });
 
 // the create-user command

@@ -123,6 +123,12 @@ function getPriorityRestrictions(auth) {
 }
 
 function verifyRoles() {
+  if (!db) {
+    db = require(path.normalize(__dirname + '/../../../db'));
+    var modules = require(path.normalize(__dirname + '/../modules'));
+    var master = modules.install(db);
+    buildRoles(master.permissions.defaults);
+  }
   // get all the roles from the DB
   return db.roles.all()
   // find any that are missing and add them
@@ -271,6 +277,7 @@ function reprioritizeRoles(allRoles) {
   allRoles.forEach(function(role) { roles[role.lookup].priority = role.priority; });
 }
 
+exports.verifyRoles = verifyRoles;
 
 exports.register.attributes = {
   name: 'acls',
