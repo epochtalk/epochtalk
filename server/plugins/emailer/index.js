@@ -36,7 +36,7 @@ exports.expose = function(emailer) {
 
 function init() {
   emailerConfig = options.config.emailer;
-  if (_.isUndefined(emailerConfig) || emailerConfig.sender === null) {
+  if (_.isUndefined(emailerConfig) || !_.get(emailerConfig, 'sender')) {
     transporter = {
       sendMail: function(email, callback) {
         console.log(email);
