@@ -161,7 +161,6 @@ function unignoreUser(userId, ignoredUserId) {
 }
 
 function fixTextSearchVector(post) {
-
   var q = `SELECT
     setweight(to_tsvector('simple', COALESCE($1,'')), 'A') ||
     setweight(to_tsvector('simple', COALESCE($2,'')), 'B')
