@@ -46,7 +46,9 @@ sanitizer.display = function(input) {
 sanitizer.bbcode = function(input) {
   // used for posts and user signatures
   // display tags plus font, font face, font size
-  return sanitize(input, {
+  var regex = /\[code\](.*?)\[\/code\]/gi;
+  var codeTags = input.match(regex);
+  var text = sanitize(input, {
     allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'tfoot', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img', 'sub', 'sup', 'tt', 'del' ],
     allowedAttributes: {
       a: [ 'href', 'name', 'target' ],
@@ -57,6 +59,14 @@ sanitizer.bbcode = function(input) {
     // URL schemes we permit
     allowedSchemes: [ 'http', 'https', 'ftp', 'mailto' ]
   });
+
+  var cleanedText = text;
+  var i = 0;
+  text.match(regex).forEach(function(val) {
+    cleanedText = cleanedText.replace(val, codeTags[i++]);
+  });
+
+  return cleanedText;
 };
 
 exports.register = function(server, options, next) {
