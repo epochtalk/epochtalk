@@ -76,6 +76,7 @@ code {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
   background-color: $code-block-bg-color;
   padding: 1rem 1rem;
+  margin-bottom: 0.5rem;
   display: block;
   font-size: 0.85rem;
   &.preview { padding: 0; display: inline-block; }

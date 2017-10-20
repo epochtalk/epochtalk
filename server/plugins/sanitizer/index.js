@@ -46,9 +46,15 @@ sanitizer.display = function(input) {
 sanitizer.bbcode = function(input) {
   // used for posts and user signatures
   // display tags plus font, font face, font size
-  var regex = /\[code\](.*?)\[\/code\]/gi;
+  var regex = /\[code\]([\s\S]*?)\[\/code\]/gi;
   var codeTags = input.match(regex);
-  var text = sanitize(input, {
+  var replacedTagsInput = input;
+
+  input.match(regex).forEach(function(val) {
+    replacedTagsInput = replacedTagsInput.replace(val, '[code][/code]');
+  });
+
+  var text = sanitize(replacedTagsInput, {
     allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'tfoot', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img', 'sub', 'sup', 'tt', 'del' ],
     allowedAttributes: {
       a: [ 'href', 'name', 'target' ],
