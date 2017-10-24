@@ -50,9 +50,12 @@ sanitizer.bbcode = function(input) {
   var codeTags = input.match(regex);
   var replacedTagsInput = input;
 
-  input.match(regex).forEach(function(val) {
-    replacedTagsInput = replacedTagsInput.replace(val, '[code][/code]');
-  });
+  var codeMatches = input.match(regex);
+  if (codeMatches && codeMatches.length) {
+    codeMatches.forEach(function(val) {
+      replacedTagsInput = replacedTagsInput.replace(val, '[code][/code]');
+    });
+  }
 
   var text = sanitize(replacedTagsInput, {
     allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'tfoot', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img', 'sub', 'sup', 'tt', 'del' ],
@@ -68,9 +71,12 @@ sanitizer.bbcode = function(input) {
 
   var cleanedText = text;
   var i = 0;
-  text.match(regex).forEach(function(val) {
-    cleanedText = cleanedText.replace(val, codeTags[i++]);
-  });
+  var matches = text.match(regex);
+  if (matches && matches.length) {
+    matches.forEach(function(val) {
+      cleanedText = cleanedText.replace(val, codeTags[i++]);
+    });
+  }
 
   return cleanedText;
 };

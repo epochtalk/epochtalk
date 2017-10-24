@@ -29,7 +29,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       };
 
       // Auto Link Regex
-      var autoLinkRegex = /(?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/ig;
+      var autoLinkRegex = /(?!<code[^>]*?>)((?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?)(?![^<]*?<\/code>)/ig;
       var autoLink = function(url) {
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
@@ -42,7 +42,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       };
 
       // Auto video embed Regex
-      var autoVideoRegex = /(?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|\/youtu.be\/)([a-zA-Z0-9_-]{11})+(?:[a-zA-Z0-9;:@#?&%=+\/\$_.-]*)*(?:(t=(?:(\d+h)?(\d+m)?(\d+s)?)))*/gi;
+      var autoVideoRegex = /(?!<code[^>]*?>)((?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|\/youtu.be\/)([a-zA-Z0-9_-]{11})+(?:[a-zA-Z0-9;:@#?&%=+\/\$_.-]*)*(?:(t=(?:(\d+h)?(\d+m)?(\d+s)?)))*)(?![^<]*?<\/code>)/gi;
       var autoVideo = function(url) {
         var temp = new URL(url);
 
@@ -62,7 +62,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
 
         // time search param
         var time = queryParams.t;
-        if (time.indexOf('s') === time.length - 1) {
+        if (time && time.indexOf('s') === time.length - 1) {
           time = time.slice(0, -1);
         }
         var src = 'https://www.youtube.com/embed/' + key;
@@ -141,7 +141,6 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         var postBody = $scope.postProcessing;
         var processed = postBody || '';
         var doStyleFix = $scope.styleFix;
-
         // autoDate and autoLink
         processed = processed.replace(autoDateRegex, autoDate) || processed;
         processed = processed.replace(autoVideoRegex, autoVideo) || processed;
