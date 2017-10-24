@@ -75,7 +75,8 @@ hr { margin: 1rem 0; border: none; height: 1px; color: $border-color; background
 code {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
   background-color: $code-block-bg-color;
-  padding: 0 1rem 1rem;
+  padding: 1rem 1rem;
+  margin-bottom: 0.5rem;
   display: block;
   font-size: 0.85rem;
   &.preview { padding: 0; display: inline-block; }
