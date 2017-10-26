@@ -36,7 +36,6 @@ module.exports = function(userId, threadId) {
     return userThreadViewExists(userId, threadId, client)
     // update or insert user-thread row
     .then(function(row) {
-      console.log(row);
       if (row) { return updateUserThreadview(userId, threadId, client); }
       else { return insertUserThreadview(userId, threadId, client); }
     });

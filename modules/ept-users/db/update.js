@@ -88,7 +88,8 @@ module.exports = function(user) {
       var prefs = {
         id: user.id,
         posts_per_page: user.posts_per_page || 25,
-        threads_per_page: user.threads_per_page || 25
+        threads_per_page: user.threads_per_page || 25,
+        notify_replied_threads: user.notify_replied_threads || true
       };
       if (user.collapsed_categories) {
         prefs.collapsed_categories = { cats: user.collapsed_categories };
