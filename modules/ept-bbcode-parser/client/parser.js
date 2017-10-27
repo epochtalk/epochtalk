@@ -1,11 +1,11 @@
 var bbcodeCompiler = require('./bbcode');
+var sanitizeHtml = require('./sanitize-html.min');
 var bbcodeDumbCompiler = require('./bbcode-dumb');
 
 module.exports = {
-  parse: function (input) {
-    if (!input) {
-      input = '';
-    }
+  parse: function (input, sanitize) {
+    if (!input) { input = ''; }
+    if (sanitize) { input = sanitizeHtml(input); }
 
     // this basically prevents html tags
     // convert all (<, &lt;) and (>, &gt;) to decimal to escape the regex
