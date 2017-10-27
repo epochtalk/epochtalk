@@ -108,6 +108,7 @@ modules.load = (dir, master) => {
   }
 };
 
+exports.install = modules.install;
 
 exports.register = (server, options, next) => {
   server = server || {};
