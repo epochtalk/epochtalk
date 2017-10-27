@@ -59,6 +59,8 @@ function usernameToUserId(request) {
     var usernamesArr = body.match(mentionsRegex) || [];
     usernamesArr = _.uniqWith(usernamesArr, _.isEqual);
 
+    request.payload.body_original = request.payload.body;
+
     body = body.replace(mentionsRegex, u => '{' + u.toLowerCase() + '}');
     var mentionedIds = [];
 
@@ -84,6 +86,14 @@ function usernameToUserId(request) {
       request.payload.mentioned_ids = mentionedIds;
     });
   });
+}
+
+function correctTextSearchVector(request) {
+  var mentionIds = request.payload.mentioned_ids;
+  if (!mentionIds || !mentionIds.length) { return; }
+  var post = request.pre.processed;
+  request.db.mentions.fixTextSearchVector(post)
+  .then(function() { delete request.pre.processed.body_original; });
 }
 
 function removeMentionIds(request) {
@@ -159,11 +169,14 @@ module.exports = [
   { path: 'mentions.page.post', method: userIdToUsername },
   { path: 'portal.view.post', method: userIdToUsername },
   { path: 'posts.update.post', method: userIdToUsername },
+  { path: 'posts.update.post', method: correctTextSearchVector },
   { path: 'posts.create.pre', method: usernameToUserId },
   { path: 'posts.update.pre', method: usernameToUserId },
   { path: 'threads.create.pre', method: usernameToUserId },
   { path: 'posts.create.post', method: createMention },
+  { path: 'posts.create.post', method: correctTextSearchVector },
   { path: 'posts.update.post', method: removeMentionIds },
   { path: 'threads.create.post', method: createMention },
+  { path: 'threads.create.post', method: correctTextSearchVector },
   { path: 'users.find.post', method: userIgnoredMentions },
 ];
