@@ -142,6 +142,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         var processed = postBody || '';
         var doStyleFix = $scope.styleFix;
         // autoDate and autoLink
+        processed = processed.replace(new RegExp('&#47;&#47;', 'g'), '//');
         processed = processed.replace(autoDateRegex, autoDate) || processed;
         processed = processed.replace(autoVideoRegex, autoVideo) || processed;
         processed = processed.replace(autoLinkRegex, autoLink) || processed;
