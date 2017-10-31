@@ -12,7 +12,7 @@ module.exports = function(post) {
   return using(db.createTransaction(), function(client) {
     var q, params;
     q = 'SELECT content ->> \'title\' as title, content ->> \'body\' as body FROM posts WHERE id = $1 FOR UPDATE';
-    return client.queryAsync(q, [post.id])
+    return client.query(q, [post.id])
     .then(function(results) {
       if (results.rows.length > 0) { return results.rows[0]; }
       else { throw new NotFoundError('Post Not Found'); }
@@ -26,7 +26,7 @@ module.exports = function(post) {
       let post_content = {title: post.title, body: post.body};
       q = 'UPDATE posts SET content = $1, thread_id = $2, updated_at = now() WHERE id = $3 RETURNING updated_at';
       params = [post_content, post.thread_id, post.id];
-      return client.queryAsync(q, params)
+      return client.query(q, params)
       .then(function(results) { post.updated_at = results.rows[0].updated_at; });
     });
   })

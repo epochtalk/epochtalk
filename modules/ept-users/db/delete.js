@@ -12,16 +12,16 @@ module.exports = function(userId) {
   return using(db.createTransaction(), function(client) {
     // delete user bans TODO: cascade delete?
     q = 'DELETE FROM users.bans WHERE user_id = $1';
-    return client.queryAsync(q, [userId])
+    return client.query(q, [userId])
     // delete user roles TODO: cascade delete?
     .then(function() {
       q = 'DELETE FROM roles_users WHERE user_id = $1';
-      return client.queryAsync(q, [userId]);
+      return client.query(q, [userId]);
     })
     // get threads user has started
     .then(function() {
       q = ' SELECT thread_id FROM ( SELECT DISTINCT(thread_id) AS id FROM posts WHERE user_id = $1 ) t LEFT JOIN LATERAL ( SELECT thread_id FROM (SELECT user_id, thread_id FROM posts WHERE thread_id = t.id ORDER BY created_at LIMIT 1) f WHERE f.user_id = $1 ) pFirst ON true WHERE thread_id IS NOT NULL';
-      return client.queryAsync(q, [userId]);
+      return client.query(q, [userId]);
     })
     // parse out thread ids
     .then(function(userThreads) {
@@ -34,12 +34,12 @@ module.exports = function(userId) {
     // delete user's thread
     .then(function(userThreads) {
       q = 'DELETE FROM threads WHERE id = ANY($1::uuid[])';
-      return client.queryAsync(q, [userThreads]);
+      return client.query(q, [userThreads]);
     })
     // delete user
     .then(function() {
       q = 'DELETE FROM users WHERE id = $1 RETURNING username, email';
-      return client.queryAsync(q, [userId])
+      return client.query(q, [userId])
       .then(function(results) { return results.rows[0]; });
     });
   });

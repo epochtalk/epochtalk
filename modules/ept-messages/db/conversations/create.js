@@ -11,7 +11,7 @@ module.exports = function() {
   var conversation = {};
   var q = 'INSERT INTO private_conversations(created_at) VALUES (now()) RETURNING id, created_at';
   return using(db.createTransaction(), function(client) {
-    return client.queryAsync(q)
+    return client.query(q)
     .then(function(results) {
       if (results.rows.length > 0) {
         conversation.id = results.rows[0].id;

@@ -25,7 +25,7 @@ module.exports = function(post) {
   params = [post.thread_id, post.user_id, post_json, post.deleted, post.locked];
 
   return using(db.createTransaction(), function(client) {
-    return client.queryAsync(q, params)
+    return client.query(q, params)
     .then(function(results) {
       if (results.rows.length > 0) {
         post.id = results.rows[0].id;
@@ -36,19 +36,19 @@ module.exports = function(post) {
       }
     })
     .then(function() {
-      return client.queryAsync(queryIncUserPostCount, [post.user_id]);
+      return client.query(queryIncUserPostCount, [post.user_id]);
     })
     .then(function() {
-      return client.queryAsync(queryUpdateThreadCreatedAt, [post.thread_id]);
+      return client.query(queryUpdateThreadCreatedAt, [post.thread_id]);
     })
     .then(function() {
-      return client.queryAsync(queryUpdateThreadUpdatedAt, [post.thread_id]);
+      return client.query(queryUpdateThreadUpdatedAt, [post.thread_id]);
     })
     .then(function() {
-      return client.queryAsync(queryUpdatePostPosition, [post.thread_id, post.id]);
+      return client.query(queryUpdatePostPosition, [post.thread_id, post.id]);
     })
     .then(function() {
-      return client.queryAsync(queryIncThreadPostCount, [post.thread_id]);
+      return client.query(queryIncThreadPostCount, [post.thread_id]);
     });
   })
   .then(function() { return helper.slugify(post); });

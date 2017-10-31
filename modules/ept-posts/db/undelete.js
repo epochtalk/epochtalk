@@ -15,7 +15,7 @@ module.exports = function(id) {
   return using(db.createTransaction(), function(client) {
     // lock up post row
     q = 'SELECT * from posts WHERE id = $1 FOR UPDATE';
-    return client.queryAsync(q, [id])
+    return client.query(q, [id])
     .then(function(results) {
       if (results.rows.length > 0) { post = results.rows[0]; }
       else { return Promise.reject('Post Not Found'); }
@@ -28,7 +28,7 @@ module.exports = function(id) {
     .then(function() {
       post.deleted = false;
       q = 'UPDATE posts SET deleted = False WHERE id = $1';
-      return client.queryAsync(q, [id]);
+      return client.query(q, [id]);
     })
     .then(function() { return post; })
     .then(helper.slugify);

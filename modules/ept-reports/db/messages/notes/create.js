@@ -10,7 +10,7 @@ module.exports = function(reportNote) {
   return using(db.createTransaction(), function(client) {
     var q = 'INSERT INTO administration.reports_messages_notes(report_id, user_id, note, created_at, updated_at) VALUES($1, $2, $3, now(), now()) RETURNING id, created_at, updated_at';
     var params = [reportNote.report_id, reportNote.user_id, reportNote.note];
-    return client.queryAsync(q, params)
+    return client.query(q, params)
     .then(function(results) { // return created report note details
       var rows = results.rows;
       if (rows.length) { return rows[0]; }
@@ -25,7 +25,7 @@ module.exports = function(reportNote) {
     .then(function() {
       q = 'SELECT u.username, p.avatar FROM users u JOIN users.profiles p ON (p.user_id = u.id) WHERE u.id = $1';
       params = [reportNote.user_id];
-      return client.queryAsync(q, params);
+      return client.query(q, params);
     })
     .then(function(results) { // return userInfo
       var rows = results.rows;

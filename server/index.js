@@ -57,6 +57,7 @@ setup()
   server.decorate('server', 'db', db);
   server.decorate('server', 'errorMap', errorMap);
   server.decorate('server', 'redis', redis);
+
 })
 // server logging
 .then(function() {
@@ -216,6 +217,17 @@ setup()
     server.log('debug', 'DB Connection: ' + process.env.DATABASE_URL);
     server.log('debug', 'config: ' + JSON.stringify(configClone, undefined, 2));
     server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
+  });
+
+  // listen on SIGINT signal and gracefully stop the server
+  process.on('SIGINT', function () {
+    console.log('Shutting down server');
+    server.stop({ timeout: 10000 })
+    .then(db.close) // end connection with db pool
+    .then(function (err) {
+      console.log('Server has stopped');
+      process.exit((err) ? 1 : 0);
+    });
   });
 })
 .catch(function(err) {

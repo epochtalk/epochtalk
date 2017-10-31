@@ -8,7 +8,7 @@ var using = Promise.using;
 var userThreadViewExists = function(userId, threadId, client) {
   var q = 'SELECT * FROM users.thread_views WHERE user_id = $1 AND thread_id = $2 FOR UPDATE';
   var params = [userId, threadId];
-  return client.queryAsync(q, params)
+  return client.query(q, params)
   .then(function(results) {
     if (results.rows.length > 0) { return results.rows[0]; }
     else { return; }
@@ -18,13 +18,13 @@ var userThreadViewExists = function(userId, threadId, client) {
 var insertUserThreadview = function(userId, threadId, client) {
   var q = 'INSERT INTO users.thread_views (user_id, thread_id, time) VALUES ($1, $2, now()) RETURNING thread_id';
   var params = [userId, threadId];
-  return client.queryAsync(q, params);
+  return client.query(q, params);
 };
 
 var updateUserThreadview = function(userId, threadId, client) {
   var q = 'UPDATE users.thread_views SET time = now() WHERE user_id = $1 AND thread_id = $2';
   var params = [userId, threadId];
-  return client.queryAsync(q, params);
+  return client.query(q, params);
 };
 
 module.exports = function(userId, threadId) {

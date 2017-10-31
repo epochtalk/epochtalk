@@ -51,13 +51,13 @@ var formatUser = function(user) {
 var insertUserProfile = function(user, client) {
   var q = 'INSERT INTO users.profiles (user_id, avatar, position, signature, raw_signature, fields) VALUES ($1, $2, $3, $4, $5, $6)';
   var params = [user.id, user.avatar, user.position, user.signature, user.raw_signature, user.fields];
-  return client.queryAsync(q, params);
+  return client.query(q, params);
 };
 
 var updateUserProfile = function(user, client) {
   var q = 'UPDATE users.profiles SET user_id = $1, avatar = $2, position = $3, signature = $4, raw_signature = $5, fields = $6 WHERE user_id = $1';
   var params = [user.id, user.avatar, user.position, user.signature, user.raw_signature, user.fields];
-  return client.queryAsync(q, params);
+  return client.query(q, params);
 };
 
 common.clean = clean;

@@ -18,7 +18,7 @@ module.exports = function(user) {
     // query original user row
     q = 'SELECT u.id, u.username, u.email, u.passhash, u.confirmation_token, u.reset_token, u.reset_expiration, u.created_at, u.updated_at, u.imported_at, p.avatar, p.position, p.signature, p.raw_signature, p.fields FROM users u LEFT JOIN users.profiles p ON u.id = p.user_id WHERE u.id = $1';
     params = [user.id];
-    return client.queryAsync(q, params)
+    return client.query(q, params)
     .then(function(results) {
       if (results.rows.length > 0) { oldUser = results.rows[0]; }
       else { throw new CreationError('User Not Found'); }
@@ -38,12 +38,12 @@ module.exports = function(user) {
 
       q = 'UPDATE users SET username = $1, email = $2, passhash = $3, reset_token = $4, reset_expiration = $5, confirmation_token = $6, updated_at = now() WHERE id = $7';
       params = [user.username, user.email, passhash, user.reset_token, new Date(user.reset_expiration), user.confirmation_token, user.id];
-      return client.queryAsync(q, params);
+      return client.query(q, params);
     })
     // query for user profile row
     .then(function() {
       q = 'SELECT * FROM users.profiles WHERE user_id = $1 FOR UPDATE';
-      return client.queryAsync(q, [user.id])
+      return client.query(q, [user.id])
       .then(function(results) {
         var exists = false;
         if (results.rows.length > 0) { exists = true; }
@@ -76,7 +76,7 @@ module.exports = function(user) {
     // query for users.preferences row
     .then(function() {
       q = 'SELECT * FROM users.preferences WHERE user_id = $1 FOR UPDATE';
-      return client.queryAsync(q, [user.id])
+      return client.query(q, [user.id])
       .then(function(results) {
         var exists = false;
         if (results.rows.length) { exists = true; }
@@ -107,11 +107,11 @@ module.exports = function(user) {
 function insertUserPreferences(user, client) {
   var q = 'INSERT INTO users.preferences (user_id, posts_per_page, threads_per_page, collapsed_categories) VALUES ($1, $2, $3, $4)';
   var params = [user.id, user.posts_per_page, user.threads_per_page, user.collapsed_categories];
-  return client.queryAsync(q, params);
+  return client.query(q, params);
 }
 
 function updateUserPreferences(user, client) {
   var q = 'UPDATE users.preferences SET posts_per_page = $2, threads_per_page = $3, collapsed_categories = $4 WHERE user_id = $1';
   var params = [user.id, user.posts_per_page, user.threads_per_page, user.collapsed_categories];
-  return client.queryAsync(q, params);
+  return client.query(q, params);
 }
