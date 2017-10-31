@@ -5,11 +5,9 @@ var helper = dbc.helper;
 
 function save(data) {
   // cannot update jsonb using standard node-pg syntax
-  var q = `
-    UPDATE configurations SET config = config ||
-    '{"motd": { "message": "` + data.motd + `", "mainViewOnly": ` + data.main_view_only + ` } }'
-  `;
-  return db.sqlQuery(q);
+  var motd = { motd: { message: data.motd, mainViewOnly: data.main_view_only } };
+  var q = 'UPDATE configurations SET config = config || $1';
+  return db.sqlQuery(q, [ motd ]);
 }
 
 
