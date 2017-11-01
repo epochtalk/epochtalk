@@ -325,7 +325,8 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     ctrl.warnBtnLabel = 'Sending...';
     // create a new conversation id to put this message under
     var newMessage = {
-      receiver_id: ctrl.newConversation.receiver_id,
+      receiver_ids: [ctrl.newConversation.receiver_id],
+      subject:'[WARNING] User Report',
       body: ctrl.newConversation.body,
     };
 
