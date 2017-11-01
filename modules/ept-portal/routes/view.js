@@ -89,6 +89,7 @@ module.exports = {
         { method: processing, assign: 'processed' },
       ],
       { method: 'hooks.merge' },
+      { method: 'common.portal.parseOut(parser, pre.processed.threads)' },
       { method: 'hooks.postProcessing' }
     ]
   },
@@ -96,7 +97,6 @@ module.exports = {
     return reply(request.pre.processed);
   }
 };
-
 
 function processing(request, reply) {
   var config = request.server.app.config;

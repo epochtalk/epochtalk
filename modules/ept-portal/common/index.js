@@ -1,5 +1,27 @@
+var Promise = require('bluebird');
 var common = {};
 module.exports = common;
+
+common.parseOut = parseOut;
+
+common.export = () =>  {
+  return [
+    {
+      name: 'common.portal.parseOut',
+      method: parseOut,
+      options: { callback: false }
+    }
+  ];
+};
+
+
+function parseOut(parser, threads) {
+  if (!threads || !threads.length) { return threads; }
+  return Promise.map(threads, function(thread) {
+    thread.post_body = parser.parse(thread.post_body);
+  });
+}
+
 
 common.formatThread = function(thread, userId) {
   // handle deleted user
