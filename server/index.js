@@ -214,8 +214,15 @@ setup()
     if (configClone.recaptchaSecretKey) { configClone.recaptchaSecretKey = configClone.recaptchaSecretKey.replace(/./g, '*'); }
     if (configClone.gaKey) { configClone.gaKey = configClone.gaKey.replace(/./g, '*'); }
     if (configClone.websocketAPIKey) { configClone.websocketAPIKey = configClone.websocketAPIKey.replace(/./g, '*'); }
-    server.log('debug', 'DB Connection: ' + process.env.DATABASE_URL);
-    server.log('debug', 'config: ' + JSON.stringify(configClone, undefined, 2));
+    var dbCon = {
+      database: process.env.PGDATABASE,
+      host: process.env.PGHOST,
+      port: process.env.PGPORT,
+      username: process.env.PGUSER,
+      password: process.env.PGPASSWORD.replace(/./g, '*')
+    };
+    server.log('debug', '\nDB Connection:\n' + JSON.stringify(dbCon, undefined, 2));
+    server.log('debug', '\nServer Configurations:\n' + JSON.stringify(configClone, undefined, 2));
     server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
   });
 
