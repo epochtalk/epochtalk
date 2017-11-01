@@ -79,6 +79,7 @@ code {
   margin-bottom: 0.5rem;
   display: block;
   font-size: 0.85rem;
+  color: $code-block-text-color;
   &.preview { padding: 0; display: inline-block; }
 }
 
