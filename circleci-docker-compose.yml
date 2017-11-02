@@ -24,7 +24,11 @@ services:
       - postgres
     environment:
       PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
-      DATABASE_URL: postgres://docker:docker@postgres:5432/epochtalk
+      PGUSER: docker
+      PGHOST: postgres
+      PGPASSWORD: docker
+      PGDATABASE: epochtalk
+      PGPORT: 5432
       REDIS_HOST: redis
       REDIS_PORT: 6379
       RECAPTCHA_SITE_KEY: ""
