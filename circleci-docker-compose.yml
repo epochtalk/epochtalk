@@ -1,7 +1,7 @@
 version: '3'
 services:
   epochtalk-api-tests:
-    image: quay.io/epochtalk/epochtalk-api-tests:update/node-pg
+    image: quay.io/epochtalk/epochtalk-api-tests:update_node-pg
     ports:
       - "1025:1025"
     depends_on:
