@@ -1,7 +1,7 @@
 version: '3'
 services:
   epochtalk-api-tests:
-    image: quay.io/epochtalk/epochtalk-api-tests:latest
+    image: quay.io/epochtalk/epochtalk-api-tests:update/node-pg
     ports:
       - "1025:1025"
     depends_on:
@@ -46,7 +46,7 @@ services:
       RATE_LIMITING_POST_INTERVAL: -1
       RATE_LIMITING_DELETE_INTERVAL: -1
   epoch:
-    image: quay.io/epochtalk/epoch:feature_email-notifications
+    image: quay.io/epochtalk/epoch
     depends_on:
       - postgres
     links:
