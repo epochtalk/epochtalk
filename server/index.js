@@ -67,36 +67,55 @@ setup()
       return { path: path, extension: 'log', rotate: 'daily', format: 'YYYY-MM-DD-X', prefix:'epochtalk' };
     };
     var options = {
-      reporters: [
-        {
-          reporter: GoodConsole,
-          events: { log: '*', response: '*', error: '*' }
-        },
-        {
-          reporter: GoodFile,
-          events: { ops: '*' },
-          config: configWithPath(path.normalize(__dirname +  '/../logs/server/operations'))
-        },
-        {
-          reporter: GoodFile,
-          events: { error: '*' },
-          config: configWithPath(path.normalize(__dirname + '/../logs/server/errors'))
-        },
-        {
-          reporter: GoodFile,
-          events: { response: '*' },
-          config: configWithPath(path.normalize(__dirname + '/../logs/server/requests'))
-        },
-        {
-          reporter: GoodFile,
-          events: { log: '*' },
-          config: configWithPath(path.normalize(__dirname + '/../logs/server/logs'))
-        }
-      ]
+      ops: {
+          interval: 1000
+      },
+      reporters: {
+        myConsoleReporter: [
+          {
+            module: 'good-squeeze',
+            name: 'Squeeze',
+            args: [{ log: '*', response: '*' }]
+          },
+          { module: 'good-console' },
+          'stdout'
+        ],
+        myFileReporter: [
+          {
+            module: 'good-squeeze',
+            name: 'Squeeze',
+            args: [{ ops: '*' }]
+          },
+          {
+            module: 'good-squeeze',
+            name: 'SafeJson'
+          },
+          {
+            module: 'good-file',
+            args: ['./test/fixtures/awesome_log']
+          }
+        ],
+        myHTTPReporter: [
+          {
+            module: 'good-squeeze',
+            name: 'Squeeze',
+            args: [{ error: '*' }]
+          },
+          {
+            module: 'good-http',
+            args: [
+              'http://prod.logs:3000',
+              { wreck: { headers: { 'x-api-key': 12345 } } }
+            ]
+          }
+        ]
+      }
     };
     return server.register({ register: Good, options: options});
   }
 })
+// inert static file serving
+.then(function() { server.register(Inert); })
 // notifications
 .then(function() {
   // notification methods
@@ -130,21 +149,27 @@ setup()
 // load modules
 .then(function() {
   return server.register({ register: modules, options: { db } })
-  .then(function(output) {
-    additionalRoutes = output.routes;
-    commonMethods = output.common;
-    authMethods = output.authorization;
-    permissions = output.permissions;
-    hookMethods = output.hooks;
-    parsers = output.parsers;
+  .then(function() {
+    additionalRoutes = server.app.moduleData.routes;
+    commonMethods = server.app.moduleData.common;
+    authMethods = server.app.moduleData.authorization;
+    permissions = server.app.moduleData.permissions;
+    hookMethods = server.app.moduleData.hooks;
+    parsers = server.app.moduleData.parsers;
+    delete server.app.moduleData;
+    return;
   });
 })
 // parser
 .then(function() { return server.register({ register: parser, options: { parsers } }); })
 // route acls
 .then(function() {
-  return server.register({register: acls, options: { db, config, permissions } })
-  .then(function(output) { roles = output; });
+  return server.register({ register: acls, options: { db, config, permissions } })
+  .then(function(output) {
+    roles = server.app.rolesData;
+    delete server.app.rolesData;
+    return;
+  });
 })
 // user sessions
 .then(function() {
@@ -173,21 +198,19 @@ setup()
     });
   });
 })
-// inert static file serving
-.then(function() { return server.register(Inert); })
 // emailer
-.then(function() { server.register({ register: emailer, options: { config } }); })
+.then(function() { return server.register({ register: emailer, options: { config } }); })
 // moderation log
-.then(function() { server.register({ register: moderationLog, options: { db } }); })
+.then(function() { return server.register({ register: moderationLog, options: { db } }); })
 // Track IP
-.then(function() { server.register({ register: trackIp, options: { db } }); })
+.then(function() { return server.register({ register: trackIp, options: { db } }); })
 // Patrollers
-.then(function() { server.register({ register: patroller }); })
+.then(function() { return server.register({ register: patroller }); })
 // Last Active
-.then(function() { server.register({ register: lastActive }); })
+.then(function() { return server.register({ register: lastActive }); })
 // Start websocket server
 .then(function() {
-  websocketServer.start(path.normalize(__dirname + '/../websocket.env'));
+  return websocketServer.start(path.normalize(__dirname + '/../websocket.env'));
 })
 // routes and server start
 .then(function() {
@@ -198,7 +221,7 @@ setup()
   server.route(allRoutes);
 
   // start server
-  server.start(function () {
+  return server.start(function () {
     var configClone = Hoek.clone(config);
     configClone.privateKey = configClone.privateKey.replace(/./g, '*');
     if (_.get(configClone, 'emailer.transporter') === 'ses') {

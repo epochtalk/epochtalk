@@ -97,7 +97,7 @@ exports.addAddresses = {
     }
   },
   validate: {
-    payload: Joi.array(Joi.object().keys({
+    payload: Joi.array().items(Joi.object().keys({
       hostname: Joi.string(),
       ip: Joi.string(),
       weight: Joi.number().required(),
