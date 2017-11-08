@@ -165,7 +165,7 @@ setup()
 // route acls
 .then(function() {
   return server.register({ register: acls, options: { db, config, permissions } })
-  .then(function(output) {
+  .then(function() {
     roles = server.app.rolesData;
     delete server.app.rolesData;
     return;
