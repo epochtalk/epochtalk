@@ -23,7 +23,7 @@ services:
       - redis
       - postgres
     configs:
-      - websocket_config
+      - source: websocket_config
         target: /websocket.env
     environment:
       PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
