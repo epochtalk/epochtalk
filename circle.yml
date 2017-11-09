@@ -60,3 +60,9 @@ jobs:
           command: |
             docker-compose -f circleci-docker-compose.yml logs epochtalk
           when: on_fail
+
+      - run:
+          name: "Failure: output directory to console"
+          command: |
+            docker-compose -f circleci-docker-compose.yml exec epochtalk /bin/bash -c "ls; pwd"
+          when: on_fail
