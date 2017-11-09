@@ -24,7 +24,7 @@ services:
       - postgres
     configs:
       - source: websocket_config
-        target: /websocket.env
+        target: /usr/src/app/websocket.env
     environment:
       PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
       PGUSER: docker
