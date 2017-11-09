@@ -22,6 +22,9 @@ services:
     links:
       - redis
       - postgres
+    configs:
+      - websocket_config
+        target: /websocket.env
     environment:
       PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
       PGUSER: docker
@@ -65,3 +68,6 @@ services:
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
+configs:
+  websocket_config:
+    file: ./circleci.websocket.env
