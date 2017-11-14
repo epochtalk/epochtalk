@@ -36,7 +36,7 @@ jobs:
           name: Install Docker Compose
           command: |
             set -x
-            curl -L https://github.com/docker/compose/releases/download/1.15.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+            curl -L https://github.com/docker/compose/releases/download/1.17.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
             chmod +x /usr/local/bin/docker-compose
 
       - run:
@@ -59,4 +59,10 @@ jobs:
           name: "Failure: output container logs to console"
           command: |
             docker-compose -f circleci-docker-compose.yml logs epochtalk
+          when: on_fail
+
+      - run:
+          name: "Failure: output directory to console"
+          command: |
+            docker-compose -f circleci-docker-compose.yml exec epochtalk /bin/bash -c "ls; pwd"
           when: on_fail
