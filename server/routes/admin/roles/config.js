@@ -286,9 +286,10 @@ exports.reprioritize = {
     mod_log: { type: 'adminRoles.reprioritize' }
   },
   validate: {
-    payload: Joi.array(Joi.object().keys({
+    payload: Joi.array().items(Joi.object().keys({
       id: Joi.string().required(),
-      priority: Joi.number().min(0).max(Number.MAX_VALUE).required()
+      priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
+      lookup: Joi.string()
     }))
   },
   handler: function(request, reply) {

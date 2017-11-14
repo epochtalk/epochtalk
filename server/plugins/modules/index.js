@@ -116,8 +116,8 @@ exports.register = (server, options, next) => {
   var db = options.db || {};
   // load all the code from each module installed
   var output = modules.install(db);
-
-  return next(output);
+  server.app.moduleData = output;
+  return next();
 };
 
 exports.register.attributes = {

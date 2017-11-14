@@ -1,4 +1,4 @@
-FROM node:7.10.0
+FROM node:8.9.0
 MAINTAINER Bronson Oka <boka@slickage.com>
 RUN npm install -g bower
 

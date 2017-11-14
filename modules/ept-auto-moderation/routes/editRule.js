@@ -73,7 +73,7 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { id: Joi.string(255).required() },
+      params: { id: Joi.string().max(255).required() },
       payload: {
         name: Joi.string().max(255).required(),
         description: Joi.string().max(1000),

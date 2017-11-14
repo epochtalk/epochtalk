@@ -66,7 +66,11 @@ exports.register = function (server, options, next) {
   server.decorate('server', 'rolesAPI', rolesAPI);
   server.decorate('request', 'rolesAPI', rolesAPI);
 
-  return verifyRoles().then(function() { return next(roles); });
+  return verifyRoles()
+  .then(function() {
+    server.app.rolesData = roles;
+    return next();
+  });
 };
 
 function buildRoles(permissions) {
