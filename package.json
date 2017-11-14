@@ -39,7 +39,7 @@
     "del": "^2.2.0",
     "dot": "^1.0.3",
     "dotenv": "^2.0.0",
-    "epochtalk-websocket-server": "epochtalk/epochtalk-websocket-server",
+    "epochtalk-websocket-server": "epochtalk/ept-websocket-server",
     "epochtalk-core-pg": "epochtalk/core-pg",
     "fs-extra": "^1.0.0",
     "good": "^7.3.0",
