@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: node:7.10.0
+      - image: node:8.9.0
       - image: redis:4.0.1
       - image: postgres:9.6.2
         environment:
