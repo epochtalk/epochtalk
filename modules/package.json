@@ -9,7 +9,7 @@
   "author": "Edward Kim",
   "license": "ISC",
   "dependencies": {
-    "bct-activity": "1.0.2",
-    "bct-trust": "1.0.4"
+    "bct-activity": "epochtalk/bct-activity",
+    "bct-trust": "epochtalk/bct-trust"
   }
 }

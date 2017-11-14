@@ -1,4 +1,4 @@
-FROM node:7.10.0
+FROM node:8.9.0
 MAINTAINER Bronson Oka <boka@slickage.com>
 RUN npm install -g bower
 
@@ -15,6 +15,7 @@ RUN bower install --allow-root
 
 RUN npm install epochtalk-core-pg
 
+COPY circleci.websocket.env /usr/src/app/websocket.env
 COPY . /usr/src/app
 
 CMD until node cli connect; do sleep 1; done; npm run serve

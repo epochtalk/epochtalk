@@ -14,7 +14,7 @@ services:
     env_file:
       - docker.env
   epoch:
-    image: epoch:latest
+    image: quay.io/epochtalk/epoch:latest
     depends_on:
       - postgres
     links:

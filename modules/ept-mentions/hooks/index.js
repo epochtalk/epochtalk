@@ -21,7 +21,10 @@ function userIdToUsername(request) {
   }
   else { posts = [ request.payload ]; }
   return Promise.each(posts, post => {
-    if (post.post_body) { post.body = post.post_body; }
+    if (post.post_body) {
+      post.body = post.post_body;
+      post.body_html = post.post_body;
+    }
     if (!post.body) { return; }
     var userIds = post.body.match(userIdRegex) || [];
     userIds = _.uniqWith(userIds, _.isEqual);
