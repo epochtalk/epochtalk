@@ -12,12 +12,12 @@ module.exports = function(board) {
     // insert new board
     q = 'INSERT INTO boards(name, description, viewable_by, postable_by, created_at) VALUES($1, $2, $3, $4, now()) RETURNING id';
     params = [board.name, board.description, board.viewable_by, board.postable_by];
-    return client.queryAsync(q, params)
+    return client.query(q, params)
     .then(function(results) { board.id = results.rows[0].id; })
     // insert new board metadata
     .then(function() {
       q = 'INSERT INTO metadata.boards (board_id) VALUES ($1)';
-      return client.queryAsync(q, [board.id]);
+      return client.query(q, [board.id]);
     });
   })
   .then(function() { return helper.slugify(board); });

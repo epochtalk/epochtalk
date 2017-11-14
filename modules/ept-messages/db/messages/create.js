@@ -12,7 +12,7 @@ module.exports = function(message) {
   var q = 'INSERT INTO private_messages(conversation_id, sender_id, receiver_ids, body, subject, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id, created_at';
   var params = [message.conversation_id, message.sender_id, message.receiver_ids, message.body, message.subject];
   return using(db.createTransaction(), function(client) {
-    return client.queryAsync(q, params)
+    return client.query(q, params)
     .then(function(results) {
       if (results.rows.length > 0) {
         message.id = results.rows[0].id;
@@ -23,7 +23,7 @@ module.exports = function(message) {
     })
     .then(function() {
       q = 'UPDATE private_conversations SET deleted_by_user_ids = $1 WHERE id = $2';
-      return client.queryAsync(q, [[], message.conversation_id]);
+      return client.query(q, [[], message.conversation_id]);
     });
   })
   .then(function() { return helper.slugify(message); });

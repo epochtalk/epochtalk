@@ -16,7 +16,7 @@ module.exports = function(id, userId) {
   return using(db.createTransaction(), function(client) {
     // Check if message exists
     var q = 'SELECT conversation_id, deleted_by_user_ids from private_messages WHERE id = $1 FOR UPDATE';
-    return client.queryAsync(q, [id])
+    return client.query(q, [id])
     .then(function(results) {
       if (results.rows.length < 1) { throw new DeletionError('Message Does Not Exist'); }
       else {
@@ -27,7 +27,7 @@ module.exports = function(id, userId) {
     // delete the private message
     .then(function() {
       q = 'UPDATE private_messages SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE id = $2 RETURNING sender_id, receiver_ids';
-      return client.queryAsync(q, [userId, id]);
+      return client.query(q, [userId, id]);
     })
     // clean up conversation if no more messages
     .then(function(results) {
@@ -35,11 +35,11 @@ module.exports = function(id, userId) {
       result.sender_id = row.sender_id;
       result.receiver_ids = row.receiver_ids;
       q = 'SELECT id FROM private_messages WHERE $1 != ALL(deleted_by_user_ids) AND conversation_id = $2';
-      return client.queryAsync(q, [userId, conversationId])
+      return client.query(q, [userId, conversationId])
       .then(function(results) {
         if (results.rows.length < 1) {
           q = 'UPDATE private_conversations SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE id = $2';
-          client.queryAsync(q, [userId, conversationId]);
+          client.query(q, [userId, conversationId]);
         }
       });
     })

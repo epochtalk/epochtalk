@@ -9,6 +9,6 @@ module.exports = function(userId) {
   userId = helper.deslugify(userId);
   return using(db.createTransaction(), function(client) {
     var q = 'UPDATE users SET deleted = True WHERE id = $1';
-    return client.queryAsync(q, [userId]);
+    return client.query(q, [userId]);
   });
 };

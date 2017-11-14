@@ -17,12 +17,12 @@ module.exports = function(thread) {
   return using(db.createTransaction(), function(client) {
     q = 'INSERT INTO threads(board_id, locked, sticky, moderated, created_at) VALUES ($1, $2, $3, $4, now()) RETURNING id';
     params = [thread.board_id, thread.locked, thread.sticky, thread.moderated];
-    return client.queryAsync(q, params)
+    return client.query(q, params)
     .then(function(results) { thread.id = results.rows[0].id; })
     // insert thread metadata
     .then(function() {
       q = 'INSERT INTO metadata.threads (thread_id, views) VALUES($1, 0);';
-      return client.queryAsync(q, [thread.id]);
+      return client.query(q, [thread.id]);
     });
   })
   .then(function() { return helper.slugify(thread); });

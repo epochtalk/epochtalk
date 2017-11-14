@@ -21,7 +21,7 @@ module.exports = function(id) {
 
   return using(db.createTransaction(), function(client) {
     // lock up post row
-    return client.queryAsync(querySelectPost, [id])
+    return client.query(querySelectPost, [id])
     .then(function(results) {
       if (results.rows.length > 0) { post = results.rows[0]; }
       else { return Promise.reject('Post Not Found'); }
@@ -32,19 +32,25 @@ module.exports = function(id) {
     })
     // set post deleted flag
     .then(function() {
-      return client.queryAsync(queryDeletePost, [id]);
+      return client.query(queryDeletePost, [id]);
     })
     .then(function() {
-      if (!post.deleted) return client.queryAsync(queryUpdateUserPostCount, [post.user_id]);
+      if (!post.deleted) {
+        return client.query(queryUpdateUserPostCount, [post.user_id]);
+      }
     })
     .then(function() {
-      if (!post.deleted) return client.queryAsync(queryUpdateThreadUpdatedAt, [post.thread_id]);
+      if (!post.deleted) {
+        return client.query(queryUpdateThreadUpdatedAt, [post.thread_id]);
+      }
     })
     .then(function() {
-      return client.queryAsync(queryUpdatePostPositions, [post.position, post.thread_id]);
+      return client.query(queryUpdatePostPositions, [post.position, post.thread_id]);
     })
     .then(function() {
-      if (!post.deleted) return client.queryAsync(queryUpdateThreadPostCount, [post.thread_id]);
+      if (!post.deleted) {
+        return client.query(queryUpdateThreadPostCount, [post.thread_id]);
+      }
     })
     .then(function() {
       post.deleted = true;

@@ -11,7 +11,7 @@ module.exports = function(catId) {
   catId = helper.deslugify(catId);
   return using(db.createTransaction(), function(client) {
     var q = 'SELECT * FROM categories WHERE id = $1 FOR UPDATE';
-    return client.queryAsync(q, [catId])
+    return client.query(q, [catId])
     .then(function(results) {
       if (results.rows.length > 0) { return results.rows[0]; }
       else { throw new NotFoundError('Category Not Found'); }
@@ -28,11 +28,11 @@ module.exports = function(catId) {
       )
       DELETE FROM board_mapping
       WHERE board_id IN ( SELECT board_id FROM find_boards )`;
-      return client.queryAsync(q, [catId]);
+      return client.query(q, [catId]);
     })
     .then(function() {
       q = 'DELETE FROM categories WHERE id = $1';
-      return client.queryAsync(q, [catId]);
+      return client.query(q, [catId]);
     });
   });
 };

@@ -17,14 +17,14 @@ module.exports = function(threadId) {
 
   return using(db.createTransaction(), function(client) {
     q = 'SELECT user_id, content ->> \'title\' FROM posts where thread_id = $1 ORDER BY created_at ASC LIMIT 1';
-    return client.queryAsync(q, [threadId])
+    return client.query(q, [threadId])
     .then(function(results) {
       var row = results.rows[0];
       result.title = row.title;
       result.user_id = row.user_id;
       // lock up thread and Meta
       q = 'DELETE FROM threads WHERE id = $1 returning board_id';
-      return client.queryAsync(q, [threadId]);
+      return client.query(q, [threadId]);
     })
     .then(function(results) {
       var row = results.rows[0];

@@ -22,14 +22,14 @@ module.exports = function(boardId){
   return using(db.createTransaction(), function(client) {
     // Remove board data from DB
     q = 'WITH RECURSIVE find_boards(board_id, parent_id, category_id) AS ( SELECT bm.board_id, bm.parent_id, bm.category_id FROM board_mapping bm WHERE bm.board_id = $1 UNION ALL SELECT bm.board_id, bm.parent_id, bm.category_id FROM find_boards fb, board_mapping bm WHERE bm.parent_id = fb.board_id ) DELETE FROM board_mapping WHERE board_id IN ( SELECT board_id FROM find_boards )';
-    return client.queryAsync(q, [boardId])
+    return client.query(q, [boardId])
     .then(function() {
       q = 'DELETE FROM metadata.boards WHERE board_id = $1';
-      return client.queryAsync(q, [boardId]);
+      return client.query(q, [boardId]);
     })
     .then(function() {
       q = 'DELETE FROM boards WHERE id = $1 RETURNING name';
-      return client.queryAsync(q, [boardId]);
+      return client.query(q, [boardId]);
     })
     .then(function(results) {
       return {

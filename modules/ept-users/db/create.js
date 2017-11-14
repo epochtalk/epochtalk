@@ -19,7 +19,7 @@ module.exports = function(user, isAdmin) {
     // insert user
     q = 'INSERT INTO users(email, username, passhash, confirmation_token, created_at, updated_at) VALUES($1, $2, $3, $4, now(), now()) RETURNING id';
     params = [user.email, user.username, passhash, user.confirmation_token];
-    return client.queryAsync(q, params)
+    return client.query(q, params)
     .then(function(results) {
       if (results.rows.length > 0) { user.id = results.rows[0].id; }
       else { throw new CreationError('User Could Not Be Created'); }
@@ -29,14 +29,14 @@ module.exports = function(user, isAdmin) {
       q = 'INSERT INTO roles_users(role_id, user_id) VALUES($1, $2)';
       if (isAdmin) {
         var superAdminRole = '8ab5ef49-c2ce-4421-9524-bb45f289d42c';
-        return client.queryAsync(q, [superAdminRole, user.id]);
+        return client.query(q, [superAdminRole, user.id]);
       }
     })
     .then(function() { return common.insertUserProfile(user, client); })
     // Query for users roles
     .then(function() {
       q = 'SELECT roles.* FROM roles_users, roles WHERE roles_users.user_id = $1 AND roles.id = roles_users.role_id';
-      return client.queryAsync(q, [user.id])
+      return client.query(q, [user.id])
       .then(function(results) { user.roles = results.rows; });
     });
   })

@@ -23,25 +23,27 @@ module.exports = function(id) {
    * board's last post information.
    */
   return using(db.createTransaction(), function(client) {
-    return client.queryAsync(querySelectPost, [id])
+    return client.query(querySelectPost, [id])
       .then(function(results) {
         if (results.rows.length > 0) { post = results.rows[0]; }
         else { return Promise.reject('Post Not Found'); }
       })
       .then(function() {
-        return client.queryAsync(queryDeletePost, [post.id]);
+        return client.query(queryDeletePost, [post.id]);
       })
       .then(function() {
-        return client.queryAsync(queryUpdateUserPostCount, [post.user_id]);
+        return client.query(queryUpdateUserPostCount, [post.user_id]);
       })
       .then(function() {
-        return client.queryAsync(queryUpdateThreadUpdatedAt, [post.thread_id]);
+        return client.query(queryUpdateThreadUpdatedAt, [post.thread_id]);
       })
       .then(function() {
-        return client.queryAsync(queryUpdatePostPositions, [post.position, post.thread_id]);
+        return client.query(queryUpdatePostPositions, [post.position, post.thread_id]);
       })
       .then(function() {
-        if (!post.deleted) return client.queryAsync(queryUpdateThreadPostCount, [post.thread_id]);
+        if (!post.deleted) {
+          return client.query(queryUpdateThreadPostCount, [post.thread_id]);
+        }
       });
   })
   .then(helper.slugify);

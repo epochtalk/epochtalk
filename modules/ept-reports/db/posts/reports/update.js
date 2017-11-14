@@ -11,7 +11,7 @@ module.exports = function(postReport) {
     var q = 'SELECT rp.id, rp.status, rp.reporter_user_id, rp.reporter_reason, rp.reviewer_user_id, rp.offender_post_id, rp.created_at, rp.updated_at FROM administration.reports_posts rp WHERE rp.id = $1';
     var params = [postReport.id];
     var existingReport;
-    return client.queryAsync(q, params)
+    return client.query(q, params)
     .then(function(results) { // check that report exists and return existing report with string status
       var rows = results.rows;
       if (rows.length) { return rows[0]; }
@@ -22,7 +22,7 @@ module.exports = function(postReport) {
       var newReviewerUserId = postReport.reviewer_user_id || existingReport.reviewer_user_id;
       q = 'UPDATE administration.reports_posts SET status = $1, reviewer_user_id = $2, updated_at = now() WHERE id = $3 RETURNING updated_at';
       params = [postReport.status , newReviewerUserId, postReport.id];
-      return client.queryAsync(q, params);
+      return client.query(q, params);
     })
     .then(function(results) { // extract updated_at from row and return
       var rows = results.rows;

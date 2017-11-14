@@ -47,7 +47,7 @@ var save = {
     .then(function() {
       return {
         motd: data.motd || "",
-        motd_html: request.parser.parse(data.motd),
+        motd_html: request.sanitizer.bbcode(request.parser.parse(data.motd)),
         main_view_only: data.main_view_only || false
       };
     });

@@ -15,7 +15,7 @@ module.exports = function(id) {
   return using(db.createTransaction(), function(client) {
     // lock up post row
     q = 'SELECT * from posts WHERE id = $1 FOR UPDATE';
-    return client.queryAsync(q, [id])
+    return client.query(q, [id])
     .then(function(results) {
       if (results.rows.length > 0) { post = results.rows[0]; }
       else { throw new NotFoundError('Post Not Found'); }
@@ -24,7 +24,7 @@ module.exports = function(id) {
     .then(function() {
       post.locked = false;
       q = 'UPDATE posts SET locked = FALSE WHERE id = $1';
-      return client.queryAsync(q, [id]);
+      return client.query(q, [id]);
     })
     .then(function() { return post; })
     .then(helper.slugify);
