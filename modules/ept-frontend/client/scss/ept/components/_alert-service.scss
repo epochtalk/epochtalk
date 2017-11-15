@@ -26,5 +26,9 @@
   .repeated-item.ng-move { @include transition(0.15s linear all); opacity:0; }
   .repeated-item.ng-enter.ng-enter-active, .repeated-item.ng-leave { opacity: 1; }
   .repeated-item.ng-leave.ng-leave-active { opacity: 0; }
+  .repeated-item:hover {
+    background-color: $header-bg-color;
+    cursor: pointer;
+  }
   @include media($mobile) { width: 90%; }
 }
