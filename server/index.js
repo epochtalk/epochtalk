@@ -28,6 +28,7 @@ var patroller = require(path.normalize(__dirname + '/plugins/patroller'));
 var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
+var logOptions = require(path.normalize(__dirname + '/log-options'));
 var imageStore = require(path.normalize(__dirname + '/plugins/imageStore'));
 var lastActive = require(path.normalize(__dirname + '/plugins/last_active'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
@@ -63,55 +64,7 @@ setup()
 .then(function() {
   // server logging only registered if config enabled
   if (config.logEnabled) {
-    var configWithPath = function(path) {
-      return { path: path, extension: 'log', rotate: 'daily', format: 'YYYY-MM-DD-X', prefix:'epochtalk' };
-    };
-    var options = {
-      ops: {
-          interval: 1000
-      },
-      reporters: {
-        myConsoleReporter: [
-          {
-            module: 'good-squeeze',
-            name: 'Squeeze',
-            args: [{ log: '*', response: '*' }]
-          },
-          { module: 'good-console' },
-          'stdout'
-        ],
-        myFileReporter: [
-          {
-            module: 'good-squeeze',
-            name: 'Squeeze',
-            args: [{ ops: '*' }]
-          },
-          {
-            module: 'good-squeeze',
-            name: 'SafeJson'
-          },
-          {
-            module: 'good-file',
-            args: ['./test/fixtures/awesome_log']
-          }
-        ],
-        myHTTPReporter: [
-          {
-            module: 'good-squeeze',
-            name: 'Squeeze',
-            args: [{ error: '*' }]
-          },
-          {
-            module: 'good-http',
-            args: [
-              'http://prod.logs:3000',
-              { wreck: { headers: { 'x-api-key': 12345 } } }
-            ]
-          }
-        ]
-      }
-    };
-    return server.register({ register: Good, options: options});
+    return server.register({ register: Good, options: logOptions});
   }
 })
 // inert static file serving
