@@ -208,7 +208,7 @@ setup()
 .then(function() { return server.register({ register: lastActive }); })
 // Start websocket server
 .then(function() {
-  return websocketServer.start(path.normalize(__dirname + '/../websocket.env'));
+  return websocketServer.start();
 })
 // routes and server start
 .then(function() {
