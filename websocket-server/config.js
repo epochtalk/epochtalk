@@ -36,7 +36,7 @@ module.exports = {
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
-    db: process.env.REDIS_DB
+    db: process.env.WEBSOCKET_REDIS_DB
   },
   redisChannels: {
     onlineUsersChannel: 'online-users'
