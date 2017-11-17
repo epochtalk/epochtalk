@@ -1,3 +1,6 @@
+var path = require('path');
+var users = require(path.normalize(__dirname + '/../modules/ept-users'));
+
 module.exports = {
-  users: require('ept-users').db
+  users: users.db
 };
