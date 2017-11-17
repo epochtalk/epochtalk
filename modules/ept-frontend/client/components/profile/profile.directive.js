@@ -1,13 +1,14 @@
-var directive = ['Conversations', 'Messages', 'User', 'Session', 'Alert', 'PreferencesSvc', '$filter', '$state', '$timeout', 'Websocket',
-function(Conversations, Messages, User, Session, Alert, PreferencesSvc, $filter, $state, $timeout, Websocket) {
+var directive = [function() {
   return {
     restrict: 'E',
     scope: true,
     bindToController: { user: '=' },
     template: require('./profile.html'),
     controllerAs: 'vmProfile',
-    controller: [function() {
+    controller: [ 'Conversations', 'Messages', 'User', 'Session', 'Alert', 'PreferencesSvc', 'Websocket', '$timeout', '$scope', '$window', '$filter', '$state', function(Conversations, Messages, User, Session, Alert, PreferencesSvc, Websocket, $timeout, $scope, $window, $filter, $state) {
       var ctrl = this;
+      this.newConversation = {subject: '', body: '', receiver_ids: [], previewBody: ''};
+      this.newMessage = {subject: '', body: '', receiver_ids: [], previewBody: '' };
 
       this.isLoggedIn = function() { return Session.isAuthenticated(); };
 
@@ -228,61 +229,55 @@ function(Conversations, Messages, User, Session, Alert, PreferencesSvc, $filter,
       // Create Conversation
       this.newConversation = {};
       this.showConvoModal = false;
+
       this.openConvoModal = function() {
         ctrl.newConversation = {};
         ctrl.showConvoModal = true;
       };
 
-      this.listMessageReceivers = function(message) {
-        var receiverNames = [];
-        message.receivers.forEach(function(receiver) {
-          receiverNames.push(receiver.username);
-        });
-        var authedIndex = receiverNames.indexOf(Session.user.username);
-        if (authedIndex > -1) {
-          receiverNames.splice(authedIndex, 1);
-          receiverNames.push(message.sender_username);
+      $scope.$watch(function() { return ctrl.newMessage.body; }, function(body) {
+        if (body) {
+          // BBCode Parsing
+          var rawText = body;
+          var processed = rawText;
+          $window.parsers.forEach(function(parser) {
+            processed = parser.parse(processed);
+          });
+          // re-bind to scope
+          ctrl.newMessage.previewBody = processed;
         }
-        return receiverNames.join(', ');
-      };
+      });
 
-      this.receivers = [];
-
-      this.loadTags = function(query) {
-        return Messages.findUser({ username: query }).$promise
-        .then(function(users) { return users; });
-      };
+      $scope.$watch(function() { return ctrl.newConversation.body; }, function(body) {
+        if (body) {
+          // BBCode Parsing
+          var rawText = body;
+          var processed = rawText;
+          $window.parsers.forEach(function(parser) {
+            processed = parser.parse(processed);
+          });
+          // re-bind to scope
+          ctrl.newConversation.previewBody = processed;
+        }
+      });
 
       this.createConversation = function() {
-        var receiverIds = [];
-        ctrl.receivers.forEach(function(user) { receiverIds.push(user.id); });
-
         // create a new conversation id to put this message under
         var newMessage = {
-          receiver_ids: receiverIds,
+          receiver_ids: [ ctrl.user.id ],
           subject: ctrl.newConversation.subject,
           body: ctrl.newConversation.body,
         };
 
         Conversations.save(newMessage).$promise
-        .then(function(savedMessage) {
-          // open conversation
-          ctrl.loadConversation(savedMessage.conversation_id);
-
-          // Add message to list
-          savedMessage.receiver_usernames = ctrl.newConversation.receiver_usernames;
-          savedMessage.sender_username = Session.user.username;
-          Alert.success('New Conversation Started!');
-          ctrl.loadRecentMessages();
-        })
+        .then(function() { Alert.success('Successfully messaged user ' + ctrl.user.username); })
         .catch(function(err) {
-          var msg = 'Failed to create conversation';
+          var msg = 'Failed to message ' + ctrl.user.username;
           if (err && err.status === 403) { msg = err.data.message; }
           Alert.error(msg);
         })
         .finally(function() {
-          ctrl.receivers = [];
-          ctrl.newConversation = {body: '', receiver_ids: []};
+          ctrl.newConversation = { body: '', receiver_ids: [ ctrl.user.id ] };
           ctrl.showConvoModal = false;
         });
       };
