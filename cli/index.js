@@ -11,9 +11,8 @@ var roles = require(path.join(__dirname, '..', 'server', 'plugins', 'acls'));
 
 var emailerOptions = config.emailer;
 var emailer = require(path.normalize(__dirname + '/../server/plugins/emailer')).expose(emailerOptions);
-
-var databaseUrl = process.env.DATABASE_URL;
-var testConnection = require('epochtalk-core-pg')({ conString: databaseUrl }).db.testConnection;
+var dbName = process.env.PGDATABASE;
+var testConnection = require('epochtalk-core-pg')().db.testConnection;
 
 program
   .version('0.0.1');
@@ -25,11 +24,11 @@ program
   .action(function() {
     return testConnection()
     .then(function() {
-      console.log(`Connection to ${databaseUrl} successful!`);
+      console.log(`Succesfully connected to database: ${dbName}`);
       process.exit(0);
     })
     .catch(function() {
-      console.log(`Unable to connect to ${databaseUrl}.`);
+      console.log(`Unable to connect to database: ${dbName}`);
       process.exit(1);
     });
   });

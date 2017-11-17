@@ -3,12 +3,10 @@ var _ = require('lodash');
 var path = require('path');
 var Hapi = require('hapi');
 var Hoek = require('hoek');
-var websocketServer = require('epochtalk-websocket-server');
+var websocketServer = require(path.normalize(__dirname + '/../websocket-server'));
 var Good = require('good');
 var Inert = require('inert');
 var Vision = require('vision');
-var GoodFile = require('good-file');
-var GoodConsole = require('good-console');
 var errorMap = require(path.normalize(__dirname + '/error-map'));
 var db = require(path.normalize(__dirname + '/../db'));
 var redis = require(path.normalize(__dirname + '/../redis'));
@@ -210,7 +208,7 @@ setup()
 .then(function() { return server.register({ register: lastActive }); })
 // Start websocket server
 .then(function() {
-  return websocketServer.start(path.normalize(__dirname + '/../websocket.env'));
+  return websocketServer.start();
 })
 // routes and server start
 .then(function() {

@@ -7,7 +7,6 @@ lib-cov
 *.pid
 *.gz
 .env
-websocket.env
 docker.env
 .DS_Store
 .idea
