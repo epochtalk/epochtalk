@@ -2,8 +2,8 @@ var path = require('path');
 
 
 module.exports = {
-  start: function(envPath) {
-    require('dotenv').config({ path: envPath });
+  start: function() {
+    require('dotenv');
     var SocketCluster = require('socketcluster').SocketCluster;
     var db = require(path.normalize(__dirname + '/db'));
     var config = require(path.normalize(__dirname + '/config'));
