@@ -34,7 +34,7 @@ set up a connection to Redis, provide the following variables in `.env`.
 ```bash
 REDIS_HOST # the redis host to connect to
 REDIS_PORT # the redis port to connect to
-REDIS_DB   # the number of the redis db
+WEBSOCKET_REDIS_DB   # the number of the redis db
 ```
 
 ### SSL
