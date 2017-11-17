@@ -392,8 +392,17 @@
   <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-underline">New Message</h3>
     <!-- Select User -->
-    <label>To: <span ng-bind="vmProfile.user.username"></span></label>
+    <label><h5>To</h5>
 
+    <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers">
+      <auto-complete min-length="1" debounce-delay="250" source="MessagesCtrl.loadTags($query)"></auto-complete>
+    </tags-input>
+
+    </label>
+    <!-- Subject -->
+    <label><h5>Subject</h5>
+      <input type="text" ng-model="MessagesCtrl.newConversation.subject" minlength="1" maxlength="255" />
+    </label>
     <!-- Message Body -->
     <label>Message:
       <textarea type="text" rows="10" ng-model="vmProfile.newConversation.body" maxlength="5000" modal-focus="{{vmProfile.showConvoModal}}"></textarea>

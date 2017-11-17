@@ -1,5 +1,5 @@
-var directive = ['Conversations', 'User', 'Session', 'Alert', 'PreferencesSvc', '$filter', '$state', '$timeout', 'Websocket',
-function(Conversations, User, Session, Alert, PreferencesSvc, $filter, $state, $timeout, Websocket) {
+var directive = ['Conversations', 'Messages', 'User', 'Session', 'Alert', 'PreferencesSvc', '$filter', '$state', '$timeout', 'Websocket',
+function(Conversations, Messages, User, Session, Alert, PreferencesSvc, $filter, $state, $timeout, Websocket) {
   return {
     restrict: 'E',
     scope: true,
@@ -232,22 +232,59 @@ function(Conversations, User, Session, Alert, PreferencesSvc, $filter, $state, $
         ctrl.newConversation = {};
         ctrl.showConvoModal = true;
       };
+
+      this.listMessageReceivers = function(message) {
+        var receiverNames = [];
+        message.receivers.forEach(function(receiver) {
+          receiverNames.push(receiver.username);
+        });
+        var authedIndex = receiverNames.indexOf(Session.user.username);
+        if (authedIndex > -1) {
+          receiverNames.splice(authedIndex, 1);
+          receiverNames.push(message.sender_username);
+        }
+        return receiverNames.join(', ');
+      };
+
+      this.receivers = [];
+
+      this.loadTags = function(query) {
+        return Messages.findUser({ username: query }).$promise
+        .then(function(users) { return users; });
+      };
+
       this.createConversation = function() {
+        var receiverIds = [];
+        ctrl.receivers.forEach(function(user) { receiverIds.push(user.id); });
+
         // create a new conversation id to put this message under
         var newMessage = {
-          receiver_id: ctrl.user.id,
+          receiver_ids: receiverIds,
+          subject: ctrl.newConversation.subject,
           body: ctrl.newConversation.body,
         };
 
         Conversations.save(newMessage).$promise
-        .then(function() { Alert.success('New Conversation Started!'); })
-        .then(function() { $state.go('messages'); })
+        .then(function(savedMessage) {
+          // open conversation
+          ctrl.loadConversation(savedMessage.conversation_id);
+
+          // Add message to list
+          savedMessage.receiver_usernames = ctrl.newConversation.receiver_usernames;
+          savedMessage.sender_username = Session.user.username;
+          Alert.success('New Conversation Started!');
+          ctrl.loadRecentMessages();
+        })
         .catch(function(err) {
           var msg = 'Failed to create conversation';
           if (err && err.status === 403) { msg = err.data.message; }
           Alert.error(msg);
         })
-        .finally(function() { ctrl.showConvoModal = false; });
+        .finally(function() {
+          ctrl.receivers = [];
+          ctrl.newConversation = {body: '', receiver_ids: []};
+          ctrl.showConvoModal = false;
+        });
       };
 
       this.showBanModal = false; // manage ban modal visibility boolean
