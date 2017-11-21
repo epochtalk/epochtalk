@@ -54,7 +54,7 @@
     "ip-address": "^5.0.2",
     "joi": "^13.0.1",
     "json": "^9.0.3",
-    "jsonwebtoken": "^5.0.0",
+    "jsonwebtoken": "^8.1.0",
     "klaw": "^2.1.1",
     "lodash": "^4.5.0",
     "marked": "^0.3.6",
