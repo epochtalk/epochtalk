@@ -204,7 +204,10 @@ session.formatUserReply = formatUserReply;
 function buildToken(userId, expiration) {
   // build jwt token from decodedToken and privateKey
   var decodedToken = { userId: userId, sessionId: uuid.v4(), timestamp: Date.now() };
-  var options = { algorithm: 'HS256', expiresIn: expiration, noTimestamp: true };
+  var options = { algorithm: 'HS256', noTimestamp: true };
+  if (expiration) {
+    options.expiresIn = expiration;
+  }
   var encodedToken = jwt.sign(decodedToken, config.privateKey, options);
   return { decodedToken: decodedToken, token: encodedToken };
 }
