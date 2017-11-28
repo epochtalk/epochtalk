@@ -56,7 +56,7 @@
     "json": "^9.0.3",
     "jsonwebtoken": "^8.1.0",
     "klaw": "^2.1.1",
-    "lodash": "^4.5.0",
+    "lodash": "^4.17.4",
     "marked": "^0.3.6",
     "mkdirp": "^0.5.0",
     "mmmagic": "^0.4.1",
