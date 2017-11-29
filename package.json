@@ -59,7 +59,7 @@
     "lodash": "^4.17.4",
     "marked": "^0.3.6",
     "mkdirp": "^0.5.1",
-    "mmmagic": "^0.4.1",
+    "mmmagic": "^0.4.6",
     "node-sass": "^4.4.0",
     "node-sass-globbing": "0.0.23",
     "nodemailer": "^2.0.0",
