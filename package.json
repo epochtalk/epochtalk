@@ -68,7 +68,7 @@
     "pg": "^6.1.2",
     "redis": "^2.8.0",
     "request": "^2.83.0",
-    "rolling-rate-limiter": "^0.1.2",
+    "rolling-rate-limiter": "^0.1.10",
     "sanitize-html": "^1.4.3",
     "socketcluster": "^4.3.2",
     "socketcluster-client": "^4.3.7",
