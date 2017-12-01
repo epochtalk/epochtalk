@@ -1,7 +1,7 @@
 var common = {};
 module.exports = common;
 
-var uuid = require('uuid');
+var uuid = require('uuid/v4');
 
 var formatThread = function(thread, userId) {
   // handle deleted user
@@ -60,7 +60,7 @@ function checkView(server, headers, info, threadId) {
     if (viewerId) { server.redis.setAsync(viewerIdKey, Date.now()); }
     // create new viewerId and save to redis
     else {
-      newViewerId = uuid.v4();
+      newViewerId = uuid();
       server.redis.setAsync(newViewerId + threadId, Date.now());
     }
 
