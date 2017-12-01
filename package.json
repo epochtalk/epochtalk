@@ -67,7 +67,7 @@
     "oclazyload": "^1.1.0",
     "pg": "^6.1.2",
     "redis": "^2.8.0",
-    "request": "^2.53.0",
+    "request": "^2.83.0",
     "rolling-rate-limiter": "^0.1.2",
     "sanitize-html": "^1.4.3",
     "socketcluster": "^4.3.2",
