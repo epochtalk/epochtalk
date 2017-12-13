@@ -39,7 +39,7 @@
     "del": "^2.2.0",
     "dot": "^1.0.3",
     "dotenv": "^2.0.0",
-    "epochtalk-core-pg": "epochtalk/core-pg",
+    "epochtalk-core-pg": "^1.0.8",
     "fs-extra": "^1.0.0",
     "good": "^7.3.0",
     "good-console": "^6.4.0",
@@ -87,9 +87,6 @@
     "nodemon": "^1.1.1",
     "parse-database-url": "^0.3.0",
     "watch": "^0.17.1"
-  },
-  "engines": {
-    "node": "5.4.x"
   },
   "bin": {
     "epoch": "cli/index.js"
