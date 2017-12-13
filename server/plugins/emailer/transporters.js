@@ -1,3 +1,3 @@
-var transporters = module.exports = {
+module.exports = {
   ses: require('nodemailer-ses-transport')
 };

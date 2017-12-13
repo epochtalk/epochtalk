@@ -1,4 +1,4 @@
-var uuid = require('uuid');
+var uuid = require('uuid/v4');
 var jwt = require('jsonwebtoken');
 var session = {};
 var redis, config, roles;
@@ -203,8 +203,11 @@ session.formatUserReply = formatUserReply;
 
 function buildToken(userId, expiration) {
   // build jwt token from decodedToken and privateKey
-  var decodedToken = { userId: userId, sessionId: uuid.v4(), timestamp: Date.now() };
-  var options = { algorithm: 'HS256', expiresIn: expiration, noTimestamp: true };
+  var decodedToken = { userId: userId, sessionId: uuid(), timestamp: Date.now() };
+  var options = { algorithm: 'HS256', noTimestamp: true };
+  if (expiration) {
+    options.expiresIn = expiration;
+  }
   var encodedToken = jwt.sign(decodedToken, config.privateKey, options);
   return { decodedToken: decodedToken, token: encodedToken };
 }

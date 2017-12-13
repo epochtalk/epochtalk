@@ -1,6 +1,7 @@
 var del = require('del');
 var path = require('path');
 var fse = require('fs-extra');
+var klaw = require('klaw');
 var Promise = require('bluebird');
 
 var appDir = path.normalize(__dirname + '/../../app');
@@ -14,7 +15,7 @@ module.exports = function() {
   // find any HTML files in /app dir
   .then(function() {
     return new Promise(function(resolve, reject) {
-      fse.walk(appDir)
+      klaw(appDir)
       .on('data', function(item) {
         var isFile = item.stats.isFile();
         var isSymbolicLink = item.stats.isSymbolicLink();
