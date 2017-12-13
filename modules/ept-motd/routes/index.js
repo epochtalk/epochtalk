@@ -1,5 +1,4 @@
 var Joi = require('joi');
-var fse = require('fs-extra');
 var Promise = require('bluebird');
 var path = require('path');
 var motdPath = path.normalize(__dirname + '/../../../content/motd/motd.txt');
