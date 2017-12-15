@@ -1,5 +1,8 @@
 var html = `
-  <h5 class="thin-underline section-header-top-spacing">Announcement Configuration</h5>
+  <h5 class="thin-underline section-header-top-spacing">
+    Announcement Configuration
+    <span class="info-tooltip" data-balloon="Allows the forum owners to create an announcements which can be broadcast across the whole forum, or just the main page" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+  </h5>
   <div class="setting-row">
     <div class="switch-desc">
       <label for="main-only">Main Page Only</label>
