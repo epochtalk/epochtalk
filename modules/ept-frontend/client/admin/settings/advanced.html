@@ -1,7 +1,9 @@
 <!-- Column One -->
 <div class="settings half-column">
   <!-- Black List -->
-  <h5 class="thin-underline section-header-top-spacing">IP Blacklist Rules <a ng-click="AdminSettingsCtrl.showAddModal = true" class="right"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Rule</a></h5>
+  <h5 class="thin-underline section-header-top-spacing">IP Blacklist Rules
+    <span class="info-tooltip" data-balloon="Adding an IP address/range/wildcard to the blacklist will disallow users with that specific IP or in that IP Range from loading the forum or its data" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    <a ng-click="AdminSettingsCtrl.showAddModal = true" class="right"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Rule</a></h5>
 
   <table class="striped rulesTable" width="100%">
     <thead>
@@ -34,21 +36,29 @@
 <!-- Column Two -->
 <div class="settings half-column">
   <!-- Rate Limiting -->
-  <h5 class="thin-underline section-header-top-spacing">API Rate Limiting (Global Defaults)</h5>
+  <h5 class="thin-underline section-header-top-spacing">API Rate Limiting (Global Defaults)
+    <span class="info-tooltip" data-balloon="Allows the forum owners to apply rate limits to different types of data requests" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+  </h5>
 
   <section class="boxed-section">
     <div class="header"><span class="get large">GET Requests</span></div>
     <div class="content input-three-col">
       <div>
-        <label class="desc-label" for="get-interval">Interval</label>
+        <label class="desc-label" for="get-interval">Interval
+          <span class="info-tooltip" data-balloon="The amount of time to which you are limiting the number of request to (e.g. 'Max in Interval' requests every 'Interval' milliseconds)" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="get-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.interval" placeholder="In MS (Ex: 1000)" />
       </div>
       <div>
-        <label class="desc-label" for="get-max-in-interval">Max In Interval</label>
+        <label class="desc-label" for="get-max-in-interval">Max In Interval
+          <span class="info-tooltip" data-balloon="How many requests you can make within the interval (e.g. 'Max in Interval' requests every 'Interval' milliseconds)" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="get-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.max_in_interval" placeholder="Ex: 1" />
       </div>
       <div>
-        <label class="desc-label" for="get-min-difference">Min Difference</label>
+        <label class="desc-label" for="get-min-difference">Min Difference
+          <span class="info-tooltip" data-balloon="How long between each request (e.g. how much time between each 'Max in Interval')" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="get-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.get.min_difference" placeholder="In MS (Ex: 100)" />
       </div>
     </div>
@@ -58,15 +68,21 @@
     <div class="header"><span class="post large">POST Requests</span></div>
     <div class="content input-three-col">
       <div>
-        <label class="desc-label" for="post-interval">Interval</label>
+        <label class="desc-label" for="post-interval">Interval
+          <span class="info-tooltip" data-balloon="The amount of time to which you are limiting the number of request to (e.g. 'Max in Interval' requests every 'Interval' milliseconds)" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="post-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.interval" placeholder="In MS (Ex: 1000)" />
       </div>
       <div>
-        <label class="desc-label" for="post-max-in-interval">Max In Interval</label>
+        <label class="desc-label" for="post-max-in-interval">Max In Interval
+          <span class="info-tooltip" data-balloon="How many requests you can make within the interval (e.g. 'Max in Interval' requests every 'Interval' milliseconds)" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="post-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.max_in_interval" placeholder="Ex: 1" />
       </div>
       <div>
-        <label class="desc-label" for="post-min-difference">Min Difference</label>
+        <label class="desc-label" for="post-min-difference">Min Difference
+          <span class="info-tooltip" data-balloon="How long between each request (e.g. how much time between each 'Max in Interval')" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="post-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.post.min_difference" placeholder="In MS (Ex: 100)" />
       </div>
     </div>
@@ -76,15 +92,21 @@
     <div class="header"><span class="put large">PUT Requests</span></div>
     <div class="content input-three-col">
       <div>
-        <label class="desc-label" for="put-interval">Interval</label>
+        <label class="desc-label" for="put-interval">Interval
+          <span class="info-tooltip" data-balloon="The amount of time to which you are limiting the number of request to (e.g. 'Max in Interval' requests every 'Interval' milliseconds)" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="put-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.interval" placeholder="In MS (Ex: 1000)" />
       </div>
       <div>
-        <label class="desc-label" for="put-max-in-interval">Max In Interval</label>
+        <label class="desc-label" for="put-max-in-interval">Max In Interval
+          <span class="info-tooltip" data-balloon="How many requests you can make within the interval (e.g. 'Max in Interval' requests every 'Interval' milliseconds)" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="put-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.max_in_interval" placeholder="Ex: 1" />
       </div>
       <div>
-        <label class="desc-label" for="put-min-difference">Min Difference</label>
+        <label class="desc-label" for="put-min-difference">Min Difference
+          <span class="info-tooltip" data-balloon="How long between each request (e.g. how much time between each 'Max in Interval')" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="put-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.put.min_difference" placeholder="In MS (Ex: 100)" />
       </div>
     </div>
@@ -94,15 +116,21 @@
     <div class="header"><span class="delete large">DELETE Requests</span></div>
       <div class="content input-three-col">
       <div>
-        <label class="desc-label" for="delete-interval">Interval</label>
+        <label class="desc-label" for="delete-interval">Interval
+          <span class="info-tooltip" data-balloon="The amount of time to which you are limiting the number of request to (e.g. 'Max in Interval' requests every 'Interval' milliseconds)" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="delete-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.interval" placeholder="In MS (Ex: 1000)" />
       </div>
       <div>
-        <label class="desc-label" for="delete-max-in-interval">Max In Interval</label>
+        <label class="desc-label" for="delete-max-in-interval">Max In Interval
+          <span class="info-tooltip" data-balloon="How many requests you can make within the interval (e.g. 'Max in Interval' requests every 'Interval' milliseconds)" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="delete-max-in-interval" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.max_in_interval" placeholder="Ex: 1" />
       </div>
       <div>
-        <label class="desc-label" for="delete-min-difference">Min Difference</label>
+        <label class="desc-label" for="delete-min-difference">Min Difference
+          <span class="info-tooltip" data-balloon="How long between each request (e.g. how much time between each 'Max in Interval')" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="delete-min-difference" ng-model="AdminSettingsCtrl.settings.rate_limiting.delete.min_difference" placeholder="In MS (Ex: 100)" />
       </div>
     </div>

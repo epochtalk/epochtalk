@@ -1,6 +1,7 @@
 <div ng-if="vm.canViewRules()">
   <h5 class="thin-underline section-header-top-spacing">
     Auto Moderation Rules
+    <span class="info-tooltip" data-balloon="Allows forum owners to set up rules which will auto detect keywords or phrases and take a predesignated action without the intervention of a human moderator" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
     <a ng-click="vm.createRule()" class="right" ng-if="vm.canCreateRule()">
       <i class="fa fa-plus"></i>&nbsp;&nbsp;Add Rule
     </a>
@@ -47,13 +48,14 @@
     <div class="column-container">
       <div class="half-column">
         <h5 ng-class="{'rule-red':vm.viewedRule.conditions.length<1}">
-          Conditions <small><i>(add at least 1)</i></small>
+          Conditions
+          <span class="info-tooltip" data-balloon="Conditions allow you to match text within a post, thread, or even by a particular user. Conditions can be stacked allowing you to auto moderate things such as a specific user posting in a specific thread" data-balloon-pos="right" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
         </h5>
       </div>
       <!-- Add Condition -->
       <div class="half-column">
         <a href="#" class="right" ng-click="vm.addCondition()">
-          <i class="fa fa-plus"></i>&nbsp;&nbsp;Add Condition
+          <i class="fa fa-plus"></i>&nbsp;&nbsp;Add More Conditions
         </a>
       </div>
     </div>
@@ -62,7 +64,7 @@
     <section class="boxed-section" ng-repeat="cond in vm.viewedRule.conditions">
       <div class="header">
         Condition {{$index+1}}
-        <div class="right">
+        <div class="right" ng-show="vm.viewedRule.conditions.length > 1">
           <a ng-click="vm.removeCondition($index)">
             <i class="fa fa-trash"></i>
           </a>
@@ -75,28 +77,28 @@
             Parameter
           </label>
           <select type="text" class="input-text" ng-model="cond.param" required >
-            <option value="body">Post Body</option>
-            <option value="thread_id">Thread ID</option>
-            <option value="user_id">User ID</option>
-            <option value="title">Post Title</option>
+            <option value="body">Post Body - Detect keyword/phrase in post body</option>
+            <option value="thread_id">Thread ID - Detect keyword/phrase in a particular thread</option>
+            <option value="user_id">User ID - Detect keyword/phrase when post is made by a particular user</option>
+            <option value="title">Post Title - Detect keyword/phrase in the post title</option>
           </select>
         </div>
 
-        <label class="desc-label">Regex</label>
+        <label class="desc-label">Regex - <a href="https://www.regular-expressions.info/quickstart.html">Need regex help?</a></label>
         <div class="column-container">
           <div class="rule-regex-slash">/</div>
           <div class="rule-regex-input">
-            <input type="text" class="input-text" ng-model="cond.regex.pattern" required />
+            <input type="text" class="input-text" ng-model="cond.regex.pattern" placeholder="Regex Pattern" required />
           </div>
           <div class="rule-regex-slash">/</div>
           <div class="rule-regex-flags">
-            <input type="text" class="input-text" ng-model="cond.regex.flags" />
+            <input type="text" class="input-text" ng-model="cond.regex.flags" placeholder="Regex Flags" />
           </div>
         </div>
       </div>
     </section>
 
-    <section class="rule-no-selections" ng-if="vm.viewedRule.conditions.length === 0">
+    <section class="rule-no-selections" ng-if="vm.viewedRule.conditions.length === 0" ng-init="vm.addCondition()">
       Please add at least one condition
     </section>
 
@@ -104,7 +106,8 @@
 
     <!-- Actions -->
     <h5 class="thin-underline" ng-class="{'rule-red': vm.viewedRule.actions.length < 1}">
-      Actions <small><i>(choose at least 1)</i></small>
+      Actions
+      <span class="info-tooltip" data-balloon="Actions are the moderation action that will take place when a match on the condition in the previous step is made. Actions can be stacked, with a minimum of one action being required" data-balloon-pos="right" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
     </h5>
     <div class="column-container">
       <div class="half-column rule-action" ng-class="{checked: vm.viewedRule.actions.indexOf('reject') > -1}" ng-click="vm.toggleActionSelection('reject')">
@@ -132,39 +135,47 @@
 
     <!-- Reject -->
     <section class="boxed-section" ng-if="vm.viewedRule.actions.indexOf('reject') > -1">
-      <div class="header">Rejection Options</div>
+      <div class="header">Reject Post Options</div>
       <div class="content">
-        <label class="desc-label">Error Message</label>
+        <label class="desc-label">Error Message
+          <span class="info-tooltip" data-balloon="The error message the user should receive when their post is rejected for this auto moderation rule" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" ng-model="vm.viewedRule.message" ng-disabled="vm.viewedRule.actions.indexOf('reject') < 0" />
       </div>
     </section>
 
     <!-- Ban -->
     <section class="boxed-section" ng-if="vm.viewedRule.actions.indexOf('ban') > -1">
-      <div class="header">Banning Options</div>
+      <div class="header">Ban User Options</div>
       <div class="content">
-        <label class="desc-label">Days Banned <i>(leave blank for permanent)</i></label>
+        <label class="desc-label">Days Banned
+          <span class="info-tooltip" data-balloon="The number of days to ban the user for, left blank for a permanent ban" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="number" ng-model="vm.viewedRule.options.ban_interval" min="0" ng-disabled="vm.viewedRule.actions.indexOf('ban') < 0" />
       </div>
     </section>
 
     <!-- Edit -->
     <section class="boxed-section" ng-if="vm.viewedRule.actions.indexOf('edit') > -1">
-      <div class="header">Editing Options</div>
+      <div class="header">Edit Post Body Options</div>
       <div class="content">
         <!-- Edit Template -->
-        <label class="desc-label">Template</label>
+        <label class="desc-label">Template
+          <span class="info-tooltip" data-balloon="Allows the user's post to be edited. The {body} tag in this text area will be replaced with the user's actual post, so a message can be appeneded, prepended or replaced all together by removing the {body} tag" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <textarea class="input-text" ng-model="vm.viewedRule.options.edit.template" ng-class="{'rule-red-border': vm.viewedRule.options.edit.template.length && vm.viewedRule.options.edit.template.indexOf('{body}') < 0}" ng-disabled="vm.viewedRule.actions.indexOf('edit') < 0" placeholder="*Pre-append message* {body} *Post-apprend message*" ></textarea>
 
         <br /><hr /><br />
 
         <!-- Edit Replace -->
         <div class="fill-row">
-          <label class="desc-label">Text to Replace</label>
+          <label class="desc-label">Text to Replace
+            <span class="info-tooltip" data-balloon="The text which will replace the keyword or phrase matched by the regex below" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+          </label>
           <input type="text" class="input-text" ng-model="vm.viewedRule.options.edit.replace.text" ng-disabled="vm.viewedRule.actions.indexOf('edit') < 0" />
         </div>
 
-        <label class="desc-label">Regex </label>
+        <label class="desc-label">Regex - <a href="https://www.regular-expressions.info/quickstart.html">Need regex help?</a></label>
         <div class="column-container">
           <div class="rule-regex-slash">/</div>
           <div class="rule-regex-input">
@@ -172,7 +183,7 @@
           </div>
           <div class="rule-regex-slash">/</div>
           <div class="rule-regex-flags">
-            <input type="text" class="input-text" ng-model="vm.viewedRule.options.edit.replace.regex.flags" ng-disabled="vm.viewedRule.actions.indexOf('edit') < 0" />
+            <input type="text" class="input-text" ng-init="vm.viewedRule.options.edit.replace.regex.flags = 'gi'" ng-model="vm.viewedRule.options.edit.replace.regex.flags" ng-disabled="vm.viewedRule.actions.indexOf('edit') < 0" />
           </div>
         </div>
       </div>
