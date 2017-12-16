@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var Promise = require('bluebird');
 
 var appPath = path.join(__dirname, '/../../app');
-var bowerComponentsPath = path.join(__dirname, '/../../bower_components');
+var nodeModulesPath = path.join(__dirname, '/../../node_modules');
 
 var webpackConfigs = {
   entry: appPath + '/app.js',
@@ -15,7 +15,7 @@ var webpackConfigs = {
     sourceMapFilename: 'bundle.map'
   },
   resolve: {
-    root: [bowerComponentsPath],
+    root: [nodeModulesPath],
     alias: {
       jquery: 'jquery/dist/jquery',
       angular: 'angular/angular',
@@ -26,22 +26,22 @@ var webpackConfigs = {
       ngLoadingBar: 'angular-loading-bar',
       nestable: 'nestable/jquery.nestable',
       angularSortable: 'angular-sortable-view/src/angular-sortable-view.min',
-      ngTagsInput: 'ng-tags-input/ng-tags-input.min'
+      ngTagsInput: 'ng-tags-input/build/ng-tags-input.min'
     }
   },
   plugins: [ new webpack.optimize.DedupePlugin() ],
   module: {
     noParse: [
-      bowerComponentsPath + '/jquery/dist/jquery',
-      bowerComponentsPath + '/angular/angular',
-      bowerComponentsPath + '/angular-animate/angular-animate',
-      bowerComponentsPath + '/angular-resource/angular-resource',
-      bowerComponentsPath + '/angular-sanitize/angular-sanitize',
-      bowerComponentsPath + '/angular-ui-router/release/angular-ui-router',
-      bowerComponentsPath + '/angular-loading-bar',
-      bowerComponentsPath + '/nestable/jquery.nestable',
-      bowerComponentsPath + '/angular-sortable-view/src/angular-sortable-view.min',
-      bowerComponentsPath + '/ng-tags-input/ng-tags-input.min',
+      nodeModulesPath + '/jquery/dist/jquery',
+      nodeModulesPath + '/angular/angular',
+      nodeModulesPath + '/angular-animate/angular-animate',
+      nodeModulesPath + '/angular-resource/angular-resource',
+      nodeModulesPath + '/angular-sanitize/angular-sanitize',
+      nodeModulesPath + '/angular-ui-router/release/angular-ui-router',
+      nodeModulesPath + '/angular-loading-bar',
+      nodeModulesPath + '/nestable/jquery.nestable',
+      nodeModulesPath + '/angular-sortable-view/src/angular-sortable-view.min',
+      nodeModulesPath + '/ng-tags-input/build/ng-tags-input.min',
     ],
     loaders: [ { test: /\.html$/, loader: 'html-loader' } ]
   }

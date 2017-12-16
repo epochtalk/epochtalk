@@ -1,13 +1,14 @@
-var directive = ['Conversations', 'User', 'Session', 'Alert', 'PreferencesSvc', '$filter', '$state', '$timeout', 'Websocket',
-function(Conversations, User, Session, Alert, PreferencesSvc, $filter, $state, $timeout, Websocket) {
+var directive = [function() {
   return {
     restrict: 'E',
     scope: true,
     bindToController: { user: '=' },
     template: require('./profile.html'),
     controllerAs: 'vmProfile',
-    controller: [function() {
+    controller: [ 'Conversations', 'Messages', 'User', 'Session', 'Alert', 'PreferencesSvc', 'Websocket', '$timeout', '$scope', '$window', '$filter', '$state', function(Conversations, Messages, User, Session, Alert, PreferencesSvc, Websocket, $timeout, $scope, $window, $filter, $state) {
       var ctrl = this;
+      this.newConversation = {subject: '', body: '', receiver_ids: [], previewBody: ''};
+      this.newMessage = {subject: '', body: '', receiver_ids: [], previewBody: '' };
 
       this.isLoggedIn = function() { return Session.isAuthenticated(); };
 
@@ -228,26 +229,57 @@ function(Conversations, User, Session, Alert, PreferencesSvc, $filter, $state, $
       // Create Conversation
       this.newConversation = {};
       this.showConvoModal = false;
+
       this.openConvoModal = function() {
         ctrl.newConversation = {};
         ctrl.showConvoModal = true;
       };
+
+      $scope.$watch(function() { return ctrl.newMessage.body; }, function(body) {
+        if (body) {
+          // BBCode Parsing
+          var rawText = body;
+          var processed = rawText;
+          $window.parsers.forEach(function(parser) {
+            processed = parser.parse(processed);
+          });
+          // re-bind to scope
+          ctrl.newMessage.previewBody = processed;
+        }
+      });
+
+      $scope.$watch(function() { return ctrl.newConversation.body; }, function(body) {
+        if (body) {
+          // BBCode Parsing
+          var rawText = body;
+          var processed = rawText;
+          $window.parsers.forEach(function(parser) {
+            processed = parser.parse(processed);
+          });
+          // re-bind to scope
+          ctrl.newConversation.previewBody = processed;
+        }
+      });
+
       this.createConversation = function() {
         // create a new conversation id to put this message under
         var newMessage = {
-          receiver_id: ctrl.user.id,
+          receiver_ids: [ ctrl.user.id ],
+          subject: ctrl.newConversation.subject,
           body: ctrl.newConversation.body,
         };
 
         Conversations.save(newMessage).$promise
-        .then(function() { Alert.success('New Conversation Started!'); })
-        .then(function() { $state.go('messages'); })
+        .then(function() { Alert.success('Successfully messaged user ' + ctrl.user.username); })
         .catch(function(err) {
-          var msg = 'Failed to create conversation';
+          var msg = 'Failed to message ' + ctrl.user.username;
           if (err && err.status === 403) { msg = err.data.message; }
           Alert.error(msg);
         })
-        .finally(function() { ctrl.showConvoModal = false; });
+        .finally(function() {
+          ctrl.newConversation = { body: '', receiver_ids: [ ctrl.user.id ] };
+          ctrl.showConvoModal = false;
+        });
       };
 
       this.showBanModal = false; // manage ban modal visibility boolean

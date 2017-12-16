@@ -10,7 +10,6 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * [Features](#features)
 * [Dependencies](#dependencies)
   * [System](#system)
-  * [Bower](#bower)
   * [NPM](#npm)
 * [Installation](#installation)
 * [Configuration](#configuration)
@@ -37,11 +36,10 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 ### System
 * [node](http://nodejs.org)
 * [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
-* [bower](https://github.com/bower/bower)
 * [Postgres](http://www.postgresql.org/)
 * [Redis](http://redis.io/)
 
-### Bower
+### NPM
 * angular `1.4.4`
 * angular-resource `1.4.4`
 * angular-sanitize `1.4.4`
@@ -52,8 +50,6 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * angular-sortable-view" `~0.0.13`
 * ng-tags-input `3.0.0`
 * jquery `~2.1.4`
-
-### NPM
 * aws-sdk `^2.1.20`
 * bcrypt `^0.8.0`
 * bluebird `^3.1.5`
@@ -111,18 +107,20 @@ $ cd epochtalk
 $ npm install
 ```
 
-#### 3) Copy the example.env file
+#### 5) Install module dependencies using [npm](https://www.npmjs.org/doc/README.html)
+```sh
+$ cd modules
+$ npm install
+```
+
+#### 4) Copy the example.env file
 This file specifies the server configurations and is necessary to run the
 server.  You can edit the .env file later to specify the configurations as
 outlined in the Configuration section.
 
 ```sh
+$ cd .. # cd back to project root
 $ cp example.env .env
-```
-
-#### 4) Install frontend dependencies using [bower](https://github.com/bower/bower)
-```sh
-$ bower install
 ```
 
 #### 5) Initialize
