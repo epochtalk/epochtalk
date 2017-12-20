@@ -1,7 +1,9 @@
 <!-- Column One -->
 <form name="themeForm" class="css-form" novalidate>
   <div class="settings half-column">
-    <h5 class="thin-underline">Font Settings<a class="right header-link show-mobile" ng-click="AdminSettingsCtrl.revert()">Revert to Default Theme</a></h5>
+    <h5 class="thin-underline">Font Settings
+      <span class="info-tooltip" data-balloon="Allows you to adjust global font settings for the forum, variables such as color and font family must be valid css" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+      <a class="right header-link show-mobile" ng-click="AdminSettingsCtrl.revert()">Revert to Default Theme</a></h5>
     <div class="setting-row">
       <div class="desc">
         <label for="base-font-size">Base Font Size</label>
@@ -52,7 +54,9 @@
   </div>
   <!-- Column Two -->
   <div class="settings half-column section-header-top-spacing">
-    <h5 class="thin-underline">Layout Settings<a class="right header-link hide-mobile" ng-click="AdminSettingsCtrl.revert()">Revert to Default Theme</a></h5>
+    <h5 class="thin-underline">Layout Settings
+      <span class="info-tooltip" data-balloon="Allows you to customize forum colors. Use preview mode to ensure that your color changes look good without affecting the current theme. Variables must be valid css" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+      <a class="right header-link hide-mobile" ng-click="AdminSettingsCtrl.revert()">Revert to Default Theme</a></h5>
     <div class="setting-row">
       <div class="desc">
         <label for="base-background-color">Background Color</label>

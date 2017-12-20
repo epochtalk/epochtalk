@@ -38,12 +38,14 @@
     <textarea rows="5" id="newBoardDesc" placeholder="Board Description" maxlength="255"></textarea>
   </label>
   <label>Board Read Access:
+    <span class="info-tooltip" data-balloon="Minimum role a user must have to read the posts in this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
     <select id="newBoardViewable">
       <option value="">Minimum role level</option>
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
     </select>
   </label>
   <label>Board Write Access:
+    <span class="info-tooltip" data-balloon="Minimum role a user must have to create posts within this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
     <select id="newBoardPostable">
       <option value="">Minimum role level</option>
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
@@ -63,12 +65,14 @@
     <textarea rows="5" id="editBoardDesc" ng-model="editBoardDesc" placeholder="Board Description" maxlength="255"></textarea>
   </label>
   <label>Board Read Access:
+    <span class="info-tooltip" data-balloon="Minimum role a user must have to read the posts in this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
     <select id="editBoardViewable">
       <option value="">Minimum role level</option>
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
     </select>
   </label>
   <label>Board Write Access:
+    <span class="info-tooltip" data-balloon="Minimum role a user must have to create posts within this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
     <select id="editBoardPostable">
       <option value="">Minimum role level</option>
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
@@ -98,6 +102,7 @@
     <input modal-focus="{{showEditCategory}}" type="text" class="input-text" id="editCatName" placeholder="Category Name" maxlength="255"/>
   </label>
   <label>Category Read Access:
+    <span class="info-tooltip" data-balloon="Minimum role a user must have to read the posts in this category" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
     <select id="editCatViewable">
       <option value="">Minimum role level</option>
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
