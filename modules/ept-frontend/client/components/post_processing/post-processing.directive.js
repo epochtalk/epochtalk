@@ -42,9 +42,11 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       };
 
       // Auto video embed Regex
-      var autoVideoRegex = /(?!<a[^>]*?>)(?!<code[^>]*?>)((?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|\/youtu.be\/)([a-zA-Z0-9_-]{11})+(?:[a-zA-Z0-9;:@#?&%=+\/\$_.-]*)*(?:(t=(?:(\d+h)?(\d+m)?(\d+s)?)))*)(?![^<]*?<\/code>)(?![^<]*?<\/a>)/gi;
+      var autoVideoRegex = /(?!<code[^>]*?>)((?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|\/youtu.be\/)([a-zA-Z0-9_-]{11})+(?:[a-zA-Z0-9;:@#?&%=+\/\$_.-]*)*(?:(t=(?:(\d+h)?(\d+m)?(\d+s)?)))*)(?![^<]*?<\/code>)/gi;
       var autoVideo = function(url) {
-        var temp = new URL(url);
+        var temp;
+        try { temp = new URL(url); }
+        catch(e) { return url; }
 
         // create query params dict
         var queryParams = {};
@@ -142,9 +144,14 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         var processed = postBody || '';
         var doStyleFix = $scope.styleFix;
         // autoDate and autoLink
+        console.log(processed);
         processed = processed.replace(new RegExp('&#47;&#47;', 'g'), '//');
         processed = processed.replace(autoDateRegex, autoDate) || processed;
+        console.log(processed);
+
         processed = processed.replace(autoVideoRegex, autoVideo) || processed;
+        console.log(processed);
+
         processed = processed.replace(autoLinkRegex, autoLink) || processed;
 
         // styleFix
