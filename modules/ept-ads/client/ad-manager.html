@@ -3,6 +3,7 @@
 <h5 class="thin-underline">
   <!-- Title -->
   Advertisements
+  <span class="info-tooltip" data-balloon="Allows admins to sell ad space to members. Members can provide admins with an html/css snippet for their advertisment which will be displayed between posts. Factoids can be enabled an will be shown randomly between ads. Ads are cycled randomly" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
 
   <!-- Tabs -->
   <dl class="tabs ad-tabs right">
@@ -22,13 +23,17 @@
 <div class="text-view" ng-show="vm.tab === 'text'">
   <!-- Ad Disclaimer -->
   <div class="fill-row">
-    <label class="desc-label">Ad Disclaimer</label>
+    <label class="desc-label">Ad Disclaimer
+      <span class="info-tooltip" data-balloon="Optional disclaimer which will be displayed above the ads" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
     <textarea ng-model="vm.text.disclaimer"></textarea>
   </div>
 
   <!-- Ad Disclaimer -->
   <div class="fill-row">
-    <label class="desc-label">Ad Information sub-header</label>
+    <label class="desc-label">Ad Information sub-header
+      <span class="info-tooltip" data-balloon="An informational area to display text or an admin message regarding the ads." data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
     <textarea ng-model="vm.text.info"></textarea>
   </div>
 
@@ -49,6 +54,7 @@
     --
     <span>Current Round: </span>
     <span ng-bind="vm.currentRound || 'None'"></span>
+    <span class="info-tooltip" data-balloon="Ads run in rounds so that you can bill customers buying ad space by the round" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
   </div>
 
   <div class="rightcol">
@@ -129,7 +135,9 @@
 <!-- Factoids View -->
 <div class="factoids-view" ng-show="vm.tab === 'factoids'">
   <div class="leftcol">
-    <span>All Factoids</span>
+    <span>Factoids
+      <span class="info-tooltip" data-balloon="Factoids can be quotes, facts, or anything else. They will randomly be displayed between ads to give users a break from advertisments" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </span>
   </div>
 
   <div class="rightcol">
