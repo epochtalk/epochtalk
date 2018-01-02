@@ -1,6 +1,8 @@
 <div class="half-column">
   <br />
-  <h3>Create and Edit Roles</h3><br />
+  <h3>Create and Edit Roles
+    <span class="info-tooltip" data-balloon="Add new roles or customize existing roles by editing below. Drag and drop the roles below to order by priority. The lower the number, the higher the priority of the role. This allows for roles of a higher priority to take action upon those of lower priority." data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+  </h3><br />
   <div ng-if="AdminManagementCtrl.controlAccess.add" class="roles add-role">
     <div class="nested-input-container">
       <a ng-click="AdminManagementCtrl.showRole()" class="nested-btn">Add</a>
@@ -20,11 +22,11 @@
         <td ng-bind-html="role.priority"></td>
         <td ng-bind-html="role.description"></td>
         <td>
-          <a ng-if="role.id === role.lookup && AdminManagementCtrl.controlAccess.remove" ng-href="#" ng-click="AdminManagementCtrl.showRemoveRole(role)">Remove</a>
-          <span ng-if="role.id !== role.lookup || (role.id === role.lookup && !AdminManagementCtrl.controlAccess.remove)">Remove</span>
-          &nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#" ng-if="AdminManagementCtrl.controlAccess.update" ng-click="AdminManagementCtrl.showRole(role)">Edit</a>
           <span ng-if="!AdminManagementCtrl.controlAccess.update">Edit</span>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-if="role.id === role.lookup && AdminManagementCtrl.controlAccess.remove" ng-href="#" ng-click="AdminManagementCtrl.showRemoveRole(role)">Remove</a>
+          <span ng-if="(role.id === role.lookup && !AdminManagementCtrl.controlAccess.remove)">Remove</span>
         </td>
       </tr>
     </tbody>
