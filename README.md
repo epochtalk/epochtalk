@@ -2,7 +2,7 @@
 
 ####**Warning this project is under active development, design is subject to change**
 
-Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Webpack](https://webpack.github.io), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
+Next generation forum software. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Webpack](https://webpack.github.io), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
 
 ![Epochtalk Forums](http://i.imgur.com/D2Lizk5.png)
 
@@ -28,7 +28,7 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * Epochtalk is a single page web application created with [AngularJS](https://angularjs.org)
 * Web/Mobile ready responsive design using [Bourbon](http://bourbon.io/)
 * Code is bundled and loaded as needed, for performance, using [Webpack](https://webpack.github.io)
-* Designed with performance in mind. Epochtalk's backend, [epochtalk-core-pg](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
+* Designed with performance in mind. Epochtalk utilizes [Postgres](http://www.postgresql.org/) as a database.
 * Customizable Theming (Branding, coloring, fonts, sizes)
 * Fully modular permissions system with roles
 
@@ -36,63 +36,69 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 ### System
 * [node](http://nodejs.org)
 * [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
-* [Postgres](http://www.postgresql.org/)
+* [Postgres](http://www.postgresql.org/) (Recommended Version 9.6.5)
 * [Redis](http://redis.io/)
 
 ### NPM
 * angular `1.4.4`
-* angular-resource `1.4.4`
-* angular-sanitize `1.4.4`
 * angular-animate `1.4.4`
 * angular-loading-bar `0.7.1`
-* nestable [slickage/Nestable](http://github.com/slickage/Nestable)
-* angular-ui-router `~0.2.15`
-* angular-sortable-view" `~0.0.13`
-* ng-tags-input `3.0.0`
-* jquery `~2.1.4`
-* aws-sdk `^2.1.20`
+* angular-resource `1.4.4`
+* angular-sanitize `1.4.4`
+* angular-sortable-view `0.0.13`
+* angular-ui-router `0.2.15`
+* aws-sdk `^2.7.22`
 * bcrypt `^0.8.0`
-* bluebird `^3.1.5`
-* boom `^3.1.2`
-* bower `^1.7.5`
+* bluebird `^3.3.1`
+* boom `^7.1.1`
 * change-case `^2.3.1`
-* cheerio `^0.19.0`
-* commander `^2.5.1`
-* db-migrate `^0.9.23`
+* cheerio `^0.20.0`
+* commander `^2.9.0`
 * deep-rename-keys `^0.1.0`
 * del `^2.2.0`
 * dot `^1.0.3`
-* dotenv `^2.0.0`
-* epochtalk-core-pg `epochtalk/core-pg`
-* fs-extra `^0.26.4`
-* good `^6.4.0`
-* good-console `^5.3.0`
-* good-file `^5.1.1`
-* handlebars `^4.0.3`
-* hapi `^12.1.0`
-* hoek `^3.0.4`
-* html-loader `^0.4.0`
+* dotenv `^4.0.0`
+* epochtalk-core-pg `^1.0.8`
+* fs-extra `^4.0.2`
+* good `^7.3.0`
+* good-console `^6.4.0`
+* good-file `^6.0.1`
+* good-http `^6.1.3`
+* good-squeeze `^5.0.2`
+* handlebars `^4.0.11`
+* hapi `^16.6.2`
+* hoek `^5.0.2`
+* html-loader `^0.5.1`
+* inert `^4.2.1`
 * ip-address `^5.0.2`
-* joi `^7.2.2`
+* joi `^13.0.1`
+* jquery `2.1.4`
 * json `^9.0.3`
-* jsonwebtoken `^5.0.0`
-* lodash `^4.0.1`
-* mkdirp `^0.5.0`
-* mmmagic `^0.4.1`
-* node-sass `^3.4.2`
-* uuid `^3.0.0`
+* jsonwebtoken `^8.1.0`
+* klaw `^2.1.1`
+* lodash `^4.17.4`
+* marked `^0.3.6`
+* mkdirp `^0.5.1`
+* mmmagic `^0.4.6`
+* nestable [slickage/Nestable](http://github.com/slickage/Nestable)
+* ng-tags-input `3.0.0`
+* node-sass `^4.7.2`
+* node-sass-globbing `0.0.23`
 * nodemailer `^2.0.0`
-* oclazyload `^1.0.6`
-* pg `^4.2.0`
-* redis `^2.4.2`
-* request `^2.53.0`
-* rolling-rate-limiter `^0.1.2`
+* nodemailer-ses-transport `^1.5.1`
+* oclazyload `^1.1.0`
+* pg `^6.1.2`
+* redis `^2.8.0`
+* request `^2.83.0`
+* rolling-rate-limiter `^0.1.10`
 * sanitize-html `^1.4.3`
+* socketcluster `^4.3.2`
+* socketcluster-client `^4.3.7`
 * stream-meter `^1.0.3`
 * through2 `^2.0.0`
-* vision `^4.0.1`
+* uuid `^3.1.0`
+* vision `^4.1.1`
 * webpack `^1.12.2`
-
 
 ## Installation
 
@@ -104,13 +110,13 @@ $ git clone git@github.com:epochtalk/epochtalk.git
 #### 2) Change directories and install dependencies using [npm](https://www.npmjs.org/doc/README.html)
 ```sh
 $ cd epochtalk
-$ npm install
+$ yarn
 ```
 
 #### 5) Install module dependencies using [npm](https://www.npmjs.org/doc/README.html)
 ```sh
 $ cd modules
-$ npm install
+$ yarn
 ```
 
 #### 4) Copy the example.env file
