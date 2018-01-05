@@ -54,6 +54,9 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       var autoVideo = function(url) {
         if (validUrl(url)) {
           url = new URL(url);
+          // Convert url string to URL Object
+          // This allows us to specifically check things like the host or query params
+          // as opposed to doing a regex on a url string
 
           // create query params dict
           var queryParams = {};
@@ -67,11 +70,14 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
          // parse url for youtube video id if present in query param
          var videoId;
          // check for shortened youtu.be
+         // if found parse out video id from pathname
          if (url.host.indexOf('youtu.be') > -1) {
            videoId = url.pathname.replace('/', '');
          }
+         // otherwise look for video id in the query parameters
          else { videoId = queryParams.v; }
 
+         // If video id isn't present at this point return original string
          if (videoId) {
             // time search param
             var time = queryParams.t;
