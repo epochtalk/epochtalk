@@ -53,45 +53,50 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       var autoVideoRegex = /(?!<code[^>]*?>)((?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|\/youtu.be\/)([a-zA-Z0-9_-]{11})+(?:[a-zA-Z0-9;:@#?&%=+\/\$_.-]*)*(?:(t=(?:(\d+h)?(\d+m)?(\d+s)?)))*)(?![^<]*?<\/code>)/gi;
       var autoVideo = function(url) {
         if (validUrl(url)) {
-          var temp = new URL(url);
+          url = new URL(url);
 
           // create query params dict
           var queryParams = {};
-          var query = temp.search.substring(1);
+          var query = url.search.substring(1);
           var vars = query.split('&');
           for (var i = 0; i < vars.length; i++) {
             var pair = vars[i].split('=');
             queryParams[pair[0]] = pair[1];
           }
 
-          // parse url for youtube key
-          var key = '';
-          if (url.indexOf('youtube') > 0) { key = queryParams.v; }
-          else { key = temp.pathname.replace('/', ''); }
+         // parse url for youtube video id if present in query param
+         var videoId;
+         // check for shortened youtu.be
+         if (url.host.indexOf('youtu.be') > -1) {
+           videoId = url.pathname.replace('/', '');
+         }
+         else { videoId = queryParams.v; }
 
-          // time search param
-          var time = queryParams.t;
-          if (time && time.indexOf('s') === time.length - 1) {
-            time = time.slice(0, -1);
+         if (videoId) {
+            // time search param
+            var time = queryParams.t;
+            if (time && time.indexOf('s') === time.length - 1) {
+              time = time.slice(0, -1);
+            }
+            var src = 'https://www.youtube.com/embed/' + videoId;
+            if (time) { src += '?start=' + time; }
+
+            // create youtube iframe`
+            var wrap = document.createElement('div');
+            var vidWrap = document.createElement('div');
+            vidWrap.className = 'video-wrap';
+            var frame = document.createElement('iframe');
+            frame.width = 640;
+            frame.height = 360;
+            frame.src = src;
+            frame.setAttribute('frameborder', 0);
+            frame.setAttribute('allowfullscreen', '');
+            vidWrap.appendChild(frame);
+            wrap.appendChild(vidWrap);
+
+            // return content
+            return wrap.innerHTML;
           }
-          var src = 'https://www.youtube.com/embed/' + key;
-          if (time) { src += '?start=' + time; }
-
-          // create youtube iframe
-          var wrap = document.createElement('div');
-          var vidWrap = document.createElement('div');
-          vidWrap.className = 'video-wrap';
-          var frame = document.createElement('iframe');
-          frame.width = 640;
-          frame.height = 360;
-          frame.src = src;
-          frame.setAttribute('frameborder', 0);
-          frame.setAttribute('allowfullscreen', '');
-          vidWrap.appendChild(frame);
-          wrap.appendChild(vidWrap);
-
-          // return content
-          if (key) { return wrap.innerHTML; }
           else {return url; }
         }
         else { return url; }
