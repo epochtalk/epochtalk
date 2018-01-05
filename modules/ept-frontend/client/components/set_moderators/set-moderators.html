@@ -15,7 +15,9 @@
     </p>
     <br />
     <div>
-      <label>Add Moderators</label>
+      <label>Add Moderators
+        <span class="info-tooltip" data-balloon="Type the names of users you want to add as moderators to this board. This will add the user as a moderator, but you have to ensure the user has permissions to moderate via the roles management view" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+      </label>
       <tags-input modal-focus="{{vm.show}}" min-length="1" placeholder="Type username of moderator(s) to add" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" ng-model="vm.modsToAdd">
         <auto-complete min-length="1" source="vm.loadTags($query)"></auto-complete>
       </tags-input>

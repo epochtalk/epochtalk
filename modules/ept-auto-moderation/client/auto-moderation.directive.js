@@ -57,7 +57,7 @@ var directive = ['AutoModeration', 'Alert', 'Session',
       };
 
       this.addCondition = function() {
-        var newCondition = { param: '', regex: { pattern: '', flags: '' } };
+        var newCondition = { param: '', regex: { pattern: '', flags: 'gi' } };
         ctrl.viewedRule.conditions.push(newCondition);
       };
 

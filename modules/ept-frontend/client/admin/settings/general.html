@@ -1,10 +1,15 @@
 <!-- Forum Configurations -->
 <div class="settings half-column">
-  <h5 class="thin-underline">Forum Configurations</h5>
+  <h5 class="thin-underline">
+    Forum Configurations
+    <span class="info-tooltip" data-balloon="General configurations which allow you to restrict/grant access to your forum" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+  </h5>
   <div class="setting-row">
     <div class="switch-desc">
-      <label for="public-forum">Public Forum</label>
-      <label class="desc-label" for="public-forum">Allow guests to view forum content</label>
+      <label for="public-forum">
+        Public Forum
+      </label>
+      <label class="desc-label" for="public-forum">Allow guests to view forum content without registering</label>
     </div>
     <div class="switch-block">
       <input id="public-forum" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.login_required" ng-true-value="false" ng-false-value="true">
@@ -13,8 +18,10 @@
   </div>
   <div class="setting-row">
     <div class="switch-desc">
-      <label for="verify-registration">Verify Registration</label>
-      <label class="desc-label" for="verify-registration">Users must verify their accounts when registering</label>
+      <label for="verify-registration">
+        Verify Registration
+      </label>
+      <label class="desc-label" for="verify-registration">Users must verify their accounts via email when registering</label>
     </div>
     <div class="switch-block">
       <input id="verify-registration" class="toggle-switch" type="checkbox" ng-model="AdminSettingsCtrl.settings.verify_registration">
@@ -33,7 +40,10 @@
   </div>
 
   <!-- Portal Configurations -->
-  <h5 class="thin-underline section-header-top-spacing">Portal Configurations</h5>
+  <h5 class="thin-underline section-header-top-spacing">
+    Portal Configurations
+    <span class="info-tooltip" data-balloon="Enabling portal mode allows you to choose a specific board to be the main feed of the homepage as opposed to a listing of all the boards" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+  </h5>
   <div class="setting-row">
     <div class="switch-desc">
       <label for="public-forum">Enable Portal</label>
@@ -55,13 +65,19 @@
   <motd-admin></motd-admin>
 
   <!-- Analytics -->
-  <h5 class="thin-underline section-header-top-spacing">Google Analytics</h5>
+  <h5 class="thin-underline section-header-top-spacing">
+    Google Analytics
+    <span class="info-tooltip" data-balloon="Enter your Google Analytics Key to enable analytics of the forum" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+  </h5>
   <label for="google-analytics-key">Google Analytics Key</label>
   <input type="text" class="input-text" id="google-analytics-key" ng-model="AdminSettingsCtrl.settings.ga_key" placeholder="UA-XXXXX-Y" />
 
   <!-- SMTP Configurations -->
   <div ng-if="!AdminSettingsCtrl.settings.saas_mode">
-    <h5 class="thin-underline section-header-top-spacing">SMTP Configurations</h5>
+    <h5 class="thin-underline section-header-top-spacing">
+      SMTP Configurations
+      <span class="info-tooltip" data-balloon="SMTP settings must be configured in order for the forum to send emails for forum invites, registration verifications or to reset your password" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </h5>
     <div>
       <label for="smtp-sender">SMTP Sender Email Address</label>
       <input type="text" class="input-text" id="smtp-sender" ng-model="AdminSettingsCtrl.settings.emailer.sender" placeholder="Example: ept@epochtalk.com" />
@@ -91,7 +107,10 @@
 
 <!-- Web Configurations -->
 <div class="settings half-column section-header-top-spacing">
-  <h5 class="thin-underline">Web Configurations</h5>
+  <h5 class="thin-underline">
+    Web Configurations
+    <span class="info-tooltip" data-balloon="Web configurations will affect how your forum is picked up by search engines. Setting website logo and website favicon will allow you to brand the forum" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+  </h5>
   <label for="website-title">Website Title</label>
   <input type="text" class="input-text" id="website-title" ng-model="AdminSettingsCtrl.settings.website.title" placeholder="Example: Epochtalk Forums" />
   <label for="website-description">Website Description</label>
@@ -107,7 +126,10 @@
 
   <!-- Image Server Configurations -->
   <div ng-if="!AdminSettingsCtrl.settings.saas_mode">
-    <h5 class="thin-underline section-header-top-spacing">Image Server Configurations</h5>
+    <h5 class="thin-underline section-header-top-spacing">
+      Image Server Configurations
+      <span class="info-tooltip" data-balloon="Image server configurations give the option of hosting the forums images locally or using an Amazon s3 bucket" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </h5>
     <div class="img-wrap">
       <div class="img-server-wrap">
         <label>Image Server Host</label>
@@ -124,15 +146,20 @@
     </div>
     <div class="input-three-col">
       <div>
-        <label for="image-size">Max Image Size</label>
+        <label for="image-size">Max Image Size
+          <span class="info-tooltip" data-balloon="Max image upload size in bytes, anything larger will be rejected. Default is 10 megabytes" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+        </label>
         <input type="text" class="input-text" id="image-size" ng-model="AdminSettingsCtrl.settings.images.max_size" placeholder="Max Image Upload Size in MegaBytes ( Example: 10 )" />
       </div>
       <div>
-        <label for="image-expiration">Image Expiration</label>
+        <label for="image-expiration">Image Expiration
+          <span class="info-tooltip" data-balloon="Expiration in milliseconds for images that were uploaded but not posted ( Example: 7,200,000 )" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span></label>
         <input type="text" class="input-text" id="image-expiration" ng-model="AdminSettingsCtrl.settings.images.expiration" placeholder="Expiration in milliseconds for images that were uploaded but not posted ( Example: 7,200,000 )" />
       </div>
       <div>
-        <label for="image-interval">Clean Interval</label>
+        <label for="image-interval">Clean Interval
+          <span class="info-tooltip" data-balloon="How often to check for expired images in milliseconds ( Example: 900,000 )" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span></label>
+        </label>
         <input type="text" class="input-text" id="image-interval" ng-model="AdminSettingsCtrl.settings.images.interval" placeholder="How often to check for expired images in milliseconds ( Example: 900,000 )" />
       </div>
     </div>

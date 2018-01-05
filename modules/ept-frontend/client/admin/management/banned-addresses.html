@@ -93,7 +93,9 @@
 <!-- Ban New Addresses Modal -->
 <modal show="AdminManagementCtrl.showBanAddresses" on-close="AdminManagementCtrl.closeBanAddresses()">
   <form name="$parent.form" class="css-form">
-    <h3 class="thin-underline">Manually Ban Addresses</h3>
+    <h3 class="thin-underline">Manually Ban Addresses
+      <span class="info-tooltip" data-balloon="Allows admins to manually ban users from registering from particular hostnames/ip addresses. Weight is used when calculating how malicious a user trying to register is. Decay will allow users to register from that particular hostname/ip after an lengthy amount of time, assuming there were no re-offences causing the same address to be banned again" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </h3>
     <table class="striped ban-addresses" width="100%">
       <thead>
         <tr>
