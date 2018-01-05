@@ -51,12 +51,13 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
 
       // Auto video embed Regex
       var autoVideoRegex = /(?!<code[^>]*?>)((?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|\/youtu.be\/)([a-zA-Z0-9_-]{11})+(?:[a-zA-Z0-9;:@#?&%=+\/\$_.-]*)*(?:(t=(?:(\d+h)?(\d+m)?(\d+s)?)))*)(?![^<]*?<\/code>)/gi;
-      var autoVideo = function(url) {
-        if (validUrl(url)) {
-          url = new URL(url);
+      var autoVideo = function(urlString) {
+
+        if (validUrl(urlString)) {
           // Convert url string to URL Object
           // This allows us to specifically check things like the host or query params
           // as opposed to doing a regex on a url string
+          var url = new URL(urlString);
 
           // create query params dict
           var queryParams = {};
@@ -103,9 +104,9 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
             // return content
             return wrap.innerHTML;
           }
-          else {return url; }
+          else {return urlString; }
         }
-        else { return url; }
+        else { return urlString; }
       };
 
       // Style Fix Regex
