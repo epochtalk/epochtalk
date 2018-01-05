@@ -41,6 +41,14 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         return wrap.innerHTML;
       };
 
+      var validUrl = function(s) {
+        try {
+          new URL(s);
+          return true;
+        }
+        catch(e) { return false; }
+      };
+
       // Auto video embed Regex
       var autoVideoRegex = /(?!<code[^>]*?>)((?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|\/youtu.be\/)([a-zA-Z0-9_-]{11})+(?:[a-zA-Z0-9;:@#?&%=+\/\$_.-]*)*(?:(t=(?:(\d+h)?(\d+m)?(\d+s)?)))*)(?![^<]*?<\/code>)/gi;
       var autoVideo = function(url) {
