@@ -2,17 +2,17 @@
 <modal show="HeaderCtrl.showLogin" on-close="HeaderCtrl.clearLoginFields()">
   <form action="." name="$parent.form" class="css-form" ng-submit="$event.preventDefault();" novalidate>
     <h3 class="thin-underline">Login</h3>
-    <input type="text" class="input-text" placeholder="Username" ng-model="HeaderCtrl.user.username" modal-focus="{{HeaderCtrl.showLogin}}" required />
+    <input id="login-user" type="text" class="input-text" placeholder="Username" ng-model="HeaderCtrl.user.username" modal-focus="{{HeaderCtrl.showLogin}}" required />
     <label>
       <div class="input-info">Minimum 8 characters</div>
-      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password"  ng-class="{'ng-invalid': HeaderCtrl.user.password.length < 8 }" required />
+      <input id="login-pass" type="password" placeholder="Password" ng-model="HeaderCtrl.user.password"  ng-class="{'ng-invalid': HeaderCtrl.user.password.length < 8 }" required />
     </label>
     <label>
       <input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe" />
       Remember Me
     </label>
     <div class="clear">
-      <button class=" fill-row" ng-click="HeaderCtrl.login()" type="submit" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
+      <button id="login-btn" class=" fill-row" ng-click="HeaderCtrl.login()" type="submit" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
         Login
       </button>
     </div>
