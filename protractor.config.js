@@ -2,7 +2,7 @@
 exports.config = {
   framework: 'jasmine',
   seleniumAddress: 'http://localhost:4444/wd/hub',
-  specs: ['color-validator.spec.js'],
+  specs: ['./test/protractor/color-validator.spec.js'],
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
