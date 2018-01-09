@@ -1,3 +1,5 @@
+var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+
 // conf.js
 exports.config = {
   framework: 'jasmine',
@@ -10,17 +12,10 @@ exports.config = {
     }
   },
   onPrepare: function() {
-    browser.get('http://localhost:8080');
-
-    element(by.id('login-link')).click();
-
-    element(by.id('login-user')).sendKeys('admin');
-    element(by.id('login-pass')).sendKeys('admin1234');
-
-    element(by.id('login-btn')).click();
-
-    return browser.wait(function() {
-      return element(by.id('user-dropdown-wrap')).isPresent();
-    }, 10000);
+    jasmine.getEnv().addReporter(new SpecReporter({
+      spec: {
+        displayStacktrace: true
+      }
+    }));
   }
 };

@@ -4,7 +4,8 @@ var helper = require(path.join(__dirname, 'helper'));
 describe('Directive: Color Validator', function() {
   var color = element(by.id('base-background-color'));
 
-  beforeEach(function() {
+  helper.login()
+  .then(function() {
     browser.get('http://localhost:8080/admin/settings/theme');
   });
 
@@ -15,7 +16,7 @@ describe('Directive: Color Validator', function() {
     expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
   });
 
-  it('"#ccc" should be an invalid color', function() {
+  it('"#ccc" should be a valid color', function() {
     color.clear();
     color.sendKeys('#ccc');
     expect(helper.hasClass(color, 'ng-valid')).toBe(true);
