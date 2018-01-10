@@ -1,0 +1,119 @@
+version: '3.3'
+services:
+  protractor:
+    build: .
+    depends_on:
+      - hub
+      - chrome
+      - epochtalk
+    links:
+      - hub
+      - epochtalk
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: password
+      SELENIUM_HOST: http://chwome
+      SELENIUM_PORT: 4444
+      SELENIUM_EPOCHTALK_HOST: http://epochtalk
+      SELENIUM_EPOCHTALK_PORT: 8080
+    command: sh -c "./wait-for-it.sh epochtalk:8080 -t 120 && sleep 5 && npm run test-client"
+  epochtalk:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - postgres
+      - epoch
+    links:
+      - redis
+      - postgres
+    environment:
+      PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
+      PGUSER: docker
+      PGHOST: postgres
+      PGPASSWORD: docker
+      PGDATABASE: epochtalk
+      PGPORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RECAPTCHA_SITE_KEY: ""
+      RECAPTCHA_SECRET_KEY: ""
+      HOST: 0.0.0.0
+      PORT: 8080
+      PUBLIC_URL: http://localhost:8080
+      EMAILER_SENDER: e@ma.il
+      EMAILER_OPTIONS_HOST: epochtalk-api-tests
+      EMAILER_OPTIONS_PORT: 1025
+      EMAILER_OPTIONS_IGNORE_TLS: "true"
+      EMAILER_OPTIONS_SECURE: "false"
+      RATE_LIMITING_GET_INTERVAL: -1
+      RATE_LIMITING_PUT_INTERVAL: -1
+      RATE_LIMITING_POST_INTERVAL: -1
+      RATE_LIMITING_DELETE_INTERVAL: -1
+  epochtalk-seed:
+    build: .
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    environment:
+      PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
+      PGUSER: docker
+      PGHOST: postgres
+      PGPASSWORD: docker
+      PGDATABASE: epochtalk
+      PGPORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RECAPTCHA_SITE_KEY: ""
+      RECAPTCHA_SECRET_KEY: ""
+      HOST: 0.0.0.0
+      PORT: 8080
+      PUBLIC_URL: http://localhost:8080
+      EMAILER_SENDER: e@ma.il
+      EMAILER_OPTIONS_HOST: epochtalk-api-tests
+      EMAILER_OPTIONS_PORT: 1025
+      EMAILER_OPTIONS_IGNORE_TLS: "true"
+      EMAILER_OPTIONS_SECURE: "false"
+      RATE_LIMITING_GET_INTERVAL: -1
+      RATE_LIMITING_PUT_INTERVAL: -1
+      RATE_LIMITING_POST_INTERVAL: -1
+      RATE_LIMITING_DELETE_INTERVAL: -1
+    command: sh -c "until node cli create-user admin admin@epochtalk.com --password password --admin; do sleep 5; done"
+  epoch:
+    image: quay.io/epochtalk/epoch:latest
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    environment:
+      MIX_ENV: prod
+      DATABASE_USER: docker
+      DATABASE_PASSWORD: docker
+      DATABASE_NAME: epochtalk
+      DATABASE_HOST: postgres
+  redis:
+    image: redis:4.0.1
+    user: redis
+  postgres:
+    image: postgres:9.6.2
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+  chrome:
+    image: selenium/node-chrome:3.8.1-dubnium
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - hub
+    environment:
+      HUB_HOST: hub
+  hub:
+    image: selenium/hub:3.8.1-dubnium
+    # ports:
+    #   - "4444:4444"
+  chwome:
+    image: selenium/standalone-chrome
+    ports:
+      - "4444:4444"
