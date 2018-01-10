@@ -4,9 +4,10 @@ var helper = require(path.join(__dirname, 'helper'));
 describe('Directive: Color Validator', function() {
   var color = element(by.id('base-background-color'));
 
+  // Init for test
   helper.login()
   .then(function() {
-    browser.get('http://localhost:8080/admin/settings/theme');
+    browser.get(helper.host + '/admin/settings/theme');
   });
 
   it('"invalid-color" should be an invalid color', function() {

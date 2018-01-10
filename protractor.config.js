@@ -1,9 +1,10 @@
 var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+require('dotenv').load({ path: 'protractor.env', slient: true });
 
 // conf.js
 exports.config = {
   framework: 'jasmine',
-  seleniumAddress: 'http://localhost:4444/wd/hub',
+  seleniumAddress: process.env.SELENIUM_HOST + ':' + process.env.SELENIUM_PORT + '/wd/hub',
   specs: ['./test/protractor/color-validator.spec.js'],
   capabilities: {
     browserName: 'chrome',
