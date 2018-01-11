@@ -54,7 +54,6 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * bcrypt `^0.8.0`
 * bluebird `^3.1.5`
 * boom `^3.1.2`
-* bower `^1.7.5`
 * change-case `^2.3.1`
 * cheerio `^0.19.0`
 * commander `^2.5.1`
