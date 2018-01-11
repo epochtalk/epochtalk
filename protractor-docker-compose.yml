@@ -3,24 +3,19 @@ services:
   protractor:
     build: .
     depends_on:
-      - hub
-      - chrome
       - epochtalk
     links:
-      - hub
       - epochtalk
     environment:
       ADMIN_USERNAME: admin
       ADMIN_PASSWORD: password
-      SELENIUM_HOST: http://chwome
+      SELENIUM_HOST: http://chrome
       SELENIUM_PORT: 4444
       SELENIUM_EPOCHTALK_HOST: http://epochtalk
       SELENIUM_EPOCHTALK_PORT: 8080
     command: sh -c "./wait-for-it.sh epochtalk:8080 -t 120 && sleep 5 && npm run test-client"
   epochtalk:
     build: .
-    ports:
-      - "8080:8080"
     depends_on:
       - redis
       - postgres
@@ -102,18 +97,4 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
   chrome:
-    image: selenium/node-chrome:3.8.1-dubnium
-    volumes:
-      - /dev/shm:/dev/shm
-    depends_on:
-      - hub
-    environment:
-      HUB_HOST: hub
-  hub:
-    image: selenium/hub:3.8.1-dubnium
-    # ports:
-    #   - "4444:4444"
-  chwome:
     image: selenium/standalone-chrome
-    ports:
-      - "4444:4444"
