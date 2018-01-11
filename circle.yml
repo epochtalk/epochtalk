@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: node:8.9.0
+      - image: selenium/standalone-chrome
       - image: redis:4.0.1
       - image: postgres:9.6.2
         environment:
@@ -54,6 +55,12 @@ jobs:
           command: |
             set -eo pipefail
             docker-compose -f circleci-docker-compose.yml up --exit-code-from epochtalk-api-tests epochtalk-api-tests
+
+      - run:
+          name: run test-client
+          command: |
+            set -eo pipefail
+            docker-compose -f circleci-docker-compose.yml up --exit-code-from protractor protractor
 
       - run:
           name: "Failure: output container logs to console"

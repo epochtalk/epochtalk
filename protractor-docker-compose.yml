@@ -4,6 +4,7 @@ services:
     build: .
     depends_on:
       - epochtalk
+      - chrome
     links:
       - epochtalk
     environment:
