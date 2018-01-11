@@ -11,6 +11,20 @@ services:
     environment:
       HOST: http://epochtalk:8080
     command: sh -c "./wait-for-it.sh epochtalk:8080 -t 120 && sleep 5 && npm run test"
+  protractor:
+    build: .
+    depends_on:
+      - epochtalk
+    links:
+      - epochtalk
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: password
+      SELENIUM_HOST: http://chrome
+      SELENIUM_PORT: 4444
+      SELENIUM_EPOCHTALK_HOST: http://epochtalk
+      SELENIUM_EPOCHTALK_PORT: 8080
+    command: sh -c "./wait-for-it.sh epochtalk:8080 -t 120 && sleep 5 && npm run test-client"
   epochtalk:
     build: .
     ports:
@@ -65,3 +79,5 @@ services:
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
+  chrome:
+    image: selenium/standalone-chrome
