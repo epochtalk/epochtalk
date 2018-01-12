@@ -75,4 +75,11 @@ describe('Directive: Color Validator', function() {
     expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
   });
 
+  it('Fail on purpose', function() {
+    color.clear();
+    color.sendKeys('hsla(120, 100%, 50%, 0.5)');
+    expect(helper.hasClass(color, 'ng-valid')).toBe(false);
+    expect(helper.hasClass(color, 'ng-dirty')).toBe(false);
+  });
+
 });
