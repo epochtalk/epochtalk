@@ -1,6 +1,6 @@
 require('dotenv');
 var path = require('path');
-var SocketCluster = require('socketcluster').SocketCluster;
+var SocketCluster = require('socketcluster');
 
 var db = require(path.normalize(__dirname + '/db'));
 var config = require(path.normalize(__dirname + '/config'));
