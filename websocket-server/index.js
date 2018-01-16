@@ -25,7 +25,8 @@ module.exports = {
           appName: 'ept-ws',
           workerController: path.normalize(__dirname + '/worker.js'),
           allowClientPublish: false,
-          killMasterOnSignal: false
+          killMasterOnSignal: false,
+          rebootOnSignal: false
         });
         return resolve(socketCluster);
       })
