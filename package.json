@@ -8,6 +8,7 @@
     "build": "node ./scripts/build.js",
     "serve": "node ./scripts/serve.js",
     "db-create": "node ./scripts/db-create",
+    "test-client": "./node_modules/.bin/protractor protractor.config.js",
     "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && psql epoch_test < ./schema.sql",
     "start": "./node_modules/.bin/bower install && npm run build && node cli/index.js --create && node server"
   },
@@ -91,11 +92,13 @@
     "brototype": "0.0.6",
     "code": "^4.0.0",
     "faker": "^4.1.0",
+    "jasmine-spec-reporter": "^4.2.1",
     "lab": "^13.0.1",
     "livereload": "^0.4.0",
     "mocha": "^2.4.1",
     "nodemon": "^1.1.1",
     "parse-database-url": "^0.3.0",
+    "protractor": "^5.2.2",
     "watch": "^0.17.1"
   },
   "bin": {

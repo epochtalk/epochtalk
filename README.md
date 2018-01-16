@@ -1,6 +1,6 @@
 # Epochtalk [![Circle CI](https://circleci.com/gh/epochtalk/epochtalk.svg?circle-token=:circle-token)](https://circleci.com/gh/epochtalk/epochtalk) [![Gitter chat](http://img.shields.io/badge/gitter-epochtalk%2Fepochtalk-1dce73.svg?style=flat)](https://gitter.im/epochtalk/epochtalk)
 
-####**Warning this project is under active development, design is subject to change**
+#### **Warning this project is under active development, design is subject to change**
 
 Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Webpack](https://webpack.github.io), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
 
@@ -54,7 +54,6 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * bcrypt `^0.8.0`
 * bluebird `^3.1.5`
 * boom `^3.1.2`
-* bower `^1.7.5`
 * change-case `^2.3.1`
 * cheerio `^0.19.0`
 * commander `^2.5.1`
