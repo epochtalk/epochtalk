@@ -1,13 +1,13 @@
+require('dotenv');
 var path = require('path');
+var SocketCluster = require('socketcluster');
 
+var db = require(path.normalize(__dirname + '/db'));
+var config = require(path.normalize(__dirname + '/config'));
+var onlineUsers = require(path.normalize(__dirname + '/plugins/online'));
 
 module.exports = {
   start: function() {
-    require('dotenv');
-    var SocketCluster = require('socketcluster').SocketCluster;
-    var db = require(path.normalize(__dirname + '/db'));
-    var config = require(path.normalize(__dirname + '/config'));
-    var onlineUsers = require(path.normalize(__dirname + '/plugins/online'));
     return db.users.testConnection()
     .then(onlineUsers.logOptions)
     .then(onlineUsers.clear)
@@ -24,7 +24,9 @@ module.exports = {
           host: config.host,
           appName: 'ept-ws',
           workerController: path.normalize(__dirname + '/worker.js'),
-          allowClientPublish: false
+          allowClientPublish: false,
+          killMasterOnSignal: false,
+          rebootOnSignal: false
         });
         return resolve(socketCluster);
       })
