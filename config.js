@@ -91,7 +91,7 @@ setIfDefined(config, 'emailerEnv.options.auth.user', process.env.EMAILER_OPTIONS
 setIfDefined(config, 'emailerEnv.options.auth.pass', process.env.EMAILER_OPTIONS_AUTH_PASS);
 setIfDefined(config, 'emailerEnv.options.secure', coerceEnvBoolean(process.env.EMAILER_OPTIONS_SECURE));
 setIfDefined(config, 'emailerEnv.options.region', process.env.EMAILER_OPTIONS_REGION);
-setIfDefined(config, 'emailerEnv.options.accessKey', process.env.EMAILER_OPTIONS_ACCESS_KEY);
-setIfDefined(config, 'emailerEnv.options.secretKey', process.env.EMAILER_OPTIONS_SECRET_KEY);
+setIfDefined(config, 'emailerEnv.options.accessKeyId', process.env.EMAILER_OPTIONS_ACCESS_KEY_ID);
+setIfDefined(config, 'emailerEnv.options.secretAccessKey', process.env.EMAILER_OPTIONS_SECRET_ACCESS_KEY);
 
 module.exports = config;

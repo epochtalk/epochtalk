@@ -175,10 +175,8 @@ setup()
   return server.start(function () {
     var configClone = Hoek.clone(config);
     configClone.privateKey = configClone.privateKey.replace(/./g, '*');
-    if (_.get(configClone, 'emailer.transporter') === 'ses') {
-      configClone.emailer.options.accessKey = configClone.emailer.options.accessKey.replace(/./g, '*');
-      configClone.emailer.options.secretKey = configClone.emailer.options.secretKey.replace(/./g, '*');
-    }
+    if (_.get(configClone, 'emailer.options.accessKeyId')) { configClone.emailer.options.accessKeyId = configClone.emailer.options.accessKeyId.replace(/./g, '*'); }
+    if (_.get(configClone, 'emailer.options.secretAccessKey')) { configClone.emailer.options.secretAccessKey = configClone.emailer.options.secretAccessKey.replace(/./g, '*'); }
     if (_.get(configClone, 'emailer.options.auth.pass')) { configClone.emailer.options.auth.pass = configClone.emailer.options.auth.pass.replace(/./g, '*'); }
     if (configClone.images.s3.accessKey) { configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*'); }
     if (configClone.images.s3.secretKey) { configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*'); }
