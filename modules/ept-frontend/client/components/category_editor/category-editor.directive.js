@@ -1,5 +1,6 @@
 var remove = require('lodash/remove');
 var find = require('lodash/find');
+var difference = require('lodash/difference');
 
 var directive = ['$state', function($state) {
   return {
@@ -233,6 +234,7 @@ var directive = ['$state', function($state) {
 
       $scope.save = function() {
         var serializedCats = $('#' + $scope.catListId).nestable('serialize');
+        var serializedUncategorizedBoards = $('#' + $scope.boardListId).nestable('serialize');
         // 1) Create new Categories
         return $scope.processNewCategories()
         // 2) Create new boards
@@ -245,14 +247,32 @@ var directive = ['$state', function($state) {
         .then($scope.processDeletedCategories)
         // 6) Update Board Mapping Categories
         .then(function() {
-          var mapping = buildUpdatedCats(serializedCats);
-          return $scope.processCategories(mapping);
+          var categorizedMapping = buildUpdatedCats(serializedCats);
+          var uncategorizedMapping = buildUncategorizedBoards(serializedUncategorizedBoards);
+          var mergedMapping = uncategorizedMapping.concat(categorizedMapping);
+          return $scope.processCategories(mergedMapping);
         })
         .then(function() {
           console.log('Done Saving!');
           return $state.go($state.$current, { saved: true }, { reload: true });
         });
       };
+
+      function buildUncategorizedBoards(uncatArr) {
+        var uncategorizedMapping = [];
+        // Convert Original Uncategorized List into flat array
+        var origList = $scope.boardListData.map(function(data) { return data.id; });
+        // Convert New Uncategorized List into flat array
+        var newList = uncatArr.map(function(data) { return data.boardId; });
+        // Diff new and original uncategorized lists to figure out
+        // which boards were newly uncategorized
+        var diffList = difference(newList, origList);
+        // Add the newly uncategorized boards into the uncategorized mapping
+        diffList.forEach(function(boardId) {
+          uncategorizedMapping.push({ id: boardId, type: 'uncategorized' });
+        });
+        return uncategorizedMapping;
+      }
 
       /* Translates serialized array into boards.updateCategory format */
       function buildUpdatedCats(catsArr) {

@@ -123,7 +123,7 @@ exports.moveBoards = {
   * @apiParam (Payload) {object[]} boardMapping Array containing mapping of boards and categories
   * @apiParam (Payload) {string} boardMapping.id The id of the category or board
   * @apiParam (Payload) {string} boardMapping.name The name of the category or board
-  * @apiParam (Payload) {string="board","category"} boardMapping.type The type of the mapping object
+  * @apiParam (Payload) {string="board","category","uncategorized"} boardMapping.type The type of the mapping object
   * @apiParam (Payload) {number} boardMapping.view_order The view order of the board or category
   * @apiParam (Payload) {string} [boardMapping.category_id] If type is "board" the id of the category the board belongs to
   * @apiParam (Payload) {string} [boardMapping.parent_id] If type is "board" and the board is a child board, the id of the parent board
