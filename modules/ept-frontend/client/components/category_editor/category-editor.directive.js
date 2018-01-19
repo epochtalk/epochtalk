@@ -233,17 +233,17 @@ var directive = ['$state', function($state) {
 
       $scope.save = function() {
         var serializedCats = $('#' + $scope.catListId).nestable('serialize');
-        // 0) Create new Categories
+        // 1) Create new Categories
         return $scope.processNewCategories()
-        // 1) Create new boards
+        // 2) Create new boards
         .then($scope.processNewBoards)
-        // 2) Handle Boards which have been edited
+        // 3) Handle Boards which have been edited
         .then($scope.processEditedBoards)
-        // 3) Handle Boards which have been deleted
+        // 4) Handle Boards which have been deleted
         .then($scope.processDeletedBoards)
-        // 4) Handle Categories which have been deleted
+        // 5) Handle Categories which have been deleted
         .then($scope.processDeletedCategories)
-        // 3) Updated all Categories
+        // 6) Update Board Mapping Categories
         .then(function() {
           var mapping = buildUpdatedCats(serializedCats);
           return $scope.processCategories(mapping);
