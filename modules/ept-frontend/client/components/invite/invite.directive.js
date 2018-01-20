@@ -20,7 +20,7 @@ function(Invitations, Alert) {
           Alert.success('Invitation Sent');
          })
         .catch(function(err) {
-          if (err.status === 400) { ctrl.errorMessage = err.data.message; }
+          if (err.status === 400 || err.status === 422) { ctrl.errorMessage = err.data.message; }
           else { ctrl.errorMessage = 'Failed to invite user'; }
         });
       };
