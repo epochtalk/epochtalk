@@ -1,6 +1,16 @@
-var ctrl = ['$rootScope', '$location', '$timeout', '$stateParams', 'User', 'Alert', 'Session',
-  function($rootScope, $location, $timeout, $stateParams, User, Alert, Session) {
+var ctrl = ['$rootScope', '$location', '$timeout', '$stateParams', 'User', 'Auth', 'Alert', 'Session',
+  function($rootScope, $location, $timeout, $stateParams, User, Auth, Alert, Session) {
     var ctrl = this;
+
+    // For the odd case when a user is authenticated already and they
+    // click on an invite link. Log the user out and refresh the view
+    if (Session.isAuthenticated()) {
+      Auth.logout()
+      .then(function() {
+        $state.go($state.current, $stateParams, { reload: true });
+      });
+    }
+
     this.joinUser = {
       hash: $stateParams.token,
       username: '',
