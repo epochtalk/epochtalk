@@ -4,6 +4,7 @@ app.directive('alert', require('./alert/alert.directive.js'));
 app.directive('pagination', require('./pagination/pagination.directive.js'));
 app.directive('slideToggle', require('./slide_toggle/slide-toggle.directive.js'));
 app.directive('uniqueUsername', require('./unique_username/unique-username.directive.js'));
+app.directive('uniqueInvite', require('./unique_invite/unique-invite.directive.js'));
 app.directive('uniqueEmail', require('./unique_email/unique-email.directive.js'));
 app.directive('imageLoader', require('./image_loader/image_loader.directive.js'));
 app.directive('modal', require('./modal/modal.directive.js'));
