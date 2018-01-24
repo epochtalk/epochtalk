@@ -25,7 +25,7 @@ module.exports = {
   workers: os.cpus().length,
   brokers: os.cpus().length,
   port: process.env.WEBSOCKET_PORT,
-  host: process.env.WEBSOCKET_HOST,
+  host: process.env.WEBSOCKET_BIND_ADDRESS,
   wsEngine: process.env.WEBSOCKET_ENGINE || 'ws',
   protocol: process.env.WEBSOCKET_PROTOCOL,
   protocolOptions: {
