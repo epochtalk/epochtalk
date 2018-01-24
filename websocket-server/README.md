@@ -13,7 +13,7 @@ cp example.env .env
 ### EpochTalk
 
 ```bash
-WEBSOCKET_BIND_ADDRESS # specify the host to listen on
+WEBSOCKET_SERVER_BIND_ADDRESS # specify the host to listen on
 WEBSOCKET_PORT    # specify the port to expose
 WEBSOCKET_API_KEY # used to validate the Epochtalk server
 PRIVATE_KEY       # to reflect that of the Epochtalk server.
