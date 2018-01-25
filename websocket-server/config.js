@@ -21,7 +21,7 @@ if (process.env.WEBSOCKET_SERVER_PROTOCOL === 'https') {
 }
 
 module.exports = {
-  authKey: process.env.PRIVATE_KEY,
+  authKey: process.env.WEBSOCKET_SERVER_PRIVATE_KEY,
   workers: os.cpus().length,
   brokers: os.cpus().length,
   port: process.env.WEBSOCKET_SERVER_PORT,
@@ -34,8 +34,8 @@ module.exports = {
     passphrase: process.env.WEBSOCKET_SERVER_PASS
   },
   redis: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
+    host: process.env.WEBSOCKET_SERVER_REDIS_HOST,
+    port: process.env.WEBSOCKET_SERVER_REDIS_PORT,
     db: process.env.WEBSOCKET_SERVER_REDIS_DB
   },
   redisChannels: {

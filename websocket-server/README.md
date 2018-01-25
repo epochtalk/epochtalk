@@ -16,7 +16,7 @@ cp example.env .env
 WEBSOCKET_SERVER_BIND_ADDRESS # specify the host to listen on
 WEBSOCKET_SERVER_PORT    # specify the port to expose
 WEBSOCKET_SERVER_API_KEY # used to validate the Epochtalk server
-PRIVATE_KEY       # to reflect that of the Epochtalk server.
+WEBSOCKET_SERVER_PRIVATE_KEY       # to reflect that of the Epochtalk server.
                   # used for JWT token authentication.
 ```
 
@@ -32,8 +32,8 @@ Websocket-server uses Redis to keep track of users who are currently online.  To
 set up a connection to Redis, provide the following variables in `.env`.
 
 ```bash
-REDIS_HOST # the redis host to connect to
-REDIS_PORT # the redis port to connect to
+WEBSOCKET_SERVER_REDIS_HOST # the redis host to connect to
+WEBSOCKET_SERVER_REDIS_PORT # the redis port to connect to
 WEBSOCKET_SERVER_REDIS_DB   # the number of the redis db
 ```
 
