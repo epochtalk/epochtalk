@@ -35,6 +35,7 @@ set up a connection to Redis, provide the following variables in `.env`.
 WEBSOCKET_SERVER_REDIS_HOST # the redis host to connect to
 WEBSOCKET_SERVER_REDIS_PORT # the redis port to connect to
 WEBSOCKET_SERVER_REDIS_DB   # the number of the redis db
+WEBSOCKET_SERVER_REDIS_OPTIONS_PASSWORD   # the password for redis
 ```
 
 ### SSL
