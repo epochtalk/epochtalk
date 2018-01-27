@@ -11,7 +11,7 @@ var directive = ['$state', function($state) {
       $scope.catListId = 'categorized-boards';
       $scope.boardListId = 'uncategorized-boards';
       $scope.catListOpts = { protectRoot: true, maxDepth: 5, group: 1 };
-      $scope.boardListOpts = { protectRoot: true, maxDepth: 1, group: 1 };
+      $scope.boardListOpts = { protectRoot: true, maxDepth: 5, group: 1 };
 
       var deleteCatDataId = '';
       var editCatDataId = ''; // Stores the data-id of category being edited
