@@ -17,16 +17,22 @@ module.exports = function(boardMapping) {
         params = [mapping.name, mapping.viewable_by || null, mapping.view_order, mapping.id];
         promise = client.query(q, params);
       }
-      // Boards
-      else if (mapping.type === 'board' && mapping.parent_id) {
-        q = 'INSERT INTO board_mapping (board_id, parent_id, view_order) VALUES ($1, $2, $3) ON CONFLICT(board_id, parent_id) DO UPDATE SET board_id = EXCLUDED.board_id, parent_id = EXCLUDED.parent_id, view_order = EXCLUDED.view_order';
-        params = [mapping.id, mapping.parent_id, mapping.view_order];
+      // Uncategorized
+      else if (mapping.type === 'uncategorized') {
+        q = 'DELETE FROM board_mapping WHERE board_id = $1';
+        params = [mapping.id]
         promise = client.query(q, params);
       }
-      else if (mapping.type === 'board' && mapping.category_id) {
-        q = 'INSERT INTO board_mapping (board_id, category_id, view_order) VALUES ($1, $2, $3) ON CONFLICT(board_id, category_id) DO UPDATE SET board_id = EXCLUDED.board_id, category_id = EXCLUDED.category_id, view_order = EXCLUDED.view_order';
-        params = [mapping.id, mapping.category_id, mapping.view_order];
-        promise = client.query(q, params);
+      // Boards
+      else if (mapping.type === 'board') {
+        q = 'DELETE FROM board_mapping WHERE board_id = $1';
+        params = [mapping.id];
+        promise = client.query(q, params)
+        .then(function() {
+          q = 'INSERT INTO board_mapping (board_id, parent_id, category_id, view_order) VALUES ($1, $2, $3, $4);';
+          params = [mapping.id, mapping.parent_id, mapping.category_id, mapping.view_order];
+          return client.query(q, params);
+        });
       }
       return promise;
     });

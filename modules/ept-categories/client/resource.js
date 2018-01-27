@@ -7,7 +7,7 @@ var resource = ['$resource',
         isArray: true
       },
       save: { method: 'POST', isArray: true },
-      delete: { method: 'POST', url: '/api/categories/delete', isArray: true }
+      delete: { method: 'POST', url: '/api/categories/delete', isArray: false }
     });
   }
 ];
