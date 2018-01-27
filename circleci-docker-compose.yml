@@ -48,6 +48,9 @@ services:
       REDIS_PORT: 6379
       RECAPTCHA_SITE_KEY: ""
       RECAPTCHA_SECRET_KEY: ""
+      WEBSOCKET_SERVER_PRIVATE_KEY: privateprivateprivatekeyprivateprivateprivatekey
+      WEBSOCKET_SERVER_REDIS_HOST: redis
+      WEBSOCKET_SERVER_REDIS_PORT: 6379
       HOST: 0.0.0.0
       PORT: 8080
       PUBLIC_URL: http://localhost:8080
