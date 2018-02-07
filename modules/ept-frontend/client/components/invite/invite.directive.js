@@ -14,9 +14,13 @@ function(Invitations, Alert) {
       this.invite = function() {
         ctrl.errorMessage = '';
         Invitations.invite({ email: ctrl.email }).$promise
-        .then(function() { Alert.success('Invitation Sent'); })
+        .then(function() {
+          ctrl.show = false;
+          ctrl.email = '';
+          Alert.success('Invitation Sent');
+         })
         .catch(function(err) {
-          if (err.status === 400) { ctrl.errorMessage = err.data.message; }
+          if (err.status === 400 || err.status === 422) { ctrl.errorMessage = err.data.message; }
           else { ctrl.errorMessage = 'Failed to invite user'; }
         });
       };

@@ -11,9 +11,15 @@
         <div ng-if="$parent.form.email.$dirty && $parent.form.email.$error.email" class="invalid right">
           Email is invalid
         </div>
-        <input type="email" modal-focus="{{vm.show}}" class="icon-padding" name="email" maxlength="255" ng-model="vm.email" ng-model-options="{ updateOn: 'default', debounce: {'default': 500 }}" placeholder="Email" auto-focus="$parent.focus" required>
-        <i ng-if="$parent.form.email.$dirty && !$parent.form.email.$error.email && !$parent.form.email.$error.required" class="fa fa-check input-icon valid"></i>
-        <i ng-if="$parent.form.email.$dirty && ($parent.form.email.$error.email || $parent.form.email.$error.required)" class="fa fa-times input-icon invalid"></i>
+        <div ng-if="$parent.form.email.$dirty && $parent.form.email.$error.unique" class="invalid right">
+          Email is already registered
+        </div>
+        <div ng-if="$parent.form.email.$dirty && $parent.form.email.$error.alreadyInvited" class="invalid right">
+          Email has already been invited
+        </div>
+        <input type="email" modal-focus="{{vm.show}}" class="icon-padding" name="email" maxlength="255" ng-model="vm.email" ng-model-options="{ updateOn: 'default', debounce: {'default': 500 }}" placeholder="Email" auto-focus="$parent.focus" unique-email="{{vm.email}}" unique-invite="{{vm.email}}" required>
+        <i ng-if="$parent.form.email.$touched && !$parent.form.email.$error.email && !$parent.form.email.$error.required && !$parent.form.email.$error.unique && !$parent.form.email.$error.alreadyInvited" class="fa fa-check input-icon valid"></i>
+        <i ng-if="$parent.form.email.$touched && ($parent.form.email.$error.email || $parent.form.email.$error.required || $parent.form.email.$error.unique || $parent.form.email.$error.alreadyInvited)" class="fa fa-times input-icon invalid"></i>
       </label>
     </div>
     <!-- Save Button -->

@@ -7,8 +7,8 @@ var Joi = require('joi');
   * @apiVersion 0.4.0
   * @apiDescription Used to page through current invitations.
   *
-  * @apiParam (Payload) {string} [page=1] The page of invitations to bring back.
-  * @apiParam (Payload) {string} [limit=25] The number of invitations to bring back.
+  * @apiParam (Query) {string} [page=1] The page of invitations to bring back.
+  * @apiParam (Query) {string} [limit=25] The number of invitations to bring back.
   *
   * @apiSuccess {number} page The page of invitations to return
   * @apiSuccess {number} limit The number of invitations to return per page

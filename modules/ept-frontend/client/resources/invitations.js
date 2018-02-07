@@ -12,6 +12,11 @@ module.exports = ['$resource',
         method: 'POST',
         url: '/api/invites'
       },
+      inviteExists: {
+        method: 'GET',
+        params: { email: '@email' },
+        url: '/api/invites/exists'
+      },
       resend: {
         method: 'POST',
         url: '/api/invites/resend'
