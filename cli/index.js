@@ -9,7 +9,7 @@ var boards = require(path.normalize(__dirname + '/../modules/ept-boards')).db;
 var config = require(path.join(__dirname, '..', 'config'));
 var roles = require(path.join(__dirname, '..', 'server', 'plugins', 'acls'));
 
-var emailerOptions = config.emailer;
+var emailerOptions = config.emailerEnv;
 var emailer = require(path.normalize(__dirname + '/../server/plugins/emailer')).expose(emailerOptions);
 var dbName = process.env.PGDATABASE;
 var testConnection = require('epochtalk-core-pg')().db.testConnection;
