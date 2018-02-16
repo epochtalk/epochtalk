@@ -143,8 +143,11 @@ Since both [Epochtalk](https://github.com/epochtalk/epochtalk) and [core-pg](htt
 ## Configuration
 Forum configurations can be set either manually or using the admin panel.
 
+
 ### Manual Configuration
+
 The forum server configs can and must be set manually with a `.env` file in the root directory of the project.
+
 ```sh
 DATABASE_URL="postgres://localhost/epochtalk_dev"
 HOST="localhost"
@@ -154,6 +157,8 @@ REDIS_HOST="localhost"
 REDIS_PORT="6379"
 REDIS_AUTH_PASS=""
 ```
+
+
 ### Admin Panel Configuration
 Some configurations can also be set using the settings tab in the administration panel.
 ![Admin Settings](http://i.imgur.com/DNygrYN.png)
