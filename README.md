@@ -149,13 +149,107 @@ Forum configurations can be set either manually or using the admin panel.
 The forum server configs can and must be set manually with a `.env` file in the root directory of the project.
 
 ```sh
-DATABASE_URL="postgres://localhost/epochtalk_dev"
-HOST="localhost"
-PORT="8080"
-PUBLIC_URL="http://localhost:8080"
-REDIS_HOST="localhost"
-REDIS_PORT="6379"
-REDIS_AUTH_PASS=""
+# Variables only configured in .env
+## Host configurations
+PRIVATE_KEY=Change this to something more secure
+HOST=localhost
+PORT=8080
+PUBLIC_URL=http://localhost:8080/
+NEWBIE_ENABLED=false
+
+## Postgres configurations
+PGUSER=postgres
+PGHOST=localhost
+PGPASSWORD=postgres
+PGDATABASE=epoch_dev
+PGPORT=5432
+
+## Redis configurations
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_AUTH_PASS=
+
+## Recaptcha configurations
+RECAPTCHA_SITE_KEY=
+RECAPTCHA_SECRET_KEY=
+
+## Set these if using websocket
+## websocket client variables
+WEBSOCKET_HOST=localhost
+WEBSOCKET_CLIENT_HOST=localhost
+WEBSOCKET_PORT=23958
+WEBSOCKET_API_KEY=Now I know my ABC\'s
+WEBSOCKET_SECURE=true
+## websocket server variables
+WEBSOCKET_SERVER_BIND_ADDRESS=localhost
+WEBSOCKET_SERVER_PORT=23958
+WEBSOCKET_SERVER_PRIVATE_KEY=Change this to something more secure
+WEBSOCKET_SERVER_API_KEY=Now I know my ABC\'s
+WEBSOCKET_SERVER_KEY_NAME=server.key
+WEBSOCKET_SERVER_CERT_NAME=server.crt
+WEBSOCKET_SERVER_SECURE=true
+WEBSOCKET_SERVER_REDIS_HOST=localhost
+WEBSOCKET_SERVER_REDIS_PORT=6379
+WEBSOCKET_SERVER_REDIS_OPTIONS_PASSWORD=
+WEBSOCKET_SERVER_REDIS_DB=10
+
+# Variables with values configured at runtime
+## Overrides for configurations values, configured by default on first run
+## and configurable through the admin panel
+## See below for example configurations
+
+# Example email configurations
+
+## Log emails to console
+(No configuration)
+
+## SMTP
+EMAILER_SENDER=info@example.com
+EMAILER_OPTIONS_HOST=emailer.host
+EMAILER_OPTIONS_PORT=465
+EMAILER_OPTIONS_AUTH_USER=username
+EMAILER_OPTIONS_AUTH_PASS=password
+EMAILER_OPTIONS_SECURE=true
+
+## Amazon SES
+EMAILER_TRANSPORTER=ses
+EMAILER_SENDER=sender@addre.ss
+EMAILER_OPTIONS_REGION=us-west-2
+EMAILER_OPTIONS_ACCESS_KEY_ID=accesskey
+EMAILER_OPTIONS_SECRET_ACCESS_KEY=secretaccesskey
+
+## Maildev (test emailer)
+EMAILER_SENDER=info@example.com
+EMAILER_OPTIONS_HOST=localhost
+EMAILER_OPTIONS_PORT=1025
+EMAILER_OPTIONS_IGNORE_TLS=true
+EMAILER_OPTIONS_SECURE=false
+
+# Images configurations
+IMAGES_STORAGE=local
+IMAGES_MAX_SIZE=10485760
+IMAGES_EXPIRATION=7200000
+IMAGES_INTERVAL=900000
+IMAGES_S3_ROOT=http://example.com
+IMAGES_S3_DIR=images/
+IMAGES_S3_BUCKET=bukkit
+IMAGES_S3_REGION=region
+IMAGES_S3_ACCESS_KEY=
+IMAGES_S3_SECRET_KEY=
+
+# Rate limiting
+RATE_LIMITING_GET_INTERVAL=1000
+RATE_LIMITING_GET_MAX_IN_INTERVAL=10
+RATE_LIMITING_GET_MIN_DIFFERENCE=50
+RATE_LIMITING_POST_INTERVAL=1000
+RATE_LIMITING_POST_MAX_IN_INTERVAL=2
+RATE_LIMITING_POST_MIN_DIFFERENCE=500
+RATE_LIMITING_PUT_INTERVAL=1000
+RATE_LIMITING_PUT_MAX_IN_INTERVAL=2
+RATE_LIMITING_PUT_MIN_DIFFERENCE=500
+RATE_LIMITING_DELETE_INTERVAL=1000
+RATE_LIMITING_DELETE_MAX_IN_INTERVAL=2
+RATE_LIMITING_DELETE_MIN_DIFFERENCE=500
 ```
 
 
