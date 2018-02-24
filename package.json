@@ -57,7 +57,7 @@
     "inert": "^4.2.1",
     "ip-address": "^5.0.2",
     "joi": "^13.0.1",
-    "jquery": "2.1.4",
+    "jquery": "3.0.0",
     "json": "^9.0.3",
     "jsonwebtoken": "^8.1.0",
     "klaw": "^2.1.1",

@@ -36,62 +36,70 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 ### System
 * [node](http://nodejs.org)
 * [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
+* [yarn](https://yarnpkg.com)
 * [Postgres](http://www.postgresql.org/)
 * [Redis](http://redis.io/)
 
 ### NPM
 * angular `1.4.4`
-* angular-resource `1.4.4`
-* angular-sanitize `1.4.4`
 * angular-animate `1.4.4`
 * angular-loading-bar `0.7.1`
-* nestable [slickage/Nestable](http://github.com/slickage/Nestable)
-* angular-ui-router `~0.2.15`
-* angular-sortable-view" `~0.0.13`
-* ng-tags-input `3.0.0`
-* jquery `~2.1.4`
-* aws-sdk `^2.1.20`
+* angular-resource `1.4.4`
+* angular-sanitize `1.4.4`
+* angular-sortable-view `0.0.13`
+* angular-ui-router `0.2.15`
+* aws-sdk `^2.7.22`
 * bcrypt `^0.8.0`
-* bluebird `^3.1.5`
-* boom `^3.1.2`
+* bluebird `^3.3.1`
+* boom `^7.1.1`
 * change-case `^2.3.1`
-* cheerio `^0.19.0`
-* commander `^2.5.1`
-* db-migrate `^0.9.23`
+* cheerio `^0.20.0`
+* commander `^2.9.0`
 * deep-rename-keys `^0.1.0`
 * del `^2.2.0`
 * dot `^1.0.3`
-* dotenv `^2.0.0`
-* epochtalk-core-pg `epochtalk/core-pg`
-* fs-extra `^0.26.4`
-* good `^6.4.0`
-* good-console `^5.3.0`
-* good-file `^5.1.1`
-* handlebars `^4.0.3`
-* hapi `^12.1.0`
-* hoek `^3.0.4`
-* html-loader `^0.4.0`
+* dotenv `^4.0.0`
+* epochtalk-core-pg `^1.0.8`
+* fs-extra `^4.0.2`
+* good `^7.3.0`
+* good-console `^6.4.0`
+* good-file `^6.0.1`
+* good-http `^6.1.3`
+* good-squeeze `^5.0.2`
+* handlebars `^4.0.11`
+* hapi `^16.6.2`
+* hoek `^5.0.2`
+* html-loader `^0.5.1`
+* inert `^4.2.1`
 * ip-address `^5.0.2`
-* joi `^7.2.2`
+* joi `^13.0.1`
+* jquery `3.0.0`
 * json `^9.0.3`
-* jsonwebtoken `^5.0.0`
-* lodash `^4.0.1`
-* mkdirp `^0.5.0`
-* mmmagic `^0.4.1`
-* node-sass `^3.4.2`
-* uuid `^3.0.0`
+* jsonwebtoken `^8.1.0`
+* klaw `^2.1.1`
+* lodash `^4.17.4`
+* marked `^0.3.6`
+* mkdirp `^0.5.1`
+* mmmagic `^0.4.6`
+* nestable [slickage/Nestable](http://github.com/slickage/Nestable)
+* ng-tags-input `3.0.0`
+* node-sass `^4.7.2`
+* node-sass-globbing `0.0.23`
 * nodemailer `^2.0.0`
-* oclazyload `^1.0.6`
-* pg `^4.2.0`
-* redis `^2.4.2`
-* request `^2.53.0`
-* rolling-rate-limiter `^0.1.2`
+* nodemailer-ses-transport `^1.5.1`
+* oclazyload `^1.1.0`
+* pg `^6.1.2`
+* redis `^2.8.0`
+* request `^2.83.0`
+* rolling-rate-limiter `^0.1.10`
 * sanitize-html `^1.4.3`
+* socketcluster `^9.3.1`
+* socketcluster-client `^9.0.2`
 * stream-meter `^1.0.3`
 * through2 `^2.0.0`
-* vision `^4.0.1`
+* uuid `^3.1.0`
+* vision `^4.1.1`
 * webpack `^1.12.2`
-
 
 ## Installation
 
@@ -100,16 +108,16 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 $ git clone git@github.com:epochtalk/epochtalk.git
 ```
 
-#### 2) Change directories and install dependencies using [npm](https://www.npmjs.org/doc/README.html)
+#### 2) Change directories and install dependencies using [yarn](https://yarnpkg.com)
 ```sh
 $ cd epochtalk
-$ npm install
+$ yarn
 ```
 
-#### 5) Install module dependencies using [npm](https://www.npmjs.org/doc/README.html)
+#### 5) Install module dependencies using [yarn](https://yarnpkg.com)
 ```sh
 $ cd modules
-$ npm install
+$ yarn
 ```
 
 #### 4) Copy the example.env file
@@ -196,7 +204,7 @@ Marked routes are protected from spam or abuse by tracking the number of times a
 * Full feature compatibility across all input methods (BBCode, Medium, Markdown)
 
 ## Contributions
-Epochtalk is an open source project and we are planning to accept contributions. If you would like to contribute to Epochtalk please email [info@slickage.com](mailto:info@slickage.com).
+Epochtalk is an open source project and gladly welcomes public contributions. Contributions can be made by creating a discussion via the issues. New features or fixes can be contributed via pull requests. *Please note, all new packages must be added via yarn, not npm*
 
 ## Feedback
 Please leave us feedback using [github issues](https://github.com/epochtalk/epochtalk/issues)
