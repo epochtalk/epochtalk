@@ -28,6 +28,7 @@ module.exports = function() {
 function parseConfigs(configurations) {
   return new Promise(function(resolve, reject) {
     // set config values from configurations
+    _.merge(configurations, config);
     _.merge(config, configurations);
 
     // override config with env, if available
