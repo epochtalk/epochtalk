@@ -2,6 +2,7 @@ var path = require('path');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 
+// Administrative db methods
 function add(data) {
   var q = 'INSERT INTO ranks(rank_name, threshold) VALUES($1, $2) RETURNING id';
   return db.scalar(q, [ data.rank_name, data.threshold ])
@@ -29,9 +30,16 @@ function get() {
   return db.sqlQuery(q);
 }
 
+// Public facing db methods
+function getUserRank(userId) {
+  var q = 'SELECT r.rank_name FROM ranks r INNER JOIN ranks_users ru ON (r.id = ru.rank_id) WHERE ru.user_id = $1';
+  return db.scalar(q, [ userId ]);
+}
+
 module.exports = {
   add: add,
   update: update,
   remove: remove,
-  get: get
+  get: get,
+  getUserRank: getUserRank
 };
