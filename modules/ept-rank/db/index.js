@@ -1,45 +1,67 @@
 var path = require('path');
+var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
+var using = Promise.using;
 
 // Administrative db methods
-function add(data) {
-  var q = 'INSERT INTO ranks(rank_name, threshold) VALUES($1, $2) RETURNING id';
-  return db.scalar(q, [ data.rank_name, data.threshold ])
-  .then(function(rank) {
-    return {
-      id: rank.id,
-      rank_name: data.rank_name,
-      threshold: data.threshold
-    };
-  });
-}
+function upsert(ranks){
+  var clearRanks = 'DELETE FROM ranks';
+  var clearMetricMaps = 'DELETE FROM metric_rank_maps';
+  var createRank = 'INSERT INTO ranks(name, number) VALUES($1, $2)';
+  var createMetricMaps = 'INSERT INTO metric_rank_maps(maps) VALUES($1)';
 
-function update(data) {
-  var q = 'UPDATE ranks SET rank_name = $1, threshold = $2 WHERE id = $3 RETURNING id, rank_name, threshold';
-  return db.scalar(q, [ data.rank_name, data.threshold, data.id ]);
-}
-
-function remove(id) {
-  var q = 'DELETE FROM ranks WHERE id = $1 RETURNING id, rank_name, threshold';
-  return db.scalar(q, [ id ]);
+  return using(db.createTransaction(), function(client) {
+    return client.query(clearRanks)
+    .then(function() { return client.query(clearMetricMaps); })
+    .then(function() {
+      var postCountThresholds = [];
+      return Promise.map(ranks, function(rank, idx) {
+        postCountThresholds.push(rank.post_count);
+        console.log(postCountThresholds);
+        return client.query(createRank, [ rank.name, idx ]);
+      })
+      .then(function() {
+        var map = { post_count: postCountThresholds };
+        return client.query(createMetricMaps, [ map ]);
+      });
+    });
+  })
+  .then(function() { return ranks; });
 }
 
 function get() {
-  var q = 'SELECT id, rank_name, threshold FROM ranks ORDER BY threshold DESC';
+  var queryRank = 'SELECT name FROM ranks ORDER BY number DESC';
+  var queryMap = 'SELECT maps FROM metric_rank_maps';
+  return db.scalar(queryMap)
+  .then(function(dbMaps) {
+    if (dbMaps) {
+      return db.sqlQuery(queryRank)
+      .map(function(rank, idx) {
+        return {
+          name: rank.name,
+          post_count: dbMaps.maps.post_count[idx]
+        };
+      });
+    }
+    else { return []; }
+  });
+}
+
+function getMaps() {
+  var q = 'SELECT maps FROM metric_rank_maps';
+  return db.scalar(q)
+  .then(function(data) { return data.maps; });
+}
+
+function getRanks() {
+  var q = 'SELECT name, number FROM ranks';
   return db.sqlQuery(q);
 }
 
-// Public facing db methods
-function getUserRank(userId) {
-  var q = 'SELECT r.rank_name FROM ranks r INNER JOIN ranks_users ru ON (r.id = ru.rank_id) WHERE ru.user_id = $1';
-  return db.scalar(q, [ userId ]);
-}
-
 module.exports = {
-  add: add,
-  update: update,
-  remove: remove,
+  upsert: upsert,
   get: get,
-  getUserRank: getUserRank
+  getRanks: getRanks,
+  getMaps: getMaps
 };

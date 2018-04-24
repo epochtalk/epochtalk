@@ -11,5 +11,5 @@ module.exports =  {
   db: db,
   permissions: permissions,
   authorization: authorization,
- // hooks: hooks
+  hooks: hooks
 };

@@ -1,17 +1,14 @@
-var Promise = require('bluebird');
-
-function getUsersRanks(request) {
-  var authedUserId;
-  if (request.auth.isAuthenticated) { authedUserId = request.auth.credentials.id; }
-  return Promise.map(request.pre.processed.posts, function(post) {
-    return request.db.ranks.getUserRank(post.user.id)
-    .then(function(data) {
-      post.user.rank = data.rank;
-      return post;
-    });
+function getRankData(request) {
+  return request.db.rank.getMaps()
+  .then(function(maps) {
+    request.pre.processed.rank_metric_maps = maps;
+    return request.db.rank.getRanks();
+  })
+  .then(function(ranks) {
+    request.pre.processed.ranks = ranks;
   });
 }
 
 module.exports = [
-  { path: 'posts.byThread.post', method: getUsersRanks }
+  { path: 'posts.byThread.post', method: getRankData }
 ];
