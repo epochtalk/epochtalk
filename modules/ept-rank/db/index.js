@@ -51,7 +51,10 @@ function get() {
 function getMaps() {
   var q = 'SELECT maps FROM metric_rank_maps';
   return db.scalar(q)
-  .then(function(data) { return data.maps; });
+  .then(function(data) {
+    if (data) { return data.maps; }
+    return [];
+  });
 }
 
 function getRanks() {
