@@ -18,7 +18,6 @@ function upsert(ranks){
       var postCountThresholds = [];
       return Promise.map(ranks, function(rank, idx) {
         postCountThresholds.push(rank.post_count);
-        console.log(postCountThresholds);
         return client.query(createRank, [ rank.name, idx ]);
       })
       .then(function() {
