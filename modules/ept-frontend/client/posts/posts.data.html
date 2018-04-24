@@ -23,7 +23,7 @@
 
       <div class="user-role" ng-if="PostsParentCtrl.loggedIn()">
         <trust-score user="post.user" visible="PostsParentCtrl.thread.trust_visible"></trust-score>
-        <rank-display ranks="PostsParentCtrl.pageData.ranks" maps="PostsParentCtrl.pageData.rank_metric_maps" user="post.user"></rank-display>
+        <rank-display ranks="PostsParentCtrl.pageData.metadata.ranks" maps="PostsParentCtrl.pageData.metadata.rank_metric_maps" user="post.user"></rank-display>
       </div>
 
       <div class="user-role">
