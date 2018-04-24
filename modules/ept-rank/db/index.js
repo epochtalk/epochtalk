@@ -30,7 +30,7 @@ function upsert(ranks){
 }
 
 function get() {
-  var queryRank = 'SELECT name FROM ranks ORDER BY number DESC';
+  var queryRank = 'SELECT name FROM ranks ORDER BY number ASC';
   var queryMap = 'SELECT maps FROM metric_rank_maps';
   return db.scalar(queryMap)
   .then(function(dbMaps) {
