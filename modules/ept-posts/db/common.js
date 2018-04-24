@@ -6,6 +6,7 @@ var formatPost = function(post) {
     priority: post.priority,
     deleted: post.user_deleted,
     signature: post.signature,
+    post_count: post.post_count,
     highlight_color: post.highlight_color,
     role_name: post.role_name
   };
@@ -14,6 +15,7 @@ var formatPost = function(post) {
   delete post.priority;
   delete post.name;
   delete post.user_deleted;
+  delete post.post_count;
   delete post.signature;
   delete post.highlight_color;
   delete post.role_name;
