@@ -46,12 +46,11 @@ var upsert = {
   * @api {GET} /rank Get Ranks
   * @apiName GetRanks
   * @apiPermission Super Administrator, Administrator
-  * @apiDescription Used to retrieve a list of all ranks and their thresholds
+  * @apiDescription Used to retrieve a list of all ranks and their thresholds for use in the admin panel
   *
-  * @apiSuccess {object[]} ranks Array containing all rank objects
-  * @apiSuccess {string} ranks.id The id of the rank
-  * @apiSuccess {string} ranks.rank_name The name of the rank
-  * @apiSuccess {number} ranks.threshold The threshold of the rank
+  * @apiSuccess {object[]} ranks The id of the rank to updated
+  * @apiSuccess {string} ranks.name The name of the rank
+  * @apiSuccess {number} ranks.post_count The post count needed to achieve the rank
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the list of ranks
   */
