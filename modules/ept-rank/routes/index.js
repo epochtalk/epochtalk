@@ -29,7 +29,7 @@ var upsert = {
         post_count: Joi.number()
       })).unique('post_count')
     },
-    pre: [ { method: 'auth.rank.update(server, auth)' } ]
+    pre: [ { method: 'auth.rank.upsert(server, auth)' } ]
   },
   handler: function(request, reply) {
     var ranks = request.payload;
