@@ -48,6 +48,7 @@ function get() {
   });
 }
 
+// Public db methods
 function getMaps() {
   var q = 'SELECT maps FROM metric_rank_maps';
   return db.scalar(q)
@@ -62,6 +63,6 @@ function getRanks() {
 module.exports = {
   upsert: upsert,
   get: get,
-  getRanks: getRanks,
-  getMaps: getMaps
+  getMaps: getMaps,
+  getRanks: getRanks
 };
