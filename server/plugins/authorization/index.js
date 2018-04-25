@@ -352,7 +352,7 @@ function adminRolesRemove(roleId){
 }
 
 function adminRolesValidate(validations, payload) {
-  var schema =  Joi.object().keys({
+  var schema = Joi.object().keys({
     priorityRestrictions: Joi.array().items(Joi.number()),
     adminAccess: Joi.object().keys({
       settings: Joi.object().keys({
@@ -479,6 +479,7 @@ function adminRolesValidate(validations, payload) {
     watchlist: validations.watchlist,
     mentions: validations.mentions,
     motd: validations.motd,
+    rank: validations.rank,
     autoModeration: validations.autoModeration,
     ads: validations.ads,
     userTrust: validations.userTrust,
