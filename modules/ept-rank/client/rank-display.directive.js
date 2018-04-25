@@ -1,6 +1,4 @@
-var html= `Ranks: {{vm.ranks}}
-  <br> Maps: {{vm.maps}}
-  <br> User: {{vm.user}}`;
+var html = '{{vm.userRank}}';
 
 var directive = [function() {
   return {
