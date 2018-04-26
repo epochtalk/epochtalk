@@ -1,4 +1,4 @@
-var directive = ['Ranks', 'Alert', '$timeout', function(Ads, Alert, $timeout) {
+var directive = ['Ranks', 'Alert', '$timeout', function(Ranks, Alert, $timeout) {
   return {
     restrict: 'E',
     scope: true,
@@ -7,8 +7,14 @@ var directive = ['Ranks', 'Alert', '$timeout', function(Ads, Alert, $timeout) {
     controllerAs: 'vm',
     controller: ['$scope', function($scope) {
       var ctrl = this;
+
+      Ranks.get().$promise
+      .then(function(ranks) {
+        ctrl.ranks = ranks;
+      });
+
     }]
   };
 }];
 
-angular.module('ept').directive('rank-manager', directive);
+angular.module('ept').directive('rankManager', directive);
