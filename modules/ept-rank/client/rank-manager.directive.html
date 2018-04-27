@@ -19,10 +19,65 @@
       <td class="name" ng-bind-html="rank.name"></td>
       <td ng-bind-html="rank.post_count"></td>
       <td>
-        <a ng-click="vn.openEditModal(rank)"><i class="fa fa-pencil"></i></a>
+        <a ng-click="vm.openEditModal(rank)"><i class="fa fa-pencil"></i></a>
         &nbsp;&nbsp;&nbsp;
         <a ng-click="vm.selectedRank = rank; vm.showDeleteModal = true"><i class="fa fa-trash"></i></a>
       </td>
     </tr>
   </tbody>
 </table>
+
+<!-- Add Rank Modal -->
+<modal show="vm.showAddModal">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Add Rank</h3>
+
+    <label>
+      Rank Name
+      <input type="text" placeholder="Rank Name" ng-model="vm.newRank.name" ng-disabled="vm.addSubmitted" modal-focus="{{vm.showAddModal}}" required />
+    </label>
+
+    <label>
+      Post Count
+      <input type="number" ng-model="vm.newRank.post_count" placeholder="Post count needed to attain rank name title" min="0" ng-pattern="/^[0-9]\d*$/" ng-disabled="vm.addSubmitted" required />
+    </label>
+
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.addRank();" ng-disabled="$parent.form.$invalid || $parent.form.$errors || vm.addSubmitted" ng-bind="vm.saveRankBtnLabel"></button>
+    </div>
+  </form>
+</modal>
+
+<!-- Delete Rank Modal -->
+<modal show="vm.showDeleteModal">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Delete Rank</h3>
+
+    <p>Are you sure you want to delete rank {{vm.selectedRank.name}}?</p>
+
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.deleteRanks(vm.selectedRank)" ng-disabled="$parent.form.$invalid || $parent.form.$errors || vm.deleteSubmitted" ng-bind="vm.deleteRankBtnLabel"></button>
+    </div>
+  </form>
+</modal>
+
+<!-- Edit Rank Modal -->
+<modal show="vm.showEditModal">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Edit Rank</h3>
+
+    <label>
+      Rank Name
+      <input type="text" placeholder="Rank Name" ng-model="vm.rank.name" ng-disabled="vm.addSubmitted" modal-focus="{{vm.showAddModal}}" required />
+    </label>
+
+    <label>
+      Post Count
+      <input type="number" ng-model="vm.rank.post_count" placeholder="Post count needed to attain rank name title" min="0" ng-pattern="/^[0-9]\d*$/" ng-disabled="vm.addSubmitted" required />
+    </label>
+
+    <div class="clear">
+      <button class="fill-row" ng-click="vm.editRanks()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || vm.editSubmitted" ng-bind="vm.editRankBtnLabel"></button>
+    </div>
+  </form>
+</modal>
