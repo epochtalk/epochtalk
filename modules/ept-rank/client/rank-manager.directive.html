@@ -6,7 +6,7 @@
 <table class="striped rulesTable" width="100%">
   <thead>
     <th>Rank Name</th>
-    <th>Post Count</th>
+    <th>Minimum Post Count</th>
     <th>Actions</th>
   </thead>
   <tbody ng-if="!vm.ranks.length">
@@ -39,7 +39,7 @@
     </label>
 
     <label>
-      Post Count
+      Minimum Post Count
       <input type="number" ng-model="vm.newRank.post_count" placeholder="Post count needed to attain rank name title" min="0" ng-pattern="/^[0-9]\d*$/" ng-disabled="vm.addSubmitted" required />
     </label>
 
@@ -73,7 +73,7 @@
     </label>
 
     <label>
-      Post Count
+      Minimum Post Count
       <input type="number" ng-model="vm.editedRank.post_count" placeholder="Post count needed to attain rank name title" min="0" ng-pattern="/^[0-9]\d*$/" ng-disabled="vm.editSubmitted" required />
     </label>
 
