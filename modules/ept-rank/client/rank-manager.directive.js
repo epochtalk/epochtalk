@@ -13,7 +13,7 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
       Ranks.get().$promise.then(function(ranks) { ctrl.ranks = ranks; });
 
       // Permissions Handling
-      this.hasPermission = function() { return Session.hasPermission('rank.upsert.allow') };
+      this.hasPermission = function() { return Session.hasPermission('rank.upsert.allow'); };
 
       // Add Rank Modal
       this.newRank = {};
@@ -49,7 +49,7 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
       };
 
       // Delete Rank Modal
-      this.deleteRankBtnLabel = 'Delete Rank'
+      this.deleteRankBtnLabel = 'Delete Rank';
 
       this.deleteRank = function(rank) {
         ctrl.deleteSubmitted = true;
@@ -65,7 +65,7 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
           ctrl.showDeleteModal = false;
         })
         .catch(function(err) {
-          var errMsg = 'There was an error adding the rank';
+          var errMsg = 'There was an error deleting the rank';
           if (err && err.data && err.data.statusCode === 403) {
             errMsg = 'You do not have permissions to delete ranks';
           }
@@ -74,6 +74,38 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
         .finally(function() {
           ctrl.deleteRankBtnLabel = 'Delete Rank';
           ctrl.deleteSubmitted = false;
+        });
+      };
+
+      // Edit Rank Modal
+      this.editRankBtnLabel = 'Edit Rank';
+
+      this.editRank = function(originalRank, editedRank) {
+        ctrl.editSubmitted = true;
+        ctrl.editRankBtnLabel = 'Loading...';
+
+        var updatedRanks = cloneDeep(ctrl.ranks).filter(function(o) {
+          return o.post_count !== originalRank.post_count;
+        });
+
+        updatedRanks.push(editedRank);
+
+        Ranks.upsert(updatedRanks).$promise
+        .then(function(latestRanks) {
+          ctrl.ranks = latestRanks;
+          Alert.success('Sucessfully edited rank ' + editedRank.name);
+          ctrl.showEditModal = false;
+        })
+        .catch(function(err) {
+          var errMsg = 'There was an error editing the rank';
+          if (err && err.data && err.data.statusCode === 403) {
+            errMsg = 'You do not have permissions to edit ranks';
+          }
+          Alert.error(errMsg);
+        })
+        .finally(function() {
+          ctrl.editRankBtnLabel = 'Edit Rank';
+          ctrl.editSubmitted = false;
         });
       };
 

@@ -20,7 +20,7 @@
       <td class="name" ng-bind-html="rank.name"></td>
       <td ng-bind-html="rank.post_count"></td>
       <td>
-        <a ng-click="vm.selectedRank = rank; vm.showEditModal = true"><i class="fa fa-pencil"></i></a>
+        <a ng-click="vm.selectedRank = rank; vm.editedRank = { name: rank.name, post_count: rank.post_count }; vm.showEditModal = true"><i class="fa fa-pencil"></i></a>
         &nbsp;&nbsp;&nbsp;
         <a ng-click="vm.selectedRank = rank; vm.showDeleteModal = true"><i class="fa fa-trash"></i></a>
       </td>
@@ -29,7 +29,7 @@
 </table>
 
 <!-- Add Rank Modal -->
-<modal show="vm.showAddModal">
+<modal show="vm.showAddModal" on-close="vm.newRank = {};">
   <form name="$parent.form" class="css-form">
     <h3 class="thin-underline">Add Rank</h3>
 
@@ -78,7 +78,7 @@
     </label>
 
     <div class="clear">
-      <button class="fill-row" ng-click="vm.editRanks(vm.selectedRank, vm.editedRank)" ng-disabled="$parent.form.$invalid || $parent.form.$errors || vm.editSubmitted" ng-bind="vm.editRankBtnLabel"></button>
+      <button class="fill-row" ng-click="vm.editRank(vm.selectedRank, vm.editedRank)" ng-disabled="$parent.form.$invalid || $parent.form.$errors || vm.editSubmitted" ng-bind="vm.editRankBtnLabel"></button>
     </div>
   </form>
 </modal>
