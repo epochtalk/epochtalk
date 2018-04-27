@@ -7,32 +7,30 @@ var directive = [function() {
     bindToController: { ranks: '=', maps: '=', user: '='},
     template: html,
     controllerAs: 'vm',
-    controller: [function() {
+    controller: ['$scope', function($scope) {
       var ctrl = this;
 
-      console.log(ctrl.ranks);
-      console.log(ctrl.user);
-      console.log(ctrl.maps);
-
-      // calculate the rank of the user
-      var metricToRankMaps = ctrl.maps;
-      // map the metrics to ranks
-      var ranks = Object.keys(metricToRankMaps).reduce(function(mappedRanks, metricName) {
-        var rank = 0;
-        for (var i = 0; i < metricToRankMaps[metricName].length; i++) {
-          if (ctrl.user[metricName] >= metricToRankMaps[metricName][i]) {
-            rank = i;
+      $scope.$watch(function() { return ctrl.user; }, function (user) {
+        // calculate the rank of the user
+        var metricToRankMaps = ctrl.maps;
+        // map the metrics to ranks
+        var ranks = Object.keys(metricToRankMaps).reduce(function(mappedRanks, metricName) {
+          var rank = 0;
+          for (var i = 0; i < metricToRankMaps[metricName].length; i++) {
+            if (user[metricName] >= metricToRankMaps[metricName][i]) {
+              rank = i;
+            }
+            else {
+              break;
+            }
           }
-          else {
-            break;
-          }
-        }
-        mappedRanks.push(rank);
-        return mappedRanks;
-      }, []);
-      // order the ranks and pluck the lowest rank
-      ranks.sort(function(a, b) { return a > b });
-      this.userRank = this.ranks[ranks[0]].name;
+          mappedRanks.push(rank);
+          return mappedRanks;
+        }, []);
+        // order the ranks and pluck the lowest rank
+        ranks.sort(function(a, b) { return a > b; });
+        ctrl.userRank = ctrl.ranks[ranks[0]].name;
+      });
     }]
   };
 }];
