@@ -11,6 +11,8 @@ function upsert(ranks){
   var createRank = 'INSERT INTO ranks(name, number) VALUES($1, $2)';
   var createMetricMaps = 'INSERT INTO metric_rank_maps(maps) VALUES($1)';
 
+  ranks.sort(function(a, b) { return b.post_count < a.post_count });
+
   return using(db.createTransaction(), function(client) {
     return client.query(clearRanks)
     .then(function() { return client.query(clearMetricMaps); })
