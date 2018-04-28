@@ -61,7 +61,7 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
         Ranks.upsert(updatedRanks).$promise
         .then(function(latestRanks) {
           ctrl.ranks = latestRanks;
-          Alert.success('Sucessfully deleted rank ' + ctrl.newRank.name);
+          Alert.success('Sucessfully deleted rank ' + rank.name);
           ctrl.showDeleteModal = false;
         })
         .catch(function(err) {
