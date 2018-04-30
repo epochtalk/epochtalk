@@ -15,7 +15,7 @@ var directive = [function() {
         var metricToRankMaps = ctrl.maps;
         // map the metrics to ranks
         var ranks = Object.keys(metricToRankMaps).reduce(function(mappedRanks, metricName) {
-          var rank = 0;
+          var rank = -1;
           for (var i = 0; i < metricToRankMaps[metricName].length; i++) {
             if (user[metricName] >= metricToRankMaps[metricName][i]) {
               rank = i;
@@ -29,7 +29,13 @@ var directive = [function() {
         }, []);
         // order the ranks and pluck the lowest rank
         ranks.sort(function(a, b) { return a > b; });
-        ctrl.userRank = ctrl.ranks[ranks[0]].name;
+        var lowestRankNumber = ranks[0];
+        if (lowestRankNumber >= 0) {
+          ctrl.userRank = ctrl.ranks[lowestRankNumber].name;
+        }
+        else {
+          ctrl.userRank = '';
+        }
       });
     }]
   };
