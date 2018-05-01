@@ -50,6 +50,11 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
         }
       });
     }
+    else if (JSON.parse(channelName).type === 'public') {
+      socket.watch(channelName, function(data) {
+        if (data.action === 'announcement') { Alert.warn(data.message); }
+      });
+    }
 
     if ($window.websocketLogs) {
       console.log('Websocket subscribed to', channelName, socket.watchers(channelName));
@@ -123,10 +128,6 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
   if (Session.getToken()) { socketLogin(); }
   // always subscribe to the public channel
   publicChannel = socket.subscribe(publicChannelKey, options);
-  // Alert anything that comes out of this channel
-  publicChannel.watch(function(data) {
-    if (data.action === 'announcement') { Alert.warn(data.message); }
-  });
 
   return {
     watchUserChannel: watchUserChannel,
