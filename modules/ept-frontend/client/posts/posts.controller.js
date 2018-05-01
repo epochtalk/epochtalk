@@ -3,6 +3,7 @@ var ctrl = [
   function($rootScope, $scope, $timeout, $anchorScroll, $location, Alert, BanSvc, Watchlist, Session, Posts, pageData, Websocket) {
     var ctrl = this;
     var parent = $scope.$parent.PostsParentCtrl;
+    parent.pageData = pageData;
     parent.loggedIn = Session.isAuthenticated;
     parent.page = Number(pageData.page);
     parent.limit = Number(pageData.limit);

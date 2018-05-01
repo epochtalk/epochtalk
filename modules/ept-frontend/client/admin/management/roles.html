@@ -141,6 +141,7 @@
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'portal'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'portal'}" ng-href="#">Portal</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'reports'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'reports'}" ng-href="#">Reports</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'roles'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'roles'}" ng-href="#">Roles</a></li>
+        <li><a ng-click="AdminManagementCtrl.selectedTab = 'ranks'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'ranks'}" ng-href="#">Ranks</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'categories'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'categories'}" ng-href="#">Categories</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'boards'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'boards'}" ng-href="#">Boards</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'threads'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'threads'}" ng-href="#">Threads</a></li>
@@ -843,6 +844,41 @@
           <input id="adminRoles-reprioritize" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminRoles.reprioritize" ng-false-value="undefined" />
           Allow user to reprioritize roles
         </label>
+      </div>
+
+      <!-- Ranks Tab -->
+      <div ng-if="AdminManagementCtrl.selectedTab === 'ranks'">
+        <section class="permission" ng-repeat="(model, details) in AdminManagementCtrl.layouts.rank">
+
+          <!-- Title Display -->
+          <div ng-if="details.type === 'title'">
+            <h4 ng-bind="details.title"></h4>
+            <h3 class="thin-underline"></h3>
+          </div>
+
+          <!-- Subtitle Display -->
+          <div ng-if="details.type === 'subtitle'">
+            <h6 ng-bind="details.title"></h6>
+          </div>
+
+          <!-- Separator Display -->
+          <div ng-if="details.type === 'separator'">
+            <div class="clear"></div><br />
+          </div>
+
+          <!-- Main Permission -->
+          <div ng-if="!details.type">
+
+            <label>
+              <input type="checkbox"
+                ng-change="AdminManagementCtrl.newRole.permissions.rank[model].allow ? null : AdminManagementCtrl.newRole.permissions.rank[model] = undefined"
+                ng-model="AdminManagementCtrl.newRole.permissions.rank[model].allow"
+                ng-false-value="undefined" />
+              <span class="permission-title" ng-bind="details.title"></span>
+            </label>
+
+          </div>
+        </section>
       </div>
 
       <!-- Categories Tab -->

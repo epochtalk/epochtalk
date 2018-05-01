@@ -21,11 +21,14 @@
         <div ng-if="post.user.activity > -1" title="{{ 'Activity: ' + post.user.activity }}" class="user-activity">Act: <span ng-bind="post.user.activity"></span></div>
       </a>
 
+
       <div class="user-role" ng-if="PostsParentCtrl.loggedIn()">
         <trust-score user="post.user" visible="PostsParentCtrl.thread.trust_visible"></trust-score>
       </div>
 
       <div class="user-role">
+        <rank-display ranks="PostsParentCtrl.pageData.metadata.ranks" maps="PostsParentCtrl.pageData.metadata.rank_metric_maps" user="post.user"></rank-display>
+
         <ignore-posts post="post"></ignore-posts>
       </div>
     </div>

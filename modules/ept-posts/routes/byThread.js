@@ -71,6 +71,7 @@ var common = require(path.normalize(__dirname + '/../common'));
   * @apiSuccess {string} posts.user.highlight_color The role highlight color of the user
   * @apiSuccess {string} posts.user.role_name The role name of the user
   * @apiSuccess {number} posts.user.activity The user's activity number
+  * @apiSuccess {number} posts.user.post_count The user's post count number
   * @apiSuccess {object} posts.user.stats Object containing trust stats for user
   * @apiSuccess {number} posts.user.stats.score The user's overall trust score
   * @apiSuccess {number} posts.user.stats.neg The user's negative trust points

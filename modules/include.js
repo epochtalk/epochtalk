@@ -18,4 +18,5 @@ module.exports = [
   'ept-ads',
   'ept-motd',
   'ept-ignore-users',
+  'ept-rank',
 ];
