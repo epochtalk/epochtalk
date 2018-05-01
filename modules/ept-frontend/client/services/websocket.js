@@ -25,6 +25,15 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
 
   // Channel Subscribe
   socket.on('subscribe', function(channelName) {
+    if (JSON.parse(channelName).type === 'role') {
+      socket.watch(channelName, function(data) {
+        if ($window.websocketLogs) {
+          console.log('Received role channel message.', data);
+        }
+        Auth.authenticate();
+      });
+    }
+
     if ($window.websocketLogs) {
       console.log('Websocket subscribed to', channelName, socket.watchers(channelName));
     }
@@ -69,13 +78,7 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
     if (Session.user.roles) {
       Session.user.roles.forEach(function(role) {
         var channel = JSON.stringify({ type: 'role', id: role });
-        socket.subscribe(channel, options)
-        .watch(function(data) {
-          if ($window.websocketLogs) {
-            console.log('Received role channel message.', data);
-          }
-          Auth.authenticate();
-        });
+        socket.subscribe(channel, options);
       });
     }
   });
