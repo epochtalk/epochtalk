@@ -62,7 +62,7 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
     }
 
     if ($window.websocketLogs) {
-      console.log('Websocket subscribed to', channelName, socket.watchers(channelName));
+      console.log('Websocket subscribed to', channelName, 'with watchers', socket.watchers(channelName));
     }
   });
 
