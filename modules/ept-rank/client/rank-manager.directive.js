@@ -13,7 +13,10 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
       Ranks.get().$promise.then(function(ranks) { ctrl.ranks = ranks; });
 
       // Permissions Handling
-      this.hasPermission = function() { return Session.hasPermission('rank.upsert.allow'); };
+      this.hasPermission = function() {
+        return Session.hasPermission('rank.upsert.allow') &&
+          Session.hasPermission('rank.get.allow');
+      };
 
       // Add Rank Modal
       this.newRank = {};
