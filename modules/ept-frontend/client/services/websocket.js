@@ -55,6 +55,11 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
         if (data.action === 'announcement') { Alert.warn(data.message); }
       });
     }
+    else {
+      if ($window.websocketLogs) {
+        console.log('Not watching', channelName);
+      }
+    }
 
     if ($window.websocketLogs) {
       console.log('Websocket subscribed to', channelName, socket.watchers(channelName));
