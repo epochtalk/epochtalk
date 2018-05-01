@@ -33,6 +33,23 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
         Auth.authenticate();
       });
     }
+    else if (JSON.parse(channelName).type === 'user') {
+      socket.watch(channelName, function(data) {
+        if ($window.websocketLogs) { console.log('Received user channel message', data); }
+        if (data.action === 'reauthenticate') {
+          Auth.authenticate();
+        }
+        else if (data.action === 'logout' && data.sessionId === socket.getAuthToken().sessionId) {
+          Auth.logout();
+          Alert.warning('You have been logged out from another window.');
+        }
+        else if (data.action === 'newMessage') { NotificationSvc.refresh(); }
+        else if (data.action === 'refreshMentions') {
+          NotificationSvc.refresh();
+          NotificationSvc.refreshMentionsList();
+        }
+      });
+    }
 
     if ($window.websocketLogs) {
       console.log('Websocket subscribed to', channelName, socket.watchers(channelName));
@@ -58,21 +75,6 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
     // subscribe to user channel
     var userChannelKey = JSON.stringify({ type: 'user', id: Session.user.id });
     userChannel = socket.subscribe(userChannelKey, options);
-    userChannel.watch(function(data) {
-      if ($window.websocketLogs) { console.log('Received user channel message', data); }
-      if (data.action === 'reauthenticate') {
-        Auth.authenticate();
-      }
-      else if (data.action === 'logout' && data.sessionId === socket.getAuthToken().sessionId) {
-        Auth.logout();
-        Alert.warning('You have been logged out from another window.');
-      }
-      else if (data.action === 'newMessage') { NotificationSvc.refresh(); }
-      else if (data.action === 'refreshMentions') {
-        NotificationSvc.refresh();
-        NotificationSvc.refreshMentionsList();
-     }
-    });
 
     // subscribe to roles channels
     if (Session.user.roles) {
