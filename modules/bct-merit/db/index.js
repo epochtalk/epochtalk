@@ -5,7 +5,7 @@ var db = dbc.db;
 var using = Promise.using;
 
 function recalculateMerit(userId) {
-  var queryMerit  = 'SELECT SUM(amount) AS merit FROM merit_ledger WHERE to_user_id = $1';
+  var queryMerit = 'SELECT SUM(amount) AS merit FROM merit_ledger WHERE to_user_id = $1';
   var updateMerit = 'UPDATE merit_users SET merit = $1 WHERE user_id = $2';
   var merit = 0;
 
