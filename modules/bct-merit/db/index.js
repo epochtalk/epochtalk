@@ -28,22 +28,33 @@ function recalculateMerit(userId) {
   });
 }
 
+// algorithm to calculate sent merit
+// during a merit transaction,
+// the merit received is a fraction of the merit sent
 function calculateSentMerit(userId) {
   var params = [userId];
   var smerit = 0;
   var sent = 0;
   var sources = [];
   var sends = [];
+  // any time retVal gets called, the function exits
   var retVal;
 
   return using(db.createTransaction(), function(client) {
+    // get the total amount of merit for a user
     var queryReceivedMerit = 'SELECT SUM(amount) AS merit FROM merit_ledger WHERE to_user_id = $1';
     return client.query(queryReceivedMerit, params)
     .then(function(results) {
+      // sendable merit, half of the user's total merit
       if (results.rows.length) {
         smerit = results.rows[0].merit;
         smerit = smerit / 2;
       }
+
+      // get the faucets
+      // user_id -> the user that is allocated a faucet
+      // time -> ??
+      // amount -> ??
       var queryMeritSourcesByTime = 'SELECT time, amount FROM merit_sources WHERE user_id = $1 ORDER BY time ASC';
       return client.query(queryMeritSourcesByTime);
     })
