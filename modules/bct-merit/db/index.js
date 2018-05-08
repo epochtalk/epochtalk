@@ -33,7 +33,7 @@ function recalculateMerit(userId) {
 // the merit received is a fraction of the merit sent
 function calculateSentMerit(userId) {
   var params = [userId];
-  var smerit = 0;
+  var sendableMerit = 0;
   var sent = 0;
   var sources = [];
   var sends = [];
@@ -47,8 +47,8 @@ function calculateSentMerit(userId) {
     .then(function(results) {
       // sendable merit, half of the user's total merit
       if (results.rows.length) {
-        smerit = results.rows[0].merit;
-        smerit = smerit / 2;
+        sendableMerit = results.rows[0].merit;
+        sendableMerit = sendableMerit / 2;
       }
 
       // get the faucets
@@ -75,7 +75,7 @@ function calculateSentMerit(userId) {
         .then(function(results) {
           if (results.rows.length) { sent = results.rows[0].merit; }
           retVal = {
-            smerit: smerit - sent,
+            sendableMerit: sendableMerit - sent,
             monthLimit: 0
           };
           return retVal;
