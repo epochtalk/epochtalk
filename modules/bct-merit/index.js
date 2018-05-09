@@ -8,8 +8,8 @@ var db = require(path.normalize(__dirname + '/db'));
 module.exports =  {
   name: 'merit',
   db: db,
+  authorization: authorization
   // routes: routes,
   // permissions: permissions,
-  // authorization: authorization,
   // hooks: hooks
 };
