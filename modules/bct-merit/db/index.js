@@ -64,6 +64,7 @@ function calculateSentMerit(userId) {
           data.time = data.time.getTime();
           return data;
         });
+        // at time 0, you start with 0 source merit
         sources.unshift({ time: 0, amount: 0 });
 
         var queryMeritByTime = 'SELECT time, amount FROM merit_ledger WHERE from_user_id = $1 ORDER BY time ASC';
@@ -95,19 +96,35 @@ function calculateSentMerit(userId) {
       var source = 0;
       var monthLimit = 0;
       var monthTotal = 0;
+      var amount;
 
-      sends.forEach(function(data) {
+      sends.forEach(function(data, i) {
         var time = data.time;
-        var amount = data.amount;
+        amount = data.amount;
 
         while (source + 1 < sources.length && time >= sources[source + 1].time) { source += 1; }
         monthLimit = sources[source].amount;
 
         monthTotal = 0;
+        for (var j = i - 1; j >= 0; j--) {
+          if (time - sends[j].time > month) { break; }
+          monthTotal += sends[j].amount;
+        }
 
-        // TODO: Finish translating
+        monthLimit -= monthTotal;
+        if (monthLimit < 0) { monthLimit = 0; }
 
+        sendableMerit -= Math.max(0, amount - monthLimit);
       });
+
+      monthLimit -= amount;
+      if (monthLimit < 0) { monthLimit = 0; }
+
+      retVal = {
+        sendableMerit: sendableMerit,
+        monthLimit: monthLimit
+      };
+      return retVal;
     });
   });
 }
