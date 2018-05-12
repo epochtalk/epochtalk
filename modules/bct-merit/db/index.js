@@ -93,7 +93,7 @@ function calculateSendableMerit(userId) {
             // Sent merit from:
             // (2) Between source merit allocations
             else {
-              q = 'SELECT time, amount FROM merit_ledger WHERE from_user_id = $1 AND time >= $2 AND time < $3';
+              q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2 AND time < $3';
               params  = [userId, source.time, sources[i + 1].time];
               return client.query(q, params)
               .then(function(results) {
