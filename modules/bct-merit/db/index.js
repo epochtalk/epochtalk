@@ -96,14 +96,14 @@ function calculateSendableMerit(userId) {
               var sourceMerit = source.amount;
               // if sum is NULL, set to 0
               var sentMeritSumForTimeRange = results.row[0].sum || 0;
-              var sendAmountExceedingSourceMerit = sentMeritSumForTimeRange - sourceMerit;
-              if (sendAmountExceedingSourceMerit < 0) { sendAmountExceedingSourceMerit = 0; }
+              var sentMeritExceedingSourceMerit = sentMeritSumForTimeRange - sourceMerit;
+              if (sentMeritExceedingSourceMerit < 0) { sentMeritExceedingSourceMerit = 0; }
               // update month limit, subtract merit for sends since allocated
               if (i === sources.length - 1) {
                 monthLimit -= sentMeritSumForTimeRange;
                 if (monthLimit < 0) { monthLimit = 0 }
               }
-              return currentSentMeritSum + sendAmountExceedingSourceMerit;
+              return currentSentMeritSum + sentMeritExceedingSourceMerit;
             });
           }, startingSentMeritSum)
           .then(function(totalSentMeritSum) {
