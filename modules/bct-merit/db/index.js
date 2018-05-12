@@ -99,6 +99,10 @@ function calculateSendableMerit(userId) {
           }, startingSentMeritSum)
           .then(function(totalSentMeritSum) {
             return {
+              // sendable merit:
+              // user's merit
+              // divided by 2
+              // minus sent merit exceeding source merit for each source merit range
               sendableMerit: sendableMerit - totalSentMeritSum,
               monthLimit: monthLimit
             };
