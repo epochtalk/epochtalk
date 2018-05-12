@@ -90,7 +90,8 @@ function calculateSendableMerit(userId) {
                 return sendAmountExceedingSourceMerit;
               });
             }
-            // Time range between two source merit allocations
+            // Sent merit from:
+            // (2) Between source merit allocations
             else {
               q = 'SELECT time, amount FROM merit_ledger WHERE from_user_id = $1 AND time >= $2 AND time < $3';
               params  = [userId, source.time, sources[i + 1].time];
