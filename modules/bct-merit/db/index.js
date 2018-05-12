@@ -64,13 +64,16 @@ function calculateSendableMerit(userId) {
         // (2) Between source merit allocations
         // (3) After the latest source merit allocation
 
-        // Sent merit before user was allocated any source merit
+        // Sent merit from:
+        // (1) Before source merit was allocated
         q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time < $2';
         params = [userId, sources[0].time];
 
         return client.query(q, params)
         .then(function(results) {
-          // result from q
+          // (Result of sent merit from:)
+          // (1) Before source merit was allocated
+          // if sum is NULL, set to 0
           var startingSentMeritSum = results.rows[0].sum || 0;
 
           // Iterate through source merit of user
