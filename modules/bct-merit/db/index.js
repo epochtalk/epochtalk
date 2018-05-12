@@ -96,7 +96,7 @@ function calculateSendableMerit(userId) {
               var sentMeritSumForTimeRange = results.row[0].sum || 0;
               var sendAmountExceedingSourceMerit = sentMeritSumForTimeRange - sourceMerit;
               if (sendAmountExceedingSourceMerit < 0) { sendAmountExceedingSourceMerit = 0; }
-              return currentSentMeritSentSum + sendAmountExceedingSourceMerit;
+              return currentSentMeritSum + sendAmountExceedingSourceMerit;
             });
           }, startingSentMeritSum)
           .then(function(totalSentMeritSum) {
