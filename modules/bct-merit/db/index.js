@@ -55,6 +55,7 @@ function calculateSendableMerit(userId) {
       return client.query(queryMeritSourcesByTime);
     })
     .then(function(results) {
+      // if there are merit sources for the user
       if (results.rows.length) {
         sources = results.rows;
         // Sent merit before user was allocated any source merit
@@ -95,6 +96,7 @@ function calculateSendableMerit(userId) {
           return sendMerit -= totalSentMerit;
         });
       }
+      // otherwise, user has no source merit
       else {
         var querySentMerit = 'SELECT SUM(amount) as merit FROM merit_ledger WHERE from_user_id = $1';
         return client.query(querySentMerit)
