@@ -84,25 +84,21 @@ function calculateSendableMerit(userId) {
             if (i === sources.length - 1) {
               q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2';
               params = [userId, source.time];
-              return client.query(q, params)
-              .then(function(results) {
-                sentMeritSumForTimeRange = results.row[0].sum || 0;
-
-                return sendAmountExceedingSourceMerit;
-              });
             }
             // Sent merit from:
             // (2) Between source merit allocations
             else {
               q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2 AND time < $3';
               params  = [userId, source.time, sources[i + 1].time];
-              return client.query(q, params)
-              .then(function(results) {
-
-                return currentSentSum + sendAmountExceedingSourceMerit;
-              });
             }
-          }, startingSentMeritSum);
+            return client.query(q, params)
+            .then(function(results) {
+              var sentMeritSumForTimeRange = results.row[0].sum || 0;
+              return currentSentMeritSentSum + sendAmountExceedingSourceMerit;
+            });
+          }, startingSentMeritSum)
+          .then(function(totalSentMeritSum) {
+          });
 
           return sendMerit -= totalSentMerit;
         });
