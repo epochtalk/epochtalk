@@ -98,9 +98,12 @@ function calculateSendableMerit(userId) {
             });
           }, startingSentMeritSum)
           .then(function(totalSentMeritSum) {
+            return {
+              sendableMerit: sendableMerit - totalSentMeritSum,
+              monthLimit: monthLimit
+            };
           });
 
-          return sendMerit -= totalSentMerit;
         });
       }
       // otherwise, user has no source merit
