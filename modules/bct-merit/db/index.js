@@ -58,6 +58,13 @@ function calculateSendableMerit(userId) {
       // if there are merit sources for the user
       if (results.rows.length) {
         sources = results.rows;
+
+        // calculate the total sent merit
+        // in exceess of source merit for each time range:
+        // (1) Before source merit was allocated
+        // (2) Between source merit allocations
+        // (3) After the latest source merit allocation
+
         // Sent merit before user was allocated any source merit
         q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time < $2';
         params = [userId, sources[0].time];
