@@ -104,6 +104,9 @@ function calculateSendableMerit(userId) {
               // divided by 2
               // minus sent merit exceeding source merit for each source merit range
               sendableMerit: sendableMerit - totalSentMeritSum,
+              // monthLimit:
+              // user's current source merit
+              // minus merit for sends since allocated source merit time
               monthLimit: monthLimit
             };
           });
