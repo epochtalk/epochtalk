@@ -115,6 +115,7 @@ function calculateSendableMerit(userId) {
             // divided by 2
             // minus sum of sends on ledger
             sendableMerit: sendableMerit - sent,
+            // user has no source merit
             monthLimit: 0
           };
           return retVal;
