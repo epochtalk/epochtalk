@@ -93,10 +93,10 @@ function calculateSendableMerit(userId) {
             }
             return client.query(q, params)
             .then(function(results) {
-              var sourceMerit = source.amount;
+              var sourceMeritForTimeRange = source.amount;
               // if sum is NULL, set to 0
               var sentMeritSumForTimeRange = results.row[0].sum || 0;
-              var sentMeritExceedingSourceMerit = sentMeritSumForTimeRange - sourceMerit;
+              var sentMeritExceedingSourceMerit = sentMeritSumForTimeRange - sourceMeritForTimeRange;
               if (sentMeritExceedingSourceMerit < 0) { sentMeritExceedingSourceMerit = 0; }
               // update month limit, subtract merit for sends since allocated
               if (i === sources.length - 1) {
