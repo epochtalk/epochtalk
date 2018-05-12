@@ -92,6 +92,7 @@ function calculateSendableMerit(userId) {
             }
             return client.query(q, params)
             .then(function(results) {
+              // if sum is NULL, set to 0
               var sentMeritSumForTimeRange = results.row[0].sum || 0;
               return currentSentMeritSentSum + sendAmountExceedingSourceMerit;
             });
