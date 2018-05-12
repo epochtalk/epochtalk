@@ -38,8 +38,7 @@ function calculateSendableMerit(userId) {
   var sent = 0;
   var sources = [];
   var sends = [];
-  // any time retVal gets called, the function exits
-  var retVal, q, params;
+  var q, params;
 
   return using(db.createTransaction(), function(client) {
     // get the total amount of merit for a user
@@ -109,7 +108,7 @@ function calculateSendableMerit(userId) {
         return client.query(querySentMerit)
         .then(function(results) {
           if (results.rows.length) { sent = results.rows[0].merit; }
-          retVal = {
+          return {
             // sendable merit:
             // user's merit
             // divided by 2
@@ -118,7 +117,6 @@ function calculateSendableMerit(userId) {
             // user has no source merit
             monthLimit: 0
           };
-          return retVal;
         });
       }
     });
