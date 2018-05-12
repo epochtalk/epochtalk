@@ -57,6 +57,8 @@ function calculateSendableMerit(userId) {
       // if there are merit sources for the user
       if (results.rows.length) {
         sources = results.rows;
+        // month limit starts at latest source merit allocation amount
+        var monthLimit = sources[sources.length - 1].amount;
 
         // calculate the total sent merit
         // in exceess of source merit for each time range:
@@ -96,6 +98,11 @@ function calculateSendableMerit(userId) {
               var sentMeritSumForTimeRange = results.row[0].sum || 0;
               var sendAmountExceedingSourceMerit = sentMeritSumForTimeRange - sourceMerit;
               if (sendAmountExceedingSourceMerit < 0) { sendAmountExceedingSourceMerit = 0; }
+              // update month limit, subtract merit for sends since allocated
+              if (i === sources.length - 1) {
+                monthLimit -= sentMeritSumForTimeRange;
+                if (monthLimit < 0) { monthLimit = 0 }
+              }
               return currentSentMeritSum + sendAmountExceedingSourceMerit;
             });
           }, startingSentMeritSum)
