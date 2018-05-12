@@ -39,7 +39,7 @@ function calculateSendableMerit(userId) {
   var sources = [];
   var sends = [];
   // any time retVal gets called, the function exits
-  var retVal;
+  var retVal, q, params;
 
   return using(db.createTransaction(), function(client) {
     // get the total amount of merit for a user
@@ -57,32 +57,43 @@ function calculateSendableMerit(userId) {
     .then(function(results) {
       if (results.rows.length) {
         sources = results.rows;
-
         // Sent merit before user was allocated any source merit
         q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time < $2';
         params = [userId, sources[0].time];
 
-        var startingSentMeritSum; // result from q
+        return client.query(q, params)
+        .then(function(results) {
+          // result from q
+          var startingSentMeritSum = results.rows[0].sum || 0;
 
-        // Iterate through source merit of user
-        var totalSentMerit = sources.reduce(function(currentSentSum, source, i) {
-          var sendAmountExceedingSourceMerit;
-          // Time range latest source merit allocation til now
-          if (i === sources.length - 1) {
-            q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2';
-            params = [userId, source.time];
-            sendAmountExceedingSourceMerit; // calculate amounttosubtract
-          }
-          // Time range between two source merit allocations
-          else {
-            q = 'SELECT time, amount FROM merit_ledger WHERE from_user_id = $1 AND time >= $2 AND time < $3';
-            params  = [userId, source.time, sources[i + 1].time];
-            sendAmountExceedingSourceMerit;
-          }
-          return currentSentSum + sendAmountExceedingSourceMerit;
-        }, startingSentMeritSum);
+          // Iterate through source merit of user
+          var totalSentMerit = sources.reduce(function(currentSentSum, source, i) {
+            var sendAmountExceedingSourceMerit, sentMeritSumForTimeRange;
+            // Time range latest source merit allocation til now
+            if (i === sources.length - 1) {
+              q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2';
+              params = [userId, source.time];
+              return client.query(q, params)
+              .then(function(results) {
+                sentMeritSumForTimeRange = results.row[0].sum || 0;
 
-        sendMerit -= totalSentMerit;
+                return sendAmountExceedingSourceMerit;
+              });
+            }
+            // Time range between two source merit allocations
+            else {
+              q = 'SELECT time, amount FROM merit_ledger WHERE from_user_id = $1 AND time >= $2 AND time < $3';
+              params  = [userId, source.time, sources[i + 1].time];
+              return client.query(q, params)
+              .then(function(results) {
+
+                return currentSentSum + sendAmountExceedingSourceMerit;
+              });
+            }
+          }, startingSentMeritSum);
+
+          return sendMerit -= totalSentMerit;
+        });
       }
       else {
         var querySentMerit = 'SELECT SUM(amount) as merit FROM merit_ledger WHERE from_user_id = $1';
