@@ -33,7 +33,6 @@ function recalculateMerit(userId) {
 
 function calculateSendableMerit(userId) {
   userId = helper.deslugify(userId);
-  var params = [userId];
   var sendableMerit = 0;
   var sent = 0;
   var sources = [];
@@ -43,6 +42,7 @@ function calculateSendableMerit(userId) {
   return using(db.createTransaction(), function(client) {
     // get the total amount of merit for a user
     var queryReceivedMerit = 'SELECT SUM(amount) AS merit FROM merit_ledger WHERE to_user_id = $1';
+    params = [userId];
     return client.query(queryReceivedMerit, params)
     .then(function(results) {
       if (results.rows.length) {
@@ -51,7 +51,8 @@ function calculateSendableMerit(userId) {
       }
 
       var queryMeritSourcesByTime = 'SELECT time, amount FROM merit_sources WHERE user_id = $1 ORDER BY time ASC';
-      return client.query(queryMeritSourcesByTime);
+      params = [userId];
+      return client.query(queryMeritSourcesByTime, params);
     })
     .then(function(results) {
       // if there are merit sources for the user
