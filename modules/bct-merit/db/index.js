@@ -110,6 +110,10 @@ function calculateSendableMerit(userId) {
         .then(function(results) {
           if (results.rows.length) { sent = results.rows[0].merit; }
           retVal = {
+            // sendable merit:
+            // user's merit
+            // divided by 2
+            // minus sum of sends on ledger
             sendableMerit: sendableMerit - sent,
             monthLimit: 0
           };
