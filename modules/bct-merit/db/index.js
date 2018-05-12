@@ -79,7 +79,8 @@ function calculateSendableMerit(userId) {
           // Iterate through source merit of user
           var totalSentMerit = sources.reduce(function(currentSentSum, source, i) {
             var sendAmountExceedingSourceMerit, sentMeritSumForTimeRange;
-            // Time range latest source merit allocation til now
+            // Sent merit from:
+            // (3) After the latest source merit allocation
             if (i === sources.length - 1) {
               q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2';
               params = [userId, source.time];
