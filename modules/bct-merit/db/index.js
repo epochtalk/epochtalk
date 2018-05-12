@@ -77,7 +77,6 @@ function calculateSendableMerit(userId) {
           var startingSentMeritSum = results.rows[0].sum || 0;
 
           return Promise.reduce(sources, function(currentSentMeritSum, source, i) {
-            var sendAmountExceedingSourceMerit, sentMeritSumForTimeRange;
             // Sent merit from:
             // (3) After the latest source merit allocation
             if (i === sources.length - 1) {
@@ -92,8 +91,11 @@ function calculateSendableMerit(userId) {
             }
             return client.query(q, params)
             .then(function(results) {
+              var sourceMerit = source.amount;
               // if sum is NULL, set to 0
               var sentMeritSumForTimeRange = results.row[0].sum || 0;
+              var sendAmountExceedingSourceMerit = sentMeritSumForTimeRange - sourceMerit;
+              if (sendAmountExceedingSourceMerit < 0) { sendAmountExceedingSourceMerit = 0; }
               return currentSentMeritSentSum + sendAmountExceedingSourceMerit;
             });
           }, startingSentMeritSum)
