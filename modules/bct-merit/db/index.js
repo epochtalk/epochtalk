@@ -76,7 +76,6 @@ function calculateSendableMerit(userId) {
           // if sum is NULL, set to 0
           var startingSentMeritSum = results.rows[0].sum || 0;
 
-          // Iterate through source merit of user
           return Promise.reduce(sources, function(currentSentMeritSum, source, i) {
             var sendAmountExceedingSourceMerit, sentMeritSumForTimeRange;
             // Sent merit from:
