@@ -125,10 +125,10 @@ function calculateSendableMerit(userId) {
       }
       // otherwise, user has no source merit
       else {
-        var querySentMerit = 'SELECT SUM(amount) as merit FROM merit_ledger WHERE from_user_id = $1';
+        var querySentMerit = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1';
         return client.query(querySentMerit)
         .then(function(results) {
-          if (results.rows.length) { sent = results.rows[0].merit; }
+          if (results.rows.length) { sent = results.rows[0].sum; }
           return {
             // sendable merit:
             // user's merit
