@@ -13,7 +13,7 @@ var CreationError = errors.CreationError;
 function recalculateMerit(userId) {
   var queryMerit = 'SELECT SUM(amount) AS merit FROM merit_ledger WHERE to_user_id = $1';
   var updateMerit = 'UPDATE merit_users SET merit = $1 WHERE user_id = $2';
-
+  console.log('HERE');
   return using(db.createTransaction(), function(client) {
     // query sum of merit transactions from merit ledger
     return client.query(queryMerit, [userId])
@@ -31,28 +31,67 @@ function recalculateMerit(userId) {
   });
 }
 
-function calculateSendableMerit(userId) {
-  userId = helper.deslugify(userId);
+sendMerit('2699e6f3-e137-479f-ab9f-9a7075180194', '30ad5dd2-447b-442e-9ca9-b1dd7b3e3b42', '0d189e0c-6261-4273-b4e1-f57603c5f978', 1)
+.then(console.log);
+
+
+function sendMerit(fromUserId, toUserId, postId, amount) {
+  // fromUserId = helper.deslugify(fromUserId);
+  // toUserId = helper.deslugify(toUserId);
+  // postId = helper.deslugify(postId);
+  // These should be configs
+  var maxToUser = 50;
+  var maxToPost = 100;
+  var totalToUser, totalToPost;
   var sendableMerit = 0;
   var sent = 0;
   var sources = [];
   var sends = [];
   var q, params;
 
+  var sendableUserMerit, sendableSourceMerit;
+
   return using(db.createTransaction(), function(client) {
-    // get the total amount of merit for a user
-    var queryReceivedMerit = 'SELECT SUM(amount) AS merit FROM merit_ledger WHERE to_user_id = $1';
-    params = [userId];
-    return client.query(queryReceivedMerit, params)
+    q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND to_user_id = $2 AND time > (now() - \'1 month\'::interval)';
+    params = [fromUserId, toUserId];
+    return client.query(q, params)
+    .then(function(results) {
+      if (results.rows.length && results.rows[0].amount) {
+        totalToUser = results.rows[0].amount;
+      }
+      else { totalToUser = 0; }
+
+      q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND post_id= $2';
+      params = [fromUserId, postId];
+      return client.query(q, params);
+    })
+    .then(function(results) {
+      if (results.rows.length && results.rows[0].amount) {
+        totalToPost = results.rows[0].amount;
+      }
+      else { totalToPost = 0; }
+
+      if (totalToUser + amount > maxToUser) {
+        throw new CreationError('You can only send ' + maxToUser + ' merit to a given user per 30 days. You have already sent ' + totalToUser + ' merit to this user within the last 30 days.');
+      }
+      else if (totalToPost + amount > maxToPost) {
+        throw new CreationError('You can only send ' + maxToPost + ' merit to a given post. You have already sent ' + totalToPost + ' merit to this post.');
+      }
+
+      // get the total amount of merit for a user
+      q = 'SELECT SUM(amount) AS merit FROM merit_ledger WHERE to_user_id = $1';
+      params = [fromUserId];
+      return client.query(q, params);
+    })
     .then(function(results) {
       if (results.rows.length) {
         sendableMerit = results.rows[0].merit;
         sendableMerit = sendableMerit / 2;
       }
 
-      var queryMeritSourcesByTime = 'SELECT time, amount FROM merit_sources WHERE user_id = $1 ORDER BY time ASC';
-      params = [userId];
-      return client.query(queryMeritSourcesByTime, params);
+      q = 'SELECT time, amount FROM merit_sources WHERE user_id = $1 ORDER BY time ASC';
+      params = [fromUserId];
+      return client.query(q, params);
     })
     .then(function(results) {
       // if there are merit sources for the user
@@ -69,7 +108,7 @@ function calculateSendableMerit(userId) {
         // Sent merit from:
         // (1) Before source merit was allocated
         q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time < $2';
-        params = [userId, sources[0].time];
+        params = [fromUserId, sources[0].time];
 
         return client.query(q, params)
         .then(function(results) {
@@ -82,13 +121,13 @@ function calculateSendableMerit(userId) {
             // (3) After the latest source merit allocation
             if (i === sources.length - 1) {
               q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2';
-              params = [userId, source.time];
+              params = [fromUserId, source.time];
             }
             // Sent merit from:
             // (2) Between source merit allocations
             else {
               q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2 AND time < $3';
-              params  = [userId, source.time, sources[i + 1].time];
+              params  = [fromUserId, source.time, sources[i + 1].time];
             }
 
             return client.query(q, params)
@@ -108,75 +147,58 @@ function calculateSendableMerit(userId) {
             });
           }, startingSentMeritSum)
           .then(function(totalSentMeritSum) {
-            return {
-              // sendable merit:
-              // user's merit
-              // divided by 2
-              // minus sent merit exceeding source merit for each source merit range
-              sendableMerit: sendableMerit - totalSentMeritSum,
-              // monthLimit:
-              // user's current source merit
-              // minus merit for sends since allocated source merit time
-              monthLimit: monthLimit
-            };
+            // sendable merit:
+            // user's merit
+            // divided by 2
+            // minus sent merit exceeding source merit for each source merit range
+            sendableUserMerit = sendableMerit - totalSentMeritSum;
+            // monthLimit:
+            // user's current source merit
+            // minus merit for sends since allocated source merit time
+            sendableSourceMerit = monthLimit;
+            return;
           });
-
         });
       }
       // otherwise, user has no source merit
       else {
-        var querySentMerit = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1';
-        return client.query(querySentMerit)
+        q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1';
+        return client.query(q)
         .then(function(results) {
           sent = Number(results.rows[0].sum);
-          return {
-            // sendable merit:
-            // user's merit
-            // divided by 2
-            // minus sum of sends on ledger
-            sendableMerit: sendableMerit - sent,
-            // user has no source merit
-            monthLimit: 0
-          };
+          // sendable merit:
+          // user's merit
+          // divided by 2
+          // minus sum of sends on ledger
+          sendableUserMerit = sendableMerit - sent;
+          // user has no source merit
+          sendableSourceMerit = 0;
+          return;
         });
       }
-    });
-  });
-}
-
-function sendMerit(fromUserId, toUserId, postId, merits) {
-  fromUserId = helper.deslugify(fromUserId);
-  toUserId = helper.deslugify(toUserId);
-  postId = helper.deslugify(postId);
-  // These should be configs
-  var maxToUser = 50;
-  var maxToPost = 100;
-  var totalToUser, totalToPost;
-
-  return using(db.createTransaction(), function(client) {
-    var q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND to_user_id = $2 AND time > (now() - \'1 month\'::interval)';
-    var params = [fromUserId, toUserId];
-    return client.query(q, params)
-    .then(function(results) {
-      if (results.rows.length && results.rows[0].amount) {
-        totalToUser = results.rows[0].amount;
-      }
-      else { totalToUser = 0; }
-
-      q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND post_id= $2';
-      params = [fromUserId, postId];
-      return client.query(q, params);
+      return;
     })
-    .then(function(results) {
-      if (results.rows.length && results.rows[0].amount) {
-        totalToPost = results.rows[0].amount;
+    .then(function() {
+      console.log('Sendable User Merit:', sendableUserMerit);
+      console.log('Sendable Source Merit:', sendableSourceMerit);
+      if (sendableUserMerit + sendableSourceMerit < amount) {
+        throw new CreationError('You do not have enough sendable merit.');
       }
-      else { totalToPost = 0; }
-
-      if (totalToUser + merits > maxToUser) {
-
-      }
+      q = 'INSERT INTO merit_ledger(from_user_id, to_user_id, post_id, amount, time) VALUES($1, $2, $3, $4, now())';
+      params = [fromUserId, toUserId, postId, amount];
+      return client.query(q, params);
     });
+  })
+  .then(function() {
+    return recalculateMerit(toUserId);
+  })
+  .then(function() {
+    return {
+      from_user_id: fromUserId,
+      to_user_id: toUserId,
+      post_id: postId,
+      amount: amount
+    };
   });
 }
 
