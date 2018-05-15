@@ -35,9 +35,9 @@ sendMerit('2699e6f3-e137-479f-ab9f-9a7075180194', '30ad5dd2-447b-442e-9ca9-b1dd7
 
 
 function sendMerit(fromUserId, toUserId, postId, amount) {
-  // fromUserId = helper.deslugify(fromUserId);
-  // toUserId = helper.deslugify(toUserId);
-  // postId = helper.deslugify(postId);
+  fromUserId = helper.deslugify(fromUserId);
+  toUserId = helper.deslugify(toUserId);
+  postId = helper.deslugify(postId);
   // These should be configs
   var maxToUser = 50;
   var maxToPost = 100;
