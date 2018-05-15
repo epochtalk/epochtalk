@@ -128,7 +128,7 @@ function calculateSendableMerit(userId) {
         var querySentMerit = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1';
         return client.query(querySentMerit)
         .then(function(results) {
-          if (results.rows.length) { sent = Number(results.rows[0].sum); }
+          sent = Number(results.rows[0].sum);
           return {
             // sendable merit:
             // user's merit
