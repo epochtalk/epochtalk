@@ -76,8 +76,7 @@ function calculateSendableMerit(userId) {
           // (Result of sent merit from:)
           // (1) Before source merit was allocated
           // if sum is NULL, set to 0
-          var startingSentMeritSum = results.rows[0].sum || 0;
-
+          var startingSentMeritSum = Number(results.rows[0].sum);
           return Promise.reduce(sources, function(currentSentMeritSum, source, i) {
             // Sent merit from:
             // (3) After the latest source merit allocation
@@ -91,11 +90,12 @@ function calculateSendableMerit(userId) {
               q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2 AND time < $3';
               params  = [userId, source.time, sources[i + 1].time];
             }
+
             return client.query(q, params)
             .then(function(results) {
               var sourceMeritForTimeRange = source.amount;
               // if sum is NULL, set to 0
-              var sentMeritSumForTimeRange = results.rows[0].sum || 0;
+              var sentMeritSumForTimeRange = Number(results.rows[0].sum);
               var sentMeritExceedingSourceMerit = sentMeritSumForTimeRange - sourceMeritForTimeRange;
               if (sentMeritExceedingSourceMerit < 0) { sentMeritExceedingSourceMerit = 0; }
               // set month limit:
@@ -128,7 +128,7 @@ function calculateSendableMerit(userId) {
         var querySentMerit = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1';
         return client.query(querySentMerit)
         .then(function(results) {
-          if (results.rows.length) { sent = results.rows[0].sum; }
+          if (results.rows.length) { sent = Number(results.rows[0].sum); }
           return {
             // sendable merit:
             // user's merit
