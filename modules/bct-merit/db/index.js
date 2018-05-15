@@ -77,10 +77,8 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
       return client.query(q, params);
     })
     .then(function(results) {
-      if (results.rows.length) {
-        sendableMerit = results.rows[0].merit;
-        sendableMerit = sendableMerit / 2;
-      }
+      sendableMerit = results.rows[0].merit;
+      sendableMerit = sendableMerit / 2;
 
       q = 'SELECT time, amount FROM merit_sources WHERE user_id = $1 ORDER BY time ASC';
       params = [fromUserId];
