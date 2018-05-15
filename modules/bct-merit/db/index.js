@@ -134,7 +134,7 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
               // latest source merit - sum of sent merit since allocation
               if (i === sources.length - 1) {
                 monthLimit = sourceMeritForTimeRange - sentMeritSumForTimeRange;
-                if (monthLimit < 0) { monthLimit = 0 }
+                if (monthLimit < 0) { monthLimit = 0; }
               }
               return currentSentMeritSum + sentMeritExceedingSourceMerit;
             });
@@ -182,9 +182,7 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
       return client.query(q, params);
     });
   })
-  .then(function() {
-    return recalculateMerit(toUserId);
-  })
+  .then(function() { return recalculateMerit(toUserId); })
   .then(function() {
     return {
       from_user_id: fromUserId,
