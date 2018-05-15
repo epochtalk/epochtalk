@@ -55,20 +55,14 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
     params = [fromUserId, toUserId];
     return client.query(q, params)
     .then(function(results) {
-      if (results.rows.length && results.rows[0].amount) {
-        totalToUser = results.rows[0].amount;
-      }
-      else { totalToUser = 0; }
+      totalToUser = Number(results.rows[0].sum);
 
       q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND post_id= $2';
       params = [fromUserId, postId];
       return client.query(q, params);
     })
     .then(function(results) {
-      if (results.rows.length && results.rows[0].amount) {
-        totalToPost = results.rows[0].amount;
-      }
-      else { totalToPost = 0; }
+      totalToPost = Number(results.rows[0].sum);
 
       if (totalToUser + amount > maxToUser) {
         throw new CreationError('You can only send ' + maxToUser + ' merit to a given user per 30 days. You have already sent ' + totalToUser + ' merit to this user within the last 30 days.');
