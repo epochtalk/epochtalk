@@ -12,8 +12,7 @@ var CreationError = errors.CreationError;
 // return merit
 function recalculateMerit(userId) {
   var queryMerit = 'SELECT SUM(amount) AS merit FROM merit_ledger WHERE to_user_id = $1';
-  var updateMerit = 'UPDATE merit_users SET merit = $1 WHERE user_id = $2';
-  console.log('HERE');
+  var updateMerit = 'INSERT INTO merit_users(user_id, merit) VALUES($1, $2) ON CONFLICT(user_id) DO UPDATE SET merit = $2';
   return using(db.createTransaction(), function(client) {
     // query sum of merit transactions from merit ledger
     return client.query(queryMerit, [userId])
@@ -23,7 +22,7 @@ function recalculateMerit(userId) {
       if (results.rows.length && results.rows[0].merit) {
         var merit = results.rows[0].merit;
         // update user's merit to the sum of merit from transactions, returning merit
-        return client.query(updateMerit, [merit, userId]).then(function() { return merit; });
+        return client.query(updateMerit, [userId, merit]).then(function() { return merit; });
       }
       // otherwise, don't update the user's merit, return zero merit
       else { return 0; }
