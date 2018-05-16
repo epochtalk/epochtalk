@@ -60,35 +60,13 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
   toUserId = helper.deslugify(toUserId);
   postId = helper.deslugify(postId);
   // These should be configs
-  var maxToUser = 50;
-  var maxToPost = 100;
   var q, params, sendableUserMerit, sendableSourceMerit;
 
   return using(db.createTransaction(), function(client) {
-    q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND to_user_id = $2 AND time > (now() - \'1 month\'::interval)';
-    params = [fromUserId, toUserId];
+    // get the total amount of merit for a user
+    q = 'SELECT SUM(amount) FROM merit_ledger WHERE to_user_id = $1';
+    params = [fromUserId];
     return client.query(q, params)
-    .then(function(results) {
-      var totalToUser = Number(results.rows[0].sum);
-      if (totalToUser + amount > config.maxToUser) {
-        throw new CreationError('You can only send ' + config.maxToUser + ' merit to a given user per 30 days. You have already sent ' + totalToUser + ' merit to this user within the last 30 days.');
-      }
-
-      q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND post_id= $2';
-      params = [fromUserId, postId];
-      return client.query(q, params);
-    })
-    .then(function(results) {
-      var totalToPost = Number(results.rows[0].sum);
-      if (totalToPost + amount > config.maxToPost) {
-        throw new CreationError('You can only send ' + config.maxToPost + ' merit to a given post. You have already sent ' + totalToPost + ' merit to this post.');
-      }
-
-      // get the total amount of merit for a user
-      q = 'SELECT SUM(amount) FROM merit_ledger WHERE to_user_id = $1';
-      params = [fromUserId];
-      return client.query(q, params);
-    })
     .then(function(results) {
       sendableUserMerit = Number(results.rows[0].sum) / 2;
 
