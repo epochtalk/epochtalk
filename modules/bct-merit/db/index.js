@@ -1,11 +1,34 @@
 var path = require('path');
 var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
+var config = require(path.normalize(__dirname + '/../config'));
 var db = dbc.db;
 var using = Promise.using;
 var errors = dbc.errors;
 var helper = dbc.helper;
 var CreationError = errors.CreationError;
+
+function withinUserMax(fromUserId, toUserId, amount) {
+  var maxToUser = config.maxToUser;
+  var q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND to_user_id = $2 AND time > (now() - \'1 month\'::interval)';
+  var params = [helper.deslugify(fromUserId), helper.deslugify(toUserId)];
+  return db.scalar(q, params)
+  .then(function(results) {
+    var totalToUser = Number(results.sum);
+    return totalToUser + amount <= maxToUser;
+  });
+}
+
+function withinPostMax(fromUserId, postId, amount) {
+  var maxToPost = config.maxToPost;
+  var q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND post_id = $2';
+  var params = [helper.deslugify(fromUserId), helper.deslugify(postId)];
+  return db.scalar(q, params)
+  .then(function(results) {
+    var totalToPost = Number(results.sum);
+    return totalToPost + amount <= maxToPost;
+  });
+}
 
 // calculate user's merit
 // update merit for user
@@ -47,8 +70,8 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
     return client.query(q, params)
     .then(function(results) {
       var totalToUser = Number(results.rows[0].sum);
-      if (totalToUser + amount > maxToUser) {
-        throw new CreationError('You can only send ' + maxToUser + ' merit to a given user per 30 days. You have already sent ' + totalToUser + ' merit to this user within the last 30 days.');
+      if (totalToUser + amount > config.maxToUser) {
+        throw new CreationError('You can only send ' + config.maxToUser + ' merit to a given user per 30 days. You have already sent ' + totalToUser + ' merit to this user within the last 30 days.');
       }
 
       q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND post_id= $2';
@@ -57,8 +80,8 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
     })
     .then(function(results) {
       var totalToPost = Number(results.rows[0].sum);
-      if (totalToPost + amount > maxToPost) {
-        throw new CreationError('You can only send ' + maxToPost + ' merit to a given post. You have already sent ' + totalToPost + ' merit to this post.');
+      if (totalToPost + amount > config.maxToPost) {
+        throw new CreationError('You can only send ' + config.maxToPost + ' merit to a given post. You have already sent ' + totalToPost + ' merit to this post.');
       }
 
       // get the total amount of merit for a user
@@ -181,5 +204,7 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
 }
 
 module.exports = {
-  sendMerit: sendMerit
+  sendMerit: sendMerit,
+  withinUserMax: withinUserMax,
+  withinPostMax: withinPostMax
 };

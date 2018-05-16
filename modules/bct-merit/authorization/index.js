@@ -1,3 +1,5 @@
+var config = require(path.normalize(__dirname + '/../config'));
+
 module.exports = [
   {
     name: 'auth.merit.canMerit',
@@ -6,8 +8,8 @@ module.exports = [
   }
 ];
 
-function canMerit(server, auth, postId, toUserId, amount) {
-  var userId = '';
+function canMerit(server, auth, fromUserId, toUserId, postId, amount) {
+  var userId;
   var authenticated = auth.isAuthenticated;
   if (authenticated) { userId = auth.credentials.id; }
 
@@ -28,6 +30,23 @@ function canMerit(server, auth, postId, toUserId, amount) {
     args: [postId, server.plugins.acls.getUserPriority(auth)]
   });
 
+
+  // check that user is not exceeding the max merit allowed to user
+  var withinUserMax = server.authorization.build({
+    error: Boom.badRequest('You may only send up to ' + config.maxToUser + ' merit to a particular user per month.'),
+    type: 'dbValue',
+    method: server.db.merit.withinUserMax,
+    args: [fromUserId, toUserId, amount]
+  });
+
+  // check that user is not exceeding the max merit allowed to a post
+  var withinUserMax = server.authorization.build({
+    error: Boom.badRequest('You may only send up to ' + config.maxToPost + ' merit to a particular post.'),
+    type: 'dbValue',
+    method: server.db.merit.withinPostMax,
+    args: [fromUserId, postId, amount]
+  });
+
   // check that the user isn't giving merit to themselves
   var notAuthedUser = function() {
     if (userId === toUserId) {
@@ -46,5 +65,5 @@ function canMerit(server, auth, postId, toUserId, amount) {
     else { return true; }
   };
 
-  return Promise.all([allowed, read, notAuthedUser, validMeritAmount]);
+  return Promise.all([allowed, read, withinUserMax, withinPostMax, notAuthedUser, validMeritAmount]);
 };
