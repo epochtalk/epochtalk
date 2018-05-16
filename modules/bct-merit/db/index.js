@@ -126,19 +126,19 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
               }
               return currentSentMeritSum + sentMeritExceedingSourceMerit;
             });
-          }, startingSentMeritSum)
-          .then(function(totalSentMeritSum) {
-            // sendable merit:
-            // user's merit
-            // divided by 2
-            // minus sent merit exceeding source merit for each source merit range
-            sendableUserMerit -= totalSentMeritSum;
-            // monthLimit:
-            // user's current source merit
-            // minus merit for sends since allocated source merit time
-            sendableSourceMerit = monthLimit;
-            return;
-          });
+          }, startingSentMeritSum);
+        })
+        .then(function(totalSentMeritSum) {
+          // sendable merit:
+          // user's merit
+          // divided by 2
+          // minus sent merit exceeding source merit for each source merit range
+          sendableUserMerit -= totalSentMeritSum;
+          // monthLimit:
+          // user's current source merit
+          // minus merit for sends since allocated source merit time
+          sendableSourceMerit = monthLimit;
+          return;
         });
       }
       // otherwise, user has no source merit
