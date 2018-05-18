@@ -51,22 +51,22 @@ function canMerit(server, auth, toUserId, postId, amount) {
   });
 
   // check that the user isn't giving merit to themselves
-  var notAuthedUser = function() {
+  var notAuthedUser = new Promise(function(resolve, reject) {
     if (userId === toUserId) {
       var error = Boom.badRequest('You are not allowed to merit your own posts');
-      return Promise.reject(error);
+      return reject(error);
     }
-    else { return true; }
-  };
+    else { resolve(true); }
+  });
 
   // check that the user isn't giving merit to themselves
-  var validMeritAmount = function() {
+  var validMeritAmount = new Promise(function(resolve, reject) {
     if (!amount || amount <= 0) {
-      var error = Boom.badRequest('Invalid merit amount');
-      return Promise.reject(error);
+      var error = Boom.badRequest('Invalid merit amount, you must send at least 1 merit.');
+      return reject(error);
     }
-    else { return true; }
-  };
+    else { return resolve(true); }
+  });
 
   return Promise.all([allowed, read, withinUserMax, withinPostMax, notAuthedUser, validMeritAmount]);
 };
