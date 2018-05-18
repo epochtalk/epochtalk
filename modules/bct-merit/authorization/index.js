@@ -1,3 +1,4 @@
+var path = require('path');
 var config = require(path.normalize(__dirname + '/../config'));
 
 module.exports = [
@@ -8,11 +9,11 @@ module.exports = [
   }
 ];
 
-function canMerit(server, auth, fromUserId, toUserId, postId, amount) {
+function canMerit(server, auth, toUserId, postId, amount) {
   var userId;
   var authenticated = auth.isAuthenticated;
   if (authenticated) { userId = auth.credentials.id; }
-
+  console.log('HERE');
   // check base permission
   var allowed = server.authorization.build({
     error: Boom.forbidden('You do not have permissions to send merit'),
@@ -20,8 +21,11 @@ function canMerit(server, auth, fromUserId, toUserId, postId, amount) {
     server: server,
     auth: auth,
     permission: 'merit.send.allow'
-  });
+  }).catch(console.log);
 
+  console.log('TEST');
+
+console.log(allowed);
   // user has permission to see the post they giving merit to
   var read = server.authorization.build({
     error: Boom.unauthorized('You do not have permissions to merit this post'),
@@ -36,7 +40,7 @@ function canMerit(server, auth, fromUserId, toUserId, postId, amount) {
     error: Boom.badRequest('You may only send up to ' + config.maxToUser + ' merit to a particular user per month.'),
     type: 'dbValue',
     method: server.db.merit.withinUserMax,
-    args: [fromUserId, toUserId, amount]
+    args: [userId, toUserId, amount]
   });
 
   // check that user is not exceeding the max merit allowed to a post
@@ -44,7 +48,7 @@ function canMerit(server, auth, fromUserId, toUserId, postId, amount) {
     error: Boom.badRequest('You may only send up to ' + config.maxToPost + ' merit to a particular post.'),
     type: 'dbValue',
     method: server.db.merit.withinPostMax,
-    args: [fromUserId, postId, amount]
+    args: [userId, postId, amount]
   });
 
   // check that the user isn't giving merit to themselves

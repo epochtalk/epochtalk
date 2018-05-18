@@ -39,7 +39,6 @@ var upsert = {
   }
 };
 
-
 /**
   * @apiVersion 0.4.0
   * @apiGroup Rank

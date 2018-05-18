@@ -19,4 +19,5 @@ module.exports = [
   'ept-motd',
   'ept-ignore-users',
   'ept-rank',
+  'bct-merit',
 ];
