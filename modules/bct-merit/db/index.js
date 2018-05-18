@@ -168,13 +168,12 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
   .then(function() { return recalculateMerit(toUserId); })
   .then(function() {
     return {
-      from_user_id: fromUserId,
-      to_user_id: toUserId,
-      post_id: postId,
+      from_user_id: helper.slugify(fromUserId),
+      to_user_id: helper.slugify(toUserId),
+      post_id: helper.slugify(postId),
       amount: amount
     };
-  })
-  .then(helper.slugify);
+  });
 }
 
 module.exports = {
