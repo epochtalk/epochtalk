@@ -141,7 +141,8 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
       // otherwise, user has no source merit
       else {
         q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1';
-        return client.query(q)
+        params = [fromUserId];
+        return client.query(q, params)
         .then(function(results) {
           var sent = Number(results.rows[0].sum);
           // sendable merit:
