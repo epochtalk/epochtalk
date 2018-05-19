@@ -22,8 +22,7 @@ var errorMap = {
 module.exports = {
   toHttpError: function(error) {
     var errCode = errorMap[error.name];
-    var boomErr = Boom.boomify(error, errCode);
-    boomErr.output.payload.message = error.message || boomErr.output.payload.message;
+    var boomErr = Boom.boomify(error, { statusCode: errCode });
     return boomErr;
   }
 };
