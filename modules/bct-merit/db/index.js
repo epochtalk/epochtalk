@@ -6,7 +6,7 @@ var db = dbc.db;
 var using = Promise.using;
 var errors = dbc.errors;
 var helper = dbc.helper;
-var CreationError = errors.CreationError;
+var BadRequestError = errors.BadRequestError;
 
 function withinUserMax(fromUserId, toUserId, amount) {
   var maxToUser = config.maxToUser;
@@ -54,6 +54,7 @@ function recalculateMerit(userId) {
 // sendMerit('2699e6f3-e137-479f-ab9f-9a7075180194', '30ad5dd2-447b-442e-9ca9-b1dd7b3e3b42', '0d189e0c-6261-4273-b4e1-f57603c5f978', 2).then(console.log);
 
 function sendMerit(fromUserId, toUserId, postId, amount) {
+
   fromUserId = helper.deslugify(fromUserId);
   toUserId = helper.deslugify(toUserId);
   postId = helper.deslugify(postId);
@@ -159,7 +160,7 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
     })
     .then(function() {
       if (sendableUserMerit + sendableSourceMerit < amount) {
-        throw new CreationError('You do not have enough sendable merit.');
+        throw new BadRequestError('You do not have enough sendable merit.');
       }
       q = 'INSERT INTO merit_ledger(from_user_id, to_user_id, post_id, amount, time) VALUES($1, $2, $3, $4, now())';
       params = [fromUserId, toUserId, postId, amount];
