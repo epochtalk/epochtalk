@@ -26,9 +26,7 @@ function customMaps(ranksAndMetricsMaps){
     })
     // create metrics maps jsonb
     .then(function() {
-      return Promise.map(ranksAndMetricsMaps.metricsMaps, function(metricsMap) {
-        return client.query(createMetricsMap, [ metricsMap ]);
-      });
+      return client.query(createMetricsMap, [ ranksAndMetricsMaps.metricsMaps]);
     });
   })
   .then(function() { return ranksAndMetricsMaps; });
