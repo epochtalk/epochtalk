@@ -6,7 +6,12 @@ var using = Promise.using;
 var c = require(path.join(__dirname, '..', '..', '..', 'metrics-configuration.json'));
 
 if (c) {
-  customMaps(c);
+  customMaps(c)
+  .then(function() {
+    getMaps().then(function(maps) {
+      console.log('Rank maps:', maps);
+    });
+  });
 }
 
 // Server-only db methods
