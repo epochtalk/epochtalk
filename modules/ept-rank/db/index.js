@@ -18,14 +18,17 @@ function customMaps(ranksAndMetricsMaps){
 
   return using(db.createTransaction(), function(client) {
     return Promise.join(client.query(clearRanks), client.query(clearMetricsMaps))
+    // create ranks
     .then(function() {
-      var createRanks = Promise.map(ranksAndMetricsMaps.ranks, function(rank, index) {
+      return Promise.map(ranksAndMetricsMaps.ranks, function(rank, index) {
         return client.query(createRank, [ rank, index]);
       });
-      var createMetricsMaps = Promise.map(ranksAndMetricsMaps.metricsMaps, function(metricsMap) {
+    })
+    // create metrics maps jsonb
+    .then(function() {
+      return Promise.map(ranksAndMetricsMaps.metricsMaps, function(metricsMap) {
         return client.query(createMetricsMap, [ metricsMap ]);
       });
-      return Promise.join(createRanks, createMetricsMaps);
     });
   })
   .then(function() { return ranksAndMetricsMaps; });
