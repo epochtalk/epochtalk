@@ -3,6 +3,33 @@ var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var using = Promise.using;
+var c = require(path.join(__dirname, '..', '..', '..', 'metrics-configuration.json'));
+
+if (c) {
+  customMaps(c);
+}
+
+// Server-only db methods
+function customMaps(ranksAndMetricsMaps){
+  var clearRanks = 'DELETE FROM ranks';
+  var clearMetricsMaps = 'DELETE FROM metric_rank_maps';
+  var createRank = 'INSERT INTO ranks(name, number) VALUES($1, $2)';
+  var createMetricsMap = 'INSERT INTO metric_rank_maps(maps) VALUES($1)';
+
+  return using(db.createTransaction(), function(client) {
+    return Promise.join(client.query(clearRanks), client.query(clearMetricsMaps))
+    .then(function() {
+      var createRanks = Promise.map(ranksAndMetricsMaps.ranks, function(rank, index) {
+        return client.query(createRank, [ rank, index]);
+      });
+      var createMetricsMaps = Promise.map(ranksAndMetricsMaps.metricsMaps, function(metricsMap) {
+        return client.query(createMetricsMap, [ metricsMap ]);
+      });
+      return Promise.join(createRanks, createMetricsMaps);
+    });
+  })
+  .then(function() { return ranksAndMetricsMaps; });
+}
 
 // Administrative db methods
 function upsert(ranks){
