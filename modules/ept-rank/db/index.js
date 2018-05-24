@@ -3,7 +3,11 @@ var Promise = require('bluebird');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var using = Promise.using;
-var c = require(path.join(__dirname, '..', '..', '..', 'metrics-configuration.json'));
+try {
+  var c = require(path.join(__dirname, '..', '..', '..', 'metrics-configuration.json'));
+  console.log('Running with custom metrics configuration');
+}
+catch(error) { console.log('Running without custom metrics configuration'); }
 
 if (c) {
   customMaps(c)
