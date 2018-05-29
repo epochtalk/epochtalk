@@ -53,7 +53,7 @@ function recalculateMerit(userId) {
 
 // sendMerit('2699e6f3-e137-479f-ab9f-9a7075180194', '30ad5dd2-447b-442e-9ca9-b1dd7b3e3b42', '0d189e0c-6261-4273-b4e1-f57603c5f978', 2).then(console.log);
 
-function sendMerit(fromUserId, toUserId, postId, amount) {
+function send(fromUserId, toUserId, postId, amount) {
 
   fromUserId = helper.deslugify(fromUserId);
   toUserId = helper.deslugify(toUserId);
@@ -179,7 +179,7 @@ function sendMerit(fromUserId, toUserId, postId, amount) {
 }
 
 module.exports = {
-  sendMerit: sendMerit,
   withinUserMax: withinUserMax,
-  withinPostMax: withinPostMax
+  withinPostMax: withinPostMax,
+  send: send,
 };

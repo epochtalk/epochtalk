@@ -39,7 +39,7 @@ var send = {
     var postId = request.payload.post_id;
     var amount = request.payload.amount;
 
-    var promise = request.db.merit.sendMerit(fromUserId, toUserId, postId, amount)
+    var promise = request.db.merit.send(fromUserId, toUserId, postId, amount)
     .error(request.errorMap.toHttpError);
     return reply(promise);
   }
