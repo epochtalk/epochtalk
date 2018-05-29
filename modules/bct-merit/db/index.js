@@ -178,8 +178,15 @@ function send(fromUserId, toUserId, postId, amount) {
   });
 }
 
+function get(userId) {
+  var q = 'SELECT user_id, merit FROM merit_users WHERE user_id = $1';
+  var params = [ helper.deslugify(userId) ];
+  return db.scalar(q, params);
+}
+
 module.exports = {
   withinUserMax: withinUserMax,
   withinPostMax: withinPostMax,
   send: send,
+  get: get
 };
