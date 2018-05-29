@@ -1,9 +1,4 @@
 var Joi = require('joi');
-var Boom = require('boom');
-var path = require('path');
-var dbc = require(path.normalize(__dirname + '/../db/db'));
-var errors = dbc.errors;
-var BadRequestError = errors.BadRequestError;
 
 /**
   * @apiVersion 0.4.0
@@ -45,7 +40,6 @@ var send = {
     var amount = request.payload.amount;
 
     var promise = request.db.merit.sendMerit(fromUserId, toUserId, postId, amount)
-    .catch(BadRequestError, Boom.badRequest)
     .error(request.errorMap.toHttpError);
     return reply(promise);
   }
