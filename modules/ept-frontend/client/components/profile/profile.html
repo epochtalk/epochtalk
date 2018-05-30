@@ -38,7 +38,8 @@
       <div><span ng-bind="vmProfile.user.position"></span></div>
       <div><span ng-bind="vmProfile.user.status"></span></div>
       <br />
-      <div ng-if="vmProfile.user.activity > -1">Activity:&nbsp;&nbsp;<span ng-bind="vmProfile.user.activity"></span></div>
+      <div ng-if="vmProfile.user.activity > -1">Activity: <span ng-bind="vmProfile.user.activity"></span></div>
+      <merit-display user="vmProfile.user"></merit-display>
       <trust-profile ng-if="vmProfile.isLoggedIn()" username="vmProfile.user.username"></trust-profile>
       <hr ng-if="vmProfile.user.email || vmProfile.user.gender || vmProfile.user.dob || vmProfile.user.location || vmProfile.user.language || vmProfile.userLocalTime">
       <a ng-href="mailto:{{vmProfile.user.email}}" target="_blank" ng-bind="vmProfile.user.email"></a>

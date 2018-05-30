@@ -6,13 +6,13 @@ var config = require(path.normalize(__dirname + '/../config'));
 
 module.exports = [
   {
-    name: 'auth.merit.canMerit',
-    method: canMerit,
+    name: 'auth.merit.send',
+    method: send,
     options: { callback: false }
   }
 ];
 
-function canMerit(server, auth, toUserId, postId, amount) {
+function send(server, auth, toUserId, postId, amount) {
   var userId;
   var authenticated = auth.isAuthenticated;
   if (authenticated) { userId = auth.credentials.id; }
@@ -69,4 +69,4 @@ function canMerit(server, auth, toUserId, postId, amount) {
   });
 
   return Promise.all([allowed, read, withinUserMax, withinPostMax, notAuthedUser, validMeritAmount]);
-};
+}

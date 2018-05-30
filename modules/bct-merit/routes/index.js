@@ -31,7 +31,7 @@ var send = {
         amount: Joi.number().required()
       })
     },
-    pre: [ { method: 'auth.merit.canMerit(server, auth, payload.to_user_id, payload.post_id, payload.amount)' } ]
+    pre: [ { method: 'auth.merit.send(server, auth, payload.to_user_id, payload.post_id, payload.amount)' } ]
   },
   handler: function(request, reply) {
     var toUserId = request.payload.to_user_id;
