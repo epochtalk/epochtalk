@@ -14,6 +14,10 @@ function userMeritByPost(request) {
     return request.db.merit.get(post.user.id)
     .then(function(data) {
       post.user.merit = data.merit;
+      return request.db.merit.getPostMerits(post.id);
+    })
+    .then(function(merits) {
+      post.merits = merits;
       return post;
     });
   });

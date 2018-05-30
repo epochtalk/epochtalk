@@ -184,9 +184,16 @@ function get(userId) {
   return db.scalar(q, params);
 }
 
+function getPostMerits(postId) {
+  var q = 'SELECT u.username, SUM(amount) AS amount FROM merit_ledger LEFT JOIN users u ON u.id = from_user_id WHERE post_id = $1 GROUP BY post_id, u.username';
+  var params = [ helper.deslugify(postId) ];
+  return db.sqlQuery(q, params);
+}
+
 module.exports = {
   withinUserMax: withinUserMax,
   withinPostMax: withinPostMax,
   send: send,
-  get: get
+  get: get,
+  getPostMerits: getPostMerits
 };
