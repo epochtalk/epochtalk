@@ -40,10 +40,9 @@
   .post-block {
     @include row;
     @include clearfix;
-    @include pad(1.25rem 0.5rem);
     @include transition(background-color 250ms ease-in);
     position: relative;
-    min-height: 10rem;
+    min-height: 10.5rem;
     border-bottom: 1px solid $border-color;
     &:first-child {
       border-top: 1px solid $border-color;
@@ -64,13 +63,12 @@
       text-align: center;
     }
     .post-user {
+      @include pad(1.25rem 0.5rem);
       width: 5rem;
-      padding-right: 1.25rem;
-      display: inline-block;
+      left: 0rem;
+      top: 0rem;
       position: absolute;
-      a {
-        display: block;
-      }
+      a { display: block; }
       .user-avatar {
         @include bg-cover;
         background: no-repeat center center;
@@ -96,10 +94,22 @@
         width: 100%;
       }
     }
+    .post-footer {
+      @include pad(0 0.5rem 0.5rem 0.5rem);
+      position: absolute;
+      left: 5rem;
+      bottom: 0rem;
+      width: calc(100% - 5rem);
+      font-size: 0.75rem;
+      color: $secondary-font-color;
+    }
     .post-content {
-      display: block;
-      margin-left: 5rem;
-      .bbcode-column {
+      @include pad(1.25rem 0.5rem);
+      position: absolute;
+      top: 0;
+      left: 5rem;
+      width: calc(100% - 5rem);
+     .bbcode-column {
         img.image-loader.loaded {
           max-width: 350px;
           margin: 5px auto;
@@ -290,7 +300,12 @@
     display: none;
   }
   .thread-data .post-block .post-content {
-    margin-left: 0;
+    left: 0;
+    width: 100%;
+  }
+  .thread-data .post-block .post-footer {
+    left: 0;
+    width: 100%;
   }
   .thread-data .post-block .post-content .post-title {
     position: relative;
