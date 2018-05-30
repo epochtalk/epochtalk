@@ -70,6 +70,7 @@
               <i class="icon-epoch-lock clicked"></i>
             </a>
           </li>
+          <send-merit-button ng-if="PostsParentCtrl.loggedIn()"></send-merit-button>
           <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers) && !PostsParentCtrl.bannedFromBoard" ng-hide="post.reported && post.reported_author">
             <a ng-href="#" data-balloon="Report" ng-click="PostsCtrl.openReportModal(post)">
               <i class="icon-epoch-flag"></i>
@@ -103,6 +104,8 @@
     <post-merited-by merits="post.merits"></post-merited-by>
   </div>
 </div>
+
+<send-merit-modal post="PostsParentCtrl.meritPost"></send-merit-modal>
 
 <!-- Delete Post Modal -->
 <modal show="PostsParentCtrl.showDeleteModal">
