@@ -1,6 +1,6 @@
 var html = '<li ng-if="vmSMB.notOwner && vmSMB.loggedIn()">' +
            '  <a ng-href="#" data-balloon="Merit Post" ng-click="PostsParentCtrl.meritPost = post; PostsParentCtrl.showMeritModal = true;">' +
-           '    <i class="fa fa-plus-square"></i>' +
+           '    <i class="fa fa-heart"></i>' +
            '  </a>' +
            '</li>';
 
