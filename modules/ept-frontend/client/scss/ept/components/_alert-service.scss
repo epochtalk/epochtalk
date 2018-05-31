@@ -5,7 +5,7 @@
   margin: auto;
   left: 0;
   right: 0;
-  z-index: 9000;
+  z-index: 900000;
   @include border-radius(0 0 3px 3px);
   background-color: $header-dropdown-bg-color;
   max-height: 6.75rem;
