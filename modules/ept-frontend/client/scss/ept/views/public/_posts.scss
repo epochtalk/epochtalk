@@ -96,19 +96,14 @@
     }
     .post-footer {
       @include pad(0 0.5rem 0.5rem 0.5rem);
-      position: absolute;
-      left: 5rem;
-      bottom: 0rem;
-      width: calc(100% - 5rem);
+      margin-left: 5rem;
       font-size: 0.75rem;
       color: $secondary-font-color;
     }
     .post-content {
       @include pad(1.25rem 0.5rem);
-      position: absolute;
-      top: 0;
-      left: 5rem;
-      width: calc(100% - 5rem);
+      min-height: 9rem;
+      margin-left: 5rem;
      .bbcode-column {
         img.image-loader.loaded {
           max-width: 350px;
@@ -266,6 +261,9 @@
       }
     }
   }
+  #post-tools-fixed .tool-wrap .tool-container {
+    padding: 0 $base-grid-padding;
+  }
 }
 
 @include media($mobile-portrait) {
@@ -300,12 +298,10 @@
     display: none;
   }
   .thread-data .post-block .post-content {
-    left: 0;
-    width: 100%;
+    margin-left: 0;
   }
   .thread-data .post-block .post-footer {
-    left: 0;
-    width: 100%;
+    margin-left: 0;
   }
   .thread-data .post-block .post-content .post-title {
     position: relative;
