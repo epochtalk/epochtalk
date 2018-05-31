@@ -4,13 +4,13 @@ var directive = [function() {
   return {
     restrict: 'E',
     scope: true,
-    bindToController: { user: '='},
+    bindToController: { merit: '='},
     template: html,
     controllerAs: 'vm',
     controller: ['$scope', function($scope) {
       var ctrl = this;
-      $scope.$watch(function() { return ctrl.user; }, function (user) {
-        ctrl.userMerit = user.merit;
+      $scope.$watch(function() { return ctrl.merit; }, function(merit) {
+        ctrl.userMerit = merit;
       });
     }]
   };
