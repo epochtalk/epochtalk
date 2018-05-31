@@ -1,0 +1,12 @@
+<modal show="vmSMM.showMeritModal">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Send merit to {{vmSMM.post.user.username}}</h3>
+    <label>Amount of merit to send
+      <input type="number" min="1" modal-focus="{{PostsParentCtrl.showMeritModal}}" ng-model="vmSMM.meritAmount" />
+    </label>
+    <div class="clear">
+      <button class="fill-row" ng-click="vmSMM.sendMerit()"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || vmSMM.sendMeritSubmitted" ng-bind="vmSMM.sendMeritBtnLabel"></button>
+    </div>
+  </form>
+</modal>
