@@ -1,0 +1,24 @@
+<div>
+  <h3 class="thin-underline">Merit Summary for {{UserMeritCtrl.user.username}}</h3>
+  <br />
+  <h4>Total Merit: <strong>{{UserMeritCtrl.user.merit}}</strong></h4>
+  <br />
+</div>
+
+<div>
+  <h4>Sent by {{UserMeritCtrl.user.username}} in the last 120 days</h4>
+  <ul class="indent">
+    <li ng-repeat="sMerit in UserMeritCtrl.statistics.recently_sent">
+      {{sMerit.time | humanDate}}:&nbsp;&nbsp;Sent <strong>{{sMerit.amount}} merit{{ sMerit.amount > 1 ? 's' : '' }}</strong> to <a ui-sref="profile.posts({ username: sMerit.username})" ng-bind-html="sMerit.username"></a> for post in thread <a ui-sref="posts.data({ threadId: sMerit.thread_id, start: sMerit.position, '#': sMerit.post_id })" ng-bind-html="sMerit.title"></a>
+    </li>
+  </ul>
+</div>
+
+<div>
+  <h4>Received by {{UserMeritCtrl.user.username}} in the last 120 days</h4>
+  <ul class="indent">
+    <li ng-repeat="rMerit in UserMeritCtrl.statistics.recently_received">
+      {{rMerit.time | humanDate}}:&nbsp;&nbsp;Received <strong>{{rMerit.amount}} merit{{ rMerit.amount > 1 ? 's' : '' }}</strong> from <a ui-sref="profile.posts({ username: rMerit.username})" ng-bind-html="rMerit.username"></a> for post in thread <a ui-sref="posts.data({ threadId: rMerit.thread_id, start: rMerit.position, '#': rMerit.post_id })" ng-bind-html="rMerit.title"></a>
+    </li>
+  </ul>
+</div>
