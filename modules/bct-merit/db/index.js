@@ -51,10 +51,7 @@ function recalculateMerit(userId) {
   });
 }
 
-// sendMerit('2699e6f3-e137-479f-ab9f-9a7075180194', '30ad5dd2-447b-442e-9ca9-b1dd7b3e3b42', '0d189e0c-6261-4273-b4e1-f57603c5f978', 2).then(console.log);
-
 function send(fromUserId, toUserId, postId, amount) {
-
   fromUserId = helper.deslugify(fromUserId);
   toUserId = helper.deslugify(toUserId);
   postId = helper.deslugify(postId);
@@ -190,10 +187,27 @@ function getPostMerits(postId) {
   return db.sqlQuery(q, params);
 }
 
+function getUserStatistics(userId) {
+  var q = 'SELECT time, amount, (SELECT content->>\'title\' as title FROM posts WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1), (SELECT position FROM posts WHERE id = post_id), (SELECT username from users where id = to_user_id) FROM merit_ledger WHERE from_user_id = $1 and time >= now() - \'3 months\'::interval';
+  var params = [ helper.deslugify(userId) ];
+  var results = {};
+  return db.sqlQuery(q, params)
+  .then(function(recentlySent) {
+    results.recently_sent = recentlySent;
+    q = 'SELECT time, amount, (SELECT content->>\'title\' as title FROM posts WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1), (SELECT position FROM posts WHERE id = post_id), (SELECT username from users where id = from_user_id) FROM merit_ledger WHERE to_user_id = $1 and time >= now() - \'3 months\'::interval';
+    return db.sqlQuery(q, params);
+  })
+  .then(function(recentlyReceived) {
+    results.recently_received = recentlyReceived;
+    return results;
+  });
+}
+
 module.exports = {
   withinUserMax: withinUserMax,
   withinPostMax: withinPostMax,
   send: send,
   get: get,
-  getPostMerits: getPostMerits
+  getPostMerits: getPostMerits,
+  getUserStatistics: getUserStatistics
 };
