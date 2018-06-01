@@ -186,3 +186,11 @@ input[type].nested-input.valid-username { color: green; }
   line-height: 36px;
   text-align: center;
 }
+
+ul.indent {
+  list-style-position: outside;
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  margin-left: 1.25rem;
+  ul { margin-left: 2rem; }
+}
