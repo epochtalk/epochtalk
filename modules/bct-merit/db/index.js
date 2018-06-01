@@ -188,18 +188,18 @@ function getPostMerits(postId) {
 }
 
 function getUserStatistics(userId) {
-  var q = 'SELECT time, amount, (SELECT content->>\'title\' as title FROM posts WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1), (SELECT position FROM posts WHERE id = post_id), (SELECT username from users where id = to_user_id) FROM merit_ledger WHERE from_user_id = $1 and time >= now() - \'3 months\'::interval';
+  var q = 'SELECT time, amount, post_id, (SELECT thread_id from posts where id = post_id), (SELECT content->>\'title\' as title FROM posts WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1), (SELECT position FROM posts WHERE id = post_id), (SELECT username from users where id = to_user_id) FROM merit_ledger WHERE from_user_id = $1 and time >= now() - \'3 months\'::interval';
   var params = [ helper.deslugify(userId) ];
   var results = {};
   return db.sqlQuery(q, params)
   .then(function(recentlySent) {
     results.recently_sent = recentlySent;
-    q = 'SELECT time, amount, (SELECT content->>\'title\' as title FROM posts WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1), (SELECT position FROM posts WHERE id = post_id), (SELECT username from users where id = from_user_id) FROM merit_ledger WHERE to_user_id = $1 and time >= now() - \'3 months\'::interval';
+    q = 'SELECT time, amount, post_id, (SELECT thread_id from posts where id = post_id), (SELECT content->>\'title\' as title FROM posts WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1), (SELECT position FROM posts WHERE id = post_id), (SELECT username from users where id = from_user_id) FROM merit_ledger WHERE to_user_id = $1 and time >= now() - \'3 months\'::interval';
     return db.sqlQuery(q, params);
   })
   .then(function(recentlyReceived) {
     results.recently_received = recentlyReceived;
-    return results;
+    return helper.slugify(results);
   });
 }
 

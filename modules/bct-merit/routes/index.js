@@ -62,12 +62,16 @@ var send = {
   * @apiSuccess {string} recently_sent.title The title of the merited post
   * @apiSuccess {string} recently_sent.username The author of the merited post
   * @apiSuccess {number} recently_sent.position The position of the merited post within its thread
+  * @apiSuccess {string} recently_sent.post_id The id of the merited post
+  * @apiSuccess {string} recently_sent.thread_id The id of the thread the post is within
   * @apiSuccess {object[]} recently_received Recently received merit by this user
   * @apiSuccess {timestamp} recently_received.time The time the merit was received
   * @apiSuccess {number} recently_received.amount The amount of merit received
   * @apiSuccess {string} recently_received.title The title of the merited post
   * @apiSuccess {string} recently_received.username The username of the user who sent the merit
   * @apiSuccess {number} recently_received.position The position of the merited post within its thread
+  * @apiSuccess {string} recently_received.post_id The id of the merited post
+  * @apiSuccess {string} recently_received.thread_id The id of the thread the post is within
   *
   * @apiError (Error 500) InternalServerError There was an issue fetching the users metric statistics
   */
