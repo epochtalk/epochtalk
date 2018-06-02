@@ -9,7 +9,7 @@
     </label>
     <br />
     <label>Amount of merit to send
-      <input type="number" min="1" modal-focus="{{PostsParentCtrl.showMeritModal}}" ng-model="vmSMM.meritAmount" />
+      <input type="number" min="1" max="{{PostsParentCtrl.pageData.metadata.merit.sendable_user_merit + PostsParentCtrl.pageData.metadata.merit.sendable_source_merit}}" modal-focus="{{PostsParentCtrl.showMeritModal}}" ng-model="vmSMM.meritAmount" />
     </label>
     <div class="clear">
       <button class="fill-row" ng-click="vmSMM.sendMerit()"
