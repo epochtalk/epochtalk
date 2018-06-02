@@ -193,16 +193,16 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
             to_user_id: helper.slugify(toUserId),
             post_id: helper.slugify(postId),
             amount: amount,
-            sendable_user_merit: leftoverUserMerit,
-            sendable_source_merit: leftoverSourceMerit
+            sendable_user_merit: Math.floor(leftoverUserMerit),
+            sendable_source_merit: Math.floor(leftoverSourceMerit)
           };
         });
       }
       // We're just calculating sendable merit
       else {
         return {
-          sendable_user_merit: sendableUserMerit,
-          sendable_source_merit: sendableSourceMerit
+          sendable_user_merit: Math.floor(sendableUserMerit),
+          sendable_source_merit: Math.floor(sendableSourceMerit)
         }
       }
     });
