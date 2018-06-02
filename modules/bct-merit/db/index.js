@@ -176,9 +176,16 @@ function send(fromUserId, toUserId, postId, amount) {
 }
 
 function get(userId) {
-  var q = 'SELECT user_id, merit FROM merit_users WHERE user_id = $1';
+  var q = 'SELECT merit FROM merit_users WHERE user_id = $1';
   var params = [ helper.deslugify(userId) ];
-  return db.scalar(q, params);
+  return db.scalar(q, params)
+  .then(function(data) {
+    var amount = data ? data.merit : 0;
+    return {
+      user_id: userId,
+      merit: Number(amount)
+    }
+  });
 }
 
 function getPostMerits(postId) {
