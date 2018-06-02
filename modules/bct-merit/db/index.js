@@ -52,10 +52,13 @@ function recalculateMerit(userId) {
 }
 
 function send(fromUserId, toUserId, postId, amount) {
+  return calculateSendableMerit(fromUserId, toUserId, postId, amount);
+}
+
+function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
   fromUserId = helper.deslugify(fromUserId);
   toUserId = helper.deslugify(toUserId);
   postId = helper.deslugify(postId);
-  // These should be configs
   var q, params, sendableUserMerit, sendableSourceMerit;
   return using(db.createTransaction(), function(client) {
     // get the total amount of merit for a user
@@ -156,22 +159,53 @@ function send(fromUserId, toUserId, postId, amount) {
       return;
     })
     .then(function() {
-      if (sendableUserMerit + sendableSourceMerit < amount) {
-        throw new BadRequestError('You do not have enough sendable merit.');
+      // We're sending merit to someone after calculating
+      if (toUserId) {
+        if (sendableUserMerit + sendableSourceMerit < amount) {
+          throw new BadRequestError('You do not have enough sendable merit.');
+        }
+        q = 'INSERT INTO merit_ledger(from_user_id, to_user_id, post_id, amount, time) VALUES($1, $2, $3, $4, now())';
+        params = [fromUserId, toUserId, postId, amount];
+        return client.query(q, params)
+        .then(function() {
+          q = 'SELECT SUM(amount) FROM merit_ledger WHERE to_user_id = $1';
+          params = [toUserId];
+          // query sum of merit transactions from merit ledger
+          return client.query(q, params);
+        })
+        .then(function(results) {
+          q = 'INSERT INTO merit_users(user_id, merit) VALUES($1, $2) ON CONFLICT(user_id) DO UPDATE SET merit = $2';
+          var merit = Number(results.rows[0].sum);
+          params = [toUserId, merit];
+          // update user's merit to the sum of merit from transactions, returning merit
+          return client.query(q, params);
+        })
+        .then(function() {
+          var leftoverSourceMerit = sendableSourceMerit - amount;
+          var leftoverUserMerit = sendableUserMerit;
+
+          if (leftoverSourceMerit < 0) {
+            leftoverUserMerit = leftoverUserMerit + leftoverSourceMerit;
+            leftoverSourceMerit = 0;
+          }
+          return {
+            from_user_id: helper.slugify(fromUserId),
+            to_user_id: helper.slugify(toUserId),
+            post_id: helper.slugify(postId),
+            amount: amount,
+            sendable_user_merit: leftoverUserMerit,
+            sendable_source_merit: leftoverSourceMerit
+          };
+        });
       }
-      q = 'INSERT INTO merit_ledger(from_user_id, to_user_id, post_id, amount, time) VALUES($1, $2, $3, $4, now())';
-      params = [fromUserId, toUserId, postId, amount];
-      return client.query(q, params);
+      // We're just calculating sendable merit
+      else {
+        return {
+          sendable_user_merit: sendableUserMerit,
+          sendable_source_merit: sendableSourceMerit
+        }
+      }
     });
-  })
-  .then(function() { return recalculateMerit(toUserId); })
-  .then(function() {
-    return {
-      from_user_id: helper.slugify(fromUserId),
-      to_user_id: helper.slugify(toUserId),
-      post_id: helper.slugify(postId),
-      amount: amount
-    };
   });
 }
 
@@ -214,6 +248,7 @@ module.exports = {
   withinUserMax: withinUserMax,
   withinPostMax: withinPostMax,
   send: send,
+  calculateSendableMerit: calculateSendableMerit,
   get: get,
   getPostMerits: getPostMerits,
   getUserStatistics: getUserStatistics
