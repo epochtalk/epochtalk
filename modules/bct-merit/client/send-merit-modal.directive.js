@@ -2,7 +2,7 @@ var directive = ['Merit', 'Alert', 'Session', function(Merit, Alert, Session) {
   return {
     restrict: 'E',
     scope: true,
-    bindToController: { post: '=', allPosts: '=', showMeritModal: '=' },
+    bindToController: { post: '=', allPosts: '=', sendableMerit: '=', showMeritModal: '=' },
     template: require('./send-merit-modal.html'),
     controllerAs: 'vmSMM',
     controller: ['$scope', function($scope) {
@@ -16,7 +16,8 @@ var directive = ['Merit', 'Alert', 'Session', function(Merit, Alert, Session) {
         ctrl.sendMeritBtnLabel = 'Loading...';
         ctrl.sendMeritSubmitted = true;
         return Merit.send({ to_user_id: ctrl.post.user.id, post_id: ctrl.post.id, amount: ctrl.meritAmount }).$promise
-        .then(function() {
+        // Update relevant merit values so UI is up to date.
+        .then(function(results) {
           // update the posts merit array, updates merited by UI
           var found = false;
           for (var i = 0; i < ctrl.post.merits.length; i++) {
@@ -37,6 +38,10 @@ var directive = ['Merit', 'Alert', 'Session', function(Merit, Alert, Session) {
               post.user.merit = Number(post.user.merit) + Number(ctrl.meritAmount);
             }
           });
+
+          // Update sendable merit values
+          ctrl.sendableMerit.sendable_user_merit = results.sendable_user_merit;
+          ctrl.sendableMerit.sendable_source_merit = results.sendable_source_merit;
 
           Alert.success('Sucessfully sent ' + ctrl.meritAmount + ' merit to ' + ctrl.post.user.username);
         })

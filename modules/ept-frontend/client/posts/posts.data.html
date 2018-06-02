@@ -19,7 +19,7 @@
         </div>
         <div title="{{post.user.role_name || 'user'}}" class="user-role" ng-bind="post.user.role_name || 'user'"></div>
       </a>
-      <div class="user-role" ng-if="PostsParentCtrl.loggedIn()">
+      <div class="user-role">
         <rank-display ranks="PostsParentCtrl.pageData.metadata.ranks" maps="PostsParentCtrl.pageData.metadata.rank_metric_maps" user="post.user"></rank-display>
         <div ng-if="post.user.activity > -1" title="{{ 'Activity: ' + post.user.activity }}">Act: <span ng-bind="post.user.activity"></span></div>
         <merit-display merit="post.user.merit"></merit-display>
@@ -70,7 +70,7 @@
               <i class="icon-epoch-lock clicked"></i>
             </a>
           </li>
-          <send-merit-button post="post"></send-merit-button>
+          <send-merit-button post="post" sendable-merit="PostsParentCtrl.pageData.metadata.merit"></send-merit-button>
           <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers) && !PostsParentCtrl.bannedFromBoard" ng-hide="post.reported && post.reported_author">
             <a ng-href="#" data-balloon="Report" ng-click="PostsCtrl.openReportModal(post)">
               <i class="icon-epoch-flag"></i>
@@ -105,7 +105,7 @@
   </div>
 </div>
 
-<send-merit-modal post="PostsParentCtrl.meritPost" all-posts="PostsCtrl.posts" show-merit-modal="PostsParentCtrl.showMeritModal"></send-merit-modal>
+<send-merit-modal post="PostsParentCtrl.meritPost" all-posts="PostsCtrl.posts" sendable-merit="PostsParentCtrl.pageData.metadata.merit" show-merit-modal="PostsParentCtrl.showMeritModal"></send-merit-modal>
 
 <!-- Delete Post Modal -->
 <modal show="PostsParentCtrl.showDeleteModal">
