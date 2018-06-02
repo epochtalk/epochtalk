@@ -1,7 +1,7 @@
 var html = '<div ng-if="vmM.userMerit > -1" title="Merit: {{vmM.userMerit}}">Merit: {{vmM.userMerit}}</div>' +
-           '<a ng-if="vmM.username" ui-sref="merit({ username: vmM.username })">View Merit Statistics</a>';
+           '<a ng-if="vmM.loggedIn() && vmM.username" ui-sref="merit({ username: vmM.username })">View Merit Statistics</a>';
 
-var directive = [function() {
+var directive = ['Session', function(Session) {
   return {
     restrict: 'E',
     scope: true,
@@ -13,6 +13,8 @@ var directive = [function() {
       $scope.$watch(function() { return ctrl.merit; }, function(merit) {
         ctrl.userMerit = merit;
       });
+
+      this.loggedIn = Session.isAuthenticated;
     }]
   };
 }];
