@@ -1,6 +1,13 @@
 <modal show="vmSMM.showMeritModal">
   <form name="$parent.form" class="css-form">
     <h3 class="thin-underline">Send merit to {{vmSMM.post.user.username}}</h3>
+    <label>
+      <strong>Merit available to send:</strong> {{PostsParentCtrl.pageData.metadata.merit.sendable_user_merit}}
+    </label>
+    <label ng-if="PostsParentCtrl.pageData.metadata.merit.sendable_source_merit > 0">
+      <strong>Source Merit available to send:</strong> {{PostsParentCtrl.pageData.metadata.merit.sendable_source_merit}}
+    </label>
+    <br />
     <label>Amount of merit to send
       <input type="number" min="1" modal-focus="{{PostsParentCtrl.showMeritModal}}" ng-model="vmSMM.meritAmount" />
     </label>
