@@ -87,7 +87,8 @@ var getUserStatistics = {
   },
   handler: function(request, reply) {
     var userId = request.params.userId;
-    var promise = request.db.merit.getUserStatistics(userId)
+    var authedUserPriority = request.server.plugins.acls.getUserPriority(request.auth);
+    var promise = request.db.merit.getUserStatistics(userId, authedUserPriority)
     .error(request.errorMap.toHttpError);
     return reply(promise);
   }

@@ -228,16 +228,66 @@ function getPostMerits(postId) {
   return db.sqlQuery(q, params);
 }
 
-function getUserStatistics(userId) {
-  var q = 'SELECT time, amount, post_id, (SELECT thread_id from posts where id = post_id), (SELECT content->>\'title\' as title FROM posts WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1), (SELECT position FROM posts WHERE id = post_id), (SELECT username from users where id = to_user_id) FROM merit_ledger WHERE from_user_id = $1 and time >= now() - \'3 months\'::interval';
-  var params = [ helper.deslugify(userId) ];
+var postVisibleToUser = function(paramNum) {
+  return `
+    EXISTS (
+      SELECT 1
+      FROM boards b
+      WHERE id = (SELECT t.board_id FROM posts p LEFT JOIN threads t ON p.thread_id = t.id WHERE p.id = post_id) AND (b.viewable_by >= $${paramNum} OR b.viewable_by IS NULL)
+    ) AS visible`;
+};
+
+var cleanOffLimitPosts = function(data) {
+  if (data.visible === false) {
+    delete data.post_id;
+    delete data.position;
+    delete data.thread_id;
+    delete data.title;
+  }
+  delete data.visible;
+  return data;
+};
+
+function getUserStatistics(userId, authedPriority) {
+  var q = function(toUser, fromUser) {
+    return `
+      SELECT
+        time,
+        amount,
+        post_id,
+        ${postVisibleToUser(2)},
+        (
+          SELECT thread_id
+          FROM posts
+          WHERE id = post_id
+        ) AS thread_id,
+        (
+          SELECT content->>\'title\' AS title
+          FROM posts
+          WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1
+        ) AS title,
+        (
+          SELECT position
+          FROM posts
+          WHERE id = post_id
+        ) AS position,
+        (
+          SELECT username
+          FROM users
+          WHERE id = ${toUser}
+        ) AS username
+      FROM merit_ledger
+      WHERE ${fromUser} = $1 AND time >= now() - \'3 months\'::interval`;
+  };
+  var params = [ helper.deslugify(userId), authedPriority ];
   var results = {};
-  return db.sqlQuery(q, params)
+  return db.sqlQuery(q('to_user_id', 'from_user_id'), params)
+  .map(cleanOffLimitPosts)
   .then(function(recentlySent) {
     results.recently_sent = recentlySent;
-    q = 'SELECT time, amount, post_id, (SELECT thread_id from posts where id = post_id), (SELECT content->>\'title\' as title FROM posts WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1), (SELECT position FROM posts WHERE id = post_id), (SELECT username from users where id = from_user_id) FROM merit_ledger WHERE to_user_id = $1 and time >= now() - \'3 months\'::interval';
-    return db.sqlQuery(q, params);
+    return db.sqlQuery(q('from_user_id', 'to_user_id'), params);
   })
+  .map(cleanOffLimitPosts)
   .then(function(recentlyReceived) {
     results.recently_received = recentlyReceived;
     return helper.slugify(results);
