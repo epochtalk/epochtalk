@@ -294,6 +294,46 @@ function getUserStatistics(userId, authedPriority) {
   });
 }
 
+function getStatistics(type, authedPriority) {
+  var q;
+  var params = [authedPriority];
+  if (type === 'recent') {
+    q = `
+      SELECT
+        ${postVisibleToUser(1)},
+        time,
+        amount,
+        post_id,
+        t.id as thread_id,
+        (
+          SELECT content->>\'title\' AS title
+          FROM posts
+          WHERE thread_id = t.id ORDER BY created_at LIMIT 1
+        ) AS title,
+        (
+          SELECT position
+          FROM posts
+          WHERE id = post_id
+        ) AS position,
+        (
+          SELECT username
+          FROM users
+          WHERE id = from_user_id
+        ) AS from_username,
+        (
+          SELECT username
+          FROM users
+          WHERE id = to_user_id
+        ) AS to_username
+      FROM merit_ledger
+      LEFT JOIN threads t ON (t.id = (SELECT p.thread_id FROM posts p WHERE p.id = post_id))
+      ORDER BY TIME DESC LIMIT 500;
+    `;
+  }
+  return db.sqlQuery(q, params)
+  .then(helper.slugify);
+}
+
 module.exports = {
   withinUserMax: withinUserMax,
   withinPostMax: withinPostMax,
@@ -301,5 +341,6 @@ module.exports = {
   calculateSendableMerit: calculateSendableMerit,
   get: get,
   getPostMerits: getPostMerits,
-  getUserStatistics: getUserStatistics
+  getUserStatistics: getUserStatistics,
+  getStatistics: getStatistics
 };

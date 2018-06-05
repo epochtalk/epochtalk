@@ -94,4 +94,23 @@ var getUserStatistics = {
   }
 };
 
-module.exports = [ send, getUserStatistics ];
+var getStatistics = {
+  method: 'GET',
+  path: '/api/merit',
+  config: {
+    auth: { strategy: 'jwt' },
+    validate: {
+      query: { type: Joi.string().required() }
+    },
+    pre: [ { method: 'auth.merit.getUserStatistics(server, auth)' } ]
+  },
+  handler: function(request, reply) {
+    var type = request.query.type;
+    var authedUserPriority = request.server.plugins.acls.getUserPriority(request.auth);
+    var promise = request.db.merit.getStatistics(type, authedUserPriority)
+    .error(request.errorMap.toHttpError);
+    return reply(promise);
+  }
+};
+
+module.exports = [ send, getUserStatistics, getStatistics ];
