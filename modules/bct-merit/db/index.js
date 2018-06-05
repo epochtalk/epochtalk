@@ -234,7 +234,7 @@ var postVisibleToUser = function(paramNum) {
       SELECT 1
       FROM boards b
       WHERE id = (SELECT t.board_id FROM posts p LEFT JOIN threads t ON p.thread_id = t.id WHERE p.id = post_id) AND (b.viewable_by >= $${paramNum} OR b.viewable_by IS NULL)
-    ) AS visible`;
+    )`;
 };
 
 var cleanOffLimitPosts = function(data) {
@@ -255,7 +255,7 @@ function getUserStatistics(userId, authedPriority) {
         time,
         amount,
         post_id,
-        ${postVisibleToUser(2)},
+        ${postVisibleToUser(2)} AS visible,
         (
           SELECT thread_id
           FROM posts
@@ -295,38 +295,22 @@ function getUserStatistics(userId, authedPriority) {
 }
 
 function getStatistics(type, authedPriority) {
+  var threadId = 't.id AS thread_id';
+  var threadTitle = '(SELECT content->>\'title\' AS title FROM posts WHERE thread_id = t.id ORDER BY created_at LIMIT 1) AS title';
+  var postPosition = '(SELECT position FROM posts WHERE id = post_id) AS position';
+  var fromUsername = '(SELECT username FROM users WHERE id = from_user_id) AS from_username';
+  var toUsername = '(SELECT username FROM users WHERE id = to_user_id) AS to_username';
+  var leftJoinThreads = 'LEFT JOIN threads t ON (t.id = (SELECT p.thread_id FROM posts p WHERE p.id = post_id))';
+
   var q;
   var params = [authedPriority];
   if (type === 'recent') {
     q = `
-      SELECT
-        ${postVisibleToUser(1)},
-        time,
-        amount,
-        post_id,
-        t.id as thread_id,
-        (
-          SELECT content->>\'title\' AS title
-          FROM posts
-          WHERE thread_id = t.id ORDER BY created_at LIMIT 1
-        ) AS title,
-        (
-          SELECT position
-          FROM posts
-          WHERE id = post_id
-        ) AS position,
-        (
-          SELECT username
-          FROM users
-          WHERE id = from_user_id
-        ) AS from_username,
-        (
-          SELECT username
-          FROM users
-          WHERE id = to_user_id
-        ) AS to_username
+      SELECT time, amount, post_id, ${threadId}, ${threadTitle}, ${postPosition}, ${fromUsername},
+        ${toUsername}
       FROM merit_ledger
-      LEFT JOIN threads t ON (t.id = (SELECT p.thread_id FROM posts p WHERE p.id = post_id))
+      ${leftJoinThreads}
+      WHERE ${postVisibleToUser(1)}
       ORDER BY TIME DESC LIMIT 500;
     `;
   }
