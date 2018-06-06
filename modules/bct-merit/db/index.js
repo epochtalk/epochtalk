@@ -295,8 +295,16 @@ function getUserStatistics(userId, authedPriority) {
 }
 
 function getStatistics(type, authedPriority) {
-  var q;
+  var q, promise;
   var params = [authedPriority];
+  var results = {};
+
+  var appendStats = function(stats) {
+        console.log(stats);
+
+    results.stats = stats
+    return results;
+  };
 
   // Pre-defined column selectors
   var postPosition  = '(SELECT position FROM posts WHERE id = post_id) AS position';
@@ -310,13 +318,13 @@ function getStatistics(type, authedPriority) {
   var joinPosts     = 'LEFT JOIN posts p ON (p.id = post_id)';
   var joinToUsers   = 'LEFT JOIN users u ON (u.id = to_user_id)';
   var joinFromUsers = 'LEFT JOIN users u ON (u.id = from_user_id)';
-
   if (type === 'recent') {
     q = `
       SELECT time, amount, post_id, ${threadId}, ${threadTitle}, ${postPosition}, ${fromUsername}, ${toUsername}
       FROM merit_ledger ${joinThreads}
       WHERE ${postVisibleToUser(1)}
       ORDER BY TIME DESC LIMIT 500`;
+    promise = db.sqlQuery(q, params).then(appendStats);
   }
   else if (type === 'top_threads') {
     q = `
@@ -325,6 +333,7 @@ function getStatistics(type, authedPriority) {
       WHERE ${postVisibleToUser(1)} AND p.created_at > now() - '1 month'::interval AND p.position = 1
       GROUP BY t.id, post_id, to_user_id, p.created_at
       ORDER BY amount DESC, p.created_at DESC limit 50`;
+    promise = db.sqlQuery(q, params).then(appendStats);
   }
   else if (type === 'top_threads_all') {
     q = `
@@ -333,6 +342,7 @@ function getStatistics(type, authedPriority) {
       WHERE ${postVisibleToUser(1)} AND p.position = 1
       GROUP BY t.id, post_id, to_user_id, p.created_at
       ORDER BY amount DESC, p.created_at DESC limit 50`;
+    promise = db.sqlQuery(q, params).then(appendStats);
   }
   else if (type === 'top_replies') {
     q = `
@@ -341,6 +351,7 @@ function getStatistics(type, authedPriority) {
       WHERE ${postVisibleToUser(1)} AND p.created_at > now() - '1 month'::interval AND p.position > 1
       GROUP BY t.id, post_id, to_user_id, p.created_at
       ORDER BY amount DESC, p.created_at DESC limit 50`;
+    promise = db.sqlQuery(q, params).then(appendStats);
   }
   else if (type === 'top_replies_all') {
     q = `
@@ -349,6 +360,7 @@ function getStatistics(type, authedPriority) {
       WHERE ${postVisibleToUser(1)} AND p.position > 1
       GROUP BY t.id, post_id, to_user_id, p.created_at
       ORDER BY amount DESC, p.created_at DESC limit 50`;
+    promise = db.sqlQuery(q, params).then(appendStats);
   }
   else if (type === 'top_users') {
     params = [];
@@ -358,6 +370,7 @@ function getStatistics(type, authedPriority) {
       WHERE time > now() - '1 month'::interval
       GROUP BY u.id
       ORDER BY amount DESC limit 50`;
+    promise = db.sqlQuery(q, params).then(appendStats);
   }
   else if (type === 'top_users_all') {
     params = [];
@@ -366,6 +379,7 @@ function getStatistics(type, authedPriority) {
       FROM merit_ledger ${joinToUsers}
       GROUP BY u.id
       ORDER BY amount DESC limit 50`;
+    promise = db.sqlQuery(q, params).then(appendStats);
   }
   else if (type === 'top_senders') {
     params = [];
@@ -375,6 +389,16 @@ function getStatistics(type, authedPriority) {
       WHERE time > now() - '1 month'::interval
       GROUP BY u.id
       ORDER BY amount DESC limit 50`;
+    promise = db.sqlQuery(q, params)
+    .then(appendStats)
+    .then(function() {
+      q = `SELECT SUM(amount) as amount FROM merit_ledger WHERE time > now() - '1 month'::interval`;
+      return db.scalar(q)
+      .then(function(data) {
+        results.total_sent_merit = data.amount;
+        return results;
+      })
+    });
   }
   else if (type === 'top_senders_all') {
     params = [];
@@ -383,10 +407,19 @@ function getStatistics(type, authedPriority) {
       FROM merit_ledger ${joinFromUsers}
       GROUP BY u.id
       ORDER BY amount DESC limit 50`;
+    promise = db.sqlQuery(q, params)
+    .then(appendStats)
+    .then(function() {
+      q = `SELECT SUM(amount) as amount FROM merit_ledger`;
+      return db.scalar(q)
+      .then(function(data) {
+        results.total_sent_merit = data.amount;
+        return results;
+      })
+    });
   }
 
-  return db.sqlQuery(q, params)
-  .then(helper.slugify);
+  return promise.then(helper.slugify);
 }
 
 module.exports = {
