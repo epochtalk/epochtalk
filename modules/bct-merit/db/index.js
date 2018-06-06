@@ -418,6 +418,28 @@ function getStatistics(type, authedPriority) {
       })
     });
   }
+  else if (type === 'sources') {
+    var joinLatestSourceRow = 'JOIN (SELECT user_id, MAX(TIME) latest_time FROM merit_sources GROUP BY user_id) m ON (m.user_id = merit_sources.user_id AND m.latest_time = time)';
+    q = `
+      SELECT
+        (SELECT SUM(amount) FROM merit_sources ${joinLatestSourceRow}) AS total_source_merit,
+        (SELECT COUNT(*) FROM merit_sources  ${joinLatestSourceRow} WHERE amount > 0) AS num_merit_sources`;
+    promise = db.scalar(q)
+    .then(function(data) {
+      results = data;
+      // Show more stats for admins
+      if (authedPriority <= 1) {
+        q = `
+          SELECT amount, u.username as source_username
+          FROM merit_sources
+          ${joinLatestSourceRow}
+          JOIN users u ON (u.id = merit_sources.user_id)
+          ORDER BY amount DESC`;
+        return db.sqlQuery(q).then(appendStats);
+      }
+      else { return results; }
+    });
+  }
 
   return promise.then(helper.slugify);
 }
