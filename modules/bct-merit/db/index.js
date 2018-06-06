@@ -308,6 +308,7 @@ function getStatistics(type, authedPriority) {
   // Pre-defined joins
   var joinThreads = 'LEFT JOIN threads t ON (t.id = (SELECT p.thread_id FROM posts p WHERE p.id = post_id))';
   var joinPosts = 'LEFT JOIN posts p ON (p.id = post_id)';
+  var joinToUsers = 'LEFT JOIN users u ON (u.id = to_user_id)';
 
   if (type === 'recent') {
     q = `
@@ -348,6 +349,16 @@ function getStatistics(type, authedPriority) {
       GROUP BY t.id, post_id, to_user_id, p.created_at
       ORDER BY amount DESC, p.created_at DESC limit 50`;
   }
+  else if (type === 'top_users') {
+    params = [];
+    q = `
+      SELECT SUM(amount) as amount, u.username AS to_username
+      FROM merit_ledger ${joinToUsers}
+      WHERE time > now() - '1 month'::interval
+      GROUP BY u.id
+      ORDER BY amount DESC limit 50`;
+  }
+
   return db.sqlQuery(q, params)
   .then(helper.slugify);
 }
