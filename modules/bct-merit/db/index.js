@@ -299,9 +299,8 @@ function getStatistics(type, authedPriority) {
   var params = [authedPriority];
   var results = {};
 
+  // Pre-defined helper functions
   var appendStats = function(stats) {
-        console.log(stats);
-
     results.stats = stats
     return results;
   };
@@ -314,10 +313,11 @@ function getStatistics(type, authedPriority) {
   var threadTitle   = '(SELECT content->>\'title\' AS title FROM posts WHERE thread_id = t.id ORDER BY created_at LIMIT 1) AS title';
 
   // Pre-defined joins
-  var joinThreads   = 'LEFT JOIN threads t ON (t.id = (SELECT p.thread_id FROM posts p WHERE p.id = post_id))';
-  var joinPosts     = 'LEFT JOIN posts p ON (p.id = post_id)';
-  var joinToUsers   = 'LEFT JOIN users u ON (u.id = to_user_id)';
-  var joinFromUsers = 'LEFT JOIN users u ON (u.id = from_user_id)';
+  var joinThreads   = 'JOIN threads t ON (t.id = (SELECT p.thread_id FROM posts p WHERE p.id = post_id))';
+  var joinPosts     = 'JOIN posts p ON (p.id = post_id)';
+  var joinToUsers   = 'JOIN users u ON (u.id = to_user_id)';
+  var joinFromUsers = 'JOIN users u ON (u.id = from_user_id)';
+
   if (type === 'recent') {
     q = `
       SELECT time, amount, post_id, ${threadId}, ${threadTitle}, ${postPosition}, ${fromUsername}, ${toUsername}
