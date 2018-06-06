@@ -321,16 +321,16 @@ function getStatistics(type, authedPriority) {
       SELECT SUM(amount) as amount, post_id, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
       FROM merit_ledger ${joinThreads} ${joinPosts}
       WHERE ${postVisibleToUser(1)} AND p.created_at > now() - '1 month'::interval AND p.position = 1
-      GROUP BY t.id, post_id, to_user_id
-      ORDER BY amount DESC limit 50`;
+      GROUP BY t.id, post_id, to_user_id, p.created_at
+      ORDER BY amount DESC, p.created_at DESC limit 50`;
   }
   else if (type === 'top_threads_all') {
     q = `
       SELECT SUM(amount) as amount, post_id, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
       FROM merit_ledger ${joinThreads} ${joinPosts}
       WHERE ${postVisibleToUser(1)} AND p.position = 1
-      GROUP BY t.id, post_id, to_user_id
-      ORDER BY amount DESC limit 50`;
+      GROUP BY t.id, post_id, to_user_id, p.created_at
+      ORDER BY amount DESC, p.created_at DESC limit 50`;
   }
   return db.sqlQuery(q, params)
   .then(helper.slugify);
