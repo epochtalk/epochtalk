@@ -358,6 +358,15 @@ function getStatistics(type, authedPriority) {
       GROUP BY u.id
       ORDER BY amount DESC limit 50`;
   }
+  else if (type === 'top_users_all') {
+    params = [];
+    q = `
+      SELECT SUM(amount) as amount, u.username AS to_username
+      FROM merit_ledger ${joinToUsers}
+      GROUP BY u.id
+      ORDER BY amount DESC limit 50`;
+  }
+
 
   return db.sqlQuery(q, params)
   .then(helper.slugify);
