@@ -299,16 +299,17 @@ function getStatistics(type, authedPriority) {
   var params = [authedPriority];
 
   // Pre-defined column selectors
-  var threadId = 't.id AS thread_id';
-  var threadTitle = '(SELECT content->>\'title\' AS title FROM posts WHERE thread_id = t.id ORDER BY created_at LIMIT 1) AS title';
-  var postPosition = '(SELECT position FROM posts WHERE id = post_id) AS position';
-  var fromUsername = '(SELECT username FROM users WHERE id = from_user_id) AS from_username';
-  var toUsername = '(SELECT username FROM users WHERE id = to_user_id) AS to_username';
+  var postPosition  = '(SELECT position FROM posts WHERE id = post_id) AS position';
+  var fromUsername  = '(SELECT username FROM users WHERE id = from_user_id) AS from_username';
+  var toUsername    = '(SELECT username FROM users WHERE id = to_user_id) AS to_username';
+  var threadId      = 't.id AS thread_id';
+  var threadTitle   = '(SELECT content->>\'title\' AS title FROM posts WHERE thread_id = t.id ORDER BY created_at LIMIT 1) AS title';
 
   // Pre-defined joins
-  var joinThreads = 'LEFT JOIN threads t ON (t.id = (SELECT p.thread_id FROM posts p WHERE p.id = post_id))';
-  var joinPosts = 'LEFT JOIN posts p ON (p.id = post_id)';
-  var joinToUsers = 'LEFT JOIN users u ON (u.id = to_user_id)';
+  var joinThreads   = 'LEFT JOIN threads t ON (t.id = (SELECT p.thread_id FROM posts p WHERE p.id = post_id))';
+  var joinPosts     = 'LEFT JOIN posts p ON (p.id = post_id)';
+  var joinToUsers   = 'LEFT JOIN users u ON (u.id = to_user_id)';
+  var joinFromUsers = 'LEFT JOIN users u ON (u.id = from_user_id)';
 
   if (type === 'recent') {
     q = `
@@ -366,7 +367,23 @@ function getStatistics(type, authedPriority) {
       GROUP BY u.id
       ORDER BY amount DESC limit 50`;
   }
-
+  else if (type === 'top_senders') {
+    params = [];
+    q = `
+      SELECT SUM(amount) as amount, u.username AS from_username
+      FROM merit_ledger ${joinFromUsers}
+      WHERE time > now() - '1 month'::interval
+      GROUP BY u.id
+      ORDER BY amount DESC limit 50`;
+  }
+  else if (type === 'top_senders_all') {
+    params = [];
+    q = `
+      SELECT SUM(amount) as amount, u.username AS from_username
+      FROM merit_ledger ${joinFromUsers}
+      GROUP BY u.id
+      ORDER BY amount DESC limit 50`;
+  }
 
   return db.sqlQuery(q, params)
   .then(helper.slugify);

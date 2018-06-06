@@ -100,7 +100,7 @@ var getStatistics = {
   config: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: { type: Joi.string().required().valid('recent', 'top_threads', 'top_threads_all', 'top_replies', 'top_replies_all', 'top_users', 'top_users_all') }
+      query: { type: Joi.string().required().valid('recent', 'top_threads', 'top_threads_all', 'top_replies', 'top_replies_all', 'top_users', 'top_users_all', 'top_senders', 'top_senders_all') }
     },
     pre: [ { method: 'auth.merit.getUserStatistics(server, auth)' } ]
   },
