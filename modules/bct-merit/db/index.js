@@ -262,7 +262,7 @@ function getUserStatistics(userId, authedPriority) {
           WHERE id = post_id
         ) AS thread_id,
         (
-          SELECT content->>\'title\' AS title
+          SELECT content->>'title' AS title
           FROM posts
           WHERE thread_id = (SELECT thread_id from posts where id = post_id) ORDER BY created_at LIMIT 1
         ) AS title,
@@ -277,7 +277,7 @@ function getUserStatistics(userId, authedPriority) {
           WHERE id = ${toUser}
         ) AS username
       FROM merit_ledger
-      WHERE ${fromUser} = $1 AND time >= now() - \'3 months\'::interval`;
+      WHERE ${fromUser} = $1 AND time >= now() - '3 months'::interval`;
   };
   var params = [ helper.deslugify(userId), authedPriority ];
   var results = {};
