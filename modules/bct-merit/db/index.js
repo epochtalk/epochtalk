@@ -309,6 +309,7 @@ function getStatistics(type, authedPriority) {
   var postPosition  = '(SELECT position FROM posts WHERE id = post_id) AS position';
   var fromUsername  = '(SELECT username FROM users WHERE id = from_user_id) AS from_username';
   var toUsername    = '(SELECT username FROM users WHERE id = to_user_id) AS to_username';
+  var sumAmount     = 'SUM(amount) as amount';
   var threadId      = 't.id AS thread_id';
   var threadTitle   = '(SELECT content->>\'title\' AS title FROM posts WHERE thread_id = t.id ORDER BY created_at LIMIT 1) AS title';
 
@@ -328,7 +329,7 @@ function getStatistics(type, authedPriority) {
   }
   else if (type === 'top_threads') {
     q = `
-      SELECT SUM(amount) as amount, post_id, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
+      SELECT post_id, ${sumAmount}, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
       FROM merit_ledger ${joinThreads} ${joinPosts}
       WHERE ${postVisibleToUser(1)} AND p.created_at > now() - '1 month'::interval AND p.position = 1
       GROUP BY t.id, post_id, to_user_id, p.created_at
@@ -337,7 +338,7 @@ function getStatistics(type, authedPriority) {
   }
   else if (type === 'top_threads_all') {
     q = `
-      SELECT SUM(amount) as amount, post_id, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
+      SELECT post_id, ${sumAmount}, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
       FROM merit_ledger ${joinThreads} ${joinPosts}
       WHERE ${postVisibleToUser(1)} AND p.position = 1
       GROUP BY t.id, post_id, to_user_id, p.created_at
@@ -346,7 +347,7 @@ function getStatistics(type, authedPriority) {
   }
   else if (type === 'top_replies') {
     q = `
-      SELECT SUM(amount) as amount, post_id, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
+      SELECT post_id, ${sumAmount}, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
       FROM merit_ledger ${joinThreads} ${joinPosts}
       WHERE ${postVisibleToUser(1)} AND p.created_at > now() - '1 month'::interval AND p.position > 1
       GROUP BY t.id, post_id, to_user_id, p.created_at
@@ -355,7 +356,7 @@ function getStatistics(type, authedPriority) {
   }
   else if (type === 'top_replies_all') {
     q = `
-      SELECT SUM(amount) as amount, post_id, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
+      SELECT post_id, ${sumAmount}, ${threadId}, ${threadTitle}, ${postPosition}, ${toUsername}
       FROM merit_ledger ${joinThreads} ${joinPosts}
       WHERE ${postVisibleToUser(1)} AND p.position > 1
       GROUP BY t.id, post_id, to_user_id, p.created_at
@@ -365,7 +366,7 @@ function getStatistics(type, authedPriority) {
   else if (type === 'top_users') {
     params = [];
     q = `
-      SELECT SUM(amount) as amount, u.username AS to_username
+      SELECT ${sumAmount}, u.username AS to_username
       FROM merit_ledger ${joinToUsers}
       WHERE time > now() - '1 month'::interval
       GROUP BY u.id
@@ -375,7 +376,7 @@ function getStatistics(type, authedPriority) {
   else if (type === 'top_users_all') {
     params = [];
     q = `
-      SELECT SUM(amount) as amount, u.username AS to_username
+      SELECT ${sumAmount}, u.username AS to_username
       FROM merit_ledger ${joinToUsers}
       GROUP BY u.id
       ORDER BY amount DESC limit 50`;
@@ -384,7 +385,7 @@ function getStatistics(type, authedPriority) {
   else if (type === 'top_senders') {
     params = [];
     q = `
-      SELECT SUM(amount) as amount, u.username AS from_username
+      SELECT ${sumAmount}, u.username AS from_username
       FROM merit_ledger ${joinFromUsers}
       WHERE time > now() - '1 month'::interval
       GROUP BY u.id
@@ -392,7 +393,7 @@ function getStatistics(type, authedPriority) {
     promise = db.sqlQuery(q, params)
     .then(appendStats)
     .then(function() {
-      q = `SELECT SUM(amount) as amount FROM merit_ledger WHERE time > now() - '1 month'::interval`;
+      q = `SELECT ${sumAmount} FROM merit_ledger WHERE time > now() - '1 month'::interval`;
       return db.scalar(q)
       .then(function(data) {
         results.total_sent_merit = data.amount;
@@ -403,14 +404,14 @@ function getStatistics(type, authedPriority) {
   else if (type === 'top_senders_all') {
     params = [];
     q = `
-      SELECT SUM(amount) as amount, u.username AS from_username
+      SELECT ${sumAmount}, u.username AS from_username
       FROM merit_ledger ${joinFromUsers}
       GROUP BY u.id
       ORDER BY amount DESC limit 50`;
     promise = db.sqlQuery(q, params)
     .then(appendStats)
     .then(function() {
-      q = `SELECT SUM(amount) as amount FROM merit_ledger`;
+      q = `SELECT ${sumAmount} FROM merit_ledger`;
       return db.scalar(q)
       .then(function(data) {
         results.total_sent_merit = data.amount;
