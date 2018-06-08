@@ -210,6 +210,7 @@ ul.indent {
   @include pad(0.5rem);
   margin-bottom: 3rem;
   ul {
-    padding-left: 1rem;
+    list-style: none;
+    li { margin: 0.5rem 0; }
   }
 }
