@@ -194,3 +194,22 @@ ul.indent {
   margin-left: 1.25rem;
   ul { margin-left: 2rem; }
 }
+.vertical-links {
+  margin-bottom: 1rem;
+  a {
+    @include pad(0.5rem 0.5rem);
+    font-size: 0.85rem;
+    display: block;
+    &.selected {
+      background-color: $color-primary;
+      color: $button-text-color;
+    }
+  };
+}
+.vertical-list {
+  @include pad(0.5rem);
+  margin-bottom: 3rem;
+  ul {
+    padding-left: 1rem;
+  }
+}

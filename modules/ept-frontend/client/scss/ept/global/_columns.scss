@@ -11,6 +11,11 @@
   @include span-columns(2);
   @include media($mobile) { @include span-columns(8); @include omega; }
 }
+.five-sixths-column {
+  @include row;
+  @include span-columns(10);
+  @include media($mobile) { @include span-columns(8); @include omega; }
+}
 .one-third-column {
   @include row;
   @include span-columns(4);

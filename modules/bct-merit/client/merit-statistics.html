@@ -1,0 +1,42 @@
+<div>
+  <h3 class="thin-underline">
+    Merit Statistics: {{MeritStatsCtrl.typeToDesc[MeritStatsCtrl.selectedType]}}
+  </h3>
+</div>
+<div>
+  <div class="one-sixth-column vertical-links">
+    <span ng-repeat="type in MeritStatsCtrl.types">
+      <a ng-href="#" ng-click="MeritStatsCtrl.selectType(type)" ng-class="{ 'selected': MeritStatsCtrl.selectedType === type }">{{MeritStatsCtrl.typeToDesc[type]}}</a>
+    </span>
+  </div>
+  <div class="five-sixths-column vertical-list">
+    <p ng-if="MeritStatsCtrl.loading">Loading {{MeritStatsCtrl.typeToDesc[MeritStatsCtrl.selectedType]}}...</p>
+    <p ng-if="MeritStatsCtrl.selectedType === 'sources'">
+      There are {{MeritStatsCtrl.statsData.num_merit_sources}} merit sources with a total merit generation of up to {{MeritStatsCtrl.statsData.total_source_merit}} sMerit per 30 days.<br /><br />
+    </p>
+
+    <p ng-if="MeritStatsCtrl.selectedType === 'top_senders'">
+      {{MeritStatsCtrl.statsData.total_sent_merit}} merit has been sent in the last 30 days.<br /><br />
+    </p>
+
+    <p ng-if="MeritStatsCtrl.selectedType === 'top_senders_all'">
+      {{MeritStatsCtrl.statsData.total_sent_merit}} merit has been sent in total.<br /><br />
+    </p>
+
+    <ul>
+      <li ng-repeat="stat in MeritStatsCtrl.statsData.stats">
+        <span ng-if="MeritStatsCtrl.selectedType === 'recent'">
+          {{stat.time | humanDate}}:&nbsp;&nbsp;<strong>{{stat.amount}} merit{{ stat.amount > 1 ? 's' : '' }}</strong> was sent by <a ui-sref="profile.posts({ username: stat.from_username})" ng-bind-html="stat.from_username"></a> to <a ui-sref="profile.posts({ username: stat.to_username})" ng-bind-html="stat.to_username"></a> for post <a ng-if="stat.post_id" ui-sref="posts.data({ threadId: stat.thread_id, start: stat.position, '#': stat.post_id })" ng-bind-html="stat.title"></a><strong ng-if="!stat.post_id">(Deleted or Off-limits)</strong>
+        </span>
+
+        <span ng-if="MeritStatsCtrl.selectedType === 'top_threads' || MeritStatsCtrl.selectedType === 'top_threads_all' || MeritStatsCtrl.selectedType === 'top_replies' || MeritStatsCtrl.selectedType === 'top_replies_all'">
+          {{stat.amount}}:&nbsp;&nbsp;<a ng-if="stat.post_id" ui-sref="posts.data({ threadId: stat.thread_id, start: stat.position, '#': stat.post_id })" ng-bind-html="stat.title"></a><strong ng-if="!stat.post_id">(Deleted or Off-limits)</strong> by <a ui-sref="profile.posts({ username: stat.to_username})" ng-bind-html="stat.to_username"></a>
+        </span>
+
+        <span ng-if="MeritStatsCtrl.selectedType === 'top_users' || MeritStatsCtrl.selectedType === 'top_users_all' || MeritStatsCtrl.selectedType === 'top_senders' || MeritStatsCtrl.selectedType === 'top_senders_all' || MeritStatsCtrl.selectedType === 'sources'">
+          {{stat.amount}}:&nbsp;&nbsp;<a ui-sref="profile.posts({ username: stat.to_username || stat.from_username || stat.source_username })" ng-bind-html="stat.to_username || stat.from_username || stat.source_username"></a>
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>

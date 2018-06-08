@@ -34,6 +34,34 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   });
 
+  $stateProvider.state('merit-statistics', {
+    parent: 'public-layout',
+    url: '/merit-statistics?type',
+    reloadOnSearch: false,
+    views: {
+      'content': {
+        controller: 'MeritStatsCtrl',
+        controllerAs: 'MeritStatsCtrl',
+        templateUrl: '/static/templates/modules/bct-merit/merit-statistics.html'
+      }
+    },
+    resolve: {
+      $title: [ function() { return 'Merit Statistics'; } ],
+      loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
+        var deferred = $q.defer();
+        require.ensure([], function() {
+          var ctrl = require('./merit-statistics.controller');
+          $ocLazyLoad.load({ name: 'bct.merit-statistics.ctrl' });
+          deferred.resolve(ctrl);
+        });
+        return deferred.promise;
+      }],
+      statsData: ['Merit', '$stateParams', function(Merit, $stateParams) {
+        var type = $stateParams.type || 'recent';
+        return Merit.getStatistics({ type: type }).$promise;
+      }]
+    }
+  });
 }];
 
 module.exports = angular.module('bct.merit', ['ui.router'])
