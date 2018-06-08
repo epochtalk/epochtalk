@@ -1,7 +1,7 @@
-var ctrl = ['user', 'statistics', function(user, statistics) {
+var ctrl = ['Session', 'statsData', function(Session, statsData) {
     var ctrl = this;
-    this.user = user;
-    this.statistics = statistics;
+    this.user = statsData.user;
+    this.statistics = statsData.stats;
   }
 ];
 

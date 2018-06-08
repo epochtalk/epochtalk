@@ -21,18 +21,12 @@ var route = ['$stateProvider', function($stateProvider) {
         });
         return deferred.promise;
       }],
-      user: ['$q', 'User', '$stateParams', function($q, User, $stateParams) {
-        if ($stateParams.username) {
-          return User.get({ id: $stateParams.username }).$promise
-          .then(function(user) { return user; });
-        }
-        else { return $q.reject({ status: 404, statusText: 'Not Found' }); }
-      }],
-      statistics: ['$q', 'User', 'Merit', '$stateParams', function($q, User, Merit, $stateParams) {
+      statsData: ['$q', 'User', 'Merit', '$stateParams', function($q, User, Merit, $stateParams) {
         if ($stateParams.username) {
           return User.get({ id: $stateParams.username }).$promise
           .then(function(user) {
-            return Merit.getUserStatistics({ userId: user.id }).$promise;
+            return Merit.getUserStatistics({ userId: user.id }).$promise
+            .then(function(statsData) { return { user: user, stats: statsData } });
           });
         }
         else { return $q.reject({ status: 404, statusText: 'Not Found' }); }
