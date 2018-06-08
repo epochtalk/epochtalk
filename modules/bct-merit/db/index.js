@@ -30,27 +30,6 @@ function withinPostMax(fromUserId, postId, amount) {
   });
 }
 
-// calculate user's merit
-// update merit for user
-// return merit
-function recalculateMerit(userId) {
-  var q, params;
-  return using(db.createTransaction(), function(client) {
-    q = 'SELECT SUM(amount) FROM merit_ledger WHERE to_user_id = $1';
-    params = [userId];
-    // query sum of merit transactions from merit ledger
-    return client.query(q, params)
-    .then(function(results) {
-      q = 'INSERT INTO merit_users(user_id, merit) VALUES($1, $2) ON CONFLICT(user_id) DO UPDATE SET merit = $2';
-      var merit = Number(results.rows[0].sum);
-      params = [userId, merit];
-      // update user's merit to the sum of merit from transactions, returning merit
-      return client.query(q, params)
-      .then(function() { return merit; });
-    });
-  });
-}
-
 function send(fromUserId, toUserId, postId, amount) {
   return calculateSendableMerit(fromUserId, toUserId, postId, amount);
 }
