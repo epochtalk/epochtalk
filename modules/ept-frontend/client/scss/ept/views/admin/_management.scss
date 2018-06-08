@@ -57,9 +57,12 @@ table.ban-addresses {
   label { @include no-select; clear: both; }
   .indent { padding-left: 1rem; }
   ul {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     list-style-type: none;
     li { display: block }
-    li a { display: block; padding: 0.5rem 0; padding-left: 0.5rem; }
+    li a { display: block; padding: 0.25rem 0; padding-left: 0.25rem; font-size: 0.75rem; }
     li a:hover { background-color: $sub-header-color; }
     li a.active { background-color: $color-primary; color: #fff; }
     &.roles {

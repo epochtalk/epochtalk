@@ -156,7 +156,7 @@
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'ads'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'ads'}" ng-href="#">Ads</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'mentions'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'mentions'}" ng-href="#">Mentions</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'announcements'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'announcements'}" ng-href="#">Announcements</a></li>
-        <li><a ng-click="AdminManagementCtrl.selectedTab = 'merit'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'merit'}" ng-href="#">Merit</a></li>
+        <merit-permissions-tab></merit-permissions-tab>
       </ul>
     </div>
     <div class="right-column">
@@ -883,39 +883,7 @@
       </div>
 
       <!-- Merit Tab -->
-      <div ng-if="AdminManagementCtrl.selectedTab === 'merit'">
-        <section class="permission" ng-repeat="(model, details) in AdminManagementCtrl.layouts.merit">
-
-          <!-- Title Display -->
-          <div ng-if="details.type === 'title'">
-            <h4 ng-bind="details.title"></h4>
-            <h3 class="thin-underline"></h3>
-          </div>
-
-          <!-- Subtitle Display -->
-          <div ng-if="details.type === 'subtitle'">
-            <h6 ng-bind="details.title"></h6>
-          </div>
-
-          <!-- Separator Display -->
-          <div ng-if="details.type === 'separator'">
-            <div class="clear"></div><br />
-          </div>
-
-          <!-- Main Permission -->
-          <div ng-if="!details.type">
-
-            <label>
-              <input type="checkbox"
-                ng-change="AdminManagementCtrl.newRole.permissions.merit[model].allow ? null : AdminManagementCtrl.newRole.permissions.merit[model] = undefined"
-                ng-model="AdminManagementCtrl.newRole.permissions.merit[model].allow"
-                ng-false-value="undefined" />
-              <span class="permission-title" ng-bind="details.title"></span>
-            </label>
-
-          </div>
-        </section>
-      </div>
+      <merit-permissions-layout></merit-permissions-layout>
 
       <!-- Categories Tab -->
       <div ng-if="AdminManagementCtrl.selectedTab === 'categories'">
