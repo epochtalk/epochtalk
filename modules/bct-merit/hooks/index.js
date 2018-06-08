@@ -5,7 +5,14 @@ function userMerit(request) {
   return request.db.merit.get(user.id)
   .then(function(data) {
     user.merit = data.merit;
-    return user;
+    if (request.auth.isAuthenticated && request.auth.credentials.id === user.id) {
+      return request.db.merit.calculateSendableMerit(user.id)
+      .then(function(data) {
+        user.sendable_merit = data;
+        return user;
+      });
+    }
+    else { return user; }
   });
 }
 

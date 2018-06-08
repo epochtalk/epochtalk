@@ -1,8 +1,13 @@
 <div>
   <h3 class="thin-underline">Merit Summary for {{UserMeritCtrl.user.username}}</h3>
   <br />
-  <h4>Total Merit: <strong>{{UserMeritCtrl.user.merit}}</strong></h4>
-  <br />
+  <h4>Merit: <strong ng-bind="UserMeritCtrl.user.merit"></strong><br /><br /></h4>
+  <h4 ng-if="UserMeritCtrl.user.sendable_merit.sendable_user_merit">Sendable Merit: <strong ng-bind="UserMeritCtrl.user.sendable_merit.sendable_user_merit"></strong><br /><br /></h4>
+  <h4 ng-if="UserMeritCtrl.user.sendable_merit.sendable_source_merit > 0">Source Merit: <strong ng-bind="UserMeritCtrl.user.sendable_merit.sendable_source_merit"></strong><br /><br /></h4>
+  <p ng-if="UserMeritCtrl.viewingSelf">
+    You have received a total of <strong ng-bind="UserMeritCtrl.user.merit"></strong> merit. This is what determines your forum rank. You typically cannot lose this merit. You have <strong ng-bind="UserMeritCtrl.user.sendable_merit.sendable_user_merit"></strong> sendable merit (sMerit) <span ng-if="UserMeritCtrl.user.sendable_merit.sendable_source_merit > 0">and <strong ng-bind="UserMeritCtrl.user.sendable_merit.sendable_source_merit"></strong> source merit </span> which you can send to other people. There is no point in hoarding sMerit; keeping it yourself does not benefit you, and we reserve the right to decay unused sMerit in the future.
+    <br /><br />
+  </p>
 </div>
 
 <div>
