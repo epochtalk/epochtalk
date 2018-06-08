@@ -274,9 +274,10 @@ function getUserStatistics(userId, authedPriority) {
 }
 
 function getStatistics(type, authedPriority) {
+  type = type.toLowerCase();
   var q, promise;
   var params = [authedPriority];
-  var results = {};
+  var results = { type: type };
 
   // Pre-defined helper functions
   var appendStats = function(stats) {
@@ -406,7 +407,8 @@ function getStatistics(type, authedPriority) {
         (SELECT COUNT(*) FROM merit_sources  ${joinLatestSourceRow} WHERE amount > 0) AS num_merit_sources`;
     promise = db.scalar(q)
     .then(function(data) {
-      results = data;
+      results.total_source_merit = data.total_source_merit;
+      results.num_merit_sources = data.num_merit_sources;
       // Show more stats for admins
       if (authedPriority <= 1) {
         q = `
