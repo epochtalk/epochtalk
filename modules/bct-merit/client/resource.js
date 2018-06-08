@@ -7,6 +7,10 @@ var resource = ['$resource',
         url: '/api/merit/:userId',
         params: { userId: '@userId' }
       },
+      getStatistics: {
+        method: 'GET',
+        url: '/api/merit/'
+      }
     });
   }
 ];
