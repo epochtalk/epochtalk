@@ -56,9 +56,10 @@ var route = ['$stateProvider', function($stateProvider) {
         });
         return deferred.promise;
       }],
-      statsData: ['Merit', '$stateParams', function(Merit, $stateParams) {
+      statsData: ['Merit', '$stateParams', '$q', function(Merit, $stateParams, $q) {
         var type = $stateParams.type || 'recent';
-        return Merit.getStatistics({ type: type }).$promise;
+        return Merit.getStatistics({ type: type }).$promise
+        .catch(function() { return $q.reject({ status: 404, statusText: 'Not Found' }); });
       }]
     }
   });
