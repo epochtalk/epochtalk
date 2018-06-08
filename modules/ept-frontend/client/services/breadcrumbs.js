@@ -72,7 +72,7 @@ function ($state, $stateParams, $location, Breadcrumbs) {
         // Shifting array by one to eliminate empty index
         pathArr.shift();
         for (var i = 0, len = pathArr.length; i < len; i++) {
-          var id = pathArr[i];
+          var id = pathArr[i].replace('-', ' ');
           var crumb = pathLookup[id] || { label: id };
           breadcrumbs.push(crumb);
           // ignore following crumbs if ignoreFollowing is true
