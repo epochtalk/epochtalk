@@ -81,4 +81,18 @@ var getUserStatistics = {
   options: { callback: false }
 };
 
-module.exports = [ send, getUserStatistics ];
+var getStatistics = {
+  name: 'auth.merit.getStatistics',
+  method: function(server, auth) {
+    return server.authorization.build({
+      error: Boom.forbidden(),
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'merit.getStatistics.allow'
+    });
+  },
+  options: { callback: false }
+};
+
+module.exports = [ send, getUserStatistics, getStatistics ];

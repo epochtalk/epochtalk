@@ -1,5 +1,5 @@
 var html = '<div ng-if="vmM.userMerit > -1" title="Merit: {{vmM.userMerit}}">Merit: {{vmM.userMerit}}</div>' +
-           '<a ng-if="vmM.loggedIn() && vmM.username" ui-sref="merit({ username: vmM.username })">View Merit Statistics</a>';
+           '<a ng-if="vmM.loggedIn() && vmM.canViewMeritStats && vmM.username" ui-sref="merit({ username: vmM.username })">View Merit Statistics</a>';
 
 var directive = ['Session', function(Session) {
   return {
@@ -15,6 +15,8 @@ var directive = ['Session', function(Session) {
       });
 
       this.loggedIn = Session.isAuthenticated;
+      this.canViewMeritStats = Session.hasPermission('merit.getUserStatistics.allow');
+
     }]
   };
 }];

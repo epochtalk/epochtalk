@@ -26,9 +26,7 @@
       {{rMerit.time | humanDate}}:&nbsp;&nbsp;Received <strong>{{rMerit.amount}} merit{{ rMerit.amount > 1 ? 's' : '' }}</strong> from <a ui-sref="profile.posts({ username: rMerit.username})" ng-bind-html="rMerit.username"></a> for post in thread <a ng-if="rMerit.post_id" ui-sref="posts.data({ threadId: rMerit.thread_id, start: rMerit.position, '#': rMerit.post_id })" ng-bind-html="rMerit.title"></a><strong ng-if="!rMerit.post_id">(Deleted or Off-limits)</strong>
     </li>
   </ul>
-</div>
-
-<div>
-  <a ui-sref="merit-statistics">View Global Merit Statistics</a>
-  <br /><br /><br />
+  <br />
+  <a ng-if="UserMeritCtrl.canViewGlobalStats" ui-sref="merit-statistics">View Global Merit Statistics</a>
+  <br /><br />
 </div>

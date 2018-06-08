@@ -2,6 +2,12 @@ var Joi = require('joi');
 
 var allPermissions = {
   send: { allow: true },
+  getStatistics: { allow: true },
+  getUserStatistics: { allow: true }
+};
+
+var viewStatsPermissions = {
+  getStatistics: { allow: true },
   getUserStatistics: { allow: true }
 };
 
@@ -12,6 +18,9 @@ var merit = {
     send: Joi.object().keys({
       allow: Joi.boolean()
     }),
+    getStatistics: Joi.object().keys({
+      allow: Joi.boolean()
+    }),
     getUserStatistics: Joi.object().keys({
       allow: Joi.boolean()
     })
@@ -19,6 +28,7 @@ var merit = {
 
   layout: {
     send: { title: 'Allow user to send merit to other user\'s' },
+    getStatistics: { title: 'Allow user to get global merit statistics' },
     getUserStatistics: { title: 'Allow user to get merit statistics on other users and themeselves' }
   },
 
@@ -29,7 +39,7 @@ var merit = {
     moderator: allPermissions,
     patroller: allPermissions,
     user: allPermissions,
-    newbie: noPermissions,
+    newbie: viewStatsPermissions,
     banned: noPermissions,
     anonymous: noPermissions,
     private: noPermissions

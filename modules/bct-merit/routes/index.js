@@ -102,7 +102,7 @@ var getStatistics = {
     validate: {
       query: { type: Joi.string().required().valid('recent', 'top_threads', 'top_threads_all', 'top_replies', 'top_replies_all', 'top_users', 'top_users_all', 'top_senders', 'top_senders_all', 'sources') }
     },
-    pre: [ { method: 'auth.merit.getUserStatistics(server, auth)' } ]
+    pre: [ { method: 'auth.merit.getStatistics(server, auth)' } ]
   },
   handler: function(request, reply) {
     var type = request.query.type;
