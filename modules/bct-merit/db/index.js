@@ -439,12 +439,21 @@ function getLatestSourceRecords() {
     })
   });
 }
+
+function insertSource(userId, amount) {
+  var q = 'INSERT INTO merit_sources(user_id, amount, time) VALUES($1, $2, now())';
+  var params = [ helper.deslugify(userId), amount ];
+  return db.scalar(q, params)
+  .then(function() {
+    return { user_id: userId, amount: amount };
+  });
 }
 
 module.exports = {
   withinUserMax: withinUserMax,
   withinPostMax: withinPostMax,
   send: send,
+  insertSource: insertSource,
   calculateSendableMerit: calculateSendableMerit,
   get: get,
   getPostMerits: getPostMerits,
