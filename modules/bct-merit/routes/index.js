@@ -128,4 +128,27 @@ var getLatestSourceRecords = {
   }
 };
 
-module.exports = [ send, getUserStatistics, getStatistics, getLatestSourceRecords ];
+var insertSource = {
+  method: 'POST',
+  path: '/api/merit/sources',
+  config: {
+    auth: { strategy: 'jwt' },
+    validate: {
+      payload: Joi.object().keys({
+        user_id: Joi.string().max(255).required(),
+        amount: Joi.number().required()
+      })
+    },
+    pre: [ { method: 'auth.merit.insertSource(server, auth)' } ]
+  },
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var amount = request.payload.amount;
+
+    var promise = request.db.merit.insertSource(userId, amount)
+    .error(request.errorMap.toHttpError);
+    return reply(promise);
+  }
+};
+
+module.exports = [ send, getUserStatistics, getStatistics, getLatestSourceRecords, insertSource ];
