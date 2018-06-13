@@ -426,13 +426,38 @@ function getStatistics(type, authedPriority) {
   return promise.then(helper.slugify);
 }
 
+function getLatestSourceRecords() {
+  var q = 'SELECT (SELECT username FROM users WHERE id = ms.user_id), ms.user_id, ms.amount, ms.time FROM merit_sources ms INNER JOIN (SELECT user_id, MAX(time) as latest FROM merit_sources GROUP BY user_id) lt on ms.user_id = lt.user_id AND ms.time = lt.latest ORDER BY ms.time DESC';
+  return db.sqlQuery(q)
+  .map(function(row) {
+    q = 'SELECT amount, time FROM merit_sources  WHERE user_id = $1 ORDER BY time DESC OFFSET 1';
+    var params = [ row.user_id ];
+    return db.sqlQuery(q, params)
+    .then(function(sourceHistory) {
+      row.history = sourceHistory;
+      return row;
+    })
+  });
+}
+
+function insertSource(userId, amount) {
+  var q = 'INSERT INTO merit_sources(user_id, amount, time) VALUES($1, $2, now())';
+  var params = [ helper.deslugify(userId), amount ];
+  return db.scalar(q, params)
+  .then(function() {
+    return { user_id: userId, amount: amount };
+  });
+}
+
 module.exports = {
   withinUserMax: withinUserMax,
   withinPostMax: withinPostMax,
   send: send,
+  insertSource: insertSource,
   calculateSendableMerit: calculateSendableMerit,
   get: get,
   getPostMerits: getPostMerits,
   getUserStatistics: getUserStatistics,
-  getStatistics: getStatistics
+  getStatistics: getStatistics,
+  getLatestSourceRecords: getLatestSourceRecords
 };

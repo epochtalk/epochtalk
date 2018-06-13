@@ -1,0 +1,64 @@
+<div ng-if="vmMS.hasPermission()">
+
+  <h5 class="thin-underline section-header-top-spacing">Merit Source Management
+    <span class="info-tooltip" data-balloon="Allows forum owners to choose users to be merit sources" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    <a ng-click="vmMS.showModal = true" class="right"><i class="fa fa-plus"></i>&nbsp;&nbsp;New Source</a></h5>
+
+  <table class="striped rulesTable align-top" width="100%">
+    <thead>
+      <th>Username</th>
+      <th>Current Amount</th>
+      <th>Last Updated</th>
+      <th>Actions</th>
+    </thead>
+    <tbody ng-if="!vmMS.sources.length">
+      <tr>
+        <td colspan="4">
+          <h6>There are currently no merit sources. Click "+ New Source" above to create a new merit source.</h6>
+        </td>
+    </tbody>
+    <tbody ng-if="vmMS.sources.length" ng-repeat="source in vmMS.sources track by source.user_id" ng-init="showHistory = {}">
+      <tr>
+        <td class="name" ng-bind-html="source.username"></td>
+        <td>
+          {{source.amount}}
+          <div ng-if="showHistory[source.user_id]" ng-repeat="row in source.history track by row.time">
+            {{row.amount}}
+          </div>
+        </td>
+        <td>
+          {{source.time | humanDate}}
+          <div ng-if="showHistory[source.user_id]" ng-repeat="row in source.history track by row.time">
+            {{row.time | humanDate}}
+          </div>
+        </td>
+        <td>
+          <a data-balloon="Edit Source Amount" ng-click="vmMS.newSource = { username: source.username, user_id: source.user_id, amount: source.amount }; vmMS.editMode = true; vmMS.showModal = true;"><i class="fa fa-pencil"></i></a>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-if="source.history.length" data-balloon="{{ showHistory[source.user_id] ? 'Hide History' : 'Show History'}}" ng-click="showHistory[source.user_id] = !showHistory[source.user_id];"><i class="fa fa-history"></i>&nbsp;&nbsp;({{source.history.length}})</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Source Merit Modal -->
+  <modal show="vmMS.showModal" on-close="vmMS.newSource = {}; vmMS.editMode = false;">
+    <form name="$parent.form" class="css-form">
+      <h3 class="thin-underline">Merit Source</h3>
+
+      <label>
+        Source Username
+        <input type="text" placeholder="Source Username" ng-model="vmMS.newSource.username" ng-disabled="vmMS.submitted || vmMS.editMode" modal-focus="{{vmMS.showModal && !vmMS.newSource.username}}" required />
+      </label>
+
+      <label>
+        Source Generation Amount (every 30 days)
+        <input type="number" ng-model="vmMS.newSource.amount" placeholder="Amount of merit to generate every 30 days" min="0" ng-pattern="/^[0-9]\d*$/" ng-disabled="vmMS.submitted"  modal-focus="{{vmMS.showModal && vmMS.newSource.amount > -1 }}" required />
+      </label>
+
+      <div class="clear">
+        <button class="fill-row" ng-click="vmMS.insertSource();" ng-disabled="$parent.form.$invalid || $parent.form.$errors || vmMS.submitted" ng-bind="vmMS.saveSourceBtnLabel"></button>
+      </div>
+    </form>
+  </modal>
+</div>
