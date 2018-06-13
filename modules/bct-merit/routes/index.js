@@ -113,4 +113,19 @@ var getStatistics = {
   }
 };
 
-module.exports = [ send, getUserStatistics, getStatistics ];
+var getLatestSourceRecords = {
+  method: 'GET',
+  path: '/api/merit/sources',
+  config: {
+    auth: { strategy: 'jwt' },
+    pre: [ { method: 'auth.merit.getLatestSourceRecords(server, auth)' } ]
+  },
+  handler: function(request, reply) {
+    var type = request.query.type;
+    var promise = request.db.merit.getLatestSourceRecords()
+    .error(request.errorMap.toHttpError);
+    return reply(promise);
+  }
+};
+
+module.exports = [ send, getUserStatistics, getStatistics, getLatestSourceRecords ];
