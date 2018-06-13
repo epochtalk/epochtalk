@@ -63,9 +63,17 @@ Promise.each(spends, function(spend) {
   // don't double count spends
   var remainingSource = Math.max(sources[sourcePos].amount - rangeSum, 0);
   excessSent += Math.max(spend.amount - remainingSource, 0);
+  console.log('source', sources[sourcePos]);
+  console.log('range sum:', rangeSum);
+  console.log('range:', range);
+  console.log('remainingSrc:', remainingSource);
+  console.log('spend:', spend);
+  console.log('current excess:', Math.max(spend.amount - remainingSource, 0));
+  console.log('new total excess:', excessSent);
   // add to sum and insert the entry at the end
   rangeSum += spend.amount;
   range.push(spend);
+  console.log();
 })
 .then(function(originalArray) {
   console.log(originalArray);
