@@ -86,67 +86,82 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
       // if there are merit sources for the user
       if (results.rows.length) {
         sources = results.rows;
-        var monthLimit;
-
         // calculate the total sent merit
-        // in exceess of source merit for each time range:
-        // (1) Before source merit was allocated
-        // (2) Between source merit allocations
-        // (3) After the latest source merit allocation
-
-        // Sent merit from:
-        // (1) Before source merit was allocated
-        q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time < $2';
-        params = [fromUserId, sources[0].time];
-
+        // in exceess of source merit for each source merit range
+        q = 'SELECT time, amount FROM merit_ledger WHERE from_user_id = $1 ORDER BY time ASC';
+        params = [fromUserId];
         return client.query(q, params)
         .then(function(results) {
-          // (Result of sent merit from:)
-          // (1) Before source merit was allocated
-          // if sum is NULL, set to 0
-          var startingSentMeritSum = Number(results.rows[0].sum);
-          return Promise.reduce(sources, function(currentSentMeritSum, source, i) {
-            // Sent merit from:
-            // (3) After the latest source merit allocation
-            if (i === sources.length - 1) {
-              q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2';
-              params = [fromUserId, source.time];
-            }
-            // Sent merit from:
-            // (2) Between source merit allocations
-            else {
-              q = 'SELECT SUM(amount) FROM merit_ledger WHERE from_user_id = $1 AND time >= $2 AND time < $3';
-              params  = [fromUserId, source.time, sources[i + 1].time];
-            }
+          // if there are sends
+          if (results.rows.length) {
+            sends = results.rows;
+          }
+          else {
+            sends = [];
+          }
+          // one month time window
+          // milliseconds/second * seconds/minute * minutes/hour * hours/day * days/month
+          var timeWindow = 1000 * 60 * 60 * 24 * 30;
 
-            return client.query(q, params)
-            .then(function(results) {
-              var sourceMeritForTimeRange = source.amount;
-              // if sum is NULL, set to 0
-              var sentMeritSumForTimeRange = Number(results.rows[0].sum);
-              var sentMeritExceedingSourceMerit = sentMeritSumForTimeRange - sourceMeritForTimeRange;
-              if (sentMeritExceedingSourceMerit < 0) { sentMeritExceedingSourceMerit = 0; }
-              // set month limit:
-              // latest source merit - sum of sent merit since allocation
-              if (i === sources.length - 1) {
-                monthLimit = sourceMeritForTimeRange - sentMeritSumForTimeRange;
-                if (monthLimit < 0) { monthLimit = 0; }
-              }
-              return currentSentMeritSum + sentMeritExceedingSourceMerit;
-            });
-          }, startingSentMeritSum);
-        })
-        .then(function(totalSentMeritSum) {
-          // sendable merit:
-          // user's merit
-          // divided by 2
-          // minus sent merit exceeding source merit for each source merit range
-          sendableUserMerit -= totalSentMeritSum;
-          // monthLimit:
-          // user's current source merit
-          // minus merit for sends since allocated source merit time
-          sendableSourceMerit = monthLimit;
-          return;
+          // total excess
+          var excessSent = 0;
+
+          // loop-updateable
+          var range = [];
+          var rangeSum = 0;
+          var sourcePos = 0;
+
+          Promise.each(sends, function(send) {
+            // if there is a next source amount and the current send's time is
+            // at or after the next source amount, reset all loop-updateable
+            // variables
+            if (sourcePos < sources.length - 1 && send.time >= sources[sourcePos+1].time) {
+              // update the source pos
+              sourcePos++;
+              // clear the range sum
+              rangeSum = 0;
+              // clear the range array
+              range = [];
+            }
+            // if there are sends in the range and the difference between
+            // current send time and oldest range time is greater than
+            // the time window, clear the range until it's within the window
+            while (range.length > 0 && (send.time - range[0].time > timeWindow)) {
+              // remove the send from range and update range sum
+              var entry = range.shift();
+              rangeSum -= entry.amount;
+            }
+            // remaining source merit:  the source merit allocation amount
+            // minus the sent merit in the range (for time window)
+            var remainingSource = Math.max(sources[sourcePos].amount - rangeSum, 0);
+            // accumulate excess sent:  the amount of sent merit which exeeds
+            // the remaining source merit allocation
+            excessSent += Math.max(send.amount - remainingSource, 0);
+            // add the send to range and update range sum
+            range.push(send);
+            rangeSum += send.amount;
+          })
+          .then(function(originalArray) {
+            // calculate sendable user merit
+            // subtract excess sent from sendable user merit
+            sendableUserMerit -= excessSent;
+
+            // calculate sendable source merit
+            // current source is the latest source
+            sourcePos = sources.length - 1;
+            // if there are sends in the range and the difference between
+            // now and oldest range time is greater than the time window, clear
+            // the range until it's within the window
+            while (range.length > 0 && (Date.now() - range[0].time > timeWindow)) {
+              // remove the send from range and update range sum
+              var entry = range.shift();
+              rangeSum -= entry.amount;
+            }
+            // sendable source merit:  the current source merit allocation amount
+            // minus the sent merit in the range (for time window)
+            sendableSourceMerit = Math.max(sources[sourcePos].amount - rangeSum, 0);
+            return;
+          });
         });
       }
       // otherwise, user has no source merit
