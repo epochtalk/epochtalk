@@ -3,7 +3,7 @@
 
 module.exports = ['$resource',
   function($resource) {
-    return $resource('/api/admin/users/:username/', {}, {
+    return $resource('/api/users/:username/', {}, {
       addRoles: {
         method: 'PUT',
         url: '/api/admin/users/roles/add',

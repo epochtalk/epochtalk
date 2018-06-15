@@ -75,7 +75,7 @@ require('./patrol/resource');
 // Set Angular Configs
 app
 .config(require('./config'))
-.run(['$rootScope', '$state', '$timeout', 'Alert', 'BreadcrumbSvc', 'BanSvc', function($rootScope, $state, $timeout, Alert, BreadcrumbSvc, BanSvc) {
+.run(['$rootScope', '$state', '$timeout', 'Alert', 'BreadcrumbSvc', 'BanSvc', 'Websocket', function($rootScope, $state, $timeout, Alert, BreadcrumbSvc, BanSvc, Websocket) {
 
   // Fetch website configs (title, logo, favicon)
   $rootScope.$webConfigs = forumData;

@@ -95,4 +95,32 @@ var getStatistics = {
   options: { callback: false }
 };
 
-module.exports = [ send, getUserStatistics, getStatistics ];
+var getLatestSourceRecords = {
+  name: 'auth.merit.getLatestSourceRecords',
+  method: function(server, auth) {
+    return server.authorization.build({
+      error: Boom.forbidden(),
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'merit.getLatestSourceRecords.allow'
+    });
+  },
+  options: { callback: false }
+};
+
+var insertSource = {
+  name: 'auth.merit.insertSource',
+  method: function(server, auth) {
+    return server.authorization.build({
+      error: Boom.forbidden(),
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'merit.insertSource.allow'
+    });
+  },
+  options: { callback: false }
+};
+
+module.exports = [ send, getUserStatistics, getStatistics, getLatestSourceRecords, insertSource ];
