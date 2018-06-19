@@ -142,11 +142,13 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
             // find the amount of source merit sent
             var sourceMeritSendAmount = Math.min(remainingSource, send.amount);
             // add the source merit sent to range and update range sum
-            sourceMeritSendsRange.push({
-              amount: sourceMeritSendAmount,
-              time: send.time
-            });
-            sourceMeritSendsRangeSum += sourceMeritSendAmount;
+            if (sourceMeritSendAmount > 0) {
+              sourceMeritSendsRange.push({
+                amount: sourceMeritSendAmount,
+                time: send.time
+              });
+              sourceMeritSendsRangeSum += sourceMeritSendAmount;
+            }
           })
           .then(function(originalArray) {
             // calculate sendable user merit
