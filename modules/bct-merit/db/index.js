@@ -109,8 +109,8 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
           var excessSent = 0;
 
           // loop-updateable
-          var range = [];
-          var rangeSum = 0;
+          var sourceMeritSendsRange = [];
+          var sourceMeritSendsRangeSum = 0;
           var sourcePos = 0;
 
           return Promise.each(sends, function(send) {
@@ -121,27 +121,27 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
               // update the source pos
               sourcePos++;
               // clear the range sum
-              rangeSum = 0;
+              sourceMeritSendsRangeSum = 0;
               // clear the range array
-              range = [];
+              sourceMeritSendsRange = [];
             }
             // if there are sends in the range and the difference between
             // current send time and oldest range time is greater than
             // the time window, clear the range until it's within the window
-            while (range.length > 0 && (send.time - range[0].time > timeWindow)) {
+            while (sourceMeritSendsRange.length > 0 && (send.time - sourceMeritSendsRange[0].time > timeWindow)) {
               // remove the send from range and update range sum
-              var entry = range.shift();
-              rangeSum -= entry.amount;
+              var entry = sourceMeritSendsRange.shift();
+              sourceMeritSendsRangeSum -= entry.amount;
             }
             // remaining source merit:  the source merit allocation amount
             // minus the sent merit in the range (for time window)
-            var remainingSource = Math.max(sources[sourcePos].amount - rangeSum, 0);
+            var remainingSource = Math.max(sources[sourcePos].amount - sourceMeritSendsRangeSum, 0);
             // accumulate excess sent:  the amount of sent merit which exeeds
             // the remaining source merit allocation
             excessSent += Math.max(send.amount - remainingSource, 0);
             // add the send to range and update range sum
-            range.push(send);
-            rangeSum += send.amount;
+            sourceMeritSendsRange.push(send);
+            sourceMeritSendsRangeSum += send.amount;
           })
           .then(function(originalArray) {
             // calculate sendable user merit
@@ -154,14 +154,14 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
             // if there are sends in the range and the difference between
             // now and oldest range time is greater than the time window, clear
             // the range until it's within the window
-            while (range.length > 0 && (Date.now() - range[0].time > timeWindow)) {
+            while (sourceMeritSendsRange.length > 0 && (Date.now() - sourceMeritSendsRange[0].time > timeWindow)) {
               // remove the send from range and update range sum
-              var entry = range.shift();
-              rangeSum -= entry.amount;
+              var entry = sourceMeritSendsRange.shift();
+              sourceMeritSendsRangeSum -= entry.amount;
             }
             // sendable source merit:  the current source merit allocation amount
             // minus the sent merit in the range (for time window)
-            sendableSourceMerit = Math.max(sources[sourcePos].amount - rangeSum, 0);
+            sendableSourceMerit = Math.max(sources[sourcePos].amount - sourceMeritSendsRangeSum, 0);
             return;
           });
         });
