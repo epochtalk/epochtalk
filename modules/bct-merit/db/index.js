@@ -139,9 +139,14 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
             // accumulate excess sent:  the amount of sent merit which exeeds
             // the remaining source merit allocation
             excessSent += Math.max(send.amount - remainingSource, 0);
-            // add the send to range and update range sum
-            sourceMeritSendsRange.push(send);
-            sourceMeritSendsRangeSum += send.amount;
+            // find the amount of source merit sent
+            var sourceMeritSendAmount = Math.min(remainingSource, send.amount);
+            // add the source merit sent to range and update range sum
+            sourceMeritSendsRange.push({
+              amount: sourceMeritSendAmount,
+              time: send.time
+            });
+            sourceMeritSendsRangeSum += sourceMeritSendAmount;
           })
           .then(function(originalArray) {
             // calculate sendable user merit
