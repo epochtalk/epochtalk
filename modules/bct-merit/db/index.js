@@ -93,6 +93,7 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
         params = [fromUserId];
         return client.query(q, params)
         .then(function(results) {
+          var sends;
           // if there are sends
           if (results.rows.length) {
             sends = results.rows;
