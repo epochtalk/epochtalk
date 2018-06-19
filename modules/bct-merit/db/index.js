@@ -78,6 +78,7 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
     .then(function(results) {
       sendableUserMerit = Number(results.rows[0].sum) / 2;
 
+      // get the merit sources for a user
       q = 'SELECT time, amount FROM merit_sources WHERE user_id = $1 ORDER BY time ASC';
       params = [fromUserId];
       return client.query(q, params);
@@ -87,7 +88,7 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
       if (results.rows.length) {
         sources = results.rows;
         // calculate the total sent merit
-        // in exceess of source merit for each source merit range
+        // in excess of source merit for each source merit range
         q = 'SELECT time, amount FROM merit_ledger WHERE from_user_id = $1 ORDER BY time ASC';
         params = [fromUserId];
         return client.query(q, params)
