@@ -113,7 +113,7 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
           var rangeSum = 0;
           var sourcePos = 0;
 
-          Promise.each(sends, function(send) {
+          return Promise.each(sends, function(send) {
             // if there is a next source amount and the current send's time is
             // at or after the next source amount, reset all loop-updateable
             // variables
