@@ -125,8 +125,15 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
             sendableUserMerit -= excessSent;
 
             // calculate sendable source merit
-            // current source is the latest source
-            sourcePos = sources.length - 1;
+            // if the current source isn't the latest
+            if (sourcePos != sources.length - 1) {
+              // current source is the latest source
+              sourcePos = sources.length - 1;
+              // clear the range sum
+              sourceMeritSendsRangeSum = 0;
+              // clear the range array
+              sourceMeritSendsRange = [];
+            }
             // if there are sends in the range and the difference between
             // now and oldest range time is greater than the time window, clear
             // the range until it's within the window
