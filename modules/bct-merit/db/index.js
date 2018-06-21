@@ -34,37 +34,6 @@ function send(fromUserId, toUserId, postId, amount) {
   return calculateSendableMerit(fromUserId, toUserId, postId, amount);
 }
 
-function testDateDiff() {
-  return using(db.createTransaction(), function(client) {
-    // get the total amount of merit for a user
-    q = 'SELECT time, amount FROM merit_ledger WHERE to_user_id = $1 ORDER BY time ASC';
-    params = ['af07fbbf-c696-4c0d-938b-9a61122e90c4'];
-    return client.query(q, params)
-    .then(function(results) {
-      if (results.rows) {
-        console.log(results.rows);
-        function diff(first, second) {
-          return results.rows[second].time - results.rows[first].time;
-        };
-        // milliseconds/second * seconds/minute
-        // * minutes/hour * hours/day * days/month
-        var oneMonth = 1000 * 60 * 60 * 24 * 30;
-        if (diff(3,7) > oneMonth) {
-          console.log('BIGGER THAN MONTH');
-        }
-        if (diff(4,7) < oneMonth) {
-          console.log('SMALLER THAN MONTH');
-        }
-        var oneHour = 1000 * 60 * 60;
-        console.log(Date.now() - results.rows[3].time);
-        console.log(oneHour);
-      }
-    });
-  });
-}
-
-testDateDiff();
-
 function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
   fromUserId = helper.deslugify(fromUserId);
   toUserId = helper.deslugify(toUserId);
