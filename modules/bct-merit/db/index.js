@@ -77,6 +77,15 @@ function calculateSendableMerit(fromUserId, toUserId, postId, amount) {
           // total excess
           var excessSent = 0;
 
+          // handle all sends prior to first source merit
+          // if there are sends and the earliest send's time is before the first
+          // source time, remove the send and count as user merit send
+          while (sends.length > 0 && (sends[0].time < sources[0].time)) {
+            // remove the send and update excess sent
+            var preSourceMeritSend = sends.shift();
+            excessSent += preSourceMeritSend.amount;
+          }
+
           // loop-updateable
           var sourceMeritSendsRange = [];
           var sourceMeritSendsRangeSum = 0;
