@@ -95,6 +95,12 @@ function(Alert, Auth, NotificationSvc, Session, $window, $rootScope) {
     }
   });
 
+  socket.on('connect', function(status) {
+    if (status.isAuthenticated) {
+      socket.emit('loggedIn');
+    }
+  });
+
   // Handle LoginEvent
   $rootScope.$on('loginEvent', socketLogin);
 
