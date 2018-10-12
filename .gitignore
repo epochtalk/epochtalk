@@ -21,6 +21,7 @@ config.json
 npm-debug.log
 node_modules
 bower_components
+package-lock.json
 
 test/coverage/
 /public/js/bundle.js

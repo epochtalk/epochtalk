@@ -24,7 +24,7 @@ const config = {
       ngAnimate: 'angular-animate/angular-animate',
       ngResource: 'angular-resource/angular-resource',
       ngSanitize: 'angular-sanitize/angular-sanitize',
-      uiRouter: 'angular-ui-router/release/angular-ui-router',
+      uiRouter: '@uirouter/angularjs/release/angular-ui-router',
       ngLoadingBar: 'angular-loading-bar',
       nestable: 'nestable/jquery.nestable',
       angularSortable: 'angular-sortable-view/src/angular-sortable-view.min',
