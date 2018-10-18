@@ -68,7 +68,8 @@ module.exports = function() {
   if (opts.prod) {
     var minify = new webpack.optimize.UglifyJsPlugin({
       mangle: true,
-      compress: { warnings: false },
+      cache: true,
+      compress: { warnings: false }
     });
     config.plugins.push(minify);
   }
