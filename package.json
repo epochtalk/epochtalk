@@ -36,7 +36,7 @@
     "aws-sdk": "^2.339.0",
     "bcrypt": "^0.8.0",
     "bluebird": "^3.3.1",
-    "boom": "^7.1.1",
+    "boom": "^7.2.0",
     "change-case": "^2.3.1",
     "cheerio": "^0.20.0",
     "commander": "^2.9.0",
