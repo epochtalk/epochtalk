@@ -474,7 +474,7 @@ atob@^2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.0.3.tgz#19c7a760473774468f20b2d2d03372ad7d4cbf5d"
 
-aws-sdk@^2.2.36, aws-sdk@^2.7.22:
+aws-sdk@^2.2.36:
   version "2.182.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.182.0.tgz#f769f3c34c92a0063389ffecaff9fd788743e4d1"
   dependencies:
@@ -489,6 +489,20 @@ aws-sdk@^2.2.36, aws-sdk@^2.7.22:
     uuid "3.1.0"
     xml2js "0.4.17"
     xmlbuilder "4.2.1"
+
+aws-sdk@^2.339.0:
+  version "2.339.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.339.0.tgz#869ce594b87854c723c6157c2a56f101334ce258"
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.8"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.1.0"
+    xml2js "0.4.19"
 
 aws-sign2@~0.6.0:
   version "0.6.0"
@@ -2007,7 +2021,7 @@ event-stream@~3.3.0:
     stream-combiner "~0.0.4"
     through "~2.3.1"
 
-events@^1.0.0, events@^1.1.1:
+events@1.1.1, events@^1.0.0, events@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
 
@@ -2949,7 +2963,7 @@ iconv-lite@^0.4.4:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
-ieee754@^1.1.4:
+ieee754@1.1.8, ieee754@^1.1.4:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.8.tgz#be33d40ac10ef1926701f6f08a2d86fbfd1ad3e4"
 
@@ -7108,19 +7122,19 @@ xml2js@0.4.17:
     sax ">=0.6.0"
     xmlbuilder "^4.1.0"
 
+xml2js@0.4.19, xml2js@^0.4.17:
+  version "0.4.19"
+  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.19.tgz#686c20f213209e94abf0d1bcf1efaa291c7827a7"
+  dependencies:
+    sax ">=0.6.0"
+    xmlbuilder "~9.0.1"
+
 xml2js@0.4.4:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.4.tgz#3111010003008ae19240eba17497b57c729c555d"
   dependencies:
     sax "0.6.x"
     xmlbuilder ">=1.0.0"
-
-xml2js@^0.4.17:
-  version "0.4.19"
-  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.19.tgz#686c20f213209e94abf0d1bcf1efaa291c7827a7"
-  dependencies:
-    sax ">=0.6.0"
-    xmlbuilder "~9.0.1"
 
 xmlbuilder@4.2.1, xmlbuilder@^4.1.0:
   version "4.2.1"
