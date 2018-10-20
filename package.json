@@ -67,7 +67,7 @@
     "mmmagic": "^0.4.6",
     "nestable": "git+https://github.com/slickage/Nestable.git",
     "ng-tags-input": "3.0.0",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.9.3",
     "node-sass-globbing": "0.0.23",
     "nodemailer": "^2.0.0",
     "nodemailer-ses-transport": "^1.5.1",
