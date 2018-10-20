@@ -585,7 +585,7 @@ binary-extensions@^1.0.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.11.0.tgz#46aa1751fb6a2f93ee5e689bb1087d4b14c6c205"
 
-bindings@1.2.1, bindings@1.2.x, bindings@~1.2.1:
+bindings@1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.2.1.tgz#14ad6113812d2d37d72e67b4cacb4bb726505f11"
 
@@ -795,13 +795,6 @@ buffer@4.9.1, buffer@^4.3.0:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
-bufferutil@1.2.x:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/bufferutil/-/bufferutil-1.2.1.tgz#37be5d36e1e06492221e68d474b1ac58e510cbd7"
-  dependencies:
-    bindings "1.2.x"
-    nan "^2.0.5"
-
 buildmail@4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/buildmail/-/buildmail-4.0.1.tgz#877f7738b78729871c9a105e3b837d2be11a7a72"
@@ -1000,7 +993,7 @@ cheerio@^0.20.0:
   optionalDependencies:
     jsdom "^7.0.2"
 
-chokidar@^1.1.0:
+chokidar@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-1.7.0.tgz#798e689778151c8076b4b360e5edd28cda2bb468"
   dependencies:
@@ -3786,13 +3779,13 @@ linked-list@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/linked-list/-/linked-list-0.1.0.tgz#798b0ff97d1b92a4fd08480f55aea4e9d49d37bf"
 
-livereload@^0.4.0:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/livereload/-/livereload-0.4.1.tgz#c54e164c35d15badbcdb6b83041eb10b8fdecb97"
+livereload@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/livereload/-/livereload-0.7.0.tgz#38238dd155ffb251191697f737b6b13f471da115"
   dependencies:
-    chokidar "^1.1.0"
+    chokidar "^1.7.0"
     opts ">= 1.2.0"
-    ws "^0.8.0"
+    ws "^1.1.5"
 
 load-json-file@^1.0.0:
   version "1.1.0"
@@ -4273,17 +4266,13 @@ nan@2.3.5:
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.3.5.tgz#822a0dc266290ce4cd3a12282ca3e7e364668a08"
 
-nan@^2.0.5, nan@^2.3.0, nan@^2.3.2, nan@^2.4.0:
+nan@^2.3.0, nan@^2.3.2, nan@^2.4.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
 
 nan@^2.9.2:
   version "2.11.1"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.11.1.tgz#90e22bccb8ca57ea4cd37cc83d3819b52eea6766"
-
-nan@~2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.4.0.tgz#fb3c59d45fe4effe215f0b890f8adf6eb32d2232"
 
 nanomatch@^1.2.5:
   version "1.2.7"
@@ -6836,13 +6825,6 @@ user-home@^2.0.0:
   dependencies:
     os-homedir "^1.0.0"
 
-utf-8-validate@1.2.x:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/utf-8-validate/-/utf-8-validate-1.2.2.tgz#8bb871a4741e085c70487ca7acdbd7d6d36029eb"
-  dependencies:
-    bindings "~1.2.1"
-    nan "~2.4.0"
-
 util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
@@ -7125,17 +7107,7 @@ ws@3.3.1:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^0.8.0:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-0.8.1.tgz#6b65273b99193c5f067a4cf5809598f777e3b759"
-  dependencies:
-    options ">=0.0.5"
-    ultron "1.0.x"
-  optionalDependencies:
-    bufferutil "1.2.x"
-    utf-8-validate "1.2.x"
-
-ws@^1.0.1:
+ws@^1.0.1, ws@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/ws/-/ws-1.1.5.tgz#cbd9e6e75e09fc5d2c90015f21f0c40875e0dd51"
   dependencies:
