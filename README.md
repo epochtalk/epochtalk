@@ -41,17 +41,17 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * [Redis](http://redis.io/)
 
 ### NPM
+* @uirouter/angularjs `^1.0.20`
 * angular `1.4.4`
 * angular-animate `1.4.4`
 * angular-loading-bar `0.7.1`
 * angular-resource `1.4.4`
 * angular-sanitize `1.4.4`
 * angular-sortable-view `0.0.13`
-* angular-ui-router `0.2.15`
-* aws-sdk `^2.7.22`
-* bcrypt `^0.8.0`
+* aws-sdk `^2.339.0`
+* bcrypt `^3.0.2`
 * bluebird `^3.3.1`
-* boom `^7.1.1`
+* boom `^7.2.0`
 * change-case `^2.3.1`
 * cheerio `^0.20.0`
 * commander `^2.9.0`
@@ -68,38 +68,38 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * good-squeeze `^5.0.2`
 * handlebars `^4.0.11`
 * hapi `^16.6.2`
-* hoek `^5.0.2`
-* html-loader `^0.5.1`
+* hoek `^5.0.4`
 * inert `^4.2.1`
 * ip-address `^5.0.2`
-* joi `^13.0.1`
+* joi `^13.7.0`
 * jquery `3.0.0`
 * json `^9.0.3`
 * jsonwebtoken `^8.1.0`
 * klaw `^2.1.1`
-* lodash `^4.17.4`
+* lodash `^4.17.11`
 * marked `^0.3.6`
 * mkdirp `^0.5.1`
 * mmmagic `^0.4.6`
-* nestable [slickage/Nestable](http://github.com/slickage/Nestable)
+* nestable `git+https://github.com/slickage/Nestable.git`
 * ng-tags-input `3.0.0`
-* node-sass `^4.7.2`
+* node-sass `^4.9.3`
 * node-sass-globbing `0.0.23`
 * nodemailer `^2.0.0`
 * nodemailer-ses-transport `^1.5.1`
 * oclazyload `^1.1.0`
 * pg `^6.1.2`
 * redis `^2.8.0`
-* request `^2.83.0`
+* request `^2.88.0`
 * rolling-rate-limiter `^0.1.10`
 * sanitize-html `^1.4.3`
-* socketcluster `^9.3.1`
-* socketcluster-client `^9.0.2`
+* socketcluster `^14.3.2`
+* socketcluster-client `^14.2.1`
 * stream-meter `^1.0.3`
 * through2 `^2.0.0`
 * uuid `^3.1.0`
 * vision `^4.1.1`
-* webpack `^1.12.2`
+* webpack `^4.20.1`
+* webpack-cli `^3.1.2`
 
 ## Installation
 

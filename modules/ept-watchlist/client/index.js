@@ -28,7 +28,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   });
 
-  $stateProvider.state('watchlist.edit', {
+  $stateProvider.state('watchlist-edit', {
     parent: 'public-layout',
     url: '/watchlist/edit',
     reloadOnSearch: false,

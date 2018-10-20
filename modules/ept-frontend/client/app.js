@@ -75,20 +75,22 @@ require('./patrol/resource');
 // Set Angular Configs
 app
 .config(require('./config'))
-.run(['$rootScope', '$state', '$timeout', 'Alert', 'BreadcrumbSvc', 'BanSvc', 'Websocket', function($rootScope, $state, $timeout, Alert, BreadcrumbSvc, BanSvc, Websocket) {
+.run(['$rootScope', '$transitions', '$state', '$timeout', 'Alert', 'BreadcrumbSvc', 'BanSvc', 'Websocket', function($rootScope, $transitions, $state, $timeout, Alert, BreadcrumbSvc, BanSvc, Websocket) {
 
   // Fetch website configs (title, logo, favicon)
   $rootScope.$webConfigs = forumData;
 
-  // Dynamically populate breadcrumbs
-  $rootScope.$on('$stateChangeSuccess', function() {
+  $transitions.onSuccess({}, function(transition) {
     // update title
-    var title = $state.$current.locals.globals.$title;
+    var title = '';
+    try { title = transition.injector().get('$title'); } catch(e) {}
     if (title) { $timeout(function() { $rootScope.$title = title; }); }
+    // update banInfo
+    var boardBanned = false;
+    try { boardBanned = transition.injector().get('$boardBanned'); } catch(e) {}
+    BanSvc.update(boardBanned);
     // update breadcrumbs
     BreadcrumbSvc.update();
-    // update banInfo
-    BanSvc.update();
   });
 
   // Handle if there is an error changing state

@@ -7,7 +7,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
       // poll selected answers
       $scope.pollAnswers = [];
       $scope.user = Session.user;
-      $scope.banned = BanSvc.banStatus().boards.length > 0;
+      $scope.banned = BanSvc.banStatus();
       $scope.switches = { editPoll: false };
       // $scope.poll and $scope.options set in watch
 
