@@ -35,12 +35,6 @@ test/coverage/
 /public/images/*.gif
 /public/templates/*
 
-/app/scss/loading-bar.scss
-/app/scss/ept/variables/_custom-variables.scss
-/app/scss/ept/variables/_preview-variables.scss
-/app/.sass-cache/
-/app/modules
-
 /modules/etc
 
 /content/sass/_custom-variables.scss

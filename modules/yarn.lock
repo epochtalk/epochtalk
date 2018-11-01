@@ -5,7 +5,9 @@
 bct-activity@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/bct-activity/-/bct-activity-1.0.3.tgz#0b16c705dbe74c8ac57d07722355535b9bb5fc9d"
+  integrity sha512-DMsPHCTxEoeAmJ2yn/9zFw3pGsy0aa+J4Krw//ovQ+AVN5AZlBtWViC8wsPNCxKjgW0GitlmJewfQe9mdS424w==
 
 bct-trust@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/bct-trust/-/bct-trust-1.0.5.tgz#ccad213f981c1f0d3b420099eaf835f10d44d967"
+  integrity sha512-YFj4SfLqIz6wJPXyARkfZ/PenzOfQKk6rEeJ3+qMlwbgfbpZLPyiZGYlzguF9PxQCFxvNecFANfdCatB/ORqEg==

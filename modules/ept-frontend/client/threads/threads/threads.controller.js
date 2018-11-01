@@ -15,11 +15,11 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.page = pageData.page;
     this.parent.pageCount = Math.ceil(ctrl.board.thread_count / ctrl.limit);
     // TODO: This will not be here once actual boards are stored in this array
-    this.parent.bannedFromBoard = BanSvc.banStatus().boards.length > 0;
+    this.parent.bannedFromBoard = BanSvc.banStatus();
 
     this.parent.canCreate = function() {
       if (!ctrl.loggedIn()) { return false; }
-      if (ctrl.parent.bannedFromBoard) { return false; }
+      if (BanSvc.banStatus()) { return false; }
       if (!Session.hasPermission('threads.create.allow')) { return false; }
       if (!pageData.write_access) { return false; }
       return true;
@@ -137,7 +137,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.showSetModerators = false;
     this.parent.canSetModerator = function() {
       if (!ctrl.loggedIn()) { return false; }
-      if (ctrl.parent.bannedFromBoard) { return false; }
+      if (BanSvc.banStatus()) { return false; }
       if (!Session.hasPermission('adminModerators.add')) { return false; }
       if (!Session.hasPermission('adminModerators.remove')) { return false; }
       return true;
