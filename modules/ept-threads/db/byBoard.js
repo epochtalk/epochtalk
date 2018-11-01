@@ -87,7 +87,7 @@ var getStickyThreads = function(boardId, userId, opts) {
   'LEFT JOIN LATERAL ( ' + opts.q3 + ' ) p ON true ' +
   'LEFT JOIN LATERAL ( ' + opts.q4 + ' ) tv ON true ' +
   'LEFT JOIN LATERAL ( ' + opts.q5 + ' ) pl ON true ' +
-  'ORDER BY tlist.created_at';
+  'ORDER BY tlist.created_at DESC';
   return db.sqlQuery(query, [boardId, userId])
   .map(function(thread) { return common.formatThread(thread, userId); });
 };
