@@ -39,10 +39,15 @@ function get() {
     if (dbMaps) {
       return db.sqlQuery(queryRank)
       .map(function(rank, idx) {
-        return {
-          name: rank.name,
-          post_count: dbMaps.maps.post_count[idx]
+        var result = {
+          name: rank.name
         };
+
+        console.log(dbMaps);
+        Object.keys(dbMaps.maps).forEach(function(key) {
+          result[key] = dbMaps.maps[key][idx];
+        });
+        return result;
       });
     }
     else { return []; }
