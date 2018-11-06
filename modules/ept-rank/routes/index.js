@@ -24,10 +24,20 @@ var upsert = {
   config: {
     auth: { strategy: 'jwt' },
     validate: {
+      // because we allow dynamic maps we need to allow dynamic metric keys
+      options: { allowUnknown: true, stripUnknown: false },
       payload: Joi.array().items(Joi.object().keys({
         name: Joi.string().max(255),
-        post_count: Joi.number()
-      })).unique('post_count')
+      })).unique(function(a, b) { // make sure ranks have unique generic metrics
+        var fields = Object.keys(a).filter(f => f !== "name");
+        var aValues = [];
+        var bValues = [];
+        fields.forEach(function(f) {
+          aValues.push(a[f]);
+          bValues.push(b[f]);
+        });
+        return aValues.toString() === bValues.toString();
+      })
     },
     pre: [ { method: 'auth.rank.upsert(server, auth)' } ]
   },

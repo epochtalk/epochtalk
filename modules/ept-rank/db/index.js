@@ -11,21 +11,21 @@ function upsert(ranks){
   var createRank = 'INSERT INTO ranks(name, number) VALUES($1, $2)';
   var createMetricMaps = 'INSERT INTO metric_rank_maps(maps) VALUES($1)';
 
-  ranks.sort(function(a, b) { return b.post_count < a.post_count });
-
   return using(db.createTransaction(), function(client) {
+    var map = {};
+    var fields;
     return client.query(clearRanks)
     .then(function() { return client.query(clearMetricMaps); })
     .then(function() {
-      var postCountThresholds = [];
+      if (ranks.length) {
+        fields = Object.keys(ranks[0]).filter(f => f !== "name");
+        fields.forEach(f => map[f] = []);
+      }
       return Promise.map(ranks, function(rank, idx) {
-        postCountThresholds.push(rank.post_count);
+        fields.forEach(f => map[f].push(rank[f]));
         return client.query(createRank, [ rank.name, idx ]);
       })
-      .then(function() {
-        var map = { post_count: postCountThresholds };
-        return client.query(createMetricMaps, [ map ]);
-      });
+      .then(function() { return client.query(createMetricMaps, [ map ]); });
     });
   })
   .then(function() { return ranks; });
