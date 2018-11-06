@@ -62,7 +62,7 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
             ctrl.showEditMapModal = false;
           })
           .catch(function(err) {
-            var errMsg = 'There was an error adding the rank';
+            var errMsg = 'There was an error updating the ranks';
             if (err && err.data && err.data.statusCode === 400) {
               errMsg = 'Ranks metrics must be unique per rank';
             }
