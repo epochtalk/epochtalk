@@ -14,6 +14,7 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
       Ranks.get().$promise.then(function(ranks) {
         ctrl.ranks = ranks;
         ctrl.rankMapping = ranks;
+        ctrl.copyRankMapping = ranks;
         refreshMetrics();
       });
 
@@ -33,6 +34,10 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
 
       // Add Rank Modal
       this.saveRankBtnLabel = 'Save Rank Map';
+
+      this.editMapClose = function() {
+        ctrl.rankMapping = ctrl.copyRankMapping;
+      };
 
       this.editMap = function() {
         ctrl.editMapSubmitted = true;
@@ -55,9 +60,11 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
           Ranks.upsert(ctrl.rankMapping).$promise
           .then(function(latestRanks) {
             ctrl.ranks = latestRanks;
+            ctrl.copyRankMapping = latestRanks;
             refreshMetrics();
             Alert.success('Sucessfully updated rank map');
             ctrl.showEditMapModal = false;
+            ctrl.rankMapping = JSON.parse(JSON.stringify(ctrl.rankMapping, null, 2));
           })
           .catch(function(err) {
             var errMsg = 'There was an error updating the ranks';
@@ -72,7 +79,6 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
           .finally(function() {
             ctrl.saveRankBtnLabel = 'Save Rank Map';
             ctrl.editMapSubmitted = false;
-            ctrl.rankMapping = JSON.parse(JSON.stringify(ctrl.rankMapping, null, 2));
           });
         }
       };
