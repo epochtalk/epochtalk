@@ -40,6 +40,10 @@
     font-size: 0.875rem;
     &.show-mobile { display: none; }
   }
+  .rank-config {
+    min-height: 375px;
+    font-family: monospace;
+  }
 }
 
 @include media($mobile) {

@@ -1,7 +1,7 @@
 <div ng-if="vm.hasPermission()">
 <h5 class="thin-underline section-header-top-spacing">Rank Management
   <span class="info-tooltip" data-balloon="Allows forum owners to create ranks, which is a title associated with metrics like post count, activity, or merit" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
-  <a ng-click="vm.showEditMapModal = true" class="right"><i class="fa fa-code"></i>&nbsp;&nbsp;Edit Rank Map</a></h5>
+  <a ng-click="vm.showEditMapModal = true" class="right"><i class="fa fa-code"></i>&nbsp;&nbsp;Edit Rank Config</a></h5>
 
 <table class="striped rulesTable" width="100%">
   <thead>
@@ -22,14 +22,14 @@
   </tbody>
 </table>
 
-<!-- Add Rank Modal -->
+<!-- Edit Rank Config Modal -->
 <modal show="vm.showEditMapModal">
   <form name="$parent.form" class="css-form">
-    <h3 class="thin-underline">Edit Rank Map</h3>
+    <h3 class="thin-underline">Edit Rank Config</h3>
 
     <label>
-      Rank Map
-      <textarea json-text ng-model="vm.rankMapping" ng-disabled="vm.editMapSubmitted" modal-focus="{{vm.showEditMapModal}}" required></textarea>
+      Rank Config
+      <textarea class="rank-config" json-text ng-model="vm.rankMapping" ng-disabled="vm.editMapSubmitted" modal-focus="{{vm.showEditMapModal}}" required></textarea>
     </label>
 
     <div class="clear">

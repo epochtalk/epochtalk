@@ -1,5 +1,3 @@
-var cloneDeep = require('lodash/cloneDeep');
-
 var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
   return {
     restrict: 'E',
@@ -74,6 +72,7 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
           .finally(function() {
             ctrl.saveRankBtnLabel = 'Save Rank Map';
             ctrl.editMapSubmitted = false;
+            ctrl.rankMapping = JSON.parse(JSON.stringify(ctrl.rankMapping, null, 2));
           });
         }
       };
