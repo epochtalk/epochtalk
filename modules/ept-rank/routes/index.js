@@ -28,7 +28,7 @@ var upsert = {
       options: { allowUnknown: true, stripUnknown: false },
       payload: Joi.array().items(Joi.object().keys({
         name: Joi.string().max(255),
-      })).unique(function(a, b) { // make sure ranks have unique generic metrics
+      }).pattern(/^(?!name).*/, Joi.number().min(0))).unique(function(a, b) { // make sure ranks have unique generic metrics
         var fields = Object.keys(a).filter(f => f !== "name");
         var aValues = [];
         var bValues = [];

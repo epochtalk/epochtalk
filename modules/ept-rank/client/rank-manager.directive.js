@@ -73,6 +73,9 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
               if (err.data.message === '"value" must be an array') {
                 errMsg = 'Ranks config must be an array of ranks';
               }
+              else if (err.data.validation.keys.length) {
+                errMsg = 'Rank names must be strings, and metrics must be numbers';
+              }
             }
             else if (err && err.data && err.data.statusCode === 403) {
               errMsg = 'You do not have permissions to update ranks';
