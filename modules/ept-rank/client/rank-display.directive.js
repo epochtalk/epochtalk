@@ -28,7 +28,7 @@ var directive = [function() {
           return mappedRanks;
         }, []);
         // order the ranks and pluck the lowest rank
-        ranks.sort(function(a, b) { return a > b; });
+        ranks.sort();
         var lowestRankNumber = ranks[0];
         if (lowestRankNumber >= 0) {
           ctrl.userRank = ctrl.ranks[lowestRankNumber].name;
