@@ -70,6 +70,9 @@ var directive = ['Ranks', 'Alert', 'Session', function(Ranks, Alert, Session) {
             var errMsg = 'There was an error updating the ranks';
             if (err && err.data && err.data.statusCode === 400) {
               errMsg = 'Ranks metrics must be unique per rank';
+              if (err.data.message === '"value" must be an array') {
+                errMsg = 'Ranks config must be an array of ranks';
+              }
             }
             else if (err && err.data && err.data.statusCode === 403) {
               errMsg = 'You do not have permissions to update ranks';
