@@ -4,9 +4,12 @@
   <a ng-click="vm.showEditMapModal = true" class="right"><i class="fa fa-code"></i>&nbsp;&nbsp;Edit Rank Config</a></h5>
 
 <table class="striped rulesTable" width="100%">
-  <thead>
+  <thead ng-if="vm.ranks.length">
     <th>Rank Name</th>
     <th ng-repeat="metric in vm.metricNames track by metric">{{metric}}</th>
+  </thead>
+  <thead ng-if="!vm.ranks.length">
+    <th colspan="3">Rank Name</th>
   </thead>
   <tbody ng-if="!vm.ranks.length">
     <tr>
