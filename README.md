@@ -114,7 +114,7 @@ $ cd epochtalk
 $ yarn
 ```
 
-#### 5) Install module dependencies using [yarn](https://yarnpkg.com)
+#### 3) Install module dependencies using [yarn](https://yarnpkg.com)
 ```sh
 $ cd modules
 $ yarn
