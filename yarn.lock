@@ -272,29 +272,33 @@ ammo@2.x.x, ammo@^2.0.4:
     boom "5.x.x"
     hoek "4.x.x"
 
-angular-animate@1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/angular-animate/-/angular-animate-1.4.4.tgz#70baec78ff49cba3be13ea0141819ffb2e785115"
+angular-animate@1.7.5:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/angular-animate/-/angular-animate-1.7.5.tgz#1ffc6c2a9cdee227a2ba79cc6cd8f71ec44db5dc"
+  integrity sha512-kU/fHIGf2a4a3bH7E1tzALTHk+QfoUSCK9fEcMFisd6ZWvNDwPzXWAilItqOC3EDiAXPmGHaNc9/aXiD9xrAxQ==
 
 angular-loading-bar@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/angular-loading-bar/-/angular-loading-bar-0.7.1.tgz#7a03011d89c0fccc7cd35b81a7083f37120604c6"
 
-angular-resource@1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/angular-resource/-/angular-resource-1.4.4.tgz#92bea7ab48f75240a237a2f1a1b15cb11b5ce588"
+angular-resource@1.7.5:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/angular-resource/-/angular-resource-1.7.5.tgz#80007af3aed8b6278bf2344e8e5257ea7bca333e"
+  integrity sha512-zlCKVNa2nnZNb4Lz3YFPKhsYG+v+t4STEsjkWRbii6PfwSrtH9R/zGpCOkBNFnq3naeZMMmd5aIIgHi5a7k9jA==
 
-angular-sanitize@1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.4.4.tgz#295f0899694c91aefd0f3c451bddf87e0a0b0e31"
+angular-sanitize@1.7.5:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.7.5.tgz#75d49e15071ca9c70581e76d20940f26372e24d2"
+  integrity sha512-wjKCJOIwrkEvfD0keTnKGi6We13gtoCAQIHcdoqyoo3gwvcgNfYymVQIS3+iCGVcjfWz0jHuS3KgB4ysRWsTTA==
 
 angular-sortable-view@0.0.13:
   version "0.0.13"
   resolved "https://registry.yarnpkg.com/angular-sortable-view/-/angular-sortable-view-0.0.13.tgz#d9d27d839dab9c5ed04b99aa1f3c048dbf2fd62f"
 
-angular@1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.4.4.tgz#9ac24aa5d38802339af99fe63c64a7e9784958b8"
+angular@1.7.5:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.7.5.tgz#d1c1c01c6f5dc835638f3f9aa51012857bdac49e"
+  integrity sha512-760183yxtGzni740IBTieNuWLtPNAoMqvmC0Z62UoU0I3nqk+VJuO3JbQAXOyvo3Oy/ZsdNQwrSTh/B0OQZjNw==
 
 ansi-align@^2.0.0:
   version "2.0.0"

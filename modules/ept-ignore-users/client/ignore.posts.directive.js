@@ -16,9 +16,11 @@ var directive = ['IgnoreUsers', 'Session', 'Alert', '$state',
     controller: [function() {
       var ctrl = this;
 
-      this.Session = Session;
-      this.sessionUser = Session.user;
-      this.user = this.post.user;
+      this.$onInit = function() {
+        ctrl.user = ctrl.post.user;
+        ctrl.Session = Session;
+        ctrl.sessionUser = Session.user;
+      }
 
       this.canIgnore = function() {
         var valid = true;
