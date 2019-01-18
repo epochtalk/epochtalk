@@ -79,7 +79,7 @@ services:
     image: redis:4.0.1
     user: redis
   postgres:
-    image: postgres:9.6.2
+    image: postgres:11.1
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker

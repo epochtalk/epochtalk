@@ -5,7 +5,7 @@ jobs:
       - image: node:8.9.0
       - image: selenium/standalone-chrome
       - image: redis:4.0.1
-      - image: postgres:9.6.2
+      - image: postgres:11.1
         environment:
           POSTGRES_USER: docker
           POSTGRES_PASSWORD: docker
