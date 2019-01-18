@@ -28,6 +28,7 @@ var config = {
   recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY,
   gaKey: process.env.GA_KEY || 'UA-XXXXX-Y',
+  disable_websocket_server: process.env.DISABLE_WEBSOCKET_SERVER === 'true' || false,
   websocket_host: process.env.WEBSOCKET_HOST,
   websocket_client_host: process.env.WEBSOCKET_CLIENT_HOST,
   websocket_port: process.env.WEBSOCKET_PORT,
