@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: node:8.9.0
+      - image: node:10.15.0
       - image: selenium/standalone-chrome
       - image: redis:4.0.1
       - image: postgres:9.6.2
@@ -19,7 +19,7 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: npm install
+      - run: yarn
 
       - save_cache:
           paths:
