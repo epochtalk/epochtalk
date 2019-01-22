@@ -72,7 +72,7 @@
     "nodemailer": "^5.1.1",
     "nodemailer-ses-transport": "^1.5.1",
     "oclazyload": "^1.1.0",
-    "pg": "^7.3.0",
+    "pg": "^7.8.0",
     "redis": "^2.8.0",
     "request": "^2.88.0",
     "rolling-rate-limiter": "^0.1.10",
