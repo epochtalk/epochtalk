@@ -44,7 +44,7 @@
     "del": "^2.2.0",
     "dot": "^1.0.3",
     "dotenv": "^4.0.0",
-    "epochtalk-core-pg": "git+https://github.com/epochtalk/core-pg#upgrade-deps",
+    "epochtalk-core-pg": "https://github.com/epochtalk/core-pg.git#bfd0a9ba58f651b7f37188ba87d61e9a4ec6373b",
     "fs-extra": "^7.0.1",
     "good": "^7.3.0",
     "good-console": "^6.4.0",
@@ -69,7 +69,7 @@
     "ng-tags-input": "3.0.0",
     "node-sass": "^4.11.0",
     "node-sass-globbing": "0.0.23",
-    "nodemailer": "^2.0.0",
+    "nodemailer": "^5.1.1",
     "nodemailer-ses-transport": "^1.5.1",
     "oclazyload": "^1.1.0",
     "pg": "^7.3.0",
@@ -102,6 +102,16 @@
     "parse-database-url": "^0.3.0",
     "protractor": "^5.4.1",
     "watch": "^0.17.1"
+  },
+  "resolutions": {
+    "good/joi": "^14.3.1",
+    "good-console/joi": "^14.3.1",
+    "inert/joi": "^14.3.1",
+    "vision/joi": "^14.3.1",
+    "hapi/**/joi": "^14.3.1",
+    "lab/**/joi": "^14.3.1",
+    "good-http/wreck": "^12.5.1",
+    "vision/boom": "^7.2.0"
   },
   "bin": {
     "epoch": "cli/index.js"

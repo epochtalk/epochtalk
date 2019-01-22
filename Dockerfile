@@ -8,9 +8,10 @@ ENV NODE_ENV $NODE_ENV
 COPY package.json /usr/src/app/
 RUN yarn && yarn cache clean --force
 COPY modules/package.json /usr/src/app/modules/
-RUN npm --prefix ./modules install
+RUN (cd ./modules && yarn)
 
-RUN npm install epochtalk-core-pg
+RUN yarn add https://github.com/epochtalk/core-pg.git#bfd0a9ba58f651b7f37188ba87d61e9a4ec6373b
+
 
 COPY . /usr/src/app
 
