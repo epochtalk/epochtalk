@@ -161,7 +161,12 @@ setup()
 .then(function() { return server.register({ register: lastActive }); })
 // Start websocket server
 .then(function() {
-  return websocketServer.start();
+  if (config.disable_websocket_server) {
+    return;
+  }
+  else {
+    return websocketServer.start();
+  }
 })
 // routes and server start
 .then(function() {
