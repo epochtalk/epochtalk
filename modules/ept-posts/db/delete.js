@@ -10,18 +10,12 @@ var DeletionError = errors.DeletionError;
 module.exports = function(id) {
   id = helper.deslugify(id);
   var post;
-  var querySelectPost = 'SELECT * from posts WHERE id = $1 FOR UPDATE';
-  // deletion flag
-  var queryDeletePost = 'UPDATE posts SET deleted = TRUE WHERE id = $1';
-  var queryUpdateUserPostCount = 'UPDATE users.profiles SET post_count = post_count - 1 WHERE user_id = $1'
-  var queryUpdateThreadUpdatedAt = 'UPDATE threads SET updated_at = (SELECT created_at FROM posts WHERE thread_id = $1 ORDER BY created_at DESC limit 1) WHERE id = $1';
-  var queryUpdatePostPositions = 'UPDATE posts SET position = position - 1 WHERE position > $1 AND thread_id = $2';
-  var queryUpdateThreadPostCount = 'UPDATE threads SET post_count = post_count - 1 WHERE id = $1';
-
+  var q;
 
   return using(db.createTransaction(), function(client) {
     // lock up post row
-    return client.query(querySelectPost, [id])
+    q = 'SELECT * from posts WHERE id = $1 FOR UPDATE';
+    return client.query(q, [id])
     .then(function(results) {
       if (results.rows.length > 0) { post = results.rows[0]; }
       else { return Promise.reject('Post Not Found'); }
@@ -32,28 +26,11 @@ module.exports = function(id) {
     })
     // set post deleted flag
     .then(function() {
-      return client.query(queryDeletePost, [id]);
-    })
-    .then(function() {
-      if (!post.deleted) {
-        return client.query(queryUpdateUserPostCount, [post.user_id]);
-      }
-    })
-    .then(function() {
-      if (!post.deleted) {
-        return client.query(queryUpdateThreadUpdatedAt, [post.thread_id]);
-      }
-    })
-    .then(function() {
-      return client.query(queryUpdatePostPositions, [post.position, post.thread_id]);
-    })
-    .then(function() {
-      if (!post.deleted) {
-        return client.query(queryUpdateThreadPostCount, [post.thread_id]);
-      }
-    })
-    .then(function() {
       post.deleted = true;
+      q = 'UPDATE posts SET deleted = TRUE WHERE id = $1';
+      return client.query(q, [id]);
+    })
+    .then(function() {
       // Strip unneeded return fields
       delete post.tsv;
       return post;
