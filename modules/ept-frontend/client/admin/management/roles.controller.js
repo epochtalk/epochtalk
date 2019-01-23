@@ -54,7 +54,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   ];
 
   this.hasLimits = function() {
-    var usedLimits = this.limiter.filter(function(limit) { return limit.use; });
+    var usedLimits = ctrl.limiter.filter(function(limit) { return limit.use; });
     return usedLimits.length > 0;
   };
 
@@ -151,7 +151,9 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
     var successMsg = '';
     var errorMsg = '';
     ctrl.newRole.highlight_color = ctrl.newRole.highlight_color ? ctrl.newRole.highlight_color : undefined;
-    ctrl.newRole.permissions.limits = ctrl.limiter;
+    ctrl.newRole.permissions.limits = ctrl.limiter.filter(function(limit) {
+      return limit.interval && limit.maxInInterval;
+    });
     if (ctrl.modifyingRole) {
       promise = AdminRoles.update(ctrl.newRole).$promise;
       successMsg = ctrl.newRole.name + ' successfully updated.';
