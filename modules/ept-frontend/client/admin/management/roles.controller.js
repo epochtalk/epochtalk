@@ -39,7 +39,8 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
     threadCreate: { path: '/api/threads', method: 'POST' },
     reportUser: { path: '/api/reports/users', method: 'POST' },
     reportMessage: { path: '/api/reports/messages', method: 'POST' },
-    reportPost: { path: '/api/reports/posts', method: 'POST' }
+    reportPost: { path: '/api/reports/posts', method: 'POST' },
+    userUpdate: { path: '/api/users/{id}', method: 'PUT'}
   };
 
   this.limiter = [
@@ -50,7 +51,8 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
     this.limits.threadCreate,
     this.limits.reportUser,
     this.limits.reportMessage,
-    this.limits.reportPost
+    this.limits.reportPost,
+    this.limits.userUpdate
   ];
 
   this.hasLimits = function() {

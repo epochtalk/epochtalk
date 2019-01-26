@@ -1845,9 +1845,28 @@
 
       <!-- Rate Limits Tab -->
       <div ng-if="AdminManagementCtrl.selectedTab === 'rateLimiting'">
+        <!-- Update User -->
+        <section class="boxed-section" ng-if="AdminManagementCtrl.limits.userUpdate.use = AdminManagementCtrl.newRole.permissions.users.update">
+          <div class="header"><h6>User Update <span class="put right">PUT</span></h6></div>
+          <div class="content input-three-col">
+            <div>
+              <label class="desc-label" for="userUpdate-interval">Interval</label>
+              <input type="text" class="input-text" id="userUpdate-interval" ng-model="AdminManagementCtrl.limits.userUpdate.interval" placeholder="In MS (Ex: 1000)" />
+            </div>
+            <div>
+              <label class="desc-label" for="userUpdate-max-in-interval">Max In Interval</label>
+              <input type="text" class="input-text" id="userUpdate-max-in-interval" ng-model="AdminManagementCtrl.limits.userUpdate.maxInInterval" placeholder="Ex: 1" />
+            </div>
+            <div>
+              <label class="desc-label" for="userUpdate-min-difference">Min Difference</label>
+              <input type="text" class="input-text" id="userUpdate-min-difference" ng-model="AdminManagementCtrl.limits.userUpdate.minDifference" placeholder="In MS (Ex: 100)" />
+            </div>
+          </div>
+        </section>
+
         <!-- Conversation Create -->
         <section class="boxed-section" ng-if="AdminManagementCtrl.limits.conversationCreate.use = AdminManagementCtrl.newRole.permissions.conversations.create">
-          <div class="header"><h6>Conversations <span class="post right">CREATE</span></h6></div>
+          <div class="header"><h6>Conversations Create <span class="post right">POST</span></h6></div>
           <div class="content input-three-col">
             <div>
               <label class="desc-label" for="conversationCreate-interval">Interval</label>
@@ -1866,7 +1885,7 @@
 
         <!-- Message Create -->
         <section class="boxed-section" ng-if="AdminManagementCtrl.limits.messageCreate.use = AdminManagementCtrl.newRole.permissions.messages.create">
-          <div class="header"><h6>Messages <span class="post right">CREATE</span></h6></div>
+          <div class="header"><h6>Messages Create <span class="post right">POST</span></h6></div>
           <div class="content input-three-col">
             <div>
               <label class="desc-label" for="messageCreate-interval">Interval</label>
@@ -1885,7 +1904,7 @@
 
         <!-- Post Create -->
         <section class="boxed-section" ng-if="AdminManagementCtrl.limits.postCreate.use = AdminManagementCtrl.newRole.permissions.posts.create">
-          <div class="header"><h6>Posts <span class="post right">CREATE</span></h6></div>
+          <div class="header"><h6>Posts Create <span class="post right">POST</span></h6></div>
           <div class="content input-three-col">
             <div>
               <label class="desc-label" for="postCreate-interval">Interval</label>
@@ -1904,7 +1923,7 @@
 
         <!-- Post Update -->
         <section class="boxed-section" ng-if="AdminManagementCtrl.limits.postUpdate.use = AdminManagementCtrl.newRole.permissions.posts.update">
-          <div class="header"><h6>Posts <span class="put right">UPDATE</span></h6></div>
+          <div class="header"><h6>Posts Update <span class="post right">POST</span></h6></div>
           <div class="content input-three-col">
             <div>
               <label class="desc-label" for="postUpdate-interval">Interval</label>
@@ -1923,7 +1942,7 @@
 
         <!-- Thread Create -->
         <section class="boxed-section" ng-if="AdminManagementCtrl.limits.threadCreate.use = AdminManagementCtrl.newRole.permissions.threads.create">
-          <div class="header"><h6>Threads <span class="post right">CREATE</span></h6></div>
+          <div class="header"><h6>Threads Create <span class="post right">POST</span></h6></div>
           <div class="content input-three-col">
             <div>
               <label class="desc-label" for="threadCreate-interval">Interval</label>
@@ -1942,7 +1961,7 @@
 
         <!-- Report User -->
         <section class="boxed-section" ng-if="AdminManagementCtrl.limits.reportUser.use = AdminManagementCtrl.newRole.permissions.reports.createUserReport">
-          <div class="header"><h6>User Reports <span class="post right">CREATE</span></h6></div>
+          <div class="header"><h6>Report Users <span class="post right">POST</span></h6></div>
           <div class="content input-three-col">
             <div>
               <label class="desc-label" for="reportUser-interval">Interval</label>
@@ -1961,7 +1980,7 @@
 
         <!-- Report Message -->
         <section class="boxed-section" ng-if="AdminManagementCtrl.limits.reportMessage.use = AdminManagementCtrl.newRole.permissions.reports.createMessageReport">
-          <div class="header"><h6>Message Reports <span class="post right">CREATE</span></h6></div>
+          <div class="header"><h6>Report Messages <span class="post right">POST</span></h6></div>
           <div class="content input-three-col">
             <div>
               <label class="desc-label" for="reportMessage-interval">Interval</label>
@@ -1980,7 +1999,7 @@
 
         <!-- Report Post -->
         <section class="boxed-section" ng-if="AdminManagementCtrl.limits.reportPost.use = AdminManagementCtrl.newRole.permissions.reports.createPostReport">
-          <div class="header"><h6>Post Reports <span class="post right">CREATE</span></h6></div>
+          <div class="header"><h6>Report Posts <span class="post right">POST</span></h6></div>
           <div class="content input-three-col">
             <div>
               <label class="desc-label" for="reportPost-interval">Interval</label>
