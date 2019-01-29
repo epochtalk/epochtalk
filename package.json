@@ -44,7 +44,7 @@
     "del": "^2.2.0",
     "dot": "^1.0.3",
     "dotenv": "^4.0.0",
-    "epochtalk-core-pg": "https://github.com/epochtalk/core-pg.git#bfd0a9ba58f651b7f37188ba87d61e9a4ec6373b",
+    "epochtalk-core-pg": "https://github.com/epochtalk/core-pg.git#43383c756b71046bae08c3cb0086a8038477a032",
     "fs-extra": "^7.0.1",
     "good": "^7.3.0",
     "good-console": "^6.4.0",
