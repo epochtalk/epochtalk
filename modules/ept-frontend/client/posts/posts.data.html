@@ -56,12 +56,12 @@
             </a>
           </li>
           <li ng-if="PostsCtrl.canDelete(post) && $index !== 0 && !post.deleted">
-            <a ng-href="#" data-balloon="Delete" ng-click="PostsParentCtrl.openDeleteModal($index)">
+            <a ng-href="#" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index)">
               <i class="fa fa-eye-slash"></i>
             </a>
           </li>
           <li ng-if="PostsCtrl.canDelete(post) && post.deleted">
-            <a ng-href="#" data-balloon="Undelete" ng-click="PostsParentCtrl.openUndeleteModal($index)">
+            <a ng-href="#" data-balloon="Unhide" ng-click="PostsParentCtrl.openUndeleteModal($index)">
               <i class="fa fa-eye"></i>
             </a>
           </li>
@@ -111,16 +111,16 @@
 <!-- Delete Post Modal -->
 <modal show="PostsParentCtrl.showDeleteModal">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Delete Post</h3>
-    <p>Are you sure you want to delete this post?</p>
+    <h3 class="thin-underline">Hide Post</h3>
+    <p>Are you sure you want to hide this post?</p>
     <label ng-if="PostsParentCtrl.canPostLockQuick(PostsParentCtrl.deletePostIndex)">
       <input type="checkbox" ng-model="PostsParentCtrl.deleteAndLock" modal-focus="{{PostsParentCtrl.showDeleteModal}}" />
-      Lock Post (poster cannot delete/edit this post)?
+      Lock Post (poster cannot hide/edit this post)?
     </label>
     <!-- Delete Button -->
     <div class="clear">
       <button class="fill-row" ng-click="PostsParentCtrl.deletePost()">
-        Delete Post
+        Hide Post
       </button>
     </div>
   </form>
@@ -129,12 +129,12 @@
 <!-- Undelete Post Modal -->
 <modal show="PostsParentCtrl.showUndeleteModal">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Undelete Post</h3>
-    <p>Are you sure you want to Undelete this post?</p>
+    <h3 class="thin-underline">Unhide Post</h3>
+    <p>Are you sure you want to unhide this post?</p>
     <!-- Undelete Button -->
     <div class="clear">
       <button class="fill-row" ng-click="PostsParentCtrl.undeletePost()">
-        Undelete Post
+        Unhide Post
       </button>
     </div>
   </form>
