@@ -93,40 +93,41 @@ app
     BreadcrumbSvc.update();
   });
 
-  // Handle if there is an error changing state
-  $rootScope.$on('$stateChangeError', function(event, next, nextParams, prev, prevParams, error) {
-      event.preventDefault();
+  // Handle if there is an error transitioning states
+  $transitions.onError({}, function(transition) {
+    transition.abort();
+    var error = transition.error().detail;
+    var next = transition.to();
+    var nextParams = transition.params();
 
-      console.log(error);
+    // stop page change
+    if (error === 'NoPageChange') { return; }
 
-      // stop page change
-      if (error === 'NoPageChange') { return; }
-
-      // Unauthorized is redirected to login, save next so we can redirect after login
-      if (error.status === 401) {
-        $state.go('login');
-        $state.next = next;
-        $state.nextParams = nextParams;
-      }
-      // Forbidden
-      else if (error.status === 403 && (error.statusText === 'Forbidden' || error.data.error === 'Forbidden')) {
-        $state.go('403');
-        $state.next = next;
-        $state.nextParams = nextParams;
-      }
-      // Too Many Requests
-      else if (error.status === 429) { Alert.error('Too Many Requests'); }
-      // logout from private board or thread (returns a 404)
-      else if (error.status === 404 && (prev.name === 'threads.data' || prev.name === 'posts.data')) { $state.go('home'); }
-      // 404 Not Found
-      else if (error.status === 404 && (next.name === 'threads.data' || next.name === 'posts.data')) {
-        $state.go('404');
-        $state.next = next;
-        $state.nextParams = nextParams;
-      }
-      // 404 catch all
-      else if (error.status === 404) { $state.go('404'); }
-      // 503 Service Unavailable
-      else { $state.go('503'); }
+    // Unauthorized is redirected to login, save next so we can redirect after login
+    if (error.status === 401) {
+      $state.go('login');
+      $state.next = next;
+      $state.nextParams = nextParams;
+    }
+    // Forbidden
+    else if (error.status === 403 && (error.statusText === 'Forbidden' || error.data.error === 'Forbidden')) {
+      $state.go('403');
+      $state.next = next;
+      $state.nextParams = nextParams;
+    }
+    // Too Many Requests
+    else if (error.status === 429) { Alert.error('Too Many Requests'); }
+    // logout from private board or thread (returns a 404)
+    else if (error.status === 404 && (prev.name === 'threads.data' || prev.name === 'posts.data')) { $state.go('home'); }
+    // 404 Not Found
+    else if (error.status === 404 && (next.name === 'threads.data' || next.name === 'posts.data')) {
+      $state.go('404');
+      $state.next = next;
+      $state.nextParams = nextParams;
+    }
+    // 404 catch all
+    else if (error.status === 404) { $state.go('404'); }
+    // 503 Service Unavailable
+    else { $state.go('503'); }
   });
 }]);
