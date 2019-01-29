@@ -16,19 +16,23 @@ describe('Directive: Color Validator', function() {
     .then(function() {
       color.sendKeys(1)
       .then(function() {
-        expect(helper.hasClass(color, 'ng-invalid')).toBe(true);
-        expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        return expect(helper.hasClass(color, 'ng-invalid')).toBe(true)
+        .then(function() {
+          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        });
       });
     });
   });
 
   it('A non-color string should be an invalid color', function() {
-    color.clear()
+    return color.clear()
     .then(function() {
-      color.sendKeys('invalid-color')
+      return color.sendKeys('invalid-color')
       .then(function() {
-        expect(helper.hasClass(color, 'ng-invalid')).toBe(true);
-        expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        return expect(helper.hasClass(color, 'ng-invalid')).toBe(true)
+        .then(function() {
+          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        });
       });
     });
   });
@@ -37,10 +41,12 @@ describe('Directive: Color Validator', function() {
   it('A color string should be a valid color', function() {
     color.clear()
     .then(function() {
-      color.sendKeys('white')
+      return color.sendKeys('white')
       .then(function() {
-        expect(helper.hasClass(color, 'ng-valid')).toBe(true);
-        expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        return expect(helper.hasClass(color, 'ng-valid')).toBe(true)
+        .then(function() {
+          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        });
       });
     });
   });
@@ -50,8 +56,10 @@ describe('Directive: Color Validator', function() {
     .then(function() {
       color.sendKeys('#fff')
       .then(function() {
-        expect(helper.hasClass(color, 'ng-valid')).toBe(true);
-        expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        return expect(helper.hasClass(color, 'ng-valid')).toBe(true)
+        .then(function() {
+          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        });
       });
     });
   });
@@ -59,10 +67,12 @@ describe('Directive: Color Validator', function() {
   it('Hexadecimal values should be a valid color', function() {
     color.clear()
     .then(function() {
-      color.sendKeys('#ffffff')
+      color.sendKeys('#000000')
       .then(function() {
-        expect(helper.hasClass(color, 'ng-valid')).toBe(true);
-        expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        return expect(helper.hasClass(color, 'ng-valid')).toBe(true)
+        .then(function() {
+          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        });
       });
     });
   });
@@ -72,8 +82,10 @@ describe('Directive: Color Validator', function() {
     .then(function() {
       color.sendKeys('rgb(255,255,255)')
       .then(function() {
-        expect(helper.hasClass(color, 'ng-valid')).toBe(true);
-        expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        return expect(helper.hasClass(color, 'ng-valid')).toBe(true)
+        .then(function() {
+          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        });
       });
     });
   });
@@ -83,8 +95,10 @@ describe('Directive: Color Validator', function() {
     .then(function() {
       color.sendKeys('rgba(255,255,255,0.5)')
       .then(function() {
-        expect(helper.hasClass(color, 'ng-valid')).toBe(true);
-        expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        return expect(helper.hasClass(color, 'ng-valid')).toBe(true)
+        .then(function() {
+          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        });
       });
     });
   });
@@ -94,8 +108,10 @@ describe('Directive: Color Validator', function() {
     .then(function() {
       color.sendKeys('hsl(120, 100%, 50%)')
       .then(function() {
-        expect(helper.hasClass(color, 'ng-valid')).toBe(true);
-        expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        return expect(helper.hasClass(color, 'ng-valid')).toBe(true)
+        .then(function() {
+          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        });
       });
     });
   });
@@ -105,10 +121,11 @@ describe('Directive: Color Validator', function() {
     .then(function() {
       color.sendKeys('hsla(120, 100%, 50%, 0.5)')
       .then(function() {
-        expect(helper.hasClass(color, 'ng-valid')).toBe(true);
-        expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        return expect(helper.hasClass(color, 'ng-valid')).toBe(true)
+        .then(function() {
+          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+        });
       });
     });
   });
-
 });
