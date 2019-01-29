@@ -3,7 +3,6 @@ var path = require('path');
 var Boom = require('boom');
 var Hoek = require('hoek');
 var limiter = require('rolling-rate-limiter');
-var roles = require(path.normalize(__dirname + '/../acls/roles'));
 var redis;
 
 var namespace = 'ept:';
@@ -69,7 +68,7 @@ exports.register = function(plugin, options, next) {
       var priority;
       var limits;
       userRoles.forEach(function(role) {
-        var userRole = roles[role];
+        var userRole = request.rolesAPI.getRole(role);
         if (userRole) { // fix for when role is removed, but "undefined" remains in redis
           var userLimits = userRole.limits;
           var priorityValid = priority === undefined || userRole.priority > priority;

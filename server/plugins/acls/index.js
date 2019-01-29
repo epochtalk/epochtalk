@@ -61,6 +61,7 @@ exports.register = function (server, options, next) {
     addRole: addRole,
     updateRole: updateRole,
     deleteRole: deleteRole,
+    getRole: function(name) { return roles[name]; },
     reprioritizeRoles: reprioritizeRoles
   };
   server.decorate('server', 'rolesAPI', rolesAPI);
