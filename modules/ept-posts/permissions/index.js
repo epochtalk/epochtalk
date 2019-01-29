@@ -342,29 +342,29 @@ var layout = {
   },
   byThread: {
     title: 'View Thread Posts',
-    bypasses: [ { description: 'View Deleted Posts', control: 'viewDeletedPosts' } ]
+    bypasses: [ { description: 'View Hidden Posts', control: 'viewDeletedPosts' } ]
   },
   find: {
     title: 'View Single Post',
-    bypasses: [ { description: 'View Deleted Posts', control: 'viewDeletedPosts' } ]
+    bypasses: [ { description: 'View Hidden Posts', control: 'viewDeletedPosts' } ]
   },
   pageByUser: {
     title: 'View User Posts',
     bypasses: [
-      { description: 'View Deleted Users', control: 'viewDeletedUsers', type: 'boolean'},
-      { description: 'View Deleted Posts', control: 'viewDeletedPosts' }
+      { description: 'View Deactivated User\'s Posts', control: 'viewDeletedUsers', type: 'boolean'},
+      { description: 'View Hidden Posts', control: 'viewDeletedPosts' }
     ]
   },
   update: {
     title: 'Update Posts',
     bypasses: [
       { description: 'Ignore Post Ownership', control: 'owner', type: 'priority' },
-      { description: 'Ignore Deleted Posts', control: 'deleted', type: 'priority' },
+      { description: 'Ignore Hidden Posts', control: 'deleted', type: 'priority' },
       { description: 'Ignore Thread Lock', control: 'locked', type: 'priority' }
     ]
   },
   delete: {
-    title: 'Delete Posts',
+    title: 'Hide Posts',
     bypasses: [
       { description: 'Ignore Post Ownership', control: 'owner', type: 'priority' },
       { description: 'Ignore Thread Lock', control: 'locked', type: 'priority' }
