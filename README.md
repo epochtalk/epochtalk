@@ -32,74 +32,12 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * Customizable Theming (Branding, coloring, fonts, sizes)
 * Fully modular permissions system with roles
 
-## Dependencies
-### System
+## System Dependencies
 * [node](http://nodejs.org)
 * [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
 * [yarn](https://yarnpkg.com)
 * [Postgres](http://www.postgresql.org/)
 * [Redis](http://redis.io/)
-
-### NPM
-* @uirouter/angularjs `^1.0.20`
-* angular `1.4.4`
-* angular-animate `1.4.4`
-* angular-loading-bar `0.7.1`
-* angular-resource `1.4.4`
-* angular-sanitize `1.4.4`
-* angular-sortable-view `0.0.13`
-* aws-sdk `^2.339.0`
-* bcrypt `^3.0.2`
-* bluebird `^3.3.1`
-* boom `^7.2.0`
-* change-case `^2.3.1`
-* cheerio `^0.20.0`
-* commander `^2.9.0`
-* deep-rename-keys `^0.1.0`
-* del `^2.2.0`
-* dot `^1.0.3`
-* dotenv `^4.0.0`
-* epochtalk-core-pg `^1.0.8`
-* fs-extra `^4.0.2`
-* good `^7.3.0`
-* good-console `^6.4.0`
-* good-file `^6.0.1`
-* good-http `^6.1.3`
-* good-squeeze `^5.0.2`
-* handlebars `^4.0.11`
-* hapi `^16.6.2`
-* hoek `^5.0.4`
-* inert `^4.2.1`
-* ip-address `^5.0.2`
-* joi `^13.7.0`
-* jquery `3.0.0`
-* json `^9.0.3`
-* jsonwebtoken `^8.1.0`
-* klaw `^2.1.1`
-* lodash `^4.17.11`
-* marked `^0.3.6`
-* mkdirp `^0.5.1`
-* mmmagic `^0.4.6`
-* nestable `git+https://github.com/slickage/Nestable.git`
-* ng-tags-input `3.0.0`
-* node-sass `^4.9.3`
-* node-sass-globbing `0.0.23`
-* nodemailer `^2.0.0`
-* nodemailer-ses-transport `^1.5.1`
-* oclazyload `^1.1.0`
-* pg `^6.1.2`
-* redis `^2.8.0`
-* request `^2.88.0`
-* rolling-rate-limiter `^0.1.10`
-* sanitize-html `^1.4.3`
-* socketcluster `^14.3.2`
-* socketcluster-client `^14.2.1`
-* stream-meter `^1.0.3`
-* through2 `^2.0.0`
-* uuid `^3.1.0`
-* vision `^4.1.1`
-* webpack `^4.20.1`
-* webpack-cli `^3.1.2`
 
 ## Installation
 
