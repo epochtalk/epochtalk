@@ -100,6 +100,7 @@ app
     var next = transition.to();
     var nextParams = transition.params();
 
+    console.log(error);
     // stop page change
     if (error === 'NoPageChange') { return; }
 
