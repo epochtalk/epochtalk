@@ -1846,9 +1846,10 @@ entities@^1.1.1, entities@~1.1.1:
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.2.tgz#bdfa735299664dfafd34529ed4f8522a275fea56"
   integrity sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==
 
-"epochtalk-core-pg@https://github.com/epochtalk/core-pg.git#43383c756b71046bae08c3cb0086a8038477a032":
-  version "1.0.8"
-  resolved "https://github.com/epochtalk/core-pg.git#43383c756b71046bae08c3cb0086a8038477a032"
+epochtalk-core-pg@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/epochtalk-core-pg/-/epochtalk-core-pg-1.0.9.tgz#f75671de2bf4e5f1f4f6ef93414bd53179e23923"
+  integrity sha512-UiNdr+Eh51zA6XEd52SYsu3FrkwJC3hyUBTOklm05z0NT5ppv1oPdzy1rMMD/l4HmszfNaQqsnNMbYlDK5Srag==
   dependencies:
     bcrypt "^3.0.3"
     bluebird "^3.5.1"
