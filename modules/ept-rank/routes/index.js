@@ -8,11 +8,11 @@ var Joi = require('joi');
   * @apiPermission Super Administrator, Administrator
   * @apiDescription Used to insert/update ranks
   *
-  * @apiParam (Payload) {object[]} ranks The id of the rank to updated
+  * @apiParam (Payload) {object[]} ranks The list of ranks to be updated
   * @apiParam (Payload) {string} ranks.name The name of the rank
   * @apiParam (Payload) {number} ranks.post_count The post count needed to achieve the rank
   *
-  * @apiSuccess {object[]} ranks The id of the rank to updated
+  * @apiSuccess {object[]} ranks The list of ranks which were updated
   * @apiSuccess {string} ranks.name The name of the rank
   * @apiSuccess {number} ranks.post_count The post count needed to achieve the rank
   *

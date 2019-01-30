@@ -3,7 +3,20 @@ var Promise = require('bluebird');
 var path = require('path');
 var motdPath = path.normalize(__dirname + '/../../../content/motd/motd.txt');
 
-
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup MOTD
+  * @api {GET} /motd Get Message of the Day
+  * @apiName GetMOTD
+  * @apiPermission User
+  * @apiDescription Used to retrieve the message of the day
+  *
+  * @apiSuccess {string} motd The unparsed motd, may contain bbcode or markdown
+  * @apiSuccess {string} motd_html The parsed motd html to display to users
+  * @apiSuccess {boolean} main_view_only Lets the UI know to display on the main page or all pages
+  *
+  * @apiError (Error 500) InternalServerError There was an issue retrieving the Message of the Day
+  */
 var get = {
   method: 'GET',
   path: '/api/motd',
@@ -26,6 +39,23 @@ var get = {
   }
 };
 
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup MOTD
+  * @api {PUT} /motd Set Message of the Day
+  * @apiName SetMOTD
+  * @apiPermission Super Administrator, Administrator
+  * @apiDescription Used to set the message of the day
+  *
+  * @apiParam (Payload) {string} motd The unparse message of the day, may contain markdown or bbcode
+  * @apiParam (Payload) {boolean} main_view_only Lets the UI know to display on the main page or all pages
+  *
+  * @apiSuccess {string} motd The unparsed motd, may contain bbcode or markdown
+  * @apiSuccess {string} motd_html The parsed motd html to display to users
+  * @apiSuccess {boolean} main_view_only Lets the UI know to display on the main page or all pages
+  *
+  * @apiError (Error 500) InternalServerError There was an issue saving the Message of the Day
+  */
 var save = {
   method: 'PUT',
   path: '/api/motd',
