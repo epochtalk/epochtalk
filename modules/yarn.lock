@@ -7,6 +7,7 @@ bct-activity@^1.0.3:
   resolved "https://registry.yarnpkg.com/bct-activity/-/bct-activity-1.0.3.tgz#0b16c705dbe74c8ac57d07722355535b9bb5fc9d"
   integrity sha512-DMsPHCTxEoeAmJ2yn/9zFw3pGsy0aa+J4Krw//ovQ+AVN5AZlBtWViC8wsPNCxKjgW0GitlmJewfQe9mdS424w==
 
-"bct-trust@https://github.com/epochtalk/bct-trust.git":
-  version "1.0.5"
-  resolved "https://github.com/epochtalk/bct-trust.git#c587b4a065df9d7cb889abf75737bbf222220848"
+bct-trust@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/bct-trust/-/bct-trust-1.0.6.tgz#1b5d2707d5c0c9cfe7617bb3a42f2c3a14b8055b"
+  integrity sha512-38vTHxoGI6i5JWKVNqoG4AU6RsvbhpZGGW/4aRVrLbet5VDJWPSyCkViVjF6GWWm2YMMBb3+CTgCYLf/aw0c7A==

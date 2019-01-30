@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "bct-activity": "^1.0.3",
-    "bct-trust": "https://github.com/epochtalk/bct-trust.git"
+    "bct-trust": "^1.0.6"
   }
 }
