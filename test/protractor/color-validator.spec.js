@@ -2,7 +2,6 @@ var path = require('path');
 var helper = require(path.join(__dirname, 'helper'));
 
 describe('Directive: Color Validator', function() {
-  var color = element(by.id('base-background-color'));
 
   // Init for test
   helper.login()
@@ -12,6 +11,7 @@ describe('Directive: Color Validator', function() {
 
   // Negative test cases
   it('A number should be an invalid color', function() {
+    var color = element(by.id('base-background-color'));
     return color.clear().sendKeys(1)
     .then(function() {
       expect(helper.hasClass(color, 'ng-invalid')).toBe(true);
@@ -20,6 +20,7 @@ describe('Directive: Color Validator', function() {
   });
 
   it('A non-color string should be an invalid color', function() {
+    var color = element(by.id('base-background-color'));
     return color.clear().sendKeys('invalid-color')
     .then(function() {
       expect(helper.hasClass(color, 'ng-invalid')).toBe(true);
@@ -29,6 +30,7 @@ describe('Directive: Color Validator', function() {
 
   // Positive test cases
   it('A color string should be a valid color', function() {
+    var color = element(by.id('base-background-color'));
     return color.clear().sendKeys('white')
     .then(function() {
       expect(helper.hasClass(color, 'ng-valid')).toBe(true);
@@ -37,6 +39,7 @@ describe('Directive: Color Validator', function() {
   });
 
   it('Shorthand hexadecimal values should be a valid color', function() {
+    var color = element(by.id('base-background-color'));
     return color.clear().sendKeys('#fff')
     .then(function() {
       expect(helper.hasClass(color, 'ng-valid')).toBe(true);
@@ -45,8 +48,8 @@ describe('Directive: Color Validator', function() {
   });
 
   it('Hexadecimal values should be a valid color', function() {
-    var val = '#ffffff';
-    return color.clear().sendKeys(val)
+    var color = element(by.id('base-background-color'));
+    return color.clear().sendKeys('#ffffff')
     .then(function() {
       expect(helper.hasClass(color, 'ng-valid', true)).toBe(true);
       expect(helper.hasClass(color, 'ng-dirty', true)).toBe(true);
@@ -54,6 +57,7 @@ describe('Directive: Color Validator', function() {
   });
 
   it('RGB values should be a valid color', function() {
+    var color = element(by.id('base-background-color'));
     return color.clear().sendKeys('rgb(255,255,255)')
     .then(function() {
       expect(helper.hasClass(color, 'ng-valid')).toBe(true);
@@ -62,6 +66,7 @@ describe('Directive: Color Validator', function() {
   });
 
   it('RGBA values should be a valid color', function() {
+    var color = element(by.id('base-background-color'));
     return color.clear().sendKeys('rgba(255,255,255,0.5)')
     .then(function() {
       expect(helper.hasClass(color, 'ng-valid')).toBe(true);
@@ -70,6 +75,7 @@ describe('Directive: Color Validator', function() {
   });
 
   it('HSL values should be a valid color', function() {
+    var color = element(by.id('base-background-color'));
     return color.clear().sendKeys('hsl(120, 100%, 50%)')
     .then(function() {
       expect(helper.hasClass(color, 'ng-valid')).toBe(true);
@@ -78,6 +84,7 @@ describe('Directive: Color Validator', function() {
   });
 
   it('HSLA values should be a valid color', function() {
+    var color = element(by.id('base-background-color'));
     return color.clear().sendKeys('hsla(120, 100%, 50%, 0.5)')
     .then(function(){
       expect(helper.hasClass(color, 'ng-valid')).toBe(true);
