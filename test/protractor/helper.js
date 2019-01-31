@@ -4,8 +4,9 @@ var host = exports.host = process.env.SELENIUM_EPOCHTALK_HOST + ':' + process.en
 
 exports.hasClass = function (element, cls, log) {
   return element.getAttribute('class').then(function (classes) {
-    if (log) { console.log(JSON.stringify(classes.split(' '), null, 2)); }
-    return classes.split(' ').indexOf(cls) !== -1;
+    classes = classes.split(' ');
+    if (log) { console.log(JSON.stringify(classes, null, 2)); }
+    return classes.indexOf(cls) !== -1;
   });
 };
 
