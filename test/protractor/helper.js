@@ -2,8 +2,9 @@ require('dotenv').load({ path: 'protractor.env', slient: true });
 
 var host = exports.host = process.env.SELENIUM_EPOCHTALK_HOST + ':' + process.env.SELENIUM_EPOCHTALK_PORT;
 
-exports.hasClass = function (element, cls) {
+exports.hasClass = function (element, cls, log) {
   return element.getAttribute('class').then(function (classes) {
+    if (log) { console.log(JSON.stringify(classes.split(' '), null, 2)); }
     return classes.split(' ').indexOf(cls) !== -1;
   });
 };

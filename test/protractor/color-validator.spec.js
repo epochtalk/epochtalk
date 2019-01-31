@@ -69,9 +69,9 @@ describe('Directive: Color Validator', function() {
     .then(function() {
       color.sendKeys('#000000')
       .then(function() {
-        return expect(helper.hasClass(color, 'ng-valid')).toBe(true)
+        return expect(helper.hasClass(color, 'ng-valid', true)).toBe(true)
         .then(function() {
-          return expect(helper.hasClass(color, 'ng-dirty')).toBe(true);
+          return expect(helper.hasClass(color, 'ng-dirty', true)).toBe(true);
         });
       });
     });
