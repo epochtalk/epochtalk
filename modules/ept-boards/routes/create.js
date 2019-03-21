@@ -45,7 +45,7 @@ module.exports = {
         description: Joi.string().max(255).allow(''),
         viewable_by: Joi.number(),
         postable_by: Joi.number()
-      })).unique().min(1)
+      })).min(1)
     },
     pre: [
       { method: 'auth.boards.create(server, auth)' },
