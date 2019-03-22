@@ -137,6 +137,46 @@ var XBBCODE = (function () {
                 return '</acronym>';
             }
         },
+        "black": {
+            openTag: function () {
+                return '<span style="color: black;">';
+            },
+            closeTag: function () {
+                return '</span>';
+            }
+        },
+        "blue": {
+            openTag: function () {
+                return '<span style="color: blue;">';
+            },
+            closeTag: function () {
+                return '</span>';
+            }
+        },
+        "green": {
+            openTag: function () {
+                return '<span style="color: green;">';
+            },
+            closeTag: function () {
+                return '</span>';
+            }
+        },
+        "red": {
+            openTag: function () {
+                return '<span style="color: red;">';
+            },
+            closeTag: function () {
+                return '</span>';
+            }
+        },
+        "white": {
+            openTag: function () {
+                return '<span style="color: white;">';
+            },
+            closeTag: function () {
+                return '</span>';
+            }
+        },
         "b": {
             openTag: function () {
                 return '<b>';
