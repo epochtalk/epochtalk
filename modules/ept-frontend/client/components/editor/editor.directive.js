@@ -56,7 +56,7 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
         var processed = rawText;
         $window.parsers.forEach(function(parser) {
           // second boolean tells the processor to strip html
-          processed = parser.parse(processed, true);
+          processed = parser.parse(processed, false);
         });
 
         // re-bind to scope
