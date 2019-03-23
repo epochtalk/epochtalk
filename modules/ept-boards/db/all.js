@@ -10,6 +10,7 @@ module.exports = function() {
     description,
     viewable_by,
     postable_by,
+    right_to_left,
     created_at,
     updated_at,
     imported_at

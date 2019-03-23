@@ -20,6 +20,7 @@ module.exports = function(userPriority, opts) {
         b.description,
         b.viewable_by,
         b.postable_by,
+        b.right_to_left,
         b.thread_count,
         b.post_count,
         b.created_at,
