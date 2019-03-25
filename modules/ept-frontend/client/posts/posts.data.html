@@ -50,12 +50,12 @@
         </div>
 
         <ul class="post-action">
-          <li ng-if="PostsCtrl.canPurge() && $index !== 0">
+          <li ng-if="PostsCtrl.canPurge() && post.position !== 1">
             <a ng-href="#" data-balloon="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
               <i class="fa fa-trash"></i>
             </a>
           </li>
-          <li ng-if="PostsCtrl.canDelete(post) && $index !== 0 && !post.deleted">
+          <li ng-if="PostsCtrl.canDelete(post) && post.position !== 1 && !post.deleted">
             <a ng-href="#" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index)">
               <i class="fa fa-eye-slash"></i>
             </a>
