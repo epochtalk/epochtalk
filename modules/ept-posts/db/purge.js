@@ -44,6 +44,12 @@ module.exports = function(id) {
         if (!post.deleted) {
           return client.query(queryUpdateThreadPostCount, [post.thread_id]);
         }
+      })
+      .then(function() {
+        return {
+          user_id: post.user_id,
+          thread_id: post.thread_id
+        };
       });
   })
   .then(helper.slugify);

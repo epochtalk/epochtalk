@@ -22,6 +22,12 @@ module.exports = {
   path: '/api/posts/{id}',
   config: {
     auth: { strategy: 'jwt' },
+    plugins: {
+      mod_log: {
+        type: 'posts.delete',
+        data: { id: 'params.id' }
+      }
+    },
     validate: {
       params: { id: Joi.string().required() },
       query: { locked: Joi.boolean().default(false) }
