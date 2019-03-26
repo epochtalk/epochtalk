@@ -178,6 +178,24 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         // dump html into element
         $element.html(processed);
 
+        // Remove first newline from codeblock
+        // This allows users to type:
+        // [code]
+        // Hello World
+        // [/code]
+        // Without having extra padding at the top of the code block
+        var codeBlocks = $element.find("CODE");
+        if (codeBlocks.length > 0) {
+          for (var i = 0; i < codeBlocks.length; i++) {
+            var codeBlock = angular.element(codeBlocks[i]);
+            var text = codeBlock.text();
+            if (text.charAt(0) == '\n') {
+              text = text.substr(1);
+              codeBlock.text(text);
+            }
+          }
+        }
+
         // image loading
         var images = $($element[0]).find('img');
         images.each(function(index, image) {
