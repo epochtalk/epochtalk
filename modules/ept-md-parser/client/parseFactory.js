@@ -5,7 +5,6 @@ function parse(input) {
   if (!input) { input = ''; }
   // escape back slashes before parsing markdown
   input = input.replace(/\\/g, '&#92;');
-  console.log('MD Before:', input);
   var regex = /\`([\s\S]*?)\`/gi;
 
   // MD parser replaces &lt with &amp;lt within code tags, change them back to < and >
