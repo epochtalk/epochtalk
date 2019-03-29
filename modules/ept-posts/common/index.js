@@ -181,6 +181,7 @@ function cleanPosts(posts, currentUserId, viewContext) {
         id: post.id,
         hidden: true,
         _deleted: true,
+        position: post.position,
         thread_title: 'deleted',
         user: {}
       };

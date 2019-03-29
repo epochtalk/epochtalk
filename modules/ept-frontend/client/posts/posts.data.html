@@ -2,7 +2,8 @@
   <!-- Delete Post View -->
   <div class="deleted" ng-if="post._deleted || post.user.ignored">
     Post
-    <span ng-if="post._deleted">Deleted</span>
+    <span ng-if="post._deleted">Hidden By User</span>
+    <div class="right bold secondary-font-color-light" ng-if="post._deleted">#{{post.position}}</div>
     <span ng-if="post.user.ignored">Ignored</span>
     <small class="pointer" ng-if="post.user.ignored" ng-click="post.user.ignored = false">
       <strong>- Show Post</strong>
@@ -92,7 +93,8 @@
           </li>
           <li>
             <a ng-href="{{::PostsCtrl.rootUrl}}?start={{::post.position}}#{{::post.id}}" ng-click="PostsCtrl.highlightPost()" data-balloon="Permalink">
-              <i class="icon-epoch-link"></i>
+              <!-- <i class="icon-epoch-link"></i> -->
+              <strong>#{{post.position}}</strong>
             </a>
           </li>
         </ul>
