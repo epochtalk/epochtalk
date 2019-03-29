@@ -34,17 +34,22 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
 
-        anch.innerHTML = url;
-        anch.href = url;
-        anch.target = '_blank';
-        wrap.appendChild(anch);
-        return wrap.innerHTML;
+        if (validUrl(url)) {
+          anch.innerHTML = url;
+          anch.href = url;
+          anch.target = '_blank';
+          wrap.appendChild(anch);
+          return wrap.innerHTML;
+        }
+        else { return url; }
       };
 
       var validUrl = function(s) {
         try {
-          new URL(s);
-          return true;
+          var testUrl = new URL(s);
+          var urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm;
+          var reg = new RegExp(urlRegex);
+          return s.match(reg);
         }
         catch(e) { return false; }
       };
