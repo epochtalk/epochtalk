@@ -48,7 +48,6 @@ common.apiExport = () => {
 function clean(sanitizer, payload) {
   var hadLength = payload.body.length > 0;
   payload.title = sanitizer.strip(payload.title);
-  payload.body = sanitizer.bbcode(payload.body);
   if (hadLength && !payload.body.length) {
     var msg = 'Post body contained no data after sanitizing html tags.';
     return Promise.reject(Boom.badRequest(msg));
@@ -56,8 +55,12 @@ function clean(sanitizer, payload) {
 }
 
 function parse(parser, payload) {
+  var hadLength = payload.body.length > 0;
   payload.body_html = parser.parse(payload.body);
-
+  if (hadLength && !payload.body_html.length) {
+    var msg = 'Post body contained no data after parsing';
+    return Promise.reject(Boom.badRequest(msg));
+  }
   // check if parsing was needed
   if (payload.body_html === payload.body) { payload.body_html = ''; }
 }
