@@ -29,6 +29,7 @@ module.exports = {
     },
     pre: [
       { method: 'auth.posts.create(server, auth, payload.thread_id)' },
+      { method: 'common.posts.checkPostLength(server, payload.body)' },
       { method: 'common.posts.clean(sanitizer, payload)' },
       { method: 'common.posts.parse(parser, payload)' },
       { method: 'common.images.sub(payload)' },

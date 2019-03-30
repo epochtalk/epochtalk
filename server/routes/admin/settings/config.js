@@ -113,6 +113,7 @@ exports.find = {
          logEnabled: config.logEnabled,
          loginRequired: config.loginRequired,
          verifyRegistration: config.verifyRegistration,
+         postMaxLength: config.postMaxLength || 10000,
          inviteOnly: config.inviteOnly,
          gaKey: config.gaKey || '',
          website: config.website,
@@ -203,6 +204,7 @@ exports.update = {
       log_enabled: Joi.boolean(),
       verify_registration: Joi.boolean(),
       login_required: Joi.boolean(),
+      post_max_length: Joi.number().min(100).max(25000).required(),
       invite_only: Joi.boolean(),
       ga_key: Joi.string().allow(''),
       website: Joi.object().keys({

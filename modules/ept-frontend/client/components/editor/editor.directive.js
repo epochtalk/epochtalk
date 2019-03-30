@@ -37,6 +37,9 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
       var editor = $element[0].getElementsByClassName('editor-input')[0];
       var $editor = angular.element(editor);
 
+      // Grab post_max_length from web configs
+      $scope.post_max_length = $rootScope.$webConfigs.post_max_length;
+
       // -- Images
 
       $scope.insertImageUrl = function(url) {

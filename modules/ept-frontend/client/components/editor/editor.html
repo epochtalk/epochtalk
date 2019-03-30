@@ -5,7 +5,7 @@
 
 <div class="editor-body" ng-init="preview = false;">
   <div class="editor-column-input" ng-class="{ 'hidden': preview }">
-    <textarea class="editor-input" ng-class="{ 'rtl': right_to_left }" placeholder="Enter your reply here. (BTW, you can drag and drop images directly into the editor panel)" maxlength="5000"></textarea>
+    <textarea class="editor-input" ng-class="{ 'rtl': right_to_left }" placeholder="Enter your reply here. (BTW, you can drag and drop images directly into the editor panel)" maxlength="{{post_max_length || 10000 }}"></textarea>
     <div class="editor-drag-container">
       <div class="editor-drag">
         <div class="editor-drag-text">Drag and Drop Images</div>

@@ -23,6 +23,7 @@ var config = {
   publicUrl: process.env.PUBLIC_URL,
   privateKey: process.env.PRIVATE_KEY,
   inviteOnly: process.env.INVITE_ONLY === 'true' || false,
+  postMaxLength: Number(process.env.POST_MAX_LENGTH) || 10000,
   saasMode: process.env.SAAS_MODE === 'true' || false,
   newbieEnabled: process.env.NEWBIE_ENABLED === 'true' || false,
   recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,

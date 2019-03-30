@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 var common = {};
 module.exports = common;
 
+common.checkPostLength = checkPostLength;
 common.clean = clean;
 common.parse = parse;
 common.parseOut = parseOut;
@@ -13,6 +14,11 @@ common.cleanPosts = cleanPosts;
 
 common.export = () =>  {
   return [
+    {
+      name: 'common.posts.checkPostLength',
+      method: checkPostLength,
+      options: { callback: false }
+    },
     {
       name: 'common.posts.clean',
       method: clean,
@@ -45,11 +51,18 @@ common.apiExport = () => {
   return { format: cleanPosts  };
 };
 
+function checkPostLength(server, postBody) {
+  if (postBody && postBody.length > server.app.config.postMaxLength) {
+    var msg = 'Error: Post body too long, max post length is ' + server.app.config.postMaxLength;
+    return Promise.reject(Boom.badRequest(msg));
+  }
+}
+
 function clean(sanitizer, payload) {
   var hadLength = payload.body.length > 0;
   payload.title = sanitizer.strip(payload.title);
   if (hadLength && !payload.body.length) {
-    var msg = 'Post body contained no data after sanitizing html tags.';
+    var msg = 'Error: Post body contained no data after sanitizing html tags.';
     return Promise.reject(Boom.badRequest(msg));
   }
 }
@@ -58,7 +71,7 @@ function parse(parser, payload) {
   var hadLength = payload.body.length > 0;
   payload.body_html = parser.parse(payload.body);
   if (hadLength && !payload.body_html.length) {
-    var msg = 'Post body contained no data after parsing';
+    var msg = 'Error: Post body contained no data after parsing';
     return Promise.reject(Boom.badRequest(msg));
   }
   // check if parsing was needed
