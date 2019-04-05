@@ -53,7 +53,7 @@ module.exports = function postsLock(server, auth, postId, query) {
     type: 'isMod',
     method: server.db.moderators.isModeratorSelfModerated,
     args: [auth.credentials.id, postId],
-    permission: server.plugins.acls.getACLValue(auth, 'posts.lock.bypass.lock.mod')
+    permission: server.plugins.acls.getACLValue(auth, 'posts.lock.allow')
   });
 
   var hasSelfModPrivilege = server.plugins.acls.getACLValue(auth, 'threads.moderated');
@@ -61,8 +61,8 @@ module.exports = function postsLock(server, auth, postId, query) {
   // check self mod permissions
   var permissionsCond = [
     ignoreOwnership,
-    common.hasPriority(server, auth, 'posts.lock.bypass.lock.mod', postId), // User has permission to lock posts they mod if user has lesser priority
-    common.hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId) // User has permission to local all posts with lesser priority
+    common.hasPriority(server, auth, 'posts.lock.allow', postId), // User has permission to lock posts they mod if user has same/lesser priority
+    common.hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId) // User has permission to local all posts with same/lesser priority
   ];
 
   var permissions = server.authorization.stitch(Boom.forbidden('Invalid permissions'), permissionsCond, 'any');

@@ -27,7 +27,7 @@ module.exports = function postsDelete(server, auth, postId) {
   var hasSMPrivilege = server.plugins.acls.getACLValue(auth, 'threads.moderated');
   var isThreadModerated = server.db.posts.isPostsThreadModerated(postId);
   var isThreadOwner = server.db.posts.isPostsThreadOwner(postId, userId);
-  var isModHasPriority = common.hasPriority(server, auth, 'posts.delete.bypass.locked.mod', postId);
+  var isSMHasPriority = common.hasPriority(server, auth, 'posts.delete.allow', postId);
   var deleteCond = [
     {
       // permission based override
@@ -50,7 +50,7 @@ module.exports = function postsDelete(server, auth, postId) {
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.delete.bypass.owner.mod')
     },
-    Promise.join(isThreadModerated, isThreadOwner, hasSMPrivilege, isModHasPriority, function(threadSM, owner, userSM, priority) {
+    Promise.join(isThreadModerated, isThreadOwner, hasSMPrivilege, isSMHasPriority, function(threadSM, owner, userSM, priority) {
       if (threadSM && owner && userSM && priority) { return true; }
       else { return Promise.reject(Boom.forbidden()); }
     }),

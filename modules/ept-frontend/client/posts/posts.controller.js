@@ -100,7 +100,6 @@ var ctrl = [
         if (Session.hasPermission('posts.delete.bypass.locked.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.delete.bypass.locked.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
-          else if (ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated) { validBypass = true; }
         }
         else if (Session.hasPermission('posts.delete.bypass.locked.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
@@ -130,13 +129,13 @@ var ctrl = [
       if (Session.hasPermission('posts.lock.bypass.lock.admin')) { return true; }
       else if (Session.hasPermission('posts.lock.bypass.lock.mod')) {
         if (Session.moderatesBoard(ctrl.thread.board_id)) { return true; }
-        else if (ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated) { return true; }
         else { return false; }
       }
       else if (Session.hasPermission('posts.lock.bypass.lock.priority')) {
         if (Session.getPriority() < post.user.priority) { return true; }
         else { return false; }
       }
+      else if (ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated) { return true; }
       else { return false; }
     };
 

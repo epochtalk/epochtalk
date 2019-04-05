@@ -32,8 +32,20 @@ module.exports = function postsByThread(server, auth, threadId) {
     var result = false;
     if (viewAll) { result = true; }
     else if (viewSome && boards.length > 0) { result = boards; }
+    else if (viewSome && !boards.length) {
+      var selfMod = server.authorization.build({
+        // is thread moderator
+        type: 'isMod',
+        method: server.db.moderators.isModeratorSelfModeratedThread,
+        args: [auth.credentials.id, threadId],
+        permission: server.plugins.acls.getACLValue(auth, 'posts.byThread.bypass.viewDeletedPosts.mod')
+      });
+      result = selfMod;
+    }
     return result;
   });
+
+
 
   return Promise.all([allowed, read, viewDeleted])
   .then((data) => { return data[2]; });

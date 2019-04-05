@@ -2,7 +2,7 @@
   <!-- Delete Post View -->
   <div class="deleted" ng-if="post._deleted || post.user.ignored">
     Post
-    <span ng-if="post._deleted">Hidden By User</span>
+    <span ng-if="post._deleted">Hidden</span>
     <div class="right bold secondary-font-color-light" ng-if="post._deleted">#{{post.position}}</div>
     <span ng-if="post.user.ignored">Ignored</span>
     <small class="pointer" ng-if="post.user.ignored" ng-click="post.user.ignored = false">

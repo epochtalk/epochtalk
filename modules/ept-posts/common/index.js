@@ -124,8 +124,8 @@ function hasPriority(server, auth, permission, postId) {
     .error(() => { return Promise.reject(Boom.badRequest()); });
 
     return Promise.join(postUserPriority, authedUserPriority, function(pid, aid) {
-      // Authed user has higher priority than post's user
-      if (hasPermission && aid < pid) { return true; }
+      // Authed user has higher or same priority than post's user
+      if (hasPermission && aid <= pid) { return true; }
       else { return Promise.reject(Boom.badRequest()) }
     });
   });

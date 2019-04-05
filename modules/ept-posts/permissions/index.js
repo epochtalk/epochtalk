@@ -371,7 +371,7 @@ var layout = {
     ]
   },
   lock: {
-    title: 'Lock Posts (lock level required)',
+    title: 'Lock Posts (lock level required for threads that are not self moderated)',
     bypasses: [ { description: 'Lock Level', control: 'lock', type: 'priority' } ]
   },
   purge: {
