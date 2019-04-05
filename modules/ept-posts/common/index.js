@@ -11,6 +11,7 @@ common.clean = clean;
 common.parse = parse;
 common.parseOut = parseOut;
 common.cleanPosts = cleanPosts;
+common.hasPriority = hasPriority;
 
 common.export = () =>  {
   return [
@@ -37,11 +38,6 @@ common.export = () =>  {
     {
       name: 'common.posts.newbieImages',
       method: newbieImages,
-      options: { callback: false }
-    },
-    {
-      name: 'common.posts.checkLockedQuery',
-      method: checkLockedQuery,
       options: { callback: false }
     }
   ];
@@ -110,53 +106,28 @@ function newbieImages(auth, payload) {
   payload.body_html = $.html();
 }
 
-function checkLockedQuery(server, auth, postId, query) {
-  // has lock query
-  if (!query.locked) { return; }
-
-  // has lock permissions
-  var hasLocked = server.plugins.acls.getACLValue(auth, 'posts.lock.allow');
-
-  // apply lock permission
-  var cond = [
-    {
-      // permission based override
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'posts.lock.bypass.lock.admin'
-    },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [auth.credentials.id, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.lock.bypass.lock.mod')
-    },
-    hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId)
-  ];
-
-  return server.authorization.stitch(Boom.forbidden(), cond, 'any')
-  .then(function() {
-    if (hasLocked) { return; }
-    else { query.locked = ''; }
-  })
-  .catch(function() { query.locked = ''; });
-}
-
 function hasPriority(server, auth, permission, postId) {
-  var actorPermission = server.plugins.acls.getACLValue(auth, permission);
-  if (!actorPermission) { return Promise.reject(Boom.forbidden()); }
+  var hasPermission = server.plugins.acls.getACLValue(auth, permission);
 
-  var hasPatrollerRole = false;
-  auth.credentials.roles.map(function(role) {
-    if (role === 'patroller') { hasPatrollerRole = true; }
-  });
+  return server.db.posts.find(postId)
+  .then(function(post) {
+    // Allow users to perform actions on their own posts
+    if (post.user.id == auth.credentials.id) { return true; }
+    // get referenced user's priority
+    var postUserPriority = server.db.users.find(post.user.id)
+    .then(function(paramUser) { return _.min(_.map(paramUser.roles, 'priority')); })
+    .error(() => { return Promise.reject(Boom.badRequest()); });
 
-  return server.db.roles.posterHasRole(postId, 'newbie')
-  .then(function(posterIsNewbie) {
-    if (hasPatrollerRole && posterIsNewbie) { return true; }
-    else { return Promise.reject(Boom.forbidden()); }
+    // get authed user's priority
+    var authedUserPriority = server.db.users.find(auth.credentials.id)
+    .then(function(authUser) { return _.min(_.map(authUser.roles, 'priority')); })
+    .error(() => { return Promise.reject(Boom.badRequest()); });
+
+    return Promise.join(postUserPriority, authedUserPriority, function(pid, aid) {
+      // Authed user has higher priority than post's user
+      if (hasPermission && aid < pid) { return true; }
+      else { return Promise.reject(Boom.badRequest()) }
+    });
   });
 }
 

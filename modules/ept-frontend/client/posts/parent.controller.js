@@ -368,9 +368,10 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
     this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };
 
     this.deletePostIndex = -1;
-    this.deleteAndLock = true;
+    this.deleteAndLock = false;
     this.showDeleteModal = false;
     this.openDeleteModal = function(index) {
+      ctrl.deleteAndLock = ctrl.canPostLockQuick(index);
       ctrl.deletePostIndex = index;
       ctrl.showDeleteModal = true;
     };

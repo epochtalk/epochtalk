@@ -34,7 +34,7 @@ module.exports = {
     },
     pre: [
       { method: 'auth.posts.delete(server, auth, params.id)' },
-      { method: 'common.posts.checkLockedQuery(server, auth, params.id, query)' }
+      { method: 'auth.posts.lock(server, auth, params.id, query)' }
     ],
     handler: function(request, reply) {
       var promise = request.db.posts.delete(request.params.id)
