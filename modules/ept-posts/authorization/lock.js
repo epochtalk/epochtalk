@@ -48,27 +48,61 @@ module.exports = function postsLock(server, auth, postId, query) {
     permission: 'posts.lock.bypass.lock.admin'
   });
 
-  var selfMod = server.authorization.build({
-    // is thread moderator
-    type: 'isMod',
-    method: server.db.moderators.isModeratorSelfModerated,
-    args: [auth.credentials.id, postId],
-    permission: server.plugins.acls.getACLValue(auth, 'posts.lock.allow')
-  });
+  var notLockedByHigherPriority = function(userId, postId) {
+    return server.db.posts.find(postId)
+    .then(function(post) {
+      var authedUserPriority = server.plugins.acls.getUserPriority(auth);
+      // Post was locked by someone else
+      if (authedUserPriority && post.metadata && post.metadata.locked_by_id && post.metadata.locked_by_id !== userId) {
+        // Person who locked the post has greater priority
+        if (post.metadata.locked_by_priority < authedUserPriority) {
+          return Promise.reject(Boom.forbidden());
+        }
+      }
+      return Promise.resolve(true);
+    })
+  }
 
-  var hasSelfModPrivilege = server.plugins.acls.getACLValue(auth, 'threads.moderated');
+  // Is user self moderator and do they have priority to hide post
+  var selfModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorSelfModerated,
+      args: [userId, postId],
+      permission: 'posts.lock.bypass.lock.selfMod'
+    },
+    common.hasPriority(server, auth, 'posts.lock.bypass.lock.selfMod', postId),
+    notLockedByHigherPriority(userId, postId)
+  ];
+  var selfMod = server.authorization.stitch(Boom.forbidden(), selfModCond, 'all');
+
+  var priorityModCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'posts.lock.bypass.lock.priority'
+    },
+    common.hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId),
+    notLockedByHigherPriority(userId, postId)
+  ];
+  var priorityMod = server.authorization.stitch(Boom.forbidden(), priorityModCond, 'all');
 
   // check self mod permissions
   var permissionsCond = [
     ignoreOwnership,
     common.hasPriority(server, auth, 'posts.lock.allow', postId), // User has permission to lock posts they mod if user has same/lesser priority
-    common.hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId) // User has permission to local all posts with same/lesser priority
+    common.hasPriority(server, auth, 'posts.lock.bypass.lock', postId) // User has permission to lock all posts with same/lesser priority
   ];
 
-  var permissions = server.authorization.stitch(Boom.forbidden('Invalid permissions'), permissionsCond, 'any');
+  var permissions = server.authorization.stitch(Boom.forbidden('Insufficient permissions to perform this action on this user'), permissionsCond, 'any');
 
   var modCond = [
     ignoreOwnership,
+    priorityMod,
     {
       // is board moderator
       type: 'isMod',
@@ -76,17 +110,7 @@ module.exports = function postsLock(server, auth, postId, query) {
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.lock.bypass.lock.mod')
     },
-    {
-      // is thread moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorSelfModerated,
-      args: [auth.credentials.id, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.lock.bypass.lock.mod')
-    },
-    // Check if user is self mod and that self mod is enabled
-    Promise.join(selfMod, hasSelfModPrivilege, function(sm, smp) {
-      return sm && smp;
-    })
+    selfMod
   ];
   var mod = server.authorization.stitch(Boom.forbidden(), modCond, 'any');
 

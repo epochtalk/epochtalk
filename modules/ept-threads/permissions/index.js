@@ -296,7 +296,6 @@ var user = {
 
 var newbie = {
   create: { allow: true },
-  moderated: { allow: true },
   byBoard: { allow: true },
   posted: { allow: true },
   viewed: { allow: true },

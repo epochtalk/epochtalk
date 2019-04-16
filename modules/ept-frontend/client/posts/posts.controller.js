@@ -108,7 +108,7 @@ var ctrl = [
 
       // moderated/owner
       if (post.user.id === ctrl.user.id) { validBypass = true; }
-      else if (ctrl.thread.moderated && ctrl.thread.user.id === ctrl.user.id && Session.hasPermission('threads.moderated.allow')) { validBypass = true; }
+      else if (ctrl.thread.moderated && ctrl.thread.user.id === ctrl.user.id && Session.hasPermission('threads.moderated.allow') && Session.hasPermission('posts.delete.bypass.owner.selfMod')) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.admin')) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.mod')) {
         if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
@@ -135,7 +135,12 @@ var ctrl = [
         if (Session.getPriority() < post.user.priority) { return true; }
         else { return false; }
       }
-      else if (ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated) { return true; }
+      else if (Session.hasPermission('posts.lock.bypass.lock.selfMod')) {
+        if (ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated && ctrl.user.id !== post.user.id) {
+          return true;
+        }
+        else { return false; }
+      }
       else { return false; }
     };
 
@@ -187,7 +192,7 @@ var ctrl = [
     });
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
-    parent.pullPage = function() {
+    parent.pullPage = function(disableScroll) {
 
       var query = {
         thread_id: parent.thread.id,
@@ -209,7 +214,7 @@ var ctrl = [
         calculatePollPercentage();
         checkUsersOnline();
         ctrl.highlightPost();
-        $timeout($anchorScroll);
+        if (!disableScroll) { $timeout($anchorScroll); }
       });
     };
 

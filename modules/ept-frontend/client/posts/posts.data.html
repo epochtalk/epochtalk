@@ -57,7 +57,7 @@
             </a>
           </li>
           <li ng-if="PostsCtrl.canDelete(post) && post.position !== 1 && !post.deleted">
-            <a ng-href="#" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index)">
+            <a ng-href="#" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index, post.locked)">
               <i class="fa fa-eye-slash"></i>
             </a>
           </li>
@@ -115,7 +115,7 @@
   <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-underline">Hide Post</h3>
     <p>Are you sure you want to hide this post?</p>
-    <label ng-if="PostsParentCtrl.canPostLockQuick(PostsParentCtrl.deletePostIndex)">
+    <label ng-if="PostsParentCtrl.canPostLockQuick(PostsParentCtrl.deletePostIndex) && PostsParentCtrl.deletePostLocked === false">
       <input type="checkbox" ng-model="PostsParentCtrl.deleteAndLock" modal-focus="{{PostsParentCtrl.showDeleteModal}}" />
       Lock Post (poster cannot hide/edit this post)?
     </label>

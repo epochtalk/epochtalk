@@ -167,7 +167,10 @@ function stitch(error, conditions, type) {
     return build(condition);
   });
 
-  if (type === 'all') { return Promise.all(conditions); }
+  if (type === 'all') {
+    return Promise.all(conditions)
+    .catch(() => { return Promise.reject(error); });
+  }
   else if (type === 'any') {
     return Promise.any(conditions)
     .catch(() => { return Promise.reject(error); });

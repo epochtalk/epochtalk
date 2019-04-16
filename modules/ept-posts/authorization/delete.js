@@ -23,15 +23,27 @@ module.exports = function postsDelete(server, auth, postId) {
     args: [postId]
   });
 
+  // Is user self moderator and do they have priority to hide post
+  var selfModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorSelfModerated,
+      args: [userId, postId],
+      permission: 'posts.delete.bypass.owner.selfMod'
+    },
+    common.hasPriority(server, auth, 'posts.delete.bypass.owner.selfMod', postId)
+  ];
+  var selfMod = server.authorization.stitch(Boom.forbidden(), selfModCond, 'all');
+
+
   // is post alright to delete
-  var hasSMPrivilege = server.plugins.acls.getACLValue(auth, 'threads.moderated');
-  var isThreadModerated = server.db.posts.isPostsThreadModerated(postId);
-  var isThreadOwner = server.db.posts.isPostsThreadOwner(postId, userId);
-  var isSMHasPriority = common.hasPriority(server, auth, 'posts.delete.allow', postId);
   var deleteCond = [
     {
       // permission based override
       type: 'hasPermission',
+      error: Boom.forbidden(),
       server: server,
       auth: auth,
       permission: 'posts.delete.bypass.owner.admin'
@@ -50,11 +62,9 @@ module.exports = function postsDelete(server, auth, postId) {
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.delete.bypass.owner.mod')
     },
-    Promise.join(isThreadModerated, isThreadOwner, hasSMPrivilege, isSMHasPriority, function(threadSM, owner, userSM, priority) {
-      if (threadSM && owner && userSM && priority) { return true; }
-      else { return Promise.reject(Boom.forbidden()); }
-    }),
-     common.hasPriority(server, auth, 'posts.delete.bypass.owner.priority', postId)
+    selfMod,
+    // Has priority permission
+    common.hasPriority(server, auth, 'posts.delete.bypass.owner.priority', postId)
   ];
   var deleted = server.authorization.stitch(Boom.forbidden(), deleteCond, 'any');
 
@@ -86,7 +96,13 @@ module.exports = function postsDelete(server, auth, postId) {
   var tLocked = server.authorization.stitch(Boom.forbidden(), tLockedCond, 'any');
 
   // post locked
-  var pLocked = postLocked(server, auth, postId);
+  var pLocked = server.authorization.build({
+    error: Boom.forbidden('Post is locked'),
+    type: 'dbNotProp',
+    method: server.db.posts.find,
+    args: [postId],
+    prop: 'locked'
+  });
 
   // read board
   var read = server.authorization.build({
@@ -114,16 +130,3 @@ module.exports = function postsDelete(server, auth, postId) {
 
   return Promise.all([allowed, notFirst, deleted, read, write, tLocked, pLocked, active]);
 };
-
-
-function postLocked(server, auth, postId) {
-  var userId = auth.credentials.id;
-  return server.db.posts.find(postId)
-  .then(function(post) {
-    if (post.locked && post.user.id === userId) {
-      return Promise.reject(Boom.forbidden('Post is Locked'));
-    }
-    else { return true; }
-  })
-  .error(function(err) { return Promise.reject(Boom.notFound(err)); });
-}

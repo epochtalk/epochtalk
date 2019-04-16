@@ -27,8 +27,18 @@ module.exports = function(id) {
     // set post deleted flag
     .then(function() {
       post.deleted = false;
-      q = 'UPDATE posts SET deleted = False WHERE id = $1';
-      return client.query(q, [id]);
+      // Remove hidden_by metadata when unlocked
+      if (post.metadata) {
+        delete post.metadata.hidden_by_id;
+        delete post.metadata.hidden_by_priority;
+        var metadata = Object.keys(post.metadata).length ? post.metadata : null;
+        q = 'UPDATE posts SET deleted = FALSE, metadata = $1 WHERE id = $2';
+        return client.query(q, [metadata, id]);
+      }
+      else {
+        q = 'UPDATE posts SET deleted = FALSE WHERE id = $1';
+        return client.query(q, [id]);
+      }
     })
     .then(function() { return post; })
     .then(helper.slugify);

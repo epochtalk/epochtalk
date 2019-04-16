@@ -23,8 +23,18 @@ module.exports = function(id) {
     // set post locked flag
     .then(function() {
       post.locked = false;
-      q = 'UPDATE posts SET locked = FALSE WHERE id = $1';
-      return client.query(q, [id]);
+      // Remove locked_by metadata when unlocked
+      if (post.metadata) {
+        delete post.metadata.locked_by_id;
+        delete post.metadata.locked_by_priority;
+        var metadata = Object.keys(post.metadata).length ? post.metadata : null;
+        q = 'UPDATE posts SET locked = FALSE, metadata = $1 WHERE id = $2';
+        return client.query(q, [metadata, id]);
+      }
+      else {
+        q = 'UPDATE posts SET locked = FALSE WHERE id = $1';
+        return client.query(q, [id]);
+      }
     })
     .then(function() { return post; })
     .then(helper.slugify);

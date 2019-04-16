@@ -112,7 +112,7 @@ function hasPriority(server, auth, permission, postId) {
   return server.db.posts.find(postId)
   .then(function(post) {
     // Allow users to perform actions on their own posts
-    if (post.user.id == auth.credentials.id) { return true; }
+    if (post.user.id == auth.credentials.id) { return Promise.resolve(true); }
     // get referenced user's priority
     var postUserPriority = server.db.users.find(post.user.id)
     .then(function(paramUser) { return _.min(_.map(paramUser.roles, 'priority')); })
@@ -125,8 +125,8 @@ function hasPriority(server, auth, permission, postId) {
 
     return Promise.join(postUserPriority, authedUserPriority, function(pid, aid) {
       // Authed user has higher or same priority than post's user
-      if (hasPermission && aid <= pid) { return true; }
-      else { return Promise.reject(Boom.badRequest()) }
+      if (hasPermission === true && aid <= pid) { return Promise.resolve(true); }
+      else { return Promise.reject(Boom.forbidden()) }
     });
   });
 }
@@ -134,7 +134,9 @@ function hasPriority(server, auth, permission, postId) {
 /**
  *  ViewContext can be an array of boards or a boolean
  */
-function cleanPosts(posts, currentUserId, viewContext) {
+function cleanPosts(posts, currentUserId, viewContext, request) {
+  var authedUserPriority = request.server.plugins.acls.getUserPriority(request.auth);
+  var authedUserHasPermission = request.server.plugins.acls.getACLValue(request.auth, 'posts.byThread.bypass.viewDeletedPosts.priority');
   posts = [].concat(posts);
   var viewables = viewContext;
   var viewablesType = 'boolean';
@@ -143,20 +145,35 @@ function cleanPosts(posts, currentUserId, viewContext) {
     boards = viewContext.map(function(vd) { return vd.board_id; });
     viewablesType = 'array';
   }
-
   return posts.map(function(post) {
-
+     var postHiddenByPriority = post.metadata ? post.metadata.hidden_by_priority : null;
+     var postHiddenById = post.metadata ? post.metadata.hidden_by_id : null;
+     var authedId = request.auth.credentials ? request.auth.credentials.id : null;
     // if currentUser owns post, show everything
     var viewable = false;
     if (currentUserId === post.user.id) { viewable = true; }
     // if viewables is an array, check if user is moderating this post
     else if (viewablesType === 'array' && _.includes(boards, post.board_id)) { viewable = true; }
     // if viewables is a true, view all posts
-    else if (viewables) { viewable = true; }
+    else if (viewables) {
+      // Allow self mods to view posts hidden by users of the same or lesser role
+      var authedUserHasPriority = authedUserPriority <= postHiddenByPriority;
+      var authedUserHidePost = postHiddenById === authedId;
+      // post is hidden, only show users posts hidden by users of the same or greater priority
+      if (post.deleted && authedId && authedUserPriority !== null) {
+          viewable = (authedUserHasPriority || authedUserHidePost);
+      }
+      else {
+        viewable = true;
+      }
+    }
+
 
     // remove deleted users or post information
     var deleted = false;
-    if (post.deleted || post.user.deleted || post.board_visible === false) { deleted = true; }
+    if (post.deleted || post.user.deleted || post.board_visible === false) {
+      deleted = true;
+    }
 
     // format post
     if (viewable && deleted) { post.hidden = true; }

@@ -421,12 +421,12 @@ roles.moderator = {
   }
 };
 
-roles.patroller = {
+roles.user = {
   // business logic (none)
-  id: 'd62dc470-12f5-4093-a6c6-ef674985d5b6',
-  name: 'Patroller',
-  description: 'Moderates Newbies only',
-  lookup: 'patroller',
+  id: 'edcd8f77-ce34-4433-ba85-17f9b17a3b60',
+  name: 'User',
+  description: 'Standard account with access to create threads and post',
+  lookup: 'user',
   priority: 4,
   // ACLs
   notifications: {
@@ -435,12 +435,12 @@ roles.patroller = {
   }
 };
 
-roles.user = {
+roles.patroller = {
   // business logic (none)
-  id: 'edcd8f77-ce34-4433-ba85-17f9b17a3b60',
-  name: 'User',
-  description: 'Standard account with access to create threads and post',
-  lookup: 'user',
+  id: 'd62dc470-12f5-4093-a6c6-ef674985d5b6',
+  name: 'Patroller',
+  description: 'Moderates Newbies only, otherwise mirrors User role unless modified',
+  lookup: 'patroller',
   priority: 5,
   // ACLs
   notifications: {

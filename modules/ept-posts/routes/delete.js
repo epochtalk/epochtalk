@@ -37,10 +37,10 @@ module.exports = {
       { method: 'auth.posts.lock(server, auth, params.id, query)' }
     ],
     handler: function(request, reply) {
-      var promise = request.db.posts.delete(request.params.id)
+      var promise = request.db.posts.delete(request)
       .tap(function() {
         if (request.query.locked) {
-          return request.db.posts.lock(request.params.id);
+          return request.db.posts.lock(request);
         }
       })
       .error(request.errorMap.toHttpError);
