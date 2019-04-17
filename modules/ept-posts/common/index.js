@@ -106,16 +106,26 @@ function newbieImages(auth, payload) {
   payload.body_html = $.html();
 }
 
-function hasPriority(server, auth, permission, postId) {
+function hasPriority(server, auth, permission, postId, selfMod) {
   var hasPermission = server.plugins.acls.getACLValue(auth, permission);
 
   return server.db.posts.find(postId)
   .then(function(post) {
     // Allow users to perform actions on their own posts
     if (post.user.id == auth.credentials.id) { return Promise.resolve(true); }
+
     // get referenced user's priority
     var postUserPriority = server.db.users.find(post.user.id)
     .then(function(paramUser) { return _.min(_.map(paramUser.roles, 'priority')); })
+    .error(() => { return Promise.reject(Boom.badRequest()); });
+
+    // special check for patroller/newbie
+    var hasPatrollerRole = false;
+    auth.credentials.roles.map(function(role) {
+      if (role === 'patroller') { hasPatrollerRole = true; }
+    });
+
+    var postOwnerIsUser = server.db.roles.posterHasRole(postId, 'user')
     .error(() => { return Promise.reject(Boom.badRequest()); });
 
     // get authed user's priority
@@ -123,10 +133,12 @@ function hasPriority(server, auth, permission, postId) {
     .then(function(authUser) { return _.min(_.map(authUser.roles, 'priority')); })
     .error(() => { return Promise.reject(Boom.badRequest()); });
 
-    return Promise.join(postUserPriority, authedUserPriority, function(pid, aid) {
+    return Promise.join(postUserPriority, authedUserPriority, postOwnerIsUser, function(pid, aid, isUser) {
       // Authed user has higher or same priority than post's user
       if (hasPermission === true && aid <= pid) { return Promise.resolve(true); }
-      else { return Promise.reject(Boom.forbidden()) }
+      // Allow patrollers to have priority over users
+      else if (selfMod === true && isUser === true && hasPatrollerRole === true) { return Promise.resolve(true); }
+      else { return Promise.reject(Boom.forbidden());}
     });
   });
 }

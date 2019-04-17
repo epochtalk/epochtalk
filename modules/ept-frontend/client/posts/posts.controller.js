@@ -103,6 +103,7 @@ var ctrl = [
         }
         else if (Session.hasPermission('posts.delete.bypass.locked.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
+          else if (Session.hasPermission('threads.moderated.allow') && ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated && ctrl.user.id !== post.user.id) { validBypass = true; }
         }
       }
 
@@ -115,6 +116,7 @@ var ctrl = [
       }
       else if (Session.hasPermission('posts.delete.bypass.owner.priority')) {
         if (Session.getPriority() < post.user.priority) { validBypass = true; }
+        else if (Session.hasPermission('threads.moderated.allow') && ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated && ctrl.user.id !== post.user.id) { validBypass = true; }
       }
 
       return validBypass;
@@ -133,9 +135,11 @@ var ctrl = [
       }
       else if (Session.hasPermission('posts.lock.bypass.lock.priority')) {
         if (Session.getPriority() < post.user.priority) { return true; }
+        // Allow users with priority option to still self mod
+        else if (Session.hasPermission('threads.moderated.allow') && ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated && ctrl.user.id !== post.user.id) { return true; }
         else { return false; }
       }
-      else if (Session.hasPermission('posts.lock.bypass.lock.selfMod')) {
+      else if (Session.hasPermission('threads.moderated.allow') && Session.hasPermission('posts.lock.bypass.lock.selfMod')) {
         if (ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated && ctrl.user.id !== post.user.id) {
           return true;
         }

@@ -37,6 +37,21 @@ module.exports = function postsDelete(server, auth, postId) {
   ];
   var selfMod = server.authorization.stitch(Boom.forbidden(), selfModCond, 'all');
 
+  // User has priority permission
+  var prioritySelfModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorSelfModerated,
+      args: [userId, postId],
+      permission: 'posts.delete.bypass.owner.priority'
+    },
+    // The boolean at the end tells hasPriority to pass if auth user is Patroller and post creator is a user
+    common.hasPriority(server, auth, 'posts.delete.bypass.owner.priority', postId, true)
+  ];
+  var prioritySelfMod = server.authorization.stitch(Boom.forbidden(), prioritySelfModCond, 'all');
+ common.hasPriority(server, auth, 'posts.delete.bypass.owner.priority', postId, true).then(console.log);
 
   // is post alright to delete
   var deleteCond = [
@@ -64,6 +79,7 @@ module.exports = function postsDelete(server, auth, postId) {
     },
     selfMod,
     // Has priority permission
+    prioritySelfMod,
     common.hasPriority(server, auth, 'posts.delete.bypass.owner.priority', postId)
   ];
   var deleted = server.authorization.stitch(Boom.forbidden(), deleteCond, 'any');
@@ -91,6 +107,7 @@ module.exports = function postsDelete(server, auth, postId) {
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.delete.bypass.locked.mod')
     },
+    prioritySelfMod,
     common.hasPriority(server, auth, 'posts.delete.bypass.locked.priority', postId)
   ];
   var tLocked = server.authorization.stitch(Boom.forbidden(), tLockedCond, 'any');
