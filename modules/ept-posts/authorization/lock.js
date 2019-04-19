@@ -91,18 +91,27 @@ module.exports = function postsLock(server, auth, postId, query) {
   ];
   var priorityMod = server.authorization.stitch(Boom.forbidden(), priorityModCond, 'all');
 
-  // check self mod permissions
-  var permissionsCond = [
-    ignoreOwnership,
-    common.hasPriority(server, auth, 'posts.lock.allow', postId), // User has permission to lock posts they mod if user has same/lesser priority
-    common.hasPriority(server, auth, 'posts.lock.bypass.lock', postId) // User has permission to lock all posts with same/lesser priority
+  // User has priority permission
+  var prioritySelfModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorSelfModerated,
+      args: [userId, postId],
+      permission: 'posts.lock.bypass.lock.priority'
+    },
+    // The boolean at the end tells hasPriority to pass if auth user is Patroller and post creator is a user
+    common.hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId, true),
+    notLockedByHigherPriority(userId, postId)
   ];
-
-  var permissions = server.authorization.stitch(Boom.forbidden('Insufficient permissions to perform this action on this user'), permissionsCond, 'any');
+  var prioritySelfMod = server.authorization.stitch(Boom.forbidden(), prioritySelfModCond, 'all')
+  // check self mod permissions
 
   var modCond = [
     ignoreOwnership,
     priorityMod,
+    prioritySelfMod,
     {
       // is board moderator
       type: 'isMod',
@@ -112,7 +121,7 @@ module.exports = function postsLock(server, auth, postId, query) {
     },
     selfMod
   ];
-  var mod = server.authorization.stitch(Boom.forbidden(), modCond, 'any');
 
-  return Promise.all([allowed, read, write, active, permissions, mod]);
+  var mod = server.authorization.stitch(Boom.forbidden(), modCond, 'any');
+  return Promise.all([allowed, read, write, active, mod]);
 };

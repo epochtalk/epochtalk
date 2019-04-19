@@ -386,8 +386,10 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
         Posts.delete({id: post.id, locked: locked}).$promise
         .then(function() {
           // $state.go($state.$current, null, {reload:true});
-          ctrl.pullPage(true);
           Alert.success('Post Hidden');
+          post.deleted = true;
+          post.hidden = true;
+          post.locked = locked;
         })
         .catch(function(e) {
           var msg = 'Failed to hide post';
@@ -413,7 +415,8 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       if (post) {
         Posts.undelete({id: post.id}).$promise
         .then(function() {
-          ctrl.pullPage(true);
+          delete post.deleted;
+          delete post.hidden;
           Alert.success('Post Unhidden');
         })
         .catch(function(e) {

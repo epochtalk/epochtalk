@@ -151,7 +151,7 @@ function processing(request, reply) {
       write_access: writeAccess,
       limit: opts.limit,
       page: opts.page,
-      posts: common.cleanPosts(posts, userId, viewables, request)
+      posts: common.cleanPosts(posts, userId, viewables, request, thread)
     };
   })
   // handle page or start out of range

@@ -51,7 +51,6 @@ module.exports = function postsDelete(server, auth, postId) {
     common.hasPriority(server, auth, 'posts.delete.bypass.owner.priority', postId, true)
   ];
   var prioritySelfMod = server.authorization.stitch(Boom.forbidden(), prioritySelfModCond, 'all');
- common.hasPriority(server, auth, 'posts.delete.bypass.owner.priority', postId, true).then(console.log);
 
   // is post alright to delete
   var deleteCond = [
@@ -106,11 +105,9 @@ module.exports = function postsDelete(server, auth, postId) {
       method: server.db.moderators.isModeratorWithPostId,
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.delete.bypass.locked.mod')
-    },
-    prioritySelfMod,
-    common.hasPriority(server, auth, 'posts.delete.bypass.locked.priority', postId)
+    }
   ];
-  var tLocked = server.authorization.stitch(Boom.forbidden(), tLockedCond, 'any');
+  var tLocked = server.authorization.stitch(Boom.forbidden('Thread Locked'), tLockedCond, 'any');
 
   // post locked
   var pLocked = server.authorization.build({

@@ -196,7 +196,7 @@ var ctrl = [
     });
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
-    parent.pullPage = function(disableScroll) {
+    parent.pullPage = function() {
 
       var query = {
         thread_id: parent.thread.id,
@@ -218,7 +218,7 @@ var ctrl = [
         calculatePollPercentage();
         checkUsersOnline();
         ctrl.highlightPost();
-        if (!disableScroll) { $timeout($anchorScroll); }
+        $timeout($anchorScroll);
       });
     };
 
