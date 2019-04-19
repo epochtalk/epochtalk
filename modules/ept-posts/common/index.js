@@ -151,7 +151,7 @@ function cleanPosts(posts, currentUserId, viewContext, request, thread) {
   var hasPriority = request.server.plugins.acls.getACLValue(request.auth, 'posts.byThread.bypass.viewDeletedPosts.priority');
   var hasSelfMod = request.server.plugins.acls.getACLValue(request.auth, 'posts.byThread.bypass.viewDeletedPosts.selfMod');
   var authedId = request.auth.credentials ? request.auth.credentials.id : null;
-  var isModerator = thread.user.id === authedId && thread.moderated;
+  var isModerator = thread ? (thread.user.id === authedId && thread.moderated) : false;
 
   posts = [].concat(posts);
   var viewables = viewContext;
@@ -177,7 +177,7 @@ function cleanPosts(posts, currentUserId, viewContext, request, thread) {
 
     // Allow self mods to view posts hidden by users of the same or lesser role
     // post is hidden, only show users posts hidden by users of the same or greater priority
-    if (isModerator &&post.deleted && authedId && authedUserPriority !== null && (hasPriority || hasSelfMod)) {
+    if (((isModerator === true && selfMod) || hasPriority) && post.deleted && authedId && authedUserPriority !== null) {
       viewable = (authedUserHasPriority || authedUserHidePost);
     }
 

@@ -27,13 +27,14 @@ module.exports = function postsByThread(server, auth, threadId) {
   // view deleted posts
   var viewAll = server.plugins.acls.getACLValue(auth, 'posts.byThread.bypass.viewDeletedPosts.admin');
   var viewSome = server.plugins.acls.getACLValue(auth, 'posts.byThread.bypass.viewDeletedPosts.mod');
-  var viewPriority = server.plugins.acls.getACLValue(auth, 'posts.byThread.bypass.viewDeletedPosts.selfMod');
+  var viewSelfMod = server.plugins.acls.getACLValue(auth, 'posts.byThread.bypass.viewDeletedPosts.selfMod');
+  var viewPriority = server.plugins.acls.getACLValue(auth, 'posts.byThread.bypass.viewDeletedPosts.priority');
   var viewDeleted = server.db.moderators.getUsersBoards(userId)
   .then(function(boards) {
     var result = false;
-    if (viewAll) { result = true; }
+    if (viewAll || viewPriority) { result = true; }
     else if (viewSome && boards.length > 0) { result = boards; }
-    else if (viewPriority && !boards.length) {
+    else if (viewSelfMod && !boards.length) {
       var selfMod = server.authorization.build({
         // is thread moderator
         type: 'isMod',
