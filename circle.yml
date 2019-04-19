@@ -61,7 +61,7 @@ jobs:
           name: Create admin user
           command: |
             set -e
-            docker-compose -f circleci-docker-compose.yml exec epochtalk /bin/bash -c "./wait-for-it.sh localhost:8080 -t 240 && node cli create-user admin admin@epochtalk.com --password password --admin"
+            docker-compose -f circleci-docker-compose.yml exec epochtalk /bin/bash -c "node cli create-user admin admin@epochtalk.com --password password --admin"
 
       - run:
           name: run test
