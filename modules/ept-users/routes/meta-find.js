@@ -43,8 +43,9 @@ module.exports = {
       }
 
       // description
-      var $ = cheerio.load('<div>' + user.signature + '</div>');
+      var $ = cheerio.load('<div ng-non-bindable>' + user.signature + '</div>');
       var description = $('div').text();
+      description = description.replace(/{/g, '&#123;').replace(/}/g, '&#125;');
       if (description && viewable) {
         data.ogDescription = data.twDescription = description;
       }

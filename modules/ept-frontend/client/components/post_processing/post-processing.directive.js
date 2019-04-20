@@ -181,7 +181,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         }
 
         // dump html into element
-        $element.html(processed);
+        $element.html('<div ng-non-bindable>' + processed + '</div>');
 
         // Remove first newline from codeblock
         // This allows users to type:
