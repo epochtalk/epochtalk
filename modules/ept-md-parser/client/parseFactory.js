@@ -3,6 +3,8 @@ var renderer;
 
 function parse(input) {
   if (!input) { input = ''; }
+  // preserve typed in decimal code
+  input = input.replace(/(?:&#92;)/gi, '&#92-preserve;');
   // escape back slashes before parsing markdown
   input = input.replace(/\\/g, '&#92;');
   var regex = /\`([\s\S]*?)\`/gi;
@@ -19,16 +21,21 @@ function parse(input) {
 
   // Stop html entities from being encoded by replacing & with entity
   input = input.replace(/(?:&)/g, '&#38;');
+  // preserve whitespacing (i'm sorry this is hacky, it's needed to preserve newlines after going through the markdown parser)
+  var id = Math.random();
+  input = input.replace(/\r\n|\r|\n/g, "\n$ept-newline$\n");
 
   // compile markdown
   input = compiler(input, { renderer: renderer });
+
+  input = input.replace(/(?:&#38;#92-preserve;)/g, '&amp;#92; ')
+  input = input.replace(/(?:&#38;#92;)/g, '\\');
   input = input.replace(/(?:&amp;#38;)/g, '&amp;');
 
-  // preserve whitespacing
-  input = input.replace(/\r\n|\r|\n/g, String.fromCharCode(26));
 
   // replace whitespacing
-  input = input.replace(new RegExp(String.fromCharCode(26), 'g'), '\n');
+  input = input.replace(/(?:\n\$ept-newline\$)/g, '\n');
+  input = input.replace(/(?:\$ept-newline\$)/g, '\n');
 
   // replace &#38;lt and &#38;lt; with < and >
   // Put back lt and gt after they get butchered by the md parser

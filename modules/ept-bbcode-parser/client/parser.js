@@ -43,6 +43,8 @@ module.exports = {
       input = cleanedText;
     }
 
+    // Stop html entities from being encoded by replacing & with entity
+    input = input.replace(/(?:&)/g, '&#38;');
     // this basically prevents html tags
     // convert all (<, &lt;) and (>, &gt;) to decimal to escape the regex
     // in the bbcode dumbBBcodeParser that'll unescape those chars
@@ -57,9 +59,13 @@ module.exports = {
         input = bbcodeDumbCompiler.process(input);
       }
     }
+
     // Convert back to lt and gt
     input = input.replace(/(?:&#60;)/g, '&lt;');
     input = input.replace(/(?:&#62;)/g, '&gt;');
+
+    // replace entity for & after processing bbcode
+    input = input.replace(/(?:&#38;)/g, '&');
     return input;
   }
 };
