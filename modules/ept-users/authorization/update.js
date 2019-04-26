@@ -16,22 +16,24 @@ module.exports = function userUpdate(server, auth, paramsId, payload) {
 
 function sameUser(server, auth, paramsId, payload) {
   var allowed = isAllowed(server, auth);
+  var changeUsername = isAllowedToChangeUsername(server, auth, paramsId, payload.username);
   var active = isActive(server, auth.credentials.id);
   var emailUnique = isEmailUnique(server, paramsId, payload.email);
   var emailPassValid = isPasswordValid(server, paramsId, payload.email_password);
   var usernameUnique = isUsernameUnique(server, paramsId, payload.username);
   var passValid = isPasswordValid(server, paramsId, payload.old_password);
-  return Promise.all([allowed, active, emailUnique, emailPassValid, usernameUnique, passValid]);
+  return Promise.all([allowed, changeUsername, active, emailUnique, emailPassValid, usernameUnique, passValid]);
 }
 
 function otherUser(server, auth, paramsId, payload) {
   var allowed = isAllowed(server, auth);
+  var changeUsername = isAllowedToChangeUsername(server, auth, paramsId, payload.username);
   var active = isActive(server, auth.credentials.id);
   var usernameUnique = isUsernameUnique(server, paramsId, payload.username);
   var noEmail = rejectEmail(payload);
   var noPass = rejectPassword(payload);
   var priority = hasPriority(server, auth, paramsId, auth.credentials.id);
-  return Promise.all([allowed, active, usernameUnique, noEmail, noPass, priority]);
+  return Promise.all([allowed, changeUsername, active, usernameUnique, noEmail, noPass, priority]);
 }
 
 // check base permission
@@ -43,6 +45,25 @@ function isAllowed(server, auth) {
     auth: auth,
     permission: 'users.update.allow'
   });
+}
+
+// check secondary permission
+function isAllowedToChangeUsername(server, auth, userId, username) {
+  // get referenced user's username
+  return server.db.users.find(userId)
+  .then(function(paramUser) {
+    if (paramUser.username == username) { return true }
+    else {
+      return server.authorization.build({
+        error: Boom.forbidden(),
+        type: 'hasPermission',
+        server: server,
+        auth: auth,
+        permission: 'users.changeUsername.allow'
+      });
+    }
+  })
+  .error(() => { return Promise.reject(Boom.badRequest()); });
 }
 
 // is requester active

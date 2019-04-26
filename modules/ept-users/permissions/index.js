@@ -10,6 +10,9 @@ var validation =  Joi.object().keys({
       }).xor('admin', 'mod')
     })
   }),
+  changeUsername:  Joi.object().keys({
+    allow: Joi.boolean()
+  }),
   find: Joi.object().keys({
     allow: Joi.boolean(),
     bypass: Joi.object().keys({
@@ -54,6 +57,7 @@ var superAdministrator = {
     allow: true,
     bypass: { priority: { admin: true } }
   },
+  changeUsername: { allow: true },
   find: {
     allow: true,
     bypass: {
@@ -79,6 +83,7 @@ var administrator = {
     allow: true,
     bypass: { priority: { admin: true } }
   },
+  changeUsername: { allow: true },
   find: {
     allow: true,
     bypass: {
@@ -104,6 +109,7 @@ var globalModerator = {
     allow: true,
     bypass: { priority: { mod: true } }
   },
+  changeUsername: { allow: true },
   find: {
     allow: true,
     bypass: {
@@ -126,6 +132,7 @@ var moderator = {
     allow: true,
     bypass: { priority: { mod: true } }
   },
+  changeUsername: { allow: true },
   find: {
     allow: true,
     bypass: {
@@ -178,8 +185,10 @@ var anonymous = {
 var layout = {
   update: {
     title: 'Update User Accounts',
-    bypasses: [ { description: 'Other Users', control: 'priority', } ],
+    bypasses: [ {
+      description: 'Other Users', control: 'priority' } ]
   },
+  changeUsername: { title: 'Change username' },
   find: {
     title: 'View User Accounts',
     bypasses: [

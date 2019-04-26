@@ -258,7 +258,7 @@
         <div ng-if="$parent.form.username.$error.pattern" class="invalid right">
           Usernames may only contain A-Z, 0-9, -, _ and .
         </div>
-        <input type="text" name="username" ng-model="vmProfile.editProfileUser.username" unique-username="{{vmProfile.user.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ maxlength="255" modal-focus="{{vmProfile.editProfile}}" />
+        <input type="text" name="username" ng-model="vmProfile.editProfileUser.username" unique-username="{{vmProfile.user.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ maxlength="255" ng-disabled="!vmProfile.canUpdateUsername()" modal-focus="{{vmProfile.editProfile}}" />
       </label>
 
       <label>Display Name
