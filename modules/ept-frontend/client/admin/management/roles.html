@@ -26,7 +26,7 @@
           <span ng-if="!AdminManagementCtrl.controlAccess.update">Edit</span>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-if="role.id === role.lookup && AdminManagementCtrl.controlAccess.remove" ng-href="#" ng-click="AdminManagementCtrl.showRemoveRole(role)">Remove</a>
-          <span ng-if="(role.id === role.lookup && !AdminManagementCtrl.controlAccess.remove)">Remove</span>
+          <a ng-if="role.id !== role.lookup" ng-href="#" ng-click="AdminManagementCtrl.showResetRole(role)">Reset</a>
         </td>
       </tr>
     </tbody>
@@ -107,6 +107,23 @@
   <h3>{{AdminManagementCtrl.selectedRole.name}}</h3> <br />
   <h5>{{AdminManagementCtrl.selectedRole.message}}</h5>
 </div>
+
+<!-- Reset Role Modal -->
+<modal show="AdminManagementCtrl.showResetRoleModal" on-close="AdminManagementCtrl.closeResetRole()">
+  <h3 class="thin-underline">Confirm Reset Role</h3>
+  <p>
+    Are you sure you want to reset the role named <strong>{{AdminManagementCtrl.roleToReset.name}}</strong>? This will change all permissions for this role back to their Epochtalk defaults.
+  </p>
+  <div>
+    <div class="half-column">
+      <button class="fill-row" ng-click="AdminManagementCtrl.closeResetRole()">Cancel</button>
+    </div>
+    <div class="half-column">
+      <button class="fill-row" ng-click="AdminManagementCtrl.resetRole()">Reset</button>
+    </div>
+  </div>
+  <div class="clear"></div>
+</modal>
 
 <!-- Remove Role Modal -->
 <modal show="AdminManagementCtrl.showRemoveRoleModal" on-close="AdminManagementCtrl.closeRemoveRole()">

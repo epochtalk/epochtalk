@@ -127,8 +127,8 @@ function getPriorityRestrictions(auth) {
   return priorityRestrictions;
 }
 
-function verifyRoles() {
-  if (!db) {
+function verifyRoles(reload) {
+  if (!db || reload) {
     db = require(path.normalize(__dirname + '/../../../db'));
     var modules = require(path.normalize(__dirname + '/../modules'));
     var master = modules.install(db);
@@ -145,7 +145,7 @@ function verifyRoles() {
       });
 
       // if role found in db and permissions exists, use these
-      if (dbRoleFound && dbRoleFound.permissions) {
+      if (dbRoleFound && Object.keys(dbRoleFound.permissions).length > 0) {
         // check if permissions are set
         var newRole = dbRoleFound.permissions;
         newRole.id = dbRoleFound.id;
@@ -167,6 +167,11 @@ function verifyRoles() {
         delete clonedRole.highlightColor;
         var updateRole = {
           id: dbRoleFound.id,
+          name: role.name,
+          lookup: role.lookup,
+          description: role.description,
+          priority: role.priority,
+          highlightColor: role.highlightColor,
           permissions: clonedRole
         };
         return db.roles.update(updateRole);

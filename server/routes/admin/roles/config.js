@@ -188,13 +188,21 @@ exports.update = {
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
       highlight_color: Joi.string(),
       lookup: Joi.string().required(),
-      permissions: Joi.object().required()
+      permissions: Joi.object()
     }
   },
   pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
   handler: function(request, reply) {
     var role = request.payload;
     var promise = request.db.roles.update(role)
+    .then(function(result) {
+      // If permissions are empty reset to default
+      if (role.permissions === '{}' && role.id !== role.lookup) {
+        return request.server.plugins.acls.verifyRoles(true)
+        .then(function() { return result; });
+      }
+      else { return result; }
+    })
     .tap(function(dbRole) {
       var roleClone = _.cloneDeep(dbRole);
       var notification = {

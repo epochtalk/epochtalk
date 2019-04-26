@@ -501,13 +501,16 @@ function adminRolesValidate(validations, payload) {
   }).required();
 
   var promise = new Promise(function(resolve, reject) {
-    Joi.validate(payload.permissions, schema, { stripUnknown: true }, function(err, value) {
-      if (err) { return reject(Boom.badRequest(err)); }
-      else {
-        payload.permissions = value;
-        return resolve();
-      }
-    });
+    if (payload.permissions) {
+      Joi.validate(payload.permissions, schema, { stripUnknown: true }, function(err, value) {
+        if (err) { return reject(Boom.badRequest(err)); }
+        else {
+          payload.permissions = value;
+          return resolve();
+        }
+      });
+    }
+    else { return resolve(); }
   });
 
   return promise;
