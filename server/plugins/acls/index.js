@@ -127,7 +127,7 @@ function getPriorityRestrictions(auth) {
   return priorityRestrictions;
 }
 
-function verifyRoles(reload) {
+function verifyRoles(reload, roleLookup) {
   if (!db || reload) {
     db = require(path.normalize(__dirname + '/../../../db'));
     var modules = require(path.normalize(__dirname + '/../modules'));
@@ -217,7 +217,14 @@ function verifyRoles(reload) {
       roles[dbRole.lookup] = newRole;
     }
     return;
-  }).then(function() { return; }); // need to return undefined
+  }).then(function() {
+    if (roleLookup) {
+      return roles[roleLookup];
+    }
+    else {
+      return;
+    }
+  });
 }
 
 function getACLValue(auth, acl) {
