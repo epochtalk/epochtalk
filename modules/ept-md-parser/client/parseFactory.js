@@ -22,7 +22,6 @@ function parse(input) {
   // Stop html entities from being encoded by replacing & with entity
   input = input.replace(/(?:&)/g, '&#38;');
   // preserve whitespacing (i'm sorry this is hacky, it's needed to preserve newlines after going through the markdown parser)
-  var id = Math.random();
   input = input.replace(/\r\n|\r|\n/g, "\n$ept-newline$\n");
 
   // compile markdown
