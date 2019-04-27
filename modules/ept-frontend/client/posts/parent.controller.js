@@ -368,10 +368,13 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
     this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };
 
     this.deletePostIndex = -1;
-    this.deleteAndLock = true;
+    this.deleteAndLock = false;
     this.showDeleteModal = false;
-    this.openDeleteModal = function(index) {
+    this.deletePostLocked = false;
+    this.openDeleteModal = function(index, locked) {
+      ctrl.deleteAndLock = ctrl.canPostLockQuick(index);
       ctrl.deletePostIndex = index;
+      ctrl.deletePostLocked = locked;
       ctrl.showDeleteModal = true;
     };
     this.deletePost = function() {
@@ -381,8 +384,21 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.delete({id: post.id, locked: locked}).$promise
-        .then(function() { $state.go($state.$current, null, {reload:true}); })
-        .catch(function() { Alert.error('Failed to delete post'); });
+        .then(function() {
+          // $state.go($state.$current, null, {reload:true});
+          Alert.success('Post Hidden');
+          post.deleted = true;
+          post.hidden = true;
+          post.locked = locked;
+        })
+        .catch(function(e) {
+          var msg = 'Failed to hide post';
+          if (e.data && e.data.message === "Forbidden") {
+            msg = 'Insufficient permissions to hide this user\'s post';
+          }
+          else { msg = e.data.message; }
+          Alert.error(msg);
+        });
       }
     };
 
@@ -398,8 +414,19 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.undelete({id: post.id}).$promise
-        .then(function() { $state.go($state.$current, null, {reload:true}); })
-        .catch(function() { Alert.error('Failed to Undelete Post'); });
+        .then(function() {
+          delete post.deleted;
+          delete post.hidden;
+          Alert.success('Post Unhidden');
+        })
+        .catch(function(e) {
+          var msg = 'Failed to unhide post';
+          if (e.data && e.data.message === "Forbidden") {
+            msg = 'Insufficient permissions to unhide this user\'s post';
+          }
+          else { msg = e.data.message; }
+          Alert.error(msg);
+        });
       }
     };
 
@@ -407,14 +434,30 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       Posts.lock({id: post.id}).$promise
       .then(function() { post.locked = true; })
       .then(function() { Alert.success('Post Locked'); })
-      .catch(function() { Alert.error('Failed to lock post'); });
+      .catch(function(e) {
+        var msg = 'Failed to lock post';
+        if (e.data && e.data.message === "Forbidden") {
+          msg = 'Insufficient permissions to lock this user\'s post';
+        }
+        else { msg = e.data.message; }
+        Alert.error(msg);
+      });
     };
 
     this.unlockPost = function(post) {
       Posts.unlock({id: post.id}).$promise
       .then(function() { post.locked = false; })
       .then(function() { Alert.success('Post Unlocked.'); })
-      .catch(function() { Alert.error('Failed to Undelete Post'); });
+      .catch(function(e) {
+        var msg = 'Failed to unlock post';
+        if (e.status === 403 || (e.data && e.data.statusCode === 403)) {
+          if (e.data && e.data.message === "Forbidden") {
+            msg = 'Insufficient permissions to unlock this user\'s post';
+          }
+          else { msg = e.data.message; }
+        }
+        Alert.error(msg);
+      });
     };
 
     this.purgePostIndex = -1;

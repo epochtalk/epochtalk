@@ -6,7 +6,6 @@ module.exports = {
   parse: function (input, sanitize) {
     if (!input) { input = ''; }
 
-
     if (sanitize) {
       // used for posts and user signatures
       // display tags plus font, font face, font size
@@ -20,7 +19,6 @@ module.exports = {
           replacedTagsInput = replacedTagsInput.replace(val, '[code][/code]');
         });
       }
-
       var text = sanitizeHtml(replacedTagsInput, {
         allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'tfoot', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img', 'sub', 'sup', 'tt', 'del' ],
         allowedAttributes: {
@@ -45,14 +43,13 @@ module.exports = {
       input = cleanedText;
     }
 
-
+    // Stop html entities from being encoded by replacing & with entity
+    input = input.replace(/(?:&)/g, '&#38;');
     // this basically prevents html tags
     // convert all (<, &lt;) and (>, &gt;) to decimal to escape the regex
     // in the bbcode dumbBBcodeParser that'll unescape those chars
-    input = input.replace(/(?:<br \/>)/g, '\n');
     input = input.replace(/(?:<|&lt;)/g, '&#60;');
     input = input.replace(/(?:>|&gt;)/g, '&#62;');
-
     if (input.indexOf('[') >= 0) {
       // parse input to generate body
       input = bbcodeCompiler.process({text: input}).html;
@@ -63,6 +60,12 @@ module.exports = {
       }
     }
 
+    // Convert back to lt and gt
+    input = input.replace(/(?:&#60;)/g, '&lt;');
+    input = input.replace(/(?:&#62;)/g, '&gt;');
+
+    // replace entity for & after processing bbcode
+    input = input.replace(/(?:&#38;)/g, '&');
     return input;
   }
 };

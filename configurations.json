@@ -2,6 +2,7 @@
   "logEnabled": true,
   "verifyRegistration": false,
   "loginRequired": false,
+  "postMaxLength": 10000,
   "inviteOnly": false,
   "saasMode": false,
   "newbieEnabled": false,

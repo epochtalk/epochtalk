@@ -58,6 +58,7 @@ var directive = ['$compile', function($compile) {
             description: board.description,
             viewable_by: board.viewable_by,
             postable_by: board.postable_by,
+            right_to_left: board.right_to_left,
             children: board.children || [],
             moderators: board.moderators || []
           };

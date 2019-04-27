@@ -2,7 +2,8 @@
   <!-- Delete Post View -->
   <div class="deleted" ng-if="post._deleted || post.user.ignored">
     Post
-    <span ng-if="post._deleted">Deleted</span>
+    <span ng-if="post._deleted">Hidden</span>
+    <div class="right bold secondary-font-color-light" ng-if="post._deleted">#{{post.position}}</div>
     <span ng-if="post.user.ignored">Ignored</span>
     <small class="pointer" ng-if="post.user.ignored" ng-click="post.user.ignored = false">
       <strong>- Show Post</strong>
@@ -50,13 +51,13 @@
         </div>
 
         <ul class="post-action">
-          <li ng-if="PostsCtrl.canPurge() && $index !== 0">
+          <li ng-if="PostsCtrl.canPurge() && post.position !== 1">
             <a ng-href="#" data-balloon="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
               <i class="fa fa-trash"></i>
             </a>
           </li>
-          <li ng-if="PostsCtrl.canDelete(post) && $index !== 0 && !post.deleted">
-            <a ng-href="#" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index)">
+          <li ng-if="PostsCtrl.canDelete(post) && post.position !== 1 && !post.deleted">
+            <a ng-href="#" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index, post.locked)">
               <i class="fa fa-eye-slash"></i>
             </a>
           </li>
@@ -92,14 +93,15 @@
           </li>
           <li>
             <a ng-href="{{::PostsCtrl.rootUrl}}?start={{::post.position}}#{{::post.id}}" ng-click="PostsCtrl.highlightPost()" data-balloon="Permalink">
-              <i class="icon-epoch-link"></i>
+              <!-- <i class="icon-epoch-link"></i> -->
+              <strong>#{{post.position}}</strong>
             </a>
           </li>
         </ul>
         <div class="clear"></div>
       </div>
       <!-- Post Body -->
-      <div class="post-body" post-processing="post.body_html" style-fix="true"></div>
+      <div class="post-body" ng-class="{ 'rtl': post.right_to_left }" post-processing="post.body_html" style-fix="true"></div>
       <div ng-if="post.user.signature">
         <div class="post-sig-border"></div>
         <div class="post-signature" post-processing="post.user.signature" style-fix="true"></div>
@@ -113,7 +115,7 @@
   <form name="$parent.form" class="css-form" novalidate>
     <h3 class="thin-underline">Hide Post</h3>
     <p>Are you sure you want to hide this post?</p>
-    <label ng-if="PostsParentCtrl.canPostLockQuick(PostsParentCtrl.deletePostIndex)">
+    <label ng-if="PostsParentCtrl.canPostLockQuick(PostsParentCtrl.deletePostIndex) && PostsParentCtrl.deletePostLocked === false">
       <input type="checkbox" ng-model="PostsParentCtrl.deleteAndLock" modal-focus="{{PostsParentCtrl.showDeleteModal}}" />
       Lock Post (poster cannot hide/edit this post)?
     </label>

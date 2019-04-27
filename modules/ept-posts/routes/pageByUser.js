@@ -92,7 +92,7 @@ function processing(request, reply) {
       page: opts.page,
       limit: opts.limit,
       desc: opts.desc,
-      posts: common.cleanPosts(posts, userId, viewables),
+      posts: common.cleanPosts(posts, userId, viewables, request),
       count: count
     };
   })

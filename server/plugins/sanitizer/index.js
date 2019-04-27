@@ -58,7 +58,7 @@ sanitizer.bbcode = function(input) {
   }
 
   var text = sanitize(replacedTagsInput, {
-    allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'table', 'thead', 'tfoot', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img', 'sub', 'sup', 'tt', 'del' ],
+    allowedTags: false, // allow all tags thru, angular will sanitize
     allowedAttributes: {
       a: [ 'href', 'name', 'target' ],
       img: [ 'src', 'srcset', 'alt' ],

@@ -6,9 +6,10 @@
 .error-label { @include label(error,  0.6875rem, 2px, 0.1rem); }
 .thin-underline { @include clearfix; border-bottom: 1px solid $border-color; margin-bottom: 0.625rem; }
 .info-tooltip { transition:color 0.3s ease; margin-left: 0.25rem; cursor: pointer; color: $secondary-font-color; &:hover { color: $secondary-font-color-dark; }}
-.desc-label { color: $secondary-font-color; }
+.desc-label, .secondary-font-color-light { color: $secondary-font-color-light; }
 .bold { font-weight: bold; }
 .spoiler { color: black; background-color: black; &:hover { color: white; } }
+.rtl { direction: rtl; }
 .disable-animations {
   // Use this for transitions
   &.ng-enter,
@@ -78,6 +79,57 @@ pre.json {
 /*-- Toggle Switch --*/
 .switch-block label { float: none; }
 .toggle-switch { position: absolute; margin-left: -9999px; visibility: hidden; }
+.form-switch {
+  margin-bottom: 1rem;
+  .switch-field {
+    float: left;
+    display: flex;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .switch-field input {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
+  }
+
+  .switch-field label {
+    background-color: #e4e4e4;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    line-height: 1;
+    text-align: center;
+    padding: 8px 16px;
+    margin: 0;
+    width: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.1s ease-in-out;
+  }
+
+  .switch-field label:hover {
+    cursor: pointer;
+  }
+
+  .switch-field input:checked + label {
+    background-color: $color-primary;
+    color: $button-text-color;
+    box-shadow: none;
+  }
+
+  .switch-field label:first-of-type {
+    border-radius: 2px 0 0 2px;
+  }
+
+  .switch-field label:last-of-type {
+    border-radius: 0 2px 2px 0;
+  }
+}
 input.toggle-switch + label {
   @include no-select;
   @include border-radius(3px);

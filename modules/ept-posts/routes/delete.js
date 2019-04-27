@@ -22,19 +22,25 @@ module.exports = {
   path: '/api/posts/{id}',
   config: {
     auth: { strategy: 'jwt' },
+    plugins: {
+      mod_log: {
+        type: 'posts.delete',
+        data: { id: 'params.id' }
+      }
+    },
     validate: {
       params: { id: Joi.string().required() },
       query: { locked: Joi.boolean().default(false) }
     },
     pre: [
       { method: 'auth.posts.delete(server, auth, params.id)' },
-      { method: 'common.posts.checkLockedQuery(server, auth, params.id, query)' }
+      { method: 'auth.posts.lock(server, auth, params.id, query)' }
     ],
     handler: function(request, reply) {
-      var promise = request.db.posts.delete(request.params.id)
+      var promise = request.db.posts.delete(request)
       .tap(function() {
         if (request.query.locked) {
-          return request.db.posts.lock(request.params.id);
+          return request.db.posts.lock(request);
         }
       })
       .error(request.errorMap.toHttpError);

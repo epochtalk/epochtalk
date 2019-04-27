@@ -22,6 +22,7 @@ module.exports = {
       default_avatar: config.website.defaultAvatar,
       websocket_host: config.websocket_client_host,
       websocket_port: config.websocket_port,
+      post_max_length: config.postMaxLength,
       max_image_size: config.images.maxSize,
       portal: { enabled: config.portal.enabled },
       GAKey: config.gaKey,
@@ -42,8 +43,9 @@ module.exports = {
       }
 
       // description
-      var $ = cheerio.load('<div>' + user.signature + '</div>');
+      var $ = cheerio.load('<div ng-non-bindable>' + user.signature + '</div>');
       var description = $('div').text();
+      description = description.replace(/{/g, '&#123;').replace(/}/g, '&#125;');
       if (description && viewable) {
         data.ogDescription = data.twDescription = description;
       }

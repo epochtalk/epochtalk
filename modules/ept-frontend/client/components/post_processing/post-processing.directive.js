@@ -34,17 +34,22 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
 
-        anch.innerHTML = url;
-        anch.href = url;
-        anch.target = '_blank';
-        wrap.appendChild(anch);
-        return wrap.innerHTML;
+        if (validUrl(url)) {
+          anch.innerHTML = url;
+          anch.href = url;
+          anch.target = '_blank';
+          wrap.appendChild(anch);
+          return wrap.innerHTML;
+        }
+        else { return url; }
       };
 
       var validUrl = function(s) {
         try {
-          new URL(s);
-          return true;
+          var testUrl = new URL(s);
+          var urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm;
+          var reg = new RegExp(urlRegex);
+          return s.match(reg);
         }
         catch(e) { return false; }
       };
@@ -176,7 +181,25 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         }
 
         // dump html into element
-        $element.html(processed);
+        $element.html('<div ng-non-bindable>' + processed + '</div>');
+
+        // Remove first newline from codeblock
+        // This allows users to type:
+        // [code]
+        // Hello World
+        // [/code]
+        // Without having extra padding at the top of the code block
+        var codeBlocks = $element.find("CODE");
+        if (codeBlocks.length > 0) {
+          for (var i = 0; i < codeBlocks.length; i++) {
+            var codeBlock = angular.element(codeBlocks[i]);
+            var text = codeBlock.text();
+            if (text.charAt(0) == '\n') {
+              text = text.substr(1);
+              codeBlock.text(text);
+            }
+          }
+        }
 
         // image loading
         var images = $($element[0]).find('img');

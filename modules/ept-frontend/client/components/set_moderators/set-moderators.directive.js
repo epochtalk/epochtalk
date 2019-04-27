@@ -58,7 +58,6 @@ function(AdminModerators, AdminUsers, Alert, $timeout, $q) {
           'threads.title.bypass.owner.admin'
         ];
         return filter(mods.map(function(mod) {
-          console.log(mod);
           var hasSomeModePrivileges = some(mod.roles.map(function(role) {
             var hasModPermission = false;
             modPermissions.forEach(function(perm) {

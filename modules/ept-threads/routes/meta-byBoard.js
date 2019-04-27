@@ -25,6 +25,7 @@ module.exports = {
       default_avatar: config.website.defaultAvatar,
       websocket_host: config.websocket_client_host,
       websocket_port: config.websocket_port,
+      post_max_length: config.postMaxLength,
       max_image_size: config.images.maxSize,
       portal: { enabled: config.portal.enabled },
       GAKey: config.gaKey,

@@ -38,6 +38,16 @@
       <label for="invite-only"></label>
     </div>
   </div>
+  <div class="setting-row">
+    <div class="switch-desc">
+      <label for="post-max-length">Max Post Length</label>
+      <label class="desc-label" for="post-max-length">The number of characters allowed per post</label>
+    </div>
+    <div class="switch-block">
+      <input id="post-max-length" type="number" min="100" max="25000" ng-model="AdminSettingsCtrl.settings.post_max_length">
+    </div>
+  </div>
+
 
   <!-- Portal Configurations -->
   <h5 class="thin-underline section-header-top-spacing">

@@ -27,6 +27,7 @@ var directive = ['$compile', function($compile) {
             description: board.description,
             viewable_by: board.viewable_by,
             postable_by: board.postable_by,
+            right_to_left: board.right_to_left,
             children: board.children || [],
             moderators: board.moderators || []
           };
@@ -55,7 +56,8 @@ var directive = ['$compile', function($compile) {
           name: $('#newBoardName').val() || '',
           description: $('#newBoardDesc').val() || '',
           viewable_by: $('#newBoardViewable').val() || undefined,
-          postable_by: $('#newBoardPostable').val() || undefined
+          postable_by: $('#newBoardPostable').val() || undefined,
+          right_to_left: $('input[name="newBoardRTL"]:checked').val() === "true"
         };
 
         if (board.name !== '') {
@@ -67,6 +69,7 @@ var directive = ['$compile', function($compile) {
             description: board.description,
             viewable_by: board.viewable_by,
             postable_by: board.postable_by,
+            right_to_left: board.right_to_left,
             children: board.children || [],
             moderators: board.moderators || []
           };
@@ -97,6 +100,7 @@ var directive = ['$compile', function($compile) {
         $('#newBoardDesc').val('');
         $('#newBoardViewable').val('');
         $('#newBoardPostable').val('');
+        $('#ltr').prop('checked', true);
       };
 
     }

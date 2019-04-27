@@ -3,7 +3,7 @@ var formatPost = function(post) {
     id: post.user_id,
     name: post.name,
     username: post.username,
-    priority: post.priority,
+    priority: post.priority || post.default_priority,
     deleted: post.user_deleted,
     signature: post.signature,
     post_count: post.post_count,
@@ -13,6 +13,7 @@ var formatPost = function(post) {
   delete post.user_id;
   delete post.username;
   delete post.priority;
+  delete post.default_priority;
   delete post.name;
   delete post.user_deleted;
   delete post.post_count;

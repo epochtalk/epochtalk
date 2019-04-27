@@ -5,6 +5,13 @@
   .desc, .switch-desc { @include span-columns(9); }
   .button { @include span-columns(3); @include omega; font-size: 0.875rem; padding: 0.625rem; }
   .switch-block { @include span-columns(3); @include omega; padding-top: 0.25rem; }
+  .switch-block {
+    input[type="number"] {
+      text-align: right;
+      width: 5rem;
+      float: right;
+    }
+  }
   .setting-row { @include clearfix; padding-bottom: 1rem; }
   .img-wrap {
     @include omega(3n);

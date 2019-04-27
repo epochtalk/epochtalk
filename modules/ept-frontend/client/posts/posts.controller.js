@@ -103,18 +103,20 @@ var ctrl = [
         }
         else if (Session.hasPermission('posts.delete.bypass.locked.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
+          else if (Session.hasPermission('threads.moderated.allow') && ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated && ctrl.user.id !== post.user.id) { validBypass = true; }
         }
       }
 
       // moderated/owner
       if (post.user.id === ctrl.user.id) { validBypass = true; }
-      else if (ctrl.thread.moderated && ctrl.thread.user.id === ctrl.user.id && Session.hasPermission('threads.moderated.allow')) { validBypass = true; }
+      else if (ctrl.thread.moderated && ctrl.thread.user.id === ctrl.user.id && Session.hasPermission('threads.moderated.allow') && Session.hasPermission('posts.delete.bypass.owner.selfMod')) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.admin')) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.mod')) {
         if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
       }
       else if (Session.hasPermission('posts.delete.bypass.owner.priority')) {
         if (Session.getPriority() < post.user.priority) { validBypass = true; }
+        else if (Session.hasPermission('threads.moderated.allow') && ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated && ctrl.user.id !== post.user.id) { validBypass = true; }
       }
 
       return validBypass;
@@ -133,6 +135,14 @@ var ctrl = [
       }
       else if (Session.hasPermission('posts.lock.bypass.lock.priority')) {
         if (Session.getPriority() < post.user.priority) { return true; }
+        // Allow users with priority option to still self mod
+        else if (Session.hasPermission('threads.moderated.allow') && ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated && ctrl.user.id !== post.user.id) { return true; }
+        else { return false; }
+      }
+      else if (Session.hasPermission('threads.moderated.allow') && Session.hasPermission('posts.lock.bypass.lock.selfMod')) {
+        if (ctrl.thread.user.id === ctrl.user.id && parent.thread.moderated && ctrl.user.id !== post.user.id) {
+          return true;
+        }
         else { return false; }
       }
       else { return false; }

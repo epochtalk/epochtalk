@@ -10,8 +10,8 @@ module.exports = function(board) {
   var q, params;
   return using(db.createTransaction(), function(client){
     // insert new board
-    q = 'INSERT INTO boards(name, description, viewable_by, postable_by, created_at) VALUES($1, $2, $3, $4, now()) RETURNING id';
-    params = [board.name, board.description, board.viewable_by, board.postable_by];
+    q = 'INSERT INTO boards(name, description, viewable_by, postable_by, right_to_left, created_at) VALUES($1, $2, $3, $4, $5, now()) RETURNING id';
+    params = [board.name, board.description, board.viewable_by, board.postable_by, board.right_to_left];
     return client.query(q, params)
     .then(function(results) { board.id = results.rows[0].id; })
     // insert new board metadata

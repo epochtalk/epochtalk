@@ -167,7 +167,10 @@ function stitch(error, conditions, type) {
     return build(condition);
   });
 
-  if (type === 'all') { return Promise.all(conditions); }
+  if (type === 'all') {
+    return Promise.all(conditions)
+    .catch(() => { return Promise.reject(error); });
+  }
   else if (type === 'any') {
     return Promise.any(conditions)
     .catch(() => { return Promise.reject(error); });
@@ -498,13 +501,16 @@ function adminRolesValidate(validations, payload) {
   }).required();
 
   var promise = new Promise(function(resolve, reject) {
-    Joi.validate(payload.permissions, schema, { stripUnknown: true }, function(err, value) {
-      if (err) { return reject(Boom.badRequest(err)); }
-      else {
-        payload.permissions = value;
-        return resolve();
-      }
-    });
+    if (payload.permissions) {
+      Joi.validate(payload.permissions, schema, { stripUnknown: true }, function(err, value) {
+        if (err) { return reject(Boom.badRequest(err)); }
+        else {
+          payload.permissions = value;
+          return resolve();
+        }
+      });
+    }
+    else { return resolve(); }
   });
 
   return promise;

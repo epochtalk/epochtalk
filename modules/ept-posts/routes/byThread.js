@@ -119,6 +119,7 @@ function processing(request, reply) {
   var threadId = request.query.thread_id;
   if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
+
   var viewables = request.pre.viewables;
 
   var opts = { limit: limit, start: 0, page: 1, userId: userId };
@@ -150,7 +151,7 @@ function processing(request, reply) {
       write_access: writeAccess,
       limit: opts.limit,
       page: opts.page,
-      posts: common.cleanPosts(posts, userId, viewables)
+      posts: common.cleanPosts(posts, userId, viewables, request, thread)
     };
   })
   // handle page or start out of range

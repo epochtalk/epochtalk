@@ -27,6 +27,12 @@ module.exports = {
   config: {
     app: { hook: 'posts.update' },
     auth: { strategy: 'jwt' },
+    plugins: {
+      mod_log: {
+        type: 'posts.update',
+        data: { id: 'params.id' }
+      }
+    },
     validate: {
       payload: {
         title: Joi.string().min(1).max(255).required(),

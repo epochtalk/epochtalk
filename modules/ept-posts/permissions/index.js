@@ -15,8 +15,10 @@ var validation =  Joi.object().keys({
     bypass: Joi.object().keys({
       viewDeletedPosts: Joi.object().keys({
         admin: Joi.boolean(),
-        mod: Joi.boolean()
-      }).xor('admin', 'mod')
+        mod: Joi.boolean(),
+        priority: Joi.boolean(),
+        selfMod: Joi.boolean()
+      }).xor('admin', 'mod', 'priority', 'selfMod')
     })
   }),
   find: Joi.object().keys({
@@ -67,13 +69,15 @@ var validation =  Joi.object().keys({
       locked: Joi.object().keys({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
-        priority: Joi.boolean()
-      }).xor('admin', 'mod', 'priority'),
+        priority: Joi.boolean(),
+        selfMod: Joi.boolean()
+      }).xor('admin', 'mod', 'priority', 'selfMod'),
       owner: Joi.object().keys({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
-        priority: Joi.boolean()
-      }).xor('admin', 'mod', 'priority')
+        priority: Joi.boolean(),
+        selfMod: Joi.boolean()
+      }).xor('admin', 'mod', 'priority', 'selfMod')
     })
   }),
   lock: Joi.object().keys({
@@ -82,8 +86,9 @@ var validation =  Joi.object().keys({
       lock: Joi.object().keys({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
-        priority: Joi.boolean()
-      }).xor('admin', 'mod', 'priority')
+        priority: Joi.boolean(),
+        selfMod: Joi.boolean()
+      }).xor('admin', 'mod', 'priority', 'selfMod')
     })
   }),
   purge: Joi.object().keys({
@@ -135,7 +140,7 @@ var superAdministrator = {
   },
   lock: {
     allow: true,
-    bypass: { purge: { admin: true } }
+    bypass: { lock: { admin: true } }
   },
   purge: {
     allow: true,
@@ -181,7 +186,7 @@ var administrator = {
   },
   lock: {
     allow: true,
-    bypass: { purge: { admin: true } }
+    bypass: { lock: { admin: true } }
   },
   purge: {
     allow: true,
@@ -227,7 +232,7 @@ var globalModerator = {
   },
   lock: {
     allow: true,
-    bypass: { purge: { admin: true } }
+    bypass: { lock: { admin: true } }
   }
 };
 
@@ -269,14 +274,45 @@ var moderator = {
   },
   lock: {
     allow: true,
-    bypass: { purge: { mod: true } }
+    bypass: { lock: { mod: true } }
+  }
+};
+
+var user = {
+  search: { allow: true },
+  create: { allow: true },
+  byThread: {
+    allow: true,
+    bypass: { viewDeletedPosts: { selfMod: true } }
+  },
+  find: { allow: true },
+  pageByUser: { allow: true },
+  update: { allow: true },
+  delete: {
+    allow: true,
+    bypass: {
+      locked: { selfMod: true },
+      owner: { selfMod: true },
+    }
+  },
+  lock: {
+    allow: true,
+    bypass: {
+      lock: { selfMod: true },
+      owner: { selfMod: true },
+    }
   }
 };
 
 var patroller = {
   search: { allow: true },
   create: { allow: true },
-  byThread: { allow: true },
+  byThread: {
+    allow: true,
+    bypass: {
+      viewDeletedPosts: { priority: true }
+    }
+  },
   find: { allow: true },
   pageByUser: { allow: true },
   update: {
@@ -296,18 +332,8 @@ var patroller = {
   },
   lock: {
     allow: true,
-    bypass: { purge: { priority: true } }
+    bypass: { lock: { priority: true } }
   }
-};
-
-var user = {
-  search: { allow: true },
-  create: { allow: true },
-  byThread: { allow: true },
-  find: { allow: true },
-  pageByUser: { allow: true },
-  update: { allow: true },
-  delete: { allow: true }
 };
 
 var newbie = {
@@ -342,7 +368,7 @@ var layout = {
   },
   byThread: {
     title: 'View Thread Posts',
-    bypasses: [ { description: 'View Hidden Posts', control: 'viewDeletedPosts' } ]
+    bypasses: [ { description: 'View Hidden Posts', control: 'viewDeletedPosts', type: 'selfMod' } ]
   },
   find: {
     title: 'View Single Post',
@@ -366,13 +392,13 @@ var layout = {
   delete: {
     title: 'Hide Posts',
     bypasses: [
-      { description: 'Ignore Post Ownership', control: 'owner', type: 'priority' },
-      { description: 'Ignore Thread Lock', control: 'locked', type: 'priority' }
+      { description: 'Ignore Post Ownership', control: 'owner', type: 'selfMod' },
+      { description: 'Ignore Thread Lock', control: 'locked', type: 'selfMod' }
     ]
   },
   lock: {
     title: 'Lock Posts (lock level required)',
-    bypasses: [ { description: 'Lock Level', control: 'lock', type: 'priority' } ]
+    bypasses: [ { description: 'Lock Level', control: 'lock', type: 'selfMod' } ]
   },
   purge: {
     title: 'Purge Posts (purge level required)',

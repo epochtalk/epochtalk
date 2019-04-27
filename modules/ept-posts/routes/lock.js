@@ -26,9 +26,8 @@ module.exports = {
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: 'auth.posts.lock(server, auth, params.id)'} ],
     handler: function(request, reply) {
-      var promise = request.db.posts.lock(request.params.id)
+      var promise = request.db.posts.lock(request)
       .error(request.errorMap.toHttpError);
-
       return reply(promise);
     }
   }

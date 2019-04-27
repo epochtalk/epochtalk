@@ -37,6 +37,9 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
       var editor = $element[0].getElementsByClassName('editor-input')[0];
       var $editor = angular.element(editor);
 
+      // Grab post_max_length from web configs
+      $scope.post_max_length = $rootScope.$webConfigs.post_max_length;
+
       // -- Images
 
       $scope.insertImageUrl = function(url) {
@@ -56,7 +59,7 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
         var processed = rawText;
         $window.parsers.forEach(function(parser) {
           // second boolean tells the processor to strip html
-          processed = parser.parse(processed, true);
+          processed = parser.parse(processed, false);
         });
 
         // re-bind to scope
@@ -97,6 +100,10 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
 
       // directive initialization and reset
       var initEditor = function() {
+        // This is hacky, but it stops us from having to make a db query... Maybe replace later
+        // This checks if any of the post bodys has the right to left class, letting the editor
+        // know that it should display in rtl too.
+        $scope.right_to_left = $(".rtl")[0] !== undefined;
         // on load ng-model body to editor and preview
         $scope.preview = false; // show compose tab
         if ($scope.body && $scope.body.length > 0) {

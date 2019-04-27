@@ -37,7 +37,8 @@ module.exports = {
         name: Joi.string().min(1).max(255),
         description: Joi.string().max(255).allow(''),
         viewable_by: Joi.number().allow(null),
-        postable_by: Joi.number().allow(null)
+        postable_by: Joi.number().allow(null),
+        right_to_left: Joi.boolean().default(false)
       })).unique().min(1)
     },
     pre: [

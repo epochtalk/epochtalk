@@ -252,7 +252,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   };
 
   this.selectRole = function(role) {
-    if (ctrl.modifyingRole || ctrl.roleToRemove) { return; }
+    if (ctrl.modifyingRole || ctrl.roleToRemove || ctrl.roleToReset) { return; }
     // reset defaults when deselecting or reselecting
     ctrl.page = page;
     ctrl.limit = limit;
@@ -292,6 +292,37 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       });
     }
     else { ctrl.resetPriority(); }
+  };
+
+  // Reset role modal
+  this.showResetRoleModal = false;
+  this.roleToReset = null;
+  this.showResetRole = function(resetRole) {
+    ctrl.showResetRoleModal = true;
+    ctrl.roleToReset = resetRole;
+  };
+
+  this.closeResetRole = function() {
+    ctrl.roleToReset = null;
+    ctrl.showResetRoleModal = false;
+  };
+
+  this.resetRole = function() {
+    ctrl.roleToReset.permissions = {};
+    ctrl.roleToReset.highlight_color = ctrl.roleToReset.highlight_color ? ctrl.roleToReset.highlight_color : undefined;
+    AdminRoles.update(ctrl.roleToReset).$promise
+    .then(function() {
+      Alert.success('Role ' + ctrl.roleToReset.name + ' successfully reset.');
+    })
+    .catch(function(err) {
+      var errMsg = 'There was an error resetting the role ' + ctrl.roleToReset.name + '.';
+      if (err && err.data && err.data.message) { errMsg = err.data.message; }
+      Alert.error(errMsg);
+    })
+    .finally(function() {
+      ctrl.closeResetRole();
+      ctrl.pullPage();
+    });
   };
 
   // Remove role modal

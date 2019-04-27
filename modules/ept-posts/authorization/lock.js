@@ -1,9 +1,12 @@
 var Boom = require('boom');
 var Promise = require('bluebird');
+var path = require('path');
+var common = require(path.normalize(__dirname + '/../common'));
 
-module.exports = function postsPurge(server, auth, postId) {
+module.exports = function postsLock(server, auth, postId, query) {
+  if (query && !query.locked) { return; }
+
   var userId = auth.credentials.id;
-
   // check base permission
   var allowed = server.authorization.build({
     error: Boom.forbidden(),
@@ -37,14 +40,78 @@ module.exports = function postsPurge(server, auth, postId) {
     userId: userId
   });
 
-  var lockCond = [
+  var ignoreOwnership = server.authorization.build({
+    // permission based override
+    type: 'hasPermission',
+    server: server,
+    auth: auth,
+    permission: 'posts.lock.bypass.lock.admin'
+  });
+
+  var notLockedByHigherPriority = function(userId, postId) {
+    return server.db.posts.find(postId)
+    .then(function(post) {
+      var authedUserPriority = server.plugins.acls.getUserPriority(auth);
+      // Post was locked by someone else
+      if (authedUserPriority && post.metadata && post.metadata.locked_by_id && post.metadata.locked_by_id !== userId) {
+        // Person who locked the post has greater priority
+        if (post.metadata.locked_by_priority < authedUserPriority) {
+          return Promise.reject(Boom.forbidden());
+        }
+      }
+      return Promise.resolve(true);
+    })
+  }
+
+  // Is user self moderator and do they have priority to hide post
+  var selfModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorSelfModerated,
+      args: [userId, postId],
+      permission: 'posts.lock.bypass.lock.selfMod'
+    },
+    common.hasPriority(server, auth, 'posts.lock.bypass.lock.selfMod', postId),
+    notLockedByHigherPriority(userId, postId)
+  ];
+  var selfMod = server.authorization.stitch(Boom.forbidden(), selfModCond, 'all');
+
+  var priorityModCond = [
     {
       // permission based override
       type: 'hasPermission',
       server: server,
       auth: auth,
-      permission: 'posts.lock.bypass.lock.admin'
+      permission: 'posts.lock.bypass.lock.priority'
     },
+    common.hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId),
+    notLockedByHigherPriority(userId, postId)
+  ];
+  var priorityMod = server.authorization.stitch(Boom.forbidden(), priorityModCond, 'all');
+
+  // User has priority permission
+  var prioritySelfModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorSelfModerated,
+      args: [userId, postId],
+      permission: 'posts.lock.bypass.lock.priority'
+    },
+    // The boolean at the end tells hasPriority to pass if auth user is Patroller and post creator is a user
+    common.hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId, true),
+    notLockedByHigherPriority(userId, postId)
+  ];
+  var prioritySelfMod = server.authorization.stitch(Boom.forbidden(), prioritySelfModCond, 'all')
+  // check self mod permissions
+
+  var modCond = [
+    ignoreOwnership,
+    priorityMod,
+    prioritySelfMod,
     {
       // is board moderator
       type: 'isMod',
@@ -52,26 +119,9 @@ module.exports = function postsPurge(server, auth, postId) {
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.lock.bypass.lock.mod')
     },
-    // is patroller
-    hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId)
+    selfMod
   ];
-  var lock = server.authorization.stitch(Boom.forbidden(), lockCond, 'any');
 
-  return Promise.all([allowed, read, write, active, lock]);
+  var mod = server.authorization.stitch(Boom.forbidden(), modCond, 'any');
+  return Promise.all([allowed, read, write, active, mod]);
 };
-
-function hasPriority(server, auth, permission, postId) {
-  var actorPermission = server.plugins.acls.getACLValue(auth, permission);
-  if (!actorPermission) { return Promise.reject(Boom.forbidden()); }
-
-  var hasPatrollerRole = false;
-  auth.credentials.roles.map(function(role) {
-    if (role === 'patroller') { hasPatrollerRole = true; }
-  });
-
-  return server.db.roles.posterHasRole(postId, 'newbie')
-  .then(function(posterIsNewbie) {
-    if (hasPatrollerRole && posterIsNewbie) { return true; }
-    else { return Promise.reject(Boom.forbidden()); }
-  });
-}

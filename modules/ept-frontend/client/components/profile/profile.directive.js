@@ -53,6 +53,13 @@ var directive = [function() {
         return valid;
       };
 
+      this.canUpdateUsername = function() {
+        if (!Session.isAuthenticated()) { return false; }
+        if (!Session.hasPermission('users.changeUsername.allow')) { return false; }
+        return canUpdate();
+      };
+
+
       this.canUpdatePrivate = function() { return ctrl.canUpdate() && ctrl.pageOwner(); };
 
       this.canDeactivate = function() {

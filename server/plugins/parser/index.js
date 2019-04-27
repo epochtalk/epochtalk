@@ -8,7 +8,9 @@ function parse(input) {
   input = textToEntities(input);
 
   // run through all parsers
-  parsers.forEach(function(parser) { input = parser.parse(input); });
+  parsers.forEach(function(parser) {
+    input = parser.parse(input);
+  });
 
   return input;
 }
@@ -17,12 +19,16 @@ function textToEntities(text) {
   var entities = '';
   for (var i = 0; i < text.length; i++) {
     if (text.charCodeAt(i) > 127) {
-      entities += '&#' + text.charCodeAt(i) + ';';
+      entities += encode(text.charAt(i));
     }
     else { entities += text.charAt(i); }
   }
 
   return entities;
+}
+
+function encode(e) {
+  return e.replace(/[.]/g, function(e) { return "&#" + e.charCodeAt(0) + ";" });
 }
 
 exports.register = function(server, options, next) {

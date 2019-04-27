@@ -22,12 +22,17 @@ module.exports = {
   path: '/api/posts/{id}/undelete',
   config: {
     auth: { strategy: 'jwt' },
+    plugins: {
+      mod_log: {
+        type: 'posts.undelete',
+        data: { id: 'params.id' }
+      }
+    },
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: 'auth.posts.delete(server, auth, params.id)'} ],
     handler: function(request, reply) {
       var promise = request.db.posts.undelete(request.params.id)
       .error(request.errorMap.toHttpError);
-
       return reply(promise);
     }
   }

@@ -188,13 +188,25 @@ exports.update = {
       priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
       highlight_color: Joi.string(),
       lookup: Joi.string().required(),
-      permissions: Joi.object().required()
+      permissions: Joi.object()
     }
   },
   pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
   handler: function(request, reply) {
     var role = request.payload;
+    var defaultRole;
     var promise = request.db.roles.update(role)
+    .then(function(result) {
+      // If permissions are empty reset to default
+      if (role.permissions === '{}' && role.id !== role.lookup) {
+        return request.server.plugins.acls.verifyRoles(true, role.lookup)
+        .then(function(updatedDefaultRole) {
+          defaultRole = updatedDefaultRole;
+          return result;
+        });
+      }
+      else { return result; }
+    })
     .tap(function(dbRole) {
       var roleClone = _.cloneDeep(dbRole);
       var notification = {
@@ -204,9 +216,11 @@ exports.update = {
       request.server.plugins.notifications.systemNotification(notification);
     })
     .then(function(result) {
-      role.id = result.id; // undoes deslugify which happens in core
+      var updateRole = role;
+      if (defaultRole) { updateRole = defaultRole; }
+      else { updateRole.id = result.id; } // undoes deslugify which happens in core
       // Update role in the in memory role object
-      request.rolesAPI.updateRole(role);
+      request.rolesAPI.updateRole(updateRole);
       return result;
     })
     .error(request.errorMap.toHttpError);

@@ -271,7 +271,6 @@ var patroller = {
   posted: { allow: true },
   viewed: { allow: true },
   title: { allow: true },
-  lock: { allow: true },
   vote: { allow: true },
   removeVote: { allow: true },
   createPoll: { allow: true },
@@ -286,7 +285,6 @@ var user = {
   posted: { allow: true },
   viewed: { allow: true },
   title: { allow: true },
-  lock: { allow: true },
   vote: { allow: true },
   removeVote: { allow: true },
   createPoll: { allow: true },
@@ -296,12 +294,10 @@ var user = {
 
 var newbie = {
   create: { allow: true },
-  moderated: { allow: true },
   byBoard: { allow: true },
   posted: { allow: true },
   viewed: { allow: true },
   title: { allow: true },
-  lock: { allow: true },
   vote: { allow: true },
   removeVote: { allow: true },
   createPoll: { allow: true },

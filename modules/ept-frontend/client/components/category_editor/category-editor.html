@@ -54,6 +54,17 @@
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
     </select>
   </label>
+  <div class="form-switch">
+    <label for="newBoardRTL">Text Direction
+      <span class="info-tooltip" data-balloon="Sets the read direction of the text for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
+    <div class="switch-field">
+      <input type="radio" id="ltr" name="newBoardRTL" value="false" checked/>
+      <label for="ltr">Left to Right</label>
+      <input type="radio" id="rtl" name="newBoardRTL" value="true" />
+      <label for="rtl">Right to Left</label>
+    </div>
+  </div>
   <div class="clear">
     <button ng-click="insertNewBoard()" class="fill-row">Add Board</button>
   </div>
@@ -81,6 +92,17 @@
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
     </select>
   </label>
+  <div class="form-switch">
+    <label for="editBoardRTL">Text Direction
+      <span class="info-tooltip" data-balloon="Sets the read direction of the text for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
+    <div class="switch-field">
+      <input type="radio" id="ltr-edit" name="editBoardRTL" value="false" checked/>
+      <label for="ltr-edit">Left to Right</label>
+      <input type="radio" id="rtl-edit" name="editBoardRTL" value="true" />
+      <label for="rtl-edit">Right to Left</label>
+    </div>
+  </div>
   <div class="clear">
     <button ng-click="editBoard()" class="fill-row">Edit Board</button>
   </div>
