@@ -1,8 +1,8 @@
 var os = require('os');
 var fs = require('fs');
 var path = require('path');
-var keyPath = path.join(__dirname, 'keys', process.env.WEBSOCKET_SERVER_KEY_NAME || 'server.key');
-var certPath = path.join(__dirname, 'keys', process.env.WEBSOCKET_SERVER_CERT_NAME || 'server.crt');
+var keyPath = process.env.WEBSOCKET_SERVER_KEY_NAME || path.join(__dirname, 'keys', 'server.key');
+var certPath = process.env.WEBSOCKET_SERVER_CERT_NAME || path.join(__dirname, 'keys', 'server.crt');
 
 // check that key and cert exist when necessary
 if (process.env.WEBSOCKET_SERVER_PROTOCOL === 'https') {
