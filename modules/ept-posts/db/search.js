@@ -20,6 +20,7 @@ module.exports = function(opts, priority) {
       ts_headline('simple', (SELECT content ->> 'title' as title from posts WHERE thread_id = p.thread_id ORDER BY created_at LIMIT 1), q, 'StartSel=<mark>, StopSel=</mark>') as thread_title,
       p.user_id,
       p.created_at,
+      b.right_to_left,
       u.username,
       p.thread_id,
       p.position,

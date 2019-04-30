@@ -46,7 +46,7 @@
           <div class="clear"></div>
         </div>
         <!-- Post Body -->
-        <div class="post-body" post-processing="post.body_html" style-fix="true"></div>
+        <div class="post-body" ng-class="{ 'rtl': post.right_to_left }" post-processing="post.body_html" style-fix="true"></div>
       </div>
     </div>
   </div>
