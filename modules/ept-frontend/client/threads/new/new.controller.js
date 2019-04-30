@@ -1,4 +1,4 @@
-var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Threads', 'Alert', function($anchorScroll, $stateParams, $location, Session, Threads, Alert) {
+var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Threads', 'Alert', 'board', function($anchorScroll, $stateParams, $location, Session, Threads, Alert, board) {
     $anchorScroll();
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
@@ -8,6 +8,7 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
     this.pollValid = false;
     this.addPoll = false;
     this.poll = {};
+    this.right_to_left = board.right_to_left;
     this.thread = {
       title: '',
       board_id: $stateParams.boardId,

@@ -25,6 +25,9 @@ var route = ['$stateProvider', function($stateProvider) {
         });
         return deferred.promise;
       }],
+      board: ['$stateParams', 'Boards', function($stateParams, Boards) {
+        return Boards.get({ id: $stateParams.boardId }).$promise;
+      }],
       authCheck: ['$q', 'Session', function($q, Session) {
         var authed = Session.isAuthenticated();
         if (authed) { return authed; }
