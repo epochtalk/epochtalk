@@ -1,5 +1,4 @@
 {
-  "logEnabled": true,
   "verifyRegistration": false,
   "loginRequired": false,
   "postMaxLength": 10000,

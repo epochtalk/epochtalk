@@ -53,7 +53,6 @@ function validatePortalParams(request, reply) {
   * @apiDescription Used to fetch all web app settings. Allows admins to grab settings defined
   * in config.js
   *
-  * @apiSuccess {boolean} log_enabled Boolean indicating if the server should log to /logs
   * @apiSuccess {boolean} verify_registration Boolean indicating if users need verify their accounts via email
   * @apiSuccess {boolean} login_required Boolean indicating if users need to login to view posts
   * @apiSuccess {boolean} invite_only Boolean indicating if forum is invite only
@@ -110,7 +109,6 @@ exports.find = {
     var promise = request.db.configurations.get()
     .then(function(config) {
        var retVal = {
-         logEnabled: config.logEnabled,
          loginRequired: config.loginRequired,
          verifyRegistration: config.verifyRegistration,
          postMaxLength: config.postMaxLength || 10000,
@@ -139,7 +137,6 @@ exports.find = {
   * @apiName UpdateSettings
   * @apiDescription Used to update web app settings. Used in the admin panel.
   *
-  * @apiParam (Payload) {boolean} [log_enabled] Boolean indicating if the server should log to /logs
   * @apiParam (Payload) {boolean} [verify_registration] Boolean indicating if users need verify their accounts via email
   * @apiParam (Payload) {boolean} [login_required] Boolean indicating if users need to login to view posts
   * @apiParam (Payload) {boolean} [invite_only] Boolean indicating if forum is invite only
@@ -201,7 +198,6 @@ exports.update = {
   ],
   validate: {
     payload: Joi.object().keys({
-      log_enabled: Joi.boolean(),
       verify_registration: Joi.boolean(),
       login_required: Joi.boolean(),
       post_max_length: Joi.number().min(100).max(25000).required(),
