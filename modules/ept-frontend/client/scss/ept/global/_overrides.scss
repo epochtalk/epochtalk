@@ -80,6 +80,11 @@ code {
   display: block;
   font-size: 0.85rem;
   color: $code-block-text-color;
+  line-height: 0.65rem;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: break-word;
+  overflow-x: scroll;
   &.preview { padding: 0; display: inline-block; }
 }
 

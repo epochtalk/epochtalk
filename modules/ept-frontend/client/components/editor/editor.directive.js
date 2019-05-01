@@ -8,7 +8,8 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
       resetSwitch: '=',
       focusSwitch: '=',
       exitSwitch: '=',
-      dirty: '='
+      dirty: '=',
+      rightToLeft: '='
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
@@ -103,7 +104,8 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
         // This is hacky, but it stops us from having to make a db query... Maybe replace later
         // This checks if any of the post bodys has the right to left class, letting the editor
         // know that it should display in rtl too.
-        $scope.right_to_left = $(".rtl")[0] !== undefined;
+        $scope.rtl = $scope.rightToLeft || ($(".rtl")[0] !== undefined);
+
         // on load ng-model body to editor and preview
         $scope.preview = false; // show compose tab
         if ($scope.body && $scope.body.length > 0) {

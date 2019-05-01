@@ -5,7 +5,7 @@
 
 <div class="editor-body" ng-init="preview = false;">
   <div class="editor-column-input" ng-class="{ 'hidden': preview }">
-    <textarea class="editor-input" ng-class="{ 'rtl': right_to_left }" placeholder="Enter your reply here. (BTW, you can drag and drop images directly into the editor panel)" maxlength="{{post_max_length || 10000 }}"></textarea>
+    <textarea class="editor-input" ng-class="{ 'rtl': rtl }" placeholder="Enter your reply here. (BTW, you can drag and drop images directly into the editor panel)" maxlength="{{post_max_length || 10000 }}"></textarea>
     <div class="editor-drag-container">
       <div class="editor-drag">
         <div class="editor-drag-text">Drag and Drop Images</div>
@@ -13,7 +13,7 @@
     </div>
   </div>
   <div class="editor-column-preview"  ng-class="{ 'hidden': !preview }">
-    <div class="editor-preview" ng-class="{ 'rtl': right_to_left }" post-processing="bodyHtml" style-fix="false"></div>
+    <div class="editor-preview" ng-class="{ 'rtl': rtl }" post-processing="bodyHtml" style-fix="false"></div>
   </div>
 </div>
 
