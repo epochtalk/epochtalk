@@ -61,9 +61,7 @@ setup()
 // server logging
 .then(function() {
   // server logging only registered if config enabled
-  if (config.logEnabled) {
-    return server.register({ register: Good, options: logOptions});
-  }
+  return server.register({ register: Good, options: logOptions});
 })
 // inert static file serving
 .then(function() { server.register(Inert); })

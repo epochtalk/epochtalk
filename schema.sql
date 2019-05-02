@@ -978,7 +978,6 @@ CREATE TABLE categories (
 --
 
 CREATE TABLE configurations (
-    log_enabled boolean NOT NULL,
     verify_registration boolean NOT NULL,
     login_required boolean NOT NULL,
     "website.title" character varying(255) NOT NULL,
@@ -2111,12 +2110,6 @@ CREATE UNIQUE INDEX threads_thread_id_index ON threads USING btree (thread_id);
 
 
 SET search_path = public, pg_catalog;
-
---
--- Name: configurations_one_row; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX configurations_one_row ON configurations USING btree (((log_enabled IS NOT NULL)));
 
 
 --
