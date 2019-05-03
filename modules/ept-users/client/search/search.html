@@ -1,0 +1,43 @@
+<div class="fill-row">
+  <div>
+    <form action="." ng-submit="$event.preventDefault();">
+      <div class="nested-input-container">
+        <a ng-if="UserSearchCtrl.search" ng-click="UserSearchCtrl.clearSearch()" class="nested-clear-btn fa fa-times"></a>
+        <a ng-click="UserSearchCtrl.searchUsers()" class="nested-btn">Search</a>
+        <input class="input-text nested-input" type="search" ng-model="UserSearchCtrl.searchStr" type="text" id="search-users" placeholder="Search users by username" ng-keydown="$event.which === 13 && UserSearchCtrl.searchUsers()" ng-keyup="$event.which === 27 && UserSearchCtrl.clearSearch()" />
+      </div>
+    </form>
+  </div>
+</div>
+<div class="fill-row" ng-if="UserSearchCtrl.count > 0 || UserSearchCtrl.search">
+  <div ng-if="UserSearchCtrl.search">
+  Displaying {{UserSearchCtrl.count | number}} search result(s) for "<strong>{{UserSearchCtrl.search}}</strong>":<br /><br />
+  </div>
+  <table class="underlined striped" width="100%">
+    <thead>
+      <th class="pointer" ng-click="UserSearchCtrl.setSortField('username')"><span ng-class="UserSearchCtrl.getSortClass('username')"></span>&nbsp;Username</th>
+      <th class="pointer" ng-click="UserSearchCtrl.setSortField('role')"><span ng-class="UserSearchCtrl.getSortClass('role')"></span>&nbsp;Role</th>
+      <th class="pointer" ng-click="UserSearchCtrl.setSortField('post_count')"><span ng-class="UserSearchCtrl.getSortClass('post_count')"></span>&nbsp;Post Count</th>
+      <th class="pointer hide-mobile" ng-click="UserSearchCtrl.setSortField('created_at')"><span ng-class="UserSearchCtrl.getSortClass('created_at')"></span>&nbsp;Registered Date</th>
+    </thead>
+    <tbody>
+      <tr ng-if="UserSearchCtrl.count <= 0">
+        <td class="centered-text" colspan="4"><h5>No users to display</h5></td>
+      </tr>
+      <tr ng-repeat="user in UserSearchCtrl.users track by user.username">
+        <td>
+          <a class="search-users user-avatar hide-mobile" ui-sref="profile.posts({ username: user.username})">
+            <img ng-src="{{ user.avatar || $webConfigs.default_avatar }}">
+          </a>
+          <a ui-sref="profile.posts({ username: user.username })" ng-bind="user.username"></a>
+        </td>
+        <td ng-bind="user.role"></td>
+        <td ng-bind="user.post_count"></td>
+        <td class="hide-mobile" ng-bind="user.created_at | date:'MM/dd/yy @ h:mma'"></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagination-wrap">
+    <pagination ng-if="UserSearchCtrl.count > 0" page-count="UserSearchCtrl.pageCount" page="UserSearchCtrl.page" query-params="UserSearchCtrl.queryParams"></pagination>
+  </div>
+</div>

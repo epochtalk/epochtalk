@@ -30,14 +30,6 @@ var ngDeps = [
   'ngTagsInput',
   require('oclazyload'),
   require('./layout/header.controller'),
-  // users
-  require('./users/confirm'),
-  require('./users/profile'),
-  require('./users/reset'),
-  require('./users/search'),
-  require('./users/join'),
-  require('./users/settings'),
-  // posts
   require('./patrol'),
   require('./admin')
 ].concat(moduleNames);
@@ -59,7 +51,6 @@ require('./filters');
 require('./services');
 require('./resources');
 require('./components');
-require('./users/resource');
 require('./patrol/resource');
 
 // Set Angular Configs
