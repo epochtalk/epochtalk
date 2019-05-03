@@ -6,7 +6,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: [function(){}],
         controllerAs: 'ThreadsWrapperCtrl',
-        templateUrl: '/static/templates/threads/threads/threads.html'
+        template: require('./threads.html')
       }
     }
   })
@@ -17,7 +17,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'data@threads': {
         controller: 'ThreadsCtrl',
         controllerAs: 'ThreadsCtrl',
-        templateUrl: '/static/templates/threads/threads/threads.data.html'
+        template: require('./threads.data.html')
       }
     },
     resolve: {

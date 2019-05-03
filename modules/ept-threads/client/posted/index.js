@@ -6,7 +6,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: [function(){}],
         controllerAs: 'PostedWrapperCtrl',
-        templateUrl: '/static/templates/threads/posted/posted.html'
+        template: require('./posted.html')
       }
     }
   })
@@ -17,7 +17,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'data@posted': {
         controller: 'PostedCtrl',
         controllerAs: 'PostedCtrl',
-        templateUrl: '/static/templates/threads/posted/posted.data.html'
+        template: require('./posted.data.html')
       }
     },
     resolve: {

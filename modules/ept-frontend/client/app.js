@@ -37,10 +37,6 @@ var ngDeps = [
   require('./users/search'),
   require('./users/join'),
   require('./users/settings'),
-  // threads
-  require('./threads/new'),
-  require('./threads/posted'),
-  require('./threads/threads'),
   // posts
   require('./patrol'),
   require('./admin')
@@ -64,7 +60,6 @@ require('./services');
 require('./resources');
 require('./components');
 require('./users/resource');
-require('./threads/resource');
 require('./patrol/resource');
 
 // Set Angular Configs

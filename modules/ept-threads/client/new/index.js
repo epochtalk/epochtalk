@@ -6,7 +6,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'NewThreadCtrl',
         controllerAs: 'NewThreadCtrl',
-        templateUrl: '/static/templates/threads/new/new.html'
+        template: require('./new.html')
       }
     },
     resolve: {
