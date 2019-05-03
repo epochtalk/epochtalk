@@ -6,7 +6,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'PostsParentCtrl',
         controllerAs: 'PostsParentCtrl',
-        templateUrl: '/static/templates/posts/posts.html'
+        template: require('./posts.html')
       }
     }
   })
@@ -17,7 +17,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'data@posts': {
         controller: 'PostsCtrl',
         controllerAs: 'PostsCtrl',
-        templateUrl: '/static/templates/posts/posts.data.html'
+        template: require('./posts.data.html')
       }
     },
     resolve: {
@@ -78,7 +78,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'PostSearchCtrl',
         controllerAs: 'PostSearchCtrl',
-        templateUrl: '/static/templates/posts/search.html'
+        template: require('./search.html')
       }
     },
     resolve: {
