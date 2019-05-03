@@ -6,7 +6,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'MessagesCtrl',
         controllerAs: 'MessagesCtrl',
-        templateUrl: '/static/templates/messages/messages.html'
+        template: require('./messages.html')
       }
     },
     resolve: {

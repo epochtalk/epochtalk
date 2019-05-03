@@ -43,7 +43,6 @@ var ngDeps = [
   require('./threads/threads'),
   // posts
   require('./posts'),
-  require('./messages'),
   require('./patrol'),
   require('./admin')
 ].concat(moduleNames);
