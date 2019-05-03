@@ -30,7 +30,6 @@ var ngDeps = [
   'ngTagsInput',
   require('oclazyload'),
   require('./layout/header.controller'),
-  require('./boards'),
   // users
   require('./users/confirm'),
   require('./users/profile'),
@@ -67,7 +66,6 @@ require('./services');
 require('./resources');
 require('./components');
 require('./users/resource');
-require('./boards/resource');
 require('./threads/resource');
 require('./posts/resource');
 require('./patrol/resource');
