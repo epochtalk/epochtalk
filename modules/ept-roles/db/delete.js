@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 var using = Promise.using;
 
 /* returns removed role id */
-roles.delete = function(roleId) {
+module.exports = function(roleId) {
   roleId = helper.deslugify(roleId);
   var result = { id: roleId };
   return using(db.createTransaction(), function(client) {
