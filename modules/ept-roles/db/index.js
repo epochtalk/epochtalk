@@ -6,5 +6,6 @@ module.exports = {
   update: require(path.normalize(__dirname + '/update')),
   delete: require(path.normalize(__dirname + '/delete')),
   reprioritize: require(path.normalize(__dirname + '/reprioritize')),
-  users: require(path.normalize(__dirname + '/users'))
+  users: require(path.normalize(__dirname + '/users')),
+  addRoles: require(path.normalize(__dirname + '/addRoles'))
 };
