@@ -2,6 +2,8 @@ var path = require('path');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
+var Promise = require('bluebird');
+var using = Promise.using;
 
 /* returns user with added role(s) */
 module.exports = function(role) {
