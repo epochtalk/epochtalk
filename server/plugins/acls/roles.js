@@ -36,14 +36,6 @@ module.exports = roles;
     adminModerationLogs: {
       page: true
     },
-    adminRoles: {
-      all: true,
-      users: true,
-      add: true,
-      update: true,
-      remove: true,
-      reprioritize: true
-    },
     adminSettings: {
       find: true,
       update: true,
@@ -158,14 +150,6 @@ roles.superAdministrator = {
   adminModerationLogs: {
     page: true
   },
-  adminRoles: {
-    all: true,
-    users: true,
-    add: true,
-    update: true,
-    remove: true,
-    reprioritize: true
-  },
   adminSettings: {
     find: true,
     update: true,
@@ -270,10 +254,6 @@ roles.administrator = {
   },
   adminModerationLogs: {
     page: true
-  },
-  adminRoles: {
-    all: true,
-    users: true,
   },
   adminUsers: {
     privilegedAddRoles: {

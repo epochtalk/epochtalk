@@ -19,16 +19,16 @@
   */
 module.exports = {
   method: 'GET',
-  path: '/roles/all',
+  path: '/api/admin/roles/all',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminRoles.all' },
-    handler: function(request, reply) {
-      var promise = request.db.roles.all()
-        .then((roles) => { return { roles: roles, layouts: request.roleLayouts }; })
-        .error(request.errorMap.toHttpError);
+    pre: [ { method: 'auth.roles.all(server, auth)' } ]
+  },
+  handler: function(request, reply) {
+    var promise = request.db.roles.all()
+    .then((roles) => { return { roles: roles, layouts: request.roleLayouts }; })
+    .error(request.errorMap.toHttpError);
 
-      return reply(promise);
-    }
+    return reply(promise);
   }
 };

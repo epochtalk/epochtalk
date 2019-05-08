@@ -1,5 +1,5 @@
 var Joi = require('joi');
-
+var _ = require('lodash');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Roles
@@ -25,10 +25,9 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'GET',
-  path: '/roles/{id}/users',
+  path: '/api/admin/roles/{id}/users',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminRoles.users' },
     validate: {
       params: { id: Joi.string().required() },
       query: {
@@ -37,24 +36,25 @@ module.exports = {
         search: Joi.string()
       }
     },
-    handler: function(request, reply) {
-      var roleId = request.params.id;
-      var opts = {
-        page: request.query.page,
-        limit: request.query.limit,
-        searchStr: request.query.search
-      };
-      var promise = request.db.roles.users(roleId, opts)
-        .then(function(userData) {
-          userData.users.map(function(user) {
-            user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
-            user.roles = user.roles.map(function(role) { return role.lookup; });
-          });
-          return userData;
-        })
-        .error(request.errorMap.toHttpError);
+    pre: [ { method: 'auth.roles.users(server, auth)' } ]
+  },
+  handler: function(request, reply) {
+    var roleId = request.params.id;
+    var opts = {
+      page: request.query.page,
+      limit: request.query.limit,
+      searchStr: request.query.search
+    };
+    var promise = request.db.roles.users(roleId, opts)
+      .then(function(userData) {
+        userData.users.map(function(user) {
+          user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
+          user.roles = user.roles.map(function(role) { return role.lookup; });
+        });
+        return userData;
+      })
+      .error(request.errorMap.toHttpError);
 
-      return reply(promise);
-    }
+    return reply(promise);
   }
 };

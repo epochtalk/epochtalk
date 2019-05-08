@@ -375,17 +375,6 @@ exports.register = function(server, options, next) {
       method: bansBanFromBoards,
       options: { callback: false }
     },
-    // -- admin roles
-    {
-      name: 'auth.admin.roles.remove',
-      method: adminRolesRemove,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.admin.roles.validate',
-      method: adminRolesValidate,
-      options: { callback: false }
-    },
     // -- user notes
     {
       name: 'auth.userNotes.isOwner',

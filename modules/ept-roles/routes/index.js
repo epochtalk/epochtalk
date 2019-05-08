@@ -6,6 +6,5 @@ module.exports = [
   require(path.normalize(__dirname + '/delete')),
   require(path.normalize(__dirname + '/reprioritize')),
   require(path.normalize(__dirname + '/users')),
-  require(path.normalize(__dirname + '/addRoles')),
-  require(path.normalize(__dirname + '/removeRoles'))
+  require(path.normalize(__dirname + '/addRoles'))
 ];

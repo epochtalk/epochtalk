@@ -18,11 +18,10 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'PUT',
-  path: '/roles/reprioritize',
+  path: '/api/admin/roles/reprioritize',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminRoles.reprioritize',
       mod_log: { type: 'adminRoles.reprioritize' }
     },
     validate: {
@@ -32,17 +31,18 @@ module.exports = {
         lookup: Joi.string()
       }))
     },
-    handler: function(request, reply) {
-      var roles = request.payload;
-      var promise = request.db.roles.reprioritize(roles)
-        .then(function(result) {
-          // update priorities for in memory roles object
-          request.rolesAPI.reprioritizeRoles(roles);
-          return result;
-        })
-        .error(request.errorMap.toHttpError);
+    pre: [ { method: 'auth.roles.reprioritize(server, auth)' } ]
+  },
+  handler: function(request, reply) {
+    var roles = request.payload;
+    var promise = request.db.roles.reprioritize(roles)
+      .then(function(result) {
+        // update priorities for in memory roles object
+        request.rolesAPI.reprioritizeRoles(roles);
+        return result;
+      })
+      .error(request.errorMap.toHttpError);
 
-      return reply(promise);
-    }
+    return reply(promise);
   }
 };

@@ -1,11 +1,11 @@
-var boom = require('boom');
+var Boom = require('boom');
 
 module.exports = function(server, auth) {
   return server.authorization.build({
-    error: boom.forbidden(),
-    type: 'haspermission',
+    error: Boom.forbidden(),
+    type: 'hasPermission',
     server: server,
     auth: auth,
-    permission: 'adminRoles.users'
+    permission: 'roles.users.allow'
   });
 };

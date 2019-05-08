@@ -22,13 +22,12 @@ var _ = require('lodash');
   * @apiError (Error 400) BadRequest There name of the role must be unique.
   * @apiError (Error 500) InternalServerError There was an issue adding the role.
   */
-modules.exports = {
+module.exports = {
   method: 'PUT',
-  path: '/roles/update',
+  path: '/api/admin/roles/update',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminRoles.update',
       mod_log: {
         type: 'adminRoles.update',
         data: {
@@ -48,41 +47,41 @@ modules.exports = {
         permissions: Joi.object()
       }
     },
-    pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
-    handler: function(request, reply) {
-      var role = request.payload;
-      var defaultRole;
-      var promise = request.db.roles.update(role)
-        .then(function(result) {
-          // If permissions are empty reset to default
-          if (role.permissions === '{}' && role.id !== role.lookup) {
-            return request.server.plugins.acls.verifyRoles(true, role.lookup)
-              .then(function(updatedDefaultRole) {
-                defaultRole = updatedDefaultRole;
-                return result;
-              });
-          }
-          else { return result; }
-        })
-        .tap(function(dbRole) {
-          var roleClone = _.cloneDeep(dbRole);
-          var notification = {
-            channel: { type: 'role', id: roleClone.lookup },
-            data: {}
-          };
-          request.server.plugins.notifications.systemNotification(notification);
-        })
-        .then(function(result) {
-          var updateRole = role;
-          if (defaultRole) { updateRole = defaultRole; }
-          else { updateRole.id = result.id; } // undoes deslugify which happens in core
-          // Update role in the in memory role object
-          request.rolesAPI.updateRole(updateRole);
-          return result;
-        })
-        .error(request.errorMap.toHttpError);
+    pre: [ { method: 'auth.roles.update(server, auth, roleValidations, payload)' } ]
+  },
+  handler: function(request, reply) {
+    var role = request.payload;
+    var defaultRole;
+    var promise = request.db.roles.update(role)
+      .then(function(result) {
+        // If permissions are empty reset to default
+        if (role.permissions === '{}' && role.id !== role.lookup) {
+          return request.server.plugins.acls.verifyRoles(true, role.lookup)
+            .then(function(updatedDefaultRole) {
+              defaultRole = updatedDefaultRole;
+              return result;
+            });
+        }
+        else { return result; }
+      })
+      .tap(function(dbRole) {
+        var roleClone = _.cloneDeep(dbRole);
+        var notification = {
+          channel: { type: 'role', id: roleClone.lookup },
+          data: {}
+        };
+        request.server.plugins.notifications.systemNotification(notification);
+      })
+      .then(function(result) {
+        var updateRole = role;
+        if (defaultRole) { updateRole = defaultRole; }
+        else { updateRole.id = result.id; } // undoes deslugify which happens in core
+        // Update role in the in memory role object
+        request.rolesAPI.updateRole(updateRole);
+        return result;
+      })
+      .error(request.errorMap.toHttpError);
 
-      return reply(promise);
-    }
+    return reply(promise);
   }
 };

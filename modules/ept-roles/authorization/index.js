@@ -30,10 +30,5 @@ module.exports = [
     name: 'auth.roles.addRoles',
     method: require(path.normalize(__dirname + '/addRoles')),
     options: { callback: false }
-  },
-  {
-    name: 'auth.roles.removeRoles',
-    method: require(path.normalize(__dirname + '/removeRoles')),
-    options: { callback: false }
   }
 ];

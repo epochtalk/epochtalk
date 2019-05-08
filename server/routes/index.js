@@ -9,7 +9,6 @@ var bans = require(path.normalize(__dirname + '/bans'));
 var userNotes = require(path.normalize(__dirname + '/user_notes'));
 var adminLegal = require(path.normalize(__dirname + '/admin/legal'));
 var adminUsers = require(path.normalize(__dirname + '/admin/users'));
-var adminRoles = require(path.normalize(__dirname + '/admin/roles'));
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 var notifications = require(path.normalize(__dirname + '/notifications'));
@@ -22,7 +21,7 @@ function buildEndpoints() {
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminBoards, adminSettings, adminUsers, adminRoles, adminModerators, adminModerationLogs, adminLegal);
+  return [].concat(adminBoards, adminSettings, adminUsers, adminModerators, adminModerationLogs, adminLegal);
 }
 
 exports.endpoints = function(internalConfig) {

@@ -17,11 +17,10 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'DELETE',
-  path: '/roles/remove/{id}',
+  path: '/api/admin/roles/remove/{id}',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminRoles.remove',
       mod_log: {
         type: 'adminRoles.remove',
         data: {
@@ -31,23 +30,23 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.admin.roles.remove(params.id)' } ],
-    handler: function(request, reply) {
-      var id = request.params.id;
-      var promise = request.db.roles.delete(id)
-        .then(function(result) {
-          // Add deleted role name to plugin metadata
-          request.route.settings.plugins.mod_log.metadata = {
-            name: result.name
-          };
+    pre: [ { method: 'auth.roles.delete(server, auth, params.id)' } ],
+  },
+  handler: function(request, reply) {
+    var id = request.params.id;
+    var promise = request.db.roles.delete(id)
+      .then(function(result) {
+        // Add deleted role name to plugin metadata
+        request.route.settings.plugins.mod_log.metadata = {
+          name: result.name
+        };
 
-          // Remove deleted role from in memory object
-          request.rolesAPI.deleteRole(id);
-          return result;
-        })
-        .error(request.errorMap.toHttpError);
+        // Remove deleted role from in memory object
+        request.rolesAPI.deleteRole(id);
+        return result;
+      })
+      .error(request.errorMap.toHttpError);
 
-      return reply(promise);
-    }
+    return reply(promise);
   }
 };

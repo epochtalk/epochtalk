@@ -22,11 +22,10 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'POST',
-  path: '/roles/add',
+  path: '/api/admin/roles/add',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminRoles.add',
       mod_log: {
         type: 'adminRoles.add',
         data: {
@@ -46,20 +45,20 @@ module.exports = {
         permissions: Joi.object().required()
       }
     },
-    pre: [ { method: 'auth.admin.roles.validate(roleValidations, payload)' } ],
-    handler: function(request, reply) {
-      var role = request.payload;
-      var promise = request.db.roles.create(role)
-        .then(function(result) {
-          role.id = result.id;
-          role.lookup = result.id;
-          // Add role to the in memory role object
-          request.rolesAPI.addRole(role);
-          return result;
-        })
-        .error(request.errorMap.toHttpError);
+    pre: [ { method: 'auth.roles.addRoles(server, auth, roleValidations, payload)' } ],
+  },
+  handler: function(request, reply) {
+    var role = request.payload;
+    var promise = request.db.roles.create(role)
+      .then(function(result) {
+        role.id = result.id;
+        role.lookup = result.id;
+        // Add role to the in memory role object
+        request.rolesAPI.addRole(role);
+        return result;
+      })
+      .error(request.errorMap.toHttpError);
 
-      return reply(promise);
-    }
+    return reply(promise);
   }
 };

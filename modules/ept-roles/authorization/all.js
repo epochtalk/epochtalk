@@ -6,6 +6,6 @@ module.exports = function(server, auth) {
     type: 'hasPermission',
     server: server,
     auth: auth,
-    permission: 'adminRoles.all'
+    permission: 'roles.all.allow'
   });
 };
