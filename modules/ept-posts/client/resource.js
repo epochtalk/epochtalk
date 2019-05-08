@@ -47,6 +47,10 @@ var resource = ['$resource',
         url: '/api/posts/:id/purge',
         method: 'DELETE',
         params: { id: '@id' }
+      },
+      patrolPosts: {
+        method: 'GET',
+        url: '/api/posts/patrol'
       }
     });
   }

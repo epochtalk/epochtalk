@@ -12,6 +12,7 @@ common.parse = parse;
 common.parseOut = parseOut;
 common.cleanPosts = cleanPosts;
 common.hasPriority = hasPriority;
+common.formatPost = formatPost;
 
 common.export = () =>  {
   return [
@@ -46,6 +47,31 @@ common.export = () =>  {
 common.apiExport = () => {
   return { format: cleanPosts  };
 };
+
+function formatPost(post) {
+  post.user = {
+    id: post.user_id,
+    name: post.name,
+    username: post.username,
+    priority: post.priority || post.default_priority,
+    deleted: post.user_deleted,
+    signature: post.signature,
+    post_count: post.post_count,
+    highlight_color: post.highlight_color,
+    role_name: post.role_name
+  };
+  delete post.user_id;
+  delete post.username;
+  delete post.priority;
+  delete post.default_priority;
+  delete post.name;
+  delete post.user_deleted;
+  delete post.post_count;
+  delete post.signature;
+  delete post.highlight_color;
+  delete post.role_name;
+  return post;
+}
 
 function checkPostLength(server, postBody) {
   if (postBody && postBody.length > server.app.config.postMaxLength) {
@@ -146,7 +172,7 @@ function hasPriority(server, auth, permission, postId, selfMod) {
 /**
  *  ViewContext can be an array of boards or a boolean
  */
-function cleanPosts(posts, currentUserId, viewContext, request, thread) {
+function cleanPosts(posts, currentUserId, viewContext, request, thread, allowView) {
   var authedUserPriority = request.server.plugins.acls.getUserPriority(request.auth);
   var hasPriority = request.server.plugins.acls.getACLValue(request.auth, 'posts.byThread.bypass.viewDeletedPosts.priority');
   var hasSelfMod = request.server.plugins.acls.getACLValue(request.auth, 'posts.byThread.bypass.viewDeletedPosts.selfMod');
@@ -177,7 +203,7 @@ function cleanPosts(posts, currentUserId, viewContext, request, thread) {
 
     // Allow self mods to view posts hidden by users of the same or lesser role
     // post is hidden, only show users posts hidden by users of the same or greater priority
-    if (((isModerator === true && selfMod) || hasPriority) && post.deleted && authedId && authedUserPriority !== null) {
+    if (((isModerator === true && hasSelfMod) || hasPriority) && post.deleted && authedId && authedUserPriority !== null) {
       viewable = (authedUserHasPriority || authedUserHidePost);
     }
 
@@ -189,7 +215,7 @@ function cleanPosts(posts, currentUserId, viewContext, request, thread) {
     }
 
     // format post
-    if (viewable && deleted) { post.hidden = true; }
+    if ((viewable || allowView) && deleted) { post.hidden = true; }
     else if (deleted) {
       post = {
         id: post.id,

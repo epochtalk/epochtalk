@@ -6,7 +6,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'PatrolParentCtrl',
         controllerAs: 'PatrolParentCtrl',
-        templateUrl: '/static/templates/patrol/patrol.html'
+        template: require('./patrol.html')
       }
     }
   })
@@ -17,11 +17,11 @@ var route = ['$stateProvider', function($stateProvider) {
       'data@patrol': {
         controller: 'PatrolCtrl',
         controllerAs: 'PatrolCtrl',
-        templateUrl: '/static/templates/patrol/patrol.data.html'
+        template: require('./patrol.data.html')
       }
     },
     resolve: {
-      $title: function() { return 'Patrol'; },
+      $title: function() { return 'Patrol Posts'; },
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
@@ -45,12 +45,12 @@ var route = ['$stateProvider', function($stateProvider) {
         });
         return deferred.promise;
       }],
-      pageData: ['Patrol', '$stateParams', function(Patrol, $stateParams) {
+      pageData: ['Posts', '$stateParams', function(Posts, $stateParams) {
         var query = {
           limit: Number($stateParams.limit) || 25,
           page: Number($stateParams.page) || 1
         };
-        return Patrol.index(query).$promise;
+        return Posts.patrolPosts(query).$promise;
       }]
     }
   });

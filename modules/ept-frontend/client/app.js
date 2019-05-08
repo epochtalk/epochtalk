@@ -30,7 +30,6 @@ var ngDeps = [
   'ngTagsInput',
   require('oclazyload'),
   require('./layout/header.controller'),
-  require('./patrol'),
   require('./admin')
 ].concat(moduleNames);
 var app = angular.module('ept', ngDeps);
@@ -51,7 +50,6 @@ require('./filters');
 require('./services');
 require('./resources');
 require('./components');
-require('./patrol/resource');
 
 // Set Angular Configs
 app

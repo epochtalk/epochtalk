@@ -50,7 +50,7 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
       if (discardAlert()) {
         var editorPost = ctrl.posting.post;
         editorPost.id = post.id || '';
-        editorPost.title = post.title || '';
+        editorPost.title = post.thread_title || '';
         editorPost.body_html = post.body_html || '';
         editorPost.thread_id = post.thread_id || '';
         editorPost.body = post.body || '';
@@ -216,9 +216,9 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
   }
 ];
 
-require('../components/editor/editor.directive');
-require('../components/resizeable/resizeable.directive');
-require('../components/image_uploader/image_uploader.directive');
+require('./../../../components/editor/editor.directive');
+require('./../../../components/resizeable/resizeable.directive');
+require('./../../../components/image_uploader/image_uploader.directive');
 
 module.exports = angular.module('ept.patrol.parentCtrl', [])
 .controller('PatrolParentCtrl', ctrl);
