@@ -5,13 +5,15 @@ var querystring = require('querystring');
 
 module.exports = function userUpdate(server, auth, paramsId, payload) {
   var requesterId = auth.credentials.id;
+  var isAdmin = server.plugins.acls.getACLValue(auth, 'users.update.bypass.priority.admin');
 
   if (requesterId === paramsId) {
     return sameUser(server, auth, paramsId, payload);
   }
-  else {
-    return otherUser(server, auth, paramsId, payload);
+  else if (isAdmin) {
+    return otherUserAdmin(server, auth, paramsId, payload);
   }
+  else { return otherUserMod(server, auth, paramsId, payload); }
 };
 
 function sameUser(server, auth, paramsId, payload) {
@@ -31,32 +33,37 @@ function sameUser(server, auth, paramsId, payload) {
   return Promise.all([allowed, changeUsername, active, emailUnique, emailPassValid, usernameUnique, passValid]);
 }
 
-function otherUser(server, auth, paramsId, payload) {
-  var allowCond = [
-    {
-      error: Boom.forbidden(),
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'users.update.priority.bypass.admin'
-    },
-    {
-      error: Boom.forbidden(),
-      type: 'hasPermission',
-      server: server,
-      auth: auth,
-      permission: 'users.update.priority.bypass.mod'
-    }
-  ];
-  var allowed = server.authorization.stitch(Boom.forbidden('Insufficient permissions'), allowCond, 'some');
-
-  var changeUsername = isAllowedToChangeUsername(server, auth, paramsId, payload.username);
+function otherUserAdmin(server, auth, paramsId, payload) {
+  var allowed = server.authorization.build({
+    error: Boom.forbidden(),
+    type: 'hasPermission',
+    server: server,
+    auth: auth,
+    permission: 'users.update.bypass.priority.admin'
+  });
+  var username = isAllowedToChangeUsername(server, auth, paramsId, payload.username);
   var active = isActive(server, auth.credentials.id);
-  var usernameUnique = isUsernameUnique(server, paramsId, payload.username);
-  var noEmail = rejectEmail(server, auth, payload, true);
-  var noPass = rejectPassword(payload);
+  var unique = isUsernameUnique(server, paramsId, payload.username);
+  var email = rejectEmail(server, auth, payload, paramsId);
+
+  return Promise.all([allowed, username, active, unique, email]);
+}
+
+function otherUserMod(server, auth, paramsId, payload) {
+  var allowed = server.authorization.build({
+    error: Boom.forbidden(),
+    type: 'hasPermission',
+    server: server,
+    auth: auth,
+    permission: 'users.update.bypass.priority.mod'
+  });
+  var username = isAllowedToChangeUsername(server, auth, paramsId, payload.username);
+  var active = isActive(server, auth.credentials.id);
+  var unique = isUsernameUnique(server, paramsId, payload.username);
+  var email = rejectEmail(server, auth, payload, paramsId);
   var priority = hasPriority(server, auth, paramsId, auth.credentials.id);
-  return Promise.all([allowed, changeUsername, active, usernameUnique, noEmail, noPass, priority]);
+
+  return Promise.all([allowed, username, active, unique, email, priority]);
 }
 
 // check secondary permission
@@ -64,7 +71,7 @@ function isAllowedToChangeUsername(server, auth, userId, username) {
   // get referenced user's username
   return server.db.users.find(userId)
   .then(function(paramUser) {
-    if (paramUser.username == username) { return true }
+    if (paramUser.username === username) { return true; }
     else {
       return server.authorization.build({
         error: Boom.forbidden(),
@@ -117,12 +124,7 @@ function isUsernameUnique(server, userId, username) {
 }
 
 // old password valid
-function isPasswordValid(server, userId, password, allowAdmins) {
-  var isAdmin = server.plugins.acls.getACLValue(auth, 'users.update.priority.bypass.admin');
-  if (allowAdmins && isAdmin) {
-    return true;
-  }
-
+function isPasswordValid(server, userId, password) {
   if (password) {
     return server.authorization.build({
       error: Boom.badRequest(),
@@ -136,21 +138,21 @@ function isPasswordValid(server, userId, password, allowAdmins) {
 }
 
 // remove email from payload for other users
-function rejectEmail(server, auth, payload) {
-  var isAdmin = server.plugins.acls.getACLValue(auth, 'users.update.priority.bypass.admin');
-  console.log(isAdmin);
-  if (payload.email && !isAdmin) {
-    var error = Boom.badRequest('Not Allowed to change other user\'s email');
-    return Promise.reject(error);
-  }
-  else { return true; }
+function rejectEmail(server, auth, payload, paramsId) {
+  return server.db.users.find(paramsId)
+  .then(function(paramUser) {
+    var isAdmin = server.plugins.acls.getACLValue(auth, 'users.update.bypass.priority.admin');
+    if (paramUser.email === payload.email) { return true; }
+    else if (isAdmin) { return true; }
+    else { return Promise.reject(Boom.badRequest('Cannot change email')); }
+  })
+  .error(() => { return Promise.reject(Boom.badRequest()); })
 }
 
 // reject passwords change attempts for other users
 function rejectPassword(payload) {
   if (payload.old_password) {
-    var error = Boom.badRequest('Not Allowed to change other user\'s password');
-    return Promise.reject(error);
+    return Promise.reject(Boom.badRequest('Not Allowed to change other user\'s password'));
   }
   else { return true; }
 }
