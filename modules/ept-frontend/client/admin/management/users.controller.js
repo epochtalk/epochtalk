@@ -73,12 +73,16 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
     User.update(ctrl.selectedUser).$promise
     .then(function() { Alert.success('Successfully updated profile for ' + ctrl.selectedUser.username); })
     .catch(function(err) {
-      console.log(err);
       var msg = 'There was an error updating user ' + ctrl.selectedUser.username;
-      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      if (err && err.data && err.data.message) {
+          msg += '. ' + err.data.message;
+      }
       Alert.error(msg);
     })
-    .finally(function() { ctrl.closeEditUser(); });
+    .finally(function() {
+      ctrl.closeEditUser();
+      ctrl.pullPage();
+    });
   };
 
   this.showManageBans = function(user) {

@@ -6,7 +6,6 @@ var querystring = require('querystring');
 module.exports = function userUpdate(server, auth, paramsId, payload) {
   var requesterId = auth.credentials.id;
   var isAdmin = server.plugins.acls.getACLValue(auth, 'users.update.bypass.priority.admin');
-
   if (requesterId === paramsId) {
     return sameUser(server, auth, paramsId, payload);
   }
@@ -27,15 +26,15 @@ function sameUser(server, auth, paramsId, payload) {
   var changeUsername = isAllowedToChangeUsername(server, auth, paramsId, payload.username);
   var active = isActive(server, auth.credentials.id);
   var emailUnique = isEmailUnique(server, paramsId, payload.email);
-  var emailPassValid = isPasswordValid(server, paramsId, payload.email_password);
+  var emailPassValid = isEmailPasswordValid(server, auth, paramsId, payload.email_password);
   var usernameUnique = isUsernameUnique(server, paramsId, payload.username);
-  var passValid = isPasswordValid(server, paramsId, payload.old_password);
+  var passValid = isPasswordValid(server, paramsId, payload.old_password, payload.password);
   return Promise.all([allowed, changeUsername, active, emailUnique, emailPassValid, usernameUnique, passValid]);
 }
 
 function otherUserAdmin(server, auth, paramsId, payload) {
   var allowed = server.authorization.build({
-    error: Boom.forbidden(),
+    error: Boom.forbidden('You do not have the appropriate permissions to update other users'),
     type: 'hasPermission',
     server: server,
     auth: auth,
@@ -51,7 +50,7 @@ function otherUserAdmin(server, auth, paramsId, payload) {
 
 function otherUserMod(server, auth, paramsId, payload) {
   var allowed = server.authorization.build({
-    error: Boom.forbidden(),
+    error: Boom.forbidden('You do not have the appropriate permissions to update other users'),
     type: 'hasPermission',
     server: server,
     auth: auth,
@@ -74,7 +73,7 @@ function isAllowedToChangeUsername(server, auth, userId, username) {
     if (paramUser.username === username) { return true; }
     else {
       return server.authorization.build({
-        error: Boom.forbidden(),
+        error: Boom.forbidden('You do not have the appropriate permissions to change other user\'s usernames'),
         type: 'hasPermission',
         server: server,
         auth: auth,
@@ -124,8 +123,25 @@ function isUsernameUnique(server, userId, username) {
 }
 
 // old password valid
-function isPasswordValid(server, userId, password) {
-  if (password) {
+function isPasswordValid(server, userId, oldPassword, newPassword) {
+  if (oldPassword && newPassword) {
+    return server.authorization.build({
+      error: Boom.badRequest(),
+      type: 'validatePassword',
+      server: server,
+      userId: userId,
+      password: oldPassword
+    });
+  }
+  else { return true; }
+}
+
+function isEmailPasswordValid(server, auth, userId, password) {
+  var isAdmin = server.plugins.acls.getACLValue(auth, 'users.update.bypass.priority.admin');
+  var isMod = server.plugins.acls.getACLValue(auth, 'users.update.bypass.priority.mod');
+
+  if (isAdmin || isMod) { return true; }
+  else if (password) {
     return server.authorization.build({
       error: Boom.badRequest(),
       type: 'validatePassword',
@@ -136,6 +152,7 @@ function isPasswordValid(server, userId, password) {
   }
   else { return true; }
 }
+
 
 // remove email from payload for other users
 function rejectEmail(server, auth, payload, paramsId) {
@@ -177,6 +194,6 @@ function hasPriority(server, auth, paramsId, authedId) {
     if (same && aid <= pid) { return true; }
     // current has higher priority than referenced
     else if (lower && aid < pid) { return true; }
-    else { return Promise.reject(Boom.badRequest()); }
+    else { return Promise.reject(Boom.badRequest('This user has the same or higher priveleges than you, you may not edit their account')); }
   });
 }
