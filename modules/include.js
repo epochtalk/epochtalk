@@ -19,5 +19,6 @@ module.exports = [
   'ept-motd',
   'ept-ignore-users',
   'ept-rank',
-  'ept-roles'
+  'ept-roles',
+  'ept-bans'
 ];
