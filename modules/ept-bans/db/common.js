@@ -1,14 +1,10 @@
-module.exports = {
-  // Returns the decayed score given a row
-  calculateScoreDecay: calculateScoreDecay,
-  sumArr: sumArr
-}
+
 
 // Calculates decay given MS and a weight
 // Decay algorithm is 0.8897*curWeight^0.9644 run weekly
 // This will calculate decay given the amount of time that has passed
 // in ms since the weight was last updated
-var decayForTime = function(time, weight) {
+function decayForTime(time, weight) {
   var oneWeek = 1000 * 60 * 60 * 24 * 7;
   var weeks = time / oneWeek;
   var a = 0.8897;
@@ -17,7 +13,7 @@ var decayForTime = function(time, weight) {
 };
 
 // Returns the decayed score given a row
-var calculateScoreDecay = function(row) {
+function calculateScoreDecay(row) {
   // Score does decay
   if (row && row.decay) {
     // Current timestamp
@@ -41,3 +37,9 @@ var calculateScoreDecay = function(row) {
 var sumArr = function(arr) {
   return arr.reduce(function(a, b) { return a + b; }, 0);
 };
+
+module.exports = {
+  // Returns the decayed score given a row
+  calculateScoreDecay: calculateScoreDecay,
+  sumArr: sumArr
+}

@@ -1,59 +1,84 @@
-var path = require('path');
-var dbc = require(path.normalize(__dirname + '/db'));
-var db = dbc.db;
-var helper = dbc.helper;
+var Joi = require('joi');
+var Promise = require('bluebird');
 
-module.exports = function(userId, expiration) {
-  userId = helper.deslugify(userId);
-  var q = 'SELECT id FROM users.bans WHERE user_id = $1';
-  var params = [userId];
-  var returnObj;
-  expiration = expiration ? expiration : new Date(8640000000000000); // permanent ban
-  return using(db.createTransaction(), function(client) {
-    return client.query(q, params)
-    .then(function(results) {
-      var rows = results.rows;
-      if (rows.length > 0) { // user has been previously banned
-        q = 'UPDATE users.bans SET expiration = $1, updated_at = now() WHERE user_id = $2 RETURNING id, user_id, expiration, created_at, updated_at';
-        params = [expiration, userId];
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Bans
+  * @api {PUT} /users/ban (Admin) Ban
+  * @apiName BanUsersAdmin
+  * @apiPermission Super Administrator, Administrator, Global Moderator, Moderator
+  * @apiDescription This allows Administrators and Moderators to ban users.
+  *
+  * @apiParam (Payload) {string} user_id The unique id of the user to ban
+  * @apiParam (Payload) {timestamp} [expiration] The expiration date for the ban, when not defined ban is considered permanent
+  * @apiParam (Payload) {boolean=false} [ip_ban=false] Boolean indicating that the user should be ip banned as well, this will make it so they cannot register from any of their known ips for a new account
+  *
+  * @apiSuccess {string} id The unique id of the row in users.bans
+  * @apiSuccess {string} user_id The unique id of the user being banned
+  * @apiSuccess {object[]} roles Array containing users roles
+  * @apiSuccess {timestamp} expiration Timestamp of when the user's ban expires
+  * @apiSuccess {timestamp} created_at Timestamp of when the ban was created
+  * @apiSuccess {timestamp} updated_at Timestamp of when the ban was last updated
+  *
+  * @apiError (Error 500) InternalServerError There was an error banning the user
+  */
+module.exports = {
+  method: 'PUT',
+  path: '/api/users/ban',
+  config: {
+    app: {
+      user_id: 'payload.user_id',
+      privilege: 'bans.privilegedBan'
+    },
+    auth: { strategy: 'jwt' },
+    plugins: {
+      acls: 'bans.ban',
+      mod_log: {
+        type: 'bans.ban',
+        data: {
+          user_id: 'payload.user_id',
+          expiration: 'payload.expiration'
+        }
       }
-      else { // user has never been banned
-        q = 'INSERT INTO users.bans(user_id, expiration, created_at, updated_at) VALUES($1, $2, now(), now()) RETURNING id, user_id, expiration, created_at, updated_at';
-        params = [userId, expiration];
+    },
+    validate: {
+      payload: {
+        user_id: Joi.string().required(),
+        expiration: Joi.date(),
+        ip_ban: Joi.boolean().default(false)
       }
-      return client.query(q, params);
+    },
+    pre: [ { method: 'auth.bans.ban(server, auth, payload.user_id)' } ],
+  },
+  handler: function(request, reply) {
+    var userId = request.payload.user_id;
+    var expiration = request.payload.expiration || null;
+    var ipBan = request.payload.ip_ban;
+    var banPromise = request.db.bans.ban(userId, expiration)
+    .tap(function(user) {
+      var notification = {
+        channel: { type: 'user', id: user.user_id },
+        data: { action: 'reauthenticate' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
     })
-    .then(function(results) {
-      var rows = results.rows;
-      if (rows.length > 0) {
-        returnObj = rows[0];
-        return;
-      }
-      else { return Promise.reject(); }
+    .then(function(user) {
+      return request.session.updateRoles(user.user_id, user.roles)
+      .then(function() { return request.session.updateBanInfo(user.user_id, user.expiration); })
+      .then(function() { return user; });
     })
-    .then(function() { // lookup the banned role id to add to user
-      q = 'SELECT id FROM roles where lookup = $1';
-      return client.query(q, ['banned']);
-    })
-    .then(function(results) {
-      var rows = results.rows;
-      if (rows.length > 0) { return rows[0].id; }
-      else { return Promise.reject(); }
-    })
-    .then(function(bannedRoleId) {
-      q = 'INSERT INTO roles_users(role_id, user_id) SELECT $1, $2 WHERE NOT EXISTS (SELECT 1 FROM roles_users WHERE role_id = $1 AND user_id = $2);';
-      params = [bannedRoleId, userId];
-      return client.query(q, params)
-      .then(function() { // append roles to updated user and return
-        q = 'SELECT roles.* FROM roles_users, roles WHERE roles_users.user_id = $1 AND roles.id = roles_users.role_id';
-        params = [userId];
-        return client.query(q, params);
+    .error(request.errorMap.toHttpError);
+
+    // If user is being ip banned copy their known ips into banned_addresses
+    if (ipBan) {
+      // TODO: Can be customized by passing weight and decay in payload
+      var opts = { userId: userId, weight: 50, decay: true };
+      var ipBanPromise = request.db.bans.copyUserIps(opts);
+      return Promise.join(banPromise, ipBanPromise, function(result) {
+        return reply(result);
       })
-      .then(function(results) {
-        returnObj.roles = results.rows;
-        return returnObj;
-      });
-    });
-  })
-  .then(helper.slugify);
+      .error(request.errorMap.toHttpError);
+    }
+    else { return reply(banPromise); }
+  }
 };
