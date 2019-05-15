@@ -40,7 +40,6 @@ module.exports = {
   path: '/api/users/banned',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'bans.byBannedBoards' },
     validate: {
       query: {
         page: Joi.number().integer().min(1).default(1),
@@ -49,7 +48,8 @@ module.exports = {
         board: Joi.string(),
         modded: Joi.boolean()
       }
-    }
+    },
+    pre: [ { method: 'auth.bans.byBannedBoards(server, auth)' } ]
   },
   handler: function(request, reply) {
     var opts = {

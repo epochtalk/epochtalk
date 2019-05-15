@@ -23,8 +23,8 @@ module.exports = {
   path: '/api/users/{username}/bannedboards',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'bans.getBannedBoards' },
-    validate: { params: { username: Joi.string().required() } }
+    validate: { params: { username: Joi.string().required() } },
+    pre: [ { method: 'auth.bans.getBannedBoards(server, auth)' } ]
   },
   handler: function(request, reply) {
     var username = request.params.username;

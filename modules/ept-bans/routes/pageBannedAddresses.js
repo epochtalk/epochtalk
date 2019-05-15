@@ -41,7 +41,6 @@ module.exports = {
   path: '/api/ban/addresses',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'bans.pageBannedAddresses' },
     validate: {
       query: {
         page: Joi.number().min(1),
@@ -50,7 +49,8 @@ module.exports = {
         field: Joi.string().valid('created_at', 'updates', 'decay', 'weight', 'update_count', 'imported_at'),
         search: Joi.string().optional()
       }
-    }
+    },
+    pre: [ { method: 'auth.bans.pageBannedAddresses(server, auth)' } ]
   },
   handler: function(request, reply) {
     var opts = request.query;

@@ -269,70 +269,6 @@ function adminRolesDelete(server, auth, userId) {
   return promise;
 }
 
-function bansBan(server, auth, userId) {
-  // match priority
-  var currentUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'bans.privilegedBan.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'bans.privilegedBan.lowerPriority');
-
-  // get referenced user's priority
-  var refPriority = server.db.users.find(userId)
-  .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
-
-  // get authed user priority
-  var curPriority = server.db.users.find(currentUserId)
-  .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
-
-  // compare priorities
-  var match = Promise.join(refPriority, curPriority, function(referenced, current) {
-    if (userId === currentUserId) { return; }
-    // current has same or higher priority than referenced
-    if (same && current <= referenced) { return userId; }
-    // current has higher priority than referenced
-    else if (lower && current < referenced) { return userId; }
-    else { return Promise.reject(Boom.forbidden()); }
-  });
-
-  return match;
-}
-
-function bansBanFromBoards(server, auth, userId, boardIds) {
-  // match priority
-  var currentUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.lowerPriority');
-
-  // Check if the user has global mod permissions
-  var some = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.some');
-  var all = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.all');
-
-  // get referenced user's priority
-  var refPriority = server.db.users.find(userId)
-  .then(function(refUser) { return _.min(_.map(refUser.roles, 'priority')); });
-
-  // get authed user priority
-  var curPriority = server.db.users.find(currentUserId)
-  .then(function(curUser) { return _.min(_.map(curUser.roles, 'priority')); });
-
-
-  // compare priorities
-  var match = Promise.join(refPriority, curPriority, function(referenced, current) {
-    if (userId === currentUserId) { return; }
-    // User is a normal mod and try to ban from a board they do not moderate
-    if ((!all && some && _.difference(boardIds, auth.credentials.moderating).length) || !all && !some) {
-      return Promise.reject(Boom.forbidden('You can only modify user\'s bans for boards you moderate'));
-    }
-
-    // current has same or higher priority than referenced
-    if (same && current <= referenced) { return userId; }
-    // current has higher priority than referenced
-    else if (lower && current < referenced) { return userId; }
-    else { return Promise.reject(Boom.forbidden()); }
-  });
-
-  return match;
-}
-
 // -- user notes
 
 function userNotesIsOwner(server, auth, noteId) {
@@ -362,17 +298,6 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.admin.users.deleteRole',
       method: adminRolesDelete,
-      options: { callback: false }
-    },
-    // -- bans
-    {
-      name: 'auth.bans.ban',
-      method: bansBan,
-      options: { callback: false }
-    },
-    {
-      name: 'auth.bans.banFromBoards',
-      method: bansBanFromBoards,
       options: { callback: false }
     },
     // -- user notes

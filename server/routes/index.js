@@ -5,7 +5,6 @@ var path = require('path');
 var fse = require('fs-extra');
 var crypto = require('crypto');
 var Promise = require('bluebird');
-// var bans = require(path.normalize(__dirname + '/bans'));
 var userNotes = require(path.normalize(__dirname + '/user_notes'));
 var adminLegal = require(path.normalize(__dirname + '/admin/legal'));
 var adminUsers = require(path.normalize(__dirname + '/admin/users'));

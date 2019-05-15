@@ -28,7 +28,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'bans.deleteAddress',
       mod_log: {
         type: 'bans.deleteAddress',
         data: {
@@ -42,7 +41,8 @@ module.exports = {
         hostname: Joi.string(),
         ip: Joi.string()
       }
-    }
+    },
+    pre: [ { method: 'auth.bans.deleteAddress(server, auth)' } ]
   },
   handler: function(request, reply) {
     var address = request.query;

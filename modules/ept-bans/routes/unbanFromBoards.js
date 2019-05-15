@@ -24,7 +24,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'bans.unbanFromBoards',
       mod_log: {
         type: 'bans.unbanFromBoards',
         data: {

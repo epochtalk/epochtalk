@@ -33,7 +33,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'bans.addAddresses',
       mod_log: {
         type: 'bans.addAddresses',
         data: { addresses: 'payload' }
@@ -47,6 +46,7 @@ module.exports = {
         decay: Joi.boolean().default(false),
       }).without('hostname', 'ip'))
     },
+    // pre: [ { method: 'auth.bans.addAddresses(server, auth)' } ]
   },
   handler: function(request, reply) {
     var addresses = request.payload;

@@ -31,7 +31,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'bans.editAddress',
       mod_log: {
         type: 'bans.editAddress',
         data: {
@@ -49,7 +48,8 @@ module.exports = {
         weight: Joi.number().required(),
         decay: Joi.boolean().default(false),
       }).without('hostname', 'ip')
-    }
+    },
+    pre: [ { method: 'auth.bans.editAddress(server, auth)' } ]
   },
   handler: function(request, reply) {
     var address = request.payload;

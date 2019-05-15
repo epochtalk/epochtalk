@@ -30,7 +30,6 @@ module.exports = {
     },
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'bans.unban',
       mod_log: {
         type: 'bans.unban',
         data: { user_id: 'payload.user_id' }
