@@ -73,7 +73,7 @@ function isAllowedToChangeUsername(server, auth, userId, username) {
     if (paramUser.username === username) { return true; }
     else {
       return server.authorization.build({
-        error: Boom.forbidden('You do not have the appropriate permissions to change other user\'s usernames'),
+        error: Boom.forbidden('You do not have the appropriate permissions to change other users\' usernames'),
         type: 'hasPermission',
         server: server,
         auth: auth,
