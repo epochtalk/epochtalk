@@ -153,7 +153,6 @@ function isEmailPasswordValid(server, auth, userId, password) {
   else { return true; }
 }
 
-
 // remove email from payload for other users
 function rejectEmail(server, auth, payload, paramsId) {
   return server.db.users.find(paramsId)
