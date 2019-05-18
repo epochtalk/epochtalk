@@ -194,6 +194,6 @@ function hasPriority(server, auth, paramsId, authedId) {
     if (same && aid <= pid) { return true; }
     // current has higher priority than referenced
     else if (lower && aid < pid) { return true; }
-    else { return Promise.reject(Boom.badRequest('This user has the same or higher priveleges than you, you may not edit their account')); }
+    else { return Promise.reject(Boom.badRequest('This user has the same or higher privileges than you, you may not edit their account')); }
   });
 }
