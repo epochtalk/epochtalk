@@ -81,7 +81,7 @@ function isAllowedToChangeUsername(server, auth, userId, username) {
       });
     }
   })
-  .error(() => { return Promise.reject(Boom.badRequest()); });
+  .error((e) => { return Promise.reject(Boom.badRequest(e)); });
 }
 
 // is requester active
