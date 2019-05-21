@@ -148,7 +148,7 @@ module.exports = ['$window', function($window) {
           privilegedPurge: perm('posts.purge.bypass.purge'),
         };
         result.userControls = {
-          privilegedBan: perm('bans.ban.bypass.priority.allow'),
+          privilegedBan: perm('bans.ban.allow'),
           privilegedBanFromBoards: perm('bans.banFromBoards.allow')
         };
         result.messageControls = hasPermission('messages');
