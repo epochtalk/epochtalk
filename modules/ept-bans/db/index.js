@@ -3,6 +3,7 @@ var path = require('path');
 module.exports = {
   addAddresses: require(path.normalize(__dirname + '/addAddresses')),
   ban: require(path.normalize(__dirname + '/ban')),
+  banFromBoards: require(path.normalize(__dirname + '/banFromBoards')),
   byBannedBoards: require(path.normalize(__dirname + '/byBannedBoards')),
   copyUserIps: require(path.normalize(__dirname + '/copyUserIps')),
   deleteAddress: require(path.normalize(__dirname + '/deleteAddress')),
