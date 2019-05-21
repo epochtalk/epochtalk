@@ -165,14 +165,6 @@ function rejectEmail(server, auth, payload, paramsId) {
   .error(() => { return Promise.reject(Boom.badRequest()); })
 }
 
-// reject passwords change attempts for other users
-function rejectPassword(payload) {
-  if (payload.old_password) {
-    return Promise.reject(Boom.badRequest('Not Allowed to change other user\'s password'));
-  }
-  else { return true; }
-}
-
 // priority
 function hasPriority(server, auth, paramsId, authedId) {
   var same = server.plugins.acls.getACLValue(auth, 'users.update.bypass.priority.admin');
