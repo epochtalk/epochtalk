@@ -20,7 +20,7 @@ var directive = [function() {
       this.ban_expiration = function() {
         var result;
         var expiration = this.user.ban_expiration;
-        var canBan = Session.hasPermission('bans.privilegedBan');
+        var canBan = Session.hasPermission('bans.ban.allow');
 
         if (canBan && expiration && new Date(expiration) > new Date()) {
           result = $filter('humanDate')(expiration, true);
@@ -293,8 +293,8 @@ var directive = [function() {
 
       this.canBanUser = function() {
         var loggedIn = Session.isAuthenticated();
-        var banPermission = Session.hasPermission('bans.privilegedBan');
-        var banBoardsPermission = Session.hasPermission('bans.privilegedBanFromBoards');
+        var banPermission = Session.hasPermission('bans.ban.allow');
+        var banBoardsPermission = Session.hasPermission('bans.banFromBoards');
         var profileView = $state.current.name === 'profile.posts';
         if (loggedIn && profileView && (banPermission || banBoardsPermission)) { return true; }
         else { return false; }
@@ -313,7 +313,6 @@ var directive = [function() {
       };
 
       // Websockets
-
       this.isOnline = false;
       $timeout(function() {
         Websocket.isOnline(ctrl.user.id, function(err, data) {
@@ -332,6 +331,7 @@ var directive = [function() {
         ctrl.tempPreferences.collapsed_categories = ctrl.user.collapsed_categories;
         this.editPreferences = true;
       };
+
       this.savePreferences = function() {
         User.update({ id: ctrl.user.id }, ctrl.tempPreferences).$promise
         .then(function(data) {

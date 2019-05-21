@@ -31,8 +31,8 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 
   this.canBanUser = function() {
     var loggedIn = Session.isAuthenticated();
-    var banPermission = Session.hasPermission('bans.privilegedBan');
-    var banBoardsPermission = Session.hasPermission('bans.privilegedBanFromBoards');
+    var banPermission = Session.hasPermission('bans.ban.allow');
+    var banBoardsPermission = Session.hasPermission('bans.banFromBoards.allow');
     if (loggedIn && (banPermission || banBoardsPermission)) { return true; }
     else { return false; }
   };

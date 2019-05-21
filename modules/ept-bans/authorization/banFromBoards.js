@@ -18,12 +18,12 @@ module.exports = function(server, auth, userId, boardIds) {
 function hasBoardBanPriority(server, auth, userId, boardIds) {
   // match priority
   var currentUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.lowerPriority');
+  var same = server.plugins.acls.getACLValue(auth, 'bans.banFromBoards.bypass.priority.same');
+  var lower = server.plugins.acls.getACLValue(auth, 'bans.banFromBoards.bypass.priority.less');
 
   // Check if the user has global mod permissions
-  var some = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.some');
-  var all = server.plugins.acls.getACLValue(auth, 'bans.privilegedBanFromBoards.all');
+  var some = server.plugins.acls.getACLValue(auth, 'bans.banFromBoards.bypass.type.mod');
+  var all = server.plugins.acls.getACLValue(auth, 'bans.banFromBoards.bypass.type.admin');
 
   // get referenced user's priority
   var refPriority = server.db.users.find(userId)

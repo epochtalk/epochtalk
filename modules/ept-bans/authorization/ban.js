@@ -18,8 +18,8 @@ module.exports = function(server, auth, userId) {
 function hasPriority(server, auth, userId) {
   // match priority
   var currentUserId = auth.credentials.id;
-  var same = server.plugins.acls.getACLValue(auth, 'bans.privilegedBan.samePriority');
-  var lower = server.plugins.acls.getACLValue(auth, 'bans.privilegedBan.lowerPriority');
+  var same = server.plugins.acls.getACLValue(auth, 'bans.ban.bypass.priority.same');
+  var lower = server.plugins.acls.getACLValue(auth, 'bans.ban.bypass.priority.less');
 
   // get referenced user's priority
   var refPriority = server.db.users.find(userId)

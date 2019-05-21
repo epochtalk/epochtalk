@@ -24,10 +24,6 @@ module.exports = {
   method: 'PUT',
   path: '/api/users/unban',
   config: {
-    app: {
-      user_id: 'payload.user_id',
-      privilege: 'bans.privilegedBan'
-    },
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
