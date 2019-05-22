@@ -54,7 +54,7 @@ module.exports = {
   },
   handler: function(request, reply) {
     var opts = request.query;
-    var promise =  request.db.bans.pageBannedAddresses(opts)
+    var promise = request.db.bans.pageBannedAddresses(opts)
     .error(request.errorMap.toHttpError);
 
     return reply(promise);

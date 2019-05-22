@@ -119,12 +119,58 @@ module.exports = [{
     }),
 
     layout: {
-      all: { title: 'Allow user to query a list of all the bans (Admin only recommended)' },
-      users: { title: 'Allow user to query a list of all users within a role (Admin only recommended)' },
-      add: { title: 'Allows user to create new bans (Admin only recommended)' },
-      update: { title: 'Allow user to update existing bans (Admin only recommended)' },
-      remove: { title: 'Allow user to delete non-default bans (Admin only recommended)' },
-      reprioritize: { title: 'Allow user to reprioritize bans (Admin only recommended)' },
+      ban: {
+        title: 'Allow user to ban/unban other\'s accounts'
+        bypasses: [
+          {
+            descriptions: [
+              'Users with the same or lesser role',
+              'Only users with lesser roles'
+            ],
+            values: [
+              'same',
+              'less'
+            ]
+            control: 'priority',
+            type: 'radio'
+          }
+        ]
+      },
+      banFromBoards: {
+        title: 'Allow user to ban/unban other\'s accounts from certain boards'
+        bypasses: [
+          {
+            options: [
+              'Users with the same or lesser role',
+              'Only users with lesser roles'
+            ],
+            values: [
+              'same',
+              'less'
+            ]
+            control: 'priority',
+            type: 'radio'
+          },
+          {
+            options: [
+              'Ban/unban users from any board',
+              'Ban/unban users from boards this user moderates'
+            ],
+            values: [
+              'admin',
+              'mod'
+            ]
+            control: 'type',
+            type: 'radio'
+          }
+        ]
+      },
+      addAddresses: { title: 'Allow user to manually ban addresses, used for admin banned addresses page' },
+      byBannedBoards: { title: 'Allow user to page through banned users' },
+      deleteAddress: { title: 'Allow user to delete banned addresses, used for admin banned addresses page' },
+      editAddress: { title: 'Allow user to edit banned addresses. used for admin banned addresses page' },
+      getBannedBoards: { title: 'Allow user to retrieve list of boards which another user has been banned from' },
+      pageBannedAddresses: { title: 'Allow user to page through banned addresses, used for admin banned addresses page' }
     },
 
     defaults: {
