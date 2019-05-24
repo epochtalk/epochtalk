@@ -18,7 +18,6 @@ var allPermissions = {
   byBannedBoards: { allow: true},
   deleteAddress: { allow: true },
   editAddress: { allow: true },
-  getBannedBoards: { allow: true },
   pageBannedAddresses: { allow: true }
 };
 
@@ -40,7 +39,6 @@ var adminPermissions = {
   byBannedBoards: { allow: true},
   deleteAddress: { allow: true },
   editAddress: { allow: true },
-  getBannedBoards: { allow: true },
   pageBannedAddresses: { allow: true }
 };
 
@@ -110,15 +108,13 @@ module.exports = [{
       editAddress: Joi.object().keys({
         allow: Joi.boolean()
       }),
-      getBannedBoards: Joi.object().keys({
-        allow: Joi.boolean()
-      }),
       pageBannedAddresses: Joi.object().keys({
         allow: Joi.boolean()
       })
     }),
 
     layout: {
+      banTitle: { title: 'User Ban Permissions', type: 'title' },
       ban: {
         title: 'Allow user to ban/unban other\'s accounts',
         bypasses: [
@@ -168,11 +164,12 @@ module.exports = [{
           }
         ]
       },
+      byBannedBoards: { title: 'Allow user to page through a list of board banned users, used for board bans moderation page' },
+      banAddressSeparator: { type: 'separator' },
+      banAddressTitle: { title: 'IP/Host Ban Permissions', type: 'title' },
       addAddresses: { title: 'Allow user to manually ban addresses, used for admin banned addresses page' },
-      byBannedBoards: { title: 'Allow user to page through banned users' },
       deleteAddress: { title: 'Allow user to delete banned addresses, used for admin banned addresses page' },
       editAddress: { title: 'Allow user to edit banned addresses. used for admin banned addresses page' },
-      getBannedBoards: { title: 'Allow user to retrieve list of boards which another user has been banned from' },
       pageBannedAddresses: { title: 'Allow user to page through banned addresses, used for admin banned addresses page' }
     },
 
