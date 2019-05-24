@@ -10,7 +10,7 @@ module.exports = {
   editAddress: require(path.normalize(__dirname + '/editAddress')),
   getBannedBoards: require(path.normalize(__dirname + '/getBannedBoards')),
   getMaliciousScore: require(path.normalize(__dirname + '/getMaliciousScore')),
-  isNotBannedFromBoards: require(path.normalize(__dirname + '/isNotBannedFromBoard')),
+  isNotBannedFromBoard: require(path.normalize(__dirname + '/isNotBannedFromBoard')),
   pageBannedAddresses: require(path.normalize(__dirname + '/pageBannedAddresses')),
   unban: require(path.normalize(__dirname + '/unban')),
   unbanFromBoards: require(path.normalize(__dirname + '/unbanFromBoards')),
