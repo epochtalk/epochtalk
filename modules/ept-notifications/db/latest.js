@@ -4,6 +4,7 @@ var dbc = require(path.join(__dirname, 'db'));
 var db = dbc.db;
 var helper = dbc.helper;
 
+// get the latest notifications for a user
 module.exports = function(notification) {
   var receiver_id = helper.deslugify(user_id);
 
