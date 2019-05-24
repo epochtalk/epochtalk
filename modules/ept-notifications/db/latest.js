@@ -5,7 +5,7 @@ var db = dbc.db;
 var helper = dbc.helper;
 
 // get the latest notifications for a user
-module.exports = function(notification) {
+module.exports = function(user_id, opts) {
   var receiver_id = helper.deslugify(user_id);
 
   var query = 'SELECT * FROM notifications WHERE receiver_id = $1 AND type = $2 AND viewed = FALSE ORDER BY created_at DESC LIMIT $3 OFFSET $4';
