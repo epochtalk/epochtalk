@@ -4,7 +4,7 @@ var dbc = require(path.join(__dirname, 'db'));
 var db = dbc.db;
 var helper = dbc.helper;
 
-module.exports = function(notification) {
+module.exports = function(options) {
   options = helper.deslugify(options);
   var q, params;
   var receiverId = _.get(options, 'receiver_id');
