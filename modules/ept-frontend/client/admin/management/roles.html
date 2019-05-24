@@ -354,6 +354,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.users[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.users[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -462,71 +475,175 @@
 
       <!-- Bans Tab -->
       <div ng-if="AdminManagementCtrl.selectedTab === 'bans'">
-        <h4>Elevated Permissions</h4>
-        <!-- Ban/Unban User -->
-        <label>
-          <input id="adminUsers-privilegedBan" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.bans.ban" ng-change="AdminManagementCtrl.newRole.permissions.bans.ban ? AdminManagementCtrl.newRole.permissions.bans.privilegedBan.lowerPriority = true : AdminManagementCtrl.newRole.permissions.bans.privilegedBan = undefined; AdminManagementCtrl.newRole.permissions.bans.ban ? AdminManagementCtrl.newRole.permissions.bans.unban = true : AdminManagementCtrl.newRole.permissions.bans.unban = undefined" ng-false-value="undefined" />
-          Allow user to ban/unban other's accounts
-        </label>
-        <div class="indent">
-          <label ng-if="AdminManagementCtrl.newRole.permissions.bans.ban">
-            <input name="users-ban-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.bans.privilegedBan.samePriority" ng-click="AdminManagementCtrl.newRole.permissions.bans.privilegedBan.lowerPriority = undefined" ng-value="true" />
-            Users with the same or lesser role
-          </label>
-          <label ng-if="AdminManagementCtrl.newRole.permissions.bans.ban">
-            <input name="users-ban-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.bans.privilegedBan.lowerPriority" ng-click="AdminManagementCtrl.newRole.permissions.bans.privilegedBan.samePriority = undefined" ng-value="true" />
-            Only users with lesser roles
-          </label>
-        </div>
+        <section class="permission" ng-repeat="(model, details) in AdminManagementCtrl.layouts.bans">
 
-        <!-- Board Ban/Unban User -->
-        <label>
-          <input id="bans-privilegedBanFromBoards" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.bans.banFromBoards" ng-change="AdminManagementCtrl.newRole.permissions.bans.banFromBoards ? AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.lowerPriority = true : AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards = undefined;
-          AdminManagementCtrl.newRole.permissions.bans.banFromBoards ? AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.some = true : AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards = undefined; AdminManagementCtrl.newRole.permissions.bans.banFromBoards ? AdminManagementCtrl.newRole.permissions.bans.unbanFromBoards = true : AdminManagementCtrl.newRole.permissions.bans.unbanFromBoards = undefined" ng-false-value="undefined" />
-          Allow user to ban/unban other's accounts from certain boards
-        </label>
-        <div class="indent">
-          <label ng-if="AdminManagementCtrl.newRole.permissions.bans.banFromBoards">
-            <input name="users-banFromBoards-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.samePriority" ng-click="AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.lowerPriority = undefined" ng-value="true" />
-            Users with the same or lesser role
-          </label>
-          <label ng-if="AdminManagementCtrl.newRole.permissions.bans.banFromBoards">
-            <input name="users-banFromBoards-priority" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.lowerPriority" ng-click="AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.samePriority = undefined" ng-value="true" />
-            Only users with lesser roles
-          </label>
-          <label ng-if="AdminManagementCtrl.newRole.permissions.bans.banFromBoards">
-            <input name="users-banFromBoards-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.all" ng-click="AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.some = undefined" ng-value="true" />
-            Ban/unban users from any board
-          </label>
-          <label ng-if="AdminManagementCtrl.newRole.permissions.bans.banFromBoards">
-            <input name="users-banFromBoards-status" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.some" ng-click="AdminManagementCtrl.newRole.permissions.bans.privilegedBanFromBoards.all = undefined" ng-value="true" />
-            Ban/unban users from boards this user moderates
-          </label>
-        </div>
+          <!-- Title Display -->
+          <div ng-if="details.type === 'title'">
+            <h4 ng-bind="details.title"></h4>
+            <h3 class="thin-underline"></h3>
+          </div>
 
-        <!-- Page Banned Addresses -->
-        <label>
-          <input id="bans-pageBannedAddresses" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.bans.pageBannedAddresses" ng-false-value="undefined" />
-          Allow user to page through banned addresses, used for admin banned addressess page
-        </label>
+          <!-- Subtitle Display -->
+          <div ng-if="details.type === 'subtitle'">
+            <h6 ng-bind="details.title"></h6>
+          </div>
 
-        <!-- Add Banned Addresses -->
-        <label>
-          <input id="bans-addAddresses" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.bans.addAddresses" ng-false-value="undefined" />
-          Allow user to maunally ban addresses, used for admin banned addressess page
-        </label>
+          <!-- Separator Display -->
+          <div ng-if="details.type === 'separator'">
+            <div class="clear"></div><br />
+          </div>
 
-        <!-- Edit Banned Address -->
-        <label>
-          <input id="bans-editAddress" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.bans.editAddress" ng-false-value="undefined" />
-          Allow user to edit banned addresses, used for admin banned addressess page
-        </label>
+          <!-- Main Permission -->
+          <div ng-if="!details.type">
 
-        <!-- Delete Banned Address -->
-        <label>
-          <input id="bans-deleteAddress" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.bans.deleteAddress" ng-false-value="undefined" />
-          Allow user to delete banned addresses, used for admin banned addressess page
-        </label>
+            <label>
+              <input type="checkbox"
+                ng-change="AdminManagementCtrl.newRole.permissions.bans[model].allow ? null : AdminManagementCtrl.newRole.permissions.bans[model] = undefined"
+                ng-model="AdminManagementCtrl.newRole.permissions.bans[model].allow"
+                ng-false-value="undefined" />
+              <span class="permission-title" ng-bind="details.title"></span>
+            </label>
+            <!-- Bypasses -->
+            <div class="bypass" ng-repeat="bypass in details.bypasses">
+              <!-- Boolean Bypass View -->
+              <div class="bypass-header" ng-if="bypass.type === 'boolean'">
+                <label>
+                  <input type="checkbox"
+                    ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].allow"
+                    ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control]"
+                    ng-false-value="undefined" />
+                  <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].allow }" ng-bind-html="bypass.description"></span>
+                </label>
+              </div>
+              <!-- Object Bypass View -->
+              <div ng-if="bypass.type === 'object' || !bypass.type">
+                <div class="bypass-header">
+                  <label>
+                    <input type="checkbox"
+                      ng-init="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin || AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod; AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show ? null : AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control] = undefined"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].allow"
+                      ng-change="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show ? AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod = true : AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control] = undefined"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-false-value="undefined" />
+                    <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].allow }" ng-bind-html="bypass.description"></span>
+                  </label>
+                </div>
+                <div class="bypass-control">
+                  <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show }">
+                    <input type="radio"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin"
+                      ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod = undefined" ng-value="true" />
+                    All
+                  </label>
+                  <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show }">
+                    <input type="radio"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod"
+                      ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin = undefined" ng-value="true" />
+                    Moderated
+                  </label>
+                </div>
+              </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.bans[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Priority Bypass View -->
+              <div ng-if="bypass.type === 'priority'">
+                <div class="bypass-header">
+                  <label>
+                    <input type="checkbox"
+                      ng-init="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin || AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod || AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].priority; AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show ? null : AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control] = undefined"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].allow"
+                      ng-change="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show ? null : AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control] = undefined"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-false-value="undefined" />
+                    <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].allow }" ng-bind-html="bypass.description"></span>
+                  </label>
+                </div>
+                <div class="bypass-control">
+                  <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show }">
+                    <input type="radio"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin"
+                      ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].priority = undefined" ng-value="true" />
+                    All
+                  </label>
+                  <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show }">
+                    <input type="radio"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod"
+                      ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].priority = undefined" ng-value="true" />
+                    Moderated
+                  </label>
+                  <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show }">
+                    <input type="radio"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].priority"
+                      ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod = undefined" ng-value="true" />
+                    Priority
+                  </label>
+                </div>
+              </div>
+
+              <!-- Priority Self Mod View -->
+              <div ng-if="bypass.type === 'selfMod'">
+                <div class="bypass-header">
+                  <label>
+                    <input type="checkbox"
+                      ng-init="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin || AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod || AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].priority || AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].selfMod; AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show ? null : AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control] = undefined"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].allow"
+                      ng-change="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show ? null : AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control] = undefined"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-false-value="undefined" />
+                    <span class="bypass-description" ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].allow }" ng-bind-html="bypass.description"></span>
+                  </label>
+                </div>
+                <div class="bypass-control">
+                  <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show }">
+                    <input type="radio"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin"
+                      ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].priority = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].selfMod = undefined" ng-value="true" />
+                    All
+                  </label>
+                  <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show }">
+                    <input type="radio"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod"
+                      ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].priority = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].selfMod = undefined" ng-value="true" />
+                    Moderated
+                  </label>
+                  <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show }">
+                    <input type="radio"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].selfMod"
+                      ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].priority = undefined" ng-value="true" />
+                    Self Moderated
+                  </label>
+                  <label ng-class="{ disabled: !AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show }">
+                    <input type="radio"
+                      ng-disabled="!AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].show"
+                      ng-model="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].priority"
+                      ng-click="AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].admin = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].mod = AdminManagementCtrl.newRole.permissions.bans[model].bypass[bypass.control].selfMod = undefined" ng-value="true" />
+                    Priority
+                  </label>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
       </div>
 
       <!-- Settings Tab -->
@@ -666,6 +783,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.portal[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.portal[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.portal[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.portal[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.portal[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.portal[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -780,6 +910,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.reports[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.reports[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.reports[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.reports[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.reports[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.reports[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -894,6 +1037,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.roles[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.roles[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.roles[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.roles[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.roles[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.roles[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -1044,6 +1200,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.categories[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.categories[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.categories[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.categories[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.categories[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.categories[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -1158,6 +1327,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.boards[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.boards[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.boards[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.boards[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.boards[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.boards[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -1272,6 +1454,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.threads[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.threads[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -1387,6 +1582,18 @@
                 </div>
               </div>
 
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.posts[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.posts[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -1425,7 +1632,7 @@
                 </div>
               </div>
 
-              <!-- Priority Bypass View -->
+              <!-- Priority Self Mod View -->
               <div ng-if="bypass.type === 'selfMod'">
                 <div class="bypass-header">
                   <label>
@@ -1547,6 +1754,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.conversations[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.conversations[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.conversations[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.conversations[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.conversations[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.conversations[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -1661,6 +1881,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.messages[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.messages[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.messages[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.messages[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.messages[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.messages[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -1824,6 +2057,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.watchlist[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.watchlist[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.watchlist[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.watchlist[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.watchlist[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.watchlist[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -1938,6 +2184,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.autoModeration[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.autoModeration[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.autoModeration[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.autoModeration[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.autoModeration[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.autoModeration[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">
@@ -2370,6 +2629,19 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Radio Bypass View -->
+              <div ng-if="bypass.type === 'radio'">
+                <div class="indent" ng-if="AdminManagementCtrl.newRole.permissions.ads[model]">
+                  <span ng-repeat="desc in bypass.descriptions">
+                    <label>
+                      <input name="{{model}}-{{bypass.control}}" ng-init="AdminManagementCtrl.newRole.permissions.ads[model].bypass[bypass.control] ? null : AdminManagementCtrl.newRole.permissions.ads[model].bypass[bypass.control][bypass.defaultValue] = true;" type="radio" ng-model="AdminManagementCtrl.newRole.permissions.ads[model].bypass[bypass.control][bypass.values[$index]]" ng-click="AdminManagementCtrl.newRole.permissions.ads[model].bypass[bypass.control] = {}; AdminManagementCtrl.newRole.permissions.ads[model].bypass[bypass.control][bypass.values[$index]] = true;" ng-value="true" />
+                      {{ desc }}
+                    </label>
+                  </span>
+                </div>
+              </div>
+
               <!-- Priority Bypass View -->
               <div ng-if="bypass.type === 'priority'">
                 <div class="bypass-header">

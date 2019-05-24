@@ -84,34 +84,13 @@ module.exports = {
        add: Joi.boolean(),
        remove: Joi.boolean()
      }),
-     bans: Joi.object().keys({
-       privilegedBan: Joi.object().keys({
-         samePriority: Joi.boolean(),
-         lowerPriority: Joi.boolean()
-       }),
-       privilegedBanFromBoards: Joi.object().keys({
-         samePriority: Joi.boolean(),
-         lowerPriority: Joi.boolean(),
-         some: Joi.boolean(),
-         all: Joi.boolean()
-       }),
-       ban: Joi.boolean(),
-       unban: Joi.boolean(),
-       banFromBoards: Joi.boolean(),
-       unbanFromBoards: Joi.boolean(),
-       getBannedBoards: Joi.boolean(),
-       byBannedBoards: Joi.boolean(),
-       addAddresses: Joi.boolean(),
-       editAddress: Joi.boolean(),
-       deleteAddress: Joi.boolean(),
-       pageBannedAddresses: Joi.boolean()
-     }),
      userNotes: Joi.object().keys({
        page: Joi.boolean(),
        create: Joi.boolean(),
        update: Joi.boolean(),
        delete: Joi.boolean()
      }),
+     bans: validations.bans,
      roles: validations.roles,
      boards: validations.boards,
      categories: validations.categories,

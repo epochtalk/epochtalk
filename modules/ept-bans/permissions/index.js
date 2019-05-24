@@ -85,7 +85,7 @@ module.exports = [{
           priority: Joi.object().keys({
             same: Joi.boolean(),
             less: Joi.boolean()
-          }).xor('admin', 'mod')
+          }).xor('same', 'less')
         })
       }),
       banFromBoards: Joi.object().keys({
@@ -120,7 +120,7 @@ module.exports = [{
 
     layout: {
       ban: {
-        title: 'Allow user to ban/unban other\'s accounts'
+        title: 'Allow user to ban/unban other\'s accounts',
         bypasses: [
           {
             descriptions: [
@@ -130,36 +130,39 @@ module.exports = [{
             values: [
               'same',
               'less'
-            ]
+            ],
+            defaultValue: 'less',
             control: 'priority',
             type: 'radio'
           }
         ]
       },
       banFromBoards: {
-        title: 'Allow user to ban/unban other\'s accounts from certain boards'
+        title: 'Allow user to ban/unban other\'s accounts from certain boards',
         bypasses: [
           {
-            options: [
+            descriptions: [
               'Users with the same or lesser role',
               'Only users with lesser roles'
             ],
             values: [
               'same',
               'less'
-            ]
+            ],
+            defaultValue: 'less',
             control: 'priority',
             type: 'radio'
           },
           {
-            options: [
+            descriptions: [
               'Ban/unban users from any board',
               'Ban/unban users from boards this user moderates'
             ],
+            defaultValue: 'mod',
             values: [
               'admin',
               'mod'
-            ]
+            ],
             control: 'type',
             type: 'radio'
           }
