@@ -13,14 +13,13 @@ var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 var notifications = require(path.normalize(__dirname + '/notifications'));
 var adminSettings = require(path.normalize(__dirname + '/admin/settings'));
 var adminModerators = require(path.normalize(__dirname + '/admin/moderators'));
-var adminModerationLogs = require(path.normalize(__dirname + '/admin/moderation_logs'));
 
 function buildEndpoints() {
   return [].concat(userNotes, breadcrumbs, notifications);
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminBoards, adminSettings, adminUsers, adminModerators, adminModerationLogs, adminLegal);
+  return [].concat(adminBoards, adminSettings, adminUsers, adminModerators, adminLegal);
 }
 
 exports.endpoints = function(internalConfig) {

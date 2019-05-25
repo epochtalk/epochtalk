@@ -10,6 +10,7 @@ module.exports = [
   'ept-reports',
   'ept-mentions',
   'ept-messages',
+  'ept-moderation-logs',
   'ept-watchlist',
   'ept-bbcode-parser',
   'ept-md-parser',
