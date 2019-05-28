@@ -14,6 +14,7 @@ modules.install = (db) => {
     authorization: [],
     apiMethods: {},
     hooks: {},
+    plugins: [],
     parsers: [],
     initMethods: [],
     permissions: {
@@ -74,6 +75,10 @@ modules.load = (dir, master) => {
       if (hookEndpoint) { hookEndpoint.push(hook.method); }
       else { _.set(master.hooks, hook.path, [hook.method]); }
     });
+  }
+
+  if (module.plugins) {
+    master.plugins = master.plugins.concat(module.plugins);
   }
 
   if (module.parser) {

@@ -31,10 +31,9 @@ var lastActive = require(path.normalize(__dirname + '/plugins/last_active'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
 var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
-var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
 var trackIp = require(path.normalize(__dirname + '/plugins/track_ip'));
 
-var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods, parsers;
+var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods, plugins, parsers;
 
 // setup configration file and sync with DB
 setup()
@@ -103,6 +102,7 @@ setup()
     authMethods = server.app.moduleData.authorization;
     permissions = server.app.moduleData.permissions;
     hookMethods = server.app.moduleData.hooks;
+    plugins = server.app.moduleData.plugins;
     parsers = server.app.moduleData.parsers;
     delete server.app.moduleData;
     return;
@@ -135,6 +135,12 @@ setup()
 .then(function() {
   return server.register({ register: hooks, options: { hooks: hookMethods } });
 })
+// plugins methods
+.then(function() {
+  return plugins.forEach(function(plugin) {
+    server.register(plugin);
+  });
+})
 // vision templating
 .then(function() {
   return server.register(Vision)
@@ -148,8 +154,6 @@ setup()
 })
 // emailer
 .then(function() { return server.register({ register: emailer, options: { config } }); })
-// moderation log
-.then(function() { return server.register({ register: moderationLog, options: { db } }); })
 // Track IP
 .then(function() { return server.register({ register: trackIp, options: { db } }); })
 // Last Active

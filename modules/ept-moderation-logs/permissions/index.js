@@ -22,8 +22,8 @@ module.exports = [{
     defaults: {
       superAdministrator: allPermissions,
       administrator: allPermissions,
-      globalModerator: allPermissions,
-      moderator: allPermissions,
+      globalModerator: noPermissions,
+      moderator: noPermissions,
       patroller: noPermissions,
       user: noPermissions,
       newbie: noPermissions,
