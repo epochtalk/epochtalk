@@ -41,7 +41,6 @@ module.exports = {
   path: '/api/admin/modlog',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminModerationLogs.page' },
     validate: {
       query: {
         page: Joi.number().integer().min(1).default(1),
@@ -54,7 +53,8 @@ module.exports = {
         sdate: Joi.date(),
         edate: Joi.date()
       }
-    }
+    },
+    pre: [ { method: 'auth.moderationLogs.page(server, auth)' } ],
   },
   handler: function(request, reply) {
     var promise = request.db.moderationLogs.page(request.query)
