@@ -205,23 +205,23 @@
         </label>
         <div class="indent" ng-if="modAccess">
           <label>
-            <input id="modAccess-users" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.users" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.users ? AdminManagementCtrl.newRole.permissions.reports.pageUserReports = true : AdminManagementCtrl.newRole.permissions.reports.pageUserReports = undefined" ng-false-value="undefined" />
+            <input id="modAccess-users" type="checkbox" ng-init="AdminManagementCtrl.newRole.permissions.modAccess.users = AdminManagementCtrl.newRole.permissions.reports.pageUserReports.allow;" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.users" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.users ? AdminManagementCtrl.newRole.permissions.reports.pageUserReports.allow = true : AdminManagementCtrl.newRole.permissions.reports.pageUserReports = undefined" ng-false-value="undefined" />
             Users Moderation Tab
           </label>
           <label>
-            <input id="modAccess-posts" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.posts" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.posts ? AdminManagementCtrl.newRole.permissions.reports.pagePostReports = true : AdminManagementCtrl.newRole.permissions.reports.pagePostReports = undefined" ng-false-value="undefined" />
+            <input id="modAccess-posts" type="checkbox" ng-init="AdminManagementCtrl.newRole.permissions.modAccess.posts = AdminManagementCtrl.newRole.permissions.reports.pagePostReports.allow;" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.posts" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.posts ? AdminManagementCtrl.newRole.permissions.reports.pagePostReports.allow = true : AdminManagementCtrl.newRole.permissions.reports.pagePostReports = undefined" ng-false-value="undefined" />
             Posts Moderation Tab
           </label>
           <label>
-            <input id="modAccess-messages" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.messages" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.messages ? AdminManagementCtrl.newRole.permissions.reports.pageMessageReports = true : AdminManagementCtrl.newRole.permissions.reports.pageMessageReports = undefined" ng-false-value="undefined" />
+            <input id="modAccess-messages" type="checkbox" ng-init="AdminManagementCtrl.newRole.permissions.modAccess.messages = AdminManagementCtrl.newRole.permissions.reports.pageMessageReports.allow;" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.messages" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.messages ? AdminManagementCtrl.newRole.permissions.reports.pageMessageReports.allow = true : AdminManagementCtrl.newRole.permissions.reports.pageMessageReports = undefined" ng-false-value="undefined" />
             Messages Moderation Tab
           </label>
           <label>
-            <input id="modAccess-boardBans" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.boardBans" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.boardBans ? AdminManagementCtrl.newRole.permissions.bans.byBannedBoards = true : AdminManagementCtrl.newRole.permissions.bans.byBannedBoards = undefined; AdminManagementCtrl.newRole.permissions.modAccess.boardBans ? AdminManagementCtrl.newRole.permissions.bans.getBannedBoards = true : AdminManagementCtrl.newRole.permissions.bans.getBannedBoards = undefined" ng-false-value="undefined" />
+            <input id="modAccess-boardBans" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.boardBans" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.boardBans ? AdminManagementCtrl.newRole.permissions.bans.byBannedBoards.allow = true : AdminManagementCtrl.newRole.permissions.bans.byBannedBoards = undefined; AdminManagementCtrl.newRole.permissions.modAccess.boardBans ? AdminManagementCtrl.newRole.permissions.bans.getBannedBoards.allow = true : AdminManagementCtrl.newRole.permissions.bans.getBannedBoards = undefined" ng-false-value="undefined" />
             Board Bans Moderation Tab
           </label>
           <label>
-            <input id="modAccess-logs" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.logs" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.logs ? AdminManagementCtrl.newRole.permissions.adminModerationLogs.page = true : AdminManagementCtrl.newRole.permissions.adminModerationLogs.page = undefined" ng-false-value="undefined" />
+            <input id="modAccess-logs" type="checkbox" ng-init="AdminManagementCtrl.newRole.permissions.modAccess.logs = AdminManagementCtrl.newRole.permissions.moderationLogs.page.allow;" ng-model="AdminManagementCtrl.newRole.permissions.modAccess.logs" ng-change="AdminManagementCtrl.newRole.permissions.modAccess.logs ? AdminManagementCtrl.newRole.permissions.moderationLogs.page.allow = true : AdminManagementCtrl.newRole.permissions.moderationLogs.page = undefined" ng-false-value="undefined" />
             Logs Moderation Tab
           </label>
         </div>

@@ -147,9 +147,6 @@ roles.superAdministrator = {
     moveBoards: true,
     updateCategories: true
   },
-  adminModerationLogs: {
-    page: true
-  },
   adminSettings: {
     find: true,
     update: true,
@@ -232,9 +229,6 @@ roles.administrator = {
     boards: true,
     moveBoards: true,
     updateCategories: true
-  },
-  adminModerationLogs: {
-    page: true
   },
   adminUsers: {
     privilegedAddRoles: {

@@ -34,9 +34,6 @@ module.exports = {
        moveBoards: Joi.boolean(),
        updateCategories: Joi.boolean()
      }),
-     adminModerationLogs: Joi.object().keys({
-       page: Joi.boolean()
-     }),
      adminSettings: Joi.object().keys({
        find: Joi.boolean(),
        update: Joi.boolean(),
@@ -102,6 +99,7 @@ module.exports = {
      reports: validations.reports,
      watchlist: validations.watchlist,
      mentions: validations.mentions,
+     moderationLogs: validations.moderationLogs,
      motd: validations.motd,
      rank: validations.rank,
      autoModeration: validations.autoModeration,
