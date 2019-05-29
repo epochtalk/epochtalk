@@ -1,5 +1,6 @@
 require('dotenv').load({silent: true});
 var _ = require('lodash');
+var Promise = require('bluebird');
 var path = require('path');
 var Hapi = require('hapi');
 var Hoek = require('hoek');
@@ -137,7 +138,7 @@ setup()
 })
 // plugins methods
 .then(function() {
-  return plugins.forEach(function(plugin) {
+  return Promise.each(plugins, function(plugin) {
     server.register(plugin);
   });
 })
