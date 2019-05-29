@@ -2,8 +2,12 @@ var _ = require('lodash');
 var path = require('path');
 var Promise = require('bluebird');
 var templates = require(path.normalize(__dirname + '/templates'));
+var db;
 
 exports.register = function(server, options, next) {
+  if (!options.db) { return next(new Error('No DB found in Moderation Log')); }
+  db = options.db;
+
   server.ext('onPostHandler', function(request, reply) {
     reply.continue();
 

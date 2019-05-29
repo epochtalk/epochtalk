@@ -13,5 +13,5 @@ module.exports = {
   isNotBannedFromBoard: require(path.normalize(__dirname + '/isNotBannedFromBoard')),
   pageBannedAddresses: require(path.normalize(__dirname + '/pageBannedAddresses')),
   unban: require(path.normalize(__dirname + '/unban')),
-  unbanFromBoards: require(path.normalize(__dirname + '/unbanFromBoards')),
+  unbanFromBoards: require(path.normalize(__dirname + '/unbanFromBoards'))
 };

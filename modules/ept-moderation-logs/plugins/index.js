@@ -1,5 +1,5 @@
 var path = require('path');
 
 module.exports = [
-  { register: require(path.normalize(__dirname + '/moderation-log')) }
+  { register: require(path.normalize(__dirname + '/moderation-log')), db: true }
 ];

@@ -23,7 +23,6 @@ var emailer = require(path.normalize(__dirname + '/plugins/emailer'));
 var modules = require(path.normalize(__dirname + '/plugins/modules'));
 var session = require(path.normalize(__dirname + '/plugins/session'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
-var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var logOptions = require(path.normalize(__dirname + '/log-options'));
@@ -80,8 +79,6 @@ setup()
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
 })
-// blacklist
-.then(function() { return server.register({ register: blacklist, options: { db } }); })
 // backoff
 .then(function() { return server.register({ register: backoff }); })
 // rate limiter
@@ -139,6 +136,10 @@ setup()
 // plugins methods
 .then(function() {
   return Promise.each(plugins, function(plugin) {
+    if (plugin.db) {
+      plugin.options = { db };
+      delete plugin.db;
+    }
     server.register(plugin);
   });
 })

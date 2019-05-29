@@ -21,5 +21,6 @@ module.exports = [
   'ept-ignore-users',
   'ept-rank',
   'ept-roles',
-  'ept-bans'
+  'ept-bans',
+  'ept-blacklist'
 ];
