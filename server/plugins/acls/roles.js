@@ -36,14 +36,6 @@ module.exports = roles;
     adminModerationLogs: {
       page: true
     },
-    adminRoles: {
-      all: true,
-      users: true,
-      add: true,
-      update: true,
-      remove: true,
-      reprioritize: true
-    },
     adminSettings: {
       find: true,
       update: true,
@@ -155,17 +147,6 @@ roles.superAdministrator = {
     moveBoards: true,
     updateCategories: true
   },
-  adminModerationLogs: {
-    page: true
-  },
-  adminRoles: {
-    all: true,
-    users: true,
-    add: true,
-    update: true,
-    remove: true,
-    reprioritize: true
-  },
   adminSettings: {
     find: true,
     update: true,
@@ -204,25 +185,6 @@ roles.superAdministrator = {
   adminModerators: {
     add: true,
     remove: true
-  },
-  bans: {
-    privilegedBan: {
-      samePriority: true
-    },
-    privilegedBanFromBoards: {
-      samePriority: true,
-      all: true
-    },
-    ban: true,
-    unban: true,
-    banFromBoards: true,
-    unbanFromBoards: true,
-    getBannedBoards: true,
-    byBannedBoards: true,
-    addAddresses: true,
-    editAddress: true,
-    deleteAddress: true,
-    pageBannedAddresses: true
   },
   userNotes: {
     page: true,
@@ -268,13 +230,6 @@ roles.administrator = {
     moveBoards: true,
     updateCategories: true
   },
-  adminModerationLogs: {
-    page: true
-  },
-  adminRoles: {
-    all: true,
-    users: true,
-  },
   adminUsers: {
     privilegedAddRoles: {
       lowerPriority: true
@@ -296,25 +251,6 @@ roles.administrator = {
   adminModerators: {
     add: true,
     remove: true
-  },
-  bans: {
-    privilegedBan: {
-      lowerPriority: true
-    },
-    privilegedBanFromBoards: {
-      lowerPriority: true,
-      all: true
-    },
-    ban: true,
-    unban: true,
-    banFromBoards: true,
-    unbanFromBoards: true,
-    getBannedBoards: true,
-    byBannedBoards: true,
-    addAddresses: true,
-    editAddress: true,
-    deleteAddress: true,
-    pageBannedAddresses: true
   },
   userNotes: {
     page: true,
@@ -350,21 +286,6 @@ roles.globalModerator = {
   adminUsers: {
     searchUsernames: true
   },
-  bans: {
-    privilegedBan: {
-      lowerPriority: true
-    },
-    privilegedBanFromBoards : {
-      lowerPriority: true,
-      all: true
-    },
-    ban: true,
-    unban: true,
-    banFromBoards: true,
-    unbanFromBoards: true,
-    getBannedBoards: true,
-    byBannedBoards: true
-  },
   userNotes: {
     page: true,
     create: true,
@@ -398,16 +319,6 @@ roles.moderator = {
   },
   adminUsers: {
     searchUsernames: true
-  },
-  bans: {
-    privilegedBanFromBoards: {
-      lowerPriority: true,
-      some: true
-    },
-    banFromBoards: true,
-    unbanFromBoards: true,
-    getBannedBoards: true,
-    byBannedBoards: true
   },
   userNotes: {
     page: true,

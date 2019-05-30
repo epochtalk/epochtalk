@@ -76,7 +76,7 @@ var directive = ['$q', '$filter', '$timeout', 'Session', 'Alert', 'Bans', 'Board
 
       this.canGlobalBanUser = function() {
         var loggedIn = Session.isAuthenticated();
-        var banPermission = Session.hasPermission('bans.privilegedBan');
+        var banPermission = Session.hasPermission('bans.ban.allow');
         if (loggedIn && banPermission) { return true; }
         else { return false; }
       };
@@ -85,20 +85,20 @@ var directive = ['$q', '$filter', '$timeout', 'Session', 'Alert', 'Bans', 'Board
         var loggedIn = Session.isAuthenticated();
         if (!loggedIn) { return; }
         var moderatingBoard = ctrl.authedUser.moderating.indexOf(boardId) >= 0;
-        var banAllBoardsPermission = Session.hasPermission('bans.privilegedBanFromBoards.all');
+        var banAllBoardsPermission = Session.hasPermission('bans.banFromBoards.bypass.type.admin');
         if (moderatingBoard || banAllBoardsPermission) { return true; }
         else { return false; }
       };
 
       this.loadBoardBans = function(boardId) {
-        var banAllBoardsPermission = Session.hasPermission('bans.privilegedBanFromBoards.all');
+        var banAllBoardsPermission = Session.hasPermission('bans.banFromBoards.bypass.type.admin');
         if (banAllBoardsPermission && ctrl.allBoardIds.indexOf(boardId) < 0) {
           ctrl.allBoardIds.push(boardId);
         }
       };
 
       this.uncheckModBoards = function() {
-        var banBoardsPermission = Session.hasPermission('bans.privilegedBanFromBoards.all');
+        var banBoardsPermission = Session.hasPermission('bans.banFromBoards.bypass.type.admin');
         if (banBoardsPermission) { ctrl.boardBanList = []; }
         else {
           ctrl.authedUser.moderating.forEach(function(id) {
@@ -109,7 +109,7 @@ var directive = ['$q', '$filter', '$timeout', 'Session', 'Alert', 'Bans', 'Board
       };
 
       this.checkModBoards = function() {
-        var banBoardsPermission = Session.hasPermission('bans.privilegedBanFromBoards.all');
+        var banBoardsPermission = Session.hasPermission('bans.banFromBoards.bypass.type.admin');
         if (banBoardsPermission) { ctrl.boardBanList = ctrl.allBoardIds; }
         else {
           ctrl.authedUser.moderating.forEach(function(id) {

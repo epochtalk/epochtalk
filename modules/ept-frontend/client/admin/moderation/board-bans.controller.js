@@ -17,7 +17,7 @@ var ctrl = ['$q', '$rootScope', '$scope', '$location', '$timeout', '$anchorScrol
   this.boardFilter = this.board;
   this.bannedBoards = bannedBoards.data;
 
-  this.hasGlobalModPerms = Session.hasPermission('bans.privilegedBanFromBoards.all');
+  this.hasGlobalModPerms = Session.hasPermission('bans.banFromBoards.bypass.type.admin');
 
   this.boards = boards;
   this.allBoards = selectBoards; // used to populate filter select

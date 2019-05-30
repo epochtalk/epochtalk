@@ -5,23 +5,20 @@ var path = require('path');
 var fse = require('fs-extra');
 var crypto = require('crypto');
 var Promise = require('bluebird');
-var bans = require(path.normalize(__dirname + '/bans'));
 var userNotes = require(path.normalize(__dirname + '/user_notes'));
 var adminLegal = require(path.normalize(__dirname + '/admin/legal'));
 var adminUsers = require(path.normalize(__dirname + '/admin/users'));
-var adminRoles = require(path.normalize(__dirname + '/admin/roles'));
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 var adminSettings = require(path.normalize(__dirname + '/admin/settings'));
 var adminModerators = require(path.normalize(__dirname + '/admin/moderators'));
-var adminModerationLogs = require(path.normalize(__dirname + '/admin/moderation_logs'));
 
 function buildEndpoints() {
-  return [].concat(userNotes, bans, breadcrumbs);
+  return [].concat(userNotes, breadcrumbs);
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminBoards, adminSettings, adminUsers, adminRoles, adminModerators, adminModerationLogs, adminLegal);
+  return [].concat(adminBoards, adminSettings, adminUsers, adminModerators, adminLegal);
 }
 
 exports.endpoints = function(internalConfig) {

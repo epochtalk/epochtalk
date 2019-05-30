@@ -20,7 +20,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   this.newRole = {};
   this.basedRoleId = null;
   this.modifyingRole = false;
-  this.controlAccess = Session.getControlAccessWithPriority('adminRoles');
+  this.controlAccess = Session.getControlAccessWithPriority('roles');
   this.controlAccess.privilegedRemoveRoles =  {
     samePriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.samePriority'),
     lowerPriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.lowerPriority')

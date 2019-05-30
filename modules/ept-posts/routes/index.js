@@ -8,6 +8,7 @@ module.exports = [
   require(path.normalize(__dirname + '/meta-byThread')),
   require(path.normalize(__dirname + '/update')),
   require(path.normalize(__dirname + '/delete')),
+  require(path.normalize(__dirname + '/patrol')),
   require(path.normalize(__dirname + '/undelete')),
   require(path.normalize(__dirname + '/lock')),
   require(path.normalize(__dirname + '/unlock')),

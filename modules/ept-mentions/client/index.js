@@ -7,7 +7,7 @@ var route = ['$stateProvider', function($stateProvider) {
       'content': {
         controller: 'MentionsCtrl',
         controllerAs: 'MentionsCtrl',
-        templateUrl: '/static/templates/modules/ept-mentions/mentions.html'
+        template: require('./mentions.html')
       }
     },
     resolve: {

@@ -30,22 +30,6 @@ var ngDeps = [
   'ngTagsInput',
   require('oclazyload'),
   require('./layout/header.controller'),
-  require('./boards'),
-  // users
-  require('./users/confirm'),
-  require('./users/profile'),
-  require('./users/reset'),
-  require('./users/search'),
-  require('./users/join'),
-  require('./users/settings'),
-  // threads
-  require('./threads/new'),
-  require('./threads/posted'),
-  require('./threads/threads'),
-  // posts
-  require('./posts'),
-  require('./messages'),
-  require('./patrol'),
   require('./admin')
 ].concat(moduleNames);
 var app = angular.module('ept', ngDeps);
@@ -66,11 +50,6 @@ require('./filters');
 require('./services');
 require('./resources');
 require('./components');
-require('./users/resource');
-require('./boards/resource');
-require('./threads/resource');
-require('./posts/resource');
-require('./patrol/resource');
 
 // Set Angular Configs
 app

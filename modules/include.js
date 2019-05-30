@@ -11,6 +11,7 @@ module.exports = [
   'ept-mentions',
   'ept-messages',
   'ept-notifications',
+  'ept-moderation-logs',
   'ept-watchlist',
   'ept-bbcode-parser',
   'ept-md-parser',
@@ -20,4 +21,7 @@ module.exports = [
   'ept-motd',
   'ept-ignore-users',
   'ept-rank',
+  'ept-roles',
+  'ept-bans',
+  'ept-blacklist'
 ];

@@ -7,6 +7,7 @@ module.exports = {
   byThread: require(path.normalize(__dirname + '/byThread')),
   pageByUserCount: require(path.normalize(__dirname + '/pageByUserCount')),
   pageByUser: require(path.normalize(__dirname + '/pageByUser')),
+  patrol: require(path.normalize(__dirname + '/patrol')),
   delete: require(path.normalize(__dirname + '/delete')),
   undelete: require(path.normalize(__dirname + '/undelete')),
   lock: require(path.normalize(__dirname + '/lock')),
