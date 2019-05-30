@@ -40,11 +40,7 @@ module.exports = {
        getTheme: Joi.boolean(),
        setTheme: Joi.boolean(),
        resetTheme: Joi.boolean(),
-       previewTheme: Joi.boolean(),
-       getBlacklist: Joi.boolean(),
-       addToBlacklist: Joi.boolean(),
-       updateBlacklist: Joi.boolean(),
-       deleteFromBlacklist: Joi.boolean()
+       previewTheme: Joi.boolean()
      }),
      adminLegal: Joi.object().keys({
        text: Joi.boolean(),
@@ -88,6 +84,7 @@ module.exports = {
        delete: Joi.boolean()
      }),
      bans: validations.bans,
+     blacklist: validations.blacklist,
      roles: validations.roles,
      boards: validations.boards,
      categories: validations.categories,

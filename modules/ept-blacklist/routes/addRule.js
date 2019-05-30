@@ -20,7 +20,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminSettings.addToBlacklist',
       mod_log: {
         type: 'adminSettings.addToBlacklist',
         data: {
@@ -34,7 +33,8 @@ module.exports = {
         ip_data: Joi.string().min(1).max(100),
         note: Joi.string().min(1).max(255)
       }
-    }
+    },
+    pre: [ { method: 'auth.blacklist.addRule(server, auth)' } ]
   },
   handler: function(request, reply) {
     var rule = request.payload;
