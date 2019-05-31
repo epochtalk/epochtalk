@@ -109,10 +109,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           return settings;
         });
       }],
-      blacklist: ['AdminSettings', function(AdminSettings) {
-        return AdminSettings.getBlacklist().$promise
-        .then(function(blacklist) { return blacklist; });
-      }],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {

@@ -18,7 +18,7 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'DELETE',
-  path: '/api/admin/settings/blacklist/{id}',
+  path: '/api/admin/blacklist/{id}',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {

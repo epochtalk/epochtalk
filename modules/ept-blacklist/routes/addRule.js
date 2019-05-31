@@ -16,7 +16,7 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'POST',
-  path: '/api/admin/settings/blacklist',
+  path: '/api/admin/blacklist',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
