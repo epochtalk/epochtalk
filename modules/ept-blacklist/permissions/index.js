@@ -28,15 +28,15 @@ module.exports = [{
     }),
 
     layout: {
-      addRule: { title: 'Allow User to blacklist IP addresses and hostnames (Admin only)' },
-      all: { title: 'Allow User to get list of blacklisted IP addresses and hostnames (Admin only)' },
-      deleteRule: { title: 'Allow User to delete blacklisted IP addresses and hostnames (Admin only)' },
-      updateRule: { title: 'Allow User to update blacklisted IP addresses and hostnames (Admin only)' }
+      addRule: { title: 'Allow User to blacklist IP addresses (Admin only)' },
+      all: { title: 'Allow User to get list of blacklisted IP addresses (Admin only)' },
+      deleteRule: { title: 'Allow User to delete blacklisted IP addresses (Admin only)' },
+      updateRule: { title: 'Allow User to update blacklisted IP addresses (Admin only)' }
     },
 
     defaults: {
       superAdministrator: allPermissions,
-      administrator: allPermissions,
+      administrator: noPermissions,
       globalModerator: noPermissions,
       moderator: noPermissions,
       patroller: noPermissions,
