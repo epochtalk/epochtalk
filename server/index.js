@@ -30,7 +30,6 @@ var imageStore = require(path.normalize(__dirname + '/plugins/imageStore'));
 var lastActive = require(path.normalize(__dirname + '/plugins/last_active'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
-var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
 var trackIp = require(path.normalize(__dirname + '/plugins/track_ip'));
 
 var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods, plugins, parsers;
@@ -63,11 +62,6 @@ setup()
 })
 // inert static file serving
 .then(function() { server.register(Inert); })
-// notifications
-.then(function() {
-  // notification methods
-  return server.register({ register: notifications, options: { db, config }});
-})
 // auth via jwt
 .then(function() {
   return server.register({ register: jwt, options: { redis } })
