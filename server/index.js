@@ -130,6 +130,7 @@ setup()
 // plugins methods
 .then(function() {
   return Promise.each(plugins, function(plugin) {
+    // TODO: modify this to take in other things than db
     if (plugin.db) {
       plugin.options = { db };
       delete plugin.db;
