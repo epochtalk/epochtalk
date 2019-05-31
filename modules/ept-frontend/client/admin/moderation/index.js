@@ -260,7 +260,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      moderationLogs: ['AdminModerationLogs', '$stateParams', function(AdminModerationLogs, $stateParams) {
+      moderationLogs: ['ModerationLogs', '$stateParams', function(ModerationLogs, $stateParams) {
         var query = {
           limit: Number($stateParams.limit) || undefined,
           page: Number($stateParams.page) || undefined,
@@ -272,7 +272,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           sdate: $stateParams.sdate,
           edate: $stateParams.edate
         };
-        return AdminModerationLogs.page(query).$promise;
+        return ModerationLogs.page(query).$promise;
       }]
     }
   });

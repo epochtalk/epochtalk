@@ -33,9 +33,6 @@ module.exports = roles;
       logs: true
     },
     // ACLs
-    adminModerationLogs: {
-      page: true
-    },
     adminSettings: {
       find: true,
       update: true,
@@ -153,11 +150,7 @@ roles.superAdministrator = {
     getTheme: true,
     setTheme: true,
     resetTheme: true,
-    previewTheme: true,
-    getBlacklist: true,
-    addToBlacklist: true,
-    updateBlacklist: true,
-    deleteFromBlacklist: true
+    previewTheme: true
   },
   adminLegal: {
     text: true,
