@@ -5,5 +5,6 @@ var routes = require(path.normalize(__dirname + '/routes'));
 module.exports =  {
   name: 'notifications',
   routes: routes,
-  db: db
+  db: db,
+  plugins: plugins
 };
