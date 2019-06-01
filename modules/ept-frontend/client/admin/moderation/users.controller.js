@@ -443,7 +443,6 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 require('../../components/profile/profile.directive.js');
 require('../../components/usernotes/usernotes.directive.js');
 require('../../components/image_uploader/image_uploader.directive');
-require('../../components/ban_modal/ban-modal.directive');
 
 module.exports = angular.module('ept.admin.moderation.users.ctrl', [])
 .controller('ModUsersCtrl', ctrl);

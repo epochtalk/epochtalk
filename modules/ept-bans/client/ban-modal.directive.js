@@ -10,7 +10,7 @@ var directive = ['$q', '$filter', '$timeout', 'Session', 'Alert', 'Bans', 'Board
       callback: '=',
       disableBoardBans: '='
     },
-    template: require('./ban-modal.html'),
+    template: require('./ban-modal.directive.html'),
     controllerAs: 'vmBan',
     controller: ['$scope', function($scope) {
       var ctrl = this;
@@ -249,5 +249,4 @@ var directive = ['$q', '$filter', '$timeout', 'Session', 'Alert', 'Bans', 'Board
   };
 }];
 
-module.exports = angular.module('ept.directives.ban-modal', [])
-.directive('banModal', directive);
+angular.module('ept').directive('banModal', directive);
