@@ -1,7 +1,4 @@
-'use strict';
-/* jslint node: true */
-
-module.exports = ['$resource',
+var resource = ['$resource',
   function($resource) {
     return $resource('/api/admin/roles/all', {}, {
       all: {
@@ -32,3 +29,5 @@ module.exports = ['$resource',
     });
   }
 ];
+
+angular.module('ept').factory('Roles', resource);
