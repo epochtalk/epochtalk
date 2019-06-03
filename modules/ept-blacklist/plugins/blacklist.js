@@ -5,7 +5,7 @@ var Address4 = ipAddress.Address4;
 var Address6 = ipAddress.Address6;
 var blacklist = {};
 var path = require('path');
-var db = require(path.normalize(__dirname + '/../db/db'));
+var db;
 
 exports.register = function(server, options, next) {
   if (!options.db) { return next(new Error('No DB found in IP Blacklist')); }
