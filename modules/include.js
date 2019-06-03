@@ -20,6 +20,7 @@ module.exports = [
   'ept-ads',
   'ept-motd',
   'ept-ignore-users',
+  'ept-user-notes',
   'ept-rank',
   'ept-roles',
   'ept-bans',
