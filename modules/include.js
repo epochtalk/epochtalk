@@ -1,4 +1,5 @@
 module.exports = [
+  'ept-polls',
   'ept-thread-notifications',
   'ept-posts',
   'ept-threads',
