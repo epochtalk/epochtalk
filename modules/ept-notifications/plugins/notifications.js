@@ -6,7 +6,7 @@ var db, websocket, websocketAPIKey;
 var path = require('path');
 
 exports.register = function (plugin, options, next) {
-  if (!options.db) { return next(new Error('No db found in notifications')); }
+  if (!options.db) { return next(new Error('No options.db found in notifications module')); }
   db = options.db;
   if (!options.websocket) { return next(new Error('No options.websocket found in notifications module')); }
   websocket = options.websocket;
