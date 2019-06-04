@@ -27,7 +27,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'userNotes.update',
       mod_log: {
         type: 'userNotes.update',
         data: {
@@ -46,7 +45,7 @@ module.exports = {
         note: Joi.string().min(2).max(2000).required()
       }
     },
-    pre: [ { method: 'auth.userNotes.isOwner(server, auth, payload.id)' } ]
+    pre: [ { method: 'auth.userNotes.update(server, auth, payload.id)' } ]
   },
   handler: function(request, reply) {
     var opts = Object.assign({}, request.payload);

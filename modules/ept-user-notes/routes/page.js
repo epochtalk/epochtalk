@@ -42,7 +42,8 @@ module.exports = {
         page: Joi.number().min(1).default(1),
         limit: Joi.number().min(1).max(100).default(25)
       }
-    }
+    },
+    pre: [ { method: 'auth.userNotes.page(server, auth)' } ]
   },
   handler: function(request, reply) {
     var opts = request.query;

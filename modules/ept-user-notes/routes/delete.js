@@ -26,7 +26,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'userNotes.delete',
       mod_log: {
         type: 'userNotes.delete',
         data: {
@@ -40,7 +39,7 @@ module.exports = {
       }
     },
     validate: { query: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.userNotes.isOwner(server, auth, query.id)' } ]
+    pre: [ { method: 'auth.userNotes.delete(server, auth, query.id)' } ]
   },
   handler: function(request, reply) {
     var opts = Object.assign({}, request.query);

@@ -83,6 +83,7 @@ module.exports = {
        update: Joi.boolean(),
        delete: Joi.boolean()
      }),
+     userNotes: validations.userNotes,
      bans: validations.bans,
      blacklist: validations.blacklist,
      roles: validations.roles,

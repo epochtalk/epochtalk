@@ -28,7 +28,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'userNotes.create',
       mod_log: {
         type: 'userNotes.create',
         data: {
@@ -48,6 +47,7 @@ module.exports = {
         note: Joi.string().min(2).max(2000).required()
       }
     },
+    pre: [ { method: 'auth.userNotes.create(server, auth)' } ]
   },
   handler: function(request, reply) {
     var opts = Object.assign({}, request.payload);

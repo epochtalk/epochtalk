@@ -179,12 +179,6 @@ roles.superAdministrator = {
     add: true,
     remove: true
   },
-  userNotes: {
-    page: true,
-    create: true,
-    update: true,
-    delete: true
-  },
   notifications: {
     dismiss: true,
     counts: true
@@ -245,12 +239,6 @@ roles.administrator = {
     add: true,
     remove: true
   },
-  userNotes: {
-    page: true,
-    create: true,
-    update: true,
-    delete: true
-  },
   notifications: {
     dismiss: true,
     counts: true
@@ -279,12 +267,6 @@ roles.globalModerator = {
   adminUsers: {
     searchUsernames: true
   },
-  userNotes: {
-    page: true,
-    create: true,
-    update: true,
-    delete: true
-  },
   notifications: {
     dismiss: true,
     counts: true
@@ -312,12 +294,6 @@ roles.moderator = {
   },
   adminUsers: {
     searchUsernames: true
-  },
-  userNotes: {
-    page: true,
-    create: true,
-    update: true,
-    delete: true
   },
   notifications: {
     dismiss: true,
