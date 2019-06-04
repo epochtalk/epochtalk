@@ -1,15 +1,15 @@
 // Load modules
 var _ = require('lodash');
 
-var db, websocketAPIKey;
+var db, websocket, websocketAPIKey;
 
-// Use websocket
 var path = require('path');
-var socket = require(path.join(__dirname, '../../../websocket'));
 
 exports.register = function (plugin, options, next) {
   if (!options.db) { return next(new Error('No db found in notifications')); }
   db = options.db;
+  if (!options.websocket) { return next(new Error('No options.websocket found in notifications module')); }
+  websocket = options.websocket;
 
   if (!options.config) { return next(new Error('No config found in notifications')); }
   websocketAPIKey = options.config.websocketAPIKey;
@@ -38,5 +38,5 @@ function systemNotification(datas) {
     channel: JSON.stringify(datas.channel),
     data: datas.data
   };
-  socket.emit('notify', options);
+  websocket.emit('notify', options);
 }
