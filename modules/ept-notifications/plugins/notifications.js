@@ -11,7 +11,7 @@ exports.register = function (plugin, options, next) {
   if (!options.websocket) { return next(new Error('No options.websocket found in notifications module')); }
   websocket = options.websocket;
 
-  if (!options.config) { return next(new Error('No config found in notifications')); }
+  if (!options.config) { return next(new Error('No options.config found in notifications module')); }
   websocketAPIKey = options.config.websocketAPIKey;
 
   plugin.expose('spawnNotification', spawnNotification);
