@@ -1,7 +1,4 @@
-'use strict';
-/* jslint node: true */
-
-module.exports = ['$resource',
+var resource = ['$resource',
   function($resource) {
     return $resource('/api/user/notes', {}, {
       find: {
@@ -20,3 +17,5 @@ module.exports = ['$resource',
     });
   }
 ];
+
+angular.module('ept').factory('UserNotes', resource);
