@@ -4,6 +4,7 @@ module.exports = [
   {
     register: require(path.normalize(__dirname + '/notifications')),
     db: true,
-    config: config
+    websocket: true,
+    config: true
   }
 ];
