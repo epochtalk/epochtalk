@@ -23,7 +23,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminModerators.remove',
       mod_log: {
         type: 'adminModerators.remove',
         data: {
@@ -37,7 +36,8 @@ module.exports = {
         usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
         board_id: Joi.string().required()
       }
-    }
+    },
+    pre: [ { method: 'auth.moderators.remove(server, auth)' } ]
   },
   handler: function(request, reply) {
     var usernames = request.payload.usernames;

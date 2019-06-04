@@ -73,10 +73,6 @@ module.exports = {
        pageModerators: Joi.boolean(),
        resetPassword: Joi.boolean()
      }),
-     adminModerators: Joi.object().keys({
-       add: Joi.boolean(),
-       remove: Joi.boolean()
-     }),
      userNotes: Joi.object().keys({
        page: Joi.boolean(),
        create: Joi.boolean(),
@@ -98,6 +94,7 @@ module.exports = {
      watchlist: validations.watchlist,
      mentions: validations.mentions,
      moderationLogs: validations.moderationLogs,
+     moderators: validations.moderators,
      motd: validations.motd,
      rank: validations.rank,
      autoModeration: validations.autoModeration,

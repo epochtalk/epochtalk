@@ -24,7 +24,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminModerators.add',
       mod_log: {
         type: 'adminModerators.add',
         data: {
@@ -38,7 +37,8 @@ module.exports = {
         usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
         board_id: Joi.string().required()
       }
-    }
+    },
+    pre: [ { method: 'auth.moderators.add(server, auth)' } ]
   },
   handler: function(request, reply) {
     var usernames = request.payload.usernames;

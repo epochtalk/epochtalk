@@ -65,10 +65,6 @@ module.exports = roles;
       pageModerators: true,
       resetPassword: true
     },
-    adminModerators: {
-      add: true,
-      remove: true
-    },
     bans: {
       privilegedBan: {
         samePriority: true,
@@ -175,10 +171,6 @@ roles.superAdministrator = {
     pageModerators: true,
     resetPassword: true
   },
-  adminModerators: {
-    add: true,
-    remove: true
-  },
   notifications: {
     dismiss: true,
     counts: true
@@ -234,10 +226,6 @@ roles.administrator = {
     pageAdmins: true,
     pageModerators: true,
     resetPassword: true
-  },
-  adminModerators: {
-    add: true,
-    remove: true
   },
   notifications: {
     dismiss: true,
