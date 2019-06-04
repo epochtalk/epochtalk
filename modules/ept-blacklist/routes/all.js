@@ -14,10 +14,10 @@
   */
 module.exports = {
   method: 'GET',
-  path: '/api/admin/settings/blacklist',
+  path: '/api/admin/blacklist',
   config: {
-   auth: { strategy: 'jwt' },
-   plugins: { acls: 'adminSettings.getBlacklist' }
+    auth: { strategy: 'jwt' },
+    pre: [ { method: 'auth.blacklist.all(server, auth)' } ]
   },
   handler: function(request, reply) {
     var promise = request.db.blacklist.all()

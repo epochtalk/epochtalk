@@ -1,6 +1,6 @@
 var intersection = require('lodash/intersection');
 
-var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles', 'AdminUsers', 'pageData', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, AdminRoles, AdminUsers, pageData, userData, roleId, limit, page, search) {
+var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'AdminUsers', 'pageData', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, Roles, AdminUsers, pageData, userData, roleId, limit, page, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
@@ -157,12 +157,12 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       return limit.interval && limit.maxInInterval;
     });
     if (ctrl.modifyingRole) {
-      promise = AdminRoles.update(ctrl.newRole).$promise;
+      promise = Roles.update(ctrl.newRole).$promise;
       successMsg = ctrl.newRole.name + ' successfully updated.';
       errorMsg = 'There was an error updating the role ' + ctrl.newRole.name + '.';
     }
     else {
-      promise = AdminRoles.add(ctrl.newRole).$promise;
+      promise = Roles.add(ctrl.newRole).$promise;
       successMsg = ctrl.newRole.name + ' successfully created.';
       errorMsg = 'There was an error creating the role ' + ctrl.newRole.name + '.';
     }
@@ -274,7 +274,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   this.resetPriority = function() { ctrl.roles = angular.copy(ctrl.backupPriorities); };
 
   this.savePriority = function() {
-    AdminRoles.reprioritize(ctrl.roles).$promise
+    Roles.reprioritize(ctrl.roles).$promise
     .then(function() {
       Alert.success('Roles successfully reprioritized');
       ctrl.backupPriorities = angular.copy(ctrl.roles);
@@ -310,7 +310,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   this.resetRole = function() {
     ctrl.roleToReset.permissions = {};
     ctrl.roleToReset.highlight_color = ctrl.roleToReset.highlight_color ? ctrl.roleToReset.highlight_color : undefined;
-    AdminRoles.update(ctrl.roleToReset).$promise
+    Roles.update(ctrl.roleToReset).$promise
     .then(function() {
       Alert.success('Role ' + ctrl.roleToReset.name + ' successfully reset.');
     })
@@ -347,7 +347,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       ctrl.queryParams = {};
       $location.search(ctrl.queryParams);
     }
-    AdminRoles.remove({ id: ctrl.roleToRemove.id }).$promise
+    Roles.remove({ id: ctrl.roleToRemove.id }).$promise
     .then(function() {
       Alert.success('Role ' + ctrl.roleToRemove.name + ' successfully removed.');
     })
@@ -424,14 +424,14 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       search: ctrl.search
     };
     if (ctrl.roleId) {
-      AdminRoles.users(query).$promise
+      Roles.users(query).$promise
       .then(function(updatedUserData) {
         ctrl.processUsers(updatedUserData);
         ctrl.userData = updatedUserData;
         ctrl.pageCount = Math.ceil(updatedUserData.count / query.limit);
       });
     }
-    AdminRoles.all(query).$promise
+    Roles.all(query).$promise
     .then(function(pageData) {
       ctrl.roles = pageData.roles;
       ctrl.layouts = pageData.layouts;

@@ -632,7 +632,6 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 require('../../components/editor/editor.directive');
 require('../../components/resizeable/resizeable.directive');
 require('../../components/image_uploader/image_uploader.directive');
-require('../../components/ban_modal/ban-modal.directive');
 
 module.exports = angular.module('ept.admin.moderation.posts.ctrl', [])
 .controller('ModPostsCtrl', ctrl);

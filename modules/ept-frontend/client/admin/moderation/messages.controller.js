@@ -463,7 +463,6 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     });
   };
 }];
-require('../../components/ban_modal/ban-modal.directive');
 
 module.exports = angular.module('ept.admin.moderation.messages.ctrl', [])
 .controller('ModMessagesCtrl', ctrl);

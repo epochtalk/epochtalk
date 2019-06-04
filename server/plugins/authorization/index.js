@@ -271,15 +271,7 @@ function adminRolesDelete(server, auth, userId) {
 
 // -- user notes
 
-function userNotesIsOwner(server, auth, noteId) {
-  var userId = auth.credentials.id;
-  var isOwner = server.db.userNotes.find(noteId)
-  .then(function(note) {
-    if (note.author_id === userId) { return true; }
-    else { return Promise.reject(Boom.forbidden('Only the author can modify this usernote')); }
-  });
-  return isOwner;
-}
+
 
 // -- API
 
@@ -298,12 +290,6 @@ exports.register = function(server, options, next) {
     {
       name: 'auth.admin.users.deleteRole',
       method: adminRolesDelete,
-      options: { callback: false }
-    },
-    // -- user notes
-    {
-      name: 'auth.userNotes.isOwner',
-      method: userNotesIsOwner,
       options: { callback: false }
     }
   ];

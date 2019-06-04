@@ -1,4 +1,5 @@
 module.exports = [
+  'ept-polls',
   'ept-thread-notifications',
   'ept-posts',
   'ept-threads',
@@ -20,6 +21,8 @@ module.exports = [
   'ept-ads',
   'ept-motd',
   'ept-ignore-users',
+  'ept-moderators',
+  'ept-user-notes',
   'ept-rank',
   'ept-roles',
   'ept-bans',

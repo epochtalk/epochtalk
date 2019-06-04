@@ -18,11 +18,10 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'DELETE',
-  path: '/api/admin/settings/blacklist/{id}',
+  path: '/api/admin/blacklist/{id}',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminSettings.deleteFromBlacklist',
       mod_log: {
         type: 'adminSettings.deleteFromBlacklist',
         data: {
@@ -31,7 +30,8 @@ module.exports = {
         }
       }
     },
-    validate: { params: { id: Joi.string().required() } }
+    validate: { params: { id: Joi.string().required() } },
+    pre: [ { method: 'auth.blacklist.deleteRule(server, auth)' } ]
   },
   handler: function(request, reply) {
     var id = request.params.id;

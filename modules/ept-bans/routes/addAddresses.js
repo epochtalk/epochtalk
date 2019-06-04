@@ -46,7 +46,7 @@ module.exports = {
         decay: Joi.boolean().default(false),
       }).without('hostname', 'ip'))
     },
-    // pre: [ { method: 'auth.bans.addAddresses(server, auth)' } ]
+    pre: [ { method: 'auth.bans.addAddresses(server, auth)' } ]
   },
   handler: function(request, reply) {
     var addresses = request.payload;

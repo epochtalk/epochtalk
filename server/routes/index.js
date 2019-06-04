@@ -5,7 +5,6 @@ var path = require('path');
 var fse = require('fs-extra');
 var crypto = require('crypto');
 var Promise = require('bluebird');
-var userNotes = require(path.normalize(__dirname + '/user_notes'));
 var adminLegal = require(path.normalize(__dirname + '/admin/legal'));
 var adminUsers = require(path.normalize(__dirname + '/admin/users'));
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
@@ -14,7 +13,7 @@ var adminSettings = require(path.normalize(__dirname + '/admin/settings'));
 var adminModerators = require(path.normalize(__dirname + '/admin/moderators'));
 
 function buildEndpoints() {
-  return [].concat(userNotes, breadcrumbs);
+  return [].concat(userNotes);
 }
 
 function buildAdminEndpoints() {

@@ -78,7 +78,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      roleData: ['AdminRoles', function(AdminRoles) { return AdminRoles.all().$promise; }],
+      roleData: ['Roles', function(Roles) { return Roles.all().$promise; }],
       categories: ['AdminBoards', function(AdminBoards) { return AdminBoards.categories().$promise; }],
       boards: ['AdminBoards', function(AdminBoards) { return AdminBoards.boards().$promise; }]
     }
@@ -103,7 +103,6 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           $ocLazyLoad.load([
             { name: 'ept.admin.management.users.ctrl' },
             { name: 'ept.directives.image-uploader' },
-            { name: 'ept.directives.ban-modal'}
           ]);
           deferred.resolve();
         });
@@ -181,8 +180,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      pageData: ['AdminRoles', function(AdminRoles) {
-        return AdminRoles.all().$promise
+      pageData: ['Roles', function(Roles) {
+        return Roles.all().$promise
         .then(function(pageData) { return pageData; });
       }],
       page: ['$stateParams', function($stateParams) {
@@ -197,14 +196,14 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       search: ['$stateParams', function($stateParams) {
         return $stateParams.search;
       }],
-      userData: ['AdminRoles', '$stateParams', function(AdminRoles, $stateParams) {
+      userData: ['Roles', '$stateParams', function(Roles, $stateParams) {
         var query = {
           id: $stateParams.roleId,
           page: Number($stateParams.page) || 1,
           limit: Number($stateParams.limit) || 15,
           search: $stateParams.search
         };
-        return AdminRoles.users(query).$promise
+        return Roles.users(query).$promise
         .then(function(userData) { return userData; });
       }]
     }

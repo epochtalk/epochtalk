@@ -33,9 +33,6 @@ module.exports = roles;
       logs: true
     },
     // ACLs
-    adminModerationLogs: {
-      page: true
-    },
     adminSettings: {
       find: true,
       update: true,
@@ -153,11 +150,7 @@ roles.superAdministrator = {
     getTheme: true,
     setTheme: true,
     resetTheme: true,
-    previewTheme: true,
-    getBlacklist: true,
-    addToBlacklist: true,
-    updateBlacklist: true,
-    deleteFromBlacklist: true
+    previewTheme: true
   },
   adminLegal: {
     text: true,
@@ -185,12 +178,6 @@ roles.superAdministrator = {
   adminModerators: {
     add: true,
     remove: true
-  },
-  userNotes: {
-    page: true,
-    create: true,
-    update: true,
-    delete: true
   },
   notifications: {
     dismiss: true,
@@ -252,12 +239,6 @@ roles.administrator = {
     add: true,
     remove: true
   },
-  userNotes: {
-    page: true,
-    create: true,
-    update: true,
-    delete: true
-  },
   notifications: {
     dismiss: true,
     counts: true
@@ -286,12 +267,6 @@ roles.globalModerator = {
   adminUsers: {
     searchUsernames: true
   },
-  userNotes: {
-    page: true,
-    create: true,
-    update: true,
-    delete: true
-  },
   notifications: {
     dismiss: true,
     counts: true
@@ -319,12 +294,6 @@ roles.moderator = {
   },
   adminUsers: {
     searchUsernames: true
-  },
-  userNotes: {
-    page: true,
-    create: true,
-    update: true,
-    delete: true
   },
   notifications: {
     dismiss: true,

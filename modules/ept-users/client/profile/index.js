@@ -19,13 +19,11 @@ var route = ['$stateProvider', function($stateProvider) {
           require('./../../../components/profile/profile.directive.js');
           require('./../../../components/usernotes/usernotes.directive.js');
           require('./../../../components/image_uploader/image_uploader.directive');
-          require('./../../../components/ban_modal/ban-modal.directive');
           $ocLazyLoad.load([
             { name: 'ept.directives.resetPassword' },
             { name: 'ept.directives.profile' },
             { name: 'ept.directives.usernotes' },
-            { name: 'ept.directives.image-uploader' },
-            { name: 'ept.directives.ban-modal' }
+            { name: 'ept.directives.image-uploader' }
           ]);
           deferred.resolve();
         });
