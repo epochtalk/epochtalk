@@ -10,6 +10,7 @@ var Inert = require('inert');
 var Vision = require('vision');
 var errorMap = require(path.normalize(__dirname + '/error-map'));
 var db = require(path.normalize(__dirname + '/../db'));
+var websocket = require(path.normalize(__dirname + '/../websocket'));
 var redis = require(path.normalize(__dirname + '/../redis'));
 var setup = require(path.normalize(__dirname + '/../setup'));
 var jwt = require(path.normalize(__dirname + '/plugins/jwt'));
@@ -88,7 +89,7 @@ setup()
 // load modules
 .then(function() {
   // TODO: modify this to take in other things than db
-  return server.register({ register: modules, options: { db } })
+  return server.register({ register: modules, options: { db, websocket, config } })
   .then(function() {
     additionalRoutes = server.app.moduleData.routes;
     commonMethods = server.app.moduleData.common;
