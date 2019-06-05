@@ -165,6 +165,13 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         }
       };
 
+      var uuidv4 = function() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      };
+
       var process = function() {
         var postBody = $scope.postProcessing;
         var processed = postBody || '';
@@ -181,7 +188,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         }
 
         // dump html into element
-        $element.html('<div ng-non-bindable>' + processed + '</div>');
+        $element.html(processed);
 
         // Remove first newline from codeblock
         // This allows users to type:
@@ -202,10 +209,25 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
         }
 
         // image loading
-        var images = $($element[0]).find('img');
+        var imageCache = {};
+        var images = $element.find('img');
         images.each(function(index, image) {
-          $(image).addClass('image-loader');
+          var uuid = uuidv4();
+          image = $(image).addClass('image-loader'); // attach directive
+          imageCache[uuid] = $(image)[0].outerHTML;
+          $(image).replaceWith(uuid)
         });
+
+        // Surround all text that isn't image tags with ng-non-bindable,
+        // this allows image loader directive to still run...
+        var nonBindableHTML = '<span ng-non-bindable>' + $element.html() + '</span>';
+        Object.keys(imageCache).forEach(function(uuid) {
+          var replaceWith = '</span>' + imageCache[uuid] + '<span ng-non-bindable>';
+          nonBindableHTML = nonBindableHTML.replace(uuid, replaceWith)
+        });
+
+        // Rebind html to $element after excluding images from ng-non-bindable
+        $element.html(nonBindableHTML);
 
         // noopener/noreferrer hack
         $('a[target="_blank"]').attr('rel', 'noopener noreferrer');
