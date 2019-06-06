@@ -21,6 +21,7 @@ module.exports = [
   'ept-motd',
   'ept-ignore-users',
   'ept-moderators',
+  'ept-images',
   'ept-user-notes',
   'ept-rank',
   'ept-roles',

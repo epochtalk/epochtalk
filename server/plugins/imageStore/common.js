@@ -69,7 +69,7 @@ images.generateUploadFilename = function(filename) {
 // Image Expiration
 
 images.setExpiration = function(duration, url) {
-  var expiration = new Date(Date.now() + duration);
+  var expiration = new Date(Number(Date.now()) + Number(duration));
   db.images.addImageExpiration(url, expiration);
 };
 
