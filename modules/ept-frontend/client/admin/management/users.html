@@ -118,10 +118,6 @@
         <input type="email" name="email" ng-model="AdminManagementCtrl.selectedUser.email" unique-email="{{::AdminManagementCtrl.selectedUser.email}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" />
       </label>
 
-      <label>New Password
-        <input type="password" placeholder="New Password" ng-model="AdminManagementCtrl.selectedUser.password" maxlength="255">
-      </label>
-
       <label>Avatar
         <image-uploader class="editor-image-uploader" model="AdminManagementCtrl.selectedUser.avatar" purpose="avatar"></image-uploader>
         <input type="text" class="input-text" ng-model="AdminManagementCtrl.selectedUser.avatar" placeholder="URL to avatar image" />

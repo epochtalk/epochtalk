@@ -56,7 +56,7 @@ var directive = [function() {
       this.canUpdateUsername = function() {
         if (!Session.isAuthenticated()) { return false; }
         if (!Session.hasPermission('users.changeUsername.allow')) { return false; }
-        return canUpdate();
+        return ctrl.canUpdate();
       };
 
 
