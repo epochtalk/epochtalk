@@ -284,39 +284,3 @@ exports.previewTheme = {
     });
   }
 };
-
-function checkImagesConfig(images) {
-  return new Promise(function(resolve, reject) {
-    if (!images) { return reject(new ConfigError('Images configuration not found')); }
-
-    var errors = [];
-    var storageType = images.storage;
-
-    if (!storageType) { errors.push('Image Storage Type not found.'); }
-    else if (storageType !== 'local' && storageType !== 's3') {
-      errors.push('Image Type is not "local" or "s3"');
-    }
-    if (!images.maxSize) { errors.push('Max Image Size not set.'); }
-    if (!images.expiration) { errors.push('Image Expiration Interval not set.'); }
-    if (!images.interval) { errors.push('Image Check Interval not set.'); }
-
-    // local
-    if (storageType === 'local') {
-      if (!images.local.dir) { errors.push('Local Images dir not set.'); }
-      if (!images.local.path) { errors.push('Local Images public path not set.'); }
-    }
-
-    // s3
-    if (storageType === 's3') {
-      if (!images.s3.root) { errors.push('S3 root URL not set.'); }
-      if (!images.s3.dir) { errors.push('S3 dir not set.'); }
-      if (!images.s3.bucket) { errors.push('S3 bucket not set.'); }
-      if (!images.s3.region) { errors.push('S3 region not set.'); }
-      if (!images.s3.accessKey) { errors.push('S3 Access Key not set.'); }
-      if (!images.s3.secretKey) { errors.push('S3 Secret Key not set.'); }
-    }
-
-    if (errors.length > 0) { return reject(new ConfigError(errors.join('\n'))); }
-    else { return resolve(); }
-  });
-}
