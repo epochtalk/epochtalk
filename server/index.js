@@ -136,6 +136,10 @@ setup()
       _.set(plugin, ['options', 'db'], db);
       delete plugin.db;
     }
+    if (plugin.websocket) {
+      _.set(plugin, ['options', 'websocket'], websocket);
+      delete plugin.websocket;
+    }
     server.register(plugin);
   });
 })
