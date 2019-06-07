@@ -88,8 +88,7 @@ setup()
 .then(function() { return server.register({ register: sanitizer }); })
 // load modules
 .then(function() {
-  // TODO: modify this to take in other things than db
-  return server.register({ register: modules, options: { db, websocket, config } })
+  return server.register({ register: modules, options: { db } })
   .then(function() {
     additionalRoutes = server.app.moduleData.routes;
     commonMethods = server.app.moduleData.common;
@@ -131,6 +130,7 @@ setup()
 })
 // plugins methods
 .then(function() {
+  // TODO: modify this to take in other things than db
   return Promise.each(plugins, function(plugin) {
     if (plugin.db) {
       plugin.options = { db };
