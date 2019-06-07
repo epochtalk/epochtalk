@@ -65,8 +65,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.general'),
       $title: function() { return 'General Settings'; },
-      settings: ['AdminSettings', function(AdminSettings) {
-        return AdminSettings.get().$promise
+      settings: ['Configurations', function(Configurations) {
+        return Configurations.get().$promise
         .then(function(settings) {
           // Remove unsettable configs
           delete settings.db;
@@ -100,8 +100,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.advanced'),
       $title: function() { return 'Advanced Settings'; },
-      settings: ['AdminSettings', function(AdminSettings) {
-        return AdminSettings.get().$promise
+      settings: ['Configurations', function(Configurations) {
+        return Configurations.get().$promise
         .then(function(settings) {
           // Remove unsettable configs
           delete settings.db;

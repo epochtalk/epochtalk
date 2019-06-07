@@ -64,7 +64,7 @@ var ConfigError = Promise.OperationalError;
   */
 module.exports = {
   method: 'POST',
-  path: '/api/admin/settings',
+  path: '/api/configurations',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {

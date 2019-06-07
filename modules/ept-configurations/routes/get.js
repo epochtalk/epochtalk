@@ -61,7 +61,7 @@ var renameKeys = require('deep-rename-keys');
   */
 module.exports = {
   method: 'GET',
-  path: '/api/admin/settings',
+  path: '/api/configurations',
   config: {
     auth: { strategy: 'jwt' },
     pre: [ { method: 'auth.configurations.get(server, auth)' } ]

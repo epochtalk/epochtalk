@@ -1,4 +1,4 @@
-var ctrl = ['$scope', '$filter', 'settings', 'AdminSettings', 'AdminBoards', 'Alert', function($scope, $filter, settings, AdminSettings, AdminBoards, Alert) {
+var ctrl = ['$scope', '$filter', 'settings', 'Configurations', 'AdminBoards', 'Alert', function($scope, $filter, settings, Configurations, AdminBoards, Alert) {
   var ctrl = this;
 
   // Tab control
@@ -35,7 +35,7 @@ var ctrl = ['$scope', '$filter', 'settings', 'AdminSettings', 'AdminBoards', 'Al
 
   // Save action
   $scope.child.save = function() {
-    AdminSettings.save(ctrl.settings).$promise
+    Configurations.update(ctrl.settings).$promise
     .then(function() {
       Alert.success('Successfully saved settings');
       ctrl.originalSettings = angular.copy(ctrl.settings);
