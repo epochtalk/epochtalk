@@ -133,7 +133,7 @@ setup()
   // TODO: modify this to take in other things than db
   return Promise.each(plugins, function(plugin) {
     if (plugin.db) {
-      plugin.options = { db };
+      _.set(plugin, ['options', 'db'], db);
       delete plugin.db;
     }
     server.register(plugin);
