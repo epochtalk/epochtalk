@@ -26,7 +26,6 @@ var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var logOptions = require(path.normalize(__dirname + '/log-options'));
-var imageStore = require(path.normalize(__dirname + '/plugins/imageStore'));
 var lastActive = require(path.normalize(__dirname + '/plugins/last_active'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
@@ -87,8 +86,6 @@ setup()
   rlOptions.redis = redis;
   return server.register({ register: limiter, options: rlOptions });
 })
-// imageStore
-.then(function() { return server.register({ register: imageStore, options: { config, db } }); })
 // sanitizer
 .then(function() { return server.register({ register: sanitizer }); })
 // load modules
@@ -137,8 +134,12 @@ setup()
 .then(function() {
   return Promise.each(plugins, function(plugin) {
     if (plugin.db) {
-      plugin.options = { db };
+      plugin.options = Object.assign(plugin.options || {}, { db });
       delete plugin.db;
+    }
+    if (plugin.config) {
+      plugin.options = Object.assign(plugin.options || {}, { config });
+      delete plugin.config;
     }
     server.register(plugin);
   });
