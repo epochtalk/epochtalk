@@ -140,6 +140,10 @@ setup()
       _.set(plugin, ['options', 'websocket'], websocket);
       delete plugin.websocket;
     }
+    if (plugin.config) {
+      _.set(plugin, ['options', 'config'], config);
+      delete plugin.config;
+    }
     server.register(plugin);
   });
 })
