@@ -73,7 +73,7 @@ function isAllowedToChangeUsername(server, auth, userId, username) {
     if (paramUser.username === username) { return true; }
     else {
       return server.authorization.build({
-        error: Boom.forbidden('You do not have the appropriate permissions to change other user\'s usernames'),
+        error: Boom.forbidden('You do not have the appropriate permissions to change other users\' usernames'),
         type: 'hasPermission',
         server: server,
         auth: auth,
@@ -81,7 +81,7 @@ function isAllowedToChangeUsername(server, auth, userId, username) {
       });
     }
   })
-  .error(() => { return Promise.reject(Boom.badRequest()); });
+  .error((e) => { return Promise.reject(Boom.badRequest(e)); });
 }
 
 // is requester active
@@ -153,7 +153,6 @@ function isEmailPasswordValid(server, auth, userId, password) {
   else { return true; }
 }
 
-
 // remove email from payload for other users
 function rejectEmail(server, auth, payload, paramsId) {
   return server.db.users.find(paramsId)
@@ -164,14 +163,6 @@ function rejectEmail(server, auth, payload, paramsId) {
     else { return Promise.reject(Boom.badRequest('Cannot change email')); }
   })
   .error(() => { return Promise.reject(Boom.badRequest()); })
-}
-
-// reject passwords change attempts for other users
-function rejectPassword(payload) {
-  if (payload.old_password) {
-    return Promise.reject(Boom.badRequest('Not Allowed to change other user\'s password'));
-  }
-  else { return true; }
 }
 
 // priority
@@ -194,6 +185,6 @@ function hasPriority(server, auth, paramsId, authedId) {
     if (same && aid <= pid) { return true; }
     // current has higher priority than referenced
     else if (lower && aid < pid) { return true; }
-    else { return Promise.reject(Boom.badRequest('This user has the same or higher priveleges than you, you may not edit their account')); }
+    else { return Promise.reject(Boom.badRequest('This user has the same or higher privileges than you, you may not edit their account')); }
   });
 }
