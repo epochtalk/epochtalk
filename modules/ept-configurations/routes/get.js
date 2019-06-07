@@ -5,7 +5,7 @@ var renameKeys = require('deep-rename-keys');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {GET} /admin/settings (Admin) Find
+  * @api {GET} /api/configurations (Admin) Find
   * @apiName FindSettings
   * @apiDescription Used to fetch all web app settings. Allows admins to grab settings defined
   * in config.js

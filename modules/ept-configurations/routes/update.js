@@ -9,7 +9,7 @@ var ConfigError = Promise.OperationalError;
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {POST} /admin/settings (Admin) Update
+  * @api {POST} /api/configurations(Admin) Update
   * @apiName UpdateSettings
   * @apiDescription Used to update web app settings. Used in the admin panel.
   *
