@@ -68,7 +68,6 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminSettings.update',
       mod_log: { type: 'adminSettings.update' }
     },
     pre: [
@@ -147,7 +146,8 @@ module.exports = {
           board_id: Joi.string().allow('').allow(null)
         })
       }).options({ stripUnknown: true, abortEarly: true })
-    }
+    },
+    pre: [ { method: 'auth.configurations.update(server, auth)' } ]
   },
   handler: function(request, reply) {
     var internalConfig = request.server.app.config;

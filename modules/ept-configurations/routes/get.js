@@ -64,7 +64,7 @@ module.exports = {
   path: '/api/admin/settings',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminSettings.find' }
+    pre: [ { method: 'auth.configurations.get(server, auth)' } ]
   },
   handler: function(request, reply) {
     var promise = request.db.configurations.get()
