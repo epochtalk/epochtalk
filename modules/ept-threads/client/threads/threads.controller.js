@@ -138,8 +138,8 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.canSetModerator = function() {
       if (!ctrl.loggedIn()) { return false; }
       if (BanSvc.banStatus()) { return false; }
-      if (!Session.hasPermission('adminModerators.add')) { return false; }
-      if (!Session.hasPermission('adminModerators.remove')) { return false; }
+      if (!Session.hasPermission('moderators.add.allow')) { return false; }
+      if (!Session.hasPermission('moderators.remove.allow')) { return false; }
       return true;
     };
   }

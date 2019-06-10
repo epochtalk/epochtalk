@@ -56,6 +56,9 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
     User.get({ id: username }).$promise
     .then(function(userData) {
       ctrl.selectedUser = userData;
+      // this is hacky.. but we need to pass joi validation when admins change emails
+      ctrl.selectedUser.email_password = '********';
+      ctrl.selectedUser.avatar = ctrl.selectedUser.avatar || '';
       ctrl.selectedUser.dob = $filter('date')(ctrl.selectedUser.dob, 'longDate');
       ctrl.showEditUserModal = true;
     });
@@ -71,10 +74,15 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
     .then(function() { Alert.success('Successfully updated profile for ' + ctrl.selectedUser.username); })
     .catch(function(err) {
       var msg = 'There was an error updating user ' + ctrl.selectedUser.username;
-      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      if (err && err.data && err.data.message) {
+          msg += '. ' + err.data.message;
+      }
       Alert.error(msg);
     })
-    .finally(function() { ctrl.closeEditUser(); });
+    .finally(function() {
+      ctrl.closeEditUser();
+      ctrl.pullPage();
+    });
   };
 
   this.showManageBans = function(user) {

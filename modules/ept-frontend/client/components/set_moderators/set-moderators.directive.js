@@ -4,8 +4,8 @@ var rem = require('lodash/remove');
 var filter = require('lodash/filter');
 var intersection = require('lodash/intersection');
 
-var directive = ['AdminModerators', 'AdminUsers', 'Alert', '$timeout', '$q',
-function(AdminModerators, AdminUsers, Alert, $timeout, $q) {
+var directive = ['Moderators', 'AdminUsers', 'Alert', '$timeout', '$q',
+function(Moderators, AdminUsers, Alert, $timeout, $q) {
   return {
     restrict: 'E',
     scope: true,
@@ -86,7 +86,7 @@ function(AdminModerators, AdminUsers, Alert, $timeout, $q) {
         return $q(function(resolve) {
           if (!ctrl.modsToRemove.length) { return resolve(); }
 
-          var promise = AdminModerators.remove(removeParams).$promise
+          var promise = Moderators.remove(removeParams).$promise
           .then(function(users) {
             return users.map(function(user) {
               rem(ctrl.board.moderators, function(mod) { return mod.username === user.username; });
@@ -97,7 +97,7 @@ function(AdminModerators, AdminUsers, Alert, $timeout, $q) {
         // add moderators if needed
         .then(function() {
           if (!ctrl.modsToAdd.length) { return; }
-          return AdminModerators.add(addParams).$promise
+          return Moderators.add(addParams).$promise
           .then(function(users) {
             users.forEach(function(user) {
               ctrl.board.moderators.push({ username: user.username, id: user.id });

@@ -2,12 +2,12 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 var path = require('path');
 var config = require(path.normalize(__dirname + '/config'));
-var db = require(path.normalize(__dirname + '/db'));
+var dbConfigurations = require(path.normalize(__dirname + '/modules/ept-configurations/db'));
 var defaultConfigurations = require(path.join(__dirname, 'configurations.json'));
 
 // load admin options from database
 module.exports = function() {
-  return db.configurations.get()
+  return dbConfigurations.get()
   .then(parseConfigs)
   // if admin options are not yet configured
   .error(function() {
@@ -19,7 +19,7 @@ module.exports = function() {
       // emailer is no longer configured by default
       var configClone = _.cloneDeep(config);
       configClone.emailer = {};
-      return db.configurations.create(configClone);
+      return dbConfigurations.create(configClone);
     })
     .then(function() { return config; });
   });

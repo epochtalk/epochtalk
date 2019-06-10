@@ -22,9 +22,12 @@ module.exports = [
   'ept-motd',
   'ept-ignore-users',
   'ept-moderators',
+  'ept-images',
+  'ept-configurations',
   'ept-user-notes',
   'ept-rank',
   'ept-roles',
   'ept-bans',
-  'ept-blacklist'
+  'ept-blacklist',
+  'ept-themes',
 ];
