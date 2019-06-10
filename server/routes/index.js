@@ -10,10 +10,6 @@ var adminUsers = require(path.normalize(__dirname + '/admin/users'));
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 
-function buildEndpoints() {
-  return [].concat(userNotes);
-}
-
 function buildAdminEndpoints() {
   return [].concat(adminBoards, adminUsers, adminLegal);
 }
@@ -182,13 +178,6 @@ exports.endpoints = function(internalConfig) {
     }
   ];
 
-  // namespace core routes
-  var apiRoutes = buildEndpoints();
-  apiRoutes.forEach(function(route) {
-    // prefix each route with api
-    route.path = '/api' + route.path;
-  });
-
   // namespace admin routes
   var apiAdminRoutes = buildAdminEndpoints();
   apiAdminRoutes.forEach(function(route) {
@@ -196,6 +185,6 @@ exports.endpoints = function(internalConfig) {
   });
 
   // add core routes
-  var routes = localRoutes.concat(apiRoutes, apiAdminRoutes);
+  var routes = localRoutes.concat(apiAdminRoutes);
   return routes;
 };
