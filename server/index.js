@@ -127,7 +127,6 @@ setup()
 })
 // plugins methods
 .then(function() {
-  // TODO: modify this to take in other things than db
   return Promise.each(plugins, function(plugin) {
     if (plugin.db) {
       _.set(plugin, ['options', 'db'], db);
