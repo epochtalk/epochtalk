@@ -1,4 +1,4 @@
-var directive = ['Blacklist', 'Alert', 'Session', function(Blacklist, Alert, Session) {
+var directive = ['Blacklist', 'Alert', 'Session', '$timeout', function(Blacklist, Alert, Session, $timeout) {
   return {
     restrict: 'E',
     scope: true,

@@ -10,14 +10,13 @@ var adminUsers = require(path.normalize(__dirname + '/admin/users'));
 var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 var notifications = require(path.normalize(__dirname + '/notifications'));
-var adminSettings = require(path.normalize(__dirname + '/admin/settings'));
 
 function buildEndpoints() {
   return [].concat(breadcrumbs, notifications);
 }
 
 function buildAdminEndpoints() {
-  return [].concat(adminBoards, adminSettings, adminUsers, adminLegal);
+  return [].concat(adminBoards, adminUsers, adminLegal);
 }
 
 exports.endpoints = function(internalConfig) {
