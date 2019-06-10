@@ -3,8 +3,8 @@ var Joi = require('joi');
 var fs = require('fs');
 var copyCss = require(path.join(__dirname + '/../../../scripts', 'tasks', 'copy_files'));
 var sass = require(path.join(__dirname + '/../../../scripts', 'tasks', 'sass'));
-var varsDir = '/../../../app/scss/ept/variables';
-var previewVarsPath = path.normalize(__dirname + varsDir + '/_preview-variables.scss');
+var common = require(path.normalize(__dirname + '/common'));
+var previewVarsPath = common.previewVarsPath;
 
 /**
   * @apiVersion 0.4.0

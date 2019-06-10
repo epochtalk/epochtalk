@@ -2,11 +2,9 @@ var path = require('path');
 var Joi = require('joi');
 var fs = require('fs');
 var readLine = require('readline');
-var varsDir = '/../../../app/scss/ept/variables';
-var defaultVarsPath = path.normalize(__dirname + varsDir + '/_default-variables.scss');
-var customPath = '/../../../content/sass/_custom-variables.scss';
-var customVarsPath = path.normalize(__dirname + customPath);
-var previewVarsPath = path.normalize(__dirname + varsDir + '/_preview-variables.scss');
+var common = require(path.normalize(__dirname + '/common'));
+var customVarsPath = common.customVarsPath;
+var previewVarsPath = common.previewVarsPath;
 
 /**
   * @apiVersion 0.4.0
