@@ -29,7 +29,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       };
 
       // Auto Link Regex
-      var autoLinkRegex = /(?!<code[^>]*?>)((?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?)(?![^<]*?<\/code>)/ig;
+      var autoLinkRegex = /(?!<code[^>]*?>)((?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+%#-])?)(?![^<]*?<\/code>)/ig;
       var autoLink = function(url) {
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
@@ -47,7 +47,7 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
       var validUrl = function(s) {
         try {
           var testUrl = new URL(s);
-          var urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm;
+          var urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,%;=.]+$/gm;
           var reg = new RegExp(urlRegex);
           return s.match(reg);
         }
