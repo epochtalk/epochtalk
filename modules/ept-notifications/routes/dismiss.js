@@ -17,7 +17,7 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'POST',
-  path: '/notifications/dismiss',
+  path: '/api/notifications/dismiss',
   config: {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'notifications.dismiss' },
