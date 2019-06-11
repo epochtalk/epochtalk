@@ -25,7 +25,7 @@ module.exports = {
         max: Joi.number()
       })
     },
-    plugins: { acls: 'notifications.counts' }
+    pre: [ { method: 'auth.notifications.counts(server, auth)' } ]
   },
   handler: function(request, reply) {
     // get notifications counts for userId

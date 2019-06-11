@@ -20,7 +20,7 @@ module.exports = {
   path: '/api/notifications/dismiss',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'notifications.dismiss' },
+    pre: [ { method: 'auth.notifications.dismiss(server, auth)' } ],
     validate: {
       payload: Joi.object().keys({
         type: Joi.string().valid('message', 'mention', 'other').required(),
