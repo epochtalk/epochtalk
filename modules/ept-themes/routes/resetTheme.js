@@ -3,16 +3,15 @@ var fs = require('fs');
 var readLine = require('readline');
 var sass = require(path.join(__dirname + '/../../../scripts', 'tasks', 'sass'));
 var copyCss = require(path.join(__dirname + '/../../../scripts', 'tasks', 'copy_files'));
-var varsDir = '/../../../app/scss/ept/variables';
-var defaultVarsPath = path.normalize(__dirname + varsDir + '/_default-variables.scss');
-var customPath = '/../../../content/sass/_custom-variables.scss';
-var customVarsPath = path.normalize(__dirname + customPath);
-var previewVarsPath = path.normalize(__dirname + varsDir + '/_preview-variables.scss');
+var common = require(path.normalize(__dirname + '/common'));
+var customVarsPath = common.customVarsPath;
+var previewVarsPath = common.previewVarsPath;
+var defaultVarsPath = common.defaultVarsPath;
 
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {POST} /admin/settings/theme (Admin) Reset Theme
+  * @api {POST} /theme (Admin) Reset Theme
   * @apiName ResetTheme
   * @apiDescription Used reset custom variables to fall back to _default-variables.scss
   *
@@ -34,13 +33,13 @@ var previewVarsPath = path.normalize(__dirname + varsDir + '/_preview-variables.
   */
 module.exports = {
   method: 'POST',
-  path: '/api/admin/settings/theme',
+  path: '/api/theme',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminSettings.resetTheme',
       mod_log: { type: 'adminSettings.resetTheme' }
-    }
+    },
+    pre: [ { method: 'auth.themes.resetTheme(server, auth)' } ]
   },
   handler: function(request, reply) {
     fs.truncateSync(previewVarsPath, 0); // wipe preview vars file

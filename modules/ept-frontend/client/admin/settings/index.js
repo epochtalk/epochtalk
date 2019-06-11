@@ -162,11 +162,11 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.theme'),
       $title: function() { return 'Theme Settings'; },
-      theme: ['AdminSettings', '$stateParams', function(AdminSettings, $stateParams) {
+      theme: ['Themes', '$stateParams', function(Themes, $stateParams) {
         var preview = $stateParams.preview;
         var params;
         if (preview) { params = { preview: preview }; }
-        return AdminSettings.getTheme(params).$promise
+        return Themes.getTheme(params).$promise
         .then(function(theme) {
           return theme;
         });

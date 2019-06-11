@@ -21,7 +21,7 @@ module.exports = [{
 
     layout: {
       get: { title: 'Allow User to fetch all forum configurations (Admin only)' },
-      update: { title: 'Allow User to update ball forum configurations (Admin only)' }
+      update: { title: 'Allow User to update all forum configurations (Admin only)' }
     },
 
     defaults: {

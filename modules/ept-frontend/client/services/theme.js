@@ -1,7 +1,7 @@
 'use strict';
 /* jslint node: true */
 
-module.exports = ['AdminSettings', 'Alert', function(AdminSettings, Alert) {
+module.exports = ['Themes', 'Alert', function(Themes, Alert) {
 
   // True if in preview mode, false if not
   var previewActive = false;
@@ -31,7 +31,7 @@ module.exports = ['AdminSettings', 'Alert', function(AdminSettings, Alert) {
   var themeAPI = {
     setTheme: function(model) { theme = model; },
     saveTheme: function() {
-      AdminSettings.setTheme(theme).$promise
+      Themes.setTheme(theme).$promise
       .then(function() {
         toggleCSS(false);
         Alert.success('Theme successfully updated');

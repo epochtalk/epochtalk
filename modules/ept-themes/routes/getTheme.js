@@ -2,16 +2,14 @@ var path = require('path');
 var Joi = require('joi');
 var fs = require('fs');
 var readLine = require('readline');
-var varsDir = '/../../../app/scss/ept/variables';
-var defaultVarsPath = path.normalize(__dirname + varsDir + '/_default-variables.scss');
-var customPath = '/../../../content/sass/_custom-variables.scss';
-var customVarsPath = path.normalize(__dirname + customPath);
-var previewVarsPath = path.normalize(__dirname + varsDir + '/_preview-variables.scss');
+var common = require(path.normalize(__dirname + '/common'));
+var customVarsPath = common.customVarsPath;
+var previewVarsPath = common.previewVarsPath;
 
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {GET} /admin/settings/theme (Admin) Get Theme
+  * @api {GET} /theme (Admin) Get Theme
   * @apiName GetTheme
   * @apiDescription Used to fetch theme vars in _custom-variables.scss
   *
@@ -33,11 +31,11 @@ var previewVarsPath = path.normalize(__dirname + varsDir + '/_preview-variables.
   */
 module.exports = {
   method: 'GET',
-  path: '/api/admin/settings/theme',
+  path: '/api/theme',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminSettings.getTheme' },
-    validate: { query: { preview: Joi.boolean() } }
+    validate: { query: { preview: Joi.boolean() } },
+    pre: [ { method: 'auth.themes.getTheme(server, auth)' } ]
   },
   handler: function(request, reply) {
     var preview = request.query.preview;

@@ -3,15 +3,14 @@ var Joi = require('joi');
 var fs = require('fs');
 var sass = require(path.join(__dirname + '/../../../scripts', 'tasks', 'sass'));
 var copyCss = require(path.join(__dirname + '/../../../scripts', 'tasks', 'copy_files'));
-var customPath = '/../../../content/sass/_custom-variables.scss';
-var customVarsPath = path.normalize(__dirname + customPath);
-var varsDir = '/../../../app/scss/ept/variables';
-var previewVarsPath = path.normalize(__dirname + varsDir + '/_preview-variables.scss');
-
+var common = require(path.normalize(__dirname + '/common'));
+var customVarsPath = common.customVarsPath;
+var previewVarsPath = common.previewVarsPath;
+var defaultVarsPath = common.defaultVarsPath;
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {PUT} /admin/settings/theme (Admin) Set Theme
+  * @api {PUT} /theme (Admin) Set Theme
   * @apiName SetTheme
   * @apiDescription Used to set theme vars in _custom-variables.scss
   *
@@ -47,11 +46,10 @@ var previewVarsPath = path.normalize(__dirname + varsDir + '/_preview-variables.
   */
 module.exports = {
   method: 'PUT',
-  path: '/api/admin/settings/theme',
+  path: '/api/theme',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminSettings.setTheme',
       mod_log: {
         type: 'adminSettings.setTheme',
         data: { theme: 'payload' }
@@ -73,7 +71,8 @@ module.exports = {
         'sub-header-color': Joi.string(),
         'header-bg-color': Joi.string()
       })
-    }
+    },
+    pre: [ { method: 'auth.themes.setTheme(server, auth)' } ]
   },
   handler: function(request, reply) {
     var theme = request.payload;
