@@ -93,10 +93,6 @@ module.exports = roles;
       update: true,
       delete: true
     },
-    notifications: {
-      dismiss: true,
-      counts: true
-    }
     limits: []
   };
 */
@@ -170,10 +166,6 @@ roles.superAdministrator = {
     pageAdmins: true,
     pageModerators: true,
     resetPassword: true
-  },
-  notifications: {
-    dismiss: true,
-    counts: true
   }
 };
 
@@ -226,10 +218,6 @@ roles.administrator = {
     pageAdmins: true,
     pageModerators: true,
     resetPassword: true
-  },
-  notifications: {
-    dismiss: true,
-    counts: true
   }
 };
 
@@ -254,10 +242,6 @@ roles.globalModerator = {
   },
   adminUsers: {
     searchUsernames: true
-  },
-  notifications: {
-    dismiss: true,
-    counts: true
   }
 };
 
@@ -282,10 +266,6 @@ roles.moderator = {
   },
   adminUsers: {
     searchUsernames: true
-  },
-  notifications: {
-    dismiss: true,
-    counts: true
   }
 };
 
@@ -295,12 +275,7 @@ roles.user = {
   name: 'User',
   description: 'Standard account with access to create threads and post',
   lookup: 'user',
-  priority: 4,
-  // ACLs
-  notifications: {
-    dismiss: true,
-    counts: true
-  }
+  priority: 4
 };
 
 roles.patroller = {
@@ -309,12 +284,7 @@ roles.patroller = {
   name: 'Patroller',
   description: 'Moderates Newbies only, otherwise mirrors User role unless modified',
   lookup: 'patroller',
-  priority: 5,
-  // ACLs
-  notifications: {
-    dismiss: true,
-    counts: true
-  }
+  priority: 5
 };
 
 roles.newbie = {
@@ -323,12 +293,7 @@ roles.newbie = {
   name: 'Newbie',
   description: 'Brand new users',
   lookup: 'newbie',
-  priority: 6,
-  // ACLs
-  notifications: {
-    dismiss: true,
-    counts: true
-  }
+  priority: 6
 };
 
 roles.banned = {
@@ -338,11 +303,7 @@ roles.banned = {
   lookup: 'banned',
   description: 'Read only access with content creation disabled',
   priority: 7,
-  priorityRestrictions: [0, 1, 2, 3],
-  notifications: {
-    dismiss: true,
-    counts: true
-  }
+  priorityRestrictions: [0, 1, 2, 3]
 };
 
 roles.anonymous = {
