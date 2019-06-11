@@ -7,7 +7,6 @@ var crypto = require('crypto');
 var Promise = require('bluebird');
 var adminLegal = require(path.normalize(__dirname + '/admin/legal'));
 var adminUsers = require(path.normalize(__dirname + '/admin/users'));
-var breadcrumbs = require(path.normalize(__dirname + '/breadcrumbs'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 
 function buildAdminEndpoints() {

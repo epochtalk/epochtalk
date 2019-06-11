@@ -1,7 +1,4 @@
-'use strict';
-/* jslint node: true */
-
-module.exports = ['$resource',
+var resource = ['$resource',
   function($resource) {
     return $resource('/api/breadcrumbs', {}, {
       getBreadcrumbs: {
@@ -12,3 +9,5 @@ module.exports = ['$resource',
     });
   }
 ];
+
+angular.module('ept').factory('Breadcrumbs', resource);

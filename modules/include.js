@@ -29,5 +29,6 @@ module.exports = [
   'ept-roles',
   'ept-bans',
   'ept-blacklist',
-  'ept-themes',
+  'ept-breadcrumbs',
+  'ept-themes'
 ];

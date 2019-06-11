@@ -17,12 +17,16 @@ var Joi = require('joi');
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the breadcrumbs
   */
-exports.byType = {
-  auth: { mode: 'try', strategy: 'jwt' },
-  validate: {
-    query: {
-      id: Joi.string().required(),
-      type: Joi.string().required()
+module.exports = {
+  method: 'GET',
+  path: '/api/breadcrumbs',
+  config: {
+    auth: { mode: 'try', strategy: 'jwt' },
+    validate: {
+      query: {
+        id: Joi.string().required(),
+        type: Joi.string().required()
+      }
     }
   },
   handler: function(request, reply) {
