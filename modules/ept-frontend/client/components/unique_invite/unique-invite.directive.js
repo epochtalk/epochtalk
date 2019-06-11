@@ -1,4 +1,4 @@
-module.exports = ['Invitations', '$q', function(Invitations, $q) {
+module.exports = ['User', '$q', function(User, $q) {
   return {
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl) {
@@ -19,7 +19,7 @@ module.exports = ['Invitations', '$q', function(Invitations, $q) {
           var def = $q.defer();
 
           // check against the backend to see if available
-          Invitations.inviteExists({email: modelValue},
+          User.inviteExists({email: modelValue},
             function(result) {
               if (result.found) { def.reject(); }
               else { def.resolve(); }

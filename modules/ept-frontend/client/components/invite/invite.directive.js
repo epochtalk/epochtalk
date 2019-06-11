@@ -1,5 +1,5 @@
-module.exports = ['Invitations', 'Alert',
-function(Invitations, Alert) {
+module.exports = ['User', 'Alert',
+function(User, Alert) {
   return {
     restrict: 'E',
     scope: true,
@@ -13,7 +13,7 @@ function(Invitations, Alert) {
 
       this.invite = function() {
         ctrl.errorMessage = '';
-        Invitations.invite({ email: ctrl.email }).$promise
+        User.invite({ email: ctrl.email }).$promise
         .then(function() {
           ctrl.show = false;
           ctrl.email = '';

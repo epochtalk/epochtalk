@@ -71,9 +71,31 @@ var resource = ['$resource',
       preferences: {
         method: 'GET',
         url: '/api/users/preferences'
+      },
+      inviteList: {
+        method: 'GET',
+        url: '/api/invites'
+      },
+      invite: {
+        method: 'POST',
+        url: '/api/invites'
+      },
+      inviteExists: {
+        method: 'GET',
+        params: { email: '@email' },
+        url: '/api/invites/exists'
+      },
+      resendInvite: {
+        method: 'POST',
+        url: '/api/invites/resend'
+      },
+      removeInvite: {
+        method: 'POST',
+        url: '/api/invites/remove'
       }
     });
   }
 ];
+
 
 angular.module('ept').factory('User', resource);

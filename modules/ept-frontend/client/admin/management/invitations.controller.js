@@ -1,4 +1,4 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'Invitations', 'pageData', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, Invitations, pageData) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'Alert', 'Session', 'User', 'pageData', function($rootScope, $scope, $location, $timeout, $anchorScroll, Alert, Session, User, pageData) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'invitations';
@@ -40,7 +40,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   };
 
   this.resend = function() {
-    Invitations.resend({email: ctrl.resendEmail}).$promise
+    User.resendInvite({email: ctrl.resendEmail}).$promise
     .then(function() { Alert.success('Resent Invitation to ' + ctrl.resendEmail); })
     .then(function() { ctrl.showResendModal = false; })
     .catch(function() { Alert.error('Failed to Resend Invitation'); });
@@ -54,7 +54,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   };
 
   this.remove = function() {
-    Invitations.remove({ email: ctrl.removeEmail }).$promise
+    User.removeInvite({ email: ctrl.removeEmail }).$promise
     .then(function() { Alert.success('Invitation to ' + ctrl.removeEmail + ' deleted'); })
     .then(function() { ctrl.showRemoveModal = false; })
     .then(function() { ctrl.pullPage(); })
@@ -63,7 +63,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
 
   this.inviteEmail = '';
   this.invite = function() {
-    Invitations.invite({ email: ctrl.inviteEmail }).$promise
+    User.invite({ email: ctrl.inviteEmail }).$promise
     .then(function() { Alert.success('Invitation send to ' + ctrl.inviteEmail ); })
     .then(function() { ctrl.inviteEmail = ''; })
     .then(function() { ctrl.pullPage(); })
@@ -100,7 +100,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     var query = { page: ctrl.page, limit: ctrl.limit };
 
     // replace current users with new users
-    Invitations.list(query).$promise
+    User.inviteList(query).$promise
     .then(function(res) {
       ctrl.invitations = res.invitations;
       ctrl.prev = res.page - 1;
