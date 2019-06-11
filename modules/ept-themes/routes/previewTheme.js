@@ -9,7 +9,7 @@ var previewVarsPath = common.previewVarsPath;
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {PUT} /admin/settings/theme/preview (Admin) Preview Theme
+  * @api {PUT} /theme/preview (Admin) Preview Theme
   * @apiName PreviewTheme
   * @apiDescription Used preview theme vars are compiled from _preview-variables.scss
   *
@@ -45,10 +45,9 @@ var previewVarsPath = common.previewVarsPath;
   */
 module.exports = {
   method: 'PUT',
-  path: '/api/admin/settings/theme/preview',
+  path: '/api/theme/preview',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminSettings.previewTheme' },
     validate: {
       payload: Joi.object().keys({
         'base-line-height': Joi.string(),
@@ -65,7 +64,8 @@ module.exports = {
         'sub-header-color': Joi.string(),
         'header-bg-color': Joi.string()
       })
-    }
+    },
+    pre: [ { method: 'auth.themes.previewTheme(server, auth)' } ]
   },
   handler: function(request, reply) {
     var theme = request.payload;

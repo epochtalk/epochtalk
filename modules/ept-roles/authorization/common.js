@@ -82,6 +82,8 @@ module.exports = {
      userNotes: validations.userNotes,
      bans: validations.bans,
      blacklist: validations.blacklist,
+     themes: validations.themes,
+     configurations: validations.configurations,
      roles: validations.roles,
      boards: validations.boards,
      categories: validations.categories,

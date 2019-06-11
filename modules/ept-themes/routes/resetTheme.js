@@ -11,7 +11,7 @@ var defaultVarsPath = common.defaultVarsPath;
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {POST} /admin/settings/theme (Admin) Reset Theme
+  * @api {POST} /theme (Admin) Reset Theme
   * @apiName ResetTheme
   * @apiDescription Used reset custom variables to fall back to _default-variables.scss
   *
@@ -33,13 +33,13 @@ var defaultVarsPath = common.defaultVarsPath;
   */
 module.exports = {
   method: 'POST',
-  path: '/api/admin/settings/theme',
+  path: '/api/theme',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminSettings.resetTheme',
       mod_log: { type: 'adminSettings.resetTheme' }
-    }
+    },
+    pre: [ { method: 'auth.themes.resetTheme(server, auth)' } ]
   },
   handler: function(request, reply) {
     fs.truncateSync(previewVarsPath, 0); // wipe preview vars file

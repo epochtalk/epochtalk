@@ -9,7 +9,7 @@ var previewVarsPath = common.previewVarsPath;
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {GET} /admin/settings/theme (Admin) Get Theme
+  * @api {GET} /theme (Admin) Get Theme
   * @apiName GetTheme
   * @apiDescription Used to fetch theme vars in _custom-variables.scss
   *
@@ -31,11 +31,11 @@ var previewVarsPath = common.previewVarsPath;
   */
 module.exports = {
   method: 'GET',
-  path: '/api/admin/settings/theme',
+  path: '/api/theme',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminSettings.getTheme' },
-    validate: { query: { preview: Joi.boolean() } }
+    validate: { query: { preview: Joi.boolean() } },
+    pre: [ { method: 'auth.themes.getTheme(server, auth)' } ]
   },
   handler: function(request, reply) {
     var preview = request.query.preview;

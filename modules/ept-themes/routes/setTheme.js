@@ -10,7 +10,7 @@ var defaultVarsPath = common.defaultVarsPath;
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
-  * @api {PUT} /admin/settings/theme (Admin) Set Theme
+  * @api {PUT} /theme (Admin) Set Theme
   * @apiName SetTheme
   * @apiDescription Used to set theme vars in _custom-variables.scss
   *
@@ -46,11 +46,10 @@ var defaultVarsPath = common.defaultVarsPath;
   */
 module.exports = {
   method: 'PUT',
-  path: '/api/admin/settings/theme',
+  path: '/api/theme',
   config: {
     auth: { strategy: 'jwt' },
     plugins: {
-      acls: 'adminSettings.setTheme',
       mod_log: {
         type: 'adminSettings.setTheme',
         data: { theme: 'payload' }
@@ -72,7 +71,8 @@ module.exports = {
         'sub-header-color': Joi.string(),
         'header-bg-color': Joi.string()
       })
-    }
+    },
+    pre: [ { method: 'auth.themes.setTheme(server, auth)' } ]
   },
   handler: function(request, reply) {
     var theme = request.payload;
