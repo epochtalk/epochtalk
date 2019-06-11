@@ -25,16 +25,16 @@ module.exports = {
         max: Joi.number()
       })
     },
-    plugins: { acls: 'notifications.counts' },
-    handler: function(request, reply) {
-      // get notifications counts for userId
-      var userId = request.auth.credentials.id;
-      var opts =  { max: request.query.max };
+    plugins: { acls: 'notifications.counts' }
+  },
+  handler: function(request, reply) {
+    // get notifications counts for userId
+    var userId = request.auth.credentials.id;
+    var opts =  { max: request.query.max };
 
-      var promise = request.db.notifications.counts(userId, opts)
-        .error(request.errorMap.toHttpError);
+    var promise = request.db.notifications.counts(userId, opts)
+      .error(request.errorMap.toHttpError);
 
-      return reply(promise);
-    }
+    return reply(promise);
   }
 };

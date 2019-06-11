@@ -26,26 +26,26 @@ module.exports = {
         type: Joi.string().valid('message', 'mention', 'other').required(),
         id: Joi.string()
       })
-    },
-    handler: function(request, reply) {
-      // dismiss notifications for receiver_id
-      var params = {
-        receiver_id: request.auth.credentials.id,
-        type: request.payload.type,
-        id: request.payload.id
-      };
-      var promise = request.db.notifications.dismiss(params)
-      .tap(function() {
-        var userId = request.auth.credentials.id;
-        var notification = {
-          channel: { type: 'user', id: userId },
-          data: { action: 'refreshMentions' }
-        };
-        request.server.plugins.notifications.systemNotification(notification);
-      })
-      .error(request.errorMap.toHttpError);
-
-      return reply(promise);
     }
+  },
+  handler: function(request, reply) {
+    // dismiss notifications for receiver_id
+    var params = {
+      receiver_id: request.auth.credentials.id,
+      type: request.payload.type,
+      id: request.payload.id
+    };
+    var promise = request.db.notifications.dismiss(params)
+    .tap(function() {
+      var userId = request.auth.credentials.id;
+      var notification = {
+        channel: { type: 'user', id: userId },
+        data: { action: 'refreshMentions' }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    })
+    .error(request.errorMap.toHttpError);
+
+    return reply(promise);
   }
 };
