@@ -88,6 +88,7 @@ module.exports = {
      boards: validations.boards,
      categories: validations.categories,
      conversations: validations.conversations,
+     notifications: validations.notifications,
      messages: validations.messages,
      threads: validations.threads,
      posts: validations.posts,

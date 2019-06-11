@@ -10,6 +10,7 @@ var Inert = require('inert');
 var Vision = require('vision');
 var errorMap = require(path.normalize(__dirname + '/error-map'));
 var db = require(path.normalize(__dirname + '/../db'));
+var websocket = require(path.normalize(__dirname + '/../websocket'));
 var redis = require(path.normalize(__dirname + '/../redis'));
 var setup = require(path.normalize(__dirname + '/../setup'));
 var jwt = require(path.normalize(__dirname + '/plugins/jwt'));
@@ -29,7 +30,6 @@ var logOptions = require(path.normalize(__dirname + '/log-options'));
 var lastActive = require(path.normalize(__dirname + '/plugins/last_active'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
 var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
-var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
 var trackIp = require(path.normalize(__dirname + '/plugins/track_ip'));
 
 var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods, plugins, parsers;
@@ -62,11 +62,6 @@ setup()
 })
 // inert static file serving
 .then(function() { server.register(Inert); })
-// notifications
-.then(function() {
-  // notification methods
-  return server.register({ register: notifications, options: { db, config }});
-})
 // auth via jwt
 .then(function() {
   return server.register({ register: jwt, options: { redis } })
@@ -134,11 +129,15 @@ setup()
 .then(function() {
   return Promise.each(plugins, function(plugin) {
     if (plugin.db) {
-      plugin.options = Object.assign(plugin.options || {}, { db });
+      _.set(plugin, ['options', 'db'], db);
       delete plugin.db;
     }
+    if (plugin.websocket) {
+      _.set(plugin, ['options', 'websocket'], websocket);
+      delete plugin.websocket;
+    }
     if (plugin.config) {
-      plugin.options = Object.assign(plugin.options || {}, { config });
+      _.set(plugin, ['options', 'config'], config);
       delete plugin.config;
     }
     server.register(plugin);
