@@ -1,9 +1,6 @@
-'use strict';
-/* jslint node: true */
-
-module.exports = ['$resource',
+var resource = ['$resource',
   function($resource) {
-    return $resource('/api/notifications/:id', {}, {
+    return $resource('/api/notifications/', {}, {
       dismiss: {
         params: { type: '@type' },
         method: 'POST',
@@ -16,3 +13,5 @@ module.exports = ['$resource',
     });
   }
 ];
+
+angular.module('ept').factory('Notifications', resource);
