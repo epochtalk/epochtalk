@@ -39,7 +39,7 @@ local.uploadPolicy = function(filename) {
   imageStore.setExpiration(config.images.expiration, imageUrl);
 
   return {
-    uploadUrl: '/images/upload',
+    uploadUrl: '/api/images/upload',
     policy: policyHash,
     storageType: 'local',
     imageUrl: imageUrl

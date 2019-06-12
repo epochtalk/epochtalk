@@ -7,7 +7,7 @@ function ($q, $http, Session) {
       images.forEach(function(image) { names.push(image.name); });
 
       // get policy for each name
-      return $http.post('/images/policy', names)
+      return $http.post('/api/images/policy', names)
       .then(function(response) {
         response = response.data;
         for (var i = 0; i < names.length; i++) {

@@ -85,7 +85,7 @@ setup()
 .then(function() { return server.register({ register: sanitizer }); })
 // load modules
 .then(function() {
-  return server.register({ register: modules, options: { db } })
+  return server.register({ register: modules, options: { db, config } })
   .then(function() {
     additionalRoutes = server.app.moduleData.routes;
     commonMethods = server.app.moduleData.common;
