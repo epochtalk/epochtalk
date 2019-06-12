@@ -30,5 +30,6 @@ module.exports = [
   'ept-bans',
   'ept-blacklist',
   'ept-breadcrumbs',
-  'ept-themes'
+  'ept-themes',
+  'ept-legal'
 ];
