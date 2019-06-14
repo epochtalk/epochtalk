@@ -11,4 +11,4 @@ var resource = ['$resource',
   }
 ];
 
-angular.module('ept').factory('AdminLegal', resource);
+angular.module('ept').factory('Legal', resource);

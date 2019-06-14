@@ -135,8 +135,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.legal'),
       $title: function() { return 'Legal Settings'; },
-      text: ['AdminLegal', function(AdminLegal) {
-        return AdminLegal.text().$promise
+      text: ['Legal', function(Legal) {
+        return Legal.text().$promise
         .then(function(text) { return text; });
       }],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
