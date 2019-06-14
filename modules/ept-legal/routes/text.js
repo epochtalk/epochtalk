@@ -23,7 +23,7 @@ module.exports = {
   path: '/api/legal',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminLegal.text' }
+    pre: [ { method: 'auth.legal.text(server, auth)' } ]
   },
   handler: function(request, reply) {
     var getFile = function(customDir, defaultDir) {

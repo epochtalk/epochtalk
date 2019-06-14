@@ -42,11 +42,6 @@ module.exports = {
        resetTheme: Joi.boolean(),
        previewTheme: Joi.boolean()
      }),
-     adminLegal: Joi.object().keys({
-       text: Joi.boolean(),
-       update: Joi.boolean(),
-       reset: Joi.boolean()
-     }),
      adminUsers: Joi.object().keys({
        privilegedUpdate: Joi.object().keys({
          samePriority: Joi.boolean(),
@@ -82,6 +77,7 @@ module.exports = {
      userNotes: validations.userNotes,
      bans: validations.bans,
      blacklist: validations.blacklist,
+     legal: validations.legal,
      themes: validations.themes,
      configurations: validations.configurations,
      roles: validations.roles,
@@ -110,11 +106,7 @@ module.exports = {
        interval: Joi.number().min(-1).required(),
        maxInInterval: Joi.number().min(1).required(),
        minDifference: Joi.number().min(1).optional()
-     }).sparse(),
-     notifications: Joi.object().keys({
-       dismiss: Joi.boolean(),
-       counts: Joi.boolean()
-     }),
+     }).sparse()
    }).required();
 
     var promise = new Promise(function(resolve, reject) {

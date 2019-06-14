@@ -144,11 +144,6 @@ roles.superAdministrator = {
     resetTheme: true,
     previewTheme: true
   },
-  adminLegal: {
-    text: true,
-    update: true,
-    reset: true
-  },
   adminUsers: {
     privilegedAddRoles: {
       samePriority: true

@@ -23,7 +23,7 @@ module.exports = {
   path: '/api/legal/reset',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminLegal.reset' }
+    pre: [ { method: 'auth.legal.reset(server, auth)' } ]
   },
   handler: function(request, reply) {
     var copyFile = function(fromDir, toDir, options) {

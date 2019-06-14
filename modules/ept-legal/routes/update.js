@@ -25,14 +25,14 @@ module.exports = {
   path: '/api/legal',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminLegal.update' },
     validate: {
       payload: Joi.object().keys({
         tos: Joi.string().allow(''),
         privacy: Joi.string().allow(''),
         disclaimer: Joi.string().allow('')
       })
-    }
+    },
+    pre: [ { method: 'auth.legal.update(server, auth)' } ]
   },
   handler: function(request, reply) {
     var writeFile = function(path, text) {
