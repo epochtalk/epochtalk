@@ -1,5 +1,5 @@
-var directive = ['AdminUsers', 'Session', 'Alert',
-function(AdminUsers, Session, Alert) {
+var directive = ['Authorization', 'Session', 'Alert',
+function(Authorization, Session, Alert) {
   return {
     restrict: 'E',
     scope: true,
@@ -18,7 +18,7 @@ function(AdminUsers, Session, Alert) {
 
       // Reset Password
       this.reset = function() {
-        AdminUsers.resetPassword({ user_id: this.user.id }).$promise
+        Authorization.adminRecoverAccount({ user_id: this.user.id }).$promise
         .then(function() { Alert.success('Password Reset Email Sent'); })
         .catch(function() { Alert.error('Error resetting password'); });
       };

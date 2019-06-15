@@ -28,14 +28,6 @@ module.exports = ['$resource',
         method: 'GET',
         url: '/api/admin/users',
         isArray: true
-      },
-      resetPassword: {
-        method: 'POST',
-        url: '/api/admin/recover'
-      },
-      register: {
-        method: 'POST',
-        url: '/api/join'
       }
     });
   }
