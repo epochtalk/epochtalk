@@ -10,7 +10,7 @@ function(User, Session, Alert) {
       // Permissions
       this.canReset = function() {
         var isAuthed = Session.isAuthenticated();
-        var hasPermission = Session.hasPermission('adminUsers.resetPassword');
+        var hasPermission = Session.hasPermission('users.adminRecover');
 
         if (isAuthed && hasPermission) { return true; }
         else { return false; }

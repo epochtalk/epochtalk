@@ -52,6 +52,11 @@ module.exports = [
     options: { callback: false }
   },
   {
+    name: 'auth.users.adminRecover',
+    method: require(path.normalize(__dirname + '/adminRecover')),
+    options: { callback: false }
+  },
+  {
     name: 'auth.users.resend',
     method: require(path.normalize(__dirname + '/resend')),
     options: { callback: false }

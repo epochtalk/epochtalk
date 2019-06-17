@@ -22,7 +22,8 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'adminUsers.resetPassword' },
-    validate: { payload: { user_id: Joi.string().required() } }
+    validate: { payload: { user_id: Joi.string().required() } },
+    pre: [ { method: 'auth.users.adminRecover(server, auth)' } ]
   },
   handler: function(request, reply) {
     var userId = request.payload.user_id;

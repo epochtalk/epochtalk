@@ -47,6 +47,9 @@ var validation =  Joi.object().keys({
   removeInvite: Joi.object().keys({
     allow: Joi.boolean()
   }),
+  adminRecover: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
   resend: Joi.object().keys({
     allow: Joi.boolean()
   })
@@ -75,6 +78,7 @@ var superAdministrator = {
   invitations: { allow: true },
   invite: { allow: true },
   removeInvite: { allow: true },
+  adminRecover: { allow: true },
   resend: { allow: true }
 };
 
@@ -101,6 +105,7 @@ var administrator = {
   invitations: { allow: true },
   invite: { allow: true },
   removeInvite: { allow: true },
+  adminRecover: { allow: true },
   resend: { allow: true }
 };
 
@@ -209,6 +214,7 @@ var layout = {
   invitations: { title: 'View all Invitations' },
   resend: { title: 'Resend a prior invitation' },
   removeInvite: { title: 'Remove an Invitation' },
+  adminRecover: { title: 'Send password recovery email to other user\'s accounts' },
   moderationSepratator: { type: 'separator' }
 };
 
