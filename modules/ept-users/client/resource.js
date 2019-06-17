@@ -72,27 +72,10 @@ var resource = ['$resource',
         method: 'GET',
         url: '/api/users/preferences'
       },
-      inviteList: {
-        method: 'GET',
-        url: '/api/invites'
-      },
-      invite: {
+      adminRecoverAccount: {
         method: 'POST',
-        url: '/api/invites'
+        url: '/api/user/recover'
       },
-      inviteExists: {
-        method: 'GET',
-        params: { email: '@email' },
-        url: '/api/invites/exists'
-      },
-      resendInvite: {
-        method: 'POST',
-        url: '/api/invites/resend'
-      },
-      removeInvite: {
-        method: 'POST',
-        url: '/api/invites/remove'
-      }
     });
   }
 ];

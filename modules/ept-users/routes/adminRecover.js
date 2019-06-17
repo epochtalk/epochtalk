@@ -4,9 +4,9 @@ var Boom = require('boom');
 var crypto = require('crypto');
 
 /**
-  * @api {POST} /admin/recover/ (Admin) Recover Account
+  * @api {POST} /user/recover/ (Admin) Recover Account
   * @apiName AccountRecoveryAdmin
-  * @apiGroup Auth
+  * @apiGroup Users
   * @apiVersion 0.4.0
   * @apiDescription Used by admins to recover a user's account. Sends an email to the account holder with a URL to visit to reset the account password.
   *
@@ -18,7 +18,7 @@ var crypto = require('crypto');
   */
 module.exports = {
   method: 'POST',
-  path: '/api/admin/recover',
+  path: '/api/user/recover',
   config: {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'adminUsers.resetPassword' },
