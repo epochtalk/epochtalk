@@ -12,6 +12,16 @@ module.exports = [
     options: { callback: false }
   },
   {
+    name: 'auth.boards.allUnfiltered',
+    method: require(path.normalize(__dirname + '/allUnfiltered')),
+    options: { callback: false }
+  },
+  {
+    name: 'auth.boards.allUncategorized',
+    method: require(path.normalize(__dirname + '/allUncategorized')),
+    options: { callback: false }
+  },
+  {
     name: 'auth.boards.create',
     method: require(path.normalize(__dirname + '/create')),
     options: { callback: false }

@@ -4,6 +4,12 @@ var validation =  Joi.object().keys({
   allCategories: Joi.object().keys({
     allow: Joi.boolean()
   }),
+  allUnfiltered: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
+  allUncategorized: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
   create: Joi.object().keys({
     allow: Joi.boolean()
   }),
@@ -20,6 +26,8 @@ var validation =  Joi.object().keys({
 
 var superAdministrator = {
   allCategories: { allow: true },
+  allUnfiltered: { allow: true },
+  allUncategorized: { allow: true },
   create: { allow: true },
   delete: { allow: true },
   find: { allow: true },
@@ -28,6 +36,8 @@ var superAdministrator = {
 
 var administrator = {
   allCategories: { allow: true },
+  allUnfiltered: { allow: true },
+  allUncategorized: { allow: true },
   create: { allow: true },
   delete: { allow: true },
   find: { allow: true },
@@ -71,6 +81,8 @@ var anonymous = {
 
 var layout = {
   allCategories: { title: 'View Public Boards' },
+  allUnfiltered: { title: 'Fetch all Boards in their respective categories, including private boards (For Board/Category Editing)' },
+  allUncategorized: { title: 'Fetch all Boards, including uncategorized and private boards (For Board/Category Editing)' },
   create: { title: 'Create Boards' },
   delete: { title: 'Delete Boards' },
   find: { title: 'View Single Board' },

@@ -79,8 +79,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         return deferred.promise;
       }],
       roleData: ['Roles', function(Roles) { return Roles.all().$promise; }],
-      categories: ['AdminBoards', function(AdminBoards) { return AdminBoards.categories().$promise; }],
-      boards: ['AdminBoards', function(AdminBoards) { return AdminBoards.boards().$promise; }]
+      categories: ['Boards', function(Boards) { return Boards.unfiltered().$promise; }],
+      boards: ['Boards', function(Boards) { console.log(Boards); return Boards.uncategorized().$promise; }]
     }
   })
   .state('admin-management.users', {

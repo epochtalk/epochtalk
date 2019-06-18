@@ -13,11 +13,6 @@ module.exports = ['$resource',
         url: '/api/admin/boards/move',
         isArray: true
       },
-      categories: {
-        method: 'GET',
-        url: '/api/admin/categories',
-        isArray: true
-      },
       updateCategories: {
         method: 'POST',
         url: '/api/admin/categories',

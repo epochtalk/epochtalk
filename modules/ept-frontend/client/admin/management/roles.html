@@ -3063,20 +3063,6 @@
 
       <!-- Admin Tab -->
       <div ng-if="AdminManagementCtrl.selectedTab === 'admin'">
-        <h4>Categories</h4>
-        <div class="container">
-          <div class="half-column">
-            <label> <!-- View Categories -->
-              <input id="adminBoards-categories" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminBoards.categories" ng-false-value="undefined" />
-              Allow user to view all (including private) categories and boards
-            </label>
-          </div>
-          <div class="half-column">
-
-          </div>
-        </div>
-
-        <div class="clear"></div><br>
         <h4>Boards</h4>
         <div>
           <div class="half-column">
@@ -3084,11 +3070,6 @@
             <label>
               <input id="adminBoards-updateCategories" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminBoards.updateCategories" ng-false-value="undefined" />
               Allow user to recategorize boards
-            </label>
-            <!-- View All Boards (Including Private) -->
-            <label>
-              <input id="adminBoards-boards" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminBoards.boards" ng-false-value="undefined" />
-              Allow user to view all boards, used for board management
             </label>
             <!-- View Move Boards -->
             <label>

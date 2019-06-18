@@ -29,50 +29,8 @@ module.exports = {
        logs: Joi.boolean()
      }),
      adminBoards: Joi.object().keys({
-       categories: Joi.boolean(),
-       boards: Joi.boolean(),
        moveBoards: Joi.boolean(),
        updateCategories: Joi.boolean()
-     }),
-     adminSettings: Joi.object().keys({
-       find: Joi.boolean(),
-       update: Joi.boolean(),
-       getTheme: Joi.boolean(),
-       setTheme: Joi.boolean(),
-       resetTheme: Joi.boolean(),
-       previewTheme: Joi.boolean()
-     }),
-     adminUsers: Joi.object().keys({
-       privilegedUpdate: Joi.object().keys({
-         samePriority: Joi.boolean(),
-         lowerPriority: Joi.boolean()
-       }),
-       privilegedAddRoles: Joi.object().keys({
-         samePriority: Joi.boolean(),
-         lowerPriority: Joi.boolean()
-       }),
-       privilegedRemoveRoles: Joi.object().keys({
-         samePriority: Joi.boolean(),
-         lowerPriority: Joi.boolean()
-       }),
-       update: Joi.boolean(),
-       find: Joi.boolean(),
-       addRoles: Joi.boolean(),
-       removeRoles: Joi.boolean(),
-       searchUsernames: Joi.boolean(),
-       count: Joi.boolean(),
-       countAdmins: Joi.boolean(),
-       countModerators: Joi.boolean(),
-       page: Joi.boolean(),
-       pageAdmins: Joi.boolean(),
-       pageModerators: Joi.boolean(),
-       resetPassword: Joi.boolean()
-     }),
-     userNotes: Joi.object().keys({
-       page: Joi.boolean(),
-       create: Joi.boolean(),
-       update: Joi.boolean(),
-       delete: Joi.boolean()
      }),
      userNotes: validations.userNotes,
      bans: validations.bans,
