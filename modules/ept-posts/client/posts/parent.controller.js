@@ -1,5 +1,5 @@
-var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 'AdminBoards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
-  function($scope, $timeout, $location, $filter, $state, Session, AdminBoards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
+var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
+  function($scope, $timeout, $location, $filter, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -174,7 +174,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
     this.getBoards = function(boardId) {
       if (ctrl.canMove()) {
-        return AdminBoards.moveBoards().$promise
+        return Boards.moveList().$promise
         .then(function(allBoards) {
           ctrl.boards = allBoards || [];
           ctrl.boards.map(function(board) {

@@ -1,7 +1,7 @@
 var rem = require('lodash/remove');
 
-var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'AdminBoards', 'Boards', 'Categories', 'boards', 'categories', 'roleData',
-  function($location, $stateParams, $scope, $q, $anchorScroll, Alert, AdminBoards, Boards, Categories, boards, categories, roleData) {
+var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert', 'Boards', 'Categories', 'boards', 'categories', 'roleData',
+  function($location, $stateParams, $scope, $q, $anchorScroll, Alert, Boards, Categories, boards, categories, roleData) {
     this.parent = $scope.$parent.AdminManagementCtrl;
     this.parent.tab = 'boards';
     var ctrl = this;
@@ -126,7 +126,7 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
     // 5) Updated all Categories
     $scope.processCategories = function(boardMapping) {
       console.log('5) Updating board mapping: \n' + JSON.stringify(boardMapping, null, 2));
-      return AdminBoards.updateCategories({ boardMapping: boardMapping }).$promise
+      return Boards.updateAll({ boardMapping: boardMapping }).$promise
       .catch(function(response) { console.log(response); });
     };
 

@@ -18,6 +18,16 @@ var resource = ['$resource',
         url: '/api/boards/uncategorized',
         isArray: true
       },
+      moveList: {
+        method: 'GET',
+        url: '/api/boards/movelist',
+        isArray: true
+      },
+      updateAll: {
+        method: 'POST',
+        url: '/api/boards/all',
+        isArray: true
+      }
     });
   }
 ];

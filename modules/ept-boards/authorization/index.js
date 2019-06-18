@@ -35,5 +35,15 @@ module.exports = [
     name: 'auth.boards.update',
     method: require(path.normalize(__dirname + '/update')),
     options: { callback: false }
+  },
+  {
+    name: 'auth.boards.updateAll',
+    method: require(path.normalize(__dirname + '/updateAll')),
+    options: { callback: false }
+  },
+  {
+    name: 'auth.boards.moveList',
+    method: require(path.normalize(__dirname + '/moveList')),
+    options: { callback: false }
   }
 ];

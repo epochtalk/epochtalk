@@ -172,7 +172,6 @@
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'autoModeration'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'autoModeration'}" ng-href="#">Auto Moderation</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'rateLimiting'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'rateLimiting'}" ng-href="#">Rate Limits</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'trust'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'trust'}" ng-href="#">Trust</a></li>
-        <li><a ng-click="AdminManagementCtrl.selectedTab = 'admin'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'admin'}" ng-href="#">Admin</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'legal'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'legal'}" ng-href="#">Legal</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'ads'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'ads'}" ng-href="#">Ads</a></li>
         <li><a ng-click="AdminManagementCtrl.selectedTab = 'mentions'" ng-class="{'active' : AdminManagementCtrl.selectedTab === 'mentions'}" ng-href="#">Mentions</a></li>
@@ -3059,26 +3058,6 @@
             <center>You have no Permissions that require rate limiting.</center>
           </strong>
         </div>
-      </div>
-
-      <!-- Admin Tab -->
-      <div ng-if="AdminManagementCtrl.selectedTab === 'admin'">
-        <h4>Boards</h4>
-        <div>
-          <div class="half-column">
-            <!-- Recategorize Boards -->
-            <label>
-              <input id="adminBoards-updateCategories" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminBoards.updateCategories" ng-false-value="undefined" />
-              Allow user to recategorize boards
-            </label>
-            <!-- View Move Boards -->
-            <label>
-              <input id="adminBoards-moveBoards" type="checkbox" ng-model="AdminManagementCtrl.newRole.permissions.adminBoards.moveBoards" ng-false-value="undefined" />
-              Allow user to view all boards, used for moving threads
-            </label>
-          </div>
-        </div>
-
       </div>
 
       <!-- Legal Tab -->

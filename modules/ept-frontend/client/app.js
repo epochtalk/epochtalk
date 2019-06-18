@@ -48,7 +48,6 @@ parserContext.keys().forEach(function(args) {
 
 require('./filters');
 require('./services');
-require('./resources');
 require('./components');
 
 // Set Angular Configs

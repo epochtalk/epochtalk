@@ -1,4 +1,4 @@
-var ctrl = ['$scope', '$filter', 'settings', 'Configurations', 'AdminBoards', 'Alert', function($scope, $filter, settings, Configurations, AdminBoards, Alert) {
+var ctrl = ['$scope', '$filter', 'settings', 'Configurations', 'Boards', 'Alert', function($scope, $filter, settings, Configurations, Boards, Alert) {
   var ctrl = this;
 
   // Tab control
@@ -23,7 +23,7 @@ var ctrl = ['$scope', '$filter', 'settings', 'Configurations', 'AdminBoards', 'A
   // get boards for portal select
   this.boards = [];
   function getBoards() {
-    return AdminBoards.moveBoards().$promise
+    return Boards.moveList().$promise
     .then(function(allBoards) {
       ctrl.boards = allBoards || [];
       ctrl.boards.map(function(board) {

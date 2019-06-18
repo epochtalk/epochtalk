@@ -1,7 +1,7 @@
 /**
   * @apiVersion 0.4.0
   * @apiGroup Boards
-  * @api {GET} /admin/boards All Boards
+  * @api {GET} /boards/uncategorized All Boards
   * @apiName AllBoard
   * @apiDescription Used to find all boards.
   *

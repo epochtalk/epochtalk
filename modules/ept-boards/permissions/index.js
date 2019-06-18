@@ -21,6 +21,12 @@ var validation =  Joi.object().keys({
   }),
   update: Joi.object().keys({
     allow: Joi.boolean()
+  }),
+  updateAll: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
+  moveList: Joi.object().keys({
+    allow: Joi.boolean()
   })
 });
 
@@ -31,7 +37,9 @@ var superAdministrator = {
   create: { allow: true },
   delete: { allow: true },
   find: { allow: true },
-  update: { allow: true }
+  update: { allow: true },
+  updateAll: { allow: true },
+  moveList: { allow: true }
 };
 
 var administrator = {
@@ -41,7 +49,9 @@ var administrator = {
   create: { allow: true },
   delete: { allow: true },
   find: { allow: true },
-  update: { allow: true }
+  update: { allow: true },
+  updateAll: { allow: true },
+  moveList: { allow: true }
 };
 
 var globalModerator = {
@@ -86,7 +96,9 @@ var layout = {
   create: { title: 'Create Boards' },
   delete: { title: 'Delete Boards' },
   find: { title: 'View Single Board' },
-  update: { title: 'Update Boards' }
+  update: { title: 'Update individual Boards' },
+  updateAll: { title: 'Update all Boards (Used to organize boards) ' },
+  moveList: { title: 'Allow user to retrieve list of Boards (Used for moving threads)' }
 };
 
 module.exports = {

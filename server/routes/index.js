@@ -1,15 +1,7 @@
-var Joi = require('joi');
 var path = require('path');
-var Boom = require('boom');
-var path = require('path');
-var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
-
-function buildAdminEndpoints() {
-  return [].concat(adminBoards);
-}
 
 exports.endpoints = function(internalConfig) {
-  var localRoutes = [
+  return [
     // static assets
     {
       method: 'GET',
@@ -56,14 +48,4 @@ exports.endpoints = function(internalConfig) {
       }
     }
   ];
-
-  // namespace admin routes
-  var apiAdminRoutes = buildAdminEndpoints();
-  apiAdminRoutes.forEach(function(route) {
-    route.path = '/api/admin' + route.path;
-  });
-
-  // add core routes
-  var routes = localRoutes.concat(apiAdminRoutes);
-  return routes;
 };

@@ -80,7 +80,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       }],
       roleData: ['Roles', function(Roles) { return Roles.all().$promise; }],
       categories: ['Boards', function(Boards) { return Boards.unfiltered().$promise; }],
-      boards: ['Boards', function(Boards) { console.log(Boards); return Boards.uncategorized().$promise; }]
+      boards: ['Boards', function(Boards) { return Boards.uncategorized().$promise; }]
     }
   })
   .state('admin-management.users', {
