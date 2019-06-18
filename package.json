@@ -44,7 +44,6 @@
     "del": "^2.2.0",
     "dot": "^1.0.3",
     "dotenv": "^4.0.0",
-    "epochtalk-core-pg": "^1.0.9",
     "fs-extra": "^7.0.1",
     "good": "^7.3.0",
     "good-console": "^6.4.0",
