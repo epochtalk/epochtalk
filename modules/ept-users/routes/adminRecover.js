@@ -21,7 +21,6 @@ module.exports = {
   path: '/api/user/recover',
   config: {
     auth: { strategy: 'jwt' },
-    plugins: { acls: 'adminUsers.resetPassword' },
     validate: { payload: { user_id: Joi.string().required() } },
     pre: [ { method: 'auth.users.adminRecover(server, auth)' } ]
   },

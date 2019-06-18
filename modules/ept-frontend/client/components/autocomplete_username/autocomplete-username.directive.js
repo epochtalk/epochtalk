@@ -1,4 +1,4 @@
-var directive = ['AdminUsers', 'User', function(AdminUsers, User) {
+var directive = ['User', 'User', function(User, User) {
   return {
     restrict: 'E',
     template: require('./autocomplete-username.html'),
@@ -24,7 +24,7 @@ var directive = ['AdminUsers', 'User', function(AdminUsers, User) {
         $scope.usernameIsValid = false;
         if (!$scope.searchStr || !$scope.searchStr.length) { return; }
         $scope.usernameSearchResults = [];
-        AdminUsers.searchUsernames({ username: $scope.searchStr }).$promise
+        User.searchUsernames({ username: $scope.searchStr }).$promise
         .then(function(usernames) {
           $scope.usernameSearchResults = usernames;
           // ignore casing

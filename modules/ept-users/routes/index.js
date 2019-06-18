@@ -14,5 +14,10 @@ module.exports = [
   require(path.normalize(__dirname + '/hasInvitation')),
   require(path.normalize(__dirname + '/resend')),
   require(path.normalize(__dirname + '/adminRecover')),
+  require(path.normalize(__dirname + '/page')),
+  require(path.normalize(__dirname + '/count')),
+  require(path.normalize(__dirname + '/addRoles')),
+  require(path.normalize(__dirname + '/removeRole')),
+  require(path.normalize(__dirname + '/searchUsernames')),
   require(path.normalize(__dirname + '/preferences'))
 ];

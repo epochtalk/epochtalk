@@ -1,6 +1,6 @@
 var intersection = require('lodash/intersection');
 
-var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'AdminUsers', 'pageData', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, Roles, AdminUsers, pageData, userData, roleId, limit, page, search) {
+var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'User', 'pageData', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, Roles, User, pageData, userData, roleId, limit, page, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
@@ -22,12 +22,12 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'A
   this.modifyingRole = false;
   this.controlAccess = Session.getControlAccessWithPriority('roles');
   this.controlAccess.privilegedRemoveRoles =  {
-    samePriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.samePriority'),
-    lowerPriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.lowerPriority')
+    samePriority: Session.hasPermission('users.removeRole.bypass.priority.same'),
+    lowerPriority: Session.hasPermission('users.removeRole.bypass.priority.less')
   };
   this.controlAccess.privilegedAddRoles = {
-    samePriority: Session.hasPermission('adminUsers.privilegedAddRoles.samePriority'),
-    lowerPriority: Session.hasPermission('adminUsers.privilegedAddRoles.lowerPriority')
+    samePriority: Session.hasPermission('users.addRoles.bypass.priority.same'),
+    lowerPriority: Session.hasPermission('users.addRoles.bypass.priority.less')
   };
 
   // rate limiting
@@ -221,7 +221,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'A
     var users = [];
     ctrl.usersToAdd.forEach(function(user) { users.push(user.text); });
 
-    AdminUsers.addRoles({ usernames: users, role_id: ctrl.roleId }).$promise
+    User.addRoles({ usernames: users, role_id: ctrl.roleId }).$promise
     .then(function() {
       Alert.success('Users successfully added to ' + ctrl.selectedRole.name + ' role.');
       ctrl.pullPage();
@@ -235,7 +235,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'A
   };
 
   this.removeUser = function(user) {
-    AdminUsers.removeRoles({ user_id: user.id, role_id: ctrl.roleId }).$promise
+    User.removeRole({ user_id: user.id, role_id: ctrl.roleId }).$promise
     .then(function() {
       Alert.success('User ' + user.username + ' successfully removed from ' + ctrl.selectedRole.name + ' role.');
       ctrl.pullPage();
@@ -248,7 +248,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'A
   };
 
   this.loadTags = function(query) {
-    return AdminUsers.searchUsernames({ username: query }).$promise;
+    return User.searchUsernames({ username: query }).$promise;
   };
 
   this.selectRole = function(role) {

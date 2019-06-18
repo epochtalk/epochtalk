@@ -4,8 +4,8 @@ var rem = require('lodash/remove');
 var filter = require('lodash/filter');
 var intersection = require('lodash/intersection');
 
-var directive = ['Moderators', 'AdminUsers', 'Alert', '$timeout', '$q',
-function(Moderators, AdminUsers, Alert, $timeout, $q) {
+var directive = ['Moderators', 'User', 'Alert', '$timeout', '$q',
+function(Moderators, User, Alert, $timeout, $q) {
   return {
     restrict: 'E',
     scope: true,
@@ -116,7 +116,7 @@ function(Moderators, AdminUsers, Alert, $timeout, $q) {
       };
 
       this.loadTags = function(query) {
-        return AdminUsers.searchUsernames({ username: query }).$promise;
+        return User.searchUsernames({ username: query }).$promise;
       };
     }]
   };

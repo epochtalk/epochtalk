@@ -76,6 +76,31 @@ var resource = ['$resource',
         method: 'POST',
         url: '/api/user/recover'
       },
+      addRoles: {
+        method: 'PUT',
+        url: '/api/users/roles/add',
+        isArray: true
+      },
+      removeRole: {
+        method: 'PUT',
+        url: '/api/users/roles/remove'
+      },
+      count: {
+        method: 'GET',
+        url: '/api/users/count',
+        ignoreLoadingBar: true
+      },
+      searchUsernames: {
+        method: 'GET',
+        url: '/api/users/search',
+        isArray: true,
+        ignoreLoadingBar: true
+      },
+      page: {
+        method: 'GET',
+        url: '/api/users',
+        isArray: true
+      }
     });
   }
 ];

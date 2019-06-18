@@ -131,7 +131,7 @@ function verifyRoles(reload, roleLookup) {
   if (!db || reload) {
     db = require(path.normalize(__dirname + '/../../../db'));
     var modules = require(path.normalize(__dirname + '/../modules'));
-    var master = modules.install(db);
+    var master = modules.install(db, config);
     buildRoles(master.permissions.defaults);
   }
   // get all the roles from the DB

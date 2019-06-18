@@ -2,11 +2,10 @@ var Joi = require('joi');
 var path = require('path');
 var Boom = require('boom');
 var path = require('path');
-var adminUsers = require(path.normalize(__dirname + '/admin/users'));
 var adminBoards = require(path.normalize(__dirname + '/admin/boards'));
 
 function buildAdminEndpoints() {
-  return [].concat(adminBoards, adminUsers);
+  return [].concat(adminBoards);
 }
 
 exports.endpoints = function(internalConfig) {

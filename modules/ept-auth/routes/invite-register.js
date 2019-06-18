@@ -70,7 +70,7 @@ module.exports = {
     .tap(function(user) {
       var newbieEnabled = request.server.app.config.newbieEnabled;
       if (newbieEnabled) {
-        return request.db.roles.addRoles([user.username], 'CN0h5ZeBTGqMbzwVdMWahQ');
+        return request.db.users.addRoles([user.username], 'CN0h5ZeBTGqMbzwVdMWahQ');
       }
     })
     .then(request.session.save)

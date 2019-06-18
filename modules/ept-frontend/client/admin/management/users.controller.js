@@ -1,4 +1,4 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', '$state', 'Session', 'Alert', 'AdminUsers', 'Bans', 'User', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'ip', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, $state, Session, Alert, AdminUsers, Bans, User, users, usersCount, page, limit, field, desc, filter, search, ip) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', '$state', 'Session', 'Alert', 'User', 'Bans', 'User', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'ip', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, $state, Session, Alert, User, Bans, User, users, usersCount, page, limit, field, desc, filter, search, ip) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'users';
@@ -216,14 +216,14 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
     }
 
     // update users's page count
-    AdminUsers.count(opts).$promise
+    User.count(opts).$promise
     .then(function(updatedCount) {
       ctrl.count = updatedCount.count;
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
 
     // replace current users with new users
-    AdminUsers.page(query).$promise
+    User.page(query).$promise
     .then(function(updatedUsers) {
       ctrl.users = updatedUsers;
       $timeout($anchorScroll);

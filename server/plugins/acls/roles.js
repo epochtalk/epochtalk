@@ -45,26 +45,6 @@ module.exports = roles;
       updateBlacklist: true,
       deleteFromBlacklist: true
     },
-    adminUsers: {
-      privilegedAddRoles: {
-        samePriority: true,
-        lowerPriority: true
-      },
-      privilegedRemoveRoles: {
-        samePriority: true,
-        lowerPriority: true
-      },
-      addRoles: true,
-      removeRoles: true,
-      searchUsernames: true,
-      count: true,
-      countAdmins: true,
-      countModerators: true,
-      page: true,
-      pageAdmins: true,
-      pageModerators: true,
-      resetPassword: true
-    },
     bans: {
       privilegedBan: {
         samePriority: true,
@@ -143,24 +123,6 @@ roles.superAdministrator = {
     setTheme: true,
     resetTheme: true,
     previewTheme: true
-  },
-  adminUsers: {
-    privilegedAddRoles: {
-      samePriority: true
-    },
-    privilegedRemoveRoles: {
-      samePriority: true
-    },
-    addRoles: true,
-    removeRoles: true,
-    searchUsernames: true,
-    count: true,
-    countAdmins: true,
-    countModerators: true,
-    page: true,
-    pageAdmins: true,
-    pageModerators: true,
-    resetPassword: true
   }
 };
 
@@ -195,24 +157,6 @@ roles.administrator = {
     boards: true,
     moveBoards: true,
     updateCategories: true
-  },
-  adminUsers: {
-    privilegedAddRoles: {
-      lowerPriority: true
-    },
-    privilegedRemoveRoles: {
-      lowerPriority: true
-    },
-    addRoles: true,
-    removeRoles: true,
-    searchUsernames: true,
-    count: true,
-    countAdmins: true,
-    countModerators: true,
-    page: true,
-    pageAdmins: true,
-    pageModerators: true,
-    resetPassword: true
   }
 };
 
@@ -234,9 +178,6 @@ roles.globalModerator = {
   // ACLs
   adminBoards: {
     moveBoards: true
-  },
-  adminUsers: {
-    searchUsernames: true
   }
 };
 
@@ -258,9 +199,6 @@ roles.moderator = {
   // ACLs
   adminBoards: {
     moveBoards: true
-  },
-  adminUsers: {
-    searchUsernames: true
   }
 };
 

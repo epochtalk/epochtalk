@@ -50,6 +50,30 @@ var validation =  Joi.object().keys({
   adminRecover: Joi.object().keys({
     allow: Joi.boolean()
   }),
+  adminPage: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
+  searchUsernames: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
+  addRoles: Joi.object().keys({
+    allow: Joi.boolean(),
+    bypass: Joi.object().keys({
+      priority: Joi.object().keys({
+        same: Joi.boolean(),
+        less: Joi.boolean()
+      }).xor('same', 'less')
+    })
+  }),
+  removeRole: Joi.object().keys({
+    allow: Joi.boolean(),
+    bypass: Joi.object().keys({
+      priority: Joi.object().keys({
+        same: Joi.boolean(),
+        less: Joi.boolean()
+      }).xor('same', 'less')
+    })
+  }),
   resend: Joi.object().keys({
     allow: Joi.boolean()
   })
@@ -79,6 +103,20 @@ var superAdministrator = {
   invite: { allow: true },
   removeInvite: { allow: true },
   adminRecover: { allow: true },
+  adminPage: { allow: true },
+  searchUsernames: { allow: true },
+  addRoles: {
+    allow: true,
+    bypass: {
+      priority: { same: true }
+    }
+  },
+  removeRole: {
+    allow: true,
+    bypass: {
+      priority: { same: true }
+    }
+  },
   resend: { allow: true }
 };
 
@@ -106,6 +144,20 @@ var administrator = {
   invite: { allow: true },
   removeInvite: { allow: true },
   adminRecover: { allow: true },
+  adminPage: { allow: true },
+  searchUsernames: { allow: true },
+  addRoles: {
+    allow: true,
+    bypass: {
+      priority: { less: true }
+    }
+  },
+  removeRole: {
+    allow: true,
+    bypass: {
+      priority: { less: true }
+    }
+  },
   resend: { allow: true }
 };
 
@@ -130,6 +182,7 @@ var globalModerator = {
   },
   pagePublic: { allow: true },
   invite: { allow: true },
+  searchUsernames: { allow: true }
 };
 
 var moderator = {
@@ -153,6 +206,7 @@ var moderator = {
   },
   pagePublic: { allow: true },
   invite: { allow: true },
+  searchUsernames: { allow: true }
 };
 
 var patroller = {
@@ -215,7 +269,47 @@ var layout = {
   resend: { title: 'Resend a prior invitation' },
   removeInvite: { title: 'Remove an Invitation' },
   adminRecover: { title: 'Send password recovery email to other user\'s accounts' },
-  moderationSepratator: { type: 'separator' }
+  priviledgedUserSeparator: { type: 'separator' },
+  priviledgedUserTitle: { title: 'Priviledged User Permissions', type: 'title' },
+  addRoles: {
+    title: 'Allow user to add roles to other\'s user accounts',
+    bypasses: [
+      {
+        descriptions: [
+          'Users with the same or lesser role',
+          'Only users with lesser roles'
+        ],
+        values: [
+          'same',
+          'less'
+        ],
+        defaultValue: 'less',
+        control: 'priority',
+        type: 'radio'
+      }
+    ]
+  },
+  removeRole: {
+    title: 'Allow user to remove roles from other\'s user accounts',
+    bypasses: [
+      {
+        descriptions: [
+          'Users with the same or lesser role',
+          'Only users with lesser roles'
+        ],
+        values: [
+          'same',
+          'less'
+        ],
+        defaultValue: 'less',
+        control: 'priority',
+        type: 'radio'
+      }
+    ]
+  },
+  searchUsernames: { title: 'Search all usernames, used for admin/mod UI components to lookup users' },
+  adminPage: { title: 'Page through all forum users, used for admin/mod' },
+  removeInvite: { title: 'Remove an Invitation' }
 };
 
 module.exports = {

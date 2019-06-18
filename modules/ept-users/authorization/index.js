@@ -57,6 +57,26 @@ module.exports = [
     options: { callback: false }
   },
   {
+    name: 'auth.users.page',
+    method: require(path.normalize(__dirname + '/page')),
+    options: { callback: false }
+  },
+  {
+    name: 'auth.users.addRoles',
+    method: require(path.normalize(__dirname + '/addRoles')),
+    options: { callback: false }
+  },
+  {
+    name: 'auth.users.removeRole',
+    method: require(path.normalize(__dirname + '/removeRole')),
+    options: { callback: false }
+  },
+  {
+    name: 'auth.users.searchUsernames',
+    method: require(path.normalize(__dirname + '/searchUsernames')),
+    options: { callback: false }
+  },
+  {
     name: 'auth.users.resend',
     method: require(path.normalize(__dirname + '/resend')),
     options: { callback: false }

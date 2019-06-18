@@ -25,5 +25,7 @@ module.exports = {
   verifyInvite: require(path.normalize(__dirname + '/verifyInvite')),
   getLastActive: require(path.normalize(__dirname + '/getLastActive')),
   setLastActive: require(path.normalize(__dirname + '/setLastActive')),
+  addRoles: require(path.normalize(__dirname + '/addRoles')),
+  removeRole: require(path.normalize(__dirname + '/removeRole')),
   preferences: require(path.normalize(__dirname + '/preferences'))
 };

@@ -108,7 +108,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+      users: ['User', '$stateParams', function(User, $stateParams) {
         var query = {
           field: $stateParams.field,
           desc: $stateParams.desc,
@@ -118,9 +118,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           search: $stateParams.search,
           ip: $stateParams.ip
         };
-        return AdminUsers.page(query).$promise;
+        return User.page(query).$promise;
       }],
-      usersCount: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+      usersCount: ['User', '$stateParams', function(User, $stateParams) {
         var opts;
         var filter = $stateParams.filter;
         var search = $stateParams.search;
@@ -132,7 +132,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
             ip: ip
           };
         }
-        return AdminUsers.count(opts).$promise
+        return User.count(opts).$promise
         .then(function(usersCount) { return usersCount.count; });
       }],
       field: ['$stateParams', function($stateParams) {
