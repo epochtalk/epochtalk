@@ -12,7 +12,7 @@ var roles = require(path.join(__dirname, '..', 'server', 'plugins', 'acls'));
 var emailerOptions = config.emailerEnv;
 var emailer = require(path.normalize(__dirname + '/../server/plugins/emailer')).expose(emailerOptions);
 var dbName = process.env.PGDATABASE;
-var testConnection = require('epochtalk-core-pg')().db.testConnection;
+var testConnection = require(path.normalize(__dirname + '/../db.js')).db.testConnection;
 
 program
   .version('0.0.1');
