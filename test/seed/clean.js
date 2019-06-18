@@ -1,6 +1,7 @@
 require('dotenv').load({ silent: true });
+var path = require('path');
 var Promise = require('bluebird');
-var core = require('epochtalk-core-pg')({ conString: process.env.TEST_DATABASE_URL });
+var core = require(path.normalize(__dirname + '/../../core'))({ conString: process.env.TEST_DATABASE_URL });
 var db = core.db;
 var close = core.close;
 
