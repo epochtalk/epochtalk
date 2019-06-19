@@ -264,12 +264,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      pageData: ['User', '$stateParams', function(User, $stateParams) {
+      pageData: ['Invitations', '$stateParams', function(Invitations, $stateParams) {
         var query = {
           limit: Number($stateParams.limit) || 25,
           page: Number($stateParams.page) || 1,
         };
-        return User.inviteList(query).$promise;
+        return Invitations.all(query).$promise;
       }]
     }
   });

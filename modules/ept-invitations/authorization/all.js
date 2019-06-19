@@ -7,6 +7,6 @@ module.exports = function(server, auth) {
     type: 'hasPermission',
     server: server,
     auth: auth,
-    permission: 'users.invitations.allow'
+    permission: 'invitations.all.allow'
   });
 };

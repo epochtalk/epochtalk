@@ -23,7 +23,7 @@ module.exports = {
     validate: {
       payload: { email: Joi.string().email().required() }
     },
-    pre: [ { method: 'auth.users.invite(server, auth, payload.email)' } ]
+    pre: [ { method: 'auth.invitations.invite(server, auth, payload.email)' } ]
   },
   handler: function(request, reply) {
     var newUser = {
@@ -32,7 +32,7 @@ module.exports = {
     };
 
     // save invitation
-    var promise = request.db.users.invite(newUser)
+    var promise = request.db.invitations.invite(newUser)
     // send invitation email
     .then(function() {
       var config = request.server.app.config;

@@ -5,14 +5,14 @@ module.exports = function(server, auth, email) {
   // check unique email
   var emailCond = server.db.users.userByEmail(email)
   .then(function(user) {
-    if (user) { return Promise.reject(Boom.badData('Email Already In Use')); }
+    if (user) { return Promise.reject(Boom.badRequest('Email Already Exists')); }
     else { return true; }
   });
 
   // invitation does not exist
-  var firstInvitation = server.db.users.hasInvitation(email)
+  var hasInvitation = server.db.invitations.hasInvitation(email)
   .then(function(invitationExists) {
-    if (invitationExists) { return Promise.reject(Boom.badData('Invitation Already Sent')); }
+    if (!invitationExists) { return Promise.reject(Boom.badRequest('Invitation Does Not Exists')); }
     else { return true; }
   });
 
@@ -22,8 +22,8 @@ module.exports = function(server, auth, email) {
     type: 'hasPermission',
     server: server,
     auth: auth,
-    permission: 'users.invite.allow'
+    permission: 'invitations.resend.allow'
   });
 
-  return Promise.all([emailCond, firstInvitation, permission]);
+  return Promise.all([emailCond, hasInvitation, permission]);
 };

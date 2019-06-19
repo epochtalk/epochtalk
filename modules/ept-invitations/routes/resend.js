@@ -22,11 +22,11 @@ module.exports = {
     validate: {
       payload: { email: Joi.string().email().required() }
     },
-    pre: [ { method: 'auth.users.resend(server, auth, payload.email)' } ]
+    pre: [ { method: 'auth.invitations.resend(server, auth, payload.email)' } ]
   },
   handler: function(request, reply) {
     // save invitation
-    var promise = request.db.users.findInvitation(request.payload.email)
+    var promise = request.db.invitations.find(request.payload.email)
     // send invitation email
     .then(function(invitation) {
       var config = request.server.app.config;

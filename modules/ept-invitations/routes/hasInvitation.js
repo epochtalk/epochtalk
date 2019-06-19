@@ -22,7 +22,7 @@ module.exports = {
   },
   handler: function(request, reply) {
     // query invitations
-    var promise = request.db.users.hasInvitation(request.query.email)
+    var promise = request.db.invitations.hasInvitation(request.query.email)
     .then(function(result) {
       return { found: result };
     })

@@ -2,7 +2,7 @@ var Boom = require('boom');
 
 module.exports = function(server, auth, email) {
   // invitation exists
-  var hasInvitation = server.db.users.hasInvitation(email)
+  var hasInvitation = server.db.invitations.hasInvitation(email)
   .then(function(invitationExists) {
     if (invitationExists) { return true; }
     else { return Promise.reject(Boom.badRequest('User does not have an invitation')); }
@@ -14,7 +14,7 @@ module.exports = function(server, auth, email) {
     type: 'hasPermission',
     server: server,
     auth: auth,
-    permission: 'users.removeInvite.allow'
+    permission: 'invitations.remove.allow'
   });
 
   return Promise.all([permission, hasInvitation]);

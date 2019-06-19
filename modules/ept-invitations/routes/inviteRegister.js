@@ -51,12 +51,12 @@ module.exports = {
 
     // verify hash
     var invite = { hash: request.payload.hash, email: request.payload.email };
-    var promise = request.db.users.verifyInvite(invite)
+    var promise = request.db.invitations.verify(invite)
     .then(function(inviteValid) {
       if (inviteValid) { return invite.email; }
       else { return Promise.reject(Boom.badData('Invitation Not Valid')); }
     })
-    .then(request.db.users.removeInvite)
+    .then(request.db.invitations.remove)
     .then(function() {
       return {
         username: request.payload.username,

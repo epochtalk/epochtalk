@@ -28,10 +28,7 @@ module.exports = {
        boardBans: Joi.boolean(),
        logs: Joi.boolean()
      }),
-     adminBoards: Joi.object().keys({
-       moveBoards: Joi.boolean(),
-       updateCategories: Joi.boolean()
-     }),
+     invitations: validations.invitations,
      userNotes: validations.userNotes,
      bans: validations.bans,
      blacklist: validations.blacklist,

@@ -21,12 +21,12 @@ module.exports = {
     validate: {
       payload: { email: Joi.string().email().required() }
     },
-    pre: [ { method: 'auth.users.removeInvite(server, auth, payload.email)' } ]
+    pre: [ { method: 'auth.invitations.remove(server, auth, payload.email)' } ]
   },
   handler: function(request, reply) {
     // remove invitation
     var email = request.payload.email;
-    var promise = request.db.users.removeInvite(email)
+    var promise = request.db.invitations.remove(email)
     .then(function() { return { message: 'Invitation Removed.' }; })
     .error(request.errorMap.toHttpError);
 
