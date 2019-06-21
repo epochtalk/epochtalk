@@ -8,5 +8,4 @@ angular.module('ept')
   .factory('Session', require('./session.js'))
   .factory('Alert', require('./alert.js'))
   .factory('Websocket', require('./websocket.js'))
-  .factory('NotificationSvc', require('./notificationSvc.js'))
   .factory('PreferencesSvc', require('./preferencesSvc.js'));

@@ -1,7 +1,4 @@
-'use strict';
-/* jslint node: true */
-
-module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions) {
+var service = ['Notifications', 'Mentions', function(Notifications, Mentions) {
 
   var messages = 0;
   var mentions = 0;
@@ -57,3 +54,5 @@ module.exports = ['Notifications', 'Mentions', function(Notifications, Mentions)
     deleteMention: deleteMention
   };
 }];
+
+angular.module('ept').factory('NotificationSvc', service);

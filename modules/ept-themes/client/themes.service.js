@@ -45,4 +45,4 @@ var service = ['Themes', 'Alert', function(Themes, Alert) {
   return themeAPI;
 }];
 
-angular.module('ept').factory('ThemeSVC', service)
+angular.module('ept').factory('ThemeSVC', service);
