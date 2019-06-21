@@ -28,4 +28,4 @@ var service = ['Session', '$state', '$filter', function(Session, $state, $filter
   };
 }];
 
-angular.module('ept').factory('BanSvc', service);
+angular.module('ept').service('BanSvc', service);

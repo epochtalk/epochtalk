@@ -1,8 +1,8 @@
 angular.module('ept')
-  .factory('Auth', require('./auth.js'))
-  .factory('AuthInterceptor', require('./authInterceptor.js'))
-  .factory('ViewInterceptor', require('./viewInterceptor.js'))
-  .factory('S3ImageUpload', require('./s3ImageUpload.js'))
-  .factory('Session', require('./session.js'))
-  .factory('Alert', require('./alert.js'))
-  .factory('Websocket', require('./websocket.js'));
+  .service('Auth', require('./auth.js'))
+  .service('AuthInterceptor', require('./authInterceptor.js'))
+  .service('ViewInterceptor', require('./viewInterceptor.js'))
+  .service('S3ImageUpload', require('./s3ImageUpload.js'))
+  .service('Session', require('./session.js'))
+  .service('Alert', require('./alert.js'))
+  .service('Websocket', require('./websocket.js'));

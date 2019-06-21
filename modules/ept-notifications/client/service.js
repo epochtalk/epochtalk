@@ -55,4 +55,4 @@ var service = ['Notifications', 'Mentions', function(Notifications, Mentions) {
   };
 }];
 
-angular.module('ept').factory('NotificationSvc', service);
+angular.module('ept').service('NotificationSvc', service);

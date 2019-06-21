@@ -67,5 +67,5 @@ var service = ['User', '$window', function(User, $window) {
   }
 ];
 
-angular.module('ept').factory('PreferencesSvc', service);
+angular.module('ept').service('PreferencesSvc', service);
 
