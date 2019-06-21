@@ -1,4 +1,4 @@
-module.exports = ['$q', '$http', 'Session',
+var service = ['$q', '$http', 'Session',
 function ($q, $http, Session) {
   return {
     policy: function(images) {
@@ -88,3 +88,6 @@ function ($q, $http, Session) {
     }
   };
 }];
+
+angular.module('ept').service('S3ImageUpload', service);
+
