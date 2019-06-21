@@ -1,7 +1,4 @@
-'use strict';
-/* jslint node: true */
-
-module.exports = ['Session', '$state', '$filter', function(Session, $state, $filter) {
+var service = ['Session', '$state', '$filter', function(Session, $state, $filter) {
   var message;
   var boardBanned = false;
   var globallyBanned = Session.user.ban_expiration ? true : false;
@@ -30,3 +27,5 @@ module.exports = ['Session', '$state', '$filter', function(Session, $state, $fil
     banStatus: function() {  return boardBanned || globallyBanned; }
   };
 }];
+
+angular.module('ept').factory('BanSvc', service);
