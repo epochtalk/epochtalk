@@ -1,4 +1,4 @@
-module.exports = ['$q', 'Session',
+var service = ['$q', 'Session',
   function ($q, Session) {
   return {
     request: function (config) {
@@ -13,3 +13,5 @@ module.exports = ['$q', 'Session',
     }
   };
 }];
+
+angular.module('ept').service('AuthInterceptor', service);

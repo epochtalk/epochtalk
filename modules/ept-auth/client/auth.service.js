@@ -1,4 +1,4 @@
-module.exports = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope',
+var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope',
   function(User, Session, PreferencesSvc, BanSvc, $rootScope) {
     // Service API
     var serviceAPI = {
@@ -43,3 +43,5 @@ module.exports = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope',
     return serviceAPI;
   }
 ];
+
+angular.module('ept').service('Auth', service);
