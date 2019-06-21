@@ -1,11 +1,8 @@
-'use strict';
-/* jslint node: true */
-
 var without = require('lodash/without');
 var intersection = require('lodash/intersection');
 var isEmpty = require('lodash/isEmpty');
 
-module.exports = ['$state', '$stateParams', '$location', 'Breadcrumbs',
+var service = ['$state', '$stateParams', '$location', 'Breadcrumbs',
 function ($state, $stateParams, $location, Breadcrumbs) {
   var breadcrumbsStore; // stores array of breadcrumb objects
 
@@ -98,3 +95,6 @@ function ($state, $stateParams, $location, Breadcrumbs) {
     }
   };
 }];
+
+angular.module('ept').service('BreadcrumbSvc', service);
+
