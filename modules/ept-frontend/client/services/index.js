@@ -7,5 +7,4 @@ angular.module('ept')
   .factory('S3ImageUpload', require('./s3ImageUpload.js'))
   .factory('Session', require('./session.js'))
   .factory('Alert', require('./alert.js'))
-  .factory('Websocket', require('./websocket.js'))
-  .factory('PreferencesSvc', require('./preferencesSvc.js'));
+  .factory('Websocket', require('./websocket.js'));

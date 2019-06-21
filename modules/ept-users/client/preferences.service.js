@@ -1,4 +1,4 @@
-module.exports = ['User', '$window', function(User, $window) {
+var service = ['User', '$window', function(User, $window) {
     var preferences = {};
     var storage = {}; // fallback for safari private browser
     var hasLocalStorage = checkLocalStorage();
@@ -66,3 +66,6 @@ module.exports = ['User', '$window', function(User, $window) {
     return preferencesAPI;
   }
 ];
+
+angular.module('ept').factory('PreferencesSvc', service);
+
