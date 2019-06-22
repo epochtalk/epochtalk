@@ -145,7 +145,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
   }
 ];
 
-require('./../../../components/set_moderators/set-moderators.directive');
+require('./../../../modules/ept-moderators/set-moderators.directive');
 
 module.exports = angular.module('ept.threads.ctrl', [])
 .controller('ThreadsCtrl', ctrl)

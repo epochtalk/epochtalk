@@ -122,5 +122,5 @@ function(Moderators, User, Alert, $timeout, $q) {
   };
 }];
 
-module.exports = angular.module('ept.directives.setModerators', [])
+module.exports = angular.module('ept.directives.set-moderators', [])
 .directive('setModerators', directive);

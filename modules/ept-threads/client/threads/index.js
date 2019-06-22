@@ -29,7 +29,7 @@ var route = ['$stateProvider', function($stateProvider) {
           require('./threads.controller');
           $ocLazyLoad.load([
             { name: 'ept.threads.ctrl' },
-            { name: 'ept.directives.setModerators' }
+            { name: 'ept.directives.set-moderators' }
           ]);
           deferred.resolve();
         });

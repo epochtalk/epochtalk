@@ -72,7 +72,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
             { name: 'ept.directives.category-editor'},
             { name: 'ept.directives.nestable-boards'},
             { name: 'ept.directives.nestable-categories'},
-            { name: 'ept.directives.setModerators' }
+            { name: 'ept.directives.set-moderators' }
           ]);
           deferred.resolve();
         });
