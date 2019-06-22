@@ -35,7 +35,7 @@ module.exports = {
     // TODO: clean inputs?
     // update board on db
     var boardMapping = request.payload.boardMapping;
-    var promise = request.db.boards.updateCategories(boardMapping)
+    var promise = request.db.boards.updateAll(boardMapping)
     .error(request.errorMap.toHttpError);
 
     return reply(promise);

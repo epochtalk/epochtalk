@@ -134,9 +134,9 @@ var ctrl = ['$location', '$stateParams', '$scope', '$q', '$anchorScroll', 'Alert
 ];
 
 // include the category editor directive
-require('../../components/category_editor/category-editor.directive');
-require('../../components/category_editor/nestable-boards.directive');
-require('../../components/category_editor/nestable-categories.directive');
+require('../../modules/ept-boards/category-editor.directive');
+require('../../modules/ept-boards/nestable-boards.directive');
+require('../../modules/ept-boards/nestable-categories.directive');
 require('../../modules/ept-moderators/set-moderators.directive');
 
 module.exports = angular.module('ept.admin.management.boards.ctrl', [])
