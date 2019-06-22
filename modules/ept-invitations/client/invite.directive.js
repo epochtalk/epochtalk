@@ -1,4 +1,4 @@
-module.exports = ['Invitations', 'Alert',
+var directive = ['Invitations', 'Alert',
 function(Invitations, Alert) {
   return {
     restrict: 'E',
@@ -27,3 +27,5 @@ function(Invitations, Alert) {
     }]
   };
 }];
+
+angular.module('ept').directive('invite', directive);

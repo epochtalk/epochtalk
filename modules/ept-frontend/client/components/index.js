@@ -10,5 +10,4 @@ app.directive('modal', require('./modal/modal.directive.js'));
 app.directive('autoFocus', require('./autofocus/autofocus.directive.js'));
 app.directive('modalFocus', require('./modal_focus/modal-focus.directive.js'));
 app.directive('postProcessing', require('./post_processing/post-processing.directive.js'));
-app.directive('invite', require('./invite/invite.directive.js'));
 app.directive('jumpToPage', require('./jump_to_page/jump-to-page.directive.js'));
