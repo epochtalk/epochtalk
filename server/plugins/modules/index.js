@@ -1,7 +1,6 @@
 var _ = require('lodash');
 var path = require('path');
 var localModules = require(path.normalize(__dirname + '/../../../modules/include'));
-var modulesDir = path.normalize(__dirname + '/../../../modules');
 var modulesNMDir = path.normalize(__dirname + '/../../../modules/node_modules');
 var localModulesDir = path.normalize(__dirname + '/../../../modules');
 var modules = {};
@@ -24,14 +23,6 @@ modules.install = (db, config) => {
     },
   };
 
-  // get a list of all modules in modules/package.json
-  var packageJson = require(path.normalize(modulesDir + '/package.json'));
-  var ept_modules = packageJson.dependencies;
-
-  // extract code from modules
-  for (var moduleName in ept_modules) {
-    modules.load(path.normalize(modulesNMDir + '/' + moduleName), master, config);
-  }
 
   // extract code from local modules
   localModules.forEach(function(moduleName) {
