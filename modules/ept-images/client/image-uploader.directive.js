@@ -8,7 +8,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
       reset: '=',
       onDone: '&'
     },
-    template: require('./image_uploader.html'),
+    template: require('./image-uploader.html'),
     link: function($scope, $element) {
       // directive initialization
       $scope.images = [];

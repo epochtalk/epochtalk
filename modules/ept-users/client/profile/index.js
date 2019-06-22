@@ -18,7 +18,7 @@ var route = ['$stateProvider', function($stateProvider) {
           require('./../../../components/reset_password/reset-password.directive.js');
           require('./../../../components/profile/profile.directive.js');
           require('./../../../modules/ept-user-notes/usernotes.directive.js');
-          require('./../../../components/image_uploader/image_uploader.directive');
+          require('./../../../modules/ept-images/image-uploader.directive');
           $ocLazyLoad.load([
             { name: 'ept.directives.resetPassword' },
             { name: 'ept.directives.profile' },

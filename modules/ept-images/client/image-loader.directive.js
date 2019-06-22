@@ -1,4 +1,4 @@
-module.exports = ['$timeout', function($timeout) {
+var directive = ['$timeout', function($timeout) {
   return {
     restrict: 'CA',
     link: function(scope, element) {
@@ -50,3 +50,5 @@ module.exports = ['$timeout', function($timeout) {
     }
   };
 }];
+
+angular.module('ept').directive('imageLoader', directive);

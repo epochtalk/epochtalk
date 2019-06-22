@@ -557,7 +557,7 @@ require('./../../../components/poll_creator/poll_creator.directive');
 require('./../../../components/poll_viewer/poll_viewer.directive');
 require('./../../../components/editor/editor.directive');
 require('./../../../components/resizeable/resizeable.directive');
-require('./../../../components/image_uploader/image_uploader.directive');
+require('./../../../modules/ept-images/image-uploader.directive');
 
 module.exports = angular.module('ept.posts.parentCtrl', [])
 .controller('PostsParentCtrl', ctrl);
