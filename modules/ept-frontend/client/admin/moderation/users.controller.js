@@ -440,7 +440,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 }];
 
 // include the profile directive
-require('../../components/profile/profile.directive.js');
+require('../../modules/ept-users/profile/profile.directive.js');
 require('../../modules/ept-user-notes/usernotes.directive.js');
 require('../../modules/ept-images/image-uploader.directive');
 
