@@ -441,7 +441,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 
 // include the profile directive
 require('../../components/profile/profile.directive.js');
-require('../../components/usernotes/usernotes.directive.js');
+require('../../modules/ept-user-notes/usernotes.directive.js');
 require('../../components/image_uploader/image_uploader.directive');
 
 module.exports = angular.module('ept.admin.moderation.users.ctrl', [])
