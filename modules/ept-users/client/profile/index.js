@@ -15,8 +15,8 @@ var route = ['$stateProvider', function($stateProvider) {
       profileDirective: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
-          require('./../../../components/reset_password/reset-password.directive.js');
-          require('./../../../modules/ept-users/profile/profile.directive.js');
+          require('./../../../modules/ept-users/directives/reset-password.directive.js');
+          require('./../../../modules/ept-users/directives/profile.directive.js');
           require('./../../../modules/ept-user-notes/usernotes.directive.js');
           require('./../../../modules/ept-images/image-uploader.directive');
           $ocLazyLoad.load([
