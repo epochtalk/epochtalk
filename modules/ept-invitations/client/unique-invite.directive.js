@@ -1,4 +1,4 @@
-module.exports = ['Invitations', '$q', function(Invitations, $q) {
+var directive = ['Invitations', '$q', function(Invitations, $q) {
   return {
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl) {
@@ -33,3 +33,5 @@ module.exports = ['Invitations', '$q', function(Invitations, $q) {
     }
   };
 }];
+
+angular.module('ept').directive('uniqueInvite', directive);
