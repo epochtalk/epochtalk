@@ -1,4 +1,4 @@
-module.exports = ['User', '$q', function(User, $q) {
+var directive = ['User', '$q', function(User, $q) {
   return {
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl) {
@@ -31,3 +31,5 @@ module.exports = ['User', '$q', function(User, $q) {
     }
   };
 }];
+
+angular.module('ept').directive('uniqueUsername', directive);

@@ -34,5 +34,4 @@ var directive = ['Messages', function(Messages) {
   };
 }];
 
-module.exports = angular.module('ept.directives.autocomplete-user-id', [])
-.directive('autocompleteUserId', directive);
+angular.module('ept').directive('autocompleteUserId', directive);
