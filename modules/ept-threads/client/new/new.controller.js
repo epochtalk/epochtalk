@@ -84,7 +84,7 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
 ];
 
 // include the poll-creator directive
-require('./../../../modules/ept-posts/directives/poll_creator.directive');
+require('./../../../modules/ept-polls/poll_creator.directive');
 require('./../../../modules/ept-posts/directives/editor.directive');
 require('./../../../modules/ept-images/image-uploader.directive');
 

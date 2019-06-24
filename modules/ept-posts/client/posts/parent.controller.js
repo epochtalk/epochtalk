@@ -553,8 +553,8 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 ];
 
 // include the poll creator directive
-require('./../../../modules/ept-posts/directives/poll_creator.directive');
-require('./../../../modules/ept-posts/directives/poll_viewer.directive');
+require('./../../../modules/ept-polls/poll_creator.directive');
+require('./../../../modules/ept-polls/poll_viewer.directive');
 require('./../../../modules/ept-posts/directives/editor.directive');
 require('./../../../modules/ept-posts/directives/resizeable.directive');
 require('./../../../modules/ept-images/image-uploader.directive');
