@@ -553,10 +553,10 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 ];
 
 // include the poll creator directive
-require('./../../../components/poll_creator/poll_creator.directive');
-require('./../../../components/poll_viewer/poll_viewer.directive');
-require('./../../../components/editor/editor.directive');
-require('./../../../components/resizeable/resizeable.directive');
+require('./../../../modules/ept-posts/directives/poll_creator.directive');
+require('./../../../modules/ept-posts/directives/poll_viewer.directive');
+require('./../../../modules/ept-posts/directives/editor.directive');
+require('./../../../modules/ept-posts/directives/resizeable.directive');
 require('./../../../modules/ept-images/image-uploader.directive');
 
 module.exports = angular.module('ept.posts.parentCtrl', [])

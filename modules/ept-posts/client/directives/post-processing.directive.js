@@ -1,4 +1,4 @@
-module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter, $compile) {
+var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, $compile) {
   return {
     scope: {
       postProcessing: '=',
@@ -242,3 +242,5 @@ module.exports = ['$timeout', '$filter', '$compile', function($timeout, $filter,
     }
   };
 }];
+
+angular.module('ept').directive('postProcessing', directive);

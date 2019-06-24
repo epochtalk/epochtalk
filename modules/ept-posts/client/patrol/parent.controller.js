@@ -216,8 +216,8 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
   }
 ];
 
-require('./../../../components/editor/editor.directive');
-require('./../../../components/resizeable/resizeable.directive');
+require('./../../../modules/ept-posts/directives/editor.directive');
+require('./../../../modules/ept-posts/directives/resizeable.directive');
 require('./../../../modules/ept-images/image-uploader.directive');
 
 module.exports = angular.module('ept.patrol.parentCtrl', [])
