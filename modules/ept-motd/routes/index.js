@@ -21,7 +21,7 @@ var get = {
   method: 'GET',
   path: '/api/motd',
   config: {
-    auth: { strategy: 'jwt' },
+    auth: { mode: 'try', strategy: 'jwt' },
     plugins: { track_ip: true },
     pre: [ { method: 'auth.motd.get(server, auth)' } ]
   },
