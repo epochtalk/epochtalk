@@ -1021,7 +1021,7 @@ chalk@^2.0.0, chalk@^2.0.1, chalk@^2.4.1, chalk@^2.4.2:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
-change-case@^2.3.0, change-case@^2.3.1:
+change-case@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/change-case/-/change-case-2.3.1.tgz#2c4fde3f063bb41d00cd68e0d5a09db61cbe894f"
   integrity sha1-LE/ePwY7tB0AzWjg1aCdthy+iU8=
@@ -1849,21 +1849,6 @@ entities@^1.1.1, entities@~1.1.1:
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.2.tgz#bdfa735299664dfafd34529ed4f8522a275fea56"
   integrity sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==
 
-epochtalk-core-pg@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/epochtalk-core-pg/-/epochtalk-core-pg-1.0.9.tgz#f75671de2bf4e5f1f4f6ef93414bd53179e23923"
-  integrity sha512-UiNdr+Eh51zA6XEd52SYsu3FrkwJC3hyUBTOklm05z0NT5ppv1oPdzy1rMMD/l4HmszfNaQqsnNMbYlDK5Srag==
-  dependencies:
-    bcrypt "^3.0.3"
-    bluebird "^3.5.1"
-    change-case "^2.3.0"
-    deep-rename-keys "^0.1.0"
-    flat "^1.6.0"
-    json "^9.0.3"
-    lodash "^4.17.11"
-    pg "^7.8.0"
-    slugid "^1.0.3"
-
 errno@^0.1.3, errno@~0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/errno/-/errno-0.1.7.tgz#4684d71779ad39af177e3f007996f7c67c852618"
@@ -2446,13 +2431,6 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     rimraf "~2.6.2"
     write "^0.2.1"
-
-flat@^1.6.0:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/flat/-/flat-1.6.1.tgz#476b9dbb70d5e9340dbbc038bde084a20945921c"
-  integrity sha1-R2udu3DV6TQNu8A4veCEoglFkhw=
-  dependencies:
-    is-buffer "~1.1.2"
 
 fleximap@^1.0.0:
   version "1.0.0"
@@ -3363,7 +3341,7 @@ is-binary-path@^1.0.0:
   dependencies:
     binary-extensions "^1.0.0"
 
-is-buffer@^1.1.5, is-buffer@~1.1.2:
+is-buffer@^1.1.5:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
   integrity sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==
@@ -6270,12 +6248,13 @@ slice-ansi@0.0.4:
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-0.0.4.tgz#edbf8903f66f7ce2f8eafd6ceed65e264c831b35"
   integrity sha1-7b+JA/ZvfOL46v1s7tZeJkyDGzU=
 
-slugid@^1.0.3:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/slugid/-/slugid-1.1.0.tgz#e09f00899c09f5a7058edc36dd49f046fd50a82a"
-  integrity sha1-4J8AiZwJ9acFjtw23UnwRv1QqCo=
+slugid@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/slugid/-/slugid-2.0.0.tgz#f08f651b677e666093e6617e10486aa2e73ed8a6"
+  integrity sha512-zTCivUfTk2GC6MU4Fjcz0iXwAjhe0NweMJqpfWcGrBbrm2dWtVAUupAonfsc7ysw4M0kZ934Nle5ljwM2dR+/g==
   dependencies:
-    uuid "^2.0.1"
+    uuid "^3.2.1"
+    uuid-parse "^1.0.0"
 
 snake-case@^1.1.0:
   version "1.1.2"
@@ -7140,6 +7119,11 @@ utila@^0.4.0, utila@~0.4:
   resolved "https://registry.yarnpkg.com/utila/-/utila-0.4.0.tgz#8a16a05d445657a3aea5eecc5b12a4fa5379772c"
   integrity sha1-ihagXURWV6Oupe7MWxKk+lN5dyw=
 
+uuid-parse@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/uuid-parse/-/uuid-parse-1.1.0.tgz#7061c5a1384ae0e1f943c538094597e1b5f3a65b"
+  integrity sha512-OdmXxA8rDsQ7YpNVbKSJkNzTw2I+S5WsbMDnCtIWSQaosNAcWtFuI/YK1TjzUI6nbkgiqEyh8gWngfcv8Asd9A==
+
 uuid@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
@@ -7150,15 +7134,10 @@ uuid@3.2.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
   integrity sha512-jZnMwlb9Iku/O3smGWvZhauCf6cvvpKi4BKRiliS3cxnI+Gz9j5MEpTz2UFuXiKPJocb7gnsLHwiS05ige5BEA==
 
-uuid@3.3.2, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.3.2:
+uuid@3.3.2, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
-
-uuid@^2.0.1:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
-  integrity sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=
 
 v8-compile-cache@^2.0.2:
   version "2.0.2"

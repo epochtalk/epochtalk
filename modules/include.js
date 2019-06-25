@@ -32,5 +32,7 @@ module.exports = [
   'ept-breadcrumbs',
   'ept-themes',
   'ept-legal',
-  'ept-invitations'
+  'ept-invitations',
+  'bct-trust',
+  'bct-activity'
 ];
