@@ -56,8 +56,7 @@ var route = ['$stateProvider', function($stateProvider) {
         require.ensure([], function() {
           var ctrl = require('./trustSettings.controller');
           $ocLazyLoad.load([
-            { name: 'bct.trustSettings.ctrl' },
-            { name: 'ept.directives.autocomplete-user-id' }
+            { name: 'bct.trustSettings.ctrl' }
           ]);
           deferred.resolve(ctrl);
         });

@@ -1,4 +1,4 @@
-var directive = ['UserTrust', function(UserTrust) {
+var directive = ['UserTrust', '$timeout', function(UserTrust, $timeout) {
   return {
     restrict: 'E',
     scope: true,
@@ -12,13 +12,14 @@ var directive = ['UserTrust', function(UserTrust) {
       this.untrustList = [];
       this.maxDepth = null;
 
-      var trustListPromise = this.defaultTrust ? UserTrust.getDefaultTrustList() : UserTrust.getTrustList();
-
-      trustListPromise.$promise
-      .then(function(trustData) {
-        ctrl.trustList = trustData.trustList;
-        ctrl.untrustList = trustData.untrustList;
-        ctrl.maxDepth = trustData.maxDepth;
+      $timeout(function() {
+        var trustListPromise = ctrl.defaultTrust ? UserTrust.getDefaultTrustList() : UserTrust.getTrustList();
+        trustListPromise.$promise
+        .then(function(trustData) {
+          ctrl.trustList = trustData.trustList;
+          ctrl.untrustList = trustData.untrustList;
+          ctrl.maxDepth = trustData.maxDepth;
+        });
       });
 
       this.addToTrustList = function() {
@@ -74,7 +75,7 @@ var directive = ['UserTrust', function(UserTrust) {
           max_depth: ctrl.maxDepth >= 0 && ctrl.maxDepth <= 4 ? ctrl.maxDepth : 2,
           list: ctrl.trustList.concat(ctrl.untrustList)
         };
-        var editTrustListPromise = this.defaultTrust ? UserTrust.editDefaultTrustList(params) : UserTrust.editTrustList(params);
+        var editTrustListPromise = ctrl.defaultTrust ? UserTrust.editDefaultTrustList(params) : UserTrust.editTrustList(params);
         editTrustListPromise.$promise
         .then(function(updatedLists) {
           ctrl.trustList = updatedLists.trustList;
@@ -83,12 +84,8 @@ var directive = ['UserTrust', function(UserTrust) {
           if (ctrl.callback) { return ctrl.callback(); }
          });
       };
-
-
     }]
   };
 }];
-
-require('../../components/autocomplete_user_id/autocomplete-user-id.directive');
 
 angular.module('ept').directive('trustList', directive);
