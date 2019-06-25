@@ -11,6 +11,7 @@ module.exports = {
   create: require(path.normalize(__dirname + '/create.js')),
   update: require(path.normalize(__dirname + '/update.js')),
   find: require(path.normalize(__dirname + '/find.js')),
+  lookup: require(path.normalize(__dirname + '/lookup.js')),
   trackIp: require(path.normalize(__dirname + '/trackIp.js')),
   getKnownIps: require(path.normalize(__dirname + '/getKnownIps.js')),
   putUserThreadViews: require(path.normalize(__dirname + '/putUserThreadViews.js')),

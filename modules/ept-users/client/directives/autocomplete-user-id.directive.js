@@ -1,4 +1,4 @@
-var directive = ['Messages', function(Messages) {
+var directive = ['User', function(User) {
   return {
     restrict: 'E',
     template: require('./autocomplete-user-id.html'),
@@ -16,7 +16,7 @@ var directive = ['Messages', function(Messages) {
         $scope.usernameIsValid = false;
         if (!$scope.username || !$scope.username.length) { return; }
         $scope.searchResults = [];
-        Messages.findUser({ username: $scope.username }).$promise
+        User.lookup({ username: $scope.username, self: true }).$promise
         .then(function(results) {
           $scope.searchResults = results;
           // ignore casing

@@ -7,6 +7,7 @@ module.exports = [
   require(path.normalize(__dirname + '/pagePublic')),
   require(path.normalize(__dirname + '/deactivate')),
   require(path.normalize(__dirname + '/reactivate')),
+  require(path.normalize(__dirname + '/lookup')),
   require(path.normalize(__dirname + '/delete')),
   require(path.normalize(__dirname + '/adminRecover')),
   require(path.normalize(__dirname + '/page')),

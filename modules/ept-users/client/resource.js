@@ -30,6 +30,13 @@ var resource = ['$resource',
         method: 'GET',
         url: '/api/authenticate'
       },
+      lookup: {
+        method: 'GET',
+        url: '/api/users/lookup/:username',
+        params: { username: '@username', self: '@self' },
+        isArray: true,
+        ignoreLoadingBar: true
+      },
       pagePublic: {
         method: 'GET',
         url: '/api/search/users'

@@ -2,13 +2,14 @@ var Joi = require('joi');
 
 /**
   * @apiVersion 0.4.0
-  * @apiGroup Messages
-  * @api {GET} /messages/users/{username} Message Receiver Lookup
-  * @apiName FindUserMessages
+  * @apiGroup Users
+  * @api {GET} /users/lookup/{username} User Lookup
+  * @apiName LookupUser
   * @apiPermission User
-  * @apiDescription Query possible username matches and returns their ids for use in message delivery
+  * @apiDescription Query possible username matches and returns their ids for use in UI components
   *
   * @apiParam {string} username The name of the user to send the message to
+  * @apiParam {boolean} self Include authed user in lookup
   *
   * @apiSuccess {object[]} users An array of possible username matches
   * @apiSuccess {string} users.id The id of the user
@@ -18,16 +19,22 @@ var Joi = require('joi');
   */
 module.exports = {
   method: 'GET',
-  path: '/api/messages/users/{username}',
+  path: '/api/users/lookup/{username}',
   config: {
     auth: { strategy: 'jwt' },
-    validate: { params: { username: Joi.string().required() } },
-    pre: [ { method: 'auth.messages.findUser(server, auth)' } ]
+    validate: {
+      params: {
+        username: Joi.string().required(),
+        self: Joi.boolean()
+      }
+    },
+    pre: [ { method: 'auth.users.lookup(server, auth)' } ]
   },
   handler: function(request, reply) {
     // get id for username
     var username = request.params.username;
-    var promise = request.db.messages.findUser(username, request.auth.credentials.username)
+    var ignoredUsername = request.query.self ? undefined : request.auth.credentials.username;
+    var promise = request.db.users.lookup(username, ignoredUsername)
     .error(request.errorMap.toHttpError);
 
     return reply(promise);

@@ -25,13 +25,6 @@ var messagesResource = ['$resource',
           limit: '@limit',
           page: '@page'
         }
-      },
-      findUser: {
-        method: 'GET',
-        url: '/api/messages/users/:username',
-        params: { username: '@username' },
-        isArray: true,
-        ignoreLoadingBar: true
       }
     });
   }

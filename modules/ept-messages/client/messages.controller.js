@@ -1,6 +1,6 @@
 var ctrl = [
-  '$scope', '$rootScope', '$timeout', '$window', '$anchorScroll', 'Session', 'Alert', 'Messages', 'Conversations', 'Reports', 'pageData', 'Websocket',
-  function($scope, $rootScope, $timeout, $window, $anchorScroll, Session, Alert, Messages, Conversations, Reports, pageData, Websocket) {
+  '$scope', '$rootScope', '$timeout', '$window', '$anchorScroll', 'Session', 'Alert', 'Messages', 'Conversations', 'User', 'Reports', 'pageData', 'Websocket',
+  function($scope, $rootScope, $timeout, $window, $anchorScroll, Session, Alert, Messages, Conversations, User, Reports, pageData, Websocket) {
     var ctrl = this;
     this.currentUserId = Session.user.id;
     this.username = Session.user.username;
@@ -87,7 +87,7 @@ var ctrl = [
     this.receivers = [];
 
     this.loadTags = function(query) {
-      return Messages.findUser({ username: query }).$promise
+      return User.lookup({ username: query }).$promise
       .then(function(users) { return users; });
     };
 

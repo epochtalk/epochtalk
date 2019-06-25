@@ -12,6 +12,11 @@ module.exports = [
     options: { callback: false }
   },
   {
+    name: 'auth.users.lookup',
+    method: require(path.normalize(__dirname + '/lookup')),
+    options: { callback: false }
+  },
+  {
     name: 'auth.users.metaFind',
     method: require(path.normalize(__dirname + '/metaFind')),
     options: { callback: false }

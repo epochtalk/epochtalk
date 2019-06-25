@@ -20,6 +20,9 @@ var validation =  Joi.object().keys({
       viewMoreInfo: Joi.boolean()
     })
   }),
+  lookup: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
   deactivate: Joi.object().keys({
     allow: Joi.boolean()
   }),
@@ -80,6 +83,7 @@ var superAdministrator = {
       viewMoreInfo: true
     }
   },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   delete: {
@@ -117,6 +121,7 @@ var administrator = {
       viewMoreInfo: true
     }
   },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   delete: {
@@ -154,6 +159,7 @@ var globalModerator = {
       viewMoreInfo: true
     }
   },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   delete: {
@@ -177,6 +183,7 @@ var moderator = {
       viewMoreInfo: true
     }
   },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   delete: {
@@ -190,6 +197,7 @@ var moderator = {
 var patroller = {
   update: { allow: true },
   find: { allow: true },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   pagePublic: { allow: true }
@@ -198,6 +206,7 @@ var patroller = {
 var user = {
   update: { allow: true },
   find: { allow: true },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   pagePublic: { allow: true }
@@ -206,6 +215,7 @@ var user = {
 var newbie = {
   update: { allow: true },
   find: { allow: true },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   pagePublic: { allow: true }
@@ -213,10 +223,12 @@ var newbie = {
 
 var banned = {
   find: { allow: true },
+  lookup: { allow: true}
 };
 
 var anonymous = {
-  find: { allow: true }
+  find: { allow: true },
+  lookup: { allow: true}
 };
 
 var layout = {
@@ -233,6 +245,7 @@ var layout = {
       { description: 'View Sensitive Information', control: 'viewMoreInfo', type: 'boolean'}
     ]
   },
+  lookup: { title: 'Allow user to lookup usernames (Used for messaging and other UI components)' },
   pagePublic: { title: 'Search and Page forum members' },
   deactivate: { title: 'Deactivate Their Account' },
   reactivate: { title: 'Reactivate Their Account' },
