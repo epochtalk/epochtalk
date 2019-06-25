@@ -7,11 +7,23 @@
     </a>
   </h5>
 
-  <div class="rules-data">
-    <section class="boxed-section" ng-repeat="rule in vm.rules track by rule.id" >
-      <div class="header">
-        <span class="large" ng-bind="rule.name"></span>
-        <div class="right">
+  <table class="striped rulesTable" width="100%">
+    <thead>
+      <th>Rank Name</th>
+      <th>Minimum Post Count</th>
+      <th>Actions</th>
+    </thead>
+    <tbody ng-if="!vm.rules.length">
+      <tr>
+        <td colspan="3">
+          <h6>There are currently no auto moderation rules. Click "+ Add Rule" above to create a new rule.</h6>
+        </td>
+    </tbody>
+    <tbody ng-if="vm.rules.length" ng-repeat="rule in vm.rules track by rule.id">
+      <tr>
+        <td class="name" ng-bind-html="rule.name"></td>
+        <td ng-bind-html="rule.description"></td>
+        <td>
           <a ng-click="vm.viewRule(rule)" ng-if="vm.canEditRule()">
             <i class="fa fa-pencil"></i>
           </a>
@@ -19,14 +31,10 @@
           <a ng-click="vm.deleteRule(rule)" ng-if="vm.canRemoveRule()">
             <i class="fa fa-trash"></i>
           </a>
-        </div>
-      </div>
-      <div class="content">
-        <div class="desc-label rule-description" ng-bind="rule.description"></div>
-        <div class="desc-label rule-description" ng-if="!rule.description">No Description Given</div>
-      </div>
-    </section>
-  </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <!-- Edit Rule Modal -->
@@ -169,7 +177,7 @@
 
         <!-- Edit Replace -->
         <div class="fill-row">
-          <label class="desc-label">Text to Replace
+          <label class="desc-label">Replacement Text
             <span class="info-tooltip" data-balloon="The text which will replace the keyword or phrase matched by the regex below" data-balloon-pos="up" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
           </label>
           <input type="text" class="input-text" ng-model="vm.viewedRule.options.edit.replace.text" ng-disabled="vm.viewedRule.actions.indexOf('edit') < 0" />
