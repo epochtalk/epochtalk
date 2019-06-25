@@ -111,8 +111,6 @@ roles.superAdministrator = {
   },
   // ACLs
   adminBoards: {
-    categories: true,
-    boards: true,
     moveBoards: true,
     updateCategories: true
   },
@@ -153,8 +151,6 @@ roles.administrator = {
   },
   // ACLs
   adminBoards: {
-    categories: true,
-    boards: true,
     moveBoards: true,
     updateCategories: true
   }

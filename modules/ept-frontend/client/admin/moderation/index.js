@@ -219,8 +219,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         };
         return Bans.byBannedBoards(query).$promise;
       }],
-      selectBoards: ['AdminBoards', '$filter', function(AdminBoards, $filter) {
-        return AdminBoards.moveBoards().$promise
+      selectBoards: ['Boards', '$filter', function(Boards, $filter) {
+        return Boards.moveList().$promise
         .then(function(allBoards) {
           allBoards = allBoards || [];
           allBoards.map(function(board) {

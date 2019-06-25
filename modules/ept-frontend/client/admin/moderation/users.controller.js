@@ -440,9 +440,9 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 }];
 
 // include the profile directive
-require('../../components/profile/profile.directive.js');
-require('../../components/usernotes/usernotes.directive.js');
-require('../../components/image_uploader/image_uploader.directive');
+require('../../modules/ept-users/directives/profile.directive.js');
+require('../../modules/ept-user-notes/usernotes.directive.js');
+require('../../modules/ept-images/image-uploader.directive');
 
 module.exports = angular.module('ept.admin.moderation.users.ctrl', [])
 .controller('ModUsersCtrl', ctrl);

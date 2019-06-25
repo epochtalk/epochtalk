@@ -114,8 +114,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         require.ensure([], function() {
           require('./advanced.controller');
           $ocLazyLoad.load([
-            { name: 'ept.admin.settings.advanced.ctrl' },
-            { name: 'ept.directives.autocomplete-user-id' }
+            { name: 'ept.admin.settings.advanced.ctrl' }
           ]);
           deferred.resolve();
         });
