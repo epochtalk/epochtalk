@@ -231,7 +231,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
   };
 }];
 
-require('../../components/image_uploader/image_uploader.directive');
+require('../../modules/ept-images/image-uploader.directive');
 
 module.exports = angular.module('ept.admin.management.users.ctrl', [])
 .controller('UsersCtrl', ctrl);

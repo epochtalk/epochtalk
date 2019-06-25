@@ -38,15 +38,6 @@ var validation =  Joi.object().keys({
   pagePublic: Joi.object().keys({
     allow: Joi.boolean()
   }),
-  invitations: Joi.object().keys({
-    allow: Joi.boolean()
-  }),
-  invite: Joi.object().keys({
-    allow: Joi.boolean()
-  }),
-  removeInvite: Joi.object().keys({
-    allow: Joi.boolean()
-  }),
   adminRecover: Joi.object().keys({
     allow: Joi.boolean()
   }),
@@ -73,9 +64,6 @@ var validation =  Joi.object().keys({
         less: Joi.boolean()
       }).xor('same', 'less')
     })
-  }),
-  resend: Joi.object().keys({
-    allow: Joi.boolean()
   })
 });
 
@@ -99,9 +87,6 @@ var superAdministrator = {
     bypass: { priority: { admin: true } }
   },
   pagePublic: { allow: true },
-  invitations: { allow: true },
-  invite: { allow: true },
-  removeInvite: { allow: true },
   adminRecover: { allow: true },
   adminPage: { allow: true },
   searchUsernames: { allow: true },
@@ -116,8 +101,7 @@ var superAdministrator = {
     bypass: {
       priority: { same: true }
     }
-  },
-  resend: { allow: true }
+  }
 };
 
 var administrator = {
@@ -140,9 +124,6 @@ var administrator = {
     bypass: { priority: { admin: true } }
   },
   pagePublic: { allow: true },
-  invitations: { allow: true },
-  invite: { allow: true },
-  removeInvite: { allow: true },
   adminRecover: { allow: true },
   adminPage: { allow: true },
   searchUsernames: { allow: true },
@@ -157,8 +138,7 @@ var administrator = {
     bypass: {
       priority: { less: true }
     }
-  },
-  resend: { allow: true }
+  }
 };
 
 var globalModerator = {
@@ -181,7 +161,6 @@ var globalModerator = {
     bypass: { priority: { mod: true } }
   },
   pagePublic: { allow: true },
-  invite: { allow: true },
   searchUsernames: { allow: true }
 };
 
@@ -205,7 +184,6 @@ var moderator = {
     bypass: { priority: { mod: true } }
   },
   pagePublic: { allow: true },
-  invite: { allow: true },
   searchUsernames: { allow: true }
 };
 
@@ -262,12 +240,6 @@ var layout = {
     title: 'Delete User Accounts',
     bypasses: [ { description: 'Other Users', control: 'priority' } ]
   },
-  inviteSeparator: { type: 'separator' },
-  inviteTitle: { title: 'Invitation Permissions', type: 'title' },
-  invite: { title: 'Invite User' },
-  invitations: { title: 'View all Invitations' },
-  resend: { title: 'Resend a prior invitation' },
-  removeInvite: { title: 'Remove an Invitation' },
   adminRecover: { title: 'Send password recovery email to other user\'s accounts' },
   priviledgedUserSeparator: { type: 'separator' },
   priviledgedUserTitle: { title: 'Priviledged User Permissions', type: 'title' },
@@ -308,8 +280,7 @@ var layout = {
     ]
   },
   searchUsernames: { title: 'Search all usernames, used for admin/mod UI components to lookup users' },
-  adminPage: { title: 'Page through all forum users, used for admin/mod' },
-  removeInvite: { title: 'Remove an Invitation' }
+  adminPage: { title: 'Page through all forum users, used for admin/mod' }
 };
 
 module.exports = {

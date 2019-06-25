@@ -1,0 +1,46 @@
+<div class="fill-row">
+  <h5 ng-if="vm.defaultTrust" class="thin-underline section-header-top-spacing">Manage Default Trust Lists
+    <span class="info-tooltip" data-balloon="Manages the trust list which all users will inherit for their default trust settings. Trust is important to prevent scamming when there are forums for selling goods and services" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+  </h5>
+
+  <autocomplete-user-id user-id="vm.userToTrust.user_id_trusted" username="vm.userToTrust.username_trusted" input-placeholder="Type username to add to trust/untrust list"></autocomplete-user-id>
+
+  <div class="trust-section">
+    <div class="half-column">
+      <button class="fill-row" ng-click="vm.addToTrustList()" ng-disabled="!vm.userToTrust.user_id_trusted || vm.trustedUserExists()">Add to Trusted Users</button>
+    </div>
+    <div class="half-column">
+      <button class="fill-row" ng-click="vm.addToUntrustList()" ng-disabled="!vm.userToTrust.user_id_trusted || vm.untrustedUserExists()">Add to Untrusted Users</button>
+    </div>
+  </div>
+  <div class="trust-section">
+    <div class="half-column">
+      <h5 class="inline-block">Trusted Users
+        <span class="info-tooltip" data-balloon="Users that you believe are trusted members to deal with" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+      </h5>
+      <a ng-show="vm.selectedTrustedUsers.length" class="remove-active right" ng-href="#" ng-click="vm.removeSelectedTrust()"><i class="fa fa-times"></i> Remove Selected</a>
+      <span ng-hide="vm.selectedTrustedUsers.length" class="remove-inactive right"><i class="fa fa-times"></i> Remove Selected</span>
+      <select id="trustList" class="trust-select" ng-click="vm.selectedUntrustedUsers = [];" ng-options="u.username_trusted for u in vm.trustList track by u.username_trusted" ng-model="vm.selectedTrustedUsers" multiple="multiple">
+      </select>
+    </div>
+    <div class="half-column">
+      <h5 class="inline-block">Untrusted Users
+        <span class="info-tooltip" data-balloon="Users that are known or are suspected scammers" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+      </h5>
+      <a ng-show="vm.selectedUntrustedUsers.length" class="remove-active right" ng-href="#" ng-click="vm.removeSelectedUntrust()"><i class="fa fa-times"></i> Remove Selected</a>
+      <span ng-hide="vm.selectedUntrustedUsers.length" class="remove-inactive right"><i class="fa fa-times"></i> Remove Selected</span>
+      <select id="untrustList" class="trust-select" ng-click="vm.selectedstedUsers = [];" ng-options="u.username_trusted for u in vm.untrustList track by u.username_trusted" ng-model="vm.selectedUntrustedUsers" multiple="multiple">
+      </select>
+    </div>
+  </div>
+  <div class="trust-section">
+    <div class="half-column">
+      <label ng-hide="vm.defaultTrust" for="maxdepth">Trust Depth (max 4): </label>
+      <input ng-hide="vm.defaultTrust" id="maxdepth" name="maxdepth" placeholder="Trust Depth (max 4)" type="number" min="0" max="4" ng-model="vm.maxDepth"></input>
+      <span ng-show="vm.defaultTrust">&nbsp</span>
+    </div>
+    <div class="half-column">
+      <button class="right trust-button" ng-click="vm.editTrustList()"><i class="fa fa-save"></i> Save Trust Settings</button>
+    </div>
+  </div>
+</div>

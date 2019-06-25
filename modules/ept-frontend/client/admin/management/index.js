@@ -72,15 +72,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
             { name: 'ept.directives.category-editor'},
             { name: 'ept.directives.nestable-boards'},
             { name: 'ept.directives.nestable-categories'},
-            { name: 'ept.directives.setModerators' }
+            { name: 'ept.directives.set-moderators' }
           ]);
           deferred.resolve();
         });
         return deferred.promise;
       }],
       roleData: ['Roles', function(Roles) { return Roles.all().$promise; }],
-      categories: ['AdminBoards', function(AdminBoards) { return AdminBoards.categories().$promise; }],
-      boards: ['AdminBoards', function(AdminBoards) { return AdminBoards.boards().$promise; }]
+      categories: ['Boards', function(Boards) { return Boards.unfiltered().$promise; }],
+      boards: ['Boards', function(Boards) { return Boards.uncategorized().$promise; }]
     }
   })
   .state('admin-management.users', {
@@ -264,12 +264,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      pageData: ['User', '$stateParams', function(User, $stateParams) {
+      pageData: ['Invitations', '$stateParams', function(Invitations, $stateParams) {
         var query = {
           limit: Number($stateParams.limit) || 25,
           page: Number($stateParams.page) || 1,
         };
-        return User.inviteList(query).$promise;
+        return Invitations.all(query).$promise;
       }]
     }
   });

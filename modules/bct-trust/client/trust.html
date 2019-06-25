@@ -1,0 +1,177 @@
+<div class="trust-section">
+  <h3 class="thin-underline">Trust Summary for {{TrustCtrl.user.username}}</h3>
+</div>
+
+<div class="trust-section" ng-if="TrustCtrl.loggedIn">
+  <a ng-hide="TrustCtrl.hideAddFeedback" class="button" ng-href="#" ng-click="TrustCtrl.showFeedbackModal = true">Leave feedback for {{TrustCtrl.user.username}}</a> <a class="right" ui-sref="trust-settings"><i class="fa fa-cog"></i> Edit My Trust Settings</a>
+  <br />
+</div>
+
+<div class="trust-section">
+  Risked BTC amount is money that the person could have stolen or did steal. For example, if you do a currency trade where the other person sends first, your feedback for them would have 0 risked BTC and their feedback for you would have risked BTC equal to the BTC value of the trade.
+</div>
+
+<div class="trust-section">
+  <h4>Trusted feedback</h4>
+</div>
+
+<div class="trust-section">
+  <span ng-if="!TrustCtrl.userFeedback.trusted.length">
+    {{TrustCtrl.user.username}} has no trusted feedback.
+  </span>
+  <table width="100%" class="striped" ng-if="TrustCtrl.userFeedback.trusted.length">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Feedback By User</th>
+        <th>Date</th>
+        <th>Risked BTC</th>
+        <th class="centered-text">Reference</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="feedback in TrustCtrl.userFeedback.trusted track by feedback.id">
+        <td>
+          <span data-balloon="{{ (feedback.scammer === null ? 'Neutral' : (feedback.scammer ? 'Negative' : 'Positive')) + ' Feedback'}}" data-balloon-pos="left">
+            <i class="fa" ng-class="{'fa-plus-circle pos-feedback': feedback.scammer === false, 'fa-circle neu-feedback': feedback.scammer === null, 'fa-minus-circle neg-feedback': feedback.scammer === true}"></i>
+          </span>
+        </td>
+        <td><a ui-sref="profile.posts({ username: feedback.reporter.username })">{{feedback.reporter.username}}</a> <trust-score user="feedback.reporter"></trust-score></td>
+        <td ng-bind="feedback.created_at | date:'MM/dd/yy @ h:mma'"></td>
+        <td ng-bind="feedback.risked_btc"></td>
+        <td class="centered-text">
+          <i ng-if="!feedback.reference" class="fa fa-external-link-square"></i>
+          <a ng-if="feedback.reference" ng-href="{{feedback.reference}}" target="_blank" data-balloon="{{feedback.reference}}" data-balloon-pos="left"><i class="fa fa-external-link-square"></i></a>
+        </td>
+        <td ng-bind="feedback.comments" width="35%"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="trust-section">
+  <h4>Untrusted feedback</h4>
+</div>
+
+<div class="trust-section">
+  These ratings are from people who are not in your trust network. They may be totally inaccurate.
+</div>
+
+<div class="trust-section" ng-init="showUntrusted = false">
+
+  <span ng-if="!TrustCtrl.userFeedback.untrusted.length">
+    {{TrustCtrl.user.username}} has no untrusted feedback.
+  </span>
+  <a ng-href="#" ng-show="TrustCtrl.userFeedback.untrusted.length && !showUntrusted" ng-click="showUntrusted = true">Show untrusted feedback</a>
+  <a ng-href="#" ng-show="TrustCtrl.userFeedback.untrusted.length && showUntrusted" ng-click="showUntrusted = false">Hide untrusted feedback</a>
+
+  <div ng-show="showUntrusted">
+    <br />
+    <table width="100%" class="striped">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Feedback By User</th>
+          <th>Date</th>
+          <th>Risked BTC</th>
+          <th class="centered-text">Reference</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="feedback in TrustCtrl.userFeedback.untrusted track by feedback.id">
+          <td>
+            <span data-balloon="{{ (feedback.scammer === null ? 'Neutral' : (feedback.scammer ? 'Negative' : 'Positive')) + ' Feedback'}}" data-balloon-pos="left">
+              <i class="fa" ng-class="{'fa-plus-circle pos-feedback': feedback.scammer === false, 'fa-circle neu-feedback': feedback.scammer === null, 'fa-minus-circle neg-feedback': feedback.scammer === true}"></i>
+            </span>
+          </td>
+          <td><a ui-sref="profile.posts({ username: feedback.reporter.username })">{{feedback.reporter.username}}</a> <trust-score user="feedback.reporter"></trust-score></td>
+          <td ng-bind="feedback.created_at | date:'MM/dd/yy @ h:mma'"></td>
+          <td ng-bind="feedback.risked_btc"></td>
+          <td class="centered-text">
+            <i ng-if="!feedback.reference" class="fa fa-external-link-square"></i>
+            <a ng-if="feedback.reference" ng-href="{{feedback.reference}}" target="_blank" data-balloon="{{feedback.reference}}" data-balloon-pos="left"><i class="fa fa-external-link-square"></i></a>
+          </td>
+          <td ng-bind="feedback.comments" width="35%"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="trust-section">
+  <h4>Sent feedback</h4>
+</div>
+
+<div class="trust-section">
+  <span ng-if="!TrustCtrl.userFeedback.sent.length">{{TrustCtrl.user.username}} hasn't sent any feedback.</span>
+
+  <table ng-if="TrustCtrl.userFeedback.sent.length" width="100%" class="striped">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Feedback Left for User</th>
+        <th>Date</th>
+        <th>Risked BTC</th>
+        <th>Reference</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="feedback in TrustCtrl.userFeedback.sent track by feedback.id">
+        <td>
+          <span data-balloon="{{ (feedback.scammer === null ? 'Neutral' : (feedback.scammer ? 'Negative' : 'Positive')) + ' Feedback'}}" data-balloon-pos="left">
+            <i class="fa" ng-class="{'fa-plus-circle pos-feedback': feedback.scammer === false, 'fa-circle neu-feedback': feedback.scammer === null, 'fa-minus-circle neg-feedback': feedback.scammer === true}"></i>
+          </span>
+        </td>
+        <td><a ui-sref="profile.posts({ username: feedback.user.username })">{{feedback.user.username}}</a> <trust-score user="feedback.user"></trust-score></td>
+        <td ng-bind="feedback.created_at | date:'MM/dd/yy @ h:mma'"></td>
+        <td ng-bind="feedback.risked_btc"></td>
+        <td class="centered-text">
+          <i ng-if="!feedback.reference" class="fa fa-external-link-square"></i>
+          <a ng-if="feedback.reference" ng-href="{{feedback.reference}}" target="_blank" data-balloon="{{feedback.reference}}" data-balloon-pos="left"><i class="fa fa-external-link-square"></i></a>
+        </td>
+        <td ng-bind="feedback.comments" width="35%"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Leave Feedback Modal -->
+<modal show="TrustCtrl.showFeedbackModal" on-close="TrustCtrl.closeFeedback()">
+  <form name="$parent.form" class="css-form">
+    <h3 class="thin-underline">Leave trust feedback for {{TrustCtrl.user.username}}</h3>
+    <label>
+      Risked BTC
+      <input modal-focus="{{TrustCtrl.showFeedbackModal}}" type="number" ng-model="TrustCtrl.feedback.risked_btc" step="any" value="0.0000" ng-required />
+    </label>
+    <label>
+      Reference Link
+      <input type="text" placeholder="Reference link to back up your feedback" ng-pattern="TrustCtrl.urlRegex" ng-model="TrustCtrl.feedback.reference" />
+    </label>
+    <label>
+      Feedback Type
+    </label>
+    <label>
+      <input type="radio" ng-model="TrustCtrl.feedback.scammer" name="scammer" ng-value="0" ng-required />
+      Postive &mdash; You trust this person or had a successful trade
+    </label>
+    <label>
+      <input type="radio" ng-model="TrustCtrl.feedback.scammer" name="scammer" ng-value="-1" ng-required />
+      Neutral &mdash; Your rating will not affect this user's trust score
+    </label>
+    <label>
+      <input type="radio" ng-model="TrustCtrl.feedback.scammer" name="scammer" ng-value="1" ng-required />
+      Negative &mdash; You were scammed or you strongly believe that this user is a scammer
+    </label>
+    <label>
+      Comments
+      <textarea ng-model="TrustCtrl.feedback.comments" width="35%" rows="10" ng-required></textarea>
+    </label>
+    <div class="clear">
+      <button class="fill-row"
+        ng-disabled="$parent.form.$invalid || $parent.form.$errors || TrustCtrl.feedback.scammer === undefined || TrustCtrl.feedback.comments === undefined || TrustCtrl.feedbackSubmitted || !TrustCtrl.urlValid()" ng-click="TrustCtrl.addTrustFeedback()" ng-bind="TrustCtrl.submitFeedbackBtnLabel"></button>
+    </div>
+  </form>
+</modal>

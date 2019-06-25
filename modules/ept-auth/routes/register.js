@@ -88,7 +88,7 @@ module.exports = {
       }
     })
     // remove invitation if exists in db
-    .tap(function(user) { return request.db.users.removeInvite(user.email); })
+    .tap(function(user) { return request.db.invitations.remove(user.email); })
     // send confirmation email
     .then(function(user) {
       if (config.verifyRegistration) {

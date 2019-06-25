@@ -31,5 +31,8 @@ module.exports = [
   'ept-blacklist',
   'ept-breadcrumbs',
   'ept-themes',
-  'ept-legal'
+  'ept-legal',
+  'ept-invitations',
+  'bct-trust',
+  'bct-activity'
 ];
