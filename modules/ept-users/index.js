@@ -4,6 +4,7 @@ var routes = require(path.normalize(__dirname + '/routes'));
 var common = require(path.normalize(__dirname + '/common'));
 var permissions = require(path.normalize(__dirname + '/permissions'));
 var authorization = require(path.normalize(__dirname + '/authorization'));
+var plugins = require(path.normalize(__dirname + '/plugins'));
 
 module.exports =  {
   name: 'users',
@@ -11,5 +12,6 @@ module.exports =  {
   routes: routes,
   common: common.export(),
   authorization: authorization,
+  plugins: plugins,
   db: db
 };

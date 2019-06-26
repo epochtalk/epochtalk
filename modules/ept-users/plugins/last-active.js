@@ -1,8 +1,6 @@
 var Boom = require('boom');
 
 exports.register = function(plugin, options, next) {
-  options = options || {};
-
   plugin.ext('onPostAuth', function(request, reply) {
     // check if user is authed
     var authed = request.auth.isAuthenticated;

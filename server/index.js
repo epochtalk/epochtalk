@@ -26,9 +26,7 @@ var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var logOptions = require(path.normalize(__dirname + '/log-options'));
-var lastActive = require(path.normalize(__dirname + '/plugins/last_active'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
-var trackIp = require(path.normalize(__dirname + '/plugins/track_ip'));
 
 var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods, plugins, parsers;
 
@@ -134,10 +132,6 @@ setup()
 })
 // emailer
 .then(function() { return server.register({ register: emailer, options: { config } }); })
-// Track IP
-.then(function() { return server.register({ register: trackIp, options: { db } }); })
-// Last Active
-.then(function() { return server.register({ register: lastActive }); })
 // plugins methods
 .then(function() {
   return loadModulePlugins(plugins);
