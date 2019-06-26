@@ -15,7 +15,6 @@ var redis = require(path.normalize(__dirname + '/../redis'));
 var setup = require(path.normalize(__dirname + '/../setup'));
 var jwt = require(path.normalize(__dirname + '/plugins/jwt'));
 var config = require(path.normalize(__dirname + '/../config'));
-var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var hooks = require(path.normalize(__dirname + '/plugins/hooks'));
 var parser = require(path.normalize(__dirname + '/plugins/parser'));
 var common = require(path.normalize(__dirname + '/plugins/common'));
@@ -55,6 +54,7 @@ setup()
   server.decorate('server', 'redis', redis);
 
 })
+// Load plugins which are npm deps
 // server logging
 .then(function() {
   // server logging only registered if config enabled
@@ -73,6 +73,42 @@ setup()
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
 })
+// vision templating
+.then(function() {
+  return server.register(Vision)
+  .then(function() {
+    // render views
+    server.views({
+      engines: { html: require('handlebars') },
+      path: path.normalize(__dirname + '/../') + 'public'
+    });
+  });
+})
+// register modules plugin to grab plugin data
+.then(function() {
+  return server.register({ register: modules, options: { db, config } })
+  .then(function() {
+    additionalRoutes = server.app.moduleData.routes;
+    commonMethods = server.app.moduleData.common;
+    authMethods = server.app.moduleData.authorization;
+    permissions = server.app.moduleData.permissions;
+    hookMethods = server.app.moduleData.hooks;
+    preloadPlugins = server.app.moduleData.plugins.filter(function(e) { return e.preload; });
+    plugins = server.app.moduleData.plugins.filter(function(e) { return !e.preload; });
+    parsers = server.app.moduleData.parsers;
+    return;
+  });
+})
+// preload special case module plugins which need to be loaded first
+.then(function() { return loadModulePlugins(preloadPlugins) })
+// Clean up data temporarily appended to server after modules are loaded
+.then(function() {
+  roles = server.app.rolesData;
+  delete server.app.rolesData;
+  delete server.app.moduleData;
+  return;
+})
+// Load non-module plugins
 // backoff
 .then(function() { return server.register({ register: backoff }); })
 // rate limiter
@@ -83,32 +119,8 @@ setup()
 })
 // sanitizer
 .then(function() { return server.register({ register: sanitizer }); })
-// load modules
-.then(function() {
-  return server.register({ register: modules, options: { db, config } })
-  .then(function() {
-    additionalRoutes = server.app.moduleData.routes;
-    commonMethods = server.app.moduleData.common;
-    authMethods = server.app.moduleData.authorization;
-    permissions = server.app.moduleData.permissions;
-    hookMethods = server.app.moduleData.hooks;
-    plugins = server.app.moduleData.plugins;
-    parsers = server.app.moduleData.parsers;
-    delete server.app.moduleData;
-    return;
-  });
-})
 // parser
 .then(function() { return server.register({ register: parser, options: { parsers } }); })
-// route acls
-.then(function() {
-  return server.register({ register: acls, options: { db, config, permissions } })
-  .then(function() {
-    roles = server.app.rolesData;
-    delete server.app.rolesData;
-    return;
-  });
-})
 // user sessions
 .then(function() {
   return server.register({ register: session, options: { roles, redis, config } });
@@ -125,41 +137,16 @@ setup()
 .then(function() {
   return server.register({ register: hooks, options: { hooks: hookMethods } });
 })
-// plugins methods
-.then(function() {
-  return Promise.each(plugins, function(plugin) {
-    if (plugin.db) {
-      _.set(plugin, ['options', 'db'], db);
-      delete plugin.db;
-    }
-    if (plugin.websocket) {
-      _.set(plugin, ['options', 'websocket'], websocket);
-      delete plugin.websocket;
-    }
-    if (plugin.config) {
-      _.set(plugin, ['options', 'config'], config);
-      delete plugin.config;
-    }
-    server.register(plugin);
-  });
-})
-// vision templating
-.then(function() {
-  return server.register(Vision)
-  .then(function() {
-    // render views
-    server.views({
-      engines: { html: require('handlebars') },
-      path: path.normalize(__dirname + '/../') + 'public'
-    });
-  });
-})
 // emailer
 .then(function() { return server.register({ register: emailer, options: { config } }); })
 // Track IP
 .then(function() { return server.register({ register: trackIp, options: { db } }); })
 // Last Active
 .then(function() { return server.register({ register: lastActive }); })
+// plugins methods
+.then(function() {
+  return loadModulePlugins(plugins);
+})
 // Start websocket server
 .then(function() {
   if (config.disable_websocket_server) {
@@ -219,3 +206,25 @@ setup()
   console.error(err);
   process.exit(1);
 });
+
+function loadModulePlugins(plugs) {
+  return Promise.each(plugs, function(plugin) {
+    if (plugin.db) {
+      _.set(plugin, ['options', 'db'], db);
+      delete plugin.db;
+    }
+    if (plugin.websocket) {
+      _.set(plugin, ['options', 'websocket'], websocket);
+      delete plugin.websocket;
+    }
+    if (plugin.config) {
+      _.set(plugin, ['options', 'config'], config);
+      delete plugin.config;
+    }
+    if (plugin.permissions) {
+      _.set(plugin, ['options', 'permissions'], permissions);
+      delete plugin.permissions;
+    }
+    return server.register(plugin);
+  });
+}

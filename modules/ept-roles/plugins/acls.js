@@ -66,7 +66,6 @@ exports.register = function (server, options, next) {
   };
   server.decorate('server', 'rolesAPI', rolesAPI);
   server.decorate('request', 'rolesAPI', rolesAPI);
-
   return verifyRoles()
   .then(function() {
     server.app.rolesData = roles;
@@ -134,6 +133,7 @@ function verifyRoles(reload, roleLookup) {
     var master = modules.install(db, config);
     buildRoles(master.permissions.defaults);
   }
+
   // get all the roles from the DB
   return db.roles.all()
   // find any that are missing and add them
