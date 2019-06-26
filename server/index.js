@@ -28,7 +28,6 @@ var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var logOptions = require(path.normalize(__dirname + '/log-options'));
 var lastActive = require(path.normalize(__dirname + '/plugins/last_active'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
-var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
 var trackIp = require(path.normalize(__dirname + '/plugins/track_ip'));
 
 var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods, plugins, parsers;
@@ -129,10 +128,6 @@ setup()
 .then(function() {
   return server.register({ register: common, options: { methods: commonMethods } });
 })
-// authorization methods
-.then(function() {
-  return server.register({ register: authorization, options: { methods: authMethods } });
-})
 // hook methods
 .then(function() {
   return server.register({ register: hooks, options: { hooks: hookMethods } });
@@ -224,6 +219,10 @@ function loadModulePlugins(plugs) {
     if (plugin.permissions) {
       _.set(plugin, ['options', 'permissions'], permissions);
       delete plugin.permissions;
+    }
+    if (plugin.methods) {
+      _.set(plugin, ['options', 'methods'], authMethods);
+      delete plugin.methods;
     }
     return server.register(plugin);
   });
