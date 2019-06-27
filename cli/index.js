@@ -7,7 +7,7 @@ var users = require(path.normalize(__dirname + '/../modules/ept-users')).db;
 var categories = require(path.normalize(__dirname + '/../modules/ept-categories')).db;
 var boards = require(path.normalize(__dirname + '/../modules/ept-boards')).db;
 var config = require(path.join(__dirname, '..', 'config'));
-var roles = require(path.join(__dirname, '..', 'server', 'plugins', 'acls'));
+var roles = require(path.join(__dirname, '..', 'modules', 'ept-roles', 'plugins', 'acls'));
 
 var emailerOptions = config.emailerEnv;
 var emailer = require(path.normalize(__dirname + '/../server/plugins/emailer')).expose(emailerOptions);
