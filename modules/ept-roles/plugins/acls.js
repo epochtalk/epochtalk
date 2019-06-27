@@ -129,7 +129,7 @@ function getPriorityRestrictions(auth) {
 function verifyRoles(reload, roleLookup) {
   if (!db || reload) {
     db = require(path.normalize(__dirname + '/../../../db'));
-    var modules = require(path.normalize(__dirname + '/../modules'));
+    var modules = require(path.normalize(__dirname + '/../../../server/plugins/modules'));
     var master = modules.install(db, config);
     buildRoles(master.permissions.defaults);
   }
