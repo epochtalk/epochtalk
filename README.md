@@ -137,13 +137,6 @@ Title like inputs are stripped of all html while description like inputs are all
 ### Anti-Abuse
 Marked routes are protected from spam or abuse by tracking the number of times a user access an API endpoint. The first two uses of the endpoint are free of any penalties. Any use of the endpoint afterward is penalized with longer and longer cool down periods, starting from 1 minutes and ranging up to 65536 minutes or roughly 45 days from the last known incident. Proper use of the endpoint will trigger a function to remove all cool down periods. Improper use of the endpoint duing the cool down period will only increase the cool down period.
 
-### Planned Features:
-* Markdown Support
-* Medium Based Editor
-* Hiding the preview window
-* Moving the preview window to another location
-* Full feature compatibility across all input methods (BBCode, Medium, Markdown)
-
 ## Contributions
 Epochtalk is an open source project and gladly welcomes public contributions. Contributions can be made by creating a discussion via the issues. New features or fixes can be contributed via pull requests. *Please note, all new packages must be added via yarn, not npm*
 
