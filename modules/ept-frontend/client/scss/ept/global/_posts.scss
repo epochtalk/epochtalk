@@ -38,3 +38,11 @@
   &>br:last-child,
   &+br { display: none; }
 }
+.rtl .quote {
+  border-left: 0;
+  border-right: 4px solid RGB(221, 221, 221);
+}
+.rtl .quoteHeader {
+  border-left: 0;
+  border-right: 4px solid RGB(221, 221, 221);
+}
