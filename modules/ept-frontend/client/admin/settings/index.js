@@ -65,8 +65,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.general'),
       $title: function() { return 'General Settings'; },
-      settings: ['AdminSettings', function(AdminSettings) {
-        return AdminSettings.get().$promise
+      settings: ['Configurations', function(Configurations) {
+        return Configurations.get().$promise
         .then(function(settings) {
           // Remove unsettable configs
           delete settings.db;
@@ -100,8 +100,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.advanced'),
       $title: function() { return 'Advanced Settings'; },
-      settings: ['AdminSettings', function(AdminSettings) {
-        return AdminSettings.get().$promise
+      settings: ['Configurations', function(Configurations) {
+        return Configurations.get().$promise
         .then(function(settings) {
           // Remove unsettable configs
           delete settings.db;
@@ -109,17 +109,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           return settings;
         });
       }],
-      blacklist: ['AdminSettings', function(AdminSettings) {
-        return AdminSettings.getBlacklist().$promise
-        .then(function(blacklist) { return blacklist; });
-      }],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
           require('./advanced.controller');
           $ocLazyLoad.load([
-            { name: 'ept.admin.settings.advanced.ctrl' },
-            { name: 'ept.directives.autocomplete-user-id' }
+            { name: 'ept.admin.settings.advanced.ctrl' }
           ]);
           deferred.resolve();
         });
@@ -139,8 +134,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.legal'),
       $title: function() { return 'Legal Settings'; },
-      text: ['AdminLegal', function(AdminLegal) {
-        return AdminLegal.text().$promise
+      text: ['Legal', function(Legal) {
+        return Legal.text().$promise
         .then(function(text) { return text; });
       }],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
@@ -166,11 +161,11 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
     resolve: {
       userAccess: adminCheck('settings.theme'),
       $title: function() { return 'Theme Settings'; },
-      theme: ['AdminSettings', '$stateParams', function(AdminSettings, $stateParams) {
+      theme: ['Themes', '$stateParams', function(Themes, $stateParams) {
         var preview = $stateParams.preview;
         var params;
         if (preview) { params = { preview: preview }; }
-        return AdminSettings.getTheme(params).$promise
+        return Themes.getTheme(params).$promise
         .then(function(theme) {
           return theme;
         });

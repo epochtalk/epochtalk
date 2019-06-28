@@ -1,4 +1,4 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'AdminModerationLogs', 'moderationLogs', function($rootScope, $scope, $location, $timeout, $anchorScroll, AdminModerationLogs, moderationLogs) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'ModerationLogs', 'moderationLogs', function($rootScope, $scope, $location, $timeout, $anchorScroll, ModerationLogs, moderationLogs) {
   var ctrl = this;
   this.parent = $scope.$parent.ModerationCtrl;
   this.parent.tab = 'logs';
@@ -374,7 +374,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     };
 
     // replace current reports with new mods
-    AdminModerationLogs.page(query).$promise
+    ModerationLogs.page(query).$promise
     .then(function(newLogs) {
       ctrl.logs = newLogs.data;
       ctrl.page = newLogs.page;

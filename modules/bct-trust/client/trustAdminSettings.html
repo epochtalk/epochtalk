@@ -1,0 +1,20 @@
+<h5 class="thin-underline section-header-top-spacing">Trust Score Board Visibility
+  <span class="info-tooltip" data-balloon="Choose which boards you want a user's trust score to be visible within. Trust scores will be shown to the left of the user's post, below their avatar" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+</h3>
+
+<div class="board-bans-list">
+  <script type="text/ng-template" id="board_renderer.html">
+    <input id="{{board.id}}" ng-init="vm.allBoards[board.id] = (vm.trustBoards.indexOf(board.id) > -1)" ng-model="vm.allBoards[board.id]" ng-click="vm.toggleBoardTrust(board.id)" ng-disabled="vm.toggleSubmitted[board.id]" type="checkbox" />
+    <label for="{{board.id}}" ng-bind-html="board.name"></label>
+    <ul>
+      <li ng-repeat="board in board.children track by board.id" ng-include="'board_renderer.html'"></li>
+    </ul>
+  </script>
+  <div ng-repeat="cat in vm.boards track by cat.id">
+    <label class="bold" ng-bind-html="cat.name"></label>
+    <ul>
+      <li ng-repeat="board in cat.boards track by board.id" ng-include="'board_renderer.html'">
+      </li>
+    </ul>
+  </div>
+</div>

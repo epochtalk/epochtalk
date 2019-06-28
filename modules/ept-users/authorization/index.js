@@ -12,6 +12,11 @@ module.exports = [
     options: { callback: false }
   },
   {
+    name: 'auth.users.lookup',
+    method: require(path.normalize(__dirname + '/lookup')),
+    options: { callback: false }
+  },
+  {
     name: 'auth.users.metaFind',
     method: require(path.normalize(__dirname + '/metaFind')),
     options: { callback: false }
@@ -37,23 +42,28 @@ module.exports = [
     options: { callback: false }
   },
   {
-    name: 'auth.users.invitations',
-    method: require(path.normalize(__dirname + '/invitations')),
+    name: 'auth.users.adminRecover',
+    method: require(path.normalize(__dirname + '/adminRecover')),
     options: { callback: false }
   },
   {
-    name: 'auth.users.invite',
-    method: require(path.normalize(__dirname + '/invite')),
+    name: 'auth.users.page',
+    method: require(path.normalize(__dirname + '/page')),
     options: { callback: false }
   },
   {
-    name: 'auth.users.removeInvite',
-    method: require(path.normalize(__dirname + '/removeInvite')),
+    name: 'auth.users.addRoles',
+    method: require(path.normalize(__dirname + '/addRoles')),
     options: { callback: false }
   },
   {
-    name: 'auth.users.resend',
-    method: require(path.normalize(__dirname + '/resend')),
+    name: 'auth.users.removeRole',
+    method: require(path.normalize(__dirname + '/removeRole')),
+    options: { callback: false }
+  },
+  {
+    name: 'auth.users.searchUsernames',
+    method: require(path.normalize(__dirname + '/searchUsernames')),
     options: { callback: false }
   }
 ];

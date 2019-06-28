@@ -4,6 +4,12 @@ var validation =  Joi.object().keys({
   allCategories: Joi.object().keys({
     allow: Joi.boolean()
   }),
+  allUnfiltered: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
+  allUncategorized: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
   create: Joi.object().keys({
     allow: Joi.boolean()
   }),
@@ -15,23 +21,37 @@ var validation =  Joi.object().keys({
   }),
   update: Joi.object().keys({
     allow: Joi.boolean()
+  }),
+  updateAll: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
+  moveList: Joi.object().keys({
+    allow: Joi.boolean()
   })
 });
 
 var superAdministrator = {
   allCategories: { allow: true },
+  allUnfiltered: { allow: true },
+  allUncategorized: { allow: true },
   create: { allow: true },
   delete: { allow: true },
   find: { allow: true },
-  update: { allow: true }
+  update: { allow: true },
+  updateAll: { allow: true },
+  moveList: { allow: true }
 };
 
 var administrator = {
   allCategories: { allow: true },
+  allUnfiltered: { allow: true },
+  allUncategorized: { allow: true },
   create: { allow: true },
   delete: { allow: true },
   find: { allow: true },
-  update: { allow: true }
+  update: { allow: true },
+  updateAll: { allow: true },
+  moveList: { allow: true }
 };
 
 var globalModerator = {
@@ -71,10 +91,14 @@ var anonymous = {
 
 var layout = {
   allCategories: { title: 'View Public Boards' },
+  allUnfiltered: { title: 'Fetch all Boards in their respective categories, including private boards (For Board/Category Editing)' },
+  allUncategorized: { title: 'Fetch all Boards, including uncategorized and private boards (For Board/Category Editing)' },
   create: { title: 'Create Boards' },
   delete: { title: 'Delete Boards' },
   find: { title: 'View Single Board' },
-  update: { title: 'Update Boards' }
+  update: { title: 'Update individual Boards' },
+  updateAll: { title: 'Update all Boards (Used to organize boards) ' },
+  moveList: { title: 'Allow user to retrieve list of Boards (Used for moving threads)' }
 };
 
 module.exports = {

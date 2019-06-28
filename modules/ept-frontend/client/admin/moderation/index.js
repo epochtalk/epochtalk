@@ -74,8 +74,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
             { name: 'ept.admin.moderation.users.ctrl' },
             { name: 'ept.directives.image-uploader' },
             { name: 'ept.directives.profile'},
-            { name: 'ept.directives.usernotes'},
-            { name: 'ept.directives.ban-modal'}
+            { name: 'ept.directives.usernotes'}
           ]);
           deferred.resolve();
         });
@@ -118,8 +117,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
             { name: 'ept.admin.moderation.posts.ctrl' },
             { name: 'ept.directives.epochtalk-editor' },
             { name: 'ept.directives.image-uploader' },
-            { name: 'ept.directives.resizeable' },
-            { name: 'ept.directives.ban-modal'}
+            { name: 'ept.directives.resizeable' }
           ]);
           deferred.resolve();
         });
@@ -164,8 +162,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         require.ensure([], function() {
           require('./messages.controller');
           $ocLazyLoad.load([
-            { name: 'ept.admin.moderation.messages.ctrl' },
-            { name: 'ept.directives.ban-modal'}
+            { name: 'ept.admin.moderation.messages.ctrl' }
           ]);
           deferred.resolve();
         });
@@ -222,8 +219,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         };
         return Bans.byBannedBoards(query).$promise;
       }],
-      selectBoards: ['AdminBoards', '$filter', function(AdminBoards, $filter) {
-        return AdminBoards.moveBoards().$promise
+      selectBoards: ['Boards', '$filter', function(Boards, $filter) {
+        return Boards.moveList().$promise
         .then(function(allBoards) {
           allBoards = allBoards || [];
           allBoards.map(function(board) {
@@ -260,7 +257,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      moderationLogs: ['AdminModerationLogs', '$stateParams', function(AdminModerationLogs, $stateParams) {
+      moderationLogs: ['ModerationLogs', '$stateParams', function(ModerationLogs, $stateParams) {
         var query = {
           limit: Number($stateParams.limit) || undefined,
           page: Number($stateParams.page) || undefined,
@@ -272,7 +269,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           sdate: $stateParams.sdate,
           edate: $stateParams.edate
         };
-        return AdminModerationLogs.page(query).$promise;
+        return ModerationLogs.page(query).$promise;
       }]
     }
   });

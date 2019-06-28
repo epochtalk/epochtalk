@@ -6,9 +6,9 @@ var installModules = require(path.normalize(__dirname + '/load_modules'));
 
 var monitors = [];
 var localModulesPath = path.normalize(__dirname + '/../../modules');
-var nodeModulesPath = path.normalize(__dirname + '/../../node_modules');
+var rootDirectoryPath = path.normalize(__dirname + '/../..');
 
-var coreDir = 'epochtalk-core-pg';
+var coreDir = 'core';
 
 var backendDirs = require(path.normalize(localModulesPath + '/include'));
 
@@ -19,7 +19,7 @@ module.exports = function() {
   var nm = launchNodemon();
 
   // watch core-pg dir
-  monitorBEDir(coreDir, nodeModulesPath, nm)
+  monitorBEDir(coreDir, rootDirectoryPath, nm)
   .then(function(monitor) { monitors.push(monitor); });
 
   // watch backend dirs

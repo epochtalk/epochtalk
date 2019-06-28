@@ -14,18 +14,18 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
   // Permissions
 
   this.canInvite = function() {
-    if (Session.isAuthenticated() && Session.hasPermission('users.invite.allow')) { return true; }
+    if (Session.isAuthenticated() && Session.hasPermission('invitations.invite')) { return true; }
     else { return false; }
   };
 
   this.canResend = function() {
-    if (Session.isAuthenticated() && Session.hasPermission('users.resend.allow')) { return true; }
+    if (Session.isAuthenticated() && Session.hasPermission('invitations.resend')) { return true; }
     else { return false; }
   };
 
   this.canRemove = function() {
     var authed = Session.isAuthenticated();
-    var hasPerm = Session.hasPermission('users.removeInvite.allow');
+    var hasPerm = Session.hasPermission('invitations.remove');
     if (authed && hasPerm) { return true; }
     else { return false; }
   };
@@ -100,7 +100,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', 'A
     var query = { page: ctrl.page, limit: ctrl.limit };
 
     // replace current users with new users
-    Invitations.list(query).$promise
+    Invitations.all(query).$promise
     .then(function(res) {
       ctrl.invitations = res.invitations;
       ctrl.prev = res.page - 1;

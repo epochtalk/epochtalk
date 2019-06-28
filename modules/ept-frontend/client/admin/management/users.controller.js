@@ -1,4 +1,4 @@
-var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', '$state', 'Session', 'Alert', 'AdminUsers', 'Bans', 'User', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'ip', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, $state, Session, Alert, AdminUsers, Bans, User, users, usersCount, page, limit, field, desc, filter, search, ip) {
+var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$filter', '$state', 'Session', 'Alert', 'User', 'Bans', 'User', 'users', 'usersCount', 'page', 'limit', 'field', 'desc', 'filter', 'search', 'ip', function($rootScope, $scope, $location, $timeout, $anchorScroll, $filter, $state, Session, Alert, User, Bans, User, users, usersCount, page, limit, field, desc, filter, search, ip) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'users';
@@ -56,6 +56,9 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
     User.get({ id: username }).$promise
     .then(function(userData) {
       ctrl.selectedUser = userData;
+      // this is hacky.. but we need to pass joi validation when admins change emails
+      ctrl.selectedUser.email_password = '********';
+      ctrl.selectedUser.avatar = ctrl.selectedUser.avatar || '';
       ctrl.selectedUser.dob = $filter('date')(ctrl.selectedUser.dob, 'longDate');
       ctrl.showEditUserModal = true;
     });
@@ -71,10 +74,15 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
     .then(function() { Alert.success('Successfully updated profile for ' + ctrl.selectedUser.username); })
     .catch(function(err) {
       var msg = 'There was an error updating user ' + ctrl.selectedUser.username;
-      if (err.status === 403) { msg += '.  This user has higher permissions than you.'; }
+      if (err && err.data && err.data.message) {
+          msg += '. ' + err.data.message;
+      }
       Alert.error(msg);
     })
-    .finally(function() { ctrl.closeEditUser(); });
+    .finally(function() {
+      ctrl.closeEditUser();
+      ctrl.pullPage();
+    });
   };
 
   this.showManageBans = function(user) {
@@ -208,14 +216,14 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
     }
 
     // update users's page count
-    AdminUsers.count(opts).$promise
+    User.count(opts).$promise
     .then(function(updatedCount) {
       ctrl.count = updatedCount.count;
       ctrl.pageCount = Math.ceil(updatedCount.count / limit);
     });
 
     // replace current users with new users
-    AdminUsers.page(query).$promise
+    User.page(query).$promise
     .then(function(updatedUsers) {
       ctrl.users = updatedUsers;
       $timeout($anchorScroll);
@@ -223,8 +231,7 @@ var ctrl = ['$rootScope', '$scope', '$location', '$timeout', '$anchorScroll', '$
   };
 }];
 
-require('../../components/image_uploader/image_uploader.directive');
-require('../../components/ban_modal/ban-modal.directive');
+require('../../modules/ept-images/image-uploader.directive');
 
 module.exports = angular.module('ept.admin.management.users.ctrl', [])
 .controller('UsersCtrl', ctrl);

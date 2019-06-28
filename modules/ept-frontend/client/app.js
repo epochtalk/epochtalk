@@ -30,22 +30,6 @@ var ngDeps = [
   'ngTagsInput',
   require('oclazyload'),
   require('./layout/header.controller'),
-  require('./boards'),
-  // users
-  require('./users/confirm'),
-  require('./users/profile'),
-  require('./users/reset'),
-  require('./users/search'),
-  require('./users/join'),
-  require('./users/settings'),
-  // threads
-  require('./threads/new'),
-  require('./threads/posted'),
-  require('./threads/threads'),
-  // posts
-  require('./posts'),
-  require('./messages'),
-  require('./patrol'),
   require('./admin')
 ].concat(moduleNames);
 var app = angular.module('ept', ngDeps);
@@ -56,6 +40,9 @@ resourceContext.keys().forEach(function(args) { resourceContext(args); });
 var directiveContext = require.context('./modules', true, /directive.js$/);
 directiveContext.keys().forEach(function(args) { directiveContext(args); });
 
+var serviceContext = require.context('./modules', true, /service.js$/);
+serviceContext.keys().forEach(function(args) { serviceContext(args); });
+
 window.parsers = [];
 var parserContext = require.context('./modules', true, /parser.js$/);
 parserContext.keys().forEach(function(args) {
@@ -64,13 +51,7 @@ parserContext.keys().forEach(function(args) {
 
 require('./filters');
 require('./services');
-require('./resources');
 require('./components');
-require('./users/resource');
-require('./boards/resource');
-require('./threads/resource');
-require('./posts/resource');
-require('./patrol/resource');
 
 // Set Angular Configs
 app

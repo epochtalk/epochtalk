@@ -30,8 +30,8 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 
   this.canBanUser = function() {
     var loggedIn = Session.isAuthenticated();
-    var banPermission = Session.hasPermission('bans.privilegedBan');
-    var banBoardsPermission = Session.hasPermission('bans.privilegedBanFromBoards');
+    var banPermission = Session.hasPermission('bans.ban.allow');
+    var banBoardsPermission = Session.hasPermission('bans.banFromBoards.allow');
     if (loggedIn && (banPermission || banBoardsPermission)) { return true; }
     else { return false; }
   };
@@ -629,10 +629,9 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
   };
 }];
 
-require('../../components/editor/editor.directive');
-require('../../components/resizeable/resizeable.directive');
-require('../../components/image_uploader/image_uploader.directive');
-require('../../components/ban_modal/ban-modal.directive');
+require('../../modules/ept-posts/directives/editor.directive');
+require('../../modules/ept-posts/directives/resizeable.directive');
+require('../../modules/ept-images/image-uploader.directive');
 
 module.exports = angular.module('ept.admin.moderation.posts.ctrl', [])
 .controller('ModPostsCtrl', ctrl);

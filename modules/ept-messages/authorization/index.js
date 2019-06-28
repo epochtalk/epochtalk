@@ -12,11 +12,6 @@ module.exports = [
     options: { callback: false }
   },
   {
-    name: 'auth.messages.findUser',
-    method: require(path.normalize(__dirname + '/findUser')),
-    options: { callback: false }
-  },
-  {
     name: 'auth.messages.delete',
     method: require(path.normalize(__dirname + '/deleteMessage')),
     options: { callback: false }

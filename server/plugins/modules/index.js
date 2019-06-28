@@ -1,12 +1,11 @@
 var _ = require('lodash');
 var path = require('path');
 var localModules = require(path.normalize(__dirname + '/../../../modules/include'));
-var modulesDir = path.normalize(__dirname + '/../../../modules');
 var modulesNMDir = path.normalize(__dirname + '/../../../modules/node_modules');
 var localModulesDir = path.normalize(__dirname + '/../../../modules');
 var modules = {};
 
-modules.install = (db) => {
+modules.install = (db, config) => {
   var master = {
     db: db,
     routes: [],
@@ -14,6 +13,7 @@ modules.install = (db) => {
     authorization: [],
     apiMethods: {},
     hooks: {},
+    plugins: [],
     parsers: [],
     initMethods: [],
     permissions: {
@@ -23,33 +23,33 @@ modules.install = (db) => {
     },
   };
 
-  // get a list of all modules in modules/package.json
-  var packageJson = require(path.normalize(modulesDir + '/package.json'));
-  var ept_modules = packageJson.dependencies;
-
-  // extract code from modules
-  for (var moduleName in ept_modules) {
-    modules.load(path.normalize(modulesNMDir + '/' + moduleName), master);
-  }
 
   // extract code from local modules
   localModules.forEach(function(moduleName) {
-    modules.load(path.normalize(localModulesDir + '/' + moduleName), master);
+    modules.load(path.normalize(localModulesDir + '/' + moduleName), master, config);
   });
 
   // return collection of code from modules
   return master;
 };
 
-modules.load = (dir, master) => {
+modules.load = (dir, master, config) => {
   // load the index.js for the given moduleName
   var module = require(dir);
   var name = module.name;
 
   // Module Routes
-  if (module.routes && module.routes.length > 0) {
+  if (module.routeOpts) {
+    var options = {};
+    if (module.routeOpts.config) {
+      options.config = config;
+    }
+    master.routes = master.routes.concat(module.routes(options));
+  }
+  else if (module.routes && module.routes.length > 0) {
     master.routes = master.routes.concat(module.routes);
   }
+
 
   // Module Common methods
   if (module.common && module.common.length > 0) {
@@ -74,6 +74,10 @@ modules.load = (dir, master) => {
       if (hookEndpoint) { hookEndpoint.push(hook.method); }
       else { _.set(master.hooks, hook.path, [hook.method]); }
     });
+  }
+
+  if (module.plugins) {
+    master.plugins = master.plugins.concat(module.plugins);
   }
 
   if (module.parser) {
@@ -114,8 +118,9 @@ exports.register = (server, options, next) => {
   server = server || {};
   options = options || {};
   var db = options.db || {};
+  var config = options.config || {};
   // load all the code from each module installed
-  var output = modules.install(db);
+  var output = modules.install(db, config);
   server.app.moduleData = output;
   return next();
 };

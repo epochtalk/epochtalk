@@ -84,11 +84,11 @@ module.exports = {
     .tap(function(user) {
       var newbieEnabled = request.server.app.config.newbieEnabled;
       if (newbieEnabled) {
-        return request.db.roles.addRoles([user.username], 'CN0h5ZeBTGqMbzwVdMWahQ');
+        return request.db.users.addRoles([user.username], 'CN0h5ZeBTGqMbzwVdMWahQ');
       }
     })
     // remove invitation if exists in db
-    .tap(function(user) { return request.db.users.removeInvite(user.email); })
+    .tap(function(user) { return request.db.invitations.remove(user.email); })
     // send confirmation email
     .then(function(user) {
       if (config.verifyRegistration) {

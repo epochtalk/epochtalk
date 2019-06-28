@@ -1,6 +1,6 @@
 var intersection = require('lodash/intersection');
 
-var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles', 'AdminUsers', 'pageData', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, AdminRoles, AdminUsers, pageData, userData, roleId, limit, page, search) {
+var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'User', 'pageData', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, Roles, User, pageData, userData, roleId, limit, page, search) {
   var ctrl = this;
   this.parent = $scope.$parent.AdminManagementCtrl;
   this.parent.tab = 'roles';
@@ -20,14 +20,14 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   this.newRole = {};
   this.basedRoleId = null;
   this.modifyingRole = false;
-  this.controlAccess = Session.getControlAccessWithPriority('adminRoles');
+  this.controlAccess = Session.getControlAccessWithPriority('roles');
   this.controlAccess.privilegedRemoveRoles =  {
-    samePriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.samePriority'),
-    lowerPriority: Session.hasPermission('adminUsers.privilegedRemoveRoles.lowerPriority')
+    samePriority: Session.hasPermission('users.removeRole.bypass.priority.same'),
+    lowerPriority: Session.hasPermission('users.removeRole.bypass.priority.less')
   };
   this.controlAccess.privilegedAddRoles = {
-    samePriority: Session.hasPermission('adminUsers.privilegedAddRoles.samePriority'),
-    lowerPriority: Session.hasPermission('adminUsers.privilegedAddRoles.lowerPriority')
+    samePriority: Session.hasPermission('users.addRoles.bypass.priority.same'),
+    lowerPriority: Session.hasPermission('users.addRoles.bypass.priority.less')
   };
 
   // rate limiting
@@ -157,12 +157,12 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       return limit.interval && limit.maxInInterval;
     });
     if (ctrl.modifyingRole) {
-      promise = AdminRoles.update(ctrl.newRole).$promise;
+      promise = Roles.update(ctrl.newRole).$promise;
       successMsg = ctrl.newRole.name + ' successfully updated.';
       errorMsg = 'There was an error updating the role ' + ctrl.newRole.name + '.';
     }
     else {
-      promise = AdminRoles.add(ctrl.newRole).$promise;
+      promise = Roles.add(ctrl.newRole).$promise;
       successMsg = ctrl.newRole.name + ' successfully created.';
       errorMsg = 'There was an error creating the role ' + ctrl.newRole.name + '.';
     }
@@ -221,7 +221,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
     var users = [];
     ctrl.usersToAdd.forEach(function(user) { users.push(user.text); });
 
-    AdminUsers.addRoles({ usernames: users, role_id: ctrl.roleId }).$promise
+    User.addRoles({ usernames: users, role_id: ctrl.roleId }).$promise
     .then(function() {
       Alert.success('Users successfully added to ' + ctrl.selectedRole.name + ' role.');
       ctrl.pullPage();
@@ -235,7 +235,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   };
 
   this.removeUser = function(user) {
-    AdminUsers.removeRoles({ user_id: user.id, role_id: ctrl.roleId }).$promise
+    User.removeRole({ user_id: user.id, role_id: ctrl.roleId }).$promise
     .then(function() {
       Alert.success('User ' + user.username + ' successfully removed from ' + ctrl.selectedRole.name + ' role.');
       ctrl.pullPage();
@@ -248,7 +248,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   };
 
   this.loadTags = function(query) {
-    return AdminUsers.searchUsernames({ username: query }).$promise;
+    return User.searchUsernames({ username: query }).$promise;
   };
 
   this.selectRole = function(role) {
@@ -274,7 +274,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   this.resetPriority = function() { ctrl.roles = angular.copy(ctrl.backupPriorities); };
 
   this.savePriority = function() {
-    AdminRoles.reprioritize(ctrl.roles).$promise
+    Roles.reprioritize(ctrl.roles).$promise
     .then(function() {
       Alert.success('Roles successfully reprioritized');
       ctrl.backupPriorities = angular.copy(ctrl.roles);
@@ -310,7 +310,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
   this.resetRole = function() {
     ctrl.roleToReset.permissions = {};
     ctrl.roleToReset.highlight_color = ctrl.roleToReset.highlight_color ? ctrl.roleToReset.highlight_color : undefined;
-    AdminRoles.update(ctrl.roleToReset).$promise
+    Roles.update(ctrl.roleToReset).$promise
     .then(function() {
       Alert.success('Role ' + ctrl.roleToReset.name + ' successfully reset.');
     })
@@ -347,7 +347,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       ctrl.queryParams = {};
       $location.search(ctrl.queryParams);
     }
-    AdminRoles.remove({ id: ctrl.roleToRemove.id }).$promise
+    Roles.remove({ id: ctrl.roleToRemove.id }).$promise
     .then(function() {
       Alert.success('Role ' + ctrl.roleToRemove.name + ' successfully removed.');
     })
@@ -424,14 +424,14 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'AdminRoles
       search: ctrl.search
     };
     if (ctrl.roleId) {
-      AdminRoles.users(query).$promise
+      Roles.users(query).$promise
       .then(function(updatedUserData) {
         ctrl.processUsers(updatedUserData);
         ctrl.userData = updatedUserData;
         ctrl.pageCount = Math.ceil(updatedUserData.count / query.limit);
       });
     }
-    AdminRoles.all(query).$promise
+    Roles.all(query).$promise
     .then(function(pageData) {
       ctrl.roles = pageData.roles;
       ctrl.layouts = pageData.layouts;

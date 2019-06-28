@@ -51,7 +51,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     // invitations
     this.canInvite = function() {
       var isAuthed = Session.isAuthenticated();
-      var hasPermission = Session.hasPermission('users.invite');
+      var hasPermission = Session.hasPermission('invitations.invite');
       if (isAuthed && hasPermission) { return true; }
       else { return false; }
     };

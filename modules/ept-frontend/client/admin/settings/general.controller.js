@@ -1,4 +1,4 @@
-var ctrl = ['$scope', '$filter', 'settings', 'AdminSettings', 'AdminBoards', 'Alert', function($scope, $filter, settings, AdminSettings, AdminBoards, Alert) {
+var ctrl = ['$scope', '$filter', 'settings', 'Configurations', 'Boards', 'Alert', function($scope, $filter, settings, Configurations, Boards, Alert) {
   var ctrl = this;
 
   // Tab control
@@ -23,7 +23,7 @@ var ctrl = ['$scope', '$filter', 'settings', 'AdminSettings', 'AdminBoards', 'Al
   // get boards for portal select
   this.boards = [];
   function getBoards() {
-    return AdminBoards.moveBoards().$promise
+    return Boards.moveList().$promise
     .then(function(allBoards) {
       ctrl.boards = allBoards || [];
       ctrl.boards.map(function(board) {
@@ -35,7 +35,7 @@ var ctrl = ['$scope', '$filter', 'settings', 'AdminSettings', 'AdminBoards', 'Al
 
   // Save action
   $scope.child.save = function() {
-    AdminSettings.save(ctrl.settings).$promise
+    Configurations.update(ctrl.settings).$promise
     .then(function() {
       Alert.success('Successfully saved settings');
       ctrl.originalSettings = angular.copy(ctrl.settings);
@@ -54,7 +54,7 @@ var ctrl = ['$scope', '$filter', 'settings', 'AdminSettings', 'AdminBoards', 'Al
   };
 }];
 
-require('../../components/image_uploader/image_uploader.directive');
+require('../../modules/ept-images/image-uploader.directive');
 
 module.exports = angular.module('ept.admin.settings.general.ctrl', [])
 .controller('GeneralSettingsCtrl', ctrl);

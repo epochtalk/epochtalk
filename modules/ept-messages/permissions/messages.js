@@ -12,9 +12,6 @@ var validation =  Joi.object().keys({
   }),
   latest: Joi.object().keys({
     allow: Joi.boolean()
-  }),
-  findUser: Joi.object().keys({
-    allow: Joi.boolean()
   })
 });
 
@@ -24,8 +21,7 @@ var superAdministrator = {
     allow: true,
     bypass: { owner: true }
   },
-  latest: { allow: true },
-  findUser: { allow: true }
+  latest: { allow: true }
 };
 
 var administrator = {
@@ -34,8 +30,7 @@ var administrator = {
     allow: true,
     bypass: { owner: true }
   },
-  latest: { allow: true },
-  findUser: { allow: true }
+  latest: { allow: true }
 };
 
 var globalModerator = {
@@ -44,8 +39,7 @@ var globalModerator = {
     allow: true,
     bypass: { owner: true }
   },
-  latest: { allow: true },
-  findUser: { allow: true }
+  latest: { allow: true }
 };
 
 var moderator = {
@@ -54,8 +48,7 @@ var moderator = {
     allow: true,
     bypass: { owner: true }
   },
-  latest: { allow: true },
-  findUser: { allow: true }
+  latest: { allow: true }
 };
 
 var patroller = {
@@ -64,8 +57,7 @@ var patroller = {
     allow: true,
     bypass: { owner: true }
   },
-  latest: { allow: true },
-  findUser: { allow: true }
+  latest: { allow: true }
 };
 
 var user = {
@@ -74,8 +66,7 @@ var user = {
     allow: true,
     bypass: { owner: true }
   },
-  latest: { allow: true },
-  findUser: { allow: true }
+  latest: { allow: true }
 };
 
 var newbie = {
@@ -84,8 +75,7 @@ var newbie = {
     allow: true,
     bypass: { owner: true }
   },
-  latest: { allow: true },
-  findUser: { allow: true }
+  latest: { allow: true }
 };
 
 
@@ -95,8 +85,7 @@ var banned = {
     allow: true,
     bypass: { owner: true }
   },
-  latest: { allow: true },
-  findUser: { allow: true }
+  latest: { allow: true }
 };
 
 var layout = {
@@ -105,8 +94,7 @@ var layout = {
     title: 'Delete Single Message',
     bypasses: [ { description: 'Ignore Message Ownership', control: 'owner', type: 'boolean' } ]
   },
-  latest: { title: 'View Messages' },
-  findUser: { title: 'Search for users to Message' }
+  latest: { title: 'View Messages' }
 };
 
 module.exports = {

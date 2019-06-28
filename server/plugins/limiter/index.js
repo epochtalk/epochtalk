@@ -84,7 +84,7 @@ exports.register = function(plugin, options, next) {
     }
 
     // TODO: Remove this, modify image upload to accept batch uploads
-    if (!routeLimit && path === '/images/upload') {
+    if (!routeLimit && path === '/api/images/upload') {
       routeLimit = _.clone(imageUploadOverrides);
     }
 

@@ -1,4 +1,4 @@
-var ctrl = ['$scope', 'text', 'AdminLegal', 'Alert', function($scope, text, AdminLegal, Alert) {
+var ctrl = ['$scope', 'text', 'Legal', 'Alert', function($scope, text, Legal, Alert) {
   var ctrl = this;
 
   // Tab control
@@ -12,14 +12,14 @@ var ctrl = ['$scope', 'text', 'AdminLegal', 'Alert', function($scope, text, Admi
 
   // Save action
   $scope.child.save = function() {
-    AdminLegal.update(ctrl.text).$promise
+    Legal.update(ctrl.text).$promise
     .then(function() { Alert.success('Successfully saved legal text'); })
     .catch(function() { Alert.error('Legal text could not be saved'); });
   };
 
   // Reset action
   $scope.child.reset = function() {
-    AdminLegal.reset().$promise
+    Legal.reset().$promise
     .then(function(text) { ctrl.text = text; })
     .then(function() { Alert.success('Successfully reset legal text'); });
   };

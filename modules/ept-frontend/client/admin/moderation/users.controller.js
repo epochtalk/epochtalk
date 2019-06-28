@@ -32,8 +32,8 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 
   this.canBanUser = function() {
     var loggedIn = Session.isAuthenticated();
-    var banPermission = Session.hasPermission('bans.privilegedBan');
-    var banBoardsPermission = Session.hasPermission('bans.privilegedBanFromBoards');
+    var banPermission = Session.hasPermission('bans.ban.allow');
+    var banBoardsPermission = Session.hasPermission('bans.banFromBoards.allow');
     if (loggedIn && (banPermission || banBoardsPermission)) { return true; }
     else { return false; }
   };
@@ -440,10 +440,9 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
 }];
 
 // include the profile directive
-require('../../components/profile/profile.directive.js');
-require('../../components/usernotes/usernotes.directive.js');
-require('../../components/image_uploader/image_uploader.directive');
-require('../../components/ban_modal/ban-modal.directive');
+require('../../modules/ept-users/directives/profile.directive.js');
+require('../../modules/ept-user-notes/usernotes.directive.js');
+require('../../modules/ept-images/image-uploader.directive');
 
 module.exports = angular.module('ept.admin.moderation.users.ctrl', [])
 .controller('ModUsersCtrl', ctrl);

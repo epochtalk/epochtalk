@@ -72,15 +72,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
             { name: 'ept.directives.category-editor'},
             { name: 'ept.directives.nestable-boards'},
             { name: 'ept.directives.nestable-categories'},
-            { name: 'ept.directives.setModerators' }
+            { name: 'ept.directives.set-moderators' }
           ]);
           deferred.resolve();
         });
         return deferred.promise;
       }],
-      roleData: ['AdminRoles', function(AdminRoles) { return AdminRoles.all().$promise; }],
-      categories: ['AdminBoards', function(AdminBoards) { return AdminBoards.categories().$promise; }],
-      boards: ['AdminBoards', function(AdminBoards) { return AdminBoards.boards().$promise; }]
+      roleData: ['Roles', function(Roles) { return Roles.all().$promise; }],
+      categories: ['Boards', function(Boards) { return Boards.unfiltered().$promise; }],
+      boards: ['Boards', function(Boards) { return Boards.uncategorized().$promise; }]
     }
   })
   .state('admin-management.users', {
@@ -103,13 +103,12 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           $ocLazyLoad.load([
             { name: 'ept.admin.management.users.ctrl' },
             { name: 'ept.directives.image-uploader' },
-            { name: 'ept.directives.ban-modal'}
           ]);
           deferred.resolve();
         });
         return deferred.promise;
       }],
-      users: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+      users: ['User', '$stateParams', function(User, $stateParams) {
         var query = {
           field: $stateParams.field,
           desc: $stateParams.desc,
@@ -119,9 +118,9 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           search: $stateParams.search,
           ip: $stateParams.ip
         };
-        return AdminUsers.page(query).$promise;
+        return User.page(query).$promise;
       }],
-      usersCount: ['AdminUsers', '$stateParams', function(AdminUsers, $stateParams) {
+      usersCount: ['User', '$stateParams', function(User, $stateParams) {
         var opts;
         var filter = $stateParams.filter;
         var search = $stateParams.search;
@@ -133,7 +132,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
             ip: ip
           };
         }
-        return AdminUsers.count(opts).$promise
+        return User.count(opts).$promise
         .then(function(usersCount) { return usersCount.count; });
       }],
       field: ['$stateParams', function($stateParams) {
@@ -181,8 +180,8 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
         });
         return deferred.promise;
       }],
-      pageData: ['AdminRoles', function(AdminRoles) {
-        return AdminRoles.all().$promise
+      pageData: ['Roles', function(Roles) {
+        return Roles.all().$promise
         .then(function(pageData) { return pageData; });
       }],
       page: ['$stateParams', function($stateParams) {
@@ -197,14 +196,14 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
       search: ['$stateParams', function($stateParams) {
         return $stateParams.search;
       }],
-      userData: ['AdminRoles', '$stateParams', function(AdminRoles, $stateParams) {
+      userData: ['Roles', '$stateParams', function(Roles, $stateParams) {
         var query = {
           id: $stateParams.roleId,
           page: Number($stateParams.page) || 1,
           limit: Number($stateParams.limit) || 15,
           search: $stateParams.search
         };
-        return AdminRoles.users(query).$promise
+        return Roles.users(query).$promise
         .then(function(userData) { return userData; });
       }]
     }
@@ -270,7 +269,7 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           limit: Number($stateParams.limit) || 25,
           page: Number($stateParams.page) || 1,
         };
-        return Invitations.list(query).$promise;
+        return Invitations.all(query).$promise;
       }]
     }
   });

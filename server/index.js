@@ -1,5 +1,6 @@
 require('dotenv').load({silent: true});
 var _ = require('lodash');
+var Promise = require('bluebird');
 var path = require('path');
 var Hapi = require('hapi');
 var Hoek = require('hoek');
@@ -9,11 +10,11 @@ var Inert = require('inert');
 var Vision = require('vision');
 var errorMap = require(path.normalize(__dirname + '/error-map'));
 var db = require(path.normalize(__dirname + '/../db'));
+var websocket = require(path.normalize(__dirname + '/../websocket'));
 var redis = require(path.normalize(__dirname + '/../redis'));
 var setup = require(path.normalize(__dirname + '/../setup'));
 var jwt = require(path.normalize(__dirname + '/plugins/jwt'));
 var config = require(path.normalize(__dirname + '/../config'));
-var acls = require(path.normalize(__dirname + '/plugins/acls'));
 var hooks = require(path.normalize(__dirname + '/plugins/hooks'));
 var parser = require(path.normalize(__dirname + '/plugins/parser'));
 var common = require(path.normalize(__dirname + '/plugins/common'));
@@ -22,20 +23,12 @@ var emailer = require(path.normalize(__dirname + '/plugins/emailer'));
 var modules = require(path.normalize(__dirname + '/plugins/modules'));
 var session = require(path.normalize(__dirname + '/plugins/session'));
 var limiter = require(path.normalize(__dirname + '/plugins/limiter'));
-var patroller = require(path.normalize(__dirname + '/plugins/patroller'));
-var blacklist = require(path.normalize(__dirname + '/plugins/blacklist'));
 var sanitizer = require(path.normalize(__dirname + '/plugins/sanitizer'));
 var serverOptions = require(path.normalize(__dirname + '/server-options'));
 var logOptions = require(path.normalize(__dirname + '/log-options'));
-var imageStore = require(path.normalize(__dirname + '/plugins/imageStore'));
-var lastActive = require(path.normalize(__dirname + '/plugins/last_active'));
 var AuthValidate = require(path.normalize(__dirname + '/plugins/jwt/validate'));
-var authorization = require(path.normalize(__dirname + '/plugins/authorization'));
-var notifications = require(path.normalize(__dirname + '/plugins/notifications'));
-var moderationLog = require(path.normalize(__dirname + '/plugins/moderation_log'));
-var trackIp = require(path.normalize(__dirname + '/plugins/track_ip'));
 
-var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods, parsers;
+var server, additionalRoutes, commonMethods, authMethods, permissions, roles, hookMethods, plugins, parsers;
 
 // setup configration file and sync with DB
 setup()
@@ -58,6 +51,7 @@ setup()
   server.decorate('server', 'redis', redis);
 
 })
+// Load plugins which are npm deps
 // server logging
 .then(function() {
   // server logging only registered if config enabled
@@ -65,11 +59,6 @@ setup()
 })
 // inert static file serving
 .then(function() { server.register(Inert); })
-// notifications
-.then(function() {
-  // notification methods
-  return server.register({ register: notifications, options: { db, config }});
-})
 // auth via jwt
 .then(function() {
   return server.register({ register: jwt, options: { redis } })
@@ -80,61 +69,6 @@ setup()
     };
     server.auth.strategy('jwt', 'jwt', strategyOptions);
   });
-})
-// blacklist
-.then(function() { return server.register({ register: blacklist, options: { db } }); })
-// backoff
-.then(function() { return server.register({ register: backoff }); })
-// rate limiter
-.then(function() {
-  var rlOptions = Hoek.clone(config.rateLimiting);
-  rlOptions.redis = redis;
-  return server.register({ register: limiter, options: rlOptions });
-})
-// imageStore
-.then(function() { return server.register({ register: imageStore, options: { config, db } }); })
-// sanitizer
-.then(function() { return server.register({ register: sanitizer }); })
-// load modules
-.then(function() {
-  return server.register({ register: modules, options: { db } })
-  .then(function() {
-    additionalRoutes = server.app.moduleData.routes;
-    commonMethods = server.app.moduleData.common;
-    authMethods = server.app.moduleData.authorization;
-    permissions = server.app.moduleData.permissions;
-    hookMethods = server.app.moduleData.hooks;
-    parsers = server.app.moduleData.parsers;
-    delete server.app.moduleData;
-    return;
-  });
-})
-// parser
-.then(function() { return server.register({ register: parser, options: { parsers } }); })
-// route acls
-.then(function() {
-  return server.register({ register: acls, options: { db, config, permissions } })
-  .then(function() {
-    roles = server.app.rolesData;
-    delete server.app.rolesData;
-    return;
-  });
-})
-// user sessions
-.then(function() {
-  return server.register({ register: session, options: { roles, redis, config } });
-})
-// common methods
-.then(function() {
-  return server.register({ register: common, options: { methods: commonMethods } });
-})
-// authorization methods
-.then(function() {
-  return server.register({ register: authorization, options: { methods: authMethods } });
-})
-// hook methods
-.then(function() {
-  return server.register({ register: hooks, options: { hooks: hookMethods } });
 })
 // vision templating
 .then(function() {
@@ -147,16 +81,61 @@ setup()
     });
   });
 })
+// register modules plugin to grab plugin data
+.then(function() {
+  return server.register({ register: modules, options: { db, config } })
+  .then(function() {
+    additionalRoutes = server.app.moduleData.routes;
+    commonMethods = server.app.moduleData.common;
+    authMethods = server.app.moduleData.authorization;
+    permissions = server.app.moduleData.permissions;
+    hookMethods = server.app.moduleData.hooks;
+    preloadPlugins = server.app.moduleData.plugins.filter(function(e) { return e.preload; });
+    plugins = server.app.moduleData.plugins.filter(function(e) { return !e.preload; });
+    parsers = server.app.moduleData.parsers;
+    return;
+  });
+})
+// preload special case module plugins which need to be loaded first
+.then(function() { return loadModulePlugins(preloadPlugins) })
+// Clean up data temporarily appended to server after modules are loaded
+.then(function() {
+  roles = server.app.rolesData;
+  delete server.app.rolesData;
+  delete server.app.moduleData;
+  return;
+})
+// Load non-module plugins
+// backoff
+.then(function() { return server.register({ register: backoff }); })
+// rate limiter
+.then(function() {
+  var rlOptions = Hoek.clone(config.rateLimiting);
+  rlOptions.redis = redis;
+  return server.register({ register: limiter, options: rlOptions });
+})
+// sanitizer
+.then(function() { return server.register({ register: sanitizer }); })
+// parser
+.then(function() { return server.register({ register: parser, options: { parsers } }); })
+// user sessions
+.then(function() {
+  return server.register({ register: session, options: { roles, redis, config } });
+})
+// common methods
+.then(function() {
+  return server.register({ register: common, options: { methods: commonMethods } });
+})
+// hook methods
+.then(function() {
+  return server.register({ register: hooks, options: { hooks: hookMethods } });
+})
 // emailer
 .then(function() { return server.register({ register: emailer, options: { config } }); })
-// moderation log
-.then(function() { return server.register({ register: moderationLog, options: { db } }); })
-// Track IP
-.then(function() { return server.register({ register: trackIp, options: { db } }); })
-// Patrollers
-.then(function() { return server.register({ register: patroller }); })
-// Last Active
-.then(function() { return server.register({ register: lastActive }); })
+// plugins methods
+.then(function() {
+  return loadModulePlugins(plugins);
+})
 // Start websocket server
 .then(function() {
   if (config.disable_websocket_server) {
@@ -216,3 +195,29 @@ setup()
   console.error(err);
   process.exit(1);
 });
+
+function loadModulePlugins(plugs) {
+  return Promise.each(plugs, function(plugin) {
+    if (plugin.db) {
+      _.set(plugin, ['options', 'db'], db);
+      delete plugin.db;
+    }
+    if (plugin.websocket) {
+      _.set(plugin, ['options', 'websocket'], websocket);
+      delete plugin.websocket;
+    }
+    if (plugin.config) {
+      _.set(plugin, ['options', 'config'], config);
+      delete plugin.config;
+    }
+    if (plugin.permissions) {
+      _.set(plugin, ['options', 'permissions'], permissions);
+      delete plugin.permissions;
+    }
+    if (plugin.methods) {
+      _.set(plugin, ['options', 'methods'], authMethods);
+      delete plugin.methods;
+    }
+    return server.register(plugin);
+  });
+}

@@ -2,7 +2,7 @@
 
 #### **Warning this project is under active development, design is subject to change**
 
-Next generation forum software. Epochtalk is a forum frontend designed to be paired with the [core-pg](https://github.com/epochtalk/core-pg) backend. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Webpack](https://webpack.github.io), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
+Next generation forum software. Epochtalk forum software utilizes technologies such as [AngularJS](https://angularjs.org), [Webpack](https://webpack.github.io), [Postgres](https://github.com/postgres/postgres) and [Bourbon](http://bourbon.io/) for improved performance and user experience as compared to existing forum software.
 
 ![Epochtalk Forums](http://i.imgur.com/D2Lizk5.png)
 
@@ -28,7 +28,7 @@ Next generation forum software. Epochtalk is a forum frontend designed to be pai
 * Epochtalk is a single page web application created with [AngularJS](https://angularjs.org)
 * Web/Mobile ready responsive design using [Bourbon](http://bourbon.io/)
 * Code is bundled and loaded as needed, for performance, using [Webpack](https://webpack.github.io)
-* Designed with performance in mind. Epochtalk's backend, [epochtalk-core-pg](https://github.com/epochtalk/core-pg), utilizes [Postgres](http://www.postgresql.org/) as a database.
+* Designed with performance in mind. Epochtalk's backend utilizes [Postgres](http://www.postgresql.org/) as a database.
 * Customizable Theming (Branding, coloring, fonts, sizes)
 * Fully modular permissions system with roles
 
@@ -52,13 +52,7 @@ $ cd epochtalk
 $ yarn
 ```
 
-#### 3) Install module dependencies using [yarn](https://yarnpkg.com)
-```sh
-$ cd modules
-$ yarn
-```
-
-#### 4) Copy the example.env file
+#### 3) Copy the example.env file
 This file specifies the server configurations and is necessary to run the
 server.  You can edit the .env file later to specify the configurations as
 outlined in the Configuration section.
@@ -68,8 +62,20 @@ $ cd .. # cd back to project root
 $ cp example.env .env
 ```
 
-#### 5) Initialize
-First ensure that [Postgres](http://www.postgresql.org/) is installed andrunning. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the fourm. From the root directory of the project run the following command:
+#### 4) Checkout and Run Migrations
+**Note**: If you do not have brew installed, you must manually install [Elixir](https://elixir-lang.org/install.html)
+```sh
+$ cd .. # (or just change directories outside of the epochtalk directory)
+$ brew install elixir # this installs elixir so we can run epoch migrations
+$ git clone git@github.com:epochtalk/epoch.git
+$ cd epoch
+$ mix deps.get # install project deps
+$ mix ecto.setup # create and migrate epochtalk database
+$ cd ../epochtalk # change directories back to epochtalk root
+```
+
+#### 5) Initialize First User
+First ensure that [Postgres](http://www.postgresql.org/) is installed and running. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the forum. From the root directory of the project run the following command:
 ```sh
 $ node cli --create
 ```
@@ -82,9 +88,6 @@ $ npm run serve
 
 #### 7) Log in and change admin account information
 Login to the admin account using the username ``admin`` and password ``admin1234``. Visit your profile by clicking the link in the top right corner of the page, then change your username and password.
-
-### Trouble Shooting
-Since both [Epochtalk](https://github.com/epochtalk/epochtalk) and [core-pg](https://github.com/epochtalk/core-pg) are actively being developed, the database migrations can become out of sync. To resolve this you can checkout [core-pg](https://github.com/epochtalk/core-pg) and then from within the root directory of core-pg, you can run ``npm link``. Change directories into the ``node_modules`` of your checked out [Epochtalk](https://github.com/epochtalk/epochtalk) project and run ``npm link epochtalk-core-pg``. This will ensure that [Epochtalk](https://github.com/epochtalk/epochtalk) is using the latest master of [core-pg](https://github.com/epochtalk/core-pg) instead of the npm version. Then run ``npm run db-migrate`` from the root directory of your [Epochtalk](https://github.com/epochtalk/epochtalk) project to ensure all migrations are up to date.
 
 ## Configuration
 Forum configurations can be set either manually or using the admin panel.
@@ -133,13 +136,6 @@ Title like inputs are stripped of all html while description like inputs are all
 
 ### Anti-Abuse
 Marked routes are protected from spam or abuse by tracking the number of times a user access an API endpoint. The first two uses of the endpoint are free of any penalties. Any use of the endpoint afterward is penalized with longer and longer cool down periods, starting from 1 minutes and ranging up to 65536 minutes or roughly 45 days from the last known incident. Proper use of the endpoint will trigger a function to remove all cool down periods. Improper use of the endpoint duing the cool down period will only increase the cool down period.
-
-### Planned Features:
-* Markdown Support
-* Medium Based Editor
-* Hiding the preview window
-* Moving the preview window to another location
-* Full feature compatibility across all input methods (BBCode, Medium, Markdown)
 
 ## Contributions
 Epochtalk is an open source project and gladly welcomes public contributions. Contributions can be made by creating a discussion via the issues. New features or fixes can be contributed via pull requests. *Please note, all new packages must be added via yarn, not npm*

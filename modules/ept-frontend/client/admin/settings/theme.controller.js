@@ -1,4 +1,4 @@
-var ctrl = ['$scope', '$state', '$timeout', 'theme', 'AdminSettings', 'Alert', 'ThemeSVC', function($scope, $state, $timeout, theme, AdminSettings, Alert, ThemeSVC) {
+var ctrl = ['$scope', '$state', '$timeout', 'theme', 'Themes', 'Alert', 'ThemeSVC', function($scope, $state, $timeout, theme, Themes, Alert, ThemeSVC) {
   var ctrl = this;
 
   // Tab control
@@ -44,7 +44,7 @@ var ctrl = ['$scope', '$state', '$timeout', 'theme', 'AdminSettings', 'Alert', '
     ThemeSVC.setTheme(ctrl.themeCopy);
 
     // Update
-    AdminSettings.previewTheme(ctrl.themeCopy).$promise
+    Themes.previewTheme(ctrl.themeCopy).$promise
     .then(function(previewTheme) {
       ctrl.theme = previewTheme;
       ctrl.removeVarPostFix();
@@ -60,7 +60,7 @@ var ctrl = ['$scope', '$state', '$timeout', 'theme', 'AdminSettings', 'Alert', '
     // Add px and rem back
     ctrl.addVarPostFix();
     // Update
-    AdminSettings.setTheme(ctrl.themeCopy).$promise
+    Themes.setTheme(ctrl.themeCopy).$promise
     .then(function(updatedTheme) {
       ctrl.theme = updatedTheme;
       ctrl.removeVarPostFix();
@@ -77,7 +77,7 @@ var ctrl = ['$scope', '$state', '$timeout', 'theme', 'AdminSettings', 'Alert', '
 
   // revert action
   this.revert = function() {
-    AdminSettings.resetTheme().$promise
+    Themes.resetTheme().$promise
     .then(function(resetTheme) {
       ctrl.theme = resetTheme;
       ctrl.removeVarPostFix();
@@ -89,7 +89,7 @@ var ctrl = ['$scope', '$state', '$timeout', 'theme', 'AdminSettings', 'Alert', '
 }];
 
 // include the color validator directive
-require('../../components/color_validator/color-validator.directive');
+require('../../modules/ept-themes/color-validator.directive');
 
 module.exports = angular.module('ept.admin.settings.theme.ctrl', [])
 .controller('ThemeSettingsCtrl', ctrl);

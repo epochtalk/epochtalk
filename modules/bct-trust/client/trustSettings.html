@@ -1,0 +1,35 @@
+<h3 class="thin-underline">Trust Settings for {{TrustSettingsCtrl.settingsUsername}}</h3>
+
+<trust-list callback="TrustSettingsCtrl.trustListCallback"></trust-list>
+
+<div class="trust-section">
+  <div class="fill-row">
+  <h5 class="thin-underline"><span class="inline-block">Trust Network ( {{TrustSettingsCtrl.hierarchy ? 'Hierarchical' : 'Depth'}} View )</span>
+  <a class="remove-active right" ng-href="#" ng-click="TrustSettingsCtrl.changeTrustView()"><i class="fa fa-retweet"></i> Change to {{!TrustSettingsCtrl.hierarchy ? 'Hierarchical' : 'Depth'}} View</a>
+  </h4>
+
+    <ul ng-hide="TrustSettingsCtrl.hierarchy" class="depth-tree" ng-repeat="level in TrustSettingsCtrl.trustTree">
+      <li><h5>Depth {{level.depth}}</h5></li>
+      <ul>
+        <li ng-repeat="user in level.users">
+          {{user.username}} ({{user.level_trust}})
+        </li>
+      </ul>
+    </ul>
+
+    <div ng-show="TrustSettingsCtrl.hierarchy">
+      <script type="text/ng-template" id="trustTree">
+        <span ng-if="user.type === 0">{{ user.username_trusted }}</span>
+        <span ng-if="user.type === 1"><s>{{ user.username_trusted }}</s></span>
+        <ul ng-if="user.trusted">
+          <li ng-repeat="user in user.trusted" ng-include="'trustTree'"></li>
+        </ul>
+      </script>
+      <ul class="depth-tree">
+        <li ng-repeat="user in TrustSettingsCtrl.trustTree" ng-include="'trustTree'">
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>

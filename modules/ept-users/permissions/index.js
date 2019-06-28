@@ -20,6 +20,9 @@ var validation =  Joi.object().keys({
       viewMoreInfo: Joi.boolean()
     })
   }),
+  lookup: Joi.object().keys({
+    allow: Joi.boolean()
+  }),
   deactivate: Joi.object().keys({
     allow: Joi.boolean()
   }),
@@ -38,17 +41,32 @@ var validation =  Joi.object().keys({
   pagePublic: Joi.object().keys({
     allow: Joi.boolean()
   }),
-  invitations: Joi.object().keys({
+  adminRecover: Joi.object().keys({
     allow: Joi.boolean()
   }),
-  invite: Joi.object().keys({
+  adminPage: Joi.object().keys({
     allow: Joi.boolean()
   }),
-  removeInvite: Joi.object().keys({
+  searchUsernames: Joi.object().keys({
     allow: Joi.boolean()
   }),
-  resend: Joi.object().keys({
-    allow: Joi.boolean()
+  addRoles: Joi.object().keys({
+    allow: Joi.boolean(),
+    bypass: Joi.object().keys({
+      priority: Joi.object().keys({
+        same: Joi.boolean(),
+        less: Joi.boolean()
+      }).xor('same', 'less')
+    })
+  }),
+  removeRole: Joi.object().keys({
+    allow: Joi.boolean(),
+    bypass: Joi.object().keys({
+      priority: Joi.object().keys({
+        same: Joi.boolean(),
+        less: Joi.boolean()
+      }).xor('same', 'less')
+    })
   })
 });
 
@@ -65,6 +83,7 @@ var superAdministrator = {
       viewMoreInfo: true
     }
   },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   delete: {
@@ -72,10 +91,21 @@ var superAdministrator = {
     bypass: { priority: { admin: true } }
   },
   pagePublic: { allow: true },
-  invitations: { allow: true },
-  invite: { allow: true },
-  removeInvite: { allow: true },
-  resend: { allow: true }
+  adminRecover: { allow: true },
+  adminPage: { allow: true },
+  searchUsernames: { allow: true },
+  addRoles: {
+    allow: true,
+    bypass: {
+      priority: { same: true }
+    }
+  },
+  removeRole: {
+    allow: true,
+    bypass: {
+      priority: { same: true }
+    }
+  }
 };
 
 var administrator = {
@@ -91,6 +121,7 @@ var administrator = {
       viewMoreInfo: true
     }
   },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   delete: {
@@ -98,10 +129,21 @@ var administrator = {
     bypass: { priority: { admin: true } }
   },
   pagePublic: { allow: true },
-  invitations: { allow: true },
-  invite: { allow: true },
-  removeInvite: { allow: true },
-  resend: { allow: true }
+  adminRecover: { allow: true },
+  adminPage: { allow: true },
+  searchUsernames: { allow: true },
+  addRoles: {
+    allow: true,
+    bypass: {
+      priority: { less: true }
+    }
+  },
+  removeRole: {
+    allow: true,
+    bypass: {
+      priority: { less: true }
+    }
+  }
 };
 
 var globalModerator = {
@@ -117,6 +159,7 @@ var globalModerator = {
       viewMoreInfo: true
     }
   },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   delete: {
@@ -124,7 +167,7 @@ var globalModerator = {
     bypass: { priority: { mod: true } }
   },
   pagePublic: { allow: true },
-  invite: { allow: true },
+  searchUsernames: { allow: true }
 };
 
 var moderator = {
@@ -140,6 +183,7 @@ var moderator = {
       viewMoreInfo: true
     }
   },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   delete: {
@@ -147,12 +191,13 @@ var moderator = {
     bypass: { priority: { mod: true } }
   },
   pagePublic: { allow: true },
-  invite: { allow: true },
+  searchUsernames: { allow: true }
 };
 
 var patroller = {
   update: { allow: true },
   find: { allow: true },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   pagePublic: { allow: true }
@@ -161,6 +206,7 @@ var patroller = {
 var user = {
   update: { allow: true },
   find: { allow: true },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   pagePublic: { allow: true }
@@ -169,6 +215,7 @@ var user = {
 var newbie = {
   update: { allow: true },
   find: { allow: true },
+  lookup: { allow: true},
   deactivate: { allow: true },
   reactivate: { allow: true },
   pagePublic: { allow: true }
@@ -176,10 +223,12 @@ var newbie = {
 
 var banned = {
   find: { allow: true },
+  lookup: { allow: true}
 };
 
 var anonymous = {
-  find: { allow: true }
+  find: { allow: true },
+  lookup: { allow: true}
 };
 
 var layout = {
@@ -196,6 +245,7 @@ var layout = {
       { description: 'View Sensitive Information', control: 'viewMoreInfo', type: 'boolean'}
     ]
   },
+  lookup: { title: 'Allow user to lookup usernames (Used for messaging and other UI components)' },
   pagePublic: { title: 'Search and Page forum members' },
   deactivate: { title: 'Deactivate Their Account' },
   reactivate: { title: 'Reactivate Their Account' },
@@ -203,13 +253,47 @@ var layout = {
     title: 'Delete User Accounts',
     bypasses: [ { description: 'Other Users', control: 'priority' } ]
   },
-  inviteSeparator: { type: 'separator' },
-  inviteTitle: { title: 'Invitation Permissions', type: 'title' },
-  invite: { title: 'Invite User' },
-  invitations: { title: 'View all Invitations' },
-  resend: { title: 'Resend a prior invitation' },
-  removeInvite: { title: 'Remove an Invitation' },
-  moderationSepratator: { type: 'separator' }
+  adminRecover: { title: 'Send password recovery email to other user\'s accounts' },
+  priviledgedUserSeparator: { type: 'separator' },
+  priviledgedUserTitle: { title: 'Priviledged User Permissions', type: 'title' },
+  addRoles: {
+    title: 'Allow user to add roles to other\'s user accounts',
+    bypasses: [
+      {
+        descriptions: [
+          'Users with the same or lesser role',
+          'Only users with lesser roles'
+        ],
+        values: [
+          'same',
+          'less'
+        ],
+        defaultValue: 'less',
+        control: 'priority',
+        type: 'radio'
+      }
+    ]
+  },
+  removeRole: {
+    title: 'Allow user to remove roles from other\'s user accounts',
+    bypasses: [
+      {
+        descriptions: [
+          'Users with the same or lesser role',
+          'Only users with lesser roles'
+        ],
+        values: [
+          'same',
+          'less'
+        ],
+        defaultValue: 'less',
+        control: 'priority',
+        type: 'radio'
+      }
+    ]
+  },
+  searchUsernames: { title: 'Search all usernames, used for admin/mod UI components to lookup users' },
+  adminPage: { title: 'Page through all forum users, used for admin/mod' }
 };
 
 module.exports = {
