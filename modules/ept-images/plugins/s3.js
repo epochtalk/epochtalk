@@ -226,10 +226,10 @@ s3.uploadPolicy = function(filename) {
   conditions.push(['content-length-range', 1024, config.images.maxSize]);
   var policy = { expiration: expiration, conditions: conditions };
   policy = JSON.stringify(policy);
-  policy = new Buffer(policy).toString('base64');
+  policy = Buffer.from(policy).toString('base64');
 
   // sign policy to generate signature
-  var signature = crypto.createHmac('sha1', config.images.s3.secretKey).update(new Buffer(policy)).digest('base64');
+  var signature = crypto.createHmac('sha1', config.images.s3.secretKey).update(Buffer.from(policy)).digest('base64');
 
   // add this imageUrl to the image expiration
   imageStore.setExpiration(config.images.expiration, imageUrl);
