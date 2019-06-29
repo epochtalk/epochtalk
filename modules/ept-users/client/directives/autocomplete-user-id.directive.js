@@ -6,6 +6,7 @@ var directive = ['User', function(User) {
       userId: '=',
       username: '=',
       inputPlaceholder: '@',
+      admin: '='
     },
     controller: ['$scope', function($scope) {
       $scope.searchResults = [];
@@ -16,7 +17,7 @@ var directive = ['User', function(User) {
         $scope.usernameIsValid = false;
         if (!$scope.username || !$scope.username.length) { return; }
         $scope.searchResults = [];
-        User.lookup({ username: $scope.username, self: true }).$promise
+        User.lookup({ username: $scope.username, self: $scope.admin }).$promise
         .then(function(results) {
           $scope.searchResults = results;
           // ignore casing
