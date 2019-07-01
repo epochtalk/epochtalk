@@ -3,6 +3,9 @@ var watch = require('watch');
 var nodemon = require('nodemon');
 var Promise = require('bluebird');
 var installModules = require(path.normalize(__dirname + '/load_modules'));
+var sass = require(path.join(__dirname, 'sass'));
+var symlink = require(path.join(__dirname, 'symlink'));
+var copy_css = require(path.join(__dirname, 'copy_files'));
 
 var monitors = [];
 var localModulesPath = path.normalize(__dirname + '/../../modules');
@@ -78,9 +81,21 @@ var monitorFEDir = function(dir) {
   return new Promise(function(resolve) {
     var dirPath = localModulesPath + '/' + dir;
     watch.createMonitor(dirPath, function(monitor) {
-      monitor.on('created', function() { installModules(); });
-      monitor.on('changed', function() { installModules(); });
-      monitor.on('removed', function() { installModules(); });
+      monitor.on('created', function() {
+        installModules()
+        .then(copy_css)
+        .then(sass);
+      });
+      monitor.on('changed', function() {
+        installModules()
+        .then(copy_css)
+        .then(sass);
+      });
+      monitor.on('removed', function() {
+        installModules()
+        .then(copy_css)
+        .then(sass);
+      });
       return resolve(monitor);
     });
   });
