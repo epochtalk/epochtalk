@@ -4,5 +4,7 @@ main {
   @include pad(0 $base-grid-padding);
   min-height: 100%;
   padding-bottom: 9.4375rem;
-  #public-content { @include outer-container; }
+  #public-content {
+    @include base-layout-width;
+  }
 }

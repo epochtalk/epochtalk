@@ -20,3 +20,11 @@ $border-color: rgb(215, 215, 215);
 $header-font-color: rgb(255, 255, 255);
 $header-bg-color: rgb(66, 71, 80);
 $sub-header-color: rgb(245, 245, 245);
+
+
+// Base layout width
+@mixin base-layout-width {
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}

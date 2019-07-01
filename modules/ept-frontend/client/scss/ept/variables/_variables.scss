@@ -32,7 +32,7 @@ $placeholder-text-color: lighten($header-bg-color, 20%);
 $base-grid-padding: 2rem;
 
 // Primary Layout Colors Calculated
-$color-primary-alt: lighten($color-primary, 30%);
+$color-primary-alt: darken($color-primary, 15%);
 @if (lightness($color-primary) > 50) { $color-primary-alt: darken($color-primary, 15%); }
 // transparent version
 $color-primary-transparent: rgba($color-primary, 0.4);

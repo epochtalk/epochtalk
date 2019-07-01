@@ -48,6 +48,7 @@ a {
   &:hover, &:focus {
     @include transition(color 0.15s ease, background-color 0.15s ease);
     color: $color-primary-alt;
+    text-decoration: underline;
   }
 }
 a.ng-show, a.ng-hide, input.ng-hide, input.ng-show { @include transition(none !important); }

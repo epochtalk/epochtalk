@@ -12,7 +12,7 @@ footer {
   font-size: 0.8rem;
   margin-bottom: 0;
   #footer {
-    @include outer-container;
+    @include base-layout-width;
     .row { @include row; }
     .links {
       @include span-columns(3);

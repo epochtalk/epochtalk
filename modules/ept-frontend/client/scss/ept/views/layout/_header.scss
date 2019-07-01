@@ -528,7 +528,7 @@ header {
     text-align: center;
     height: $breadcrumbs-height;
     #breadcrumbs {
-      @include outer-container;
+      @include base-layout-width;
       min-width: 0;
       padding: 0;
       background: none;
