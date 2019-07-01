@@ -6,6 +6,7 @@ var nodeSassGlobbing = require('node-sass-globbing');
 // file params
 var sassPath = './app/scss/app.scss';
 var publicSassPath = './public/css/app.css';
+var publicMapPath = './public/css/app';
 
 module.exports = function(publicPath) {
   var currentSassPath = publicPath || publicSassPath;
@@ -13,6 +14,8 @@ module.exports = function(publicPath) {
     var opts = {
       file: sassPath,
       outputStyle: 'compressed',
+      sourceMap: true,
+      outFile: publicMapPath,
       importer: nodeSassGlobbing
     };
     sass.render(opts, function(error, result) {
@@ -23,6 +26,10 @@ module.exports = function(publicPath) {
   .then(function(output) {
     return new Promise(function(resolve, reject) {
       fs.writeFile(currentSassPath, output.css, function(err) {
+        if (err) { reject(err); }
+        else { return resolve(); }
+      });
+      fs.writeFile(publicMapPath + '.map', output.map, function(err) {
         if (err) { reject(err); }
         else { return resolve(); }
       });
