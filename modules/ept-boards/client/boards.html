@@ -4,9 +4,8 @@
     <div ng-click="BoardsCtrl.toggleCategory(cat)" class="collapse-section">
       <a ng-class="{ 'fa-chevron-down' : cat.show, 'fa-chevron-right': !cat.show }"
       class="fa collapse-btn no-select"></a>
-      <h4 ng-bind-html="::cat.name"></h4>
+      <h1 ng-bind-html="::cat.name"></h1>
     </div>
-    <div class="thin-underline"></div>
   </div>
 
   <!-- Boards in Category -->
@@ -17,9 +16,9 @@
         <!-- Board Info -->
         <div class="info">
           <!-- Board Name -->
-          <h5>
+          <h2>
             <a ui-sref="threads.data({ boardId: board.id })" class="board-name" ng-bind-html="board.name"></a>
-          </h5>
+          </h2>
           <!-- Moderators -->
           <div ng-if="board.moderators.length > 0">
             <strong>Moderators: </strong>

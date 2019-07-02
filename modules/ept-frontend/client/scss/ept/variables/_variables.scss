@@ -2,6 +2,17 @@
 
 $dark-text-default: rgb(34, 34, 34);
 $light-text-default: rgb(255,255,255);
+$text-gray-med: #777;
+$text-gray-dark:  #555;  
+
+// Font sizes calculated
+$font-size-3xl: 2.75rem;
+$font-size-2xl: 2.3125rem;
+$font-size-xl:  1.5rem;
+$font-size-lg:  1.3125rem;
+$font-size-med: 1.25rem;
+
+$border: 1px solid #e4e4e4;
 
 @function brightness($color) {
   @if type-of($color) == color {

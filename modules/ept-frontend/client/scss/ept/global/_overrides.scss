@@ -19,13 +19,14 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.5rem;
   font-style: normal;
   font-weight: normal;
-  font-color: $base-font-color;
+  color: $base-font-color;
   text-rendering: optimizedLegibility;
+  text-transform: uppercase;
 }
-h1 { font-size: 2.75rem; line-height: 2.5rem; }
-h2 { font-size: 2.3125rem; line-height: 2rem; }
-h3 { font-size: 1.5rem; } // modal titles
-h4 { font-size: 1.3125rem; } //Category Name, Board Name, Thread Name
+h1 { color: $text-gray-med; font-size: 2.75rem; line-height: 2.5rem; }
+h2 { color: $text-gray-med; font-size: 2.3125rem; line-height: 2rem; }
+h3 { color: $text-gray-med; font-size: 1.5rem; } // modal titles
+h4 { color: $text-gray-med; font-size: 1.3125rem; } //Category Name, Board Name, Thread Name
 h5 { font-size: 1.125rem; } // Board Name (Front Page), Section Headers Board View
 h6 { font-size: 1rem; }
 ul, ol, dl { list-style-position: outside; }

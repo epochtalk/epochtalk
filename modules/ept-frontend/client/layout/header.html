@@ -2,12 +2,12 @@
 <div id="menu-wrap" ng-class="{ 'mobile-expanded' : HeaderCtrl.focusSearch }">
   <nav id="menu">
     <!-- Logo Section -->
-    <h3>
+    <h1>
       <a ui-sref="home" ng-if="$webConfigs.logo"><img ng-src="{{$webConfigs.logo}}" id="logo" /></a>
       <a ui-sref="home" ui-sref-opts="{ reload: true }" id="logo-text" ng-bind="$webConfigs.title | decode">
         Epochtalk
       </a>
-    </h3>
+    </h1>
 
     <!-- Login Section -->
     <ul class="signed-out" ng-if="!HeaderCtrl.loggedIn()">

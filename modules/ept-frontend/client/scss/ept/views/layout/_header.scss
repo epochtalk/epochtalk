@@ -19,12 +19,13 @@ header {
       &.mobile-expanded { min-height: 2 * $header-height; }
     }
     #menu {
-      @include outer-container;
-      h3 {
+      @include base-layout-width;
+      h1 {
         float: left;
         font-family: $base-font-sans;
         line-height: $header-height;
         font-size: $header-logo-font-size;
+        text-transform: none;
         #logo {
           padding-right: 10px;
           width: 2.1875rem;
@@ -32,7 +33,12 @@ header {
           max-height: 2.1875rem;
           margin-bottom: 0.25rem;
         }
-        #logo-text { color: $header-logo-font-color; }
+        #logo-text { 
+          color: $header-logo-font-color; 
+          &:hover {
+            text-decoration: none;
+          }
+        }
       }
       .imageContainer { background: url('/static/img/loading.gif') no-repeat center; display: inline;}
       .imageContainer.loaded { background: none; }
@@ -564,7 +570,7 @@ header {
     border-bottom: 1px solid $breadcrumbs-border-color;
     margin-bottom: $breadcrumbs-bottom-margin;
     #motd {
-      @include outer-container;
+      @include base-layout-width;
       clear: both;
       padding: 0.5rem 0;
       color: #666;

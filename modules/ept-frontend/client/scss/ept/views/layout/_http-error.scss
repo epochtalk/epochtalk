@@ -1,6 +1,6 @@
 /*-------------- Error Layout -------------- */
 main #http-error {
-  @include outer-container;
+  @include base-layout-width;
   @include row;
   text-align: center;
   line-height: normal;
