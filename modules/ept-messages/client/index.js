@@ -16,7 +16,10 @@ var route = ['$stateProvider', function($stateProvider) {
         require.ensure([], function() {
           require('./messages.controller');
           $ocLazyLoad.load([
-            { name: 'ept.messages.ctrl' }
+            { name: 'ept.messages.ctrl' },
+            { name: 'ept.directives.epochtalk-editor' },
+            { name: 'ept.directives.image-uploader' },
+            { name: 'ept.directives.resizeable' }
           ]);
           deferred.resolve();
         });

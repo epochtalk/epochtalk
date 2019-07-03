@@ -12,8 +12,8 @@ var ctrl = [
     this.currentConversation = {messages: []};
     this.selectedConversationId = null;
     this.receiverNames = null;
-    this.newConversation = {subject: '', body: '', receiver_ids: [], previewBody: ''};
-    this.newMessage = {subject: '', body: '', receiver_ids: [], previewBody: '' };
+    this.newConversation = {content: { subject: '', body: '', body_html: '' }, receiver_ids: [], previewBody: ''};
+    this.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [] };
     this.showReply = false;
 
     this.canCreateMessage = function() {
@@ -52,13 +52,13 @@ var ctrl = [
     // page exiting functions
     var confirmMessage = 'It looks like a message is being written.';
     var exitFunction = function() {
-      if (ctrl.newMessage.body.length) { return confirmMessage; }
+      if (ctrl.newMessage.content.body.length) { return confirmMessage; }
     };
     $window.onbeforeunload = exitFunction;
     var routeLeaveFunction = function() {
       return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState) {
         if (toState.url === fromState.url) { return; }
-        if (ctrl.newMessage.body.length) {
+        if (ctrl.newMessage.content.body.length) {
           var message = confirmMessage + ' Are you sure you want to leave?';
           var answer = confirm(message);
           if (!answer) { e.preventDefault(); }
@@ -103,11 +103,11 @@ var ctrl = [
         ctrl.currentConversation.id = conversationId;
         if (options.saveInput) {
           ctrl.newMessage.subject = ctrl.newMessage.subject || ctrl.currentConversation.subject;
-          ctrl.newMessage.body = ctrl.newMessage.body || '';
-          ctrl.newMessage.previewBody = ctrl.newMessage.previewBody || '';
+          ctrl.newMessage.content.body = ctrl.newMessage.content.body || '';
+          ctrl.newMessage.content.body_html = ctrl.newMessage.content.body_html || '';
         }
         else {
-          ctrl.newMessage = { subject: ctrl.currentConversation.subject, body: '', previewBody: '' };
+          ctrl.newMessage = { subject: ctrl.currentConversation.subject, content: { body_html: '', body: '' } };
         }
         ctrl.newMessage.conversation_id = data.id;
         ctrl.newMessage.sender_id = Session.user.id;
@@ -177,8 +177,11 @@ var ctrl = [
       // create a new conversation id to put this message under
       var newMessage = {
         receiver_ids: receiverIds,
-        subject: ctrl.newConversation.subject,
-        body: ctrl.newConversation.body,
+        content: {
+          subject: ctrl.newConversation.subject || "",
+          body: "TEST",
+          body_html: "TEST"
+        }
       };
 
       Conversations.save(newMessage).$promise
@@ -233,32 +236,6 @@ var ctrl = [
       });
     };
 
-    $scope.$watch(function() { return ctrl.newMessage.body; }, function(body) {
-      if (body) {
-        // BBCode Parsing
-        var rawText = body;
-        var processed = rawText;
-        $window.parsers.forEach(function(parser) {
-          processed = parser.parse(processed);
-        });
-        // re-bind to scope
-        ctrl.newMessage.previewBody = processed;
-      }
-    });
-
-    $scope.$watch(function() { return ctrl.newConversation.body; }, function(body) {
-      if (body) {
-        // BBCode Parsing
-        var rawText = body;
-        var processed = rawText;
-        $window.parsers.forEach(function(parser) {
-          processed = parser.parse(processed);
-        });
-        // re-bind to scope
-        ctrl.newConversation.previewBody = processed;
-      }
-    });
-
     this.saveMessage = function() {
       Messages.save(ctrl.newMessage).$promise
       .then(function(message) {
@@ -270,8 +247,7 @@ var ctrl = [
       })
       .then(ctrl.loadRecentMessages)
       .then(function() {
-        ctrl.newMessage.body = '';
-        ctrl.newMessage.previewBody = '';
+        ctrl.newMessage.content = { body: '', body_html: '' };
       })
       .catch(function(err) {
         var msg = 'Message could not be sent';
@@ -374,6 +350,62 @@ var ctrl = [
         $timeout(function() { ctrl.reportSubmitted = false; }, 500);
       });
     };
+
+    // Editor
+    this.dirtyEditor = false;
+    this.resetEditor = false;
+    this.showEditor = false;
+    this.focusEditor = false;
+    this.isMinimized = true;
+    this.resize = true;
+    this.content = { post: { body_html: '', body: '' } };
+    this.editorPosition = 'editor-fixed-bottom';
+
+    this.fullscreen = function() {
+      if (ctrl.isMinimized) {
+        ctrl.isMinimized = false;
+        this.editorPosition = 'editor-full-screen';
+        this.resize = false;
+      }
+      else {
+        ctrl.isMinimized = true;
+        this.editorPosition = 'editor-fixed-bottom';
+        this.resize = true;
+      }
+    };
+
+    /* Post Methods */
+
+    var discardAlert = function() {
+      if (ctrl.dirtyEditor) {
+        var message = 'It looks like you were working on something. ';
+        message += 'Are you sure you want to leave that behind?';
+        return confirm(message);
+      }
+      else { return true; }
+    };
+
+    function closeEditor() {
+      ctrl.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [] };
+      ctrl.resetEditor = true;
+      ctrl.showEditor = false;
+      ctrl.showFormatting = false;
+    }
+
+    this.loadEditor = function(message) {
+      message = message || {};
+      if (discardAlert()) {
+        var editorMsg = ctrl.newMessage;
+        editorMsg.subject = message.subject || '';
+        editorMsg.content.body_html = message.body_html || '';
+        editorMsg.content.body = message.body || '';
+        ctrl.resetEditor = true;
+        ctrl.showEditor = true;
+        ctrl.focusEditor = true;
+      }
+    };
+
+    this.cancelMsg = function() { if (discardAlert()) { closeEditor(); } };
 
   }
 ];

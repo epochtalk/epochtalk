@@ -57,7 +57,9 @@ var directive = ['$document',
             var height = originalY - e.clientY;
             height = originalHeight + height;
             if (height > body.clientHeight - 25) { height = body.clientHeight; }
+            if (element.data('default-height') !== undefined) { height = element.data('default-height'); }
             if (height < 288) { height = 288; }
+
             newHeight = height;
             newSpacerHeight = height - 113;
             requestAnimationFrame(animate);
@@ -72,9 +74,10 @@ var directive = ['$document',
 
         scope.$on('$destroy', destroy);
         scope.$watch('resize', function(value) {
+          console.log(element.data('default-height'))
           if (value) {
             init();
-            element[0].style.height = '288px';
+            element[0].style.height = element.data('default-height') || '288px';
           }
           else {
             destroy();
