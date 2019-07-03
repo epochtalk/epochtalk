@@ -19,17 +19,17 @@
           <h2>
             <a ui-sref="threads.data({ boardId: board.id })" class="board-name" ng-bind-html="board.name"></a>
           </h2>
-          <!-- Moderators -->
-          <div ng-if="board.moderators.length > 0">
-            <strong>Moderators: </strong>
-            <a ui-sref="profile.posts({ username: mod.username })" ng-repeat="mod in board.moderators" ng-bind="::mod.username + ($last ? '' : ', ')"></a>
-          </div>
           <!-- Board Description -->
           <div class="description" ng-bind-html="::board.description"></div>
+          <!-- Moderators -->
+          <div class="moderators" ng-if="board.moderators.length > 0">
+            <span class="label">Moderators: </span>
+            <a ui-sref="profile.posts({ username: mod.username })" ng-repeat="mod in board.moderators" ng-bind="::mod.username + ($last ? '' : ', ')"></a>
+          </div>
 
           <!-- Child Boards -->
           <div class="childboards" ng-if="board.children.length > 0">
-            <strong>Child Boards:</strong>
+            <span class="label">Child Boards:</span>
             <span ng-repeat="child in board.children">
               <a ui-sref="threads.data({ boardId: child.id })" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
             </span>
@@ -38,11 +38,11 @@
 
         <!-- Board Posts and Threads -->
         <div class="view-count">
-          <div>
-            <strong ng-bind="::board.total_post_count | number:0"></strong> posts
+          <div class="view-count-posts">
+            <span class="view-count-number" ng-bind="::board.total_post_count | number:0"></span> posts in
           </div>
-          <div>
-            <strong ng-bind="::board.total_thread_count | number:0"></strong> threads
+          <div class="view-count-threads">
+            <span class="view-count-number" ng-bind="::board.total_thread_count | number:0"></span> threads
           </div>
         </div>
 

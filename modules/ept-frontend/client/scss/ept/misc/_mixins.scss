@@ -26,8 +26,8 @@
   column-gap: $spacing;
 }
 
-@mixin info-text($size: 0.8rem) {
-  color: $secondary-font-color;
+@mixin info-text($size: $font-size-sm) {
+  color: $text-gray-dark;
   font-size: $size;
 }
 
