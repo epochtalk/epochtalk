@@ -529,7 +529,8 @@ header {
   #breadcrumbs-wrap {
     @include clearfix();
     @include pad(0 $base-grid-padding);
-    background-color: $breadcrumbs-bg-color;
+    // background-color: $breadcrumbs-bg-color;
+    background-color: #fff;
     border-bottom: 1px solid $breadcrumbs-border-color;
     text-align: center;
     height: $breadcrumbs-height;
