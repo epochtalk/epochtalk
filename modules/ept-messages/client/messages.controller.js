@@ -12,8 +12,7 @@ var ctrl = [
     this.currentConversation = {messages: []};
     this.selectedConversationId = null;
     this.receiverNames = null;
-    this.newConversation = {content: { subject: '', body: '', body_html: '' }, receiver_ids: [], previewBody: ''};
-    this.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [] };
+    this.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [], receiver_usernames: [] };
     this.showReply = false;
 
     this.canCreateMessage = function() {
@@ -96,7 +95,7 @@ var ctrl = [
     this.loadConversation = function(conversationId, options) {
       options = options || {};
       ctrl.selectedConversationId = conversationId;
-      Conversations.messages({ id: conversationId }).$promise
+      return Conversations.messages({ id: conversationId }).$promise
       // build out conversation information
       .then(function(data) {
         ctrl.currentConversation = data;
@@ -148,7 +147,7 @@ var ctrl = [
         timestamp: ctrl.currentConversation.last_message_timestamp,
         message_id: ctrl.currentConversation.last_message_id
       };
-      Conversations.messages(query).$promise
+      return Conversations.messages(query).$promise
       // build out conversation information
       .then(function(data) {
         ctrl.currentConversation.messages = ctrl.currentConversation.messages.concat(data.messages);
@@ -161,36 +160,19 @@ var ctrl = [
 
     this.hasMoreMessages = function() { return ctrl.currentConversation.has_next; };
 
-
-    this.showConvoModal = false;
-    this.closeConvoModal = function() {
-      $timeout(function() {
-        ctrl.newConversation = {};
-        ctrl.showConvoModal = false;
-      });
-    };
-    this.openConvoModal = function() { ctrl.showConvoModal = true; };
     this.createConversation = function() {
       var receiverIds = [];
       ctrl.receivers.forEach(function(user) { receiverIds.push(user.id); });
 
       // create a new conversation id to put this message under
-      var newMessage = {
-        receiver_ids: receiverIds,
-        content: {
-          subject: ctrl.newConversation.subject || "",
-          body: "TEST",
-          body_html: "TEST"
-        }
-      };
-
-      Conversations.save(newMessage).$promise
+      ctrl.newMessage.receiver_ids = receiverIds;
+      return Conversations.save(ctrl.newMessage).$promise
       .then(function(savedMessage) {
         // open conversation
         ctrl.loadConversation(savedMessage.conversation_id);
 
         // Add message to list
-        savedMessage.receiver_usernames = ctrl.newConversation.receiver_usernames;
+        savedMessage.receiver_usernames = ctrl.newMessage.receiver_usernames;
         savedMessage.sender_username = Session.user.username;
         Alert.success('New Conversation Started!');
         ctrl.loadRecentMessages();
@@ -202,8 +184,9 @@ var ctrl = [
       })
       .finally(function() {
         ctrl.receivers = [];
-        ctrl.newConversation = {body: '', receiver_ids: []};
-        ctrl.showConvoModal = false;
+        ctrl.newMessage.receiver_ids = [];
+        ctrl.newMessage.content = { subject: '', body: '', body_html: '' };
+        closeEditor();
       });
     };
 
@@ -225,7 +208,7 @@ var ctrl = [
       if (page <= 0 || page > ctrl.pageMax) { return; }
       page = page || 1;
       limit = limit || 15;
-      Messages.latest({ page: page, limit: limit}).$promise
+      return Messages.latest({ page: page, limit: limit}).$promise
       .then(function(data) {
         ctrl.recentMessages = data.messages;
         ctrl.totalConvoCount = data.total_convo_count;
@@ -237,7 +220,7 @@ var ctrl = [
     };
 
     this.saveMessage = function() {
-      Messages.save(ctrl.newMessage).$promise
+      return Messages.save(ctrl.newMessage).$promise
       .then(function(message) {
         message.receiver_usernames = ctrl.newMessage.receiver_usernames;
         message.sender_username = ctrl.newMessage.sender_username;
@@ -248,6 +231,7 @@ var ctrl = [
       .then(ctrl.loadRecentMessages)
       .then(function() {
         ctrl.newMessage.content = { body: '', body_html: '' };
+        closeEditor();
       })
       .catch(function(err) {
         var msg = 'Message could not be sent';
@@ -386,7 +370,7 @@ var ctrl = [
     };
 
     function closeEditor() {
-      ctrl.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [] };
+      ctrl.newMessage.content = { body: '', body_html: '' };
       ctrl.resetEditor = true;
       ctrl.showEditor = false;
       ctrl.showFormatting = false;

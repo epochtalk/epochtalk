@@ -4,7 +4,7 @@
 
   <br /><br />
 
-  <button ng-if='MessagesCtrl.canCreateConversation()' ng-click="MessagesCtrl.loadEditor(); MessagesCtrl.editorConvoMode = true;" ng-click=""></button>
+  <button ng-if='MessagesCtrl.canCreateConversation()' ng-click="MessagesCtrl.loadEditor(); MessagesCtrl.editorConvoMode = true;"></button>
 </div>
 
 
@@ -108,10 +108,10 @@
 <div id="post-spacer"></div>
 
 <!-- Editor -->
-<div>
+<div class="messages-wrap">
   <div ng-class="MessagesCtrl.editorPosition" ng-show="MessagesCtrl.showEditor" resizeable="MessagesCtrl.resize" data-default-height="500px">
     <!-- Editor Container-->
-    <div class="editor-container">
+    <div class="editor-container" ng-class="{ 'new-message' : MessagesCtrl.editorConvoMode }">
       <!-- Editor Header -->
       <div class="editor-top-bar">
         <div ng-if="MessagesCtrl.editorConvoMode">
@@ -120,10 +120,9 @@
           <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers" modal-focus="{{MessagesCtrl.showConvoModal}}">
               <auto-complete min-length="1" debounce-delay="250" source="MessagesCtrl.loadTags($query)"></auto-complete>
             </tags-input>
-          <br />
           <!-- Subject -->
-          <label><h5>Subject</h5></label>
-          <input type="text" ng-model="MessagesCtrl.newConversation.subject" minlength="1" maxlength="255" />
+          <label>Subject</label>
+          <input type="text" ng-model="MessagesCtrl.newMessage.content.subject" minlength="1" maxlength="255" />
         </div>
 
         <div class="editor-formatting" ng-if="MessagesCtrl.showFormatting">
@@ -216,8 +215,11 @@
         <button class="inverted-button cancel" ng-click="MessagesCtrl.cancelMsg()">
           Cancel
         </button>
-        <button class="send" ng-click="MessagesCtrl.saveMessage()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateMessage()">
-          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ MessagesCtrl.editorConvoMode ? 'Start New Conversation' : 'Send Reply' }}
+        <button class="no-animate" ng-if="MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.createConversation()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateConversation() || !MessagesCtrl.newMessage.content.subject.length">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start New Conversation
+        </button>
+        <button class="no-animate" ng-if="!MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.saveMessage()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateMessage()">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send Reply
         </button>
 
         <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
@@ -225,42 +227,6 @@
     </div>
   </div>
 </div>
-
-
-<!-- Create New Conversation Modal -->
-<modal show="MessagesCtrl.showConvoModal" on-close="MessagesCtrl.closeConvoModal()">
-  <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">New Message</h3>
-    <!-- Select User -->
-    <label>To
-      <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers" modal-focus="{{MessagesCtrl.showConvoModal}}">
-        <auto-complete min-length="1" debounce-delay="250" source="MessagesCtrl.loadTags($query)"></auto-complete>
-      </tags-input>
-    </label>
-
-    <!-- Subject -->
-    <label><h5>Subject</h5>
-      <input type="text" ng-model="MessagesCtrl.newConversation.subject" minlength="1" maxlength="255" />
-    </label>
-
-    <!-- Message Body -->
-    <label>Message ( <a ng-click="MessagesCtrl.newConversation.preview = !MessagesCtrl.newConversation.preview">Toggle Preview</a> )
-      <textarea type="text" rows="10" ng-model="MessagesCtrl.newConversation.body" maxlength="5000"></textarea>
-    </label>
-
-    <label ng-show="MessagesCtrl.newConversation.preview">Message Preview
-      <div class="preview" ng-show="MessagesCtrl.newConversation.preview" post-processing="MessagesCtrl.newConversation.previewBody"></div>
-      <br />
-    </label>
-
-    <!-- Save Button -->
-    <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.newConversation.subject || !MessagesCtrl.newConversation.body || !MessagesCtrl.receivers.length">
-        Send Message
-      </button>
-    </div>
-  </form>
-</modal>
 
 <!-- Delete Message Modal -->
 <modal show="MessagesCtrl.showDeleteModal" on-close="MessagesCtrl.closeDeleteModal()">
