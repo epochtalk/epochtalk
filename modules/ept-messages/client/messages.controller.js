@@ -90,6 +90,10 @@ var ctrl = [
       .then(function(users) { return users; });
     };
 
+    this.conversationSubject = function() {
+      return ctrl.currentConversation.messages[0].content.subject;
+    };
+
     // Conversations
 
     this.loadConversation = function(conversationId, options) {

@@ -543,17 +543,6 @@
 
 
 .messages-wrap {
-  .ng-animate.no-animate {
-    transition: 0s none;
-    -webkit-transition: 0s none;
-    animation: 0s none;
-    -webkit-animation: 0s none;
-  }
-
-  .ng-hide.ng-hide-animate {
-    display: none !important;
-  }
-
   .new-message .editor-form {
     top: 8.4375rem;
   }

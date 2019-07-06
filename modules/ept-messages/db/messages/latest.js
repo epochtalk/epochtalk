@@ -47,5 +47,15 @@ module.exports = function(userId, opts) {
     }
     else { return data; }
   })
+  .map(function(data) {
+    if (data) {
+      var subjectQuery = 'SELECT content->>\'subject\' as subject FROM messages.private_messages WHERE conversation_id = $1 AND content->>\'subject\' IS NOT NULL';
+      return db.scalar(subjectQuery, [data.conversation_id])
+      .then(function(dbData) {
+        data.content.subject = dbData.subject;
+        return data;
+      });
+    }
+  })
   .then(helper.slugify);
 };

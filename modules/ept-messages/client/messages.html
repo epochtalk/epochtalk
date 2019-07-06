@@ -35,7 +35,7 @@
       <br />
       <span class="msg-preview" ng-bind-html="message.created_at | humanDate"></span>
       <br />
-      <strong><span class="msg-preview" ng-bind-html="message.subject"></span></strong>
+      <strong><span class="msg-preview" ng-bind-html="message.content.subject"></span></strong>
       <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete" data-balloon-pos="left">
         <i class="fa fa-trash"></i>
       </a>
@@ -55,7 +55,7 @@
         <a ui-sref="profile.posts({ username: name})">{{name}}</a>{{ $last ? '' : ', '}}
       </strong>
     </h4>
-    <h4>Subject: <strong>{{MessagesCtrl.currentConversation.subject}}</strong></h4>
+    <h4>Subject: <strong>{{MessagesCtrl.conversationSubject()}}</strong></h4>
   </div>
   <div ng-if="MessagesCtrl.currentConversation.messages.length > 0" class="reply" ng-show="MessagesCtrl.showReply">
     <!-- Message Body and Send button-->
@@ -98,14 +98,16 @@
 
   <!-- load more message -->
   <div class="clear">
-    <button class="fill-row" ng-if="MessagesCtrl.hasMoreMessages()" ng-click="MessagesCtrl.loadMoreMessages()">
+    <button class="fill-row no-animate" ng-if="MessagesCtrl.hasMoreMessages()" ng-click="MessagesCtrl.loadMoreMessages()">
       Load More Messages
     </button>
   </div>
 </div>
 
+<div class="clear"></div>
+
 <!-- spacer for editor -->
-<div id="post-spacer"></div>
+<div ng-hide="!MessagesCtrl.showEditor" id="post-spacer" style="height: 387px;"></div>
 
 <!-- Editor -->
 <div class="messages-wrap">
