@@ -38,11 +38,11 @@
     .last-reply, .actions { @include span-columns(3); @include omega; }
   }
   .threads-data {
-    @include clearfix;
-    @include pad(0 0 1rem 0);
-    font-size: 0.95rem;
+    // @include clearfix;
+    // @include pad(0 0 1rem 0);
+    // font-size: 0.95rem;
     .subject {
-      @include span-columns(7);
+      // @include span-columns(7);
       .title i {
         color: $secondary-font-color-dark;
         padding-left: 0.25rem;
@@ -57,7 +57,11 @@
       .mobile-stats { @include info-text; display: none; }
     }
     .replies, .views { @include span-columns(1); @include info-text; text-align: center; }
-    .last-reply, .actions { @include span-columns(3); @include omega; @include info-text; }
+    .actions { 
+      @include span-columns(3); 
+      @include omega; 
+      @include info-text; 
+    }
   }
   .threads-data.compact {
     @include clearfix;
@@ -88,9 +92,7 @@
         .subject { @include span-columns(6.5); }
         .show-mobile { @include span-columns(1.5); @include omega; }
       }
-      .subject { @include span-columns(8); @include omega; }
-      .subject .mobile-stats { display: block; }
-      .replies, .views, .last-reply { display: none; }
+      .replies, .views { display: none; }
     }
   }
 }
@@ -99,3 +101,56 @@
 .padded-row { @include row; @include pad(0 0 1rem 0); }
 .padded-row { .h4, .h6 { display: inline-block; } }
 @include media($mobile) { input[type="text"].thread-title { margin-bottom: 0; } }
+
+
+//  New Board Layout
+.content-sidebar {
+  .board-data {
+    h1 {
+      font-size: $font-size-sm;
+      color: $text-gray-med;
+      text-transform: uppercase;
+    }
+
+    .threads-data {
+      color: $text-gray-med;
+      display: flex;
+      flex-direction: row;
+      padding-bottom: 1rem;
+    }
+
+    .subject {
+      display: flex;
+      flex: 2;
+      margin-right: 0.5rem;
+    }
+
+    .title {
+      flex: 2;
+      margin-right: 0.5rem;
+    }
+
+    .last-reply {
+      
+    }
+
+    @media screen and (min-width: 1280px) {
+      font-size: $font-size-sm;
+      flex-direction: column;
+
+      .threads-data {
+        flex-direction: column;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      .threads-data {
+        flex-direction: column;
+      }
+
+      .last-reply {
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}

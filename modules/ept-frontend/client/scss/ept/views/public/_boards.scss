@@ -1,4 +1,28 @@
 /*-------------- Boards Layout -------------- */
+#public-content {
+  grid-template-columns: auto;
+  grid-gap: 1rem;
+  margin-bottom: 2rem;
+
+  @media screen and (min-width: 1280px) {
+    grid-template-columns: 1fr 300px;
+  }
+}
+.content-main {
+
+}
+
+.content-sidebar {
+  border-top: $border;
+  padding-top: 1rem;
+
+  @media screen and (min-width: 1280px) {
+    border-top: none;
+    border-left: $border;
+    padding-left: 1rem;
+  }
+}
+
 .category {
   @include row;
   // border-top: $border;
@@ -7,7 +31,7 @@
   .title {
     h1 { 
       display: inline-block; 
-      font-size: 0.875rem;
+      font-size: $font-size-sm;
       line-height: 1.5;
       margin-top: 0.5rem;
       padding-left: 0; 
