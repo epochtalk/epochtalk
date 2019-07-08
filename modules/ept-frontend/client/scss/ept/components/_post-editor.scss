@@ -543,9 +543,9 @@
 
 
 .messages-wrap {
-  .new-message .editor-form {
-    top: 8.4375rem;
-  }
+  .new-message .editor-form { top: 8.4375rem; }
+  .editor-button-container { padding: 0.5rem;}
+  .progress-editor { margin-left: 0; }
 
   .editor-footer {
     left: 0;
@@ -554,10 +554,6 @@
       margin-left: 0px;
       padding-left: 1rem;
     }
-  }
-
-  .editor-button-container {
-    padding: 0.5rem;
   }
 
   .new-message .editor-top-bar {
