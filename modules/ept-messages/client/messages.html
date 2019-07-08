@@ -217,10 +217,10 @@
         <button class="inverted-button cancel" ng-click="MessagesCtrl.cancelMsg()">
           Cancel
         </button>
-        <button class="no-animate" ng-if="MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.createConversation()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateConversation() || !MessagesCtrl.newMessage.content.subject.length">
+        <button class="no-animate" ng-if="MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.createConversation()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateConversation() || !MessagesCtrl.newMessage.content.subject.length || !MessagesCtrl.newMessage.content.body.length">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start New Conversation
         </button>
-        <button class="no-animate" ng-if="!MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.saveMessage()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateMessage()">
+        <button class="no-animate" ng-if="!MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.saveMessage()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateMessage() || !MessagesCtrl.newMessage.content.body.length">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send Reply
         </button>
 
