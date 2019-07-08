@@ -37,6 +37,10 @@ module.exports = {
     },
     pre: [
       { method: 'auth.messages.create(server, auth, payload.receiver_ids, payload.conversation_id)' },
+      { method: 'common.posts.checkPostLength(server, payload.body)' },
+      { method: 'common.posts.clean(sanitizer, payload)' },
+      { method: 'common.posts.parse(parser, payload)' },
+      { method: 'common.images.sub(payload)' }
     ]
   },
   handler: function(request, reply) {

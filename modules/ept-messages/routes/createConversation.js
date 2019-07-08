@@ -50,8 +50,10 @@ module.exports = {
     },
     pre: [
       { method: 'auth.conversations.create(server, auth, payload.receiver_ids)' },
-      // { method: 'common.messages.clean(sanitizer,payload)' },
-      // { method: 'common.messages.parse(parser, payload)' }
+      { method: 'common.posts.checkPostLength(server, payload.body)' },
+      { method: 'common.posts.clean(sanitizer, payload)' },
+      { method: 'common.posts.parse(parser, payload)' },
+      { method: 'common.images.sub(payload)' }
     ]
   },
   handler: function(request, reply) {

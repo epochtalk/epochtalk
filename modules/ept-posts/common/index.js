@@ -75,25 +75,27 @@ function formatPost(post) {
 
 function checkPostLength(server, postBody) {
   if (postBody && postBody.length > server.app.config.postMaxLength) {
-    var msg = 'Error: Post body too long, max post length is ' + server.app.config.postMaxLength;
+    var msg = 'Error: body too long, max length is ' + server.app.config.postMaxLength;
     return Promise.reject(Boom.badRequest(msg));
   }
 }
 
 function clean(sanitizer, payload) {
+  payload = payload.body ? payload : payload.content;
   var hadLength = payload.body.length > 0;
   payload.title = sanitizer.strip(payload.title);
   if (hadLength && !payload.body.length) {
-    var msg = 'Error: Post body contained no data after sanitizing html tags.';
+    var msg = 'Error: body contained no data after sanitizing html tags.';
     return Promise.reject(Boom.badRequest(msg));
   }
 }
 
 function parse(parser, payload) {
+  payload = payload.body ? payload : payload.content;
   var hadLength = payload.body.length > 0;
   payload.body_html = parser.parse(payload.body);
   if (hadLength && !payload.body_html.length) {
-    var msg = 'Error: Post body contained no data after parsing';
+    var msg = 'Error: body contained no data after parsing';
     return Promise.reject(Boom.badRequest(msg));
   }
   // check if parsing was needed

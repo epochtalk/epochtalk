@@ -92,7 +92,7 @@ var expire = function() {
 // TODO: should respect where the images are saved to
 
 images.imageSub = (post) => {
-  var html = post.body_html;
+  var html = post.body_html || post.content.body_html;
   // load html in post.body_html into cheerio
   var $ = cheerio.load(html);
 
