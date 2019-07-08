@@ -83,7 +83,12 @@ function checkPostLength(server, postBody) {
 function clean(sanitizer, payload) {
   payload = payload.body ? payload : payload.content;
   var hadLength = payload.body.length > 0;
-  payload.title = sanitizer.strip(payload.title);
+  if (payload.title) {
+    payload.title = sanitizer.strip(payload.title);
+  }
+  else if (payload.subject) {
+    payload.subject = sanitizer.strip(payload.subject);
+  }
   if (hadLength && !payload.body.length) {
     var msg = 'Error: body contained no data after sanitizing html tags.';
     return Promise.reject(Boom.badRequest(msg));

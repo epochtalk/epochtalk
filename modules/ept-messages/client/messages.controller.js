@@ -14,6 +14,7 @@ var ctrl = [
     this.receiverNames = null;
     this.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [], receiver_usernames: [] };
     this.showReply = false;
+    this.currentSubject = '';
 
     this.canCreateMessage = function() {
       if (!Session.isAuthenticated()) { return false; }
@@ -90,10 +91,6 @@ var ctrl = [
       .then(function(users) { return users; });
     };
 
-    this.conversationSubject = function() {
-      return ctrl.currentConversation.messages[0].content.subject;
-    };
-
     // Conversations
 
     this.loadConversation = function(conversationId, options) {
@@ -102,6 +99,7 @@ var ctrl = [
       return Conversations.messages({ id: conversationId }).$promise
       // build out conversation information
       .then(function(data) {
+        ctrl.currentSubject = data.messages[0].content.subject;
         ctrl.currentConversation = data;
         ctrl.currentConversation.id = conversationId;
         if (options.saveInput) {
@@ -143,7 +141,6 @@ var ctrl = [
     if (this.recentMessages.length) {
       this.loadConversation(this.recentMessages[0].conversation_id);
     }
-
 
     this.loadMoreMessages = function() {
       var query = {
@@ -215,6 +212,7 @@ var ctrl = [
       return Messages.latest({ page: page, limit: limit}).$promise
       .then(function(data) {
         ctrl.recentMessages = data.messages;
+        ctrl.currentSubject = data.messages[0].content.subject;
         ctrl.totalConvoCount = data.total_convo_count;
         ctrl.limit = data.limit;
         ctrl.page = data.page;
@@ -380,16 +378,17 @@ var ctrl = [
       ctrl.showFormatting = false;
     }
 
-    this.loadEditor = function(message) {
-      message = message || {};
+    this.loadEditor = function(focus) {
       if (discardAlert()) {
         var editorMsg = ctrl.newMessage;
-        editorMsg.subject = message.subject || '';
-        editorMsg.content.body_html = message.body_html || '';
-        editorMsg.content.body = message.body || '';
+        ctrl.receivers = [];
+        editorMsg.subject = '';
+        editorMsg.content.body_html = '';
+        editorMsg.content.body = '';
         ctrl.resetEditor = true;
         ctrl.showEditor = true;
-        ctrl.focusEditor = true;
+        if (focus === false) { ctrl.focusEditor = false; }
+        else { ctrl.focusEditor = true; }
       }
     };
 
