@@ -37,29 +37,27 @@
             </div>
           </div>
   
-          <!-- Board Posts and Threads -->
-          <div class="view-count">
-            <div class="view-count-posts">
+          <div class="board-secondary">
+            <!-- Board Posts and Threads -->
+            <div class="view-count">
               <span class="view-count-number" ng-bind="::board.total_post_count | number:0"></span> posts in
-            </div>
-            <div class="view-count-threads">
               <span class="view-count-number" ng-bind="::board.total_thread_count | number:0"></span> threads
             </div>
-          </div>
-  
-          <!-- Board Last Post By -->
-          <div class="last-post">
-            <div ng-if="board.last_post_username">
-              <span ng-if="board.user_deleted || board.post_deleted">deleted</span>
-              <img ng-if="!board.user_deleted && !board.post_deleted" class="avatar-small" ng-src="{{::board.last_post_avatar || $webConfigs.default_avatar}}" />
-              <a ng-if="!board.user_deleted && !board.post_deleted" ui-sref="profile.posts({ username: board.last_post_username })" ng-bind="::board.last_post_username"></a> posted in
-              <span ng-if="board.last_thread_title">
-                <a ui-sref="posts.data({ threadId: board.last_thread_id, start: board.last_post_position })"
-                  ng-bind-html="::board.last_thread_title | decode | truncate:25" title="{{board.last_thread_title | decode}}"></a> on
-              </span>
-              <span ng-if="board.last_post_created_at">
-                <span ng-bind="::board.last_post_created_at | humanDate"></span>
-              </span>
+    
+            <!-- Board Last Post By -->
+            <div class="last-post">
+              <div ng-if="board.last_post_username">
+                <span ng-if="board.user_deleted || board.post_deleted">deleted</span>
+                <img ng-if="!board.user_deleted && !board.post_deleted" class="avatar-small" ng-src="{{::board.last_post_avatar || $webConfigs.default_avatar}}" />
+                <a ng-if="!board.user_deleted && !board.post_deleted" ui-sref="profile.posts({ username: board.last_post_username })" ng-bind="::board.last_post_username"></a> posted in
+                <span ng-if="board.last_thread_title">
+                  <a ui-sref="posts.data({ threadId: board.last_thread_id, start: board.last_post_position })"
+                    ng-bind-html="::board.last_thread_title | decode | truncate:25" title="{{board.last_thread_title | decode}}"></a> on
+                </span>
+                <span ng-if="board.last_post_created_at">
+                  <span ng-bind="::board.last_post_created_at | humanDate"></span>
+                </span>
+              </div>
             </div>
           </div>
   

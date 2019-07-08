@@ -121,7 +121,7 @@
 
     .subject {
       display: flex;
-      flex: 2;
+      flex: 3;
       margin-right: 0.5rem;
     }
 
@@ -131,7 +131,8 @@
     }
 
     .last-reply {
-      
+      flex: 1;
+      font-size: $font-size-sm;
     }
 
     @media screen and (min-width: 1280px) {
