@@ -4,7 +4,7 @@ var db = dbc.db;
 var helper = dbc.helper;
 
 module.exports = function(opts) {
-  var q = 'SELECT rm.id, rm.status, rm.reporter_user_id, rm.reporter_reason, rm.reviewer_user_id, rm.offender_message_id, rm.created_at, rm.updated_at, (SELECT username FROM users WHERE rm.reporter_user_id = id) as reporter_username, pm.created_at as offender_created_at, pm.body as offender_message, o.username as offender_author_username, o.id as offender_author_id, o.email as offender_author_email, o.created_at as offender_author_created_at, b.expiration as offender_ban_expiration, (SELECT EXISTS (SELECT true FROM users.board_bans WHERE user_id = o.id)) as offender_board_banned FROM administration.reports_messages rm JOIN messages.private_messages pm ON(rm.offender_message_id = pm.id) JOIN users o ON(pm.sender_id = o.id) LEFT JOIN (SELECT ub.expiration, ub.user_id FROM users.bans ub WHERE ub.expiration > now()) b ON (o.id = b.user_id)';
+  var q = 'SELECT rm.id, rm.status, rm.reporter_user_id, rm.reporter_reason, rm.reviewer_user_id, rm.offender_message_id, rm.created_at, rm.updated_at, (SELECT username FROM users WHERE rm.reporter_user_id = id) as reporter_username, pm.created_at as offender_created_at, pm.content, o.username as offender_author_username, o.id as offender_author_id, o.email as offender_author_email, o.created_at as offender_author_created_at, b.expiration as offender_ban_expiration, (SELECT EXISTS (SELECT true FROM users.board_bans WHERE user_id = o.id)) as offender_board_banned FROM administration.reports_messages rm JOIN messages.private_messages pm ON(rm.offender_message_id = pm.id) JOIN users o ON(pm.sender_id = o.id) LEFT JOIN (SELECT ub.expiration, ub.user_id FROM users.bans ub WHERE ub.expiration > now()) b ON (o.id = b.user_id)';
   var limit = 10;
   var page = 1;
   var sortField = 'created_at';
@@ -32,5 +32,10 @@ module.exports = function(opts) {
     params = [limit, offset];
   }
   return db.sqlQuery(q, params)
+  .map(function(row) {
+    row.offender_message = row.content.body_html || row.content.body;
+    delete row.content;
+    return row;
+  })
   .then(helper.slugify);
 };
