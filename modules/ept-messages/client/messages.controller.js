@@ -12,9 +12,9 @@ var ctrl = [
     this.currentConversation = {messages: []};
     this.selectedConversationId = null;
     this.receiverNames = null;
-    this.newConversation = {subject: '', body: '', receiver_ids: [], previewBody: ''};
-    this.newMessage = {subject: '', body: '', receiver_ids: [], previewBody: '' };
+    this.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [], receiver_usernames: [] };
     this.showReply = false;
+    this.currentSubject = '';
 
     this.canCreateMessage = function() {
       if (!Session.isAuthenticated()) { return false; }
@@ -52,13 +52,13 @@ var ctrl = [
     // page exiting functions
     var confirmMessage = 'It looks like a message is being written.';
     var exitFunction = function() {
-      if (ctrl.newMessage.body.length) { return confirmMessage; }
+      if (ctrl.newMessage.content.body.length) { return confirmMessage; }
     };
     $window.onbeforeunload = exitFunction;
     var routeLeaveFunction = function() {
       return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState) {
         if (toState.url === fromState.url) { return; }
-        if (ctrl.newMessage.body.length) {
+        if (ctrl.newMessage.content.body.length) {
           var message = confirmMessage + ' Are you sure you want to leave?';
           var answer = confirm(message);
           if (!answer) { e.preventDefault(); }
@@ -96,18 +96,19 @@ var ctrl = [
     this.loadConversation = function(conversationId, options) {
       options = options || {};
       ctrl.selectedConversationId = conversationId;
-      Conversations.messages({ id: conversationId }).$promise
+      return Conversations.messages({ id: conversationId }).$promise
       // build out conversation information
       .then(function(data) {
+        ctrl.currentSubject = data.messages[0].content.subject;
         ctrl.currentConversation = data;
         ctrl.currentConversation.id = conversationId;
         if (options.saveInput) {
           ctrl.newMessage.subject = ctrl.newMessage.subject || ctrl.currentConversation.subject;
-          ctrl.newMessage.body = ctrl.newMessage.body || '';
-          ctrl.newMessage.previewBody = ctrl.newMessage.previewBody || '';
+          ctrl.newMessage.content.body = ctrl.newMessage.content.body || '';
+          ctrl.newMessage.content.body_html = ctrl.newMessage.content.body_html || '';
         }
         else {
-          ctrl.newMessage = { subject: ctrl.currentConversation.subject, body: '', previewBody: '' };
+          ctrl.newMessage = { subject: ctrl.currentConversation.subject, content: { body_html: '', body: '' } };
         }
         ctrl.newMessage.conversation_id = data.id;
         ctrl.newMessage.sender_id = Session.user.id;
@@ -141,14 +142,13 @@ var ctrl = [
       this.loadConversation(this.recentMessages[0].conversation_id);
     }
 
-
     this.loadMoreMessages = function() {
       var query = {
         id: ctrl.currentConversation.id,
         timestamp: ctrl.currentConversation.last_message_timestamp,
         message_id: ctrl.currentConversation.last_message_id
       };
-      Conversations.messages(query).$promise
+      return Conversations.messages(query).$promise
       // build out conversation information
       .then(function(data) {
         ctrl.currentConversation.messages = ctrl.currentConversation.messages.concat(data.messages);
@@ -161,33 +161,19 @@ var ctrl = [
 
     this.hasMoreMessages = function() { return ctrl.currentConversation.has_next; };
 
-
-    this.showConvoModal = false;
-    this.closeConvoModal = function() {
-      $timeout(function() {
-        ctrl.newConversation = {};
-        ctrl.showConvoModal = false;
-      });
-    };
-    this.openConvoModal = function() { ctrl.showConvoModal = true; };
     this.createConversation = function() {
       var receiverIds = [];
       ctrl.receivers.forEach(function(user) { receiverIds.push(user.id); });
 
       // create a new conversation id to put this message under
-      var newMessage = {
-        receiver_ids: receiverIds,
-        subject: ctrl.newConversation.subject,
-        body: ctrl.newConversation.body,
-      };
-
-      Conversations.save(newMessage).$promise
+      ctrl.newMessage.receiver_ids = receiverIds;
+      return Conversations.save(ctrl.newMessage).$promise
       .then(function(savedMessage) {
         // open conversation
         ctrl.loadConversation(savedMessage.conversation_id);
 
         // Add message to list
-        savedMessage.receiver_usernames = ctrl.newConversation.receiver_usernames;
+        savedMessage.receiver_usernames = ctrl.newMessage.receiver_usernames;
         savedMessage.sender_username = Session.user.username;
         Alert.success('New Conversation Started!');
         ctrl.loadRecentMessages();
@@ -199,8 +185,9 @@ var ctrl = [
       })
       .finally(function() {
         ctrl.receivers = [];
-        ctrl.newConversation = {body: '', receiver_ids: []};
-        ctrl.showConvoModal = false;
+        ctrl.newMessage.receiver_ids = [];
+        ctrl.newMessage.content = { subject: '', body: '', body_html: '' };
+        closeEditor();
       });
     };
 
@@ -222,9 +209,10 @@ var ctrl = [
       if (page <= 0 || page > ctrl.pageMax) { return; }
       page = page || 1;
       limit = limit || 15;
-      Messages.latest({ page: page, limit: limit}).$promise
+      return Messages.latest({ page: page, limit: limit}).$promise
       .then(function(data) {
         ctrl.recentMessages = data.messages;
+        ctrl.currentSubject = data.messages[0].content.subject;
         ctrl.totalConvoCount = data.total_convo_count;
         ctrl.limit = data.limit;
         ctrl.page = data.page;
@@ -233,34 +221,8 @@ var ctrl = [
       });
     };
 
-    $scope.$watch(function() { return ctrl.newMessage.body; }, function(body) {
-      if (body) {
-        // BBCode Parsing
-        var rawText = body;
-        var processed = rawText;
-        $window.parsers.forEach(function(parser) {
-          processed = parser.parse(processed);
-        });
-        // re-bind to scope
-        ctrl.newMessage.previewBody = processed;
-      }
-    });
-
-    $scope.$watch(function() { return ctrl.newConversation.body; }, function(body) {
-      if (body) {
-        // BBCode Parsing
-        var rawText = body;
-        var processed = rawText;
-        $window.parsers.forEach(function(parser) {
-          processed = parser.parse(processed);
-        });
-        // re-bind to scope
-        ctrl.newConversation.previewBody = processed;
-      }
-    });
-
     this.saveMessage = function() {
-      Messages.save(ctrl.newMessage).$promise
+      return Messages.save(ctrl.newMessage).$promise
       .then(function(message) {
         message.receiver_usernames = ctrl.newMessage.receiver_usernames;
         message.sender_username = ctrl.newMessage.sender_username;
@@ -270,8 +232,8 @@ var ctrl = [
       })
       .then(ctrl.loadRecentMessages)
       .then(function() {
-        ctrl.newMessage.body = '';
-        ctrl.newMessage.previewBody = '';
+        ctrl.newMessage.content = { body: '', body_html: '' };
+        closeEditor();
       })
       .catch(function(err) {
         var msg = 'Message could not be sent';
@@ -374,6 +336,63 @@ var ctrl = [
         $timeout(function() { ctrl.reportSubmitted = false; }, 500);
       });
     };
+
+    // Editor
+    this.dirtyEditor = false;
+    this.resetEditor = false;
+    this.showEditor = false;
+    this.focusEditor = false;
+    this.isMinimized = true;
+    this.resize = true;
+    this.content = { post: { body_html: '', body: '' } };
+    this.editorPosition = 'editor-fixed-bottom';
+
+    this.fullscreen = function() {
+      if (ctrl.isMinimized) {
+        ctrl.isMinimized = false;
+        this.editorPosition = 'editor-full-screen';
+        this.resize = false;
+      }
+      else {
+        ctrl.isMinimized = true;
+        this.editorPosition = 'editor-fixed-bottom';
+        this.resize = true;
+      }
+    };
+
+    /* Post Methods */
+
+    var discardAlert = function() {
+      if (ctrl.dirtyEditor) {
+        var message = 'It looks like you were working on something. ';
+        message += 'Are you sure you want to leave that behind?';
+        return confirm(message);
+      }
+      else { return true; }
+    };
+
+    function closeEditor() {
+      ctrl.newMessage.content = { body: '', body_html: '' };
+      ctrl.resetEditor = true;
+      ctrl.showEditor = false;
+      ctrl.showFormatting = false;
+    }
+
+    this.loadEditor = function(focus) {
+      if (discardAlert()) {
+        var editorMsg = ctrl.newMessage;
+        ctrl.receivers = [];
+        editorMsg.subject = '';
+        editorMsg.content.body_html = '';
+        editorMsg.content.body = '';
+        ctrl.resetEditor = true;
+        ctrl.showEditor = true;
+        if (focus === false) { ctrl.focusEditor = false; }
+        else { ctrl.focusEditor = true; }
+      }
+    };
+
+    this.cancelMsg = function() { if (discardAlert()) { closeEditor(); } };
 
   }
 ];

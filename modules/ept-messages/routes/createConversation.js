@@ -7,9 +7,10 @@ var _ = require('lodash');
   * @apiSuccess {string} conversation_id The unique id of the conversation this message belongs to
   * @apiSuccess {string} sender_id The unique id of the user that sent this message
   * @apiSuccess {string} receiver_ids The unique ids of the users that will receive this message
-  * @apiSuccess {string} body The contents of this message
-  * @apiSuccess {string} subject The subject of this message
-  * @apiSuccess {boolean} viewed The flag showing if the receiver viewed this message
+  * @apiSuccess {object} content The contents of this message
+  * @apiSuccess {string} content.body The raw contents of this message
+  * @apiSuccess {string} content.body_html The html contents of this message
+  * @apiSuccess {string} content.subject The subject of this message
   * @apiSuccess {timestamp} created_at Timestamp of when the conversation was created
   */
 
@@ -22,8 +23,10 @@ var _ = require('lodash');
   * @apiDescription Used to create a new conversation and the first message of the conversation.
   *
   * @apiParam (Payload) {string} receiver_ids The id of the users receiving the message/conversation
-  * @apiParam (Payload) {string} body The content of the message/conversation
-  * @apiParam (Payload) {string} subject The subject of the message
+  * @apiParam (Payload) {object} content The contents of this message
+  * @apiParam (Payload) {string} content.body The raw contents of this message
+  * @apiParam (Payload) {string} content.body_html The html contents of this message
+  * @apiParam (Payload) {string} content.subject The subject of this message
   *
   * @apiUse MessageObjectSuccess
   *
@@ -38,14 +41,19 @@ module.exports = {
     validate: {
       payload: {
         receiver_ids: Joi.array().items(Joi.string()).min(1).required(),
-        body: Joi.string().min(1).max(5000).required(),
-        subject: Joi.string().min(1).max(255).required()
+        content: Joi.object().keys({
+          body: Joi.string().min(1).max(5000).required(),
+          body_html: Joi.string(),
+          subject: Joi.string().min(1).max(255).required()
+        })
       }
     },
     pre: [
       { method: 'auth.conversations.create(server, auth, payload.receiver_ids)' },
-      { method: 'common.messages.clean(sanitizer,payload)' },
-      { method: 'common.messages.parse(parser, payload)' }
+      { method: 'common.posts.checkPostLength(server, payload.body)' },
+      { method: 'common.posts.clean(sanitizer, payload)' },
+      { method: 'common.posts.parse(parser, payload)' },
+      { method: 'common.images.sub(payload)' }
     ]
   },
   handler: function(request, reply) {

@@ -11,8 +11,9 @@ var _ = require('lodash');
   *
   * @apiParam (Payload) {string} conversation_id The id of the conversation the message should be created in
   * @apiParam (Payload) {string} receiver_ids The ids of the users receiving the message/conversation
-  * @apiParam (Payload) {string} body The content of the message/conversation
-  * @apiParam (Payload) {string} subject The subject of the message/conversation
+  * @apiParam (Payload) {object} content The contents of this message
+  * @apiParam (Payload) {string} content.body The raw contents of this message
+  * @apiParam (Payload) {string} content.body_html The html contents of this message
   *
   * @apiUse MessageObjectSuccess
   *
@@ -28,14 +29,18 @@ module.exports = {
       payload: {
         conversation_id: Joi.string().required(),
         receiver_ids: Joi.array().items(Joi.string()).min(1).required(),
-        body: Joi.string().min(1).max(5000).required(),
-        subject: Joi.string().min(1).max(255).required()
+        content: Joi.object().keys({
+          body: Joi.string().min(1).max(5000).required(),
+          body_html: Joi.string()
+        })
       }
     },
     pre: [
       { method: 'auth.messages.create(server, auth, payload.receiver_ids, payload.conversation_id)' },
-      { method: 'common.messages.clean(sanitizer, payload)' },
-      { method: 'common.messages.parse(parser, payload)' }
+      { method: 'common.posts.checkPostLength(server, payload.body)' },
+      { method: 'common.posts.clean(sanitizer, payload)' },
+      { method: 'common.posts.parse(parser, payload)' },
+      { method: 'common.images.sub(payload)' }
     ]
   },
   handler: function(request, reply) {

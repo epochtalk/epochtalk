@@ -540,3 +540,28 @@
   bottom: 0;
   z-index: 999;
 }
+
+
+.messages-wrap {
+  .new-message .editor-form { top: 8.4375rem; }
+  .editor-button-container { padding: 0.5rem;}
+  .progress-editor { margin-left: 0; }
+
+  .editor-footer {
+    left: 0;
+    width: 100%;
+    .upload-editor {
+      margin-left: 0px;
+      padding-left: 1rem;
+    }
+  }
+
+  .new-message .editor-top-bar {
+    height: 10.725rem;
+    padding: 1rem;
+    div:first-child {
+      padding: 0;
+      text-align: left;
+    }
+  }
+}

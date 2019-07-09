@@ -1,5 +1,6 @@
 var path = require('path');
 var sass = require(path.join(__dirname, 'tasks', 'sass'));
-var copy_css = require(path.join(__dirname, 'tasks', 'copy_files'));
+var copycss = require(path.join(__dirname, 'tasks', 'copy_files'));
+var installModules = require(path.join(__dirname, 'tasks', 'load_modules'));
 
-copy_css().then(sass);
+installModules().then(copycss).then(sass);

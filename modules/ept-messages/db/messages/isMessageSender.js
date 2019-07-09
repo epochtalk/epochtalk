@@ -9,7 +9,7 @@ module.exports = function(messageId, userId) {
   messageId = helper.deslugify(messageId);
   userId = helper.deslugify(userId);
 
-  var q = 'SELECT sender_id FROM private_messages WHERE id = $1';
+  var q = 'SELECT sender_id FROM messages.private_messages WHERE id = $1';
   return db.sqlQuery(q, [messageId])
   .then(function(rows) {
     if (rows.length > 0) { return rows[0]; }

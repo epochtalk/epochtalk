@@ -15,8 +15,8 @@ module.exports = function(conversationId, viewerId, opts) {
   if (messageId) { messageId = helper.deslugify(messageId); }
   var params = [conversationId, viewerId, timestamp, limit];
 
-  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.body, mid.subject, mid.created_at, mid.viewed, mid.reported, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar';
-  var q = 'SELECT pm.conversation_id, pm.id, pm.sender_id, pm.receiver_ids, pm.body, pm.subject, pm.created_at, pm.viewed, CASE WHEN EXISTS (SELECT rm.id FROM administration.reports_messages rm WHERE rm.offender_message_id = pm.id AND rm.reporter_user_id = $2) THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS reported FROM private_messages pm WHERE $2 != ALL(deleted_by_user_ids) AND conversation_id = $1 AND (pm.sender_id = $2 OR $2 = ANY(pm.receiver_ids)) AND pm.created_at <= $3';
+  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.content, mid.created_at, mid.viewed, mid.reported, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar';
+  var q = 'SELECT pm.conversation_id, pm.id, pm.sender_id, pm.receiver_ids, pm.content, pm.created_at, pm.viewed, CASE WHEN EXISTS (SELECT rm.id FROM administration.reports_messages rm WHERE rm.offender_message_id = pm.id AND rm.reporter_user_id = $2) THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS reported FROM messages.private_messages pm WHERE $2 != ALL(deleted_by_user_ids) AND conversation_id = $1 AND (pm.sender_id = $2 OR $2 = ANY(pm.receiver_ids)) AND pm.created_at <= $3';
   var q2 = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = mid.sender_id';
 
   if (messageId) {
@@ -28,7 +28,7 @@ module.exports = function(conversationId, viewerId, opts) {
 
   var query = 'SELECT ' + columns + ' FROM ( ' +
     q + ' ) mid LEFT JOIN LATERAL ( ' +
-    q2 + ' ) s ON true';
+    q2 + ' ) s ON true ORDER BY mid.created_at DESC';
 
   // get all related posts
   return db.sqlQuery(query, params)
@@ -40,10 +40,21 @@ module.exports = function(conversationId, viewerId, opts) {
       })
       .then(function(receiverData) {
         data.receivers = receiverData;
+        if (data.content && !data.content.body_html) { data.content.body_html = data.content.body; }
         return data;
       });
     }
     else { return data; }
+  })
+  .map(function(data) {
+    if (data) {
+      var subjectQuery = 'SELECT content->>\'subject\' as subject FROM messages.private_messages WHERE conversation_id = $1 AND content->>\'subject\' IS NOT NULL';
+      return db.scalar(subjectQuery, [data.conversation_id])
+      .then(function(dbData) {
+        data.content.subject = dbData.subject;
+        return data;
+      });
+    }
   })
   .then(helper.slugify);
 };

@@ -9,7 +9,7 @@ var CreationError = errors.CreationError;
 
 module.exports = function() {
   var conversation = {};
-  var q = 'INSERT INTO private_conversations(created_at) VALUES (now()) RETURNING id, created_at';
+  var q = 'INSERT INTO messages.private_conversations(created_at) VALUES (now()) RETURNING id, created_at';
   return using(db.createTransaction(), function(client) {
     return client.query(q)
     .then(function(results) {

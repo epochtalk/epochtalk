@@ -24,6 +24,12 @@
     animation: none 0s;
   }
 }
+.ng-animate.no-animate {
+  transition: 0s none;
+  -webkit-transition: 0s none;
+  animation: 0s none;
+  -webkit-animation: 0s none;
+}
 img.avatar-small {
   @include border-radius(100px);
   border: 1px solid $border-color;

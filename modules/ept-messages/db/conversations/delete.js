@@ -13,11 +13,11 @@ module.exports = function(id, userId) {
   var result = { id: id };
   return using(db.createTransaction(), function(client) {
     // Check if conversation exists
-    var q = 'SELECT id from private_conversations WHERE id = $1 FOR UPDATE';
+    var q = 'SELECT id from messages.private_conversations WHERE id = $1 FOR UPDATE';
     return client.query(q, [id])
     .then(function(results) {
       if (results.rows.length < 1) { throw new DeletionError('Conversation Does Not Exist'); }
-      q = 'SELECT sender_id, receiver_ids FROM private_messages WHERE conversation_id = $1 FOR UPDATE';
+      q = 'SELECT sender_id, receiver_ids FROM messages.private_messages WHERE conversation_id = $1 FOR UPDATE';
       return client.query(q, [id]);
     })
     // append sender and receiver ids to reply
@@ -30,12 +30,12 @@ module.exports = function(id, userId) {
     })
     // delete the private messages within the conversation
     .then(function() {
-      q = 'UPDATE private_messages SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE conversation_id = $2';
+      q = 'UPDATE messages.private_messages SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE conversation_id = $2';
       return client.query(q, [userId, id]);
     })
     // delete the private conversation
     .then(function() {
-      q = 'UPDATE private_conversations SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE id = $2';
+      q = 'UPDATE messages.private_conversations SET deleted_by_user_ids = array_append(deleted_by_user_ids, $1) WHERE id = $2';
       return client.query(q, [userId, id]);
     })
     .then(function() { return result; });
