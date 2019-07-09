@@ -9,6 +9,10 @@
   ul { white-space: normal }
   img.loaded { opacity: 1; }
   img { @include transition(opacity 0.5s ease-in); opacity: 0; }
+  & table {
+    display: block;
+    overflow-x: scroll;
+  }
   .video-wrap {
     position: relative;
     padding-bottom: 56.25%;
