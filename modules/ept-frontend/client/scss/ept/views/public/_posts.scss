@@ -43,7 +43,7 @@
     @include pad(1.25rem 0.5rem);
     @include transition(background-color 250ms ease-in);
     position: relative;
-    min-height: 10rem;
+    min-height: 11rem;
     border-bottom: 1px solid $border-color;
     &:first-child {
       border-top: 1px solid $border-color;
