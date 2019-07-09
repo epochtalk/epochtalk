@@ -86,6 +86,9 @@
           &:hover .action { color: $secondary-font-color-dark; }
           &:hover .action:hover { color: $color-primary;; }
         }
+        .msg-content {
+          margin-left: 8.5%;
+        }
       }
     }
   }
