@@ -40,8 +40,14 @@
           <div class="board-secondary">
             <!-- Board Posts and Threads -->
             <div class="view-count">
-              <span class="view-count-number" ng-bind="::board.total_post_count | number:0"></span> posts in
-              <span class="view-count-number" ng-bind="::board.total_thread_count | number:0"></span> threads
+              <p class="view-count-posts">
+                <span class="view-count-number" ng-bind="::board.total_post_count | number:0"></span>
+                 <span class="label">posts,</span>
+              </p>
+              <p class="view-count-threads">
+                <span class="view-count-number" ng-bind="::board.total_thread_count | number:0"></span>
+                 <span class="label">threads</span>
+              </p>
             </div>
     
             <!-- Board Last Post By -->

@@ -1,8 +1,11 @@
 /*-------------- Threads Layout -------------- */
 .board-controls-wrap {
-  background-color: $sub-header-color;
+  // background-color: $sub-header-color;
+  background-color: #fff;
+  border-bottom: $border;
   margin: -$header-bottom-margin -100% $header-bottom-margin;
   padding: $header-bottom-margin 100% 0;
+  grid-column: 1 / span 2;
   .inverted-button {
     color: $secondary-font-color;
     padding-top: 0.35rem;
@@ -17,32 +20,107 @@
 }
 
 .board-data, .watchlist-data {
-  @include row;
-  .child-boards {
-    @include pad(0 0 1rem 0);
-    .board {
-      @include clearfix;
-      @include pad(0 0 1rem 0);
-      .info {
-        @include span-columns(7);
-        .description { font-size: 0.875rem; }
+  h1 { 
+    display: inline-block; 
+    font-size: $font-size-sm;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+    padding-left: 0; 
+  }
+  a { 
+    
+  }
+
+  h2 {
+    font-size: $font-size-med;
+    font-weight: 600;
+    text-transform: none;
+
+    a {
+      color: $base-font-color;
+      
+      &:hover {
+        color: $color-primary;
       }
-      .view-count { @include span-columns(2); @include info-text; }
-      .last-post { @include span-columns(3); @include omega; @include info-text;}
     }
   }
-  .threads-header {
-    .mobile-header { display: none; }
-    .subject { @include span-columns(7); }
-    .replies, .views { @include span-columns(1); text-align: center; }
-    .last-reply, .actions { @include span-columns(3); @include omega; }
+
+  .child-boards {
+    margin-bottom: 3rem;
+    .board {
+      display: flex;
+      flex-direction: row;
+      .info {
+        flex: 3;
+        .description { 
+          font-size: 0.875rem; 
+          line-height: 1.5;
+        }
+        .label {
+          color: $text-gray-med;
+          font-size: $font-size-sm;
+          // text-transform: uppercase;
+        }
+      }
+
+      .info-secondary {
+        color: $text-gray-med;
+        flex: 1;
+        font-size: $font-size-sm;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .value {
+        font-weight: 600;
+      }
+
+      .view-count { 
+      }
+      .last-post {  
+      }
+    }
+
+    @include media($mobile) {
+      .board {
+        flex-direction: column;
+      }
+    }
+  }
+
+  .threads-header,
+  .threads-data {
+    display: flex;
+    margin-bottom: 1rem;
+
+    .subject {
+      flex: 6;
+    }
+
+    .replies,
+    .views {
+      flex: 1;
+    }
+
+    .last-reply,
+    .actions {
+      flex: 2;
+    }
+
+    .replies, 
+    .views,
+    .last-post { 
+      font-size: $font-size-sm;
+      margin-left: 1rem;
+    }
+
+    .replies,
+    .views {
+      text-align: right;
+    }
   }
   .threads-data {
-    // @include clearfix;
-    // @include pad(0 0 1rem 0);
-    // font-size: 0.95rem;
     .subject {
-      // @include span-columns(7);
       .title i {
         color: $secondary-font-color-dark;
         padding-left: 0.25rem;
@@ -56,7 +134,7 @@
       .started-by, .pages { font-size: 0.875rem; }
       .mobile-stats { @include info-text; display: none; }
     }
-    .replies, .views { @include span-columns(1); @include info-text; text-align: center; }
+
     .actions { 
       @include span-columns(3); 
       @include omega; 
@@ -73,14 +151,27 @@
   }
 }
 
+.board-sidebar {
+  @include media($mobile) {
+    grid-column: 1 / span 2;
+    grid-row: 2 / 3;
+  }
+}
+
+.board-footer {
+  grid-column: 1 / span 2;
+  justify-self: end;
+}
+
 // Mobile Board Layout
 @include media($mobile) {
   .board-data, .watchlist-data {
-    .child-boards .board {
-      .info { @include span-columns(8); }
-      .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
-      .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
-    }
+    grid-column: 1 / span 2;
+    // .child-boards .board {
+    //   .info { @include span-columns(8); }
+    //   .view-count { @include span-columns(3); @include shift(5); @include pad(0.5rem 0 0 0); }
+    //   .last-post { @include span-columns(5); @include shift(-8); @include pad(0.5rem 0 0 0); }
+    // }
     .threads-header {
       .mobile-header { @include span-columns(8); @include omega; display: block; }
       .subject, .replies, .views, .last-reply { display: none; }
