@@ -5,7 +5,7 @@ var directive = [function() {
     bindToController: { user: '=' },
     template: require('./profile.html'),
     controllerAs: 'vmProfile',
-    controller: [ 'Conversations', 'Messages', 'User', 'Session', 'Alert', 'PreferencesSvc', 'Websocket', '$timeout', '$scope', '$window', '$filter', '$state', function(Conversations, Messages, User, Session, Alert, PreferencesSvc, Websocket, $timeout, $scope, $window, $filter, $state) {
+    controller: [ 'Conversations', 'Messages', 'User', 'Session', 'Alert', 'Websocket', '$timeout', '$scope', '$window', '$filter', '$state', function(Conversations, Messages, User, Session, Alert, Websocket, $timeout, $scope, $window, $filter, $state) {
       var ctrl = this;
       this.newConversation = {subject: '', body: '', receiver_ids: [], previewBody: ''};
       this.newMessage = {subject: '', body: '', receiver_ids: [], previewBody: '' };
@@ -320,34 +320,6 @@ var directive = [function() {
           else { ctrl.isOnline = data.online; }
         });
       });
-
-      // Preferences
-      this.editPreferences = false;
-      this.tempPreferences = {};
-      this.openEditPreferences = function() {
-        ctrl.tempPreferences.username = ctrl.user.username;
-        ctrl.tempPreferences.posts_per_page = ctrl.user.posts_per_page;
-        ctrl.tempPreferences.threads_per_page = ctrl.user.threads_per_page;
-        ctrl.tempPreferences.collapsed_categories = ctrl.user.collapsed_categories;
-        this.editPreferences = true;
-      };
-
-      this.savePreferences = function() {
-        User.update({ id: ctrl.user.id }, ctrl.tempPreferences).$promise
-        .then(function(data) {
-          ctrl.user.posts_per_page = data.posts_per_page;
-          ctrl.user.threads_per_page = data.threads_per_page;
-        })
-        .then(function() {
-          var tempPref = PreferencesSvc.preferences;
-          tempPref.posts_per_page = ctrl.user.posts_per_page;
-          tempPref.threads_per_page = ctrl.user.threads_per_page;
-          PreferencesSvc.setPreferences(tempPref);
-        })
-        .then(function() { Alert.success('Successfully saved preferences'); })
-        .catch(function() { Alert.error('Preferences could not be updated'); })
-        .finally(function() { ctrl.editPreferences = false; });
-      };
     }]
   };
 }];
