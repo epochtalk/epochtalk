@@ -59,7 +59,7 @@ setup()
 .then(function() { server.register(Inert); })
 // auth via jwt
 .then(function() {
-  return server.register({ register: jwt, options: { redis } })
+  return server.register({ plugin: jwt, options: { redis } })
   .then(function() {
     var strategyOptions = {
       key: config.privateKey,
