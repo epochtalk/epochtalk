@@ -48,7 +48,6 @@ setup()
   server.decorate('server', 'db', db);
   server.decorate('server', 'errorMap', errorMap);
   server.decorate('server', 'redis', redis);
-
 })
 // Load plugins which are npm deps
 // server logging
