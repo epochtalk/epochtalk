@@ -26,7 +26,7 @@
     "url": "/api"
   },
   "dependencies": {
-    "@hapi/good": "8.2.0",
+    "@hapi/good": "^8.2.0",
     "@hapi/good-console": "^6.4.0",
     "@hapi/good-squeeze": "^5.0.2",
     "@hapi/hapi": "^18.1.0",
