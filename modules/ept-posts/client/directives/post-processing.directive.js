@@ -29,7 +29,7 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
       };
 
       // Auto Link Regex
-      var autoLinkRegex = /(?!<code[^>]*?>)((?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+%#-])?)(?![^<]*?<\/code>)/ig;
+      var autoLinkRegex = /(?!<code[^>]*?>)((?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~\(\)+#-]*[\w@?^=%&amp;\/~\(\)+%#-])?)(?![^<]*?<\/code>)/ig;
       var autoLink = function(url) {
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
