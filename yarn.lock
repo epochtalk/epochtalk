@@ -110,6 +110,34 @@
   resolved "https://registry.yarnpkg.com/@hapi/file/-/file-1.0.0.tgz#c91c39fd04db8bed5af82d2e032e7a4e65555b38"
   integrity sha512-Bsfp/+1Gyf70eGtnIgmScvrH8sSypO3TcK3Zf0QdHnzn/ACnAkI6KLtGACmNRPEzzIy+W7aJX5E+1fc9GwIABQ==
 
+"@hapi/good-console@^6.4.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@hapi/good-console/-/good-console-8.1.0.tgz#db15b6f0b00dd265fdda4eed82c20d7598740a5d"
+  integrity sha512-Bdru81gNPQNAFbhO9ZrIBeVats7GUk+wzhkF1ryrodllgcBXGahrvJJJT4Z9Yj3EjcwlhpmuV+Dsjd+2C98edg==
+  dependencies:
+    "@hapi/hoek" "6.x.x"
+    "@hapi/joi" "15.x.x"
+    json-stringify-safe "5.x.x"
+    moment "2.x.x"
+
+"@hapi/good-squeeze@^5.0.2":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@hapi/good-squeeze/-/good-squeeze-5.2.0.tgz#f8bdafa96a6c50b57d46e9fd408911e052a771b0"
+  integrity sha512-o7xnEeVSCgywAG3zfnNv4KQZvYjL8M3Gd0QPNlnHwIZakLurmliJCTheo/DwxoVtWHS3G/nyoxQNSlXMa3P3lQ==
+  dependencies:
+    "@hapi/hoek" "6.x.x"
+    fast-safe-stringify "2.x.x"
+
+"@hapi/good@^7.3.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@hapi/good/-/good-8.2.0.tgz#3aa975e5d26b2a9e55dc59d7d5abdf1212111d53"
+  integrity sha512-/teb7vubMlWup+Eg/VLdJ6blhWNkU8JUhEbpAP6XTycWbtYwBoXLv3CBFre0jSBZQ7gElKhEzZXYBpr1ET/5JA==
+  dependencies:
+    "@hapi/hoek" "6.x.x"
+    "@hapi/joi" "15.x.x"
+    "@hapi/oppsy" "2.x.x"
+    pumpify "1.x.x"
+
 "@hapi/hapi@^18.1.0":
   version "18.3.1"
   resolved "https://registry.yarnpkg.com/@hapi/hapi/-/hapi-18.3.1.tgz#936d1e24551b11486eabd6a4974bea4ec2127669"
@@ -193,6 +221,13 @@
   dependencies:
     "@hapi/hoek" "6.x.x"
     "@hapi/vise" "3.x.x"
+
+"@hapi/oppsy@2.x.x":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@hapi/oppsy/-/oppsy-2.1.1.tgz#b524600f12a56e177dbb88182a6fb9286082de11"
+  integrity sha512-Pi07rU7p8Zz1TdjhNu8iUlNTp1d22geW2UkA766zkrzbhgycsqPtRfnco2t3aXSqm54dgkZAK3I0fJ42q5dRVA==
+  dependencies:
+    "@hapi/hoek" "6.x.x"
 
 "@hapi/pez@4.x.x":
   version "4.1.0"
@@ -1952,7 +1987,7 @@ duplexer3@^0.1.4:
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
   integrity sha1-7gHdHKwO08vH/b6jfcCo8c4ALOI=
 
-duplexify@^3.4.2, duplexify@^3.5.3, duplexify@^3.6.0:
+duplexify@^3.4.2, duplexify@^3.6.0:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-3.7.1.tgz#2a4df5317f6ccfd91f86d6fd25d8d8a103b88309"
   integrity sha512-07z8uv2wMyS51kKhD1KsdXJg5WQ6t93RneqRxUHnskXVtlYYkLqM0gqStQZ3pj073g687jPCHrqNfCzawLYh5g==
@@ -2406,7 +2441,7 @@ fast-safe-stringify@1.1.x:
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-1.1.13.tgz#a01e9cd9c9e491715c98a75a42d5f0bbd107ff76"
   integrity sha1-oB6c2cnkkXFcmKdaQtXwu9EH/3Y=
 
-fast-safe-stringify@2.0.x:
+fast-safe-stringify@2.x.x:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.6.tgz#04b26106cc56681f51a044cfc0d76cf0008ac2c2"
   integrity sha512-q8BZ89jjc+mz08rSxROs8VsrBBcn1SIw1kq9NjolL509tkABRk9io01RAjSaEv1Xb2uFLt8VtRiZbGp5H8iDtg==
@@ -2862,16 +2897,6 @@ globule@^1.0.0:
     lodash "~4.17.10"
     minimatch "~3.0.2"
 
-good-console@^6.4.0:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/good-console/-/good-console-6.4.1.tgz#5922974868bcf3bd9594372ba33818dc0d01a464"
-  integrity sha1-WSKXSGi8872VlDcrozgY3A0BpGQ=
-  dependencies:
-    hoek "4.x.x"
-    joi "8.1.x"
-    json-stringify-safe "5.0.x"
-    moment "2.19.x"
-
 good-file@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/good-file/-/good-file-6.0.1.tgz#a4260d2232585d52f3054756b2dde27de42697cb"
@@ -2886,24 +2911,6 @@ good-http@^6.1.3:
   dependencies:
     fast-safe-stringify "1.1.x"
     wreck "10.x.x"
-
-good-squeeze@^5.0.2:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/good-squeeze/-/good-squeeze-5.1.0.tgz#265f3e8be6081aa44c55d484d1af375e166752b9"
-  integrity sha1-Jl8+i+YIGqRMVdSE0a83XhZnUrk=
-  dependencies:
-    fast-safe-stringify "2.0.x"
-    hoek "4.2.x"
-
-good@^7.3.0:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/good/-/good-7.3.0.tgz#25da74d51f336692ec86fe8d6533453585fa85fe"
-  integrity sha512-bZ4clzBw75zI424QUOrOnzwSM/7BrJ/2xTX75IT3spIZ052OPYEzLqdSt4mj/zZfs2OU52+/428QEmvyKUscUQ==
-  dependencies:
-    hoek "4.x.x"
-    joi "10.x.x"
-    oppsy "1.x.x"
-    pumpify "1.3.x"
 
 got@^6.7.1:
   version "6.7.1"
@@ -3071,7 +3078,7 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
-hoek@4.2.x, hoek@4.x.x:
+hoek@4.x.x:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb"
   integrity sha512-QLg82fGkfnJ/4iy1xZ81/9SIJiq1NGFUMGs6ParyjBZr6jW2Ufj/snDqTHixNlHdPNwN2RLVD0Pi3igeK9+JfA==
@@ -3734,7 +3741,7 @@ jmespath@0.15.0:
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
   integrity sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=
 
-joi@10.x.x, joi@14.x.x, joi@8.1.x, joi@^14.3.1:
+joi@10.x.x, joi@14.x.x, joi@^14.3.1:
   version "14.3.1"
   resolved "https://registry.yarnpkg.com/joi/-/joi-14.3.1.tgz#164a262ec0b855466e0c35eea2a885ae8b6c703c"
   integrity sha512-LQDdM+pkOrpAn4Lp+neNIFV3axv1Vna3j38bisbQhETPMANYRbFJFUyOZcOClYvM/hppMhGWuKSFEK9vjrB+bQ==
@@ -3824,7 +3831,7 @@ json-stable-stringify@1.x.x:
   dependencies:
     jsonify "~0.0.0"
 
-json-stringify-safe@5.0.x, json-stringify-safe@5.x.x, json-stringify-safe@~5.0.1:
+json-stringify-safe@5.x.x, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=
@@ -4477,10 +4484,10 @@ mocha@^5.2.0:
     mkdirp "0.5.1"
     supports-color "5.4.0"
 
-moment@2.19.x:
-  version "2.19.4"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.4.tgz#17e5e2c6ead8819c8ecfad83a0acccb312e94682"
-  integrity sha512-1xFTAknSLfc47DIxHDUbnJWC+UwgWxATmymaxIPQpmMh7LBm7ZbwVEsuushqwL2GYZU0jie4xO+TK44hJPjNSQ==
+moment@2.x.x:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
 "mongodb-uri@>= 0.9.7":
   version "0.9.7"
@@ -4877,14 +4884,6 @@ onetime@^2.0.0:
   integrity sha1-BnQoIw/WdEOyeUsiu6UotoZ5YtQ=
   dependencies:
     mimic-fn "^1.0.0"
-
-oppsy@1.x.x:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/oppsy/-/oppsy-1.0.2.tgz#98014cd6967653a83cfffa554226dc90050baad4"
-  integrity sha1-mAFM1pZ2U6g8//pVQibckAULqtQ=
-  dependencies:
-    hoek "4.x.x"
-    items "2.x.x"
 
 optimist@^0.6.1, optimist@~0.6.0:
   version "0.6.1"
@@ -5438,16 +5437,7 @@ pump@^3.0.0:
     end-of-stream "^1.1.0"
     once "^1.3.1"
 
-pumpify@1.3.x:
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/pumpify/-/pumpify-1.3.6.tgz#00d40e5ded0a3bf1e0788b1c0cf426a42882ab64"
-  integrity sha512-BurGAcvezsINL5US9T9wGHHcLNrG6MCp//ECtxron3vcR+Rfx5Anqq7HbZXNJvFQli8FGVsWCAvywEJFV5Hx/Q==
-  dependencies:
-    duplexify "^3.5.3"
-    inherits "^2.0.3"
-    pump "^2.0.0"
-
-pumpify@^1.3.3:
+pumpify@1.x.x, pumpify@^1.3.3:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/pumpify/-/pumpify-1.5.1.tgz#36513be246ab27570b1a374a5ce278bfd74370ce"
   integrity sha512-oClZI37HvuUJJxSKKrC17bZ9Cu0ZYhEAGPsPUy9KlMUmv9dKX2o77RUmq7f3XjIxbwyGwYzbzQ1L2Ks8sIradQ==
