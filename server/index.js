@@ -2,7 +2,7 @@ require('dotenv').load({silent: true});
 var _ = require('lodash');
 var Promise = require('bluebird');
 var path = require('path');
-var Hapi = require('hapi');
+var Hapi = require('@hapi/hapi');
 var Hoek = require('hoek');
 var websocketServer = require(path.normalize(__dirname + '/../websocket-server'));
 var Good = require('good');
@@ -35,8 +35,7 @@ setup()
 // create server instance and add dbs
 .then(function() {
   // create server object
-  server = new Hapi.Server();
-  server.connection(serverOptions);
+  server = Hapi.Server(serverOptions);
 
   // config decoration
   server.app.config = config;
