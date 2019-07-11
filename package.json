@@ -51,7 +51,7 @@
     "good-http": "^6.1.3",
     "good-squeeze": "^5.0.2",
     "handlebars": "^4.1.1",
-    "hapi": "^16.6.2",
+    "@hapi/hapi": "^18.1.0",
     "hoek": "^6.1.2",
     "inert": "^4.2.1",
     "ip-address": "^5.0.2",
