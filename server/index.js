@@ -81,7 +81,7 @@ setup()
 })
 // register modules plugin to grab plugin data
 .then(function() {
-  return server.register({ register: modules, options: { db, config } })
+  return server.register({ plugin: modules, options: { db, config } })
   .then(function() {
     additionalRoutes = server.app.moduleData.routes;
     commonMethods = server.app.moduleData.common;
