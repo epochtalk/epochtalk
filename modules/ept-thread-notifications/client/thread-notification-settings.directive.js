@@ -6,26 +6,27 @@ var directive = ['ThreadNotifications', function(ThreadNotifications) {
     controllerAs: 'vmThreadSettings',
     controller: ['Alert', '$timeout', function(Alert, $timeout) {
       var ctrl = this;
-      this.notificationsEnabled;
+      this.notificationsDisabled;
       this.showRemoveModal;
 
-      (function init() {
+      function init() {
         var query = { limit: 10 };
         return ThreadNotifications.get().$promise
         .then(function(data) {
-          ctrl.notificationsEnabled = data.notify_replied_threads;
+          ctrl.notificationsDisabled = data.notify_replied_threads;
         });
-      })();
+      }
+      init();
 
       this.enableNotifications = function() {
-        var payload = { enabled: ctrl.notificationsEnabled };
+        var payload = { enabled: !ctrl.notificationsDisabled };
         return ThreadNotifications.enableNotifications(payload).$promise
         .then(function() {
-          var action = ctrl.notificationsEnabled ? 'Enabled' : 'Disabled';
+          var action = ctrl.notificationsDisabled ? 'Enabled' : 'Disabled';
           Alert.success('Successfully ' + action + ' Thread Notifications');
         })
         .catch(function(e) {
-          ctrl.notificationsEnabled = !ctrl.notificationsEnabled;
+          ctrl.notificationsDisabled = !ctrl.notificationsDisabled;
           Alert.error('There was an error updating your thread notification settings');
         });
       }
