@@ -128,7 +128,7 @@
     "@hapi/hoek" "6.x.x"
     fast-safe-stringify "2.x.x"
 
-"@hapi/good@^7.3.0":
+"@hapi/good@8.2.0":
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/@hapi/good/-/good-8.2.0.tgz#3aa975e5d26b2a9e55dc59d7d5abdf1212111d53"
   integrity sha512-/teb7vubMlWup+Eg/VLdJ6blhWNkU8JUhEbpAP6XTycWbtYwBoXLv3CBFre0jSBZQ7gElKhEzZXYBpr1ET/5JA==
