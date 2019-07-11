@@ -136,7 +136,21 @@
       flex: 2;
     }
 
-    @media screen and  (min-width: 1280px) {
+    @media screen and (max-width: 960px) {
+      .view-count {
+        flex: 0 0 auto;
+      }
+      .view-count-posts,
+      .view-count-threads {
+        display: inline;
+      }
+      .view-count-number {
+        margin-right: 0;
+        text-align: left;
+      }
+    }
+
+    @media screen and  (min-width: 960px) {
       .info {
         flex: 2;
       }
