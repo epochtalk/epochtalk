@@ -120,7 +120,7 @@
     json-stringify-safe "5.x.x"
     moment "2.x.x"
 
-"@hapi/good-squeeze@^5.0.2":
+"@hapi/good-squeeze@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@hapi/good-squeeze/-/good-squeeze-5.2.0.tgz#f8bdafa96a6c50b57d46e9fd408911e052a771b0"
   integrity sha512-o7xnEeVSCgywAG3zfnNv4KQZvYjL8M3Gd0QPNlnHwIZakLurmliJCTheo/DwxoVtWHS3G/nyoxQNSlXMa3P3lQ==
