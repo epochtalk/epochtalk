@@ -5,7 +5,7 @@ var path = require('path');
 var Hapi = require('@hapi/hapi');
 var Hoek = require('hoek');
 var websocketServer = require(path.normalize(__dirname + '/../websocket-server'));
-var Good = require('good');
+var Good = require('@hapi/good');
 var Inert = require('inert');
 var Vision = require('vision');
 var errorMap = require(path.normalize(__dirname + '/error-map'));
@@ -54,7 +54,7 @@ setup()
 // server logging
 .then(function() {
   // server logging only registered if config enabled
-  return server.register({ register: Good, options: logOptions});
+  return server.register({ plugin: Good, options: logOptions});
 })
 // inert static file serving
 .then(function() { server.register(Inert); })
