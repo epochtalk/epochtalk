@@ -53,7 +53,7 @@
     "good-http": "^6.1.3",
     "handlebars": "^4.1.1",
     "hoek": "^6.1.2",
-    "inert": "^4.2.1",
+    "@hapi/inert": "^5.2.1",
     "ip-address": "^5.0.2",
     "joi": "^14.3.1",
     "jquery": "3.4.0",

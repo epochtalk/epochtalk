@@ -181,6 +181,18 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-8.0.2.tgz#f63a5ff00e891a4e7aa98f11119f9515c6672032"
   integrity sha512-O6o6mrV4P65vVccxymuruucb+GhP2zl9NLCG8OdoFRS8BEGw3vwpPp20wpAtpbQQxz1CEUtmxJGgWhjq1XA3qw==
 
+"@hapi/inert@^5.2.1":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@hapi/inert/-/inert-5.2.1.tgz#97de7e688f9bd9d681bf3dd14280d09ef2414544"
+  integrity sha512-kovx94LVcT9jELc+k4xuR+1lsdmimjHKn9SpI/YAXDioO7m4YzksEBSmneH3ZwVWVnl2j66Sfzvs2IweHRxyNA==
+  dependencies:
+    "@hapi/ammo" "3.x.x"
+    "@hapi/boom" "7.x.x"
+    "@hapi/bounce" "1.x.x"
+    "@hapi/hoek" "8.x.x"
+    "@hapi/joi" "15.x.x"
+    lru-cache "4.1.x"
+
 "@hapi/iron@5.x.x":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@hapi/iron/-/iron-5.1.0.tgz#c3b34783cd19b7b8aabe11b72b0ce3781fcee08d"
@@ -569,14 +581,6 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
-
-ammo@2.x.x:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/ammo/-/ammo-2.0.4.tgz#bf80aab211698ea78f63ef5e7f113dd5d9e8917f"
-  integrity sha1-v4CqshFpjqePY+9efxE91dnokX8=
-  dependencies:
-    boom "5.x.x"
-    hoek "4.x.x"
 
 angular-animate@1.7.5:
   version "1.7.5"
@@ -3268,18 +3272,6 @@ indent-string@^2.1.0:
   integrity sha1-ji1INIdCEhtKghi3oTfppSBJ3IA=
   dependencies:
     repeating "^2.0.0"
-
-inert@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/inert/-/inert-4.2.1.tgz#da743c478a18a8378032f80ada128a28cd2bba93"
-  integrity sha512-qmbbZYPSzU/eOUOStPQvSjrU9IR1Q3uDtsEsVwnBQeZG43xu7Nrj6yuUrX3ice/03rv5dj/KiKB+NGCbiqH+aQ==
-  dependencies:
-    ammo "2.x.x"
-    boom "5.x.x"
-    hoek "4.x.x"
-    items "2.x.x"
-    joi "10.x.x"
-    lru-cache "4.1.x"
 
 inflight@^1.0.4:
   version "1.0.6"
