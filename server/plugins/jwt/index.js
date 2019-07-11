@@ -9,16 +9,15 @@ var internals = {};
 var redis;
 
 
-exports.register = function (server, options, next) {
-  if (!options.redis) { return next(new Error('Redis not found in jwt')); }
-  redis = options.redis;
-  server.auth.scheme('jwt', internals.implementation);
-  next();
-};
 
-exports.register.attributes = {
+module.exports = {
   name: 'jwt',
-  version: '1.0.1'
+  version: '1.0.1',
+  register: async function (server, options) {
+    if (!options.redis) { return next(new Error('Redis not found in jwt')); }
+    redis = options.redis;
+    server.auth.scheme('jwt', internals.implementation);
+  }
 };
 
 
