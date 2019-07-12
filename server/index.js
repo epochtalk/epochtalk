@@ -118,7 +118,7 @@ setup()
 .then(function() { return server.register({ plugin: parser, options: { parsers } }); })
 // user sessions
 .then(function() {
-  return server.register({ register: session, options: { roles, redis, config } });
+  return server.register({ plugin: session, options: { roles, redis, config } });
 })
 // common methods
 .then(function() {
