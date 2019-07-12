@@ -175,26 +175,21 @@ function stitch(error, conditions, type) {
   }
 }
 
-// -- API
-
-exports.register = function(server, options, next) {
-  options = options || {};
-  options.methods = options.methods || [];
-
-  server.method(options.methods);
-
-  // append the authorization common object to server
-  var authorization = {
-    common: common,
-    stitch: stitch,
-    build: build
-  };
-  server.decorate('server', 'authorization', authorization);
-
-  next();
-};
-
-exports.register.attributes = {
+module.exports = {
   name: 'authorization',
-  version: '1.0.0'
+  version: '1.0.0',
+  register: async function(server, options) {
+    options = options || {};
+    options.methods = options.methods || [];
+
+    server.method(options.methods);
+
+    // append the authorization common object to server
+    var authorization = {
+      common: common,
+      stitch: stitch,
+      build: build
+    };
+    server.decorate('server', 'authorization', authorization);
+  }
 };
