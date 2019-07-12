@@ -24,7 +24,7 @@ module.exports = {
     server.ext('onPostAuth', function (request, reply) {
       var routeACL = request.route.settings.plugins.acls;
       // route has no ACLs so allow access
-      if (!routeACL) { return reply.continue(); }
+      if (!routeACL) { return reply.continue; }
       var userACLs = [];
       var authenticated = request.auth.isAuthenticated;
       var err = Boom.unauthorized('You must log in to see this content.');
@@ -43,7 +43,7 @@ module.exports = {
       var ACLValues = userACLs.map(function(acl) { return _.get(acl, routeACL); });
       var validACL = false;
       ACLValues.forEach(function(val) { validACL = val || validACL; });
-      if (validACL) { return reply.continue(); }
+      if (validACL) { return reply.continue; }
       else { return reply(err); }
     });
 
