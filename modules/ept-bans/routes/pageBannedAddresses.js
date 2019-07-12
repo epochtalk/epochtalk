@@ -50,7 +50,7 @@ module.exports = {
         search: Joi.string().optional()
       }
     },
-    pre: [ { method: 'auth.bans.pageBannedAddresses(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.bans.pageBannedAddresses(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var opts = request.query;

@@ -64,7 +64,7 @@ module.exports = {
   path: '/api/configurations',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.configurations.get(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.configurations.get(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.configurations.get()

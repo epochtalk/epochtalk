@@ -44,7 +44,7 @@ module.exports = {
         reviewer_user_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.reports.posts.reports.update(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.posts.reports.update(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var report = Object.assign({}, request.payload);

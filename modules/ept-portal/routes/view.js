@@ -82,7 +82,7 @@ module.exports = {
     app: { hook: 'portal.view' },
     auth: { mode: 'try', strategy: 'jwt' },
     pre: [
-      { method: 'auth.portal.view(server, auth)', assign: 'priority' },
+      { method: (request) => request.server.methods.auth.portal.view(request.server, request.auth), assign: 'priority' },
       { method: 'hooks.preProcessing' },
       [
         { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },

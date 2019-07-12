@@ -49,7 +49,7 @@ module.exports = {
         modded: Joi.boolean()
       }
     },
-    pre: [ { method: 'auth.bans.byBannedBoards(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.bans.byBannedBoards(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var opts = {

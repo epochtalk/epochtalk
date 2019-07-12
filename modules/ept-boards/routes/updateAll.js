@@ -29,7 +29,7 @@ module.exports = {
       mod_log: { type: 'adminBoards.updateCategories' }
     },
     validate: { payload: { boardMapping: Joi.array().required() } },
-    pre: [ { method: 'auth.boards.updateAll(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.updateAll(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     // TODO: clean inputs?

@@ -147,7 +147,7 @@ module.exports = {
         })
       }).options({ stripUnknown: true, abortEarly: true })
     },
-    pre: [ { method: 'auth.configurations.update(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.configurations.update(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var internalConfig = request.server.app.config;

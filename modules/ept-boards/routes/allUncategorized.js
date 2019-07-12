@@ -22,7 +22,7 @@ module.exports = {
   path: '/api/boards/uncategorized',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.boards.allUncategorized(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.allUncategorized(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.boards.all()

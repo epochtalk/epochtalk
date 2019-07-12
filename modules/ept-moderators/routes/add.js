@@ -38,7 +38,7 @@ module.exports = {
         board_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.moderators.add(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.moderators.add(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var usernames = request.payload.usernames;

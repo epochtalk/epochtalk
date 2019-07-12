@@ -32,7 +32,7 @@ module.exports = {
         disclaimer: Joi.string().allow('')
       })
     },
-    pre: [ { method: 'auth.legal.update(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.legal.update(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var writeFile = function(path, text) {

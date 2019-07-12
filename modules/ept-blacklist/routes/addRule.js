@@ -34,7 +34,7 @@ module.exports = {
         note: Joi.string().min(1).max(255)
       }
     },
-    pre: [ { method: 'auth.blacklist.addRule(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.blacklist.addRule(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var rule = request.payload;

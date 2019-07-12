@@ -49,7 +49,7 @@ module.exports = {
       })).min(1)
     },
     pre: [
-      { method: 'auth.boards.create(server, auth)' },
+      { method: (request) => request.server.methods.auth.boards.create(request.server, request.auth) },
       { method: 'common.boards.clean(sanitizer, payload)' }
     ]
   },

@@ -47,7 +47,7 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(25)
       }
     },
-    pre: [ { method: 'auth.watchlist.unread(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.watchlist.unread(request.server, request.auth) } ],
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;

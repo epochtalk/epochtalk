@@ -44,7 +44,7 @@ module.exports = {
         note: Joi.string().max(255).required()
       }
     },
-    pre: [ { method: 'auth.reports.messages.notes.create(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.messages.notes.create(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var reportNote = Object.assign({}, request.payload);

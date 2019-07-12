@@ -36,7 +36,7 @@ module.exports = {
         search: Joi.string()
       }
     },
-    pre: [ { method: 'auth.roles.users(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.roles.users(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var roleId = request.params.id;

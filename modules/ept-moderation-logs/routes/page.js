@@ -54,7 +54,7 @@ module.exports = {
         edate: Joi.date()
       }
     },
-    pre: [ { method: 'auth.moderationLogs.page(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.moderationLogs.page(request.server, request.auth) } ],
   },
   handler: function(request, reply) {
     var promise = request.db.moderationLogs.page(request.query)

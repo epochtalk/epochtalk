@@ -47,7 +47,7 @@ module.exports = {
   path: '/api/boards/unfiltered',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.boards.allUnfiltered(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.allUnfiltered(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise =  request.db.boards.allCategories()

@@ -27,7 +27,7 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(15)
       }
     },
-    pre: [ { method: 'auth.users.searchUsernames(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.searchUsernames(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     // get user by username

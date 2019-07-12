@@ -17,7 +17,7 @@ module.exports = {
   path: '/api/admin/blacklist',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.blacklist.all(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.blacklist.all(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.blacklist.all()

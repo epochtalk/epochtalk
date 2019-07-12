@@ -49,7 +49,7 @@ module.exports = {
         decay: Joi.boolean().default(false),
       }).without('hostname', 'ip')
     },
-    pre: [ { method: 'auth.bans.editAddress(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.bans.editAddress(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var address = request.payload;

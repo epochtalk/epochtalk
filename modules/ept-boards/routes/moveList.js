@@ -19,7 +19,7 @@ module.exports = {
   path: '/api/boards/movelist',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.boards.moveList(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.moveList(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.boards.allSelect()

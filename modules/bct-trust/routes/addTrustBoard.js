@@ -21,7 +21,7 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     validate: { payload: { board_id: Joi.string().required() } },
-    pre: [ { method: 'auth.userTrust.addTrustBoard(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.userTrust.addTrustBoard(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.userTrust.addTrustBoard(request.payload.board_id)

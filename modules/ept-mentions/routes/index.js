@@ -50,7 +50,7 @@ var page = {
       }
     },
     pre: [
-      { method: 'auth.mentions.page(server, auth)' },
+      { method: (request) => request.server.methods.auth.mentions.page(request.server, request.auth) },
       { method: 'hooks.preProcessing' },
       [
         { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
@@ -100,7 +100,7 @@ var remove = {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { query: { id: Joi.string() } },
-    pre: [{ method: 'auth.mentions.delete(server, auth)' }],
+    pre: [{ method: (request) => request.server.methods.auth.mentions.delete(request.server, request.auth) }],
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;

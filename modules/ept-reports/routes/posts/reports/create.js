@@ -35,7 +35,7 @@ module.exports = {
         offender_post_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.reports.posts.reports.create(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.reports.posts.reports.create(request.server, request.auth) } ],
   },
   handler: function(request, reply) {
     var report = request.payload;

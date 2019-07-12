@@ -31,7 +31,7 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.categories.create(server, auth)' },
+      { method: (request) => request.server.methods.auth.categories.create(request.server, request.auth) },
       { method: 'common.categories.clean(sanitizer, payload)' },
     ]
   },

@@ -72,7 +72,7 @@ module.exports = {
         'header-bg-color': Joi.string()
       })
     },
-    pre: [ { method: 'auth.themes.setTheme(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.themes.setTheme(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var theme = request.payload;

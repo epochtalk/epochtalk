@@ -68,7 +68,7 @@ var save = {
         main_view_only: Joi.boolean().default(false)
       }
     },
-    pre: [ { method: 'auth.motd.save(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.motd.save(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var data = request.payload;

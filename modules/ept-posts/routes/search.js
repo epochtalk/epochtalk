@@ -49,7 +49,7 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.posts.search(server, auth)' },
+      { method: (request) => request.server.methods.auth.posts.search(request.server, request.auth) },
       { method: 'hooks.preProcessing' },
       [
         { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },

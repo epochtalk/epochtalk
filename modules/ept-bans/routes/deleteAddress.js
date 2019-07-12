@@ -42,7 +42,7 @@ module.exports = {
         ip: Joi.string()
       }
     },
-    pre: [ { method: 'auth.bans.deleteAddress(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.bans.deleteAddress(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var address = request.query;

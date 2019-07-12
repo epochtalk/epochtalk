@@ -28,7 +28,7 @@ module.exports = {
         self: Joi.boolean()
       }
     },
-    pre: [ { method: 'auth.users.lookup(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.lookup(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     // get id for username

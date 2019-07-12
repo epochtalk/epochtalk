@@ -36,7 +36,7 @@ module.exports = {
         note: Joi.string().min(1).max(255)
       }
     },
-    pre: [ { method: 'auth.blacklist.updateRule(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.blacklist.updateRule(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var updatedRule = request.payload;

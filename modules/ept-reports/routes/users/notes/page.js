@@ -45,7 +45,7 @@ module.exports = {
         desc: Joi.boolean().default(true)
       }
     },
-    pre: [ { method: 'auth.reports.users.notes.page(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.users.notes.page(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var reportId = request.params.report_id;

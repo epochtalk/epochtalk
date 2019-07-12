@@ -63,7 +63,7 @@ module.exports = {
         search: Joi.string()
       }
     },
-    pre: [ { method: 'auth.reports.posts.reports.page(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.posts.reports.page(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var opts = {

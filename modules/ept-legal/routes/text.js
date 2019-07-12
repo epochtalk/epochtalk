@@ -23,7 +23,7 @@ module.exports = {
   path: '/api/legal',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.legal.text(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.legal.text(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var getFile = function(customDir, defaultDir) {

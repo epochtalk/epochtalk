@@ -24,7 +24,7 @@ module.exports = {
   path: '/api/admin/trustlist',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.userTrust.getDefaultTrustList(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.userTrust.getDefaultTrustList(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var defaultTrustId = 'U31jnDtQRUW-oYs4rM9Ajg';
