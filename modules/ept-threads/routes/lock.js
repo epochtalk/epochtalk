@@ -46,6 +46,6 @@ module.exports = {
     .then(() => { return { id: threadId, locked: locked }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

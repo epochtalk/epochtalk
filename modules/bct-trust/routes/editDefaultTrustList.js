@@ -54,6 +54,6 @@ module.exports = {
     };
     var promise = request.db.userTrust.editTrustList(opts)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

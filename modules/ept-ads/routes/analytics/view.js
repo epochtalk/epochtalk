@@ -12,7 +12,7 @@ function auth(request, reply) {
     auth: request.auth,
     permission: 'ads.analyticsView.allow'
   });
-  return reply(promise);
+  return promise;
 }
 
 function defaultRoundNumber(request, reply) {
@@ -96,6 +96,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

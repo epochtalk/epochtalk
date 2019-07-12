@@ -70,5 +70,5 @@ function processing(request, reply) {
   .then((post) => { return request.imageStore.updateImageReferences(post); })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

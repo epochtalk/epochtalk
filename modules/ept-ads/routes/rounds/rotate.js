@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'ads.roundRotate.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -45,6 +45,6 @@ module.exports = {
     var promise = db.rounds.rotate(round)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

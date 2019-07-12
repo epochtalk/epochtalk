@@ -49,6 +49,6 @@ module.exports = {
     var promise = request.db.polls.lock(pollId, locked)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

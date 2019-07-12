@@ -28,6 +28,6 @@ module.exports = {
     var promise = request.db.watchlist.watchThread(userId, threadId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

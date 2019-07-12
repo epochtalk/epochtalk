@@ -15,7 +15,7 @@ function auth(request, reply) {
     permission: 'ads.view.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -98,6 +98,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

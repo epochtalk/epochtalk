@@ -30,6 +30,6 @@ module.exports = {
     var defaultTrustId = 'U31jnDtQRUW-oYs4rM9Ajg';
     var promise = request.db.userTrust.getTrustList(defaultTrustId)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

@@ -87,7 +87,7 @@ module.exports = {
        return retVal;
     });
 
-    return reply(promise);
+    return promise;
   }
 };
 

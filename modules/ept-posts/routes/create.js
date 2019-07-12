@@ -60,7 +60,7 @@ function processing(request, reply) {
   .then((post) => { return request.imageStore.createImageReferences(post); })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }
 
 

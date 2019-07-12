@@ -50,6 +50,6 @@ module.exports = {
     var promise = request.db.userNotes.page(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

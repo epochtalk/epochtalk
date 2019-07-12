@@ -26,6 +26,6 @@ module.exports = {
   handler: function(request, reply) {
     var promise = request.db.userTrust.deleteTrustBoard(request.params.board_id)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

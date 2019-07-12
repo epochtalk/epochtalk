@@ -37,6 +37,6 @@ module.exports = {
     var promise = request.db.users.lookup(username, ignoredUsername)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

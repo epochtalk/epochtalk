@@ -53,6 +53,6 @@ module.exports = {
     var promise =  request.db.bans.addAddresses(addresses)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

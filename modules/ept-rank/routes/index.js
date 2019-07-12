@@ -35,7 +35,7 @@ var upsert = {
     var ranks = request.payload;
     var promise = request.db.rank.upsert(ranks)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -64,7 +64,7 @@ var get = {
   handler: function(request, reply) {
     var promise = request.db.rank.get()
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };
 

@@ -51,6 +51,6 @@ module.exports = {
     var promise = request.db.reports.updateUserReport(report)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

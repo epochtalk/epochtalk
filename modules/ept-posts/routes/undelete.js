@@ -33,7 +33,7 @@ module.exports = {
     handler: function(request, reply) {
       var promise = request.db.posts.undelete(request.params.id)
       .error(request.errorMap.toHttpError);
-      return reply(promise);
+      return promise;
     }
   }
 };

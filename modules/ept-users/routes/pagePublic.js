@@ -59,6 +59,6 @@ module.exports = {
     var promise = request.db.users.pagePublic(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

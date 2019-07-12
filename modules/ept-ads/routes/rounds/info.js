@@ -14,7 +14,7 @@ function auth(request, reply) {
     permission: 'ads.roundInfo.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 function currentRound(request, reply) {
@@ -93,6 +93,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

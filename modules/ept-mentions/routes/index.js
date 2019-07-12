@@ -76,7 +76,7 @@ function processing(request, reply) {
   var promise = request.db.mentions.page(mentioneeId, opts)
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -115,7 +115,7 @@ var remove = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -166,7 +166,7 @@ var pageIgnoredUsers = {
     var promise = request.db.mentions.pageIgnoredUsers(userId, opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -201,7 +201,7 @@ var ignoreUser = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -242,7 +242,7 @@ var unignoreUser = {
       promise = request.db.mentions.unignoreUser(userId)
       .error(request.errorMap.toHttpError);
     }
-    return reply(promise);
+    return promise;
   }
 };
 

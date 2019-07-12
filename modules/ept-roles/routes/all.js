@@ -29,6 +29,6 @@ module.exports = {
     .then((roles) => { return { roles: roles, layouts: request.roleLayouts }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

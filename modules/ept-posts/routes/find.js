@@ -60,5 +60,5 @@ function processing(request, reply) {
   .then(function(posts) { return posts[0]; })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

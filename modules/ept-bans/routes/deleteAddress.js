@@ -49,6 +49,6 @@ module.exports = {
     var promise =  request.db.bans.deleteAddress(address)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -56,6 +56,6 @@ module.exports = {
     var promise = Promise.join(writeTos, writePrivacy, writeDisclaimer, function() { return; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

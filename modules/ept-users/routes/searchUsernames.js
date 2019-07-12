@@ -36,6 +36,6 @@ module.exports = {
     var promise = request.db.users.searchUsernames(searchStr, limit)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

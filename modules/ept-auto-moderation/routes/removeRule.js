@@ -13,7 +13,7 @@ function auth(request, reply) {
     permission: 'autoModeration.removeRule.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -44,6 +44,6 @@ module.exports = {
     .tap(function() { autoModerator.removeRule(ruleId); })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

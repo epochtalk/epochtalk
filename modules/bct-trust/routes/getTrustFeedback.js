@@ -68,6 +68,6 @@ module.exports = {
       return request.db.userTrust.getTrustFeedback(user.id, request.auth.credentials.id);
     })
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

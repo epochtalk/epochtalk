@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'ads.remove.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -42,6 +42,6 @@ module.exports = {
     var promise = db.ads.remove(adId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

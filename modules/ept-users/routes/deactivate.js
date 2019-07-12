@@ -34,6 +34,6 @@ module.exports = {
     .then(function() { return {}; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -46,6 +46,6 @@ module.exports = {
     .then(() => { return { id: threadId, sticky: sticky }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

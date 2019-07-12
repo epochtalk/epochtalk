@@ -28,6 +28,6 @@ module.exports = {
     var promise = request.db.boards.all()
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

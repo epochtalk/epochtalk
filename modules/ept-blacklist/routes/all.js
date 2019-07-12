@@ -23,6 +23,6 @@ module.exports = {
     var promise = request.db.blacklist.all()
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

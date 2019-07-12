@@ -30,6 +30,6 @@ module.exports = {
     .then(function() { return { message: 'Invitation Removed.' }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

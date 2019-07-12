@@ -42,6 +42,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError)
     .catch(function() { return { token_valid: false }; });
-    return reply(promise);
+    return promise;
   }
 };

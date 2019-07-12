@@ -106,5 +106,5 @@ function processing(request, reply) {
   .then(function() { return request.db.posts.create(newPost); })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

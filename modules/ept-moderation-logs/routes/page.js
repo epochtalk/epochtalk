@@ -60,6 +60,6 @@ module.exports = {
     var promise = request.db.moderationLogs.page(request.query)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

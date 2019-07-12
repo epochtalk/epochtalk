@@ -28,7 +28,7 @@ module.exports = {
     handler: function(request, reply) {
       var promise = request.db.posts.lock(request)
       .error(request.errorMap.toHttpError);
-      return reply(promise);
+      return promise;
     }
   }
 };

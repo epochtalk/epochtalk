@@ -35,6 +35,6 @@ module.exports = {
     var promise = request.db.notifications.counts(userId, opts)
       .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

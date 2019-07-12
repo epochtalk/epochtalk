@@ -80,7 +80,7 @@ var save = {
         main_view_only: data.main_view_only || false
       };
     });
-    return reply(promise);
+    return promise;
   }
 };
 

@@ -48,6 +48,6 @@ module.exports = {
     var promise = request.db.users.count(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

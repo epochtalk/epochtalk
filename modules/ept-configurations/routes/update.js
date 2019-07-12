@@ -176,7 +176,7 @@ module.exports = {
     .then(function() { return request.payload; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 

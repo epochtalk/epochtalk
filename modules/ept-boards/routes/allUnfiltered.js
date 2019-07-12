@@ -53,6 +53,6 @@ module.exports = {
     var promise =  request.db.boards.allCategories()
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -62,6 +62,6 @@ module.exports = {
     var promise = request.db.bans.byBannedBoards(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

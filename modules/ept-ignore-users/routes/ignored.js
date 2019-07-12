@@ -46,6 +46,6 @@ module.exports = {
     var promise = request.db.ignoreUsers.ignored(userId, opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -27,6 +27,6 @@ module.exports = {
       return { found: result };
     })
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

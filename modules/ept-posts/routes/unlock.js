@@ -29,7 +29,7 @@ module.exports = {
       var promise = request.db.posts.unlock(request.params.id)
       .error(request.errorMap.toHttpError);
 
-      return reply(promise);
+      return promise;
     }
   }
 };

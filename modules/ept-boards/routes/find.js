@@ -42,6 +42,6 @@ module.exports = {
     var promise = request.db.boards.find(boardId, userPriority)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

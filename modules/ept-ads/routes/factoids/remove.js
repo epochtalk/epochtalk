@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'ads.factoidRemove.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -42,6 +42,6 @@ module.exports = {
     var promise = db.factoids.remove(factoidId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

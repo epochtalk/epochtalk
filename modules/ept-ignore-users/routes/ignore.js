@@ -30,6 +30,6 @@ module.exports = {
     .then(function() { return { user_id: ignoreUserId, ignored: true }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

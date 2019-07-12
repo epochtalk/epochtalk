@@ -57,6 +57,6 @@ module.exports = {
     var promise = request.db.bans.pageBannedAddresses(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

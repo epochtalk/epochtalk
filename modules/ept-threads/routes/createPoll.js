@@ -62,6 +62,6 @@ module.exports = {
     var promise = request.db.polls.create(threadId, poll)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

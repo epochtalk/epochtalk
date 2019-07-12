@@ -25,6 +25,6 @@ module.exports = {
     var promise = request.db.boards.allSelect()
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
