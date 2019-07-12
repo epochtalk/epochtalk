@@ -113,7 +113,7 @@ setup()
   return server.register({ plugin: limiter, options: rlOptions });
 })
 // sanitizer
-.then(function() { return server.register({ register: sanitizer }); })
+.then(function() { return server.register({ plugin: sanitizer }); })
 // parser
 .then(function() { return server.register({ plugin: parser, options: { parsers } }); })
 // user sessions
