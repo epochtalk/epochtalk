@@ -13,8 +13,6 @@ module.exports = {
     db = options.db;
 
     server.ext('onPostHandler', function(request, reply) {
-      reply.continue();
-
       // Only log successful actions
       if (request.response.statusCode === 200) {
         var modLog = _.get(request, 'route.settings.plugins.mod_log');
@@ -72,9 +70,12 @@ module.exports = {
           }
 
           // Execute dataQuery if present, generate display text, then write log to the db
-          promise.then(function() { return generateDisplayInfo(); })
+          return promise.then(function() { return generateDisplayInfo(); })
           .then(function() { return storeToDb(); })
           .catch(function(err) { if (err) { throw err; } });
+        }
+        else {
+          return reply.continue;
         }
       }
     });
