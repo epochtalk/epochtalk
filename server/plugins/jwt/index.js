@@ -66,18 +66,18 @@ internals.implementation = function (server, options) {
         settings.validateFunc(decoded, token, redis, function (err, isValid, credentials) {
           credentials = credentials || null;
 
-          if (err) { return reply(err, null, { credentials: credentials }); }
+          if (err) { return reply.unauthenticated(err, { credentials: credentials }); }
 
           if (!isValid) {
-            return reply(Boom.unauthorized('Invalid token', 'Bearer'), null, { credentials: credentials });
+            return reply.unauthenticated(Boom.unauthorized('Invalid token', 'Bearer'), { credentials: credentials });
           }
 
           if (!credentials || typeof credentials !== 'object') {
-            return reply(Boom.badImplementation('Bad credentials object received for jwt auth validation'), null, { log: { tags: 'credentials' } });
+            return reply.unauthenticated(Boom.badImplementation('Bad credentials object received for jwt auth validation'), { log: { tags: 'credentials' } });
           }
 
           // Authenticated
-          return reply.continue({ credentials: credentials });
+          return reply.authenticated({ credentials: credentials });
         });
 
       });
