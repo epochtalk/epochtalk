@@ -105,31 +105,31 @@ setup()
 })
 // Load non-module plugins
 // backoff
-.then(function() { return server.register({ register: backoff }); })
+.then(function() { return server.register({ plugin: backoff }); })
 // rate limiter
 .then(function() {
   var rlOptions = Hoek.clone(config.rateLimiting);
   rlOptions.redis = redis;
-  return server.register({ register: limiter, options: rlOptions });
+  return server.register({ plugin: limiter, options: rlOptions });
 })
 // sanitizer
-.then(function() { return server.register({ register: sanitizer }); })
+.then(function() { return server.register({ plugin: sanitizer }); })
 // parser
-.then(function() { return server.register({ register: parser, options: { parsers } }); })
+.then(function() { return server.register({ plugin: parser, options: { parsers } }); })
 // user sessions
 .then(function() {
-  return server.register({ register: session, options: { roles, redis, config } });
+  return server.register({ plugin: session, options: { roles, redis, config } });
 })
 // common methods
 .then(function() {
-  return server.register({ register: common, options: { methods: commonMethods } });
+  return server.register({ plugin: common, options: { methods: commonMethods } });
 })
 // hook methods
 .then(function() {
-  return server.register({ register: hooks, options: { hooks: hookMethods } });
+  return server.register({ plugin: hooks, options: { hooks: hookMethods } });
 })
 // emailer
-.then(function() { return server.register({ register: emailer, options: { config } }); })
+.then(function() { return server.register({ plugin: emailer, options: { config } }); })
 // plugins methods
 .then(function() {
   return loadModulePlugins(plugins);

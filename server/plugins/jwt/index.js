@@ -14,7 +14,7 @@ module.exports = {
   name: 'jwt',
   version: '1.0.1',
   register: async function (server, options) {
-    if (!options.redis) { return next(new Error('Redis not found in jwt')); }
+    if (!options.redis) { return new Error('Redis not found in jwt'); }
     redis = options.redis;
     server.auth.scheme('jwt', internals.implementation);
   }

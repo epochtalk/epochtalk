@@ -12,28 +12,25 @@ function imagesSite(imageStore, payload) {
 
 // -- API
 
-exports.register = function(server, options, next) {
-  options = options || {};
-  options.methods = options.methods || [];
-
-  // append hardcoded methods to the server
-  var internalMethods = [
-    // -- images
-    {
-      name: 'common.images.site',
-      method: imagesSite,
-      options: { callback: false }
-    }
-  ];
-
-  // append any new methods to methods from options
-  var methods = [].concat(options.methods, internalMethods);
-  server.method(methods);
-
-  next();
-};
-
-exports.register.attributes = {
+module.exports = {
   name: 'common',
-  version: '1.0.0'
+  version: '1.0.0',
+  register: async function(server, options) {
+    options = options || {};
+    options.methods = options.methods || [];
+
+    // append hardcoded methods to the server
+    var internalMethods = [
+      // -- images
+      {
+        name: 'common.images.site',
+        method: imagesSite,
+        options: { callback: false }
+      }
+    ];
+
+    // append any new methods to methods from options
+    var methods = [].concat(options.methods, internalMethods);
+    server.method(methods);
+  }
 };

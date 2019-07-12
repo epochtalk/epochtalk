@@ -57,40 +57,38 @@ function postProcessing(request) {
 
 // -- API
 
-exports.register = function(server, options, next) {
-  options = options || {};
-  options.hooks = options.hooks || [];
-  server.decorate('request', 'hooks', options.hooks);
 
-  // append hardcoded methods to the server
-  var internalMethods = [
-    {
-      name: 'hooks.preProcessing',
-      method: preProcessing,
-      options: { callback: false }
-    },
-    {
-      name: 'hooks.parallelProcessing',
-      method: parallelProcessing,
-      options: { callback: false }
-    },
-    {
-      name: 'hooks.merge',
-      method: mergeProcessing,
-      options: { callback: false }
-    },
-    {
-      name: 'hooks.postProcessing',
-      method: postProcessing,
-      options: { callback: false }
-    }
-  ];
-  server.method(internalMethods);
-
-  next();
-};
-
-exports.register.attributes = {
+module.exports = {
   name: 'hooks',
-  version: '1.0.0'
+  version: '1.0.0',
+  register: async function(server, options) {
+    options = options || {};
+    options.hooks = options.hooks || [];
+    server.decorate('request', 'hooks', options.hooks);
+
+    // append hardcoded methods to the server
+    var internalMethods = [
+      {
+        name: 'hooks.preProcessing',
+        method: preProcessing,
+        options: { callback: false }
+      },
+      {
+        name: 'hooks.parallelProcessing',
+        method: parallelProcessing,
+        options: { callback: false }
+      },
+      {
+        name: 'hooks.merge',
+        method: mergeProcessing,
+        options: { callback: false }
+      },
+      {
+        name: 'hooks.postProcessing',
+        method: postProcessing,
+        options: { callback: false }
+      }
+    ];
+    server.method(internalMethods);
+  }
 };
