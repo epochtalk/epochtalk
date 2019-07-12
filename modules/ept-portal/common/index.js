@@ -8,8 +8,7 @@ common.export = () =>  {
   return [
     {
       name: 'common.portal.parseOut',
-      method: parseOut,
-      options: { callback: false }
+      method: parseOut
     }
   ];
 };
