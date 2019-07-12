@@ -22,8 +22,13 @@
     <!-- Child Board Posts and Threads -->
     <div class="info-secondary">
       <div class="view-count">
-        <span class="value" ng-bind="(childBoard.total_post_count | number:0) || 0"></span> posts in 
-        <span class="value" ng-bind="(childBoard.total_thread_count | number:0) || 0"></span> threads
+        <p class="view-count-posts">
+          <span class="view-count-number" ng-bind="(childBoard.total_post_count | number:0) || 0"></span><span class="label">posts,</span>
+        </p>
+        <p class="view-count-threads">
+          <span class="view-count-number" ng-bind="(childBoard.total_thread_count | number:0) || 0"></span><span class="label">threads</span>
+        </p>
+        
       </div>
       <div class="last-post">
         <div ng-if="childBoard.last_thread_id">
@@ -36,7 +41,7 @@
             posted in
             <a ui-sref="posts.data({ threadId: childBoard.last_thread_id, start: childBoard.last_post_position })"
               ng-bind-html="childBoard.last_thread_title | decode | truncate:25"
-              title="{{childBoard.last_thread_title | decode}}"></a>, 
+              title="{{childBoard.last_thread_title | decode}}"></a> on  
           </span>
           <span ng-if="childBoard.last_thread_id">
             <span ng-bind="childBoard.last_post_created_at | humanDate"></span>
@@ -44,32 +49,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="view-count">
-      <div>
-        <strong ng-bind="(childBoard.total_post_count | number:0) || 0"></strong> posts
-      </div>
-      <div>
-        <strong ng-bind="(childBoard.total_thread_count | number:0) || 0"></strong> threads
-      </div>
-    </div> -->
-
-    <!-- Child Board Last Post By -->
-    <!-- <div class="last-post">
-      <div ng-if="childBoard.last_thread_id">
-        Last post by
-        <span ng-if="!childBoard.last_post_username">deleted</span>
-        <img ng-if="childBoard.last_post_username" class="avatar-small" ng-src="{{childBoard.last_post_avatar || $webConfigs.default_avatar}}" />
-        <a ng-if="childBoard.last_post_username" ui-sref="profile.posts({ username: childBoard.last_post_username })" ng-bind="childBoard.last_post_username"></a>
-      </div>
-      <div ng-if="childBoard.last_thread_id">
-        in
-        <a ui-sref="posts.data({ threadId: childBoard.last_thread_id, start: childBoard.last_post_position })" ng-bind-html="childBoard.last_thread_title | decode | truncate:25" title="{{childBoard.last_thread_title | decode}}"></a>
-      </div>
-      <div ng-if="childBoard.last_thread_id">
-        <span ng-bind="childBoard.last_post_created_at | humanDate"></span>
-      </div>
-    </div> -->
-
   </div>
 </div>
 

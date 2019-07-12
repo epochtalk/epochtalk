@@ -20,6 +20,10 @@
 .content-sidebar {
   border-top: $border;
   padding-top: 1rem;
+  
+  .title {
+    margin-bottom: 0.5rem;
+  }
 
   @media screen and (min-width: 1280px) {
     border-top: none;

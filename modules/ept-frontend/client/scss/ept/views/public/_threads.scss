@@ -50,21 +50,27 @@
     .board {
       display: flex;
       flex-direction: row;
+      padding: 0 0 1rem 0;
+
       .info {
-        flex: 3;
+        flex: 2;
         .description { 
-          font-size: 0.875rem; 
+          // font-size: 0.875rem; 
           line-height: 1.5;
         }
+
+        .childboards {
+          color: $text-gray-dark;
+        }
+
         .label {
-          color: $text-gray-med;
           font-size: $font-size-sm;
           // text-transform: uppercase;
         }
       }
 
       .info-secondary {
-        color: $text-gray-med;
+        color: $text-gray-dark;
         flex: 1;
         font-size: $font-size-sm;
         display: flex;
@@ -76,7 +82,27 @@
       }
 
       .view-count { 
+        flex: 0 0 50%;
       }
+
+      .view-count-posts,
+      .view-count-threads {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .view-count-number {
+        flex: 1 0 auto;
+        font-weight: 600;
+        margin-right: 0.25rem;
+        text-align: right;
+      }
+
+      .label {
+        flex: 0 0 50%;
+        text-align: left;
+      }
+
       .last-post {  
       }
     }
@@ -84,6 +110,18 @@
     @include media($mobile) {
       .board {
         flex-direction: column;
+      }
+    }
+
+    @media screen and (min-width: 960px) {
+      .board {
+        .info-secondary {
+          flex-direction: row;
+
+          .view-count {
+            padding-right: 2rem;
+          }
+        }
       }
     }
   }
@@ -207,7 +245,6 @@
       color: $text-gray-med;
       display: flex;
       flex-direction: row;
-      padding-bottom: 1rem;
     }
 
     .subject {
@@ -232,6 +269,7 @@
 
       .threads-data {
         flex-direction: column;
+        margin-bottom: 1rem;
       }
     }
 
