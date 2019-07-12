@@ -122,7 +122,7 @@ setup()
 })
 // common methods
 .then(function() {
-  return server.register({ register: common, options: { methods: commonMethods } });
+  return server.register({ plugin: common, options: { methods: commonMethods } });
 })
 // hook methods
 .then(function() {
