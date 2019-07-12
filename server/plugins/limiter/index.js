@@ -56,7 +56,7 @@ module.exports = {
       var authenticated = request.auth.isAuthenticated;
 
       // ignore static paths
-      if (path === '/static/{path*}' || path === '/{path*}') { return reply.continue(); }
+      if (path === '/static/{path*}' || path === '/{path*}') { return reply.continue; }
 
       // check if user is authenticated
       if (authenticated) {
@@ -99,7 +99,7 @@ module.exports = {
       else if (!routeLimit) { routeLimit = _.clone(postDefaults); }
 
       // check if limits are valid, bypass if not
-      if (routeLimit.interval < 0) { return reply.continue(); }
+      if (routeLimit.interval < 0) { return reply.continue; }
 
       // setup rate limiter
       routeLimit.redis = redis;
@@ -107,12 +107,12 @@ module.exports = {
       var routeLimiter = limiter(routeLimit);
 
       // query rate limiter to see if route should be blocked
-      routeLimiter(key, function(err, timeLeft) {
+      return routeLimiter(key, function(err, timeLeft) {
         if (err) { return reply(err); }
         else if (timeLeft) {
           return reply(Boom.tooManyRequests('Rate Limit Exceeded'));
         }
-        else { return reply.continue(); }
+        else { return reply.continue; }
       });
     });
 
