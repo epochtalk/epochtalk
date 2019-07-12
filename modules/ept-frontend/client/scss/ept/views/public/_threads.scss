@@ -94,7 +94,7 @@
       .view-count-number {
         flex: 1 0 auto;
         font-weight: 600;
-        margin-right: 0.25rem;
+        margin-right: 0.2rem;
         text-align: right;
       }
 
@@ -110,6 +110,21 @@
     @include media($mobile) {
       .board {
         flex-direction: column;
+      }
+    }@media screen and (max-width: 960px) {
+      .info-secondary {
+        .view-count {
+          flex: 0 0 auto;
+        }
+
+        .view-count-posts,
+        .view-count-threads {
+          display: inline;
+        }
+
+        .view-count-number {
+          text-align: left;
+        }
       }
     }
 
@@ -190,9 +205,28 @@
 }
 
 .board-sidebar {
-  @include media($mobile) {
-    grid-column: 1 / span 2;
-    grid-row: 2 / 3;
+  grid-column: 1 / span 2;
+  grid-row: 2 / 3;
+
+  .board-actions {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media screen and (min-width: 1280px) {
+    grid-column: 2 / span 1;
+  }
+
+  @media screen and (min-width: 767px) and (max-width: 1279px) {
+    .board-actions {
+      flex-direction: row;
+      justify-content: center;
+
+      a {
+        margin-left: 1rem;
+        margin-right: 1rem;
+      }
+    }
   }
 }
 

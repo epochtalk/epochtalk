@@ -2,6 +2,7 @@
 #public-content {
   grid-template-columns: auto;
   grid-gap: 2rem;
+  row-gap: 1rem;
   margin-bottom: 2rem;
 
   @media screen and (min-width: 1280px) {
