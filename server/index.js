@@ -110,7 +110,7 @@ setup()
 .then(function() {
   var rlOptions = Hoek.clone(config.rateLimiting);
   rlOptions.redis = redis;
-  return server.register({ register: limiter, options: rlOptions });
+  return server.register({ plugin: limiter, options: rlOptions });
 })
 // sanitizer
 .then(function() { return server.register({ register: sanitizer }); })
