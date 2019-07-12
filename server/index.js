@@ -105,7 +105,7 @@ setup()
 })
 // Load non-module plugins
 // backoff
-.then(function() { return server.register({ register: backoff }); })
+.then(function() { return server.register({ plugin: backoff }); })
 // rate limiter
 .then(function() {
   var rlOptions = Hoek.clone(config.rateLimiting);
