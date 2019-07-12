@@ -126,7 +126,7 @@ setup()
 })
 // hook methods
 .then(function() {
-  return server.register({ register: hooks, options: { hooks: hookMethods } });
+  return server.register({ plugin: hooks, options: { hooks: hookMethods } });
 })
 // emailer
 .then(function() { return server.register({ plugin: emailer, options: { config } }); })
