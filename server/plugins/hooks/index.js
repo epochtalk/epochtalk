@@ -70,23 +70,19 @@ module.exports = {
     var internalMethods = [
       {
         name: 'hooks.preProcessing',
-        method: preProcessing,
-        options: { callback: false }
+        method: preProcessing
       },
       {
         name: 'hooks.parallelProcessing',
-        method: parallelProcessing,
-        options: { callback: false }
+        method: parallelProcessing
       },
       {
         name: 'hooks.merge',
-        method: mergeProcessing,
-        options: { callback: false }
+        method: mergeProcessing
       },
       {
         name: 'hooks.postProcessing',
-        method: postProcessing,
-        options: { callback: false }
+        method: postProcessing
       }
     ];
     server.method(internalMethods);
