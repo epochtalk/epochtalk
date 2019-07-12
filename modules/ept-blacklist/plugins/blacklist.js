@@ -20,7 +20,7 @@ module.exports = {
         var err = Boom.forbidden();
         return reply(err);
       }
-      else { return reply.continue(); }
+      else { return reply.continue; }
     });
 
     server.expose('retrieveBlacklist', retrieveBlacklist);
