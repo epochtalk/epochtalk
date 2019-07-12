@@ -9,11 +9,13 @@ module.exports = {
     db = options.db;
 
     server.ext('onPostHandler', function(request, reply) {
-      reply.continue();
       // If credentials are present and track_ip is true
       if (request.auth.credentials && _.get(request, 'route.settings.plugins.track_ip')) {
         var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
-        db.users.trackIp(request.auth.credentials.id, ip);
+        return db.users.trackIp(request.auth.credentials.id, ip);
+      }
+      else {
+        return reply.continue;
       }
     });
   }
