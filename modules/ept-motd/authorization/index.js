@@ -23,12 +23,10 @@ var get = function(server, auth) {
 module.exports = [
   {
     name: 'auth.motd.save',
-    method: save,
-    options: { callback: false }
+    method: save
   },
   {
     name: 'auth.motd.get',
-    method: get,
-    options: { callback: false }
+    method: get
   },
 ];
