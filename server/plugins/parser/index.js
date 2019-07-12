@@ -1,6 +1,6 @@
 var parsers = [];
 
-exports.register.attributes = {
+module.exports = {
   name: 'parser',
   version: '1.0.0',
   register: async function(server, options) {
