@@ -18,28 +18,23 @@ common.export = () =>  {
   return [
     {
       name: 'common.posts.checkPostLength',
-      method: checkPostLength,
-      options: { callback: false }
+      method: checkPostLength
     },
     {
       name: 'common.posts.clean',
-      method: clean,
-      options: { callback: false }
+      method: clean
     },
     {
       name: 'common.posts.parse',
-      method: parse,
-      options: { callback: false }
+      method: parse
     },
     {
       name: 'common.posts.parseOut',
-      method: parseOut,
-      options: { callback: false }
+      method: parseOut
     },
     {
       name: 'common.posts.newbieImages',
-      method: newbieImages,
-      options: { callback: false }
+      method: newbieImages
     }
   ];
 };
