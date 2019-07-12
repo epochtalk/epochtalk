@@ -117,13 +117,11 @@ common.export = () =>  {
   return [
     {
       name: 'common.threads.checkView',
-      method: checkView,
-      options: { callback: false }
+      method: checkView
     },
     {
       name: 'common.threads.updateView',
-      method: updateView,
-      options: { callback: false }
+      method: updateView
     }
   ];
 };
