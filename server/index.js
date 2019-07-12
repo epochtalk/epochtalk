@@ -129,7 +129,7 @@ setup()
   return server.register({ register: hooks, options: { hooks: hookMethods } });
 })
 // emailer
-.then(function() { return server.register({ register: emailer, options: { config } }); })
+.then(function() { return server.register({ plugin: emailer, options: { config } }); })
 // plugins methods
 .then(function() {
   return loadModulePlugins(plugins);
