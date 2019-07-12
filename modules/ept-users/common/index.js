@@ -70,18 +70,15 @@ common.export = () =>  {
   return [
     {
       name: 'common.users.clean',
-      method: clean,
-      options: { callback: false }
+      method: clean
     },
     {
       name: 'common.users.parse',
-      method: parse,
-      options: { callback: false }
+      method: parse
     },
     {
       name: 'common.images.signature',
-      method: imagesSignature,
-      options: { callback: false }
+      method: imagesSignature
     }
   ];
 };
