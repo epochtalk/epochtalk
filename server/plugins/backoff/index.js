@@ -8,7 +8,7 @@ module.exports = {
 
     plugin.ext('onPostAuth', function(request, reply) {
       var backoffSwitch = request.route.settings.plugins.backoff;
-      if (!backoffSwitch) { return reply.continue(); }
+      if (!backoffSwitch) { return reply.continue; }
 
       // variables
       var db = request.db.db;
@@ -22,7 +22,7 @@ module.exports = {
       .tap(function() { return appendLog(db, remoteAddress); })
       // reject or allow connection
       .then(function(allowed) {
-        if (allowed) { return reply.continue(); }
+        if (allowed) { return reply.continue; }
         else { return reply(Boom.tooManyRequests('Abuse Detected')); }
       });
     });
