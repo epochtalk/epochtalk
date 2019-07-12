@@ -23,7 +23,7 @@ var get = {
   config: {
     auth: { mode: 'try', strategy: 'jwt' },
     plugins: { track_ip: true },
-    pre: [ { method: 'auth.motd.get(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.motd.get(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.motd.get()
