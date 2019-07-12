@@ -24,11 +24,12 @@ module.exports = {
   config: { auth: { mode: 'try', strategy: 'jwt' } },
   handler: function(request, reply) {
     // check if already logged in with jwt
-    var ret = Boom.unauthorized();
     if (request.auth.isAuthenticated) {
       var user = request.auth.credentials;
-      ret = request.session.formatUserReply(user.token, user);
+      return reply.response(request.session.formatUserReply(user.token, user));
     }
-    return reply(ret);
+    else {
+      return Boom.unauthorized();
+    }
   }
 };
