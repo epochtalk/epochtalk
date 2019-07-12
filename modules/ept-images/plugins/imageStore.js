@@ -14,14 +14,12 @@ module.exports = {
 
     server.method({
       name: 'common.images.sub',
-      method: images.imageSub,
-      options: { callback: false }
+      method: images.imageSub
     });
 
     server.method({
       name: 'common.images.avatarSub',
-      method: images.avatarSub,
-      options: { callback: false }
+      method: images.avatarSub
     });
   }
 };
