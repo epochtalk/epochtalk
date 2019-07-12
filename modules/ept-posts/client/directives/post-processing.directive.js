@@ -29,7 +29,7 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
       };
 
       // Auto Link Regex
-      var autoLinkRegex = /(?!<code[^>]*?>)((?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+%#-])?)(?![^<]*?<\/code>)/ig;
+      var autoLinkRegex = /(?!<code[^>]*?>)((?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~\(\)+#-]*[\w@?^=%&amp;\/~\(\)+%#-])?)(?![^<]*?<\/code>)/ig;
       var autoLink = function(url) {
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
@@ -196,14 +196,26 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
         // Hello World
         // [/code]
         // Without having extra padding at the top of the code block
-        var codeBlocks = $element.find("CODE");
+        var codeBlocks = $element.find('CODE');
         if (codeBlocks.length > 0) {
           for (var i = 0; i < codeBlocks.length; i++) {
             var codeBlock = angular.element(codeBlocks[i]);
             var text = codeBlock.text();
-            if (text.charAt(0) == '\n') {
+            if (text.charAt(0) === '\n') {
               text = text.substr(1);
               codeBlock.text(text);
+            }
+          }
+        }
+
+        // Remove extra newlines following quoteblocks
+        var quoteBlocks = $element.find('.quote');
+        if (quoteBlocks.length > 0) {
+          for (var i = 0; i < quoteBlocks.length; i++) {
+            var quoteBlock = angular.element(quoteBlocks[i])[0].nextSibling;
+            var text = quoteBlock.nodeValue;
+            if (text.charAt(0) === '\n') {
+              quoteBlock.nodeValue = text.substr(2);
             }
           }
         }

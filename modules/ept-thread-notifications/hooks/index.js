@@ -16,7 +16,7 @@ function emailSubscribers(request) {
       username: emailData.username,
       thread_name: emailData.title,
       site_name: config.website.title,
-      thread_url: config.publicUrl + '/threads/' + threadId + '/posts'
+      thread_url: config.publicUrl + '/threads/' + threadId + '/posts?start=' + emailData.last_post_position + '#' + emailData.last_post_id
     };
     return request.emailer.send('threadNotification', emailParams)
     .then(function() {
