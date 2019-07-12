@@ -115,7 +115,7 @@ setup()
 // sanitizer
 .then(function() { return server.register({ register: sanitizer }); })
 // parser
-.then(function() { return server.register({ register: parser, options: { parsers } }); })
+.then(function() { return server.register({ plugin: parser, options: { parsers } }); })
 // user sessions
 .then(function() {
   return server.register({ register: session, options: { roles, redis, config } });
