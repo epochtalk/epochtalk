@@ -9,29 +9,31 @@ var transporters = require(path.join(__dirname, 'transporters'));
 var transporter = {};
 var emailerConfig = {};
 
-exports.register = function(server, opts, next) {
-  options = opts = opts || {};
-  if (!opts.config) { return next(new Error('No Config found in Emailer Plugin!')); }
+module.exports = {
+  name: 'emailer',
+  version: '1.0.0',
+  // exposes this plugin as a javascript object
+  // used in cli
+  expose: function(emailer) {
+    options = {
+      config: {
+        emailer: emailer
+      }
+    };
 
-  init();
+    init();
+    return { send, init };
+  },
+  register: async function(server, opts) {
+    options = opts = opts || {};
+    if (!opts.config) { return new Error('No Config found in Emailer Plugin!'); }
 
-  var emailer = { send, init };
-  server.decorate('server', 'emailer', emailer);
-  server.decorate('request', 'emailer', emailer);
-  return next();
-};
+    init();
 
-// exposes this plugin as a javascript object
-// used in cli
-exports.expose = function(emailer) {
-  options = {
-    config: {
-      emailer: emailer
-    }
-  };
-
-  init();
-  return { send, init };
+    var emailer = { send, init };
+    server.decorate('server', 'emailer', emailer);
+    server.decorate('request', 'emailer', emailer);
+  }
 };
 
 function init() {
@@ -70,8 +72,3 @@ function send(templateName, emailParams) {
     });
   });
 }
-
-exports.register.attributes = {
-  name: 'emailer',
-  version: '1.0.0'
-};
