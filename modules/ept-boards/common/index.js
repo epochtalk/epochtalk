@@ -59,8 +59,7 @@ common.export = () =>  {
   return [
     {
       name: 'common.boards.clean',
-      method: boardsClean,
-      options: { callback: false }
+      method: boardsClean
     }
   ];
 };
