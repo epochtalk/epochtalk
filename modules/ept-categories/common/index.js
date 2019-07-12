@@ -11,8 +11,7 @@ common.export = () =>  {
   return [
     {
       name: 'common.categories.clean',
-      method: categoriesClean,
-      options: { callback: false }
+      method: categoriesClean
     }
   ];
 };
