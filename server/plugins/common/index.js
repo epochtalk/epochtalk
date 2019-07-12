@@ -24,8 +24,7 @@ module.exports = {
       // -- images
       {
         name: 'common.images.site',
-        method: imagesSite,
-        options: { callback: false }
+        method: imagesSite
       }
     ];
 
