@@ -51,7 +51,7 @@ module.exports = {
     pre: [
       { method: 'auth.conversations.create(server, auth, request.payload.receiver_ids)' },
       { method: 'common.posts.checkPostLength(server, request.payload.body)' },
-      { method: 'common.posts.clean(sanitizer, request.payload)' },
+      { method: 'common.posts.clean(request.sanitizer, request.payload)' },
       { method: 'common.posts.parse(parser, request.payload)' },
       { method: 'common.images.sub(request.payload)' }
     ]

@@ -43,7 +43,7 @@ module.exports = {
     },
     pre: [
       { method: 'auth.posts.update(server, auth, params.id, request.payload.thread_id)' },
-      { method: 'common.posts.clean(sanitizer, request.payload)' },
+      { method: 'common.posts.clean(request.sanitizer, request.payload)' },
       { method: 'common.posts.parse(parser, request.payload)' },
       { method: 'common.images.sub(request.payload)' },
       { method: 'common.posts.newbieImages(auth, request.payload)' },

@@ -50,7 +50,7 @@ module.exports = {
     },
     pre: [
       { method: (request) => request.server.methods.auth.boards.create(request.server, request.auth) },
-      { method: 'common.boards.clean(sanitizer, request.payload)' }
+      { method: 'common.boards.clean(request.sanitizer, request.payload)' }
     ]
   },
   handler: function(request, reply) {

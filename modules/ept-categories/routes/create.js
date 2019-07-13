@@ -32,7 +32,7 @@ module.exports = {
     },
     pre: [
       { method: (request) => request.server.methods.auth.categories.create(request.server, request.auth) },
-      { method: 'common.categories.clean(sanitizer, request.payload)' },
+      { method: 'common.categories.clean(request.sanitizer, request.payload)' },
     ]
   },
   handler: function(request, reply) {
