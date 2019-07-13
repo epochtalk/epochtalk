@@ -36,11 +36,11 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.messages.create(server, auth, payload.receiver_ids, payload.conversation_id)' },
-      { method: 'common.posts.checkPostLength(server, payload.body)' },
-      { method: 'common.posts.clean(sanitizer, payload)' },
-      { method: 'common.posts.parse(parser, payload)' },
-      { method: 'common.images.sub(payload)' }
+      { method: 'auth.messages.create(server, auth, request.payload.receiver_ids, request.payload.conversation_id)' },
+      { method: 'common.posts.checkPostLength(server, request.payload.body)' },
+      { method: 'common.posts.clean(sanitizer, request.payload)' },
+      { method: 'common.posts.parse(parser, request.payload)' },
+      { method: 'common.images.sub(request.payload)' }
     ]
   },
   handler: function(request, reply) {

@@ -56,7 +56,7 @@ module.exports = {
         confirmation: Joi.ref('password')
       }
     },
-    pre: [ { method: 'auth.auth.register(server, payload.email, payload.username)' } ]
+    pre: [ { method: 'auth.auth.register(server, request.payload.email, request.payload.username)' } ]
   },
   handler: function(request, reply) {
     var config = request.server.app.config;

@@ -52,7 +52,7 @@ module.exports = {
         role_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.users.addRoles(server, auth, payload.role_id, payload.usernames)' } ]
+    pre: [ { method: 'auth.users.addRoles(server, auth, request.payload.role_id, request.payload.usernames)' } ]
   },
   handler: function(request, reply) {
     var usernames = request.payload.usernames;

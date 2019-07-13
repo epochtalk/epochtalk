@@ -43,7 +43,7 @@ module.exports = {
     },
     pre: [
       { method: (request) => request.server.methods.auth.boards.update(request.server, request.auth) },
-      { method: 'common.boards.clean(sanitizer, payload)' },
+      { method: 'common.boards.clean(sanitizer, request.payload)' },
     ]
   },
   handler: function(request, reply) {

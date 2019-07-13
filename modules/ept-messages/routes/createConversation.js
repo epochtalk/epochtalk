@@ -49,11 +49,11 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.conversations.create(server, auth, payload.receiver_ids)' },
-      { method: 'common.posts.checkPostLength(server, payload.body)' },
-      { method: 'common.posts.clean(sanitizer, payload)' },
-      { method: 'common.posts.parse(parser, payload)' },
-      { method: 'common.images.sub(payload)' }
+      { method: 'auth.conversations.create(server, auth, request.payload.receiver_ids)' },
+      { method: 'common.posts.checkPostLength(server, request.payload.body)' },
+      { method: 'common.posts.clean(sanitizer, request.payload)' },
+      { method: 'common.posts.parse(parser, request.payload)' },
+      { method: 'common.images.sub(request.payload)' }
     ]
   },
   handler: function(request, reply) {

@@ -43,7 +43,7 @@ module.exports = {
         ip_ban: Joi.boolean().default(false)
       }
     },
-    pre: [ { method: 'auth.bans.ban(server, auth, payload.user_id)' } ],
+    pre: [ { method: 'auth.bans.ban(server, auth, request.payload.user_id)' } ],
   },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
