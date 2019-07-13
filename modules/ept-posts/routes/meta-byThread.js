@@ -10,7 +10,7 @@ module.exports = {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { thread_id: Joi.string().required() } },
     pre: [
-      { method: 'auth.posts.metaByThread(request.server, request.auth, params.thread_id)', assign: 'viewable' },
+      { method: 'auth.posts.metaByThread(request.server, request.auth, request.params.thread_id)', assign: 'viewable' },
     ]
   },
   handler: function(request, reply) {

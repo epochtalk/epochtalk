@@ -40,7 +40,7 @@ module.exports = {
       },
       payload: { locked: Joi.boolean().required() }
     },
-    pre: [ { method: 'auth.threads.lockPoll(request.server, request.auth, params.thread_id)' } ]
+    pre: [ { method: 'auth.threads.lockPoll(request.server, request.auth, request.params.thread_id)' } ]
   },
   handler: function(request, reply) {
     var pollId = request.params.poll_id;

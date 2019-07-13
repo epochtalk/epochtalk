@@ -34,7 +34,7 @@ module.exports = {
     },
     pre: [
       { method: (request) => request.server.methods.auth.posts.delete(request.server, request.auth, request.params.id) },
-      { method: 'auth.posts.lock(request.server, request.auth, params.id, query)' }
+      { method: 'auth.posts.lock(request.server, request.auth, request.params.id, query)' }
     ],
     handler: function(request, reply) {
       var promise = request.db.posts.delete(request)
