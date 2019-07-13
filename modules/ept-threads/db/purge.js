@@ -22,6 +22,8 @@ module.exports = function(threadId) {
       var row = results.rows[0];
       result.title = row.title;
       result.user_id = row.user_id;
+      q = 'SELECT user_id FROM posts where thread_id = $1';
+
       // lock up thread and Meta
       q = 'DELETE FROM threads WHERE id = $1 returning board_id';
       return client.query(q, [threadId]);
