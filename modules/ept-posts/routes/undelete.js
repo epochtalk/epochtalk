@@ -29,7 +29,7 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.posts.delete(server, auth, params.id)'} ],
+    pre: [ { method: (request) => request.server.methods.auth.posts.delete(request.server, request.auth, request.params.id)} ],
     handler: function(request, reply) {
       var promise = request.db.posts.undelete(request.params.id)
       .error(request.errorMap.toHttpError);

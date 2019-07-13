@@ -32,7 +32,7 @@ module.exports = {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [
-      { method: 'auth.posts.find(server, auth, params.id)', assign: 'viewDeleted' },
+      { method: (request) => request.server.methods.auth.posts.find(request.server, request.auth, request.params.id), assign: 'viewDeleted' },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },

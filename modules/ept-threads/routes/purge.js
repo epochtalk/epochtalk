@@ -32,7 +32,7 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.threads.purge(server, auth, params.id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.purge(request.server, request.auth, request.params.id) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.threads.purge(request.params.id)

@@ -8,7 +8,7 @@ module.exports = {
   config: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { username: Joi.string().required() } },
-    pre: [ { method: 'auth.users.metaFind(server, auth, params)', assign: 'viewable' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.metaFind(request.server, request.auth, request.params), assign: 'viewable' } ]
   },
   handler: function(request, reply) {
     var viewable = request.pre.viewable;

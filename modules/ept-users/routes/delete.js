@@ -30,7 +30,7 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.users.delete(server, auth, params.id)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.users.delete(request.server, request.auth, request.params.id) } ],
   },
   handler: function(request, reply) {
     var userId = request.params.id;

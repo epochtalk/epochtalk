@@ -20,10 +20,10 @@ module.exports = {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [
-      [ { method: 'auth.threads.viewed(server, auth, params.id)' } ],
+      [ { method: (request) => request.server.methods.auth.threads.viewed(request.server, request.auth, request.params.id) } ],
       [
         { method: 'common.threads.checkView(server, headers, info, params.id)', assign: 'newViewId' },
-        { method: 'common.threads.updateView(server, auth, params.id)' }
+        { method: (request) => request.server.methods.common.threads.updateView(request.server, request.auth, request.params.id) }
       ]
     ]
   },

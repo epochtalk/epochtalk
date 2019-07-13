@@ -54,7 +54,7 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.posts.pageByUser(server, auth, params.username)', assign: 'auth' },
+      { method: (request) => request.server.methods.auth.posts.pageByUser(request.server, request.auth, request.params.username), assign: 'auth' },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },

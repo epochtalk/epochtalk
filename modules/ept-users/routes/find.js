@@ -45,7 +45,7 @@ module.exports = {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { username: Joi.string().required() } },
     pre: [
-      { method: 'auth.users.find(server, auth, params)', assign: 'view' },
+      { method: (request) => request.server.methods.auth.users.find(request.server, request.auth, request.params), assign: 'view' },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },

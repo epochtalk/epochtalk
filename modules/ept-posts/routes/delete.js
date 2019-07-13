@@ -33,7 +33,7 @@ module.exports = {
       query: { locked: Joi.boolean().default(false) }
     },
     pre: [
-      { method: 'auth.posts.delete(server, auth, params.id)' },
+      { method: (request) => request.server.methods.auth.posts.delete(request.server, request.auth, request.params.id) },
       { method: 'auth.posts.lock(server, auth, params.id, query)' }
     ],
     handler: function(request, reply) {

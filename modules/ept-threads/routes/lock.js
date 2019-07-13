@@ -35,7 +35,7 @@ module.exports = {
       params: { id: Joi.string().required() },
       payload: { status: Joi.boolean().default(true) }
     },
-    pre: [ { method: 'auth.threads.lock(server, auth, params.id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.lock(request.server, request.auth, request.params.id) } ]
   },
   handler: function(request, reply) {
     var threadId = request.params.id;
