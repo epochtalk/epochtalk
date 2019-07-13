@@ -46,13 +46,13 @@ module.exports = {
     validate: { params: { username: Joi.string().required() } },
     pre: [
       { method: 'auth.users.find(server, auth, params)', assign: 'view' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge },
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {
       return reply(request.pre.processed);

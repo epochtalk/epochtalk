@@ -83,14 +83,14 @@ module.exports = {
     auth: { mode: 'try', strategy: 'jwt' },
     pre: [
       { method: (request) => request.server.methods.auth.portal.view(request.server, request.auth), assign: 'priority' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
+      { method: (request) => request.server.methods.hooks.merge },
       { method: 'common.portal.parseOut(parser, pre.processed.threads)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ]
   },
   handler: function(request, reply) {

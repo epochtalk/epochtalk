@@ -16,14 +16,14 @@ module.exports = {
     },
     pre: [
       { method: 'auth.posts.patrol(auth)', assign: 'viewables' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
+      { method: (request) => request.server.methods.hooks.merge },
       { method: 'common.posts.parseOut(parser, pre.processed.posts)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {
       return reply(request.pre.processed);
