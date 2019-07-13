@@ -96,7 +96,7 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.threads.byBoard(request.server, auth, query.board_id)' },
+      { method: 'auth.threads.byBoard(request.server, request.auth, query.board_id)' },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },

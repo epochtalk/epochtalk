@@ -49,7 +49,7 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.conversations.create(request.server, auth, request.payload.receiver_ids)' },
+      { method: 'auth.conversations.create(request.server, request.auth, request.payload.receiver_ids)' },
       { method: 'common.posts.checkPostLength(request.server, request.payload.body)' },
       { method: 'common.posts.clean(request.sanitizer, request.payload)' },
       { method: 'common.posts.parse(parser, request.payload)' },

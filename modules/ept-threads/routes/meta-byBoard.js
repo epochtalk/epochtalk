@@ -8,7 +8,7 @@ module.exports = {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { board_id: Joi.string().required() } },
     pre: [
-      { method: 'auth.threads.metaByBoard(request.server, auth, params.board_id)', assign: 'viewable' }
+      { method: 'auth.threads.metaByBoard(request.server, request.auth, params.board_id)', assign: 'viewable' }
     ],
   },
   handler: function(request, reply) {

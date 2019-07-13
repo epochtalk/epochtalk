@@ -38,7 +38,7 @@ module.exports = {
         }
       }
     },
-    pre: [ { method: 'auth.reports.messages.notes.update(request.server, auth, request.payload.id)' } ],
+    pre: [ { method: 'auth.reports.messages.notes.update(request.server, request.auth, request.payload.id)' } ],
     validate: {
       payload: {
         id: Joi.string().required(),

@@ -32,7 +32,7 @@ module.exports = {
       }
     },
     validate: { payload: { user_id: Joi.string().required() } },
-    pre: [ { method: 'auth.bans.ban(request.server, auth, request.payload.user_id)' } ],
+    pre: [ { method: 'auth.bans.ban(request.server, request.auth, request.payload.user_id)' } ],
   },
   handler: function(request, reply) {
     var userId = request.payload.user_id;

@@ -28,12 +28,12 @@ module.exports = {
       })
     },
     pre: [
-      { method: 'auth.posts.create(request.server, auth, request.payload.thread_id)' },
+      { method: 'auth.posts.create(request.server, request.auth, request.payload.thread_id)' },
       { method: 'common.posts.checkPostLength(request.server, request.payload.body)' },
       { method: 'common.posts.clean(request.sanitizer, request.payload)' },
       { method: 'common.posts.parse(parser, request.payload)' },
       { method: 'common.images.sub(request.payload)' },
-      { method: 'common.posts.newbieImages(auth, request.payload)' },
+      { method: 'common.posts.newbieImages(request.auth, request.payload)' },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },

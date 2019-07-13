@@ -39,7 +39,7 @@ module.exports = {
       }
     },
     validate: { query: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.userNotes.delete(request.server, auth, query.id)' } ]
+    pre: [ { method: 'auth.userNotes.delete(request.server, request.auth, query.id)' } ]
   },
   handler: function(request, reply) {
     var opts = Object.assign({}, request.query);

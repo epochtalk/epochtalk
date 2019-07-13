@@ -36,7 +36,7 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.messages.create(request.server, auth, request.payload.receiver_ids, request.payload.conversation_id)' },
+      { method: 'auth.messages.create(request.server, request.auth, request.payload.receiver_ids, request.payload.conversation_id)' },
       { method: 'common.posts.checkPostLength(request.server, request.payload.body)' },
       { method: 'common.posts.clean(request.sanitizer, request.payload)' },
       { method: 'common.posts.parse(parser, request.payload)' },

@@ -42,11 +42,11 @@ module.exports = {
       params: { id: Joi.string().required() }
     },
     pre: [
-      { method: 'auth.posts.update(request.server, auth, params.id, request.payload.thread_id)' },
+      { method: 'auth.posts.update(request.server, request.auth, params.id, request.payload.thread_id)' },
       { method: 'common.posts.clean(request.sanitizer, request.payload)' },
       { method: 'common.posts.parse(parser, request.payload)' },
       { method: 'common.images.sub(request.payload)' },
-      { method: 'common.posts.newbieImages(auth, request.payload)' },
+      { method: 'common.posts.newbieImages(request.auth, request.payload)' },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },

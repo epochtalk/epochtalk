@@ -15,7 +15,7 @@ module.exports = {
       }).without('start', 'page')
     },
     pre: [
-      { method: 'auth.posts.patrol(auth)', assign: 'viewables' },
+      { method: 'auth.posts.patrol(request.auth)', assign: 'viewables' },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
