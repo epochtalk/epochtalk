@@ -59,7 +59,7 @@ module.exports = {
       })
     },
     pre: [
-      { method: 'auth.threads.create(server, auth, request.payload)' },
+      { method: 'auth.threads.create(request.server, auth, request.payload)' },
       { method: 'common.posts.clean(request.sanitizer, request.payload)' },
       { method: 'common.posts.parse(parser, request.payload)' },
       { method: 'common.images.sub(request.payload)' },

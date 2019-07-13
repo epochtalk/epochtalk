@@ -53,7 +53,7 @@ module.exports = {
         display_mode: Joi.string().valid('always', 'voted', 'expired').required()
       })
     },
-    pre: [ { method: 'auth.threads.createPoll(server, auth, params.thread_id, request.payload)' } ]
+    pre: [ { method: 'auth.threads.createPoll(request.server, auth, params.thread_id, request.payload)' } ]
   },
   handler: function(request, reply) {
     var threadId = request.params.thread_id;

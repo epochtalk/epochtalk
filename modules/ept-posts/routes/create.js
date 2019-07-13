@@ -28,8 +28,8 @@ module.exports = {
       })
     },
     pre: [
-      { method: 'auth.posts.create(server, auth, request.payload.thread_id)' },
-      { method: 'common.posts.checkPostLength(server, request.payload.body)' },
+      { method: 'auth.posts.create(request.server, auth, request.payload.thread_id)' },
+      { method: 'common.posts.checkPostLength(request.server, request.payload.body)' },
       { method: 'common.posts.clean(request.sanitizer, request.payload)' },
       { method: 'common.posts.parse(parser, request.payload)' },
       { method: 'common.images.sub(request.payload)' },

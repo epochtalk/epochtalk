@@ -39,7 +39,7 @@ module.exports = {
         comments: Joi.string().min(3).max(1024).required()
       }
     },
-    pre: [ { method: 'auth.userTrust.addTrustFeedback(server, auth, request.payload.user_id)' } ]
+    pre: [ { method: 'auth.userTrust.addTrustFeedback(request.server, auth, request.payload.user_id)' } ]
   },
   handler: function(request, reply) {
     var opts = {

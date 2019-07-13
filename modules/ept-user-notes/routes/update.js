@@ -45,7 +45,7 @@ module.exports = {
         note: Joi.string().min(2).max(2000).required()
       }
     },
-    pre: [ { method: 'auth.userNotes.update(server, auth, request.payload.id)' } ]
+    pre: [ { method: 'auth.userNotes.update(request.server, auth, request.payload.id)' } ]
   },
   handler: function(request, reply) {
     var opts = Object.assign({}, request.payload);
