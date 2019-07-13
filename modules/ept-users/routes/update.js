@@ -110,7 +110,7 @@ module.exports = {
       { method: 'auth.users.update(request.server, request.auth, params.id, request.payload)' },
       { method: 'common.users.clean(request.sanitizer, request.payload)' },
       { method: 'common.users.parse(parser, request.payload)' },
-      { method: 'common.images.signature(imageStore, request.payload)' },
+      { method: 'common.images.signature(request.imageStore, request.payload)' },
       { method: 'common.images.avatarSub(request.payload)' }
     ]
   },
