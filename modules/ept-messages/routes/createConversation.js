@@ -52,7 +52,7 @@ module.exports = {
       { method: 'auth.conversations.create(request.server, request.auth, request.payload.receiver_ids)' },
       { method: 'common.posts.checkPostLength(request.server, request.payload.body)' },
       { method: 'common.posts.clean(request.sanitizer, request.payload)' },
-      { method: 'common.posts.parse(parser, request.payload)' },
+      { method: 'common.posts.parse(request.parser, request.payload)' },
       { method: 'common.images.sub(request.payload)' }
     ]
   },

@@ -22,7 +22,7 @@ module.exports = {
         { method: processing, assign: 'processed' },
       ],
       { method: (request) => request.server.methods.hooks.merge },
-      { method: 'common.posts.parseOut(parser, pre.processed.posts)' },
+      { method: 'common.posts.parseOut(request.parser, pre.processed.posts)' },
       { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {

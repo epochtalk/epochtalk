@@ -44,7 +44,7 @@ module.exports = {
     pre: [
       { method: 'auth.posts.update(request.server, request.auth, request.params.id, request.payload.thread_id)' },
       { method: 'common.posts.clean(request.sanitizer, request.payload)' },
-      { method: 'common.posts.parse(parser, request.payload)' },
+      { method: 'common.posts.parse(request.parser, request.payload)' },
       { method: 'common.images.sub(request.payload)' },
       { method: 'common.posts.newbieImages(request.auth, request.payload)' },
       { method: (request) => request.server.methods.hooks.preProcessing },
@@ -53,7 +53,7 @@ module.exports = {
         { method: processing, assign: 'processed' },
       ],
       { method: (request) => request.server.methods.hooks.merge },
-      { method: 'common.posts.parseOut(parser, pre.processed)' },
+      { method: 'common.posts.parseOut(request.parser, pre.processed)' },
       { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {
