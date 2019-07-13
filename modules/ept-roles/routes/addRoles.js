@@ -45,7 +45,7 @@ module.exports = {
         permissions: Joi.object().required()
       }
     },
-    pre: [ { method: 'auth.roles.addRoles(request.server, request.auth, roleValidations, request.payload)' } ],
+    pre: [ { method: 'auth.roles.addRoles(request.server, request.auth, request.roleValidations, request.payload)' } ],
   },
   handler: function(request, reply) {
     var role = request.payload;
