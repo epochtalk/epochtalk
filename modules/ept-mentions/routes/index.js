@@ -57,7 +57,7 @@ var page = {
         { method: processing, assign: 'processed' },
       ],
       { method: (request) => request.server.methods.hooks.merge },
-      { method: 'common.posts.parseOut(request.parser, pre.processed.data)' },
+      { method: 'common.posts.parseOut(request.parser, request.pre.processed.data)' },
       { method: (request) => request.server.methods.hooks.postProcessing }
     ]
   },
