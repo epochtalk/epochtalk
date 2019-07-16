@@ -50,7 +50,7 @@ module.exports = {
         role_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.users.removeRole(request.server, request.auth, request.payload.user_id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.removeRole(request.server, request.auth, request.payload.user_id) } ]
   },
   handler: function(request, reply) {
     var userId = request.payload.user_id;

@@ -42,18 +42,18 @@ module.exports = {
       params: { id: Joi.string().required() }
     },
     pre: [
-      { method: 'auth.posts.update(request.server, request.auth, request.params.id, request.payload.thread_id)' },
-      { method: 'common.posts.clean(request.sanitizer, request.payload)' },
-      { method: 'common.posts.parse(request.parser, request.payload)' },
-      { method: 'common.images.sub(request.payload)' },
-      { method: 'common.posts.newbieImages(request.auth, request.payload)' },
+      { method: (request) => request.server.methods.auth.posts.update(request.server, request.auth, request.params.id, request.payload.thread_id) },
+      { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.sub(request.payload) },
+      { method: (request) => request.server.methods.common.posts.newbieImages(request.auth, request.payload) },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
       { method: (request) => request.server.methods.hooks.merge },
-      { method: 'common.posts.parseOut(request.parser, request.pre.processed)' },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed) },
       { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {

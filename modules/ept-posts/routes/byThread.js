@@ -94,14 +94,14 @@ module.exports = {
       }).without('start', 'page')
     },
     pre: [
-      { method: 'auth.posts.byThread(request.server, request.auth, request.query.thread_id)', assign: 'viewables' },
+      { method: (request) => request.server.methods.auth.posts.byThread(request.server, request.auth, request.query.thread_id), assign: 'viewables' },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
       { method: (request) => request.server.methods.hooks.merge },
-      { method: 'common.posts.parseOut(request.parser, request.pre.processed.posts)' },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.posts) },
       { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {

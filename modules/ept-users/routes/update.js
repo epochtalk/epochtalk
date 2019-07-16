@@ -107,11 +107,11 @@ module.exports = {
       .with('email', 'email_password')
     },
     pre: [
-      { method: 'auth.users.update(request.server, request.auth, request.params.id, request.payload)' },
-      { method: 'common.users.clean(request.sanitizer, request.payload)' },
-      { method: 'common.users.parse(request.parser, request.payload)' },
-      { method: 'common.images.signature(request.imageStore, request.payload)' },
-      { method: 'common.images.avatarSub(request.payload)' }
+      { method: (request) => request.server.methods.auth.users.update(request.server, request.auth, request.params.id, request.payload) },
+      { method: (request) => request.server.methods.common.users.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.users.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.signature(request.imageStore, request.payload) },
+      { method: (request) => request.server.methods.common.images.avatarSub(request.payload) }
     ]
   },
   handler: function(request, reply) {

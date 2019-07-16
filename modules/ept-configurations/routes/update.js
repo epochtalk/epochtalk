@@ -72,7 +72,7 @@ module.exports = {
     },
     pre: [
       { method: validatePortalParams },
-      { method: 'common.images.site(request.imageStore, request.payload)' }
+      { method: (request) => request.server.methods.common.images.site(request.imageStore, request.payload) }
     ],
     validate: {
       payload: Joi.object().keys({

@@ -47,7 +47,7 @@ module.exports = {
         permissions: Joi.object()
       }
     },
-    pre: [ { method: 'auth.roles.update(request.server, request.auth, request.roleValidations, request.payload)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.roles.update(request.server, request.auth, request.roleValidations, request.payload) } ]
   },
   handler: function(request, reply) {
     var role = request.payload;

@@ -22,7 +22,7 @@ module.exports = {
     validate: {
       payload: { email: Joi.string().email().required() }
     },
-    pre: [ { method: 'auth.invitations.resend(request.server, request.auth, request.payload.email)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.invitations.resend(request.server, request.auth, request.payload.email) } ]
   },
   handler: function(request, reply) {
     // save invitation

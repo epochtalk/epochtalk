@@ -22,7 +22,7 @@ module.exports = {
     pre: [
       [ { method: (request) => request.server.methods.auth.threads.viewed(request.server, request.auth, request.params.id) } ],
       [
-        { method: 'common.threads.checkView(request.server, request.headers, request.info, request.params.id)', assign: 'newViewId' },
+        { method: (request) => request.server.methods.common.threads.checkView(request.server, request.headers, request.info, request.params.id), assign: 'newViewId' },
         { method: (request) => request.server.methods.common.threads.updateView(request.server, request.auth, request.params.id) }
       ]
     ]

@@ -89,7 +89,7 @@ module.exports = {
         { method: processing, assign: 'processed' },
       ],
       { method: (request) => request.server.methods.hooks.merge },
-      { method: 'common.portal.parseOut(request.parser, request.pre.processed.threads)' },
+      { method: (request) => request.server.methods.common.portal.parseOut(request.parser, request.pre.processed.threads) },
       { method: (request) => request.server.methods.hooks.postProcessing }
     ]
   },

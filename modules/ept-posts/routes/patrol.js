@@ -15,14 +15,14 @@ module.exports = {
       }).without('start', 'page')
     },
     pre: [
-      { method: 'auth.posts.patrol(request.auth)', assign: 'viewables' },
+      { method: (request) => request.server.methods.auth.posts.patrol(request.auth), assign: 'viewables' },
       { method: (request) => request.server.methods.hooks.preProcessing },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
       { method: (request) => request.server.methods.hooks.merge },
-      { method: 'common.posts.parseOut(request.parser, request.pre.processed.posts)' },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.posts) },
       { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {
