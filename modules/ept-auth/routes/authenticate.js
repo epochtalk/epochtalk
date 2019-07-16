@@ -26,7 +26,7 @@ module.exports = {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var user = request.auth.credentials;
-      return reply.response(request.session.formatUserReply(user.token, user));
+      return request.session.formatUserReply(user.token, user);
     }
     else {
       return Boom.unauthorized();
