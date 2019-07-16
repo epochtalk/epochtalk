@@ -100,3 +100,12 @@ $footer-font-color: $secondary-font-color;
 $footer-bg-color: $sub-header-color;
 $footer-link-color: $footer-font-color;
 $footer-link-hover-color: $color-primary;
+
+
+// Mobile Breakpoints
+$tablet: 767px;
+@mixin break-mobile-sm {
+  @media screen and (max-width: #{$tablet}) {
+    @content;
+  }
+}

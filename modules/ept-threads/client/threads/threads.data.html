@@ -52,131 +52,87 @@
   </div>
 </div>
 
-<!-- Threads -->
-<!-- Thread listing headers -->
-<div class="threads">
-  <div class="threads-header" ng-if="ThreadsCtrl.threads">
-    <div class="subject">
-      <h1>Threads</h1>
-    </div>
-    <div class="replies">
-      <h1>Replies</h1>
-    </div>
-    <div class="views">
-      <h1>Views</h1>
-    </div>
-    <div class="last-post">
-      <h1>Last Post</h1>
-    </div>
-  </div>
-  
-  <!-- Sticky Thread listing -->
-  <div class="threads-data" ng-repeat="thread in ThreadsCtrl.stickyThreads track by thread.id">
-  
-    <div class="subject">
-      <div class="title">
-        <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
-        <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-        <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
-        <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
-      </div>
-  
-      <div class="started-by">
-        Started by
-        <span ng-if="thread.user.deleted">deleted</span>
-        <a ng-if="!thread.user.deleted" ui-sref="profile.posts({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
-        <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
-      </div>
-  
-      <div class="mobile-stats">
-        <strong class="mobile-replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></strong>
-        <span> Replies and </span>
-        <strong class="mobile-views" ng-bind="(thread.view_count | number:0) || 0"></strong>
-        <span> Views</span>
-        <br />
-        <span>Last post by </span>
+<!-- Threads (table) -->
+<table class="threads-list">
+  <caption>Threads</caption>
+  <thead>
+    <tr>
+      <th class="subject">Threads</th>
+      <th class="replies">Replies</th>
+      <th class="views">Views</th>
+      <th class="last-post">Last Post</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Sticky Threads -->
+    <tr class="threads-data sticky" ng-repeat="thread in ThreadsCtrl.stickyThreads track by thread.id">
+      <td class="subject">
+        <div class="title">
+          <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
+            ng-bind-html="thread.title"></a>
+          <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
+          <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
+          <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
+        </div>
+        
+        <div class="started-by">
+          Started by
+          <span ng-if="thread.user.deleted">deleted</span>
+          <a ng-if="!thread.user.deleted" ui-sref="profile.posts({ username: thread.user.username })"
+            ng-bind-html="thread.user.username"></a>
+          <span ng-bind="'on ' + (thread.created_at | humanDate)"></span>
+        </div>
+      </td>
+      <td class="replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></td>
+      <td class="views" ng-bind="(thread.view_count | number:0) || 0"></td>
+      <td class="last-post">
         <span ng-if="thread.last_deleted">deleted</span>
-        <img ng-if="!thread.last_deleted" class="avatar-small" ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
-        <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
-        <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
-      </div>
-  
-      <div class="pages" ng-if="thread.page_count > 1">
-        <span ng-repeat="pageKey in thread.page_keys">
-          <a ng-if="pageKey.threadId !== null" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
-          <span ng-if="pageKey.threadId === null" ng-bind-html="pageKey.val"></span>
-        </span>
-      </div>
-    </div>
-  
-    <div class="replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></div>
-  
-    <div class="views" ng-bind="(thread.view_count | number:0) || 0"></div>
-  
-    <div class="last-reply">
-      <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
-       by
-       <span ng-if="thread.last_deleted">deleted</span>
-       <img ng-if="!thread.last_deleted" class="avatar-small" ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
-       <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
-      <div ng-bind="thread.last_post_created_at | humanDate"></div>
-      <div ng-if="thread.has_new_post">
-        <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Thread listing -->
-  <div class="threads-data" ng-repeat="thread in ThreadsCtrl.threads track by thread.id">
-    <div class="subject">
-      <div class="title">
-        <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
-        <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-        <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
-     </div>
-  
-      <div class="started-by">
-        Started by
-        <span ng-if="thread.user.deleted">deleted</span>
-        <a ng-if="!thread.user.deleted" ui-sref="profile.posts({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
-        <em ng-bind="'(' + (thread.created_at | humanDate) + ')'"></em>
-      </div>
-  
-      <div class="mobile-stats">
-        <strong class="mobile-replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></strong>
-        <span> Replies and </span>
-        <strong class="mobile-views" ng-bind="(thread.view_count | number:0) || 0"></strong>
-        <span> Views</span>
-        <br />
-        <span>Last post by </span>
+        <img ng-if="!thread.last_deleted" class="avatar-small"
+          ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
+        <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })"
+          ng-bind="thread.last_post_username"></a> posted on
+        <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })"><span ng-bind="thread.last_post_created_at | humanDate"></span></a>
+        <div ng-if="thread.has_new_post">
+          <a
+            ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last
+            unread post</a>
+        </div>
+      </td>
+    </tr>
+
+    <!-- Threads -->
+    <tr class="threads-data" ng-repeat="thread in ThreadsCtrl.threads track by thread.id">
+      <td class="subject">
+        <div class="title">
+          <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
+            ng-bind-html="thread.title"></a>
+          <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
+          <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
+        </div>
+        
+        <div class="started-by">
+          Started by
+          <span ng-if="thread.user.deleted">deleted</span>
+          <a ng-if="!thread.user.deleted" ui-sref="profile.posts({ username: thread.user.username })"
+            ng-bind-html="thread.user.username"></a>
+          <span ng-bind="'on ' + (thread.created_at | humanDate)"></span>
+        </div>
+      </td>
+      <td class="replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></td>
+      <td class="views" ng-bind="(thread.view_count | number:0) || 0"></td>
+      <td class="last-post">
         <span ng-if="thread.last_deleted">deleted</span>
-        <img ng-if="!thread.last_deleted" class="avatar-small" ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
-        <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
-        <em ng-bind="' (' + (thread.last_post_created_at | humanDate) + ')'"></em>
-      </div>
-  
-      <div class="pages" ng-if="thread.page_count > 1">
-        <span ng-repeat="pageKey in thread.page_keys">
-          <a ng-if="pageKey.threadId !== null" ui-sref="posts.data({ threadId: pageKey.threadId, page: pageKey.val })" ng-bind-html="pageKey.val"></a>
-          <span ng-if="pageKey.threadId === null" ng-bind-html="pageKey.val"></span>
-        </span>
-      </div>
-    </div>
-  
-    <div class="replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></div>
-  
-    <div class="views" ng-bind="(thread.view_count | number:0) || 0"></div>
-  
-    <div class="last-reply">
-      <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">Last post</a>
-      by
-      <span ng-if="thread.last_deleted">deleted</span>
-      <img ng-if="!thread.last_deleted" class="avatar-small" ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
-      <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })" ng-bind="thread.last_post_username"></a>
-      <div ng-bind="thread.last_post_created_at | humanDate"></div>
-      <div ng-if="thread.has_new_post">
-        <a ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last unread post</a>
-      </div>
-    </div>
-  </div>
-</div>
+        <img ng-if="!thread.last_deleted" class="avatar-small"
+          ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
+        <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })"
+          ng-bind="thread.last_post_username"></a> posted on 
+        <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })"><span ng-bind="thread.last_post_created_at | humanDate"></span></a>
+        <div ng-if="thread.has_new_post">
+          <a
+            ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">Last
+            unread post</a>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

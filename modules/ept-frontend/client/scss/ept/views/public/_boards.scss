@@ -9,9 +9,9 @@
     grid-template-columns: 1fr 300px;
   }
 
-  @include media($mobile) {
+  @include break-mobile-sm {
     column-gap: 0;
-    grid-template-columns: auto;
+    grid-template-columns: 1fr;
   }
 }
 .content-main {
