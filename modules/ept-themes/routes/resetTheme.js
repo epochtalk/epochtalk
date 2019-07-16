@@ -39,7 +39,7 @@ module.exports = {
     plugins: {
       mod_log: { type: 'adminSettings.resetTheme' }
     },
-    pre: [ { method: 'auth.themes.resetTheme(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.themes.resetTheme(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     fs.truncateSync(previewVarsPath, 0); // wipe preview vars file

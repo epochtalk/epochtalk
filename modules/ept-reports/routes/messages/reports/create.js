@@ -35,13 +35,13 @@ module.exports = {
         offender_message_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.reports.messages.reports.create(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.messages.reports.create(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var report = request.payload;
     var promise = request.db.reports.createMessageReport(report)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

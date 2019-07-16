@@ -51,7 +51,7 @@ module.exports = {
         display_mode: Joi.string().valid('always', 'voted', 'expired').required()
       })
     },
-    pre: [ { method: 'auth.threads.editPoll(server, auth, params, payload)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.editPoll(request.server, request.auth, request.params, request.payload) } ]
   },
   handler: function(request, reply) {
     var options = request.payload;
@@ -59,6 +59,6 @@ module.exports = {
     var promise = request.db.polls.update(options)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

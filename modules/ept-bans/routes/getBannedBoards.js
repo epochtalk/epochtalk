@@ -24,13 +24,13 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     validate: { params: { username: Joi.string().required() } },
-    pre: [ { method: 'auth.bans.getBannedBoards(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.bans.getBannedBoards(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var username = request.params.username;
     var promise = request.db.bans.getBannedBoards(username)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -42,7 +42,7 @@ module.exports = {
         }))
       }
     },
-    pre: [ { method: 'auth.userTrust.editDefaultTrustList(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.userTrust.editDefaultTrustList(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var defaultTrustId = 'U31jnDtQRUW-oYs4rM9Ajg';
@@ -54,6 +54,6 @@ module.exports = {
     };
     var promise = request.db.userTrust.editTrustList(opts)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

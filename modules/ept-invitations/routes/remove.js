@@ -21,7 +21,7 @@ module.exports = {
     validate: {
       payload: { email: Joi.string().email().required() }
     },
-    pre: [ { method: 'auth.invitations.remove(server, auth, payload.email)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.invitations.remove(request.server, request.auth, request.payload.email) } ]
   },
   handler: function(request, reply) {
     // remove invitation
@@ -30,6 +30,6 @@ module.exports = {
     .then(function() { return { message: 'Invitation Removed.' }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

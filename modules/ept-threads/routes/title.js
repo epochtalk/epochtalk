@@ -39,7 +39,7 @@ module.exports = {
       params: { id: Joi.string().required() },
       payload: { title: Joi.string().min(1).max(255).required() }
     },
-    pre: [ { method: 'auth.threads.title(server, auth, params.id)', assign: 'post' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.title(request.server, request.auth, request.params.id), assign: 'post' } ]
   },
   handler: function(request, reply) {
     var post = {
@@ -50,6 +50,6 @@ module.exports = {
     var promise = request.db.posts.update(post)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

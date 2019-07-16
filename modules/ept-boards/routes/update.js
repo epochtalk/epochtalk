@@ -42,8 +42,8 @@ module.exports = {
       })).unique().min(1)
     },
     pre: [
-      { method: 'auth.boards.update(server, auth)' },
-      { method: 'common.boards.clean(sanitizer, payload)' },
+      { method: (request) => request.server.methods.auth.boards.update(request.server, request.auth) },
+      { method: (request) => request.server.methods.common.boards.clean(request.sanitizer, request.payload) },
     ]
   },
   handler: function(request, reply) {
@@ -53,6 +53,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

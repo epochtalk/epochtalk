@@ -54,15 +54,15 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.posts.pageByUser(server, auth, params.username)', assign: 'auth' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.posts.pageByUser(request.server, request.auth, request.params.username), assign: 'auth' },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.posts.parseOut(parser, pre.processed.posts)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.posts) },
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {
       return reply(request.pre.processed);
@@ -98,5 +98,5 @@ function processing(request, reply) {
   })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

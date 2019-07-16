@@ -85,7 +85,7 @@ module.exports = {
         stripped: Joi.boolean()
       }
     },
-    pre: [ { method: 'auth.boards.allCategories(server, auth)', assign: 'priority' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.allCategories(request.server, request.auth), assign: 'priority' } ]
   },
   handler: function(request, reply) {
     var userId;
@@ -118,6 +118,6 @@ module.exports = {
       })
       .error(request.errorMap.toHttpError);
     }
-    return reply(promise);
+    return promise;
   }
 };

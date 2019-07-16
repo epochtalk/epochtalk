@@ -72,7 +72,7 @@ module.exports = {
     },
     pre: [
       { method: validatePortalParams },
-      { method: 'common.images.site(imageStore, payload)' }
+      { method: (request) => request.server.methods.common.images.site(request.imageStore, request.payload) }
     ],
     validate: {
       payload: Joi.object().keys({
@@ -147,7 +147,7 @@ module.exports = {
         })
       }).options({ stripUnknown: true, abortEarly: true })
     },
-    pre: [ { method: 'auth.configurations.update(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.configurations.update(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var internalConfig = request.server.app.config;
@@ -176,7 +176,7 @@ module.exports = {
     .then(function() { return request.payload; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 

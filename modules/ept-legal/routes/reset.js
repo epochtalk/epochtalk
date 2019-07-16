@@ -23,7 +23,7 @@ module.exports = {
   path: '/api/legal/reset',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.legal.reset(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.legal.reset(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var copyFile = function(fromDir, toDir, options) {
@@ -56,6 +56,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

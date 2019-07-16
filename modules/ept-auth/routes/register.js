@@ -56,7 +56,7 @@ module.exports = {
         confirmation: Joi.ref('password')
       }
     },
-    pre: [ { method: 'auth.auth.register(server, payload.email, payload.username)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.auth.register(request.server, request.payload.email, request.payload.username) } ]
   },
   handler: function(request, reply) {
     var config = request.server.app.config;
@@ -137,6 +137,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

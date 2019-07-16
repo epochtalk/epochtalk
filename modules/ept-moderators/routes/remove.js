@@ -37,7 +37,7 @@ module.exports = {
         board_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.moderators.remove(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.moderators.remove(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var usernames = request.payload.usernames;
@@ -55,6 +55,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

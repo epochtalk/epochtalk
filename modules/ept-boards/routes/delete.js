@@ -32,7 +32,7 @@ module.exports = {
       }
     },
     validate: { payload: { board_ids: Joi.array().items(Joi.string().required()).unique().min(1) } },
-    pre: [ { method: 'auth.boards.delete(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.boards.delete(request.server, request.auth) } ],
   },
   handler: function(request, reply) {
 
@@ -47,6 +47,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

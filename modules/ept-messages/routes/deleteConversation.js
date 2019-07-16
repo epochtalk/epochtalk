@@ -32,7 +32,7 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.conversations.delete(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.conversations.delete(request.server, request.auth) } ],
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
@@ -47,6 +47,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

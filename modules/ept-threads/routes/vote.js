@@ -41,7 +41,7 @@ module.exports = {
       },
       payload: { answer_ids: Joi.array().items(Joi.string()).min(1).unique().required() }
     },
-    pre: [ { method: 'auth.threads.vote(server, auth, params, payload)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.vote(request.server, request.auth, request.params, request.payload) } ]
   },
   handler: function(request, reply) {
     var threadId = request.params.thread_id;
@@ -62,6 +62,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

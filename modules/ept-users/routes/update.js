@@ -107,11 +107,11 @@ module.exports = {
       .with('email', 'email_password')
     },
     pre: [
-      { method: 'auth.users.update(server, auth, params.id, payload)' },
-      { method: 'common.users.clean(sanitizer, payload)' },
-      { method: 'common.users.parse(parser, payload)' },
-      { method: 'common.images.signature(imageStore, payload)' },
-      { method: 'common.images.avatarSub(payload)' }
+      { method: (request) => request.server.methods.auth.users.update(request.server, request.auth, request.params.id, request.payload) },
+      { method: (request) => request.server.methods.common.users.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.users.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.signature(request.imageStore, request.payload) },
+      { method: (request) => request.server.methods.common.images.avatarSub(request.payload) }
     ]
   },
   handler: function(request, reply) {
@@ -134,6 +134,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

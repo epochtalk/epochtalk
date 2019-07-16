@@ -32,15 +32,15 @@ module.exports = {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [
-      { method: 'auth.posts.find(server, auth, params.id)', assign: 'viewDeleted' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.posts.find(request.server, request.auth, request.params.id), assign: 'viewDeleted' },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.posts.parseOut(parser, pre.processed)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed) },
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {
       return reply(request.pre.processed);
@@ -60,5 +60,5 @@ function processing(request, reply) {
   .then(function(posts) { return posts[0]; })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

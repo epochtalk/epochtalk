@@ -31,8 +31,8 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.categories.create(server, auth)' },
-      { method: 'common.categories.clean(sanitizer, payload)' },
+      { method: (request) => request.server.methods.auth.categories.create(request.server, request.auth) },
+      { method: (request) => request.server.methods.common.categories.clean(request.sanitizer, request.payload) },
     ]
   },
   handler: function(request, reply) {
@@ -41,6 +41,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

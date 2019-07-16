@@ -34,7 +34,7 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(15)
       }
     },
-    pre: [ { method: 'auth.messages.latest(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.messages.latest(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
@@ -56,6 +56,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

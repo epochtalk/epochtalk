@@ -46,13 +46,13 @@ module.exports = {
         note: Joi.string().max(255)
       }
     },
-    pre: [ { method: 'auth.reports.users.notes.update(server, auth, payload.id)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.reports.users.notes.update(request.server, request.auth, request.payload.id) } ],
   },
   handler: function(request, reply) {
     var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.updateUserReportNote(reportNote)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

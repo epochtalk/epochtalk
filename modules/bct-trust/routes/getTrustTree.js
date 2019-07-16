@@ -43,6 +43,6 @@ module.exports = {
       promise = request.db.userTrust.getTrustDepth(userId)
       .error(request.errorMap.toHttpError);
     }
-    return reply(promise);
+    return promise;
   }
 };

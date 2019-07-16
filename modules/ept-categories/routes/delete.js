@@ -26,7 +26,7 @@ module.exports = {
         category_ids: Joi.array().items(Joi.string().required()).unique().min(1)
       }
     },
-    pre: [ { method: 'auth.categories.delete(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.categories.delete(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = Promise.map(request.payload.category_ids, function(catId) {
@@ -38,6 +38,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

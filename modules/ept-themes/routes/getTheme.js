@@ -35,7 +35,7 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     validate: { query: { preview: Joi.boolean() } },
-    pre: [ { method: 'auth.themes.getTheme(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.themes.getTheme(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var preview = request.query.preview;

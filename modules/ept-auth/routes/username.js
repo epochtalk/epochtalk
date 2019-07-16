@@ -23,6 +23,6 @@ module.exports = {
     .then(function(user) { return { found: !!user }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

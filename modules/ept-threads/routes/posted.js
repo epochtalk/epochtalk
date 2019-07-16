@@ -49,7 +49,7 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(25)
       }
     },
-    pre: [ { method: 'auth.threads.posted(server, auth)', assign: 'priority' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.posted(request.server, request.auth), assign: 'priority' } ]
   },
   handler: function(request, reply) {
     var opts = {
@@ -72,6 +72,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

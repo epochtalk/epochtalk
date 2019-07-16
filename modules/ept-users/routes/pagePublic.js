@@ -46,7 +46,7 @@ module.exports = {
         search: Joi.string()
       }
     },
-    pre: [ { method: 'auth.users.pagePublic(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.users.pagePublic(request.server, request.auth) } ],
   },
   handler: function(request, reply) {
     var opts = {
@@ -59,6 +59,6 @@ module.exports = {
     var promise = request.db.users.pagePublic(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

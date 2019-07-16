@@ -25,7 +25,7 @@ module.exports = {
         max: Joi.number()
       })
     },
-    pre: [ { method: 'auth.notifications.counts(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.notifications.counts(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     // get notifications counts for userId
@@ -35,6 +35,6 @@ module.exports = {
     var promise = request.db.notifications.counts(userId, opts)
       .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

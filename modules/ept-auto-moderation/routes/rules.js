@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'autoModeration.rules.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -57,6 +57,6 @@ module.exports = {
     var promise = db.rules()
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

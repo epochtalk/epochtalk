@@ -45,7 +45,7 @@ module.exports = {
         desc: Joi.boolean().default(true)
       }
     },
-    pre: [ { method: 'auth.reports.messages.notes.page(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.messages.notes.page(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var reportId = request.params.report_id;
@@ -70,6 +70,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

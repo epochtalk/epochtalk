@@ -28,6 +28,6 @@ module.exports = {
     .then(function(user) { return user; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

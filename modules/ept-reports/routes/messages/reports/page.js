@@ -60,7 +60,7 @@ module.exports = {
         search: Joi.string()
       }
     },
-    pre: [ { method: 'auth.reports.messages.reports.page(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.messages.reports.page(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var opts = {
@@ -89,6 +89,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

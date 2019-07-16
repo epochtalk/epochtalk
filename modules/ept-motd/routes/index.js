@@ -23,7 +23,7 @@ var get = {
   config: {
     auth: { mode: 'try', strategy: 'jwt' },
     plugins: { track_ip: true },
-    pre: [ { method: 'auth.motd.get(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.motd.get(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.motd.get()
@@ -35,7 +35,7 @@ var get = {
       };
     })
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -68,7 +68,7 @@ var save = {
         main_view_only: Joi.boolean().default(false)
       }
     },
-    pre: [ { method: 'auth.motd.save(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.motd.save(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var data = request.payload;
@@ -80,7 +80,7 @@ var save = {
         main_view_only: data.main_view_only || false
       };
     });
-    return reply(promise);
+    return promise;
   }
 };
 

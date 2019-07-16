@@ -45,7 +45,7 @@ module.exports = {
         permissions: Joi.object().required()
       }
     },
-    pre: [ { method: 'auth.roles.addRoles(server, auth, roleValidations, payload)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.roles.addRoles(request.server, request.auth, request.roleValidations, request.payload) } ],
   },
   handler: function(request, reply) {
     var role = request.payload;
@@ -59,6 +59,6 @@ module.exports = {
       })
       .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

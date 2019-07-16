@@ -38,7 +38,7 @@ module.exports = {
         board_ids: Joi.array().items(Joi.string().required()).unique().min(1).required()
       }
     },
-    pre: [ { method: 'auth.bans.banFromBoards(server, auth, payload.user_id, payload.board_ids)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.bans.banFromBoards(request.server, request.auth, request.payload.user_id, request.payload.board_ids) } ]
   },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
@@ -53,6 +53,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

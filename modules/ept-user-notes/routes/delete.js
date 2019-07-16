@@ -39,7 +39,7 @@ module.exports = {
       }
     },
     validate: { query: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.userNotes.delete(server, auth, query.id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.userNotes.delete(request.server, request.auth, request.query.id) } ]
   },
   handler: function(request, reply) {
     var opts = Object.assign({}, request.query);
@@ -50,6 +50,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

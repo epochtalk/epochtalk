@@ -26,7 +26,7 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.users.deactivate(server, auth, params.id)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.users.deactivate(request.server, request.auth, request.params.id) } ],
   },
   handler: function(request, reply) {
     var userId = request.params.id;
@@ -34,6 +34,6 @@ module.exports = {
     .then(function() { return {}; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

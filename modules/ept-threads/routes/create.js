@@ -59,17 +59,17 @@ module.exports = {
       })
     },
     pre: [
-      { method: 'auth.threads.create(server, auth, payload)' },
-      { method: 'common.posts.clean(sanitizer, payload)' },
-      { method: 'common.posts.parse(parser, payload)' },
-      { method: 'common.images.sub(payload)' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.threads.create(request.server, request.auth, request.payload) },
+      { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.sub(request.payload) },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessing' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessing' },
         { method: processing, assign: 'processed' }
       ],
-      { method: 'hooks.merge' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge },
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ]
   },
   handler: function(request, reply) {
@@ -106,5 +106,5 @@ function processing(request, reply) {
   .then(function() { return request.db.posts.create(newPost); })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

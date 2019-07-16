@@ -31,7 +31,7 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(25)
       }
     },
-    pre: [ { method: 'auth.invitations.all(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.invitations.all(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var opts = {
@@ -58,6 +58,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

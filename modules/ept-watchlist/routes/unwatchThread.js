@@ -20,7 +20,7 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.watchlist.unwatchThread(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.watchlist.unwatchThread(request.server, request.auth) } ],
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
@@ -28,6 +28,6 @@ module.exports = {
     var promise = request.db.watchlist.unwatchThread(userId, boardId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

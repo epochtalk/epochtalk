@@ -38,7 +38,7 @@ module.exports = {
         }
       }
     },
-    pre: [ { method: 'auth.reports.messages.notes.update(server, auth, payload.id)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.reports.messages.notes.update(request.server, request.auth, request.payload.id) } ],
     validate: {
       payload: {
         id: Joi.string().required(),
@@ -52,6 +52,6 @@ module.exports = {
     var promise = request.db.reports.updateMessageReportNote(reportNote)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

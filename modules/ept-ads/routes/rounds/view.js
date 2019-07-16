@@ -15,7 +15,7 @@ function auth(request, reply) {
     permission: 'ads.roundView.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 function defaultRoundNumber(request, reply) {
@@ -138,6 +138,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

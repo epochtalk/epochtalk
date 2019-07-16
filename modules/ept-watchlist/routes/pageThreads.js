@@ -33,7 +33,7 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(25)
       }
     },
-    pre: [ { method: 'auth.watchlist.pageThreads(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.watchlist.pageThreads(request.server, request.auth) } ],
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
@@ -58,6 +58,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -37,7 +37,7 @@ module.exports = {
       params: { id: Joi.string().required() },
       payload: { new_board_id: Joi.string().required() }
     },
-    pre: [ { method: 'auth.threads.move(server, auth, params.id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.move(request.server, request.auth, request.params.id) } ]
   },
   handler: function(request, reply) {
     var threadId = request.params.id;
@@ -55,6 +55,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

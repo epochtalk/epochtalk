@@ -31,7 +31,7 @@ module.exports = {
         lookup: Joi.string()
       }))
     },
-    pre: [ { method: 'auth.roles.reprioritize(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.roles.reprioritize(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var roles = request.payload;
@@ -43,6 +43,6 @@ module.exports = {
       })
       .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

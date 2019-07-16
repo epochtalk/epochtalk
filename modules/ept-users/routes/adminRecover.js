@@ -22,7 +22,7 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     validate: { payload: { user_id: Joi.string().required() } },
-    pre: [ { method: 'auth.users.adminRecover(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.adminRecover(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var userId = request.payload.user_id;
@@ -55,6 +55,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

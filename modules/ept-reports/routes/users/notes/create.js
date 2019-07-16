@@ -44,13 +44,13 @@ module.exports = {
         note: Joi.string().max(255).required()
       }
     },
-    pre: [ { method: 'auth.reports.users.notes.create(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.users.notes.create(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.createUserReportNote(reportNote)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

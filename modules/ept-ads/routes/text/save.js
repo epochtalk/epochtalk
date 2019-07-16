@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'ads.textSave.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**

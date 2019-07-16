@@ -20,7 +20,7 @@ module.exports = {
   path: '/api/notifications/dismiss',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.notifications.dismiss(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.notifications.dismiss(request.server, request.auth) } ],
     validate: {
       payload: Joi.object().keys({
         type: Joi.string().valid('message', 'mention', 'other').required(),
@@ -46,6 +46,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

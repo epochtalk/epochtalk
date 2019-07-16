@@ -40,7 +40,7 @@ module.exports = {
         confirmation: Joi.ref('password')
       }
     },
-    pre: [ { method: 'auth.auth.register(server, payload.email, payload.username)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.auth.register(request.server, request.payload.email, request.payload.username) } ]
   },
   handler: function(request, reply) {
     // check if already logged in with jwt
@@ -76,6 +76,6 @@ module.exports = {
     .then(request.session.save)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

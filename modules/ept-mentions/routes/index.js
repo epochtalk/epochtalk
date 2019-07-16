@@ -50,15 +50,15 @@ var page = {
       }
     },
     pre: [
-      { method: 'auth.mentions.page(server, auth)' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.mentions.page(request.server, request.auth) },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.posts.parseOut(parser, pre.processed.data)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.data) },
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ]
   },
   handler: function(request, reply) {
@@ -76,7 +76,7 @@ function processing(request, reply) {
   var promise = request.db.mentions.page(mentioneeId, opts)
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -100,7 +100,7 @@ var remove = {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { query: { id: Joi.string() } },
-    pre: [{ method: 'auth.mentions.delete(server, auth)' }],
+    pre: [{ method: (request) => request.server.methods.auth.mentions.delete(request.server, request.auth) }],
   },
   handler: function(request, reply) {
     var userId = request.auth.credentials.id;
@@ -115,7 +115,7 @@ var remove = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -166,7 +166,7 @@ var pageIgnoredUsers = {
     var promise = request.db.mentions.pageIgnoredUsers(userId, opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -201,7 +201,7 @@ var ignoreUser = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -242,7 +242,7 @@ var unignoreUser = {
       promise = request.db.mentions.unignoreUser(userId)
       .error(request.errorMap.toHttpError);
     }
-    return reply(promise);
+    return promise;
   }
 };
 

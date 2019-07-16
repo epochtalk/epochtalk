@@ -25,7 +25,7 @@ var getNotificationSettings = {
     var promise = request.db.threadNotifications.getNotificationSettings(userId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -59,7 +59,7 @@ var enableNotifications = {
     var promise = request.db.threadNotifications.enableNotifications(userId, enabled)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -88,7 +88,7 @@ var removeSubscriptions = {
     var promise = request.db.threadNotifications.removeSubscriptions(userId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 

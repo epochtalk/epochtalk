@@ -42,19 +42,19 @@ module.exports = {
       params: { id: Joi.string().required() }
     },
     pre: [
-      { method: 'auth.posts.update(server, auth, params.id, payload.thread_id)' },
-      { method: 'common.posts.clean(sanitizer, payload)' },
-      { method: 'common.posts.parse(parser, payload)' },
-      { method: 'common.images.sub(payload)' },
-      { method: 'common.posts.newbieImages(auth, payload)' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.posts.update(request.server, request.auth, request.params.id, request.payload.thread_id) },
+      { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.sub(request.payload) },
+      { method: (request) => request.server.methods.common.posts.newbieImages(request.auth, request.payload) },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.posts.parseOut(parser, pre.processed)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed) },
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {
       return reply(request.pre.processed);
@@ -70,5 +70,5 @@ function processing(request, reply) {
   .then((post) => { return request.imageStore.updateImageReferences(post); })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

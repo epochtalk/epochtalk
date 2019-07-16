@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'ads.duplicate.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 
@@ -48,6 +48,6 @@ module.exports = {
     var promise = db.ads.duplicate(adId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

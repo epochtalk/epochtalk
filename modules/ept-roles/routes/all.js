@@ -22,13 +22,13 @@ module.exports = {
   path: '/api/admin/roles/all',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.roles.all(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.roles.all(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.roles.all()
     .then((roles) => { return { roles: roles, layouts: request.roleLayouts }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

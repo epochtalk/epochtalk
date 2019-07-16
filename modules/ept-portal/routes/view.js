@@ -82,15 +82,15 @@ module.exports = {
     app: { hook: 'portal.view' },
     auth: { mode: 'try', strategy: 'jwt' },
     pre: [
-      { method: 'auth.portal.view(server, auth)', assign: 'priority' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.portal.view(request.server, request.auth), assign: 'priority' },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.portal.parseOut(parser, pre.processed.threads)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge },
+      { method: (request) => request.server.methods.common.portal.parseOut(request.parser, request.pre.processed.threads) },
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ]
   },
   handler: function(request, reply) {
@@ -121,5 +121,5 @@ function processing(request, reply) {
   })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

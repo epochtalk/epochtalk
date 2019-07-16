@@ -33,7 +33,7 @@ module.exports = {
   config: {
     auth: { mode:'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.boards.find(server, auth, params.id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.find(request.server, request.auth, request.params.id) } ]
   },
   handler: function(request, reply) {
     var boardId = request.params.id;
@@ -42,6 +42,6 @@ module.exports = {
     var promise = request.db.boards.find(boardId, userPriority)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

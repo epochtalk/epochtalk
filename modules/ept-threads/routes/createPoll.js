@@ -53,7 +53,7 @@ module.exports = {
         display_mode: Joi.string().valid('always', 'voted', 'expired').required()
       })
     },
-    pre: [ { method: 'auth.threads.createPoll(server, auth, params.thread_id, payload)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.createPoll(request.server, request.auth, request.params.thread_id, request.payload) } ]
   },
   handler: function(request, reply) {
     var threadId = request.params.thread_id;
@@ -62,6 +62,6 @@ module.exports = {
     var promise = request.db.polls.create(threadId, poll)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

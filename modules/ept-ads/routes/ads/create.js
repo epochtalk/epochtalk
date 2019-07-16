@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'ads.create.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -53,6 +53,6 @@ module.exports = {
     var promise = db.ads.create(ad)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

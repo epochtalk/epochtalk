@@ -23,7 +23,7 @@ module.exports = {
     validate: {
       payload: { email: Joi.string().email().required() }
     },
-    pre: [ { method: 'auth.invitations.invite(server, auth, payload.email)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.invitations.invite(request.server, request.auth, request.payload.email) } ]
   },
   handler: function(request, reply) {
     var newUser = {
@@ -52,6 +52,6 @@ module.exports = {
     .error(request.errorMap.toHttpError);
 
 
-    return reply(promise);
+    return promise;
   }
 };

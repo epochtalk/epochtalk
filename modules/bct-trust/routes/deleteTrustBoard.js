@@ -21,11 +21,11 @@ module.exports = {
   config: {
     auth: { strategy: 'jwt' },
     validate: { params: { board_id: Joi.string().required() } },
-    pre: [ { method: 'auth.userTrust.deleteTrustBoard(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.userTrust.deleteTrustBoard(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.userTrust.deleteTrustBoard(request.params.board_id)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

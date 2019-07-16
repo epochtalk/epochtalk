@@ -57,7 +57,7 @@ module.exports = {
         search: Joi.string()
       }
     },
-    pre: [ { method: 'auth.reports.users.reports.page(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.users.reports.page(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var opts = {
@@ -87,6 +87,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

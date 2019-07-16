@@ -28,19 +28,19 @@ module.exports = {
       })
     },
     pre: [
-      { method: 'auth.posts.create(server, auth, payload.thread_id)' },
-      { method: 'common.posts.checkPostLength(server, payload.body)' },
-      { method: 'common.posts.clean(sanitizer, payload)' },
-      { method: 'common.posts.parse(parser, payload)' },
-      { method: 'common.images.sub(payload)' },
-      { method: 'common.posts.newbieImages(auth, payload)' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.posts.create(request.server, request.auth, request.payload.thread_id) },
+      { method: (request) => request.server.methods.common.posts.checkPostLength(request.server, request.payload.body) },
+      { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.sub(request.payload) },
+      { method: (request) => request.server.methods.common.posts.newbieImages(request.auth, request.payload) },
+      { method: (request) => request.server.methods.hooks.preProcessing },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge },
+      { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {
       return reply(request.pre.processed);
@@ -60,7 +60,7 @@ function processing(request, reply) {
   .then((post) => { return request.imageStore.createImageReferences(post); })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }
 
 

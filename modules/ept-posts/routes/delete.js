@@ -33,8 +33,8 @@ module.exports = {
       query: { locked: Joi.boolean().default(false) }
     },
     pre: [
-      { method: 'auth.posts.delete(server, auth, params.id)' },
-      { method: 'auth.posts.lock(server, auth, params.id, query)' }
+      { method: (request) => request.server.methods.auth.posts.delete(request.server, request.auth, request.params.id) },
+      { method: (request) => request.server.methods.auth.posts.lock(request.server, request.auth, request.params.id, request.query) }
     ],
     handler: function(request, reply) {
       var promise = request.db.posts.delete(request)
@@ -45,7 +45,7 @@ module.exports = {
       })
       .error(request.errorMap.toHttpError);
 
-      return reply(promise);
+      return promise;
     }
   }
 };

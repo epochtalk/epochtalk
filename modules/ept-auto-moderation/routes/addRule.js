@@ -13,7 +13,7 @@ function auth(request, reply) {
     permission: 'autoModeration.addRule.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -106,6 +106,6 @@ module.exports = {
     .tap(function(rule) { autoModerator.addRule(rule); })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

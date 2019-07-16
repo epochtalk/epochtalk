@@ -29,13 +29,13 @@ var upsert = {
         post_count: Joi.number()
       })).unique('post_count')
     },
-    pre: [ { method: 'auth.rank.upsert(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.rank.upsert(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var ranks = request.payload;
     var promise = request.db.rank.upsert(ranks)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -59,12 +59,12 @@ var get = {
   path: '/api/rank',
   config: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.rank.get(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.rank.get(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var promise = request.db.rank.get()
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };
 

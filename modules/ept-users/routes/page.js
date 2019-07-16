@@ -48,7 +48,7 @@ module.exports = {
         ip: Joi.boolean()
       }
     },
-    pre: [ { method: 'auth.users.page(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.page(request.server, request.auth) } ]
   },
   handler: function(request, reply) {
     var opts = {
@@ -63,6 +63,6 @@ module.exports = {
     var promise = request.db.users.page(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

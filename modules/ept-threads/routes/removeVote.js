@@ -38,7 +38,7 @@ module.exports = {
         poll_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.threads.removeVote(server, auth, params.thread_id, params.poll_id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.removeVote(request.server, request.auth, request.params.thread_id, request.params.poll_id) } ]
   },
   handler: function(request, reply) {
     var threadId = request.params.thread_id;
@@ -60,6 +60,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
