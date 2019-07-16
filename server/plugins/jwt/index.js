@@ -32,21 +32,21 @@ internals.implementation = function (server, options) {
       var req = request.raw.req;
       var authorization = req.headers.authorization;
       if (!authorization) {
-        return reply(Boom.unauthorized(null, 'Bearer'));
+        return Boom.unauthorized(null, 'Bearer');
       }
 
       var parts = authorization.split(/\s+/);
 
       if (parts.length !== 2) {
-        return reply(Boom.badRequest('Bad HTTP authentication header format', 'Bearer'));
+        return Boom.badRequest('Bad HTTP authentication header format', 'Bearer');
       }
 
       if (parts[0].toLowerCase() !== 'bearer') {
-        return reply(Boom.unauthorized(null, 'Bearer'));
+        return Boom.unauthorized(null, 'Bearer');
       }
 
       if(parts[1].split('.').length !== 3) {
-        return reply(Boom.badRequest('Bad HTTP authentication header format', 'Bearer'));
+        return Boom.badRequest('Bad HTTP authentication header format', 'Bearer');
       }
 
       var token = parts[1];
