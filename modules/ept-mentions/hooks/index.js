@@ -109,6 +109,8 @@ function createMention(request) {
   .then(function(hasPermission) {
     if (!hasPermission) { return; }
 
+    var thread;
+    var config = request.server.app.config;
     var post = request.pre.processed;
     var mentionedIds = request.payload.mentioned_ids.slice(0);
     delete request.pre.processed.mentioned_ids;
@@ -123,7 +125,7 @@ function createMention(request) {
       };
 
       // create the mention in db if user isn't being ignored
-      request.db.mentions.getUserIgnored(mentioneeId, post.user_id)
+      return request.db.mentions.getUserIgnored(mentioneeId, post.user_id)
       .then(function(user) {
         if (user.ignored) { return; }
         return request.db.mentions.create(mention)
@@ -140,7 +142,27 @@ function createMention(request) {
                 mentionId: mentionClone.id
               }
             };
-            request.server.plugins.notifications.spawnNotification(notification);
+            return request.server.plugins.notifications.spawnNotification(notification)
+            .then(function() { return request.db.threads.getThreadFirstPost(post.thread_id); })
+            .then(function(threadData) {
+              thread = threadData;
+              return request.db.users.find(mentioneeId);
+            })
+            .then(function(user) {
+              var emailParams = {
+                email: user.email,
+                username: user.username,
+                post_author: request.auth.credentials.username,
+                thread_name: thread.title,
+                site_name: config.website.title,
+                thread_url: config.publicUrl + '/threads/' + post.thread_id + '/posts?start=' + post.position + '#' + post.id
+              };
+              // Do not return, otherwise user has to wait for email to send
+              // before post is created
+              request.emailer.send('mentionNotification', emailParams)
+              .catch(console.log);
+              return;
+            });
           }
         });
       });
