@@ -41,7 +41,7 @@ module.exports = {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      return reply(request.session.formatUserReply(loggedInUser.token, loggedInUser));
+      return request.session.formatUserReply(loggedInUser.token, loggedInUser);
     }
 
     var username = request.payload.username;
