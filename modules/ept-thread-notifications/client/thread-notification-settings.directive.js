@@ -10,7 +10,6 @@ var directive = ['ThreadNotifications', function(ThreadNotifications) {
       this.showRemoveModal;
 
       function init() {
-        var query = { limit: 10 };
         return ThreadNotifications.get().$promise
         .then(function(data) {
           ctrl.notificationsDisabled = data.notify_replied_threads;
@@ -29,7 +28,7 @@ var directive = ['ThreadNotifications', function(ThreadNotifications) {
           ctrl.notificationsDisabled = !ctrl.notificationsDisabled;
           Alert.error('There was an error updating your thread notification settings');
         });
-      }
+      };
 
       this.removeSubscriptions = function() {
         return ThreadNotifications.removeSubscriptions().$promise
@@ -40,7 +39,7 @@ var directive = ['ThreadNotifications', function(ThreadNotifications) {
           Alert.error('There was an error removing thread subscriptions');
         })
         .finally(function() { ctrl.showRemoveModal = false; });
-      }
+      };
 
     }]
   };

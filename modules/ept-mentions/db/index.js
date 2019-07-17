@@ -173,6 +173,29 @@ function fixTextSearchVector(post) {
   .then(helper.slugify);
 }
 
+function enableMentionEmails(userId, enabled) {
+  userId = helper.deslugify(userId);
+
+  var q = `INSERT INTO users.preferences (user_id, email_mentions)
+           VALUES ($1, $2)
+           ON CONFLICT (user_id) DO UPDATE SET email_mentions = $2`;
+  var params = [ userId, enabled ];
+  return db.sqlQuery(q, params)
+  .then(function() { return { enabled: enabled }; });
+}
+
+function getMentionEmailSettings(userId) {
+  userId = helper.deslugify(userId);
+
+  var q = 'SELECT email_mentions FROM users.preferences WHERE user_id = $1';
+  var params = [ userId ];
+  return db.scalar(q, params)
+  .then(function(data) {
+    if (data === null) { return { email_mentions: true }; }
+    else { return data; }
+  });
+}
+
 module.exports = {
   create: create,
   page: page,
@@ -181,5 +204,7 @@ module.exports = {
   pageIgnoredUsers: pageIgnoredUsers,
   ignoreUser: ignoreUser,
   unignoreUser: unignoreUser,
-  fixTextSearchVector: fixTextSearchVector
+  fixTextSearchVector: fixTextSearchVector,
+  enableMentionEmails: enableMentionEmails,
+  getMentionEmailSettings: getMentionEmailSettings
 };

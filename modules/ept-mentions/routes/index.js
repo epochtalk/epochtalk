@@ -246,10 +246,76 @@ var unignoreUser = {
   }
 };
 
+
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Mentions
+  * @api {GET} /mentions/settings Get Mention Settings
+  * @apiName GetMentionSettings
+  * @apiPermission User
+  * @apiDescription Used to retreive the user's mention settings
+  *
+  * @apiSuccess {boolean} email_mentions Boolean indicating if the user is receiving emails when mentioned
+  *
+  * @apiError (Error 500) InternalServerError There was an getting mention settings
+  */
+var getMentionEmailSettings = {
+  method: 'GET',
+  path: '/api/mentions/settings',
+  config: {
+    auth: { strategy: 'jwt' },
+    plugins: { track_ip: true }
+  },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+
+    var promise = request.db.mentions.getMentionEmailSettings(userId)
+    .error(request.errorMap.toHttpError);
+
+    return reply(promise);
+  }
+};
+
+
+/**
+  * @apiVersion 0.4.0
+  * @apiGroup Mentions
+  * @api {PUT} /mentions/settings Toggle Mention Emails
+  * @apiName ToggleMentionEmails
+  * @apiPermission User
+  * @apiDescription Used to toggle email notifications when mentioned
+  *
+  * @apiParam (Payload) {boolean} [enabled=true] Boolean indicating if mention emails are enabled or not
+  *
+  * @apiSuccess {boolean} enabled Boolean indicating if the mention emails were enabled or not
+  *
+  * @apiError (Error 500) InternalServerError There was an enabling mention emails
+  */
+var enableMentionEmails = {
+  method: 'PUT',
+  path: '/api/mentions/settings',
+  config: {
+    auth: { strategy: 'jwt' },
+    plugins: { track_ip: true },
+    validate: { payload: { enabled: Joi.boolean().default(true) } }
+  },
+  handler: function(request, reply) {
+    var userId = request.auth.credentials.id;
+    var enabled = request.payload.enabled;
+
+    var promise = request.db.mentions.enableMentionEmails(userId, enabled)
+    .error(request.errorMap.toHttpError);
+
+    return reply(promise);
+  }
+};
+
 module.exports = [
   page,
   remove,
   pageIgnoredUsers,
   ignoreUser,
-  unignoreUser
+  unignoreUser,
+  getMentionEmailSettings,
+  enableMentionEmails
 ];

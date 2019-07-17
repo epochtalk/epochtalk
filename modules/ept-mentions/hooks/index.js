@@ -143,24 +143,30 @@ function createMention(request) {
               }
             };
             return request.server.plugins.notifications.spawnNotification(notification)
-            .then(function() { return request.db.threads.getThreadFirstPost(post.thread_id); })
-            .then(function(threadData) {
-              thread = threadData;
-              return request.db.users.find(mentioneeId);
-            })
-            .then(function(user) {
-              var emailParams = {
-                email: user.email,
-                username: user.username,
-                post_author: request.auth.credentials.username,
-                thread_name: thread.title,
-                site_name: config.website.title,
-                thread_url: config.publicUrl + '/threads/' + post.thread_id + '/posts?start=' + post.position + '#' + post.id
-              };
-              // Do not return, otherwise user has to wait for email to send
-              // before post is created
-              request.emailer.send('mentionNotification', emailParams)
-              .catch(console.log);
+            .then(function() { return request.db.mentions.getMentionEmailSettings(mentioneeId); })
+            .then(function(data) {
+              if (data.email_mentions) {
+                return request.db.threads.getThreadFirstPost(post.thread_id)
+                .then(function(threadData) {
+                  thread = threadData;
+                  return request.db.users.find(mentioneeId);
+                })
+                .then(function(user) {
+                  var emailParams = {
+                    email: user.email,
+                    username: user.username,
+                    post_author: request.auth.credentials.username,
+                    thread_name: thread.title,
+                    site_name: config.website.title,
+                    thread_url: config.publicUrl + '/threads/' + post.thread_id + '/posts?start=' + post.position + '#' + post.id
+                  };
+                  // Do not return, otherwise user has to wait for email to send
+                  // before post is created
+                  request.emailer.send('mentionNotification', emailParams)
+                  .catch(console.log);
+                  return;
+                });
+              }
               return;
             });
           }

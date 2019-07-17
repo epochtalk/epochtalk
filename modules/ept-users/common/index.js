@@ -60,11 +60,25 @@ var updateUserProfile = function(user, client) {
   return client.query(q, params);
 };
 
+var insertUserPreferences = function(user, client) {
+  var q = 'INSERT INTO users.preferences (user_id, posts_per_page, threads_per_page, collapsed_categories) VALUES ($1, $2, $3, $4)';
+  var params = [user.id, user.posts_per_page, user.threads_per_page, user.collapsed_categories];
+  return client.query(q, params);
+};
+
+var updateUserPreferences = function(user, client) {
+  var q = 'UPDATE users.preferences SET posts_per_page = $2, threads_per_page = $3, collapsed_categories = $4 WHERE user_id = $1';
+  var params = [user.id, user.posts_per_page, user.threads_per_page, user.collapsed_categories];
+  return client.query(q, params);
+};
+
 common.clean = clean;
 common.parse = parse;
 common.formatUser = formatUser;
 common.insertUserProfile = insertUserProfile;
 common.updateUserProfile = updateUserProfile;
+common.insertUserPreferences = insertUserPreferences;
+common.updateUserPreferences = updateUserPreferences;
 
 common.export = () =>  {
   return [
