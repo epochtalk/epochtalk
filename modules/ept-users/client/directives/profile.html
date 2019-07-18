@@ -46,11 +46,19 @@
       <div>
         <a ng-href="{{vmProfile.user.website}}" target="_blank" ng-bind="vmProfile.user.website"></a>
       </div>
-      <div><span ng-bind="vmProfile.user.gender"></span></div>
-      <div><span ng-bind="vmProfile.userAge(vmProfile.user.dob)"></span></div>
-      <div><span ng-bind="vmProfile.user.location"></span></div>
-      <div><span ng-bind="vmProfile.user.language"></span></div>
-      <div><span ng-bind="vmProfile.userLocalTime | date:'h:mm a (Z)'"></span></div>
+      <div ng-if="vmProfile.user.gender">
+        Gender:&nbsp;&nbsp;<span ng-bind="vmProfile.user.gender"></span>
+      </div>
+      <div ng-if="vmProfile.user.dob">
+        Age:&nbsp;&nbsp;<span ng-bind="vmProfile.userAge(vmProfile.user.dob)"></span>
+      </div>
+      <div ng-if="vmProfile.user.location">
+        Location:&nbsp;&nbsp;<span ng-bind="vmProfile.user.location"></span>
+      </div>
+      <div ng-if="vmProfile.user.language">
+        Language:&nbsp;&nbsp;<span ng-bind="vmProfile.user.language"></span>
+      </div>
+      <!-- <div><span ng-bind="vmProfile.userLocalTime | date:'h:mm a (Z)'"></span></div> -->
       <hr ng-if="vmProfile.canUpdate() || vmProfile.canUpdatePrivate() || vmProfile.pageOwner() || vmProfile.canDeactivate() || vmProfile.canReactivate() || vmProfile.canDelete() || vmProfile.canPageUserNotes() || vmProfile.canBanUser() || vmProfile.canMessage()">
     </div>
 

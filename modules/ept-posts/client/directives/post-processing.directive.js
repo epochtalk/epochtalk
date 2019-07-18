@@ -213,7 +213,7 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
         if (quoteBlocks.length > 0) {
           for (var i = 0; i < quoteBlocks.length; i++) {
             var quoteBlock = angular.element(quoteBlocks[i])[0].nextSibling;
-            var text = quoteBlock.nodeValue;
+            var text = quoteBlock ? quoteBlock.nodeValue : '';
             if (text.charAt(0) === '\n') {
               quoteBlock.nodeValue = text.substr(2);
             }

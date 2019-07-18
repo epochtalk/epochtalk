@@ -96,22 +96,10 @@ module.exports = function(user) {
       }
       else { prefs.collapsed_categories = { cats: [] }; }
 
-      if (exists) { return updateUserPreferences(prefs, client); }
-      else { return insertUserPreferences(prefs, client); }
+      if (exists) { return common.updateUserPreferences(prefs, client); }
+      else { return common.insertUserPreferences(prefs, client); }
     })
     .then(function() { return common.formatUser(user); });
   })
   .then(helper.slugify);
 };
-
-function insertUserPreferences(user, client) {
-  var q = 'INSERT INTO users.preferences (user_id, posts_per_page, threads_per_page, collapsed_categories) VALUES ($1, $2, $3, $4)';
-  var params = [user.id, user.posts_per_page, user.threads_per_page, user.collapsed_categories];
-  return client.query(q, params);
-}
-
-function updateUserPreferences(user, client) {
-  var q = 'UPDATE users.preferences SET posts_per_page = $2, threads_per_page = $3, collapsed_categories = $4 WHERE user_id = $1';
-  var params = [user.id, user.posts_per_page, user.threads_per_page, user.collapsed_categories];
-  return client.query(q, params);
-}
