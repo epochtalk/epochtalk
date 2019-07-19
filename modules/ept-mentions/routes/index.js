@@ -62,7 +62,7 @@ var page = {
     ]
   },
   handler: function(request, reply) {
-    return reply(request.pre.processed);
+    return request.pre.processed;
   }
 };
 
