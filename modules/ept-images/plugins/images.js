@@ -38,7 +38,8 @@ images.reinit = function() { images.init(options); };
 // -- interface api
 
 images.saveImage = (imgSrc) => {
-  return imageHandlers[config.images.storage].saveImage(imgSrc);
+  if (imgSrc) { return imageHandlers[config.images.storage].saveImage(imgSrc); }
+  else { return; }
 };
 
 images.uploadPolicy = (filename) => {
