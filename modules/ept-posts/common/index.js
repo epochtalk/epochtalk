@@ -105,10 +105,9 @@ function parse(parser, payload) {
 function parseOut(parser, posts) {
   if (!posts) { return; }
   posts = posts.length ? posts : [ posts ];
-  Promise.each(posts, function(post) {
+  return Promise.each(posts, function(post) {
     post.body_html = parser.parse(post.body);
-  })
-  .then(true);
+  });
 }
 
 
