@@ -38,15 +38,15 @@ internals.implementation = function (server, options) {
       var parts = authorization.split(/\s+/);
 
       if (parts.length !== 2) {
-        return Boom.badRequest('Bad HTTP authentication header format', 'Bearer');
+        throw Boom.badRequest('Bad HTTP authentication header format', 'Bearer');
       }
 
       if (parts[0].toLowerCase() !== 'bearer') {
-        return Boom.unauthorized(null, 'Bearer');
+        throw Boom.unauthorized(null, 'Bearer');
       }
 
       if(parts[1].split('.').length !== 3) {
-        return Boom.badRequest('Bad HTTP authentication header format', 'Bearer');
+        throw Boom.badRequest('Bad HTTP authentication header format', 'Bearer');
       }
 
       var token = parts[1];
