@@ -25,7 +25,7 @@ module.exports = {
 
     // deletes session, deletes user, no return
     var creds = request.auth.credentials;
-    var promise = request.session.delete(creds.sessionId, creds.id)
+    return request.session.delete(creds.sessionId, creds.id)
     .tap(function() {
       var notification = {
         channel: { type: 'user', id: creds.id },
@@ -36,8 +36,7 @@ module.exports = {
       };
       request.server.plugins.notifications.systemNotification(notification);
     })
+    .then(() => true)
     .error(request.errorMap.toHttpError);
-
-    return promise;
   }
 };
