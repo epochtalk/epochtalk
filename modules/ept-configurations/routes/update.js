@@ -70,10 +70,6 @@ module.exports = {
     plugins: {
       mod_log: { type: 'adminSettings.update' }
     },
-    pre: [
-      { method: validatePortalParams },
-      { method: 'common.images.site(imageStore, payload)' }
-    ],
     validate: {
       payload: Joi.object().keys({
         verify_registration: Joi.boolean(),
@@ -147,7 +143,12 @@ module.exports = {
         })
       }).options({ stripUnknown: true, abortEarly: true })
     },
-    pre: [ { method: 'auth.configurations.update(server, auth)' } ]
+    pre: [
+      { method: 'auth.configurations.update(server, auth)' },
+      { method: validatePortalParams },
+      { method: 'common.images.saveNoExpiration(payload.website.logo)' },
+      { method: 'common.images.saveNoExpiration(payload.website.favicon)' }
+    ]
   },
   handler: function(request, reply) {
     var internalConfig = request.server.app.config;

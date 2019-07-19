@@ -30,7 +30,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
       };
 
       // input initialization
-      if ($scope.purpose === 'avatar') {
+      if ($scope.purpose === 'avatar' || $scope.purpose === 'logo') {
         $scope.images[0] = { url: $scope.model };
       }
       else if ($scope.purpose === 'editor') {

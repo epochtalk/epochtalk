@@ -8,7 +8,7 @@ var mmm = require('mmmagic');
 var crypto = require('crypto');
 var request = require('request');
 var through2 = require('through2');
-var imageStore = require(path.normalize(__dirname + '/common'));
+var images = require(path.normalize(__dirname + '/images'));
 var Magic = mmm.Magic;
 var config;
 
@@ -18,7 +18,7 @@ local.init = function(opts) {
 };
 
 local.uploadPolicy = function(filename) {
-  var imageName = imageStore.generateUploadFilename(filename);
+  var imageName = images.generateUploadFilename(filename);
   var imageUrl = generateImageUrl(imageName);
 
   // create policy expiration
@@ -36,7 +36,7 @@ local.uploadPolicy = function(filename) {
   policyHash += cipher.final('hex');
 
   // add this imageUrl to the image expiration
-  imageStore.setExpiration(config.images.expiration, imageUrl);
+  images.setExpiration(config.images.expiration, imageUrl);
 
   return {
     uploadUrl: '/api/images/upload',
@@ -51,11 +51,11 @@ local.saveImage = function(imgSrc) {
   var url;
   if (imgSrc.indexOf(config.publicUrl) === 0 || imgSrc.indexOf(config.images.local.path) === 0) {
     // clear any expirations
-    imageStore.clearExpiration(imgSrc);
+    images.clearExpiration(imgSrc);
   }
   // hotlink image
   else {
-    var filename = imageStore.generateHotlinkFilename(imgSrc);
+    var filename = images.generateHotlinkFilename(imgSrc);
     local.uploadImage(imgSrc, filename);
     url = generateImageUrl(filename);
   }

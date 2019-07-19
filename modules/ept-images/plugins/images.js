@@ -70,16 +70,16 @@ images.generateUploadFilename = function(filename) {
 
 images.setExpiration = function(duration, url) {
   var expiration = new Date(Number(Date.now()) + Number(duration));
-  db.images.addImageExpiration(url, expiration);
+  return db.images.addImageExpiration(url, expiration);
 };
 
 images.clearExpiration = function(url) {
-  db.images.clearImageExpiration(url);
+  return db.images.clearImageExpiration(url);
 };
 
 var expire = function() {
   var storageType = config.images.storage;
-  db.images.getExpiredImages()
+  return db.images.getExpiredImages()
   .each(function(image) {
     // remove from cdn
     imageHandlers[storageType].removeImage(image.image_url);
@@ -180,18 +180,18 @@ images.updateImageReferences = (post) => {
 
 var clearImageReferences = function() {
   var storageType = config.images.storage;
-  db.images.getDeletedPostImages()
+  return db.images.getDeletedPostImages()
   .each(function(imageReference) {
     return checkImageReferences(imageReference.image_url)
     // if true, delete image
     .then(function(noMoreReferences) {
       if (noMoreReferences) {
-        imageHandlers[storageType].removeImage(imageReference.image_url);
+        return imageHandlers[storageType].removeImage(imageReference.image_url);
       }
     })
     // delete this reference
     .then(function() {
-      db.images.deleteImageReference(imageReference.id);
+      return db.images.deleteImageReference(imageReference.id);
     });
   });
 };
