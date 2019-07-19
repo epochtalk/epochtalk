@@ -2,6 +2,7 @@
 var Boom = require('boom');
 var Hoek = require('hoek');
 var jwt  = require('jsonwebtoken');
+var Promise = require('bluebird');
 
 
 // Declare internals
