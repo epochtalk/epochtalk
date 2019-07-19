@@ -21,7 +21,7 @@ module.exports = {
   },
   handler: function(request, reply) {
     // check if already logged in with jwt
-    if (!request.auth.isAuthenticated) { return reply(Boom.unauthorized()); }
+    if (!request.auth.isAuthenticated) { return Boom.unauthorized(); }
 
     // deletes session, deletes user, no return
     var creds = request.auth.credentials;
