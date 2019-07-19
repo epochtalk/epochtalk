@@ -108,7 +108,7 @@ function parseOut(parser, posts) {
   Promise.each(posts, function(post) {
     post.body_html = parser.parse(post.body);
   })
-  .then(() => true);
+  .then(true);
 }
 
 
