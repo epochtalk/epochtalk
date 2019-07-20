@@ -30,6 +30,6 @@ module.exports = {
   handler: function(request, reply) {
     var newViewerId = request.pre.newViewId;
     if (newViewerId) { return reply().header('Epoch-Viewer', newViewerId); }
-    else { return; }
+    else { return 200; }
   }
 };
