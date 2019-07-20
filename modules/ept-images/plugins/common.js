@@ -127,7 +127,8 @@ images.avatarSub = (user) => {
     var savedUrl = images.saveImage(user.avatar);
     if (savedUrl) { user.avatar = savedUrl; }
     return resolve();
-  });
+  })
+  .then(() => 200);
 };
 
 images.addPostImageReference = function(postId, imageUrl) {
