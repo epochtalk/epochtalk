@@ -103,9 +103,17 @@ $footer-link-hover-color: $color-primary;
 
 
 // Mobile Breakpoints
-$tablet: 767px;
+$tablet:  767px;
+$large:   1280px;
+
 @mixin break-mobile-sm {
   @media screen and (max-width: #{$tablet}) {
+    @content;
+  }
+}
+
+@mixin break-min-large {
+  @media screen and (min-width: #{$large}) {
     @content;
   }
 }

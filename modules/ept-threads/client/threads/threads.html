@@ -1,16 +1,13 @@
-<div class="board-controls-wrap">
-  <div class="page-header-split">
-    <div>
-      <h4 ng-bind-html="ThreadsWrapperCtrl.board.name"></h4>
-    </div>
-    <div>
-      <pagination page-count="ThreadsWrapperCtrl.pageCount" page="ThreadsWrapperCtrl.page"></pagination>
-    </div>
+<div class="board-controls">
+  <div class="board-title">
+    <h1 ng-bind-html="ThreadsWrapperCtrl.board.name"></h1>
     <div class="moderators" ng-if="ThreadsWrapperCtrl.board.moderators.length > 0">
       <span class="label">Moderators: </span>
-      <a ui-sref="profile.posts({ username: mod.username })" ng-repeat="mod in ThreadsWrapperCtrl.board.moderators" ng-bind="mod.username + ($last ? '' : ', ')"></a>
+      <a ui-sref="profile.posts({ username: mod.username })" ng-repeat="mod in ThreadsWrapperCtrl.board.moderators"
+        ng-bind="mod.username + ($last ? '' : ', ')"></a>
     </div>
   </div>
+  <pagination page-count="ThreadsWrapperCtrl.pageCount" page="ThreadsWrapperCtrl.page"></pagination>
 </div>
 
 <div class="board-data" ui-view="data"></div>
