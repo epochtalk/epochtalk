@@ -23,7 +23,7 @@ module.exports = {
       // reject or allow connection
       .then(function(allowed) {
         if (allowed) { return reply.continue; }
-        else { return reply(Boom.tooManyRequests('Abuse Detected')); }
+        else { return Boom.tooManyRequests('Abuse Detected'); }
       });
     });
 
