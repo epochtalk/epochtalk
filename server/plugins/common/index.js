@@ -8,6 +8,7 @@ function imagesSite(imageStore, payload) {
   if (payload.website.favicon) {
     imageStore.clearExpiration(payload.website.favicon);
   }
+  return 200;
 }
 
 // -- API
