@@ -101,7 +101,7 @@ module.exports = {
 function processing(request, reply) {
   var config = request.server.app.config;
   var boardId = config.portal.boardId;
-  if (!boardId) { return reply(Boom.badRequest('Board Not Set routes')); }
+  if (!boardId) { return Boom.badRequest('Board Not Set routes'); }
 
   var userId;
   var opts = { limit: 10, page: 1 };

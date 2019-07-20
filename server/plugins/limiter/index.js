@@ -110,7 +110,7 @@ module.exports = {
       return routeLimiter(key, function(err, timeLeft) {
         if (err) { return reply(err); }
         else if (timeLeft) {
-          return reply(Boom.tooManyRequests('Rate Limit Exceeded'));
+          return Boom.tooManyRequests('Rate Limit Exceeded');
         }
         else { return reply.continue; }
       });
