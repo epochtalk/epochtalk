@@ -108,7 +108,7 @@ module.exports = {
 
       // query rate limiter to see if route should be blocked
       return routeLimiter(key, function(err, timeLeft) {
-        if (err) { return reply(err); }
+        if (err) { return err; }
         else if (timeLeft) {
           return Boom.tooManyRequests('Rate Limit Exceeded');
         }

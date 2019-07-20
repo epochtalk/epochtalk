@@ -44,7 +44,7 @@ module.exports = {
       var validACL = false;
       ACLValues.forEach(function(val) { validACL = val || validACL; });
       if (validACL) { return reply.continue; }
-      else { return reply(err); }
+      else { return err; }
     });
 
     // server exposed objects
