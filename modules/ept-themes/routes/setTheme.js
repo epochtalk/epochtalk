@@ -88,7 +88,7 @@ module.exports = {
       fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
       copyCss()
       .then(sass)
-      .then(function() { reply(theme); })
+      .then(function() { theme; })
       .error(request.errorMap.toHttpError);
     });
   }

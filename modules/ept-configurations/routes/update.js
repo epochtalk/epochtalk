@@ -187,7 +187,7 @@ function validatePortalParams(request, reply) {
       !request.payload.portal.board_id) {
     return Boom.badData('Portal Configurations must include a Board to Show');
   }
-  else { return reply(); }
+  else { return; }
 }
 
 function underscoreToCamelCase(obj) {

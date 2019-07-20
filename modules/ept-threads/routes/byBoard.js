@@ -106,7 +106,7 @@ module.exports = {
       { method: (request) => request.server.methods.hooks.postProcessing }
     ],
     handler: function(request, reply) {
-      return reply(request.pre.processed);
+      return request.pre.processed;
     }
   }
 };

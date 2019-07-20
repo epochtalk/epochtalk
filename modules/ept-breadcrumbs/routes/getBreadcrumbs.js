@@ -79,7 +79,7 @@ module.exports = {
 
     // Build the breadcrumbs and reply
     return buildCrumbs(request.query.id, request.query.type, [])
-    .then(function(breadcrumbs) { reply(breadcrumbs.reverse()); })
+    .then(function(breadcrumbs) { breadcrumbs.reverse(); })
     .error(request.errorMap.toHttpError);
   }
 };

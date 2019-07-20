@@ -54,6 +54,6 @@ module.exports = {
         theme[key] = val;
       }
     })
-    .on('close', function() { reply(theme); });
+    .on('close', function() { theme; });
   }
 };

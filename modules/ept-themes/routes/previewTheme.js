@@ -80,7 +80,7 @@ module.exports = {
     .on('close', function() {
       copyCss()
       .then(function () { return sass('./public/css/preview.css'); })
-      .then(function() { reply(theme); })
+      .then(function() { theme; })
       .error(request.errorMap.toHttpError);
     });
   }

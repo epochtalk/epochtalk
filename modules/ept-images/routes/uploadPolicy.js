@@ -12,6 +12,6 @@ module.exports = {
     var policies = filenames.map(function(filename) {
       return request.imageStore.uploadPolicy(filename);
     });
-    return reply(policies);
+    return policies;
   }
 };
