@@ -13,7 +13,7 @@ module.exports = {
       var userId = request.auth.credentials.id;
 
       // get lastActive for this user
-      return request.db.users.getLastActive(userId)
+      request.db.users.getLastActive(userId)
       .then(function(lastActive) {
         // if no lastActive, then just update
         if (!lastActive) { return true; }
@@ -28,8 +28,8 @@ module.exports = {
       })
       .then(function(doUpdate) {
         if (doUpdate) { return request.db.users.setLastActive(userId); }
-        else { return reply.continue; }
       });
+      return reply.continue;
     });
   }
 };
