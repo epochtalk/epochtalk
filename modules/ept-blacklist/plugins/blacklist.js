@@ -18,7 +18,7 @@ module.exports = {
       var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
       if (Object.keys(blacklist).length && ipBlacklisted(ip)) {
         var err = Boom.forbidden();
-        return reply(err);
+        return err;
       }
       else { return reply.continue; }
     });

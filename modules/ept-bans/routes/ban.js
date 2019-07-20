@@ -70,10 +70,10 @@ module.exports = {
       var opts = { userId: userId, weight: 50, decay: true };
       var ipBanPromise = request.db.bans.copyUserIps(opts);
       return Promise.join(banPromise, ipBanPromise, function(result) {
-        return reply(result);
+        return result;
       })
       .error(request.errorMap.toHttpError);
     }
-    else { return reply(banPromise); }
+    else { return banPromise; }
   }
 };

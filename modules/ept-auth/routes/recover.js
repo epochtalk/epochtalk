@@ -94,6 +94,6 @@ module.exports = {
       .then(function() { return promise; });
     }
 
-    return reply(captchaPromise || promise);
+    return captchaPromise || promise;
   }
 };

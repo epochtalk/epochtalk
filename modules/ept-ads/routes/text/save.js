@@ -48,6 +48,6 @@ module.exports = {
     var text = request.payload;
     adText.setDisclaimer(text.disclaimer);
     adText.setInfo(text.info);
-    return reply(text);
+    return text;
   }
 };

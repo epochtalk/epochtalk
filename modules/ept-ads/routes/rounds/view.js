@@ -30,7 +30,7 @@ function defaultRoundNumber(request, reply) {
       }
     });
   }
-  return reply(roundNumber);
+  return roundNumber;
 }
 
 /**
