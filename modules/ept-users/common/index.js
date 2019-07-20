@@ -13,10 +13,12 @@ function clean(sanitizer, payload) {
   displayKeys.map(function(key) {
     if (payload[key]) { payload[key] = sanitizer.display(payload[key]); }
   });
+  return 200;
 }
 
 function parse(parser, payload) {
   payload.signature = parser.parse(payload.raw_signature);
+  return 200;
 }
 
 function imagesSignature(imageStore, payload) {
@@ -31,6 +33,7 @@ function imagesSignature(imageStore, payload) {
   if (payload.avatar) {
     imageStore.clearExpiration(payload.avatar);
   }
+  return 200;
 }
 
 var formatUser = function(user) {
