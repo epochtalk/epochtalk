@@ -87,7 +87,7 @@ local.uploadImage = function(source, filename, reply) {
     });
     puller.on('end', function () {
       if (reply) {
-        if (error) { return reply(Boom.badImplementation(error)); }
+        if (error) { return Boom.badImplementation(error); }
         else { return reply().code(204); }
       }
     });

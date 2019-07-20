@@ -185,7 +185,7 @@ function validatePortalParams(request, reply) {
   if (request.payload.portal &&
       request.payload.portal.enabled &&
       !request.payload.portal.board_id) {
-    return reply(Boom.badData('Portal Configurations must include a Board to Show'));
+    return Boom.badData('Portal Configurations must include a Board to Show');
   }
   else { return reply(); }
 }

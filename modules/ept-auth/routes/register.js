@@ -63,7 +63,7 @@ module.exports = {
 
     // check if registration is open
     if (config.inviteOnly) {
-      return reply(Boom.locked('Registration is Closed'));
+      return Boom.locked('Registration is Closed');
     }
 
     // check if already logged in with jwt

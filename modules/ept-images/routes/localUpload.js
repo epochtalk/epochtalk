@@ -18,12 +18,12 @@ module.exports = function(internalConfig) {
       // check we're using local storage
       var config = request.server.app.config;
       if (config.images.storage !== 'local') {
-        return reply(Boom.notFound());
+        return Boom.notFound();
       }
 
       // make sure image file exists
       var file = request.payload.file;
-      if (!file) { return reply(Boom.badRequest('No File Attached')); }
+      if (!file) { return Boom.badRequest('No File Attached'); }
 
       // decode policy
       var policyPayload = request.payload.policy;
@@ -34,17 +34,17 @@ module.exports = function(internalConfig) {
       // parse policy
       var policy;
       try { policy = JSON.parse(decoded); }
-      catch(e) { return reply(Boom.badRequest('Malformed Policy')); }
-      if (!policy) { return reply(Boom.badRequest('Malformed Policy')); }
+      catch(e) { return Boom.badRequest('Malformed Policy'); }
+      if (!policy) { return Boom.badRequest('Malformed Policy'); }
 
       // check filename
       var filename = policy.filename;
-      if (!filename) { return reply(Boom.badRequest('Invalid Policy')); }
+      if (!filename) { return Boom.badRequest('Invalid Policy'); }
 
       // check policy expiration
       var expiration = new Date(policy.expiration);
       if (expiration < Date.now()) {
-        return reply(Boom.badRequest('Policy Timed Out'));
+        return Boom.badRequest('Policy Timed Out');
       }
 
       request.imageStore.uploadImage(file, filename, reply);

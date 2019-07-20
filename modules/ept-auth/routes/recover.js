@@ -36,10 +36,10 @@ module.exports = {
 
     // validate the payload
     if (secretKey && !recaptcha) {
-      return reply(Boom.badRequest('Please click the checkbox'));
+      return Boom.badRequest('Please click the checkbox');
     }
     if (!query) {
-      return reply(Boom.badRequest('Please enter a username or email'));
+      return Boom.badRequest('Please enter a username or email');
     }
 
     var captchaPromise;
