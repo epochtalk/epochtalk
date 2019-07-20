@@ -19,7 +19,7 @@ function auth(request, reply) {
 
 function currentRound(request, reply) {
   var roundNumber = db.rounds.current();
-  return reply(roundNumber);
+  return roundNumber;
 }
 
 /**
