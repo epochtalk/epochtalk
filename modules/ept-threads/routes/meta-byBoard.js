@@ -47,6 +47,6 @@ module.exports = {
       return data;
     })
     .then(function(data) { return reply.view('index', data); })
-    .catch(() => { return reply().redirect('/404'); });
+    .catch(() => { return reply.redirect('/404'); });
   }
 };
