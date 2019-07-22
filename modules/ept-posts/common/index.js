@@ -73,6 +73,9 @@ function checkPostLength(server, postBody) {
     var msg = 'Error: body too long, max length is ' + server.app.config.postMaxLength;
     return Promise.reject(Boom.badRequest(msg));
   }
+  else {
+    return 200;
+  }
 }
 
 function clean(sanitizer, payload) {
@@ -88,6 +91,7 @@ function clean(sanitizer, payload) {
     var msg = 'Error: body contained no data after sanitizing html tags.';
     return Promise.reject(Boom.badRequest(msg));
   }
+  return 200;
 }
 
 function parse(parser, payload) {
@@ -100,6 +104,7 @@ function parse(parser, payload) {
   }
   // check if parsing was needed
   if (payload.body_html === payload.body) { payload.body_html = ''; }
+  return 200;
 }
 
 function parseOut(parser, posts) {
@@ -117,7 +122,7 @@ function newbieImages(auth, payload) {
   auth.credentials.roles.map(function(role) {
     if (role === 'newbie') { isNewbie = true; }
   });
-  if (!isNewbie) { return; }
+  if (!isNewbie) { return 200; }
 
   // load html in payload.body_html into cheerio
   var html = payload.body_html;
@@ -132,6 +137,7 @@ function newbieImages(auth, payload) {
   });
 
   payload.body_html = $.html();
+  return 200;
 }
 
 function hasPriority(server, auth, permission, postId, selfMod) {
