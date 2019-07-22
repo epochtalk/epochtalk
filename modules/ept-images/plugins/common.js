@@ -118,7 +118,8 @@ images.imageSub = (post) => {
       $(element).attr('src', savedUrl);
     }
   })
-  .then(() => { post.body_html = $.html(); });
+  .then(() => { post.body_html = $.html(); })
+  .then(() => 200);
 };
 
 images.avatarSub = (user) => {
