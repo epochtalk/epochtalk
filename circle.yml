@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: node:10.15.0
+      - image: node:10.16.0
       - image: selenium/standalone-chrome
       - image: redis:4.0.1
       - image: postgres:11.1
