@@ -55,12 +55,10 @@ function processing(request, reply) {
   newPost.user_id = request.auth.credentials.id;
 
   // create the post in db
-  var promise = request.db.posts.create(newPost)
+  return request.db.posts.create(newPost)
   // handle any image references
-  .then((post) => { return request.imageStore.createImageReferences(post); })
+  .then((post) => request.imageStore.createImageReferences(post))
   .error(request.errorMap.toHttpError);
-
-  return promise;
 }
 
 
