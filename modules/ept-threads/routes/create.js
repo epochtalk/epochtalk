@@ -63,13 +63,13 @@ module.exports = {
       { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
       { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
       { method: (request) => request.server.methods.common.images.sub(request.payload) },
-      { method: (request) => request.server.methods.hooks.preProcessing },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessing' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessing' },
         { method: processing, assign: 'processed' }
       ],
-      { method: (request) => request.server.methods.hooks.merge },
-      { method: (request) => request.server.methods.hooks.postProcessing }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
   handler: function(request, reply) {
