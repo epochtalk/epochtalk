@@ -61,18 +61,15 @@ module.exports = {
           // Store to db
           var storeToDb = function() { request.db.moderationLogs.create(log); return null; };
 
-          // var storeToDb = request.db.moderationLog.create(log);
-
+          var promisesToDo = [generateDisplayInfo, storeToDb];
           // Determine if dataQuery is present
-          var promise = Promise.resolve();
           if (actionTemplate.dataQuery) {
-            promise = actionTemplate.dataQuery(log.action.obj, request);
+            promisesToDo = [].concat(actionTemplate, promisesToDo);
           }
 
           // Execute dataQuery if present, generate display text, then write log to the db
-          return promise.then(function() { return generateDisplayInfo(); })
-          .then(function() { return storeToDb(); })
-          .catch(function(err) { if (err) { throw err; } });
+          return Promise.each(promisesToDo, result => result)
+          .then(() => 200);
         }
         else {
           return reply.continue;
