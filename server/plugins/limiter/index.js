@@ -3,6 +3,7 @@ var path = require('path');
 var Boom = require('boom');
 var Hoek = require('hoek');
 var limiter = require('rolling-rate-limiter');
+var Promise = require('bluebird');
 var redis;
 
 var namespace = 'ept:';
@@ -107,13 +108,16 @@ module.exports = {
       var routeLimiter = limiter(routeLimit);
 
       // query rate limiter to see if route should be blocked
-      return routeLimiter(key, function(err, timeLeft) {
-        if (err) { return err; }
-        else if (timeLeft) {
-          return Boom.tooManyRequests('Rate Limit Exceeded');
-        }
-        else { return reply.continue; }
+      return new Promise((resolve, reject) => {
+        routeLimiter(key, function(err, timeLeft) {
+          if (err) { return reject(err); }
+          else if (timeLeft) {
+            return reject(Boom.tooManyRequests('Rate Limit Exceeded'));
+          }
+          else { return resolve(reply.continue); }
+        });
       });
+
     });
 
     // for modifing existing default rate limits
