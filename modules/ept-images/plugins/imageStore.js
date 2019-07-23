@@ -1,5 +1,5 @@
 var path = require('path');
-var images = require(path.normalize(__dirname + '/common'));
+var images = require(path.normalize(__dirname + '/images'));
 
 exports.register = function(server, options, next) {
   images.init(options);
@@ -7,18 +7,6 @@ exports.register = function(server, options, next) {
   // imageStore decoration
   server.decorate('request', 'imageStore', images);
   server.decorate('server', 'imageStore', images);
-
-  server.method({
-    name: 'common.images.sub',
-    method: images.imageSub,
-    options: { callback: false }
-  });
-
-  server.method({
-    name: 'common.images.avatarSub',
-    method: images.avatarSub,
-    options: { callback: false }
-  });
 
   return next();
 };

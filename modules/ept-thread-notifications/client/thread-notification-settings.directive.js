@@ -7,7 +7,6 @@ var directive = ['ThreadNotifications', function(ThreadNotifications) {
     controller: ['Alert', '$timeout', function(Alert, $timeout) {
       var ctrl = this;
       this.notificationsDisabled;
-      this.showRemoveModal;
 
       function init() {
         return ThreadNotifications.get().$promise
@@ -17,28 +16,25 @@ var directive = ['ThreadNotifications', function(ThreadNotifications) {
       }
       init();
 
+      // notificationsDisabled is inverted due to weirdness with ng-model and
+      // the delay it takes for the switch to toggle off
       this.enableNotifications = function() {
         var payload = { enabled: !ctrl.notificationsDisabled };
         return ThreadNotifications.enableNotifications(payload).$promise
         .then(function() {
-          var action = ctrl.notificationsDisabled ? 'Enabled' : 'Disabled';
-          Alert.success('Successfully ' + action + ' Thread Notifications');
+          if (ctrl.notificationsDisabled) { // notifications were disabled, now enabled
+            Alert.success('Successfully Enabled Thread Notifications');
+            return;
+          }
+          else {
+            Alert.success('Successfully Disabled Thread Notifications');
+            return ThreadNotifications.removeSubscriptions().$promise;
+          }
         })
         .catch(function(e) {
           ctrl.notificationsDisabled = !ctrl.notificationsDisabled;
           Alert.error('There was an error updating your thread notification settings');
         });
-      };
-
-      this.removeSubscriptions = function() {
-        return ThreadNotifications.removeSubscriptions().$promise
-        .then(function() {
-          Alert.success('Successfully removed all previous thread subscriptions');
-        })
-        .catch(function(e) {
-          Alert.error('There was an error removing thread subscriptions');
-        })
-        .finally(function() { ctrl.showRemoveModal = false; });
       };
 
     }]
