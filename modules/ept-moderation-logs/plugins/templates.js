@@ -520,7 +520,7 @@ function retrievePost(data, request) {
   return request.db.posts.find(data.id)
   .then(function(post){
     // don't log mods/admins modifying their own posts
-    if (post.user.id === request.auth.credentials.id) { return Promise.reject(); }
+    if (post.user.id === request.auth.credentials.id) { return Promise.reject(new Error('User is editing their own post')); }
     data.author = {
       username: post.user.username,
       id: post.user.id
