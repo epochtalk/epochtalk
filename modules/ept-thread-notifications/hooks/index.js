@@ -21,8 +21,7 @@ function emailSubscribers(request) {
     return request.emailer.send('threadNotification', emailParams)
     .then(function() {
       if (!emailData.thread_author) {
-        var userId = request.db.helper.slugify(emailData.user_id);
-        return request.db.threadNotifications.removeSubscription(userId, threadId);
+        return request.db.threadNotifications.removeSubscription(emailData.user_id, threadId);
       }
     })
     .catch(console.log);
