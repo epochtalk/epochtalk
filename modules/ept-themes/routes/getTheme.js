@@ -1,11 +1,11 @@
 var path = require('path');
 var Joi = require('joi');
+var Promise = require('bluebird');
 var fs = require('fs');
 var readLine = require('readline');
 var common = require(path.normalize(__dirname + '/common'));
 var customVarsPath = common.customVarsPath;
 var previewVarsPath = common.previewVarsPath;
-
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
@@ -46,14 +46,18 @@ module.exports = {
       terminal: false
     });
     var theme = {};
-    rl.on('line', function (line) {
-      if (line.charAt(0) === '$') {
-        var lineArr = line.split(':');
-        var key = lineArr[0].split('$')[1].trim();
-        var val = lineArr[1].split(';')[0].trim();
-        theme[key] = val;
-      }
+    return new Promise(function(resolve, reject) {
+      rl.on('line', function (line) {
+        if (line.charAt(0) === '$') {
+          var lineArr = line.split(':');
+          var key = lineArr[0].split('$')[1].trim();
+          var val = lineArr[1].split(';')[0].trim();
+          theme[key] = val;
+        }
+      })
+      .on('close', function() { return resolve(theme); })
+      .on('error', reject);
     })
-    .on('close', function() { theme; });
+    .error(request.errorMap.toHttpError);
   }
 };

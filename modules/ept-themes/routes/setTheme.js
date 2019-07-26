@@ -1,3 +1,4 @@
+var Promise = require('bluebird');
 var path = require('path');
 var Joi = require('joi');
 var fs = require('fs');
@@ -78,18 +79,22 @@ module.exports = {
     var theme = request.payload;
     var keys = Object.keys(theme);
     var stream = fs.createWriteStream(customVarsPath);
-    stream.once('open', function() {
-      keys.forEach(function(key) {
-        stream.write('$' + key + ': ' + theme[key].toLowerCase() + ';\n');
-      });
-      stream.end();
+
+    return new Promise(function(resolve, reject) {
+      stream.once('open', function() {
+        keys.forEach(function(key) {
+          stream.write('$' + key + ': ' + theme[key].toLowerCase() + ';\n');
+        });
+        stream.end();
+      })
+      .on('close', function() {
+        fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
+        copyCss()
+        .then(sass)
+        .then(function() { return resolve(theme); })
+      })
+      .on('error', reject);
     })
-    .on('close', function() {
-      fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
-      copyCss()
-      .then(sass)
-      .then(function() { theme; })
-      .error(request.errorMap.toHttpError);
-    });
+    .error(request.errorMap.toHttpError);
   }
 };

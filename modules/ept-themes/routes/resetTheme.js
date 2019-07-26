@@ -53,21 +53,25 @@ module.exports = {
     })
     .then(copyCss)
     .then(sass)
-    .then(function() { // read theme from file and return vars in reply
-      var rl = readLine.createInterface({
-        input: fs.createReadStream(customVarsPath),
-        terminal: false
+    .then(function() {
+      return new Promise(function(resolve, reject) {
+        // read theme from file and return vars in reply
+        var rl = readLine.createInterface({
+          input: fs.createReadStream(customVarsPath),
+          terminal: false
+        });
+        var theme = {};
+        rl.on('line', function (line) {
+          if (line.charAt(0) === '$') {
+            var lineArr = line.split(':');
+            var key = lineArr[0].split('$')[1].trim();
+            var val = lineArr[1].split(';')[0].trim();
+            theme[key] = val;
+          }
+        })
+        .on('close', function() { return resolve(theme); })
+        .on('error', reject);
       });
-      var theme = {};
-      rl.on('line', function (line) {
-        if (line.charAt(0) === '$') {
-          var lineArr = line.split(':');
-          var key = lineArr[0].split('$')[1].trim();
-          var val = lineArr[1].split(';')[0].trim();
-          theme[key] = val;
-        }
-      })
-      .on('close', function() { theme; });
     })
     .error(request.errorMap.toHttpError);
   }
