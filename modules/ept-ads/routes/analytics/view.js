@@ -16,14 +16,21 @@ function auth(request, reply) {
 }
 
 function defaultRoundNumber(request, reply) {
-  var roundNumber = request.params.round;
+  var roundNumber = request.params.round || reply.continue;
   if (roundNumber === 'current') {
-    roundNumber = db.rounds.current()
-    .tap(function(round) { request.params.round = round; })
+    return db.rounds.current()
     .then(function(round) {
-      if (!round) {
+      request.params.round = round;
+      return round;
+    })
+    .then(function(round) {
+      if (round) { return round; }
+      else {
         return db.rounds.max()
-        .tap(function(maxRound) { request.params.round = maxRound; });
+        .tap(function(maxRound) {
+          request.params.round = maxRound;
+          return maxRound;
+        });
       }
     });
   }

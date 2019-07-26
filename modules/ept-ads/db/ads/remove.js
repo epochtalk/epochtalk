@@ -7,5 +7,6 @@ module.exports = function(adId) {
   adId = helper.deslugify(adId);
   var q = `DELETE FROM ads WHERE id = $1`;
   return db.sqlQuery(q, [adId])
-  .then(function() { return; });
+  .then(function() { return { id: adId }; })
+  .then(helper.slugify);
 };
