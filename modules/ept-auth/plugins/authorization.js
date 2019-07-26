@@ -165,10 +165,12 @@ function stitch(error, conditions, type) {
     return build(condition);
   });
 
+  // Fulfills when all promises succeed, rejects when first promise rejects
   if (type === 'all') {
     return Promise.all(conditions)
     .catch(() => { return Promise.reject(error); });
   }
+  // Fulfills when first promise succeeds, rejects when all promise reject
   else if (type === 'any') {
     return Promise.any(conditions)
     .catch(() => { return Promise.reject(error); });
