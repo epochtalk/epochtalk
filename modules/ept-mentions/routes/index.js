@@ -51,14 +51,14 @@ var page = {
     },
     pre: [
       { method: (request) => request.server.methods.auth.mentions.page(request.server, request.auth) },
-      { method: (request) => request.server.methods.hooks.preProcessing },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: (request) => request.server.methods.hooks.parallelProcessing, assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: (request) => request.server.methods.hooks.merge },
+      { method: (request) => request.server.methods.hooks.merge(request) },
       { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.data) },
-      { method: (request) => request.server.methods.hooks.postProcessing }
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
   handler: function(request, reply) {

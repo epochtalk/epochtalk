@@ -36,7 +36,7 @@ function mergeProcessing(request) {
   var parallelProcessed = request.pre.parallelProcessed || [];
   var processed = request.pre.processed;
 
-  parallelProcessed.map(function(result) {
+  return parallelProcessed.map(function(result) {
     if (!_.get(processed, result.path)) {
       _.set(processed, result.path, result.data); }
   });
