@@ -172,7 +172,7 @@ function hasPriority(server, auth, permission, postId, selfMod) {
       if (hasPermission === true && aid <= pid) { return Promise.resolve(true); }
       // Allow patrollers to have priority over users in self moderated threads
       else if (selfMod === true && isUser === true && hasPatrollerRole === true) { return Promise.resolve(true); }
-      else { return Promise.reject(Boom.forbidden());}
+      else { return Promise.reject(Boom.forbidden()); }
     });
   });
 }
