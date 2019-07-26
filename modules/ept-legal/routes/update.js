@@ -53,7 +53,7 @@ module.exports = {
     var disclaimerCustomPath = path.normalize(baseCustomPath + 'disclaimer.txt');
     var writeDisclaimer = writeFile(disclaimerCustomPath, request.payload.disclaimer);
 
-    var promise = Promise.join(writeTos, writePrivacy, writeDisclaimer, function() { return; })
+    var promise = Promise.join(writeTos, writePrivacy, writeDisclaimer, function() { return 'Success 200'; })
     .error(request.errorMap.toHttpError);
 
     return promise;
