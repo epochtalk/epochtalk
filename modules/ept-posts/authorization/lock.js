@@ -4,7 +4,7 @@ var path = require('path');
 var common = require(path.normalize(__dirname + '/../common'));
 
 module.exports = function postsLock(server, auth, postId, query) {
-  if (query && !query.locked) { return; }
+  if (query && !query.locked) { return Promise.resolve(true); }
 
   var userId = auth.credentials.id;
   // check base permission
