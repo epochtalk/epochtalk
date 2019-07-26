@@ -14,6 +14,7 @@ function boardsClean(sanitizer, payload) {
       board.description = sanitizer.display(board.description);
     }
   });
+  return payload;
 }
 
 function boardStitching(boardMapping, currentBoard, userPriority, opts) {
