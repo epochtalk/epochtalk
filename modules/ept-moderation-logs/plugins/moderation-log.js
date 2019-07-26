@@ -52,28 +52,22 @@ module.exports = {
             return o;
           }, {});
 
-          // Generates display text from templates
-          var generateDisplayInfo = function() {
-            log.action.display_text = actionTemplate.genDisplayText(log.action.obj);
-            log.action.display_url = actionTemplate.genDisplayUrl(log.action.obj);
-          };
-
-          // Store to db
-          var storeToDb = function() { request.db.moderationLogs.create(log); return null; };
-
-          var promisesToDo = [generateDisplayInfo, storeToDb];
-          // Determine if dataQuery is present
+          var promise = Promise.resolve();
           if (actionTemplate.dataQuery) {
-            promisesToDo = [].concat(actionTemplate, promisesToDo);
+            promise = actionTemplate.dataQuery(log.action.obj, request);
           }
 
           // Execute dataQuery if present, generate display text, then write log to the db
-          return Promise.each(promisesToDo, result => result)
-          .then(() => 200);
+          promise.then(function() {
+            // Generates display text from templates
+            log.action.display_text = actionTemplate.genDisplayText(log.action.obj);
+            log.action.display_url = actionTemplate.genDisplayUrl(log.action.obj);
+            // Store log to database
+            return request.db.moderationLogs.create(log);
+          })
+          .catch(function(err) { if (err) { throw err; } });
         }
-        else {
-          return reply.continue;
-        }
+        return reply.continue;
       }
     });
   }
