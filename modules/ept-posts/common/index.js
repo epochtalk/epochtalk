@@ -48,7 +48,7 @@ function formatPost(post) {
     id: post.user_id,
     name: post.name,
     username: post.username,
-    priority: post.priority || post.default_priority,
+    priority: post.priority === null ? post.default_priority : post.priority,
     deleted: post.user_deleted,
     signature: post.signature,
     post_count: post.post_count,
@@ -196,7 +196,7 @@ function cleanPosts(posts, currentUserId, viewContext, request, thread, allowVie
     viewablesType = 'array';
   }
   return posts.map(function(post) {
-    var postHiddenByPriority = post.metadata ? post.metadata.hidden_by_priority : null;
+    var postHiddenByPriority = post.metadata ? post.metadata.hidden_by_priority : post.user.priority;
     var postHiddenById = post.metadata ? post.metadata.hidden_by_id : null;
     var authedUserHasPriority = authedUserPriority <= postHiddenByPriority;
     var authedUserHidePost = postHiddenById === authedId;
