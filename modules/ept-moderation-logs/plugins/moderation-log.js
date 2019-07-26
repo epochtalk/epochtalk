@@ -41,7 +41,7 @@ module.exports = {
           // Build known action data
           log.action = {
             type: modLog.type,
-            api_url: request.url.path,
+            api_url: request.path,
             api_method: request.route.method,
             taken_at: new Date()
           };
