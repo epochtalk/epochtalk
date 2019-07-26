@@ -74,7 +74,7 @@ function checkPostLength(server, postBody) {
     return Promise.reject(Boom.badRequest(msg));
   }
   else {
-    return 200;
+    return true;
   }
 }
 
@@ -91,7 +91,7 @@ function clean(sanitizer, payload) {
     var msg = 'Error: body contained no data after sanitizing html tags.';
     return Promise.reject(Boom.badRequest(msg));
   }
-  return 200;
+  return payload;
 }
 
 function parse(parser, payload) {
@@ -104,7 +104,7 @@ function parse(parser, payload) {
   }
   // check if parsing was needed
   if (payload.body_html === payload.body) { payload.body_html = ''; }
-  return 200;
+  return payload;
 }
 
 function parseOut(parser, posts) {
@@ -122,22 +122,22 @@ function newbieImages(auth, payload) {
   auth.credentials.roles.map(function(role) {
     if (role === 'newbie') { isNewbie = true; }
   });
-  if (!isNewbie) { return 200; }
+  if (isNewbie) {
+    // load html in payload.body_html into cheerio
+    var html = payload.body_html;
+    var $ = cheerio.load(html);
 
-  // load html in payload.body_html into cheerio
-  var html = payload.body_html;
-  var $ = cheerio.load(html);
+    // collect all the images in the body
+    $('img').each((index, element) => {
+      var src = $(element).attr('src');
+      var canonical = $(element).attr('data-canonical-src');
+      var replacement = `<a href="${src}" target="_blank" data-canonical-src="${canonical}">${src}</a>`;
+      $(element).replaceWith(replacement);
+    });
 
-  // collect all the images in the body
-  $('img').each((index, element) => {
-    var src = $(element).attr('src');
-    var canonical = $(element).attr('data-canonical-src');
-    var replacement = `<a href="${src}" target="_blank" data-canonical-src="${canonical}">${src}</a>`;
-    $(element).replaceWith(replacement);
-  });
-
-  payload.body_html = $.html();
-  return 200;
+    payload.body_html = $.html();
+  }
+  return payload;
 }
 
 function hasPriority(server, auth, permission, postId, selfMod) {

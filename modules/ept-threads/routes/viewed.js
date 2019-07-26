@@ -29,7 +29,9 @@ module.exports = {
   },
   handler: function(request, reply) {
     var newViewerId = request.pre.newViewId;
-    if (newViewerId) { return reply().header('Epoch-Viewer', newViewerId); }
-    else { return 200; }
+    const response = reply.response('200 OK');
+    response.code(200);
+    if (newViewerId) { response.header('Epoch-Viewer', newViewerId); }
+    return response;
   }
 };
