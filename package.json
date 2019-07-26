@@ -104,14 +104,8 @@
     "watch": "^0.17.1"
   },
   "resolutions": {
-    "good/joi": "^14.3.1",
-    "good-console/joi": "^14.3.1",
-    "inert/joi": "^14.3.1",
-    "vision/joi": "^14.3.1",
-    "hapi/**/joi": "^14.3.1",
     "lab/**/joi": "^14.3.1",
-    "good-http/wreck": "^12.5.1",
-    "vision/boom": "^7.2.0"
+    "good-http/wreck": "^12.5.1"
   },
   "bin": {
     "epoch": "cli/index.js"
