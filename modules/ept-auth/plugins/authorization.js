@@ -16,6 +16,10 @@ var common = {
       else { return reject(error); }
     });
   },
+  runValidation: (error, method, args) => {
+    return method(...args)
+    .error(function() { return Promise.reject(error); });
+  },
   dbValue: (error, method, args) => {
     return method(...args)
     .then(function(value) {
@@ -125,6 +129,9 @@ function build(opts) {
       promise = common[opts.type](error, opts.server, opts.auth, opts.permission);
       break;
     case 'isNotFirstPost':
+    case 'runValidation':
+      promise = common[opts.type](error, opts.method, opts.args);
+      break;
     case 'dbValue':
       promise = common[opts.type](error, opts.method, opts.args);
       break;
