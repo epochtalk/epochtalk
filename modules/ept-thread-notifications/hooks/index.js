@@ -16,13 +16,12 @@ function emailSubscribers(request) {
       username: emailData.username,
       thread_name: emailData.title,
       site_name: config.website.title,
-      thread_url: config.publicUrl + '/threads/' + threadId + '/posts'
+      thread_url: config.publicUrl + '/threads/' + threadId + '/posts?start=' + emailData.last_post_position + '#' + emailData.last_post_id
     };
     return request.emailer.send('threadNotification', emailParams)
     .then(function() {
       if (!emailData.thread_author) {
-        var userId = request.db.helper.slugify(emailData.user_id);
-        return request.db.threadNotifications.removeSubscription(userId, threadId);
+        return request.db.threadNotifications.removeSubscription(emailData.user_id, threadId);
       }
     })
     .catch(console.log);

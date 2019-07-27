@@ -1,4 +1,4 @@
-var directive = ['UserTrust', 'Boards', function(UserTrust, Boards) {
+var directive = ['UserTrust', 'Boards', '$timeout', function(UserTrust, Boards, $timeout) {
   return {
     restrict: 'E',
     scope: true,
@@ -10,11 +10,15 @@ var directive = ['UserTrust', 'Boards', function(UserTrust, Boards) {
       this.trustBoards = [];
       this.allBoards = {};
 
-      Boards.query({ stripped: true }).$promise
-      .then(function(data) { ctrl.boards = data.boards; });
+      $timeout(function() {
+        Boards.query({ stripped: true }).$promise
+        .then(function(data) { ctrl.boards = data.boards; });
+      });
 
-      UserTrust.getTrustBoards().$promise
-      .then(function(trustBoards) { ctrl.trustBoards = trustBoards; });
+      $timeout(function() {
+        UserTrust.getTrustBoards().$promise
+        .then(function(trustBoards) { ctrl.trustBoards = trustBoards; });
+      });
 
       this.toggleSubmitted = {};
       this.toggleBoardTrust = function(boardId) {

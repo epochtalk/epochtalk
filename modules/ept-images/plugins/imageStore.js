@@ -1,6 +1,5 @@
 var path = require('path');
-var images = require(path.normalize(__dirname + '/common'));
-
+var images = require(path.normalize(__dirname + '/images'));
 
 module.exports = {
   name: 'imageStore',
@@ -11,15 +10,5 @@ module.exports = {
     // imageStore decoration
     server.decorate('request', 'imageStore', images);
     server.decorate('server', 'imageStore', images);
-
-    server.method({
-      name: 'common.images.sub',
-      method: images.imageSub
-    });
-
-    server.method({
-      name: 'common.images.avatarSub',
-      method: images.avatarSub
-    });
   }
 };

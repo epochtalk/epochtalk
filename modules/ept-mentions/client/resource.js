@@ -36,6 +36,14 @@ var resource = ['$resource',
           username: '@username',
         },
         ignoreLoadingBar: true
+      },
+      enableMentionEmails: {
+        method: 'PUT',
+        url: '/api/mentions/settings'
+      },
+      getMentionEmailSettings: {
+        method: 'GET',
+        url: '/api/mentions/settings'
       }
     });
   }

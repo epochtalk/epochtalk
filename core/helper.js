@@ -15,6 +15,7 @@ var slugKeywords = [
   'notification_id',
   'category_id',
   'last_thread_id',
+  'last_post_id',
   'ignored_user_id',
   'reporter_user_id',
   'reviewer_user_id',

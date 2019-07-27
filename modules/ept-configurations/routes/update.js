@@ -70,10 +70,6 @@ module.exports = {
     plugins: {
       mod_log: { type: 'adminSettings.update' }
     },
-    pre: [
-      { method: validatePortalParams },
-      { method: (request) => request.server.methods.common.images.site(request.imageStore, request.payload) }
-    ],
     validate: {
       payload: Joi.object().keys({
         verify_registration: Joi.boolean(),
@@ -147,7 +143,12 @@ module.exports = {
         })
       }).options({ stripUnknown: true, abortEarly: true })
     },
-    pre: [ { method: (request) => request.server.methods.auth.configurations.update(request.server, request.auth) } ]
+    pre: [
+      { method: (request) => request.server.methods.auth.configurations.update(request.server, request.auth) },
+      { method: validatePortalParams },
+      { method: (request) => request.server.methods.common.images.saveNoExpiration(request.payload.website.logo) },
+      { method: (request) => request.server.methods.common.images.saveNoExpiration(request.payload.website.favicon) }
+    ]
   },
   handler: function(request, reply) {
     var internalConfig = request.server.app.config;
@@ -180,14 +181,14 @@ module.exports = {
   }
 };
 
-function validatePortalParams(request, reply) {
+function validatePortalParams(request) {
   // validate portal params
   if (request.payload.portal &&
       request.payload.portal.enabled &&
       !request.payload.portal.board_id) {
     return Boom.badData('Portal Configurations must include a Board to Show');
   }
-  else { return; }
+  else { return true; }
 }
 
 function underscoreToCamelCase(obj) {

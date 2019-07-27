@@ -1,5 +1,17 @@
 <!-- Page Header -->
-<h3 class="thin-underline">Ignored User Mentions</h3>
+<h3 class="thin-underline">User Mention Settings</h3>
+<div class="row">
+  <div class="two-thirds-column">
+    <label for="enable-mention-emails">Send me an Email when I'm mentioned</label>
+    <label class="desc-label" for="enable-mention-emails">Receive an email when there are thread replies which mention you</label>
+  </div>
+  <div class="one-third-column">
+    <input id="enable-mention-emails" class="toggle-switch" type="checkbox" ng-model="vmIgnoreUserMentions.emailsDisabled" ng-click="vmIgnoreUserMentions.enableMentionEmails()">
+    <label for="enable-mention-emails"></label>
+  </div>
+</div>
+<div class="clear"></div>
+<br />
 <!-- All Users -->
 <table class="striped ignored-users" width="100%">
   <thead>
@@ -9,7 +21,7 @@
   </thead>
   <tbody ng-if="vmIgnoreUserMentions.users.length < 1">
     <tr>
-      <td class="centered-text no-data" colspan="3"><h5>No User Posts Being Ignored</h5></td>
+      <td class="centered-text no-data" colspan="3"><h5>No User Mentions Being Ignored</h5></td>
     </tr>
   </tbody>
   <tbody ng-repeat="user in vmIgnoreUserMentions.users track by user.id">

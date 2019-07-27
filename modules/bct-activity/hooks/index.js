@@ -26,7 +26,7 @@ function updateUserActivity(request) {
     // Check if the users activity just passed 30, if so remove the newbie role
     if (info && info.old_activity < 30 && info.updated_activity >= 30) {
       var newbieRoleId = 'CN0h5ZeBTGqMbzwVdMWahQ';
-      return request.db.roles.removeRoles(userId, newbieRoleId)
+      return request.db.users.removeRoles(userId, newbieRoleId)
       .tap(function(user) {
         var notification = {
           channel: { type: 'user', id: user.id },

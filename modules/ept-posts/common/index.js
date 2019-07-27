@@ -150,8 +150,7 @@ function hasPriority(server, auth, permission, postId, selfMod) {
 
     // get referenced user's priority
     var postUserPriority = server.db.users.find(post.user.id)
-    .then(function(paramUser) { return _.min(_.map(paramUser.roles, 'priority')); })
-    .error(() => { return Promise.reject(Boom.badRequest()); });
+    .then(function(paramUser) { return _.min(_.map(paramUser.roles, 'priority')); });
 
     // special check for patroller/newbie
     var hasPatrollerRole = false;
@@ -159,13 +158,11 @@ function hasPriority(server, auth, permission, postId, selfMod) {
       if (role === 'patroller') { hasPatrollerRole = true; }
     });
 
-    var postOwnerIsUser = server.db.roles.posterHasRole(postId, 'user')
-    .error(() => { return Promise.reject(Boom.badRequest()); });
+    var postOwnerIsUser = server.db.roles.posterHasRole(postId, 'user');
 
     // get authed user's priority
     var authedUserPriority = server.db.users.find(auth.credentials.id)
-    .then(function(authUser) { return _.min(_.map(authUser.roles, 'priority')); })
-    .error(() => { return Promise.reject(Boom.badRequest()); });
+    .then(function(authUser) { return _.min(_.map(authUser.roles, 'priority')); });
 
     return Promise.join(postUserPriority, authedUserPriority, postOwnerIsUser, function(pid, aid, isUser) {
       // Authed user has higher or same priority than post's user

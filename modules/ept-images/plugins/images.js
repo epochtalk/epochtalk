@@ -38,7 +38,8 @@ images.reinit = function() { images.init(options); };
 // -- interface api
 
 images.saveImage = (imgSrc) => {
-  return imageHandlers[config.images.storage].saveImage(imgSrc);
+  if (imgSrc) { return imageHandlers[config.images.storage].saveImage(imgSrc); }
+  else { return true; }
 };
 
 images.uploadPolicy = (filename) => {
@@ -70,16 +71,16 @@ images.generateUploadFilename = function(filename) {
 
 images.setExpiration = function(duration, url) {
   var expiration = new Date(Number(Date.now()) + Number(duration));
-  db.images.addImageExpiration(url, expiration);
+  return db.images.addImageExpiration(url, expiration);
 };
 
 images.clearExpiration = function(url) {
-  db.images.clearImageExpiration(url);
+  return db.images.clearImageExpiration(url);
 };
 
 var expire = function() {
   var storageType = config.images.storage;
-  db.images.getExpiredImages()
+  return db.images.getExpiredImages()
   .each(function(image) {
     // remove from cdn
     imageHandlers[storageType].removeImage(image.image_url);
@@ -119,7 +120,7 @@ images.imageSub = (post) => {
     }
   })
   .then(() => { post.body_html = $.html(); })
-  .then(() => 200);
+  .then(() => post);
 };
 
 images.avatarSub = (user) => {
@@ -129,7 +130,7 @@ images.avatarSub = (user) => {
     if (savedUrl) { user.avatar = savedUrl; }
     return resolve();
   })
-  .then(() => 200);
+  .then(() => user);
 };
 
 images.addPostImageReference = function(postId, imageUrl) {
@@ -182,18 +183,18 @@ images.updateImageReferences = (post) => {
 
 var clearImageReferences = function() {
   var storageType = config.images.storage;
-  db.images.getDeletedPostImages()
+  return db.images.getDeletedPostImages()
   .each(function(imageReference) {
     return checkImageReferences(imageReference.image_url)
     // if true, delete image
     .then(function(noMoreReferences) {
       if (noMoreReferences) {
-        imageHandlers[storageType].removeImage(imageReference.image_url);
+        return imageHandlers[storageType].removeImage(imageReference.image_url);
       }
     })
     // delete this reference
     .then(function() {
-      db.images.deleteImageReference(imageReference.id);
+      return db.images.deleteImageReference(imageReference.id);
     });
   });
 };

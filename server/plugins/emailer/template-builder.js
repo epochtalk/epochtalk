@@ -121,3 +121,22 @@ exports.threadNotification = function(sender, params) {
     })
   };
 };
+
+exports.mentionNotification = function(sender, params) {
+  var template = doT.template(templateFile('mention-notification.html'));
+  var currentYear = new Date().getFullYear();
+  return {
+    from: sender,
+    to: params.email,
+    subject: `[${params.site_name}] New mention in thread "${params.thread_name}"`,
+    html: template({
+      css: css(),
+      threadName: params.thread_name,
+      username: params.username,
+      postAuthor: params.post_author,
+      siteName: params.site_name,
+      currentYear: currentYear,
+      threadUrl: params.thread_url
+    })
+  };
+};

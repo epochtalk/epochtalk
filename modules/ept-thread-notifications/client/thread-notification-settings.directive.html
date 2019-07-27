@@ -3,30 +3,11 @@
 
 <div class="row">
   <div class="two-thirds-column">
-    <label for="enable-thread-notifications">Enable Thread Notifications</label>
+    <label for="enable-thread-notifications">Thread Notifications Enabled</label>
     <label class="desc-label" for="enable-thread-notifications">Receive an email when there are replies to threads you have created or participated in</label>
   </div>
   <div class="one-third-column">
-    <input id="enable-thread-notifications" class="toggle-switch" type="checkbox" ng-model="vmThreadSettings.notificationsEnabled" ng-click="vmThreadSettings.enableNotifications()">
+    <input id="enable-thread-notifications" class="toggle-switch" type="checkbox" ng-model="vmThreadSettings.notificationsDisabled" ng-click="vmThreadSettings.enableNotifications()">
     <label for="enable-thread-notifications"></label>
   </div>
 </div>
-<div class="row">
-  <br /><br />
-  <br /><br />
-  <button class="fill-row" ng-click="vmThreadSettings.showRemoveModal = true">Remove All Subscriptions</button>
-</div>
-
-<modal show="vmThreadSettings.showRemoveModal">
-  <form name="$parent.form" class="css-form">
-    <h3 class="thin-underline">Confirm remove all subscriptions</h3>
-    <p>
-      This will permanently delete all previous thread subscriptions, are you sure you would like to continue?
-    </p>
-    <div class="clear">
-      <button class="fill-row" ng-click="vmThreadSettings.removeSubscriptions()">
-        Remove All Subscriptions
-      </button>
-    </div>
-  </form>
-</modal>
