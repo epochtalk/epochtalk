@@ -84,7 +84,7 @@ function checkView(server, headers, info, threadId) {
 }
 
 function updateView(server, auth, threadId) {
-  var promise;
+  var promise = true;
   if (auth.isAuthenticated) {
     var userId = auth.credentials.id;
     promise = server.db.users.putUserThreadViews(userId, threadId);
