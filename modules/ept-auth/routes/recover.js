@@ -43,7 +43,7 @@ module.exports = {
     }
 
     var captchaPromise;
-    var promise =  request.db.users.userByEmail(query)
+    var promise = request.db.users.userByEmail(query)
       .then(function(user) {
         if (user) { return user; }
         else { return Promise.reject(Boom.badRequest('No Account Found')); }
@@ -57,8 +57,9 @@ module.exports = {
         // Store token and expiration to user object
         return request.db.users.update(updateUser);
       })
+      .then(function() { return 'Success 200'; })
       // Email user reset information here
-      .then(function(user) {
+      .tap(function(user) {
         var emailParams = {
           email: user.email,
           username: user.username,
@@ -66,7 +67,7 @@ module.exports = {
           reset_url: config.publicUrl + '/' + path.join('reset', user.username, user.reset_token)
         };
         request.server.log('debug', emailParams);
-        return request.emailer.send('recoverAccount', emailParams);
+        request.emailer.send('recoverAccount', emailParams);
       })
       .error(request.errorMap.toHttpError);
 
@@ -87,11 +88,11 @@ module.exports = {
           var error = 'Failed reCaptcha Check';
           if (err || response.statusCode !== 200) { return reject(Boom.badRequest(error)); }
           else if (!body.success) { return reject(Boom.badRequest(error)); }
-          else if (body.success) { return resolve(); }
+          else if (body.success) { return resolve('Success 200'); }
           else { return reject(Boom.badRequest(error)); }
         });
       })
-      .then(function() { return promise; });
+      .then(promise);
     }
 
     return captchaPromise || promise;

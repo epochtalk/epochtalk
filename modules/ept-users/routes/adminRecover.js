@@ -43,7 +43,7 @@ module.exports = {
       return request.db.users.update(updateUser);
     })
     // Email user reset information here
-    .then(function(user) {
+    .tap(function(user) {
       var emailParams = {
         email: user.email,
         username: user.username,
@@ -51,7 +51,7 @@ module.exports = {
         reset_url: config.publicUrl + '/' + path.join('reset', user.username, user.reset_token)
       };
       request.server.log('debug', emailParams);
-      return request.emailer.send('recoverAccount', emailParams);
+      request.emailer.send('recoverAccount', emailParams);
     })
     .error(request.errorMap.toHttpError);
 
