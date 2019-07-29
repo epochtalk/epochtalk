@@ -47,7 +47,7 @@ module.exports = function(internalConfig) {
         return Boom.badRequest('Policy Timed Out');
       }
 
-      request.imageStore.uploadImage(file, filename, reply);
+      return request.imageStore.uploadImage(file, filename, reply);
     }
   };
 };
