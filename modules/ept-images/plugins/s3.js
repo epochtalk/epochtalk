@@ -245,7 +245,7 @@ s3.uploadPolicy = function(filename) {
 };
 
 s3.saveImage = function(imgSrc) {
-  var url = true;
+  var url = imgSrc;
 
   // image uploaded by client
   if (imgSrc.indexOf(config.images.s3.root) === 0) {
