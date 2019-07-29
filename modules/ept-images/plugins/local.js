@@ -49,7 +49,7 @@ local.uploadPolicy = function(filename) {
 
 local.saveImage = function(imgSrc) {
   // image uploaded by client
-  var url = true;
+  var url = imgSrc;
   if (imgSrc.indexOf(config.publicUrl) === 0 || imgSrc.indexOf(config.images.local.path) === 0) {
     // clear any expirations
     images.clearExpiration(imgSrc);
