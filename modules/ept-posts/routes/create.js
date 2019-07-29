@@ -16,7 +16,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/posts',
-  config: {
+  options: {
     app: { hook: 'posts.create' },
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },

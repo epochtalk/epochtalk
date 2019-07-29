@@ -40,7 +40,7 @@ var querystring = require('querystring');
 module.exports = {
   method: 'GET',
   path: '/api/users/{username}',
-  config: {
+  options: {
     app: { hook: 'users.find' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { username: Joi.string().required() } },

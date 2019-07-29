@@ -21,7 +21,7 @@ var baseDefaultPath = __dirname + '/../../../defaults/legal/';
 module.exports = {
   method: 'GET',
   path: '/api/legal',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.legal.text(request.server, request.auth) } ]
   },

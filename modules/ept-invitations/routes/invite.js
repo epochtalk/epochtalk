@@ -18,7 +18,7 @@ var crypto = require('crypto');
 module.exports = {
   method: 'POST',
   path: '/api/invites',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: { email: Joi.string().email().required() }

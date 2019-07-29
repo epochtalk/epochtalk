@@ -35,7 +35,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'POST',
   path: '/api/ads/rounds/rotate',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { payload: { round: Joi.number().required() } },
     pre: [ { method: auth } ]

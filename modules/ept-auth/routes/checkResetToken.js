@@ -19,7 +19,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/reset/{username}/{token}/validate',
-  config: {
+  options: {
     validate: {
       params: {
         username: Joi.string().min(1).max(255).required(),

@@ -45,7 +45,7 @@
 module.exports = {
   method: 'GET',
   path: '/api/boards/unfiltered',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.boards.allUnfiltered(request.server, request.auth) } ]
   },

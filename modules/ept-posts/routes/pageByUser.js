@@ -42,7 +42,7 @@ var common = require(path.normalize(__dirname + '/../common'));
 module.exports = {
   method: 'GET',
   path: '/api/posts/user/{username}',
-  config: {
+  options: {
     app: { hook: 'posts.pageByUser' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {

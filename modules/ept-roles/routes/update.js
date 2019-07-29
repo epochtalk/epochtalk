@@ -25,7 +25,7 @@ var _ = require('lodash');
 module.exports = {
   method: 'PUT',
   path: '/api/admin/roles/update',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

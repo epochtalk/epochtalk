@@ -16,7 +16,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/users/{id}/reactivate',
-  config: {
+  options: {
     app: { user_id: 'params.id' },
     auth: { strategy: 'jwt' },
     plugins: {

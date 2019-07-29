@@ -29,7 +29,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'POST',
   path: '/api/ads/rounds',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: auth } ]
   },

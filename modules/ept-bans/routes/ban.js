@@ -25,7 +25,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'PUT',
   path: '/api/users/ban',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

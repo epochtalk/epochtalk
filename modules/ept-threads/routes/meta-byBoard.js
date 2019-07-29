@@ -3,7 +3,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/boards/{board_id}',
-  config: {
+  options: {
     app: { hook: 'threads.byBoard' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { board_id: Joi.string().required() } },

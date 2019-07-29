@@ -32,7 +32,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/threads/{thread_id}/polls/{poll_id}/vote',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {

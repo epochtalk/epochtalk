@@ -30,7 +30,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/boards/{id}',
-  config: {
+  options: {
     auth: { mode:'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.boards.find(request.server, request.auth, request.params.id) } ]

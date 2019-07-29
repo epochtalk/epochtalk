@@ -35,7 +35,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/reports/messagenotes/{report_id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: { report_id: Joi.string().required() },

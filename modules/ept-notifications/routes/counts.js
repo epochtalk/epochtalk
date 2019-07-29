@@ -18,7 +18,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/notifications/counts',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: Joi.object().keys({

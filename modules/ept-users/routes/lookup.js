@@ -20,7 +20,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/users/lookup/{username}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {

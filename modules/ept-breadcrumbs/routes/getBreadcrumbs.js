@@ -20,7 +20,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/breadcrumbs',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       query: {

@@ -21,7 +21,7 @@ var Boom = require('boom');
 module.exports = {
   method: 'GET',
   path: '/api/authenticate',
-  config: { auth: { mode: 'try', strategy: 'jwt' } },
+  options: { auth: { mode: 'try', strategy: 'jwt' } },
   handler: function(request, reply) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {

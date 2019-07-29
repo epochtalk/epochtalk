@@ -26,7 +26,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'PUT',
   path: '/api/reports/usernotes',
-  config: {
+  options: {
     app: { auth: { type: 'user'} },
     auth: { strategy: 'jwt' },
     plugins: {

@@ -22,7 +22,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/reset',
-  config: {
+  options: {
     validate: {
       payload: {
         username: Joi.string().min(1).max(255).required(),

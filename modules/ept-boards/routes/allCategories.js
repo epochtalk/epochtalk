@@ -76,7 +76,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/boards',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       query: {

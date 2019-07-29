@@ -5,7 +5,7 @@ var cheerio = require('cheerio');
 module.exports = {
   method: 'GET',
   path: '/threads/{thread_id}/posts',
-  config: {
+  options: {
     app: { hook: 'posts.byThread' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { thread_id: Joi.string().required() } },

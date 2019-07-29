@@ -21,7 +21,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/posts/{id}/unlock',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.posts.lock(request.server, request.auth, request.params.id)} ],

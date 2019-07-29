@@ -38,7 +38,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'GET',
   path: '/api/ads',
-  config: {
+  options: {
     auth: {  mode: 'try', strategy: 'jwt' },
     pre: [ { method: auth } ]
   },

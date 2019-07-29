@@ -27,7 +27,7 @@ var common = require(path.normalize(__dirname + '/../common'));
 module.exports = {
   method: 'GET',
   path: '/api/posts/{id}',
-  config: {
+  options: {
     app: { hook: 'posts.find' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },

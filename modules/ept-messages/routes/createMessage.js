@@ -22,7 +22,7 @@ var _ = require('lodash');
 module.exports = {
   method: 'POST',
   path: '/api/messages',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {

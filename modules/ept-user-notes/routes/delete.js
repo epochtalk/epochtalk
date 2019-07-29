@@ -23,7 +23,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/user/notes',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

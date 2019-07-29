@@ -34,7 +34,7 @@ var defaultVarsPath = common.defaultVarsPath;
 module.exports = {
   method: 'POST',
   path: '/api/theme',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: { type: 'adminSettings.resetTheme' }

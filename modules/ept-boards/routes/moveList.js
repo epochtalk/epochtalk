@@ -17,7 +17,7 @@
 module.exports = {
   method: 'GET',
   path: '/api/boards/movelist',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.boards.moveList(request.server, request.auth) } ]
   },

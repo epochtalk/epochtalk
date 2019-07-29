@@ -15,7 +15,7 @@ var Joi = require('joi');
 var getNotificationSettings = {
   method: 'GET',
   path: '/api/threadnotifications',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true }
   },
@@ -47,7 +47,7 @@ var getNotificationSettings = {
 var enableNotifications = {
   method: 'PUT',
   path: '/api/threadnotifications',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { payload: { enabled: Joi.boolean().default(true) } }
@@ -78,7 +78,7 @@ var enableNotifications = {
 var removeSubscriptions = {
   method: 'DELETE',
   path: '/api/threadnotifications',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true }
   },

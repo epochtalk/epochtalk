@@ -17,7 +17,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/invites/resend',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: { email: Joi.string().email().required() }

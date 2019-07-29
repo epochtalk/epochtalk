@@ -37,7 +37,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'POST',
   path: '/api/ads',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {

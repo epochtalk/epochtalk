@@ -31,7 +31,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/boards',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

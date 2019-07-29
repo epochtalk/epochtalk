@@ -27,7 +27,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/ignoreUsers/ignored',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {

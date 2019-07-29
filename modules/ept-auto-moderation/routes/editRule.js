@@ -70,7 +70,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'PUT',
   path: '/api/automoderation/rules/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: { id: Joi.string().max(255).required() },

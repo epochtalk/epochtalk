@@ -21,7 +21,7 @@ var Joi = require('joi');
 var upsert = {
   method: 'PUT',
   path: '/api/rank',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: Joi.array().items(Joi.object().keys({
@@ -57,7 +57,7 @@ var upsert = {
 var get = {
   method: 'GET',
   path: '/api/rank',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.rank.get(request.server, request.auth) } ]
   },

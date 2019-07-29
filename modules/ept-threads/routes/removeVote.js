@@ -30,7 +30,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'DELETE',
   path: '/api/threads/{thread_id}/polls/{poll_id}/vote',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {

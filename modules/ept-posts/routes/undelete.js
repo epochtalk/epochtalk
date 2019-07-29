@@ -20,7 +20,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/posts/{id}/undelete',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

@@ -18,7 +18,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/admin/trustboards/{board_id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { board_id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.deleteTrustBoard(request.server, request.auth) } ]

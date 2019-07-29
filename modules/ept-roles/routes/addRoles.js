@@ -23,7 +23,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/admin/roles/add',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

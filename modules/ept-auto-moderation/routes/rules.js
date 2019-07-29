@@ -49,7 +49,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'GET',
   path: '/api/automoderation/rules',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: auth } ]
   },

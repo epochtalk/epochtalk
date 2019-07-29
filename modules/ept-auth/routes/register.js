@@ -46,7 +46,7 @@ var crypto = require('crypto');
 module.exports = {
   method: 'POST',
   path: '/api/register',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       payload: {

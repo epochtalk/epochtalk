@@ -56,7 +56,7 @@ var querystring = require('querystring');
 module.exports = {
   method: 'GET',
   path: '/api/trustfeedback/{username}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { username: Joi.string().min(1).required() } }
   },

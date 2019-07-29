@@ -35,7 +35,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'PUT',
   path: '/api/users/roles/add',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

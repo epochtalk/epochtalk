@@ -27,7 +27,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'PUT',
   path: '/api/threads/{thread_id}/polls/{poll_id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

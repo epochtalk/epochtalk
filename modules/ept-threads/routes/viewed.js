@@ -16,7 +16,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/threads/{id}/viewed',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [

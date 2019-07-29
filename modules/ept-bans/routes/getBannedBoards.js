@@ -21,7 +21,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/users/{username}/bannedboards',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { username: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.bans.getBannedBoards(request.server, request.auth) } ]

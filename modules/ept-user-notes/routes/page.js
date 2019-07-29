@@ -33,7 +33,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/user/notes',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'userNotes.page' },
     validate: {

@@ -20,7 +20,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/threads/{id}/sticky',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

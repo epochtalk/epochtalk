@@ -17,7 +17,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/users/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

@@ -46,7 +46,7 @@ var previewVarsPath = common.previewVarsPath;
 module.exports = {
   method: 'PUT',
   path: '/api/theme/preview',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: Joi.object().keys({

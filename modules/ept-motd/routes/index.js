@@ -20,7 +20,7 @@ var motdPath = path.normalize(__dirname + '/../../../content/motd/motd.txt');
 var get = {
   method: 'GET',
   path: '/api/motd',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     plugins: { track_ip: true },
     pre: [ { method: (request) => request.server.methods.auth.motd.get(request.server, request.auth) } ]
@@ -59,7 +59,7 @@ var get = {
 var save = {
   method: 'PUT',
   path: '/api/motd',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {

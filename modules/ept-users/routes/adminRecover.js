@@ -19,7 +19,7 @@ var crypto = require('crypto');
 module.exports = {
   method: 'POST',
   path: '/api/user/recover',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { payload: { user_id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.users.adminRecover(request.server, request.auth) } ]

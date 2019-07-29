@@ -20,7 +20,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/categories',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'categories.create' },
     validate: {

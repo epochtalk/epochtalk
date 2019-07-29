@@ -16,7 +16,7 @@ var Boom = require('boom');
 module.exports = {
   method: 'DELETE',
   path: '/api/logout',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' }
   },
   handler: function(request, reply) {

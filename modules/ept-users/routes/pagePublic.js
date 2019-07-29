@@ -35,7 +35,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/search/users',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {

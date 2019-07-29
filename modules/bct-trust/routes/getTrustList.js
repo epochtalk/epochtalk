@@ -21,7 +21,7 @@
 module.exports = {
   method: 'GET',
   path: '/api/trustlist',
-  config: {
+  options: {
     auth: { strategy: 'jwt' }
   },
   handler: function(request, reply) {

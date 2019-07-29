@@ -23,7 +23,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/boards/all',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: { type: 'adminBoards.updateCategories' }

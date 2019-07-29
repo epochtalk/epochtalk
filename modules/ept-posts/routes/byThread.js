@@ -82,7 +82,7 @@ var common = require(path.normalize(__dirname + '/../common'));
 module.exports = {
   method: 'GET',
   path: '/api/posts',
-  config: {
+  options: {
     app: { hook: 'posts.byThread' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {

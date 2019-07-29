@@ -38,7 +38,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/conversations/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: { id: Joi.string() },

@@ -20,7 +20,7 @@
 module.exports = {
   method: 'GET',
   path: '/api/admin/roles/all',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.roles.all(request.server, request.auth) } ]
   },

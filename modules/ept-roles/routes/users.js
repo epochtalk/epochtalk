@@ -26,7 +26,7 @@ var _ = require('lodash');
 module.exports = {
   method: 'GET',
   path: '/api/admin/roles/{id}/users',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: { id: Joi.string().required() },

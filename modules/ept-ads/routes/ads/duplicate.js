@@ -38,7 +38,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'POST',
   path: '/api/ads/{id}/duplicate',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: auth } ]

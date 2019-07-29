@@ -80,7 +80,7 @@ function defaultRoundNumber(request, reply) {
 module.exports = {
   method: 'GET',
   path: '/api/ads/rounds/{roundNumber}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {

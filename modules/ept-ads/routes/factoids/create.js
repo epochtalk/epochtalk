@@ -34,7 +34,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'POST',
   path: '/api/ads/factoids',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { payload: { text: Joi.string().required() } },
     pre: [ { method: auth } ]

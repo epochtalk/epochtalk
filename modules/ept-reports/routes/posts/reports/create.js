@@ -26,7 +26,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/reports/posts',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {

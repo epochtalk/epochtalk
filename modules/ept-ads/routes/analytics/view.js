@@ -63,7 +63,7 @@ function defaultRoundNumber(request, reply) {
 module.exports = {
   method: 'GET',
   path: '/api/ads/analytics/{round}',
-  config: {
+  options: {
     validate: {
       params: {
         round: Joi.alternatives(Joi.number().min(1), Joi.string().valid('current'))

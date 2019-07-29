@@ -20,7 +20,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/boards/delete',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

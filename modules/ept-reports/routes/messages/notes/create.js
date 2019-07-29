@@ -26,7 +26,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/reports/messagenotes',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

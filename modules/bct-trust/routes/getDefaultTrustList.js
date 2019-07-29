@@ -22,7 +22,7 @@
 module.exports = {
   method: 'GET',
   path: '/api/admin/trustlist',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.getDefaultTrustList(request.server, request.auth) } ]
   },

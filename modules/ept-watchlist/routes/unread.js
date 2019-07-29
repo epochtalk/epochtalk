@@ -39,7 +39,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/watchlist',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {

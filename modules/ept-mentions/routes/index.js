@@ -38,7 +38,7 @@ var Joi = require('joi');
 var page = {
   method: 'GET',
   path: '/api/mentions',
-  config: {
+  options: {
     app: { hook: 'mentions.page' },
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
@@ -96,7 +96,7 @@ function processing(request, reply) {
 var remove = {
   method: 'DELETE',
   path: '/api/mentions',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { query: { id: Joi.string() } },
@@ -147,7 +147,7 @@ var remove = {
 var pageIgnoredUsers = {
   method: 'GET',
   path: '/api/mentions/ignored',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
@@ -187,7 +187,7 @@ var pageIgnoredUsers = {
 var ignoreUser = {
   method: 'POST',
   path: '/api/mentions/ignore',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { payload: { username: Joi.string().required() } }
@@ -222,7 +222,7 @@ var ignoreUser = {
 var unignoreUser = {
   method: 'POST',
   path: '/api/mentions/unignore',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { payload: { username: Joi.string() } }
@@ -262,7 +262,7 @@ var unignoreUser = {
 var getMentionEmailSettings = {
   method: 'GET',
   path: '/api/mentions/settings',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true }
   },
@@ -294,7 +294,7 @@ var getMentionEmailSettings = {
 var enableMentionEmails = {
   method: 'PUT',
   path: '/api/mentions/settings',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { payload: { enabled: Joi.boolean().default(true) } }

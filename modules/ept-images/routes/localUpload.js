@@ -6,7 +6,7 @@ module.exports = function(internalConfig) {
   return {
     method: 'POST',
     path: '/api/images/upload',
-    config: {
+    options: {
       auth: { strategy: 'jwt' },
       payload: {
         maxBytes: internalConfig.images.maxSize,

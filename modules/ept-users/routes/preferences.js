@@ -16,7 +16,7 @@ var Boom = require('boom');
 module.exports = {
   method: 'GET',
   path: '/api/users/preferences',
-  config: { auth: { strategy: 'jwt' } },
+  options: { auth: { strategy: 'jwt' } },
   handler: function(request, reply) {
     if (!request.auth.isAuthenticated) { return Boom.badRequest(); }
 

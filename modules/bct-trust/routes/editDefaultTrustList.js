@@ -30,7 +30,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/admin/trustlist',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {

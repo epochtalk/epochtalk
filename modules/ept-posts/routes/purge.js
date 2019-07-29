@@ -18,7 +18,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/posts/{id}/purge',
-  config: {
+  options: {
     app: { post_id: 'params.id' },
     auth: { strategy: 'jwt' },
     plugins: {

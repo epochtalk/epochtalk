@@ -6,7 +6,7 @@ var common = require(path.normalize(__dirname + '/../common'));
 module.exports = {
   method: 'GET',
   path: '/api/posts/patrol',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: Joi.object().keys({

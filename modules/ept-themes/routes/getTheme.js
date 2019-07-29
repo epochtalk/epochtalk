@@ -32,7 +32,7 @@ var previewVarsPath = common.previewVarsPath;
 module.exports = {
   method: 'GET',
   path: '/api/theme',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { query: { preview: Joi.boolean() } },
     pre: [ { method: (request) => request.server.methods.auth.themes.getTheme(request.server, request.auth) } ]

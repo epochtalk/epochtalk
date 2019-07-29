@@ -24,7 +24,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/recover',
-  config: {
+  options: {
     plugins: { backoff: true }
   },
   handler: function(request, reply) {

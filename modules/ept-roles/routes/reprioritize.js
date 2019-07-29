@@ -19,7 +19,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'PUT',
   path: '/api/admin/roles/reprioritize',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: { type: 'adminRoles.reprioritize' }

@@ -5,7 +5,7 @@ var querystring = require('querystring');
 module.exports = {
   method: 'GET',
   path: '/profiles/{username}',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { username: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.users.metaFind(request.server, request.auth, request.params), assign: 'viewable' } ]

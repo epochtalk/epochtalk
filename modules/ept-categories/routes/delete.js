@@ -18,7 +18,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/categories/delete',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'categories.delete' },
     validate: {

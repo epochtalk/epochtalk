@@ -38,7 +38,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/users/banned',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {

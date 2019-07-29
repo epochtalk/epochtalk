@@ -20,7 +20,7 @@
 module.exports = {
   method: 'GET',
   path: '/api/boards/uncategorized',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.boards.allUncategorized(request.server, request.auth) } ]
   },

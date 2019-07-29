@@ -35,7 +35,7 @@ var _ = require('lodash');
 module.exports = {
   method: 'POST',
   path: '/api/conversations',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {

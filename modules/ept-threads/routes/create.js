@@ -37,7 +37,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/threads',
-  config: {
+  options: {
     app: { hook: 'threads.create' },
     auth: { strategy: 'jwt' },
     validate: {

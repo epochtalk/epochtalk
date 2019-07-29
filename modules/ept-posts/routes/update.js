@@ -24,7 +24,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/posts/{id}',
-  config: {
+  options: {
     app: { hook: 'posts.update' },
     auth: { strategy: 'jwt' },
     plugins: {

@@ -23,7 +23,7 @@ var baseCustomPath = __dirname + '/../../../content/legal/';
 module.exports = {
   method: 'PUT',
   path: '/api/legal',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: Joi.object().keys({

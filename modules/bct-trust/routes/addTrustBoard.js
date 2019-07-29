@@ -18,7 +18,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/admin/trustboards',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { payload: { board_id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.addTrustBoard(request.server, request.auth) } ]

@@ -18,7 +18,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/ignoreUsers/unignore/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
   },

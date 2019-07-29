@@ -21,7 +21,7 @@ var baseDefaultPath = __dirname + '/../../../defaults/legal/';
 module.exports = {
   method: 'POST',
   path: '/api/legal/reset',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.legal.reset(request.server, request.auth) } ]
   },

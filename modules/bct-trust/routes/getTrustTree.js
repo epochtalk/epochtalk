@@ -28,7 +28,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/trusttree',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { query: { hierarchy: Joi.boolean() } }
   },

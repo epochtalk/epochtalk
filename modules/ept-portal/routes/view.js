@@ -78,7 +78,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/portal',
-  config: {
+  options: {
     app: { hook: 'portal.view' },
     auth: { mode: 'try', strategy: 'jwt' },
     pre: [

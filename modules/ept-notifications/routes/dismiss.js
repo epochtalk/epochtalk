@@ -18,7 +18,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/notifications/dismiss',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.notifications.dismiss(request.server, request.auth) } ],
     validate: {

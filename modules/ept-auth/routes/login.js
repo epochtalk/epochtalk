@@ -27,7 +27,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/login',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       payload: {

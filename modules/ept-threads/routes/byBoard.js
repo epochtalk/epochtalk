@@ -85,7 +85,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/threads',
-  config: {
+  options: {
     app: { hook: 'threads.byBoard' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {

@@ -26,7 +26,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'PUT',
   path: '/api/reports/posts',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {

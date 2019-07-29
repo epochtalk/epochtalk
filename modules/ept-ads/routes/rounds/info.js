@@ -53,7 +53,7 @@ function currentRound(request, reply) {
 module.exports = {
   method: 'GET',
   path: '/api/ads/rounds/info',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [
       { method: auth },

@@ -68,7 +68,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'POST',
   path: '/api/automoderation/rules',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {

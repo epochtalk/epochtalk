@@ -17,7 +17,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/watchlist/threads/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.watchlist.watchThread(request.server, request.auth, request.params.id) } ]

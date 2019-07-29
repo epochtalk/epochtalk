@@ -23,7 +23,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/invites',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {

@@ -16,7 +16,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/register/email/{email}',
-  config: {
+  options: {
     validate: { params: { email: Joi.string().email().required() } }
   },
   handler: function(request, reply) {
