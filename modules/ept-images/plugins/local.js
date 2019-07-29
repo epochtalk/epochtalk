@@ -75,7 +75,7 @@ local.uploadImage = function(source, filename, reply) {
   var exists = fs.existsSync(pathToFile);  // check if file already exists
 
   if (exists) {
-    if (reply) { return 204; }
+    if (reply) { return reply.response().code(204); }
   }
   else {
     return new Promise(function(resolve, reject) {
@@ -90,7 +90,7 @@ local.uploadImage = function(source, filename, reply) {
       puller.on('end', function () {
         if (reply) {
           if (error) { return reject(Boom.badImplementation(error)); }
-          else { return resolve(204); }
+          else { return resolve(reply.response().code(204)); }
         }
       });
 
