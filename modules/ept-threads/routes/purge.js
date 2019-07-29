@@ -44,6 +44,7 @@ module.exports = {
         board_id: purgedThread.board_id
       };
     })
+    .then(() => reply.continue)
     .error(request.errorMap.toHttpError);
 
     return promise;

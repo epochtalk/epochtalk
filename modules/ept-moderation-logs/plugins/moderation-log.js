@@ -67,8 +67,8 @@ module.exports = {
           })
           .catch(function(err) { if (err) { throw err; } });
         }
-        return reply.continue;
       }
+      return reply.continue;
     });
   }
 };
