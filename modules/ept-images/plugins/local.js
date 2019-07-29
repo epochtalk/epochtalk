@@ -1,6 +1,7 @@
 var local = {};
 module.exports = local;
 
+var Promise = require('bluebird');
 var fs = require('fs');
 var path = require('path');
 var Boom = require('boom');
@@ -77,18 +78,19 @@ local.uploadImage = function(source, filename, reply) {
     if (reply) { return 204; }
   }
   else {
+    return new Promise(function(resolve, reject) {
     // grab image
     var puller, error;
     if (reply) { puller = source; }
     else { puller = request(source); }
     puller.on('error', function(err) {
       deleteImage(err, pathToFile);
-      if (reply) { error = Boom.badRequest('Could not process image'); }
+      if (reply) { return reject(Boom.badRequest('Could not process image')); }
     });
     puller.on('end', function () {
       if (reply) {
-        if (error) { return Boom.badImplementation(error); }
-        else { return 204; }
+        if (error) { return reject(Boom.badImplementation(error)); }
+        else { return resolve(204); }
       }
     });
 
@@ -140,6 +142,7 @@ local.uploadImage = function(source, filename, reply) {
     });
 
     puller.pipe(ftc).pipe(sc).pipe(writer);
+    });
   }
 };
 
