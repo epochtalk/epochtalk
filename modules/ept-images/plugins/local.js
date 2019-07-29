@@ -79,69 +79,69 @@ local.uploadImage = function(source, filename, reply) {
   }
   else {
     return new Promise(function(resolve, reject) {
-    // grab image
-    var puller, error;
-    if (reply) { puller = source; }
-    else { puller = request(source); }
-    puller.on('error', function(err) {
-      deleteImage(err, pathToFile);
-      if (reply) { return reject(Boom.badRequest('Could not process image')); }
-    });
-    puller.on('end', function () {
-      if (reply) {
-        if (error) { return reject(Boom.badImplementation(error)); }
-        else { return resolve(204); }
-      }
-    });
-
-    // check file type
-    var newStream = true;
-    var fileTypeCheck = new Magic(mmm.MAGIC_MIME_TYPE);
-    var ftc = through2(function(chunk, enc, cb) {
-      fileTypeCheck.detect(chunk, function(err, result) {
-        var error;
-        if (err) { error = err; }
-
-        // check results
-        if (result && newStream) {
-          newStream = false;
-          if (result.indexOf('image') !== 0) {
-            error = new Error('Invalid File Type');
-          }
+      // grab image
+      var puller, error;
+      if (reply) { puller = source; }
+      else { puller = request(source); }
+      puller.on('error', function(err) {
+        deleteImage(err, pathToFile);
+        if (reply) { return reject(Boom.badRequest('Could not process image')); }
+      });
+      puller.on('end', function () {
+        if (reply) {
+          if (error) { return reject(Boom.badImplementation(error)); }
+          else { return resolve(204); }
         }
+      });
 
-        // next
+      // check file type
+      var newStream = true;
+      var fileTypeCheck = new Magic(mmm.MAGIC_MIME_TYPE);
+      var ftc = through2(function(chunk, enc, cb) {
+        fileTypeCheck.detect(chunk, function(err, result) {
+          var error;
+          if (err) { error = err; }
+
+          // check results
+          if (result && newStream) {
+            newStream = false;
+            if (result.indexOf('image') !== 0) {
+              error = new Error('Invalid File Type');
+            }
+          }
+
+          // next
+          return cb(error, chunk);
+        });
+      });
+      ftc.on('error', function(err) {
+        deleteImage(err, pathToFile);
+        if (reply) { error = Boom.unsupportedMediaType('File is not an image'); }
+      });
+
+      // check file size
+      var size = 0;
+      var sc = through2(function(chunk, enc, cb) {
+        var error;
+        size += chunk.length;
+        if (size > config.images.maxSize) {
+          error = new Error('Exceeded File Size');
+        }
         return cb(error, chunk);
       });
-    });
-    ftc.on('error', function(err) {
-      deleteImage(err, pathToFile);
-      if (reply) { error = Boom.unsupportedMediaType('File is not an image'); }
-    });
+      sc.on('error', function(err) {
+        deleteImage(err, pathToFile);
+        if (reply) { error = Boom.badRequest('Image Size Limit Exceeded'); }
+      });
 
-    // check file size
-    var size = 0;
-    var sc = through2(function(chunk, enc, cb) {
-      var error;
-      size += chunk.length;
-      if (size > config.images.maxSize) {
-        error = new Error('Exceeded File Size');
-      }
-      return cb(error, chunk);
-    });
-    sc.on('error', function(err) {
-      deleteImage(err, pathToFile);
-      if (reply) { error = Boom.badRequest('Image Size Limit Exceeded'); }
-    });
+      // write to disk
+      var writer = fs.createWriteStream(pathToFile);
+      writer.on('error', function (err) {
+        deleteImage(err, pathToFile);
+        if (reply) { error = Boom.badImplementation(); }
+      });
 
-    // write to disk
-    var writer = fs.createWriteStream(pathToFile);
-    writer.on('error', function (err) {
-      deleteImage(err, pathToFile);
-      if (reply) { error = Boom.badImplementation(); }
-    });
-
-    puller.pipe(ftc).pipe(sc).pipe(writer);
+      puller.pipe(ftc).pipe(sc).pipe(writer);
     });
   }
 };
