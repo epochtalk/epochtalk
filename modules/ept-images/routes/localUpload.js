@@ -12,9 +12,6 @@ module.exports = function(internalConfig) {
         maxBytes: internalConfig.images.maxSize,
         output: 'stream',
         parse: true
-      },
-      response: {
-        emptyStatusCode: 204
       }
     },
     handler: function(request, reply) {
