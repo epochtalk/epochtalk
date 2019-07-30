@@ -29,7 +29,8 @@ module.exports = function(internalConfig) {
       let policyParts = request.payload.policy.split(':');
       let iv = Buffer.from(policyParts[0], 'hex');
       let policyPayload = policyParts[1];
-      let decipher = crypto.createDecipheriv('aes-256-ctr', config.privateKey, iv);
+      let keyHash = crypto.createHash('md5').update(config.privateKey, 'utf-8').digest('hex').toUpperCase();
+      let decipher = crypto.createDecipheriv('aes-256-ctr', keyHash, iv);
       var decoded = decipher.update(policyPayload,'hex','utf8');
       decoded += decipher.final('utf8');
 
