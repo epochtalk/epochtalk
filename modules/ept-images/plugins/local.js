@@ -12,6 +12,7 @@ var through2 = require('through2');
 var images = require(path.normalize(__dirname + '/images'));
 var Magic = mmm.Magic;
 var config;
+const ivLength = 16; // aes encryption
 
 local.init = function(opts) {
   opts = opts || {};
@@ -32,7 +33,9 @@ local.uploadPolicy = function(filename) {
   policy = JSON.stringify(policy);
 
   // hash policy
-  var cipher = crypto.createCipher('aes-256-ctr', config.privateKey);
+  let iv = crypto.randomBytes(ivLength);
+  let keyHash = crypto.createHash('md5').update(config.privateKey, 'utf-8').digest('hex').toUpperCase();
+  let cipher = crypto.createCipheriv('aes-256-ctr', keyHash, iv);
   var policyHash = cipher.update(policy,'utf8','hex');
   policyHash += cipher.final('hex');
 
@@ -41,7 +44,7 @@ local.uploadPolicy = function(filename) {
 
   return {
     uploadUrl: '/api/images/upload',
-    policy: policyHash,
+    policy: iv.toString('hex') + ':' + policyHash.toString('hex'),
     storageType: 'local',
     imageUrl: imageUrl
   };

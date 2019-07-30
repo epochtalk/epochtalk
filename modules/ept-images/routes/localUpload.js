@@ -26,8 +26,11 @@ module.exports = function(internalConfig) {
       if (!file) { return Boom.badRequest('No File Attached'); }
 
       // decode policy
-      var policyPayload = request.payload.policy;
-      var decipher = crypto.createDecipher('aes-256-ctr', config.privateKey);
+      let policyParts = request.payload.policy.split(':');
+      let iv = Buffer.from(policyParts[0], 'hex');
+      let policyPayload = policyParts[1];
+      let keyHash = crypto.createHash('md5').update(config.privateKey, 'utf-8').digest('hex').toUpperCase();
+      let decipher = crypto.createDecipheriv('aes-256-ctr', keyHash, iv);
       var decoded = decipher.update(policyPayload,'hex','utf8');
       decoded += decipher.final('utf8');
 
