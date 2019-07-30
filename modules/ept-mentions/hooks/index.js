@@ -54,7 +54,7 @@ function userIdToUsername(request) {
   .then(function() { return true; });
 }
 
-function usernameToUserId(request, h) {
+function usernameToUserId(request) {
   return request.server.methods.auth.mentions.create(request.server, request.auth)
   .then(function(hasPermission) {
     if (!hasPermission) { return; }
@@ -90,7 +90,7 @@ function usernameToUserId(request, h) {
       request.payload.mentioned_ids = mentionedIds;
     });
   })
-  .then(function() { return h.continue; });
+  .then(function() { return true; });
 }
 
 function correctTextSearchVector(request) {

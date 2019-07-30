@@ -34,12 +34,12 @@ module.exports = {
       { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
       { method: (request) => request.server.methods.common.images.sub(request.payload) },
       { method: (request) => request.server.methods.common.posts.newbieImages(request.auth, request.payload) },
-      { method: (request, h) => request.server.methods.hooks.preProcessing(request, h) },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: (request, h) => request.server.methods.hooks.parallelProcessing(request, h), assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: (request, h) => request.server.methods.hooks.merge(request, h) },
+      { method: (request) => request.server.methods.hooks.merge(request) },
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
     handler: function(request, reply) {
