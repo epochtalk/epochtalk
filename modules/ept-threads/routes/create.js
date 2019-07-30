@@ -63,12 +63,12 @@ module.exports = {
       { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
       { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
       { method: (request) => request.server.methods.common.images.sub(request.payload) },
-      { method: (request) => request.server.methods.hooks.preProcessing(request) },
+      { method: (request, h) => request.server.methods.hooks.preProcessing(request, h) },
       [
-        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessing' },
+        { method: (request, h) => request.server.methods.hooks.parallelProcessing(request, h), assign: 'parallelProcessing' },
         { method: processing, assign: 'processed' }
       ],
-      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request, h) => request.server.methods.hooks.merge(request, h) },
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
