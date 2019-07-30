@@ -50,10 +50,11 @@ function userIdToUsername(request) {
         }
       });
     });
-  });
+  })
+  .then(function() { return true; });
 }
 
-function usernameToUserId(request) {
+function usernameToUserId(request, h) {
   return request.server.methods.auth.mentions.create(request.server, request.auth)
   .then(function(hasPermission) {
     if (!hasPermission) { return; }
@@ -88,7 +89,8 @@ function usernameToUserId(request) {
       request.payload.body = body;
       request.payload.mentioned_ids = mentionedIds;
     });
-  });
+  })
+  .then(function() { return h.continue; });
 }
 
 function correctTextSearchVector(request) {
@@ -97,11 +99,13 @@ function correctTextSearchVector(request) {
   var post = request.pre.processed;
   request.db.mentions.fixTextSearchVector(post)
   .then(function() { delete request.pre.processed.body_original; });
+  return true;
 }
 
 function removeMentionIds(request) {
   delete request.pre.processed.mentioned_ids;
   delete request.payload.mentioned_ids;
+  return true;
 }
 
 function createMention(request) {
@@ -175,7 +179,8 @@ function createMention(request) {
 
     });
 
-  });
+  })
+  .then(function() { return true; });
 }
 
 function userIgnoredMentions(request) {
