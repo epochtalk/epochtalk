@@ -30,35 +30,35 @@ internals.implementation = function (server, options) {
 
   var scheme = {
     authenticate: function (request, reply) {
-      var req = request.raw.req;
-      var authorization = req.headers.authorization;
-      if (!authorization) {
-        return Boom.unauthorized(null, 'Bearer');
-      }
+      return new Promise(function(resolve) {
+        var req = request.raw.req;
+        var authorization = req.headers.authorization;
+        if (!authorization) {
+          return resolve(reply.unauthenticated(Boom.badRequest('Bad HTTP authentication header format', 'Bearer')));
+        }
 
-      var parts = authorization.split(/\s+/);
+        var parts = authorization.split(/\s+/);
 
-      if (parts.length !== 2) {
-        throw Boom.badRequest('Bad HTTP authentication header format', 'Bearer');
-      }
+        if (parts.length !== 2) {
+          return resolve(reply.unauthenticated(Boom.badRequest('Bad HTTP authentication header format', 'Bearer')));
+        }
 
-      if (parts[0].toLowerCase() !== 'bearer') {
-        throw Boom.unauthorized(null, 'Bearer');
-      }
+        if (parts[0].toLowerCase() !== 'bearer') {
+          return resolve(reply.unauthenticated(Boom.badRequest('Bad HTTP authentication header format', 'Bearer')));
+        }
 
-      if(parts[1].split('.').length !== 3) {
-        throw Boom.badRequest('Bad HTTP authentication header format', 'Bearer');
-      }
+        if(parts[1].split('.').length !== 3) {
+          return resolve(reply.unauthenticated(Boom.badRequest('Bad HTTP authentication header format', 'Bearer')));
+        }
 
-      var token = parts[1];
+        var token = parts[1];
 
-      return new Promise(function(resolve, reject) {
         jwt.verify(token, settings.key, { algorithms: ['HS256'] }, function(err, decoded) {
           if(err && err.message === 'jwt expired') {
-            return reject(Boom.unauthorized('Expired token received for JSON Web Token validation', 'Bearer'));
+            return resolve(reply.unauthenticated(Boom.unauthorized('Expired token received for JSON Web Token validation', 'Bearer'), { credentials: decoded }));
           }
           else if (err) {
-            return reject(Boom.unauthorized('Invalid signature received for JSON Web Token validation', 'Bearer'));
+            return resolve(reply.unauthenticated(Boom.unauthorized('Invalid signature received for JSON Web Token validation', 'Bearer'), { credentials: decoded }));
           }
 
           if (!settings.validateFunc) {
@@ -68,16 +68,15 @@ internals.implementation = function (server, options) {
           settings.validateFunc(decoded, token, redis, function (err, isValid, credentials) {
             credentials = credentials || null;
 
-            if (err) { return reject(reply.unauthenticated(err, { credentials: credentials })); }
+            if (err) { return resolve(reply.unauthenticated(Boom.unauthorized(err.message), { credentials: credentials })); }
 
             if (!isValid) {
-              return reject(reply.unauthenticated(Boom.unauthorized('Invalid token', 'Bearer'), { credentials: credentials }));
+              return resolve(reply.unauthenticated(Boom.unauthorized('Invalid token', 'Bearer'), { credentials: credentials }));
             }
 
             if (!credentials || typeof credentials !== 'object') {
-              return reject(reply.unauthenticated(Boom.badImplementation('Bad credentials object received for jwt auth validation'), { log: { tags: 'credentials' } }));
+              return resolve(reply.unauthenticated(Boom.badImplementation('Bad credentials object received for jwt auth validation'), { log: { tags: 'credentials' } }));
             }
-
             // Authenticated
             return resolve(reply.authenticated({ credentials: credentials }));
           });
