@@ -59,6 +59,9 @@ var ctrl = ['$anchorScroll', '$scope', '$rootScope', '$location', '$timeout', 'S
         ctrl.prev = pageData.prev;
         ctrl.limit = pageData.limit;
         $timeout($anchorScroll);
+      })
+      .catch(function(err) {
+        console.log(err);
       });
     };
 
