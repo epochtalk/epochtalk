@@ -118,6 +118,7 @@ images.imageSub = (post) => {
       // update src with new url
       $(element).attr('src', savedUrl);
     }
+    return Promise.resolve();
   })
   .then(() => { post.body_html = $.html(); })
   .then(() => post);

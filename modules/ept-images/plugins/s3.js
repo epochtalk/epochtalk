@@ -191,8 +191,8 @@ s3.initClient = function(accessKey, secretKey, region) {
 s3.checkBucket = function() {
   return new Promise(function(resolve, reject) {
     client.headBucket({ Bucket: config.images.s3.bucket }, function(err, data) {
-      if (err) { return reject(); }
-      if (data) { return resolve(); }
+      if (err) { return reject(err); }
+      if (data) { return resolve(data); }
     });
   });
 };
