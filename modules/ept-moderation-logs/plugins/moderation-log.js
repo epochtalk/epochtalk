@@ -65,7 +65,9 @@ module.exports = {
             // Store log to database
             return request.db.moderationLogs.create(log);
           })
-          .catch(function(err) { if (err) { throw err; } });
+          .catch(function(err) {
+           if (err && err.code !== 'DONOTLOG') { throw err; }
+         });
         }
       }
       return reply.continue;
