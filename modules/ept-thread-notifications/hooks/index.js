@@ -2,7 +2,7 @@ function subscribeToThread(request) {
   var threadId = request.pre.processed.thread_id;
   var authedUserId = request.auth.credentials.id;
   request.db.threadNotifications.subscribe(authedUserId, threadId);
-  return;
+  return true;
 }
 
 function emailSubscribers(request) {
@@ -26,7 +26,7 @@ function emailSubscribers(request) {
     })
     .catch(console.log);
   });
-  return;
+  return true;
 }
 
 module.exports = [

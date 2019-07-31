@@ -18,6 +18,7 @@ function parseOut(parser, threads) {
   if (!threads || !threads.length) { return threads; }
   return Promise.map(threads, function(thread) {
     thread.post_body = parser.parse(thread.post_body);
+    return thread;
   });
 }
 
