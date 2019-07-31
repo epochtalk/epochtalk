@@ -14,7 +14,6 @@ module.exports = function(reportNote) {
     .then(function(results) { // return created report note details
       var rows = results.rows;
       if (rows.length) { return rows[0]; }
-      else { return Promise.reject(); }
     })
     .then(function(reportDetails) { // append id and return created note
       reportNote.id = reportDetails.id;
@@ -30,7 +29,6 @@ module.exports = function(reportNote) {
     .then(function(results) { // return userInfo
       var rows = results.rows;
       if (rows.length) { return rows[0]; }
-      else { return Promise.reject(); }
     })
     .then(function(userInfo) {
       reportNote.username = userInfo.username;

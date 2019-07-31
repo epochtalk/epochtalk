@@ -21,6 +21,6 @@ module.exports = function(opts) {
   return db.sqlQuery(q, params)
   .then(function(rows) {
     if (rows.length) { return Number(rows[0].count); }
-    else { return Promise.reject(); }
+    else { return 0; }
   });
 };

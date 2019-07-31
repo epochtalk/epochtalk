@@ -14,7 +14,6 @@ module.exports = function(usernames, boardId) {
     .then(function(results) {
       var rows = results.rows;
       if (rows.length > 0) { return rows; }
-      else { return Promise.reject(); }
     })
     .then(function(users) {
       return Promise.map(users,
