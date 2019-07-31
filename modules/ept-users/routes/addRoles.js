@@ -59,16 +59,16 @@ module.exports = {
     var roleId = request.payload.role_id;
     var promise = request.db.users.addRoles(usernames, roleId)
     .tap(function(users) {
-      return Promise.map(users, function(user) {
+      return Promise.each(users, function(user) {
         var notification = {
           channel: { type: 'user', id: user.id },
           data: { action: 'reauthenticate' }
         };
-        request.server.plugins.notifications.systemNotification(notification);
+        return request.server.plugins.notifications.systemNotification(notification);
       });
     })
     .tap(function(users) {
-      return Promise.map(users, function(user) {
+      return Promise.each(users, function(user) {
         return request.session.updateRoles(user.id, user.roles);
       });
     })

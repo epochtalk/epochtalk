@@ -108,7 +108,7 @@ images.imageSub = (post) => {
   $('img').each((index, element) => { postImages.push(element); });
 
   // convert each image's src to cdn version
-  return Promise.map(postImages, (element) => {
+  return Promise.each(postImages, (element) => {
     var imgSrc = $(element).attr('src');
     var savedUrl = images.saveImage(imgSrc);
 
