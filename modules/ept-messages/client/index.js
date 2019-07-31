@@ -26,10 +26,10 @@ var route = ['$stateProvider', function($stateProvider) {
         return deferred.promise;
       }],
       pageData: ['Session', 'Alert', 'Messages', '$q', function(Session, Alert, Messages, $q) {
-        if (Session.isAuthenticated() && Session.hasPermission('messages.latest.allow')) {
-          return Messages.latest().$promise;
-        }
-        else { return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
+        return Messages.latest().$promise
+        .catch(function() {
+          return $q.reject({ status: 401, statusText: 'Unauthorized' });
+        });
       }]
     }
   });
