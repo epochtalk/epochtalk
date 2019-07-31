@@ -33,7 +33,7 @@ module.exports = {
     var opts =  { max: request.query.max };
 
     var promise = request.db.notifications.counts(userId, opts)
-      .error(request.errorMap.toHttpError);
+    .error(request.errorMap.toHttpError);
 
     return promise;
   }
