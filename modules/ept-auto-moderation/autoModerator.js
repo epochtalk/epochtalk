@@ -170,6 +170,8 @@ function executeActions(request, actionSet, messages, banInterval, edits) {
   if (actionSet.has('reject')) {
     return Boom.badRequest(messages.join(' -- '));
   }
+
+  return true;
 }
 
 module.exports = {
