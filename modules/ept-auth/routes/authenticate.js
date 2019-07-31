@@ -29,7 +29,7 @@ module.exports = {
       return request.session.formatUserReply(user.token, user);
     }
     else {
-      return Boom.unauthorized();
+      return Boom.unauthorized('Session is no longer valid.');
     }
   }
 };
