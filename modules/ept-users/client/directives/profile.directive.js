@@ -258,8 +258,10 @@ var directive = [function() {
         // create a new conversation id to put this message under
         var newMessage = {
           receiver_ids: [ ctrl.user.id ],
-          subject: ctrl.newConversation.subject,
-          body: ctrl.newConversation.body,
+          content: {
+            subject: ctrl.newConversation.subject,
+            body: ctrl.newConversation.body
+          }
         };
 
         Conversations.save(newMessage).$promise
