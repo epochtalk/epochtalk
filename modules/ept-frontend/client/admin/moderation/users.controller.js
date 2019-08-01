@@ -326,8 +326,10 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     // create a new conversation id to put this message under
     var newMessage = {
       receiver_ids: [ctrl.newConversation.receiver_id],
-      subject:'[WARNING] User Report',
-      body: ctrl.newConversation.body,
+      content: {
+        subject: '[WARNING] User Report',
+        body: ctrl.newConversation.body,
+      }
     };
 
     Conversations.save(newMessage).$promise
