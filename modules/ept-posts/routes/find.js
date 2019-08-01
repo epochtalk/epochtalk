@@ -56,7 +56,7 @@ function processing(request, reply) {
   var viewDeleted = request.pre.viewDeleted;
   var id = request.params.id;
   var promise = request.db.posts.find(id)
-  .then(function(post) { return common.cleanPosts(post, userId, viewDeleted); })
+  .then(function(post) { return common.cleanPosts(post, userId, viewDeleted, request); })
   .then(function(posts) { return posts[0]; })
   .error(request.errorMap.toHttpError);
 
