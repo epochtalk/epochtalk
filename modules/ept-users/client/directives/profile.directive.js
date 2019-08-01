@@ -8,7 +8,6 @@ var directive = [function() {
     controller: [ 'Conversations', 'Messages', 'User', 'Session', 'Alert', 'Websocket', '$timeout', '$scope', '$window', '$filter', '$state', function(Conversations, Messages, User, Session, Alert, Websocket, $timeout, $scope, $window, $filter, $state) {
       var ctrl = this;
       this.newConversation = {subject: '', body: '', receiver_ids: [], previewBody: ''};
-      this.newMessage = {subject: '', body: '', receiver_ids: [], previewBody: '' };
 
       this.isLoggedIn = function() { return Session.isAuthenticated(); };
 
@@ -241,19 +240,6 @@ var directive = [function() {
         ctrl.newConversation = {};
         ctrl.showConvoModal = true;
       };
-
-      $scope.$watch(function() { return ctrl.newMessage.body; }, function(body) {
-        if (body) {
-          // BBCode Parsing
-          var rawText = body;
-          var processed = rawText;
-          $window.parsers.forEach(function(parser) {
-            processed = parser.parse(processed);
-          });
-          // re-bind to scope
-          ctrl.newMessage.previewBody = processed;
-        }
-      });
 
       $scope.$watch(function() { return ctrl.newConversation.body; }, function(body) {
         if (body) {
