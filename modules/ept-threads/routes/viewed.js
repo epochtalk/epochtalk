@@ -27,9 +27,9 @@ module.exports = {
       ]
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request, h) {
     var newViewerId = request.pre.newViewId;
-    const response = reply.response('200 OK');
+    const response = h.response('200 OK');
     response.code(200);
     if (newViewerId) { response.header('Epoch-Viewer', newViewerId); }
     return response;

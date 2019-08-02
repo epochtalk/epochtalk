@@ -22,7 +22,7 @@ module.exports = {
   method: 'GET',
   path: '/api/authenticate',
   options: { auth: { mode: 'try', strategy: 'jwt' } },
-  handler: function(request, reply) {
+  handler: function(request) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var user = request.auth.credentials;

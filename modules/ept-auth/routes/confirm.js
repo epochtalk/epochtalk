@@ -35,7 +35,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var username = request.payload.username;
     var confirmationToken = request.payload.token;
     var promise = request.db.users.userByUsername(username) // get full user info

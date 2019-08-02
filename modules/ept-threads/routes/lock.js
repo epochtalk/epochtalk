@@ -37,7 +37,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.lock(request.server, request.auth, request.params.id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var threadId = request.params.id;
     var locked = request.payload.status;
 

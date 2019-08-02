@@ -3,7 +3,7 @@ var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../../db'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -39,7 +39,7 @@ module.exports = {
     validate: { payload: { text: Joi.string().required() } },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var factoid = request.payload;
     var promise = db.factoids.create(factoid)
     .error(request.errorMap.toHttpError);

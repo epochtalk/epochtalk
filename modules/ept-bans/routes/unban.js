@@ -34,7 +34,7 @@ module.exports = {
     validate: { payload: { user_id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.bans.ban(request.server, request.auth, request.payload.user_id) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.payload.user_id;
     var promise = request.db.bans.unban(userId)
     .tap(function(user) {

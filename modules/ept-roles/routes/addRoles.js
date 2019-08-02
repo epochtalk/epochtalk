@@ -47,7 +47,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.roles.addRoles(request.server, request.auth, request.roleValidations, request.payload) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var role = request.payload;
     var promise = request.db.roles.create(role)
       .then(function(result) {

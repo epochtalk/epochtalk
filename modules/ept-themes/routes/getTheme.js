@@ -37,7 +37,7 @@ module.exports = {
     validate: { query: { preview: Joi.boolean() } },
     pre: [ { method: (request) => request.server.methods.auth.themes.getTheme(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var preview = request.query.preview;
     var previewExists = fs.statSync(previewVarsPath).size;
     var readFilePath = preview && previewExists ? previewVarsPath : customVarsPath;

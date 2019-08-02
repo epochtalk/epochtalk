@@ -46,7 +46,7 @@ module.exports = {
       { method: (request) => request.server.methods.common.boards.clean(request.sanitizer, request.payload) },
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // update each board
     var promise = Promise.map(request.payload, function(board) {
       return request.db.boards.update(board);

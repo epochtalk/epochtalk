@@ -42,14 +42,14 @@ module.exports = {
       { method: (request) => request.server.methods.hooks.merge(request) },
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
+    handler: function(request) {
       return request.pre.processed;
     }
   }
 };
 
 
-function processing(request, reply) {
+function processing(request) {
   // build the post object from payload and params
   var newPost = request.payload;
   newPost.user_id = request.auth.credentials.id;

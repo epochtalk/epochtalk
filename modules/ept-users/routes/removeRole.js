@@ -52,7 +52,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.users.removeRole(request.server, request.auth, request.payload.user_id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.payload.user_id;
     var roleId = request.payload.role_id;
     var promise = request.db.users.removeRole(userId, roleId)

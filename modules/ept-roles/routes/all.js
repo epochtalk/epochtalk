@@ -24,7 +24,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.roles.all(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.roles.all()
     .then((roles) => { return { roles: roles, layouts: request.roleLayouts }; })
     .error(request.errorMap.toHttpError);

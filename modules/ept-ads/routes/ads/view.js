@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../db'));
 var adText = require(path.normalize(__dirname + '/../../text'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -42,7 +42,7 @@ module.exports = {
     auth: {  mode: 'try', strategy: 'jwt' },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // check if user is logged in
     var userId;
     var pKey = request.server.app.config.privateKey;

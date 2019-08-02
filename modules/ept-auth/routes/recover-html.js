@@ -1,7 +1,7 @@
 module.exports = {
   method: 'GET',
   path: '/recover',
-  handler: function(request, reply) {
+  handler: function(request, h) {
     var config = request.server.app.config;
     var ip = request.info.remoteAddress;
     var data = {
@@ -17,7 +17,7 @@ module.exports = {
     return request.server.plugins.backoff.getAccessLogs(request.db.db, ip)
     .then(function(attempts) {
       data.attempts = JSON.stringify(attempts);
-      return reply.view('recover', data);
+      return h.view('recover', data);
     });
   }
 };

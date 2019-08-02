@@ -60,7 +60,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     validate: { params: { username: Joi.string().min(1).required() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var username = querystring.unescape(request.params.username);
     var promise = request.db.users.userByUsername(username)
     .catch(function() { return Boom.notFound(); })

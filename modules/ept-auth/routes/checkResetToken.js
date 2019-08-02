@@ -27,7 +27,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var username = request.params.username;
     var token = request.params.token;
     var promise = request.db.users.userByUsername(username) // get full user info

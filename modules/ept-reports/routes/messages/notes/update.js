@@ -47,7 +47,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.updateMessageReportNote(reportNote)
     .error(request.errorMap.toHttpError);

@@ -44,7 +44,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.deleteAddress(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var address = request.query;
     var promise =  request.db.bans.deleteAddress(address)
     .error(request.errorMap.toHttpError);

@@ -61,12 +61,12 @@ var page = {
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     return request.pre.processed;
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   var mentioneeId = request.auth.credentials.id;
   var opts = {
     limit: request.query.limit,
@@ -102,7 +102,7 @@ var remove = {
     validate: { query: { id: Joi.string() } },
     pre: [{ method: (request) => request.server.methods.auth.mentions.delete(request.server, request.auth) }],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var mentionId = request.query.id;
     var promise = request.db.mentions.remove(mentionId, userId)
@@ -157,7 +157,7 @@ var pageIgnoredUsers = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var opts = {
       limit: request.query.limit,
@@ -192,7 +192,7 @@ var ignoreUser = {
     plugins: { track_ip: true },
     validate: { payload: { username: Joi.string().required() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var ignoredUser = request.payload.username;
     var promise = request.db.users.userByUsername(ignoredUser)
@@ -227,7 +227,7 @@ var unignoreUser = {
     plugins: { track_ip: true },
     validate: { payload: { username: Joi.string() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var ignoredUser = request.payload.username;
     var promise;
@@ -266,7 +266,7 @@ var getMentionEmailSettings = {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
 
     var promise = request.db.mentions.getMentionEmailSettings(userId)
@@ -299,7 +299,7 @@ var enableMentionEmails = {
     plugins: { track_ip: true },
     validate: { payload: { enabled: Joi.boolean().default(true) } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var enabled = request.payload.enabled;
 

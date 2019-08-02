@@ -28,7 +28,7 @@ module.exports = {
       })
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // dismiss notifications for receiver_id
     var params = {
       receiver_id: request.auth.credentials.id,

@@ -19,7 +19,7 @@ module.exports = {
   options: {
     validate: { params: { email: Joi.string().email().required() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var email = request.params.email;
     var promise = request.db.users.userByEmail(email) // get full user info
     .then(function(user) { return { found: !!user }; })

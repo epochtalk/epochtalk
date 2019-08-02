@@ -29,7 +29,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.users.searchUsernames(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // get user by username
     var searchStr = request.query.username;
     var limit = request.query.limit;

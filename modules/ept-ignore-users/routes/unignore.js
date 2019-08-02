@@ -22,7 +22,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var ignoreUserId = request.params.id;
 

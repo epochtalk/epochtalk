@@ -34,7 +34,7 @@ module.exports = {
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.threads.purge(request.server, request.auth, request.params.id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.threads.purge(request.params.id)
     .then(function(purgedThread) {
       // append purged thread data to plugin metadata
@@ -43,8 +43,8 @@ module.exports = {
         user_id: purgedThread.user_id,
         board_id: purgedThread.board_id
       };
+      return purgedThread;
     })
-    .then(() => reply.continue)
     .error(request.errorMap.toHttpError);
 
     return promise;

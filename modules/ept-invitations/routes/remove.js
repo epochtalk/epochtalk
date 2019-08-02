@@ -23,7 +23,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.invitations.remove(request.server, request.auth, request.payload.email) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // remove invitation
     var email = request.payload.email;
     var promise = request.db.invitations.remove(email)

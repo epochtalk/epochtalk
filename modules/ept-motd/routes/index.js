@@ -25,7 +25,7 @@ var get = {
     plugins: { track_ip: true },
     pre: [ { method: (request) => request.server.methods.auth.motd.get(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.motd.get()
     .then(function(data) {
       return {
@@ -70,7 +70,7 @@ var save = {
     },
     pre: [ { method: (request) => request.server.methods.auth.motd.save(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var data = request.payload;
     var promise = request.db.motd.save(data)
     .then(function() {

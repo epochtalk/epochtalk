@@ -33,7 +33,7 @@ module.exports = {
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.blacklist.deleteRule(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var id = request.params.id;
     var promise = request.db.blacklist.deleteRule(id)
     .then(function(results) {

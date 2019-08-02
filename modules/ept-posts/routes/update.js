@@ -56,13 +56,13 @@ module.exports = {
       { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed) },
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
+    handler: function(request) {
       return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   var updatePost = request.payload;
   updatePost.id = request.params.id;
   var promise = request.db.posts.update(updatePost)

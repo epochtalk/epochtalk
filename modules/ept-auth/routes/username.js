@@ -17,7 +17,7 @@ module.exports = {
   options: {
     validate: { params: { username: Joi.string().min(1).max(255).required() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var username = request.params.username;
     var promise = request.db.users.userByUsername(username) // get full user info
     .then(function(user) { return { found: !!user }; })

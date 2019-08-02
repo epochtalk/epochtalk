@@ -25,7 +25,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.legal.text(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var getFile = function(customDir, defaultDir) {
       return new Promise(function(resolve) {
         fse.stat(customDir, function(err, stat) {

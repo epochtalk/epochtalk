@@ -46,7 +46,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.users.notes.create(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.createUserReportNote(reportNote)
     .error(request.errorMap.toHttpError);

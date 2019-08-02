@@ -28,7 +28,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.categories.delete(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = Promise.map(request.payload.category_ids, function(catId) {
       return request.db.categories.delete(catId)
       .then(function() { return catId; });

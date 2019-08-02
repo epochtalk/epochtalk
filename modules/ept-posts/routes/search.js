@@ -59,7 +59,7 @@ module.exports = {
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     return request.pre.processed;
   }
 };
@@ -68,7 +68,7 @@ function insert(str, index, value) {
   return str.substr(0, index) + value + str.substr(index);
 }
 
-function processing(request, reply) {
+function processing(request) {
   var opts = {
     limit: request.query.limit,
     page: request.query.page,

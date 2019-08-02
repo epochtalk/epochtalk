@@ -25,7 +25,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.legal.reset(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var copyFile = function(fromDir, toDir, options) {
       return new Promise(function(resolve, reject) {
         fse.copy(fromDir, toDir, options, function(err) {

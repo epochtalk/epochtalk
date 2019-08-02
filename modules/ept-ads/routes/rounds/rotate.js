@@ -3,7 +3,7 @@ var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../../db'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -40,7 +40,7 @@ module.exports = {
     validate: { payload: { round: Joi.number().required() } },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var round = request.payload.round;
     var promise = db.rounds.rotate(round)
     .error(request.errorMap.toHttpError);

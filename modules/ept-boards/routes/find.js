@@ -35,7 +35,7 @@ module.exports = {
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.boards.find(request.server, request.auth, request.params.id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var boardId = request.params.id;
     var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
 

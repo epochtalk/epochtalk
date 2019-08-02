@@ -72,28 +72,28 @@ var generateImageUrl = function(filename) {
   return imageUrl;
 };
 
-local.uploadImage = function(source, filename, reply) {
+local.uploadImage = function(source, filename, h) {
   var pathToFile = path.normalize(__dirname + '/../../../public/images');
   pathToFile = pathToFile + '/' + filename;
   var exists = fs.existsSync(pathToFile);  // check if file already exists
 
   if (exists) {
-    if (reply) { return reply.response().code(204); }
+    if (h) { return h.response().code(204); }
   }
   else {
     return new Promise(function(resolve, reject) {
       // grab image
       var puller, error;
-      if (reply) { puller = source; }
+      if (h) { puller = source; }
       else { puller = request(source); }
       puller.on('error', function(err) {
         deleteImage(err, pathToFile);
-        if (reply) { return reject(Boom.badRequest('Could not process image')); }
+        if (h) { return reject(Boom.badRequest('Could not process image')); }
       });
       puller.on('end', function () {
-        if (reply) {
+        if (h) {
           if (error) { return reject(Boom.badImplementation(error)); }
-          else { return resolve(reply.response().code(204)); }
+          else { return resolve(h.response().code(204)); }
         }
       });
 
@@ -119,7 +119,7 @@ local.uploadImage = function(source, filename, reply) {
       });
       ftc.on('error', function(err) {
         deleteImage(err, pathToFile);
-        if (reply) { error = Boom.unsupportedMediaType('File is not an image'); }
+        if (h) { error = Boom.unsupportedMediaType('File is not an image'); }
       });
 
       // check file size
@@ -134,14 +134,14 @@ local.uploadImage = function(source, filename, reply) {
       });
       sc.on('error', function(err) {
         deleteImage(err, pathToFile);
-        if (reply) { error = Boom.badRequest('Image Size Limit Exceeded'); }
+        if (h) { error = Boom.badRequest('Image Size Limit Exceeded'); }
       });
 
       // write to disk
       var writer = fs.createWriteStream(pathToFile);
       writer.on('error', function (err) {
         deleteImage(err, pathToFile);
-        if (reply) { error = Boom.badImplementation(); }
+        if (h) { error = Boom.badImplementation(); }
       });
 
       puller.pipe(ftc).pipe(sc).pipe(writer);

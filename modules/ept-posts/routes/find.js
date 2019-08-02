@@ -42,13 +42,13 @@ module.exports = {
       { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed) },
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
+    handler: function(request) {
       return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   // retrieve post
   var userId = '';
   var authenticated = request.auth.isAuthenticated;

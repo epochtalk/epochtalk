@@ -40,7 +40,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.removeVote(request.server, request.auth, request.params.thread_id, request.params.poll_id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var threadId = request.params.thread_id;
     var pollId = request.params.poll_id;
     var userId = request.auth.credentials.id;

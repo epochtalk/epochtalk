@@ -49,7 +49,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.watchlist.unread(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var opts = {
       page: request.query.page,

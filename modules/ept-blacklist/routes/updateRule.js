@@ -38,7 +38,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.blacklist.updateRule(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var updatedRule = request.payload;
     var promise = request.db.blacklist.updateRule(updatedRule)
     .then(function(blacklist) {

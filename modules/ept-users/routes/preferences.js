@@ -17,7 +17,7 @@ module.exports = {
   method: 'GET',
   path: '/api/users/preferences',
   options: { auth: { strategy: 'jwt' } },
-  handler: function(request, reply) {
+  handler: function(request) {
     if (!request.auth.isAuthenticated) { return Boom.badRequest(); }
 
     // get logged in user id

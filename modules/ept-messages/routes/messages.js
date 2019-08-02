@@ -50,7 +50,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.conversations.messages(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var conversationId = request.params.id;
     var userId = request.auth.credentials.id;
     var opts = {

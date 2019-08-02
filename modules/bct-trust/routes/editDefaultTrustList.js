@@ -44,7 +44,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.editDefaultTrustList(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var defaultTrustId = 'U31jnDtQRUW-oYs4rM9Ajg';
 
     var opts = {

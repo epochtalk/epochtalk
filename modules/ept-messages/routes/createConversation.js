@@ -56,7 +56,7 @@ module.exports = {
       { method: (request) => request.server.methods.common.images.sub(request.payload) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // create the conversation in db
     var promise = request.db.conversations.create()
     .then(function(conversation) {

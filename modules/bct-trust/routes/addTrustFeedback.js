@@ -41,7 +41,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.addTrustFeedback(request.server, request.auth, request.payload.user_id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       userId: request.payload.user_id,
       reporterId: request.auth.credentials.id,

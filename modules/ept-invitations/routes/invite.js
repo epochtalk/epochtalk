@@ -25,7 +25,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.invitations.invite(request.server, request.auth, request.payload.email) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var newUser = {
       email: request.payload.email,
       hash: crypto.randomBytes(20).toString('hex')

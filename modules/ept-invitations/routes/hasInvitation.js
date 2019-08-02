@@ -20,7 +20,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     validate: { query: { email: Joi.string().email().required() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // query invitations
     var promise = request.db.invitations.hasInvitation(request.query.email)
     .then(function(result) {

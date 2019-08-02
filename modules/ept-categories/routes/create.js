@@ -35,7 +35,7 @@ module.exports = {
       { method: (request) => request.server.methods.common.categories.clean(request.sanitizer, request.payload) },
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = Promise.map(request.payload.categories, function(cat) {
       return request.db.categories.create(cat);
     })

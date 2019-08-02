@@ -26,7 +26,7 @@ module.exports = {
     validate: { params: { username: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.bans.getBannedBoards(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var username = request.params.username;
     var promise = request.db.bans.getBannedBoards(username)
     .error(request.errorMap.toHttpError);

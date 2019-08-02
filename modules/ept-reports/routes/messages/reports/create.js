@@ -37,7 +37,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.messages.reports.create(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var report = request.payload;
     var promise = request.db.reports.createMessageReport(report)
     .error(request.errorMap.toHttpError);

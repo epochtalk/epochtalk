@@ -105,13 +105,13 @@ module.exports = {
       { method: (request) => request.server.methods.hooks.merge(request) },
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
+    handler: function(request) {
       return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   var userId;
   if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);

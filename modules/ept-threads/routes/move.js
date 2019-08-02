@@ -39,7 +39,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.move(request.server, request.auth, request.params.id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var threadId = request.params.id;
     var newBoardId = request.payload.new_board_id;
 

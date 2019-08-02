@@ -34,7 +34,7 @@ module.exports = {
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.conversations.delete(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var promise = request.db.conversations.delete(request.params.id, userId)
     .then(function(deletedConvo) {

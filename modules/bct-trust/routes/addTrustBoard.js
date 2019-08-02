@@ -23,7 +23,7 @@ module.exports = {
     validate: { payload: { board_id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.addTrustBoard(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.userTrust.addTrustBoard(request.payload.board_id)
     .error(request.errorMap.toHttpError);
     return promise;

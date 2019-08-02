@@ -58,7 +58,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.auth.register(request.server, request.payload.email, request.payload.username) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var config = request.server.app.config;
 
     // check if registration is open

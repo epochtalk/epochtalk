@@ -45,7 +45,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.ban(request.server, request.auth, request.payload.user_id) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
     var ipBan = request.payload.ip_ban;

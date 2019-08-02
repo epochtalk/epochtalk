@@ -31,7 +31,7 @@ var upsert = {
     },
     pre: [ { method: (request) => request.server.methods.auth.rank.upsert(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var ranks = request.payload;
     var promise = request.db.rank.upsert(ranks)
     .error(request.errorMap.toHttpError);
@@ -61,7 +61,7 @@ var get = {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.rank.get(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.rank.get()
     .error(request.errorMap.toHttpError);
     return promise;

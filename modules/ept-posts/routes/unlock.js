@@ -25,7 +25,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.posts.lock(request.server, request.auth, request.params.id)} ],
-    handler: function(request, reply) {
+    handler: function(request) {
       var promise = request.db.posts.unlock(request.params.id)
       .error(request.errorMap.toHttpError);
 

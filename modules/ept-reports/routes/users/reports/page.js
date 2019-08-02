@@ -59,7 +59,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.users.reports.page(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       page: request.query.page,
       limit: request.query.limit,

@@ -22,7 +22,7 @@ module.exports = {
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.watchlist.watchBoard(request.server, request.auth, request.params.id) }]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
     var promise = request.db.watchlist.watchBoard(userId, boardId)

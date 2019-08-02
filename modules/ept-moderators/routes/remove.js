@@ -39,7 +39,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.moderators.remove(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var usernames = request.payload.usernames;
     var boardId = request.payload.board_id;
     var promise = request.db.moderators.remove(usernames, boardId)

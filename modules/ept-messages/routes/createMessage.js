@@ -43,7 +43,7 @@ module.exports = {
       { method: (request) => request.server.methods.common.images.sub(request.payload) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var message = request.payload;
     message.sender_id = request.auth.credentials.id;
 

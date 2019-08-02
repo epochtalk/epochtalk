@@ -49,7 +49,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.userNotes.create(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = Object.assign({}, request.payload);
     var promise =  request.db.userNotes.create(opts)
     .then(function(createdNote) {

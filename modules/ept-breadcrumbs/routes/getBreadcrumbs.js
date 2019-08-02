@@ -29,7 +29,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
 
     // method type enum
     var findType = {

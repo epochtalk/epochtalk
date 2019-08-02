@@ -40,7 +40,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.banFromBoards(request.server, request.auth, request.payload.user_id, request.payload.board_ids) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.payload.user_id;
     var boardIds = request.payload.board_ids;
     var promise = request.db.bans.banFromBoards(userId, boardIds)

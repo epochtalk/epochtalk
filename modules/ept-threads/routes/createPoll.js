@@ -55,7 +55,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.createPoll(request.server, request.auth, request.params.thread_id, request.payload) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var threadId = request.params.thread_id;
     var poll = request.payload;
 

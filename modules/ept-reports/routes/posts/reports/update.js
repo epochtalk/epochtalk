@@ -46,7 +46,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.posts.reports.update(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var report = Object.assign({}, request.payload);
     var promise = request.db.reports.updatePostReport(report)
     .error(request.errorMap.toHttpError);

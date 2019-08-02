@@ -32,7 +32,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.users.page(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts;
     var filter = request.query.filter;
     var search = request.query.search;

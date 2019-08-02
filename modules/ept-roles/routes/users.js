@@ -38,7 +38,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.roles.users(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var roleId = request.params.id;
     var opts = {
       page: request.query.page,

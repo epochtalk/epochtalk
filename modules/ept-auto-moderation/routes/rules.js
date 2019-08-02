@@ -3,7 +3,7 @@ var Boom = require('boom');
 var db = require(path.normalize(__dirname + '/../db'));
 
 // Auth Function
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -53,7 +53,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = db.rules()
     .error(request.errorMap.toHttpError);
 

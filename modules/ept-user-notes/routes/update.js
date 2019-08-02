@@ -47,7 +47,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.userNotes.update(request.server, request.auth, request.payload.id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = Object.assign({}, request.payload);
     var promise =  request.db.userNotes.update(opts)
     .then(function(updatedNote) {

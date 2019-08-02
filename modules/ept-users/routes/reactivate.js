@@ -28,7 +28,7 @@ module.exports = {
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.users.activate(request.server, request.auth, request.params.id) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.params.id;
     var promise = request.db.users.reactivate(userId)
     .then(function() { return {}; })

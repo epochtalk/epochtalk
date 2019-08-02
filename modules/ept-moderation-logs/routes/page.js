@@ -56,7 +56,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.moderationLogs.page(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.moderationLogs.page(request.query)
     .error(request.errorMap.toHttpError);
 

@@ -49,7 +49,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.boards.allUnfiltered(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise =  request.db.boards.allCategories()
     .error(request.errorMap.toHttpError);
 

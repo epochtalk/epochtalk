@@ -33,7 +33,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.invitations.all(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       page: request.query.page,
       limit: request.query.limit

@@ -41,7 +41,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.themes.resetTheme(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
     return new Promise(function(resolve, reject) {
       var rd = fs.createReadStream(defaultVarsPath);

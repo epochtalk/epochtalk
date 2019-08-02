@@ -24,7 +24,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.invitations.resend(request.server, request.auth, request.payload.email) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // save invitation
     var promise = request.db.invitations.find(request.payload.email)
     // send invitation email

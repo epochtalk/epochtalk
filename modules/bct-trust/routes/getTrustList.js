@@ -24,7 +24,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.userTrust.getTrustList(request.auth.credentials.id)
     .error(request.errorMap.toHttpError);
     return promise;

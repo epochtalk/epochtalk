@@ -36,7 +36,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.blacklist.addRule(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var rule = request.payload;
     var promise = request.db.blacklist.addRule(rule)
     .then(function(blacklist) {

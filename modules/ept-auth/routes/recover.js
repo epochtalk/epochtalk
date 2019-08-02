@@ -27,7 +27,7 @@ module.exports = {
   options: {
     plugins: { backoff: true }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var query = request.payload.query;
     var config = request.server.app.config;
     var recaptcha = request.payload.recaptcha;

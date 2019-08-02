@@ -48,7 +48,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.users.pagePublic(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       limit: request.query.limit,
       page: request.query.page,

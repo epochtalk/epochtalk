@@ -4,10 +4,10 @@ module.exports = {
   name: 'lastActive',
   version: '1.0.0',
   register: async function(plugin, options) {
-    plugin.ext('onPostAuth', function(request, reply) {
+    plugin.ext('onPostAuth', function(request, h) {
       // check if user is authed
       var authed = request.auth.isAuthenticated;
-      if (!authed) { return reply.continue; }
+      if (!authed) { return h.continue; }
 
       // get this user's id
       var userId = request.auth.credentials.id;
@@ -29,7 +29,7 @@ module.exports = {
       .then(function(doUpdate) {
         if (doUpdate) { return request.db.users.setLastActive(userId); }
       });
-      return reply.continue;
+      return h.continue;
     });
   }
 };

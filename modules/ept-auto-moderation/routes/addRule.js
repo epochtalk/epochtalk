@@ -4,7 +4,7 @@ var path = require('path');
 var db = require(path.normalize(__dirname + '/../db'));
 var autoModerator = require(path.normalize(__dirname + '/../autoModerator'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -100,7 +100,7 @@ module.exports = {
     },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var rule = request.payload;
     var promise = db.addRule(rule)
     .tap(function(rule) { autoModerator.addRule(rule); })

@@ -42,7 +42,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       userId: request.auth.credentials.id,
       maxDepth: request.payload.max_depth,

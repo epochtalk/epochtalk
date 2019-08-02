@@ -41,7 +41,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.title(request.server, request.auth, request.params.id), assign: 'post' } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var post = {
       id: request.pre.post.id,
       thread_id: request.params.id,

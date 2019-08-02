@@ -54,13 +54,13 @@ module.exports = {
       { method: (request) => request.server.methods.hooks.merge(request) },
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
+    handler: function(request) {
       return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   // get logged in user id
   var userId = '';
   var authenticated = request.auth.isAuthenticated;

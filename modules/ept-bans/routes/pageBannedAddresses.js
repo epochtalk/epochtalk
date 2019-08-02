@@ -52,7 +52,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.pageBannedAddresses(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = request.query;
     var promise = request.db.bans.pageBannedAddresses(opts)
     .error(request.errorMap.toHttpError);

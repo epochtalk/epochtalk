@@ -14,7 +14,7 @@ module.exports = function(internalConfig) {
         parse: true
       }
     },
-    handler: function(request, reply) {
+    handler: function(request, h) {
       // check we're using local storage
       var config = request.server.app.config;
       if (config.images.storage !== 'local') {
@@ -50,7 +50,7 @@ module.exports = function(internalConfig) {
         return Boom.badRequest('Policy Timed Out');
       }
 
-      return request.imageStore.uploadImage(file, filename, reply);
+      return request.imageStore.uploadImage(file, filename, h);
     }
   };
 };

@@ -53,7 +53,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.editPoll(request.server, request.auth, request.params, request.payload) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var options = request.payload;
     options.id = request.params.poll_id;
     var promise = request.db.polls.update(options)

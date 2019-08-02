@@ -41,7 +41,7 @@ module.exports = {
     validate: { query: { id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.userNotes.delete(request.server, request.auth, request.query.id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = Object.assign({}, request.query);
     var promise =  request.db.userNotes.delete(opts.id)
     .then(function(deletedNote) {

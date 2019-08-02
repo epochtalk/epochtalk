@@ -12,7 +12,7 @@ module.exports = {
     if (!options.db) { return new Error('No DB found in Moderation Log'); }
     db = options.db;
 
-    server.ext('onPostHandler', function(request, reply) {
+    server.ext('onPostHandler', function(request, h) {
       // Only log successful actions
       if (request.response.statusCode === 200) {
         var modLog = _.get(request, 'route.settings.plugins.mod_log');
@@ -70,7 +70,7 @@ module.exports = {
          });
         }
       }
-      return reply.continue;
+      return h.continue;
     });
   }
 };

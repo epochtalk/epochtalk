@@ -34,7 +34,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.legal.update(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var writeFile = function(path, text) {
       return new Promise(function(resolve, reject) {
         fse.outputFile(path, text, function(err) {

@@ -24,7 +24,7 @@ module.exports = {
     validate: { payload: { user_id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.users.adminRecover(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.payload.user_id;
     var config = request.server.app.config;
 

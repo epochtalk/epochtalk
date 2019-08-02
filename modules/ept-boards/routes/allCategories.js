@@ -87,7 +87,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.boards.allCategories(request.server, request.auth), assign: 'priority' } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId;
     var priority = request.pre.priority;
     var opts = {

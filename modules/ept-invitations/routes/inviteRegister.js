@@ -42,7 +42,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.auth.register(request.server, request.payload.email, request.payload.username) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;

@@ -150,7 +150,7 @@ module.exports = {
       { method: (request) => request.server.methods.common.images.saveNoExpiration(request.payload.website.favicon) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var internalConfig = request.server.app.config;
     var newConfig = underscoreToCamelCase(request.payload);
     var promise = sanitizeConfigs(newConfig, internalConfig.saasMode)

@@ -31,7 +31,7 @@ module.exports = {
     validate: { payload: { boardMapping: Joi.array().required() } },
     pre: [ { method: (request) => request.server.methods.auth.boards.updateAll(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // TODO: clean inputs?
     // update board on db
     var boardMapping = request.payload.boardMapping;

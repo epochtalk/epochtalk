@@ -40,7 +40,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.watchlist.edit(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var threadOpts = { page: 1, limit: request.query.limit };
     var boardOpts = { page: 1, limit: request.query.limit };

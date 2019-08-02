@@ -48,7 +48,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.addAddresses(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var addresses = request.payload;
     var promise =  request.db.bans.addAddresses(addresses)
     .error(request.errorMap.toHttpError);

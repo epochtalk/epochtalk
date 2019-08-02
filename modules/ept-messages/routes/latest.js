@@ -36,7 +36,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.messages.latest(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var opts = {
       limit: request.query.limit,

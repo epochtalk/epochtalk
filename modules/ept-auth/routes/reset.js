@@ -32,7 +32,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var username = request.payload.username;
     var password = request.payload.password;
     var token = request.payload.token;

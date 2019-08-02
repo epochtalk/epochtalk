@@ -75,7 +75,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.themes.setTheme(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var theme = request.payload;
     var keys = Object.keys(theme);
     var stream = fs.createWriteStream(customVarsPath);

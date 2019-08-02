@@ -51,7 +51,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.posted(request.server, request.auth), assign: 'priority' } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       userId: request.auth.credentials.id,
       priority: request.pre.priority,

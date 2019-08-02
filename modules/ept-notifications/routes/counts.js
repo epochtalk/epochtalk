@@ -27,7 +27,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.notifications.counts(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // get notifications counts for userId
     var userId = request.auth.credentials.id;
     var opts =  { max: request.query.max };

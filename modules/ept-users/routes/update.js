@@ -114,7 +114,7 @@ module.exports = {
       { method: (request) => request.server.methods.common.images.avatarSub(request.payload) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // update the user in db
     request.payload.id = request.params.id;
     var promise = request.db.users.update(request.payload)

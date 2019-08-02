@@ -93,12 +93,12 @@ module.exports = {
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     return request.pre.processed;
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   var config = request.server.app.config;
   var boardId = config.portal.boardId;
   if (!boardId) { return Boom.badRequest('Board Not Set routes'); }

@@ -30,7 +30,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.users.lookup(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // get id for username
     var username = request.params.username;
     var ignoredUsername = request.query.self ? undefined : request.auth.credentials.username;

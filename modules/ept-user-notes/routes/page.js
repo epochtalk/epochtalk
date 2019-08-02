@@ -45,7 +45,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.userNotes.page(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = request.query;
     var promise = request.db.userNotes.page(opts)
     .error(request.errorMap.toHttpError);

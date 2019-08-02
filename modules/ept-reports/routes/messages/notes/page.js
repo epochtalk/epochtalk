@@ -47,7 +47,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.messages.notes.page(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var reportId = request.params.report_id;
     var opts = {
       limit: request.query.limit,

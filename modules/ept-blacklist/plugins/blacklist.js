@@ -14,13 +14,13 @@ module.exports = {
     if (!options.db) { return next(new Error('No DB found in IP Blacklist')); }
     db = options.db;
 
-    server.ext('onRequest', function(request, reply) {
+    server.ext('onRequest', function(request, h) {
       var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
       if (Object.keys(blacklist).length && ipBlacklisted(ip)) {
         var err = Boom.forbidden();
         return err;
       }
-      else { return reply.continue; }
+      else { return h.continue; }
     });
 
     server.expose('retrieveBlacklist', retrieveBlacklist);

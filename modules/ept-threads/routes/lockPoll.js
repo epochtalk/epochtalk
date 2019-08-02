@@ -42,7 +42,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.lockPoll(request.server, request.auth, request.params.thread_id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var pollId = request.params.poll_id;
     var locked = request.payload.locked;
 

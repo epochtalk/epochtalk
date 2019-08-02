@@ -49,7 +49,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.roles.update(request.server, request.auth, request.roleValidations, request.payload) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var role = request.payload;
     var defaultRole;
     var promise = request.db.roles.update(role)

@@ -11,7 +11,7 @@ module.exports = {
       { method: (request) => request.server.methods.auth.threads.metaByBoard(request.server, request.auth, request.params.board_id), assign: 'viewable' }
     ],
   },
-  handler: function(request, reply) {
+  handler: function(request, h) {
     var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
     var viewable = request.pre.viewable;
     var boardId = request.params.board_id;
@@ -46,7 +46,7 @@ module.exports = {
 
       return data;
     })
-    .then(function(data) { return reply.view('index', data); })
-    .catch(() => { return reply.redirect('/404'); });
+    .then(function(data) { return h.view('index', data); })
+    .catch(() => { return h.redirect('/404'); });
   }
 };

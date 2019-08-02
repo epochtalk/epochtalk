@@ -23,7 +23,7 @@ module.exports = {
     validate: { params: { board_id: Joi.string().required() } },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.deleteTrustBoard(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.userTrust.deleteTrustBoard(request.params.board_id)
     .error(request.errorMap.toHttpError);
     return promise;

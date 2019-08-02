@@ -32,7 +32,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     validate: { query: { hierarchy: Joi.boolean() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var promise;
     if (request.query.hierarchy) {

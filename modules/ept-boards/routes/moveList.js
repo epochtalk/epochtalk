@@ -21,7 +21,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.boards.moveList(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.boards.allSelect()
     .error(request.errorMap.toHttpError);
 

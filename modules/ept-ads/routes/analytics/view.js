@@ -4,7 +4,7 @@ var path = require('path');
 var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../db'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -15,8 +15,8 @@ function auth(request, reply) {
   return promise;
 }
 
-function defaultRoundNumber(request, reply) {
-  var roundNumber = request.params.round || reply.continue;
+function defaultRoundNumber(request, h) {
+  var roundNumber = request.params.round || h.continue;
   if (roundNumber === 'current') {
     return db.rounds.current()
     .then(function(round) {
@@ -75,7 +75,7 @@ module.exports = {
       { method: defaultRoundNumber }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var round = request.params.round;
 
     // get current ads and factoid

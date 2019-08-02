@@ -36,7 +36,7 @@ module.exports = {
       }
     },
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var opts = {
       page: request.query.page,

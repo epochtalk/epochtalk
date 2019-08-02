@@ -26,7 +26,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.getDefaultTrustList(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var defaultTrustId = 'U31jnDtQRUW-oYs4rM9Ajg';
     var promise = request.db.userTrust.getTrustList(defaultTrustId)
     .error(request.errorMap.toHttpError);

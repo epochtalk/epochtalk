@@ -43,7 +43,7 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.vote(request.server, request.auth, request.params, request.payload) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var threadId = request.params.thread_id;
     var answerIds = request.payload.answer_ids;
     var userId = request.auth.credentials.id;
