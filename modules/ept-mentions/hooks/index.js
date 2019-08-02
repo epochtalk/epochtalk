@@ -158,7 +158,6 @@ function createMention(request) {
                 .then(function(user) {
                   var emailParams = {
                     email: user.email,
-                    username: user.username,
                     post_author: request.auth.credentials.username,
                     thread_name: thread.title,
                     site_name: config.website.title,

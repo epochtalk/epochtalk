@@ -13,7 +13,6 @@ function emailSubscribers(request) {
   .each(function(emailData) {
     var emailParams = {
       email: emailData.email,
-      username: emailData.username,
       thread_name: emailData.title,
       site_name: config.website.title,
       thread_url: config.publicUrl + '/threads/' + threadId + '/posts?start=' + emailData.last_post_position + '#' + emailData.last_post_id
