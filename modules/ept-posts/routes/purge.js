@@ -41,6 +41,7 @@ module.exports = {
           user_id: purgedPost.user_id,
           thread_id: purgedPost.thread_id
         };
+        return purgedPost;
       })
       .error(request.errorMap.toHttpError);
 
