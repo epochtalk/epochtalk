@@ -57,7 +57,6 @@ module.exports = {
         // Store token and expiration to user object
         return request.db.users.update(updateUser);
       })
-      .then(function() { return 'Success 200'; })
       // Email user reset information here
       .tap(function(user) {
         var emailParams = {
@@ -69,6 +68,7 @@ module.exports = {
         request.server.log('debug', emailParams);
         request.emailer.send('recoverAccount', emailParams);
       })
+      .then(function() { return 'Success 200'; })
       .error(request.errorMap.toHttpError);
 
     // Validate recaptcha if the user set it up
