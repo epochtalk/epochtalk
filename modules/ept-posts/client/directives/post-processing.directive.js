@@ -220,19 +220,44 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
           }
         }
 
+        // Surround non images in non-bindable to prevent injection
+        var nonBindableHTML = '<span ng-non-bindable>' + $element.html() + '</span>';
+
+        // Quotes are a special case we need to handle because they can be nested.
+        // This closes the non-bindable span outside the quote, and opens a new one
+        // wrapping the contents inside the quote body
+        var quotes = $element.find('.quote');
+        quotes.each(function(index, quote) {
+          var outterHTML = $(quote)[0].outerHTML;
+          var innerHTML = $(quote).html();
+          var nonBindable = '<span ng-non-bindable>' + innerHTML + '</span>';
+          var newOutter = '</span>' +  outterHTML.replace(innerHTML, nonBindable) + '<span ng-non-bindable>';
+          nonBindableHTML = nonBindableHTML.replace(outterHTML, newOutter);
+        });
+
+        // This closes the non-bindable span outside the quoteHeader, and opens a new one
+        // wrapping the contents inside the quote header
+        var quoteHeaders = $element.find('.quoteHeader');
+        quoteHeaders.each(function(index, qh) {
+          var outterHTML = $(qh)[0].outerHTML;
+          var innerHTML = $(qh).html();
+          var nonBindable = '<span ng-non-bindable>' + innerHTML + '</span>';
+          var newOutter = '</span>' +  outterHTML.replace(innerHTML, nonBindable) + '<span ng-non-bindable>';
+          nonBindableHTML = nonBindableHTML.replace(outterHTML, newOutter);
+        });
+
         // image loading
         var imageCache = {};
         var images = $element.find('img');
         images.each(function(index, image) {
           var uuid = uuidv4();
+          var preservedOutterHTML = $(image)[0].outerHTML;
           image = $(image).addClass('image-loader'); // attach directive
           imageCache[uuid] = $(image)[0].outerHTML;
-          $(image).replaceWith(uuid)
+          nonBindableHTML = nonBindableHTML.replace(preservedOutterHTML, uuid);
         });
 
-        // Surround all text that isn't image tags with ng-non-bindable,
-        // this allows image loader directive to still run...
-        var nonBindableHTML = '<span ng-non-bindable>' + $element.html() + '</span>';
+        // Remove all images from non-bindable spans
         Object.keys(imageCache).forEach(function(uuid) {
           var replaceWith = '</span>' + imageCache[uuid] + '<span ng-non-bindable>';
           nonBindableHTML = nonBindableHTML.replace(uuid, replaceWith)
