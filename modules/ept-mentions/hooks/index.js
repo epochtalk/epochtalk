@@ -148,7 +148,7 @@ function createMention(request) {
             };
             return request.server.plugins.notifications.spawnNotification(notification)
             .then(function() { return request.db.mentions.getMentionEmailSettings(mentioneeId); })
-            .then(function(data) {
+            .tap(function(data) {
               if (data.email_mentions) {
                 return request.db.threads.getThreadFirstPost(post.thread_id)
                 .then(function(threadData) {
@@ -165,12 +165,13 @@ function createMention(request) {
                   };
                   // Do not return, otherwise user has to wait for email to send
                   // before post is created
+                  request.server.log('debug', emailParams)
                   request.emailer.send('mentionNotification', emailParams)
                   .catch(console.log);
-                  return;
+                  return true;
                 });
               }
-              return;
+              return true;
             });
           }
         });
