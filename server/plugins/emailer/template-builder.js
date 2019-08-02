@@ -114,7 +114,6 @@ exports.threadNotification = function(sender, params) {
     html: template({
       css: css(),
       threadName: params.thread_name,
-      username: params.username,
       siteName: params.site_name,
       currentYear: currentYear,
       threadUrl: params.thread_url
@@ -132,7 +131,6 @@ exports.mentionNotification = function(sender, params) {
     html: template({
       css: css(),
       threadName: params.thread_name,
-      username: params.username,
       postAuthor: params.post_author,
       siteName: params.site_name,
       currentYear: currentYear,
