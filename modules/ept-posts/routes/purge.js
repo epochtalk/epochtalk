@@ -43,6 +43,30 @@ module.exports = {
         };
         return purgedPost;
       })
+      .tap(function(purgedPost) {
+        var email;
+        request.db.users.find(purgedPost.user_id)
+        .then(function(user) {
+          email = user.email;
+          return request.db.threads.find(purgedPost.thread_id);
+        })
+        .then(function(thread) {
+          var config = request.server.app.config;
+          var emailParams = {
+            email: email,
+            mod_username: request.auth.credentials.username,
+            thread_name: thread.title,
+            site_name: config.website.title,
+            thread_url: config.publicUrl + '/threads/' + thread.id + '/posts'
+          };
+
+          request.server.log('debug', emailParams);
+          request.emailer.send('postDeleted', emailParams)
+          .catch(console.log);
+          return;
+        });
+        return;
+      })
       .error(request.errorMap.toHttpError);
 
       return promise;
