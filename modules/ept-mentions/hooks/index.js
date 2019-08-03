@@ -128,6 +128,7 @@ function createMention(request) {
         mentioneeId: mentioneeId
       };
 
+      if (post.user_id === mentioneeId) { return; }
       // create the mention in db if user isn't being ignored
       return request.db.mentions.getUserIgnored(mentioneeId, post.user_id)
       .then(function(user) {
