@@ -144,7 +144,7 @@ setup()
   }
 })
 // routes and server start
-.then(function() {
+.then(async function() {
   // server routes
   var routes = require(path.normalize(__dirname + '/routes'));
   var allRoutes = routes.endpoints(config);
@@ -152,31 +152,30 @@ setup()
   server.route(allRoutes);
 
   // start server
-  return server.start(function () {
-    var configClone = Hoek.clone(config);
-    configClone.privateKey = configClone.privateKey.replace(/./g, '*');
-    if (_.get(configClone, 'emailer.options.accessKeyId')) { configClone.emailer.options.accessKeyId = configClone.emailer.options.accessKeyId.replace(/./g, '*'); }
-    if (_.get(configClone, 'emailer.options.secretAccessKey')) { configClone.emailer.options.secretAccessKey = configClone.emailer.options.secretAccessKey.replace(/./g, '*'); }
-    if (_.get(configClone, 'emailer.options.auth.pass')) { configClone.emailer.options.auth.pass = configClone.emailer.options.auth.pass.replace(/./g, '*'); }
-    if (configClone.images.s3.accessKey) { configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*'); }
-    if (configClone.images.s3.secretKey) { configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*'); }
-    if (configClone.imagesEnv.s3.accessKey) { configClone.imagesEnv.s3.accessKey = configClone.imagesEnv.s3.accessKey.replace(/./g, '*'); }
-    if (configClone.imagesEnv.s3.secretKey) { configClone.imagesEnv.s3.secretKey = configClone.imagesEnv.s3.secretKey.replace(/./g, '*'); }
-    if (configClone.recaptchaSiteKey) { configClone.recaptchaSiteKey = configClone.recaptchaSiteKey.replace(/./g, '*'); }
-    if (configClone.recaptchaSecretKey) { configClone.recaptchaSecretKey = configClone.recaptchaSecretKey.replace(/./g, '*'); }
-    if (configClone.gaKey) { configClone.gaKey = configClone.gaKey.replace(/./g, '*'); }
-    if (configClone.websocketAPIKey) { configClone.websocketAPIKey = configClone.websocketAPIKey.replace(/./g, '*'); }
-    var dbCon = {
-      database: process.env.PGDATABASE,
-      host: process.env.PGHOST,
-      port: process.env.PGPORT,
-      username: process.env.PGUSER,
-      password: process.env.PGPASSWORD.replace(/./g, '*')
-    };
-    server.log('debug', '\nDB Connection:\n' + JSON.stringify(dbCon, undefined, 2));
-    server.log('debug', '\nServer Configurations:\n' + JSON.stringify(configClone, undefined, 2));
-    server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
-  });
+  await server.start();
+  var configClone = Hoek.clone(config);
+  configClone.privateKey = configClone.privateKey.replace(/./g, '*');
+  if (_.get(configClone, 'emailer.options.accessKeyId')) { configClone.emailer.options.accessKeyId = configClone.emailer.options.accessKeyId.replace(/./g, '*'); }
+  if (_.get(configClone, 'emailer.options.secretAccessKey')) { configClone.emailer.options.secretAccessKey = configClone.emailer.options.secretAccessKey.replace(/./g, '*'); }
+  if (_.get(configClone, 'emailer.options.auth.pass')) { configClone.emailer.options.auth.pass = configClone.emailer.options.auth.pass.replace(/./g, '*'); }
+  if (configClone.images.s3.accessKey) { configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*'); }
+  if (configClone.images.s3.secretKey) { configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*'); }
+  if (configClone.imagesEnv.s3.accessKey) { configClone.imagesEnv.s3.accessKey = configClone.imagesEnv.s3.accessKey.replace(/./g, '*'); }
+  if (configClone.imagesEnv.s3.secretKey) { configClone.imagesEnv.s3.secretKey = configClone.imagesEnv.s3.secretKey.replace(/./g, '*'); }
+  if (configClone.recaptchaSiteKey) { configClone.recaptchaSiteKey = configClone.recaptchaSiteKey.replace(/./g, '*'); }
+  if (configClone.recaptchaSecretKey) { configClone.recaptchaSecretKey = configClone.recaptchaSecretKey.replace(/./g, '*'); }
+  if (configClone.gaKey) { configClone.gaKey = configClone.gaKey.replace(/./g, '*'); }
+  if (configClone.websocketAPIKey) { configClone.websocketAPIKey = configClone.websocketAPIKey.replace(/./g, '*'); }
+  var dbCon = {
+    database: process.env.PGDATABASE,
+    host: process.env.PGHOST,
+    port: process.env.PGPORT,
+    username: process.env.PGUSER,
+    password: process.env.PGPASSWORD.replace(/./g, '*')
+  };
+  server.log('debug', '\nDB Connection:\n' + JSON.stringify(dbCon, undefined, 2));
+  server.log('debug', '\nServer Configurations:\n' + JSON.stringify(configClone, undefined, 2));
+  server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
 
   // listen on SIGINT signal and gracefully stop the server
   process.on('SIGINT', function () {
