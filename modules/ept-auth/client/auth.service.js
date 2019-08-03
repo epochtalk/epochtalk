@@ -20,7 +20,6 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Ale
         .then(function(resource) { Session.setUser(resource); })
         .then(function() { PreferencesSvc.pullPreferences(); })
         .then(function() { $rootScope.$emit('loginEvent'); })
-        .catch(console.log);
       },
 
       logout: function() {
@@ -28,7 +27,6 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Ale
         .then(function() { Session.clearUser(); })
         .then(function() { PreferencesSvc.clearPreferences(); })
         .finally(function() { $rootScope.$emit('logoffEvent'); })
-        .catch(console.log);
       },
 
       authenticate: function() {
