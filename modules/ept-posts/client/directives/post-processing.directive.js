@@ -263,7 +263,8 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
           nonBindableHTML = nonBindableHTML.replace(uuid, replaceWith)
         });
 
-        var ngLinks = $element.find('[data-sref]');
+        // Replace mentions which use ui-sref, allow directive to bind
+        var ngLinks = $element.find('[ui-sref]');
         ngLinks.each(function(index, link) {
           var linkHTML = $(link)[0].outerHTML;
           var replaceWith = '</span>' + linkHTML + '<span ng-non-bindable>';
