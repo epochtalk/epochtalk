@@ -263,6 +263,13 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
           nonBindableHTML = nonBindableHTML.replace(uuid, replaceWith)
         });
 
+        var ngLinks = $element.find('[data-sref]');
+        ngLinks.each(function(index, link) {
+          var linkHTML = $(link)[0].outerHTML;
+          var replaceWith = '</span>' + linkHTML + '<span ng-non-bindable>';
+          nonBindableHTML = nonBindableHTML.replace(linkHTML, replaceWith);
+        });
+
         // Rebind html to $element after excluding images from ng-non-bindable
         $element.html(nonBindableHTML);
 

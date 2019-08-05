@@ -40,7 +40,7 @@ function userIdToUsername(request) {
         post.body = post.body.replace(idRegex, '@' + user.username);
 
         // bodyHtml: {@123} -> <a ui-sref=".profiles('kkid')">kkid</a>
-        var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\'})">' + '@' + user.username + '</a>';
+        var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\'})" data-sref="true">' + '@' + user.username + '</a>';
 
         post.body_html = post.body_html.replace(idRegex, profileLink);
         if (post.post_body) {
