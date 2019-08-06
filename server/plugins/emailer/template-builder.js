@@ -156,3 +156,22 @@ exports.postDeleted = function(sender, params) {
     })
   };
 };
+
+exports.postUpdated = function(sender, params) {
+  var template = doT.template(templateFile('post-updated.html'));
+  var currentYear = new Date().getFullYear();
+  return {
+    from: sender,
+    to: params.email,
+    subject: `[${params.site_name}] Your post in thread "${params.thread_name}" has been ${params.action}`,
+    html: template({
+      css: css(),
+      threadName: params.thread_name,
+      modUsername: params.mod_username,
+      siteName: params.site_name,
+      currentYear: currentYear,
+      action: params.action,
+      threadUrl: params.thread_url
+    })
+  };
+};
