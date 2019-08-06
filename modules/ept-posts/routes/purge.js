@@ -43,13 +43,13 @@ module.exports = {
         };
         return purgedPost;
       })
-      .tap(function(purgedPost) {
+      .tap(function(post) {
         var email;
-        if (purgedPost.user_id !== request.auth.credentials.id) {
-          request.db.users.find(purgedPost.user_id)
+        if (post.user_id !== request.auth.credentials.id) {
+          request.db.users.find(post.user_id)
           .then(function(user) {
             email = user.email;
-            return request.db.threads.find(purgedPost.thread_id);
+            return request.db.threads.find(post.thread_id);
           })
           .then(function(thread) {
             var config = request.server.app.config;
@@ -58,11 +58,11 @@ module.exports = {
               mod_username: request.auth.credentials.username,
               thread_name: thread.title,
               site_name: config.website.title,
-              thread_url: config.publicUrl + '/threads/' + thread.id + '/posts'
+              thread_url: config.publicUrl + '/threads/' + thread.id + '/posts',
+              action: 'deleted'
             };
-
             request.server.log('debug', emailParams);
-            request.emailer.send('postDeleted', emailParams)
+            request.emailer.send('postUpdated', emailParams)
             .catch(console.log);
             return;
           });

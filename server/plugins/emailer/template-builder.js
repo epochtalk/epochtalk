@@ -139,24 +139,6 @@ exports.mentionNotification = function(sender, params) {
   };
 };
 
-exports.postDeleted = function(sender, params) {
-  var template = doT.template(templateFile('post-deleted.html'));
-  var currentYear = new Date().getFullYear();
-  return {
-    from: sender,
-    to: params.email,
-    subject: `[${params.site_name}] Your post has been deleted from "${params.thread_name}"`,
-    html: template({
-      css: css(),
-      threadName: params.thread_name,
-      modUsername: params.mod_username,
-      siteName: params.site_name,
-      currentYear: currentYear,
-      threadUrl: params.thread_url
-    })
-  };
-};
-
 exports.postUpdated = function(sender, params) {
   var template = doT.template(templateFile('post-updated.html'));
   var currentYear = new Date().getFullYear();
