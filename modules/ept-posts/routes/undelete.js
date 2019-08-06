@@ -32,6 +32,32 @@ module.exports = {
     pre: [ { method: (request) => request.server.methods.auth.posts.delete(request.server, request.auth, request.params.id)} ],
     handler: function(request) {
       var promise = request.db.posts.undelete(request.params.id)
+      .tap(function(post) {
+        var email;
+        if (post.user_id !== request.auth.credentials.id) {
+          request.db.users.find(post.user_id)
+          .then(function(user) {
+            email = user.email;
+            return request.db.threads.find(post.thread_id);
+          })
+          .then(function(thread) {
+            var config = request.server.app.config;
+            var emailParams = {
+              email: email,
+              mod_username: request.auth.credentials.username,
+              thread_name: thread.title,
+              site_name: config.website.title,
+              thread_url: config.publicUrl + '/threads/' + thread.id + '/posts?start=' + post.position + '#' + post.id,
+              action: 'unhidden'
+            };
+            request.server.log('debug', emailParams);
+            request.emailer.send('postUpdated', emailParams)
+            .catch(console.log);
+            return;
+          });
+        }
+        return;
+      })
       .error(request.errorMap.toHttpError);
       return promise;
     }
