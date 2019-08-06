@@ -36,6 +36,52 @@ module.exports = {
   },
   handler: function(request) {
     var promise = request.db.threads.purge(request.params.id)
+    .tap(function(thread) {
+      thread.poster_ids.forEach(function(userId) {
+        var email;
+        // Email thread author
+        if (userId === request.auth.credentials.id) {
+          return request.db.users.find(userId)
+          .then(function(user) { email = user.email; })
+          .then(function() {
+            var config = request.server.app.config;
+            var emailParams = {
+              email: email,
+              mod_username: request.auth.credentials.username,
+              thread_name: thread.title,
+              site_name: config.website.title,
+              site_url: config.publicUrl,
+              action: 'created'
+            };
+            request.server.log('debug', emailParams);
+            request.emailer.send('threadDeleted', emailParams)
+            .catch(console.log);
+            return;
+          });
+        }
+        // Email thread participants
+        else {
+          return request.db.users.find(userId)
+          .then(function(user) { email = user.email; })
+          .then(function() {
+            var config = request.server.app.config;
+            var emailParams = {
+              email: email,
+              mod_username: request.auth.credentials.username,
+              thread_name: thread.title,
+              site_name: config.website.title,
+              site_url: config.publicUrl,
+              action: 'participated in'
+            };
+            request.server.log('debug', emailParams);
+            request.emailer.send('threadDeleted', emailParams)
+            .catch(console.log);
+            return;
+          });
+        }
+      });
+      return thread;
+    })
     .then(function(purgedThread) {
       // append purged thread data to plugin metadata
       request.route.settings.plugins.mod_log.metadata = {
