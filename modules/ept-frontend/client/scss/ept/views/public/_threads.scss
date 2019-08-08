@@ -364,15 +364,117 @@
 }
 
 
+// Grid test
+.grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+
+  thead, tbody, tr {
+    display: contents;
+  }
+
+  caption {
+    grid-column: 1 / span 4;
+  }
+
+  @include break-mobile-sm {
+    grid-template-columns: 1fr;
+
+    caption {
+      grid-column: inherit;
+    }
+  }
+}
+
+// Child Boards view
+.child-boards {
+  display: grid;
+  // grid-template-columns: minmax(200px, 600px) 2fr 3fr;
+  grid-template-columns: minmax(200px, 600px) 2fr minmax(100px, 200px);
+  column-gap: 1.5rem;
+  row-gap: 1rem;
+  margin-bottom: 3rem;
+
+  caption {
+    color: $text-gray-med;
+    font-size: $font-size-sm;
+    font-weight: 400;
+    grid-column: 1 / span 3;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  thead, tbody, tr {
+    display: contents;
+  }
+
+   thead, tbody {
+    tr {
+      td, th {
+        font-size: $base-font-size;
+        padding: 0; 
+        line-height: 20px;
+      }
+    }
+  }
+
+  .description {
+    font-size: $font-size-sm;
+  }
+
+  .children {
+    color: $text-gray-dark;
+    font-size: $font-size-sm;
+  }
+
+  .views {
+    color: $text-gray-dark;
+    font-size: $font-size-sm;
+    font-weight: 600;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: min-content;
+    column-gap: 0.2rem;
+
+    .views-number {
+      justify-self: end;
+    }
+
+    .label {
+      font-weight: 400;
+    }
+  }
+
+  .last-post {
+    color: $text-gray-dark;
+    font-size: $font-size-sm;
+  }
+
+  @include break-mobile-sm {
+    grid-template-columns: 1fr;
+
+    caption {
+      grid-column: inherit;
+    }
+
+    .views {
+      grid-template-columns: repeat(4, auto);
+    }
+  }
+}
+
+
 // Thread List view
 .threads-list {
   display: grid;
-  grid-template-columns: minmax(200px, 600px) repeat(2, 1fr) 3fr;
+  // grid-template-columns: minmax(200px, 600px) repeat(2, 1fr) 3fr;
+  grid-template-columns: minmax(200px, 600px) repeat(2, 1fr) minmax(100px, 200px);
   column-gap: 1.5rem;
   row-gap: 1rem;
 
   caption {
     display: none;
+    grid-column: 1 / span 2;
   }
 
   thead, tbody, tr {
