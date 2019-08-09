@@ -34,7 +34,7 @@ var css = function() {
 };
 
 var templateFile = function(filename) {
-  return fs.readFileSync(path.join(__dirname, 'templates', filename));
+  return fs.readFileSync(path.join(__dirname, 'templates', filename)).toString().split('\n').map(s => s.trim()).join('');
 };
 
 exports.recoverAccount = function(sender, params) {
