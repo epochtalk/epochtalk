@@ -1,5 +1,5 @@
 var path = require('path');
-var doT = require('dot');
+var mustache = require('mustache');
 var fs = require('fs');
 var varsDir = '/../../../app/scss/ept/variables';
 var defaultVarsPath = path.normalize(__dirname + varsDir + '/_default-variables.scss');
@@ -38,13 +38,12 @@ var templateFile = function(filename) {
 };
 
 exports.recoverAccount = function(sender, params) {
-  var template = doT.template(templateFile('recover-account.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] Account Recovery`,
-    html: template({
+    html: mustache.render(templateFile('recover-account.html'),{
       css: css(),
       username: params.username,
       siteName: params.site_name,
