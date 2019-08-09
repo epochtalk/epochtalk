@@ -15,7 +15,6 @@ module.exports = function(reportNote) {
     .then(function(results) { // lookup and return existing reportNote
       var rows = results.rows;
       if (rows.length) { return rows[0]; }
-      else { return Promise.reject(); }
     })
     .then(function(dbReportNote) { // update only note content and updated_at timestamp
       existingReportNote = dbReportNote;
@@ -27,7 +26,6 @@ module.exports = function(reportNote) {
     .then(function(results) { // extract updated_at from row and return
       var rows = results.rows;
       if (rows.length) { return rows[0].updated_at; }
-      else { return Promise.reject(); }
     })
     .then(function(updatedAt) { // return updated report note
       existingReportNote.updated_at = updatedAt;

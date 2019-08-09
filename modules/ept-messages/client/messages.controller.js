@@ -218,6 +218,11 @@ var ctrl = [
         ctrl.page = data.page;
         ctrl.pageMax = Math.ceil(data.total_convo_count / data.limit);
 
+      })
+      .catch(function(err) {
+        var msg = 'Messages could not be loaded';
+        if (err && err.status === 403) { msg = err.data.message; }
+        Alert.error(msg);
       });
     };
 

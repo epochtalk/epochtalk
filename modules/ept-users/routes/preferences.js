@@ -16,9 +16,9 @@ var Boom = require('boom');
 module.exports = {
   method: 'GET',
   path: '/api/users/preferences',
-  config: { auth: { strategy: 'jwt' } },
-  handler: function(request, reply) {
-    if (!request.auth.isAuthenticated) { return reply(Boom.badRequest()); }
+  options: { auth: { strategy: 'jwt' } },
+  handler: function(request) {
+    if (!request.auth.isAuthenticated) { return Boom.badRequest(); }
 
     // get logged in user id
     var userId = request.auth.credentials.id;
@@ -28,6 +28,6 @@ module.exports = {
     .then(function(user) { return user; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

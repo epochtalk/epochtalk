@@ -54,7 +54,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'PUT',
   path: '/api/users/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -107,14 +107,14 @@ module.exports = {
       .with('email', 'email_password')
     },
     pre: [
-      { method: 'auth.users.update(server, auth, params.id, payload)' },
-      { method: 'common.users.clean(sanitizer, payload)' },
-      { method: 'common.users.parse(parser, payload)' },
-      { method: 'common.images.signature(imageStore, payload)' },
-      { method: 'common.images.avatarSub(payload)' }
+      { method: (request) => request.server.methods.auth.users.update(request.server, request.auth, request.params.id, request.payload) },
+      { method: (request) => request.server.methods.common.users.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.users.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.signature(request.imageStore, request.payload) },
+      { method: (request) => request.server.methods.common.images.avatarSub(request.payload) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // update the user in db
     request.payload.id = request.params.id;
     var promise = request.db.users.update(request.payload)
@@ -134,6 +134,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

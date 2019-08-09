@@ -7,22 +7,26 @@ var blacklist = {};
 var path = require('path');
 var db;
 
-exports.register = function(server, options, next) {
-  if (!options.db) { return next(new Error('No DB found in IP Blacklist')); }
-  db = options.db;
+module.exports = {
+  name: 'blacklist',
+  version: '1.0.0',
+  register: async function(server, options) {
+    if (!options.db) { return next(new Error('No DB found in IP Blacklist')); }
+    db = options.db;
 
-  server.ext('onRequest', function(request, reply) {
-    var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
-    if (Object.keys(blacklist).length && ipBlacklisted(ip)) {
-      var err = Boom.forbidden();
-      return reply(err);
-    }
-    else { return reply.continue(); }
-  });
+    server.ext('onRequest', function(request, h) {
+      var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
+      if (Object.keys(blacklist).length && ipBlacklisted(ip)) {
+        var err = Boom.forbidden();
+        return err;
+      }
+      else { return h.continue; }
+    });
 
-  server.expose('retrieveBlacklist', retrieveBlacklist);
+    server.expose('retrieveBlacklist', retrieveBlacklist);
 
-  return retrieveBlacklist().then(next);
+    return retrieveBlacklist();
+  }
 };
 
 function ipBlacklisted(requesterIp) {
@@ -98,8 +102,3 @@ function retrieveBlacklist() {
   })
   .then(function(data) { blacklist = data; });
 }
-
-exports.register.attributes = {
-  name: 'blacklist',
-  version: '1.0.0'
-};

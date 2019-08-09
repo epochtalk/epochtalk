@@ -23,7 +23,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'PUT',
   path: '/api/boards',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -42,17 +42,17 @@ module.exports = {
       })).unique().min(1)
     },
     pre: [
-      { method: 'auth.boards.update(server, auth)' },
-      { method: 'common.boards.clean(sanitizer, payload)' },
+      { method: (request) => request.server.methods.auth.boards.update(request.server, request.auth) },
+      { method: (request) => request.server.methods.common.boards.clean(request.sanitizer, request.payload) },
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // update each board
     var promise = Promise.map(request.payload, function(board) {
       return request.db.boards.update(board);
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

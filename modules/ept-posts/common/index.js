@@ -18,28 +18,23 @@ common.export = () =>  {
   return [
     {
       name: 'common.posts.checkPostLength',
-      method: checkPostLength,
-      options: { callback: false }
+      method: checkPostLength
     },
     {
       name: 'common.posts.clean',
-      method: clean,
-      options: { callback: false }
+      method: clean
     },
     {
       name: 'common.posts.parse',
-      method: parse,
-      options: { callback: false }
+      method: parse
     },
     {
       name: 'common.posts.parseOut',
-      method: parseOut,
-      options: { callback: false }
+      method: parseOut
     },
     {
       name: 'common.posts.newbieImages',
-      method: newbieImages,
-      options: { callback: false }
+      method: newbieImages
     }
   ];
 };
@@ -53,7 +48,7 @@ function formatPost(post) {
     id: post.user_id,
     name: post.name,
     username: post.username,
-    priority: post.priority || post.default_priority,
+    priority: post.priority === null ? post.default_priority : post.priority,
     deleted: post.user_deleted,
     signature: post.signature,
     post_count: post.post_count,
@@ -78,6 +73,9 @@ function checkPostLength(server, postBody) {
     var msg = 'Error: body too long, max length is ' + server.app.config.postMaxLength;
     return Promise.reject(Boom.badRequest(msg));
   }
+  else {
+    return true;
+  }
 }
 
 function clean(sanitizer, payload) {
@@ -93,6 +91,7 @@ function clean(sanitizer, payload) {
     var msg = 'Error: body contained no data after sanitizing html tags.';
     return Promise.reject(Boom.badRequest(msg));
   }
+  return payload;
 }
 
 function parse(parser, payload) {
@@ -105,12 +104,13 @@ function parse(parser, payload) {
   }
   // check if parsing was needed
   if (payload.body_html === payload.body) { payload.body_html = ''; }
+  return payload;
 }
 
 function parseOut(parser, posts) {
   if (!posts) { return; }
   posts = posts.length ? posts : [ posts ];
-  Promise.each(posts, function(post) {
+  return Promise.each(posts, function(post) {
     post.body_html = parser.parse(post.body);
   });
 }
@@ -122,21 +122,22 @@ function newbieImages(auth, payload) {
   auth.credentials.roles.map(function(role) {
     if (role === 'newbie') { isNewbie = true; }
   });
-  if (!isNewbie) { return; }
+  if (isNewbie) {
+    // load html in payload.body_html into cheerio
+    var html = payload.body_html;
+    var $ = cheerio.load(html);
 
-  // load html in payload.body_html into cheerio
-  var html = payload.body_html;
-  var $ = cheerio.load(html);
+    // collect all the images in the body
+    $('img').each((index, element) => {
+      var src = $(element).attr('src');
+      var canonical = $(element).attr('data-canonical-src');
+      var replacement = `<a href="${src}" target="_blank" data-canonical-src="${canonical}">${src}</a>`;
+      $(element).replaceWith(replacement);
+    });
 
-  // collect all the images in the body
-  $('img').each((index, element) => {
-    var src = $(element).attr('src');
-    var canonical = $(element).attr('data-canonical-src');
-    var replacement = `<a href="${src}" target="_blank" data-canonical-src="${canonical}">${src}</a>`;
-    $(element).replaceWith(replacement);
-  });
-
-  payload.body_html = $.html();
+    payload.body_html = $.html();
+  }
+  return payload;
 }
 
 function hasPriority(server, auth, permission, postId, selfMod) {
@@ -168,7 +169,7 @@ function hasPriority(server, auth, permission, postId, selfMod) {
       if (hasPermission === true && aid <= pid) { return Promise.resolve(true); }
       // Allow patrollers to have priority over users in self moderated threads
       else if (selfMod === true && isUser === true && hasPatrollerRole === true) { return Promise.resolve(true); }
-      else { return Boom.forbidden();}
+      else { return Promise.reject(Boom.forbidden()); }
     });
   });
 }
@@ -192,8 +193,8 @@ function cleanPosts(posts, currentUserId, viewContext, request, thread, allowVie
     viewablesType = 'array';
   }
   return posts.map(function(post) {
-    var postHiddenByPriority = post.metadata ? post.metadata.hidden_by_priority : null;
-    var postHiddenById = post.metadata ? post.metadata.hidden_by_id : null;
+    var postHiddenByPriority = post.metadata ? post.metadata.hidden_by_priority : post.user.priority;
+    var postHiddenById = post.metadata ? post.metadata.hidden_by_id : post.user.id;
     var authedUserHasPriority = authedUserPriority <= postHiddenByPriority;
     var authedUserHidePost = postHiddenById === authedId;
 

@@ -35,7 +35,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'PUT',
   path: '/api/users/roles/add',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -52,28 +52,28 @@ module.exports = {
         role_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.users.addRoles(server, auth, payload.role_id, payload.usernames)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.addRoles(request.server, request.auth, request.payload.role_id, request.payload.usernames) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var usernames = request.payload.usernames;
     var roleId = request.payload.role_id;
     var promise = request.db.users.addRoles(usernames, roleId)
     .tap(function(users) {
-      return Promise.map(users, function(user) {
+      return Promise.each(users, function(user) {
         var notification = {
           channel: { type: 'user', id: user.id },
           data: { action: 'reauthenticate' }
         };
-        request.server.plugins.notifications.systemNotification(notification);
+        return request.server.plugins.notifications.systemNotification(notification);
       });
     })
     .tap(function(users) {
-      return Promise.map(users, function(user) {
+      return Promise.each(users, function(user) {
         return request.session.updateRoles(user.id, user.roles);
       });
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

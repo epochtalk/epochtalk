@@ -17,7 +17,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/admin/blacklist',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -34,9 +34,9 @@ module.exports = {
         note: Joi.string().min(1).max(255)
       }
     },
-    pre: [ { method: 'auth.blacklist.addRule(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.blacklist.addRule(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var rule = request.payload;
     var promise = request.db.blacklist.addRule(rule)
     .then(function(blacklist) {
@@ -45,6 +45,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

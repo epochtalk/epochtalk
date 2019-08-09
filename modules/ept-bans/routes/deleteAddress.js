@@ -25,7 +25,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/ban/addresses',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -42,13 +42,13 @@ module.exports = {
         ip: Joi.string()
       }
     },
-    pre: [ { method: 'auth.bans.deleteAddress(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.bans.deleteAddress(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var address = request.query;
     var promise =  request.db.bans.deleteAddress(address)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

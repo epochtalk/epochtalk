@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../db'));
 var adText = require(path.normalize(__dirname + '/../../text'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -15,7 +15,7 @@ function auth(request, reply) {
     permission: 'ads.view.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -38,11 +38,11 @@ function auth(request, reply) {
 module.exports = {
   method: 'GET',
   path: '/api/ads',
-  config: {
+  options: {
     auth: {  mode: 'try', strategy: 'jwt' },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // check if user is logged in
     var userId;
     var pKey = request.server.app.config.privateKey;
@@ -98,6 +98,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

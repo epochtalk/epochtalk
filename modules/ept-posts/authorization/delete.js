@@ -33,7 +33,11 @@ module.exports = function postsDelete(server, auth, postId) {
       args: [userId, postId],
       permission: 'posts.delete.bypass.owner.selfMod'
     },
-    common.hasPriority(server, auth, 'posts.delete.bypass.owner.selfMod', postId)
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.delete.bypass.owner.selfMod', postId]
+    }
   ];
   var selfMod = server.authorization.stitch(Boom.forbidden(), selfModCond, 'all');
 
@@ -47,8 +51,12 @@ module.exports = function postsDelete(server, auth, postId) {
       args: [userId, postId],
       permission: 'posts.delete.bypass.owner.priority'
     },
-    // The boolean at the end tells hasPriority to pass if auth user is Patroller and post creator is a user
-    common.hasPriority(server, auth, 'posts.delete.bypass.owner.priority', postId, true)
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      // The boolean at the end tells hasPriority to pass if auth user is Patroller and post creator is a user
+      args: [server, auth, 'posts.delete.bypass.owner.priority', postId, true]
+    }
   ];
   var prioritySelfMod = server.authorization.stitch(Boom.forbidden(), prioritySelfModCond, 'all');
 
@@ -79,7 +87,11 @@ module.exports = function postsDelete(server, auth, postId) {
     selfMod,
     // Has priority permission
     prioritySelfMod,
-    common.hasPriority(server, auth, 'posts.delete.bypass.owner.priority', postId)
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.delete.bypass.owner.priority', postId]
+    }
   ];
   var deleted = server.authorization.stitch(Boom.forbidden(), deleteCond, 'any');
 

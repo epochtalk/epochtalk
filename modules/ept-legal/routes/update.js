@@ -23,7 +23,7 @@ var baseCustomPath = __dirname + '/../../../content/legal/';
 module.exports = {
   method: 'PUT',
   path: '/api/legal',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: Joi.object().keys({
@@ -32,9 +32,9 @@ module.exports = {
         disclaimer: Joi.string().allow('')
       })
     },
-    pre: [ { method: 'auth.legal.update(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.legal.update(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var writeFile = function(path, text) {
       return new Promise(function(resolve, reject) {
         fse.outputFile(path, text, function(err) {
@@ -53,9 +53,9 @@ module.exports = {
     var disclaimerCustomPath = path.normalize(baseCustomPath + 'disclaimer.txt');
     var writeDisclaimer = writeFile(disclaimerCustomPath, request.payload.disclaimer);
 
-    var promise = Promise.join(writeTos, writePrivacy, writeDisclaimer, function() { return; })
+    var promise = Promise.join(writeTos, writePrivacy, writeDisclaimer, function() { return 'Success 200'; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

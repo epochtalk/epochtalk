@@ -26,6 +26,10 @@
     "url": "/api"
   },
   "dependencies": {
+    "@hapi/good": "^8.2.0",
+    "@hapi/good-console": "^8.1.0",
+    "@hapi/good-squeeze": "^5.2.0",
+    "@hapi/hapi": "^18.1.0",
     "@uirouter/angularjs": "^1.0.20",
     "angular": "1.7.5",
     "angular-animate": "1.7.5",
@@ -45,22 +49,18 @@
     "dot": "^1.0.3",
     "dotenv": "^4.0.0",
     "fs-extra": "^7.0.1",
-    "good": "^7.3.0",
-    "good-console": "^6.4.0",
     "good-file": "^6.0.1",
     "good-http": "^6.1.3",
-    "good-squeeze": "^5.0.2",
     "handlebars": "^4.1.1",
-    "hapi": "^16.6.2",
     "hoek": "^6.1.2",
-    "inert": "^4.2.1",
+    "@hapi/inert": "^5.2.1",
     "ip-address": "^5.0.2",
     "joi": "^14.3.1",
     "jquery": "3.4.0",
     "json": "^9.0.3",
     "jsonwebtoken": "^8.1.0",
     "klaw": "^2.1.1",
-    "lodash": "^4.17.11",
+    "lodash": "4.17.14",
     "marked": "^0.3.6",
     "mkdirp": "^0.5.1",
     "mmmagic": "^0.5.2",
@@ -82,7 +82,7 @@
     "stream-meter": "^1.0.3",
     "through2": "^2.0.0",
     "uuid": "^3.1.0",
-    "vision": "^4.1.1",
+    "@hapi/vision": "^5.5.2",
     "webpack": "^4.20.1",
     "webpack-cli": "^3.1.2"
   },
@@ -104,14 +104,8 @@
     "watch": "^0.17.1"
   },
   "resolutions": {
-    "good/joi": "^14.3.1",
-    "good-console/joi": "^14.3.1",
-    "inert/joi": "^14.3.1",
-    "vision/joi": "^14.3.1",
-    "hapi/**/joi": "^14.3.1",
     "lab/**/joi": "^14.3.1",
-    "good-http/wreck": "^12.5.1",
-    "vision/boom": "^7.2.0"
+    "good-http/wreck": "^12.5.1"
   },
   "bin": {
     "epoch": "cli/index.js"

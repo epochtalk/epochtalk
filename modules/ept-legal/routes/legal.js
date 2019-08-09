@@ -5,7 +5,7 @@ var fse = require('fs-extra');
 module.exports = {
   method: 'GET',
   path: '/legal',
-  handler: function(request, reply) {
+  handler: function(request, h) {
     var config = request.server.app.config;
     var baseCustomPath = __dirname + '/../../../content/legal/';
     var baseDefaultPath = __dirname + '/../../../defaults/legal/';
@@ -46,7 +46,7 @@ module.exports = {
         disclaimer: disclaimer
       };
 
-      return reply.view('legal', data);
+      return h.view('legal', data);
     });
   }
 };

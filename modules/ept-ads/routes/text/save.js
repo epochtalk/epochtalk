@@ -3,7 +3,7 @@ var Boom = require('boom');
 var path = require('path');
 var adText = require(path.normalize(__dirname + '/../../text'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'ads.textSave.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -34,7 +34,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'POST',
   path: '/api/ads/text',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {
@@ -44,10 +44,10 @@ module.exports = {
     },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var text = request.payload;
     adText.setDisclaimer(text.disclaimer);
     adText.setInfo(text.info);
-    return reply(text);
+    return text;
   }
 };

@@ -35,7 +35,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/reports/postnotes/{report_id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: { report_id: Joi.string().required() },
@@ -45,9 +45,9 @@ module.exports = {
         desc: Joi.boolean().default(true)
       }
     },
-    pre: [ { method: 'auth.reports.posts.notes.page(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.posts.notes.page(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var reportId = request.params.report_id;
     var opts = {
       limit: request.query.limit,
@@ -70,6 +70,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

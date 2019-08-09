@@ -33,7 +33,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'PUT',
   path: '/api/users/roles/remove',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -50,9 +50,9 @@ module.exports = {
         role_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.users.removeRole(server, auth, payload.user_id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.removeRole(request.server, request.auth, request.payload.user_id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.payload.user_id;
     var roleId = request.payload.role_id;
     var promise = request.db.users.removeRole(userId, roleId)
@@ -75,6 +75,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -39,7 +39,7 @@ images.reinit = function() { images.init(options); };
 
 images.saveImage = (imgSrc) => {
   if (imgSrc) { return imageHandlers[config.images.storage].saveImage(imgSrc); }
-  else { return; }
+  else { return true; }
 };
 
 images.uploadPolicy = (filename) => {
@@ -108,7 +108,7 @@ images.imageSub = (post) => {
   $('img').each((index, element) => { postImages.push(element); });
 
   // convert each image's src to cdn version
-  return Promise.map(postImages, (element) => {
+  return Promise.each(postImages, (element) => {
     var imgSrc = $(element).attr('src');
     var savedUrl = images.saveImage(imgSrc);
 
@@ -118,8 +118,10 @@ images.imageSub = (post) => {
       // update src with new url
       $(element).attr('src', savedUrl);
     }
+    return Promise.resolve();
   })
-  .then(() => { post.body_html = $.html(); });
+  .then(() => { post.body_html = $.html(); })
+  .then(() => post);
 };
 
 images.avatarSub = (user) => {
@@ -128,7 +130,8 @@ images.avatarSub = (user) => {
     var savedUrl = images.saveImage(user.avatar);
     if (savedUrl) { user.avatar = savedUrl; }
     return resolve();
-  });
+  })
+  .then(() => user);
 };
 
 images.addPostImageReference = function(postId, imageUrl) {

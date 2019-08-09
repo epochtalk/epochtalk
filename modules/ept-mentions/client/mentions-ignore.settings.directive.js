@@ -24,7 +24,8 @@ var directive = ['Mentions', '$timeout', 'Alert',
           ctrl.prev = ignored.prev;
           return Mentions.getMentionEmailSettings().$promise
         })
-        .then(function(data) {  ctrl.emailsDisabled = data.email_mentions; });
+        .then(function(data) {  ctrl.emailsDisabled = data.email_mentions; })
+        .catch(function(err) { Alert.error('There was an error paging ignored users.'); });
       };
 
       $timeout(function() { ctrl.init(); })

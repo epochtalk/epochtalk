@@ -26,7 +26,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/messages',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -34,9 +34,9 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(15)
       }
     },
-    pre: [ { method: 'auth.messages.latest(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.messages.latest(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var opts = {
       limit: request.query.limit,
@@ -56,6 +56,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

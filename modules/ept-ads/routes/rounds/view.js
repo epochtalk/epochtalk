@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../db'));
 var adText = require(path.normalize(__dirname + '/../../text'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -15,22 +15,29 @@ function auth(request, reply) {
     permission: 'ads.roundView.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
-function defaultRoundNumber(request, reply) {
-  var roundNumber = request.params.roundNumber;
+function defaultRoundNumber(request, h) {
+  var roundNumber = request.params.roundNumber || h.continue;
   if (roundNumber === 'current') {
-    roundNumber = db.rounds.current()
-    .tap(function(round) { request.params.roundNumber = round; })
+    return db.rounds.current()
     .then(function(round) {
-      if (!round) {
+      request.params.roundNumber = round;
+      return round;
+    })
+    .then(function(round) {
+      if (round) { return round; }
+      else {
         return db.rounds.max()
-        .tap(function(maxRound) { request.params.roundNumber = maxRound; });
+        .tap(function(maxRound) {
+          request.params.roundNumber = maxRound;
+          return maxRound;
+        });
       }
     });
   }
-  return reply(roundNumber);
+  return roundNumber;
 }
 
 /**
@@ -73,7 +80,7 @@ function defaultRoundNumber(request, reply) {
 module.exports = {
   method: 'GET',
   path: '/api/ads/rounds/{roundNumber}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {
@@ -88,7 +95,7 @@ module.exports = {
       { method: defaultRoundNumber }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var roundNumber = request.params.roundNumber || 0;
     var pKey = request.server.app.config.privateKey;
     var type = request.query.type;
@@ -138,6 +145,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

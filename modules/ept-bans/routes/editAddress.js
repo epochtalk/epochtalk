@@ -28,7 +28,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'PUT',
   path: '/api/ban/addresses',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -49,13 +49,13 @@ module.exports = {
         decay: Joi.boolean().default(false),
       }).without('hostname', 'ip')
     },
-    pre: [ { method: 'auth.bans.editAddress(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.bans.editAddress(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var address = request.payload;
     var promise =  request.db.bans.editAddress(address)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -20,7 +20,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/admin/moderators/remove',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -37,9 +37,9 @@ module.exports = {
         board_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.moderators.remove(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.moderators.remove(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var usernames = request.payload.usernames;
     var boardId = request.payload.board_id;
     var promise = request.db.moderators.remove(usernames, boardId)
@@ -55,6 +55,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

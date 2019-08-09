@@ -21,14 +21,15 @@ var Boom = require('boom');
 module.exports = {
   method: 'GET',
   path: '/api/authenticate',
-  config: { auth: { mode: 'try', strategy: 'jwt' } },
-  handler: function(request, reply) {
+  options: { auth: { mode: 'try', strategy: 'jwt' } },
+  handler: function(request) {
     // check if already logged in with jwt
-    var ret = Boom.unauthorized();
     if (request.auth.isAuthenticated) {
       var user = request.auth.credentials;
-      ret = request.session.formatUserReply(user.token, user);
+      return request.session.formatUserReply(user.token, user);
     }
-    return reply(ret);
+    else {
+      return Boom.unauthorized('Session is no longer valid.');
+    }
   }
 };

@@ -4,7 +4,7 @@ var path = require('path');
 var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../db'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -12,22 +12,29 @@ function auth(request, reply) {
     auth: request.auth,
     permission: 'ads.analyticsView.allow'
   });
-  return reply(promise);
+  return promise;
 }
 
-function defaultRoundNumber(request, reply) {
-  var roundNumber = request.params.round;
+function defaultRoundNumber(request, h) {
+  var roundNumber = request.params.round || h.continue;
   if (roundNumber === 'current') {
-    roundNumber = db.rounds.current()
-    .tap(function(round) { request.params.round = round; })
+    return db.rounds.current()
     .then(function(round) {
-      if (!round) {
+      request.params.round = round;
+      return round;
+    })
+    .then(function(round) {
+      if (round) { return round; }
+      else {
         return db.rounds.max()
-        .tap(function(maxRound) { request.params.round = maxRound; });
+        .tap(function(maxRound) {
+          request.params.round = maxRound;
+          return maxRound;
+        });
       }
     });
   }
-  return reply(roundNumber);
+  return roundNumber;
 }
 
 /**
@@ -56,7 +63,7 @@ function defaultRoundNumber(request, reply) {
 module.exports = {
   method: 'GET',
   path: '/api/ads/analytics/{round}',
-  config: {
+  options: {
     validate: {
       params: {
         round: Joi.alternatives(Joi.number().min(1), Joi.string().valid('current'))
@@ -68,7 +75,7 @@ module.exports = {
       { method: defaultRoundNumber }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var round = request.params.round;
 
     // get current ads and factoid
@@ -96,6 +103,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

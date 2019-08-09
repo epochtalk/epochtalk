@@ -86,7 +86,7 @@
       <a ng-href="#" ng-click="vmProfile.showDelete = true">Delete Account</a>
     </div>
     <div class="profile-row profile-action" ng-if="vmProfile.canMessage()">
-      <a ng-href="#" ng-click="vmProfile.openConvoModal()">Message This User</a>
+      <a ng-href="#" ng-click="vmProfile.openConvoModal()">Quick Message</a>
     </div>
     <ignore-user-profile ng-if="vmProfile.isLoggedIn()" user="vmProfile.user"></ignore-user-profile>
     <mentions-ignore-profile ng-if="vmProfile.isLoggedIn() && !vmProfile.pageOwner()" user="vmProfile.user"></mentions-ignore-profile>
@@ -398,7 +398,7 @@
 <!-- Create Conversation Modal -->
 <modal show="vmProfile.showConvoModal" on-close="vmProfile.closeConvoModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Message {{vmProfile.user.username}}</h3>
+    <h3 class="thin-underline">Quick Message {{vmProfile.user.username}}</h3>
 
     <!-- Subject -->
     <label><h5>Subject</h5>

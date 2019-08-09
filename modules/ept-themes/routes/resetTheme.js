@@ -34,14 +34,14 @@ var defaultVarsPath = common.defaultVarsPath;
 module.exports = {
   method: 'POST',
   path: '/api/theme',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: { type: 'adminSettings.resetTheme' }
     },
-    pre: [ { method: 'auth.themes.resetTheme(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.themes.resetTheme(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
     return new Promise(function(resolve, reject) {
       var rd = fs.createReadStream(defaultVarsPath);
@@ -53,21 +53,25 @@ module.exports = {
     })
     .then(copyCss)
     .then(sass)
-    .then(function() { // read theme from file and return vars in reply
-      var rl = readLine.createInterface({
-        input: fs.createReadStream(customVarsPath),
-        terminal: false
+    .then(function() {
+      return new Promise(function(resolve, reject) {
+        // read theme from file and return vars in reply
+        var rl = readLine.createInterface({
+          input: fs.createReadStream(customVarsPath),
+          terminal: false
+        });
+        var theme = {};
+        rl.on('line', function (line) {
+          if (line.charAt(0) === '$') {
+            var lineArr = line.split(':');
+            var key = lineArr[0].split('$')[1].trim();
+            var val = lineArr[1].split(';')[0].trim();
+            theme[key] = val;
+          }
+        })
+        .on('close', function() { return resolve(theme); })
+        .on('error', reject);
       });
-      var theme = {};
-      rl.on('line', function (line) {
-        if (line.charAt(0) === '$') {
-          var lineArr = line.split(':');
-          var key = lineArr[0].split('$')[1].trim();
-          var val = lineArr[1].split(';')[0].trim();
-          theme[key] = val;
-        }
-      })
-      .on('close', function() { reply(theme); });
     })
     .error(request.errorMap.toHttpError);
   }

@@ -56,11 +56,11 @@ var querystring = require('querystring');
 module.exports = {
   method: 'GET',
   path: '/api/trustfeedback/{username}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { username: Joi.string().min(1).required() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var username = querystring.unescape(request.params.username);
     var promise = request.db.users.userByUsername(username)
     .catch(function() { return Boom.notFound(); })
@@ -68,6 +68,6 @@ module.exports = {
       return request.db.userTrust.getTrustFeedback(user.id, request.auth.credentials.id);
     })
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

@@ -4,7 +4,7 @@ var path = require('path');
 var db = require(path.normalize(__dirname + '/../db'));
 var autoModerator = require(path.normalize(__dirname + '/../autoModerator'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -13,7 +13,7 @@ function auth(request, reply) {
     permission: 'autoModeration.editRule.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 
@@ -70,7 +70,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'PUT',
   path: '/api/automoderation/rules/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: { id: Joi.string().max(255).required() },
@@ -103,7 +103,7 @@ module.exports = {
     },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var ruleId = request.params.id;
     var rule = request.payload;
     rule.id = ruleId;
@@ -111,6 +111,6 @@ module.exports = {
     .tap(function(rule) { autoModerator.editRule(rule); })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -20,7 +20,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/posts/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -33,19 +33,47 @@ module.exports = {
       query: { locked: Joi.boolean().default(false) }
     },
     pre: [
-      { method: 'auth.posts.delete(server, auth, params.id)' },
-      { method: 'auth.posts.lock(server, auth, params.id, query)' }
+      { method: (request) => request.server.methods.auth.posts.delete(request.server, request.auth, request.params.id) },
+      { method: (request) => request.server.methods.auth.posts.lock(request.server, request.auth, request.params.id, request.query) }
     ],
-    handler: function(request, reply) {
+    handler: function(request) {
+      var action = 'hidden';
       var promise = request.db.posts.delete(request)
       .tap(function() {
         if (request.query.locked) {
+          action = 'hidden and locked';
           return request.db.posts.lock(request);
         }
       })
+      .tap(function(post) {
+        var email;
+        if (post.user_id !== request.auth.credentials.id) {
+          request.db.users.find(post.user_id)
+          .then(function(user) {
+            email = user.email;
+            return request.db.threads.find(post.thread_id);
+          })
+          .then(function(thread) {
+            var config = request.server.app.config;
+            var emailParams = {
+              email: email,
+              mod_username: request.auth.credentials.username,
+              thread_name: thread.title,
+              site_name: config.website.title,
+              thread_url: config.publicUrl + '/threads/' + thread.id + '/posts?start=' + post.position + '#' + post.id,
+              action: action
+            };
+            request.server.log('debug', emailParams);
+            request.emailer.send('postUpdated', emailParams)
+            .catch(console.log);
+            return;
+          });
+        }
+        return;
+      })
       .error(request.errorMap.toHttpError);
 
-      return reply(promise);
+      return promise;
     }
   }
 };

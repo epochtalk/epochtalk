@@ -31,7 +31,6 @@ module.exports = function(userId, expiration) {
         returnObj = rows[0];
         return;
       }
-      else { return Promise.reject(); }
     })
     .then(function() { // lookup the banned role id to add to user
       q = 'SELECT id FROM roles where lookup = $1';
@@ -40,7 +39,6 @@ module.exports = function(userId, expiration) {
     .then(function(results) {
       var rows = results.rows;
       if (rows.length > 0) { return rows[0].id; }
-      else { return Promise.reject(); }
     })
     .then(function(bannedRoleId) {
       q = 'INSERT INTO roles_users(role_id, user_id) SELECT $1, $2 WHERE NOT EXISTS (SELECT 1 FROM roles_users WHERE role_id = $1 AND user_id = $2);';

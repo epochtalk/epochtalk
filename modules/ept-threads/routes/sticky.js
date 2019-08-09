@@ -20,7 +20,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/threads/{id}/sticky',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -35,9 +35,9 @@ module.exports = {
       params: { id: Joi.string().required() },
       payload: { status: Joi.boolean().default(true) }
     },
-    pre: [ { method: 'auth.threads.sticky(server, auth, params.id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.sticky(request.server, request.auth, request.params.id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var threadId = request.params.id;
     var sticky = request.payload.status;
 
@@ -46,6 +46,6 @@ module.exports = {
     .then(() => { return { id: threadId, sticky: sticky }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

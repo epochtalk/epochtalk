@@ -25,7 +25,7 @@ var _ = require('lodash');
 module.exports = {
   method: 'PUT',
   path: '/api/admin/roles/update',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -47,9 +47,9 @@ module.exports = {
         permissions: Joi.object()
       }
     },
-    pre: [ { method: 'auth.roles.update(server, auth, roleValidations, payload)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.roles.update(request.server, request.auth, request.roleValidations, request.payload) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var role = request.payload;
     var defaultRole;
     var promise = request.db.roles.update(role)
@@ -82,6 +82,6 @@ module.exports = {
       })
       .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -16,20 +16,20 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/invites/remove',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: { email: Joi.string().email().required() }
     },
-    pre: [ { method: 'auth.invitations.remove(server, auth, payload.email)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.invitations.remove(request.server, request.auth, request.payload.email) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // remove invitation
     var email = request.payload.email;
     var promise = request.db.invitations.remove(email)
     .then(function() { return { message: 'Invitation Removed.' }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -6,7 +6,7 @@ module.exports = ['$location', '$state', function($location, $state) {
     scope: { pageCount: '=', focus: '=', clickAction: '=' },
     template:
     `<div class="jump-to-page">
-       <input ng-model="pageNum" auto-focus="focus" select="true" type="number" ng-keyup="$event.keyCode === 13 && goToPage()" />
+       <input ng-model="pageNum" auto-focus="focus" select="true" type="number" min="1" max="{{pageCount}}" ng-keyup="$event.keyCode === 13 && goToPage()" />
        <button ng-click="goToPage()">Go</button>
      </div>`,
     link: function(scope) {

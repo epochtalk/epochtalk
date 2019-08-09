@@ -46,7 +46,7 @@ var crypto = require('crypto');
 module.exports = {
   method: 'POST',
   path: '/api/register',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       payload: {
@@ -56,20 +56,20 @@ module.exports = {
         confirmation: Joi.ref('password')
       }
     },
-    pre: [ { method: 'auth.auth.register(server, payload.email, payload.username)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.auth.register(request.server, request.payload.email, request.payload.username) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var config = request.server.app.config;
 
     // check if registration is open
     if (config.inviteOnly) {
-      return reply(Boom.locked('Registration is Closed'));
+      return Boom.locked('Registration is Closed');
     }
 
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      return reply(request.session.formatUserReply(loggedInUser.token, loggedInUser));
+      return request.session.formatUserReply(loggedInUser.token, loggedInUser);
     }
 
     // create new user
@@ -137,6 +137,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

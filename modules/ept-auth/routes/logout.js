@@ -16,16 +16,16 @@ var Boom = require('boom');
 module.exports = {
   method: 'DELETE',
   path: '/api/logout',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // check if already logged in with jwt
-    if (!request.auth.isAuthenticated) { return reply(Boom.unauthorized()); }
+    if (!request.auth.isAuthenticated) { return Boom.unauthorized(); }
 
     // deletes session, deletes user, no return
     var creds = request.auth.credentials;
-    var promise = request.session.delete(creds.sessionId, creds.id)
+    return request.session.delete(creds.sessionId, creds.id)
     .tap(function() {
       var notification = {
         channel: { type: 'user', id: creds.id },
@@ -36,8 +36,7 @@ module.exports = {
       };
       request.server.plugins.notifications.systemNotification(notification);
     })
+    .then(() => true)
     .error(request.errorMap.toHttpError);
-
-    return reply(promise);
   }
 };

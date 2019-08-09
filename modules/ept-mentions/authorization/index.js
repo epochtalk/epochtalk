@@ -32,17 +32,14 @@ var deleteAuthorization = function(server, auth) {
 module.exports = [
   {
     name: 'auth.mentions.page',
-    method: pageAuthorization,
-    options: { callback: false }
+    method: pageAuthorization
   },
   {
     name: 'auth.mentions.create',
-    method: createAuthorization,
-    options: { callback: false }
+    method: createAuthorization
   },
   {
     name: 'auth.mentions.delete',
-    method: deleteAuthorization,
-    options: { callback: false }
+    method: deleteAuthorization
   }
 ];

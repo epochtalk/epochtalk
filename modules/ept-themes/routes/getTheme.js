@@ -1,11 +1,11 @@
 var path = require('path');
 var Joi = require('joi');
+var Promise = require('bluebird');
 var fs = require('fs');
 var readLine = require('readline');
 var common = require(path.normalize(__dirname + '/common'));
 var customVarsPath = common.customVarsPath;
 var previewVarsPath = common.previewVarsPath;
-
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
@@ -32,12 +32,12 @@ var previewVarsPath = common.previewVarsPath;
 module.exports = {
   method: 'GET',
   path: '/api/theme',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { query: { preview: Joi.boolean() } },
-    pre: [ { method: 'auth.themes.getTheme(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.themes.getTheme(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var preview = request.query.preview;
     var previewExists = fs.statSync(previewVarsPath).size;
     var readFilePath = preview && previewExists ? previewVarsPath : customVarsPath;
@@ -46,14 +46,18 @@ module.exports = {
       terminal: false
     });
     var theme = {};
-    rl.on('line', function (line) {
-      if (line.charAt(0) === '$') {
-        var lineArr = line.split(':');
-        var key = lineArr[0].split('$')[1].trim();
-        var val = lineArr[1].split(';')[0].trim();
-        theme[key] = val;
-      }
+    return new Promise(function(resolve, reject) {
+      rl.on('line', function (line) {
+        if (line.charAt(0) === '$') {
+          var lineArr = line.split(':');
+          var key = lineArr[0].split('$')[1].trim();
+          var val = lineArr[1].split(';')[0].trim();
+          theme[key] = val;
+        }
+      })
+      .on('close', function() { return resolve(theme); })
+      .on('error', reject);
     })
-    .on('close', function() { reply(theme); });
+    .error(request.errorMap.toHttpError);
   }
 };

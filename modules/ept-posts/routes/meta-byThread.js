@@ -5,15 +5,15 @@ var cheerio = require('cheerio');
 module.exports = {
   method: 'GET',
   path: '/threads/{thread_id}/posts',
-  config: {
+  options: {
     app: { hook: 'posts.byThread' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { thread_id: Joi.string().required() } },
     pre: [
-      { method: 'auth.posts.metaByThread(server, auth, params.thread_id)', assign: 'viewable' },
+      { method: (request) => request.server.methods.auth.posts.metaByThread(request.server, request.auth, request.params.thread_id), assign: 'viewable' },
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request, h) {
     var threadId = request.params.thread_id;
     var viewable = request.pre.viewable;
     var config = request.server.app.config;
@@ -70,7 +70,7 @@ module.exports = {
 
       return data;
     })
-    .then(function(data) { return reply.view('index', data); })
-    .catch(() => { return reply().redirect('/404'); });
+    .then(function(data) { return h.view('index', data); })
+    .catch(() => { return h.redirect('/404'); });
   }
 };

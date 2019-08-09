@@ -155,8 +155,7 @@ function executeActions(request, actionSet, messages, banInterval, edits) {
     request.db.bans.ban(userId, banPeriod)
     .then(function(user) {
       return request.session.updateRoles(user.user_id, user.roles)
-      .then(function() { return request.session.updateBanInfo(user.user_id, user.expiration); })
-      .then(function() { return; });
+      .then(function() { return request.session.updateBanInfo(user.user_id, user.expiration); });
     });
   }
 
@@ -171,6 +170,8 @@ function executeActions(request, actionSet, messages, banInterval, edits) {
   if (actionSet.has('reject')) {
     return Boom.badRequest(messages.join(' -- '));
   }
+
+  return true;
 }
 
 module.exports = {

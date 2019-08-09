@@ -40,7 +40,7 @@ function userIdToUsername(request) {
         post.body = post.body.replace(idRegex, '@' + user.username);
 
         // bodyHtml: {@123} -> <a ui-sref=".profiles('kkid')">kkid</a>
-        var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\'})">' + '@' + user.username + '</a>';
+        var profileLink = '<a ui-sref="profile.posts({ username: \'' + user.username + '\', \'#\': undefined })">' + '@' + user.username + '</a>';
 
         post.body_html = post.body_html.replace(idRegex, profileLink);
         if (post.post_body) {
@@ -50,7 +50,8 @@ function userIdToUsername(request) {
         }
       });
     });
-  });
+  })
+  .then(function() { return true; });
 }
 
 function usernameToUserId(request) {
@@ -88,7 +89,8 @@ function usernameToUserId(request) {
       request.payload.body = body;
       request.payload.mentioned_ids = mentionedIds;
     });
-  });
+  })
+  .then(function() { return true; });
 }
 
 function correctTextSearchVector(request) {
@@ -97,11 +99,13 @@ function correctTextSearchVector(request) {
   var post = request.pre.processed;
   request.db.mentions.fixTextSearchVector(post)
   .then(function() { delete request.pre.processed.body_original; });
+  return true;
 }
 
 function removeMentionIds(request) {
   delete request.pre.processed.mentioned_ids;
   delete request.payload.mentioned_ids;
+  return true;
 }
 
 function createMention(request) {
@@ -124,6 +128,7 @@ function createMention(request) {
         mentioneeId: mentioneeId
       };
 
+      if (post.user_id === mentioneeId) { return; }
       // create the mention in db if user isn't being ignored
       return request.db.mentions.getUserIgnored(mentioneeId, post.user_id)
       .then(function(user) {
@@ -144,7 +149,7 @@ function createMention(request) {
             };
             return request.server.plugins.notifications.spawnNotification(notification)
             .then(function() { return request.db.mentions.getMentionEmailSettings(mentioneeId); })
-            .then(function(data) {
+            .tap(function(data) {
               if (data.email_mentions) {
                 return request.db.threads.getThreadFirstPost(post.thread_id)
                 .then(function(threadData) {
@@ -154,7 +159,6 @@ function createMention(request) {
                 .then(function(user) {
                   var emailParams = {
                     email: user.email,
-                    username: user.username,
                     post_author: request.auth.credentials.username,
                     thread_name: thread.title,
                     site_name: config.website.title,
@@ -162,12 +166,13 @@ function createMention(request) {
                   };
                   // Do not return, otherwise user has to wait for email to send
                   // before post is created
+                  request.server.log('debug', emailParams)
                   request.emailer.send('mentionNotification', emailParams)
                   .catch(console.log);
-                  return;
+                  return true;
                 });
               }
-              return;
+              return true;
             });
           }
         });
@@ -175,7 +180,8 @@ function createMention(request) {
 
     });
 
-  });
+  })
+  .then(function() { return true; });
 }
 
 function userIgnoredMentions(request) {

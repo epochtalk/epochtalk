@@ -18,7 +18,6 @@ module.exports = function(userId) {
         returnObj = rows[0];
         return;
       }
-      else { return Promise.reject(); }
     })
     .then(function() {
       q = 'UPDATE users SET malicious_score = null WHERE id = $1';
@@ -31,7 +30,6 @@ module.exports = function(userId) {
     .then(function(results) {
       var rows = results.rows;
       if (rows.length > 0) { return rows[0].id; }
-      else { return Promise.reject(); }
     })
     .then(function(bannedRoleId) {
       q = 'DELETE FROM roles_users WHERE role_id = $1 AND user_id = $2';

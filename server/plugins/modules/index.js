@@ -112,20 +112,17 @@ modules.load = (dir, master, config) => {
   }
 };
 
-exports.install = modules.install;
-
-exports.register = (server, options, next) => {
-  server = server || {};
-  options = options || {};
-  var db = options.db || {};
-  var config = options.config || {};
-  // load all the code from each module installed
-  var output = modules.install(db, config);
-  server.app.moduleData = output;
-  return next();
-};
-
-exports.register.attributes = {
+module.exports = {
   name: 'modules',
-  version: '1.0.0'
+  version: '1.0.0',
+  register: async function(server, options) {
+    server = server || {};
+    options = options || {};
+    var db = options.db || {};
+    var config = options.config || {};
+    // load all the code from each module installed
+    var output = modules.install(db, config);
+    server.app.moduleData = output;
+  },
+  install: modules.install
 };

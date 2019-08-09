@@ -23,21 +23,21 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/boards/all',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: { type: 'adminBoards.updateCategories' }
     },
     validate: { payload: { boardMapping: Joi.array().required() } },
-    pre: [ { method: 'auth.boards.updateAll(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.updateAll(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // TODO: clean inputs?
     // update board on db
     var boardMapping = request.payload.boardMapping;
     var promise = request.db.boards.updateAll(boardMapping)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

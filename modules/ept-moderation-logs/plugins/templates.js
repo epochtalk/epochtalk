@@ -506,7 +506,11 @@ function retrieveThread(data, request) {
   return request.db.threads.find(threadId)
   .then(function(thread) {
     // don't log mods/admins modifying their own threads
-    if (thread.user.id === request.auth.credentials.id) { return Promise.reject(); }
+    if (thread.user.id === request.auth.credentials.id) {
+      var error = new Error('Break promise chain');
+      error.code = "DONOTLOG";
+      return Promise.reject(error);
+    }
     data.author = {
       id: thread.user.id,
       username: thread.user.username
@@ -520,7 +524,11 @@ function retrievePost(data, request) {
   return request.db.posts.find(data.id)
   .then(function(post){
     // don't log mods/admins modifying their own posts
-    if (post.user.id === request.auth.credentials.id) { return Promise.reject(); }
+    if (post.user.id !== request.auth.credentials.id) {
+      var error = new Error('Break promise chain');
+      error.code = "DONOTLOG";
+      return Promise.reject(error);
+    }
     data.author = {
       username: post.user.username,
       id: post.user.id
@@ -540,7 +548,11 @@ function retrieveParticipants(data, request) {
   return request.db.users.find(data.sender_id)
   .then(function(sender) {
     // We dont care if user is deleting a conversation they started
-    if (sender.id === request.auth.credentials.id) { return Promise.reject(); }
+    if (sender.id === request.auth.credentials.id) {
+      var error = new Error('Break promise chain');
+      error.code = "DONOTLOG";
+      return Promise.reject(error);
+    }
     delete data.sender_id;
     data.sender = {
       id: sender.id,

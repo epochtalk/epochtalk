@@ -15,7 +15,6 @@ module.exports = function(postReport) {
     .then(function(results) { // check that report exists and return existing report with string status
       var rows = results.rows;
       if (rows.length) { return rows[0]; }
-      else { return Promise.reject(); }
     })
     .then(function(dbPostReport) {
       existingReport = dbPostReport;
@@ -27,7 +26,6 @@ module.exports = function(postReport) {
     .then(function(results) { // extract updated_at from row and return
       var rows = results.rows;
       if (rows.length) { return rows[0].updated_at; }
-      else { return Promise.reject(); }
     })
     .then(function(updatedAt) { // return updated report
       existingReport.updated_at = updatedAt;

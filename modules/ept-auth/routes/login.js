@@ -27,7 +27,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/login',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       payload: {
@@ -37,11 +37,11 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      return reply(request.session.formatUserReply(loggedInUser.token, loggedInUser));
+      return request.session.formatUserReply(loggedInUser.token, loggedInUser);
     }
 
     var username = request.payload.username;
@@ -100,6 +100,6 @@ module.exports = {
     .then(request.session.save)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -23,7 +23,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/invites',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -31,9 +31,9 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(25)
       }
     },
-    pre: [ { method: 'auth.invitations.all(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.invitations.all(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       page: request.query.page,
       limit: request.query.limit
@@ -58,6 +58,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

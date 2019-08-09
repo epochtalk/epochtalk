@@ -84,7 +84,7 @@ module.exports = function() {
     if (process.env.NODE_ENV === 'development') {
       console.log(data.toString({colors: true}));
     }
-    return Promise.resolve();
+    return Promise.resolve(data);
   }
 
   return webpack(config, webpackCallback);

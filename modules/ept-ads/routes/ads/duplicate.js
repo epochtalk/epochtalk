@@ -3,7 +3,7 @@ var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../../db'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'ads.duplicate.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 
@@ -38,16 +38,16 @@ function auth(request, reply) {
 module.exports = {
   method: 'POST',
   path: '/api/ads/{id}/duplicate',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var adId = request.params.id;
     var promise = db.ads.duplicate(adId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

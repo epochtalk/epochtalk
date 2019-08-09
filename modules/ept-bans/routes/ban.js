@@ -25,7 +25,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'PUT',
   path: '/api/users/ban',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -43,9 +43,9 @@ module.exports = {
         ip_ban: Joi.boolean().default(false)
       }
     },
-    pre: [ { method: 'auth.bans.ban(server, auth, payload.user_id)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.bans.ban(request.server, request.auth, request.payload.user_id) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.payload.user_id;
     var expiration = request.payload.expiration || null;
     var ipBan = request.payload.ip_ban;
@@ -70,10 +70,10 @@ module.exports = {
       var opts = { userId: userId, weight: 50, decay: true };
       var ipBanPromise = request.db.bans.copyUserIps(opts);
       return Promise.join(banPromise, ipBanPromise, function(result) {
-        return reply(result);
+        return result;
       })
       .error(request.errorMap.toHttpError);
     }
-    else { return reply(banPromise); }
+    else { return banPromise; }
   }
 };

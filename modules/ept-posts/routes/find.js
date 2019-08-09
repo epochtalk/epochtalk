@@ -27,28 +27,28 @@ var common = require(path.normalize(__dirname + '/../common'));
 module.exports = {
   method: 'GET',
   path: '/api/posts/{id}',
-  config: {
+  options: {
     app: { hook: 'posts.find' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [
-      { method: 'auth.posts.find(server, auth, params.id)', assign: 'viewDeleted' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.posts.find(request.server, request.auth, request.params.id), assign: 'viewDeleted' },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.posts.parseOut(parser, pre.processed)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
-      return reply(request.pre.processed);
+    handler: function(request) {
+      return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   // retrieve post
   var userId = '';
   var authenticated = request.auth.isAuthenticated;
@@ -56,9 +56,9 @@ function processing(request, reply) {
   var viewDeleted = request.pre.viewDeleted;
   var id = request.params.id;
   var promise = request.db.posts.find(id)
-  .then(function(post) { return common.cleanPosts(post, userId, viewDeleted); })
+  .then(function(post) { return common.cleanPosts(post, userId, viewDeleted, request); })
   .then(function(posts) { return posts[0]; })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

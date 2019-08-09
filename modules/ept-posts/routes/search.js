@@ -37,7 +37,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/search/posts',
-  config: {
+  options: {
     app: { hook: 'posts.search' },
     auth: { strategy: 'jwt' },
     validate: {
@@ -49,18 +49,18 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.posts.search(server, auth)' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.posts.search(request.server, request.auth) },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
-  handler: function(request, reply) {
-    return reply(request.pre.processed);
+  handler: function(request) {
+    return request.pre.processed;
   }
 };
 
@@ -68,7 +68,7 @@ function insert(str, index, value) {
   return str.substr(0, index) + value + str.substr(index);
 }
 
-function processing(request, reply) {
+function processing(request) {
   var opts = {
     limit: request.query.limit,
     page: request.query.page,
@@ -169,5 +169,5 @@ function processing(request, reply) {
   })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

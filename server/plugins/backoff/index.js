@@ -1,34 +1,36 @@
 var Boom = require('boom');
 
-exports.register = function(plugin, options, next) {
-  options = options || {};
+module.exports = {
+  name: 'backoff',
+  version: '1.0.0',
+  register: async function(plugin, options) {
+    options = options || {};
 
-  plugin.ext('onPostAuth', function(request, reply) {
-    var backoffSwitch = request.route.settings.plugins.backoff;
-    if (!backoffSwitch) { return reply.continue(); }
+    plugin.ext('onPostAuth', function(request, reply) {
+      var backoffSwitch = request.route.settings.plugins.backoff;
+      if (!backoffSwitch) { return reply.continue; }
 
-    // variables
-    var db = request.db.db;
-    var remoteAddress = request.info.remoteAddress;
+      // variables
+      var db = request.db.db;
+      var remoteAddress = request.info.remoteAddress;
 
-    // pull records for this ip
-    return getAccessLogs(db, remoteAddress)
-    // calculate backoff pressure
-    .then(calculatePressure)
-    // log route (ip, timestamp)
-    .tap(function() { return appendLog(db, remoteAddress); })
-    // reject or allow connection
-    .then(function(allowed) {
-      if (allowed) { return reply.continue(); }
-      else { return reply(Boom.tooManyRequests('Abuse Detected')); }
+      // pull records for this ip
+      return getAccessLogs(db, remoteAddress)
+      // calculate backoff pressure
+      .then(calculatePressure)
+      // log route (ip, timestamp)
+      .tap(function() { return appendLog(db, remoteAddress); })
+      // reject or allow connection
+      .then(function(allowed) {
+        if (allowed) { return reply.continue; }
+        else { return Boom.tooManyRequests('Abuse Detected'); }
+      });
     });
-  });
 
-  plugin.expose('release', releasePressure);
-  plugin.expose('getAccessLogs', getAccessLogs);
-  plugin.expose('getLockoutTimes', getLockoutTimes);
-
-  next();
+    plugin.expose('release', releasePressure);
+    plugin.expose('getAccessLogs', getAccessLogs);
+    plugin.expose('getLockoutTimes', getLockoutTimes);
+  }
 };
 
 function getAccessLogs(db, ip) {
@@ -75,9 +77,3 @@ function releasePressure(db, ip) {
   var q = `DELETE FROM backoff WHERE ip = $1 AND route = $2 AND method = $3`;
   return db.sqlQuery(q, [ip, '/api/recover', 'POST']);
 }
-
-
-exports.register.attributes = {
-  name: 'backoff',
-  version: '1.0.0'
-};

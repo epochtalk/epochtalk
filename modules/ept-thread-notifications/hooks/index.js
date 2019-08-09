@@ -2,7 +2,7 @@ function subscribeToThread(request) {
   var threadId = request.pre.processed.thread_id;
   var authedUserId = request.auth.credentials.id;
   request.db.threadNotifications.subscribe(authedUserId, threadId);
-  return;
+  return true;
 }
 
 function emailSubscribers(request) {
@@ -13,7 +13,6 @@ function emailSubscribers(request) {
   .each(function(emailData) {
     var emailParams = {
       email: emailData.email,
-      username: emailData.username,
       thread_name: emailData.title,
       site_name: config.website.title,
       thread_url: config.publicUrl + '/threads/' + threadId + '/posts?start=' + emailData.last_post_position + '#' + emailData.last_post_id
@@ -26,7 +25,7 @@ function emailSubscribers(request) {
     })
     .catch(console.log);
   });
-  return;
+  return true;
 }
 
 module.exports = [

@@ -38,7 +38,7 @@ var Joi = require('joi');
 var page = {
   method: 'GET',
   path: '/api/mentions',
-  config: {
+  options: {
     app: { hook: 'mentions.page' },
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
@@ -50,23 +50,23 @@ var page = {
       }
     },
     pre: [
-      { method: 'auth.mentions.page(server, auth)' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.mentions.page(request.server, request.auth) },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.posts.parseOut(parser, pre.processed.data)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.data) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
-  handler: function(request, reply) {
-    return reply(request.pre.processed);
+  handler: function(request) {
+    return request.pre.processed;
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   var mentioneeId = request.auth.credentials.id;
   var opts = {
     limit: request.query.limit,
@@ -76,7 +76,7 @@ function processing(request, reply) {
   var promise = request.db.mentions.page(mentioneeId, opts)
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -96,13 +96,13 @@ function processing(request, reply) {
 var remove = {
   method: 'DELETE',
   path: '/api/mentions',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { query: { id: Joi.string() } },
-    pre: [{ method: 'auth.mentions.delete(server, auth)' }],
+    pre: [{ method: (request) => request.server.methods.auth.mentions.delete(request.server, request.auth) }],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var mentionId = request.query.id;
     var promise = request.db.mentions.remove(mentionId, userId)
@@ -115,7 +115,7 @@ var remove = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -147,7 +147,7 @@ var remove = {
 var pageIgnoredUsers = {
   method: 'GET',
   path: '/api/mentions/ignored',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
@@ -157,7 +157,7 @@ var pageIgnoredUsers = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var opts = {
       limit: request.query.limit,
@@ -166,7 +166,7 @@ var pageIgnoredUsers = {
     var promise = request.db.mentions.pageIgnoredUsers(userId, opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -187,12 +187,12 @@ var pageIgnoredUsers = {
 var ignoreUser = {
   method: 'POST',
   path: '/api/mentions/ignore',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { payload: { username: Joi.string().required() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var ignoredUser = request.payload.username;
     var promise = request.db.users.userByUsername(ignoredUser)
@@ -201,7 +201,7 @@ var ignoreUser = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -222,12 +222,12 @@ var ignoreUser = {
 var unignoreUser = {
   method: 'POST',
   path: '/api/mentions/unignore',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { payload: { username: Joi.string() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var ignoredUser = request.payload.username;
     var promise;
@@ -242,7 +242,7 @@ var unignoreUser = {
       promise = request.db.mentions.unignoreUser(userId)
       .error(request.errorMap.toHttpError);
     }
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -262,17 +262,17 @@ var unignoreUser = {
 var getMentionEmailSettings = {
   method: 'GET',
   path: '/api/mentions/settings',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
 
     var promise = request.db.mentions.getMentionEmailSettings(userId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -294,19 +294,19 @@ var getMentionEmailSettings = {
 var enableMentionEmails = {
   method: 'PUT',
   path: '/api/mentions/settings',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { payload: { enabled: Joi.boolean().default(true) } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var enabled = request.payload.enabled;
 
     var promise = request.db.mentions.enableMentionEmails(userId, enabled)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 

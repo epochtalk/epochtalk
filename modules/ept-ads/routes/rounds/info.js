@@ -5,7 +5,7 @@ var Promise = require('bluebird');
 var db = require(path.normalize(__dirname + '/../../db'));
 var adText = require(path.normalize(__dirname + '/../../text'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -14,12 +14,12 @@ function auth(request, reply) {
     permission: 'ads.roundInfo.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
-function currentRound(request, reply) {
+function currentRound(request) {
   var roundNumber = db.rounds.current();
-  return reply(roundNumber);
+  return roundNumber;
 }
 
 /**
@@ -53,14 +53,14 @@ function currentRound(request, reply) {
 module.exports = {
   method: 'GET',
   path: '/api/ads/rounds/info',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     pre: [
       { method: auth },
       { method: currentRound, assign: 'currentRound' }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var roundNumber = request.pre.currentRound;
     var pKey = request.server.app.config.privateKey;
 
@@ -93,6 +93,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -26,7 +26,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/reports/messagenotes',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -44,13 +44,13 @@ module.exports = {
         note: Joi.string().max(255).required()
       }
     },
-    pre: [ { method: 'auth.reports.messages.notes.create(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.messages.notes.create(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var reportNote = Object.assign({}, request.payload);
     var promise = request.db.reports.createMessageReportNote(reportNote)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

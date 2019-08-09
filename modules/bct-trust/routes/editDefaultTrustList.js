@@ -30,7 +30,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/admin/trustlist',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {
@@ -42,9 +42,9 @@ module.exports = {
         }))
       }
     },
-    pre: [ { method: 'auth.userTrust.editDefaultTrustList(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.userTrust.editDefaultTrustList(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var defaultTrustId = 'U31jnDtQRUW-oYs4rM9Ajg';
 
     var opts = {
@@ -54,6 +54,6 @@ module.exports = {
     };
     var promise = request.db.userTrust.editTrustList(opts)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

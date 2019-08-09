@@ -14,7 +14,6 @@ module.exports = function(messageReport) {
     .then(function(results) { // return created report id
       var rows = results.rows;
       if (rows.length) { return rows[0].id; }
-      else { return Promise.reject(); }
     })
     .then(function(reportId) { // Lookup the created report and return it
       q = 'SELECT ru.id, ru.status, ru.reporter_user_id, ru.reporter_reason, ru.reviewer_user_id, ru.offender_message_id, ru.created_at, ru.updated_at FROM administration.reports_messages ru WHERE ru.id = $1';
@@ -24,7 +23,6 @@ module.exports = function(messageReport) {
     .then(function(results) { // return created row
       var rows = results.rows;
       if(rows.length) { return rows[0]; }
-      else { return Promise.reject(); }
     });
   })
   .then(helper.slugify);

@@ -18,9 +18,9 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/notifications/dismiss',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.notifications.dismiss(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.notifications.dismiss(request.server, request.auth) } ],
     validate: {
       payload: Joi.object().keys({
         type: Joi.string().valid('message', 'mention', 'other').required(),
@@ -28,7 +28,7 @@ module.exports = {
       })
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // dismiss notifications for receiver_id
     var params = {
       receiver_id: request.auth.credentials.id,
@@ -46,6 +46,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

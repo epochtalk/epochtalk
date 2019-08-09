@@ -23,7 +23,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/admin/roles/add',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -45,9 +45,9 @@ module.exports = {
         permissions: Joi.object().required()
       }
     },
-    pre: [ { method: 'auth.roles.addRoles(server, auth, roleValidations, payload)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.roles.addRoles(request.server, request.auth, request.roleValidations, request.payload) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var role = request.payload;
     var promise = request.db.roles.create(role)
       .then(function(result) {
@@ -59,6 +59,6 @@ module.exports = {
       })
       .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

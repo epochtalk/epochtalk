@@ -27,7 +27,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/confirm',
-  config: {
+  options: {
     validate: {
       payload: {
         username: Joi.string().min(1).max(255).required(),
@@ -35,7 +35,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var username = request.payload.username;
     var confirmationToken = request.payload.token;
     var promise = request.db.users.userByUsername(username) // get full user info
@@ -85,6 +85,6 @@ module.exports = {
     .then(request.session.save)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

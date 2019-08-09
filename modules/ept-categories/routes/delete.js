@@ -18,7 +18,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/categories/delete',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'categories.delete' },
     validate: {
@@ -26,9 +26,9 @@ module.exports = {
         category_ids: Joi.array().items(Joi.string().required()).unique().min(1)
       }
     },
-    pre: [ { method: 'auth.categories.delete(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.categories.delete(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = Promise.map(request.payload.category_ids, function(catId) {
       return request.db.categories.delete(catId)
       .then(function() { return catId; });
@@ -38,6 +38,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -3,7 +3,7 @@ var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../../db'));
 
-function auth(request, reply) {
+function auth(request) {
   var promise = request.server.authorization.build({
     error: Boom.forbidden(),
     type: 'hasPermission',
@@ -12,7 +12,7 @@ function auth(request, reply) {
     permission: 'ads.create.allow'
   });
 
-  return reply(promise);
+  return promise;
 }
 
 /**
@@ -37,7 +37,7 @@ function auth(request, reply) {
 module.exports = {
   method: 'POST',
   path: '/api/ads',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {
@@ -48,11 +48,11 @@ module.exports = {
     },
     pre: [ { method: auth } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var ad = request.payload;
     var promise = db.ads.create(ad)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

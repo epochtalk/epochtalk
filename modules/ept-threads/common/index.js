@@ -121,7 +121,7 @@ function checkView(server, headers, info, threadId) {
 }
 
 function updateView(server, auth, threadId) {
-  var promise;
+  var promise = true;
   if (auth.isAuthenticated) {
     var userId = auth.credentials.id;
     promise = server.db.users.putUserThreadViews(userId, threadId);
@@ -159,13 +159,11 @@ common.export = () =>  {
   return [
     {
       name: 'common.threads.checkView',
-      method: checkView,
-      options: { callback: false }
+      method: checkView
     },
     {
       name: 'common.threads.updateView',
-      method: updateView,
-      options: { callback: false }
+      method: updateView
     }
   ];
 };

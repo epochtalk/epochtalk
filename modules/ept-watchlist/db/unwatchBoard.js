@@ -7,6 +7,12 @@ module.exports = function(userId, boardId) {
   userId = helper.deslugify(userId);
   boardId = helper.deslugify(boardId);
   var q = 'DELETE FROM users.watch_boards WHERE user_id = $1 AND board_id = $2';
-  return db.sqlQuery(q, [userId, boardId])
-  .then(function() { return; });
+  return db.scalar(q, [userId, boardId])
+  .then(function() {
+    return {
+      user_id: userId,
+      board_id: boardId
+    };
+  })
+  .then(helper.slugify);
 };

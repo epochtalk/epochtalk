@@ -29,7 +29,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/trustlist',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {
@@ -42,7 +42,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       userId: request.auth.credentials.id,
       maxDepth: request.payload.max_depth,
@@ -50,6 +50,6 @@ module.exports = {
     };
     var promise = request.db.userTrust.editTrustList(opts)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

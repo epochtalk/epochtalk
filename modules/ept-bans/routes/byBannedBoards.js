@@ -38,7 +38,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/users/banned',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -49,9 +49,9 @@ module.exports = {
         modded: Joi.boolean()
       }
     },
-    pre: [ { method: 'auth.bans.byBannedBoards(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.bans.byBannedBoards(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       page: request.query.page,
       limit: request.query.limit,
@@ -62,6 +62,6 @@ module.exports = {
     var promise = request.db.bans.byBannedBoards(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

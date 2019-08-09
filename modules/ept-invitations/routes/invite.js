@@ -18,14 +18,14 @@ var crypto = require('crypto');
 module.exports = {
   method: 'POST',
   path: '/api/invites',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: { email: Joi.string().email().required() }
     },
-    pre: [ { method: 'auth.invitations.invite(server, auth, payload.email)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.invitations.invite(request.server, request.auth, request.payload.email) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var newUser = {
       email: request.payload.email,
       hash: crypto.randomBytes(20).toString('hex')
@@ -52,6 +52,6 @@ module.exports = {
     .error(request.errorMap.toHttpError);
 
 
-    return reply(promise);
+    return promise;
   }
 };

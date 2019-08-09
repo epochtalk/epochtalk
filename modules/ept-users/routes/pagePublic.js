@@ -35,7 +35,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/search/users',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -46,9 +46,9 @@ module.exports = {
         search: Joi.string()
       }
     },
-    pre: [ { method: 'auth.users.pagePublic(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.users.pagePublic(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       limit: request.query.limit,
       page: request.query.page,
@@ -59,6 +59,6 @@ module.exports = {
     var promise = request.db.users.pagePublic(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

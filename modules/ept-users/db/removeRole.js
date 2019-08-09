@@ -18,7 +18,6 @@ module.exports = function(userId, roleId) {
     .then(function(results) { // fetch user and ensure user exists
       var rows = results.rows;
       if (rows.length > 0) { return rows[0]; } // return user
-      else { return Promise.reject(); } // user doesnt exist
     })
     .then(function(user) {
       updatedUser = user;

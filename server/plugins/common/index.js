@@ -1,13 +1,9 @@
-exports.register = function(server, options, next) {
-  options = options || {};
-  options.methods = options.methods || [];
-
-  // Append all module methods to server
-  server.method(options.methods);
-  next();
-};
-
-exports.register.attributes = {
+module.exports = {
   name: 'common',
-  version: '1.0.0'
+  version: '1.0.0',
+  register: async function(server, options) {
+    options = options || {};
+    options.methods = options.methods || [];
+    server.method(options.methods);
+  }
 };

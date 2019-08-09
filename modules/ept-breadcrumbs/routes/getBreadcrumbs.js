@@ -20,7 +20,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/breadcrumbs',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       query: {
@@ -29,7 +29,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
 
     // method type enum
     var findType = {
@@ -79,7 +79,7 @@ module.exports = {
 
     // Build the breadcrumbs and reply
     return buildCrumbs(request.query.id, request.query.type, [])
-    .then(function(breadcrumbs) { reply(breadcrumbs.reverse()); })
+    .then(function(breadcrumbs) { return breadcrumbs.reverse(); })
     .error(request.errorMap.toHttpError);
   }
 };

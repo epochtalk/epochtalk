@@ -5,23 +5,21 @@ var db, websocket, websocketAPIKey;
 
 var path = require('path');
 
-exports.register = function (plugin, options, next) {
-  if (!options.db) { return next(new Error('No options.db found in notifications module')); }
-  db = options.db;
-  if (!options.websocket) { return next(new Error('No options.websocket found in notifications module')); }
-  websocket = options.websocket;
-
-  if (!options.config) { return next(new Error('No options.config found in notifications module')); }
-  websocketAPIKey = options.config.websocketAPIKey;
-
-  plugin.expose('spawnNotification', spawnNotification);
-  plugin.expose('systemNotification', systemNotification);
-  next();
-};
-
-exports.register.attributes = {
+module.exports = {
   name: 'notifications',
-  version: '1.0.0'
+  version: '1.0.0',
+  register: async function (plugin, options) {
+    if (!options.db) { return new Error('No options.db found in notifications module'); }
+    db = options.db;
+    if (!options.websocket) { return new Error('No options.websocket found in notifications module'); }
+    websocket = options.websocket;
+
+    if (!options.config) { return new Error('No options.config found in notifications module'); }
+    websocketAPIKey = options.config.websocketAPIKey;
+
+    plugin.expose('spawnNotification', spawnNotification);
+    plugin.expose('systemNotification', systemNotification);
+  }
 };
 
 function spawnNotification(datas) {

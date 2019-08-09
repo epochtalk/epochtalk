@@ -6,7 +6,7 @@ module.exports = function(internalConfig) {
   return {
     method: 'POST',
     path: '/api/images/upload',
-    config: {
+    options: {
       auth: { strategy: 'jwt' },
       payload: {
         maxBytes: internalConfig.images.maxSize,
@@ -14,40 +14,43 @@ module.exports = function(internalConfig) {
         parse: true
       }
     },
-    handler: function(request, reply) {
+    handler: function(request, h) {
       // check we're using local storage
       var config = request.server.app.config;
       if (config.images.storage !== 'local') {
-        return reply(Boom.notFound());
+        return Boom.notFound();
       }
 
       // make sure image file exists
       var file = request.payload.file;
-      if (!file) { return reply(Boom.badRequest('No File Attached')); }
+      if (!file) { return Boom.badRequest('No File Attached'); }
 
       // decode policy
-      var policyPayload = request.payload.policy;
-      var decipher = crypto.createDecipher('aes-256-ctr', config.privateKey);
+      let policyParts = request.payload.policy.split(':');
+      let iv = Buffer.from(policyParts[0], 'hex');
+      let policyPayload = policyParts[1];
+      let keyHash = crypto.createHash('md5').update(config.privateKey, 'utf-8').digest('hex').toUpperCase();
+      let decipher = crypto.createDecipheriv('aes-256-ctr', keyHash, iv);
       var decoded = decipher.update(policyPayload,'hex','utf8');
       decoded += decipher.final('utf8');
 
       // parse policy
       var policy;
       try { policy = JSON.parse(decoded); }
-      catch(e) { return reply(Boom.badRequest('Malformed Policy')); }
-      if (!policy) { return reply(Boom.badRequest('Malformed Policy')); }
+      catch(e) { return Boom.badRequest('Malformed Policy'); }
+      if (!policy) { return Boom.badRequest('Malformed Policy'); }
 
       // check filename
       var filename = policy.filename;
-      if (!filename) { return reply(Boom.badRequest('Invalid Policy')); }
+      if (!filename) { return Boom.badRequest('Invalid Policy'); }
 
       // check policy expiration
       var expiration = new Date(policy.expiration);
       if (expiration < Date.now()) {
-        return reply(Boom.badRequest('Policy Timed Out'));
+        return Boom.badRequest('Policy Timed Out');
       }
 
-      request.imageStore.uploadImage(file, filename, reply);
+      return request.imageStore.uploadImage(file, filename, h);
     }
   };
 };

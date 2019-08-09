@@ -22,7 +22,7 @@ var _ = require('lodash');
 module.exports = {
   method: 'POST',
   path: '/api/messages',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
@@ -36,14 +36,14 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.messages.create(server, auth, payload.receiver_ids, payload.conversation_id)' },
-      { method: 'common.posts.checkPostLength(server, payload.body)' },
-      { method: 'common.posts.clean(sanitizer, payload)' },
-      { method: 'common.posts.parse(parser, payload)' },
-      { method: 'common.images.sub(payload)' }
+      { method: (request) => request.server.methods.auth.messages.create(request.server, request.auth, request.payload.receiver_ids, request.payload.conversation_id) },
+      { method: (request) => request.server.methods.common.posts.checkPostLength(request.server, request.payload.body) },
+      { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.sub(request.payload) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var message = request.payload;
     message.sender_id = request.auth.credentials.id;
 
@@ -68,6 +68,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

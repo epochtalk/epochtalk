@@ -35,7 +35,7 @@ var _ = require('lodash');
 module.exports = {
   method: 'POST',
   path: '/api/conversations',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
@@ -49,14 +49,14 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.conversations.create(server, auth, payload.receiver_ids)' },
-      { method: 'common.posts.checkPostLength(server, payload.body)' },
-      { method: 'common.posts.clean(sanitizer, payload)' },
-      { method: 'common.posts.parse(parser, payload)' },
-      { method: 'common.images.sub(payload)' }
+      { method: (request) => request.server.methods.auth.conversations.create(request.server, request.auth, request.payload.receiver_ids) },
+      { method: (request) => request.server.methods.common.posts.checkPostLength(request.server, request.payload.body) },
+      { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.sub(request.payload) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // create the conversation in db
     var promise = request.db.conversations.create()
     .then(function(conversation) {
@@ -85,6 +85,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

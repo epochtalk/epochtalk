@@ -38,7 +38,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/conversations/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: { id: Joi.string() },
@@ -48,9 +48,9 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(15)
       }
     },
-    pre: [ { method: 'auth.conversations.messages(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.conversations.messages(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var conversationId = request.params.id;
     var userId = request.auth.credentials.id;
     var opts = {
@@ -87,6 +87,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

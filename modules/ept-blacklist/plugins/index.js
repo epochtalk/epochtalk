@@ -1,5 +1,5 @@
 var path = require('path');
 
 module.exports = [
-  { register: require(path.normalize(__dirname + '/blacklist')), db: true }
+  { plugin: require(path.normalize(__dirname + '/blacklist')), db: true }
 ];

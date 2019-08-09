@@ -3,6 +3,24 @@ var jwt = require('jsonwebtoken');
 var session = {};
 var redis, config, roles;
 
+// -- API
+module.exports = {
+  name: 'session',
+  version: '1.0.0',
+  register: async function(server, options) {
+    options = options || {};
+    if (!options.roles) { return new Error('Session: Roles not found in options'); }
+    if (!options.redis) { return new Error('Session: Redis not found in options'); }
+    if (!options.config) { return new Error('Session: Config not found in options'); }
+    redis = options.redis;
+    config = options.config;
+    roles = options.roles;
+
+    server.decorate('server', 'session', session);
+    server.decorate('request', 'session', session);
+  }
+};
+
 /**
  * Assumes that the user parameter has
   * id
@@ -295,25 +313,3 @@ function formatUserReply(token, user) {
   };
   return reply;
 }
-
-// -- API
-
-exports.register = function(server, options, next) {
-  options = options || {};
-  if (!options.roles) { return next(new Error('Session: Roles not found in options')); }
-  if (!options.redis) { return next(new Error('Session: Redis not found in options')); }
-  if (!options.config) { return next(new Error('Session: Config not found in options')); }
-  redis = options.redis;
-  config = options.config;
-  roles = options.roles;
-
-  server.decorate('server', 'session', session);
-  server.decorate('request', 'session', session);
-
-  next();
-};
-
-exports.register.attributes = {
-  name: 'session',
-  version: '1.0.0'
-};

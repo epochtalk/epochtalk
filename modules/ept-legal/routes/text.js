@@ -21,11 +21,11 @@ var baseDefaultPath = __dirname + '/../../../defaults/legal/';
 module.exports = {
   method: 'GET',
   path: '/api/legal',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.legal.text(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.legal.text(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var getFile = function(customDir, defaultDir) {
       return new Promise(function(resolve) {
         fse.stat(customDir, function(err, stat) {
@@ -60,6 +60,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

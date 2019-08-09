@@ -29,7 +29,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/join',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       payload: {
@@ -40,13 +40,13 @@ module.exports = {
         confirmation: Joi.ref('password')
       }
     },
-    pre: [ { method: 'auth.auth.register(server, payload.email, payload.username)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.auth.register(request.server, request.payload.email, request.payload.username) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // check if already logged in with jwt
     if (request.auth.isAuthenticated) {
       var loggedInUser = request.auth.credentials;
-      return reply(request.session.formatUserReply(loggedInUser.token, loggedInUser));
+      return request.session.formatUserReply(loggedInUser.token, loggedInUser);
     }
 
     // verify hash
@@ -76,6 +76,6 @@ module.exports = {
     .then(request.session.save)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

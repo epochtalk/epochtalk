@@ -5,72 +5,77 @@ var roles = require(path.normalize(__dirname + '/roles'));
 
 var db, config, defaultPerms, validations, layouts;
 
-exports.register = function (server, options, next) {
-  if (!options.db) { return next(new Error('No DB found in ACLS')); }
-  if (!options.config) { return next(new Error('No Configs found in ACLS')); }
-  db = options.db;
-  config = options.config;
-  defaultPerms = options.permissions.defaults;
-  validations = options.permissions.validations;
-  layouts = options.permissions.layouts;
+module.exports = {
+  name: 'acls',
+  version: '1.0.0',
+  verifyRoles: verifyRoles,
+  register: async function (server, options) {
+    if (!options.db) { return new Error('No DB found in ACLS'); }
+    if (!options.config) { return new Error('No Configs found in ACLS'); }
+    db = options.db;
+    config = options.config;
+    defaultPerms = options.permissions.defaults;
+    validations = options.permissions.validations;
+    layouts = options.permissions.layouts;
 
-  buildRoles(defaultPerms);
+    buildRoles(defaultPerms);
 
-  // Check ACL roles on each route
-  server.ext('onPostAuth', function (request, reply) {
-    var routeACL = request.route.settings.plugins.acls;
-    // route has no ACLs so allow access
-    if (!routeACL) { return reply.continue(); }
-    var userACLs = [];
-    var authenticated = request.auth.isAuthenticated;
-    var err = Boom.unauthorized('You must log in to see this content.');
-    if (authenticated) {
-      var userBanned = request.auth.credentials.roles.indexOf(roles.banned.lookup) > -1;
-      if (userBanned) { userACLs = [ roles.banned ]; }
-      else {
-        userACLs = _.filter(request.auth.credentials.roles.map(function(roleName) { return roles[roleName]; }), undefined);
+    // Check ACL roles on each route
+    server.ext('onPostAuth', function (request, h) {
+      var routeACL = request.route.settings.plugins.acls;
+      // route has no ACLs so allow access
+      if (!routeACL) { return h.continue; }
+      var userACLs = [];
+      var authenticated = request.auth.isAuthenticated;
+      var err = Boom.unauthorized('You must log in to see this content.');
+      if (authenticated) {
+        var userBanned = request.auth.credentials.roles.indexOf(roles.banned.lookup) > -1;
+        if (userBanned) { userACLs = [ roles.banned ]; }
+        else {
+          userACLs = _.filter(request.auth.credentials.roles.map(function(roleName) { return roles[roleName]; }), undefined);
+        }
+        if (!userACLs.length) { userACLs = [ roles.user ]; }
+        err = Boom.forbidden('You do not have the proper permissions.');
       }
-      if (!userACLs.length) { userACLs = [ roles.user ]; }
-      err = Boom.forbidden('You do not have the proper permissions.');
-    }
-    else if (config.loginRequired) { userACLs = [ roles.private ]; }
-    else { userACLs = [ roles.anonymous ]; }
+      else if (config.loginRequired) { userACLs = [ roles.private ]; }
+      else { userACLs = [ roles.anonymous ]; }
 
-    var ACLValues = userACLs.map(function(acl) { return _.get(acl, routeACL); });
-    var validACL = false;
-    ACLValues.forEach(function(val) { validACL = val || validACL; });
-    if (validACL) { return reply.continue(); }
-    else { return reply(err); }
-  });
+      var ACLValues = userACLs.map(function(acl) { return _.get(acl, routeACL); });
+      var validACL = false;
+      ACLValues.forEach(function(val) { validACL = val || validACL; });
+      if (validACL) { return h.continue; }
+      else { return err; }
+    });
 
-  // server exposed objects
-  server.expose('getACLValue', getACLValue);
-  server.expose('getUserPriority', getUserPriority);
-  server.expose('getPriorityRestrictions', getPriorityRestrictions);
-  server.expose('verifyRoles', verifyRoles);
+    // server exposed objects
+    server.expose('getACLValue', getACLValue);
+    server.expose('getUserPriority', getUserPriority);
+    server.expose('getPriorityRestrictions', getPriorityRestrictions);
+    server.expose('verifyRoles', verifyRoles);
 
-  // server decoration
-  server.decorate('server', 'roles', roles);
-  server.decorate('request', 'roles', roles);
-  server.decorate('server', 'roleLayouts', layouts);
-  server.decorate('request', 'roleLayouts', layouts);
-  server.decorate('server', 'roleValidations', validations);
-  server.decorate('request', 'roleValidations', validations);
+    // server decoration
+    server.decorate('server', 'roles', roles);
+    server.decorate('request', 'roles', roles);
+    server.decorate('server', 'roleLayouts', layouts);
+    server.decorate('request', 'roleLayouts', layouts);
+    server.decorate('server', 'roleValidations', validations);
+    server.decorate('request', 'roleValidations', validations);
 
-  var rolesAPI = {
-    addRole: addRole,
-    updateRole: updateRole,
-    deleteRole: deleteRole,
-    getRole: function(name) { return roles[name]; },
-    reprioritizeRoles: reprioritizeRoles
-  };
-  server.decorate('server', 'rolesAPI', rolesAPI);
-  server.decorate('request', 'rolesAPI', rolesAPI);
-  return verifyRoles()
-  .then(function() {
-    server.app.rolesData = roles;
-    return next();
-  });
+    var rolesAPI = {
+      addRole: addRole,
+      updateRole: updateRole,
+      deleteRole: deleteRole,
+      getRole: function(name) { return roles[name]; },
+      reprioritizeRoles: reprioritizeRoles
+    };
+    server.decorate('server', 'rolesAPI', rolesAPI);
+    server.decorate('request', 'rolesAPI', rolesAPI);
+    return verifyRoles()
+    .then(function() {
+      server.app.rolesData = roles;
+      return;
+    });
+  }
 };
 
 function buildRoles(permissions) {
@@ -293,10 +298,3 @@ function deleteRole(roleId) {
 function reprioritizeRoles(allRoles) {
   allRoles.forEach(function(role) { roles[role.lookup].priority = role.priority; });
 }
-
-exports.verifyRoles = verifyRoles;
-
-exports.register.attributes = {
-  name: 'acls',
-  version: '1.0.0'
-};
