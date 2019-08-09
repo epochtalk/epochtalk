@@ -43,7 +43,7 @@ exports.recoverAccount = function(sender, params) {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] Account Recovery`,
-    html: mustache.render(templateFile('recover-account.html'),{
+    html: mustache.render(templateFile('recover-account.html'), {
       css: css(),
       username: params.username,
       siteName: params.site_name,
