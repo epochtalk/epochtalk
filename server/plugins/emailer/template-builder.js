@@ -117,13 +117,12 @@ exports.threadNotification = function(sender, params) {
 };
 
 exports.mentionNotification = function(sender, params) {
-  var template = mustache.render(templateFile('mention-notification.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] New mention in thread "${params.thread_name}"`,
-    html: template({
+    html: mustache.render(templateFile('mention-notification.html'), {
       css: css(),
       threadName: params.thread_name,
       postAuthor: params.post_author,
