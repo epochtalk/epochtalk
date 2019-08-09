@@ -9,8 +9,8 @@
         font-size: 12px;
       }
       .header {
-        background-color: {{=it.css.headerBgColor}};
-        color: {{=it.css.headerFontColor}};
+        background-color: {{css.headerBgColor}};
+        color: {{css.headerFontColor}};
         font-weight: bold;
         font-size: 25px;
         padding-left: 25px;
@@ -19,44 +19,44 @@
       }
       .body {
         min-width: 80%;
-        background-color: {{=it.css.baseBackgroundColor}};
-        border: 1px solid {{=it.css.borderColor}};
+        background-color: {{css.baseBackgroundColor}};
+        border: 1px solid {{css.borderColor}};
         border-collapse: collapse;;
       }
       .content {
         padding: 25px;
         padding-top: 10px;
-        color: {{=it.css.baseFontColor}};
+        color: {{css.baseFontColor}};
       }
       .footer {
-        background-color: {{=it.css.subHeaderColor}};
-        color: {{=it.css.secondaryFontColor}};
+        background-color: {{css.subHeaderColor}};
+        color: {{css.secondaryFontColor}};
         margin: 5px;
         line-height: 30px;
         height: 30px;
       }
-      a { color: {{=it.css.colorPrimary}}; }
+      a { color: {{css.colorPrimary}}; }
     </style>
   </head>
   <body>
     <table align="center" class="body">
       <tr>
         <td class="header" align="left" valign="middle">
-            {{=it.siteName}}
+            {{siteName}}
         </td>
       </tr>
       <tr>
         <td class="content" align="left" valign="top">
           <h3>Account Recovery</h3>
           Recover your account by visiting the link below and resetting your password:<br /><br />
-          <strong>Username</strong>: {{=it.username}}<br />
+          <strong>Username</strong>: {{username}}<br />
           <strong>Password</strong>:
-          <a href="{{=it.resetUrl}}">Reset</a>
+          <a href="{{resetUrl}}">Reset</a>
         </td>
       </tr>
       <tr>
         <td align="center" valign="top">
-            <div class="footer">&copy; {{=it.currentYear}} {{=it.siteName}}</div>
+            <div class="footer">&copy; {{currentYear}} {{siteName}}</div>
         </td>
       </tr>
     </table>
