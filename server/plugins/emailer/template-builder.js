@@ -70,13 +70,12 @@ exports.recoverSuccess = function(sender, params) {
 };
 
 exports.confirmAccount = function(sender, params) {
-  var template = mustache.render(templateFile('confirm-account.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] Account Confirmation`,
-    html: template({
+    html: mustache.render(templateFile('confirm-account.html'), {
       css: css(),
       username: params.username,
       siteName: params.site_name,
