@@ -86,13 +86,12 @@ exports.confirmAccount = function(sender, params) {
 };
 
 exports.invite = function(sender, params) {
-  var template = mustache.render(templateFile('invitation.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] You've been sent an invitation`,
-    html: template({
+    html: mustache.render(templateFile('invitation.html'), {
       css: css(),
       siteName: params.site_name,
       currentYear: currentYear,
