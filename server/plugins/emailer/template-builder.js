@@ -134,13 +134,12 @@ exports.mentionNotification = function(sender, params) {
 };
 
 exports.postUpdated = function(sender, params) {
-  var template = mustache.render(templateFile('post-updated.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] Your post in thread "${params.thread_name}" has been ${params.action}`,
-    html: template({
+    html: mustache.render(templateFile('post-updated.html'), {
       css: css(),
       threadName: params.thread_name,
       modUsername: params.mod_username,
