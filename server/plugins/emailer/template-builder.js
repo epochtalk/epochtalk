@@ -101,13 +101,12 @@ exports.invite = function(sender, params) {
 };
 
 exports.threadNotification = function(sender, params) {
-  var template = mustache.render(templateFile('thread-notification.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] New replies to thread "${params.thread_name}"`,
-    html: template({
+    html: mustache.render(templateFile('thread-notification.html'), {
       css: css(),
       threadName: params.thread_name,
       siteName: params.site_name,
