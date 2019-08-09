@@ -54,7 +54,7 @@ exports.recoverAccount = function(sender, params) {
 };
 
 exports.recoverSuccess = function(sender, params) {
-  var template = doT.template(templateFile('recover-success.html'));
+  var template = mustache.render(templateFile('recover-success.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
@@ -71,7 +71,7 @@ exports.recoverSuccess = function(sender, params) {
 };
 
 exports.confirmAccount = function(sender, params) {
-  var template = doT.template(templateFile('confirm-account.html'));
+  var template = mustache.render(templateFile('confirm-account.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
@@ -88,7 +88,7 @@ exports.confirmAccount = function(sender, params) {
 };
 
 exports.invite = function(sender, params) {
-  var template = doT.template(templateFile('invitation.html'));
+  var template = mustache.render(templateFile('invitation.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
@@ -104,7 +104,7 @@ exports.invite = function(sender, params) {
 };
 
 exports.threadNotification = function(sender, params) {
-  var template = doT.template(templateFile('thread-notification.html'));
+  var template = mustache.render(templateFile('thread-notification.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
@@ -121,7 +121,7 @@ exports.threadNotification = function(sender, params) {
 };
 
 exports.mentionNotification = function(sender, params) {
-  var template = doT.template(templateFile('mention-notification.html'));
+  var template = mustache.render(templateFile('mention-notification.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
@@ -139,7 +139,7 @@ exports.mentionNotification = function(sender, params) {
 };
 
 exports.postUpdated = function(sender, params) {
-  var template = doT.template(templateFile('post-updated.html'));
+  var template = mustache.render(templateFile('post-updated.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
@@ -158,7 +158,7 @@ exports.postUpdated = function(sender, params) {
 };
 
 exports.threadDeleted = function(sender, params) {
-  var template = doT.template(templateFile('thread-delete.html'));
+  var template = mustache.render(templateFile('thread-delete.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
