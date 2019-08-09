@@ -54,13 +54,12 @@ exports.recoverAccount = function(sender, params) {
 };
 
 exports.recoverSuccess = function(sender, params) {
-  var template = mustache.render(templateFile('recover-success.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] Account Recovery Success`,
-    html: template({
+    html: mustache.render(templateFile('recover-success.html'), {
       css: css(),
       username: params.username,
       siteName: params.site_name,
