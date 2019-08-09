@@ -105,9 +105,13 @@
   <caption>Threads</caption>
   <thead>
     <tr>
-      <th class="subject">Threads</th>
-      <th class="replies">Replies</th>
-      <th class="views">Views</th>
+      <th class="subject">Subject</th>
+      <th class="views-replies">
+        <span>Views</span>
+        <span>Replies</span>
+      </th>
+      <!-- <th class="replies">Replies</th>
+      <th class="views">Views</th> -->
       <th class="last-post">Last Post</th>
     </tr>
   </thead>
@@ -131,8 +135,15 @@
           <span ng-bind="'on ' + (thread.created_at | humanDate)"></span>
         </div>
       </td>
-      <td class="replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></td>
-      <td class="views" ng-bind="(thread.view_count | number:0) || 0"></td>
+
+      <td class="views-replies">
+        <span class="views" ng-bind="(thread.post_count - 1 | number:0) || 0"></span>
+        <span class="replies" ng-bind="(thread.view_count | number:0) || 0"></span>
+      </td>
+
+      <!-- <td class="replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></td>
+      <td class="views" ng-bind="(thread.view_count | number:0) || 0"></td> -->
+
       <td class="last-post">
         <span ng-if="thread.last_deleted">deleted</span>
         <img ng-if="!thread.last_deleted" class="avatar-small"
@@ -149,7 +160,7 @@
     </tr>
 
     <!-- Threads -->
-    <tr class="threads-data" ng-repeat="thread in ThreadsCtrl.threads track by thread.id">
+    <!-- <tr class="threads-data" ng-repeat="thread in ThreadsCtrl.threads track by thread.id">
       <td class="subject">
         <div class="title">
           <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
@@ -181,6 +192,6 @@
             unread post</a>
         </div>
       </td>
-    </tr>
+    </tr> -->
   </tbody>
 </table>

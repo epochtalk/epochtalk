@@ -364,34 +364,12 @@
 }
 
 
-// Grid test
-.grid {
+
+// General Thread Table styles
+.child-boards,
+.threads-list {
   display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr);
-
-  thead, tbody, tr {
-    display: contents;
-  }
-
-  caption {
-    grid-column: 1 / span 4;
-  }
-
-  @include break-mobile-sm {
-    grid-template-columns: 1fr;
-
-    caption {
-      grid-column: inherit;
-    }
-  }
-}
-
-// Child Boards view
-.child-boards {
-  display: grid;
-  grid-template-columns: minmax(200px, 600px) 2fr minmax(100px, 200px);
   column-gap: 1.5rem;
-  // row-gap: 1rem;
   margin-bottom: 3rem;
 
   caption {
@@ -412,16 +390,31 @@
     tr {
       td, th {
         font-size: $base-font-size;
-        padding: 0; 
-        padding-bottom: 1rem;
         line-height: 20px;
       }
     }
   }
 
+  td, th {
+    padding: 0;
+    padding-bottom: 1rem;
+  }
+
   .description {
     font-size: $font-size-sm;
   }
+
+  .last-post {
+    color: $text-gray-dark;
+    font-size: $font-size-sm;
+  }
+}
+
+
+// Child Boards view
+.child-boards {
+  grid-template-columns: minmax(calc(400px + 4rem), 800px) 2fr minmax(200px, 400px);
+  // row-gap: 1rem;
 
   .children {
     color: $text-gray-dark;
@@ -446,15 +439,14 @@
     }
   }
 
-  .last-post {
-    color: $text-gray-dark;
-    font-size: $font-size-sm;
-  }
-
   @include break-mobile-sm {
     grid-template-columns: 1fr;
     row-gap: 0;
     margin-bottom: 2rem;
+
+    td {
+      padding-bottom: 0;
+    }
 
     td:last-child {
       margin-bottom: 2rem;
@@ -467,10 +459,6 @@
     .views {
       grid-template-columns: repeat(4, min-content);
     }
-
-    .board-name {
-      // margin-top: 1rem;
-    }
   }
 }
 
@@ -478,14 +466,13 @@
 // Thread List view
 .threads-list {
   display: grid;
-  // grid-template-columns: minmax(200px, 600px) repeat(2, 1fr) 3fr;
-  grid-template-columns: minmax(200px, 600px) repeat(2, 1fr) minmax(100px, 200px);
+  grid-template-columns: minmax(400px, 800px) minmax(100px, auto) minmax(200px, 400px);
   column-gap: 1.5rem;
   row-gap: 1rem;
 
   caption {
     display: none;
-    grid-column: 1 / span 2;
+    grid-column: 1 / span 4;
   }
 
   thead, tbody, tr {
@@ -508,9 +495,10 @@
         &.subject,
         &.replies,
         &.views,
+        &.views-replies,
         &.last-post {
           color: $text-gray-med;
-          font-size: $font-size-sm;
+          font-size: $font-size-xs;
           font-weight: 400;
           text-transform: uppercase;
         }
@@ -536,6 +524,16 @@
     text-align: right;
   }
 
+  .views-replies {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(60px, auto));
+    text-align: right;
+
+    .replies {
+      margin-left: 0.5rem;
+    }
+  }
+
   // .sticky {
   //   td {
   //     border-bottom: $border;
@@ -552,6 +550,7 @@
     caption {
       display: block;
       color: $text-gray-med;
+      grid-column: inherit;
       text-align: left;
       text-transform: uppercase;
     }
@@ -581,9 +580,19 @@
       font-size: $font-size-sm;
     }
 
+    .views-replies {
+      grid-template-columns: repeat(3, min-content);
+    }
+
     .replies,
     .views {
+      font-weight: 600;
       text-align: left;
+
+      &:after {
+        font-weight: 400;
+        white-space: nowrap;
+      }
     }
 
     .replies {
@@ -594,7 +603,7 @@
 
     .views {
       &:after {
-        content: ' views'; 
+        content: ' views,'; 
       }
     }
 
