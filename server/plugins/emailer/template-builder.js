@@ -152,13 +152,12 @@ exports.postUpdated = function(sender, params) {
 };
 
 exports.threadDeleted = function(sender, params) {
-  var template = mustache.render(templateFile('thread-delete.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] "${params.thread_name}" a thread that you ${params.action}, has been deleted`,
-    html: template({
+    html: mustache.render(templateFile('thread-delete.html'), {
       css: css(),
       threadName: params.thread_name,
       modUsername: params.mod_username,
