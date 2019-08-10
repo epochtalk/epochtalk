@@ -537,11 +537,32 @@
     }
   }
 
-  // .sticky {
-  //   td {
-  //     border-bottom: $border;
-  //   }
-  // }
+  .title {
+    position: relative;
+  }
+
+  .is-sticky,
+  .is-unread {
+    position: absolute;
+    top: 0;
+    left: -1rem;
+
+    svg {
+      height: 12px;
+      width: auto;
+
+      path {
+        fill: $text-gray-dark;
+      }
+    }
+  }
+
+  .is-unread {
+    svg {
+      height: 8px;
+      fill: $color-primary;
+    }
+  }
 
 
 

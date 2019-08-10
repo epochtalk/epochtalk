@@ -110,12 +110,11 @@
         <span>Views</span>
         <span>Replies</span>
       </th>
-      <!-- <th class="replies">Replies</th>
-      <th class="views">Views</th> -->
       <th class="last-post">Last Post</th>
     </tr>
   </thead>
   <tbody>
+    
     <!-- Sticky Threads -->
     <tr class="threads-data sticky" ng-repeat="thread in ThreadsCtrl.stickyThreads track by thread.id">
       <td class="subject">
@@ -123,7 +122,14 @@
           <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
             ng-bind-html="thread.title"></a>
           <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-          <i class="icon-epoch-verified right" ng-if="thread.sticky"></i>
+          <!-- <i class="icon-epoch-verified right" ng-if="thread.sticky"></i> -->
+          <span class="is-sticky" ng-if="thread.sticky">
+            <svg viewBox="0 0 40.68 40.68" xmlns="http://www.w3.org/2000/svg">
+              <path d="m40 9.92-9.24-9.19a2.5 2.5 0 0 0 -3.54 3.54l9.2 9.19a2.5 2.5 0 0 0 3.58-3.54z" />
+              <path
+                d="m12 14.52a3 3 0 0 0 -4.24 4.24l5.66 5.66-11.3 11.31-2.12 4.95 5-2.12 11.26-11.31 5.66 5.66a3 3 0 0 0 4.24-4.25z" />
+              <path d="m17.46 9.23h16v12h-16z" transform="matrix(.70710678 -.70710678 .70710678 .70710678 -3.31 22.46)" /></svg>
+          </span>
           <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
         </div>
         
@@ -140,9 +146,6 @@
         <span class="views" ng-bind="(thread.post_count - 1 | number:0) || 0"></span>
         <span class="replies" ng-bind="(thread.view_count | number:0) || 0"></span>
       </td>
-
-      <!-- <td class="replies" ng-bind="(thread.post_count - 1 | number:0) || 0"></td>
-      <td class="views" ng-bind="(thread.view_count | number:0) || 0"></td> -->
 
       <td class="last-post">
         <span ng-if="thread.last_deleted">deleted</span>
@@ -165,6 +168,14 @@
         <div class="title">
           <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
             ng-bind-html="thread.title"></a>
+          <span class="is-unread" ng-if="thread.has_new_post">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+              <title>icon__unread</title>
+              <g id="icons">
+                <circle cx="16" cy="16" r="16" />
+              </g>
+            </svg>
+          </span>
           <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
           <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
         </div>
