@@ -541,25 +541,29 @@
     position: relative;
   }
 
-  .is-sticky,
-  .is-unread {
+  .thread-state {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: flex-start; 
     position: absolute;
     top: 0;
-    left: -1rem;
+    left: -1.25rem;
+    height: 2.5rem;
+    width: 1rem;
 
     svg {
-      height: 12px;
+      height: 10px;
+      margin: 6px 0;
       width: auto;
 
       path {
         fill: $text-gray-dark;
       }
     }
-  }
 
-  .is-unread {
-    svg {
-      height: 8px;
+    .is-unread {
+      height: 6px;
       fill: $color-primary;
     }
   }
@@ -631,16 +635,9 @@
       }
     }
 
-    // .sticky {
-    //   td {
-    //     border-bottom: none;
-    //     &:last-child {
-    //       border-bottom: $border;
-    //       margin-bottom: 1rem;
-    //       padding-bottom: 1rem;
-    //     }
-    //   }
-    // }
+    .thread-state {
+      height: 3rem;
+    }
 
   }
 }
