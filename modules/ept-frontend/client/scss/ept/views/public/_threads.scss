@@ -414,6 +414,9 @@
 // Child Boards view
 .child-boards {
   grid-template-columns: minmax(calc(400px + 4rem), 800px) 2fr minmax(200px, 400px);
+  border-bottom: $border;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
   // row-gap: 1rem;
 
   .children {
