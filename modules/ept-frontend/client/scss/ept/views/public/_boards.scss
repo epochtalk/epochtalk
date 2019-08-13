@@ -21,8 +21,13 @@
 .content-sidebar {
   border-top: $border;
   padding-top: 1rem;
-  
-  .title {
+
+  h1 {
+    line-height: inherit;
+    margin-bottom: 0.5rem;
+  }
+
+  .threads-data {
     margin-bottom: 0.5rem;
   }
 
@@ -31,6 +36,40 @@
     // border-left: $border;
     padding-left: 1rem;
     padding-top: 0;
+  }
+}
+
+.subject {
+  position: relative;
+}
+
+.thread-state {
+  position: absolute;
+  top: 0;
+  left: -1.625rem;
+  height: 1.25rem;
+  width: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  svg {
+    width: 9px;
+    height: auto;
+    margin-right: 0.25rem;
+
+    path {
+      fill: $text-gray-dark;
+    }
+  }
+
+  .is-unread {
+    width: 5px;
+    height: auto;
+
+    circle {
+      fill: $color-primary;
+    }
   }
 }
 
@@ -75,14 +114,9 @@
       .childboards,
       .moderators { 
         color: $text-gray-dark;
-        font-size: $base-font-size; 
+        font-size: $font-size-sm; 
         line-height: 1;
         margin-bottom: 0.5rem;
-
-        .label {
-          font-size: $font-size-sm;
-          // text-transform: uppercase;
-        }
 
         a {
           
