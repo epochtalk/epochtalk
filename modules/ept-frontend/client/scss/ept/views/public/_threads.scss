@@ -543,18 +543,17 @@
 
   .thread-state {
     display: flex;
-    flex-direction: column;
-    align-content: center;
-    justify-content: flex-start; 
+    align-items: center;
+    justify-content: flex-end; 
     position: absolute;
     top: 0;
-    left: -1.25rem;
-    height: 2.5rem;
-    width: 1rem;
+    left: -1.625rem;
+    height: 1.25rem;
+    width: 1.5rem;
 
     svg {
-      height: 10px;
-      margin: 6px 0;
+      height: 9px;
+      margin-right: 0.25rem;
       width: auto;
 
       path {
@@ -563,7 +562,7 @@
     }
 
     .is-unread {
-      height: 6px;
+      height: 5px;
       fill: $color-primary;
     }
   }
@@ -634,10 +633,5 @@
         content: ' views,'; 
       }
     }
-
-    .thread-state {
-      height: 3rem;
-    }
-
   }
 }
