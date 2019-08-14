@@ -83,22 +83,56 @@
       display: inline-block; 
       font-size: $font-size-sm;
       line-height: 1.5;
-      margin-top: 0.5rem;
+      // margin-top: 0.5rem;
       padding-left: 0; 
     }
     a { 
       display: inline-block; 
       color: $text-gray-med;
       width: 1rem; 
-      font-size: 0.65rem; 
+      // font-size: 0.65rem; 
       position: relative; 
-      top: -0.2rem; 
+      // top: -0.2rem; 
       &:hover,
       &:focus {
         text-decoration: none;
       }
     }
-    .collapse-section { @include no-select; margin-left: -1.15rem; cursor: pointer; display: inline-block; }
+
+    .collapse-section {
+       @include no-select; 
+       display: flex;
+       align-items: center;
+       margin-left: -1rem; 
+       cursor: pointer; 
+
+      .is-open {
+        .icon__caretDown {
+          transform: rotateZ(0deg);
+          transition: all ease-in-out 150ms;
+        }
+      }
+
+      .is-closed {
+        .icon__caretDown {
+          transform: rotateZ(-90deg);
+          transition: all ease-in-out 150ms;
+        }
+      }
+
+       .icon__caretDown {
+         margin-bottom: 4px;
+         width: 8px;
+
+         polyline {
+           fill: none;
+           stroke: $text-gray-med;
+           stroke-linecap: round;
+           stroke-miterlimit: 10;
+           stroke-width: 7px;
+         }
+       }
+      }
   }
   .board {
     display: flex;

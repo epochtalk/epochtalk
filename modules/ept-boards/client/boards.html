@@ -2,9 +2,20 @@
   <div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards">
     <!-- Category Title -->
     <div id="{{BoardsCtrl.generateCatId(cat.name, cat.view_order)}}" class="title">
-      <div ng-click="BoardsCtrl.toggleCategory(cat)" class="collapse-section">
+      <!-- <div ng-click="BoardsCtrl.toggleCategory(cat)" class="collapse-section">
         <a ng-class="{ 'fa-chevron-down' : cat.show, 'fa-chevron-right': !cat.show }"
         class="fa collapse-btn no-select"></a>
+        <h1 ng-bind-html="::cat.name"></h1>
+      </div> -->
+      <div ng-click="BoardsCtrl.toggleCategory(cat)" class="collapse-section">
+        <a ng-class="{ 'is-open' : cat.show, 'is-closed': !cat.show }" class="test">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39.84 22.63" class="icon__caretDown">
+            <title>icon__caretDown</title>
+            <g id="Layer_2" data-name="Layer 2">
+              <polyline class="icon" points="37.92 1.92 19.92 19.92 1.92 1.92" />
+            </g>
+          </svg>
+        </a>
         <h1 ng-bind-html="::cat.name"></h1>
       </div>
     </div>
