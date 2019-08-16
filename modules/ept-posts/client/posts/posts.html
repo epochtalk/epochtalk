@@ -10,10 +10,10 @@
   <div class="page-header-split">
     <!-- Show Title -->
     <div ng-if="!PostsParentCtrl.editThread">
-      <h4 ng-bind-html="::PostsParentCtrl.thread.title"></h4>
+      <h1 ng-bind-html="::PostsParentCtrl.thread.title"></h1>
       <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
       <i class="icon-epoch-verified" ng-if="PostsParentCtrl.thread.sticky"></i>
-      <a data-balloon="Edit Thread Title" ng-href="#" ng-if="PostsParentCtrl.canEditTitle()" ng-click="PostsParentCtrl.openEditThread()">
+      <a data-balloon="Edit Thread Title" ng-href="#" class="do-edit" ng-if="PostsParentCtrl.canEditTitle()" ng-click="PostsParentCtrl.openEditThread()">
         <i class="icon-epoch-edit-pencil"></i>
       </a>
     </div>
@@ -25,66 +25,71 @@
         <button ng-click="PostsParentCtrl.closeEditThread()">Cancel</button>
       </form>
     </div>
-    <!-- Pagination -->
-    <div>
-      <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
-    </div>
-  </div>
 
-  <!-- User Controls -->
-  <div class="fill-row" ng-if="PostsParentCtrl.showUserControls() || PostsParentCtrl.showThreadControls() || PostsParentCtrl.canPost()">
-    <div class="half-column">
-      <!-- Watch Thread -->
-      <span ng-if="PostsParentCtrl.showUserControls()">
-        <a class="inverted-button" ng-if="!PostsParentCtrl.thread.watched" ng-click="PostsParentCtrl.watchThread()">
-          <i class="icon-epoch-watch"></i>Watch This Thread
-        </a>
-      </span>
-      <!-- Add Poll -->
-      <span ng-if="PostsParentCtrl.showUserControls()">
-        <a class="inverted-button" ng-if="PostsParentCtrl.canCreatePoll()" ng-click="PostsParentCtrl.addPoll = !PostsParentCtrl.addPoll">
-          <i class="fa fa-bar-chart"></i>Add a Poll
-        </a>
-      </span>
-      <span ng-if="!PostsParentCtrl.showUserControls()">&nbsp;</span>
-    </div>
-    <div class="half-column">
-      <div>
-        <div class="controls two-thirds-column">
+    <!-- Bottom Pagination -->
+    <!-- <div class="fill-row">
+      <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+    </div> -->
+
+    <!-- User Controls -->
+    <div class="user-controls"
+      ng-if="PostsParentCtrl.showUserControls() || PostsParentCtrl.showThreadControls() || PostsParentCtrl.canPost()">
+      <div class="user-controls-base">
+        <!-- Watch Thread -->
+        <div ng-if="PostsParentCtrl.showUserControls()" data-balloon="Watch Thread">
+          <a class="" ng-if="!PostsParentCtrl.thread.watched" ng-click="PostsParentCtrl.watchThread()">
+            <i class="icon-epoch-watch"></i>
+          </a>
+        </div>
+
+        <!-- Add a Poll -->
+        <div ng-if="PostsParentCtrl.showUserControls()" data-balloon="Add a Poll">
+          <a class="" ng-if="PostsParentCtrl.canCreatePoll()"
+            ng-click="PostsParentCtrl.addPoll = !PostsParentCtrl.addPoll">
+            <i class="fa fa-bar-chart"></i>
+          </a>
+        </div>
 
         <!-- Thread Lock -->
-        <div class="control" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}" ng-if="PostsParentCtrl.canLock()">
-          <a ng-href="#" id="lockThread" class="icon-epoch-lock" ng-class="{'clicked' : PostsParentCtrl.thread.locked }" ng-click="PostsParentCtrl.updateThreadLock()">
+        <div class="control" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}"
+          ng-if="PostsParentCtrl.canLock()">
+          <a ng-href="#" id="lockThread" class="icon-epoch-lock" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
+            ng-click="PostsParentCtrl.updateThreadLock()">
           </a>
         </div>
-
+    
         <!-- Thread Sticky -->
-        <div class="control" data-balloon="{{PostsParentCtrl.thread.sticky ? 'Unsticky Thread' : 'Sticky Thread'}}"  ng-if="PostsParentCtrl.canSticky()">
-          <a ng-href="#" id="stickyThread" class="icon-epoch-verified" ng-class="{'clicked' : PostsParentCtrl.thread.sticky }" ng-click="PostsParentCtrl.updateThreadSticky()">
+        <div class="control" data-balloon="{{PostsParentCtrl.thread.sticky ? 'Unsticky Thread' : 'Sticky Thread'}}"
+          ng-if="PostsParentCtrl.canSticky()">
+          <a ng-href="#" id="stickyThread" class="icon-epoch-verified"
+            ng-class="{'clicked' : PostsParentCtrl.thread.sticky }" ng-click="PostsParentCtrl.updateThreadSticky()">
           </a>
         </div>
-
-          <!-- Purge Delete -->
-          <div class="control" data-balloon="Purge Thread" ng-if="PostsParentCtrl.canPurge()">
-            <a ng-href="#" id="purgeThread" class="fa fa-times-circle" ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }" ng-click="PostsParentCtrl.showPurgeThreadModal = true">
-            </a>
-          </div>
-
-          <!-- Move Thread -->
-          <div class="control" data-balloon="Move Thread" ng-if="PostsParentCtrl.canMove()">
-            <a ng-href="#" id="moveBoard" class="fa fa-arrow-right" ng-class="{'clicked' : PostsParentCtrl.showMoveThreadModal }" ng-click="PostsParentCtrl.openMoveThreadModal()">
-            </a>
-          </div>
-          <span ng-if="!PostsParentCtrl.showThreadControls()">&nbsp;</span>
+    
+        <!-- Purge Delete -->
+        <div class="control" data-balloon="Purge Thread" ng-if="PostsParentCtrl.canPurge()">
+          <a ng-href="#" id="purgeThread" class="fa fa-times-circle"
+            ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }"
+            ng-click="PostsParentCtrl.showPurgeThreadModal = true">
+          </a>
         </div>
-        <div class="controls one-third-column">
-          <a class="button right" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Post Reply</a>
+    
+        <!-- Move Thread -->
+        <div class="control" data-balloon="Move Thread" ng-if="PostsParentCtrl.canMove()">
+          <a ng-href="#" id="moveBoard" class="fa fa-arrow-right"
+            ng-class="{'clicked' : PostsParentCtrl.showMoveThreadModal }" ng-click="PostsParentCtrl.openMoveThreadModal()">
+          </a>
         </div>
+        <span ng-if="!PostsParentCtrl.showThreadControls()">&nbsp;</span>
+    
+        <!-- <div class="controls one-third-column">
+              <a class="button right" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Post Reply</a>
+            </div> -->
+    
       </div>
-
     </div>
   </div>
-  <div class="clear"></div>
+
 
   <!-- Polls -->
   <div class="fill-row" ng-if="PostsParentCtrl.addPoll">

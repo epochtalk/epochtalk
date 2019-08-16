@@ -10,6 +10,20 @@
 .hide-mobile { @include media($mobile) { display: none !important; } }
 .padding-top { padding-top: 1rem; }
 
+
+// Grid layout
+$grid-2-column: 1fr 240px;
+
+@mixin grid-base-layout {
+  display: grid;
+  column-gap: 2rem;
+  row-gap: 0;
+}
+
+@mixin grid-columns {
+  grid-template-columns: $grid-2-column;
+}
+
 /*-- Banner Message Layout --*/
 .banner-container {
   @include row;
@@ -30,35 +44,16 @@
 
 /*-- Shared Page Header Layout (Threads and Posts View) --*/
 .page-header-split {
-  @include row;
-  margin-bottom: 1rem;
-  div:first-child {
-    @include span-columns(6);
-    color: $sub-header-font-color;
-    h4 { color: $sub-header-font-color; font-weight: bold; display: inline; }
-    input { margin-bottom: 0.5rem; @include transition(none); }
-    button { @include span-columns(6); margin-bottom: 0;}
-    button:last-child { @include omega; }
-  }
-  div:not(:first-child) {
-    @include span-columns(6);
-    @include omega;
-    pagination { float: right; }
-    &.moderators {
-      @include span-columns(12);
-      @include omega;
-      .label { font-weight: bold; color: $sub-header-secondary-font-color; }
-    }
-  }
+  @include grid-base-layout();
+  @include grid-columns();
 
-  @include media($mobile) {
-    text-align: center;
-    h4 { font-size: 1.4rem; }
-    div:first-child, div:not(:first-child) {
-      @include span-columns(8);
-      @include omega;
-      pagination { display:inline-block; float: none; }
-    }
+  h1 {
+    color: $sub-header-font-color;
+    display: inline;
+    font-size: $font-size-lg;
+    font-weight: 600;
+    line-height: 1.2;
+    text-transform: uppercase;
   }
 }
 

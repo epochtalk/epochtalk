@@ -6,6 +6,6 @@ main {
   padding-bottom: 9.4375rem;
   #public-content {
     @include base-layout-width;
-    display: grid;
+    @include grid-base-layout;
   }
 }

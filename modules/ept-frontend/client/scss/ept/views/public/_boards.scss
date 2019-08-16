@@ -6,7 +6,7 @@
   margin-bottom: 2rem;
 
   @media screen and (min-width: 1280px) {
-    grid-template-columns: 1fr 300px;
+    @include grid-columns();
   }
 
   @include break-mobile-sm {
