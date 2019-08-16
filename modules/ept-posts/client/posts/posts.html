@@ -26,11 +26,6 @@
       </form>
     </div>
 
-    <!-- Bottom Pagination -->
-    <!-- <div class="fill-row">
-      <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
-    </div> -->
-
     <!-- User Controls -->
     <div class="user-controls"
       ng-if="PostsParentCtrl.showUserControls() || PostsParentCtrl.showThreadControls() || PostsParentCtrl.canPost()">
@@ -97,7 +92,8 @@
     <button class="fill-row" ng-disabled="!PostsParentCtrl.pollValid" ng-click="PostsParentCtrl.createPoll()">Create Poll</button>
   </div>
   <poll-viewer thread="PostsParentCtrl.thread" reset="PostsParentCtrl.resetPoll"></poll-viewer>
-  <div class="clear"></div>
+
+  <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
 
 </div>
 
