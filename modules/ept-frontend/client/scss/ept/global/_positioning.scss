@@ -12,7 +12,7 @@
 
 
 // Grid layout
-$grid-2-column: 1fr 240px;
+$grid-2-column: 1fr $sidebarWidth;
 
 @mixin grid-base-layout {
   display: grid;

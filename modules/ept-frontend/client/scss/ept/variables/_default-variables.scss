@@ -25,7 +25,7 @@ $sub-header-color: rgb(245, 245, 245);
 
 // Base layout width
 @mixin base-layout-width {
-  max-width: 1300px;
+  max-width: $view-maxWidth;
   margin-left: auto;
   margin-right: auto;
 }

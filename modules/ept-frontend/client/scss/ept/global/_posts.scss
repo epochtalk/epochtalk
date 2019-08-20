@@ -9,11 +9,13 @@
   ul { white-space: normal }
   img.loaded { opacity: 1; }
   img { @include transition(opacity 0.5s ease-in); opacity: 0; }
+
   .video-wrap {
     position: relative;
     padding-bottom: 56.25%;
     padding-top: 1.875rem;
     height: 0;
+    width: 100%;
     overflow:hidden;
   }
   .video-wrap iframe, .video-wrap object, .video-wrap embed {

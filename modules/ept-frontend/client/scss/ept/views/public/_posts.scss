@@ -14,11 +14,11 @@ ad-viewer {
 
 .thread-controls-wrap {
   // background-color: $sub-header-color;
-  // margin: -$header-bottom-margin -100% $header-bottom-margin;
-  // padding: $header-bottom-margin 100% 0;
+  margin: -$header-bottom-margin -100% $header-bottom-margin;
+  padding: $header-bottom-margin 100% 1rem;
   border-bottom: $border;
-  margin: -1.5rem -2rem 1.5rem;
-  padding: 1.5rem 2rem;
+  // margin: -1.5rem -2rem 1.5rem;
+  // padding: 1.5rem 2rem;
   grid-column: 1 / span 2;
 
   .inverted-button {
@@ -74,6 +74,7 @@ ad-viewer {
     @include transition(background-color 250ms ease-in);
     position: relative;
     min-height: 10rem;
+    max-width: calc(#{$view-maxWidth} - #{$sidebarWidth} - 2rem);
     border-bottom: $border;
     padding: 1.5rem 0 2rem;
     // &:first-child {
