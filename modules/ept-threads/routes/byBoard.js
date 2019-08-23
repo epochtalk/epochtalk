@@ -85,7 +85,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/threads',
-  config: {
+  options: {
     app: { hook: 'threads.byBoard' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
@@ -96,22 +96,22 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.threads.byBoard(server, auth, query.board_id)' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.threads.byBoard(request.server, request.auth, request.query.board_id) },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
-      return reply(request.pre.processed);
+    handler: function(request) {
+      return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   var userId;
   if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
@@ -140,5 +140,5 @@ function processing(request, reply) {
   })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

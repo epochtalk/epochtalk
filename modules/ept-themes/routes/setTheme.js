@@ -1,3 +1,4 @@
+var Promise = require('bluebird');
 var path = require('path');
 var Joi = require('joi');
 var fs = require('fs');
@@ -47,7 +48,7 @@ var defaultVarsPath = common.defaultVarsPath;
 module.exports = {
   method: 'PUT',
   path: '/api/theme',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -72,24 +73,28 @@ module.exports = {
         'header-bg-color': Joi.string()
       })
     },
-    pre: [ { method: 'auth.themes.setTheme(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.themes.setTheme(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var theme = request.payload;
     var keys = Object.keys(theme);
     var stream = fs.createWriteStream(customVarsPath);
-    stream.once('open', function() {
-      keys.forEach(function(key) {
-        stream.write('$' + key + ': ' + theme[key].toLowerCase() + ';\n');
-      });
-      stream.end();
+
+    return new Promise(function(resolve, reject) {
+      stream.once('open', function() {
+        keys.forEach(function(key) {
+          stream.write('$' + key + ': ' + theme[key].toLowerCase() + ';\n');
+        });
+        stream.end();
+      })
+      .on('close', function() {
+        fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
+        copyCss()
+        .then(sass)
+        .then(function() { return resolve(theme); })
+      })
+      .on('error', reject);
     })
-    .on('close', function() {
-      fs.truncateSync(previewVarsPath, 0); // wipe preview vars file
-      copyCss()
-      .then(sass)
-      .then(function() { reply(theme); })
-      .error(request.errorMap.toHttpError);
-    });
+    .error(request.errorMap.toHttpError);
   }
 };

@@ -8,5 +8,6 @@ module.exports = function(userId, ignoreUserId) {
   ignoreUserId = helper.deslugify(ignoreUserId);
   var q = 'DELETE FROM users.ignored WHERE user_id = $1 AND ignored_user_id = $2';
   return db.sqlQuery(q, [userId, ignoreUserId])
-  .then(function() { return; });
+  .then(function() { return { user_id: userId, ignored_user_id: ignoreUserId}; })
+  .then(helper.slugify);
 };

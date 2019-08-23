@@ -8,7 +8,7 @@ var crypto = require('crypto');
 var request = require('request');
 var Promise = require('bluebird');
 var through2 = require('through2');
-var imageStore = require(path.normalize(__dirname + '/common'));
+var images = require(path.normalize(__dirname + '/images'));
 var Magic = mmm.Magic;
 var config;
 
@@ -191,8 +191,8 @@ s3.initClient = function(accessKey, secretKey, region) {
 s3.checkBucket = function() {
   return new Promise(function(resolve, reject) {
     client.headBucket({ Bucket: config.images.s3.bucket }, function(err, data) {
-      if (err) { return reject(); }
-      if (data) { return resolve(); }
+      if (err) { return reject(err); }
+      if (data) { return resolve(data); }
     });
   });
 };
@@ -210,7 +210,7 @@ s3.createBucket = function() {
 };
 
 s3.uploadPolicy = function(filename) {
-  var imageName = imageStore.generateUploadFilename(filename);
+  var imageName = images.generateUploadFilename(filename);
   var imageUrl = generateImageUrl(imageName);
   var key = config.images.s3.dir + imageName;
 
@@ -232,7 +232,7 @@ s3.uploadPolicy = function(filename) {
   var signature = crypto.createHmac('sha1', config.images.s3.secretKey).update(Buffer.from(policy)).digest('base64');
 
   // add this imageUrl to the image expiration
-  imageStore.setExpiration(config.images.expiration, imageUrl);
+  images.setExpiration(config.images.expiration, imageUrl);
 
   return {
     policy: policy,
@@ -245,16 +245,16 @@ s3.uploadPolicy = function(filename) {
 };
 
 s3.saveImage = function(imgSrc) {
-  var url;
+  var url = imgSrc;
 
   // image uploaded by client
   if (imgSrc.indexOf(config.images.s3.root) === 0) {
     // clear any expirations
-    imageStore.clearExpiration(imgSrc);
+    images.clearExpiration(imgSrc);
   }
   // hotlink image
   else {
-    var filename = imageStore.generateHotlinkFilename(imgSrc);
+    var filename = images.generateHotlinkFilename(imgSrc);
     uploadImage(imgSrc, filename);
     url = generateImageUrl(filename);
   }

@@ -24,10 +24,10 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/recover',
-  config: {
+  options: {
     plugins: { backoff: true }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var query = request.payload.query;
     var config = request.server.app.config;
     var recaptcha = request.payload.recaptcha;
@@ -36,14 +36,14 @@ module.exports = {
 
     // validate the payload
     if (secretKey && !recaptcha) {
-      return reply(Boom.badRequest('Please click the checkbox'));
+      return Boom.badRequest('Please click the checkbox');
     }
     if (!query) {
-      return reply(Boom.badRequest('Please enter a username or email'));
+      return Boom.badRequest('Please enter a username or email');
     }
 
     var captchaPromise;
-    var promise =  request.db.users.userByEmail(query)
+    var promise = request.db.users.userByEmail(query)
       .then(function(user) {
         if (user) { return user; }
         else { return Promise.reject(Boom.badRequest('No Account Found')); }
@@ -58,7 +58,7 @@ module.exports = {
         return request.db.users.update(updateUser);
       })
       // Email user reset information here
-      .then(function(user) {
+      .tap(function(user) {
         var emailParams = {
           email: user.email,
           username: user.username,
@@ -66,8 +66,9 @@ module.exports = {
           reset_url: config.publicUrl + '/' + path.join('reset', user.username, user.reset_token)
         };
         request.server.log('debug', emailParams);
-        return request.emailer.send('recoverAccount', emailParams);
+        request.emailer.send('recoverAccount', emailParams);
       })
+      .then(function() { return 'Success 200'; })
       .error(request.errorMap.toHttpError);
 
     // Validate recaptcha if the user set it up
@@ -87,13 +88,13 @@ module.exports = {
           var error = 'Failed reCaptcha Check';
           if (err || response.statusCode !== 200) { return reject(Boom.badRequest(error)); }
           else if (!body.success) { return reject(Boom.badRequest(error)); }
-          else if (body.success) { return resolve(); }
+          else if (body.success) { return resolve('Success 200'); }
           else { return reject(Boom.badRequest(error)); }
         });
       })
-      .then(function() { return promise; });
+      .then(promise);
     }
 
-    return reply(captchaPromise || promise);
+    return captchaPromise || promise;
   }
 };

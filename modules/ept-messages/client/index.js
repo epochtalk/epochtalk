@@ -16,17 +16,20 @@ var route = ['$stateProvider', function($stateProvider) {
         require.ensure([], function() {
           require('./messages.controller');
           $ocLazyLoad.load([
-            { name: 'ept.messages.ctrl' }
+            { name: 'ept.messages.ctrl' },
+            { name: 'ept.directives.epochtalk-editor' },
+            { name: 'ept.directives.image-uploader' },
+            { name: 'ept.directives.resizeable' }
           ]);
           deferred.resolve();
         });
         return deferred.promise;
       }],
       pageData: ['Session', 'Alert', 'Messages', '$q', function(Session, Alert, Messages, $q) {
-        if (Session.isAuthenticated() && Session.hasPermission('messages.latest.allow')) {
-          return Messages.latest().$promise;
-        }
-        else { return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
+        return Messages.latest().$promise
+        .catch(function() {
+          return $q.reject({ status: 401, statusText: 'Unauthorized' });
+        });
       }]
     }
   });

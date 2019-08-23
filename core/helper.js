@@ -15,6 +15,7 @@ var slugKeywords = [
   'notification_id',
   'category_id',
   'last_thread_id',
+  'last_post_id',
   'ignored_user_id',
   'reporter_user_id',
   'reviewer_user_id',
@@ -37,7 +38,7 @@ var slugKeywords = [
   'old_board_id',
   'role_id'
 ];
-var slugArrayKeywords = ['children_ids', 'board_ids', 'copied_ids', 'answer_ids', 'receiver_ids'];
+var slugArrayKeywords = ['children_ids', 'board_ids', 'copied_ids', 'answer_ids', 'receiver_ids', 'poster_ids'];
 
 module.exports = {
   intToUUID: function(id) {

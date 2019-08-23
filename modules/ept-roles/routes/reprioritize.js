@@ -19,7 +19,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'PUT',
   path: '/api/admin/roles/reprioritize',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: { type: 'adminRoles.reprioritize' }
@@ -31,9 +31,9 @@ module.exports = {
         lookup: Joi.string()
       }))
     },
-    pre: [ { method: 'auth.roles.reprioritize(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.roles.reprioritize(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var roles = request.payload;
     var promise = request.db.roles.reprioritize(roles)
       .then(function(result) {
@@ -43,6 +43,6 @@ module.exports = {
       })
       .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

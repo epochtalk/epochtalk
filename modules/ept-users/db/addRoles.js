@@ -15,7 +15,6 @@ module.exports = function(usernames, roleId) {
     .then(function(results) { // fetch user and ensure user exists
       var rows = results.rows;
       if (rows.length > 0) { return rows; } // return role names to be mapped
-      else { return Promise.reject(); } // users dont exist
     })
     .then(function(users) {
       return Promise.map(users,

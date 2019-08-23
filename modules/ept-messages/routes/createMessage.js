@@ -11,8 +11,9 @@ var _ = require('lodash');
   *
   * @apiParam (Payload) {string} conversation_id The id of the conversation the message should be created in
   * @apiParam (Payload) {string} receiver_ids The ids of the users receiving the message/conversation
-  * @apiParam (Payload) {string} body The content of the message/conversation
-  * @apiParam (Payload) {string} subject The subject of the message/conversation
+  * @apiParam (Payload) {object} content The contents of this message
+  * @apiParam (Payload) {string} content.body The raw contents of this message
+  * @apiParam (Payload) {string} content.body_html The html contents of this message
   *
   * @apiUse MessageObjectSuccess
   *
@@ -21,24 +22,28 @@ var _ = require('lodash');
 module.exports = {
   method: 'POST',
   path: '/api/messages',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
       payload: {
         conversation_id: Joi.string().required(),
         receiver_ids: Joi.array().items(Joi.string()).min(1).required(),
-        body: Joi.string().min(1).max(5000).required(),
-        subject: Joi.string().min(1).max(255).required()
+        content: Joi.object().keys({
+          body: Joi.string().min(1).max(5000).required(),
+          body_html: Joi.string()
+        })
       }
     },
     pre: [
-      { method: 'auth.messages.create(server, auth, payload.receiver_ids, payload.conversation_id)' },
-      { method: 'common.messages.clean(sanitizer, payload)' },
-      { method: 'common.messages.parse(parser, payload)' }
+      { method: (request) => request.server.methods.auth.messages.create(request.server, request.auth, request.payload.receiver_ids, request.payload.conversation_id) },
+      { method: (request) => request.server.methods.common.posts.checkPostLength(request.server, request.payload.body) },
+      { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.sub(request.payload) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var message = request.payload;
     message.sender_id = request.auth.credentials.id;
 
@@ -63,6 +68,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -66,8 +66,6 @@ var getNormalThreads = function(boardId, userId, opts) {
     return db.sqlQuery(query, params);
   })
   .then(function(threads) {
-    // reverse ordering if backward search
-    if (!opts.reversed) { threads.reverse(); }
     // rearrange last post and user properties
     return Promise.map(threads, function(thread) {
       return common.formatThread(thread, userId);

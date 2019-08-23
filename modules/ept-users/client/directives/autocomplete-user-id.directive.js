@@ -22,8 +22,7 @@ var directive = ['User', function(User) {
           $scope.searchResults = results;
           // ignore casing
           for (var i = 0; i < results.length; i++) {
-            var lowerCasedUsername = results[i].username.toLowerCase();
-            if (lowerCasedUsername === $scope.username.toLowerCase()) {
+            if (results[i].username && results[i].username.toLowerCase() === $scope.username.toLowerCase()) {
               $scope.userId = results[i].id;
               $scope.usernameIsValid = true;
               break;

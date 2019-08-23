@@ -31,16 +31,16 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/watchlist/edit',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
         limit: Joi.number().integer().min(1).max(100).default(25)
       }
     },
-    pre: [ { method: 'auth.watchlist.edit(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.watchlist.edit(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var threadOpts = { page: 1, limit: request.query.limit };
     var boardOpts = { page: 1, limit: request.query.limit };
@@ -69,6 +69,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

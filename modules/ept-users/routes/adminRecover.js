@@ -19,12 +19,12 @@ var crypto = require('crypto');
 module.exports = {
   method: 'POST',
   path: '/api/user/recover',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { payload: { user_id: Joi.string().required() } },
-    pre: [ { method: 'auth.users.adminRecover(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.adminRecover(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.payload.user_id;
     var config = request.server.app.config;
 
@@ -43,7 +43,7 @@ module.exports = {
       return request.db.users.update(updateUser);
     })
     // Email user reset information here
-    .then(function(user) {
+    .tap(function(user) {
       var emailParams = {
         email: user.email,
         username: user.username,
@@ -51,10 +51,10 @@ module.exports = {
         reset_url: config.publicUrl + '/' + path.join('reset', user.username, user.reset_token)
       };
       request.server.log('debug', emailParams);
-      return request.emailer.send('recoverAccount', emailParams);
+      request.emailer.send('recoverAccount', emailParams);
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

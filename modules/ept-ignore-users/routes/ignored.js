@@ -27,7 +27,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/ignoreUsers/ignored',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -36,7 +36,7 @@ module.exports = {
       }
     },
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var opts = {
       page: request.query.page,
@@ -46,6 +46,6 @@ module.exports = {
     var promise = request.db.ignoreUsers.ignored(userId, opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

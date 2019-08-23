@@ -3,6 +3,7 @@ var path = require('path');
 var Boom = require('boom');
 var Hoek = require('hoek');
 var limiter = require('rolling-rate-limiter');
+var Promise = require('bluebird');
 var redis;
 
 var namespace = 'ept:';
@@ -37,86 +38,91 @@ var imageUploadOverrides = {
   maxInInterval: 10
 };
 
-exports.register = function(plugin, options, next) {
-  if (!options.redis) { return next(new Error('Redis not found in limiter')); }
-  redis = options.redis;
-  updateLimits(options);
-  namespace = options.namespace || namespace;
+module.exports = {
+  name: 'rate-limiter',
+  version: '1.0.0',
+  register: async function(plugin, options) {
+    if (!options.redis) { return new Error('Redis not found in limiter'); }
+    redis = options.redis;
+    updateLimits(options);
+    namespace = options.namespace || namespace;
 
-  plugin.ext('onPostAuth', function(request, reply) {
-    // variables
-    var key = '';
-    var routeLimit;
-    var userRoles = [];
-    var path = request.route.path;
-    var method = request.route.method.toUpperCase();
-    var authenticated = request.auth.isAuthenticated;
+    plugin.ext('onPostAuth', function(request, reply) {
+      // variables
+      var key = '';
+      var routeLimit;
+      var userRoles = [];
+      var path = request.route.path;
+      var method = request.route.method.toUpperCase();
+      var authenticated = request.auth.isAuthenticated;
 
-    // ignore static paths
-    if (path === '/static/{path*}' || path === '/{path*}') { return reply.continue(); }
+      // ignore static paths
+      if (path === '/static/{path*}' || path === '/{path*}') { return reply.continue; }
 
-    // check if user is authenticated
-    if (authenticated) {
-      key = request.auth.credentials.id + ':' + path + ':' + method;
-      userRoles = request.auth.credentials.roles;
-      if (userRoles.length === 0) { userRoles = ['users']; }
-    }
-    else { key = request.info.remoteAddress + ':' + path + ':' + method; }
+      // check if user is authenticated
+      if (authenticated) {
+        key = request.auth.credentials.id + ':' + path + ':' + method;
+        userRoles = request.auth.credentials.roles;
+        if (userRoles.length === 0) { userRoles = ['users']; }
+      }
+      else { key = request.info.remoteAddress + ':' + path + ':' + method; }
 
-    // calculate route limits
-    if (userRoles.length > 0) {
-      var priority;
-      var limits;
-      userRoles.forEach(function(role) {
-        var userRole = request.rolesAPI.getRole(role);
-        if (userRole) { // fix for when role is removed, but "undefined" remains in redis
-          var userLimits = userRole.limits;
-          var priorityValid = priority === undefined || userRole.priority > priority;
-          if (userLimits && priorityValid) { limits = userLimits; }
+      // calculate route limits
+      if (userRoles.length > 0) {
+        var priority;
+        var limits;
+        userRoles.forEach(function(role) {
+          var userRole = request.rolesAPI.getRole(role);
+          if (userRole) { // fix for when role is removed, but "undefined" remains in redis
+            var userLimits = userRole.limits;
+            var priorityValid = priority === undefined || userRole.priority > priority;
+            if (userLimits && priorityValid) { limits = userLimits; }
+          }
+        });
+
+        if (limits) {
+          routeLimit = _.clone(_.find(limits, function(limit) {
+            return limit.path === path && limit.method === method;
+          }));
         }
+      }
+
+      // TODO: Remove this, modify image upload to accept batch uploads
+      if (!routeLimit && path === '/api/images/upload') {
+        routeLimit = _.clone(imageUploadOverrides);
+      }
+
+      // default to global settings
+      else if (!routeLimit && method === 'GET') { routeLimit = _.clone(getDefaults); }
+      else if (!routeLimit && method === 'POST') { routeLimit = _.clone(postDefaults); }
+      else if (!routeLimit && method === 'PUT') { routeLimit = _.clone(putDefaults); }
+      else if (!routeLimit && method === 'DELETE') { routeLimit = _.clone(deleteDefaults); }
+      else if (!routeLimit) { routeLimit = _.clone(postDefaults); }
+
+      // check if limits are valid, bypass if not
+      if (routeLimit.interval < 0) { return reply.continue; }
+
+      // setup rate limiter
+      routeLimit.redis = redis;
+      routeLimit.namespace = namespace;
+      var routeLimiter = limiter(routeLimit);
+
+      // query rate limiter to see if route should be blocked
+      return new Promise((resolve, reject) => {
+        routeLimiter(key, function(err, timeLeft) {
+          if (err) { return reject(err); }
+          else if (timeLeft) {
+            return reject(Boom.tooManyRequests('Rate Limit Exceeded'));
+          }
+          else { return resolve(reply.continue); }
+        });
       });
 
-      if (limits) {
-        routeLimit = _.clone(_.find(limits, function(limit) {
-          return limit.path === path && limit.method === method;
-        }));
-      }
-    }
-
-    // TODO: Remove this, modify image upload to accept batch uploads
-    if (!routeLimit && path === '/api/images/upload') {
-      routeLimit = _.clone(imageUploadOverrides);
-    }
-
-    // default to global settings
-    else if (!routeLimit && method === 'GET') { routeLimit = _.clone(getDefaults); }
-    else if (!routeLimit && method === 'POST') { routeLimit = _.clone(postDefaults); }
-    else if (!routeLimit && method === 'PUT') { routeLimit = _.clone(putDefaults); }
-    else if (!routeLimit && method === 'DELETE') { routeLimit = _.clone(deleteDefaults); }
-    else if (!routeLimit) { routeLimit = _.clone(postDefaults); }
-
-    // check if limits are valid, bypass if not
-    if (routeLimit.interval < 0) { return reply.continue(); }
-
-    // setup rate limiter
-    routeLimit.redis = redis;
-    routeLimit.namespace = namespace;
-    var routeLimiter = limiter(routeLimit);
-
-    // query rate limiter to see if route should be blocked
-    routeLimiter(key, function(err, timeLeft) {
-      if (err) { return reply(err); }
-      else if (timeLeft) {
-        return reply(Boom.tooManyRequests('Rate Limit Exceeded'));
-      }
-      else { return reply.continue(); }
     });
-  });
 
-  // for modifing existing default rate limits
-  plugin.expose('updateLimits', updateLimits);
-
-  next();
+    // for modifing existing default rate limits
+    plugin.expose('updateLimits', updateLimits);
+  }
 };
 
 function updateLimits(newLimits) {
@@ -125,8 +131,3 @@ function updateLimits(newLimits) {
   putDefaults = Hoek.applyToDefaults(putDefaults, newLimits.put);
   deleteDefaults = Hoek.applyToDefaults(deleteDefaults, newLimits.delete);
 }
-
-exports.register.attributes = {
-  name: 'rate-limiter',
-  version: '1.0.0'
-};

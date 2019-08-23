@@ -20,7 +20,13 @@ var ctrl = [
     this.addQuote = parent.addQuote;
     this.openReportModal = parent.openReportModal;
 
-    if ($location.hash().length) { $timeout($anchorScroll, 1000); }
+    if ($location.hash().length) {
+      if($location.search().start && $location.search().page) {
+        delete $location.$$search.page;
+        $location.$$compose();
+      }
+      $timeout($anchorScroll, 1000);
+    }
     else { $timeout($anchorScroll); }
 
     // Posts Permissions

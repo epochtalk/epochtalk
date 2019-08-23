@@ -2,12 +2,12 @@ require('dotenv').load({silent: true});
 var _ = require('lodash');
 var Promise = require('bluebird');
 var path = require('path');
-var Hapi = require('hapi');
+var Hapi = require('@hapi/hapi');
 var Hoek = require('hoek');
 var websocketServer = require(path.normalize(__dirname + '/../websocket-server'));
-var Good = require('good');
-var Inert = require('inert');
-var Vision = require('vision');
+var Good = require('@hapi/good');
+var Inert = require('@hapi/inert');
+var Vision = require('@hapi/vision');
 var errorMap = require(path.normalize(__dirname + '/error-map'));
 var db = require(path.normalize(__dirname + '/../db'));
 var websocket = require(path.normalize(__dirname + '/../websocket'));
@@ -35,8 +35,7 @@ setup()
 // create server instance and add dbs
 .then(function() {
   // create server object
-  server = new Hapi.Server();
-  server.connection(serverOptions);
+  server = Hapi.Server(serverOptions);
 
   // config decoration
   server.app.config = config;
@@ -49,19 +48,18 @@ setup()
   server.decorate('server', 'db', db);
   server.decorate('server', 'errorMap', errorMap);
   server.decorate('server', 'redis', redis);
-
 })
 // Load plugins which are npm deps
 // server logging
 .then(function() {
   // server logging only registered if config enabled
-  return server.register({ register: Good, options: logOptions});
+  return server.register({ plugin: Good, options: logOptions});
 })
 // inert static file serving
 .then(function() { server.register(Inert); })
 // auth via jwt
 .then(function() {
-  return server.register({ register: jwt, options: { redis } })
+  return server.register({ plugin: jwt, options: { redis } })
   .then(function() {
     var strategyOptions = {
       key: config.privateKey,
@@ -83,7 +81,7 @@ setup()
 })
 // register modules plugin to grab plugin data
 .then(function() {
-  return server.register({ register: modules, options: { db, config } })
+  return server.register({ plugin: modules, options: { db, config } })
   .then(function() {
     additionalRoutes = server.app.moduleData.routes;
     commonMethods = server.app.moduleData.common;
@@ -107,31 +105,31 @@ setup()
 })
 // Load non-module plugins
 // backoff
-.then(function() { return server.register({ register: backoff }); })
+.then(function() { return server.register({ plugin: backoff }); })
 // rate limiter
 .then(function() {
   var rlOptions = Hoek.clone(config.rateLimiting);
   rlOptions.redis = redis;
-  return server.register({ register: limiter, options: rlOptions });
+  return server.register({ plugin: limiter, options: rlOptions });
 })
 // sanitizer
-.then(function() { return server.register({ register: sanitizer }); })
+.then(function() { return server.register({ plugin: sanitizer }); })
 // parser
-.then(function() { return server.register({ register: parser, options: { parsers } }); })
+.then(function() { return server.register({ plugin: parser, options: { parsers } }); })
 // user sessions
 .then(function() {
-  return server.register({ register: session, options: { roles, redis, config } });
+  return server.register({ plugin: session, options: { roles, redis, config } });
 })
 // common methods
 .then(function() {
-  return server.register({ register: common, options: { methods: commonMethods } });
+  return server.register({ plugin: common, options: { methods: commonMethods } });
 })
 // hook methods
 .then(function() {
-  return server.register({ register: hooks, options: { hooks: hookMethods } });
+  return server.register({ plugin: hooks, options: { hooks: hookMethods } });
 })
 // emailer
-.then(function() { return server.register({ register: emailer, options: { config } }); })
+.then(function() { return server.register({ plugin: emailer, options: { config } }); })
 // plugins methods
 .then(function() {
   return loadModulePlugins(plugins);
@@ -146,7 +144,7 @@ setup()
   }
 })
 // routes and server start
-.then(function() {
+.then(async function() {
   // server routes
   var routes = require(path.normalize(__dirname + '/routes'));
   var allRoutes = routes.endpoints(config);
@@ -154,31 +152,30 @@ setup()
   server.route(allRoutes);
 
   // start server
-  return server.start(function () {
-    var configClone = Hoek.clone(config);
-    configClone.privateKey = configClone.privateKey.replace(/./g, '*');
-    if (_.get(configClone, 'emailer.options.accessKeyId')) { configClone.emailer.options.accessKeyId = configClone.emailer.options.accessKeyId.replace(/./g, '*'); }
-    if (_.get(configClone, 'emailer.options.secretAccessKey')) { configClone.emailer.options.secretAccessKey = configClone.emailer.options.secretAccessKey.replace(/./g, '*'); }
-    if (_.get(configClone, 'emailer.options.auth.pass')) { configClone.emailer.options.auth.pass = configClone.emailer.options.auth.pass.replace(/./g, '*'); }
-    if (configClone.images.s3.accessKey) { configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*'); }
-    if (configClone.images.s3.secretKey) { configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*'); }
-    if (configClone.imagesEnv.s3.accessKey) { configClone.imagesEnv.s3.accessKey = configClone.imagesEnv.s3.accessKey.replace(/./g, '*'); }
-    if (configClone.imagesEnv.s3.secretKey) { configClone.imagesEnv.s3.secretKey = configClone.imagesEnv.s3.secretKey.replace(/./g, '*'); }
-    if (configClone.recaptchaSiteKey) { configClone.recaptchaSiteKey = configClone.recaptchaSiteKey.replace(/./g, '*'); }
-    if (configClone.recaptchaSecretKey) { configClone.recaptchaSecretKey = configClone.recaptchaSecretKey.replace(/./g, '*'); }
-    if (configClone.gaKey) { configClone.gaKey = configClone.gaKey.replace(/./g, '*'); }
-    if (configClone.websocketAPIKey) { configClone.websocketAPIKey = configClone.websocketAPIKey.replace(/./g, '*'); }
-    var dbCon = {
-      database: process.env.PGDATABASE,
-      host: process.env.PGHOST,
-      port: process.env.PGPORT,
-      username: process.env.PGUSER,
-      password: process.env.PGPASSWORD.replace(/./g, '*')
-    };
-    server.log('debug', '\nDB Connection:\n' + JSON.stringify(dbCon, undefined, 2));
-    server.log('debug', '\nServer Configurations:\n' + JSON.stringify(configClone, undefined, 2));
-    server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
-  });
+  await server.start();
+  var configClone = Hoek.clone(config);
+  configClone.privateKey = configClone.privateKey.replace(/./g, '*');
+  if (_.get(configClone, 'emailer.options.accessKeyId')) { configClone.emailer.options.accessKeyId = configClone.emailer.options.accessKeyId.replace(/./g, '*'); }
+  if (_.get(configClone, 'emailer.options.secretAccessKey')) { configClone.emailer.options.secretAccessKey = configClone.emailer.options.secretAccessKey.replace(/./g, '*'); }
+  if (_.get(configClone, 'emailer.options.auth.pass')) { configClone.emailer.options.auth.pass = configClone.emailer.options.auth.pass.replace(/./g, '*'); }
+  if (configClone.images.s3.accessKey) { configClone.images.s3.accessKey = configClone.images.s3.accessKey.replace(/./g, '*'); }
+  if (configClone.images.s3.secretKey) { configClone.images.s3.secretKey = configClone.images.s3.secretKey.replace(/./g, '*'); }
+  if (configClone.imagesEnv.s3.accessKey) { configClone.imagesEnv.s3.accessKey = configClone.imagesEnv.s3.accessKey.replace(/./g, '*'); }
+  if (configClone.imagesEnv.s3.secretKey) { configClone.imagesEnv.s3.secretKey = configClone.imagesEnv.s3.secretKey.replace(/./g, '*'); }
+  if (configClone.recaptchaSiteKey) { configClone.recaptchaSiteKey = configClone.recaptchaSiteKey.replace(/./g, '*'); }
+  if (configClone.recaptchaSecretKey) { configClone.recaptchaSecretKey = configClone.recaptchaSecretKey.replace(/./g, '*'); }
+  if (configClone.gaKey) { configClone.gaKey = configClone.gaKey.replace(/./g, '*'); }
+  if (configClone.websocketAPIKey) { configClone.websocketAPIKey = configClone.websocketAPIKey.replace(/./g, '*'); }
+  var dbCon = {
+    database: process.env.PGDATABASE,
+    host: process.env.PGHOST,
+    port: process.env.PGPORT,
+    username: process.env.PGUSER,
+    password: process.env.PGPASSWORD.replace(/./g, '*')
+  };
+  server.log('debug', '\nDB Connection:\n' + JSON.stringify(dbCon, undefined, 2));
+  server.log('debug', '\nServer Configurations:\n' + JSON.stringify(configClone, undefined, 2));
+  server.log('info', 'Epochtalk Frontend server started @' + server.info.uri);
 
   // listen on SIGINT signal and gracefully stop the server
   process.on('SIGINT', function () {

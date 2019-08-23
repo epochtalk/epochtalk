@@ -12,10 +12,10 @@
 module.exports = {
   method: 'GET',
   path: '/api/trustboards',
-  config: { auth: { strategy: 'jwt' } },
-  handler: function(request, reply) {
+  options: { auth: { strategy: 'jwt' } },
+  handler: function(request) {
     var promise = request.db.userTrust.getTrustBoards()
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

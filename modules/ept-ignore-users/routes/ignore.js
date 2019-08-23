@@ -18,11 +18,11 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/ignoreUsers/ignore/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var ignoreUserId = request.params.id;
 
@@ -30,6 +30,6 @@ module.exports = {
     .then(function() { return { user_id: ignoreUserId, ignored: true }; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

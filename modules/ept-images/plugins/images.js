@@ -38,7 +38,8 @@ images.reinit = function() { images.init(options); };
 // -- interface api
 
 images.saveImage = (imgSrc) => {
-  return imageHandlers[config.images.storage].saveImage(imgSrc);
+  if (imgSrc) { return imageHandlers[config.images.storage].saveImage(imgSrc); }
+  else { return true; }
 };
 
 images.uploadPolicy = (filename) => {
@@ -70,16 +71,16 @@ images.generateUploadFilename = function(filename) {
 
 images.setExpiration = function(duration, url) {
   var expiration = new Date(Number(Date.now()) + Number(duration));
-  db.images.addImageExpiration(url, expiration);
+  return db.images.addImageExpiration(url, expiration);
 };
 
 images.clearExpiration = function(url) {
-  db.images.clearImageExpiration(url);
+  return db.images.clearImageExpiration(url);
 };
 
 var expire = function() {
   var storageType = config.images.storage;
-  db.images.getExpiredImages()
+  return db.images.getExpiredImages()
   .each(function(image) {
     // remove from cdn
     imageHandlers[storageType].removeImage(image.image_url);
@@ -92,7 +93,13 @@ var expire = function() {
 // TODO: should respect where the images are saved to
 
 images.imageSub = (post) => {
-  var html = post.body_html;
+  var html;
+  if (post.content) {
+    html = post.content.body_html;
+  }
+  else {
+    html = post.body_html;
+  }
   // load html in post.body_html into cheerio
   var $ = cheerio.load(html);
 
@@ -101,7 +108,7 @@ images.imageSub = (post) => {
   $('img').each((index, element) => { postImages.push(element); });
 
   // convert each image's src to cdn version
-  return Promise.map(postImages, (element) => {
+  return Promise.each(postImages, (element) => {
     var imgSrc = $(element).attr('src');
     var savedUrl = images.saveImage(imgSrc);
 
@@ -111,8 +118,10 @@ images.imageSub = (post) => {
       // update src with new url
       $(element).attr('src', savedUrl);
     }
+    return Promise.resolve();
   })
-  .then(() => { post.body_html = $.html(); });
+  .then(() => { post.body_html = $.html(); })
+  .then(() => post);
 };
 
 images.avatarSub = (user) => {
@@ -121,7 +130,8 @@ images.avatarSub = (user) => {
     var savedUrl = images.saveImage(user.avatar);
     if (savedUrl) { user.avatar = savedUrl; }
     return resolve();
-  });
+  })
+  .then(() => user);
 };
 
 images.addPostImageReference = function(postId, imageUrl) {
@@ -174,18 +184,18 @@ images.updateImageReferences = (post) => {
 
 var clearImageReferences = function() {
   var storageType = config.images.storage;
-  db.images.getDeletedPostImages()
+  return db.images.getDeletedPostImages()
   .each(function(imageReference) {
     return checkImageReferences(imageReference.image_url)
     // if true, delete image
     .then(function(noMoreReferences) {
       if (noMoreReferences) {
-        imageHandlers[storageType].removeImage(imageReference.image_url);
+        return imageHandlers[storageType].removeImage(imageReference.image_url);
       }
     })
     // delete this reference
     .then(function() {
-      db.images.deleteImageReference(imageReference.id);
+      return db.images.deleteImageReference(imageReference.id);
     });
   });
 };

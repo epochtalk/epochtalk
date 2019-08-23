@@ -21,7 +21,7 @@ var Joi = require('joi');
 var upsert = {
   method: 'PUT',
   path: '/api/rank',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: Joi.array().items(Joi.object().keys({
@@ -29,13 +29,13 @@ var upsert = {
         post_count: Joi.number()
       })).unique('post_count')
     },
-    pre: [ { method: 'auth.rank.upsert(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.rank.upsert(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var ranks = request.payload;
     var promise = request.db.rank.upsert(ranks)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -57,14 +57,14 @@ var upsert = {
 var get = {
   method: 'GET',
   path: '/api/rank',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.rank.get(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.rank.get(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.rank.get()
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };
 

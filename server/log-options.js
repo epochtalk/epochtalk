@@ -5,11 +5,11 @@ module.exports = {
   reporters: {
     serverConsole: [
       {
-        module: 'good-squeeze',
+        module: '@hapi/good-squeeze',
         name: 'Squeeze',
         args: [{ log: '*', response: '*', error: '*' }]
       },
-      { module: 'good-console' },
+      { module: '@hapi/good-console' },
       'stdout'
     ]
   }

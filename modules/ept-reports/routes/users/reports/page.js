@@ -45,7 +45,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/reports/users',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -57,9 +57,9 @@ module.exports = {
         search: Joi.string()
       }
     },
-    pre: [ { method: 'auth.reports.users.reports.page(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.reports.users.reports.page(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       page: request.query.page,
       limit: request.query.limit,
@@ -87,6 +87,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

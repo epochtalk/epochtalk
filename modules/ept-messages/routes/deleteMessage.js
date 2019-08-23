@@ -19,7 +19,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/messages/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -32,9 +32,9 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.messages.delete(server, auth, params.id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.messages.delete(request.server, request.auth, request.params.id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var promise = request.db.messages.delete(request.params.id, userId)
     .then(function(deletedMessage) {
@@ -47,6 +47,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

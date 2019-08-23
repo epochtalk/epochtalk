@@ -24,7 +24,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/posts/{id}',
-  config: {
+  options: {
     app: { hook: 'posts.update' },
     auth: { strategy: 'jwt' },
     plugins: {
@@ -42,33 +42,59 @@ module.exports = {
       params: { id: Joi.string().required() }
     },
     pre: [
-      { method: 'auth.posts.update(server, auth, params.id, payload.thread_id)' },
-      { method: 'common.posts.clean(sanitizer, payload)' },
-      { method: 'common.posts.parse(parser, payload)' },
-      { method: 'common.images.sub(payload)' },
-      { method: 'common.posts.newbieImages(auth, payload)' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.posts.update(request.server, request.auth, request.params.id, request.payload.thread_id) },
+      { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
+      { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
+      { method: (request) => request.server.methods.common.images.sub(request.payload) },
+      { method: (request) => request.server.methods.common.posts.newbieImages(request.auth, request.payload) },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.posts.parseOut(parser, pre.processed)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
-      return reply(request.pre.processed);
+    handler: function(request) {
+      return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   var updatePost = request.payload;
   updatePost.id = request.params.id;
   var promise = request.db.posts.update(updatePost)
+  .tap(function(post) {
+    var email;
+    if (post.user_id !== request.auth.credentials.id) {
+      request.db.users.find(post.user_id)
+      .then(function(user) {
+        email = user.email;
+        return request.db.threads.find(post.thread_id);
+      })
+      .then(function(thread) {
+        var config = request.server.app.config;
+        var emailParams = {
+          email: email,
+          mod_username: request.auth.credentials.username,
+          thread_name: thread.title,
+          site_name: config.website.title,
+          thread_url: config.publicUrl + '/threads/' + thread.id + '/posts?start=' + post.position + '#' + post.id,
+          action: 'edited'
+        };
+        request.server.log('debug', emailParams);
+        request.emailer.send('postUpdated', emailParams)
+        .catch(console.log);
+        return;
+      });
+    }
+    return;
+  })
   // handle image references
   .then((post) => { return request.imageStore.updateImageReferences(post); })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

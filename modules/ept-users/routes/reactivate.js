@@ -16,7 +16,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/users/{id}/reactivate',
-  config: {
+  options: {
     app: { user_id: 'params.id' },
     auth: { strategy: 'jwt' },
     plugins: {
@@ -26,14 +26,14 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.users.activate(server, auth, params.id)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.users.activate(request.server, request.auth, request.params.id) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.params.id;
     var promise = request.db.users.reactivate(userId)
     .then(function() { return {}; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

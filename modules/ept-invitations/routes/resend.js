@@ -17,14 +17,14 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/invites/resend',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: { email: Joi.string().email().required() }
     },
-    pre: [ { method: 'auth.invitations.resend(server, auth, payload.email)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.invitations.resend(request.server, request.auth, request.payload.email) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // save invitation
     var promise = request.db.invitations.find(request.payload.email)
     // send invitation email
@@ -45,6 +45,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

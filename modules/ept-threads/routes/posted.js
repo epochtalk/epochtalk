@@ -41,7 +41,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/threads/posted',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -49,9 +49,9 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(25)
       }
     },
-    pre: [ { method: 'auth.threads.posted(server, auth)', assign: 'priority' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.posted(request.server, request.auth), assign: 'priority' } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       userId: request.auth.credentials.id,
       priority: request.pre.priority,
@@ -72,6 +72,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

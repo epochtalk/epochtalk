@@ -19,7 +19,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/reset/{username}/{token}/validate',
-  config: {
+  options: {
     validate: {
       params: {
         username: Joi.string().min(1).max(255).required(),
@@ -27,7 +27,7 @@ module.exports = {
       }
     }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var username = request.params.username;
     var token = request.params.token;
     var promise = request.db.users.userByUsername(username) // get full user info
@@ -42,6 +42,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError)
     .catch(function() { return { token_valid: false }; });
-    return reply(promise);
+    return promise;
   }
 };

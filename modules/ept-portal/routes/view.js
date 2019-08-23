@@ -78,30 +78,30 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/portal',
-  config: {
+  options: {
     app: { hook: 'portal.view' },
     auth: { mode: 'try', strategy: 'jwt' },
     pre: [
-      { method: 'auth.portal.view(server, auth)', assign: 'priority' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.portal.view(request.server, request.auth), assign: 'priority' },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.portal.parseOut(parser, pre.processed.threads)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.common.portal.parseOut(request.parser, request.pre.processed.threads) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
-  handler: function(request, reply) {
-    return reply(request.pre.processed);
+  handler: function(request) {
+    return request.pre.processed;
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   var config = request.server.app.config;
   var boardId = config.portal.boardId;
-  if (!boardId) { return reply(Boom.badRequest('Board Not Set routes')); }
+  if (!boardId) { return Boom.badRequest('Board Not Set routes'); }
 
   var userId;
   var opts = { limit: 10, page: 1 };
@@ -121,5 +121,5 @@ function processing(request, reply) {
   })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

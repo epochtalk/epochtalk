@@ -26,7 +26,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/reports/posts',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {
@@ -35,13 +35,13 @@ module.exports = {
         offender_post_id: Joi.string().required()
       }
     },
-    pre: [ { method: 'auth.reports.posts.reports.create(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.reports.posts.reports.create(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var report = request.payload;
     var promise = request.db.reports.createPostReport(report)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -38,7 +38,11 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.update.bypass.owner.mod')
     },
-    common.hasPriority(server, auth, 'posts.update.bypass.owner.priority', postId)
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.update.bypass.owner.priority', postId]
+    }
   ];
   var owner = server.authorization.stitch(Boom.forbidden('owner'), ownerCond, 'any');
 
@@ -65,7 +69,11 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.update.bypass.deleted.mod')
     },
-    common.hasPriority(server, auth, 'posts.update.bypass.deleted.priority', postId)
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.update.bypass.deleted.priority', postId]
+    }
   ];
   var deleted = server.authorization.stitch(Boom.forbidden('deleted'), deletedCond, 'any');
 
@@ -92,7 +100,11 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [userId, threadId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.update.bypass.locked.mod')
     },
-    common.hasPriority(server, auth, 'posts.update.bypass.locked.priority', postId)
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.update.bypass.locked.priority', postId]
+    }
   ];
   var tLocked = server.authorization.stitch(Boom.forbidden('locked'), tLockedCond, 'any');
 

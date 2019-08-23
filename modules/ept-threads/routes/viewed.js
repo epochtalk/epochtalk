@@ -16,20 +16,22 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/threads/{id}/viewed',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
     pre: [
-      [ { method: 'auth.threads.viewed(server, auth, params.id)' } ],
+      [ { method: (request) => request.server.methods.auth.threads.viewed(request.server, request.auth, request.params.id) } ],
       [
-        { method: 'common.threads.checkView(server, headers, info, params.id)', assign: 'newViewId' },
-        { method: 'common.threads.updateView(server, auth, params.id)' }
+        { method: (request) => request.server.methods.common.threads.checkView(request.server, request.headers, request.info, request.params.id), assign: 'newViewId' },
+        { method: (request) => request.server.methods.common.threads.updateView(request.server, request.auth, request.params.id) }
       ]
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request, h) {
     var newViewerId = request.pre.newViewId;
-    if (newViewerId) { return reply().header('Epoch-Viewer', newViewerId); }
-    else { return reply(); }
+    const response = h.response('200 OK');
+    response.code(200);
+    if (newViewerId) { response.header('Epoch-Viewer', newViewerId); }
+    return response;
   }
 };

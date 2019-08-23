@@ -3,15 +3,15 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/images/policy',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { payload: Joi.array().items(Joi.string().required()).min(1) }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var filenames = request.payload;
     var policies = filenames.map(function(filename) {
       return request.imageStore.uploadPolicy(filename);
     });
-    return reply(policies);
+    return policies;
   }
 };

@@ -25,7 +25,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/watchlist/threads',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -33,9 +33,9 @@ module.exports = {
         limit: Joi.number().integer().min(1).max(100).default(25)
       }
     },
-    pre: [ { method: 'auth.watchlist.pageThreads(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.watchlist.pageThreads(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var opts = {
       page: request.query.page,
@@ -58,6 +58,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

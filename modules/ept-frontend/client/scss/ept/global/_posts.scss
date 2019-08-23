@@ -9,7 +9,10 @@
   ul { white-space: normal }
   img.loaded { opacity: 1; }
   img { @include transition(opacity 0.5s ease-in); opacity: 0; }
-
+  & table {
+    display: block;
+    overflow-x: scroll;
+  }
   .video-wrap {
     position: relative;
     padding-bottom: 56.25%;
@@ -32,7 +35,7 @@
   border-left: 4px solid RGB(221, 221, 221);
 }
 .quote {
-  margin: 0 0 1rem 1rem;
+  margin: 0 0 0rem 1rem;
   padding: 0 0.625rem 0;
   border-left: 4px solid RGB(221, 221, 221);
   ul, ol { margin-left: 1.625rem }

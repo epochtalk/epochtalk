@@ -2,6 +2,17 @@ var sanitize = require('sanitize-html');
 
 var sanitizer = {};
 
+module.exports = {
+  name: 'sanitizer',
+  version: '1.0.0',
+  register: async function(server, options) {
+    options = options || {};
+
+    server.decorate('server', 'sanitizer', sanitizer);
+    server.decorate('request', 'sanitizer', sanitizer);
+  }
+};
+
 sanitizer.strip = function(input) {
   // remove all html
   // used for titles, names, and profile info
@@ -79,18 +90,4 @@ sanitizer.bbcode = function(input) {
   }
 
   return cleanedText;
-};
-
-exports.register = function(server, options, next) {
-  options = options || {};
-
-  server.decorate('server', 'sanitizer', sanitizer);
-  server.decorate('request', 'sanitizer', sanitizer);
-
-  next();
-};
-
-exports.register.attributes = {
-  name: 'sanitizer',
-  version: '1.0.0'
 };

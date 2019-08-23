@@ -1,11 +1,11 @@
 var path = require('path');
 var Joi = require('joi');
 var fs = require('fs');
+var Promise = require('bluebird');
 var copyCss = require(path.join(__dirname + '/../../../scripts', 'tasks', 'copy_files'));
 var sass = require(path.join(__dirname + '/../../../scripts', 'tasks', 'sass'));
 var common = require(path.normalize(__dirname + '/common'));
 var previewVarsPath = common.previewVarsPath;
-
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
@@ -46,7 +46,7 @@ var previewVarsPath = common.previewVarsPath;
 module.exports = {
   method: 'PUT',
   path: '/api/theme/preview',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: Joi.object().keys({
@@ -65,23 +65,28 @@ module.exports = {
         'header-bg-color': Joi.string()
       })
     },
-    pre: [ { method: 'auth.themes.previewTheme(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.themes.previewTheme(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var theme = request.payload;
     var keys = Object.keys(theme);
     var stream = fs.createWriteStream(previewVarsPath);
-    stream.once('open', function() {
-      keys.forEach(function(key) {
-        stream.write('$' + key + ': ' + theme[key].toLowerCase() + ';\n');
-      });
-      stream.end();
+
+    return new Promise(function(resolve, reject) {
+      stream.once('open', function() {
+        keys.forEach(function(key) {
+          stream.write('$' + key + ': ' + theme[key].toLowerCase() + ';\n');
+        });
+        stream.end();
+      })
+      .on('close', function() {
+        copyCss()
+        .then(function () { return sass('./public/css/preview.css'); })
+        .then(function() { return resolve(theme); })
+        .catch(reject);
+      })
+      .on('error', reject);;
     })
-    .on('close', function() {
-      copyCss()
-      .then(function () { return sass('./public/css/preview.css'); })
-      .then(function() { reply(theme); })
-      .error(request.errorMap.toHttpError);
-    });
+    .error(request.errorMap.toHttpError);
   }
 };

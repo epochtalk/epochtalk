@@ -5,10 +5,9 @@ var directive = [function() {
     bindToController: { user: '=' },
     template: require('./profile.html'),
     controllerAs: 'vmProfile',
-    controller: [ 'Conversations', 'Messages', 'User', 'Session', 'Alert', 'PreferencesSvc', 'Websocket', '$timeout', '$scope', '$window', '$filter', '$state', function(Conversations, Messages, User, Session, Alert, PreferencesSvc, Websocket, $timeout, $scope, $window, $filter, $state) {
+    controller: [ 'Conversations', 'Messages', 'User', 'Session', 'Alert', 'Websocket', '$timeout', '$scope', '$window', '$filter', '$state', function(Conversations, Messages, User, Session, Alert, Websocket, $timeout, $scope, $window, $filter, $state) {
       var ctrl = this;
       this.newConversation = {subject: '', body: '', receiver_ids: [], previewBody: ''};
-      this.newMessage = {subject: '', body: '', receiver_ids: [], previewBody: '' };
 
       this.isLoggedIn = function() { return Session.isAuthenticated(); };
 
@@ -242,19 +241,6 @@ var directive = [function() {
         ctrl.showConvoModal = true;
       };
 
-      $scope.$watch(function() { return ctrl.newMessage.body; }, function(body) {
-        if (body) {
-          // BBCode Parsing
-          var rawText = body;
-          var processed = rawText;
-          $window.parsers.forEach(function(parser) {
-            processed = parser.parse(processed);
-          });
-          // re-bind to scope
-          ctrl.newMessage.previewBody = processed;
-        }
-      });
-
       $scope.$watch(function() { return ctrl.newConversation.body; }, function(body) {
         if (body) {
           // BBCode Parsing
@@ -272,8 +258,10 @@ var directive = [function() {
         // create a new conversation id to put this message under
         var newMessage = {
           receiver_ids: [ ctrl.user.id ],
-          subject: ctrl.newConversation.subject,
-          body: ctrl.newConversation.body,
+          content: {
+            subject: ctrl.newConversation.subject,
+            body: ctrl.newConversation.body
+          }
         };
 
         Conversations.save(newMessage).$promise
@@ -320,34 +308,6 @@ var directive = [function() {
           else { ctrl.isOnline = data.online; }
         });
       });
-
-      // Preferences
-      this.editPreferences = false;
-      this.tempPreferences = {};
-      this.openEditPreferences = function() {
-        ctrl.tempPreferences.username = ctrl.user.username;
-        ctrl.tempPreferences.posts_per_page = ctrl.user.posts_per_page;
-        ctrl.tempPreferences.threads_per_page = ctrl.user.threads_per_page;
-        ctrl.tempPreferences.collapsed_categories = ctrl.user.collapsed_categories;
-        this.editPreferences = true;
-      };
-
-      this.savePreferences = function() {
-        User.update({ id: ctrl.user.id }, ctrl.tempPreferences).$promise
-        .then(function(data) {
-          ctrl.user.posts_per_page = data.posts_per_page;
-          ctrl.user.threads_per_page = data.threads_per_page;
-        })
-        .then(function() {
-          var tempPref = PreferencesSvc.preferences;
-          tempPref.posts_per_page = ctrl.user.posts_per_page;
-          tempPref.threads_per_page = ctrl.user.threads_per_page;
-          PreferencesSvc.setPreferences(tempPref);
-        })
-        .then(function() { Alert.success('Successfully saved preferences'); })
-        .catch(function() { Alert.error('Preferences could not be updated'); })
-        .finally(function() { ctrl.editPreferences = false; });
-      };
     }]
   };
 }];

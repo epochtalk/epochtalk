@@ -18,7 +18,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/posts/{id}/purge',
-  config: {
+  options: {
     app: { post_id: 'params.id' },
     auth: { strategy: 'jwt' },
     plugins: {
@@ -32,8 +32,8 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.posts.purge(server, auth, params.id)' } ],
-    handler: function(request, reply) {
+    pre: [ { method: (request) => request.server.methods.auth.posts.purge(request.server, request.auth, request.params.id) } ],
+    handler: function(request) {
       var promise = request.db.posts.purge(request.params.id)
       .then(function(purgedPost) {
         // append purged post data to plugin metadata
@@ -41,10 +41,37 @@ module.exports = {
           user_id: purgedPost.user_id,
           thread_id: purgedPost.thread_id
         };
+        return purgedPost;
+      })
+      .tap(function(post) {
+        var email;
+        if (post.user_id !== request.auth.credentials.id) {
+          request.db.users.find(post.user_id)
+          .then(function(user) {
+            email = user.email;
+            return request.db.threads.find(post.thread_id);
+          })
+          .then(function(thread) {
+            var config = request.server.app.config;
+            var emailParams = {
+              email: email,
+              mod_username: request.auth.credentials.username,
+              thread_name: thread.title,
+              site_name: config.website.title,
+              thread_url: config.publicUrl + '/threads/' + thread.id + '/posts',
+              action: 'deleted'
+            };
+            request.server.log('debug', emailParams);
+            request.emailer.send('postUpdated', emailParams)
+            .catch(console.log);
+            return;
+          });
+        }
+        return;
       })
       .error(request.errorMap.toHttpError);
 
-      return reply(promise);
+      return promise;
     }
   }
 };

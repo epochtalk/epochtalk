@@ -32,7 +32,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/threads/{thread_id}/polls/{poll_id}/vote',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {
@@ -41,9 +41,9 @@ module.exports = {
       },
       payload: { answer_ids: Joi.array().items(Joi.string()).min(1).unique().required() }
     },
-    pre: [ { method: 'auth.threads.vote(server, auth, params, payload)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.vote(request.server, request.auth, request.params, request.payload) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var threadId = request.params.thread_id;
     var answerIds = request.payload.answer_ids;
     var userId = request.auth.credentials.id;
@@ -62,6 +62,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

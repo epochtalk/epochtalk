@@ -25,7 +25,7 @@ function watchThread(request) {
     if (!watching) { request.db.watchlist.watchThread(userId, threadId); }
   });
 
-  return;
+  return true;
 }
 
 

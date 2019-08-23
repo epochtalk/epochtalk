@@ -28,7 +28,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/trust',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       payload: {
@@ -39,9 +39,9 @@ module.exports = {
         comments: Joi.string().min(3).max(1024).required()
       }
     },
-    pre: [ { method: 'auth.userTrust.addTrustFeedback(server, auth, payload.user_id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.userTrust.addTrustFeedback(request.server, request.auth, request.payload.user_id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = {
       userId: request.payload.user_id,
       reporterId: request.auth.credentials.id,
@@ -52,6 +52,6 @@ module.exports = {
     };
     var promise = request.db.userTrust.addTrustFeedback(opts)
     .error(request.errorMap.toHttpError);
-    return reply(promise);
+    return promise;
   }
 };

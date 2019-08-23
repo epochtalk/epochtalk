@@ -5,7 +5,6 @@ var helper = dbc.helper;
 
 module.exports = function(factoidId) {
   factoidId = helper.deslugify(factoidId);
-  var q = `UPDATE factoids SET enabled = false WHERE id = $1;`;
-  return db.sqlQuery(q, [factoidId])
-  .then(function() { return; });
+  var q = `UPDATE factoids SET enabled = false WHERE id = $1 RETURNING enabled;`;
+  return db.scalar(q, [factoidId]);
 };

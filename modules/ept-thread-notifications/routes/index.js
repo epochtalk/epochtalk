@@ -15,17 +15,17 @@ var Joi = require('joi');
 var getNotificationSettings = {
   method: 'GET',
   path: '/api/threadnotifications',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
 
     var promise = request.db.threadNotifications.getNotificationSettings(userId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -47,19 +47,19 @@ var getNotificationSettings = {
 var enableNotifications = {
   method: 'PUT',
   path: '/api/threadnotifications',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: { payload: { enabled: Joi.boolean().default(true) } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var enabled = request.payload.enabled;
 
     var promise = request.db.threadNotifications.enableNotifications(userId, enabled)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
@@ -78,17 +78,17 @@ var enableNotifications = {
 var removeSubscriptions = {
   method: 'DELETE',
   path: '/api/threadnotifications',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
 
     var promise = request.db.threadNotifications.removeSubscriptions(userId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 

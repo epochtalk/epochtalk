@@ -31,7 +31,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'POST',
   path: '/api/boards',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -49,17 +49,17 @@ module.exports = {
       })).min(1)
     },
     pre: [
-      { method: 'auth.boards.create(server, auth)' },
-      { method: 'common.boards.clean(sanitizer, payload)' }
+      { method: (request) => request.server.methods.auth.boards.create(request.server, request.auth) },
+      { method: (request) => request.server.methods.common.boards.clean(request.sanitizer, request.payload) }
     ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // create each board
     var promise = Promise.map(request.payload, function(board) {
       return request.db.boards.create(board);
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

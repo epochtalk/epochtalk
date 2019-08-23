@@ -76,7 +76,7 @@ var Promise = require('bluebird');
 module.exports = {
   method: 'GET',
   path: '/api/boards',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       query: {
@@ -85,9 +85,9 @@ module.exports = {
         stripped: Joi.boolean()
       }
     },
-    pre: [ { method: 'auth.boards.allCategories(server, auth)', assign: 'priority' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.allCategories(request.server, request.auth), assign: 'priority' } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId;
     var priority = request.pre.priority;
     var opts = {
@@ -118,6 +118,6 @@ module.exports = {
       })
       .error(request.errorMap.toHttpError);
     }
-    return reply(promise);
+    return promise;
   }
 };

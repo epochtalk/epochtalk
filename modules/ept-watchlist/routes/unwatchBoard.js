@@ -17,17 +17,17 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/watchlist/boards/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.watchlist.unwatchBoard(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.watchlist.unwatchBoard(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
     var promise = request.db.watchlist.unwatchBoard(userId, boardId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

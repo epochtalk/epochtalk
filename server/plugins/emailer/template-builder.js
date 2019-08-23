@@ -1,5 +1,5 @@
 var path = require('path');
-var doT = require('dot');
+var mustache = require('mustache');
 var fs = require('fs');
 var varsDir = '/../../../app/scss/ept/variables';
 var defaultVarsPath = path.normalize(__dirname + varsDir + '/_default-variables.scss');
@@ -34,17 +34,16 @@ var css = function() {
 };
 
 var templateFile = function(filename) {
-  return fs.readFileSync(path.join(__dirname, 'templates', filename));
+  return fs.readFileSync(path.join(__dirname, 'templates', filename)).toString().split('\n').map(s => s.trim()).join('');
 };
 
 exports.recoverAccount = function(sender, params) {
-  var template = doT.template(templateFile('recover-account.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] Account Recovery`,
-    html: template({
+    html: mustache.render(templateFile('recover-account.html'), {
       css: css(),
       username: params.username,
       siteName: params.site_name,
@@ -55,13 +54,12 @@ exports.recoverAccount = function(sender, params) {
 };
 
 exports.recoverSuccess = function(sender, params) {
-  var template = doT.template(templateFile('recover-success.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] Account Recovery Success`,
-    html: template({
+    html: mustache.render(templateFile('recover-success.html'), {
       css: css(),
       username: params.username,
       siteName: params.site_name,
@@ -72,13 +70,12 @@ exports.recoverSuccess = function(sender, params) {
 };
 
 exports.confirmAccount = function(sender, params) {
-  var template = doT.template(templateFile('confirm-account.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] Account Confirmation`,
-    html: template({
+    html: mustache.render(templateFile('confirm-account.html'), {
       css: css(),
       username: params.username,
       siteName: params.site_name,
@@ -89,13 +86,12 @@ exports.confirmAccount = function(sender, params) {
 };
 
 exports.invite = function(sender, params) {
-  var template = doT.template(templateFile('invitation.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] You've been sent an invitation`,
-    html: template({
+    html: mustache.render(templateFile('invitation.html'), {
       css: css(),
       siteName: params.site_name,
       currentYear: currentYear,
@@ -105,19 +101,70 @@ exports.invite = function(sender, params) {
 };
 
 exports.threadNotification = function(sender, params) {
-  var template = doT.template(templateFile('thread-notification.html'));
   var currentYear = new Date().getFullYear();
   return {
     from: sender,
     to: params.email,
     subject: `[${params.site_name}] New replies to thread "${params.thread_name}"`,
-    html: template({
+    html: mustache.render(templateFile('thread-notification.html'), {
       css: css(),
       threadName: params.thread_name,
-      username: params.username,
       siteName: params.site_name,
       currentYear: currentYear,
       threadUrl: params.thread_url
+    })
+  };
+};
+
+exports.mentionNotification = function(sender, params) {
+  var currentYear = new Date().getFullYear();
+  return {
+    from: sender,
+    to: params.email,
+    subject: `[${params.site_name}] New mention in thread "${params.thread_name}"`,
+    html: mustache.render(templateFile('mention-notification.html'), {
+      css: css(),
+      threadName: params.thread_name,
+      postAuthor: params.post_author,
+      siteName: params.site_name,
+      currentYear: currentYear,
+      threadUrl: params.thread_url
+    })
+  };
+};
+
+exports.postUpdated = function(sender, params) {
+  var currentYear = new Date().getFullYear();
+  return {
+    from: sender,
+    to: params.email,
+    subject: `[${params.site_name}] Your post in thread "${params.thread_name}" has been ${params.action}`,
+    html: mustache.render(templateFile('post-updated.html'), {
+      css: css(),
+      threadName: params.thread_name,
+      modUsername: params.mod_username,
+      siteName: params.site_name,
+      currentYear: currentYear,
+      action: params.action,
+      threadUrl: params.thread_url
+    })
+  };
+};
+
+exports.threadDeleted = function(sender, params) {
+  var currentYear = new Date().getFullYear();
+  return {
+    from: sender,
+    to: params.email,
+    subject: `[${params.site_name}] "${params.thread_name}" a thread that you ${params.action}, has been deleted`,
+    html: mustache.render(templateFile('thread-delete.html'), {
+      css: css(),
+      threadName: params.thread_name,
+      modUsername: params.mod_username,
+      siteName: params.site_name,
+      currentYear: currentYear,
+      action: params.action,
+      siteUrl: params.site_url
     })
   };
 };

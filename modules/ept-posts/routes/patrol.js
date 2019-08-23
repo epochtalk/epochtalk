@@ -6,7 +6,7 @@ var common = require(path.normalize(__dirname + '/../common'));
 module.exports = {
   method: 'GET',
   path: '/api/posts/patrol',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: Joi.object().keys({
@@ -15,23 +15,23 @@ module.exports = {
       }).without('start', 'page')
     },
     pre: [
-      { method: 'auth.posts.patrol(auth)', assign: 'viewables' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.posts.patrol(request.auth), assign: 'viewables' },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.posts.parseOut(parser, pre.processed.posts)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.posts) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
-      return reply(request.pre.processed);
+    handler: function(request) {
+      return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   // ready parameters
   var userId = request.auth.credentials.id;
   var opts = {
@@ -64,6 +64,6 @@ function processing(request, reply) {
   })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }
 

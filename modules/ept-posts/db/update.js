@@ -24,10 +24,16 @@ module.exports = function(post) {
     })
     .then(function() {
       let post_content = {title: post.title, body: post.body};
-      q = 'UPDATE posts SET content = $1, thread_id = $2, updated_at = now() WHERE id = $3 RETURNING updated_at';
+      q = 'UPDATE posts SET content = $1, thread_id = $2, updated_at = now() WHERE id = $3 RETURNING updated_at, position, user_id';
       params = [post_content, post.thread_id, post.id];
       return client.query(q, params)
-      .then(function(results) { post.updated_at = results.rows[0].updated_at; });
+      .then(function(results) {
+        var dbPost = results.rows[0];
+        post.updated_at = dbPost.updated_at;
+        post.position = dbPost.position;
+        post.user_id = dbPost.user_id;
+        return post;
+      });
     });
   })
   .then(function() { return helper.slugify(post); });

@@ -46,11 +46,19 @@
       <div>
         <a ng-href="{{vmProfile.user.website}}" target="_blank" ng-bind="vmProfile.user.website"></a>
       </div>
-      <div><span ng-bind="vmProfile.user.gender"></span></div>
-      <div><span ng-bind="vmProfile.userAge(vmProfile.user.dob)"></span></div>
-      <div><span ng-bind="vmProfile.user.location"></span></div>
-      <div><span ng-bind="vmProfile.user.language"></span></div>
-      <div><span ng-bind="vmProfile.userLocalTime | date:'h:mm a (Z)'"></span></div>
+      <div ng-if="vmProfile.user.gender">
+        Gender:&nbsp;&nbsp;<span ng-bind="vmProfile.user.gender"></span>
+      </div>
+      <div ng-if="vmProfile.user.dob">
+        Age:&nbsp;&nbsp;<span ng-bind="vmProfile.userAge(vmProfile.user.dob)"></span>
+      </div>
+      <div ng-if="vmProfile.user.location">
+        Location:&nbsp;&nbsp;<span ng-bind="vmProfile.user.location"></span>
+      </div>
+      <div ng-if="vmProfile.user.language">
+        Language:&nbsp;&nbsp;<span ng-bind="vmProfile.user.language"></span>
+      </div>
+      <!-- <div><span ng-bind="vmProfile.userLocalTime | date:'h:mm a (Z)'"></span></div> -->
       <hr ng-if="vmProfile.canUpdate() || vmProfile.canUpdatePrivate() || vmProfile.pageOwner() || vmProfile.canDeactivate() || vmProfile.canReactivate() || vmProfile.canDelete() || vmProfile.canPageUserNotes() || vmProfile.canBanUser() || vmProfile.canMessage()">
     </div>
 
@@ -65,7 +73,7 @@
       <a ng-href="#" ng-click="vmProfile.openEditEmail()">Edit Email</a>
     </div>
     <div class="profile-row profile-action" ng-if="vmProfile.pageOwner()">
-      <a ng-href="#" ng-click="vmProfile.openEditPreferences()">Edit Preferences</a>
+      <a ui-sref="settings">Edit Forum Settings</a>
     </div>
     <trust-link ng-if="vmProfile.pageOwner()"></trust-link>
     <div class="profile-row profile-action" ng-if="vmProfile.canDeactivate()">
@@ -78,7 +86,7 @@
       <a ng-href="#" ng-click="vmProfile.showDelete = true">Delete Account</a>
     </div>
     <div class="profile-row profile-action" ng-if="vmProfile.canMessage()">
-      <a ng-href="#" ng-click="vmProfile.openConvoModal()">Message This User</a>
+      <a ng-href="#" ng-click="vmProfile.openConvoModal()">Quick Message</a>
     </div>
     <ignore-user-profile ng-if="vmProfile.isLoggedIn()" user="vmProfile.user"></ignore-user-profile>
     <mentions-ignore-profile ng-if="vmProfile.isLoggedIn() && !vmProfile.pageOwner()" user="vmProfile.user"></mentions-ignore-profile>
@@ -390,7 +398,7 @@
 <!-- Create Conversation Modal -->
 <modal show="vmProfile.showConvoModal" on-close="vmProfile.closeConvoModal()">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Message {{vmProfile.user.username}}</h3>
+    <h3 class="thin-underline">Quick Message {{vmProfile.user.username}}</h3>
 
     <!-- Subject -->
     <label><h5>Subject</h5>
@@ -419,25 +427,3 @@
 
 <!-- Manage Bans Modal -->
 <ban-modal show-modal="vmProfile.showBanModal" selected-user="vmProfile.selectedUser" callback="vmProfile.updateUser"></ban-modal>
-
-<!-- Edit Preferences Modal -->
-<modal class="medium" show="vmProfile.editPreferences">
-  <h3 class="thin-underline">Edit Preferences</h3>
-  <form name="$parent.form" class="css-form" novalidate>
-    <!-- Preferences Fields -->
-    <label>Posts Per Page
-      <input type="number" name="posts_per_page" ng-model="vmProfile.tempPreferences.posts_per_page" placeholder="25" min="25" step="1" max="100" modal-focus="{{vmProfile.showBanModal}}" />
-    </label>
-
-    <label>Threads Per Page
-      <input type="number" name="threads_per_page" ng-model="vmProfile.tempPreferences.threads_per_page" placeholder="25" min="25" step="1" max="100"/>
-    </label>
-
-    <!-- Save Button -->
-    <div class="clear">
-      <button class="fill-row" ng-click="vmProfile.savePreferences()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
-        Save
-      </button>
-    </div>
-  </form>
-</modal>

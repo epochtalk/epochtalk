@@ -21,7 +21,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/threads/{thread_id}/polls/{poll_id}/lock',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -40,15 +40,15 @@ module.exports = {
       },
       payload: { locked: Joi.boolean().required() }
     },
-    pre: [ { method: 'auth.threads.lockPoll(server, auth, params.thread_id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.lockPoll(request.server, request.auth, request.params.thread_id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var pollId = request.params.poll_id;
     var locked = request.payload.locked;
 
     var promise = request.db.polls.lock(pollId, locked)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

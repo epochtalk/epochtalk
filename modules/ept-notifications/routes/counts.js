@@ -18,23 +18,23 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/notifications/counts',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: Joi.object().keys({
         max: Joi.number()
       })
     },
-    pre: [ { method: 'auth.notifications.counts(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.notifications.counts(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // get notifications counts for userId
     var userId = request.auth.credentials.id;
     var opts =  { max: request.query.max };
 
     var promise = request.db.notifications.counts(userId, opts)
-      .error(request.errorMap.toHttpError);
+    .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -30,7 +30,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
       };
 
       // input initialization
-      if ($scope.purpose === 'avatar') {
+      if ($scope.purpose === 'avatar' || $scope.purpose === 'logo') {
         $scope.images[0] = { url: $scope.model };
       }
       else if ($scope.purpose === 'editor') {
@@ -95,9 +95,9 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
         return s3ImageUpload.policy($scope.currentImages)
         // upload each image
         .then(function(images) {
-          return Promise.map(images, function(image, index) {
+          return Promise.each(images, function(image, index) {
             $scope.currentImages[index].status = 'Starting';
-            return s3ImageUpload.upload(image)
+            return Promise.resolve(s3ImageUpload.upload(image)
             .progress(function(percent) {
               updateImagesUploading(index, percent);
             })
@@ -121,7 +121,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
               if (err.status === 429) { message += 'Exceeded 10 images in batch upload.'; }
               else { message += 'Error: ' + err.message; }
               Alert.error(message);
-            });
+            }));
           })
           .then(function() {
             // log error images after all uploads finish

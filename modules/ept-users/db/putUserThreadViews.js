@@ -38,7 +38,9 @@ module.exports = function(userId, threadId) {
     .then(function(row) {
       if (row) { return updateUserThreadview(userId, threadId, client); }
       else { return insertUserThreadview(userId, threadId, client); }
-    });
+    })
+    .then(function() { return { user_id: userId, thread_id: threadId }; })
+    .then(helper.slugify);
   });
 };
 

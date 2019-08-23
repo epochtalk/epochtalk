@@ -62,11 +62,11 @@ var renameKeys = require('deep-rename-keys');
 module.exports = {
   method: 'GET',
   path: '/api/configurations',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.configurations.get(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.configurations.get(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.configurations.get()
     .then(function(config) {
        var retVal = {
@@ -87,7 +87,7 @@ module.exports = {
        return retVal;
     });
 
-    return reply(promise);
+    return promise;
   }
 };
 

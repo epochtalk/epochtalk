@@ -18,7 +18,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'DELETE',
   path: '/api/admin/roles/remove/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -30,9 +30,9 @@ module.exports = {
       }
     },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.roles.delete(server, auth, params.id)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.roles.delete(request.server, request.auth, request.params.id) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var id = request.params.id;
     var promise = request.db.roles.delete(id)
       .then(function(result) {
@@ -47,6 +47,6 @@ module.exports = {
       })
       .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

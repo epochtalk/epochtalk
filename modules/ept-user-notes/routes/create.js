@@ -25,7 +25,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/user/notes',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -47,9 +47,9 @@ module.exports = {
         note: Joi.string().min(2).max(2000).required()
       }
     },
-    pre: [ { method: 'auth.userNotes.create(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.userNotes.create(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = Object.assign({}, request.payload);
     var promise =  request.db.userNotes.create(opts)
     .then(function(createdNote) {
@@ -58,6 +58,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -5,12 +5,12 @@ var querystring = require('querystring');
 module.exports = {
   method: 'GET',
   path: '/profiles/{username}',
-  config: {
+  options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { username: Joi.string().required() } },
-    pre: [ { method: 'auth.users.metaFind(server, auth, params)', assign: 'viewable' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.metaFind(request.server, request.auth, request.params), assign: 'viewable' } ]
   },
-  handler: function(request, reply) {
+  handler: function(request, h) {
     var viewable = request.pre.viewable;
     var config = request.server.app.config;
     var data = {
@@ -67,7 +67,7 @@ module.exports = {
 
       return data;
     })
-    .then(function(data) { return reply.view('index', data); })
-    .catch(function() { return reply().redirect('/404'); });
+    .then(function(data) { return h.view('index', data); })
+    .catch(function() { return h.redirect('/404'); });
   }
 };

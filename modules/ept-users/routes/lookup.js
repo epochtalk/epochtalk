@@ -20,7 +20,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/users/lookup/{username}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       params: {
@@ -28,15 +28,15 @@ module.exports = {
         self: Joi.boolean()
       }
     },
-    pre: [ { method: 'auth.users.lookup(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.users.lookup(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     // get id for username
     var username = request.params.username;
     var ignoredUsername = request.query.self ? undefined : request.auth.credentials.username;
     var promise = request.db.users.lookup(username, ignoredUsername)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

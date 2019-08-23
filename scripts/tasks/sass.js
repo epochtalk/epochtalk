@@ -27,13 +27,13 @@ module.exports = function(publicPath) {
     return new Promise(function(resolve, reject) {
       fs.writeFile(currentSassPath, output.css, function(err) {
         if (err) { reject(err); }
-        else { return resolve(); }
+        else { return resolve(true); }
       });
       fs.writeFile(publicMapPath + '.map', output.map, function(err) {
         if (err) { reject(err); }
-        else { return resolve(); }
+        else { return resolve(true); }
       });
     });
   })
-  .then(function() { console.log('SASS Compilation Complete'); });
+  .tap(function() { console.log('SASS Compilation Complete'); });
 };

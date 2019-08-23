@@ -16,6 +16,10 @@ var common = {
       else { return reject(error); }
     });
   },
+  runValidation: (error, method, args) => {
+    return method(...args)
+    .error(function() { return Promise.reject(error); });
+  },
   dbValue: (error, method, args) => {
     return method(...args)
     .then(function(value) {
@@ -125,6 +129,9 @@ function build(opts) {
       promise = common[opts.type](error, opts.server, opts.auth, opts.permission);
       break;
     case 'isNotFirstPost':
+    case 'runValidation':
+      promise = common[opts.type](error, opts.method, opts.args);
+      break;
     case 'dbValue':
       promise = common[opts.type](error, opts.method, opts.args);
       break;
@@ -165,36 +172,33 @@ function stitch(error, conditions, type) {
     return build(condition);
   });
 
+  // Fulfills when all promises succeed, rejects when first promise rejects
   if (type === 'all') {
     return Promise.all(conditions)
     .catch(() => { return Promise.reject(error); });
   }
+  // Fulfills when first promise succeeds, rejects when all promise reject
   else if (type === 'any') {
     return Promise.any(conditions)
     .catch(() => { return Promise.reject(error); });
   }
 }
 
-// -- API
-
-exports.register = function(server, options, next) {
-  options = options || {};
-  options.methods = options.methods || [];
-
-  server.method(options.methods);
-
-  // append the authorization common object to server
-  var authorization = {
-    common: common,
-    stitch: stitch,
-    build: build
-  };
-  server.decorate('server', 'authorization', authorization);
-
-  next();
-};
-
-exports.register.attributes = {
+module.exports = {
   name: 'authorization',
-  version: '1.0.0'
+  version: '1.0.0',
+  register: async function(server, options) {
+    options = options || {};
+    options.methods = options.methods || [];
+
+    server.method(options.methods);
+
+    // append the authorization common object to server
+    var authorization = {
+      common: common,
+      stitch: stitch,
+      build: build
+    };
+    server.decorate('server', 'authorization', authorization);
+  }
 };

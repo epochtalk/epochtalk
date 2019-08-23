@@ -28,11 +28,11 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/trusttree',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { query: { hierarchy: Joi.boolean() } }
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var promise;
     if (request.query.hierarchy) {
@@ -43,6 +43,6 @@ module.exports = {
       promise = request.db.userTrust.getTrustDepth(userId)
       .error(request.errorMap.toHttpError);
     }
-    return reply(promise);
+    return promise;
   }
 };

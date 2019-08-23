@@ -42,7 +42,7 @@ var common = require(path.normalize(__dirname + '/../common'));
 module.exports = {
   method: 'GET',
   path: '/api/posts/user/{username}',
-  config: {
+  options: {
     app: { hook: 'posts.pageByUser' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
@@ -54,23 +54,23 @@ module.exports = {
       }
     },
     pre: [
-      { method: 'auth.posts.pageByUser(server, auth, params.username)', assign: 'auth' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.posts.pageByUser(request.server, request.auth, request.params.username), assign: 'auth' },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'common.posts.parseOut(parser, pre.processed.posts)' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.posts) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
-      return reply(request.pre.processed);
+    handler: function(request) {
+      return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   var userId = '';
   var authenticated = request.auth.isAuthenticated;
   if (authenticated) { userId = request.auth.credentials.id; }
@@ -98,5 +98,5 @@ function processing(request, reply) {
   })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

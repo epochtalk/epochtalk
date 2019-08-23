@@ -39,7 +39,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/admin/modlog',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: {
       query: {
@@ -54,12 +54,12 @@ module.exports = {
         edate: Joi.date()
       }
     },
-    pre: [ { method: 'auth.moderationLogs.page(server, auth)' } ],
+    pre: [ { method: (request) => request.server.methods.auth.moderationLogs.page(request.server, request.auth) } ],
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise = request.db.moderationLogs.page(request.query)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

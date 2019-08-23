@@ -21,11 +21,11 @@ var baseDefaultPath = __dirname + '/../../../defaults/legal/';
 module.exports = {
   method: 'POST',
   path: '/api/legal/reset',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.legal.reset(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.legal.reset(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var copyFile = function(fromDir, toDir, options) {
       return new Promise(function(resolve, reject) {
         fse.copy(fromDir, toDir, options, function(err) {
@@ -56,6 +56,6 @@ module.exports = {
     })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

@@ -33,7 +33,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/user/notes',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'userNotes.page' },
     validate: {
@@ -43,13 +43,13 @@ module.exports = {
         limit: Joi.number().min(1).max(100).default(25)
       }
     },
-    pre: [ { method: 'auth.userNotes.page(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.userNotes.page(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var opts = request.query;
     var promise = request.db.userNotes.page(opts)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

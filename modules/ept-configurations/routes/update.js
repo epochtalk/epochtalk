@@ -65,15 +65,11 @@ var ConfigError = Promise.OperationalError;
 module.exports = {
   method: 'POST',
   path: '/api/configurations',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: { type: 'adminSettings.update' }
     },
-    pre: [
-      { method: validatePortalParams },
-      { method: 'common.images.site(imageStore, payload)' }
-    ],
     validate: {
       payload: Joi.object().keys({
         verify_registration: Joi.boolean(),
@@ -147,9 +143,14 @@ module.exports = {
         })
       }).options({ stripUnknown: true, abortEarly: true })
     },
-    pre: [ { method: 'auth.configurations.update(server, auth)' } ]
+    pre: [
+      { method: (request) => request.server.methods.auth.configurations.update(request.server, request.auth) },
+      { method: validatePortalParams },
+      { method: (request) => request.server.methods.common.images.saveNoExpiration(request.payload.website.logo) },
+      { method: (request) => request.server.methods.common.images.saveNoExpiration(request.payload.website.favicon) }
+    ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var internalConfig = request.server.app.config;
     var newConfig = underscoreToCamelCase(request.payload);
     var promise = sanitizeConfigs(newConfig, internalConfig.saasMode)
@@ -176,18 +177,18 @@ module.exports = {
     .then(function() { return request.payload; })
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
 
-function validatePortalParams(request, reply) {
+function validatePortalParams(request) {
   // validate portal params
   if (request.payload.portal &&
       request.payload.portal.enabled &&
       !request.payload.portal.board_id) {
-    return reply(Boom.badData('Portal Configurations must include a Board to Show'));
+    return Boom.badData('Portal Configurations must include a Board to Show');
   }
-  else { return reply(); }
+  else { return true; }
 }
 
 function underscoreToCamelCase(obj) {

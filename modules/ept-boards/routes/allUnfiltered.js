@@ -45,14 +45,14 @@
 module.exports = {
   method: 'GET',
   path: '/api/boards/unfiltered',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: 'auth.boards.allUnfiltered(server, auth)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.allUnfiltered(request.server, request.auth) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var promise =  request.db.boards.allCategories()
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

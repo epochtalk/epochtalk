@@ -40,27 +40,27 @@ var querystring = require('querystring');
 module.exports = {
   method: 'GET',
   path: '/api/users/{username}',
-  config: {
+  options: {
     app: { hook: 'users.find' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: { params: { username: Joi.string().required() } },
     pre: [
-      { method: 'auth.users.find(server, auth, params)', assign: 'view' },
-      { method: 'hooks.preProcessing' },
+      { method: (request) => request.server.methods.auth.users.find(request.server, request.auth, request.params), assign: 'view' },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
-        { method: 'hooks.parallelProcessing', assign: 'parallelProcessed' },
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
         { method: processing, assign: 'processed' },
       ],
-      { method: 'hooks.merge' },
-      { method: 'hooks.postProcessing' }
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ],
-    handler: function(request, reply) {
-      return reply(request.pre.processed);
+    handler: function(request) {
+      return request.pre.processed;
     }
   }
 };
 
-function processing(request, reply) {
+function processing(request) {
   // get logged in user id
   var userId = '';
   var authenticated = request.auth.isAuthenticated;
@@ -94,5 +94,5 @@ function processing(request, reply) {
   })
   .error(request.errorMap.toHttpError);
 
-  return reply(promise);
+  return promise;
 }

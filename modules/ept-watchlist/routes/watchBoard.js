@@ -17,17 +17,17 @@ var Joi = require('joi');
 module.exports = {
   method: 'POST',
   path: '/api/watchlist/boards/{id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.watchlist.watchBoard(server, auth, params.id)' }]
+    pre: [ { method: (request) => request.server.methods.auth.watchlist.watchBoard(request.server, request.auth, request.params.id) }]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var userId = request.auth.credentials.id;
     var boardId = request.params.id;
     var promise = request.db.watchlist.watchBoard(userId, boardId)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

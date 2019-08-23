@@ -1,5 +1,17 @@
 var parsers = [];
 
+module.exports = {
+  name: 'parser',
+  version: '1.0.0',
+  register: async function(server, options) {
+    options = options || {};
+    parsers = options.parsers;
+
+    server.decorate('server', 'parser', { parse });
+    server.decorate('request', 'parser', { parse });
+  }
+};
+
 function parse(input) {
   if (!input) { input = ''; }
 
@@ -30,17 +42,3 @@ function textToEntities(text) {
 function encode(e) {
   return e.replace(/[.]/g, function(e) { return "&#" + e.charCodeAt(0) + ";" });
 }
-
-exports.register = function(server, options, next) {
-  options = options || {};
-  parsers = options.parsers;
-
-  server.decorate('server', 'parser', { parse });
-  server.decorate('request', 'parser', { parse });
-  return next();
-};
-
-exports.register.attributes = {
-  name: 'parser',
-  version: '1.0.0'
-};

@@ -10,8 +10,7 @@ var upsert = {
       auth: auth,
       permission: 'rank.upsert.allow'
     });
-  },
-  options: { callback: false }
+  }
 };
 
 var get = {
@@ -24,8 +23,7 @@ var get = {
       auth: auth,
       permission: 'rank.get.allow'
     });
-  },
-  options: { callback: false }
+  }
 };
 
 module.exports = [ upsert, get ];

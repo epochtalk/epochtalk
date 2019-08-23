@@ -30,18 +30,18 @@ var Joi = require('joi');
 module.exports = {
   method: 'GET',
   path: '/api/boards/{id}',
-  config: {
+  options: {
     auth: { mode:'try', strategy: 'jwt' },
     validate: { params: { id: Joi.string().required() } },
-    pre: [ { method: 'auth.boards.find(server, auth, params.id)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.find(request.server, request.auth, request.params.id) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var boardId = request.params.id;
     var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
 
     var promise = request.db.boards.find(boardId, userPriority)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };

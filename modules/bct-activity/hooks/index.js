@@ -21,12 +21,12 @@ function userPostActivity(request) {
 
 function updateUserActivity(request) {
   var userId = request.pre.processed.user_id;
-  return request.db.userActivity.updateUserActivity(userId)
+  request.db.userActivity.updateUserActivity(userId)
   .then(function(info) {
     // Check if the users activity just passed 30, if so remove the newbie role
     if (info && info.old_activity < 30 && info.updated_activity >= 30) {
       var newbieRoleId = 'CN0h5ZeBTGqMbzwVdMWahQ';
-      return request.db.roles.removeRoles(userId, newbieRoleId)
+      return request.db.users.removeRole(userId, newbieRoleId)
       .tap(function(user) {
         var notification = {
           channel: { type: 'user', id: user.id },
@@ -39,6 +39,7 @@ function updateUserActivity(request) {
       });
     }
   });
+  return true;
 }
 
 module.exports = [

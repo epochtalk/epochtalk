@@ -4,7 +4,7 @@ var path = require('path');
 var common = require(path.normalize(__dirname + '/../common'));
 
 module.exports = function postsLock(server, auth, postId, query) {
-  if (query && !query.locked) { return; }
+  if (query && !query.locked) { return Promise.resolve(true); }
 
   var userId = auth.credentials.id;
   // check base permission
@@ -73,7 +73,11 @@ module.exports = function postsLock(server, auth, postId, query) {
       args: [userId, postId],
       permission: 'posts.lock.bypass.lock.selfMod'
     },
-    common.hasPriority(server, auth, 'posts.lock.bypass.lock.selfMod', postId),
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.lock.bypass.lock.selfMod', postId]
+    },
     notLockedByHigherPriority(userId, postId)
   ];
   var selfMod = server.authorization.stitch(Boom.forbidden(), selfModCond, 'all');
@@ -86,7 +90,11 @@ module.exports = function postsLock(server, auth, postId, query) {
       auth: auth,
       permission: 'posts.lock.bypass.lock.priority'
     },
-    common.hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId),
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.lock.bypass.lock.priority', postId]
+    },
     notLockedByHigherPriority(userId, postId)
   ];
   var priorityMod = server.authorization.stitch(Boom.forbidden(), priorityModCond, 'all');
@@ -101,8 +109,12 @@ module.exports = function postsLock(server, auth, postId, query) {
       args: [userId, postId],
       permission: 'posts.lock.bypass.lock.priority'
     },
-    // The boolean at the end tells hasPriority to pass if auth user is Patroller and post creator is a user
-    common.hasPriority(server, auth, 'posts.lock.bypass.lock.priority', postId, true),
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      // The boolean at the end tells hasPriority to pass if auth user is Patroller and post creator is a user
+      args: [server, auth, 'posts.lock.bypass.lock.priority', postId, true]
+    },
     notLockedByHigherPriority(userId, postId)
   ];
   var prioritySelfMod = server.authorization.stitch(Boom.forbidden(), prioritySelfModCond, 'all')

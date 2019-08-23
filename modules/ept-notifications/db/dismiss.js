@@ -13,15 +13,14 @@ module.exports = function(options) {
 
   // Dismiss specific notification
   if (id) {
-    q = 'UPDATE notifications SET viewed = TRUE WHERE receiver_id = $1 AND type = $2 AND id = $3 AND viewed = FALSE';
+    q = 'UPDATE notifications SET viewed = TRUE WHERE receiver_id = $1 AND type = $2 AND id = $3 AND viewed = FALSE RETURNING viewed';
     params = [receiverId, type, id];
   }
   // Dimiss all notifications
   else {
-    q = 'UPDATE notifications SET viewed = TRUE WHERE receiver_id = $1 AND type = $2 AND viewed = FALSE';
+    q = 'UPDATE notifications SET viewed = TRUE WHERE receiver_id = $1 AND type = $2 AND viewed = FALSE RETURNING viewed';
     params = [receiverId, type];
   }
 
-  return db.sqlQuery(q, params)
-  .then(function() { return; });
+  return db.scalar(q, params);
 };

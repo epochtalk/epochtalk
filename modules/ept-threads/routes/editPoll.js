@@ -27,7 +27,7 @@ var Joi = require('joi');
 module.exports = {
   method: 'PUT',
   path: '/api/threads/{thread_id}/polls/{poll_id}',
-  config: {
+  options: {
     auth: { strategy: 'jwt' },
     plugins: {
       mod_log: {
@@ -51,14 +51,14 @@ module.exports = {
         display_mode: Joi.string().valid('always', 'voted', 'expired').required()
       })
     },
-    pre: [ { method: 'auth.threads.editPoll(server, auth, params, payload)' } ]
+    pre: [ { method: (request) => request.server.methods.auth.threads.editPoll(request.server, request.auth, request.params, request.payload) } ]
   },
-  handler: function(request, reply) {
+  handler: function(request) {
     var options = request.payload;
     options.id = request.params.poll_id;
     var promise = request.db.polls.update(options)
     .error(request.errorMap.toHttpError);
 
-    return reply(promise);
+    return promise;
   }
 };
