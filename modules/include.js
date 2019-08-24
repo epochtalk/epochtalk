@@ -34,5 +34,6 @@ module.exports = [
   'ept-legal',
   'ept-invitations',
   'bct-trust',
-  'bct-activity'
+  'bct-activity',
+  'cb-altcoins'
 ];

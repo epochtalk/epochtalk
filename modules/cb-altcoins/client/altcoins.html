@@ -1,0 +1,15 @@
+<h3 class="thin-underline">Altcoins</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Altcoin Name</th>
+      <th>Altcoin Symbol</th>
+    </tr>
+  </thead>
+  <tbody ng-repeat="coin in AltcoinsCtrl.altcoins">
+    <tr>
+      <td ng-bind="coin.name"></td>
+      <td ng-bind="coin.id"></td>
+    </tr>
+  </tbody>
+</table>
