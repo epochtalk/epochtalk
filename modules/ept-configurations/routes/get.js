@@ -14,6 +14,7 @@ var childProcess = require('child_process');
   * @apiSuccess {boolean} login_required Boolean indicating if users need to login to view posts
   * @apiSuccess {boolean} invite_only Boolean indicating if forum is invite only
   * @apiSuccess {boolean} saas_mode Boolean indicating if forum is in saas mode
+  * @apiSuccess {boolean} revision The current git revision of the running instance of Epochtalk
   * @apiSuccess {string} ga_key Google analytics key for reCaptcha
   * @apiSuccess {object} website Object containing website configs
   * @apiSuccess {string} website.title The title of the website
