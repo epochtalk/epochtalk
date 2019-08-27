@@ -18,17 +18,15 @@
       </div>
     </div>
     <div class="poll-controls">
-      <ng-include src="'static/template/layout/svg/lock.svg'"></ng-include>
       <!-- Poll Controls -->
-      <div class="poll-control" ng-if="canLock()">
+      <div class="poll-control" ng-if="canLock()" data-balloon="Lock Poll">
         <input id="lockPoll" class="icon" type="checkbox" ng-model="poll.locked">
-        <label for="lockPoll"  ng-click="updateLockPoll()" >
-          <ng-include src="'static/templates/layout/svg/lock.svg'"></ng-include>
+        <label for="lockPoll"  ng-click="updateLockPoll()" ng-include="'static/templates/layout/svg/lock.html'" >
         </label>
       </div>
-      <div class="poll-control" ng-if="canEdit()">
+      <div class="poll-control" ng-if="canEdit()" data-balloon="Edit Poll">
         <input id="editPoll" class="icon" type="checkbox" ng-model="switches.editPoll">
-        <label for="editPoll" class="icon-epoch-edit">
+        <label for="editPoll" ng-include="'static/templates/layout/svg/edit-pencil.html'" >
         </label>
       </div>
     </div>
