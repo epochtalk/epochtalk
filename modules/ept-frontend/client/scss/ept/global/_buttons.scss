@@ -87,5 +87,9 @@ button.icon {
 svg {
   width: 1rem;
   height: auto;
-  fill: $text-gray-dark;
+  fill: $text-gray-med;
+
+  &:hover {
+    fill: $color-primary;
+  }
 }

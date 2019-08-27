@@ -3,7 +3,7 @@
   border: 1px solid $border-color;
   padding: 1rem;
   color: $sub-header-font-color;
-  margin-bottom: 1.5rem;
+  margin: 1.5rem 0;
   .ng-enter { @include transition(0.3s ease-in all); opacity: 0; }
   .ng-enter-active { opacity: 1; }
   .ng-leave { display: none; }
@@ -39,7 +39,13 @@
   .poll-header {
     display: flex;
     margin-bottom: 0.5rem;
-    // &:after { content: ""; display: table; clear: both; }
+
+    .poll-question {
+      color: $dark-text-default;
+      font-size: $font-size-lg;
+      text-transform: none;
+    }
+
     .poll-header-main {
       flex: 4 0 auto;
     }
@@ -76,27 +82,54 @@
     padding: 0.5rem;
     background-color: #eee;
   }
+
   // poll answers section
+  $poll-answer-margin: 1.75rem;
+
   .poll-answer {
     margin: 0.5rem 0 0.5rem 0;
     &:first { margin-top: 0;}
     .fill-row:not(:last-child) { margin-bottom: 0.5rem; }
     .one-third-column { padding-top: 0.2rem; }
+
     .poll-select {
-      @include pad(0.5rem);
-      border: 1px solid $border-color;
+      padding: 0.5rem 0.25rem;
       color: $sub-header-secondary-font-color;
+      font-size: $font-size-med;
+      font-weight: 600;
+      
       input { margin-bottom: 0; }
-      &.voted { border: none; }
+      
+      &.voted { 
+        margin-left: $poll-answer-margin; 
+      }
+      
       &.active { border-color: $color-primary-transparent; background-color: $color-primary-transparent; }
     }
     // votes bar
-    .poll-results { font-size: 0.875rem; color: $secondary-font-color-dark; }
+    .poll-results {
+      display: flex;
+      align-items: center;
+      margin-left: $poll-answer-margin;
+    }
+    .poll-results-data { 
+      color: $secondary-font-color-dark; 
+      flex: 1 0 220px;
+      font-size: 0.875rem; 
+      padding: 0 1rem;
+      order: 2;
+    }
+
+    .poll-results-value {
+      font-weight: 600;
+    }
+
     .poll-bar {
       @include transition(250ms linear all);
       position: relative;
-      height: 0.25rem;
+      height: 0.375rem;
       background-color: $border-color;
+      flex: 4 0 auto;
       span {
         position: absolute;
         overflow: hidden;
@@ -107,9 +140,17 @@
       .poll-answer-fill { max-width: 20%; right: 0.625rem; }
       section {
         background-color: $secondary-font-color-dark;
-        height: 0.25rem;
+        border-right: 1px solid $base-background-color;
+        height: 100%;
       }
     }
+  }
+
+  button,
+  .button {
+    float: none;
+    margin-left: $poll-answer-margin;
+    max-width: 320px;
   }
 
   @include media($mobile) {
