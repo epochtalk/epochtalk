@@ -66,6 +66,10 @@ app
     var title = '';
     try { title = transition.injector().get('$title'); } catch(e) {}
     if (title) { $timeout(function() { $rootScope.$title = title; }); }
+    // update className
+    var className = null;
+    try { className = transition.injector().get('$className'); } catch(e) {}
+    $timeout(function() { $rootScope.$className = className; });
     // update banInfo
     var boardBanned = false;
     try { boardBanned = transition.injector().get('$boardBanned'); } catch(e) {}
