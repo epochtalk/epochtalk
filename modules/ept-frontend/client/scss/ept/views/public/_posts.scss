@@ -271,6 +271,10 @@ ad-viewer {
   }
 }
 
+.pagination-bottom {
+  grid-column: 1 / span 2;
+}
+
 // Posts Layout Mobile
 
 @include media($desktop-small) {
@@ -319,6 +323,10 @@ ad-viewer {
 }
 
 @include media($mobile) {
+  .thread-data {
+    grid-column: 1 / span 2;
+  }
+  
   .thread-data .post-block .post-user {
     display: none;
   }
