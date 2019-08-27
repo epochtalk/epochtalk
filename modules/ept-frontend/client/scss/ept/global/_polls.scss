@@ -37,12 +37,15 @@
   }
   // header section
   .poll-header {
+    display: flex;
     margin-bottom: 0.5rem;
-    &:after { content: ""; display: table; clear: both; }
-    .poll-question { display: inline; }
+    // &:after { content: ""; display: table; clear: both; }
+    .poll-header-main {
+      flex: 4 0 auto;
+    }
     .poll-controls {
-      float: right;
-      width: 3.5rem;
+      flex: 1 0 200px;
+      text-align: right;
     }
     .poll-control {
       display: inline;
@@ -56,9 +59,8 @@
       }
     }
     .poll-details {
-      float: right;
-      width: 10rem;
-      padding: 0 0 0.5rem 1rem;
+      display: inline;
+
       .poll-info {
         color: $secondary-font-color-dark;
         font-size: 0.7rem;

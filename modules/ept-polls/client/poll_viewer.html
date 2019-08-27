@@ -2,11 +2,28 @@
   <!-- Poll Header -->
   <div class="poll-header">
     <!-- Poll Details -->
+    <div class="poll-header-main">
+      <h5 class="poll-question" ng-bind="poll.question"></h5>
+      <div class="poll-details">
+        <span class="poll-info" ng-if="poll.display_mode === 'always'">Results Always Shown. </span>
+        <span class="poll-info" ng-if="poll.display_mode === 'voted'">Results After Voting. </span>
+        <span class="poll-info" ng-class="{'highlight':!poll.expired && !canVote() }" ng-if="poll.display_mode === 'expired'">Results After Expiration. </span>
+        <span class="poll-info" ng-class="{'highlight':poll.expired}">
+        {{ poll.expiration ? 'Exp: ' + (poll.expiration | date : 'short') : 'No Expiration. '}}</span>
+      </div>
+      <div class="poll-details">
+        <span class="poll-info" ng-class="{'highlight':pollAnswers.length===poll.max_answers}">{{poll.max_answers + ' choice. ' + (poll.max_answers > 1 ? 's':'')}}</span>
+        <span class="poll-info" ng-if="!poll.change_vote">Votes are Permanent. </span>
+        <span class="poll-info" ng-if="poll.change_vote">Votes can be changed. </span>
+      </div>
+    </div>
     <div class="poll-controls">
+      <ng-include src="'static/template/layout/svg/lock.svg'"></ng-include>
       <!-- Poll Controls -->
       <div class="poll-control" ng-if="canLock()">
         <input id="lockPoll" class="icon" type="checkbox" ng-model="poll.locked">
-        <label for="lockPoll" class="icon-epoch-lock" ng-click="updateLockPoll()">
+        <label for="lockPoll"  ng-click="updateLockPoll()" >
+          <ng-include src="'static/templates/layout/svg/lock.svg'"></ng-include>
         </label>
       </div>
       <div class="poll-control" ng-if="canEdit()">
@@ -15,21 +32,8 @@
         </label>
       </div>
     </div>
-    <div class="poll-details">
-      <div class="poll-info" ng-if="poll.display_mode === 'always'">Results Always Shown</div>
-      <div class="poll-info" ng-if="poll.display_mode === 'voted'">Results After Voting</div>
-      <div class="poll-info" ng-class="{'highlight':!poll.expired && !canVote() }" ng-if="poll.display_mode === 'expired'">Results After Expiration</div>
-      <div class="poll-info" ng-class="{'highlight':poll.expired}">
-      {{ poll.expiration ? 'Exp: ' + (poll.expiration | date : 'short') : 'No Expiration'}}</div>
-    </div>
-    <div class="poll-details small">
-      <div class="poll-info" ng-class="{'highlight':pollAnswers.length===poll.max_answers}">{{poll.max_answers + ' choice' + (poll.max_answers > 1 ? 's':'')}}</div>
-      <div class="poll-info" ng-if="!poll.change_vote">Votes are Permanent</div>
-      <div class="poll-info" ng-if="poll.change_vote">Votes can be changed</div>
-    </div>
 
     <!-- Poll Question -->
-    <h5 class="poll-question" ng-bind="poll.question"></h5>
   </div>
 
   <!-- Poll Edit -->
