@@ -11,5 +11,10 @@ main {
 
   @include break-mobile-sm {
     padding: 0 1rem;
+    
+    #public-content {
+      column-gap: 0;
+      grid-template-columns: 1fr;
+    }
   }
 }
