@@ -85,7 +85,7 @@
 
   <!-- Poll Results -->
   <div class="poll-answer" ng-repeat="answer in poll.answers">
-    <div ng-class="{ 'poll-answer-row':showPollResults() }">
+    <div ng-class="{ 'poll-answer-row':showPollResults(), 'selected-answer':answer.selected }">
       <label class="poll-select" ng-class="{ 'active':pollAnswers.indexOf(answer.id) > -1, 'default-cursor voted':!canVote() }">
         <input ng-if="poll.max_answers === 1 && canVote()" ng-click="pollAnswers.pop(); toggleAnswer(answer.id);" name="pollanswer" type="radio">
         <input type="checkbox" ng-click="toggleAnswer(answer.id)" ng-disabled="pollAnswers.length >= poll.max_answers && pollAnswers.indexOf(answer.id) === -1" ng-checked="pollAnswers.indexOf(answer.id) > -1" ng-if="poll.max_answers > 1 && canVote()"/>
