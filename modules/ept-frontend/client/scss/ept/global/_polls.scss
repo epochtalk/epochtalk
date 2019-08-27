@@ -159,9 +159,30 @@
     .poll-answer .poll-select { padding-bottom:0; padding-left:0; border: none; }
     .poll-answer .poll-select.active { background-color: transparent; }
     .poll-answer .one-third-column { padding-top: 0; }
-    .poll-header .poll-controls { width: 100%; text-align: center; }
+    // .poll-header .poll-controls { width: 100%; text-align: center; }
     .poll-header .poll-control { margin: 0.5rem; }
-    .poll-header .poll-details .poll-info { display: block; }
+    // .poll-header .poll-details .poll-info { display: block; }
     .poll-header .poll-details, .poll-header .poll-details.small { width: 100%; text-align: center; padding-left: 0; }
+  }
+
+  @include break-mobile-sm {
+    poll-header {
+      flex-direction: column;
+
+      .poll-header-main {
+        flex: none;
+      }
+    }
+
+    .poll-answer {
+      .poll-results-data {
+        flex: none;
+      }
+    }
+
+    button, .button {
+      margin-left: 0;
+      margin-top: 1rem;
+    }
   }
 }

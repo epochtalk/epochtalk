@@ -8,4 +8,8 @@ main {
     @include base-layout-width;
     @include grid-base-layout;
   }
+
+  @include break-mobile-sm {
+    padding: 0 1rem;
+  }
 }

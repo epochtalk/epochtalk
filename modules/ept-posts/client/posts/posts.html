@@ -9,7 +9,7 @@
   <!-- Page Title -->
   <div class="page-header-split">
     <!-- Show Title -->
-    <div ng-if="!PostsParentCtrl.editThread">
+    <div ng-if="!PostsParentCtrl.editThread" class="thread-title">
       <h1 ng-bind-html="::PostsParentCtrl.thread.title"></h1>
       <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
       <i class="icon-epoch-verified" ng-if="PostsParentCtrl.thread.sticky"></i>

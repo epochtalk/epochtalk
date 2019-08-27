@@ -55,6 +55,22 @@ $grid-2-column: 1fr $sidebarWidth;
     line-height: 1.2;
     text-transform: uppercase;
   }
+
+  @include break-mobile-sm {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    row-gap: 1rem;
+
+    .thread-title {
+      text-align: center;
+    }
+
+    .user-controls {
+      .user-controls-base {
+        justify-content: space-evenly;
+      }
+    }
+  }
 }
 
 /* -- Input Layout --*/
