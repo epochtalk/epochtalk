@@ -131,7 +131,7 @@ function processing(request) {
   var getWriteAccess = request.db.threads.getBoardWriteAccess(threadId, userPriority);
   var getPosts = request.db.posts.byThread(threadId, opts);
   var getThread = request.db.threads.find(threadId);
-  var getPoll = request.db.polls.byThread(threadId);
+  var getPoll = request.db.polls.byThread(threadId, userId);
   var hasVoted = request.db.polls.hasVoted(threadId, userId);
   var getUserBoardBan = request.db.bans.isNotBannedFromBoard(userId, { threadId: threadId })
   .then((notBanned) => { return !notBanned || undefined; });

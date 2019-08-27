@@ -47,7 +47,7 @@ module.exports = {
 
     var promise = request.db.polls.removeVote(pollId, userId)
     .then(function() {
-      var getPoll = request.db.polls.byThread(threadId);
+      var getPoll = request.db.polls.byThread(threadId, userId);
       var hasVoted = request.db.polls.hasVoted(threadId, userId);
 
       return Promise.join(getPoll, hasVoted, function(poll, voted) {
