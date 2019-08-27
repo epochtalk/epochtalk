@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var changeCase = require('change-case');
 var renameKeys = require('deep-rename-keys');
-
+var childProcess = require('child_process');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
@@ -80,7 +80,8 @@ module.exports = {
          emailer: config.saasMode ? {} : config.emailer,
          images: config.saasMode ? {local:{}, s_3:{}} : config.images,
          rateLimiting: config.rateLimiting,
-         saasMode: config.saasMode
+         saasMode: config.saasMode,
+         revision: childProcess.execSync('git rev-parse --short HEAD').toString().trim()
        };
        retVal = camelCaseToUnderscore(retVal);
 
