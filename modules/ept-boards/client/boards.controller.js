@@ -83,21 +83,23 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
       }
     }
 
+    function greater(a, b) {
+      var minDate = new Date('0001-01-01T00:00:00Z');
+      var aCreatedAt = a.last_post_created_at || minDate;
+      var bCreatedAt = b.last_post_created_at || minDate;
+      if (new Date(aCreatedAt) > new Date(bCreatedAt)) { return a; }
+      else { return b; }
+    }
+
     function getLastPost(boards) {
       var latestPost = {};
       if (boards.length > 0) {
         boards.forEach(function(board) {
           var curLatest = getLastPost(board.children);
-          if (curLatest == {}) { // No child values
-            latestPost = buildLastPostData(board);
-          }
-          else {
-            var minDate = new Date('0001-01-01T00:00:00Z');
-            var curLastPost = curLatest.last_post_created_at || minDate;
-            var boardLastPost = board.last_post_created_at || minDate;
-            if (curLastPost > boardLastPost) { latestPost = buildLastPostData(curLatest); }
-            else { latestPost = buildLastPostData(board); }
-          }
+          // Compare curLatest to board
+          curLatest = buildLastPostData(greater(curLatest, board));
+          // Compare curLatest to actual latest
+          latestPost = buildLastPostData(greater(curLatest, latestPost))
         });
       }
       return latestPost;
