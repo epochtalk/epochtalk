@@ -84,7 +84,7 @@
   }
 
   // poll answers section
-  $poll-answer-margin: 1.75rem;
+  $poll-answer-margin: 1.5rem;
 
   .poll-answer {
     margin: 0.5rem 0 0.5rem 0;
@@ -93,10 +93,11 @@
     .one-third-column { padding-top: 0.2rem; }
 
     .poll-select {
-      padding: 0.5rem 0.25rem;
+      padding: 0.5rem 0 0;
       color: $sub-header-secondary-font-color;
       font-size: 1rem;
       font-weight: 600;
+      position: relative;
       
       input { margin-bottom: 0; }
       
@@ -142,6 +143,21 @@
         background-color: $secondary-font-color-dark;
         border-right: 1px solid $base-background-color;
         height: 100%;
+      }
+    }
+
+    .selected-answer {
+      .selected-answer-icon {
+        position: absolute;
+        top: 10px;
+        left: -1.25rem;
+        svg {
+          fill: $color-primary;
+        }
+      }
+
+      section {
+        background-color: $color-primary;
       }
     }
   }
