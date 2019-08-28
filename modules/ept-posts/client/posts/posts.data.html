@@ -11,23 +11,24 @@
   </div>
 
   <!-- Visible Post View -->
-  <div ng-if="!post._deleted && !post.user.ignored">
+  <div ng-if="!post._deleted && !post.user.ignored" class="post-block-grid">
     <!-- Post Profile Section -->
     <div class="post-user">
       <a ui-sref="profile.posts({ username: post.user.username})">
         <div class="user-avatar">
-          <img ng-style="PostsCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar || $webConfigs.default_avatar}}">
+          <span ng-if="post.user.online"ng-include="'static/templates/layout/svg/icon__online.html'" class="online green"></span>
+          <!-- <span ng-if="!post.user.online" class="online green"><i class="fa fa-circle-o"></i></span> -->
+          <img ng-style="" ng-src="{{::post.avatar || $webConfigs.default_avatar}}">
         </div>
-        <div title="{{post.user.role_name || 'user'}}" class="user-role" ng-bind="post.user.role_name || 'user'"></div>
-        <div ng-if="post.user.activity > -1" title="{{ 'Activity: ' + post.user.activity }}" class="user-activity">Act: <span ng-bind="post.user.activity"></span></div>
+        <div ng-if="post.user.activity > -1" title="{{ 'Activity: ' + post.user.activity }}" class="user-activity">Act: <span ng-bind="post.user.activity" class="user-activity-value"></span></div>
       </a>
 
 
-      <div class="user-role" ng-if="PostsParentCtrl.loggedIn()">
+      <div class="user-trust" ng-if="PostsParentCtrl.loggedIn()">
         <trust-score user="post.user" visible="PostsParentCtrl.thread.trust_visible"></trust-score>
       </div>
 
-      <div class="user-role">
+      <div class="user-rank">
         <rank-display ranks="PostsParentCtrl.pageData.metadata.ranks" maps="PostsParentCtrl.pageData.metadata.rank_metric_maps" user="post.user"></rank-display>
 
         <ignore-posts post="post"></ignore-posts>
@@ -38,16 +39,17 @@
     <div class="post-content">
       <!-- Post Title -->
       <div class="post-title">
-        <span ng-if="post.user.online" class="online green"><i class="fa fa-circle"></i></span>
-        <span ng-if="!post.user.online" class="online green"><i class="fa fa-circle-o"></i></span>
-        <a class="username" data-balloon="{{post.user.role_name || 'User'}}" ui-sref="profile.posts({ username: post.user.username})" ng-style="PostsCtrl.usernameHighlight(post.user.highlight_color)" ng-bind="::post.user.username"></a>
-        <div title="{{post.user.name}}" ng-if="post.user.name" class="display-name">
-          <span ng-bind-html="::post.user.name | truncate:33"></span>
-          <span class="hide-mobile">&nbsp;&mdash;&nbsp;</span>
-        </div>
-        <div class="timestamp">
-          <span ng-bind="::post.created_at | humanDate"></span>
-          <span ng-if="PostsCtrl.showEditDate(post)" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
+        <div class="post-title-user">
+          <a class="username" data-balloon="{{post.user.role_name || 'User'}}" ui-sref="profile.posts({ username: post.user.username})"  ng-bind="::post.user.username"></a>
+          <div title="{{post.user.name}}" ng-if="post.user.name" class="display-name">
+            <span ng-bind-html="::post.user.name | truncate:33"></span>
+            <span class="hide-mobile">&nbsp;&mdash;&nbsp;</span>
+          </div>
+          <div title="{{post.user.role_name || 'user'}}" class="user-role" ng-bind="post.user.role_name || 'user'" ng-style="PostsCtrl.userRoleHighlight(post.user.highlight_color)"></div>
+          <div class="timestamp">
+            <span ng-bind="::post.created_at | humanDate"></span>
+            <span ng-if="PostsCtrl.showEditDate(post)" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
+          </div>
         </div>
 
         <ul class="post-action">

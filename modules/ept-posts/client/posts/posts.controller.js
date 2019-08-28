@@ -259,6 +259,18 @@ var ctrl = [
       return style;
     };
 
+    this.userRoleHighlight = function(color)
+    {
+      var style = {};
+      if (color) {
+        style.background = color;
+        style.border = 'none';
+        style.color = '#fff';
+        style.fontWeight = '600';
+      }
+      return style;
+    };
+    
     this.highlightPost = function() {
       $timeout(function() { highlight($location.hash()); });
     };
