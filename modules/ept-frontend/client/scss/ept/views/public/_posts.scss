@@ -66,18 +66,26 @@ ad-viewer {
   @include pad(0 0 1rem 0);
   clear: both;
   .post-block {
-    @include row;
-    @include clearfix;
-    // @include pad(1.25rem 0.5rem);
     @include transition(background-color 250ms ease-in);
-    position: relative;
     min-height: 10rem;
-    max-width: calc(#{$view-maxWidth} - #{$sidebarWidth} - 2rem);
+    // max-width: calc(#{$view-maxWidth} - #{$sidebarWidth} - 2rem);
     border-bottom: $border;
     padding: 1.5rem 0 2rem;
-    // &:first-child {
-    //   border-top: $border;
-    // }
+
+    &:hover {
+      background-color: #f9f9f9;
+      .post-content {
+        .post-title {
+          .post-action {
+            li {
+              a {
+                color: red;
+              }
+            }
+          }
+        }
+      }
+    }
 
     &.highlighted {
       background-color: $color-highlighted;
@@ -94,19 +102,41 @@ ad-viewer {
       color: $secondary-font-color;
       text-align: center;
     }
+
+    .post-block-grid {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+
     .post-user {
       width: 5rem;
       padding-right: 1.25rem;
-      display: inline-block;
-      position: absolute;
       a {
         display: block;
       }
       .user-avatar {
         @include bg-cover;
         background: no-repeat center center;
+        position: relative;
         height: 3.75rem;
         width: 3.75rem;
+        
+        .online {
+          position: absolute;
+          top: -4px;
+          right: -4px;
+
+          svg {
+            stroke: white;
+            stroke-width: 6;
+            fill: green;
+            width: 20px;
+            height: auto;
+          }
+        }
+
         img {
           @include border-radius(100px);
           width: 100%;
@@ -114,7 +144,9 @@ ad-viewer {
           object-fit: cover;
         }
       }
-      .user-role, .user-activity {
+      .user-trust,
+      .user-rank, 
+      .user-activity {
         padding-top: 0.5rem;
         line-height: 0.625rem;
         color: $secondary-font-color;
@@ -125,11 +157,15 @@ ad-viewer {
         text-transform: uppercase;
         text-overflow: ellipsis;
         width: 100%;
+
+        &-value {
+          font-weight: 600;
+        }
       }
     }
     .post-content {
-      display: block;
-      margin-left: 5rem;
+      width: 100%;
+
       .bbcode-column {
         img.image-loader.loaded {
           max-width: 350px;
@@ -139,36 +175,54 @@ ad-viewer {
       }
       .post-title {
         color: $secondary-font-color;
+        display: flex;
+        align-items: center;
         margin-bottom: 0.5rem;
         width: 100%;
-        .online {
-          float: left;
-          margin-right: 0.5rem;
+
+        .post-title-user {
+          display: flex;
+          align-items: center;
+          flex: 2 0 auto;
         }
+
         a.username {
-          float: left;
-          margin-right: 0.75rem;
+          margin-right: 0.5rem;
           color: $base-font-color;
-          font-weight: 900;
+          font-weight: 600;
           &:hover {
             color: $color-primary;
           }
         }
+
+        .user-role {
+          @include truncate-ellipsis;
+          background-color: transparent;
+          border: 1px solid $secondary-font-color;
+          border-radius: 2px;
+          color: $secondary-font-color-dark;
+          display: inline-block;
+          font-size: $font-size-xs;
+          font-weight: 400;
+          line-height: 1.4;
+          margin-right: 0.5rem;
+          max-width: 100px;
+          padding: 1px 6px;
+          text-align: center;
+        }
+
         .timestamp, .display-name {
           display: inline-block;
-          color: $secondary-font-color;
-          line-height: 1.3rem;
-          font-size: 0.8125rem;
+          color: $text-gray-med;
+          font-size: $font-size-xs;
           font-weight: 400;
-          float: left;
         }
         .display-name {
           color: $secondary-font-color-dark;
         }
         .post-action {
           @include list-clean;
-          float: right;
-          line-height: 1.3rem;
+          justify-self: flex-end;
           color: $secondary-font-color;
           li {
             @include list-flat;
@@ -188,9 +242,6 @@ ad-viewer {
         }
         &:hover .post-action a {
           color: $secondary-font-color;
-        }
-        .clear {
-          @include clearfix;
         }
       }
       .post-sig-border {

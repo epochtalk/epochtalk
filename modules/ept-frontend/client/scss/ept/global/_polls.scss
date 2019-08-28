@@ -128,7 +128,7 @@
     .poll-bar {
       @include transition(250ms linear all);
       position: relative;
-      height: 0.375rem;
+      height: 0.25rem;
       background-color: $border-color;
       flex: 4 0 auto;
       span {
