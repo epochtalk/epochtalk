@@ -1,10 +1,8 @@
 /*-------------- Posts (Thread View) Layout -------------- */
 
 #public-content {
-  @include grid-columns();
-
-  @include break-min-large {
-
+  .posts & {
+    grid-template-columns: 1fr 320px;
   }
 }
 
