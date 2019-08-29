@@ -15,7 +15,8 @@ module.exports = {
     db = options.db;
 
     server.ext('onRequest', function(request, h) {
-      var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
+      var xFF = request.headers['x-forwarded-for']
+      var ip = xFF ? xFF.split(',')[0] : request.info.remoteAddress;
       if (Object.keys(blacklist).length && ipBlacklisted(ip)) {
         var err = Boom.forbidden();
         return err;
