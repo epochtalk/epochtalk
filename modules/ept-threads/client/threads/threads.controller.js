@@ -13,7 +13,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.loggedIn = Session.isAuthenticated;
     this.parent.board  = pageData.board;
     this.parent.page = pageData.page;
-    this.parent.pageCount = Math.ceil(ctrl.board.thread_count / ctrl.limit);
+    this.parent.pageCount = Math.ceil((ctrl.board.thread_count - ctrl.board.sticky_thread_count) / ctrl.limit) || 1;
     // TODO: This will not be here once actual boards are stored in this array
     this.parent.bannedFromBoard = BanSvc.banStatus();
 
@@ -114,7 +114,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       // replace current threads with new threads
       Threads.byBoard(query).$promise
       .then(function(pageData) {
-        ctrl.parent.pageCount = Math.ceil(pageData.board.thread_count / ctrl.limit);
+        ctrl.parent.pageCount = Math.ceil((pageData.board.thread_count - pageData.board.sticky_thread_count) / ctrl.limit) || 1;
         ctrl.threads = pageData.normal;
         ctrl.stickyThreads = pageData.sticky;
         ctrl.threads.forEach(threadPageCount);
