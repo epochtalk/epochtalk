@@ -182,7 +182,8 @@ ad-viewer {
         .post-title-user {
           display: flex;
           align-items: center;
-          flex: 2 0 auto;
+          flex: 2 1 auto;
+          flex-wrap: wrap;
         }
 
         a.username {
@@ -244,6 +245,10 @@ ad-viewer {
             font-size: $font-size-sm;
             opacity: .25;
             transition: opacity ease-in-out 150ms;
+
+            @include break-mobile-sm {
+              opacity: 1;
+            }
 
             &.selected {
               opacity: .6;
@@ -390,7 +395,8 @@ ad-viewer {
 }
 
 @include media($mobile) {
-  .thread-data {
+  .thread-data,
+  .sidebar {
     grid-column: 1 / span 2;
   }
   
