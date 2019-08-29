@@ -65,27 +65,14 @@ ad-viewer {
 .thread-data {
   @include pad(0 0 1rem 0);
   clear: both;
-  .post-block {
+}
+
+.post-block {
     @include transition(background-color 250ms ease-in);
     min-height: 10rem;
     // max-width: calc(#{$view-maxWidth} - #{$sidebarWidth} - 2rem);
     border-bottom: $border;
     padding: 1.5rem 0 2rem;
-
-    &:hover {
-      background-color: #f9f9f9;
-      .post-content {
-        .post-title {
-          .post-action {
-            li {
-              a {
-                color: red;
-              }
-            }
-          }
-        }
-      }
-    }
 
     &.highlighted {
       background-color: $color-highlighted;
@@ -101,6 +88,18 @@ ad-viewer {
       padding: 0.5rem 0.5rem;
       color: $secondary-font-color;
       text-align: center;
+    }
+
+    &:hover {
+      .post-content {
+        .post-title {
+          .post-action {
+            .post-action-icon, a {
+              opacity: 1;
+            }
+          }
+        }
+      }
     }
 
     .post-block-grid {
@@ -220,30 +219,50 @@ ad-viewer {
         .display-name {
           color: $secondary-font-color-dark;
         }
+
         .post-action {
+          // opacity: .4;
           @include list-clean;
+          display: flex;
+          align-items: center;
           justify-self: flex-end;
           color: $secondary-font-color;
+          // transition: opacity ease-in-out 150ms;
+
           li {
-            @include list-flat;
-            a {
-              color: $secondary-font-color-light;
-              &:hover {
-                color: $color-primary;
+            padding-left: 1rem;
+          }
+
+          svg {
+            fill: $secondary-font-color;
+          }
+
+          .post-action-icon,
+          a {
+            color: $secondary-font-color;
+            display: flex;
+            font-size: $font-size-sm;
+            opacity: .25;
+            transition: opacity ease-in-out 150ms;
+
+            &.selected {
+              opacity: .6;
+
+              svg {
+                // fill: $secondary-font-color-dark;
+                fill: $dark-text-default;
               }
             }
-            .clicked {
-              color: $color-primary;
+
+            &:hover {
+              svg {
+                fill: $color-primary;
+              }
             }
           }
-          &:hover a {
-            color: $secondary-font-color;
-          }
-        }
-        &:hover .post-action a {
-          color: $secondary-font-color;
         }
       }
+
       .post-sig-border {
         clear: both;
         width: 250px;
@@ -268,7 +287,6 @@ ad-viewer {
       }
     }
   }
-}
 
 #post-spacer {
   min-height: 175px;

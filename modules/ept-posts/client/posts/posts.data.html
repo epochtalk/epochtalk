@@ -54,47 +54,39 @@
 
         <ul class="post-action">
           <li ng-if="PostsCtrl.canPurge() && post.position !== 1">
-            <a ng-href="#" data-balloon="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
-              <i class="fa fa-trash"></i>
+            <a ng-href="#" class="post-action-icon" data-balloon="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)" ng-include="'static/templates/layout/svg/trashcan.html'">
             </a>
           </li>
           <li ng-if="PostsCtrl.canDelete(post) && post.position !== 1 && !post.deleted">
-            <a ng-href="#" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index, post.locked)">
-              <i class="fa fa-eye-slash"></i>
+            <a ng-href="#" class="post-action-icon" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index, post.locked)" ng-include="'static/templates/layout/svg/watch-hide.html'">
             </a>
           </li>
           <li ng-if="PostsCtrl.canDelete(post) && post.deleted">
-            <a ng-href="#" data-balloon="Unhide" ng-click="PostsParentCtrl.openUndeleteModal($index)">
-              <i class="fa fa-eye"></i>
+            <a ng-href="#" class="post-action-icon selected" data-balloon="Unhide" ng-click="PostsParentCtrl.openUndeleteModal($index)" ng-include="'static/templates/layout/svg/watch-hide.html'">
             </a>
           </li>
           <li ng-if="PostsCtrl.canPostLock(post) && !post.locked">
-            <a ng-href="#" data-balloon="Lock Post" ng-click="PostsParentCtrl.lockPost(post)">
-              <i class="icon-epoch-lock"></i>
+            <a ng-href="#" class="post-action-icon" data-balloon="Lock Post" ng-click="PostsParentCtrl.lockPost(post)" ng-include="'static/templates/layout/svg/lock.html'">
             </a>
           </li>
           <li ng-if="PostsCtrl.canPostLock(post) && post.locked">
-            <a ng-href="#" data-balloon="Unlock Post" ng-click="PostsParentCtrl.unlockPost(post)">
-              <i class="icon-epoch-lock clicked"></i>
+            <a ng-href="#" class="post-action-icon selected" data-balloon="Unlock Post" ng-click="PostsParentCtrl.unlockPost(post)" ng-include="'static/templates/layout/svg/lock.html'">
             </a>
           </li>
           <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers) && !PostsParentCtrl.bannedFromBoard" ng-hide="post.reported && post.reported_author">
-            <a ng-href="#" data-balloon="Report" ng-click="PostsCtrl.openReportModal(post)">
-              <i class="icon-epoch-flag"></i>
+            <a ng-href="#" class="post-action-icon" data-balloon="Report" ng-click="PostsCtrl.openReportModal(post)" ng-include="'static/templates/layout/svg/flag.html'">
             </a>
           </li>
           <li ng-if="PostsCtrl.canUpdate(post)">
-            <a ng-href="#" data-balloon="Edit" ng-click="PostsCtrl.loadEditor(post)">
-              <i class="icon-epoch-edit-pencil"></i>
+            <a ng-href="#" class="post-action-icon" data-balloon="Edit" ng-click="PostsCtrl.loadEditor(post)" ng-include="'static/templates/layout/svg/edit-pencil.html'">
             </a>
           </li>
           <li ng-if="PostsCtrl.canPost()">
-            <a ng-href="#" data-balloon="Quote" ng-click="PostsCtrl.addQuote(post)">
-              <i class="icon-epoch-quote"></i>
+            <a ng-href="#" class="post-action-icon" data-balloon="Quote" ng-click="PostsCtrl.addQuote(post)" ng-include="'static/templates/layout/svg/quote.html'">
             </a>
           </li>
           <li>
-            <a ng-href="{{::PostsCtrl.rootUrl}}?start={{::post.position}}#{{::post.id}}" ng-click="PostsCtrl.highlightPost()" data-balloon="Permalink">
+            <a ng-href="{{::PostsCtrl.rootUrl}}?start={{::post.position}}#{{::post.id}}" ng-click="PostsCtrl.highlightPost()" class="post-action-icon" data-balloon="Permalink">
               <!-- <i class="icon-epoch-link"></i> -->
               <strong>#{{post.position}}</strong>
             </a>
