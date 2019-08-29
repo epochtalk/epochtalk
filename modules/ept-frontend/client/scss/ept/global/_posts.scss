@@ -30,9 +30,11 @@
   }
 }
 .quoteHeader {
+  border-left: 4px solid RGB(221, 221, 221);
+  color: $text-gray-med;
+  font-size: $font-size-sm;
   margin: 0 0 0 1rem;
   padding: 0 0.625rem 0;
-  border-left: 4px solid RGB(221, 221, 221);
 }
 .quote {
   margin: 0 0 0rem 1rem;
