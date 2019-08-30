@@ -22,12 +22,22 @@
       <!-- Poll Controls -->
       <div class="poll-control" ng-if="canLock()" data-balloon="Lock Poll">
         <input id="lockPoll" class="icon" type="checkbox" ng-model="poll.locked">
-        <label for="lockPoll"  ng-click="updateLockPoll()" ng-include="'static/templates/layout/svg/lock.html'" >
+        <label for="lockPoll"  ng-click="updateLockPoll()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <title>lock</title>
+            <path
+              d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z" />
+          </svg>
         </label>
       </div>
       <div class="poll-control" ng-if="canEdit()" data-balloon="Edit Poll">
         <input id="editPoll" class="icon" type="checkbox" ng-model="switches.editPoll">
-        <label for="editPoll" ng-include="'static/templates/layout/svg/edit-pencil.html'" >
+        <label for="editPoll">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <title>edit-pencil</title>
+            <path d="M7.38,33.74h0L4,44l10.26-3.39h0L41.74,13.14,34.86,6.26Zm31-21.15.54.55L14.26,37.79l-.54-.54" />
+            <path d="M45.48,6.89,41.11,2.52a1.78,1.78,0,0,0-2.5,0L36.11,5,43,11.89l2.5-2.5A1.76,1.76,0,0,0,45.48,6.89Z" />
+          </svg>
         </label>
       </div>
     </div>
@@ -87,7 +97,12 @@
   <div class="poll-answer" ng-repeat="answer in poll.answers">
     <div ng-class="{ 'poll-answer-row':showPollResults(), 'selected-answer':answer.selected }">
       <label class="poll-select" ng-class="{ 'active':pollAnswers.indexOf(answer.id) > -1, 'default-cursor voted':!canVote() }">
-        <span ng-if="answer.selected" ng-include="'static/templates/layout/svg/checkmark-circle.html'" class="selected-answer-icon"></span>
+        <span ng-if="answer.selected" class="selected-answer-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <title>checkmark-circle</title>
+            <path d="M24,2A22,22,0,1,0,46,24,22,22,0,0,0,24,2ZM21,34.22l-10-10,2.82-2.83L21,28.56l14-14,2.82,2.83Z" />
+          </svg>
+        </span>
         <input ng-if="poll.max_answers === 1 && canVote()" ng-click="pollAnswers.pop(); toggleAnswer(answer.id);" name="pollanswer" type="radio">
         <input type="checkbox" ng-click="toggleAnswer(answer.id)" ng-disabled="pollAnswers.length >= poll.max_answers && pollAnswers.indexOf(answer.id) === -1" ng-checked="pollAnswers.indexOf(answer.id) > -1" ng-if="poll.max_answers > 1 && canVote()"/>
         <span ng-bind="answer.answer"></span>

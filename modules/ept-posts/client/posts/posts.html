@@ -32,8 +32,13 @@
       <div class="user-controls-base">
         <!-- Watch Thread -->
         <div ng-if="PostsParentCtrl.showUserControls()" data-balloon="Watch Thread">
-          <a class="" ng-if="!PostsParentCtrl.thread.watched" ng-click="PostsParentCtrl.watchThread()">
-            <i class="icon-epoch-watch"></i>
+          <a class="" ng-if="!PostsParentCtrl.thread.watched" ng-click="PostsParentCtrl.watchThread()" >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>watch</title>
+              <path
+                d="M24,9.75C11.3,9.75,0,24,0,24S11.3,38.25,24,38.25,48,24,48,24,36.7,9.75,24,9.75ZM24,36A12,12,0,1,1,36,24,12,12,0,0,1,24,36Z" />
+              <path d="M24,15a8.89,8.89,0,0,0-3.06.57,3.93,3.93,0,1,1-5.37,5.37A8.89,8.89,0,0,0,15,24a9,9,0,1,0,9-9Z" />
+            </svg>
           </a>
         </div>
 
@@ -48,16 +53,29 @@
         <!-- Thread Lock -->
         <div class="control" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}"
           ng-if="PostsParentCtrl.canLock()">
-          <a ng-href="#" id="lockThread" class="icon-epoch-lock" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
+          <!-- <a ng-href="#" id="lockThread" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
+            ng-click="PostsParentCtrl.updateThreadLock()" ng-include="'static/templates/layout/svg/lock.html'">
+          </a> -->
+          <a ng-href="#" id="lockThread" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
             ng-click="PostsParentCtrl.updateThreadLock()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>lock</title>
+              <path
+                d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z" />
+            </svg>
           </a>
         </div>
     
         <!-- Thread Sticky -->
         <div class="control" data-balloon="{{PostsParentCtrl.thread.sticky ? 'Unsticky Thread' : 'Sticky Thread'}}"
           ng-if="PostsParentCtrl.canSticky()">
-          <a ng-href="#" id="stickyThread" class="icon-epoch-verified"
+          <a ng-href="#" id="stickyThread"
             ng-class="{'clicked' : PostsParentCtrl.thread.sticky }" ng-click="PostsParentCtrl.updateThreadSticky()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>verified</title>
+              <path
+                d="M41.79,3.83A19.77,19.77,0,0,1,23.67,2.15,19.77,19.77,0,0,1,5.55,3.83C-1.65,35.26,18.45,45,23.67,46.15,28.88,45,49,35.26,41.79,3.83Zm-20.52,29L12.37,24l2.12-2.12,6.78,6.78,13.1-13.1,2.12,2.12Z" />
+            </svg>
           </a>
         </div>
     
