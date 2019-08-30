@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><style>.cls-1{fill:#231f20;}</style></defs><title>graph-bar</title><g id="icons"><polygon class="cls-1" points="43.25 41.75 4.75 41.75 4.75 6.25 7.75 6.25 7.75 38.75 43.25 38.75 43.25 41.75"/><rect class="cls-1" x="9.75" y="28.75" width="6" height="8"/><rect class="cls-1" x="18.75" y="18.75" width="6" height="18"/><rect class="cls-1" x="27.75" y="23.75" width="6" height="13"/><rect class="cls-1" x="36.75" y="8.75" width="6" height="28"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <title>graph-bar</title>
+  <polygon points="43.25 41.75 4.75 41.75 4.75 6.25 7.75 6.25 7.75 38.75 43.25 38.75 43.25 41.75"/>
+  <rect x="9.75" y="28.75" width="6" height="8"/>
+  <rect x="18.75" y="18.75" width="6" height="18"/>
+  <rect x="27.75" y="23.75" width="6" height="13"/>
+  <rect x="36.75" y="8.75" width="6" height="28"/>
+</svg>

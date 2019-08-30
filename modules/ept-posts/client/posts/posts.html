@@ -14,7 +14,11 @@
       <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i>
       <i class="icon-epoch-verified" ng-if="PostsParentCtrl.thread.sticky"></i>
       <a data-balloon="Edit Thread Title" ng-href="#" class="do-edit" ng-if="PostsParentCtrl.canEditTitle()" ng-click="PostsParentCtrl.openEditThread()">
-        <i class="icon-epoch-edit-pencil"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+          <title>edit-pencil</title>
+          <path d="M7.38,33.74h0L4,44l10.26-3.39h0L41.74,13.14,34.86,6.26Zm31-21.15.54.55L14.26,37.79l-.54-.54" />
+          <path d="M45.48,6.89,41.11,2.52a1.78,1.78,0,0,0-2.5,0L36.11,5,43,11.89l2.5-2.5A1.76,1.76,0,0,0,45.48,6.89Z" />
+        </svg>
       </a>
     </div>
     <!-- Edit Title -->
@@ -46,7 +50,14 @@
         <div ng-if="PostsParentCtrl.showUserControls()" data-balloon="Add a Poll">
           <a class="" ng-if="PostsParentCtrl.canCreatePoll()"
             ng-click="PostsParentCtrl.addPoll = !PostsParentCtrl.addPoll">
-            <i class="fa fa-bar-chart"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>graph-bar</title>
+              <polygon points="43.25 41.75 4.75 41.75 4.75 6.25 7.75 6.25 7.75 38.75 43.25 38.75 43.25 41.75" />
+              <rect x="9.75" y="28.75" width="6" height="8" />
+              <rect x="18.75" y="18.75" width="6" height="18" />
+              <rect x="27.75" y="23.75" width="6" height="13" />
+              <rect x="36.75" y="8.75" width="6" height="28" />
+            </svg>
           </a>
         </div>
 
@@ -81,16 +92,25 @@
     
         <!-- Purge Delete -->
         <div class="control" data-balloon="Purge Thread" ng-if="PostsParentCtrl.canPurge()">
-          <a ng-href="#" id="purgeThread" class="fa fa-times-circle"
+          <a ng-href="#" id="purgeThread"
             ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }"
             ng-click="PostsParentCtrl.showPurgeThreadModal = true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>delete-circle</title>
+              <path
+                d="M24,2A22,22,0,1,0,46,24,22,22,0,0,0,24,2ZM35.67,32.13l-3.54,3.54L24,27.54l-8.13,8.13-3.54-3.54L20.46,24l-8.13-8.13,3.54-3.54L24,20.46l8.13-8.13,3.54,3.54L27.54,24Z" />
+            </svg>
           </a>
         </div>
     
         <!-- Move Thread -->
         <div class="control" data-balloon="Move Thread" ng-if="PostsParentCtrl.canMove()">
-          <a ng-href="#" id="moveBoard" class="fa fa-arrow-right"
+          <a ng-href="#" id="moveBoard"
             ng-class="{'clicked' : PostsParentCtrl.showMoveThreadModal }" ng-click="PostsParentCtrl.openMoveThreadModal()">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <title>Move</title>
+              <path d="m29.36 7.74a3 3 0 0 0 -4.25 4.26l9 9h-28.73a3 3 0 0 0 0 6h28.76l-9 9a3 3 0 0 0 4.25 4.24l16.23-16.24z" />
+            </svg>
           </a>
         </div>
         <span ng-if="!PostsParentCtrl.showThreadControls()">&nbsp;</span>
