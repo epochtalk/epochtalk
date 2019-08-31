@@ -88,30 +88,32 @@ ul.pagination {
       }
     }
   }
-  @include media($mobile) { margin-top: 1rem; }
+  // @include media($mobile) { margin-top: 1rem; }
 
   .sidebar & {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    @include break-mobile-tablet {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
 
-    .arrow {
-      transform: rotate(90deg);
-    }
+      .arrow {
+        transform: rotate(90deg);
+      }
 
-    li {
-      line-height: 1.5;
-      margin: 0.3125rem 0;
+      li {
+        line-height: 1.5;
+        margin: 0.3125rem 0;
 
-      &.jump {
-        .jump-tooltip {
-          left: -2rem;
-          top: inherit;
-          bottom: 120%;
-        }
+        &.jump {
+          .jump-tooltip {
+            left: -2rem;
+            top: inherit;
+            bottom: 120%;
+          }
 
-        input[type='number'] {
-          margin-right: 0.5rem;
+          input[type='number'] {
+            margin-right: 0.5rem;
+          }
         }
       }
     }
