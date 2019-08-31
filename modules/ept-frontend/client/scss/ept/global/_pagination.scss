@@ -89,6 +89,33 @@ ul.pagination {
     }
   }
   @include media($mobile) { margin-top: 1rem; }
+
+  .sidebar & {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .arrow {
+      transform: rotate(90deg);
+    }
+
+    li {
+      line-height: 1.5;
+      margin: 0.3125rem 0;
+
+      &.jump {
+        .jump-tooltip {
+          left: -2rem;
+          top: inherit;
+          bottom: 120%;
+        }
+
+        input[type='number'] {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
 }
 
 .pagination-simple {
@@ -118,3 +145,4 @@ ul.pagination {
     &, pagination { float: none; text-align: center; }
   }
 }
+

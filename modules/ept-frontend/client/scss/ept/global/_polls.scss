@@ -38,7 +38,7 @@
   // header section
   .poll-header {
     display: flex;
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     margin-bottom: 0.5rem;
 
     .poll-question {
@@ -51,7 +51,7 @@
       flex: 4 1 auto;
     }
     .poll-controls {
-      flex: 1 0 200px;
+      flex: 1 1 100px;
       text-align: right;
 
       @include break-mobile-sm {
