@@ -19,9 +19,11 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
       // set total_thread_count and total_post_count for all boards
       var boards = category.boards;
       boards.map(function(board) {
-        var children = countTotals(board.children);
-        board.total_thread_count = children.thread_count + board.thread_count;
-        board.total_post_count = children.post_count + board.post_count;
+        var children = countTotals([board]);
+        var lastPost = getLastPost([board]);
+        board.total_thread_count = children.thread_count;
+        board.total_post_count = children.post_count;
+        return Object.assign(board, lastPost);
       });
     });
 
@@ -69,6 +71,38 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
       }
 
       return {thread_count: thread_count, post_count: post_count};
+    }
+
+    function buildLastPostData(data) {
+      return {
+        last_post_created_at: data.last_post_created_at,
+        last_post_position: data.last_post_position,
+        last_post_username: data.last_post_username,
+        last_thread_id: data.last_thread_id,
+        last_thread_title: data.last_thread_title
+      }
+    }
+
+    function greater(a, b) {
+      var minDate = new Date('0001-01-01T00:00:00Z');
+      var aCreatedAt = a.last_post_created_at || minDate;
+      var bCreatedAt = b.last_post_created_at || minDate;
+      if (new Date(aCreatedAt) > new Date(bCreatedAt)) { return a; }
+      else { return b; }
+    }
+
+    function getLastPost(boards) {
+      var latestPost = {};
+      if (boards.length > 0) {
+        boards.forEach(function(board) {
+          var curLatest = getLastPost(board.children);
+          // Compare curLatest to board
+          curLatest = buildLastPostData(greater(curLatest, board));
+          // Compare curLatest to actual latest
+          latestPost = buildLastPostData(greater(curLatest, latestPost))
+        });
+      }
+      return latestPost;
     }
 
     this.generateCatId = function(name, viewOrder) {

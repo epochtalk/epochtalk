@@ -116,5 +116,13 @@ module.exports = function(id, userPriority) {
       return board;
     });
   })
+  .then((board) => {
+    // query for sticky thread count
+    var stickyThreadCountQuery = 'SELECT COUNT(id) FROM threads WHERE board_id = $1 AND sticky = True';
+    return db.scalar(stickyThreadCountQuery, [id]).then((result) => {
+      board.sticky_thread_count = result.count;
+      return board;
+    });
+  })
   .then(helper.slugify);
 };
