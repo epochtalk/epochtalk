@@ -6,7 +6,11 @@
 }
 
 /*-------------- Index File -------------- */
-#wrapper { min-height:100%; position:relative; overflow-x: hidden; }
+#wrapper { 
+  min-height:100vh; 
+  position:relative;
+}
+
 #wrapper #preview-banner {
   @include pad(0 $base-grid-padding);
   background-color: orange;

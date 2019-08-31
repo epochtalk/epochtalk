@@ -1,6 +1,6 @@
 /*-- Footer --*/
 footer {
-  @include clearfix();
+  // @include clearfix();
   @include pad(1rem $base-grid-padding);
   width: 100%;
   height: 9.4375rem;

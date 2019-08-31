@@ -155,9 +155,9 @@
 <div id="post-spacer"></div>
 
 <!-- Editor -->
-<div ng-if="PostsParentCtrl.canPost()">
+<!-- <div ng-if="PostsParentCtrl.canPost()"> -->
 
-  <div id="post-tools-fixed">
+  <div ng-if="PostsParentCtrl.canPost()" id="post-tools-fixed">
     <div class="tool-wrap">
       <div class="tool-container">
         <div class="half-column left-col" ng-bind-html="PostsParentCtrl.thread.title">
@@ -308,7 +308,7 @@
       </div>
     </div>
   </div>
-</div>
+<!-- </div> -->
 
 <!-- Reporting Modal -->
 <modal show="PostsParentCtrl.showReportModal" on-close="PostsParentCtrl.closeReportModal()">
