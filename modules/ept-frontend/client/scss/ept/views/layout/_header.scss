@@ -1,5 +1,20 @@
 /*-- Header Layout --*/
 header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: transform ease-in-out 250ms;
+  z-index: 900;
+
+  &.is-hidden {
+    transform: translateY(-100%);
+  }
+
+  &.is-visible {
+    transform: translateY(0);
+  }
+
   #ban-notice {
     @include pad(0.2rem 0);
     text-align: center;

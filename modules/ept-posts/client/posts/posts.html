@@ -131,7 +131,7 @@
   </div>
   <poll-viewer thread="PostsParentCtrl.thread" reset="PostsParentCtrl.resetPoll"></poll-viewer>
 
-  <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+  <!-- <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination> -->
 
 </div>
 
@@ -143,7 +143,9 @@
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+  <div class="sidebar-block">
+    <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+  </div>
 </div>
 
 <!-- Bottom Pagination -->
@@ -152,10 +154,10 @@
 </div> -->
 
 <!-- spacer for editor -->
-<div id="post-spacer"></div>
+<!-- <div id="post-spacer"></div> -->
 
 <!-- Editor -->
-<!-- <div ng-if="PostsParentCtrl.canPost()"> -->
+<div ng-if="PostsParentCtrl.canPost()">
 
   <div ng-if="PostsParentCtrl.canPost()" id="post-tools-fixed">
     <div class="tool-wrap">
@@ -308,7 +310,7 @@
       </div>
     </div>
   </div>
-<!-- </div> -->
+</div>
 
 <!-- Reporting Modal -->
 <modal show="PostsParentCtrl.showReportModal" on-close="PostsParentCtrl.closeReportModal()">

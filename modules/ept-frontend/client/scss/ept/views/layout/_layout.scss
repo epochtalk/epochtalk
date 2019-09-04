@@ -9,6 +9,7 @@
 #wrapper { 
   min-height:100vh; 
   position:relative;
+  margin-top: calc(#{$header-offset} + 1rem);
 }
 
 #wrapper #preview-banner {
