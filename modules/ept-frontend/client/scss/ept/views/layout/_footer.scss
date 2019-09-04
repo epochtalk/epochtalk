@@ -11,6 +11,7 @@ footer {
   color: $footer-font-color;
   font-size: 0.8rem;
   margin-bottom: 0;
+
   #footer {
     @include base-layout-width;
     .row { @include row; }
@@ -32,7 +33,9 @@ footer {
 
   // Mobile Footer Layout
   @include media($mobile) {
-    bottom: -3rem;
+    bottom: -11rem;
+    margin-bottom: 6.5rem;
+
     #footer .row .links { @include span-columns(4); @include omega(2n); text-align: center; }
     #footer .row .info { @include span-columns(8); text-align: center; padding-top: 1rem; }
   }

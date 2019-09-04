@@ -16,6 +16,18 @@ ad-viewer {
     position: sticky;
     top: calc(#{$header-offset} + 1rem);
   }
+
+  @include break-mobile-sm {
+    background-color: rgba($base-background-color, 0.9);
+    border-top: $border;
+    position: fixed;
+    bottom: 3rem;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    text-align: right;
+    z-index: 900;
+  }
 }
 
 .thread-controls-wrap {
@@ -72,7 +84,6 @@ ad-viewer {
 
 .thread-data {
   @include pad(0 0 1rem 0);
-  clear: both;
 }
 
 .post-block {
@@ -312,7 +323,7 @@ ad-viewer {
   left: 0;
   height: 3rem;
   z-index: 900;
-  border-top: $border;
+  // border-top: $border;
   background-color: rgba($base-background-color, 0.9);
   .tool-wrap {
     max-width: $max-width;
@@ -359,6 +370,11 @@ ad-viewer {
 
 @include media($desktop-small) {
   .thread-controls-wrap {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
     .controls.two-thirds-column {
       text-align: center;
       @include span-columns(6);
@@ -407,6 +423,10 @@ ad-viewer {
   .sidebar {
     grid-column: 1 / span 2;
   }
+
+  .thread-data {
+    margin-bottom: 3rem;
+  }
   
   .thread-data .post-block .post-user {
     display: none;
@@ -427,7 +447,7 @@ ad-viewer {
     right: 0;
   }
   #post-tools-fixed {
-    height: 2.5rem;
+    // height: 2.5rem;
     .tool-wrap .tool-container {
       line-height: 2.5rem;
       padding: 0 $base-grid-padding;

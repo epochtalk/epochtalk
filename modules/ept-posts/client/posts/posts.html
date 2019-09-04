@@ -64,9 +64,6 @@
         <!-- Thread Lock -->
         <div class="control" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}"
           ng-if="PostsParentCtrl.canLock()">
-          <!-- <a ng-href="#" id="lockThread" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
-            ng-click="PostsParentCtrl.updateThreadLock()" ng-include="'static/templates/layout/svg/lock.html'">
-          </a> -->
           <a ng-href="#" id="lockThread" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
             ng-click="PostsParentCtrl.updateThreadLock()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
