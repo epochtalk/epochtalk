@@ -47,7 +47,7 @@ ul.pagination {
       background-clip: padding-box;
       border-radius: 3px;
       position: absolute;
-      width: 7rem;
+      width: 10rem;
       left: 50%;
       margin-left: -3.5rem;
       top: -3.5rem;
@@ -70,20 +70,22 @@ ul.pagination {
       }
 
       .jump-to-page {
+        display: flex;
+        align-items: center;
         width: 100%;
-        input {
-          float: left;
-          display: block;
-          margin-bottom: 0;
-          width: 60%;
-          height: 2rem;
-        }
+        input,
         button {
-          float: left;
-          display: block;
-          padding: 0;
-          width: 40%;
-          height: 2rem;
+          margin-bottom: 0;
+        }
+
+        input {
+          flex: 1 1 auto;
+        }
+
+        button {
+          flex: 1 0 auto;
+          padding-bottom: .375rem;
+          padding-top: .375rem;
         }
       }
     }
@@ -106,9 +108,9 @@ ul.pagination {
 
         &.jump {
           .jump-tooltip {
-            left: -2rem;
+            left: 0;
             top: inherit;
-            bottom: 120%;
+            bottom: 140%;
           }
 
           input[type='number'] {
