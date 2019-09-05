@@ -1,8 +1,8 @@
-module.exports = ['$timeout', '$anchorScroll', 'Session', 'altcoins',
-  function($timeout, $anchorScroll, Session, altcoins) {
+module.exports = ['$timeout', '$anchorScroll', 'Session', 'projects',
+  function($timeout, $anchorScroll, Session, projects) {
     $timeout($anchorScroll);
 
     this.loggedIn = Session.isAuthenticated;
-    this.altcoins = altcoins || [];
+    this.projects = projects || [];
   }
 ];

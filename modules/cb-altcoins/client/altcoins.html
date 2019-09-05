@@ -2,14 +2,16 @@
 <table>
   <thead>
     <tr>
-      <th>Altcoin Name</th>
-      <th>Altcoin Symbol</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Website</th>
     </tr>
   </thead>
-  <tbody ng-repeat="coin in AltcoinsCtrl.altcoins">
+  <tbody ng-repeat="project in AltcoinsCtrl.projects">
     <tr>
-      <td ng-bind="coin.name"></td>
-      <td ng-bind="coin.id"></td>
+      <td ng-bind="project.name"></td>
+      <td ng-bind="project.description"></td>
+      <td ng-bind="project.website"></td>
     </tr>
   </tbody>
 </table>

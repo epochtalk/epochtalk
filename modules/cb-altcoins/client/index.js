@@ -12,21 +12,9 @@ var route = ['$stateProvider', function($stateProvider) {
       }
     },
     resolve: {
-      $title: function() { return 'Home'; },
-      altcoins: ['$http', 'Session', function($http, Session) {
-        if (Session.isAuthenticated()) {
-          let requestData = {
-            method: 'GET',
-            url: 'https://api.coingecko.com/api/v3/exchanges/list',
-            headers: { 'Accept': 'application/json' }
-          }
-          return $http(requestData)
-          .then(
-            function success(req) { return req.data; },
-            function error(err) { console.log(err) }
-          );
-        }
-        else { return; }
+      $title: function() { return 'Altcoins'; },
+      projects: ['Altcoins', function(Altcoins) {
+        return Altcoins.allProjects().$promise;
       }]
     }
   });
