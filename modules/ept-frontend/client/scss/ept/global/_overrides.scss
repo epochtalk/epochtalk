@@ -75,6 +75,7 @@ datalist { z-index: 10001; }
 *:focus { outline: 0; }
 input:-webkit-autofill { -webkit-box-shadow:0 0 0 500px white inset; }
 hr { margin: 1rem 0; border: none; height: 1px; color: $border-color; background-color: $border-color; }
+
 code {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
   background-color: $code-block-bg-color;
@@ -88,7 +89,14 @@ code {
   word-break: normal;
   overflow-wrap: break-word;
   overflow-x: scroll;
-  &.preview { padding: 0; display: inline-block; }
+  
+  &.preview { 
+    padding: 0; display: inline-block; 
+  }
+
+  @include break-mobile-tablet {
+    max-width: 50vw;
+  }
 }
 
 input[type], textarea {
