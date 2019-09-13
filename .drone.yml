@@ -32,8 +32,8 @@ steps:
       from_secret: ssh_username
     key:
       from_secret: ssh_key
-      script:
-        - cd certbot-docker && /bin/bash ./update.sh
+    script:
+      - cd certbot-docker && /bin/bash ./update.sh
   when:
     branch:
       - master
