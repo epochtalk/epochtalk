@@ -23,7 +23,7 @@ steps:
       - drone-build
     event:
       - push
-- name: slack-beta
+- name: slack-continuous-deploy-notify
   image: plugins/slack
   settings:
     webhook:
