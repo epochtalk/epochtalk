@@ -49,7 +49,7 @@ steps:
       {{#success build.status}}
         Continuous deploy build on ${DRONE_BRANCH} {{build.link}} succeeded. :banana_dance:
       {{else}}
-        大変！ Beta server build on ${DRONE_BRANCH} {{build.link}} failed!  Fix it <@boka>!
+        大変！ Continuous deploy build on ${DRONE_BRANCH} {{build.link}} failed!
       {{/success}}
   when:
     branch:
