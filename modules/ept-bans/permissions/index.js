@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 var allPermissions = {
   addAddresses: { allow: true },

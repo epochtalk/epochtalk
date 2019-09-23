@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var path = require('path');
 var Promise = require('bluebird');
 var querystring = require('querystring');

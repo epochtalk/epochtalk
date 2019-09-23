@@ -1,5 +1,5 @@
 var path = require('path');
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 var fs = require('fs');
 var readLine = require('readline');

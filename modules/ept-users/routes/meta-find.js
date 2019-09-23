@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var cheerio = require('cheerio');
 var querystring = require('querystring');
 

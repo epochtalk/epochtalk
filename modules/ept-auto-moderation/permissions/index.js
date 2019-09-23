@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 var validation =  Joi.object().keys({
   rules: Joi.object().keys({

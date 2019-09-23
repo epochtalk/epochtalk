@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var bcrypt = require('bcrypt');
 var Promise = require('bluebird');

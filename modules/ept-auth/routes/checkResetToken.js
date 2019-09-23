@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @api {GET} /reset/:username/:token/validate Validate Account Reset Token

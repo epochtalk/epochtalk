@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var path = require('path');
 var adText = require(path.normalize(__dirname + '/../../text'));

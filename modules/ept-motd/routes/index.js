@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 var path = require('path');
 var motdPath = path.normalize(__dirname + '/../../../content/motd/motd.txt');

@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../../db'));

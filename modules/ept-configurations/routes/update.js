@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var changeCase = require('change-case');
 var renameKeys = require('deep-rename-keys');
 var _ = require('lodash');

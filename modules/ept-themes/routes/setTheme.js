@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 var path = require('path');
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var fs = require('fs');
 var sass = require(path.join(__dirname + '/../../../scripts', 'tasks', 'sass'));
 var copyCss = require(path.join(__dirname + '/../../../scripts', 'tasks', 'copy_files'));
