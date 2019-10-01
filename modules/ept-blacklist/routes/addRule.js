@@ -29,10 +29,10 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         ip_data: Joi.string().min(1).max(100),
         note: Joi.string().min(1).max(255)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.blacklist.addRule(request.server, request.auth) } ]
   },
