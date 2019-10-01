@@ -23,10 +23,10 @@ module.exports = {
   options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         id: Joi.string().required(),
         type: Joi.string().required()
-      }
+      })
     }
   },
   handler: function(request) {
