@@ -23,7 +23,7 @@ module.exports = {
   path: '/api/trust/{username}',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { params: { username: Joi.string().required() } }
+    validate: { params: Joi.object({ username: Joi.string().required() }) }
   },
   handler: function(request) {
     var username = querystring.unescape(request.params.username);
