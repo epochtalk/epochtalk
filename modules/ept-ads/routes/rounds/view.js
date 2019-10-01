@@ -83,9 +83,9 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: {
+      params: Joi.object({
         roundNumber: Joi.alternatives(Joi.number().min(1), Joi.string().valid('current'))
-      },
+      }),
       query: {
         type: Joi.string().valid('disclaimer', 'info', 'both')
       }
