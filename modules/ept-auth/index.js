@@ -5,7 +5,7 @@ var plugins = require(path.normalize(__dirname + '/plugins'));
 
 module.exports =  {
   name: 'auth',
-  // routes: routes,
+  routes: routes,
   authorization: authorization,
   plugins: plugins
 };
