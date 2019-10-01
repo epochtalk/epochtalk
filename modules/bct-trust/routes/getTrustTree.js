@@ -30,7 +30,7 @@ module.exports = {
   path: '/api/trusttree',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { query: { hierarchy: Joi.boolean() } }
+    validate: { query: Joi.object({ hierarchy: Joi.boolean() }) }
   },
   handler: function(request) {
     var userId = request.auth.credentials.id;
