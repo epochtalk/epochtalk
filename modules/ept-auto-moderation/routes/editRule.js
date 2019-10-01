@@ -73,8 +73,8 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { id: Joi.string().max(255).required() },
-      payload: {
+      params: Joi.object({ id: Joi.string().max(255).required() }),
+      payload: Joi.object({
         name: Joi.string().max(255).required(),
         description: Joi.string().max(1000),
         message: Joi.string().max(1000),
@@ -99,7 +99,7 @@ module.exports = {
             template: Joi.string().regex(/{body}/)
           }
         }
-      }
+      })
     },
     pre: [ { method: auth } ]
   },
