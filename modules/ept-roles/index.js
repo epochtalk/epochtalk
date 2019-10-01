@@ -8,7 +8,7 @@ var plugins = require(path.normalize(__dirname + '/plugins'));
 module.exports =  {
   name: 'roles',
   permissions: permissions,
-  routes: routes,
+  // routes: routes,
   authorization: authorization,
   db: db,
   plugins: plugins

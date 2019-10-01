@@ -6,6 +6,6 @@ var permissions = require(path.normalize(__dirname + '/permissions'));
 module.exports =  {
   name: 'autoModeration',
   permissions: permissions,
-  routes: routes,
+  // routes: routes,
   hooks: hooks
 };

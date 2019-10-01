@@ -10,6 +10,6 @@ module.exports =  {
   authorization: authorization,
   permissions: permissions,
   hooks: hooks,
-  routes: routes,
+  // routes: routes,
   db: db
 };

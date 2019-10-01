@@ -9,7 +9,7 @@ module.exports =  {
   permissions: permissions,
   authorization: authorization,
   name: 'notifications',
-  routes: routes,
+  // routes: routes,
   db: db,
   plugins: plugins
 };

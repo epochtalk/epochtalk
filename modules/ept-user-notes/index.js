@@ -8,6 +8,6 @@ module.exports =  {
   name: 'userNotes',
   permissions: permissions,
   db: db,
-  routes: routes,
+  // routes: routes,
   authorization: authorization
 };

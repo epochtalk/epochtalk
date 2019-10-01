@@ -8,6 +8,6 @@ module.exports =  {
   name: 'moderators',
   permissions: permissions,
   db: db,
-  routes: routes,
+  // routes: routes,
   authorization: authorization
 };

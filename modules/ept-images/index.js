@@ -7,7 +7,7 @@ var common = require(path.normalize(__dirname + '/common'));
 module.exports =  {
   name: 'images',
   db: db,
-  routes: routes,
+  // routes: routes,
   routeOpts: { config: true },
   plugins: plugins,
   common: common.export()

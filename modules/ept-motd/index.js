@@ -9,5 +9,5 @@ module.exports =  {
   authorization: authorization,
   permissions: permissions,
   db: db,
-  routes: routes
+  // routes: routes
 };

@@ -9,7 +9,7 @@ module.exports =  {
   name: 'portal',
   permissions: permissions,
   db: db,
-  routes: routes,
+  // routes: routes,
   common: common.export(),
   authorization: authorization
 };

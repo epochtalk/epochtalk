@@ -7,5 +7,5 @@ module.exports =  {
   name: 'themes',
   permissions: permissions,
   authorization: authorization,
-  routes: routes
+  // routes: routes
 };

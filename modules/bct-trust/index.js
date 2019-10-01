@@ -10,7 +10,7 @@ module.exports =  {
   name: 'userTrust',
   authorization: authorization,
   permissions: permissions,
-  routes: routes,
+  // routes: routes,
   hooks: hooks,
   db: db,
   init: init

@@ -7,7 +7,7 @@ var hooks = require(path.normalize(__dirname + '/hooks'));
 
 module.exports =  {
   name: 'rank',
-  routes: routes,
+  // routes: routes,
   db: db,
   permissions: permissions,
   authorization: authorization,
