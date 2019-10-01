@@ -34,7 +34,7 @@ module.exports = {
   path: '/api/ads/factoids/{id}/enable',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { params: { id: Joi.string().required() } },
+    validate: { params: Joi.object({ id: Joi.string().required() }) },
     pre: [ { method: auth } ]
   },
   handler: function(request) {
