@@ -15,7 +15,7 @@ module.exports = {
   method: 'GET',
   path: '/api/register/username/{username}',
   options: {
-    validate: { params: { username: Joi.string().min(1).max(255).required() } }
+    validate: { params: Joi.object({ username: Joi.string().min(1).max(255).required() }) }
   },
   handler: function(request) {
     var username = request.params.username;
