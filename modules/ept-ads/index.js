@@ -5,5 +5,5 @@ var permissions = require(path.normalize(__dirname + '/permissions'));
 module.exports =  {
   name: 'ads',
   permissions: permissions,
-  // routes: routes
+  routes: routes
 };
