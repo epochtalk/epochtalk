@@ -9,7 +9,7 @@ module.exports =  {
   name: 'blacklist',
   authorization: authorization,
   permissions: permissions,
-  // routes: routes,
+  routes: routes,
   db: db,
   plugins: plugins
 };
