@@ -1,4 +1,4 @@
-FROM node:10.16.0
+FROM node:12.10.0
 MAINTAINER Bronson Oka <boka@slickage.com>
 
 WORKDIR /usr/src/app
