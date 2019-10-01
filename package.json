@@ -26,6 +26,7 @@
     "url": "/api"
   },
   "dependencies": {
+    "@hapi/boom": "^8.0.1",
     "@hapi/good": "^8.2.0",
     "@hapi/good-console": "^8.1.0",
     "@hapi/good-squeeze": "^5.2.0",
@@ -44,7 +45,6 @@
     "aws-sdk": "^2.339.0",
     "bcrypt": "^3.0.6",
     "bluebird": "^3.5.1",
-    "boom": "^7.2.0",
     "change-case": "^2.3.1",
     "cheerio": "^0.20.0",
     "commander": "^2.9.0",
