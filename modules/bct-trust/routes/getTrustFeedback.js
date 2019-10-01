@@ -58,7 +58,7 @@ module.exports = {
   path: '/api/trustfeedback/{username}',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { params: { username: Joi.string().min(1).required() } }
+    validate: { params: Joi.object({ username: Joi.string().min(1).required() }) }
   },
   handler: function(request) {
     var username = querystring.unescape(request.params.username);
