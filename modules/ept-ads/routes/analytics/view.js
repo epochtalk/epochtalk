@@ -65,9 +65,9 @@ module.exports = {
   path: '/api/ads/analytics/{round}',
   options: {
     validate: {
-      params: {
+      params: Joi.object({
         round: Joi.alternatives(Joi.number().min(1), Joi.string().valid('current'))
-      }
+      })
     },
     auth: {  mode: 'try', strategy: 'jwt' },
     pre: [
