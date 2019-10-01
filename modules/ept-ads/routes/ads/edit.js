@@ -40,7 +40,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { id: Joi.string().required() },
+      params: Joi.object({ id: Joi.string().required() }),
       payload: {
         html: Joi.string().required(),
         css: Joi.string().allow('')
