@@ -86,9 +86,9 @@ module.exports = {
       params: Joi.object({
         roundNumber: Joi.alternatives(Joi.number().min(1), Joi.string().valid('current'))
       }),
-      query: {
+      query: Joi.object({
         type: Joi.string().valid('disclaimer', 'info', 'both')
-      }
+      })
     },
     pre: [
       { method: auth },
