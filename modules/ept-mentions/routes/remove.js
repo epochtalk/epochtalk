@@ -20,7 +20,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
-    validate: { query: { id: Joi.string() } },
+    validate: { query: Joi.object({ id: Joi.string() }) },
     pre: [{ method: (request) => request.server.methods.auth.mentions.delete(request.server, request.auth) }],
   },
   handler: function(request) {
