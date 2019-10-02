@@ -20,7 +20,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
-    validate: { payload: { username: Joi.string().required() } }
+    validate: { payload: Joi.object({ username: Joi.string().required() }) }
   },
   handler: function(request) {
     var userId = request.auth.credentials.id;
