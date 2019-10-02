@@ -24,11 +24,11 @@ module.exports = {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'categories.create' },
     validate: {
-      payload: {
+      payload: Joi.object({
         categories: Joi.array().items(Joi.object().keys({
           name: Joi.string().min(1).max(255).required()
         })).min(1)
-      }
+      })
     },
     pre: [
       { method: (request) => request.server.methods.auth.categories.create(request.server, request.auth) },
