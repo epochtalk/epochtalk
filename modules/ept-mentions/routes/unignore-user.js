@@ -14,7 +14,7 @@ var Joi = require('@hapi/joi');
   *
   * @apiError (Error 500) InternalServerError There was an issue unignoring mentions
   */
-var unignoreUser = {
+module.exports = {
   method: 'POST',
   path: '/api/mentions/unignore',
   options: {

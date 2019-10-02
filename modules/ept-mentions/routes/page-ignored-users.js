@@ -23,7 +23,7 @@ var Joi = require('@hapi/joi');
   *
   * @apiError (Error 500) InternalServerError There was an error paging ignored users
   */
-var pageIgnoredUsers = {
+module.exports = {
   method: 'GET',
   path: '/api/mentions/ignored',
   options: {

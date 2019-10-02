@@ -14,7 +14,7 @@ var Joi = require('@hapi/joi');
   *
   * @apiError (Error 500) InternalServerError There was an enabling mention emails
   */
-var enableMentionEmails = {
+module.exports = {
   method: 'PUT',
   path: '/api/mentions/settings',
   options: {

@@ -35,7 +35,7 @@ var Joi = require('@hapi/joi');
   *
   * @apiError (Error 500) InternalServerError There was an error paging user mentions
   */
-var page = {
+module.exports = {
   method: 'GET',
   path: '/api/mentions',
   options: {

@@ -14,7 +14,7 @@ var Joi = require('@hapi/joi');
   *
   * @apiError (Error 500) InternalServerError There was an issue deleting the mention
   */
-var remove = {
+module.exports = {
   method: 'DELETE',
   path: '/api/mentions',
   options: {

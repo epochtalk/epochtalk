@@ -10,7 +10,7 @@
   *
   * @apiError (Error 500) InternalServerError There was an getting mention settings
   */
-var getMentionEmailSettings = {
+module.exports = {
   method: 'GET',
   path: '/api/mentions/settings',
   options: {
