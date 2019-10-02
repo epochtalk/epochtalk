@@ -8,6 +8,6 @@ module.exports =  {
   name: 'configurations',
   authorization: authorization,
   permissions: permissions,
-  // routes: routes,
+  routes: routes,
   db: db
 };
