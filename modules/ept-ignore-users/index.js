@@ -5,7 +5,7 @@ var routes = require(path.normalize(__dirname + '/routes'));
 
 module.exports =  {
   name: 'ignoreUsers',
-  // routes: routes,
+  routes: routes,
   hooks: hooks,
   db: db
 };
