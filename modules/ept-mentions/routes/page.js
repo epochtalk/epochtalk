@@ -43,11 +43,11 @@ module.exports = {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
-      query: {
+      query: Joi.object({
         limit: Joi.number(),
         page: Joi.number(),
         extended: Joi.boolean()
-      }
+      })
     },
     pre: [
       { method: (request) => request.server.methods.auth.mentions.page(request.server, request.auth) },
