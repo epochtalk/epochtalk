@@ -1,4 +1,3 @@
-var Joi = require('@hapi/joi');
 var path = require('path');
 
 module.exports = [
