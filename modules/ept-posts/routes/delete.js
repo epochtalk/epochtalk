@@ -29,7 +29,7 @@ module.exports = {
       }
     },
     validate: {
-      params: { id: Joi.string().required() },
+      params: Joi.object({ id: Joi.string().required() }),
       query: { locked: Joi.boolean().default(false) }
     },
     pre: [
