@@ -24,10 +24,10 @@ module.exports = {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
-      payload: {
+      payload: Joi.object({
         motd: Joi.string().allow(''),
         main_view_only: Joi.boolean().default(false)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.motd.save(request.server, request.auth) } ]
   },
