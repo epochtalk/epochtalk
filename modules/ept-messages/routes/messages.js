@@ -41,7 +41,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { id: Joi.string() },
+      params: Joi.object({ id: Joi.string() }),
       query: {
         timestamp: Joi.date(),
         message_id: Joi.string(),
