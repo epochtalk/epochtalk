@@ -12,7 +12,7 @@
   *
   * @apiError (Error 500) InternalServerError There was an issue retrieving the Message of the Day
   */
-var get = {
+module.exports = {
   method: 'GET',
   path: '/api/motd',
   options: {
