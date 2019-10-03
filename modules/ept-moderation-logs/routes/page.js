@@ -42,7 +42,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(25),
         mod: Joi.string(),
@@ -52,7 +52,7 @@ module.exports = {
         adate: Joi.date(),
         sdate: Joi.date(),
         edate: Joi.date()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.moderationLogs.page(request.server, request.auth) } ],
   },
