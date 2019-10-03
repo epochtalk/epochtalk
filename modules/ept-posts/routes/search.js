@@ -41,12 +41,12 @@ module.exports = {
     app: { hook: 'posts.search' },
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(25),
         desc: Joi.boolean().default(false),
         search: Joi.string()
-      }
+      })
     },
     pre: [
       { method: (request) => request.server.methods.auth.posts.search(request.server, request.auth) },
