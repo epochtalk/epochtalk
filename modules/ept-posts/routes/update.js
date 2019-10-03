@@ -34,11 +34,11 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         title: Joi.string().min(1).max(255).required(),
         body: Joi.string().min(1).max(64000).required(),
         thread_id: Joi.string().required()
-      },
+      }),
       params: Joi.object({ id: Joi.string().required() })
     },
     pre: [
