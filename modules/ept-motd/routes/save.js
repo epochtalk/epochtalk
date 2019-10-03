@@ -17,7 +17,7 @@ var Joi = require('@hapi/joi');
   *
   * @apiError (Error 500) InternalServerError There was an issue saving the Message of the Day
   */
-var save = {
+module.exports = {
   method: 'PUT',
   path: '/api/motd',
   options: {
