@@ -9,7 +9,7 @@ module.exports =  {
   name: 'moderationLogs',
   permissions: permissions,
   db: db,
-  // routes: routes,
+  routes: routes,
   authorization: authorization,
   plugins: plugins
 };
