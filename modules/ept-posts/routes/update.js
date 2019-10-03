@@ -39,7 +39,7 @@ module.exports = {
         body: Joi.string().min(1).max(64000).required(),
         thread_id: Joi.string().required()
       },
-      params: { id: Joi.string().required() }
+      params: Joi.object({ id: Joi.string().required() })
     },
     pre: [
       { method: (request) => request.server.methods.auth.posts.update(request.server, request.auth, request.params.id, request.payload.thread_id) },
