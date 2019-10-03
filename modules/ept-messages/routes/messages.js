@@ -42,11 +42,11 @@ module.exports = {
     auth: { strategy: 'jwt' },
     validate: {
       params: Joi.object({ id: Joi.string() }),
-      query: {
+      query: Joi.object({
         timestamp: Joi.date(),
         message_id: Joi.string(),
         limit: Joi.number().integer().min(1).max(100).default(15)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.conversations.messages(request.server, request.auth) } ],
   },
