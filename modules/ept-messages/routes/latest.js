@@ -29,10 +29,10 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         page: Joi.number().integer().default(1),
         limit: Joi.number().integer().min(1).max(100).default(15)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.messages.latest(request.server, request.auth) } ]
   },
