@@ -35,12 +35,22 @@ function parse(input) {
   // replace whitespacing
   input = input.replace(/(?:\n\$ept-newline\$)/g, '\n');
   input = input.replace(/(?:\$ept-newline\$)/g, '\n');
+  input = input.replace(/(?:\$ept-newline\$)/g, '\n');
+
+  // allow single new line in list items
+  var liRegex = /<li>([\s\S]*?)<\/li>/gi;
+  var liMatches = input.match(liRegex);
+  if (liMatches) {
+    liMatches.forEach(function(val) {
+      var updatedVal = val.replace(/\n\n/g, '<br/>');
+      input = input.replace(val, updatedVal);
+    });
+  }
 
   // replace &#38;lt and &#38;lt; with < and >
   // Put back lt and gt after they get butchered by the md parser
   input = input.replace(/(?:&#38;lt;)/gi, '&lt;');
   input = input.replace(/(?:&#38;gt;)/gi, '&gt;');
-
   return input;
 }
 
