@@ -35,10 +35,10 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: {
+      params: Joi.object({
         thread_id: Joi.string().required(),
         poll_id: Joi.string().required()
-      },
+      }),
       payload: { answer_ids: Joi.array().items(Joi.string()).min(1).unique().required() }
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.vote(request.server, request.auth, request.params, request.payload) } ]
