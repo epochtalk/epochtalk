@@ -40,11 +40,11 @@ module.exports = {
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.messages.notes.update(request.server, request.auth, request.payload.id) } ],
     validate: {
-      payload: {
+      payload: Joi.object({
         id: Joi.string().required(),
         report_id: Joi.string().required(),
         note: Joi.string().max(255)
-      }
+      })
     }
   },
   handler: function(request) {
