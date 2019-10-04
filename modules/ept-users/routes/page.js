@@ -38,7 +38,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(25),
         field: Joi.string().default('username').valid('username', 'email', 'updated_at', 'created_at', 'imported_at', 'ban_expiration'),
@@ -46,7 +46,7 @@ module.exports = {
         filter: Joi.string().valid('banned'),
         search: Joi.string(),
         ip: Joi.boolean()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.users.page(request.server, request.auth) } ]
   },
