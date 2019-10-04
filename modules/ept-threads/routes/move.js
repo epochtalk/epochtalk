@@ -34,7 +34,7 @@ module.exports = {
       }
     },
     validate: {
-      params: { id: Joi.string().required() },
+      params: Joi.object({ id: Joi.string().required() }),
       payload: { new_board_id: Joi.string().required() }
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.move(request.server, request.auth, request.params.id) } ]
