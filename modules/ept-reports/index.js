@@ -7,7 +7,7 @@ var authorization = require(path.normalize(__dirname + '/authorization'));
 module.exports =  {
   name: 'reports',
   permissions: permissions,
-  // routes: routes,
+  routes: routes,
   authorization: authorization,
   db: db
 };
