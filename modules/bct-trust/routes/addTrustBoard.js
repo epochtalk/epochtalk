@@ -20,7 +20,7 @@ module.exports = {
   path: '/api/admin/trustboards',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { payload: { board_id: Joi.string().required() } },
+    validate: { payload: Joi.object({ board_id: Joi.string().required() }) },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.addTrustBoard(request.server, request.auth) } ]
   },
   handler: function(request) {

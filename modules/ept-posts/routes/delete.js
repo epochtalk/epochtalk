@@ -29,8 +29,8 @@ module.exports = {
       }
     },
     validate: {
-      params: { id: Joi.string().required() },
-      query: { locked: Joi.boolean().default(false) }
+      params: Joi.object({ id: Joi.string().required() }),
+      query: Joi.object({ locked: Joi.boolean().default(false) })
     },
     pre: [
       { method: (request) => request.server.methods.auth.posts.delete(request.server, request.auth, request.params.id) },

@@ -38,13 +38,13 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(25),
         field: Joi.string().default('username').valid('username', 'role', 'created_at', 'post_count'),
         desc: Joi.boolean().default(false),
         search: Joi.string()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.users.pagePublic(request.server, request.auth) } ],
   },

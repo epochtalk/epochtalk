@@ -24,12 +24,12 @@ module.exports = {
   path: '/api/reset',
   options: {
     validate: {
-      payload: {
+      payload: Joi.object({
         username: Joi.string().min(1).max(255).required(),
         password: Joi.string().min(8).max(72).required(),
         confirmation: Joi.ref('password'),
         token: Joi.string().token().required()
-      }
+      })
     }
   },
   handler: function(request) {

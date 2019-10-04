@@ -46,12 +46,12 @@ module.exports = {
     app: { hook: 'posts.pageByUser' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
-      params: { username: Joi.string().required() },
-      query: {
+      params: Joi.object({ username: Joi.string().required() }),
+      query: Joi.object({
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(25),
         desc: Joi.boolean().default(true)
-      }
+      })
     },
     pre: [
       { method: (request) => request.server.methods.auth.posts.pageByUser(request.server, request.auth, request.params.username), assign: 'auth' },

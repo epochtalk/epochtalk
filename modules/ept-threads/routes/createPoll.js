@@ -43,8 +43,8 @@ module.exports = {
       }
     },
     validate: {
-      params: { thread_id: Joi.string().required() },
-      payload: Joi.object().keys({
+      params: Joi.object({ thread_id: Joi.string().required() }),
+      payload: Joi.object({
         question: Joi.string().min(1).max(255).required(),
         answers: Joi.array().items(Joi.string()).min(1).max(255).required(),
         max_answers: Joi.number().integer().min(1).default(1),

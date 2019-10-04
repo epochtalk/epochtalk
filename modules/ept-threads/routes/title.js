@@ -36,8 +36,8 @@ module.exports = {
       }
     },
     validate: {
-      params: { id: Joi.string().required() },
-      payload: { title: Joi.string().min(1).max(255).required() }
+      params: Joi.object({ id: Joi.string().required() }),
+      payload: Joi.object({ title: Joi.string().min(1).max(255).required() })
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.title(request.server, request.auth, request.params.id), assign: 'post' } ]
   },

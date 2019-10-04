@@ -34,9 +34,9 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         limit: Joi.number().integer().min(1).max(100).default(25)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.watchlist.edit(request.server, request.auth) } ],
   },

@@ -37,10 +37,10 @@ module.exports = {
       }
     },
     validate: {
-      query:{
+      query: Joi.object({
         hostname: Joi.string(),
         ip: Joi.string()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.deleteAddress(request.server, request.auth) } ]
   },

@@ -33,10 +33,10 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         user_id: Joi.string().required(),
         board_ids: Joi.array().items(Joi.string().required()).unique().min(1).required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.banFromBoards(request.server, request.auth, request.payload.user_id, request.payload.board_ids) } ]
   },

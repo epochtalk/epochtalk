@@ -20,7 +20,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: { email: Joi.string().email().required() }
+      payload: Joi.object({ email: Joi.string().email().required() })
     },
     pre: [ { method: (request) => request.server.methods.auth.invitations.resend(request.server, request.auth, request.payload.email) } ]
   },

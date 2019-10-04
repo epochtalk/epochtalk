@@ -21,7 +21,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: Joi.object().keys({
+      query: Joi.object({
         max: Joi.number()
       })
     },

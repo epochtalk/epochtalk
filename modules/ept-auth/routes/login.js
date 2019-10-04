@@ -30,11 +30,11 @@ module.exports = {
   options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
-      payload: {
+      payload: Joi.object({
         username: Joi.string().min(1).max(255).required(),
         password: Joi.string().min(8).max(255).required(),
         rememberMe: Joi.boolean().default(false)
-      }
+      })
     }
   },
   handler: function(request) {

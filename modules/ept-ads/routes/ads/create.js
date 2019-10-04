@@ -40,11 +40,11 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: {
+      payload: Joi.object({
         round: Joi.number().required(),
         html: Joi.string().required(),
         css: Joi.string().allow('')
-      }
+      })
     },
     pre: [ { method: auth } ]
   },

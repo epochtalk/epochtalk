@@ -86,7 +86,7 @@ module.exports = {
     app: { hook: 'posts.byThread' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
-      query: Joi.object().keys({
+      query: Joi.object({
         thread_id: Joi.string().required(),
         start: Joi.number().integer().min(1),
         page: Joi.number().integer().min(1),

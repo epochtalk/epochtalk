@@ -21,7 +21,7 @@ module.exports = {
   path: '/api/user/recover',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { payload: { user_id: Joi.string().required() } },
+    validate: { payload: Joi.object({ user_id: Joi.string().required() }) },
     pre: [ { method: (request) => request.server.methods.auth.users.adminRecover(request.server, request.auth) } ]
   },
   handler: function(request) {

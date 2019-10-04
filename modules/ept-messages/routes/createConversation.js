@@ -39,14 +39,14 @@ module.exports = {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
-      payload: {
+      payload: Joi.object({
         receiver_ids: Joi.array().items(Joi.string()).min(1).required(),
         content: Joi.object().keys({
           body: Joi.string().min(1).max(5000).required(),
           body_html: Joi.string(),
           subject: Joi.string().min(1).max(255).required()
         })
-      }
+      })
     },
     pre: [
       { method: (request) => request.server.methods.auth.conversations.create(request.server, request.auth, request.payload.receiver_ids) },

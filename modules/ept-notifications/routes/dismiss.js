@@ -22,7 +22,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     pre: [ { method: (request) => request.server.methods.auth.notifications.dismiss(request.server, request.auth) } ],
     validate: {
-      payload: Joi.object().keys({
+      payload: Joi.object({
         type: Joi.string().valid('message', 'mention', 'other').required(),
         id: Joi.string()
       })

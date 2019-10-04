@@ -25,7 +25,7 @@ module.exports = {
         data: { id: 'params.id' }
       }
     },
-    validate: { params: { id: Joi.string().required() } },
+    validate: { params: Joi.object({ id: Joi.string().required() }) },
     pre: [ { method: (request) => request.server.methods.auth.users.activate(request.server, request.auth, request.params.id) } ],
   },
   handler: function(request) {

@@ -23,7 +23,7 @@ module.exports = {
   path: '/api/users/{username}/bannedboards',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { params: { username: Joi.string().required() } },
+    validate: { params: Joi.object({ username: Joi.string().required() }) },
     pre: [ { method: (request) => request.server.methods.auth.bans.getBannedBoards(request.server, request.auth) } ]
   },
   handler: function(request) {

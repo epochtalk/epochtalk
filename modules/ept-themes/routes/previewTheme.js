@@ -49,7 +49,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: Joi.object().keys({
+      payload: Joi.object({
         'base-line-height': Joi.string(),
         'base-background-color': Joi.string(),
         'color-primary': Joi.string(),

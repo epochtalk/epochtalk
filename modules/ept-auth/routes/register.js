@@ -49,12 +49,12 @@ module.exports = {
   options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
-      payload: {
+      payload: Joi.object({
         username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(8).max(72).required(),
         confirmation: Joi.ref('password')
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.auth.register(request.server, request.payload.email, request.payload.username) } ]
   },

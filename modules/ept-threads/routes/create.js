@@ -41,7 +41,7 @@ module.exports = {
     app: { hook: 'threads.create' },
     auth: { strategy: 'jwt' },
     validate: {
-      payload: Joi.object().keys({
+      payload: Joi.object({
         locked: Joi.boolean().default(false),
         sticky: Joi.boolean().default(false),
         moderated: Joi.boolean().default(false),

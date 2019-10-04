@@ -9,7 +9,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: Joi.object().keys({
+      query: Joi.object({
         page: Joi.number().integer().min(1),
         limit: Joi.number().integer().min(1).max(100).default(25)
       }).without('start', 'page')

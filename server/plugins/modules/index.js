@@ -40,11 +40,11 @@ modules.load = (dir, master, config) => {
 
   // Module Routes
   if (module.routeOpts) {
-    var options = {};
-    if (module.routeOpts.config) {
-      options.config = config;
-    }
-    master.routes = master.routes.concat(module.routes(options));
+    // var options = {};
+    // if (module.routeOpts.config) {
+    //   options.config = config;
+    // }
+    // master.routes = master.routes.concat(module.routes(options));
   }
   else if (module.routes && module.routes.length > 0) {
     master.routes = master.routes.concat(module.routes);
