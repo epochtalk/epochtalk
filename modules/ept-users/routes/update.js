@@ -79,7 +79,7 @@ module.exports = {
       }
     },
     validate: {
-      params: { id: Joi.string().required() },
+      params: Joi.object({ id: Joi.string().required() }),
       payload: Joi.object().keys({
         email: Joi.string().email(),
         email_password: Joi.string().min(8).max(255),
