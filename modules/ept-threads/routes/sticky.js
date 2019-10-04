@@ -33,7 +33,7 @@ module.exports = {
     },
     validate: {
       params: Joi.object({ id: Joi.string().required() }),
-      payload: { status: Joi.boolean().default(true) }
+      payload: Joi.object({ status: Joi.boolean().default(true) })
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.sticky(request.server, request.auth, request.params.id) } ]
   },
