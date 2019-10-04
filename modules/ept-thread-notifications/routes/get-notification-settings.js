@@ -10,7 +10,7 @@
   *
   * @apiError (Error 500) InternalServerError There was an getting thread notification settings
   */
-var getNotificationSettings = {
+module.exports = {
   method: 'GET',
   path: '/api/threadnotifications',
   options: {

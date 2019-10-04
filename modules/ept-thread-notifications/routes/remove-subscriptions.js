@@ -10,7 +10,7 @@
   *
   * @apiError (Error 500) InternalServerError There was an issue deleting the user's thread subscriptions
   */
-var removeSubscriptions = {
+module.exports = {
   method: 'DELETE',
   path: '/api/threadnotifications',
   options: {

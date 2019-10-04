@@ -14,7 +14,7 @@ var Joi = require('@hapi/joi');
   *
   * @apiError (Error 500) InternalServerError There was an enabling thread notifications
   */
-var enableNotifications = {
+module.exports = {
   method: 'PUT',
   path: '/api/threadnotifications',
   options: {
