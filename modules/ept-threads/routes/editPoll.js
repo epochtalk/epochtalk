@@ -44,7 +44,7 @@ module.exports = {
         thread_id: Joi.string().required(),
         poll_id: Joi.string().required()
       }),
-      payload: Joi.object().keys({
+      payload: Joi.object({
         max_answers: Joi.number().integer().min(1).required(),
         expiration: Joi.date(),
         change_vote: Joi.boolean().required(),
