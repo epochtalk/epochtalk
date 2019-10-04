@@ -226,13 +226,13 @@ var globalModerator = {
   delete: {
     allow: true,
     bypass: {
-      locked: { admin: true },
-      owner: { admin: true }
+      locked: { priority: true },
+      owner: { priority: true }
     }
   },
   lock: {
     allow: true,
-    bypass: { lock: { admin: true } }
+    bypass: { lock: { priority: true } }
   }
 };
 
