@@ -218,9 +218,9 @@ var globalModerator = {
   update: {
     allow: true,
     bypass: {
-      owner: { admin: true },
-      deleted: { admin: true },
-      locked: { admin: true }
+      owner: { priority: true },
+      deleted: { priority: true },
+      locked: { priority: true }
     }
   },
   delete: {
