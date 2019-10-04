@@ -18,7 +18,7 @@ module.exports = {
   path: '/api/threads/{id}/viewed',
   options: {
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: { id: Joi.string().required() } },
+    validate: { params: Joi.object({ id: Joi.string().required() }) },
     pre: [
       [ { method: (request) => request.server.methods.auth.threads.viewed(request.server, request.auth, request.params.id) } ],
       [
