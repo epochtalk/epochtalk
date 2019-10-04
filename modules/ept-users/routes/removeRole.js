@@ -45,10 +45,10 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         user_id: Joi.string().required(),
         role_id: Joi.string().required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.users.removeRole(request.server, request.auth, request.payload.user_id) } ]
   },
