@@ -43,7 +43,7 @@ module.exports = {
   options: {
     app: { hook: 'users.find' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: { username: Joi.string().required() } },
+    validate: { params: Joi.object({ username: Joi.string().required() }) },
     pre: [
       { method: (request) => request.server.methods.auth.users.find(request.server, request.auth, request.params), assign: 'view' },
       { method: (request) => request.server.methods.hooks.preProcessing(request) },
