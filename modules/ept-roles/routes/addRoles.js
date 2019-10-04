@@ -36,14 +36,14 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         id: Joi.string(),
         name: Joi.string().min(1).max(255).required(),
         description: Joi.string().min(1).max(1000).required(),
         priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
         highlight_color: Joi.string(),
         permissions: Joi.object().required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.roles.addRoles(request.server, request.auth, request.roleValidations, request.payload) } ],
   },
