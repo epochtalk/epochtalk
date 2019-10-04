@@ -38,7 +38,7 @@ module.exports = {
         thread_id: Joi.string().required(),
         poll_id: Joi.string().required()
       }),
-      payload: { locked: Joi.boolean().required() }
+      payload: Joi.object({ locked: Joi.boolean().required() })
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.lockPoll(request.server, request.auth, request.params.thread_id) } ]
   },
