@@ -22,10 +22,10 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         username: Joi.string().required(),
         limit: Joi.number().integer().min(1).max(100).default(15)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.users.searchUsernames(request.server, request.auth) } ]
   },
