@@ -29,7 +29,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { id: Joi.string().required() },
+      params: Joi.object({ id: Joi.string().required() }),
       query: {
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(15),
