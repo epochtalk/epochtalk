@@ -38,7 +38,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { report_id: Joi.string().required() },
+      params: Joi.object({ report_id: Joi.string().required() }),
       query: {
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(10),
