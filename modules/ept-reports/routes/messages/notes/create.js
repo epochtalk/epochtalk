@@ -38,11 +38,11 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         report_id: Joi.string().required(),
         user_id: Joi.string().required(),
         note: Joi.string().max(255).required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.messages.notes.create(request.server, request.auth) } ]
   },
