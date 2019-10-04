@@ -47,10 +47,10 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
         role_id: Joi.string().required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.users.addRoles(request.server, request.auth, request.payload.role_id, request.payload.usernames) } ]
   },
