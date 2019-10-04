@@ -24,11 +24,11 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         filter: Joi.string().valid('banned'),
         search: Joi.string(),
         ip: Joi.boolean()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.users.page(request.server, request.auth) } ]
   },
