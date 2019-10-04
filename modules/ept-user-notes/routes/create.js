@@ -41,11 +41,11 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         user_id: Joi.string().required(),
         author_id: Joi.string().required(),
         note: Joi.string().min(2).max(2000).required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.userNotes.create(request.server, request.auth) } ]
   },
