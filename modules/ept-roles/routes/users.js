@@ -30,11 +30,11 @@ module.exports = {
     auth: { strategy: 'jwt' },
     validate: {
       params: Joi.object({ id: Joi.string().required() }),
-      query: {
+      query: Joi.object({
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(15),
         search: Joi.string()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.roles.users(request.server, request.auth) } ]
   },
