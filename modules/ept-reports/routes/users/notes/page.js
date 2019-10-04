@@ -39,11 +39,11 @@ module.exports = {
     auth: { strategy: 'jwt' },
     validate: {
       params: Joi.object({ report_id: Joi.string().required() }),
-      query: {
+      query: Joi.object({
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(10),
         desc: Joi.boolean().default(true)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.users.notes.page(request.server, request.auth) } ]
   },
