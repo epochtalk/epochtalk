@@ -72,7 +72,7 @@ var ctrl = [
       else {
         if (Session.hasPermission('posts.update.bypass.owner.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.owner.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
+          if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
         }
         else if (Session.hasPermission('posts.update.bypass.owner.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
