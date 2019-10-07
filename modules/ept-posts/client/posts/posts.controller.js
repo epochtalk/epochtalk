@@ -105,7 +105,7 @@ var ctrl = [
       if (ctrl.thread.locked) {
         if (Session.hasPermission('posts.delete.bypass.locked.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.delete.bypass.locked.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
+          if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
         }
         else if (Session.hasPermission('posts.delete.bypass.locked.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
@@ -118,7 +118,7 @@ var ctrl = [
       else if (ctrl.thread.moderated && ctrl.thread.user.id === ctrl.user.id && Session.hasPermission('threads.moderated.allow') && Session.hasPermission('posts.delete.bypass.owner.selfMod')) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.admin')) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.mod')) {
-        if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
+        if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
       }
       else if (Session.hasPermission('posts.delete.bypass.owner.priority')) {
         if (Session.getPriority() < post.user.priority) { validBypass = true; }
