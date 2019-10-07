@@ -136,7 +136,7 @@ var ctrl = [
 
       if (Session.hasPermission('posts.lock.bypass.lock.admin')) { return true; }
       else if (Session.hasPermission('posts.lock.bypass.lock.mod')) {
-        if (Session.moderatesBoard(ctrl.thread.board_id)) { return true; }
+        if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { return true; }
         else { return false; }
       }
       else if (Session.hasPermission('posts.lock.bypass.lock.priority')) {
