@@ -45,6 +45,24 @@ module.exports = function postsPurge(server, auth, postId) {
     args: [postId]
   });
 
+  // User has priority and moderator permission
+  var standardModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithPostId,
+      args: [userId, postId],
+      permission: 'posts.delete.bypass.owner.mod'
+    },
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.delete.bypass.owner.mod', postId]
+    }
+  ];
+  var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
+
   var purgeCond = [
     {
       // permission based override
@@ -53,13 +71,7 @@ module.exports = function postsPurge(server, auth, postId) {
       auth: auth,
       permission: 'posts.purge.bypass.purge.admin'
     },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.purge.bypass.purge.mod')
-    }
+    standardMod
   ];
   var purge = server.authorization.stitch(Boom.forbidden(), purgeCond, 'any');
 
