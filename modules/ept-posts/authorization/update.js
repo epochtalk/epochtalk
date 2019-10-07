@@ -16,7 +16,7 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
   });
 
   // User has priority and moderator permission
-  var priorityModCond = [
+  var standardModCond = [
     {
       // permission based override
       error: Boom.forbidden(),
@@ -31,7 +31,7 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [server, auth, 'posts.update.bypass.owner.mod', postId]
     }
   ];
-  var priorityMod = server.authorization.stitch(Boom.forbidden(), priorityModCond, 'all');
+  var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
 
   // is post owner
   var ownerCond = [
@@ -49,7 +49,7 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [postId],
       userId: userId
     },
-    priorityMod,
+    standardMod,
     {
       type: 'runValidation',
       method: common.hasPriority,
