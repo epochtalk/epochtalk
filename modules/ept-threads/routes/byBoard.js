@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 
 /**
@@ -89,11 +89,11 @@ module.exports = {
     app: { hook: 'threads.byBoard' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         board_id: Joi.string().required(),
         page: Joi.number().default(1),
         limit: Joi.number().integer().min(1).max(100).default(25)
-      }
+      })
     },
     pre: [
       { method: (request) => request.server.methods.auth.threads.byBoard(request.server, request.auth, request.query.board_id) },

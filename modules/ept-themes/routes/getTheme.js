@@ -1,5 +1,5 @@
 var path = require('path');
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 var fs = require('fs');
 var readLine = require('readline');
@@ -34,7 +34,7 @@ module.exports = {
   path: '/api/theme',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { query: { preview: Joi.boolean() } },
+    validate: { query: Joi.object({ preview: Joi.boolean() }) },
     pre: [ { method: (request) => request.server.methods.auth.themes.getTheme(request.server, request.auth) } ]
   },
   handler: function(request) {

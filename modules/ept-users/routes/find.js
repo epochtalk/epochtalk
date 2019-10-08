@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var _ = require('lodash');
 var Boom = require('boom');
 var querystring = require('querystring');
@@ -43,7 +43,7 @@ module.exports = {
   options: {
     app: { hook: 'users.find' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: { username: Joi.string().required() } },
+    validate: { params: Joi.object({ username: Joi.string().required() }) },
     pre: [
       { method: (request) => request.server.methods.auth.users.find(request.server, request.auth, request.params), assign: 'view' },
       { method: (request) => request.server.methods.hooks.preProcessing(request) },

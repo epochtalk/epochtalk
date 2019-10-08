@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -23,10 +23,10 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: {
+      params: Joi.object({
         username: Joi.string().required(),
         self: Joi.boolean()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.users.lookup(request.server, request.auth) } ]
   },

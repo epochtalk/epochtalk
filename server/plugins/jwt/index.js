@@ -1,6 +1,6 @@
 // Load modules
 var Boom = require('boom');
-var Hoek = require('hoek');
+var Hoek = require('@hapi/hoek');
 var jwt  = require('jsonwebtoken');
 var Promise = require('bluebird');
 

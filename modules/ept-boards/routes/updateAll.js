@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -28,7 +28,7 @@ module.exports = {
     plugins: {
       mod_log: { type: 'adminBoards.updateCategories' }
     },
-    validate: { payload: { boardMapping: Joi.array().required() } },
+    validate: { payload: Joi.object({ boardMapping: Joi.array().required() }) },
     pre: [ { method: (request) => request.server.methods.auth.boards.updateAll(request.server, request.auth) } ]
   },
   handler: function(request) {

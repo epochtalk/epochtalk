@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var path = require('path');
 var Boom = require('boom');
-var Hoek = require('hoek');
+var Hoek = require('@hapi/hoek');
 var limiter = require('rolling-rate-limiter');
 var Promise = require('bluebird');
 var redis;
