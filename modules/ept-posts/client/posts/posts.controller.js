@@ -160,7 +160,7 @@ var ctrl = [
       else { return ctrl.canPostLock(post); }
     };
 
-    this.canPurge = function() {
+    this.canPurge = function(post) {
       if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
       if (BanSvc.banStatus()) { return false; }
@@ -168,7 +168,7 @@ var ctrl = [
 
       if (Session.hasPermission('posts.purge.bypass.purge.admin')) { return true; }
       else if (Session.hasPermission('posts.purge.bypass.purge.mod')) {
-        if (Session.moderatesBoard(ctrl.thread.board_id)) { return true; }
+        if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() < post.user.priority || post.user.id === ctrl.user.id)) { return true; }
         else { return false; }
       }
       else { return false; }

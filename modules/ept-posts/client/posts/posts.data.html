@@ -51,7 +51,7 @@
         </div>
 
         <ul class="post-action">
-          <li ng-if="PostsCtrl.canPurge() && post.position !== 1">
+          <li ng-if="PostsCtrl.canPurge(post) && post.position !== 1">
             <a ng-href="#" data-balloon="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
               <i class="fa fa-trash"></i>
             </a>
