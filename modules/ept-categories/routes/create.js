@@ -25,7 +25,7 @@ module.exports = {
     plugins: { acls: 'categories.create' },
     validate: {
       payload: Joi.object({
-        categories: Joi.array().items(Joi.object().keys({
+        categories: Joi.array().items(Joi.object({
           name: Joi.string().min(1).max(255).required()
         })).min(1)
       })

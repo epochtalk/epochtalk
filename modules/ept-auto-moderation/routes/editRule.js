@@ -78,9 +78,9 @@ module.exports = {
         name: Joi.string().max(255).required(),
         description: Joi.string().max(1000),
         message: Joi.string().max(1000),
-        conditions: Joi.array().items(Joi.object().keys({
+        conditions: Joi.array().items(Joi.object({
           param: Joi.string().trim().valid('body', 'thread_id', 'user_id', 'title').required(),
-          regex: Joi.object().keys({
+          regex: Joi.object({
             pattern: Joi.string().max(255).required(),
             flags: Joi.string().trim().max(25).allow('')
           }).required()
@@ -90,7 +90,7 @@ module.exports = {
           ban_interval: Joi.number(),
           edit: {
             replace: {
-              regex: Joi.object().keys({
+              regex: Joi.object({
                 pattern: Joi.string().max(255).required(),
                 flags: Joi.string().trim().max(25).allow('')
               }).required(),

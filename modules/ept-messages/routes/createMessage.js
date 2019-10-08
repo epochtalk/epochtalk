@@ -29,7 +29,7 @@ module.exports = {
       payload: Joi.object({
         conversation_id: Joi.string().required(),
         receiver_ids: Joi.array().items(Joi.string()).min(1).required(),
-        content: Joi.object().keys({
+        content: Joi.object({
           body: Joi.string().min(1).max(5000).required(),
           body_html: Joi.string()
         })

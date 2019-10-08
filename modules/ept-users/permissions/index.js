@@ -1,68 +1,68 @@
 var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  update: Joi.object().keys({
+var validation =  Joi.object({
+  update: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      priority: Joi.object().keys({
+    bypass: Joi.object({
+      priority: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean()
       }).xor('admin', 'mod')
     })
   }),
-  changeUsername:  Joi.object().keys({
+  changeUsername:  Joi.object({
     allow: Joi.boolean()
   }),
-  find: Joi.object().keys({
+  find: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
+    bypass: Joi.object({
       viewDeleted: Joi.boolean(),
       viewMoreInfo: Joi.boolean()
     })
   }),
-  lookup: Joi.object().keys({
+  lookup: Joi.object({
     allow: Joi.boolean()
   }),
-  deactivate: Joi.object().keys({
+  deactivate: Joi.object({
     allow: Joi.boolean()
   }),
-  reactivate: Joi.object().keys({
+  reactivate: Joi.object({
     allow: Joi.boolean()
   }),
-  delete: Joi.object().keys({
+  delete: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      priority: Joi.object().keys({
+    bypass: Joi.object({
+      priority: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean()
       }).xor('admin', 'mod')
     })
   }),
-  pagePublic: Joi.object().keys({
+  pagePublic: Joi.object({
     allow: Joi.boolean()
   }),
-  adminRecover: Joi.object().keys({
+  adminRecover: Joi.object({
     allow: Joi.boolean()
   }),
-  adminPage: Joi.object().keys({
+  adminPage: Joi.object({
     allow: Joi.boolean()
   }),
-  searchUsernames: Joi.object().keys({
+  searchUsernames: Joi.object({
     allow: Joi.boolean()
   }),
-  addRoles: Joi.object().keys({
+  addRoles: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      priority: Joi.object().keys({
+    bypass: Joi.object({
+      priority: Joi.object({
         same: Joi.boolean(),
         less: Joi.boolean()
       }).xor('same', 'less')
     })
   }),
-  removeRole: Joi.object().keys({
+  removeRole: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      priority: Joi.object().keys({
+    bypass: Joi.object({
+      priority: Joi.object({
         same: Joi.boolean(),
         less: Joi.boolean()
       }).xor('same', 'less')

@@ -14,14 +14,14 @@ var noCreatePermissions = {
 var noPermissions = {};
 
 var mentions = {
-  validation: Joi.object().keys({
-    page: Joi.object().keys({
+  validation: Joi.object({
+    page: Joi.object({
       allow: Joi.boolean()
     }),
-    create: Joi.object().keys({
+    create: Joi.object({
       allow: Joi.boolean()
     }),
-    delete: Joi.object().keys({
+    delete: Joi.object({
       allow: Joi.boolean()
     })
   }),

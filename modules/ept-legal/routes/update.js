@@ -26,7 +26,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: Joi.object().keys({
+      payload: Joi.object({
         tos: Joi.string().allow(''),
         privacy: Joi.string().allow(''),
         disclaimer: Joi.string().allow('')

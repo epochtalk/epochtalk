@@ -1,16 +1,16 @@
 var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  rules: Joi.object().keys({
+var validation =  Joi.object({
+  rules: Joi.object({
     allow: Joi.boolean()
   }),
-  addRule: Joi.object().keys({
+  addRule: Joi.object({
     allow: Joi.boolean()
   }),
-  editRule: Joi.object().keys({
+  editRule: Joi.object({
     allow: Joi.boolean()
   }),
-  removeRule: Joi.object().keys({
+  removeRule: Joi.object({
     allow: Joi.boolean()
   })
 });

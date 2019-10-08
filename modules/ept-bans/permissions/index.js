@@ -73,42 +73,42 @@ var noPermissions = {};
 module.exports = [{
   name: 'bans',
   data: {
-  validation: Joi.object().keys({
-      addAddresses: Joi.object().keys({
+  validation: Joi.object({
+      addAddresses: Joi.object({
         allow: Joi.boolean()
       }),
-      ban: Joi.object().keys({
+      ban: Joi.object({
         allow: Joi.boolean(),
-        bypass: Joi.object().keys({
-          priority: Joi.object().keys({
+        bypass: Joi.object({
+          priority: Joi.object({
             same: Joi.boolean(),
             less: Joi.boolean()
           }).xor('same', 'less')
         })
       }),
-      banFromBoards: Joi.object().keys({
+      banFromBoards: Joi.object({
         allow: Joi.boolean(),
-        bypass: Joi.object().keys({
-          priority: Joi.object().keys({
+        bypass: Joi.object({
+          priority: Joi.object({
             same: Joi.boolean(),
             less: Joi.boolean()
           }).xor('same', 'less'),
-          type: Joi.object().keys({
+          type: Joi.object({
             admin: Joi.boolean(),
             mod: Joi.boolean()
           }).xor('admin', 'mod')
         })
       }),
-      byBannedBoards: Joi.object().keys({
+      byBannedBoards: Joi.object({
         allow: Joi.boolean()
       }),
-      deleteAddress: Joi.object().keys({
+      deleteAddress: Joi.object({
         allow: Joi.boolean()
       }),
-      editAddress: Joi.object().keys({
+      editAddress: Joi.object({
         allow: Joi.boolean()
       }),
-      pageBannedAddresses: Joi.object().keys({
+      pageBannedAddresses: Joi.object({
         allow: Joi.boolean()
       })
     }),

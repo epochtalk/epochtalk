@@ -1,65 +1,65 @@
 var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
+var validation =  Joi.object({
   // General
-  createMessageReport: Joi.object().keys({
+  createMessageReport: Joi.object({
     allow: Joi.boolean()
   }),
-  createPostReport: Joi.object().keys({
+  createPostReport: Joi.object({
     allow: Joi.boolean()
   }),
-  createUserReport: Joi.object().keys({
+  createUserReport: Joi.object({
     allow: Joi.boolean()
   }),
 
   // Messages
-  pageMessageReports: Joi.object().keys({
+  pageMessageReports: Joi.object({
     allow: Joi.boolean()
   }),
-  updateMessageReport: Joi.object().keys({
+  updateMessageReport: Joi.object({
     allow: Joi.boolean()
   }),
-  createMessageReportNote: Joi.object().keys({
+  createMessageReportNote: Joi.object({
     allow: Joi.boolean()
   }),
-  pageMessageReportNotes: Joi.object().keys({
+  pageMessageReportNotes: Joi.object({
     allow: Joi.boolean()
   }),
-  updateMessageReportNote: Joi.object().keys({
+  updateMessageReportNote: Joi.object({
     allow: Joi.boolean()
   }),
 
   // Posts
-  pagePostReports: Joi.object().keys({
+  pagePostReports: Joi.object({
     allow: Joi.boolean()
   }),
-  updatePostReport: Joi.object().keys({
+  updatePostReport: Joi.object({
     allow: Joi.boolean()
   }),
-  createPostReportNote: Joi.object().keys({
+  createPostReportNote: Joi.object({
     allow: Joi.boolean()
   }),
-  pagePostReportNotes: Joi.object().keys({
+  pagePostReportNotes: Joi.object({
     allow: Joi.boolean()
   }),
-  updatePostReportNote: Joi.object().keys({
+  updatePostReportNote: Joi.object({
     allow: Joi.boolean()
   }),
 
   // Users
-  pageUserReports: Joi.object().keys({
+  pageUserReports: Joi.object({
     allow: Joi.boolean()
   }),
-  updateUserReport: Joi.object().keys({
+  updateUserReport: Joi.object({
     allow: Joi.boolean()
   }),
-  createUserReportNote: Joi.object().keys({
+  createUserReportNote: Joi.object({
     allow: Joi.boolean()
   }),
-  pageUserReportNotes: Joi.object().keys({
+  pageUserReportNotes: Joi.object({
     allow: Joi.boolean()
   }),
-  updateUserReportNote: Joi.object().keys({
+  updateUserReportNote: Joi.object({
     allow: Joi.boolean()
   })
 });

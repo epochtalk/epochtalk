@@ -32,7 +32,7 @@ module.exports = {
       }
     },
     validate: {
-      payload: Joi.array().items(Joi.object().keys({
+      payload: Joi.array().items(Joi.object({
         id: Joi.string().required(),
         name: Joi.string().min(1).max(255),
         description: Joi.string().max(255).allow(''),

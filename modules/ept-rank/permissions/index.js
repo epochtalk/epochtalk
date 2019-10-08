@@ -8,11 +8,11 @@ var allPermissions = {
 var noPermissions = {};
 
 var rank = {
-  validation: Joi.object().keys({
-    upsert: Joi.object().keys({
+  validation: Joi.object({
+    upsert: Joi.object({
       allow: Joi.boolean()
     }),
-    get: Joi.object().keys({
+    get: Joi.object({
       allow: Joi.boolean()
     })
   }),

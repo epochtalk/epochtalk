@@ -48,7 +48,7 @@ module.exports = {
         title: Joi.string().min(1).max(255).required(),
         body: Joi.string().min(1).max(64000).required(),
         board_id: Joi.string().required(),
-        poll: Joi.object().keys({
+        poll: Joi.object({
           max_answers: Joi.number().integer().min(1).default(1),
           expiration: Joi.date().min('now'),
           change_vote: Joi.boolean().default(false),

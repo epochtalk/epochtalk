@@ -1,19 +1,19 @@
 var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  create: Joi.object().keys({
+var validation =  Joi.object({
+  create: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      locked: Joi.object().keys({
+    bypass: Joi.object({
+      locked: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean()
       }).xor('admin', 'mod')
     })
   }),
-  byThread: Joi.object().keys({
+  byThread: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      viewDeletedPosts: Joi.object().keys({
+    bypass: Joi.object({
+      viewDeletedPosts: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
         priority: Joi.boolean(),
@@ -21,58 +21,58 @@ var validation =  Joi.object().keys({
       }).xor('admin', 'mod', 'priority', 'selfMod')
     })
   }),
-  find: Joi.object().keys({
+  find: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      viewDeletedPosts: Joi.object().keys({
+    bypass: Joi.object({
+      viewDeletedPosts: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean()
       }).xor('admin', 'mod')
     })
   }),
-  search: Joi.object().keys({
+  search: Joi.object({
     allow: Joi.boolean()
   }),
-  pageByUser: Joi.object().keys({
+  pageByUser: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
+    bypass: Joi.object({
       viewDeletedUsers: Joi.boolean(),
-      viewDeletedPosts: Joi.object().keys({
+      viewDeletedPosts: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean()
       }).xor('admin', 'mod')
     })
   }),
-  update: Joi.object().keys({
+  update: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      owner: Joi.object().keys({
+    bypass: Joi.object({
+      owner: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
         priority: Joi.boolean()
       }).xor('admin', 'mod', 'priority'),
-      deleted: Joi.object().keys({
+      deleted: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
         priority: Joi.boolean()
       }).xor('admin', 'mod', 'priority'),
-      locked: Joi.object().keys({
+      locked: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
         priority: Joi.boolean()
       }).xor('admin', 'mod', 'priority')
     })
   }),
-  delete: Joi.object().keys({
+  delete: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      locked: Joi.object().keys({
+    bypass: Joi.object({
+      locked: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
         priority: Joi.boolean(),
         selfMod: Joi.boolean()
       }).xor('admin', 'mod', 'priority', 'selfMod'),
-      owner: Joi.object().keys({
+      owner: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
         priority: Joi.boolean(),
@@ -80,10 +80,10 @@ var validation =  Joi.object().keys({
       }).xor('admin', 'mod', 'priority', 'selfMod')
     })
   }),
-  lock: Joi.object().keys({
+  lock: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      lock: Joi.object().keys({
+    bypass: Joi.object({
+      lock: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean(),
         priority: Joi.boolean(),
@@ -91,10 +91,10 @@ var validation =  Joi.object().keys({
       }).xor('admin', 'mod', 'priority', 'selfMod')
     })
   }),
-  purge: Joi.object().keys({
+  purge: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      purge: Joi.object().keys({
+    bypass: Joi.object({
+      purge: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean()
       }).xor('admin', 'mod')

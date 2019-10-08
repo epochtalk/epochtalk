@@ -19,23 +19,23 @@ var noPermissions = {};
 module.exports = [{
   name: 'roles',
   data: {
-  validation: Joi.object().keys({
-      all: Joi.object().keys({
+  validation: Joi.object({
+      all: Joi.object({
         allow: Joi.boolean()
       }),
-      users: Joi.object().keys({
+      users: Joi.object({
         allow: Joi.boolean()
       }),
-      add: Joi.object().keys({
+      add: Joi.object({
         allow: Joi.boolean()
       }),
-      update: Joi.object().keys({
+      update: Joi.object({
         allow: Joi.boolean()
       }),
-      remove: Joi.object().keys({
+      remove: Joi.object({
         allow: Joi.boolean()
       }),
-      reprioritize: Joi.object().keys({
+      reprioritize: Joi.object({
         allow: Joi.boolean()
       })
     }),

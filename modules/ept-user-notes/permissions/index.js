@@ -12,17 +12,17 @@ var noPermissions = {};
 module.exports = [{
   name: 'userNotes',
   data: {
-  validation: Joi.object().keys({
-      create: Joi.object().keys({
+  validation: Joi.object({
+      create: Joi.object({
         allow: Joi.boolean()
       }),
-      delete: Joi.object().keys({
+      delete: Joi.object({
         allow: Joi.boolean()
       }),
-      page: Joi.object().keys({
+      page: Joi.object({
         allow: Joi.boolean()
       }),
-      update: Joi.object().keys({
+      update: Joi.object({
         allow: Joi.boolean()
       })
     }),

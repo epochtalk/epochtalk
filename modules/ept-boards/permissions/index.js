@@ -1,31 +1,31 @@
 var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  allCategories: Joi.object().keys({
+var validation =  Joi.object({
+  allCategories: Joi.object({
     allow: Joi.boolean()
   }),
-  allUnfiltered: Joi.object().keys({
+  allUnfiltered: Joi.object({
     allow: Joi.boolean()
   }),
-  allUncategorized: Joi.object().keys({
+  allUncategorized: Joi.object({
     allow: Joi.boolean()
   }),
-  create: Joi.object().keys({
+  create: Joi.object({
     allow: Joi.boolean()
   }),
-  delete: Joi.object().keys({
+  delete: Joi.object({
     allow: Joi.boolean()
   }),
-  find: Joi.object().keys({
+  find: Joi.object({
     allow: Joi.boolean()
   }),
-  update: Joi.object().keys({
+  update: Joi.object({
     allow: Joi.boolean()
   }),
-  updateAll: Joi.object().keys({
+  updateAll: Joi.object({
     allow: Joi.boolean()
   }),
-  moveList: Joi.object().keys({
+  moveList: Joi.object({
     allow: Joi.boolean()
   })
 });

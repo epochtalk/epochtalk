@@ -10,11 +10,11 @@ var noPermissions = {};
 module.exports = [{
   name: 'moderators',
   data: {
-    validation: Joi.object().keys({
-      add: Joi.object().keys({
+    validation: Joi.object({
+      add: Joi.object({
         allow: Joi.boolean()
       }),
-      remove: Joi.object().keys({
+      remove: Joi.object({
         allow: Joi.boolean()
       })
     }),

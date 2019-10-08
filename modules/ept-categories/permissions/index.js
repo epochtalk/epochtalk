@@ -1,10 +1,10 @@
 var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  create: Joi.object().keys({
+var validation =  Joi.object({
+  create: Joi.object({
     allow: Joi.boolean()
   }),
-  delete: Joi.object().keys({
+  delete: Joi.object({
     allow: Joi.boolean()
   })
 });

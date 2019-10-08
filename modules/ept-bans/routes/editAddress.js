@@ -42,7 +42,7 @@ module.exports = {
       }
     },
     validate: {
-      payload: Joi.object().keys({
+      payload: Joi.object({
         hostname: Joi.string(),
         ip: Joi.string(),
         weight: Joi.number().required(),

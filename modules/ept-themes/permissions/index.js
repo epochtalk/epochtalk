@@ -12,17 +12,17 @@ var noPermissions = {};
 module.exports = [{
   name: 'themes',
   data: {
-    validation: Joi.object().keys({
-      getTheme: Joi.object().keys({
+    validation: Joi.object({
+      getTheme: Joi.object({
         allow: Joi.boolean()
       }),
-      previewTheme: Joi.object().keys({
+      previewTheme: Joi.object({
         allow: Joi.boolean()
       }),
-      resetTheme: Joi.object().keys({
+      resetTheme: Joi.object({
         allow: Joi.boolean()
       }),
-      setTheme: Joi.object().keys({
+      setTheme: Joi.object({
         allow: Joi.boolean()
       })
     }),
