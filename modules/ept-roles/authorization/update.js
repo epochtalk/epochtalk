@@ -1,5 +1,4 @@
 var path = require('path');
-var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var Promise = require('bluebird');
 var common = require(path.normalize(__dirname + '/common'));
