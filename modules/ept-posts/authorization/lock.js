@@ -134,7 +134,8 @@ module.exports = function postsLock(server, auth, postId, query) {
       type: 'runValidation',
       method: common.hasPriority,
       args: [server, auth, 'posts.lock.bypass.lock.mod', postId]
-    }
+    },
+    notLockedByHigherPriority(userId, postId)
   ];
   var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
 
