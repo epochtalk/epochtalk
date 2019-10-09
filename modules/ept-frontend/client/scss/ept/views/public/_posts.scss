@@ -83,7 +83,7 @@
           object-fit: cover;
         }
       }
-      .user-role, .user-activity {
+      .user-role, .user-activity, .original-poster {
         padding-top: 0.5rem;
         line-height: 0.625rem;
         color: $secondary-font-color;
@@ -94,6 +94,9 @@
         text-transform: uppercase;
         text-overflow: ellipsis;
         width: 100%;
+      }
+      .original-poster {
+        color: #f04124;
       }
     }
     .post-content {

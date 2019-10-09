@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @api {GET} /reset/:username/:token/validate Validate Account Reset Token
@@ -21,10 +21,10 @@ module.exports = {
   path: '/api/reset/{username}/{token}/validate',
   options: {
     validate: {
-      params: {
+      params: Joi.object({
         username: Joi.string().min(1).max(255).required(),
         token: Joi.string().required()
-      }
+      })
     }
   },
   handler: function(request) {

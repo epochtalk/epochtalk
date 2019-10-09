@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -21,7 +21,7 @@ module.exports = {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
-      payload: Joi.object().keys({
+      payload: Joi.object({
         title: Joi.string().min(1).max(255).required(),
         body: Joi.string().min(1).max(64000).required(),
         thread_id: Joi.string().required()

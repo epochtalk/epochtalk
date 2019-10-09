@@ -424,14 +424,10 @@ var XBBCODE = (function () {
                 }
 
                 myUrl = myUrl.trim();
-                urlPattern.lastIndex = 0;
-                if (!urlPattern.test(myUrl)) {
-                    myUrl = "#";
-                }
-                return '<a href="' + myUrl + '" />';
+                return '<a href="#post_' + myUrl + '">';
             },
             closeTag: function () {
-                return '';
+                return '</a>';
             }
         },
         "justify": {

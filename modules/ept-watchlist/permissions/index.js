@@ -1,28 +1,28 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  unread: Joi.object().keys({
+var validation =  Joi.object({
+  unread: Joi.object({
     allow: Joi.boolean()
   }),
-  edit: Joi.object().keys({
+  edit: Joi.object({
     allow: Joi.boolean()
   }),
-  pageBoards: Joi.object().keys({
+  pageBoards: Joi.object({
     allow: Joi.boolean()
   }),
-  watchBoard: Joi.object().keys({
+  watchBoard: Joi.object({
     allow: Joi.boolean()
   }),
-  unwatchBoard: Joi.object().keys({
+  unwatchBoard: Joi.object({
     allow: Joi.boolean()
   }),
-  pageThreads: Joi.object().keys({
+  pageThreads: Joi.object({
     allow: Joi.boolean()
   }),
-  watchThread: Joi.object().keys({
+  watchThread: Joi.object({
     allow: Joi.boolean()
   }),
-  unwatchThread: Joi.object().keys({
+  unwatchThread: Joi.object({
     allow: Joi.boolean()
   })
 });

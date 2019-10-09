@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -39,7 +39,7 @@ module.exports = {
       }
     },
     validate: {
-      payload: Joi.array().items(Joi.object().keys({
+      payload: Joi.array().items(Joi.object({
         hostname: Joi.string(),
         ip: Joi.string(),
         weight: Joi.number().required(),

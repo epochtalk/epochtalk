@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 var allPermissions = {
   addRule: { allow: true },
@@ -12,17 +12,17 @@ var noPermissions = {};
 module.exports = [{
   name: 'blacklist',
   data: {
-    validation: Joi.object().keys({
-      addRule: Joi.object().keys({
+    validation: Joi.object({
+      addRule: Joi.object({
         allow: Joi.boolean()
       }),
-      all: Joi.object().keys({
+      all: Joi.object({
         allow: Joi.boolean()
       }),
-      deleteRule: Joi.object().keys({
+      deleteRule: Joi.object({
         allow: Joi.boolean()
       }),
-      updateRule: Joi.object().keys({
+      updateRule: Joi.object({
         allow: Joi.boolean()
       })
     }),

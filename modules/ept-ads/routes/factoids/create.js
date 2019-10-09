@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../../db'));
@@ -36,7 +36,7 @@ module.exports = {
   path: '/api/ads/factoids',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { payload: { text: Joi.string().required() } },
+    validate: { payload: Joi.object({ text: Joi.string().required() }) },
     pre: [ { method: auth } ]
   },
   handler: function(request) {

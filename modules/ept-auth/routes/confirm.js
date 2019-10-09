@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var Promise = require('bluebird');
 
@@ -29,10 +29,10 @@ module.exports = {
   path: '/api/confirm',
   options: {
     validate: {
-      payload: {
+      payload: Joi.object({
         username: Joi.string().min(1).max(255).required(),
         token: Joi.string().required()
-      }
+      })
     }
   },
   handler: function(request) {

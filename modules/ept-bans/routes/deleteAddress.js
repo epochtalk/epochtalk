@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -37,10 +37,10 @@ module.exports = {
       }
     },
     validate: {
-      query:{
+      query: Joi.object({
         hostname: Joi.string(),
         ip: Joi.string()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.deleteAddress(request.server, request.auth) } ]
   },
