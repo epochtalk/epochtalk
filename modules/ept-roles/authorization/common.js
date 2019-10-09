@@ -66,13 +66,12 @@ module.exports = {
 
     var promise = new Promise(function(resolve, reject) {
      if (payload.permissions) {
-       Joi.validate(payload.permissions, schema, { stripUnknown: true }, function(err, value) {
-         if (err) { return reject(Boom.badRequest(err)); }
-         else {
-           payload.permissions = value;
-           return resolve();
-         }
-       });
+       const { error, value } = schema.validate(payload.permissions, { stripUnknown: true })
+       if (error) { return reject(Boom.badRequest(error)); }
+       else {
+         payload.permissions = value;
+         return resolve();
+       }
      }
      else { return resolve(); }
    });
