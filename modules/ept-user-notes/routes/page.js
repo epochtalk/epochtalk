@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -37,11 +37,11 @@ module.exports = {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'userNotes.page' },
     validate: {
-      query: {
+      query: Joi.object({
         user_id: Joi.string().required(),
         page: Joi.number().min(1).default(1),
         limit: Joi.number().min(1).max(100).default(25)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.userNotes.page(request.server, request.auth) } ]
   },

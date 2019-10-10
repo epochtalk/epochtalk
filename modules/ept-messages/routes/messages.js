@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -41,12 +41,12 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { id: Joi.string() },
-      query: {
+      params: Joi.object({ id: Joi.string() }),
+      query: Joi.object({
         timestamp: Joi.date(),
         message_id: Joi.string(),
         limit: Joi.number().integer().min(1).max(100).default(15)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.conversations.messages(request.server, request.auth) } ],
   },

@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -23,7 +23,7 @@ module.exports = {
   path: '/api/posts/{id}/unlock',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { params: { id: Joi.string().required() } },
+    validate: { params: Joi.object({ id: Joi.string().required() }) },
     pre: [ { method: (request) => request.server.methods.auth.posts.lock(request.server, request.auth, request.params.id)} ],
     handler: function(request) {
       var promise = request.db.posts.unlock(request.params.id)

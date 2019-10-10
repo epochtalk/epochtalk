@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../../db'));
@@ -37,7 +37,7 @@ module.exports = {
   path: '/api/ads/rounds/rotate',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { payload: { round: Joi.number().required() } },
+    validate: { payload: Joi.object({ round: Joi.number().required() }) },
     pre: [ { method: auth } ]
   },
   handler: function(request) {

@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -25,7 +25,7 @@ module.exports = {
       mod_log: { type: 'adminRoles.reprioritize' }
     },
     validate: {
-      payload: Joi.array().items(Joi.object().keys({
+      payload: Joi.array().items(Joi.object({
         id: Joi.string().required(),
         priority: Joi.number().min(0).max(Number.MAX_VALUE).required(),
         lookup: Joi.string()

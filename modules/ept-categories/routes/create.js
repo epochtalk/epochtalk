@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 
 /**
@@ -24,11 +24,11 @@ module.exports = {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'categories.create' },
     validate: {
-      payload: {
-        categories: Joi.array().items(Joi.object().keys({
+      payload: Joi.object({
+        categories: Joi.array().items(Joi.object({
           name: Joi.string().min(1).max(255).required()
         })).min(1)
-      }
+      })
     },
     pre: [
       { method: (request) => request.server.methods.auth.categories.create(request.server, request.auth) },

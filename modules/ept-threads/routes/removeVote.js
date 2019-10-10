@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 
 /**
@@ -33,10 +33,10 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: {
+      params: Joi.object({
         thread_id: Joi.string().required(),
         poll_id: Joi.string().required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.threads.removeVote(request.server, request.auth, request.params.thread_id, request.params.poll_id) } ]
   },

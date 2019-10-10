@@ -51,8 +51,7 @@ const config = {
         loader: 'html-loader'
       }
     ]
-  },
-  stats: 'errors-only'
+  }
 };
 
 module.exports = function() {
@@ -81,7 +80,7 @@ module.exports = function() {
   const webpackCallback = function(err, data) {
     if (err) return Promise.reject(err);
     console.log('Webpack Complete.');
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' && data.hasErrors()) {
       console.log(data.toString({colors: true}));
     }
     return Promise.resolve(data);

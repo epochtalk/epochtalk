@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -29,11 +29,11 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: {
+      payload: Joi.object({
         reporter_user_id: Joi.string().required(),
         reporter_reason: Joi.string().max(255).required(),
         offender_post_id: Joi.string().required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.posts.reports.create(request.server, request.auth) } ],
   },

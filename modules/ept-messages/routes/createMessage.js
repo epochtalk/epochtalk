@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var _ = require('lodash');
 
 /**
@@ -26,14 +26,14 @@ module.exports = {
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
-      payload: {
+      payload: Joi.object({
         conversation_id: Joi.string().required(),
         receiver_ids: Joi.array().items(Joi.string()).min(1).required(),
-        content: Joi.object().keys({
+        content: Joi.object({
           body: Joi.string().min(1).max(5000).required(),
           body_html: Joi.string()
         })
-      }
+      })
     },
     pre: [
       { method: (request) => request.server.methods.auth.messages.create(request.server, request.auth, request.payload.receiver_ids, request.payload.conversation_id) },

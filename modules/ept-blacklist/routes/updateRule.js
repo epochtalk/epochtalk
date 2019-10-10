@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -30,11 +30,11 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         id: Joi.string().required(),
         ip_data: Joi.string().min(1).max(100),
         note: Joi.string().min(1).max(255)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.blacklist.updateRule(request.server, request.auth) } ]
   },

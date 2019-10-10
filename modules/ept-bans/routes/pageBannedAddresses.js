@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -42,13 +42,13 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         page: Joi.number().min(1),
         limit: Joi.number().min(1).max(100),
         desc: Joi.boolean().default(true),
         field: Joi.string().valid('created_at', 'updates', 'decay', 'weight', 'update_count', 'imported_at'),
         search: Joi.string().optional()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.pageBannedAddresses(request.server, request.auth) } ]
   },

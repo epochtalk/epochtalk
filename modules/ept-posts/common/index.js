@@ -47,6 +47,7 @@ function formatPost(post) {
   post.user = {
     id: post.user_id,
     name: post.name,
+    original_poster: post.original_poster,
     username: post.username,
     priority: post.priority === null ? post.default_priority : post.priority,
     deleted: post.user_deleted,
@@ -59,7 +60,9 @@ function formatPost(post) {
   delete post.username;
   delete post.priority;
   delete post.default_priority;
+  delete post.original_poster;
   delete post.name;
+  delete post.user_deleted;
   delete post.user_deleted;
   delete post.post_count;
   delete post.signature;

@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 var allPermissions = {
   get: { allow: true },
@@ -11,11 +11,11 @@ var noSavePermissions = {
 
 
 var motd = {
-  validation: Joi.object().keys({
-    save: Joi.object().keys({
+  validation: Joi.object({
+    save: Joi.object({
       allow: Joi.boolean()
     }),
-    get: Joi.object().keys({
+    get: Joi.object({
       allow: Joi.boolean()
     })
   }),
