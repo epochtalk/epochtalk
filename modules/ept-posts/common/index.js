@@ -171,7 +171,6 @@ function hasPriority(server, auth, permission, postId, selfMod) {
     .then(function(authUser) { return _.min(_.map(authUser.roles, 'priority')); });
 
     return Promise.join(postUserPriority, authedUserPriority, postOwnerIsUser, postUserIsMod, function(pid, aid, isUser, isMod) {
-      console.log("\n\nIS MOD?", isMod,'\n\n');
       // Authed user has higher or same priority than post's user
       if (hasPermission === true && aid <= pid && !isMod) { return Promise.resolve(true); }
       // Allow patrollers to have priority over users in self moderated threads
