@@ -22,7 +22,9 @@ module.exports = {
     pre: [ { method: (request) => request.server.methods.auth.boards.moveList(request.server, request.auth) } ]
   },
   handler: function(request) {
-    var promise = request.db.boards.allSelect()
+    var priority = request.server.plugins.acls.getUserPriority(request.auth);
+
+    var promise = request.db.boards.allSelect(priority)
     .error(request.errorMap.toHttpError);
 
     return promise;
