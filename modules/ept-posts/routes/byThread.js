@@ -47,6 +47,24 @@ var common = require(path.normalize(__dirname + '/../common'));
   * @apiSuccess {date} thread.poll.expiration The expiration date of the poll
   * @apiSuccess {string} thread.poll.display_mode String indicating how the results are shown to users
   *
+  * @apiSuccess {object} board Object containing information about the board the post is in
+  * @apiSuccess {string} board.id The id of the board
+  * @apiSuccess {string} board.name The name of the board
+  * @apiSuccess {string} board.parent_id The id of the parent board if applicable
+  * @apiSuccess {boolean} board.watched Boolean indicating if the authed user is watching this board
+  * @apiSuccess {number} board.viewable_by The minimum priority to be able to view the board, null for no restriction
+  * @apiSuccess {number} board.postable_by The minimum priority to be able to post to the board, null for no restriction
+  * @apiSuccess {string} board.description The board description text
+  * @apiSuccess {number} board.thread_count The number of threads within the board
+  * @apiSuccess {number} board.post_count The number of posts within the board
+  * @apiSuccess {object[]} board.children An array containing child boards if applicable
+  * @apiSuccess {object[]} board.moderators Array containing data about the moderators of the board
+  * @apiSuccess {string} board.moderators.id The id of the moderator
+  * @apiSuccess {string} board.moderators.username The username of the moderator
+  * @apiSuccess {timestamp} board.created_at The created at timestamp of the board
+  * @apiSuccess {timestamp} board.updated_at The updated at timestamp of the board
+  * @apiSuccess {timestamp} board.imported_at The imported at timestamp of the board
+  *
   * @apiSuccess {object[]} posts Object containing thread posts
   * @apiSuccess {string} posts.id The id of the post
   * @apiSuccess {number} posts.position The position of the post in the thread
@@ -130,13 +148,22 @@ function processing(request) {
   // retrieve posts for this thread
   var getWriteAccess = request.db.threads.getBoardWriteAccess(threadId, userPriority);
   var getPosts = request.db.posts.byThread(threadId, opts);
-  var getThread = request.db.threads.find(threadId);
+  var getThreadAndBoard = request.db.threads.find(threadId)
+  .then(function(thread) {
+    return request.db.boards.find(thread.board_id, userPriority)
+    .then(function(board) {
+      return {
+        board: board,
+        thread: thread
+      }
+    });
+  });
   var getPoll = request.db.polls.byThread(threadId);
   var hasVoted = request.db.polls.hasVoted(threadId, userId);
   var getUserBoardBan = request.db.bans.isNotBannedFromBoard(userId, { threadId: threadId })
   .then((notBanned) => { return !notBanned || undefined; });
 
-  var promise = Promise.join(getWriteAccess, getPosts, getThread, getPoll, hasVoted, getUserBoardBan, function(writeAccess, posts, thread, poll, voted, bannedFromBoard) {
+  var promise = Promise.join(getWriteAccess, getPosts, getThreadAndBoard, getPoll, hasVoted, getUserBoardBan, function(writeAccess, posts, threadAndBoard, poll, voted, bannedFromBoard) {
     if (poll) {
       var hideVotes = poll.display_mode === 'voted' && !voted;
       hideVotes = hideVotes || (poll.display_mode === 'expired' && poll.expiration > Date.now());
@@ -146,12 +173,13 @@ function processing(request) {
     }
 
     return {
-      thread: thread,
+      board: threadAndBoard.board,
+      thread: threadAndBoard.thread,
       banned_from_board: bannedFromBoard,
       write_access: writeAccess,
       limit: opts.limit,
       page: opts.page,
-      posts: common.cleanPosts(posts, userId, viewables, request, thread)
+      posts: common.cleanPosts(posts, userId, viewables, request, threadAndBoard.thread)
     };
   })
   // handle page or start out of range
