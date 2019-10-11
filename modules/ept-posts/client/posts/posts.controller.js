@@ -16,6 +16,9 @@ var ctrl = [
     this.user = Session.user;
     this.posts = pageData.posts;
     this.thread = pageData.thread;
+    this.moderators = pageData.board.moderators.map(function(data) {
+      return data.id;
+    });
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
     this.openReportModal = parent.openReportModal;
@@ -61,6 +64,9 @@ var ctrl = [
         if (Session.hasPermission('posts.update.bypass.locked.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.locked.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
+          else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+            validBypass = true;
+          }
         }
         else if (Session.hasPermission('posts.update.bypass.locked.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
@@ -73,6 +79,10 @@ var ctrl = [
         if (Session.hasPermission('posts.update.bypass.owner.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
+          // Check if mod is moderating another board's mod (which is allowed)
+          else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+            validBypass = true;
+          }
         }
         else if (Session.hasPermission('posts.update.bypass.owner.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
@@ -83,7 +93,10 @@ var ctrl = [
       if (post.deleted) {
         if (Session.hasPermission('posts.update.bypass.deleted.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.deleted.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
+          if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
+          else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+            validBypass = true;
+          }
         }
         else if (Session.hasPermission('posts.update.bypass.deleted.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
