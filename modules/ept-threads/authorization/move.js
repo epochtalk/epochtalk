@@ -37,21 +37,6 @@ module.exports = function (server, auth, threadId, newBoardId) {
     userId: userId
   });
 
-  var notLockedByHigherPriority = function(userId, newBoardId) {
-    return server.db.posts.find(postId)
-    .then(function(post) {
-      var authedUserPriority = server.plugins.acls.getUserPriority(auth);
-      // Post was locked by someone else
-      if (authedUserPriority && post.metadata && post.metadata.locked_by_id && post.metadata.locked_by_id !== userId) {
-        // Person who locked the post has greater priority
-        if (post.metadata.locked_by_priority < authedUserPriority) {
-          return Promise.reject(Boom.forbidden());
-        }
-      }
-      return Promise.resolve(true);
-    })
-  }
-
   var modCondition = [
     {
       // is mod of current board
