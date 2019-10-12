@@ -1,7 +1,7 @@
 var Boom = require('boom');
 var Promise = require('bluebird');
 
-module.exports = function (server, auth, threadId) {
+module.exports = function (server, auth, threadId, newBoardId) {
   var userId = auth.credentials.id;
 
   // check base permission
@@ -37,6 +37,39 @@ module.exports = function (server, auth, threadId) {
     userId: userId
   });
 
+  var notLockedByHigherPriority = function(userId, newBoardId) {
+    return server.db.posts.find(postId)
+    .then(function(post) {
+      var authedUserPriority = server.plugins.acls.getUserPriority(auth);
+      // Post was locked by someone else
+      if (authedUserPriority && post.metadata && post.metadata.locked_by_id && post.metadata.locked_by_id !== userId) {
+        // Person who locked the post has greater priority
+        if (post.metadata.locked_by_priority < authedUserPriority) {
+          return Promise.reject(Boom.forbidden());
+        }
+      }
+      return Promise.resolve(true);
+    })
+  }
+
+  var modCondition = [
+    {
+      // is mod of current board
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'threads.move.bypass.owner.mod')
+    },
+    {
+      // is mod of new board
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithBoardId,
+      args: [userId, newBoardId],
+      permission: server.plugins.acls.getACLValue(auth, 'threads.move.bypass.owner.mod')
+    }
+  ];
+  var moderator = server.authorization.stitch(Boom.forbidden(), modCondition, 'all');
+
   var conditions = [
     {
       // permission based override
@@ -45,14 +78,7 @@ module.exports = function (server, auth, threadId) {
       auth: auth,
       permission: 'threads.move.bypass.owner.admin'
     },
-    {
-      // is this user a board moderator
-      error: Boom.badRequest(),
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: server.plugins.acls.getACLValue(auth, 'threads.move.bypass.owner.mod')
-    }
+    moderator
   ];
   var owner = server.authorization.stitch(Boom.badRequest(), conditions, 'any');
 
