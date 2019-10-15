@@ -1,7 +1,7 @@
 var Boom = require('boom');
 var Promise = require('bluebird');
 
-module.exports = function (server, auth, threadId, newBoardId) {
+module.exports = function (server, auth, threadId) {
   var userId = auth.credentials.id;
 
   // check base permission
@@ -37,24 +37,6 @@ module.exports = function (server, auth, threadId, newBoardId) {
     userId: userId
   });
 
-  var modCondition = [
-    {
-      // is mod of current board
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: server.plugins.acls.getACLValue(auth, 'threads.move.bypass.owner.mod')
-    },
-    {
-      // is mod of new board
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithBoardId,
-      args: [userId, newBoardId],
-      permission: server.plugins.acls.getACLValue(auth, 'threads.move.bypass.owner.mod')
-    }
-  ];
-  var moderator = server.authorization.stitch(Boom.forbidden(), modCondition, 'all');
-
   var conditions = [
     {
       // permission based override
@@ -63,7 +45,14 @@ module.exports = function (server, auth, threadId, newBoardId) {
       auth: auth,
       permission: 'threads.move.bypass.owner.admin'
     },
-    moderator
+    {
+      // is this user a board moderator
+      error: Boom.badRequest(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'threads.move.bypass.owner.mod')
+    }
   ];
   var owner = server.authorization.stitch(Boom.badRequest(), conditions, 'any');
 

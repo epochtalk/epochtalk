@@ -8,6 +8,5 @@ module.exports = {
   isModeratorSelfModeratedThread: require(path.normalize(__dirname + '/isModeratorSelfModeratedThread')),
   isModeratorWithPostId: require(path.normalize(__dirname + '/isModeratorWithPostId')),
   isModeratorWithThreadId: require(path.normalize(__dirname + '/isModeratorWithThreadId')),
-  isModeratorWithBoardId: require(path.normalize(__dirname + '/isModeratorWithBoardId')),
   remove: require(path.normalize(__dirname + '/remove'))
 };
