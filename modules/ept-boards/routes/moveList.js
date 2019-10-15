@@ -19,12 +19,12 @@ module.exports = {
   path: '/api/boards/movelist',
   options: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: (request) => request.server.methods.auth.boards.moveList(request.server, request.auth) } ]
+    pre: [ { method: (request) => request.server.methods.auth.boards.moveList(request.server, request.auth), assign: 'admin' } ]
   },
   handler: function(request) {
     var priority = request.server.plugins.acls.getUserPriority(request.auth);
-
-    var promise = request.db.boards.allSelect(priority)
+    var admin = request.pre.admin;
+    var promise = request.db.boards.allSelect(request.auth.credentials.id, priority, admin)
     .error(request.errorMap.toHttpError);
 
     return promise;
