@@ -35,6 +35,10 @@ common.export = () =>  {
     {
       name: 'common.posts.newbieImages',
       method: newbieImages
+    },
+    {
+      name: 'common.posts.hasPriority',
+      method: hasPriority
     }
   ];
 };

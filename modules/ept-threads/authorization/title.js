@@ -40,6 +40,29 @@ module.exports = function (server, auth, threadId) {
   // user is not banned from this board
   var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
 
+  // User has priority and moderator permission
+  var standardModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: 'posts.delete.bypass.owner.mod'
+    },
+    {
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.title.bypass.owner.mod', threadId]
+    }
+  ];
+  var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
+
   // is thread owner
   var ownerCond = [
     {
@@ -56,13 +79,7 @@ module.exports = function (server, auth, threadId) {
       args: [threadId],
       userId: userId,
     },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: server.plugins.acls.getACLValue(auth, 'threads.title.bypass.owner.mod')
-    }
+    standardMod
   ];
   var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
