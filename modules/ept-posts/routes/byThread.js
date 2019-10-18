@@ -152,6 +152,7 @@ function processing(request) {
   .then(function(thread) {
     return request.db.boards.find(thread.board_id, userPriority)
     .then(function(board) {
+      board.moderators = board.moderators || [];
       return {
         board: board,
         thread: thread

@@ -16,7 +16,6 @@ var ctrl = [
     this.user = Session.user;
     this.posts = pageData.posts;
     this.thread = pageData.thread;
-    pageData.board.moderators = pageData.board.moderators || [];
     this.moderators = pageData.board.moderators.map(function(data) {
       return data.id;
     });
