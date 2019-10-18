@@ -50,6 +50,29 @@ module.exports = function (server, auth, params, payload) {
     else { return Promise.reject(Boom.badRequest('Poll Does Not Exists')); }
   });
 
+  // User has priority and moderator permission
+  var standardModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: 'threads.editPoll.bypass.owner.mod'
+    },
+    {
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.editPoll.bypass.owner.mod', threadId]
+    }
+  ];
+  var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
+
   // is poll owner
   var ownerCond = [
     {
@@ -66,13 +89,7 @@ module.exports = function (server, auth, params, payload) {
       args: [threadId],
       userId: userId
     },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: server.plugins.acls.getACLValue(auth, 'threads.editPoll.bypass.owner.mod')
-    }
+    standardMod
   ];
   var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
