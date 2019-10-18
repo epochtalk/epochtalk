@@ -169,7 +169,7 @@ function processing(request) {
       hideVotes = hideVotes || (poll.display_mode === 'expired' && poll.expiration > Date.now());
       if (hideVotes) { poll.answers.map(function(answer) { answer.votes = 0; }); }
       poll.has_voted = voted;
-      thread.poll = poll;
+      threadAndBoard.thread.poll = poll;
     }
 
     return {
