@@ -74,6 +74,16 @@ module.exports = function (server, auth, threadId, poll) {
       permission: 'threads.createPoll.bypass.owner.admin'
     },
     standardMod,
+    {
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.createPoll.bypass.owner.priority', threadId]
+    },
     new Promise(function(resolve) {
       var getPollExists = server.db.polls.exists(threadId);
       var getThreadOwner = server.db.threads.getThreadOwner(threadId);

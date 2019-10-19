@@ -86,7 +86,17 @@ module.exports = function (server, auth, threadId) {
       args: [threadId],
       userId: userId
     },
-    standardMod
+    standardMod,
+    {
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.lockPoll.bypass.owner.priority', threadId]
+    }
   ];
   var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
