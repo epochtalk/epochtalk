@@ -34,6 +34,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       if (ctrl.thread.user.id === Session.user.id) { title = true; }
       else {
         if (Session.hasPermission('threads.title.bypass.owner.admin')) { title = true; }
+        else if (Session.hasPermission('threads.title.bypass.owner.priority')) { title = true; }
         else if (Session.hasPermission('threads.title.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { title = true; }
         }
@@ -132,6 +133,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       if (ctrl.thread.user.id === Session.user.id) { create = true; }
       else {
         if (Session.hasPermission('threads.createPoll.bypass.owner.admin')) { create = true; }
+        else if (Session.hasPermission('threads.createPoll.bypass.owner.priority')) { create = true; }
         else if (Session.hasPermission('threads.createPoll.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { create = true; }
         }
