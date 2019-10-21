@@ -34,7 +34,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       if (ctrl.thread.user.id === Session.user.id) { title = true; }
       else {
         if (Session.hasPermission('threads.title.bypass.owner.admin')) { title = true; }
-        else if (Session.hasPermission('threads.title.bypass.owner.priority')) { title = true; }
+        else if (Session.hasPermission('threads.title.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { title = true; }
         else if (Session.hasPermission('threads.title.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { title = true; }
         }
