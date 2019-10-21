@@ -133,7 +133,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       if (ctrl.thread.user.id === Session.user.id) { create = true; }
       else {
         if (Session.hasPermission('threads.createPoll.bypass.owner.admin')) { create = true; }
-        else if (Session.hasPermission('threads.createPoll.bypass.owner.priority')) { create = true; }
+        else if (Session.hasPermission('threads.createPoll.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { create = true; }
         else if (Session.hasPermission('threads.createPoll.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { create = true; }
         }
