@@ -48,7 +48,7 @@ module.exports = function (server, auth, threadId) {
       type: 'isMod',
       method: server.db.moderators.isModeratorWithThreadId,
       args: [userId, threadId],
-      permission: 'posts.delete.bypass.owner.mod'
+      permission: 'threads.title.bypass.owner.mod'
     },
     {
       type: 'runValidation',

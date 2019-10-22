@@ -31,8 +31,9 @@ var validation =  Joi.object({
     bypass: Joi.object({
       owner: Joi.object({
         admin: Joi.boolean(),
+        priority: Joi.boolean(),
         mod: Joi.boolean()
-      }).xor('admin', 'mod')
+      }).xor('admin', 'priority', 'mod')
     })
   }),
   sticky: Joi.object({
@@ -40,8 +41,9 @@ var validation =  Joi.object({
     bypass: Joi.object({
       owner: Joi.object({
         admin: Joi.boolean(),
+        priority: Joi.boolean(),
         mod: Joi.boolean()
-      }).xor('admin', 'mod')
+      }).xor('admin', 'priority', 'mod')
     })
   }),
   move: Joi.object({
@@ -58,8 +60,9 @@ var validation =  Joi.object({
     bypass: Joi.object({
       owner: Joi.object({
         admin: Joi.boolean(),
+        priority: Joi.boolean(),
         mod: Joi.boolean()
-      }).xor('admin', 'mod')
+      }).xor('admin', 'priority', 'mod')
     })
   }),
   vote: Joi.object({
@@ -196,11 +199,11 @@ var globalModerator = {
   },
   lock: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   },
   sticky: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   },
   move: {
     allow: true,
@@ -208,7 +211,7 @@ var globalModerator = {
   },
   purge: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   },
   vote: { allow: true },
   removeVote: { allow: true },
@@ -332,11 +335,11 @@ var layout = {
   },
   lock: {
     title: 'Lock Threads',
-    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner' } ]
+    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner', type: 'priority' } ]
   },
   sticky: {
     title: 'Sticky Threads (sticky level required)',
-    bypasses: [ { description: 'Sticky Level', control: 'owner' } ]
+    bypasses: [ { description: 'Sticky Level', control: 'owner', type: 'priority' } ]
   },
   move: {
     title: 'Move Threads (move level required)',
@@ -344,7 +347,7 @@ var layout = {
   },
   purge: {
     title: 'Purge Threads (purge level required)',
-    bypasses: [ { description: 'Purge Level', control: 'owner' } ]
+    bypasses: [ { description: 'Purge Level', control: 'owner', type: 'priority' } ]
   },
   vote: { title: 'Vote in Thread Polls' },
   removeVote: { title: 'Remove Vote in Thread Polls' },

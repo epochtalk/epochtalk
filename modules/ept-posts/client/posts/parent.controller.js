@@ -52,6 +52,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       if (ctrl.thread.user.id === Session.user.id) { lock = true; }
       else {
         if (Session.hasPermission('threads.lock.bypass.owner.admin')) { lock = true; }
+        else if (Session.hasPermission('threads.lock.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { lock = true; }
         else if (Session.hasPermission('threads.lock.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { lock = true; }
         }
@@ -67,6 +68,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
       var sticky = false;
       if (Session.hasPermission('threads.sticky.bypass.owner.admin')) { sticky = true; }
+      else if (Session.hasPermission('threads.sticky.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { sticky = true; }
       else if (Session.hasPermission('threads.sticky.bypass.owner.mod')) {
         if (Session.moderatesBoard(ctrl.thread.board_id)) { sticky = true; }
       }
@@ -81,6 +83,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
       var purge = false;
       if (Session.hasPermission('threads.purge.bypass.owner.admin')) { purge = true; }
+      else if (Session.hasPermission('threads.purge.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { purge = true; }
       else if (Session.hasPermission('threads.purge.bypass.owner.mod')) {
         if (Session.moderatesBoard(ctrl.thread.board_id)) { purge = true; }
       }
