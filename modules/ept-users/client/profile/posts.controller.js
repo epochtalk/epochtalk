@@ -1,5 +1,5 @@
-var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$state', '$anchorScroll',
-  function(user, pageData, Posts, $location, $scope, $rootScope, $state, $anchorScroll) {
+var ctrl = ['user', 'pageData', 'threadData', 'Posts', '$location', '$scope', '$rootScope', '$state', '$anchorScroll',
+  function(user, pageData, threadData, Posts, $location, $scope, $rootScope, $state, $anchorScroll) {
     var ctrl = this;
     this.user = angular.copy(user);
     this.pageCount = Math.ceil(pageData.count / pageData.limit);
@@ -9,6 +9,9 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
     this.desc = pageData.desc || true; // default to true
     this.usersPosts = pageData.posts;
     this.parent = $scope.$parent.ProfileCtrl;
+
+    this.usersThreads = threadData.posts;
+
     if (this.parent) { this.parent.user = user; }
 
     if ($state.current.name === 'users-posts') { $anchorScroll(); }

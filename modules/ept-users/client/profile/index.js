@@ -64,6 +64,15 @@ var route = ['$stateProvider', function($stateProvider) {
           page: Number($stateParams.page) || 1
         };
         return Posts.pageByUser(params).$promise;
+      }],
+      threadData: ['Posts', '$stateParams', function(Posts, $stateParams) {
+        var params = {
+          username: $stateParams.username,
+          desc: $stateParams.tdesc || true,
+          limit: Number($stateParams.tlimit) || 25,
+          page: Number($stateParams.tpage) || 1
+        };
+        return Posts.pageStartedByUser(params).$promise;
       }]
     }
   });
