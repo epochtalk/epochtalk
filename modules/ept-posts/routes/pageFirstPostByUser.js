@@ -7,7 +7,7 @@ var common = require(path.normalize(__dirname + '/../common'));
 
 module.exports = {
   method: 'GET',
-  path: '/api/posts/first/user/{username}',
+  path: '/api/posts/user/{username}/started',
   options: {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
@@ -47,8 +47,6 @@ function processing(request) {
     page: request.query.page,
     desc: request.query.desc
   };
-
-  var getPosts = ;
 
   // get user's posts
   var promise = request.db.posts.pageFirstPostByUser(username, priority, opts)

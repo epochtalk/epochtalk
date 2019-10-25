@@ -11,7 +11,10 @@ module.exports = function(postId) {
   return db.sqlQuery(q, [postId])
   .then(function(rows) {
     if (rows.length > 0) {
-      q = 'SELECT * FROM posts WHERE thread_id = $1 ORDER BY created_at LIMIT 1';
+      q = `SELECT p.*, u.username, u.deleted as user_deleted, up.signature, up.post_count, up.avatar, up.fields->\'name\' as name, (SELECT priority FROM roles WHERE lookup =\'user\') AS default_priority FROM posts WHERE p.thread_id = $1
+           LEFT JOIN users u ON p.user_id = u.id
+           LEFT JOIN users.profiles up ON u.id = up.user_id
+           ORDER BY p.created_at LIMIT 1`;
       return db.sqlQuery(q, [rows[0].thread_id]);
     }
     else { throw new NotFoundError('Post Not Found'); }
