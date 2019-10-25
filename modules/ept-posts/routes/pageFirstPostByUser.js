@@ -55,7 +55,9 @@ function processing(request) {
       page: opts.page,
       limit: opts.limit,
       desc: opts.desc,
-      posts: common.cleanPosts(posts, userId, viewables, request)
+      next: posts.next,
+      prev: posts.prev,
+      posts: common.cleanPosts(posts.data, userId, viewables, request)
     };
   })
   .error(request.errorMap.toHttpError);

@@ -38,6 +38,14 @@ module.exports = function(username, priority, opts) {
         p.updated_at,
         p.imported_at,
         b.id as board_id,
+        r2.priority,
+        r2.role_name,
+        r2.highlight_color,
+        up.signature,
+        up.post_count,
+        up.avatar,
+        up.fields->\'name\' as name,
+        (SELECT priority FROM roles WHERE lookup =\'user\') AS default_priority,
         EXISTS (
           SELECT 1
           FROM boards
@@ -52,15 +60,20 @@ module.exports = function(username, priority, opts) {
         ) as thread_title
     FROM posts p
     LEFT JOIN users u ON p.user_id = u.id
+    LEFT JOIN users.profiles up ON u.id = up.user_id
     LEFT JOIN threads t ON p.thread_id = t.id
     LEFT JOIN boards b ON t.board_id = b.id
+    LEFT JOIN LATERAL (SELECT r.priority, r.highlight_color, r.name as role_name
+      FROM roles_users ru
+      LEFT JOIN roles r ON ru.role_id = r.id
+      WHERE p.user_id = ru.user_id
+      ORDER BY r.priority limit 1) r2 ON true
     WHERE p.user_id = $1 AND p.position = 1 ORDER BY created_at`;
 
     var order = opts.desc ? 'DESC' : 'ASC';
     // Calculate pagination vars
     var offset = (page * limit) - limit;
     limit = limit + 1; // query one extra result to see if theres another page
-
 
     q = [q, order, 'LIMIT $3 OFFSET $4'].join(' ');
     var params = [userId, priority, limit, offset];
