@@ -32,7 +32,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('profile.posts', {
-    url: '/profiles/{username}?limit&page&field&desc',
+    url: '/profiles/{username}?limit&page&desc&tlimit&tpage&tdesc',
     reloadOnSearch: false,
     views: {
       'posts@profile': {
@@ -78,7 +78,7 @@ var route = ['$stateProvider', function($stateProvider) {
   });
 
   $stateProvider.state('users-posts', {
-    url: '/profiles/{username}/posts?limit&page&field&desc',
+    url: '/profiles/{username}/posts?limit&page&desc&tlimit&tpage&tdesc',
     parent: 'public-layout',
     reloadOnSearch: false,
     views: {
@@ -113,6 +113,15 @@ var route = ['$stateProvider', function($stateProvider) {
           page: Number($stateParams.page) || 1
         };
         return Posts.pageByUser(params).$promise;
+      }],
+      threadData: ['Posts', '$stateParams', function(Posts, $stateParams) {
+        var params = {
+          username: $stateParams.username,
+          desc: $stateParams.tdesc || true,
+          limit: Number($stateParams.tlimit) || 25,
+          page: Number($stateParams.tpage) || 1
+        };
+        return Posts.pageStartedByUser(params).$promise;
       }]
     }
   });
