@@ -32,7 +32,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('profile.posts', {
-    url: '/profiles/{username}?limit&page&desc&tlimit&tpage&tdesc',
+    url: '/profiles/{username}?limit&page&desc&threads',
     reloadOnSearch: false,
     views: {
       'posts@profile': {
@@ -57,28 +57,31 @@ var route = ['$stateProvider', function($stateProvider) {
         .then(function(user) { return user; });
       }],
       pageData: ['Posts', '$stateParams', function(Posts, $stateParams) {
+
+        var threads = $stateParams.threads;
+
         var params = {
           username: $stateParams.username,
           desc: $stateParams.desc || true,
           limit: Number($stateParams.limit) || 25,
           page: Number($stateParams.page) || 1
         };
-        return Posts.pageByUser(params).$promise;
-      }],
-      threadData: ['Posts', '$stateParams', function(Posts, $stateParams) {
-        var params = {
-          username: $stateParams.username,
-          desc: $stateParams.tdesc || true,
-          limit: Number($stateParams.tlimit) || 25,
-          page: Number($stateParams.tpage) || 1
-        };
-        return Posts.pageStartedByUser(params).$promise;
+
+        var promise = Posts.pageByUser(params).$promise;
+        if (threads) {
+          promise = Posts.pageStartedByUser(params).$promise
+          .then(function(data) {
+            data.threads = true;
+            return data;
+          });
+        }
+        return promise;
       }]
     }
   });
 
   $stateProvider.state('users-posts', {
-    url: '/profiles/{username}/posts?limit&page&desc&tlimit&tpage&tdesc',
+    url: '/profiles/{username}/posts?limit&page&desc&threads',
     parent: 'public-layout',
     reloadOnSearch: false,
     views: {
