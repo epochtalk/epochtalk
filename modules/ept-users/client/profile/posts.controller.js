@@ -98,13 +98,8 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
 
     this.toggleThreads = function(threads) {
       $location.search('page', 1);
-      if (threads) {
-        $location.search('threads', 'true');
-      }
-      else {
-        $location.search('threads', 'false');
-      }
-      console.log($location.search());
+      if (threads) { $location.search('threads', 'true'); }
+      else { $location.search('threads', null); }
       // Update queryParams (forces pagination to refresh)
       ctrl.queryParams = $location.search();
     }
