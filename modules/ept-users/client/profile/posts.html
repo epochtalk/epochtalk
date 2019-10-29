@@ -2,6 +2,7 @@
 <div ng-if="!ProfilePostsCtrl.threads">
   <div class="profile-row">
     <h5 class="title">Posts by {{ProfilePostsCtrl.user.username}}</h5>
+    <button ng-click="ProfilePostsCtrl.toggleThreads(true)">View Threads by {{ProfilePostsCtrl.user.username}}</button>
     <div class="centered-text" ng-if="ProfilePostsCtrl.pageCount === 0">
       <br /><br />
       <h4>This user has no posts to display</h4>
@@ -62,7 +63,7 @@
   <!-- User's Paged Threads -->
   <div class="profile-row">
     <h5 class="title">Threads by {{ProfilePostsCtrl.user.username}}</h5>
-
+    <button ng-click="ProfilePostsCtrl.toggleThreads(false)">View Posts by {{ProfilePostsCtrl.user.username}}</button>
     <div class="centered-text" ng-if="ProfilePostsCtrl.usersPosts.length < 1">
       <br /><br />
       <h4>This user has no threads to display</h4>
@@ -70,12 +71,12 @@
 
     <div class="pagination-wrap" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
       <div class="pagination-simple">
-        <a ng-show="ProfilePostsCtrl.prev" ui-sref=".({ tpage: ProfilePostsCtrl.prev, tlimit: ProfilePostsCtrl.tlimit, tdesc: ProfilePostsCtrl.tdesc, page: ProfilePostsCtrl.page,  limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
+        <a ng-show="ProfilePostsCtrl.prev" ui-sref=".({ threads: ProfilePostsCtrl.threads, page: ProfilePostsCtrl.prev, limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
           &#10094; Previous
         </a>
         <span ng-hide="ProfilePostsCtrl.prev">&#10094; Previous</span>
         &nbsp;&nbsp;&nbsp;
-        <a ng-show="ProfilePostsCtrl.next" ui-sref=".({ tpage: ProfilePostsCtrl.next, tlimit: ProfilePostsCtrl.tlimit, tdesc: ProfilePostsCtrl.tdesc, page: ProfilePostsCtrl.page, limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
+        <a ng-show="ProfilePostsCtrl.next" ui-sref=".({ threads: ProfilePostsCtrl.threads, page: ProfilePostsCtrl.next, limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
            Next &#10095;
         </a>
         <span ng-hide="ProfilePostsCtrl.next">Next &#10095;</span>
@@ -88,7 +89,7 @@
       <thead>
         <th width="20%"></span>Thread</th>
         <th width="58%">Post</th>
-        <th class="pointer" ng-click="ProfilePostsCtrl.setTDesc()"><span ng-class="ProfilePostsCtrl.getTDesc()"></span>&nbsp;Post Date</th>
+        <th class="pointer" ng-click="ProfilePostsCtrl.setDesc()"><span ng-class="ProfilePostsCtrl.getDesc()"></span>&nbsp;Post Date</th>
       </thead>
 
       <tbody>
@@ -125,12 +126,12 @@
   <div class="fill-row" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
     <div class="pagination-wrap">
       <div class="pagination-simple">
-        <a ng-show="ProfilePostsCtrl.prev" ui-sref=".({ tpage: ProfilePostsCtrl.prev, tlimit: ProfilePostsCtrl.tlimit, tdesc: ProfilePostsCtrl.tdesc, page: ProfilePostsCtrl.page,  limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
+        <a ng-show="ProfilePostsCtrl.prev" ui-sref=".({ threads: ProfilePostsCtrl.threads, page: ProfilePostsCtrl.prev, limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
           &#10094; Previous
         </a>
         <span ng-hide="ProfilePostsCtrl.prev">&#10094; Previous</span>
         &nbsp;&nbsp;&nbsp;
-        <a ng-show="ProfilePostsCtrl.next" ui-sref=".({ tpage: ProfilePostsCtrl.next, tlimit: ProfilePostsCtrl.tlimit, tdesc: ProfilePostsCtrl.tdesc, page: ProfilePostsCtrl.page, limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
+        <a ng-show="ProfilePostsCtrl.next" ui-sref=".({ threads: ProfilePostsCtrl.threads, page: ProfilePostsCtrl.next, limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
            Next &#10095;
         </a>
         <span ng-hide="ProfilePostsCtrl.next">Next &#10095;</span>

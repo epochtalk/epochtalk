@@ -58,7 +58,7 @@ var route = ['$stateProvider', function($stateProvider) {
       }],
       pageData: ['Posts', '$stateParams', function(Posts, $stateParams) {
 
-        var threads = $stateParams.threads;
+        var threads = $stateParams.threads === "true" || $stateParams.threads === true;
 
         var params = {
           username: $stateParams.username,
