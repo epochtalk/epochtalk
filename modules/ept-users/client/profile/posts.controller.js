@@ -30,7 +30,7 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
       return sortClass;
     };
 
-    var loadData = function(reload) {
+    this.offLCS = $rootScope.$on('$locationChangeSuccess', function(reload) {
       var params = $location.search();
       var page = Number(params.page) || 1;
       var limit = Number(params.limit) || 25;
@@ -67,10 +67,7 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
       if ($state.current.name === 'users-posts' || $state.current.name === 'profile.posts') {
         if(pageChanged || limitChanged || descChanged || threadsChanged) { ctrl.pullPosts(threads); }
       }
-
-    };
-
-    this.offLCS = $rootScope.$on('$locationChangeSuccess', loadData);
+    });
 
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
