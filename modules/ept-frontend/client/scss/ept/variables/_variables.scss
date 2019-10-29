@@ -20,6 +20,7 @@ $font-size-xs:    0.75rem;
 $font-size-tiny:  0.6375rem;
 
 $border: 1px solid #e4e4e4;
+$border-quote: 2px solid rgba(0, 0, 0, 0.1);
 
 @function brightness($color) {
   @if type-of($color) == color {

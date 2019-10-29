@@ -30,7 +30,7 @@
   }
 }
 .quoteHeader {
-  border-left: 4px solid RGB(221, 221, 221);
+  border-left: $border-quote;
   color: $text-gray-med;
   font-size: $font-size-sm;
   margin: 0 0 0 1rem;
@@ -39,7 +39,7 @@
 .quote {
   margin: 0 0 0rem 1rem;
   padding: 0 0.625rem 0;
-  border-left: 4px solid RGB(221, 221, 221);
+  border-left: $border-quote;
   ul, ol { margin-left: 1.625rem }
   &>br:first-child,
   &>br:last-child,
@@ -47,7 +47,7 @@
 }
 .rtl .quote {
   border-left: 0;
-  border-right: 4px solid RGB(221, 221, 221);
+  border-right: $border-quote;
 }
 .rtl .quoteHeader {
   border-left: 0;
