@@ -60,8 +60,6 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
         descChanged = true;
         ctrl.desc = descending;
       }
-      console.log('threads', threads);
-      console.log('ctrl.threads', ctrl.threads);
       if (threads !== ctrl.threads) {
         threadsChanged = true;
         ctrl.threads = threads;
@@ -77,7 +75,6 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
     this.pullPosts = function(threads) {
-      console.log('Pulling Posts', threads);
       var params = {
         username: ctrl.user.username,
         page: ctrl.page,
@@ -91,8 +88,6 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
           ctrl.usersPosts = pageData.posts;
           ctrl.next = pageData.next;
           ctrl.prev = pageData.prev;
-          console.log('ctrl.next', ctrl.next);
-          console.log('ctrl.prev', ctrl.prev);
         });
       }
       else {
