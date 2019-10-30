@@ -78,7 +78,6 @@ module.exports = function postsDelete(server, auth, postId) {
   ];
   var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
 
-
   // is post alright to delete
   var deleteCond = [
     {
