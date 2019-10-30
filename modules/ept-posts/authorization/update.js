@@ -15,6 +15,24 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
     permission: 'posts.update.allow'
   });
 
+  // User has priority and moderator permission
+  var standardModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithPostId,
+      args: [userId, postId],
+      permission: 'posts.update.bypass.owner.mod'
+    },
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.update.bypass.owner.mod', postId]
+    }
+  ];
+  var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
+
   // is post owner
   var ownerCond = [
     {
@@ -31,13 +49,7 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [postId],
       userId: userId
     },
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.update.bypass.owner.mod')
-    },
+    standardMod,
     {
       type: 'runValidation',
       method: common.hasPriority,

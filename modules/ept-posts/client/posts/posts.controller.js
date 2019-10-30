@@ -16,6 +16,9 @@ var ctrl = [
     this.user = Session.user;
     this.posts = pageData.posts;
     this.thread = pageData.thread;
+    this.moderators = pageData.board.moderators.map(function(data) {
+      return data.id;
+    });
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
     this.openReportModal = parent.openReportModal;
@@ -60,7 +63,10 @@ var ctrl = [
       if (ctrl.thread.locked) {
         if (Session.hasPermission('posts.update.bypass.locked.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.locked.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
+          if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
+          else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+            validBypass = true;
+          }
         }
         else if (Session.hasPermission('posts.update.bypass.locked.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
@@ -72,7 +78,11 @@ var ctrl = [
       else {
         if (Session.hasPermission('posts.update.bypass.owner.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.owner.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
+          if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
+          // Check if mod is moderating another board's mod (which is allowed)
+          else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+            validBypass = true;
+          }
         }
         else if (Session.hasPermission('posts.update.bypass.owner.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
@@ -83,7 +93,10 @@ var ctrl = [
       if (post.deleted) {
         if (Session.hasPermission('posts.update.bypass.deleted.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.deleted.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
+          if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
+          else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+            validBypass = true;
+          }
         }
         else if (Session.hasPermission('posts.update.bypass.deleted.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
@@ -105,7 +118,11 @@ var ctrl = [
       if (ctrl.thread.locked) {
         if (Session.hasPermission('posts.delete.bypass.locked.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.delete.bypass.locked.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
+          if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
+          // Check if mod is moderating another board's mod (which is allowed)
+          else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+            validBypass = true;
+          }
         }
         else if (Session.hasPermission('posts.delete.bypass.locked.priority')) {
           if (Session.getPriority() < post.user.priority) { validBypass = true; }
@@ -118,7 +135,11 @@ var ctrl = [
       else if (ctrl.thread.moderated && ctrl.thread.user.id === ctrl.user.id && Session.hasPermission('threads.moderated.allow') && Session.hasPermission('posts.delete.bypass.owner.selfMod')) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.admin')) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.mod')) {
-        if (Session.moderatesBoard(ctrl.thread.board_id)) { validBypass = true; }
+        if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
+        // Check if mod is moderating another board's mod (which is allowed)
+        else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+          validBypass = true;
+        }
       }
       else if (Session.hasPermission('posts.delete.bypass.owner.priority')) {
         if (Session.getPriority() < post.user.priority) { validBypass = true; }
@@ -136,7 +157,11 @@ var ctrl = [
 
       if (Session.hasPermission('posts.lock.bypass.lock.admin')) { return true; }
       else if (Session.hasPermission('posts.lock.bypass.lock.mod')) {
-        if (Session.moderatesBoard(ctrl.thread.board_id)) { return true; }
+        if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { return true; }
+        // Check if mod is moderating another board's mod (which is allowed)
+        else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+          return true;
+        }
         else { return false; }
       }
       else if (Session.hasPermission('posts.lock.bypass.lock.priority')) {
@@ -160,7 +185,7 @@ var ctrl = [
       else { return ctrl.canPostLock(post); }
     };
 
-    this.canPurge = function() {
+    this.canPurge = function(post) {
       if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
       if (BanSvc.banStatus()) { return false; }
@@ -168,7 +193,10 @@ var ctrl = [
 
       if (Session.hasPermission('posts.purge.bypass.purge.admin')) { return true; }
       else if (Session.hasPermission('posts.purge.bypass.purge.mod')) {
-        if (Session.moderatesBoard(ctrl.thread.board_id)) { return true; }
+        if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() < post.user.priority || post.user.id === ctrl.user.id)) { return true; }
+        else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
+          return true;
+        }
         else { return false; }
       }
       else { return false; }

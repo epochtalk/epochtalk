@@ -120,17 +120,30 @@ module.exports = function postsLock(server, auth, postId, query) {
   var prioritySelfMod = server.authorization.stitch(Boom.forbidden(), prioritySelfModCond, 'all')
   // check self mod permissions
 
+  // User has priority and moderator permission
+  var standardModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithPostId,
+      args: [userId, postId],
+      permission: 'posts.lock.bypass.lock.mod'
+    },
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.lock.bypass.lock.mod', postId]
+    },
+    notLockedByHigherPriority(userId, postId)
+  ];
+  var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
+
   var modCond = [
     ignoreOwnership,
     priorityMod,
     prioritySelfMod,
-    {
-      // is board moderator
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.lock.bypass.lock.mod')
-    },
+    standardMod,
     selfMod
   ];
 

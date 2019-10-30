@@ -91,7 +91,7 @@
     <poll-creator poll="PostsParentCtrl.poll" valid="PostsParentCtrl.pollValid"></poll-creator>
     <button class="fill-row" ng-disabled="!PostsParentCtrl.pollValid" ng-click="PostsParentCtrl.createPoll()">Create Poll</button>
   </div>
-  <poll-viewer thread="PostsParentCtrl.thread" reset="PostsParentCtrl.resetPoll"></poll-viewer>
+  <poll-viewer thread="PostsParentCtrl.thread" user-priority="PostsParentCtrl.posts[0].user.priority" reset="PostsParentCtrl.resetPoll"></poll-viewer>
   <div class="clear"></div>
 
 </div>
