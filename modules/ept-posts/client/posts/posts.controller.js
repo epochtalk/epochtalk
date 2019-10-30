@@ -19,7 +19,6 @@ var ctrl = [
     this.moderators = pageData.board.moderators.map(function(data) {
       return data.id;
     });
-
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
     this.openReportModal = parent.openReportModal;
