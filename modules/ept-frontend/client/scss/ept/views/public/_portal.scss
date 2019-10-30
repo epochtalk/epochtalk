@@ -1,5 +1,6 @@
 /*------------- Board Header -----------------------------*/
 .portal-header {
+  grid-column: span 2;
   padding: 0 0 2rem;
   .page-header-split {
     margin-bottom: 0;
@@ -9,10 +10,12 @@
 
 /*-------------- Posts (Thread View) Layout -------------- */
 .portal-threads {
-  @include pad(0 0 1rem 0);
-  clear: both;
-  &:last-child { margin-bottom: 2rem; }
-  .thread-title { display: inline; }
+  // @include pad(0 0 1rem 0);
+  // clear: both;
+  // &:last-child { margin-bottom: 2rem; }
+  // .thread-title { display: inline; }
+  grid-column: span 2;
+
   .deleted-container {
     padding-bottom: 1rem;
     border-bottom: 1px solid $border-color;
@@ -59,7 +62,7 @@
     }
     .post-content {
       display: block;
-      margin-left: 5rem;
+      padding-left: 5rem;
       .post-title {
         width: 100%;
         display: block;
