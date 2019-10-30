@@ -53,6 +53,16 @@ module.exports = function (server, auth, threadId) {
       method: server.db.moderators.isModeratorWithThreadId,
       args: [userId, threadId],
       permission: server.plugins.acls.getACLValue(auth, 'threads.purge.bypass.owner.mod')
+    },
+    {
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.purge.bypass.owner.priority', threadId]
     }
   ];
   var purgeLevel = server.authorization.stitch(Boom.badRequest(), conditions, 'any');

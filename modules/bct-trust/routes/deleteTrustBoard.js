@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -20,7 +20,7 @@ module.exports = {
   path: '/api/admin/trustboards/{board_id}',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { params: { board_id: Joi.string().required() } },
+    validate: { params: Joi.object({ board_id: Joi.string().required() }) },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.deleteTrustBoard(request.server, request.auth) } ]
   },
   handler: function(request) {

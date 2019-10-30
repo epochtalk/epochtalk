@@ -1,57 +1,57 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
+var validation =  Joi.object({
   // Ads
-  create: Joi.object().keys({
+  create: Joi.object({
     allow: Joi.boolean()
   }),
-  duplicate: Joi.object().keys({
+  duplicate: Joi.object({
     allow: Joi.boolean()
   }),
-  edit: Joi.object().keys({
+  edit: Joi.object({
     allow: Joi.boolean()
   }),
-  remove: Joi.object().keys({
+  remove: Joi.object({
     allow: Joi.boolean()
   }),
-  view: Joi.object().keys({
+  view: Joi.object({
     allow: Joi.boolean()
   }),
   // Analytics
-  analyticsView: Joi.object().keys({
+  analyticsView: Joi.object({
     allow: Joi.boolean()
   }),
   // Factoids
-  factoidCreate: Joi.object().keys({
+  factoidCreate: Joi.object({
     allow: Joi.boolean()
   }),
-  factoidDisable: Joi.object().keys({
+  factoidDisable: Joi.object({
     allow: Joi.boolean()
   }),
-  factoidEdit: Joi.object().keys({
+  factoidEdit: Joi.object({
     allow: Joi.boolean()
   }),
-  factoidEnable: Joi.object().keys({
+  factoidEnable: Joi.object({
     allow: Joi.boolean()
   }),
-  factoidRemove: Joi.object().keys({
+  factoidRemove: Joi.object({
     allow: Joi.boolean()
   }),
   // Rounds
-  roundCreate: Joi.object().keys({
+  roundCreate: Joi.object({
     allow: Joi.boolean()
   }),
-  roundInfo: Joi.object().keys({
+  roundInfo: Joi.object({
     allow: Joi.boolean()
   }),
-  roundRotate: Joi.object().keys({
+  roundRotate: Joi.object({
     allow: Joi.boolean()
   }),
-  roundView: Joi.object().keys({
+  roundView: Joi.object({
     allow: Joi.boolean()
   }),
   // Text
-  textSave: Joi.object().keys({
+  textSave: Joi.object({
     allow: Joi.boolean()
   })
 });

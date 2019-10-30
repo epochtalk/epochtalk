@@ -1,19 +1,19 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  addTrustBoard: Joi.object().keys({
+var validation =  Joi.object({
+  addTrustBoard: Joi.object({
     allow: Joi.boolean()
   }),
-  addTrustFeedback: Joi.object().keys({
+  addTrustFeedback: Joi.object({
     allow: Joi.boolean()
   }),
-  deleteTrustBoard: Joi.object().keys({
+  deleteTrustBoard: Joi.object({
     allow: Joi.boolean()
   }),
-  editDefaultTrustList: Joi.object().keys({
+  editDefaultTrustList: Joi.object({
     allow: Joi.boolean()
   }),
-  getDefaultTrustList: Joi.object().keys({
+  getDefaultTrustList: Joi.object({
     allow: Joi.boolean()
   })
 });

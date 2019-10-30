@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -30,10 +30,10 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      query: {
+      query: Joi.object({
         limit: Joi.number().default(25),
         page: Joi.number().default(1)
-      }
+      })
     },
   },
   handler: function(request) {

@@ -40,6 +40,29 @@ module.exports = function (server, auth, threadId, poll) {
   // Check that user isn't banned from this board
   var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { threadId: threadId });
 
+  // User has priority and moderator permission
+  var standardModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: 'threads.createPoll.bypass.owner.mod'
+    },
+    {
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.createPoll.bypass.owner.mod', threadId]
+    }
+  ];
+  var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
+
   // can create poll / ownership
   var ownerCond = [
     {
@@ -50,13 +73,16 @@ module.exports = function (server, auth, threadId, poll) {
       auth: auth,
       permission: 'threads.createPoll.bypass.owner.admin'
     },
+    standardMod,
     {
-      // is board moderator
-      error: Boom.badRequest('not mod'),
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithThreadId,
-      args: [userId, threadId],
-      permission: server.plugins.acls.getACLValue(auth, 'threads.createPoll.bypass.owner.mod')
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.createPoll.bypass.owner.priority', threadId]
     },
     new Promise(function(resolve) {
       var getPollExists = server.db.polls.exists(threadId);

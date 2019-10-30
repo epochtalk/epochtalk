@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var changeCase = require('change-case');
 var renameKeys = require('deep-rename-keys');
 var _ = require('lodash');
@@ -71,13 +71,13 @@ module.exports = {
       mod_log: { type: 'adminSettings.update' }
     },
     validate: {
-      payload: Joi.object().keys({
+      payload: Joi.object({
         verify_registration: Joi.boolean(),
         login_required: Joi.boolean(),
         post_max_length: Joi.number().min(100).max(25000).required(),
         invite_only: Joi.boolean(),
         ga_key: Joi.string().allow(''),
-        website: Joi.object().keys({
+        website: Joi.object({
           title: Joi.string(),
           description: Joi.string(),
           keywords: Joi.string(),
@@ -85,28 +85,28 @@ module.exports = {
           favicon: Joi.string().allow(''),
           default_avatar: Joi.string().allow(''),
         }),
-        emailer: Joi.object().keys({
+        emailer: Joi.object({
           sender: Joi.string().allow(null),
           secure: Joi.boolean(),
-          options: Joi.object().keys({
+          options: Joi.object({
             host: Joi.string().allow(null),
             port: Joi.number().allow(null),
-            auth: Joi.object().keys({
+            auth: Joi.object({
               user: Joi.string(),
               pass: Joi.string()
             })
           })
         }),
-        images: Joi.object().keys({
+        images: Joi.object({
           storage: Joi.string(),
           max_size: Joi.number(),
           expiration: Joi.number(),
           interval: Joi.number(),
-          local: Joi.object().keys({
+          local: Joi.object({
             dir: Joi.string(),
             path: Joi.string()
           }),
-          s_3: Joi.object().keys({
+          s_3: Joi.object({
             root: Joi.string(),
             dir: Joi.string(),
             bucket: Joi.string(),
@@ -115,7 +115,7 @@ module.exports = {
             secret_key: Joi.string().allow('')
           })
         }),
-        rate_limiting: Joi.object().keys({
+        rate_limiting: Joi.object({
           get: {
             interval: Joi.number().min(-1),
             max_in_interval: Joi.number().min(1),
@@ -137,7 +137,7 @@ module.exports = {
             min_difference: Joi.number()
           }
         }),
-        portal: Joi.object().keys({
+        portal: Joi.object({
           enabled: Joi.boolean().default(false),
           board_id: Joi.string().allow('').allow(null)
         })

@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 var cheerio = require('cheerio');
 
@@ -8,7 +8,7 @@ module.exports = {
   options: {
     app: { hook: 'posts.byThread' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: { thread_id: Joi.string().required() } },
+    validate: { params: Joi.object({ thread_id: Joi.string().required() }) },
     pre: [
       { method: (request) => request.server.methods.auth.posts.metaByThread(request.server, request.auth, request.params.thread_id), assign: 'viewable' },
     ]
