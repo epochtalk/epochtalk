@@ -20,7 +20,7 @@ module.exports = function postsCreate(server, auth, threadId) {
       type: 'hasPermission',
       server: server,
       auth: auth,
-      permission: 'posts.create.bypass.admin'
+      permission: 'posts.create.bypass.locked.admin'
     },
     {
       // thread not locked
@@ -34,7 +34,7 @@ module.exports = function postsCreate(server, auth, threadId) {
       type: 'isMod',
       method: server.db.moderators.isModeratorWithThreadId,
       args: [userId, threadId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.create.bypass.mod')
+      permission: server.plugins.acls.getACLValue(auth, 'posts.create.bypass.locked.mod')
     }
   ];
   var locked = server.authorization.stitch(Boom.forbidden('Thread Is Locked'), lockCond, 'any');
