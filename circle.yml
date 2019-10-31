@@ -86,3 +86,15 @@ jobs:
           command: |
             docker-compose -f circleci-docker-compose.yml exec epochtalk /bin/bash -c "ls; pwd"
           when: on_fail
+  release:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - checkout
+      - run: yarn install
+      - run: npx semantic-release
+workflows:
+  version: 2
+  release:
+    jobs:
+      - release
