@@ -7,8 +7,8 @@ var common = require(path.normalize(__dirname + '/../common'));
 /**
   * @apiVersion 0.4.0
   * @apiGroup Posts
-  * @api {GET} /posts/user/:username Page By User
-  * @apiName PagePostsByUser
+  * @api {GET} /posts/user/:username/started Page First Posts By User
+  * @apiName PageFirstPostsByUser
   * @apiDescription Used to page through starting posts made by a particular user
   *
   * @apiParam {string} username The username of the user's whose posts to page through
