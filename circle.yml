@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: node:10.16.3
       - image: selenium/standalone-chrome
@@ -97,4 +97,7 @@ workflows:
   version: 2
   release:
     jobs:
-      - release
+      - test
+      - release:
+          requires:
+            - test
