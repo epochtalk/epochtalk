@@ -1,7 +1,7 @@
 var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(Session, BanSvc, Alert, Threads, $timeout) {
   return {
     restrict: 'E',
-    scope: { thread: '=', reset: '=' },
+    scope: { thread: '=', userPriority: '=', reset: '=' },
     template: require('./poll_viewer.html'),
     link: function($scope) {
       // poll selected answers
@@ -46,6 +46,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
         if ($scope.thread.user.id === Session.user.id) { edit = true; }
         else {
           if (Session.hasPermission('threads.editPoll.bypass.owner.admin')) { edit = true; }
+          else if (Session.hasPermission('threads.editPoll.bypass.owner.priority') && Session.getPriority() < $scope.userPriority) { edit = true; }
           else if (Session.hasPermission('threads.editPoll.bypass.owner.mod')) {
             if (Session.moderatesBoard($scope.thread.board_id)) { edit = true; }
           }
@@ -62,6 +63,7 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
         if ($scope.thread.user.id === Session.user.id) { lock = true; }
         else {
           if (Session.hasPermission('threads.lockPoll.bypass.owner.admin')) { lock = true; }
+          else if (Session.hasPermission('threads.lockPoll.bypass.owner.priority') && Session.getPriority() < $scope.userPriority) { lock = true; }
           else if (Session.hasPermission('threads.lockPoll.bypass.owner.mod')) {
             if (Session.moderatesBoard($scope.thread.board_id)) { lock = true; }
           }

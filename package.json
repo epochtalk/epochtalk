@@ -10,6 +10,13 @@
     "test-client": "./node_modules/.bin/protractor protractor.config.js",
     "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && psql epoch_test < ./schema.sql"
   },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/epochtalk/epochtalk"

@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: node:10.16.3
       - image: selenium/standalone-chrome
@@ -86,3 +86,20 @@ jobs:
           command: |
             docker-compose -f circleci-docker-compose.yml exec epochtalk /bin/bash -c "ls; pwd"
           when: on_fail
+  release:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - checkout
+      - run: yarn install
+      - run:
+          command: npx semantic-release
+          no_output_timeout: 20m
+workflows:
+  version: 2
+  release:
+    jobs:
+      - test
+      - release:
+          requires:
+            - test
