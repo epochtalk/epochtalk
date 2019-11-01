@@ -92,7 +92,9 @@ jobs:
     steps:
       - checkout
       - run: yarn install
-      - run: npx semantic-release
+      - run:
+          command: npx semantic-release
+          no_output_timeout: 20m
 workflows:
   version: 2
   release:
