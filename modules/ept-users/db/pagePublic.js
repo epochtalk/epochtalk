@@ -13,7 +13,6 @@ module.exports = function(opts) {
   var page = opts.page || 1;
   var offset = (page * limit) - limit;
   var sortField = opts.sortField || 'username';
-
   var order = opts.desc ? 'DESC' : 'ASC';
   var params;
   if (opts && opts.searchStr) {
