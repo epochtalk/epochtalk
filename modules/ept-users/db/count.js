@@ -21,7 +21,7 @@ module.exports = function(opts) {
     }
     if (opts && opts.searchStr) {
       q += ' WHERE u.username LIKE $1';
-      params = [opts.searchStr + '%'];
+      params = ['%' + opts.searchStr + '%'];
     }
   }
   return db.sqlQuery(q, params)
