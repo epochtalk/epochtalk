@@ -12,14 +12,12 @@
   <table sv-root sv-on-sort="AdminManagementCtrl.reprioritizeRoles()" sv-part="AdminManagementCtrl.roles" width="100%" class="admin-content-selectable underlined">
     <thead>
       <th>Role Name</th>
-      <th>Priority</th>
       <th>Description</th>
       <th>Actions</th>
     </thead>
     <tbody ng-repeat="role in AdminManagementCtrl.roles">
       <tr ng-class="{ 'active-row' : AdminManagementCtrl.selectedRole.id === role.id }" class="selectable-row pointer" ng-click="AdminManagementCtrl.selectRole(role)" sv-element>
-        <td ng-bind-html="role.name"></td>
-        <td ng-bind-html="role.priority"></td>
+        <td><i class="fa fa-align-justify" />&nbsp;&nbsp;&nbsp;&nbsp;<span ng-bind-html="role.name"></span></td>
         <td ng-bind-html="role.description"></td>
         <td>
           <a ng-href="#" ng-if="AdminManagementCtrl.controlAccess.update.allow" ng-click="AdminManagementCtrl.showRole(role)">Edit</a>
