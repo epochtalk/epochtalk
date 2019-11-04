@@ -16,8 +16,18 @@ module.exports = function(opts) {
   var order = opts.desc ? 'DESC' : 'ASC';
   var params;
   if (opts && opts.searchStr) {
-    q = [q, 'WHERE u.deleted = false AND u.username LIKE $1 ORDER BY', sortField, order, 'LIMIT $2 OFFSET $3'].join(' ');
-    params = [opts.searchStr + '%', limit, offset];
+    var sort = sortField;
+    // weight search results to return results in correct order
+    if (sort == 'username') {
+      sort = `CASE
+        WHEN username LIKE '${opts.searchStr}' THEN 1
+        WHEN username LIKE '${opts.searchStr}%' THEN 2
+        WHEN username LIKE '%${opts.searchStr}%' THEN 3
+        ELSE 4
+      END`;
+    }
+    q = [q, 'WHERE u.deleted = false AND u.username LIKE $1 ORDER BY', sort, order, 'LIMIT $2 OFFSET $3'].join(' ');
+    params = ['%' + opts.searchStr + '%', limit, offset];
   }
   else {
     q = [q, 'WHERE u.deleted = false ORDER BY', sortField, order, 'LIMIT $1 OFFSET $2'].join(' ');
@@ -31,7 +41,7 @@ module.exports = function(opts) {
     q = 'SELECT count(*) FROM users u';
     if (opts && opts.searchStr) {
       q += ' WHERE u.deleted = false AND u.username LIKE $1';
-      params = [opts.searchStr + '%'];
+      params = ['%' + opts.searchStr + '%'];
       return db.scalar(q, params);
     }
     else { return db.scalar(q); }
