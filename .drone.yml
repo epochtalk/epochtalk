@@ -32,6 +32,7 @@ steps:
       from_secret: ssh_username
     key:
       from_secret: ssh_key
+    command_timeout: 5m
     script:
       - cd certbot-docker && /bin/bash ./update.sh
   when:
