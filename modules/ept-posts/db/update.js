@@ -10,6 +10,7 @@ var NotFoundError = errors.NotFoundError;
 module.exports = function(post, authedUser) {
   post = helper.deslugify(post);
   var authedId = helper.deslugify(authedUser.id);
+  var createdAt;
   return using(db.createTransaction(), function(client) {
     var q, params;
     q = 'SELECT content ->> \'title\' as title, content ->> \'body\' as body, metadata, created_at, user_id FROM posts WHERE id = $1 FOR UPDATE';
@@ -23,6 +24,7 @@ module.exports = function(post, authedUser) {
       helper.updateAssign(post, oldPost, post, 'body');
       post.thread_id = post.thread_id || oldPost.thread_id;
       post.metadata = oldPost.metadata || {};
+      createdAt = oldPost.created_at;
       if (authedId !== oldPost.user_id) {
         post.metadata.edited_by_id = authedId;
         post.metadata.edited_by_username = authedUser.username;
@@ -34,13 +36,19 @@ module.exports = function(post, authedUser) {
     })
     .then(function() {
       let post_content = {title: post.title, body: post.body};
-      if (post.metadata) {
+      if (post.metadata && Object.keys(post.metadata).length > 0) {
         q = 'UPDATE posts SET content = $1, thread_id = $2, metadata = $3, updated_at = now() WHERE id = $4 RETURNING updated_at, position, user_id, metadata';
         params = [post_content, post.thread_id, post.metadata, post.id];
       }
       else {
-        q = 'UPDATE posts SET content = $1, thread_id = $2, updated_at = now() WHERE id = $3 RETURNING updated_at, position, user_id, metadata';
-        params = [post_content, post.thread_id, post.id];
+        var curTime = new Date().getTime();
+        if ((curTime - createdAt.getTime()) <= (1000 * 60 * 10)) {
+          q = 'UPDATE posts SET content = $1, thread_id = $2, metadata = $3 WHERE id = $4 RETURNING updated_at, position, user_id, metadata';
+        }
+        else {
+          q = 'UPDATE posts SET content = $1, thread_id = $2, metadata = $3, updated_at = now() WHERE id = $4 RETURNING updated_at, position, user_id, metadata';
+        }
+        params = [post_content, post.thread_id, post.metadata, post.id];
       }
       return client.query(q, params)
       .then(function(results) {
