@@ -65,7 +65,7 @@ module.exports = {
 function processing(request) {
   var updatePost = request.payload;
   updatePost.id = request.params.id;
-  var promise = request.db.posts.update(updatePost)
+  var promise = request.db.posts.update(updatePost, request.auth.credentials)
   .tap(function(post) {
     var email;
     if (post.user_id !== request.auth.credentials.id) {
