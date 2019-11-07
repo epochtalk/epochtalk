@@ -36,19 +36,14 @@ module.exports = function(post, authedUser) {
     })
     .then(function() {
       let post_content = {title: post.title, body: post.body};
-      if (post.metadata && Object.keys(post.metadata).length > 0) {
+      let curTime = new Date().getTime();
+      let outsideEditWindow = (curTime - createdAt.getTime()) > (1000 * 60 * 10);
+      params = [post_content, post.thread_id, post.metadata, post.id];
+      if (post.metadata && Object.keys(post.metadata).length > 0 || outsideEditWindow) {
         q = 'UPDATE posts SET content = $1, thread_id = $2, metadata = $3, updated_at = now() WHERE id = $4 RETURNING updated_at, position, user_id, metadata';
-        params = [post_content, post.thread_id, post.metadata, post.id];
       }
       else {
-        var curTime = new Date().getTime();
-        if ((curTime - createdAt.getTime()) <= (1000 * 60 * 10)) {
-          q = 'UPDATE posts SET content = $1, thread_id = $2, metadata = $3 WHERE id = $4 RETURNING updated_at, position, user_id, metadata';
-        }
-        else {
-          q = 'UPDATE posts SET content = $1, thread_id = $2, metadata = $3, updated_at = now() WHERE id = $4 RETURNING updated_at, position, user_id, metadata';
-        }
-        params = [post_content, post.thread_id, post.metadata, post.id];
+        q = 'UPDATE posts SET content = $1, thread_id = $2, metadata = $3 WHERE id = $4 RETURNING updated_at, position, user_id, metadata';
       }
       return client.query(q, params)
       .then(function(results) {
