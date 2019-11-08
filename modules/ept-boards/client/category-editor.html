@@ -55,6 +55,17 @@
     </select>
   </label>
   <div class="form-switch">
+    <label for="newDisablePostEdit">Disable Post Editing
+      <span class="info-tooltip" data-balloon="Disables the editing of posts for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
+    <div class="switch-field">
+      <input type="radio" id="new-disble-post-edit" name="newDisablePostEdit" value="false" checked/>
+      <label for="new-disble-post-edit">Disable Edit</label>
+      <input type="radio" id="new-enable-post-edit" name="newDisablePostEdit" value="true" />
+      <label for="new-enable-post-edit">Enable Edit</label>
+    </div>
+  </div>
+  <div class="form-switch">
     <label for="newBoardRTL">Text Direction
       <span class="info-tooltip" data-balloon="Sets the read direction of the text for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
     </label>
@@ -92,6 +103,17 @@
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
     </select>
   </label>
+  <div class="form-switch">
+    <label for="editDisablePostEdit">Disable Post Editing
+      <span class="info-tooltip" data-balloon="Disables the editing of posts for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
+    <div class="switch-field">
+      <input type="radio" id="disble-post-edit" name="newDisablePostEdit" value="false" checked/>
+      <label for="disble-post-edit">Disable Edit</label>
+      <input type="radio" id="enable-post-edit" name="newDisablePostEdit" value="true" />
+      <label for="enable-post-edit">Enable Edit</label>
+    </div>
+  </div>
   <div class="form-switch">
     <label for="editBoardRTL">Text Direction
       <span class="info-tooltip" data-balloon="Sets the read direction of the text for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
