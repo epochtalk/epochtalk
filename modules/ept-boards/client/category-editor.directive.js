@@ -141,7 +141,7 @@ var directive = ['$state', function($state) {
             viewable_by: $('#editBoardViewable').val() || null,
             postable_by: $('#editBoardPostable').val() || null,
             right_to_left: $('input[name="editBoardRTL"]:checked').val() === "true",
-            disable_post_edit: $('input[name="editBoardPostEdit"]:checked').val() === "false"
+            disable_post_edit: $('input[name="editBoardPostEdit"]:checked').val() === "true"
           };
 
           // check if board already exists in editedBoards
@@ -174,7 +174,7 @@ var directive = ['$state', function($state) {
         board.viewable_by = $('#editBoardViewable').val();
         board.postable_by = $('#editBoardPostable').val();
         board.right_to_left = $('input[name="editBoardRTL"]:checked').val() === "true";
-        board.disable_post_edit = $('input[name="editBoardPostEdit"]:checked').val() === "false";
+        board.disable_post_edit = $('input[name="editBoardPostEdit"]:checked').val() === "true";
 
         // Reset scope params for editing board
         editBoardDataId = '';
