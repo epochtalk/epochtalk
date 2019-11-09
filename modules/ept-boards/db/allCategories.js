@@ -21,6 +21,7 @@ module.exports = function(userPriority, opts) {
         b.viewable_by,
         b.postable_by,
         b.right_to_left,
+        (b.meta ->> 'disable_post_edit')::boolean as disable_post_edit,
         b.thread_count,
         b.post_count,
         b.created_at,
