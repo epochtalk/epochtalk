@@ -48,8 +48,15 @@ module.exports = {
     ]
   },
   handler: function(request) {
+    var boards = request.payload.map(function(board) {
+      // create each board
+      board.meta = { disable_post_edit: board.disable_post_edit };
+      delete board.disable_post_edit;
+      return board;
+    });
+
     // update each board
-    var promise = Promise.map(request.payload, function(board) {
+    var promise = Promise.map(boards, function(board) {
       return request.db.boards.update(board);
     })
     .error(request.errorMap.toHttpError);
