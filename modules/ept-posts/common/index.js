@@ -149,40 +149,42 @@ function newbieImages(auth, payload) {
 
 function hasPriority(server, auth, permission, postId, selfMod) {
   var hasPermission = server.plugins.acls.getACLValue(auth, permission);
+  if (hasPermission) {
+    return server.db.posts.find(postId)
+    .then(function(post) {
+      // Allow users to perform actions on their own posts
+      if (post.user.id == auth.credentials.id) { return Promise.resolve(true); }
 
-  return server.db.posts.find(postId)
-  .then(function(post) {
-    // Allow users to perform actions on their own posts
-    if (post.user.id == auth.credentials.id) { return Promise.resolve(true); }
+      // get referenced user's priority
+      var postUserPriority = server.db.users.find(post.user.id)
+      .then(function(paramUser) { return _.min(_.map(paramUser.roles, 'priority')); });
 
-    // get referenced user's priority
-    var postUserPriority = server.db.users.find(post.user.id)
-    .then(function(paramUser) { return _.min(_.map(paramUser.roles, 'priority')); });
+      // check if post author is also a mod of this board
+      var postUserIsMod = server.db.moderators.isModeratorWithPostId(post.user.id, post.id);
 
-    // check if post author is also a mod of this board
-    var postUserIsMod = server.db.moderators.isModeratorWithPostId(post.user.id, post.id);
+      // special check for patroller/newbie
+      var hasPatrollerRole = false;
+      auth.credentials.roles.map(function(role) {
+        if (role === 'patroller') { hasPatrollerRole = true; }
+      });
 
-    // special check for patroller/newbie
-    var hasPatrollerRole = false;
-    auth.credentials.roles.map(function(role) {
-      if (role === 'patroller') { hasPatrollerRole = true; }
+      var postOwnerIsUser = server.db.roles.posterHasRole(postId, 'user');
+
+      // get authed user's priority
+      var authedUserPriority = server.db.users.find(auth.credentials.id)
+      .then(function(authUser) { return _.min(_.map(authUser.roles, 'priority')); });
+
+      return Promise.join(postUserPriority, authedUserPriority, postOwnerIsUser, postUserIsMod, function(pid, aid, isUser, isMod) {
+        // Authed user has higher or same priority than post's user
+        if (hasPermission === true && aid <= pid && !selfMod) { return Promise.resolve(true); }
+        else if (hasPermission === true && aid <= pid && selfMod && !isMod) { return Promise.resolve(true); }
+        // Allow patrollers to have priority over users in self moderated threads
+        else if (selfMod === true && isUser === true && hasPatrollerRole === true) { return Promise.resolve(true); }
+        else { return Promise.reject(Boom.forbidden()); }
+      });
     });
-
-    var postOwnerIsUser = server.db.roles.posterHasRole(postId, 'user');
-
-    // get authed user's priority
-    var authedUserPriority = server.db.users.find(auth.credentials.id)
-    .then(function(authUser) { return _.min(_.map(authUser.roles, 'priority')); });
-
-    return Promise.join(postUserPriority, authedUserPriority, postOwnerIsUser, postUserIsMod, function(pid, aid, isUser, isMod) {
-      // Authed user has higher or same priority than post's user
-      if (hasPermission === true && aid <= pid && !selfMod) { return Promise.resolve(true); }
-      else if (hasPermission === true && aid <= pid && selfMod && !isMod) { return Promise.resolve(true); }
-      // Allow patrollers to have priority over users in self moderated threads
-      else if (selfMod === true && isUser === true && hasPatrollerRole === true) { return Promise.resolve(true); }
-      else { return Promise.reject(Boom.forbidden()); }
-    });
-  });
+  }
+  else { return Promise.reject(Boom.forbidden()); }
 }
 
 /**
