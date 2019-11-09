@@ -23,10 +23,11 @@ module.exports = function(board) {
       helper.updateAssign(board, oldBoard, board, 'viewable_by');
       helper.updateAssign(board, oldBoard, board, 'postable_by');
       helper.updateAssign(board, oldBoard, board, 'right_to_left');
+      helper.updateAssign(board, oldBoard, board, 'meta');
     })
     .then(function() {
-      q = 'UPDATE boards SET name = $1, description = $2, viewable_by = $3, postable_by = $4, right_to_left = $5, updated_at = now() WHERE id = $6';
-      params = [board.name, board.description || '', board.viewable_by, board.postable_by, board.right_to_left, board.id];
+      q = 'UPDATE boards SET name = $1, description = $2, viewable_by = $3, postable_by = $4, right_to_left = $5, meta = $6, updated_at = now() WHERE id = $7';
+      params = [board.name, board.description || '', board.viewable_by, board.postable_by, board.right_to_left, board.meta, board.id];
       return client.query(q, params);
     });
   })
