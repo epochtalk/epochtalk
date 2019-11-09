@@ -45,7 +45,8 @@ module.exports = {
         description: Joi.string().max(255).allow(''),
         viewable_by: Joi.number(),
         postable_by: Joi.number(),
-        right_to_left: Joi.boolean().default(false)
+        right_to_left: Joi.boolean().default(false),
+        disable_post_edit: Joi.boolean().default(false)
       })).min(1)
     },
     pre: [
