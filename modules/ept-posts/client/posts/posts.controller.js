@@ -16,6 +16,7 @@ var ctrl = [
     this.user = Session.user;
     this.posts = pageData.posts;
     this.thread = pageData.thread;
+    this.disablePostEdit = pageData.board.disable_post_edit;
     this.moderators = pageData.board.moderators.map(function(data) {
       return data.id;
     });
@@ -54,8 +55,9 @@ var ctrl = [
     this.canUpdate = function(post) {
       if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
-      if (BanSvc.banStatus()) { return false; }
       if (!Session.hasPermission('posts.update.allow')) { return false; }
+      if (BanSvc.banStatus()) { return false; }
+      if (ctrl.disablePostEdit) { return false; }
 
       var validBypass = false;
 
