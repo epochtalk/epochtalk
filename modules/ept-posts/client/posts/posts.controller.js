@@ -53,11 +53,12 @@ var ctrl = [
     };
 
     this.canUpdate = function(post) {
+      var elevatedPrivledges = Session.hasPermission('posts.update.bypass.owner.admin') || Session.hasPermission('posts.update.bypass.locked.mod') || Session.hasPermission('posts.update.bypass.locked.priority');
       if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
       if (!Session.hasPermission('posts.update.allow')) { return false; }
       if (BanSvc.banStatus()) { return false; }
-      if (ctrl.disablePostEdit) { return false; }
+      if (ctrl.disablePostEdit && !elevatedPrivledges) { return false; }
 
       var validBypass = false;
 
