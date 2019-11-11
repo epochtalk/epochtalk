@@ -118,7 +118,7 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [server, auth, 'posts.update.bypass.locked.priority', postId]
     }
   ];
-  var tLocked = server.authorization.stitch(Boom.forbidden('locked'), tLockedCond, 'any');
+  var tLocked = server.authorization.stitch(Boom.forbidden('Thread is locked'), tLockedCond, 'any');
 
   // is board locked
   var bLockedCond = [
