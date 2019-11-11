@@ -87,7 +87,7 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [server, auth, 'posts.update.bypass.deleted.priority', postId]
     }
   ];
-  var deleted = server.authorization.stitch(Boom.forbidden('deleted'), deletedCond, 'any');
+  var deleted = server.authorization.stitch(Boom.forbidden('Post must be unhidden to be edited'), deletedCond, 'any');
 
   // is thread locked
   var tLockedCond = [
