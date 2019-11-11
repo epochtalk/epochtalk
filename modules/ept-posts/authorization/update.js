@@ -214,15 +214,3 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
   // final promise
   return Promise.all([allowed, owner, deleted, read, write, tLocked, bLocked, pLocked, active]);
 };
-
-function postLocked(server, auth, postId) {
-  var userId = auth.credentials.id;
-  return server.db.posts.find(postId)
-  .then(function(post) {
-    if (post.locked && post.user.id === userId) {
-      return Promise.reject(Boom.forbidden('Post is Locked'));
-    }
-    else { return true; }
-  })
-  .error(function(err) { return Promise.reject(Boom.notFound(err)); });
-}
