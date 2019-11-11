@@ -56,7 +56,7 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [server, auth, 'posts.update.bypass.owner.priority', postId]
     }
   ];
-  var owner = server.authorization.stitch(Boom.forbidden('owner'), ownerCond, 'any');
+  var owner = server.authorization.stitch(Boom.forbidden('You do not have permission to edit another user\'s post'), ownerCond, 'any');
 
   // can write to post
   var deletedCond = [
