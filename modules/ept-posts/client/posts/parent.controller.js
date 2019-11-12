@@ -33,7 +33,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       if (ctrl.disablePostEdit && !elevatedPrivileges) { return false; }
 
       var title = false;
-      if (ctrl.thread.user.id === Session.user.id) { title = true; }
+      if (ctrl.thread.user.id === Session.user.id && !ctrl.thread.locked) { title = true; }
       else {
         if (Session.hasPermission('threads.title.bypass.owner.admin')) { title = true; }
         else if (Session.hasPermission('threads.title.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { title = true; }

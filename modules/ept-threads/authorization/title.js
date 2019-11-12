@@ -93,6 +93,36 @@ module.exports = function (server, auth, threadId) {
   ];
   var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
+  // is thread locked
+  var tLockedCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'threads.title.bypass.owner.admin'
+    },
+    standardMod,
+    {
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.title.bypass.owner.priority', threadId]
+    },
+    {
+      // is thread locked
+      type: 'dbNotProp',
+      method: server.db.threads.find,
+      args: [threadId],
+      prop: 'locked'
+    },
+  ];
+  var tLocked = server.authorization.stitch(Boom.forbidden('Thread is locked'), tLockedCond, 'any');
+
   // is board locked
   var bLockedCond = [
     {
@@ -133,9 +163,9 @@ module.exports = function (server, auth, threadId) {
   var first = server.db.threads.getThreadFirstPost(threadId)
   .error(function() { return Promise.reject(Boom.notFound()); });
 
-  return Promise.all([allowed, read, write, notBannedFromBoard, active, owner, bLocked, first])
+  return Promise.all([allowed, read, write, notBannedFromBoard, active, owner, bLocked, tLocked, first])
   .then(function(data) {
-    var firstPost = data[7];
+    var firstPost = data[8];
     return firstPost;
   });
 };
