@@ -25,10 +25,12 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
     // Thread Permissions
     this.canEditTitle = function() {
+      var elevatedPrivileges = Session.hasPermission('threads.title.bypass.owner.admin') || Session.hasPermission('threads.title.bypass.owner.mod') || Session.hasPermission('threads.title.bypass.owner.priority');
       if (!ctrl.loggedIn()) { return false; }
       if (ctrl.bannedFromBoard) { return false; }
       if (!Session.hasPermission('threads.title.allow')) { return false; }
       if (!ctrl.writeAccess) { return false; }
+      if (ctrl.disablePostEdit && !elevatedPrivileges) { return false; }
 
       var title = false;
       if (ctrl.thread.user.id === Session.user.id) { title = true; }
