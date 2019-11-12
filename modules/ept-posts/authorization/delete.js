@@ -138,14 +138,45 @@ module.exports = function postsDelete(server, auth, postId) {
   ];
   var tLocked = server.authorization.stitch(Boom.forbidden('Thread Locked'), tLockedCond, 'any');
 
-  // post locked
-  var pLocked = server.authorization.build({
-    error: Boom.forbidden('Post is locked'),
-    type: 'dbNotProp',
-    method: server.db.posts.find,
-    args: [postId],
-    prop: 'locked'
-  });
+  // is thread locked
+  var pLockedCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'posts.delete.bypass.locked.admin'
+    },
+    {
+      // is post locked
+      type: 'dbNotProp',
+      method: server.db.posts.find,
+      args: [postId],
+      prop: 'locked'
+    },
+    {
+      // is board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithPostId,
+      args: [userId, postId],
+      permission: server.plugins.acls.getACLValue(auth, 'posts.delete.bypass.locked.mod')
+    },
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.delete.bypass.locked.priority', postId]
+    }
+  ];
+  var pLocked = server.authorization.stitch(Boom.forbidden('Post Locked'), pLockedCond, 'any');
+
+  // // post locked
+  // var pLocked = server.authorization.build({
+  //   error: Boom.forbidden('Post is locked'),
+  //   type: 'dbNotProp',
+  //   method: server.db.posts.find,
+  //   args: [postId],
+  //   prop: 'locked'
+  // });
 
   // read board
   var read = server.authorization.build({
