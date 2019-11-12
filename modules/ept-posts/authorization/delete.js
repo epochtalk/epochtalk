@@ -169,15 +169,6 @@ module.exports = function postsDelete(server, auth, postId) {
   ];
   var pLocked = server.authorization.stitch(Boom.forbidden('Post Locked'), pLockedCond, 'any');
 
-  // // post locked
-  // var pLocked = server.authorization.build({
-  //   error: Boom.forbidden('Post is locked'),
-  //   type: 'dbNotProp',
-  //   method: server.db.posts.find,
-  //   args: [postId],
-  //   prop: 'locked'
-  // });
-
   // read board
   var read = server.authorization.build({
     error: Boom.notFound('Board Not Found'),
