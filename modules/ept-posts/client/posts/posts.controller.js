@@ -12,6 +12,7 @@ var ctrl = [
     parent.board_id = pageData.thread.board_id;
     parent.writeAccess = pageData.write_access;
     parent.bannedFromBoard = BanSvc.banStatus();
+    parent.disablePostEdit = pageData.board.disable_post_edit;
     this.rootUrl = generateBaseUrl();
     this.user = Session.user;
     this.posts = pageData.posts;
@@ -53,12 +54,12 @@ var ctrl = [
     };
 
     this.canUpdate = function(post) {
-      var elevatedPrivledges = Session.hasPermission('posts.update.bypass.owner.admin') || Session.hasPermission('posts.update.bypass.locked.mod') || Session.hasPermission('posts.update.bypass.locked.priority');
+      var elevatedPrivileges = Session.hasPermission('posts.update.bypass.owner.admin') || Session.hasPermission('posts.update.bypass.locked.mod') || Session.hasPermission('posts.update.bypass.locked.priority');
       if (!pageData.write_access) { return false; }
       if (!Session.isAuthenticated()) { return false; }
       if (!Session.hasPermission('posts.update.allow')) { return false; }
       if (BanSvc.banStatus()) { return false; }
-      if (ctrl.disablePostEdit && !elevatedPrivledges) { return false; }
+      if (ctrl.disablePostEdit && !elevatedPrivileges) { return false; }
 
       var validBypass = false;
 
