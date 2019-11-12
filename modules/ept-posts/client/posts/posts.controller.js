@@ -76,7 +76,7 @@ var ctrl = [
       }
 
       // owner
-      if (post.user.id === ctrl.user.id) { validBypass = true; }
+      if (post.user.id === ctrl.user.id && !ctrl.thread.locked) { validBypass = true; }
       else {
         if (Session.hasPermission('posts.update.bypass.owner.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.owner.mod')) {
