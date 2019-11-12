@@ -129,6 +129,11 @@ module.exports = function postsDelete(server, auth, postId) {
       method: server.db.moderators.isModeratorWithPostId,
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.delete.bypass.locked.mod')
+    },
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.delete.bypass.locked.priority', postId]
     }
   ];
   var tLocked = server.authorization.stitch(Boom.forbidden('Thread Locked'), tLockedCond, 'any');
