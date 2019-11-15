@@ -1,7 +1,11 @@
 var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Session', 'boards', 'user',
-  function($rootScope, $location, PreferencesSvc, User, Alert, Session, Boards, user) {
+  function($rootScope, $location, PreferencesSvc, User, Alert, Session, boards, user) {
     var ctrl = this;
     this.user = user;
+    this.boards = boards;
+    this.ignoredBoards = [];
+    this.allBoards = {};
+    this.toggleSubmitted = {};
 
     this.canUpdatePrefs = function() {
       return Session.hasPermission('users.update.allow');
@@ -37,6 +41,10 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
     };
   }
 ];
+
+this.toggleBoardTrust = function(boardId) {
+  // TODO
+};
 
 module.exports = angular.module('ept.settings.ctrl', [])
 .controller('SettingsCtrl', ctrl)

@@ -28,6 +28,25 @@
   </div>
   <br />
   <ignore-mentions-settings></ignore-mentions-settings>
+  <br>
+
+  <div class="board-bans-list">
+    <script type="text/ng-template" id="board_renderer.html">
+      <input id="{{board.id}}" ng-init="SettingsCtrl.allBoards[board.id] = (SettingsCtrl.ignoredBoards.indexOf(board.id) > -1)" ng-model="SettingsCtrl.allBoards[board.id]" ng-click="SettingsCtrl.toggleIgnoredBoard(board.id)" ng-disabled="SettingsCtrl.toggleSubmitted[board.id]" type="checkbox" />
+      <label for="{{board.id}}" ng-bind-html="board.name"></label>
+      <ul>
+        <li ng-repeat="board in board.children track by board.id" ng-include="'board_renderer.html'"></li>
+      </ul>
+    </script>
+    <div ng-repeat="cat in SettingsCtrl.boards track by cat.id">
+      <label class="bold" ng-bind-html="cat.name"></label>
+      <ul>
+        <li ng-repeat="board in cat.boards track by board.id" ng-include="'board_renderer.html'">
+        </li>
+      </ul>
+    </div>
+  </div>
+
 </div>
 
 <div class="half-column">
