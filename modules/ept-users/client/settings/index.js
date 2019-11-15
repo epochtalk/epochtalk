@@ -26,6 +26,10 @@ var route = ['$stateProvider', function($stateProvider) {
         }
         else { return $q.reject({ status: 401, statusText: 'Unauthorized' }); }
       }],
+      boards: ['Boards', function(Boards) {
+        return Boards.query({ stripped: true }).$promise
+        .then(function(data) { return data.boards; });
+      }]
     }
   });
 }];

@@ -1,5 +1,5 @@
-var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Session', 'user',
-  function($rootScope, $location, PreferencesSvc, User, Alert, Session, user) {
+var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Session', 'boards', 'user',
+  function($rootScope, $location, PreferencesSvc, User, Alert, Session, Boards, user) {
     var ctrl = this;
     this.user = user;
 
