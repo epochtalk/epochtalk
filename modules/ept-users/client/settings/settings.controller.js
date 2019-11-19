@@ -11,33 +11,19 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
       return Session.hasPermission('users.update.allow');
     };
 
-    // Preferences
-    this.tempPreferences = {
-      username: ctrl.user.username,
-      posts_per_page: ctrl.user.posts_per_page,
-      threads_per_page: ctrl.user.threads_per_page,
-      collapsed_categories: ctrl.user.collapsed_categories
-    };
+    this.userPrefs = PreferencesSvc.preferences;
 
     this.resetPrefrences = function() {
-      ctrl.tempPreferences.posts_per_page = 25;
-      ctrl.tempPreferences.threads_per_page = 25;
+      ctrl.userPrefs.posts_per_page = 25;
+      ctrl.userPrefs.threads_per_page = 25;
     };
 
     this.savePreferences = function() {
-      return User.update({ id: ctrl.user.id }, ctrl.tempPreferences).$promise
-      .then(function(data) {
-        ctrl.user.posts_per_page = data.posts_per_page;
-        ctrl.user.threads_per_page = data.threads_per_page;
-      })
-      .then(function() {
-        var tempPref = PreferencesSvc.preferences;
-        tempPref.posts_per_page = ctrl.user.posts_per_page;
-        tempPref.threads_per_page = ctrl.user.threads_per_page;
-        return PreferencesSvc.setPreferences(tempPref);
-      })
-      .then(function() { Alert.success('Successfully saved preferences'); })
-      .catch(function() { Alert.error('Preferences could not be updated'); });
+      ctrl.userPrefs.username = ctrl.user.username;
+      return User.update({ id: ctrl.user.id }, ctrl.userPrefs).$promise
+      .then(function() { return PreferencesSvc.setPreferences(ctrl.userPrefs); })
+      .then(function() { Alert.success('Successfully saved paging preferences'); })
+      .catch(function() { Alert.error('Paging preferences could not be updated'); });
     };
   }
 ];
