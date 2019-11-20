@@ -3,34 +3,33 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
     var ctrl = this;
     this.user = user;
     this.boards = boards;
-    this.ignoredBoards = [];
     this.allBoards = {};
     this.toggleSubmitted = {};
-
-    this.canUpdatePrefs = function() {
-      return Session.hasPermission('users.update.allow');
-    };
-
     this.userPrefs = PreferencesSvc.preferences;
+
+    this.canUpdatePrefs = function() { return Session.hasPermission('users.update.allow'); };
 
     this.resetPrefrences = function() {
       ctrl.userPrefs.posts_per_page = 25;
       ctrl.userPrefs.threads_per_page = 25;
     };
 
-    this.savePreferences = function() {
+    this.savePreferences = function(hideMsg) {
       ctrl.userPrefs.username = ctrl.user.username;
       return User.update({ id: ctrl.user.id }, ctrl.userPrefs).$promise
       .then(function() { return PreferencesSvc.setPreferences(ctrl.userPrefs); })
-      .then(function() { Alert.success('Successfully saved paging preferences'); })
-      .catch(function() { Alert.error('Paging preferences could not be updated'); });
+      .then(function() { if (!hideMsg) { Alert.success('Successfully saved preferences'); }})
+      .catch(function() { Alert.error('Preferences could not be updated'); });
+    };
+
+    this.toggleIgnoredBoard = function(boardId) {
+      var index = ctrl.userPrefs.ignored_boards.indexOf(boardId);
+      if (index > -1) { ctrl.userPrefs.ignored_boards.splice(index, 1); }
+      else { ctrl.userPrefs.ignored_boards.push(boardId); }
+      ctrl.savePreferences(true);
     };
   }
 ];
-
-this.toggleBoardTrust = function(boardId) {
-  // TODO
-};
 
 module.exports = angular.module('ept.settings.ctrl', [])
 .controller('SettingsCtrl', ctrl)
