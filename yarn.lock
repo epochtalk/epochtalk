@@ -646,10 +646,10 @@ angular-sortable-view@0.0.13:
   resolved "https://registry.yarnpkg.com/angular-sortable-view/-/angular-sortable-view-0.0.13.tgz#d9d27d839dab9c5ed04b99aa1f3c048dbf2fd62f"
   integrity sha1-2dJ9g52rnF7QS5mqHzwEjb8v1i8=
 
-angular@1.7.5:
-  version "1.7.5"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.7.5.tgz#d1c1c01c6f5dc835638f3f9aa51012857bdac49e"
-  integrity sha512-760183yxtGzni740IBTieNuWLtPNAoMqvmC0Z62UoU0I3nqk+VJuO3JbQAXOyvo3Oy/ZsdNQwrSTh/B0OQZjNw==
+angular@1.7.9:
+  version "1.7.9"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.7.9.tgz#e52616e8701c17724c3c238cfe4f9446fd570bc4"
+  integrity sha512-5se7ZpcOtu0MBFlzGv5dsM1quQDoDeUTwZrWjGtTNA7O88cD8TEk5IEKCTDa3uECV9XnvKREVUr7du1ACiWGFQ==
 
 ansi-align@^2.0.0:
   version "2.0.0"

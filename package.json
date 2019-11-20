@@ -43,7 +43,7 @@
     "@hapi/joi": "^16.1.4",
     "@hapi/vision": "^5.5.2",
     "@uirouter/angularjs": "^1.0.20",
-    "angular": "1.7.5",
+    "angular": "1.7.9",
     "angular-animate": "1.7.5",
     "angular-loading-bar": "0.7.1",
     "angular-resource": "1.7.5",
