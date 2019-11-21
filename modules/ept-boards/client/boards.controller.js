@@ -29,6 +29,8 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
       });
     });
 
+    this.categorizedBoards = this.categorizedBoards.filter(function(c) { return c.boards.length; });
+
     function filterIgnoredBoards(boards) {
       return boards.filter(function(board) {
         board.children = filterIgnoredBoards(board.children)
