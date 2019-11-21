@@ -360,6 +360,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
           editPost.body_html = data.body_html;
           editPost.body = data.body;
           editPost.updated_at = data.updated_at;
+          editPost.metadata = data.metadata;
         }
       })
       .then(closeEditor)
