@@ -18,12 +18,7 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
       }
 
       // set total_thread_count and total_post_count for all boards
-      console.log('before', category.boards);
-      category.boards = category.boards.filter(function(board) {
-        console.log(ignoredBoards.indexOf(board.id));
-        return ignoredBoards.indexOf(board.id) === -1;
-      });
-      console.log('after', category.boards);
+      category.boards = filterIgnoredBoards(category.boards)
 
       category.boards.map(function(board) {
         var children = countTotals([board]);
@@ -33,6 +28,13 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
         return Object.assign(board, lastPost);
       });
     });
+
+    function filterIgnoredBoards(boards) {
+      return boards.filter(function(board) {
+        board.children = filterIgnoredBoards(board.children)
+        return ignoredBoards.indexOf(board.id) === -1;
+      });
+    }
 
     // Category toggling
     this.toggleCategory = function(cat) {
