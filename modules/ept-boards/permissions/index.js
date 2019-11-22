@@ -56,12 +56,14 @@ var administrator = {
 
 var globalModerator = {
   allCategories: { allow: true },
-  find: { allow: true }
+  find: { allow: true },
+  moveList: { allow: true }
 };
 
 var moderator = {
   allCategories: { allow: true },
-  find: { allow: true }
+  find: { allow: true },
+  moveList: { allow: true }
 };
 
 var patroller = {

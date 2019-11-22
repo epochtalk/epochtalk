@@ -72,17 +72,27 @@ module.exports = function(opts) {
   var order = opts.desc ? 'DESC' : 'ASC';
   var params;
   if (opts && opts.searchStr) {
+    var sort = sortField;
+    // weight search results to return results in correct order
+    if (sort == 'username') {
+      sort = `CASE
+        WHEN username LIKE '${opts.searchStr}' THEN 1
+        WHEN username LIKE '${opts.searchStr}%' THEN 2
+        WHEN username LIKE '%${opts.searchStr}%' THEN 3
+        ELSE 4
+      END`;
+    }
     if (opts.ip && opts.filter === 'banned') {
-      q = [q, 'INNER JOIN users.ips i ON (u.id = i.user_id AND i.user_ip LIKE $1) GROUP BY u.id, b.expiration ORDER BY', sortField, order, 'LIMIT $2 OFFSET $3'].join(' ');
+      q = [q, 'INNER JOIN users.ips i ON (u.id = i.user_id AND i.user_ip LIKE $1) GROUP BY u.id, b.expiration ORDER BY', sort, order, 'LIMIT $2 OFFSET $3'].join(' ');
       params = [opts.searchStr, limit, offset];
     }
     else if (opts.ip) {
-      q = [q, 'INNER JOIN users.ips i ON (u.id = i.user_id AND i.user_ip LIKE $1) GROUP BY u.id ORDER BY', sortField, order, 'LIMIT $2 OFFSET $3'].join(' ');
+      q = [q, 'INNER JOIN users.ips i ON (u.id = i.user_id AND i.user_ip LIKE $1) GROUP BY u.id ORDER BY', sort, order, 'LIMIT $2 OFFSET $3'].join(' ');
       params = [opts.searchStr, limit, offset];
     }
     else {
-      q = [q, 'WHERE u.username LIKE $1 ORDER BY', sortField, order, 'LIMIT $2 OFFSET $3'].join(' ');
-      params = [opts.searchStr + '%', limit, offset];
+      q = [q, 'WHERE u.username LIKE $1 ORDER BY', sort, order, 'LIMIT $2 OFFSET $3'].join(' ');
+      params = ['%' + opts.searchStr + '%', limit, offset];
     }
   }
   else {
