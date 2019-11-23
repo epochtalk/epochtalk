@@ -93,10 +93,79 @@ module.exports = function (server, auth, threadId) {
   ];
   var owner = server.authorization.stitch(Boom.forbidden(), ownerCond, 'any');
 
+  // is thread locked
+  var tLockedCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'threads.title.bypass.owner.admin'
+    },
+    standardMod,
+    {
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.title.bypass.owner.priority', threadId]
+    },
+    {
+      // is thread locked
+      type: 'dbNotProp',
+      method: server.db.threads.find,
+      args: [threadId],
+      prop: 'locked'
+    },
+  ];
+  var tLocked = server.authorization.stitch(Boom.forbidden('Thread is locked'), tLockedCond, 'any');
+
+  // is board locked
+  var bLockedCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'threads.title.bypass.owner.admin'
+    },
+    standardMod,
+    {
+      type: 'runValidation',
+      method: function(server, auth, acl, threadId) {
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          return server.methods.common.posts.hasPriority(server, auth, acl, post.id);
+        });
+      },
+      args: [server, auth, 'threads.title.bypass.owner.priority', threadId]
+    },
+    {
+      // is board post editing locked
+      type: 'dbNotProp',
+      method: function(threadId) {
+        return server.db.threads.find(threadId)
+        .then(function(thread) {
+          return server.db.boards.find(thread.board_id)
+        });
+      },
+      args: [threadId],
+      prop: 'disable_post_edit'
+    }
+  ];
+  var bLocked = server.authorization.stitch(Boom.forbidden('Editing is disabled for this board'), bLockedCond, 'any');
+
+
   // get thread first post
   var first = server.db.threads.getThreadFirstPost(threadId)
   .error(function() { return Promise.reject(Boom.notFound()); });
 
-  return Promise.all([allowed, read, write, notBannedFromBoard, active, owner, first])
-  .then(function(data) { return data[6]; });
+  return Promise.all([allowed, read, write, notBannedFromBoard, active, owner, bLocked, tLocked, first])
+  .then(function(data) {
+    var firstPost = data[8];
+    return firstPost;
+  });
 };

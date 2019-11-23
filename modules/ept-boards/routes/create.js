@@ -45,7 +45,8 @@ module.exports = {
         description: Joi.string().max(255).allow(''),
         viewable_by: Joi.number(),
         postable_by: Joi.number(),
-        right_to_left: Joi.boolean().default(false)
+        right_to_left: Joi.boolean().default(false),
+        disable_post_edit: Joi.boolean().default(false)
       })).min(1)
     },
     pre: [
@@ -54,8 +55,13 @@ module.exports = {
     ]
   },
   handler: function(request) {
-    // create each board
-    var promise = Promise.map(request.payload, function(board) {
+    var boards = request.payload.map(function(board) {
+      // create each board
+      board.meta = { disable_post_edit: board.disable_post_edit };
+      delete board.disable_post_edit;
+      return board;
+    });
+    var promise = Promise.map(boards, function(board) {
       return request.db.boards.create(board);
     })
     .error(request.errorMap.toHttpError);
