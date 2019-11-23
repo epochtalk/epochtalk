@@ -56,7 +56,7 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [server, auth, 'posts.update.bypass.owner.priority', postId]
     }
   ];
-  var owner = server.authorization.stitch(Boom.forbidden('owner'), ownerCond, 'any');
+  var owner = server.authorization.stitch(Boom.forbidden('You do not have permission to edit another user\'s post'), ownerCond, 'any');
 
   // can write to post
   var deletedCond = [
@@ -87,7 +87,7 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [server, auth, 'posts.update.bypass.deleted.priority', postId]
     }
   ];
-  var deleted = server.authorization.stitch(Boom.forbidden('deleted'), deletedCond, 'any');
+  var deleted = server.authorization.stitch(Boom.forbidden('Post must be unhidden to be edited'), deletedCond, 'any');
 
   // is thread locked
   var tLockedCond = [
@@ -118,9 +118,9 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
       args: [server, auth, 'posts.update.bypass.locked.priority', postId]
     }
   ];
-  var tLocked = server.authorization.stitch(Boom.forbidden('locked'), tLockedCond, 'any');
+  var tLocked = server.authorization.stitch(Boom.forbidden('Thread is locked'), tLockedCond, 'any');
 
-  // is thread locked
+  // is board locked
   var bLockedCond = [
     {
       // permission based override
@@ -156,7 +156,36 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
   ];
   var bLocked = server.authorization.stitch(Boom.forbidden('Post editing is disabled for this board'), bLockedCond, 'any');
 
-  var pLocked = postLocked(server, auth, postId);
+  // is post locked
+  var pLockedCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'posts.update.bypass.locked.admin'
+    },
+    {
+      // is post locked
+      type: 'dbNotProp',
+      method: server.db.posts.find,
+      args: [postId],
+      prop: 'locked'
+    },
+    {
+      // is board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithThreadId,
+      args: [userId, threadId],
+      permission: server.plugins.acls.getACLValue(auth, 'posts.update.bypass.locked.mod')
+    },
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.update.bypass.locked.priority', postId]
+    }
+  ];
+  var pLocked = server.authorization.stitch(Boom.forbidden('Post is Locked'), pLockedCond, 'any');
 
   // read board
   var read = server.authorization.build({
@@ -185,15 +214,3 @@ module.exports = function postsUpdate(server, auth, postId, threadId) {
   // final promise
   return Promise.all([allowed, owner, deleted, read, write, tLocked, bLocked, pLocked, active]);
 };
-
-function postLocked(server, auth, postId) {
-  var userId = auth.credentials.id;
-  return server.db.posts.find(postId)
-  .then(function(post) {
-    if (post.locked && post.user.id === userId) {
-      return Promise.reject(Boom.forbidden('Post is Locked'));
-    }
-    else { return true; }
-  })
-  .error(function(err) { return Promise.reject(Boom.notFound(err)); });
-}
