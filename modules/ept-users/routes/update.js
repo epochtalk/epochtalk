@@ -29,6 +29,7 @@ var Joi = require('@hapi/joi');
   * @apiParam (Payload) {numbers} [posts_per_page] Preference for how many post to view per page
   * @apiParam (Payload) {numbers} [threads_per_page] Preference for how many threads to view per page
   * @apiParam (Payload) {string[]} [collapsed_categories] Array of category id's which the user has collapsed
+  * @apiParam (Payload) {string[]} [ignored_boards] Array of board id's which the user has ignored
   *
   * @apiSuccess {string} id The user's unique id
   * @apiSuccess {string} [username] The user's username
@@ -45,6 +46,7 @@ var Joi = require('@hapi/joi');
   * @apiSuccess {string} [signature] The user's signature with any markup tags converted and parsed into html elements
   * @apiSuccess {string} [avatar] URL to the user's avatar
   * @apiSuccess {string[]} collapsed_categories Array containing id of categories the user collapsed
+  * @apiSuccess {string[]} ignored_boards Array containing id of boards the user ignores
   * @apiSuccess {number} posts_per_page Preference indicating the number of posts the user wants to view per page
   * @apiSuccess {number} threads_per_page Preference indicating the number of threads the user wants to view per page
   *
@@ -100,7 +102,8 @@ module.exports = {
         avatar: Joi.string().allow(''),
         posts_per_page: Joi.number().min(10).max(100).default(25),
         threads_per_page: Joi.number().min(10).max(100).default(25),
-        collapsed_categories: Joi.array().items(Joi.string())
+        collapsed_categories: Joi.array().items(Joi.string()),
+        ignored_boards: Joi.array().items(Joi.string())
       })
       .and('password', 'old_password', 'confirmation')
       .with('signature', 'raw_signature')

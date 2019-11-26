@@ -1,6 +1,7 @@
 module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSvc', 'pageData',
   function($timeout, $anchorScroll, Session, User, PreferencesSvc, pageData) {
     var collapsedCats = PreferencesSvc.preferences.collapsed_categories || [];
+    var ignoredBoards = PreferencesSvc.preferences.ignored_boards || [];
     this.loggedIn = Session.isAuthenticated;
     this.categorizedBoards = pageData.boards;
     this.recentThreads = pageData.threads;
@@ -17,8 +18,9 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
       }
 
       // set total_thread_count and total_post_count for all boards
-      var boards = category.boards;
-      boards.map(function(board) {
+      category.boards = filterIgnoredBoards(category.boards)
+
+      category.boards.map(function(board) {
         var children = countTotals([board]);
         var lastPost = getLastPost([board]);
         board.total_thread_count = children.thread_count;
@@ -26,6 +28,15 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
         return Object.assign(board, lastPost);
       });
     });
+
+    this.categorizedBoards = this.categorizedBoards.filter(function(c) { return c.boards.length; });
+
+    function filterIgnoredBoards(boards) {
+      return boards.filter(function(board) {
+        board.children = filterIgnoredBoards(board.children)
+        return ignoredBoards.indexOf(board.id) === -1;
+      });
+    }
 
     // Category toggling
     this.toggleCategory = function(cat) {

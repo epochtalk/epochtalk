@@ -11,6 +11,7 @@ module.exports = function(userId) {
       posts_per_page,
       threads_per_page,
       collapsed_categories,
+      ignored_boards,
       notify_replied_threads
     FROM users.preferences
     WHERE user_id = $1
@@ -23,6 +24,7 @@ module.exports = function(userId) {
         posts_per_page: 25,
         threads_per_page: 25,
         collapsed_categories: { cats: [] },
+        ignored_boards: { boards: [] },
         notify_replied_threads: true
       };
     }
@@ -32,6 +34,10 @@ module.exports = function(userId) {
       prefs.collapsed_categories = prefs.collapsed_categories.cats;
     }
     else { prefs.collapsed_categories = []; }
+    if (prefs.ignored_boards) {
+      prefs.ignored_boards = prefs.ignored_boards.boards;
+    }
+    else { prefs.ignored_boards = []; }
     return prefs;
   })
   .then(helper.slugify);

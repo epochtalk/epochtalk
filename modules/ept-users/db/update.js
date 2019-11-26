@@ -95,7 +95,10 @@ module.exports = function(user) {
         prefs.collapsed_categories = { cats: user.collapsed_categories };
       }
       else { prefs.collapsed_categories = { cats: [] }; }
-
+      if (user.ignored_boards) {
+        prefs.ignored_boards = { boards: user.ignored_boards };
+      }
+      else { prefs.ignored_boards = { boards: [] }; }
       if (exists) { return common.updateUserPreferences(prefs, client); }
       else { return common.insertUserPreferences(prefs, client); }
     })

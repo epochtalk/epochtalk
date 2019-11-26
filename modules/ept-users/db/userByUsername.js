@@ -42,7 +42,8 @@ module.exports = function(username) {
       p.last_active,
       pr.posts_per_page,
       pr.threads_per_page,
-      pr.collapsed_categories
+      pr.collapsed_categories,
+      pr.ignored_boards
     FROM users u
     LEFT JOIN users.profiles p ON u.id = p.user_id
     LEFT JOIN users.preferences pr ON u.id = pr.user_id
@@ -68,6 +69,10 @@ module.exports = function(username) {
           user.collapsed_categories = user.collapsed_categories.cats;
         }
         else { user.collapsed_categories = []; }
+        if (user.ignored_boards) {
+          user.ignored_boards = user.ignored_boards.boards;
+        }
+        else { user.ignored_boards = []; }
         user.avatar = user.avatar || null;
         return user;
       });

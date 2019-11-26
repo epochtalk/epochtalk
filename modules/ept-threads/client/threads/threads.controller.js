@@ -2,6 +2,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
   function($rootScope, $scope, $anchorScroll, $location, $timeout, Alert, BanSvc, Session, Threads, Watchlist, PreferencesSvc, pageData) {
     var ctrl = this;
     var prefs = PreferencesSvc.preferences;
+    var ignoredBoards = prefs.ignored_boards || [];
     this.loggedIn = Session.isAuthenticated; // check Auth
     this.board = pageData.board;
     this.page = pageData.page; // this page
@@ -31,6 +32,15 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       childBoard.total_thread_count = children.thread_count + childBoard.thread_count;
       childBoard.total_post_count = children.post_count + childBoard.post_count;
     });
+
+    this.board.children = filterIgnoredBoards(this.board.children);
+
+    function filterIgnoredBoards(boards) {
+      return boards.filter(function(board) {
+        board.children = filterIgnoredBoards(board.children)
+        return ignoredBoards.indexOf(board.id) === -1;
+      });
+    }
 
     function countTotals(countBoards) {
       var thread_count = 0;
