@@ -2,7 +2,7 @@
 
 #public-content {
   .posts & {
-    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-columns: minmax(0, 1fr) minmax(200px, 320px);
   }
 }
 
@@ -14,7 +14,7 @@ ad-viewer {
   .sidebar-block {
     display: block;
     position: sticky;
-    top: calc(#{$header-offset} + 1rem);
+    top: #$header-offset;
   }
 
   @include break-mobile-sm {
