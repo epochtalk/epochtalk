@@ -67,7 +67,8 @@ var ctrl = [
       if (ctrl.thread.locked) {
         if (Session.hasPermission('posts.update.bypass.locked.admin')) { validBypass = true; }
         else if (Session.hasPermission('posts.update.bypass.locked.mod')) {
-          if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
+          if (Session.moderatesBoard(ctrl.thread.board_id) && ctrl.user.id === post.user.id) { validBypass = true; }
+          else if (Session.moderatesBoard(ctrl.thread.board_id) && Session.getPriority() < post.user.priority) { validBypass = true; }
           else if (Session.moderatesBoard(ctrl.thread.board_id) && (Session.getPriority() === post.user.priority && !ctrl.moderators.includes(post.user.id))) {
             validBypass = true;
           }
