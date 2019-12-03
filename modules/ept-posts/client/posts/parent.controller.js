@@ -1,5 +1,5 @@
-var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
-  function($scope, $timeout, $location, $filter, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
+var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
+  function($scope, $stateParams, $timeout, $location, $filter, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -478,12 +478,33 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       ctrl.showPurgeModal = false;
       var index = ctrl.purgePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
-      // Cant delete first post, so we can always grab the previous post
-      var nearestPost =  ctrl.posts && ctrl.posts[index - 1];
+      var nearestPost;
+      if (index > 0) {
+        nearestPost = ctrl.posts[index - 1];
+      }
+      else if (index === 0 && ctrl.posts.length > 1) {
+        nearestPost = ctrl.posts && ctrl.posts[index + 1];
+      }
+      console.log(ctrl.posts.length, index, nearestPost)
       if (post) {
         Posts.purge({id: post.id}).$promise
         .then(function() {
-          $state.go($state.$current, { start: nearestPost.position, '#': nearestPost.id}, {reload:true});
+          if (nearestPost) {
+            $state.go($state.$current, { start: nearestPost.position, purged: 'true', '#': nearestPost.id}, {reload:true});
+          }
+          else {
+          // Increment post count and recalculate ctrl.pageCount
+          ctrl.thread.post_count--;
+          ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
+          // Go to last page in the thread and scroll to new post
+          var prevPage = ctrl.page - 1;
+          var params = angular.copy($stateParams);
+          params.page = params.page - 1;
+          params.purged = true;
+          delete params['#'];
+          delete params['start'];
+          $location.search(params);
+          }
         })
         .catch(function() { Alert.error('Failed to purge Post'); });
       }
