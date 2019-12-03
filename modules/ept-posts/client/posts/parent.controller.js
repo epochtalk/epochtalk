@@ -492,7 +492,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           if (nearestPost) {
             $state.go($state.$current, { start: nearestPost.position, purged: 'true', '#': nearestPost.id}, {reload:true});
           }
-          else {
+          else { // deleted all posts on this page, load prev page
           // Increment post count and recalculate ctrl.pageCount
           ctrl.thread.post_count--;
           ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
@@ -502,7 +502,9 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           params.page = (Number(params.page) || 2) - 1;
           delete params['#'];
           delete params['purged'];
+          delete params['threadId'];
           delete params['start'];
+          $location.hash('last');
           $location.search(params);
           Alert.success('Sucessfully purged post!');
           }

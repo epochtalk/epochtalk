@@ -30,12 +30,7 @@ var ctrl = [
         delete $location.$$search.page;
         $location.$$compose();
       }
-      if($location.search().purged !== 'true') {
-        delete $location.$$search.purged;
-        $location.$$compose();
-      }
       $timeout(function() { highlight($location.hash()); }, 1000);
-      $timeout($anchorScroll, 500);
     }
     else { $timeout($anchorScroll); }
 
@@ -260,7 +255,6 @@ var ctrl = [
         calculatePollPercentage();
         checkUsersOnline();
         ctrl.highlightPost();
-        $timeout($anchorScroll);
       });
     };
 
@@ -296,7 +290,10 @@ var ctrl = [
     };
 
     this.highlightPost = function() {
-      $timeout(function() { highlight($location.hash()); });
+      $timeout(function() {
+        highlight($location.hash());
+        $anchorScroll();
+      });
     };
 
     function highlight(postId) {

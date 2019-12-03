@@ -36,7 +36,7 @@
     </div>
 
     <!-- Post Body Section -->
-    <div class="post-content">
+    <div ng-attr-id="{{$last ? 'last' : ''}}" class="post-content">
       <!-- Post Title -->
       <div class="post-title">
         <span ng-if="post.user.online" class="online green"><i class="fa fa-circle"></i></span>
