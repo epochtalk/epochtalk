@@ -499,11 +499,12 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           // Go to last page in the thread and scroll to new post
           var prevPage = ctrl.page - 1;
           var params = angular.copy($stateParams);
-          params.page = params.page - 1;
-          params.purged = true;
+          params.page = (Number(params.page) || 2) - 1;
           delete params['#'];
+          delete params['purged'];
           delete params['start'];
           $location.search(params);
+          Alert.success('Sucessfully purged post!');
           }
         })
         .catch(function() { Alert.error('Failed to purge Post'); });

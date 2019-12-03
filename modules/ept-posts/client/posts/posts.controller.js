@@ -30,6 +30,10 @@ var ctrl = [
         delete $location.$$search.page;
         $location.$$compose();
       }
+      if($location.search().purged !== 'true') {
+        delete $location.$$search.purged;
+        $location.$$compose();
+      }
       $timeout(function() { highlight($location.hash()); }, 1000);
       $timeout($anchorScroll, 500);
     }
