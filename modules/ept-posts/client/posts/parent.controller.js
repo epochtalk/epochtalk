@@ -478,13 +478,9 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       ctrl.showPurgeModal = false;
       var index = ctrl.purgePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
-      // Cant delete first post, so we can always grab the previous post
-      var nearestPost =  ctrl.posts && ctrl.posts[index - 1];
       if (post) {
         Posts.purge({id: post.id}).$promise
-        .then(function() {
-          $state.go($state.$current, { start: nearestPost.position, '#': nearestPost.id}, {reload:true});
-        })
+        .then(function() { $state.go($state.$current, null, {reload:true}); })
         .catch(function() { Alert.error('Failed to purge Post'); });
       }
     };
