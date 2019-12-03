@@ -485,7 +485,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       else if (index === 0 && ctrl.posts.length > 1) {
         nearestPost = ctrl.posts && ctrl.posts[index + 1];
       }
-      console.log(ctrl.posts.length, index, nearestPost)
       if (post) {
         Posts.purge({id: post.id}).$promise
         .then(function() {
