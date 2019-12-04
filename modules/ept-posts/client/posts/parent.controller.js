@@ -354,6 +354,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           // Go to last page in the thread and scroll to new post
           var lastPage = ctrl.pageCount;
           var params = angular.copy($stateParams);
+          params.page = lastPage;
           delete params['#'];
           delete params['start'];
           $location.search(params).hash(data.id);
