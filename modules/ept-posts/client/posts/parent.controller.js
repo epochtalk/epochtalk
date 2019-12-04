@@ -353,6 +353,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
           ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
           // Go to last page in the thread and scroll to new post
           var lastPage = ctrl.pageCount;
+          $location.search('start', null);
           $location.search('page', lastPage).hash(data.id);
           if (ctrl.page === lastPage) { ctrl.pullPage(); }
         }
