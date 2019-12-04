@@ -1,5 +1,5 @@
-var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
-  function($scope, $timeout, $location, $filter, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
+var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
+  function($scope, $stateParams, $timeout, $location, $filter, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -353,7 +353,12 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
           ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
           // Go to last page in the thread and scroll to new post
           var lastPage = ctrl.pageCount;
-          $location.search('page', lastPage).hash(data.id);
+          var params = angular.copy($stateParams);
+          params.page = lastPage;
+          delete params['#'];
+          delete params['start'];
+          delete params['threadId'];
+          $location.search(params).hash(data.id);
           if (ctrl.page === lastPage) { ctrl.pullPage(); }
         }
         else if (type === 'update') {
