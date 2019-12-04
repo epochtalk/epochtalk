@@ -357,6 +357,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           params.page = lastPage;
           delete params['#'];
           delete params['start'];
+          delete params['threadId'];
           $location.search(params).hash(data.id);
           if (ctrl.page === lastPage) { ctrl.pullPage(); }
         }
