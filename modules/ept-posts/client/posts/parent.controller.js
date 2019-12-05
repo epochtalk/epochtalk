@@ -353,7 +353,12 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
           // Go to last page in the thread and scroll to new post
           var lastPage = ctrl.pageCount;
-          $location.search('page', lastPage).hash(data.id);
+          var params = angular.copy($stateParams);
+          params.page = lastPage;
+          delete params['#'];
+          delete params['start'];
+          delete params['threadId'];
+          $location.search(params).hash(data.id);
           if (ctrl.page === lastPage) { ctrl.pullPage(); }
         }
         else if (type === 'update') {
