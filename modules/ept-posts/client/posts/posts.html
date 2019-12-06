@@ -141,7 +141,45 @@
 <!-- Sidebar -->
 <div class="sidebar">
   <div class="sidebar-block">
-    <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+    <div ng-if="PostsParentCtrl.canPost()" class="sidebar-actions">
+      <a class="button" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
+      <div class="post-tools">
+        <!-- Thread Lock -->
+        <div class="control hide-mobile" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}"
+          ng-if="PostsParentCtrl.canLock()">
+          <a ng-href="#" id="lockThread" class="icon-epoch-lock" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
+            ng-click="PostsParentCtrl.updateThreadLock()">
+          </a>
+        </div>
+        
+        <!-- Thread Sticky -->
+        <div class="control hide-mobile" data-balloon="{{PostsParentCtrl.thread.sticky ? 'Unsticky Thread' : 'Sticky Thread'}}"
+          ng-if="PostsParentCtrl.canSticky()">
+          <a ng-href="#" id="stickyThread" class="icon-epoch-verified" ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
+            ng-click="PostsParentCtrl.updateThreadSticky()">
+          </a>
+        </div>
+        
+        <!-- Purge Delete -->
+        <div class="control hide-mobile" data-balloon="Purge Thread" ng-if="PostsParentCtrl.canPurge()">
+          <a ng-href="#" id="purgeThread" class="fa fa-times-circle"
+            ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }"
+            ng-click="PostsParentCtrl.showPurgeThreadModal = true">
+          </a>
+        </div>
+        
+        <!-- Move Thread -->
+        <div class="control hide-mobile" data-balloon="Move Thread" ng-if="PostsParentCtrl.canMove()">
+          <a ng-href="#" id="moveBoard" class="fa fa-arrow-right" ng-class="{'clicked' : PostsParentCtrl.showMoveThreadModal }"
+            ng-click="PostsParentCtrl.openMoveThreadModal()">
+          </a>
+        </div>
+
+      </div>
+    </div>
+    <div class="controls">
+      <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+    </div>
   </div>
 </div>
 
@@ -155,43 +193,6 @@
 
 <!-- Editor -->
 <div ng-if="PostsParentCtrl.canPost()">
-
-  <div ng-if="PostsParentCtrl.canPost()" id="post-tools-fixed">
-    <div class="tool-wrap">
-      <div class="tool-container">
-        <div class="half-column left-col" ng-bind-html="PostsParentCtrl.thread.title">
-        </div>
-        <div class="half-column right-col">
-          <!-- Thread Lock -->
-          <div class="control hide-mobile" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}" ng-if="PostsParentCtrl.canLock()">
-            <a ng-href="#" id="lockThread" class="icon-epoch-lock" ng-class="{'clicked' : PostsParentCtrl.thread.locked }" ng-click="PostsParentCtrl.updateThreadLock()">
-            </a>
-          </div>
-
-          <!-- Thread Sticky -->
-          <div class="control hide-mobile" data-balloon="{{PostsParentCtrl.thread.sticky ? 'Unsticky Thread' : 'Sticky Thread'}}"  ng-if="PostsParentCtrl.canSticky()">
-            <a ng-href="#" id="stickyThread" class="icon-epoch-verified" ng-class="{'clicked' : PostsParentCtrl.thread.sticky }" ng-click="PostsParentCtrl.updateThreadSticky()">
-            </a>
-          </div>
-
-          <!-- Purge Delete -->
-          <div class="control hide-mobile" data-balloon="Purge Thread" ng-if="PostsParentCtrl.canPurge()">
-            <a ng-href="#" id="purgeThread" class="fa fa-times-circle" ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }" ng-click="PostsParentCtrl.showPurgeThreadModal = true">
-            </a>
-          </div>
-
-          <!-- Move Thread -->
-          <div class="control hide-mobile" data-balloon="Move Thread" ng-if="PostsParentCtrl.canMove()">
-            <a ng-href="#" id="moveBoard" class="fa fa-arrow-right" ng-class="{'clicked' : PostsParentCtrl.showMoveThreadModal }" ng-click="PostsParentCtrl.openMoveThreadModal()">
-            </a>
-          </div>
-
-          <a class="button" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;<span class="hide-post">Post</span> Reply</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div ng-class="PostsParentCtrl.editorPosition" ng-show="PostsParentCtrl.showEditor" resizeable="PostsParentCtrl.resize">
     <!-- Editor Container-->
     <div class="editor-container">
@@ -204,7 +205,7 @@
             </a>
           </div>
 
-          <div class="left toolbar-title" ng-if="!PostsParentCtrl.posting.post.id">
+          <div class="toolbar-title" ng-if="!PostsParentCtrl.posting.post.id">
             New Post in "{{ PostsParentCtrl.thread.title}}"
           </div>
         </div>
