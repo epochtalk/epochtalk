@@ -8,7 +8,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
     this.focusEditor = false;
     this.quote = '';
     this.posting = { post: { body_html: '', body: '' } };
-    this.editorPosition = 'editor-fixed-bottom';
+    this.editorPosition = 'editor-fixed-right';
     this.resize = true;
     this.moveBoard = {};
     this.boards = [];
@@ -486,7 +486,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       }
       else {
         ctrl.isMinimized = true;
-        this.editorPosition = 'editor-fixed-bottom';
+        this.editorPosition = 'editor-fixed-right';
         this.resize = true;
       }
     };

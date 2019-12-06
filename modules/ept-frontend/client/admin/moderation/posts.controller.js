@@ -534,7 +534,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     }
     else {
       ctrl.isMinimized = true;
-      this.editorPosition = 'editor-fixed-bottom';
+      this.editorPosition = 'editor-fixed-right';
       this.resize = true;
     }
   };
