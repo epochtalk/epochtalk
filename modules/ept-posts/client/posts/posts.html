@@ -144,34 +144,53 @@
     <div ng-if="PostsParentCtrl.canPost()" class="sidebar-actions">
       <a class="button" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
       <div class="post-tools">
+
         <!-- Thread Lock -->
-        <div class="control hide-mobile" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}"
+        <div class="control" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}"
           ng-if="PostsParentCtrl.canLock()">
-          <a ng-href="#" id="lockThread" class="icon-epoch-lock" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
+          <a ng-href="#" id="lockThread" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
             ng-click="PostsParentCtrl.updateThreadLock()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>lock</title>
+              <path
+                d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z" />
+            </svg>
           </a>
         </div>
         
         <!-- Thread Sticky -->
-        <div class="control hide-mobile" data-balloon="{{PostsParentCtrl.thread.sticky ? 'Unsticky Thread' : 'Sticky Thread'}}"
+        <div class="control" data-balloon="{{PostsParentCtrl.thread.sticky ? 'Unsticky Thread' : 'Sticky Thread'}}"
           ng-if="PostsParentCtrl.canSticky()">
-          <a ng-href="#" id="stickyThread" class="icon-epoch-verified" ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
+          <a ng-href="#" id="stickyThread" ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
             ng-click="PostsParentCtrl.updateThreadSticky()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>verified</title>
+              <path
+                d="M41.79,3.83A19.77,19.77,0,0,1,23.67,2.15,19.77,19.77,0,0,1,5.55,3.83C-1.65,35.26,18.45,45,23.67,46.15,28.88,45,49,35.26,41.79,3.83Zm-20.52,29L12.37,24l2.12-2.12,6.78,6.78,13.1-13.1,2.12,2.12Z" />
+            </svg>
           </a>
         </div>
         
         <!-- Purge Delete -->
-        <div class="control hide-mobile" data-balloon="Purge Thread" ng-if="PostsParentCtrl.canPurge()">
-          <a ng-href="#" id="purgeThread" class="fa fa-times-circle"
-            ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }"
+        <div class="control" data-balloon="Purge Thread" ng-if="PostsParentCtrl.canPurge()">
+          <a ng-href="#" id="purgeThread" ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }"
             ng-click="PostsParentCtrl.showPurgeThreadModal = true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>delete-circle</title>
+              <path
+                d="M24,2A22,22,0,1,0,46,24,22,22,0,0,0,24,2ZM35.67,32.13l-3.54,3.54L24,27.54l-8.13,8.13-3.54-3.54L20.46,24l-8.13-8.13,3.54-3.54L24,20.46l8.13-8.13,3.54,3.54L27.54,24Z" />
+            </svg>
           </a>
         </div>
         
         <!-- Move Thread -->
-        <div class="control hide-mobile" data-balloon="Move Thread" ng-if="PostsParentCtrl.canMove()">
-          <a ng-href="#" id="moveBoard" class="fa fa-arrow-right" ng-class="{'clicked' : PostsParentCtrl.showMoveThreadModal }"
+        <div class="control" data-balloon="Move Thread" ng-if="PostsParentCtrl.canMove()">
+          <a ng-href="#" id="moveBoard" ng-class="{'clicked' : PostsParentCtrl.showMoveThreadModal }"
             ng-click="PostsParentCtrl.openMoveThreadModal()">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <title>Move</title>
+              <path d="m29.36 7.74a3 3 0 0 0 -4.25 4.26l9 9h-28.73a3 3 0 0 0 0 6h28.76l-9 9a3 3 0 0 0 4.25 4.24l16.23-16.24z" />
+            </svg>
           </a>
         </div>
 
