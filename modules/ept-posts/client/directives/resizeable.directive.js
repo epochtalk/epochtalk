@@ -77,7 +77,7 @@ var directive = ['$document',
         scope.$watch('resize', function(value) {
           if (value) {
             init();
-            element[0].style.height = element.data('default-height') || '288px';
+            element[0].style.height = element.data('default-height') || '100vh';
           }
           else {
             destroy();

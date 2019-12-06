@@ -2,7 +2,7 @@
 
 #public-content {
   .posts & {
-    grid-template-columns: minmax(0, 1fr) minmax(200px, 320px);
+    grid-template-columns: minmax(0, 1fr) minmax(200px, $sidebarWidth);
   }
 }
 
@@ -14,7 +14,30 @@ ad-viewer {
   .sidebar-block {
     display: block;
     position: sticky;
-    top: #$header-offset;
+    top: $header-offset;
+  }
+
+  .sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .post-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-bottom: 2rem;
+    width: 100%;
+
+    a {
+      color: $text-gray-med;
+    }
   }
 
   @include break-mobile-sm {
