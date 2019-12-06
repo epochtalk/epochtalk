@@ -36,7 +36,7 @@
     </div>
 
     <!-- Post Body Section -->
-    <div class="post-content">
+    <div ng-attr-id="{{$last ? 'last' : ''}}" class="post-content">
       <!-- Post Title -->
       <div class="post-title">
         <span ng-if="post.user.online" class="online green"><i class="fa fa-circle"></i></span>
@@ -54,42 +54,42 @@
 
         <ul class="post-action">
           <li ng-if="PostsCtrl.canPurge(post) && post.position !== 1">
-            <a ng-href="#" data-balloon="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
+            <a ng-href="" data-balloon="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
               <i class="fa fa-trash"></i>
             </a>
           </li>
           <li ng-if="PostsCtrl.canDelete(post) && post.position !== 1 && !post.deleted">
-            <a ng-href="#" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index, post.locked)">
+            <a ng-href="" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index, post.locked)">
               <i class="fa fa-eye-slash"></i>
             </a>
           </li>
           <li ng-if="PostsCtrl.canDelete(post) && post.deleted">
-            <a ng-href="#" data-balloon="Unhide" ng-click="PostsParentCtrl.openUndeleteModal($index)">
+            <a ng-href="" data-balloon="Unhide" ng-click="PostsParentCtrl.openUndeleteModal($index)">
               <i class="fa fa-eye"></i>
             </a>
           </li>
           <li ng-if="PostsCtrl.canPostLock(post) && !post.locked">
-            <a ng-href="#" data-balloon="Lock Post" ng-click="PostsParentCtrl.lockPost(post)">
+            <a ng-href="" data-balloon="Lock Post" ng-click="PostsParentCtrl.lockPost(post)">
               <i class="icon-epoch-lock"></i>
             </a>
           </li>
           <li ng-if="PostsCtrl.canPostLock(post) && post.locked">
-            <a ng-href="#" data-balloon="Unlock Post" ng-click="PostsParentCtrl.unlockPost(post)">
+            <a ng-href="" data-balloon="Unlock Post" ng-click="PostsParentCtrl.unlockPost(post)">
               <i class="icon-epoch-lock clicked"></i>
             </a>
           </li>
           <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers) && !PostsParentCtrl.bannedFromBoard" ng-hide="post.reported && post.reported_author">
-            <a ng-href="#" data-balloon="Report" ng-click="PostsCtrl.openReportModal(post)">
+            <a ng-href="" data-balloon="Report" ng-click="PostsCtrl.openReportModal(post)">
               <i class="icon-epoch-flag"></i>
             </a>
           </li>
           <li ng-if="PostsCtrl.canUpdate(post)">
-            <a ng-href="#" data-balloon="Edit" ng-click="PostsCtrl.loadEditor(post)">
+            <a ng-href="" data-balloon="Edit" ng-click="PostsCtrl.loadEditor(post)">
               <i class="icon-epoch-edit-pencil"></i>
             </a>
           </li>
           <li ng-if="PostsCtrl.canPost()">
-            <a ng-href="#" data-balloon="Quote" ng-click="PostsCtrl.addQuote(post)">
+            <a ng-href="" data-balloon="Quote" ng-click="PostsCtrl.addQuote(post)">
               <i class="icon-epoch-quote"></i>
             </a>
           </li>

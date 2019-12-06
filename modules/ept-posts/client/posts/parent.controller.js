@@ -483,9 +483,37 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       ctrl.showPurgeModal = false;
       var index = ctrl.purgePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
+      var nearestPost;
+      if (index > 0) {
+        nearestPost = ctrl.posts[index - 1];
+      }
+      else if (index === 0 && ctrl.posts.length > 1) {
+        nearestPost = ctrl.posts && ctrl.posts[index + 1];
+      }
       if (post) {
         Posts.purge({id: post.id}).$promise
-        .then(function() { $state.go($state.$current, null, {reload:true}); })
+        .then(function() {
+          if (nearestPost) {
+            $state.go($state.$current, { start: nearestPost.position, purged: 'true', '#': nearestPost.id}, {reload:true});
+          }
+          else { // deleted all posts on this page, load prev page
+          // Increment post count and recalculate ctrl.pageCount
+          ctrl.thread.post_count--;
+          ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
+          // Go to last page in the thread and scroll to new post
+          var prevPage = ctrl.page - 1;
+          var params = angular.copy($stateParams);
+          var page = Number(params.page) || Number($location.search().page);
+          params.page = (page || 2) - 1;
+          delete params['#'];
+          delete params['purged'];
+          delete params['threadId'];
+          delete params['start'];
+          $location.hash('last');
+          $location.search(params);
+          Alert.success('Sucessfully purged post!');
+          }
+        })
         .catch(function() { Alert.error('Failed to purge Post'); });
       }
     };

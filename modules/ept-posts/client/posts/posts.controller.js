@@ -30,7 +30,7 @@ var ctrl = [
         delete $location.$$search.page;
         $location.$$compose();
       }
-      $timeout($anchorScroll, 1000);
+      $timeout(function() { highlight($location.hash()); }, 1000);
     }
     else { $timeout($anchorScroll); }
 
@@ -211,18 +211,17 @@ var ctrl = [
     (function() {
       calculatePollPercentage();
       parent.pageCount = Math.ceil(parent.thread.post_count / parent.limit);
-      $timeout(function() { highlight($location.hash()); }, 500);
       checkUsersOnline();
     })();
 
-    this.offLCS = $rootScope.$on('$locationChangeSuccess', function(){
+    this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
       var params = $location.search();
       var page = Number(params.page) || 1;
+      var start = params.start;
       var limit = Number(params.limit);
       var pageChanged = false;
       var limitChanged = false;
-
-      if (page && page !== parent.page) {
+      if (page && page !== parent.page && !start) {
         pageChanged = true;
         parent.page = page;
       }
@@ -230,7 +229,6 @@ var ctrl = [
         limitChanged = true;
         parent.limit = limit;
       }
-
       if (pageChanged || limitChanged) { parent.pullPage(); }
     });
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
@@ -257,7 +255,6 @@ var ctrl = [
         calculatePollPercentage();
         checkUsersOnline();
         ctrl.highlightPost();
-        $timeout($anchorScroll);
       });
     };
 
@@ -293,14 +290,28 @@ var ctrl = [
     };
 
     this.highlightPost = function() {
-      $timeout(function() { highlight($location.hash()); });
+      $timeout(function() {
+        highlight($location.hash());
+        $anchorScroll();
+      });
     };
 
     function highlight(postId) {
-      ctrl.posts.map(function(post) {
-        if (post.id === postId) { post.highlighted = true; }
-        else { post.highlighted = false; }
-      });
+      if ($location.search().purged === 'true') { purgeSuccess(); }
+      else {
+        ctrl.posts.map(function(post) {
+          if (post.id === postId) { post.highlighted = true; }
+          else { post.highlighted = false; }
+        });
+      }
+    }
+
+    function purgeSuccess() {
+      if ($location.search().start && $location.hash().length && $location.search().purged) {
+        Alert.success('Sucessfully purged post!');
+        delete $location.$$search.purged;
+        $location.$$compose();
+      }
     }
 
     function generateBaseUrl() {
