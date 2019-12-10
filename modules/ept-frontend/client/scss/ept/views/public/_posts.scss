@@ -168,7 +168,7 @@ ad-viewer {
         margin-bottom: 1rem;
         height: 3.75rem;
         width: 3.75rem;
-        
+
         .online {
           position: absolute;
           top: -4px;
@@ -191,7 +191,7 @@ ad-viewer {
         }
       }
       .user-trust,
-      .user-rank, 
+      .user-rank,
       .user-activity, .original-poster {
         line-height: 1;
         color: $secondary-font-color;
@@ -456,7 +456,7 @@ ad-viewer {
   .thread-data {
     margin-bottom: 3rem;
   }
-  
+
   .thread-data .post-block .post-user {
     display: none;
   }
