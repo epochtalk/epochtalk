@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 
 /**
@@ -37,11 +37,11 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         user_id: Joi.string().required(),
         expiration: Joi.date(),
         ip_ban: Joi.boolean().default(false)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.bans.ban(request.server, request.auth, request.payload.user_id) } ],
   },

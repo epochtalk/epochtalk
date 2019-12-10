@@ -1,19 +1,19 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var Promise = require('bluebird');
 
 module.exports = {
   validateRoles: function(validations, payload) {
-   var schema = Joi.object().keys({
+   var schema = Joi.object({
      priorityRestrictions: Joi.array().items(Joi.number()),
-     adminAccess: Joi.object().keys({
-       settings: Joi.object().keys({
+     adminAccess: Joi.object({
+       settings: Joi.object({
          general: Joi.boolean(),
          advanced: Joi.boolean(),
          legal: Joi.boolean(),
          theme: Joi.boolean()
        }),
-       management: Joi.object().keys({
+       management: Joi.object({
          boards: Joi.boolean(),
          users: Joi.boolean(),
          roles: Joi.boolean(),
@@ -21,7 +21,7 @@ module.exports = {
          invitations: Joi.boolean()
        })
      }),
-     modAccess: Joi.object().keys({
+     modAccess: Joi.object({
        users: Joi.boolean(),
        posts: Joi.boolean(),
        messages: Joi.boolean(),
@@ -66,13 +66,12 @@ module.exports = {
 
     var promise = new Promise(function(resolve, reject) {
      if (payload.permissions) {
-       Joi.validate(payload.permissions, schema, { stripUnknown: true }, function(err, value) {
-         if (err) { return reject(Boom.badRequest(err)); }
-         else {
-           payload.permissions = value;
-           return resolve();
-         }
-       });
+       const { error, value } = schema.validate(payload.permissions, { stripUnknown: true })
+       if (error) { return reject(Boom.badRequest(error)); }
+       else {
+         payload.permissions = value;
+         return resolve();
+       }
      }
      else { return resolve(); }
    });

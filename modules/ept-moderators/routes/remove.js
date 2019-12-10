@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -32,10 +32,10 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         usernames: Joi.array().items(Joi.string().required()).unique().min(1).required(),
         board_id: Joi.string().required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.moderators.remove(request.server, request.auth) } ]
   },

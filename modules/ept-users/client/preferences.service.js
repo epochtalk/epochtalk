@@ -18,11 +18,14 @@ var service = ['User', '$window', function(User, $window) {
     // Attempt to retrieve preferences from storage
     try {
       preferences = {
-        posts_per_page: storage.posts_per_page,
-        threads_per_page: storage.threads_per_page,
+        posts_per_page: Number(storage.posts_per_page) || 25,
+        threads_per_page: Number(storage.threads_per_page) || 25,
       };
       if (storage.collapsed_categories) {
         preferences.collapsed_categories = JSON.parse(storage.collapsed_categories);
+      }
+      if (storage.ignored_boards) {
+        preferences.ignored_boards = JSON.parse(storage.ignored_boards);
       }
     }
     catch(err) { console.log('Error parsing preferences from storage: ', err); }
@@ -32,14 +35,19 @@ var service = ['User', '$window', function(User, $window) {
       container.threads_per_page = newPref.threads_per_page;
       if (isStorage) {
         container.collapsed_categories = JSON.stringify(newPref.collapsed_categories || []);
+        container.ignored_boards = JSON.stringify(newPref.ignored_boards || []);
       }
-      else { container.collapsed_categories = newPref.collapsed_categories || []; }
+      else {
+        container.collapsed_categories = newPref.collapsed_categories || [];
+        container.ignored_boards = newPref.ignored_boards || [];
+      }
     }
 
     function clearContainer(container) {
       delete container.posts_per_page;
       delete container.threads_per_page;
       delete container.collapsed_categories;
+      delete container.ignored_boards;
     }
 
     // Service API

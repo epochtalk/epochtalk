@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 var allPermissions = {
   counts: { allow: true },
@@ -10,11 +10,11 @@ var noPermissions = {};
 module.exports = [{
   name: 'notifications',
   data: {
-    validation: Joi.object().keys({
-      counts: Joi.object().keys({
+    validation: Joi.object({
+      counts: Joi.object({
         allow: Joi.boolean()
       }),
-      dismiss: Joi.object().keys({
+      dismiss: Joi.object({
         allow: Joi.boolean()
       })
     }),

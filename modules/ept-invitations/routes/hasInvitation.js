@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @api {GET} /invites/exists Invitation Exists
@@ -18,7 +18,7 @@ module.exports = {
   path: '/api/invites/exists',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { query: { email: Joi.string().email().required() } }
+    validate: { query: Joi.object({ email: Joi.string().email().required() }) }
   },
   handler: function(request) {
     // query invitations

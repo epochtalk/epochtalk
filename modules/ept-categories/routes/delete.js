@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 
 /**
@@ -22,9 +22,9 @@ module.exports = {
     auth: { strategy: 'jwt' },
     plugins: { acls: 'categories.delete' },
     validate: {
-      payload: {
+      payload: Joi.object({
         category_ids: Joi.array().items(Joi.string().required()).unique().min(1)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.categories.delete(request.server, request.auth) } ]
   },

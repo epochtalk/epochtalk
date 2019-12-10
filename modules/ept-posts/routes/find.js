@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var path = require('path');
 var common = require(path.normalize(__dirname + '/../common'));
 
@@ -30,7 +30,7 @@ module.exports = {
   options: {
     app: { hook: 'posts.find' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: { id: Joi.string().required() } },
+    validate: { params: Joi.object({ id: Joi.string().required() }) },
     pre: [
       { method: (request) => request.server.methods.auth.posts.find(request.server, request.auth, request.params.id), assign: 'viewDeleted' },
       { method: (request) => request.server.methods.hooks.preProcessing(request) },

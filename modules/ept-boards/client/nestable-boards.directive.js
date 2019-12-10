@@ -28,6 +28,7 @@ var directive = ['$compile', function($compile) {
             viewable_by: board.viewable_by,
             postable_by: board.postable_by,
             right_to_left: board.right_to_left,
+            disable_post_edit: board.disable_post_edit,
             children: board.children || [],
             moderators: board.moderators || []
           };
@@ -57,7 +58,8 @@ var directive = ['$compile', function($compile) {
           description: $('#newBoardDesc').val() || '',
           viewable_by: $('#newBoardViewable').val() || undefined,
           postable_by: $('#newBoardPostable').val() || undefined,
-          right_to_left: $('input[name="newBoardRTL"]:checked').val() === "true"
+          right_to_left: $('input[name="newBoardRTL"]:checked').val() === "true",
+          disable_post_edit: $('input[name="newBoardPostEdit"]:checked').val() === "true"
         };
 
         if (board.name !== '') {
@@ -70,6 +72,7 @@ var directive = ['$compile', function($compile) {
             viewable_by: board.viewable_by,
             postable_by: board.postable_by,
             right_to_left: board.right_to_left,
+            disable_post_edit: board.disable_post_edit,
             children: board.children || [],
             moderators: board.moderators || []
           };
@@ -101,6 +104,7 @@ var directive = ['$compile', function($compile) {
         $('#newBoardViewable').val('');
         $('#newBoardPostable').val('');
         $('#ltr').prop('checked', true);
+        $('#new-enable-post-edit').prop('checked', true);
       };
 
     }

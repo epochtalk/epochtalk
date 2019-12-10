@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -29,6 +29,7 @@ var Joi = require('joi');
   * @apiParam (Payload) {numbers} [posts_per_page] Preference for how many post to view per page
   * @apiParam (Payload) {numbers} [threads_per_page] Preference for how many threads to view per page
   * @apiParam (Payload) {string[]} [collapsed_categories] Array of category id's which the user has collapsed
+  * @apiParam (Payload) {string[]} [ignored_boards] Array of board id's which the user has ignored
   *
   * @apiSuccess {string} id The user's unique id
   * @apiSuccess {string} [username] The user's username
@@ -45,6 +46,7 @@ var Joi = require('joi');
   * @apiSuccess {string} [signature] The user's signature with any markup tags converted and parsed into html elements
   * @apiSuccess {string} [avatar] URL to the user's avatar
   * @apiSuccess {string[]} collapsed_categories Array containing id of categories the user collapsed
+  * @apiSuccess {string[]} ignored_boards Array containing id of boards the user ignores
   * @apiSuccess {number} posts_per_page Preference indicating the number of posts the user wants to view per page
   * @apiSuccess {number} threads_per_page Preference indicating the number of threads the user wants to view per page
   *
@@ -79,8 +81,8 @@ module.exports = {
       }
     },
     validate: {
-      params: { id: Joi.string().required() },
-      payload: Joi.object().keys({
+      params: Joi.object({ id: Joi.string().required() }),
+      payload: Joi.object({
         email: Joi.string().email(),
         email_password: Joi.string().min(8).max(255),
         username: Joi.string().regex(/^[a-zA-Z\d-_.]+$/).min(3).max(255).required(),
@@ -100,7 +102,8 @@ module.exports = {
         avatar: Joi.string().allow(''),
         posts_per_page: Joi.number().min(10).max(100).default(25),
         threads_per_page: Joi.number().min(10).max(100).default(25),
-        collapsed_categories: Joi.array().items(Joi.string())
+        collapsed_categories: Joi.array().items(Joi.string()),
+        ignored_boards: Joi.array().items(Joi.string())
       })
       .and('password', 'old_password', 'confirmation')
       .with('signature', 'raw_signature')

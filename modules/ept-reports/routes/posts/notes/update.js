@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -39,11 +39,11 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         id: Joi.string().required(),
         report_id: Joi.string().required(),
         note: Joi.string().max(255)
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.reports.posts.notes.update(request.server, request.auth, request.payload.id) } ],
   },

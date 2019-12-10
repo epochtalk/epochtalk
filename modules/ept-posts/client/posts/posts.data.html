@@ -24,6 +24,7 @@
           </span>
           <img ng-style="" ng-src="{{::post.avatar || $webConfigs.default_avatar}}">
         </div>
+        <div class="original-poster" ng-if="::post.user.original_poster">OP</div>
         <div ng-if="post.user.activity > -1" title="{{ 'Activity: ' + post.user.activity }}" class="user-activity">Act: <span ng-bind="post.user.activity" class="user-activity-value"></span></div>
       </a>
 
@@ -39,7 +40,7 @@
     </div>
 
     <!-- Post Body Section -->
-    <div class="post-content">
+    <div ng-attr-id="{{$last ? 'last' : ''}}" class="post-content">
       <!-- Post Title -->
       <div class="post-title">
         <div class="post-title-user">
@@ -51,13 +52,14 @@
           <div title="{{post.user.role_name || 'user'}}" class="user-role" ng-bind="post.user.role_name || 'user'" ng-style="PostsCtrl.userRoleHighlight(post.user.highlight_color)"></div>
           <div class="timestamp">
             <span ng-bind="::post.created_at | humanDate"></span>
-            <span ng-if="PostsCtrl.showEditDate(post)" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
+            <span ng-if="PostsCtrl.showEditDate(post) && post.metadata.edited_by_username" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate) + ' by '"></span><a ng-if="PostsCtrl.showEditDate(post) && post.metadata.edited_by_username" ui-sref="profile.posts({ username: post.metadata.edited_by_username})" ng-bind="post.metadata.edited_by_username"></a>
+            <span ng-if="PostsCtrl.showEditDate(post) && !post.metadata.edited_by_username" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
           </div>
         </div>
 
         <ul class="post-action">
           <li ng-if="PostsCtrl.canPurge() && post.position !== 1">
-            <a ng-href="#" class="post-action-icon" data-balloon="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
+            <a ng-href="" class="post-action-icon" data-balloon="Purge" ng-click="PostsParentCtrl.openPurgeModal($index)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title>trashcan</title>
                 <path
@@ -68,7 +70,7 @@
             </a>
           </li>
           <li ng-if="PostsCtrl.canDelete(post) && post.position !== 1 && !post.deleted">
-            <a ng-href="#" class="post-action-icon" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index, post.locked)">
+            <a ng-href="" class="post-action-icon" data-balloon="Hide" ng-click="PostsParentCtrl.openDeleteModal($index, post.locked)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title>unwatch</title>
                 <path
@@ -80,7 +82,7 @@
             </a>
           </li>
           <li ng-if="PostsCtrl.canDelete(post) && post.deleted">
-            <a ng-href="#" class="post-action-icon selected" data-balloon="Unhide" ng-click="PostsParentCtrl.openUndeleteModal($index)">
+            <a ng-href="" class="post-action-icon selected" data-balloon="Unhide" ng-click="PostsParentCtrl.openUndeleteModal($index)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title>unwatch</title>
                 <path
@@ -92,7 +94,7 @@
             </a>
           </li>
           <li ng-if="PostsCtrl.canPostLock(post) && !post.locked">
-            <a ng-href="#" class="post-action-icon" data-balloon="Lock Post" ng-click="PostsParentCtrl.lockPost(post)">
+            <a ng-href="" class="post-action-icon" data-balloon="Lock Post" ng-click="PostsParentCtrl.lockPost(post)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title>lock</title>
                 <path
@@ -101,7 +103,7 @@
             </a>
           </li>
           <li ng-if="PostsCtrl.canPostLock(post) && post.locked">
-            <a ng-href="#" class="post-action-icon selected" data-balloon="Unlock Post" ng-click="PostsParentCtrl.unlockPost(post)">
+            <a ng-href="" class="post-action-icon selected" data-balloon="Unlock Post" ng-click="PostsParentCtrl.unlockPost(post)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title>lock</title>
                 <path
@@ -110,7 +112,7 @@
             </a>
           </li>
           <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers) && !PostsParentCtrl.bannedFromBoard" ng-hide="post.reported && post.reported_author">
-            <a ng-href="#" class="post-action-icon" data-balloon="Report" ng-click="PostsCtrl.openReportModal(post)">
+            <a ng-href="" class="post-action-icon" data-balloon="Report" ng-click="PostsCtrl.openReportModal(post)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title>flag</title>
                 <path
@@ -119,7 +121,7 @@
             </a>
           </li>
           <li ng-if="PostsCtrl.canUpdate(post)">
-            <a ng-href="#" class="post-action-icon" data-balloon="Edit" ng-click="PostsCtrl.loadEditor(post)">
+            <a ng-href="" class="post-action-icon" data-balloon="Edit" ng-click="PostsCtrl.loadEditor(post)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title>edit-pencil</title>
                 <path d="M7.38,33.74h0L4,44l10.26-3.39h0L41.74,13.14,34.86,6.26Zm31-21.15.54.55L14.26,37.79l-.54-.54" />
@@ -128,7 +130,7 @@
             </a>
           </li>
           <li ng-if="PostsCtrl.canPost()">
-            <a ng-href="#" class="post-action-icon" data-balloon="Quote" ng-click="PostsCtrl.addQuote(post)">
+            <a ng-href="" class="post-action-icon" data-balloon="Quote" ng-click="PostsCtrl.addQuote(post)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title>quote</title>
                 <path

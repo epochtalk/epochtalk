@@ -8,7 +8,11 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
     this.limit = pageData.limit;
     this.desc = pageData.desc || true; // default to true
     this.usersPosts = pageData.posts;
+    this.threads = pageData.threads ? true : false;
+    this.next = pageData.next;
+    this.prev = pageData.prev;
     this.parent = $scope.$parent.ProfileCtrl;
+
     if (this.parent) { this.parent.user = user; }
 
     if ($state.current.name === 'users-posts') { $anchorScroll(); }
@@ -26,18 +30,23 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
       return sortClass;
     };
 
-    this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
+    this.offLCS = $rootScope.$on('$locationChangeSuccess', function(reload) {
       var params = $location.search();
       var page = Number(params.page) || 1;
       var limit = Number(params.limit) || 25;
       var descending;
+      var threads;
 
-      if (params.desc === false) { descending = false; }
+      if (params.desc === false || params.desc === "false") { descending = false; }
       else { descending = true; }
+
+      if (params.threads === true || params.threads === "true") { threads = true; }
+      else { threads = false; }
 
       var pageChanged = false;
       var limitChanged = false;
       var descChanged = false;
+      var threadsChanged = false;
 
       if (page && page !== ctrl.page) {
         pageChanged = true;
@@ -51,13 +60,18 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
         descChanged = true;
         ctrl.desc = descending;
       }
-
-      if((pageChanged || limitChanged || descChanged) && ($state.current.name === 'users-posts' || $state.current.name === 'profile.posts')) {
-        ctrl.pullPage(); }
+      if (threads !== ctrl.threads) {
+        threadsChanged = true;
+        ctrl.threads = threads;
+      }
+      if ($state.current.name === 'users-posts' || $state.current.name === 'profile.posts') {
+        if(pageChanged || limitChanged || descChanged || threadsChanged) { ctrl.pullPosts(threads); }
+      }
     });
+
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
-    this.pullPage = function() {
+    this.pullPosts = function(threads) {
       var params = {
         username: ctrl.user.username,
         page: ctrl.page,
@@ -65,13 +79,30 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
         desc: ctrl.desc
       };
 
-      // replace current user post with new user posts
-      Posts.pageByUser(params).$promise
-      .then(function(pageData) {
-        ctrl.pageCount = Math.ceil(pageData.count / pageData.limit);
-        ctrl.usersPosts = pageData.posts;
-      });
+      if (threads) {
+        Posts.pageStartedByUser(params).$promise
+        .then(function(pageData) {
+          ctrl.usersPosts = pageData.posts;
+          ctrl.next = pageData.next;
+          ctrl.prev = pageData.prev;
+        });
+      }
+      else {
+        Posts.pageByUser(params).$promise
+        .then(function(pageData) {
+          ctrl.pageCount = Math.ceil(pageData.count / pageData.limit);
+          ctrl.usersPosts = pageData.posts;
+        });
+      }
     };
+
+    this.toggleThreads = function(threads) {
+      $location.search('page', 1);
+      if (threads) { $location.search('threads', 'true'); }
+      else { $location.search('threads', null); }
+      // Update queryParams (forces pagination to refresh)
+      ctrl.queryParams = $location.search();
+    }
   }
 ];
 

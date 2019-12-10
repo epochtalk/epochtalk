@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 var allPermissions = {
   page: { allow: true },
@@ -14,14 +14,14 @@ var noCreatePermissions = {
 var noPermissions = {};
 
 var mentions = {
-  validation: Joi.object().keys({
-    page: Joi.object().keys({
+  validation: Joi.object({
+    page: Joi.object({
       allow: Joi.boolean()
     }),
-    create: Joi.object().keys({
+    create: Joi.object({
       allow: Joi.boolean()
     }),
-    delete: Joi.object().keys({
+    delete: Joi.object({
       allow: Joi.boolean()
     })
   }),

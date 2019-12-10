@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 var allPermissions = {
   page: { allow: true }
@@ -9,8 +9,8 @@ var noPermissions = {};
 module.exports = [{
   name: 'moderationLogs',
   data: {
-    validation: Joi.object().keys({
-      page: Joi.object().keys({
+    validation: Joi.object({
+      page: Joi.object({
         allow: Joi.boolean()
       })
     }),

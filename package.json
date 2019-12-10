@@ -10,6 +10,13 @@
     "test-client": "./node_modules/.bin/protractor protractor.config.js",
     "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && psql epoch_test < ./schema.sql"
   },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/epochtalk/epochtalk"
@@ -26,23 +33,25 @@
     "url": "/api"
   },
   "dependencies": {
+    "@hapi/boom": "^8.0.1",
     "@hapi/good": "^8.2.0",
     "@hapi/good-console": "^8.1.0",
     "@hapi/good-squeeze": "^5.2.0",
     "@hapi/hapi": "^18.1.0",
+    "@hapi/hoek": "^8.2.4",
     "@hapi/inert": "^5.2.1",
+    "@hapi/joi": "^16.1.4",
     "@hapi/vision": "^5.5.2",
     "@uirouter/angularjs": "^1.0.20",
-    "angular": "1.7.5",
+    "angular": "1.7.9",
     "angular-animate": "1.7.5",
     "angular-loading-bar": "0.7.1",
     "angular-resource": "1.7.5",
     "angular-sanitize": "1.7.5",
     "angular-sortable-view": "0.0.13",
     "aws-sdk": "^2.339.0",
-    "bcrypt": "^3.0.3",
+    "bcrypt": "^3.0.6",
     "bluebird": "^3.5.1",
-    "boom": "^7.2.0",
     "change-case": "^2.3.1",
     "cheerio": "^0.20.0",
     "commander": "^2.9.0",
@@ -53,9 +62,8 @@
     "good-file": "^6.0.1",
     "good-http": "^6.1.3",
     "handlebars": "^4.1.1",
-    "hoek": "^6.1.2",
+    "hapi": "^18.1.0",
     "ip-address": "^5.0.2",
-    "joi": "^14.3.1",
     "jquery": "3.4.0",
     "json": "^9.0.3",
     "jsonwebtoken": "^8.1.0",

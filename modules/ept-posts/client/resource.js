@@ -19,6 +19,11 @@ var resource = ['$resource',
         method: 'GET',
         params: { username: '@username' }
       },
+      pageStartedByUser: {
+        url: '/api/posts/user/:username/started',
+        method: 'GET',
+        params: { username: '@username' }
+      },
       search: {
         url: '/api/search/posts',
         method: 'GET'

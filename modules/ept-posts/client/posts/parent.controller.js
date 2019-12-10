@@ -1,5 +1,5 @@
-var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
-  function($scope, $timeout, $location, $filter, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
+var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$state', 'Session', 'Boards', 'Posts', 'Threads', 'Reports', 'Alert', 'BreadcrumbSvc',
+  function($scope, $stateParams, $timeout, $location, $filter, $state, Session, Boards, Posts, Threads, Reports, Alert, BreadcrumbSvc) {
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
     this.dirtyEditor = false;
@@ -25,15 +25,18 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
     // Thread Permissions
     this.canEditTitle = function() {
+      var elevatedPrivileges = Session.hasPermission('threads.title.bypass.owner.admin') || Session.hasPermission('threads.title.bypass.owner.mod') || Session.hasPermission('threads.title.bypass.owner.priority');
       if (!ctrl.loggedIn()) { return false; }
       if (ctrl.bannedFromBoard) { return false; }
       if (!Session.hasPermission('threads.title.allow')) { return false; }
       if (!ctrl.writeAccess) { return false; }
+      if (ctrl.disablePostEdit && !elevatedPrivileges) { return false; }
 
       var title = false;
-      if (ctrl.thread.user.id === Session.user.id) { title = true; }
+      if (ctrl.thread.user.id === Session.user.id && !ctrl.thread.locked) { title = true; }
       else {
         if (Session.hasPermission('threads.title.bypass.owner.admin')) { title = true; }
+        else if (Session.hasPermission('threads.title.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { title = true; }
         else if (Session.hasPermission('threads.title.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { title = true; }
         }
@@ -51,6 +54,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       if (ctrl.thread.user.id === Session.user.id) { lock = true; }
       else {
         if (Session.hasPermission('threads.lock.bypass.owner.admin')) { lock = true; }
+        else if (Session.hasPermission('threads.lock.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { lock = true; }
         else if (Session.hasPermission('threads.lock.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { lock = true; }
         }
@@ -66,6 +70,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
       var sticky = false;
       if (Session.hasPermission('threads.sticky.bypass.owner.admin')) { sticky = true; }
+      else if (Session.hasPermission('threads.sticky.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { sticky = true; }
       else if (Session.hasPermission('threads.sticky.bypass.owner.mod')) {
         if (Session.moderatesBoard(ctrl.thread.board_id)) { sticky = true; }
       }
@@ -80,6 +85,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
 
       var purge = false;
       if (Session.hasPermission('threads.purge.bypass.owner.admin')) { purge = true; }
+      else if (Session.hasPermission('threads.purge.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { purge = true; }
       else if (Session.hasPermission('threads.purge.bypass.owner.mod')) {
         if (Session.moderatesBoard(ctrl.thread.board_id)) { purge = true; }
       }
@@ -132,6 +138,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       if (ctrl.thread.user.id === Session.user.id) { create = true; }
       else {
         if (Session.hasPermission('threads.createPoll.bypass.owner.admin')) { create = true; }
+        else if (Session.hasPermission('threads.createPoll.bypass.owner.priority') && Session.getPriority() < ctrl.posts[0].user.priority) { create = true; }
         else if (Session.hasPermission('threads.createPoll.bypass.owner.mod')) {
           if (Session.moderatesBoard(ctrl.thread.board_id)) { create = true; }
         }
@@ -346,7 +353,12 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
           ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
           // Go to last page in the thread and scroll to new post
           var lastPage = ctrl.pageCount;
-          $location.search('page', lastPage).hash(data.id);
+          var params = angular.copy($stateParams);
+          params.page = lastPage;
+          delete params['#'];
+          delete params['start'];
+          delete params['threadId'];
+          $location.search(params).hash(data.id);
           if (ctrl.page === lastPage) { ctrl.pullPage(); }
         }
         else if (type === 'update') {
@@ -355,6 +367,7 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
           editPost.body_html = data.body_html;
           editPost.body = data.body;
           editPost.updated_at = data.updated_at;
+          editPost.metadata = data.metadata;
         }
       })
       .then(closeEditor)
@@ -470,9 +483,37 @@ var ctrl = [ '$scope', '$timeout', '$location', '$filter', '$state', 'Session', 
       ctrl.showPurgeModal = false;
       var index = ctrl.purgePostIndex;
       var post = ctrl.posts && ctrl.posts[index] || '';
+      var nearestPost;
+      if (index > 0) {
+        nearestPost = ctrl.posts[index - 1];
+      }
+      else if (index === 0 && ctrl.posts.length > 1) {
+        nearestPost = ctrl.posts && ctrl.posts[index + 1];
+      }
       if (post) {
         Posts.purge({id: post.id}).$promise
-        .then(function() { $state.go($state.$current, null, {reload:true}); })
+        .then(function() {
+          if (nearestPost) {
+            $state.go($state.$current, { start: nearestPost.position, purged: 'true', '#': nearestPost.id}, {reload:true});
+          }
+          else { // deleted all posts on this page, load prev page
+          // Increment post count and recalculate ctrl.pageCount
+          ctrl.thread.post_count--;
+          ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
+          // Go to last page in the thread and scroll to new post
+          var prevPage = ctrl.page - 1;
+          var params = angular.copy($stateParams);
+          var page = Number(params.page) || Number($location.search().page);
+          params.page = (page || 2) - 1;
+          delete params['#'];
+          delete params['purged'];
+          delete params['threadId'];
+          delete params['start'];
+          $location.hash('last');
+          $location.search(params);
+          Alert.success('Sucessfully purged post!');
+          }
+        })
         .catch(function() { Alert.error('Failed to purge Post'); });
       }
     };

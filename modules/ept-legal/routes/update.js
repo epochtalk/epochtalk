@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var path = require('path');
 var fse = require('fs-extra');
 var Promise = require('bluebird');
@@ -26,7 +26,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: Joi.object().keys({
+      payload: Joi.object({
         tos: Joi.string().allow(''),
         privacy: Joi.string().allow(''),
         disclaimer: Joi.string().allow('')

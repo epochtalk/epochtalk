@@ -85,6 +85,7 @@ app
 
     if (error) {
       var next = transition.to();
+      var prev = transition.from();
       var nextParams = transition.params();
       console.log(error);
       // stop page change

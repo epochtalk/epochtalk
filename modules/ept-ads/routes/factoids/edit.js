@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../../db'));
@@ -38,8 +38,8 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { id: Joi.string().required() },
-      payload: { text: Joi.string().required() }
+      params: Joi.object({ id: Joi.string().required() }),
+      payload: Joi.object({ text: Joi.string().required() })
     },
     pre: [ { method: auth } ]
   },

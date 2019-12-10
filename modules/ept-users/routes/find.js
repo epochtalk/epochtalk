@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var _ = require('lodash');
 var Boom = require('boom');
 var querystring = require('querystring');
@@ -22,6 +22,7 @@ var querystring = require('querystring');
   * @apiSuccess {number} priority The user's role priority
   * @apiSuccess {number} post_count The number of posts made by this user
   * @apiSuccess {string[]} collapsed_categories Array containing id of categories the user collapsed
+  * @apiSuccess {string[]} ignored_boards Array containing id of boards the user ignores
   * @apiSuccess {number} posts_per_page Preference indicating the number of posts the user wants to view per page
   * @apiSuccess {number} threads_per_page Preference indicating the number of threads the user wants to view per page
   * @apiSuccess {string} name The user's actual name (e.g. John Doe)
@@ -43,7 +44,7 @@ module.exports = {
   options: {
     app: { hook: 'users.find' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: { username: Joi.string().required() } },
+    validate: { params: Joi.object({ username: Joi.string().required() }) },
     pre: [
       { method: (request) => request.server.methods.auth.users.find(request.server, request.auth, request.params), assign: 'view' },
       { method: (request) => request.server.methods.hooks.preProcessing(request) },
@@ -81,11 +82,13 @@ function processing(request) {
       delete user.posts_per_page;
       delete user.thread_per_page;
       delete user.collapsed_categories;
+      delete user.ignored_boards;
     }
     else {
       user.posts_per_page = user.posts_per_page || 25;
       user.threads_per_page = user.threads_per_page || 25;
       user.collapsed_categories = user.collapsed_categories || [];
+      user.ignored_boards = user.ignored_boards || [];
     }
     user.priority = _.min(user.roles.map(function(role) { return role.priority; }));
     user.roles = user.roles.map(function(role) { return role.lookup; });

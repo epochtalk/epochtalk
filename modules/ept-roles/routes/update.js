@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var _ = require('lodash');
 
 /**
@@ -37,7 +37,7 @@ module.exports = {
       }
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         id: Joi.string().required(),
         name: Joi.string().min(1).max(255).required(),
         description: Joi.string().min(1).max(1000).required(),
@@ -45,7 +45,7 @@ module.exports = {
         highlight_color: Joi.string(),
         lookup: Joi.string().required(),
         permissions: Joi.object()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.roles.update(request.server, request.auth, request.roleValidations, request.payload) } ]
   },
