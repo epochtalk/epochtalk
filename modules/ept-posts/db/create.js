@@ -19,7 +19,7 @@ module.exports = function(post) {
   queryIncUserPostCount = 'UPDATE users.profiles SET post_count = post_count + 1 WHERE user_id = $1';
   queryUpdateThreadCreatedAt = 'UPDATE threads SET created_at = (SELECT created_at FROM posts WHERE thread_id = $1 ORDER BY created_at limit 1) WHERE id = $1'
   queryUpdateThreadUpdatedAt = 'UPDATE threads SET updated_at = (SELECT created_at FROM posts WHERE thread_id = $1 ORDER BY created_at DESC limit 1) WHERE id = $1'
-  queryUpdatePostPosition = 'UPDATE posts SET position = (SELECT post_count + 1 + (SELECT COUNT(id) FROM posts WHERE thread_id = $1 AND deleted = true) FROM threads WHERE id = $1) WHERE id = $2 RETURNING position';
+  queryUpdatePostPosition = 'UPDATE posts SET position = (SELECT post_count + 1 FROM threads WHERE id = $1) WHERE id = $2 RETURNING position';
   queryIncThreadPostCount = 'UPDATE threads SET post_count = post_count + 1 WHERE id = $1';
 
   params = [post.thread_id, post.user_id, post_json, post.deleted, post.locked];

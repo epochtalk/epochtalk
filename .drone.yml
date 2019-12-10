@@ -1,0 +1,63 @@
+kind: pipeline
+name: default
+
+steps:
+- name: publish
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    repo:
+      from_secret: aws_ecr_repo
+    registry:
+      from_secret: aws_ecr_registry
+    region:
+      from_secret: aws_region
+    tags:
+      - latest
+  when:
+    branch:
+      - master
+      - drone-build
+    event:
+      - push
+- name: publish-continuous-deploy
+  image: appleboy/drone-ssh
+  settings:
+    host: latest.epochtalk.com
+    port: 22
+    username:
+      from_secret: ssh_username
+    key:
+      from_secret: ssh_key
+    command_timeout: 5m
+    script:
+      - cd certbot-docker && /bin/bash ./update.sh
+  when:
+    branch:
+      - master
+      - drone-build
+    event:
+      - push
+- name: slack-continuous-deploy-notify
+  image: plugins/slack
+  settings:
+    webhook:
+      from_secret: continuous_deploy_slack_webhook
+    template: >
+      {{#success build.status}}
+        Continuous deploy build on ${DRONE_BRANCH} {{build.link}} succeeded. :banana_dance:
+      {{else}}
+        大変！ Continuous deploy build on ${DRONE_BRANCH} {{build.link}} failed!
+      {{/success}}
+  when:
+    branch:
+      - master
+      - drone-build
+    event:
+      - push
+    status:
+      - success
+      - failure

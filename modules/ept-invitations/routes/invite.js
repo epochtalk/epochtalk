@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var crypto = require('crypto');
 
 /**
@@ -21,7 +21,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: { email: Joi.string().email().required() }
+      payload: Joi.object({ email: Joi.string().email().required() })
     },
     pre: [ { method: (request) => request.server.methods.auth.invitations.invite(request.server, request.auth, request.payload.email) } ]
   },

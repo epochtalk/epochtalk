@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -24,7 +24,7 @@ var upsert = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: Joi.array().items(Joi.object().keys({
+      payload: Joi.array().items(Joi.object({
         name: Joi.string().max(255),
         post_count: Joi.number()
       })).unique('post_count')

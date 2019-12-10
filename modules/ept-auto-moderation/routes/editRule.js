@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../db'));
@@ -73,14 +73,14 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      params: { id: Joi.string().max(255).required() },
-      payload: {
+      params: Joi.object({ id: Joi.string().max(255).required() }),
+      payload: Joi.object({
         name: Joi.string().max(255).required(),
         description: Joi.string().max(1000),
         message: Joi.string().max(1000),
-        conditions: Joi.array().items(Joi.object().keys({
+        conditions: Joi.array().items(Joi.object({
           param: Joi.string().trim().valid('body', 'thread_id', 'user_id', 'title').required(),
-          regex: Joi.object().keys({
+          regex: Joi.object({
             pattern: Joi.string().max(255).required(),
             flags: Joi.string().trim().max(25).allow('')
           }).required()
@@ -90,7 +90,7 @@ module.exports = {
           ban_interval: Joi.number(),
           edit: {
             replace: {
-              regex: Joi.object().keys({
+              regex: Joi.object({
                 pattern: Joi.string().max(255).required(),
                 flags: Joi.string().trim().max(25).allow('')
               }).required(),
@@ -99,7 +99,7 @@ module.exports = {
             template: Joi.string().regex(/{body}/)
           }
         }
-      }
+      })
     },
     pre: [ { method: auth } ]
   },

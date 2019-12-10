@@ -4,8 +4,11 @@ var db = dbc.db;
 
 /* returns array of usernames matching searchStr */
 module.exports = function(searchStr, limit) {
-  var q = 'SELECT username FROM users WHERE username LIKE $1 ORDER BY username LIMIT $2';
-  var params = [searchStr + '%', limit || 15];
+  var sort = 'CASE WHEN username LIKE \'' + searchStr + '\' THEN 1 ' +
+    'WHEN username LIKE \'' + searchStr + '%\' THEN 2 ' +
+    'WHEN username LIKE \'%' + searchStr + '%\'THEN 3 ELSE 4 END';
+  var q = 'SELECT username FROM users WHERE username LIKE $1 ORDER BY ' + sort + ' LIMIT $2';
+  var params = ['%' + searchStr + '%', limit || 15];
   return db.sqlQuery(q, params)
   .map(function(user) { return user.username; });
 };

@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 module.exports = {
   method: 'GET',
@@ -6,7 +6,7 @@ module.exports = {
   options: {
     app: { hook: 'threads.byBoard' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: { board_id: Joi.string().required() } },
+    validate: { params: Joi.object({ board_id: Joi.string().required() }) },
     pre: [
       { method: (request) => request.server.methods.auth.threads.metaByBoard(request.server, request.auth, request.params.board_id), assign: 'viewable' }
     ],

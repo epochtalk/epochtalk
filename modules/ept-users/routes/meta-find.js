@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var cheerio = require('cheerio');
 var querystring = require('querystring');
 
@@ -7,7 +7,7 @@ module.exports = {
   path: '/profiles/{username}',
   options: {
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: { username: Joi.string().required() } },
+    validate: { params: Joi.object({ username: Joi.string().required() }) },
     pre: [ { method: (request) => request.server.methods.auth.users.metaFind(request.server, request.auth, request.params), assign: 'viewable' } ]
   },
   handler: function(request, h) {

@@ -1,7 +1,7 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  view: Joi.object().keys({
+var validation =  Joi.object({
+  view: Joi.object({
     allow: Joi.boolean()
   })
 });

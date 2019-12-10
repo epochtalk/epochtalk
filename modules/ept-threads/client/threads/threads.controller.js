@@ -2,6 +2,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
   function($rootScope, $scope, $anchorScroll, $location, $timeout, Alert, BanSvc, Session, Threads, Watchlist, PreferencesSvc, pageData) {
     var ctrl = this;
     var prefs = PreferencesSvc.preferences;
+    var ignoredBoards = prefs.ignored_boards || [];
     this.loggedIn = Session.isAuthenticated; // check Auth
     this.board = pageData.board;
     this.page = pageData.page; // this page
@@ -13,7 +14,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.loggedIn = Session.isAuthenticated;
     this.parent.board  = pageData.board;
     this.parent.page = pageData.page;
-    this.parent.pageCount = Math.ceil(ctrl.board.thread_count / ctrl.limit);
+    this.parent.pageCount = Math.ceil((ctrl.board.thread_count - ctrl.board.sticky_thread_count) / ctrl.limit) || 1;
     // TODO: This will not be here once actual boards are stored in this array
     this.parent.bannedFromBoard = BanSvc.banStatus();
 
@@ -31,6 +32,15 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       childBoard.total_thread_count = children.thread_count + childBoard.thread_count;
       childBoard.total_post_count = children.post_count + childBoard.post_count;
     });
+
+    this.board.children = filterIgnoredBoards(this.board.children);
+
+    function filterIgnoredBoards(boards) {
+      return boards.filter(function(board) {
+        board.children = filterIgnoredBoards(board.children)
+        return ignoredBoards.indexOf(board.id) === -1;
+      });
+    }
 
     function countTotals(countBoards) {
       var thread_count = 0;
@@ -114,7 +124,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       // replace current threads with new threads
       Threads.byBoard(query).$promise
       .then(function(pageData) {
-        ctrl.parent.pageCount = Math.ceil(pageData.board.thread_count / ctrl.limit);
+        ctrl.parent.pageCount = Math.ceil((pageData.board.thread_count - pageData.board.sticky_thread_count) / ctrl.limit) || 1;
         ctrl.threads = pageData.normal;
         ctrl.stickyThreads = pageData.sticky;
         ctrl.threads.forEach(threadPageCount);

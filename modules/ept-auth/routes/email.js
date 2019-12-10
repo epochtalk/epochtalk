@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @api {GET} /register/email/:email Email Availability
@@ -17,7 +17,7 @@ module.exports = {
   method: 'GET',
   path: '/api/register/email/{email}',
   options: {
-    validate: { params: { email: Joi.string().email().required() } }
+    validate: { params: Joi.object({ email: Joi.string().email().required() }) }
   },
   handler: function(request) {
     var email = request.params.email;

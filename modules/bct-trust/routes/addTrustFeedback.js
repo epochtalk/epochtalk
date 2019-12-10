@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -31,13 +31,13 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: {
+      payload: Joi.object({
         user_id: Joi.string().required(),
         risked_btc: Joi.number(),
         scammer: Joi.boolean().allow(null),
         reference: Joi.string().min(3).max(1024).optional(),
         comments: Joi.string().min(3).max(1024).required()
-      }
+      })
     },
     pre: [ { method: (request) => request.server.methods.auth.userTrust.addTrustFeedback(request.server, request.auth, request.payload.user_id) } ]
   },

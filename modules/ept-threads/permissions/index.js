@@ -1,97 +1,104 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  create: Joi.object().keys({
+var validation =  Joi.object({
+  create: Joi.object({
     allow: Joi.boolean()
   }),
-  moderated: Joi.object().keys({
+  moderated: Joi.object({
     allow: Joi.boolean(),
   }),
-  byBoard: Joi.object().keys({
+  byBoard: Joi.object({
     allow: Joi.boolean()
   }),
-  posted: Joi.object().keys({
+  posted: Joi.object({
     allow: Joi.boolean()
   }),
-  viewed: Joi.object().keys({
+  viewed: Joi.object({
     allow: Joi.boolean()
   }),
-  title: Joi.object().keys({
+  title: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      owner: Joi.object().keys({
+    bypass: Joi.object({
+      owner: Joi.object({
+        admin: Joi.boolean(),
+        priority: Joi.boolean(),
+        mod: Joi.boolean()
+      }).xor('admin', 'priority', 'mod')
+    })
+  }),
+  lock: Joi.object({
+    allow: Joi.boolean(),
+    bypass: Joi.object({
+      owner: Joi.object({
+        admin: Joi.boolean(),
+        priority: Joi.boolean(),
+        mod: Joi.boolean()
+      }).xor('admin', 'priority', 'mod')
+    })
+  }),
+  sticky: Joi.object({
+    allow: Joi.boolean(),
+    bypass: Joi.object({
+      owner: Joi.object({
+        admin: Joi.boolean(),
+        priority: Joi.boolean(),
+        mod: Joi.boolean()
+      }).xor('admin', 'priority', 'mod')
+    })
+  }),
+  move: Joi.object({
+    allow: Joi.boolean(),
+    bypass: Joi.object({
+      owner: Joi.object({
         admin: Joi.boolean(),
         mod: Joi.boolean()
       }).xor('admin', 'mod')
     })
   }),
-  lock: Joi.object().keys({
+  purge: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      owner: Joi.object().keys({
+    bypass: Joi.object({
+      owner: Joi.object({
         admin: Joi.boolean(),
+        priority: Joi.boolean(),
         mod: Joi.boolean()
-      }).xor('admin', 'mod')
+      }).xor('admin', 'priority', 'mod')
     })
   }),
-  sticky: Joi.object().keys({
-    allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      owner: Joi.object().keys({
-        admin: Joi.boolean(),
-        mod: Joi.boolean()
-      }).xor('admin', 'mod')
-    })
-  }),
-  move: Joi.object().keys({
-    allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      owner: Joi.object().keys({
-        admin: Joi.boolean(),
-        mod: Joi.boolean()
-      }).xor('admin', 'mod')
-    })
-  }),
-  purge: Joi.object().keys({
-    allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      owner: Joi.object().keys({
-        admin: Joi.boolean(),
-        mod: Joi.boolean()
-      }).xor('admin', 'mod')
-    })
-  }),
-  vote: Joi.object().keys({
+  vote: Joi.object({
     allow: Joi.boolean()
   }),
-  removeVote: Joi.object().keys({
+  removeVote: Joi.object({
     allow: Joi.boolean()
   }),
-  createPoll: Joi.object().keys({
+  createPoll: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      owner: Joi.object().keys({
+    bypass: Joi.object({
+      owner: Joi.object({
         admin: Joi.boolean(),
+        priority: Joi.boolean(),
         mod: Joi.boolean()
-      }).xor('admin', 'mod')
+      }).xor('admin', 'priority', 'mod')
     })
   }),
-  editPoll: Joi.object().keys({
+  editPoll: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      owner: Joi.object().keys({
+    bypass: Joi.object({
+      owner: Joi.object({
         admin: Joi.boolean(),
+        priority: Joi.boolean(),
         mod: Joi.boolean()
-      }).xor('admin', 'mod')
+      }).xor('admin', 'priority', 'mod')
     })
   }),
-  lockPoll: Joi.object().keys({
+  lockPoll: Joi.object({
     allow: Joi.boolean(),
-    bypass: Joi.object().keys({
-      owner: Joi.object().keys({
+    bypass: Joi.object({
+      owner: Joi.object({
         admin: Joi.boolean(),
+        priority: Joi.boolean(),
         mod: Joi.boolean()
-      }).xor('admin', 'mod')
+      }).xor('admin', 'priority', 'mod')
     })
   })
 });
@@ -188,15 +195,15 @@ var globalModerator = {
   viewed: { allow: true },
   title: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   },
   lock: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   },
   sticky: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   },
   move: {
     allow: true,
@@ -204,21 +211,21 @@ var globalModerator = {
   },
   purge: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   },
   vote: { allow: true },
   removeVote: { allow: true },
   createPoll: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   },
   editPoll: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   },
   lockPoll: {
     allow: true,
-    bypass: { owner: { admin: true } }
+    bypass: { owner: { priority: true } }
   }
 };
 
@@ -324,15 +331,15 @@ var layout = {
   viewed: { title: 'Track User Views on Threads' },
   title: {
     title: 'Edit Thread Titles',
-    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner' } ]
+    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner', type: 'priority' } ]
   },
   lock: {
     title: 'Lock Threads',
-    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner' } ]
+    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner', type: 'priority' } ]
   },
   sticky: {
     title: 'Sticky Threads (sticky level required)',
-    bypasses: [ { description: 'Sticky Level', control: 'owner' } ]
+    bypasses: [ { description: 'Sticky Level', control: 'owner', type: 'priority' } ]
   },
   move: {
     title: 'Move Threads (move level required)',
@@ -340,21 +347,21 @@ var layout = {
   },
   purge: {
     title: 'Purge Threads (purge level required)',
-    bypasses: [ { description: 'Purge Level', control: 'owner' } ]
+    bypasses: [ { description: 'Purge Level', control: 'owner', type: 'priority' } ]
   },
   vote: { title: 'Vote in Thread Polls' },
   removeVote: { title: 'Remove Vote in Thread Polls' },
   createPoll: {
     title: 'Create Poll in Threads',
-    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner' } ]
+    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner', type: 'priority' } ]
   },
   editPoll: {
     title: 'Edit Poll in Threads',
-    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner' } ]
+    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner', type: 'priority' } ]
   },
   lockPoll: {
     title: 'Lock Poll in Threads',
-    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner' } ]
+    bypasses: [ { description: 'Ignore Thread Ownership', control: 'owner', type: 'priority'} ]
   }
 };
 

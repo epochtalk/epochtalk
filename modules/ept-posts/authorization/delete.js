@@ -60,6 +60,24 @@ module.exports = function postsDelete(server, auth, postId) {
   ];
   var prioritySelfMod = server.authorization.stitch(Boom.forbidden(), prioritySelfModCond, 'all');
 
+  // User has priority and moderator permission
+  var standardModCond = [
+    {
+      // permission based override
+      error: Boom.forbidden(),
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithPostId,
+      args: [userId, postId],
+      permission: 'posts.delete.bypass.owner.mod'
+    },
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.delete.bypass.owner.mod', postId]
+    }
+  ];
+  var standardMod = server.authorization.stitch(Boom.forbidden(), standardModCond, 'all');
+
   // is post alright to delete
   var deleteCond = [
     {
@@ -77,13 +95,7 @@ module.exports = function postsDelete(server, auth, postId) {
       args: [postId],
       userId: userId
     },
-    {
-      // is board mod
-      type: 'isMod',
-      method: server.db.moderators.isModeratorWithPostId,
-      args: [userId, postId],
-      permission: server.plugins.acls.getACLValue(auth, 'posts.delete.bypass.owner.mod')
-    },
+    standardMod,
     selfMod,
     // Has priority permission
     prioritySelfMod,
@@ -117,18 +129,45 @@ module.exports = function postsDelete(server, auth, postId) {
       method: server.db.moderators.isModeratorWithPostId,
       args: [userId, postId],
       permission: server.plugins.acls.getACLValue(auth, 'posts.delete.bypass.locked.mod')
+    },
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.delete.bypass.locked.priority', postId]
     }
   ];
   var tLocked = server.authorization.stitch(Boom.forbidden('Thread Locked'), tLockedCond, 'any');
 
-  // post locked
-  var pLocked = server.authorization.build({
-    error: Boom.forbidden('Post is locked'),
-    type: 'dbNotProp',
-    method: server.db.posts.find,
-    args: [postId],
-    prop: 'locked'
-  });
+  // is thread locked
+  var pLockedCond = [
+    {
+      // permission based override
+      type: 'hasPermission',
+      server: server,
+      auth: auth,
+      permission: 'posts.delete.bypass.locked.admin'
+    },
+    {
+      // is post locked
+      type: 'dbNotProp',
+      method: server.db.posts.find,
+      args: [postId],
+      prop: 'locked'
+    },
+    {
+      // is board moderator
+      type: 'isMod',
+      method: server.db.moderators.isModeratorWithPostId,
+      args: [userId, postId],
+      permission: server.plugins.acls.getACLValue(auth, 'posts.delete.bypass.locked.mod')
+    },
+    {
+      type: 'runValidation',
+      method: common.hasPriority,
+      args: [server, auth, 'posts.delete.bypass.locked.priority', postId]
+    }
+  ];
+  var pLocked = server.authorization.stitch(Boom.forbidden('Post Locked'), pLockedCond, 'any');
 
   // read board
   var read = server.authorization.build({

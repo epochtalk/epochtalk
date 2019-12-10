@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var Promise = require('bluebird');
 
 /**
@@ -31,7 +31,7 @@ module.exports = {
         }
       }
     },
-    validate: { payload: { board_ids: Joi.array().items(Joi.string().required()).unique().min(1) } },
+    validate: { payload: Joi.object({ board_ids: Joi.array().items(Joi.string().required()).unique().min(1) }) },
     pre: [ { method: (request) => request.server.methods.auth.boards.delete(request.server, request.auth) } ],
   },
   handler: function(request) {

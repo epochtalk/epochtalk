@@ -1,39 +1,40 @@
-var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Session', 'user',
-  function($rootScope, $location, PreferencesSvc, User, Alert, Session, user) {
+var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Session', 'boards', 'user',
+  function($rootScope, $location, PreferencesSvc, User, Alert, Session, boards, user) {
     var ctrl = this;
     this.user = user;
+    this.boards = boards;
+    this.allBoards = {};
+    this.toggleSubmitted = {};
+    this.userPrefs = PreferencesSvc.preferences;
 
-    this.canUpdatePrefs = function() {
-      return Session.hasPermission('users.update.allow');
-    };
-
-    // Preferences
-    this.tempPreferences = {
-      username: ctrl.user.username,
-      posts_per_page: ctrl.user.posts_per_page,
-      threads_per_page: ctrl.user.threads_per_page,
-      collapsed_categories: ctrl.user.collapsed_categories
-    };
+    this.canUpdatePrefs = function() { return Session.hasPermission('users.update.allow'); };
 
     this.resetPrefrences = function() {
-      ctrl.tempPreferences.posts_per_page = 25;
-      ctrl.tempPreferences.threads_per_page = 25;
+      ctrl.userPrefs.posts_per_page = 25;
+      ctrl.userPrefs.threads_per_page = 25;
     };
 
     this.savePreferences = function() {
-      return User.update({ id: ctrl.user.id }, ctrl.tempPreferences).$promise
-      .then(function(data) {
-        ctrl.user.posts_per_page = data.posts_per_page;
-        ctrl.user.threads_per_page = data.threads_per_page;
-      })
-      .then(function() {
-        var tempPref = PreferencesSvc.preferences;
-        tempPref.posts_per_page = ctrl.user.posts_per_page;
-        tempPref.threads_per_page = ctrl.user.threads_per_page;
-        return PreferencesSvc.setPreferences(tempPref);
-      })
+      ctrl.userPrefs.username = ctrl.user.username;
+      return User.update({ id: ctrl.user.id }, ctrl.userPrefs).$promise
+      .then(function() { return PreferencesSvc.setPreferences(ctrl.userPrefs); })
       .then(function() { Alert.success('Successfully saved preferences'); })
       .catch(function() { Alert.error('Preferences could not be updated'); });
+    };
+
+    this.toggleIgnoredBoard = function(boardId) {
+      var index = ctrl.userPrefs.ignored_boards.indexOf(boardId);
+      var oldIgnoredBoards = angular.copy(ctrl.userPrefs.ignored_boards);
+      if (index > -1) { ctrl.userPrefs.ignored_boards.splice(index, 1); }
+      else { ctrl.userPrefs.ignored_boards.push(boardId); }
+      ctrl.userPrefs.username = ctrl.user.username;
+      return User.update({ id: ctrl.user.id }, ctrl.userPrefs).$promise
+      .then(function() { return PreferencesSvc.setPreferences(ctrl.userPrefs); })
+      .catch(function() {
+        ctrl.userPrefs.ignored_boards = oldIgnoredBoards;
+        ctrl.allBoards[boardId] = !ctrl.allBoards[boardId];
+        Alert.error('Preferences could not be updated');
+      });
     };
   }
 ];

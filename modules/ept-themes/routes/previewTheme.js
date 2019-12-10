@@ -1,5 +1,5 @@
 var path = require('path');
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 var fs = require('fs');
 var Promise = require('bluebird');
 var copyCss = require(path.join(__dirname + '/../../../scripts', 'tasks', 'copy_files'));
@@ -49,7 +49,7 @@ module.exports = {
   options: {
     auth: { strategy: 'jwt' },
     validate: {
-      payload: Joi.object().keys({
+      payload: Joi.object({
         'base-line-height': Joi.string(),
         'base-background-color': Joi.string(),
         'color-primary': Joi.string(),

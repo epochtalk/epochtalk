@@ -111,7 +111,7 @@ ad-viewer {
 
 .post-block {
     @include transition(background-color 250ms ease-in);
-    min-height: 10rem;
+    min-height: 11rem;
     // max-width: calc(#{$view-maxWidth} - #{$sidebarWidth} - 2rem);
     border-bottom: $border;
     padding: 1.5rem 0 2rem;
@@ -192,7 +192,7 @@ ad-viewer {
       }
       .user-trust,
       .user-rank, 
-      .user-activity {
+      .user-activity, .original-poster {
         line-height: 1;
         color: $secondary-font-color;
         overflow: hidden;
@@ -205,6 +205,9 @@ ad-viewer {
         &-value {
           font-weight: 600;
         }
+      }
+      .original-poster {
+        color: #f04124;
       }
     }
     .post-content {

@@ -1,13 +1,13 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
-var validation =  Joi.object().keys({
-  create: Joi.object().keys({
+var validation =  Joi.object({
+  create: Joi.object({
     allow: Joi.boolean()
   }),
-  delete: Joi.object().keys({
+  delete: Joi.object({
     allow: Joi.boolean()
   }),
-  messages: Joi.object().keys({
+  messages: Joi.object({
     allow: Joi.boolean()
   })
 });

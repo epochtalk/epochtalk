@@ -1,4 +1,4 @@
-var Joi = require('joi');
+var Joi = require('@hapi/joi');
 
 /**
   * @apiVersion 0.4.0
@@ -20,7 +20,7 @@ module.exports = {
   path: '/api/ignoreUsers/unignore/{id}',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { params: { id: Joi.string().required() } },
+    validate: { params: Joi.object({ id: Joi.string().required() }) },
   },
   handler: function(request) {
     var userId = request.auth.credentials.id;

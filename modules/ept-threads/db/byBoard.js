@@ -36,11 +36,17 @@ module.exports = function(boardId, userId, opts) {
 
 var getNormalThreads = function(boardId, userId, opts) {
   var getBoardSQL = 'SELECT thread_count FROM boards WHERE id = $1';
-  return db.scalar(getBoardSQL, [boardId])
+  var stickyThreadCountSQL = 'SELECT COUNT(*) FROM threads WHERE board_id = $1 AND sticky = True;';
+  return Promise.join(db.scalar(getBoardSQL, [boardId]), db.scalar(stickyThreadCountSQL, [boardId]))
   .then(function(result) {
-    if (result) {
+    var threadCountResult = result[0];
+    var stickyThreadCountResult = result[1];
+    if (threadCountResult) {
       // determine whether to start from the front or back
-      var threadCount = result.thread_count;
+      var threadCount = threadCountResult.thread_count;
+      if (stickyThreadCountResult) {
+        threadCount = threadCount - stickyThreadCountResult.count;
+      }
       if (opts.offset > Math.floor(threadCount / 2)) {
         opts.reversed = '';
         opts.limit = threadCount <= opts.offset + opts.limit ? threadCount - opts.offset : opts.limit;
