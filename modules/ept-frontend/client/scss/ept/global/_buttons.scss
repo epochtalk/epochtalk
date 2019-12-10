@@ -1,6 +1,6 @@
 .inverted-button {
   display: inline-block;
-  @include border-radius(3px);
+  // @include border-radius(3px);
   color: $secondary-font-color;
   padding: 0.625rem 1rem;
   border: 1px solid $border-color;
@@ -19,7 +19,7 @@
 }
 
 .button, button, button:focus, .button:focus {
-  @include border-radius(8px);
+  @include border-radius(3px);
   @include transition(color 0.15s ease, background-color 0.15s ease);
   border: 0;
   background-color: $color-primary;

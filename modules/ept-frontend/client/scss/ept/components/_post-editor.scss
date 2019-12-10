@@ -4,12 +4,26 @@
   bottom: 0;
   left: 0;
   z-index: 1000; }
+
+.editor-fixed-right {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: calc(((100vw - 1300px)/2) + 240px);
+  z-index: 1000;
+
+  @media screen and (max-width: 1400px) {
+    width: calc(#{$sidebarWidth} + #{$base-grid-padding});
+  }
+}
+
 .editor-full-screen {
-  width: 100%;
+  width: calc(100vw - 4rem);
   position: fixed;
   bottom: 0;
   top: 0;
-  left: 0;
+  right: 0;
   z-index: 1000; }
 
 .post-toolbar {
@@ -43,8 +57,8 @@
   background-color: $base-background-color;
   position: relative;
   height: 100%;
-  max-width: $max-width;
-  margin: 0 auto;
+  // max-width: calc(100vw - 4rem);
+  // margin: 0 auto;
   border: 1px solid $border-color;
   border-bottom: 0;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
@@ -72,18 +86,19 @@
   background-color: $sub-header-color;
   div:first-child {
     padding-left: 0.5rem;
-    text-align: right;
-    .toolbar-title {
-      text-align: left;
-      width: 50%;
-      padding-top: 15px;
-      color: $secondary-font-color;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      .underline { text-decoration: underline; }
-      a { color: $color-primary; }
-    }
+    // text-align: right;
+  }
+
+  .toolbar-title {
+    font-size: $font-size-xs;
+    width: 90%;
+    padding-top: 15px;
+    color: $secondary-font-color;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    .underline { text-decoration: underline; }
+    a { color: $color-primary; }
   }
 
   button {
@@ -212,15 +227,15 @@
     font-size: .875rem;
     position: absolute;
     bottom: 0px;
-    left: -50px;
-    width: 110%;
+    // left: -50px;
+    width: 100%;
     background-color: $base-background-color;
     height: 3rem;
     border-top: 1px solid $border-color;
     .upload-editor {
       text-align: left;
-      width: $max-width / 2;
-      margin-left: 50px;
+      // width: $max-width / 2;
+      // margin-left: 50px;
       padding-left: 1rem;
       position: absolute;
       top: -1.35rem;
@@ -315,7 +330,7 @@
   right: 0; }
 .editor-button-container {
   position: absolute;
-  padding: 0.5rem 0;
+  padding: 0.5rem 1rem;
   bottom: 0;
   right: 0;
   height: 3rem;
@@ -410,11 +425,13 @@
 // Bourbon/Neat Grid
 .editor-header {
   a {
+    font-size: $font-size-xs;
     line-height: 2.75rem;
     display: inline-block;
     height: 2.2rem;
     width: 6rem;
     text-align: center;
+    text-transform: uppercase;
     color: $secondary-font-color-dark;
     &.first { margin-left: 0.25rem; }
     &.selected { color: $color-primary; border-bottom: 2px solid $color-primary; }
