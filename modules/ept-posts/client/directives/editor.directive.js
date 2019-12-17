@@ -1,4 +1,4 @@
-var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeout, $window, $rootScope, $filter) {
+var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', function(User, $timeout, $window, $rootScope, $filter) {
   return {
     restrict: 'E',
     scope: {
@@ -8,7 +8,9 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
       resetSwitch: '=',
       focusSwitch: '=',
       exitSwitch: '=',
+      postEditorMode: '=',
       dirty: '=',
+      thread: '=',
       rightToLeft: '='
     },
     template: require('./editor.html'),
@@ -168,6 +170,34 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
         $window.onbeforeunload = undefined;
         if (destroyRouteBlocker) { destroyRouteBlocker(); }
       });
+
+      // Editor Wrap
+      $scope.resize = true;
+      $scope.editorPosition = 'editor-fixed-bottom';
+      $scope.isMinimized = true;
+      $scope.showEditor = false;
+      $scope.receivers = [];
+      $scope.newMessage = { content: { subject: ''} };
+      $scope.posting = { post: { body_html: '', body: '' } };
+
+      $scope.fullscreen = function() {
+        if ($scope.isMinimized) {
+          $scope.isMinimized = false;
+          $scope.editorPosition = 'editor-full-screen';
+          $scope.resize = false;
+        }
+        else {
+          ctrl.isMinimized = true;
+          $scope.editorPosition = 'editor-fixed-bottom';
+          $scope.resize = true;
+        }
+      };
+
+      $scope.loadTags = function(query) {
+        return User.lookup({ username: query }).$promise
+        .then(function(users) { return users; });
+      };
+
     }
   };
 }];
