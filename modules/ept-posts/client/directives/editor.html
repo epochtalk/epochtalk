@@ -29,8 +29,8 @@
           </div>
         </div>
 
-        <div class="editor-formatting" ng-if="MessagesCtrl.showFormatting">
-          <a class="close-formatting" ng-click="MessagesCtrl.showFormatting = false">X</a>
+        <div class="editor-formatting" ng-if="showFormatting">
+          <a class="close-formatting" ng-click="showFormatting = false">X</a>
           <div class="thin-underline fill-row">
             <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank">
               <h4>BBCode Lookup</h4>
@@ -131,24 +131,36 @@
 
       <div class="editor-tools">
         <div class="tools">
-          <a data-balloon="Formatting Help" ng-click="MessagesCtrl.showFormatting = true"><i class="fa fa-code"></i></a>
-          <a data-balloon="{{ MessagesCtrl.isMinimized ? 'Expand Editor' : 'Minimize Editor' }}" ng-click="MessagesCtrl.fullscreen()"><i class="fa expand" ng-class="{ 'fa-expand': MessagesCtrl.isMinimized, 'fa-compress': !MessagesCtrl.isMinimized }"></i></a>
+          <a data-balloon="Formatting Help" ng-click="showFormatting = true"><i class="fa fa-code"></i></a>
+          <a data-balloon="{{ isMinimized ? 'Expand Editor' : 'Minimize Editor' }}" ng-click="fullscreen()"><i class="fa expand" ng-class="{ 'fa-expand': isMinimized, 'fa-compress': !isMinimized }"></i></a>
         </div>
       </div>
 
-      <!-- Editor Controls -->
-      <div class="editor-button-container">
-        <button class="inverted-button cancel" ng-click="MessagesCtrl.cancelMsg()">
+      <!-- Message Editor Controls -->
+      <div class="editor-button-container" ng-if="!postEditorMode">
+        <button class="inverted-button cancel" ng-click="cancel()">
           Cancel
         </button>
-        <button class="no-animate" ng-if="MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.createConversation()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateConversation() || !MessagesCtrl.newMessage.content.subject.length || !MessagesCtrl.newMessage.content.body.length">
+        <button class="no-animate" ng-if="editorConvoMode" class="send" ng-click="createAction()" ng-disabled="form.title.$error.required || canCreate() || !newMessage.content.subject.length || !newMessage.content.body.length">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start New Conversation
         </button>
-        <button class="no-animate" ng-if="!MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.saveMessage()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateMessage() || !MessagesCtrl.newMessage.content.body.length">
+        <button class="no-animate" ng-if="!editorConvoMode" class="send" ng-click="updateAction()" ng-disabled="form.title.$error.required || !canUpdate() || !newMessage.content.body.length">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send Reply
         </button>
 
-        <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
+        <span class="label alert" ng-if="posting.error" ng-bind="posting.error.message"></span>
+      </div>
+
+      <!-- Post Editor Controls -->
+      <div class="editor-button-container" ng-if="postEditorMode">
+        <button class="inverted-button cancel" ng-click="cancel()">
+          Cancel
+        </button>
+        <button class="send" ng-click="createAction()" ng-disabled="form.title.$error.required || !canCreate()">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ posting.post.id ? 'Edit Post' : 'Send Reply' }}
+        </button>
+
+        <span class="label alert" ng-if="posting.error" ng-bind="posting.error.message"></span>
       </div>
     </div>
   </div>

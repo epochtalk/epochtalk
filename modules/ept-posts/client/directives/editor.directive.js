@@ -11,6 +11,10 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       postEditorMode: '=',
       dirty: '=',
       thread: '=',
+      createAction: '=',
+      updateAction: '=',
+      canCreate: '=',
+      canUpdate: '=',
       rightToLeft: '='
     },
     template: require('./editor.html'),
@@ -197,6 +201,39 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
         return User.lookup({ username: query }).$promise
         .then(function(users) { return users; });
       };
+
+      var discardAlert = function() {
+        if (ctrl.dirtyEditor) {
+          var message = 'It looks like you were working on something. ';
+          message += 'Are you sure you want to leave that behind?';
+          return confirm(message);
+        }
+        else { return true; }
+      };
+
+      function closeEditor() {
+        $scope.newMessage.content = { body: '', body_html: '' };
+        $scope.posting = { post: { body_html: '', body: '' } };
+        $scope.resetEditor = true;
+        $scope.showEditor = false;
+        $scope.showFormatting = false;
+      }
+
+      $scope.loadEditor = function(focus) {
+        if (discardAlert()) {
+          var editorMsg = $scope.newMessage;
+          $scope.receivers = [];
+          editorMsg.subject = '';
+          editorMsg.content.body_html = '';
+          editorMsg.content.body = '';
+          $scope.resetEditor = true;
+          $scope.showEditor = true;
+          if (focus === false) { $scope.focusEditor = false; }
+          else { $scope.focusEditor = true; }
+        }
+      };
+
+      $scope.cancel = function() { if (discardAlert()) { closeEditor(); } };
 
     }
   };
