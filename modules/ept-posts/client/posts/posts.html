@@ -73,7 +73,7 @@
             </svg>
           </a>
         </div>
-    
+
         <!-- Thread Sticky -->
         <div class="control" data-balloon="{{PostsParentCtrl.thread.sticky ? 'Unsticky Thread' : 'Sticky Thread'}}"
           ng-if="PostsParentCtrl.canSticky()">
@@ -86,7 +86,7 @@
             </svg>
           </a>
         </div>
-    
+
         <!-- Purge Delete -->
         <div class="control" data-balloon="Purge Thread" ng-if="PostsParentCtrl.canPurge()">
           <a ng-href="#" id="purgeThread"
@@ -99,7 +99,7 @@
             </svg>
           </a>
         </div>
-    
+
         <!-- Move Thread -->
         <div class="control" data-balloon="Move Thread" ng-if="PostsParentCtrl.canMove()">
           <a ng-href="#" id="moveBoard"
@@ -111,11 +111,11 @@
           </a>
         </div>
         <span ng-if="!PostsParentCtrl.showThreadControls()">&nbsp;</span>
-    
+
         <!-- <div class="controls one-third-column">
               <a class="button right" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Post Reply</a>
             </div> -->
-    
+
       </div>
     </div>
   </div>
@@ -142,7 +142,7 @@
 <div class="sidebar">
   <div class="sidebar-block">
     <div ng-if="PostsParentCtrl.canPost()" class="sidebar-actions">
-      <a class="button" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
+      <a class="button" ng-click="PostsParentCtrl.showSwitch = true" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
       <div class="post-tools">
 
         <!-- Thread Lock -->
@@ -157,7 +157,7 @@
             </svg>
           </a>
         </div>
-        
+
         <!-- Thread Sticky -->
         <div class="control" data-balloon="{{PostsParentCtrl.thread.sticky ? 'Unsticky Thread' : 'Sticky Thread'}}"
           ng-if="PostsParentCtrl.canSticky()">
@@ -170,7 +170,7 @@
             </svg>
           </a>
         </div>
-        
+
         <!-- Purge Delete -->
         <div class="control" data-balloon="Purge Thread" ng-if="PostsParentCtrl.canPurge()">
           <a ng-href="#" id="purgeThread" ng-class="{'clicked' : PostsParentCtrl.showPurgeThreadModal }"
@@ -182,7 +182,7 @@
             </svg>
           </a>
         </div>
-        
+
         <!-- Move Thread -->
         <div class="control" data-balloon="Move Thread" ng-if="PostsParentCtrl.canMove()">
           <a ng-href="#" id="moveBoard" ng-class="{'clicked' : PostsParentCtrl.showMoveThreadModal }"
@@ -211,122 +211,21 @@
 <!-- <div id="post-spacer"></div> -->
 
 <!-- Editor -->
-<div ng-if="PostsParentCtrl.canPost()">
-  <div ng-class="PostsParentCtrl.editorPosition" ng-show="PostsParentCtrl.showEditor" resizeable="PostsParentCtrl.resize">
-    <!-- Editor Container-->
-    <div class="editor-container">
-      <!-- Editor Header -->
-      <div class="editor-top-bar">
-        <div class="buttons">
+<div ng-if="PostsParentCtrl.canPost() && PostsParentCtrl.showSwitch">
 
-          <div class="left toolbar-title" title="Click to go to this post" ng-if="PostsParentCtrl.posting.post.id">
-              Editing Post:&nbsp;&nbsp;<a ui-sref="posts.data({ threadId: PostsParentCtrl.thread.id, page: PostsParentCtrl.posting.post.page, '#': PostsParentCtrl.posting.post.id })">{{ PostsParentCtrl.posting.post.id }}</a>
-            </a>
-          </div>
-
-          <div class="toolbar-title" ng-if="!PostsParentCtrl.posting.post.id">
-            New Post in "{{ PostsParentCtrl.thread.title}}"
-          </div>
-        </div>
-
-        <div class="editor-formatting" ng-if="PostsParentCtrl.showFormatting">
-          <a class="close-formatting" ng-click="PostsParentCtrl.showFormatting = false">X</a>
-          <div class="thin-underline fill-row">
-            <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank">
-              <h4>BBCode Lookup</h4>
-            </a>
-          </div>
-          <div class="half-column">
-            <strong>Bold</strong>:<div class="right">[b][/b]</div><br />
-            <em>Italics</em>:<div class="right">[i][/i]</div><br />
-            <u>Underline</u>:<div class="right">[u][/u]</div><br />
-            <del>Strikethrough</del>:<div class="right">[s][/s]</div><br />
-            BTC:<div class="right">[btc][/btc]</div><br />
-            <span style="background-color: green">Glow</span>:
-            <div class="right">[glow={color}][/glow]</div><br />
-            <span style="text-shadow: red 1px 1px 5px;">Shadow</span>:
-            <div class="right">[shadow={color}, {direction}, {blur}][/shadow]</div><br />
-            Font Size:<div class="right">[size={size}][/size]</div><br />
-            <sup>Superscript</sup>:<div class="right">[sup][/sup]</div><br />
-            <sub>Subscript</sub>:<div class="right">[sub][/sub]</div><br />
-
-            <hr class="clear" />
-
-            <code class="preview">Code</code>:<div class="right">[code][/code]</div><br />
-            <tt>TeleText</tt>:<div class="right">[tt][/tt]</div><br />
-            Preformatted Text:<div class="right">[pre][/pre]</div><br />
-            Justify Left:<div class="right">[left][/left]</div><br />
-            Justify Right:<div class="right">[right][/right]</div><br />
-            Justify Center:<div class="right">[center][/center]</div><br />
-
-            <hr class="clear" />
-
-            Horizontal Rule:<div class="right">[hr][/hr]</div><br /><br />
-          </div>
-          <div class="half-column">
-            Black:<div class="right">[black][/black]</div><br />
-            Blue:<div class="right">[blue][/blue]</div><br />
-            Green:<div class="right">[green][/green]</div><br />
-            Red:<div class="right">[red][/red]</div><br />
-            White:<div class="right">[white][/white]</div><br />
-            Additional Colors:<div class="right">[color={color}][/color]</div><br />
-
-            <hr class="clear" />
-
-            Image:<div class="right">[img]{URL}[/img]</div><br />
-            URL:<div class="right">[url={URL}][/url]</div><br />
-            Email:<div class="right">[email={email}][/email]</div><br />
-            FTP:<div class="right">[ftp={URL}][/ftp]</div><br />
-
-            <hr class="clear" />
-
-            Lists:
-            <div class="right">
-              [list]<br />
-              &nbsp;&nbsp;[li][/li]<br />
-              &nbsp;&nbsp;[li][/li]<br />
-              [/list]<br /><br />
-            </div>
-
-            <hr class="clear" />
-
-            Tables:
-            <div class="right">
-              [table]<br />
-              &nbsp;&nbsp;[tr]<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;[td][/td]<br />
-              &nbsp;&nbsp;[/tr]<br />
-              [/table]
-            </div><br />
-          </div>
-        </div>
-      </div>
-      <!-- Editor -->
-      <form name="form" class="editor-form" novalidate>
-        <epochtalk-editor class="posts-editor" body-html="PostsParentCtrl.posting.post.body_html" body="PostsParentCtrl.posting.post.body" reset-switch="PostsParentCtrl.resetEditor" focus-switch="PostsParentCtrl.focusEditor" dirty="PostsParentCtrl.dirtyEditor" quote="PostsParentCtrl.quote">
-        </epochtalk-editor>
-      </form>
-
-      <div class="editor-tools">
-        <div class="tools">
-          <a data-balloon="Formatting Help" ng-click="PostsParentCtrl.showFormatting = true"><i class="fa fa-code"></i></a>
-          <a data-balloon="{{ PostsParentCtrl.isMinimized ? 'Expand Editor' : 'Minimize Editor' }}" ng-click="PostsParentCtrl.fullscreen()"><i class="fa expand" ng-class="{ 'fa-expand': PostsParentCtrl.isMinimized, 'fa-compress': !PostsParentCtrl.isMinimized }"></i></a>
-        </div>
-      </div>
-
-      <!-- Editor Controls -->
-      <div class="editor-button-container">
-        <button class="inverted-button cancel" ng-click="PostsParentCtrl.cancelPost()">
-          Cancel
-        </button>
-        <button class="send" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.canSave()">
-          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ PostsParentCtrl.posting.post.id ? 'Edit Post' : 'Send Reply' }}
-        </button>
-
-        <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
-      </div>
-    </div>
-  </div>
+  <epochtalk-editor class="posts-editor"
+    body-html="PostsParentCtrl.posting.post.body_html"
+    body="PostsParentCtrl.posting.post.body"
+    reset-switch="PostsParentCtrl.resetEditor"
+    focus-switch="PostsParentCtrl.focusEditor"
+    dirty="PostsParentCtrl.dirtyEditor"
+    quote="PostsParentCtrl.quote"
+    thread="PostsParentCtrl.thread"
+    post-editor-mode="true"
+    create-action="PostsParentCtrl.savePost"
+    can-create="PostsParentCtrl.canSave"
+    show-switch="PostsParentCtrl.showSwitch">
+  </epochtalk-editor>
 </div>
 
 <!-- Reporting Modal -->

@@ -8,14 +8,15 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       resetSwitch: '=',
       focusSwitch: '=',
       exitSwitch: '=',
-      postEditorMode: '=',
       dirty: '=',
+      rightToLeft: '=',
       thread: '=',
+      postEditorMode: '=',
       createAction: '=',
       updateAction: '=',
       canCreate: '=',
       canUpdate: '=',
-      rightToLeft: '='
+      showSwitch: '='
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
@@ -26,7 +27,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
 
       // reset switch
       $scope.$watch('resetSwitch', function(newValue) {
-        if (newValue === true) { $scope.resetEditor(); }
+        if (newValue === true) { $scope.resetEditorFn(); }
       });
 
       // autofocus switch
@@ -37,6 +38,12 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       // exit switch
       $scope.$watch('exitSwitch', function(newValue) {
         $scope.exitEditor(newValue);
+      });
+
+      // show switch
+      $scope.$watch('showSwitch', function(newValue) {
+        console.log(newValue)
+        $scope.loadEditor(newValue);
       });
     }],
     link: function($scope, $element) {
@@ -143,7 +150,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
 
       // resets the editor
       $scope.resetImages = false;
-      $scope.resetEditor = function() {
+      $scope.resetEditorFn = function() {
         initEditor();
         $scope.resetImages = true;
         $scope.resetSwitch = false;
@@ -191,7 +198,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
           $scope.resize = false;
         }
         else {
-          ctrl.isMinimized = true;
+          $scope.isMinimized = true;
           $scope.editorPosition = 'editor-fixed-bottom';
           $scope.resize = true;
         }
@@ -203,7 +210,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       };
 
       var discardAlert = function() {
-        if (ctrl.dirtyEditor) {
+        if ($scope.dirtyEditor) {
           var message = 'It looks like you were working on something. ';
           message += 'Are you sure you want to leave that behind?';
           return confirm(message);
@@ -212,14 +219,17 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       };
 
       function closeEditor() {
+        console.log('CLOSE EDITOR!');
         $scope.newMessage.content = { body: '', body_html: '' };
         $scope.posting = { post: { body_html: '', body: '' } };
         $scope.resetEditor = true;
         $scope.showEditor = false;
         $scope.showFormatting = false;
+        $scope.showSwitch = false;
       }
 
       $scope.loadEditor = function(focus) {
+        console.log('LOAD EDITOR!');
         if (discardAlert()) {
           var editorMsg = $scope.newMessage;
           $scope.receivers = [];
@@ -233,7 +243,9 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
         }
       };
 
-      $scope.cancel = function() { if (discardAlert()) { closeEditor(); } };
+      $scope.cancel = function() {
+        console.log('CANCEL!');
+        if (discardAlert()) { closeEditor(); } };
 
     }
   };
