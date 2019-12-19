@@ -42,7 +42,6 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
 
       // show switch
       $scope.$watch('showSwitch', function(newValue) {
-        console.log(newValue)
         $scope.loadEditor(newValue);
       });
     }],
@@ -246,8 +245,8 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       };
 
       $scope.cancel = function() {
-        console.log('CANCEL!');
-        if (discardAlert()) { closeEditor(); } };
+        if (discardAlert()) { closeEditor(); }
+      };
 
     }
   };
