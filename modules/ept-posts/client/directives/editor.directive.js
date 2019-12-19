@@ -218,8 +218,11 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
         else { return true; }
       };
 
+      $scope.closeFormatting = function() {
+        $scope.showFormatting = false;
+      };
+
       function closeEditor() {
-        console.log('CLOSE EDITOR!');
         $scope.newMessage.content = { body: '', body_html: '' };
         $scope.posting = { post: { body_html: '', body: '' } };
         $scope.resetEditor = true;
@@ -229,7 +232,6 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       }
 
       $scope.loadEditor = function(focus) {
-        console.log('LOAD EDITOR!');
         if (discardAlert()) {
           var editorMsg = $scope.newMessage;
           $scope.receivers = [];
