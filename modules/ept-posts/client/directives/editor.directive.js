@@ -184,7 +184,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
 
       // Editor Wrap
       $scope.resize = true;
-      $scope.editorPosition = 'editor-fixed-bottom';
+      $scope.editorPosition = 'editor-fixed-right';
       $scope.isMinimized = true;
       $scope.showEditor = false;
       $scope.receivers = [];
@@ -199,7 +199,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
         }
         else {
           $scope.isMinimized = true;
-          $scope.editorPosition = 'editor-fixed-bottom';
+          $scope.editorPosition = 'editor-fixed-right';
           $scope.resize = true;
         }
       };
