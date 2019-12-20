@@ -334,7 +334,11 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           editPost.metadata = data.metadata;
         }
       })
-      .then(function() { ctrl.showEditor = false; })
+      .then(function() {
+        ctrl.showEditor = false;
+        ctrl.posting = { post: { body_html: '', body: '' } };
+        ctrl.resetEditor = true;
+      })
       .catch(function(err) {
         var error = err.data.message;
         if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
