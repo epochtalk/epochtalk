@@ -32,7 +32,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
 
       // autofocus switch
       $scope.$watch('focusSwitch', function(newValue) {
-        if (newValue === true) { $scope.focusEditor(); }
+        if (newValue === true) { $scope.focusEditorFn(); }
       });
 
       // exit switch
@@ -155,12 +155,6 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
         $scope.resetSwitch = false;
       };
 
-      // focus input on editor element
-      $scope.focusEditor = function() {
-        $timeout(function() { editor.focus(); }, 10);
-        $scope.focusSwitch = false;
-      };
-
       // turns off page exit events
       $scope.exitEditor = function(value) {
         if (value === true) {
@@ -239,13 +233,20 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
           editorMsg.content.body = '';
           $scope.resetEditor = true;
           $scope.showEditor = true;
-          if (focus === false) { $scope.focusEditor = false; }
-          else { $scope.focusEditor = true; }
+          if (focus === false) { $scope.focusSwitch = false; }
+          else { $scope.focusSwitch = true; }
         }
       };
 
       $scope.cancel = function() {
         if (discardAlert()) { closeEditor(); }
+      };
+
+
+      // focus input on editor element
+      $scope.focusEditorFn = function() {
+        $timeout(function() { editor.focus(); }, 10);
+        $scope.focusSwitch = false;
       };
 
     }
