@@ -105,8 +105,8 @@
       <form name="form" class="editor-form" novalidate>
         <!-- START EDITOR -->
         <div class="editor-header">
-          <a ng-href="#" class="first" ng-class="{'selected': !preview }" tabindex="-1" ng-click="preview = false">Compose</a>
-          <a ng-href="#" ng-class="{'selected': preview }" tabindex="-1" ng-click="preview = true">Preview</a>
+          <a class="first" ng-class="{'selected': !preview }" tabindex="-1" ng-click="preview = false">Compose</a>
+          <a ng-class="{'selected': preview }" tabindex="-1" ng-click="preview = true">Preview</a>
         </div>
 
         <div class="editor-body" ng-init="preview = false;">
