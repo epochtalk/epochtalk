@@ -142,7 +142,7 @@
 <div class="sidebar">
   <div class="sidebar-block">
     <div ng-if="PostsParentCtrl.canPost()" class="sidebar-actions">
-      <a class="button" ng-click="PostsParentCtrl.showSwitch = true" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
+      <a class="button" ng-click="PostsParentCtrl.showEditor = true" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
       <div class="post-tools">
 
         <!-- Thread Lock -->
@@ -211,7 +211,7 @@
 <!-- <div id="post-spacer"></div> -->
 
 <!-- Editor -->
-<div ng-if="PostsParentCtrl.canPost() && PostsParentCtrl.showSwitch">
+<div ng-if="PostsParentCtrl.canPost() && PostsParentCtrl.showEditor">
 
   <epochtalk-editor class="posts-editor"
     body-html="PostsParentCtrl.posting.post.body_html"
@@ -224,7 +224,7 @@
     post-editor-mode="true"
     create-action="PostsParentCtrl.savePost"
     can-create="PostsParentCtrl.canSave"
-    show-switch="PostsParentCtrl.showSwitch">
+    show-switch="PostsParentCtrl.showEditor">
   </epochtalk-editor>
 </div>
 

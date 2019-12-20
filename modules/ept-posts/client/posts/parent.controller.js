@@ -279,27 +279,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       .catch(function() { Alert.error('There was an error creating the poll'); });
     };
 
-    /* Post Methods */
-
-    var discardAlert = function() {
-      if (ctrl.dirtyEditor) {
-        var message = 'It looks like you were working on something. ';
-        message += 'Are you sure you want to leave that behind?';
-        return confirm(message);
-      }
-      else { return true; }
-    };
-
-    function closeEditor() {
-      ctrl.posting.post.id = '';
-      ctrl.posting.post.title = '';
-      ctrl.posting.post.body_html = '';
-      ctrl.posting.post.body = '';
-      ctrl.posting.page = '';
-      ctrl.resetEditor = true;
-      ctrl.showEditor = false;
-    }
-
     this.addQuote = function(post) {
       var timeDuration = 0;
       if (ctrl.showEditor === false) {
@@ -319,21 +298,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           };
         }
       }, timeDuration);
-    };
-
-    this.loadEditor = function(post) {
-      post = post || {};
-      if (discardAlert()) {
-        var editorPost = ctrl.posting.post;
-        editorPost.id = post.id || '';
-        editorPost.title = post.title || '';
-        editorPost.body_html = post.body_html || '';
-        editorPost.body = post.body || '';
-        editorPost.page = ctrl.page || 1;
-        ctrl.resetEditor = true;
-        ctrl.showEditor = true;
-        ctrl.focusEditor = true;
-      }
     };
 
     this.savePost = function() {
@@ -370,17 +334,13 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           editPost.metadata = data.metadata;
         }
       })
-      .then(function() {
-        ctrl.showSwitch = false
-      })
+      .then(function() { ctrl.showEditor = false; })
       .catch(function(err) {
         var error = err.data.message;
         if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
         Alert.error(error);
       });
     };
-
-    this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };
 
     this.deletePostIndex = -1;
     this.deleteAndLock = false;
@@ -517,20 +477,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           }
         })
         .catch(function() { Alert.error('Failed to purge Post'); });
-      }
-    };
-
-    this.isMinimized = true;
-    this.fullscreen = function() {
-      if (ctrl.isMinimized) {
-        ctrl.isMinimized = false;
-        this.editorPosition = 'editor-full-screen';
-        this.resize = false;
-      }
-      else {
-        ctrl.isMinimized = true;
-        this.editorPosition = 'editor-fixed-right';
-        this.resize = true;
       }
     };
 

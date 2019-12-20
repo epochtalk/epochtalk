@@ -21,6 +21,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
       // quote insert
+
       $scope.$watch('quote', function(newQuote) {
         if (newQuote) { $scope.insertQuote(newQuote); }
       });
