@@ -183,7 +183,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       $scope.isMinimized = true;
       $scope.showEditor = false;
       $scope.receivers = [];
-      $scope.newMessage = { content: { subject: ''} };
+      $scope.newMessage = { content: { body_html: '', body: '' } };
       $scope.posting = { post: { body_html: '', body: '' } };
 
       $scope.fullscreen = function() {
@@ -218,7 +218,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       };
 
       function closeEditor() {
-        $scope.newMessage.content = { body: '', body_html: '' };
+        $scope.newMessage.content = { subject: '', body: '', body_html: '' };
         $scope.posting = { post: { body_html: '', body: '' } };
         $scope.resetEditor = true;
         $scope.showEditor = false;

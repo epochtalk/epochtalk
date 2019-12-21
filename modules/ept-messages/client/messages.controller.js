@@ -347,34 +347,9 @@ var ctrl = [
     this.resetEditor = false;
     this.showEditor = false;
     this.focusEditor = false;
-    this.isMinimized = true;
-    this.resize = true;
     this.content = { post: { body_html: '', body: '' } };
-    this.editorPosition = 'editor-fixed-bottom';
-
-    this.fullscreen = function() {
-      if (ctrl.isMinimized) {
-        ctrl.isMinimized = false;
-        this.editorPosition = 'editor-full-screen';
-        this.resize = false;
-      }
-      else {
-        ctrl.isMinimized = true;
-        this.editorPosition = 'editor-fixed-bottom';
-        this.resize = true;
-      }
-    };
 
     /* Post Methods */
-
-    var discardAlert = function() {
-      if (ctrl.dirtyEditor) {
-        var message = 'It looks like you were working on something. ';
-        message += 'Are you sure you want to leave that behind?';
-        return confirm(message);
-      }
-      else { return true; }
-    };
 
     function closeEditor() {
       ctrl.newMessage.content = { body: '', body_html: '' };
@@ -382,22 +357,6 @@ var ctrl = [
       ctrl.showEditor = false;
       ctrl.showFormatting = false;
     }
-
-    this.loadEditor = function(focus) {
-      if (discardAlert()) {
-        var editorMsg = ctrl.newMessage;
-        ctrl.receivers = [];
-        editorMsg.subject = '';
-        editorMsg.content.body_html = '';
-        editorMsg.content.body = '';
-        ctrl.resetEditor = true;
-        ctrl.showEditor = true;
-        if (focus === false) { ctrl.focusEditor = false; }
-        else { ctrl.focusEditor = true; }
-      }
-    };
-
-    this.cancelMsg = function() { if (discardAlert()) { closeEditor(); } };
 
   }
 ];

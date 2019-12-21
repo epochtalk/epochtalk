@@ -5,7 +5,7 @@
   <br /><br />
 
   <div class="centered-text">
-    <button ng-if='MessagesCtrl.canCreateConversation()' ng-click="MessagesCtrl.loadEditor(false); MessagesCtrl.editorConvoMode = true;">Start a Conversation</button>
+    <button ng-if='MessagesCtrl.canCreateConversation()' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">Start a Conversation</button>
   </div>
 </div>
 
@@ -16,7 +16,7 @@
     <div class="inbox" ng-click="MessagesCtrl.loadRecentMessages();">
       <i class="fa fa-envelope"></i> Inbox
     </div>
-    <div class="add" ng-if="MessagesCtrl.canCreateConversation()" ng-click="MessagesCtrl.loadEditor(false); MessagesCtrl.editorConvoMode = true;">
+    <div class="add" ng-if="MessagesCtrl.canCreateConversation()" ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">
       <i class="fa fa-plus"></i> New Message
     </div>
   </div>
@@ -49,7 +49,7 @@
 <div class="messages">
   <!-- New Message -->
   <div ng-if="MessagesCtrl.currentConversation.messages.length > 0">
-    <a class="right no-select" ng-if='MessagesCtrl.canCreateMessage()' ng-click="MessagesCtrl.loadEditor(); MessagesCtrl.editorConvoMode = false;">
+    <a class="right no-select" ng-if='MessagesCtrl.canCreateMessage()' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = false;">
       <i class="fa fa-reply"></i> Reply
     </a>
     <h4>Conversation with
@@ -97,24 +97,22 @@
 
 <div class="clear"></div>
 
-<!-- spacer for editor -->
-<div ng-hide="!MessagesCtrl.showEditor" id="post-spacer" style="height: 387px;"></div>
-
 <!-- Editor -->
-<epochtalk-editor class="posts-editor"
-  body-html="MessagesCtrl.newMessage.content.body_html"
-  body="MessagesCtrl.newMessage.content.body"
-  reset-switch="MessagesCtrl.resetEditor"
-  focus-switch="MessagesCtrl.focusEditor"
-  editor-convo-mode="MessagesCtrl.editorConvoMode"
-  dirty="MessagesCtrl.dirtyEditor"
-  create-action="MessagesCtrl.createConversation"
-  update-action="MessagesCtrl.saveMessage"
-  can-create="MessagesCtrl.canCreateConversation"
-  can-update="MessagesCtrl.canCreateMessage"
-  show-switch="MessagesCtrl.showEditor">
-</epochtalk-editor>
-
+<div ng-if="(MessagesCtrl.canCreateMessage() || MessagesCtrl.canCreateConversation()) && MessagesCtrl.showEditor">
+  <epochtalk-editor class="posts-editor"
+    body-html="MessagesCtrl.newMessage.content.body_html"
+    body="MessagesCtrl.newMessage.content.body"
+    reset-switch="MessagesCtrl.resetEditor"
+    focus-switch="MessagesCtrl.focusEditor"
+    editor-convo-mode="MessagesCtrl.editorConvoMode"
+    dirty="MessagesCtrl.dirtyEditor"
+    create-action="MessagesCtrl.createConversation"
+    update-action="MessagesCtrl.saveMessage"
+    can-create="MessagesCtrl.canCreateConversation"
+    can-update="MessagesCtrl.canCreateMessage"
+    show-switch="MessagesCtrl.showEditor">
+  </epochtalk-editor>
+</div>
 
 <!-- Delete Message Modal -->
 <modal show="MessagesCtrl.showDeleteModal" on-close="MessagesCtrl.closeDeleteModal()">
