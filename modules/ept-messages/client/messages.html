@@ -101,125 +101,20 @@
 <div ng-hide="!MessagesCtrl.showEditor" id="post-spacer" style="height: 387px;"></div>
 
 <!-- Editor -->
-<div class="messages-wrap">
-  <div ng-class="MessagesCtrl.editorPosition" ng-show="MessagesCtrl.showEditor" resizeable="MessagesCtrl.resize" data-default-height="500px">
-    <!-- Editor Container-->
-    <div class="editor-container" ng-class="{ 'new-message' : MessagesCtrl.editorConvoMode }">
-      <!-- Editor Header -->
-      <div class="editor-top-bar">
-        <div ng-if="MessagesCtrl.editorConvoMode">
-          <!-- Select User -->
-          <label>To</label>
-          <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers" modal-focus="{{MessagesCtrl.showEditor && MessagesCtrl.editorConvoMode}}">
-              <auto-complete min-length="1" debounce-delay="250" source="MessagesCtrl.loadTags($query)"></auto-complete>
-            </tags-input>
-          <!-- Subject -->
-          <label>Subject</label>
-          <input type="text" ng-model="MessagesCtrl.newMessage.content.subject" minlength="1" maxlength="255" />
-        </div>
+<epochtalk-editor class="posts-editor"
+  body-html="MessagesCtrl.newMessage.content.body_html"
+  body="MessagesCtrl.newMessage.content.body"
+  reset-switch="MessagesCtrl.resetEditor"
+  focus-switch="MessagesCtrl.focusEditor"
+  editor-convo-mode="MessagesCtrl.editorConvoMode"
+  dirty="MessagesCtrl.dirtyEditor"
+  create-action="MessagesCtrl.createConversation"
+  update-action="MessagesCtrl.saveMessage"
+  can-create="MessagesCtrl.canCreateConversation"
+  can-update="MessagesCtrl.canCreateMessage"
+  show-switch="MessagesCtrl.showEditor">
+</epochtalk-editor>
 
-        <div class="editor-formatting" ng-if="MessagesCtrl.showFormatting">
-          <a class="close-formatting" ng-click="MessagesCtrl.showFormatting = false">X</a>
-          <div class="thin-underline fill-row">
-            <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank">
-              <h4>BBCode Lookup</h4>
-            </a>
-          </div>
-          <div class="half-column">
-            <strong>Bold</strong>:<div class="right">[b][/b]</div><br />
-            <em>Italics</em>:<div class="right">[i][/i]</div><br />
-            <u>Underline</u>:<div class="right">[u][/u]</div><br />
-            <del>Strikethrough</del>:<div class="right">[s][/s]</div><br />
-            BTC:<div class="right">[btc][/btc]</div><br />
-            <span style="background-color: green">Glow</span>:
-            <div class="right">[glow={color}][/glow]</div><br />
-            <span style="text-shadow: red 1px 1px 5px;">Shadow</span>:
-            <div class="right">[shadow={color}, {direction}, {blur}][/shadow]</div><br />
-            Font Size:<div class="right">[size={size}][/size]</div><br />
-            <sup>Superscript</sup>:<div class="right">[sup][/sup]</div><br />
-            <sub>Subscript</sub>:<div class="right">[sub][/sub]</div><br />
-
-            <hr class="clear" />
-
-            <code class="preview">Code</code>:<div class="right">[code][/code]</div><br />
-            <tt>TeleText</tt>:<div class="right">[tt][/tt]</div><br />
-            Preformatted Text:<div class="right">[pre][/pre]</div><br />
-            Justify Left:<div class="right">[left][/left]</div><br />
-            Justify Right:<div class="right">[right][/right]</div><br />
-            Justify Center:<div class="right">[center][/center]</div><br />
-
-            <hr class="clear" />
-
-            Horizontal Rule:<div class="right">[hr][/hr]</div><br /><br />
-          </div>
-          <div class="half-column">
-            Black:<div class="right">[black][/black]</div><br />
-            Blue:<div class="right">[blue][/blue]</div><br />
-            Green:<div class="right">[green][/green]</div><br />
-            Red:<div class="right">[red][/red]</div><br />
-            White:<div class="right">[white][/white]</div><br />
-            Additional Colors:<div class="right">[color={color}][/color]</div><br />
-
-            <hr class="clear" />
-
-            Image:<div class="right">[img]{URL}[/img]</div><br />
-            URL:<div class="right">[url={URL}][/url]</div><br />
-            Email:<div class="right">[email={email}][/email]</div><br />
-            FTP:<div class="right">[ftp={URL}][/ftp]</div><br />
-
-            <hr class="clear" />
-
-            Lists:
-            <div class="right">
-              [list]<br />
-              &nbsp;&nbsp;[li][/li]<br />
-              &nbsp;&nbsp;[li][/li]<br />
-              [/list]<br /><br />
-            </div>
-
-            <hr class="clear" />
-
-            Tables:
-            <div class="right">
-              [table]<br />
-              &nbsp;&nbsp;[tr]<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;[td][/td]<br />
-              &nbsp;&nbsp;[/tr]<br />
-              [/table]
-            </div><br />
-          </div>
-        </div>
-      </div>
-      <!-- Editor -->
-      <form name="form" class="editor-form" novalidate>
-        <epochtalk-editor class="posts-editor" body-html="MessagesCtrl.newMessage.content.body_html" body="MessagesCtrl.newMessage.content.body" reset-switch="MessagesCtrl.resetEditor" focus-switch="MessagesCtrl.focusEditor" dirty="MessagesCtrl.dirtyEditor">
-        </epochtalk-editor>
-      </form>
-
-      <div class="editor-tools">
-        <div class="tools">
-          <a data-balloon="Formatting Help" ng-click="MessagesCtrl.showFormatting = true"><i class="fa fa-code"></i></a>
-          <a data-balloon="{{ MessagesCtrl.isMinimized ? 'Expand Editor' : 'Minimize Editor' }}" ng-click="MessagesCtrl.fullscreen()"><i class="fa expand" ng-class="{ 'fa-expand': MessagesCtrl.isMinimized, 'fa-compress': !MessagesCtrl.isMinimized }"></i></a>
-        </div>
-      </div>
-
-      <!-- Editor Controls -->
-      <div class="editor-button-container">
-        <button class="inverted-button cancel" ng-click="MessagesCtrl.cancelMsg()">
-          Cancel
-        </button>
-        <button class="no-animate" ng-if="MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.createConversation()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateConversation() || !MessagesCtrl.newMessage.content.subject.length || !MessagesCtrl.newMessage.content.body.length">
-          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start New Conversation
-        </button>
-        <button class="no-animate" ng-if="!MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.saveMessage()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateMessage() || !MessagesCtrl.newMessage.content.body.length">
-          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send Reply
-        </button>
-
-        <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Delete Message Modal -->
 <modal show="MessagesCtrl.showDeleteModal" on-close="MessagesCtrl.closeDeleteModal()">
