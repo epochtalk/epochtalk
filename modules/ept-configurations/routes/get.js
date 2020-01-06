@@ -84,7 +84,7 @@ module.exports = {
         var gitReleaseVer;
       }
       // top-level directory release version
-      var dirReleaseVer = path.basename(path.join(process.mainModule.filename, '..', '..')).split('-')[1];
+      var dirReleaseVer = _.tail(path.basename(path.join(process.mainModule.filename, '..', '..')).split('-')).join('-');
       // check if directory release version is a version
       // otherwise, it could be a branch name
       if (dirReleaseVer && dirReleaseVer.split('.').length === 3) {
