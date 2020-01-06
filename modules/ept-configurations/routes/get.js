@@ -76,6 +76,7 @@ module.exports = {
       } catch(e) {
         var gitRev;
       }
+      // current git release version
       try {
         var gitReleaseVer = childProcess.execSync('git tag --points-at HEAD v[0-9]*', { stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
       } catch(e) {
