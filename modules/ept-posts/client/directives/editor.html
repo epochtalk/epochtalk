@@ -141,8 +141,8 @@
         <button class="inverted-button cancel" ng-click="cancel()">
           Cancel
         </button>
-        <button class="no-animate" ng-if="editorConvoMode" class="send" ng-click="createAction(); closeEditor();" ng-disabled="form.title.$error.required || canCreate() || !newMessage.content.subject.length || !newMessage.content.body.length">
-          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start New Conversation
+        <button class="no-animate" ng-if="editorConvoMode" class="send" ng-click="createAction(); closeEditor();">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send
         </button>
         <button class="no-animate" ng-if="!editorConvoMode" class="send" ng-click="updateAction(); closeEditor();" ng-disabled="form.title.$error.required || !canUpdate() || !newMessage.content.body.length">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send Reply

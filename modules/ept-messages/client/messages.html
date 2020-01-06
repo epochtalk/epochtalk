@@ -5,7 +5,7 @@
   <br /><br />
 
   <div class="centered-text">
-    <button ng-if='MessagesCtrl.canCreateConversation()' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">Start a Conversation</button>
+    <button ng-if='MessagesCtrl.canCreateConversation() ' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">Start a Conversation</button>
   </div>
 </div>
 
@@ -110,7 +110,9 @@
     update-action="MessagesCtrl.saveMessage"
     can-create="MessagesCtrl.canCreateConversation"
     can-update="MessagesCtrl.canCreateMessage"
-    show-switch="MessagesCtrl.showEditor">
+    show-switch="MessagesCtrl.showEditor"
+    receivers="MessagesCtrl.receivers"
+    new-message="MessagesCtrl.newMessage">
   </epochtalk-editor>
 </div>
 

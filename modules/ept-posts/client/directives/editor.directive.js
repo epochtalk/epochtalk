@@ -17,7 +17,9 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       updateAction: '=',
       canCreate: '=',
       canUpdate: '=',
-      showSwitch: '='
+      showSwitch: '=',
+      receivers: '=',
+      newMessage: '='
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {

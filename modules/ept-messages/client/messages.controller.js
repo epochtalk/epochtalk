@@ -162,12 +162,16 @@ var ctrl = [
     this.hasMoreMessages = function() { return ctrl.currentConversation.has_next; };
 
     this.createConversation = function() {
-      var receiverIds = [];
-      ctrl.receivers.forEach(function(user) { receiverIds.push(user.id); });
+      ctrl.newMessage.receiver_ids = [];
+      ctrl.newMessage.receiver_usernames = [];
+      var newMessage = angular.copy(ctrl.newMessage);
+      ctrl.receivers.forEach(function(user) {
+        newMessage.receiver_ids.push(user.id);
+        newMessage.receiver_usernames.push(user.username);
+      });
 
       // create a new conversation id to put this message under
-      ctrl.newMessage.receiver_ids = receiverIds;
-      return Conversations.save(ctrl.newMessage).$promise
+      return Conversations.save(newMessage).$promise
       .then(function(savedMessage) {
         // open conversation
         ctrl.loadConversation(savedMessage.conversation_id);
