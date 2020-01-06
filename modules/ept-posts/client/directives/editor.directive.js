@@ -36,7 +36,9 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
 
       // autofocus switch
       $scope.$watch('focusSwitch', function(newValue) {
-        if (newValue === true) { $scope.focusEditorFn(); }
+        if (newValue === true && !$scope.editorConvoMode) {
+          $scope.focusEditorFn();
+        }
       });
 
       // exit switch
