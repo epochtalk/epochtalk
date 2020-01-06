@@ -15,6 +15,7 @@ var ctrl = [
     this.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [], receiver_usernames: [] };
     this.showReply = false;
     this.currentSubject = '';
+    this.receivers = [];
 
     this.canCreateMessage = function() {
       if (!Session.isAuthenticated()) { return false; }
@@ -82,13 +83,6 @@ var ctrl = [
         receiverNames.push(message.sender_username);
       }
       return receiverNames.join(', ');
-    };
-
-    this.receivers = [];
-
-    this.loadTags = function(query) {
-      return User.lookup({ username: query }).$promise
-      .then(function(users) { return users; });
     };
 
     // Conversations

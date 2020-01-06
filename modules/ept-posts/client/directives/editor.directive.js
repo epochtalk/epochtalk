@@ -185,7 +185,6 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       $scope.isMinimized = true;
       $scope.showEditor = false;
       $scope.receivers = [];
-      $scope.newMessage = { content: { body_html: '', body: '' } };
       $scope.posting = { post: { body_html: '', body: '' } };
 
       $scope.fullscreen = function() {
@@ -235,6 +234,15 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
           editorMsg.subject = '';
           editorMsg.content.body_html = '';
           editorMsg.content.body = '';
+
+          if ($scope.editorConvoMode) {
+            $scope.newMessage = {
+              content: { body: '', body_html: '' },
+              receiver_ids: [],
+              receiver_usernames: []
+            };
+          }
+
           $scope.resetEditor = true;
           $scope.showEditor = true;
           if (focus === false) { $scope.focusSwitch = false; }
