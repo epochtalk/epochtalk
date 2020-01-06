@@ -1,3 +1,4 @@
+var path = require('path');
 var _ = require('lodash');
 var changeCase = require('change-case');
 var renameKeys = require('deep-rename-keys');
@@ -82,6 +83,8 @@ module.exports = {
       } catch(e) {
         var gitReleaseVer;
       }
+      // top-level directory release version
+      var dirReleaseVer = path.basename(path.join(process.mainModule.filename, '..', '..')).split('-')[1];
       var retVal = {
          loginRequired: config.loginRequired,
          verifyRegistration: config.verifyRegistration,
@@ -94,7 +97,7 @@ module.exports = {
          images: config.saasMode ? {local:{}, s_3:{}} : config.images,
          rateLimiting: config.rateLimiting,
          saasMode: config.saasMode,
-         revision: gitReleaseVer || gitRev
+         revision: gitReleaseVer || gitRev || dirReleaseVer
        };
        retVal = camelCaseToUnderscore(retVal);
 
