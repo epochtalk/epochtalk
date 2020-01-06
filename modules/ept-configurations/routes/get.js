@@ -85,6 +85,11 @@ module.exports = {
       }
       // top-level directory release version
       var dirReleaseVer = path.basename(path.join(process.mainModule.filename, '..', '..')).split('-')[1];
+      // check if directory release version is a version
+      // otherwise, it could be a branch name
+      if (dirReleaseVer.split('.').length === 3) {
+        dirReleaseVer = 'v' + dirReleaseVer;
+      }
       var retVal = {
          loginRequired: config.loginRequired,
          verifyRegistration: config.verifyRegistration,
