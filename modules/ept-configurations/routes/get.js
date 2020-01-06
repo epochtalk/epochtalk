@@ -70,6 +70,11 @@ module.exports = {
   handler: function(request) {
     var promise = request.db.configurations.get()
     .then(function(config) {
+      try {
+        var gitRev = childProcess.execSync('git rev-parse --short HEAD', { stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
+      } catch(e) {
+        var gitRev;
+      }
       var retVal = {
          loginRequired: config.loginRequired,
          verifyRegistration: config.verifyRegistration,
@@ -82,7 +87,7 @@ module.exports = {
          images: config.saasMode ? {local:{}, s_3:{}} : config.images,
          rateLimiting: config.rateLimiting,
          saasMode: config.saasMode,
-         revision: childProcess.execSync('git rev-parse --short HEAD').toString().trim()
+         revision: gitRev
        };
        retVal = camelCaseToUnderscore(retVal);
 
