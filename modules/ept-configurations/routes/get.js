@@ -75,6 +75,11 @@ module.exports = {
       } catch(e) {
         var gitRev;
       }
+      try {
+        var gitReleaseVer = childProcess.execSync('git tag --points-at HEAD v[0-9]*', { stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
+      } catch(e) {
+        var gitReleaseVer;
+      }
       var retVal = {
          loginRequired: config.loginRequired,
          verifyRegistration: config.verifyRegistration,
@@ -87,7 +92,7 @@ module.exports = {
          images: config.saasMode ? {local:{}, s_3:{}} : config.images,
          rateLimiting: config.rateLimiting,
          saasMode: config.saasMode,
-         revision: gitRev
+         revision: gitReleaseVer || gitRev
        };
        retVal = camelCaseToUnderscore(retVal);
 
