@@ -70,7 +70,7 @@ module.exports = {
   handler: function(request) {
     var promise = request.db.configurations.get()
     .then(function(config) {
-       var retVal = {
+      var retVal = {
          loginRequired: config.loginRequired,
          verifyRegistration: config.verifyRegistration,
          postMaxLength: config.postMaxLength || 10000,
