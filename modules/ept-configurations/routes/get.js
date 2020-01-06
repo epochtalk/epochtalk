@@ -70,6 +70,7 @@ module.exports = {
   handler: function(request) {
     var promise = request.db.configurations.get()
     .then(function(config) {
+      // current git revision hash
       try {
         var gitRev = childProcess.execSync('git rev-parse --short HEAD', { stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
       } catch(e) {
