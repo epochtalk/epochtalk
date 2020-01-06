@@ -87,7 +87,7 @@ module.exports = {
       var dirReleaseVer = path.basename(path.join(process.mainModule.filename, '..', '..')).split('-')[1];
       // check if directory release version is a version
       // otherwise, it could be a branch name
-      if (dirReleaseVer.split('.').length === 3) {
+      if (dirReleaseVer && dirReleaseVer.split('.').length === 3) {
         dirReleaseVer = 'v' + dirReleaseVer;
       }
       var retVal = {
