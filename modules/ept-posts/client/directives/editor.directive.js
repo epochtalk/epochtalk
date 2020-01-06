@@ -184,8 +184,10 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       $scope.editorPosition = 'editor-fixed-right';
       $scope.isMinimized = true;
       $scope.showEditor = false;
-      $scope.receivers = [];
       $scope.posting = { post: { body_html: '', body: '' } };
+      if ($scope.editorConvoMode) {
+        $scope.receivers = [];
+      }
 
       $scope.fullscreen = function() {
         if ($scope.isMinimized) {
@@ -219,7 +221,9 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       };
 
       function closeEditor() {
-        $scope.newMessage.content = { subject: '', body: '', body_html: '' };
+        if ($scope.editorConvoMode) {
+          $scope.newMessage.content = { subject: '', body: '', body_html: '' };
+        }
         $scope.posting = { post: { body_html: '', body: '' } };
         $scope.resetEditor = true;
         $scope.showEditor = false;
@@ -230,17 +234,19 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       $scope.loadEditor = function(focus) {
         if (discardAlert()) {
           var editorMsg = $scope.newMessage;
-          $scope.receivers = [];
-          editorMsg.subject = '';
-          editorMsg.content.body_html = '';
-          editorMsg.content.body = '';
-
           if ($scope.editorConvoMode) {
-            $scope.newMessage = {
-              content: { body: '', body_html: '' },
-              receiver_ids: [],
-              receiver_usernames: []
-            };
+            $scope.receivers = [];
+            editorMsg.subject = '';
+            editorMsg.content.body_html = '';
+            editorMsg.content.body = '';
+
+            if ($scope.editorConvoMode) {
+              $scope.newMessage = {
+                content: { body: '', body_html: '' },
+                receiver_ids: [],
+                receiver_usernames: []
+              };
+            }
           }
 
           $scope.resetEditor = true;
