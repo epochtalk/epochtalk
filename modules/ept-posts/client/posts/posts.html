@@ -142,7 +142,7 @@
 <div class="sidebar">
   <div class="sidebar-block">
     <div ng-if="PostsParentCtrl.canPost()" class="sidebar-actions">
-      <a class="button" ng-click="PostsParentCtrl.showEditor = true" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
+      <a class="button" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
       <div class="post-tools">
 
         <!-- Thread Lock -->
