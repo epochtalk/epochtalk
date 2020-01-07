@@ -19,7 +19,8 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       canUpdate: '=',
       showSwitch: '=',
       receivers: '=',
-      newMessage: '='
+      newMessage: '=',
+      posting: '='
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
@@ -186,7 +187,6 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       $scope.editorPosition = 'editor-fixed-right';
       $scope.isMinimized = true;
       $scope.showEditor = false;
-      $scope.posting = { post: { body_html: '', body: '' } };
       if ($scope.editorConvoMode) {
         $scope.receivers = [];
       }
