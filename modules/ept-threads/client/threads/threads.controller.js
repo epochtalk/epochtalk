@@ -18,6 +18,35 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     // TODO: This will not be here once actual boards are stored in this array
     this.parent.bannedFromBoard = BanSvc.banStatus();
 
+    this.parent.dirtyEditor = false;
+    this.parent.resetEditor = false;
+    this.parent.showEditor = false;
+    this.parent.focusEditor = false;
+    this.parent.quote = '';
+    this.parent.posting = { post: { body_html: '', body: '' } };
+    this.parent.editorPosition = 'editor-fixed-right';
+    this.parent.resize = true;
+
+    this.parent.saveThread = function() { console.log('save thread'); };
+
+    this.parent.loadEditor = function() {
+      if (discardAlert()) {
+        ctrl.parent.resetEditor = true;
+        ctrl.parent.showEditor = true;
+        ctrl.showEditor = true;
+        ctrl.parent.focusEditor = true;
+      }
+    };
+
+    var discardAlert = function() {
+      if (ctrl.parent.dirtyEditor) {
+        var message = 'It looks like you were working on something. ';
+        message += 'Are you sure you want to leave that behind?';
+        return confirm(message);
+      }
+      else { return true; }
+    };
+
     this.parent.canCreate = function() {
       if (!ctrl.loggedIn()) { return false; }
       if (BanSvc.banStatus()) { return false; }
