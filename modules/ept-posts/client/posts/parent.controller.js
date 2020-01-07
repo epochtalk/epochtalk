@@ -316,7 +316,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
     };
 
     var discardAlert = function() {
-      if ($scope.dirtyEditor) {
+      if (ctrl.dirtyEditor) {
         var message = 'It looks like you were working on something. ';
         message += 'Are you sure you want to leave that behind?';
         return confirm(message);
