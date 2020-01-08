@@ -55,6 +55,11 @@ var directive = ['Session', 'User', '$timeout', '$window', '$rootScope', '$filte
     }],
     link: function($scope, $element) {
       $scope.loggedIn = Session.isAuthenticated;
+      $scope.pollValid = false;
+      $scope.poll = {
+        question: '',
+        answers: ['', '']
+      };
       $scope.hasOptions = function() {
         if ($scope.canLock() || $scope.canSticky() || $scope.canModerate() || $scope.canCreatePoll()) {
           return true;
