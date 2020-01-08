@@ -1,4 +1,4 @@
-var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', function(User, $timeout, $window, $rootScope, $filter) {
+var directive = ['Session', 'User', '$timeout', '$window', '$rootScope', '$filter', function(Session, User, $timeout, $window, $rootScope, $filter) {
   return {
     restrict: 'E',
     scope: {
@@ -54,6 +54,38 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       });
     }],
     link: function($scope, $element) {
+      $scope.loggedIn = Session.isAuthenticated;
+      $scope.hasOptions = function() {
+        if ($scope.canLock() || $scope.canSticky() || $scope.canModerate() || $scope.canCreatePoll()) {
+          return true;
+        }
+        else { return false; }
+      };
+
+      $scope.canLock = function() {
+        if (!$scope.loggedIn()) { return false; }
+        if (!Session.hasPermission('threads.lock.allow')) { return false; }
+        return true;
+      };
+
+      $scope.canSticky = function() {
+        if (!$scope.loggedIn()) { return false; }
+        if (!Session.hasPermission('threads.sticky.allow')) { return false; }
+        return true;
+      };
+
+      $scope.canModerate = function() {
+        if (!$scope.loggedIn()) { return false; }
+        if (!Session.hasPermission('threads.moderated.allow')) { return false; }
+        return true;
+      };
+
+      $scope.canCreatePoll = function() {
+        if (!$scope.loggedIn()) { return false; }
+        if (!Session.hasPermission('threads.createPoll.allow')) { return false; }
+        return true;
+      };
+
       // editor input elements
       var editor = $element[0].getElementsByClassName('editor-input')[0];
       var $editor = angular.element(editor);

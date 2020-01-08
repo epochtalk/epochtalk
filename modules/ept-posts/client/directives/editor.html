@@ -1,11 +1,40 @@
 <div class="messages-wrap">
   <div ng-class="editorPosition" ng-show="showEditor">
     <!-- Editor Container-->
-    <div class="editor-container" ng-class="{ 'new-message' : editorConvoMode }">
+    <div class="editor-container" ng-class="{ 'new-message' : editorConvoMode, 'new-thread' : threadEditorMode }">
       <!-- Editor Header -->
       <div class="editor-top-bar">
 
-        <!--  Message Ediitor Mode -->
+        <!--  Thread Editor Mode -->
+        <div ng-if="threadEditorMode">
+          <!-- Thread Options -->
+          <div class="padded-row" ng-if="hasOptions()">
+            <div class="fill-row">
+              <label>Options:</label>
+              <div class="option" ng-if="canLock()">
+                <input type="checkbox" id="lockThread" ng-model="thread.locked" ng-disabled="!loggedIn()">
+                <label for="lockThread">Lock Thread</label>
+              </div>
+
+              <div class="option" ng-if="canSticky()">
+                <input type="checkbox" id="stickyThread" ng-model="thread.sticky" ng-disabled="!loggedIn()">
+                <label for="stickyThread">Sticky Thread</label>
+              </div>
+
+              <div class="option" ng-if="canModerate()">
+                <input type="checkbox" id="moderateThread" ng-model="thread.moderated" ng-disabled="!loggedIn()">
+                <label for="moderateThread">Moderate Thread</label>
+              </div>
+
+              <div class="option" ng-if="canCreatePoll()">
+                <input type="checkbox" id="threadPoll" ng-model="addPoll" ng-disabled="!loggedIn()">
+                <label for="threadPoll">Add a Poll</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--  Message Editor Mode -->
         <div ng-if="editorConvoMode">
           <!-- Select User -->
           <label>To</label>
