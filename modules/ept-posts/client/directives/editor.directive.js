@@ -13,6 +13,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       thread: '=',
       postEditorMode: '=',
       editorConvoMode: '=',
+      threadEditorMode: '=',
       createAction: '=',
       updateAction: '=',
       canCreate: '=',
