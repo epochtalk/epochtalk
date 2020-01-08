@@ -1,12 +1,12 @@
 <div class="messages-wrap">
   <div ng-class="editorPosition" ng-show="showEditor">
     <!-- Editor Container-->
-    <div class="editor-container" ng-class="{ 'new-message' : editorConvoMode && !postEditorMode }">
+    <div class="editor-container" ng-class="{ 'new-message' : editorConvoMode }">
       <!-- Editor Header -->
       <div class="editor-top-bar">
 
         <!--  Message Ediitor Mode -->
-        <div ng-if="editorConvoMode && !postEditorMode">
+        <div ng-if="editorConvoMode">
           <!-- Select User -->
           <label>To</label>
           <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="receivers" modal-focus="{{showEditor && editorConvoMode}}">
