@@ -67,10 +67,11 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       ctrl.parent.showEditor = false;
 
       // append poll to thread
-      if (ctrl.addPoll && ctrl.pollValid) { ctrl.thread.poll = ctrl.poll; }
+      console.log(ctrl.parent.poll);
+      if (ctrl.parent.addPoll && ctrl.parent.pollValid) { ctrl.parent.thread.poll = ctrl.parent.poll; }
 
       // create a new thread and post
-      Threads.save(ctrl.thread).$promise
+      Threads.save(ctrl.parent.thread).$promise
       .then(function(thread) { $location.path('/threads/' + thread.thread_id + '/posts'); })
       .catch(function(err) {
         var error = 'Could not create thread: ' + err.data.message;
