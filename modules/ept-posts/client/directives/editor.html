@@ -27,7 +27,7 @@
               </div>
 
               <div class="option" ng-if="canCreatePoll()">
-                <input type="checkbox" id="threadPoll" ng-model="addPoll" ng-disabled="!loggedIn()">
+                <input type="checkbox" id="threadPoll" ng-click="showPoll()" ng-disabled="!loggedIn()">
                 <label for="threadPoll">Add a Poll</label>
               </div>
             </div>

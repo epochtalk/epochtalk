@@ -21,12 +21,15 @@ var directive = ['Session', 'User', '$timeout', '$window', '$rootScope', '$filte
       showSwitch: '=',
       receivers: '=',
       newMessage: '=',
-      posting: '='
+      posting: '=',
+      canLock: '=',
+      canSticky: '=',
+      canModerate: '=',
+      canCreatePoll: '='
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
       // quote insert
-
       $scope.$watch('quote', function(newQuote) {
         if (newQuote) { $scope.insertQuote(newQuote); }
       });
@@ -67,28 +70,8 @@ var directive = ['Session', 'User', '$timeout', '$window', '$rootScope', '$filte
         else { return false; }
       };
 
-      $scope.canLock = function() {
-        if (!$scope.loggedIn()) { return false; }
-        if (!Session.hasPermission('threads.lock.allow')) { return false; }
-        return true;
-      };
-
-      $scope.canSticky = function() {
-        if (!$scope.loggedIn()) { return false; }
-        if (!Session.hasPermission('threads.sticky.allow')) { return false; }
-        return true;
-      };
-
-      $scope.canModerate = function() {
-        if (!$scope.loggedIn()) { return false; }
-        if (!Session.hasPermission('threads.moderated.allow')) { return false; }
-        return true;
-      };
-
-      $scope.canCreatePoll = function() {
-        if (!$scope.loggedIn()) { return false; }
-        if (!Session.hasPermission('threads.createPoll.allow')) { return false; }
-        return true;
+      $scope.showPoll = function() {
+        $scope.addPoll = !$scope.addPoll;
       };
 
       // editor input elements

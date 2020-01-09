@@ -18,6 +18,30 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     // TODO: This will not be here once actual boards are stored in this array
     this.parent.bannedFromBoard = BanSvc.banStatus();
 
+    this.parent.canLock = function() {
+      if (!ctrl.loggedIn()) { return false; }
+      if (!Session.hasPermission('threads.lock.allow')) { return false; }
+      return true;
+    };
+
+    this.parent.canSticky = function() {
+      if (!ctrl.loggedIn()) { return false; }
+      if (!Session.hasPermission('threads.sticky.allow')) { return false; }
+      return true;
+    };
+
+    this.parent.canModerate = function() {
+      if (!ctrl.loggedIn()) { return false; }
+      if (!Session.hasPermission('threads.moderated.allow')) { return false; }
+      return true;
+    };
+
+    this.parent.canCreatePoll = function() {
+      if (!ctrl.loggedIn()) { return false; }
+      if (!Session.hasPermission('threads.createPoll.allow')) { return false; }
+      return true;
+    };
+
     this.parent.dirtyEditor = false;
     this.parent.resetEditor = false;
     this.parent.showEditor = false;
