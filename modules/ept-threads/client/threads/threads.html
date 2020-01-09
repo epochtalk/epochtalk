@@ -34,8 +34,8 @@
 
 <div ng-if="ThreadsWrapperCtrl.canCreate() && ThreadsWrapperCtrl.showEditor">
   <epochtalk-editor class="posts-editor"
-    body-html="ThreadsWrapperCtrl.posting.post.body_html"
-    body="ThreadsWrapperCtrl.posting.post.body"
+    body-html="ThreadsWrapperCtrl.thread.body_html"
+    body="ThreadsWrapperCtrl.thread.body"
     posting="ThreadsWrapperCtrl.posting"
     reset-switch="ThreadsWrapperCtrl.resetEditor"
     focus-switch="ThreadsWrapperCtrl.focusEditor"

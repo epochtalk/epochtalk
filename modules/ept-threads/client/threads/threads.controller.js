@@ -42,16 +42,42 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       return true;
     };
 
+    this.parent.thread = {
+      title: '',
+      body: '',
+      body_html: '',
+      board_id:  pageData.board.id,
+      sticky: false,
+      locked: false,
+      moderated: false
+    };
     this.parent.dirtyEditor = false;
     this.parent.resetEditor = false;
     this.parent.showEditor = false;
     this.parent.focusEditor = false;
     this.parent.quote = '';
-    this.parent.posting = { post: { body_html: '', body: '' } };
     this.parent.editorPosition = 'editor-fixed-right';
-    this.parent.resize = true;
+    this.parent.addPoll = false;
+    this.parent.pollValid = false;
+    this.parent.poll = {
+      question: '',
+      answers: ['', '']
+    };
+    this.parent.saveThread = function() {
+      ctrl.parent.showEditor = false;
 
-    this.parent.saveThread = function() { console.log('save thread'); };
+      // append poll to thread
+      if (ctrl.addPoll && ctrl.pollValid) { ctrl.thread.poll = ctrl.poll; }
+
+      // create a new thread and post
+      Threads.save(ctrl.thread).$promise
+      .then(function(thread) { $location.path('/threads/' + thread.thread_id + '/posts'); })
+      .catch(function(err) {
+        var error = 'Could not create thread: ' + err.data.message;
+        if (err.status === 429) { error = 'New Thread Rate Limit Exceeded'; }
+        Alert.error(error);
+      });
+    };
 
     this.parent.loadEditor = function() {
       if (discardAlert()) {

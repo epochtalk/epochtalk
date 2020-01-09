@@ -7,6 +7,13 @@
 
         <!--  Thread Editor Mode -->
         <div ng-if="threadEditorMode">
+          <!-- Thread Title -->
+          <div class="padded-row">
+            <div class="fill-row">
+              <label>Thread Title</label>
+              <input type="text" id="threadTitle" ng-model="thread.title">
+            </div>
+          </div>
           <!-- Thread Options -->
           <div class="padded-row" ng-if="hasOptions()">
             <div class="fill-row">
