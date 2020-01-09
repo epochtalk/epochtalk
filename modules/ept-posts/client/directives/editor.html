@@ -174,7 +174,7 @@
       </div>
 
       <!-- Message Editor Controls -->
-      <div class="editor-button-container" ng-if="!postEditorMode">
+      <div class="editor-button-container" ng-if="editorConvoMode">
         <button class="inverted-button cancel" ng-click="cancel()">
           Cancel
         </button>
@@ -189,7 +189,7 @@
       </div>
 
       <!-- Post Editor Controls -->
-      <div class="editor-button-container" ng-if="postEditorMode">
+      <div class="editor-button-container" ng-if="postEditorMode || threadEditorMode">
         <button class="inverted-button cancel" ng-click="cancel()">
           Cancel
         </button>
