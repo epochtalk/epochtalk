@@ -99,6 +99,16 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       else { return true; }
     };
 
+    this.parent.canSave = function() {
+      var text = ctrl.parent.thread.body_html;
+      var imgSrcRegex = /<img[^>]+src="((http:\/\/|https:\/\/|\/)[^">]+)"/g;
+      var stripTagsRegex = /(<([^>]+)>)/ig;
+      var images = imgSrcRegex.exec(text);
+      text = text.replace(stripTagsRegex, '');
+      text = text.trim();
+      return text.length || images;
+    };
+
     this.parent.canCreate = function() {
       if (!ctrl.loggedIn()) { return false; }
       if (BanSvc.banStatus()) { return false; }

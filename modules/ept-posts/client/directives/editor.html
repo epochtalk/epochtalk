@@ -189,12 +189,24 @@
       </div>
 
       <!-- Post Editor Controls -->
-      <div class="editor-button-container" ng-if="postEditorMode || threadEditorMode">
+      <div class="editor-button-container" ng-if="postEditorMode">
         <button class="inverted-button cancel" ng-click="cancel()">
           Cancel
         </button>
         <button class="send" ng-click="createAction(); closeEditor();" ng-disabled="form.title.$error.required || !canCreate()">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ posting.post.id ? 'Edit Post' : 'Send Reply' }}
+        </button>
+
+        <span class="label alert" ng-if="posting.error" ng-bind="posting.error.message"></span>
+      </div>
+
+      <!-- Thread Editor Controls -->
+      <div class="editor-button-container" ng-if="threadEditorMode">
+        <button class="inverted-button cancel" ng-click="cancel()">
+          Cancel
+        </button>
+        <button class="send" ng-click="createAction(); closeEditor();" ng-disabled="!thread.title.length || form.title.$error.required || !canCreate()">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start Thread
         </button>
 
         <span class="label alert" ng-if="posting.error" ng-bind="posting.error.message"></span>
