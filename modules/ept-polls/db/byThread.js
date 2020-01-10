@@ -6,7 +6,6 @@ var helper = dbc.helper;
 module.exports = function(threadId, userId) {
   threadId = helper.deslugify(threadId);
   userId = helper.deslugify(userId);
-  console.log(userId);
   var q = 'SELECT p.id, p.question, p.locked, p.max_answers, p.expiration, p.change_vote, p.display_mode, ';
   q += '(SELECT json_agg(row_to_json((SELECT x FROM ( ';
   q +=   'SELECT pa.id, pa.answer, ';

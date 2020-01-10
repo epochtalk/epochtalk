@@ -55,10 +55,6 @@ var directive = ['Session', 'User', '$timeout', '$window', '$rootScope', '$filte
       $scope.$watch('showSwitch', function(newValue) {
         $scope.loadEditor(newValue);
       });
-
-      $scope.$watch('pollValid', function(newValue) {
-        console.log('poll scope valid', newValue);
-      });
     }],
     link: function($scope, $element) {
       $scope.loggedIn = Session.isAuthenticated;
