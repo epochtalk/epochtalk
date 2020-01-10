@@ -82,12 +82,10 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     };
 
     this.parent.loadEditor = function() {
-      if (discardAlert()) {
-        ctrl.parent.resetEditor = true;
-        ctrl.parent.showEditor = true;
-        ctrl.showEditor = true;
-        ctrl.parent.focusEditor = true;
-      }
+      ctrl.parent.resetEditor = true;
+      ctrl.parent.showEditor = true;
+      ctrl.showEditor = true;
+      ctrl.parent.focusEditor = true;
     };
 
     var discardAlert = function() {
