@@ -302,26 +302,15 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
 
     this.loadEditor = function(post) {
       post = post || {};
-      if (discardAlert()) {
-        var editorPost = ctrl.posting.post;
-        editorPost.id = post.id || '';
-        editorPost.title = post.title || '';
-        editorPost.body_html = post.body_html || '';
-        editorPost.body = post.body || '';
-        editorPost.page = ctrl.page || 1;
-        ctrl.resetEditor = true;
-        ctrl.showEditor = true;
-        ctrl.focusEditor = true;
-      }
-    };
-
-    var discardAlert = function() {
-      if (ctrl.dirtyEditor) {
-        var message = 'It looks like you were working on something. ';
-        message += 'Are you sure you want to leave that behind?';
-        return confirm(message);
-      }
-      else { return true; }
+      var editorPost = ctrl.posting.post;
+      editorPost.id = post.id || '';
+      editorPost.title = post.title || '';
+      editorPost.body_html = post.body_html || '';
+      editorPost.body = post.body || '';
+      editorPost.page = ctrl.page || 1;
+      ctrl.resetEditor = true;
+      ctrl.showEditor = true;
+      ctrl.focusEditor = true;
     };
 
     this.savePost = function() {

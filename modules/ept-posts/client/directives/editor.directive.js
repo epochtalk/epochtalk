@@ -214,7 +214,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       };
 
       var discardAlert = function() {
-        if ($scope.dirtyEditor) {
+        if ($scope.dirty) {
           var message = 'It looks like you were working on something. ';
           message += 'Are you sure you want to leave that behind?';
           return confirm(message);
@@ -233,6 +233,7 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
         $scope.posting = { post: { body_html: '', body: '' } };
         $scope.resetEditor = true;
         $scope.showEditor = false;
+        $scope.dirty = false;
         $scope.showFormatting = false;
         $scope.showSwitch = false;
       }
