@@ -555,7 +555,8 @@
 
 .messages-wrap {
   .new-message .editor-form { top: 8.4375rem; }
-  .new-thread .editor-form { top: 10.4375rem; }
+  .new-thread .editor-form { top: 12.4375rem; }
+  .new-thread.add-poll .editor-form { top: 49.4375rem; }
   .editor-button-container { padding: 0.5rem;}
   .progress-editor { margin-left: 0; }
 
@@ -577,11 +578,14 @@
     }
   }
   .new-thread .editor-top-bar {
-    height: 12.725rem;
+    height: 14.725rem;
     padding: 1rem;
     div:first-child {
       padding: 0;
       text-align: left;
     }
+  }
+  .new-thread.add-poll .editor-top-bar {
+    height: 52.725rem;
   }
 }
