@@ -19,22 +19,22 @@
             <div class="fill-row">
               <label>Options:</label>
               <div class="option" ng-if="canLock()">
-                <input type="checkbox" id="lockThread" ng-model="thread.locked" ng-disabled="!loggedIn()">
+                <input type="checkbox" id="lockThread" ng-model="thread.locked">
                 <label for="lockThread">Lock Thread</label>
               </div>
 
               <div class="option" ng-if="canSticky()">
-                <input type="checkbox" id="stickyThread" ng-model="thread.sticky" ng-disabled="!loggedIn()">
+                <input type="checkbox" id="stickyThread" ng-model="thread.sticky">
                 <label for="stickyThread">Sticky Thread</label>
               </div>
 
               <div class="option" ng-if="canModerate()">
-                <input type="checkbox" id="moderateThread" ng-model="thread.moderated" ng-disabled="!loggedIn()">
+                <input type="checkbox" id="moderateThread" ng-model="thread.moderated">
                 <label for="moderateThread">Moderate Thread</label>
               </div>
 
               <div class="option" ng-if="canCreatePoll()">
-                <input type="checkbox" id="threadPoll" ng-model="thread.addPoll" ng-disabled="!loggedIn()">
+                <input type="checkbox" id="threadPoll" ng-model="thread.addPoll">
                 <label for="threadPoll">Add a Poll</label>
               </div>
             </div>

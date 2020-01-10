@@ -1,4 +1,4 @@
-var directive = ['Session', 'User', '$timeout', '$window', '$rootScope', '$filter', function(Session, User, $timeout, $window, $rootScope, $filter) {
+var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', function(User, $timeout, $window, $rootScope, $filter) {
   return {
     restrict: 'E',
     scope: {
@@ -57,7 +57,6 @@ var directive = ['Session', 'User', '$timeout', '$window', '$rootScope', '$filte
       });
     }],
     link: function($scope, $element) {
-      $scope.loggedIn = Session.isAuthenticated;
       // editor input elements
       var editor = $element[0].getElementsByClassName('editor-input')[0];
       var $editor = angular.element(editor);
