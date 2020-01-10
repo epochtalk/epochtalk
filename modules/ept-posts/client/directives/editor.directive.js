@@ -26,9 +26,6 @@ var directive = ['Session', 'User', '$timeout', '$window', '$rootScope', '$filte
       canSticky: '=',
       canModerate: '=',
       canCreatePoll: '=',
-      addPoll: '=',
-      pollValid: '=',
-      poll: '='
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
@@ -58,20 +55,13 @@ var directive = ['Session', 'User', '$timeout', '$window', '$rootScope', '$filte
       $scope.$watch('showSwitch', function(newValue) {
         $scope.loadEditor(newValue);
       });
+
+      $scope.$watch('pollValid', function(newValue) {
+        console.log('poll scope valid', newValue);
+      });
     }],
     link: function($scope, $element) {
       $scope.loggedIn = Session.isAuthenticated;
-      $scope.hasOptions = function() {
-        if ($scope.canLock() || $scope.canSticky() || $scope.canModerate() || $scope.canCreatePoll()) {
-          return true;
-        }
-        else { return false; }
-      };
-
-      $scope.showPoll = function() {
-        $scope.addPoll = !$scope.addPoll;
-      };
-
       // editor input elements
       var editor = $element[0].getElementsByClassName('editor-input')[0];
       var $editor = angular.element(editor);

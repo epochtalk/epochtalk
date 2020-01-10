@@ -15,7 +15,7 @@
             </div>
           </div>
           <!-- Thread Options -->
-          <div class="padded-row" ng-if="hasOptions()">
+          <div class="padded-row" ng-if="canLock() || canSticky() || canModerate() || canCreatePoll()">
             <div class="fill-row">
               <label>Options:</label>
               <div class="option" ng-if="canLock()">
@@ -34,14 +34,14 @@
               </div>
 
               <div class="option" ng-if="canCreatePoll()">
-                <input type="checkbox" id="threadPoll" ng-click="showPoll()" ng-disabled="!loggedIn()">
+                <input type="checkbox" id="threadPoll" ng-model="thread.addPoll" ng-disabled="!loggedIn()">
                 <label for="threadPoll">Add a Poll</label>
               </div>
             </div>
           </div>
         </div>
 
-        <poll-creator poll="poll" valid="pollValid" ng-if="addPoll"></poll-creator>
+        <poll-creator poll="thread.poll" valid="thread.pollValid" ng-if="thread.addPoll"></poll-creator>
         <!--  Message Editor Mode -->
         <div ng-if="editorConvoMode">
           <!-- Select User -->

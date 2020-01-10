@@ -49,7 +49,13 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       board_id:  pageData.board.id,
       sticky: false,
       locked: false,
-      moderated: false
+      moderated: false,
+      addPoll: false,
+      pollValid: false,
+      poll: {
+        question: '',
+        answers: ['', '']
+      }
     };
     this.parent.dirtyEditor = false;
     this.parent.resetEditor = false;
@@ -59,16 +65,11 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.editorPosition = 'editor-fixed-right';
     this.parent.addPoll = false;
     this.parent.pollValid = false;
-    this.parent.poll = {
-      question: '',
-      answers: ['', '']
-    };
     this.parent.saveThread = function() {
       ctrl.parent.showEditor = false;
 
-      // append poll to thread
-      console.log(ctrl.parent.poll);
-      if (ctrl.parent.addPoll && ctrl.parent.pollValid) { ctrl.parent.thread.poll = ctrl.parent.poll; }
+      // remove poll from thread if invalid
+      if (!ctrl.parent.thread.addPoll || !ctrl.parent.thread.pollValid) { delete ctrl.parent.thread.poll; }
 
       // create a new thread and post
       Threads.save(ctrl.parent.thread).$promise
