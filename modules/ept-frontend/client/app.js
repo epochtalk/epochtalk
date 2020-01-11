@@ -81,13 +81,12 @@ app
   // Handle if there is an error transitioning states
   $transitions.onError({}, function(transition) {
     transition.abort();
-    var error = transition.error().detail;
-
-    if (error) {
+    var error = transition.error();
+    if (error && error.type !== 3 && error.type !== 5) {
+      error = error.detail || error;
       var next = transition.to();
       var prev = transition.from();
       var nextParams = transition.params();
-      console.log(error);
       // stop page change
       if (error === 'NoPageChange') { return; }
       // Unauthorized is redirected to login, save next so we can redirect after login

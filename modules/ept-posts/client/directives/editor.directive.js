@@ -1,4 +1,4 @@
-var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', function(User, $timeout, $window, $rootScope, $filter) {
+var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$filter', function(User, $transitions, $timeout, $window, $rootScope, $filter) {
   return {
     restrict: 'E',
     scope: {
@@ -7,7 +7,6 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
       quote: '=',
       resetSwitch: '=',
       focusSwitch: '=',
-      exitSwitch: '=',
       dirty: '=',
       rightToLeft: '=',
       thread: '=',
@@ -44,11 +43,6 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
         if (newValue === true && !$scope.editorConvoMode) {
           $scope.focusEditorFn();
         }
-      });
-
-      // exit switch
-      $scope.$watch('exitSwitch', function(newValue) {
-        $scope.exitEditor(newValue);
       });
 
       // show switch
@@ -104,21 +98,20 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
 
       // -- Page Exit Eventing
 
-      var confirmMessage = 'It looks like a post is being written.';
-      var exitFunction = function() { if ($scope.dirty) { return confirmMessage; } };
-      $window.onbeforeunload = exitFunction;
-
       var routeLeaveFunction = function() {
-        return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-          if (toState.url === fromState.url) { return; }
+        return $transitions.onStart({}, function($transition) {
+          var toState = $transition.$to();
+          var fromState = $transition.$from();
+          if (toState.name === fromState.name) { return false; }
           if ($scope.dirty) {
-            var message = confirmMessage + ' Are you sure you want to leave?';
-            var answer = confirm(message);
-            if (!answer) { e.preventDefault(); }
+            var message = 'It looks like you were working on something. Are you sure you want to leave?';
+            return confirm(message);
           }
         });
-      };
-      var destroyRouteBlocker = routeLeaveFunction();
+      }();
+
+      // -- Destroy
+      $element.on('$destroy', routeLeaveFunction);
 
       // -- Controller Functions
 
@@ -165,26 +158,6 @@ var directive = ['User', '$timeout', '$window', '$rootScope', '$filter', functio
         $scope.resetImages = true;
         $scope.resetSwitch = false;
       };
-
-      // turns off page exit events
-      $scope.exitEditor = function(value) {
-        if (value === true) {
-          $window.onbeforeunload = undefined;
-          if (destroyRouteBlocker) { destroyRouteBlocker(); }
-        }
-        else if (value === false) {
-          $window.onbeforeunload = exitFunction;
-          if (destroyRouteBlocker) { destroyRouteBlocker(); }
-          destroyRouteBlocker = routeLeaveFunction();
-        }
-      };
-
-      // -- Destroy
-
-      $element.on('$destroy', function() {
-        $window.onbeforeunload = undefined;
-        if (destroyRouteBlocker) { destroyRouteBlocker(); }
-      });
 
       // Editor Wrap
       $scope.resize = true;
