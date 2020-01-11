@@ -176,16 +176,16 @@ var ctrl = [
         Alert.success('New Conversation Started!');
         ctrl.loadRecentMessages();
       })
-      .catch(function(err) {
-        var msg = 'Failed to create conversation';
-        if (err && err.status === 403) { msg = err.data.message; }
-        Alert.error(msg);
-      })
-      .finally(function() {
+      .then(function() {
         ctrl.receivers = [];
         ctrl.newMessage.receiver_ids = [];
         ctrl.newMessage.content = { subject: '', body: '', body_html: '' };
         closeEditor();
+      })
+      .catch(function(err) {
+        var msg = 'Failed to create conversation';
+        if (err && err.status === 403) { msg = err.data.message; }
+        Alert.error(msg);
       });
     };
 
@@ -353,6 +353,7 @@ var ctrl = [
       ctrl.newMessage.content = { body: '', body_html: '' };
       ctrl.resetEditor = true;
       ctrl.showEditor = false;
+      ctrl.dirtyEditor = false;
       ctrl.showFormatting = false;
     }
 

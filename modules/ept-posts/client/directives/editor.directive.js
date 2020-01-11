@@ -200,10 +200,29 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
       };
 
       function closeEditor() {
-        if ($scope.editorConvoMode) {
+        if ($scope.threadEditorMode) {
+          $scope.thread = {
+            title: '',
+            body: '',
+            body_html: '',
+            board_id:  $scope.thread.board_id,
+            sticky: false,
+            locked: false,
+            moderated: false,
+            addPoll: false,
+            pollValid: false,
+            poll: {
+              question: '',
+              answers: ['', '']
+            }
+          };
+        }
+        else if ($scope.editorConvoMode || !$scope.postEditorMode) {
           $scope.newMessage.content = { subject: '', body: '', body_html: '' };
         }
-        $scope.posting = { post: { body_html: '', body: '' } };
+        else {
+          $scope.posting = { post: { body_html: '', body: '' } };
+        }
         $scope.resetEditor = true;
         $scope.showEditor = false;
         $scope.dirty = false;

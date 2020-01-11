@@ -500,13 +500,13 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
       ctrl.previewPost.body = data.body;
       Alert.success('Post successfully updated');
     })
+    .then(closeEditor)
     .catch(function(err) {
       var error = 'Post could not be updated';
       if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
       if (err.status === 403) { error = 'You do not have the proper permissions to update this post'; }
       Alert.error(error);
-    })
-    .finally(closeEditor);
+    });
   };
 
   this.loadEditor = function() {
@@ -543,6 +543,7 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     ctrl.posting.post.body = '';
     ctrl.posting.post.body_html = '';
     ctrl.resetEditor = true;
+    ctrl.dirtyEditor = false;
     ctrl.showEditor = false;
   }
 

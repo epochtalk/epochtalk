@@ -359,9 +359,10 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
         }
       })
       .then(function() {
-        ctrl.showEditor = false;
-        ctrl.posting = { post: { body_html: '', body: '' } };
         ctrl.resetEditor = true;
+        ctrl.showEditor = false;
+        ctrl.dirtyEditor = false;
+        ctrl.posting = { post: { body_html: '', body: '' } };
       })
       .catch(function(err) {
         var error = err.data.message;
