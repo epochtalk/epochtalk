@@ -11,7 +11,7 @@
           <div class="padded-row">
             <div class="fill-row">
               <label>Thread Title</label>
-              <input type="text" id="threadTitle" ng-model="thread.title" ng-class="{ 'rtl': rightToLeft }">
+              <input type="text" id="threadTitle" ng-model="thread.title" ng-class="{ 'rtl': rightToLeft }" modal-focus="{{showEditor && threadEditorMode}}">
             </div>
           </div>
           <!-- Thread Options -->
