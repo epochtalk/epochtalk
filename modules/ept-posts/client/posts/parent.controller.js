@@ -346,8 +346,11 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           delete params['#'];
           delete params['start'];
           delete params['threadId'];
-          $location.search(params).hash(data.id);
-          if (ctrl.page === lastPage) { ctrl.pullPage(); }
+          // hack, url will only update with a timeout wrapping location search
+          $timeout(function() {
+            $location.search(params).hash(data.id);
+            if (ctrl.page === lastPage) { ctrl.pullPage(); }
+          });
         }
         else if (type === 'update') {
           var filtered = ctrl.posts.filter(function(p) { return p.id === data.id; });
