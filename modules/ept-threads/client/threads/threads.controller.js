@@ -13,6 +13,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent = $scope.$parent.ThreadsWrapperCtrl;
     this.parent.loggedIn = Session.isAuthenticated;
     this.parent.board  = pageData.board;
+    this.parent.rtl = pageData.board.right_to_left;
     this.parent.page = pageData.page;
     this.parent.pageCount = Math.ceil((ctrl.board.thread_count - ctrl.board.sticky_thread_count) / ctrl.limit) || 1;
     // TODO: This will not be here once actual boards are stored in this array
