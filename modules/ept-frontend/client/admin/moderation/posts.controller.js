@@ -525,20 +525,6 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     ctrl.focusEditor = true;
   };
 
-  this.isMinimized = true;
-  this.fullscreen = function() {
-    if (ctrl.isMinimized) {
-      ctrl.isMinimized = false;
-      this.editorPosition = 'editor-full-screen';
-      this.resize = false;
-    }
-    else {
-      ctrl.isMinimized = true;
-      this.editorPosition = 'editor-fixed-right';
-      this.resize = true;
-    }
-  };
-
   function closeEditor() {
     ctrl.posting.post.body = '';
     ctrl.posting.post.body_html = '';
@@ -546,8 +532,6 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     ctrl.dirtyEditor = false;
     ctrl.showEditor = false;
   }
-
-  this.cancelPost = function() { closeEditor(); };
 
   $timeout($anchorScroll);
 

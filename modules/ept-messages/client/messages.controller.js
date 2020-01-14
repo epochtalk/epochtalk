@@ -50,28 +50,6 @@ var ctrl = [
       reportMessages: Session.hasPermission('reports.createMessageReport')
     };
 
-    // page exiting functions
-    var confirmMessage = 'It looks like a message is being written.';
-    var exitFunction = function() {
-      if (ctrl.newMessage.content.body.length) { return confirmMessage; }
-    };
-    $window.onbeforeunload = exitFunction;
-    var routeLeaveFunction = function() {
-      return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState) {
-        if (toState.url === fromState.url) { return; }
-        if (ctrl.newMessage.content.body.length) {
-          var message = confirmMessage + ' Are you sure you want to leave?';
-          var answer = confirm(message);
-          if (!answer) { e.preventDefault(); }
-        }
-      });
-    };
-    var destroyRouteBlocker = routeLeaveFunction();
-    $scope.$on('$destroy', function() {
-      $window.onbeforeunload = undefined;
-      if (destroyRouteBlocker) { destroyRouteBlocker(); }
-    });
-
     this.listMessageReceivers = function(message) {
       var receiverNames = [];
       message.receivers.forEach(function(receiver) {
