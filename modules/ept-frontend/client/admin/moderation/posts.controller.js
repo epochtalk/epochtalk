@@ -489,8 +489,6 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
   this.showEditor = false;
   this.focusEditor = false;
   this.posting = { post: { body_html: '', body: '' } };
-  this.editorPosition = 'editor-fixed-bottom';
-  this.resize = true;
 
   this.savePost = function() {
     var post = ctrl.posting.post;

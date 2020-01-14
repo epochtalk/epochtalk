@@ -63,7 +63,6 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.showEditor = false;
     this.parent.focusEditor = false;
     this.parent.quote = '';
-    this.parent.editorPosition = 'editor-fixed-right';
     this.parent.addPoll = false;
     this.parent.pollValid = false;
     this.parent.saveThread = function() {
@@ -85,7 +84,6 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.loadEditor = function() {
       ctrl.parent.resetEditor = true;
       ctrl.parent.showEditor = true;
-      ctrl.showEditor = true;
       ctrl.parent.focusEditor = true;
     };
 
