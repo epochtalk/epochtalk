@@ -32,6 +32,7 @@ var Promise = require('bluebird');
   * @apiSuccess {timestamp} data.offender_ban_expiration If the user is banned, the expiration of their ban
   * @apiSuccess {boolean} data.offender_board_banned Boolean indicating if user is board banned
   * @apiSuccess {string} data.offender_post_id The unique id of the offending post
+  * @apiSuccess {string} data.offender_post_position The unique position of the offending post
   * @apiSuccess {string} data.offender_thread_id The unique id of the offending post's thread
   * @apiSuccess {string} data.offender_title The title of the offending post
   * @apiSuccess {timestamp} data.offender_created_at Timestamp of the offending post was created
