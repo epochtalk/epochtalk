@@ -205,7 +205,7 @@
         <button class="inverted-button cancel" ng-click="cancel()">
           Cancel
         </button>
-        <button class="send" ng-click="createAction(); closeEditor();" ng-disabled="!thread.title.length || form.title.$error.required || !canCreate()">
+        <button class="send" ng-click="createAction(); closeEditor();" ng-disabled="!thread.title.length || form.title.$error.required || !canCreate() || (thread.addPoll && !thread.pollValid)">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start Thread
         </button>
 
