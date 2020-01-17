@@ -13,8 +13,7 @@
 <div class="board-data" ui-view="data"></div>
 <div class="board-sidebar">
   <div class="board-actions" ng-if="ThreadsWrapperCtrl.loggedIn()">
-    <a ng-if="ThreadsWrapperCtrl.canCreate()" class="button outline"
-      ui-sref="newThread({boardId: ThreadsWrapperCtrl.board.id})">
+    <a ng-if="ThreadsWrapperCtrl.canCreate()" class="button outline" ng-href="" ng-click="ThreadsWrapperCtrl.loadEditor()">
       <i class="icon-epoch-add"></i>Start a New Thread
     </a>
     <a class="button outline" ng-click="ThreadsWrapperCtrl.watchBoard()" ng-if="!ThreadsWrapperCtrl.board.watched">
@@ -32,3 +31,24 @@
 </div>
 
 <set-moderators board="ThreadsWrapperCtrl.board" show="ThreadsWrapperCtrl.showSetModerators"></set-moderators>
+
+<div ng-if="ThreadsWrapperCtrl.canCreate() && ThreadsWrapperCtrl.showEditor">
+  <epochtalk-editor class="posts-editor"
+    body-html="ThreadsWrapperCtrl.thread.body_html"
+    body="ThreadsWrapperCtrl.thread.body"
+    posting="ThreadsWrapperCtrl.posting"
+    reset-switch="ThreadsWrapperCtrl.resetEditor"
+    focus-switch="ThreadsWrapperCtrl.focusEditor"
+    dirty="ThreadsWrapperCtrl.dirtyEditor"
+    thread="ThreadsWrapperCtrl.thread"
+    thread-editor-mode="true"
+    create-action="ThreadsWrapperCtrl.saveThread"
+    can-create="ThreadsWrapperCtrl.canSave"
+    show-switch="ThreadsWrapperCtrl.showEditor"
+    can-lock="ThreadsWrapperCtrl.canLock"
+    can-sticky="ThreadsWrapperCtrl.canSticky"
+    can-moderate="ThreadsWrapperCtrl.canModerate"
+    can-create-poll="ThreadsWrapperCtrl.canCreatePoll"
+    right-to-left="ThreadsWrapperCtrl.rtl">
+  </epochtalk-editor>
+</div>

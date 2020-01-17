@@ -489,8 +489,6 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
   this.showEditor = false;
   this.focusEditor = false;
   this.posting = { post: { body_html: '', body: '' } };
-  this.editorPosition = 'editor-fixed-bottom';
-  this.resize = true;
 
   this.savePost = function() {
     var post = ctrl.posting.post;
@@ -500,13 +498,13 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
       ctrl.previewPost.body = data.body;
       Alert.success('Post successfully updated');
     })
+    .then(closeEditor)
     .catch(function(err) {
       var error = 'Post could not be updated';
       if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
       if (err.status === 403) { error = 'You do not have the proper permissions to update this post'; }
       Alert.error(error);
-    })
-    .finally(closeEditor);
+    });
   };
 
   this.loadEditor = function() {
@@ -525,28 +523,13 @@ var ctrl = ['$rootScope', '$scope', '$q', '$filter', '$location', '$timeout', '$
     ctrl.focusEditor = true;
   };
 
-  this.isMinimized = true;
-  this.fullscreen = function() {
-    if (ctrl.isMinimized) {
-      ctrl.isMinimized = false;
-      this.editorPosition = 'editor-full-screen';
-      this.resize = false;
-    }
-    else {
-      ctrl.isMinimized = true;
-      this.editorPosition = 'editor-fixed-right';
-      this.resize = true;
-    }
-  };
-
   function closeEditor() {
     ctrl.posting.post.body = '';
     ctrl.posting.post.body_html = '';
     ctrl.resetEditor = true;
+    ctrl.dirtyEditor = false;
     ctrl.showEditor = false;
   }
-
-  this.cancelPost = function() { closeEditor(); };
 
   $timeout($anchorScroll);
 

@@ -1,22 +1,216 @@
-<div class="editor-header">
-  <a ng-href="#" class="first" ng-class="{'selected': !preview }" tabindex="-1" ng-click="preview = false">Compose</a>
-  <a ng-href="#" ng-class="{'selected': preview }" tabindex="-1" ng-click="preview = true">Preview</a>
-</div>
+<div class="messages-wrap">
+  <div ng-class="editorPosition" ng-show="showEditor">
+    <!-- Editor Container-->
+    <div class="editor-container" ng-class="{ 'new-message' : editorConvoMode, 'new-thread' : threadEditorMode, 'add-poll' : thread.addPoll }">
+      <!-- Editor Header -->
+      <div class="editor-top-bar">
 
-<div class="editor-body" ng-init="preview = false;">
-  <div class="editor-column-input" ng-class="{ 'hidden': preview }">
-    <textarea class="editor-input" ng-class="{ 'rtl': rtl }" placeholder="Enter your reply here. (BTW, you can drag and drop images directly into the editor panel)" maxlength="{{post_max_length || 10000 }}"></textarea>
-    <div class="editor-drag-container">
-      <div class="editor-drag">
-        <div class="editor-drag-text">Drag and Drop Images</div>
+        <!--  Thread Editor Mode -->
+        <div ng-if="threadEditorMode">
+          <!-- Thread Title -->
+          <div class="padded-row">
+            <div class="fill-row">
+              <label>Thread Title</label>
+              <input type="text" id="threadTitle" ng-model="thread.title" ng-class="{ 'rtl': rightToLeft }" modal-focus="{{showEditor && threadEditorMode}}">
+            </div>
+          </div>
+          <!-- Thread Options -->
+          <div class="padded-row" ng-if="canLock() || canSticky() || canModerate() || canCreatePoll()">
+            <div class="fill-row">
+              <label>Options:</label>
+              <div class="option" ng-if="canLock()">
+                <input type="checkbox" id="lockThread" ng-model="thread.locked">
+                <label for="lockThread">Lock Thread</label>
+              </div>
+
+              <div class="option" ng-if="canSticky()">
+                <input type="checkbox" id="stickyThread" ng-model="thread.sticky">
+                <label for="stickyThread">Sticky Thread</label>
+              </div>
+
+              <div class="option" ng-if="canModerate()">
+                <input type="checkbox" id="moderateThread" ng-model="thread.moderated">
+                <label for="moderateThread">Moderate Thread</label>
+              </div>
+
+              <div class="option" ng-if="canCreatePoll()">
+                <input type="checkbox" id="threadPoll" ng-model="thread.addPoll">
+                <label for="threadPoll">Add a Poll</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <poll-creator poll="thread.poll" valid="thread.pollValid" ng-if="thread.addPoll"></poll-creator>
+        <!--  Message Editor Mode -->
+        <div ng-if="editorConvoMode">
+          <!-- Select User -->
+          <label>To</label>
+          <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="receivers" modal-focus="{{showEditor && editorConvoMode}}">
+              <auto-complete min-length="1" debounce-delay="250" source="loadTags($query)"></auto-complete>
+            </tags-input>
+          <!-- Subject -->
+          <label>Subject</label>
+          <input type="text" ng-model="newMessage.content.subject" minlength="1" maxlength="255" />
+        </div>
+
+        <!--  Post Editor Mode -->
+        <div class="buttons" ng-if="postEditorMode">
+          <div class="left toolbar-title" title="Click to go to this post" ng-if="posting.post.id">
+              Editing Post:&nbsp;&nbsp;<a ui-sref="posts.data({ threadId: thread.id, page: posting.post.page, '#': posting.post.id })">{{ posting.post.id }}</a>
+            </a>
+          </div>
+
+          <div class="toolbar-title" ng-if="!posting.post.id">
+            New Post in "{{ thread.title}}"
+          </div>
+        </div>
+
+        <div class="editor-formatting" ng-if="showFormatting">
+          <a class="close-formatting" ng-click="closeFormatting();">Close</a>
+          <div class="thin-underline fill-row">
+            <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank">
+              <h4>BBCode Lookup</h4>
+            </a>
+          </div>
+          <div class="half-column">
+            <strong>Bold</strong>:<div class="right">[b][/b]</div><br />
+            <em>Italics</em>:<div class="right">[i][/i]</div><br />
+            <u>Underline</u>:<div class="right">[u][/u]</div><br />
+            <del>Strikethrough</del>:<div class="right">[s][/s]</div><br />
+            BTC:<div class="right">[btc][/btc]</div><br />
+            <span style="background-color: green">Glow</span>:
+            <div class="right">[glow={color}][/glow]</div><br />
+            <span style="text-shadow: red 1px 1px 5px;">Shadow</span>:
+            <div class="right">[shadow={color}, {direction}, {blur}][/shadow]</div><br />
+            Font Size:<div class="right">[size={size}][/size]</div><br />
+            <sup>Superscript</sup>:<div class="right">[sup][/sup]</div><br />
+            <sub>Subscript</sub>:<div class="right">[sub][/sub]</div><br />
+
+            <hr class="clear" />
+
+            <code class="preview">Code</code>:<div class="right">[code][/code]</div><br />
+            <tt>TeleText</tt>:<div class="right">[tt][/tt]</div><br />
+            Preformatted Text:<div class="right">[pre][/pre]</div><br />
+            Justify Left:<div class="right">[left][/left]</div><br />
+            Justify Right:<div class="right">[right][/right]</div><br />
+            Justify Center:<div class="right">[center][/center]</div><br />
+
+            <hr class="clear" />
+
+            Horizontal Rule:<div class="right">[hr][/hr]</div><br /><br />
+          </div>
+          <div class="half-column">
+            Black:<div class="right">[black][/black]</div><br />
+            Blue:<div class="right">[blue][/blue]</div><br />
+            Green:<div class="right">[green][/green]</div><br />
+            Red:<div class="right">[red][/red]</div><br />
+            White:<div class="right">[white][/white]</div><br />
+            Additional Colors:<div class="right">[color={color}][/color]</div><br />
+
+            <hr class="clear" />
+
+            Image:<div class="right">[img]{URL}[/img]</div><br />
+            URL:<div class="right">[url={URL}][/url]</div><br />
+            Email:<div class="right">[email={email}][/email]</div><br />
+            FTP:<div class="right">[ftp={URL}][/ftp]</div><br />
+
+            <hr class="clear" />
+
+            Lists:
+            <div class="right">
+              [list]<br />
+              &nbsp;&nbsp;[li][/li]<br />
+              &nbsp;&nbsp;[li][/li]<br />
+              [/list]<br /><br />
+            </div>
+
+            <hr class="clear" />
+
+            Tables:
+            <div class="right">
+              [table]<br />
+              &nbsp;&nbsp;[tr]<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;[td][/td]<br />
+              &nbsp;&nbsp;[/tr]<br />
+              [/table]
+            </div><br />
+          </div>
+        </div>
+      </div>
+      <!-- Editor -->
+      <form name="form" class="editor-form" novalidate>
+        <!-- START EDITOR -->
+        <div class="editor-header">
+          <a class="first" ng-class="{'selected': !preview }" tabindex="-1" ng-click="preview = false">Compose</a>
+          <a ng-class="{'selected': preview }" tabindex="-1" ng-click="preview = true">Preview</a>
+        </div>
+
+        <div class="editor-body" ng-init="preview = false;">
+          <div class="editor-column-input" ng-class="{ 'hidden': preview }">
+            <textarea class="editor-input" ng-class="{ 'rtl': rtl }" placeholder="Enter your reply here. (BTW, you can drag and drop images directly into the editor panel)" maxlength="{{post_max_length || 10000 }}"></textarea>
+            <div class="editor-drag-container">
+              <div class="editor-drag">
+                <div class="editor-drag-text">Drag and Drop Images</div>
+              </div>
+            </div>
+          </div>
+          <div class="editor-column-preview"  ng-class="{ 'hidden': !preview }">
+            <div class="editor-preview" ng-class="{ 'rtl': rtl }" post-processing="bodyHtml" style-fix="false"></div>
+          </div>
+        </div>
+
+        <div class="editor-footer">
+          <image-uploader class="editor-image-uploader" purpose="editor" reset="resetImages" on-done="insertImageUrl(data)"></image-uploader>
+        </div>
+        <!-- END EDITOR -->
+      </form>
+
+      <div class="editor-tools">
+        <div class="tools">
+          <a data-balloon="Formatting Help" ng-click="showFormatting = true"><i class="fa fa-code"></i></a>
+          <a data-balloon="{{ isMinimized ? 'Expand Editor' : 'Minimize Editor' }}" ng-click="fullscreen()"><i class="fa expand" ng-class="{ 'fa-expand': isMinimized, 'fa-compress': !isMinimized }"></i></a>
+        </div>
+      </div>
+
+      <!-- Message Editor Controls -->
+      <div class="editor-button-container" ng-if="!threadEditorMode && !postEditorMode">
+        <button class="inverted-button cancel" ng-click="cancel()">
+          Cancel
+        </button>
+        <button class="no-animate" ng-if="editorConvoMode" class="send" ng-click="createAction(); closeEditor();"  ng-disabled="form.title.$error.required || !canCreate() || !newMessage.content.body.length || !newMessage.content.subject.length || !receivers.length">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send
+        </button>
+        <button class="no-animate" ng-if="!editorConvoMode" class="send" ng-click="updateAction(); closeEditor();" ng-disabled="form.title.$error.required || !canUpdate() || !newMessage.content.body.length">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send Reply
+        </button>
+
+        <span class="label alert" ng-if="posting.error" ng-bind="posting.error.message"></span>
+      </div>
+
+      <!-- Post Editor Controls -->
+      <div class="editor-button-container" ng-if="postEditorMode">
+        <button class="inverted-button cancel" ng-click="cancel()">
+          Cancel
+        </button>
+        <button class="send" ng-click="createAction(); closeEditor();" ng-disabled="form.title.$error.required || !canCreate()">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ posting.post.id ? 'Edit Post' : 'Send Reply' }}
+        </button>
+
+        <span class="label alert" ng-if="posting.error" ng-bind="posting.error.message"></span>
+      </div>
+
+      <!-- Thread Editor Controls -->
+      <div class="editor-button-container" ng-if="threadEditorMode">
+        <button class="inverted-button cancel" ng-click="cancel()">
+          Cancel
+        </button>
+        <button class="send" ng-click="createAction(); closeEditor();" ng-disabled="!thread.title.length || form.title.$error.required || !canCreate() || (thread.addPoll && !thread.pollValid)">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start Thread
+        </button>
+
+        <span class="label alert" ng-if="posting.error" ng-bind="posting.error.message"></span>
       </div>
     </div>
   </div>
-  <div class="editor-column-preview"  ng-class="{ 'hidden': !preview }">
-    <div class="editor-preview" ng-class="{ 'rtl': rtl }" post-processing="bodyHtml" style-fix="false"></div>
-  </div>
-</div>
-
-<div class="editor-footer">
-  <image-uploader class="editor-image-uploader" purpose="editor" reset="resetImages" on-done="insertImageUrl(data)"></image-uploader>
 </div>

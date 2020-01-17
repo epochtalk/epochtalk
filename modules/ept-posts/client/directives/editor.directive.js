@@ -1,4 +1,4 @@
-var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeout, $window, $rootScope, $filter) {
+var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$filter', function(User, $transitions, $timeout, $window, $rootScope, $filter) {
   return {
     restrict: 'E',
     scope: {
@@ -7,9 +7,24 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
       quote: '=',
       resetSwitch: '=',
       focusSwitch: '=',
-      exitSwitch: '=',
       dirty: '=',
-      rightToLeft: '='
+      rightToLeft: '=',
+      thread: '=',
+      postEditorMode: '=',
+      editorConvoMode: '=',
+      threadEditorMode: '=',
+      createAction: '=',
+      updateAction: '=',
+      canCreate: '=',
+      canUpdate: '=',
+      showSwitch: '=',
+      receivers: '=',
+      newMessage: '=',
+      posting: '=',
+      canLock: '=',
+      canSticky: '=',
+      canModerate: '=',
+      canCreatePoll: '=',
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
@@ -20,17 +35,19 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
 
       // reset switch
       $scope.$watch('resetSwitch', function(newValue) {
-        if (newValue === true) { $scope.resetEditor(); }
+        if (newValue === true) { $scope.resetEditorFn(); }
       });
 
       // autofocus switch
       $scope.$watch('focusSwitch', function(newValue) {
-        if (newValue === true) { $scope.focusEditor(); }
+        if (newValue === true && !$scope.editorConvoMode) {
+          $scope.focusEditorFn();
+        }
       });
 
-      // exit switch
-      $scope.$watch('exitSwitch', function(newValue) {
-        $scope.exitEditor(newValue);
+      // show switch
+      $scope.$watch('showSwitch', function(newValue) {
+        $scope.loadEditor(newValue);
       });
     }],
     link: function($scope, $element) {
@@ -81,21 +98,20 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
 
       // -- Page Exit Eventing
 
-      var confirmMessage = 'It looks like a post is being written.';
-      var exitFunction = function() { if ($scope.dirty) { return confirmMessage; } };
-      $window.onbeforeunload = exitFunction;
-
       var routeLeaveFunction = function() {
-        return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-          if (toState.url === fromState.url) { return; }
+        return $transitions.onStart({}, function($transition) {
+          var toState = $transition.$to();
+          var fromState = $transition.$from();
+          if (toState.name === fromState.name) { return false; }
           if ($scope.dirty) {
-            var message = confirmMessage + ' Are you sure you want to leave?';
-            var answer = confirm(message);
-            if (!answer) { e.preventDefault(); }
+            var message = 'It looks like you were working on something. Are you sure you want to leave?';
+            return confirm(message);
           }
         });
-      };
-      var destroyRouteBlocker = routeLeaveFunction();
+      }();
+
+      // -- Destroy
+      $element.on('$destroy', routeLeaveFunction);
 
       // -- Controller Functions
 
@@ -137,37 +153,119 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
 
       // resets the editor
       $scope.resetImages = false;
-      $scope.resetEditor = function() {
+      $scope.resetEditorFn = function() {
         initEditor();
         $scope.resetImages = true;
         $scope.resetSwitch = false;
       };
 
+      // Editor Wrap
+      $scope.resize = true;
+      $scope.editorPosition = 'editor-fixed-right';
+      $scope.isMinimized = true;
+      $scope.showEditor = false;
+      if ($scope.editorConvoMode) {
+        $scope.receivers = [];
+      }
+
+      $scope.fullscreen = function() {
+        if ($scope.isMinimized) {
+          $scope.isMinimized = false;
+          $scope.editorPosition = 'editor-full-screen';
+          $scope.resize = false;
+        }
+        else {
+          $scope.isMinimized = true;
+          $scope.editorPosition = 'editor-fixed-right';
+          $scope.resize = true;
+        }
+      };
+
+      $scope.loadTags = function(query) {
+        return User.lookup({ username: query }).$promise
+        .then(function(users) { return users; });
+      };
+
+      var discardAlert = function() {
+        if ($scope.dirty) {
+          var message = 'It looks like you were working on something. ';
+          message += 'Are you sure you want to leave that behind?';
+          return confirm(message);
+        }
+        else { return true; }
+      };
+
+      $scope.closeFormatting = function() {
+        $scope.showFormatting = false;
+      };
+
+      function closeEditor() {
+        if ($scope.threadEditorMode) {
+          $scope.thread = {
+            title: '',
+            body: '',
+            body_html: '',
+            board_id:  $scope.thread.board_id,
+            sticky: false,
+            locked: false,
+            moderated: false,
+            addPoll: false,
+            pollValid: false,
+            poll: {
+              question: '',
+              answers: ['', '']
+            }
+          };
+        }
+        else if ($scope.editorConvoMode || !$scope.postEditorMode) {
+          $scope.newMessage.content = { subject: '', body: '', body_html: '' };
+        }
+        else {
+          $scope.posting = { post: { body_html: '', body: '' } };
+        }
+        $scope.resetEditor = true;
+        $scope.showEditor = false;
+        $scope.dirty = false;
+        $scope.showFormatting = false;
+        $scope.showSwitch = false;
+      }
+
+      $scope.loadEditor = function(focus) {
+        if (discardAlert()) {
+          var editorMsg = $scope.newMessage;
+          if ($scope.editorConvoMode) {
+            $scope.receivers = [];
+            editorMsg.subject = '';
+            editorMsg.content.body_html = '';
+            editorMsg.content.body = '';
+
+            if ($scope.editorConvoMode) {
+              $scope.newMessage = {
+                content: { body: '', body_html: '' },
+                receiver_ids: [],
+                receiver_usernames: []
+              };
+            }
+          }
+
+          $scope.resetEditor = true;
+          $scope.showEditor = true;
+          if (focus === false) { $scope.focusSwitch = false; }
+          else { $scope.focusSwitch = true; }
+        }
+      };
+
+      $scope.cancel = function() {
+        if (discardAlert()) { closeEditor(); }
+      };
+
+
       // focus input on editor element
-      $scope.focusEditor = function() {
+      $scope.focusEditorFn = function() {
         $timeout(function() { editor.focus(); }, 10);
         $scope.focusSwitch = false;
       };
 
-      // turns off page exit events
-      $scope.exitEditor = function(value) {
-        if (value === true) {
-          $window.onbeforeunload = undefined;
-          if (destroyRouteBlocker) { destroyRouteBlocker(); }
-        }
-        else if (value === false) {
-          $window.onbeforeunload = exitFunction;
-          if (destroyRouteBlocker) { destroyRouteBlocker(); }
-          destroyRouteBlocker = routeLeaveFunction();
-        }
-      };
-
-      // -- Destroy
-
-      $element.on('$destroy', function() {
-        $window.onbeforeunload = undefined;
-        if (destroyRouteBlocker) { destroyRouteBlocker(); }
-      });
     }
   };
 }];

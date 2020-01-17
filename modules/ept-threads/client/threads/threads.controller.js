@@ -13,10 +13,98 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent = $scope.$parent.ThreadsWrapperCtrl;
     this.parent.loggedIn = Session.isAuthenticated;
     this.parent.board  = pageData.board;
+    this.parent.rtl = pageData.board.right_to_left;
     this.parent.page = pageData.page;
     this.parent.pageCount = Math.ceil((ctrl.board.thread_count - ctrl.board.sticky_thread_count) / ctrl.limit) || 1;
     // TODO: This will not be here once actual boards are stored in this array
     this.parent.bannedFromBoard = BanSvc.banStatus();
+
+    this.parent.canLock = function() {
+      if (!ctrl.loggedIn()) { return false; }
+      if (!Session.hasPermission('threads.lock.allow')) { return false; }
+      return true;
+    };
+
+    this.parent.canSticky = function() {
+      if (!ctrl.loggedIn()) { return false; }
+      if (!Session.hasPermission('threads.sticky.allow')) { return false; }
+      return true;
+    };
+
+    this.parent.canModerate = function() {
+      if (!ctrl.loggedIn()) { return false; }
+      if (!Session.hasPermission('threads.moderated.allow')) { return false; }
+      return true;
+    };
+
+    this.parent.canCreatePoll = function() {
+      if (!ctrl.loggedIn()) { return false; }
+      if (!Session.hasPermission('threads.createPoll.allow')) { return false; }
+      return true;
+    };
+
+    this.parent.thread = {
+      title: '',
+      body: '',
+      body_html: '',
+      board_id:  pageData.board.id,
+      sticky: false,
+      locked: false,
+      moderated: false,
+      addPoll: false,
+      pollValid: false,
+      poll: {
+        question: '',
+        answers: ['', '']
+      }
+    };
+    this.parent.dirtyEditor = false;
+    this.parent.resetEditor = false;
+    this.parent.showEditor = false;
+    this.parent.focusEditor = false;
+    this.parent.quote = '';
+    this.parent.addPoll = false;
+    this.parent.pollValid = false;
+    this.parent.saveThread = function() {
+      ctrl.parent.showEditor = false;
+
+      // remove poll from thread if invalid
+      if (!ctrl.parent.thread.addPoll || !ctrl.parent.thread.pollValid) { delete ctrl.parent.thread.poll; }
+
+      // create a new thread and post
+      Threads.save(ctrl.parent.thread).$promise
+      .then(function(thread) { $location.path('/threads/' + thread.thread_id + '/posts'); })
+      .catch(function(err) {
+        var error = 'Could not create thread: ' + err.data.message;
+        if (err.status === 429) { error = 'New Thread Rate Limit Exceeded'; }
+        Alert.error(error);
+      });
+    };
+
+    this.parent.loadEditor = function() {
+      ctrl.parent.resetEditor = true;
+      ctrl.parent.showEditor = true;
+      ctrl.parent.focusEditor = true;
+    };
+
+    var discardAlert = function() {
+      if (ctrl.parent.dirtyEditor) {
+        var message = 'It looks like you were working on something. ';
+        message += 'Are you sure you want to leave that behind?';
+        return confirm(message);
+      }
+      else { return true; }
+    };
+
+    this.parent.canSave = function() {
+      var text = ctrl.parent.thread.body_html;
+      var imgSrcRegex = /<img[^>]+src="((http:\/\/|https:\/\/|\/)[^">]+)"/g;
+      var stripTagsRegex = /(<([^>]+)>)/ig;
+      var images = imgSrcRegex.exec(text);
+      text = text.replace(stripTagsRegex, '');
+      text = text.trim();
+      return text.length || images;
+    };
 
     this.parent.canCreate = function() {
       if (!ctrl.loggedIn()) { return false; }
@@ -156,6 +244,8 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
 ];
 
 require('./../../../modules/ept-moderators/set-moderators.directive');
+require('./../../../modules/ept-polls/poll_creator.directive');
+require('./../../../modules/ept-posts/directives/editor.directive');
 
 module.exports = angular.module('ept.threads.ctrl', [])
 .controller('ThreadsCtrl', ctrl)

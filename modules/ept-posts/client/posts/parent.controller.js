@@ -8,8 +8,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
     this.focusEditor = false;
     this.quote = '';
     this.posting = { post: { body_html: '', body: '' } };
-    this.editorPosition = 'editor-fixed-right';
-    this.resize = true;
     this.moveBoard = {};
     this.boards = [];
     this.addPoll = false;
@@ -279,27 +277,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       .catch(function() { Alert.error('There was an error creating the poll'); });
     };
 
-    /* Post Methods */
-
-    var discardAlert = function() {
-      if (ctrl.dirtyEditor) {
-        var message = 'It looks like you were working on something. ';
-        message += 'Are you sure you want to leave that behind?';
-        return confirm(message);
-      }
-      else { return true; }
-    };
-
-    function closeEditor() {
-      ctrl.posting.post.id = '';
-      ctrl.posting.post.title = '';
-      ctrl.posting.post.body_html = '';
-      ctrl.posting.post.body = '';
-      ctrl.posting.page = '';
-      ctrl.resetEditor = true;
-      ctrl.showEditor = false;
-    }
-
     this.addQuote = function(post) {
       var timeDuration = 0;
       if (ctrl.showEditor === false) {
@@ -336,6 +313,15 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       }
     };
 
+    var discardAlert = function() {
+      if (ctrl.dirtyEditor) {
+        var message = 'It looks like you were working on something. ';
+        message += 'Are you sure you want to leave that behind?';
+        return confirm(message);
+      }
+      else { return true; }
+    };
+
     this.savePost = function() {
       var post = ctrl.posting.post;
       var type = post.id ? 'update' : 'create';
@@ -358,8 +344,11 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           delete params['#'];
           delete params['start'];
           delete params['threadId'];
-          $location.search(params).hash(data.id);
-          if (ctrl.page === lastPage) { ctrl.pullPage(); }
+          // hack, url will only update with a timeout wrapping location search
+          $timeout(function() {
+            $location.search(params).hash(data.id);
+            if (ctrl.page === lastPage) { ctrl.pullPage(); }
+          });
         }
         else if (type === 'update') {
           var filtered = ctrl.posts.filter(function(p) { return p.id === data.id; });
@@ -370,15 +359,18 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           editPost.metadata = data.metadata;
         }
       })
-      .then(closeEditor)
+      .then(function() {
+        ctrl.resetEditor = true;
+        ctrl.showEditor = false;
+        ctrl.dirtyEditor = false;
+        ctrl.posting = { post: { body_html: '', body: '' } };
+      })
       .catch(function(err) {
         var error = err.data.message;
         if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
         Alert.error(error);
       });
     };
-
-    this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };
 
     this.deletePostIndex = -1;
     this.deleteAndLock = false;
@@ -515,20 +507,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           }
         })
         .catch(function() { Alert.error('Failed to purge Post'); });
-      }
-    };
-
-    this.isMinimized = true;
-    this.fullscreen = function() {
-      if (ctrl.isMinimized) {
-        ctrl.isMinimized = false;
-        this.editorPosition = 'editor-full-screen';
-        this.resize = false;
-      }
-      else {
-        ctrl.isMinimized = true;
-        this.editorPosition = 'editor-fixed-right';
-        this.resize = true;
       }
     };
 

@@ -30,6 +30,8 @@ var route = ['$stateProvider', function($stateProvider) {
           require('./threads.controller');
           $ocLazyLoad.load([
             { name: 'ept.threads.ctrl' },
+            { name: 'ept.directives.poll-creator' },
+            { name: 'ept.directives.epochtalk-editor' },
             { name: 'ept.directives.set-moderators' }
           ]);
           deferred.resolve();

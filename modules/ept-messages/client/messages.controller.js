@@ -15,6 +15,7 @@ var ctrl = [
     this.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [], receiver_usernames: [] };
     this.showReply = false;
     this.currentSubject = '';
+    this.receivers = [];
 
     this.canCreateMessage = function() {
       if (!Session.isAuthenticated()) { return false; }
@@ -49,28 +50,6 @@ var ctrl = [
       reportMessages: Session.hasPermission('reports.createMessageReport')
     };
 
-    // page exiting functions
-    var confirmMessage = 'It looks like a message is being written.';
-    var exitFunction = function() {
-      if (ctrl.newMessage.content.body.length) { return confirmMessage; }
-    };
-    $window.onbeforeunload = exitFunction;
-    var routeLeaveFunction = function() {
-      return $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState) {
-        if (toState.url === fromState.url) { return; }
-        if (ctrl.newMessage.content.body.length) {
-          var message = confirmMessage + ' Are you sure you want to leave?';
-          var answer = confirm(message);
-          if (!answer) { e.preventDefault(); }
-        }
-      });
-    };
-    var destroyRouteBlocker = routeLeaveFunction();
-    $scope.$on('$destroy', function() {
-      $window.onbeforeunload = undefined;
-      if (destroyRouteBlocker) { destroyRouteBlocker(); }
-    });
-
     this.listMessageReceivers = function(message) {
       var receiverNames = [];
       message.receivers.forEach(function(receiver) {
@@ -82,13 +61,6 @@ var ctrl = [
         receiverNames.push(message.sender_username);
       }
       return receiverNames.join(', ');
-    };
-
-    this.receivers = [];
-
-    this.loadTags = function(query) {
-      return User.lookup({ username: query }).$promise
-      .then(function(users) { return users; });
     };
 
     // Conversations
@@ -162,12 +134,16 @@ var ctrl = [
     this.hasMoreMessages = function() { return ctrl.currentConversation.has_next; };
 
     this.createConversation = function() {
-      var receiverIds = [];
-      ctrl.receivers.forEach(function(user) { receiverIds.push(user.id); });
+      ctrl.newMessage.receiver_ids = [];
+      ctrl.newMessage.receiver_usernames = [];
+      var newMessage = angular.copy(ctrl.newMessage);
+      ctrl.receivers.forEach(function(user) {
+        newMessage.receiver_ids.push(user.id);
+        newMessage.receiver_usernames.push(user.username);
+      });
 
       // create a new conversation id to put this message under
-      ctrl.newMessage.receiver_ids = receiverIds;
-      return Conversations.save(ctrl.newMessage).$promise
+      return Conversations.save(newMessage).$promise
       .then(function(savedMessage) {
         // open conversation
         ctrl.loadConversation(savedMessage.conversation_id);
@@ -178,16 +154,16 @@ var ctrl = [
         Alert.success('New Conversation Started!');
         ctrl.loadRecentMessages();
       })
-      .catch(function(err) {
-        var msg = 'Failed to create conversation';
-        if (err && err.status === 403) { msg = err.data.message; }
-        Alert.error(msg);
-      })
-      .finally(function() {
+      .then(function() {
         ctrl.receivers = [];
         ctrl.newMessage.receiver_ids = [];
         ctrl.newMessage.content = { subject: '', body: '', body_html: '' };
         closeEditor();
+      })
+      .catch(function(err) {
+        var msg = 'Failed to create conversation';
+        if (err && err.status === 403) { msg = err.data.message; }
+        Alert.error(msg);
       });
     };
 
@@ -347,57 +323,17 @@ var ctrl = [
     this.resetEditor = false;
     this.showEditor = false;
     this.focusEditor = false;
-    this.isMinimized = true;
-    this.resize = true;
     this.content = { post: { body_html: '', body: '' } };
-    this.editorPosition = 'editor-fixed-bottom';
-
-    this.fullscreen = function() {
-      if (ctrl.isMinimized) {
-        ctrl.isMinimized = false;
-        this.editorPosition = 'editor-full-screen';
-        this.resize = false;
-      }
-      else {
-        ctrl.isMinimized = true;
-        this.editorPosition = 'editor-fixed-bottom';
-        this.resize = true;
-      }
-    };
 
     /* Post Methods */
-
-    var discardAlert = function() {
-      if (ctrl.dirtyEditor) {
-        var message = 'It looks like you were working on something. ';
-        message += 'Are you sure you want to leave that behind?';
-        return confirm(message);
-      }
-      else { return true; }
-    };
 
     function closeEditor() {
       ctrl.newMessage.content = { body: '', body_html: '' };
       ctrl.resetEditor = true;
       ctrl.showEditor = false;
+      ctrl.dirtyEditor = false;
       ctrl.showFormatting = false;
     }
-
-    this.loadEditor = function(focus) {
-      if (discardAlert()) {
-        var editorMsg = ctrl.newMessage;
-        ctrl.receivers = [];
-        editorMsg.subject = '';
-        editorMsg.content.body_html = '';
-        editorMsg.content.body = '';
-        ctrl.resetEditor = true;
-        ctrl.showEditor = true;
-        if (focus === false) { ctrl.focusEditor = false; }
-        else { ctrl.focusEditor = true; }
-      }
-    };
-
-    this.cancelMsg = function() { if (discardAlert()) { closeEditor(); } };
 
   }
 ];

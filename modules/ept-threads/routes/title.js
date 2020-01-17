@@ -47,7 +47,7 @@ module.exports = {
       thread_id: request.params.id,
       title: request.payload.title
     };
-    var promise = request.db.posts.update(post)
+    var promise = request.db.posts.update(post, request.auth.credentials)
     .error(request.errorMap.toHttpError);
 
     return promise;
