@@ -1,3 +1,4 @@
+var path = require('path');
 var _ = require('lodash');
 var changeCase = require('change-case');
 var renameKeys = require('deep-rename-keys');
@@ -70,7 +71,26 @@ module.exports = {
   handler: function(request) {
     var promise = request.db.configurations.get()
     .then(function(config) {
-       var retVal = {
+      // current git revision hash
+      try {
+        var gitRev = childProcess.execSync('git rev-parse --short HEAD', { stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
+      } catch(e) {
+        var gitRev;
+      }
+      // current git release version
+      try {
+        var gitReleaseVer = childProcess.execSync('git tag --points-at HEAD v[0-9]*', { stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
+      } catch(e) {
+        var gitReleaseVer;
+      }
+      // top-level directory release version
+      var dirReleaseVer = _.tail(path.basename(path.join(process.mainModule.filename, '..', '..')).split('-')).join('-');
+      // check if directory release version is a version
+      // otherwise, it could be a branch name
+      if (dirReleaseVer && dirReleaseVer.split('.').length === 3) {
+        dirReleaseVer = 'v' + dirReleaseVer;
+      }
+      var retVal = {
          loginRequired: config.loginRequired,
          verifyRegistration: config.verifyRegistration,
          postMaxLength: config.postMaxLength || 10000,
@@ -82,7 +102,7 @@ module.exports = {
          images: config.saasMode ? {local:{}, s_3:{}} : config.images,
          rateLimiting: config.rateLimiting,
          saasMode: config.saasMode,
-         revision: childProcess.execSync('git rev-parse --short HEAD').toString().trim()
+         revision: gitReleaseVer || gitRev || dirReleaseVer
        };
        retVal = camelCaseToUnderscore(retVal);
 
