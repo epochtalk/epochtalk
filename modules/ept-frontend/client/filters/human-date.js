@@ -1,7 +1,7 @@
 'use strict';
 /* jslint node: true */
 
-module.exports = ['$filter', function ($filter) {
+module.exports = ['$filter', 'PreferencesSvc', function ($filter, PreferencesSvc) {
   return function(dateStr, hideTime) {
     var result;
     var now = new Date();
