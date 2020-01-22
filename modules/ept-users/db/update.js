@@ -89,7 +89,8 @@ module.exports = function(user) {
         id: user.id,
         posts_per_page: user.posts_per_page || 25,
         threads_per_page: user.threads_per_page || 25,
-        notify_replied_threads: user.notify_replied_threads || true
+        notify_replied_threads: user.notify_replied_threads || true,
+        timezone_offset: user.timezone_offset || ''
       };
       if (user.collapsed_categories) {
         prefs.collapsed_categories = { cats: user.collapsed_categories };
