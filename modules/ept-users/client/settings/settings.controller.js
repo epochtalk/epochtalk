@@ -6,6 +6,16 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
     this.allBoards = {};
     this.toggleSubmitted = {};
     this.userPrefs = PreferencesSvc.preferences;
+    if (this.userPrefs.timezone_offset) {
+      this.timezone_offset_sign = this.userPrefs.timezone_offset[0];
+      this.timezone_offset_hours = this.userPrefs.timezone_offset.slice(1,3);
+      this.timezone_offset_minutes = this.userPrefs.timezone_offset.slice(3,5);
+    }
+    else {
+      this.timezone_offset_sign = '';
+      this.timezone_offset_hours = '';
+      this.timezone_offset_minutes = '';
+    }
 
     this.canUpdatePrefs = function() { return Session.hasPermission('users.update.allow'); };
 
