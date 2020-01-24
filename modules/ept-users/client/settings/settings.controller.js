@@ -64,6 +64,12 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
     function timezoneOffsetValid() {
       return ctrl.timezone_offset_sign !== '' && ctrl.timezone_offset_hours !== '' && ctrl.timezone_offset_minutes !== '';
     }
+    this.resetTimezoneOffset = function() {
+      ctrl.timezone_offset_sign = '';
+      ctrl.timezone_offset_hours = '';
+      ctrl.timezone_offset_minutes = '';
+      savePreferences();
+    };
     this.saveTimezoneOffset = function() {
       if (timezoneOffsetValid()) {
         ctrl.userPrefs.timezone_offset = ctrl.timezone_offset_sign + ctrl.timezone_offset_hours + ctrl.timezone_offset_minutes;
