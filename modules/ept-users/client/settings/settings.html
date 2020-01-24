@@ -30,7 +30,7 @@
     <br />
     <h3 class="thin-underline">Timezone Offset</h3>
     <select ng-model="SettingsCtrl.timezone_offset_sign" ng-options="offset_sign.value as offset_sign.label disable when offset_sign.disabled for offset_sign in SettingsCtrl.timezone_offset_sign_options" />
-    <select ng-model="SettingsCtrl.timezone_offset_hours" ng-options="offset_hours for offset_hours in SettingsCtrl.timezone_offset_hours_options" />
+    <select ng-model="SettingsCtrl.timezone_offset_hours" ng-options="offset_hours.value as offset_hours.label disable when offset_hours.disabled for offset_hours in SettingsCtrl.timezone_offset_hours_options" />
     <select ng-model="SettingsCtrl.timezone_offset_minutes" ng-options="offset_minutes.value as offset_minutes.label disable when offset_minutes.disabled for offset_minutes in SettingsCtrl.timezone_offset_minutes_options" />
     <button ng-click="SettingsCtrl.saveTimezoneOffset()" ng-disabled="!SettingsCtrl.timezoneOffsetValid()">
       Save
