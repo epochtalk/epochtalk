@@ -68,6 +68,7 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
       ctrl.timezone_offset_sign = '';
       ctrl.timezone_offset_hours = '';
       ctrl.timezone_offset_minutes = '';
+      ctrl.userPrefs.timezone_offset = '';
       savePreferences();
     };
     this.saveTimezoneOffset = function() {
