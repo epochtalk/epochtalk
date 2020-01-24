@@ -33,6 +33,12 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
     };
     this.savePreferences = savePreferences;
 
+    // handle timezone offset
+    function timezoneOffsetValid() {
+      return ctrl.timezone_offset_sign !== '' && ctrl.timezone_offset_hours !== '' && ctrl.timezone_offset_minutes !== '';
+    }
+    this.timezoneOffsetValid = timezoneOffsetValid;
+
     this.toggleIgnoredBoard = function(boardId) {
       var index = ctrl.userPrefs.ignored_boards.indexOf(boardId);
       var oldIgnoredBoards = angular.copy(ctrl.userPrefs.ignored_boards);
