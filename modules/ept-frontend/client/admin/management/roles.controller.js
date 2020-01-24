@@ -1,4 +1,5 @@
 var intersection = require('lodash/intersection');
+var _ = require('lodash');
 
 var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'User', 'pageData', 'userData', 'roleId', 'limit', 'page', 'search', function($rootScope, $scope, $location, Session, Alert, Roles, User, pageData, userData, roleId, limit, page, search) {
   var ctrl = this;
@@ -18,6 +19,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'U
   this.showFilterUsers = false;
   this.maxPriority = null;
   this.newRole = {};
+  this.basePermissions = {};
   this.basedRoleId = null;
   this.modifyingRole = false;
   this.controlAccess = Session.getControlAccessWithPriority('roles');
@@ -148,10 +150,47 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'U
     ctrl.newRole.permissions = permissions;
   };
 
+
+  function difference(object, base) {
+    function changes(object, base) {
+      return _.transform(object, function(result, value, key) {
+        if (!_.isEqual(value, base[key])) {
+          result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
+        }
+      });
+    }
+    return changes(object, base);
+  }
+
+  function clearEmpties(o) {
+    for (const k in o) {
+      if (o[k] == null) {
+        delete o[k];
+        continue;
+      }
+      if (typeof o[k] !== 'object') {
+        continue;
+      }
+      clearEmpties(o[k]);
+      if (Object.keys(o[k]).length === 0) {
+        delete o[k];
+      }
+    }
+  }
+
   this.saveRole = function() {
     var promise;
     var successMsg = '';
     var errorMsg = '';
+    console.log('Role Diff');
+    console.log('Custom', ctrl.newRole.permissions);
+    console.log('Base', ctrl.basePermissions);
+    var test = angular.copy(ctrl.newRole.permissions);
+    clearEmpties(test);
+    console.log('Cleared Empties Custom', test);
+    console.log('Normal Diff', JSON.stringify(difference(ctrl.newRole.permissions, ctrl.basePermissions)));
+    console.log('Cleared Diff', JSON.stringify(difference(test, ctrl.basePermissions)));
+    ctrl.basePermissions = {};
     ctrl.newRole.highlight_color = ctrl.newRole.highlight_color ? ctrl.newRole.highlight_color : undefined;
     ctrl.newRole.permissions.limits = ctrl.limiter.filter(function(limit) {
       return limit.interval && limit.maxInInterval;
@@ -371,6 +410,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'U
     if (editRole) {
       ctrl.modifyingRole = true;
       ctrl.newRole = angular.copy(editRole);
+      ctrl.basePermissions = angular.copy(editRole.permissions);
       ctrl.resetLimits(angular.copy(editRole.permissions.limits));
     }
     else { ctrl.newRole.priority = ctrl.maxPriority + 1; }
@@ -381,6 +421,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'U
     ctrl.showRoleModal = false;
     ctrl.basedRoleId = null;
     ctrl.newRole = {};
+    ctrl.basePermissions = {};
   };
 
   this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
