@@ -35,8 +35,9 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
 
     // handle timezone offset
     this.timezone_offset_sign_options = [
-      '+',
-      '-'
+      { value: '', label: '+/-', disabled: true },
+      { value: '+', label: '+' },
+      { value: '-', label: '-' }
     ];
     this.timezone_offset_minutes_options = [
       '00',
