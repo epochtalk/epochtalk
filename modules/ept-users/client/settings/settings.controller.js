@@ -39,13 +39,6 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
       { value: '+', label: '+' },
       { value: '-', label: '-' }
     ];
-    this.timezone_offset_minutes_options = [
-      { value: '', label: 'MM', disabled: true },
-      { value: '00', label: '00' },
-      { value: '15', label: '15' },
-      { value: '30', label: '30' },
-      { value: '45', label: '45' }
-    ];
     this.timezone_offset_hours_options = [
       { value: '', label: 'HH', disabled: true },
       { value: '00', label: '00' },
@@ -63,6 +56,13 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
       { value: '12', label: '12' },
       { value: '13', label: '13' },
       { value: '14', label: '14' }
+    ];
+    this.timezone_offset_minutes_options = [
+      { value: '', label: 'MM', disabled: true },
+      { value: '00', label: '00' },
+      { value: '15', label: '15' },
+      { value: '30', label: '30' },
+      { value: '45', label: '45' }
     ];
     function timezoneOffsetValid() {
       return ctrl.timezone_offset_sign !== '' && ctrl.timezone_offset_hours !== '' && ctrl.timezone_offset_minutes !== '';
