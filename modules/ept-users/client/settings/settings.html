@@ -30,23 +30,7 @@
     <br />
     <h3 class="thin-underline">Timezone Offset</h3>
     <select ng-model="SettingsCtrl.timezone_offset_sign" ng-options="offset_sign for offset_sign in SettingsCtrl.timezone_offset_sign_options" />
-    <select ng-model="SettingsCtrl.timezone_offset_hours">
-      <option value="00">00</option>
-      <option value="01">01</option>
-      <option value="02">02</option>
-      <option value="03">03</option>
-      <option value="04">04</option>
-      <option value="05">05</option>
-      <option value="06">06</option>
-      <option value="07">07</option>
-      <option value="08">08</option>
-      <option value="09">09</option>
-      <option value="10">10</option>
-      <option value="11">11</option>
-      <option value="12">12</option>
-      <option value="13">13</option>
-      <option value="14">14</option>
-    </select>
+    <select ng-model="SettingsCtrl.timezone_offset_hours" ng-options="offset_hours for offset_hours in SettingsCtrl.timezone_offset_hours_options" />
     <select ng-model="SettingsCtrl.timezone_offset_minutes" ng-options="offset_minutes for offset_minutes in SettingsCtrl.timezone_offset_minutes_options" />
     <button ng-click="SettingsCtrl.saveTimezoneOffset()" ng-disabled="!SettingsCtrl.timezoneOffsetValid()">
       Save
