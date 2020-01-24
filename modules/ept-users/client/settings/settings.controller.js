@@ -40,10 +40,11 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
       { value: '-', label: '-' }
     ];
     this.timezone_offset_minutes_options = [
-      '00',
-      '15',
-      '30',
-      '45'
+      { value: '', label: 'MM', disabled: true },
+      { value: '00', label: '00' },
+      { value: '15', label: '15' },
+      { value: '30', label: '30' },
+      { value: '45', label: '45' }
     ];
     this.timezone_offset_hours_options = [
       '00',
