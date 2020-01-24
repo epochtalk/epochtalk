@@ -14,13 +14,14 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
       ctrl.userPrefs.threads_per_page = 25;
     };
 
-    this.savePreferences = function() {
+    function savePreferences() {
       ctrl.userPrefs.username = ctrl.user.username;
       return User.update({ id: ctrl.user.id }, ctrl.userPrefs).$promise
       .then(function() { return PreferencesSvc.setPreferences(ctrl.userPrefs); })
       .then(function() { Alert.success('Successfully saved preferences'); })
       .catch(function() { Alert.error('Preferences could not be updated'); });
     };
+    this.savePreferences = savePreferences;
 
     this.toggleIgnoredBoard = function(boardId) {
       var index = ctrl.userPrefs.ignored_boards.indexOf(boardId);
