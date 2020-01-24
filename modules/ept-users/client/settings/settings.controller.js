@@ -34,6 +34,10 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
     this.savePreferences = savePreferences;
 
     // handle timezone offset
+    this.timezone_offset_sign_options = [
+      '+',
+      '-'
+    ];
     function timezoneOffsetValid() {
       return ctrl.timezone_offset_sign !== '' && ctrl.timezone_offset_hours !== '' && ctrl.timezone_offset_minutes !== '';
     }

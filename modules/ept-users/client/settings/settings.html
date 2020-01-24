@@ -29,6 +29,8 @@
     <ignore-mentions-settings></ignore-mentions-settings>
     <br />
     <h3 class="thin-underline">Timezone Offset</h3>
+    <select ng-model="SettingsCtrl.timezone_offset_sign" ng-options="offset_sign for offset_sign in SettingsCtrl.timezone_offset_sign_options" >
+    </select>
     <select ng-model="SettingsCtrl.timezone_offset_hours">
       <option value="00">00</option>
       <option value="01">01</option>
