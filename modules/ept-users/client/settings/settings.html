@@ -47,12 +47,7 @@
       <option value="13">13</option>
       <option value="14">14</option>
     </select>
-    <select ng-model="SettingsCtrl.timezone_offset_minutes">
-      <option value="00">00</option>
-      <option value="15">15</option>
-      <option value="30">30</option>
-      <option value="45">45</option>
-    </select>
+    <select ng-model="SettingsCtrl.timezone_offset_minutes" ng-options="offset_minutes for offset_minutes in SettingsCtrl.timezone_offset_minutes_options" />
     <button ng-click="SettingsCtrl.saveTimezoneOffset()" ng-disabled="!SettingsCtrl.timezoneOffsetValid()">
       Save
     </button>

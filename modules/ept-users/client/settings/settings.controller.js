@@ -38,6 +38,12 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
       '+',
       '-'
     ];
+    this.timezone_offset_minutes_options = [
+      '00',
+      '15',
+      '30',
+      '45'
+    ];
     function timezoneOffsetValid() {
       return ctrl.timezone_offset_sign !== '' && ctrl.timezone_offset_hours !== '' && ctrl.timezone_offset_minutes !== '';
     }
