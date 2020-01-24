@@ -37,6 +37,15 @@ var ctrl = ['$rootScope', '$location', 'PreferencesSvc', 'User', 'Alert', 'Sessi
     function timezoneOffsetValid() {
       return ctrl.timezone_offset_sign !== '' && ctrl.timezone_offset_hours !== '' && ctrl.timezone_offset_minutes !== '';
     }
+    this.saveTimezoneOffset = function() {
+      if (timezoneOffsetValid()) {
+        ctrl.userPrefs.timezone_offset = ctrl.timezone_offset_sign + ctrl.timezone_offset_hours + ctrl.timezone_offset_minutes;
+        savePreferences();
+      }
+      else {
+        Alert.error('All timezone fields must be filled!');
+      }
+    };
     this.timezoneOffsetValid = timezoneOffsetValid;
 
     this.toggleIgnoredBoard = function(boardId) {
