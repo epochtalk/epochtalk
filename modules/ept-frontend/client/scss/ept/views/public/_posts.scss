@@ -417,8 +417,45 @@ ad-viewer {
   }
 }
 
+
+// Bottom actiosn and pagination
+.actions-bottom {
+  border-top: 1px solid $border-color;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: $base-background-color;
+  padding: 0.75rem;
+  z-index: 1000;
+
+  &-grid {
+    display: grid;
+    grid-template-columns: 1fr minmax(200px, 240px);
+    align-items: center;
+    column-gap: 2rem;
+    max-width: $view-maxWidth;
+    margin: 0 auto;
+  }
+
+  .button {
+    display: block;
+    margin-bottom: 0;
+    width: 100%;
+  }
+}
 .pagination-bottom {
-  grid-column: 1 / span 2;
+  justify-self: end;
+
+  ul {
+    &.pagination {
+      li {
+        a {
+          font-size: $font-size-sm;;
+        }
+      }
+    }
+  }
 }
 
 // Posts Layout Mobile

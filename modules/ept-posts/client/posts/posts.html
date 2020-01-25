@@ -156,7 +156,7 @@
 <div class="sidebar">
   <div class="sidebar-block">
     <div ng-if="PostsParentCtrl.canPost()" class="sidebar-actions">
-      <a class="button" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
+      <!-- <a class="button" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()">Post Reply</a> -->
       <div class="post-tools">
 
         <!-- Thread Lock -->
@@ -210,16 +210,23 @@
 
       </div>
     </div>
-    <div class="controls">
+    <!-- <div class="controls">
       <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
-    </div>
+    </div> -->
   </div>
 </div>
 
-<!-- Bottom Pagination -->
-<!-- <div class="pagination-bottom">
-  <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
-</div> -->
+<!-- Bottom Actions and Pagination -->
+<div class="actions-bottom">
+  <div class="actions-bottom-grid">
+    <div class="pagination-bottom">
+      <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+    </div>
+    <div ng-if="PostsParentCtrl.canPost()" class="sidebar-actions">
+      <a class="button small" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
+    </div>
+  </div>
+</div>
 
 <!-- spacer for editor -->
 <!-- <div id="post-spacer"></div> -->

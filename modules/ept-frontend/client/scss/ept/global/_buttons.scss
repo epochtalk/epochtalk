@@ -61,7 +61,11 @@
       border-color: $color-primary; 
       color: #fff;
     }
+  }
 
+  &.small {
+    font-size: $font-size-sm;
+    padding: 0.5rem 1rem;
   }
 }
 
