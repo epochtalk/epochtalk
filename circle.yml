@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: node:10.16.3
+      - image: node:12.14.1
       - image: selenium/standalone-chrome
       - image: redis:4.0.1
       - image: postgres:11.1
@@ -88,7 +88,7 @@ jobs:
           when: on_fail
   release:
     docker:
-      - image: circleci/node:10.16.3
+      - image: circleci/node:12.14.1
     steps:
       - checkout
       - run: yarn install
