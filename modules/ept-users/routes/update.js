@@ -26,6 +26,7 @@ var Joi = require('@hapi/joi');
   * @apiParam (Payload) {string} [raw_signature] The user's signature as it was entered in the editor by the user
   * @apiParam (Payload) {string} [signature] The user's signature with any markup tags converted and parsed into html elements
   * @apiParam (Payload) {string} [avatar] URL to the user's avatar
+  * @apiParam (Payload) {string} [timezone_offset] Preference for UTC offset for date display
   * @apiParam (Payload) {numbers} [posts_per_page] Preference for how many post to view per page
   * @apiParam (Payload) {numbers} [threads_per_page] Preference for how many threads to view per page
   * @apiParam (Payload) {string[]} [collapsed_categories] Array of category id's which the user has collapsed
@@ -47,6 +48,7 @@ var Joi = require('@hapi/joi');
   * @apiSuccess {string} [avatar] URL to the user's avatar
   * @apiSuccess {string[]} collapsed_categories Array containing id of categories the user collapsed
   * @apiSuccess {string[]} ignored_boards Array containing id of boards the user ignores
+  * @apiSuccess {string} timezone_offset Preference indicating UTC offset for date display
   * @apiSuccess {number} posts_per_page Preference indicating the number of posts the user wants to view per page
   * @apiSuccess {number} threads_per_page Preference indicating the number of threads the user wants to view per page
   *
@@ -100,6 +102,7 @@ module.exports = {
         raw_signature: Joi.string().max(5000).allow(''),
         signature: Joi.string().max(5000).allow(''),
         avatar: Joi.string().allow(''),
+        timezone_offset: Joi.string().allow(''),
         posts_per_page: Joi.number().min(10).max(100).default(25),
         threads_per_page: Joi.number().min(10).max(100).default(25),
         collapsed_categories: Joi.array().items(Joi.string()),
