@@ -156,8 +156,10 @@ function verifyRoles(reload, roleLookup) {
       delete clonedRolePermissions.lookup;
       delete clonedRolePermissions.description;
       delete clonedRolePermissions.priority;
+      if (dbRoleFound.highlight_color === null && !clonedRolePermissions.highlightColor) {
+        clonedRolePermissions.highlight_color = null;
+      }
       delete clonedRolePermissions.highlightColor;
-      clonedRolePermissions.highlight_color = clonedRolePermissions.highlight_color || clonedRolePermissions.highlightColor || null;
 
       if (diff(dbRoleFound.permissions, clonedRolePermissions)) {
         // console.log('===DB ROLE ' + dbRoleFound.name + '====')
