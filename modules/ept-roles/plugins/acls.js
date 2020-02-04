@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var Boom = require('boom');
 var path = require('path');
+var diff = require('deep-diff');
 var roles = require(path.normalize(__dirname + '/roles'));
 
 var db, config, defaultPerms, validations, layouts;
@@ -149,6 +150,27 @@ function verifyRoles(reload, roleLookup) {
         return role.id === dbRole.id || role.lookup === dbRole.lookup;
       });
 
+      var clonedRolePermissions = _.clone(role);
+      delete clonedRolePermissions.id;
+      delete clonedRolePermissions.name;
+      delete clonedRolePermissions.lookup;
+      delete clonedRolePermissions.description;
+      delete clonedRolePermissions.priority;
+      delete clonedRolePermissions.highlightColor;
+      clonedRolePermissions.highlight_color = clonedRolePermissions.highlight_color || clonedRolePermissions.highlightColor || null;
+
+      if (diff(dbRoleFound.permissions, clonedRolePermissions)) {
+        // console.log('===DB ROLE ' + dbRoleFound.name + '====')
+        // console.log(JSON.stringify(dbRoleFound.permissions, null, 2));
+        // console.log('---MODULE ROLE ' + dbRoleFound.name + '----')
+        // console.log(JSON.stringify(clonedRolePermissions, null, 2));
+        console.log(clonedRolePermissions.highlight_color, clonedRolePermissions.highlightColor);
+        console.log(dbRoleFound.highlight_color, dbRoleFound.highlightColor);
+        console.log('+++DIFF ROLES ' + dbRoleFound.name + '++++')
+        console.log(JSON.stringify(diff(dbRoleFound.permissions, clonedRolePermissions), null, 2));
+        console.log('\n\n');
+      }
+
       // if role found in db and permissions exists, use these
       if (dbRoleFound && Object.keys(dbRoleFound.permissions).length > 0) {
         // check if permissions are set
@@ -163,13 +185,6 @@ function verifyRoles(reload, roleLookup) {
       }
       // if role found and no permissions, update permissions
       else if (dbRoleFound) {
-        var clonedRole = _.clone(role);
-        delete clonedRole.id;
-        delete clonedRole.name;
-        delete clonedRole.lookup;
-        delete clonedRole.description;
-        delete clonedRole.priority;
-        delete clonedRole.highlightColor;
         var updateRole = {
           id: dbRoleFound.id,
           name: role.name,
@@ -177,7 +192,7 @@ function verifyRoles(reload, roleLookup) {
           description: role.description,
           priority: role.priority,
           highlightColor: role.highlightColor,
-          permissions: clonedRole
+          permissions: clonedRolePermissions
         };
         return db.roles.update(updateRole);
       }
