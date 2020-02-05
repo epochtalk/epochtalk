@@ -8,16 +8,16 @@ var using = Promise.using;
 /* returns user with added role(s) */
 module.exports = function(role) {
   var q, params;
-  var permissions = JSON.stringify(role.permissions);
+  var custom_permissions = JSON.stringify(role.custom_permissions);
   if (role.id) { // for hardcoded roles with ids, don't slugify id
-    q = 'INSERT INTO roles (id, name, description, lookup, priority, highlight_color, permissions, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, now(), now()) RETURNING id';
-    params = [role.id, role.name, role.description || '', role.lookup, role.priority, role.highlight_color || role.highlightColor, permissions];
+    q = 'INSERT INTO roles (id, name, description, lookup, priority, highlight_color, custom_permissions, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, now(), now()) RETURNING id';
+    params = [role.id, role.name, role.description || '', role.lookup, role.priority, role.highlight_color || role.highlightColor, custom_permissions];
     return db.scalar(q, params)
     .then(helper.slugify);
   }
   else { // for custom roles
-    q = 'INSERT INTO roles (name, description, lookup, priority, highlight_color, permissions, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, now(), now()) RETURNING id';
-    params = [role.name, role.description || '', role.name, role.priority, role.highlight_color || role.highlightColor, permissions];
+    q = 'INSERT INTO roles (name, description, lookup, priority, highlight_color, custom_permissions, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, now(), now()) RETURNING id';
+    params = [role.name, role.description || '', role.name, role.priority, role.highlight_color || role.highlightColor, custom_permissions];
     return using(db.createTransaction(), function(client) {
       return client.query(q, params)
       .then(function(results) {
