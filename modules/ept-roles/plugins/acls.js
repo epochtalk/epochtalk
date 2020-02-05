@@ -156,16 +156,13 @@ function verifyRoles(reload, roleLookup) {
       delete clonedRolePermissions.lookup;
       delete clonedRolePermissions.description;
       delete clonedRolePermissions.priority;
-      if (dbRoleFound.highlight_color === null && !clonedRolePermissions.highlightColor) {
-        clonedRolePermissions.highlight_color = null;
-      }
       delete clonedRolePermissions.highlightColor;
 
-      if (diff(dbRoleFound.permissions, clonedRolePermissions)) {
-        // console.log('===DB ROLE ' + dbRoleFound.name + '====')
-        // console.log(JSON.stringify(dbRoleFound.permissions, null, 2));
-        // console.log('---MODULE ROLE ' + dbRoleFound.name + '----')
-        // console.log(JSON.stringify(clonedRolePermissions, null, 2));
+      if (dbRoleFound && diff(dbRoleFound.permissions, clonedRolePermissions)) {
+        console.log('===DB ROLE ' + dbRoleFound.name + '====')
+        console.log(JSON.stringify(dbRoleFound.permissions.posts, null, 2));
+        console.log('---MODULE ROLE ' + dbRoleFound.name + '----')
+        console.log(JSON.stringify(clonedRolePermissions.posts, null, 2));
         console.log(clonedRolePermissions.highlight_color, clonedRolePermissions.highlightColor);
         console.log(dbRoleFound.highlight_color, dbRoleFound.highlightColor);
         console.log('+++DIFF ROLES ' + dbRoleFound.name + '++++')
@@ -200,13 +197,6 @@ function verifyRoles(reload, roleLookup) {
       }
       // dbRole not found, so add the role to db
       else {
-        var clonedAddRole = _.clone(role);
-        delete clonedAddRole.id;
-        delete clonedAddRole.name;
-        delete clonedAddRole.lookup;
-        delete clonedAddRole.description;
-        delete clonedAddRole.priority;
-        delete clonedAddRole.highlightColor;
         var addRole = {
           id: role.id,
           name: role.name,
@@ -214,7 +204,7 @@ function verifyRoles(reload, roleLookup) {
           description: role.description,
           priority: role.priority,
           highlightColor: role.highlightColor,
-          permissions: clonedAddRole
+          permissions: clonedRolePermissions
         };
         return db.roles.create(addRole);
       }
