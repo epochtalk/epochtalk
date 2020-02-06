@@ -158,20 +158,19 @@ function verifyRoles(reload, roleLookup) {
       delete clonedRolePermissions.priority;
       delete clonedRolePermissions.highlightColor;
 
-      if (dbRoleFound && diff(dbRoleFound.permissions, clonedRolePermissions)) {
-        console.log('===DB ROLE ' + dbRoleFound.name + '====')
-        console.log(JSON.stringify(dbRoleFound.permissions.posts, null, 2));
-        console.log('---MODULE ROLE ' + dbRoleFound.name + '----')
-        console.log(JSON.stringify(clonedRolePermissions.posts, null, 2));
-        console.log(clonedRolePermissions.highlight_color, clonedRolePermissions.highlightColor);
-        console.log(dbRoleFound.highlight_color, dbRoleFound.highlightColor);
+      if (dbRoleFound && dbRoleFound.permissions && diff(dbRoleFound.permissions, clonedRolePermissions)) {
+        // console.log('===DB ROLE ' + dbRoleFound.name + '====')
+        // console.log(JSON.stringify(dbRoleFound.permissions.posts, null, 2));
+        // console.log('---MODULE ROLE ' + dbRoleFound.name + '----')
+        // console.log(JSON.stringify(clonedRolePermissions.posts, null, 2));
+
         console.log('+++DIFF ROLES ' + dbRoleFound.name + '++++')
         console.log(JSON.stringify(diff(dbRoleFound.permissions, clonedRolePermissions), null, 2));
         console.log('\n\n');
       }
 
-      // if role found in db and permissions exists, use these
-      if (dbRoleFound && Object.keys(dbRoleFound.permissions).length > 0) {
+      // if role found in db and  permissions exists, use these
+      if (dbRoleFound && dbRoleFound.permissions && Object.keys(dbRoleFound.permissions).length > 0) {
         // check if permissions are set
         var newRole = dbRoleFound.permissions;
         newRole.id = dbRoleFound.id;
@@ -181,6 +180,7 @@ function verifyRoles(reload, roleLookup) {
         newRole.priority = dbRoleFound.priority;
         newRole.highlight_color = dbRoleFound.highlight_color;
         roles[newRole.lookup] = newRole;
+        console.log('No change');
       }
       // if role found and no permissions, update permissions
       else if (dbRoleFound) {
@@ -191,8 +191,11 @@ function verifyRoles(reload, roleLookup) {
           description: role.description,
           priority: role.priority,
           highlightColor: role.highlightColor,
-          permissions: clonedRolePermissions
+          permissions: clonedRolePermissions,
+          custom_permissions: clonedRolePermissions
         };
+        // TODO: Implement diff and update custom permissions before updating.
+        console.log('Update role');
         return db.roles.update(updateRole);
       }
       // dbRole not found, so add the role to db
@@ -204,8 +207,10 @@ function verifyRoles(reload, roleLookup) {
           description: role.description,
           priority: role.priority,
           highlightColor: role.highlightColor,
-          permissions: clonedRolePermissions
+          permissions: clonedRolePermissions,
+          custom_permissions: clonedRolePermissions
         };
+        console.log('Create role');
         return db.roles.create(addRole);
       }
     });
