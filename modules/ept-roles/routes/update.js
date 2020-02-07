@@ -51,6 +51,8 @@ module.exports = {
   },
   handler: function(request) {
     var role = request.payload;
+    role.custom_permissions = role.permissions;
+    delete role.permissions;
     var defaultRole;
     var promise = request.db.roles.update(role)
       .then(function(result) {
