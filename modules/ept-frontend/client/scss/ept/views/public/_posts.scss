@@ -458,6 +458,19 @@ ad-viewer {
   }
 }
 
+@include media($mobile) {
+  .actions-bottom-grid {
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .pagination-bottom {
+    justify-self: center;
+    padding-bottom: 1rem;
+  }
+}
+
 // Posts Layout Mobile
 
 @include media($desktop-small) {
@@ -466,6 +479,9 @@ ad-viewer {
     margin-right: -1rem;
     padding-left: 1rem;
     padding-right: 1rem;
+
+    margin: 0;
+    padding: 0;
 
     .controls.two-thirds-column {
       text-align: center;
@@ -514,6 +530,11 @@ ad-viewer {
   .thread-data,
   .sidebar {
     grid-column: 1 / span 2;
+  }
+
+  // Hide sidebar on mobile
+  .sidebar {
+    display: none;
   }
 
   .thread-data {
