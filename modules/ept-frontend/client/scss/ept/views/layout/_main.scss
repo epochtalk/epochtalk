@@ -12,9 +12,11 @@ main {
   @include break-mobile-sm {
     padding: 0 1rem;
     
-    #public-content {
+    #public-content,
+    .posts #public-content {
       column-gap: 0;
       grid-template-columns: 1fr;
+      justify-items: center;
     }
   }
 }

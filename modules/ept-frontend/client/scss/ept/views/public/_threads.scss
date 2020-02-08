@@ -45,8 +45,9 @@
   }
 
   @include break-mobile-sm {
-    grid-template-columns: auto;
+    grid-template-columns: 1fr;
     justify-items: center;
+    width: 100%;
 
     pagination {
       justify-self: center;
