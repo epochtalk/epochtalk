@@ -194,12 +194,21 @@ function verifyRoles(reload, roleLookup) {
         permissionDiff.forEach(function(diff) {
           if (diff.kind === 'N') { // Property added
             // Add new property to custom permission set
+            var updatedDbPerm = _.set(dbRole.permissions, diff.path.join('.'), diff.rhs);
+            console.log('Permission added\n', JSON.stringify(updatedDbPerm, null, 2));
           }
           else if (diff.kind === 'D') { // Property deleted
             // Remove property from custom permission set
+            console.log(diff.path);
+            console.log('Permission removed before\n', JSON.stringify(dbRole.permissions.boards, null, 2));
+            var updatedDbPerm = _.omit(dbRole.permissions, diff.path.join('.'));
+            console.log(updatedDbPerm.boards);
+            console.log('Permission removed\n', JSON.stringify(updatedDbPerm, null, 2));
           }
           else if (diff.kind === 'E') { // Property changed
             // If property in custom permissions matches default, update property to match module
+            var updatedDbPerm = _.set(dbRole.permissions, diff.path.join('.'), diff.rhs);
+            console.log('Permission changed\n', JSON.stringify(updatedDbPerm, null, 2));
           }
         });
       }
