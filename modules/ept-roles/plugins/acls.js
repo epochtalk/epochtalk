@@ -158,16 +158,50 @@ function verifyRoles(reload, roleLookup) {
       delete modulePermissions.priority;
       delete modulePermissions.highlightColor;
 
+      var updatedRole = {
+        id: dbRole ? dbRole.id : role.id,
+        name: role.name,
+        lookup: role.lookup,
+        description: role.description,
+        priority: role.priority,
+        highlightColor: role.highlightColor,
+        permissions: modulePermissions,
+        custom_permissions: modulePermissions
+      };
+      /*
+        1. Diff module and base permissions
+          a. Changes detected
+            i.  Apply diff to custom permissions and store
+            ii. Store module permissions as new base permissions
+          b. No Changes detected
+            i.  Continue
+        2. Use custom permissions to populate in memory role object
+        3. If no permissions are present, but the dbRole is found use module permissions
+        4. If no db role is found, create the role using module permissions
+      */
+      var storeCustomPermissions;
+      var permissionDiff = (dbRole && dbRole.base_permissions) ? diff(dbRole.base_permissions, modulePermissions) : undefined;
+
       // There is a change to the module permissions. Update base permissions and custom permissions
-      if (dbRole && dbRole.base_permissions && diff(dbRole.base_permissions, modulePermissions)) {
+      if (permissionDiff) {
         // console.log('===DB ROLE ' + dbRole.name + '====')
         // console.log(JSON.stringify(dbRole.permissions.posts, null, 2));
         // console.log('---MODULE ROLE ' + dbRole.name + '----')
         // console.log(JSON.stringify(modulePermissions.posts, null, 2));
-
         console.log('+++DIFF ROLES ' + dbRole.name + '++++')
         console.log(JSON.stringify(diff(dbRole.base_permissions, modulePermissions), null, 2));
         console.log('\n\n');
+        permissionDiff.forEach(function(diff) {
+          if (diff.kind === 'N') { // Property added
+            // Add new property to custom permission set
+          }
+          else if (diff.kind === 'D') { // Property deleted
+            // Remove property from custom permission set
+          }
+          else if (diff.kind === 'E') { // Property changed
+            // If property in custom permissions matches default, update property to match module
+          }
+        });
       }
 
       // if role found in db and permissions exists, use these
@@ -184,32 +218,12 @@ function verifyRoles(reload, roleLookup) {
       }
       // if role found and no permissions, update permissions
       else if (dbRole) {
-        var updateRole = {
-          id: dbRole.id,
-          name: role.name,
-          lookup: role.lookup,
-          description: role.description,
-          priority: role.priority,
-          highlightColor: role.highlightColor,
-          permissions: modulePermissions,
-          custom_permissions: modulePermissions
-        };
         // TODO: Implement diff and update custom permissions before updating.
-        return db.roles.update(updateRole);
+        return db.roles.update(updatedRole);
       }
       // dbRole not found, so add the role to db
       else {
-        var addRole = {
-          id: role.id,
-          name: role.name,
-          lookup: role.lookup,
-          description: role.description,
-          priority: role.priority,
-          highlightColor: role.highlightColor,
-          permissions: modulePermissions,
-          custom_permissions: modulePermissions
-        };
-        return db.roles.create(addRole);
+        return db.roles.create(updatedRole);
       }
     });
 
