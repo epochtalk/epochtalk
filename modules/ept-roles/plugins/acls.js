@@ -184,33 +184,29 @@ function verifyRoles(reload, roleLookup) {
 
       // There is a change to the module permissions. Update base permissions and custom permissions
       if (permissionDiff) {
-        // console.log('===DB ROLE ' + dbRole.name + '====')
-        // console.log(JSON.stringify(dbRole.permissions.posts, null, 2));
-        // console.log('---MODULE ROLE ' + dbRole.name + '----')
-        // console.log(JSON.stringify(modulePermissions.posts, null, 2));
         console.log('+++DIFF ROLES ' + dbRole.name + '++++')
         console.log(JSON.stringify(diff(dbRole.base_permissions, modulePermissions), null, 2));
         console.log('\n\n');
+        var updatedCustomPerms = dbRole.permissions;
+        // Iterate over each diff and update the custom permissions
         permissionDiff.forEach(function(diff) {
+          var path = diff.path.join('.');
           if (diff.kind === 'N') { // Property added
             // Add new property to custom permission set
-            var updatedDbPerm = _.set(dbRole.permissions, diff.path.join('.'), diff.rhs);
-            console.log('Permission added\n', JSON.stringify(updatedDbPerm, null, 2));
+            updatedCustomPerms = _.set(updatedCustomPerms, path, diff.rhs);
+            console.log('Permission added', path);
           }
           else if (diff.kind === 'D') { // Property deleted
             // Remove property from custom permission set
-            console.log(diff.path);
-            console.log('Permission removed before\n', JSON.stringify(dbRole.permissions.boards, null, 2));
-            var updatedDbPerm = _.omit(dbRole.permissions, diff.path.join('.'));
-            console.log(updatedDbPerm.boards);
-            console.log('Permission removed\n', JSON.stringify(updatedDbPerm, null, 2));
+            updatedCustomPerms = _.omit(updatedCustomPerms, path);
+            console.log('Permission removed', path);
           }
-          else if (diff.kind === 'E') { // Property changed
-            // If property in custom permissions matches default, update property to match module
-            var updatedDbPerm = _.set(dbRole.permissions, diff.path.join('.'), diff.rhs);
-            console.log('Permission changed\n', JSON.stringify(updatedDbPerm, null, 2));
+          else if (diff.kind === 'E' && _.get(dbRole.base_permissions, path) === _.get(dbRole.permissions, path)) { // Property default value changed
+            updatedCustomPerms = _.set(updatedCustomPerms, path, diff.rhs);
+            console.log('Permission changed', path);
           }
         });
+        console.log(JSON.stringify(updatedCustomPerms, null, 2));
       }
 
       // if role found in db and permissions exists, use these
