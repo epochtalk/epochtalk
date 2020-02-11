@@ -26,7 +26,7 @@ module.exports = function(role) {
     .then(helper.slugify);
   }
   else { // for custom roles
-    params = [role.name, role.description || '', role.name, role.priority, role.highlight_color || role.highlightColor, custom_permissions];
+    params = [role.name, role.description || '', role.name, role.priority, role.highlight_color || role.highlightColor];
     if (permissions) {
       q = 'INSERT INTO roles (name, description, lookup, priority, highlight_color, permissions, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, now(), now()) RETURNING id';
       params.push(permissions);

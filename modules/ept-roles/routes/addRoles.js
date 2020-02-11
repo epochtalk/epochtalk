@@ -55,6 +55,8 @@ module.exports = {
       .then(function(result) {
         role.id = result.id;
         role.lookup = result.id;
+        // Swap back custom permissions for auth
+        role.permissions = role.custom_permissions;
         // Add role to the in memory role object
         request.rolesAPI.addRole(role);
         return result;
