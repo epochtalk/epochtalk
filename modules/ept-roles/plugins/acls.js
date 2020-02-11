@@ -179,40 +179,38 @@ function verifyRoles(reload, roleLookup) {
         3. If no permissions are present, but the dbRole is found use module permissions
         4. If no db role is found, create the role using module permissions
       */
-      var storeCustomPermissions;
+      var updatedCustomPerms = dbRole && dbRole.permissions ? dbRole.permissions : undefined;
       var permissionDiff = (dbRole && dbRole.base_permissions) ? diff(dbRole.base_permissions, modulePermissions) : undefined;
+      var applyDiff = false;
 
       // There is a change to the module permissions. Update base permissions and custom permissions
       if (permissionDiff) {
-        console.log('+++DIFF ROLES ' + dbRole.name + '++++')
-        console.log(JSON.stringify(diff(dbRole.base_permissions, modulePermissions), null, 2));
-        console.log('\n\n');
-        var updatedCustomPerms = dbRole.permissions;
         // Iterate over each diff and update the custom permissions
         permissionDiff.forEach(function(diff) {
           var path = diff.path.join('.');
           if (diff.kind === 'N') { // Property added
             // Add new property to custom permission set
             updatedCustomPerms = _.set(updatedCustomPerms, path, diff.rhs);
-            console.log('Permission added', path);
+            applyDiff = true;
           }
           else if (diff.kind === 'D') { // Property deleted
             // Remove property from custom permission set
             updatedCustomPerms = _.omit(updatedCustomPerms, path);
-            console.log('Permission removed', path);
+            applyDiff = true;
           }
           else if (diff.kind === 'E' && _.get(dbRole.base_permissions, path) === _.get(dbRole.permissions, path)) { // Property default value changed
             updatedCustomPerms = _.set(updatedCustomPerms, path, diff.rhs);
-            console.log('Permission changed', path);
+            applyDiff = true;
           }
         });
-        console.log(JSON.stringify(updatedCustomPerms, null, 2));
+        // Apply updated permissions
+        updatedRole.custom_permissions = updatedCustomPerms;
       }
 
       // if role found in db and permissions exists, use these
       if (dbRole && dbRole.permissions && Object.keys(dbRole.permissions).length > 0) {
         // check if permissions are set
-        var newRole = dbRole.permissions;
+        var newRole = updatedCustomPerms;
         newRole.id = dbRole.id;
         newRole.name = dbRole.name;
         newRole.description = dbRole.description;
@@ -221,15 +219,10 @@ function verifyRoles(reload, roleLookup) {
         newRole.highlight_color = dbRole.highlight_color;
         roles[newRole.lookup] = newRole;
       }
-      // if role found and no permissions, update permissions
-      else if (dbRole) {
-        // TODO: Implement diff and update custom permissions before updating.
-        return db.roles.update(updatedRole);
-      }
+      // if role found and no permissions or if there are diff changes, update permissions
+      if ((dbRole && !dbRole.permissions) || applyDiff) { return db.roles.update(updatedRole); }
       // dbRole not found, so add the role to db
-      else {
-        return db.roles.create(updatedRole);
-      }
+      else if (!dbRole) { return db.roles.create(updatedRole); }
     });
 
     return dbRoles;
