@@ -182,6 +182,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
         header.classList.add('is-hidden');
         header.classList.remove('is-visible');
       }
+
       scrollPos = windowY;
     }
     // window.addEventListener('scroll', checkPosition);

@@ -468,6 +468,14 @@ ad-viewer {
   .pagination-bottom {
     justify-self: center;
     padding-bottom: 1rem;
+    position: fixed;
+    bottom: 3rem;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border-top: 1px solid $border-color;
+    padding-top: 1rem;
+    text-align: center;
   }
 }
 
