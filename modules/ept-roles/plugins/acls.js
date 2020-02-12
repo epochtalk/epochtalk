@@ -188,19 +188,20 @@ function verifyRoles(reload, roleLookup) {
         // Iterate over each diff and update the custom permissions
         permissionDiff.forEach(function(diff) {
           var path = diff.path.join('.');
-          if (diff.kind === 'N') { // Property added
+
+          // Property added
+          if (applyDiff = diff.kind === 'N') {
             // Add new property to custom permission set
             updatedCustomPerms = _.set(updatedCustomPerms, path, diff.rhs);
-            applyDiff = true;
           }
-          else if (diff.kind === 'D') { // Property deleted
+          // Property deleted
+          else if (applyDiff = diff.kind === 'D') {
             // Remove property from custom permission set
             updatedCustomPerms = _.omit(updatedCustomPerms, path);
-            applyDiff = true;
           }
-          else if (diff.kind === 'E' && _.get(dbRole.base_permissions, path) === _.get(dbRole.permissions, path)) { // Property default value changed
+          // Property default value changed
+          else if (applyDiff = (diff.kind === 'E' && _.get(dbRole.base_permissions, path) === _.get(dbRole.permissions, path))) {
             updatedCustomPerms = _.set(updatedCustomPerms, path, diff.rhs);
-            applyDiff = true;
           }
         });
         // Apply updated permissions
