@@ -168,50 +168,40 @@ function verifyRoles(reload, roleLookup) {
         permissions: modulePermissions,
         custom_permissions: modulePermissions
       };
-      /*
-        1. Diff module and base permissions
-          a. Changes detected
-            i.  Apply diff to custom permissions and store
-            ii. Store module permissions as new base permissions
-          b. No Changes detected
-            i.  Continue
-        2. Use custom permissions to populate in memory role object
-        3. If no permissions are present, but the dbRole is found use module permissions
-        4. If no db role is found, create the role using module permissions
-      */
-      var updatedCustomPerms = dbRole && dbRole.permissions ? dbRole.permissions : undefined;
+
+      var customPermissions = dbRole && dbRole.permissions ? dbRole.permissions : undefined;
       var permissionDiff = (dbRole && dbRole.base_permissions) ? diff(dbRole.base_permissions, modulePermissions) : undefined;
       var applyDiff = false;
+      var permissionsMissing = dbRole && (!dbRole.permissions || !dbRole.base_permissions);
 
       // There is a change to the module permissions. Update base permissions and custom permissions
       if (permissionDiff) {
         // Iterate over each diff and update the custom permissions
         permissionDiff.forEach(function(diff) {
           var path = diff.path.join('.');
-
           // Property added
           if (applyDiff = diff.kind === 'N') {
             // Add new property to custom permission set
-            updatedCustomPerms = _.set(updatedCustomPerms, path, diff.rhs);
+            customPermissions = _.set(customPermissions, path, diff.rhs);
           }
           // Property deleted
           else if (applyDiff = diff.kind === 'D') {
             // Remove property from custom permission set
-            updatedCustomPerms = _.omit(updatedCustomPerms, path);
+            customPermissions = _.omit(customPermissions, path);
           }
           // Property default value changed
           else if (applyDiff = (diff.kind === 'E' && _.get(dbRole.base_permissions, path) === _.get(dbRole.permissions, path))) {
-            updatedCustomPerms = _.set(updatedCustomPerms, path, diff.rhs);
+            customPermissions = _.set(customPermissions, path, diff.rhs);
           }
         });
         // Apply updated permissions
-        updatedRole.custom_permissions = updatedCustomPerms;
+        updatedRole.custom_permissions = customPermissions;
       }
 
-      // if role found in db and permissions exists, use these
+      // if role found in db and permissions exists, use these in the in memory role object
       if (dbRole && dbRole.permissions && Object.keys(dbRole.permissions).length > 0) {
         // check if permissions are set
-        var newRole = updatedCustomPerms;
+        var newRole = customPermissions;
         newRole.id = dbRole.id;
         newRole.name = dbRole.name;
         newRole.description = dbRole.description;
@@ -221,19 +211,18 @@ function verifyRoles(reload, roleLookup) {
         roles[newRole.lookup] = newRole;
       }
       // if role found and no permissions or if there are diff changes, update permissions
-      if ((dbRole && !dbRole.permissions) || applyDiff) { return db.roles.update(updatedRole); }
+      if (permissionsMissing || applyDiff) { return db.roles.update(updatedRole); }
       // dbRole not found, so add the role to db
       else if (!dbRole) { return db.roles.create(updatedRole); }
     });
 
     return dbRoles;
   })
-  // pull any roles that aren't default into the roles Object
+  // Put custom roles into the in memory role object
   .map(function(dbRole) {
     var memRoleFound = _.find(roles, function(role) {
       return role.id === dbRole.id || role.lookup === dbRole.lookup;
     });
-
     if (!memRoleFound) {
       var newRole = dbRole.permissions;
       newRole.id = dbRole.id;
@@ -242,16 +231,12 @@ function verifyRoles(reload, roleLookup) {
       newRole.lookup = dbRole.lookup;
       newRole.priority = dbRole.priority;
       newRole.highlight_color = dbRole.highlight_color;
-      roles[dbRole.lookup] = newRole;
+      roles[newRole.lookup] = newRole;
     }
     return;
   }).then(function() {
-    if (roleLookup) {
-      return roles[roleLookup];
-    }
-    else {
-      return;
-    }
+    if (roleLookup) { return roles[roleLookup]; }
+    else { return; }
   });
 }
 
