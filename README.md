@@ -47,7 +47,7 @@ $ git clone git@github.com:epochtalk/epochtalk.git
 
 ### 2) SSL and Nginx setup
 
-Install an SSL cert and edit the nginx .conf file (located /etc/nginx/default.conf) with server info and SLL cert info
+Install an SSL cert and edit the nginx .conf file (located /etc/nginx/default.conf) with server info and SSL cert info
 
 #### 3) Change directories and install dependencies using [yarn](https://yarnpkg.com)
 ```sh
