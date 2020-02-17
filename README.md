@@ -8,9 +8,8 @@ Next generation forum software. Epochtalk forum software utilizes technologies s
 
 ## Index
 * [Features](#features)
-* [Dependencies](#dependencies)
+* [System Dependencies](#dependencies)
   * [System](#system)
-  * [NPM](#npm)
 * [Installation](#installation)
 * [Configuration](#configuration)
   * [Manual Configuration](#manual-configuration)
@@ -34,10 +33,10 @@ Next generation forum software. Epochtalk forum software utilizes technologies s
 
 ## System Dependencies
 * [node](http://nodejs.org)
-* [npm](https://www.npmjs.org/doc/README.html) (pre-packaged with node)
 * [yarn](https://yarnpkg.com)
 * [Postgres](http://www.postgresql.org/)
 * [Redis](http://redis.io/)
+* [Nginx](https://nginx.org/en/docs/)
 
 ## Installation
 
@@ -46,13 +45,17 @@ Next generation forum software. Epochtalk forum software utilizes technologies s
 $ git clone git@github.com:epochtalk/epochtalk.git
 ```
 
-#### 2) Change directories and install dependencies using [yarn](https://yarnpkg.com)
+### 2) SSL and Nginx setup
+
+Install an SSL cert and edit the nginx .conf file (located /etc/nginx/default.conf) with server info and SLL cert info
+
+#### 3) Change directories and install dependencies using [yarn](https://yarnpkg.com)
 ```sh
 $ cd epochtalk
 $ yarn
 ```
 
-#### 3) Copy the example.env file
+#### 4) Copy the example.env file
 This file specifies the server configurations and is necessary to run the
 server.  You can edit the .env file later to specify the configurations as
 outlined in the Configuration section.
@@ -62,7 +65,7 @@ $ cd .. # cd back to project root
 $ cp example.env .env
 ```
 
-#### 4) Checkout and Run Migrations
+#### 5) Checkout and Run Migrations
 **Note**: If you do not have brew installed, you must manually install [Elixir](https://elixir-lang.org/install.html)
 ```sh
 $ cd .. # (or just change directories outside of the epochtalk directory)
@@ -74,19 +77,19 @@ $ mix ecto.setup # create and migrate epochtalk database
 $ cd ../epochtalk # change directories back to epochtalk root
 ```
 
-#### 5) Initialize First User
+#### 6) Initialize First User
 First ensure that [Postgres](http://www.postgresql.org/) is installed and running. Before running Epochtalk for the first time, it is necessary to setup the database and first user account. The CLI tool will create the first board and admin account for the forum. From the root directory of the project run the following command:
 ```sh
 $ node cli --create
 ```
 
-#### 6) Start the Epochtalk server
+#### 7) Start the Epochtalk server
 Running the `npm run serve` command will start the Epochtalk webserver and compile all JavaScript and css. Once the server is running, the forum can be viewed at `http://localhost:8080`
 ```sh
-$ npm run serve
+$ yarn run serve
 ```
 
-#### 7) Log in and change admin account information
+#### 8) Log in and change admin account information
 Login to the admin account using the username ``admin`` and password ``admin1234``. Visit your profile by clicking the link in the top right corner of the page, then change your username and password.
 
 ## Configuration
