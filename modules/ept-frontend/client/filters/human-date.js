@@ -1,8 +1,9 @@
 'use strict';
 /* jslint node: true */
 
-module.exports = ['$filter', function ($filter) {
+module.exports = ['$filter', 'PreferencesSvc', function ($filter, PreferencesSvc) {
   return function(dateStr, hideTime) {
+    var timezone = PreferencesSvc.preferences.timezone_offset || '';
     var result;
     var now = new Date();
     var maxDate = new Date(8640000000000000);
@@ -16,9 +17,16 @@ module.exports = ['$filter', function ($filter) {
       else { result = $filter('date')(dateStr, 'MMMM d, y'); }
     }
     else {
-      if (isToday) { result = 'Today at ' +  $filter('date')(dateStr, 'h:mm a'); }
-      else if (isThisYear) { result = $filter('date')(dateStr, "MMMM d 'at' h:mm a"); }
-      else { result = $filter('date')(dateStr, "MMMM d, y 'at' h:mm a"); }
+      if (timezone) {
+        if (isToday) { result = 'Today at ' +  $filter('date')(dateStr, 'h:mm a', timezone); }
+        else if (isThisYear) { result = $filter('date')(dateStr, "MMMM d 'at' h:mm a", timezone); }
+        else { result = $filter('date')(dateStr, "MMMM d, y 'at' h:mm a", timezone); }
+      }
+      else {
+        if (isToday) { result = 'Today at ' +  $filter('date')(dateStr, 'h:mm a'); }
+        else if (isThisYear) { result = $filter('date')(dateStr, "MMMM d 'at' h:mm a"); }
+        else { result = $filter('date')(dateStr, "MMMM d, y 'at' h:mm a"); }
+      }
     }
     return result;
   };

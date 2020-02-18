@@ -70,8 +70,8 @@ var insertUserPreferences = function(user, client) {
 };
 
 var updateUserPreferences = function(user, client) {
-  var q = 'UPDATE users.preferences SET posts_per_page = $2, threads_per_page = $3, collapsed_categories = $4, ignored_boards = $5 WHERE user_id = $1';
-  var params = [user.id, user.posts_per_page, user.threads_per_page, user.collapsed_categories, user.ignored_boards];
+  var q = 'UPDATE users.preferences SET posts_per_page = $2, threads_per_page = $3, collapsed_categories = $4, ignored_boards = $5, timezone_offset = $6 WHERE user_id = $1';
+  var params = [user.id, user.posts_per_page, user.threads_per_page, user.collapsed_categories, user.ignored_boards, user.timezone_offset];
   return client.query(q, params);
 };
 

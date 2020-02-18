@@ -82,6 +82,14 @@ pre.json {
   }
 }
 
+
+/*-- Field Groups  --*/
+.fieldgroup {
+  display: grid;
+  grid-template-columns: 4rem 1fr 1fr;
+  grid-gap: 0.5rem;
+}
+
 /*-- Toggle Switch --*/
 .switch-block label { float: none; }
 .toggle-switch { position: absolute; margin-left: -9999px; visibility: hidden; }
