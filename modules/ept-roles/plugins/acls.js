@@ -224,7 +224,7 @@ function verifyRoles(reload, roleLookup) {
       return role.id === dbRole.id || role.lookup === dbRole.lookup;
     });
     if (!memRoleFound) {
-      var newRole = dbRole.permissions;
+      var newRole = dbRole.permissions || {};
       newRole.id = dbRole.id;
       newRole.name = dbRole.name;
       newRole.description = dbRole.description;
