@@ -336,7 +336,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       }
     };
 
-    this.submitted = false;
+    this.postSubmitted = false;
 
     this.savePost = function() {
       var post = ctrl.posting.post;
@@ -348,8 +348,8 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       if (post.id) { postPromise = Posts.update(post).$promise; }
       else { postPromise = Posts.save(post).$promise; }
 
-      if (!ctrl.submitted) {
-        ctrl.submitted = true;
+      if (!ctrl.postSubmitted) {
+        ctrl.postSubmitted = true;
         postPromise.then(function(data) {
           if (type === 'create') {
             // Increment post count and recalculate ctrl.pageCount
@@ -380,7 +380,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
           Alert.error(error);
         })
-        .finally(function() { ctrl.submitted = false; });
+        .finally(function() { ctrl.postSubmitted = false; });
       }
     };
 
