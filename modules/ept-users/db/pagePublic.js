@@ -36,7 +36,7 @@ module.exports = function(opts) {
     params = ['%' + opts.searchStr + '%', limit, offset];
   }
   else {
-    q = [q, 'WHERE u.deleted = false ORDER BY', sort, orderParam, 'LIMIT $1 OFFSET $2'].join(' ');
+    q = [q, 'WHERE u.deleted = false ORDER BY', sort, orderParam, ', username ASC LIMIT $1 OFFSET $2'].join(' ');
     params = [limit, offset];
   }
 
