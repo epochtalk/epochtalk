@@ -172,8 +172,7 @@ function verifyRoles(reload, roleLookup) {
       var customPermissions = dbRole && dbRole.permissions ? dbRole.permissions : undefined;
       var permissionDiff = (dbRole && dbRole.base_permissions) ? diff(dbRole.base_permissions, modulePermissions) : undefined;
       var applyDiff = false;
-      var permissionsMissing = dbRole && (!dbRole.permissions || !dbRole.base_permissions);
-
+      var permissionsMissing = dbRole && (!dbRole.permissions || !Object.keys(dbRole.permissions).length || !dbRole.base_permissions || !Object.keys(dbRole.permissions).length);
       // There is a change to the module permissions. Update base permissions and custom permissions
       if (permissionDiff) {
         // Iterate over each diff and update the custom permissions
