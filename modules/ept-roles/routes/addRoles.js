@@ -49,10 +49,14 @@ module.exports = {
   },
   handler: function(request) {
     var role = request.payload;
+    role.custom_permissions = role.permissions;
+    delete role.permissions;
     var promise = request.db.roles.create(role)
       .then(function(result) {
         role.id = result.id;
         role.lookup = result.id;
+        // Swap back custom permissions for auth
+        role.permissions = role.custom_permissions;
         // Add role to the in memory role object
         request.rolesAPI.addRole(role);
         return result;

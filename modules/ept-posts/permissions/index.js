@@ -298,8 +298,7 @@ var user = {
   lock: {
     allow: true,
     bypass: {
-      lock: { selfMod: true },
-      owner: { selfMod: true },
+      lock: { selfMod: true }
     }
   }
 };

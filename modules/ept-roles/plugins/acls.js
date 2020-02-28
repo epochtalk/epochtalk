@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var Boom = require('boom');
 var path = require('path');
+var diff = require('deep-diff');
 var roles = require(path.normalize(__dirname + '/roles'));
 
 var db, config, defaultPerms, validations, layouts;
@@ -145,90 +146,96 @@ function verifyRoles(reload, roleLookup) {
   .then(function(dbRoles) {
     _.mapValues(roles, function(role) {
       // check if this role is in dbRoles
-      var dbRoleFound = _.find(dbRoles, function(dbRole) {
+      var dbRole = _.find(dbRoles, function(dbRole) {
         return role.id === dbRole.id || role.lookup === dbRole.lookup;
       });
 
-      // if role found in db and permissions exists, use these
-      if (dbRoleFound && Object.keys(dbRoleFound.permissions).length > 0) {
+      var modulePermissions = _.clone(role);
+      delete modulePermissions.id;
+      delete modulePermissions.name;
+      delete modulePermissions.lookup;
+      delete modulePermissions.description;
+      delete modulePermissions.priority;
+      delete modulePermissions.highlightColor;
+
+      var updatedRole = {
+        id: dbRole ? dbRole.id : role.id,
+        name: role.name,
+        lookup: role.lookup,
+        description: role.description,
+        priority: role.priority,
+        highlightColor: role.highlightColor,
+        permissions: modulePermissions,
+        custom_permissions: modulePermissions
+      };
+
+      var customPermissions = dbRole && dbRole.permissions ? dbRole.permissions : undefined;
+      var permissionDiff = (dbRole && dbRole.base_permissions) ? diff(dbRole.base_permissions, modulePermissions) : undefined;
+      var applyDiff = false;
+      var permissionsMissing = dbRole && (!dbRole.permissions || !Object.keys(dbRole.permissions).length || !dbRole.base_permissions || !Object.keys(dbRole.permissions).length);
+      // There is a change to the module permissions. Update base permissions and custom permissions
+      if (permissionDiff) {
+        // Iterate over each diff and update the custom permissions
+        permissionDiff.forEach(function(diff) {
+          var path = diff.path.join('.');
+          // Property added
+          if (applyDiff = diff.kind === 'N') {
+            // Add new property to custom permission set
+            customPermissions = _.set(customPermissions, path, diff.rhs);
+          }
+          // Property deleted
+          else if (applyDiff = diff.kind === 'D') {
+            // Remove property from custom permission set
+            customPermissions = _.omit(customPermissions, path);
+          }
+          // Property default value changed
+          else if (applyDiff = (diff.kind === 'E' && _.get(dbRole.base_permissions, path) === _.get(dbRole.permissions, path))) {
+            customPermissions = _.set(customPermissions, path, diff.rhs);
+          }
+        });
+        // Apply updated permissions
+        updatedRole.custom_permissions = customPermissions;
+      }
+
+      // if role found in db and permissions exists, use these in the in memory role object
+      if (dbRole && dbRole.permissions && Object.keys(dbRole.permissions).length > 0) {
         // check if permissions are set
-        var newRole = dbRoleFound.permissions;
-        newRole.id = dbRoleFound.id;
-        newRole.name = dbRoleFound.name;
-        newRole.description = dbRoleFound.description;
-        newRole.lookup = dbRoleFound.lookup;
-        newRole.priority = dbRoleFound.priority;
-        newRole.highlight_color = dbRoleFound.highlight_color;
+        var newRole = customPermissions;
+        newRole.id = dbRole.id;
+        newRole.name = dbRole.name;
+        newRole.description = dbRole.description;
+        newRole.lookup = dbRole.lookup;
+        newRole.priority = dbRole.priority;
+        newRole.highlight_color = dbRole.highlight_color;
         roles[newRole.lookup] = newRole;
       }
-      // if role found and no permissions, update permissions
-      else if (dbRoleFound) {
-        var clonedRole = _.clone(role);
-        delete clonedRole.id;
-        delete clonedRole.name;
-        delete clonedRole.lookup;
-        delete clonedRole.description;
-        delete clonedRole.priority;
-        delete clonedRole.highlightColor;
-        var updateRole = {
-          id: dbRoleFound.id,
-          name: role.name,
-          lookup: role.lookup,
-          description: role.description,
-          priority: role.priority,
-          highlightColor: role.highlightColor,
-          permissions: clonedRole
-        };
-        return db.roles.update(updateRole);
-      }
+      // if role found and no permissions or if there are diff changes, update permissions
+      if (permissionsMissing || applyDiff) { return db.roles.update(updatedRole); }
       // dbRole not found, so add the role to db
-      else {
-        var clonedAddRole = _.clone(role);
-        delete clonedAddRole.id;
-        delete clonedAddRole.name;
-        delete clonedAddRole.lookup;
-        delete clonedAddRole.description;
-        delete clonedAddRole.priority;
-        delete clonedAddRole.highlightColor;
-        var addRole = {
-          id: role.id,
-          name: role.name,
-          lookup: role.lookup,
-          description: role.description,
-          priority: role.priority,
-          highlightColor: role.highlightColor,
-          permissions: clonedAddRole
-        };
-        return db.roles.create(addRole);
-      }
+      else if (!dbRole) { return db.roles.create(updatedRole); }
     });
 
     return dbRoles;
   })
-  // pull any roles that aren't default into the roles Object
+  // Put custom roles into the in memory role object
   .map(function(dbRole) {
     var memRoleFound = _.find(roles, function(role) {
       return role.id === dbRole.id || role.lookup === dbRole.lookup;
     });
-
     if (!memRoleFound) {
-      var newRole = dbRole.permissions;
+      var newRole = dbRole.permissions || {};
       newRole.id = dbRole.id;
       newRole.name = dbRole.name;
       newRole.description = dbRole.description;
       newRole.lookup = dbRole.lookup;
       newRole.priority = dbRole.priority;
       newRole.highlight_color = dbRole.highlight_color;
-      roles[dbRole.lookup] = newRole;
+      roles[newRole.lookup] = newRole;
     }
     return;
   }).then(function() {
-    if (roleLookup) {
-      return roles[roleLookup];
-    }
-    else {
-      return;
-    }
+    if (roleLookup) { return roles[roleLookup]; }
+    else { return; }
   });
 }
 
