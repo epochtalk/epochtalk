@@ -1,5 +1,5 @@
 var path = require('path');
 
 module.exports = {
-  // addTrustFeedback: require(path.normalize(__dirname + '/addTrustFeedback')),
+  publicNewbiePosts: require(path.normalize(__dirname + '/publicNewbiePosts')),
 };
