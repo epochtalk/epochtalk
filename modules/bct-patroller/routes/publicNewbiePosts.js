@@ -25,7 +25,7 @@ module.exports = {
     // pre: [ { method: (request) => request.server.methods.auth.roles.all(request.server, request.auth) } ]
   },
   handler: function(request) {
-    var promise = request.db.patroller.publicNewbiePosts()
+    var promise = request.db.patroller.publicNewbiePosts(request)
     .error(request.errorMap.toHttpError);
 
     return promise;
