@@ -5,15 +5,16 @@ var helper = dbc.helper;
 
 module.exports = function(request) {
   var q = `SELECT
-      p.*,
-      t.*,
+      p.id, p.thread_id, p.position, p.content, p.created_at, p.updated_at, p.metadata,
+      t.locked, t.sticky, t.moderated,
+      (SELECT p2.content->>'title' FROM posts p2 WHERE p2.thread_id = p.thread_id ORDER BY p2.created_at ASC LIMIT 1) AS thread_title,
       (SELECT u2.username FROM posts p2 LEFT JOIN users u2 ON u2.id = p2.user_id WHERE p2.thread_id = p.thread_id ORDER BY p2.created_at ASC LIMIT 1) AS thread_started_by_username,
       u.username FROM posts p
     LEFT JOIN threads t ON p.thread_id = t.id
     LEFT JOIN users u ON p.user_id = u.id
     WHERE p.user_id IN
       (SELECT user_id FROM roles_users WHERE role_id = (SELECT id FROM roles WHERE lookup = 'newbie')) AND p.deleted = FALSE
-    ORDER BY p.created_at
+    ORDER BY p.created_at DESC
     LIMIT 200;`;
   return db.sqlQuery(q)
   .map(function(post) {
