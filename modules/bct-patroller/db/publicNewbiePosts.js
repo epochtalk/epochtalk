@@ -4,6 +4,7 @@ var db = dbc.db;
 var helper = dbc.helper;
 
 module.exports = function(request) {
+  var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
   var q = `SELECT
       p.id, p.thread_id, p.position, p.content, p.created_at, p.updated_at, p.metadata,
       t.locked, t.sticky, t.moderated,
@@ -13,10 +14,17 @@ module.exports = function(request) {
     LEFT JOIN threads t ON p.thread_id = t.id
     LEFT JOIN users u ON p.user_id = u.id
     WHERE p.user_id IN
-      (SELECT user_id FROM roles_users WHERE role_id = (SELECT id FROM roles WHERE lookup = 'newbie')) AND p.deleted = FALSE
+      (SELECT user_id FROM roles_users WHERE role_id = (SELECT id FROM roles WHERE lookup = 'newbie'))
+      AND p.deleted = FALSE
+      AND EXISTS (
+          SELECT 1
+          FROM boards b2
+          WHERE b2.id = t.board_id
+          AND ( b2.viewable_by IS NULL OR b2.viewable_by >= $1 )
+          AND ( SELECT EXISTS ( SELECT 1 FROM board_mapping WHERE board_id = t.board_id )))
     ORDER BY p.created_at DESC
     LIMIT 200;`;
-  return db.sqlQuery(q)
+  return db.sqlQuery(q, [userPriority])
   .map(function(post) {
     // Build the breadcrumbs and reply
     return request.db.breadcrumbs.getBreadcrumbs(helper.slugify(post.thread_id), 'thread', request)
