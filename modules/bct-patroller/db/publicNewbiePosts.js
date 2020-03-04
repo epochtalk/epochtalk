@@ -6,12 +6,16 @@ var helper = dbc.helper;
 module.exports = function(request) {
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
   var q = `SELECT
-      p.id, p.thread_id, p.position, p.content, p.created_at, p.updated_at, p.metadata,
-      t.locked, t.sticky, t.moderated,
-      (SELECT p2.content->>'title' FROM posts p2 WHERE p2.thread_id = p.thread_id ORDER BY p2.created_at ASC LIMIT 1) AS thread_title,
-      (SELECT u2.username FROM posts p2 LEFT JOIN users u2 ON u2.id = p2.user_id WHERE p2.thread_id = p.thread_id ORDER BY p2.created_at ASC LIMIT 1) AS thread_started_by_username,
-      u.username,
-      b.right_to_left
+      p.id, p.position, b.right_to_left, p.content, p.created_at, p.updated_at, p.metadata,
+      json_build_object('username', u.username, 'user_id', p.user_id) AS user,
+      json_build_object(
+        'id', p.thread_id,
+        'locked', t.locked,
+        'sticky', t.sticky,
+        'moderated', t.moderated,
+        'title', (SELECT p2.content->>'title' FROM posts p2 WHERE p2.thread_id = p.thread_id ORDER BY p2.created_at ASC LIMIT 1),
+        'started_by', (SELECT u2.username FROM posts p2 LEFT JOIN users u2 ON u2.id = p2.user_id WHERE p2.thread_id = p.thread_id ORDER BY p2.created_at ASC LIMIT 1)
+      ) AS thread
     FROM posts p
     LEFT JOIN threads t ON p.thread_id = t.id
     LEFT JOIN users u ON p.user_id = u.id
@@ -30,7 +34,7 @@ module.exports = function(request) {
   return db.sqlQuery(q, [userPriority])
   .map(function(post) {
     // Build the breadcrumbs and reply
-    return request.db.breadcrumbs.getBreadcrumbs(helper.slugify(post.thread_id), 'thread', request)
+    return request.db.breadcrumbs.getBreadcrumbs(helper.slugify(post.thread.id), 'thread', request)
     .then(function(breadcrumbs) {
       post.breadcrumbs = breadcrumbs;
       return post;
