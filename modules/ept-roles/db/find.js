@@ -4,7 +4,7 @@ var db = dbc.db;
 var helper = dbc.helper;
 
 module.exports = function(roleId) {
-  var q = 'SELECT id, name, description, lookup, priority, highlight_color, permissions FROM roles WHERE id = $1';
+  var q = 'SELECT id, name, description, lookup, priority, highlight_color, permissions AS base_permissions, custom_permissions AS permissions FROM roles WHERE id = $1';
   return db.scalar(q, [helper.deslugify(roleId)])
   .then(helper.slugify);
 };

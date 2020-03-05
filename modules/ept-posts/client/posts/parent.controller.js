@@ -336,6 +336,8 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       }
     };
 
+    this.postSubmitted = false;
+
     this.savePost = function() {
       var post = ctrl.posting.post;
       var type = post.id ? 'update' : 'create';
@@ -346,36 +348,40 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       if (post.id) { postPromise = Posts.update(post).$promise; }
       else { postPromise = Posts.save(post).$promise; }
 
-      postPromise.then(function(data) {
-        if (type === 'create') {
-          // Increment post count and recalculate ctrl.pageCount
-          ctrl.thread.post_count++;
-          ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
-          // Go to last page in the thread and scroll to new post
-          var lastPage = ctrl.pageCount;
-          var params = angular.copy($stateParams);
-          params.page = lastPage;
-          delete params['#'];
-          delete params['start'];
-          delete params['threadId'];
-          $location.search(params).hash(data.id);
-          if (ctrl.page === lastPage) { ctrl.pullPage(); }
-        }
-        else if (type === 'update') {
-          var filtered = ctrl.posts.filter(function(p) { return p.id === data.id; });
-          var editPost = filtered.length > 0 && filtered[0] || {};
-          editPost.body_html = data.body_html;
-          editPost.body = data.body;
-          editPost.updated_at = data.updated_at;
-          editPost.metadata = data.metadata;
-        }
-      })
-      .then(closeEditor)
-      .catch(function(err) {
-        var error = err.data.message;
-        if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
-        Alert.error(error);
-      });
+      if (!ctrl.postSubmitted) {
+        ctrl.postSubmitted = true;
+        postPromise.then(function(data) {
+          if (type === 'create') {
+            // Increment post count and recalculate ctrl.pageCount
+            ctrl.thread.post_count++;
+            ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
+            // Go to last page in the thread and scroll to new post
+            var lastPage = ctrl.pageCount;
+            var params = angular.copy($stateParams);
+            params.page = lastPage;
+            delete params['#'];
+            delete params['start'];
+            delete params['threadId'];
+            $location.search(params).hash(data.id);
+            if (ctrl.page === lastPage) { ctrl.pullPage(); }
+          }
+          else if (type === 'update') {
+            var filtered = ctrl.posts.filter(function(p) { return p.id === data.id; });
+            var editPost = filtered.length > 0 && filtered[0] || {};
+            editPost.body_html = data.body_html;
+            editPost.body = data.body;
+            editPost.updated_at = data.updated_at;
+            editPost.metadata = data.metadata;
+          }
+        })
+        .then(closeEditor)
+        .catch(function(err) {
+          var error = err.data.message;
+          if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
+          Alert.error(error);
+        })
+        .finally(function() { ctrl.postSubmitted = false; });
+      }
     };
 
     this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };

@@ -256,7 +256,7 @@
         <button class="inverted-button cancel" ng-click="PostsParentCtrl.cancelPost()">
           Cancel
         </button>
-        <button class="send" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.canSave()">
+        <button class="send" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.canSave() || PostsParentCtrl.postSubmitted">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ PostsParentCtrl.posting.post.id ? 'Edit Post' : 'Send Reply' }}
         </button>
 
