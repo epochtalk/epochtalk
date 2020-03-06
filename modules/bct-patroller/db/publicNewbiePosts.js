@@ -7,7 +7,7 @@ module.exports = function(request) {
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
   var q = `SELECT
       p.id, p.position, b.right_to_left, p.content, p.created_at, p.updated_at, p.metadata,
-      json_build_object('username', u.username, 'user_id', p.user_id) AS user,
+      json_build_object('username', u.username, 'id', p.user_id) AS user,
       json_build_object(
         'id', p.thread_id,
         'locked', t.locked,

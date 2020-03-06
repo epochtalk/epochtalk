@@ -21,13 +21,26 @@ module.exports = {
   method: 'GET',
   path: '/api/posts/newbie',
   options: {
+    app: { hook: 'posts.patroller' },
     auth: { strategy: 'jwt' },
-    // pre: [ { method: (request) => request.server.methods.auth.roles.all(request.server, request.auth) } ]
+    pre: [
+      { method: (request) => request.server.methods.auth.posts.search(request.server, request.auth) },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
+      [
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
+        { method: processing, assign: 'processed' },
+      ],
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
+    ]
   },
   handler: function(request) {
-    var promise = request.db.patroller.publicNewbiePosts(request)
-    .error(request.errorMap.toHttpError);
-
-    return promise;
+    return request.pre.processed;
   }
 };
+
+function processing(request) {
+  var promise = request.db.patroller.publicNewbiePosts(request)
+  .error(request.errorMap.toHttpError);
+  return promise;
+}
