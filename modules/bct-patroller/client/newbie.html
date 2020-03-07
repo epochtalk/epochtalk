@@ -1,1 +1,39 @@
-{{NewbieCtrl.posts}}
+<div class="fill-row search-data" ng-if="NewbieCtrl.posts.length > 0">
+  <div id="{{::post.id}}" ng-repeat="post in NewbieCtrl.posts track by post.id" class="post-block" ng-class="{ 'hidden': post.hidden, 'deleted': post._deleted || post.user.ignored, 'first': $first }">
+    <!-- Delete Post View -->
+    <div class="deleted" ng-if="post._deleted || post.user.ignored">
+      Post
+      <span ng-if="post._deleted">Deleted</span>
+      <span ng-if="post.user.ignored">Ignored</span>
+      <small class="pointer" ng-if="post.user.ignored" ng-click="post.user.ignored = false">
+        <strong>- Show Post</strong>
+      </small>
+    </div>
+
+    <!-- Visible Post View -->
+    <div ng-if="!post._deleted && !post.user.ignored">
+
+      <!-- Post Body Section -->
+      <div class="post-content">
+        <!-- Post Title -->
+        <div class="thread-title">
+          <h5>
+            <a ui-sref="posts.data({ threadId: post.thread.id, start: post.position, '#': post.id })" ng-bind-html="::post.thread.title"></a>
+          </h5>
+          <span ng-if="post.user.online" class="online green"><i class="fa fa-circle"></i></span>
+          <span ng-if="!post.user.online" class="online green"><i class="fa fa-circle-o"></i></span>
+          <a class="username" data-balloon="{{post.user.role_name || 'User'}}" ui-sref="profile.posts({ username: post.user.username})" ng-style="NewbieCtrl.usernameHighlight(post.user.highlight_color)" ng-bind="::post.user.username"></a>
+          <div class="posted-in">posted in</div>
+          <a class="board-name" ui-sref="threads.data({ boardId: post.board_id })" ng-bind-html="::post.board_name"></a>
+          <div class="timestamp">
+            <span ng-bind="::post.created_at | humanDate"></span>
+          </div>
+
+          <div class="clear"></div>
+        </div>
+        <!-- Post Body -->
+        <div class="post-body" ng-class="{ 'rtl': post.right_to_left }" post-processing="post.content.body_html || post.content.body" style-fix="true"></div>
+      </div>
+    </div>
+  </div>
+</div>

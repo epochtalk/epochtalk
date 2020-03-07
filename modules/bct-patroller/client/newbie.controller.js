@@ -1,6 +1,8 @@
-var ctrl = ['Alert', 'pageData', function(Alert, pageData) {
+var ctrl = ['Alert', 'pageData', 'Websocket', function(Alert, pageData, Websocket) {
     var ctrl = this;
     this.posts = pageData;
+
+    (function() { checkUsersOnline(); })();
 
     function checkUsersOnline() {
       var uniqueUsers = {};
@@ -23,6 +25,23 @@ var ctrl = ['Alert', 'pageData', function(Alert, pageData) {
         });
       }
     }
+
+    this.avatarHighlight = function(color) {
+      var style = {};
+      if (color) { style.border = '0.225rem solid ' + color; }
+      return style;
+    };
+
+    this.usernameHighlight = function(color) {
+      var style = {};
+      if (color) {
+        style.background = color;
+        style.padding = '0 0.3rem';
+        style.color = '#ffffff';
+      }
+      return style;
+    };
+
   }
 ];
 
