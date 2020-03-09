@@ -25,6 +25,10 @@ common.export = () =>  {
       method: clean
     },
     {
+      name: 'common.posts.formatPost',
+      method: formatPost
+    },
+    {
       name: 'common.posts.parse',
       method: parse
     },
