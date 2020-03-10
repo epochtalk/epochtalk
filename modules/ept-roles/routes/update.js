@@ -51,36 +51,40 @@ module.exports = {
   },
   handler: function(request) {
     var role = request.payload;
+    role.custom_permissions = role.permissions;
+    delete role.permissions;
     var defaultRole;
     var promise = request.db.roles.update(role)
-      .then(function(result) {
-        // If permissions are empty reset to default
-        if (role.permissions === '{}' && role.id !== role.lookup) {
-          return request.server.plugins.acls.verifyRoles(true, role.lookup)
-            .then(function(updatedDefaultRole) {
-              defaultRole = updatedDefaultRole;
-              return result;
-            });
-        }
-        else { return result; }
-      })
-      .tap(function(dbRole) {
-        var roleClone = _.cloneDeep(dbRole);
-        var notification = {
-          channel: { type: 'role', id: roleClone.lookup },
-          data: {}
-        };
-        request.server.plugins.notifications.systemNotification(notification);
-      })
-      .then(function(result) {
-        var updateRole = role;
-        if (defaultRole) { updateRole = defaultRole; }
-        else { updateRole.id = result.id; } // undoes deslugify which happens in core
-        // Update role in the in memory role object
-        request.rolesAPI.updateRole(updateRole);
-        return result;
-      })
-      .error(request.errorMap.toHttpError);
+    .then(function(result) {
+      // Swap back custom permissions for auth
+      role.permissions = role.custom_permissions;
+      // If permissions are empty reset to default
+      if (role.custom_permissions === '{}' && role.id !== role.lookup) {
+        return request.server.plugins.acls.verifyRoles(true, role.lookup)
+          .then(function(updatedDefaultRole) {
+            defaultRole = updatedDefaultRole;
+            return result;
+          });
+      }
+      else { return result; }
+    })
+    .tap(function(dbRole) {
+      var roleClone = _.cloneDeep(dbRole);
+      var notification = {
+        channel: { type: 'role', id: roleClone.lookup },
+        data: {}
+      };
+      request.server.plugins.notifications.systemNotification(notification);
+    })
+    .then(function(result) {
+      var updateRole = role;
+      if (defaultRole) { updateRole = defaultRole; }
+      else { updateRole.id = result.id; } // undoes deslugify which happens in core
+      // Update role in the in memory role object
+      request.rolesAPI.updateRole(updateRole);
+      return result;
+    })
+    .error(request.errorMap.toHttpError);
 
     return promise;
   }

@@ -216,14 +216,17 @@
   </div>
 </div>
 
-<!-- Bottom Actions and Pagination -->
-<div class="actions-bottom">
-  <div class="actions-bottom-grid">
-    <div id="pagination-bottom" class="pagination-bottom">
-      <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
-    </div>
-    <div ng-if="PostsParentCtrl.canPost()" class="sidebar-actions">
-      <a class="button small" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
+      <!-- Editor Controls -->
+      <div class="editor-button-container">
+        <button class="inverted-button cancel" ng-click="PostsParentCtrl.cancelPost()">
+          Cancel
+        </button>
+        <button class="send" ng-click="PostsParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PostsParentCtrl.canSave() || PostsParentCtrl.postSubmitted">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ PostsParentCtrl.posting.post.id ? 'Edit Post' : 'Send Reply' }}
+        </button>
+
+        <span class="label alert" ng-if="PostsParentCtrl.posting.error" ng-bind="PostsParentCtrl.posting.error.message"></span>
+      </div>
     </div>
   </div>
 </div>
