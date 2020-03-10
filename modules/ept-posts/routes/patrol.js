@@ -10,7 +10,7 @@ module.exports = {
     validate: {
       query: Joi.object({
         page: Joi.number().integer().min(1),
-        limit: Joi.number().integer().min(1).max(100).default(25)
+        limit: Joi.number().integer().min(1).max(200).default(25)
       }).without('start', 'page')
     },
     pre: [
