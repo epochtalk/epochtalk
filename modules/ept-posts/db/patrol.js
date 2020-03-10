@@ -33,6 +33,7 @@ module.exports = function(request, opts) {
     post.signature,
     post.avatar,
     post.name,
+    post.authed_user_is_mod,
     p2.priority,
     p2.highlight_color,
     p2.role_name
@@ -60,6 +61,7 @@ module.exports = function(request, opts) {
       p.updated_at,
       p.imported_at,
       b.name as board_name,
+      CASE WHEN bm.user_id IS NULL THEN FALSE ELSE TRUE END AS authed_user_is_mod,
       u.username,
       u.deleted as user_deleted,
       up.signature,
@@ -75,6 +77,7 @@ module.exports = function(request, opts) {
     LEFT JOIN users.profiles up ON u.id = up.user_id
     LEFT JOIN threads t ON p.thread_id = t.id
     LEFT JOIN boards b ON t.board_id = b.id
+    LEFT JOIN board_moderators bm ON bm.user_id = $4 AND bm.board_id = t.board_id
     WHERE p.id = plist.id
     AND EXISTS (
           SELECT 1
@@ -96,7 +99,7 @@ module.exports = function(request, opts) {
   `;
 
   // get total post count for this thread
-  var params = [opts.limit, opts.offset, opts.priority];
+  var params = [opts.limit, opts.offset, opts.priority, helper.deslugify(request.auth.credentials.id)];
   return db.sqlQuery(query, params)
   .map(function(post) {
     // Build the breadcrumbs and reply
