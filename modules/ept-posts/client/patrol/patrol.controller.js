@@ -29,12 +29,13 @@ var ctrl = [
       if (!Session.hasPermission('posts.update.allow')) { return false; }
 
       var validBypass = false;
-
       // owner
-      if (post.user.id === ctrl.user.id) { validBypass = true; }
+      if (Session.hasPermission('posts.update.bypass.owner.admin')) { validBypass = true; }
+      else if (post.user.id === ctrl.user.id) { validBypass = true; }
       else if (Session.hasPermission('posts.update.bypass.owner.priority')) {
         if (Session.getPriority() < post.user.priority) { validBypass = true; }
       }
+
 
       // deleted
       if (post.deleted) {
@@ -53,7 +54,8 @@ var ctrl = [
       var validBypass = false;
 
       // moderated/owner
-      if (post.user.id === ctrl.user.id) { validBypass = true; }
+      if (Session.hasPermission('posts.delete.bypass.owner.admin')) { validBypass = true; }
+      else if (post.user.id === ctrl.user.id) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.priority')) {
         if (Session.getPriority() < post.user.priority) { validBypass = true; }
       }
@@ -65,7 +67,8 @@ var ctrl = [
       if (!Session.isAuthenticated()) { return false; }
       if (!Session.hasPermission('posts.lock.allow')) { return false; }
 
-      if (Session.hasPermission('posts.lock.bypass.lock.priority')) {
+      if (Session.hasPermission('posts.lock.bypass.lock.admin')) { return true; }
+      else if (Session.hasPermission('posts.lock.bypass.lock.priority')) {
         if (Session.getPriority() < post.user.priority) { return true; }
         else { return false; }
       }
