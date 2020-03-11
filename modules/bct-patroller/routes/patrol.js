@@ -1,6 +1,5 @@
 var Joi = require('@hapi/joi');
 var path = require('path');
-var common = require(path.normalize(__dirname + '/../common'));
 
 module.exports = {
   method: 'GET',
@@ -14,7 +13,6 @@ module.exports = {
       }).without('start', 'page')
     },
     pre: [
-      //{ method: (request) => request.server.methods.auth.posts.patrol(request.auth), assign: 'viewables' },
       { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
@@ -38,7 +36,7 @@ function processing(request) {
     priority: request.server.plugins.acls.getUserPriority(request.auth)
   };
   // retrieve posts for this thread
-  var promise = request.db.posts.patrol(request, opts)
+  var promise = request.db.patroller.patrol(request, opts)
   .error(request.errorMap.toHttpError);
 
   return promise;

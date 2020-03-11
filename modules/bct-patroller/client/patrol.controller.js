@@ -1,6 +1,6 @@
 var ctrl = [
-  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Posts', 'Websocket', 'pageData',
-  function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Posts, Websocket, pageData) {
+  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Patroller', 'Websocket', 'pageData',
+  function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Patroller, Websocket, pageData) {
     var ctrl = this;
     var parent = $scope.$parent.PatrolParentCtrl;
     parent.loggedIn = Session.isAuthenticated;
@@ -116,7 +116,7 @@ var ctrl = [
       };
 
       // replace current posts with new posts
-      Posts.patrolPosts(query).$promise
+      Patroller.patrolPosts(query).$promise
       .then(function(pageData) {
         ctrl.posts = pageData.posts;
         parent.posts = pageData.posts;
@@ -188,5 +188,5 @@ var ctrl = [
   }
 ];
 
-module.exports = angular.module('ept.patrol.ctrl', [])
+module.exports = angular.module('bct.patroller.ctrl', [])
 .controller('PatrolCtrl', ctrl);

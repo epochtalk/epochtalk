@@ -9,7 +9,6 @@ module.exports = [
   require(path.normalize(__dirname + '/lock')),
   require(path.normalize(__dirname + '/meta-byThread')),
   require(path.normalize(__dirname + '/pageByUser')),
-  require(path.normalize(__dirname + '/patrol')),
   require(path.normalize(__dirname + '/purge')),
   require(path.normalize(__dirname + '/search')),
   require(path.normalize(__dirname + '/undelete')),

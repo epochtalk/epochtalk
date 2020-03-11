@@ -1,28 +1,56 @@
 var route = ['$stateProvider', function($stateProvider) {
-  $stateProvider.state('newbie-patrol', {
+  $stateProvider.state('patrol', {
     parent: 'public-layout',
-    url: '/posts/patrol',
     reloadOnSearch: false,
     views: {
       'content': {
-        controller: 'NewbieCtrl',
-        controllerAs: 'NewbieCtrl',
-        templateUrl: '/static/templates/modules/bct-patroller/newbie.html'
+        controller: 'PatrolParentCtrl',
+        controllerAs: 'PatrolParentCtrl',
+        template: require('./patrol.html')
+      }
+    }
+  })
+  .state('patrol.data', {
+    url: '/patrol?limit&page',
+    reloadOnSearch: false,
+    views: {
+      'data@patrol': {
+        controller: 'PatrolCtrl',
+        controllerAs: 'PatrolCtrl',
+        template: require('./patrol.data.html')
       }
     },
     resolve: {
-      $title: function() { return 'Patrol Newbie Posts'; },
+      $title: function() { return 'Patrol Posts'; },
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
-          require('./newbie.controller');
-          $ocLazyLoad.load({ name: 'bct.patroller.newbieCtrl' });
+          require('./patrol.controller');
+          $ocLazyLoad.load({ name: 'bct.patroller.ctrl' });
           deferred.resolve();
         });
         return deferred.promise;
       }],
-      pageData: ['NewbiePatrol', function(NewbiePatrol) {
-        return NewbiePatrol.publicNewbiePosts().$promise;
+      loadParentCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
+        var deferred = $q.defer();
+        require.ensure([], function() {
+          require('./parent.controller');
+          $ocLazyLoad.load([
+            { name: 'bct.patroller.parentCtrl' },
+            { name: 'ept.directives.epochtalk-editor' },
+            { name: 'ept.directives.resizeable' },
+            { name: 'ept.directives.image-uploader' }
+          ]);
+          deferred.resolve();
+        });
+        return deferred.promise;
+      }],
+      pageData: ['Patroller', '$stateParams', function(Patroller, $stateParams) {
+        var query = {
+          limit: Number($stateParams.limit) || 25,
+          page: Number($stateParams.page) || 1
+        };
+        return Patroller.patrolPosts(query).$promise;
       }]
     }
   });

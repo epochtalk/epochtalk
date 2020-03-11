@@ -216,9 +216,9 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
   }
 ];
 
-require('./../../../modules/ept-posts/directives/editor.directive');
-require('./../../../modules/ept-posts/directives/resizeable.directive');
-require('./../../../modules/ept-images/image-uploader.directive');
+require('./../../modules/ept-posts/directives/editor.directive');
+require('./../../modules/ept-posts/directives/resizeable.directive');
+require('./../../modules/ept-images/image-uploader.directive');
 
-module.exports = angular.module('ept.patrol.parentCtrl', [])
+module.exports = angular.module('bct.patroller.parentCtrl', [])
 .controller('PatrolParentCtrl', ctrl);

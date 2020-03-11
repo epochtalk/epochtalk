@@ -1,12 +1,12 @@
 var resource = ['$resource',
   function($resource) {
     return $resource('/api/posts/newbie', {}, {
-      publicNewbiePosts: {
+      patrolPosts: {
         method: 'GET',
-        isArray: true
+        url: '/api/posts/patrol'
       }
     });
   }
 ];
 
-angular.module('ept').factory('NewbiePatrol', resource);
+angular.module('ept').factory('Patroller', resource);
