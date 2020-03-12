@@ -20,7 +20,8 @@ var service = ['User', '$window', function(User, $window) {
       preferences = {
         posts_per_page: Number(storage.posts_per_page) || 25,
         threads_per_page: Number(storage.threads_per_page) || 25,
-        timezone_offset: storage.timezone_offset || ''
+        timezone_offset: storage.timezone_offset || '',
+        patroller_view: storage.patroller_view || false
       };
       if (storage.collapsed_categories) {
         preferences.collapsed_categories = JSON.parse(storage.collapsed_categories);
@@ -35,6 +36,7 @@ var service = ['User', '$window', function(User, $window) {
       container.posts_per_page = newPref.posts_per_page;
       container.threads_per_page = newPref.threads_per_page;
       container.timezone_offset = newPref.timezone_offset;
+      container.patroller_view = newPref.patroller_view;
       if (isStorage) {
         container.collapsed_categories = JSON.stringify(newPref.collapsed_categories || []);
         container.ignored_boards = JSON.stringify(newPref.ignored_boards || []);
@@ -49,6 +51,7 @@ var service = ['User', '$window', function(User, $window) {
       delete container.posts_per_page;
       delete container.threads_per_page;
       delete container.timezone_offset;
+      delete container.patroller_view;
       delete container.collapsed_categories;
       delete container.ignored_boards;
     }

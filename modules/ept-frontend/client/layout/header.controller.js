@@ -1,5 +1,5 @@
-var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'NotificationSvc', 'BanSvc',
-  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, BreadcrumbSvc, Alert, ThemeSVC, NotificationSvc, BanSvc) {
+var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'NotificationSvc', 'BanSvc', 'PreferencesSvc',
+  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, BreadcrumbSvc, Alert, ThemeSVC, NotificationSvc, BanSvc, PreferencesSvc) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.hasPermission = Session.hasPermission;
@@ -42,9 +42,13 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     this.isPatroller = function() {
       var patrol = false;
       if (!ctrl.loggedIn()) { return patrol; }
-      this.currentUser.roles.map(function(role) {
-        if (role === 'patroller') { patrol = true; }
-      });
+      var viewPatroller = PreferencesSvc.preferences.patroller_view;
+      if (viewPatroller) { patrol = true; }
+      else {
+        ctrl.currentUser.roles.map(function(role) {
+          if (role === 'patroller') { patrol = true; }
+        });
+      }
       return patrol;
     };
 
