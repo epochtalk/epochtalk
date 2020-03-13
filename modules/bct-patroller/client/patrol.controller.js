@@ -87,6 +87,7 @@ var ctrl = [
     parent.changePage = function(increment) {
       var page = parent.page + increment;
       $location.search('page', page);
+      $timeout($anchorScroll(), 1000);
     };
 
     this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
