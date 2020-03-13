@@ -6,7 +6,7 @@ var directive = ['PreferencesSvc', 'User', 'Session', function(PreferencesSvc, U
     controllerAs: 'vmPatroller',
     controller: ['Alert', '$timeout', function(Alert, $timeout) {
       var ctrl = this;
-      this.userPrefs = PreferencesSvc.preferences;
+      this.userPrefs = angular.copy(PreferencesSvc.preferences);
       this.patrollerDisabled = this.userPrefs.patroller_view;
       this.loggedIn = Session.isAuthenticated;
       // patrollerDisabled is inverted due to weirdness with ng-model and
