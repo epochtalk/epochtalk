@@ -35,7 +35,6 @@ function processing(request) {
     limit: request.query.limit,
     priority: request.server.plugins.acls.getUserPriority(request.auth)
   };
-  // retrieve posts for this thread
   var promise = request.db.patroller.patrol(request, opts)
   .error(request.errorMap.toHttpError);
 

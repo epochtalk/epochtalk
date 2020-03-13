@@ -95,8 +95,12 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.delete({id: post.id, locked: locked}).$promise
-        .then(function() { $state.go($state.$current, null, {reload:true}); })
-        .catch(function() { Alert.error('Failed to delete post'); });
+        .then(function() {
+          post.deleted = true;
+          post.hidden = true;
+          post.locked = locked;
+        })
+        .catch(function() { Alert.error('Failed to hide post'); });
       }
     };
 
@@ -112,8 +116,11 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
       var post = ctrl.posts && ctrl.posts[index] || '';
       if (post) {
         Posts.undelete({id: post.id}).$promise
-        .then(function() { $state.go($state.$current, null, {reload:true}); })
-        .catch(function() { Alert.error('Failed to Undelete Post'); });
+        .then(function() {
+          post.deleted = false;
+          post.hidden = false;
+        })
+        .catch(function() { Alert.error('Failed to Unhide Post'); });
       }
     };
 
