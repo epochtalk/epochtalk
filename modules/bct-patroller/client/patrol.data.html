@@ -32,6 +32,11 @@
         </div>
 
         <ul class="post-action">
+          <li ng-if="PatrolCtrl.canPurge(post) && post.position !== 1">
+            <a ng-href="" data-balloon="Purge" ng-click="PatrolParentCtrl.openPurgeModal($index)">
+              <i class="fa fa-trash"></i>
+            </a>
+          </li>
           <li ng-if="PatrolCtrl.canDelete(post) && !post.deleted && post.position !== 1">
             <a ng-href="#" data-balloon="Delete" ng-click="PatrolParentCtrl.openDeleteModal($index)">
               <i class="fa fa-eye-slash"></i>

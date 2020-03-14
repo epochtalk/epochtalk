@@ -65,6 +65,20 @@ var ctrl = [
       return validBypass;
     };
 
+    this.canPurge = function(post) {
+      if (!Session.isAuthenticated()) { return false; }
+      if (!Session.hasPermission('posts.purge.allow')) { return false; }
+      var validBypass = false;
+      // moderated/owner
+      if (Session.hasPermission('posts.purge.bypass.purge.admin')) { validBypass = true; }
+      else if (Session.hasPermission('posts.purge.bypass.purge.mod') && post.authed_user_is_mod) { validBypass = true; }
+      else if (post.user.id === ctrl.user.id) { validBypass = true; }
+      else if (Session.hasPermission('posts.purge.bypass.purge.priority')) {
+        if (Session.getPriority() < post.user.priority) { validBypass = true; }
+      }
+      return validBypass;
+    };
+
     this.canPostLock = function(post) {
       if (!Session.isAuthenticated()) { return false; }
       if (!Session.hasPermission('posts.lock.allow')) { return false; }
