@@ -88,11 +88,11 @@
   </div>
 </div>
 
-<!-- Delete Post Modal -->
+<!-- Hide Post Modal -->
 <modal show="PatrolParentCtrl.showDeleteModal">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Delete Post</h3>
-    <p>Are you sure you want to delete this post?</p>
+    <h3 class="thin-underline">Hide Post</h3>
+    <p>Are you sure you want to hide this post?</p>
     <label ng-if="PatrolParentCtrl.canPostLockQuick(PatrolParentCtrl.deletePostIndex)">
       <input type="checkbox" ng-model="PatrolParentCtrl.deleteAndLock" modal-focus="{{PatrolParentCtrl.showDeleteModal}}" />
       Lock Post (poster cannot delete/edit this post)?
@@ -100,21 +100,21 @@
     <!-- Delete Button -->
     <div class="clear">
       <button class="fill-row" ng-click="PatrolParentCtrl.deletePost()">
-        Delete Post
+        Hide Post
       </button>
     </div>
   </form>
 </modal>
 
-<!-- Undelete Post Modal -->
+<!-- Unhide Post Modal -->
 <modal show="PatrolParentCtrl.showUndeleteModal">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Undelete Post</h3>
-    <p>Are you sure you want to Undelete this post?</p>
-    <!-- Undelete Button -->
+    <h3 class="thin-underline">Unhide Post</h3>
+    <p>Are you sure you want to unhide this post?</p>
+    <!-- Unhide Button -->
     <div class="clear">
       <button class="fill-row" ng-click="PatrolParentCtrl.undeletePost()">
-        Undelete Post
+        Unhide Post
       </button>
     </div>
   </form>
