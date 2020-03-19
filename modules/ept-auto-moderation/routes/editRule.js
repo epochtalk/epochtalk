@@ -1,21 +1,7 @@
 var Joi = require('@hapi/joi');
-var Boom = require('boom');
 var path = require('path');
 var db = require(path.normalize(__dirname + '/../db'));
 var autoModerator = require(path.normalize(__dirname + '/../autoModerator'));
-
-function auth(request) {
-  var promise = request.server.authorization.build({
-    error: Boom.forbidden(),
-    type: 'hasPermission',
-    server: request.server,
-    auth: request.auth,
-    permission: 'autoModeration.editRule.allow'
-  });
-
-  return promise;
-}
-
 
 /**
   * @apiVersion 0.4.0
@@ -101,7 +87,7 @@ module.exports = {
         }
       })
     },
-    pre: [ { method: auth } ]
+    pre: [ { method: (request) => request.server.methods.auth.autoModeration.editRule(request.server, request.auth) } ]
   },
   handler: function(request) {
     var ruleId = request.params.id;

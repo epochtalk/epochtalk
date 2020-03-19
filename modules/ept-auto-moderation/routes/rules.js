@@ -1,19 +1,5 @@
 var path = require('path');
-var Boom = require('boom');
 var db = require(path.normalize(__dirname + '/../db'));
-
-// Auth Function
-function auth(request) {
-  var promise = request.server.authorization.build({
-    error: Boom.forbidden(),
-    type: 'hasPermission',
-    server: request.server,
-    auth: request.auth,
-    permission: 'autoModeration.rules.allow'
-  });
-
-  return promise;
-}
 
 /**
   * @apiVersion 0.4.0
@@ -51,7 +37,7 @@ module.exports = {
   path: '/api/automoderation/rules',
   options: {
     auth: { strategy: 'jwt' },
-    pre: [ { method: auth } ]
+    pre: [ { method: (request) => request.server.methods.auth.autoModeration.rules(request.server, request.auth) } ]
   },
   handler: function(request) {
     var promise = db.rules()
