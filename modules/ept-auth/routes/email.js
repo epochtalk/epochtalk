@@ -17,7 +17,7 @@ module.exports = {
   method: 'GET',
   path: '/api/register/email/{email}',
   options: {
-    validate: { params: Joi.object({ email: Joi.string().email().required() }) }
+    validate: { params: Joi.object({ email: Joi.string().required() }) }
   },
   handler: function(request) {
     var email = request.params.email;
