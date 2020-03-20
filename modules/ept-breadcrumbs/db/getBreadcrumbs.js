@@ -16,7 +16,7 @@ module.exports = function(objId, objType, request) {
   var type = {
     board: 'board',
     category: 'category',
-    thread: 'thread',
+    thread: 'thread'
   };
 
   // Recursively Build breadcrumbs
