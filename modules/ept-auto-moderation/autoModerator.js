@@ -168,7 +168,7 @@ function executeActions(request, actionSet, messages, banInterval, edits) {
   // handle reject last
   // must be last because it'll need to return a Boom error
   if (actionSet.has('reject')) {
-    return Boom.badRequest(messages.join(' -- '));
+    return Boom.badRequest('[Auto Moderator Reject] ' + messages.join(' -- '));
   }
 
   return true;
