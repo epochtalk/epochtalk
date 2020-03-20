@@ -11,6 +11,7 @@ module.exports = function(userId) {
       posts_per_page,
       threads_per_page,
       timezone_offset,
+      patroller_view,
       collapsed_categories,
       ignored_boards,
       notify_replied_threads
@@ -25,6 +26,7 @@ module.exports = function(userId) {
         posts_per_page: 25,
         threads_per_page: 25,
         timezone_offset: '',
+        patroller_view: false,
         collapsed_categories: { cats: [] },
         ignored_boards: { boards: [] },
         notify_replied_threads: true

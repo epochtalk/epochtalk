@@ -1,4 +1,9 @@
-<div id="{{::post.id}}" ng-repeat="post in PatrolCtrl.posts track by post.id" class="post-block" ng-class="{ 'highlighted': post.highlighted, 'hidden': post.hidden, 'deleted': post._deleted, 'editing': post.id === PatrolParentCtrl.posting.post.id }">
+<div ng-if="!PatrolCtrl.posts.length">
+  <br />
+  <h3 class="centered">No newbie posts to patrol yet!</h3>
+  <br />
+</div>
+<div id="{{::post.id}}" ng-if="PatrolCtrl.posts.length" ng-repeat="post in PatrolCtrl.posts track by post.id" class="post-block" ng-class="{ 'highlighted': post.highlighted, 'hidden': post.hidden, 'deleted': post._deleted, 'editing': post.id === PatrolParentCtrl.posting.post.id }">
   <!-- Delete Post View -->
   <div class="deleted" ng-if="post._deleted">Post Deleted</div>
 
@@ -27,10 +32,16 @@
         </div>
         <div class="timestamp">
           <span ng-bind="::post.created_at | humanDate"></span>
-          <span ng-if="PatrolCtrl.showEditDate(post)" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
+          <span ng-if="PatrolCtrl.showEditDate(post) && post.metadata.edited_by_username" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate) + ' by '"></span><a ng-if="PatrolCtrl.showEditDate(post) && post.metadata.edited_by_username" ui-sref="profile.posts({ username: post.metadata.edited_by_username})" ng-bind="post.metadata.edited_by_username"></a>
+          <span ng-if="PatrolCtrl.showEditDate(post) && !post.metadata.edited_by_username" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
         </div>
 
         <ul class="post-action">
+          <li ng-if="PatrolCtrl.canPurge(post) && post.position !== 1">
+            <a ng-href="" data-balloon="Purge" ng-click="PatrolParentCtrl.openPurgeModal($index)">
+              <i class="fa fa-trash"></i>
+            </a>
+          </li>
           <li ng-if="PatrolCtrl.canDelete(post) && !post.deleted && post.position !== 1">
             <a ng-href="#" data-balloon="Delete" ng-click="PatrolParentCtrl.openDeleteModal($index)">
               <i class="fa fa-eye-slash"></i>
@@ -66,13 +77,11 @@
       </div>
       <!-- Thread title -->
       <div class="thread-title">
-        <a ui-sref="threads.data({ boardId: post.board_id })">
-          <span ng-bind-html="post.board_name"></span>
-        </a>
-        /
-        <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })">
-          <span ng-bind-html="post.thread_title"></span>
-        </a>
+        <span ng-repeat="breadcrumb in post.breadcrumbs" ng-if="breadcrumb.label" ng-class="{ active: $last }">
+          <a ng-if="!$last && breadcrumb.state" title="{{breadcrumb.label}}" ui-sref="{{breadcrumb.state}}({{breadcrumb.opts}})" ui-sref-opts="{ reload: true }" ng-bind-html="breadcrumb.label | truncate:30"></a>
+          <strong ng-if="!$last">&nbsp;/&nbsp;</strong>
+          <strong ng-if="$last"><a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="::post.thread_title"></a></strong>
+        </span>
       </div>
       <!-- Post Body -->
       <div class="post-body" post-processing="post.body_html" style-fix="true"></div>
@@ -84,11 +93,11 @@
   </div>
 </div>
 
-<!-- Delete Post Modal -->
+<!-- Hide Post Modal -->
 <modal show="PatrolParentCtrl.showDeleteModal">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Delete Post</h3>
-    <p>Are you sure you want to delete this post?</p>
+    <h3 class="thin-underline">Hide Post</h3>
+    <p>Are you sure you want to hide this post?</p>
     <label ng-if="PatrolParentCtrl.canPostLockQuick(PatrolParentCtrl.deletePostIndex)">
       <input type="checkbox" ng-model="PatrolParentCtrl.deleteAndLock" modal-focus="{{PatrolParentCtrl.showDeleteModal}}" />
       Lock Post (poster cannot delete/edit this post)?
@@ -96,21 +105,21 @@
     <!-- Delete Button -->
     <div class="clear">
       <button class="fill-row" ng-click="PatrolParentCtrl.deletePost()">
-        Delete Post
+        Hide Post
       </button>
     </div>
   </form>
 </modal>
 
-<!-- Undelete Post Modal -->
+<!-- Unhide Post Modal -->
 <modal show="PatrolParentCtrl.showUndeleteModal">
   <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Undelete Post</h3>
-    <p>Are you sure you want to Undelete this post?</p>
-    <!-- Undelete Button -->
+    <h3 class="thin-underline">Unhide Post</h3>
+    <p>Are you sure you want to unhide this post?</p>
+    <!-- Unhide Button -->
     <div class="clear">
       <button class="fill-row" ng-click="PatrolParentCtrl.undeletePost()">
-        Undelete Post
+        Unhide Post
       </button>
     </div>
   </form>
