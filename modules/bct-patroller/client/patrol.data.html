@@ -1,4 +1,9 @@
-<div id="{{::post.id}}" ng-repeat="post in PatrolCtrl.posts track by post.id" class="post-block" ng-class="{ 'highlighted': post.highlighted, 'hidden': post.hidden, 'deleted': post._deleted, 'editing': post.id === PatrolParentCtrl.posting.post.id }">
+<div ng-if="!PatrolCtrl.posts.length">
+  <br />
+  <h3 class="centered">No newbie posts to patrol yet!</h3>
+  <br />
+</div>
+<div id="{{::post.id}}" ng-if="PatrolCtrl.posts.length" ng-repeat="post in PatrolCtrl.posts track by post.id" class="post-block" ng-class="{ 'highlighted': post.highlighted, 'hidden': post.hidden, 'deleted': post._deleted, 'editing': post.id === PatrolParentCtrl.posting.post.id }">
   <!-- Delete Post View -->
   <div class="deleted" ng-if="post._deleted">Post Deleted</div>
 

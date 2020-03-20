@@ -1,5 +1,4 @@
 var Joi = require('@hapi/joi');
-var path = require('path');
 
 module.exports = {
   method: 'GET',
@@ -21,10 +20,10 @@ module.exports = {
       { method: (request) => request.server.methods.hooks.merge(request) },
       { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.posts) },
       { method: (request) => request.server.methods.hooks.postProcessing(request) }
-    ],
-    handler: function(request) {
-      return request.pre.processed;
-    }
+    ]
+  },
+  handler: function(request) {
+    return request.pre.processed;
   }
 };
 

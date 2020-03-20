@@ -126,7 +126,7 @@ module.exports = function(request, opts) {
   // handle page or start out of range
   .then(function(ret) {
     var retVal = Boom.notFound();
-    if (ret.posts.length > 0) { retVal = ret; }
+    if (ret.posts.length > 0 || ret.page === 1) { retVal = ret; }
     return retVal;
   })
   .then(helper.slugify);
