@@ -15,7 +15,7 @@ module.exports = {
       { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
-        { method: processing, assign: 'processed' },
+        { method: processing, assign: 'processed' }
       ],
       { method: (request) => request.server.methods.hooks.merge(request) },
       { method: (request) => request.server.methods.common.posts.parseOut(request.parser, request.pre.processed.posts) },
