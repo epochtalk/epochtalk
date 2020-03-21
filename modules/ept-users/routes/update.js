@@ -27,6 +27,7 @@ var Joi = require('@hapi/joi');
   * @apiParam (Payload) {string} [signature] The user's signature with any markup tags converted and parsed into html elements
   * @apiParam (Payload) {string} [avatar] URL to the user's avatar
   * @apiParam (Payload) {string} [timezone_offset] Preference for UTC offset for date display
+  * @apiParam (Payload) {boolean} [patroller_view] Preference to display patroller view
   * @apiParam (Payload) {numbers} [posts_per_page] Preference for how many post to view per page
   * @apiParam (Payload) {numbers} [threads_per_page] Preference for how many threads to view per page
   * @apiParam (Payload) {string[]} [collapsed_categories] Array of category id's which the user has collapsed
@@ -103,6 +104,7 @@ module.exports = {
         signature: Joi.string().max(5000).allow(''),
         avatar: Joi.string().allow(''),
         timezone_offset: Joi.string().allow(''),
+        patroller_view: Joi.boolean().default(false),
         posts_per_page: Joi.number().min(10).max(100).default(25),
         threads_per_page: Joi.number().min(10).max(100).default(25),
         collapsed_categories: Joi.array().items(Joi.string()),

@@ -1,9 +1,9 @@
 var path = require('path');
-var routes = require(path.normalize(__dirname + '/routes'));
 var db = require(path.normalize(__dirname + '/db'));
+var routes = require(path.normalize(__dirname + '/routes'));
 
 module.exports =  {
-  name: 'breadcrumbs',
+  name: 'patroller',
   routes: routes,
   db: db
 };

@@ -36,6 +36,7 @@ var slugKeywords = [
   'latest_unread_post_id',
   'new_board_id',
   'old_board_id',
+  'edited_by_id',
   'role_id'
 ];
 var slugArrayKeywords = ['children_ids', 'board_ids', 'copied_ids', 'answer_ids', 'receiver_ids', 'poster_ids'];

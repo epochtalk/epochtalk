@@ -25,6 +25,14 @@ common.export = () =>  {
       method: clean
     },
     {
+      name: 'common.posts.formatPost',
+      method: formatPost
+    },
+    {
+      name: 'common.posts.cleanPosts',
+      method: cleanPosts
+    },
+    {
       name: 'common.posts.parse',
       method: parse
     },
@@ -206,8 +214,8 @@ function cleanPosts(posts, currentUserId, viewContext, request, thread, allowVie
     viewablesType = 'array';
   }
   return posts.map(function(post) {
-    var postHiddenByPriority = post.metadata ? post.metadata.hidden_by_priority : post.user.priority;
-    var postHiddenById = post.metadata ? post.metadata.hidden_by_id : post.user.id;
+    var postHiddenByPriority = post.metadata && Object.keys(post.metadata).length ? post.metadata.hidden_by_priority : post.user.priority;
+    var postHiddenById = post.metadata && Object.keys(post.metadata).length ? post.metadata.hidden_by_id : post.user.id;
     var authedUserHasPriority = authedUserPriority <= postHiddenByPriority;
     var authedUserHidePost = postHiddenById === authedId;
 
