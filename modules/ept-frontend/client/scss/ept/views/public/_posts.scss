@@ -2,7 +2,7 @@
 
 #public-content {
   .posts & {
-    grid-template-columns: minmax(0, 1fr) minmax(200px, $sidebarWidth);
+    grid-template-columns: minmax(0, 1fr) $sidebarWidth;
   }
 }
 
@@ -152,7 +152,9 @@ ad-viewer {
     }
 
     .post-user {
-      width: 5rem;
+      $postUserMargin: 1rem;
+      $postUserAvatarSize: calc(#{$postUserWidth} - #{$postUserMargin});
+      width: $postUserWidth;
       padding-right: 1.25rem;
       font-size: $font-size-tiny;
       text-align: center;
@@ -166,8 +168,8 @@ ad-viewer {
         background: no-repeat center center;
         position: relative;
         margin-bottom: 1rem;
-        height: 3.75rem;
-        width: 3.75rem;
+        height: $postUserAvatarSize;
+        width: $postUserAvatarSize;
 
         .online {
           position: absolute;
@@ -211,7 +213,8 @@ ad-viewer {
       }
     }
     .post-content {
-      width: 100%;
+      // width: 100%;
+      width: calc(100% - #{$postUserWidth});
 
       .bbcode-column {
         img.image-loader.loaded {
