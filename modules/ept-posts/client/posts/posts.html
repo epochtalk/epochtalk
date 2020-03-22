@@ -231,6 +231,18 @@
   </div>
 </div>
 
+<!-- Bottom Actions and Pagination -->
+<div class="actions-bottom">
+  <div class="actions-bottom-grid">
+    <div id="pagination-bottom" class="pagination-bottom">
+      <pagination page-count="PostsParentCtrl.pageCount" page="PostsParentCtrl.page"></pagination>
+    </div>
+    <div ng-if="PostsParentCtrl.canPost()" class="sidebar-actions">
+      <a class="button small" ng-click="PostsParentCtrl.loadEditor()" ng-if="PostsParentCtrl.canPost()">Post Reply</a>
+    </div>
+  </div>
+</div>
+
 <!-- spacer for editor -->
 <!-- <div id="post-spacer"></div> -->
 
