@@ -154,8 +154,9 @@ ad-viewer {
     .post-user {
       $postUserMargin: 1rem;
       $postUserAvatarSize: calc(#{$postUserWidth} - #{$postUserMargin});
-      width: $postUserWidth;
-      padding-right: 1.25rem;
+      // width: $postUserWidth;
+      flex: 0 0 $postUserWidth;
+      margin-right: 1.25rem;
       font-size: $font-size-tiny;
       text-align: center;
       text-transform: uppercase;
@@ -168,8 +169,8 @@ ad-viewer {
         background: no-repeat center center;
         position: relative;
         margin-bottom: 1rem;
-        height: $postUserAvatarSize;
-        width: $postUserAvatarSize;
+        width: $postUserWidth;
+        height: $postUserWidth;
 
         .online {
           position: absolute;
@@ -211,7 +212,18 @@ ad-viewer {
       .original-poster {
         color: #f04124;
       }
+
+      &.rect {
+        .user-avatar {
+          height: calc(100% / 1.5);
+
+          img {
+            border-radius: 0;
+          }
+        }
+      }
     }
+
     .post-content {
       // width: 100%;
       width: calc(100% - #{$postUserWidth});
