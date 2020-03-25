@@ -3,14 +3,19 @@
 #public-content {
   .posts & {
     grid-template-columns: minmax(0, 1fr) $sidebarWidth;
+    grid-template-areas:  "top sidebar"
+                          "main sidebar"
   }
 }
 
 ad-viewer {
-  grid-column: 1 / span 2;
+  // grid-column: 1 / span 2;
+  grid-area: top;
 }
 
 .sidebar {
+  grid-area: sidebar;
+
   .sidebar-block {
     display: block;
     position: sticky;
@@ -55,12 +60,13 @@ ad-viewer {
 
 .thread-controls-wrap {
   // background-color: $sub-header-color;
+  grid-area: top;
   margin: -$header-bottom-margin -2rem $header-bottom-margin;
   padding: $header-bottom-margin 2rem 1rem;
   border-bottom: $border;
   // margin: -1.5rem -2rem 1.5rem;
   // padding: 1.5rem 2rem;
-  grid-column: 1 / span 2;
+  // grid-column: 1 / span 2;
 
   .inverted-button {
     color: $secondary-font-color;
