@@ -44,16 +44,16 @@ $grid-2-column: 1fr $sidebarWidth;
 
 /*-- Shared Page Header Layout (Threads and Posts View) --*/
 .page-header-split {
-  @include grid-base-layout();
-  @include grid-columns();
+  // @include grid-base-layout();
+  // @include grid-columns();
 
   h1 {
     color: $sub-header-font-color;
     display: inline;
-    font-size: $font-size-lg;
+    font-size: $font-size-xl;
     font-weight: 600;
     line-height: 1.2;
-    text-transform: uppercase;
+    text-transform: initial;
   }
 
   @include break-mobile-sm {
