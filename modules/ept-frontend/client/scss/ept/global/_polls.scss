@@ -1,7 +1,8 @@
 .polls {
   @include border-radius(4px);
   border: 1px solid $border-color;
-  padding: 1rem;
+  box-shadow: 0 2px 24px rgba(0, 0, 0, .1);
+  padding: 0.5rem;
   color: $sub-header-font-color;
   margin: 1.5rem 0;
   .ng-enter { @include transition(0.3s ease-in all); opacity: 0; }
@@ -38,6 +39,7 @@
   // header section
   .poll-header {
     display: flex;
+    flex-direction: column;
     // flex-wrap: wrap;
     margin-bottom: 0.5rem;
 
@@ -48,11 +50,12 @@
     }
 
     .poll-header-main {
-      flex: 4 1 auto;
+      // flex: 4 1 auto;
+      margin-bottom: 0.5rem;
     }
     .poll-controls {
-      flex: 1 1 100px;
-      text-align: right;
+      // flex: 1 1 100px;
+      // text-align: right;
 
       @include break-mobile-sm {
         text-align: right;
@@ -70,7 +73,8 @@
       }
     }
     .poll-details {
-      display: inline;
+      display: block;
+      height: 1rem;
 
       .poll-info {
         color: $secondary-font-color-dark;
@@ -169,8 +173,9 @@
 
   button,
   .button {
-    float: none;
-    margin-left: $poll-answer-margin;
+    // float: none;
+    // margin-left: $poll-answer-margin;
+    margin-top: 2rem;
     max-width: 320px;
   }
 
