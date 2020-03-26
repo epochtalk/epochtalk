@@ -159,7 +159,7 @@ function processing(request) {
       }
     });
   });
-  var getPoll = request.db.polls.byThread(threadId);
+  var getPoll = request.db.polls.byThread(threadId, userId);
   var hasVoted = request.db.polls.hasVoted(threadId, userId);
   var getUserBoardBan = request.db.bans.isNotBannedFromBoard(userId, { threadId: threadId })
   .then((notBanned) => { return !notBanned || undefined; });
