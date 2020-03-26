@@ -125,6 +125,6 @@
   </div>
   <div class="actionsBar">
     <button ng-click="vote()" ng-disabled="pollAnswers.length === 0" ng-if="canVote()">Vote</button>
-    <button ng-if="canRemoveVote()" ng-click="removeVote()">Remove Vote</button>
+    <button ng-if="canRemoveVote()" ng-click="removeVote()" class="secondary">Remove Vote</button>
   </div>
 </div>
