@@ -8,8 +8,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
     this.focusEditor = false;
     this.quote = '';
     this.posting = { post: { body_html: '', body: '' } };
-    this.editorPosition = 'editor-fixed-bottom';
-    this.resize = true;
     this.moveBoard = {};
     this.boards = [];
     this.addPoll = false;
@@ -290,16 +288,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       else { return true; }
     };
 
-    function closeEditor() {
-      ctrl.posting.post.id = '';
-      ctrl.posting.post.title = '';
-      ctrl.posting.post.body_html = '';
-      ctrl.posting.post.body = '';
-      ctrl.posting.page = '';
-      ctrl.resetEditor = true;
-      ctrl.showEditor = false;
-    }
-
     this.addQuote = function(post) {
       var timeDuration = 0;
       if (ctrl.showEditor === false) {
@@ -336,8 +324,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       }
     };
 
-    this.postSubmitted = false;
-
     this.savePost = function() {
       var post = ctrl.posting.post;
       var type = post.id ? 'update' : 'create';
@@ -348,43 +334,42 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       if (post.id) { postPromise = Posts.update(post).$promise; }
       else { postPromise = Posts.save(post).$promise; }
 
-      if (!ctrl.postSubmitted) {
-        ctrl.postSubmitted = true;
-        postPromise.then(function(data) {
-          if (type === 'create') {
-            // Increment post count and recalculate ctrl.pageCount
-            ctrl.thread.post_count++;
-            ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
-            // Go to last page in the thread and scroll to new post
-            var lastPage = ctrl.pageCount;
-            var params = angular.copy($stateParams);
-            params.page = lastPage;
-            delete params['#'];
-            delete params['start'];
-            delete params['threadId'];
-            $location.search(params).hash(data.id);
-            if (ctrl.page === lastPage) { ctrl.pullPage(); }
-          }
-          else if (type === 'update') {
-            var filtered = ctrl.posts.filter(function(p) { return p.id === data.id; });
-            var editPost = filtered.length > 0 && filtered[0] || {};
-            editPost.body_html = data.body_html;
-            editPost.body = data.body;
-            editPost.updated_at = data.updated_at;
-            editPost.metadata = data.metadata;
-          }
-        })
-        .then(closeEditor)
-        .catch(function(err) {
-          var error = err.data.message;
-          if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
-          Alert.error(error);
-        })
-        .finally(function() { ctrl.postSubmitted = false; });
-      }
+      postPromise.then(function(data) {
+        if (type === 'create') {
+          // Increment post count and recalculate ctrl.pageCount
+          ctrl.thread.post_count++;
+          ctrl.pageCount = Math.ceil(ctrl.thread.post_count / ctrl.limit);
+          // Go to last page in the thread and scroll to new post
+          var lastPage = ctrl.pageCount;
+          var params = angular.copy($stateParams);
+          params.page = lastPage;
+          delete params['#'];
+          delete params['start'];
+          delete params['threadId'];
+          $location.search(params).hash(data.id);
+          if (ctrl.page === lastPage) { ctrl.pullPage(); }
+        }
+        else if (type === 'update') {
+          var filtered = ctrl.posts.filter(function(p) { return p.id === data.id; });
+          var editPost = filtered.length > 0 && filtered[0] || {};
+          editPost.body_html = data.body_html;
+          editPost.body = data.body;
+          editPost.updated_at = data.updated_at;
+          editPost.metadata = data.metadata;
+        }
+      })
+      .then(function() {
+        ctrl.resetEditor = true;
+        ctrl.showEditor = false;
+        ctrl.dirtyEditor = false;
+        ctrl.posting = { post: { body_html: '', body: '' } };
+      })
+      .catch(function(err) {
+        var error = err.data.message;
+        if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
+        Alert.error(error);
+      });
     };
-
-    this.cancelPost = function() { if (discardAlert()) { closeEditor(); } };
 
     this.deletePostIndex = -1;
     this.deleteAndLock = false;
@@ -521,20 +506,6 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           }
         })
         .catch(function() { Alert.error('Failed to purge Post'); });
-      }
-    };
-
-    this.isMinimized = true;
-    this.fullscreen = function() {
-      if (ctrl.isMinimized) {
-        ctrl.isMinimized = false;
-        this.editorPosition = 'editor-full-screen';
-        this.resize = false;
-      }
-      else {
-        ctrl.isMinimized = true;
-        this.editorPosition = 'editor-fixed-bottom';
-        this.resize = true;
       }
     };
 
