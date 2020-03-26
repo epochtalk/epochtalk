@@ -17,7 +17,7 @@ module.exports = function(userId, opts) {
       WHERE (SELECT $1 = ANY(pc.deleted_by_user_ids) as deleted
       FROM messages.private_conversations pc WHERE pc.id = conversation_id) IS FALSE AND $1 != ALL(deleted_by_user_ids)
       AND (sender_id = $1 OR $1 = ANY(receiver_ids))
-      ORDER BY conversation_id, created_at DESC )
+      ORDER BY conversation_id, created_at ASC )
       AS m ORDER BY m.created_at DESC LIMIT $2 OFFSET $3`;
   var q2 = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = mid.sender_id';
   var query = 'SELECT ' + columns + ' FROM ( ' +

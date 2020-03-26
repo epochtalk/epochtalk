@@ -20,7 +20,7 @@ module.exports = function(message) {
       if (results.rows.length > 0) {
         message.id = results.rows[0].id;
         message.created_at = results.rows[0].created_at;
-        message.viewed = false;
+        message.viewed = true;
         if (!message.content.body_html) { message.content.body_html = message.content.body; }
       }
       else { throw new CreationError('Private Message Could Not Be Saved'); }
