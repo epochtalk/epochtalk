@@ -11,22 +11,6 @@
     <!-- Show Title -->
     <div ng-if="!PostsParentCtrl.editThread" class="thread-title">
       <h1 ng-bind-html="::PostsParentCtrl.thread.title"></h1>
-      <div class="badge locked" ng-if="PostsParentCtrl.thread.locked">
-        <div class="" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}"
-          ng-if="PostsParentCtrl.canLock()">
-          <a ng-href="#" id="lockThread" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
-            ng-click="PostsParentCtrl.updateThreadLock()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-              <title>lock</title>
-              <path
-                d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z" />
-            </svg>
-            Locked
-          </a>
-        </div>
-      </div>
-      <!-- <i class="icon-epoch-lock" ng-if="PostsParentCtrl.thread.locked"></i> -->
-      <i class="icon-epoch-verified" ng-if="PostsParentCtrl.thread.sticky"></i>
       <a data-balloon="Edit Thread Title" ng-href="#" class="do-edit" ng-if="PostsParentCtrl.canEditTitle()" ng-click="PostsParentCtrl.openEditThread()">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
           <title>edit-pencil</title>
@@ -34,6 +18,33 @@
           <path d="M45.48,6.89,41.11,2.52a1.78,1.78,0,0,0-2.5,0L36.11,5,43,11.89l2.5-2.5A1.76,1.76,0,0,0,45.48,6.89Z" />
         </svg>
       </a>
+      <div class="threadStates">
+        <div class="badge locked" ng-if="PostsParentCtrl.thread.locked">
+          <div class="" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}"
+            ng-if="PostsParentCtrl.canLock()">
+            <a ng-href="#" id="lockThread" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
+              ng-click="PostsParentCtrl.updateThreadLock()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <title>lock</title>
+                <path
+                  d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z" />
+              </svg>
+              Locked
+            </a>
+          </div>
+        </div>
+        <div class="badge sticky" ng-if="PostsParentCtrl.thread.sticky">
+          <a ng-href="#" id="badge__stickyThread" ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
+            ng-click="PostsParentCtrl.updateThreadSticky()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>sticky</title>
+                <g id="icons"><path d="M44.27,11.92,35.08,2.73a2.5,2.5,0,1,0-3.53,3.53l9.19,9.19a2.5,2.5,0,0,0,3.53-3.53Z"/><path d="M16.34,16.51a3,3,0,1,0-4.24,4.25l5.66,5.65L6.44,37.73l-2.12,5,4.95-2.12L20.59,29.24l5.65,5.66a3,3,0,1,0,4.25-4.24Z"/><rect x="21.78" y="11.22" width="16" height="12" transform="translate(-3.46 26.1) rotate(-45)"/>
+              </g>
+            </svg>
+            Sticky
+          </a>
+        </div>
+      </div>
     </div>
     <!-- Edit Title -->
     <div ng-if="PostsParentCtrl.editThread">
@@ -117,9 +128,9 @@
           <a ng-href="#" id="stickyThread" ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
             ng-click="PostsParentCtrl.updateThreadSticky()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-              <title>verified</title>
-              <path
-                d="M41.79,3.83A19.77,19.77,0,0,1,23.67,2.15,19.77,19.77,0,0,1,5.55,3.83C-1.65,35.26,18.45,45,23.67,46.15,28.88,45,49,35.26,41.79,3.83Zm-20.52,29L12.37,24l2.12-2.12,6.78,6.78,13.1-13.1,2.12,2.12Z" />
+              <title>sticky</title>
+                <g id="icons"><path d="M44.27,11.92,35.08,2.73a2.5,2.5,0,1,0-3.53,3.53l9.19,9.19a2.5,2.5,0,0,0,3.53-3.53Z"/><path d="M16.34,16.51a3,3,0,1,0-4.24,4.25l5.66,5.65L6.44,37.73l-2.12,5,4.95-2.12L20.59,29.24l5.65,5.66a3,3,0,1,0,4.25-4.24Z"/><rect x="21.78" y="11.22" width="16" height="12" transform="translate(-3.46 26.1) rotate(-45)"/>
+              </g>
             </svg>
           </a>
         </div>
