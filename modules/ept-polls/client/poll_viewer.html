@@ -1,10 +1,13 @@
 <div class="polls" ng-if="poll">
   <!-- Poll Header -->
   <div class="poll-title">
-    <span class="poll-title-text">Poll</span>
+    <span class="poll-title-text">
+      Poll
+      <span class="is__locked" ng-if="poll.locked">(Locked)</span>
+    </span>
     <div class="poll-controls">
         <!-- Poll Controls -->
-        <div class="poll-control" ng-if="canLock()" data-balloon="Lock Poll" data-balloon-pos="down">
+        <div class="poll-control" ng-if="canLock()" ng-class="{'is__locked' : poll.locked}" data-balloon="Lock Poll" data-balloon-pos="down">
           <input id="lockPoll" class="icon" type="checkbox" ng-model="poll.locked">
           <label for="lockPoll"  ng-click="updateLockPoll()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">

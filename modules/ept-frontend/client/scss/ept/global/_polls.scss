@@ -79,6 +79,12 @@
       svg {
         width: 0.875rem;
       }
+
+      &.is__locked {
+        svg {
+          fill: $color-primary;
+        }
+      }
     }
   }
 
