@@ -8,7 +8,6 @@ module.exports = {
   pageByUserCount: require(path.normalize(__dirname + '/pageByUserCount')),
   pageByUser: require(path.normalize(__dirname + '/pageByUser')),
   pageFirstPostByUser: require(path.normalize(__dirname + '/pageFirstPostByUser')),
-  patrol: require(path.normalize(__dirname + '/patrol')),
   delete: require(path.normalize(__dirname + '/delete')),
   undelete: require(path.normalize(__dirname + '/undelete')),
   lock: require(path.normalize(__dirname + '/lock')),

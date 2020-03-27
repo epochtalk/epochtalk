@@ -4,12 +4,11 @@ function isIgnored(request) {
   var data = request.pre.processed;
   var userId;
   if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
-  var userIds = _.map(data.posts, function(post) { return post.user.id; });
-
+  var userIds = _.map(data.posts || data, function(post) { return post.user.id; });
   return request.db.ignoreUsers.isIgnored(userId, userIds)
   .then(function(ignoredUsers) {
     _.map(ignoredUsers, function(ignoredUser) {
-      _.map(data.posts, function(post) {
+      _.map(data.posts || data, function(post) {
         if (post.user.id === ignoredUser.ignored_user_id) {
           post.user.ignored = true;
           post.user._ignored = true;
@@ -37,5 +36,6 @@ function userIgnored(request) {
 
 module.exports = [
   { path: 'users.find.post', method: userIgnored },
+  { path: 'posts.patroller.post', method: isIgnored },
   { path: 'posts.byThread.post', method: isIgnored }
 ];

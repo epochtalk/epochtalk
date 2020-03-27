@@ -34,10 +34,6 @@ module.exports = [
     method: require(path.normalize(__dirname + '/purge'))
   },
   {
-    name: 'auth.posts.patrol',
-    method: require(path.normalize(__dirname + '/patrol'))
-  },
-  {
     name: 'auth.posts.lock',
     method: require(path.normalize(__dirname + '/lock'))
   },

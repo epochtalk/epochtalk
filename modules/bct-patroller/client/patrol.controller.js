@@ -1,6 +1,6 @@
 var ctrl = [
-  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Posts', 'Websocket', 'pageData',
-  function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Posts, Websocket, pageData) {
+  '$rootScope', '$scope', '$timeout', '$anchorScroll', '$location', 'Session', 'Patroller', 'Websocket', 'pageData',
+  function($rootScope, $scope, $timeout, $anchorScroll, $location, Session, Patroller, Websocket, pageData) {
     var ctrl = this;
     var parent = $scope.$parent.PatrolParentCtrl;
     parent.loggedIn = Session.isAuthenticated;
@@ -29,12 +29,14 @@ var ctrl = [
       if (!Session.hasPermission('posts.update.allow')) { return false; }
 
       var validBypass = false;
-
       // owner
-      if (post.user.id === ctrl.user.id) { validBypass = true; }
+      if (Session.hasPermission('posts.update.bypass.owner.admin')) { validBypass = true; }
+      else if (Session.hasPermission('posts.update.bypass.owner.mod') && post.authed_user_is_mod) { validBypass = true; }
+      else if (post.user.id === ctrl.user.id) { validBypass = true; }
       else if (Session.hasPermission('posts.update.bypass.owner.priority')) {
         if (Session.getPriority() < post.user.priority) { validBypass = true; }
       }
+
 
       // deleted
       if (post.deleted) {
@@ -53,7 +55,9 @@ var ctrl = [
       var validBypass = false;
 
       // moderated/owner
-      if (post.user.id === ctrl.user.id) { validBypass = true; }
+      if (Session.hasPermission('posts.delete.bypass.owner.admin')) { validBypass = true; }
+      else if (Session.hasPermission('posts.delete.bypass.owner.mod') && post.authed_user_is_mod) { validBypass = true; }
+      else if (post.user.id === ctrl.user.id) { validBypass = true; }
       else if (Session.hasPermission('posts.delete.bypass.owner.priority')) {
         if (Session.getPriority() < post.user.priority) { validBypass = true; }
       }
@@ -61,11 +65,27 @@ var ctrl = [
       return validBypass;
     };
 
+    this.canPurge = function(post) {
+      if (!Session.isAuthenticated()) { return false; }
+      if (!Session.hasPermission('posts.purge.allow')) { return false; }
+      var validBypass = false;
+      // moderated/owner
+      if (Session.hasPermission('posts.purge.bypass.purge.admin')) { validBypass = true; }
+      else if (Session.hasPermission('posts.purge.bypass.purge.mod') && post.authed_user_is_mod) { validBypass = true; }
+      else if (post.user.id === ctrl.user.id) { validBypass = true; }
+      else if (Session.hasPermission('posts.purge.bypass.purge.priority')) {
+        if (Session.getPriority() < post.user.priority) { validBypass = true; }
+      }
+      return validBypass;
+    };
+
     this.canPostLock = function(post) {
       if (!Session.isAuthenticated()) { return false; }
       if (!Session.hasPermission('posts.lock.allow')) { return false; }
 
-      if (Session.hasPermission('posts.lock.bypass.lock.priority')) {
+      if (Session.hasPermission('posts.lock.bypass.lock.admin')) { return true; }
+      else if (Session.hasPermission('posts.lock.bypass.lock.mod') && post.authed_user_is_mod) { return true; }
+      else if (Session.hasPermission('posts.lock.bypass.lock.priority')) {
         if (Session.getPriority() < post.user.priority) { return true; }
         else { return false; }
       }
@@ -81,6 +101,7 @@ var ctrl = [
     parent.changePage = function(increment) {
       var page = parent.page + increment;
       $location.search('page', page);
+      $timeout($anchorScroll(), 1000);
     };
 
     this.offLCS = $rootScope.$on('$locationChangeSuccess', function() {
@@ -110,7 +131,7 @@ var ctrl = [
       };
 
       // replace current posts with new posts
-      Posts.patrolPosts(query).$promise
+      Patroller.patrolPosts(query).$promise
       .then(function(pageData) {
         ctrl.posts = pageData.posts;
         parent.posts = pageData.posts;
@@ -182,5 +203,5 @@ var ctrl = [
   }
 ];
 
-module.exports = angular.module('ept.patrol.ctrl', [])
+module.exports = angular.module('bct.patroller.ctrl', [])
 .controller('PatrolCtrl', ctrl);

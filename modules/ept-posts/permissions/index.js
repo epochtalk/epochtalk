@@ -314,14 +314,7 @@ var patroller = {
   },
   find: { allow: true },
   pageByUser: { allow: true },
-  update: {
-    allow: true,
-    bypass: {
-      owner: { priority: true },
-      deleted: { priority: true },
-      locked: { priority: true }
-    }
-  },
+  update: { allow: true },
   delete: {
     allow: true,
     bypass: {
