@@ -37,7 +37,7 @@
           Allow user to change vote
         </label>
         <div class="pollEdit__expiration">
-          <label for="pollVoteExpiration">Poll expires on {{(options.expiration|humanDate) || 'No Expiration'}}</label>
+          <label for="pollVoteExpiration">Poll expires on {{(options.expiration|humanDate) || '(No Expiration)'}}</label>
           <input id="pollVoteExpiration" type="date" ng-model="options.expiration_date" ng-change="calcExpiration()">
           <input type="time" ng-model="options.expiration_time" ng-change="calcExpiration()">
         </div>
