@@ -44,6 +44,14 @@ ad-viewer {
 
     a {
       color: $text-gray-med;
+
+      &.clicked {
+        color: $color-primary;
+
+        svg {
+          fill: $color-primary;
+        }
+      }
     }
   }
 
@@ -367,28 +375,43 @@ ad-viewer {
   }
 
 
+.threadStates {
+  margin-top: 2px;
+}
+
 .badge {
   // border: 1px solid $text-gray-dark;
-  background-color: $text-gray-dark;
+  background-color: #fff;
+  border: 1px solid #999;
   border-radius: 4px;
-  color: $color-primary;
+  color: #999;
   display: inline-block;
   font-size: $font-size-xs;
   margin-right: 0.25rem;
-  padding: 0 0.25rem;
+  padding: 0 0.5rem;
   position: relative;
-  top: -4px;
+  // top: -4px;
   text-transform: uppercase;
 
   a {
-    color: #fff;
+    color: #999;
+
+    &:active,
+    &:focus {
+      text-decoration: none;
+    }
+  }
+
+  .badgeContents {
+    display: flex;
+    align-items: center;
   }
 
   svg {
     height: 0.75rem;
-    fill: #fff;
-    position: relative;
-    top: 1px;
+    fill: #999;
+    // position: relative;
+    // top: 1px;
   }
 }
 
