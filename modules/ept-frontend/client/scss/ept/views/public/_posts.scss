@@ -2,7 +2,7 @@
 
 #public-content {
   .posts & {
-    grid-template-columns: minmax(0, 1fr) $sidebarWidth;
+    grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
     grid-template-areas:  "top sidebar"
                           "main sidebar"
   }
@@ -397,7 +397,8 @@ ad-viewer {
     color: #999;
 
     &:active,
-    &:focus {
+    &:focus,
+    &:hover {
       text-decoration: none;
     }
   }
