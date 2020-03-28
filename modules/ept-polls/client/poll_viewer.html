@@ -43,20 +43,21 @@
         </div>
         <div class="pollEdit__answers">
           <label for="pollMaxVote">Maximum answers per vote:</label>
-            <input type="number" id="pollMaxVote" min="1" max="{{poll.answers.length}}" value="1" ng-model="options.max_answers">
+          <input type="number" id="pollMaxVote" min="1" max="{{poll.answers.length}}" value="1" ng-model="options.max_answers">
           <div class="pollGroup__header">Show poll results: </label>
-          <label for="displayAlways">
-            <input type="radio" id="displayAlways" ng-model="options.display_mode" value="always">
-            Always shown
-          </label>
-          <label for="displayVoted">
-            <input type="radio" id="displayVoted" ng-model="options.display_mode" value="voted">
-            After voting
-          </label>
-          <label for="displayExpired">
-            <input type="radio" id="displayExpired" ng-model="options.display_mode" value="expired" ng-disabled="!options.expiration">
-            After expiration
-          </label>
+            <label for="displayAlways">
+              <input type="radio" id="displayAlways" ng-model="options.display_mode" value="always">
+              Always shown
+            </label>
+            <label for="displayVoted">
+              <input type="radio" id="displayVoted" ng-model="options.display_mode" value="voted">
+              After voting
+            </label>
+            <label for="displayExpired">
+              <input type="radio" id="displayExpired" ng-model="options.display_mode" value="expired" ng-disabled="!options.expiration">
+              After expiration
+            </label>
+          </div>
         </div>
         <div class="actions__pollEdit">
           <button class="secondary cancel small" ng-click="switches.editPoll = false">Cancel</button>
