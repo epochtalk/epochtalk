@@ -361,8 +361,12 @@ ad-viewer {
         @include truncate-ellipsis;
         clear: both;
         color: $secondary-font-color;
+        border-top: $border;
+        border-color: lighten($border-color, 7%);
         font-size: 13px;
-        max-height: 50px;
+        line-height: 1.2;;
+        max-height: 3.5rem;
+        padding-top: 0.5rem;
         word-wrap: break-word;
         white-space: pre-wrap;
         a {
