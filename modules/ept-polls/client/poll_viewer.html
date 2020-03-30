@@ -1,4 +1,4 @@
-<div class="polls" ng-if="poll">
+<div class="polls" id="poll-view" ng-if="poll">
   <!-- Poll Header -->
   <div class="poll-title">
     <span class="poll-title-text">
@@ -18,8 +18,8 @@
           </label>
         </div>
         <div class="poll-control" ng-if="canEdit()" data-balloon="Edit Poll" data-balloon-pos="down">
-          <input id="editPoll" class="icon" type="checkbox" ng-model="switches.editPoll">
-          <label for="editPoll">
+          <input id="editPoll" class="icon" type="checkbox" ng-model="switches.editPoll" >
+          <label for="editPoll" ng-click="scrollPollView()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
               <title>edit-pencil</title>
               <path d="M7.38,33.74h0L4,44l10.26-3.39h0L41.74,13.14,34.86,6.26Zm31-21.15.54.55L14.26,37.79l-.54-.54" />

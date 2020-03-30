@@ -105,6 +105,10 @@ var directive = ['Session', 'BanSvc', 'Alert', 'Threads', '$timeout', function(S
         $scope.reset = false;
       }
 
+      $scope.scrollPollView = function() {
+        $('#poll-view').animate({  scrollTop: 0 }, 250);
+      };
+
       $scope.toggleAnswer = function(answerId) {
         var maxAnswers = $scope.poll.max_answers;
         var idx = $scope.pollAnswers.indexOf(answerId);
