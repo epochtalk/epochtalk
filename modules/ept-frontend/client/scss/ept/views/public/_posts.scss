@@ -4,13 +4,14 @@
   .posts & {
     grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
     grid-template-areas:  "top sidebar"
+                          "ads sidebar"
                           "main sidebar"
   }
 }
 
 ad-viewer {
-  // grid-column: 1 / span 2;
-  grid-area: top;
+  grid-area: ads;
+  margin: 1rem 0;
 }
 
 .sidebar {
