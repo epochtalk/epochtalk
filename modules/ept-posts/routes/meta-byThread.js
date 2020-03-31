@@ -24,6 +24,7 @@ module.exports = {
       logo: config.website.logo,
       favicon: config.website.favicon,
       default_avatar: config.website.defaultAvatar,
+      default_avatar_shape: config.website.defaultAvatarShape,
       websocket_host: config.websocket_client_host,
       websocket_port: config.websocket_port,
       post_max_length: config.postMaxLength,

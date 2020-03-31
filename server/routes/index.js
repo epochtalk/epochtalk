@@ -35,6 +35,7 @@ exports.endpoints = function(internalConfig) {
           keywords: config.website.keywords,
           logo: config.website.logo,
           default_avatar: config.website.defaultAvatar,
+          default_avatar_shape: config.website.defaultAvatarShape,
           favicon: config.website.favicon,
           websocket_host: config.websocket_client_host,
           websocket_port: config.websocket_port,

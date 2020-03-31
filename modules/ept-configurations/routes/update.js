@@ -84,6 +84,7 @@ module.exports = {
           logo: Joi.string().allow(''),
           favicon: Joi.string().allow(''),
           default_avatar: Joi.string().allow(''),
+          default_avatar_shape: Joi.string()
         }),
         emailer: Joi.object({
           sender: Joi.string().allow(null),
