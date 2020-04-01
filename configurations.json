@@ -13,7 +13,7 @@
     "logo": "",
     "favicon": "",
     "defaultAvatar": "/static/img/avatar.png",
-    "defaultAvatarShape": "round"
+    "defaultAvatarShape": "circle"
   },
   "images": {
     "storage": "local",
