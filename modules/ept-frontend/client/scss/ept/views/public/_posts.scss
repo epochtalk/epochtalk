@@ -5,7 +5,8 @@
     grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
     grid-template-areas:  "top sidebar"
                           "ads sidebar"
-                          "main sidebar"
+                          "main sidebar";
+    grid-template-rows: auto auto 1fr;
   }
 }
 
