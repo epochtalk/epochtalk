@@ -68,7 +68,8 @@
       margin-left: 0.5rem;
 
       label {
-        display: initial;;
+        display: flex;
+        align-items: center;
       }
 
       .icon {
@@ -150,21 +151,22 @@
   }
 
   // poll answers section
-  $poll__questionOffset: 1.25rem;
+  $poll__questionOffset: 1.5rem;
 
   .poll-answer {
     margin: 0.5rem 0;
+    padding-bottom: 0.5rem;
     &:first { margin-top: 0;}
     .fill-row:not(:last-child) { margin-bottom: 0.5rem; }
     .one-third-column { padding-top: 0.2rem; }
 
     .poll-select {
-      padding: 0.5rem 0 0;
+      border-radius: 3px;
+      padding: 0.5rem 0 0.5rem $poll__questionOffset;
       color: $sub-header-secondary-font-color;
       font-size: $font-size-sm;
       font-weight: normal;
       line-height: 1.2;
-      margin-left: 1.25rem;
       position: relative;
       
       input { 
@@ -173,7 +175,7 @@
       }
       
       &.voted { 
-        margin-left: $poll__questionOffset; 
+        // margin-left: $poll__questionOffset; 
       }
       
       &.active { border-color: $color-primary-transparent; background-color: $color-primary-transparent; }
@@ -183,8 +185,8 @@
       display: flex;
       flex-direction: column;
       margin-left: $poll__questionOffset;
-      margin-top: 0.5rem;
-      margin-bottom: 1rem;
+      margin-top: 0.125rem;
+      margin-bottom: 0.25rem;
     }
     .poll-results-data { 
       color: $secondary-font-color-dark; 
@@ -225,7 +227,7 @@
       .selected-answer-icon {
         position: absolute;
         top: 10px;
-        left: -1.25rem;
+        left: 0;
         svg {
           fill: $color-primary;
         }
