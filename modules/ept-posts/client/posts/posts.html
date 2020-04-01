@@ -20,10 +20,9 @@
       </a>
       <div class="threadStates">
         <div class="badge locked" ng-if="PostsParentCtrl.thread.locked">
-          <div class="" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}"
-            ng-if="PostsParentCtrl.canLock()">
-            <a ng-href="#" id="lockThread" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
-              ng-click="PostsParentCtrl.updateThreadLock()" class="badgeContents">
+          <div class="">
+            <a ng-href="#" id="lockThread" ng-if="PostsParentCtrl.canLock()" ng-class="{'clicked' : PostsParentCtrl.thread.locked }"
+              ng-click="PostsParentCtrl.updateThreadLock()" class="badgeContents" data-balloon="{{PostsParentCtrl.thread.locked ? 'Unlock Thread' : 'Lock Thread'}}">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title>lock</title>
                 <path
@@ -31,11 +30,22 @@
               </svg>
               Locked
             </a>
+            <span id="cannotThread" ng-if="!PostsParentCtrl.canLock()" ng-class="{'clicked' : PostsParentCtrl.thread.locked }" class="badgeContents">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <title>lock</title>
+                <path
+                  d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z" />
+              </svg>
+              Locked
+            </span>
           </div>
         </div>
         <div class="badge sticky" ng-if="PostsParentCtrl.thread.sticky">
-          <a ng-href="#" id="badge__stickyThread" ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
-            ng-click="PostsParentCtrl.updateThreadSticky()" class="badgeContents">
+          <a ng-href="#" id="badge__stickyThread" 
+            ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
+            ng-if="PostsParentCtrl.canSticky()"
+            ng-click="PostsParentCtrl.updateThreadSticky()" class="badgeContents"
+            data-balloon="{{PostsParentCtrl.thread.canSticky ? 'Sticky Thread' : 'Unsticky Thread'}}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
               <title>sticky</title>
                 <g id="icons"><path d="M44.27,11.92,35.08,2.73a2.5,2.5,0,1,0-3.53,3.53l9.19,9.19a2.5,2.5,0,0,0,3.53-3.53Z"/><path d="M16.34,16.51a3,3,0,1,0-4.24,4.25l5.66,5.65L6.44,37.73l-2.12,5,4.95-2.12L20.59,29.24l5.65,5.66a3,3,0,1,0,4.25-4.24Z"/><rect x="21.78" y="11.22" width="16" height="12" transform="translate(-3.46 26.1) rotate(-45)"/>
@@ -43,6 +53,17 @@
             </svg>
             Sticky
           </a>
+          <span id="badge__cannotStickyThread" 
+            ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
+            ng-if="!PostsParentCtrl.canSticky()"
+            class="badgeContents">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>sticky</title>
+                <g id="icons"><path d="M44.27,11.92,35.08,2.73a2.5,2.5,0,1,0-3.53,3.53l9.19,9.19a2.5,2.5,0,0,0,3.53-3.53Z"/><path d="M16.34,16.51a3,3,0,1,0-4.24,4.25l5.66,5.65L6.44,37.73l-2.12,5,4.95-2.12L20.59,29.24l5.65,5.66a3,3,0,1,0,4.25-4.24Z"/><rect x="21.78" y="11.22" width="16" height="12" transform="translate(-3.46 26.1) rotate(-45)"/>
+              </g>
+            </svg>
+            Sticky
+          </span>
         </div>
       </div>
     </div>
