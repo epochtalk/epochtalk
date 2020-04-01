@@ -13,11 +13,11 @@
     }
   }
   .setting-row { @include clearfix; padding-bottom: 1rem; }
-  .img-wrap {
+  .img-wrap, .toggle-row {
     @include omega(3n);
     @include clearfix;
     padding-bottom: 1rem;
-    .img-server-wrap { @include span-columns(8); }
+    .img-server-wrap, .toggle-wrap  { @include span-columns(8); }
     .radio-button { @include span-columns(2); }
   }
   .input-block { @include span-columns(3); @include omega; margin-bottom: 0; }
@@ -53,8 +53,8 @@
   .settings.half-column {
     &.section-header-top-spacing { padding-top: 2.1875rem; }
     .desc, .button, .input-block, .swatch-input, .postfix-input { @include span-columns(8); @include omega; }
-    .img-wrap .img-server-wrap { @include span-columns(8); @include omega; }
-    .img-wrap .radio-button { @include span-columns(4); padding-top: 0.5rem; }
+    .img-wrap .img-server-wrap, .toggle-row .toggle-wrap { @include span-columns(8); @include omega; }
+    .img-wrap .radio-button, .toggle-row .radio-button { @include span-columns(4); padding-top: 0.5rem; }
     a.header-link {
       &.show-mobile { display: inline-block; }
       &.hide-mobile { display: none; }

@@ -1,9 +1,15 @@
-var ctrl = ['$scope', '$state', '$timeout', 'theme', 'Themes', 'Alert', 'ThemeSVC', function($scope, $state, $timeout, theme, Themes, Alert, ThemeSVC) {
+var ctrl = ['$scope', '$state', '$timeout', 'theme', 'settings', 'Configurations', 'Themes', 'Alert', 'ThemeSVC', function($scope, $state, $timeout, theme, settings, Configurations, Themes, Alert, ThemeSVC) {
   var ctrl = this;
 
   // Tab control
   this.parent = $scope.$parent.AdminSettingsCtrl;
   this.parent.tab = 'theme';
+
+  this.originalSettings = angular.copy(settings);
+  this.settings = angular.copy(settings);
+
+  // convert image storage type to a bool
+  this.defaultAvatarShapeCircle = ctrl.originalSettings.website.default_avatar_shape === 'circle';
 
   // Theme Model
   this.theme = theme;
@@ -60,14 +66,21 @@ var ctrl = ['$scope', '$state', '$timeout', 'theme', 'Themes', 'Alert', 'ThemeSV
     // Add px and rem back
     ctrl.addVarPostFix();
     // Update
-    Themes.setTheme(ctrl.themeCopy).$promise
+    Configurations.update(ctrl.settings).$promise
+    .then(function() {
+      ctrl.originalSettings = angular.copy(ctrl.settings);
+      return Themes.setTheme(ctrl.themeCopy).$promise;
+    })
     .then(function(updatedTheme) {
       ctrl.theme = updatedTheme;
       ctrl.removeVarPostFix();
       Alert.success('Theme successfully updated');
       ThemeSVC.toggleCSS(false);
     })
-    .catch(function() { Alert.error('There was an error setting the theme'); });
+    .catch(function(err) {
+      if (err.status === 422) { Alert.error(err.data.message); }
+      Alert.error('There was an error setting the theme');
+    });
   };
 
   // Reset action
@@ -77,7 +90,13 @@ var ctrl = ['$scope', '$state', '$timeout', 'theme', 'Themes', 'Alert', 'ThemeSV
 
   // revert action
   this.revert = function() {
-    Themes.resetTheme().$promise
+    ctrl.settings.website.default_avatar_shape = ctrl.originalSettings.website.default_avatar_shape;
+    ctrl.defaultAvatarShapeCircle = ctrl.originalSettings.website.default_avatar_shape === 'circle';
+    Configurations.update(ctrl.settings).$promise
+    .then(function() {
+      ctrl.originalSettings = angular.copy(ctrl.settings);
+      return Themes.resetTheme().$promise;
+    })
     .then(function(resetTheme) {
       ctrl.theme = resetTheme;
       ctrl.removeVarPostFix();

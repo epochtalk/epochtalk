@@ -57,6 +57,20 @@
     <h5 class="thin-underline">Layout Settings
       <span class="info-tooltip" data-balloon="Allows you to customize forum colors. Use preview mode to ensure that your color changes look good without affecting the current theme. Variables must be valid css" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
       <a class="right header-link hide-mobile" ng-click="AdminSettingsCtrl.revert()">Revert to Default Theme</a></h5>
+    <div class="toggle-row">
+      <div class="toggle-wrap">
+        <label>Avatar Shape</label>
+        <label class="desc-label">Choose the default shape for user avatars</label>
+      </div>
+      <div class="radio-button">
+        <input type="radio" class="hide-radio" name="avatar-shape" ng-value="true" ng-click="AdminSettingsCtrl.settings.website.default_avatar_shape = 'circle'" ng-model="AdminSettingsCtrl.defaultAvatarShapeCircle" id="avatar-shape-round" />
+        <label for="avatar-shape-round">Circle</label>
+      </div>
+      <div class="radio-button">
+        <input type="radio" class="hide-radio" name="avatar-shape" ng-value="false" ng-click="AdminSettingsCtrl.settings.website.default_avatar_shape = 'rect'" id="avatar-shape-square" ng-model="AdminSettingsCtrl.defaultAvatarShapeCircle" />
+        <label for="avatar-shape-square">Rectangle</label>
+      </div>
+    </div>
     <div class="setting-row">
       <div class="desc">
         <label for="base-background-color">Background Color</label>

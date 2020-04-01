@@ -170,6 +170,15 @@ module.exports = ['$stateProvider', '$urlRouterProvider', function($stateProvide
           return theme;
         });
       }],
+      settings: ['Configurations', function(Configurations) {
+        return Configurations.get().$promise
+        .then(function(settings) {
+          // Remove unsettable configs
+          delete settings.db;
+          delete settings.rootDir;
+          return settings;
+        });
+      }],
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
