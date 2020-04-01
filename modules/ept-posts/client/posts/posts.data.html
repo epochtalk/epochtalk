@@ -15,7 +15,7 @@
     <!-- Post Profile Section -->
     <div class="post-user">
       <a ui-sref="profile.posts({ username: post.user.username})">
-        <div class="user-avatar">
+        <div class="user-avatar {{$webConfigs.default_avatar_shape}}">
           <span ng-if="post.user.online" class="online green">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
               <title>icon__unread</title>

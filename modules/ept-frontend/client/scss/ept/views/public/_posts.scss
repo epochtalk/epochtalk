@@ -205,11 +205,20 @@ ad-viewer {
           }
         }
 
-        img {
-          @include border-radius(100px);
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+        &.circle {
+          img {
+            @include border-radius(100px);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        &.rect {
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
         }
       }
       .user-trust,

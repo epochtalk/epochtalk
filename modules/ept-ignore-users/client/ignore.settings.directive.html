@@ -15,7 +15,7 @@
   <tbody ng-repeat="user in vmIgnoreUserPosts.users track by user.id">
     <tr>
       <td>
-        <div class="user-avatar">
+        <div class="user-avatar {{$webConfigs.default_avatar_shape}}">
           <a ui-sref="profile.posts({ username: user.username })">
             <img ng-src="{{::user.avatar || $webConfigs.default_avatar}}">
           </a>
