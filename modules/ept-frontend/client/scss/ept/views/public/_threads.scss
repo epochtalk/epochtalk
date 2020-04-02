@@ -137,7 +137,6 @@
 .padded-row { .h4, .h6 { display: inline-block; } }
 @include media($mobile) { input[type="text"].thread-title { margin-bottom: 0; } }
 
-
 //  New Board Layout
 .content-sidebar {
   .board-data {
@@ -359,10 +358,10 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(60px, auto));
     text-align: right;
+  }
 
-    .replies {
-      margin-left: 0.5rem;
-    }
+  .replies {
+    margin-left: 0.5rem;
   }
 
   .subject {
@@ -414,6 +413,7 @@
   .thread-title {
     flex: 1 0 auto;
     margin-bottom: 0;
+    max-width: 100%;
   }
 
   .thread-state-secondary {
@@ -492,14 +492,16 @@
     }
 
     .replies {
+      margin-left: 0;
       &:after {
-        content: ' replies';
+        content: ' replies, ';
+        margin-right: 0.25rem;
       }
     }
 
     .views {
       &:after {
-        content: ' views,'; 
+        content: ' views'; 
       }
     }
   }
