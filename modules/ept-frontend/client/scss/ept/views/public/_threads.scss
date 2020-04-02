@@ -59,6 +59,9 @@
 
   @media screen and (min-width: 1280px) {
     grid-column: 2 / span 1;
+    position: sticky;
+    height: 100vh;
+    top: $header-offset;
   }
 
   @media screen and (min-width: 767px) and (max-width: 1279px) {
