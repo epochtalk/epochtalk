@@ -1,9 +1,17 @@
 .search-users.user-avatar {
   display: inline-block;
   margin-right: 0.25rem;
-  img {
-    @include border-radius(100px);
-    height: 2.5rem;
-    width: 2.5rem;
+  &.circle {
+    img {
+      @include border-radius(100px);
+      height: 2.5rem;
+      width: 2.5rem;
+    }
+  }
+  &.rect {
+    img {
+      height: 2.5rem;
+      width: 2.5rem;
+    }
   }
 }

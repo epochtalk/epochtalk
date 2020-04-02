@@ -27,7 +27,7 @@
     <div class="burger-close-overlay" ng-if="HeaderCtrl.showMobileMenu" ng-click="HeaderCtrl.showMobileMenu = false"></div>
     <div class="burger-menu show-mobile" ng-class="{ 'open' : HeaderCtrl.showMobileMenu }">
       <a ng-click="HeaderCtrl.showMobileMenu = false" class="profile" ui-sref="profile.posts({ username: HeaderCtrl.currentUser.username })">
-        <img ng-src="{{ HeaderCtrl.currentUser.avatar || $webConfigs.default_avatar }}" class="avatar image-loader">
+        <img ng-src="{{ HeaderCtrl.currentUser.avatar || $webConfigs.default_avatar }}" class="avatar image-loader {{$webConfigs.default_avatar_shape}}">
         <span class="username" ng-bind-html="HeaderCtrl.currentUser.username"></span>
       </a>
       <div class="close-menu" ng-click="HeaderCtrl.showMobileMenu = false">
@@ -101,7 +101,7 @@
       <li id="user-dropdown-wrap" class="hide-mobile">
         <div>
           <a ui-sref="profile.posts({ username: HeaderCtrl.currentUser.username })">
-            <img ng-src="{{ HeaderCtrl.currentUser.avatar || $webConfigs.default_avatar }}" class="avatar image-loader">
+            <img ng-src="{{ HeaderCtrl.currentUser.avatar || $webConfigs.default_avatar }}" class="avatar image-loader {{$webConfigs.default_avatar_shape}}">
             <span ng-bind-html="HeaderCtrl.currentUser.username"></span>
           </a>
         </div>

@@ -76,11 +76,11 @@
           <span class="views-number" ng-bind="(childBoard.total_thread_count | number:0) || 0"></span>
           <span class="label"> threads</span>
       </td>
-        
+
       <td class="last-post">
         <div ng-if="childBoard.last_thread_id">
           <span ng-if="!childBoard.last_post_username">deleted</span>
-          <img ng-if="childBoard.last_post_username" class="avatar-small"
+          <img ng-if="childBoard.last_post_username" class="avatar-small {{$webConfigs.default_avatar_shape}}"
             ng-src="{{childBoard.last_post_avatar || $webConfigs.default_avatar}}" />
           <a ng-if="childBoard.last_post_username" ui-sref="profile.posts({ username: childBoard.last_post_username })"
             ng-bind="childBoard.last_post_username"></a>
@@ -166,7 +166,7 @@
 
       <td class="last-post">
         <span ng-if="thread.last_deleted">deleted</span>
-        <img ng-if="!thread.last_deleted" class="avatar-small"
+        <img ng-if="!thread.last_deleted" class="avatar-small {{$webConfigs.default_avatar_shape}}"
           ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
         <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })"
           ng-bind="thread.last_post_username"></a> posted on
@@ -225,10 +225,10 @@
       <td class="views" ng-bind="(thread.view_count | number:0) || 0"></td> -->
       <td class="last-post">
         <span ng-if="thread.last_deleted">deleted</span>
-        <img ng-if="!thread.last_deleted" class="avatar-small"
+        <img ng-if="!thread.last_deleted" class="avatar-small {{$webConfigs.default_avatar_shape}}"
           ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
         <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })"
-          ng-bind="thread.last_post_username"></a> posted on 
+          ng-bind="thread.last_post_username"></a> posted on
         <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })"><span ng-bind="thread.last_post_created_at | humanDate"></span>.</a>
         <span ng-if="thread.has_new_post">
           <a

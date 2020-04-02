@@ -60,12 +60,12 @@
                  <span class="label">threads</span>
               </p>
             </div>
-    
+
             <!-- Board Last Post By -->
             <div class="last-post">
               <div ng-if="board.last_post_username">
                 <span ng-if="board.user_deleted || board.post_deleted">deleted</span>
-                <img ng-if="!board.user_deleted && !board.post_deleted" class="avatar-small" ng-src="{{::board.last_post_avatar || $webConfigs.default_avatar}}" />
+                <img ng-if="!board.user_deleted && !board.post_deleted" class="avatar-small {{$webConfigs.default_avatar_shape}}" ng-src="{{::board.last_post_avatar || $webConfigs.default_avatar}}" />
                 <a ng-if="!board.user_deleted && !board.post_deleted" ui-sref="profile.posts({ username: board.last_post_username })" ng-bind="::board.last_post_username"></a> posted in
                 <span ng-if="board.last_thread_title">
                   <a ui-sref="posts.data({ threadId: board.last_thread_id, start: board.last_post_position })"

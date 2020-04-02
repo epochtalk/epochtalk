@@ -15,7 +15,7 @@
   <div class="profile-left">
     <!-- User's Avatar -->
     <div class="profile-row">
-      <div class="profile-avatar-container">
+      <div class="profile-avatar-container {{$webConfigs.default_avatar_shape}}">
         <a ng-href="#" ng-if="vmProfile.canUpdate()" ng-click="vmProfile.openEditAvatar()">
           <img ng-src="{{vmProfile.user.avatar || $webConfigs.default_avatar }}" class="image-loader" />
         </a>

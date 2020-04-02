@@ -81,13 +81,24 @@
         .avatar {
           float: left;
           margin-right: 0.5rem;
-          img {
-            float: left;
-            height: 3.125rem;
-            width: 3.125rem;
-            border-radius: 100%;
-            border: 2px solid $border-color;
-            object-fit: cover;
+          &.circle {
+            img {
+              float: left;
+              height: 3.125rem;
+              width: 3.125rem;
+              border-radius: 100%;
+              border: 2px solid $border-color;
+              object-fit: cover;
+            }
+          }
+          &.rect {
+            img {
+              float: left;
+              height: 3.125rem;
+              width: 3.125rem;
+              border: 2px solid $border-color;
+              object-fit: cover;
+            }
           }
         }
         .msg {

@@ -120,7 +120,8 @@ table {
   float: left;
   width: 60px;
   height: 60px;
-  .note-avatar { width: 50px; height: 50px; }
+  .note-avatar.circle { border-radius: 100%; object-fit: cover; width: 50px; height: 50px; }
+  .note-avatar.rect { width: 50px; height: 50px; }
 }
 
 .note-details {

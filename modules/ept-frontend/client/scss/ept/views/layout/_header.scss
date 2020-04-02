@@ -48,8 +48,8 @@ header {
           max-height: 2.1875rem;
           margin-bottom: 0.25rem;
         }
-        #logo-text { 
-          color: $header-logo-font-color; 
+        #logo-text {
+          color: $header-logo-font-color;
           &:hover {
             text-decoration: none;
           }
@@ -59,12 +59,14 @@ header {
       .imageContainer.loaded { background: none; }
       .avatar.loaded { opacity: 1; }
       .avatar {
-        @include border-radius(100px);
-        border: 2px solid $header-logo-font-color;
-        opacity: 1;
-        height: 2.1875rem;
-        width: 2.1875rem;
-        object-fit: cover;
+        &.circle { @include border-radius(100px); }
+        &.rect, &.circle {
+          border: 2px solid $header-logo-font-color;
+          opacity: 1;
+          height: 2.1875rem;
+          width: 2.1875rem;
+          object-fit: cover;
+        }
       }
       a { padding-left: 0; }
       span { padding-left: 0.8rem; }
@@ -201,10 +203,14 @@ header {
           height: inherit;
           vertical-align: middle;
         }
-        li { float: left; height: inherit; }
         li a {
           color: $header-login-font-color;
           font-size: $header-login-font-size;
+        }
+        li {
+          float: left;
+          height: inherit;
+          div a { text-decoration: none; }
         }
         form, form div { height: inherit; }
         .search {
@@ -392,13 +398,24 @@ header {
                     position: absolute;
                     top: 50%;
                     transform: translateY(-50%);
-                    img {
-                      margin-left: 0.625rem;
-                      height: 2rem;
-                      width: 2rem;
-                      border-radius: 100%;
-                      border: 2px solid $border-color;
-                      object-fit: cover;
+                    &.circle {
+                      img {
+                        margin-left: 0.625rem;
+                        height: 2rem;
+                        width: 2rem;
+                        border-radius: 100%;
+                        border: 2px solid $border-color;
+                        object-fit: cover;
+                      }
+                    }
+                    &.rect {
+                      img {
+                        margin-left: 0.625rem;
+                        height: 2rem;
+                        width: 2rem;
+                        border: 2px solid $border-color;
+                        object-fit: cover;
+                      }
                     }
                   }
                   .mention-actions {

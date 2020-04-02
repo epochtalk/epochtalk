@@ -162,7 +162,7 @@
     <div ng-repeat="note in ModerationCtrl.reportNotes track by note.id">
 
       <div class="note-avatar-container" ng-if="!note.edit">
-        <img class="note-avatar" ng-src="{{ note.avatar || $webConfigs.default_avatar }}" />
+        <img class="note-avatar {{$webConfigs.default_avatar_shape}}" ng-src="{{ note.avatar || $webConfigs.default_avatar }}" />
       </div>
 
       <div class="note-details" ng-if="!note.edit">

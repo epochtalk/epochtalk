@@ -14,12 +14,11 @@
       @include omega;
       position: relative;
       width: 100%;
-      height: 200px;
+      height: 100%;
       .imageContainer.loaded { background: none; }
       .imageContainer { background: url('/static/img/loading.gif') no-repeat center; display: inline;}
       img {
         @include transition(opacity 0.5s ease-in);
-        width: 100%;
         opacity: 0;
         object-fit: cover;
       }

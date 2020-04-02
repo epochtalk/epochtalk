@@ -52,11 +52,20 @@
     @include bg-cover;
     background: no-repeat center center;
     text-align: center;
-    img {
-      @include border-radius(100px);
-      height: 1.5rem;
-      width: 1.5rem;
-      object-fit: cover;
+    &.circle {
+      img {
+        @include border-radius(100px);
+        height: 1.5rem;
+        width: 1.5rem;
+        object-fit: cover;
+      }
+    }
+    &.rect {
+     img {
+       height: 1.5rem;
+       width: 1.5rem;
+       object-fit: cover;
+     }
     }
   }
   .user-username {
