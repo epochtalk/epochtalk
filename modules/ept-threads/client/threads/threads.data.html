@@ -135,8 +135,19 @@
           </div>
           <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
             ng-bind-html="thread.title"></a>
-          <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-          <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
+          <div class="thread-state-secondary">
+            <span class="thread-state-locked" ng-if="thread.locked">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <title>lock</title>
+                <path d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z"/>
+              </svg>
+            </span>
+            <span class="thread-state-hasPoll" ng-if="thread.poll">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <path class="cls-1" d="M42,2H6A4,4,0,0,0,2,6V42a4,4,0,0,0,4,4H42a4,4,0,0,0,4-4V6A4,4,0,0,0,42,2ZM13.75,40h-6V32h6Zm9,0h-6V22h6Zm9,0h-6V27h6Zm9,0h-6V12h6Z"/>
+            </svg>
+            </span>
+          </div>
         </div>
         
         <div class="started-by">
@@ -181,8 +192,19 @@
           </div>
           <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
             ng-bind-html="thread.title"></a>
-          <i class="icon-epoch-lock right" ng-if="thread.locked"></i>
-          <i class="fa fa-bar-chart icon-fix right" ng-if="thread.poll"></i>
+            <div class="thread-state-secondary">
+            <span class="thread-state-locked" ng-if="thread.locked">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <title>lock</title>
+                <path d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z"/>
+              </svg>
+            </span>
+            <span class="thread-state-hasPoll" ng-if="thread.poll">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <path class="cls-1" d="M42,2H6A4,4,0,0,0,2,6V42a4,4,0,0,0,4,4H42a4,4,0,0,0,4-4V6A4,4,0,0,0,42,2ZM13.75,40h-6V32h6Zm9,0h-6V22h6Zm9,0h-6V27h6Zm9,0h-6V12h6Z"/>
+            </svg>
+            </span>
+          </div>
         </div>
         
         <div class="started-by">

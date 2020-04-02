@@ -365,8 +365,14 @@
     }
   }
 
+  .subject {
+    display: flex;
+    flex-direction: column;
+  }
+
   .title {
-    position: relative;
+    display: flex;
+    flex: 0 auto;
   }
 
   .thread-state {
@@ -401,6 +407,31 @@
 
       svg {
         margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .thread-title {
+    flex: 1 0 auto;
+    margin-bottom: 0;
+  }
+
+  .thread-state-secondary {
+    display: flex;
+    align-items: center;
+
+    .thread-state-locked,
+    .thread-state-hasPoll {
+      line-height: 1;
+      margin-left: 0.25rem;
+    }
+
+    svg {
+      height: 14px;
+      width: auto;
+
+      &:hover {
+        fill: $text-gray-med;
       }
     }
   }
