@@ -1,23 +1,4 @@
 /*-------------- Threads Layout -------------- */
-// .board-controls-wrap {
-//   // background-color: $sub-header-color;
-//   background-color: #fff;
-//   border-bottom: $border;
-//   margin: -$header-bottom-margin -100% $header-bottom-margin;
-//   padding: $header-bottom-margin 100% 0;
-//   grid-column: 1 / span 2;
-//   .inverted-button {
-//     color: $secondary-font-color;
-//     padding-top: 0.35rem;
-//     padding-bottom: 0.35rem;
-//     text-align: center;
-//     &:hover {
-//       background-color: $secondary-font-color-light;
-//       border-color: $secondary-font-color;
-//       color: $secondary-font-color-dark;
-//     }
-//   }
-// }
 
 .board-controls {
   background-color: #fff;
@@ -96,6 +77,16 @@
 .board-footer {
   grid-column: 1 / span 2;
   justify-self: end;
+}
+
+.actions-bottom {
+  @media screen and (max-width: 1280px) {
+    padding: 0.75rem 1.5rem;
+
+    .actions-bottom-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 }
 
 // Mobile Board Layout

@@ -7,7 +7,6 @@
         ng-bind="mod.username + ($last ? '' : ', ')"></a>
     </div>
   </div>
-  <pagination page-count="ThreadsWrapperCtrl.pageCount" page="ThreadsWrapperCtrl.page"></pagination>
 </div>
 
 <div class="board-data" ui-view="data"></div>
@@ -26,9 +25,9 @@
   </div>
 </div>
 
-<div class="board-footer">
+<!-- <div class="board-footer">
   <pagination page-count="ThreadsWrapperCtrl.pageCount" page="ThreadsWrapperCtrl.page"></pagination>
-</div>
+</div> -->
 
 <set-moderators board="ThreadsWrapperCtrl.board" show="ThreadsWrapperCtrl.showSetModerators"></set-moderators>
 
@@ -51,4 +50,10 @@
     can-create-poll="ThreadsWrapperCtrl.canCreatePoll"
     right-to-left="ThreadsWrapperCtrl.rtl">
   </epochtalk-editor>
+</div>
+
+<div class="actions-bottom">
+  <div class="actions-bottom-grid">
+    <pagination page-count="ThreadsWrapperCtrl.pageCount" page="ThreadsWrapperCtrl.page" class="pagination-bottom"></pagination>
+  </div>
 </div>
