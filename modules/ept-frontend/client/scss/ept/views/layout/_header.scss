@@ -30,9 +30,15 @@ header {
     background-color: $header-bg-color;
     text-align: center;
     min-height: $header-height;
+    
     @include media($mobile-portrait) {
       &.mobile-expanded { min-height: 2 * $header-height; }
     }
+
+    @media screen and (max-width: 767px) {
+      padding: 0 1rem;
+    }
+
     #menu {
       @include base-layout-width;
       h1 {
@@ -578,7 +584,11 @@ header {
   #breadcrumbs-wrap {
     @include clearfix();
     @include pad(0 $base-grid-padding);
-    // background-color: $breadcrumbs-bg-color;
+    
+    @media screen and (max-width: 767px) {
+      padding: 0 1rem;
+    }
+    
     background-color: #fff;
     border-bottom: 1px solid $breadcrumbs-border-color;
     text-align: center;
