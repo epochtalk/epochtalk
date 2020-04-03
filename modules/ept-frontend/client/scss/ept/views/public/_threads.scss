@@ -70,6 +70,10 @@
     flex-direction: column;
   }
 
+  @media screen and (max-width: 767px) {
+    margin-bottom: 1rem;
+  }
+
   @media screen and (min-width: 1280px) {
     grid-column: 2 / span 1;
     position: sticky;
