@@ -631,16 +631,20 @@ ad-viewer {
     margin-left: 0;
   }
   .thread-data .post-block .post-content .post-title {
-    position: relative;
+    flex-direction: column;
+    align-items: flex-start;;
   }
   .thread-data .post-block .post-content .timestamp {
     float: none;
     width: 100%;
   }
   .thread-data .post-block .post-content .post-action {
-    position: absolute;
-    top: 0;
-    right: 0;
+    align-self: flex-start;
+    
+    li {
+      padding-left: 0;
+      padding-right: 1rem;
+    }
   }
   #post-tools-fixed {
     // height: 2.5rem;
