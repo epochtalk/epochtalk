@@ -1,5 +1,7 @@
 /*-------------- Posts (Thread View) Layout -------------- */
 
+$postWidth__mobile: calc(100vw - 2rem);
+
 #public-content {
   .posts & {
     grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
@@ -12,9 +14,10 @@
     @include break-mobile-sm {
       grid-template-areas: 
         "top top"
-        "ads ads"
         "sidebar sidebar"
+        "ads ads"
         "main main";
+      grid-template-columns: 1fr;
     }
   }
 }
@@ -67,15 +70,12 @@ ad-viewer {
   }
 
   @include break-mobile-sm {
-    // background-color: rgba($base-background-color, 0.9);
-    // border-top: $border;
-    // position: fixed;
-    // bottom: 3rem;
-    // left: 0;
-    // right: 0;
-    // padding: 1rem;
-    // text-align: right;
-    // z-index: 900;
+    width: $postWidth__mobile;
+    margin: 1rem 0;
+
+    .sidebar-actions {
+      padding-top: 0;
+    }
   }
 }
 
@@ -270,8 +270,7 @@ ad-viewer {
     }
 
     .post-content {
-      // width: 100%;
-      // width: calc(100% - #{$postUserWidth});
+      width: calc(100% - #{$postUserWidth});
 
       .bbcode-column {
         img.image-loader.loaded {
@@ -401,6 +400,10 @@ ad-viewer {
             color: $color-primary;
           }
         }
+      }
+
+      @include break-mobile-sm {
+        width: $postWidth__mobile;
       }
     }
   }
