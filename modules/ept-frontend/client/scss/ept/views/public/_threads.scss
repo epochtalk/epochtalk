@@ -13,10 +13,8 @@
 .board-controls {
   background-color: #fff;
   border-bottom: $border;
-  // margin: -$header-bottom-margin -100% $header-bottom-margin;
-  // padding: $header-bottom-margin 100% 0;
-  margin: -1.5rem -2rem 1.5rem;
-  padding: 1rem 2rem;
+  margin: 0 0 1.5rem;
+  padding: 0 0 1.5rem;
   grid-column: 1 / span 2;
   display: grid;
   // grid-template-areas: 'main secondary';
@@ -37,8 +35,12 @@
 
   @include break-mobile-sm {
     grid-template-columns: 1fr;
-    justify-items: center;
-    width: 100%;
+    // justify-items: center;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 100vw;
 
     pagination {
       justify-self: center;
@@ -244,7 +246,7 @@
   border-bottom: $border;
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
-  // row-gap: 1rem;
+  margin-left: -1rem;
 
   .children {
     color: $text-gray-dark;

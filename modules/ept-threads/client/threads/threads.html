@@ -12,13 +12,13 @@
 <div class="board-data" ui-view="data"></div>
 <div class="board-sidebar">
   <div class="board-actions" ng-if="ThreadsWrapperCtrl.loggedIn()">
-    <a ng-if="ThreadsWrapperCtrl.canCreate()" class="button outline" ng-href="" ng-click="ThreadsWrapperCtrl.loadEditor()">
+    <a ng-if="ThreadsWrapperCtrl.canCreate()" class="button secondary" ng-href="" ng-click="ThreadsWrapperCtrl.loadEditor()">
       <i class="icon-epoch-add"></i>Start a New Thread
     </a>
-    <a class="button outline" ng-click="ThreadsWrapperCtrl.watchBoard()" ng-if="!ThreadsWrapperCtrl.board.watched">
+    <a class="button secondary" ng-click="ThreadsWrapperCtrl.watchBoard()" ng-if="!ThreadsWrapperCtrl.board.watched">
       <i class="icon-epoch-watch"></i>Watch This Board
     </a>
-    <a class="button outline" ng-click="ThreadsWrapperCtrl.showSetModerators = true"
+    <a class="button secondary" ng-click="ThreadsWrapperCtrl.showSetModerators = true"
       ng-if="ThreadsWrapperCtrl.canSetModerator()">
       <i class="icon-epoch-watch"></i>Set Moderators
     </a>
