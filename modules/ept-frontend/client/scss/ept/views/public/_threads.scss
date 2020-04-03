@@ -4,8 +4,15 @@
     #public-content {
       grid-template-areas:  
         "header header"
-        "sidebar sidebar"
-        "main main";
+        "main sidebar"
+        "main sidebar";
+      
+      @media screen and (max-width: 767px) {
+        grid-template-areas: 
+          "header header"
+          "sidebar sidebar"
+          "main main";
+      }
     }
   }
 }
@@ -17,8 +24,7 @@
   padding: 0 0 1.5rem;
   grid-column: 1 / span 2;
   display: grid;
-  // grid-template-areas: 'main secondary';
-  grid-template-columns: repeat(2, 1fr);
+  grid-area: header;
 
   h1 {
     color: $base-font-color;
@@ -29,13 +35,11 @@
   }
 
   pagination {
-    // grid-area: secondary;
     justify-self: end;
   }
 
   @include break-mobile-sm {
     grid-template-columns: 1fr;
-    // justify-items: center;
     margin-left: -1rem;
     margin-right: -1rem;
     padding-left: 1rem;
@@ -49,11 +53,11 @@
 }
 
 .board-data {
-  grid-column: 1 / span 2;
   padding-left: 1rem;
+  grid-area: main;
 
   @include break-min-large {
-    grid-column: auto;
+    // grid-column: auto;
   }
 }
 
@@ -62,8 +66,7 @@
 }
 
 .board-sidebar {
-  grid-column: 1 / span 2;
-  grid-row: 2 / 3;
+  grid-area: sidebar;
 
   .board-actions {
     display: flex;
