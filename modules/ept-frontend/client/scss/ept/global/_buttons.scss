@@ -68,6 +68,10 @@
     border: 1px solid $color-primary;
     color: $color-primary;
 
+    i, svg {
+      margin-right: 0.375rem;
+    }
+
     &:hover {
       background-color: $color-primary;
       border-color: $color-primary;
@@ -78,6 +82,10 @@
   &.small {
     font-size: $font-size-sm;
     padding: 0.5rem 1rem;
+  }
+
+  @include media($mobile) {
+    margin-bottom: 0.5rem;
   }
 }
 
