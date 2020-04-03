@@ -9,7 +9,7 @@
       "main sidebar";
     grid-template-rows: auto auto 1fr;
 
-    @media screen and (max-width: 767px) {
+    @include break-mobile-sm {
       grid-template-areas: 
         "top top"
         "ads ads"
@@ -511,7 +511,7 @@ ad-viewer {
 
   &-grid {
     display: grid;
-    grid-template-columns: 1fr minmax(200px, 240px);
+    grid-template-columns: minmax(0, 3fr) minmax(240px, 1fr);
     align-items: center;
     column-gap: 2rem;
     max-width: $view-maxWidth;
@@ -539,23 +539,26 @@ ad-viewer {
 }
 
 @include media($mobile) {
-  .actions-bottom-grid {
-    grid-template-columns: 1fr;
-    align-items: center;
-    justify-items: center;
-  }
+  .posts {
+    .actions-bottom {
+      .actions-bottom-grid {
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        justify-items: center;
+        column-gap: 1rem;
+      }
 
-  .pagination-bottom {
-    justify-self: center;
-    padding-bottom: 1rem;
-    position: fixed;
-    bottom: 3rem;
-    left: 0;
-    right: 0;
-    background-color: #fff;
-    border-top: 1px solid $border-color;
-    padding-top: 1rem;
-    text-align: center;
+      .pagination-bottom {
+        justify-self: end;
+        // position: fixed;
+        // bottom: 3rem;
+        // left: 0;
+        // right: 0;
+        background-color: #fff;
+        // border-top: 1px solid $border-color;
+        // text-align: center;
+      }
+    }
   }
 }
 
