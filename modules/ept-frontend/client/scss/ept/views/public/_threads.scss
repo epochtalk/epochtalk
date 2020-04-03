@@ -101,23 +101,26 @@
   justify-self: end;
 }
 
-.actions-bottom {
-  @media screen and (max-width: 1280px) {
-    padding: 0.75rem 1.5rem;
+.threads {
+  .actions-bottom {
+    @media screen and (max-width: 1280px) {
+      padding: 0.75rem 1.5rem;
 
-    .pagination-bottom {
-      bottom: 0;
+      .pagination-bottom {
+        bottom: 0;
+      }
+
+      .actions-bottom-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .actions-bottom-grid {
-      grid-template-columns: 1fr;
+    @include break-mobile-sm {
+      padding: 0.5rem 1rem;
     }
-  }
-
-  @include break-mobile-sm {
-    padding: 0.5rem 1rem;
   }
 }
+
 
 // Mobile Board Layout
 // @include media($mobile) {
