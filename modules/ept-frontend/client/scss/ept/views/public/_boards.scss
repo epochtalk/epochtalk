@@ -1,13 +1,9 @@
 /*-------------- Boards Layout -------------- */
 #public-content {
-  grid-template-columns: auto;
+  grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
   grid-gap: 2rem;
   row-gap: 1rem;
   margin-bottom: 2rem;
-
-  @media screen and (min-width: 1280px) {
-    @include grid-columns();
-  }
 
   @include break-mobile-sm {
     column-gap: 0;
