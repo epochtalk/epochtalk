@@ -194,8 +194,8 @@ ad-viewer {
 
         .online {
           position: absolute;
-          top: -4px;
-          right: -4px;
+          top: -2px;
+          right: -2px;
 
           svg {
             stroke: white;
@@ -219,6 +219,11 @@ ad-viewer {
             width: 100%;
             height: 100%;
             object-fit: cover;
+          }
+
+          .online {
+            top: -8px;
+            right: -8px
           }
         }
       }
