@@ -3,10 +3,19 @@
 #public-content {
   .posts & {
     grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
-    grid-template-areas:  "top sidebar"
-                          "ads sidebar"
-                          "main sidebar";
+    grid-template-areas:  
+      "top sidebar"
+      "ads sidebar"
+      "main sidebar";
     grid-template-rows: auto auto 1fr;
+
+    @media screen and (max-width: 767px) {
+      grid-template-areas: 
+        "top top"
+        "ads ads"
+        "sidebar sidebar"
+        "main main";
+    }
   }
 }
 
@@ -58,15 +67,15 @@ ad-viewer {
   }
 
   @include break-mobile-sm {
-    background-color: rgba($base-background-color, 0.9);
-    border-top: $border;
-    position: fixed;
-    bottom: 3rem;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    text-align: right;
-    z-index: 900;
+    // background-color: rgba($base-background-color, 0.9);
+    // border-top: $border;
+    // position: fixed;
+    // bottom: 3rem;
+    // left: 0;
+    // right: 0;
+    // padding: 1rem;
+    // text-align: right;
+    // z-index: 900;
   }
 }
 
@@ -74,6 +83,7 @@ ad-viewer {
   grid-area: top;
   margin: 0;
   padding: 1rem 0;
+  width: 100%;
   // margin: -$header-bottom-margin -2rem $header-bottom-margin;
   // padding: calc(#{$header-bottom-margin} + 1rem) 2rem 1rem;
   border-bottom: $border;
@@ -127,6 +137,7 @@ ad-viewer {
 
 .thread-data {
   @include pad(0 0 1rem 0);
+  grid-area: main;
 }
 
 .post-block {
@@ -260,7 +271,7 @@ ad-viewer {
 
     .post-content {
       // width: 100%;
-      width: calc(100% - #{$postUserWidth});
+      // width: calc(100% - #{$postUserWidth});
 
       .bbcode-column {
         img.image-loader.loaded {
@@ -605,15 +616,6 @@ ad-viewer {
 }
 
 @include media($mobile) {
-  .thread-data,
-  .sidebar {
-    grid-column: 1 / span 2;
-  }
-
-  // Hide sidebar on mobile
-  .sidebar {
-    display: none;
-  }
 
   .thread-data {
     margin-bottom: 3rem;

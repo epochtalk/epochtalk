@@ -7,7 +7,7 @@
         "main sidebar"
         "main sidebar";
       
-      @media screen and (max-width: 767px) {
+      @include break-mobile-sm {
         grid-template-areas: 
           "header header"
           "sidebar sidebar"
@@ -73,7 +73,7 @@
     flex-direction: column;
   }
 
-  @media screen and (max-width: 767px) {
+  @include break-mobile-sm {
     margin-bottom: 1rem;
   }
 
