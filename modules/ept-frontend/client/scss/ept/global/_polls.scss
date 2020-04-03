@@ -164,7 +164,7 @@
       border-radius: 3px;
       padding: 0.5rem 0 0.5rem $poll__questionOffset;
       color: $sub-header-secondary-font-color;
-      font-size: $font-size-sm;
+      font-size: $font-size-base;
       font-weight: normal;
       line-height: 1.2;
       position: relative;
@@ -257,13 +257,12 @@
   @include media($mobile) {
     .poll-info .fourth-columns { margin-bottom: 0.5rem; }
     .poll-answer .poll-bar .poll-answer-fill { max-width: 30%; }
-    .poll-answer .poll-select { padding-bottom:0; padding-left:0; border: none; }
     .poll-answer .poll-select.active { background-color: transparent; }
     .poll-answer .one-third-column { padding-top: 0; }
     // .poll-header .poll-controls { width: 100%; text-align: center; }
     .poll-header .poll-control { margin: 0.5rem; }
     // .poll-header .poll-details .poll-info { display: block; }
-    .poll-header .poll-details, .poll-header .poll-details.small { width: 100%; text-align: center; padding-left: 0; }
+    .poll-header .poll-details, .poll-header .poll-details.small { width: 100%; padding-left: 0; }
   }
 
   @include break-mobile-sm {
