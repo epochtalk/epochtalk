@@ -1,6 +1,9 @@
 /*-------------- Boards Layout -------------- */
 #public-content {
   grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
+  grid-template-areas: 
+    "main sidebar"
+    "main sidebar";
   grid-gap: 2rem;
   row-gap: 1rem;
   margin-bottom: 2rem;
@@ -10,21 +13,41 @@
     grid-template-columns: 1fr;
   }
 }
-.content-main {
+.main {
+  grid-area: main;
 
 }
 
-.content-sidebar {
-  border-top: $border;
+.sidebar {
+  grid-area: sidebar;
   padding-top: 1rem;
 
   h1 {
+    font-size: $font-size-sm;
     line-height: inherit;
     margin-bottom: 0.5rem;
   }
 
-  .threads-data {
-    margin-bottom: 0.5rem;
+  .threads-recent {
+    color: $text-gray-dark;
+    font-size: $font-size-sm;
+    margin-bottom: 1rem;
+
+    .title {
+      font-size: $font-size-base;;
+    }
+
+    .user {
+      font-size: $font-size-sm;
+    }
+
+    .thread-status {
+      font-size: $font-size-sm;
+
+      svg {
+        height: 0.875rem;
+      }
+    }
   }
 
   @media screen and (min-width: 1280px) {
