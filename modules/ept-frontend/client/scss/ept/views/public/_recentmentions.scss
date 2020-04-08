@@ -169,6 +169,9 @@
 }
 
 // Small screen layout
+$avatar-small: 2rem;
+$columnGap-small: 0.5rem;
+
 @media screen and (max-width: 767px) {
   main #public-content {
     grid-template-areas:
@@ -181,7 +184,7 @@
   .recent-mentions {
     .mention {
       .mention-content {
-        column-gap: 0.5rem;
+        column-gap: $columnGap-small;
         grid-template-areas:
           "status actions actions"
           "status title title"
@@ -193,7 +196,7 @@
         }
 
         .avatar {
-          flex: 0 0 2rem;
+          flex: 0 0 $avatar-small;
           width: 100%;
           height: auto;
           
@@ -214,6 +217,11 @@
             line-height: 1;
             margin-left: 1rem;
           }
+        }
+
+        .mention-reference {
+          margin-left: calc(#{$avatar-small} + #{$columnGap-small});
+          margin-top: 0.5rem;
         }
       }
     }
