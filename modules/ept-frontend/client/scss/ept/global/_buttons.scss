@@ -24,6 +24,9 @@
   border: 0;
   background-color: $color-primary;
   border-color: $color-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1rem;
   font-family: $base-font-sans;
   outline: none;
@@ -47,6 +50,10 @@
   &.disabled, &.disabled:hover, &.disabled:focus, &[disabled], &[disabled]:hover, &[disabled]:focus {
     background-color: $secondary-font-color-light;
     border-color: $secondary-font-color-light;
+  }
+
+  svg {
+    fill: $color-primary;
   }
 
   &.outline {

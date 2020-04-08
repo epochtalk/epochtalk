@@ -2,6 +2,7 @@
 #public-content {
   grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
   grid-template-areas: 
+    "header header"
     "main sidebar"
     "main sidebar";
   grid-gap: 2rem;

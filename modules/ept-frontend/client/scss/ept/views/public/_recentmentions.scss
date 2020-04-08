@@ -1,135 +1,162 @@
 
 .recent-mentions-header {
-  h3 {
-    margin: 0;
-    div {
-      font-size: 0.875rem;
-      float: right;
-      a:last-child { margin-left: 1rem; }
-      @include media($mobile-portrait) { margin: 0.5rem 0; float: none; }
-    }
+  display: flex;
+  align-items: center;
+  grid-area: header;
+
+  h1 {
+    color: $dark-text-default;
+    font-size: $font-size-lg;
+    font-weight: 600;
+    flex: 1 0 auto;
+    text-transform: none;
   }
 }
+
 .recent-mentions {
+  display: flex;
+  flex-direction: column;
+  grid-area: main;
   margin-bottom: 1.5rem;
+
   .mention {
-    padding: 0.5rem;
-    background-color: $sub-header-color;
-    border-bottom: 1px solid $border-color;
-    position: relative;
+    padding: 1rem 0 2rem;
+    border-bottom: $border;
+    
     .actions {
-      position: absolute;
-      top: 0;
-      right: 0;
-      height: 3.125rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       width: 2rem;
+
       div {
         width: 1rem;
-        height: 1rem;
-        position: absolute;
-        right: 0.5rem;
         cursor: pointer;
-        color: $secondary-font-color-dark;
         z-index: 999;
-        &.delete { top: 15%; }
-        &.marked { cursor: default; }
-        &.marked, &.unmarked { top: 60%; }
-        i { opacity: 0; }
-        @include media($mobile) {
-          i { opacity: 0.5; }
-        }
+        display: none;
       }
     }
-    @include clearfix;
-    @include span-columns(12);
+    
     &:hover {
-      background-color: darken($sub-header-color, 2%);
+      background-color: darken($sub-header-color, 1%);
       .actions div {
-        i { opacity: 0.5; }
-        &:hover:not(.marked) i { opacity: 1; }
+        display: block;;
       }
     }
-    &.dismissed, &.dismissed:hover {
-      .mention-content .mention-header .mention-unread .dot {
+
+    &.dismissed, 
+    &.dismissed:hover {
+      svg {
         display: none;
       }
       background-color: transparent;
     }
-    .mention-content {
-      @include span-columns(12);
-      color: $base-font-color;
+  }
 
-      // max-width - padding - dot width - margin-right
-      .mention-header {
-        @include span-columns(12);
-        height: 3.125rem;
-        .mention-unread {
-          float: left;
-          margin-right: 0.5rem;
-          width: 0.3125rem;
-          height: 3.125rem;
-          position: relative;
-          .dot {
-            height: 0.3125rem;
-            width: 0.3125rem;
-            border-radius: 100%;
-            background-color: $color-primary;
-            position: absolute;
-            top: 50%;
-          }
-        }
-        .avatar {
-          float: left;
-          margin-right: 0.5rem;
-          &.circle {
-            img {
-              float: left;
-              height: 3.125rem;
-              width: 3.125rem;
-              border-radius: 100%;
-              border: 2px solid $border-color;
-              object-fit: cover;
-            }
-          }
-          &.rect {
-            img {
-              float: left;
-              height: 3.125rem;
-              width: 3.125rem;
-              border: 2px solid $border-color;
-              object-fit: cover;
-            }
-          }
-        }
-        .msg {
-          height: 3.125rem;
-          padding-top: 0.5rem;
-          line-height: 1rem;
-          float: left;
-          width: calc(100% - 6.4375rem);
-          font-size: 0.875rem;
-          div {
-            display: inline-block;
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            @include media($mobile-portrait) {
-              .hidden-mobile { display: none; }
-            }
-          }
-        }
-      }
-      .mention-body {
-        @include span-columns(12);
-        font-size: 0.875rem;
-        padding-left: 0.3125rem + 0.5rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        a:hover { color: $color-primary; }
+  .mention-content {
+    color: $base-font-color;
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-areas: 
+      "status title actions"
+      "status message actions";
+    grid-template-columns: min-content 1fr min-content;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    .mention-status {
+      grid-area: status;
+      padding-top: 1rem;
+      padding-left: 0.5rem;
+
+      svg {
+        fill: $color-primary;
+        width: 12px;
       }
     }
+
+    .mention-title {
+      grid-area: title;
+      display: flex;
+      width: 100%;
+    }
+
+    .avatar {
+      flex: 0 0 50px;
+      margin-right: 0.5rem;
+        &.circle {
+          img {
+            height: 3.125rem;
+            width: 3.125rem;
+            border-radius: 100%;
+            border: 2px solid $border-color;
+            object-fit: cover;
+          }
+        }
+        &.rect {
+          img {
+            height: 3.125rem;
+            width: 3.125rem;
+            border: 2px solid $border-color;
+            object-fit: cover;
+          }
+        }
+      }
+      .msg {
+        height: 3.125rem;
+        padding-top: 0.5rem;
+        line-height: 1rem;
+        float: left;
+        width: calc(100% - 6.4375rem);
+        font-size: 0.875rem;
+        div {
+          display: inline-block;
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          @include media($mobile-portrait) {
+            .hidden-mobile { display: none; }
+          }
+        }
+      }
+
+    .mention-body {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: $text-gray-dark;
+
+      .timestamp {
+        display: block;
+      }
+
+      a:hover { 
+        color: $color-primary;
+      }
+    }
+
+    .mention-reference {
+      color: $dark-text-default;
+      grid-area: message;
+      margin-left: 56px;
+      // display: -webkit-box;
+      // -webkit-line-clamp: 3;
+      // -webkit-box-orient: vertical;
+      max-height: calc(#{$base-line-height} * 4);
+      overflow: hidden;
+    }
   }
+}
+
+.pagination-simple {
+  background-color: $base-background-color;
+  padding: 1rem 0;
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  text-align: right;
 }
