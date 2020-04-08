@@ -19,17 +19,17 @@
         </div>
 
         <div class="mention-body">
-         <span class="user">{{mention.mentioner}}</span> 
+          <span class="timestamp">{{mention.created_at | humanDate}}</span>
+          <span class="user">{{mention.mentioner}}</span> 
           mentioned you in 
           <span class="hidden-mobile">
             <span ng-bind-html="mention.board_name" class="boardName"></span> 
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="caret-right">
               <title>caret-down</title>
               <path d="M24,38.83,4.59,19.41a2,2,0,0,1,2.82-2.82L24,33.17,40.59,16.59a2,2,0,0,1,2.82,2.82Z"/>
             </svg> 
           </span>
           <span class="title">{{mention.title}}</span>
-          <span class="timestamp">{{mention.created_at | humanDate}}</span>
         </div>
       </div>
 
@@ -47,18 +47,14 @@
             <path d="M24,12A12,12,0,1,1,12,24,12,12,0,0,1,24,12m0-4A16,16,0,1,0,40,24,16,16,0,0,0,24,8Z"/>
           </svg>
         </div>
-        <!-- <div ng-if="mention.viewed" class="marked" data-balloon="Read" data-balloon-pos="left">
-          <i class="fa fa-check-circle-o"></i>
-        </div> -->
       </div>
-        
-    </div>
     </a>
   </div>
+</div>
 
-  <div class="recent-mentions" ng-if="MentionsCtrl.mentions.length <= 0">
-    <h4>You currently have no mentions</h4>
-  </div>
+<div class="recent-mentions" ng-if="MentionsCtrl.mentions.length <= 0">
+  <h4>You currently have no mentions</h4>
+</div>
 
 
 <div class="sidebar">

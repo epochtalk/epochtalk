@@ -22,6 +22,7 @@
   .mention {
     padding: 1rem 0 2rem;
     border-bottom: $border;
+    transition: all ease-in-out 200ms;
     
     .actions {
       display: flex;
@@ -46,17 +47,28 @@
 
     &.dismissed, 
     &.dismissed:hover {
-      svg {
-        display: none;
-      }
       background-color: transparent;
+      actions {
+        svg {
+          display: none;
+        }
+      }
+    }
+
+    &.dismissed:hover {
+      .actions {
+        svg {
+          display: block;
+        }
+      }
     }
   }
 
   .mention-content {
     color: $base-font-color;
     display: grid;
-    grid-gap: 1rem;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
     grid-template-areas: 
       "status title actions"
       "status message actions";
@@ -104,34 +116,25 @@
           }
         }
       }
-      .msg {
-        height: 3.125rem;
-        padding-top: 0.5rem;
-        line-height: 1rem;
-        float: left;
-        width: calc(100% - 6.4375rem);
-        font-size: 0.875rem;
-        div {
-          display: inline-block;
-          width: 100%;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          @include media($mobile-portrait) {
-            .hidden-mobile { display: none; }
-          }
-        }
-      }
 
     .mention-body {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
       color: $text-gray-dark;
 
+      .user,
+      .boardName,
+      .title {
+        font-weight: 600;
+      }
+
+      .title {
+        max-height: calc(#{$base-line-height} * 2);
+        overflow: hidden;
+      }
+
       .timestamp {
+        color: $text-gray-med;
         display: block;
+        font-size: $font-size-sm;
       }
 
       a:hover { 
@@ -143,9 +146,6 @@
       color: $dark-text-default;
       grid-area: message;
       margin-left: 56px;
-      // display: -webkit-box;
-      // -webkit-line-clamp: 3;
-      // -webkit-box-orient: vertical;
       max-height: calc(#{$base-line-height} * 4);
       overflow: hidden;
     }
@@ -159,4 +159,11 @@
   bottom: 0;
   left: 0;
   text-align: right;
+}
+
+.caret-right {
+  height: 12px;
+  position: relative;
+  transform: rotate(-90deg);
+  top: 1px;
 }
