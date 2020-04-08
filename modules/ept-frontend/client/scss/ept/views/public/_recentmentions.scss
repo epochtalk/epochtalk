@@ -30,7 +30,7 @@
       justify-content: space-between;
       width: 2rem;
 
-      div {
+      .action-button {
         width: 1rem;
         cursor: pointer;
         z-index: 999;
@@ -48,7 +48,7 @@
     &.dismissed, 
     &.dismissed:hover {
       background-color: transparent;
-      actions {
+      .mention-status {
         svg {
           display: none;
         }
@@ -166,4 +166,65 @@
   position: relative;
   transform: rotate(-90deg);
   top: 1px;
+}
+
+// Small screen layout
+@media screen and (max-width: 767px) {
+  main #public-content {
+    grid-template-areas:
+      "header"
+      "sidebar"
+      "main"
+      "footer";
+  }
+
+  .recent-mentions {
+    .mention {
+      .mention-content {
+        column-gap: 0.5rem;
+        grid-template-areas:
+          "status actions actions"
+          "status title title"
+          "status message message";
+
+        .mention-status {
+          padding-left: 0;
+          padding-top: 2rem;
+        }
+
+        .avatar {
+          flex: 0 0 2rem;
+          width: 100%;
+          height: auto;
+          
+          img {
+            height: initial;
+            width: initial;
+          }
+        }
+
+        .actions {
+          display: flex;
+          justify-content: flex-end;
+          flex-direction: row;
+          justify-self: flex-end;
+
+          .action-button {
+            display: block;
+            line-height: 1;
+            margin-left: 1rem;
+          }
+        }
+      }
+    }
+  }
+
+  .pagination-simple {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 0;
+  }
 }

@@ -36,13 +36,13 @@
       <div post-processing="mention.body_html" style-fix="true" class="mention-reference"></div>
 
       <div class="actions">
-        <div ng-click="MentionsCtrl.delete({ id: mention.id, type: 'mention', notification_id: mention.notification_id })" class="delete" data-balloon="Delete" data-balloon-pos="left">
+        <div ng-click="MentionsCtrl.delete({ id: mention.id, type: 'mention', notification_id: mention.notification_id })" class="action-button delete" data-balloon="Delete" data-balloon-pos="left">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
             <title>delete</title>
             <polygon points="37.08 14.45 33.55 10.92 24 20.46 14.45 10.92 10.92 14.45 20.46 24 10.92 33.55 14.45 37.08 24 27.54 33.55 37.08 37.08 33.55 27.54 24 37.08 14.45"/>
           </svg>
         </div>
-        <div ng-if="!mention.viewed" ng-click="MentionsCtrl.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })" class="unread" data-balloon="Mark Read" data-balloon-pos="left">
+        <div ng-if="!mention.viewed" ng-click="MentionsCtrl.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })" class="action-button unread" data-balloon="Mark Read" data-balloon-pos="left">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
             <path d="M24,12A12,12,0,1,1,12,24,12,12,0,0,1,24,12m0-4A16,16,0,1,0,40,24,16,16,0,0,0,24,8Z"/>
           </svg>
