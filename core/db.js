@@ -1,6 +1,7 @@
 var db = {};
 module.exports = db;
 var pg = require('pg');
+pg.defaults.parseInputDatesAsUTC = true;
 var path = require('path');
 var Promise = require('bluebird');
 var config = require(path.join(__dirname, 'config'));
