@@ -8,8 +8,6 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
     this.focusEditor = false;
     this.quote = '';
     this.posting = { post: { body_html: '', body: '' } };
-    this.editorPosition = 'editor-fixed-bottom';
-    this.resize = true;
 
     // Report Permission
     this.reportControlAccess = {
@@ -19,13 +17,15 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
 
     this.canSave = function() {
       var text = ctrl.posting.post.body_html;
-      text = text.replace(/(<([^>]+)>)/ig,'');
+      var imgSrcRegex = /<img[^>]+src="((http:\/\/|https:\/\/|\/)[^">]+)"/g;
+      var stripTagsRegex = /(<([^>]+)>)/ig;
+      var images = imgSrcRegex.exec(text);
+      text = text.replace(stripTagsRegex, '');
       text = text.trim();
-      return text.length > 0;
+      return text.length || images;
     };
 
     /* Post Methods */
-
     var discardAlert = function() {
       if (ctrl.dirtyEditor) {
         var message = 'It looks like you were working on something. ';
@@ -34,16 +34,6 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
       }
       else { return true; }
     };
-
-    function closeEditor() {
-      ctrl.posting.post.id = '';
-      ctrl.posting.post.title = '';
-      ctrl.posting.post.body_html = '';
-      ctrl.posting.post.body = '';
-      ctrl.posting.page = '';
-      ctrl.resetEditor = true;
-      ctrl.showEditor = false;
-    }
 
     this.loadEditor = function(post) {
       post = post || {};
@@ -71,7 +61,13 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
         editPost.body = data.body;
         editPost.updated_at = data.updated_at;
       })
-      .then(closeEditor)
+      .then(function() {
+        ctrl.resetEditor = true;
+        ctrl.showEditor = false;
+        ctrl.dirtyEditor = false;
+        ctrl.posting = { post: { body_html: '', body: '' } };
+        Alert.success('Post successfully updated');
+      })
       .catch(function(err) {
         var error = 'Post could not be saved';
         if (err.status === 429) { error = 'Post Rate Limit Exceeded'; }
@@ -155,23 +151,7 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
       .catch(function() { Alert.error('Failed to Undelete Post'); });
     };
 
-
-    this.isMinimized = true;
-    this.fullscreen = function() {
-      if (ctrl.isMinimized) {
-        ctrl.isMinimized = false;
-        this.editorPosition = 'editor-full-screen';
-        this.resize = false;
-      }
-      else {
-        ctrl.isMinimized = true;
-        this.editorPosition = 'editor-fixed-bottom';
-        this.resize = true;
-      }
-    };
-
     /* User/Post Reporting */
-
     this.reportedPost = {}; // Object being reported
     this.showReportModal = false; // Visible state of modal
     this.offendingId = undefined; // Is the post or user id being reported
