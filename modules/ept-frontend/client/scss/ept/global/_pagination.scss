@@ -154,6 +154,14 @@ ul.pagination {
       padding: 0.325rem;
     }
   }
+
+  @include break-mobile-sm {
+    grid-template-columns: 1fr;
+
+    .pagination-components {
+      justify-self: center;
+    }
+  }
 }
 
 .pagination-wrap {
