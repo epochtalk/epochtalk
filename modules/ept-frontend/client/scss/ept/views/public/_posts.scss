@@ -182,12 +182,14 @@ ad-viewer {
       justify-content: flex-start;
     }
 
+
+    $postUserMargin: 1rem;
+    $postUserAvatarSize: calc(#{$postUserWidth} - #{$postUserMargin});
+    
     .post-user {
-      $postUserMargin: 1rem;
-      $postUserAvatarSize: calc(#{$postUserWidth} - #{$postUserMargin});
       // width: $postUserWidth;
       flex: 0 0 $postUserWidth;
-      margin-right: 1.25rem;
+      margin-right: $postUserMargin;
       font-size: $font-size-tiny;
       text-align: center;
       text-transform: uppercase;
@@ -270,7 +272,7 @@ ad-viewer {
     }
 
     .post-content {
-      width: calc(100% - #{$postUserWidth});
+      width: calc(100% - #{$postUserWidth} - #{$postUserMargin});
 
       .bbcode-column {
         img.image-loader.loaded {

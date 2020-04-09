@@ -1,35 +1,21 @@
 <!-- Page Title -->
 <div class="patrol-section">
-  <!-- Show Title -->
-  <div class="leftcol">
-    <h4>Patrol</h4>
-  </div>
-
-  <!-- Pagination -->
-  <div class="rightcol">
-    <div class="pagination-slide">
-      <div class="prev">
-        <button ng-disabled="PatrolParentCtrl.page <= 1" ng-click="PatrolParentCtrl.changePage(-1);">&#10094; Newer</button>
-      </div>
-      <div class="page" ng-bind="PatrolParentCtrl.page"></div>
-      <div class="next">
-        <button ng-disabled="!PatrolParentCtrl.hasMorePosts" ng-click="PatrolParentCtrl.changePage(1);">Older &#10095;</button>
-      </div>
-    </div>
-  </div>
+  <h4>Patrol</h4>
 </div>
 
-<!-- Posts Listing -->
-<div class="thread-data" ui-view="data"></div>
 
-<!-- Bottom Pagination -->
-<div class="pagination-slide">
-  <div class="prev">
-    <button ng-disabled="PatrolParentCtrl.page <= 1" ng-click="PatrolParentCtrl.changePage(-1);">&#10094; Newer</button>
-  </div>
-  <div class="page" ng-bind="PatrolParentCtrl.page"></div>
-  <div class="next">
-    <button ng-disabled="!PatrolParentCtrl.hasMorePosts" ng-click="PatrolParentCtrl.changePage(1);">Older &#10095;</button>
+<!-- Posts Listing -->
+<div class="patrol-list">
+  <div class="thread-data" ui-view="data"></div>
+  <!-- Pagination -->
+  <div class="actions-bottom">
+    <div class="pagination-slide">
+      <div class="pagination-components">
+        <button class="prev" ng-disabled="PatrolParentCtrl.page <= 1" ng-click="PatrolParentCtrl.changePage(-1);">&#10094; Newer</button>
+        <div class="page" ng-bind="PatrolParentCtrl.page"></div>
+        <button class="next" ng-disabled="!PatrolParentCtrl.hasMorePosts" ng-click="PatrolParentCtrl.changePage(1);">Older &#10095;</button>
+      </div>
+    </div>
   </div>
 </div>
 

@@ -1,3 +1,5 @@
+@import 'positioning';
+
 ul.pagination {
   display: inline-block;
   min-height: 1.3rem;
@@ -127,16 +129,31 @@ ul.pagination {
   margin-bottom: 1rem;
   span { color: $secondary-font-color; }
 }
+
 .pagination-slide {
-  @include clearfix;
-  height: 2.1875rem;
-  margin-bottom: 1rem;
-  .prev, .next {
-    @include span-columns(3);
-    button { display: inline-block; padding: 0.5rem; margin: 0; }
+  @include grid-columns-base;
+  @include base-layout-width;
+  display: grid;
+
+  .pagination-components {
+    display: flex;
+    justify-self: end;
+
+    button {
+      background: transparent;
+      color: $text-gray-med;
+      margin-bottom: 0;
+      padding: 0 1rem;
+      width: max-content;
+    }
+
+    .page {
+      background-color: $color-primary;
+      border-radius: 3px;
+      color: #fff;
+      padding: 0.325rem;
+    }
   }
-  .next { @include omega; button { float: right; } }
-  .page { @include span-columns(6); color: $secondary-font-color; text-align: center; line-height: 2.1875rem; }
 }
 
 .pagination-wrap {

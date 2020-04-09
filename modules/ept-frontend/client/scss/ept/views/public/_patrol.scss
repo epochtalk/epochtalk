@@ -1,22 +1,27 @@
 /*-------------- Watchlist Layout --------------- */
 .patrol-section {
-  @include clearfix;
-  @include row;
-  .leftcol {
-    @include span-columns(6);
-    h2 { display: inline-block; }
-    margin-bottom: 1.5rem;
-  }
-  .rightcol {
-    @include span-columns(6);
-    @include omega;
-    .pagination-slide {
-      @include span-columns(8);
-      @include omega;
-      float: right;
-      .prev, .next, .page { @include span-columns(4); }
-    }
-  }
+  grid-area: header;
+  // @include clearfix;
+  // @include row;
+  // .leftcol {
+  //   @include span-columns(6);
+  //   h2 { display: inline-block; }
+  //   margin-bottom: 1.5rem;
+  // }
+  // .rightcol {
+  //   @include span-columns(6);
+  //   @include omega;
+  //   .pagination-slide {
+  //     @include span-columns(8);
+  //     @include omega;
+  //     float: right;
+  //     .prev, .next, .page { @include span-columns(4); }
+  //   }
+  // }
+}
+
+.thread-data {
+  grid-area: main;
 }
 
 .thread-title { margin-bottom: 0.5rem; }

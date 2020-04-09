@@ -8,14 +8,19 @@
   <div class="deleted" ng-if="post._deleted">Post Deleted</div>
 
   <!-- Visible Post View -->
-  <div ng-if="!post._deleted">
+  <div ng-if="!post._deleted" class="post-block-grid">
     <!-- Post Profile Section -->
     <div class="post-user">
       <a ui-sref="profile.posts({ username: post.user.username})">
         <div class="user-avatar {{$webConfigs.default_avatar_shape}}">
+          <span ng-if="post.user.online" class="online green">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <title>icon__unread</title>
+              <circle cx="24" cy="24" r="16" />
+            </svg>
+          </span>
           <img ng-style="PatrolCtrl.avatarHighlight(post.user.highlight_color)" ng-src="{{::post.avatar || $webConfigs.default_avatar}}">
         </div>
-        <div class="user-role" ng-bind="post.user.role_name || 'user'"></div>
       </a>
     </div>
 
@@ -23,53 +28,76 @@
     <div class="post-content">
       <!-- Post Title -->
       <div class="post-title">
-        <span ng-if="post.user.online" class="online green"><i class="fa fa-circle"></i></span>
-        <span ng-if="!post.user.online" class="online green"><i class="fa fa-circle-o"></i></span>
-        <a class="username" data-balloon="{{post.user.role_name || 'User'}}" ui-sref="profile.posts({ username: post.user.username})" ng-style="PatrolCtrl.usernameHighlight(post.user.highlight_color)" ng-bind="::post.user.username"></a>
-        <div title="{{post.user.name}}" ng-if="post.user.name" class="display-name">
-          <span ng-bind-html="::post.user.name | truncate:33"></span>
-          <span class="hide-mobile">&nbsp;&mdash;&nbsp;</span>
+        <div class="post-title-user">
+          <a class="username" data-balloon="{{post.user.role_name || 'User'}}" ui-sref="profile.posts({ username: post.user.username})" ng-style="PatrolCtrl.usernameHighlight(post.user.highlight_color)" ng-bind="::post.user.username"></a>
+          <div title="{{post.user.name}}" ng-if="post.user.name" class="display-name">
+            <span ng-bind-html="::post.user.name | truncate:33"></span>
+            <span class="hide-mobile">&nbsp;&mdash;&nbsp;</span>
+          </div>
+          <div title="{{post.user.role_name || 'user'}}" class="user-role" ng-bind="post.user.role_name || 'user'" ng-style="PostsCtrl.userRoleHighlight(post.user.highlight_color)"></div>
+          <div class="timestamp">
+            <span ng-bind="::post.created_at | humanDate"></span>
+            <span ng-if="PatrolCtrl.showEditDate(post) && post.metadata.edited_by_username" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate) + ' by '"></span><a ng-if="PatrolCtrl.showEditDate(post) && post.metadata.edited_by_username" ui-sref="profile.posts({ username: post.metadata.edited_by_username})" ng-bind="post.metadata.edited_by_username"></a>
+            <span ng-if="PatrolCtrl.showEditDate(post) && !post.metadata.edited_by_username" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
         </div>
-        <div class="timestamp">
-          <span ng-bind="::post.created_at | humanDate"></span>
-          <span ng-if="PatrolCtrl.showEditDate(post) && post.metadata.edited_by_username" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate) + ' by '"></span><a ng-if="PatrolCtrl.showEditDate(post) && post.metadata.edited_by_username" ui-sref="profile.posts({ username: post.metadata.edited_by_username})" ng-bind="post.metadata.edited_by_username"></a>
-          <span ng-if="PatrolCtrl.showEditDate(post) && !post.metadata.edited_by_username" ng-bind-html="'&nbsp;&mdash;&nbsp;Edited ' + (post.updated_at | humanDate)"></span>
         </div>
 
         <ul class="post-action">
           <li ng-if="PatrolCtrl.canPurge(post) && post.position !== 1">
-            <a ng-href="" data-balloon="Purge" ng-click="PatrolParentCtrl.openPurgeModal($index)">
-              <i class="fa fa-trash"></i>
+            <a ng-href="" class="post-action-icon" data-balloon="Purge" ng-click="PatrolParentCtrl.openPurgeModal($index)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <title>trashcan</title>
+                <path
+                  d="M7.73,14.82,12.08,45H35.92l4.35-30.18H7.73Zm9.69,25.26A1.23,1.23,0,0,1,16.08,39L14.52,21.08a1.23,1.23,0,0,1,1.12-1.34A1.22,1.22,0,0,1,17,20.86l1.57,17.89A1.22,1.22,0,0,1,17.42,40.08ZM31,20.86a1.22,1.22,0,0,1,1.33-1.12,1.23,1.23,0,0,1,1.12,1.34L31.92,39a1.23,1.23,0,0,1-2.46-.21Zm-5.8.08v18a1.23,1.23,0,1,1-2.46,0V20.94a1.23,1.23,0,1,1,2.46,0Z" />
+                <path
+                  d="M39.32,7.64H32.14C32.14,3,28.39,3,28.39,3H19.61s-3.75,0-3.75,4.64H8.68a1.93,1.93,0,0,0-2.09,2v3.23H41.41V9.61A1.93,1.93,0,0,0,39.32,7.64Zm-10-.1H18.72V7A1.59,1.59,0,0,1,20.3,5.43h7.4A1.59,1.59,0,0,1,29.28,7Z" />
+              </svg>
             </a>
           </li>
           <li ng-if="PatrolCtrl.canDelete(post) && !post.deleted && post.position !== 1">
-            <a ng-href="#" data-balloon="Delete" ng-click="PatrolParentCtrl.openDeleteModal($index)">
+            <a ng-href="#" class="post-action-icon" data-balloon="Delete" ng-click="PatrolParentCtrl.openDeleteModal($index)">
               <i class="fa fa-eye-slash"></i>
             </a>
           </li>
           <li ng-if="PatrolCtrl.canDelete(post) && post.deleted">
-            <a ng-href="#" data-balloon="Undelete" ng-click="PatrolParentCtrl.openUndeleteModal($index)">
+            <a ng-href="#" class="post-action-icon selected" data-balloon="Undelete" ng-click="PatrolParentCtrl.openUndeleteModal($index)">
               <i class="fa fa-eye"></i>
             </a>
           </li>
           <li ng-if="PatrolCtrl.canPostLock(post) && !post.locked">
-            <a ng-href="#" data-balloon="Lock Post" ng-click="PatrolParentCtrl.lockPost(post)">
-              <i class="icon-epoch-lock"></i>
+            <a ng-href="#" class="post-action-icon" data-balloon="Lock Post" ng-click="PatrolParentCtrl.lockPost(post)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <title>lock</title>
+                <path
+                  d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z" />
+              </svg>
             </a>
           </li>
           <li ng-if="PatrolCtrl.canPostLock(post) && post.locked">
-            <a ng-href="#" data-balloon="Unlock Post" ng-click="PatrolParentCtrl.unlockPost(post)">
-              <i class="icon-epoch-lock clicked"></i>
+            <a ng-href="#" class="post-action-icon selected" data-balloon="Unlock Post" ng-click="PatrolParentCtrl.unlockPost(post)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <title>lock</title>
+                <path
+                  d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z" />
+              </svg>
             </a>
           </li>
           <li ng-if="PatrolParentCtrl.loggedIn() && post.user.id !== PatrolCtrl.user.id && (PatrolParentCtrl.reportControlAccess.reportPosts || PatrolParentCtrl.reportControlAccess.reportUsers)">
             <a ng-href="#" data-balloon="Report" ng-click="PatrolCtrl.openReportModal(post)">
-              <i class="icon-epoch-flag"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <title>flag</title>
+                <path
+                  d="M46.7,41.82l-21.4-37a1.5,1.5,0,0,0-2.6,0l-21.4,37A1.45,1.45,0,0,0,2.6,44H45.4A1.45,1.45,0,0,0,46.7,41.82ZM26.08,18,25.5,32h-3l-.57-14ZM24,39.21a2.5,2.5,0,1,1,2.43-2.5A2.35,2.35,0,0,1,24,39.21Z" />
+              </svg>
             </a>
           </li>
           <li ng-if="PatrolCtrl.canUpdate(post)">
             <a ng-href="#" data-balloon="Edit" ng-click="PatrolCtrl.loadEditor(post)">
-              <i class="icon-epoch-edit-pencil"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <title>edit-pencil</title>
+                <path d="M7.38,33.74h0L4,44l10.26-3.39h0L41.74,13.14,34.86,6.26Zm31-21.15.54.55L14.26,37.79l-.54-.54" />
+                <path d="M45.48,6.89,41.11,2.52a1.78,1.78,0,0,0-2.5,0L36.11,5,43,11.89l2.5-2.5A1.76,1.76,0,0,0,45.48,6.89Z" />
+              </svg>
             </a>
           </li>
         </ul>

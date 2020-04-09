@@ -20,6 +20,10 @@ $grid-2-column: 1fr $sidebarWidth;
   row-gap: 0;
 }
 
+@mixin grid-columns-base {
+  grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
+}
+
 @mixin grid-columns {
   grid-template-columns: $grid-2-column;
 }

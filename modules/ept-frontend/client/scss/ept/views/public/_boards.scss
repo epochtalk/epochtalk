@@ -1,6 +1,6 @@
 /*-------------- Boards Layout -------------- */
 #public-content {
-  grid-template-columns: minmax(0, 3fr) minmax($sidebarWidth, 1fr);
+  @include grid-columns-base;
   grid-template-areas: 
     "header header"
     "main sidebar"
