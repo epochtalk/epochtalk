@@ -200,6 +200,7 @@ function userIgnoredMentions(request) {
 
 module.exports = [
   { path: 'posts.byThread.post', method: userIdToUsername },
+  { path: 'posts.patrol.post', method: userIdToUsername },
   { path: 'posts.pageByUser.post', method: userIdToUsername },
   { path: 'posts.find.post', method: userIdToUsername },
   { path: 'posts.search.post', method: userIdToUsername },
