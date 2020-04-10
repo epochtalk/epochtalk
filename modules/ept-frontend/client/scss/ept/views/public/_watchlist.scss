@@ -1,20 +1,52 @@
 /*-------------- Watchlist Layout --------------- */
 .watchlist-section {
-  @include clearfix;
-  @include row;
-  .leftcol {
-    @include span-columns(6);
-    h2 { display: inline-block; }
-    margin-bottom: 1.5rem;
+  display: flex;
+  grid-area: header;
+  margin-bottom: 1rem;
+
+  h1 {
+    color: $dark-text-default;
+    font-size: $font-size-xl;
+    font-weight: 600;
+    text-transform: none;
   }
-  .rightcol {
-    @include span-columns(6);
-    @include omega;
-    .pagination-slide {
-      @include span-columns(8);
-      @include omega;
-      float: right;
-      .prev, .next, .page { @include span-columns(4); }
+
+  @include break-mobile-sm {
+    flex-direction: column;
+  }
+}
+
+.watchlist-data {
+  grid-area: main;
+}
+
+.watchlist-threads {
+  font-size: 1rem;
+  display: grid;
+  column-gap: 1.5rem;
+  row-gap: 1rem;
+
+  tr {
+    td {
+      font-size: 1rem;
+      padding: 0;
+    }
+  }
+
+  .views-replies {
+    grid-template-columns: repeat(2, minmax(30px, auto));
+  }
+
+  @include break-mobile-sm {
+    padding-left: 0.5rem;
+    row-gap: 0;
+
+    .thread-state {
+      margin-right: 0;
+    }
+
+    .views-replies {
+      grid-template-columns: repeat(2, max-content);
     }
   }
 }
