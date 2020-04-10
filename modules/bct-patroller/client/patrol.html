@@ -19,121 +19,20 @@
   </div>
 </div>
 
-
-<!-- spacer for editor -->
-<div id="post-spacer"></div>
-
 <!-- Editor -->
-<div>
-
-  <div ng-class="PatrolParentCtrl.editorPosition" ng-show="PatrolParentCtrl.showEditor" resizeable="PatrolParentCtrl.resize">
-    <!-- Editor Container-->
-    <div class="editor-container">
-      <!-- Editor Header -->
-      <div class="editor-top-bar">
-        <div class="buttons">
-          <button ng-click="PatrolParentCtrl.showFormatting = true">
-            <i class="fa fa-code"></i>&nbsp;&nbsp;Format
-          </button>
-          <button ng-click="PatrolParentCtrl.fullscreen()"><i class="fa" ng-class="{ 'fa-expand': PatrolParentCtrl.isMinimized, 'fa-compress': !PatrolParentCtrl.isMinimized }"></i>&nbsp;&nbsp;{{ PatrolParentCtrl.isMinimized ? 'Fullscreen' : 'Minimize' }}</button>
-
-          <div class="left hide-mobile toolbar-title" title="Click to go to this post" ng-if="PatrolParentCtrl.posting.post.id">
-            <a ui-sref="posts.data({ threadId: PatrolParentCtrl.posting.post.thread_id, page: PatrolParentCtrl.posting.post.page, '#': PatrolParentCtrl.posting.post.id })">
-              Editing: <span class="underline">{{ PatrolParentCtrl.posting.post.id }}</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="editor-formatting" ng-if="PatrolParentCtrl.showFormatting">
-          <a class="close-formatting" ng-click="PatrolParentCtrl.showFormatting = false">X</a>
-          <div class="thin-underline fill-row">
-            <a ng-href="https://github.com/epochtalk/bbcode-parser" target="_blank" rel="noopener norefferer">
-              <h4>BBCode Lookup</h4>
-            </a>
-          </div>
-          <div class="half-column">
-            <strong>Bold</strong>:<div class="right">[b][/b]</div><br />
-            <em>Italics</em>:<div class="right">[i][/i]</div><br />
-            <u>Underline</u>:<div class="right">[u][/u]</div><br />
-            <del>Strikethrough</del>:<div class="right">[s][/s]</div><br />
-            BTC:<div class="right">[btc][/btc]</div><br />
-            <span style="background-color: green">Glow</span>:
-            <div class="right">[glow={color}][/glow]</div><br />
-            <span style="text-shadow: red 1px 1px 5px;">Shadow</span>:
-            <div class="right">[shadow={color}, {direction}, {blur}][/shadow]</div><br />
-            Font Size:<div class="right">[size={size}][/size]</div><br />
-            <sup>Superscript</sup>:<div class="right">[sup][/sup]</div><br />
-            <sub>Subscript</sub>:<div class="right">[sub][/sub]</div><br />
-
-            <hr class="clear" />
-
-            <code class="preview">Code</code>:<div class="right">[code][/code]</div><br />
-            <tt>TeleText</tt>:<div class="right">[tt][/tt]</div><br />
-            Preformatted Text:<div class="right">[pre][/pre]</div><br />
-            Justify Left:<div class="right">[left][/left]</div><br />
-            Justify Right:<div class="right">[right][/right]</div><br />
-            Justify Center:<div class="right">[center][/center]</div><br />
-
-            <hr class="clear" />
-
-            Horizontal Rule:<div class="right">[hr][/hr]</div><br /><br />
-          </div>
-          <div class="half-column">
-            Black:<div class="right">[black][/black]</div><br />
-            Blue:<div class="right">[blue][/blue]</div><br />
-            Green:<div class="right">[green][/green]</div><br />
-            Red:<div class="right">[red][/red]</div><br />
-            White:<div class="right">[white][/white]</div><br />
-            Additional Colors:<div class="right">[color={color}][/color]</div><br />
-
-            <hr class="clear" />
-
-            Image:<div class="right">[img]{URL}[/img]</div><br />
-            URL:<div class="right">[url={URL}][/url]</div><br />
-            Email:<div class="right">[email={email}][/email]</div><br />
-            FTP:<div class="right">[ftp={URL}][/ftp]</div><br />
-
-            <hr class="clear" />
-
-            Lists:
-            <div class="right">
-              [list]<br />
-              &nbsp;&nbsp;[li][/li]<br />
-              &nbsp;&nbsp;[li][/li]<br />
-              [/list]<br /><br />
-            </div>
-
-            <hr class="clear" />
-
-            Tables:
-            <div class="right">
-              [table]<br />
-              &nbsp;&nbsp;[tr]<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;[td][/td]<br />
-              &nbsp;&nbsp;[/tr]<br />
-              [/table]
-            </div><br />
-          </div>
-        </div>
-      </div>
-      <!-- Editor -->
-      <form name="form" class="editor-form" novalidate>
-        <epochtalk-editor class="posts-editor" body-html="PatrolParentCtrl.posting.post.body_html" body="PatrolParentCtrl.posting.post.body" reset-switch="PatrolParentCtrl.resetEditor" focus-switch="PatrolParentCtrl.focusEditor" dirty="PatrolParentCtrl.dirtyEditor">
-        </epochtalk-editor>
-      </form>
-      <!-- Editor Controls -->
-      <div class="editor-button-container">
-        <button class="cancel" ng-click="PatrolParentCtrl.cancelPost()">
-          Cancel
-        </button>
-        <button class="send" ng-click="PatrolParentCtrl.savePost()" ng-disabled="form.title.$error.required || !PatrolParentCtrl.canSave()">
-          Send
-        </button>
-
-        <span class="label alert" ng-if="PatrolParentCtrl.posting.error" ng-bind="PatrolParentCtrl.posting.error.message"></span>
-      </div>
-    </div>
-  </div>
+<div ng-if="PatrolParentCtrl.canPost() && PatrolParentCtrl.showEditor">
+  <epochtalk-editor class="posts-editor"
+    body-html="PatrolParentCtrl.posting.post.body_html"
+    body="PatrolParentCtrl.posting.post.body"
+    posting="PatrolParentCtrl.posting"
+    reset-switch="PatrolParentCtrl.resetEditor"
+    focus-switch="PatrolParentCtrl.focusEditor"
+    dirty="PatrolParentCtrl.dirtyEditor"
+    post-editor-mode="true"
+    create-action="PatrolParentCtrl.savePost"
+    can-create="PatrolParentCtrl.canSave"
+    show-switch="PatrolParentCtrl.showEditor">
+  </epochtalk-editor>
 </div>
 
 <!-- Reporting Modal -->

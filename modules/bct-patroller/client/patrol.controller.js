@@ -48,6 +48,13 @@ var ctrl = [
       return validBypass;
     };
 
+    parent.canPost = function() {
+      if (!Session.isAuthenticated()) { return false; }
+
+      if (Session.hasPermission('posts.update.allow')) { return true; }
+      else { return false; }
+    };
+
     this.canDelete = function(post) {
       if (!Session.isAuthenticated()) { return false; }
       if (!Session.hasPermission('posts.delete.allow')) { return false; }
