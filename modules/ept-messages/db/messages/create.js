@@ -12,8 +12,8 @@ module.exports = function(message) {
   if (message.content.body === message.content.body_html) {
     delete message.content.body_html
   }
-  var q = 'INSERT INTO messages.private_messages(conversation_id, sender_id, receiver_ids, content, created_at) VALUES ($1, $2, $3, $4, now()) RETURNING id, created_at';
-  var params = [message.conversation_id, message.sender_id, message.receiver_ids, message.content];
+  var q = 'INSERT INTO messages.private_messages(conversation_id, sender_id, receiver_ids, content, read_by_user_ids, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id, created_at';
+  var params = [message.conversation_id, message.sender_id, message.receiver_ids, message.content, [message.sender_id]];
   return using(db.createTransaction(), function(client) {
     return client.query(q, params)
     .then(function(results) {
