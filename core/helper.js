@@ -39,7 +39,7 @@ var slugKeywords = [
   'edited_by_id',
   'role_id'
 ];
-var slugArrayKeywords = ['children_ids', 'board_ids', 'copied_ids', 'answer_ids', 'receiver_ids', 'poster_ids'];
+var slugArrayKeywords = ['children_ids', 'board_ids', 'copied_ids', 'answer_ids', 'receiver_ids', 'poster_ids', 'read_by_user_ids'];
 
 module.exports = {
   intToUUID: function(id) {
@@ -97,7 +97,7 @@ function slugTransform(input, slugMethod) {
         input[key] = slugMethod(input[key]);
       }
       else if (_.includes(slugArrayKeywords, key)) {
-        input[key] = input[key].map(function(item) { return slugMethod(item); });
+        input[key] = input[key].map(slugMethod);
       }
       else if (_.isPlainObject(input[key]) || _.isArray(input[key])) {
         input[key] = slugTransform(input[key], slugMethod);
