@@ -26,8 +26,8 @@ module.exports = function(message) {
       else { throw new CreationError('Private Message Could Not Be Saved'); }
     })
     .then(function() {
-      q = 'UPDATE messages.private_conversations SET deleted_by_user_ids = $1 WHERE id = $2';
-      return client.query(q, [[], message.conversation_id]);
+      q = 'UPDATE messages.private_conversations SET deleted_by_user_ids = $1, read_by_user_ids = $2 WHERE id = $3';
+      return client.query(q, [[], [message.sender_id], message.conversation_id]);
     });
   })
   .then(function() { return helper.slugify(message); });
