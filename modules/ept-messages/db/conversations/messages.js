@@ -3,20 +3,22 @@ var dbc = require(path.normalize(__dirname + '/../db'));
 var helper = dbc.helper;
 var db = dbc.db;
 var Promise = require('bluebird');
+var using = Promise.using;
 
 module.exports = function(conversationId, viewerId, opts) {
   conversationId = helper.deslugify(conversationId);
   viewerId = helper.deslugify(viewerId);
 
   opts = opts || {};
+  var res;
   var limit = opts.limit || 15;
   var timestamp = opts.timestamp || new Date();
   var messageId = opts.messageId;
   if (messageId) { messageId = helper.deslugify(messageId); }
   var params = [conversationId, viewerId, timestamp, limit];
 
-  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.content, mid.created_at, mid.viewed, mid.read_by_user_ids, mid.reported, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar';
-  var q = 'SELECT pm.conversation_id, pm.read_by_user_ids, pm.id, pm.sender_id, pm.receiver_ids, pm.content, pm.created_at, pm.viewed, CASE WHEN EXISTS (SELECT rm.id FROM administration.reports_messages rm WHERE rm.offender_message_id = pm.id AND rm.reporter_user_id = $2) THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS reported FROM messages.private_messages pm WHERE $2 != ALL(deleted_by_user_ids) AND conversation_id = $1 AND (pm.sender_id = $2 OR $2 = ANY(pm.receiver_ids)) AND pm.created_at <= $3';
+  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.content, mid.created_at, mid.read_by_user_ids, mid.reported, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar';
+  var q = 'SELECT pm.conversation_id, pm.read_by_user_ids, pm.id, pm.sender_id, pm.receiver_ids, pm.content, pm.created_at, CASE WHEN EXISTS (SELECT rm.id FROM administration.reports_messages rm WHERE rm.offender_message_id = pm.id AND rm.reporter_user_id = $2) THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS reported FROM messages.private_messages pm WHERE $2 != ALL(deleted_by_user_ids) AND conversation_id = $1 AND (pm.sender_id = $2 OR $2 = ANY(pm.receiver_ids)) AND pm.created_at <= $3';
   var q2 = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = mid.sender_id';
 
   if (messageId) {

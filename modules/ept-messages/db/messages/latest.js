@@ -8,11 +8,11 @@ module.exports = function(userId, opts) {
   userId = helper.deslugify(userId);
   opts = opts || {};
 
-  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.content, mid.created_at, mid.viewed, mid.read_by_user_ids, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar';
+  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.content, mid.created_at, mid.read_by_user_ids, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar';
   var q = ` SELECT * FROM
     ( SELECT
       DISTINCT ON (conversation_id) conversation_id, id, sender_id,
-      receiver_ids, content, created_at, viewed, read_by_user_ids
+      receiver_ids, content, created_at, read_by_user_ids
       FROM messages.private_messages
       WHERE (SELECT $1 = ANY(pc.deleted_by_user_ids) as deleted
       FROM messages.private_conversations pc WHERE pc.id = conversation_id) IS FALSE AND $1 != ALL(deleted_by_user_ids)
@@ -34,6 +34,11 @@ module.exports = function(userId, opts) {
   var params = [userId, limit, offset];
   return db.sqlQuery(query, params)
   .map(function(data) {
+    if (data && data.read_by_user_ids) {
+      data.viewed = data.read_by_user_ids.includes(userId);
+      delete data.read_by_user_ids;
+    }
+    else { data.viewed = false; }
     if (data && data.receiver_ids.length) {
       return Promise.map(data.receiver_ids, function(receiverId) {
         var userQuery = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = $1';

@@ -96,6 +96,9 @@ var ctrl = [
     this.loadConversation = function(conversationId, options) {
       options = options || {};
       ctrl.selectedConversationId = conversationId;
+      ctrl.recentMessages.forEach(function(message) {
+        if (message.conversation_id === conversationId) { viewed = true; }
+      });
       return Conversations.messages({ id: conversationId }).$promise
       // build out conversation information
       .then(function(data) {
@@ -238,6 +241,9 @@ var ctrl = [
       .then(ctrl.loadRecentMessages)
       .then(function() {
         ctrl.newMessage.content = { body: '', body_html: '' };
+        ctrl.currentConversation.messages.forEach(function(message) {
+          message.viewed = true;
+        });
         closeEditor();
       })
       .catch(function(err) {
