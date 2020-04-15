@@ -12,7 +12,7 @@ module.exports = function(userId, opts) {
   var q = ` SELECT * FROM
     ( SELECT
       DISTINCT ON (conversation_id) conversation_id, id, sender_id,
-      receiver_ids, content, created_at, read_by_user_ids
+      receiver_ids, content, created_at, (SELECT read_by_user_ids FROM messages.private_conversations WHERE id = conversation_id)
       FROM messages.private_messages
       WHERE (SELECT $1 = ANY(pc.deleted_by_user_ids) as deleted
       FROM messages.private_conversations pc WHERE pc.id = conversation_id) IS FALSE AND $1 != ALL(deleted_by_user_ids)

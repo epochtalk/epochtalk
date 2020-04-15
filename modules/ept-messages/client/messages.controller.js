@@ -220,7 +220,6 @@ var ctrl = [
         ctrl.limit = data.limit;
         ctrl.page = data.page;
         ctrl.pageMax = Math.ceil(data.total_convo_count / data.limit);
-
       })
       .catch(function(err) {
         var msg = 'Messages could not be loaded';
