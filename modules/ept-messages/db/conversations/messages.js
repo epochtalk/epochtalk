@@ -33,44 +33,51 @@ module.exports = function(conversationId, viewerId, opts) {
     q2 + ' ) s ON true ORDER BY mid.created_at DESC';
 
   // get all related posts
-  return db.sqlQuery(query, params)
-  .map(function(data) {
-    if (data && data.receiver_ids.length) {
-      return Promise.map(data.receiver_ids, function(receiverId) {
-        var userQuery = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = $1';
-        return db.scalar(userQuery, [receiverId]);
-      })
-      .then(function(receiverData) {
-        data.receivers = receiverData;
-        if (data.content && !data.content.body_html) { data.content.body_html = data.content.body; }
-        return data;
+  return using(db.createTransaction(), function(client) {
+    return client.query(query, params)
+    .then(function(data) {
+      return Promise.map(data.rows, function(data) {
+        if (data && data.read_by_user_ids) {
+          data.viewed = data.read_by_user_ids.includes(viewerId);
+          delete data.read_by_user_ids;
+        }
+        else { data.viewed = false; }
+        if (data && data.receiver_ids.length) {
+          return Promise.map(data.receiver_ids, function(receiverId) {
+            var userQuery = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = $1';
+            return client.query(userQuery, [receiverId]);
+          })
+          .then(function(receiverData) {
+            data.receivers = receiverData[0].rows;
+            if (data.content && !data.content.body_html) { data.content.body_html = data.content.body; }
+            return data;
+          });
+        }
+        else { return data; }
       });
-    }
-    else { return data; }
-  })
-  .map(function(data) {
-    if (data) {
-      var subjectQuery = 'SELECT content->>\'subject\' as subject FROM messages.private_messages WHERE conversation_id = $1 AND content->>\'subject\' IS NOT NULL';
-      return db.scalar(subjectQuery, [data.conversation_id])
-      .then(function(dbData) {
-        data.content.subject = dbData.subject;
-        return data;
-      });
-    }
-  })
-  .tap(function(data) {
-    var readByUserIds;
-    var q = 'SELECT read_by_user_ids FROM messages.private_conversations WHERE id = $1';
-    return db.scalar(q, [conversationId])
-    .then(function(dbData) {
-      readByUserIds = dbData.read_by_user_ids || [];
-      if (!readByUserIds.includes(viewerId)) { readByUserIds.push(viewerId); }
-      q = 'UPDATE messages.private_conversations SET read_by_user_ids = $1 WHERE id = $2';
-      return db.scalar(q, [readByUserIds, conversationId]);
     })
-    .then(function() {
-      q = 'UPDATE messages.private_messages SET read_by_user_ids = $1 WHERE conversation_id = $2';
-      return db.scalar(q, [readByUserIds, conversationId])
+    .then(function(data) {
+     return Promise.map(data, function(data) {
+        if (data) {
+          var subjectQuery = 'SELECT content->>\'subject\' as subject FROM messages.private_messages WHERE conversation_id = $1 AND content->>\'subject\' IS NOT NULL';
+          return client.query(subjectQuery, [data.conversation_id])
+          .then(function(dbData) {
+            data.content.subject = dbData.rows[0].subject;
+            return data;
+          });
+        }
+      });
+    })
+    .then(function(result) { res = result; })
+    .then(function(data) { // Mark conversations read once queried
+      var readByUserIds;
+      var q = 'UPDATE messages.private_conversations SET read_by_user_ids = read_by_user_ids || $1::uuid WHERE id = $2 AND NOT(read_by_user_ids @> array[$1::uuid])';
+      return client.query(q, [viewerId, conversationId])
+      .then(function() {
+        q = 'UPDATE messages.private_messages SET read_by_user_ids = read_by_user_ids || $1::uuid WHERE conversation_id = $2 AND NOT(read_by_user_ids @> array[$1::uuid])';
+        return client.query(q, [viewerId, conversationId]);
+      })
+      .then(function() { return res; })
     })
   })
   .then(helper.slugify);
