@@ -145,6 +145,10 @@ var ctrl = [
       this.loadConversation(this.recentMessages[0].conversation_id);
     }
 
+    this.reloadConversation = function() {
+      ctrl.loadConversation(ctrl.selectedConversationId);
+    }
+
     this.loadMoreMessages = function() {
       var query = {
         id: ctrl.currentConversation.id,
