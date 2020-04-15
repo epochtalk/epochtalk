@@ -97,7 +97,7 @@ var ctrl = [
       options = options || {};
       ctrl.selectedConversationId = conversationId;
       ctrl.recentMessages.forEach(function(message) {
-        if (message.conversation_id === conversationId) { viewed = true; }
+        if (message.conversation_id === conversationId) { message.viewed = true; }
       });
       return Conversations.messages({ id: conversationId }).$promise
       // build out conversation information
