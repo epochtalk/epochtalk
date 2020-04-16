@@ -87,7 +87,7 @@ var ctrl = [
     this.receivers = [];
 
     this.loadTags = function(query) {
-      return User.lookup({ self: true, username: query }).$promise
+      return User.lookup({ self: true, username: query, restricted: true }).$promise
       .then(function(users) { return users; });
     };
 
