@@ -110,7 +110,7 @@
         <div ng-if="MessagesCtrl.editorConvoMode">
           <!-- Select User -->
           <label>To</label>
-          <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers" modal-focus="{{MessagesCtrl.showEditor && MessagesCtrl.editorConvoMode}}">
+          <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" allow-leftover-text="false" ng-model="MessagesCtrl.receivers" modal-focus="{{MessagesCtrl.showEditor && MessagesCtrl.editorConvoMode}}">
               <auto-complete min-length="1" debounce-delay="250" source="MessagesCtrl.loadTags($query)"></auto-complete>
             </tags-input>
           <!-- Subject -->
@@ -208,7 +208,7 @@
         <button class="inverted-button cancel" ng-click="MessagesCtrl.cancelMsg()">
           Cancel
         </button>
-        <button class="no-animate" ng-if="MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.createConversation()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateConversation() || !MessagesCtrl.newMessage.content.subject.length || !MessagesCtrl.newMessage.content.body.length">
+        <button class="no-animate" ng-if="MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.receivers.length || form.title.$error.required || !MessagesCtrl.canCreateConversation() || !MessagesCtrl.newMessage.content.subject.length || !MessagesCtrl.newMessage.content.body.length">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start New Conversation
         </button>
         <button class="no-animate" ng-if="!MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.saveMessage()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateMessage() || !MessagesCtrl.newMessage.content.body.length">
