@@ -1,7 +1,16 @@
+// Grid Layout
+main #public-content {
+  grid-template-columns: 1fr 2fr;
+  grid-template-areas:
+    "sidebar main"
+    "sidebar main";
+}
+
 /*-------------- Messages Layout -------------- */
 .conversations {
-  @include span-columns(3);
-  margin-bottom: 2rem;
+  grid-area: sidebar;
+  min-height: calc(100vh - 95px);
+
   .list {
     margin-bottom: 1rem;
     .cell {
@@ -38,8 +47,6 @@
   }
 }
 .messages {
-  @include span-columns(9);
-  @include omega;
   .thin-underline {
     @include no-select;
     margin-bottom: 0;
