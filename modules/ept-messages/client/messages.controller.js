@@ -68,6 +68,9 @@ var ctrl = [
     this.loadConversation = function(conversationId, options) {
       options = options || {};
       ctrl.selectedConversationId = conversationId;
+      ctrl.recentMessages.forEach(function(message) {
+        if (message.conversation_id === conversationId) { message.viewed = true; }
+      });
       return Conversations.messages({ id: conversationId }).$promise
       // build out conversation information
       .then(function(data) {
@@ -112,6 +115,10 @@ var ctrl = [
 
     if (this.recentMessages.length) {
       this.loadConversation(this.recentMessages[0].conversation_id);
+    }
+
+    this.reloadConversation = function() {
+      ctrl.loadConversation(ctrl.selectedConversationId);
     }
 
     this.loadMoreMessages = function() {
@@ -214,6 +221,9 @@ var ctrl = [
       .then(ctrl.loadRecentMessages)
       .then(function() {
         ctrl.newMessage.content = { body: '', body_html: '' };
+        ctrl.currentConversation.messages.forEach(function(message) {
+          message.viewed = true;
+        });
         closeEditor();
       })
       .catch(function(err) {

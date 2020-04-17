@@ -182,7 +182,7 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
       };
 
       $scope.loadTags = function(query) {
-        return User.lookup({ username: query }).$promise
+        return User.lookup({ self: true, username: query, restricted: true }).$promise
         .then(function(users) { return users; });
       };
 
