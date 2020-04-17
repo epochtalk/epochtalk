@@ -115,7 +115,8 @@
   "resolutions": {
     "livereload/ws": "^6.1.2",
     "lab/**/joi": "^14.3.1",
-    "good-http/wreck": "^12.5.1"
+    "good-http/wreck": "^12.5.1",
+    "acorn": "^6.4.1"
   },
   "bin": {
     "epoch": "cli/index.js"
