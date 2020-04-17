@@ -125,7 +125,6 @@ exports.newPM = function(sender, params) {
     html: mustache.render(templateFile('new-pm.html'), {
       css: css(),
       sender: params.sender,
-      messagePreview: params.message_preview,
       siteName: params.site_name,
       currentYear: currentYear,
       messageURL: params.message_url
