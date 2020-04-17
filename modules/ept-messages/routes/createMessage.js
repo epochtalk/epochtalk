@@ -47,7 +47,6 @@ module.exports = {
     var config = request.server.app.config;
     var message = request.payload;
     message.sender_id = request.auth.credentials.id;
-
     // create the message in db
     var promise = request.db.messages.create(message)
     .tap(function(dbMessage) {
@@ -72,7 +71,8 @@ module.exports = {
           var emailParams = {
             email: receiver.email,
             sender: request.auth.credentials.username,
-            message_preview: message.content.body_html,
+            subject: message.content.subject,
+            message: message.content.body_html,
             site_name: config.website.title,
             message_url: config.publicUrl + '/messages'
           };
