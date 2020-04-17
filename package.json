@@ -117,7 +117,8 @@
     "lab/**/joi": "^14.3.1",
     "good-http/wreck": "^12.5.1",
     "acorn": "^6.4.1",
-    "kind-of": "^6.0.3"
+    "kind-of": "^6.0.3",
+    "minimist": "^1.2.0"
   },
   "bin": {
     "epoch": "cli/index.js"
