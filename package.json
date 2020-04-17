@@ -115,6 +115,7 @@
   "resolutions": {
     "livereload/ws": "^6.1.2",
     "lab/**/joi": "^14.3.1",
+    "https-proxy-agent": "^2.2.4",
     "good-http/wreck": "^12.5.1"
   },
   "bin": {
