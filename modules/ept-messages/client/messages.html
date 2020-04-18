@@ -36,14 +36,20 @@
   
     <div class="list" ng-if="MessagesCtrl.pageMax > 0">
       <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id, 'unread': !message.viewed}">
-        <strong ng-bind="::MessagesCtrl.listMessageReceivers(message)"></strong>
-        <br />
-        <span class="msg-preview" ng-bind-html="message.created_at | humanDate"></span>
-        <br />
-        <strong><span class="msg-preview" ng-bind-html="message.content.subject"></span></strong>
-        <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete" data-balloon-pos="left">
-          <i class="fa fa-trash"></i>
-        </a>
+        <span class="state-unread">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <title>icon__unread</title>
+            <circle cx="24" cy="24" r="16"/>
+          </svg>
+        </span>
+        <div class="message-body">
+          <span class="recipient" ng-bind="::MessagesCtrl.listMessageReceivers(message)"></span>
+          <span class="msg-preview" ng-bind-html="message.created_at | humanDate"></span>
+          <span class="msg-preview" ng-bind-html="message.content.subject"></span>
+          <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete" data-balloon-pos="left">
+            <i class="fa fa-trash"></i>
+          </a>
+        </div>
       </div>
     </div>
   </div>

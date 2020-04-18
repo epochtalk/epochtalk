@@ -41,20 +41,74 @@ main #public-content {
 
   .list {
     margin-bottom: 1rem;
+
     .cell {
       @include fill-parent;
       @include truncate-ellipsis;
-      @include pad(0.5rem 0.2rem);
+      display: flex;
       font-size: 0.8rem;
       line-height: 0.95rem;
       cursor: pointer;
+      padding: 0.5rem 0;
+      padding-left: 12px;
       position: relative;
-      .action { position: absolute; top: 0.5rem; right: 0.2rem; color: $secondary-font-color; }
+
       .msg-preview { color: $secondary-font-color; }
-      &.unread { background-color: $color-primary-transparent; }
+
+      .message-body {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        span {
+          padding-bottom: 0.25rem
+        }
+
+        .recipient,
+        .msg-preview {
+          font-weight: 600;
+        }
+      }
+
+      .action {
+        position: absolute; 
+        top: 0.5rem; 
+        right: 0.2rem; 
+        color: $secondary-font-color; 
+        opacity: .25;
+        transition: all ease-in-out 200ms;
+      }
+
+      .state-unread {
+        margin-left: -12px;
+        padding-top: 2px;
+        width: 14px;
+
+        svg {
+          display: none;
+          fill: $color-primary;
+          width: 10px;
+        }
+      }
+      
       &.active { background-color: $sub-header-color; }
+
+      &.unread { 
+        .state-unread {
+          svg {
+            display: block;
+          }
+        }
+      }
+
+      &:hover {
+        .action {
+          opacity: 1;
+        }
+      }
     }
   }
+
   #recentMessagesHeader {
     display: flex;
     align-content: center;
