@@ -46,7 +46,7 @@
         <div ng-if="editorConvoMode">
           <!-- Select User -->
           <label>To</label>
-          <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="receivers" modal-focus="{{showEditor && editorConvoMode}}">
+          <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" allow-leftover-text="false" ng-model="receivers" modal-focus="{{showEditor && editorConvoMode}}">
               <auto-complete min-length="1" debounce-delay="250" source="loadTags($query)"></auto-complete>
             </tags-input>
           <!-- Subject -->

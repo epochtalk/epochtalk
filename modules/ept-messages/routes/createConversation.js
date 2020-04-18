@@ -58,7 +58,7 @@ module.exports = {
   },
   handler: function(request) {
     // create the conversation in db
-    var promise = request.db.conversations.create()
+    var promise = request.db.conversations.create(request.auth.credentials.id)
     .then(function(conversation) {
       var message = request.payload;
       message.conversation_id = conversation.id;

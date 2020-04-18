@@ -13,7 +13,7 @@
 <!-- Recent Conversations -->
 <div class="conversations" ng-if="MessagesCtrl.recentMessages.length > 0">
   <div id="recentMessagesHeader">
-    <div class="inbox" ng-click="MessagesCtrl.loadRecentMessages();">
+    <div class="inbox" ng-click="MessagesCtrl.loadRecentMessages(); MessagesCtrl.reloadConversation()">
       <i class="fa fa-envelope"></i> Inbox
     </div>
     <div class="add" ng-if="MessagesCtrl.canCreateConversation()" ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">
@@ -32,7 +32,7 @@
   </div>
 
   <div class="list" ng-if="MessagesCtrl.pageMax > 0">
-    <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id}">
+    <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id, 'unread': !message.viewed}">
       <strong ng-bind="::MessagesCtrl.listMessageReceivers(message)"></strong>
       <br />
       <span class="msg-preview" ng-bind-html="message.created_at | humanDate"></span>
@@ -65,7 +65,7 @@
 
   <!-- Conversation Messages -->
   <div class="msg-container">
-    <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="MessagesCtrl.currentUserId === message.sender_id ? 'sender' : ''">
+    <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="{ 'sender': MessagesCtrl.currentUserId === message.sender_id, 'unread': !message.viewed}">
       <div class="content">
         <div class="avatar {{$webConfigs.default_avatar_shape}}">
           <img ng-src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
