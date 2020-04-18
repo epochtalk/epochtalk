@@ -74,6 +74,9 @@
           <strong ng-bind="message.sender_username"></strong>
           <span class="date" ng-bind="message.created_at | humanDate"></span>
           <div class="right">
+            <a ng-href="" data-balloon="Quote" ng-click="MessagesCtrl.addQuote(message)">
+              <i class="icon-epoch-quote"></i>
+            </a>
             <a ng-if="MessagesCtrl.canDeleteMessage(message.sender_id)" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-balloon="Delete">
               <i class="fa fa-trash"></i>
             </a>
@@ -192,7 +195,7 @@
       </div>
       <!-- Editor -->
       <form name="form" class="editor-form" novalidate>
-        <epochtalk-editor class="posts-editor" body-html="MessagesCtrl.newMessage.content.body_html" body="MessagesCtrl.newMessage.content.body" reset-switch="MessagesCtrl.resetEditor" focus-switch="MessagesCtrl.focusEditor" dirty="MessagesCtrl.dirtyEditor">
+        <epochtalk-editor class="posts-editor" body-html="MessagesCtrl.newMessage.content.body_html" body="MessagesCtrl.newMessage.content.body" reset-switch="MessagesCtrl.resetEditor" focus-switch="MessagesCtrl.focusEditor" quote="MessagesCtrl.quote" dirty="MessagesCtrl.dirtyEditor">
         </epochtalk-editor>
       </form>
 
