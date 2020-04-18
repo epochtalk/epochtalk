@@ -1,160 +1,164 @@
-<div ng-if="MessagesCtrl.recentMessages.length < 1">
-  <br />
-  <h4 class="centered-text">You're message inbox is currently empty, message someone to get started!</h4>
-
-  <br /><br />
-
-  <div class="centered-text">
-    <button ng-if='MessagesCtrl.canCreateConversation() ' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">Start a Conversation</button>
-  </div>
-</div>
-
-
-<!-- Recent Conversations -->
-<div class="conversations" ng-if="MessagesCtrl.recentMessages.length > 0">
-  <div id="recentMessagesHeader">
-    <div class="inbox" ng-click="MessagesCtrl.loadRecentMessages(); MessagesCtrl.reloadConversation()">
-      <i class="fa fa-envelope"></i> Inbox
-    </div>
-    <div class="add" ng-if="MessagesCtrl.canCreateConversation()" ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">
-      <i class="fa fa-plus"></i> New Message
+<div class="messages-grid">
+  <div ng-if="MessagesCtrl.recentMessages.length < 1">
+    <br />
+    <h4 class="centered-text">You're message inbox is currently empty, message someone to get started!</h4>
+  
+    <br /><br />
+  
+    <div class="centered-text">
+      <button ng-if='MessagesCtrl.canCreateConversation() ' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">Start a Conversation</button>
     </div>
   </div>
-
-  <div class="pagination-slide" ng-if="MessagesCtrl.pageMax > 0">
-    <div class="prev">
-      <button ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page - 1)" ng-disabled="MessagesCtrl.page === 1">&#10094;</button>
+  
+  
+  <!-- Recent Conversations -->
+  <div class="conversations" ng-if="MessagesCtrl.recentMessages.length > 0">
+    <div id="recentMessagesHeader">
+      <div class="inbox" ng-click="MessagesCtrl.loadRecentMessages(); MessagesCtrl.reloadConversation()">
+        <i class="fa fa-envelope"></i> Inbox
+      </div>
+      <div class="add" ng-if="MessagesCtrl.canCreateConversation()" ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+          <path d="M24,4A20,20,0,1,1,4,24,20,20,0,0,1,24,4m0-2A22,22,0,1,0,46,24,22,22,0,0,0,24,2Z"/><path d="M36,25.71H25.71V36H22.29V25.71H12V22.29H22.29V12h3.42V22.29H36Z"/>
+        </svg> New Message
+      </div>
     </div>
-    <div class="page" ng-bind="'Page ' + MessagesCtrl.page + ' of ' + MessagesCtrl.pageMax"></div>
-    <div class="next">
-      <button ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page + 1)" ng-disabled="MessagesCtrl.page === MessagesCtrl.pageMax">&#10095;</button>
+  
+    <div class="pagination-slide" ng-if="MessagesCtrl.pageMax > 0">
+      <div class="prev">
+        <button ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page - 1)" ng-disabled="MessagesCtrl.page === 1">&#10094;</button>
+      </div>
+      <div class="page" ng-bind="'Page ' + MessagesCtrl.page + ' of ' + MessagesCtrl.pageMax"></div>
+      <div class="next">
+        <button ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page + 1)" ng-disabled="MessagesCtrl.page === MessagesCtrl.pageMax">&#10095;</button>
+      </div>
     </div>
-  </div>
-
-  <div class="list" ng-if="MessagesCtrl.pageMax > 0">
-    <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id, 'unread': !message.viewed}">
-      <strong ng-bind="::MessagesCtrl.listMessageReceivers(message)"></strong>
-      <br />
-      <span class="msg-preview" ng-bind-html="message.created_at | humanDate"></span>
-      <br />
-      <strong><span class="msg-preview" ng-bind-html="message.content.subject"></span></strong>
-      <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete" data-balloon-pos="left">
-        <i class="fa fa-trash"></i>
-      </a>
-    </div>
-  </div>
-</div>
-
-<!-- Current Conversation -->
-<div class="messages">
-  <!-- New Message -->
-  <div ng-if="MessagesCtrl.currentConversation.messages.length > 0">
-    <a class="right no-select" ng-if='MessagesCtrl.canCreateMessage()' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = false;">
-      <i class="fa fa-reply"></i> Reply
-    </a>
-    <h4>Conversation with
-      <strong ng-repeat="name in MessagesCtrl.receiverNames">
-        <a ui-sref="profile.posts({ username: name})">{{name}}</a>{{ $last ? '' : ', '}}
-      </strong>
-    </h4>
-    <h4>Subject: <strong>{{MessagesCtrl.currentSubject}}</strong></h4>
-  </div>
-  <h4 ng-if="MessagesCtrl.recentMessages.length > 0 && MessagesCtrl.currentConversation.messages.length < 1" class="centered-text">
-    No Conversation selected<br />
-  </h4>
-
-  <!-- Conversation Messages -->
-  <div class="msg-container">
-    <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="{ 'sender': MessagesCtrl.currentUserId === message.sender_id, 'unread': !message.viewed}">
-      <div class="content">
-        <div class="avatar {{$webConfigs.default_avatar_shape}}">
-          <img ng-src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
-        </div>
-        <div class="title">
-          <strong ng-bind="message.sender_username"></strong>
-          <span class="date" ng-bind="message.created_at | humanDate"></span>
-          <div class="right">
-            <a ng-if="MessagesCtrl.canDeleteMessage(message.sender_id)" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-balloon="Delete">
-              <i class="fa fa-trash"></i>
-            </a>
-            <a ng-if="message.sender_id !== MessagesCtrl.currentUserId && MessagesCtrl.controlAccess.reportMessages && !message.reported" ng-href="#" class="action" ng-click="MessagesCtrl.openReportModal(message)" data-balloon="Report">
-              <i class="icon-epoch-flag"></i>
-            </a>
-          </div>
-        </div>
-        <div class="msg-content post-body" post-processing="message.content.body_html" style-fix="true"></div>
+  
+    <div class="list" ng-if="MessagesCtrl.pageMax > 0">
+      <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id, 'unread': !message.viewed}">
+        <strong ng-bind="::MessagesCtrl.listMessageReceivers(message)"></strong>
+        <br />
+        <span class="msg-preview" ng-bind-html="message.created_at | humanDate"></span>
+        <br />
+        <strong><span class="msg-preview" ng-bind-html="message.content.subject"></span></strong>
+        <a ng-if="MessagesCtrl.canDeleteConversation()" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteConvoModal(message.conversation_id)" data-balloon="Delete" data-balloon-pos="left">
+          <i class="fa fa-trash"></i>
+        </a>
       </div>
     </div>
   </div>
-
-  <!-- load more message -->
-  <div class="clear">
-    <button class="fill-row no-animate" ng-if="MessagesCtrl.hasMoreMessages()" ng-click="MessagesCtrl.loadMoreMessages()">
-      Load More Messages
-    </button>
+  
+  <!-- Current Conversation -->
+  <div class="messages">
+    <!-- New Message -->
+    <div ng-if="MessagesCtrl.currentConversation.messages.length > 0">
+      <a class="right no-select" ng-if='MessagesCtrl.canCreateMessage()' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = false;">
+        <i class="fa fa-reply"></i> Reply
+      </a>
+      <h4>Conversation with
+        <strong ng-repeat="name in MessagesCtrl.receiverNames">
+          <a ui-sref="profile.posts({ username: name})">{{name}}</a>{{ $last ? '' : ', '}}
+        </strong>
+      </h4>
+      <h4>Subject: <strong>{{MessagesCtrl.currentSubject}}</strong></h4>
+    </div>
+    <h4 ng-if="MessagesCtrl.recentMessages.length > 0 && MessagesCtrl.currentConversation.messages.length < 1" class="centered-text">
+      No Conversation selected<br />
+    </h4>
+  
+    <!-- Conversation Messages -->
+    <div class="msg-container">
+      <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="{ 'sender': MessagesCtrl.currentUserId === message.sender_id, 'unread': !message.viewed}">
+        <div class="content">
+          <div class="avatar {{$webConfigs.default_avatar_shape}}">
+            <img ng-src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
+          </div>
+          <div class="title">
+            <strong ng-bind="message.sender_username"></strong>
+            <span class="date" ng-bind="message.created_at | humanDate"></span>
+            <div class="right">
+              <a ng-if="MessagesCtrl.canDeleteMessage(message.sender_id)" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-balloon="Delete">
+                <i class="fa fa-trash"></i>
+              </a>
+              <a ng-if="message.sender_id !== MessagesCtrl.currentUserId && MessagesCtrl.controlAccess.reportMessages && !message.reported" ng-href="#" class="action" ng-click="MessagesCtrl.openReportModal(message)" data-balloon="Report">
+                <i class="icon-epoch-flag"></i>
+              </a>
+            </div>
+          </div>
+          <div class="msg-content post-body" post-processing="message.content.body_html" style-fix="true"></div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- load more message -->
+    <div class="clear">
+      <button class="fill-row no-animate" ng-if="MessagesCtrl.hasMoreMessages()" ng-click="MessagesCtrl.loadMoreMessages()">
+        Load More Messages
+      </button>
+    </div>
   </div>
+  
+  <div class="clear"></div>
+  
+  <!-- Editor -->
+  <div ng-if="(MessagesCtrl.canCreateMessage() || MessagesCtrl.canCreateConversation()) && MessagesCtrl.showEditor">
+    <epochtalk-editor class="posts-editor"
+      body-html="MessagesCtrl.newMessage.content.body_html"
+      body="MessagesCtrl.newMessage.content.body"
+      reset-switch="MessagesCtrl.resetEditor"
+      focus-switch="MessagesCtrl.focusEditor"
+      editor-convo-mode="MessagesCtrl.editorConvoMode"
+      dirty="MessagesCtrl.dirtyEditor"
+      create-action="MessagesCtrl.createConversation"
+      update-action="MessagesCtrl.saveMessage"
+      can-create="MessagesCtrl.canCreateConversation"
+      can-update="MessagesCtrl.canCreateMessage"
+      show-switch="MessagesCtrl.showEditor"
+      receivers="MessagesCtrl.receivers"
+      new-message="MessagesCtrl.newMessage">
+    </epochtalk-editor>
+  </div>
+  
+  <!-- Delete Message Modal -->
+  <modal show="MessagesCtrl.showDeleteModal" on-close="MessagesCtrl.closeDeleteModal()">
+    <form name="$parent.form" class="css-form" novalidate>
+      <h3 class="thin-underline">Delete Reply</h3>
+      <p>Are you sure you want to permanently delete this reply?</p>
+  
+      <!-- Save Button -->
+      <div class="clear">
+        <button class="fill-row" ng-click="MessagesCtrl.deleteMessage()">
+          Delete Reply
+        </button>
+      </div>
+    </form>
+  </modal>
+  
+  <!-- Delete Conversation Modal -->
+  <modal show="MessagesCtrl.showDeleteConvoModal" on-close="MessagesCtrl.closeDeleteConvoModal()">
+    <form name="$parent.form" class="css-form" novalidate>
+      <h3 class="thin-underline">Delete Messages</h3>
+      <p>Are you sure you want to permanently delete this conversation and all its replies?</p>
+  
+      <!-- Save Button -->
+      <div class="clear">
+        <button class="fill-row" ng-click="MessagesCtrl.deleteConversation()">
+          Delete Messages
+        </button>
+      </div>
+    </form>
+  </modal>
+  
+  <!-- Report Message Modal -->
+  <modal show="MessagesCtrl.showReportModal" on-close="MessagesCtrl.closeReportModal()">
+    <form name="$parent.form" class="css-form" novalidate>
+      <h3 class="thin-underline">Report Message</h3>
+      <label for="reportReason">Reason for Report</label>
+      <textarea name="reportReason" ng-model="MessagesCtrl.reportReason" ng-disabled="MessagesCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required maxlength="255"></textarea>
+      <div class="clear">
+        <button class="fill-row" ng-click="MessagesCtrl.submitReport()"
+          ng-disabled="$parent.form.$invalid || $parent.form.$errors || MessagesCtrl.reportSubmitted" ng-bind="MessagesCtrl.reportBtnLabel"></button>
+      </div>
+    </form>
+  </modal>
 </div>
-
-<div class="clear"></div>
-
-<!-- Editor -->
-<div ng-if="(MessagesCtrl.canCreateMessage() || MessagesCtrl.canCreateConversation()) && MessagesCtrl.showEditor">
-  <epochtalk-editor class="posts-editor"
-    body-html="MessagesCtrl.newMessage.content.body_html"
-    body="MessagesCtrl.newMessage.content.body"
-    reset-switch="MessagesCtrl.resetEditor"
-    focus-switch="MessagesCtrl.focusEditor"
-    editor-convo-mode="MessagesCtrl.editorConvoMode"
-    dirty="MessagesCtrl.dirtyEditor"
-    create-action="MessagesCtrl.createConversation"
-    update-action="MessagesCtrl.saveMessage"
-    can-create="MessagesCtrl.canCreateConversation"
-    can-update="MessagesCtrl.canCreateMessage"
-    show-switch="MessagesCtrl.showEditor"
-    receivers="MessagesCtrl.receivers"
-    new-message="MessagesCtrl.newMessage">
-  </epochtalk-editor>
-</div>
-
-<!-- Delete Message Modal -->
-<modal show="MessagesCtrl.showDeleteModal" on-close="MessagesCtrl.closeDeleteModal()">
-  <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Delete Reply</h3>
-    <p>Are you sure you want to permanently delete this reply?</p>
-
-    <!-- Save Button -->
-    <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.deleteMessage()">
-        Delete Reply
-      </button>
-    </div>
-  </form>
-</modal>
-
-<!-- Delete Conversation Modal -->
-<modal show="MessagesCtrl.showDeleteConvoModal" on-close="MessagesCtrl.closeDeleteConvoModal()">
-  <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Delete Messages</h3>
-    <p>Are you sure you want to permanently delete this conversation and all its replies?</p>
-
-    <!-- Save Button -->
-    <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.deleteConversation()">
-        Delete Messages
-      </button>
-    </div>
-  </form>
-</modal>
-
-<!-- Report Message Modal -->
-<modal show="MessagesCtrl.showReportModal" on-close="MessagesCtrl.closeReportModal()">
-  <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Report Message</h3>
-    <label for="reportReason">Reason for Report</label>
-    <textarea name="reportReason" ng-model="MessagesCtrl.reportReason" ng-disabled="MessagesCtrl.reportSubmitted" placeholder="Give a brief reason for your report" rows="4" required maxlength="255"></textarea>
-    <div class="clear">
-      <button class="fill-row" ng-click="MessagesCtrl.submitReport()"
-        ng-disabled="$parent.form.$invalid || $parent.form.$errors || MessagesCtrl.reportSubmitted" ng-bind="MessagesCtrl.reportBtnLabel"></button>
-    </div>
-  </form>
-</modal>

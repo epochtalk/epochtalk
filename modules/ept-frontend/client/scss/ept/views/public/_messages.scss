@@ -1,15 +1,43 @@
 // Grid Layout
 main #public-content {
-  grid-template-columns: 1fr 2fr;
+  // grid-template-columns: 1fr 2fr;
+  // grid-template-areas:
+  //   "sidebar main"
+  //   "sidebar main";
+}
+
+.messages-grid {
+  grid-column: 1 / span 2;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) 2fr;
   grid-template-areas:
-    "sidebar main"
-    "sidebar main";
+    "list details"
+    "list details";
+  column-gap: 2rem;
 }
 
 /*-------------- Messages Layout -------------- */
 .conversations {
-  grid-area: sidebar;
+  grid-area: list;
   min-height: calc(100vh - 95px);
+
+  .pagination-slide {
+    font-size: $font-size-sm;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    justify-items: center;
+
+    button {
+      background-color: transparent;
+      color: $text-gray-dark;
+      padding: 0.5rem;
+      margin: 0;
+
+      &:disabled {
+        color: #ccc;
+      }
+    }
+  }
 
   .list {
     margin-bottom: 1rem;
@@ -28,26 +56,40 @@ main #public-content {
     }
   }
   #recentMessagesHeader {
-    @include clearfix;
+    display: flex;
+    align-content: center;
     cursor: pointer;
     color: $secondary-font-color;
     margin-bottom: 1rem;
+
     .inbox {
-      @include span-columns(4);
       @include transition(color 0.15s ease);
       &:hover { @include transition(color 0.15s ease); color: $secondary-font-color-dark; }
+      flex: 1 0 auto;
     }
+    
     .add {
-      @include span-columns(8);
-      @include omega;
       color: $color-primary;
-      text-align: right;
+      display: flex;
+      font-size: $font-size-sm;
+      align-content: center;      
       @include transition(color 0.15s ease);
       &:hover { @include transition(color 0.15s ease); color: $color-primary-alt; }
+
+      svg {
+        margin-right: 0.25rem;
+        fill: $color-primary;
+
+        &:hover {
+          fill: $color-primary-alt;
+        }
+      }
     }
   }
 }
 .messages {
+  grid-area: details;
+
   .thin-underline {
     @include no-select;
     margin-bottom: 0;
