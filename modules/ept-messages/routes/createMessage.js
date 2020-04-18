@@ -45,6 +45,7 @@ module.exports = {
   },
   handler: function(request) {
     var config = request.server.app.config;
+    var receiver;
     var message = request.payload;
     message.sender_id = request.auth.credentials.id;
     // create the message in db
@@ -67,11 +68,15 @@ module.exports = {
         .then(function() {
           return request.db.users.find(receiverId);
         })
-        .then(function(receiver) {
+        .then(function(dbReceiver) {
+          receiver = dbReceiver;
+          return request.db.conversations.getSubject(message.conversation_id, request.auth.credentials.id);
+        })
+        .then(function(subject) {
           var emailParams = {
             email: receiver.email,
             sender: request.auth.credentials.username,
-            subject: message.content.subject,
+            subject: subject,
             message: message.content.body_html,
             site_name: config.website.title,
             message_url: config.publicUrl + '/messages'
