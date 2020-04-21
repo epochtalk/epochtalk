@@ -74,7 +74,7 @@
           <strong ng-bind="message.sender_username"></strong>
           <span class="date" ng-bind="message.created_at | humanDate"></span>
           <div class="right">
-            <a ng-href="" data-balloon="Quote" ng-click="MessagesCtrl.addQuote(message)">
+            <a ng-href="" class="action" data-balloon="Quote" ng-click="MessagesCtrl.addQuote(message)">
               <i class="icon-epoch-quote"></i>
             </a>
             <a ng-if="MessagesCtrl.canDeleteMessage(message.sender_id)" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-balloon="Delete">
