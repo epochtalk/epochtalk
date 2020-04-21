@@ -643,6 +643,13 @@ var XBBCODE = (function () {
                     quoteHeader += '</div>';
                 }
 
+                // author date
+                if (author && date) {
+                    quoteHeader = '<div class="quoteHeader">';
+                    quoteHeader += 'Quote From: ' + author + ' on ept-date=' + date;
+                    quoteHeader += '</div>';
+                }
+
                 // author link date
                 if (author && link && date) {
                     quoteHeader = '<div class="quoteHeader">';
