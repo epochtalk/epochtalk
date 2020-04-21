@@ -181,7 +181,7 @@
         <button class="no-animate" ng-if="editorConvoMode" class="send" ng-click="createAction(); closeEditor();"  ng-disabled="form.title.$error.required || !canCreate() || !newMessage.content.body.length || !newMessage.content.subject.length || !receivers.length">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send
         </button>
-        <button class="no-animate" ng-if="!editorConvoMode" class="send" ng-click="updateAction(); closeEditor();" ng-disabled="form.title.$error.required || !canUpdate() || !newMessage.content.body.length">
+        <button class="no-animate send" ng-if="!editorConvoMode" class="send" ng-click="updateAction(); closeEditor();" ng-disabled="form.title.$error.required || !canUpdate() || !newMessage.content.body.length">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Send Reply
         </button>
 
