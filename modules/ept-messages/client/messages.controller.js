@@ -268,7 +268,7 @@ var ctrl = [
           ctrl.quote = {
             username: message.sender_username,
             createdAt: new Date(message.created_at).getTime(),
-            body: message.body || message.body_html
+            body: message.content.body || message.content.body_html
           };
         }
       }, timeDuration);
