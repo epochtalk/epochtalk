@@ -21,7 +21,6 @@ main #public-content {
       "list"
       "details";
     grid-column: 1;
-    width: 100vw;
   }
 }
 
@@ -53,7 +52,7 @@ main #public-content {
 
     .cell {
       @include fill-parent;
-      @include truncate-ellipsis;
+      // @include truncate-ellipsis;
       display: flex;
       font-size: 0.8rem;
       line-height: 0.95rem;
@@ -62,7 +61,9 @@ main #public-content {
       padding-left: 12px;
       position: relative;
 
-      .msg-preview { color: $secondary-font-color; }
+      .msg-preview { 
+        color: $secondary-font-color; 
+      }
 
       .message-body {
         display: flex;
@@ -76,6 +77,10 @@ main #public-content {
         .recipient,
         .msg-preview {
           font-weight: 600;
+        }
+
+        .msg-preview {
+          @include truncate-ellipsis;
         }
       }
 
@@ -149,7 +154,16 @@ main #public-content {
       }
     }
   }
+
+  @include break-mobile-sm {
+    min-height: unset;
+    height: 35vh;
+    overflow-y: scroll;
+    margin-bottom: 2rem;
+    border-bottom: $border;
+  }
 }
+
 .messages {
   grid-area: details;
 
@@ -237,7 +251,7 @@ main #public-content {
       &.sender { background-color: $sub-header-color; }
       &.unread { background-color: $color-primary-transparent; }
       .avatar {
-        @include span-columns(1);
+        margin-right: 0.5rem;
         &.circle {
           img {
             @include border-radius(100px);
@@ -260,7 +274,12 @@ main #public-content {
   }
 }
 
-@include media($mobile) {
-  .conversations { @include span-columns(8); @include omega; }
-  .messages { @include span-columns(8); @include omega; }
+@include break-mobile-sm {
+  .conversations {
+     width: calc(100vw - 32px);
+    }
+
+  .messages { 
+    // @include span-columns(8); @include omega; 
+  }
 }
