@@ -14,6 +14,15 @@ main #public-content {
     "list details"
     "list details";
   column-gap: 2rem;
+
+  @include break-mobile-sm {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "list"
+      "details";
+    grid-column: 1;
+    width: 100vw;
+  }
 }
 
 /*-------------- Messages Layout -------------- */
@@ -144,6 +153,20 @@ main #public-content {
 .messages {
   grid-area: details;
 
+  .message-details-header {
+    font-size: $font-size-base;
+    text-transform: none;
+  }
+
+  .message-details-subject {
+    font-size: $font-size-xl;
+    text-transform: none;
+
+    span {
+      font-weight: 600;
+    }
+  }
+
   .thin-underline {
     @include no-select;
     margin-bottom: 0;
@@ -164,6 +187,47 @@ main #public-content {
     button { margin-bottom: 0; }
   }
   .msg-container {
+    .message-body-header {
+      display: flex;
+      margin-bottom: 1rem;
+
+      .title {
+        display: flex;
+        flex-direction: column;
+        flex: 1 0 auto;
+
+        .username {
+          font-size: 1rem;
+          font-weight: 600;
+        }
+
+        .date {
+          color: $secondary-font-color;
+          font-size: 1rem;
+        }
+      }
+
+      .actions {
+        align-self: center;
+      }
+
+      .action {
+          color: $secondary-font-color;
+          flex: 1 0 auto;
+          padding-left: 1rem;
+        }
+
+        &:hover {
+          .action {
+            color: $secondary-font-color-dark;
+
+            &:hover {
+              color: $color-primary;
+            }
+          }
+        }
+    }
+
     .message {
       @include clearfix;
       @include pad(1rem);
@@ -191,17 +255,6 @@ main #public-content {
       .content {
         @include span-columns(12);
         word-wrap: break-word;
-        .title {
-          margin-bottom: 0.5rem;
-          strong { font-size: 0.8rem; }
-          .date { @include pad(0 0 0 0.25rem); font-size: 0.8rem; color: $secondary-font-color; }
-          .action { color: $secondary-font-color; }
-          &:hover .action { color: $secondary-font-color-dark; }
-          &:hover .action:hover { color: $color-primary;; }
-        }
-        .msg-content {
-          margin-left: 8.5%;
-        }
       }
     }
   }

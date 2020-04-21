@@ -61,14 +61,14 @@
       <a class="right no-select" ng-if='MessagesCtrl.canCreateMessage()' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = false;">
         <i class="fa fa-reply"></i> Reply
       </a>
-      <h4>Conversation with
-        <strong ng-repeat="name in MessagesCtrl.receiverNames">
+      <h4 class="message-details-header">Conversation with
+        <span ng-repeat="name in MessagesCtrl.receiverNames">
           <a ui-sref="profile.posts({ username: name})">{{name}}</a>{{ $last ? '' : ', '}}
-        </strong>
+        </span>
       </h4>
-      <h4>Subject: <strong>{{MessagesCtrl.currentSubject}}</strong></h4>
+      <h4 class=message-details-subject>Subject: <span>{{MessagesCtrl.currentSubject}}</span></h4>
     </div>
-    <h4 ng-if="MessagesCtrl.recentMessages.length > 0 && MessagesCtrl.currentConversation.messages.length < 1" class="centered-text">
+    <h4 class="message-details-header" ng-if="MessagesCtrl.recentMessages.length > 0 && MessagesCtrl.currentConversation.messages.length < 1" class="centered-text">
       No Conversation selected<br />
     </h4>
   
@@ -76,13 +76,15 @@
     <div class="msg-container">
       <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="{ 'sender': MessagesCtrl.currentUserId === message.sender_id, 'unread': !message.viewed}">
         <div class="content">
-          <div class="avatar {{$webConfigs.default_avatar_shape}}">
-            <img ng-src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
-          </div>
-          <div class="title">
-            <strong ng-bind="message.sender_username"></strong>
-            <span class="date" ng-bind="message.created_at | humanDate"></span>
-            <div class="right">
+          <div class="message-body-header">
+            <div class="avatar {{$webConfigs.default_avatar_shape}}">
+              <img ng-src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
+            </div>
+            <div class="title">
+              <span class="username" ng-bind="message.sender_username"></span>
+              <span class="date" ng-bind="message.created_at | humanDate"></span>
+            </div>
+            <div class="actions">
               <a ng-if="MessagesCtrl.canDeleteMessage(message.sender_id)" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-balloon="Delete">
                 <i class="fa fa-trash"></i>
               </a>
