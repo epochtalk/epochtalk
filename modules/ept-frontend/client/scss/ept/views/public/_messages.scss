@@ -118,6 +118,10 @@ main #public-content {
       &:hover {
         .action {
           opacity: 1;
+
+          &:hover {
+            color: $color-primary;
+          }
         }
       }
     }
@@ -226,30 +230,61 @@ main #public-content {
       }
 
       .action {
-          color: $secondary-font-color;
-          flex: 1 0 auto;
-          padding-left: 1rem;
-        }
-
-        &:hover {
-          .action {
-            color: $secondary-font-color-dark;
-
-            &:hover {
-              color: $color-primary;
-            }
-          }
-        }
+        color: $secondary-font-color;
+        flex: 1 0 auto;
+        opacity: 0.25;
+        padding-left: 1rem;
+        transition: opacity ease-in-out 200ms, color  ease-in-out 200ms;
+      }
     }
 
     .message {
       @include clearfix;
-      @include pad(1rem);
       border-bottom: 1px solid $border-color;
+      padding: 1rem 1rem 1rem 1.5rem;
+
       &:last-child { margin-bottom: 2rem; }
       &:first-child { border-top: 1px solid $border-color; margin-top: 1rem;}
-      &.sender { background-color: $sub-header-color; }
-      &.unread { background-color: $color-primary-transparent; }
+
+      &.unread {
+        .message-status {
+          .status-unread {
+            display: block;
+          }
+        }
+      }
+
+      &.sender {
+        .message-status {
+          .status-sender {
+            display: block;
+          }
+        }
+      }
+
+
+      .message-status {
+        margin-left: -1.5rem;
+        padding-top: 2px;
+        width: 1.5rem;
+
+        .status-unread,
+        .status-sender {
+          display: none;
+        }
+
+        svg {
+          fill: $color-primary;
+          width: 10px;
+        }
+
+        .status-sender {
+          svg {
+            fill: $secondary-font-color;
+          }
+        }
+      }
+
       .avatar {
         margin-right: 0.5rem;
         &.circle {
@@ -269,6 +304,18 @@ main #public-content {
       .content {
         @include span-columns(12);
         word-wrap: break-word;
+      }
+
+      &:hover {
+        .action {
+          color: $secondary-font-color-dark;
+          opacity: 1;
+
+          &:hover {
+            color: $color-primary;
+            opacity: 1;
+          }
+        }
       }
     }
   }

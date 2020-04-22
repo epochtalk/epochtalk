@@ -66,7 +66,7 @@
           <a ui-sref="profile.posts({ username: name})">{{name}}</a>{{ $last ? '' : ', '}}
         </span>
       </h4>
-      <h4 class=message-details-subject>Subject: <span>{{MessagesCtrl.currentSubject}}</span></h4>
+      <h4 class=message-details-subject>{{MessagesCtrl.currentSubject}}</h4>
     </div>
     <h4 class="message-details-header" ng-if="MessagesCtrl.recentMessages.length > 0 && MessagesCtrl.currentConversation.messages.length < 1" class="centered-text">
       No Conversation selected<br />
@@ -77,6 +77,19 @@
       <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="{ 'sender': MessagesCtrl.currentUserId === message.sender_id, 'unread': !message.viewed}">
         <div class="content">
           <div class="message-body-header">
+            <div class="message-status">
+              <div class="status-unread">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                  <title>icon__unread</title>
+                  <circle cx="24" cy="24" r="16"/>
+                </svg>
+              </div>
+              <div class="status-sender">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                  <polygon class="cls-1" points="24 1.18 30.43 17.56 48 18.61 34.4 29.79 38.83 46.83 24 37.34 9.17 46.83 13.6 29.79 0 18.61 17.57 17.56 24 1.18"/>
+                </svg>
+              </div>
+            </div>
             <div class="avatar {{$webConfigs.default_avatar_shape}}">
               <img ng-src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
             </div>
