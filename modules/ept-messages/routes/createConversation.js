@@ -57,10 +57,11 @@ module.exports = {
     ]
   },
   handler: function(request) {
+    var config = request.server.app.config;
+    var message = request.payload;
     // create the conversation in db
     var promise = request.db.conversations.create(request.auth.credentials.id)
     .then(function(conversation) {
-      var message = request.payload;
       message.conversation_id = conversation.id;
       message.sender_id = request.auth.credentials.id;
       return message;
@@ -80,7 +81,26 @@ module.exports = {
             conversationId: messageClone.conversation_id
           }
         };
-        request.server.plugins.notifications.spawnNotification(notification);
+        return request.server.plugins.notifications.spawnNotification(notification)
+        .then(function() {
+          return request.db.users.find(receiverId);
+        })
+        .then(function(receiver) {
+          var emailParams = {
+            email: receiver.email,
+            sender: request.auth.credentials.username,
+            subject: message.content.subject,
+            message: message.content.body_html,
+            site_name: config.website.title,
+            message_url: config.publicUrl + '/messages'
+          };
+          // Do not return, otherwise user has to wait for email to send
+          // before post is created
+          request.server.log('debug', emailParams)
+          request.emailer.send('newPM', emailParams)
+          .catch(console.log);
+          return true;
+        });
       });
     })
     .error(request.errorMap.toHttpError);

@@ -140,9 +140,12 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
 
       $scope.insertQuote = function(newQuote) {
         editor.focus();
+
         var quote = '[quote author=' + newQuote.username;
-        quote += ' link=';
-        quote += '/threads/' + newQuote.threadId + '/posts?page=' + newQuote.page + '#' + newQuote.postId;
+        if (newQuote.threadId) {
+          quote += ' link=';
+          quote += '/threads/' + newQuote.threadId + '/posts?page=' + newQuote.page + '#' + newQuote.postId;
+        }
         quote += ' date=' + newQuote.createdAt + ']';
         quote += newQuote.body;
         quote += '[/quote]';

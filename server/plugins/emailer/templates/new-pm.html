@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width"/>
+    <style type="text/css">
+      body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+      }
+      .header {
+        background-color: {{css.headerBgColor}};
+        color: {{css.headerFontColor}};
+        font-weight: bold;
+        font-size: 25px;
+        padding-left: 25px;
+        height: 50px;
+        vertical-align: middle;
+      }
+      .body {
+        min-width: 80%;
+        background-color: {{css.baseBackgroundColor}};
+        border: 1px solid {{css.borderColor}};
+        border-collapse: collapse;;
+      }
+      .content {
+        padding: 25px;
+        padding-top: 10px;
+        color: {{css.baseFontColor}};
+      }
+      .footer {
+        background-color: {{css.subHeaderColor}};
+        color: {{css.secondaryFontColor}};
+        margin: 5px;
+        line-height: 30px;
+        height: 30px;
+      }
+      a { color: {{css.colorPrimary}}; }
+    </style>
+  </head>
+  <body>
+    <table align="center" class="body">
+      <tr>
+        <td class="header" align="left" valign="middle">
+            {{siteName}}
+        </td>
+      </tr>
+      <tr>
+        <td class="content" align="left" valign="top">
+          <h3>{{sender}} sent  you a private message!</h3>
+          <strong>Subject:</strong> {{subject}}<br />
+          <strong>Message:</strong> {{{message}}}<br /><br />
+          Please visit the link below to respond!<br /><br />
+          <a href="{{messageURL}}">Visit Messages View</a>
+          <br /><br />
+        </td>
+      </tr>
+      <tr>
+        <td align="center" valign="middle">
+            <div class="footer">&copy; {{currentYear}} {{siteName}}</div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

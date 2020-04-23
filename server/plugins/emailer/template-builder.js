@@ -116,6 +116,24 @@ exports.threadNotification = function(sender, params) {
   };
 };
 
+exports.newPM = function(sender, params) {
+  var currentYear = new Date().getFullYear();
+  return {
+    from: sender,
+    to: params.email,
+    subject: `[${params.site_name}] ${params.sender} sent you a private message!`,
+    html: mustache.render(templateFile('new-pm.html'), {
+      css: css(),
+      sender: params.sender,
+      subject: params.subject,
+      message: params.message,
+      siteName: params.site_name,
+      currentYear: currentYear,
+      messageURL: params.message_url
+    })
+  };
+};
+
 exports.mentionNotification = function(sender, params) {
   var currentYear = new Date().getFullYear();
   return {
