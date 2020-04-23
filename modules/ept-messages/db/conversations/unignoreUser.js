@@ -3,7 +3,7 @@ var dbc = require(path.normalize(__dirname + '/../db'));
 var helper = dbc.helper;
 var db = dbc.db;
 
-module.exports = function unignoreUser(userId, ignoredUserId) {
+module.exports = function(userId, ignoredUserId) {
   userId = helper.deslugify(userId);
   ignoredUserId = helper.deslugify(ignoredUserId);
   var q, params;
@@ -19,4 +19,4 @@ module.exports = function unignoreUser(userId, ignoredUserId) {
   .then(function() {
     return { success: true };
   });
-}
+};
