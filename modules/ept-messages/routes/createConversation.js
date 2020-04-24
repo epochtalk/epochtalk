@@ -54,58 +54,69 @@ module.exports = {
       { method: (request) => request.server.methods.common.posts.checkPostLength(request.server, request.payload.body) },
       { method: (request) => request.server.methods.common.posts.clean(request.sanitizer, request.payload) },
       { method: (request) => request.server.methods.common.posts.parse(request.parser, request.payload) },
-      { method: (request) => request.server.methods.common.images.sub(request.payload) }
+      { method: (request) => request.server.methods.common.images.sub(request.payload) },
+      { method: (request) => request.server.methods.hooks.preProcessing(request) },
+      [
+        { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
+        { method: processing, assign: 'processed' },
+      ],
+      { method: (request) => request.server.methods.hooks.merge(request) },
+      { method: (request) => request.server.methods.hooks.postProcessing(request) }
     ]
   },
   handler: function(request) {
-    var config = request.server.app.config;
-    var message = request.payload;
-    // create the conversation in db
-    var promise = request.db.conversations.create(request.auth.credentials.id)
-    .then(function(conversation) {
-      message.conversation_id = conversation.id;
-      message.sender_id = request.auth.credentials.id;
-      return message;
-    })
-    .then(request.db.messages.create)
-    .tap(function(dbMessage) {
-      var messageClone = _.cloneDeep(dbMessage);
-      request.payload.receiver_ids.forEach(function(receiverId) {
-        var notification = {
-          type: 'message',
-          sender_id: request.auth.credentials.id,
-          receiver_id: receiverId,
-          channel: { type: 'user', id: receiverId },
-          data: {
-            action: 'newMessage',
-            messageId: messageClone.id,
-            conversationId: messageClone.conversation_id
-          }
-        };
-        return request.server.plugins.notifications.spawnNotification(notification)
-        .then(function() {
-          return request.db.users.find(receiverId);
-        })
-        .then(function(receiver) {
-          var emailParams = {
-            email: receiver.email,
-            sender: request.auth.credentials.username,
-            subject: message.content.subject,
-            message: message.content.body_html,
-            site_name: config.website.title,
-            message_url: config.publicUrl + '/messages'
-          };
-          // Do not return, otherwise user has to wait for email to send
-          // before post is created
-          request.server.log('debug', emailParams)
-          request.emailer.send('newPM', emailParams)
-          .catch(console.log);
-          return true;
-        });
-      });
-    })
-    .error(request.errorMap.toHttpError);
-
-    return promise;
+    return request.pre.processed;
   }
 };
+
+function processing(request) {
+  var config = request.server.app.config;
+  var message = request.payload;
+  // create the conversation in db
+  var promise = request.db.conversations.create(request.auth.credentials.id)
+  .then(function(conversation) {
+    message.conversation_id = conversation.id;
+    message.sender_id = request.auth.credentials.id;
+    return message;
+  })
+  .then(request.db.messages.create)
+  .tap(function(dbMessage) {
+    var messageClone = _.cloneDeep(dbMessage);
+    request.payload.receiver_ids.forEach(function(receiverId) {
+      var notification = {
+        type: 'message',
+        sender_id: request.auth.credentials.id,
+        receiver_id: receiverId,
+        channel: { type: 'user', id: receiverId },
+        data: {
+          action: 'newMessage',
+          messageId: messageClone.id,
+          conversationId: messageClone.conversation_id
+        }
+      };
+      return request.server.plugins.notifications.spawnNotification(notification)
+      .then(function() {
+        return request.db.users.find(receiverId);
+      })
+      .then(function(receiver) {
+        var emailParams = {
+          email: receiver.email,
+          sender: request.auth.credentials.username,
+          subject: message.content.subject,
+          message: message.content.body_html,
+          site_name: config.website.title,
+          message_url: config.publicUrl + '/messages'
+        };
+        // Do not return, otherwise user has to wait for email to send
+        // before post is created
+        request.server.log('debug', emailParams)
+        request.emailer.send('newPM', emailParams)
+        .catch(console.log);
+        return true;
+      });
+    });
+  })
+  .error(request.errorMap.toHttpError);
+
+  return promise;
+}
