@@ -5,9 +5,5 @@ module.exports = {
   messages: require(path.normalize(__dirname + '/messages')),
   getSubject: require(path.normalize(__dirname + '/getSubject')),
   delete: require(path.normalize(__dirname + '/delete')),
-  isConversationMember: require(path.normalize(__dirname + '/isConversationMember')),
-  ignoreUser: require(path.normalize(__dirname + '/ignoreUser')),
-  unignoreUser: require(path.normalize(__dirname + '/unignoreUser')),
-  getUserIgnored: require(path.normalize(__dirname + '/getUserIgnored')),
-  pageIgnoredUsers: require(path.normalize(__dirname + '/pageIgnoredUsers'))
+  isConversationMember: require(path.normalize(__dirname + '/isConversationMember'))
 };
