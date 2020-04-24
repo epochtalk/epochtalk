@@ -4,7 +4,7 @@ var Joi = require('@hapi/joi');
   * @apiVersion 0.4.0
   * @apiGroup Messages
   * @api {POST} /messages/unignore Unignore User's Messages
-  * @apiName UnignoreUsersMentions
+  * @apiName UnignoreUsersMessages
   * @apiPermission User
   * @apiDescription Used to unignore messages from a specific user's
   *
