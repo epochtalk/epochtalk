@@ -23,6 +23,7 @@ module.exports = {
   method: 'POST',
   path: '/api/messages',
   options: {
+    app: { hook: 'messages.create' },
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {

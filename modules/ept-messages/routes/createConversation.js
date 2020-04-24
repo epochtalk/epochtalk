@@ -36,6 +36,7 @@ module.exports = {
   method: 'POST',
   path: '/api/conversations',
   options: {
+    app: { hook: 'conversations.create' },
     auth: { strategy: 'jwt' },
     plugins: { track_ip: true },
     validate: {
