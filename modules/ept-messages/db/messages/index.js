@@ -9,5 +9,6 @@ module.exports = {
   ignoreUser: require(path.normalize(__dirname + '/ignoreUser')),
   unignoreUser: require(path.normalize(__dirname + '/unignoreUser')),
   getUserIgnored: require(path.normalize(__dirname + '/getUserIgnored')),
+  getEmailSettings: require(path.normalize(__dirname + '/getEmailSettings')),
   pageIgnoredUsers: require(path.normalize(__dirname + '/pageIgnoredUsers'))
 };
