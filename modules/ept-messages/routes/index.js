@@ -9,5 +9,7 @@ module.exports = [
   require(path.normalize(__dirname + '/messages')),
   require(path.normalize(__dirname + '/ignoreUser')),
   require(path.normalize(__dirname + '/unignoreUser')),
+  require(path.normalize(__dirname + '/getEmailSettings')),
+  require(path.normalize(__dirname + '/enableMessageEmails')),
   require(path.normalize(__dirname + '/pageIgnoredUsers'))
 ];
