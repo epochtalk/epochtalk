@@ -6,12 +6,21 @@ function checkUserIgnoredMessages(request) {
   var authedUserId;
   if (request.auth.isAuthenticated) { authedUserId = request.auth.credentials.id; }
   else { return Boom.unauthorized('You must log in to perform this action'); }
+  var ignoredUsernames = [];
   return Promise.each(receivers, function(receiverId) {
-    return request.db.messages.getUserIgnored(receiverId, authedUserId)
+    return request.db.messages.getUserIgnored(authedUserId, receiverId)
     .then(function(data) {
-      if (data.ignored) { return Promise.reject(Boom.forbidden('One or more of the users you are trying to send a message to has choosen to ignore you.')); }
-      else { return true; }
+      if (data.ignored) {
+        ignoredUsernames.push(data.ignored_username)
+      }
+      return true;
     });
+  })
+  .then(function() {
+    if (ignoredUsernames.length) {
+      return Promise.reject(Boom.forbidden('The following users have blocked you from sending private messages: ' + ignoredUsernames.join(', ')));
+    }
+    else { return true; }
   });
 }
 
