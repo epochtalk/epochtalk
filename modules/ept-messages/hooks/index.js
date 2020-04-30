@@ -37,7 +37,22 @@ function checkUserIgnoredMessages(request) {
   });
 }
 
+function userIgnoredMessages(request) {
+  var user = request.pre.processed;
+  var authedUserId;
+  if (request.auth.isAuthenticated) { authedUserId = request.auth.credentials.id; }
+  else { return user; }
+  return request.db.messages.getUserIgnored(authedUserId, user.id)
+  .then(function(messages) {
+    if (messages && messages.ignored) {
+      user.ignore_messages = true;
+    }
+    return user;
+  });
+}
+
 module.exports = [
+  { path: 'users.find.post', method: userIgnoredMessages },
   { path: 'conversations.create.pre', method: checkUserIgnoredMessages },
   { path: 'messages.create.pre', method: checkUserIgnoredMessages }
 ];
