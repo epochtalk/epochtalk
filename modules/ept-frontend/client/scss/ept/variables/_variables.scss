@@ -23,8 +23,6 @@ $font-size-sm:    0.875rem;
 $font-size-xs:    0.75rem;
 $font-size-tiny:  0.6375rem;
 
-$border: 1px solid rgb(215, 215, 215);
-$border-quote: 2px solid rgba(0, 0, 0, 0.1);
 
 @function brightness($color) {
   @if type-of($color) == color {
@@ -110,6 +108,12 @@ $footer-font-color: $secondary-font-color;
 $footer-bg-color: $sub-header-color;
 $footer-link-color: $footer-font-color;
 $footer-link-hover-color: $color-primary;
+
+
+// Borders (post color calculations)
+$border: 1px solid rgb(215, 215, 215);
+$border-alt: 1px solid $border-color-alt;
+$border-quote: 2px solid rgba(0, 0, 0, 0.1);
 
 
 // Mobile Breakpoints

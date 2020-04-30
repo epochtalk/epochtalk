@@ -13,7 +13,7 @@
     <div ng-if="UserSearchCtrl.search">
     Displaying {{UserSearchCtrl.count | number}} search result(s) for "<strong>{{UserSearchCtrl.search}}</strong>":<br /><br />
     </div>
-    <table class="underlined striped" width="100%">
+    <table class="" width="100%">
       <thead>
         <th class="pointer" ng-click="UserSearchCtrl.setSortField('username')"><span ng-class="UserSearchCtrl.getSortClass('username')"></span>&nbsp;Username</th>
         <th class="pointer" ng-click="UserSearchCtrl.setSortField('role')"><span ng-class="UserSearchCtrl.getSortClass('role')"></span>&nbsp;Role</th>
@@ -25,7 +25,7 @@
           <td class="centered-text" colspan="4"><h5>No users to display</h5></td>
         </tr>
         <tr ng-repeat="user in UserSearchCtrl.users track by user.username">
-          <td>
+          <td class="username">
             <a class="search-users user-avatar hide-mobile" ui-sref="profile.posts({ username: user.username})">
               <img ng-src="{{ user.avatar || $webConfigs.default_avatar }}">
             </a>

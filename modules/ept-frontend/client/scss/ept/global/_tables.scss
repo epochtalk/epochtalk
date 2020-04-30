@@ -1,3 +1,31 @@
+table {
+  thead {
+    tr {
+      border-bottom: $border;
+
+      th {
+        color: $secondary-font-color;
+        font-size: $font-size-xs;
+        font-weight: 400;
+        padding: .5rem 0;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: $border-alt;
+    }
+    td {
+      padding: 0.5rem 0;
+
+      &.username {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
 table.underlined, table.report-details {
   border: none;
   margin-bottom: 1rem;
@@ -5,7 +33,7 @@ table.underlined, table.report-details {
     text-align: left;
     font-size: 0.875rem;
     background-color: transparent;
-    tr { border-bottom: 1px solid $border-color; }
+    tr { border-bottom: $border-alt; }
     th { color: $secondary-font-color; font-weight: 400; padding-bottom: 0.5rem; }
     th.left-icon-col { width: 1.5rem; }
     th.mod-actions { width: 5.25rem; }
@@ -33,27 +61,38 @@ table.underlined, table.report-details {
 table.striped {
   background: $base-background-color;
   margin-bottom: 1.25rem;
-  border: solid 1px $border-color;
+  // border: solid 1px $border-color;
   table-layout: auto;
+  
   thead {
-    background: darken($sub-header-color, 4%);
-    tr th, tr td {
-      padding: 0.5rem 0.625rem 0.625rem;
-      font-size: 0.875rem;
-      font-weight: bold;
-      color: $secondary-font-color;
+    tr {
+      th {
+        padding: 0.5rem;
+      }
     }
-    tr th { color: lighten($base-font-color, 15%); }
   }
-  tr th, tr td {
-    padding: 0.5625rem 0.625rem;
-    font-size: 0.875rem;
-    color: $secondary-font-color-dark;
-    text-align: left;
-    &.centered-text { text-align: center; }
+
+  tbody {
+    tr {
+      border: 0;
+
+      td {
+        padding: 0.5rem;
+        text-align: left;
+        vertical-align: top;
+        
+        &.centered-text { 
+          text-align: center; 
+        }
+      }
+
+      &:nth-of-type(even), 
+      tbody:nth-of-type(even) { 
+        background: $sub-header-color; 
+      }
+    }
   }
-  tr:nth-of-type(even), tbody:nth-of-type(even) { background: $sub-header-color; }
-  tr { border: 0; }
+
   thead tr th, tbody tr th, tbody tr td, tr td { display: table-cell; line-height: 1.125rem; }
   &.rulesTable {
     table-layout: fixed;
