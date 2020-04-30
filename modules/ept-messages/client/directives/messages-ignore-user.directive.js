@@ -1,8 +1,8 @@
 var html = `<div class="profile-row profile-action">
-    <a ng-show="vmMessagesProfile.user.ignoreMessages" ng-click="vmMessagesProfile.unignoreUser()">
+    <a ng-show="vmMessagesProfile.user.ignore_messages" ng-click="vmMessagesProfile.unignoreUser()">
       Unignore All Messages By User
     </a>
-    <a ng-hide="vmMessagesProfile.user.ignoreMessages" ng-click="vmMessagesProfile.ignoreUser()">
+    <a ng-hide="vmMessagesProfile.user.ignore_messages" ng-click="vmMessagesProfile.ignoreUser()">
       Ignore All Messages By User
     </a>
   </div>`;
@@ -21,7 +21,7 @@ var directive = ['Messages', 'Alert', function(Messages, Alert) {
         var username = ctrl.user.username;
         return Messages.ignoreUser({ username: username }).$promise
         .then(function() {
-          ctrl.user.ignoreMessages = true;
+          ctrl.user.ignore_messages = true;
           Alert.success('You are now ignoring messages from ' + username);
         })
         .catch(function() {
@@ -33,7 +33,7 @@ var directive = ['Messages', 'Alert', function(Messages, Alert) {
         var username = ctrl.user.username;
         return Messages.unignoreUser({ username: username }).$promise
         .then(function() {
-          ctrl.user.ignoreMessages = false;
+          ctrl.user.ignore_messages = false;
           Alert.success('You stopped ignoring messages from ' + username);
         })
         .catch(function() {
