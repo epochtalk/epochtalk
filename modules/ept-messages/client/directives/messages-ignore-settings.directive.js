@@ -11,6 +11,7 @@ var directive = ['Messages', '$timeout', 'Alert',
       this.emailsDisabled;
       this.showRemoveModal;
       this.userToIgnore = {};
+      this.page = 1;
 
       this.init = function() {
         var query = { limit: 10 };
@@ -22,7 +23,6 @@ var directive = ['Messages', '$timeout', 'Alert',
           ctrl.users = ignored.data;
           ctrl.next = ignored.next;
           ctrl.prev = ignored.prev;
-          console.log(Messages);
           return Messages.getMessageEmailSettings().$promise;
         })
         .then(function(data) { console.log(data); ctrl.emailsDisabled = data.email_messages; })
@@ -35,13 +35,30 @@ var directive = ['Messages', '$timeout', 'Alert',
 
       this.unignore = function(user) {
         return Messages.unignoreUser({ username: user.username }).$promise
-        .then(function() { $timeout(function() { user.ignored = false; }); });
+        .then(function() {
+          Alert.success('Successfully uningored ' + user.username);
+          $timeout(function() { user.ignored = false; }); });
+        });
       };
 
       this.ignore = function(user) {
         return Messages.ignoreUser({username: user.username}).$promise
-        .then(function(res) { $timeout(function() { user.ignored = true; }); return res; });
+        .then(function(res) {
+          Alert.success('Successfully ingored ' + user.username);
+          $timeout(function() { user.ignored = true; }); });
+          return res;
+        });
       };
+
+      this.ignoreUser = function(username) {
+        return Messages.ignoreUser({username: username}).$promise
+        .then(function(res) {
+          Alert.success('Successfully ingored user ' + username);
+          ctrl.pullPage(0);
+          ctrl.userToIgnore = {};
+          return res;
+        });
+      }
 
       // page controls
       this.pullPage = function(pageIncrement) {

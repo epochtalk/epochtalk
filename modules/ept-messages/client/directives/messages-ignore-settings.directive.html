@@ -12,6 +12,11 @@
 </div>
 <div class="clear"></div>
 <br />
+<div class="row">
+  <autocomplete-user-id admin="false" user-id="vmIgnoreUserMessages.userToIgnore.user_id" username="vmIgnoreUserMessages.userToIgnore.username" input-placeholder="Type username to add to ignored messages list"></autocomplete-user-id>
+  <button class="fill-row" ng-click="vmIgnoreUserMessages.ignoreUser(vmIgnoreUserMessages.userToIgnore.username)" ng-disabled="!vmIgnoreUserMessages.userToIgnore.user_id">Add to Ignore List</button>
+</div>
+<div class="clear"></div>
 <!-- All Users -->
 <table class="striped ignored-users" width="100%">
   <thead>
