@@ -25,7 +25,7 @@ var directive = ['Messages', '$timeout', 'Alert',
           ctrl.prev = ignored.prev;
           return Messages.getMessageEmailSettings().$promise;
         })
-        .then(function(data) { console.log(data); ctrl.emailsDisabled = data.email_messages; })
+        .then(function(data) { ctrl.emailsDisabled = data.email_messages; })
         .catch(function(err) { Alert.error('There was an error paging ignored users.'); });
       };
 
@@ -37,7 +37,7 @@ var directive = ['Messages', '$timeout', 'Alert',
         return Messages.unignoreUser({ username: user.username }).$promise
         .then(function() {
           Alert.success('Successfully uningored ' + user.username);
-          $timeout(function() { user.ignored = false; }); });
+          $timeout(function() { user.ignored = false; });
         });
       };
 
@@ -45,7 +45,7 @@ var directive = ['Messages', '$timeout', 'Alert',
         return Messages.ignoreUser({username: user.username}).$promise
         .then(function(res) {
           Alert.success('Successfully ingored ' + user.username);
-          $timeout(function() { user.ignored = true; }); });
+          $timeout(function() { user.ignored = true; });
           return res;
         });
       };
