@@ -11,6 +11,7 @@ var directive = ['User', function(User) {
     controller: ['$scope', function($scope) {
       $scope.searchResults = [];
       $scope.usernameIsValid = false;
+      $scope.hash = Math.random().toString(36).substring(7);
 
       $scope.$watch('username', function() {
         $scope.userId = '';
