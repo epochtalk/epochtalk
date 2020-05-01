@@ -53,7 +53,7 @@ var directive = ['Messages', '$timeout', 'Alert',
       this.ignoreUser = function(username) {
         return Messages.ignoreUser({username: username}).$promise
         .then(function(res) {
-          Alert.success('Successfully ingored user ' + username);
+          Alert.success('Successfully ingored ' + username);
           ctrl.pullPage(0);
           ctrl.userToIgnore = {};
           return res;
