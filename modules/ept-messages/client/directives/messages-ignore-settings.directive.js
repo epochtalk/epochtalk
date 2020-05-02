@@ -9,7 +9,6 @@ var directive = ['Messages', '$timeout', 'Alert',
       // page variables
       var ctrl = this;
       this.emailsDisabled;
-      this.showRemoveModal;
       this.userToIgnore = {};
       this.page = 1;
 
