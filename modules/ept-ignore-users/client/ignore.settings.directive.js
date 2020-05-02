@@ -1,5 +1,5 @@
-var directive = ['IgnoreUsers', '$timeout', '$anchorScroll',
-  function(IgnoreUsers, $timeout) {
+var directive = ['IgnoreUsers', 'Alert', '$timeout',
+  function(IgnoreUsers, Alert, $timeout) {
   return {
     restrict: 'E',
     scope: true,
@@ -8,9 +8,10 @@ var directive = ['IgnoreUsers', '$timeout', '$anchorScroll',
     controller: [function() {
       // page variables
       var ctrl = this;
+      this.userToIgnore = {};
+      this.page = 1;
 
-
-      (function init() {
+      this.init = function() {
         var query = { limit: 10 };
         return IgnoreUsers.ignored(query).$promise
         .then(function(ignored) {
@@ -20,22 +21,41 @@ var directive = ['IgnoreUsers', '$timeout', '$anchorScroll',
           ctrl.users = ignored.data;
           ctrl.next = ignored.next;
           ctrl.prev = ignored.prev;
-        });
-      })();
+          return;
+        })
+        .catch(function(err) { Alert.error('There was an error paging ignored users.'); });
+      };
 
-      this.userToIgnore = {};
+      $timeout(function() { ctrl.init(); })
 
       // page actions
 
       this.unignore = function(user) {
-        return IgnoreUsers.unignore({id: user.id}).$promise
-        .then(function() { $timeout(function() { user.ignored = false; }); });
+        return IgnoreUsers.unignore({ id: user.id }).$promise
+        .then(function() {
+          Alert.success('Successfully uningored ' + user.username);
+          $timeout(function() { user.ignored = false; });
+        });
       };
 
       this.ignore = function(user) {
         return IgnoreUsers.ignore({id: user.id}).$promise
-        .then(function(res) { $timeout(function() { user.ignored = true; }); return res; });
+        .then(function(res) {
+          Alert.success('Successfully ingored ' + user.username);
+          $timeout(function() { user.ignored = true; });
+          return res;
+        });
       };
+
+      this.ignoreUser = function(user) {
+        return IgnoreUsers.ignore({id: user.user_id}).$promise
+        .then(function(res) {
+          Alert.success('Successfully ingored ' + user.username);
+          ctrl.pullPage(0);
+          ctrl.userToIgnore = {};
+          return res;
+        });
+      }
 
       // page controls
       this.pullPage = function(pageIncrement) {
