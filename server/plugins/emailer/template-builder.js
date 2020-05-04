@@ -126,7 +126,6 @@ exports.newPM = function(sender, params) {
       css: css(),
       sender: params.sender,
       subject: params.subject,
-      message: params.message,
       siteName: params.site_name,
       currentYear: currentYear,
       messageURL: params.message_url
