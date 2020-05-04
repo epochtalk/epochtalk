@@ -103,7 +103,7 @@ function processing(request) {
           email: receiver.email,
           sender: request.auth.credentials.username,
           subject: message.content.subject,
-          message: message.content.body_html,
+          // message: message.content.body_html, // do not send this for now, could contain sensitive data
           site_name: config.website.title,
           message_url: config.publicUrl + '/messages'
         };
