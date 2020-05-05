@@ -78,28 +78,38 @@ function processing(request) {
         }
       };
       return request.server.plugins.notifications.spawnNotification(notification)
-      .then(function() {
-        return request.db.users.find(receiverId);
-      })
-      .then(function(dbReceiver) {
-        receiver = dbReceiver;
-        return request.db.conversations.getSubject(message.conversation_id, request.auth.credentials.id);
-      })
-      .then(function(subject) {
-        var emailParams = {
-          email: receiver.email,
-          sender: request.auth.credentials.username,
-          subject: subject,
-          // message: message.content.body_html, // do not send this for now, could contain sensitive data
-          site_name: config.website.title,
-          message_url: config.publicUrl + '/messages'
-        };
-        // Do not return, otherwise user has to wait for email to send
-        // before post is created
-        request.server.log('debug', emailParams)
-        request.emailer.send('newPM', emailParams)
-        .catch(console.log);
-        return true;
+      .then(function() { // send email
+        var receiver = '';
+        var subject = '';
+        return request.db.users.find(receiverId)
+        .then(function(dbReceiver) {
+          receiver = dbReceiver;
+          return request.db.conversations.getSubject(message.conversation_id, request.auth.credentials.id);
+        })
+        .then(function(dbSubject) {
+          subject = dbSubject;
+          return request.db.messages.getEmailSettings(receiverId);
+        })
+        .then(function(data) {
+          console.log('\n\n', data, '\n\n');
+          if (data.email_messages) {
+            var emailParams = {
+              email: receiver.email,
+              sender: request.auth.credentials.username,
+              subject: subject,
+              // message: message.content.body_html, // do not send this for now, could contain sensitive data
+              site_name: config.website.title,
+              message_url: config.publicUrl + '/messages'
+            };
+            // Do not return, otherwise user has to wait for email to send
+            // before post is created
+            request.server.log('debug', emailParams)
+            request.emailer.send('newPM', emailParams)
+            .catch(console.log);
+            return true;
+          }
+          return true;
+        });
       });
     });
   })
