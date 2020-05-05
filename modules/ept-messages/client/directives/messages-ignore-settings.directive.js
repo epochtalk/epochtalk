@@ -82,7 +82,7 @@ var directive = ['Messages', '$timeout', 'Alert',
         })
         .catch(function(e) {
           ctrl.emailsDisabled = !ctrl.emailsDisabled;
-          Alert.error('There was an error updating your mention settings');
+          Alert.error('There was an error updating your message settings');
         });
       };
 
