@@ -4,6 +4,7 @@ module.exports = {
   method: 'GET',
   path: '/api/posts/patrol',
   options: {
+    app: { hook: 'posts.patrol' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       query: Joi.object({
