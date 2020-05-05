@@ -11,6 +11,18 @@ module.exports = function(request, opts) {
   opts.offset = (opts.page * opts.limit) - opts.limit;
   opts.limit = opts.limit + 1;
 
+  var id;
+  var isModSelect = '';
+  var isModCase = '';
+  var isModJoin = '';
+  var params = [opts.limit, opts.offset, opts.priority];
+  if (request.auth.isAuthenticated) {
+    id = request.auth.credentials.id;
+    isModSelect = 'post.authed_user_is_mod,';
+    isModCase = 'CASE WHEN bm.user_id IS NULL THEN FALSE ELSE TRUE END AS authed_user_is_mod,';
+    isModJoin = 'LEFT JOIN board_moderators bm ON bm.user_id = $4 AND bm.board_id = t.board_id';
+    params.push(helper.deslugify(request.auth.credentials.id));
+  }
   var query = `
   SELECT
     plist.id,
@@ -32,7 +44,7 @@ module.exports = function(request, opts) {
     post.signature,
     post.avatar,
     post.name,
-    post.authed_user_is_mod,
+    ${isModSelect}
     p2.priority,
     p2.highlight_color,
     p2.role_name
@@ -60,7 +72,7 @@ module.exports = function(request, opts) {
       p.updated_at,
       p.imported_at,
       b.name as board_name,
-      CASE WHEN bm.user_id IS NULL THEN FALSE ELSE TRUE END AS authed_user_is_mod,
+      ${isModCase}
       u.username,
       u.deleted as user_deleted,
       up.signature,
@@ -76,7 +88,7 @@ module.exports = function(request, opts) {
     LEFT JOIN users.profiles up ON u.id = up.user_id
     LEFT JOIN threads t ON p.thread_id = t.id
     LEFT JOIN boards b ON t.board_id = b.id
-    LEFT JOIN board_moderators bm ON bm.user_id = $4 AND bm.board_id = t.board_id
+    ${isModJoin}
     WHERE p.id = plist.id
     AND EXISTS (
           SELECT 1
@@ -97,8 +109,6 @@ module.exports = function(request, opts) {
   ) p2 ON true;
   `;
 
-  // get total post count for this thread
-  var params = [opts.limit, opts.offset, opts.priority, helper.deslugify(request.auth.credentials.id)];
   return db.sqlQuery(query, params)
   .map(function(post) {
     // Build the breadcrumbs and reply
@@ -120,7 +130,7 @@ module.exports = function(request, opts) {
       limit: request.query.limit,
       page: request.query.page,
       hasMorePosts: hasMorePosts,
-      posts: request.server.methods.common.posts.cleanPosts(posts, request.auth.credentials.id, true, request, false, true)
+      posts: request.server.methods.common.posts.cleanPosts(posts, id, true, request, false, true)
     };
   })
   // handle page or start out of range
