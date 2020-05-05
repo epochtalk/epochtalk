@@ -65,7 +65,7 @@
     "handlebars": "^4.1.1",
     "hapi": "^18.1.0",
     "ip-address": "^5.0.2",
-    "jquery": "3.4.0",
+    "jquery": "3.5.0",
     "json": "^9.0.3",
     "jsonwebtoken": "^8.1.0",
     "klaw": "^2.1.1",

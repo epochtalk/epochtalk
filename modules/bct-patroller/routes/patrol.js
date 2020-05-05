@@ -4,7 +4,8 @@ module.exports = {
   method: 'GET',
   path: '/api/posts/patrol',
   options: {
-    auth: { strategy: 'jwt' },
+    app: { hook: 'posts.patrol' },
+    auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       query: Joi.object({
         page: Joi.number().integer().min(1),
@@ -32,7 +33,7 @@ function processing(request) {
   var opts = {
     page: request.query.page,
     limit: request.query.limit,
-    priority: request.server.plugins.acls.getUserPriority(request.auth)
+    priority: request.auth ? request.server.plugins.acls.getUserPriority(request.auth) : Number.MAX_SAFE_INTEGER
   };
   var promise = request.db.patroller.patrol(request, opts)
   .error(request.errorMap.toHttpError);
