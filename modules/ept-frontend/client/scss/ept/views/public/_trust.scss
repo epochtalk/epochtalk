@@ -32,7 +32,9 @@
 }
 
 .trust-score {
-  color: $secondary-font-color;
+  // color: $secondary-font-color;
+  color: $text-gray-med;
+
   &.unknown { color: #FA8072; }
   &.low { color: #DC143C; }
   &.mid { color: #74C365; }

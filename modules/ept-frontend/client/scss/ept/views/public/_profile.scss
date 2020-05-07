@@ -1,22 +1,258 @@
 /*-------------- Profile Layout -------------- */
+.message-banned {
+  background-color: $color-primary;
+  color: $light-text-default;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+}
+
+
+
+profile {
+  grid-column: span 2;
+  display: grid;
+  @include grid-columns-base
+  grid-template-areas: 
+    "header sidebar"
+    "main sidebar";
+  column-gap: 2rem;
+}
+
+.profile-header {
+  display: flex;
+  grid-area: header;
+  padding: 1rem 0;
+
+  $avatar-width: 120px;
+  .profile-avatar {
+    flex: 0 0 $avatar-width;
+    margin-right: 2rem;
+    position: relative;
+
+    .imageContainer {
+      width: $avatar-width;
+      height: $avatar-width;
+      margin-bottom: 0.5rem;
+    }
+
+    .edit-avatar {
+      font-size: $font-size-sm;
+    }
+
+    .profile-user-status {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      
+      svg {
+        stroke: #fff;
+        stroke-width: 6;
+        fill: green;
+        width: 1.5rem;
+      }
+    }
+
+    .rectangle {
+      .profile-user-status {
+        top: -4px;
+        right: -4px;
+      }
+    }
+  }
+
+  .profile-user-details {
+    display: flex;
+    flex-direction: column;
+
+    .profile-user-name-role {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+
+      h1 {
+        color: $dark-text-default;
+        font-size: inherit;
+        font-weight: 600;
+        line-height: inherit;
+        padding-right: 0.5rem;
+        text-transform: none;
+      }
+
+      .username-screen {
+        color: $text-gray-med;
+        font-weight: 400;
+        margin-right: 0.5rem;
+      }
+
+      .user-role {
+        background: $color-primary;
+        border-radius: 2px;
+        color: #fff;
+        font-size: $font-size-xs;
+        line-height: 1.4;
+        max-width: 140px;
+        overflow: hidden;
+        padding: 1px 6px;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .profile-user-activity {
+      color: $text-gray-med;
+      font-size: $font-size-sm;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+
+      .user-activity-stat,
+      trust-profile {
+        display: inline;
+      }
+
+      .user-activity-stat {
+        margin-right: 1rem;
+      }
+
+      .value {
+        font-weight: 600;
+      }
+
+      trust-profile {
+        div {
+          display: inline;
+        }
+
+        .trust-score {
+          font-weight: 600;
+          margin-right: 1rem;
+        }
+
+        a {
+          color: $text-gray-med;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .signature-block {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+
+    .signature {
+      @include truncate-ellipsis;
+      // flex: 1 0 auto;
+      font-size: $font-size-xs;
+      color: $text-gray-med;
+      line-height: 1.2;
+      max-height: 50px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      width: 100%;
+    }
+
+    .signature-edit {
+      flex: 0 0 20px;
+    }
+  }
+
+  .profile-user-stats {
+    display: flex;
+    margin-bottom: 2rem;
+
+    .stats {
+      border: $border;
+      border-radius: 6px;
+      color: $text-gray-dark;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      padding: 0.5rem;
+      text-align: center;
+      width: 100px;
+      max-width: 120px;
+
+      .label {
+        font-size: $font-size-xs;
+      }
+
+      .stat-text {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+
+        &-sm {
+          font-size: 21px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.profile-threads-posts {
+  grid-area: main;
+}
+
+.profile-sidebar {
+  color: $text-gray-dark;
+  grid-area: sidebar;
+
+  .actions-panel {
+    border-bottom: $border;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
 .profile-save-container { padding-top: 20px; }
 .profile-posts, .profile-content, .profile-row {
-  @include clearfix;
-  @include row;
+  // @include clearfix;
+  // @include row;
   margin-bottom: 1rem;
 }
 .profile-content {
+  display: grid;
+  column-gap: 2rem;
+  grid-template-columns: 1fr 3fr;
+  display: none;
+
   .profile-left {
-    @include span-columns(3);
     word-wrap: break-word;
+
     .profile-avatar-container {
-      @include span-columns(12);
-      @include omega;
-      position: relative;
       width: 100%;
       height: 100%;
+
       .imageContainer.loaded { background: none; }
       .imageContainer { background: url('/static/img/loading.gif') no-repeat center; display: inline;}
+      
+      .profile-avatar-image {
+        display: block;
+        position: relative;
+      }
+
+      .profile-user-status {
+        position: absolute;
+        right: -1rem;
+        top: -1rem;
+
+        svg {
+          stroke: #fff;
+          stroke-width: 6;
+          fill: green;
+          height: 2rem;
+          width: auto;
+        }
+      }
+
       img {
         @include transition(opacity 0.5s ease-in);
         opacity: 0;
@@ -42,29 +278,28 @@
     }
   }
   .profile-right {
-    @include span-columns(9);
-    @include omega;
     word-wrap: break-word;
+
     #myChart { height: 375px !important; width: 100% !important; }
-    .stats {
-      @include span-columns(4);
-      @include omega(3n);
-      text-align: center;
-      .stat-text { font-size: 1.625rem; }
-    }
-    .signature {
-      @include truncate-ellipsis;
-      clear: both;
-      color: $secondary-font-color;
-      font-size: 13px;
-      max-height: 50px;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-      a {
-        color: $secondary-font-color;
-        &:hover { color: $color-primary; }
-      }
-    }
+    // .stats {
+    //   @include span-columns(4);
+    //   @include omega(3n);
+    //   text-align: center;
+    //   .stat-text { font-size: 1.625rem; }
+    // }
+    // .signature {
+    //   @include truncate-ellipsis;
+    //   clear: both;
+    //   color: $secondary-font-color;
+    //   font-size: 13px;
+    //   max-height: 50px;
+    //   word-wrap: break-word;
+    //   white-space: pre-wrap;
+    //   a {
+    //     color: $secondary-font-color;
+    //     &:hover { color: $color-primary; }
+    //   }
+    // }
   }
 }
 .profile-posts {

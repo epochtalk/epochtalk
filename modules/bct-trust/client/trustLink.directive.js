@@ -1,4 +1,4 @@
-var html = '<div class="profile-row profile-action"><a ui-sref="trust-settings">Edit Trust Settings</a></div>';
+var html = '<div class="profile-action"><a ui-sref="trust-settings">Edit Trust Settings</a></div>';
 
 var directive = [function() {
   return {

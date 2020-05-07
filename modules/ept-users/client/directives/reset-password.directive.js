@@ -4,7 +4,7 @@ function(User, Session, Alert) {
     restrict: 'E',
     scope: true,
     bindToController: { user: '=' },
-    template: '<div class="profile-row profile-action" ng-if="rsvm.canReset()"><a ng-click="rsvm.reset()">Reset Password</a></div>',
+    template: '<div class="profile-action" ng-if="rsvm.canReset()"><a ng-click="rsvm.reset()">Reset Password</a></div>',
     controllerAs: 'rsvm',
     controller: [function() {
       // Permissions

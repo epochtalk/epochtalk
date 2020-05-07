@@ -1,4 +1,4 @@
-var html= '<div ng-if="vm.canIgnore() || vm.canUnignore()" class="profile-row profile-action">';
+var html= '<div ng-if="vm.canIgnore() || vm.canUnignore()" class="profile-action">';
 html += '<a ng-if="vm.canIgnore()" ng-click="vm.ignore()">Ignore All Posts By User</a>';
 html += '<a ng-if="vm.canUnignore()" ng-click="vm.unignore()">Unignore All Posts By User</a>';
 html += '</div>';

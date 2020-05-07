@@ -1,35 +1,165 @@
-<div class="padded-row" ng-if="vmProfile.ban_expiration()">
-  <div class="error-label fill-row">
-    {{ vmProfile.user.username }}
+<div class="message-banned" ng-if="vmProfile.ban_expiration()">
+  {{ vmProfile.user.username }}
     <span ng-if="vmProfile.ban_expiration() !== 'Permanent'">
       is banned until {{ vmProfile.ban_expiration() }}
     </span>
     <span ng-if="vmProfile.ban_expiration() === 'Permanent'">
        is permanently banned
      </span>
+</div>
+
+<div class="profile-header">
+  <div class="profile-avatar">
+    <div class="profile-avatar-container {{$webConfigs.default_avatar_shape}}">
+      <a ng-href="#" ng-if="vmProfile.canUpdate()" ng-click="vmProfile.openEditAvatar()" class="profile-avatar-image">
+        <img ng-src="{{vmProfile.user.avatar || $webConfigs.default_avatar }}" class="image-loader" />
+        <span class="profile-user-status" ng-if="vmProfile.isOnline">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <title>icon__unread</title>
+            <circle cx="24" cy="24" r="16"/>
+          </svg>
+        </span>
+      </a>
+      <img ng-if="!vmProfile.canUpdate()" ng-src="{{vmProfile.user.avatar || $webConfigs.default_avatar }}" class="image-loader"/>
+      <a ng-href="#" class="edit-avatar" ng-if="vmProfile.canUpdate()" ng-click="vmProfile.openEditAvatar()">
+        <div>Change Avatar</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="profile-user-details">
+    <div class="profile-user-name-role">
+      <h1 ng-bind="vmProfile.user.username"></h1>
+      <span class="username-screen" ng-bind="vmProfile.user.name"></span>
+      <span class="user-role" ng-bind="vmProfile.user.roles[0]"></span>
+    </div>
+
+    <div class="profile-user-activity">
+      <div class="user-activity-stat" ng-if="vmProfile.user.activity > -1">Activity: <span class="value" ng-bind="vmProfile.user.activity"></span></div>
+      <trust-profile ng-if="vmProfile.isLoggedIn()" username="vmProfile.user.username"></trust-profile>
+      <!-- <hr ng-if="vmProfile.user.email || vmProfile.user.gender || vmProfile.user.dob || vmProfile.user.location || vmProfile.user.language || vmProfile.userLocalTime"> -->
+    </div>
+
+    <div class="user-profile-position">
+      <span ng-bind="vmProfile.user.position"></span>
+      <span ng-bind="vmProfile.user.status"></span>
+    </div>
+
+    <div class="signature-block">
+      <div class="signature" post-processing="vmProfile.user.signature || vmProfile.user.raw_signature" style-fix="true">
+      </div>
+      <a ng-href="#" ng-click="vmProfile.openEditSignature()" ng-if="vmProfile.canUpdate()" class="signature-edit">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+          <title>edit-pencil</title>
+          <path d="M7.38,33.74h0L4,44l10.26-3.39h0L41.74,13.14,34.86,6.26Zm31-21.15.54.55L14.26,37.79l-.54-.54"/>
+          <path d="M45.48,6.89,41.11,2.52a1.78,1.78,0,0,0-2.5,0L36.11,5,43,11.89l2.5-2.5A1.76,1.76,0,0,0,45.48,6.89Z"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="profile-user-stats">
+      <div class="stats">
+        <span class="stat-text" ng-bind="(vmProfile.user.post_count || 0)"></span>
+        <span class="label">Posts</span>
+      </div>
+      <div class="stats">
+        <span class="label">Last Seen </span>
+        <span class="stat-text-sm" ng-bind="vmProfile.user.last_active | date:'mediumDate'"></span>
+      </div>
+      <div class="stats">
+        <span class="label">Created </span>
+        <span class="stat-text-sm" ng-bind="vmProfile.user.created_at | date:'mediumDate'"></span>
+      </div>
+    </div>
   </div>
 </div>
 
+<div class="profile-threads-posts">
+  <div class="profile-row">
+    <div class="fill-row">
+      <div class="profile-posts" ui-view="posts"></div>
+    </div>
+  </div>
+</div>
+
+<div class="profile-sidebar">
+  <div class="actions-user-profile actions-panel" ng-if="vmProfile.user.email || vmProfile.user.gender || vmProfile.user.dob || vmProfile.user.location || vmProfile.user.language || vmProfile.userLocalTime">
+    <a ng-href="mailto:{{vmProfile.user.email}}" target="_blank" ng-bind="vmProfile.user.email"></a>
+    <div><span ng-bind="vmProfile.user.btc_address"></span></div>
+    <div>
+      <a ng-href="{{vmProfile.user.website}}" target="_blank" ng-bind="vmProfile.user.website"></a>
+    </div>
+    <div ng-if="vmProfile.user.gender">
+      Gender:&nbsp;&nbsp;<span ng-bind="vmProfile.user.gender"></span>
+    </div>
+    <div ng-if="vmProfile.user.dob">
+      Age:&nbsp;&nbsp;<span ng-bind="vmProfile.userAge(vmProfile.user.dob)"></span>
+    </div>
+    <div ng-if="vmProfile.user.location">
+      Location:&nbsp;&nbsp;<span ng-bind="vmProfile.user.location"></span>
+    </div>
+    <div ng-if="vmProfile.user.language">
+      Language:&nbsp;&nbsp;<span ng-bind="vmProfile.user.language"></span>
+    </div>
+  </div>
+
+  <div class="actions-all-users actions-panel" ng-if="vmProfile.canMessage()">
+    <div class="profile-action" ng-if="vmProfile.canMessage()">
+      <a ng-href="#" ng-click="vmProfile.openConvoModal()">Quick Message</a>
+    </div>
+    <ignore-user-profile ng-if="vmProfile.isLoggedIn()" user="vmProfile.user"></ignore-user-profile>
+    <mentions-ignore-profile ng-if="vmProfile.isLoggedIn() && !vmProfile.pageOwner()" user="vmProfile.user"></mentions-ignore-profile>
+  </div>
+
+  <div class="actions-edit actions-panel" ng-iff="vmProfile.canUpdate() || vmProfile.canUpdatePrivate() || vmProfile.pageOwner() || vmProfile.canPageUserNotes() || vmProfile.canBanUser() ||">
+    <div class="profile-action" ng-if="vmProfile.canUpdate()">
+      <a ng-href="#" ng-click="vmProfile.openEditProfile()">Edit Profile</a>
+    </div>
+    <div class="profile-action" ng-if="vmProfile.canUpdatePrivate()">
+      <a ng-href="#" ng-click="vmProfile.openEditPassword()">Edit Password</a>
+    </div>
+    <div class="profile-action" ng-if="vmProfile.canUpdatePrivate()">
+      <a ng-href="#" ng-click="vmProfile.openEditEmail()">Edit Email</a>
+    </div>
+    <div class="profile-action" ng-if="vmProfile.pageOwner()">
+      <a ui-sref="settings">Edit Forum Settings</a>
+    </div>
+    <trust-link ng-if="vmProfile.pageOwner()"></trust-link>
+    <div class="profile-action" ng-if="vmProfile.canPageUserNotes()">
+      <a ng-href="#" ng-click="vmProfile.showModNotes = true">
+        Moderation Notes
+        <i class="fa fa-comment" ng-if="vmProfile.user.hasNotes"></i>
+        <i class="fa fa-comment-o" ng-if="!vmProfile.user.hasNotes"></i>
+      </a>
+    </div>
+    <div class="profile-action" ng-if="vmProfile.canBanUser()">
+      <a ng-href="#" ng-click="vmProfile.showManageBans({ id: vmProfile.user.id, username: vmProfile.user.username, email: vmProfile.user.email, created_at: vmProfile.user.created_at, ban_expiration: vmProfile.user.ban_expiration })">Manage Bans</a>
+    </div>
+  </div>
+
+  <div class="actions-destructive actions-panel" ng-iff="vmProfile.canDeactivate() || vmProfile.canReactivate() || vmProfile.canDelete()">
+    <reset-password user="vmProfile.user"></reset-password>
+    <div class="profile-action" ng-if="vmProfile.canDeactivate()">
+      <a ng-href="#" ng-click="vmProfile.showDeactivate = true">Deactivate Account</a>
+    </div>
+    <div class="profile-action" ng-if="vmProfile.canReactivate()">
+      <a ng-href="#" ng-click="vmProfile.showReactivate = true">Reactivate Account</a>
+    </div>
+    <div class="profile-action" ng-if="vmProfile.canDelete()">
+      <a ng-href="#" ng-click="vmProfile.showDelete = true">Delete Account</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- ORIGINAL CONTENT -->
 <div class="profile-content">
   <!-- Left Sidebar -->
   <div class="profile-left">
-    <!-- User's Avatar -->
-    <div class="profile-row">
-      <div class="profile-avatar-container {{$webConfigs.default_avatar_shape}}">
-        <a ng-href="#" ng-if="vmProfile.canUpdate()" ng-click="vmProfile.openEditAvatar()">
-          <img ng-src="{{vmProfile.user.avatar || $webConfigs.default_avatar }}" class="image-loader" />
-        </a>
-        <img ng-if="!vmProfile.canUpdate()" ng-src="{{vmProfile.user.avatar || $webConfigs.default_avatar }}" class="image-loader"/>
-        <a ng-href="#" class="after" ng-if="vmProfile.canUpdate()" ng-click="vmProfile.openEditAvatar()">
-          <div>Change Avatar</div>
-        </a>
-      </div>
-    </div>
 
     <!-- User Information -->
-    <div class="profile-row">
+    <div class="profile-details">
       <h4>
-        <span class="green" ng-if="vmProfile.isOnline"><i class="fa fa-circle"></i></span>
         <span class="green" ng-if="!vmProfile.isOnline"><i class="fa fa-circle-o"></i></span>
         &nbsp;
         <span ng-bind="vmProfile.user.username"></span>
@@ -62,72 +192,20 @@
       <hr ng-if="vmProfile.canUpdate() || vmProfile.canUpdatePrivate() || vmProfile.pageOwner() || vmProfile.canDeactivate() || vmProfile.canReactivate() || vmProfile.canDelete() || vmProfile.canPageUserNotes() || vmProfile.canBanUser() || vmProfile.canMessage()">
     </div>
 
-    <!-- Edit Profile Controls -->
-    <div class="profile-row profile-action" ng-if="vmProfile.canUpdate()">
-      <a ng-href="#" ng-click="vmProfile.openEditProfile()">Edit Profile</a>
-    </div>
-    <div class="profile-row profile-action" ng-if="vmProfile.canUpdatePrivate()">
-      <a ng-href="#" ng-click="vmProfile.openEditPassword()">Edit Password</a>
-    </div>
-    <div class="profile-row profile-action" ng-if="vmProfile.canUpdatePrivate()">
-      <a ng-href="#" ng-click="vmProfile.openEditEmail()">Edit Email</a>
-    </div>
-    <div class="profile-row profile-action" ng-if="vmProfile.pageOwner()">
-      <a ui-sref="settings">Edit Forum Settings</a>
-    </div>
-    <trust-link ng-if="vmProfile.pageOwner()"></trust-link>
-    <div class="profile-row profile-action" ng-if="vmProfile.canDeactivate()">
-      <a ng-href="#" ng-click="vmProfile.showDeactivate = true">Deactivate Account</a>
-    </div>
-    <div class="profile-row profile-action" ng-if="vmProfile.canReactivate()">
-      <a ng-href="#" ng-click="vmProfile.showReactivate = true">Reactivate Account</a>
-    </div>
-    <div class="profile-row profile-action" ng-if="vmProfile.canDelete()">
-      <a ng-href="#" ng-click="vmProfile.showDelete = true">Delete Account</a>
-    </div>
-    <div class="profile-row profile-action" ng-if="vmProfile.canMessage()">
-      <a ng-href="#" ng-click="vmProfile.openConvoModal()">Quick Message</a>
-    </div>
-    <ignore-user-profile ng-if="vmProfile.isLoggedIn()" user="vmProfile.user"></ignore-user-profile>
-    <mentions-ignore-profile ng-if="vmProfile.isLoggedIn() && !vmProfile.pageOwner()" user="vmProfile.user"></mentions-ignore-profile>
-    <div class="profile-row profile-action" ng-if="vmProfile.canPageUserNotes()">
-      <a ng-href="#" ng-click="vmProfile.showModNotes = true">
-        Moderation Notes
-        <i class="fa fa-comment" ng-if="vmProfile.user.hasNotes"></i>
-        <i class="fa fa-comment-o" ng-if="!vmProfile.user.hasNotes"></i>
-      </a>
-    </div>
-    <div class="profile-row profile-action" ng-if="vmProfile.canBanUser()">
-      <a ng-href="#" ng-click="vmProfile.showManageBans({ id: vmProfile.user.id, username: vmProfile.user.username, email: vmProfile.user.email, created_at: vmProfile.user.created_at, ban_expiration: vmProfile.user.ban_expiration })">Manage Bans</a>
-    </div>
 
 
-    <reset-password user="vmProfile.user"></reset-password>
+    
   </div>
 
   <!-- Right Side Content -->
   <div class="profile-right">
     <div class="profile-row">
-      <div class="stats centered-text">
-        Account Created On:<br>
-        <span class="stat-text" ng-bind="vmProfile.user.created_at | date:'mediumDate'"></span>
-      </div>
-      <div class="stats">
-        Number of Posts:<br>
-        <span class="stat-text" ng-bind="(vmProfile.user.post_count || 0) + ' Posts'"></span>
-      </div>
-      <div class="stats">
-        Account Last Used:<br>
-        <span class="stat-text" ng-bind="vmProfile.user.last_active | date:'mediumDate'"></span>
-      </div>
+      
     </div>
 
     <div class="profile-row">
       <div class="fill-row">
-        <strong>Signature:</strong>
-        <a ng-href="#" ng-click="vmProfile.openEditSignature()" ng-if="vmProfile.canUpdate()">
-          <i class="icon-epoch-edit-pencil"></i>
-        </a>
+        
       </div>
     </div>
 
@@ -146,6 +224,9 @@
 
 </div>
 
+
+
+<!-- Modals -->
 <modal class="medium" show="vmProfile.showModNotes">
   <h3 class="thin-underline">Moderator Notes for {{vmProfile.user.username}}</h3>
   <usernotes user-id="vmProfile.user.id" user="vmProfile.user"></usernotes>

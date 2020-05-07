@@ -1,4 +1,4 @@
-var html = `<div class="profile-row profile-action">
+var html = `<div class="profile-action">
     <a ng-show="vmMentionsProfile.user.ignoreMentions" ng-click="vmMentionsProfile.unignoreUser()">
       Unignore All Mentions By User
     </a>
