@@ -2,39 +2,37 @@
 <div ng-if="!ProfilePostsCtrl.threads">
   <button ng-click="ProfilePostsCtrl.toggleThreads(true)">View Threads by {{ProfilePostsCtrl.user.username}}</button>
   <div class="profile-row">
-    <h5 class="title">Posts by {{ProfilePostsCtrl.user.username}}</h5>
-    <div class="centered-text" ng-if="ProfilePostsCtrl.pageCount === 0">
-      <br /><br />
-      <h4>This user has no posts to display</h4>
-    </div>
+    <!-- <h5 class="title">Posts by {{ProfilePostsCtrl.user.username}}</h5> -->
 
     <div class="pagination-wrap" ng-if="ProfilePostsCtrl.pageCount > 0">
       <pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination>
     </div>
   </div>
 
+  <div class="no-table-contents" ng-if="ProfilePostsCtrl.pageCount === 0">
+    <h4>This user has no posts to display</h4>
+  </div>
+
   <div class="fill-row hide-mobile" ng-if="ProfilePostsCtrl.pageCount > 0">
-    <table class="striped" width="100%">
+    <table class="profile-posts-table" width="100%">
       <thead>
-        <th width="20%"></span>Thread</th>
-        <th width="58%">Post</th>
-        <th class="pointer" ng-click="ProfilePostsCtrl.setDesc()"><span ng-class="ProfilePostsCtrl.getDesc()"></span>&nbsp;Post Date</th>
+        <th class="thread"></span>Thread</th>
+        <th class="timestamp pointer" ng-click="ProfilePostsCtrl.setDesc()"><span ng-class="ProfilePostsCtrl.getDesc()"></span>&nbsp;Post Date</th>
       </thead>
 
       <tbody>
         <tr ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
-          <td data-balloon="{{post.thread_title}}" data-balloon-pos="left">
+          <td data-balloon="{{post.thread_title}}" data-balloon-pos="top">
             <div class="truncate-title">
               <span ng-if="post.hidden && !post._deleted"><i class="fa fa-eye-slash"></i></span>
-              <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
+              <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted" class="thread-title"></a>
               <span ng-if="post._deleted">Deleted</span>
             </div>
+            <div class="post" ng-click="post.open = !post.open">
+              <div class="post-body" ng-class="{ closed: !post.open }" post-processing="post.body_html" style-fix="true"></div>
+            </div>
           </td>
-          <td ng-click="post.open = !post.open">
-            <!-- Post Content -->
-            <div class="post-body" ng-class="{ closed: !post.open }" post-processing="post.body_html" style-fix="true"></div>
-          </td>
-          <td ng-bind="post.created_at | date:'MM/dd/yy @ h:mma'"></td>
+          <td ng-bind="post.created_at | date:'MM/dd/yy @ h:mma'" class="timestamp"></td>
         </tr>
       </tbody>
     </table>
@@ -59,15 +57,12 @@
   </div>
 </div>
 
+
 <div ng-if="ProfilePostsCtrl.threads">
   <button ng-click="ProfilePostsCtrl.toggleThreads(false)">View Posts by {{ProfilePostsCtrl.user.username}}</button>
   <!-- User's Paged Threads -->
   <div class="profile-row">
-    <h5 class="title">Threads by {{ProfilePostsCtrl.user.username}}</h5>
-    <div class="centered-text" ng-if="ProfilePostsCtrl.usersPosts.length < 1">
-      <br /><br />
-      <h4>This user has no threads to display</h4>
-    </div>
+    <!-- <h5 class="title">Threads by {{ProfilePostsCtrl.user.username}}</h5> -->
 
     <div class="pagination-wrap" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
       <div class="pagination-simple">
@@ -84,28 +79,34 @@
     </div>
   </div>
 
+  <div class="no-table-contents" ng-if="ProfilePostsCtrl.usersPosts.length < 1">
+    This user has no threads to display
+  </div>
+
   <div class="fill-row hide-mobile" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
-    <table class="striped" width="100%">
+    <table class="profile-posts-table" width="100%">
       <thead>
-        <th width="20%"></span>Thread</th>
-        <th width="58%">Post</th>
-        <th class="pointer" ng-click="ProfilePostsCtrl.setDesc()"><span ng-class="ProfilePostsCtrl.getDesc()"></span>&nbsp;Post Date</th>
+        <th class="thread"></span>Thread</th>
+        <th class="timestamp pointer" ng-click="ProfilePostsCtrl.setDesc()"><span ng-class="ProfilePostsCtrl.getDesc()"></span>&nbsp;Post Date</th>
       </thead>
 
       <tbody>
         <tr ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
-          <td data-balloon="{{post.thread_title}}" data-balloon-pos="left">
+          <td data-balloon="{{post.thread_title}}" data-balloon-pos="top">
             <div class="truncate-title">
               <span ng-if="post.hidden && !post._deleted"><i class="fa fa-eye-slash"></i></span>
-              <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
+              <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted" class="thread-title"></a>
               <span ng-if="post._deleted">Deleted</span>
             </div>
+            <div class="post" ng-click="post.open = !post.open">
+              <div class="post-body" ng-class="{ closed: !post.open }" post-processing="post.body_html" style-fix="true"></div>
+            </div>
           </td>
-          <td ng-click="post.open = !post.open">
-            <!-- Post Content -->
+          <!--
+          <td style="display: none" ng-click="post.open = !post.open">
             <div class="post-body" ng-class="{ closed: !post.open }" post-processing="post.body_html" style-fix="true"></div>
-          </td>
-          <td ng-bind="post.created_at | date:'MM/dd/yy @ h:mma'"></td>
+          </td> -->
+          <td ng-bind="post.created_at | date:'MM/dd/yy @ h:mma'" class="timestamp"></td>
         </tr>
       </tbody>
     </table>

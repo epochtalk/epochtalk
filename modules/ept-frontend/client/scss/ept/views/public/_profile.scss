@@ -55,8 +55,8 @@ profile {
 
     .rectangle {
       .profile-user-status {
-        top: -4px;
-        right: -4px;
+        top: -8px;
+        right: -8px;
       }
     }
   }
@@ -313,22 +313,100 @@ profile {
     }
   }
 }
-.profile-posts table {
+
+// .profile-posts table {
+//   table-layout: fixed;
+//   .truncate-title { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+//   .post-body {
+//     white-space: pre-wrap;
+//     ul { white-space: normal }
+//     &.closed {
+//       width: 100%;
+//       max-height: 18px;
+//       white-space: nowrap;
+//       overflow: hidden;
+//       text-overflow: ellipsis;
+//     }
+//   }
+// }
+.more-posts { margin-bottom: 2rem; }
+
+
+.profile-posts {
+  button {
+    margin-bottom: 0;
+  }
+}
+
+.pagination-simple {
+  margin-bottom: 0;
+}
+
+.profile-posts-table {
   table-layout: fixed;
-  .truncate-title { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  
+  tr {
+    td {
+      font-size: $base-font-size;
+      line-height: 1.3;
+      padding: 0.5rem 0;
+      vertical-align: top;
+    }
+  }
+
+  .timestamp {
+    color: $text-gray-med;
+    min-width: 150px;
+    padding-left: 1rem;
+    width: 25%;
+  }
+
+  .truncate-title { 
+    width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+  }
+
+  .thread-title {
+    font-weight: 600;
+  }
+
+  .post {
+    cursor: pointer;
+    padding: 0 0.25rem;
+    transition: all ease-in-out 200ms;
+
+    &:hover {
+      background-color: darken($base-background-color, 5%);
+    }
+  }
+
   .post-body {
     white-space: pre-wrap;
-    ul { white-space: normal }
+
+    &.open {
+      background-color: darken($base-background-color, 5%);
+    }
+
+    ul { 
+      white-space: normal 
+    }
+
     &.closed {
       width: 100%;
       max-height: 18px;
-      white-space: nowrap;
+      white-space: pre-wrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
   }
+
+  .no-table-contents {
+    color: $text-gray-med;
+    font-size: $font-size-med;
+    font-weight: 400;
+  }
 }
-.more-posts { margin-bottom: 2rem; }
+
+
 
 @include media($mobile) {
   .profile-content {
