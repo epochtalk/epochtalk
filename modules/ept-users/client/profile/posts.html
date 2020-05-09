@@ -1,6 +1,16 @@
+<div class="table-actions">
+  <button ng-click="ProfilePostsCtrl.toggleThreads(true)" ng-class="{'active': ProfilePostsCtrl.threads}">
+    View <strong>&nbsp;Threads&nbsp;</strong> by {{ProfilePostsCtrl.user.username}}
+  </button>
+  
+  <button ng-click="ProfilePostsCtrl.toggleThreads(false)" ng-class="{'active': !ProfilePostsCtrl.threads}">
+    View <strong>&nbsp;Posts&nbsp;</strong> by {{ProfilePostsCtrl.user.username}}
+  </button>
+</div>
+
 <!-- User's Paged Posts -->
 <div ng-if="!ProfilePostsCtrl.threads">
-  <button ng-click="ProfilePostsCtrl.toggleThreads(true)">View Threads by {{ProfilePostsCtrl.user.username}}</button>
+  <!-- <button ng-click="ProfilePostsCtrl.toggleThreads(true)">View Threads by {{ProfilePostsCtrl.user.username}}</button> -->
   <div class="profile-row">
     <!-- <h5 class="title">Posts by {{ProfilePostsCtrl.user.username}}</h5> -->
 
@@ -37,31 +47,11 @@
       </tbody>
     </table>
   </div>
-
-  <!--
-  <div class="fill-row show-mobile--remove" ng-if="ProfilePostsCtrl.pageCount > 0">
-    <div class="mobile-post" ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
-      <div>
-        <div>
-          <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
-        </div>
-        <div class="mobile-post-time"><small ng-bind="post.created_at | date:'MM/dd/yy @ h:mma'"></small></div>
-        <div class="post-body" post-processing="post.body_html" style-fix="true"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="fill-row" ng-if="ProfilePostsCtrl.pageCount > 0">
-    <div class="pagination-wrap">
-      <pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination>
-    </div>
-  </div>
--->
 </div>
 
 
 <div ng-if="ProfilePostsCtrl.threads">
-  <button ng-click="ProfilePostsCtrl.toggleThreads(false)">View Posts by {{ProfilePostsCtrl.user.username}}</button>
+  <!-- <button ng-click="ProfilePostsCtrl.toggleThreads(false)">View Posts by {{ProfilePostsCtrl.user.username}}</button> -->
   <!-- User's Paged Threads -->
   <div class="profile-row">
     <!-- <h5 class="title">Threads by {{ProfilePostsCtrl.user.username}}</h5> -->
@@ -113,36 +103,4 @@
       </tbody>
     </table>
   </div>
-
-  <!--
-  <div class="fill-row show-mobile--remove" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
-    <div class="mobile-post" ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
-      <div>
-        <div>
-          <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
-        </div>
-        <div class="mobile-post-time"><small ng-bind="post.created_at | date:'MM/dd/yy @ h:mma'"></small></div>
-        <div class="post-body" post-processing="post.body_html" style-fix="true"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="fill-row" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
-    <div class="pagination-wrap">
-      <div class="pagination-simple">
-        <a ng-show="ProfilePostsCtrl.prev" ui-sref=".({ threads: ProfilePostsCtrl.threads, page: ProfilePostsCtrl.prev, limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
-          &#10094; Previous
-        </a>
-        <span ng-hide="ProfilePostsCtrl.prev">&#10094; Previous</span>
-        &nbsp;&nbsp;&nbsp;
-        <a ng-show="ProfilePostsCtrl.next" ui-sref=".({ threads: ProfilePostsCtrl.threads, page: ProfilePostsCtrl.next, limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
-           Next &#10095;
-        </a>
-        <span ng-hide="ProfilePostsCtrl.next">Next &#10095;</span>
-      </div>
-    </div>
-  </div>
--->
-
-
 </div>

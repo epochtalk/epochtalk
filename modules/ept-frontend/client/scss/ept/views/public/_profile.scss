@@ -18,7 +18,7 @@ profile {
     "main sidebar";
   column-gap: 2rem;
 
-  @include break-mobile-sm {
+  @include break-mobile-med {
     grid-template-columns: 1fr;
     grid-template-areas: 
       "header"
@@ -204,7 +204,7 @@ profile {
     }
   }
 
-  @include break-mobile-sm {
+  @include break-mobile-med {
     align-items: center;
     flex-direction: column;
 
@@ -244,6 +244,32 @@ profile {
 
 .profile-threads-posts {
   grid-area: main;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  button {
+    background: transparent;
+    border-bottom: 1px solid rgba(0,0,0,0);
+    border-radius: 0;
+    color: $text-gray-dark;
+    margin-right: 2rem;
+    padding: 0.5rem 0;
+
+    &:hover {
+      background: inherit;
+      border-color: rgba($color-primary, .8);
+      color: rgba($color-primary, .8);
+    }
+
+    &.active {
+      color: $color-primary;
+      border-color: $color-primary;
+    }
+  }
 }
 
 .profile-sidebar {
@@ -360,21 +386,6 @@ profile {
   }
 }
 
-// .profile-posts table {
-//   table-layout: fixed;
-//   .truncate-title { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-//   .post-body {
-//     white-space: pre-wrap;
-//     ul { white-space: normal }
-//     &.closed {
-//       width: 100%;
-//       max-height: 18px;
-//       white-space: nowrap;
-//       overflow: hidden;
-//       text-overflow: ellipsis;
-//     }
-//   }
-// }
 .more-posts { margin-bottom: 2rem; }
 
 
@@ -451,7 +462,7 @@ profile {
     font-weight: 400;
   }
 
-  @include break-mobile-sm {
+  @include break-mobile-med {
     display: grid;
     grid-template-columns: 1fr;
 

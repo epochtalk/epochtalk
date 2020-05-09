@@ -118,10 +118,17 @@ $border-quote: 2px solid rgba(0, 0, 0, 0.1);
 
 // Mobile Breakpoints
 $tablet:  767px;
+$medium: 1024px;
 $large:   1280px;
 
 @mixin break-mobile-sm {
   @media screen and (max-width: #{$tablet}) {
+    @content;
+  }
+}
+
+@mixin break-mobile-med {
+  @media screen and (max-width: #{$medium}) {
     @content;
   }
 }
