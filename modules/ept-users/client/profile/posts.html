@@ -13,7 +13,7 @@
     <h4>This user has no posts to display</h4>
   </div>
 
-  <div class="fill-row hide-mobile" ng-if="ProfilePostsCtrl.pageCount > 0">
+  <div class="fill-row" ng-if="ProfilePostsCtrl.pageCount > 0">
     <table class="profile-posts-table" width="100%">
       <thead>
         <th class="thread"></span>Thread</th>
@@ -38,7 +38,8 @@
     </table>
   </div>
 
-  <div class="fill-row show-mobile" ng-if="ProfilePostsCtrl.pageCount > 0">
+  <!--
+  <div class="fill-row show-mobile--remove" ng-if="ProfilePostsCtrl.pageCount > 0">
     <div class="mobile-post" ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
       <div>
         <div>
@@ -55,6 +56,7 @@
       <pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination>
     </div>
   </div>
+-->
 </div>
 
 
@@ -83,7 +85,7 @@
     This user has no threads to display
   </div>
 
-  <div class="fill-row hide-mobile" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
+  <div class="fill-row" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
     <table class="profile-posts-table" width="100%">
       <thead>
         <th class="thread"></span>Thread</th>
@@ -112,7 +114,8 @@
     </table>
   </div>
 
-  <div class="fill-row show-mobile" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
+  <!--
+  <div class="fill-row show-mobile--remove" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
     <div class="mobile-post" ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
       <div>
         <div>
@@ -139,4 +142,7 @@
       </div>
     </div>
   </div>
+-->
+
+
 </div>

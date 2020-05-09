@@ -17,6 +17,15 @@ profile {
     "header sidebar"
     "main sidebar";
   column-gap: 2rem;
+
+  @include break-mobile-sm {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "header"
+      "sidebar"
+      "main";
+    width: 100%;
+  }
 }
 
 .profile-header {
@@ -191,6 +200,43 @@ profile {
           font-size: 21px;
           font-weight: 600;
         }
+      }
+    }
+  }
+
+  @include break-mobile-sm {
+    align-items: center;
+    flex-direction: column;
+
+    .profile-avatar {
+      margin-bottom: 1rem;
+      margin-right: 0;
+    }
+
+    .imageContainer {
+      width: 60px;
+      height: 60px;
+    }
+
+    .profile-user-details {
+      .profile-user-name-role {
+        flex-direction: column;
+        margin-bottom: 1.5rem;
+
+        h1,
+        .username-screen {
+          margin-bottom: 0.25rem;
+        }
+      }
+    }
+
+    .profile-user-activity {
+      text-align: center;
+    }
+
+    trust-profile {
+      .trust-link {
+        white-space: nowrap;
       }
     }
   }
@@ -403,6 +449,39 @@ profile {
     color: $text-gray-med;
     font-size: $font-size-med;
     font-weight: 400;
+  }
+
+  @include break-mobile-sm {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    thead,
+    th,
+    tbody,
+    tr {
+      display: contents;
+    }
+
+    thead {
+      display: none;
+    }
+
+    tr {
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem 0;
+
+      td {
+        padding: 0;
+      }
+    }
+
+    .timestamp {
+      font-size: $font-size-sm;
+      padding: 0;
+      order: -1;
+      width: 100%;
+    }
   }
 }
 
