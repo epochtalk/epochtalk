@@ -1,10 +1,10 @@
 <div class="table-actions">
   <button ng-click="ProfilePostsCtrl.toggleThreads(true)" ng-class="{'active': ProfilePostsCtrl.threads}">
-    View <strong>&nbsp;Threads&nbsp;</strong> by {{ProfilePostsCtrl.user.username}}
+    <strong>Threads&nbsp;</strong> <span class="username">by {{ProfilePostsCtrl.user.username}}</span>
   </button>
   
   <button ng-click="ProfilePostsCtrl.toggleThreads(false)" ng-class="{'active': !ProfilePostsCtrl.threads}">
-    View <strong>&nbsp;Posts&nbsp;</strong> by {{ProfilePostsCtrl.user.username}}
+    <strong>Posts&nbsp;</strong> <span class="username">by {{ProfilePostsCtrl.user.username}}</span>
   </button>
 </div>
 

@@ -270,6 +270,19 @@ profile {
       border-color: $color-primary;
     }
   }
+
+  @include break-mobile-med {
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+
+    button {
+      font-size: $font-size-sm;
+    }
+
+    .username {
+      display: none;
+    }
+  }
 }
 
 .profile-sidebar {
@@ -496,6 +509,13 @@ profile {
   }
 }
 
+@include break-mobile-med {
+  .pagination-wrap {
+    pagination {
+      text-align: right;
+    }
+  }
+}
 
 
 @include media($mobile) {
