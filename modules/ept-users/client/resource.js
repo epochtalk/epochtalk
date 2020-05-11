@@ -33,7 +33,7 @@ var resource = ['$resource',
       lookup: {
         method: 'GET',
         url: '/api/users/lookup/:username',
-        params: { username: '@username', self: '@self' },
+        params: { username: '@username', self: '@self', restricted: '@restricted' },
         isArray: true,
         ignoreLoadingBar: true
       },

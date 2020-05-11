@@ -14,6 +14,7 @@
       position: relative;
       .action { position: absolute; top: 0.5rem; right: 0.2rem; color: $secondary-font-color; }
       .msg-preview { color: $secondary-font-color; }
+      &.unread { background-color: $color-primary-transparent; }
       &.active { background-color: $sub-header-color; }
     }
   }
@@ -67,6 +68,7 @@
       &:last-child { margin-bottom: 2rem; }
       &:first-child { border-top: 1px solid $border-color; margin-top: 1rem;}
       &.sender { background-color: $sub-header-color; }
+      &.unread { background-color: $color-primary-transparent; }
       .avatar {
         @include span-columns(1);
         img {
