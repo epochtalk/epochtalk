@@ -90,6 +90,7 @@
     </div>
     <ignore-user-profile ng-if="vmProfile.isLoggedIn()" user="vmProfile.user"></ignore-user-profile>
     <mentions-ignore-profile ng-if="vmProfile.isLoggedIn() && !vmProfile.pageOwner()" user="vmProfile.user"></mentions-ignore-profile>
+    <messages-ignore-profile ng-if="vmProfile.isLoggedIn() && !vmProfile.pageOwner()" user="vmProfile.user"></messages-ignore-profile>
     <div class="profile-row profile-action" ng-if="vmProfile.canPageUserNotes()">
       <a ng-href="#" ng-click="vmProfile.showModNotes = true">
         Moderation Notes

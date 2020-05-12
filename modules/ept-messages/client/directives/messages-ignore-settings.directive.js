@@ -1,19 +1,20 @@
-var directive = ['IgnoreUsers', 'Alert', '$timeout',
-  function(IgnoreUsers, Alert, $timeout) {
+var directive = ['Messages', '$timeout', 'Alert',
+  function(Messages, $timeout, Alert) {
   return {
     restrict: 'E',
     scope: true,
-    template: require('./ignore.settings.directive.html'),
-    controllerAs: 'vmIgnoreUserPosts',
+    template: require('./messages-ignore-settings.directive.html'),
+    controllerAs: 'vmIgnoreUserMessages',
     controller: [function() {
       // page variables
       var ctrl = this;
+      this.emailsDisabled;
       this.userToIgnore = {};
       this.page = 1;
 
       this.init = function() {
         var query = { limit: 10 };
-        return IgnoreUsers.ignored(query).$promise
+        return Messages.pageIgnoredUsers(query).$promise
         .then(function(ignored) {
           // index variables
           ctrl.page = ignored.page;
@@ -21,8 +22,9 @@ var directive = ['IgnoreUsers', 'Alert', '$timeout',
           ctrl.users = ignored.data;
           ctrl.next = ignored.next;
           ctrl.prev = ignored.prev;
-          return;
+          return Messages.getMessageEmailSettings().$promise;
         })
+        .then(function(data) { ctrl.emailsDisabled = data.email_messages; })
         .catch(function(err) { Alert.error('There was an error paging ignored users.'); });
       };
 
@@ -31,7 +33,7 @@ var directive = ['IgnoreUsers', 'Alert', '$timeout',
       // page actions
 
       this.unignore = function(user) {
-        return IgnoreUsers.unignore({ id: user.id }).$promise
+        return Messages.unignoreUser({ username: user.username }).$promise
         .then(function() {
           Alert.success('Successfully uningored ' + user.username);
           $timeout(function() { user.ignored = false; });
@@ -39,7 +41,7 @@ var directive = ['IgnoreUsers', 'Alert', '$timeout',
       };
 
       this.ignore = function(user) {
-        return IgnoreUsers.ignore({id: user.id}).$promise
+        return Messages.ignoreUser({username: user.username}).$promise
         .then(function(res) {
           Alert.success('Successfully ingored ' + user.username);
           $timeout(function() { user.ignored = true; });
@@ -47,10 +49,10 @@ var directive = ['IgnoreUsers', 'Alert', '$timeout',
         });
       };
 
-      this.ignoreUser = function(user) {
-        return IgnoreUsers.ignore({id: user.user_id}).$promise
+      this.ignoreUser = function(username) {
+        return Messages.ignoreUser({username: username}).$promise
         .then(function(res) {
-          Alert.success('Successfully ingored ' + user.username);
+          Alert.success('Successfully ingored ' + username);
           ctrl.pullPage(0);
           ctrl.userToIgnore = {};
           return res;
@@ -63,16 +65,30 @@ var directive = ['IgnoreUsers', 'Alert', '$timeout',
         var query = { page: ctrl.page, limit: ctrl.limit };
 
         // replace current threads with new threads
-        IgnoreUsers.ignored(query).$promise
+        return Messages.pageIgnoredUsers(query).$promise
         .then(function(pageData) {
           ctrl.prev = pageData.prev;
           ctrl.next = pageData.next;
           ctrl.users = pageData.data;
         });
       };
+
+      this.enableMessageEmails = function() {
+        var payload = { enabled: !ctrl.emailsDisabled };
+        return Messages.enableMessageEmails(payload).$promise
+        .then(function() {
+          var action = ctrl.emailsDisabled ? 'Enabled' : 'Disabled';
+          Alert.success('Successfully ' + action + ' Message Emails');
+        })
+        .catch(function(e) {
+          ctrl.emailsDisabled = !ctrl.emailsDisabled;
+          Alert.error('There was an error updating your message settings');
+        });
+      };
+
     }]
   };
 }];
 
 
-angular.module('ept').directive('ignoreUserSettings', directive);
+angular.module('ept').directive('ignoreMessagesSettings', directive);

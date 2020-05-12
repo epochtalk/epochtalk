@@ -11,6 +11,7 @@ var directive = ['Mentions', '$timeout', 'Alert',
       this.emailsDisabled;
       this.showRemoveModal;
       this.userToIgnore = {};
+      this.page = 1;
 
       this.init = function() {
         var query = { limit: 10 };
@@ -34,13 +35,30 @@ var directive = ['Mentions', '$timeout', 'Alert',
 
       this.unignore = function(user) {
         return Mentions.unignoreUser({ username: user.username }).$promise
-        .then(function() { $timeout(function() { user.ignored = false; }); });
+        .then(function() {
+          Alert.success('Successfully uningored ' + user.username);
+          $timeout(function() { user.ignored = false; });
+        });
       };
 
       this.ignore = function(user) {
         return Mentions.ignoreUser({username: user.username}).$promise
-        .then(function(res) { $timeout(function() { user.ignored = true; }); return res; });
+        .then(function(res) {
+          Alert.success('Successfully ingored ' + user.username);
+          $timeout(function() { user.ignored = true; });
+          return res;
+        });
       };
+
+      this.ignoreUser = function(username) {
+        return Mentions.ignoreUser({username: username}).$promise
+        .then(function(res) {
+          Alert.success('Successfully ingored ' + username);
+          ctrl.pullPage(0);
+          ctrl.userToIgnore = {};
+          return res;
+        });
+      }
 
       // page controls
       this.pullPage = function(pageIncrement) {
