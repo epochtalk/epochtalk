@@ -1,0 +1,71 @@
+<!-- Page Header -->
+<h3 class="thin-underline">User Message Settings</h3>
+<div class="row">
+  <div class="two-thirds-column">
+    <label for="enable-mention-emails">Send me an Email when I'm messaged</label>
+    <label class="desc-label" for="enable-mention-emails">Receive an email when users message you</label>
+  </div>
+  <div class="one-third-column">
+    <input id="enable-mention-emails" class="toggle-switch" type="checkbox" ng-model="vmIgnoreUserMessages.emailsDisabled" ng-click="vmIgnoreUserMessages.enableMessageEmails()">
+    <label for="enable-mention-emails"></label>
+  </div>
+</div>
+<div class="clear"></div>
+<br />
+<div class="row">
+  <autocomplete-user-id admin="false" user-id="vmIgnoreUserMessages.userToIgnore.user_id" username="vmIgnoreUserMessages.userToIgnore.username" input-placeholder="Type username to add to ignored messages list"></autocomplete-user-id>
+  <button class="fill-row" ng-click="vmIgnoreUserMessages.ignoreUser(vmIgnoreUserMessages.userToIgnore.username)" ng-disabled="!vmIgnoreUserMessages.userToIgnore.user_id">Add to Ignore List</button>
+</div>
+<div class="clear"></div>
+<!-- All Users -->
+<table class="striped ignored-users" width="100%">
+  <thead>
+    <th></th>
+    <th>Username</th>
+    <th>Action</th>
+  </thead>
+  <tbody ng-if="vmIgnoreUserMessages.users.length < 1">
+    <tr>
+      <td class="centered-text no-data" colspan="3"><h5>No User Messages Being Ignored</h5></td>
+    </tr>
+  </tbody>
+  <tbody ng-repeat="user in vmIgnoreUserMessages.users track by user.id">
+    <tr>
+      <td>
+        <div class="user-avatar">
+          <a ui-sref="profile.posts({ username: user.username })">
+            <img ng-src="{{::user.avatar || $webConfigs.default_avatar}}">
+          </a>
+        </div>
+      </td>
+      <td>
+        <a class="user-username" ui-sref="profile.posts({ username: user.username })" ng-bind-html="user.username"></a>
+      </td>
+      <td ng-if="user.ignored">
+        <a ng-click="vmIgnoreUserMessages.unignore(user)">
+          <i class="fa fa-user"></i>&nbsp;&nbsp;
+          Stop Ignoring<span class="hide-mobile"> User's Messages</span>
+        </a>
+      </td>
+      <td ng-if="!user.ignored">
+        <a ng-click="vmIgnoreUserMessages.ignore(user)">
+          <i class="fa fa-user-times"></i>&nbsp;&nbsp;
+          Ignore<span class="hide-mobile"> User's Messages</span>
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="pagination-simple">
+  <a ng-show="vmIgnoreUserMessages.prev" ng-click="vmIgnoreUserMessages.pullPage(-1)">
+    &#10094; Previous
+  </a>
+  <span ng-show="!vmIgnoreUserMessages.prev">&#10094; Previous</span>
+  &nbsp;&nbsp;&nbsp;
+  <a ng-show="vmIgnoreUserMessages.next" ng-click="vmIgnoreUserMessages.pullPage(1)">
+     Next &#10095;
+  </a>
+  <span ng-show="!vmIgnoreUserMessages.next">Next &#10095;</span>
+</div>
+

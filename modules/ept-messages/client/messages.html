@@ -13,7 +13,7 @@
 <!-- Recent Conversations -->
 <div class="conversations" ng-if="MessagesCtrl.recentMessages.length > 0">
   <div id="recentMessagesHeader">
-    <div class="inbox" ng-click="MessagesCtrl.loadRecentMessages();">
+    <div class="inbox" ng-click="MessagesCtrl.loadRecentMessages(); MessagesCtrl.reloadConversation()">
       <i class="fa fa-envelope"></i> Inbox
     </div>
     <div class="add" ng-if="MessagesCtrl.canCreateConversation()" ng-click="MessagesCtrl.loadEditor(false); MessagesCtrl.editorConvoMode = true;">
@@ -32,7 +32,7 @@
   </div>
 
   <div class="list" ng-if="MessagesCtrl.pageMax > 0">
-    <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id}">
+    <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id, 'unread': !message.viewed }">
       <strong ng-bind="::MessagesCtrl.listMessageReceivers(message)"></strong>
       <br />
       <span class="msg-preview" ng-bind-html="message.created_at | humanDate"></span>
@@ -65,7 +65,7 @@
 
   <!-- Conversation Messages -->
   <div class="msg-container">
-    <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="MessagesCtrl.currentUserId === message.sender_id ? 'sender' : ''">
+    <div id="{{message.id}}" ng-repeat="message in MessagesCtrl.currentConversation.messages track by message.id" class="message" ng-class="{ 'sender': MessagesCtrl.currentUserId === message.sender_id, 'unread': !message.viewed}">
       <div class="content">
         <div class="avatar">
           <img ng-src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
@@ -74,6 +74,9 @@
           <strong ng-bind="message.sender_username"></strong>
           <span class="date" ng-bind="message.created_at | humanDate"></span>
           <div class="right">
+            <a ng-href="" class="action" data-balloon="Quote" ng-click="MessagesCtrl.addQuote(message); MessagesCtrl.editorConvoMode = false;">
+              <i class="icon-epoch-quote"></i>
+            </a>
             <a ng-if="MessagesCtrl.canDeleteMessage(message.sender_id)" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-balloon="Delete">
               <i class="fa fa-trash"></i>
             </a>
@@ -110,7 +113,7 @@
         <div ng-if="MessagesCtrl.editorConvoMode">
           <!-- Select User -->
           <label>To</label>
-          <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" ng-model="MessagesCtrl.receivers" modal-focus="{{MessagesCtrl.showEditor && MessagesCtrl.editorConvoMode}}">
+          <tags-input min-length="1" placeholder="Type username(s) to message" add-from-autocomplete-only="true" replace-spaces-with-dashes="false" display-property="username" allow-leftover-text="false" ng-model="MessagesCtrl.receivers" modal-focus="{{MessagesCtrl.showEditor && MessagesCtrl.editorConvoMode}}">
               <auto-complete min-length="1" debounce-delay="250" source="MessagesCtrl.loadTags($query)"></auto-complete>
             </tags-input>
           <!-- Subject -->
@@ -192,7 +195,7 @@
       </div>
       <!-- Editor -->
       <form name="form" class="editor-form" novalidate>
-        <epochtalk-editor class="posts-editor" body-html="MessagesCtrl.newMessage.content.body_html" body="MessagesCtrl.newMessage.content.body" reset-switch="MessagesCtrl.resetEditor" focus-switch="MessagesCtrl.focusEditor" dirty="MessagesCtrl.dirtyEditor">
+        <epochtalk-editor class="posts-editor" body-html="MessagesCtrl.newMessage.content.body_html" body="MessagesCtrl.newMessage.content.body" reset-switch="MessagesCtrl.resetEditor" focus-switch="MessagesCtrl.focusEditor" quote="MessagesCtrl.quote" dirty="MessagesCtrl.dirtyEditor">
         </epochtalk-editor>
       </form>
 
@@ -208,7 +211,7 @@
         <button class="inverted-button cancel" ng-click="MessagesCtrl.cancelMsg()">
           Cancel
         </button>
-        <button class="no-animate" ng-if="MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.createConversation()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateConversation() || !MessagesCtrl.newMessage.content.subject.length || !MessagesCtrl.newMessage.content.body.length">
+        <button class="no-animate" ng-if="MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.createConversation()" ng-disabled="!MessagesCtrl.receivers.length || form.title.$error.required || !MessagesCtrl.canCreateConversation() || !MessagesCtrl.newMessage.content.subject.length || !MessagesCtrl.newMessage.content.body.length">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Start New Conversation
         </button>
         <button class="no-animate" ng-if="!MessagesCtrl.editorConvoMode" class="send" ng-click="MessagesCtrl.saveMessage()" ng-disabled="form.title.$error.required || !MessagesCtrl.canCreateMessage() || !MessagesCtrl.newMessage.content.body.length">

@@ -50,7 +50,7 @@ var XBBCODE = (function () {
         sizePattern = /([1-9][\d]?p[xt]|(?:x-)?small(?:er)?|(?:x-)?large[r]?)/,
         anchorPattern = /[#]?([A-Za-z][A-Za-z0-9_-]*)/,
         smfQuotePattern = /(?:board=\d+;)?((?:topic|threadid)=[\dmsg#\.\/]{1,40}(?:;start=[\dmsg#\.\/]{1,40})?|action=profile;u=\d+)/,
-        eptQuotePattern = /^\/threads\/[a-z0-9\-]*\/posts[a-z0-9?\=\-#\&]*/i,
+        eptQuotePattern = /^\/threads\/[a-z0-9\-\_]*\/posts[a-z0-9?\=\-#\&\_]*/i,
         tags,
         tagList,
         tagsNoParseList = [],
@@ -640,6 +640,13 @@ var XBBCODE = (function () {
                 if (author) {
                     quoteHeader = '<div class="quoteHeader">';
                     quoteHeader += 'Quote From: ' + author;
+                    quoteHeader += '</div>';
+                }
+
+                // author date
+                if (author && date) {
+                    quoteHeader = '<div class="quoteHeader">';
+                    quoteHeader += 'Quote From: ' + author + ' on ept-date=' + date;
                     quoteHeader += '</div>';
                 }
 

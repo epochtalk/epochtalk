@@ -12,22 +12,22 @@ module.exports = function(message) {
   if (message.content.body === message.content.body_html) {
     delete message.content.body_html
   }
-  var q = 'INSERT INTO messages.private_messages(conversation_id, sender_id, receiver_ids, content, created_at) VALUES ($1, $2, $3, $4, now()) RETURNING id, created_at';
-  var params = [message.conversation_id, message.sender_id, message.receiver_ids, message.content];
+  var q = 'INSERT INTO messages.private_messages(conversation_id, sender_id, receiver_ids, content, read_by_user_ids, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id, created_at';
+  var params = [message.conversation_id, message.sender_id, message.receiver_ids, message.content, [message.sender_id]];
   return using(db.createTransaction(), function(client) {
     return client.query(q, params)
     .then(function(results) {
       if (results.rows.length > 0) {
         message.id = results.rows[0].id;
         message.created_at = results.rows[0].created_at;
-        message.viewed = false;
+        message.viewed = true;
         if (!message.content.body_html) { message.content.body_html = message.content.body; }
       }
       else { throw new CreationError('Private Message Could Not Be Saved'); }
     })
     .then(function() {
-      q = 'UPDATE messages.private_conversations SET deleted_by_user_ids = $1 WHERE id = $2';
-      return client.query(q, [[], message.conversation_id]);
+      q = 'UPDATE messages.private_conversations SET deleted_by_user_ids = $1, read_by_user_ids = $2 WHERE id = $3';
+      return client.query(q, [[], [message.sender_id], message.conversation_id]);
     });
   })
   .then(function() { return helper.slugify(message); });

@@ -87,7 +87,7 @@ var ctrl = [
     this.receivers = [];
 
     this.loadTags = function(query) {
-      return User.lookup({ username: query }).$promise
+      return User.lookup({ self: true, username: query, restricted: true }).$promise
       .then(function(users) { return users; });
     };
 
@@ -96,6 +96,9 @@ var ctrl = [
     this.loadConversation = function(conversationId, options) {
       options = options || {};
       ctrl.selectedConversationId = conversationId;
+      ctrl.recentMessages.forEach(function(message) {
+        if (message.conversation_id === conversationId) { message.viewed = true; }
+      });
       return Conversations.messages({ id: conversationId }).$promise
       // build out conversation information
       .then(function(data) {
@@ -140,6 +143,10 @@ var ctrl = [
 
     if (this.recentMessages.length) {
       this.loadConversation(this.recentMessages[0].conversation_id);
+    }
+
+    this.reloadConversation = function() {
+      ctrl.loadConversation(ctrl.selectedConversationId);
     }
 
     this.loadMoreMessages = function() {
@@ -217,7 +224,6 @@ var ctrl = [
         ctrl.limit = data.limit;
         ctrl.page = data.page;
         ctrl.pageMax = Math.ceil(data.total_convo_count / data.limit);
-
       })
       .catch(function(err) {
         var msg = 'Messages could not be loaded';
@@ -238,6 +244,9 @@ var ctrl = [
       .then(ctrl.loadRecentMessages)
       .then(function() {
         ctrl.newMessage.content = { body: '', body_html: '' };
+        ctrl.currentConversation.messages.forEach(function(message) {
+          message.viewed = true;
+        });
         closeEditor();
       })
       .catch(function(err) {
@@ -245,6 +254,24 @@ var ctrl = [
         if (err && err.status === 403) { msg = err.data.message; }
         Alert.error(msg);
       });
+    };
+
+    this.addQuote = function(message) {
+      var timeDuration = 0;
+      if (ctrl.showEditor === false) {
+        ctrl.showEditor = true;
+        timeDuration = 100;
+      }
+
+      $timeout(function() {
+        if (message) {
+          ctrl.quote = {
+            username: message.sender_username,
+            createdAt: new Date(message.created_at).getTime(),
+            body: message.content.body || message.content.body_html
+          };
+        }
+      }, timeDuration);
     };
 
     this.deleteMessageId = '';
