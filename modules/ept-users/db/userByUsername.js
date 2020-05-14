@@ -65,8 +65,8 @@ module.exports = function(username) {
       var defaultRole = db.sqlQuery(q2);
       var mainRole = db.sqlQuery(q3, [user.id]);
       return Promise.join(allRoles, defaultRole, mainRole, function(roles, userRole, main) {
-        user.role_name = main[0].role_name || 'User';
-        user.role_highlight_color = main[0].highlight_color || '';
+        user.role_name = main[0] ? main[0].role_name : 'User';
+        user.role_highlight_color = main[0] ? main[0].highlight_color : '';
         // return user's roles or default to the user role
         return roles.length ? roles : userRole;
       })
