@@ -57,9 +57,16 @@ module.exports = function(username) {
     if (user) {
       var q = 'SELECT roles.* FROM roles_users, roles WHERE roles_users.user_id = $1 AND roles.id = roles_users.role_id';
       var q2 = 'SELECT roles.* FROM roles WHERE lookup = \'user\'';
+      var q3 = `SELECT r.highlight_color, r.name as role_name FROM roles_users ru
+                LEFT JOIN roles r ON ru.role_id = r.id
+                WHERE $1 = ru.user_id
+                ORDER BY r.priority limit 1`;
       var allRoles = db.sqlQuery(q, [user.id]);
       var defaultRole = db.sqlQuery(q2);
-      return Promise.join(allRoles, defaultRole, function(roles, userRole) {
+      var mainRole = db.sqlQuery(q3, [user.id]);
+      return Promise.join(allRoles, defaultRole, mainRole, function(roles, userRole, main) {
+        user.role_name = main[0] ? main[0].role_name : 'User';
+        user.role_highlight_color = main[0] ? main[0].highlight_color : '';
         // return user's roles or default to the user role
         return roles.length ? roles : userRole;
       })

@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   epochtalk-api-tests:
-    image: quay.io/epochtalk/epochtalk-api-tests:v1.1.0
+    image: quay.io/epochtalk/epochtalk-api-tests:v1.2.0
     ports:
       - "1025:1025"
     depends_on:

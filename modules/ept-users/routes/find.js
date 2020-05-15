@@ -34,6 +34,8 @@ var querystring = require('querystring');
   * @apiSuccess {timestamp} created_at Timestamp of when the user's account was created
   * @apiSuccess {timestamp} updated_at Timestamp of when the user's account was last updated
   * @apiSuccess {string[]} roles An array containing the users role lookups
+  * @apiSuccess {string} role_name The name of the user's primary role
+  * @apiSuccess {string} role_highlight_color The hex color to highlight the user's primary role
   *
   * @apiError (Error 404) NotFound The user was not found
   * @apiError (Error 500) InternalServerError There was an error looking up the user
