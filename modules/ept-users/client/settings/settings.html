@@ -1,73 +1,69 @@
-<div class="">
-  <div ng-if="SettingsCtrl.canUpdatePrefs()">
-    <h3 class="thin-underline">Pagination</h3>
-    <form name="$parent.form" class="css-form" novalidate>
-      <!-- Preferences Fields -->
-      <label>Posts Per Page <small>(Min: 10, Max: 100)</small>
-      <input type="number" name="posts_per_page" ng-model="SettingsCtrl.userPrefs.posts_per_page" placeholder="25" min="10" step="1" max="100" auto-focus="$parent.focus"/>
-      </label>
+<div class="" ng-if="SettingsCtrl.canUpdatePrefs()">
+  <h3 class="thin-underline">Pagination</h3>
+  <form name="$parent.form" class="css-form" novalidate>
+    <!-- Preferences Fields -->
+    <label>Posts Per Page <small>(Min: 10, Max: 100)</small>
+    <input type="number" name="posts_per_page" ng-model="SettingsCtrl.userPrefs.posts_per_page" placeholder="25" min="10" step="1" max="100" auto-focus="$parent.focus"/>
+    </label>
 
-      <label>Threads Per Page <small>(Min: 10, Max: 100)</small>
-        <input type="number" name="threads_per_page" ng-model="SettingsCtrl.userPrefs.threads_per_page" placeholder="25" min="10" step="1" max="100"/>
-      </label>
+    <label>Threads Per Page <small>(Min: 10, Max: 100)</small>
+      <input type="number" name="threads_per_page" ng-model="SettingsCtrl.userPrefs.threads_per_page" placeholder="25" min="10" step="1" max="100"/>
+    </label>
 
-      <!-- Save Button -->
-      <div class="clear">
-        <div class="half-column">
-          <button class="fill-row" ng-click="SettingsCtrl.resetPrefrences()">
-          Reset to Default
-          </button>
-        </div>
-        <div class="half-column">
-          <button class="fill-row" ng-click="SettingsCtrl.savePreferences()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
-            Save
-          </button>
-        </div>
+    <!-- Save Button -->
+    <div class="clear">
+      <div class="half-column">
+        <button class="fill-row" ng-click="SettingsCtrl.resetPrefrences()">
+        Reset to Default
+        </button>
       </div>
-    </form>
-    <br />
-    <ignore-messages-settings></ignore-messages-settings>
-    <br />
-    <ignore-mentions-settings></ignore-mentions-settings>
-    <br />
-    <h3 class="thin-underline">Timezone Offset</h3>
-    <div class="fieldgroup">
-      <select ng-model="SettingsCtrl.timezone_offset_sign" ng-options="offset_sign.value as offset_sign.label disable when offset_sign.disabled for offset_sign in SettingsCtrl.timezone_offset_sign_options"></select>
-      <select ng-model="SettingsCtrl.timezone_offset_hours" ng-options="offset_hours.value as offset_hours.label disable when offset_hours.disabled for offset_hours in SettingsCtrl.timezone_offset_hours_options"></select>
-      <select ng-model="SettingsCtrl.timezone_offset_minutes" ng-options="offset_minutes.value as offset_minutes.label disable when offset_minutes.disabled for offset_minutes in SettingsCtrl.timezone_offset_minutes_options"></select>
+      <div class="half-column">
+        <button class="fill-row" ng-click="SettingsCtrl.savePreferences()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+          Save
+        </button>
+      </div>
     </div>
-    <button ng-click="SettingsCtrl.saveTimezoneOffset()" ng-disabled="!SettingsCtrl.timezoneOffsetValid()">
-      Save
-    </button>
-    <button ng-click="SettingsCtrl.resetTimezoneOffset()">
-      Reset
-    </button>
+  </form>
+  <br />
+  <ignore-messages-settings></ignore-messages-settings>
+  <br />
+  <ignore-mentions-settings></ignore-mentions-settings>
+  <br />
+  <h3 class="thin-underline">Timezone Offset</h3>
+  <div class="fieldgroup">
+    <select ng-model="SettingsCtrl.timezone_offset_sign" ng-options="offset_sign.value as offset_sign.label disable when offset_sign.disabled for offset_sign in SettingsCtrl.timezone_offset_sign_options"></select>
+    <select ng-model="SettingsCtrl.timezone_offset_hours" ng-options="offset_hours.value as offset_hours.label disable when offset_hours.disabled for offset_hours in SettingsCtrl.timezone_offset_hours_options"></select>
+    <select ng-model="SettingsCtrl.timezone_offset_minutes" ng-options="offset_minutes.value as offset_minutes.label disable when offset_minutes.disabled for offset_minutes in SettingsCtrl.timezone_offset_minutes_options"></select>
   </div>
+  <button ng-click="SettingsCtrl.saveTimezoneOffset()" ng-disabled="!SettingsCtrl.timezoneOffsetValid()">
+    Save
+  </button>
+  <button ng-click="SettingsCtrl.resetTimezoneOffset()">
+    Reset
+  </button>
   <br />
   <patroller-settings></patroller-settings>
 
-  <div ng-if="SettingsCtrl.canUpdatePrefs()">
-    <ignore-user-settings></ignore-user-settings>
-    <br />
-    <br />
-    <thread-notification-settings></thread-notification-settings>
-    <br />
-    <h3 class="thin-underline">Ignore Boards</h3>
-    <div class="clear boards-check-list">
-      <script type="text/ng-template" id="board_renderer.html">
-        <input id="{{board.id}}" ng-init="SettingsCtrl.allBoards[board.id] = (SettingsCtrl.userPrefs.ignored_boards.indexOf(board.id) > -1)" ng-model="SettingsCtrl.allBoards[board.id]" ng-click="SettingsCtrl.toggleIgnoredBoard(board.id)" ng-disabled="SettingsCtrl.toggleSubmitted[board.id]" type="checkbox" />
-        <label for="{{board.id}}" ng-bind-html="board.name"></label>
-        <ul>
-          <li ng-repeat="board in board.children track by board.id" ng-include="'board_renderer.html'"></li>
-        </ul>
-      </script>
-      <div ng-repeat="cat in SettingsCtrl.boards track by cat.id">
-        <label class="bold" ng-bind-html="cat.name"></label>
-        <ul>
-          <li ng-repeat="board in cat.boards track by board.id" ng-include="'board_renderer.html'">
-          </li>
-        </ul>
-      </div>
+  <ignore-user-settings></ignore-user-settings>
+  <br />
+  <br />
+  <thread-notification-settings></thread-notification-settings>
+  <br />
+  <h3 class="thin-underline">Ignore Boards</h3>
+  <div class="clear boards-check-list">
+    <script type="text/ng-template" id="board_renderer.html">
+      <input id="{{board.id}}" ng-init="SettingsCtrl.allBoards[board.id] = (SettingsCtrl.userPrefs.ignored_boards.indexOf(board.id) > -1)" ng-model="SettingsCtrl.allBoards[board.id]" ng-click="SettingsCtrl.toggleIgnoredBoard(board.id)" ng-disabled="SettingsCtrl.toggleSubmitted[board.id]" type="checkbox" />
+      <label for="{{board.id}}" ng-bind-html="board.name"></label>
+      <ul>
+        <li ng-repeat="board in board.children track by board.id" ng-include="'board_renderer.html'"></li>
+      </ul>
+    </script>
+    <div ng-repeat="cat in SettingsCtrl.boards track by cat.id">
+      <label class="bold" ng-bind-html="cat.name"></label>
+      <ul>
+        <li ng-repeat="board in cat.boards track by board.id" ng-include="'board_renderer.html'">
+        </li>
+      </ul>
     </div>
   </div>
 </div>
