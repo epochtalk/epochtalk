@@ -31,7 +31,7 @@
     <div class="profile-user-name-role">
       <h1 ng-bind="vmProfile.user.username"></h1>
       <span class="username-screen" ng-bind="vmProfile.user.name"></span>
-      <span class="user-role" ng-bind="vmProfile.user.roles[0]"></span>
+      <span class="user-role" style="background-color: {{vmProfile.user.role_highlight_color ? vmProfile.user.role_highlight_color : 'grey'}}" ng-bind="vmProfile.user.role_name"></span>
     </div>
 
     <div class="profile-user-activity">
