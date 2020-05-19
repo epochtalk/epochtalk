@@ -2,6 +2,8 @@
 .search-data {
   @include pad(0 0 1rem 0);
   clear: both;
+  grid-area: main;
+
   .post-block {
     @include row;
     @include clearfix;

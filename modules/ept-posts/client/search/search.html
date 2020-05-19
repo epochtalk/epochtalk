@@ -1,4 +1,4 @@
-<div class="fill-row">
+<div class="search-header">
   <div>
     <form action="." ng-submit="$event.preventDefault();">
       <div class="nested-input-container">
@@ -9,7 +9,7 @@
     </form>
   </div>
 </div>
-<div class="fill-row search-data" ng-if="PostSearchCtrl.count > 0 || PostSearchCtrl.search">
+<div class="search-data" ng-if="PostSearchCtrl.count > 0 || PostSearchCtrl.search">
   <div ng-if="PostSearchCtrl.search">
   Displaying search result(s) for "<strong>{{PostSearchCtrl.search}}</strong>":<br /><br />
   </div>
