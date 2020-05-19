@@ -44,7 +44,7 @@ module.exports = function(conversationId, viewerId, opts) {
         else { data.viewed = false; }
         if (data && data.receiver_ids.length) {
           return Promise.map(data.receiver_ids, function(receiverId) {
-            var userQuery = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = $1';
+            var userQuery = 'SELECT CASE WHEN EXISTS (SELECT ru.user_id FROM roles_users ru WHERE ru.user_id = $1 AND ru.role_id = \'08dd21e5-9781-4c6a-8c6f-3c1574c59a85\') THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS newbie_alert, u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = $1';
             return client.query(userQuery, [receiverId]);
           })
           .then(function(receiverData) {
