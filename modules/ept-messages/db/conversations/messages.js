@@ -17,9 +17,9 @@ module.exports = function(conversationId, viewerId, opts) {
   if (messageId) { messageId = helper.deslugify(messageId); }
   var params = [conversationId, viewerId, timestamp, limit];
 
-  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.content, mid.created_at, mid.read_by_user_ids, mid.reported, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar';
+  var columns = 'mid.id, mid.conversation_id, mid.sender_id, mid.receiver_ids, mid.content, mid.created_at, mid.read_by_user_ids, mid.reported, s.username as sender_username, s.deleted as sender_deleted, s.avatar as sender_avatar, s.newbie_alert as sender_newbie_alert';
   var q = 'SELECT pm.conversation_id, pm.read_by_user_ids, pm.id, pm.sender_id, pm.receiver_ids, pm.content, pm.created_at, CASE WHEN EXISTS (SELECT rm.id FROM administration.reports_messages rm WHERE rm.offender_message_id = pm.id AND rm.reporter_user_id = $2) THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS reported FROM messages.private_messages pm WHERE $2 != ALL(deleted_by_user_ids) AND conversation_id = $1 AND (pm.sender_id = $2 OR $2 = ANY(pm.receiver_ids)) AND pm.created_at <= $3';
-  var q2 = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = mid.sender_id';
+  var q2 = 'SELECT CASE WHEN EXISTS (SELECT ru.user_id FROM roles_users ru WHERE ru.user_id = mid.sender_id AND ru.role_id = \'08dd21e5-9781-4c6a-8c6f-3c1574c59a85\') THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS newbie_alert, u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = mid.sender_id';
 
   if (messageId) {
     var withId = ' AND id != $4 ORDER BY created_at DESC LIMIT $5';
@@ -44,7 +44,7 @@ module.exports = function(conversationId, viewerId, opts) {
         else { data.viewed = false; }
         if (data && data.receiver_ids.length) {
           return Promise.map(data.receiver_ids, function(receiverId) {
-            var userQuery = 'SELECT CASE WHEN EXISTS (SELECT ru.user_id FROM roles_users ru WHERE ru.user_id = $1 AND ru.role_id = \'08dd21e5-9781-4c6a-8c6f-3c1574c59a85\') THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS newbie_alert, u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = $1';
+            var userQuery = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = $1';
             return client.query(userQuery, [receiverId]);
           })
           .then(function(receiverData) {
