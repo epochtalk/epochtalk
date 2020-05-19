@@ -72,7 +72,8 @@
         </div>
         <div class="title">
           <strong ng-bind="message.sender_username"></strong>
-          <span class="date" ng-bind="message.created_at | humanDate"></span>
+          <span class="date" ng-bind="message.created_at | humanDate"></span>&nbsp;
+          <span class="delete" ng-if="message.sender_newbie_alert">Newbie Alert!&nbsp;&nbsp;<i class="fa fa-info-circle"></i></span>
           <div class="right">
             <a ng-href="" class="action" data-balloon="Quote" ng-click="MessagesCtrl.addQuote(message); MessagesCtrl.editorConvoMode = false;">
               <i class="icon-epoch-quote"></i>
