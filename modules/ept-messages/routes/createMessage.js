@@ -88,7 +88,7 @@ function processing(request) {
         })
         .then(function(dbSubject) {
           subject = dbSubject;
-          return request.db.messages.getEmailSettings(receiverId);
+          return request.db.messages.getMessageSettings(receiverId);
         })
         .then(function(data) {
           if (data.email_messages) {

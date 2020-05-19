@@ -20,7 +20,7 @@ module.exports = {
   handler: function(request) {
     var userId = request.auth.credentials.id;
 
-    var promise = request.db.messages.getEmailSettings(userId)
+    var promise = request.db.messages.getMessageSettings(userId)
     .error(request.errorMap.toHttpError);
 
     return promise;
