@@ -30,7 +30,7 @@
   }
 
   .threads-recent {
-    color: $text-gray-dark;
+    color: $secondary-font-color;
     font-size: $font-size-sm;
     margin-bottom: 1rem;
 
@@ -79,7 +79,7 @@
     margin-right: 0.25rem;
 
     path {
-      fill: $text-gray-dark;
+      fill: $secondary-font-color;
     }
   }
 
@@ -108,7 +108,7 @@
     }
     a {
       display: inline-block;
-      color: $text-gray-med;
+      color: $secondary-font-color;
       width: 1rem;
       // font-size: 0.65rem;
       position: relative;
@@ -146,7 +146,7 @@
 
          polyline {
            fill: none;
-           stroke: $text-gray-med;
+           stroke: $secondary-font-color;
            stroke-linecap: round;
            stroke-miterlimit: 10;
            stroke-width: 7px;
@@ -167,7 +167,7 @@
       .description,
       .childboards,
       .moderators {
-        color: $text-gray-dark;
+        color: $secondary-font-color;
         font-size: $font-size-sm;
         line-height: 1;
         margin-bottom: 0.5rem;

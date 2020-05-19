@@ -67,7 +67,7 @@ header {
       .avatar {
         &.circle { @include border-radius(100px); }
         &.rect, &.circle {
-          border: 2px solid $header-logo-font-color;
+          // border: 2px solid $header-logo-font-color;
           opacity: 1;
           height: 2.1875rem;
           width: 2.1875rem;
@@ -361,15 +361,15 @@ header {
                 height: auto;
                 text-align: left;
                 margin-left: -20.1rem;
-                background-color: darken($header-dropdown-bg-color, 8%);
+                background-color: $header-dropdown-bg-color;
                 position: absolute;
                 z-index: 9999;
                 li {
                   @include clearfix;
                   float: none;
                   position: relative;
-                  color: $header-login-font-color;
-                  border-bottom: 1px solid $secondary-font-color-dark;
+                  color: $secondary-font-color;
+                  border-bottom: 1px solid rgba($border-color, 25%);
                   a {
                     @include display(flex);
                     @include pad(0.35rem 1rem);
@@ -468,7 +468,7 @@ header {
                     }
                   }
                   &.dismissed, .dismissed div {
-                    background-color: $header-bg-color;
+                    background-color: lighten($header-dropdown-bg-color, 0.2);
                     .mention-unread { display: none; }
                   }
                   &:first-child {
@@ -589,7 +589,7 @@ header {
       padding: 0 1rem;
     }
     
-    background-color: #fff;
+    background-color: $sub-header-color;
     border-bottom: 1px solid $breadcrumbs-border-color;
     text-align: center;
     height: $breadcrumbs-height;

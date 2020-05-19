@@ -68,7 +68,7 @@ $secondary-font-color-light: darken($secondary-font-color, 20%);
 }
 
 // Components Calculated
-$color-highlighted: HSL(200, 20%, 25%);
+$color-highlighted: HSL(200, 20%, 12%);
 $border-color-alt: darken($border-color, 30%);
 $code-block-bg-color: lighten($base-background-color, 10%);
 @if (lightness($base-background-color) > 50) {
@@ -111,9 +111,9 @@ $footer-link-hover-color: $color-primary;
 
 
 // Borders (post color calculations)
-$border: 1px solid rgb(215, 215, 215);
+$border: 1px solid $border-color;
 $border-alt: 1px solid $border-color-alt;
-$border-quote: 2px solid rgba(0, 0, 0, 0.1);
+$border-quote: 2px solid rgba($border-color, 0.5);
 
 
 // Mobile Breakpoints

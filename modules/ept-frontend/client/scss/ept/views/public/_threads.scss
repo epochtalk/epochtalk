@@ -18,7 +18,7 @@
 }
 
 .board-controls {
-  background-color: #fff;
+  background-color: $base-background-color;
   border-bottom: $border;
   margin: 0 0 1.5rem;
   padding: 0 0 1.5rem;
@@ -157,12 +157,12 @@
   .board-data {
     h1 {
       font-size: $font-size-sm;
-      color: $text-gray-med;
+      color: $secondary-font-color;
       text-transform: uppercase;
     }
 
     .threads-data {
-      color: $text-gray-med;
+      color: $secondary-font-color;
       display: flex;
       flex-direction: row;
     }
@@ -215,7 +215,7 @@
   margin-bottom: 3rem;
 
   caption {
-    color: $text-gray-med;
+    color: $secondary-font-color;
     font-size: $font-size-xs;
     font-weight: 400;
     grid-column: 1 / span 3;
@@ -247,7 +247,7 @@
   }
 
   .last-post {
-    color: $text-gray-dark;
+    color: $secondary-font-color;
     font-size: $font-size-sm;
   }
 }
@@ -262,12 +262,12 @@
   margin-left: -1rem;
 
   .children {
-    color: $text-gray-dark;
+    color: $secondary-font-color;
     font-size: $font-size-sm;
   }
 
   .views {
-    color: $text-gray-dark;
+    color: $secondary-font-color;
     font-size: $font-size-sm;
     font-weight: 600;
     display: grid;
@@ -342,7 +342,7 @@
         &.views,
         &.views-replies,
         &.last-post {
-          color: $text-gray-med;
+          color: $secondary-font-color;
           font-size: $font-size-xs;
           font-weight: 400;
           text-transform: uppercase;
@@ -355,7 +355,7 @@
   .replies,
   .views,
   .last-post {
-    color: $text-gray-dark;
+    color: $secondary-font-color;
   }
 
   .replies,
@@ -405,7 +405,7 @@
       width: auto;
 
       path {
-        fill: $text-gray-dark;
+        fill: $secondary-font-color;
       }
     }
 
@@ -446,7 +446,7 @@
       width: auto;
 
       &:hover {
-        fill: $text-gray-med;
+        fill: $secondary-font-color;
       }
     }
   }
@@ -460,7 +460,7 @@
 
     caption {
       display: block;
-      color: $text-gray-med;
+      color: $secondary-font-color;
       grid-column: inherit;
       text-align: left;
       text-transform: uppercase;

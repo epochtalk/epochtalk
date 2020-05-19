@@ -57,7 +57,7 @@ ad-viewer {
     width: 100%;
 
     a {
-      color: $text-gray-med;
+      color: $secondary-font-color;
 
       &.clicked {
         color: $color-primary;
@@ -211,7 +211,7 @@ ad-viewer {
           right: -2px;
 
           svg {
-            stroke: white;
+            stroke: $base-background-color;
             stroke-width: 6;
             fill: green;
             width: 20px;
@@ -322,7 +322,7 @@ ad-viewer {
 
         .timestamp, .display-name {
           display: inline-block;
-          color: $text-gray-med;
+          color: $secondary-font-color;
           font-size: $font-size-xs;
           font-weight: 400;
         }
@@ -412,15 +412,15 @@ ad-viewer {
 
 
 .threadStates {
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .badge {
   // border: 1px solid $text-gray-dark;
-  background-color: #fff;
-  border: 1px solid #999;
+  background-color: $base-background-color;
+  border: 1px solid $secondary-font-color;
   border-radius: 4px;
-  color: #999;
+  color: $secondary-font-color;
   display: inline-block;
   font-size: $font-size-xs;
   margin-right: 0.25rem;
@@ -430,7 +430,7 @@ ad-viewer {
   text-transform: uppercase;
 
   a {
-    color: #999;
+    color: $secondary-font-color;
 
     &:active,
     &:focus,
@@ -446,7 +446,7 @@ ad-viewer {
 
   svg {
     height: 0.75rem;
-    fill: #999;
+    fill: $secondary-font-color;
     // position: relative;
     // top: 1px;
   }

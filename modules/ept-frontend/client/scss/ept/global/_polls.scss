@@ -42,7 +42,7 @@
   .poll-title {
     background-color: $base-background-color;
     border-bottom: $border;
-    color: $text-gray-med;
+    color: $secondary-font-color;
     display: flex;
     align-items: center;
     font-size: $font-size-xs;
@@ -102,7 +102,7 @@
     margin-bottom: 0.5rem;
 
     .poll-question {
-      color: $dark-text-default;
+      color: $base-font-color;
       font-size: $font-size-base;
       margin-bottom: 0.5rem;
       line-height: 1.2;
@@ -130,10 +130,10 @@
   // poll edit section
   .poll-edit-container {
     padding: 0.5rem 1rem 1rem;
-    background-color: #efefef;
+    background-color: $sub-header-color;
 
     .panelTitle {
-      color: $text-gray-med;
+      color: $secondary-font-color;
       font-size: $font-size-sm;
       margin-bottom: 0.5rem;
     }

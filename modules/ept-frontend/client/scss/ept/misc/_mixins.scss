@@ -27,7 +27,7 @@
 }
 
 @mixin info-text($size: $font-size-sm) {
-  color: $text-gray-dark;
+  color: $secondary-font-color;
   font-size: $size;
 }
 

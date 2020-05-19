@@ -55,14 +55,14 @@ profile {
       right: 4px;
       
       svg {
-        stroke: #fff;
+        stroke: $base-background-color;
         stroke-width: 6;
         fill: green;
         width: 1.5rem;
       }
     }
 
-    .rectangle {
+    .rect {
       .profile-user-status {
         top: -8px;
         right: -8px;
@@ -82,7 +82,7 @@ profile {
       margin-bottom: 0.5rem;
 
       h1 {
-        color: $dark-text-default;
+        color: $base-font-color;
         font-size: inherit;
         font-weight: 600;
         line-height: inherit;
