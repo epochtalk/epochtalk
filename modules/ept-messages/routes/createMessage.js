@@ -91,7 +91,6 @@ function processing(request) {
           return request.db.messages.getEmailSettings(receiverId);
         })
         .then(function(data) {
-          console.log('\n\n', data, '\n\n');
           if (data.email_messages) {
             var emailParams = {
               email: receiver.email,
