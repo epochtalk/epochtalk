@@ -1,5 +1,5 @@
-<div class="" ng-if="SettingsCtrl.canUpdatePrefs()">
-  <h3 class="thin-underline">Pagination</h3>
+<div id="user-settings" class="user-settings" ng-if="SettingsCtrl.canUpdatePrefs()">
+  <h3 class="panel-title">Pagination</h3>
   <form name="$parent.form" class="css-form" novalidate>
     <!-- Preferences Fields -->
     <label>Posts Per Page <small>(Min: 10, Max: 100)</small>
@@ -11,17 +11,13 @@
     </label>
 
     <!-- Save Button -->
-    <div class="clear">
-      <div class="half-column">
-        <button class="fill-row" ng-click="SettingsCtrl.resetPrefrences()">
-        Reset to Default
-        </button>
-      </div>
-      <div class="half-column">
-        <button class="fill-row" ng-click="SettingsCtrl.savePreferences()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
-          Save
-        </button>
-      </div>
+    <div class="action-bar-panel">
+      <button class="outline" ng-click="SettingsCtrl.resetPrefrences()">
+      Reset
+      </button>
+      <button class="" ng-click="SettingsCtrl.savePreferences()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
+        Save
+      </button>
     </div>
   </form>
   <br />
@@ -35,12 +31,14 @@
     <select ng-model="SettingsCtrl.timezone_offset_hours" ng-options="offset_hours.value as offset_hours.label disable when offset_hours.disabled for offset_hours in SettingsCtrl.timezone_offset_hours_options"></select>
     <select ng-model="SettingsCtrl.timezone_offset_minutes" ng-options="offset_minutes.value as offset_minutes.label disable when offset_minutes.disabled for offset_minutes in SettingsCtrl.timezone_offset_minutes_options"></select>
   </div>
-  <button ng-click="SettingsCtrl.saveTimezoneOffset()" ng-disabled="!SettingsCtrl.timezoneOffsetValid()">
-    Save
-  </button>
-  <button ng-click="SettingsCtrl.resetTimezoneOffset()">
-    Reset
-  </button>
+  <div class="action-bar-panel">
+    <button class="outline" ng-click="SettingsCtrl.resetTimezoneOffset()">
+      Reset
+    </button>
+    <button ng-click="SettingsCtrl.saveTimezoneOffset()" ng-disabled="!SettingsCtrl.timezoneOffsetValid()">
+      Save
+    </button>
+  </div>
   <br />
   <patroller-settings></patroller-settings>
 
