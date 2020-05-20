@@ -5,11 +5,11 @@ var db = dbc.db;
 
 module.exports = function(userId) {
   userId = helper.deslugify(userId);
-  var q = 'SELECT email_messages FROM users.preferences WHERE user_id = $1';
+  var q = 'SELECT email_messages, ignore_newbies FROM users.preferences WHERE user_id = $1';
   var params = [ userId ];
   return db.scalar(q, params)
   .then(function(data) {
-    if (data === null) { return { email_messages: true }; }
+    if (data === null) { return { email_messages: true, ignore_newbies: true }; }
     else { return data; }
   });
 };
