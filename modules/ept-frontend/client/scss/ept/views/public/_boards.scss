@@ -19,6 +19,25 @@
 
 }
 
+.dashboard-hero {
+  background-color: darken($base-background-color, 10%);
+  grid-area: main;
+  margin: 2rem 0;
+  padding: 2rem 0;
+
+  .threads-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .threads-data {
+    border: 1px solid $border-color;
+    padding: 0.5rem;
+  }
+}
+
 .sidebar {
   grid-area: sidebar;
   padding-top: 1rem;
