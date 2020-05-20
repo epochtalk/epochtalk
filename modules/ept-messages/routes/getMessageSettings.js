@@ -7,6 +7,7 @@
   * @apiDescription Used to retreive the user's message settings
   *
   * @apiSuccess {boolean} email_messages Boolean indicating if the user is receiving emails when messaged
+  * @apiSuccess {boolean} ignore_newbies Boolean indicating if the user allows newbies to send them messages
   *
   * @apiError (Error 500) InternalServerError There was an getting message settings
   */
