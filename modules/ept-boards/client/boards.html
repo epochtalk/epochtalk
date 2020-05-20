@@ -1,62 +1,4 @@
 <div class="main">
-  <!-- Recent Threads -->
-  <div class="dashboard-hero">
-    <div class="recent-threads">
-      <div class="title column-container">
-        <h1>Recent Threads</h1>
-      </div>
-    
-      <div class="centered-text" ng-if="!BoardsCtrl.recentThreads">
-        <h5>No recently updated threads available</h5>
-      </div>
-    
-      <div class="threads-container" ng-if="BoardsCtrl.recentThreads">
-        <!-- Thread listing -->
-        <div class="threads-data threads-recent" ng-repeat="thread in BoardsCtrl.recentThreads track by thread.id">
-          <div class="subject">
-            <div class="thread-state">
-              <svg ng-if="thread.sticky" class="is-sticky" viewBox="0 0 40.68 40.68" xmlns="http://www.w3.org/2000/svg">
-                <path d="m40 9.92-9.24-9.19a2.5 2.5 0 0 0 -3.54 3.54l9.2 9.19a2.5 2.5 0 0 0 3.58-3.54z" />
-                <path
-                  d="m12 14.52a3 3 0 0 0 -4.24 4.24l5.66 5.66-11.3 11.31-2.12 4.95 5-2.12 11.26-11.31 5.66 5.66a3 3 0 0 0 4.24-4.25z" />
-                <path d="m17.46 9.23h16v12h-16z" transform="matrix(.70710678 -.70710678 .70710678 .70710678 -3.31 22.46)" />
-              </svg>
-
-              <svg ng-if="thread.latest" class="is-unread" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                <title>icon__unread</title>
-                <g id="icons">
-                  <circle cx="16" cy="16" r="16" />
-                </g>
-              </svg>
-            </div>
-            <div class="title">
-              <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ threadId: thread.id, start: thread.post.position })" ng-bind-html="thread.title"></a>
-            </div>
-            <div class="user">
-              in <a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name" class="thread-board"></a> 
-              by 
-              <span ng-if="thread.deleted">deleted</span>
-              <a ng-if="!thread.deleted" ui-sref="profile.posts({ username: thread.user.username })"
-                ng-bind-html="thread.user.username"></a>
-            </div>
-            <div class="last-reply">
-              <div ng-bind="thread.post.created_at | humanDate"></div>
-            </div>
-            <div class="thread-status">
-              <svg ng-if="thread.locked" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                <title>lock</title>
-                <path d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z"/>
-              </svg>
-              <svg ng-if="thread.poll" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                <path class="cls-1" d="M42,2H6A4,4,0,0,0,2,6V42a4,4,0,0,0,4,4H42a4,4,0,0,0,4-4V6A4,4,0,0,0,42,2ZM13.75,40h-6V32h6Zm9,0h-6V22h6Zm9,0h-6V27h6Zm9,0h-6V12h6Z"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
   <div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards">
     <!-- Category Title -->
     <div id="{{BoardsCtrl.generateCatId(cat.name, cat.view_order)}}" class="title">
@@ -138,14 +80,7 @@
 
 <!-- Threads -->
 <div class="sidebar">
-  <!-- test buttons -->
-  <div class="actions">
-    <a href="" class="btn">Create an Account</a>
-    <a href="" class="btn">Start a New Discussion</a>
-    <a href="" class="btn">Some other Action</a>
-  </div>
-
-  <div class="board-data" style="display:none">
+  <div class="board-data">
     <div class="title column-container">
       <h1>Recent Threads</h1>
     </div>
