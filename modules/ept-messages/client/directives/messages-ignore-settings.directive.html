@@ -2,12 +2,23 @@
 <h3 class="thin-underline">User Message Settings</h3>
 <div class="row">
   <div class="two-thirds-column">
-    <label for="enable-mention-emails">Send me an Email when I'm messaged</label>
-    <label class="desc-label" for="enable-mention-emails">Receive an email when users message you</label>
+    <label for="enable-message-emails">Send me an Email when I'm messaged</label>
+    <label class="desc-label" for="enable-message-emails">Receive an email when users message you</label>
   </div>
   <div class="one-third-column">
-    <input id="enable-mention-emails" class="toggle-switch" type="checkbox" ng-model="vmIgnoreUserMessages.emailsDisabled" ng-click="vmIgnoreUserMessages.enableMessageEmails()">
-    <label for="enable-mention-emails"></label>
+    <input id="enable-message-emails" class="toggle-switch" type="checkbox" ng-model="vmIgnoreUserMessages.emailsDisabled" ng-click="vmIgnoreUserMessages.enableMessageEmails()">
+    <label for="enable-message-emails"></label>
+  </div>
+</div>
+<div class="clear"></div>
+<div class="row">
+  <div class="two-thirds-column">
+    <label for="enable-newbie-messages">Ignore Newbie Messages</label>
+    <label class="desc-label" for="enable-newbie-messages">Do not allow newbie members to message you</label>
+  </div>
+  <div class="one-third-column">
+    <input id="enable-newbie-messages" class="toggle-switch" type="checkbox" ng-model="vmIgnoreUserMessages.ignoreNewbies" ng-click="vmIgnoreUserMessages.enableNewbieMessages()">
+    <label for="enable-newbie-messages"></label>
   </div>
 </div>
 <div class="clear"></div>
