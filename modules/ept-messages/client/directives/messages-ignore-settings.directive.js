@@ -9,6 +9,7 @@ var directive = ['Messages', '$timeout', 'Alert',
       // page variables
       var ctrl = this;
       this.emailsDisabled;
+      this.ignoreNewbies;
       this.userToIgnore = {};
       this.page = 1;
 
@@ -82,6 +83,19 @@ var directive = ['Messages', '$timeout', 'Alert',
         })
         .catch(function(e) {
           ctrl.emailsDisabled = !ctrl.emailsDisabled;
+          Alert.error('There was an error updating your message settings');
+        });
+      };
+
+      this.enableNewbieMessages = function() {
+        var payload = { enabled: !ctrl.ignoreNewbies };
+        return Messages.enableNewbieMessages(payload).$promise
+        .then(function() {
+          var action = ctrl.ignoreNewbies ? 'Enabled' : 'Disabled';
+          Alert.success('Successfully ' + action + ' Message Emails');
+        })
+        .catch(function(e) {
+          ctrl.ignoreNewbies = !ctrl.ignoreNewbies;
           Alert.error('There was an error updating your message settings');
         });
       };
