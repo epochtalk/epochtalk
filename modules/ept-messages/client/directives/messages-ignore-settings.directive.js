@@ -25,7 +25,10 @@ var directive = ['Messages', '$timeout', 'Alert',
           ctrl.prev = ignored.prev;
           return Messages.getMessageSettings().$promise;
         })
-        .then(function(data) { ctrl.emailsDisabled = data.email_messages; })
+        .then(function(data) {
+          ctrl.emailsDisabled = data.email_messages;
+          ctrl.ignoreNewbies = data.ignore_newbies;
+        })
         .catch(function(err) { Alert.error('There was an error paging ignored users.'); });
       };
 
