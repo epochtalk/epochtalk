@@ -81,6 +81,7 @@ var ctrl = [
         receiverNames.splice(authedIndex, 1);
         receiverNames.push(message.sender_username);
       }
+      receiverNames = receiverNames.filter((it, i, ar) => ar.indexOf(it) === i);
       return receiverNames.join(', ');
     };
 
